@@ -20,6 +20,7 @@
 		34ED5B71F24CB7FE5B930092 /* libPods-common-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F32615461FE7A559346E3EC6 /* libPods-common-tvOS.a */; };
 		6ACA09671CF189EEEE14AAB0 /* libPods-common.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC00D58513AC440712A9BCEF /* libPods-common.a */; };
 		A2F43A06FAEC0CFFB9C7F5B0 /* libPods-common-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 53B56D4224B144B8E6CBA222 /* libPods-common-tvOSTests.a */; };
+		BDCCFD6624197F03004F5FEF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BDCCFD6524197F03004F5FEF /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		53B56D4224B144B8E6CBA222 /* libPods-common-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-common-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B024C03C8A3AD0B34393F14 /* Pods-common-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-common-tvOS/Pods-common-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		67447AE68F6E221245B705B9 /* Pods-common-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-common-tvOSTests/Pods-common-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		BDCCFD6524197F03004F5FEF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C1714FDB6F3659663E704042 /* Pods-common-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-common-tvOSTests/Pods-common-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		DC00D58513AC440712A9BCEF /* libPods-common.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-common.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4DCB3E2577B6C4DC07C4A17 /* libPods-commonTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-commonTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,6 +127,7 @@
 		13B07FAE1A68108700A75B9A /* common */ = {
 			isa = PBXGroup;
 			children = (
+				BDCCFD6524197F03004F5FEF /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -161,7 +164,6 @@
 				0FC4A8D41F2BF23596527E9D /* Pods-commonTests.debug.xcconfig */,
 				1E1339E16B91424EC47B68D9 /* Pods-commonTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -230,6 +232,7 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				49C50EA38BCDB8AA2DF25C10 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -308,6 +311,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -338,6 +342,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				BDCCFD6624197F03004F5FEF /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,6 +391,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+		};
+		49C50EA38BCDB8AA2DF25C10 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-common/Pods-common-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gRPCCertificates-Cpp.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-common/Pods-common-resources.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		647AE29F0E6A625AE8ACFCCF /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
