@@ -46,7 +46,10 @@ in linux `sdk.dir = /home/USERNAME/Android/Sdk`
 ### Useful Download links
 
 ##### Android Studio
+https://developer.android.com/studio
 
+##### Xcode
+https://apps.apple.com/us/app/xcode/id497799835?mt=12
 
 ### Useful links for libraries used in the Project
 
