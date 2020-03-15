@@ -3,6 +3,19 @@
 A DAOstack product
 
 ## Getting Started
+For Getting Started with React Native there is a very comprehensive guide on their website
+
+https://reactnative.dev/docs/getting-started
+
+There are two documentation options: Expo CLI Quickstart & React Native CLI Quickstart.
+
+Choose the React Native CLI Quickstart and then choose whether you use a Mac, Linux or Windows
+
+### Files containing keys
+You will need the `env.json` file from one of the members of the developer team to get started.
+This file is to be placed into the root folder of the project.
+
+### Getting Started from the Common Github Repo
 
 1. Clone the repo `git clone https://github.com/daostack/common.git`
 2. `cd common` and run `yarn` or `npm install`
@@ -11,7 +24,7 @@ A DAOstack product
 ### For iOS
 
 4. To run the project from the command line run `react-native run-ios`
-5. To run form Xcode, open the `common.xcworkspace` file and then enter `command + r`
+5. To run from Xcode, open the `common.xcworkspace` file and then enter `command + r`
 
 ### For Android
 
@@ -30,6 +43,24 @@ in macOS `sdk.dir = /Users/USERNAME/Library/Android/sdk`
 
 in linux `sdk.dir = /home/USERNAME/Android/Sdk`
 
+### Useful Download links
+
+##### Android Studio
+
+
+### Useful links for libraries used in the Project
+
+##### Navigation (React Navigation)
+https://reactnavigation.org/docs/bottom-tab-navigator
+
+##### Testing (Jest)
+https://jestjs.io/
+
+##### React Native Firebase
+https://rnfirebase.io/
+
+##### React Hooks
+https://reactjs.org/docs/hooks-intro.html
 
 
 
