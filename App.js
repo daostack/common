@@ -6,7 +6,7 @@
  * @flow
  */
 
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -24,25 +24,22 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import Home from './src/Screens/Home'
-import Login from './src/Screens/Login'
+import Home from './src/Screens/Home';
+import Login from './src/Screens/Login';
+import CreateAccount from './src/Screens/CreateAccount';
 
-import {
-  NavigationContainer,
-} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 
-import {
-  createBottomTabNavigator,
-} from '@react-navigation/bottom-tabs';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import FirebaseService from './src/Services/FirebaseService'
+import FirebaseService from './src/Services/FirebaseService';
 
 const Tab = createBottomTabNavigator();
 
 const App = () => {
-  useEffect( () => {
+  useEffect(() => {
     const getUser = async () => {
-      console.log('users: ', await FirebaseService.getUser())
+      console.log('users: ', await FirebaseService.getUser());
     };
     getUser();
   });
@@ -52,6 +49,7 @@ const App = () => {
       <Tab.Navigator>
         <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Login" component={Login} />
+        <Tab.Screen name="Create Account" component={CreateAccount} />
       </Tab.Navigator>
     </NavigationContainer>
   );
