@@ -1,17 +1,15 @@
-import {useEffect} from 'react';
-import FirebaseService from '../Services/FirebaseService';
-import {SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View} from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import React from 'react';
 
 const Home = () => {
-  useEffect( () => {
-    const getUser = async () => {
-      console.log('users: ', await FirebaseService.getUser())
-    };
-    getUser();
-  });
-
   return (
     <>
       <StatusBar barStyle="dark-content" />

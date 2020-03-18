@@ -29,41 +29,35 @@ public class WalletModule extends ReactContextBaseJavaModule {
         return "WalletModule";
     }
 
-//    @ReactMethod
-//    public void getAddress(Promise promise) {
-//        WalletManager.getInstance().importWallet(new BaseListener<Credentials>() {
-//            @Override
-//            public void OnSuccess(Credentials credentials) {
-//                promise.resolve(credentials.getAddress());
-//            }
-//
-//            @Override
-//            public void OnFailed(Throwable e) {
-//                promise.reject(e.toString());
-//            }
-//        });
-//    }
-//
-//    @ReactMethod
-//    public void getBalance(Promise promise) {
-//        Web3jManager.getInstance().checkBalances(new BaseListener<EthGetBalance>() {
-//
-//            @Override
-//            public void OnSuccess(EthGetBalance balance) {
-//                String blanceETH = Convert.fromWei(balance.getBalance().toString(), Convert.Unit.ETHER).toPlainString().concat("ether");
-//                Toast.makeText(getReactApplicationContext(),"getBalance:" + blanceETH,Toast.LENGTH_LONG).show();
-//                promise.resolve(blanceETH);
-//            }
-//
-//            @Override
-//            public void OnFailed(Throwable e) {
-//                promise.reject(e.toString());
-//            }
-//        });
-//    }
+    @ReactMethod
+    public void generateMnemonic(Promise promise) {
+        try {
+            String mnemonic = WalletManager.getInstance().generateMnemonic();
+            promise.resolve(mnemonic);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+
+    }
 
     @ReactMethod
-    public void signMessage(String message,Promise promise) {
+    public void retrieveMnemonic(Promise promise) {
+        try {
+            String mnemonic = WalletManager.getInstance().retrieveMnemonic();
+            promise.resolve(mnemonic);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+    }
+
+    @ReactMethod
+    public void signMessage(String message, Promise promise) {
+        try {
+            String signed = WalletManager.getInstance().signMessage(message);
+            promise.resolve(signed);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
 
     }
 }

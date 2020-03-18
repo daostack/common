@@ -10,7 +10,6 @@
 		15E1ED02241A26D600651ACD /* WalletManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED01241A26D600651ACD /* WalletManager.swift */; };
 		15E1ED07241A296400651ACD /* RNBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED06241A296400651ACD /* RNBridge.m */; };
 		15E1ED09241A298900651ACD /* WalletModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED08241A298900651ACD /* WalletModule.swift */; };
-		15E1ED0D241B360700651ACD /* WalletManager+Keystore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED0C241B360700651ACD /* WalletManager+Keystore.swift */; };
 		15E1ED0F241B363C00651ACD /* WalletManager+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED0E241B363C00651ACD /* WalletManager+Error.swift */; };
 		15E1ED13241B3A2C00651ACD /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED12241B3A2C00651ACD /* String+Extension.swift */; };
 		15E1ED15241B3B8D00651ACD /* CryptoTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED14241B3B8D00651ACD /* CryptoTools.swift */; };
@@ -28,7 +27,6 @@
 		15E1ED03241A292C00651ACD /* common-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "common-Bridging-Header.h"; sourceTree = "<group>"; };
 		15E1ED06241A296400651ACD /* RNBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNBridge.m; sourceTree = "<group>"; };
 		15E1ED08241A298900651ACD /* WalletModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletModule.swift; sourceTree = "<group>"; };
-		15E1ED0C241B360700651ACD /* WalletManager+Keystore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WalletManager+Keystore.swift"; sourceTree = "<group>"; };
 		15E1ED0E241B363C00651ACD /* WalletManager+Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WalletManager+Error.swift"; sourceTree = "<group>"; };
 		15E1ED12241B3A2C00651ACD /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		15E1ED14241B3B8D00651ACD /* CryptoTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoTools.swift; sourceTree = "<group>"; };
@@ -107,7 +105,6 @@
 			isa = PBXGroup;
 			children = (
 				15E1ED01241A26D600651ACD /* WalletManager.swift */,
-				15E1ED0C241B360700651ACD /* WalletManager+Keystore.swift */,
 				15E1ED0E241B363C00651ACD /* WalletManager+Error.swift */,
 			);
 			path = Wallet;
@@ -368,7 +365,6 @@
 				15E1ED15241B3B8D00651ACD /* CryptoTools.swift in Sources */,
 				15E1ED09241A298900651ACD /* WalletModule.swift in Sources */,
 				15E1ED02241A26D600651ACD /* WalletManager.swift in Sources */,
-				15E1ED0D241B360700651ACD /* WalletManager+Keystore.swift in Sources */,
 				15E9072E2417D1B9008A5750 /* ViewController.swift in Sources */,
 				15E1ED07241A296400651ACD /* RNBridge.m in Sources */,
 				15E9072A2417D1B9008A5750 /* AppDelegate.swift in Sources */,

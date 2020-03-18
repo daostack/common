@@ -19,15 +19,23 @@ You will need three files
  3. For Android `google-services.json`
 
 You can ge these files from one of the members of the developer team to get started.
+
 The `env.json` is to be placed into the root folder of the React Native project.
+
 The `GoogleService-Info.plist` is to be placed in the `common/Support` folder
-The `google-services.json` file is to be placed in the `*to be filled*`
+The `google-services.json` file is to be placed in the `common/android/app`
 
 ### Getting Started from the Common Github Repo
 
 1. Clone the repo `git clone https://github.com/daostack/common.git`
 2. `cd common` and run `yarn` or `npm install`
 3. `cd ios` and run `pod install`
+
+** After running `pod install` you will receive an error while running the app.
+
+** 'Firebase.h' file not found with <angled> use "quotes" instead.
+
+** You will need to replace the angled brackets from `#import <Firebase.h>` with `#import "Firebase.h"` in the `/RNFirebaseFirestore.h` and `/RNFirebaseUtil.h` files
 
 ### For iOS
 

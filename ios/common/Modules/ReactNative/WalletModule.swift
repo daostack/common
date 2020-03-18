@@ -11,20 +11,27 @@ import Foundation
 @objc(WalletModule)
 class WalletModule: NSObject {
     
-    @objc func createSeedPhrase(resolve: @escaping RCTPromiseResolveBlock,
+    @objc func generateMnemonic(_ resolve: @escaping RCTPromiseResolveBlock,
                                 reject: @escaping RCTPromiseRejectBlock) {
         DispatchQueue.main.async {
             do {
-                let seed = try WalletManager.shared.createSeedPhrase()
+                let seed = try WalletManager.shared.generateMnemonic(shouldStore: true)
                 resolve(seed)
             } catch {
-                reject("1", "Create seed phrase failed", nil)
+                reject("1", "Create seed phrase failed", error)
             }
         }
     }
     
+    @objc func retrieveMnemonic(_ resolve: @escaping RCTPromiseResolveBlock,
+                                reject: @escaping RCTPromiseRejectBlock) {
+        DispatchQueue.main.async {
+            let seed = WalletManager.shared.retrieveMnemonic()
+            resolve(seed)
+        }
+    }
     
-    @objc func signMessgae(message: String,
+    @objc func signMessage(_ message: String,
                            resolve: @escaping RCTPromiseResolveBlock,
                            reject: @escaping RCTPromiseRejectBlock) {
         DispatchQueue.main.async {
@@ -32,7 +39,7 @@ class WalletModule: NSObject {
                 let signed = try WalletManager.shared.signMessage(message: message)
                 resolve(signed)
             } catch {
-                reject("2", "Sign Data failed", nil)
+                reject("2", "Sign Data failed", error)
             }
         }
     }

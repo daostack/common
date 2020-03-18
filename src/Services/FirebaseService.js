@@ -1,8 +1,9 @@
 import {db} from '../Firebase';
 
-export default new class FirebaseService {
+export default class FirebaseService {
   async getUser() {
-    return db.collection('users')
+    return db
+      .collection('users')
       .doc('pbNuWYRttv5v6d4ha2TK')
       .collection('user_info')
       .get()

@@ -9,5 +9,5 @@ firebase.initializeApp(firebaseConfig);
 module.exports = {
   db: firebase.firestore(),
   messaging: RNfirebase.messaging(),
-  firebase
+  firebase,
 };

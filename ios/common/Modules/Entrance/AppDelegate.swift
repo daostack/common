@@ -26,7 +26,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let jsCodeLocation = RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
         bridge = RCTBridge(bundleURL: jsCodeLocation, moduleProvider: nil, launchOptions: nil)
         
-        
         let rootView = RCTRootView(bridge: bridge!, moduleName: "common", initialProperties: launchOptions)
         
         let rootViewController = UIViewController()

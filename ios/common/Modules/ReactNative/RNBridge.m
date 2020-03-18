@@ -14,10 +14,13 @@
 
 @interface RCT_EXTERN_MODULE(WalletModule, NSObject)
 
-RCT_EXTERN_METHOD(createSeedPhrase:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(generateMnemonic:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(signMessgae:(NSString *)message
+RCT_EXTERN_METHOD(retrieveMnemonic:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(signMessage:(NSString *)message
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 

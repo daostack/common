@@ -7,91 +7,37 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
-
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-import Home from './src/Screens/Home';
-import Login from './src/Screens/Login';
-import CreateAccount from './src/Screens/CreateAccount';
-
+import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
-
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
+import {Home, Login, CommonsList, NativeBridgeTests} from './src/Screens';
+import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
-
+const firebaseService = new FirebaseService();
 const Tab = createBottomTabNavigator();
 
 const App = () => {
   useEffect(() => {
     const getUser = async () => {
-      console.log('users: ', await FirebaseService.getUser());
+      console.log('users: ', await firebaseService.getUser());
     };
     getUser();
   });
 
   return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="Login" component={Login} />
-        <Tab.Screen name="Create Account" component={CreateAccount} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <ApolloProvider client={client}>
+      <NavigationContainer>
+        <Tab.Navigator>
+          <Tab.Screen name="Test" component={NativeBridgeTests} />
+          <Tab.Screen name="Commons" component={CommonsList} />
+          <Tab.Screen name="Home" component={Home} />
+          <Tab.Screen name="Login" component={Login} />
+          <Tab.Screen name="Create Account" component={CreateAccount} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </ApolloProvider>
   );
 };
-
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
 
 export default App;
