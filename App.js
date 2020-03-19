@@ -11,7 +11,7 @@ import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import {Home, Login, CommonsList, NativeBridgeTests} from './src/Screens';
+import {Home, Login, CommonsList, NativeBridgeTests, Onboarding} from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
 const firebaseService = new FirebaseService();
