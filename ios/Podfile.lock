@@ -635,12 +635,9 @@ DEPENDENCIES:
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-<<<<<<< HEAD
   trunk:
-=======
-  https://github.com/CocoaPods/Specs.git:
->>>>>>> master
     - abseil
+    - AppAuth
     - BigInt
     - boost-for-react-native
     - BoringSSL-GRPC
@@ -664,10 +661,12 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleDataTransportCCTSupport
+    - GoogleSignIn
     - GoogleToolboxForMac
     - GoogleUtilities
     - "gRPC-C++"
     - gRPC-Core
+    - GTMAppAuth
     - GTMSessionFetcher
     - KeychainAccess
     - leveldb-library
@@ -677,10 +676,6 @@ SPEC REPOS:
     - Protobuf
     - secp256k1.c
     - Starscream
-  trunk:
-    - AppAuth
-    - GoogleSignIn
-    - GTMAppAuth
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -803,7 +798,7 @@ SPEC CHECKSUMS:
   React-jsi: cb2cd74d7ccf4cffb071a46833613edc79cdf8f7
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
-  react-native-safe-area-context: 8260e5157617df4b72865f44006797f895b2ada7
+  react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
   React-RCTBlob: d89293cc0236d9cb0933d85e430b0bbe81ad1d72
@@ -822,12 +817,6 @@ SPEC CHECKSUMS:
   Web3swift.pod: 1abcfb4f1d13216a549f5a44a8f7212be1f604eb
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-<<<<<<< HEAD
-PODFILE CHECKSUM: c19e5666e365a9df4cedae2a57f8f9c090c7686f
+PODFILE CHECKSUM: 0eeffb0dc4403fb0e551097987d65b886519736f
 
 COCOAPODS: 1.8.0
-=======
-PODFILE CHECKSUM: 9a05cb504a6ceb92caea1d36fe9c0288f2711ce0
-
-COCOAPODS: 1.8.4
->>>>>>> master
