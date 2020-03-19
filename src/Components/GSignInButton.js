@@ -22,6 +22,7 @@ const GSignInButton = props => {
       try {
         const isSignedIn = await GoogleSignin.isSignedIn();
         setIsSignedIn(isSignedIn);
+        isSignedIn ? props.navigation.navigate('CommonHome') : null;
         setError(null);
       } catch (error) {
         const errorMessage =

@@ -1,0 +1,158 @@
+export default StyleSheet.create({
+  h1Black: {
+    fontFamily: "Roboto",
+    fontSize: 24,
+    fontWeight: "bold",
+    fontStyle: "normal",
+    lineHeight: 29,
+    letterSpacing: 0,
+    textAlign: "center",
+    color: "#000000"
+  },
+  h3Black: {
+    fontFamily: "Roboto",
+    fontSize: 16,
+    fontWeight: "bold",
+    fontStyle: "normal",
+    letterSpacing: 0,
+    textAlign: "center",
+    color: colors.black
+  },
+  buttonblack: {
+    fontFamily: "Roboto",
+    fontSize: 16,
+    fontWeight: "500",
+    fontStyle: "normal",
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: "center",
+    color: colors.black
+  },
+  buttoncenterwhite: {
+    fontFamily: "Roboto",
+    fontSize: 16,
+    fontWeight: "500",
+    fontStyle: "normal",
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: "center",
+    color: "#ffffff"
+  },
+  buttonblue: {
+    fontFamily: "Roboto",
+    fontSize: 16,
+    fontWeight: "500",
+    fontStyle: "normal",
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: "center",
+    color: colors.mainBlue
+  },
+  runningboldblue: {
+    fontFamily: "Roboto",
+    fontSize: 14,
+    fontWeight: "bold",
+    fontStyle: "normal",
+    letterSpacing: 0,
+    color: colors.mainBlue
+  },
+  paragraphitaliclightGray: {
+    fontFamily: "Roboto",
+    fontSize: 14,
+    fontWeight: "normal",
+    fontStyle: "italic",
+    letterSpacing: 0,
+    textAlign: "right",
+    color: colors.paleblue
+  },
+  textFieldplaceholder: {
+    fontFamily: "Roboto",
+    fontSize: 14,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    lineHeight: 20,
+    letterSpacing: 0,
+    color: colors.grey3
+  },
+  textFieldfocus: {
+    fontFamily: "Roboto",
+    fontSize: 14,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    lineHeight: 20,
+    letterSpacing: 0,
+    color: "#000000"
+  },
+  textFielddisabled: {
+    fontFamily: "Roboto",
+    fontSize: 14,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    lineHeight: 20,
+    letterSpacing: 0,
+    color: colors.paleblue
+  },
+  runningred: {
+    fontFamily: "Roboto",
+    fontSize: 14,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    letterSpacing: 0,
+    textAlign: "center",
+    color: "#ff1700"
+  },
+  runninglightGray: {
+    fontFamily: "Roboto",
+    fontSize: 14,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    letterSpacing: 0,
+    color: colors.grey2
+  },
+  runninggray: {
+    fontFamily: "Roboto",
+    fontSize: 14,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    letterSpacing: 0,
+    color: colors.gray1
+  },
+  runningblack: {
+    fontFamily: "Roboto",
+    fontSize: 14,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    letterSpacing: 0,
+    color: "#000000"
+  },
+  paragraphred: {
+    fontFamily: "Roboto",
+    fontSize: 14,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: "center",
+    color: colors.error
+  },
+  tapBarunselected: {
+    fontFamily: "Roboto",
+    fontSize: 12,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: "center",
+    color: colors.grey3
+  },
+  tapBarselected: {
+    fontFamily: "Roboto",
+    fontSize: 12,
+    fontWeight: "normal",
+    fontStyle: "normal",
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: "center",
+    color: colors.mainBlue
+  }
+});

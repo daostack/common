@@ -36,6 +36,7 @@ def reactnative
   pod 'RNGestureHandler', :podspec => '../node_modules/react-native-gesture-handler/RNGestureHandler.podspec'
   pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
   pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 end
 
 # -------------------------------------------------- #
