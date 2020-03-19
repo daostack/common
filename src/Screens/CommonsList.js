@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   Text,
   TextInput,
@@ -11,6 +11,7 @@ import {
 import CommonBox from '../Components/CommonBox';
 import {Subscription} from 'react-apollo';
 import gql from 'graphql-tag';
+import {ApolloClientConfig as client} from '../Config';
 
 const {width} = Dimensions.get('window');
 
@@ -34,7 +35,24 @@ const DAOS_SUBSCRIPTION = gql`
   }
 `;
 
-const CommonsList = () => {
+const CommonsList = ({navigation}) => {
+  useEffect(() => {
+    const getUser = async () => {
+      console.log(
+        'users: ',
+        await client.readQuery({
+          query: gql`
+            query ReadDao {
+              dao(id: 1) {
+                name
+              }
+            }
+          `,
+        }),
+      );
+    };
+    getUser();
+  });
   return (
     <View style={{flex: 1}}>
       <SafeAreaView />
@@ -128,6 +146,7 @@ const CommonsList = () => {
                           10}/500/100.jpg`}
                         common={dao}
                         key={i}
+                        navigation={navigation}
                       />
                     );
                   })}

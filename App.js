@@ -15,6 +15,7 @@ import {
   Home,
   Login,
   CommonsList,
+  CommonProfile,
   NativeBridgeTests,
   Onboarding,
   CreateAccount,
@@ -51,6 +52,7 @@ const App = () => {
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="CommonHome" component={CommonHome} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
+          <Stack.Screen name="CommonProfile" component={CommonProfile} />
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>
