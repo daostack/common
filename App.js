@@ -10,8 +10,13 @@ import React, {useEffect, useState} from 'react';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-
-import {Home, Login, CommonsList, NativeBridgeTests} from './src/Screens';
+import {
+  Home,
+  Login,
+  CommonsList,
+  NativeBridgeTests,
+  CreateAccount,
+} from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
 const firebaseService = new FirebaseService();
@@ -33,7 +38,7 @@ const App = () => {
           <Tab.Screen name="Commons" component={CommonsList} />
           <Tab.Screen name="Home" component={Home} />
           <Tab.Screen name="Login" component={Login} />
-          <Tab.Screen name="Create Account" component={CreateAccount} />
+          <Tab.Screen name="CreateAccount" component={CreateAccount} />
         </Tab.Navigator>
       </NavigationContainer>
     </ApolloProvider>
