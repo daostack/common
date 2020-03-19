@@ -17,6 +17,7 @@ import {
   NativeBridgeTests,
   CreateAccount,
   Onboarding,
+  UserProfile,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
@@ -40,6 +41,7 @@ const App = () => {
           <Tab.Screen name="Home" component={Home} />
           <Tab.Screen name="Login" component={Login} />
           <Tab.Screen name="CreateAccount" component={CreateAccount} />
+          <Tab.Screen name="Profile" component={UserProfile} />
         </Tab.Navigator>
       </NavigationContainer>
     </ApolloProvider>
