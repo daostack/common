@@ -18,7 +18,7 @@ const firebaseService = new FirebaseService();
 const Tab = createBottomTabNavigator();
 
 const App = () => {
-  useEffect(() => {git ad
+  useEffect(() => {
     const getUser = async () => {
       console.log('users: ', await firebaseService.getUser());
     };
