@@ -7,6 +7,7 @@ import android.content.Context;
 import com.daostack.common.BuildConfig;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import com.orhanobut.hawk.Hawk;
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 import com.facebook.react.ReactNativeHost;
