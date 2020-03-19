@@ -29,7 +29,7 @@ const App = () => {
     <ApolloProvider client={client}>
       <NavigationContainer>
         <Tab.Navigator>
-          <Tab.Screen name="Test" component={NativeBridgeTests} />
+          {/*<Tab.Screen name="Test" component={NativeBridgeTests} />*/}
           <Tab.Screen name="Commons" component={CommonsList} />
           <Tab.Screen name="Home" component={Home} />
           <Tab.Screen name="Login" component={Login} />
