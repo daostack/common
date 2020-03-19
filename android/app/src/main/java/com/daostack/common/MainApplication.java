@@ -8,6 +8,7 @@ import com.daostack.common.BuildConfig;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import com.orhanobut.hawk.Hawk;
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 import com.facebook.react.ReactNativeHost;

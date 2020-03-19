@@ -1,22 +1,18 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {
   Text,
   TextInput,
+  SafeAreaView,
   ScrollView,
-  TouchableOpacity,
   StyleSheet,
   View,
   Dimensions,
-  Image,
-  ImageBackground,
 } from 'react-native';
 import CommonBox from '../Components/CommonBox';
 import {Subscription} from 'react-apollo';
 import gql from 'graphql-tag';
 
-import {visitWithTypeInfo} from 'graphql';
-
-const {height, width} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 const DAOS_SUBSCRIPTION = gql`
   subscription {
@@ -41,6 +37,7 @@ const DAOS_SUBSCRIPTION = gql`
 const CommonsList = () => {
   return (
     <View style={{flex: 1}}>
+      <SafeAreaView />
       <Subscription subscription={DAOS_SUBSCRIPTION}>
         {({loading, error, data}) => {
           if (error) {
@@ -66,8 +63,15 @@ const CommonsList = () => {
                   alignItems: 'center',
                   backgroundColor: '#fff',
                 }}>
-                <Text style={{fontSize: 30, fontFamily: 'Didot'}}>Alchemy</Text>
-                <Text style={{fontSize: 30, fontFamily: 'Didot'}}>Alchemy</Text>
+                <Text
+                  style={{
+                    fontSize: 24,
+                    fontWeight: 'bold',
+                    fontStyle: 'normal',
+                    letterSpacing: 0,
+                  }}>
+                  Commons
+                </Text>
               </View>
             );
           }
@@ -81,7 +85,15 @@ const CommonsList = () => {
                   width: '100%',
                   padding: 15,
                 }}>
-                <Text style={{fontSize: 30, fontWeight: '700'}}>DAOs</Text>
+                <Text
+                  style={{
+                    fontSize: 24,
+                    fontWeight: 'bold',
+                    fontStyle: 'normal',
+                    letterSpacing: 0,
+                  }}>
+                  Commons
+                </Text>
               </View>
 
               <ScrollView>
@@ -96,7 +108,7 @@ const CommonsList = () => {
                   }}
                   onChangeText={filter => this.setState({filter})}
                   autoCapitalize="none"
-                  placeholder="Filter DAOs"
+                  placeholder="Filter Commons"
                 />
                 <View style={styles.container}>
                   {data.daos.map((dao, i) => {
@@ -110,7 +122,14 @@ const CommonsList = () => {
                       backgroundColor: 'black',
                       color: 'white',
                     };
-                    return <CommonBox image={''} common={dao} i={i} />;
+                    return (
+                      <CommonBox
+                        image={`https://i.picsum.photos/id/${i *
+                          10}/500/100.jpg`}
+                        common={dao}
+                        key={i}
+                      />
+                    );
                   })}
                 </View>
               </ScrollView>

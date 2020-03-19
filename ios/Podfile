@@ -64,4 +64,6 @@ target 'common' do
   firebase
   native
 
+  pod 'RNGoogleSignin', :path => '../node_modules/@react-native-community/google-signin'
+
 end

@@ -1,24 +1,55 @@
-import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Dimensions,
+  Image,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
-const {height, width} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
-const CommonBox = (props) => {
+const CommonBox = props => {
   return (
-    <TouchableOpacity key={props.i} onPress={{}} style={styles.commonBox}>
-      <View
+    <TouchableOpacity
+      key={props.key}
+      onPress={console.log}
+      style={styles.commonBox}>
+      <ImageBackground
+        source={{
+          uri: props.image,
+        }}
+        imageStyle={{
+          borderTopLeftRadius: 15,
+          borderTopRightRadius: 15,
+        }}
         style={{
-          width: '100%',
           padding: 30,
           paddingTop: 50,
           paddingBottom: 50,
+          backgroundColor: 'black',
           borderTopLeftRadius: 15,
           borderTopRightRadius: 15,
-          backgroundColor: 'black',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}>
-        <Text style={{color: 'white', fontSize: 20, fontWeight: '700'}}>
-          {props.common.name}
-        </Text>
-      </View>
+        <TouchableOpacity style={{position: 'absolute', top: 12, left: 12}}>
+          <Image
+            style={styles.followImage}
+            source={require('../Assets/follow.png')}
+          />
+        </TouchableOpacity>
+        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+          <Text style={{color: 'white', fontSize: 23, fontWeight: '700'}}>
+            {props.common.name}
+          </Text>
+          <Text style={{color: 'white', fontSize: 16, fontWeight: '700'}}>
+            Common Description
+          </Text>
+        </View>
+      </ImageBackground>
       <View
         style={{
           flexDirection: 'row',
@@ -31,42 +62,7 @@ const CommonBox = (props) => {
             justifyContent: 'space-around',
             margin: 17,
           }}>
-          <Text
-            style={{
-              color: 'grey',
-              fontSize: 10,
-              marginBottom: 15,
-              fontWeight: '700',
-            }}>
-            Reputation Holders
-          </Text>
-          <Text style={{fontSize: 25, fontWeight: '700'}}>
-            {props.common.reputationHoldersCount}
-          </Text>
-        </View>
-        <View
-          style={{
-            height: 50,
-            width: 1,
-            backgroundColor: '#c9c9c9',
-          }}
-        />
-        <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'space-around',
-            margin: 17,
-          }}>
-          <Text
-            style={{
-              color: 'grey',
-              fontSize: 10,
-              marginBottom: 15,
-              fontWeight: '700',
-            }}>
-            Open Proposals
-          </Text>
-          <Text style={{fontSize: 25, fontWeight: '700'}}>
+          <Text style={styles.descriptionNumber}>
             {
               props.common.proposals.filter(
                 proposal =>
@@ -75,6 +71,29 @@ const CommonBox = (props) => {
               ).length
             }
           </Text>
+          <Text style={styles.descriptionTitle}>Proposals</Text>
+        </View>
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'space-around',
+            margin: 17,
+          }}>
+          <Text style={styles.descriptionNumber}>
+            {props.common.reputationHoldersCount}
+          </Text>
+          <Text style={styles.descriptionTitle}>Reputation Holders</Text>
+        </View>
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'space-around',
+            margin: 17,
+          }}>
+          <Text style={styles.descriptionNumber}>
+            ${props.common.reputationHoldersCount * 1.5}
+          </Text>
+          <Text style={styles.descriptionTitle}>Funding</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -98,6 +117,25 @@ const styles = StyleSheet.create({
     borderColor: '#eeeeee',
     marginBottom: 10,
   },
+  followImage: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
+  },
+  descriptionNumber: {
+    marginBottom: 4,
+    fontFamily: 'HelveticaNeue',
+    fontSize: 20,
+    fontWeight: '500',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+  },
+  descriptionTitle: {
+    fontFamily: 'HelveticaNeue',
+    fontSize: 12,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+  },
 });
 
-export default CommonBox
+export default CommonBox;
