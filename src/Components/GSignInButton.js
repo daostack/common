@@ -9,7 +9,7 @@ import {
 } from '@react-native-community/google-signin';
 import {GOOGLE_SIGNIN_PERMISSIONS} from '../Util';
 
-const GSignInButton = () => {
+const GSignInButton = props => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [error, setError] = useState(null);
 

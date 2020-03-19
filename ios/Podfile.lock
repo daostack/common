@@ -576,6 +576,8 @@ PODS:
     - Fabric
     - Firebase/Core
     - React
+  - RNGestureHandler (1.6.0):
+    - React
   - RNGoogleSignin (4.0.0):
     - GoogleSignIn (~> 5.0.0)
     - React
@@ -627,13 +629,15 @@ DEPENDENCIES:
   - ReactCommon/jscallinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - RNFirebase (from `../node_modules/react-native-firebase/ios`)
+  - RNGestureHandler (from `../node_modules/react-native-gesture-handler/RNGestureHandler.podspec`)
   - "RNGoogleSignin (from `../node_modules/@react-native-community/google-signin`)"
   - Web3swift.pod (from `https://github.com/matter-labs/web3swift`, branch `master`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - abseil
+    - AppAuth
     - BigInt
     - boost-for-react-native
     - BoringSSL-GRPC
@@ -657,10 +661,12 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleDataTransportCCTSupport
+    - GoogleSignIn
     - GoogleToolboxForMac
     - GoogleUtilities
     - "gRPC-C++"
     - gRPC-Core
+    - GTMAppAuth
     - GTMSessionFetcher
     - KeychainAccess
     - leveldb-library
@@ -670,10 +676,6 @@ SPEC REPOS:
     - Protobuf
     - secp256k1.c
     - Starscream
-  trunk:
-    - AppAuth
-    - GoogleSignIn
-    - GTMAppAuth
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -728,6 +730,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNFirebase:
     :path: "../node_modules/react-native-firebase/ios"
+  RNGestureHandler:
+    :podspec: "../node_modules/react-native-gesture-handler/RNGestureHandler.podspec"
   RNGoogleSignin:
     :path: "../node_modules/@react-native-community/google-signin"
   Web3swift.pod:
@@ -794,7 +798,7 @@ SPEC CHECKSUMS:
   React-jsi: cb2cd74d7ccf4cffb071a46833613edc79cdf8f7
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
-  react-native-safe-area-context: 8260e5157617df4b72865f44006797f895b2ada7
+  react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
   React-RCTBlob: d89293cc0236d9cb0933d85e430b0bbe81ad1d72
@@ -806,12 +810,13 @@ SPEC CHECKSUMS:
   React-RCTVibration: a49a1f42bf8f5acf1c3e297097517c6b3af377ad
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
   RNFirebase: 37daa9a346d070f9f6ee1f3b4aaf4c8e3b1d5d1c
+  RNGestureHandler: dde546180bf24af0b5f737c8ad04b6f3fa51609a
   RNGoogleSignin: 068788c1e83e5e05ef0bad090ba67fd8f963a2a3
   secp256k1.c: db47b726585d80f027423682eb369729e61b3b20
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
   Web3swift.pod: 1abcfb4f1d13216a549f5a44a8f7212be1f604eb
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 9a05cb504a6ceb92caea1d36fe9c0288f2711ce0
+PODFILE CHECKSUM: 820676c400f64d87da196b221265b044cec7482f
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.7.5

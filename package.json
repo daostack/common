@@ -32,7 +32,7 @@
     "react-native-reanimated": "^1.7.0",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.3.0",
-    "react-native-swiper": "^1.5.14",
+    "react-native-swiper": "^1.6.0-nightly.5",
     "subscriptions-transport-ws": "^0.9.16"
   },
   "devDependencies": {
