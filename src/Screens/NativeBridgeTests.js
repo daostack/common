@@ -1,6 +1,5 @@
 import React from 'react';
-import {NativeModules, NativeEventEmitter} from 'react-native';
-import {ethers} from 'ethers';
+import {NativeWallet} from '../Util/NativeWallet';
 import {
   Text,
   View,
@@ -25,7 +24,7 @@ export default class nativeBridgeTests extends React.Component {
 
   generateMnemonic = async () => {
     try {
-      const mnemonic = await NativeModules.WalletModule.generateMnemonic();
+      const mnemonic = await NativeWallet.generateMnemonic();
       console.log('mnemonic: ', mnemonic);
       this.setState({mnemonic});
     } catch (e) {
@@ -35,7 +34,7 @@ export default class nativeBridgeTests extends React.Component {
 
   retrieveMnemonic = async () => {
     try {
-      const keychainMnemonics = await NativeModules.WalletModule.retrieveMnemonic();
+      const keychainMnemonics = await NativeWallet.retrieveMnemonic();
       console.log('keychainMnemonics: ', keychainMnemonics);
       this.setState({keychainMnemonics});
     } catch (e) {
@@ -45,9 +44,7 @@ export default class nativeBridgeTests extends React.Component {
 
   signMessage = async () => {
     try {
-      const signedMessage = await NativeModules.WalletModule.signMessage(
-        ethers.utils.formatBytes32String('Hello World'),
-      );
+      const signedMessage = await NativeWallet.signMessage('Hello World');
       console.log('signedMessage: ', signedMessage);
       this.setState({signedMessage});
     } catch (e) {
