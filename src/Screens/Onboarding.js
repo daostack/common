@@ -13,6 +13,16 @@ import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 const { height, width } = Dimensions.get('window');
 
 import Swiper from 'react-native-swiper'
+import AsyncStorage from '@react-native-community/async-storage';
+
+const onboardingClick = async () => {
+    try {
+      await AsyncStorage.setItem('FirstTimeOpenApp', 'false');
+      // TODO: Navigate to Main Tab
+    } catch (e) {
+        console.log(e);
+    }
+  }
 
 const Onboarding = () => {
     return (
@@ -40,7 +50,7 @@ const Onboarding = () => {
                 </Swiper>
 
                 <View style={styles.buttonConatiner}>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={onboardingClick}>
                         <Text style={styles.buttonText}>Explore Commons!</Text>
                     </TouchableOpacity>
                 </View>

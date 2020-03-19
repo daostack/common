@@ -7,6 +7,7 @@ import android.content.Context;
 import com.daostack.common.BuildConfig;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.orhanobut.hawk.Hawk;
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 import com.facebook.react.ReactNativeHost;
@@ -42,6 +43,7 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
             packages.add(new RNFirebaseMessagingPackage());
+            packages.add(new AsyncStoragePackage());
             packages.add(new RNBridgePackage());
           return packages;
         }
