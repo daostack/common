@@ -56,6 +56,10 @@ const CreateAccount = () => {
     );
   };
 
+  onSignIn = () => {
+    console.log('Signed in callbaack!');
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -69,7 +73,7 @@ const CreateAccount = () => {
 
               <View style={styles.hr} />
 
-              <GSignInButton />
+              <GSignInButton onSignIn={this.onSignIn} />
             </View>
           </View>
         </ScrollView>
