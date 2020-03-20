@@ -18,6 +18,7 @@ import {
   NativeBridgeTests,
   Onboarding,
   CreateAccount,
+  Onboarding,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
