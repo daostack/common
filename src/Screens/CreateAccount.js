@@ -7,10 +7,11 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
+  Image,
   View,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
+import AcordionBtn from '../Components/AcordionBtn';
 import React from 'react';
 import {GoogleSignin} from '@react-native-community/google-signin';
 
@@ -59,17 +60,23 @@ const CreateAccount = () => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView contentInsetAdjustmentBehavior="automatic">
-          <View>
-            <View>
-              {renderIsSignedIn()}
-              {renderGetCurrentUser()}
-              {renderGetTokens()}
+      <SafeAreaView style={styles.container}>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          style={styles.scrollView}>
+          <View style={styles.body}>
+            <View style={styles.sectionContainer}>
+              <Image source={require('../Assets/accountPlaceHolder.png')} />
+            </View>
 
-              <View style={styles.hr} />
+            <GSignInButton style={styles.googleSignInButton} />
 
-              <GSignInButton />
+            <View style={styles.buttonsArea}>
+              <AcordionBtn name="FAQ" />
+              <AcordionBtn name="Terms of use" />
+              <AcordionBtn name="Privacy Policy" />
+              <AcordionBtn name="Help" />
+              <AcordionBtn name="Contact us" />
             </View>
           </View>
         </ScrollView>
@@ -79,10 +86,44 @@ const CreateAccount = () => {
 };
 
 const styles = StyleSheet.create({
-  hr: {
-    borderWidth: 0.5,
-    borderColor: Colors.black,
-    margin: 10,
+  container: {
+    flex: 1,
+  },
+  scrollView: {
+    flexGrow: 1,
+    backgroundColor: Colors.white,
+  },
+  body: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+  },
+  sectionContainer: {
+    marginTop: 22,
+    marginBottom: 34,
+  },
+  googleSignInButton: {
+    width: 327,
+    height: 56,
+    borderWidth: 1,
+    borderRadius: 28,
+    borderStyle: 'solid',
+    borderColor: '#eeeeee',
+
+    shadowOpacity: 0,
+    shadowColor: Colors.white,
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowRadius: 0,
+    elevation: 0,
+  },
+  buttonsArea: {
+    alignSelf: 'stretch',
+    marginTop: 60,
   },
 });
 
