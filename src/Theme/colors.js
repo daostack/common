@@ -9,4 +9,4 @@ export default {
   paleblue: '#d5dee4',
   grey4: '#eeeeee',
   grey5: '#fbfcfc',
-}
+};

@@ -59,7 +59,9 @@ const Onboarding = ({navigation}) => {
           </Swiper>
 
           <View style={styles.buttonConatiner}>
-            <TouchableOpacity style={styles.button} onPress={() => onboardingClick(navigation)}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => onboardingClick(navigation)}>
               <Text style={styles.buttonText}>Explore Commons!</Text>
             </TouchableOpacity>
           </View>
