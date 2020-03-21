@@ -33,6 +33,7 @@
     "react-native-reanimated": "^1.7.0",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.3.0",
+    "react-native-svg": "^12.0.3",
     "react-native-swiper": "^1.6.0-nightly.5",
     "subscriptions-transport-ws": "^0.9.16"
   },
@@ -50,6 +51,7 @@
     "jest": "^25.1.0",
     "metro-react-native-babel-preset": "^0.58.0",
     "prettier": "^1.19.1",
+    "react-native-iconfont-cli": "^1.7.0",
     "react-test-renderer": "16.9.0"
   },
   "jest": {
