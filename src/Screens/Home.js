@@ -9,6 +9,8 @@ import {
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import React from 'react';
 
+import {colors, text} from '../Theme';
+
 const Home = () => {
   return (
     <>
@@ -19,7 +21,7 @@ const Home = () => {
           style={styles.scrollView}>
           <View style={styles.body}>
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Home</Text>
+              <Text style={text.h1Black}>Home</Text>
             </View>
           </View>
         </ScrollView>
@@ -33,7 +35,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.lighter,
   },
   body: {
-    backgroundColor: Colors.white,
+    backgroundColor: colors.mainBlue,
   },
   sectionContainer: {
     marginTop: 32,
