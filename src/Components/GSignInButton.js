@@ -11,6 +11,11 @@ import GoogleDriveService from '../Services/GoogleDriveService';
 import {GOOGLE_SIGNIN_PERMISSIONS} from '../Util';
 import {NativeModules} from 'react-native';
 
+let initialAppDataContent = {
+  mnemonic: null,
+  version: '0.1',
+};
+
 const GSignInButton = props => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [error, setError] = useState(null);
@@ -43,7 +48,7 @@ const GSignInButton = props => {
       await GoogleSignin.signIn();
       setIsSignedIn(true);
       // TODO: Use generated mnemonic
-      const mnemonic = _generateMnemonic();
+      const mnemonic = await _generateMnemonic();
       props.onSignIn();
       setError(null);
     } catch (error) {
@@ -65,9 +70,6 @@ const GSignInButton = props => {
 
   _generateMnemonic = async () => {
     const tokens = await GoogleSignin.getTokens();
-
-    console.log('idToken -> ', tokens.accessToken);
-
     const googleDriveService = GoogleDriveService.getInstance(
       tokens.accessToken,
     );
@@ -81,11 +83,9 @@ const GSignInButton = props => {
       const jsonContent = JSON.parse(fileContent);
       return jsonContent.mnemonic;
     } else {
-      const mnemonic = await NativeModules.WalletModule.generateMnemonic();
-      const fileCreateResponse = await googleDriveService.setAppData(
-        `{ "mnemonic": "${mnemonic}" }`,
-      );
-      return mnemonic;
+      initialAppDataContent.mnemonic = await NativeModules.WalletModule.generateMnemonic();
+      await googleDriveService.setAppData(initialAppDataContent);
+      return initialAppDataContent.mnemonic;
     }
   };
 
