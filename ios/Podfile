@@ -33,9 +33,12 @@ def reactnative
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
   
+  pod 'RNGestureHandler', :podspec => '../node_modules/react-native-gesture-handler/RNGestureHandler.podspec'
   pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
   pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+  pod 'RNGoogleSignin', :path => '../node_modules/@react-native-community/google-signin'
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
 end
 
 # -------------------------------------------------- #
@@ -63,7 +66,5 @@ target 'common' do
   reactnative
   firebase
   native
-
-  pod 'RNGoogleSignin', :path => '../node_modules/@react-native-community/google-signin'
 
 end

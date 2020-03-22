@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableOpacity,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import React from 'react';
@@ -16,7 +17,7 @@ import {GoogleSignin} from '@react-native-community/google-signin';
 
 import GSignInButton from '../Components/GSignInButton';
 
-const CreateAccount = () => {
+const CreateAccount = ({navigation}) => {
   renderIsSignedIn = () => {
     return (
       <Button
@@ -70,10 +71,8 @@ const CreateAccount = () => {
               {renderIsSignedIn()}
               {renderGetCurrentUser()}
               {renderGetTokens()}
-
               <View style={styles.hr} />
-
-              <GSignInButton onSignIn={this.onSignIn} />
+              <GSignInButton onSignIn={this.onSignIn} navigation={navigation} />
             </View>
           </View>
         </ScrollView>
@@ -87,6 +86,19 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: Colors.black,
     margin: 10,
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 25,
+    marginHorizontal: 24,
+    backgroundColor: '#3cc7e1',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    paddingVertical: 15,
   },
 });
 
