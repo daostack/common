@@ -9,6 +9,9 @@ import {
   StyleSheet,
   Image,
   View,
+  Text,
+  View,
+  TouchableOpacity,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import AcordionBtn from '../Components/AcordionBtn';
@@ -17,7 +20,7 @@ import {GoogleSignin} from '@react-native-community/google-signin';
 
 import GSignInButton from '../Components/GSignInButton';
 
-const CreateAccount = () => {
+const CreateAccount = ({navigation}) => {
   renderIsSignedIn = () => {
     return (
       <Button
@@ -69,7 +72,10 @@ const CreateAccount = () => {
               <Image source={require('../Assets/accountPlaceHolder.png')} />
             </View>
 
-            <GSignInButton style={styles.googleSignInButton} />
+            <GSignInButton
+              navigation={navigation}
+              style={styles.googleSignInButton}
+            />
 
             <View style={styles.buttonsArea}>
               <AcordionBtn name="FAQ" />
@@ -124,6 +130,19 @@ const styles = StyleSheet.create({
   buttonsArea: {
     alignSelf: 'stretch',
     marginTop: 60,
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 25,
+    marginHorizontal: 24,
+    backgroundColor: '#3cc7e1',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    paddingVertical: 15,
   },
 });
 
