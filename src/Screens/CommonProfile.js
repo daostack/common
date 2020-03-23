@@ -12,6 +12,7 @@ import CommonBox from '../Components/CommonBox';
 import {Subscription} from 'react-apollo';
 import gql from 'graphql-tag';
 import {ApolloClientConfig as client} from '../Config';
+const {cache} = client;
 import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
 
 const {width} = Dimensions.get('window');
@@ -23,17 +24,20 @@ const CommonProfile = () => {
   useEffect(() => {
     getDao = async () => {
       try {
-        const dao = await client.readQuery({
+        console.log('CACHE: ', cache);
+        const res = await cache.readQuery({
           query: gql`
-            query ReadDao {
-              dao(id: 1) {
+            query readDao {
+              DAO(id: "0x6bee9b81e434f7afce72a43a4016719315069539") {
                 name
               }
             }
           `,
         });
-        setDao(dao);
+        console.log('HELLO!: ', client.readQuery());
+        setDao(res);
       } catch (error) {
+        console.log('error: ', error)
         const errorMessage =
           error.code === statusCodes.SIGN_IN_REQUIRED
             ? 'Please sign in'

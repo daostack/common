@@ -36,23 +36,6 @@ const DAOS_SUBSCRIPTION = gql`
 `;
 
 const CommonsList = ({navigation}) => {
-  useEffect(() => {
-    const getUser = async () => {
-      console.log(
-        'users: ',
-        await client.readQuery({
-          query: gql`
-            query ReadDao {
-              dao(id: 1) {
-                name
-              }
-            }
-          `,
-        }),
-      );
-    };
-    getUser();
-  });
   return (
     <View style={{flex: 1}}>
       <SafeAreaView />
