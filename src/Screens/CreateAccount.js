@@ -8,7 +8,8 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  View, TouchableOpacity,
+  View,
+  TouchableOpacity,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import React from 'react';
@@ -56,6 +57,10 @@ const CreateAccount = ({navigation}) => {
     );
   };
 
+  onSignIn = () => {
+    console.log('Signed in callbaack!');
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -67,7 +72,7 @@ const CreateAccount = ({navigation}) => {
               {renderGetCurrentUser()}
               {renderGetTokens()}
               <View style={styles.hr} />
-              <GSignInButton navigation={navigation}/>
+              <GSignInButton onSignIn={this.onSignIn} navigation={navigation} />
             </View>
           </View>
         </ScrollView>
