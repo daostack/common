@@ -119,6 +119,11 @@ export default class nativeBridgeTests extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
+
+          <Text style={{marginVertical: 10}}>
+            --------------- Native Bridge -----------------
+          </Text>
+
           <Text>mnemonic: {this.state.mnemonic}</Text>
           <TouchableOpacity
             onPress={this.generateMnemonic}
@@ -139,7 +144,7 @@ export default class nativeBridgeTests extends React.Component {
           </TouchableOpacity>
 
           <Text style={{marginVertical: 10}}>
-            --------------------------------
+          --------------- JavaScript -----------------
           </Text>
 
           <Text style={{marginBottom: 10}}>
