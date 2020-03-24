@@ -1,5 +1,5 @@
 import React from 'react';
-import {NativeWallet} from '../Util/NativeWallet';
+import { NativeWallet } from '../Util/NativeWallet';
 import {
   Text,
   View,
@@ -8,7 +8,8 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
+import { ethers } from 'ethers';
 
 export default class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -17,6 +18,11 @@ export default class nativeBridgeTests extends React.Component {
       mnemonics: '',
       keychainMnemonics: '',
       signedMessage: '',
+      networkURL: 'https://sokol.poa.network',
+      address: '',
+      balance: '',
+      txStatus: '',
+      txHash: '',
     };
 
     this.child = React.createRef();
@@ -52,55 +58,112 @@ export default class nativeBridgeTests extends React.Component {
     }
   };
 
+  getAddress = async () => {
+    try {
+      const mnemonic = await NativeWallet.retrieveMnemonic();
+      let wallet = ethers.Wallet.fromMnemonic(mnemonic);
+      console.log('Address: ', wallet.address);
+      this.setState({address: wallet.address});
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  getBalance = async () => {
+    try {
+      const mnemonic = await NativeWallet.retrieveMnemonic();
+      let wallet = ethers.Wallet.fromMnemonic(mnemonic);
+      let provider = new ethers.providers.JsonRpcProvider('https://sokol.poa.network');
+      provider.getBalance(wallet.address).then(balance => {
+        let etherString = ethers.utils.formatEther(balance);
+        this.setState({balance: etherString});
+      });
+    } catch (e) {
+      throw 'Send transaction failed with error: ' + e;
+    }
+  };
+
+  sendTransaction = async () => {
+    try {
+      const mnemonic = await NativeWallet.retrieveMnemonic();
+      let wallet = ethers.Wallet.fromMnemonic(mnemonic);
+      let provider = new ethers.providers.JsonRpcProvider('https://sokol.poa.network');
+      let rinkebyWallet = wallet.connect(provider);
+      let tx = {
+        to: '0x41B788babf69FC7F98336ff7A47F5A80c3A63d40',
+        value: ethers.utils.parseEther('1'),
+      };
+      rinkebyWallet
+        .sendTransaction(tx)
+        .then(tx => {
+          console.log(tx);
+          this.setState({txHash: tx.hash, txStatus: 'pending'});
+          return provider.waitForTransaction(tx.hash);
+        })
+        .then(receipt => {
+          console.log(receipt);
+          this.setState({
+            txStatus: receipt.status == 0 ? 'Failed' : 'Confirmed',
+          });
+          return this.getBalance();
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    } catch (e) {
+      throw 'Send transaction failed with error: ' + e;
+    }
+  };
+
   render() {
     return (
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <ScrollView
-          contentContainerStyle={{
-            width,
-            marginTop: 50,
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingVertical: 100,
-          }}>
+      <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollView}>
           <Text>mnemonic: {this.state.mnemonic}</Text>
           <TouchableOpacity
             onPress={this.generateMnemonic}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 200,
-              height: 40,
-              backgroundColor: 'grey',
-            }}>
+            style={styles.button}>
             <Text>Generate Mnemonic</Text>
           </TouchableOpacity>
 
           <Text>local: {this.state.keychainMnemonics}</Text>
           <TouchableOpacity
             onPress={this.retrieveMnemonic}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 200,
-              height: 40,
-              backgroundColor: 'grey',
-            }}>
+            style={styles.button}>
             <Text>Retrieve Mnemonic From Local</Text>
           </TouchableOpacity>
 
           <Text>signedMessage: {this.state.signedMessage}</Text>
-          <TouchableOpacity
-            onPress={this.signMessage}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 200,
-              height: 40,
-              backgroundColor: 'grey',
-            }}>
+          <TouchableOpacity onPress={this.signMessage} style={styles.button}>
             <Text>Sign Message</Text>
           </TouchableOpacity>
+
+          <Text style={{marginVertical: 10}}>
+            --------------------------------
+          </Text>
+
+          <Text style={{marginBottom: 10}}>
+            Network: {this.state.networkURL}
+          </Text>
+
+          <Text>Address: {this.state.address}</Text>
+          <TouchableOpacity onPress={this.getAddress} style={styles.button}>
+            <Text>Get Address</Text>
+          </TouchableOpacity>
+
+          <Text>Balance: {this.state.balance}</Text>
+          <TouchableOpacity onPress={this.getBalance} style={styles.button}>
+            <Text>Get Balance</Text>
+          </TouchableOpacity>
+
+          <Text>Status: {this.state.txStatus}</Text>
+          <Text>Hash: {this.state.txHash}</Text>
+          <TouchableOpacity
+            onPress={this.sendTransaction}
+            style={styles.button}>
+            <Text>Send Transaction</Text>
+          </TouchableOpacity>
+
         </ScrollView>
       </View>
     );
@@ -110,8 +173,21 @@ export default class nativeBridgeTests extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#9d48ff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  scrollView: {
+    width,
+    marginTop: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 100,
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 200,
+    height: 40,
+    backgroundColor: 'grey',
   },
 });
