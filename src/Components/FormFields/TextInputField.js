@@ -99,7 +99,7 @@ class TextInputField extends React.Component {
 
     const {formStore, name} = this.props.validation;
     if (formStore.form.fields[name].error) {
-      styleTextfield = {...styles.textfield, ...textfieldError};
+      styleTextfield = {...styles.textfield, ...styles.textfieldError};
     }
 
     return (
@@ -108,7 +108,6 @@ class TextInputField extends React.Component {
         <TextInput
           {...otherProps}
           style={styleTextfield}
-          //placeholderTextColor={{}}
           placeholder={placeholderText}
           onChangeText={this.onChangeText}
           onBlur={this.onBlur}

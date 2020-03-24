@@ -158,6 +158,15 @@ export default StyleSheet.create({
     textAlign: 'center',
     color: colors.mainBlue,
   },
+  ashleyjquimbacom: {
+    fontFamily: 'Roboto',
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.mainBlue,
+  },
 
   greyText: {
     fontFamily: 'Roboto',

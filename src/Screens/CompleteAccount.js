@@ -7,9 +7,10 @@ import {
   StyleSheet,
   View,
   Text,
+  Image,
 } from 'react-native';
 import CompleteAccountForm from '../Components/Forms/CompleteAccountForm';
-import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
+
 import {colors, text, layout} from '../Theme';
 
 const CompleteAccount = ({}) => {
@@ -27,6 +28,12 @@ const CompleteAccount = ({}) => {
               <Text style={styles.subtitle}>
                 Help the community get to know you better
               </Text>
+            </View>
+
+            <View style={styles.imagePlaceholder}></View>
+
+            <View style={layout.content}>
+              <Text style={text.ashleyjquimbacom}>user@email.here</Text>
             </View>
 
             <CompleteAccountForm />
@@ -48,11 +55,18 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: colors.error,
   },
   subtitle: {
     ...text.greyText,
     ...layout.marginTopS,
+  },
+  imagePlaceholder: {
+    ...layout.content,
+    ...layout.marginTopXL,
+    backgroundColor: '#effafd',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
 });
 

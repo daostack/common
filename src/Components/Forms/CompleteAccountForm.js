@@ -28,7 +28,7 @@ class CompleteAccountForm extends React.Component {
           validation={{
             name: CompleteAccountForm.FIELD_NAME,
             formStore: this.props.completeAccountFormStore,
-            validateRule: 'required|email',
+            validateRule: 'required',
           }}
         />
         <TextInputField
