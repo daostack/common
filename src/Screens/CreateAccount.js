@@ -6,8 +6,14 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
+<<<<<<< HEAD
   Image,
   View,
+=======
+  Text,
+  View,
+  TouchableOpacity,
+>>>>>>> master
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import BottomSheetContainer from '../Components/BottomSheetContainer';
@@ -23,6 +29,10 @@ const CreateAccount = ({navigation}) => {
 
   openSheet = () => {
     bottomSheetContainerRef.current.snapTo(1);
+  };
+
+  onSignIn = () => {
+    console.log('Signed in callbaack!');
   };
 
   return (
