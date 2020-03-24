@@ -1,73 +1,44 @@
-import {useEffect, useState} from 'react';
-import FirebaseService from '../Services/FirebaseService';
+import React, {useRef} from 'react';
+
 import {
   Button,
-  Alert,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Image,
   View,
-  Text,
-  View,
-  TouchableOpacity,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
+import BottomSheetContainer from '../Components/BottomSheetContainer';
 import AcordionBtn from '../Components/AcordionBtn';
-import React from 'react';
-import {GoogleSignin} from '@react-native-community/google-signin';
 
 import GSignInButton from '../Components/GSignInButton';
 
+import Icon from '../Assets/iconfont/Icon';
+import {layout} from '../Theme';
+
 const CreateAccount = ({navigation}) => {
-  renderIsSignedIn = () => {
-    return (
-      <Button
-        onPress={async () => {
-          const isSignedIn = await GoogleSignin.isSignedIn();
-          Alert.alert(String(isSignedIn));
-        }}
-        title="is user signed in?"
-      />
-    );
-  };
+  bottomSheetContainerRef = useRef();
 
-  renderGetCurrentUser = () => {
-    return (
-      <Button
-        onPress={async () => {
-          const userInfo = await GoogleSignin.getCurrentUser();
-          Alert.alert(
-            'current user',
-            userInfo ? JSON.stringify(userInfo.user) : 'null',
-          );
-        }}
-        title="get current user"
-      />
-    );
-  };
-
-  renderGetTokens = () => {
-    return (
-      <Button
-        onPress={async () => {
-          const isSignedIn = await GoogleSignin.getTokens();
-          Alert.alert('tokens', JSON.stringify(isSignedIn));
-        }}
-        title="get tokens"
-      />
-    );
+  openSheet = () => {
+    bottomSheetContainerRef.current.snapTo(1);
   };
 
   return (
     <>
       <StatusBar barStyle="dark-content" />
+
       <SafeAreaView style={styles.container}>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
           <View style={styles.body}>
+            <Button
+              style={layout.marginTopM}
+              title="button"
+              onPress={openSheet}></Button>
+
             <View style={styles.sectionContainer}>
               <Image source={require('../Assets/accountPlaceHolder.png')} />
             </View>
@@ -84,6 +55,9 @@ const CreateAccount = ({navigation}) => {
               <AcordionBtn name="Help" />
               <AcordionBtn name="Contact us" />
             </View>
+
+            <BottomSheetContainer
+              ref={bottomSheetContainerRef}></BottomSheetContainer>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -111,7 +85,7 @@ const styles = StyleSheet.create({
     marginBottom: 34,
   },
   googleSignInButton: {
-    width: 327,
+    alignSelf: 'stretch',
     height: 56,
     borderWidth: 1,
     borderRadius: 28,
