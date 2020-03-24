@@ -1,6 +1,7 @@
 import {StyleSheet} from 'react-native';
 import colors from './colors';
 
+// Common style for reuse in Stylesheet
 const btn = {
   height: 50,
   flexDirection: 'row',
@@ -40,6 +41,7 @@ const messageContainerTriangle = {
   borderTopColor: colors.mainBlue,
 };
 
+// Layout Stylesheet
 export default StyleSheet.create({
   content: {
     justifyContent: 'center',
@@ -90,7 +92,6 @@ export default StyleSheet.create({
   },
 
   // Buttons
-
   btnPrimary: {
     ...btn,
     backgroundColor: colors.mainBlue,
@@ -119,4 +120,6 @@ export default StyleSheet.create({
     ...messageContainerTriangle,
     borderTopColor: colors.redLight,
   },
+
+  // Forms
 });
