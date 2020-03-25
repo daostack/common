@@ -18,7 +18,7 @@ export default class nativeBridgeTests extends React.Component {
       mnemonics: '',
       keychainMnemonics: '',
       signedMessage: '',
-      networkURL: 'https://sokol.poa.network',
+      networkURL: 'Rinkeby',
       address: '',
       balance: '',
       txStatus: '',
@@ -73,7 +73,10 @@ export default class nativeBridgeTests extends React.Component {
     try {
       const mnemonic = await NativeWallet.retrieveMnemonic();
       let wallet = ethers.Wallet.fromMnemonic(mnemonic);
-      let provider = new ethers.providers.JsonRpcProvider('https://sokol.poa.network');
+      let provider = new ethers.providers.InfuraProvider(
+        'rinkeby',
+        '3c08878d00734c0c98a3e4741d0b4cfc',
+      );
       provider.getBalance(wallet.address).then(balance => {
         let etherString = ethers.utils.formatEther(balance);
         this.setState({balance: etherString});
@@ -87,11 +90,14 @@ export default class nativeBridgeTests extends React.Component {
     try {
       const mnemonic = await NativeWallet.retrieveMnemonic();
       let wallet = ethers.Wallet.fromMnemonic(mnemonic);
-      let provider = new ethers.providers.JsonRpcProvider('https://sokol.poa.network');
+      let provider = new ethers.providers.InfuraProvider(
+        'rinkeby',
+        '3c08878d00734c0c98a3e4741d0b4cfc',
+      );
       let rinkebyWallet = wallet.connect(provider);
       let tx = {
         to: '0x41B788babf69FC7F98336ff7A47F5A80c3A63d40',
-        value: ethers.utils.parseEther('1'),
+        value: ethers.utils.parseEther('0.001'),
       };
       rinkebyWallet
         .sendTransaction(tx)
@@ -103,7 +109,7 @@ export default class nativeBridgeTests extends React.Component {
         .then(receipt => {
           console.log(receipt);
           this.setState({
-            txStatus: receipt.status == 0 ? 'Failed' : 'Confirmed',
+            txStatus: receipt.status === 0 ? 'Failed' : 'Confirmed',
           });
           return this.getBalance();
         })
@@ -119,7 +125,6 @@ export default class nativeBridgeTests extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
-
           <Text style={{marginVertical: 10}}>
             --------------- Native Bridge -----------------
           </Text>
