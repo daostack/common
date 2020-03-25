@@ -27,7 +27,9 @@ build/
 .idea
 .gradle
 local.properties
-*.imlgit mer
+*.iml
+*.hprof
+
 #ENV
 /env.json
 
@@ -36,9 +38,6 @@ local.properties
 node_modules/
 npm-debug.log
 yarn-error.log
-
-# Android hprof file
-*.hprof
 
 # BUCK
 buck-out/
@@ -62,7 +61,11 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+Podfile.lock
 
 # Firebase
 GoogleService-Info.plist
 google-services.json
+
+# IconFont
+/src/Assets/iconfont

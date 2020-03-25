@@ -31,12 +31,6 @@ The `google-services.json` file is to be placed in the `common/android/app`
 2. `cd common` and run `yarn` or `npm install`
 3. `cd ios` and run `pod install`
 
-** After running `pod install` you will receive an error while running the app.
-
-** 'Firebase.h' file not found with <angled> use "quotes" instead.
-
-** You will need to replace the angled brackets from `#import <Firebase.h>` with `#import "Firebase.h"` in the `/RNFirebaseFirestore.h` and `/RNFirebaseUtil.h` files
-
 ### For iOS
 
 4. To run the project from the command line run `react-native run-ios`

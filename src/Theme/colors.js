@@ -9,4 +9,6 @@ export default {
   paleblue: '#d5dee4',
   grey4: '#eeeeee',
   grey5: '#fbfcfc',
+  greyText: '#7a8189',
+  redLight: '#fdedee',
 };
