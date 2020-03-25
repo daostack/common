@@ -3,6 +3,7 @@ import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import {colors, text, layout} from '../Theme';
 
 import React from 'react';
+
 import Icon from '../Assets/iconfont/Icon';
 import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
 import GoogleDriveService from '../Services/GoogleDriveService';
