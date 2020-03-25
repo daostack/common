@@ -37,6 +37,9 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
+# Android hprof file
+*.hprof
+
 # BUCK
 buck-out/
 \.buckd/
