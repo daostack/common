@@ -1,24 +1,26 @@
 import React from 'react';
-import {View} from 'react-native';
+import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import {observer, inject} from 'mobx-react';
-
-/*
-export interface Props extends ViewProps {
-  forgotPasswordSubmit: (e: GestureResponderEvent) => void;
-  formStore: CompleteAccountForm;
-}
-*/
+import {layout, text} from '../../Theme';
 
 class CompleteAccountForm extends React.Component {
   static FIELD_NAME = 'name';
   static FIELD_INTRO = 'Intro';
 
+  formSave() {}
+
   render() {
     const {formStore, ...otherProps} = this.props;
 
     return (
-      <View {...otherProps} style={{alignSelf: 'stretch'}}>
+      <View
+        {...otherProps}
+        style={{
+          alignSelf: 'stretch',
+          flexGrow: 1,
+          marginTop: 15,
+        }}>
         <TextInputField
           viewStyle={{alignSelf: 'stretch'}}
           label="Name"
@@ -40,10 +42,32 @@ class CompleteAccountForm extends React.Component {
             validateRule: 'required',
           }}
         />
+
+        <View style={styles.containerRow}>
+          <TouchableOpacity
+            style={{...layout.btnOutline, ...layout.marginRightS}}
+            onPress={this.formSave}>
+            <Text style={text.buttonblue}>Skip</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{...layout.btnPrimary, ...layout.marginLeftS}}
+            onPress={this.formSave}>
+            <Text style={text.buttoncenterwhite}>Save</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  containerRow: {
+    flexDirection: 'row',
+    alignSelf: 'stretch',
+    marginTop: 160,
+  },
+});
 
 export default inject('completeAccountFormStore')(
   observer(CompleteAccountForm),

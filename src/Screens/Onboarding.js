@@ -18,7 +18,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 const onboardingClick = async navigation => {
   try {
     await AsyncStorage.setItem('FirstTimeOpenApp', 'false');
-    navigation.navigate('CompleteAccount');
+    navigation.navigate('CreateAccount');
   } catch (e) {
     console.log(e);
   }

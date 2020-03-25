@@ -3,14 +3,15 @@ import colors from './colors';
 
 // Common style for reuse in Stylesheet
 const btn = {
-  height: 50,
+  height: 56,
   flexDirection: 'row',
   justifyContent: 'center',
   alignItems: 'center',
   alignContent: 'center',
   alignSelf: 'stretch',
-  borderRadius: 25,
+  borderRadius: 28,
   paddingHorizontal: 50,
+  flexGrow: 1,
 };
 
 const messageContainer = {
@@ -85,6 +86,34 @@ export default StyleSheet.create({
     marginBottom: 40,
   },
 
+  // Margin LEFT
+  marginLeftS: {
+    marginLeft: 10,
+  },
+  marginLeftM: {
+    marginLeft: 15,
+  },
+  marginLeftL: {
+    marginLeft: 20,
+  },
+  marginLeftXL: {
+    marginLeft: 40,
+  },
+
+  // Margin RIGHT
+  marginRightS: {
+    marginRight: 10,
+  },
+  marginRightM: {
+    marginRight: 15,
+  },
+  marginRightL: {
+    marginRight: 20,
+  },
+  marginRightXL: {
+    marginRight: 40,
+  },
+
   // Padding Horizontal
   paddingHorizontalXL: {
     paddingLeft: 40,
@@ -98,7 +127,6 @@ export default StyleSheet.create({
   },
   btnOutline: {
     ...btn,
-    height: 56,
     borderWidth: 1,
     borderRadius: 28,
     borderColor: colors.grey4,

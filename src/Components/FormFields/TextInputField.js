@@ -192,7 +192,6 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    fontFamily: 'Roboto',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',

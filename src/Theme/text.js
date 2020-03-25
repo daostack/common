@@ -1,9 +1,13 @@
 import {StyleSheet} from 'react-native';
 import colors from './colors';
 
+const appFontFamily = {
+  fontFamily: 'HelveticaNeue',
+};
+
 export default StyleSheet.create({
   h1Black: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 24,
     fontWeight: 'bold',
     fontStyle: 'normal',
@@ -13,7 +17,7 @@ export default StyleSheet.create({
     color: '#000000',
   },
   h3Black: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 16,
     fontWeight: 'bold',
     fontStyle: 'normal',
@@ -22,7 +26,7 @@ export default StyleSheet.create({
     color: colors.black,
   },
   buttonblack: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 16,
     fontWeight: '500',
     fontStyle: 'normal',
@@ -32,7 +36,7 @@ export default StyleSheet.create({
     color: colors.black,
   },
   buttoncenterwhite: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 16,
     fontWeight: '500',
     fontStyle: 'normal',
@@ -42,7 +46,7 @@ export default StyleSheet.create({
     color: '#ffffff',
   },
   buttonblue: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 16,
     fontWeight: '500',
     fontStyle: 'normal',
@@ -52,7 +56,7 @@ export default StyleSheet.create({
     color: colors.mainBlue,
   },
   runningboldblue: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'bold',
     fontStyle: 'normal',
@@ -60,7 +64,7 @@ export default StyleSheet.create({
     color: colors.mainBlue,
   },
   paragraphitaliclightGray: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'italic',
@@ -69,7 +73,7 @@ export default StyleSheet.create({
     color: colors.paleblue,
   },
   textFieldplaceholder: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -78,7 +82,7 @@ export default StyleSheet.create({
     color: colors.grey3,
   },
   textFieldfocus: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -87,7 +91,7 @@ export default StyleSheet.create({
     color: '#000000',
   },
   textFielddisabled: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -96,7 +100,7 @@ export default StyleSheet.create({
     color: colors.paleblue,
   },
   runningred: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -105,7 +109,7 @@ export default StyleSheet.create({
     color: '#ff1700',
   },
   runninglightGray: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -113,7 +117,7 @@ export default StyleSheet.create({
     color: colors.grey2,
   },
   runninggray: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -121,7 +125,7 @@ export default StyleSheet.create({
     color: colors.gray1,
   },
   runningblack: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -129,7 +133,7 @@ export default StyleSheet.create({
     color: '#000000',
   },
   paragraphred: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -139,7 +143,7 @@ export default StyleSheet.create({
     color: colors.error,
   },
   tapBarunselected: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 12,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -149,7 +153,7 @@ export default StyleSheet.create({
     color: colors.grey3,
   },
   tapBarselected: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 12,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -159,7 +163,7 @@ export default StyleSheet.create({
     color: colors.mainBlue,
   },
   ashleyjquimbacom: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 16,
     fontWeight: 'bold',
     fontStyle: 'normal',
@@ -169,7 +173,7 @@ export default StyleSheet.create({
   },
 
   greyText: {
-    fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',

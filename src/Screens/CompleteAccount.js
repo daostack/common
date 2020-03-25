@@ -47,10 +47,10 @@ const CompleteAccount = ({}) => {
 const styles = StyleSheet.create({
   scrollView: {
     flexGrow: 1,
+
     backgroundColor: colors.white,
   },
   body: {
-    flex: 1,
     ...layout.content,
   },
   container: {
