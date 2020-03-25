@@ -58,6 +58,7 @@ def native
   # Native Dependencies
   pod 'Web3swift.pod', git: 'https://github.com/matter-labs/web3swift', branch: 'master'
   pod 'KeychainAccess'
+  pod 'ToastHybrid', :path => './lib'
 end
 
 target 'common' do
