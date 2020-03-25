@@ -68,6 +68,8 @@ target 'common' do
   firebase
   native
 
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
 end
 
 
