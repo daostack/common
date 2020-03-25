@@ -13,7 +13,7 @@ import CompleteAccountForm from '../Components/Forms/CompleteAccountForm';
 
 import {colors, text, layout} from '../Theme';
 
-const CompleteAccount = ({}) => {
+const CompleteAccount = () => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -33,7 +33,9 @@ const CompleteAccount = ({}) => {
             <View style={styles.imagePlaceholder}></View>
 
             <View style={layout.content}>
-              <Text style={text.ashleyjquimbacom}>user@email.here</Text>
+              <Text style={text.ashleyjquimbacom}>
+                lyubomir.petkov@limechain.tech
+              </Text>
             </View>
 
             <CompleteAccountForm />

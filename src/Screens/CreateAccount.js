@@ -25,6 +25,10 @@ const CreateAccount = ({navigation}) => {
     bottomSheetContainerRef.current.snapTo(1);
   };
 
+  onSignIn = () => {
+    console.log('Signed in callbaack!');
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />

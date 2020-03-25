@@ -27,6 +27,7 @@ class CompleteAccountForm extends React.Component {
           placeholderText="Firstname Lastname"
           autoCapitalize="none"
           autoCorrect={false}
+          value="Lyubomir Petkov"
           validation={{
             name: CompleteAccountForm.FIELD_NAME,
             formStore: this.props.completeAccountFormStore,
