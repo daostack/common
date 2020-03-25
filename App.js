@@ -17,6 +17,7 @@ import {
   CommonsList,
   NativeBridgeTests,
   Onboarding,
+  UserProfile,
   CreateAccount,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
@@ -28,8 +29,8 @@ const Stack = createStackNavigator();
 const CommonHome = () => {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Test" component={NativeBridgeTests} />
       <Tab.Screen name="Commons" component={CommonsList} />
+      <Tab.Screen name="Test" component={NativeBridgeTests} />
       <Tab.Screen name="CreateAccount" component={CreateAccount} />
     </Tab.Navigator>
   );
@@ -47,10 +48,11 @@ const App = () => {
     <ApolloProvider client={client}>
       <NavigationContainer>
         <Stack.Navigator>
+          <Stack.Screen name="CommonHome" component={CommonHome} />
           <Stack.Screen name="Onboarding" component={Onboarding} />
           <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="CommonHome" component={CommonHome} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
+          <Stack.Screen name="Profile" component={UserProfile} />
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>

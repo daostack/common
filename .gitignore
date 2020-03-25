@@ -27,7 +27,9 @@ build/
 .idea
 .gradle
 local.properties
-*.imlgit mer
+*.iml
+*.hprof
+
 #ENV
 /env.json
 
@@ -59,7 +61,11 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+Podfile.lock
 
 # Firebase
 GoogleService-Info.plist
 google-services.json
+
+# IconFont
+/src/Assets/iconfont
