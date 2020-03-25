@@ -32,12 +32,33 @@ public class WalletModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void generateMnemonic(Promise promise) {
         try {
-            String mnemonic = WalletManager.getInstance().generateMnemonic();
+            String mnemonic = WalletManager.getInstance().generateMnemonic(false);
             promise.resolve(mnemonic);
         } catch (Exception e) {
             promise.reject(e);
         }
 
+    }
+
+    @ReactMethod
+    public void generateAndStoreMnemonic(Promise promise) {
+        try {
+            String mnemonic = WalletManager.getInstance().generateMnemonic(true);
+            promise.resolve(mnemonic);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+
+    }
+
+    @ReactMethod
+    public void storeMnemonic(String mnemonic, Promise promise) {
+        try {
+            WalletManager.getInstance().storeMnemonic(mnemonic);
+            promise.resolve(mnemonic);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
     }
 
     @ReactMethod
