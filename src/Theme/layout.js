@@ -22,8 +22,8 @@ const messageContainer = {
     width: 0,
     height: 2,
   },
-  shadowRadius: 34,
-  shadowOpacity: 1,
+  shadowRadius: 3,
+  shadowOpacity: 0.1,
 };
 
 const messageContainerTriangle = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextInput, View, Text, StyleSheet} from 'react-native';
+import {TextInput, View, Text, StyleSheet, Platform} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import colors from '../../Theme/colors';
@@ -35,6 +35,7 @@ class TextInputField extends React.Component {
 
     this.state = {
       showPassword: props.password,
+      onFocus: false,
     };
 
     const {validation, value, password, fieldActionComponent} = this.props;
@@ -74,7 +75,12 @@ class TextInputField extends React.Component {
     this.props.onChangeText && this.props.onChangeText(text);
   };
 
+  onFocus = e => {
+    this.setState({onFocus: true});
+  };
+
   onBlur = e => {
+    this.setState({onFocus: false});
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
       formStore.fieldBlured(name);
@@ -88,6 +94,8 @@ class TextInputField extends React.Component {
       label,
       value,
       password,
+      multiline,
+      numberOfLines,
 
       // Validation management properties
       validation,
@@ -101,15 +109,39 @@ class TextInputField extends React.Component {
     if (formStore.form.fields[name].error) {
       styleTextfield = {...styles.textfield, ...styles.textfieldError};
     }
+    if (this.state?.onFocus) {
+      styleTextfield = {...styles.textfield, ...styles.textfieldFocus};
+    }
+
+    let defaultMultilineProps = {minHeight: 48};
+
+    if (multiline) {
+      let rowsNumber = numberOfLines;
+      if (!numberOfLines) {
+        rowsNumber = 4;
+      }
+
+      const height = 20 * rowsNumber;
+
+      defaultMultilineProps = {
+        minHeight: height,
+        maxHeight: height,
+      };
+
+      console.log(multiline);
+    }
 
     return (
       <View style={{alignSelf: 'stretch'}}>
         <Text style={styles.label}>{label}</Text>
         <TextInput
+          {...defaultMultilineProps}
           {...otherProps}
+          multiline={multiline}
           style={styleTextfield}
           placeholder={placeholderText}
           onChangeText={this.onChangeText}
+          onFocus={this.onFocus}
           onBlur={this.onBlur}
           secureTextEntry={this.state.showPassword}
           value={
@@ -171,7 +203,7 @@ TextInputField.defaultProps = {
 
 const styles = StyleSheet.create({
   textfield: {
-    height: 48,
+    //minHeight: 48,
     alignSelf: 'stretch',
     borderRadius: 3,
     backgroundColor: colors.white,

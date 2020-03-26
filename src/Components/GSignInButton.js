@@ -9,6 +9,7 @@ import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
 import GoogleDriveService from '../Services/GoogleDriveService';
 import {GOOGLE_SIGNIN_PERMISSIONS} from '../Util';
 import {NativeModules} from 'react-native';
+import {CommonActions} from '@react-navigation/native';
 
 let initialAppDataContent = {
   mnemonic: null,
@@ -29,16 +30,17 @@ const GSignInButton = props => {
         const isSignedIn = await GoogleSignin.isSignedIn();
         setIsSignedIn(isSignedIn);
 
-        if (isSignedIn) {
-          props.navigation.navigate('CompleteAccount');
-          /*
-          props.navigation.navigate({
-            routeName: 'CompleteAccount',
+        if (isSignedIn && props.navigation) {
+          const userInfo = await GoogleSignin.signInSilently();
+          const navigate = CommonActions.navigate({
+            name: 'CompleteAccount',
             params: {
-              email: 'lyubomir.petkov@limechain.tech',
+              email: userInfo.user.email,
+              image: userInfo.user.photo,
+              name: userInfo.user.name,
             },
           });
-          */
+          props.navigation.dispatch(navigate);
         }
         setError(null);
       } catch (error) {
@@ -62,7 +64,9 @@ const GSignInButton = props => {
       setIsSignedIn(true);
       // TODO: Use generated mnemonic
       const mnemonic = await _generateMnemonic();
-      props.onSignIn();
+      if (props.onSignIn) {
+        props.onSignIn();
+      }
       setError(null);
     } catch (error) {
       switch (error.code) {

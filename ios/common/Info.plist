@@ -57,5 +57,9 @@
   	<array>
   		<string>Roboto.ttf</string>
   	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera Permission</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>$(PRODUCT_NAME) photos and video use.</string>
 </dict>
 </plist>
