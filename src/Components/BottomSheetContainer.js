@@ -17,7 +17,7 @@ const BottomSheetContainer = forwardRef((props, ref) => {
   renderSheetHeader = () => {
     return (
       <View style={styles.headerContainer}>
-        <View style={styles.draggingElement}></View>
+        <View style={styles.draggingElement} />
         <Text style={styles.sheetTitleStyle}>Be a part of Common</Text>
       </View>
     );

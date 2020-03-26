@@ -41,7 +41,8 @@ const CreateAccount = ({navigation}) => {
             <Button
               style={layout.marginTopM}
               title="button"
-              onPress={openSheet}></Button>
+              onPress={openSheet}
+            />
 
             <View style={styles.sectionContainer}>
               <Image source={require('../Assets/accountPlaceHolder.png')} />
@@ -60,8 +61,7 @@ const CreateAccount = ({navigation}) => {
               <AcordionBtn name="Contact us" />
             </View>
 
-            <BottomSheetContainer
-              ref={bottomSheetContainerRef}></BottomSheetContainer>
+            <BottomSheetContainer ref={bottomSheetContainerRef} />
           </View>
         </ScrollView>
       </SafeAreaView>

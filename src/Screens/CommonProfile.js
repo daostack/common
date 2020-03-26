@@ -37,7 +37,7 @@ const CommonProfile = () => {
         console.log('HELLO!: ', client.readQuery());
         setDao(res);
       } catch (error) {
-        console.log('error: ', error)
+        console.log('error: ', error);
         const errorMessage =
           error.code === statusCodes.SIGN_IN_REQUIRED
             ? 'Please sign in'

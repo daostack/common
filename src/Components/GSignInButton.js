@@ -107,7 +107,7 @@ const GSignInButton = props => {
     return (
       <>
         <TouchableOpacity style={layout.btnOutline} onPress={_signIn}>
-          <Icon style={layout.btnLeftIcon} name="google" size={32}></Icon>
+          <Icon style={layout.btnLeftIcon} name="google" size={32} />
           <Text style={text.buttonblack}>Sign in with Google</Text>
         </TouchableOpacity>
       </>
@@ -130,7 +130,7 @@ const GSignInButton = props => {
       return (
         <View style={styles.messageContainer}>
           <Text style={styles.errorMessage}>{text}</Text>
-          <View style={layout.messageErrorTriangle}></View>
+          <View style={layout.messageErrorTriangle} />
         </View>
       );
     }
