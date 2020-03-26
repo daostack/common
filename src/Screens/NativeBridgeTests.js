@@ -3,12 +3,11 @@ import {NativeWallet} from '../Util/NativeWallet';
 import {
   Text,
   View,
-  StyleSheet,
   TouchableOpacity,
   ScrollView,
   Dimensions,
 } from 'react-native';
-const {height, width} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 export default class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -106,12 +105,3 @@ export default class nativeBridgeTests extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#9d48ff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

@@ -3,14 +3,11 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  Button,
   TouchableOpacity,
   View,
-  Dimensions,
 } from 'react-native';
 import React from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-const {height, width} = Dimensions.get('window');
 
 import Swiper from 'react-native-swiper';
 import AsyncStorage from '@react-native-community/async-storage';

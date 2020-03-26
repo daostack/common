@@ -18,7 +18,7 @@ export default class GoogleDriveService {
   static getInstance(accessToken) {
     if (
       !GoogleDriveService.instance ||
-      GoogleDriveService.instance.accessToken != accessToken
+      GoogleDriveService.instance.accessToken !== accessToken
     ) {
       GoogleDriveService.instance = new GoogleDriveService(accessToken);
     }
