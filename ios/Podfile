@@ -33,6 +33,7 @@ def reactnative
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
   
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
   pod 'RNGestureHandler', :podspec => '../node_modules/react-native-gesture-handler/RNGestureHandler.podspec'
   pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
   pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
@@ -68,4 +69,15 @@ target 'common' do
   firebase
   native
 
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
+end
+
+
+# Fix RNFirebase.h missing
+post_install do |installer|
+  rnfirebase = installer.pods_project.targets.find { |target| target.name == 'RNFirebase' }
+  rnfirebase.build_configurations.each do |config|
+    config.build_settings['HEADER_SEARCH_PATHS'] = '$(inherited) ${PODS_ROOT}/Headers/Public/**'
+  end
 end

@@ -17,6 +17,7 @@ import {
   CommonsList,
   NativeBridgeTests,
   Onboarding,
+  UserProfile,
   CreateAccount,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
@@ -51,6 +52,7 @@ const App = () => {
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="CommonHome" component={CommonHome} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
+          <Stack.Screen name="Profile" component={UserProfile} />
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>

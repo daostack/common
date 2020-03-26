@@ -3,4 +3,5 @@ export Home from './Home';
 export Login from './Login';
 export CreateAccount from './CreateAccount';
 export NativeBridgeTests from './NativeBridgeTests';
+export UserProfile from './UserProfile';
 export Onboarding from './Onboarding';
