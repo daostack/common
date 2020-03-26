@@ -10,10 +10,9 @@ import App from '../App';
 import renderer from 'react-test-renderer';
 import FirebaseService from '../src/Services/FirebaseService';
 
-it("getUser should return user", async () => {
-
+it('getUser should return user', async () => {
   const user = async () => {
-    console.log('users: ', await FirebaseService.getUser())
+    console.log('users: ', await FirebaseService.getUser());
   };
 
   console.log('USERS >>>', user);
@@ -21,8 +20,6 @@ it("getUser should return user", async () => {
   expect(user.length).toBeGreaterThan(0);
 });
 
-
 it('renders correctly', () => {
   renderer.create(<App />);
 });
-

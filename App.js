@@ -14,7 +14,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
   Login,
   CommonsList,
-  NativeBridgeTests,
+  CommonProfile,
   Onboarding,
   UserProfile,
   CreateAccount,
@@ -28,8 +28,8 @@ const Stack = createStackNavigator();
 const CommonHome = () => {
   return (
     <Tab.Navigator>
+      {/*<Tab.Screen name="Test" component={NativeBridgeTests} />*/}
       <Tab.Screen name="Commons" component={CommonsList} />
-      <Tab.Screen name="Test" component={NativeBridgeTests} />
       <Tab.Screen name="CreateAccount" component={CreateAccount} />
     </Tab.Navigator>
   );
@@ -47,7 +47,12 @@ const App = () => {
     <ApolloProvider client={client}>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="CommonHome" component={CommonHome} />
+          <Stack.Screen
+            name="CommonHome"
+            component={CommonHome}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen name="CommonProfile" component={CommonProfile} />
           <Stack.Screen name="Onboarding" component={Onboarding} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
