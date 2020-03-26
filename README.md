@@ -30,6 +30,7 @@ The `google-services.json` file is to be placed in the `common/android/app`
 1. Clone the repo `git clone https://github.com/daostack/common.git`
 2. `cd common` and run `yarn` or `npm install`
 3. `cd ios` and run `pod install`
+4. `cd common` and run `npx iconfont-init`
 
 ### For iOS
 
