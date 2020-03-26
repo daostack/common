@@ -15,8 +15,6 @@
         android:id="@+id/container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="fitCenter"
-        android:adjustViewBounds="true"
         />
     <TextView
         android:id="@+id/label"
@@ -25,6 +23,7 @@
         android:layout_marginTop="12dp"
         android:textColor="@android:color/white"
         android:textSize="16sp"
+        android:gravity="center"
         android:visibility="gone" />
 
     <TextView
