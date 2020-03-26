@@ -2,57 +2,57 @@ name: Build Android and iOS
 on:
   push:
     branches:
-    - master
+      - master
   pull_request:
     branches:
-    - master
+      - master
 jobs:
   install-and-test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Install dependencies
-      run: |
-        yarn
-#    - name: Run tests
-#      run: |
-#        yarn test
-#  build-android:
-#    needs: install-and-test
-#    runs-on: ubuntu-latest
-#    steps:
-#    - uses: actions/checkout@v2
-#    - name: Install dependencies
-#      run: |
-#        yarn
-#    - name: Build Android Release
-#      run: |
-#        cd android && ./gradlew assembleRelease -PMYAPP_UPLOAD_STORE_PASSWORD='${{ secrets.KEYSTORE_PASSWORD }}' -PMYAPP_UPLOAD_KEY_PASSWORD='${{ secrets.KEYSTORE_PASSWORD }}'
-#    - name: Upload Artifact
-#      uses: actions/upload-artifact@v1
-#      with:
-#        name: app-release.apk
-#        path: android/app/build/outputs/apk/release/
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          yarn
+  #    - name: Run tests
+  #      run: |
+  #        yarn test
+  #  build-android:
+  #    needs: install-and-test
+  #    runs-on: ubuntu-latest
+  #    steps:
+  #    - uses: actions/checkout@v2
+  #    - name: Install dependencies
+  #      run: |
+  #        yarn
+  #    - name: Build Android Release
+  #      run: |
+  #        cd android && ./gradlew assembleRelease -PMYAPP_UPLOAD_STORE_PASSWORD='${{ secrets.KEYSTORE_PASSWORD }}' -PMYAPP_UPLOAD_KEY_PASSWORD='${{ secrets.KEYSTORE_PASSWORD }}'
+  #    - name: Upload Artifact
+  #      uses: actions/upload-artifact@v1
+  #      with:
+  #        name: app-release.apk
+  #        path: android/app/build/outputs/apk/release/
 
   run-linters:
     name: Run linters
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out Git repository
-      uses: actions/checkout@v2
+      - name: Check out Git repository
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
 
-    - name: Install Node.js dependencies
-      run: yarn
+      - name: Install Node.js dependencies
+        run: yarn
 
-    - name: Run linters
-      uses: samuelmeuli/lint-action@v1
-      with:
-        github_token: ${{ secrets.github_token }}
-        eslint: true
-        prettier: true
+      - name: Run linters
+        uses: samuelmeuli/lint-action@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          eslint: true
+          prettier: true
