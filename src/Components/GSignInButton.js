@@ -4,7 +4,7 @@ import {colors, text, layout} from '../Theme';
 
 import React from 'react';
 
-// import Icon from '../Assets/iconfont/Icon';
+import Icon from '../Assets/iconfont/Icon';
 import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
 import GoogleDriveService from '../Services/GoogleDriveService';
 import {GOOGLE_SIGNIN_PERMISSIONS} from '../Util';
@@ -42,7 +42,7 @@ const GSignInButton = props => {
           });
           props.navigation.dispatch(navigate);
         }
-        setError(null);
+        setSignInError(null);
       } catch (error) {
         const errorMessage =
           error.code === statusCodes.SIGN_IN_REQUIRED
@@ -122,7 +122,7 @@ const GSignInButton = props => {
     return (
       <>
         <TouchableOpacity style={layout.btnOutline} onPress={_signIn}>
-          {/*<Icon style={layout.btnLeftIcon} name="google" size={32}></Icon>*/}
+          <Icon style={layout.btnLeftIcon} name="google" size={32}></Icon>
           <Text style={text.buttonblack}>Sign in with Google</Text>
         </TouchableOpacity>
       </>
