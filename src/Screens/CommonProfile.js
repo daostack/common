@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-<<<<<<< HEAD
 import {
   Text,
   TextInput,
@@ -24,18 +23,6 @@ const CommonProfile = () => {
 
   useEffect(() => {
     getDao = async () => {
-=======
-import {Text, View} from 'react-native';
-import gql from 'graphql-tag';
-import {ApolloClientConfig as client} from '../Config';
-const {cache} = client;
-
-const CommonProfile = () => {
-  const [dao, setDao] = useState(false);
-
-  useEffect(() => {
-    const getDao = async () => {
->>>>>>> master
       try {
         console.log('CACHE: ', cache);
         const res = await cache.readQuery({
@@ -50,25 +37,17 @@ const CommonProfile = () => {
         console.log('HELLO!: ', client.readQuery());
         setDao(res);
       } catch (error) {
-<<<<<<< HEAD
-        console.log('error: ', error)
+        console.log('error: ', error);
         const errorMessage =
           error.code === statusCodes.SIGN_IN_REQUIRED
             ? 'Please sign in'
             : error.message;
         setError(new Error(errorMessage));
-=======
-        console.log('error: ', error);
->>>>>>> master
       }
     };
 
     getDao();
-<<<<<<< HEAD
-  }, [1]);
-=======
   }, []);
->>>>>>> master
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>

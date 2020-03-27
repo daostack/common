@@ -10,7 +10,6 @@ import {
   View,
   TouchableOpacity,
   Image,
-  View,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import BottomSheetContainer from '../Components/BottomSheetContainer';
