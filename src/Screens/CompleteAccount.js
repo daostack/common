@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 
 import {
   SafeAreaView,
@@ -10,7 +10,6 @@ import {
   Image,
 } from 'react-native';
 import CompleteAccountForm from '../Components/Forms/CompleteAccountForm';
-
 import {colors, text, layout} from '../Theme';
 
 const CompleteAccount = ({route, navigation}) => {

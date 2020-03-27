@@ -3,18 +3,20 @@ import {NativeWallet} from '../Util/NativeWallet';
 import {
   Text,
   View,
-  StyleSheet,
   TouchableOpacity,
   ScrollView,
   Dimensions,
 } from 'react-native';
-const {height, width} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 export default class nativeBridgeTests extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       mnemonics: '',
+      mnemonicsAndStore: '',
+      storedMnemonic:
+        'order cabin immune pond brave guilt boil index car aware snap list',
       keychainMnemonics: '',
       signedMessage: '',
     };
@@ -29,6 +31,28 @@ export default class nativeBridgeTests extends React.Component {
       this.setState({mnemonic});
     } catch (e) {
       console.log(e);
+    }
+  };
+
+  generateAndStoreMnemonic = async () => {
+    try {
+      const mnemonicsAndStore = await NativeWallet.generateAndStoreMnemonic();
+      console.log('mnemonicsAndStore: ', mnemonicsAndStore);
+      this.setState({mnemonicsAndStore});
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  storeMnemonic = async () => {
+    try {
+      const storedMnemonic = await NativeWallet.storeMnemonic(
+        'order cabin immune pond brave guilt boil index car aware snap list',
+      );
+      console.log('storeMnemonic: ', storedMnemonic);
+      this.setState({storedMnemonic: 'true'});
+    } catch (e) {
+      throw 'Sign message failed with error: ' + e;
     }
   };
 
@@ -76,6 +100,19 @@ export default class nativeBridgeTests extends React.Component {
             <Text>Generate Mnemonic</Text>
           </TouchableOpacity>
 
+          <Text>mnemonicsAndStore: {this.state.mnemonicsAndStore}</Text>
+          <TouchableOpacity
+            onPress={this.generateAndStoreMnemonic}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 200,
+              height: 40,
+              backgroundColor: 'grey',
+            }}>
+            <Text>Generate And Store Mnemonic</Text>
+          </TouchableOpacity>
+
           <Text>local: {this.state.keychainMnemonics}</Text>
           <TouchableOpacity
             onPress={this.retrieveMnemonic}
@@ -87,6 +124,19 @@ export default class nativeBridgeTests extends React.Component {
               backgroundColor: 'grey',
             }}>
             <Text>Retrieve Mnemonic From Local</Text>
+          </TouchableOpacity>
+
+          <Text>storeMnemonic: {this.state.storedMnemonic}</Text>
+          <TouchableOpacity
+            onPress={this.storeMnemonic}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 200,
+              height: 40,
+              backgroundColor: 'grey',
+            }}>
+            <Text>Store Mnemonic</Text>
           </TouchableOpacity>
 
           <Text>signedMessage: {this.state.signedMessage}</Text>
@@ -106,12 +156,3 @@ export default class nativeBridgeTests extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#9d48ff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
