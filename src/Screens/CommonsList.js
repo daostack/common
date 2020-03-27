@@ -9,13 +9,13 @@ import {
   Dimensions,
 } from 'react-native';
 import CommonBox from '../Components/CommonBox';
-import {Subscription} from 'react-apollo';
+import {Subscription, Query} from 'react-apollo';
 import gql from 'graphql-tag';
 
 const {width} = Dimensions.get('window');
 
 const DAOS_SUBSCRIPTION = gql`
-  subscription {
+  query {
     daos(orderBy: reputationHoldersCount, orderDirection: desc) {
       id
       name
@@ -38,7 +38,7 @@ const CommonsList = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       <SafeAreaView />
-      <Subscription subscription={DAOS_SUBSCRIPTION}>
+      <Query query={DAOS_SUBSCRIPTION}>
         {({loading, error, data}) => {
           if (error) {
             console.error(error);
@@ -133,7 +133,7 @@ const CommonsList = ({navigation}) => {
             </>
           );
         }}
-      </Subscription>
+      </Query>
     </View>
   );
 };

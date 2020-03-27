@@ -3,7 +3,7 @@ import colors from './colors';
 
 export default StyleSheet.create({
   h1Black: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 24,
     fontWeight: 'bold',
     fontStyle: 'normal',
@@ -13,7 +13,7 @@ export default StyleSheet.create({
     color: '#000000',
   },
   h3Black: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 16,
     fontWeight: 'bold',
     fontStyle: 'normal',
@@ -22,7 +22,7 @@ export default StyleSheet.create({
     color: colors.black,
   },
   buttonblack: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 16,
     fontWeight: '500',
     fontStyle: 'normal',
@@ -32,7 +32,7 @@ export default StyleSheet.create({
     color: colors.black,
   },
   buttoncenterwhite: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 16,
     fontWeight: '500',
     fontStyle: 'normal',
@@ -42,7 +42,7 @@ export default StyleSheet.create({
     color: '#ffffff',
   },
   buttonblue: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 16,
     fontWeight: '500',
     fontStyle: 'normal',
@@ -52,7 +52,7 @@ export default StyleSheet.create({
     color: colors.mainBlue,
   },
   runningboldblue: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 14,
     fontWeight: 'bold',
     fontStyle: 'normal',
@@ -60,7 +60,7 @@ export default StyleSheet.create({
     color: colors.mainBlue,
   },
   paragraphitaliclightGray: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'italic',
@@ -69,7 +69,7 @@ export default StyleSheet.create({
     color: colors.paleblue,
   },
   textFieldplaceholder: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -78,7 +78,7 @@ export default StyleSheet.create({
     color: colors.grey3,
   },
   textFieldfocus: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -87,7 +87,7 @@ export default StyleSheet.create({
     color: '#000000',
   },
   textFielddisabled: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -96,7 +96,7 @@ export default StyleSheet.create({
     color: colors.paleblue,
   },
   runningred: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -105,7 +105,7 @@ export default StyleSheet.create({
     color: '#ff1700',
   },
   runninglightGray: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -113,7 +113,7 @@ export default StyleSheet.create({
     color: colors.grey2,
   },
   runninggray: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -121,7 +121,7 @@ export default StyleSheet.create({
     color: colors.gray1,
   },
   runningblack: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -129,7 +129,7 @@ export default StyleSheet.create({
     color: '#000000',
   },
   paragraphred: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -139,7 +139,7 @@ export default StyleSheet.create({
     color: colors.error,
   },
   tapBarunselected: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 12,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -149,7 +149,7 @@ export default StyleSheet.create({
     color: colors.grey3,
   },
   tapBarselected: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 12,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -160,7 +160,7 @@ export default StyleSheet.create({
   },
 
   greyText: {
-    fontFamily: 'Roboto',
+    // fontFamily: 'Roboto',
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
