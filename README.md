@@ -30,12 +30,7 @@ The `google-services.json` file is to be placed in the `common/android/app`
 1. Clone the repo `git clone https://github.com/daostack/common.git`
 2. `cd common` and run `yarn` or `npm install`
 3. `cd ios` and run `pod install`
-
-** After running `pod install` you will receive an error while running the app.
-
-** 'Firebase.h' file not found with <angled> use "quotes" instead.
-
-** You will need to replace the angled brackets from `#import <Firebase.h>` with `#import "Firebase.h"` in the `/RNFirebaseFirestore.h` and `/RNFirebaseUtil.h` files
+4. `cd common` and run `npx iconfont-init`
 
 ### For iOS
 

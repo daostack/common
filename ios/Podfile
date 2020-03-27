@@ -68,4 +68,15 @@ target 'common' do
   firebase
   native
 
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
+end
+
+
+# Fix RNFirebase.h missing
+post_install do |installer|
+  rnfirebase = installer.pods_project.targets.find { |target| target.name == 'RNFirebase' }
+  rnfirebase.build_configurations.each do |config|
+    config.build_settings['HEADER_SEARCH_PATHS'] = '$(inherited) ${PODS_ROOT}/Headers/Public/**'
+  end
 end
