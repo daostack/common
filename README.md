@@ -3,6 +3,7 @@
 A DAOstack product
 
 ## Getting Started
+
 For Getting Started with React Native there is a very comprehensive guide on their website
 
 https://reactnative.dev/docs/getting-started
@@ -14,9 +15,10 @@ Choose the React Native CLI Quickstart and then choose whether you use a Mac, Li
 ### Files containing keys
 
 You will need three files
- 1. For React Native - `env.json`
- 2. For iOS `GoogleService-Info.plist`
- 3. For Android `google-services.json`
+
+1.  For React Native - `env.json`
+2.  For iOS `GoogleService-Info.plist`
+3.  For Android `google-services.json`
 
 You can ge these files from one of the members of the developer team to get started.
 
@@ -30,6 +32,7 @@ The `google-services.json` file is to be placed in the `common/android/app`
 1. Clone the repo `git clone https://github.com/daostack/common.git`
 2. `cd common` and run `yarn` or `npm install`
 3. `cd ios` and run `pod install`
+4. `cd common` and run `npx iconfont-init`
 
 ### For iOS
 
@@ -60,24 +63,27 @@ Please enter command `npx jetify` in terminal. [StackOverflow](https://stackover
 ### Useful Download links
 
 ##### Android Studio
+
 https://developer.android.com/studio
 
 ##### Xcode
+
 https://apps.apple.com/us/app/xcode/id497799835?mt=12
 
 ### Useful links for libraries used in the Project
 
 ##### Navigation (React Navigation)
+
 https://reactnavigation.org/docs/bottom-tab-navigator
 
 ##### Testing (Jest)
+
 https://jestjs.io/
 
 ##### React Native Firebase
+
 https://rnfirebase.io/
 
 ##### React Hooks
+
 https://reactjs.org/docs/hooks-intro.html
-
-
-

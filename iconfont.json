@@ -1,8 +1,8 @@
 {
-    "symbol_url": "http://at.alicdn.com/t/font_1704341_pmmu834tvv.js",
-    "use_typescript": false,
-    "save_dir": "./src/Assets/iconfont",
-    "trim_icon_prefix": "icon",
-    "default_icon_size": 18,
-    "summary_component_name": "Icon"
+  "symbol_url": "http://at.alicdn.com/t/font_1704341_pmmu834tvv.js",
+  "use_typescript": false,
+  "save_dir": "./src/Assets/iconfont",
+  "trim_icon_prefix": "icon",
+  "default_icon_size": 18,
+  "summary_component_name": "Icon"
 }

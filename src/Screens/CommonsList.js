@@ -119,10 +119,6 @@ const CommonsList = ({navigation}) => {
                     ) {
                       return;
                     }
-                    const {backgroundColor, color} = {
-                      backgroundColor: 'black',
-                      color: 'white',
-                    };
                     return (
                       <CommonBox
                         image={`https://i.picsum.photos/id/${i *

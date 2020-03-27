@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 
 import {
   SafeAreaView,
@@ -6,9 +6,9 @@ import {
   StatusBar,
   StyleSheet,
   View,
+  Text,
 } from 'react-native';
-import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {colors, text, layout} from '../Theme';
+import {text} from '../Theme';
 
 const CompleteAccount = ({navigation}) => {
   return (
