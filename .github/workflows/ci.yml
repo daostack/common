@@ -14,9 +14,6 @@ jobs:
       - name: Install dependencies
         run: |
           yarn
-  #    - name: Run tests
-  #      run: |
-  #        yarn test
   #  build-android:
   #    needs: install-and-test
   #    runs-on: ubuntu-latest
