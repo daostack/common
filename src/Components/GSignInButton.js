@@ -17,7 +17,7 @@ let initialAppDataContent = {
 
 const GSignInButton = props => {
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [setSignInError] = useState(null);
+  const [signInError, setSignInError] = useState(null);
 
   GoogleSignin.configure({
     scopes: [GOOGLE_SIGNIN_PERMISSIONS.APP_DATA_RW],
@@ -125,8 +125,10 @@ const GSignInButton = props => {
   };
 
   renderError = () => {
-    if (error) {
-      const errorText = `${error.toString()} ${error.code ? error.code : ''}`;
+    if (signInError) {
+      const errorText = `${signInError.toString()} ${
+        signInError.code ? signInError.code : ''
+      }`;
       return (
         <View style={styles.messageContainer}>
           <Text style={styles.errorMessage}>{errorText}</Text>
