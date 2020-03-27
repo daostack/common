@@ -52,7 +52,11 @@ const App = () => {
             component={CommonHome}
             options={{headerShown: false}}
           />
-          <Stack.Screen name="CommonProfile" component={CommonProfile} />
+          <Stack.Screen
+            name="CommonProfile"
+            component={CommonProfile}
+            options={{headerShown: false}}
+          />
           <Stack.Screen name="Onboarding" component={Onboarding} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
