@@ -66,20 +66,31 @@ public class WalletManager {
         System.loadLibrary("TrustWalletCore");
     }
 
-    public String generateMnemonic() throws Exception  {
+    public String generateMnemonic(Boolean shouldStore) throws Exception  {
         try {
             byte[] initialEntropy = new byte[16];
             SecureRandom secureRandom = new SecureRandom();
             secureRandom.nextBytes(initialEntropy);
             String mnemonic = MnemonicUtils.generateMnemonic(initialEntropy);
-            Crypto crypto = new Crypto(Options.TRANSFORMATION_SYMMETRIC);
-            String encryptedData = crypto.encrypt(mnemonic, key);
-            Hawk.put(MEMORIZINGWORDS, encryptedData);
+            if (shouldStore) {
+                Crypto crypto = new Crypto(Options.TRANSFORMATION_SYMMETRIC);
+                String encryptedData = crypto.encrypt(mnemonic, key);
+                Hawk.put(MEMORIZINGWORDS, encryptedData);
+            }
             return mnemonic;
         }catch (Exception e){
             throw e;
         }
+    }
 
+    public void storeMnemonic(String mnemonic) throws Exception {
+        try {
+            Crypto crypto = new Crypto(Options.TRANSFORMATION_SYMMETRIC);
+            String encryptedData = crypto.encrypt(mnemonic, key);
+            Hawk.put(MEMORIZINGWORDS, encryptedData);
+        } catch (Exception e){
+            throw e;
+        }
     }
 
     public String retrieveMnemonic() throws Exception {

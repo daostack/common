@@ -6,8 +6,10 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Image,
+  Text,
   View,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import BottomSheetContainer from '../Components/BottomSheetContainer';
@@ -32,7 +34,6 @@ const CreateAccount = ({navigation}) => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
-
       <SafeAreaView style={styles.container}>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
