@@ -23,11 +23,16 @@ public class WalletManager {
     }
     
     func generateMnemonic(shouldStore: Bool) throws -> String? {
+        
+        guard let keychain = self.keychain else {
+            throw WalletError.custom("keychian is nil")
+        }
+        
         do {
             let bitsOfEntropy: Int = 128 // Entropy is a measure of password strength. Usually used 128 or 256 bits.
             let mnemonics = try BIP39.generateMnemonics(bitsOfEntropy: bitsOfEntropy)
             if shouldStore {
-                keychain![keychainKey] = mnemonics
+                keychain[keychainKey] = mnemonics
             }
             return mnemonics
         } catch {
@@ -35,8 +40,19 @@ public class WalletManager {
         }
     }
     
-    func retrieveMnemonic() -> String? {
-        let mnemonics = keychain![keychainKey]
+    func storeMnemonic(mnemonic: String) throws {
+        guard let keychain = self.keychain else {
+            throw WalletError.custom("keychian is nil")
+        }
+        keychain[keychainKey] = mnemonic
+    }
+    
+    func retrieveMnemonic() throws -> String? {
+        guard let keychain = self.keychain else {
+            throw WalletError.custom("keychian is nil")
+        }
+        
+        let mnemonics = keychain[keychainKey]
 //        defer {
 //            mnemonics = nil
 //        }
@@ -50,7 +66,7 @@ public class WalletManager {
             throw WalletError.custom("Data")
         }
         
-        guard let mnemonics = retrieveMnemonic(),
+        guard let mnemonics = try retrieveMnemonic(),
             let keystore = try BIP32Keystore(mnemonics: mnemonics),
             let address = keystore.addresses?.first else {
             throw WalletError.malformedKeystore
