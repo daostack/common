@@ -2,18 +2,38 @@ name: Build Android and iOS
 on:
   push:
     branches:
-    - master
+      - master
   pull_request:
     branches:
-    - master
+      - master
 jobs:
   install-and-test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Install dependencies
-      run: |
-        yarn
-    - name: Run tests
-      run: |
-        yarn test
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          yarn
+
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Install Node.js dependencies
+        run: yarn
+
+      - name: Run linters
+        uses: samuelmeuli/lint-action@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          eslint: true
+          prettier: true

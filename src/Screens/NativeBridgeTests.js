@@ -3,12 +3,11 @@ import {NativeWallet} from '../Util/NativeWallet';
 import {
   Text,
   View,
-  StyleSheet,
   TouchableOpacity,
   ScrollView,
   Dimensions,
 } from 'react-native';
-const {height, width} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 export default class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -16,7 +15,8 @@ export default class nativeBridgeTests extends React.Component {
     this.state = {
       mnemonics: '',
       mnemonicsAndStore: '',
-      storedMnemonic: 'order cabin immune pond brave guilt boil index car aware snap list',
+      storedMnemonic:
+        'order cabin immune pond brave guilt boil index car aware snap list',
       keychainMnemonics: '',
       signedMessage: '',
     };
@@ -46,9 +46,11 @@ export default class nativeBridgeTests extends React.Component {
 
   storeMnemonic = async () => {
     try {
-      const storedMnemonic = await NativeWallet.storeMnemonic('order cabin immune pond brave guilt boil index car aware snap list');
+      const storedMnemonic = await NativeWallet.storeMnemonic(
+        'order cabin immune pond brave guilt boil index car aware snap list',
+      );
       console.log('storeMnemonic: ', storedMnemonic);
-      this.setState({storedMnemonic : 'true'});
+      this.setState({storedMnemonic: 'true'});
     } catch (e) {
       throw 'Sign message failed with error: ' + e;
     }
@@ -154,12 +156,3 @@ export default class nativeBridgeTests extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#9d48ff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

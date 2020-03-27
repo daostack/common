@@ -4,8 +4,8 @@ export default class FirebaseService {
   async getUser() {
     return db
       .collection('users')
-      .doc('pbNuWYRttv5v6d4ha2TK')
-      .collection('user_info')
+      .doc('fwdzYtFOP9Q8tT65tBaU')
+      .collection('userInfo')
       .get()
       .then(snapshots => {
         if (snapshots.empty) {
