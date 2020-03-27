@@ -11,11 +11,11 @@ import {
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import BottomSheetContainer from '../Components/BottomSheetContainer';
-import AcordionBtn from '../Components/AcordionBtn';
+import AccordionBtn from '../Components/AccordionBtn';
 
 import GSignInButton from '../Components/GSignInButton';
 
-import Icon from '../Assets/iconfont/Icon';
+// import Icon from '../Assets/iconfont/Icon';
 import {layout} from '../Theme';
 
 const CreateAccount = ({navigation}) => {
@@ -41,7 +41,8 @@ const CreateAccount = ({navigation}) => {
             <Button
               style={layout.marginTopM}
               title="button"
-              onPress={openSheet}></Button>
+              onPress={openSheet}
+            />
 
             <View style={styles.sectionContainer}>
               <Image source={require('../Assets/accountPlaceHolder.png')} />
@@ -53,15 +54,14 @@ const CreateAccount = ({navigation}) => {
             />
 
             <View style={styles.buttonsArea}>
-              <AcordionBtn name="FAQ" />
-              <AcordionBtn name="Terms of use" />
-              <AcordionBtn name="Privacy Policy" />
-              <AcordionBtn name="Help" />
-              <AcordionBtn name="Contact us" />
+              <AccordionBtn name="FAQ" />
+              <AccordionBtn name="Terms of use" />
+              <AccordionBtn name="Privacy Policy" />
+              <AccordionBtn name="Help" />
+              <AccordionBtn name="Contact us" />
             </View>
 
-            <BottomSheetContainer
-              ref={bottomSheetContainerRef}></BottomSheetContainer>
+            <BottomSheetContainer ref={bottomSheetContainerRef} />
           </View>
         </ScrollView>
       </SafeAreaView>

@@ -4,7 +4,7 @@ import {colors, text, layout} from '../Theme';
 
 import React from 'react';
 
-import Icon from '../Assets/iconfont/Icon';
+// import Icon from '../Assets/iconfont/Icon';
 import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
 import GoogleDriveService from '../Services/GoogleDriveService';
 import {GOOGLE_SIGNIN_PERMISSIONS} from '../Util';
@@ -17,7 +17,7 @@ let initialAppDataContent = {
 
 const GSignInButton = props => {
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [error, setError] = useState(null);
+  const [setSignInError] = useState(null);
 
   GoogleSignin.configure({
     scopes: [GOOGLE_SIGNIN_PERMISSIONS.APP_DATA_RW],
@@ -26,21 +26,21 @@ const GSignInButton = props => {
   useEffect(() => {
     _isUserSignedIn = async () => {
       try {
-        const isSignedIn = await GoogleSignin.isSignedIn();
-        setIsSignedIn(isSignedIn);
-        isSignedIn ? props.navigation.navigate('CommonHome') : null;
-        setError(null);
+        const signedIn = await GoogleSignin.isSignedIn();
+        setIsSignedIn(signedIn);
+        signedIn ? props.navigation.navigate('CommonHome') : null;
+        setSignInError(null);
       } catch (error) {
         const errorMessage =
           error.code === statusCodes.SIGN_IN_REQUIRED
             ? 'Please sign in'
             : error.message;
-        setError(new Error(errorMessage));
+        setSignInError(new Error(errorMessage));
       }
     };
 
     _isUserSignedIn();
-  }, [isSignedIn]);
+  }, [isSignedIn, props.navigation, setSignInError]);
 
   _signIn = async () => {
     console.log('Sign in');
@@ -50,22 +50,22 @@ const GSignInButton = props => {
       await GoogleSignin.signIn();
       setIsSignedIn(true);
       // TODO: Use generated mnemonic
-      const mnemonic = await _generateMnemonic();
+      // const mnemonic = await _generateMnemonic();
       props.onSignIn();
-      setError(null);
+      setSignInError(null);
     } catch (error) {
       switch (error.code) {
         case statusCodes.SIGN_IN_CANCELLED:
-          setError('Canceled');
+          setSignInError('Canceled');
           break;
         case statusCodes.IN_PROGRESS:
           console.log('SignIn in progress');
           break;
         case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-          setError('play services not available or outdated');
+          setSignInError('play services not available or outdated');
           break;
         default:
-          setError(error);
+          setSignInError(error);
       }
     }
   };
@@ -97,9 +97,9 @@ const GSignInButton = props => {
       await GoogleSignin.signOut();
 
       setIsSignedIn(false);
-      setError(null);
+      setSignInError(null);
     } catch (error) {
-      setError(error);
+      setSignInError(error);
     }
   };
 
@@ -107,7 +107,7 @@ const GSignInButton = props => {
     return (
       <>
         <TouchableOpacity style={layout.btnOutline} onPress={_signIn}>
-          <Icon style={layout.btnLeftIcon} name="google" size={32}></Icon>
+          {/*<Icon style={layout.btnLeftIcon} name="google" size={32}></Icon>*/}
           <Text style={text.buttonblack}>Sign in with Google</Text>
         </TouchableOpacity>
       </>
@@ -126,11 +126,11 @@ const GSignInButton = props => {
 
   renderError = () => {
     if (error) {
-      const text = `${error.toString()} ${error.code ? error.code : ''}`;
+      const errorText = `${error.toString()} ${error.code ? error.code : ''}`;
       return (
         <View style={styles.messageContainer}>
-          <Text style={styles.errorMessage}>{text}</Text>
-          <View style={layout.messageErrorTriangle}></View>
+          <Text style={styles.errorMessage}>{errorText}</Text>
+          <View style={layout.messageErrorTriangle} />
         </View>
       );
     }

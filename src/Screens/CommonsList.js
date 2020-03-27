@@ -34,7 +34,7 @@ const DAOS_SUBSCRIPTION = gql`
   }
 `;
 
-const CommonsList = () => {
+const CommonsList = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       <SafeAreaView />
@@ -118,16 +118,13 @@ const CommonsList = () => {
                     ) {
                       return;
                     }
-                    const {backgroundColor, color} = {
-                      backgroundColor: 'black',
-                      color: 'white',
-                    };
                     return (
                       <CommonBox
                         image={`https://i.picsum.photos/id/${i *
                           10}/500/100.jpg`}
                         common={dao}
                         key={i}
+                        navigation={navigation}
                       />
                     );
                   })}

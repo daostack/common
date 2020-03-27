@@ -3,14 +3,11 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  Button,
   TouchableOpacity,
   View,
-  Dimensions,
 } from 'react-native';
 import React from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-const {height, width} = Dimensions.get('window');
 
 import Swiper from 'react-native-swiper';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -59,7 +56,9 @@ const Onboarding = ({navigation}) => {
           </Swiper>
 
           <View style={styles.buttonConatiner}>
-            <TouchableOpacity style={styles.button} onPress={() => onboardingClick(navigation)}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => onboardingClick(navigation)}>
               <Text style={styles.buttonText}>Explore Commons!</Text>
             </TouchableOpacity>
           </View>
