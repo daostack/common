@@ -1,14 +1,28 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
+import {
+  Text,
+  TextInput,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+  Dimensions,
+} from 'react-native';
+import CommonBox from '../Components/CommonBox';
+import {Subscription} from 'react-apollo';
 import gql from 'graphql-tag';
 import {ApolloClientConfig as client} from '../Config';
 const {cache} = client;
+import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
+
+const {width} = Dimensions.get('window');
 
 const CommonProfile = () => {
   const [dao, setDao] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const getDao = async () => {
+    getDao = async () => {
       try {
         console.log('CACHE: ', cache);
         const res = await cache.readQuery({
@@ -24,6 +38,11 @@ const CommonProfile = () => {
         setDao(res);
       } catch (error) {
         console.log('error: ', error);
+        const errorMessage =
+          error.code === statusCodes.SIGN_IN_REQUIRED
+            ? 'Please sign in'
+            : error.message;
+        setError(new Error(errorMessage));
       }
     };
 
