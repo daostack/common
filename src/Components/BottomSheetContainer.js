@@ -1,5 +1,5 @@
-import {useEffect, useRef, forwardRef} from 'react';
-import {Button, Alert, Text, View, StyleSheet} from 'react-native';
+import {forwardRef} from 'react';
+import {Text, View, StyleSheet} from 'react-native';
 
 import React from 'react';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -17,7 +17,7 @@ const BottomSheetContainer = forwardRef((props, ref) => {
   renderSheetHeader = () => {
     return (
       <View style={styles.headerContainer}>
-        <View style={styles.draggingElement}></View>
+        <View style={styles.draggingElement} />
         <Text style={styles.sheetTitleStyle}>Be a part of Common</Text>
       </View>
     );
@@ -71,27 +71,26 @@ const styles = StyleSheet.create({
     ...layout.content,
     ...layout.flexStart,
     backgroundColor: Colors.white,
-    height: 60,
+    height: 80,
 
     borderTopLeftRadius: 27,
     borderTopRightRadius: 27,
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
+
     borderColor: 'rgba(0, 0, 0, 0.3)',
 
-    shadowColor: 'rgba(0, 0, 0, 0.09)',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: -20,
     },
-    shadowRadius: 13,
-    shadowOpacity: 1,
+    shadowRadius: 12,
+    shadowOpacity: 0.1,
     ...layout.paddingTopM,
+    zIndex: 5,
   },
   contentContainer: {
-    height: 350,
+    height: 550,
     backgroundColor: Colors.white,
+    zIndex: 6,
   },
 
   sheetTitleStyle: {

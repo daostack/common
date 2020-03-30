@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   Text,
   TextInput,
@@ -11,6 +11,7 @@ import {
 import CommonBox from '../Components/CommonBox';
 import {Subscription} from 'react-apollo';
 import gql from 'graphql-tag';
+import {ApolloClientConfig as client} from '../Config';
 
 const {width} = Dimensions.get('window');
 
@@ -34,7 +35,7 @@ const DAOS_SUBSCRIPTION = gql`
   }
 `;
 
-const CommonsList = () => {
+const CommonsList = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       <SafeAreaView />
@@ -118,16 +119,13 @@ const CommonsList = () => {
                     ) {
                       return;
                     }
-                    const {backgroundColor, color} = {
-                      backgroundColor: 'black',
-                      color: 'white',
-                    };
                     return (
                       <CommonBox
                         image={`https://i.picsum.photos/id/${i *
                           10}/500/100.jpg`}
                         common={dao}
                         key={i}
+                        navigation={navigation}
                       />
                     );
                   })}

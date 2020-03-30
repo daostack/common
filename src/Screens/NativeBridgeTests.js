@@ -3,7 +3,6 @@ import { NativeWallet } from '../Util/NativeWallet';
 import {
   Text,
   View,
-  StyleSheet,
   TouchableOpacity,
   ScrollView,
   Dimensions,
@@ -11,13 +10,15 @@ import {
 const { height, width } = Dimensions.get('window');
 import { ethers } from 'ethers';
 
+
 export default class nativeBridgeTests extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       mnemonics: '',
       mnemonicsAndStore: '',
-      storedMnemonic: 'order cabin immune pond brave guilt boil index car aware snap list',
+      storedMnemonic:
+        'order cabin immune pond brave guilt boil index car aware snap list',
       keychainMnemonics: '',
       signedMessage: '',
       networkURL: 'Rinkeby',
@@ -52,9 +53,11 @@ export default class nativeBridgeTests extends React.Component {
 
   storeMnemonic = async () => {
     try {
-      const storedMnemonic = await NativeWallet.storeMnemonic('order cabin immune pond brave guilt boil index car aware snap list');
+      const storedMnemonic = await NativeWallet.storeMnemonic(
+        'order cabin immune pond brave guilt boil index car aware snap list',
+      );
       console.log('storeMnemonic: ', storedMnemonic);
-      this.setState({storedMnemonic : 'true'});
+      this.setState({storedMnemonic: 'true'});
     } catch (e) {
       throw 'Sign message failed with error: ' + e;
     }
