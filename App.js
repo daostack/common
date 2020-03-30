@@ -7,6 +7,7 @@
  */
 
 import React, {useEffect} from 'react';
+import {Image} from 'react-native';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -18,6 +19,7 @@ import {
   Onboarding,
   UserProfile,
   CreateAccount,
+  CreateCommon,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
@@ -56,6 +58,18 @@ const App = () => {
           <Stack.Screen name="Onboarding" component={Onboarding} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
+          <Stack.Screen
+            name="CreateCommon"
+            component={CreateCommon}
+            options={({navigation, route}) => ({
+              headerTitle: 'Common!',
+              headerBackTitleVisible: false,
+              headerLeftContainerStyle: {marginLeft: 20},
+              headerRightContainerStyle: {marginRight: 20},
+              headerBackImage: () => <Image source={require('./src/Assets/backArrow.png')} style={{resizeMode: 'contain', width: 32, height: 32}}/>,
+              headerRight: () => <Image source={require('./src/Assets/questionmark.png')} style={{resizeMode: 'contain', width: 20, height: 20}}/>
+            })}
+          />
           <Stack.Screen name="Profile" component={UserProfile} />
         </Stack.Navigator>
       </NavigationContainer>

@@ -1,14 +1,16 @@
 import React from 'react';
 import {
+  Image,
   Text,
   TextInput,
   SafeAreaView,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
   View,
   Dimensions,
 } from 'react-native';
-import CommonBox from '../Components/CommonBox';
+import {CommonBox, BottomRightButton} from '../Components';
 import {Subscription, Query} from 'react-apollo';
 import gql from 'graphql-tag';
 
@@ -92,7 +94,7 @@ const CommonsList = ({navigation}) => {
                     fontStyle: 'normal',
                     letterSpacing: 0,
                   }}>
-                  Commons
+                  My Commons
                 </Text>
               </View>
 
@@ -134,6 +136,7 @@ const CommonsList = ({navigation}) => {
           );
         }}
       </Query>
+      <BottomRightButton onPress={() => navigation.navigate('CreateCommon')} />
     </View>
   );
 };
@@ -193,29 +196,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#eeeeee',
     marginBottom: 10,
-  },
-  cheezeDaoBox: {
-    width: width - 20,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: 'black',
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowRadius: 10,
-    shadowOpacity: 0.1,
-  },
-  sharpShadow: {
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 4,
-      height: 4,
-    },
-    shadowRadius: 0,
-    shadowOpacity: 1,
   },
 });
 
