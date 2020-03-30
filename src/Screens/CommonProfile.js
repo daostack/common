@@ -27,7 +27,7 @@ const mockData = {
 };
 
 const CommonProfile = ({navigation}) => {
-  const [dao, setDao] = useState(false);
+  const [readMore, setReadMore] = useState(false);
 
   useEffect(() => {
     // noinspection JSAnnotator
@@ -73,7 +73,7 @@ const CommonProfile = ({navigation}) => {
           style={{position: 'absolute', top: 60, left: 20}}
           onPress={navigation.goBack}>
           <Image
-            style={{resizeMode: 'contain', height: 20, width: 20, }}
+            style={{resizeMode: 'contain', height: 20, width: 20}}
             source={require('../Assets/left-arrow-32.png')}
           />
         </TouchableOpacity>
@@ -139,11 +139,19 @@ const CommonProfile = ({navigation}) => {
           considered politically feasible, to preserve rainforests, protect the
           climate, and uphold human rights.
         </Text>
-        <TouchableOpacity>
-          <Text style={styles.readMoreButton}>
-            Read more
+        {readMore && (
+          <Text style={styles.agendaDescription}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+            culpa qui officia deserunt mollit anim id est laborum.
           </Text>
-
+        )}
+        <TouchableOpacity onPress={() => setReadMore(!readMore)}>
+          <Text style={styles.readMoreButton}>{readMore ? 'Show less' : 'Read more'}</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -155,7 +163,7 @@ const styles = StyleSheet.create({
     padding: 25,
     backgroundColor: 'white',
     shadowColor: '#000',
-    shadowOffset: { width: 1, height: 1 },
+    shadowOffset: {width: 1, height: 1},
     shadowOpacity: 0.4,
     shadowRadius: 3,
     elevation: 5,
@@ -163,10 +171,10 @@ const styles = StyleSheet.create({
   agendaTitle: {
     ...text.runningblack,
     fontWeight: '700',
-    marginBottom: 9
+    marginBottom: 9,
   },
   agendaDescription: {
-    marginBottom: 9
+    marginBottom: 9,
   },
   readMoreButton: {
     fontSize: 16,
