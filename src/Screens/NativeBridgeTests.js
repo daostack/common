@@ -1,15 +1,17 @@
 import React from 'react';
-import { NativeWallet } from '../Util/NativeWallet';
+import {NativeWallet} from '../Util/NativeWallet';
 import {
   Text,
   View,
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  StyleSheet,
 } from 'react-native';
-const { height, width } = Dimensions.get('window');
-import { ethers } from 'ethers';
-
+const {height, width} = Dimensions.get('window');
+import {ethers} from 'ethers';
+import CPK from 'contract-proxy-kit';
+import WalletManager from '../Util/WalletManager';
 
 export default class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -24,8 +26,11 @@ export default class nativeBridgeTests extends React.Component {
       networkURL: 'Rinkeby',
       address: '',
       balance: '',
+      ownerAddress: '',
+      ownerBalance: '',
       txStatus: '',
       txHash: '',
+      txSW: '',
     };
 
     this.child = React.createRef();
@@ -73,22 +78,12 @@ export default class nativeBridgeTests extends React.Component {
     }
   };
 
-  signMessage = async () => {
+  getOwnerBalance = async () => {
     try {
-      const signedMessage = await NativeWallet.signMessage('Hello World');
-      console.log('signedMessage: ', signedMessage);
-      this.setState({signedMessage});
-    } catch (e) {
-      throw 'Sign message failed with error: ' + e;
-    }
-  };
-
-  getAddress = async () => {
-    try {
-      const mnemonic = await NativeWallet.retrieveMnemonic();
-      let wallet = ethers.Wallet.fromMnemonic(mnemonic);
-      console.log('Address: ', wallet.address);
-      this.setState({address: wallet.address});
+      const manager = await WalletManager.getInstance();
+      const address = await manager.getOwnerAccount();
+      const balance = await manager.getBalance(address);
+      this.setState({ownerAccount: address, ownerBalance: balance});
     } catch (e) {
       console.log(e);
     }
@@ -96,16 +91,10 @@ export default class nativeBridgeTests extends React.Component {
 
   getBalance = async () => {
     try {
-      const mnemonic = await NativeWallet.retrieveMnemonic();
-      let wallet = ethers.Wallet.fromMnemonic(mnemonic);
-      let provider = new ethers.providers.InfuraProvider(
-        'rinkeby',
-        '3c08878d00734c0c98a3e4741d0b4cfc',
-      );
-      provider.getBalance(wallet.address).then(balance => {
-        let etherString = ethers.utils.formatEther(balance);
-        this.setState({balance: etherString});
-      });
+      const manager = await WalletManager.getInstance();
+      const address = manager.getAddress();
+      const balance = await manager.getBalance(manager.address);
+      this.setState({address, balance});
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
@@ -113,38 +102,27 @@ export default class nativeBridgeTests extends React.Component {
 
   sendTransaction = async () => {
     try {
-      const mnemonic = await NativeWallet.retrieveMnemonic();
-      let wallet = ethers.Wallet.fromMnemonic(mnemonic);
-      let provider = new ethers.providers.InfuraProvider(
-        'rinkeby',
-        '3c08878d00734c0c98a3e4741d0b4cfc',
+      const manager = await WalletManager.getInstance();
+      const {response, hash} = await manager.sendTransaction(
+        '0x41B788babf69FC7F98336ff7A47F5A80c3A63d40',
+        '0.001',
       );
-      let rinkebyWallet = wallet.connect(provider);
-      let tx = {
-        to: '0x41B788babf69FC7F98336ff7A47F5A80c3A63d40',
-        value: ethers.utils.parseEther('0.001'),
-      };
-      rinkebyWallet
-        .sendTransaction(tx)
-        .then(tx => {
-          console.log(tx);
-          this.setState({txHash: tx.hash, txStatus: 'pending'});
-          return provider.waitForTransaction(tx.hash);
-        })
-        .then(receipt => {
-          console.log(receipt);
-          this.setState({
-            txStatus: receipt.status === 0 ? 'Failed' : 'Confirmed',
-          });
-          return this.getBalance();
-        })
-        .catch(e => {
-          console.log(e);
-        });
+      this.setState({txHash: hash, txStatus: 'pending'});
+      const receipt = await manager.provider.waitForTransaction(hash);
+      this.setState({
+        txStatus: receipt.status === 0 ? 'Failed' : 'Confirmed',
+      });
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
   };
+
+  // callSmartContract = async () => {
+  //   try {
+  //   } catch (e) {
+  //     throw 'Send transaction failed with error: ' + e;
+  //   }
+  // };
 
   render() {
     return (
@@ -164,13 +142,7 @@ export default class nativeBridgeTests extends React.Component {
           <Text>mnemonicsAndStore: {this.state.mnemonicsAndStore}</Text>
           <TouchableOpacity
             onPress={this.generateAndStoreMnemonic}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 200,
-              height: 40,
-              backgroundColor: 'grey',
-            }}>
+            style={styles.button}>
             <Text>Generate And Store Mnemonic</Text>
           </TouchableOpacity>
 
@@ -182,36 +154,27 @@ export default class nativeBridgeTests extends React.Component {
           </TouchableOpacity>
 
           <Text>storeMnemonic: {this.state.storedMnemonic}</Text>
-          <TouchableOpacity
-            onPress={this.storeMnemonic}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 200,
-              height: 40,
-              backgroundColor: 'grey',
-            }}>
+          <TouchableOpacity onPress={this.storeMnemonic} style={styles.button}>
             <Text>Store Mnemonic</Text>
           </TouchableOpacity>
 
-          <Text>signedMessage: {this.state.signedMessage}</Text>
-          <TouchableOpacity onPress={this.signMessage} style={styles.button}>
-            <Text>Sign Message</Text>
-          </TouchableOpacity>
-
           <Text style={{marginVertical: 10}}>
-          --------------- JavaScript -----------------
+            --------------- JavaScript -----------------
           </Text>
 
           <Text style={{marginBottom: 10}}>
             Network: {this.state.networkURL}
           </Text>
 
-          <Text>Address: {this.state.address}</Text>
-          <TouchableOpacity onPress={this.getAddress} style={styles.button}>
-            <Text>Get Address</Text>
+          <Text>Address: {this.state.ownerAccount}</Text>
+          <Text>Balance: {this.state.ownerBalance}</Text>
+          <TouchableOpacity
+            onPress={this.getOwnerBalance}
+            style={styles.button}>
+            <Text>Get Owner Address</Text>
           </TouchableOpacity>
 
+          <Text>Address: {this.state.address}</Text>
           <Text>Balance: {this.state.balance}</Text>
           <TouchableOpacity onPress={this.getBalance} style={styles.button}>
             <Text>Get Balance</Text>
@@ -225,6 +188,12 @@ export default class nativeBridgeTests extends React.Component {
             <Text>Send Transaction</Text>
           </TouchableOpacity>
 
+          {/* <Text>Result: {this.state.txSW}</Text>
+          <TouchableOpacity
+            onPress={this.callSmartContract}
+            style={styles.button}>
+            <Text>Call Smart Contract</Text>
+          </TouchableOpacity> */}
         </ScrollView>
       </View>
     );
