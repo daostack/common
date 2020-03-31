@@ -7,7 +7,6 @@ import {
   StyleSheet,
   View,
   Text,
-  Image,
 } from 'react-native';
 import CompleteAccountForm from '../Components/Forms/CompleteAccountForm';
 import {colors, text, layout} from '../Theme';
@@ -31,6 +30,7 @@ const CompleteAccount = ({route, navigation}) => {
             </View>
 
             <CompleteAccountForm
+              userId={route.params.userId}
               name={route.params.name}
               image={route.params.image}
               email={route.params.email}

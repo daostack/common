@@ -2,7 +2,7 @@ import React from 'react';
 
 import {Text} from 'react-native';
 import {observer} from 'mobx-react';
-import {colors, text, layout} from '../../Theme';
+import {colors, layout} from '../../Theme';
 
 class ValidationMessage extends React.Component {
   render() {
