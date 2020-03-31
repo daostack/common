@@ -11,8 +11,6 @@ import Iconcheck from './Iconcheck';
 import Iconedit from './Iconedit';
 import Iconfollow from './Iconfollow';
 import IconfeedSelected from './IconfeedSelected';
-import Iconfollow from './Iconfollow';
-import Iconfollowing from './Iconfollowing';
 import Icongroup from './Icongroup';
 import Iconfollowing from './Iconfollowing';
 import Iconmenu from './Iconmenu';
