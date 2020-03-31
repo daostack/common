@@ -59,6 +59,7 @@ def native
   # Native Dependencies
   pod 'Web3swift.pod', git: 'https://github.com/matter-labs/web3swift', branch: 'master'
   pod 'KeychainAccess'
+  pod 'ToastHybrid', :path => './lib'
 end
 
 target 'common' do
@@ -69,6 +70,10 @@ target 'common' do
   native
 
   pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+
+  pod 'react-native-image-resizer', :path => '../node_modules/react-native-image-resizer'
 
 end
 
