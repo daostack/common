@@ -16,13 +16,9 @@ class CompleteAccountForm extends React.Component {
 
   formSave = () => {
     const {completeAccountFormStore, userId} = this.props;
-    console.log('FORM SAVE -> ', completeAccountFormStore);
     if (completeAccountFormStore.isFormValid()) {
       firebaseService
-        .editUser(
-          this.props.userId,
-          completeAccountFormStore.getChangedFormFieldsJson(),
-        )
+        .editUser(userId, completeAccountFormStore.getChangedFormFieldsJson())
         .catch(err => {
           completeAccountFormStore.form.meta.submitError = `${err.toString()}  \n ${
             err.response

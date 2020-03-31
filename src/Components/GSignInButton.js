@@ -26,8 +26,7 @@ const GSignInButton = ({onSignIn}) => {
   useEffect(() => {
     _isUserSignedIn = async () => {
       try {
-        const isSignedIn = await GoogleSignin.isSignedIn();
-        setIsSignedIn(isSignedIn);
+        setIsSignedIn(await GoogleSignin.isSignedIn());
         if (isSignedIn) {
           const userInfo = await GoogleSignin.signInSilently();
           if (onSignIn) {
