@@ -2,31 +2,6 @@ import {observable, computed, action, decorate} from 'mobx';
 import Validator from 'validatorjs';
 import en from 'validatorjs/src/lang/en';
 
-/*
-export type FormFieldChange = (
-  e: NativeSyntheticEvent<TextInputChangeEventData> | GestureResponderEvent,
-) => void;
-
-interface FormField {
-  value: string | boolean;
-  error: string | boolean;
-  rule: string;
-}
-
-interface FormMeta {
-  isValid: boolean | void;
-  formValidationMade: boolean;
-  error: string;
-  submitError: string;
-  isLoadingSubmit: boolean;
-}
-
-interface FormProp {
-  fields: Record<string, FormField>;
-  meta: FormMeta;
-}
-*/
-
 class FormStore {
   form;
 
@@ -50,12 +25,12 @@ class FormStore {
   }
 
   // Public functions
-
   registerFormField(name, validateRule, initialValue = '') {
     this.form.fields[name] = {
       value: initialValue,
       error: false,
       rule: validateRule,
+      changed: false,
     };
   }
 
@@ -91,6 +66,20 @@ class FormStore {
     ) {
       this.validateField(name);
     }
+    this.form.fields[name].changed = true;
+  };
+
+  getChangedFormFieldsJson = () => {
+    let changedFieldsJson = {};
+
+    for (const key in this.form.fields) {
+      const formField = this.form.fields[key];
+      if (formField.changed) {
+        changedFieldsJson[key] = formField.value;
+      }
+    }
+
+    return changedFieldsJson;
   };
 
   // Private functions

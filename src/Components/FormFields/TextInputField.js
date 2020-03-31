@@ -127,8 +127,6 @@ class TextInputField extends React.Component {
         minHeight: height,
         maxHeight: height,
       };
-
-      console.log(multiline);
     }
 
     return (
