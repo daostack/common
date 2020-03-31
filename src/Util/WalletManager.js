@@ -1,5 +1,5 @@
 import {NativeWallet} from './NativeWallet';
-import {ethers} from 'ethers';
+import {ethers, Contract} from 'ethers';
 import CPK from 'contract-proxy-kit';
 
 export default class WalletManager {
@@ -55,13 +55,44 @@ export default class WalletManager {
     });
   };
 
-  sendTransaction = async (toAddress, amount, data = '0x') => {
+  sendTransaction = async (toAddress, value, data = '0x') => {
     return this.wallet
       .execTransactions([
         {
           operation: CPK.CALL,
           to: toAddress,
-          value: ethers.utils.parseEther(amount),
+          value: ethers.utils.parseEther(value),
+          data: data,
+        },
+      ])
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
+  readSmartContract = async (contractAddress, abi, functionName) => {
+    const contract = new Contract(contractAddress, abi, this.provider);
+    return await contract[functionName]();
+  };
+
+  writeSmartContract = async (
+    contractAddress,
+    abi,
+    functionName,
+    params,
+    value = '0.0',
+  ) => {
+    const contract = new Contract(contractAddress, abi, this.provider);
+
+    let data = contract.interface.functions[functionName].encode(params);
+    let valueHex = ethers.utils.parseEther(value);
+
+    return this.wallet
+      .execTransactions([
+        {
+          operation: CPK.CALL,
+          to: contractAddress,
+          value: valueHex,
           data: data,
         },
       ])

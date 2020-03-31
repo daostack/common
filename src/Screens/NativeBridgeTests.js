@@ -9,8 +9,6 @@ import {
   StyleSheet,
 } from 'react-native';
 const {height, width} = Dimensions.get('window');
-import {ethers} from 'ethers';
-import CPK from 'contract-proxy-kit';
 import WalletManager from '../Util/WalletManager';
 
 export default class nativeBridgeTests extends React.Component {
@@ -22,7 +20,6 @@ export default class nativeBridgeTests extends React.Component {
       storedMnemonic:
         'order cabin immune pond brave guilt boil index car aware snap list',
       keychainMnemonics: '',
-      signedMessage: '',
       networkURL: 'Rinkeby',
       address: '',
       balance: '',
@@ -30,7 +27,8 @@ export default class nativeBridgeTests extends React.Component {
       ownerBalance: '',
       txStatus: '',
       txHash: '',
-      txSW: '',
+      result: '',
+      scTXHash: '',
     };
 
     this.child = React.createRef();
@@ -117,12 +115,38 @@ export default class nativeBridgeTests extends React.Component {
     }
   };
 
-  // callSmartContract = async () => {
-  //   try {
-  //   } catch (e) {
-  //     throw 'Send transaction failed with error: ' + e;
-  //   }
-  // };
+  readSmartContract = async () => {
+    try {
+      const manager = await WalletManager.getInstance();
+      let value = await manager.readSmartContract(
+        '0x2f21957c7147c3eE49235903D6471159a16c9ccd',
+        MessageContract,
+        'getMessage',
+      );
+      this.setState({result: value});
+    } catch (e) {
+      throw 'Send transaction failed with error: ' + e;
+    }
+  };
+
+  callSmartContract = async () => {
+    try {
+      const manager = await WalletManager.getInstance();
+      let message = `Hello ${Math.floor(Math.random() * Math.floor(50))}`;
+      console.log(message);
+      const {
+        hash,
+      } = await manager.writeSmartContract(
+        '0x2f21957c7147c3eE49235903D6471159a16c9ccd',
+        MessageContract,
+        'setMessage',
+        [message],
+      );
+      this.setState({scTXHash: hash});
+    } catch (e) {
+      throw 'Send transaction failed with error: ' + e;
+    }
+  };
 
   render() {
     return (
@@ -188,12 +212,19 @@ export default class nativeBridgeTests extends React.Component {
             <Text>Send Transaction</Text>
           </TouchableOpacity>
 
-          {/* <Text>Result: {this.state.txSW}</Text>
+          <Text>Result: {this.state.result}</Text>
+          <TouchableOpacity
+            onPress={this.readSmartContract}
+            style={styles.button}>
+            <Text>Read Smart Contract</Text>
+          </TouchableOpacity>
+
+          <Text>TXHash: {this.state.scTXHash}</Text>
           <TouchableOpacity
             onPress={this.callSmartContract}
             style={styles.button}>
-            <Text>Call Smart Contract</Text>
-          </TouchableOpacity> */}
+            <Text>Write Smart Contract</Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     );
@@ -221,3 +252,34 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
   },
 });
+
+const MessageContract = [
+  {
+    constant: false,
+    inputs: [
+      {
+        name: 'newMessage',
+        type: 'string',
+      },
+    ],
+    name: 'setMessage',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'getMessage',
+    outputs: [
+      {
+        name: '',
+        type: 'string',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+];
