@@ -15,10 +15,35 @@ class WalletModule: NSObject {
                                 reject: @escaping RCTPromiseRejectBlock) {
         DispatchQueue.main.async {
             do {
+                let seed = try WalletManager.shared.generateMnemonic(shouldStore: false)
+                resolve(seed)
+            } catch {
+                reject("1", "Create mnemonic failed", error)
+            }
+        }
+    }
+    
+    @objc func generateAndStoreMnemonic(_ resolve: @escaping RCTPromiseResolveBlock,
+                                        reject: @escaping RCTPromiseRejectBlock) {
+        DispatchQueue.main.async {
+            do {
                 let seed = try WalletManager.shared.generateMnemonic(shouldStore: true)
                 resolve(seed)
             } catch {
-                reject("1", "Create seed phrase failed", error)
+                reject("1", "Create and store mnemonic failed", error)
+            }
+        }
+    }
+    
+    @objc func storeMnemonic(_ mnemonic: String,
+                             resolve: @escaping RCTPromiseResolveBlock,
+                             reject: @escaping RCTPromiseRejectBlock) {
+        DispatchQueue.main.async {
+            do {
+                try WalletManager.shared.storeMnemonic(mnemonic: mnemonic)
+                resolve(true)
+            } catch {
+                reject("3", "Store mnemonic  failed", error)
             }
         }
     }
@@ -26,8 +51,12 @@ class WalletModule: NSObject {
     @objc func retrieveMnemonic(_ resolve: @escaping RCTPromiseResolveBlock,
                                 reject: @escaping RCTPromiseRejectBlock) {
         DispatchQueue.main.async {
-            let seed = WalletManager.shared.retrieveMnemonic()
-            resolve(seed)
+            do {
+                let seed = try WalletManager.shared.retrieveMnemonic()
+                resolve(seed)
+            } catch {
+                reject("4", "Retrieve mnemonic failed", error)
+            }
         }
     }
     

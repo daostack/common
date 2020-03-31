@@ -20,9 +20,11 @@ import {
   UserProfile,
   CreateAccount,
   CreateCommon,
+  CompleteAccount,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
+import CommonExplanation from './src/Screens/CommonExplanation';
 const firebaseService = new FirebaseService();
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -33,6 +35,7 @@ const CommonHome = () => {
       {/*<Tab.Screen name="Test" component={NativeBridgeTests} />*/}
       <Tab.Screen name="Commons" component={CommonsList} />
       <Tab.Screen name="CreateAccount" component={CreateAccount} />
+      <Tab.Screen name="CompleteAccount" component={CompleteAccount} />
     </Tab.Navigator>
   );
 };
@@ -58,6 +61,7 @@ const App = () => {
           <Stack.Screen name="Onboarding" component={Onboarding} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
+          <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
           <Stack.Screen
             name="CreateCommon"
             component={CreateCommon}
@@ -66,8 +70,40 @@ const App = () => {
               headerBackTitleVisible: false,
               headerLeftContainerStyle: {marginLeft: 20},
               headerRightContainerStyle: {marginRight: 20},
-              headerBackImage: () => <Image source={require('./src/Assets/backArrow.png')} style={{resizeMode: 'contain', width: 32, height: 32}}/>,
-              headerRight: () => <Image source={require('./src/Assets/questionmark.png')} style={{resizeMode: 'contain', width: 20, height: 20}}/>
+              headerBackImage: () => (
+                <Image
+                  source={require('./src/Assets/backArrow.png')}
+                  style={{resizeMode: 'contain', width: 32, height: 32}}
+                />
+              ),
+              headerRight: () => (
+                <Image
+                  source={require('./src/Assets/questionmark.png')}
+                  style={{resizeMode: 'contain', width: 20, height: 20}}
+                />
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="CommonExplanation"
+            component={CommonExplanation}
+            options={({navigation, route}) => ({
+              headerTitle: 'Common!',
+              headerBackTitleVisible: false,
+              headerLeftContainerStyle: {marginLeft: 20},
+              headerRightContainerStyle: {marginRight: 20},
+              headerBackImage: () => (
+                <Image
+                  source={require('./src/Assets/backArrow.png')}
+                  style={{resizeMode: 'contain', width: 32, height: 32}}
+                />
+              ),
+              headerRight: () => (
+                <Image
+                  source={require('./src/Assets/questionmark.png')}
+                  style={{resizeMode: 'contain', width: 20, height: 20}}
+                />
+              ),
             })}
           />
           <Stack.Screen name="Profile" component={UserProfile} />

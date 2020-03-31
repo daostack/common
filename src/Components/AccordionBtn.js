@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   btnText: {
-    fontFamily: 'Roboto',
     fontSize: 16,
     fontWeight: '500',
     fontStyle: 'normal',

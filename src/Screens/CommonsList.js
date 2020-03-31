@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   Image,
   Text,
@@ -13,6 +13,7 @@ import {
 import {CommonBox, BottomRightButton} from '../Components';
 import {Subscription, Query} from 'react-apollo';
 import gql from 'graphql-tag';
+import {ApolloClientConfig as client} from '../Config';
 
 const {width} = Dimensions.get('window');
 
@@ -136,7 +137,9 @@ const CommonsList = ({navigation}) => {
           );
         }}
       </Query>
-      <BottomRightButton onPress={() => navigation.navigate('CreateCommon')} />
+      <BottomRightButton
+        onPress={() => navigation.navigate('CommonExplanation')}
+      />
     </View>
   );
 };

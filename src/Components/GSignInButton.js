@@ -9,6 +9,7 @@ import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
 import GoogleDriveService from '../Services/GoogleDriveService';
 import {GOOGLE_SIGNIN_PERMISSIONS} from '../Util';
 import {NativeModules} from 'react-native';
+import {CommonActions} from '@react-navigation/native';
 
 let initialAppDataContent = {
   mnemonic: null,
@@ -26,9 +27,21 @@ const GSignInButton = props => {
   useEffect(() => {
     _isUserSignedIn = async () => {
       try {
-        const signedIn = await GoogleSignin.isSignedIn();
-        setIsSignedIn(signedIn);
-        signedIn ? props.navigation.navigate('CommonHome') : null;
+        const isSignedIn = await GoogleSignin.isSignedIn();
+        setIsSignedIn(isSignedIn);
+
+        if (isSignedIn && props.navigation) {
+          const userInfo = await GoogleSignin.signInSilently();
+          const navigate = CommonActions.navigate({
+            name: 'CompleteAccount',
+            params: {
+              email: userInfo.user.email,
+              image: userInfo.user.photo,
+              name: userInfo.user.name,
+            },
+          });
+          props.navigation.dispatch(navigate);
+        }
         setSignInError(null);
       } catch (error) {
         const errorMessage =
@@ -50,8 +63,10 @@ const GSignInButton = props => {
       await GoogleSignin.signIn();
       setIsSignedIn(true);
       // TODO: Use generated mnemonic
-      // const mnemonic = await _generateMnemonic();
-      props.onSignIn();
+      const mnemonic = await _generateMnemonic();
+      if (props.onSignIn) {
+        props.onSignIn();
+      }
       setSignInError(null);
     } catch (error) {
       switch (error.code) {
@@ -126,7 +141,9 @@ const GSignInButton = props => {
 
   renderError = () => {
     if (signInError) {
-      const errorText = `${signInError.toString()} ${signInError.code ? signInError.code : ''}`;
+      const errorText = `${signInError.toString()} ${
+        signInError.code ? signInError.code : ''
+      }`;
       return (
         <View style={styles.messageContainer}>
           <Text style={styles.errorMessage}>{errorText}</Text>
