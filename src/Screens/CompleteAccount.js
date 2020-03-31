@@ -7,7 +7,6 @@ import {
   StyleSheet,
   View,
   Text,
-  Image,
 } from 'react-native';
 import CompleteAccountForm from '../Components/Forms/CompleteAccountForm';
 import {colors, text, layout} from '../Theme';

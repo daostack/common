@@ -6,9 +6,7 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   View,
-  TouchableOpacity,
   Image,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
@@ -44,7 +42,7 @@ const CreateAccount = ({navigation}) => {
   onSignIn = async userInfo => {
     const internalUser = await firebaseService.getUserById(userInfo.user.id);
     if (!internalUser) {
-      const result = await firebaseService.addUser(
+      await firebaseService.addUser(
         userInfo.user.id,
         filterObjectByKeys(userInfo.user, userInfoFields),
       );

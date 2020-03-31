@@ -62,21 +62,13 @@ class ImageField extends React.Component {
   }
 
   render() {
-    const {
-      value,
-      viewStyle,
-
-      // Validation management properties
-      validation,
-    } = this.props;
-
     return (
       <View>
         <View style={styles.formFieldContainer}>
           <PhotoUpload onPhotoSelect={this.onChangeValue}>
             {this.renderAccountImage()}
             <View style={styles.formImageFielAddIcon}>
-              <Icon name="right-arrow" size={20} color={colors.white}></Icon>
+              <Icon name="right-arrow" size={20} color={colors.white} />
             </View>
           </PhotoUpload>
         </View>

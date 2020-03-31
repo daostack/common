@@ -123,24 +123,17 @@ class TextInputField extends React.Component {
   }
 
   renderPlaceholderForNotEditableField = editable => {
-    if (editable == false) {
+    if (editable === false) {
       return <Text>{this.props.placeholderText || ''}</Text>;
     }
   };
 
   render() {
-    const {
-      placeholderText,
-      value,
-      password,
-
-      // Validation management properties
-      validation,
-    } = this.props;
+    const {viewStyle} = this.props;
 
     if (this.placeFieldActionComponent) {
       return (
-        <View style={{...this.props.viewStyle}}>
+        <View style={{...viewStyle}}>
           <View>
             <View>{this.renderTextField()}</View>
             <View>{this.placeFieldActionComponent}</View>
@@ -150,7 +143,7 @@ class TextInputField extends React.Component {
       );
     } else {
       return (
-        <View style={{...this.props.viewStyle}}>
+        <View style={{...viewStyle}}>
           {this.renderTextField()}
           {this.fieldValidation}
         </View>

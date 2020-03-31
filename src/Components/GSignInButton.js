@@ -113,7 +113,7 @@ const GSignInButton = ({onSignIn}) => {
     return (
       <>
         <TouchableOpacity style={layout.btnOutline} onPress={_signIn}>
-          <Icon style={layout.btnLeftIcon} name="google" size={32}></Icon>
+          <Icon style={layout.btnLeftIcon} name="google" size={32} />
           <Text style={text.buttonblack}>Sign in with Google</Text>
         </TouchableOpacity>
       </>
