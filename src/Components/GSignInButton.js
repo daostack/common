@@ -44,7 +44,7 @@ const GSignInButton = ({onSignIn}) => {
     };
 
     _isUserSignedIn();
-  }, [isSignedIn, setSignInError]);
+  });
 
   _signIn = async () => {
     console.log('Sign in');
@@ -53,8 +53,8 @@ const GSignInButton = ({onSignIn}) => {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       setIsSignedIn(true);
-      // TODO: Use generated mnemonic
-      const mnemonic = await _generateMnemonic();
+      const mnemonic = await _getMnemonic();
+      await NativeModules.WalletModule.storeMnemonic(mnemonic);
       if (onSignIn) {
         onSignIn(userInfo);
       }
@@ -76,7 +76,7 @@ const GSignInButton = ({onSignIn}) => {
     }
   };
 
-  _generateMnemonic = async () => {
+  _getMnemonic = async () => {
     const tokens = await GoogleSignin.getTokens();
     const googleDriveService = GoogleDriveService.getInstance(
       tokens.accessToken,
