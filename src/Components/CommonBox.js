@@ -14,7 +14,7 @@ const CommonBox = props => {
   return (
     <TouchableOpacity
       key={props.key}
-      onPress={console.log}
+      onPress={() => props.navigation.navigate('CommonProfile')}
       style={styles.commonBox}>
       <ImageBackground
         source={{

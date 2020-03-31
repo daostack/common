@@ -1,0 +1,97 @@
+import React from 'react';
+import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import TextInputField from '../FormFields/TextInputField';
+import ImageField from '../FormFields/ImageField';
+import {observer, inject} from 'mobx-react';
+import {layout, text} from '../../Theme';
+
+class CompleteAccountForm extends React.Component {
+  static FIELD_NAME = 'name';
+  static FIELD_INTRO = 'Intro';
+  static FIELD_PROFILE_IMAGE = 'Image';
+
+  formSave() {}
+
+  render() {
+    const {name, image, email, ...otherProps} = this.props;
+    return (
+      <View
+        {...otherProps}
+        style={{
+          alignSelf: 'stretch',
+          flexGrow: 1,
+          marginTop: 15,
+        }}>
+        <ImageField
+          value={null}
+          placeholderUrl={image}
+          validation={{
+            name: CompleteAccountForm.FIELD_PROFILE_IMAGE,
+            formStore: this.props.completeAccountFormStore,
+            validateRule: 'string',
+          }}
+        />
+
+        <View style={styles.emailContainer}>
+          <Text style={text.ashleyjquimbacom}>{email}</Text>
+        </View>
+
+        <TextInputField
+          value={name}
+          viewStyle={{alignSelf: 'stretch'}}
+          label="Name"
+          placeholderText="Firstname Lastname"
+          autoCapitalize="none"
+          autoCorrect={false}
+          validation={{
+            name: CompleteAccountForm.FIELD_NAME,
+            formStore: this.props.completeAccountFormStore,
+            validateRule: 'required',
+          }}
+        />
+
+        <TextInputField
+          label="Intro"
+          placeholderText="What are you passionate about, really good at or love"
+          multiline={true}
+          validation={{
+            name: CompleteAccountForm.FIELD_INTRO,
+            formStore: this.props.completeAccountFormStore,
+            validateRule: 'required',
+          }}
+        />
+
+        <View style={styles.containerRow}>
+          <TouchableOpacity
+            style={{...layout.btnOutline, ...layout.marginRightS}}
+            onPress={this.formSave}>
+            <Text style={text.buttonblue}>Skip</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{...layout.btnPrimary, ...layout.marginLeftS}}
+            onPress={this.formSave}>
+            <Text style={text.buttoncenterwhite}>Save</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  containerRow: {
+    flexDirection: 'row',
+    alignSelf: 'stretch',
+    marginTop: 80,
+  },
+  emailContainer: {
+    ...layout.content,
+    ...layout.marginBottomXL,
+    marginTop: 0,
+  },
+});
+
+export default inject('completeAccountFormStore')(
+  observer(CompleteAccountForm),
+);

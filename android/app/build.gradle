@@ -183,6 +183,8 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
 dependencies {
+    implementation project(':react-native-image-resizer')
+    implementation project(':react-native-image-picker')
     implementation project(':react-native-safe-area-context')
 //    implementation project(':react-native-firebase')
     implementation fileTree(dir: "libs", include: ["*.jar"])

@@ -1,20 +1,12 @@
-import {
-  Dimensions,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
-const {width} = Dimensions.get('window');
 
-const AcordionBtn = props => {
+const AccordionBtn = props => {
   return (
     <TouchableOpacity
       key={props.key}
       onPress={console.log}
-      style={styles.acordiaonBtn}>
+      style={styles.accordionBtn}>
       <Text style={styles.btnText}>{props.name}</Text>
       <Image source={require('../Assets/rightArrow16.png')} />
     </TouchableOpacity>
@@ -22,7 +14,7 @@ const AcordionBtn = props => {
 };
 
 const styles = StyleSheet.create({
-  acordiaonBtn: {
+  accordionBtn: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
@@ -34,7 +26,6 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   btnText: {
-    fontFamily: 'Roboto',
     fontSize: 16,
     fontWeight: '500',
     fontStyle: 'normal',
@@ -43,4 +34,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AcordionBtn;
+export default AccordionBtn;
