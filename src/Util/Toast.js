@@ -1,4 +1,4 @@
-useRefimport {useRef, useEffect} from 'react';
+import {useRef, useEffect} from 'react';
 import {NativeModules, BackHandler} from 'react-native';
 const {ToastHybrid} = NativeModules;
 
