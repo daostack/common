@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Image, Text, TouchableOpacity, View, StyleSheet} from 'react-native';
-import TextInputField from '../Components/FormFields/TextInputField';
-import {colors} from '../Theme';
+import TextInputField from '../../Components/FormFields/TextInputField';
+import {colors} from '../../Theme';
 import {observer, inject} from 'mobx-react';
 
 const CreateCommon = props => {
@@ -25,7 +25,7 @@ const CreateCommon = props => {
         }}>
         <View style={styles.oval}>
           <Image
-            source={require('../Assets/daoGeneralInfo.png')}
+            source={require('../../Assets/daoGeneralInfo.png')}
             style={{
               alignItems: 'center',
               justifyContent: 'center',
@@ -36,7 +36,7 @@ const CreateCommon = props => {
         </View>
         <View style={styles.oval2}>
           <Image
-            source={require('../Assets/funding.png')}
+            source={require('../../Assets/funding.png')}
             style={{
               tintColor: 'grey',
               alignItems: 'center',
@@ -48,7 +48,7 @@ const CreateCommon = props => {
         </View>
         <View style={styles.oval2}>
           <Image
-            source={require('../Assets/agenda.png')}
+            source={require('../../Assets/agenda.png')}
             style={{
               tintColor: 'grey',
               alignItems: 'center',
@@ -60,7 +60,7 @@ const CreateCommon = props => {
         </View>
         <View style={styles.oval2}>
           <Image
-            source={require('../Assets/members24.png')}
+            source={require('../../Assets/members24.png')}
             style={{
               tintColor: 'grey',
               alignItems: 'center',

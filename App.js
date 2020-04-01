@@ -21,10 +21,10 @@ import {
   CreateAccount,
   CreateCommon,
   CompleteAccount,
+  CommonExplanation,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
-import CommonExplanation from './src/Screens/CommonExplanation';
 const firebaseService = new FirebaseService();
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
