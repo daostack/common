@@ -63,6 +63,7 @@ def native
   pod 'Web3swift.pod', git: 'https://github.com/matter-labs/web3swift', branch: 'master'
   pod 'KeychainAccess'
   pod 'IQKeyboardManagerSwift'
+  pod 'ToastHybrid', :path => './lib'
 end
 
 target 'common' do

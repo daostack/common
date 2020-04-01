@@ -1,6 +1,7 @@
 package com.daostack.common;
 
 import com.daostack.common.bridge.WalletModule;
+import com.daostack.common.toast.ToastHybridModule;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -19,6 +20,7 @@ public class RNBridgePackage implements ReactPackage {
     public List<NativeModule> createNativeModules(@Nonnull ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new WalletModule(reactContext));
+        modules.add(new ToastHybridModule(reactContext));
         return modules;
     }
 

@@ -9,14 +9,13 @@ import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
 import GoogleDriveService from '../Services/GoogleDriveService';
 import {GOOGLE_SIGNIN_PERMISSIONS} from '../Util';
 import {NativeModules} from 'react-native';
-import {CommonActions} from '@react-navigation/native';
 
 let initialAppDataContent = {
   mnemonic: null,
   version: '0.1',
 };
 
-const GSignInButton = props => {
+const GSignInButton = ({onSignIn}) => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [signInError, setSignInError] = useState(null);
 
@@ -27,20 +26,12 @@ const GSignInButton = props => {
   useEffect(() => {
     _isUserSignedIn = async () => {
       try {
-        const isSignedIn = await GoogleSignin.isSignedIn();
-        setIsSignedIn(isSignedIn);
-
-        if (isSignedIn && props.navigation) {
+        setIsSignedIn(await GoogleSignin.isSignedIn());
+        if (isSignedIn) {
           const userInfo = await GoogleSignin.signInSilently();
-          const navigate = CommonActions.navigate({
-            name: 'CompleteAccount',
-            params: {
-              email: userInfo.user.email,
-              image: userInfo.user.photo,
-              name: userInfo.user.name,
-            },
-          });
-          props.navigation.dispatch(navigate);
+          if (onSignIn) {
+            onSignIn(userInfo);
+          }
         }
         setSignInError(null);
       } catch (error) {
@@ -53,19 +44,19 @@ const GSignInButton = props => {
     };
 
     _isUserSignedIn();
-  }, [isSignedIn, props.navigation, setSignInError]);
+  });
 
   _signIn = async () => {
     console.log('Sign in');
 
     try {
       await GoogleSignin.hasPlayServices();
-      await GoogleSignin.signIn();
+      const userInfo = await GoogleSignin.signIn();
       setIsSignedIn(true);
-      // TODO: Use generated mnemonic
-      const mnemonic = await _generateMnemonic();
-      if (props.onSignIn) {
-        props.onSignIn();
+      const mnemonic = await _getMnemonic();
+      await NativeModules.WalletModule.storeMnemonic(mnemonic);
+      if (onSignIn) {
+        onSignIn(userInfo);
       }
       setSignInError(null);
     } catch (error) {
@@ -85,7 +76,7 @@ const GSignInButton = props => {
     }
   };
 
-  _generateMnemonic = async () => {
+  _getMnemonic = async () => {
     const tokens = await GoogleSignin.getTokens();
     const googleDriveService = GoogleDriveService.getInstance(
       tokens.accessToken,
@@ -122,7 +113,7 @@ const GSignInButton = props => {
     return (
       <>
         <TouchableOpacity style={layout.btnOutline} onPress={_signIn}>
-          {/*<Icon style={layout.btnLeftIcon} name="google" size={32}></Icon>*/}
+          <Icon style={layout.btnLeftIcon} name="google" size={32} />
           <Text style={text.buttonblack}>Sign in with Google</Text>
         </TouchableOpacity>
       </>
