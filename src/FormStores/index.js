@@ -1,5 +1,5 @@
-import CompleteAccountFormStore from './CompleteAccountFormStore';
+import EditProfileFormStore from './EditProfileFormStore';
 
 export default {
-  completeAccountFormStore: new CompleteAccountFormStore(),
+  editProfileFormStore: new EditProfileFormStore(),
 };

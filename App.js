@@ -19,6 +19,7 @@ import {
   UserProfile,
   CreateAccount,
   CompleteAccount,
+  EditProfile,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
@@ -31,6 +32,9 @@ const CommonHome = () => {
     <Tab.Navigator>
       {/*<Tab.Screen name="Test" component={NativeBridgeTests} />*/}
       <Tab.Screen name="Commons" component={CommonsList} />
+
+      <Tab.Screen name="Profile" component={UserProfile} />
+      <Tab.Screen name="EditProfile" component={EditProfile} />
       <Tab.Screen name="CreateAccount" component={CreateAccount} />
     </Tab.Navigator>
   );
@@ -46,6 +50,7 @@ const App = () => {
 
   return (
     <ApolloProvider client={client}>
+      {/** 
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
@@ -56,9 +61,26 @@ const App = () => {
           <Stack.Screen name="CommonProfile" component={CommonProfile} />
           <Stack.Screen name="Onboarding" component={Onboarding} />
           <Stack.Screen name="Login" component={Login} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      <NavigationContainer>
+        <Stack.Navigator>
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      */}
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="CommonHome"
+            component={CommonHome}
+            options={{headerShown: false}}
+          />
           <Stack.Screen name="Profile" component={UserProfile} />
+          <Stack.Screen name="EditProfile" component={EditProfile} />
+          <Stack.Screen name="CompleteAccount" component={UserProfile} />
+          <Stack.Screen name="CreateAccount" component={EditProfile} />
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>

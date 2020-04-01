@@ -39,15 +39,19 @@ class ImageField extends React.Component {
     this.setState({});
   };
 
-  renderAccountImage() {
-    const {validation, placeholderUrl} = this.props;
-    const {formStore, name} = validation;
-    if (formStore.form.fields[name].value) {
+  renderAccountImage = () => {
+    const {value, validation, placeholderUrl} = this.props;
+
+    const currValue = validation
+      ? validation.formStore.form.fields[validation.name].value
+      : value;
+
+    if (currValue) {
       return (
         <Image
           style={styles.formImageFieldStyle}
           resizeMode="cover"
-          source={formStore.form.fields[name].value}
+          source={currValue}
         />
       );
     } else {
@@ -59,7 +63,7 @@ class ImageField extends React.Component {
         />
       );
     }
-  }
+  };
 
   render() {
     const {

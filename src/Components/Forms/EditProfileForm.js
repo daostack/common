@@ -5,7 +5,7 @@ import ImageField from '../FormFields/ImageField';
 import {observer, inject} from 'mobx-react';
 import {layout, text} from '../../Theme';
 
-class CompleteAccountForm extends React.Component {
+class EditProfileForm extends React.Component {
   static FIELD_NAME = 'name';
   static FIELD_INTRO = 'Intro';
   static FIELD_PROFILE_IMAGE = 'Image';
@@ -26,8 +26,8 @@ class CompleteAccountForm extends React.Component {
           value={null}
           placeholderUrl={image}
           validation={{
-            name: CompleteAccountForm.FIELD_PROFILE_IMAGE,
-            formStore: this.props.completeAccountFormStore,
+            name: EditProfileForm.FIELD_PROFILE_IMAGE,
+            formStore: this.props.editProfileFormStore,
             validateRule: 'string',
           }}
         />
@@ -44,8 +44,8 @@ class CompleteAccountForm extends React.Component {
           autoCapitalize="none"
           autoCorrect={false}
           validation={{
-            name: CompleteAccountForm.FIELD_NAME,
-            formStore: this.props.completeAccountFormStore,
+            name: EditProfileForm.FIELD_NAME,
+            formStore: this.props.editProfileFormStore,
             validateRule: 'required',
           }}
         />
@@ -55,8 +55,8 @@ class CompleteAccountForm extends React.Component {
           placeholderText="What are you passionate about, really good at or love"
           multiline={true}
           validation={{
-            name: CompleteAccountForm.FIELD_INTRO,
-            formStore: this.props.completeAccountFormStore,
+            name: EditProfileForm.FIELD_INTRO,
+            formStore: this.props.editProfileFormStore,
             validateRule: 'required',
           }}
         />
@@ -92,6 +92,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('completeAccountFormStore')(
-  observer(CompleteAccountForm),
-);
+export default inject('editProfileFormStore')(observer(EditProfileForm));

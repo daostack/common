@@ -8,11 +8,57 @@ import {
   ScrollView,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
+import {layout, text} from '../Theme';
 import Swiper from 'react-native-swiper';
+import ImageField from '../Components/FormFields/ImageField';
+import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
+import FirebaseService from '../Services/FirebaseService';
+const firebaseService = new FirebaseService();
 
 const UserProfile = () => {
+  const FIELD_PROFILE_IMAGE = 'profileImage';
+  const [user, setUser] = useState(false);
+  const [userInfo, setUserInfo] = useState(false);
+
+  useEffect(() => {
+    loadUser = async () => {
+      console.log('LOAD USER');
+      try {
+        const userInfo = await GoogleSignin.signInSilently();
+        const appUser = firebaseService.getUserById(userInfo.user.id);
+        console.log('useEffect userInfo -> ', userInfo);
+        console.log('useEffect appUser -> ', appUser);
+        setUser(appUser);
+        setUserInfo(appUserInfo);
+      } catch (error) {
+        console.log('ERRROR', error);
+      }
+    };
+
+    console.log('USE EFFECT');
+
+    loadUser();
+  });
+
+  renderUserProfilePicture = () => {
+    let imageOptions = {};
+
+    console.log('user -> ', user);
+    console.log('userInfo -> ', userInfo);
+
+    if (user.profilePicture) {
+      imageOptions = {value: user.profileImage};
+    } else {
+      imageOptions = {placeholderUrl: userInfo.image};
+    }
+
+    console.log('imageOptions -> ', imageOptions);
+
+    return <ImageField {...imageOptions} />;
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -25,35 +71,9 @@ const UserProfile = () => {
           directionalLockEnabled={true}
           {...this.props}>
           <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Image
-                style={styles.avatarImage}
-                source={{
-                  uri: 'https://source.unsplash.com/user/erondu/180x180',
-                }}
-              />
-              <Text style={styles.sectionTitle}>Yogarasa Gandhi</Text>
-            </View>
-            <View style={styles.socialContainer}>
-              <Image
-                style={styles.socialImage}
-                source={{uri: 'https://source.unsplash.com/user/erondu/30x30'}}
-              />
-              <Image
-                style={styles.socialImage}
-                source={{uri: 'https://source.unsplash.com/user/erondu/30x30'}}
-              />
-              <Image
-                style={styles.socialImage}
-                source={{uri: 'https://source.unsplash.com/user/erondu/30x30'}}
-              />
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.descriptionText}>
-                I work on a DAO project at iteratec and am interested in DAOs,
-                coops as well as crypto and blockchain in general.
-              </Text>
-            </View>
+            {renderUserProfilePicture()}
+            <Text style={styles.sectionTitle}>Yogarasa Gandhi</Text>
+            <Text style={text.ashleyjquimbacom}>{user.email}</Text>
 
             <View style={styles.separateLine} />
             <Text style={styles.title}>DAOs</Text>

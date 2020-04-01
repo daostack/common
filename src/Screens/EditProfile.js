@@ -6,13 +6,11 @@ import {
   StatusBar,
   StyleSheet,
   View,
-  Text,
-  Image,
 } from 'react-native';
 import EditProfileForm from '../Components/Forms/EditProfileForm';
 import {colors, text, layout} from '../Theme';
 
-const CompleteAccount = ({route, navigation}) => {
+const EditProfile = ({navigation}) => {
   console.log('navigation -> ', navigation);
   return (
     <>
@@ -23,18 +21,7 @@ const CompleteAccount = ({route, navigation}) => {
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
           <View style={styles.body}>
-            <View style={layout.marginBottomXL}>
-              <Text style={text.h1Black}>Complete your account</Text>
-              <Text style={styles.subtitle}>
-                Help the community get to know you better
-              </Text>
-            </View>
-
-            <EditProfileForm
-              name={route.params.name}
-              image={route.params.image}
-              email={route.params.email}
-            />
+            <EditProfileForm name={'test'} image={'test'} email={'test'} />
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -60,4 +47,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CompleteAccount;
+export default EditProfile;
