@@ -22,6 +22,7 @@
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.6.8",
     "apollo-link-ws": "^1.0.19",
+    "contract-proxy-kit": "^1.1.1",
     "ethers": "^4.0.45",
     "firebase": "^7.10.0",
     "graphql": "^14.6.0",
@@ -48,6 +49,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.8.7",
+    "@babel/helper-validator-identifier": "^7.9.0",
     "@babel/runtime": "^7.8.7",
     "@react-native-community/eslint-config": "^0.0.7",
     "babel-jest": "^25.1.0",

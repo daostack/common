@@ -23,6 +23,7 @@ import {
   UserProfile,
   CreateAccount,
   CompleteAccount,
+  NativeBridgeTests,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 const Tab = createBottomTabNavigator();
