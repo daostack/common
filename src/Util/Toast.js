@@ -40,7 +40,7 @@ export default class Toast {
   loading(text) {
     if (!this.closed) {
       this.clearTimeout();
-      this.ensure().then(key => {
+      this.ensure().then((key) => {
         this.clearTimeout();
         ToastHybrid.loading(key, text);
       });
@@ -59,7 +59,7 @@ export default class Toast {
   show(fn, text, duration) {
     if (!this.closed) {
       this.clearTimeout();
-      this.ensure().then(key => {
+      this.ensure().then((key) => {
         if (!this.closed) {
           fn(key, text);
           this.clearTimeout();
@@ -84,7 +84,7 @@ export default class Toast {
   hide() {
     this.clearTimeout();
     if (this.underlying !== null) {
-      this.underlying.then(key => {
+      this.underlying.then((key) => {
         ToastHybrid.hide(key);
       });
       this.underlying = null;
@@ -102,7 +102,7 @@ export function useToast() {
   useEffect(() => {
     const toast = toastRef.current;
     return () => {
-    //   toast.shutdown();
+      //   toast.shutdown();
     };
   }, []);
   useEffect(() => {
