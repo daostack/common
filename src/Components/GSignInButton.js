@@ -132,7 +132,9 @@ const GSignInButton = ({onSignIn}) => {
 
   renderError = () => {
     if (signInError) {
-      const errorText = `${signInError.toString()} ${signInError.code ? signInError.code : ''}`;
+      const errorText = `${signInError.toString()} ${
+        signInError.code ? signInError.code : ''
+      }`;
       return (
         <View style={styles.messageContainer}>
           <Text style={styles.errorMessage}>{errorText}</Text>
