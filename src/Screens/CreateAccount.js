@@ -19,13 +19,13 @@ import FirebaseService from '../Services/FirebaseService';
 import {filterObjectByKeys} from '../Util';
 const firebaseService = new FirebaseService();
 
-import CompleteAccountForm from '../Components/Forms/CompleteAccountForm';
+import EditProfileForm from '../Components/Forms/EditProfileForm';
 import {layout} from '../Theme';
 
 const userInfoFields = [
-  CompleteAccountForm.FIELD_NAME,
-  CompleteAccountForm.FIELD_INTRO,
-  CompleteAccountForm.FIELD_PROFILE_IMAGE,
+  EditProfileForm.FIELD_NAME,
+  EditProfileForm.FIELD_INTRO,
+  EditProfileForm.FIELD_PROFILE_IMAGE,
   'byLine',
   'email',
   'ethereumAddress',

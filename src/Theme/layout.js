@@ -42,6 +42,12 @@ const messageContainerTriangle = {
   borderTopColor: colors.mainBlue,
 };
 
+export const sizeS = 10;
+export const sizeM = 15;
+export const sizeL = 20;
+export const sizeXL = 40;
+export const sizeXXL = 55;
+
 // Layout Stylesheet
 export default StyleSheet.create({
   content: {
@@ -51,8 +57,13 @@ export default StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
+  flexRow: {
+    flexDirection: 'row',
+  },
   flexStart: {
     justifyContent: 'flex-start',
+    alignContent: 'flex-start',
+    alignItems: 'flex-start',
   },
   flexEnd: {
     justifyContent: 'flex-end',

@@ -15,17 +15,17 @@ class EditProfileForm extends React.Component {
   formSkip() {}
 
   formSave = () => {
-    const {completeAccountFormStore, userId} = this.props;
-    if (completeAccountFormStore.isFormValid()) {
+    const {editProfileFormStore, userId} = this.props;
+    if (editProfileFormStore.isFormValid()) {
       firebaseService
-        .editUser(userId, completeAccountFormStore.getChangedFormFieldsJson())
+        .editUser(userId, editProfileFormStore.getChangedFormFieldsJson())
         .catch(err => {
-          completeAccountFormStore.form.meta.submitError = `${err.toString()}  \n ${
+          editProfileFormStore.form.meta.submitError = `${err.toString()}  \n ${
             err.response
               ? `\nCode: ${err.response.data.code}  \nMessage: ${err.response.data.message}`
               : ''
           }`;
-          completeAccountFormStore.form.meta.isLoadingSubmit = false;
+          editProfileFormStore.form.meta.isLoadingSubmit = false;
           throw err;
         });
     }
@@ -33,15 +33,15 @@ class EditProfileForm extends React.Component {
 
   render() {
     const {
-      completeAccountFormStore,
+      editProfileFormStore,
       name,
       image,
       email,
       ...otherProps
     } = this.props;
 
-    console.log('completeAccountFormStore');
-    console.log(completeAccountFormStore);
+    console.log('editProfileFormStore');
+    console.log(editProfileFormStore);
     return (
       <View
         {...otherProps}
