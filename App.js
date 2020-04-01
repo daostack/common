@@ -19,6 +19,7 @@ import {
   UserProfile,
   CreateAccount,
   CompleteAccount,
+  NativeBridgeTests,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
@@ -29,7 +30,7 @@ const Stack = createStackNavigator();
 const CommonHome = () => {
   return (
     <Tab.Navigator>
-      {/*<Tab.Screen name="Test" component={NativeBridgeTests} />*/}
+      <Tab.Screen name="Test" component={NativeBridgeTests} />
       <Tab.Screen name="Commons" component={CommonsList} />
       <Tab.Screen name="CreateAccount" component={CreateAccount} />
     </Tab.Navigator>
