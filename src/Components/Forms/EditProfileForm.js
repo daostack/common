@@ -4,16 +4,44 @@ import TextInputField from '../FormFields/TextInputField';
 import ImageField from '../FormFields/ImageField';
 import {observer, inject} from 'mobx-react';
 import {layout, text} from '../../Theme';
+import FirebaseService from '../../Services/FirebaseService';
+const firebaseService = new FirebaseService();
 
 class EditProfileForm extends React.Component {
   static FIELD_NAME = 'name';
-  static FIELD_INTRO = 'Intro';
-  static FIELD_PROFILE_IMAGE = 'Image';
+  static FIELD_INTRO = 'intro';
+  static FIELD_PROFILE_IMAGE = 'profileImage';
 
-  formSave() {}
+  formSkip() {}
+
+  formSave = () => {
+    const {completeAccountFormStore, userId} = this.props;
+    if (completeAccountFormStore.isFormValid()) {
+      firebaseService
+        .editUser(userId, completeAccountFormStore.getChangedFormFieldsJson())
+        .catch(err => {
+          completeAccountFormStore.form.meta.submitError = `${err.toString()}  \n ${
+            err.response
+              ? `\nCode: ${err.response.data.code}  \nMessage: ${err.response.data.message}`
+              : ''
+          }`;
+          completeAccountFormStore.form.meta.isLoadingSubmit = false;
+          throw err;
+        });
+    }
+  };
 
   render() {
-    const {name, image, email, ...otherProps} = this.props;
+    const {
+      completeAccountFormStore,
+      name,
+      image,
+      email,
+      ...otherProps
+    } = this.props;
+
+    console.log('completeAccountFormStore');
+    console.log(completeAccountFormStore);
     return (
       <View
         {...otherProps}
@@ -64,7 +92,7 @@ class EditProfileForm extends React.Component {
         <View style={styles.containerRow}>
           <TouchableOpacity
             style={{...layout.btnOutline, ...layout.marginRightS}}
-            onPress={this.formSave}>
+            onPress={this.formSkip}>
             <Text style={text.buttonblue}>Skip</Text>
           </TouchableOpacity>
 

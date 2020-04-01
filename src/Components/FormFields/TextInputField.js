@@ -1,27 +1,9 @@
 import React from 'react';
-import {TextInput, View, Text, StyleSheet, Platform} from 'react-native';
+import {TextInput, View, Text, StyleSheet} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import colors from '../../Theme/colors';
 import layout from '../../Theme/layout';
-
-/*
-interface TextInputFieldProps extends TextInputProps {
-  placeholderText?: string;
-  onChangeText?: (e: string) => void;
-  value?: string;
-  password?: boolean;
-  viewStyle?: ViewStyle;
-  fieldActionComponent?: React.ReactElement;
-  editable?: boolean;
-  minHeight?: number | null;
-  maxHeight?: number | null;
-
-  // Validation management properties
-  validation?: ValidationField;
-}
-
-*/
 
 class TextInputField extends React.Component {
   fieldValidation;
@@ -34,11 +16,10 @@ class TextInputField extends React.Component {
     super(props);
 
     this.state = {
-      showPassword: props.password,
       onFocus: false,
     };
 
-    const {validation, value, password, fieldActionComponent} = this.props;
+    const {validation, value, fieldActionComponent} = this.props;
     // Register form field for validation message component if name,formStore and validateRule props are provided
     if (validation) {
       const {name, formStore, validateRule} = validation;
@@ -47,20 +28,6 @@ class TextInputField extends React.Component {
         <ValidationMessage formStore={formStore} name={name} />
       );
     }
-    /*
-    if (password) {
-      this.toggleValueBtn = (
-        <TogglePasswordButton
-          style={{
-            position: 'absolute',
-            right: 0,
-            bottom: 0,
-          }}
-          onChange={toggle => this.setState({showPassword: toggle})}
-        />
-      );
-    }
-    */
 
     if (fieldActionComponent) {
       this.placeFieldActionComponent = fieldActionComponent;
@@ -127,8 +94,6 @@ class TextInputField extends React.Component {
         minHeight: height,
         maxHeight: height,
       };
-
-      console.log(multiline);
     }
 
     return (
@@ -158,26 +123,17 @@ class TextInputField extends React.Component {
   }
 
   renderPlaceholderForNotEditableField = editable => {
-    if (editable == false) {
+    if (editable === false) {
       return <Text>{this.props.placeholderText || ''}</Text>;
     }
   };
 
   render() {
-    const {
-      placeholderText,
-      value,
-      password,
-
-      // Validation management properties
-      validation,
-
-      ...otherProps
-    } = this.props;
+    const {viewStyle} = this.props;
 
     if (this.placeFieldActionComponent) {
       return (
-        <View style={{...this.props.viewStyle}}>
+        <View style={{...viewStyle}}>
           <View>
             <View>{this.renderTextField()}</View>
             <View>{this.placeFieldActionComponent}</View>
@@ -187,7 +143,7 @@ class TextInputField extends React.Component {
       );
     } else {
       return (
-        <View style={{...this.props.viewStyle}}>
+        <View style={{...viewStyle}}>
           {this.renderTextField()}
           {this.fieldValidation}
         </View>

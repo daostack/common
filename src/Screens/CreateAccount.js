@@ -6,9 +6,7 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   View,
-  TouchableOpacity,
   Image,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
@@ -16,9 +14,23 @@ import BottomSheetContainer from '../Components/BottomSheetContainer';
 import AccordionBtn from '../Components/AccordionBtn';
 
 import GSignInButton from '../Components/GSignInButton';
+import {CommonActions} from '@react-navigation/native';
+import FirebaseService from '../Services/FirebaseService';
+import {filterObjectByKeys} from '../Util';
+const firebaseService = new FirebaseService();
 
-// import Icon from '../Assets/iconfont/Icon';
+import CompleteAccountForm from '../Components/Forms/CompleteAccountForm';
 import {layout} from '../Theme';
+
+const userInfoFields = [
+  CompleteAccountForm.FIELD_NAME,
+  CompleteAccountForm.FIELD_INTRO,
+  CompleteAccountForm.FIELD_PROFILE_IMAGE,
+  'byLine',
+  'email',
+  'ethereumAddress',
+  'preferences',
+];
 
 const CreateAccount = ({navigation}) => {
   bottomSheetContainerRef = useRef();
@@ -27,8 +39,31 @@ const CreateAccount = ({navigation}) => {
     bottomSheetContainerRef.current.snapTo(1);
   };
 
-  onSignIn = () => {
-    console.log('Signed in callbaack!');
+  onSignIn = async userInfo => {
+    const internalUser = await firebaseService.getUserById(userInfo.user.id);
+    if (!internalUser) {
+      await firebaseService.addUser(
+        userInfo.user.id,
+        filterObjectByKeys(userInfo.user, userInfoFields),
+      );
+
+      if (navigation) {
+        const navigate = CommonActions.navigate({
+          name: 'CompleteAccount',
+          params: {
+            userId: userInfo.user.id,
+            email: userInfo.user.email,
+            image: userInfo.user.photo,
+            name: userInfo.user.name,
+          },
+        });
+        navigation.dispatch(navigate);
+      }
+    } else {
+      if (navigation) {
+        navigation.navigate('Commons');
+      }
+    }
   };
 
   return (
@@ -52,6 +87,7 @@ const CreateAccount = ({navigation}) => {
             <GSignInButton
               navigation={navigation}
               style={styles.googleSignInButton}
+              onSignIn={onSignIn}
             />
 
             <View style={styles.buttonsArea}>

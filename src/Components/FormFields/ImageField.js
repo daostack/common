@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {Image, ImageProps, View, StyleSheet, ViewStyle} from 'react-native';
+import {Image, View, StyleSheet} from 'react-native';
 
 import ValidationMessage from './ValidationMessage';
-import {observer, inject} from 'mobx-react';
+import {observer} from 'mobx-react';
 
 import PhotoUpload from 'react-native-photo-upload';
 
@@ -66,23 +66,13 @@ class ImageField extends React.Component {
   };
 
   render() {
-    const {
-      value,
-      viewStyle,
-
-      // Validation management properties
-      validation,
-
-      ...otherProps
-    } = this.props;
-
     return (
       <View>
         <View style={styles.formFieldContainer}>
           <PhotoUpload onPhotoSelect={this.onChangeValue}>
             {this.renderAccountImage()}
             <View style={styles.formImageFielAddIcon}>
-              <Icon name="right-arrow" size={20} color={colors.white}></Icon>
+              <Icon name="right-arrow" size={20} color={colors.white} />
             </View>
           </PhotoUpload>
         </View>
