@@ -7,3 +7,4 @@ export CompleteAccount from './CompleteAccount';
 export NativeBridgeTests from './NativeBridgeTests';
 export UserProfile from './UserProfile';
 export Onboarding from './Onboarding';
+export EditProfile from './EditProfile';

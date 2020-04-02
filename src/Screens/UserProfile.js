@@ -4,18 +4,180 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Image,
   ScrollView,
   View,
 } from 'react-native';
 import React from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import Swiper from 'react-native-swiper';
+import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
+import {observer, inject} from 'mobx-react';
+import ImageField from '../Components/FormFields/ImageField';
+import CountBox from '../Components/CountBox';
+import AccordionBtn from '../Components/AccordionBtn';
+import {GoogleSignin} from '@react-native-community/google-signin';
+import EditProfileForm from '../Components/Forms/EditProfileForm';
+import CreateAccount from '../Screens/CreateAccount';
 
-const UserProfile = () => {
+import Icon from '../Assets/iconfont/Icon';
+import {CommonActions} from '@react-navigation/native';
+
+const UserProfile = ({editProfileFormStore, userStore, navigation}) => {
+  _signOut = async () => {
+    try {
+      //await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+      userStore.setSignedInUser(null);
+    } catch (error) {
+      setSignInError(error);
+    }
+  };
+
+  const onUserSignedIn = isNewUser => {
+    if (navigation) {
+      navigateToEditProfile(true);
+    }
+  };
+
+  const navigateToEditProfile = isFirstOpening => {
+    const navigate = CommonActions.navigate({
+      name: 'EditProfile',
+      params: {
+        isFirstOpening: isFirstOpening,
+      },
+    });
+    navigation.dispatch(navigate);
+  };
+
+  const renderUserProfilePicture = () => {
+    let imageOptions = {};
+
+    imageOptions = {placeholderUrl: userStore.userInfo?.photo};
+
+    return (
+      <ImageField
+        {...imageOptions}
+        validation={{
+          name: EditProfileForm.FIELD_PROFILE_IMAGE,
+          formStore: editProfileFormStore,
+          validateRule: 'string',
+        }}
+      />
+    );
+  };
+
+  const handleScreenScroll = e => {
+    console.log('SCROLL EVENT -> ', e);
+  };
+
+  const renderUnsignedUserData = () => {
+    return <CreateAccount onSignedIn={onUserSignedIn}></CreateAccount>;
+  };
+
+  const renderSignedInUserData = () => {
+    return (
+      <>
+        <View style={styles.screenNav}>
+          <TouchableOpacity onPress={() => navigateToEditProfile(false)}>
+            <Icon name="edit-" size={26} />
+          </TouchableOpacity>
+        </View>
+        {renderUserProfilePicture()}
+        <Text style={{...text.h1Black, ...{paddingTop: 0, paddingBottom: 2}}}>
+          Lyubomir Petkov
+        </Text>
+        <Text style={text.ashleyjquimbacom2}>
+          lyubomir.petkov@limechain.tech
+        </Text>
+
+        <View style={styles.countBoxContainer}>
+          <CountBox
+            count={0}
+            name="Commons"
+            onPress={() => {
+              console.log('Commons CardBox clicked');
+            }}
+          />
+          <View style={styles.countBoxDivider}></View>
+          <CountBox
+            count={0}
+            name="Proposals"
+            onPress={() => {
+              console.log('Proposals CardBox clicked');
+            }}
+          />
+        </View>
+
+        <View style={styles.contentContainer}>
+          <Text style={text.h3Black}>About</Text>
+          <Text style={{...text.blackText, ...layout.marginTopM}}>
+            I work on a DAO project at iteratec and am interested in DAOs, coops
+            as well as crypto and blockchain in general.
+          </Text>
+        </View>
+
+        {/*
+    <Swiper
+        style={styles.wrapper}
+        loop={false}
+        // dot={<View style={{backgroundColor: 'rgba(255,255,255,.0)', width: 0, height: 0, borderRadius: 0, marginLeft: 0, marginRight: 0}} />}
+        // activeDot={<View style={{backgroundColor: '#fff', width: 0, height: 0, borderRadius: 0, marginLeft: 0, marginRight: 0}} />}
+      >
+        <View style={styles.image3} />
+        <View style={{...styles.image3, backgroundColor: '#3cc7e1'}} />
+      </Swiper>
+    */}
+
+        <View style={styles.contentContainer}>
+          <Text style={text.h3Black}>Commons (0)</Text>
+
+          <View style={styles.emptyObjectContainer}>
+            <Icon name="group" size={56} />
+            <Text style={{...text.h3Black, ...layout.marginTopS}}>
+              No Commons
+            </Text>
+            <Text
+              style={{
+                ...text.blackText,
+                ...text.centered,
+                ...layout.marginTopS,
+              }}>
+              Join your first common and start making an impact
+            </Text>
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity style={styles.btn}>
+                <Text style={text.buttonblue}>Explore Commons</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.contentContainer}>
+          <Text style={text.h3Black}>Proposals (0)</Text>
+
+          <View style={styles.emptyObjectContainer}>
+            <Icon name="pencil" size={46} />
+            <Text style={{...text.h3Black, ...layout.marginTopS}}>
+              No Proposals
+            </Text>
+            <Text
+              style={{
+                ...text.blackText,
+                ...text.centered,
+                ...layout.marginTopS,
+              }}>
+              Join a common and propose actions you think it should take to
+              achieve its goal
+            </Text>
+          </View>
+        </View>
+      </>
+    );
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
+      <SafeAreaView></SafeAreaView>
       <SafeAreaView style={styles.safeArea}>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
@@ -23,104 +185,32 @@ const UserProfile = () => {
           vertical={true}
           nestedScrollEnabled={true}
           directionalLockEnabled={true}
-          {...this.props}>
+          onScroll={handleScreenScroll}>
           <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Image
-                style={styles.avatarImage}
-                source={{
-                  uri: 'https://source.unsplash.com/user/erondu/180x180',
-                }}
-              />
-              <Text style={styles.sectionTitle}>Yogarasa Gandhi</Text>
-            </View>
-            <View style={styles.socialContainer}>
-              <Image
-                style={styles.socialImage}
-                source={{uri: 'https://source.unsplash.com/user/erondu/30x30'}}
-              />
-              <Image
-                style={styles.socialImage}
-                source={{uri: 'https://source.unsplash.com/user/erondu/30x30'}}
-              />
-              <Image
-                style={styles.socialImage}
-                source={{uri: 'https://source.unsplash.com/user/erondu/30x30'}}
-              />
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.descriptionText}>
-                I work on a DAO project at iteratec and am interested in DAOs,
-                coops as well as crypto and blockchain in general.
-              </Text>
-            </View>
+            {userStore.userInfo
+              ? renderSignedInUserData()
+              : renderUnsignedUserData()}
 
-            <View style={styles.separateLine} />
-            <Text style={styles.title}>DAOs</Text>
-            <Swiper
-              style={styles.wrapper}
-              loop={false}
-              // dot={<View style={{backgroundColor: 'rgba(255,255,255,.0)', width: 0, height: 0, borderRadius: 0, marginLeft: 0, marginRight: 0}} />}
-              // activeDot={<View style={{backgroundColor: '#fff', width: 0, height: 0, borderRadius: 0, marginLeft: 0, marginRight: 0}} />}
-            >
-              <View style={styles.image3} />
-              <View style={{...styles.image3, backgroundColor: '#3cc7e1'}} />
-            </Swiper>
-            <View style={{...styles.separateLine, marginTop: 25}} />
-
-            <Text style={styles.title}>Proposals</Text>
-            <Swiper
-              style={styles.wrapper}
-              loop={false}
-              nestedScrollEnabled={true}
-              showsButtons={false}>
-              <View style={styles.image3} />
-            </Swiper>
-            <View
-              style={{...styles.separateLine, marginTop: 25, marginBottom: 25}}
-            />
-            <TouchableOpacity style={{flex: 1}}>
-              <View style={styles.linkButton}>
-                <Text style={styles.linkText}>FAQ</Text>
-                <Text style={{flex: 0.2, fontSize: 21}}>➤</Text>
-              </View>
-              <View style={styles.lightSeparateLine} />
-            </TouchableOpacity>
-            <TouchableOpacity style={{flex: 1}}>
-              <View style={styles.linkButton}>
-                <Text style={styles.linkText}>Terms of use</Text>
-                <Text style={{flex: 0.2, fontSize: 21}}>➤</Text>
-              </View>
-              <View style={styles.lightSeparateLine} />
-            </TouchableOpacity>
-            <TouchableOpacity style={{flex: 1}}>
-              <View style={styles.linkButton}>
-                <Text style={styles.linkText}>Privacy Policy</Text>
-                <Text style={{flex: 0.2, fontSize: 21}}>➤</Text>
-              </View>
-              <View style={styles.lightSeparateLine} />
-            </TouchableOpacity>
-            <TouchableOpacity style={{flex: 1}}>
-              <View style={styles.linkButton}>
-                <Text style={styles.linkText}>Help</Text>
-                <Text style={{flex: 0.2, fontSize: 21}}>➤</Text>
-              </View>
-              <View style={styles.lightSeparateLine} />
-            </TouchableOpacity>
-            <TouchableOpacity style={{flex: 1}}>
-              <View style={styles.linkButton}>
-                <Text style={styles.linkText}>Contact us</Text>
-                <Text style={{flex: 0.2, fontSize: 21}}>➤</Text>
-              </View>
-              <View style={styles.lightSeparateLine} />
-            </TouchableOpacity>
-            <TouchableOpacity style={{flex: 1, marginBottom: 30}}>
-              <View style={styles.linkButton}>
-                <Text style={{...styles.linkText, color: '#ff1700'}}>
-                  Logout
-                </Text>
-              </View>
-            </TouchableOpacity>
+            <View style={layout.marginTopL}>
+              {userStore.userInfo ? (
+                <AccordionBtn
+                  title="My wallet"
+                  subtitle="1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2"
+                />
+              ) : null}
+              <AccordionBtn title="FAQ" />
+              <AccordionBtn title="Terms of use" />
+              <AccordionBtn title="Privacy Policy" />
+              <AccordionBtn title="Help" />
+              <AccordionBtn title="Contact us" />
+              {userStore.userInfo ? (
+                <AccordionBtn
+                  lightStyle={true}
+                  title="Logout"
+                  onPress={_signOut}
+                />
+              ) : null}
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -129,129 +219,78 @@ const UserProfile = () => {
 };
 
 const styles = StyleSheet.create({
+  btn: {
+    ...layout.btnOutline,
+    flexDirection: 'row',
+    marginTop: 20,
+    borderRadius: 5,
+    backgroundColor: colors.white,
+    flexGrow: 0,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+  },
+  screenNav: {
+    paddingBottom: sizeL,
+    paddingHorizontal: sizeL,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignSelf: 'stretch',
+  },
+
+  contentContainer: {
+    ...layout.content,
+    ...layout.flexStart,
+    ...layout.marginTopL,
+  },
+
+  countBoxContainer: {
+    ...layout.flexRow,
+    ...layout.marginTopL,
+    justifyContent: 'space-around',
+    paddingVertical: sizeL,
+    alignSelf: 'stretch',
+  },
+  countBoxDivider: {
+    height: '100%',
+    width: 1,
+    backgroundColor: '#eeeeee',
+  },
+  emptyObjectContainer: {
+    ...layout.content,
+    ...layout.marginTopM,
+    borderRadius: 14,
+    paddingHorizontal: sizeXXL,
+    backgroundColor: colors.lightBlue,
+  },
+  body: {
+    paddingTop: 40,
+  },
+
   safeArea: {
     flex: 1,
     backgroundColor: Colors.white,
+    padding: 20,
   },
-  body: {
-    backgroundColor: Colors.white,
-    flex: 1,
-  },
-  sectionContainer: {
-    marginTop: 13,
-    marginBottom: 3,
-    alignItems: 'center',
-  },
-  sectionTitle: {
-    fontSize: 24,
-    //   fontFamily: 'Roboto',
-    fontWeight: '600',
-    color: Colors.black,
-    textAlign: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-  },
-  avatarImage: {
-    // width: '40%',
-    // paddingTop: '100%',
-    minHeight: 104,
-    minWidth: 104,
-    maxWidth: '40%',
-    borderRadius: 52,
-    backgroundColor: '#efefef',
-  },
-  socialContainer: {
-    // paddingVertical: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  socialImage: {
-    minHeight: 30,
-    minWidth: 30,
-    borderRadius: 15,
-    // paddingHorizontal: 15,
-    marginHorizontal: 12,
-    backgroundColor: '#efefef',
-  },
-  descriptionText: {
-    fontSize: 14,
-    textAlign: 'center',
-    color: Colors.black,
-    paddingHorizontal: 38,
-    marginBottom: 20,
-  },
-  separateLine: {
-    marginTop: 15,
-    height: 0.5,
-    // paddingHorizontal:30,
-    marginHorizontal: 30,
-    backgroundColor: Colors.black,
-  },
-  lightSeparateLine: {
-    height: 0.5,
-    // paddingHorizontal:30,
-    marginHorizontal: 0,
-    backgroundColor: '#bfbfbf',
-  },
-  title: {
-    marginTop: 24,
-    marginLeft: 30,
-    marginBottom: 24,
-    fontSize: 24,
-    //   fontFamily: 'Roboto',
-    fontWeight: '600',
-    color: Colors.black,
-    textAlign: 'left',
-  },
-  wrapper: {
-    // flex: 1,
-    height: 200,
-  },
-  image: {
-    backgroundColor: '#3cc7e1',
-    // height: '100%',
-    width: '80%',
-    borderRadius: 14,
-    flex: 0.8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 30,
-  },
-  image2: {
-    backgroundColor: '#001a36',
-    // height: '100%',
-    // width: '100%',
-    borderRadius: 30,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image3: {
-    backgroundColor: '#efefef',
-    borderRadius: 14,
-    flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    marginHorizontal: 30,
-    // marginBottom: 30,
-  },
-  linkButton: {
-    paddingVertical: 18,
-    marginHorizontal: 15,
-    flexDirection: 'row',
-    width: '100%',
-    // backgroundColor: "#3cc7e1",
-  },
-  linkText: {
-    left: 15,
-    fontSize: 16,
-    //   fontFamily: 'Roboto',
-    fontWeight: '700',
-    justifyContent: 'center',
-    color: Colors.black,
-    textAlign: 'left',
-    flex: 0.8,
+  googleSignInButton: {
+    alignSelf: 'stretch',
+    height: 56,
+    borderWidth: 1,
+    borderRadius: 28,
+    borderStyle: 'solid',
+    borderColor: '#eeeeee',
+
+    shadowOpacity: 0,
+    shadowColor: Colors.white,
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowRadius: 0,
+    elevation: 0,
   },
 });
 
-export default UserProfile;
+export default inject(
+  'editProfileFormStore',
+  'userStore',
+)(observer(UserProfile));
