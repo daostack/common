@@ -21,22 +21,30 @@ import CreateStep4 from './CreateStep4';
 const {width} = Dimensions.get('window');
 import Swiper from 'react-native-swiper';
 
-const CreateCommon = props => {
+const CreateCommon = (props) => {
   const [common, setCommon] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const swiper = useRef(null);
 
   useEffect(() => {
-    swiper.current.scrollBy(currentIndex);
+    swiper.current.scrollTo(currentIndex);
+    console.log('AAAA', currentIndex);
   }, [currentIndex]);
 
-  var progress = 0;
   const progressList = [0, 0.35, 0.7, 1.0];
 
   nextIndex = () => {
-    setCurrentIndex(currentIndex + 1);
+    if (currentIndex < 3) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      setCurrentIndex(3);
+    }
     console.log(currentIndex);
   };
+
+  // changeIndex = () => {
+  //   setCurrentIndex(0);
+  // };
 
   return (
     <SafeAreaView
@@ -72,63 +80,74 @@ const CreateCommon = props => {
               marginHorizontal: 30,
             }}
           />
-          <View
-            style={currentIndex === 0 ? {...styles.oval} : {...styles.oval2}}>
-            <Image
-              source={
-                currentIndex === 0
-                  ? require('../../Assets/daoGeneralInfo.png')
-                  : require('../../Assets/checkmark.png')
-              }
-              style={styles.iconBlue}
-            />
-          </View>
-          <View
-            style={currentIndex === 1 ? {...styles.oval} : {...styles.oval2}}>
-            <Image
-              source={
-                currentIndex <= 1
-                  ? require('../../Assets/funding.png')
-                  : require('../../Assets/checkmark.png')
-              }
-              style={
-                currentIndex < 1 ? {...styles.iconGrey} : {...styles.iconBlue}
-              }
-            />
-          </View>
-          <View
-            style={currentIndex === 2 ? {...styles.oval} : {...styles.oval2}}>
-            <Image
-              source={
-                currentIndex <= 2
-                  ? require('../../Assets/agenda.png')
-                  : require('../../Assets/checkmark.png')
-              }
-              style={
-                currentIndex < 2 ? {...styles.iconGrey} : {...styles.iconBlue}
-              }
-            />
-          </View>
-          <View
-            style={currentIndex === 3 ? {...styles.oval} : {...styles.oval2}}>
-            <Image
-              source={
-                currentIndex <= 3
-                  ? require('../../Assets/members24.png')
-                  : require('../../Assets/checkmark.png')
-              }
-              style={
-                currentIndex < 3 ? {...styles.iconGrey} : {...styles.iconBlue}
-              }
-            />
-          </View>
+          <TouchableOpacity onPress={() => setCurrentIndex(0)}>
+            <View
+              style={currentIndex === 0 ? {...styles.oval} : {...styles.oval2}}>
+              <Image
+                source={
+                  currentIndex === 0
+                    ? require('../../Assets/daoGeneralInfo.png')
+                    : require('../../Assets/checkmark.png')
+                }
+                style={styles.iconBlue}
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setCurrentIndex(1)}>
+            <View
+              style={currentIndex === 1 ? {...styles.oval} : {...styles.oval2}}>
+              <Image
+                source={
+                  currentIndex <= 1
+                    ? require('../../Assets/funding.png')
+                    : require('../../Assets/checkmark.png')
+                }
+                style={
+                  currentIndex < 1 ? {...styles.iconGrey} : {...styles.iconBlue}
+                }
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setCurrentIndex(2)}>
+            <View
+              style={currentIndex === 2 ? {...styles.oval} : {...styles.oval2}}>
+              <Image
+                source={
+                  currentIndex <= 2
+                    ? require('../../Assets/agenda.png')
+                    : require('../../Assets/checkmark.png')
+                }
+                style={
+                  currentIndex < 2 ? {...styles.iconGrey} : {...styles.iconBlue}
+                }
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setCurrentIndex(3)}>
+            <View
+              style={currentIndex === 3 ? {...styles.oval} : {...styles.oval2}}>
+              <Image
+                source={
+                  currentIndex <= 3
+                    ? require('../../Assets/members24.png')
+                    : require('../../Assets/checkmark.png')
+                }
+                style={
+                  currentIndex < 3 ? {...styles.iconGrey} : {...styles.iconBlue}
+                }
+              />
+            </View>
+          </TouchableOpacity>
         </View>
         <Swiper
           ref={swiper}
           showsButtons={false}
           showsPagination={false}
           loop={false}
-          scrollEnabled={false}>
+          // width={width-48}
+          // index={currentIndex}
+          // scrollEnabled={false}
+          style={{overflow: 'visible'}}>
           <CreateStep1 />
           <CreateStep2 />
           <CreateStep3 />

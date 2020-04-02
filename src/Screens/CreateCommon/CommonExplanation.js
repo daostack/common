@@ -34,7 +34,7 @@ const CreateCommon = ({navigation}) => {
             activeDotColor={colors.mainBlue}
             autoplay={true}
             paginationStyle={{bottom: 0}}>
-              <View style={styles.slide1}>
+            <View style={styles.slide1}>
               <Image
                 source={require('../../Assets/common.png')}
                 style={styles.image}

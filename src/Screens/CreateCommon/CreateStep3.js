@@ -13,75 +13,70 @@ import {colors} from '../../Theme';
 import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
 
-const CreateStep3 = props => {
+const CreateStep3 = (props) => {
   const [common, setCommon] = useState(false);
 
   return (
-    // <ScrollView
-    //   contentContainerStyle={{
-    //     width,
-    //     alignItems: 'center',
-    //     justifyContent: 'center',
-    //   }}>
-    <View
-      style={{
-        flex: 1,
-        // padding: 24,
-        backgroundColor: 'white',
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      width={width - 48}
+      contentContainerStyle={{
+        alignItems: 'center',
+        justifyContent: 'center',
       }}>
-      <Text style={{marginTop: 24, fontWeight: 'bold', fontSize: 18, textAlign: 'center'}}>
-        Agenda
-      </Text>
-      <Text style={{marginTop: 12, marginBottom: 23}}>
-        Describe your cause so people will understand what you want to achieve
-        and how
-      </Text>
-      <TextInputField
-        value={''}
-        viewStyle={{alignSelf: 'stretch'}}
-        label="Course of action"
-        placeholderText="What action are you planning to take to fulfil your goal? Are there things this common will not do?"
-        autoCapitalize="none"
-        autoCorrect={false}
-        validation={{
-          name: 'action',
-          formStore: props.completeAccountFormStore,
-          validateRule: 'required',
-        }}
-      />
-      <TextInputField
-        value={''}
-        viewStyle={{alignSelf: 'stretch'}}
-        label="Main Values"
-        placeholderText="What should guide members in decision making processes"
-        autoCapitalize="none"
-        autoCorrect={false}
-        validation={{
-          name: 'byline',
-          formStore: props.completeAccountFormStore,
-          validateRule: 'required',
-        }}
-      />
-      <TextInputField
-        value={''}
-        viewStyle={{height: 400}}
-        label="Rules of conduct"
-        placeholderText="Any restrictions members should know about (No advertising in common discussion, accepted language)"
-        autoCapitalize="none"
-        autoCorrect={false}
-        validation={{
-          name: 'description',
-          formStore: props.completeAccountFormStore,
-          validateRule: 'required',
-        }}
-      />
-      <View style={{width: '100%'}}>
-        <TouchableOpacity>
-          <Text style={styles.readMoreButton}>Add Link</Text>
-        </TouchableOpacity>
+      <View
+        style={{
+          flex: 1,
+          // padding: 24,
+          backgroundColor: 'white',
+        }}>
+        <Text
+          style={{
+            marginTop: 24,
+            fontWeight: 'bold',
+            fontSize: 18,
+            textAlign: 'center',
+          }}>
+          Agenda
+        </Text>
+        <Text style={{marginTop: 12, marginBottom: 23, textAlign: 'center'}}>
+          Describe your cause so people will understand what you want to achieve
+          and how
+        </Text>
+        <TextInputField
+          value={''}
+          viewStyle={{alignSelf: 'stretch'}}
+          label="Course of action"
+          numberOfLines={6}
+          multiline={true}
+          placeholderText="What action are you planning to take to fulfil your goal? Are there things this common will not do?"
+          autoCapitalize="none"
+          autoCorrect={false}
+          validation={{
+            name: 'action',
+            formStore: props.completeAccountFormStore,
+            validateRule: 'required',
+          }}
+        />
+        <Text
+          style={{
+            marginTop: 24,
+            fontWeight: 'bold',
+            fontSize: 18,
+          }}>
+          Rules of conduct
+        </Text>
+        <Text
+          style={{
+            marginVertical: 15,
+            fontSize: 12,
+            color: colors.grey3,
+          }}>
+          Any restrictions members should know about (Advertising in common
+          discussion, accepted language, you do not talk about Fight Club etc.)
+        </Text>
       </View>
-    </View>
-    // </ScrollView>
+    </ScrollView>
   );
 };
 

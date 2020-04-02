@@ -11,75 +11,103 @@ import {
 import TextInputField from '../../Components/FormFields/TextInputField';
 import {colors} from '../../Theme';
 import {observer, inject} from 'mobx-react';
+import SegmentedControlTab from 'react-native-segmented-control-tab';
 const {width} = Dimensions.get('window');
 
-const CreateStep2 = props => {
+const CreateStep2 = (props) => {
   const [common, setCommon] = useState(false);
 
   return (
-    // <ScrollView
-    //   contentContainerStyle={{
-    //     width,
-    //     alignItems: 'center',
-    //     justifyContent: 'center',
-    //   }}>
-    <View
-      style={{
-        flex: 1,
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      width={width - 48}
+      contentContainerStyle={{
         alignItems: 'center',
-        // padding: 24,
-        backgroundColor: 'white',
+        justifyContent: 'center',
       }}>
-      <Text style={{marginTop: 24, fontWeight: '700', fontSize: 18}}>
-        Funding
-      </Text>
-      <Text style={{marginTop: 12, marginBottom: 23}}>
-      Set the amount you would like to raise. Until you reach this goal the common will not be able to spend any of the funds. 
-      </Text>
-      <TextInputField
-        value={''}
-        viewStyle={{alignSelf: 'stretch'}}
-        label="Funding goal"
-        placeholderText="$"
-        autoCapitalize="none"
-        autoCorrect={false}
-        validation={{
-          name: 'funding',
-          formStore: props.completeAccountFormStore,
-          validateRule: 'required',
-        }}
-      />
-      <TextInputField
-        value={''}
-        viewStyle={{alignSelf: 'stretch'}}
-        label="Deadline"
-        placeholderText=""
-        autoCapitalize="none"
-        autoCorrect={false}
-        validation={{
-          name: 'deadline',
-          formStore: props.completeAccountFormStore,
-          validateRule: 'required',
-        }}
-      />
-      <TextInputField
-        value={''}
-        viewStyle={{alignSelf: 'stretch'}}
-        label="Minimum join fee"
-        placeholderText=""
-        autoCapitalize="none"
-        autoCorrect={false}
-        validation={{
-          name: 'minimumFee',
-          formStore: props.completeAccountFormStore,
-          validateRule: 'required',
-        }}
-      />
-      <View style={{width: '100%'}}>
-          <Text style={styles.readMoreButton}>min. $10. Members can donate more if they want. </Text>
+      <View
+        style={{
+          flex: 1,
+          // alignItems: 'center',
+          // padding: 24,
+          backgroundColor: 'white',
+        }}>
+        <Text
+          style={{
+            marginTop: 24,
+            fontWeight: '700',
+            fontSize: 18,
+            textAlign: 'center',
+          }}>
+          Funding
+        </Text>
+        <Text
+          style={{
+            marginTop: 12,
+            marginBottom: 23,
+            marginHorizontal: 20,
+            textAlign: 'center',
+          }}>
+          Set the amount you would like to raise. Until you reach this goal the
+          common will not be able to spend any of the funds.
+        </Text>
+        <View
+          style={{
+            backgroundColor: colors.grey4,
+            height: 1,
+            marginBottom: 40,
+          }}
+        />
+        <TextInputField
+          value={''}
+          viewStyle={{alignSelf: 'stretch'}}
+          label="Funding goal"
+          placeholderText="$"
+          infoLabel="required"
+          autoCapitalize="none"
+          autoCorrect={false}
+          validation={{
+            name: 'funding',
+            formStore: props.completeAccountFormStore,
+            validateRule: 'required',
+          }}
+        />
+        <View style={{}}>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={styles.label}>Deadline</Text>
+            <Text style={styles.infoLabel}>required</Text>
+          </View>
+          <SegmentedControlTab
+            tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 40}}
+            tabStyle={{borderColor: colors.grey4}}
+            activeTabStyle={{backgroundColor: colors.mainBlue}}
+            values={['1 week', '1 month', 'Custom']}
+            tabTextStyle={{color: colors.mainBlue}}
+            borderRadius={8}
+            // selectedIndex={this.state.selectedIndex}
+            // onTabPress={this.handleIndexChange}
+          />
+        </View>
+        <TextInputField
+          value={''}
+          viewStyle={{alignSelf: 'stretch'}}
+          label="Minimum join fee"
+          placeholderText=""
+          autoCapitalize="none"
+          autoCorrect={false}
+          validation={{
+            name: 'minimumFee',
+            formStore: props.completeAccountFormStore,
+            validateRule: 'required',
+          }}
+        />
+        <View style={{width: '100%'}}>
+          <Text style={styles.readMoreButton}>
+            Min. $10. Members can donate more if they want.{' '}
+          </Text>
+        </View>
       </View>
-    </View>
-    // </ScrollView>
+    </ScrollView>
   );
 };
 
@@ -109,7 +137,7 @@ const styles = StyleSheet.create({
   readMoreButton: {
     fontSize: 12,
     // fontWeight: '700',
-    color: colors.grey1,
+    color: colors.grey3,
   },
   continueButton: {
     width: '100%',
@@ -121,6 +149,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.mainBlue,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    color: colors.slate,
+    alignSelf: 'flex-start',
+  },
+  infoLabel: {
+    fontFamily: 'Roboto',
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'italic',
+    letterSpacing: 0,
+    color: colors.paleblue,
+    textAlign: 'right',
+    flex: 1,
   },
 });
 
