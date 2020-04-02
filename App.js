@@ -24,8 +24,13 @@ import {
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
 const firebaseService = new FirebaseService();
+import AuthService from './src/Services/AuthService';
+const authService = new AuthService();
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+import {filterObjectByKeys} from './src/Util';
+import {userInfoFields} from './src/Stores/UserStore';
+import {observer, inject} from 'mobx-react';
 
 const CommonHome = () => {
   return (
@@ -34,19 +39,46 @@ const CommonHome = () => {
       <Tab.Screen name="Commons" component={CommonsList} />
 
       <Tab.Screen name="Profile" component={UserProfile} />
-      <Tab.Screen name="EditProfile" component={EditProfile} />
-      <Tab.Screen name="CreateAccount" component={CreateAccount} />
     </Tab.Navigator>
   );
 };
 
-const App = () => {
+const App = ({userStore}) => {
   useEffect(() => {
-    const getUser = async () => {
-      console.log('users: ', await firebaseService.getUser());
+    loadUser = async () => {
+      console.log('LOAD USER');
+      try {
+        if (!userStore.userInfo) {
+          const googleSignedInUser = await authService.getGoogleSignedInUser();
+          // Signed In Mode
+          if (googleSignedInUser) {
+            const appUser = await firebaseService.getUserById(
+              googleSignedInUser.user.id,
+            );
+
+            const allUserInfo = {
+              ...googleSignedInUser.user,
+              ...appUser,
+            };
+
+            const filteredUser = filterObjectByKeys(
+              allUserInfo,
+              userInfoFields,
+            );
+            console.log('filteredUser -> ', filteredUser);
+            userStore.setSignedInUser(filteredUser);
+          }
+          // Anonymous mode
+          else {
+            console.log('Anonymous user');
+          }
+        }
+      } catch (error) {
+        console.log('ERRROR', error);
+      }
     };
-    getUser();
-  });
+    loadUser();
+  }, [userStore.userInfo]);
 
   return (
     <ApolloProvider client={client}>
@@ -79,12 +111,12 @@ const App = () => {
           />
           <Stack.Screen name="Profile" component={UserProfile} />
           <Stack.Screen name="EditProfile" component={EditProfile} />
-          <Stack.Screen name="CompleteAccount" component={UserProfile} />
-          <Stack.Screen name="CreateAccount" component={EditProfile} />
+          <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
+          <Stack.Screen name="CreateAccount" component={CreateAccount} />
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>
   );
 };
 
-export default App;
+export default inject('userStore')(observer(App));

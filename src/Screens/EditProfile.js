@@ -6,12 +6,35 @@ import {
   StatusBar,
   StyleSheet,
   View,
+  Text,
 } from 'react-native';
 import EditProfileForm from '../Components/Forms/EditProfileForm';
 import {colors, text, layout} from '../Theme';
+import {observer, inject} from 'mobx-react';
 
-const EditProfile = ({navigation}) => {
-  console.log('navigation -> ', navigation);
+const EditProfile = ({route, navigation, userStore}) => {
+  const renderFirstTimeHeader = () => {
+    return (
+      <View style={layout.marginBottomXL}>
+        <Text style={text.h1Black}>Complete your account</Text>
+        <Text style={styles.subtitle}>
+          Help the community get to know you better
+        </Text>
+      </View>
+    );
+  };
+
+  const renderEditProfileHeader = () => {
+    return (
+      <View style={layout.marginBottomXL}>
+        <Text style={text.h1Black}>Complete your account</Text>
+        <Text style={styles.subtitle}>
+          Help the community get to know you better
+        </Text>
+      </View>
+    );
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -21,7 +44,10 @@ const EditProfile = ({navigation}) => {
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
           <View style={styles.body}>
-            <EditProfileForm name={'test'} image={'test'} email={'test'} />
+            {route.params.isFirstOpening
+              ? renderFirstTimeHeader()
+              : renderEditProfileHeader}
+            <EditProfileForm firstOpening={route.params.isFirstOpening} />
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -47,4 +73,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EditProfile;
+export default inject('userStore')(observer(EditProfile));

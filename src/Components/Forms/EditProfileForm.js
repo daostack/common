@@ -33,10 +33,9 @@ class EditProfileForm extends React.Component {
 
   render() {
     const {
+      userStore,
       editProfileFormStore,
-      name,
-      image,
-      email,
+      firstOpening,
       ...otherProps
     } = this.props;
 
@@ -51,21 +50,21 @@ class EditProfileForm extends React.Component {
           marginTop: 15,
         }}>
         <ImageField
-          value={null}
-          placeholderUrl={image}
+          value={userStore.userInfo.profilePicture}
+          placeholderUrl={userStore.userInfo.photo}
           validation={{
             name: EditProfileForm.FIELD_PROFILE_IMAGE,
             formStore: this.props.editProfileFormStore,
-            validateRule: 'string',
+            validateRule: null,
           }}
         />
 
         <View style={styles.emailContainer}>
-          <Text style={text.ashleyjquimbacom}>{email}</Text>
+          <Text style={text.ashleyjquimbacom}>{userStore.userInfo.email}</Text>
         </View>
 
         <TextInputField
-          value={name}
+          value={userStore.userInfo.name}
           viewStyle={{alignSelf: 'stretch'}}
           label="Name"
           placeholderText="Firstname Lastname"
@@ -82,6 +81,7 @@ class EditProfileForm extends React.Component {
           label="Intro"
           placeholderText="What are you passionate about, really good at or love"
           multiline={true}
+          value={userStore.userInfo.intro}
           validation={{
             name: EditProfileForm.FIELD_INTRO,
             formStore: this.props.editProfileFormStore,
@@ -90,11 +90,19 @@ class EditProfileForm extends React.Component {
         />
 
         <View style={styles.containerRow}>
-          <TouchableOpacity
-            style={{...layout.btnOutline, ...layout.marginRightS}}
-            onPress={this.formSkip}>
-            <Text style={text.buttonblue}>Skip</Text>
-          </TouchableOpacity>
+          {firstOpening ? (
+            <TouchableOpacity
+              style={{...layout.btnOutline, ...layout.marginRightS}}
+              onPress={this.formSkip}>
+              <Text style={text.buttonblue}>Skip</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={{...layout.btnOutline, ...layout.marginRightS}}
+              onPress={this.formSkip}>
+              <Text style={text.buttonblue}>Cancel</Text>
+            </TouchableOpacity>
+          )}
 
           <TouchableOpacity
             style={{...layout.btnPrimary, ...layout.marginLeftS}}
@@ -120,4 +128,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('editProfileFormStore')(observer(EditProfileForm));
+export default inject(
+  'editProfileFormStore',
+  'userStore',
+)(observer(EditProfileForm));

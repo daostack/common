@@ -147,7 +147,7 @@ const GSignInButton = ({onSignIn}) => {
   return (
     <View style={styles.container}>
       {renderError()}
-      {isSignedIn ? renderLogOutBtn() : renderSignInButton()}
+      {!isSignedIn ? renderSignInButton() : null}
     </View>
   );
 };
