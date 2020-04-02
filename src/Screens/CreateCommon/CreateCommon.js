@@ -1,138 +1,121 @@
-import React, {useEffect, useState} from 'react';
-import {Image, Text, TouchableOpacity, View, StyleSheet} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+  SafeAreaView,
+} from 'react-native';
 import TextInputField from '../../Components/FormFields/TextInputField';
 import {colors} from '../../Theme';
 import {observer, inject} from 'mobx-react';
+import * as Progress from 'react-native-progress';
+import CreateStep1 from './CreateStep1';
+import CreateStep2 from './CreateStep2';
+import CreateStep3 from './CreateStep3';
+import CreateStep4 from './CreateStep4';
+const {width} = Dimensions.get('window');
+import Swiper from 'react-native-swiper';
 
 const CreateCommon = props => {
   const [common, setCommon] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const swiper = useRef(null);
+
+  useEffect(() => {
+    swiper.current.scrollBy(currentIndex);
+  }, [currentIndex]);
+
+  var progress = 0;
+  const progressList = [0, 0.35, 0.7, 1.0];
+
+  nextIndex = () => {
+    setCurrentIndex(currentIndex + 1);
+    console.log(currentIndex);
+  };
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
-        alignItems: 'center',
-        padding: 24,
         backgroundColor: 'white',
       }}>
       <View
         style={{
-          flexDirection: 'row',
+          flex: 1,
           alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '100%',
-          paddingHorizontal: 32,
+          padding: 24,
+          backgroundColor: 'white',
         }}>
-        <View style={styles.oval}>
-          <Image
-            source={require('../../Assets/daoGeneralInfo.png')}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 24,
-              height: 24,
-            }}
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '100%',
+            // padding: 32,
+            marginBottom: 24,
+          }}>
+          <Progress.Bar
+            progress={progressList[currentIndex]} // 0 0.35 0.7 1.0
+            width={width - 48}
+            color={colors.mainBlue}
+            borderWidth={0}
+            unfilledColor={colors.grey4}
+            style={{height: 2, flex: 1, position: 'absolute'}}
           />
+          <View style={ currentIndex === 0 ?  {...styles.oval} : {...styles.oval2} }>
+            <Image
+              source={currentIndex === 0 ? require('../../Assets/daoGeneralInfo.png') : require('../../Assets/checkmark.png')}
+              style={styles.iconBlue}
+            />
+          </View>
+          <View style={ currentIndex === 1 ?  {...styles.oval} : {...styles.oval2} }>
+            <Image
+              source={ currentIndex <= 1 ? require('../../Assets/funding.png') : require('../../Assets/checkmark.png') }
+              style={ currentIndex < 1 ? {...styles.iconGrey} : {...styles.iconBlue} }
+            />
+          </View>
+          <View style={currentIndex === 2 ?  {...styles.oval} : {...styles.oval2} }>
+            <Image
+              source={ currentIndex <= 2 ? require('../../Assets/agenda.png') : require('../../Assets/checkmark.png') }
+              style={ currentIndex < 2 ? {...styles.iconGrey} : {...styles.iconBlue} }
+            />
+          </View>
+          <View style={ currentIndex === 3 ?  {...styles.oval} : {...styles.oval2} }>
+            <Image
+              source={ currentIndex <= 3 ? require('../../Assets/members24.png') : require('../../Assets/checkmark.png') }
+              style={ currentIndex < 3 ? {...styles.iconGrey} : {...styles.iconBlue} }
+            />
+          </View>
         </View>
-        <View style={styles.oval2}>
-          <Image
-            source={require('../../Assets/funding.png')}
+        <Swiper
+          ref={swiper}
+          showsButtons={false}
+          showsPagination={false}
+          loop={false}
+          scrollEnabled={false}>
+          <CreateStep1 />
+          <CreateStep2 />
+          <CreateStep3 />
+          <CreateStep4 />
+        </Swiper>
+
+        <TouchableOpacity style={styles.continueButton} onPress={nextIndex}>
+          <Text
             style={{
-              tintColor: 'grey',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 16,
-              height: 16,
-            }}
-          />
-        </View>
-        <View style={styles.oval2}>
-          <Image
-            source={require('../../Assets/agenda.png')}
-            style={{
-              tintColor: 'grey',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 16,
-              height: 16,
-            }}
-          />
-        </View>
-        <View style={styles.oval2}>
-          <Image
-            source={require('../../Assets/members24.png')}
-            style={{
-              tintColor: 'grey',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 16,
-              height: 16,
-            }}
-          />
-        </View>
-      </View>
-      <Text style={{marginTop: 24, fontWeight: '700', fontSize: 18}}>
-        General Info
-      </Text>
-      <Text style={{marginTop: 12, marginBottom: 23}} >
-        Describe your cause so people will understand what you want to achieve
-        and how
-      </Text>
-      <TextInputField
-        value={''}
-        viewStyle={{alignSelf: 'stretch'}}
-        label="Common Name"
-        placeholderText=""
-        autoCapitalize="none"
-        autoCorrect={false}
-        validation={{
-          name: 'name',
-          formStore: props.completeAccountFormStore,
-          validateRule: 'required',
-        }}
-      />
-      <TextInputField
-        value={''}
-        viewStyle={{alignSelf: 'stretch'}}
-        label="Byline"
-        placeholderText="A sentence that describes what you want to achieve"
-        autoCapitalize="none"
-        autoCorrect={false}
-        validation={{
-          name: 'byline',
-          formStore: props.completeAccountFormStore,
-          validateRule: 'required',
-        }}
-      />
-      <TextInputField
-        value={''}
-        viewStyle={{alignSelf: 'stretch'}}
-        label="Description"
-        placeholderText="Give some more detail about your cause, how are you going to support it, why you are passionate about it and why others should join."
-        autoCapitalize="none"
-        autoCorrect={false}
-        validation={{
-          name: 'description',
-          formStore: props.completeAccountFormStore,
-          validateRule: 'required',
-        }}
-      />
-      <View style={{width: '100%'}}>
-        <TouchableOpacity>
-          <Text style={styles.readMoreButton}>Add Link</Text>
+              fontSize: 16,
+              color: 'white',
+              fontWeight: '700',
+            }}>
+            Next
+          </Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.continueButton}>
-        <Text
-          style={{
-            fontSize: 16,
-            color: 'white',
-            fontWeight: '700',
-          }}>
-          Next
-        </Text>
-      </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -159,6 +142,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  iconBlue: {
+    tintColor: colors.mainBlue,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 24,
+    height: 24,
+  },
+  iconGrey: {
+    tintColor: 'grey',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 16,
+    height: 16,
+  },
   readMoreButton: {
     fontSize: 16,
     fontWeight: '700',
@@ -166,7 +163,7 @@ const styles = StyleSheet.create({
   },
   continueButton: {
     width: '100%',
-    height: 48,
+    height: 56,
     borderRadius: 32,
     marginTop: 25,
     flexDirection: 'row',
