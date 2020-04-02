@@ -20,6 +20,7 @@ import {
   CreateAccount,
   CompleteAccount,
   EditProfile,
+  NativeBridgeTests,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
@@ -35,7 +36,7 @@ import {observer, inject} from 'mobx-react';
 const CommonHome = () => {
   return (
     <Tab.Navigator>
-      {/*<Tab.Screen name="Test" component={NativeBridgeTests} />*/}
+      <Tab.Screen name="Test" component={NativeBridgeTests} />
       <Tab.Screen name="Commons" component={CommonsList} />
 
       <Tab.Screen name="Profile" component={UserProfile} />
