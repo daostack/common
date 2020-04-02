@@ -8,199 +8,158 @@ import {
   Dimensions,
   ScrollView,
   SafeAreaView,
+  StatusBar,
 } from 'react-native';
+import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors} from '../../Theme';
 import {observer, inject} from 'mobx-react';
+import Swiper from 'react-native-swiper';
 const {width} = Dimensions.get('window');
 
 const CreateCommon = ({navigation}) => {
   const [common, setCommon] = useState(false);
 
   return (
-    <SafeAreaView style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'white'}}>
-      <ScrollView
-        contentContainerStyle={{
-          width,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            paddingHorizontal: 24,
-            backgroundColor: 'white',
-          }}>
-          <View style={{backgroundColor: '#f1f1f1', width, height: 149}} />
-          <Text
-            style={{
-              marginTop: 24,
-              fontWeight: 'bold',
-              fontSize: 16,
-              textAlign: 'center',
-            }}>
-            Organize a community to work together for a cause you care about
-          </Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-              // justifyContent: 'center',
-              marginTop: 36,
-              paddingHorizontal: 20,
-            }}>
-            <View>
+    <>
+      <StatusBar barStyle="dark-content" />
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.body}>
+          {/* <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Common!</Text>
+          </View> */}
+
+          <Swiper
+            style={styles.wrapper}
+            showsButtons={false}
+            activeDotColor={colors.mainBlue}
+            autoplay={true}
+            paginationStyle={{bottom: 0}}>
+              <View style={styles.slide1}>
               <Image
-                source={require('../../Assets/funding.png')}
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: 24,
-                  height: 24,
-                  // left: 0,
-                  marginRight: 8,
-                  position: 'relative',
-                }}
+                source={require('../../Assets/common.png')}
+                style={styles.image}
               />
+              <Text style={styles.text}>Create a Common</Text>
+              <Text style={styles.subtitle}>
+                Organize a community to work together for a cause you care about
+              </Text>
             </View>
-            <View>
-              <Text style={styles.subtitle}>Raise the funds you need</Text>
-              <Text style={styles.bodyText}>
+            <View style={styles.slide1}>
+              <Image
+                source={require('../../Assets/funds.png')}
+                style={styles.image}
+              />
+              <Text style={styles.text}>Raise the funds you need</Text>
+              <Text style={styles.subtitle}>
                 Set the amount of money you want to raise to reach your goal and
                 how much each member should donate.
               </Text>
             </View>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-              // justifyContent: 'center',
-              marginTop: 28,
-              paddingHorizontal: 20,
-            }}>
-            <View>
+            <View style={styles.slide1}>
               <Image
-                source={require('../../Assets/members24.png')}
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: 24,
-                  height: 24,
-                  left: 0,
-                  marginRight: 8,
-                }}
+                source={require('../../Assets/crowd.png')}
+                style={styles.image}
               />
-            </View>
-            <View>
+              <Text style={styles.text}>Harness the power of the crowd</Text>
               <Text style={styles.subtitle}>
-                Harness the power of the crowd
-              </Text>
-              <Text style={styles.bodyText}>
                 All members of the common has equal weight in the decision
                 making process. From what action you should take, through how to
                 spend the money and even who should be a member.
               </Text>
             </View>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-              // justifyContent: 'center',
-              marginTop: 28,
-              paddingHorizontal: 15,
-            }}>
-            <View>
+            <View style={styles.slide1}>
               <Image
-                source={require('../../Assets/blockchain1.png')}
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: 24,
-                  height: 24,
-                  marginRight: 8,
-                }}
+                source={require('../../Assets/decentralised.png')}
+                style={styles.image}
               />
-            </View>
-            <View>
-              <Text style={styles.subtitle}>
+              <Text style={styles.text}>
                 Keep things completely decentralised
               </Text>
-              <Text style={styles.bodyText}>
-                Everything is automated and protected by blockchain technology
-                to assure decisions match the common consensus.
+              <Text style={styles.subtitle}>
+                All members of the common has equal weight in the decision
+                making process. From what action you should take, through how to
+                spend the money and even who should be a member.
               </Text>
             </View>
+          </Swiper>
+
+          <View style={styles.buttonConatiner}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.navigate('CreateCommon')}>
+              <Text style={styles.buttonText}>Get started</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </ScrollView>
-      <View style={{width: '80%', marginBottom: 20}}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('CreateCommon')}
-          style={styles.continueButton}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: 'white',
-              fontWeight: '700',
-            }}>
-            Get started
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  oval: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#ffffff',
-    borderStyle: 'solid',
-    borderWidth: 2,
-    borderColor: colors.grey4,
+  safeArea: {
+    flex: 1,
+    backgroundColor: Colors.white,
+  },
+  body: {
+    backgroundColor: Colors.white,
+    flex: 1,
+    flexDirection: 'column',
+  },
+  sectionContainer: {
+    marginTop: 22,
+    marginBottom: 34,
+  },
+  buttonConatiner: {
+    marginTop: 22,
+    marginBottom: 22,
+  },
+  button: {
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 25,
+    marginHorizontal: 24,
+    backgroundColor: '#3cc7e1',
   },
-  oval2: {
-    width: 32,
-    height: 32,
-    borderRadius: 24,
-    backgroundColor: '#ffffff',
-    borderStyle: 'solid',
-    borderWidth: 2,
-    borderColor: colors.grey4,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  readMoreButton: {
+  buttonText: {
+    color: '#fff',
     fontSize: 16,
-    fontWeight: '700',
-    color: colors.mainBlue,
+    fontWeight: 'bold',
+    paddingVertical: 15,
   },
-  continueButton: {
+  sectionTitle: {
+    fontSize: 20,
+    //   fontFamily: 'Roboto',
+    fontWeight: '600',
+    color: Colors.black,
+    textAlign: 'center',
+  },
+  image: {
+    top: 0,
     width: '100%',
-    height: 60,
-    borderRadius: 32,
-    marginTop: 25,
-    paddingHorizontal: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.mainBlue,
+    height: '70%',
+    // backgroundColor: '#efefef',
+  },
+  wrapper: {},
+  slide1: {
+    flex: 1,
+  },
+  text: {
+    paddingHorizontal: 33,
+    paddingVertical: 10,
+    textAlign: 'center',
+    color: colors.black,
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontFamily: 'Roboto',
   },
   subtitle: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    fontFamily: 'Roboto',
-  },
-  bodyText: {
+    paddingHorizontal: 40,
+    paddingVertical: 10,
+    textAlign: 'center',
+    color: colors.black,
     fontSize: 14,
     fontFamily: 'Roboto',
-    marginTop: 12,
-    marginBottom: 23,
   },
 });
 
