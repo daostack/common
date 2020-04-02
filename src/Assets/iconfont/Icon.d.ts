@@ -6,7 +6,7 @@ import { ViewProps } from 'react-native';
 import { GProps } from 'react-native-svg';
 
 interface Props extends GProps, ViewProps {
-  name: 'approved-' | 'declined-' | 'close' | 'account-selected' | 'commons-selected' | 'check-' | 'edit-' | 'follow' | 'feed-selected' | 'follow-' | 'following-' | 'group' | 'following' | 'menu' | 'report-' | 'picture' | 'pencil' | 'save' | 'verification' | 'wallet' | 'left-arrow' | 'common' | 'right-arrow' | 'left-arrow-16' | 'account-place-holder' | 'feed' | 'google' | 'account';
+  name: 'agenda' | 'dao-general-info' | 'funds' | 'style' | 'account-place-holder1' | 'approved' | 'declined' | 'close' | 'account-selected' | 'commons-selected' | 'check' | 'edit' | 'follow' | 'feed-selected' | 'group' | 'following' | 'menu' | 'report' | 'picture' | 'pencil' | 'save' | 'verification' | 'wallet' | 'left-arrow' | 'common' | 'right-arrow' | 'account-place-holder' | 'feed' | 'google' | 'account';
   size?: number;
   color?: string | string[];
 }

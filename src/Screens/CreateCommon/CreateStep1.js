@@ -32,14 +32,15 @@ const CreateStep1 = props => {
       <Text style={{marginTop: 24, fontWeight: '700', fontSize: 18, textAlign: 'center'}}>
         General Info
       </Text>
-      <Text style={{marginTop: 12, marginBottom: 23}}>
+      <Text style={{marginTop: 12, marginBottom: 23, textAlign: 'center'}}>
         Describe your cause so people will understand what you want to achieve
         and how
       </Text>
+      <View style={{backgroundColor: colors.grey4, height: 1, width:'100%', marginBottom: 40,}}/>
       <TextInputField
         value={''}
         viewStyle={{alignSelf: 'stretch'}}
-        label="Common Name"
+        label="Common name"
         placeholderText=""
         autoCapitalize="none"
         autoCorrect={false}

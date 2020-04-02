@@ -12,6 +12,7 @@ import {
 import TextInputField from '../../Components/FormFields/TextInputField';
 import {colors} from '../../Theme';
 import {observer, inject} from 'mobx-react';
+import Icon from '../../Assets/iconfont/Icon';
 import * as Progress from 'react-native-progress';
 import CreateStep1 from './CreateStep1';
 import CreateStep2 from './CreateStep2';
@@ -56,39 +57,69 @@ const CreateCommon = props => {
             alignItems: 'center',
             justifyContent: 'space-between',
             width: '100%',
-            // padding: 32,
             marginBottom: 24,
+            paddingHorizontal: 30,
           }}>
           <Progress.Bar
             progress={progressList[currentIndex]} // 0 0.35 0.7 1.0
-            width={width - 48}
+            width={width - 48 - 60}
             color={colors.mainBlue}
             borderWidth={0}
             unfilledColor={colors.grey4}
-            style={{height: 2, flex: 1, position: 'absolute'}}
+            style={{
+              height: 2,
+              position: 'absolute',
+              marginHorizontal: 30,
+            }}
           />
-          <View style={ currentIndex === 0 ?  {...styles.oval} : {...styles.oval2} }>
+          <View
+            style={currentIndex === 0 ? {...styles.oval} : {...styles.oval2}}>
             <Image
-              source={currentIndex === 0 ? require('../../Assets/daoGeneralInfo.png') : require('../../Assets/checkmark.png')}
+              source={
+                currentIndex === 0
+                  ? require('../../Assets/daoGeneralInfo.png')
+                  : require('../../Assets/checkmark.png')
+              }
               style={styles.iconBlue}
             />
           </View>
-          <View style={ currentIndex === 1 ?  {...styles.oval} : {...styles.oval2} }>
+          <View
+            style={currentIndex === 1 ? {...styles.oval} : {...styles.oval2}}>
             <Image
-              source={ currentIndex <= 1 ? require('../../Assets/funding.png') : require('../../Assets/checkmark.png') }
-              style={ currentIndex < 1 ? {...styles.iconGrey} : {...styles.iconBlue} }
+              source={
+                currentIndex <= 1
+                  ? require('../../Assets/funding.png')
+                  : require('../../Assets/checkmark.png')
+              }
+              style={
+                currentIndex < 1 ? {...styles.iconGrey} : {...styles.iconBlue}
+              }
             />
           </View>
-          <View style={currentIndex === 2 ?  {...styles.oval} : {...styles.oval2} }>
+          <View
+            style={currentIndex === 2 ? {...styles.oval} : {...styles.oval2}}>
             <Image
-              source={ currentIndex <= 2 ? require('../../Assets/agenda.png') : require('../../Assets/checkmark.png') }
-              style={ currentIndex < 2 ? {...styles.iconGrey} : {...styles.iconBlue} }
+              source={
+                currentIndex <= 2
+                  ? require('../../Assets/agenda.png')
+                  : require('../../Assets/checkmark.png')
+              }
+              style={
+                currentIndex < 2 ? {...styles.iconGrey} : {...styles.iconBlue}
+              }
             />
           </View>
-          <View style={ currentIndex === 3 ?  {...styles.oval} : {...styles.oval2} }>
+          <View
+            style={currentIndex === 3 ? {...styles.oval} : {...styles.oval2}}>
             <Image
-              source={ currentIndex <= 3 ? require('../../Assets/members24.png') : require('../../Assets/checkmark.png') }
-              style={ currentIndex < 3 ? {...styles.iconGrey} : {...styles.iconBlue} }
+              source={
+                currentIndex <= 3
+                  ? require('../../Assets/members24.png')
+                  : require('../../Assets/checkmark.png')
+              }
+              style={
+                currentIndex < 3 ? {...styles.iconGrey} : {...styles.iconBlue}
+              }
             />
           </View>
         </View>
@@ -126,8 +157,8 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     backgroundColor: '#ffffff',
     borderStyle: 'solid',
-    borderWidth: 2,
-    borderColor: colors.grey4,
+    borderWidth: 1,
+    borderColor: colors.mainBlue,
     alignItems: 'center',
     justifyContent: 'center',
   },
