@@ -145,7 +145,7 @@ const App = ({userStore}) => {
 
     checkOnboardingStatus();
     loadUser();
-  }, []);
+  });
 
   return (
     <ApolloProvider client={client}>

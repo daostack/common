@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   View,
+  Image,
 } from 'react-native';
 
 import Swiper from 'react-native-swiper';
@@ -164,6 +165,26 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
               achieve its goal
             </Text>
           </View>
+
+          {/*
+
+<Swiper
+            style={styles.wrapper}
+            loop={false}
+            nestedScrollEnabled={true}
+            showsButtons={false}>
+            <View style={styles.swiperContentWrapper}>
+              <View style={styles.swiperContent}>
+
+              </View>
+            </View>
+
+            <View style={styles.swiperContentWrapper}>
+              <View style={styles.swiperContent} />
+            </View>
+          </Swiper>
+    
+    */}
         </View>
       </>
     );
@@ -249,6 +270,13 @@ const styles = StyleSheet.create({
     ...layout.marginTopL,
   },
 
+  contentContainerWithoutPadding: {
+    ...layout.content,
+    ...layout.flexStart,
+    ...layout.marginTopL,
+    paddingHorizontal: 0,
+  },
+
   countBoxContainer: {
     ...layout.flexRow,
     ...layout.marginTopL,
@@ -295,7 +323,16 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   wrapper: {
-    flexGrow: 0,
+    height: 240,
+  },
+  swiperContentWrapper: {
+    paddingHorizontal: 20,
+    flex: 1,
+  },
+  swiperContent: {
+    backgroundColor: '#efefef',
+    borderRadius: 14,
+    flex: 1,
   },
 });
 
