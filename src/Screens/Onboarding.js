@@ -12,16 +12,19 @@ import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import Swiper from 'react-native-swiper';
 import AsyncStorage from '@react-native-community/async-storage';
 
-const onboardingClick = async navigation => {
-  try {
-    await AsyncStorage.setItem('FirstTimeOpenApp', 'false');
-    navigation.navigate('CreateAccount');
-  } catch (e) {
-    console.log(e);
-  }
-};
-
 const Onboarding = ({navigation}) => {
+  _onboardingClick = async () => {
+    try {
+      await AsyncStorage.setItem('onboarded', 'true');
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'CommonHome'}],
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -58,7 +61,7 @@ const Onboarding = ({navigation}) => {
           <View style={styles.buttonConatiner}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => onboardingClick(navigation)}>
+              onPress={() => _onboardingClick(navigation)}>
               <Text style={styles.buttonText}>Explore Commons!</Text>
             </TouchableOpacity>
           </View>
