@@ -1,3 +1,4 @@
+
 import React, {useEffect, useState} from 'react';
 import {
   Image,
@@ -16,7 +17,7 @@ import {observer, inject} from 'mobx-react';
 import Swiper from 'react-native-swiper';
 const {width} = Dimensions.get('window');
 
-const CreateCommon = ({navigation}) => {
+const CommonExplanation = ({navigation}) => {
   const [common, setCommon] = useState(false);
 
   return (
@@ -86,7 +87,7 @@ const CreateCommon = ({navigation}) => {
           <View style={styles.buttonConatiner}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => navigation.navigate('CreateCommon')}>
+              onPress={() => navigation.navigate('CreateStep1')}>
               <Text style={styles.buttonText}>Get started</Text>
             </TouchableOpacity>
           </View>
@@ -163,4 +164,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('completeAccountFormStore')(observer(CreateCommon));
+export default inject('completeAccountFormStore')(observer(CommonExplanation));

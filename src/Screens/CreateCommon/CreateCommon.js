@@ -139,7 +139,7 @@ const CreateCommon = (props) => {
             </View>
           </TouchableOpacity>
         </View>
-        <Swiper
+        {/* <Swiper
           ref={swiper}
           showsButtons={false}
           showsPagination={false}
@@ -152,7 +152,7 @@ const CreateCommon = (props) => {
           <CreateStep2 />
           <CreateStep3 />
           <CreateStep4 />
-        </Swiper>
+        </Swiper> */}
 
         <TouchableOpacity style={styles.continueButton} onPress={nextIndex}>
           <Text
