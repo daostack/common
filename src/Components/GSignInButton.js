@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import {colors, text, layout} from '../Theme';
 
@@ -23,22 +23,16 @@ const GSignInButton = ({onSignIn}) => {
   });
 
   _signIn = async () => {
-    console.log('Sign In Called');
-
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      console.log('user_info -> ', userInfo);
       const mnemonic = await _getMnemonic();
-      console.log('mnemonic -> ', mnemonic);
       await NativeModules.WalletModule.storeMnemonic(mnemonic);
       if (onSignIn) {
         onSignIn(userInfo);
       }
       setSignInError(null);
     } catch (error) {
-      console.log('Error -> ', error);
-      throw error;
       switch (error.code) {
         case statusCodes.SIGN_IN_CANCELLED:
           setSignInError('Canceled');
@@ -63,14 +57,10 @@ const GSignInButton = ({onSignIn}) => {
 
     let appData = await googleDriveService.getAppData();
 
-    console.log('getMnemonic -> ', appData.files);
-
     if (appData.files && appData.files.length > 0) {
       const fileContent = await googleDriveService.getFileById(
         appData.files[0].id,
       );
-
-      console.log('fileContent -> ', fileContent);
       const jsonContent = JSON.parse(fileContent);
       return jsonContent.mnemonic;
     } else {
@@ -81,7 +71,6 @@ const GSignInButton = ({onSignIn}) => {
   };
 
   _signOut = async () => {
-    console.log('Sign Out Called');
     try {
       //await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();

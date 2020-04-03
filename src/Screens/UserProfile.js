@@ -28,7 +28,7 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
     if (route.params?.userUpdated) {
       Toast.done('Your profile is updated');
     }
-  }, []);
+  });
 
   _signOut = async () => {
     try {
