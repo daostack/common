@@ -16,50 +16,29 @@ let initialAppDataContent = {
 };
 
 const GSignInButton = ({onSignIn}) => {
-  const [isSignedIn, setIsSignedIn] = useState(false);
   const [signInError, setSignInError] = useState(null);
 
   GoogleSignin.configure({
     scopes: [GOOGLE_SIGNIN_PERMISSIONS.APP_DATA_RW],
   });
 
-  useEffect(() => {
-    _isUserSignedIn = async () => {
-      try {
-        setIsSignedIn(await GoogleSignin.isSignedIn());
-        if (isSignedIn) {
-          const userInfo = await GoogleSignin.signInSilently();
-          if (onSignIn) {
-            onSignIn(userInfo);
-          }
-        }
-        setSignInError(null);
-      } catch (error) {
-        const errorMessage =
-          error.code === statusCodes.SIGN_IN_REQUIRED
-            ? 'Please sign in'
-            : error.message;
-        setSignInError(new Error(errorMessage));
-      }
-    };
-
-    _isUserSignedIn();
-  });
-
   _signIn = async () => {
-    console.log('Sign in');
+    console.log('Sign In Called');
 
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      setIsSignedIn(true);
+      console.log('user_info -> ', userInfo);
       const mnemonic = await _getMnemonic();
+      console.log('mnemonic -> ', mnemonic);
       await NativeModules.WalletModule.storeMnemonic(mnemonic);
       if (onSignIn) {
         onSignIn(userInfo);
       }
       setSignInError(null);
     } catch (error) {
+      console.log('Error -> ', error);
+      throw error;
       switch (error.code) {
         case statusCodes.SIGN_IN_CANCELLED:
           setSignInError('Canceled');
@@ -84,10 +63,14 @@ const GSignInButton = ({onSignIn}) => {
 
     let appData = await googleDriveService.getAppData();
 
+    console.log('getMnemonic -> ', appData.files);
+
     if (appData.files && appData.files.length > 0) {
       const fileContent = await googleDriveService.getFileById(
         appData.files[0].id,
       );
+
+      console.log('fileContent -> ', fileContent);
       const jsonContent = JSON.parse(fileContent);
       return jsonContent.mnemonic;
     } else {
@@ -98,11 +81,11 @@ const GSignInButton = ({onSignIn}) => {
   };
 
   _signOut = async () => {
+    console.log('Sign Out Called');
     try {
       //await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
 
-      setIsSignedIn(false);
       setSignInError(null);
     } catch (error) {
       setSignInError(error);
@@ -147,7 +130,7 @@ const GSignInButton = ({onSignIn}) => {
   return (
     <View style={styles.container}>
       {renderError()}
-      {!isSignedIn ? renderSignInButton() : null}
+      {renderSignInButton()}
     </View>
   );
 };

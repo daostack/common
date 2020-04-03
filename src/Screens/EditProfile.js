@@ -11,20 +11,20 @@ import {
 import EditProfileForm from '../Components/Forms/EditProfileForm';
 import {colors, text, layout} from '../Theme';
 import {observer, inject} from 'mobx-react';
+import {CommonActions} from '@react-navigation/native';
 
 const EditProfile = ({route, navigation, userStore}) => {
-  const renderFirstTimeHeader = () => {
-    return (
-      <View style={layout.marginBottomXL}>
-        <Text style={text.h1Black}>Complete your account</Text>
-        <Text style={styles.subtitle}>
-          Help the community get to know you better
-        </Text>
-      </View>
-    );
+  const onFormSubmit = () => {
+    const navigate = CommonActions.navigate({
+      name: 'Profile',
+      params: {
+        userUpdated: true,
+      },
+    });
+    navigation.dispatch(navigate);
   };
 
-  const renderEditProfileHeader = () => {
+  const renderFirstTimeHeader = () => {
     return (
       <View style={layout.marginBottomXL}>
         <Text style={text.h1Black}>Complete your account</Text>
@@ -44,10 +44,11 @@ const EditProfile = ({route, navigation, userStore}) => {
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
           <View style={styles.body}>
-            {route.params.isFirstOpening
-              ? renderFirstTimeHeader()
-              : renderEditProfileHeader}
-            <EditProfileForm firstOpening={route.params.isFirstOpening} />
+            {route.params.isFirstOpening ? renderFirstTimeHeader() : null}
+            <EditProfileForm
+              firstOpening={route.params.isFirstOpening}
+              onFormSubmit={onFormSubmit}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>

@@ -40,8 +40,8 @@ export default class GoogleDriveService {
       {toFile: downloadHeaderPath},
       {},
     );
-    console.log('response -> ', response);
-    return RNFS.readFile(downloadHeaderPath, 'utf8');
+
+    return await RNFS.readFile(downloadHeaderPath, 'utf8');
   };
 
   async getAppData() {

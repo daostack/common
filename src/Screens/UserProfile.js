@@ -7,7 +7,8 @@ import {
   ScrollView,
   View,
 } from 'react-native';
-import React from 'react';
+
+import React, {useEffect} from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
 import {observer, inject} from 'mobx-react';
@@ -20,8 +21,15 @@ import CreateAccount from '../Screens/CreateAccount';
 
 import Icon from '../Assets/iconfont/Icon';
 import {CommonActions} from '@react-navigation/native';
+import Toast, {useToast} from '../Util/Toast';
 
-const UserProfile = ({editProfileFormStore, userStore, navigation}) => {
+const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
+  useEffect(() => {
+    if (route.params?.userUpdated) {
+      Toast.done('Your profile is updated');
+    }
+  }, []);
+
   _signOut = async () => {
     try {
       //await GoogleSignin.revokeAccess();
@@ -48,14 +56,15 @@ const UserProfile = ({editProfileFormStore, userStore, navigation}) => {
     navigation.dispatch(navigate);
   };
 
+  const onMyWalletPress = event => {
+    navigation.navigate('MyWallet');
+  };
+
   const renderUserProfilePicture = () => {
-    let imageOptions = {};
-
-    imageOptions = {placeholderUrl: userStore.userInfo?.photo};
-
     return (
       <ImageField
-        {...imageOptions}
+        value={userStore.userInfo?.profileImage}
+        placeholderUrl={userStore.userInfo?.photo}
         validation={{
           name: EditProfileForm.FIELD_PROFILE_IMAGE,
           formStore: editProfileFormStore,
@@ -63,10 +72,6 @@ const UserProfile = ({editProfileFormStore, userStore, navigation}) => {
         }}
       />
     );
-  };
-
-  const handleScreenScroll = e => {
-    console.log('SCROLL EVENT -> ', e);
   };
 
   const renderUnsignedUserData = () => {
@@ -174,48 +179,59 @@ const UserProfile = ({editProfileFormStore, userStore, navigation}) => {
     );
   };
 
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView></SafeAreaView>
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}
-          vertical={true}
-          nestedScrollEnabled={true}
-          directionalLockEnabled={true}
-          onScroll={handleScreenScroll}>
-          <View style={styles.body}>
-            {userStore.userInfo
-              ? renderSignedInUserData()
-              : renderUnsignedUserData()}
+  const renderScreen = () => {
+    return (
+      <>
+        <StatusBar barStyle="dark-content" />
 
-            <View style={layout.marginTopL}>
-              {userStore.userInfo ? (
-                <AccordionBtn
-                  title="My wallet"
-                  subtitle="1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2"
-                />
-              ) : null}
-              <AccordionBtn title="FAQ" />
-              <AccordionBtn title="Terms of use" />
-              <AccordionBtn title="Privacy Policy" />
-              <AccordionBtn title="Help" />
-              <AccordionBtn title="Contact us" />
-              {userStore.userInfo ? (
-                <AccordionBtn
-                  lightStyle={true}
-                  title="Logout"
-                  onPress={_signOut}
-                />
-              ) : null}
+        <SafeAreaView style={styles.safeArea}>
+          <ScrollView
+            contentInsetAdjustmentBehavior="automatic"
+            style={styles.scrollView}
+            vertical={true}
+            nestedScrollEnabled={true}
+            directionalLockEnabled={true}>
+            <View style={styles.body}>
+              {userStore.userInfo
+                ? renderSignedInUserData()
+                : renderUnsignedUserData()}
+
+              <View style={layout.marginTopL}>
+                {userStore.userInfo ? (
+                  <AccordionBtn
+                    title="My wallet"
+                    subtitle="1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2"
+                    onPress={onMyWalletPress}
+                  />
+                ) : null}
+                <AccordionBtn title="FAQ" />
+                <AccordionBtn title="Terms of use" />
+                <AccordionBtn title="Privacy Policy" />
+                <AccordionBtn title="Help" />
+                <AccordionBtn title="Contact us" />
+                {userStore.userInfo ? (
+                  <AccordionBtn
+                    lightStyle={true}
+                    title="Logout"
+                    onPress={_signOut}
+                  />
+                ) : null}
+              </View>
             </View>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
+          </ScrollView>
+        </SafeAreaView>
+      </>
+    );
+  };
+
+  const renderScreenLoader = () => {
+    return (
+      <View style={{...layout.content, ...{flex: 1}, ...colors.white}}>
+        <Text style={text.h1Black}>Loading ...</Text>
+      </View>
+    );
+  };
+  return userStore.isLoading ? renderScreenLoader() : renderScreen();
 };
 
 const styles = StyleSheet.create({

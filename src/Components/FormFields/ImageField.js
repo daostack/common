@@ -51,7 +51,9 @@ class ImageField extends React.Component {
         <Image
           style={styles.formImageFieldStyle}
           resizeMode="cover"
-          source={currValue}
+          source={{
+            uri: `data:image/png;base64,${currValue}`,
+          }}
         />
       );
     } else {

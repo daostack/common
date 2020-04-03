@@ -14,11 +14,22 @@ class EditProfileForm extends React.Component {
 
   formSkip() {}
 
-  formSave = () => {
-    const {editProfileFormStore, userId} = this.props;
+  formSave = e => {
+    console.log('FORM SAVE | EditProfileForm');
+    const {editProfileFormStore, userStore} = this.props;
+    console.log('this.props', this.props);
+    console.log('userStore.userInfo.id ->', userStore.userInfo.id);
+
+    console.log(
+      'editProfileFormStore.getChangedFormFieldsJson() -> ',
+      editProfileFormStore.getChangedFormFieldsJson(),
+    );
     if (editProfileFormStore.isFormValid()) {
       firebaseService
-        .editUser(userId, editProfileFormStore.getChangedFormFieldsJson())
+        .editUser(
+          userStore.userInfo.id,
+          editProfileFormStore.getChangedFormFieldsJson(),
+        )
         .catch(err => {
           editProfileFormStore.form.meta.submitError = `${err.toString()}  \n ${
             err.response
@@ -28,6 +39,9 @@ class EditProfileForm extends React.Component {
           editProfileFormStore.form.meta.isLoadingSubmit = false;
           throw err;
         });
+      if (this.props.onFormSubmit) {
+        this.props.onFormSubmit();
+      }
     }
   };
 
@@ -50,12 +64,12 @@ class EditProfileForm extends React.Component {
           marginTop: 15,
         }}>
         <ImageField
-          value={userStore.userInfo.profilePicture}
+          value={userStore.userInfo.profileImage}
           placeholderUrl={userStore.userInfo.photo}
           validation={{
             name: EditProfileForm.FIELD_PROFILE_IMAGE,
             formStore: this.props.editProfileFormStore,
-            validateRule: null,
+            validateRule: 'string',
           }}
         />
 

@@ -30,6 +30,7 @@ const CreateAccount = ({navigation, onSignedIn, userStore}) => {
   };
 
   onSignIn = async userInfo => {
+    userStore.setIsLoading(true);
     const internalUser = await firebaseService.getUserById(userInfo.user.id);
     const isNewUser = !internalUser;
     if (isNewUser) {
@@ -45,6 +46,7 @@ const CreateAccount = ({navigation, onSignedIn, userStore}) => {
 
     const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
     userStore.setSignedInUser(filteredUser);
+    userStore.setIsLoading(false);
 
     if (onSignedIn) {
       onSignedIn(isNewUser);
@@ -53,11 +55,6 @@ const CreateAccount = ({navigation, onSignedIn, userStore}) => {
 
   return (
     <View style={styles.componentContainer}>
-      {/** 
-      <View style={styles.sectionContainer}>
-        <Button style={layout.marginTopM} title="button" onPress={openSheet} />
-      </View>
-      */}
       <View style={styles.sectionContainer}>
         <Image source={require('../Assets/accountPlaceHolder.png')} />
       </View>

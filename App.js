@@ -17,6 +17,8 @@ import {
   CommonProfile,
   Onboarding,
   UserProfile,
+  HUDTest,
+  MyWallet,
   CreateAccount,
   CompleteAccount,
   EditProfile,
@@ -38,7 +40,6 @@ const CommonHome = () => {
     <Tab.Navigator>
       <Tab.Screen name="Test" component={NativeBridgeTests} />
       <Tab.Screen name="Commons" component={CommonsList} />
-
       <Tab.Screen name="Profile" component={UserProfile} />
     </Tab.Navigator>
   );
@@ -47,12 +48,13 @@ const CommonHome = () => {
 const App = ({userStore}) => {
   useEffect(() => {
     loadUser = async () => {
-      console.log('LOAD USER');
       try {
         if (!userStore.userInfo) {
+          console.log('LOAD USER 1');
           const googleSignedInUser = await authService.getGoogleSignedInUser();
           // Signed In Mode
           if (googleSignedInUser) {
+            userStore.setIsLoading(true);
             const appUser = await firebaseService.getUserById(
               googleSignedInUser.user.id,
             );
@@ -66,8 +68,8 @@ const App = ({userStore}) => {
               allUserInfo,
               userInfoFields,
             );
-            console.log('filteredUser -> ', filteredUser);
             userStore.setSignedInUser(filteredUser);
+            userStore.setIsLoading(false);
           }
           // Anonymous mode
           else {
@@ -79,7 +81,7 @@ const App = ({userStore}) => {
       }
     };
     loadUser();
-  }, [userStore.userInfo]);
+  });
 
   return (
     <ApolloProvider client={client}>
@@ -114,6 +116,8 @@ const App = ({userStore}) => {
           <Stack.Screen name="EditProfile" component={EditProfile} />
           <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
+          <Stack.Screen name="MyWallet" component={MyWallet} />
+          <Stack.Screen name="HUDTest" component={HUDTest} />
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>

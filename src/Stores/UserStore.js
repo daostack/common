@@ -4,7 +4,7 @@ export const userInfoFields = [
   'id',
   'name',
   'intro',
-  'profilePicture',
+  'profileImage',
   'photo',
   'byLine',
   'email',
@@ -14,9 +14,17 @@ export const userInfoFields = [
 
 class UserStore {
   userInfo;
+  isLoading;
+  myCommons;
+  myProposals;
   constructor() {
     userInfo = null;
+    isLoading = false;
   }
+
+  setIsLoading = loading => {
+    this.isLoading = loading;
+  };
 
   setSignedInUser = newUserInfo => {
     if (newUserInfo) {
@@ -25,8 +33,8 @@ class UserStore {
       if (newUserInfo.email) newUserObj.email = newUserInfo.email;
       if (newUserInfo.name) newUserObj.name = newUserInfo.name;
       if (newUserInfo.photo) newUserObj.photo = newUserInfo.photo;
-      if (newUserInfo.profilePicture)
-        newUserObj.profilePicture = newUserInfo.profilePicture;
+      if (newUserInfo.profileImage)
+        newUserObj.profileImage = newUserInfo.profileImage;
       if (newUserInfo.intro) newUserObj.intro = newUserInfo.intro;
       if (newUserInfo.ethereumAddress)
         newUserObj.ethereumAddress = newUserInfo.ethereumAddress;
@@ -44,6 +52,9 @@ class UserStore {
 decorate(UserStore, {
   setSignedInUser: action,
   userInfo: observable,
+  isLoading: observable,
+  myCommons: observable,
+  myProposals: observable,
 });
 
 export default UserStore;

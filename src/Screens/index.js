@@ -8,3 +8,5 @@ export NativeBridgeTests from './NativeBridgeTests';
 export UserProfile from './UserProfile';
 export Onboarding from './Onboarding';
 export EditProfile from './EditProfile';
+export HUDTest from './HUDTest';
+export MyWallet from './MyWallet';
