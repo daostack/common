@@ -8,6 +8,8 @@ import {
   View,
 } from 'react-native';
 
+import Swiper from 'react-native-swiper';
+
 import React, {useEffect} from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
@@ -119,18 +121,6 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
             as well as crypto and blockchain in general.
           </Text>
         </View>
-
-        {/*
-    <Swiper
-        style={styles.wrapper}
-        loop={false}
-        // dot={<View style={{backgroundColor: 'rgba(255,255,255,.0)', width: 0, height: 0, borderRadius: 0, marginLeft: 0, marginRight: 0}} />}
-        // activeDot={<View style={{backgroundColor: '#fff', width: 0, height: 0, borderRadius: 0, marginLeft: 0, marginRight: 0}} />}
-      >
-        <View style={styles.image3} />
-        <View style={{...styles.image3, backgroundColor: '#3cc7e1'}} />
-      </Swiper>
-    */}
 
         <View style={styles.contentContainer}>
           <Text style={text.h3Black}>Commons (0)</Text>
@@ -303,6 +293,9 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 0,
     elevation: 0,
+  },
+  wrapper: {
+    flexGrow: 0,
   },
 });
 

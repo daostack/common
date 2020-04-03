@@ -90,12 +90,12 @@ const CommonHome = () => {
       {/*<Tab.Screen name="Test" component={NativeBridgeTests} />*/}
       <Tab.Screen name="My feed" component={UserProfile} />
       <Tab.Screen name="Explore" component={CommonsList} />
-      <Tab.Screen name="Profile" component={CreateAccount} />
+      <Tab.Screen name="Profile" component={UserProfile} />
     </Tab.Navigator>
   );
 };
 
-const App = () => {
+const App = ({userStore}) => {
   const [onboarded, setOnboarded] = useState();
   useEffect(() => {
     const loadUser = async () => {

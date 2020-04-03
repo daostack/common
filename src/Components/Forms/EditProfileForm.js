@@ -15,15 +15,7 @@ class EditProfileForm extends React.Component {
   formSkip() {}
 
   formSave = e => {
-    console.log('FORM SAVE | EditProfileForm');
     const {editProfileFormStore, userStore} = this.props;
-    console.log('this.props', this.props);
-    console.log('userStore.userInfo.id ->', userStore.userInfo.id);
-
-    console.log(
-      'editProfileFormStore.getChangedFormFieldsJson() -> ',
-      editProfileFormStore.getChangedFormFieldsJson(),
-    );
     if (editProfileFormStore.isFormValid()) {
       firebaseService
         .editUser(
