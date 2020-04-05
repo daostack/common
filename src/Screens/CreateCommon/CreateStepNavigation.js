@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {useEffect, useRef, useState} from 'react';
 import {
   Image,
@@ -10,28 +11,32 @@ import {
   SafeAreaView,
 } from 'react-native';
 import NavigationBar from 'react-native-navbar';
+import Icon from '../../Assets/iconfont/Icon';
 
 const CreateStepNavigation = (props) => {
-  // const rightButtonConfig = {
-  //   title: 'Next',
-  //   // handler: () => alert('hello!'),
-  // };
-
-  // const titleConfig = {
-  //   title: 'Hello, world',
-  // };
 
   return (
-    <View style={styles.container}>
-      <NavigationBar title={'test'} />
-    </View>
+    <NavigationBar
+    statusBar={{hidden: true}}
+    leftButton={
+      <TouchableOpacity
+        style={{justifyContent: 'center', flexDirection: 'row'}}
+        onPress={() => props.navigation.pop()}>
+        <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
+        <Text
+          style={{
+            fontWeight: 'bold',
+            alignSelf: 'center',
+            fontSize: 16,
+            top: -5,
+            marginLeft: 3,
+          }}>
+          {props.title}
+        </Text>
+      </TouchableOpacity>
+    }
+  />
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default CreateStepNavigation;

@@ -12,11 +12,12 @@ import {
 } from 'react-native';
 import TextInputField from '../../Components/FormFields/TextInputField';
 import {colors} from '../../Theme';
+import Icon from '../../Assets/iconfont/Icon';
 import {observer, inject} from 'mobx-react';
 const {width, height} = Dimensions.get('window');
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import CreateStepHeader from './CreateStepHeader';
-import NavigationBar from 'react-native-navbar';
+import CreateStepNavigation from './CreateStepNavigation';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Modal from 'react-native-modal';
 import moment from 'moment';
@@ -54,28 +55,9 @@ const CreateStep2 = (props) => {
         flex: 1,
         backgroundColor: 'white',
       }}>
-      <NavigationBar
-        statusBar={{hidden: true}}
-        style={{borderBottomWidth: 1, borderBottomColor: colors.grey4}}
-        // title={{
-        //   title: 'Create a common',
-        // }}
-        leftButton={
-          <TouchableOpacity
-            style={{justifyContent: 'center', flexDirection: 'row'}}
-            onPress={() => props.navigation.pop()}>
-            <Image
-              source={require('../../Assets/backArrow.png')}
-              style={{
-                resizeMode: 'contain',
-                width: 32,
-                height: 32,
-                marginLeft: 20,
-              }}
-            />
-            <Text style={{fontWeight: 'bold', alignSelf: 'center', fontSize: 16, top:-5, marginLeft:8 }}>General Info</Text>
-          </TouchableOpacity>
-        }
+      <CreateStepNavigation
+        navigation={props.navigation}
+        title="General info"
       />
       <Animated.View style={[styles.header, {height: headerHeight}]}>
         <View style={styles.bar}>
@@ -211,7 +193,7 @@ const CreateStep2 = (props) => {
         </View>
         <TouchableOpacity
           style={styles.continueButton}
-          onPress={() => props.navigation.navigate('CreateStep2')}>
+          onPress={() => props.navigation.navigate('CreateStep3')}>
           <Text
             style={{
               fontSize: 16,

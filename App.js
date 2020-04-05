@@ -24,6 +24,8 @@ import {
   CommonExplanation,
   CreateStep1,
   CreateStep2,
+  CreateStep3,
+  CreateStep4,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
@@ -90,36 +92,31 @@ const App = () => {
             name="CreateStep1"
             component={CreateStep1}
             options={({navigation, route}) => ({
-              headerTitle: 'Create a common',
               headerShown: false,
-              headerBackTitleVisible: false,
-              headerLeftContainerStyle: {marginLeft: 20},
-              headerRightContainerStyle: {marginRight: 20},
-              headerBackImage: () => (
-                <Image
-                  source={require('./src/Assets/backArrow.png')}
-                  style={{resizeMode: 'contain', width: 32, height: 32}}
-                />
-              ),
             })}
           />
           <Stack.Screen
             name="CreateStep2"
             component={CreateStep2}
             options={({navigation, route}) => ({
-              headerTitle: 'Common!',
               headerShown: false,
-              headerBackTitleVisible: true,
-              headerLeftContainerStyle: {marginLeft: 20},
-              headerRightContainerStyle: {marginRight: 20},
-              headerBackImage: () => (
-                <Image
-                  source={require('./src/Assets/backArrow.png')}
-                  style={{resizeMode: 'contain', width: 32, height: 32}}
-                />
-              ),
             })}
           />
+          <Stack.Screen
+            name="CreateStep3"
+            component={CreateStep3}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="CreateStep4"
+            component={CreateStep4}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+
           <Stack.Screen name="Profile" component={UserProfile} />
         </Stack.Navigator>
       </NavigationContainer>

@@ -16,6 +16,7 @@ import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import NavigationBar from 'react-native-navbar';
+import Icon from '../../Assets/iconfont/Icon';
 
 const CreateStep1 = (props) => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
@@ -48,15 +49,7 @@ const CreateStep1 = (props) => {
           <TouchableOpacity
             style={{justifyContent: 'center'}}
             onPress={() => props.navigation.pop()}>
-            <Image
-              source={require('../../Assets/backArrow.png')}
-              style={{
-                resizeMode: 'contain',
-                width: 32,
-                height: 32,
-                marginLeft: 20,
-              }}
-            />
+            <Icon name="left-arrow" size={32} style={{marginLeft:10}} />
           </TouchableOpacity>
         }
       />
