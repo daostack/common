@@ -265,7 +265,6 @@ const styles = StyleSheet.create({
   body: {
     paddingTop: 40,
   },
-
   safeArea: {
     flex: 1,
     backgroundColor: Colors.white,
