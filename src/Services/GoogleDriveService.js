@@ -49,9 +49,9 @@ export default class GoogleDriveService {
     return response.json();
   }
 
-  async setAppData(mnemonic) {
+  async setAppData(appDataJson) {
     return await GDrive.files.createFileMultipart(
-      mnemonic,
+      appDataJson,
       mimeType,
       {
         parents: [appDataFolder],

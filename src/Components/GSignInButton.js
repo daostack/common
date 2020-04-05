@@ -65,7 +65,9 @@ const GSignInButton = ({onSignIn}) => {
       return jsonContent.mnemonic;
     } else {
       initialAppDataContent.mnemonic = await NativeModules.WalletModule.generateMnemonic();
-      await googleDriveService.setAppData(initialAppDataContent);
+      await googleDriveService.setAppData(
+        JSON.stringify(initialAppDataContent),
+      );
       return initialAppDataContent.mnemonic;
     }
   };
