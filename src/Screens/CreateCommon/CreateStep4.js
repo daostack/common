@@ -17,7 +17,7 @@ const {width, height} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 
-const CreateStep4 = props => {
+const CreateStep4 = (props) => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
 
@@ -38,10 +38,7 @@ const CreateStep4 = props => {
         flex: 1,
         backgroundColor: 'white',
       }}>
-      <CreateStepNavigation
-        navigation={props.navigation}
-        title="Agenda"
-      />
+      <CreateStepNavigation navigation={props.navigation} title="Agenda" />
       <Animated.View style={[styles.header, {height: headerHeight}]}>
         <View style={styles.bar}>
           <View
@@ -127,8 +124,7 @@ const CreateStep4 = props => {
           <View
             style={{height: 1, width: width, backgroundColor: colors.grey4}}
           />
-          <View
-            style={styles.sectionTitle}>
+          <View style={styles.sectionTitle}>
             <View style={{width: 90, marginRight: 10}}>
               <Text
                 style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>
@@ -156,8 +152,7 @@ const CreateStep4 = props => {
               />
             </TouchableOpacity>
           </View>
-          <View
-            style={styles.sectionTitle}>
+          <View style={styles.sectionTitle}>
             <Text style={{fontSize: 18, fontWeight: 'bold'}}>About</Text>
             <TouchableOpacity
               style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
@@ -175,8 +170,7 @@ const CreateStep4 = props => {
             meetups.
           </Text>
           <>
-            <View
-              style={styles.sectionTitle}>
+            <View style={styles.sectionTitle}>
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>
                 Course of action
               </Text>
@@ -195,8 +189,7 @@ const CreateStep4 = props => {
             </Text>
           </>
           <>
-            <View
-              style={styles.sectionTitle}>
+            <View style={styles.sectionTitle}>
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>Link</Text>
               <TouchableOpacity
                 style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
@@ -207,13 +200,10 @@ const CreateStep4 = props => {
                 />
               </TouchableOpacity>
             </View>
-            <Text style={styles.textContent}>
-              https://www.google.com/
-            </Text>
+            <Text style={styles.textContent}>https://www.google.com/</Text>
           </>
           <>
-            <View
-              style={styles.sectionTitle}>
+            <View style={styles.sectionTitle}>
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>Deadline</Text>
               <TouchableOpacity
                 style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
@@ -227,11 +217,16 @@ const CreateStep4 = props => {
             <Text style={styles.textContent}>03 April 2021</Text>
           </>
           <>
-            <Text style={{fontSize: 14, marginTop: 20, paddingHorizontal:24, color: colors.grey3}}>
+            <Text
+              style={{
+                fontSize: 14,
+                marginTop: 20,
+                paddingHorizontal: 24,
+                color: colors.grey3,
+              }}>
               Rule #1
             </Text>
-            <View
-              style={styles.sectionTitle}>
+            <View style={styles.sectionTitle}>
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>
                 No promotions or spam
               </Text>
@@ -250,11 +245,16 @@ const CreateStep4 = props => {
             </Text>
           </>
           <>
-            <Text style={{fontSize: 14, marginTop: 20, paddingHorizontal:24, color: colors.grey3}}>
+            <Text
+              style={{
+                fontSize: 14,
+                marginTop: 20,
+                paddingHorizontal: 24,
+                color: colors.grey3,
+              }}>
               Rule #2
             </Text>
-            <View
-              style={styles.sectionTitle}>
+            <View style={styles.sectionTitle}>
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>
                 Be courteous and kind to others
               </Text>
@@ -277,7 +277,7 @@ const CreateStep4 = props => {
         <TouchableOpacity
           style={styles.continueButton}
           // onPress={() => props.navigation.navigate('CreateStep2')}
-          >
+        >
           <Text
             style={{
               fontSize: 16,
@@ -377,17 +377,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.mainBlue,
   },
-  sectionTitle:{
+  sectionTitle: {
     flexDirection: 'row',
     marginTop: 40,
     marginBottom: 10,
     flex: 1,
-    paddingHorizontal:24,
+    paddingHorizontal: 24,
   },
   textContent: {
     fontSize: 14,
-    marginTop: 0, 
-    paddingHorizontal:24,
+    marginTop: 0,
+    paddingHorizontal: 24,
   },
 });
 

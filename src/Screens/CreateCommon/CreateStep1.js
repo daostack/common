@@ -21,6 +21,7 @@ import Icon from '../../Assets/iconfont/Icon';
 const CreateStep1 = (props) => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
+  const [ruleCount, setRuleCount] = useState(1);
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -49,7 +50,7 @@ const CreateStep1 = (props) => {
           <TouchableOpacity
             style={{justifyContent: 'center'}}
             onPress={() => props.navigation.pop()}>
-            <Icon name="left-arrow" size={32} style={{marginLeft:10}} />
+            <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
           </TouchableOpacity>
         }
       />
@@ -152,23 +153,29 @@ const CreateStep1 = (props) => {
               validateRule: '',
             }}
           />
-          <TextInputField
-            value={''}
-            viewStyle={{}}
-            label="Add link"
-            infoLabel="Resources, related content or social pages"
-            placeholderText=""
-            autoCapitalize="none"
-            autoCorrect={false}
-            validation={{
-              name: 'link',
-              formStore: props.completeAccountFormStore,
-              validateRule: 'string',
-            }}
-          />
+          {[...Array(ruleCount)].map((x) => (
+            <TextInputField
+              value={''}
+              viewStyle={{}}
+              label="Add link"
+              infoLabel="Resources, related content or social pages"
+              placeholderText=""
+              autoCapitalize="none"
+              autoCorrect={false}
+              validation={{
+                name: `link + ${x}`,
+                formStore: props.completeAccountFormStore,
+                validateRule: 'string',
+              }}
+            />
+          ))}
           <View style={{width: '100%'}}>
             <TouchableOpacity>
-              <Text style={styles.readMoreButton}>Add Link</Text>
+              <Text
+                style={styles.readMoreButton}
+                onPress={() => setRuleCount(ruleCount + 1)}>
+                Add Link
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

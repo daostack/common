@@ -9,22 +9,20 @@ import {
   Dimensions,
   SafeAreaView,
   Animated,
+  TextInput,
 } from 'react-native';
 import TextInputField from '../../Components/FormFields/TextInputField';
 import {colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import {observer, inject} from 'mobx-react';
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
-import NavigationBar from 'react-native-navbar';
 import CreateStepNavigation from './CreateStepNavigation';
 
-const CreateStep3 = props => {
+const CreateStep3 = (props) => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [segmentedIndex, setSegmentedIndex] = useState(0);
-  const [pickDate, setPickDate] = useState('Custom');
-  const [show, setShow] = useState(false);
+  const [ruleCount, setRuleCount] = useState(1);
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -43,10 +41,7 @@ const CreateStep3 = props => {
         flex: 1,
         backgroundColor: 'white',
       }}>
-      <CreateStepNavigation
-        navigation={props.navigation}
-        title="Funding"
-      />
+      <CreateStepNavigation navigation={props.navigation} title="Funding" />
       <Animated.View style={[styles.header, {height: headerHeight}]}>
         <View style={styles.bar}>
           <View
@@ -120,7 +115,8 @@ const CreateStep3 = props => {
           </Text>
           <Text
             style={{
-              marginVertical: 15,
+              // marginVertical: 15,
+              marginTop: 15,
               fontSize: 12,
               color: colors.grey3,
             }}>
@@ -128,6 +124,47 @@ const CreateStep3 = props => {
             discussion, accepted language, you do not talk about Fight Club
             etc.)
           </Text>
+
+          {[...Array(ruleCount)].map((x) => (
+            <>
+              <TextInput
+                style={{
+                  borderColor: colors.grey4,
+                  padding: 10,
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  borderWidth: 1,
+                  marginTop: 20,
+                }}
+                placeholder="Rule title"
+              />
+              <TextInput
+                style={{
+                  borderColor: colors.grey4,
+                  padding: 10,
+                  borderWidth: 1,
+                  borderTopWidth: 0,
+                  borderBottomRightRadius: 5,
+                  borderBottomLeftRadius: 5,
+                  height: 100,
+                }}
+                multiline={true}
+                numberOfLines={4}
+                placeholder="Rule description"
+              />
+            </>
+          ))}
+          <TouchableOpacity onPress={() => setRuleCount(ruleCount + 1)}>
+            <Text
+              style={{
+                color: colors.mainBlue,
+                fontSize: 16,
+                fontWeight: '500',
+                marginTop: 20,
+              }}>
+              Add rule
+            </Text>
+          </TouchableOpacity>
         </View>
         <TouchableOpacity
           style={styles.continueButton}

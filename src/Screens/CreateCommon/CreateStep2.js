@@ -138,7 +138,9 @@ const CreateStep2 = (props) => {
           <View style={{}}>
             <View style={{flexDirection: 'row'}}>
               <Text style={styles.label}>Deadline</Text>
-              <Text style={styles.infoLabel}>required</Text>
+              <Text style={[styles.infoLabel, {alignSelf: 'flex-end'}]}>
+                Required
+              </Text>
             </View>
             <SegmentedControlTab
               tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 40}}
@@ -148,7 +150,7 @@ const CreateStep2 = (props) => {
               tabTextStyle={{color: colors.mainBlue}}
               borderRadius={8}
               selectedIndex={segmentedIndex}
-              onTabPress={index => setSegmentedIndex(index)}
+              onTabPress={(index) => setSegmentedIndex(index)}
             />
             <Modal
               isVisible={show}
@@ -157,6 +159,26 @@ const CreateStep2 = (props) => {
               onBackdropPress={() => setShow(false)}
               style={styles.view}>
               <View style={{backgroundColor: 'white'}}>
+                <View
+                  style={{
+                    height: 50,
+                    backgroundColor: colors.grey4,
+                    justifyContent: 'center',
+                  }}>
+                  <TouchableOpacity onPress={() => setShow(false)}>
+                    <Text
+                      style={{
+                        color: colors.mainBlue,
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        paddingHorizontal: 20,
+                        textAlign: 'center',
+                        alignSelf: 'flex-end',
+                      }}>
+                      Done
+                    </Text>
+                  </TouchableOpacity>
+                </View>
                 <DateTimePicker
                   testID="dateTimePicker"
                   timeZoneOffsetInMinutes={0}
@@ -292,6 +314,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.mainBlue,
+  },
+  infoLabel: {
+    fontFamily: 'Roboto',
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'italic',
+    letterSpacing: 0,
+    color: colors.paleblue,
+    textAlign: 'right',
+    flex: 1,
   },
 });
 
