@@ -32,7 +32,7 @@ def reactnative
   pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
-  
+
   pod 'RNFS', :path => '../node_modules/react-native-fs'
   pod 'RNGestureHandler', :podspec => '../node_modules/react-native-gesture-handler/RNGestureHandler.podspec'
   pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
@@ -43,6 +43,7 @@ def reactnative
   pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
   pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
   pod 'react-native-image-resizer', :path => '../node_modules/react-native-image-resizer'
+  pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
 end
 
 # -------------------------------------------------- #
@@ -68,7 +69,7 @@ end
 
 target 'common' do
   use_frameworks!
-  
+
   reactnative
   firebase
   native

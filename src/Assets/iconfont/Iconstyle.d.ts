@@ -10,6 +10,12 @@ interface Props extends GProps, ViewProps {
   color?: string | string[];
 }
 
+<<<<<<< HEAD:src/Assets/iconfont/Iconfunds.d.ts
+export declare const Iconfunds: FunctionComponent<Props>;
+
+export default Iconfunds;
+=======
 export declare const Iconstyle: FunctionComponent<Props>;
 
 export default Iconstyle;
+>>>>>>> CM-165-Common-creation:src/Assets/iconfont/Iconstyle.d.ts

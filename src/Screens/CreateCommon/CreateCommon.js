@@ -14,10 +14,6 @@ import {colors} from '../../Theme';
 import {observer, inject} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
 import * as Progress from 'react-native-progress';
-import CreateStep1 from './CreateStep1';
-import CreateStep2 from './CreateStep2';
-import CreateStep3 from './CreateStep3';
-import CreateStep4 from './CreateStep4';
 const {width} = Dimensions.get('window');
 import Swiper from 'react-native-swiper';
 
@@ -139,7 +135,7 @@ const CreateCommon = (props) => {
             </View>
           </TouchableOpacity>
         </View>
-        <Swiper
+        {/* <Swiper
           ref={swiper}
           showsButtons={false}
           showsPagination={false}
@@ -152,7 +148,7 @@ const CreateCommon = (props) => {
           <CreateStep2 />
           <CreateStep3 />
           <CreateStep4 />
-        </Swiper>
+        </Swiper> */}
 
         <TouchableOpacity style={styles.continueButton} onPress={nextIndex}>
           <Text

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Image,
   Text,
@@ -7,132 +7,297 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
+  SafeAreaView,
+  Animated,
 } from 'react-native';
 import TextInputField from '../../Components/FormFields/TextInputField';
 import {colors} from '../../Theme';
+import Icon from '../../Assets/iconfont/Icon';
 import {observer, inject} from 'mobx-react';
+const {width, height} = Dimensions.get('window');
 import SegmentedControlTab from 'react-native-segmented-control-tab';
-const {width} = Dimensions.get('window');
+import CreateStepHeader from './CreateStepHeader';
+import CreateStepNavigation from './CreateStepNavigation';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Modal from 'react-native-modal';
+import moment from 'moment';
 
 const CreateStep2 = (props) => {
-  const [common, setCommon] = useState(false);
+  const [scrollY, setScrollY] = useState(new Animated.Value(0));
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const [segmentedIndex, setSegmentedIndex] = useState(0);
+  const [pickDate, setPickDate] = useState('Custom');
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const height = scrollY.interpolate({
+      inputRange: [0, 50],
+      outputRange: [0, 125],
+      extrapolate: 'clamp',
+    });
+    console.log(height);
+    // const height = scrollY.value > 100 ? 125 : 0;
+    setHeaderHeight(height);
+  }, [scrollY]);
+
+  useEffect(() => {
+    console.log('aaaaaa');
+    if (segmentedIndex === 2) {
+      setShow(true);
+    } else {
+      setShow(false);
+    }
+  }, [segmentedIndex]);
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      width={width - 48}
-      contentContainerStyle={{
-        alignItems: 'center',
-        justifyContent: 'center',
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: 'white',
       }}>
-      <View
-        style={{
-          flex: 1,
-          // alignItems: 'center',
-          // padding: 24,
-          backgroundColor: 'white',
-        }}>
-        <Text
-          style={{
-            marginTop: 24,
-            fontWeight: '700',
-            fontSize: 18,
-            textAlign: 'center',
-          }}>
-          Funding
-        </Text>
-        <Text
-          style={{
-            marginTop: 12,
-            marginBottom: 23,
-            marginHorizontal: 20,
-            textAlign: 'center',
-          }}>
-          Set the amount you would like to raise. Until you reach this goal the
-          common will not be able to spend any of the funds.
-        </Text>
+      <CreateStepNavigation
+        navigation={props.navigation}
+        title="General info"
+      />
+      <Animated.View style={[styles.header, {height: headerHeight}]}>
+        <View style={styles.bar}>
+          <View
+            style={{
+              marginTop: 80,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            <View style={styles.dot} />
+            <View style={styles.dot} />
+            <View style={styles.dot2} />
+            <View style={styles.dot2} />
+          </View>
+          <Text style={styles.title}>Funding</Text>
+        </View>
+      </Animated.View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        width={width}
+        contentContainerStyle={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 24,
+        }}
+        scrollEventThrottle={16}
+        onScroll={Animated.event([
+          {nativeEvent: {contentOffset: {y: scrollY}}},
+        ])}>
+        <CreateStepHeader currentIndex={1} />
         <View
           style={{
-            backgroundColor: colors.grey4,
-            height: 1,
-            marginBottom: 40,
-          }}
-        />
-        <TextInputField
-          value={''}
-          viewStyle={{alignSelf: 'stretch'}}
-          label="Funding goal"
-          placeholderText="$"
-          infoLabel="required"
-          autoCapitalize="none"
-          autoCorrect={false}
-          validation={{
-            name: 'funding',
-            formStore: props.completeAccountFormStore,
-            validateRule: 'required',
-          }}
-        />
-        <View style={{}}>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={styles.label}>Deadline</Text>
-            <Text style={styles.infoLabel}>required</Text>
-          </View>
-          <SegmentedControlTab
-            tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 40}}
-            tabStyle={{borderColor: colors.grey4}}
-            activeTabStyle={{backgroundColor: colors.mainBlue}}
-            values={['1 week', '1 month', 'Custom']}
-            tabTextStyle={{color: colors.mainBlue}}
-            borderRadius={8}
-            // selectedIndex={this.state.selectedIndex}
-            // onTabPress={this.handleIndexChange}
-          />
-        </View>
-        <TextInputField
-          value={''}
-          viewStyle={{alignSelf: 'stretch'}}
-          label="Minimum join fee"
-          placeholderText=""
-          autoCapitalize="none"
-          autoCorrect={false}
-          validation={{
-            name: 'minimumFee',
-            formStore: props.completeAccountFormStore,
-            validateRule: 'required',
-          }}
-        />
-        <View style={{width: '100%'}}>
-          <Text style={styles.readMoreButton}>
-            Min. $10. Members can donate more if they want.{' '}
+            flex: 1,
+            // alignItems: 'center',
+            // padding: 24,
+            backgroundColor: 'white',
+          }}>
+          <Text
+            style={{
+              marginTop: 24,
+              fontWeight: '700',
+              fontSize: 18,
+              textAlign: 'center',
+            }}>
+            Funding
           </Text>
+          <Text
+            style={{
+              marginTop: 12,
+              marginBottom: 23,
+              marginHorizontal: 20,
+              textAlign: 'center',
+            }}>
+            Set the amount you would like to raise. Until you reach this goal
+            the common will not be able to spend any of the funds.
+          </Text>
+          <View
+            style={{
+              backgroundColor: colors.grey4,
+              height: 1,
+              marginBottom: 40,
+            }}
+          />
+          <TextInputField
+            value={''}
+            viewStyle={{alignSelf: 'stretch'}}
+            label="Funding goal"
+            placeholderText="$"
+            infoLabel="Required"
+            autoCapitalize="none"
+            autoCorrect={false}
+            validation={{
+              name: 'funding',
+              formStore: props.completeAccountFormStore,
+              validateRule: 'required',
+            }}
+          />
+          <View style={{}}>
+            <View style={{flexDirection: 'row'}}>
+              <Text style={styles.label}>Deadline</Text>
+              <Text style={[styles.infoLabel, {alignSelf: 'flex-end'}]}>
+                Required
+              </Text>
+            </View>
+            <SegmentedControlTab
+              tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 40}}
+              tabStyle={{borderColor: colors.grey4}}
+              activeTabStyle={{backgroundColor: colors.mainBlue}}
+              values={['1 week', '1 month', pickDate]}
+              tabTextStyle={{color: colors.mainBlue}}
+              borderRadius={8}
+              selectedIndex={segmentedIndex}
+              onTabPress={(index) => setSegmentedIndex(index)}
+            />
+            <Modal
+              isVisible={show}
+              avoidKeyboard={true}
+              backdropOpacity={0.3}
+              onBackdropPress={() => setShow(false)}
+              style={styles.view}>
+              <View style={{backgroundColor: 'white'}}>
+                <View
+                  style={{
+                    height: 50,
+                    backgroundColor: colors.grey4,
+                    justifyContent: 'center',
+                  }}>
+                  <TouchableOpacity onPress={() => setShow(false)}>
+                    <Text
+                      style={{
+                        color: colors.mainBlue,
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        paddingHorizontal: 20,
+                        textAlign: 'center',
+                        alignSelf: 'flex-end',
+                      }}>
+                      Done
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  timeZoneOffsetInMinutes={0}
+                  value={new Date()}
+                  minimumDate={new Date()}
+                  is24Hour={true}
+                  display="default"
+                  onChange={(event, date) =>
+                    setPickDate(moment(date).format('MMM DD, YYYY'))
+                  }
+                />
+              </View>
+            </Modal>
+          </View>
+          <TextInputField
+            value={''}
+            viewStyle={{alignSelf: 'stretch'}}
+            label="Minimum contrubution"
+            infoLabel="Required"
+            placeholderText="$"
+            autoCapitalize="none"
+            autoCorrect={false}
+            validation={{
+              name: 'minimumFee',
+              formStore: props.completeAccountFormStore,
+              validateRule: 'required',
+            }}
+          />
+          <View style={{width: '100%'}}>
+            <Text style={styles.readMoreButton}>
+              Min. $10. Members can donate more if they want.{' '}
+            </Text>
+          </View>
         </View>
-      </View>
-    </ScrollView>
+        <TouchableOpacity
+          style={styles.continueButton}
+          onPress={() => props.navigation.navigate('CreateStep3')}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: 'white',
+              fontWeight: '700',
+            }}>
+            Continue to Agenda
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  oval: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#ffffff',
-    borderStyle: 'solid',
-    borderWidth: 2,
-    borderColor: colors.grey4,
-    alignItems: 'center',
-    justifyContent: 'center',
+  view: {
+    justifyContent: 'flex-end',
+    margin: 0,
   },
-  oval2: {
-    width: 32,
+  container: {
+    backgroundColor: colors.white,
+    borderBottomColor: colors.gray,
+    borderBottomWidth: 1,
+    marginVertical: 10,
+    marginHorizontal: 10,
+    justifyContent: 'center',
+    borderRadius: 2,
+    height: 50,
+  },
+  placeholderText: {
+    color: colors.grey3,
+  },
+  text: {
+    width: '100%',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    fontSize: 15,
+    color: colors.black,
+  },
+  dot: {
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    backgroundColor: colors.grey5,
+    borderColor: colors.mainBlue,
+    borderWidth: 1,
+    marginHorizontal: 5,
+  },
+  dot2: {
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    backgroundColor: colors.grey5,
+    borderColor: colors.grey3,
+    borderWidth: 1,
+    marginHorizontal: 5,
+  },
+  header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'white',
+    overflow: 'hidden',
+    zIndex: 999,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.grey4,
+  },
+  bar: {
+    marginTop: 28,
     height: 32,
-    borderRadius: 24,
-    backgroundColor: '#ffffff',
-    borderStyle: 'solid',
-    borderWidth: 2,
-    borderColor: colors.grey4,
     alignItems: 'center',
     justifyContent: 'center',
+    // bottomborder: 'solid',
+  },
+  title: {
+    backgroundColor: 'transparent',
+    color: colors.black,
+    fontSize: 16,
+    fontFamily: 'Roboto',
+    fontWeight: 'bold',
+    paddingVertical: 10,
   },
   readMoreButton: {
     fontSize: 12,
@@ -143,20 +308,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 48,
     borderRadius: 32,
-    marginTop: 25,
+    marginTop: 45,
     flexDirection: 'row',
     paddingHorizontal: 18,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.mainBlue,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    color: colors.slate,
-    alignSelf: 'flex-start',
   },
   infoLabel: {
     fontFamily: 'Roboto',
@@ -170,4 +327,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateStep2;
+export default inject('completeAccountFormStore')(observer(CreateStep2));

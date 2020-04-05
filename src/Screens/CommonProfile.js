@@ -8,20 +8,25 @@ const CommonProfile = () => {
   const [dao, setDao] = useState(false);
 
   useEffect(() => {
+    // noinspection JSAnnotator
     const getDao = async () => {
+      // noinspection JSAnnotator
       try {
-        console.log('CACHE: ', cache);
+        console.log('CACHE: ', cache.data.data);
         const res = await cache.readQuery({
           query: gql`
-            query readDao {
-              DAO(id: "0x6bee9b81e434f7afce72a43a4016719315069539") {
-                name
+            query readDao($id: String!) {
+              daos(id: $id) {
+                id
               }
             }
           `,
+          variables: {
+            id: '0x6bee9b81e434f7afce72a43a4016719315069539',
+            __typename: 'DAO',
+          },
         });
-        console.log('HELLO!: ', client.readQuery());
-        setDao(res);
+        console.log('HELLO!: ', res);
       } catch (error) {
         console.log('error: ', error);
       }
