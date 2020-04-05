@@ -22,6 +22,8 @@ import {
   Onboarding,
   UserProfile,
   CreateAccount,
+  CommonExplanation,
+  CreateCommon,
   CompleteAccount,
   EditProfile,
   NativeBridgeTests,
@@ -85,7 +87,7 @@ const CommonHome = () => {
       tabBarOptions={{
         activeTintColor: colors.mainBlue,
       }}>
-      <Tab.Screen name="My feed" component={NativeBridgeTests} />
+      {/*<Tab.Screen name="My feed" component={NativeBridgeTests} />*/}
       <Tab.Screen name="Explore" component={CommonsList} />
       <Tab.Screen name="Profile" component={UserProfile} />
     </Tab.Navigator>
@@ -159,6 +161,8 @@ const App = ({userStore}) => {
             />
           )}
           <Stack.Screen name="CommonProfile" component={CommonProfile} />
+          <Stack.Screen name="CommonExplanation" component={CommonExplanation} />
+          <Stack.Screen name="CreateCommon" component={CreateCommon} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Profile" component={UserProfile} />
           <Stack.Screen name="EditProfile" component={EditProfile} />

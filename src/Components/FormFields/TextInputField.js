@@ -59,6 +59,7 @@ class TextInputField extends React.Component {
     const {
       placeholderText,
       label,
+      infoLabel,
       value,
       password,
       multiline,
@@ -98,7 +99,10 @@ class TextInputField extends React.Component {
 
     return (
       <View style={{alignSelf: 'stretch'}}>
-        <Text style={styles.label}>{label}</Text>
+        <View style={{flexDirection: 'row'}}>
+          <Text style={styles.label}>{label}</Text>
+          <Text style={styles.infoLabel}>{infoLabel}</Text>
+        </View>
         <TextInput
           {...defaultMultilineProps}
           {...otherProps}
@@ -185,6 +189,17 @@ const styles = StyleSheet.create({
     fontStyle: 'normal',
     letterSpacing: 0,
     color: colors.slate,
+    alignSelf: 'flex-start',
+  },
+  infoLabel: {
+    fontFamily: 'Roboto',
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'italic',
+    letterSpacing: 0,
+    color: colors.paleblue,
+    textAlign: 'right',
+    flex: 1,
   },
 });
 

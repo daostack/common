@@ -3,6 +3,8 @@ export CommonProfile from './CommonProfile';
 export Home from './Home';
 export Login from './Login';
 export CreateAccount from './CreateAccount';
+export CreateCommon from './CreateCommon/CreateCommon';
+export CommonExplanation from './CreateCommon/CommonExplanation';
 export CompleteAccount from './CompleteAccount';
 export NativeBridgeTests from './NativeBridgeTests';
 export UserProfile from './UserProfile';

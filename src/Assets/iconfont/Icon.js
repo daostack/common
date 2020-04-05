@@ -2,6 +2,11 @@
 
 import React from 'react';
 
+import Iconagenda from './Iconagenda';
+import IcondaoGeneralInfo from './IcondaoGeneralInfo';
+import Iconfunds from './Iconfunds';
+import Iconstyle from './Iconstyle';
+import IconaccountPlaceHolder1 from './IconaccountPlaceHolder1';
 import Iconapproved from './Iconapproved';
 import Icondeclined from './Icondeclined';
 import Iconclose from './Iconclose';
@@ -23,7 +28,6 @@ import Iconwallet from './Iconwallet';
 import IconleftArrow from './IconleftArrow';
 import Iconcommon from './Iconcommon';
 import IconrightArrow from './IconrightArrow';
-import IconleftArrow16 from './IconleftArrow16';
 import IconaccountPlaceHolder from './IconaccountPlaceHolder';
 import Iconfeed from './Iconfeed';
 import Icongoogle from './Icongoogle';
@@ -31,9 +35,19 @@ import Iconaccount from './Iconaccount';
 
 export const Icon = ({ name, ...rest }) => {
   switch (name) {
-    case 'approved-':
+    case 'agenda':
+      return <Iconagenda {...rest} />;
+    case 'dao-general-info':
+      return <IcondaoGeneralInfo {...rest} />;
+    case 'funds':
+      return <Iconfunds {...rest} />;
+    case 'style':
+      return <Iconstyle {...rest} />;
+    case 'account-place-holder1':
+      return <IconaccountPlaceHolder1 {...rest} />;
+    case 'approved':
       return <Iconapproved {...rest} />;
-    case 'declined-':
+    case 'declined':
       return <Icondeclined {...rest} />;
     case 'close':
       return <Iconclose {...rest} />;
@@ -41,25 +55,21 @@ export const Icon = ({ name, ...rest }) => {
       return <IconaccountSelected {...rest} />;
     case 'commons-selected':
       return <IconcommonsSelected {...rest} />;
-    case 'check-':
+    case 'check':
       return <Iconcheck {...rest} />;
-    case 'edit-':
+    case 'edit':
       return <Iconedit {...rest} />;
     case 'follow':
       return <Iconfollow {...rest} />;
     case 'feed-selected':
       return <IconfeedSelected {...rest} />;
-    case 'follow-':
-      return <Iconfollow {...rest} />;
-    case 'following-':
-      return <Iconfollowing {...rest} />;
     case 'group':
       return <Icongroup {...rest} />;
     case 'following':
       return <Iconfollowing {...rest} />;
     case 'menu':
       return <Iconmenu {...rest} />;
-    case 'report-':
+    case 'report':
       return <Iconreport {...rest} />;
     case 'picture':
       return <Iconpicture {...rest} />;
@@ -77,8 +87,6 @@ export const Icon = ({ name, ...rest }) => {
       return <Iconcommon {...rest} />;
     case 'right-arrow':
       return <IconrightArrow {...rest} />;
-    case 'left-arrow-16':
-      return <IconleftArrow16 {...rest} />;
     case 'account-place-holder':
       return <IconaccountPlaceHolder {...rest} />;
     case 'feed':
