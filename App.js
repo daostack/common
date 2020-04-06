@@ -26,6 +26,7 @@ import {
   CreateAccount,
   CompleteAccount,
   EditProfile,
+  UserProfileReadMode,
   NativeBridgeTests,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
@@ -91,6 +92,7 @@ const CommonHome = () => {
       <Tab.Screen name="My feed" component={UserProfile} />
       <Tab.Screen name="Explore" component={CommonsList} />
       <Tab.Screen name="Profile" component={UserProfile} />
+      <Tab.Screen name="UserProfileReadMode" component={UserProfileReadMode} />
     </Tab.Navigator>
   );
 };
@@ -189,6 +191,10 @@ const App = ({userStore}) => {
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen name="MyWallet" component={MyWallet} />
           <Stack.Screen name="HUDTest" component={HUDTest} />
+          <Stack.Screen
+            name="UserProfileReadMode"
+            component={UserProfileReadMode}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>

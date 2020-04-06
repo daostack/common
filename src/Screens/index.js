@@ -10,3 +10,4 @@ export Onboarding from './Onboarding';
 export EditProfile from './EditProfile';
 export HUDTest from './HUDTest';
 export MyWallet from './MyWallet';
+export UserProfileReadMode from './UserProfileReadMode';

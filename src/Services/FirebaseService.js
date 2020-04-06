@@ -34,6 +34,21 @@ export default class FirebaseService {
       });
   }
 
+  async getUsers() {
+    console.log('getUsers-> ');
+    return db
+      .collection(DB_COLLECTIONS.users)
+      .get()
+      .then(snapshots => {
+        if (snapshots.empty) {
+          return [];
+        }
+        return snapshots.docs.map(doc => {
+          return {...{id: doc.id}, ...doc.data()};
+        });
+      });
+  }
+
   async addUser(googleId, newUser) {
     console.log('addUser -> ', newUser);
     return db

@@ -39,7 +39,7 @@ class ImageField extends React.Component {
     this.setState({});
   };
 
-  renderAccountImage = () => {
+  renderImage = () => {
     const {value, validation, placeholderUrl} = this.props;
 
     const currValue = validation
@@ -72,7 +72,7 @@ class ImageField extends React.Component {
       <View>
         <View style={styles.formFieldContainer}>
           <PhotoUpload onPhotoSelect={this.onChangeValue}>
-            {this.renderAccountImage()}
+            {this.renderImage()}
             <View style={styles.formImageFielAddIcon}>
               <Icon name="edit-" size={16} color={colors.white} />
             </View>
