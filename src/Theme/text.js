@@ -130,7 +130,7 @@ export default StyleSheet.create({
     fontWeight: 'normal',
     fontStyle: 'normal',
     letterSpacing: 0,
-    color: '#000000',
+    color: colors.black,
   },
   paragraphred: {
     ...appFontFamily,
@@ -171,6 +171,24 @@ export default StyleSheet.create({
     textAlign: 'center',
     color: colors.mainBlue,
   },
+  ashleyjquimbacom2: {
+    ...appFontFamily,
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.grey3,
+  },
+  bvBmseYstWetqTFn5Au: {
+    ...appFontFamily,
+    fontSize: 10,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 12,
+    letterSpacing: 0,
+    color: colors.slate,
+  },
 
   greyText: {
     ...appFontFamily,
@@ -181,8 +199,22 @@ export default StyleSheet.create({
     letterSpacing: 0,
     color: colors.greyText,
   },
+
+  blackText: {
+    ...appFontFamily,
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 20,
+    letterSpacing: 0,
+    color: colors.black,
+  },
   // Custom text styles
   centered: {
     textAlign: 'center',
+  },
+
+  bold: {
+    fontWeight: 'bold',
   },
 });

@@ -21,13 +21,23 @@ import {
   CommonProfile,
   Onboarding,
   UserProfile,
+  HUDTest,
+  MyWallet,
   CreateAccount,
   CompleteAccount,
+  EditProfile,
   NativeBridgeTests,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
+import FirebaseService from './src/Services/FirebaseService';
+const firebaseService = new FirebaseService();
+import AuthService from './src/Services/AuthService';
+const authService = new AuthService();
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+import {filterObjectByKeys} from './src/Util';
+import {userInfoFields} from './src/Stores/UserStore';
+import {observer, inject} from 'mobx-react';
 
 const CommonHome = () => {
   return (
@@ -80,14 +90,48 @@ const CommonHome = () => {
       {/*<Tab.Screen name="Test" component={NativeBridgeTests} />*/}
       <Tab.Screen name="My feed" component={UserProfile} />
       <Tab.Screen name="Explore" component={CommonsList} />
-      <Tab.Screen name="Profile" component={CreateAccount} />
+      <Tab.Screen name="Profile" component={UserProfile} />
     </Tab.Navigator>
   );
 };
 
-const App = () => {
+const App = ({userStore}) => {
   const [onboarded, setOnboarded] = useState();
   useEffect(() => {
+    const loadUser = async () => {
+      try {
+        if (!userStore.userInfo) {
+          console.log('LOAD USER 1');
+          const googleSignedInUser = await authService.getGoogleSignedInUser();
+          // Signed In Mode
+          if (googleSignedInUser) {
+            userStore.setIsLoading(true);
+            const appUser = await firebaseService.getUserById(
+              googleSignedInUser.user.id,
+            );
+
+            const allUserInfo = {
+              ...googleSignedInUser.user,
+              ...appUser,
+            };
+
+            const filteredUser = filterObjectByKeys(
+              allUserInfo,
+              userInfoFields,
+            );
+            userStore.setSignedInUser(filteredUser);
+            userStore.setIsLoading(false);
+          }
+          // Anonymous mode
+          else {
+            console.log('Anonymous user');
+          }
+        }
+      } catch (error) {
+        console.log('ERRROR', error);
+      }
+    };
+
     const checkOnboardingStatus = async () => {
       try {
         const isOnboarded = await AsyncStorage.getItem('onboarded');
@@ -98,11 +142,14 @@ const App = () => {
         console.log(e);
       }
     };
+
     checkOnboardingStatus();
-  }, []);
+    loadUser();
+  });
 
   return (
     <ApolloProvider client={client}>
+      {/** 
       <NavigationContainer>
         <Stack.Navigator>
           {!onboarded ? (
@@ -120,13 +167,32 @@ const App = () => {
           )}
           <Stack.Screen name="CommonProfile" component={CommonProfile} />
           <Stack.Screen name="Login" component={Login} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      <NavigationContainer>
+        <Stack.Navigator>
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      */}
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="CommonHome"
+            component={CommonHome}
+            options={{headerShown: false}}
+          />
           <Stack.Screen name="Profile" component={UserProfile} />
+          <Stack.Screen name="EditProfile" component={EditProfile} />
+          <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
+          <Stack.Screen name="CreateAccount" component={CreateAccount} />
+          <Stack.Screen name="MyWallet" component={MyWallet} />
+          <Stack.Screen name="HUDTest" component={HUDTest} />
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>
   );
 };
 
-export default App;
+export default inject('userStore')(observer(App));
