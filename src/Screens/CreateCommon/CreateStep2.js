@@ -19,6 +19,7 @@ import SegmentedControlTab from 'react-native-segmented-control-tab';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
 import Modal from 'react-native-modal';
 import moment from 'moment';
 
@@ -28,6 +29,7 @@ const CreateStep2 = (props) => {
   const [segmentedIndex, setSegmentedIndex] = useState(0);
   const [pickDate, setPickDate] = useState('Custom');
   const [show, setShow] = useState(false);
+  const [pass, setPass] = useState(false);
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -35,19 +37,48 @@ const CreateStep2 = (props) => {
       outputRange: [0, 125],
       extrapolate: 'clamp',
     });
-    console.log(height);
-    // const height = scrollY.value > 100 ? 125 : 0;
     setHeaderHeight(height);
   }, [scrollY]);
 
   useEffect(() => {
-    console.log('aaaaaa');
-    if (segmentedIndex === 2) {
-      setShow(true);
-    } else {
-      setShow(false);
+    const name = CreateCommonForm.FIELD_DEADLINE;
+    props.createCommonFormStore.registerFormField(name, 'required');
+    switch (segmentedIndex) {
+      case 0: {
+        props.createCommonFormStore.fieldChanged(name, moment().add('7', 'days').toDate());
+        setShow(false);
+        break;
+      }
+      case 1: {
+        props.createCommonFormStore.fieldChanged(name, moment().add('1', 'months').toDate());
+        setShow(false);
+        break;
+      }
+      case 2: {
+        props.createCommonFormStore.fieldChanged(name, moment(pickDate, 'MMM DD, YYYY').toDate());
+        setShow(true);
+        break;
+      }
     }
-  }, [segmentedIndex]);
+  }, [segmentedIndex, pickDate]);
+
+  const isValid = () => {
+    const result = props.createCommonFormStore.isFormValidSelectedFields([
+      CreateCommonForm.FIELD_FUNDING_GOAL,
+      CreateCommonForm.FIELD_MINIMUM,
+      CreateCommonForm.FIELD_DEADLINE,
+    ]);
+    setPass(result);
+    return result;
+  };
+
+  const push = () => {
+    const vaild = isValid();
+    if (vaild) {
+      props.navigation.navigate('CreateStep3');
+      console.log(props.createCommonFormStore.getChangedFormFieldsJson());
+    }
+  };
 
   return (
     <SafeAreaView
@@ -129,10 +160,12 @@ const CreateStep2 = (props) => {
             infoLabel="Required"
             autoCapitalize="none"
             autoCorrect={false}
+            keyboardType="numeric"
+            onChangeText={isValid}
             validation={{
-              name: 'funding',
-              formStore: props.completeAccountFormStore,
-              validateRule: 'required',
+              name: CreateCommonForm.FIELD_FUNDING_GOAL,
+              formStore: props.createCommonFormStore,
+              validateRule: 'required|integer',
             }}
           />
           <View style={{}}>
@@ -201,10 +234,12 @@ const CreateStep2 = (props) => {
             placeholderText="$"
             autoCapitalize="none"
             autoCorrect={false}
+            keyboardType="numeric"
+            onChangeText={isValid}
             validation={{
-              name: 'minimumFee',
-              formStore: props.completeAccountFormStore,
-              validateRule: 'required',
+              name: CreateCommonForm.FIELD_MINIMUM,
+              formStore: props.createCommonFormStore,
+              validateRule: 'required|integer',
             }}
           />
           <View style={{width: '100%'}}>
@@ -214,8 +249,11 @@ const CreateStep2 = (props) => {
           </View>
         </View>
         <TouchableOpacity
-          style={styles.continueButton}
-          onPress={() => props.navigation.navigate('CreateStep3')}>
+          style={[
+            styles.continueButton,
+            {backgroundColor: pass ? colors.mainBlue : colors.grey3},
+          ]}
+          onPress={push}>
           <Text
             style={{
               fontSize: 16,
@@ -327,4 +365,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('completeAccountFormStore')(observer(CreateStep2));
+export default inject('createCommonFormStore')(observer(CreateStep2));

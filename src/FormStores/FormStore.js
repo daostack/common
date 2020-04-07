@@ -39,6 +39,7 @@ class FormStore {
     this.form.meta.formValidationMade = true;
     var validation = this.getValidator();
     this.form.meta.isValid = validation.passes();
+    console.log(this.form.meta.isValid, validation.errors.errors);
     if (!this.form.meta.isValid) {
       for (const key in validation.errors.errors) {
         this.form.fields[key].error = validation.errors.first(key);

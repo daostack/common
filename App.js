@@ -29,6 +29,7 @@ import {
 import {ApolloClientConfig as client} from './src/Config';
 import {colors} from './src/Theme';
 import FirebaseService from './src/Services/FirebaseService';
+import AsyncStorage from '@react-native-community/async-storage';
 const firebaseService = new FirebaseService();
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -94,6 +95,7 @@ const App = () => {
     const checkOnboardingStatus = async () => {
       try {
         const isOnboarded = await AsyncStorage.getItem('onboarded');
+        console.log('BBBBB', isOnboarded);
         if (isOnboarded === 'true') {
           setOnboarded(true);
         }
@@ -121,11 +123,6 @@ const App = () => {
               options={{headerShown: false}}
             />
           )}
-          <Stack.Screen
-            name="CommonHome"
-            component={CommonHome}
-            options={{headerShown: false}}
-          />
           <Stack.Screen name="CommonProfile" component={CommonProfile} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />

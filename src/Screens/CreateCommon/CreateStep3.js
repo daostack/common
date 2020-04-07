@@ -18,11 +18,15 @@ import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
+import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
 
-const CreateStep3 = (props) => {
+const CreateStep3 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [ruleCount, setRuleCount] = useState(1);
+  const [ruleTitles, setRuleTitles] = useState([]);
+  const [pass, setPass] = useState(false);
+  // var ruleBody = [];
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -34,6 +38,46 @@ const CreateStep3 = (props) => {
     // const height = scrollY.value > 100 ? 125 : 0;
     setHeaderHeight(height);
   }, [scrollY]);
+
+  const handleRuleTitles = (x, text) => {
+    // props.createCommonFormStore.registerFormField(`ruleTitles_${x}`, 'string');
+    // console.log(props.createCommonFormStore);
+    props.createCommonFormStore.registerFormField(
+      `ruleTitles_${x}`,
+      'string',
+    );
+    props.createCommonFormStore.fieldChanged(`ruleTitles_${x}`, text);
+    // ruleTitles[x] = text;
+    // console.log(x, text, ruleTitles);
+  };
+
+  const handleRuleBody = (x, text) => {
+    props.createCommonFormStore.registerFormField(`ruleBody_${x}`, 'string');
+    // ruleBody[x] = text;
+    // console.log(ruleBody);
+    props.createCommonFormStore.fieldChanged(`ruleBody_${x}`, text);
+  };
+
+  const isValid = () => {
+    const titles = [...Array(ruleCount).keys()].map(x => `ruleTitles_${x}`);
+    const bodys = [...Array(ruleCount).keys()].map(x => `ruleBody_${x}`);
+
+    const result = props.createCommonFormStore.isFormValidSelectedFields([
+      CreateCommonForm.FIELD_ACTION,
+      ...titles,
+      ...bodys,
+    ]);
+    setPass(result);
+    return result;
+  };
+
+  const push = () => {
+    const vaild = isValid();
+    if (vaild) {
+      props.navigation.navigate('CreateStep4');
+      console.log(props.createCommonFormStore.getChangedFormFieldsJson());
+    }
+  };
 
   return (
     <SafeAreaView
@@ -99,10 +143,11 @@ const CreateStep3 = (props) => {
             placeholderText="What action are you planning to take to fulfil your goal? Are there things this common will not do?"
             autoCapitalize="none"
             autoCorrect={false}
+            onChangeText={isValid}
             validation={{
-              name: 'action',
-              formStore: props.completeAccountFormStore,
-              validateRule: 'required',
+              name: CreateCommonForm.FIELD_ACTION,
+              formStore: props.createCommonFormStore,
+              validateRule: 'string',
             }}
           />
           <Text
@@ -125,9 +170,10 @@ const CreateStep3 = (props) => {
             etc.)
           </Text>
 
-          {[...Array(ruleCount)].map((x) => (
-            <>
+          {[...Array(ruleCount).keys()].map(x => (
+            <View key={x}>
               <TextInput
+                key={`title_${x}`}
                 style={{
                   borderColor: colors.grey4,
                   padding: 10,
@@ -136,9 +182,11 @@ const CreateStep3 = (props) => {
                   borderWidth: 1,
                   marginTop: 20,
                 }}
+                onChangeText={text => handleRuleTitles(x, text)}
                 placeholder="Rule title"
               />
               <TextInput
+                key={`body_${x}`}
                 style={{
                   borderColor: colors.grey4,
                   padding: 10,
@@ -148,11 +196,12 @@ const CreateStep3 = (props) => {
                   borderBottomLeftRadius: 5,
                   height: 100,
                 }}
+                onChangeText={text => handleRuleBody(x, text)}
                 multiline={true}
                 numberOfLines={4}
                 placeholder="Rule description"
               />
-            </>
+            </View>
           ))}
           <TouchableOpacity onPress={() => setRuleCount(ruleCount + 1)}>
             <Text
@@ -167,8 +216,11 @@ const CreateStep3 = (props) => {
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          style={styles.continueButton}
-          onPress={() => props.navigation.navigate('CreateStep4')}>
+          style={[
+            styles.continueButton,
+            {backgroundColor: pass ? colors.mainBlue : colors.grey3},
+          ]}
+          onPress={push}>
           <Text
             style={{
               fontSize: 16,
@@ -270,4 +322,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('completeAccountFormStore')(observer(CreateStep3));
+export default inject('createCommonFormStore')(observer(CreateStep3));

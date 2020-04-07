@@ -175,4 +175,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('completeAccountFormStore')(observer(CreateStepHeader));
+export default inject('createCommonFormStore')(observer(CreateStepHeader));
