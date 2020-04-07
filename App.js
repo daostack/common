@@ -7,12 +7,12 @@
  */
 
 import React, {useState, useEffect} from 'react';
-import {Image} from 'react-native';
+import {Image, StyleSheet} from 'react-native';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {colors} from './src/Theme';
+import {colors, text} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import {
@@ -39,6 +39,7 @@ const Stack = createStackNavigator();
 import {filterObjectByKeys} from './src/Util';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
+import Icon from './src/Assets/iconfont/Icon';
 
 const CommonHome = () => {
   return (
@@ -179,17 +180,36 @@ const App = ({userStore}) => {
       </NavigationContainer>
       */}
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: styles.headerStyle,
+            headerTitleStyle: styles.headerTitleStyle,
+            headerTintColor: colors.black,
+            headerBackTitleVisible: false,
+            headerBackImage: () => <Icon name="left-arrow" size={32} />,
+          }}>
           <Stack.Screen
             name="CommonHome"
             component={CommonHome}
             options={{headerShown: false}}
           />
           <Stack.Screen name="Profile" component={UserProfile} />
-          <Stack.Screen name="EditProfile" component={EditProfile} />
+          <Stack.Screen
+            options={{
+              title: 'Edit my profile',
+            }}
+            name="EditProfile"
+            component={EditProfile}
+          />
           <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
-          <Stack.Screen name="MyWallet" component={MyWallet} />
+          <Stack.Screen
+            options={{
+              title: 'My wallet',
+            }}
+            name="MyWallet"
+            component={MyWallet}
+          />
           <Stack.Screen name="HUDTest" component={HUDTest} />
           <Stack.Screen
             name="UserProfileReadMode"
@@ -200,5 +220,20 @@ const App = ({userStore}) => {
     </ApolloProvider>
   );
 };
+
+const styles = StyleSheet.create({
+  headerStyle: {
+    borderWidth: 0,
+    borderBottomWidth: 0,
+    shadowRadius: 0,
+    shadowOffset: {
+      height: 0,
+    },
+  },
+
+  headerTitleStyle: {
+    ...text.h4Black,
+  },
+});
 
 export default inject('userStore')(observer(App));

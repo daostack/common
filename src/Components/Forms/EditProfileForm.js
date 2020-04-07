@@ -37,6 +37,13 @@ class EditProfileForm extends React.Component {
     }
   };
 
+  onFormClose = e => {
+    const {onFormClose} = this.props;
+    if (onFormClose) {
+      onFormClose();
+    }
+  };
+
   render() {
     const {
       userStore,
@@ -105,7 +112,7 @@ class EditProfileForm extends React.Component {
           ) : (
             <TouchableOpacity
               style={{...layout.btnOutline, ...layout.marginRightS}}
-              onPress={this.formSkip}>
+              onPress={this.onFormClose}>
               <Text style={text.buttonblue}>Cancel</Text>
             </TouchableOpacity>
           )}

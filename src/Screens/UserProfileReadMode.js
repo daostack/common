@@ -16,8 +16,6 @@ const firebaseService = new FirebaseService();
 import {layout, colors, text, sizeS} from '../Theme';
 import AccordionBtn from '../Components/AccordionBtn';
 import BottomSheetContainer from '../Components/BottomSheetContainer';
-import UserProfile from './UserProfile';
-import UserProfileData from '../Components/UserProfileData';
 import {UserProfileSheetScreen} from './BottomSheetScreens';
 
 const UserProfileReadMode = ({navigation}) => {
@@ -57,7 +55,7 @@ const UserProfileReadMode = ({navigation}) => {
           directionalLockEnabled={true}>
           <View style={layout.content}>
             <Icon name="commons-selected" size={60}></Icon>
-            <Text style={text.h3Black}>Common users:</Text>
+            <Text style={text.h3Black}>USERS</Text>
           </View>
 
           <View style={layout.content}>
@@ -75,7 +73,7 @@ const UserProfileReadMode = ({navigation}) => {
           </View>
         </ScrollView>
         <BottomSheetContainer ref={bottomSheetContainerRef}>
-          <UserProfileSheetScreen userId={userId} />
+          <UserProfileSheetScreen navigation={navigation} userId={userId} />
         </BottomSheetContainer>
       </SafeAreaView>
     </>

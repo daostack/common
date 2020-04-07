@@ -11,13 +11,7 @@ import React from 'react';
 import {text, layout, colors} from '../../Theme';
 import UserProfileData from '../../Components/UserProfileData';
 
-const UserProfileSheetScreen = ({userId}) => {
-  const contentStyle = {
-    ...layout.content,
-    ...layout.flexStart,
-    ...styles.contentContainer,
-  };
-
+const UserProfileSheetScreen = ({navigation, userId}) => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -30,7 +24,7 @@ const UserProfileSheetScreen = ({userId}) => {
           nestedScrollEnabled={true}
           directionalLockEnabled={true}>
           <View style={styles.body}>
-            <UserProfileData userId={userId} />
+            <UserProfileData navigation={navigation} userId={userId} />
           </View>
         </ScrollView>
       </SafeAreaView>

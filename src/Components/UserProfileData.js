@@ -17,10 +17,16 @@ import Loader from '../Components/Loader';
 import EditProfileForm from '../Components/Forms/EditProfileForm';
 import FirebaseService from '../Services/FirebaseService';
 const firebaseService = new FirebaseService();
+import {CommonActions} from '@react-navigation/native';
 
 import Icon from '../Assets/iconfont/Icon';
 
-const UserProfileData = ({userId, userStore, editProfileFormStore}) => {
+const UserProfileData = ({
+  userId,
+  navigation,
+  userStore,
+  editProfileFormStore,
+}) => {
   const [user, setUser] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
 
@@ -43,6 +49,16 @@ const UserProfileData = ({userId, userStore, editProfileFormStore}) => {
     setIsEditMode(false);
     getUser();
   }, [userId]);
+
+  const navigateToEditProfile = isFirstOpening => {
+    const navigate = CommonActions.navigate({
+      name: 'EditProfile',
+      params: {
+        isFirstOpening: isFirstOpening,
+      },
+    });
+    navigation.dispatch(navigate);
+  };
 
   const renderUserProfilePicture = () => {
     if (isEditMode) {
@@ -87,7 +103,7 @@ const UserProfileData = ({userId, userStore, editProfileFormStore}) => {
       {isEditMode ? (
         <View style={styles.screenNav}>
           <TouchableOpacity onPress={() => navigateToEditProfile(false)}>
-            <Icon name="edit-" size={26} />
+            <Icon name="edit" size={26} />
           </TouchableOpacity>
         </View>
       ) : null}

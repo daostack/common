@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     ...layout.content,
     ...layout.flexStart,
     backgroundColor: Colors.white,
-    height: 80,
+    height: 30,
 
     borderTopLeftRadius: 27,
     borderTopRightRadius: 27,
@@ -64,8 +64,9 @@ const styles = StyleSheet.create({
     zIndex: 5,
   },
   contentContainer: {
-    height: 550,
-    backgroundColor: Colors.white,
+    paddingTop: 0,
+    height: 600,
+    backgroundColor: colors.white,
     zIndex: 6,
   },
 

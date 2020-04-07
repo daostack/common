@@ -71,7 +71,9 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
   };
 
   const renderSignedInUserData = () => {
-    return <UserProfileData userId={userStore.userInfo.id} />;
+    return (
+      <UserProfileData navigation={navigation} userId={userStore.userInfo.id} />
+    );
   };
 
   const renderScreen = () => {
@@ -181,7 +183,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightBlue,
   },
   body: {
-    paddingTop: 40,
+    paddingVertical: 10,
   },
 
   safeArea: {

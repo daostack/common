@@ -74,7 +74,7 @@ class ImageField extends React.Component {
           <PhotoUpload onPhotoSelect={this.onChangeValue}>
             {this.renderImage()}
             <View style={styles.formImageFielAddIcon}>
-              <Icon name="edit-" size={16} color={colors.white} />
+              <Icon name="edit" size={16} color={colors.white} />
             </View>
           </PhotoUpload>
         </View>
