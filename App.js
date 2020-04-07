@@ -36,73 +36,19 @@ import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
 const firebaseService = new FirebaseService();
 import AuthService from './src/Services/AuthService';
+import CommonHome from './src/Components/Navigation/CommonHome';
 const authService = new AuthService();
-const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 import {filterObjectByKeys} from './src/Util';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 
-const CommonHome = () => {
-  return (
-    <Tab.Navigator
-      initialRouteName="Explore"
-      screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => {
-          if (route.name === 'My feed') {
-            return (
-              <Image
-                source={require('./src/Assets/feed.png')}
-                style={{
-                  resizeMode: 'contain',
-                  width: 24,
-                  height: 24,
-                  tintColor: focused ? colors.mainBlue : '#92A2B5',
-                }}
-              />
-            );
-          } else if (route.name === 'Explore') {
-            return (
-              <Image
-                source={require('./src/Assets/commons.png')}
-                style={{
-                  resizeMode: 'contain',
-                  width: 24,
-                  height: 24,
-                  tintColor: focused ? colors.mainBlue : '#92A2B5',
-                }}
-              />
-            );
-          } else {
-            return (
-              <Image
-                source={require('./src/Assets/accountSelected.png')}
-                style={{
-                  resizeMode: 'contain',
-                  width: 20,
-                  height: 20,
-                  tintColor: focused ? colors.mainBlue : '#92A2B5',
-                }}
-              />
-            );
-          }
-        },
-      })}
-      tabBarOptions={{
-        activeTintColor: colors.mainBlue,
-      }}>
-      {/*<Tab.Screen name="My feed" component={NativeBridgeTests} />*/}
-      <Tab.Screen name="Explore" component={CommonsList} />
-      <Tab.Screen name="Profile" component={UserProfile} />
-    </Tab.Navigator>
-  );
-};
 
 const App = ({userStore}) => {
   const [onboarded, setOnboarded] = useState();
   useEffect(() => {
     const loadUser = async () => {
-      console.log('LOAD USER');
+      console.log('User from userStore App.js: ', userStore.userInfo);
       try {
         if (!userStore.userInfo) {
           const googleSignedInUser = await authService.getGoogleSignedInUser();
@@ -162,6 +108,7 @@ const App = ({userStore}) => {
               name="CommonHome"
               component={CommonHome}
               options={{headerShown: false}}
+              userStore={userStore}
             />
           )}
           <Stack.Screen name="CommonProfile" component={CommonProfile} />

@@ -1,3 +1,4 @@
+import {IPFSApiClient} from './ipfs-api';
 import {ApolloClient} from 'apollo-client';
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import {HttpLink} from 'apollo-link-http';
@@ -6,10 +7,12 @@ import {ApolloLink, split} from 'apollo-link';
 import {WebSocketLink} from 'apollo-link-ws';
 import {getMainDefinition} from 'apollo-utilities';
 
-const graphHttpLink = 'https://api.thegraph.com/subgraphs/name/daostack/v36_8';
-const graphwsLink = 'wss://api.thegraph.com/subgraphs/name/daostack/v36_8';
+const graphHttpLink =
+  'https://api.thegraph.com/subgraphs/name/daostack/v7_2_exp_rinkeby';
+const graphwsLink =
+  'wss://api.thegraph.com/subgraphs/name/daostack/v7_2_exp_rinkeby';
+const ipfsLink = 'https://api.thegraph.com/ipfs-daostack/api/v0';
 
-// Create a Http Link
 const httpLink = new HttpLink({
   uri: graphHttpLink,
   fetchOptions: {
@@ -58,3 +61,4 @@ const apolloClientConfig = new ApolloClient({
 });
 
 export const ApolloClientConfig = new ApolloClient(apolloClientConfig);
+export const Ipfs = new IPFSApiClient(ipfsLink);

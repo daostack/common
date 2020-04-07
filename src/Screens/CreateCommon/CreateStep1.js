@@ -150,7 +150,7 @@ const CreateStep1 = (props) => {
             validation={{
               name: 'description',
               formStore: props.completeAccountFormStore,
-              validateRule: '',
+              validateRule: 'string',
             }}
           />
           {[...Array(ruleCount)].map((x) => (
