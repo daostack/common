@@ -1,14 +1,8 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useRef, useState} from 'react';
 import {
-  Image,
   Text,
   TouchableOpacity,
-  View,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-  SafeAreaView,
 } from 'react-native';
 import NavigationBar from 'react-native-navbar';
 import Icon from '../../Assets/iconfont/Icon';

@@ -16,10 +16,18 @@ import {observer, inject} from 'mobx-react';
 const {width, height} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
+import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
+import ImagePicker from 'react-native-image-picker';
+import moment from 'moment';
 
-const CreateStep4 = (props) => {
+const CreateStep4 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
+  const form = props.createCommonFormStore.getChangedFormFieldsJson();
+  const [templateIndex, setTemplateIndex] = useState(1);
+  const [imageURI, setImageURI] = useState('https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media')
+
+  console.log(form['name']);
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -31,6 +39,38 @@ const CreateStep4 = (props) => {
     // const height = scrollY.value > 100 ? 125 : 0;
     setHeaderHeight(height);
   }, [scrollY]);
+
+  const changeIndex = number => {
+    let index = templateIndex + number;
+    if (index <= 1) {
+      index = 1;
+    }
+
+    if (index >= 8) {
+      index = 8;
+    }
+    setTemplateIndex(index);
+    setImageURI(`https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`)
+  };
+
+  const pickImage = () => {
+    const options = {
+      title: 'Select Avatar',
+    };
+    ImagePicker.showImagePicker(options, (response) => {
+      console.log('Response = ', response);
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        // const source = { uri: response.uri };
+        setImageURI(response.uri);
+      }
+    });
+  }
 
   return (
     <SafeAreaView
@@ -94,9 +134,39 @@ const CreateStep4 = (props) => {
             You will not be able to make changes to the common info after it is
             published
           </Text>
-          <View style={styles.image}>
-            {/* <Image source={require('../../Assets/funds.png')} resizeMode='cover' /> */}
-            {/* <Text>Placeholder</Text> */}
+          <View
+            style={{
+              height: 225,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Image
+              style={{position: 'absolute', height: 225, width: width}}
+              source={{
+                uri: imageURI,
+              }}
+              resizeMode="cover"
+            />
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: 15,
+                right: 15,
+                padding: 10,
+                color: 'white',
+              }}
+              onPress={() => pickImage()}>
+              <Icon name="add-picture" color='white' size={20} />
+            </TouchableOpacity>
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity style={{padding: 10, opacity: templateIndex === 1 ? 0.5 : 1,alignSelf: 'flex-start'}} onPress={() => changeIndex(-1)}>
+                <Icon name="left-arrow" color="white" size={35} />
+              </TouchableOpacity>
+            <Text style={styles.titleName}>{form[CreateCommonForm.FIELD_NAME]}</Text>
+              <TouchableOpacity style={{padding: 10, opacity: templateIndex === 8 ? 0.5 : 1, alignSelf: 'flex-end'}} onPress={() => changeIndex(1)}>
+                <Icon name="right-arrow" color="white" size={35} />
+              </TouchableOpacity>
+            </View>
           </View>
           <View
             style={{
@@ -125,10 +195,10 @@ const CreateStep4 = (props) => {
             style={{height: 1, width: width, backgroundColor: colors.grey4}}
           />
           <View style={styles.sectionTitle}>
-            <View style={{width: 90, marginRight: 10}}>
+            <View style={{minWidth: 90, marginRight: 10}}>
               <Text
                 style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>
-                $10K
+                ${form[CreateCommonForm.FIELD_FUNDING_GOAL]}
               </Text>
               <Text style={{fontSize: 14, textAlign: 'center', marginTop: 10}}>
                 Goal
@@ -137,7 +207,7 @@ const CreateStep4 = (props) => {
             <View style={{width: 90, marginHorizontal: 10}}>
               <Text
                 style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>
-                $10
+                ${form[CreateCommonForm.FIELD_MINIMUM]}
               </Text>
               <Text style={{fontSize: 14, textAlign: 'center', marginTop: 10}}>
                 Contribution
@@ -164,10 +234,7 @@ const CreateStep4 = (props) => {
             </TouchableOpacity>
           </View>
           <Text style={styles.textContent}>
-            We aim to ba a global non-profit initiative. Only small percentage
-            of creative directors are women and we want to help change this
-            through mentorship circles, portfolio reviews, talks & creative
-            meetups.
+          {form[CreateCommonForm.FIELD_DESCRIPTION]}
           </Text>
           <>
             <View style={styles.sectionTitle}>
@@ -184,8 +251,7 @@ const CreateStep4 = (props) => {
               </TouchableOpacity>
             </View>
             <Text style={styles.textContent}>
-              We created this community to help you along your journey. Links to
-              sponsored content or brands will vote you out.
+            {form[CreateCommonForm.FIELD_ACTION]}
             </Text>
           </>
           <>
@@ -214,7 +280,7 @@ const CreateStep4 = (props) => {
                 />
               </TouchableOpacity>
             </View>
-            <Text style={styles.textContent}>03 April 2021</Text>
+            <Text style={styles.textContent}>{moment(form[CreateCommonForm.FIELD_DEADLINE]).format('MMM DD, YYYY')}</Text>
           </>
           <>
             <Text
@@ -226,7 +292,7 @@ const CreateStep4 = (props) => {
               }}>
               Rule #1
             </Text>
-            <View style={styles.sectionTitle}>
+            <View style={[styles.sectionTitle, {marginTop: 10}]}>
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>
                 No promotions or spam
               </Text>
@@ -254,7 +320,7 @@ const CreateStep4 = (props) => {
               }}>
               Rule #2
             </Text>
-            <View style={styles.sectionTitle}>
+            <View style={[styles.sectionTitle, {marginTop: 10}]}>
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>
                 Be courteous and kind to others
               </Text>
@@ -276,7 +342,7 @@ const CreateStep4 = (props) => {
         </View>
         <TouchableOpacity
           style={styles.continueButton}
-          // onPress={() => props.navigation.navigate('CreateStep2')}
+          // onPress={push}
         >
           <Text
             style={{
@@ -389,6 +455,22 @@ const styles = StyleSheet.create({
     marginTop: 0,
     paddingHorizontal: 24,
   },
+  titleName: {
+    width: '70%',
+    color: 'white',
+    opacity: 0.8,
+    textAlign: 'center',
+    alignSelf: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    fontFamily: 'Roboto',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textShadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    textShadowRadius: 4,
+  },
 });
 
-export default inject('completeAccountFormStore')(observer(CreateStep4));
+export default inject('createCommonFormStore')(observer(CreateStep4));

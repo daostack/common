@@ -2,6 +2,12 @@
 
 import React from 'react';
 
+import IconaddPicture from './IconaddPicture';
+import Icongroup1 from './Icongroup1';
+import Iconalert from './Iconalert';
+import Iconwallet1 from './Iconwallet1';
+import IconaccountPlaceHolder2 from './IconaccountPlaceHolder2';
+import Iconsave1 from './Iconsave1';
 import Iconagenda from './Iconagenda';
 import IcondaoGeneralInfo from './IcondaoGeneralInfo';
 import Iconfunds from './Iconfunds';
@@ -35,6 +41,18 @@ import Iconaccount from './Iconaccount';
 
 export const Icon = ({ name, ...rest }) => {
   switch (name) {
+    case 'add-picture':
+      return <IconaddPicture {...rest} />;
+    case 'group1':
+      return <Icongroup1 {...rest} />;
+    case 'alert':
+      return <Iconalert {...rest} />;
+    case 'wallet1':
+      return <Iconwallet1 {...rest} />;
+    case 'account-place-holder2':
+      return <IconaccountPlaceHolder2 {...rest} />;
+    case 'save1':
+      return <Iconsave1 {...rest} />;
     case 'agenda':
       return <Iconagenda {...rest} />;
     case 'dao-general-info':

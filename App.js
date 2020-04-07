@@ -34,6 +34,7 @@ import {
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
+import AsyncStorage from '@react-native-community/async-storage';
 const firebaseService = new FirebaseService();
 import AuthService from './src/Services/AuthService';
 import CommonHome from './src/Components/Navigation/CommonHome';
@@ -82,6 +83,7 @@ const App = ({userStore}) => {
     const checkOnboardingStatus = async () => {
       try {
         const isOnboarded = await AsyncStorage.getItem('onboarded');
+        console.log('BBBBB', isOnboarded);
         if (isOnboarded === 'true') {
           setOnboarded(true);
         }

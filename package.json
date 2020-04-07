@@ -8,7 +8,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "icon": "rm -rf ./src/Assets/iconfont && npx iconfont-rn"
+    "icon": "rm -rf ./src/Assets/iconfont && npx iconfont-rn && rm -rf ./src/Assets/iconfont/*.ts"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",

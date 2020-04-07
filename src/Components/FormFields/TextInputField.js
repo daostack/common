@@ -64,6 +64,7 @@ class TextInputField extends React.Component {
       password,
       multiline,
       numberOfLines,
+      keyboardType,
 
       // Validation management properties
       validation,
@@ -110,6 +111,7 @@ class TextInputField extends React.Component {
           style={styleTextfield}
           placeholder={placeholderText}
           onChangeText={this.onChangeText}
+          keyboardType={keyboardType}
           onFocus={this.onFocus}
           onBlur={this.onBlur}
           secureTextEntry={this.state.showPassword}

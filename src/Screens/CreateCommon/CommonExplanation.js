@@ -163,4 +163,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('completeAccountFormStore')(observer(CommonExplanation));
+export default inject('createCommonFormStore')(observer(CommonExplanation));

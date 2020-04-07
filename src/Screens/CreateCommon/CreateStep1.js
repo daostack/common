@@ -9,19 +9,23 @@ import {
   Dimensions,
   SafeAreaView,
   Animated,
+  TextInput,
 } from 'react-native';
 import TextInputField from '../../Components/FormFields/TextInputField';
+import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
 import {colors} from '../../Theme';
 import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import NavigationBar from 'react-native-navbar';
 import Icon from '../../Assets/iconfont/Icon';
+import Toast from '../../Util/Toast.js';
 
-const CreateStep1 = (props) => {
+const CreateStep1 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [ruleCount, setRuleCount] = useState(1);
+  const [pass, setPass] = useState(false);
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -33,6 +37,27 @@ const CreateStep1 = (props) => {
     // const height = scrollY.value > 100 ? 125 : 0;
     setHeaderHeight(height);
   }, [scrollY]);
+
+  const isValid = () => {
+    const links = [...Array(ruleCount).keys()].map(
+      x => `${CreateCommonForm.FIELD_LINKS}_${x}`,
+    );
+    const result = props.createCommonFormStore.isFormValidSelectedFields([
+      CreateCommonForm.FIELD_NAME,
+      CreateCommonForm.FIELD_BYLINE,
+      ...links,
+    ]);
+    setPass(result);
+    return result;
+  };
+
+  const push = () => {
+    const vaild = isValid();
+    if (vaild) {
+      props.navigation.navigate('CreateStep2');
+      console.log(props.createCommonFormStore.getChangedFormFieldsJson());
+    }
+  };
 
   return (
     <SafeAreaView
@@ -117,9 +142,11 @@ const CreateStep1 = (props) => {
             placeholderText=""
             autoCapitalize="none"
             autoCorrect={false}
+            onChangeText={isValid}
             validation={{
-              name: 'name',
-              formStore: props.completeAccountFormStore,
+              name: CreateCommonForm.FIELD_NAME,
+              formStore: props.createCommonFormStore,
+              // validateRule: 'required|min:4',
               validateRule: 'required',
             }}
           />
@@ -133,10 +160,12 @@ const CreateStep1 = (props) => {
             placeholderText="A sentence that describes what you want to achieve"
             autoCapitalize="none"
             autoCorrect={false}
+            onChangeText={isValid}
             validation={{
-              name: 'byline',
-              formStore: props.completeAccountFormStore,
-              validateRule: 'required',
+              name: CreateCommonForm.FIELD_BYLINE,
+              formStore: props.createCommonFormStore,
+              validateRule: 'required|min:10',
+              // validateRule: 'required',
             }}
           />
           <TextInputField
@@ -148,40 +177,47 @@ const CreateStep1 = (props) => {
             autoCapitalize="none"
             autoCorrect={false}
             validation={{
-              name: 'description',
-              formStore: props.completeAccountFormStore,
+              name: CreateCommonForm.FIELD_DESCRIPTION,
+              formStore: props.createCommonFormStore,
               validateRule: 'string',
             }}
           />
-          {[...Array(ruleCount)].map((x) => (
+          {[...Array(ruleCount).keys()].map(x => (
             <TextInputField
+              key={x}
               value={''}
-              viewStyle={{}}
-              label="Add link"
-              infoLabel="Resources, related content or social pages"
-              placeholderText=""
+              viewStyle={{marginTop: -5, marginBottom: -15}}
+              label={x === 0 ? 'Add link' : ''}
+              infoLabel={
+                x === 0 ? 'Resources, related content or social pages' : ''
+              }
+              placeholderText="https://"
               autoCapitalize="none"
               autoCorrect={false}
+              onChangeText={isValid}
               validation={{
-                name: `link + ${x}`,
-                formStore: props.completeAccountFormStore,
-                validateRule: 'string',
+                name: `${CreateCommonForm.FIELD_LINKS}_${x}`,
+                formStore: props.createCommonFormStore,
+                validateRule: 'string|url',
+                // validateRule: 'string',
               }}
             />
           ))}
-          <View style={{width: '100%'}}>
-            <TouchableOpacity>
-              <Text
-                style={styles.readMoreButton}
-                onPress={() => setRuleCount(ruleCount + 1)}>
-                Add Link
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity>
+            <Text
+              style={styles.readMoreButton}
+              onPress={() => setRuleCount(ruleCount + 1)}>
+              Add Link
+            </Text>
+          </TouchableOpacity>
         </View>
         <TouchableOpacity
-          style={styles.continueButton}
-          onPress={() => props.navigation.navigate('CreateStep2')}>
+          style={[
+            styles.continueButton,
+            {backgroundColor: pass ? colors.mainBlue : colors.grey3},
+          ]}
+          // onPress={() => props.navigation.navigate('CreateStep2')}
+          onPress={push}>
           <Text
             style={{
               fontSize: 16,
@@ -259,4 +295,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('completeAccountFormStore')(observer(CreateStep1));
+export default inject('createCommonFormStore')(observer(CreateStep1));
