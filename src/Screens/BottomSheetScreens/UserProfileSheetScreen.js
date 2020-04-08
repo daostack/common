@@ -1,5 +1,4 @@
 import {
-  Text,
   View,
   StyleSheet,
   StatusBar,
@@ -8,7 +7,7 @@ import {
 } from 'react-native';
 
 import React from 'react';
-import {text, layout, colors} from '../../Theme';
+import {text, colors} from '../../Theme';
 import UserProfileData from '../../Components/UserProfileData';
 
 const UserProfileSheetScreen = ({navigation, userId}) => {

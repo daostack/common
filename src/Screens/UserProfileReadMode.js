@@ -54,7 +54,7 @@ const UserProfileReadMode = ({navigation}) => {
           nestedScrollEnabled={true}
           directionalLockEnabled={true}>
           <View style={layout.content}>
-            <Icon name="commons-selected" size={60}></Icon>
+            <Icon name="commons-selected" size={60} />
             <Text style={text.h3Black}>USERS</Text>
           </View>
 
