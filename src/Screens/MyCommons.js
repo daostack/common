@@ -23,8 +23,7 @@ const MyCommons = ({navigation}) => {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     {key: 'all', title: 'All (14)'},
-    {key: 'active', title: 'Active (8)'},
-    {key: 'history', title: 'History (2) '},
+    {key: 'members', title: 'Members(8)'},
   ]);
 
   const SceneRenderer = () => {
@@ -72,8 +71,7 @@ const MyCommons = ({navigation}) => {
 
   const renderScene = SceneMap({
     all: SceneRenderer,
-    active: SceneRenderer,
-    history: SceneRenderer,
+    members: SceneRenderer,
   });
 
   const renderTabBar = props => (
