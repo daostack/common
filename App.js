@@ -26,6 +26,13 @@ import {
   EditProfile,
   UserProfileReadMode,
   NativeBridgeTests,
+  MyWallet,
+  HUDTest,
+  CommonExplanation,
+  CreateStep1,
+  CreateStep2,
+  CreateStep3,
+  CreateStep4,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
@@ -172,8 +179,6 @@ const App = ({userStore}) => {
             name="EditProfile"
             component={EditProfile}
           />
-          <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
-          <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen
             options={{
               title: 'My wallet',
@@ -185,6 +190,56 @@ const App = ({userStore}) => {
           <Stack.Screen
             name="UserProfileReadMode"
             component={UserProfileReadMode}
+          />
+          <Stack.Screen
+            name="CommonExplanation"
+            component={CommonExplanation}
+            options={({navigation, route}) => ({
+              headerTitle: 'Common!',
+              headerBackTitleVisible: false,
+              headerLeftContainerStyle: {marginLeft: 20},
+              headerRightContainerStyle: {marginRight: 20},
+              headerBackImage: () => (
+                <Image
+                  source={require('./src/Assets/backArrow.png')}
+                  style={{resizeMode: 'contain', width: 32, height: 32}}
+                />
+              ),
+              headerRight: () => (
+                <Image
+                  source={require('./src/Assets/questionmark.png')}
+                  style={{resizeMode: 'contain', width: 20, height: 20}}
+                />
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="CreateStep1"
+            component={CreateStep1}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="CreateStep2"
+            component={CreateStep2}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="CreateStep3"
+            component={CreateStep3}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="CreateStep4"
+            component={CreateStep4}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
           />
         </Stack.Navigator>
       </NavigationContainer>

@@ -52,6 +52,7 @@ def firebase
   pod 'Fabric'
   pod 'Crashlytics'
   pod 'Firebase/Core'
+  pod 'Firebase/Auth'
   pod 'Firebase/Messaging'
   pod 'Firebase/Analytics'
   pod 'Firebase/Performance'
@@ -61,7 +62,7 @@ end
 # -------------------------------------------------- #
 def native
   # Native Dependencies
-  pod 'Web3swift.pod', git: 'https://github.com/matter-labs/web3swift', branch: 'master'
+  pod 'web3swift', git: 'https://github.com/matter-labs/web3swift', branch: 'master'
   pod 'KeychainAccess'
   pod 'IQKeyboardManagerSwift'
   pod 'ToastHybrid', :path => './lib'
