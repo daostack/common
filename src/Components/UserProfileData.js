@@ -39,7 +39,7 @@ const UserProfileData = ({
     setUser(null);
     setIsEditMode(false);
     getUser();
-  }, [userId]);
+  }, [userId, userStore.userInfo]);
 
   const navigateToEditProfile = isFirstOpening => {
     const navigate = CommonActions.navigate({
