@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import {
   SafeAreaView,
@@ -16,19 +16,34 @@ import Loader from '../Components/Loader';
 import {layout, colors, text, sizeS} from '../Theme';
 
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
-import {DAOS_SUBSCRIPTION} from '../GrapthSubscriptions';
+import {MY_DAOS_SUBSCRIPTION} from '../GrapthSubscriptions';
 import {Query} from 'react-apollo';
 
+const getTabName = (objectName, count) => {
+  return `${objectName} (${count ? count : 0})`;
+};
+
 const MyCommons = ({navigation}) => {
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    {key: 'all', title: 'All (14)'},
-    {key: 'members', title: 'Members(8)'},
+  const [index, setIndex] = useState(0);
+  const [routes, setRoutes] = useState([
+    {key: 'all', title: getTabName('All')},
+    {key: 'members', title: getTabName('Members')},
   ]);
 
-  const SceneRenderer = () => {
+  const AllCommons = () => {
+    return sceneRenderer(0);
+  };
+
+  const MyCommons = () => {
+    return sceneRenderer(1);
+  };
+
+  const sceneRenderer = sceneIndex => {
     return (
-      <Query query={DAOS_SUBSCRIPTION}>
+      <Query
+        query={MY_DAOS_SUBSCRIPTION(
+          '0xbe5cf9a0408d22cdd61f8990b33dd00a5272f65b',
+        )}>
         {({loading, error, data}) => {
           console.log('Query -> ', loading, error, data);
 
@@ -42,9 +57,24 @@ const MyCommons = ({navigation}) => {
             return <Loader />;
           }
 
+          let daosList = data.daos;
+          if (sceneIndex === 0) {
+            let tmpRoutes = routes;
+            tmpRoutes[0].title = getTabName('All', data.daos.length);
+            tmpRoutes[1].title = getTabName(
+              'Members',
+              data.daos.filter(dao => dao.reputationHolders.length > 0).length,
+            );
+            setRoutes(tmpRoutes);
+          } else if (sceneIndex === 1) {
+            daosList = data.daos.filter(
+              dao => dao.reputationHolders.length > 0,
+            );
+          }
+
           return (
             <View style={layout.marginTopL}>
-              {data.daos.map((dao, i) => {
+              {daosList.map((dao, i) => {
                 if (
                   ''.length > 0 &&
                   !dao.name.toLowerCase().includes(''.toLowerCase())
@@ -70,8 +100,8 @@ const MyCommons = ({navigation}) => {
   const initialLayout = {width: Dimensions.get('window').width};
 
   const renderScene = SceneMap({
-    all: SceneRenderer,
-    members: SceneRenderer,
+    all: AllCommons,
+    members: MyCommons,
   });
 
   const renderTabBar = props => (
