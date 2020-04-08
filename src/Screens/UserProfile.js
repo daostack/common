@@ -3,32 +3,29 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TouchableOpacity,
   ScrollView,
   View,
-  Image,
 } from 'react-native';
 
-import Swiper from 'react-native-swiper';
+//import Swiper from 'react-native-swiper';
 
 import React, {useEffect} from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
 import {observer, inject} from 'mobx-react';
-import ImageField from '../Components/FormFields/ImageField';
-import CountBox from '../Components/CountBox';
 import AccordionBtn from '../Components/AccordionBtn';
 import {GoogleSignin} from '@react-native-community/google-signin';
-import EditProfileForm from '../Components/Forms/EditProfileForm';
 import CreateAccount from '../Screens/CreateAccount';
 
-import Icon from '../Assets/iconfont/Icon';
 import {CommonActions} from '@react-navigation/native';
-import Toast, {useToast} from '../Util/Toast';
+import Toast from '../Util/Toast';
+import UserProfileData from '../Components/UserProfileData';
 
 const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
+  //const [editMode, setEditMode] = useState(false);
+
   useEffect(() => {
-    if (route.params?.userUpdated) {
+    if (route?.params?.userUpdated) {
       Toast.done('Your profile is updated');
     }
   });
@@ -63,130 +60,13 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
     navigation.navigate('MyWallet');
   };
 
-  const renderUserProfilePicture = () => {
-    return (
-      <ImageField
-        value={userStore.userInfo?.profileImage}
-        placeholderUrl={userStore.userInfo?.photo}
-        validation={{
-          name: EditProfileForm.FIELD_PROFILE_IMAGE,
-          formStore: editProfileFormStore,
-          validateRule: 'string',
-        }}
-      />
-    );
-  };
-
   const renderUnsignedUserData = () => {
-    return <CreateAccount onSignedIn={onUserSignedIn}></CreateAccount>;
+    return <CreateAccount onSignedIn={onUserSignedIn} />;
   };
 
   const renderSignedInUserData = () => {
     return (
-      <>
-        <View style={styles.screenNav}>
-          <TouchableOpacity onPress={() => navigateToEditProfile(false)}>
-            <Icon name="edit-" size={26} />
-          </TouchableOpacity>
-        </View>
-        {renderUserProfilePicture()}
-        <Text style={{...text.h1Black, ...{paddingTop: 0, paddingBottom: 2}}}>
-          Lyubomir Petkov
-        </Text>
-        <Text style={text.ashleyjquimbacom2}>
-          lyubomir.petkov@limechain.tech
-        </Text>
-
-        <View style={styles.countBoxContainer}>
-          <CountBox
-            count={0}
-            name="Commons"
-            onPress={() => {
-              console.log('Commons CardBox clicked');
-            }}
-          />
-          <View style={styles.countBoxDivider}></View>
-          <CountBox
-            count={0}
-            name="Proposals"
-            onPress={() => {
-              console.log('Proposals CardBox clicked');
-            }}
-          />
-        </View>
-
-        <View style={styles.contentContainer}>
-          <Text style={text.h3Black}>About</Text>
-          <Text style={{...text.blackText, ...layout.marginTopM}}>
-            I work on a DAO project at iteratec and am interested in DAOs, coops
-            as well as crypto and blockchain in general.
-          </Text>
-        </View>
-
-        <View style={styles.contentContainer}>
-          <Text style={text.h3Black}>Commons (0)</Text>
-
-          <View style={styles.emptyObjectContainer}>
-            <Icon name="group" size={56} />
-            <Text style={{...text.h3Black, ...layout.marginTopS}}>
-              No Commons
-            </Text>
-            <Text
-              style={{
-                ...text.blackText,
-                ...text.centered,
-                ...layout.marginTopS,
-              }}>
-              Join your first common and start making an impact
-            </Text>
-            <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity style={styles.btn}>
-                <Text style={text.buttonblue}>Explore Commons</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.contentContainer}>
-          <Text style={text.h3Black}>Proposals (0)</Text>
-
-          <View style={styles.emptyObjectContainer}>
-            <Icon name="pencil" size={46} />
-            <Text style={{...text.h3Black, ...layout.marginTopS}}>
-              No Proposals
-            </Text>
-            <Text
-              style={{
-                ...text.blackText,
-                ...text.centered,
-                ...layout.marginTopS,
-              }}>
-              Join a common and propose actions you think it should take to
-              achieve its goal
-            </Text>
-          </View>
-
-          {/*
-
-<Swiper
-            style={styles.wrapper}
-            loop={false}
-            nestedScrollEnabled={true}
-            showsButtons={false}>
-            <View style={styles.swiperContentWrapper}>
-              <View style={styles.swiperContent}>
-
-              </View>
-            </View>
-
-            <View style={styles.swiperContentWrapper}>
-              <View style={styles.swiperContent} />
-            </View>
-          </Swiper>
-    
-    */}
-        </View>
-      </>
+      <UserProfileData navigation={navigation} userId={userStore.userInfo.id} />
     );
   };
 
@@ -297,7 +177,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightBlue,
   },
   body: {
-    paddingTop: 40,
+    paddingVertical: 10,
   },
 
   safeArea: {

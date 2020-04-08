@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 
 import {
   SafeAreaView,
@@ -12,8 +12,25 @@ import EditProfileForm from '../Components/Forms/EditProfileForm';
 import {colors, text, layout} from '../Theme';
 import {observer, inject} from 'mobx-react';
 import {CommonActions} from '@react-navigation/native';
+import UnsavedChanges from './BottomSheetScreens/UnsavedChanges';
+import BottomSheetContainer from '../Components/BottomSheetContainer';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import Icon from '../Assets/iconfont/Icon';
 
-const EditProfile = ({route, navigation, userStore}) => {
+const EditProfile = ({editProfileFormStore, route, navigation}) => {
+  unsavedChangesSheetRef = useRef();
+
+  navigation.setOptions({
+    headerLeft: () => (
+      <TouchableOpacity
+        onPress={async () => {
+          onFormClose();
+        }}>
+        <Icon name="left-arrow" size={32} />
+      </TouchableOpacity>
+    ),
+  });
+
   const onFormSubmit = () => {
     const navigate = CommonActions.navigate({
       name: 'Profile',
@@ -22,6 +39,24 @@ const EditProfile = ({route, navigation, userStore}) => {
       },
     });
     navigation.dispatch(navigate);
+  };
+
+  const onFormClose = () => {
+    if (editProfileFormStore.isFormChanged()) {
+      // Call snapTo twice because of an issue in the library :(  https://github.com/osdnk/react-native-reanimated-bottom-sheet/issues/198
+      if (unsavedChangesSheetRef) {
+        unsavedChangesSheetRef.current.snapTo(1);
+        unsavedChangesSheetRef.current.snapTo(1);
+      }
+    } else {
+      navigation.goBack();
+    }
+  };
+
+  const onContinueEditing = () => {
+    // Call snapTo twice because of an issue in the library :(  https://github.com/osdnk/react-native-reanimated-bottom-sheet/issues/198
+    unsavedChangesSheetRef.current.snapTo(0);
+    unsavedChangesSheetRef.current.snapTo(0);
   };
 
   const renderFirstTimeHeader = () => {
@@ -47,11 +82,19 @@ const EditProfile = ({route, navigation, userStore}) => {
             {route.params.isFirstOpening ? renderFirstTimeHeader() : null}
             <EditProfileForm
               firstOpening={route.params.isFirstOpening}
+              onFormClose={onFormClose}
               onFormSubmit={onFormSubmit}
             />
           </View>
         </ScrollView>
       </SafeAreaView>
+
+      <BottomSheetContainer ref={unsavedChangesSheetRef}>
+        <UnsavedChanges
+          navigation={navigation}
+          onContinueEditing={onContinueEditing}
+        />
+      </BottomSheetContainer>
     </>
   );
 };
@@ -74,4 +117,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(EditProfile));
+export default inject('editProfileFormStore')(observer(EditProfile));

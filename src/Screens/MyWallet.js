@@ -31,7 +31,7 @@ const MyWallet = () => {
           </View>
 
           <View style={layout.content}>
-            <Icon name="commons-selected" size={100}></Icon>
+            <Icon name="wallet1" size={130} />
           </View>
 
           <View style={styles.sectionContainer}>

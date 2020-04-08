@@ -25,6 +25,15 @@ export default StyleSheet.create({
     textAlign: 'center',
     color: colors.black,
   },
+  h4Black: {
+    ...appFontFamily,
+    fontSize: 15,
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.black,
+  },
   buttonblack: {
     ...appFontFamily,
     fontSize: 16,
@@ -54,6 +63,16 @@ export default StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'center',
     color: colors.mainBlue,
+  },
+  buttonred: {
+    ...appFontFamily,
+    fontSize: 16,
+    fontWeight: '500',
+    fontStyle: 'normal',
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.error,
   },
   runningboldblue: {
     ...appFontFamily,

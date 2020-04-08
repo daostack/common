@@ -82,6 +82,10 @@ class FormStore {
     return changedFieldsJson;
   };
 
+  isFormChanged = () => {
+    return Object.keys(this.getChangedFormFieldsJson()).length > 0;
+  };
+
   // Private functions
   validateField = field => {
     var validation = this.getValidator();
