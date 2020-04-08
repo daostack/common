@@ -11,13 +11,13 @@ import {
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 
-import Icon from '../Assets/iconfont/Icon';
 import CommonBox from '../Components/CommonBox';
+import Loader from '../Components/Loader';
 import {layout, colors, text, sizeS} from '../Theme';
 
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import {DAOS_SUBSCRIPTION} from '../GrapthSubscriptions';
-import {Subscription, Query} from 'react-apollo';
+import {Query} from 'react-apollo';
 
 const MyProposals = ({navigation}) => {
   const [index, setIndex] = React.useState(0);
@@ -40,7 +40,7 @@ const MyProposals = ({navigation}) => {
 
           if (loading) {
             console.log('Loading... -> ');
-            return <Text>Loading...</Text>;
+            return <Loader />;
           }
 
           return (
@@ -83,14 +83,11 @@ const MyProposals = ({navigation}) => {
         backgroundColor: colors.black,
       }}
       renderLabel={({route, focused, color}) => {
-        let tabTextStyle = focused
-          ? {
-              ...text.ashleyjquimbacom2,
-              ...{fontWeight: 'bold', color: colors.black},
-            }
-          : {...text.ashleyjquimbacom2, ...{fontWeight: 'bold'}};
-
-        return <Text style={tabTextStyle}>{route.title}</Text>;
+        return (
+          <Text style={focused ? styles.tabStyleActive : styles.tabStyle}>
+            {route.title}
+          </Text>
+        );
       }}
       style={{backgroundColor: colors.white}}
       tabStyle={{width: 'auto'}}
@@ -128,12 +125,6 @@ const MyProposals = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  componentContainer: {
-    marginBottom: 100,
-  },
-  container: {
-    flex: 1,
-  },
   scrollView: {
     flexGrow: 1,
     backgroundColor: Colors.white,
@@ -144,19 +135,20 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   sectionTabView: {},
-
   sectionContainer: {
     ...layout.content,
     marginVertical: sizeS,
     alignItems: 'flex-start',
   },
 
-  proposalBox: {
-    ...layout.marginTopL,
-    height: 240,
-
-    backgroundColor: colors.mainBlue,
-    borderRadius: 14,
+  tabStyleActive: {
+    ...text.ashleyjquimbacom2,
+    fontWeight: 'bold',
+    color: colors.black,
+  },
+  tabStyle: {
+    ...text.ashleyjquimbacom2,
+    fontWeight: 'bold',
   },
 });
 
