@@ -1,38 +1,28 @@
 import React, {useRef} from 'react';
 
-import {
-  Button,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  View,
-  Image,
-} from 'react-native';
+import {StyleSheet, View, Image} from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import BottomSheetContainer from '../Components/BottomSheetContainer';
-import AccordionBtn from '../Components/AccordionBtn';
-
 import GSignInButton from '../Components/GSignInButton';
-import {CommonActions} from '@react-navigation/native';
 import FirebaseService from '../Services/FirebaseService';
 import {filterObjectByKeys} from '../Util';
 const firebaseService = new FirebaseService();
+import {observer, inject} from 'mobx-react';
 
-import CompleteAccountForm from '../Components/Forms/CompleteAccountForm';
+import {userInfoFields} from '../Stores/UserStore';
+import EditProfileForm from '../Components/Forms/EditProfileForm';
 import {layout} from '../Theme';
 
-const userInfoFields = [
-  CompleteAccountForm.FIELD_NAME,
-  CompleteAccountForm.FIELD_INTRO,
-  CompleteAccountForm.FIELD_PROFILE_IMAGE,
+const dbUserInfoFields = [
+  EditProfileForm.FIELD_NAME,
+  EditProfileForm.FIELD_INTRO,
+  EditProfileForm.FIELD_PROFILE_IMAGE,
   'byLine',
   'email',
   'ethereumAddress',
   'preferences',
 ];
 
-const CreateAccount = ({navigation}) => {
+const CreateAccount = ({navigation, onSignedIn, userStore}) => {
   bottomSheetContainerRef = useRef();
 
   openSheet = () => {
@@ -40,73 +30,46 @@ const CreateAccount = ({navigation}) => {
   };
 
   onSignIn = async userInfo => {
+    userStore.setIsLoading(true);
     const internalUser = await firebaseService.getUserById(userInfo.user.id);
-    if (!internalUser) {
+    const isNewUser = !internalUser;
+    if (isNewUser) {
       await firebaseService.addUser(
         userInfo.user.id,
-        filterObjectByKeys(userInfo.user, userInfoFields),
+        filterObjectByKeys(userInfo.user, dbUserInfoFields),
       );
+    }
+    const allUserInfo = {
+      ...userInfo.user,
+      ...internalUser,
+    };
 
-      if (navigation) {
-        const navigate = CommonActions.navigate({
-          name: 'CompleteAccount',
-          params: {
-            userId: userInfo.user.id,
-            email: userInfo.user.email,
-            image: userInfo.user.photo,
-            name: userInfo.user.name,
-          },
-        });
-        navigation.dispatch(navigate);
-      }
-    } else {
-      if (navigation) {
-        navigation.navigate('Commons');
-      }
+    const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
+    userStore.setSignedInUser(filteredUser);
+    userStore.setIsLoading(false);
+
+    if (onSignedIn) {
+      onSignedIn(isNewUser);
     }
   };
 
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView style={styles.container}>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <View style={styles.body}>
-            <Button
-              style={layout.marginTopM}
-              title="button"
-              onPress={openSheet}
-            />
+    <View style={styles.componentContainer}>
+      <View style={styles.sectionContainer}>
+        <Image source={require('../Assets/accountPlaceHolder.png')} />
+      </View>
 
-            <View style={styles.sectionContainer}>
-              <Image source={require('../Assets/accountPlaceHolder.png')} />
-            </View>
+      <GSignInButton style={styles.googleSignInButton} onSignIn={onSignIn} />
 
-            <GSignInButton
-              navigation={navigation}
-              style={styles.googleSignInButton}
-              onSignIn={onSignIn}
-            />
-
-            <View style={styles.buttonsArea}>
-              <AccordionBtn name="FAQ" />
-              <AccordionBtn name="Terms of use" />
-              <AccordionBtn name="Privacy Policy" />
-              <AccordionBtn name="Help" />
-              <AccordionBtn name="Contact us" />
-            </View>
-
-            <BottomSheetContainer ref={bottomSheetContainerRef} />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+      {/*<BottomSheetContainer ref={bottomSheetContainerRef} />*/}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  componentContainer: {
+    marginBottom: 100,
+  },
   container: {
     flex: 1,
   },
@@ -114,16 +77,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: Colors.white,
   },
-  body: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-  },
+
   sectionContainer: {
-    marginTop: 22,
-    marginBottom: 34,
+    ...layout.content,
   },
   googleSignInButton: {
     alignSelf: 'stretch',
@@ -161,4 +117,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateAccount;
+export default inject('userStore')(observer(CreateAccount));

@@ -7,11 +7,14 @@
  */
 
 import React, {useState, useEffect} from 'react';
-import {Image} from 'react-native';
+import {Image, StyleSheet} from 'react-native';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {colors, text} from './src/Theme';
+import AsyncStorage from '@react-native-community/async-storage';
+
 import {
   Login,
   CommonsList,
@@ -20,17 +23,15 @@ import {
   UserProfile,
   CreateAccount,
   CompleteAccount,
-  CommonExplanation,
-  CreateStep1,
-  CreateStep2,
-  CreateStep3,
-  CreateStep4,
+  EditProfile,
+  UserProfileReadMode,
+  NativeBridgeTests,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
-import {colors} from './src/Theme';
 import FirebaseService from './src/Services/FirebaseService';
-import AsyncStorage from '@react-native-community/async-storage';
 const firebaseService = new FirebaseService();
+import AuthService from './src/Services/AuthService';
+const authService = new AuthService();
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -83,19 +84,54 @@ const CommonHome = () => {
         activeTintColor: colors.mainBlue,
       }}>
       {/*<Tab.Screen name="Test" component={NativeBridgeTests} />*/}
-      <Tab.Screen name="Commons" component={CommonsList} />
-      <Tab.Screen name="CreateAccount" component={CreateAccount} />
+      <Tab.Screen name="My feed" component={UserProfile} />
+      <Tab.Screen name="Explore" component={CommonsList} />
+      <Tab.Screen name="Profile" component={UserProfile} />
+      <Tab.Screen name="UserProfileReadMode" component={UserProfileReadMode} />
     </Tab.Navigator>
   );
 };
 
-const App = () => {
+const App = ({userStore}) => {
   const [onboarded, setOnboarded] = useState();
   useEffect(() => {
+    const loadUser = async () => {
+      try {
+        if (!userStore.userInfo) {
+          console.log('LOAD USER 1');
+          const googleSignedInUser = await authService.getGoogleSignedInUser();
+          // Signed In Mode
+          if (googleSignedInUser) {
+            userStore.setIsLoading(true);
+            const appUser = await firebaseService.getUserById(
+              googleSignedInUser.user.id,
+            );
+
+            const allUserInfo = {
+              ...googleSignedInUser.user,
+              ...appUser,
+            };
+
+            const filteredUser = filterObjectByKeys(
+              allUserInfo,
+              userInfoFields,
+            );
+            userStore.setSignedInUser(filteredUser);
+            userStore.setIsLoading(false);
+          }
+          // Anonymous mode
+          else {
+            console.log('Anonymous user');
+          }
+        }
+      } catch (error) {
+        console.log('ERRROR', error);
+      }
+    };
+
     const checkOnboardingStatus = async () => {
       try {
         const isOnboarded = await AsyncStorage.getItem('onboarded');
-        console.log('BBBBB', isOnboarded);
         if (isOnboarded === 'true') {
           setOnboarded(true);
         }
@@ -104,7 +140,8 @@ const App = () => {
       }
     };
     checkOnboardingStatus();
-  }, []);
+    loadUser();
+  });
 
   return (
     <ApolloProvider client={client}>
@@ -128,56 +165,26 @@ const App = () => {
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
           <Stack.Screen name="Profile" component={UserProfile} />
-
           <Stack.Screen
-            name="CommonExplanation"
-            component={CommonExplanation}
-            options={({navigation, route}) => ({
-              headerTitle: 'Common!',
-              headerBackTitleVisible: false,
-              headerLeftContainerStyle: {marginLeft: 20},
-              headerRightContainerStyle: {marginRight: 20},
-              headerBackImage: () => (
-                <Image
-                  source={require('./src/Assets/backArrow.png')}
-                  style={{resizeMode: 'contain', width: 32, height: 32}}
-                />
-              ),
-              headerRight: () => (
-                <Image
-                  source={require('./src/Assets/questionmark.png')}
-                  style={{resizeMode: 'contain', width: 20, height: 20}}
-                />
-              ),
-            })}
+            options={{
+              title: 'Edit my profile',
+            }}
+            name="EditProfile"
+            component={EditProfile}
           />
+          <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
+          <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen
-            name="CreateStep1"
-            component={CreateStep1}
-            options={({navigation, route}) => ({
-              headerShown: false,
-            })}
+            options={{
+              title: 'My wallet',
+            }}
+            name="MyWallet"
+            component={MyWallet}
           />
+          <Stack.Screen name="HUDTest" component={HUDTest} />
           <Stack.Screen
-            name="CreateStep2"
-            component={CreateStep2}
-            options={({navigation, route}) => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="CreateStep3"
-            component={CreateStep3}
-            options={({navigation, route}) => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="CreateStep4"
-            component={CreateStep4}
-            options={({navigation, route}) => ({
-              headerShown: false,
-            })}
+            name="UserProfileReadMode"
+            component={UserProfileReadMode}
           />
         </Stack.Navigator>
       </NavigationContainer>

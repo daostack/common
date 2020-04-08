@@ -1,11 +1,10 @@
 import {forwardRef} from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 
 import React from 'react';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors, text, layout} from '../Theme';
-import GSignInButton from '../Components/GSignInButton';
 
 const BottomSheetContainer = forwardRef((props, ref) => {
   openBottomSheet = () => {};
@@ -18,7 +17,6 @@ const BottomSheetContainer = forwardRef((props, ref) => {
     return (
       <View style={styles.headerContainer}>
         <View style={styles.draggingElement} />
-        <Text style={styles.sheetTitleStyle}>Be a part of Common</Text>
       </View>
     );
   };
@@ -30,29 +28,7 @@ const BottomSheetContainer = forwardRef((props, ref) => {
       ...styles.contentContainer,
     };
 
-    return (
-      <View style={contentStyle}>
-        <Text
-          style={{
-            ...styles.sheetTextStyle,
-            ...layout.marginBottomXL,
-          }}>
-          To join this Common you need to be connected with your Google account
-        </Text>
-
-        <GSignInButton />
-
-        <View style={layout.paddingHorizontalXL}>
-          <Text
-            style={{
-              ...styles.sheetTextStyle,
-              ...layout.marginTopL,
-            }}>
-            By clicking next you are accepting the Common app terms of use
-          </Text>
-        </View>
-      </View>
-    );
+    return <View style={contentStyle}>{props.children}</View>;
   };
 
   return (
@@ -71,7 +47,7 @@ const styles = StyleSheet.create({
     ...layout.content,
     ...layout.flexStart,
     backgroundColor: Colors.white,
-    height: 80,
+    height: 30,
 
     borderTopLeftRadius: 27,
     borderTopRightRadius: 27,
@@ -88,8 +64,9 @@ const styles = StyleSheet.create({
     zIndex: 5,
   },
   contentContainer: {
-    height: 550,
-    backgroundColor: Colors.white,
+    paddingTop: 0,
+    height: 600,
+    backgroundColor: colors.white,
     zIndex: 6,
   },
 
@@ -105,6 +82,7 @@ const styles = StyleSheet.create({
   },
 
   draggingElement: {
+    alignSelf: 'center',
     width: 72,
     height: 4,
     borderRadius: 2,

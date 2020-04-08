@@ -7,41 +7,53 @@ import {layout, text} from '../../Theme';
 import FirebaseService from '../../Services/FirebaseService';
 const firebaseService = new FirebaseService();
 
-class CompleteAccountForm extends React.Component {
+class EditProfileForm extends React.Component {
   static FIELD_NAME = 'name';
   static FIELD_INTRO = 'intro';
   static FIELD_PROFILE_IMAGE = 'profileImage';
 
   formSkip() {}
 
-  formSave = () => {
-    const {completeAccountFormStore, userId} = this.props;
-    if (completeAccountFormStore.isFormValid()) {
+  formSave = e => {
+    const {editProfileFormStore, userStore} = this.props;
+    if (editProfileFormStore.isFormValid()) {
       firebaseService
-        .editUser(userId, completeAccountFormStore.getChangedFormFieldsJson())
+        .editUser(
+          userStore.userInfo.id,
+          editProfileFormStore.getChangedFormFieldsJson(),
+        )
         .catch(err => {
-          completeAccountFormStore.form.meta.submitError = `${err.toString()}  \n ${
+          editProfileFormStore.form.meta.submitError = `${err.toString()}  \n ${
             err.response
               ? `\nCode: ${err.response.data.code}  \nMessage: ${err.response.data.message}`
               : ''
           }`;
-          completeAccountFormStore.form.meta.isLoadingSubmit = false;
+          editProfileFormStore.form.meta.isLoadingSubmit = false;
           throw err;
         });
+      if (this.props.onFormSubmit) {
+        this.props.onFormSubmit();
+      }
+    }
+  };
+
+  onFormClose = e => {
+    const {onFormClose} = this.props;
+    if (onFormClose) {
+      onFormClose();
     }
   };
 
   render() {
     const {
-      completeAccountFormStore,
-      name,
-      image,
-      email,
+      userStore,
+      editProfileFormStore,
+      firstOpening,
       ...otherProps
     } = this.props;
 
-    console.log('completeAccountFormStore');
-    console.log(completeAccountFormStore);
+    console.log('editProfileFormStore');
+    console.log(editProfileFormStore);
     return (
       <View
         {...otherProps}
@@ -51,29 +63,29 @@ class CompleteAccountForm extends React.Component {
           marginTop: 15,
         }}>
         <ImageField
-          value={null}
-          placeholderUrl={image}
+          value={userStore.userInfo.profileImage}
+          placeholderUrl={userStore.userInfo.photo}
           validation={{
-            name: CompleteAccountForm.FIELD_PROFILE_IMAGE,
-            formStore: completeAccountFormStore,
+            name: EditProfileForm.FIELD_PROFILE_IMAGE,
+            formStore: this.props.editProfileFormStore,
             validateRule: 'string',
           }}
         />
 
         <View style={styles.emailContainer}>
-          <Text style={text.ashleyjquimbacom}>{email}</Text>
+          <Text style={text.ashleyjquimbacom}>{userStore.userInfo.email}</Text>
         </View>
 
         <TextInputField
-          value={name}
+          value={userStore.userInfo.name}
           viewStyle={{alignSelf: 'stretch'}}
           label="Name"
           placeholderText="Firstname Lastname"
           autoCapitalize="none"
           autoCorrect={false}
           validation={{
-            name: CompleteAccountForm.FIELD_NAME,
-            formStore: completeAccountFormStore,
+            name: EditProfileForm.FIELD_NAME,
+            formStore: this.props.editProfileFormStore,
             validateRule: 'required',
           }}
         />
@@ -82,19 +94,28 @@ class CompleteAccountForm extends React.Component {
           label="Intro"
           placeholderText="What are you passionate about, really good at or love"
           multiline={true}
+          value={userStore.userInfo.intro}
           validation={{
-            name: CompleteAccountForm.FIELD_INTRO,
-            formStore: completeAccountFormStore,
+            name: EditProfileForm.FIELD_INTRO,
+            formStore: this.props.editProfileFormStore,
             validateRule: 'required',
           }}
         />
 
         <View style={styles.containerRow}>
-          <TouchableOpacity
-            style={{...layout.btnOutline, ...layout.marginRightS}}
-            onPress={this.formSkip}>
-            <Text style={text.buttonblue}>Skip</Text>
-          </TouchableOpacity>
+          {firstOpening ? (
+            <TouchableOpacity
+              style={{...layout.btnOutline, ...layout.marginRightS}}
+              onPress={this.formSkip}>
+              <Text style={text.buttonblue}>Skip</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={{...layout.btnOutline, ...layout.marginRightS}}
+              onPress={this.onFormClose}>
+              <Text style={text.buttonblue}>Cancel</Text>
+            </TouchableOpacity>
+          )}
 
           <TouchableOpacity
             style={{...layout.btnPrimary, ...layout.marginLeftS}}
@@ -120,6 +141,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('completeAccountFormStore')(
-  observer(CompleteAccountForm),
-);
+export default inject(
+  'editProfileFormStore',
+  'userStore',
+)(observer(EditProfileForm));

@@ -8,7 +8,7 @@ import {
   View,
   Text,
 } from 'react-native';
-import CompleteAccountForm from '../Components/Forms/CompleteAccountForm';
+import EditProfileForm from '../Components/Forms/EditProfileForm';
 import {colors, text, layout} from '../Theme';
 
 const CompleteAccount = ({route, navigation}) => {
@@ -29,7 +29,7 @@ const CompleteAccount = ({route, navigation}) => {
               </Text>
             </View>
 
-            <CompleteAccountForm
+            <EditProfileForm
               userId={route.params.userId}
               name={route.params.name}
               image={route.params.image}
