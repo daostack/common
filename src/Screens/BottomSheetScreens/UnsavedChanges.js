@@ -17,7 +17,9 @@ const UnsavedChanges = ({navigation, onContinueEditing}) => {
 
   const continueEditing = e => {
     console.log('onContinueEditing -> ', onContinueEditing);
-    if (onContinueEditing) onContinueEditing();
+    if (onContinueEditing) {
+      onContinueEditing();
+    }
   };
 
   return (
@@ -28,7 +30,7 @@ const UnsavedChanges = ({navigation, onContinueEditing}) => {
       nestedScrollEnabled={true}
       directionalLockEnabled={true}>
       <View style={styles.body}>
-        <Icon name="save1" size={100}></Icon>
+        <Icon name="save1" size={100} />
         <Text style={{...text.h3Black, ...layout.marginTopM}}>
           Unsaved Changes
         </Text>

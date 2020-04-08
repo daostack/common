@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 
-import {Button, StyleSheet, View, Image} from 'react-native';
+import {StyleSheet, View, Image} from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import GSignInButton from '../Components/GSignInButton';
 import FirebaseService from '../Services/FirebaseService';

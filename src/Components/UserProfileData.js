@@ -1,13 +1,4 @@
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  View,
-  Image,
-} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
 import {observer, inject} from 'mobx-react';
@@ -33,7 +24,7 @@ const UserProfileData = ({
   useEffect(() => {
     const getUser = async () => {
       try {
-        if (userId == userStore.userInfo?.id) {
+        if (userId === userStore.userInfo?.id) {
           setUser(userStore.userInfo);
           setIsEditMode(true);
         } else {
@@ -48,7 +39,7 @@ const UserProfileData = ({
     setUser(null);
     setIsEditMode(false);
     getUser();
-  }, [userId]);
+  }, [userId, userStore.userInfo]);
 
   const navigateToEditProfile = isFirstOpening => {
     const navigate = CommonActions.navigate({
@@ -121,7 +112,7 @@ const UserProfileData = ({
             console.log('Commons CardBox clicked');
           }}
         />
-        <View style={styles.countBoxDivider}></View>
+        <View style={styles.countBoxDivider} />
         <CountBox
           count={0}
           name="Proposals"

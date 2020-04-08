@@ -3,28 +3,22 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TouchableOpacity,
   ScrollView,
   View,
-  Image,
 } from 'react-native';
 
-import Swiper from 'react-native-swiper';
+//import Swiper from 'react-native-swiper';
 
 import React, {useEffect} from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
 import {observer, inject} from 'mobx-react';
-import ImageField from '../Components/FormFields/ImageField';
-import CountBox from '../Components/CountBox';
 import AccordionBtn from '../Components/AccordionBtn';
 import {GoogleSignin} from '@react-native-community/google-signin';
-import EditProfileForm from '../Components/Forms/EditProfileForm';
 import CreateAccount from '../Screens/CreateAccount';
 
-import Icon from '../Assets/iconfont/Icon';
 import {CommonActions} from '@react-navigation/native';
-import Toast, {useToast} from '../Util/Toast';
+import Toast from '../Util/Toast';
 import UserProfileData from '../Components/UserProfileData';
 
 const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
@@ -75,7 +69,7 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
   };
 
   const renderUnsignedUserData = () => {
-    return <CreateAccount onSignedIn={onUserSignedIn}></CreateAccount>;
+    return <CreateAccount onSignedIn={onUserSignedIn} />;
   };
 
   const renderSignedInUserData = () => {
