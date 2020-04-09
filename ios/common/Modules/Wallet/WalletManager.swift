@@ -14,15 +14,14 @@ public class WalletManager {
     
     static var shared = WalletManager()
     var keychain: Keychain?
-    
-    private let keychainKey = "mnemonic"
+
     let defaultPassword = "web3swift"
     
     init() {
         keychain = Keychain(service: "com.daostack.common")
     }
     
-    func generateMnemonic(shouldStore: Bool) throws -> String? {
+    func generateMnemonic(uid: String, shouldStore: Bool) throws -> String? {
         
         guard let keychain = self.keychain else {
             throw WalletError.custom("keychian is nil")
@@ -32,7 +31,7 @@ public class WalletManager {
             let bitsOfEntropy: Int = 128 // Entropy is a measure of password strength. Usually used 128 or 256 bits.
             let mnemonics = try BIP39.generateMnemonics(bitsOfEntropy: bitsOfEntropy)
             if shouldStore {
-                keychain[keychainKey] = mnemonics
+                keychain[uid] = mnemonics
             }
             return mnemonics
         } catch {
@@ -40,49 +39,22 @@ public class WalletManager {
         }
     }
     
-    func storeMnemonic(mnemonic: String) throws {
+    func storeMnemonic(uid: String, mnemonic: String) throws {
         guard let keychain = self.keychain else {
             throw WalletError.custom("keychian is nil")
         }
-        keychain[keychainKey] = mnemonic
+        keychain[uid] = mnemonic
     }
     
-    func retrieveMnemonic() throws -> String? {
+    func retrieveMnemonic(uid: String) throws -> String? {
         guard let keychain = self.keychain else {
             throw WalletError.custom("keychian is nil")
         }
         
-        let mnemonics = keychain[keychainKey]
+        let mnemonics = keychain[uid]
 //        defer {
 //            mnemonics = nil
 //        }
         return mnemonics
     }
-    
-    /// Message is hex data string
-    func signMessage(message: String) throws -> String? {
-        
-        guard let data = Data.fromHex(message) else {
-            throw WalletError.custom("Data")
-        }
-        
-        guard let mnemonics = try retrieveMnemonic(),
-            let keystore = try BIP32Keystore(mnemonics: mnemonics),
-            let address = keystore.addresses?.first else {
-            throw WalletError.malformedKeystore
-        }
-        
-        do {
-            guard let signedData = try Web3Signer.signPersonalMessage(data,
-                                                                      keystore: keystore,
-                                                                      account: address,
-                                                                      password: defaultPassword) else {
-                                                                        throw WalletError.custom("Sign Failed")
-            }
-            return signedData.toHexString().addHexPrefix()
-        } catch {
-            throw WalletError.messageFailedToData
-        }
-    }
-    
 }
