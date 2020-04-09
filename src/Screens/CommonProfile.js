@@ -14,6 +14,7 @@ import {ApolloClientConfig as client} from '../Config';
 import {text, layout, colors} from '../Theme';
 import {kFormatter} from '../Util';
 import Icon from '../Assets/iconfont/Icon';
+import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 
 const {cache} = client;
 let {height, width} = Dimensions.get('window');
@@ -31,6 +32,13 @@ const mockData = {
 
 const CommonProfile = ({navigation}) => {
   const [readMore, setReadMore] = useState(false);
+
+  const [index, setIndex] = useState(0);
+  const [routes, setRoutes] = useState([
+    {key: 'discussions', title: 'Discussions'},
+    {key: 'proposals', title: 'Proposals'},
+    {key: 'history', title: 'History'},
+  ]);
 
   useEffect(() => {
     // noinspection JSAnnotator
@@ -60,6 +68,31 @@ const CommonProfile = ({navigation}) => {
     getDao();
   }, []);
 
+  const renderTabBar = props => (
+    <TabBar
+      {...props}
+      indicatorStyle={{
+        backgroundColor: colors.black,
+      }}
+      renderLabel={({route, focused, color}) => {
+        return (
+          <View style={{...layout.content, padding: 0}}>
+            <Icon
+              name="common"
+              size={30}
+              color={focused ? colors.mainBlue : colors.grey3}
+            />
+            <Text style={focused ? styles.tabStyleActive : styles.tabStyle}>
+              {route.title}
+            </Text>
+          </View>
+        );
+      }}
+      style={{backgroundColor: colors.white}}
+      tabStyle={{borderTopWidth: 1, borderTopColor: colors.grey3}}
+    />
+  );
+
   const commonNumberBox = (numberComponent, title) => {
     return (
       <View>
@@ -68,6 +101,22 @@ const CommonProfile = ({navigation}) => {
       </View>
     );
   };
+
+  const SceneRenderer = sceneIndex => {
+    return (
+      <View style={{height: 80, padding: 20}}>
+        <Text>Tab content</Text>
+      </View>
+    );
+  };
+
+  const renderScene = SceneMap({
+    discussions: SceneRenderer,
+    proposals: SceneRenderer,
+    history: SceneRenderer,
+  });
+
+  const initialLayout = {width: Dimensions.get('window').width};
 
   return (
     <ScrollView
@@ -135,24 +184,9 @@ const CommonProfile = ({navigation}) => {
         <Text style={{...styles.headerSmallText, margin: 10}}>
           {mockData.time} days to go
         </Text>
-        <View style={styles.headerButtons}>
-          <TouchableOpacity
-            style={{
-              ...styles.headerButton,
-              width: 48,
-              justifyContent: 'center',
-              marginLeft: 18,
-            }}>
-            <Image
-              source={require('../Assets/follow-white.png')}
-              style={{...styles.image, height: 24, width: 24}}
-            />
-          </TouchableOpacity>
-        </View>
       </View>
 
       <View style={styles.agendaBox}>
-        <Text style={styles.agendaTitle}>Agenda</Text>
         <Text style={styles.agendaDescription}>
           We are committed to doing what is necessary, not only what is
           considered politically feasible, to preserve rainforests, protect the
@@ -176,6 +210,15 @@ const CommonProfile = ({navigation}) => {
         </TouchableOpacity>
       </View>
 
+      <TabView
+        navigationState={{index, routes}}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={initialLayout}
+        renderTabBar={renderTabBar}
+        style={{paddingHorizontal: 20}}
+      />
+
       <View style={styles.actionButtonContainer}>
         <TouchableOpacity style={styles.headerButton}>
           <Text
@@ -187,7 +230,7 @@ const CommonProfile = ({navigation}) => {
             }}>
             Request to join
           </Text>
-          <Text style={{fontSize: 16, color: 'white'}}>$50 fee</Text>
+          <Text style={{fontSize: 16, color: 'white'}}>$50 Contribution</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -195,9 +238,24 @@ const CommonProfile = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  tabStyle: {
+    ...text.ashleyjquimbacom2,
+  },
+  tabStyleActive: {
+    ...text.ashleyjquimbacom2,
+
+    color: colors.mainBlue,
+  },
+
   actionButtonContainer: {
+    padding: 20,
     position: 'absolute',
-    bottom: 0,
+    bottom: -200,
+    left: 0,
+    right: 0,
+    backgroundColor: colors.white,
+    borderTopWidth: 1,
+    borderTopColor: colors.grey2,
   },
 
   raisedContainer: {
@@ -207,13 +265,7 @@ const styles = StyleSheet.create({
     ...layout.content,
   },
   agendaBox: {
-    padding: 25,
-    backgroundColor: 'white',
-    shadowColor: '#000',
-    shadowOffset: {width: 1, height: 1},
-    shadowOpacity: 0.4,
-    shadowRadius: 3,
-    elevation: 5,
+    padding: 20,
   },
   agendaTitle: {
     ...text.runningblack,
@@ -238,7 +290,7 @@ const styles = StyleSheet.create({
   fundingProgressBar: {
     width: 308,
     borderRadius: 7,
-    backgroundColor: 'white',
+    backgroundColor: colors.grey2,
     height: 14,
     alignItems: 'flex-start',
     justifyContent: 'center',

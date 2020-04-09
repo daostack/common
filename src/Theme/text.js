@@ -14,7 +14,16 @@ export default StyleSheet.create({
     lineHeight: 29,
     letterSpacing: 0,
     textAlign: 'center',
-    color: '#000000',
+    color: colors.black,
+  },
+  h2Black: {
+    ...appFontFamily,
+    fontSize: 20,
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.black,
   },
   h3Black: {
     ...appFontFamily,

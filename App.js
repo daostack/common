@@ -28,6 +28,8 @@ import {
   EditProfile,
   UserProfileReadMode,
   NativeBridgeTests,
+  MyProposals,
+  MyCommons,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
@@ -184,8 +186,9 @@ const App = ({userStore}) => {
           screenOptions={{
             headerStyle: styles.headerStyle,
             headerTitleStyle: styles.headerTitleStyle,
-            headerTintColor: colors.black,
+            headerBackTitleStyle: styles.headerTitleStyle,
             headerBackTitleVisible: false,
+            headerTintColor: colors.black,
             headerBackImage: () => <Icon name="left-arrow" size={32} />,
           }}>
           <Stack.Screen
@@ -221,6 +224,22 @@ const App = ({userStore}) => {
           <Stack.Screen
             name="UserProfileReadMode"
             component={UserProfileReadMode}
+          />
+          <Stack.Screen
+            options={{
+              title: null,
+              headerBackTitleVisible: true,
+            }}
+            name="MyProposals"
+            component={MyProposals}
+          />
+          <Stack.Screen
+            options={{
+              title: null,
+              headerBackTitleVisible: true,
+            }}
+            name="MyCommons"
+            component={MyCommons}
           />
         </Stack.Navigator>
       </NavigationContainer>
