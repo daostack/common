@@ -1,75 +1,75 @@
 import React, {useRef} from 'react';
 
-import {
-  Button,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Image,
-  View,
-} from 'react-native';
+import {StyleSheet, View, Image} from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import BottomSheetContainer from '../Components/BottomSheetContainer';
-import AccordionBtn from '../Components/AccordionBtn';
-
 import GSignInButton from '../Components/GSignInButton';
+import FirebaseService from '../Services/FirebaseService';
+import {filterObjectByKeys} from '../Util';
+const firebaseService = new FirebaseService();
+import {observer, inject} from 'mobx-react';
 
-// import Icon from '../Assets/iconfont/Icon';
+import {userInfoFields} from '../Stores/UserStore';
+import EditProfileForm from '../Components/Forms/EditProfileForm';
 import {layout} from '../Theme';
 
-const CreateAccount = ({navigation}) => {
+const dbUserInfoFields = [
+  EditProfileForm.FIELD_NAME,
+  EditProfileForm.FIELD_INTRO,
+  EditProfileForm.FIELD_PROFILE_IMAGE,
+  'byLine',
+  'email',
+  'ethereumAddress',
+  'preferences',
+];
+
+const CreateAccount = ({navigation, onSignedIn, userStore}) => {
   bottomSheetContainerRef = useRef();
 
   openSheet = () => {
     bottomSheetContainerRef.current.snapTo(1);
   };
 
-  onSignIn = () => {
-    console.log('Signed in callbaack!');
+  onSignIn = async userInfo => {
+    userStore.setIsLoading(true);
+    const internalUser = await firebaseService.getUserById(userInfo.user.id);
+    const isNewUser = !internalUser;
+    if (isNewUser) {
+      await firebaseService.addUser(
+        userInfo.user.id,
+        filterObjectByKeys(userInfo.user, dbUserInfoFields),
+      );
+    }
+    const allUserInfo = {
+      ...userInfo.user,
+      ...internalUser,
+    };
+
+    const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
+    userStore.setSignedInUser(filteredUser);
+    userStore.setIsLoading(false);
+
+    if (onSignedIn) {
+      onSignedIn(isNewUser);
+    }
   };
 
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
+    <View style={styles.componentContainer}>
+      <View style={styles.sectionContainer}>
+        <Image source={require('../Assets/accountPlaceHolder.png')} />
+      </View>
 
-      <SafeAreaView style={styles.container}>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <View style={styles.body}>
-            <Button
-              style={layout.marginTopM}
-              title="button"
-              onPress={openSheet}
-            />
+      <GSignInButton style={styles.googleSignInButton} onSignIn={onSignIn} />
 
-            <View style={styles.sectionContainer}>
-              <Image source={require('../Assets/accountPlaceHolder.png')} />
-            </View>
-
-            <GSignInButton
-              navigation={navigation}
-              style={styles.googleSignInButton}
-            />
-
-            <View style={styles.buttonsArea}>
-              <AccordionBtn name="FAQ" />
-              <AccordionBtn name="Terms of use" />
-              <AccordionBtn name="Privacy Policy" />
-              <AccordionBtn name="Help" />
-              <AccordionBtn name="Contact us" />
-            </View>
-
-            <BottomSheetContainer ref={bottomSheetContainerRef} />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+      {/*<BottomSheetContainer ref={bottomSheetContainerRef} />*/}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  componentContainer: {
+    marginBottom: 100,
+  },
   container: {
     flex: 1,
   },
@@ -77,16 +77,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: Colors.white,
   },
-  body: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-  },
+
   sectionContainer: {
-    marginTop: 22,
-    marginBottom: 34,
+    ...layout.content,
   },
   googleSignInButton: {
     alignSelf: 'stretch',
@@ -124,4 +117,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateAccount;
+export default inject('userStore')(observer(CreateAccount));

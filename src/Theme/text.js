@@ -1,9 +1,13 @@
 import {StyleSheet} from 'react-native';
 import colors from './colors';
 
+const appFontFamily = {
+  fontFamily: 'HelveticaNeue',
+};
+
 export default StyleSheet.create({
   h1Black: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 24,
     fontWeight: 'bold',
     fontStyle: 'normal',
@@ -13,7 +17,7 @@ export default StyleSheet.create({
     color: '#000000',
   },
   h3Black: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 16,
     fontWeight: 'bold',
     fontStyle: 'normal',
@@ -21,8 +25,17 @@ export default StyleSheet.create({
     textAlign: 'center',
     color: colors.black,
   },
+  h4Black: {
+    ...appFontFamily,
+    fontSize: 15,
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.black,
+  },
   buttonblack: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 16,
     fontWeight: '500',
     fontStyle: 'normal',
@@ -32,7 +45,7 @@ export default StyleSheet.create({
     color: colors.black,
   },
   buttoncenterwhite: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 16,
     fontWeight: '500',
     fontStyle: 'normal',
@@ -42,7 +55,7 @@ export default StyleSheet.create({
     color: '#ffffff',
   },
   buttonblue: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 16,
     fontWeight: '500',
     fontStyle: 'normal',
@@ -51,8 +64,18 @@ export default StyleSheet.create({
     textAlign: 'center',
     color: colors.mainBlue,
   },
+  buttonred: {
+    ...appFontFamily,
+    fontSize: 16,
+    fontWeight: '500',
+    fontStyle: 'normal',
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.error,
+  },
   runningboldblue: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'bold',
     fontStyle: 'normal',
@@ -60,7 +83,7 @@ export default StyleSheet.create({
     color: colors.mainBlue,
   },
   paragraphitaliclightGray: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'italic',
@@ -69,7 +92,7 @@ export default StyleSheet.create({
     color: colors.paleblue,
   },
   textFieldplaceholder: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -78,7 +101,7 @@ export default StyleSheet.create({
     color: colors.grey3,
   },
   textFieldfocus: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -87,7 +110,7 @@ export default StyleSheet.create({
     color: '#000000',
   },
   textFielddisabled: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -96,7 +119,7 @@ export default StyleSheet.create({
     color: colors.paleblue,
   },
   runningred: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -105,7 +128,7 @@ export default StyleSheet.create({
     color: '#ff1700',
   },
   runninglightGray: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -113,7 +136,7 @@ export default StyleSheet.create({
     color: colors.grey2,
   },
   runninggray: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -121,15 +144,15 @@ export default StyleSheet.create({
     color: colors.gray1,
   },
   runningblack: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
     letterSpacing: 0,
-    color: '#000000',
+    color: colors.black,
   },
   paragraphred: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -139,7 +162,7 @@ export default StyleSheet.create({
     color: colors.error,
   },
   tapBarunselected: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 12,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -149,7 +172,7 @@ export default StyleSheet.create({
     color: colors.grey3,
   },
   tapBarselected: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 12,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -158,9 +181,36 @@ export default StyleSheet.create({
     textAlign: 'center',
     color: colors.mainBlue,
   },
+  ashleyjquimbacom: {
+    ...appFontFamily,
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.mainBlue,
+  },
+  ashleyjquimbacom2: {
+    ...appFontFamily,
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.grey3,
+  },
+  bvBmseYstWetqTFn5Au: {
+    ...appFontFamily,
+    fontSize: 10,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 12,
+    letterSpacing: 0,
+    color: colors.slate,
+  },
 
   greyText: {
-    // fontFamily: 'Roboto',
+    ...appFontFamily,
     fontSize: 14,
     fontWeight: 'normal',
     fontStyle: 'normal',
@@ -168,8 +218,22 @@ export default StyleSheet.create({
     letterSpacing: 0,
     color: colors.greyText,
   },
+
+  blackText: {
+    ...appFontFamily,
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 20,
+    letterSpacing: 0,
+    color: colors.black,
+  },
   // Custom text styles
   centered: {
     textAlign: 'center',
+  },
+
+  bold: {
+    fontWeight: 'bold',
   },
 });

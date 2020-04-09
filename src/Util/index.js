@@ -6,3 +6,12 @@ export const kFormatter = num => {
     ? Math.sign(num) * (Math.abs(num) / 1000).toFixed(1) + 'k'
     : Math.sign(num) * Math.abs(num);
 };
+
+export function filterObjectByKeys(currObj, allowedKeys) {
+  return Object.keys(currObj)
+    .filter(key => allowedKeys.includes(key))
+    .reduce((obj, key) => {
+      obj[key] = currObj[key];
+      return obj;
+    }, {});
+}

@@ -40,8 +40,8 @@ export default class GoogleDriveService {
       {toFile: downloadHeaderPath},
       {},
     );
-    console.log('response -> ', response);
-    return RNFS.readFile(downloadHeaderPath, 'utf8');
+
+    return await RNFS.readFile(downloadHeaderPath, 'utf8');
   };
 
   async getAppData() {
@@ -49,9 +49,9 @@ export default class GoogleDriveService {
     return response.json();
   }
 
-  async setAppData(mnemonic) {
+  async setAppData(appDataJson) {
     return await GDrive.files.createFileMultipart(
-      mnemonic,
+      appDataJson,
       mimeType,
       {
         parents: [appDataFolder],

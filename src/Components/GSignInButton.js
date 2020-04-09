@@ -1,10 +1,10 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import {colors, text, layout} from '../Theme';
 
 import React from 'react';
 
-// import Icon from '../Assets/iconfont/Icon';
+import Icon from '../Assets/iconfont/Icon';
 import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
 import GoogleDriveService from '../Services/GoogleDriveService';
 import {GOOGLE_SIGNIN_PERMISSIONS} from '../Util';
@@ -15,43 +15,22 @@ let initialAppDataContent = {
   version: '0.1',
 };
 
-const GSignInButton = props => {
-  const [isSignedIn, setIsSignedIn] = useState(false);
+const GSignInButton = ({onSignIn}) => {
   const [signInError, setSignInError] = useState(null);
 
   GoogleSignin.configure({
     scopes: [GOOGLE_SIGNIN_PERMISSIONS.APP_DATA_RW],
   });
 
-  useEffect(() => {
-    _isUserSignedIn = async () => {
-      try {
-        const signedIn = await GoogleSignin.isSignedIn();
-        setIsSignedIn(signedIn);
-        signedIn ? props.navigation.navigate('CommonHome') : null;
-        setSignInError(null);
-      } catch (error) {
-        const errorMessage =
-          error.code === statusCodes.SIGN_IN_REQUIRED
-            ? 'Please sign in'
-            : error.message;
-        setSignInError(new Error(errorMessage));
-      }
-    };
-
-    _isUserSignedIn();
-  }, [isSignedIn, props.navigation, setSignInError]);
-
   _signIn = async () => {
-    console.log('Sign in');
-
     try {
       await GoogleSignin.hasPlayServices();
-      await GoogleSignin.signIn();
-      setIsSignedIn(true);
-      // TODO: Use generated mnemonic
-      // const mnemonic = await _generateMnemonic();
-      props.onSignIn();
+      const userInfo = await GoogleSignin.signIn();
+      const mnemonic = await _getMnemonic();
+      await NativeModules.WalletModule.storeMnemonic(mnemonic);
+      if (onSignIn) {
+        onSignIn(userInfo);
+      }
       setSignInError(null);
     } catch (error) {
       switch (error.code) {
@@ -70,7 +49,7 @@ const GSignInButton = props => {
     }
   };
 
-  _generateMnemonic = async () => {
+  _getMnemonic = async () => {
     const tokens = await GoogleSignin.getTokens();
     const googleDriveService = GoogleDriveService.getInstance(
       tokens.accessToken,
@@ -86,7 +65,9 @@ const GSignInButton = props => {
       return jsonContent.mnemonic;
     } else {
       initialAppDataContent.mnemonic = await NativeModules.WalletModule.generateMnemonic();
-      await googleDriveService.setAppData(initialAppDataContent);
+      await googleDriveService.setAppData(
+        JSON.stringify(initialAppDataContent),
+      );
       return initialAppDataContent.mnemonic;
     }
   };
@@ -96,7 +77,6 @@ const GSignInButton = props => {
       //await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
 
-      setIsSignedIn(false);
       setSignInError(null);
     } catch (error) {
       setSignInError(error);
@@ -107,7 +87,7 @@ const GSignInButton = props => {
     return (
       <>
         <TouchableOpacity style={layout.btnOutline} onPress={_signIn}>
-          {/*<Icon style={layout.btnLeftIcon} name="google" size={32}></Icon>*/}
+          <Icon style={layout.btnLeftIcon} name="google" size={32} />
           <Text style={text.buttonblack}>Sign in with Google</Text>
         </TouchableOpacity>
       </>
@@ -126,7 +106,9 @@ const GSignInButton = props => {
 
   renderError = () => {
     if (signInError) {
-      const errorText = `${signInError.toString()} ${signInError.code ? signInError.code : ''}`;
+      const errorText = `${signInError.toString()} ${
+        signInError.code ? signInError.code : ''
+      }`;
       return (
         <View style={styles.messageContainer}>
           <Text style={styles.errorMessage}>{errorText}</Text>
@@ -139,7 +121,7 @@ const GSignInButton = props => {
   return (
     <View style={styles.container}>
       {renderError()}
-      {isSignedIn ? renderLogOutBtn() : renderSignInButton()}
+      {renderSignInButton()}
     </View>
   );
 };

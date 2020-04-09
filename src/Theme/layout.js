@@ -1,15 +1,17 @@
 import {StyleSheet} from 'react-native';
 import colors from './colors';
 
+// Common style for reuse in Stylesheet
 const btn = {
-  height: 50,
+  height: 56,
   flexDirection: 'row',
   justifyContent: 'center',
   alignItems: 'center',
   alignContent: 'center',
   alignSelf: 'stretch',
-  borderRadius: 25,
+  borderRadius: 28,
   paddingHorizontal: 50,
+  flexGrow: 1,
 };
 
 const messageContainer = {
@@ -20,8 +22,8 @@ const messageContainer = {
     width: 0,
     height: 2,
   },
-  shadowRadius: 34,
-  shadowOpacity: 1,
+  shadowRadius: 3,
+  shadowOpacity: 0.1,
 };
 
 const messageContainerTriangle = {
@@ -40,6 +42,13 @@ const messageContainerTriangle = {
   borderTopColor: colors.mainBlue,
 };
 
+export const sizeS = 10;
+export const sizeM = 15;
+export const sizeL = 20;
+export const sizeXL = 40;
+export const sizeXXL = 55;
+
+// Layout Stylesheet
 export default StyleSheet.create({
   content: {
     justifyContent: 'center',
@@ -48,8 +57,13 @@ export default StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
+  flexRow: {
+    flexDirection: 'row',
+  },
   flexStart: {
     justifyContent: 'flex-start',
+    alignContent: 'flex-start',
+    alignItems: 'flex-start',
   },
   flexEnd: {
     justifyContent: 'flex-end',
@@ -83,6 +97,34 @@ export default StyleSheet.create({
     marginBottom: 40,
   },
 
+  // Margin LEFT
+  marginLeftS: {
+    marginLeft: 10,
+  },
+  marginLeftM: {
+    marginLeft: 15,
+  },
+  marginLeftL: {
+    marginLeft: 20,
+  },
+  marginLeftXL: {
+    marginLeft: 40,
+  },
+
+  // Margin RIGHT
+  marginRightS: {
+    marginRight: 10,
+  },
+  marginRightM: {
+    marginRight: 15,
+  },
+  marginRightL: {
+    marginRight: 20,
+  },
+  marginRightXL: {
+    marginRight: 40,
+  },
+
   // Padding Horizontal
   paddingHorizontalXL: {
     paddingLeft: 40,
@@ -90,14 +132,12 @@ export default StyleSheet.create({
   },
 
   // Buttons
-
   btnPrimary: {
     ...btn,
     backgroundColor: colors.mainBlue,
   },
   btnOutline: {
     ...btn,
-    height: 56,
     borderWidth: 1,
     borderRadius: 28,
     borderColor: colors.grey4,
@@ -119,4 +159,6 @@ export default StyleSheet.create({
     ...messageContainerTriangle,
     borderTopColor: colors.redLight,
   },
+
+  // Forms
 });

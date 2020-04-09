@@ -1,5 +1,6 @@
 export default {
   mainBlue: '#3cc7e1',
+  lightBlue: '#f7fcfe',
   black: '#001a36',
   error: '#ef5456',
   gray1: '#7f7f7f',
@@ -11,4 +12,5 @@ export default {
   grey5: '#fbfcfc',
   greyText: '#7a8189',
   redLight: '#fdedee',
+  white: '#ffffff',
 };

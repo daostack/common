@@ -9,6 +9,22 @@ const generateMnemonic = async () => {
   }
 };
 
+const generateAndStoreMnemonic = async () => {
+  try {
+    return await NativeModules.WalletModule.generateAndStoreMnemonic();
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const storeMnemonic = async mnemonic => {
+  try {
+    return await NativeModules.WalletModule.storeMnemonic(mnemonic);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 const retrieveMnemonic = async () => {
   try {
     return await NativeModules.WalletModule.retrieveMnemonic();
@@ -29,6 +45,8 @@ const signMessage = async message => {
 
 export const NativeWallet = {
   generateMnemonic,
+  generateAndStoreMnemonic,
+  storeMnemonic,
   retrieveMnemonic,
   signMessage,
 };

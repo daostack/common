@@ -1,6 +1,8 @@
 # Common!
 
-A DAOstack product
+![Build Android and iOS](https://github.com/daostack/common/workflows/Build%20Android%20and%20iOS/badge.svg)
+
+A DAOstack Product
 
 ## Getting Started
 
