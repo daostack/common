@@ -15,7 +15,7 @@ class WalletModule: NSObject {
                                 reject: @escaping RCTPromiseRejectBlock) {
         DispatchQueue.main.async {
             do {
-                let seed = try WalletManager.shared.generateMnemonic(shouldStore: false)
+                let seed = try WalletManager.shared.generateMnemonic(uid: "", shouldStore: false)
                 resolve(seed)
             } catch {
                 reject("1", "Create mnemonic failed", error)
@@ -23,11 +23,12 @@ class WalletModule: NSObject {
         }
     }
     
-    @objc func generateAndStoreMnemonic(_ resolve: @escaping RCTPromiseResolveBlock,
+    @objc func generateAndStoreMnemonic(_ uid: String,
+                                        resolve: @escaping RCTPromiseResolveBlock,
                                         reject: @escaping RCTPromiseRejectBlock) {
         DispatchQueue.main.async {
             do {
-                let seed = try WalletManager.shared.generateMnemonic(shouldStore: true)
+                let seed = try WalletManager.shared.generateMnemonic(uid: uid, shouldStore: true)
                 resolve(seed)
             } catch {
                 reject("1", "Create and store mnemonic failed", error)
@@ -35,12 +36,13 @@ class WalletModule: NSObject {
         }
     }
     
-    @objc func storeMnemonic(_ mnemonic: String,
+    @objc func storeMnemonic(_ uid: String,
+                             mnemonic: String,
                              resolve: @escaping RCTPromiseResolveBlock,
                              reject: @escaping RCTPromiseRejectBlock) {
         DispatchQueue.main.async {
             do {
-                try WalletManager.shared.storeMnemonic(mnemonic: mnemonic)
+                try WalletManager.shared.storeMnemonic(uid: uid, mnemonic: mnemonic)
                 resolve(true)
             } catch {
                 reject("3", "Store mnemonic  failed", error)
@@ -48,27 +50,15 @@ class WalletModule: NSObject {
         }
     }
     
-    @objc func retrieveMnemonic(_ resolve: @escaping RCTPromiseResolveBlock,
+    @objc func retrieveMnemonic(_ uid: String,
+                                resolve: @escaping RCTPromiseResolveBlock,
                                 reject: @escaping RCTPromiseRejectBlock) {
         DispatchQueue.main.async {
             do {
-                let seed = try WalletManager.shared.retrieveMnemonic()
+                let seed = try WalletManager.shared.retrieveMnemonic(uid: uid)
                 resolve(seed)
             } catch {
                 reject("4", "Retrieve mnemonic failed", error)
-            }
-        }
-    }
-    
-    @objc func signMessage(_ message: String,
-                           resolve: @escaping RCTPromiseResolveBlock,
-                           reject: @escaping RCTPromiseRejectBlock) {
-        DispatchQueue.main.async {
-            do {
-                let signed = try WalletManager.shared.signMessage(message: message)
-                resolve(signed)
-            } catch {
-                reject("2", "Sign Data failed", error)
             }
         }
     }
