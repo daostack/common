@@ -40,6 +40,7 @@ import {filterObjectByKeys} from './src/Util';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
+import firebase from 'react-native-firebase';
 
 const CommonHome = () => {
   return (
@@ -100,40 +101,33 @@ const CommonHome = () => {
 
 const App = ({userStore}) => {
   const [onboarded, setOnboarded] = useState();
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        if (!userStore.userInfo) {
-          console.log('LOAD USER 1');
-          const googleSignedInUser = await authService.getGoogleSignedInUser();
-          // Signed In Mode
-          if (googleSignedInUser) {
-            userStore.setIsLoading(true);
-            const appUser = await firebaseService.getUserById(
-              googleSignedInUser.user.id,
-            );
 
-            const allUserInfo = {
-              ...googleSignedInUser.user,
-              ...appUser,
-            };
+  const onAuthStateChanged = async user => {
+    try {
+      userStore.setIsLoading(true);
+      if (user) {
+        const appUser = await firebaseService.getUserById(user.uid);
 
-            const filteredUser = filterObjectByKeys(
-              allUserInfo,
-              userInfoFields,
-            );
-            userStore.setSignedInUser(filteredUser);
-            userStore.setIsLoading(false);
-          }
-          // Anonymous mode
-          else {
-            console.log('Anonymous user');
-          }
-        }
-      } catch (error) {
-        console.log('ERRROR', error);
+        const allUserInfo = {
+          ...user._user,
+          ...appUser,
+        };
+
+        const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
+
+        userStore.setSignedInUser(filteredUser);
+        userStore.setIsLoading(false);
+      } else {
+        userStore.setSignedInUser(null);
       }
-    };
+      userStore.setIsLoading(false);
+    } catch (error) {
+      console.log('ERRROR', error);
+    }
+  };
+
+  useEffect(() => {
+    const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
 
     const checkOnboardingStatus = async () => {
       try {
@@ -147,7 +141,7 @@ const App = ({userStore}) => {
     };
 
     checkOnboardingStatus();
-    loadUser();
+    return subscriber; // unsubscribe on unmount
   });
 
   return (

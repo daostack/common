@@ -10,6 +10,8 @@ import GoogleDriveService from '../Services/GoogleDriveService';
 import {GOOGLE_SIGNIN_PERMISSIONS} from '../Util';
 import {NativeModules} from 'react-native';
 
+import firebase from 'react-native-firebase';
+
 let initialAppDataContent = {
   mnemonic: null,
   version: '0.1',
@@ -25,7 +27,16 @@ const GSignInButton = ({onSignIn}) => {
   _signIn = async () => {
     try {
       await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
+      const {idToken} = await GoogleSignin.signIn();
+
+      const googleCredential = firebase.auth.GoogleAuthProvider.credential(
+        idToken,
+      );
+
+      const userInfo = await firebase
+        .auth()
+        .signInWithCredential(googleCredential);
+
       const mnemonic = await _getMnemonic();
       await NativeModules.WalletModule.storeMnemonic(mnemonic);
       if (onSignIn) {
@@ -72,33 +83,12 @@ const GSignInButton = ({onSignIn}) => {
     }
   };
 
-  _signOut = async () => {
-    try {
-      //await GoogleSignin.revokeAccess();
-      await GoogleSignin.signOut();
-
-      setSignInError(null);
-    } catch (error) {
-      setSignInError(error);
-    }
-  };
-
   renderSignInButton = () => {
     return (
       <>
         <TouchableOpacity style={layout.btnOutline} onPress={_signIn}>
           <Icon style={layout.btnLeftIcon} name="google" size={32} />
           <Text style={text.buttonblack}>Sign in with Google</Text>
-        </TouchableOpacity>
-      </>
-    );
-  };
-
-  renderLogOutBtn = () => {
-    return (
-      <>
-        <TouchableOpacity style={layout.btnPrimary} onPress={_signOut}>
-          <Text style={text.buttonblack}>Log out</Text>
         </TouchableOpacity>
       </>
     );

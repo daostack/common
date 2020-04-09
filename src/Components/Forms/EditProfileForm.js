@@ -64,7 +64,7 @@ class EditProfileForm extends React.Component {
         }}>
         <ImageField
           value={userStore.userInfo.profileImage}
-          placeholderUrl={userStore.userInfo.photo}
+          placeholderUrl={userStore.userInfo.photoURL}
           validation={{
             name: EditProfileForm.FIELD_PROFILE_IMAGE,
             formStore: this.props.editProfileFormStore,
@@ -77,7 +77,7 @@ class EditProfileForm extends React.Component {
         </View>
 
         <TextInputField
-          value={userStore.userInfo.name}
+          value={userStore.userInfo.displayName}
           viewStyle={{alignSelf: 'stretch'}}
           label="Name"
           placeholderText="Firstname Lastname"

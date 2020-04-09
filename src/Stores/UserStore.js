@@ -1,14 +1,14 @@
 import {observable, action, decorate} from 'mobx';
 
 export const userInfoFields = [
-  'id',
-  'name',
+  'uid',
+  'displayName',
+  'email',
+  'photoURL',
+  'ethereumAddress',
   'intro',
   'profileImage',
-  'photo',
   'byLine',
-  'email',
-  'ethereumAddress',
   'preferences',
 ];
 
@@ -31,8 +31,9 @@ class UserStore {
       let newUserObj = {};
       if (newUserInfo.id) newUserObj.id = newUserInfo.id;
       if (newUserInfo.email) newUserObj.email = newUserInfo.email;
-      if (newUserInfo.name) newUserObj.name = newUserInfo.name;
-      if (newUserInfo.photo) newUserObj.photo = newUserInfo.photo;
+      if (newUserInfo.displayName)
+        newUserObj.displayName = newUserInfo.displayName;
+      if (newUserInfo.photoURL) newUserObj.photoURL = newUserInfo.photoURL;
       if (newUserInfo.profileImage)
         newUserObj.profileImage = newUserInfo.profileImage;
       if (newUserInfo.intro) newUserObj.intro = newUserInfo.intro;

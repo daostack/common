@@ -56,7 +56,7 @@ const UserProfileData = ({
       return (
         <ImageField
           value={user?.profileImage}
-          placeholderUrl={user?.photo}
+          placeholderUrl={user?.photoURL}
           validation={{
             name: EditProfileForm.FIELD_PROFILE_IMAGE,
             formStore: editProfileFormStore,
@@ -69,7 +69,7 @@ const UserProfileData = ({
       if (user.profileImage) {
         imageUri = `data:image/png;base64,${user.profileImage}`;
       } else {
-        imageUri = user.photo;
+        imageUri = user.photoURL;
       }
 
       return (
@@ -100,7 +100,7 @@ const UserProfileData = ({
       ) : null}
       {renderUserProfilePicture()}
       <Text style={{...text.h1Black, ...{paddingTop: 0, paddingBottom: 2}}}>
-        {user.name}
+        {user.displayName}
       </Text>
       <Text style={text.ashleyjquimbacom2}>{user.email}</Text>
 
