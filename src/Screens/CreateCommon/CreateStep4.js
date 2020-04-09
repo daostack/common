@@ -19,6 +19,10 @@ import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
 import ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
+import FirebaseService from '../../Services/FirebaseService';
+import {useToast} from '../../Util/Toast'
+
+const firebaseService = new FirebaseService()
 
 const CreateStep4 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
@@ -29,13 +33,14 @@ const CreateStep4 = props => {
 
   console.log(form['name']);
 
+  const toast = useToast();
+
   useEffect(() => {
     const height = scrollY.interpolate({
       inputRange: [0, 50],
       outputRange: [0, 125],
       extrapolate: 'clamp',
     });
-    console.log(height);
     // const height = scrollY.value > 100 ? 125 : 0;
     setHeaderHeight(height);
   }, [scrollY]);
@@ -56,18 +61,27 @@ const CreateStep4 = props => {
   const pickImage = () => {
     const options = {
       title: 'Select Avatar',
+      quality: 0.6,
+      allowsEditing: true,
     };
     ImagePicker.showImagePicker(options, (response) => {
       console.log('Response = ', response);
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
+        toast.error(response.error)
         console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
       } else {
+        console.log('TTTTTTT')
         // const source = { uri: response.uri };
-        setImageURI(response.uri);
+        toast.loading('Uploading...');
+        firebaseService.uploadImage(response.uri).then(url => {
+          toast.hide();
+          setImageURI(response.uri);
+          console.log('RRRRR', url);
+        }).catch(error =>
+          toast.error(error)
+        )
       }
     });
   }
@@ -141,7 +155,7 @@ const CreateStep4 = props => {
               alignItems: 'center',
             }}>
             <Image
-              style={{position: 'absolute', height: 225, width: width}}
+              style={{position: 'absolute', height: 225, width: width, backgroundColor: colors.grey4}}
               source={{
                 uri: imageURI,
               }}
@@ -251,7 +265,7 @@ const CreateStep4 = props => {
               </TouchableOpacity>
             </View>
             <Text style={styles.textContent}>
-            {form[CreateCommonForm.FIELD_ACTION]}
+             {form[CreateCommonForm.FIELD_ACTION]}
             </Text>
           </>
           <>

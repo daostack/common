@@ -9,5 +9,6 @@ firebase.initializeApp(firebaseConfig);
 module.exports = {
   db: firebase.firestore(),
   messaging: RNfirebase.messaging(),
+  auth: RNfirebase.auth,
   firebase,
 };

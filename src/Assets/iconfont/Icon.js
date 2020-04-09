@@ -2,6 +2,7 @@
 
 import React from 'react';
 
+import IconaddPicture from './IconaddPicture';
 import Icongroup1 from './Icongroup1';
 import Iconalert from './Iconalert';
 import Iconwallet1 from './Iconwallet1';
@@ -40,6 +41,8 @@ import Iconaccount from './Iconaccount';
 
 export const Icon = ({ name, ...rest }) => {
   switch (name) {
+    case 'add-picture':
+      return <IconaddPicture {...rest} />;
     case 'group1':
       return <Icongroup1 {...rest} />;
     case 'alert':

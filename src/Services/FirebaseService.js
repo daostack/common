@@ -1,4 +1,5 @@
-import {db} from '../Firebase';
+import {db, firebase} from '../Firebase';
+import uuid from 'uuid/v4';
 
 const DB_COLLECTIONS = {
   users: 'users',
@@ -68,6 +69,21 @@ export default class FirebaseService {
       .update(user)
       .then(ref => {
         console.log('Edited document with ID: ', ref.id);
+      });
+  }
+
+  async uploadImage(imageUri) {
+    const ext = imageUri.split('.').pop();
+    const filename = `${uuid()}.${ext}`;
+    const response = await fetch(imageUri);
+    const blob = await response.blob();
+    return firebase
+      .storage()
+      .ref(`public_img/${filename}`)
+      .put(blob)
+      .then(snapshot => {
+        console.log('snapshot', snapshot);
+        return snapshot.downloadURL;
       });
   }
 }
