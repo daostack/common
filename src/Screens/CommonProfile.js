@@ -11,16 +11,19 @@ import {
 } from 'react-native';
 import gql from 'graphql-tag';
 import {ApolloClientConfig as client} from '../Config';
-import {text, colors} from '../Theme';
+import {text, layout, colors} from '../Theme';
 import {kFormatter} from '../Util';
+import Icon from '../Assets/iconfont/Icon';
+
 const {cache} = client;
 let {height, width} = Dimensions.get('window');
 const mockData = {
   commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
   numberOfProposals: 4,
-  members: 142,
   raised: 1421,
-  goal: 10000,
+  totalAmount: 20000,
+  active: 55,
+  approved: 142,
   name: 'Amazon Network',
   description: 'If you wanna save the Amazon, own it.',
   time: 26,
@@ -57,12 +60,21 @@ const CommonProfile = ({navigation}) => {
     getDao();
   }, []);
 
+  const commonNumberBox = (numberComponent, title) => {
+    return (
+      <View>
+        <View style={styles.raisedContainer}>{numberComponent}</View>
+        <Text style={styles.headerSmallText}>{title}</Text>
+      </View>
+    );
+  };
+
   return (
     <ScrollView
       style={{
-        width: '100%',
-        height: '100%',
         flex: 1,
+        backgroundColor: colors.white,
+        position: 'relative',
       }}>
       <ImageBackground
         source={{
@@ -84,54 +96,61 @@ const CommonProfile = ({navigation}) => {
           />
         </TouchableOpacity>
         <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>{mockData.name}</Text>
+          <Text style={styles.headerTitleWhite}>{mockData.name}</Text>
           <Text style={styles.headerDescription}>{mockData.description}</Text>
-          <View style={styles.commonNumbers}>
-            <Text style={styles.headerTitle}>
-              ${mockData.raised.toLocaleString()}
-            </Text>
-            <Text style={styles.headerTitle}>{mockData.members}</Text>
-            <Text style={styles.headerTitle}>${kFormatter(mockData.goal)}</Text>
-          </View>
-          <View style={styles.commonNumbers}>
-            <Text style={styles.headerSmallText}>Raised</Text>
-            <Text style={styles.headerSmallText}>Members</Text>
-            <Text style={styles.headerSmallText}>Goal</Text>
-          </View>
-          <View style={styles.fundingProgressBar}>
-            <View style={styles.innerProgressBar} />
-          </View>
-          <Text style={{...styles.headerSmallText, margin: 10}}>
-            {mockData.time} days to go
-          </Text>
-          <View style={styles.headerButtons}>
-            <TouchableOpacity style={styles.headerButton}>
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: 'white',
-                  fontWeight: '700',
-                  marginRight: 40,
-                }}>
-                Request to join
-              </Text>
-              <Text style={{fontSize: 16, color: 'white'}}>$50 fee</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                ...styles.headerButton,
-                width: 48,
-                justifyContent: 'center',
-                marginLeft: 18,
-              }}>
-              <Image
-                source={require('../Assets/follow-white.png')}
-                style={{...styles.image, height: 24, width: 24}}
-              />
-            </TouchableOpacity>
-          </View>
         </View>
       </ImageBackground>
+
+      <View style={styles.commonProgressContainer}>
+        <View style={styles.commonNumbers}>
+          {commonNumberBox(
+            <>
+              <Text style={styles.headerTitleLight}>
+                ${mockData.raised.toLocaleString()}
+              </Text>
+              <Text style={styles.headerTitle}>
+                / {kFormatter(mockData.totalAmount)}
+              </Text>
+            </>,
+            'Raised',
+          )}
+          {commonNumberBox(
+            <>
+              <Icon name="common" size={20} />
+              <Text style={styles.headerTitle}>{mockData.active}</Text>
+            </>,
+            'Active',
+          )}
+          {commonNumberBox(
+            <>
+              <Icon name="common" size={20} />
+              <Text style={styles.headerTitle}>{mockData.approved}</Text>
+            </>,
+            'Approved',
+          )}
+        </View>
+        <View style={styles.fundingProgressBar}>
+          <View style={styles.innerProgressBar} />
+        </View>
+        <Text style={{...styles.headerSmallText, margin: 10}}>
+          {mockData.time} days to go
+        </Text>
+        <View style={styles.headerButtons}>
+          <TouchableOpacity
+            style={{
+              ...styles.headerButton,
+              width: 48,
+              justifyContent: 'center',
+              marginLeft: 18,
+            }}>
+            <Image
+              source={require('../Assets/follow-white.png')}
+              style={{...styles.image, height: 24, width: 24}}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <View style={styles.agendaBox}>
         <Text style={styles.agendaTitle}>Agenda</Text>
         <Text style={styles.agendaDescription}>
@@ -151,7 +170,24 @@ const CommonProfile = ({navigation}) => {
           </Text>
         )}
         <TouchableOpacity onPress={() => setReadMore(!readMore)}>
-          <Text style={styles.readMoreButton}>{readMore ? 'Show less' : 'Read more'}</Text>
+          <Text style={styles.readMoreButton}>
+            {readMore ? 'Show less' : 'Read more'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.actionButtonContainer}>
+        <TouchableOpacity style={styles.headerButton}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: 'white',
+              fontWeight: '700',
+              marginRight: 40,
+            }}>
+            Request to join
+          </Text>
+          <Text style={{fontSize: 16, color: 'white'}}>$50 fee</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -159,6 +195,17 @@ const CommonProfile = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  actionButtonContainer: {
+    position: 'absolute',
+    bottom: 0,
+  },
+
+  raisedContainer: {
+    ...layout.flexRow,
+  },
+  commonProgressContainer: {
+    ...layout.content,
+  },
   agendaBox: {
     padding: 25,
     backgroundColor: 'white',
@@ -182,8 +229,9 @@ const styles = StyleSheet.create({
     color: colors.mainBlue,
   },
   commonNumbers: {
+    ...layout.content,
+    ...layout.flexRow,
     width: '100%',
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
@@ -222,10 +270,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  headerTitle: {
+  headerTitleWhite: {
     ...text.h1Black,
-    color: 'white',
-    marginBottom: 8,
+    color: colors.white,
+  },
+  headerTitle: {
+    ...text.h3Black,
+  },
+  headerTitleLight: {
+    ...text.h3Black,
+    color: colors.grey3,
   },
   headerDescription: {
     ...text.buttoncenterwhite,
@@ -234,10 +288,8 @@ const styles = StyleSheet.create({
     marginBottom: 13,
   },
   headerSmallText: {
-    ...text.buttoncenterwhite,
-    fontSize: 12,
-    color: 'white',
-    marginBottom: 13,
+    ...text.smallBlackText,
+    ...layout.marginTopS,
   },
   headerContent: {
     alignItems: 'center',

@@ -181,6 +181,16 @@ export default StyleSheet.create({
     textAlign: 'center',
     color: colors.mainBlue,
   },
+  smallBlackText: {
+    ...appFontFamily,
+    fontSize: 12,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.black,
+  },
   ashleyjquimbacom: {
     ...appFontFamily,
     fontSize: 16,
