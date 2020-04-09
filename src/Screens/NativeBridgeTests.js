@@ -62,7 +62,7 @@ export default class nativeBridgeTests extends React.Component {
       console.log('storeMnemonic: ', storedMnemonic);
       this.setState({storedMnemonic: 'true'});
     } catch (e) {
-      throw 'Sign message failed with error: ' + e;
+      throw 'Store mnemonic failed with error: ' + e;
     }
   };
 
