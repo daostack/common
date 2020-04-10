@@ -1,13 +1,13 @@
-const firebase = require('firebase');
-require('firebase/firestore');
-const RNfirebase = require('react-native-firebase');
+import firebase from '@react-native-firebase/app';
+import firestore from '@react-native-firebase/firestore';
+import messaging from '@react-native-firebase/messaging';
 
 const {firebaseConfig} = require('../../env');
 
 firebase.initializeApp(firebaseConfig);
 
 module.exports = {
-  db: firebase.firestore(),
-  messaging: RNfirebase.messaging(),
+  db: firestore,
+  messaging: messaging,
   firebase,
 };

@@ -186,25 +186,18 @@ android {
 
         }
     }
+
+    configurations {
+        implementation.exclude module:'proto-google-common-protos'
+        implementation.exclude module:'protobuf-java'
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
 
 dependencies {
-    implementation project(':react-native-image-resizer')
-    implementation project(':react-native-image-picker')
-    implementation project(':react-native-safe-area-context')
-//    implementation project(':react-native-firebase')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
-    implementation "com.google.firebase:firebase-core:17.0.0"
-    implementation ("com.google.firebase:firebase-messaging:19.0.0") {
-        exclude group: 'com.google.firebase', module: 'firebase-iid'
-    }
-    implementation 'com.google.firebase:firebase-iid:20.0.2'
-    implementation 'com.google.firebase:firebase-analytics:17.2.2'
-    implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta01'
     implementation 'org.web3j:core:4.2.0-android'
     implementation 'com.orhanobut:hawk:2.0.1'
     implementation 'androidx.multidex:multidex:2.0.0'
