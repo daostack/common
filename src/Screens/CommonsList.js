@@ -12,6 +12,7 @@ import {CommonBox, BottomRightButton} from '../Components';
 import {Subscription, Query} from 'react-apollo';
 import gql from 'graphql-tag';
 import {ApolloClientConfig as client} from '../Config';
+import {inject, observer} from 'mobx-react';
 
 const {width} = Dimensions.get('window');
 
@@ -223,4 +224,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommonsList;
+export default inject('createCommonFormStore')(observer(CommonsList));

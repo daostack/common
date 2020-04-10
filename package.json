@@ -25,6 +25,7 @@
     "apollo-client": "^2.6.8",
     "apollo-link-ws": "^1.0.19",
     "axios": "^0.19.2",
+    "commonfactory": "daostack/commonfactory",
     "contract-proxy-kit": "^1.1.1",
     "ethers": "^4.0.45",
     "firebase": "^7.10.0",

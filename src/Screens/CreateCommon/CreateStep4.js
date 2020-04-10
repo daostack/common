@@ -13,21 +13,29 @@ import {
 import {colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import {observer, inject} from 'mobx-react';
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
 import ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
+import {Ipfs as IpfsClient} from '../../Config';
+import WalletManager from '../../Util/WalletManager';
+import {ethers} from 'ethers';
+import DAOFactory from '../../Contracts/ABIs/DAOFactory';
+let provider = ethers.getDefaultProvider('rinkeby');
+const {getForgeOrgData, getSetSchemesData} = require('commonfactory');
 
 const CreateStep4 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const form = props.createCommonFormStore.getChangedFormFieldsJson();
   const [templateIndex, setTemplateIndex] = useState(1);
-  const [imageURI, setImageURI] = useState('https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media')
+  const [imageURI, setImageURI] = useState(
+    'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
+  );
 
-  console.log(form['name']);
+  console.log(form.name);
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -50,14 +58,16 @@ const CreateStep4 = props => {
       index = 8;
     }
     setTemplateIndex(index);
-    setImageURI(`https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`)
+    setImageURI(
+      `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`,
+    );
   };
 
   const pickImage = () => {
     const options = {
       title: 'Select Avatar',
     };
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.showImagePicker(options, response => {
       console.log('Response = ', response);
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -70,7 +80,126 @@ const CreateStep4 = props => {
         setImageURI(response.uri);
       }
     });
-  }
+  };
+
+  const ipfsUpload = async formData => {
+    return await IpfsClient.addAndPinString(
+      JSON.stringify({
+        name: formData.name,
+        byline: formData.byline,
+        description: formData.description,
+        courseOfAction: formData.action,
+        mainValue1: formData.funding,
+        mainValue2: formData.minimum,
+        mainValue3: 'empty value',
+      }),
+    );
+  };
+
+  const forgeCommon = async _ipfsHash => {
+    try {
+      const formData = props.createCommonFormStore.getChangedFormFieldsJson();
+      const manager = await WalletManager.getInstance();
+      const wallet = manager.ethWallet;
+      const address = await manager.getOwnerAccount();
+      console.log('owner account: ', address);
+      let contract = new ethers.Contract(
+        '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
+        DAOFactory,
+        provider,
+      );
+      let daoFactory = contract.connect(wallet);
+      let overrides = {
+        gasLimit: 6000000,
+      };
+      //TODO: add funding amounts??
+      const forgeOrgData = getForgeOrgData({
+        DAOFactoryInstance: '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
+        orgName: formData.name,
+        founderAddresses: [address],
+        tokenDist: [0],
+        repDist: [100],
+      });
+
+      console.log('forgeOrgData: ', forgeOrgData);
+      const forgeOrg = await daoFactory.forgeOrg(...forgeOrgData, overrides);
+
+      console.log('forgeOrg: ', forgeOrg);
+
+      const {hash} = forgeOrg;
+      console.log('hash: ', hash);
+      let avatarAddress;
+      contract.on('NewOrg', (_avatarAddress, newValue, event) => {
+        setScheme(_ipfsHash, _avatarAddress);
+      });
+
+      return {avatarAddress: avatarAddress};
+    } catch (e) {
+      throw 'Send transaction failed with error: ' + e;
+    }
+  };
+
+  const setScheme = async (_ipfsHash, _avatarAddress) => {
+    try {
+      const manager = await WalletManager.getInstance();
+      const wallet = manager.ethWallet;
+
+      console.log('ethwallet: ', manager.ethWallet);
+      const address = await manager.getAddress();
+      let contract = new ethers.Contract(
+        '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
+        DAOFactory,
+        provider,
+      );
+      let daoFactory = contract.connect(wallet);
+
+      let overrides = {
+        gasLimit: 6000000,
+      };
+      const setSchemeData = getSetSchemesData({
+        DAOFactoryInstance: '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
+        avatar: _avatarAddress,
+        votingMachine: '0x59EC3731Dca0512678A5F6507d79Cf631005cAd4',
+        joinAndQuitVoteParams:
+          '0x1000000000000000000000000000000000000000000000000000000000000000',
+        fundingRequestVoteParams:
+          '0x1100000000000000000000000000000000000000000000000000000000000000',
+        schemeFactoryVoteParams:
+          '0x1110000000000000000000000000000000000000000000000000000000000000',
+        fundingToken: '0x0000000000000000000000000000000000000000',
+        minFeeToJoin: 100,
+        memberReputation: 100,
+        goal: 1000,
+        deadline: (await provider.getBlock('latest')).timestamp + 3000,
+        metaData: _ipfsHash,
+      });
+
+      console.log('setSchemeData: ', setSchemeData);
+      const setSchemes = await daoFactory.setSchemes(
+        ...setSchemeData,
+        overrides,
+      );
+      console.log('setSchemes: ', setSchemes);
+      const {hash} = setSchemes;
+      console.log('hash: ', hash);
+    } catch (e) {
+      throw 'Send transaction failed with error: ' + e;
+    }
+  };
+
+  const createCommon = async () => {
+    try {
+      console.log(
+        'commonfields: ',
+        props.createCommonFormStore.getChangedFormFieldsJson(),
+      );
+      const commonFormData = props.createCommonFormStore.getChangedFormFieldsJson();
+      const ipfsHash = await ipfsUpload(commonFormData);
+      await forgeCommon(ipfsHash);
+    } catch (e) {
+      console.log('error: ', e);
+    }
+  };
 
   return (
     <SafeAreaView
@@ -156,14 +285,28 @@ const CreateStep4 = props => {
                 color: 'white',
               }}
               onPress={() => pickImage()}>
-              <Icon name="add-picture" color='white' size={20} />
+              <Icon name="add-picture" color="white" size={20} />
             </TouchableOpacity>
             <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity style={{padding: 10, opacity: templateIndex === 1 ? 0.5 : 1,alignSelf: 'flex-start'}} onPress={() => changeIndex(-1)}>
+              <TouchableOpacity
+                style={{
+                  padding: 10,
+                  opacity: templateIndex === 1 ? 0.5 : 1,
+                  alignSelf: 'flex-start',
+                }}
+                onPress={() => changeIndex(-1)}>
                 <Icon name="left-arrow" color="white" size={35} />
               </TouchableOpacity>
-            <Text style={styles.titleName}>{form[CreateCommonForm.FIELD_NAME]}</Text>
-              <TouchableOpacity style={{padding: 10, opacity: templateIndex === 8 ? 0.5 : 1, alignSelf: 'flex-end'}} onPress={() => changeIndex(1)}>
+              <Text style={styles.titleName}>
+                {form[CreateCommonForm.FIELD_NAME]}
+              </Text>
+              <TouchableOpacity
+                style={{
+                  padding: 10,
+                  opacity: templateIndex === 8 ? 0.5 : 1,
+                  alignSelf: 'flex-end',
+                }}
+                onPress={() => changeIndex(1)}>
                 <Icon name="right-arrow" color="white" size={35} />
               </TouchableOpacity>
             </View>
@@ -234,7 +377,7 @@ const CreateStep4 = props => {
             </TouchableOpacity>
           </View>
           <Text style={styles.textContent}>
-          {form[CreateCommonForm.FIELD_DESCRIPTION]}
+            {form[CreateCommonForm.FIELD_DESCRIPTION]}
           </Text>
           <>
             <View style={styles.sectionTitle}>
@@ -251,7 +394,7 @@ const CreateStep4 = props => {
               </TouchableOpacity>
             </View>
             <Text style={styles.textContent}>
-            {form[CreateCommonForm.FIELD_ACTION]}
+              {form[CreateCommonForm.FIELD_ACTION]}
             </Text>
           </>
           <>
@@ -280,7 +423,11 @@ const CreateStep4 = props => {
                 />
               </TouchableOpacity>
             </View>
-            <Text style={styles.textContent}>{moment(form[CreateCommonForm.FIELD_DEADLINE]).format('MMM DD, YYYY')}</Text>
+            <Text style={styles.textContent}>
+              {moment(form[CreateCommonForm.FIELD_DEADLINE]).format(
+                'MMM DD, YYYY',
+              )}
+            </Text>
           </>
           <>
             <Text
@@ -340,10 +487,7 @@ const CreateStep4 = props => {
             </Text>
           </>
         </View>
-        <TouchableOpacity
-          style={styles.continueButton}
-          // onPress={push}
-        >
+        <TouchableOpacity style={styles.continueButton} onPress={createCommon}>
           <Text
             style={{
               fontSize: 16,

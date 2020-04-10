@@ -14,7 +14,7 @@ class CreateCommonForm extends React.Component {
   static FIELD_LINKS = 'links';
   static FIELD_FUNDING_GOAL = 'funding';
   static FIELD_DEADLINE = 'deadline';
-  static FIELD_MINIMUM = 'minimun';
+  static FIELD_MINIMUM = 'minimum';
   static FIELD_ACTION = 'action';
   static FIELD_RULES = 'rules';
   static FIELD_AVATAR = 'avatar';

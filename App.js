@@ -7,11 +7,10 @@
  */
 
 import React, {useState, useEffect} from 'react';
-import {Image} from 'react-native';
+import {Image, View} from 'react-native';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -34,7 +33,6 @@ import {
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
-import AsyncStorage from '@react-native-community/async-storage';
 const firebaseService = new FirebaseService();
 import AuthService from './src/Services/AuthService';
 import CommonHome from './src/Components/Navigation/CommonHome';
@@ -94,6 +92,10 @@ const App = ({userStore}) => {
     loadUser();
     checkOnboardingStatus();
   }, [userStore.userInfo]);
+
+  if (!onboarded) {
+    return (<View style={{flex:1 }}/>)
+  }
 
   return (
     <ApolloProvider client={client}>

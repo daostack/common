@@ -8,8 +8,9 @@ import {
   Dimensions,
   StyleSheet,
 } from 'react-native';
-const {height, width} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 import WalletManager from '../Util/WalletManager';
+import MessageContract from '../Contracts/ABIs/MessageContract';
 
 export default class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -81,6 +82,8 @@ export default class nativeBridgeTests extends React.Component {
       const manager = await WalletManager.getInstance();
       const address = await manager.getOwnerAccount();
       const balance = await manager.getBalance(address);
+      console.log('ADDRESS: ', address)
+      console.log('BALANCE: ', balance)
       this.setState({ownerAccount: address, ownerBalance: balance});
     } catch (e) {
       console.log(e);
@@ -92,6 +95,8 @@ export default class nativeBridgeTests extends React.Component {
       const manager = await WalletManager.getInstance();
       const address = manager.getAddress();
       const balance = await manager.getBalance(manager.address);
+      console.log('ADDRESS: ', address);
+      console.log('BALANCE: ', balance);
       this.setState({address, balance});
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
@@ -252,34 +257,3 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
   },
 });
-
-const MessageContract = [
-  {
-    constant: false,
-    inputs: [
-      {
-        name: 'newMessage',
-        type: 'string',
-      },
-    ],
-    name: 'setMessage',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getMessage',
-    outputs: [
-      {
-        name: '',
-        type: 'string',
-      },
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-];
