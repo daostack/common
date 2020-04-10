@@ -205,6 +205,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-iid:20.0.2'
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
     implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta01'
+    implementation 'com.google.firebase:firebase-auth:19.1.0'
     implementation 'org.web3j:core:4.2.0-android'
     implementation 'com.orhanobut:hawk:2.0.1'
     implementation 'androidx.multidex:multidex:2.0.0'
