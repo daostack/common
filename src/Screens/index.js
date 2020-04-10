@@ -13,3 +13,4 @@ export MyWallet from './MyWallet';
 export UserProfileReadMode from './UserProfileReadMode';
 export MyProposals from './MyProposals';
 export MyCommons from './MyCommons';
+export CommonAgenda from './CommonAgenda';

@@ -30,6 +30,7 @@ import {
   NativeBridgeTests,
   MyProposals,
   MyCommons,
+  CommonAgenda,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
@@ -202,6 +203,8 @@ const App = ({userStore}) => {
             component={CommonProfile}
             options={{headerShown: false}}
           />
+
+          <Stack.Screen name="CommonAgenda" component={CommonAgenda} />
 
           <Stack.Screen name="Profile" component={UserProfile} />
           <Stack.Screen

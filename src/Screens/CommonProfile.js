@@ -31,8 +31,6 @@ const mockData = {
 };
 
 const CommonProfile = ({navigation}) => {
-  const [readMore, setReadMore] = useState(false);
-
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([
     {key: 'discussions', title: 'Discussions'},
@@ -72,7 +70,7 @@ const CommonProfile = ({navigation}) => {
     <TabBar
       {...props}
       indicatorStyle={{
-        backgroundColor: colors.black,
+        backgroundColor: colors.mainBlue,
       }}
       renderLabel={({route, focused, color}) => {
         return (
@@ -89,7 +87,7 @@ const CommonProfile = ({navigation}) => {
         );
       }}
       style={{backgroundColor: colors.white}}
-      tabStyle={{borderTopWidth: 1, borderTopColor: colors.grey3}}
+      tabStyle={{borderTopWidth: 1, borderColor: colors.grey4}}
     />
   );
 
@@ -104,7 +102,7 @@ const CommonProfile = ({navigation}) => {
 
   const SceneRenderer = sceneIndex => {
     return (
-      <View style={{height: 80, padding: 20}}>
+      <View style={{height: 100, padding: 20}}>
         <Text>Tab content</Text>
       </View>
     );
@@ -115,6 +113,10 @@ const CommonProfile = ({navigation}) => {
     proposals: SceneRenderer,
     history: SceneRenderer,
   });
+
+  const openAgendaScreen = e => {
+    navigation.navigate('CommonAgenda');
+  };
 
   const initialLayout = {width: Dimensions.get('window').width};
 
@@ -181,31 +183,57 @@ const CommonProfile = ({navigation}) => {
         <View style={styles.fundingProgressBar}>
           <View style={styles.innerProgressBar} />
         </View>
-        <Text style={{...styles.headerSmallText, margin: 10}}>
+        <Text
+          style={{...styles.headerSmallText, margin: 10, color: colors.grey3}}>
           {mockData.time} days to go
         </Text>
       </View>
 
+      <View style={styles.membersContainer}>
+        <Text style={text.bold}>230 Members</Text>
+        <Text>13 Pending</Text>
+        <View style={styles.membersRow}>
+          <Image
+            style={styles.memberImage}
+            source={{
+              uri:
+                'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
+            }}
+          />
+          <Image
+            style={{...styles.memberImage, ...{marginLeft: -10}}}
+            source={{
+              uri:
+                'https://live.envalab.com/html/cetus/demo/images/element/team/2.jpg',
+            }}
+          />
+          <Image
+            style={{...styles.memberImage, ...{marginLeft: -10}}}
+            source={{
+              uri:
+                'https://live.envalab.com/html/cetus/demo/images/element/team/3.jpg',
+            }}
+          />
+          <Image
+            style={{...styles.memberImage, ...{marginLeft: -10}}}
+            source={{
+              uri:
+                'https://live.envalab.com/html/cetus/demo/images/element/team/4.jpg',
+            }}
+          />
+        </View>
+      </View>
+
       <View style={styles.agendaBox}>
         <Text style={styles.agendaDescription}>
-          We are committed to doing what is necessary, not only what is
-          considered politically feasible, to preserve rainforests, protect the
-          climate, and uphold human rights.
+          We aim to ba a global non-profit initiative. Only small percentage of
+          creative directors are women and we want to help change this through
+          mentorship circles, portfolio reviews, talks & creative meetups.
         </Text>
-        {readMore && (
-          <Text style={styles.agendaDescription}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </Text>
-        )}
-        <TouchableOpacity onPress={() => setReadMore(!readMore)}>
+
+        <TouchableOpacity onPress={openAgendaScreen}>
           <Text style={styles.readMoreButton}>
-            {readMore ? 'Show less' : 'Read more'}
+            View agenda and rules of conduct
           </Text>
         </TouchableOpacity>
       </View>
@@ -216,7 +244,7 @@ const CommonProfile = ({navigation}) => {
         onIndexChange={setIndex}
         initialLayout={initialLayout}
         renderTabBar={renderTabBar}
-        style={{paddingHorizontal: 20}}
+        style={{}}
       />
 
       <View style={styles.actionButtonContainer}>
@@ -238,6 +266,24 @@ const CommonProfile = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  memberImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: colors.white,
+  },
+  membersRow: {
+    ...layout.flexRow,
+  },
+  membersContainer: {
+    ...layout.content,
+    ...layout.flexRow,
+    justifyContent: 'space-between',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: colors.grey4,
+  },
   tabStyle: {
     ...text.ashleyjquimbacom2,
   },
@@ -250,7 +296,7 @@ const styles = StyleSheet.create({
   actionButtonContainer: {
     padding: 20,
     position: 'absolute',
-    bottom: -200,
+    bottom: -80,
     left: 0,
     right: 0,
     backgroundColor: colors.white,
@@ -278,7 +324,7 @@ const styles = StyleSheet.create({
   readMoreButton: {
     fontSize: 16,
     fontWeight: '700',
-    color: colors.mainBlue,
+    color: colors.black,
   },
   commonNumbers: {
     ...layout.content,
@@ -290,8 +336,8 @@ const styles = StyleSheet.create({
   fundingProgressBar: {
     width: 308,
     borderRadius: 7,
-    backgroundColor: colors.grey2,
-    height: 14,
+    backgroundColor: colors.grey4,
+    height: 8,
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
@@ -314,7 +360,7 @@ const styles = StyleSheet.create({
     width: 308 / 4,
     borderRadius: 6,
     backgroundColor: colors.mainBlue,
-    height: 12,
+    height: 8,
   },
   textContainer: {},
   headerActions: {
