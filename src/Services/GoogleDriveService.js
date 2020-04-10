@@ -34,6 +34,10 @@ export default class GoogleDriveService {
     });
   };
 
+  deleteAppDataFileById = async id => {
+    GDrive.files.delete(id);
+  };
+
   getFileById = async id => {
     const response = await GDrive.files.download(
       id,

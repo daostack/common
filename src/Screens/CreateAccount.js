@@ -17,7 +17,7 @@ const CreateAccount = ({userStore, navigation, onSignedIn}) => {
 
   onSignIn = async userInfo => {
     if (userInfo.additionalUserInfo.isNewUser) {
-      const manager = await WalletManager.getInstance();
+      const manager = await WalletManager.getInstance(userInfo.user.uid);
       const userPublicData = {
         ethereumAddress: await manager.getOwnerAccount(),
       };

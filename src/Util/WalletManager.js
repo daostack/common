@@ -4,9 +4,10 @@ import CPK from 'contract-proxy-kit';
 
 export default class WalletManager {
   static myInstance = null;
-  constructor(provider, cpkAddress) {
+  constructor(uid, provider, cpkAddress) {
     return (async () => {
-      this.mnemonic = await NativeWallet.retrieveMnemonic();
+      this.mnemonic = await NativeWallet.retrieveMnemonic(uid);
+      this.uid = uid;
       this.provider = provider;
       this.ethWallet = ethers.Wallet.fromMnemonic(this.mnemonic).connect(
         this.provider,
@@ -21,8 +22,11 @@ export default class WalletManager {
     })();
   }
 
-  static getInstance = async () => {
-    if (WalletManager.myInstance == null) {
+  static getInstance = async uid => {
+    if (
+      WalletManager.myInstance == null ||
+      WalletManager.myInstance.uid != uid
+    ) {
       const cpkAddress = {
         4: {
           masterCopyAddress: '0xaE32496491b53841efb51829d6f886387708F99B',
@@ -35,7 +39,12 @@ export default class WalletManager {
         'rinkeby',
         '3c08878d00734c0c98a3e4741d0b4cfc',
       );
-      WalletManager.myInstance = await new WalletManager(provider, cpkAddress);
+
+      WalletManager.myInstance = await new WalletManager(
+        uid,
+        provider,
+        cpkAddress,
+      );
     }
     return this.myInstance;
   };
