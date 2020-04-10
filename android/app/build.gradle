@@ -186,11 +186,6 @@ android {
 
         }
     }
-
-    configurations {
-        implementation.exclude module:'proto-google-common-protos'
-        implementation.exclude module:'protobuf-java'
-    }
 }
 
 apply plugin: 'com.google.gms.google-services'
@@ -222,4 +217,10 @@ task copyDownloadableDepsToLibs(type: Copy) {
     into 'libs'
 }
 
+configurations.implementation.exclude(group: 'com.google.firebase', module: 'protolite-well-known-types')
+configurations.implementation.exclude(group: 'com.google.protobuf', module: 'protobuf-lite')
+
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+
+
+com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
