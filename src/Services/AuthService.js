@@ -26,4 +26,8 @@ export default class AuthService {
     );
     return await firebase.auth().signInWithCredential(googleCredential);
   }
+
+  async updateUserData(userData) {
+    return await firebase.auth().currentUser.updateProfile(userData);
+  }
 }

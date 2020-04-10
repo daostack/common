@@ -29,7 +29,7 @@ class UserStore {
   setSignedInUser = newUserInfo => {
     if (newUserInfo) {
       let newUserObj = {};
-      if (newUserInfo.id) newUserObj.id = newUserInfo.id;
+      if (newUserInfo.uid) newUserObj.uid = newUserInfo.uid;
       if (newUserInfo.email) newUserObj.email = newUserInfo.email;
       if (newUserInfo.displayName)
         newUserObj.displayName = newUserInfo.displayName;

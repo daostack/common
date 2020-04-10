@@ -16,8 +16,9 @@ import UnsavedChanges from './BottomSheetScreens/UnsavedChanges';
 import BottomSheetContainer from '../Components/BottomSheetContainer';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '../Assets/iconfont/Icon';
+import UserStore from '../Stores/UserStore';
 
-const EditProfile = ({editProfileFormStore, route, navigation}) => {
+const EditProfile = ({userStore, editProfileFormStore, route, navigation}) => {
   unsavedChangesSheetRef = useRef();
 
   navigation.setOptions({
@@ -31,7 +32,8 @@ const EditProfile = ({editProfileFormStore, route, navigation}) => {
     ),
   });
 
-  const onFormSubmit = () => {
+  const onFormSubmit = updatedFields => {
+    userStore.setSignedInUser({...userStore.userInfo, ...updatedFields});
     const navigate = CommonActions.navigate({
       name: 'Profile',
       params: {
@@ -117,4 +119,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('editProfileFormStore')(observer(EditProfile));
+export default inject(
+  'userStore',
+  'editProfileFormStore',
+)(observer(EditProfile));

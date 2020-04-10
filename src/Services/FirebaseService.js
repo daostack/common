@@ -76,7 +76,7 @@ export default class FirebaseService {
       .doc(userId)
       .update(user)
       .then(ref => {
-        console.log('Edited document with ID: ', ref.id);
+        //console.log('Edited document with ID: ', ref.id);
       });
   }
 }
