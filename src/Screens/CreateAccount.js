@@ -4,11 +4,11 @@ import {StyleSheet, View, Image} from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import GSignInButton from '../Components/GSignInButton';
 import FirebaseService from '../Services/FirebaseService';
-const firebaseService = new FirebaseService();
 import {layout} from '../Theme';
 import WalletManager from '../Util/WalletManager';
+import {observer, inject} from 'mobx-react';
 
-const CreateAccount = ({navigation, onSignedIn}) => {
+const CreateAccount = ({userStore, navigation, onSignedIn}) => {
   bottomSheetContainerRef = useRef();
 
   openSheet = () => {
@@ -18,9 +18,20 @@ const CreateAccount = ({navigation, onSignedIn}) => {
   onSignIn = async userInfo => {
     if (userInfo.additionalUserInfo.isNewUser) {
       const manager = await WalletManager.getInstance();
-      await firebaseService.addUser(userInfo.user.uid, {
+      const userPublicData = {
         ethereumAddress: await manager.getOwnerAccount(),
-      });
+      };
+
+      await FirebaseService.getInstance().addUser(
+        userInfo.user.uid,
+        userPublicData,
+      );
+
+      const allUserInfo = {
+        ...userInfo.user._user,
+        ...userPublicData,
+      };
+      userStore.setSignedInUser(allUserInfo);
     }
     if (onSignedIn) {
       onSignedIn(userInfo.additionalUserInfo.isNewUser);
@@ -89,4 +100,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateAccount;
+export default inject('userStore')(observer(CreateAccount));

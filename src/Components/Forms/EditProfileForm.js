@@ -5,7 +5,6 @@ import ImageField from '../FormFields/ImageField';
 import {observer, inject} from 'mobx-react';
 import {layout, text} from '../../Theme';
 import FirebaseService from '../../Services/FirebaseService';
-const firebaseService = new FirebaseService();
 
 class EditProfileForm extends React.Component {
   static FIELD_NAME = 'name';
@@ -17,7 +16,7 @@ class EditProfileForm extends React.Component {
   formSave = e => {
     const {editProfileFormStore, userStore} = this.props;
     if (editProfileFormStore.isFormValid()) {
-      firebaseService
+      FirebaseService.getInstance()
         .editUser(
           userStore.userInfo.id,
           editProfileFormStore.getChangedFormFieldsJson(),

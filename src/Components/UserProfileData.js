@@ -7,7 +7,7 @@ import CountBox from '../Components/CountBox';
 import Loader from '../Components/Loader';
 import EditProfileForm from '../Components/Forms/EditProfileForm';
 import FirebaseService from '../Services/FirebaseService';
-const firebaseService = new FirebaseService();
+
 import {CommonActions} from '@react-navigation/native';
 
 import Icon from '../Assets/iconfont/Icon';
@@ -28,7 +28,7 @@ const UserProfileData = ({
           setUser(userStore.userInfo);
           setIsEditMode(true);
         } else {
-          setUser(await firebaseService.getUserById(userId));
+          setUser(await FirebaseService.getInstance().getUserById(userId));
           setIsEditMode(false);
         }
       } catch (error) {

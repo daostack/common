@@ -31,9 +31,6 @@ import {
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
-const firebaseService = new FirebaseService();
-import AuthService from './src/Services/AuthService';
-const authService = new AuthService();
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 import {filterObjectByKeys} from './src/Util';
@@ -106,7 +103,9 @@ const App = ({userStore}) => {
     try {
       userStore.setIsLoading(true);
       if (user) {
-        const appUser = await firebaseService.getUserById(user.uid);
+        const appUser = await FirebaseService.getInstance().getUserById(
+          user.uid,
+        );
 
         const allUserInfo = {
           ...user._user,

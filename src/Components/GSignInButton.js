@@ -9,8 +9,7 @@ import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
 import GoogleDriveService from '../Services/GoogleDriveService';
 import {GOOGLE_SIGNIN_PERMISSIONS} from '../Util';
 import {NativeModules} from 'react-native';
-
-import firebase from 'react-native-firebase';
+import AuthService from '../Services/AuthService';
 
 let initialAppDataContent = {
   mnemonic: null,
@@ -26,17 +25,7 @@ const GSignInButton = ({onSignIn}) => {
 
   _signIn = async () => {
     try {
-      await GoogleSignin.hasPlayServices();
-      const {idToken} = await GoogleSignin.signIn();
-
-      const googleCredential = firebase.auth.GoogleAuthProvider.credential(
-        idToken,
-      );
-
-      const userInfo = await firebase
-        .auth()
-        .signInWithCredential(googleCredential);
-
+      const userInfo = await AuthService.getInstance().signIn();
       const mnemonic = await _getMnemonic();
       await NativeModules.WalletModule.storeMnemonic(mnemonic);
       if (onSignIn) {
