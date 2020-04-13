@@ -136,7 +136,7 @@ const CommonsList = ({navigation}) => {
         }}
       </Query>
       <BottomRightButton
-        onPress={() => navigation.navigate('CommonExplanation')}
+        onPress={() => navigation.navigate('CreateStep4')}
       />
     </View>
   );

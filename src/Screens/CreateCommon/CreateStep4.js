@@ -20,16 +20,16 @@ import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
 import ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
 import FirebaseService from '../../Services/FirebaseService';
-import {useToast} from '../../Util/Toast'
+import {useToast} from '../../Util/Toast';
 
-const firebaseService = new FirebaseService()
+const firebaseService = new FirebaseService();
 
 const CreateStep4 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const form = props.createCommonFormStore.getChangedFormFieldsJson();
   const [templateIndex, setTemplateIndex] = useState(1);
-  const [imageURI, setImageURI] = useState('https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media')
+  const [imageURI, setImageURI] = useState('https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media');
 
   console.log(form['name']);
 
@@ -55,7 +55,7 @@ const CreateStep4 = props => {
       index = 8;
     }
     setTemplateIndex(index);
-    setImageURI(`https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`)
+    setImageURI(`https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`);
   };
 
   const pickImage = () => {
@@ -69,10 +69,10 @@ const CreateStep4 = props => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
-        toast.error(response.error)
+        toast.error(response.error);
         console.log('ImagePicker Error: ', response.error);
       } else {
-        console.log('TTTTTTT')
+        console.log('TTTTTTT');
         // const source = { uri: response.uri };
         toast.loading('Uploading...');
         firebaseService.uploadImage(response.uri).then(url => {
@@ -81,10 +81,10 @@ const CreateStep4 = props => {
           console.log('RRRRR', url);
         }).catch(error =>
           toast.error(error)
-        )
+        );
       }
     });
-  }
+  };
 
   return (
     <SafeAreaView

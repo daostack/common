@@ -1,14 +1,25 @@
 import * as React from 'react';
-import {Image, ImageProps, View, StyleSheet, ViewStyle} from 'react-native';
+import {
+  Image,
+  ImageProps,
+  View,
+  StyleSheet,
+  ViewStyle,
+  TouchableOpacity,
+} from 'react-native';
 
 import ValidationMessage from './ValidationMessage';
 import {observer, inject} from 'mobx-react';
 
-import PhotoUpload from 'react-native-photo-upload';
+import ImagePicker from 'react-native-image-picker';
+import {useToast} from '../../Util/Toast';
+import FirebaseService from '../../Services/FirebaseService';
 
-// import Icon from '../../Assets/iconfont/Icon';
+import Icon from '../../Assets/iconfont/Icon';
 import colors from '../../Theme/colors';
 import layout from '../../Theme/layout';
+
+const firebaseService = new FirebaseService();
 
 class ImageField extends React.Component {
   fieldValidation = null;
@@ -30,13 +41,41 @@ class ImageField extends React.Component {
     }
   }
 
-  onChangeValue = base64Value => {
+  onChangeValue = url => {
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
-      formStore.fieldChanged(name, base64Value);
+      formStore.fieldChanged(name, url);
     }
-    this.props.onChangeImage && this.props.onChangeImage(base64Value);
+    this.props.onChangeImage && this.props.onChangeImage(url);
     this.setState({});
+  };
+
+  pickImage = () => {
+    const toast = useToast();
+    const {title, quality, allowsEditing} = this.props;
+    const options = {
+      title: title,
+      quality: quality || 0.7,
+      allowsEditing: allowsEditing || true,
+    };
+    ImagePicker.showImagePicker(options, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        toast.error(response.error);
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        // const source = { uri: response.uri };
+        toast.loading('Uploading...');
+        firebaseService
+          .uploadImage(response.uri)
+          .then(url => {
+            toast.hide();
+            onChangeValue(url);
+          })
+          .catch(error => toast.error(error));
+      }
+    });
   };
 
   renderImage = () => {
@@ -52,7 +91,7 @@ class ImageField extends React.Component {
           style={styles.formImageFieldStyle}
           resizeMode="cover"
           source={{
-            uri: `data:image/png;base64,${currValue}`,
+            uri: currValue,
           }}
         />
       );
@@ -69,24 +108,24 @@ class ImageField extends React.Component {
 
   render() {
     const {
-          value,
-          viewStyle,
+      value,
+      viewStyle,
 
-          // Validation management properties
-          validation,
+      // Validation management properties
+      validation,
 
-          ...otherProps
-        } = this.props;
-        
+      ...otherProps
+    } = this.props;
+
     return (
       <View>
         <View style={styles.formFieldContainer}>
-          <PhotoUpload onPhotoSelect={this.onChangeValue}>
-            {this.renderImage()}
+          {this.renderImage()}
+          <TouchableOpacity onPress={this.pickImage}>
             <View style={styles.formImageFielAddIcon}>
               <Icon name="edit" size={16} color={colors.white} />
             </View>
-          </PhotoUpload>
+          </TouchableOpacity>
         </View>
 
         {this.fieldValidation}

@@ -82,7 +82,6 @@ export default class FirebaseService {
       .ref(`public_img/${filename}`)
       .put(blob)
       .then(snapshot => {
-        console.log('snapshot', snapshot);
         return snapshot.downloadURL;
       });
   }
