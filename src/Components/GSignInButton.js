@@ -9,7 +9,7 @@ import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
 import GoogleDriveService from '../Services/GoogleDriveService';
 import {GOOGLE_SIGNIN_PERMISSIONS} from '../Util';
 import {NativeModules} from 'react-native';
-import {auth} from 'firebase';
+import auth from '@react-native-firebase/auth';
 
 let initialAppDataContent = {
   mnemonic: null,
