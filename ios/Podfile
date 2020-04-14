@@ -52,12 +52,13 @@ def firebase
   pod 'Firebase/Analytics'
   pod 'Firebase/Performance'
   pod 'Firebase/Firestore', '~> 6.18.0'
+  pod 'Firebase/Auth'
 end
 
 # -------------------------------------------------- #
 def native
   # Native Dependencies
-  pod 'Web3swift.pod', git: 'https://github.com/matter-labs/web3swift', branch: 'master'
+  pod 'web3swift', git: 'https://github.com/matter-labs/web3swift', branch: 'master'
   pod 'KeychainAccess'
   pod 'ToastHybrid', :path => './lib'
 end
