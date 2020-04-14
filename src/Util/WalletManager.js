@@ -4,10 +4,9 @@ import CPK from 'contract-proxy-kit';
 
 export default class WalletManager {
   static myInstance = null;
-  constructor(uid, provider, cpkAddress) {
+  constructor(provider, cpkAddress, uid) {
     return (async () => {
       this.mnemonic = await NativeWallet.retrieveMnemonic(uid);
-      this.uid = uid;
       this.provider = provider;
       this.ethWallet = ethers.Wallet.fromMnemonic(this.mnemonic).connect(
         this.provider,
@@ -22,29 +21,29 @@ export default class WalletManager {
     })();
   }
 
-  static getInstance = async uid => {
-    if (
-      WalletManager.myInstance == null ||
-      WalletManager.myInstance.uid != uid
-    ) {
-      const cpkAddress = {
-        4: {
-          masterCopyAddress: '0xaE32496491b53841efb51829d6f886387708F99B',
-          proxyFactoryAddress: '0x336c19296d3989e9e0c2561ef21c964068657c38',
-          multiSendAddress: '0xB522a9f781924eD250A11C54105E51840B138AdD',
-          fallbackHandlerAddress: '0x40A930851BD2e590Bd5A5C981b436de25742E980',
-        },
-      };
-      const provider = new ethers.providers.InfuraProvider(
-        'rinkeby',
-        '3c08878d00734c0c98a3e4741d0b4cfc',
-      );
+  static init = async uid => {
+    const cpkAddress = {
+      4: {
+        masterCopyAddress: '0xaE32496491b53841efb51829d6f886387708F99B',
+        proxyFactoryAddress: '0x336c19296d3989e9e0c2561ef21c964068657c38',
+        multiSendAddress: '0xB522a9f781924eD250A11C54105E51840B138AdD',
+        fallbackHandlerAddress: '0x40A930851BD2e590Bd5A5C981b436de25742E980',
+      },
+    };
+    const provider = new ethers.providers.InfuraProvider(
+      'rinkeby',
+      '3c08878d00734c0c98a3e4741d0b4cfc',
+    );
+    WalletManager.myInstance = await new WalletManager(
+      provider,
+      cpkAddress,
+      uid,
+    );
+  };
 
-      WalletManager.myInstance = await new WalletManager(
-        uid,
-        provider,
-        cpkAddress,
-      );
+  static getInstance = () => {
+    if (WalletManager.myInstance == null) {
+      throw new Error('WalletManager have not initialized');
     }
     return this.myInstance;
   };
