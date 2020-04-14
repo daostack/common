@@ -57,6 +57,7 @@ const UserProfileData = ({
         <ImageField
           value={user?.profileImage}
           placeholderUrl={user?.photo}
+          allowsEditing={true}
           validation={{
             name: EditProfileForm.FIELD_PROFILE_IMAGE,
             formStore: editProfileFormStore,

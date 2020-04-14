@@ -12,7 +12,7 @@ import ValidationMessage from './ValidationMessage';
 import {observer, inject} from 'mobx-react';
 
 import ImagePicker from 'react-native-image-picker';
-import {useToast} from '../../Util/Toast';
+import Toast from '../../Util/Toast';
 import FirebaseService from '../../Services/FirebaseService';
 
 import Icon from '../../Assets/iconfont/Icon';
@@ -31,6 +31,7 @@ class ImageField extends React.Component {
     super(props);
 
     const {validation, value} = this.props;
+    this.toast = new Toast();
 
     if (validation) {
       const {name, formStore, validateRule} = validation;
@@ -51,29 +52,30 @@ class ImageField extends React.Component {
   };
 
   pickImage = () => {
-    const toast = useToast();
+    console.log('AAAA')
     const {title, quality, allowsEditing} = this.props;
     const options = {
       title: title,
       quality: quality || 0.7,
-      allowsEditing: allowsEditing || true,
+      allowsEditing: allowsEditing || false,
     };
     ImagePicker.showImagePicker(options, response => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
-        toast.error(response.error);
+        this.toast.error(response.error);
         console.log('ImagePicker Error: ', response.error);
       } else {
         // const source = { uri: response.uri };
-        toast.loading('Uploading...');
+        this.toast.loading('Uploading...');
         firebaseService
           .uploadImage(response.uri)
           .then(url => {
-            toast.hide();
-            onChangeValue(url);
+            this.toast.hide();
+            this.toast.done('Done');
+            this.onChangeValue(url);
           })
-          .catch(error => toast.error(error));
+          .catch(error => this.toast.error(error));
       }
     });
   };
@@ -118,16 +120,15 @@ class ImageField extends React.Component {
     } = this.props;
 
     return (
-      <View>
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <View style={styles.formFieldContainer}>
-          {this.renderImage()}
           <TouchableOpacity onPress={this.pickImage}>
+            {this.renderImage()}
             <View style={styles.formImageFielAddIcon}>
               <Icon name="edit" size={16} color={colors.white} />
             </View>
           </TouchableOpacity>
         </View>
-
         {this.fieldValidation}
       </View>
     );
@@ -146,7 +147,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     ...layout.marginTopS,
   },
-  formFieldContainer: {},
+  formFieldContainer: {
+    width: 100,
+  },
 
   formImageFieldStyle: {
     width: 100,
@@ -161,6 +164,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 8,
     shadowOpacity: 1,
+    alignSelf: 'center',
   },
 
   formImageFielAddIcon: {

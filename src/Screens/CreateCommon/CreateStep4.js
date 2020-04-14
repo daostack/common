@@ -29,7 +29,9 @@ const CreateStep4 = props => {
   const [headerHeight, setHeaderHeight] = useState(0);
   const form = props.createCommonFormStore.getChangedFormFieldsJson();
   const [templateIndex, setTemplateIndex] = useState(1);
-  const [imageURI, setImageURI] = useState('https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media');
+  const [imageURI, setImageURI] = useState(
+    'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
+  );
 
   console.log(form['name']);
 
@@ -55,16 +57,17 @@ const CreateStep4 = props => {
       index = 8;
     }
     setTemplateIndex(index);
-    setImageURI(`https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`);
+    setImageURI(
+      `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`,
+    );
   };
 
   const pickImage = () => {
     const options = {
       title: 'Select Avatar',
-      quality: 0.6,
-      allowsEditing: true,
+      quality: 0.7,
     };
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.showImagePicker(options, response => {
       console.log('Response = ', response);
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -72,16 +75,15 @@ const CreateStep4 = props => {
         toast.error(response.error);
         console.log('ImagePicker Error: ', response.error);
       } else {
-        console.log('TTTTTTT');
         // const source = { uri: response.uri };
         toast.loading('Uploading...');
-        firebaseService.uploadImage(response.uri).then(url => {
-          toast.hide();
-          setImageURI(response.uri);
-          console.log('RRRRR', url);
-        }).catch(error =>
-          toast.error(error)
-        );
+        firebaseService
+          .uploadImage(response.uri)
+          .then(url => {
+            toast.hide();
+            setImageURI(url);
+          })
+          .catch(error => toast.error(error));
       }
     });
   };
@@ -155,7 +157,12 @@ const CreateStep4 = props => {
               alignItems: 'center',
             }}>
             <Image
-              style={{position: 'absolute', height: 225, width: width, backgroundColor: colors.grey4}}
+              style={{
+                position: 'absolute',
+                height: 225,
+                width: width,
+                backgroundColor: colors.grey4,
+              }}
               source={{
                 uri: imageURI,
               }}
@@ -173,11 +180,25 @@ const CreateStep4 = props => {
               <Icon name="add-picture" color='white' size={20} />
             </TouchableOpacity>
             <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity style={{padding: 10, opacity: templateIndex === 1 ? 0.5 : 1,alignSelf: 'flex-start'}} onPress={() => changeIndex(-1)}>
+              <TouchableOpacity
+                style={{
+                  padding: 10,
+                  opacity: templateIndex === 1 ? 0.5 : 1,
+                  alignSelf: 'flex-start',
+                }}
+                onPress={() => changeIndex(-1)}>
                 <Icon name="left-arrow" color="white" size={35} />
               </TouchableOpacity>
-            <Text style={styles.titleName}>{form[CreateCommonForm.FIELD_NAME]}</Text>
-              <TouchableOpacity style={{padding: 10, opacity: templateIndex === 8 ? 0.5 : 1, alignSelf: 'flex-end'}} onPress={() => changeIndex(1)}>
+              <Text style={styles.titleName}>
+                {form[CreateCommonForm.FIELD_NAME]}
+              </Text>
+              <TouchableOpacity
+                style={{
+                  padding: 10,
+                  opacity: templateIndex === 8 ? 0.5 : 1,
+                  alignSelf: 'flex-end',
+                }}
+                onPress={() => changeIndex(1)}>
                 <Icon name="right-arrow" color="white" size={35} />
               </TouchableOpacity>
             </View>
@@ -248,7 +269,7 @@ const CreateStep4 = props => {
             </TouchableOpacity>
           </View>
           <Text style={styles.textContent}>
-          {form[CreateCommonForm.FIELD_DESCRIPTION]}
+            {form[CreateCommonForm.FIELD_DESCRIPTION]}
           </Text>
           <>
             <View style={styles.sectionTitle}>
@@ -265,7 +286,7 @@ const CreateStep4 = props => {
               </TouchableOpacity>
             </View>
             <Text style={styles.textContent}>
-             {form[CreateCommonForm.FIELD_ACTION]}
+              {form[CreateCommonForm.FIELD_ACTION]}
             </Text>
           </>
           <>
@@ -294,7 +315,11 @@ const CreateStep4 = props => {
                 />
               </TouchableOpacity>
             </View>
-            <Text style={styles.textContent}>{moment(form[CreateCommonForm.FIELD_DEADLINE]).format('MMM DD, YYYY')}</Text>
+            <Text style={styles.textContent}>
+              {moment(form[CreateCommonForm.FIELD_DEADLINE]).format(
+                'MMM DD, YYYY',
+              )}
+            </Text>
           </>
           <>
             <Text

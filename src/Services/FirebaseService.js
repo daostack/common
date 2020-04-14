@@ -1,5 +1,6 @@
 import {db, firebase} from '../Firebase';
 import uuid from 'uuid/v4';
+import storage from '@react-native-firebase/storage';
 
 const DB_COLLECTIONS = {
   users: 'users',
@@ -75,14 +76,9 @@ export default class FirebaseService {
   async uploadImage(imageUri) {
     const ext = imageUri.split('.').pop();
     const filename = `${uuid()}.${ext}`;
-    const response = await fetch(imageUri);
-    const blob = await response.blob();
-    return firebase
-      .storage()
-      .ref(`public_img/${filename}`)
-      .put(blob)
-      .then(snapshot => {
-        return snapshot.downloadURL;
-      });
+    const path = `public_img/${filename}`;
+    const ref = firebase.storage().ref(path);
+    await ref.putFile(imageUri);
+    return await ref.getDownloadURL();
   }
 }
