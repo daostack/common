@@ -38,6 +38,7 @@ import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import firebase from 'react-native-firebase';
+import Toast from './src/Util/Toast';
 
 const CommonHome = () => {
   return (
@@ -113,15 +114,13 @@ const App = ({userStore}) => {
         };
 
         const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
-
         userStore.setSignedInUser(filteredUser);
-        userStore.setIsLoading(false);
       } else {
         userStore.setSignedInUser(null);
       }
       userStore.setIsLoading(false);
     } catch (error) {
-      console.log('ERRROR', error);
+      Toast.error(error);
     }
   };
 
@@ -140,7 +139,7 @@ const App = ({userStore}) => {
     };
 
     checkOnboardingStatus();
-    return subscriber; // unsubscribe on unmount
+    return subscriber;
   });
 
   return (
