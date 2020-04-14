@@ -15,6 +15,7 @@ import {text, layout, colors} from '../Theme';
 import {kFormatter} from '../Util';
 import Icon from '../Assets/iconfont/Icon';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
+import ViewTabNoData from '../Components/ViewTabNoData';
 
 const {cache} = client;
 let {height, width} = Dimensions.get('window');
@@ -100,22 +101,49 @@ const CommonProfile = ({navigation}) => {
     );
   };
 
-  const SceneRenderer = sceneIndex => {
+  const Discussions = () => {
     return (
-      <View style={{height: 100, padding: 20}}>
-        <Text>Tab content</Text>
-      </View>
+      <ViewTabNoData
+        title="No Discussions"
+        subtitle="Have things in common? This is the place to talk about them."
+      />
+    );
+  };
+
+  const Proposals = () => {
+    return (
+      <ViewTabNoData
+        title="No proposals yet"
+        subtitle="Write your first proposals and invite members to make an impact together!"
+      />
+    );
+  };
+
+  const History = () => {
+    return (
+      <ViewTabNoData
+        title="No Past activity"
+        subtitle="You will be able to see proposals that passed or were rejected here."
+      />
     );
   };
 
   const renderScene = SceneMap({
-    discussions: SceneRenderer,
-    proposals: SceneRenderer,
-    history: SceneRenderer,
+    discussions: Discussions,
+    proposals: Proposals,
+    history: History,
   });
 
   const openAgendaScreen = e => {
     navigation.navigate('CommonAgenda');
+  };
+
+  const openCommonMembers = e => {
+    navigation.navigate('CommonMembers');
+  };
+
+  const shareCommon = event => {
+    console.log('TODO: share functionality');
   };
 
   const initialLayout = {width: Dimensions.get('window').width};
@@ -189,9 +217,9 @@ const CommonProfile = ({navigation}) => {
         </Text>
       </View>
 
-      <View style={styles.membersContainer}>
-        <Text style={text.bold}>230 Members</Text>
-        <Text>13 Pending</Text>
+      <TouchableOpacity
+        onPress={openCommonMembers}
+        style={styles.membersContainer}>
         <View style={styles.membersRow}>
           <Image
             style={styles.memberImage}
@@ -222,6 +250,20 @@ const CommonProfile = ({navigation}) => {
             }}
           />
         </View>
+        <TouchableOpacity style={layout.flexRow}>
+          <Text style={text.h4Black}>Pending (13)</Text>
+          <Icon name="right-arrow" />
+        </TouchableOpacity>
+      </TouchableOpacity>
+
+      <View style={{...layout.content, ...{paddingVertical: 0}}}>
+        <TouchableOpacity
+          style={{
+            ...layout.btnOutline,
+          }}
+          onPress={shareCommon}>
+          <Text style={text.buttonblue}>Share Common</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.agendaBox}>
@@ -281,7 +323,6 @@ const styles = StyleSheet.create({
     ...layout.flexRow,
     justifyContent: 'space-between',
     borderTopWidth: 1,
-    borderBottomWidth: 1,
     borderColor: colors.grey4,
   },
   tabStyle: {

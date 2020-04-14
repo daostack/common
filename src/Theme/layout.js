@@ -42,6 +42,7 @@ const messageContainerTriangle = {
   borderTopColor: colors.mainBlue,
 };
 
+export const sizeXS = 5;
 export const sizeS = 10;
 export const sizeM = 15;
 export const sizeL = 20;

@@ -238,6 +238,16 @@ export default StyleSheet.create({
     color: colors.greyText,
   },
 
+  smallGreyText: {
+    ...appFontFamily,
+    fontSize: 12,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.grey3,
+  },
+
   blackText: {
     ...appFontFamily,
     fontSize: 14,

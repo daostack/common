@@ -31,6 +31,7 @@ import {
   MyProposals,
   MyCommons,
   CommonAgenda,
+  CommonMembers,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
@@ -243,6 +244,14 @@ const App = ({userStore}) => {
             }}
             name="MyCommons"
             component={MyCommons}
+          />
+          <Stack.Screen
+            options={{
+              title: null,
+              headerBackTitleVisible: true,
+            }}
+            name="CommonMembers"
+            component={CommonMembers}
           />
         </Stack.Navigator>
       </NavigationContainer>

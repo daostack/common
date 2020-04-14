@@ -1,0 +1,164 @@
+import React, {useState} from 'react';
+
+import {
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  ScrollView,
+  View,
+  Dimensions,
+} from 'react-native';
+import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
+
+import MemberCard from '../Components/MemberCard';
+
+import {layout, colors, text, sizeS} from '../Theme';
+
+import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
+
+const getTabName = (objectName, count) => {
+  return `${objectName} (${count ? count : 0})`;
+};
+
+const commonMembersMock = [
+  {
+    name: 'John Smith',
+    approvePercent: 32,
+    imageUrl:
+      'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
+  },
+  {
+    name: 'John Smith',
+    approvePercent: 32,
+    imageUrl:
+      'https://live.envalab.com/html/cetus/demo/images/element/team/2.jpg',
+  },
+  {
+    name: 'John Smith',
+    approvePercent: 32,
+    imageUrl:
+      'https://live.envalab.com/html/cetus/demo/images/element/team/3.jpg',
+  },
+  {
+    name: 'John Smith',
+    approvePercent: 32,
+    imageUrl:
+      'https://live.envalab.com/html/cetus/demo/images/element/team/4.jpg',
+  },
+];
+
+const CommonMembers = ({navigation}) => {
+  const [index, setIndex] = useState(0);
+  const [routes, setRoutes] = useState([
+    {key: 'members', title: getTabName('Members')},
+    {key: 'pending', title: getTabName('Pending')},
+  ]);
+
+  const Members = () => {
+    return sceneRenderer(0);
+  };
+
+  const Pending = () => {
+    return sceneRenderer(1);
+  };
+
+  const sceneRenderer = sceneIndex => {
+    return (
+      <View style={layout.marginTopL}>
+        {commonMembersMock.map((member, i) => {
+          return (
+            <MemberCard
+              name={member.name}
+              approvePercent={member.approvePercent}
+              imageUrl={member.imageUrl}
+            />
+          );
+        })}
+      </View>
+    );
+  };
+
+  const initialLayout = {width: Dimensions.get('window').width};
+
+  const renderScene = SceneMap({
+    members: Members,
+    pending: Pending,
+  });
+
+  const renderTabBar = props => (
+    <TabBar
+      {...props}
+      indicatorStyle={{
+        backgroundColor: colors.black,
+      }}
+      renderLabel={({route, focused, color}) => {
+        return (
+          <Text style={focused ? styles.tabStyleActive : styles.tabStyle}>
+            {route.title}
+          </Text>
+        );
+      }}
+      style={{backgroundColor: colors.white}}
+      tabStyle={{width: 'auto'}}
+    />
+  );
+  return (
+    <>
+      <StatusBar barStyle="dark-content" />
+
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          style={styles.scrollView}
+          vertical={true}
+          nestedScrollEnabled={true}
+          directionalLockEnabled={true}>
+          <View style={styles.sectionContainer}>
+            <Text style={text.h2Black}>Members</Text>
+          </View>
+
+          <View style={styles.sectionTabView}>
+            <TabView
+              navigationState={{index, routes}}
+              renderScene={renderScene}
+              onIndexChange={setIndex}
+              initialLayout={initialLayout}
+              renderTabBar={renderTabBar}
+              style={{paddingHorizontal: 20}}
+            />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </>
+  );
+};
+
+const styles = StyleSheet.create({
+  scrollView: {
+    flexGrow: 1,
+    backgroundColor: Colors.white,
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: Colors.white,
+    padding: 20,
+  },
+  sectionTabView: {},
+  sectionContainer: {
+    ...layout.content,
+    marginVertical: sizeS,
+    alignItems: 'flex-start',
+  },
+
+  tabStyleActive: {
+    ...text.ashleyjquimbacom2,
+    color: colors.black,
+  },
+  tabStyle: {
+    ...text.ashleyjquimbacom2,
+    fontWeight: 'bold',
+  },
+});
+
+export default CommonMembers;
