@@ -16,42 +16,55 @@ import Loader from '../Components/Loader';
 import {layout, colors, text, sizeS} from '../Theme';
 
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
-import {DAOS_SUBSCRIPTION} from '../GrapthSubscriptions';
+
 import {Query} from 'react-apollo';
+
+import {ALL_DAOS_SUBSCRIPTION} from '../GrapthSubscriptions';
+
+const getTabName = (objectName, count) => {
+  return `${objectName} (${count ? count : 0})`;
+};
 
 const MyProposals = ({navigation}) => {
   const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    {key: 'all', title: 'All (14)'},
-    {key: 'active', title: 'Active (8)'},
-    {key: 'history', title: 'History (2) '},
+  const [routes, setRoutes] = React.useState([
+    {key: 'all', title: 'All (0)'},
+    {key: 'active', title: 'Active (0)'},
+    {key: 'history', title: 'History (0) '},
   ]);
 
-  const SceneRenderer = () => {
-    return (
-      <Query query={DAOS_SUBSCRIPTION}>
-        {({loading, error, data}) => {
-          console.log('Query -> ', loading, error, data);
+  const AllProposals = () => {
+    return SceneRenderer(0);
+  };
 
+  const ActiveProposals = () => {
+    return SceneRenderer(1);
+  };
+
+  const HistoryProposals = () => {
+    return SceneRenderer(2);
+  };
+
+  const SceneRenderer = sceneIndex => {
+    return (
+      <Query query={ALL_DAOS_SUBSCRIPTION()}>
+        {({loading, error, data}) => {
           if (error) {
-            console.log('Error -> ', error);
-            return <Text>ERROR!</Text>;
+            return <Text>ERROR! ${error}</Text>;
           }
 
           if (loading) {
-            console.log('Loading... -> ');
             return <Loader />;
           }
+
+          let tmpRoutes = routes;
+          tmpRoutes[sceneIndex].title = getTabName('All', data.daos.length);
+
+          setRoutes(tmpRoutes);
 
           return (
             <View style={layout.marginTopL}>
               {data.daos.map((dao, i) => {
-                if (
-                  ''.length > 0 &&
-                  !dao.name.toLowerCase().includes(''.toLowerCase())
-                ) {
-                  return;
-                }
                 return (
                   <CommonBox
                     image={`https://i.picsum.photos/id/${i * 10}/500/100.jpg`}
@@ -71,9 +84,9 @@ const MyProposals = ({navigation}) => {
   const initialLayout = {width: Dimensions.get('window').width};
 
   const renderScene = SceneMap({
-    all: SceneRenderer,
-    active: SceneRenderer,
-    history: SceneRenderer,
+    all: AllProposals,
+    active: ActiveProposals,
+    history: HistoryProposals,
   });
 
   const renderTabBar = props => (
