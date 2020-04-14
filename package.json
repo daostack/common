@@ -43,6 +43,7 @@
     "react-native-screens": "^2.3.0",
     "react-native-svg": "^12.0.3",
     "react-native-swiper": "^1.6.0-nightly.5",
+    "react-native-tab-view": "^2.13.0",
     "reanimated-bottom-sheet": "^1.0.0-alpha.19",
     "subscriptions-transport-ws": "^0.9.16",
     "validatorjs": "^3.18.1"

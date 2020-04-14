@@ -54,6 +54,14 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
     navigation.navigate('MyWallet');
   };
 
+  const onMyCommonsPress = event => {
+    navigation.navigate('MyCommons');
+  };
+
+  const onMyProposalsPress = event => {
+    navigation.navigate('MyProposals');
+  };
+
   const renderUnsignedUserData = () => {
     return <CreateAccount onSignedIn={onUserSignedIn} />;
   };
@@ -94,6 +102,11 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
                 <AccordionBtn title="Privacy Policy" />
                 <AccordionBtn title="Help" />
                 <AccordionBtn title="Contact us" />
+                <AccordionBtn
+                  onPress={onMyProposalsPress}
+                  title="My Proposals"
+                />
+                <AccordionBtn onPress={onMyCommonsPress} title="My Commons" />
                 {userStore.userInfo ? (
                   <AccordionBtn
                     lightStyle={true}
