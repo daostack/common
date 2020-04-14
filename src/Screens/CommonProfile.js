@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   Dimensions,
   Text,
@@ -17,6 +17,11 @@ import Icon from '../Assets/iconfont/Icon';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import ViewTabNoData from '../Components/ViewTabNoData';
 
+import CommonOperationalStateNotif from './BottomSheetScreens/CommonOperationalStateNotif';
+import SortProposals from './BottomSheetScreens/SortProposals';
+import CommonProfileOptions from './BottomSheetScreens/CommonProfileOptions';
+import BottomSheetContainer from '../Components/BottomSheetContainer';
+
 const {cache} = client;
 let {height, width} = Dimensions.get('window');
 const mockData = {
@@ -32,6 +37,10 @@ const mockData = {
 };
 
 const CommonProfile = ({navigation}) => {
+  commonOperationalStateNotifRef = useRef();
+  optionsSheetRef = useRef();
+  sortProposalsSheetRef = useRef();
+
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([
     {key: 'discussions', title: 'Discussions'},
@@ -146,6 +155,16 @@ const CommonProfile = ({navigation}) => {
     console.log('TODO: share functionality');
   };
 
+  const openCommonOptions = event => {
+    optionsSheetRef.current.snapTo(1);
+    optionsSheetRef.current.snapTo(1);
+  };
+
+  const openNotif = event => {
+    commonOperationalStateNotifRef.current.snapTo(1);
+    commonOperationalStateNotifRef.current.snapTo(1);
+  };
+
   const initialLayout = {width: Dimensions.get('window').width};
 
   return (
@@ -162,16 +181,22 @@ const CommonProfile = ({navigation}) => {
         style={styles.imageHeader}>
         <TouchableOpacity
           style={{position: 'absolute', top: 60, left: 20}}
-          onPress={navigation.goBack}>
+          onPress={
+            //navigation.goBack
+            openNotif
+          }>
           <Image
             style={{resizeMode: 'contain', height: 20, width: 20}}
             source={require('../Assets/left-arrow-32.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={{position: 'absolute', top: 60, right: 20}}>
-          <Image
-            style={{resizeMode: 'contain', height: 20, width: 20}}
-            src={require('../Assets/menu-dots.png')}
+        <TouchableOpacity
+          style={{position: 'absolute', top: 60, right: 20}}
+          onPress={openCommonOptions}>
+          <Icon
+            name="menu"
+            style={{height: 20, width: 20}}
+            color={colors.white}
           />
         </TouchableOpacity>
         <View style={styles.headerContent}>
@@ -303,6 +328,18 @@ const CommonProfile = ({navigation}) => {
           <Text style={{fontSize: 16, color: 'white'}}>$50 Contribution</Text>
         </TouchableOpacity>
       </View>
+
+      <BottomSheetContainer ref={commonOperationalStateNotifRef}>
+        <CommonOperationalStateNotif navigation={navigation} />
+      </BottomSheetContainer>
+
+      <BottomSheetContainer ref={optionsSheetRef}>
+        <CommonProfileOptions navigation={navigation} />
+      </BottomSheetContainer>
+
+      <BottomSheetContainer ref={sortProposalsSheetRef}>
+        <SortProposals navigation={navigation} />
+      </BottomSheetContainer>
     </ScrollView>
   );
 };
