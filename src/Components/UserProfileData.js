@@ -7,7 +7,7 @@ import CountBox from '../Components/CountBox';
 import Loader from '../Components/Loader';
 import EditProfileForm from '../Components/Forms/EditProfileForm';
 import FirebaseService from '../Services/FirebaseService';
-const firebaseService = new FirebaseService();
+
 import {CommonActions} from '@react-navigation/native';
 
 import Icon from '../Assets/iconfont/Icon';
@@ -28,7 +28,7 @@ const UserProfileData = ({
           setUser(userStore.userInfo);
           setIsEditMode(true);
         } else {
-          setUser(await firebaseService.getUserById(userId));
+          setUser(await FirebaseService.getInstance().getUserById(userId));
           setIsEditMode(false);
         }
       } catch (error) {
@@ -56,7 +56,7 @@ const UserProfileData = ({
       return (
         <ImageField
           value={user?.profileImage}
-          placeholderUrl={user?.photo}
+          placeholderUrl={user?.photoURL}
           validation={{
             name: EditProfileForm.FIELD_PROFILE_IMAGE,
             formStore: editProfileFormStore,
@@ -69,7 +69,7 @@ const UserProfileData = ({
       if (user.profileImage) {
         imageUri = `data:image/png;base64,${user.profileImage}`;
       } else {
-        imageUri = user.photo;
+        imageUri = user.photoURL;
       }
 
       return (
@@ -100,7 +100,7 @@ const UserProfileData = ({
       ) : null}
       {renderUserProfilePicture()}
       <Text style={{...text.h1Black, ...{paddingTop: 0, paddingBottom: 2}}}>
-        {user.name}
+        {user.displayName}
       </Text>
       <Text style={text.ashleyjquimbacom2}>{user.email}</Text>
 

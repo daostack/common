@@ -14,12 +14,12 @@ import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
 import {observer, inject} from 'mobx-react';
 import AccordionBtn from '../Components/AccordionBtn';
-import {GoogleSignin} from '@react-native-community/google-signin';
 import CreateAccount from '../Screens/CreateAccount';
 
 import {CommonActions} from '@react-navigation/native';
 import Toast from '../Util/Toast';
 import UserProfileData from '../Components/UserProfileData';
+import firebase from 'react-native-firebase';
 
 const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
   //const [editMode, setEditMode] = useState(false);
@@ -32,28 +32,22 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
 
   _signOut = async () => {
     try {
-      //await GoogleSignin.revokeAccess();
-      await GoogleSignin.signOut();
-      userStore.setSignedInUser(null);
+      await firebase.auth().signOut();
     } catch (error) {
-      setSignInError(error);
+      console.log('Error -> ', error);
     }
   };
 
   const onUserSignedIn = isNewUser => {
-    if (navigation) {
-      navigateToEditProfile(true);
+    if (navigation && isNewUser) {
+      const navigate = CommonActions.navigate({
+        name: 'EditProfile',
+        params: {
+          isFirstOpening: true,
+        },
+      });
+      navigation.dispatch(navigate);
     }
-  };
-
-  const navigateToEditProfile = isFirstOpening => {
-    const navigate = CommonActions.navigate({
-      name: 'EditProfile',
-      params: {
-        isFirstOpening: isFirstOpening,
-      },
-    });
-    navigation.dispatch(navigate);
   };
 
   const onMyWalletPress = event => {
@@ -99,7 +93,7 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
                 {userStore.userInfo ? (
                   <AccordionBtn
                     title="My wallet"
-                    subtitle="1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2"
+                    subtitle={userStore.userInfo.ethereumAddress}
                     onPress={onMyWalletPress}
                   />
                 ) : null}
