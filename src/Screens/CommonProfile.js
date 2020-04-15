@@ -26,20 +26,25 @@ const {cache} = client;
 let {height, width} = Dimensions.get('window');
 const mockData = {
   commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
-  numberOfProposals: 4,
-  raised: 1421,
-  totalAmount: 20000,
-  active: 55,
-  approved: 142,
-  name: 'Amazon Network',
   description: 'If you wanna save the Amazon, own it.',
+  name: 'Amazon Network',
   time: 26,
+  members: 55,
+  raised: 4200,
+  //Funding stage data
+  goal: 10000,
+  //Operating stage data
+  currentBudget: 1421,
+  activeProposals: 142,
 };
 
 const CommonProfile = ({navigation}) => {
   commonOperationalStateNotifRef = useRef();
   optionsSheetRef = useRef();
   sortProposalsSheetRef = useRef();
+
+  const [isMember, setIsMember] = useState(false);
+  const [isFundingStage, setIsFundingStage] = useState(true);
 
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([
@@ -103,7 +108,12 @@ const CommonProfile = ({navigation}) => {
 
   const commonNumberBox = (numberComponent, title) => {
     return (
-      <View>
+      <View
+        style={{
+          justifyContent: 'center',
+          alignContent: 'center',
+          alignItems: 'center',
+        }}>
         <View style={styles.raisedContainer}>{numberComponent}</View>
         <Text style={styles.headerSmallText}>{title}</Text>
       </View>
@@ -143,6 +153,94 @@ const CommonProfile = ({navigation}) => {
     history: History,
   });
 
+  const renderFundingProgressBar = () => {
+    if (isFundingStage) {
+      return (
+        <>
+          <View style={styles.fundingProgressBar}>
+            <View style={styles.innerProgressBar} />
+          </View>
+          <Text
+            style={{
+              ...styles.headerSmallText,
+              color: colors.grey3,
+              ...layout.marginTopS,
+            }}>
+            {mockData.time} days to go
+          </Text>
+        </>
+      );
+    }
+  };
+
+  const renderAgendaForNonMembers = () => {
+    if (!isMember) {
+      return (
+        <View style={styles.agendaBox}>
+          <Text style={styles.agendaDescription}>
+            We aim to ba a global non-profit initiative. Only small percentage
+            of creative directors are women and we want to help change this
+            through mentorship circles, portfolio reviews, talks & creative
+            meetups.
+          </Text>
+
+          <TouchableOpacity onPress={openAgendaScreen}>
+            <Text style={styles.readMoreButton}>
+              View agenda and rules of conduct
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+  };
+
+  const renderMembersRowForMemberUsers = () => {
+    if (isMember) {
+      return (
+        <View style={styles.membersContainer}>
+          <TouchableOpacity
+            onPress={openCommonMembers}
+            style={styles.membersAction}>
+            <View style={styles.membersRow}>
+              <Image
+                style={styles.memberImage}
+                source={{
+                  uri:
+                    'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
+                }}
+              />
+              <Image
+                style={{...styles.memberImage, ...{marginLeft: -10}}}
+                source={{
+                  uri:
+                    'https://live.envalab.com/html/cetus/demo/images/element/team/2.jpg',
+                }}
+              />
+              <Image
+                style={{...styles.memberImage, ...{marginLeft: -10}}}
+                source={{
+                  uri:
+                    'https://live.envalab.com/html/cetus/demo/images/element/team/3.jpg',
+                }}
+              />
+              <Image
+                style={{...styles.memberImage, ...{marginLeft: -10}}}
+                source={{
+                  uri:
+                    'https://live.envalab.com/html/cetus/demo/images/element/team/4.jpg',
+                }}
+              />
+            </View>
+            <TouchableOpacity style={layout.flexRow}>
+              <Text style={text.h4Black}>Pending (13)</Text>
+              <Icon name="right-arrow" />
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+  };
+
   const openAgendaScreen = e => {
     navigation.navigate('CommonAgenda');
   };
@@ -168,166 +266,128 @@ const CommonProfile = ({navigation}) => {
   const initialLayout = {width: Dimensions.get('window').width};
 
   return (
-    <ScrollView
-      style={{
-        flex: 1,
-        backgroundColor: colors.white,
-        position: 'relative',
-      }}>
-      <ImageBackground
-        source={{
-          uri: mockData.commonPicture,
-        }}
-        style={styles.imageHeader}>
-        <TouchableOpacity
-          style={{position: 'absolute', top: 60, left: 20}}
-          onPress={
-            //navigation.goBack
-            openNotif
-          }>
-          <Image
-            style={{resizeMode: 'contain', height: 20, width: 20}}
-            source={require('../Assets/left-arrow-32.png')}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{position: 'absolute', top: 60, right: 20}}
-          onPress={openCommonOptions}>
-          <Icon
-            name="menu"
-            style={{height: 20, width: 20}}
-            color={colors.white}
-          />
-        </TouchableOpacity>
-        <View style={styles.headerContent}>
-          <Text style={styles.headerTitleWhite}>{mockData.name}</Text>
-          <Text style={styles.headerDescription}>{mockData.description}</Text>
-        </View>
-      </ImageBackground>
-
-      <View style={styles.commonProgressContainer}>
-        <View style={styles.commonNumbers}>
-          {commonNumberBox(
-            <>
-              <Text style={styles.headerTitleLight}>
-                ${mockData.raised.toLocaleString()}
-              </Text>
-              <Text style={styles.headerTitle}>
-                / {kFormatter(mockData.totalAmount)}
-              </Text>
-            </>,
-            'Raised',
-          )}
-          {commonNumberBox(
-            <>
-              <Icon name="common" size={20} />
-              <Text style={styles.headerTitle}>{mockData.active}</Text>
-            </>,
-            'Active',
-          )}
-          {commonNumberBox(
-            <>
-              <Icon name="common" size={20} />
-              <Text style={styles.headerTitle}>{mockData.approved}</Text>
-            </>,
-            'Approved',
-          )}
-        </View>
-        <View style={styles.fundingProgressBar}>
-          <View style={styles.innerProgressBar} />
-        </View>
-        <Text
-          style={{...styles.headerSmallText, margin: 10, color: colors.grey3}}>
-          {mockData.time} days to go
-        </Text>
-      </View>
-
-      <TouchableOpacity
-        onPress={openCommonMembers}
-        style={styles.membersContainer}>
-        <View style={styles.membersRow}>
-          <Image
-            style={styles.memberImage}
-            source={{
-              uri:
-                'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
-            }}
-          />
-          <Image
-            style={{...styles.memberImage, ...{marginLeft: -10}}}
-            source={{
-              uri:
-                'https://live.envalab.com/html/cetus/demo/images/element/team/2.jpg',
-            }}
-          />
-          <Image
-            style={{...styles.memberImage, ...{marginLeft: -10}}}
-            source={{
-              uri:
-                'https://live.envalab.com/html/cetus/demo/images/element/team/3.jpg',
-            }}
-          />
-          <Image
-            style={{...styles.memberImage, ...{marginLeft: -10}}}
-            source={{
-              uri:
-                'https://live.envalab.com/html/cetus/demo/images/element/team/4.jpg',
-            }}
-          />
-        </View>
-        <TouchableOpacity style={layout.flexRow}>
-          <Text style={text.h4Black}>Pending (13)</Text>
-          <Icon name="right-arrow" />
-        </TouchableOpacity>
-      </TouchableOpacity>
-
-      <View style={{...layout.content, ...{paddingVertical: 0}}}>
-        <TouchableOpacity
-          style={{
-            ...layout.btnOutline,
+    <>
+      <ScrollView
+        style={{
+          flex: 1,
+          backgroundColor: colors.white,
+          position: 'relative',
+        }}>
+        <ImageBackground
+          source={{
+            uri: mockData.commonPicture,
           }}
-          onPress={shareCommon}>
-          <Text style={text.buttonblue}>Share Common</Text>
-        </TouchableOpacity>
-      </View>
+          style={styles.imageHeader}>
+          <TouchableOpacity
+            style={{position: 'absolute', top: 60, left: 20}}
+            onPress={
+              //navigation.goBack
+              openNotif
+            }>
+            <Image
+              style={{resizeMode: 'contain', height: 20, width: 20}}
+              source={require('../Assets/left-arrow-32.png')}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{position: 'absolute', top: 60, right: 20}}
+            onPress={openCommonOptions}>
+            <Icon
+              name="menu"
+              style={{height: 20, width: 20}}
+              color={colors.white}
+            />
+          </TouchableOpacity>
+          <View style={styles.headerContent}>
+            <Text style={styles.headerTitleWhite}>{mockData.name}</Text>
+            <Text style={styles.headerDescription}>{mockData.description}</Text>
+            {isMember ? (
+              <TouchableOpacity onPress={openAgendaScreen}>
+                <Text style={styles.headerViewAgenda}>View agenda</Text>
+              </TouchableOpacity>
+            ) : null}
+          </View>
+        </ImageBackground>
 
-      <View style={styles.agendaBox}>
-        <Text style={styles.agendaDescription}>
-          We aim to ba a global non-profit initiative. Only small percentage of
-          creative directors are women and we want to help change this through
-          mentorship circles, portfolio reviews, talks & creative meetups.
-        </Text>
+        <View style={styles.commonProgressContainer}>
+          <View style={styles.commonNumbers}>
+            {commonNumberBox(
+              isFundingStage ? (
+                <>
+                  <Text style={styles.headerTitle}>
+                    ${mockData.raised.toLocaleString()}
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.headerTitleLight}>
+                    ${mockData.currentBudget.toLocaleString()}
+                  </Text>
+                  <Text style={styles.headerTitle}>
+                    / {kFormatter(mockData.raised)}
+                  </Text>
+                </>
+              ),
+              isFundingStage ? 'Raised' : 'Available funds',
+            )}
+            {commonNumberBox(
+              <Text style={styles.headerTitle}>{mockData.members}</Text>,
+              'Members',
+            )}
+            {commonNumberBox(
+              isFundingStage ? (
+                <Text style={styles.headerTitle}>
+                  ${kFormatter(mockData.goal).toLocaleString()}
+                </Text>
+              ) : (
+                <Text style={styles.headerTitle}>
+                  {mockData.activeProposals}
+                </Text>
+              ),
+              isFundingStage ? 'Goal' : 'ActiveProposals',
+            )}
+          </View>
+          {renderFundingProgressBar()}
+        </View>
 
-        <TouchableOpacity onPress={openAgendaScreen}>
-          <Text style={styles.readMoreButton}>
-            View agenda and rules of conduct
-          </Text>
-        </TouchableOpacity>
-      </View>
+        {renderMembersRowForMemberUsers()}
 
-      <TabView
-        navigationState={{index, routes}}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={initialLayout}
-        renderTabBar={renderTabBar}
-        style={{}}
-      />
-
-      <View style={styles.actionButtonContainer}>
-        <TouchableOpacity style={styles.headerButton}>
-          <Text
+        <View style={{...layout.content, ...{paddingTop: 0}}}>
+          <TouchableOpacity
             style={{
-              fontSize: 16,
-              color: 'white',
-              fontWeight: '700',
-              marginRight: 40,
-            }}>
-            Request to join
-          </Text>
-          <Text style={{fontSize: 16, color: 'white'}}>$50 Contribution</Text>
-        </TouchableOpacity>
-      </View>
+              ...layout.btnOutline,
+            }}
+            onPress={shareCommon}>
+            <Text style={text.buttonblue}>Share Common</Text>
+          </TouchableOpacity>
+        </View>
+
+        {renderAgendaForNonMembers()}
+
+        <TabView
+          navigationState={{index, routes}}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={initialLayout}
+          renderTabBar={renderTabBar}
+          style={{}}
+        />
+
+        <View style={styles.actionButtonContainer}>
+          <TouchableOpacity style={styles.headerButton}>
+            <Text
+              style={{
+                fontSize: 16,
+                color: 'white',
+                fontWeight: '700',
+                marginRight: 40,
+              }}>
+              Request to join
+            </Text>
+            <Text style={{fontSize: 16, color: 'white'}}>$50 Contribution</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
 
       <BottomSheetContainer ref={commonOperationalStateNotifRef}>
         <CommonOperationalStateNotif navigation={navigation} />
@@ -340,7 +400,7 @@ const CommonProfile = ({navigation}) => {
       <BottomSheetContainer ref={sortProposalsSheetRef}>
         <SortProposals navigation={navigation} />
       </BottomSheetContainer>
-    </ScrollView>
+    </>
   );
 };
 
@@ -358,6 +418,14 @@ const styles = StyleSheet.create({
   membersContainer: {
     ...layout.content,
     ...layout.flexRow,
+    paddingVertical: 0,
+  },
+  membersAction: {
+    ...layout.content,
+    ...layout.flexRow,
+    paddingHorizontal: 0,
+    alignSelf: 'stretch',
+    flexGrow: 1,
     justifyContent: 'space-between',
     borderTopWidth: 1,
     borderColor: colors.grey4,
@@ -390,6 +458,7 @@ const styles = StyleSheet.create({
   },
   agendaBox: {
     padding: 20,
+    paddingTop: 0,
   },
   agendaTitle: {
     ...text.runningblack,
@@ -412,7 +481,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   fundingProgressBar: {
-    width: 308,
+    width: 370,
     borderRadius: 7,
     backgroundColor: colors.grey4,
     height: 8,
@@ -435,7 +504,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.mainBlue,
   },
   innerProgressBar: {
-    width: 308 / 4,
+    width: 380 / 4,
     borderRadius: 6,
     backgroundColor: colors.mainBlue,
     height: 8,
@@ -458,14 +527,19 @@ const styles = StyleSheet.create({
     color: colors.grey3,
   },
   headerDescription: {
-    ...text.buttoncenterwhite,
-    fontWeight: '700',
-    color: 'white',
-    marginBottom: 13,
+    ...text.greyText,
+    fontWeight: '600',
+    color: colors.grey4,
+  },
+
+  headerViewAgenda: {
+    ...text.smallGreyText,
+
+    color: colors.grey4,
+    marginTop: 30,
   },
   headerSmallText: {
     ...text.smallBlackText,
-    ...layout.marginTopS,
   },
   headerContent: {
     alignItems: 'center',
@@ -476,10 +550,10 @@ const styles = StyleSheet.create({
   },
   imageHeader: {
     width,
-    paddingLeft: 80,
+    paddingLeft: 50,
     paddingRight: 50,
     paddingTop: 100,
-    paddingBottom: 28,
+    paddingBottom: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },

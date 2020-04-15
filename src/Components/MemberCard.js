@@ -4,12 +4,37 @@ import {layout, colors, text, sizeXS} from '../Theme';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '../Assets/iconfont/Icon';
 
-const MemberCard = ({name, approvePercent, imageUrl}) => {
+const MemberCard = ({name, approvePercent, imageUrl, isPending, date}) => {
+  renderRightContainer = () => {
+    if (isPending) {
+      return (
+        <>
+          <TouchableOpacity style={styles.actionBtn}>
+            <Icon name="close" size={15} color={colors.error} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.actionBtn}>
+            <Icon name="check" size={30} color={colors.lightishGreen} />
+          </TouchableOpacity>
+        </>
+      );
+    } else {
+      return (
+        <Text
+          style={{
+            ...text.smallGreyText,
+            marginTop: 2,
+          }}>
+          {date}
+        </Text>
+      );
+    }
+  };
+
   return (
     <View style={styles.cardContainer}>
       <View style={styles.memberInfoContainer}>
         <Image
-          style={{...styles.memberImage, ...{marginLeft: -10}}}
+          style={styles.memberImage}
           source={{
             uri: imageUrl,
           }}
@@ -29,14 +54,7 @@ const MemberCard = ({name, approvePercent, imageUrl}) => {
           </Text>
         </View>
       </View>
-      <View style={styles.actionsContainer}>
-        <TouchableOpacity style={styles.actionBtn}>
-          <Icon name="common" size={30} color={colors.error} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.actionBtn}>
-          <Icon name="common" size={30} color={colors.lightishGreen} />
-        </TouchableOpacity>
-      </View>
+      <View style={styles.rightContainer}>{renderRightContainer()}</View>
     </View>
   );
 };
@@ -57,7 +75,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignContent: 'center',
   },
-  actionsContainer: {
+  rightContainer: {
     ...layout.content,
     ...layout.flexRow,
   },

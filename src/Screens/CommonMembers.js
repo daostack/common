@@ -27,24 +27,28 @@ const commonMembersMock = [
     approvePercent: 32,
     imageUrl:
       'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
+    date: 'May 12',
   },
   {
     name: 'John Smith',
     approvePercent: 32,
     imageUrl:
       'https://live.envalab.com/html/cetus/demo/images/element/team/2.jpg',
+    date: 'May 12',
   },
   {
     name: 'John Smith',
     approvePercent: 32,
     imageUrl:
       'https://live.envalab.com/html/cetus/demo/images/element/team/3.jpg',
+    date: 'May 12',
   },
   {
     name: 'John Smith',
     approvePercent: 32,
     imageUrl:
       'https://live.envalab.com/html/cetus/demo/images/element/team/4.jpg',
+    date: 'May 12',
   },
 ];
 
@@ -72,6 +76,8 @@ const CommonMembers = ({navigation}) => {
               name={member.name}
               approvePercent={member.approvePercent}
               imageUrl={member.imageUrl}
+              isPending={sceneIndex == 1}
+              date={member.date}
             />
           );
         })}
@@ -125,7 +131,6 @@ const CommonMembers = ({navigation}) => {
               onIndexChange={setIndex}
               initialLayout={initialLayout}
               renderTabBar={renderTabBar}
-              style={{paddingHorizontal: 20}}
             />
           </View>
         </ScrollView>
@@ -154,6 +159,7 @@ const styles = StyleSheet.create({
   tabStyleActive: {
     ...text.ashleyjquimbacom2,
     color: colors.black,
+    fontWeight: 'bold',
   },
   tabStyle: {
     ...text.ashleyjquimbacom2,
