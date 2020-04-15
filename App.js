@@ -26,6 +26,7 @@ import {
   EditProfile,
   UserProfileReadMode,
   NativeBridgeTests,
+<<<<<<< HEAD
   MyWallet,
   HUDTest,
   CommonExplanation,
@@ -33,14 +34,24 @@ import {
   CreateStep2,
   CreateStep3,
   CreateStep4,
+=======
+  MyProposals,
+  MyCommons,
+>>>>>>> master
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
-const firebaseService = new FirebaseService();
-import AuthService from './src/Services/AuthService';
-const authService = new AuthService();
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+<<<<<<< HEAD
+=======
+import {filterObjectByKeys} from './src/Util';
+import {userInfoFields} from './src/Stores/UserStore';
+import {observer, inject} from 'mobx-react';
+import Icon from './src/Assets/iconfont/Icon';
+import firebase from 'react-native-firebase';
+import Toast from './src/Util/Toast';
+>>>>>>> master
 
 const CommonHome = () => {
   return (
@@ -101,40 +112,33 @@ const CommonHome = () => {
 
 const App = ({userStore}) => {
   const [onboarded, setOnboarded] = useState();
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        if (!userStore.userInfo) {
-          console.log('LOAD USER 1');
-          const googleSignedInUser = await authService.getGoogleSignedInUser();
-          // Signed In Mode
-          if (googleSignedInUser) {
-            userStore.setIsLoading(true);
-            const appUser = await firebaseService.getUserById(
-              googleSignedInUser.user.id,
-            );
 
-            const allUserInfo = {
-              ...googleSignedInUser.user,
-              ...appUser,
-            };
+  const onAuthStateChanged = async user => {
+    try {
+      userStore.setIsLoading(true);
+      if (user) {
+        const appUser = await FirebaseService.getInstance().getUserById(
+          user.uid,
+        );
 
-            const filteredUser = filterObjectByKeys(
-              allUserInfo,
-              userInfoFields,
-            );
-            userStore.setSignedInUser(filteredUser);
-            userStore.setIsLoading(false);
-          }
-          // Anonymous mode
-          else {
-            console.log('Anonymous user');
-          }
-        }
-      } catch (error) {
-        console.log('ERRROR', error);
+        const allUserInfo = {
+          ...user._user,
+          ...appUser,
+        };
+
+        const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
+        userStore.setSignedInUser(filteredUser);
+      } else {
+        userStore.setSignedInUser(null);
       }
-    };
+      userStore.setIsLoading(false);
+    } catch (error) {
+      Toast.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
 
     const checkOnboardingStatus = async () => {
       try {
@@ -147,7 +151,7 @@ const App = ({userStore}) => {
       }
     };
     checkOnboardingStatus();
-    loadUser();
+    return subscriber;
   });
 
   return (
@@ -171,7 +175,35 @@ const App = ({userStore}) => {
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
+<<<<<<< HEAD
           <Stack.Screen name="Profile" component={UserProfile} />
+=======
+        </Stack.Navigator>
+      </NavigationContainer>
+      */}
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: styles.headerStyle,
+            headerTitleStyle: styles.headerTitleStyle,
+            headerBackTitleStyle: styles.headerTitleStyle,
+            headerBackTitleVisible: false,
+            headerTintColor: colors.black,
+            headerBackImage: () => <Icon name="left-arrow" size={32} />,
+          }}>
+          <Stack.Screen
+            name="CommonHome"
+            component={CommonHome}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            options={{
+              title: 'My profile',
+            }}
+            name="Profile"
+            component={UserProfile}
+          />
+>>>>>>> master
           <Stack.Screen
             options={{
               title: 'Edit my profile',
@@ -192,6 +224,7 @@ const App = ({userStore}) => {
             component={UserProfileReadMode}
           />
           <Stack.Screen
+<<<<<<< HEAD
             name="CommonExplanation"
             component={CommonExplanation}
             options={({navigation, route}) => ({
@@ -240,6 +273,22 @@ const App = ({userStore}) => {
             options={({navigation, route}) => ({
               headerShown: false,
             })}
+=======
+            options={{
+              title: null,
+              headerBackTitleVisible: true,
+            }}
+            name="MyProposals"
+            component={MyProposals}
+          />
+          <Stack.Screen
+            options={{
+              title: null,
+              headerBackTitleVisible: true,
+            }}
+            name="MyCommons"
+            component={MyCommons}
+>>>>>>> master
           />
         </Stack.Navigator>
       </NavigationContainer>

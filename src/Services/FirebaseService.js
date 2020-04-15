@@ -8,6 +8,15 @@ const DB_COLLECTIONS = {
 };
 
 export default class FirebaseService {
+  static serviceInstance = null;
+
+  static getInstance = () => {
+    if (FirebaseService.serviceInstance == null) {
+      FirebaseService.serviceInstance = new FirebaseService();
+    }
+    return this.serviceInstance;
+  };
+
   async getUser() {
     return db
       .collection('users')
@@ -69,7 +78,7 @@ export default class FirebaseService {
       .doc(userId)
       .update(user)
       .then(ref => {
-        console.log('Edited document with ID: ', ref.id);
+        //console.log('Edited document with ID: ', ref.id);
       });
   }
 

@@ -17,3 +17,5 @@ export EditProfile from './EditProfile';
 export HUDTest from './HUDTest';
 export MyWallet from './MyWallet';
 export UserProfileReadMode from './UserProfileReadMode';
+export MyProposals from './MyProposals';
+export MyCommons from './MyCommons';
