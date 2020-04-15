@@ -30,6 +30,8 @@ import {
   NativeBridgeTests,
   MyProposals,
   MyCommons,
+  CommonAgenda,
+  CommonMembers,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
@@ -188,13 +190,16 @@ const App = ({userStore}) => {
             component={CommonHome}
             options={{headerShown: false}}
           />
+
           <Stack.Screen
-            options={{
-              title: 'My profile',
-            }}
-            name="Profile"
-            component={UserProfile}
+            name="CommonProfile"
+            component={CommonProfile}
+            options={{headerShown: false}}
           />
+
+          <Stack.Screen name="CommonAgenda" component={CommonAgenda} />
+
+          <Stack.Screen name="Profile" component={UserProfile} />
           <Stack.Screen
             options={{
               title: 'Edit my profile',
@@ -231,6 +236,14 @@ const App = ({userStore}) => {
             }}
             name="MyCommons"
             component={MyCommons}
+          />
+          <Stack.Screen
+            options={{
+              title: null,
+              headerBackTitleVisible: true,
+            }}
+            name="CommonMembers"
+            component={CommonMembers}
           />
         </Stack.Navigator>
       </NavigationContainer>

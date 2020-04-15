@@ -191,7 +191,6 @@ const styles = StyleSheet.create({
 
   tabStyleActive: {
     ...text.ashleyjquimbacom2,
-    fontWeight: 'bold',
     color: colors.black,
   },
   tabStyle: {

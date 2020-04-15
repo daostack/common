@@ -190,6 +190,16 @@ export default StyleSheet.create({
     textAlign: 'center',
     color: colors.mainBlue,
   },
+  smallBlackText: {
+    ...appFontFamily,
+    fontSize: 12,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.black,
+  },
   ashleyjquimbacom: {
     ...appFontFamily,
     fontSize: 16,
@@ -226,6 +236,16 @@ export default StyleSheet.create({
     lineHeight: 20,
     letterSpacing: 0,
     color: colors.greyText,
+  },
+
+  smallGreyText: {
+    ...appFontFamily,
+    fontSize: 12,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.grey3,
   },
 
   blackText: {
