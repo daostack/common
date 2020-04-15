@@ -1,6 +1,6 @@
 import {GoogleSignin} from '@react-native-community/google-signin';
 import {GOOGLE_SIGNIN_PERMISSIONS} from '../Util';
-import firebase from 'react-native-firebase';
+import {firebase} from '../Firebase';
 
 export default class AuthService {
   static serviceInstance = null;

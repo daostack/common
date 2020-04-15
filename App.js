@@ -21,37 +21,31 @@ import {
   CommonProfile,
   Onboarding,
   UserProfile,
+  HUDTest,
+  MyWallet,
   CreateAccount,
   CompleteAccount,
   EditProfile,
   UserProfileReadMode,
   NativeBridgeTests,
-<<<<<<< HEAD
-  MyWallet,
-  HUDTest,
+  MyProposals,
+  MyCommons,
   CommonExplanation,
   CreateStep1,
   CreateStep2,
   CreateStep3,
   CreateStep4,
-=======
-  MyProposals,
-  MyCommons,
->>>>>>> master
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-<<<<<<< HEAD
-=======
 import {filterObjectByKeys} from './src/Util';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
-import firebase from 'react-native-firebase';
+import {firebase} from './src/Firebase';
 import Toast from './src/Util/Toast';
->>>>>>> master
 
 const CommonHome = () => {
   return (
@@ -150,12 +144,14 @@ const App = ({userStore}) => {
         console.log(e);
       }
     };
+
     checkOnboardingStatus();
     return subscriber;
   });
 
   return (
     <ApolloProvider client={client}>
+      {/** 
       <NavigationContainer>
         <Stack.Navigator>
           {!onboarded ? (
@@ -173,11 +169,12 @@ const App = ({userStore}) => {
           )}
           <Stack.Screen name="CommonProfile" component={CommonProfile} />
           <Stack.Screen name="Login" component={Login} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      <NavigationContainer>
+        <Stack.Navigator>
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
-<<<<<<< HEAD
-          <Stack.Screen name="Profile" component={UserProfile} />
-=======
         </Stack.Navigator>
       </NavigationContainer>
       */}
@@ -203,7 +200,6 @@ const App = ({userStore}) => {
             name="Profile"
             component={UserProfile}
           />
->>>>>>> master
           <Stack.Screen
             options={{
               title: 'Edit my profile',
@@ -211,6 +207,8 @@ const App = ({userStore}) => {
             name="EditProfile"
             component={EditProfile}
           />
+          <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
+          <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen
             options={{
               title: 'My wallet',
@@ -224,27 +222,20 @@ const App = ({userStore}) => {
             component={UserProfileReadMode}
           />
           <Stack.Screen
-<<<<<<< HEAD
-            name="CommonExplanation"
-            component={CommonExplanation}
-            options={({navigation, route}) => ({
-              headerTitle: 'Common!',
-              headerBackTitleVisible: false,
-              headerLeftContainerStyle: {marginLeft: 20},
-              headerRightContainerStyle: {marginRight: 20},
-              headerBackImage: () => (
-                <Image
-                  source={require('./src/Assets/backArrow.png')}
-                  style={{resizeMode: 'contain', width: 32, height: 32}}
-                />
-              ),
-              headerRight: () => (
-                <Image
-                  source={require('./src/Assets/questionmark.png')}
-                  style={{resizeMode: 'contain', width: 20, height: 20}}
-                />
-              ),
-            })}
+            options={{
+              title: null,
+              headerBackTitleVisible: true,
+            }}
+            name="MyProposals"
+            component={MyProposals}
+          />
+          <Stack.Screen
+            options={{
+              title: null,
+              headerBackTitleVisible: true,
+            }}
+            name="MyCommons"
+            component={MyCommons}
           />
           <Stack.Screen
             name="CreateStep1"
@@ -273,22 +264,28 @@ const App = ({userStore}) => {
             options={({navigation, route}) => ({
               headerShown: false,
             })}
-=======
-            options={{
-              title: null,
-              headerBackTitleVisible: true,
-            }}
-            name="MyProposals"
-            component={MyProposals}
           />
           <Stack.Screen
-            options={{
-              title: null,
-              headerBackTitleVisible: true,
-            }}
-            name="MyCommons"
-            component={MyCommons}
->>>>>>> master
+            name="CommonExplanation"
+            component={CommonExplanation}
+            options={({navigation, route}) => ({
+              headerTitle: 'Common!',
+              headerBackTitleVisible: false,
+              headerLeftContainerStyle: {marginLeft: 20},
+              headerRightContainerStyle: {marginRight: 20},
+              headerBackImage: () => (
+                <Image
+                  source={require('./src/Assets/backArrow.png')}
+                  style={{resizeMode: 'contain', width: 32, height: 32}}
+                />
+              ),
+              headerRight: () => (
+                <Image
+                  source={require('./src/Assets/questionmark.png')}
+                  style={{resizeMode: 'contain', width: 20, height: 20}}
+                />
+              ),
+            })}
           />
         </Stack.Navigator>
       </NavigationContainer>
@@ -296,4 +293,19 @@ const App = ({userStore}) => {
   );
 };
 
-export default App;
+const styles = StyleSheet.create({
+  headerStyle: {
+    borderWidth: 0,
+    borderBottomWidth: 0,
+    shadowRadius: 0,
+    shadowOffset: {
+      height: 0,
+    },
+  },
+
+  headerTitleStyle: {
+    ...text.h4Black,
+  },
+});
+
+export default inject('userStore')(observer(App));
