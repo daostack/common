@@ -1,9 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useRef, useState} from 'react';
-import {
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, TouchableOpacity} from 'react-native';
 import NavigationBar from 'react-native-navbar';
 import Icon from '../../Assets/iconfont/Icon';
 

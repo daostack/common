@@ -24,7 +24,7 @@ import {useToast} from '../../Util/Toast';
 
 const firebaseService = new FirebaseService();
 
-const CreateStep4 = props => {
+const CreateStep4 = (props) => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const form = props.createCommonFormStore.getChangedFormFieldsJson();
@@ -47,7 +47,7 @@ const CreateStep4 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const changeIndex = number => {
+  const changeIndex = (number) => {
     let index = templateIndex + number;
     if (index <= 1) {
       index = 1;
@@ -67,7 +67,7 @@ const CreateStep4 = props => {
       title: 'Select Avatar',
       quality: 0.7,
     };
-    ImagePicker.showImagePicker(options, response => {
+    ImagePicker.showImagePicker(options, (response) => {
       console.log('Response = ', response);
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -79,11 +79,11 @@ const CreateStep4 = props => {
         toast.loading('Uploading...');
         firebaseService
           .uploadImage(response.uri)
-          .then(url => {
+          .then((url) => {
             toast.hide();
             setImageURI(url);
           })
-          .catch(error => toast.error(error));
+          .catch((error) => toast.error(error));
       }
     });
   };
@@ -177,7 +177,7 @@ const CreateStep4 = props => {
                 color: 'white',
               }}
               onPress={() => pickImage()}>
-              <Icon name="add-picture" color='white' size={20} />
+              <Icon name="add-picture" color="white" size={20} />
             </TouchableOpacity>
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity

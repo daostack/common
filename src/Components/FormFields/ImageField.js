@@ -42,7 +42,7 @@ class ImageField extends React.Component {
     }
   }
 
-  onChangeValue = url => {
+  onChangeValue = (url) => {
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
       formStore.fieldChanged(name, url);
@@ -52,14 +52,14 @@ class ImageField extends React.Component {
   };
 
   pickImage = () => {
-    console.log('AAAA')
+    console.log('AAAA');
     const {title, quality, allowsEditing} = this.props;
     const options = {
       title: title,
       quality: quality || 0.7,
       allowsEditing: allowsEditing || false,
     };
-    ImagePicker.showImagePicker(options, response => {
+    ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -70,12 +70,12 @@ class ImageField extends React.Component {
         this.toast.loading('Uploading...');
         firebaseService
           .uploadImage(response.uri)
-          .then(url => {
+          .then((url) => {
             this.toast.hide();
             this.toast.done('Done');
             this.onChangeValue(url);
           })
-          .catch(error => this.toast.error(error));
+          .catch((error) => this.toast.error(error));
       }
     });
   };

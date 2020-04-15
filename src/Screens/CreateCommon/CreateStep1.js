@@ -21,7 +21,7 @@ import NavigationBar from 'react-native-navbar';
 import Icon from '../../Assets/iconfont/Icon';
 import Toast from '../../Util/Toast.js';
 
-const CreateStep1 = props => {
+const CreateStep1 = (props) => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [ruleCount, setRuleCount] = useState(1);
@@ -40,7 +40,7 @@ const CreateStep1 = props => {
 
   const isValid = () => {
     const links = [...Array(ruleCount).keys()].map(
-      x => `${CreateCommonForm.FIELD_LINKS}_${x}`,
+      (x) => `${CreateCommonForm.FIELD_LINKS}_${x}`,
     );
     const result = props.createCommonFormStore.isFormValidSelectedFields([
       CreateCommonForm.FIELD_NAME,
@@ -182,7 +182,7 @@ const CreateStep1 = props => {
               validateRule: 'string',
             }}
           />
-          {[...Array(ruleCount).keys()].map(x => (
+          {[...Array(ruleCount).keys()].map((x) => (
             <TextInputField
               key={x}
               value={''}
