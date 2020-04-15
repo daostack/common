@@ -13,4 +13,5 @@ export default {
   greyText: '#7a8189',
   redLight: '#fdedee',
   white: '#ffffff',
+  lightishGreen: '#6ee569',
 };
