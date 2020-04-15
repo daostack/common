@@ -24,7 +24,7 @@ import {useToast} from '../../Util/Toast';
 
 const firebaseService = new FirebaseService();
 
-const CreateStep4 = (props) => {
+const CreateStep4 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const form = props.createCommonFormStore.getChangedFormFieldsJson();
@@ -32,6 +32,7 @@ const CreateStep4 = (props) => {
   const [imageURI, setImageURI] = useState(
     'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
   );
+  const [avatarURL, setAvatarURL] = useState(null);
 
   console.log(form['name']);
 
@@ -47,7 +48,7 @@ const CreateStep4 = (props) => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const changeIndex = (number) => {
+  const changeIndex = number => {
     let index = templateIndex + number;
     if (index <= 1) {
       index = 1;
@@ -62,12 +63,13 @@ const CreateStep4 = (props) => {
     );
   };
 
-  const pickImage = () => {
+  const pickImage = isAvatar => {
     const options = {
       title: 'Select Avatar',
       quality: 0.7,
+      allowsEditing: isAvatar,
     };
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.showImagePicker(options, response => {
       console.log('Response = ', response);
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -79,11 +81,15 @@ const CreateStep4 = (props) => {
         toast.loading('Uploading...');
         firebaseService
           .uploadImage(response.uri)
-          .then((url) => {
+          .then(url => {
             toast.hide();
-            setImageURI(url);
+            if (isAvatar) {
+              setAvatarURL(url);
+            } else {
+              setImageURI(url);
+            }
           })
-          .catch((error) => toast.error(error));
+          .catch(error => toast.error(error));
       }
     });
   };
@@ -176,7 +182,7 @@ const CreateStep4 = (props) => {
                 padding: 10,
                 color: 'white',
               }}
-              onPress={() => pickImage()}>
+              onPress={() => pickImage(false)}>
               <Icon name="add-picture" color="white" size={20} />
             </TouchableOpacity>
             <View style={{flexDirection: 'row'}}>
@@ -184,48 +190,83 @@ const CreateStep4 = (props) => {
                 style={{
                   padding: 10,
                   opacity: templateIndex === 1 ? 0.5 : 1,
-                  alignSelf: 'flex-start',
+                  justifyContent: 'center',
+                  alignContent: 'center',
                 }}
                 onPress={() => changeIndex(-1)}>
                 <Icon name="left-arrow" color="white" size={35} />
               </TouchableOpacity>
-              <Text style={styles.titleName}>
-                {form[CreateCommonForm.FIELD_NAME]}
-              </Text>
+              <View width={width - 100}>
+                <Text style={styles.titleName}>
+                  {form[CreateCommonForm.FIELD_NAME]}
+                </Text>
+                <Text style={styles.byline}>
+                  {form[CreateCommonForm.FIELD_BYLINE]}
+                </Text>
+              </View>
               <TouchableOpacity
                 style={{
                   padding: 10,
                   opacity: templateIndex === 8 ? 0.5 : 1,
-                  alignSelf: 'flex-end',
+                  justifyContent: 'center',
+                  alignContent: 'center',
                 }}
                 onPress={() => changeIndex(1)}>
                 <Icon name="right-arrow" color="white" size={35} />
               </TouchableOpacity>
             </View>
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginHorizontal: 10,
-              marginVertical: 15,
-            }}>
-            <Text style={{flex: 1, alignSelf: 'flex-start'}}>
-              Have an avatar for you Common?
-            </Text>
-            <TouchableOpacity>
-              <Text
-                style={{
-                  alignSelf: 'flex-end',
-                  flex: 1,
-                  color: colors.mainBlue,
-                  fontSize: 16,
-                  fontFamily: 'Roboto',
-                  fontWeight: 'bold',
-                }}>
-                Upload avatar
+
+          {avatarURL === null ? (
+            <View
+              style={{
+                flexDirection: 'row',
+                marginHorizontal: 10,
+                marginVertical: 15,
+              }}>
+              <Text style={{flex: 1, alignSelf: 'flex-start'}}>
+                Have an avatar for you Common?
               </Text>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity onPress={() => pickImage(true)}>
+                <Text
+                  style={{
+                    alignSelf: 'flex-end',
+                    flex: 1,
+                    color: colors.mainBlue,
+                    fontSize: 16,
+                    fontFamily: 'Roboto',
+                    fontWeight: 'bold',
+                  }}>
+                  Upload avatar
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={{marginBottom: 30}}>
+              <Text style={{color: colors.slate, fontSize: 14, margin: 24}}>
+                Avatar
+              </Text>
+              <View style={{width: 70, alignSelf: 'center'}}>
+                <Image
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: 58,
+                    width: 58,
+                    borderRadius: 29,
+                    backgroundColor: colors.grey4,
+                    borderColor: colors.grey4,
+                    borderWidth: 0.5,
+                  }}
+                  resizeMode="cover"
+                  source={{uri: avatarURL}}
+                />
+                <TouchableOpacity style={styles.formImageFielAddIcon} onPress={() => setAvatarURL(null)}>
+                  <Icon name="close" size={10} color='white' />
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
           <View
             style={{height: 1, width: width, backgroundColor: colors.grey4}}
           />
@@ -495,7 +536,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   titleName: {
-    width: '70%',
     color: 'white',
     opacity: 0.8,
     textAlign: 'center',
@@ -509,6 +549,30 @@ const styles = StyleSheet.create({
       height: 2,
     },
     textShadowRadius: 4,
+  },
+  byline: {
+    width: '100%',
+    color: 'white',
+    opacity: 0.8,
+    textAlign: 'center',
+    alignSelf: 'center',
+    fontFamily: 'Roboto',
+    fontSize: 14,
+  },
+  formImageFielAddIcon: {
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    padding: 2,
+    backgroundColor: colors.mainBlue,
+    borderWidth: 2,
+    borderColor: colors.white,
   },
 });
 
