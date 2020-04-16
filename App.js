@@ -54,7 +54,8 @@ import {firebase} from './src/Firebase';
 import Toast from './src/Util/Toast';
 
 const App = ({userStore}) => {
-  const [onboarded, setOnboarded] = useState();
+  const [onboarded, setOnboarded] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const onAuthStateChanged = async user => {
     try {
@@ -89,6 +90,7 @@ const App = ({userStore}) => {
         if (isOnboarded === 'true') {
           setOnboarded(true);
         }
+        setLoading(false);
       } catch (e) {
         console.log(e);
       }
@@ -96,9 +98,11 @@ const App = ({userStore}) => {
 
     checkOnboardingStatus();
     return subscriber;
-  }, [userStore.userInfo]);
+  });
 
-  if (!onboarded) {
+  console.log('onboarded: ', onboarded);
+
+  if (loading) {
     return <View style={{flex: 1}} />;
   }
 
@@ -114,20 +118,19 @@ const App = ({userStore}) => {
             headerTintColor: colors.black,
             headerBackImage: () => <Icon name="left-arrow" size={32} />,
           }}>
-          {!onboarded ? (
+          {!onboarded && (
             <Stack.Screen
               name="Onboarding"
               component={Onboarding}
               options={{headerShown: false}}
             />
-          ) : (
-            <Stack.Screen
-              name="CommonHome"
-              component={CommonHome}
-              options={{headerShown: false}}
-              userStore={userStore}
-            />
           )}
+          <Stack.Screen
+            name="CommonHome"
+            component={CommonHome}
+            options={{headerShown: false}}
+            userStore={userStore}
+          />
           <Stack.Screen name="CreateCommon" component={CreateCommon} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen name="CompleteAccount" component={CompleteAccount} />

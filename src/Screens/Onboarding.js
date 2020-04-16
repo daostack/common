@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-
+import {CommonActions} from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -16,10 +16,17 @@ const Onboarding = ({navigation}) => {
   _onboardingClick = async () => {
     try {
       await AsyncStorage.setItem('onboarded', 'true');
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'CommonHome'}],
-      });
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [
+            {
+              name: 'CommonHome',
+              params: {user: 'jane'},
+            },
+          ],
+        }),
+      );
     } catch (e) {
       console.log(e);
     }

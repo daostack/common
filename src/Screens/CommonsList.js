@@ -13,6 +13,24 @@ import {Subscription, Query} from 'react-apollo';
 import gql from 'graphql-tag';
 import {ApolloClientConfig as client} from '../Config';
 import {inject, observer} from 'mobx-react';
+// import {Arc} from '@daostack/client';
+//
+// const arc = new Arc({
+//   graphqlHttpProvider:
+//     'https://api.thegraph.com/subgraphs/name/daostack/v7_2_exp_rinkeby',
+//   graphqlWsProvider:
+//     'wss://api.thegraph.com/subgraphs/name/daostack/v7_2_exp_rinkeby',
+//   web3Provider: `wss://mainnet.infura.io/ws/v3/${'4406c3acf862426c83991f1752c46dd8'}`,
+//   ipfsProvider: {
+//     host: 'subgraph.daostack.io',
+//     port: '443',
+//     protocol: 'https',
+//     'api-path': '/ipfs/api/v0/',
+//   },
+// });
+//
+// // get a list of DAOs
+// arc.daos().subscribe(daos => console.log(`Here are your DAOS: ${daos}`));
 
 const {width} = Dimensions.get('window');
 
@@ -115,7 +133,7 @@ const CommonsList = ({navigation}) => {
                 />
                 <View style={styles.container}>
                   {data.daos.map((dao, i) => {
-                    console.log('dao data: ', dao)
+                    console.log('dao data: ', dao);
                     if (
                       ''.length > 0 &&
                       !dao.name.toLowerCase().includes(''.toLowerCase())
