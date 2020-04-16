@@ -47,7 +47,7 @@ const CommonProfile = ({navigation, route}) => {
   sortProposalsSheetRef = useRef();
 
   const [isMember, setIsMember] = useState(false);
-  const [isFundingStage, setIsFundingStage] = useState(true);
+  const [isFundingStage, setIsFundingStage] = useState(false);
 
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([
@@ -269,12 +269,11 @@ const CommonProfile = ({navigation, route}) => {
   const initialLayout = {width: Dimensions.get('window').width};
 
   return (
-    <>
+    <View style={{flex: 1, backgroundColor: colors.white}}>
       <ScrollView
         style={{
           flex: 1,
           backgroundColor: colors.white,
-          marginBottom: 80,
         }}>
         <ImageBackground
           source={{
@@ -399,11 +398,9 @@ const CommonProfile = ({navigation, route}) => {
 
       <SafeAreaView>
         {isMember ? (
-          <View style={styles.actionButtonContainerForMembers}>
-            <TouchableOpacity style={styles.addButton}>
-              <Text style={{fontSize: 20}}>+</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity style={styles.addButton}>
+            <Icon name="plus" color={colors.white}></Icon>
+          </TouchableOpacity>
         ) : (
           <View style={styles.actionButtonContainer}>
             <TouchableOpacity style={styles.headerButton}>
@@ -435,7 +432,7 @@ const CommonProfile = ({navigation, route}) => {
       <BottomSheetContainer ref={sortProposalsSheetRef}>
         <SortProposals navigation={navigation} />
       </BottomSheetContainer>
-    </>
+    </View>
   );
 };
 
@@ -494,14 +491,6 @@ const styles = StyleSheet.create({
     ...text.ashleyjquimbacom2,
 
     color: colors.mainBlue,
-  },
-
-  actionButtonContainerForMembers: {
-    padding: 20,
-    position: 'absolute',
-    bottom: 28,
-    left: 0,
-    right: 0,
   },
 
   actionButtonContainer: {
@@ -569,8 +558,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.mainBlue,
   },
   addButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    margin: 20,
     ...layout.content,
-    alignSelf: 'flex-end',
     backgroundColor: colors.mainBlue,
     height: 48,
     width: 48,

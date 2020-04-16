@@ -37,6 +37,7 @@ import Icongroup from './Icongroup';
 import Iconfollowing from './Iconfollowing';
 import Iconmenu from './Iconmenu';
 import Iconreport from './Iconreport';
+import Iconplus from './Iconplus';
 import Iconpicture from './Iconpicture';
 import Iconpencil from './Iconpencil';
 import Iconsave from './Iconsave';
@@ -122,6 +123,8 @@ export const Icon = ({ name, ...rest }) => {
       return <Iconmenu {...rest} />;
     case 'report':
       return <Iconreport {...rest} />;
+    case 'plus':
+      return <Iconplus {...rest} />;
     case 'picture':
       return <Iconpicture {...rest} />;
     case 'pencil':
