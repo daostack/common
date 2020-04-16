@@ -45,15 +45,17 @@ class CreateCommonFormStore extends FormStore {
     }
 
     if (titles.length > 0) {
-      changedFieldsJson[CreateCommonForm.FIELD_RULES] = [...titles.keys()].map(x => {
-        return {title: titles[x], description: body[x]};
-      });
+      changedFieldsJson[CreateCommonForm.FIELD_RULES] = [...titles.keys()].map(
+        (x) => {
+          return {title: titles[x], description: body[x]};
+        },
+      );
     }
 
     return changedFieldsJson;
   };
 
-  isFormValidSelectedFields = fields => {
+  isFormValidSelectedFields = (fields) => {
     var validation = this.getValidator();
     this.form.meta.isValid = validation.passes();
     // console.log(validation.errors.errors);

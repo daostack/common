@@ -15,11 +15,11 @@ import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
 import * as Progress from 'react-native-progress';
 
-const CreateStepHeader = (props) => {
+const CreateStepHeader = props => {
   const currentIndex = props.currentIndex;
   const progressList = [0, 0.35, 0.7, 1.0];
 
-  const ovalStyle = (index) => {
+  const ovalStyle = index => {
     if (props.currentIndex > index) {
       return styles.ovalDone;
     }
@@ -31,7 +31,7 @@ const CreateStepHeader = (props) => {
     }
   };
 
-  const iconStyle = (index) => {
+  const iconStyle = index => {
     if (props.currentIndex > index) {
       return styles.iconDone;
     }

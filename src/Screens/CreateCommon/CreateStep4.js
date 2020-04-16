@@ -34,7 +34,7 @@ const CreateStep4 = props => {
   );
   const [avatarURL, setAvatarURL] = useState(null);
 
-  console.log(form['name']);
+  console.log(form.name);
 
   const toast = useToast();
 
@@ -261,8 +261,10 @@ const CreateStep4 = props => {
                   resizeMode="cover"
                   source={{uri: avatarURL}}
                 />
-                <TouchableOpacity style={styles.formImageFielAddIcon} onPress={() => setAvatarURL(null)}>
-                  <Icon name="close" size={10} color='white' />
+                <TouchableOpacity
+                  style={styles.formImageFielAddIcon}
+                  onPress={() => setAvatarURL(null)}>
+                  <Icon name="close" size={10} color="white" />
                 </TouchableOpacity>
               </View>
             </View>

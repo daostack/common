@@ -41,7 +41,7 @@ const UserProfileData = ({
     getUser();
   }, [userId, userStore.userInfo]);
 
-  const navigateToEditProfile = isFirstOpening => {
+  const navigateToEditProfile = (isFirstOpening) => {
     const navigate = CommonActions.navigate({
       name: 'EditProfile',
       params: {

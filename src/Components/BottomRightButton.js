@@ -2,7 +2,7 @@ import {Image, TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
 import colors from '../Theme/colors';
 
-const BottomRightButton = props => {
+const BottomRightButton = (props) => {
   return (
     <TouchableOpacity style={styles.button} onPress={props.onPress}>
       <Image

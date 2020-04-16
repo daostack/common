@@ -48,7 +48,7 @@ const GSignInButton = ({onSignIn}) => {
     }
   };
 
-  _getMnemonic = async uid => {
+  _getMnemonic = async (uid) => {
     // 1. Read mnemonic from the store
     /*
     const mnemonicFromStore = NativeModules.WalletModule.retrieveMnemonic(uid);
@@ -92,7 +92,7 @@ const GSignInButton = ({onSignIn}) => {
     return _generateAndStoreMnemonic();
   };
 
-  _generateAndStoreMnemonic = async uid => {
+  _generateAndStoreMnemonic = async (uid) => {
     initialAppDataContent.mnemonic = await NativeModules.WalletModule.generateAndStoreMnemonic(
       uid,
     );

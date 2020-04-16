@@ -22,11 +22,11 @@ class UserStore {
     isLoading = false;
   }
 
-  setIsLoading = loading => {
+  setIsLoading = (loading) => {
     this.isLoading = loading;
   };
 
-  setSignedInUser = newUserInfo => {
+  setSignedInUser = (newUserInfo) => {
     if (newUserInfo) {
       let newUserObj = {};
       if (newUserInfo.uid) newUserObj.uid = newUserInfo.uid;
