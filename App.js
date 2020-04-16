@@ -16,7 +16,6 @@ import {colors, text} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import {
-  Login,
   CommonsList,
   CommonProfile,
   Onboarding,
@@ -40,7 +39,6 @@ import {
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
-const firebaseService = new FirebaseService();
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 import {filterObjectByKeys} from './src/Util';
@@ -99,18 +97,15 @@ const CommonHome = () => {
         activeTintColor: colors.mainBlue,
       }}>
       {/*<Tab.Screen name="Test" component={NativeBridgeTests} />*/}
-      <Tab.Screen name="My feed" component={UserProfile} />
+      <Tab.Screen name="My feed" component={UserProfileReadMode} />
       <Tab.Screen name="Explore" component={CommonsList} />
       <Tab.Screen name="Profile" component={UserProfile} />
-      <Tab.Screen name="UserProfileReadMode" component={UserProfileReadMode} />
-      <Tab.Screen name="Commons" component={CommonsList} />
-      <Tab.Screen name="CreateAccount" component={CreateAccount} />
     </Tab.Navigator>
   );
 };
 
 const App = ({userStore}) => {
-  const [onboarded, setOnboarded] = useState();
+  const [setOnboarded] = useState();
 
   const onAuthStateChanged = async user => {
     try {
