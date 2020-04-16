@@ -34,7 +34,7 @@ class TextInputField extends React.Component {
     }
   }
 
-  onChangeText = text => {
+  onChangeText = (text) => {
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
       formStore.fieldChanged(name, text);
@@ -42,11 +42,11 @@ class TextInputField extends React.Component {
     this.props.onChangeText && this.props.onChangeText(text);
   };
 
-  onFocus = e => {
+  onFocus = (e) => {
     this.setState({onFocus: true});
   };
 
-  onBlur = e => {
+  onBlur = (e) => {
     this.setState({onFocus: false});
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
@@ -59,10 +59,12 @@ class TextInputField extends React.Component {
     const {
       placeholderText,
       label,
+      infoLabel,
       value,
       password,
       multiline,
       numberOfLines,
+      keyboardType,
 
       // Validation management properties
       validation,
@@ -98,7 +100,10 @@ class TextInputField extends React.Component {
 
     return (
       <View style={{alignSelf: 'stretch'}}>
-        <Text style={styles.label}>{label}</Text>
+        <View style={{flexDirection: 'row'}}>
+          <Text style={styles.label}>{label}</Text>
+          <Text style={styles.infoLabel}>{infoLabel}</Text>
+        </View>
         <TextInput
           {...defaultMultilineProps}
           {...otherProps}
@@ -106,6 +111,7 @@ class TextInputField extends React.Component {
           style={styleTextfield}
           placeholder={placeholderText}
           onChangeText={this.onChangeText}
+          keyboardType={keyboardType}
           onFocus={this.onFocus}
           onBlur={this.onBlur}
           secureTextEntry={this.state.showPassword}
@@ -122,7 +128,7 @@ class TextInputField extends React.Component {
     );
   }
 
-  renderPlaceholderForNotEditableField = editable => {
+  renderPlaceholderForNotEditableField = (editable) => {
     if (editable === false) {
       return <Text>{this.props.placeholderText || ''}</Text>;
     }
@@ -185,6 +191,17 @@ const styles = StyleSheet.create({
     fontStyle: 'normal',
     letterSpacing: 0,
     color: colors.slate,
+    alignSelf: 'flex-start',
+  },
+  infoLabel: {
+    fontFamily: 'Roboto',
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'italic',
+    letterSpacing: 0,
+    color: colors.paleblue,
+    textAlign: 'right',
+    flex: 1,
   },
 });
 

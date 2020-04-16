@@ -19,7 +19,7 @@ import CreateAccount from '../Screens/CreateAccount';
 import {CommonActions} from '@react-navigation/native';
 import Toast from '../Util/Toast';
 import UserProfileData from '../Components/UserProfileData';
-import firebase from 'react-native-firebase';
+import {firebase} from '../Firebase';
 
 const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
   //const [editMode, setEditMode] = useState(false);

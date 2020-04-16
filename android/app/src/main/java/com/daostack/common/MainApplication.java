@@ -7,15 +7,10 @@ import android.content.Context;
 import com.daostack.common.BuildConfig;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
-import fr.bamlab.rnimageresizer.ImageResizerPackage;
-import com.imagepicker.ImagePickerPackage;
 import com.orhanobut.hawk.Hawk;
-import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
-import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
-import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import com.daostack.common.RNBridgePackage;
 import com.daostack.common.async.MainHandler;
 import com.daostack.common.config.IConfig;
@@ -43,10 +38,7 @@ public class MainApplication extends Application implements ReactApplication {
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
-          // packages.add(new MyReactNativePackage());
-            packages.add(new RNFirebaseMessagingPackage());
             packages.add(new RNBridgePackage());
-            packages.add(new RNFirebaseAuthPackage());
           return packages;
         }
 

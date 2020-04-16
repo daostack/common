@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export const ALL_DAOS_SUBSCRIPTION = address => gql`
+export const ALL_DAOS_SUBSCRIPTION = (address) => gql`
   query {
     daos(orderBy: reputationHoldersCount, orderDirection: desc) {
       id

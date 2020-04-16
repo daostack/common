@@ -14,7 +14,7 @@ class EditProfileForm extends React.Component {
 
   formSkip() {}
 
-  formSave = async e => {
+  formSave = async (e) => {
     const {editProfileFormStore, userStore} = this.props;
     if (editProfileFormStore.isFormValid()) {
       const changedFields = editProfileFormStore.getChangedFormFieldsJson();
@@ -49,7 +49,7 @@ class EditProfileForm extends React.Component {
     }
   };
 
-  onFormClose = e => {
+  onFormClose = (e) => {
     const {onFormClose} = this.props;
     if (onFormClose) {
       onFormClose();
@@ -77,6 +77,8 @@ class EditProfileForm extends React.Component {
         <ImageField
           value={userStore.userInfo.profileImage}
           placeholderUrl={userStore.userInfo.photoURL}
+          allowsEditing={true}
+          title={'Select new avatar'}
           validation={{
             name: EditProfileForm.FIELD_PROFILE_IMAGE,
             formStore: this.props.editProfileFormStore,

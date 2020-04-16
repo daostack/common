@@ -39,6 +39,7 @@ class FormStore {
     this.form.meta.formValidationMade = true;
     var validation = this.getValidator();
     this.form.meta.isValid = validation.passes();
+    console.log(this.form.meta.isValid, validation.errors.errors);
     if (!this.form.meta.isValid) {
       for (const key in validation.errors.errors) {
         this.form.fields[key].error = validation.errors.first(key);
@@ -53,7 +54,7 @@ class FormStore {
     return this.form.meta.formValidationMade ? !this.form.meta.isValid : false;
   };
 
-  fieldBlured = name => {
+  fieldBlured = (name) => {
     this.validateField(name);
   };
 
@@ -87,7 +88,7 @@ class FormStore {
   };
 
   // Private functions
-  validateField = field => {
+  validateField = (field) => {
     var validation = this.getValidator();
     this.form.meta.isValid = validation.passes();
     this.form.fields[field].error = validation.errors.first(field);
@@ -120,7 +121,7 @@ class FormStore {
     };
   };
 
-  setError = errMsg => {
+  setError = (errMsg) => {
     this.form.meta.error = errMsg;
   };
 }
