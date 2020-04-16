@@ -274,6 +274,7 @@ const CommonProfile = ({navigation, route}) => {
         style={{
           flex: 1,
           backgroundColor: colors.white,
+          marginBottom: 80,
         }}>
         <ImageBackground
           source={{
@@ -498,7 +499,7 @@ const styles = StyleSheet.create({
   actionButtonContainerForMembers: {
     padding: 20,
     position: 'absolute',
-    bottom: 40,
+    bottom: 28,
     left: 0,
     right: 0,
   },
@@ -506,7 +507,7 @@ const styles = StyleSheet.create({
   actionButtonContainer: {
     padding: 20,
     position: 'absolute',
-    bottom: 40,
+    bottom: 28,
     left: 0,
     right: 0,
     backgroundColor: colors.white,
