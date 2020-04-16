@@ -1,5 +1,4 @@
 import {NativeModules} from 'react-native';
-import {ethers} from 'ethers';
 
 const generateMnemonic = async () => {
   try {
@@ -9,37 +8,27 @@ const generateMnemonic = async () => {
   }
 };
 
-const generateAndStoreMnemonic = async () => {
+const generateAndStoreMnemonic = async (uid) => {
   try {
-    return await NativeModules.WalletModule.generateAndStoreMnemonic();
+    return await NativeModules.WalletModule.generateAndStoreMnemonic(uid);
   } catch (e) {
     console.log(e);
   }
 };
 
-const storeMnemonic = async mnemonic => {
+const storeMnemonic = async (uid, mnemonic) => {
   try {
-    return await NativeModules.WalletModule.storeMnemonic(mnemonic);
+    return await NativeModules.WalletModule.storeMnemonic(uid, mnemonic);
   } catch (e) {
     console.log(e);
   }
 };
 
-const retrieveMnemonic = async () => {
+const retrieveMnemonic = async (uid) => {
   try {
-    return await NativeModules.WalletModule.retrieveMnemonic();
+    return await NativeModules.WalletModule.retrieveMnemonic(uid);
   } catch (e) {
     console.log(e);
-  }
-};
-
-const signMessage = async message => {
-  try {
-    return await NativeModules.WalletModule.signMessage(
-      ethers.utils.formatBytes32String(message),
-    );
-  } catch (e) {
-    throw 'Sign message failed with error: ' + e;
   }
 };
 
@@ -48,5 +37,4 @@ export const NativeWallet = {
   generateAndStoreMnemonic,
   storeMnemonic,
   retrieveMnemonic,
-  signMessage,
 };

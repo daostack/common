@@ -11,7 +11,6 @@ import {
 
 import Icon from '../Assets/iconfont/Icon';
 import FirebaseService from '../Services/FirebaseService';
-const firebaseService = new FirebaseService();
 
 import {layout, colors, text, sizeS} from '../Theme';
 import AccordionBtn from '../Components/AccordionBtn';
@@ -27,7 +26,7 @@ const UserProfileReadMode = ({navigation}) => {
     const getUsers = async () => {
       if (!users) {
         try {
-          const appUsers = await firebaseService.getUsers();
+          const appUsers = await FirebaseService.getInstance().getUsers();
           setUsers(appUsers);
         } catch (error) {
           console.log('error: ', error);

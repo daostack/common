@@ -11,6 +11,8 @@ import {
 const {height, width} = Dimensions.get('window');
 import WalletManager from '../Util/WalletManager';
 
+const uid = 'test';
+
 export default class nativeBridgeTests extends React.Component {
   constructor(props) {
     super(props);
@@ -32,6 +34,7 @@ export default class nativeBridgeTests extends React.Component {
     };
 
     this.child = React.createRef();
+    WalletManager.init(uid);
   }
 
   generateMnemonic = async () => {
@@ -46,7 +49,9 @@ export default class nativeBridgeTests extends React.Component {
 
   generateAndStoreMnemonic = async () => {
     try {
-      const mnemonicsAndStore = await NativeWallet.generateAndStoreMnemonic();
+      const mnemonicsAndStore = await NativeWallet.generateAndStoreMnemonic(
+        uid,
+      );
       console.log('mnemonicsAndStore: ', mnemonicsAndStore);
       this.setState({mnemonicsAndStore});
     } catch (e) {
@@ -57,18 +62,19 @@ export default class nativeBridgeTests extends React.Component {
   storeMnemonic = async () => {
     try {
       const storedMnemonic = await NativeWallet.storeMnemonic(
+        uid,
         'order cabin immune pond brave guilt boil index car aware snap list',
       );
       console.log('storeMnemonic: ', storedMnemonic);
       this.setState({storedMnemonic: 'true'});
     } catch (e) {
-      throw 'Sign message failed with error: ' + e;
+      throw 'Store mnemonic failed with error: ' + e;
     }
   };
 
   retrieveMnemonic = async () => {
     try {
-      const keychainMnemonics = await NativeWallet.retrieveMnemonic();
+      const keychainMnemonics = await NativeWallet.retrieveMnemonic(uid);
       console.log('keychainMnemonics: ', keychainMnemonics);
       this.setState({keychainMnemonics});
     } catch (e) {
@@ -78,7 +84,7 @@ export default class nativeBridgeTests extends React.Component {
 
   getOwnerBalance = async () => {
     try {
-      const manager = await WalletManager.getInstance();
+      const manager = WalletManager.getInstance();
       const address = await manager.getOwnerAccount();
       const balance = await manager.getBalance(address);
       this.setState({ownerAccount: address, ownerBalance: balance});
@@ -89,7 +95,7 @@ export default class nativeBridgeTests extends React.Component {
 
   getBalance = async () => {
     try {
-      const manager = await WalletManager.getInstance();
+      const manager = WalletManager.getInstance();
       const address = manager.getAddress();
       const balance = await manager.getBalance(manager.address);
       this.setState({address, balance});
@@ -100,7 +106,7 @@ export default class nativeBridgeTests extends React.Component {
 
   sendTransaction = async () => {
     try {
-      const manager = await WalletManager.getInstance();
+      const manager = WalletManager.getInstance();
       const {response, hash} = await manager.sendTransaction(
         '0x41B788babf69FC7F98336ff7A47F5A80c3A63d40',
         '0.001',
@@ -117,7 +123,7 @@ export default class nativeBridgeTests extends React.Component {
 
   readSmartContract = async () => {
     try {
-      const manager = await WalletManager.getInstance();
+      const manager = WalletManager.getInstance();
       let value = await manager.readSmartContract(
         '0x2f21957c7147c3eE49235903D6471159a16c9ccd',
         MessageContract,
@@ -131,7 +137,7 @@ export default class nativeBridgeTests extends React.Component {
 
   callSmartContract = async () => {
     try {
-      const manager = await WalletManager.getInstance();
+      const manager = WalletManager.getInstance();
       let message = `Hello ${Math.floor(Math.random() * Math.floor(50))}`;
       console.log(message);
       const {

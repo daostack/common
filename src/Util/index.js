@@ -1,7 +1,7 @@
 export const GOOGLE_SIGNIN_PERMISSIONS = {
   APP_DATA_RW: 'https://www.googleapis.com/auth/drive.appdata',
 };
-export const kFormatter = num => {
+export const kFormatter = (num) => {
   return Math.abs(num) > 999
     ? Math.sign(num) * (Math.abs(num) / 1000).toFixed(1) + 'k'
     : Math.sign(num) * Math.abs(num);
@@ -9,7 +9,7 @@ export const kFormatter = num => {
 
 export function filterObjectByKeys(currObj, allowedKeys) {
   return Object.keys(currObj)
-    .filter(key => allowedKeys.includes(key))
+    .filter((key) => allowedKeys.includes(key))
     .reduce((obj, key) => {
       obj[key] = currObj[key];
       return obj;

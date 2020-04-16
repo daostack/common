@@ -11,7 +11,7 @@ import React from 'react';
 import {CommonActions} from '@react-navigation/native';
 const {width} = Dimensions.get('window');
 
-const CommonBox = props => {
+const CommonBox = (props) => {
   return (
     <TouchableOpacity
       key={props.key}
@@ -74,7 +74,7 @@ const CommonBox = props => {
           <Text style={styles.descriptionNumber}>
             {
               props.common.proposals.filter(
-                proposal =>
+                (proposal) =>
                   proposal.stage !== 'Executed' &&
                   proposal.stage !== 'ExpiredInQueue',
               ).length

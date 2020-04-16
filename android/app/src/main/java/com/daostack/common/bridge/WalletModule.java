@@ -32,7 +32,7 @@ public class WalletModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void generateMnemonic(Promise promise) {
         try {
-            String mnemonic = WalletManager.getInstance().generateMnemonic(false);
+            String mnemonic = WalletManager.getInstance().generateMnemonic("",false);
             promise.resolve(mnemonic);
         } catch (Exception e) {
             promise.reject(e);
@@ -41,9 +41,9 @@ public class WalletModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void generateAndStoreMnemonic(Promise promise) {
+    public void generateAndStoreMnemonic(String uid, Promise promise) {
         try {
-            String mnemonic = WalletManager.getInstance().generateMnemonic(true);
+            String mnemonic = WalletManager.getInstance().generateMnemonic(uid,true);
             promise.resolve(mnemonic);
         } catch (Exception e) {
             promise.reject(e);
@@ -52,9 +52,9 @@ public class WalletModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void storeMnemonic(String mnemonic, Promise promise) {
+    public void storeMnemonic(String uid, String mnemonic, Promise promise) {
         try {
-            WalletManager.getInstance().storeMnemonic(mnemonic);
+            WalletManager.getInstance().storeMnemonic(uid, mnemonic);
             promise.resolve(mnemonic);
         } catch (Exception e) {
             promise.reject(e);
@@ -62,23 +62,12 @@ public class WalletModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void retrieveMnemonic(Promise promise) {
+    public void retrieveMnemonic(String uid, Promise promise) {
         try {
-            String mnemonic = WalletManager.getInstance().retrieveMnemonic();
+            String mnemonic = WalletManager.getInstance().retrieveMnemonic(uid);
             promise.resolve(mnemonic);
         } catch (Exception e) {
             promise.reject(e);
         }
-    }
-
-    @ReactMethod
-    public void signMessage(String message, Promise promise) {
-        try {
-            String signed = WalletManager.getInstance().signMessage(message);
-            promise.resolve(signed);
-        } catch (Exception e) {
-            promise.reject(e);
-        }
-
     }
 }
