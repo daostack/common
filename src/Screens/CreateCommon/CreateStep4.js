@@ -33,9 +33,6 @@ const CreateStep4 = props => {
     'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
   );
   const [avatarURL, setAvatarURL] = useState(null);
-
-  console.log(form.name);
-
   const toast = useToast();
 
   useEffect(() => {
@@ -291,25 +288,25 @@ const CreateStep4 = props => {
                 Contribution
               </Text>
             </View>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
               <Icon
                 name="edit"
                 size={16}
                 style={{textAlign: 'right', alignSelf: 'flex-end'}}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <View style={styles.sectionTitle}>
             <Text style={{fontSize: 18, fontWeight: 'bold'}}>About</Text>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
               <Icon
                 name="edit"
                 size={16}
                 style={{textAlign: 'right', alignSelf: 'flex-end'}}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <Text style={styles.textContent}>
             {form[CreateCommonForm.FIELD_DESCRIPTION]}
@@ -319,14 +316,14 @@ const CreateStep4 = props => {
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>
                 Course of action
               </Text>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
                 <Icon
                   name="edit"
                   size={16}
                   style={{textAlign: 'right', alignSelf: 'flex-end'}}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             <Text style={styles.textContent}>
               {form[CreateCommonForm.FIELD_ACTION]}
@@ -335,28 +332,30 @@ const CreateStep4 = props => {
           <>
             <View style={styles.sectionTitle}>
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>Link</Text>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
                 <Icon
                   name="edit"
                   size={16}
                   style={{textAlign: 'right', alignSelf: 'flex-end'}}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
-            <Text style={styles.textContent}>https://www.google.com/</Text>
+            {form[CreateCommonForm.FIELD_LINKS].map(x => (
+              <Text style={styles.textContent}>{x}</Text>
+            ))}
           </>
           <>
             <View style={styles.sectionTitle}>
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>Deadline</Text>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
                 <Icon
                   name="edit"
                   size={16}
                   style={{textAlign: 'right', alignSelf: 'flex-end'}}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             <Text style={styles.textContent}>
               {moment(form[CreateCommonForm.FIELD_DEADLINE]).format(
@@ -364,63 +363,34 @@ const CreateStep4 = props => {
               )}
             </Text>
           </>
-          <>
-            <Text
-              style={{
-                fontSize: 14,
-                marginTop: 20,
-                paddingHorizontal: 24,
-                color: colors.grey3,
-              }}>
-              Rule #1
-            </Text>
-            <View style={[styles.sectionTitle, {marginTop: 10}]}>
-              <Text style={{fontSize: 14, fontWeight: 'bold'}}>
-                No promotions or spam
+
+          {form[CreateCommonForm.FIELD_RULES].map((rule, index) => (
+            <>
+              <Text
+                style={{
+                  fontSize: 14,
+                  marginTop: 20,
+                  paddingHorizontal: 24,
+                  color: colors.grey3,
+                }}>
+                Rule #{index + 1}
               </Text>
-              <TouchableOpacity
-                style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
-                <Icon
-                  name="edit"
-                  size={16}
-                  style={{textAlign: 'right', alignSelf: 'flex-end'}}
-                />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.textContent}>
-              We created this community to help you along your journey. Links to
-              sponsored content or brands will vote you out.
-            </Text>
-          </>
-          <>
-            <Text
-              style={{
-                fontSize: 14,
-                marginTop: 20,
-                paddingHorizontal: 24,
-                color: colors.grey3,
-              }}>
-              Rule #2
-            </Text>
-            <View style={[styles.sectionTitle, {marginTop: 10}]}>
-              <Text style={{fontSize: 14, fontWeight: 'bold'}}>
-                Be courteous and kind to others
-              </Text>
-              <TouchableOpacity
-                style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
-                <Icon
-                  name="edit"
-                  size={16}
-                  style={{textAlign: 'right', alignSelf: 'flex-end'}}
-                />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.textContent}>
-              We're all in this together to create a nurturing enviroment. Let's
-              teat everyone with resprct. Healthy debates are natural, but
-              kindness is required.
-            </Text>
-          </>
+              <View style={[styles.sectionTitle, {marginTop: 10}]}>
+                <Text style={{fontSize: 14, fontWeight: 'bold'}}>
+                  {rule.title}
+                </Text>
+                {/* <TouchableOpacity
+                          style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
+                          <Icon
+                            name="edit"
+                            size={16}
+                            style={{textAlign: 'right', alignSelf: 'flex-end'}}
+                          />
+                        </TouchableOpacity> */}
+              </View>
+              <Text style={styles.textContent}>{rule.description}</Text>
+            </>
+          ))}
         </View>
         <TouchableOpacity
           style={styles.continueButton}
@@ -536,6 +506,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 0,
     paddingHorizontal: 24,
+    marginBottom: 15,
   },
   titleName: {
     color: 'white',
