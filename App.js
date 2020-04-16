@@ -7,7 +7,7 @@
  */
 
 import React, {useState, useEffect} from 'react';
-import {Image, StyleSheet, Platform, View} from 'react-native';
+import {Image, StyleSheet, Platform, View, Alert} from 'react-native';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -66,6 +66,8 @@ import {auth} from './src/Firebase';
 // import Toast from './src/Util/Toast';
 import KeyboardManager from 'react-native-keyboard-manager';
 import CommonCreationLoading from './src/Screens/CommonCreationLoading';
+import messaging from '@react-native-firebase/messaging';
+import NotificationService from './src/Services/NotificationService';
 
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
@@ -75,6 +77,30 @@ if (Platform.OS === 'ios') {
 const App = ({userStore, daoStore}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    messaging()
+      .registerDeviceForRemoteMessages()
+      .then(() => {
+        return messaging().requestPermission();
+      })
+      .then(settings => {
+        console.log('Notification settings', settings);
+        if (settings) {
+          return NotificationService.saveTokenToDatabase();
+        }
+      });
+    return messaging().onTokenRefresh(token => {
+      NotificationService.saveTokenToDatabase(token);
+    });
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('Foreground Message Arrived', JSON.stringify(remoteMessage));
+    });
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     const onAuthStateChanged = async user => {
