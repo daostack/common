@@ -8,13 +8,22 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
+import {CommonActions} from '@react-navigation/native';
 const {width} = Dimensions.get('window');
 
 const CommonBox = props => {
   return (
     <TouchableOpacity
       key={props.key}
-      onPress={() => props.navigation.navigate('CommonProfile')}
+      onPress={() => {
+        const navigate = CommonActions.navigate({
+          name: 'CommonProfile',
+          params: {
+            commonId: props.common.id,
+          },
+        });
+        props.navigation.dispatch(navigate);
+      }}
       style={styles.commonBox}>
       <ImageBackground
         source={{

@@ -11,6 +11,7 @@ const ViewTabNoData = ({title, subtitle}) => {
         height: 'auto',
         padding: 40,
         paddingHorizontal: 50,
+        paddingVertical: 100,
       }}>
       <Text style={{...text.h2Black, color: colors.grey3}}>{title}</Text>
       <Text
@@ -27,15 +28,6 @@ const ViewTabNoData = ({title, subtitle}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  loaderContainer: {
-    ...layout.content,
-    alignSelf: 'stretch',
-  },
-  loader: {
-    marginTop: sizeXXL,
-    alignSelf: 'center',
-  },
-});
+const styles = StyleSheet.create({});
 
 export default ViewTabNoData;

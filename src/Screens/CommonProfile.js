@@ -8,6 +8,7 @@ import {
   Image,
   ImageBackground,
   TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
 import gql from 'graphql-tag';
 import {ApolloClientConfig as client} from '../Config';
@@ -26,6 +27,8 @@ const {cache} = client;
 let {height, width} = Dimensions.get('window');
 const mockData = {
   commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
+  commonLogo:
+    'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
   description: 'If you wanna save the Amazon, own it.',
   name: 'Amazon Network',
   time: 26,
@@ -38,7 +41,7 @@ const mockData = {
   activeProposals: 142,
 };
 
-const CommonProfile = ({navigation}) => {
+const CommonProfile = ({navigation, route}) => {
   commonOperationalStateNotifRef = useRef();
   optionsSheetRef = useRef();
   sortProposalsSheetRef = useRef();
@@ -48,9 +51,9 @@ const CommonProfile = ({navigation}) => {
 
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([
-    {key: 'discussions', title: 'Discussions'},
-    {key: 'proposals', title: 'Proposals'},
-    {key: 'history', title: 'History'},
+    {key: 'discussions', title: 'Discussions', icon: 'discussion'},
+    {key: 'proposals', title: 'Proposals', icon: 'proposals'},
+    {key: 'history', title: 'History', icon: 'history'},
   ]);
 
   useEffect(() => {
@@ -68,7 +71,7 @@ const CommonProfile = ({navigation}) => {
             }
           `,
           variables: {
-            id: '0x6bee9b81e434f7afce72a43a4016719315069539',
+            id: route.params.commonId,
             __typename: 'DAO',
           },
         });
@@ -91,7 +94,7 @@ const CommonProfile = ({navigation}) => {
         return (
           <View style={{...layout.content, padding: 0}}>
             <Icon
-              name="common"
+              name={route.icon}
               size={30}
               color={focused ? colors.mainBlue : colors.grey3}
             />
@@ -271,42 +274,65 @@ const CommonProfile = ({navigation}) => {
         style={{
           flex: 1,
           backgroundColor: colors.white,
-          position: 'relative',
         }}>
         <ImageBackground
           source={{
             uri: mockData.commonPicture,
           }}
           style={styles.imageHeader}>
-          <TouchableOpacity
-            style={{position: 'absolute', top: 60, left: 20}}
-            onPress={
-              //navigation.goBack
-              openNotif
-            }>
-            <Image
-              style={{resizeMode: 'contain', height: 20, width: 20}}
-              source={require('../Assets/left-arrow-32.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{position: 'absolute', top: 60, right: 20}}
-            onPress={openCommonOptions}>
-            <Icon
-              name="menu"
-              style={{height: 20, width: 20}}
-              color={colors.white}
-            />
-          </TouchableOpacity>
-          <View style={styles.headerContent}>
-            <Text style={styles.headerTitleWhite}>{mockData.name}</Text>
-            <Text style={styles.headerDescription}>{mockData.description}</Text>
-            {isMember ? (
-              <TouchableOpacity onPress={openAgendaScreen}>
-                <Text style={styles.headerViewAgenda}>View agenda</Text>
-              </TouchableOpacity>
-            ) : null}
-          </View>
+          <SafeAreaView style={{}}>
+            <View style={styles.headerContainerWrap}>
+              <View style={styles.headerContainer}>
+                <TouchableOpacity
+                  onPress={
+                    //navigation.goBack
+                    openNotif
+                  }>
+                  <Icon
+                    name="left-arrow"
+                    size={30}
+                    color={colors.white}
+                    style={layout.marginTopXS}
+                  />
+                </TouchableOpacity>
+
+                <View
+                  style={{
+                    ...layout.content,
+
+                    ...{padding: 0},
+                  }}>
+                  <Image
+                    style={styles.logoImage}
+                    source={{
+                      uri: mockData.commonLogo,
+                    }}
+                  />
+                  <Text style={styles.headerTitleWhite}>{mockData.name}</Text>
+                </View>
+
+                <TouchableOpacity onPress={openCommonOptions}>
+                  <Icon
+                    name="menu-horizontal"
+                    size={30}
+                    color={colors.white}
+                    style={layout.marginTopXS}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.headerContent}>
+              <Text style={styles.headerDescription}>
+                {mockData.description}
+              </Text>
+              {isMember ? (
+                <TouchableOpacity onPress={openAgendaScreen}>
+                  <Text style={styles.headerViewAgenda}>View agenda</Text>
+                </TouchableOpacity>
+              ) : null}
+            </View>
+          </SafeAreaView>
         </ImageBackground>
 
         <View style={styles.commonProgressContainer}>
@@ -349,9 +375,7 @@ const CommonProfile = ({navigation}) => {
           </View>
           {renderFundingProgressBar()}
         </View>
-
         {renderMembersRowForMemberUsers()}
-
         <View style={{...layout.content, ...{paddingTop: 0}}}>
           <TouchableOpacity
             style={{
@@ -361,9 +385,7 @@ const CommonProfile = ({navigation}) => {
             <Text style={text.buttonblue}>Share Common</Text>
           </TouchableOpacity>
         </View>
-
         {renderAgendaForNonMembers()}
-
         <TabView
           navigationState={{index, routes}}
           renderScene={renderScene}
@@ -372,22 +394,34 @@ const CommonProfile = ({navigation}) => {
           renderTabBar={renderTabBar}
           style={{}}
         />
-
-        <View style={styles.actionButtonContainer}>
-          <TouchableOpacity style={styles.headerButton}>
-            <Text
-              style={{
-                fontSize: 16,
-                color: 'white',
-                fontWeight: '700',
-                marginRight: 40,
-              }}>
-              Request to join
-            </Text>
-            <Text style={{fontSize: 16, color: 'white'}}>$50 Contribution</Text>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
+
+      <SafeAreaView>
+        {isMember ? (
+          <View style={styles.actionButtonContainerForMembers}>
+            <TouchableOpacity style={styles.addButton}>
+              <Text style={{fontSize: 20}}>+</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.actionButtonContainer}>
+            <TouchableOpacity style={styles.headerButton}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: 'white',
+                  fontWeight: '700',
+                  marginRight: 40,
+                }}>
+                Request to join
+              </Text>
+              <Text style={{fontSize: 16, color: 'white'}}>
+                $50 Contribution
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </SafeAreaView>
 
       <BottomSheetContainer ref={commonOperationalStateNotifRef}>
         <CommonOperationalStateNotif navigation={navigation} />
@@ -405,7 +439,29 @@ const CommonProfile = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  headerContainerWrap: {
+    ...layout.flexRow,
+
+    width: '100%',
+  },
+  headerContainer: {
+    ...layout.content,
+    ...layout.flexRow,
+    ...layout.flexStart,
+    alignSelf: 'stretch',
+    flexGrow: 1,
+    justifyContent: 'space-between',
+  },
   memberImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: colors.white,
+  },
+  logoImage: {
+    ...layout.marginBottomM,
+
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -439,10 +495,18 @@ const styles = StyleSheet.create({
     color: colors.mainBlue,
   },
 
+  actionButtonContainerForMembers: {
+    padding: 20,
+    position: 'absolute',
+    bottom: 40,
+    left: 0,
+    right: 0,
+  },
+
   actionButtonContainer: {
     padding: 20,
     position: 'absolute',
-    bottom: -80,
+    bottom: 40,
     left: 0,
     right: 0,
     backgroundColor: colors.white,
@@ -503,6 +567,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.mainBlue,
   },
+  addButton: {
+    ...layout.content,
+    alignSelf: 'flex-end',
+    backgroundColor: colors.mainBlue,
+    height: 48,
+    width: 48,
+    borderRadius: 24,
+  },
   innerProgressBar: {
     width: 380 / 4,
     borderRadius: 6,
@@ -550,12 +622,9 @@ const styles = StyleSheet.create({
   },
   imageHeader: {
     width,
-    paddingLeft: 50,
-    paddingRight: 50,
-    paddingTop: 100,
-    paddingBottom: 20,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingBottom: 20,
   },
 });
 
