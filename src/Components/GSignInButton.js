@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import {colors, text, layout} from '../Theme';
 
@@ -9,6 +9,7 @@ import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
 import GoogleDriveService from '../Services/GoogleDriveService';
 import {GOOGLE_SIGNIN_PERMISSIONS} from '../Util';
 import {NativeModules} from 'react-native';
+import AuthService from '../Services/AuthService';
 
 let initialAppDataContent = {
   mnemonic: null,
@@ -16,45 +17,16 @@ let initialAppDataContent = {
 };
 
 const GSignInButton = ({onSignIn}) => {
-  const [isSignedIn, setIsSignedIn] = useState(false);
   const [signInError, setSignInError] = useState(null);
 
   GoogleSignin.configure({
     scopes: [GOOGLE_SIGNIN_PERMISSIONS.APP_DATA_RW],
   });
 
-  useEffect(() => {
-    const _isUserSignedIn = async () => {
-      try {
-        setIsSignedIn(await GoogleSignin.isSignedIn());
-        if (isSignedIn) {
-          const userInfo = await GoogleSignin.signInSilently();
-          if (onSignIn) {
-            onSignIn(userInfo);
-          }
-        }
-        setSignInError(null);
-      } catch (error) {
-        const errorMessage =
-          error.code === statusCodes.SIGN_IN_REQUIRED
-            ? 'Please sign in'
-            : error.message;
-        setSignInError(new Error(errorMessage));
-      }
-    };
-
-    _isUserSignedIn();
-  });
-
   _signIn = async () => {
-    console.log('Sign in');
-
     try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      setIsSignedIn(true);
-      const mnemonic = await _getMnemonic();
-      await NativeModules.WalletModule.storeMnemonic(mnemonic);
+      const userInfo = await AuthService.getInstance().signIn();
+      const mnemonic = await _getMnemonic(userInfo.user.uid);
       if (onSignIn) {
         onSignIn(userInfo);
       }
@@ -76,7 +48,16 @@ const GSignInButton = ({onSignIn}) => {
     }
   };
 
-  _getMnemonic = async () => {
+  _getMnemonic = async (uid) => {
+    // 1. Read mnemonic from the store
+    /*
+    const mnemonicFromStore = NativeModules.WalletModule.retrieveMnemonic(uid);
+    if (mnemonicFromStore) {
+      return mnemonicFromStore;
+    }
+    */
+
+    // 2. Read mnemonic From the Google Drive app data
     const tokens = await GoogleSignin.getTokens();
     const googleDriveService = GoogleDriveService.getInstance(
       tokens.accessToken,
@@ -85,28 +66,38 @@ const GSignInButton = ({onSignIn}) => {
     let appData = await googleDriveService.getAppData();
 
     if (appData.files && appData.files.length > 0) {
-      const fileContent = await googleDriveService.getFileById(
-        appData.files[0].id,
-      );
-      const jsonContent = JSON.parse(fileContent);
+      const appDataFileId = appData.files[0].id;
+      const fileContent = await googleDriveService.getFileById(appDataFileId);
+
+      let jsonContent;
+      try {
+        jsonContent = JSON.parse(fileContent);
+      } catch (error) {
+        /*
+        FIX FOR USESRS WITH BROKEN APP DATA FILES
+        TBD: Discuss on removing that logic or replace with better one.
+        */
+
+        // The file content is not a valid json
+        // In that case we are deleting the file
+        await googleDriveService.deleteAppDataFileById(appDataFileId);
+        // And then generate and store new mnemonic for the user
+        return _generateAndStoreMnemonic();
+      }
+      await NativeModules.WalletModule.storeMnemonic(uid, jsonContent.mnemonic);
       return jsonContent.mnemonic;
-    } else {
-      initialAppDataContent.mnemonic = await NativeModules.WalletModule.generateMnemonic();
-      await googleDriveService.setAppData(initialAppDataContent);
-      return initialAppDataContent.mnemonic;
     }
+
+    // 3. Generate mnemonic and store in Google Drive app data
+    return _generateAndStoreMnemonic();
   };
 
-  _signOut = async () => {
-    try {
-      //await GoogleSignin.revokeAccess();
-      await GoogleSignin.signOut();
-
-      setIsSignedIn(false);
-      setSignInError(null);
-    } catch (error) {
-      setSignInError(error);
-    }
+  _generateAndStoreMnemonic = async (uid) => {
+    initialAppDataContent.mnemonic = await NativeModules.WalletModule.generateAndStoreMnemonic(
+      uid,
+    );
+    await googleDriveService.setAppData(JSON.stringify(initialAppDataContent));
+    return initialAppDataContent.mnemonic;
   };
 
   renderSignInButton = () => {
@@ -115,16 +106,6 @@ const GSignInButton = ({onSignIn}) => {
         <TouchableOpacity style={layout.btnOutline} onPress={_signIn}>
           <Icon style={layout.btnLeftIcon} name="google" size={32} />
           <Text style={text.buttonblack}>Sign in with Google</Text>
-        </TouchableOpacity>
-      </>
-    );
-  };
-
-  renderLogOutBtn = () => {
-    return (
-      <>
-        <TouchableOpacity style={layout.btnPrimary} onPress={_signOut}>
-          <Text style={text.buttonblack}>Log out</Text>
         </TouchableOpacity>
       </>
     );
@@ -147,7 +128,7 @@ const GSignInButton = ({onSignIn}) => {
   return (
     <View style={styles.container}>
       {renderError()}
-      {!isSignedIn ? renderSignInButton() : null}
+      {renderSignInButton()}
     </View>
   );
 };

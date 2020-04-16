@@ -17,17 +17,18 @@
 RCT_EXTERN_METHOD(generateMnemonic:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(generateAndStoreMnemonic:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
-
-RCT_EXTERN_METHOD(storeMnemonic:(NSString *)mnemonic
+RCT_EXTERN_METHOD(generateAndStoreMnemonic(NSString *)uid
+                  mnemonic:(NSString *)mnemonic
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(retrieveMnemonic:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(storeMnemonic:(NSString *)uid
+                  mnemonic:(NSString *)mnemonic
+                  resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(signMessage:(NSString *)message
+RCT_EXTERN_METHOD(retrieveMnemonic:(NSString *)uid
+                  mnemonic:(NSString *)mnemonic
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 

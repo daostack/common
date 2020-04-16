@@ -42,10 +42,7 @@ const CreateStep3 = props => {
   const handleRuleTitles = (x, text) => {
     // props.createCommonFormStore.registerFormField(`ruleTitles_${x}`, 'string');
     // console.log(props.createCommonFormStore);
-    props.createCommonFormStore.registerFormField(
-      `ruleTitles_${x}`,
-      'string',
-    );
+    props.createCommonFormStore.registerFormField(`ruleTitles_${x}`, 'string');
     props.createCommonFormStore.fieldChanged(`ruleTitles_${x}`, text);
     // ruleTitles[x] = text;
     // console.log(x, text, ruleTitles);

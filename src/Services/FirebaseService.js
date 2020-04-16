@@ -1,4 +1,6 @@
-import {db} from '../Firebase';
+import {db, firebase} from '../Firebase';
+import uuid from 'uuid/v4';
+import storage from '@react-native-firebase/storage';
 
 const DB_COLLECTIONS = {
   users: 'users',
@@ -6,17 +8,26 @@ const DB_COLLECTIONS = {
 };
 
 export default class FirebaseService {
+  static serviceInstance = null;
+
+  static getInstance = () => {
+    if (FirebaseService.serviceInstance == null) {
+      FirebaseService.serviceInstance = new FirebaseService();
+    }
+    return this.serviceInstance;
+  };
+
   async getUser() {
     return db
       .collection('users')
       .doc('fwdzYtFOP9Q8tT65tBaU')
       .collection('userInfo')
       .get()
-      .then(snapshots => {
+      .then((snapshots) => {
         if (snapshots.empty) {
           return [];
         }
-        return snapshots.docs.map(doc => doc.data());
+        return snapshots.docs.map((doc) => doc.data());
       });
   }
 
@@ -26,11 +37,26 @@ export default class FirebaseService {
       .collection(DB_COLLECTIONS.users)
       .doc(userId)
       .get()
-      .then(snapshots => {
+      .then((snapshots) => {
         if (!snapshots) {
           return null;
         }
         return snapshots.data();
+      });
+  }
+
+  async getUsers() {
+    console.log('getUsers-> ');
+    return db
+      .collection(DB_COLLECTIONS.users)
+      .get()
+      .then((snapshots) => {
+        if (snapshots.empty) {
+          return [];
+        }
+        return snapshots.docs.map((doc) => {
+          return {...{id: doc.id}, ...doc.data()};
+        });
       });
   }
 
@@ -40,7 +66,7 @@ export default class FirebaseService {
       .collection(DB_COLLECTIONS.users)
       .doc(googleId)
       .set(newUser)
-      .then(ref => {
+      .then((ref) => {
         return ref;
       });
   }
@@ -51,8 +77,17 @@ export default class FirebaseService {
       .collection(DB_COLLECTIONS.users)
       .doc(userId)
       .update(user)
-      .then(ref => {
-        console.log('Edited document with ID: ', ref.id);
+      .then((ref) => {
+        //console.log('Edited document with ID: ', ref.id);
       });
+  }
+
+  async uploadImage(imageUri) {
+    const ext = imageUri.split('.').pop();
+    const filename = `${uuid()}.${ext}`;
+    const path = `public_img/${filename}`;
+    const ref = firebase.storage().ref(path);
+    await ref.putFile(imageUri);
+    return await ref.getDownloadURL();
   }
 }

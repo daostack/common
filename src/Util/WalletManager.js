@@ -4,9 +4,9 @@ import CPK from 'contract-proxy-kit';
 
 export default class WalletManager {
   static myInstance = null;
-  constructor(provider, cpkAddress) {
+  constructor(provider, cpkAddress, uid) {
     return (async () => {
-      this.mnemonic = await NativeWallet.retrieveMnemonic();
+      this.mnemonic = await NativeWallet.retrieveMnemonic(uid);
       this.provider = provider;
       this.ethWallet = ethers.Wallet.fromMnemonic(this.mnemonic).connect(
         this.provider,
@@ -21,21 +21,29 @@ export default class WalletManager {
     })();
   }
 
-  static getInstance = async () => {
+  static init = async (uid) => {
+    const cpkAddress = {
+      4: {
+        masterCopyAddress: '0xaE32496491b53841efb51829d6f886387708F99B',
+        proxyFactoryAddress: '0x336c19296d3989e9e0c2561ef21c964068657c38',
+        multiSendAddress: '0xB522a9f781924eD250A11C54105E51840B138AdD',
+        fallbackHandlerAddress: '0x40A930851BD2e590Bd5A5C981b436de25742E980',
+      },
+    };
+    const provider = new ethers.providers.InfuraProvider(
+      'rinkeby',
+      '3c08878d00734c0c98a3e4741d0b4cfc',
+    );
+    WalletManager.myInstance = await new WalletManager(
+      provider,
+      cpkAddress,
+      uid,
+    );
+  };
+
+  static getInstance = () => {
     if (WalletManager.myInstance == null) {
-      const cpkAddress = {
-        4: {
-          masterCopyAddress: '0xaE32496491b53841efb51829d6f886387708F99B',
-          proxyFactoryAddress: '0x336c19296d3989e9e0c2561ef21c964068657c38',
-          multiSendAddress: '0xB522a9f781924eD250A11C54105E51840B138AdD',
-          fallbackHandlerAddress: '0x40A930851BD2e590Bd5A5C981b436de25742E980',
-        },
-      };
-      const provider = new ethers.providers.InfuraProvider(
-        'rinkeby',
-        '3c08878d00734c0c98a3e4741d0b4cfc',
-      );
-      WalletManager.myInstance = await new WalletManager(provider, cpkAddress);
+      throw new Error('WalletManager have not initialized');
     }
     return this.myInstance;
   };
@@ -48,8 +56,8 @@ export default class WalletManager {
     return await this.wallet.getOwnerAccount();
   };
 
-  getBalance = async address => {
-    return this.provider.getBalance(address).then(balance => {
+  getBalance = async (address) => {
+    return this.provider.getBalance(address).then((balance) => {
       let balanceString = ethers.utils.formatEther(balance);
       return balanceString;
     });
@@ -65,7 +73,7 @@ export default class WalletManager {
           data: data,
         },
       ])
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
       });
   };
@@ -96,7 +104,7 @@ export default class WalletManager {
           data: data,
         },
       ])
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
       });
   };

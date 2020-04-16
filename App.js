@@ -7,29 +7,36 @@
  */
 
 import React, {useState, useEffect} from 'react';
-import {Image, View} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {colors} from './src/Theme';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {colors, text} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import {
-  Login,
   CommonsList,
   CommonProfile,
   Onboarding,
   UserProfile,
+  HUDTest,
+  MyWallet,
   CreateAccount,
   CreateCommon,
   CompleteAccount,
+  EditProfile,
+  UserProfileReadMode,
+  NativeBridgeTests,
+  MyProposals,
+  MyCommons,
+  CommonAgenda,
+  CommonMembers,
   CommonExplanation,
   CreateStep1,
   CreateStep2,
   CreateStep3,
   CreateStep4,
-  EditProfile,
-  NativeBridgeTests,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
@@ -37,51 +44,48 @@ const firebaseService = new FirebaseService();
 import AuthService from './src/Services/AuthService';
 import CommonHome from './src/Components/Navigation/CommonHome';
 const authService = new AuthService();
+const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 import {filterObjectByKeys} from './src/Util';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
-
+import Icon from './src/Assets/iconfont/Icon';
+import {firebase} from './src/Firebase';
+import Toast from './src/Util/Toast';
 
 const App = ({userStore}) => {
   const [onboarded, setOnboarded] = useState();
-  useEffect(() => {
-    const loadUser = async () => {
-      console.log('User from userStore App.js: ', userStore.userInfo);
-      try {
-        if (!userStore.userInfo) {
-          const googleSignedInUser = await authService.getGoogleSignedInUser();
-          // Signed In Mode
-          if (googleSignedInUser) {
-            const appUser = await firebaseService.getUserById(
-              googleSignedInUser.user.id,
-            );
 
-            const allUserInfo = {
-              ...googleSignedInUser.user,
-              ...appUser,
-            };
+  const onAuthStateChanged = async user => {
+    try {
+      userStore.setIsLoading(true);
+      if (user) {
+        const appUser = await FirebaseService.getInstance().getUserById(
+          user.uid,
+        );
 
-            const filteredUser = filterObjectByKeys(
-              allUserInfo,
-              userInfoFields,
-            );
-            console.log('filteredUser -> ', filteredUser);
-            userStore.setSignedInUser(filteredUser);
-          }
-          // Anonymous mode
-          else {
-            console.log('Anonymous user');
-          }
-        }
-      } catch (error) {
-        console.log('ERRROR', error);
+        const allUserInfo = {
+          ...user._user,
+          ...appUser,
+        };
+
+        const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
+        userStore.setSignedInUser(filteredUser);
+      } else {
+        userStore.setSignedInUser(null);
       }
-    };
+      userStore.setIsLoading(false);
+    } catch (error) {
+      Toast.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
+
     const checkOnboardingStatus = async () => {
       try {
         const isOnboarded = await AsyncStorage.getItem('onboarded');
-        console.log('BBBBB', isOnboarded);
         if (isOnboarded === 'true') {
           setOnboarded(true);
         }
@@ -89,18 +93,27 @@ const App = ({userStore}) => {
         console.log(e);
       }
     };
-    loadUser();
+
     checkOnboardingStatus();
+    return subscriber;
   }, [userStore.userInfo]);
 
   if (!onboarded) {
-    return (<View style={{flex:1 }}/>)
+    return <View style={{flex: 1}} />;
   }
 
   return (
     <ApolloProvider client={client}>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: styles.headerStyle,
+            headerTitleStyle: styles.headerTitleStyle,
+            headerBackTitleStyle: styles.headerTitleStyle,
+            headerBackTitleVisible: false,
+            headerTintColor: colors.black,
+            headerBackImage: () => <Icon name="left-arrow" size={32} />,
+          }}>
           {!onboarded ? (
             <Stack.Screen
               name="Onboarding"
@@ -115,11 +128,19 @@ const App = ({userStore}) => {
               userStore={userStore}
             />
           )}
-          <Stack.Screen name="CommonProfile" component={CommonProfile} />
           <Stack.Screen name="CreateCommon" component={CreateCommon} />
-          <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
+          <Stack.Screen
+            name="CommonProfile"
+            component={CommonProfile}
+            options={{headerShown: false}}
+          />
+
+          <Stack.Screen name="CommonAgenda" component={CommonAgenda} />
+
+          <Stack.Screen name="Profile" component={UserProfile} />
+
           <Stack.Screen
             name="CommonExplanation"
             component={CommonExplanation}
@@ -170,13 +191,68 @@ const App = ({userStore}) => {
               headerShown: false,
             })}
           />
-
-          <Stack.Screen name="Profile" component={UserProfile} />
-          <Stack.Screen name="EditProfile" component={EditProfile} />
+          <Stack.Screen
+            options={{
+              title: 'Edit my profile',
+            }}
+            name="EditProfile"
+            component={EditProfile}
+          />
+          <Stack.Screen
+            options={{
+              title: 'My wallet',
+            }}
+            name="MyWallet"
+            component={MyWallet}
+          />
+          <Stack.Screen name="HUDTest" component={HUDTest} />
+          <Stack.Screen
+            name="UserProfileReadMode"
+            component={UserProfileReadMode}
+          />
+          <Stack.Screen
+            options={{
+              title: null,
+              headerBackTitleVisible: true,
+            }}
+            name="MyProposals"
+            component={MyProposals}
+          />
+          <Stack.Screen
+            options={{
+              title: null,
+              headerBackTitleVisible: true,
+            }}
+            name="MyCommons"
+            component={MyCommons}
+          />
+          <Stack.Screen
+            options={{
+              title: null,
+              headerBackTitleVisible: true,
+            }}
+            name="CommonMembers"
+            component={CommonMembers}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>
   );
 };
+
+const styles = StyleSheet.create({
+  headerStyle: {
+    borderWidth: 0,
+    borderBottomWidth: 0,
+    shadowRadius: 0,
+    shadowOffset: {
+      height: 0,
+    },
+  },
+
+  headerTitleStyle: {
+    ...text.h4Black,
+  },
+});
 
 export default inject('userStore')(observer(App));

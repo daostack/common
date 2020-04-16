@@ -27,14 +27,14 @@ class CreateCommonFormStore extends FormStore {
       }
 
       if (key.startsWith('ruleTitles')) {
-        console.log(key, formField.value);
+        // console.log(key, formField.value);
         titles = titles.concat(formField.value);
-        console.log(titles);
+        // console.log(titles);
         continue;
       }
 
       if (key.startsWith('ruleBody')) {
-        console.log(key, formField.value);
+        // console.log(key, formField.value);
         body = body.concat(formField.value);
         continue;
       }
@@ -44,21 +44,21 @@ class CreateCommonFormStore extends FormStore {
       }
     }
 
-    console.log(titles);
-
     if (titles.length > 0) {
-      changedFieldsJson[CreateCommonForm.FIELD_RULES] = [...titles.keys()].map(x => {
-        return {title: titles[x], description: body[x]};
-      });
+      changedFieldsJson[CreateCommonForm.FIELD_RULES] = [...titles.keys()].map(
+        (x) => {
+          return {title: titles[x], description: body[x]};
+        },
+      );
     }
 
     return changedFieldsJson;
   };
 
-  isFormValidSelectedFields = fields => {
+  isFormValidSelectedFields = (fields) => {
     var validation = this.getValidator();
     this.form.meta.isValid = validation.passes();
-    console.log(validation.errors.errors);
+    // console.log(validation.errors.errors);
     for (const key in fields) {
       const field = fields[key];
       if (validation.errors.first(field)) {

@@ -1,45 +1,13 @@
 package com.daostack.common.manager;
 
-import android.os.Environment;
-import android.text.TextUtils;
-
 import com.daostack.common.MainApplication;
-import com.facebook.react.bridge.Promise;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-
-import com.daostack.common.async.WorkThreadHandler;
-import com.daostack.common.async.*;
-
-import org.web3j.crypto.Bip32ECKeyPair;
-import org.web3j.crypto.Credentials;
 import org.web3j.crypto.MnemonicUtils;
-import org.web3j.crypto.Wallet;
-import org.web3j.crypto.WalletFile;
-import org.web3j.protocol.Web3j;
-import org.web3j.utils.Numeric;
-
-import java.io.File;
 import java.security.SecureRandom;
-
-import io.reactivex.disposables.CompositeDisposable;
-import wallet.core.jni.CoinType;
-import wallet.core.jni.Curve;
-import wallet.core.jni.HDWallet;
-import wallet.core.jni.Hash;
-import wallet.core.jni.PrivateKey;
-
 import com.orhanobut.hawk.Hawk;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.daostack.common.util.*;
-import com.daostack.common.config.*;
 import com.yakivmospan.scytale.Crypto;
 import com.yakivmospan.scytale.Options;
 import com.yakivmospan.scytale.Store;
-
 import javax.crypto.SecretKey;
-import static com.daostack.common.config.Constants.MEMORIZINGWORDS;
 
 public class WalletManager {
 
@@ -66,7 +34,7 @@ public class WalletManager {
         System.loadLibrary("TrustWalletCore");
     }
 
-    public String generateMnemonic(Boolean shouldStore) throws Exception  {
+    public String generateMnemonic(String uid, Boolean shouldStore) throws Exception  {
         try {
             byte[] initialEntropy = new byte[16];
             SecureRandom secureRandom = new SecureRandom();
@@ -75,7 +43,7 @@ public class WalletManager {
             if (shouldStore) {
                 Crypto crypto = new Crypto(Options.TRANSFORMATION_SYMMETRIC);
                 String encryptedData = crypto.encrypt(mnemonic, key);
-                Hawk.put(MEMORIZINGWORDS, encryptedData);
+                Hawk.put(uid, encryptedData);
             }
             return mnemonic;
         }catch (Exception e){
@@ -83,19 +51,19 @@ public class WalletManager {
         }
     }
 
-    public void storeMnemonic(String mnemonic) throws Exception {
+    public void storeMnemonic(String uid, String mnemonic) throws Exception {
         try {
             Crypto crypto = new Crypto(Options.TRANSFORMATION_SYMMETRIC);
             String encryptedData = crypto.encrypt(mnemonic, key);
-            Hawk.put(MEMORIZINGWORDS, encryptedData);
+            Hawk.put(uid, encryptedData);
         } catch (Exception e){
             throw e;
         }
     }
 
-    public String retrieveMnemonic() throws Exception {
+    public String retrieveMnemonic(String uid ) throws Exception {
         try {
-            String encryptedData = Hawk.get(MEMORIZINGWORDS);
+            String encryptedData = Hawk.get(uid);
             Crypto crypto = new Crypto(Options.TRANSFORMATION_SYMMETRIC);
             String decryptedData = crypto.decrypt(encryptedData, key);
             return decryptedData;
@@ -103,21 +71,6 @@ public class WalletManager {
             throw e;
         }
 
-    }
-
-    public String signMessage(String message) throws Exception {
-        try{
-            byte[] messageBytes = Numeric.hexStringToByteArray(message);
-            String mnemonic = retrieveMnemonic();
-            HDWallet newWallet = new HDWallet(mnemonic, "");
-            PrivateKey pk = newWallet.getKeyForCoin(CoinType.ETHEREUM);
-            byte[] digest = Hash.keccak256(messageBytes);
-            byte[] sigBytes = pk.sign(digest, Curve.SECP256K1);
-            String result = Numeric.toHexString(sigBytes);
-            return result;
-        }catch (Exception e){
-            throw e;
-        }
     }
 
 }

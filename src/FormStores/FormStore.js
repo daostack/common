@@ -54,7 +54,7 @@ class FormStore {
     return this.form.meta.formValidationMade ? !this.form.meta.isValid : false;
   };
 
-  fieldBlured = name => {
+  fieldBlured = (name) => {
     this.validateField(name);
   };
 
@@ -83,8 +83,12 @@ class FormStore {
     return changedFieldsJson;
   };
 
+  isFormChanged = () => {
+    return Object.keys(this.getChangedFormFieldsJson()).length > 0;
+  };
+
   // Private functions
-  validateField = field => {
+  validateField = (field) => {
     var validation = this.getValidator();
     this.form.meta.isValid = validation.passes();
     this.form.fields[field].error = validation.errors.first(field);
@@ -117,7 +121,7 @@ class FormStore {
     };
   };
 
-  setError = errMsg => {
+  setError = (errMsg) => {
     this.form.meta.error = errMsg;
   };
 }

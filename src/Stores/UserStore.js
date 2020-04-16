@@ -1,32 +1,41 @@
 import {observable, action, decorate} from 'mobx';
 
 export const userInfoFields = [
-  'id',
-  'name',
-  'intro',
-  'profilePicture',
-  'photo',
-  'byLine',
+  'uid',
+  'displayName',
   'email',
+  'photoURL',
   'ethereumAddress',
+  'intro',
+  'profileImage',
+  'byLine',
   'preferences',
 ];
 
 class UserStore {
   userInfo;
+  isLoading;
+  myCommons;
+  myProposals;
   constructor() {
     userInfo = null;
+    isLoading = false;
   }
 
-  setSignedInUser = newUserInfo => {
+  setIsLoading = (loading) => {
+    this.isLoading = loading;
+  };
+
+  setSignedInUser = (newUserInfo) => {
     if (newUserInfo) {
       let newUserObj = {};
-      if (newUserInfo.id) newUserObj.id = newUserInfo.id;
+      if (newUserInfo.uid) newUserObj.uid = newUserInfo.uid;
       if (newUserInfo.email) newUserObj.email = newUserInfo.email;
-      if (newUserInfo.name) newUserObj.name = newUserInfo.name;
-      if (newUserInfo.photo) newUserObj.photo = newUserInfo.photo;
-      if (newUserInfo.profilePicture)
-        newUserObj.profilePicture = newUserInfo.profilePicture;
+      if (newUserInfo.displayName)
+        newUserObj.displayName = newUserInfo.displayName;
+      if (newUserInfo.photoURL) newUserObj.photoURL = newUserInfo.photoURL;
+      if (newUserInfo.profileImage)
+        newUserObj.profileImage = newUserInfo.profileImage;
       if (newUserInfo.intro) newUserObj.intro = newUserInfo.intro;
       if (newUserInfo.ethereumAddress)
         newUserObj.ethereumAddress = newUserInfo.ethereumAddress;
@@ -44,6 +53,9 @@ class UserStore {
 decorate(UserStore, {
   setSignedInUser: action,
   userInfo: observable,
+  isLoading: observable,
+  myCommons: observable,
+  myProposals: observable,
 });
 
 export default UserStore;

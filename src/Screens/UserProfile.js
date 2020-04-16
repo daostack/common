@@ -3,219 +3,133 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TouchableOpacity,
   ScrollView,
   View,
 } from 'react-native';
-import React from 'react';
+
+//import Swiper from 'react-native-swiper';
+
+import React, {useEffect} from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
 import {observer, inject} from 'mobx-react';
-import ImageField from '../Components/FormFields/ImageField';
-import CountBox from '../Components/CountBox';
 import AccordionBtn from '../Components/AccordionBtn';
-import {GoogleSignin} from '@react-native-community/google-signin';
-import EditProfileForm from '../Components/Forms/EditProfileForm';
 import CreateAccount from '../Screens/CreateAccount';
 
-import Icon from '../Assets/iconfont/Icon';
 import {CommonActions} from '@react-navigation/native';
+import Toast from '../Util/Toast';
+import UserProfileData from '../Components/UserProfileData';
+import {firebase} from '../Firebase';
 
-const UserProfile = ({editProfileFormStore, userStore, navigation}) => {
+const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
+  //const [editMode, setEditMode] = useState(false);
+
+  useEffect(() => {
+    if (route?.params?.userUpdated) {
+      Toast.done('Your profile is updated');
+    }
+  });
+
   _signOut = async () => {
     try {
-      //await GoogleSignin.revokeAccess();
-      await GoogleSignin.signOut();
-      userStore.setSignedInUser(null);
+      await firebase.auth().signOut();
     } catch (error) {
-      setSignInError(error);
+      console.log('Error -> ', error);
     }
   };
 
   const onUserSignedIn = isNewUser => {
-    if (navigation) {
-      navigateToEditProfile(true);
+    if (navigation && isNewUser) {
+      const navigate = CommonActions.navigate({
+        name: 'EditProfile',
+        params: {
+          isFirstOpening: true,
+        },
+      });
+      navigation.dispatch(navigate);
     }
   };
 
-  const navigateToEditProfile = isFirstOpening => {
-    const navigate = CommonActions.navigate({
-      name: 'EditProfile',
-      params: {
-        isFirstOpening: isFirstOpening,
-      },
-    });
-    navigation.dispatch(navigate);
+  const onMyWalletPress = event => {
+    navigation.navigate('MyWallet');
   };
 
-  const renderUserProfilePicture = () => {
-    let imageOptions = {};
-
-    imageOptions = {placeholderUrl: userStore.userInfo?.photo};
-
-    return (
-      <ImageField
-        {...imageOptions}
-        validation={{
-          name: EditProfileForm.FIELD_PROFILE_IMAGE,
-          formStore: editProfileFormStore,
-          validateRule: 'string',
-        }}
-      />
-    );
+  const onMyCommonsPress = event => {
+    navigation.navigate('MyCommons');
   };
 
-  const handleScreenScroll = e => {
-    console.log('SCROLL EVENT -> ', e);
+  const onMyProposalsPress = event => {
+    navigation.navigate('MyProposals');
   };
 
   const renderUnsignedUserData = () => {
-    return <CreateAccount onSignedIn={onUserSignedIn}></CreateAccount>;
+    return <CreateAccount onSignedIn={onUserSignedIn} />;
   };
 
   const renderSignedInUserData = () => {
     return (
+      <UserProfileData navigation={navigation} userId={userStore.userInfo.id} />
+    );
+  };
+
+  const renderScreen = () => {
+    return (
       <>
-        <View style={styles.screenNav}>
-          <TouchableOpacity onPress={() => navigateToEditProfile(false)}>
-            <Icon name="edit-" size={26} />
-          </TouchableOpacity>
-        </View>
-        {renderUserProfilePicture()}
-        <Text style={{...text.h1Black, ...{paddingTop: 0, paddingBottom: 2}}}>
-          Lyubomir Petkov
-        </Text>
-        <Text style={text.ashleyjquimbacom2}>
-          lyubomir.petkov@limechain.tech
-        </Text>
+        <StatusBar barStyle="dark-content" />
 
-        <View style={styles.countBoxContainer}>
-          <CountBox
-            count={0}
-            name="Commons"
-            onPress={() => {
-              console.log('Commons CardBox clicked');
-            }}
-          />
-          <View style={styles.countBoxDivider}></View>
-          <CountBox
-            count={0}
-            name="Proposals"
-            onPress={() => {
-              console.log('Proposals CardBox clicked');
-            }}
-          />
-        </View>
+        <SafeAreaView style={styles.safeArea}>
+          <ScrollView
+            contentInsetAdjustmentBehavior="automatic"
+            style={styles.scrollView}
+            vertical={true}
+            nestedScrollEnabled={true}
+            directionalLockEnabled={true}>
+            <View style={styles.body}>
+              {userStore.userInfo
+                ? renderSignedInUserData()
+                : renderUnsignedUserData()}
 
-        <View style={styles.contentContainer}>
-          <Text style={text.h3Black}>About</Text>
-          <Text style={{...text.blackText, ...layout.marginTopM}}>
-            I work on a DAO project at iteratec and am interested in DAOs, coops
-            as well as crypto and blockchain in general.
-          </Text>
-        </View>
-
-        {/*
-    <Swiper
-        style={styles.wrapper}
-        loop={false}
-        // dot={<View style={{backgroundColor: 'rgba(255,255,255,.0)', width: 0, height: 0, borderRadius: 0, marginLeft: 0, marginRight: 0}} />}
-        // activeDot={<View style={{backgroundColor: '#fff', width: 0, height: 0, borderRadius: 0, marginLeft: 0, marginRight: 0}} />}
-      >
-        <View style={styles.image3} />
-        <View style={{...styles.image3, backgroundColor: '#3cc7e1'}} />
-      </Swiper>
-    */}
-
-        <View style={styles.contentContainer}>
-          <Text style={text.h3Black}>Commons (0)</Text>
-
-          <View style={styles.emptyObjectContainer}>
-            <Icon name="group" size={56} />
-            <Text style={{...text.h3Black, ...layout.marginTopS}}>
-              No Commons
-            </Text>
-            <Text
-              style={{
-                ...text.blackText,
-                ...text.centered,
-                ...layout.marginTopS,
-              }}>
-              Join your first common and start making an impact
-            </Text>
-            <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity style={styles.btn}>
-                <Text style={text.buttonblue}>Explore Commons</Text>
-              </TouchableOpacity>
+              <View style={layout.marginTopL}>
+                {userStore.userInfo ? (
+                  <AccordionBtn
+                    title="My wallet"
+                    subtitle={userStore.userInfo.ethereumAddress}
+                    onPress={onMyWalletPress}
+                  />
+                ) : null}
+                <AccordionBtn title="FAQ" />
+                <AccordionBtn title="Terms of use" />
+                <AccordionBtn title="Privacy Policy" />
+                <AccordionBtn title="Help" />
+                <AccordionBtn title="Contact us" />
+                <AccordionBtn
+                  onPress={onMyProposalsPress}
+                  title="My Proposals"
+                />
+                <AccordionBtn onPress={onMyCommonsPress} title="My Commons" />
+                {userStore.userInfo ? (
+                  <AccordionBtn
+                    lightStyle={true}
+                    title="Logout"
+                    onPress={_signOut}
+                  />
+                ) : null}
+              </View>
             </View>
-          </View>
-        </View>
-
-        <View style={styles.contentContainer}>
-          <Text style={text.h3Black}>Proposals (0)</Text>
-
-          <View style={styles.emptyObjectContainer}>
-            <Icon name="pencil" size={46} />
-            <Text style={{...text.h3Black, ...layout.marginTopS}}>
-              No Proposals
-            </Text>
-            <Text
-              style={{
-                ...text.blackText,
-                ...text.centered,
-                ...layout.marginTopS,
-              }}>
-              Join a common and propose actions you think it should take to
-              achieve its goal
-            </Text>
-          </View>
-        </View>
+          </ScrollView>
+        </SafeAreaView>
       </>
     );
   };
 
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView></SafeAreaView>
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}
-          vertical={true}
-          nestedScrollEnabled={true}
-          directionalLockEnabled={true}
-          onScroll={handleScreenScroll}>
-          <View style={styles.body}>
-            {userStore.userInfo
-              ? renderSignedInUserData()
-              : renderUnsignedUserData()}
-
-            <View style={layout.marginTopL}>
-              {userStore.userInfo ? (
-                <AccordionBtn
-                  title="My wallet"
-                  subtitle="1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2"
-                />
-              ) : null}
-              <AccordionBtn title="FAQ" />
-              <AccordionBtn title="Terms of use" />
-              <AccordionBtn title="Privacy Policy" />
-              <AccordionBtn title="Help" />
-              <AccordionBtn title="Contact us" />
-              {userStore.userInfo ? (
-                <AccordionBtn
-                  lightStyle={true}
-                  title="Logout"
-                  onPress={_signOut}
-                />
-              ) : null}
-            </View>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
+  const renderScreenLoader = () => {
+    return (
+      <View style={{...layout.content, ...{flex: 1}, ...colors.white}}>
+        <Text style={text.h1Black}>Loading ...</Text>
+      </View>
+    );
+  };
+  return userStore.isLoading ? renderScreenLoader() : renderScreen();
 };
 
 const styles = StyleSheet.create({
@@ -243,6 +157,13 @@ const styles = StyleSheet.create({
     ...layout.marginTopL,
   },
 
+  contentContainerWithoutPadding: {
+    ...layout.content,
+    ...layout.flexStart,
+    ...layout.marginTopL,
+    paddingHorizontal: 0,
+  },
+
   countBoxContainer: {
     ...layout.flexRow,
     ...layout.marginTopL,
@@ -263,7 +184,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightBlue,
   },
   body: {
-    paddingTop: 40,
+    paddingVertical: 10,
   },
   safeArea: {
     flex: 1,
@@ -286,6 +207,18 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 0,
     elevation: 0,
+  },
+  wrapper: {
+    height: 240,
+  },
+  swiperContentWrapper: {
+    paddingHorizontal: 20,
+    flex: 1,
+  },
+  swiperContent: {
+    backgroundColor: '#efefef',
+    borderRadius: 14,
+    flex: 1,
   },
 });
 

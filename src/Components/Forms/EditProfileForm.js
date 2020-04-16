@@ -5,29 +5,54 @@ import ImageField from '../FormFields/ImageField';
 import {observer, inject} from 'mobx-react';
 import {layout, text} from '../../Theme';
 import FirebaseService from '../../Services/FirebaseService';
-const firebaseService = new FirebaseService();
+import AuthService from '../../Services/AuthService';
 
 class EditProfileForm extends React.Component {
-  static FIELD_NAME = 'name';
+  static FIELD_NAME = 'displayName';
   static FIELD_INTRO = 'intro';
   static FIELD_PROFILE_IMAGE = 'profileImage';
 
   formSkip() {}
 
-  formSave = () => {
-    const {editProfileFormStore, userId} = this.props;
+  formSave = async (e) => {
+    const {editProfileFormStore, userStore} = this.props;
     if (editProfileFormStore.isFormValid()) {
-      firebaseService
-        .editUser(userId, editProfileFormStore.getChangedFormFieldsJson())
-        .catch(err => {
-          editProfileFormStore.form.meta.submitError = `${err.toString()}  \n ${
-            err.response
-              ? `\nCode: ${err.response.data.code}  \nMessage: ${err.response.data.message}`
-              : ''
-          }`;
-          editProfileFormStore.form.meta.isLoadingSubmit = false;
-          throw err;
-        });
+      const changedFields = editProfileFormStore.getChangedFormFieldsJson();
+
+      let publicData = {};
+      let authData = {};
+
+      if (changedFields.displayName)
+        authData.displayName = changedFields.displayName;
+      if (changedFields.intro) publicData.intro = changedFields.intro;
+
+      try {
+        await FirebaseService.getInstance().editUser(
+          userStore.userInfo.uid,
+          publicData,
+        );
+        await AuthService.getInstance().updateUserData(authData);
+      } catch (err) {
+        console.log('Error -> ', err);
+        editProfileFormStore.form.meta.submitError = `${err.toString()}  \n ${
+          err.response
+            ? `\nCode: ${err.response.data.code}  \nMessage: ${err.response.data.message}`
+            : ''
+        }`;
+        editProfileFormStore.form.meta.isLoadingSubmit = false;
+        throw err;
+      }
+
+      if (this.props.onFormSubmit) {
+        this.props.onFormSubmit(changedFields);
+      }
+    }
+  };
+
+  onFormClose = (e) => {
+    const {onFormClose} = this.props;
+    if (onFormClose) {
+      onFormClose();
     }
   };
 
@@ -50,12 +75,14 @@ class EditProfileForm extends React.Component {
           marginTop: 15,
         }}>
         <ImageField
-          value={userStore.userInfo.profilePicture}
-          placeholderUrl={userStore.userInfo.photo}
+          value={userStore.userInfo.profileImage}
+          placeholderUrl={userStore.userInfo.photoURL}
+          allowsEditing={true}
+          title={'Select new avatar'}
           validation={{
             name: EditProfileForm.FIELD_PROFILE_IMAGE,
             formStore: this.props.editProfileFormStore,
-            validateRule: null,
+            validateRule: 'string',
           }}
         />
 
@@ -64,7 +91,7 @@ class EditProfileForm extends React.Component {
         </View>
 
         <TextInputField
-          value={userStore.userInfo.name}
+          value={userStore.userInfo.displayName}
           viewStyle={{alignSelf: 'stretch'}}
           label="Name"
           placeholderText="Firstname Lastname"
@@ -99,7 +126,7 @@ class EditProfileForm extends React.Component {
           ) : (
             <TouchableOpacity
               style={{...layout.btnOutline, ...layout.marginRightS}}
-              onPress={this.formSkip}>
+              onPress={this.onFormClose}>
               <Text style={text.buttonblue}>Cancel</Text>
             </TouchableOpacity>
           )}
