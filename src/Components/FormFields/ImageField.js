@@ -1,14 +1,25 @@
 import * as React from 'react';
-import {Image, ImageProps, View, StyleSheet, ViewStyle} from 'react-native';
+import {
+  Image,
+  ImageProps,
+  View,
+  StyleSheet,
+  ViewStyle,
+  TouchableOpacity,
+} from 'react-native';
 
 import ValidationMessage from './ValidationMessage';
 import {observer, inject} from 'mobx-react';
 
-import PhotoUpload from 'react-native-photo-upload';
+import ImagePicker from 'react-native-image-picker';
+import Toast from '../../Util/Toast';
+import FirebaseService from '../../Services/FirebaseService';
 
 import Icon from '../../Assets/iconfont/Icon';
 import colors from '../../Theme/colors';
 import layout from '../../Theme/layout';
+
+const firebaseService = new FirebaseService();
 
 class ImageField extends React.Component {
   fieldValidation = null;
@@ -20,6 +31,7 @@ class ImageField extends React.Component {
     super(props);
 
     const {validation, value} = this.props;
+    this.toast = new Toast();
 
     if (validation) {
       const {name, formStore, validateRule} = validation;
@@ -30,13 +42,42 @@ class ImageField extends React.Component {
     }
   }
 
-  onChangeValue = base64Value => {
+  onChangeValue = (url) => {
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
-      formStore.fieldChanged(name, base64Value);
+      formStore.fieldChanged(name, url);
     }
-    this.props.onChangeImage && this.props.onChangeImage(base64Value);
+    this.props.onChangeImage && this.props.onChangeImage(url);
     this.setState({});
+  };
+
+  pickImage = () => {
+    console.log('AAAA');
+    const {title, quality, allowsEditing} = this.props;
+    const options = {
+      title: title,
+      quality: quality || 0.7,
+      allowsEditing: allowsEditing || false,
+    };
+    ImagePicker.showImagePicker(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        this.toast.error(response.error);
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        // const source = { uri: response.uri };
+        this.toast.loading('Uploading...');
+        firebaseService
+          .uploadImage(response.uri)
+          .then((url) => {
+            this.toast.hide();
+            this.toast.done('Done');
+            this.onChangeValue(url);
+          })
+          .catch((error) => this.toast.error(error));
+      }
+    });
   };
 
   renderImage = () => {
@@ -52,7 +93,7 @@ class ImageField extends React.Component {
           style={styles.formImageFieldStyle}
           resizeMode="cover"
           source={{
-            uri: `data:image/png;base64,${currValue}`,
+            uri: currValue,
           }}
         />
       );
@@ -69,26 +110,25 @@ class ImageField extends React.Component {
 
   render() {
     const {
-          value,
-          viewStyle,
+      value,
+      viewStyle,
 
-          // Validation management properties
-          validation,
+      // Validation management properties
+      validation,
 
-          ...otherProps
-        } = this.props;
+      ...otherProps
+    } = this.props;
 
     return (
-      <View>
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <View style={styles.formFieldContainer}>
-          <PhotoUpload onPhotoSelect={this.onChangeValue}>
+          <TouchableOpacity onPress={this.pickImage}>
             {this.renderImage()}
             <View style={styles.formImageFielAddIcon}>
               <Icon name="edit" size={16} color={colors.white} />
             </View>
-          </PhotoUpload>
+          </TouchableOpacity>
         </View>
-
         {this.fieldValidation}
       </View>
     );
@@ -107,7 +147,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     ...layout.marginTopS,
   },
-  formFieldContainer: {},
+  formFieldContainer: {
+    width: 100,
+  },
 
   formImageFieldStyle: {
     width: 100,
@@ -122,6 +164,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 8,
     shadowOpacity: 1,
+    alignSelf: 'center',
   },
 
   formImageFielAddIcon: {

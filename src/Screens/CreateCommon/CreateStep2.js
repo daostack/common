@@ -45,17 +45,26 @@ const CreateStep2 = (props) => {
     props.createCommonFormStore.registerFormField(name, 'required');
     switch (segmentedIndex) {
       case 0: {
-        props.createCommonFormStore.fieldChanged(name, moment().add('7', 'days').toDate());
+        props.createCommonFormStore.fieldChanged(
+          name,
+          moment().add('7', 'days').toDate(),
+        );
         setShow(false);
         break;
       }
       case 1: {
-        props.createCommonFormStore.fieldChanged(name, moment().add('1', 'months').toDate());
+        props.createCommonFormStore.fieldChanged(
+          name,
+          moment().add('1', 'months').toDate(),
+        );
         setShow(false);
         break;
       }
       case 2: {
-        props.createCommonFormStore.fieldChanged(name, moment(pickDate, 'MMM DD, YYYY').toDate());
+        props.createCommonFormStore.fieldChanged(
+          name,
+          moment(pickDate, 'MMM DD, YYYY').toDate(),
+        );
         setShow(true);
         break;
       }

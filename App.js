@@ -45,7 +45,7 @@ import {filterObjectByKeys} from './src/Util';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
-import firebase from 'react-native-firebase';
+import {firebase} from './src/Firebase';
 import Toast from './src/Util/Toast';
 
 const CommonHome = () => {
@@ -193,7 +193,6 @@ const App = ({userStore}) => {
             component={CommonHome}
             options={{headerShown: false}}
           />
-
           <Stack.Screen
             name="CommonProfile"
             component={CommonProfile}

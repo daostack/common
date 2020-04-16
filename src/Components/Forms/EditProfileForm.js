@@ -77,6 +77,8 @@ class EditProfileForm extends React.Component {
         <ImageField
           value={userStore.userInfo.profileImage}
           placeholderUrl={userStore.userInfo.photoURL}
+          allowsEditing={true}
+          title={'Select new avatar'}
           validation={{
             name: EditProfileForm.FIELD_PROFILE_IMAGE,
             formStore: this.props.editProfileFormStore,
