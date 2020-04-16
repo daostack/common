@@ -35,6 +35,8 @@ import {
   CreateStep2,
   CreateStep3,
   CreateStep4,
+  CommonAgenda,
+  CommonMembers,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
@@ -107,7 +109,7 @@ const CommonHome = () => {
 const App = ({userStore}) => {
   const [onboarded, setOnboarded] = useState();
 
-  const onAuthStateChanged = async (user) => {
+  const onAuthStateChanged = async user => {
     try {
       userStore.setIsLoading(true);
       if (user) {
@@ -194,12 +196,14 @@ const App = ({userStore}) => {
             options={{headerShown: false}}
           />
           <Stack.Screen
-            options={{
-              title: 'My profile',
-            }}
-            name="Profile"
-            component={UserProfile}
+            name="CommonProfile"
+            component={CommonProfile}
+            options={{headerShown: false}}
           />
+
+          <Stack.Screen name="CommonAgenda" component={CommonAgenda} />
+
+          <Stack.Screen name="Profile" component={UserProfile} />
           <Stack.Screen
             options={{
               title: 'Edit my profile',
@@ -236,6 +240,14 @@ const App = ({userStore}) => {
             }}
             name="MyCommons"
             component={MyCommons}
+          />
+		 <Stack.Screen
+            options={{
+              title: null,
+              headerBackTitleVisible: true,
+            }}
+            name="CommonMembers"
+            component={CommonMembers}
           />
           <Stack.Screen
             name="CreateStep1"
