@@ -7,19 +7,31 @@
  */
 
 import React, {useState, useEffect} from 'react';
-import {Image} from 'react-native';
+import {Image, StyleSheet} from 'react-native';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {colors, text} from './src/Theme';
+import AsyncStorage from '@react-native-community/async-storage';
+
 import {
   Login,
   CommonsList,
   CommonProfile,
   Onboarding,
   UserProfile,
+  HUDTest,
+  MyWallet,
   CreateAccount,
   CompleteAccount,
+  EditProfile,
+  UserProfileReadMode,
+  NativeBridgeTests,
+  MyProposals,
+  MyCommons,
+  CommonAgenda,
+  CommonMembers,
   CommonExplanation,
   CreateStep1,
   CreateStep2,
@@ -27,12 +39,16 @@ import {
   CreateStep4,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
-import {colors} from './src/Theme';
 import FirebaseService from './src/Services/FirebaseService';
-import AsyncStorage from '@react-native-community/async-storage';
 const firebaseService = new FirebaseService();
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+import {filterObjectByKeys} from './src/Util';
+import {userInfoFields} from './src/Stores/UserStore';
+import {observer, inject} from 'mobx-react';
+import Icon from './src/Assets/iconfont/Icon';
+import firebase from 'react-native-firebase';
+import Toast from './src/Util/Toast';
 
 const CommonHome = () => {
   return (
@@ -83,19 +99,49 @@ const CommonHome = () => {
         activeTintColor: colors.mainBlue,
       }}>
       {/*<Tab.Screen name="Test" component={NativeBridgeTests} />*/}
+      <Tab.Screen name="My feed" component={UserProfile} />
+      <Tab.Screen name="Explore" component={CommonsList} />
+      <Tab.Screen name="Profile" component={UserProfile} />
+      <Tab.Screen name="UserProfileReadMode" component={UserProfileReadMode} />
       <Tab.Screen name="Commons" component={CommonsList} />
       <Tab.Screen name="CreateAccount" component={CreateAccount} />
     </Tab.Navigator>
   );
 };
 
-const App = () => {
+const App = ({userStore}) => {
   const [onboarded, setOnboarded] = useState();
+
+  const onAuthStateChanged = async user => {
+    try {
+      userStore.setIsLoading(true);
+      if (user) {
+        const appUser = await FirebaseService.getInstance().getUserById(
+          user.uid,
+        );
+
+        const allUserInfo = {
+          ...user._user,
+          ...appUser,
+        };
+
+        const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
+        userStore.setSignedInUser(filteredUser);
+      } else {
+        userStore.setSignedInUser(null);
+      }
+      userStore.setIsLoading(false);
+    } catch (error) {
+      Toast.error(error);
+    }
+  };
+
   useEffect(() => {
+    const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
+
     const checkOnboardingStatus = async () => {
       try {
         const isOnboarded = await AsyncStorage.getItem('onboarded');
-        console.log('BBBBB', isOnboarded);
         if (isOnboarded === 'true') {
           setOnboarded(true);
         }
@@ -103,11 +149,14 @@ const App = () => {
         console.log(e);
       }
     };
+
     checkOnboardingStatus();
-  }, []);
+    return subscriber;
+  });
 
   return (
     <ApolloProvider client={client}>
+      {/**
       <NavigationContainer>
         <Stack.Navigator>
           {!onboarded ? (
@@ -125,8 +174,39 @@ const App = () => {
           )}
           <Stack.Screen name="CommonProfile" component={CommonProfile} />
           <Stack.Screen name="Login" component={Login} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      <NavigationContainer>
+        <Stack.Navigator>
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      */}
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: styles.headerStyle,
+            headerTitleStyle: styles.headerTitleStyle,
+            headerBackTitleStyle: styles.headerTitleStyle,
+            headerBackTitleVisible: false,
+            headerTintColor: colors.black,
+            headerBackImage: () => <Icon name="left-arrow" size={32} />,
+          }}>
+          <Stack.Screen
+            name="CommonHome"
+            component={CommonHome}
+            options={{headerShown: false}}
+          />
+
+          <Stack.Screen
+            name="CommonProfile"
+            component={CommonProfile}
+            options={{headerShown: false}}
+          />
+
+          <Stack.Screen name="CommonAgenda" component={CommonAgenda} />
+
           <Stack.Screen name="Profile" component={UserProfile} />
 
           <Stack.Screen
@@ -179,10 +259,70 @@ const App = () => {
               headerShown: false,
             })}
           />
+          <Stack.Screen
+            options={{
+              title: 'Edit my profile',
+            }}
+            name="EditProfile"
+            component={EditProfile}
+          />
+          <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
+          <Stack.Screen name="CreateAccount" component={CreateAccount} />
+          <Stack.Screen
+            options={{
+              title: 'My wallet',
+            }}
+            name="MyWallet"
+            component={MyWallet}
+          />
+          <Stack.Screen name="HUDTest" component={HUDTest} />
+          <Stack.Screen
+            name="UserProfileReadMode"
+            component={UserProfileReadMode}
+          />
+          <Stack.Screen
+            options={{
+              title: null,
+              headerBackTitleVisible: true,
+            }}
+            name="MyProposals"
+            component={MyProposals}
+          />
+          <Stack.Screen
+            options={{
+              title: null,
+              headerBackTitleVisible: true,
+            }}
+            name="MyCommons"
+            component={MyCommons}
+          />
+          <Stack.Screen
+            options={{
+              title: null,
+              headerBackTitleVisible: true,
+            }}
+            name="CommonMembers"
+            component={CommonMembers}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>
   );
 };
 
-export default App;
+const styles = StyleSheet.create({
+  headerStyle: {
+    borderWidth: 0,
+    borderBottomWidth: 0,
+    shadowRadius: 0,
+    shadowOffset: {
+      height: 0,
+    },
+  },
+
+  headerTitleStyle: {
+    ...text.h4Black,
+  },
+});
+
+export default inject('userStore')(observer(App));

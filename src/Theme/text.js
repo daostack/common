@@ -14,11 +14,29 @@ export default StyleSheet.create({
     lineHeight: 29,
     letterSpacing: 0,
     textAlign: 'center',
-    color: '#000000',
+    color: colors.black,
+  },
+  h2Black: {
+    ...appFontFamily,
+    fontSize: 20,
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.black,
   },
   h3Black: {
     ...appFontFamily,
     fontSize: 16,
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.black,
+  },
+  h4Black: {
+    ...appFontFamily,
+    fontSize: 15,
     fontWeight: 'bold',
     fontStyle: 'normal',
     letterSpacing: 0,
@@ -54,6 +72,16 @@ export default StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'center',
     color: colors.mainBlue,
+  },
+  buttonred: {
+    ...appFontFamily,
+    fontSize: 16,
+    fontWeight: '500',
+    fontStyle: 'normal',
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.error,
   },
   runningboldblue: {
     ...appFontFamily,
@@ -130,7 +158,7 @@ export default StyleSheet.create({
     fontWeight: 'normal',
     fontStyle: 'normal',
     letterSpacing: 0,
-    color: '#000000',
+    color: colors.black,
   },
   paragraphred: {
     ...appFontFamily,
@@ -162,6 +190,16 @@ export default StyleSheet.create({
     textAlign: 'center',
     color: colors.mainBlue,
   },
+  smallBlackText: {
+    ...appFontFamily,
+    fontSize: 12,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.black,
+  },
   ashleyjquimbacom: {
     ...appFontFamily,
     fontSize: 16,
@@ -170,6 +208,24 @@ export default StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'center',
     color: colors.mainBlue,
+  },
+  ashleyjquimbacom2: {
+    ...appFontFamily,
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.grey3,
+  },
+  bvBmseYstWetqTFn5Au: {
+    ...appFontFamily,
+    fontSize: 10,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 12,
+    letterSpacing: 0,
+    color: colors.slate,
   },
 
   greyText: {
@@ -181,8 +237,32 @@ export default StyleSheet.create({
     letterSpacing: 0,
     color: colors.greyText,
   },
+
+  smallGreyText: {
+    ...appFontFamily,
+    fontSize: 12,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.grey3,
+  },
+
+  blackText: {
+    ...appFontFamily,
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 20,
+    letterSpacing: 0,
+    color: colors.black,
+  },
   // Custom text styles
   centered: {
     textAlign: 'center',
+  },
+
+  bold: {
+    fontWeight: 'bold',
   },
 });

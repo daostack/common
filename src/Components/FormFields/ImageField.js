@@ -6,7 +6,7 @@ import {observer, inject} from 'mobx-react';
 
 import PhotoUpload from 'react-native-photo-upload';
 
-// import Icon from '../../Assets/iconfont/Icon';
+import Icon from '../../Assets/iconfont/Icon';
 import colors from '../../Theme/colors';
 import layout from '../../Theme/layout';
 
@@ -39,15 +39,21 @@ class ImageField extends React.Component {
     this.setState({});
   };
 
-  renderAccountImage() {
-    const {validation, placeholderUrl} = this.props;
-    const {formStore, name} = validation;
-    if (formStore.form.fields[name].value) {
+  renderImage = () => {
+    const {value, validation, placeholderUrl} = this.props;
+
+    const currValue = validation
+      ? validation.formStore.form.fields[validation.name].value
+      : value;
+
+    if (currValue) {
       return (
         <Image
           style={styles.formImageFieldStyle}
           resizeMode="cover"
-          source={formStore.form.fields[name].value}
+          source={{
+            uri: `data:image/png;base64,${currValue}`,
+          }}
         />
       );
     } else {
@@ -59,7 +65,7 @@ class ImageField extends React.Component {
         />
       );
     }
-  }
+  };
 
   render() {
     const {
@@ -71,14 +77,14 @@ class ImageField extends React.Component {
 
           ...otherProps
         } = this.props;
-        
+
     return (
       <View>
         <View style={styles.formFieldContainer}>
           <PhotoUpload onPhotoSelect={this.onChangeValue}>
-            {this.renderAccountImage()}
+            {this.renderImage()}
             <View style={styles.formImageFielAddIcon}>
-              <Icon name="right-arrow" size={20} color={colors.white} />
+              <Icon name="edit" size={16} color={colors.white} />
             </View>
           </PhotoUpload>
         </View>
@@ -123,8 +129,8 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    right: -3,
-    bottom: -3,
+    right: 0,
+    bottom: 0,
     width: 30,
     height: 30,
     borderRadius: 15,
