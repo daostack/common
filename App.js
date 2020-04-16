@@ -16,7 +16,6 @@ import {colors, text} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import {
-  Login,
   CommonsList,
   CommonProfile,
   Onboarding,
@@ -32,6 +31,11 @@ import {
   MyCommons,
   CommonAgenda,
   CommonMembers,
+  CommonExplanation,
+  CreateStep1,
+  CreateStep2,
+  CreateStep3,
+  CreateStep4,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
@@ -41,7 +45,7 @@ import {filterObjectByKeys} from './src/Util';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
-import firebase from 'react-native-firebase';
+import {firebase} from './src/Firebase';
 import Toast from './src/Util/Toast';
 
 const CommonHome = () => {
@@ -93,18 +97,17 @@ const CommonHome = () => {
         activeTintColor: colors.mainBlue,
       }}>
       {/*<Tab.Screen name="Test" component={NativeBridgeTests} />*/}
-      <Tab.Screen name="My feed" component={UserProfile} />
+      <Tab.Screen name="My feed" component={UserProfileReadMode} />
       <Tab.Screen name="Explore" component={CommonsList} />
       <Tab.Screen name="Profile" component={UserProfile} />
-      <Tab.Screen name="UserProfileReadMode" component={UserProfileReadMode} />
     </Tab.Navigator>
   );
 };
 
 const App = ({userStore}) => {
-  const [onboarded, setOnboarded] = useState();
+  const [setOnboarded] = useState();
 
-  const onAuthStateChanged = async user => {
+  const onAuthStateChanged = async (user) => {
     try {
       userStore.setIsLoading(true);
       if (user) {
@@ -148,7 +151,7 @@ const App = ({userStore}) => {
 
   return (
     <ApolloProvider client={client}>
-      {/** 
+      {/**
       <NavigationContainer>
         <Stack.Navigator>
           {!onboarded ? (
@@ -190,7 +193,6 @@ const App = ({userStore}) => {
             component={CommonHome}
             options={{headerShown: false}}
           />
-
           <Stack.Screen
             name="CommonProfile"
             component={CommonProfile}
@@ -200,6 +202,57 @@ const App = ({userStore}) => {
           <Stack.Screen name="CommonAgenda" component={CommonAgenda} />
 
           <Stack.Screen name="Profile" component={UserProfile} />
+
+          <Stack.Screen
+            name="CommonExplanation"
+            component={CommonExplanation}
+            options={({navigation, route}) => ({
+              headerTitle: 'Common!',
+              headerBackTitleVisible: false,
+              headerLeftContainerStyle: {marginLeft: 20},
+              headerRightContainerStyle: {marginRight: 20},
+              headerBackImage: () => (
+                <Image
+                  source={require('./src/Assets/backArrow.png')}
+                  style={{resizeMode: 'contain', width: 32, height: 32}}
+                />
+              ),
+              headerRight: () => (
+                <Image
+                  source={require('./src/Assets/questionmark.png')}
+                  style={{resizeMode: 'contain', width: 20, height: 20}}
+                />
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="CreateStep1"
+            component={CreateStep1}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="CreateStep2"
+            component={CreateStep2}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="CreateStep3"
+            component={CreateStep3}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="CreateStep4"
+            component={CreateStep4}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
           <Stack.Screen
             options={{
               title: 'Edit my profile',

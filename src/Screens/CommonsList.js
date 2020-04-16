@@ -8,7 +8,7 @@ import {
   View,
   Dimensions,
 } from 'react-native';
-import CommonBox from '../Components/CommonBox';
+import {CommonBox, BottomRightButton} from '../Components';
 import {Subscription, Query} from 'react-apollo';
 import gql from 'graphql-tag';
 import {ApolloClientConfig as client} from '../Config';
@@ -137,6 +137,9 @@ const CommonsList = ({navigation}) => {
           );
         }}
       </Query>
+      <BottomRightButton
+        onPress={() => navigation.navigate('CommonExplanation')}
+      />
     </View>
   );
 };

@@ -17,7 +17,8 @@
 RCT_EXTERN_METHOD(generateMnemonic:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(generateAndStoreMnemonic:(NSString *)uid
+RCT_EXTERN_METHOD(generateAndStoreMnemonic(NSString *)uid
+                  mnemonic:(NSString *)mnemonic
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
@@ -27,6 +28,7 @@ RCT_EXTERN_METHOD(storeMnemonic:(NSString *)uid
                   reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(retrieveMnemonic:(NSString *)uid
+                  mnemonic:(NSString *)mnemonic
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 

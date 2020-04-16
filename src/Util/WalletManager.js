@@ -21,7 +21,7 @@ export default class WalletManager {
     })();
   }
 
-  static init = async uid => {
+  static init = async (uid) => {
     const cpkAddress = {
       4: {
         masterCopyAddress: '0xaE32496491b53841efb51829d6f886387708F99B',
@@ -56,8 +56,8 @@ export default class WalletManager {
     return await this.wallet.getOwnerAccount();
   };
 
-  getBalance = async address => {
-    return this.provider.getBalance(address).then(balance => {
+  getBalance = async (address) => {
+    return this.provider.getBalance(address).then((balance) => {
       let balanceString = ethers.utils.formatEther(balance);
       return balanceString;
     });
@@ -73,7 +73,7 @@ export default class WalletManager {
           data: data,
         },
       ])
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
       });
   };
@@ -104,7 +104,7 @@ export default class WalletManager {
           data: data,
         },
       ])
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
       });
   };

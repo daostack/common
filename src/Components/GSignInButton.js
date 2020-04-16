@@ -48,7 +48,7 @@ const GSignInButton = ({onSignIn}) => {
     }
   };
 
-  _getMnemonic = async uid => {
+  _getMnemonic = async (uid) => {
     // 1. Read mnemonic from the store
     /*
     const mnemonicFromStore = NativeModules.WalletModule.retrieveMnemonic(uid);
@@ -74,7 +74,7 @@ const GSignInButton = ({onSignIn}) => {
         jsonContent = JSON.parse(fileContent);
       } catch (error) {
         /*
-        FIX FOR USESRS WITH BROKEN APP DATA FILES 
+        FIX FOR USESRS WITH BROKEN APP DATA FILES
         TBD: Discuss on removing that logic or replace with better one.
         */
 
@@ -92,7 +92,7 @@ const GSignInButton = ({onSignIn}) => {
     return _generateAndStoreMnemonic();
   };
 
-  _generateAndStoreMnemonic = async uid => {
+  _generateAndStoreMnemonic = async (uid) => {
     initialAppDataContent.mnemonic = await NativeModules.WalletModule.generateAndStoreMnemonic(
       uid,
     );
