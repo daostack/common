@@ -46,7 +46,7 @@ const CommonProfile = ({navigation, route}) => {
   optionsSheetRef = useRef();
   sortProposalsSheetRef = useRef();
 
-  const [isMember, setIsMember] = useState(false);
+  const [isMember, setIsMember] = useState(true);
   const [isFundingStage, setIsFundingStage] = useState(false);
 
   const [index, setIndex] = useState(0);
@@ -283,11 +283,7 @@ const CommonProfile = ({navigation, route}) => {
           <SafeAreaView style={{}}>
             <View style={styles.headerContainerWrap}>
               <View style={styles.headerContainer}>
-                <TouchableOpacity
-                  onPress={
-                    //navigation.goBack
-                    openNotif
-                  }>
+                <TouchableOpacity onPress={navigation.goBack}>
                   <Icon
                     name="left-arrow"
                     size={30}

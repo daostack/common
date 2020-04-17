@@ -7,11 +7,52 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {CommonActions} from '@react-navigation/native';
+import Icon from '../Assets/iconfont/Icon';
+import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
+import {kFormatter} from '../Util';
+import CommonCover from './Commons/CommonCover';
 const {width} = Dimensions.get('window');
 
-const CommonBox = (props) => {
+const CommonBox = props => {
+  const [isMember, setIsMember] = useState(false);
+  const [isFundingStage, setIsFundingStage] = useState(true);
+
+  const renderFundingProgressBar = () => {
+    if (isFundingStage) {
+      return (
+        <>
+          <View style={styles.fundingProgressBar}>
+            <View style={styles.innerProgressBar} />
+          </View>
+          <Text
+            style={{
+              ...styles.headerSmallText,
+              color: colors.grey3,
+              ...layout.marginTopS,
+            }}>
+            26 days to go
+          </Text>
+        </>
+      );
+    }
+  };
+
+  const commonNumberBox = (numberComponent, title) => {
+    return (
+      <View
+        style={{
+          justifyContent: 'center',
+          alignContent: 'center',
+          alignItems: 'center',
+        }}>
+        <View style={styles.raisedContainer}>{numberComponent}</View>
+        <Text style={styles.headerSmallText}>{title}</Text>
+      </View>
+    );
+  };
+
   return (
     <TouchableOpacity
       key={props.key}
@@ -25,6 +66,16 @@ const CommonBox = (props) => {
         props.navigation.dispatch(navigate);
       }}
       style={styles.commonBox}>
+      <CommonCover
+        isMember={false}
+        commonInfo={{
+          cover: props.image,
+          logo: null,
+          name: props.common.name,
+          description: props.common.name,
+        }}
+      />
+
       <ImageBackground
         source={{
           uri: props.image,
@@ -44,13 +95,17 @@ const CommonBox = (props) => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <TouchableOpacity style={{position: 'absolute', top: 12, left: 12}}>
-          <Image
-            style={styles.followImage}
-            source={require('../Assets/follow.png')}
-          />
+        <TouchableOpacity style={{position: 'absolute', top: 12, right: 12}}>
+          <Icon name="follow" size={22} color={colors.white} />
         </TouchableOpacity>
         <View style={{alignItems: 'center', justifyContent: 'center'}}>
+          <Image
+            style={styles.logoImage}
+            source={{
+              uri:
+                'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
+            }}
+          />
           <Text style={{color: 'white', fontSize: 23, fontWeight: '700'}}>
             {props.common.name}
           </Text>
@@ -59,6 +114,7 @@ const CommonBox = (props) => {
           </Text>
         </View>
       </ImageBackground>
+      {/*
       <View
         style={{
           flexDirection: 'row',
@@ -74,7 +130,7 @@ const CommonBox = (props) => {
           <Text style={styles.descriptionNumber}>
             {
               props.common.proposals.filter(
-                (proposal) =>
+                proposal =>
                   proposal.stage !== 'Executed' &&
                   proposal.stage !== 'ExpiredInQueue',
               ).length
@@ -104,6 +160,59 @@ const CommonBox = (props) => {
           </Text>
           <Text style={styles.descriptionTitle}>Funding</Text>
         </View>
+      </View>
+        */}
+
+      <View style={styles.commonProgressContainer}>
+        <View style={styles.commonNumbers}>
+          {commonNumberBox(
+            isFundingStage ? (
+              <>
+                <Text style={styles.headerTitle}>
+                  $
+                  {(props.common.reputationHoldersCount * 1.5).toLocaleString()}
+                </Text>
+              </>
+            ) : (
+              <>
+                <Text style={styles.headerTitleLight}>
+                  $
+                  {(props.common.reputationHoldersCount * 1.5).toLocaleString()}
+                </Text>
+                <Text style={styles.headerTitle}>
+                  / {kFormatter(props.common.reputationHoldersCount * 1.5)}
+                </Text>
+              </>
+            ),
+            isFundingStage ? 'Raised' : 'Available funds',
+          )}
+          {commonNumberBox(
+            <Text style={styles.headerTitle}>144</Text>,
+            'Members',
+          )}
+          {commonNumberBox(
+            isFundingStage ? (
+              <Text style={styles.headerTitle}>
+                $
+                {kFormatter(
+                  props.common.reputationHoldersCount * 1.5,
+                ).toLocaleString()}
+              </Text>
+            ) : (
+              <Text style={styles.headerTitle}>
+                {
+                  props.common.proposals.filter(
+                    proposal =>
+                      proposal.stage !== 'Executed' &&
+                      proposal.stage !== 'ExpiredInQueue',
+                  ).length
+                }
+              </Text>
+            ),
+            isFundingStage ? 'Goal' : 'ActiveProposals',
+          )}
+        </View>
+        {renderFundingProgressBar()}
       </View>
     </TouchableOpacity>
   );
@@ -144,6 +253,64 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'normal',
     fontStyle: 'normal',
+  },
+
+  raisedContainer: {
+    ...layout.flexRow,
+  },
+  commonProgressContainer: {
+    ...layout.content,
+  },
+
+  commonNumbers: {
+    ...layout.content,
+    ...layout.flexRow,
+    paddingTop: 0,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
+  headerTitleWhite: {
+    ...text.h1Black,
+    color: colors.white,
+  },
+  headerTitle: {
+    ...text.h3Black,
+  },
+  headerTitleLight: {
+    ...text.h3Black,
+    color: colors.grey3,
+  },
+  headerDescription: {
+    ...text.greyText,
+    fontWeight: '600',
+    color: colors.grey4,
+  },
+
+  fundingProgressBar: {
+    width: 340,
+    borderRadius: 7,
+    backgroundColor: colors.grey4,
+    height: 8,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
+
+  innerProgressBar: {
+    width: 380 / 4,
+    borderRadius: 6,
+    backgroundColor: colors.mainBlue,
+    height: 8,
+  },
+  logoImage: {
+    ...layout.marginBottomM,
+
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: colors.white,
   },
 });
 
