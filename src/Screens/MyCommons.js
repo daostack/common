@@ -115,7 +115,7 @@ const MyCommons = ({navigation}) => {
     );
   };
 
-  const sceneRenderer = sceneIndex => {};
+  const sceneRenderer = (sceneIndex) => {};
 
   const initialLayout = {width: Dimensions.get('window').width};
 
@@ -124,7 +124,7 @@ const MyCommons = ({navigation}) => {
     members: MyCommons,
   });
 
-  const renderTabBar = props => (
+  const renderTabBar = (props) => (
     <TabBar
       {...props}
       indicatorStyle={{

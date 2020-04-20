@@ -19,8 +19,9 @@ const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
+import CreateStepDotHeader from './CreateStepDotHeader';
 
-const CreateStep3 = props => {
+const CreateStep3 = (props) => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [ruleCount, setRuleCount] = useState(1);
@@ -56,11 +57,11 @@ const CreateStep3 = props => {
   };
 
   const isValid = () => {
-    const titles = [...Array(ruleCount).keys()].map(x => `ruleTitles_${x}`);
-    const bodys = [...Array(ruleCount).keys()].map(x => `ruleBody_${x}`);
+    const titles = [...Array(ruleCount).keys()].map((x) => `ruleTitles_${x}`);
+    const bodys = [...Array(ruleCount).keys()].map((x) => `ruleBody_${x}`);
 
     const result = props.createCommonFormStore.isFormValidSelectedFields([
-      CreateCommonForm.FIELD_ACTION,
+      CreateCommonForm.ACTION,
       ...titles,
       ...bodys,
     ]);
@@ -83,22 +84,12 @@ const CreateStep3 = props => {
         backgroundColor: 'white',
       }}>
       <CreateStepNavigation navigation={props.navigation} title="Funding" />
-      <Animated.View style={[styles.header, {height: headerHeight}]}>
-        <View style={styles.bar}>
-          <View
-            style={{
-              marginTop: 80,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <View style={styles.dot} />
-            <View style={styles.dot} />
-            <View style={styles.dot} />
-            <View style={styles.dot2} />
-          </View>
-          <Text style={styles.title}>Funding</Text>
-        </View>
-      </Animated.View>
+      <CreateStepDotHeader
+        title="Agenda"
+        currentIndex={3}
+        navigation={props.navigation}
+        headerHeight={headerHeight}
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         width={width}
@@ -142,7 +133,7 @@ const CreateStep3 = props => {
             autoCorrect={false}
             onChangeText={isValid}
             validation={{
-              name: CreateCommonForm.FIELD_ACTION,
+              name: CreateCommonForm.ACTION,
               formStore: props.createCommonFormStore,
               validateRule: 'string',
             }}
@@ -167,7 +158,7 @@ const CreateStep3 = props => {
             etc.)
           </Text>
 
-          {[...Array(ruleCount).keys()].map(x => (
+          {[...Array(ruleCount).keys()].map((x) => (
             <View key={x}>
               <TextInput
                 key={`title_${x}`}
@@ -179,7 +170,7 @@ const CreateStep3 = props => {
                   borderWidth: 1,
                   marginTop: 20,
                 }}
-                onChangeText={text => handleRuleTitles(x, text)}
+                onChangeText={(text) => handleRuleTitles(x, text)}
                 placeholder="Rule title"
               />
               <TextInput
@@ -193,7 +184,7 @@ const CreateStep3 = props => {
                   borderBottomLeftRadius: 5,
                   height: 100,
                 }}
-                onChangeText={text => handleRuleBody(x, text)}
+                onChangeText={(text) => handleRuleBody(x, text)}
                 multiline={true}
                 numberOfLines={4}
                 placeholder="Rule description"
@@ -256,50 +247,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontSize: 15,
     color: colors.black,
-  },
-  dot: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: colors.grey5,
-    borderColor: colors.mainBlue,
-    borderWidth: 1,
-    marginHorizontal: 5,
-  },
-  dot2: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: colors.grey5,
-    borderColor: colors.grey3,
-    borderWidth: 1,
-    marginHorizontal: 5,
-  },
-  header: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'white',
-    overflow: 'hidden',
-    zIndex: 999,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.grey4,
-  },
-  bar: {
-    marginTop: 28,
-    height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-    // bottomborder: 'solid',
-  },
-  title: {
-    backgroundColor: 'transparent',
-    color: colors.black,
-    fontSize: 16,
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
-    paddingVertical: 10,
   },
   readMoreButton: {
     fontSize: 12,

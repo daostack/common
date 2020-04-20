@@ -10,7 +10,7 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import TextInputField from '../../Components/FormFields/TextInputField';
+import TextInputFieldWithIcon from '../../Components/FormFields/TextInputFieldWithIcon';
 import {colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import {observer, inject} from 'mobx-react';
@@ -22,8 +22,9 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
 import Modal from 'react-native-modal';
 import moment from 'moment';
+import CreateStepDotHeader from './CreateStepDotHeader';
 
-const CreateStep2 = props => {
+const CreateStep2 = (props) => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [segmentedIndex, setSegmentedIndex] = useState(0);
@@ -41,15 +42,13 @@ const CreateStep2 = props => {
   }, [scrollY]);
 
   useEffect(() => {
-    const name = CreateCommonForm.FIELD_DEADLINE;
+    const name = CreateCommonForm.DEADLINE;
     props.createCommonFormStore.registerFormField(name, 'required');
     switch (segmentedIndex) {
       case 0: {
         props.createCommonFormStore.fieldChanged(
           name,
-          moment()
-            .add('7', 'days')
-            .toDate(),
+          moment().add('7', 'days').toDate(),
         );
         setShow(false);
         break;
@@ -57,9 +56,7 @@ const CreateStep2 = props => {
       case 1: {
         props.createCommonFormStore.fieldChanged(
           name,
-          moment()
-            .add('1', 'months')
-            .toDate(),
+          moment().add('1', 'months').toDate(),
         );
         setShow(false);
         break;
@@ -77,9 +74,9 @@ const CreateStep2 = props => {
 
   const isValid = () => {
     const result = props.createCommonFormStore.isFormValidSelectedFields([
-      CreateCommonForm.FIELD_FUNDING_GOAL,
-      CreateCommonForm.FIELD_MINIMUM,
-      CreateCommonForm.FIELD_DEADLINE,
+      CreateCommonForm.FUNDING_GOAL,
+      CreateCommonForm.MINIMUM,
+      CreateCommonForm.DEADLINE,
     ]);
     setPass(result);
     return result;
@@ -103,22 +100,12 @@ const CreateStep2 = props => {
         navigation={props.navigation}
         title="General info"
       />
-      <Animated.View style={[styles.header, {height: headerHeight}]}>
-        <View style={styles.bar}>
-          <View
-            style={{
-              marginTop: 80,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <View style={styles.dot} />
-            <View style={styles.dot} />
-            <View style={styles.dot2} />
-            <View style={styles.dot2} />
-          </View>
-          <Text style={styles.title}>Funding</Text>
-        </View>
-      </Animated.View>
+      <CreateStepDotHeader
+        title="Funding"
+        currentIndex={2}
+        navigation={props.navigation}
+        headerHeight={headerHeight}
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         width={width}
@@ -165,18 +152,21 @@ const CreateStep2 = props => {
               marginBottom: 40,
             }}
           />
-          <TextInputField
-            value={''}
+          <TextInputFieldWithIcon
+            iconName="dollar"
+            iconSize={12}
+            iconStyle={{paddingRight: 5}}
+            iconEmptyColor={colors.grey3}
+            iconFillColor={colors.grey}
             viewStyle={{alignSelf: 'stretch'}}
             label="Funding goal"
-            placeholderText="$"
             infoLabel="Required"
             autoCapitalize="none"
             autoCorrect={false}
             keyboardType="numeric"
             onChangeText={isValid}
             validation={{
-              name: CreateCommonForm.FIELD_FUNDING_GOAL,
+              name: CreateCommonForm.FUNDING_GOAL,
               formStore: props.createCommonFormStore,
               validateRule: 'required|integer',
             }}
@@ -196,7 +186,7 @@ const CreateStep2 = props => {
               tabTextStyle={{color: colors.mainBlue}}
               borderRadius={8}
               selectedIndex={segmentedIndex}
-              onTabPress={index => setSegmentedIndex(index)}
+              onTabPress={(index) => setSegmentedIndex(index)}
             />
             <Modal
               isVisible={show}
@@ -239,18 +229,21 @@ const CreateStep2 = props => {
               </View>
             </Modal>
           </View>
-          <TextInputField
-            value={''}
+          <TextInputFieldWithIcon
+            iconName="dollar"
+            iconSize={12}
+            iconStyle={{paddingRight: 5}}
+            iconEmptyColor={colors.grey3}
+            iconFillColor={colors.grey}
             viewStyle={{alignSelf: 'stretch'}}
             label="Minimum contrubution"
             infoLabel="Required"
-            placeholderText="$"
             autoCapitalize="none"
             autoCorrect={false}
             keyboardType="numeric"
             onChangeText={isValid}
             validation={{
-              name: CreateCommonForm.FIELD_MINIMUM,
+              name: CreateCommonForm.MINIMUM,
               formStore: props.createCommonFormStore,
               validateRule: 'required|integer',
             }}
@@ -305,50 +298,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontSize: 15,
     color: colors.black,
-  },
-  dot: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: colors.grey5,
-    borderColor: colors.mainBlue,
-    borderWidth: 1,
-    marginHorizontal: 5,
-  },
-  dot2: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: colors.grey5,
-    borderColor: colors.grey3,
-    borderWidth: 1,
-    marginHorizontal: 5,
-  },
-  header: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'white',
-    overflow: 'hidden',
-    zIndex: 999,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.grey4,
-  },
-  bar: {
-    marginTop: 28,
-    height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-    // bottomborder: 'solid',
-  },
-  title: {
-    backgroundColor: 'transparent',
-    color: colors.black,
-    fontSize: 16,
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
-    paddingVertical: 10,
   },
   readMoreButton: {
     fontSize: 12,

@@ -32,7 +32,7 @@ const EditProfile = ({userStore, editProfileFormStore, route, navigation}) => {
     ),
   });
 
-  const onFormSubmit = updatedFields => {
+  const onFormSubmit = (updatedFields) => {
     userStore.setSignedInUser({...userStore.userInfo, ...updatedFields});
     const navigate = CommonActions.navigate({
       name: 'Profile',

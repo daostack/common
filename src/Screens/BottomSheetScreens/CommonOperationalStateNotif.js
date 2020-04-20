@@ -11,7 +11,7 @@ import {text, layout, colors, sizeL} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
 const CommonOperationalStateNotif = ({navigation, onCreateFundingProposal}) => {
-  const createFundingProposal = e => {
+  const createFundingProposal = (e) => {
     if (onCreateFundingProposal) {
       onCreateFundingProposal();
     }

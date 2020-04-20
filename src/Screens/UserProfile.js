@@ -38,7 +38,7 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
     }
   };
 
-  const onUserSignedIn = isNewUser => {
+  const onUserSignedIn = (isNewUser) => {
     if (navigation && isNewUser) {
       const navigate = CommonActions.navigate({
         name: 'EditProfile',
@@ -50,15 +50,15 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
     }
   };
 
-  const onMyWalletPress = event => {
+  const onMyWalletPress = (event) => {
     navigation.navigate('MyWallet');
   };
 
-  const onMyCommonsPress = event => {
+  const onMyCommonsPress = (event) => {
     navigation.navigate('MyCommons');
   };
 
-  const onMyProposalsPress = event => {
+  const onMyProposalsPress = (event) => {
     navigation.navigate('MyProposals');
   };
 
