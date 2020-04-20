@@ -109,7 +109,7 @@ const CommonsList = ({navigation}) => {
                     fontWeight: '600',
                     fontSize: 14,
                   }}
-                  onChangeText={(filter) => this.setState({filter})}
+                  onChangeText={filter => this.setState({filter})}
                   autoCapitalize="none"
                   placeholder="Filter Commons"
                 />
@@ -123,9 +123,8 @@ const CommonsList = ({navigation}) => {
                     }
                     return (
                       <CommonBox
-                        image={`https://i.picsum.photos/id/${
-                          i * 10
-                        }/500/100.jpg`}
+                        image={`https://i.picsum.photos/id/${i *
+                          10}/500/100.jpg`}
                         common={dao}
                         key={i}
                         navigation={navigation}

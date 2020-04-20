@@ -35,7 +35,7 @@ class TextInputFieldWithIcon extends React.Component {
     }
   }
 
-  onChangeText = (text) => {
+  onChangeText = text => {
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
       formStore.fieldChanged(name, text);
@@ -43,11 +43,11 @@ class TextInputFieldWithIcon extends React.Component {
     this.props.onChangeText && this.props.onChangeText(text);
   };
 
-  onFocus = (e) => {
+  onFocus = e => {
     this.setState({onFocus: true});
   };
 
-  onBlur = (e) => {
+  onBlur = e => {
     this.setState({onFocus: false});
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
@@ -151,7 +151,7 @@ class TextInputFieldWithIcon extends React.Component {
     );
   }
 
-  renderPlaceholderForNotEditableField = (editable) => {
+  renderPlaceholderForNotEditableField = editable => {
     if (editable === false) {
       return <Text>{this.props.placeholderText || ''}</Text>;
     }

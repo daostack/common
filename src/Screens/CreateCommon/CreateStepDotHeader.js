@@ -10,7 +10,7 @@ import {
 import Icon from '../../Assets/iconfont/Icon';
 import {colors} from '../../Theme';
 
-const CreateStepDotHeader = (props) => {
+const CreateStepDotHeader = props => {
   const headerHeight = props.headerHeight;
   const currentIndex = props.currentIndex;
 
@@ -28,7 +28,7 @@ const CreateStepDotHeader = (props) => {
             flexDirection: 'row',
             justifyContent: 'space-between',
           }}>
-          {[...Array(4).keys()].map((x) => (
+          {[...Array(4).keys()].map(x => (
             <View key={x} style={x < currentIndex ? styles.dot : styles.dot2} />
           ))}
         </View>

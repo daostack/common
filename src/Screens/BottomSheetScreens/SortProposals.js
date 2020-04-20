@@ -11,11 +11,11 @@ import {text, layout, colors, sizeL} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
 const SortProposals = ({navigation, onContinueEditing}) => {
-  const liveWithoutSave = (e) => {
+  const liveWithoutSave = e => {
     navigation.goBack();
   };
 
-  const continueEditing = (e) => {
+  const continueEditing = e => {
     console.log('onContinueEditing -> ', onContinueEditing);
     if (onContinueEditing) {
       onContinueEditing();

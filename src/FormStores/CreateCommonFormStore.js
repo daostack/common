@@ -45,11 +45,9 @@ class CreateCommonFormStore extends FormStore {
     }
 
     if (titles.length > 0) {
-      changedFieldsJson[CreateCommonForm.RULES] = [...titles.keys()].map(
-        (x) => {
-          return {title: titles[x], description: body[x]};
-        },
-      );
+      changedFieldsJson[CreateCommonForm.RULES] = [...titles.keys()].map(x => {
+        return {title: titles[x], description: body[x]};
+      });
     } else {
       changedFieldsJson[CreateCommonForm.RULES] = [];
     }
@@ -57,7 +55,7 @@ class CreateCommonFormStore extends FormStore {
     return changedFieldsJson;
   };
 
-  isFormValidSelectedFields = (fields) => {
+  isFormValidSelectedFields = fields => {
     var validation = this.getValidator();
     this.form.meta.isValid = validation.passes();
     // console.log(validation.errors.errors);

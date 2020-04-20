@@ -22,7 +22,7 @@ import Icon from '../../Assets/iconfont/Icon';
 import Toast from '../../Util/Toast.js';
 import CreateStepDotHeader from './CreateStepDotHeader';
 
-const CreateStep1 = (props) => {
+const CreateStep1 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [ruleCount, setRuleCount] = useState(1);
@@ -41,7 +41,7 @@ const CreateStep1 = (props) => {
 
   const isValid = () => {
     const links = [...Array(ruleCount).keys()].map(
-      (x) => `${CreateCommonForm.LINKS}_${x}`,
+      x => `${CreateCommonForm.LINKS}_${x}`,
     );
     const result = props.createCommonFormStore.isFormValidSelectedFields([
       CreateCommonForm.NAME,
@@ -175,7 +175,7 @@ const CreateStep1 = (props) => {
               validateRule: 'string',
             }}
           />
-          {[...Array(ruleCount).keys()].map((x) => (
+          {[...Array(ruleCount).keys()].map(x => (
             <TextInputField
               key={x}
               value={''}

@@ -21,7 +21,7 @@ import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
 import CreateStepDotHeader from './CreateStepDotHeader';
 
-const CreateStep3 = (props) => {
+const CreateStep3 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [ruleCount, setRuleCount] = useState(1);
@@ -57,8 +57,8 @@ const CreateStep3 = (props) => {
   };
 
   const isValid = () => {
-    const titles = [...Array(ruleCount).keys()].map((x) => `ruleTitles_${x}`);
-    const bodys = [...Array(ruleCount).keys()].map((x) => `ruleBody_${x}`);
+    const titles = [...Array(ruleCount).keys()].map(x => `ruleTitles_${x}`);
+    const bodys = [...Array(ruleCount).keys()].map(x => `ruleBody_${x}`);
 
     const result = props.createCommonFormStore.isFormValidSelectedFields([
       CreateCommonForm.ACTION,
@@ -158,7 +158,7 @@ const CreateStep3 = (props) => {
             etc.)
           </Text>
 
-          {[...Array(ruleCount).keys()].map((x) => (
+          {[...Array(ruleCount).keys()].map(x => (
             <View key={x}>
               <TextInput
                 key={`title_${x}`}
@@ -170,7 +170,7 @@ const CreateStep3 = (props) => {
                   borderWidth: 1,
                   marginTop: 20,
                 }}
-                onChangeText={(text) => handleRuleTitles(x, text)}
+                onChangeText={text => handleRuleTitles(x, text)}
                 placeholder="Rule title"
               />
               <TextInput
@@ -184,7 +184,7 @@ const CreateStep3 = (props) => {
                   borderBottomLeftRadius: 5,
                   height: 100,
                 }}
-                onChangeText={(text) => handleRuleBody(x, text)}
+                onChangeText={text => handleRuleBody(x, text)}
                 multiline={true}
                 numberOfLines={4}
                 placeholder="Rule description"

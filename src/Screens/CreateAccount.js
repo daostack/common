@@ -15,7 +15,7 @@ const CreateAccount = ({userStore, navigation, onSignedIn}) => {
     bottomSheetContainerRef.current.snapTo(1);
   };
 
-  onSignIn = async (userInfo) => {
+  onSignIn = async userInfo => {
     if (userInfo.additionalUserInfo.isNewUser) {
       const manager = await WalletManager.getInstance(userInfo.user.uid);
       const userPublicData = {

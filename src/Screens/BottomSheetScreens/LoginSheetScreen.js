@@ -4,7 +4,7 @@ import React from 'react';
 import {text, layout} from '../../Theme';
 import GSignInButton from '../../Components/GSignInButton';
 
-const LoginSheetScreen = (props) => {
+const LoginSheetScreen = props => {
   const contentStyle = {
     ...layout.content,
     ...layout.flexStart,

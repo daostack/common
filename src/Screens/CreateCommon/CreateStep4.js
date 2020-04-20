@@ -26,7 +26,7 @@ import {kFormatter} from '../../Util';
 
 const firebaseService = new FirebaseService();
 
-const CreateStep4 = (props) => {
+const CreateStep4 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const form = props.createCommonFormStore.getChangedFormFieldsJson();
@@ -47,7 +47,7 @@ const CreateStep4 = (props) => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const changeIndex = (number) => {
+  const changeIndex = number => {
     let index = templateIndex + number;
     if (index <= 1) {
       index = 1;
@@ -71,15 +71,15 @@ const CreateStep4 = (props) => {
       CreateCommonForm.IMAGE,
       'url',
     );
-  }, []);
+  });
 
-  const pickImage = (isAvatar) => {
+  const pickImage = isAvatar => {
     const options = {
       title: 'Select Avatar',
       quality: 0.7,
       allowsEditing: isAvatar,
     };
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.showImagePicker(options, response => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -90,7 +90,7 @@ const CreateStep4 = (props) => {
         toast.loading('Uploading...');
         firebaseService
           .uploadImage(response.uri)
-          .then((url) => {
+          .then(url => {
             toast.hide();
             if (isAvatar) {
               setAvatarURL(url);
@@ -106,7 +106,7 @@ const CreateStep4 = (props) => {
               setImageURI(url);
             }
           })
-          .catch((error) => toast.error(error));
+          .catch(error => toast.error(error));
       }
     });
   };
@@ -352,7 +352,7 @@ const CreateStep4 = (props) => {
               </TouchableOpacity> */}
             </View>
             {form[CreateCommonForm.LINKS].length ? (
-              form[CreateCommonForm.LINKS].map((x) => (
+              form[CreateCommonForm.LINKS].map(x => (
                 <Text style={styles.textContent}>{x}</Text>
               ))
             ) : (

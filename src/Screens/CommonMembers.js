@@ -67,7 +67,7 @@ const CommonMembers = ({navigation}) => {
     return sceneRenderer(1);
   };
 
-  const sceneRenderer = (sceneIndex) => {
+  const sceneRenderer = sceneIndex => {
     return (
       <View style={layout.marginTopL}>
         {commonMembersMock.map((member, i) => {
@@ -92,7 +92,7 @@ const CommonMembers = ({navigation}) => {
     pending: Pending,
   });
 
-  const renderTabBar = (props) => (
+  const renderTabBar = props => (
     <TabBar
       {...props}
       indicatorStyle={{

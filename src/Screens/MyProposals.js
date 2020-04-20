@@ -45,7 +45,7 @@ const MyProposals = ({navigation}) => {
     return SceneRenderer(2);
   };
 
-  const SceneRenderer = (sceneIndex) => {
+  const SceneRenderer = sceneIndex => {
     return (
       <Query query={ALL_DAOS_SUBSCRIPTION()}>
         {({loading, error, data}) => {
@@ -89,7 +89,7 @@ const MyProposals = ({navigation}) => {
     history: HistoryProposals,
   });
 
-  const renderTabBar = (props) => (
+  const renderTabBar = props => (
     <TabBar
       {...props}
       indicatorStyle={{

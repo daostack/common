@@ -37,7 +37,7 @@ const UserProfileReadMode = ({navigation}) => {
     getUsers();
   }, [users]);
 
-  const onUserSelected = (selectedUserId) => {
+  const onUserSelected = selectedUserId => {
     setUserId(selectedUserId);
     bottomSheetContainerRef.current.snapTo(1);
   };

@@ -81,7 +81,7 @@ const CommonProfile = ({navigation}) => {
     getDao();
   }, []);
 
-  const renderTabBar = (props) => (
+  const renderTabBar = props => (
     <TabBar
       {...props}
       indicatorStyle={{
@@ -241,24 +241,24 @@ const CommonProfile = ({navigation}) => {
     }
   };
 
-  const openAgendaScreen = (e) => {
+  const openAgendaScreen = e => {
     navigation.navigate('CommonAgenda');
   };
 
-  const openCommonMembers = (e) => {
+  const openCommonMembers = e => {
     navigation.navigate('CommonMembers');
   };
 
-  const shareCommon = (event) => {
+  const shareCommon = event => {
     console.log('TODO: share functionality');
   };
 
-  const openCommonOptions = (event) => {
+  const openCommonOptions = event => {
     optionsSheetRef.current.snapTo(1);
     optionsSheetRef.current.snapTo(1);
   };
 
-  const openNotif = (event) => {
+  const openNotif = event => {
     commonOperationalStateNotifRef.current.snapTo(1);
     commonOperationalStateNotifRef.current.snapTo(1);
   };

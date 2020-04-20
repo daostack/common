@@ -24,7 +24,7 @@ import Modal from 'react-native-modal';
 import moment from 'moment';
 import CreateStepDotHeader from './CreateStepDotHeader';
 
-const CreateStep2 = (props) => {
+const CreateStep2 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [segmentedIndex, setSegmentedIndex] = useState(0);
@@ -48,7 +48,9 @@ const CreateStep2 = (props) => {
       case 0: {
         props.createCommonFormStore.fieldChanged(
           name,
-          moment().add('7', 'days').toDate(),
+          moment()
+            .add('7', 'days')
+            .toDate(),
         );
         setShow(false);
         break;
@@ -56,7 +58,9 @@ const CreateStep2 = (props) => {
       case 1: {
         props.createCommonFormStore.fieldChanged(
           name,
-          moment().add('1', 'months').toDate(),
+          moment()
+            .add('1', 'months')
+            .toDate(),
         );
         setShow(false);
         break;
@@ -186,7 +190,7 @@ const CreateStep2 = (props) => {
               tabTextStyle={{color: colors.mainBlue}}
               borderRadius={8}
               selectedIndex={segmentedIndex}
-              onTabPress={(index) => setSegmentedIndex(index)}
+              onTabPress={index => setSegmentedIndex(index)}
             />
             <Modal
               isVisible={show}
