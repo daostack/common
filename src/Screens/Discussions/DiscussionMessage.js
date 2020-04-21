@@ -19,8 +19,7 @@ import Icon from '../../Assets/iconfont/Icon';
 
 const DiscussionMessage = () => {
   return (
-    <View
-      style={styles.container}>
+    <View style={styles.container}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <Image
           style={{

@@ -50,7 +50,7 @@ class CreateCommonForm extends React.Component {
 
     console.log('createCommonFormStore');
     console.log(createCommonFormStore);
-    return <View></View>;
+    return <View />;
   }
 }
 

@@ -84,10 +84,10 @@ const Discussions = () => {
             }}
           />
         </View>
-        <DiscussionMessage/>
-        <DiscussionMessage/>
-        <DiscussionMessage/>
-        <DiscussionMessage/>
+        <DiscussionMessage />
+        <DiscussionMessage />
+        <DiscussionMessage />
+        <DiscussionMessage />
       </ScrollView>
 
       <KeyboardAvoidingView

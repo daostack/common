@@ -108,7 +108,7 @@ const CommonHome = () => {
 const App = ({userStore}) => {
   const [setOnboarded] = useState();
 
-  const onAuthStateChanged = async (user) => {
+  const onAuthStateChanged = async user => {
     try {
       userStore.setIsLoading(true);
       if (user) {
