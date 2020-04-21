@@ -34,7 +34,7 @@ module.exports = {
       "WithStatement"
     ],
     "no-unused-vars": [
-      1,
+      0,
       {
         "ignoreSiblings": true,
         "argsIgnorePattern": "res|next|^err"
@@ -62,9 +62,11 @@ module.exports = {
         "props": false
       }
     ],
+    "no-use-before-define": 0,
     "no-console": 0,
     "import/prefer-default-export": 0,
     "import": 0,
+    "global-require": 0,
     "func-names": 0,
     "space-before-function-paren": 0,
     "comma-dangle": 0,
@@ -72,7 +74,7 @@ module.exports = {
     "import/extensions": 0,
     "no-underscore-dangle": 0,
     "consistent-return": 0,
-    "react/display-name": 1,
+    "react/prop-types": 0,
     "react/no-array-index-key": 0,
     "react/react-in-jsx-scope": 0,
     "react/prefer-stateless-function": 0,
@@ -80,6 +82,8 @@ module.exports = {
     "react/no-unescaped-entities": 0,
     "jsx-a11y/accessible-emoji": 0,
     "react/require-default-props": 0,
+    "import/no-named-as-default": 0,
+    "import/named": 0,
     "react/jsx-filename-extension": [
       1,
       {

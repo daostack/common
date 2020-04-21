@@ -12,8 +12,9 @@ import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {colors, text} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
+import {observer, inject} from 'mobx-react';
+import {colors, text} from './src/Theme';
 
 import {
   CommonsList,
@@ -39,80 +40,78 @@ import {
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
-const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
 import {filterObjectByKeys} from './src/Util';
 import {userInfoFields} from './src/Stores/UserStore';
-import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import {firebase} from './src/Firebase';
 import Toast from './src/Util/Toast';
 
-const CommonHome = () => {
-  return (
-    <Tab.Navigator
-      initialRouteName="Explore"
-      screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => {
-          if (route.name === 'My feed') {
-            return (
-              <Image
-                source={require('./src/Assets/feed.png')}
-                style={{
-                  resizeMode: 'contain',
-                  width: 24,
-                  height: 24,
-                  tintColor: focused ? colors.mainBlue : '#92A2B5',
-                }}
-              />
-            );
-          } else if (route.name === 'Explore') {
-            return (
-              <Image
-                source={require('./src/Assets/commons.png')}
-                style={{
-                  resizeMode: 'contain',
-                  width: 24,
-                  height: 24,
-                  tintColor: focused ? colors.mainBlue : '#92A2B5',
-                }}
-              />
-            );
-          } else {
-            return (
-              <Image
-                source={require('./src/Assets/accountSelected.png')}
-                style={{
-                  resizeMode: 'contain',
-                  width: 20,
-                  height: 20,
-                  tintColor: focused ? colors.mainBlue : '#92A2B5',
-                }}
-              />
-            );
-          }
-        },
-      })}
-      tabBarOptions={{
-        activeTintColor: colors.mainBlue,
-      }}>
-      {/*<Tab.Screen name="Test" component={NativeBridgeTests} />*/}
-      <Tab.Screen name="My feed" component={UserProfileReadMode} />
-      <Tab.Screen name="Explore" component={CommonsList} />
-      <Tab.Screen name="Profile" component={UserProfile} />
-    </Tab.Navigator>
-  );
-};
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+const CommonHome = () => (
+  <Tab.Navigator
+    initialRouteName="Explore"
+    screenOptions={({route}) => ({
+      tabBarIcon: ({focused, color, size}) => {
+        if (route.name === 'My feed') {
+          return (
+            <Image
+              source={require('./src/Assets/feed.png')}
+              style={{
+                resizeMode: 'contain',
+                width: 24,
+                height: 24,
+                tintColor: focused ? colors.mainBlue : '#92A2B5',
+              }}
+            />
+          );
+        }
+        if (route.name === 'Explore') {
+          return (
+            <Image
+              source={require('./src/Assets/commons.png')}
+              style={{
+                resizeMode: 'contain',
+                width: 24,
+                height: 24,
+                tintColor: focused ? colors.mainBlue : '#92A2B5',
+              }}
+            />
+          );
+        }
+        return (
+          <Image
+            source={require('./src/Assets/accountSelected.png')}
+            style={{
+              resizeMode: 'contain',
+              width: 20,
+              height: 20,
+              tintColor: focused ? colors.mainBlue : '#92A2B5',
+            }}
+          />
+        );
+      },
+    })}
+    tabBarOptions={{
+      activeTintColor: colors.mainBlue,
+    }}>
+    {/* <Tab.Screen name="Test" component={NativeBridgeTests} /> */}
+    <Tab.Screen name="My feed" component={UserProfileReadMode} />
+    <Tab.Screen name="Explore" component={CommonsList} />
+    <Tab.Screen name="Profile" component={UserProfile} />
+  </Tab.Navigator>
+);
 
 const App = ({userStore}) => {
   const [setOnboarded] = useState();
 
-  const onAuthStateChanged = async (user) => {
+  const onAuthStateChanged = async user => {
     try {
       userStore.setIsLoading(true);
       if (user) {
         const appUser = await FirebaseService.getInstance().getUserById(
-          user.uid,
+          user.uid
         );
 
         const allUserInfo = {
