@@ -41,7 +41,7 @@ const UserProfileData = ({
     getUser();
   }, [userId, userStore.userInfo]);
 
-  const navigateToEditProfile = (isFirstOpening) => {
+  const navigateToEditProfile = isFirstOpening => {
     const navigate = CommonActions.navigate({
       name: 'EditProfile',
       params: {
@@ -87,7 +87,9 @@ const UserProfileData = ({
     }
   };
 
-  if (!user) return <Loader />;
+  if (!user) {
+    return <Loader />;
+  }
 
   return (
     <>
@@ -189,7 +191,7 @@ const UserProfileData = ({
               <View style={styles.swiperContent} />
             </View>
           </Swiper>
-    
+
     */}
       </View>
     </>

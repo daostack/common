@@ -21,6 +21,8 @@ import ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
 import FirebaseService from '../../Services/FirebaseService';
 import {useToast} from '../../Util/Toast';
+import CreateStepDotHeader from './CreateStepDotHeader';
+import {kFormatter} from '../../Util';
 
 const firebaseService = new FirebaseService();
 
@@ -33,9 +35,6 @@ const CreateStep4 = props => {
     'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
   );
   const [avatarURL, setAvatarURL] = useState(null);
-
-  console.log(form.name);
-
   const toast = useToast();
 
   useEffect(() => {
@@ -63,6 +62,17 @@ const CreateStep4 = props => {
     );
   };
 
+  useEffect(() => {
+    props.createCommonFormStore.registerFormField(
+      CreateCommonForm.AVATAR,
+      'url',
+    );
+    props.createCommonFormStore.registerFormField(
+      CreateCommonForm.IMAGE,
+      'url',
+    );
+  });
+
   const pickImage = isAvatar => {
     const options = {
       title: 'Select Avatar',
@@ -70,7 +80,6 @@ const CreateStep4 = props => {
       allowsEditing: isAvatar,
     };
     ImagePicker.showImagePicker(options, response => {
-      console.log('Response = ', response);
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -85,7 +94,15 @@ const CreateStep4 = props => {
             toast.hide();
             if (isAvatar) {
               setAvatarURL(url);
+              props.createCommonFormStore.fieldChanged(
+                CreateCommonForm.AVATAR,
+                url,
+              );
             } else {
+              props.createCommonFormStore.fieldChanged(
+                CreateCommonForm.IMAGE,
+                url,
+              );
               setImageURI(url);
             }
           })
@@ -101,22 +118,12 @@ const CreateStep4 = props => {
         backgroundColor: 'white',
       }}>
       <CreateStepNavigation navigation={props.navigation} title="Agenda" />
-      <Animated.View style={[styles.header, {height: headerHeight}]}>
-        <View style={styles.bar}>
-          <View
-            style={{
-              marginTop: 80,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <View style={styles.dot} />
-            <View style={styles.dot} />
-            <View style={styles.dot} />
-            <View style={styles.dot} />
-          </View>
-          <Text style={styles.title}>Review</Text>
-        </View>
-      </Animated.View>
+      <CreateStepDotHeader
+        title="Final touches and review"
+        currentIndex={4}
+        navigation={props.navigation}
+        headerHeight={headerHeight}
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         width={width}
@@ -198,10 +205,10 @@ const CreateStep4 = props => {
               </TouchableOpacity>
               <View width={width - 100}>
                 <Text style={styles.titleName}>
-                  {form[CreateCommonForm.FIELD_NAME]}
+                  {form[CreateCommonForm.NAME]}
                 </Text>
                 <Text style={styles.byline}>
-                  {form[CreateCommonForm.FIELD_BYLINE]}
+                  {form[CreateCommonForm.BYLINE]}
                 </Text>
               </View>
               <TouchableOpacity
@@ -264,7 +271,7 @@ const CreateStep4 = props => {
                 <TouchableOpacity
                   style={styles.formImageFielAddIcon}
                   onPress={() => setAvatarURL(null)}>
-                  <Icon name="close" size={10} color="white" />
+                  <Icon name="delete" size={15} color="white" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -276,7 +283,7 @@ const CreateStep4 = props => {
             <View style={{minWidth: 90, marginRight: 10}}>
               <Text
                 style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>
-                ${form[CreateCommonForm.FIELD_FUNDING_GOAL]}
+                ${kFormatter(form[CreateCommonForm.FUNDING_GOAL])}
               </Text>
               <Text style={{fontSize: 14, textAlign: 'center', marginTop: 10}}>
                 Goal
@@ -285,142 +292,121 @@ const CreateStep4 = props => {
             <View style={{width: 90, marginHorizontal: 10}}>
               <Text
                 style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>
-                ${form[CreateCommonForm.FIELD_MINIMUM]}
+                ${kFormatter(form[CreateCommonForm.MINIMUM])}
               </Text>
               <Text style={{fontSize: 14, textAlign: 'center', marginTop: 10}}>
                 Contribution
               </Text>
             </View>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
               <Icon
                 name="edit"
                 size={16}
                 style={{textAlign: 'right', alignSelf: 'flex-end'}}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <View style={styles.sectionTitle}>
             <Text style={{fontSize: 18, fontWeight: 'bold'}}>About</Text>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
               <Icon
                 name="edit"
                 size={16}
                 style={{textAlign: 'right', alignSelf: 'flex-end'}}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <Text style={styles.textContent}>
-            {form[CreateCommonForm.FIELD_DESCRIPTION]}
+            {form[CreateCommonForm.DESCRIPTION]}
           </Text>
           <>
             <View style={styles.sectionTitle}>
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>
                 Course of action
               </Text>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
                 <Icon
                   name="edit"
                   size={16}
                   style={{textAlign: 'right', alignSelf: 'flex-end'}}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             <Text style={styles.textContent}>
-              {form[CreateCommonForm.FIELD_ACTION]}
+              {form[CreateCommonForm.ACTION]}
             </Text>
           </>
           <>
             <View style={styles.sectionTitle}>
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>Link</Text>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
                 <Icon
                   name="edit"
                   size={16}
                   style={{textAlign: 'right', alignSelf: 'flex-end'}}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
-            <Text style={styles.textContent}>https://www.google.com/</Text>
+            {form[CreateCommonForm.LINKS].length ? (
+              form[CreateCommonForm.LINKS].map(x => (
+                <Text style={styles.textContent}>{x}</Text>
+              ))
+            ) : (
+              <View />
+            )}
           </>
           <>
             <View style={styles.sectionTitle}>
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>Deadline</Text>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
                 <Icon
                   name="edit"
                   size={16}
                   style={{textAlign: 'right', alignSelf: 'flex-end'}}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             <Text style={styles.textContent}>
-              {moment(form[CreateCommonForm.FIELD_DEADLINE]).format(
-                'MMM DD, YYYY',
-              )}
+              {moment(form[CreateCommonForm.DEADLINE]).format('MMM DD, YYYY')}
             </Text>
           </>
-          <>
-            <Text
-              style={{
-                fontSize: 14,
-                marginTop: 20,
-                paddingHorizontal: 24,
-                color: colors.grey3,
-              }}>
-              Rule #1
-            </Text>
-            <View style={[styles.sectionTitle, {marginTop: 10}]}>
-              <Text style={{fontSize: 14, fontWeight: 'bold'}}>
-                No promotions or spam
-              </Text>
-              <TouchableOpacity
-                style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
-                <Icon
-                  name="edit"
-                  size={16}
-                  style={{textAlign: 'right', alignSelf: 'flex-end'}}
-                />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.textContent}>
-              We created this community to help you along your journey. Links to
-              sponsored content or brands will vote you out.
-            </Text>
-          </>
-          <>
-            <Text
-              style={{
-                fontSize: 14,
-                marginTop: 20,
-                paddingHorizontal: 24,
-                color: colors.grey3,
-              }}>
-              Rule #2
-            </Text>
-            <View style={[styles.sectionTitle, {marginTop: 10}]}>
-              <Text style={{fontSize: 14, fontWeight: 'bold'}}>
-                Be courteous and kind to others
-              </Text>
-              <TouchableOpacity
-                style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
-                <Icon
-                  name="edit"
-                  size={16}
-                  style={{textAlign: 'right', alignSelf: 'flex-end'}}
-                />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.textContent}>
-              We're all in this together to create a nurturing enviroment. Let's
-              teat everyone with resprct. Healthy debates are natural, but
-              kindness is required.
-            </Text>
-          </>
+
+          {form[CreateCommonForm.RULES].length ? (
+            form[CreateCommonForm.RULES].map((rule, index) => (
+              <>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    marginTop: 20,
+                    paddingHorizontal: 24,
+                    color: colors.grey3,
+                  }}>
+                  Rule #{index + 1}
+                </Text>
+                <View style={[styles.sectionTitle, {marginTop: 10}]}>
+                  <Text style={{fontSize: 14, fontWeight: 'bold'}}>
+                    {rule.title}
+                  </Text>
+                  {/* <TouchableOpacity
+                          style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
+                          <Icon
+                            name="edit"
+                            size={16}
+                            style={{textAlign: 'right', alignSelf: 'flex-end'}}
+                          />
+                        </TouchableOpacity> */}
+                </View>
+                <Text style={styles.textContent}>{rule.description}</Text>
+              </>
+            ))
+          ) : (
+            <View />
+          )}
         </View>
         <TouchableOpacity
           style={styles.continueButton}
@@ -465,50 +451,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.black,
   },
-  dot: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: colors.grey5,
-    borderColor: colors.mainBlue,
-    borderWidth: 1,
-    marginHorizontal: 5,
-  },
-  dot2: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: colors.grey5,
-    borderColor: colors.grey3,
-    borderWidth: 1,
-    marginHorizontal: 5,
-  },
-  header: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'white',
-    overflow: 'hidden',
-    zIndex: 999,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.grey4,
-  },
-  bar: {
-    marginTop: 28,
-    height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-    // bottomborder: 'solid',
-  },
-  title: {
-    backgroundColor: 'transparent',
-    color: colors.black,
-    fontSize: 16,
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
-    paddingVertical: 10,
-  },
   readMoreButton: {
     fontSize: 12,
     // fontWeight: '700',
@@ -536,6 +478,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 0,
     paddingHorizontal: 24,
+    marginBottom: 15,
   },
   titleName: {
     color: 'white',

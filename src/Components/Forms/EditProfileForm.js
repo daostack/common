@@ -14,7 +14,7 @@ class EditProfileForm extends React.Component {
 
   formSkip() {}
 
-  formSave = async (e) => {
+  formSave = async e => {
     const {editProfileFormStore, userStore} = this.props;
     if (editProfileFormStore.isFormValid()) {
       const changedFields = editProfileFormStore.getChangedFormFieldsJson();
@@ -22,9 +22,12 @@ class EditProfileForm extends React.Component {
       let publicData = {};
       let authData = {};
 
-      if (changedFields.displayName)
+      if (changedFields.displayName) {
         authData.displayName = changedFields.displayName;
-      if (changedFields.intro) publicData.intro = changedFields.intro;
+      }
+      if (changedFields.intro) {
+        publicData.intro = changedFields.intro;
+      }
 
       try {
         await FirebaseService.getInstance().editUser(
@@ -49,7 +52,7 @@ class EditProfileForm extends React.Component {
     }
   };
 
-  onFormClose = (e) => {
+  onFormClose = e => {
     const {onFormClose} = this.props;
     if (onFormClose) {
       onFormClose();
