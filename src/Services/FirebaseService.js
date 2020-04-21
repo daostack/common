@@ -23,11 +23,11 @@ export default class FirebaseService {
       .doc('fwdzYtFOP9Q8tT65tBaU')
       .collection('userInfo')
       .get()
-      .then((snapshots) => {
+      .then(snapshots => {
         if (snapshots.empty) {
           return [];
         }
-        return snapshots.docs.map((doc) => doc.data());
+        return snapshots.docs.map(doc => doc.data());
       });
   }
 
@@ -37,7 +37,7 @@ export default class FirebaseService {
       .collection(DB_COLLECTIONS.users)
       .doc(userId)
       .get()
-      .then((snapshots) => {
+      .then(snapshots => {
         if (!snapshots) {
           return null;
         }
@@ -50,11 +50,11 @@ export default class FirebaseService {
     return db
       .collection(DB_COLLECTIONS.users)
       .get()
-      .then((snapshots) => {
+      .then(snapshots => {
         if (snapshots.empty) {
           return [];
         }
-        return snapshots.docs.map((doc) => {
+        return snapshots.docs.map(doc => {
           return {...{id: doc.id}, ...doc.data()};
         });
       });
@@ -66,7 +66,7 @@ export default class FirebaseService {
       .collection(DB_COLLECTIONS.users)
       .doc(googleId)
       .set(newUser)
-      .then((ref) => {
+      .then(ref => {
         return ref;
       });
   }
@@ -77,7 +77,7 @@ export default class FirebaseService {
       .collection(DB_COLLECTIONS.users)
       .doc(userId)
       .update(user)
-      .then((ref) => {
+      .then(ref => {
         //console.log('Edited document with ID: ', ref.id);
       });
   }
