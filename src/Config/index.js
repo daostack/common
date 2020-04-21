@@ -8,9 +8,9 @@ import {WebSocketLink} from 'apollo-link-ws';
 import {getMainDefinition} from 'apollo-utilities';
 
 const graphHttpLink =
-  'https://api.thegraph.com/subgraphs/name/daostack/v7_2_exp_rinkeby';
+  'https://api.thegraph.com/subgraphs/name/daostack/v7_4_exp_rinkeby';
 const graphwsLink =
-  'wss://api.thegraph.com/subgraphs/name/daostack/v7_2_exp_rinkeby';
+  'wss://api.thegraph.com/subgraphs/name/daostack/v7_4_exp_rinkeby';
 const ipfsLink = 'https://api.thegraph.com/ipfs-daostack/api/v0';
 
 const httpLink = new HttpLink({
