@@ -20,3 +20,4 @@ export MyCommons from './MyCommons';
 export CommonAgenda from './CommonAgenda';
 export CommonMembers from './CommonMembers';
 export Discussions from './Discussions/Discussions';
+export DiscussionPost from './Discussions/DiscussionPost';

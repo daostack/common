@@ -37,6 +37,7 @@ import {
   CreateStep3,
   CreateStep4,
   Discussions,
+  DiscussionPost,
 } from './src/Screens';
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
@@ -263,6 +264,13 @@ const App = ({userStore}) => {
           <Stack.Screen
             name="Discussions"
             component={Discussions}
+            // options={({navigation, route}) => ({
+            //   headerShown: false,
+            // })}
+          />
+          <Stack.Screen
+            name="New Post"
+            component={DiscussionPost}
             // options={({navigation, route}) => ({
             //   headerShown: false,
             // })}

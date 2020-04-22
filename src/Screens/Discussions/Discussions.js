@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useRef} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -17,10 +17,39 @@ import {
 import Icon from '../../Assets/iconfont/Icon';
 import {text, layout, colors} from '../../Theme';
 import DiscussionMessage from './DiscussionMessage';
+import firestore from '@react-native-firebase/firestore';
 
 const {width} = Dimensions.get('window');
 
 const Discussions = () => {
+  // const [message, setMessage] = useState('');
+  const inputRef = useRef(null);
+
+  sendMessageToDiscussion = async () => {
+    const message = inputRef.current._lastNativeText;
+    console.log('Message', inputRef.current._lastNativeText);
+    if (message && message.trim().length) {
+      firestore()
+        .collection('discussion')
+        .doc('QkLfLcEucHuH1fhuq1Ci')
+        .collection('message')
+        .doc()
+        .set({
+          text: message,
+          createTime: new Date(),
+        })
+        .then(() => {
+          console.log('YES');
+          inputRef.current.clear();
+          // inputRef.focused
+          Keyboard.dismiss();
+        })
+        .catch(error => {
+          console.log('NO', error);
+        });
+    }
+  };
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
       <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
@@ -111,8 +140,13 @@ const Discussions = () => {
             alignItems: 'center',
             paddingHorizontal: 15,
           }}>
-          <TextInput style={{flex: 1}} fontSize={20} />
-          <TouchableOpacity>
+          <TextInput
+            ref={inputRef}
+            // onChangeText={text => setMessage(text)}
+            style={{flex: 1}}
+            fontSize={20}
+          />
+          <TouchableOpacity onPress={sendMessageToDiscussion}>
             <Icon name="edit" size={25} />
           </TouchableOpacity>
         </View>
