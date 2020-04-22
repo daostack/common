@@ -29,8 +29,10 @@ class CreateDiscussionForm extends React.Component {
       console.log('createDiscussionStore', changedFields);
 
       firestore()
+        .collection('common')
+        .doc('48NPcGnpskN9YkqVNXKA')
         .collection('discussion')
-        .doc('QkLfLcEucHuH1fhuq1Ci')
+        .doc()
         .set({
           title: changedFields[CreateDiscussionForm.TITLE],
           message: changedFields[CreateDiscussionForm.MESSAGE],
@@ -42,41 +44,15 @@ class CreateDiscussionForm extends React.Component {
           console.log('YES');
           Toast.done('Sent');
           Keyboard.dismiss();
+
+          if (this.props.onFormSubmit) {
+            this.props.onFormSubmit(changedFields);
+          }
         })
         .catch(error => {
           Toast.error(error);
           console.log('NO', error);
         });
-      // let publicData = {};
-      // let authData = {};
-
-      // if (changedFields.displayName) {
-      //   authData.displayName = changedFields.displayName;
-      // }
-      // if (changedFields.intro) {
-      //   publicData.intro = changedFields.intro;
-      // }
-
-      // try {
-      //   await FirebaseService.getInstance().editUser(
-      //     userStore.userInfo.uid,
-      //     publicData,
-      //   );
-      //   await AuthService.getInstance().updateUserData(authData);
-      // } catch (err) {
-      //   console.log('Error -> ', err);
-      //   editProfileFormStore.form.meta.submitError = `${err.toString()}  \n ${
-      //     err.response
-      //       ? `\nCode: ${err.response.data.code}  \nMessage: ${err.response.data.message}`
-      //       : ''
-      //   }`;
-      //   editProfileFormStore.form.meta.isLoadingSubmit = false;
-      //   throw err;
-      // }
-
-      // if (this.props.onFormSubmit) {
-      //   this.props.onFormSubmit(changedFields);
-      // }
     }
   };
 

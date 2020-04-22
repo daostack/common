@@ -18,12 +18,12 @@ import {text, layout, colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import CreateDiscussionForm from '../../Components/Forms/CreateDiscussionForm';
 
-const DiscussionPost = () => {
+const DiscussionPost = props => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
       <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
         <View style={{backgroundColor: colors.white, flex: 1, padding: 20}}>
-          <CreateDiscussionForm />
+          <CreateDiscussionForm onFormSubmit={() => props.navigation.pop()} />
         </View>
       </ScrollView>
     </SafeAreaView>

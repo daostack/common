@@ -8,6 +8,7 @@ import {
   Image,
   ImageBackground,
   TouchableOpacity,
+  SafeAreaView
 } from 'react-native';
 import gql from 'graphql-tag';
 import {ApolloClientConfig as client} from '../Config';
@@ -21,6 +22,9 @@ import CommonOperationalStateNotif from './BottomSheetScreens/CommonOperationalS
 import SortProposals from './BottomSheetScreens/SortProposals';
 import CommonProfileOptions from './BottomSheetScreens/CommonProfileOptions';
 import BottomSheetContainer from '../Components/BottomSheetContainer';
+import DiscussionCard from './Discussions/DiscussionCard';
+import BottomRightButton from '../Components/BottomRightButton';
+import DiscussionList from './Discussions/DiscussionList';
 
 const {cache} = client;
 let {height, width} = Dimensions.get('window');
@@ -122,10 +126,11 @@ const CommonProfile = ({navigation}) => {
 
   const Discussions = () => {
     return (
-      <ViewTabNoData
-        title="No Discussions"
-        subtitle="Have things in common? This is the place to talk about them."
-      />
+      // <ViewTabNoData
+      //   title="No Discussions"
+      //   subtitle="Have things in common? This is the place to talk about them."
+      // />
+      <DiscussionList navigation={navigation} commonId='48NPcGnpskN9YkqVNXKA' />
     );
   };
 
@@ -370,7 +375,7 @@ const CommonProfile = ({navigation}) => {
           onIndexChange={setIndex}
           initialLayout={initialLayout}
           renderTabBar={renderTabBar}
-          style={{}}
+          style={{backgroundColor: colors.lightBlue}}
         />
 
         <View style={styles.actionButtonContainer}>
@@ -388,6 +393,8 @@ const CommonProfile = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      <BottomRightButton onPress={() => navigation.navigate('New Post')} />
 
       <BottomSheetContainer ref={commonOperationalStateNotifRef}>
         <CommonOperationalStateNotif navigation={navigation} />

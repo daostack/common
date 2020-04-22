@@ -17,7 +17,8 @@ import {
 import {text, layout, colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
-const DiscussionMessage = () => {
+const DiscussionMessage = props => {
+  const data = props.data;
   return (
     <View style={styles.container}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -35,8 +36,7 @@ const DiscussionMessage = () => {
         <Text style={{color: colors.grey3}}>0.1% REP</Text>
       </View>
       <Text style={{marginVertical: 10}}>
-        It is a component to solve the common problem of views that need to move
-        out of the way of the virtual keyboard.
+        {data.text}
       </Text>
       <View style={{flexDirection: 'row'}}>
         <Text style={{flex: 1, fontSize: 12, fontWeight: '300'}}>

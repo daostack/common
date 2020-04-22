@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -27,6 +27,29 @@ const Discussions = props => {
   const [inputHeight, setInputHeight] = useState(60);
   const inputRef = useRef(null);
 
+  const data = props.route.params.data;
+  const commonId = props.route.params.commonId;
+  const [list, setList] = useState([]);
+  const [trigger, setTrigger] = useState(true);
+
+  console.log('commonId', commonId);
+  console.log('discussionId', data.id);
+  console.log('data1', data);
+
+  useEffect(() => {
+    const fetchList = async () => {
+      const snapshot = await firestore()
+        .collection('common')
+        .doc(commonId)
+        .collection('discussion')
+        .doc(data.id)
+        .collection('message')
+        .get();
+      setList(snapshot.docs.map(doc => ({id: doc.id, ...doc.data()})));
+    };
+    fetchList();
+  }, [commonId, trigger]);
+
   sendMessageToDiscussion = async () => {
     const userStore = props.userStore;
     console.log('userStore', userStore);
@@ -34,8 +57,10 @@ const Discussions = props => {
     console.log('Message', inputRef.current._lastNativeText);
     if (message && message.trim().length) {
       firestore()
+        .collection('common')
+        .doc(commonId)
         .collection('discussion')
-        .doc('QkLfLcEucHuH1fhuq1Ci')
+        .doc(data.id)
         .collection('message')
         .doc()
         .set({
@@ -48,6 +73,7 @@ const Discussions = props => {
           inputRef.current.clear();
           // inputRef.focused
           // Toast.done('Sent');
+          setTrigger(!trigger);
           Keyboard.dismiss();
         })
         .catch(error => {
@@ -61,9 +87,7 @@ const Discussions = props => {
     <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
       <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
         <View style={{backgroundColor: colors.white, flex: 1, padding: 20}}>
-          <Text style={styles.title}>
-            How about planring tree in india as well?
-          </Text>
+          <Text style={styles.title}>{data.title}</Text>
           <View
             style={{
               flexDirection: 'row',
@@ -87,13 +111,7 @@ const Discussions = props => {
 
           <View>
             <Text style={{fontSize: 16, lineHeight: 25, paddingVertical: 20}}>
-              It is a component to solve the common problem of views that need
-              to move out of the way of the virtual keyboard. It can
-              automatically adjust either its height, position, or bottom
-              padding based on the keyboard height. It is a component to solve
-              the common problem of views that need to move out of the way of
-              the virtual keyboard. It can automatically adjust either its
-              height, position, or bottom padding based on the keyboard height.
+              {data.message}
             </Text>
           </View>
 
@@ -120,35 +138,15 @@ const Discussions = props => {
             }}
           />
         </View>
-        <DiscussionMessage />
-        <DiscussionMessage />
-        <DiscussionMessage />
-        <DiscussionMessage />
+        {list.map(x => (
+          <DiscussionMessage data={x} />
+        ))}
       </ScrollView>
 
       <KeyboardAvoidingView
         // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{position: 'absolute', bottom: 0, flex: 1}}>
-        <View
-          style={{
-            backgroundColor: colors.white,
-            borderColor: colors.grey4,
-            // borderwidth: 1,
-            borderBottomWidth: 1,
-            // height: 60,
-            width: width,
-            flexDirection: 'row',
-            shadowColor: 'rgba(0, 0, 0, 0.2)',
-            shadowOffset: {
-              width: 0,
-              height: -4,
-            },
-            shadowRadius: 4,
-            shadowOpacity: 1,
-            alignItems: 'center',
-            paddingHorizontal: 15,
-            paddingVertical: 15,
-          }}>
+        <View style={styles.input}>
           <TextInput
             ref={inputRef}
             editable={true}
@@ -189,6 +187,25 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: colors.mainBlue,
   },
+  input: {
+    backgroundColor: colors.white,
+    borderColor: colors.grey4,
+    // borderwidth: 1,
+    borderBottomWidth: 1,
+    // height: 60,
+    width: width,
+    flexDirection: 'row',
+    shadowColor: 'rgba(0, 0, 0, 0.2)',
+    shadowOffset: {
+      width: 0,
+      height: -4,
+    },
+    shadowRadius: 4,
+    shadowOpacity: 1,
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+  }
 });
 
 export default inject('userStore')(observer(Discussions));
