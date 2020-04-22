@@ -13,7 +13,7 @@ class CreateCommonFormStore extends FormStore {
     for (const key in this.form.fields) {
       const formField = this.form.fields[key];
 
-      const links = CreateCommonForm.FIELD_LINKS;
+      const links = CreateCommonForm.LINKS;
       if (key.startsWith(links)) {
         if (!changedFieldsJson[links]) {
           changedFieldsJson[links] = [];
@@ -45,11 +45,11 @@ class CreateCommonFormStore extends FormStore {
     }
 
     if (titles.length > 0) {
-      changedFieldsJson[CreateCommonForm.FIELD_RULES] = [...titles.keys()].map(
-        x => {
-          return {title: titles[x], description: body[x]};
-        },
-      );
+      changedFieldsJson[CreateCommonForm.RULES] = [...titles.keys()].map(x => {
+        return {title: titles[x], description: body[x]};
+      });
+    } else {
+      changedFieldsJson[CreateCommonForm.RULES] = [];
     }
 
     return changedFieldsJson;

@@ -8,17 +8,17 @@ import FirebaseService from '../../Services/FirebaseService';
 const firebaseService = new FirebaseService();
 
 class CreateCommonForm extends React.Component {
-  static FIELD_NAME = 'name';
-  static FIELD_BYLINE = 'byline';
-  static FIELD_DESCRIPTION = 'description';
-  static FIELD_LINKS = 'links';
-  static FIELD_FUNDING_GOAL = 'funding';
-  static FIELD_DEADLINE = 'deadline';
-  static FIELD_MINIMUM = 'minimun';
-  static FIELD_ACTION = 'action';
-  static FIELD_RULES = 'rules';
-  static FIELD_AVATAR = 'avatar';
-  static FIELD_AVATAR = 'image';
+  static NAME = 'name';
+  static BYLINE = 'byline';
+  static DESCRIPTION = 'description';
+  static LINKS = 'links';
+  static FUNDING_GOAL = 'funding';
+  static DEADLINE = 'deadline';
+  static MINIMUM = 'minimun';
+  static ACTION = 'action';
+  static RULES = 'rules';
+  static AVATAR = 'avatar';
+  static IMAGE = 'image';
 
   formSkip() {}
 

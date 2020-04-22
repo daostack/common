@@ -2,6 +2,19 @@
 
 import React from 'react';
 
+import Icondelete from './Icondelete';
+import Icondollar from './Icondollar';
+import Iconsort from './Iconsort';
+import IconproposalIndication from './IconproposalIndication';
+import IconproposalsSelected from './IconproposalsSelected';
+import Iconproposals from './Iconproposals';
+import IconhistorySelected from './IconhistorySelected';
+import Iconhistory from './Iconhistory';
+import IcondiscussionSelected from './IcondiscussionSelected';
+import Icondiscussion from './Icondiscussion';
+import Iconshare32 from './Iconshare32';
+import IconmenuHorizontal from './IconmenuHorizontal';
+import Icondonate16 from './Icondonate16';
 import IconaddPicture from './IconaddPicture';
 import Icongroup1 from './Icongroup1';
 import Iconalert from './Iconalert';
@@ -26,6 +39,7 @@ import Icongroup from './Icongroup';
 import Iconfollowing from './Iconfollowing';
 import Iconmenu from './Iconmenu';
 import Iconreport from './Iconreport';
+import Iconplus from './Iconplus';
 import Iconpicture from './Iconpicture';
 import Iconpencil from './Iconpencil';
 import Iconsave from './Iconsave';
@@ -39,8 +53,34 @@ import Iconfeed from './Iconfeed';
 import Icongoogle from './Icongoogle';
 import Iconaccount from './Iconaccount';
 
-export const Icon = ({ name, ...rest }) => {
+export const Icon = ({name, ...rest}) => {
   switch (name) {
+    case 'delete':
+      return <Icondelete {...rest} />;
+    case 'dollar':
+      return <Icondollar {...rest} />;
+    case 'sort':
+      return <Iconsort {...rest} />;
+    case 'proposal-indication':
+      return <IconproposalIndication {...rest} />;
+    case 'proposals-selected':
+      return <IconproposalsSelected {...rest} />;
+    case 'proposals':
+      return <Iconproposals {...rest} />;
+    case 'history-selected':
+      return <IconhistorySelected {...rest} />;
+    case 'history':
+      return <Iconhistory {...rest} />;
+    case 'discussion-selected':
+      return <IcondiscussionSelected {...rest} />;
+    case 'discussion':
+      return <Icondiscussion {...rest} />;
+    case 'share-32':
+      return <Iconshare32 {...rest} />;
+    case 'menu-horizontal':
+      return <IconmenuHorizontal {...rest} />;
+    case 'donate-16':
+      return <Icondonate16 {...rest} />;
     case 'add-picture':
       return <IconaddPicture {...rest} />;
     case 'group1':
@@ -89,6 +129,8 @@ export const Icon = ({ name, ...rest }) => {
       return <Iconmenu {...rest} />;
     case 'report':
       return <Iconreport {...rest} />;
+    case 'plus':
+      return <Iconplus {...rest} />;
     case 'picture':
       return <Iconpicture {...rest} />;
     case 'pencil':
