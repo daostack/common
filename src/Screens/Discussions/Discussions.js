@@ -14,18 +14,22 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
+import {observer, inject} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
 import {text, layout, colors} from '../../Theme';
 import DiscussionMessage from './DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
+import Toast from '../../Util/Toast.js';
 
 const {width} = Dimensions.get('window');
 
-const Discussions = () => {
-  // const [message, setMessage] = useState('');
+const Discussions = props => {
+  const [inputHeight, setInputHeight] = useState(60);
   const inputRef = useRef(null);
 
   sendMessageToDiscussion = async () => {
+    const userStore = props.userStore;
+    console.log('userStore', userStore);
     const message = inputRef.current._lastNativeText;
     console.log('Message', inputRef.current._lastNativeText);
     if (message && message.trim().length) {
@@ -37,15 +41,18 @@ const Discussions = () => {
         .set({
           text: message,
           createTime: new Date(),
+          owner: userStore.userInfo.uid,
         })
         .then(() => {
           console.log('YES');
           inputRef.current.clear();
           // inputRef.focused
+          // Toast.done('Sent');
           Keyboard.dismiss();
         })
         .catch(error => {
           console.log('NO', error);
+          Toast.done(error);
         });
     }
   };
@@ -125,9 +132,10 @@ const Discussions = () => {
         <View
           style={{
             backgroundColor: colors.white,
-            borderColor: colors.mainBlue,
-            borderwidth: 1,
-            height: 60,
+            borderColor: colors.grey4,
+            // borderwidth: 1,
+            borderBottomWidth: 1,
+            // height: 60,
             width: width,
             flexDirection: 'row',
             shadowColor: 'rgba(0, 0, 0, 0.2)',
@@ -139,11 +147,16 @@ const Discussions = () => {
             shadowOpacity: 1,
             alignItems: 'center',
             paddingHorizontal: 15,
+            paddingVertical: 15,
           }}>
           <TextInput
             ref={inputRef}
-            // onChangeText={text => setMessage(text)}
-            style={{flex: 1}}
+            editable={true}
+            multiline={true}
+            onContentSizeChange={e =>
+              setInputHeight(e.nativeEvent.contentSize.height)
+            }
+            style={{flex: 1, height: inputHeight}}
             fontSize={20}
           />
           <TouchableOpacity onPress={sendMessageToDiscussion}>
@@ -178,4 +191,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Discussions;
+export default inject('userStore')(observer(Discussions));
