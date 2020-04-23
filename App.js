@@ -7,7 +7,7 @@
  */
 
 import React, {useState, useEffect} from 'react';
-import {Image, StyleSheet} from 'react-native';
+import {Image, StyleSheet, Platform} from 'react-native';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -47,6 +47,12 @@ import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import {firebase} from './src/Firebase';
 import Toast from './src/Util/Toast';
+import KeyboardManager from 'react-native-keyboard-manager';
+
+if (Platform.OS === 'ios') {
+  KeyboardManager.setEnable(true);
+  KeyboardManager.setToolbarPreviousNextButtonEnable(true);
+}
 
 const CommonHome = () => {
   return (

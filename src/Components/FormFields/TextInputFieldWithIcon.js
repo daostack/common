@@ -4,8 +4,9 @@ import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import colors from '../../Theme/colors';
 import layout from '../../Theme/layout';
+import Icon from '../../Assets/iconfont/Icon';
 
-class TextInputField extends React.Component {
+class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
   toggleValueBtn;
   placeFieldActionComponent;
@@ -66,6 +67,13 @@ class TextInputField extends React.Component {
       numberOfLines,
       keyboardType,
 
+      // Icon props
+      iconName,
+      iconSize,
+      iconEmptyColor,
+      iconFillColor,
+      iconStyle,
+
       // Validation management properties
       validation,
 
@@ -104,26 +112,41 @@ class TextInputField extends React.Component {
           <Text style={styles.label}>{label}</Text>
           <Text style={styles.infoLabel}>{infoLabel}</Text>
         </View>
-        <TextInput
-          {...defaultMultilineProps}
-          {...otherProps}
-          multiline={multiline}
-          style={styleTextfield}
-          placeholder={placeholderText}
-          onChangeText={this.onChangeText}
-          keyboardType={keyboardType}
-          onFocus={this.onFocus}
-          onBlur={this.onBlur}
-          secureTextEntry={this.state.showPassword}
-          value={
-            validation
-              ? validation.formStore.form.fields[
+        <View style={styleTextfield}>
+          <View style={iconStyle}>
+            <Icon
+              name={iconName}
+              size={iconSize}
+              color={
+                validation.formStore.form.fields[
                   validation.name
-                ].value.toString()
-              : value
-          }
-        />
-        {this.toggleValueBtn}
+                ].value.toString() === ''
+                  ? iconEmptyColor
+                  : iconFillColor
+              }
+            />
+          </View>
+          <TextInput
+            {...defaultMultilineProps}
+            {...otherProps}
+            multiline={multiline}
+            style={{flex: 1}}
+            placeholder={placeholderText}
+            onChangeText={this.onChangeText}
+            keyboardType={keyboardType}
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
+            secureTextEntry={this.state.showPassword}
+            value={
+              validation
+                ? validation.formStore.form.fields[
+                    validation.name
+                  ].value.toString()
+                : value
+            }
+          />
+          {this.toggleValueBtn}
+        </View>
       </View>
     );
   }
@@ -159,14 +182,17 @@ class TextInputField extends React.Component {
 }
 
 // Set default props
-TextInputField.defaultProps = {
+TextInputFieldWithIcon.defaultProps = {
   password: false,
 };
 
 const styles = StyleSheet.create({
   textfield: {
     //minHeight: 48,
-    alignSelf: 'stretch',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // alignSelf: 'stretch',
     borderRadius: 3,
     backgroundColor: colors.white,
     borderStyle: 'solid',
@@ -184,7 +210,6 @@ const styles = StyleSheet.create({
   textfieldError: {
     borderColor: colors.error,
   },
-
   label: {
     fontSize: 14,
     fontWeight: 'normal',
@@ -205,4 +230,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(TextInputField);
+export default observer(TextInputFieldWithIcon);

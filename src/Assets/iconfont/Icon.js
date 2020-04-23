@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+import Icondelete from './Icondelete';
+import Icondollar from './Icondollar';
 import Iconsort from './Iconsort';
 import IconproposalIndication from './IconproposalIndication';
 import IconproposalsSelected from './IconproposalsSelected';
@@ -51,8 +53,12 @@ import Iconfeed from './Iconfeed';
 import Icongoogle from './Icongoogle';
 import Iconaccount from './Iconaccount';
 
-export const Icon = ({ name, ...rest }) => {
+export const Icon = ({name, ...rest}) => {
   switch (name) {
+    case 'delete':
+      return <Icondelete {...rest} />;
+    case 'dollar':
+      return <Icondollar {...rest} />;
     case 'sort':
       return <Iconsort {...rest} />;
     case 'proposal-indication':
