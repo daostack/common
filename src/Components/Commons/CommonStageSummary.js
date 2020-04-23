@@ -27,6 +27,7 @@ const CommonStageSummary = ({isFundingStage, commonProgressInfo}) => {
               ...styles.headerSmallText,
               color: colors.grey3,
               ...layout.marginTopS,
+              ...layout.marginBottomS,
             }}>
             {commonProgressInfo.time} days to go
           </Text>
@@ -99,9 +100,11 @@ const styles = StyleSheet.create({
   },
   commonProgressContainer: {
     ...layout.content,
+    paddingVertical: 0,
   },
   commonNumbers: {
     ...layout.content,
+    padding: 10,
     ...layout.flexRow,
     width: '100%',
     alignItems: 'center',
@@ -121,6 +124,7 @@ const styles = StyleSheet.create({
     height: 8,
     alignItems: 'flex-start',
     justifyContent: 'center',
+    ...layout.marginTopS,
   },
   innerProgressBar: {
     width: 380 / 4,

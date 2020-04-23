@@ -92,6 +92,7 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
       source={{
         uri: commonInfo.cover,
       }}
+      imageStyle={navigation ? {} : styles.backgoundRoundedTopEdges}
       style={styles.coverBackground}>
       {navigation ? renderCoverInSafeArea() : renderCover()}
     </ImageBackground>
@@ -101,6 +102,10 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
 const styles = StyleSheet.create({
   coverBackground: {
     paddingBottom: 20,
+  },
+  backgoundRoundedTopEdges: {
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
   },
   headerContainerWrap: {
     ...layout.flexRow,
