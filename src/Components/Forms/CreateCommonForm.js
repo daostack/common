@@ -1,11 +1,6 @@
 import React from 'react';
-import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
-import TextInputField from '../FormFields/TextInputField';
-import ImageField from '../FormFields/ImageField';
+import {View} from 'react-native';
 import {observer, inject} from 'mobx-react';
-import {layout, text} from '../../Theme';
-import FirebaseService from '../../Services/FirebaseService';
-const firebaseService = new FirebaseService();
 
 class CreateCommonForm extends React.Component {
   static NAME = 'name';
@@ -40,13 +35,7 @@ class CreateCommonForm extends React.Component {
   };
 
   render() {
-    const {
-      createCommonFormStore,
-      name,
-      image,
-      email,
-      ...otherProps
-    } = this.props;
+    const {createCommonFormStore} = this.props;
 
     console.log('createCommonFormStore');
     console.log(createCommonFormStore);

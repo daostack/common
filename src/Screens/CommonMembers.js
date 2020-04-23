@@ -54,7 +54,7 @@ const commonMembersMock = [
 
 const CommonMembers = ({navigation}) => {
   const [index, setIndex] = useState(0);
-  const [routes, setRoutes] = useState([
+  const [routes] = useState([
     {key: 'members', title: getTabName('Members')},
     {key: 'pending', title: getTabName('Pending')},
   ]);
