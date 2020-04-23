@@ -15,6 +15,27 @@ import {ApolloClientConfig as client} from '../Config';
 
 const {width} = Dimensions.get('window');
 
+import {Arc} from '@daostack/client';
+
+const graphHttpLink = 'https://api.thegraph.com/subgraphs/name/daostack/v36_8';
+const graphwsLink = 'wss://api.thegraph.com/subgraphs/name/daostack/v36_8';
+//
+// create an Arc instance
+const arc = new Arc({
+  graphqlHttpProvider: graphHttpLink,
+  graphqlWsProvider: graphwsLink,
+  web3Provider: `wss://mainnet.infura.io/ws/v3/${'4406c3acf862426c83991f1752c46dd8'}`,
+  ipfsProvider: {
+    host: 'subgraph.daostack.io',
+    port: '443',
+    protocol: 'https',
+    'api-path': '/ipfs/api/v0/',
+  },
+});
+
+// get a list of DAOs
+arc.daos().subscribe(daos => console.log(`Here are your DAOS: ${daos}`));
+
 const DAOS_SUBSCRIPTION = gql`
   query {
     daos(orderBy: reputationHoldersCount, orderDirection: desc) {
