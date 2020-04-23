@@ -1,18 +1,8 @@
-import {
-  Dimensions,
-  Image,
-  ImageBackground,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  SafeAreaView,
-} from 'react-native';
-import React, {useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import React from 'react';
 import {kFormatter} from '../../Util';
 
-import Icon from '../../Assets/iconfont/Icon';
-import {layout, colors, text, sizeL, sizeXXL} from '../../Theme';
+import {layout, colors, text} from '../../Theme';
 
 const CommonStageSummary = ({isFundingStage, commonProgressInfo}) => {
   const renderFundingProgressBar = () => {

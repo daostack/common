@@ -1,5 +1,4 @@
 import {
-  Dimensions,
   Image,
   ImageBackground,
   StyleSheet,
@@ -8,10 +7,10 @@ import {
   View,
   SafeAreaView,
 } from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 
 import Icon from '../../Assets/iconfont/Icon';
-import {layout, colors, text, sizeL, sizeXXL} from '../../Theme';
+import {layout, colors, text} from '../../Theme';
 
 const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
   const renderCoverInSafeArea = () => {
@@ -138,13 +137,6 @@ const styles = StyleSheet.create({
     ...text.h1Black,
     color: colors.white,
   },
-  headerTitle: {
-    ...text.h3Black,
-  },
-  headerTitleLight: {
-    ...text.h3Black,
-    color: colors.grey3,
-  },
   headerDescription: {
     ...text.greyText,
     fontWeight: '600',
@@ -159,9 +151,6 @@ const styles = StyleSheet.create({
 
     color: colors.grey4,
     marginTop: 30,
-  },
-  headerSmallText: {
-    ...text.smallBlackText,
   },
 });
 

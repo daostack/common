@@ -1,20 +1,8 @@
-import {
-  Dimensions,
-  Image,
-  ImageBackground,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import React, {useState} from 'react';
+import {StyleSheet, TouchableOpacity} from 'react-native';
+import React from 'react';
 import {CommonActions} from '@react-navigation/native';
-import Icon from '../Assets/iconfont/Icon';
-import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
-import {kFormatter} from '../Util';
 import CommonCover from './Commons/CommonCover';
 import CommonStageSummary from './Commons/CommonStageSummary';
-const {width} = Dimensions.get('window');
 
 const CommonBox = props => {
   return (
