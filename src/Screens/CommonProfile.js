@@ -22,6 +22,8 @@ import CommonOperationalStateNotif from './BottomSheetScreens/CommonOperationalS
 import SortProposals from './BottomSheetScreens/SortProposals';
 import CommonProfileOptions from './BottomSheetScreens/CommonProfileOptions';
 import BottomSheetContainer from '../Components/BottomSheetContainer';
+import CommonCover from '../Components/Commons/CommonCover';
+import CommonStageSummary from '../Components/Commons/CommonStageSummary';
 
 const {cache} = client;
 let {height, width} = Dimensions.get('window');
@@ -109,20 +111,6 @@ const CommonProfile = ({navigation, route}) => {
     />
   );
 
-  const commonNumberBox = (numberComponent, title) => {
-    return (
-      <View
-        style={{
-          justifyContent: 'center',
-          alignContent: 'center',
-          alignItems: 'center',
-        }}>
-        <View style={styles.raisedContainer}>{numberComponent}</View>
-        <Text style={styles.headerSmallText}>{title}</Text>
-      </View>
-    );
-  };
-
   const Discussions = () => {
     return (
       <ViewTabNoData
@@ -155,26 +143,6 @@ const CommonProfile = ({navigation, route}) => {
     proposals: Proposals,
     history: History,
   });
-
-  const renderFundingProgressBar = () => {
-    if (isFundingStage) {
-      return (
-        <>
-          <View style={styles.fundingProgressBar}>
-            <View style={styles.innerProgressBar} />
-          </View>
-          <Text
-            style={{
-              ...styles.headerSmallText,
-              color: colors.grey3,
-              ...layout.marginTopS,
-            }}>
-            {mockData.time} days to go
-          </Text>
-        </>
-      );
-    }
-  };
 
   const renderAgendaForNonMembers = () => {
     if (!isMember) {
@@ -244,10 +212,6 @@ const CommonProfile = ({navigation, route}) => {
     }
   };
 
-  const openAgendaScreen = e => {
-    navigation.navigate('CommonAgenda');
-  };
-
   const openCommonMembers = e => {
     navigation.navigate('CommonMembers');
   };
@@ -275,6 +239,19 @@ const CommonProfile = ({navigation, route}) => {
           flex: 1,
           backgroundColor: colors.white,
         }}>
+        <CommonCover
+          isMember={true}
+          navigation={navigation}
+          onHeaderMenuOpen={openCommonOptions}
+          commonInfo={{
+            cover: mockData.commonPicture,
+            logo:
+              'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
+            name: mockData.name,
+            description: mockData.description,
+          }}
+        />
+        {/*
         <ImageBackground
           source={{
             uri: mockData.commonPicture,
@@ -330,47 +307,20 @@ const CommonProfile = ({navigation, route}) => {
             </View>
           </SafeAreaView>
         </ImageBackground>
+*/}
 
-        <View style={styles.commonProgressContainer}>
-          <View style={styles.commonNumbers}>
-            {commonNumberBox(
-              isFundingStage ? (
-                <>
-                  <Text style={styles.headerTitle}>
-                    ${mockData.raised.toLocaleString()}
-                  </Text>
-                </>
-              ) : (
-                <>
-                  <Text style={styles.headerTitleLight}>
-                    ${mockData.currentBudget.toLocaleString()}
-                  </Text>
-                  <Text style={styles.headerTitle}>
-                    / {kFormatter(mockData.raised)}
-                  </Text>
-                </>
-              ),
-              isFundingStage ? 'Raised' : 'Available funds',
-            )}
-            {commonNumberBox(
-              <Text style={styles.headerTitle}>{mockData.members}</Text>,
-              'Members',
-            )}
-            {commonNumberBox(
-              isFundingStage ? (
-                <Text style={styles.headerTitle}>
-                  ${kFormatter(mockData.goal).toLocaleString()}
-                </Text>
-              ) : (
-                <Text style={styles.headerTitle}>
-                  {mockData.activeProposals}
-                </Text>
-              ),
-              isFundingStage ? 'Goal' : 'ActiveProposals',
-            )}
-          </View>
-          {renderFundingProgressBar()}
-        </View>
+        <CommonStageSummary
+          isFundingStage={true}
+          commonProgressInfo={{
+            time: mockData.time,
+            activeProposals: mockData.activeProposals,
+            goal: mockData.goal,
+            members: mockData.members,
+            raised: mockData.raised,
+            currentBudget: mockData.currentBudget,
+          }}
+        />
+
         {renderMembersRowForMemberUsers()}
         <View style={{...layout.content, ...{paddingTop: 0}}}>
           <TouchableOpacity

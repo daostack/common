@@ -12,6 +12,7 @@ import {CommonBox, BottomRightButton} from '../Components';
 import {Subscription, Query} from 'react-apollo';
 import gql from 'graphql-tag';
 import {ApolloClientConfig as client} from '../Config';
+import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
 
 const {width} = Dimensions.get('window');
 
@@ -134,8 +135,7 @@ const CommonsList = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    ...layout.content,
   },
   welcome: {
     fontSize: 20,
