@@ -31,7 +31,6 @@ public class WalletManager {
         } else {
             key = store.getSymmetricKey(keyString, null);
         }
-        System.loadLibrary("TrustWalletCore");
     }
 
     public String generateMnemonic(String uid, Boolean shouldStore) throws Exception  {
