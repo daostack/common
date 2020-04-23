@@ -82,14 +82,14 @@ const GSignInButton = ({onSignIn}) => {
         // In that case we are deleting the file
         await googleDriveService.deleteAppDataFileById(appDataFileId);
         // And then generate and store new mnemonic for the user
-        return _generateAndStoreMnemonic();
+        return _generateAndStoreMnemonic(uid);
       }
       await NativeModules.WalletModule.storeMnemonic(uid, jsonContent.mnemonic);
       return jsonContent.mnemonic;
     }
 
     // 3. Generate mnemonic and store in Google Drive app data
-    return _generateAndStoreMnemonic();
+    return _generateAndStoreMnemonic(uid);
   };
 
   _generateAndStoreMnemonic = async uid => {
