@@ -8,7 +8,6 @@ import {
   Image,
   ImageBackground,
   TouchableOpacity,
-  SafeAreaView
 } from 'react-native';
 import gql from 'graphql-tag';
 import {ApolloClientConfig as client} from '../Config';
