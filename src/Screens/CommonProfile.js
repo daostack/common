@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   Dimensions,
   Text,
@@ -46,7 +46,7 @@ const CommonProfile = ({navigation, route}) => {
   optionsSheetRef = useRef();
   sortProposalsSheetRef = useRef();
 
-  const [isMember] = useState(true);
+  const [isMember] = useState(false);
   const [isFundingStage] = useState(false);
 
   const [index, setIndex] = useState(0);
@@ -141,6 +141,10 @@ const CommonProfile = ({navigation, route}) => {
     proposals: Proposals,
     history: History,
   });
+
+  const openAgendaScreen = e => {
+    navigation.navigate('CommonAgenda');
+  };
 
   const renderAgendaForNonMembers = () => {
     if (!isMember) {
@@ -250,17 +254,19 @@ const CommonProfile = ({navigation, route}) => {
           }}
         />
 
-        <CommonStageSummary
-          isFundingStage={isFundingStage}
-          commonProgressInfo={{
-            time: mockData.time,
-            activeProposals: mockData.activeProposals,
-            goal: mockData.goal,
-            members: mockData.members,
-            raised: mockData.raised,
-            currentBudget: mockData.currentBudget,
-          }}
-        />
+        <View style={{paddingVertical: 20}}>
+          <CommonStageSummary
+            isFundingStage={isFundingStage}
+            commonProgressInfo={{
+              time: mockData.time,
+              activeProposals: mockData.activeProposals,
+              goal: mockData.goal,
+              members: mockData.members,
+              raised: mockData.raised,
+              currentBudget: mockData.currentBudget,
+            }}
+          />
+        </View>
 
         {renderMembersRowForMemberUsers()}
         <View style={{...layout.content, ...{paddingTop: 0}}}>
