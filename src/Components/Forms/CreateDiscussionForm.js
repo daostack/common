@@ -101,7 +101,7 @@ class CreateDiscussionForm extends React.Component {
           infoLabel="Required"
           multiline={true}
           numberOfLines={9}
-          value={userStore.userInfo.intro}
+          value={''}
           validation={{
             name: CreateDiscussionForm.MESSAGE,
             formStore: this.props.createDiscussionStore,

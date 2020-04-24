@@ -50,12 +50,18 @@ const CommonProfile = ({navigation}) => {
   const [isMember, setIsMember] = useState(false);
   const [isFundingStage, setIsFundingStage] = useState(true);
 
+  const [refreshDiscussion, setRefreshDiscussion] = useState(false);
+
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([
     {key: 'discussions', title: 'Discussions'},
     {key: 'proposals', title: 'Proposals'},
     {key: 'history', title: 'History'},
   ]);
+
+  const refreshDiscussionPage = () => {
+    setRefreshDiscussion(!refreshDiscussion);
+  };
 
   useEffect(() => {
     // noinspection JSAnnotator
@@ -126,11 +132,11 @@ const CommonProfile = ({navigation}) => {
 
   const Discussions = () => {
     return (
-      // <ViewTabNoData
-      //   title="No Discussions"
-      //   subtitle="Have things in common? This is the place to talk about them."
-      // />
-      <DiscussionList navigation={navigation} commonId='48NPcGnpskN9YkqVNXKA' />
+      <DiscussionList
+        navigation={navigation}
+        commonId="48NPcGnpskN9YkqVNXKA"
+        refresh={refreshDiscussion}
+      />
     );
   };
 
@@ -394,7 +400,13 @@ const CommonProfile = ({navigation}) => {
         </View>
       </ScrollView>
 
-      <BottomRightButton onPress={() => navigation.navigate('New Post')} />
+      <BottomRightButton
+        onPress={() =>
+          navigation.navigate('New Post', {
+            callback: () => refreshDiscussionPage(),
+          })
+        }
+      />
 
       <BottomSheetContainer ref={commonOperationalStateNotifRef}>
         <CommonOperationalStateNotif navigation={navigation} />

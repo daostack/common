@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -16,9 +16,24 @@ import {
 } from 'react-native';
 import {text, layout, colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
+import FirebaseService from '../../Services/FirebaseService';
+import moment from 'moment';
 
 const DiscussionMessage = props => {
   const data = props.data;
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userData = await FirebaseService.getInstance().getUserById(
+        data.owner,
+      );
+      setUser(userData);
+    };
+    fetchUser();
+  }, [data]);
+
+  console.log('data', data);
   return (
     <View style={styles.container}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -29,26 +44,25 @@ const DiscussionMessage = props => {
             width: 30,
             borderRadius: 15,
           }}
+          source={{uri: user.photoURL}}
         />
         <Text style={{flex: 1, marginLeft: 10, fontWeight: 'bold'}}>
-          Test Name
+          {user.displayName}
         </Text>
-        <Text style={{color: colors.grey3}}>0.1% REP</Text>
+        {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
       </View>
-      <Text style={{marginVertical: 10}}>
-        {data.text}
-      </Text>
+      <Text style={{marginVertical: 10}}>{data.text}</Text>
       <View style={{flexDirection: 'row'}}>
         <Text style={{flex: 1, fontSize: 12, fontWeight: '300'}}>
-          4-12 22:29
+          {moment(data.createTime.toDate()).format('MM-DD hh:mm')}
         </Text>
-        <TouchableOpacity style={{flexDirection: 'row'}}>
+        {/* <TouchableOpacity style={{flexDirection: 'row'}}>
           <Text>👍</Text>
           <Text
             style={{fontSize: 15, color: colors.grey3, paddingHorizontal: 5}}>
             23
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         {/* <View style={{flexDirection: 'row'}}>
         <Text>💬</Text>
         <Text style={{ fontSize: 15, color: colors.grey3, paddingHorizontal: 5}}>22</Text>

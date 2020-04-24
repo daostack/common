@@ -20,12 +20,15 @@ import {text, layout, colors} from '../../Theme';
 import DiscussionMessage from './DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast.js';
+import FirebaseService from '../../Services/FirebaseService';
+import moment from 'moment';
 
 const {width} = Dimensions.get('window');
 
 const Discussions = props => {
   const [inputHeight, setInputHeight] = useState(60);
   const inputRef = useRef(null);
+  const [user, setUser] = useState({});
 
   const data = props.route.params.data;
   const commonId = props.route.params.commonId;
@@ -35,6 +38,7 @@ const Discussions = props => {
   console.log('commonId', commonId);
   console.log('discussionId', data.id);
   console.log('data1', data);
+  console.log('user', user);
 
   useEffect(() => {
     const fetchList = async () => {
@@ -44,11 +48,22 @@ const Discussions = props => {
         .collection('discussion')
         .doc(data.id)
         .collection('message')
+        .orderBy('createTime', 'desc')
         .get();
       setList(snapshot.docs.map(doc => ({id: doc.id, ...doc.data()})));
     };
     fetchList();
-  }, [commonId, trigger]);
+  }, [commonId, trigger, data]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userData = await FirebaseService.getInstance().getUserById(
+        data.owner,
+      );
+      setUser(userData);
+    };
+    fetchUser();
+  }, [data]);
 
   sendMessageToDiscussion = async () => {
     const userStore = props.userStore;
@@ -97,11 +112,12 @@ const Discussions = props => {
             }}>
             <Image
               style={styles.avatar}
+              source={{uri: user.photoURL}}
               // source={require('../../Assets/daoGeneralInfo.png')}
             />
             <View style={{flex: 1, paddingHorizontal: 10}}>
-              <Text style={{fontWeight: 'bold'}}>Name</Text>
-              <Text style={{color: colors.grey3}}>0.1% REP</Text>
+              <Text style={{fontWeight: 'bold'}}>{user.displayName}</Text>
+              {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
             </View>
 
             <TouchableOpacity style={styles.button}>
@@ -115,7 +131,7 @@ const Discussions = props => {
             </Text>
           </View>
 
-          <View style={{flexDirection: 'row'}}>
+          {/* <View style={{flexDirection: 'row'}}>
             <View style={{flexDirection: 'row', paddingHorizontal: 8}}>
               <Icon name="edit" />
               <Text>23</Text>
@@ -128,7 +144,8 @@ const Discussions = props => {
               <Icon name="edit" />
               <Text>23</Text>
             </View>
-          </View>
+          </View> */}
+          <Text style={{color: colors.grey3}}>{moment(data.createTime.toDate()).format('MMMM Do YYYY - HH:mm')}</Text>
 
           <View
             style={{

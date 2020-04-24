@@ -18,6 +18,7 @@ import {text, layout, colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import DiscussionCard from './DiscussionCard';
 import firestore from '@react-native-firebase/firestore';
+import ViewTabNoData from '../../Components/ViewTabNoData';
 
 const DiscussionList = props => {
   const commonId = props.commonId;
@@ -29,6 +30,7 @@ const DiscussionList = props => {
         .collection('common')
         .doc(commonId)
         .collection('discussion')
+        .orderBy('createTime', 'desc')
         .get();
       setList(snapshot.docs.map(doc => ({id: doc.id, ...doc.data()})));
     };
@@ -37,14 +39,21 @@ const DiscussionList = props => {
 
   return (
     <>
-      {list.map(x => (
-        <DiscussionCard
-          key={x.id}
-          data={x}
-          commonId={props.commonId}
-          navigation={props.navigation}
+      {list.length > 0 ? (
+        list.map(x => (
+          <DiscussionCard
+            key={x.id}
+            data={x}
+            commonId={props.commonId}
+            navigation={props.navigation}
+          />
+        ))
+      ) : (
+        <ViewTabNoData
+          title="No Discussions"
+          subtitle="Have things in common? This is the place to talk about them."
         />
-      ))}
+      )}
     </>
   );
 };

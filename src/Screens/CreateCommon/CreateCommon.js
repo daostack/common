@@ -20,7 +20,6 @@ const CreateCommon = props => {
 
   useEffect(() => {
     swiper.current.scrollTo(currentIndex);
-    console.log('AAAA', currentIndex);
   }, [currentIndex]);
 
   const progressList = [0, 0.35, 0.7, 1.0];

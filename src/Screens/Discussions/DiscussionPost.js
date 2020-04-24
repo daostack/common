@@ -23,7 +23,12 @@ const DiscussionPost = props => {
     <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
       <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
         <View style={{backgroundColor: colors.white, flex: 1, padding: 20}}>
-          <CreateDiscussionForm onFormSubmit={() => props.navigation.pop()} />
+          <CreateDiscussionForm
+            onFormSubmit={() => {
+              props.route.params.callback();
+              props.navigation.pop();
+            }}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
