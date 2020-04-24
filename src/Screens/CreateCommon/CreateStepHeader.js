@@ -1,8 +1,7 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React from 'react';
 import {View, StyleSheet, Dimensions} from 'react-native';
 import Icon from '../../Assets/iconfont/Icon';
 import {colors} from '../../Theme';
-import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
 import * as Progress from 'react-native-progress';
 

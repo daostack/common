@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Text,
@@ -13,7 +13,7 @@ import {
 import {colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import {observer, inject} from 'mobx-react';
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
