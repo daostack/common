@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 import React from 'react';
-import {text, layout, colors, sizeL} from '../../Theme';
+import {text, layout, colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
 const CommonOperationalStateNotif = ({navigation, onCreateFundingProposal}) => {
