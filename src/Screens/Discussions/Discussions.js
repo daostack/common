@@ -145,7 +145,9 @@ const Discussions = props => {
               <Text>23</Text>
             </View>
           </View> */}
-          <Text style={{color: colors.grey3}}>{moment(data.createTime.toDate()).format('MMMM Do YYYY - HH:mm')}</Text>
+          <Text style={{color: colors.grey3}}>
+            {moment(data.createTime.toDate()).format('MMMM Do YYYY - HH:mm')}
+          </Text>
 
           <View
             style={{
@@ -222,7 +224,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 15,
-  }
+  },
 });
 
 export default inject('userStore')(observer(Discussions));
