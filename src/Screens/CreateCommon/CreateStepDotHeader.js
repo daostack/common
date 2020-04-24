@@ -1,12 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  Animated,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import React from 'react';
+import {View, StyleSheet, Animated, Text, TouchableOpacity} from 'react-native';
 import Icon from '../../Assets/iconfont/Icon';
 import {colors} from '../../Theme';
 

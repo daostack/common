@@ -1,6 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  Image,
   Text,
   TouchableOpacity,
   View,
@@ -9,7 +8,6 @@ import {
   Dimensions,
   SafeAreaView,
   Animated,
-  TextInput,
 } from 'react-native';
 import TextInputField from '../../Components/FormFields/TextInputField';
 import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
@@ -19,7 +17,6 @@ const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import NavigationBar from 'react-native-navbar';
 import Icon from '../../Assets/iconfont/Icon';
-import Toast from '../../Util/Toast.js';
 import CreateStepDotHeader from './CreateStepDotHeader';
 
 const CreateStep1 = props => {

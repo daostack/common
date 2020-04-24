@@ -8,7 +8,7 @@ import {
   Dimensions,
   StyleSheet,
 } from 'react-native';
-const {height, width} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 import WalletManager from '../Util/WalletManager';
 
 const uid = 'test';
@@ -107,7 +107,7 @@ export default class nativeBridgeTests extends React.Component {
   sendTransaction = async () => {
     try {
       const manager = WalletManager.getInstance();
-      const {response, hash} = await manager.sendTransaction(
+      const {hash} = await manager.sendTransaction(
         '0x41B788babf69FC7F98336ff7A47F5A80c3A63d40',
         '0.001',
       );

@@ -1,6 +1,5 @@
 import {db, firebase} from '../Firebase';
 import uuid from 'uuid/v4';
-import storage from '@react-native-firebase/storage';
 
 const DB_COLLECTIONS = {
   users: 'users',

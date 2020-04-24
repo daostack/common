@@ -188,8 +188,6 @@ android {
     }
 }
 
-apply plugin: 'com.google.gms.google-services'
-
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
@@ -198,8 +196,6 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.0'
     implementation "androidx.annotation:annotation:1.1.0"
     implementation 'com.yakivmospan:scytale:1.0.1'
-    implementation 'com.trustwallet:wallet-core:2.0.4'
-    implementation 'androidx.annotation:annotation:1.0.0'
 
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
@@ -217,10 +213,5 @@ task copyDownloadableDepsToLibs(type: Copy) {
     into 'libs'
 }
 
-configurations.implementation.exclude(group: 'com.google.firebase', module: 'protolite-well-known-types')
-configurations.implementation.exclude(group: 'com.google.protobuf', module: 'protobuf-lite')
-
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
-
-
-com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
+apply plugin: 'com.google.gms.google-services'
