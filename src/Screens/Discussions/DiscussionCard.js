@@ -50,7 +50,12 @@ const DiscussionCard = props => {
         <Text style={{marginVertical: 10}}>{data.message}</Text>
         <TouchableOpacity
           style={{marginVertical: 12, marginBottom: 20}}
-          onPress={() => props.navigation.navigate('Discussions')}>
+          onPress={() =>
+            props.navigation.navigate('Discussions', {
+              data: data,
+              commonId: commonId,
+            })
+          }>
           <Text style={{fontSize: 15, color: colors.black, fontWeight: 'bold'}}>
             Read More
           </Text>
