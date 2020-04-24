@@ -1,15 +1,8 @@
 import * as React from 'react';
-import {
-  Image,
-  ImageProps,
-  View,
-  StyleSheet,
-  ViewStyle,
-  TouchableOpacity,
-} from 'react-native';
+import {Image, View, StyleSheet, TouchableOpacity} from 'react-native';
 
 import ValidationMessage from './ValidationMessage';
-import {observer, inject} from 'mobx-react';
+import {observer} from 'mobx-react';
 
 import ImagePicker from 'react-native-image-picker';
 import Toast from '../../Util/Toast';
@@ -109,16 +102,6 @@ class ImageField extends React.Component {
   };
 
   render() {
-    const {
-      value,
-      viewStyle,
-
-      // Validation management properties
-      validation,
-
-      ...otherProps
-    } = this.props;
-
     return (
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <View style={styles.formFieldContainer}>

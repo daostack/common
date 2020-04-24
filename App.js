@@ -18,7 +18,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {
   CommonsList,
   CommonProfile,
-  Onboarding,
   UserProfile,
   HUDTest,
   MyWallet,
@@ -26,7 +25,6 @@ import {
   CompleteAccount,
   EditProfile,
   UserProfileReadMode,
-  NativeBridgeTests,
   MyProposals,
   MyCommons,
   CommonAgenda,
