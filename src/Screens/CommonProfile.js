@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   Dimensions,
   Text,
@@ -6,14 +6,12 @@ import {
   ScrollView,
   StyleSheet,
   Image,
-  ImageBackground,
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
 import gql from 'graphql-tag';
 import {ApolloClientConfig as client} from '../Config';
 import {text, layout, colors} from '../Theme';
-import {kFormatter} from '../Util';
 import Icon from '../Assets/iconfont/Icon';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import ViewTabNoData from '../Components/ViewTabNoData';
@@ -26,7 +24,7 @@ import CommonCover from '../Components/Commons/CommonCover';
 import CommonStageSummary from '../Components/Commons/CommonStageSummary';
 
 const {cache} = client;
-let {height, width} = Dimensions.get('window');
+let {width} = Dimensions.get('window');
 const mockData = {
   commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
   commonLogo:
@@ -48,11 +46,11 @@ const CommonProfile = ({navigation, route}) => {
   optionsSheetRef = useRef();
   sortProposalsSheetRef = useRef();
 
-  const [isMember, setIsMember] = useState(true);
-  const [isFundingStage, setIsFundingStage] = useState(false);
+  const [isMember] = useState(true);
+  const [isFundingStage] = useState(false);
 
   const [index, setIndex] = useState(0);
-  const [routes, setRoutes] = useState([
+  const [routes] = useState([
     {key: 'discussions', title: 'Discussions', icon: 'discussion'},
     {key: 'proposals', title: 'Proposals', icon: 'proposals'},
     {key: 'history', title: 'History', icon: 'history'},
@@ -60,7 +58,7 @@ const CommonProfile = ({navigation, route}) => {
 
   useEffect(() => {
     // noinspection JSAnnotator
-    const getDao = async () => {
+    const getDao = async commonId => {
       // noinspection JSAnnotator
       try {
         console.log('CACHE: ', cache.data.data);
@@ -73,7 +71,7 @@ const CommonProfile = ({navigation, route}) => {
             }
           `,
           variables: {
-            id: route.params.commonId,
+            id: commonId,
             __typename: 'DAO',
           },
         });
@@ -83,7 +81,7 @@ const CommonProfile = ({navigation, route}) => {
       }
     };
 
-    getDao();
+    getDao(route.params.commonId);
   }, []);
 
   const renderTabBar = props => (
@@ -251,66 +249,9 @@ const CommonProfile = ({navigation, route}) => {
             description: mockData.description,
           }}
         />
-        {/*
-        <ImageBackground
-          source={{
-            uri: mockData.commonPicture,
-          }}
-          style={styles.imageHeader}>
-          <SafeAreaView style={{}}>
-            <View style={styles.headerContainerWrap}>
-              <View style={styles.headerContainer}>
-                <TouchableOpacity onPress={navigation.goBack}>
-                  <Icon
-                    name="left-arrow"
-                    size={30}
-                    color={colors.white}
-                    style={layout.marginTopXS}
-                  />
-                </TouchableOpacity>
-
-                <View
-                  style={{
-                    ...layout.content,
-
-                    ...{padding: 0},
-                  }}>
-                  <Image
-                    style={styles.logoImage}
-                    source={{
-                      uri: mockData.commonLogo,
-                    }}
-                  />
-                  <Text style={styles.headerTitleWhite}>{mockData.name}</Text>
-                </View>
-
-                <TouchableOpacity onPress={openCommonOptions}>
-                  <Icon
-                    name="menu-horizontal"
-                    size={30}
-                    color={colors.white}
-                    style={layout.marginTopXS}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View style={styles.headerContent}>
-              <Text style={styles.headerDescription}>
-                {mockData.description}
-              </Text>
-              {isMember ? (
-                <TouchableOpacity onPress={openAgendaScreen}>
-                  <Text style={styles.headerViewAgenda}>View agenda</Text>
-                </TouchableOpacity>
-              ) : null}
-            </View>
-          </SafeAreaView>
-        </ImageBackground>
-*/}
 
         <CommonStageSummary
-          isFundingStage={true}
+          isFundingStage={isFundingStage}
           commonProgressInfo={{
             time: mockData.time,
             activeProposals: mockData.activeProposals,
@@ -383,32 +324,10 @@ const CommonProfile = ({navigation, route}) => {
 };
 
 const styles = StyleSheet.create({
-  headerContainerWrap: {
-    ...layout.flexRow,
-
-    width: '100%',
-  },
-  headerContainer: {
-    ...layout.content,
-    ...layout.flexRow,
-    ...layout.flexStart,
-    alignSelf: 'stretch',
-    flexGrow: 1,
-    justifyContent: 'space-between',
-  },
   memberImage: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    borderWidth: 2,
-    borderColor: colors.white,
-  },
-  logoImage: {
-    ...layout.marginBottomM,
-
-    width: 40,
-    height: 40,
-    borderRadius: 20,
     borderWidth: 2,
     borderColor: colors.white,
   },
@@ -449,21 +368,9 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.grey2,
   },
-
-  raisedContainer: {
-    ...layout.flexRow,
-  },
-  commonProgressContainer: {
-    ...layout.content,
-  },
   agendaBox: {
     padding: 20,
     paddingTop: 0,
-  },
-  agendaTitle: {
-    ...text.runningblack,
-    fontWeight: '700',
-    marginBottom: 9,
   },
   agendaDescription: {
     marginBottom: 9,
@@ -479,14 +386,6 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  fundingProgressBar: {
-    width: 370,
-    borderRadius: 7,
-    backgroundColor: colors.grey4,
-    height: 8,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
   },
   headerButtons: {
     flexDirection: 'row',
@@ -513,57 +412,6 @@ const styles = StyleSheet.create({
     height: 48,
     width: 48,
     borderRadius: 24,
-  },
-  innerProgressBar: {
-    width: 380 / 4,
-    borderRadius: 6,
-    backgroundColor: colors.mainBlue,
-    height: 8,
-  },
-  textContainer: {},
-  headerActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  headerTitleWhite: {
-    ...text.h1Black,
-    color: colors.white,
-  },
-  headerTitle: {
-    ...text.h3Black,
-  },
-  headerTitleLight: {
-    ...text.h3Black,
-    color: colors.grey3,
-  },
-  headerDescription: {
-    ...text.greyText,
-    fontWeight: '600',
-    color: colors.grey4,
-  },
-
-  headerViewAgenda: {
-    ...text.smallGreyText,
-
-    color: colors.grey4,
-    marginTop: 30,
-  },
-  headerSmallText: {
-    ...text.smallBlackText,
-  },
-  headerContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  image: {
-    resizeMode: 'contain',
-  },
-  imageHeader: {
-    width,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingBottom: 20,
   },
 });
 
