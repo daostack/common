@@ -82,7 +82,7 @@ const CommonProfile = ({navigation, route}) => {
     };
 
     getDao(route.params.commonId);
-  }, []);
+  }, [route.params.commonId]);
 
   const renderTabBar = props => (
     <TabBar
