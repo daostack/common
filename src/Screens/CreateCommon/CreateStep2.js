@@ -1,6 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  Image,
   Text,
   TouchableOpacity,
   View,
@@ -12,9 +11,8 @@ import {
 } from 'react-native';
 import TextInputFieldWithIcon from '../../Components/FormFields/TextInputFieldWithIcon';
 import {colors} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
 import {observer, inject} from 'mobx-react';
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';

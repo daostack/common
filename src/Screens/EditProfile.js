@@ -16,7 +16,6 @@ import UnsavedChanges from './BottomSheetScreens/UnsavedChanges';
 import BottomSheetContainer from '../Components/BottomSheetContainer';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '../Assets/iconfont/Icon';
-import UserStore from '../Stores/UserStore';
 
 const EditProfile = ({userStore, editProfileFormStore, route, navigation}) => {
   unsavedChangesSheetRef = useRef();
