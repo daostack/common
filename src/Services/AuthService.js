@@ -1,6 +1,7 @@
 import {GoogleSignin} from '@react-native-community/google-signin';
 import {GOOGLE_SIGNIN_PERMISSIONS} from '../Util';
 import {firebase} from '../Firebase';
+import FirebaseService from './FirebaseService';
 
 export default class AuthService {
   static serviceInstance = null;
@@ -27,7 +28,13 @@ export default class AuthService {
     return await firebase.auth().signInWithCredential(googleCredential);
   }
 
-  async updateUserData(userData) {
-    return await firebase.auth().currentUser.updateProfile(userData);
+  async updateUserData(userData, publicData) {
+    const currentUser = await firebase.auth().currentUser;
+    currentUser.updateProfile(userData);
+
+    return await FirebaseService.getInstance().editUser(currentUser.uid, {
+      ...publicData,
+      ...userData,
+    });
   }
 }
