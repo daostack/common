@@ -13,6 +13,7 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   Platform,
+  SectionList,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
@@ -29,31 +30,84 @@ const Discussions = props => {
   const [inputHeight, setInputHeight] = useState(60);
   const inputRef = useRef(null);
   const [user, setUser] = useState({});
+  const chatRef = useRef(null);
 
   const data = props.route.params.data;
   const commonId = props.route.params.commonId;
   const [list, setList] = useState([]);
-  const [trigger, setTrigger] = useState(true);
-
-  console.log('commonId', commonId);
-  console.log('discussionId', data.id);
-  console.log('data1', data);
-  console.log('user', user);
+  const [msgGroup, setMsgDroup] = useState([]);
 
   useEffect(() => {
-    const fetchList = async () => {
-      const snapshot = await firestore()
-        .collection('common')
-        .doc(commonId)
-        .collection('discussion')
-        .doc(data.id)
-        .collection('message')
-        .orderBy('createTime', 'desc')
-        .get();
-      setList(snapshot.docs.map(doc => ({id: doc.id, ...doc.data()})));
+    const unsubscribe = firestore()
+      .collection('common')
+      .doc(commonId)
+      .collection('discussion')
+      .doc(data.id)
+      .collection('message')
+      .orderBy('createTime', 'desc')
+      // .startAt(0)
+      // .limit(4)
+      .onSnapshot(
+        snapshot => {
+          if (snapshot.docChanges().length !== 0) {
+            const newList = snapshot.docs.map(doc => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
+            const msgList = [...list, ...newList];
+            setList(msgList);
+            const groupDate = msgList
+              .map(msg => ({
+                date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
+                data: msg,
+              }))
+              .reduce((acc, curr) => {
+                var key = curr.date;
+                let el = acc.find(x => x && x.date === key);
+                if (el) {
+                  el.data.push(curr.data);
+                } else {
+                  acc.push({
+                    date: key,
+                    data: [curr.data],
+                  });
+                }
+                // acc[key].push(curr.data);
+                return acc;
+              }, []);
+            console.log('groupDate', groupDate);
+            // const group = Object.keys(groupDate).map(key => ({section: key, data: groupDate[key]}))
+            setMsgDroup(groupDate);
+          }
+        },
+        error => console.error(error),
+      );
+    return () => {
+      unsubscribe();
     };
-    fetchList();
-  }, [commonId, trigger, data]);
+  }, [commonId, data.id]);
+
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     if (chatRef.current) {
+  //       chatRef.current.scrollToLocation({
+  //         animated: true,
+  //         itemIndex: 1,
+  //         sectionIndex: 0,
+  //       });
+  //     }
+  //   }, 200);
+  // }, [chatRef]);
+
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     const userData = await FirebaseService.getInstance().getUserById(
+  //       data.owner,
+  //     );
+  //     setUser(userData);
+  //   };
+  //   fetchUser();
+  // }, [data]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -88,7 +142,7 @@ const Discussions = props => {
           inputRef.current.clear();
           // inputRef.focused
           // Toast.done('Sent');
-          setTrigger(!trigger);
+          // setTrigger(!trigger);
           Keyboard.dismiss();
         })
         .catch(error => {
@@ -99,9 +153,15 @@ const Discussions = props => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: colors.lightBlue}}>
       <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
-        <View style={{backgroundColor: colors.white, flex: 1, padding: 20}}>
+        <View
+          style={{
+            backgroundColor: colors.white,
+            flex: 1,
+            padding: 20,
+            paddingBottom: 0,
+          }}>
           <Text style={styles.title}>{data.title}</Text>
           <View
             style={{
@@ -118,15 +178,18 @@ const Discussions = props => {
             <View style={{flex: 1, paddingHorizontal: 10}}>
               <Text style={{fontWeight: 'bold'}}>{user.displayName}</Text>
               {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
+              <Text style={{color: colors.grey3}}>
+                {moment(data.createTime.toDate()).fromNow()}
+              </Text>
             </View>
 
-            <TouchableOpacity style={styles.button}>
+            {/* <TouchableOpacity style={styles.button}>
               <Text style={{color: colors.white}}>Quick reply</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           <View>
-            <Text style={{fontSize: 16, lineHeight: 25, paddingVertical: 20}}>
+            <Text style={{fontSize: 16, lineHeight: 25, paddingVertical: 10}}>
               {data.message}
             </Text>
           </View>
@@ -145,21 +208,35 @@ const Discussions = props => {
               <Text>23</Text>
             </View>
           </View> */}
-          <Text style={{color: colors.grey3}}>
-            {moment(data.createTime.toDate()).format('MMMM Do YYYY - HH:mm')}
-          </Text>
 
           <View
             style={{
-              height: 2,
-              marginVertical: 20,
+              height: 4,
+              marginTop: 20,
+              // paddingHorizontal: -20,
+              marginHorizontal: -20,
               backgroundColor: colors.grey4,
             }}
           />
         </View>
-        {list.map(x => (
-          <DiscussionMessage data={x} />
-        ))}
+        <SectionList
+          sections={msgGroup}
+          ref={chatRef}
+          renderItem={x => <DiscussionMessage data={x.item} />}
+          renderSectionFooter={({section: {date}}) => (
+            <Text
+              style={{
+                textAlign: 'center',
+                marginVertical: 3,
+                color: colors.grey3,
+              }}>
+              {date}
+            </Text>
+          )}
+          keyExtractor={x => x.id}
+          inverted={true}
+          initialScrollIndex={0}
+        />
       </ScrollView>
 
       <KeyboardAvoidingView
@@ -220,7 +297,7 @@ const styles = StyleSheet.create({
       height: -4,
     },
     shadowRadius: 4,
-    shadowOpacity: 1,
+    shadowOpacity: 0.5,
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 15,
