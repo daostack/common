@@ -16,10 +16,18 @@ const CreateAccount = ({userStore, navigation, onSignedIn}) => {
   };
 
   onSignIn = async userInfo => {
+    console.log('ON SIGN IN -> ', userInfo);
+    await WalletManager.init(userInfo.user.uid);
     if (userInfo.additionalUserInfo.isNewUser) {
       const manager = await WalletManager.getInstance(userInfo.user.uid);
       const userPublicData = {
         ethereumAddress: await manager.getOwnerAccount(),
+        // store the google user info in the firestore DB
+        ...{
+          displayName: userInfo.user.displayName,
+          email: userInfo.user.email,
+          photoURL: userInfo.user.photoURL,
+        },
       };
 
       await FirebaseService.getInstance().addUser(
