@@ -34,7 +34,9 @@ import {
   CreateStep2,
   CreateStep3,
   CreateStep4,
+  FundingProposal,
 } from './src/Screens';
+
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
 const Tab = createBottomTabNavigator();
@@ -104,6 +106,7 @@ const CommonHome = () => {
       <Tab.Screen name="My feed" component={UserProfileReadMode} />
       <Tab.Screen name="Explore" component={CommonsList} />
       <Tab.Screen name="Profile" component={UserProfile} />
+      <Tab.Screen name="FundingProposal" component={FundingProposal} />
     </Tab.Navigator>
   );
 };
@@ -301,6 +304,13 @@ const App = ({userStore}) => {
             }}
             name="CommonMembers"
             component={CommonMembers}
+          />
+          <Stack.Screen
+            options={{
+              title: 'Funding request',
+            }}
+            name="FundingProposal"
+            component={FundingProposal}
           />
         </Stack.Navigator>
       </NavigationContainer>
