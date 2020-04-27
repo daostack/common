@@ -109,13 +109,21 @@ const DiscussionCard = props => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
-    borderTopWidth: 1,
-    borderTopColor: colors.grey4,
-    borderBottomWidth: 4,
-    borderBottomColor: colors.grey4,
-    // marginHorizontal: 25,
-    marginVertical: 20,
+    // borderTopWidth: 1,
+    // borderTopColor: colors.grey4,
+    // borderBottomWidth: 4,
+    // borderBottomColor: colors.grey4,
+    marginHorizontal: 25,
+    marginVertical: 10,
+    borderRadius: 10,
     padding: 20,
+    shadowColor: 'rgba(0, 0, 0, 0.22)',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowRadius: 4,
+    shadowOpacity: 0.5,
   },
   title: {
     fontSize: 22,

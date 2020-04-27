@@ -1,19 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  ScrollView,
-  View,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-  TextInput,
-  KeyboardAvoidingView,
-  Keyboard,
-  Platform,
-} from 'react-native';
+import React, {useEffect, useState, useRef} from 'react';
+import {StyleSheet, FlatList} from 'react-native';
 import {text, layout, colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import DiscussionCard from './DiscussionCard';
@@ -24,30 +10,47 @@ const DiscussionList = props => {
   const commonId = props.commonId;
   const [list, setList] = useState([]);
 
+  let listRef = useRef([]);
   useEffect(() => {
-    const fetchList = async () => {
-      const snapshot = await firestore()
-        .collection('common')
-        .doc(commonId)
-        .collection('discussion')
-        .orderBy('createTime', 'desc')
-        .get();
-      setList(snapshot.docs.map(doc => ({id: doc.id, ...doc.data()})));
+    const unsubscribe = firestore()
+      .collection('common')
+      .doc(commonId)
+      .collection('discussion')
+      .orderBy('createTime', 'desc')
+      .onSnapshot(
+        snapshot => {
+          if (snapshot.docChanges().length !== 0) {
+            const newList = snapshot.docChanges().map(({doc}) => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
+            console.log('newDoc', newList);
+            const disList = [...newList, ...listRef.current];
+            listRef.current = disList;
+            setList(newList);
+          }
+        },
+        error => console.error(error),
+      );
+    return () => {
+      unsubscribe();
     };
-    fetchList();
   }, [commonId]);
 
   return (
     <>
       {list.length > 0 ? (
-        list.map(x => (
-          <DiscussionCard
-            key={x.id}
-            data={x}
-            commonId={props.commonId}
-            navigation={props.navigation}
-          />
-        ))
+        <FlatList
+          data={list}
+          renderItem={({item}) => (
+            <DiscussionCard
+              key={item.id}
+              data={item}
+              commonId={props.commonId}
+              navigation={props.navigation}
+            />
+          )}
+        />
       ) : (
         <ViewTabNoData
           title="No Discussions"

@@ -23,6 +23,7 @@ import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast.js';
 import FirebaseService from '../../Services/FirebaseService';
 import moment from 'moment';
+// import _ from 'lodash';
 
 const {width} = Dimensions.get('window');
 
@@ -34,9 +35,9 @@ const Discussions = props => {
 
   const data = props.route.params.data;
   const commonId = props.route.params.commonId;
-  const [list, setList] = useState([]);
   const [msgGroup, setMsgDroup] = useState([]);
 
+  let listRef = useRef([]);
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('common')
@@ -50,12 +51,14 @@ const Discussions = props => {
       .onSnapshot(
         snapshot => {
           if (snapshot.docChanges().length !== 0) {
-            const newList = snapshot.docs.map(doc => ({
+            const newList = snapshot.docChanges().map(({doc}) => ({
               id: doc.id,
               ...doc.data(),
             }));
-            const msgList = [...list, ...newList];
-            setList(msgList);
+            const msgList = [...newList, ...listRef.current];
+            // _.union(listRef.current, newList);
+            listRef.current = msgList;
+            console.log('newMessage', newList);
             const groupDate = msgList
               .map(msg => ({
                 date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
@@ -76,12 +79,11 @@ const Discussions = props => {
               }, []);
             console.log('groupDate', groupDate);
             setMsgDroup(groupDate);
-
-            chatRef.current.scrollToLocation({
-              animated: true,
-              itemIndex: 0,
-              sectionIndex: 0,
-            });
+            // chatRef.current.scrollToLocation({
+            //   animated: true,
+            //   itemIndex: 0,
+            //   sectionIndex: 0,
+            // });
           }
         },
         error => console.error(error),
@@ -90,18 +92,6 @@ const Discussions = props => {
       unsubscribe();
     };
   }, [commonId, data.id]);
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     if (chatRef.current) {
-  //       chatRef.current.scrollToLocation({
-  //         animated: true,
-  //         itemIndex: 1,
-  //         sectionIndex: 0,
-  //       });
-  //     }
-  //   }, 200);
-  // }, [chatRef]);
 
   // useEffect(() => {
   //   const fetchUser = async () => {
@@ -125,9 +115,7 @@ const Discussions = props => {
 
   sendMessageToDiscussion = async () => {
     const userStore = props.userStore;
-    console.log('userStore', userStore);
     const message = inputRef.current._lastNativeText;
-    console.log('Message', inputRef.current._lastNativeText);
     if (message && message.trim().length) {
       firestore()
         .collection('common')
@@ -151,7 +139,7 @@ const Discussions = props => {
         })
         .catch(error => {
           console.log('NO', error);
-          Toast.done(error);
+          Toast.error(error);
         });
     }
   };
@@ -244,7 +232,7 @@ const Discussions = props => {
           keyExtractor={x => x.id}
           stickySectionHeadersEnabled={true}
           inverted={true}
-          contentContainerStyle={{paddingTop: 30}}
+          contentContainerStyle={{paddingTop: 10}}
           // initialScrollIndex={2}
         />
       </ScrollView>
@@ -316,6 +304,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 3,
     color: colors.grey3,
+    fontSize: 12,
+    fontFamily: 'Roboto',
   },
 });
 
