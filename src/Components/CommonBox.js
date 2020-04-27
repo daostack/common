@@ -1,140 +1,63 @@
-import {
-  Dimensions,
-  Image,
-  ImageBackground,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
-const {width} = Dimensions.get('window');
+import {CommonActions} from '@react-navigation/native';
+import CommonCover from './Commons/CommonCover';
+import CommonStageSummary from './Commons/CommonStageSummary';
 
 const CommonBox = props => {
   return (
     <TouchableOpacity
       key={props.key}
-      onPress={() => props.navigation.navigate('CommonProfile')}
+      onPress={() => {
+        const navigate = CommonActions.navigate({
+          name: 'CommonProfile',
+          params: {
+            commonId: props.common.id,
+          },
+        });
+        props.navigation.dispatch(navigate);
+      }}
       style={styles.commonBox}>
-      <ImageBackground
-        source={{
-          uri: props.image,
+      <CommonCover
+        isMember={false}
+        commonInfo={{
+          cover: props.image,
+          logo:
+            'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
+          name: props.common.name,
+          description: props.common.name,
         }}
-        imageStyle={{
-          borderTopLeftRadius: 15,
-          borderTopRightRadius: 15,
+      />
+
+      <CommonStageSummary
+        isFundingStage={true}
+        commonProgressInfo={{
+          time: 55,
+          activeProposals: 55,
+          goal: 55,
+          members: props.common.reputationHoldersCount * 1.5,
+          raised: 55,
+          currentBudget: 55,
         }}
-        style={{
-          padding: 30,
-          paddingTop: 50,
-          paddingBottom: 50,
-          backgroundColor: 'black',
-          borderTopLeftRadius: 15,
-          borderTopRightRadius: 15,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <TouchableOpacity style={{position: 'absolute', top: 12, left: 12}}>
-          <Image
-            style={styles.followImage}
-            source={require('../Assets/follow.png')}
-          />
-        </TouchableOpacity>
-        <View style={{alignItems: 'center', justifyContent: 'center'}}>
-          <Text style={{color: 'white', fontSize: 23, fontWeight: '700'}}>
-            {props.common.name}
-          </Text>
-          <Text style={{color: 'white', fontSize: 16, fontWeight: '700'}}>
-            Common Description
-          </Text>
-        </View>
-      </ImageBackground>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-around',
-        }}>
-        <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'space-around',
-            margin: 17,
-          }}>
-          <Text style={styles.descriptionNumber}>
-            {
-              props.common.proposals.filter(
-                proposal =>
-                  proposal.stage !== 'Executed' &&
-                  proposal.stage !== 'ExpiredInQueue',
-              ).length
-            }
-          </Text>
-          <Text style={styles.descriptionTitle}>Proposals</Text>
-        </View>
-        <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'space-around',
-            margin: 17,
-          }}>
-          <Text style={styles.descriptionNumber}>
-            {props.common.reputationHoldersCount}
-          </Text>
-          <Text style={styles.descriptionTitle}>Reputation Holders</Text>
-        </View>
-        <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'space-around',
-            margin: 17,
-          }}>
-          <Text style={styles.descriptionNumber}>
-            ${props.common.reputationHoldersCount * 1.5}
-          </Text>
-          <Text style={styles.descriptionTitle}>Funding</Text>
-        </View>
-      </View>
+      />
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   commonBox: {
-    width: width - 36,
-    borderRadius: 14,
+    width: '100%',
+    marginBottom: 20,
+
+    borderRadius: 26,
     backgroundColor: '#ffffff',
-    shadowColor: 'rgba(0, 0, 0, 0.09)',
+    shadowColor: 'rgba(0, 26, 54, 0.08)',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 3,
     },
-    shadowRadius: 13,
+    shadowRadius: 8,
     shadowOpacity: 1,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#eeeeee',
-    marginBottom: 10,
-  },
-  followImage: {
-    width: 24,
-    height: 24,
-    resizeMode: 'contain',
-  },
-  descriptionNumber: {
-    marginBottom: 4,
-    fontFamily: 'HelveticaNeue',
-    fontSize: 20,
-    fontWeight: '500',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-  },
-  descriptionTitle: {
-    fontFamily: 'HelveticaNeue',
-    fontSize: 12,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
   },
 });
 
