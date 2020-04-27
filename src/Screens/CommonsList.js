@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   TextInput,
@@ -15,6 +15,24 @@ import {ApolloClientConfig as client} from '../Config';
 import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
 
 const {width} = Dimensions.get('window');
+
+import {Arc} from '@daostack/client';
+
+const graphHttpLink = 'https://api.thegraph.com/subgraphs/name/daostack/v36_8';
+const graphwsLink = 'wss://api.thegraph.com/subgraphs/name/daostack/v36_8';
+//
+// create an Arc instance
+const arc = new Arc({
+  graphqlHttpProvider: graphHttpLink,
+  graphqlWsProvider: graphwsLink,
+  web3Provider: `https://mainnet.infura.io/ws/v3/${'4406c3acf862426c83991f1752c46dd8'}`,
+  ipfsProvider: {
+    host: 'subgraph.daostack.io',
+    port: '443',
+    protocol: 'https',
+    'api-path': '/ipfs/api/v0/',
+  },
+});
 
 const DAOS_SUBSCRIPTION = gql`
   query {
@@ -37,6 +55,19 @@ const DAOS_SUBSCRIPTION = gql`
 `;
 
 const CommonsList = ({navigation}) => {
+  const [hasError, setErrors] = useState(false);
+  const [daos, setDaos] = useState([]);
+
+  useEffect(() => {
+    const daosSubscription = async () => {
+      arc.daos().subscribe(res => {
+        console.log(res);
+        setDaos(res);
+      });
+    };
+    daosSubscription();
+  }, [0]);
+
   return (
     <View style={{flex: 1}}>
       <SafeAreaView />
