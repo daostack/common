@@ -1,6 +1,6 @@
 import {GoogleSignin} from '@react-native-community/google-signin';
-import {GOOGLE_SIGNIN_PERMISSIONS} from '../Util';
-import {firebase} from '../Firebase';
+import {GOOGLE_SIGNIN_PERMISSIONS, WEB_CLIENT_ID} from '../Util';
+import {auth} from '../Firebase';
 import FirebaseService from './FirebaseService';
 
 export default class AuthService {
@@ -9,6 +9,7 @@ export default class AuthService {
   constructor() {
     GoogleSignin.configure({
       scopes: [GOOGLE_SIGNIN_PERMISSIONS.APP_DATA_RW],
+      webClientId: WEB_CLIENT_ID,
     });
   }
 
@@ -21,15 +22,22 @@ export default class AuthService {
 
   async signIn() {
     await GoogleSignin.hasPlayServices();
-    const {idToken} = await GoogleSignin.signIn();
-    const googleCredential = firebase.auth.GoogleAuthProvider.credential(
+    await GoogleSignin.signIn();
+    const {idToken, accessToken} = await GoogleSignin.getTokens();
+
+    const googleCredential = auth.GoogleAuthProvider.credential(
       idToken,
+      accessToken,
     );
-    return await firebase.auth().signInWithCredential(googleCredential);
+    return await auth().signInWithCredential(googleCredential);
+  }
+
+  async signOut() {
+    await auth().signOut();
   }
 
   async updateUserData(userData, publicData) {
-    const currentUser = await firebase.auth().currentUser;
+    const currentUser = await auth().currentUser;
     currentUser.updateProfile(userData);
 
     return await FirebaseService.getInstance().editUser(currentUser.uid, {
