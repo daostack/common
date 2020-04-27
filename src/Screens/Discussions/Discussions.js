@@ -46,7 +46,7 @@ const Discussions = props => {
       .collection('message')
       .orderBy('createTime', 'desc')
       // .startAt(0)
-      // .limit(4)
+      // .limit(25)
       .onSnapshot(
         snapshot => {
           if (snapshot.docChanges().length !== 0) {
@@ -72,12 +72,16 @@ const Discussions = props => {
                     data: [curr.data],
                   });
                 }
-                // acc[key].push(curr.data);
                 return acc;
               }, []);
             console.log('groupDate', groupDate);
-            // const group = Object.keys(groupDate).map(key => ({section: key, data: groupDate[key]}))
             setMsgDroup(groupDate);
+
+            chatRef.current.scrollToLocation({
+              animated: true,
+              itemIndex: 0,
+              sectionIndex: 0,
+            });
           }
         },
         error => console.error(error),
@@ -152,9 +156,9 @@ const Discussions = props => {
     }
   };
 
-  return (
-    <SafeAreaView style={{flex: 1, backgroundColor: colors.lightBlue}}>
-      <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
+  const header = () => {
+    return (
+      <>
         <View
           style={{
             backgroundColor: colors.white,
@@ -219,23 +223,29 @@ const Discussions = props => {
             }}
           />
         </View>
+      </>
+    );
+  };
+
+  return (
+    <SafeAreaView style={{flex: 1, backgroundColor: colors.lightBlue}}>
+      <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
+        {header()}
         <SectionList
           sections={msgGroup}
           ref={chatRef}
+          // ListFooterComponent={header}
           renderItem={x => <DiscussionMessage data={x.item} />}
           renderSectionFooter={({section: {date}}) => (
-            <Text
-              style={{
-                textAlign: 'center',
-                marginVertical: 3,
-                color: colors.grey3,
-              }}>
-              {date}
+            <Text style={styles.timeHeader}>
+              {moment().isSame(date, 'day') ? 'Today' : date}
             </Text>
           )}
           keyExtractor={x => x.id}
+          stickySectionHeadersEnabled={true}
           inverted={true}
-          initialScrollIndex={0}
+          contentContainerStyle={{paddingTop: 30}}
+          // initialScrollIndex={2}
         />
       </ScrollView>
 
@@ -301,6 +311,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 15,
+  },
+  timeHeader: {
+    textAlign: 'center',
+    marginVertical: 3,
+    color: colors.grey3,
   },
 });
 
