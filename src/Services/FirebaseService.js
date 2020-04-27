@@ -1,6 +1,5 @@
 import {db, firebase} from '../Firebase';
 import uuid from 'uuid/v4';
-import storage from '@react-native-firebase/storage';
 
 const DB_COLLECTIONS = {
   users: 'users',
@@ -62,13 +61,17 @@ export default class FirebaseService {
 
   async addUser(googleId, newUser) {
     console.log('addUser -> ', newUser);
-    return db
-      .collection(DB_COLLECTIONS.users)
-      .doc(googleId)
-      .set(newUser)
-      .then(ref => {
-        return ref;
-      });
+    try {
+      return db
+        .collection(DB_COLLECTIONS.users)
+        .doc(googleId)
+        .set(newUser)
+        .then(ref => {
+          return ref;
+        });
+    } catch (error) {
+      console.log('ERROR -> ', error);
+    }
   }
 
   async editUser(userId, user) {

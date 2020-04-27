@@ -5,17 +5,13 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
-  ScrollView,
   Dimensions,
   SafeAreaView,
 } from 'react-native';
-import TextInputField from '../../Components/FormFields/TextInputField';
 import {colors} from '../../Theme';
 import {observer, inject} from 'mobx-react';
-import Icon from '../../Assets/iconfont/Icon';
 import * as Progress from 'react-native-progress';
 const {width} = Dimensions.get('window');
-import Swiper from 'react-native-swiper';
 
 const CreateCommon = props => {
   const [common, setCommon] = useState(false);

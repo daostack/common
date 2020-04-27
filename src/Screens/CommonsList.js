@@ -12,6 +12,7 @@ import {CommonBox, BottomRightButton} from '../Components';
 import {Subscription, Query} from 'react-apollo';
 import gql from 'graphql-tag';
 import {ApolloClientConfig as client} from '../Config';
+import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
 
 const {width} = Dimensions.get('window');
 
@@ -126,24 +127,11 @@ const CommonsList = ({navigation}) => {
                     fontStyle: 'normal',
                     letterSpacing: 0,
                   }}>
-                  Commons
+                  {data.daos.length} Commons
                 </Text>
               </View>
 
               <ScrollView>
-                <TextInput
-                  style={{
-                    padding: 8,
-                    width: '100%',
-                    ...styles.input,
-                    height: 40,
-                    fontWeight: '600',
-                    fontSize: 14,
-                  }}
-                  onChangeText={filter => this.setState({filter})}
-                  autoCapitalize="none"
-                  placeholder="Filter Commons"
-                />
                 <View style={styles.container}>
                   {data.daos.map((dao, i) => {
                     if (
@@ -178,8 +166,7 @@ const CommonsList = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    ...layout.content,
   },
   welcome: {
     fontSize: 20,
