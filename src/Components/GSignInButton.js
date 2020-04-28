@@ -49,10 +49,10 @@ const GSignInButton = ({onSignIn}) => {
     let appData = await GoogleDriveService.getInstance().getAppData();
 
     if (appData.files && appData.files.length > 0) {
-      appData.files.forEach(file =>
+      appData.files.forEach(file => {
         await GoogleDriveService.getInstance().deleteAppDataFileById(
           file.id,
-        )
+        )}
       );
     }
 
