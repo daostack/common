@@ -100,7 +100,7 @@ class CreateDiscussionForm extends React.Component {
           placeholderText="What do you want to say?"
           infoLabel="Required"
           multiline={true}
-          numberOfLines={9}
+          numberOfLines={15}
           value={''}
           validation={{
             name: CreateDiscussionForm.MESSAGE,
@@ -109,9 +109,9 @@ class CreateDiscussionForm extends React.Component {
           }}
         />
         <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity style={{marginRight: 12}}>
+          {/* <TouchableOpacity style={{marginRight: 12}}>
             <Text style={styles.addButton}>Add link</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity style={{marginRight: 12}}>
             <Text style={styles.addButton}>Add image</Text>
           </TouchableOpacity>

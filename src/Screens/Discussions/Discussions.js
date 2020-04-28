@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {
   SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
   ScrollView,
@@ -12,12 +11,11 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Keyboard,
-  Platform,
   SectionList,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
-import {text, layout, colors} from '../../Theme';
+import {colors} from '../../Theme';
 import DiscussionMessage from './DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast.js';
@@ -31,6 +29,7 @@ const Discussions = props => {
   const [inputHeight, setInputHeight] = useState(60);
   const inputRef = useRef(null);
   const [user, setUser] = useState({});
+  const [inputText, setInputText] = useState(null);
   const chatRef = useRef(null);
 
   const data = props.route.params.data;
@@ -92,16 +91,6 @@ const Discussions = props => {
       unsubscribe();
     };
   }, [commonId, data.id]);
-
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     const userData = await FirebaseService.getInstance().getUserById(
-  //       data.owner,
-  //     );
-  //     setUser(userData);
-  //   };
-  //   fetchUser();
-  // }, [data]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -185,22 +174,6 @@ const Discussions = props => {
               {data.message}
             </Text>
           </View>
-
-          {/* <View style={{flexDirection: 'row'}}>
-            <View style={{flexDirection: 'row', paddingHorizontal: 8}}>
-              <Icon name="edit" />
-              <Text>23</Text>
-            </View>
-            <View style={{flexDirection: 'row', paddingHorizontal: 8}}>
-              <Icon name="edit" />
-              <Text>23</Text>
-            </View>
-            <View style={{flexDirection: 'row', paddingHorizontal: 8}}>
-              <Icon name="edit" />
-              <Text>23</Text>
-            </View>
-          </View> */}
-
           <View
             style={{
               height: 4,
@@ -239,21 +212,32 @@ const Discussions = props => {
 
       <KeyboardAvoidingView
         // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{position: 'absolute', bottom: 0, flex: 1}}>
+        style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
         <View style={styles.input}>
-          <TextInput
-            ref={inputRef}
-            editable={true}
-            multiline={true}
-            onContentSizeChange={e =>
-              setInputHeight(e.nativeEvent.contentSize.height)
-            }
-            style={{flex: 1, height: inputHeight}}
-            fontSize={20}
-          />
-          <TouchableOpacity onPress={sendMessageToDiscussion}>
-            <Icon name="edit" size={25} />
-          </TouchableOpacity>
+          <View style={styles.inputBorder}>
+            <TextInput
+              ref={inputRef}
+              editable={true}
+              multiline={true}
+              onContentSizeChange={e =>
+                setInputHeight(e.nativeEvent.contentSize.height)
+              }
+              style={{flex: 1, height: inputHeight, marginHorizontal: 10}}
+              fontSize={15}
+              onChangeText={text => setInputText(text)}
+            />
+            <TouchableOpacity
+              style={{paddingRight: 15, justifyContent: 'center'}}
+              onPress={sendMessageToDiscussion}>
+              <Icon
+                name="edit"
+                size={20}
+                color={
+                  inputText && inputText.trim() ? colors.mainBlue : colors.grey3
+                }
+              />
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={{height: 30, backgroundColor: colors.white}} />
       </KeyboardAvoidingView>
@@ -282,7 +266,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.mainBlue,
   },
   input: {
-    backgroundColor: colors.white,
+    // backgroundColor: colors.white,
+    backgroundColor: '#fbfdff',
     borderColor: colors.grey4,
     // borderwidth: 1,
     borderBottomWidth: 1,
@@ -306,6 +291,15 @@ const styles = StyleSheet.create({
     color: colors.grey3,
     fontSize: 12,
     fontFamily: 'Roboto',
+  },
+  inputBorder: {
+    flex: 1,
+    flexDirection: 'row',
+    borderColor: colors.grey4,
+    borderWidth: 1,
+    paddingVertical: 10,
+    marginHorizontal: 10,
+    borderRadius: 40,
   },
 });
 

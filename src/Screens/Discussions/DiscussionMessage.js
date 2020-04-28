@@ -43,8 +43,6 @@ const DiscussionMessage = props => {
       {currentUserUid === data.owner ? (
         <View
           style={{
-            // marginLeft: 10,
-            // maxWidth: width - 90,
             padding: 10,
             borderRadius: 10,
             backgroundColor: '#E1F1F8',
@@ -59,9 +57,7 @@ const DiscussionMessage = props => {
             shadowOpacity: 0.2,
             // flexDirection: 'row',
           }}>
-          <Text style={{marginVertical: 2, textAlign: 'right'}}>
-            {data.text}
-          </Text>
+          <Text style={{marginVertical: 2}}>{data.text}</Text>
           <View style={{position: 'relative', right: 0, bottom: 0}}>
             <Text
               style={{
