@@ -71,7 +71,7 @@ const CreateStep4 = props => {
       CreateCommonForm.IMAGE,
       'url',
     );
-  });
+  }, []);
 
   const pickImage = isAvatar => {
     const options = {
@@ -298,25 +298,9 @@ const CreateStep4 = props => {
                 Contribution
               </Text>
             </View>
-            {/* <TouchableOpacity
-              style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
-              <Icon
-                name="edit"
-                size={16}
-                style={{textAlign: 'right', alignSelf: 'flex-end'}}
-              />
-            </TouchableOpacity> */}
           </View>
           <View style={styles.sectionTitle}>
             <Text style={{fontSize: 18, fontWeight: 'bold'}}>About</Text>
-            {/* <TouchableOpacity
-              style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
-              <Icon
-                name="edit"
-                size={16}
-                style={{textAlign: 'right', alignSelf: 'flex-end'}}
-              />
-            </TouchableOpacity> */}
           </View>
           <Text style={styles.textContent}>
             {form[CreateCommonForm.DESCRIPTION]}
@@ -326,14 +310,6 @@ const CreateStep4 = props => {
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>
                 Course of action
               </Text>
-              {/* <TouchableOpacity
-                style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
-                <Icon
-                  name="edit"
-                  size={16}
-                  style={{textAlign: 'right', alignSelf: 'flex-end'}}
-                />
-              </TouchableOpacity> */}
             </View>
             <Text style={styles.textContent}>
               {form[CreateCommonForm.ACTION]}
@@ -362,14 +338,6 @@ const CreateStep4 = props => {
           <>
             <View style={styles.sectionTitle}>
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>Deadline</Text>
-              {/* <TouchableOpacity
-                style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
-                <Icon
-                  name="edit"
-                  size={16}
-                  style={{textAlign: 'right', alignSelf: 'flex-end'}}
-                />
-              </TouchableOpacity> */}
             </View>
             <Text style={styles.textContent}>
               {moment(form[CreateCommonForm.DEADLINE]).format('MMM DD, YYYY')}
@@ -392,14 +360,6 @@ const CreateStep4 = props => {
                   <Text style={{fontSize: 14, fontWeight: 'bold'}}>
                     {rule.title}
                   </Text>
-                  {/* <TouchableOpacity
-                          style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
-                          <Icon
-                            name="edit"
-                            size={16}
-                            style={{textAlign: 'right', alignSelf: 'flex-end'}}
-                          />
-                        </TouchableOpacity> */}
                 </View>
                 <Text style={styles.textContent}>{rule.description}</Text>
               </>

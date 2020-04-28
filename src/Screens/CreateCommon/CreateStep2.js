@@ -26,7 +26,7 @@ const CreateStep2 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [segmentedIndex, setSegmentedIndex] = useState(0);
-  const [pickDate, setPickDate] = useState('Custom');
+  const [pickDate, setPickDate] = useState(null);
   const [show, setShow] = useState(false);
   const [pass, setPass] = useState(false);
 
@@ -66,7 +66,7 @@ const CreateStep2 = props => {
       case 2: {
         props.createCommonFormStore.fieldChanged(
           name,
-          moment(pickDate, 'MMM DD, YYYY').toDate(),
+          pickDate,
         );
         setShow(true);
         break;
@@ -184,7 +184,7 @@ const CreateStep2 = props => {
               tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 40}}
               tabStyle={{borderColor: colors.grey4}}
               activeTabStyle={{backgroundColor: colors.mainBlue}}
-              values={['1 week', '1 month', pickDate]}
+              values={['1 week', '1 month', pickDate ? moment(pickDate).format('MMM DD, YYYY') : 'Custom'] }
               tabTextStyle={{color: colors.mainBlue}}
               borderRadius={8}
               selectedIndex={segmentedIndex}
@@ -220,12 +220,15 @@ const CreateStep2 = props => {
                 <DateTimePicker
                   testID="dateTimePicker"
                   timeZoneOffsetInMinutes={0}
-                  value={new Date()}
+                  value={
+                    pickDate === null
+                      ? new Date() : pickDate
+                  }
                   minimumDate={new Date()}
                   is24Hour={true}
                   display="default"
                   onChange={(event, date) =>
-                    setPickDate(moment(date).format('MMM DD, YYYY'))
+                    setPickDate(date)
                   }
                 />
               </View>
