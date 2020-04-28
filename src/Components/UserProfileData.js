@@ -56,7 +56,7 @@ const UserProfileData = ({
       return (
         <ImageField
           value={user?.profileImage}
-          placeholderUrl={user?.photoURL}
+          placeholderUrl={user?.photo}
           validation={{
             name: EditProfileForm.FIELD_PROFILE_IMAGE,
             formStore: editProfileFormStore,
@@ -66,8 +66,8 @@ const UserProfileData = ({
       );
     } else {
       let imageUri = null;
-      if (user?.profileImage) {
-        imageUri = user.profileImage;
+      if (user.profileImage) {
+        imageUri = `data:image/png;base64,${user.profileImage}`;
       } else {
         imageUri = user.photo;
       }

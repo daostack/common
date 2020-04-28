@@ -46,23 +46,14 @@ const GSignInButton = ({onSignIn}) => {
   _loadMnemonic = async uid => {
     // 1. Read mnemonic from the store
 
-    let appData = await GoogleDriveService.getInstance().getAppData();
-
-    if (appData.files && appData.files.length > 0) {
-      appData.files.forEach(async file => {
-        await GoogleDriveService.getInstance().deleteAppDataFileById(file.id);
-      });
-    }
-
-    /*
     const mnemonicFromStore = NativeModules.WalletModule.retrieveMnemonic(uid);
     if (mnemonicFromStore) {
       return mnemonicFromStore;
     }
-    */
+
     // 2. Read mnemonic From the Google Drive app data
 
-    appData = await GoogleDriveService.getInstance().getAppData();
+    let appData = await GoogleDriveService.getInstance().getAppData();
 
     if (appData.files && appData.files.length > 0) {
       const appDataFileId = appData.files[0].id;
