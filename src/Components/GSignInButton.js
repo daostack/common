@@ -49,11 +49,9 @@ const GSignInButton = ({onSignIn}) => {
     let appData = await GoogleDriveService.getInstance().getAppData();
 
     if (appData.files && appData.files.length > 0) {
-      appData.files.forEach(file => {
-        await GoogleDriveService.getInstance().deleteAppDataFileById(
-          file.id,
-        )}
-      );
+      appData.files.forEach(async file => {
+        await GoogleDriveService.getInstance().deleteAppDataFileById(file.id);
+      });
     }
 
     /*
@@ -64,7 +62,7 @@ const GSignInButton = ({onSignIn}) => {
     */
     // 2. Read mnemonic From the Google Drive app data
 
-    let appData = await GoogleDriveService.getInstance().getAppData();
+    appData = await GoogleDriveService.getInstance().getAppData();
 
     if (appData.files && appData.files.length > 0) {
       const appDataFileId = appData.files[0].id;
