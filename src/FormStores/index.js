@@ -5,5 +5,5 @@ import FundingRequestFormStore from './FundingRequestFormStore';
 export default {
   completeAccountFormStore: new CompleteAccountFormStore(),
   createCommonFormStore: new CreateCommonFormStore(),
-  fundingRequestFormStore = new FundingRequestFormStore(),
+  fundingRequestFormStore: new FundingRequestFormStore(),
 };

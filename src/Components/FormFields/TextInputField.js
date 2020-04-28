@@ -90,7 +90,7 @@ class TextInputField extends React.Component {
         rowsNumber = 4;
       }
 
-      const height = 20 * rowsNumber;
+      const height = 24 * rowsNumber;
 
       defaultMultilineProps = {
         minHeight: height,

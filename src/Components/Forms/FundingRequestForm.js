@@ -82,6 +82,8 @@ class FundingRequestForm extends React.Component {
           label="Title"
           placeholderText="Briefly describe how you wish to spend these funds"
           autoCapitalize="none"
+          multiline={true}
+          numberOfLines={2}
           autoCorrect={false}
           validation={{
             name: FundingRequestForm.FIELD_TITLE,
