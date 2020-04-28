@@ -30,11 +30,7 @@ class EditProfileForm extends React.Component {
       }
 
       try {
-        await FirebaseService.getInstance().editUser(
-          userStore.userInfo.uid,
-          publicData,
-        );
-        await AuthService.getInstance().updateUserData(authData);
+        await AuthService.getInstance().updateUserData(authData, publicData);
       } catch (err) {
         console.log('Error -> ', err);
         editProfileFormStore.form.meta.submitError = `${err.toString()}  \n ${

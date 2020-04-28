@@ -34,7 +34,7 @@ const CommonProfileOptions = ({navigation, onContinueEditing}) => {
 
         <TouchableOpacity style={styles.optionBtn}>
           <Icon
-            name="agenda"
+            name="donate-16"
             style={layout.marginRightS}
             color={colors.black}
           />
@@ -52,7 +52,7 @@ const CommonProfileOptions = ({navigation, onContinueEditing}) => {
 
         <TouchableOpacity style={styles.optionBtn}>
           <Icon
-            name="agenda"
+            name="share-32"
             style={layout.marginRightS}
             color={colors.black}
           />
