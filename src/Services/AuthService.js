@@ -33,6 +33,7 @@ export default class AuthService {
   }
 
   async signOut() {
+    await GoogleSignin.revokeAccess();
     await auth().signOut();
   }
 
@@ -44,5 +45,9 @@ export default class AuthService {
       ...publicData,
       ...userData,
     });
+  }
+
+  async getTokens() {
+    await GoogleSignin.getTokens();
   }
 }
