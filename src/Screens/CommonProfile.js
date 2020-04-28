@@ -49,18 +49,12 @@ const CommonProfile = ({navigation}) => {
   const [isMember, setIsMember] = useState(false);
   const [isFundingStage, setIsFundingStage] = useState(true);
 
-  const [refreshDiscussion, setRefreshDiscussion] = useState(false);
-
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([
     {key: 'discussions', title: 'Discussions'},
     {key: 'proposals', title: 'Proposals'},
     {key: 'history', title: 'History'},
   ]);
-
-  const refreshDiscussionPage = () => {
-    setRefreshDiscussion(!refreshDiscussion);
-  };
 
   useEffect(() => {
     // noinspection JSAnnotator

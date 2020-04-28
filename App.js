@@ -45,7 +45,7 @@ import {filterObjectByKeys} from './src/Util';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
-import {firebase} from './src/Firebase';
+import {auth} from './src/Firebase';
 import Toast from './src/Util/Toast';
 import KeyboardManager from 'react-native-keyboard-manager';
 
@@ -138,7 +138,7 @@ const App = ({userStore}) => {
   };
 
   useEffect(() => {
-    const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
 
     const checkOnboardingStatus = async () => {
       try {

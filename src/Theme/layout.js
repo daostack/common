@@ -71,17 +71,20 @@ export default StyleSheet.create({
   },
 
   // Margin TOP
+  marginTopXS: {
+    marginTop: sizeXS,
+  },
   marginTopS: {
-    marginTop: 10,
+    marginTop: sizeS,
   },
   marginTopM: {
-    marginTop: 15,
+    marginTop: sizeM,
   },
   marginTopL: {
-    marginTop: 20,
+    marginTop: sizeL,
   },
   marginTopXL: {
-    marginTop: 40,
+    marginTop: sizeXL,
   },
 
   // Margin Bottom
