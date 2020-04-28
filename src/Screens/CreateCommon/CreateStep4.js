@@ -22,7 +22,7 @@ import moment from 'moment';
 import FirebaseService from '../../Services/FirebaseService';
 import {useToast} from '../../Util/Toast';
 import CreateStepDotHeader from './CreateStepDotHeader';
-import {kFormatter} from '../../Util';
+import {numberFormatter} from '../../Util';
 
 const firebaseService = new FirebaseService();
 
@@ -283,7 +283,7 @@ const CreateStep4 = props => {
             <View style={{minWidth: 90, marginRight: 10}}>
               <Text
                 style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>
-                ${kFormatter(form[CreateCommonForm.FUNDING_GOAL])}
+                ${numberFormatter(form[CreateCommonForm.FUNDING_GOAL])}
               </Text>
               <Text style={{fontSize: 14, textAlign: 'center', marginTop: 10}}>
                 Goal
@@ -292,7 +292,7 @@ const CreateStep4 = props => {
             <View style={{width: 90, marginHorizontal: 10}}>
               <Text
                 style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>
-                ${kFormatter(form[CreateCommonForm.MINIMUM])}
+                ${numberFormatter(form[CreateCommonForm.MINIMUM])}
               </Text>
               <Text style={{fontSize: 14, textAlign: 'center', marginTop: 10}}>
                 Contribution
