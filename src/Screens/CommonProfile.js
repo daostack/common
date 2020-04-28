@@ -125,11 +125,7 @@ const CommonProfile = ({navigation}) => {
 
   const Discussions = () => {
     return (
-      <DiscussionList
-        navigation={navigation}
-        commonId="48NPcGnpskN9YkqVNXKA"
-        refresh={refreshDiscussion}
-      />
+      <DiscussionList navigation={navigation} commonId="48NPcGnpskN9YkqVNXKA" />
     );
   };
 
@@ -396,7 +392,7 @@ const CommonProfile = ({navigation}) => {
       <BottomRightButton
         onPress={() =>
           navigation.navigate('New Post', {
-            callback: () => refreshDiscussionPage(),
+            commonId: "48NPcGnpskN9YkqVNXKA",
           })
         }
       />

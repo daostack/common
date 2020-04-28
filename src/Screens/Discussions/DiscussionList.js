@@ -5,10 +5,12 @@ import Icon from '../../Assets/iconfont/Icon';
 import DiscussionCard from './DiscussionCard';
 import firestore from '@react-native-firebase/firestore';
 import ViewTabNoData from '../../Components/ViewTabNoData';
+import _ from 'lodash';
 
 const DiscussionList = props => {
   const commonId = props.commonId;
   const [list, setList] = useState([]);
+  const [update, setUpdate] = useState(false);
 
   let listRef = useRef([]);
   useEffect(() => {
@@ -24,10 +26,26 @@ const DiscussionList = props => {
               id: doc.id,
               ...doc.data(),
             }));
-            console.log('newDoc', newList);
-            const disList = [...newList, ...listRef.current];
-            listRef.current = disList;
-            setList(newList);
+            let createList = newList
+              .map(item => {
+                let index = listRef.current.findIndex(v => v.id === item.id);
+                if (index > -1) {
+                  console.log('A', index, item);
+                  listRef.current[index] = item;
+                } else {
+                  console.log('B');
+                  return item;
+                }
+              })
+              .filter(item => item);
+            if (createList.length > 0) {
+              const allList = [...createList, ...listRef.current];
+              listRef.current = allList;
+            }
+            console.log('createList', createList);
+            console.log('allList', listRef.current);
+            setList(listRef.current);
+            setUpdate(!update);
           }
         },
         error => console.error(error),
@@ -50,6 +68,8 @@ const DiscussionList = props => {
               navigation={props.navigation}
             />
           )}
+          // extraData={update}
+          extraData={listRef}
         />
       ) : (
         <ViewTabNoData

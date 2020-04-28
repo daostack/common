@@ -52,54 +52,76 @@ const DiscussionCard = props => {
         })
       }>
       <View style={styles.container}>
-        <Text style={styles.title}>{data.title}</Text>
+        <TouchableOpacity>
+          <View style={{position: 'absolute', right: 0, top: 0}}>
+            <Icon name="menu" size={20} />
+          </View>
+        </TouchableOpacity>
+        <Text style={styles.title} numberOfLines={2}>
+          {data.title}
+        </Text>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Image
             style={{
               backgroundColor: colors.grey3,
-              height: 30,
-              width: 30,
-              borderRadius: 15,
+              height: 40,
+              width: 40,
+              borderRadius: 20,
             }}
             source={{uri: user.photoURL}}
           />
           <View style={{flex: 1, marginLeft: 10}}>
             <Text style={{fontWeight: 'bold'}}>{user.displayName}</Text>
             {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-          </View>
-          <Text>{moment(data.createTime.toDate()).fromNow()}</Text>
-        </View>
-        {data.message.length < 150 ? (
-          <Text style={{marginVertical: 10}}>{data.message}</Text>
-        ) : (
-          <>
-            <Text style={{marginVertical: 10}}>
-              {data.message.slice(0, 150)}
+            <Text style={{color: colors.grey3, fontSize: 12}}>
+              {moment(data.createTime.toDate()).fromNow()}
             </Text>
-            <TouchableOpacity
-              style={{marginVertical: 12, marginBottom: 20}}
-              onPress={() =>
-                props.navigation.navigate('Discussions', {
-                  data,
-                  commonId,
-                  user,
-                })
-              }>
-              <Text
-                style={{fontSize: 15, color: colors.black, fontWeight: 'bold'}}>
-                Read More
-              </Text>
-            </TouchableOpacity>
-          </>
-        )}
+          </View>
+        </View>
+        <Text
+          style={{
+            marginVertical: 10,
+            fontSize: 14,
+            lineHeight: 20,
+            fontFamily: 'Roboto',
+          }}
+          numberOfLines={3}>
+          {data.message}
+        </Text>
+        <View
+          style={{
+            backgroundColor: colors.grey4,
+            height: 1,
+            marginBottom: 15,
+            marginTop: 10,
+            marginHorizontal: -20,
+          }}
+        />
         <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity style={{flexDirection: 'row'}}>
-            <Text>💬</Text>
+          <View style={{flexDirection: 'row'}}>
+            <Icon name="discussion" size={20} />
             <Text
-              style={{fontSize: 15, color: colors.grey3, paddingHorizontal: 5}}>
+              style={{
+                fontSize: 15,
+                color: colors.grey3,
+                paddingHorizontal: 5,
+              }}>
               {msgCount}
             </Text>
-          </TouchableOpacity>
+          </View>
+          <View
+            style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end'}}>
+            <Text
+              style={{
+                textAlign: 'right',
+                fontSize: 16,
+                fontFamily: 'Roboto',
+                fontWeight: '400',
+              }}>
+              Read more
+            </Text>
+            <Icon name="right-arrow" size={20} />
+          </View>
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -126,7 +148,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
   },
   title: {
-    fontSize: 22,
+    fontSize: 18,
     marginBottom: 20,
     fontWeight: '500',
     fontFamily: 'Roboto',

@@ -30,7 +30,7 @@ class CreateDiscussionForm extends React.Component {
 
       firestore()
         .collection('common')
-        .doc('48NPcGnpskN9YkqVNXKA')
+        .doc(this.props.commonId)
         .collection('discussion')
         .doc()
         .set({
