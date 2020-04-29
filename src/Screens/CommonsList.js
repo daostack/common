@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
   Text,
-  TextInput,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -9,153 +8,87 @@ import {
   Dimensions,
 } from 'react-native';
 import {CommonBox, BottomRightButton} from '../Components';
-import {Subscription, Query} from 'react-apollo';
-import gql from 'graphql-tag';
-import {ApolloClientConfig as client} from '../Config';
-import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
+import {layout} from '../Theme';
+import FirebaseService from '../Services/FirebaseService';
+import {db} from '../Firebase';
 
 const {width} = Dimensions.get('window');
-
-import {Arc} from '@daostack/client';
-
-const graphHttpLink = 'https://api.thegraph.com/subgraphs/name/daostack/v36_8';
-const graphwsLink = 'wss://api.thegraph.com/subgraphs/name/daostack/v36_8';
-//
-// create an Arc instance
-const arc = new Arc({
-  graphqlHttpProvider: graphHttpLink,
-  graphqlWsProvider: graphwsLink,
-  web3Provider: `https://mainnet.infura.io/ws/v3/${'4406c3acf862426c83991f1752c46dd8'}`,
-  ipfsProvider: {
-    host: 'subgraph.daostack.io',
-    port: '443',
-    protocol: 'https',
-    'api-path': '/ipfs/api/v0/',
-  },
-});
-
-const DAOS_SUBSCRIPTION = gql`
-  query {
-    daos(orderBy: reputationHoldersCount, orderDirection: desc) {
-      id
-      name
-      reputationHoldersCount
-      schemes(first: 1000) {
-        id
-        address
-        name
-        paramsHash
-      }
-      proposals(first: 1000) {
-        id
-        stage
-      }
-    }
-  }
-`;
 
 const CommonsList = ({navigation}) => {
   const [hasError, setErrors] = useState(false);
   const [daos, setDaos] = useState([]);
 
   useEffect(() => {
-    const daosSubscription = async () => {
-      arc.daos().subscribe(res => {
-        console.log(res);
-        setDaos(res);
-      });
+    const getDaos = async () => {
+      try {
+        const appUsers = await FirebaseService.getInstance().getUsers();
+        console.log('users: ', appUsers);
+        const unsubscribe = db.collection('daos').onSnapshot(snapshot => {
+          if (snapshot.empty) {
+            return [];
+          }
+          let daosSnapshot = snapshot.docs.map(doc => {
+            return {...{id: doc.id}, ...doc.data()};
+          });
+          console.log('daos: ', daosSnapshot)
+          setDaos(daosSnapshot);
+        });
+        // console.log('DAOS: ', daosRes);
+        // setDaos(daosRes);
+      } catch (error) {
+        console.log('errror: ', error);
+      }
     };
-    daosSubscription();
+    getDaos();
+    return function cleanup() {
+      unsubscribe();
+    }
   }, [0]);
 
   return (
     <View style={{flex: 1}}>
       <SafeAreaView />
-      <Query query={DAOS_SUBSCRIPTION}>
-        {({loading, error, data}) => {
-          console.log('Query Commons -> ', loading, error, data);
+      <>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '100%',
+            padding: 15,
+          }}>
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: 'bold',
+              fontStyle: 'normal',
+              letterSpacing: 0,
+            }}>
+            {daos.length} Commons
+          </Text>
+        </View>
 
-          if (error) {
-            console.error(error);
-            return (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#fff',
-                }}>
-                <Text>Can't fetch DAOs</Text>
-              </View>
-            );
-          }
-          if (loading) {
-            return (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#fff',
-                }}>
-                <Text
-                  style={{
-                    fontSize: 24,
-                    fontWeight: 'bold',
-                    fontStyle: 'normal',
-                    letterSpacing: 0,
-                  }}>
-                  Commons
-                </Text>
-              </View>
-            );
-          }
-          return (
-            <>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  width: '100%',
-                  padding: 15,
-                }}>
-                <Text
-                  style={{
-                    fontSize: 24,
-                    fontWeight: 'bold',
-                    fontStyle: 'normal',
-                    letterSpacing: 0,
-                  }}>
-                  {data.daos.length} Commons
-                </Text>
-              </View>
-
-              <ScrollView>
-                <View style={styles.container}>
-                  {data.daos.map((dao, i) => {
-                    if (
-                      ''.length > 0 &&
-                      !dao.name.toLowerCase().includes(''.toLowerCase())
-                    ) {
-                      return;
-                    }
-                    return (
-                      <CommonBox
-                        image={`https://i.picsum.photos/id/${i *
-                          10}/500/100.jpg`}
-                        common={dao}
-                        key={i}
-                        navigation={navigation}
-                      />
-                    );
-                  })}
-                </View>
-              </ScrollView>
-            </>
-          );
-        }}
-      </Query>
+        <ScrollView>
+          <View style={styles.container}>
+            {daos.map((dao, i) => {
+              if (
+                ''.length > 0 &&
+                !dao.name.toLowerCase().includes(''.toLowerCase())
+              ) {
+                return;
+              }
+              return (
+                <CommonBox
+                  image={`https://i.picsum.photos/id/${i * 10}/500/100.jpg`}
+                  common={dao}
+                  key={i}
+                  navigation={navigation}
+                />
+              );
+            })}
+          </View>
+        </ScrollView>
+      </>
       <BottomRightButton
         onPress={() => navigation.navigate('CommonExplanation')}
       />
