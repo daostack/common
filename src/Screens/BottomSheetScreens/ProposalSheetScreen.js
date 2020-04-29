@@ -42,12 +42,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     position: 'relative',
   },
-
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-
   componentContainer: {
     marginBottom: 100,
   },
