@@ -1,36 +1,10 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {
-  Dimensions,
-  Text,
-  View,
-  ScrollView,
-  StyleSheet,
-  Image,
-  ImageBackground,
-  TouchableOpacity,
-} from 'react-native';
-import {text, layout, colors, sizeL, sizeM, sizeXS} from '../../Theme';
+import React from 'react';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {text, layout, colors, sizeM, sizeXS} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
-import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
-import MemberCard from '../../Components/MemberCard';
 import ReadMore from 'react-native-read-more-text';
 
-import BoostedInfo from '../BottomSheetScreens/BoostedInfo';
-import BottomSheetContainer from '../../Components/BottomSheetContainer';
-
-let {height, width} = Dimensions.get('window');
-const mockData = {
-  data: 'data',
-  member: {
-    name: 'John Smith',
-    approvePercent: 32,
-    imageUrl:
-      'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
-    date: 'May 12',
-  },
-};
-
-const ProposalData = ({navigation}) => {
+const ProposalData = ({}) => {
   const _renderTruncatedFooter = handlePress => {
     return (
       <Text style={styles.readMoreBtn} onPress={handlePress}>

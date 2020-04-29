@@ -1,11 +1,4 @@
-import {
-  View,
-  StyleSheet,
-  StatusBar,
-  SafeAreaView,
-  ScrollView,
-  Text,
-} from 'react-native';
+import {View, StyleSheet, StatusBar, SafeAreaView} from 'react-native';
 
 import React, {useRef} from 'react';
 import {text, colors, layout, sizeS} from '../../Theme';
@@ -14,7 +7,7 @@ import ProposalScreen from '../Proposals/ProposalScreen';
 import BoostedInfo from '../BottomSheetScreens/BoostedInfo';
 import BottomSheetContainer from '../../Components/BottomSheetContainer';
 
-const ProposalSheetScreen = ({navigation}) => {
+const ProposalSheetScreen = ({}) => {
   boostedInfoRef = useRef();
 
   const openBoostedInfoBottomSheet = () => {

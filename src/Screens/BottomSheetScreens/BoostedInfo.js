@@ -1,28 +1,10 @@
-import {
-  Text,
-  View,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import {Text, View, StyleSheet, ScrollView, Image} from 'react-native';
 
 import React from 'react';
 import {text, layout, colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
 const BoostedInfo = ({navigation, onContinueEditing}) => {
-  const liveWithoutSave = e => {
-    navigation.goBack();
-  };
-
-  const continueEditing = e => {
-    console.log('onContinueEditing -> ', onContinueEditing);
-    if (onContinueEditing) {
-      onContinueEditing();
-    }
-  };
-
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"

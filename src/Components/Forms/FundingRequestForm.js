@@ -1,7 +1,6 @@
 import React from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
-import ImageField from '../FormFields/ImageField';
 import {observer, inject} from 'mobx-react';
 import {layout, text} from '../../Theme';
 import FirebaseService from '../../Services/FirebaseService';
