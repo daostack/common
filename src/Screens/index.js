@@ -19,3 +19,4 @@ export MyProposals from './MyProposals';
 export MyCommons from './MyCommons';
 export CommonAgenda from './CommonAgenda';
 export CommonMembers from './CommonMembers';
+export FundingProposal from './Proposals/FundingProposal';

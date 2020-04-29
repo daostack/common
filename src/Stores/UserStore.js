@@ -7,7 +7,6 @@ export const userInfoFields = [
   'photoURL',
   'ethereumAddress',
   'intro',
-  'profileImage',
   'byLine',
   'preferences',
 ];
@@ -40,9 +39,6 @@ class UserStore {
       }
       if (newUserInfo.photoURL) {
         newUserObj.photoURL = newUserInfo.photoURL;
-      }
-      if (newUserInfo.profileImage) {
-        newUserObj.profileImage = newUserInfo.profileImage;
       }
       if (newUserInfo.intro) {
         newUserObj.intro = newUserInfo.intro;

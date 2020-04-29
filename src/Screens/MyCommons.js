@@ -51,7 +51,7 @@ const MyCommons = ({navigation}) => {
           setRoutes(tmpRoutes);
 
           return (
-            <View style={layout.marginTopL}>
+            <View style={layout.content}>
               {data.daos.map((dao, i) => {
                 return (
                   <CommonBox
@@ -95,7 +95,7 @@ const MyCommons = ({navigation}) => {
           setRoutes(tmpRoutes);
 
           return (
-            <View style={layout.marginTopL}>
+            <View style={layout.content}>
               {data.reputationHolders.map((currHolder, i) => {
                 return (
                   <CommonBox
@@ -159,7 +159,7 @@ const MyCommons = ({navigation}) => {
               onIndexChange={setIndex}
               initialLayout={initialLayout}
               renderTabBar={renderTabBar}
-              style={{paddingHorizontal: 20}}
+              style={{}}
             />
           </View>
         </ScrollView>

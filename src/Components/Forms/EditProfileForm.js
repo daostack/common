@@ -4,13 +4,13 @@ import TextInputField from '../FormFields/TextInputField';
 import ImageField from '../FormFields/ImageField';
 import {observer, inject} from 'mobx-react';
 import {layout, text} from '../../Theme';
-import FirebaseService from '../../Services/FirebaseService';
 import AuthService from '../../Services/AuthService';
+import {filterObjectByKeys} from '../../Util';
 
 class EditProfileForm extends React.Component {
   static FIELD_NAME = 'displayName';
   static FIELD_INTRO = 'intro';
-  static FIELD_PROFILE_IMAGE = 'profileImage';
+  static FIELD_PROFILE_IMAGE = 'photoURL';
 
   formSkip() {}
 
@@ -19,15 +19,13 @@ class EditProfileForm extends React.Component {
     if (editProfileFormStore.isFormValid()) {
       const changedFields = editProfileFormStore.getChangedFormFieldsJson();
 
-      let publicData = {};
-      let authData = {};
-
-      if (changedFields.displayName) {
-        authData.displayName = changedFields.displayName;
-      }
-      if (changedFields.intro) {
-        publicData.intro = changedFields.intro;
-      }
+      let authData = filterObjectByKeys(changedFields, [
+        EditProfileForm.FIELD_NAME,
+        EditProfileForm.FIELD_PROFILE_IMAGE,
+      ]);
+      let publicData = filterObjectByKeys(changedFields, [
+        EditProfileForm.FIELD_INTRO,
+      ]);
 
       try {
         await AuthService.getInstance().updateUserData(authData, publicData);
@@ -74,8 +72,7 @@ class EditProfileForm extends React.Component {
           marginTop: 15,
         }}>
         <ImageField
-          value={userStore.userInfo.profileImage}
-          placeholderUrl={userStore.userInfo.photoURL}
+          value={userStore.userInfo.photoURL}
           allowsEditing={true}
           title={'Select new avatar'}
           validation={{
@@ -111,7 +108,7 @@ class EditProfileForm extends React.Component {
           validation={{
             name: EditProfileForm.FIELD_INTRO,
             formStore: this.props.editProfileFormStore,
-            validateRule: 'required',
+            validateRule: 'string',
           }}
         />
 

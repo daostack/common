@@ -19,6 +19,7 @@ import ViewTabNoData from '../Components/ViewTabNoData';
 import CommonOperationalStateNotif from './BottomSheetScreens/CommonOperationalStateNotif';
 import SortProposals from './BottomSheetScreens/SortProposals';
 import CommonProfileOptions from './BottomSheetScreens/CommonProfileOptions';
+import ProposalSheetScreen from './BottomSheetScreens/ProposalSheetScreen';
 import BottomSheetContainer from '../Components/BottomSheetContainer';
 import CommonCover from '../Components/Commons/CommonCover';
 import CommonStageSummary from '../Components/Commons/CommonStageSummary';
@@ -45,6 +46,7 @@ const CommonProfile = ({navigation, route}) => {
   commonOperationalStateNotifRef = useRef();
   optionsSheetRef = useRef();
   sortProposalsSheetRef = useRef();
+  proposalSheetRef = useRef();
 
   const [isMember] = useState(false);
   const [isFundingStage] = useState(false);
@@ -227,6 +229,11 @@ const CommonProfile = ({navigation, route}) => {
     optionsSheetRef.current.snapTo(1);
   };
 
+  const openProposalSheet = event => {
+    proposalSheetRef.current.snapTo(1);
+    proposalSheetRef.current.snapTo(1);
+  };
+
   const openNotif = event => {
     commonOperationalStateNotifRef.current.snapTo(1);
     commonOperationalStateNotifRef.current.snapTo(1);
@@ -279,6 +286,27 @@ const CommonProfile = ({navigation, route}) => {
           </TouchableOpacity>
         </View>
         {renderAgendaForNonMembers()}
+
+        <TouchableOpacity
+          style={{
+            ...styles.headerButton,
+            ...{
+              justifyContent: 'center',
+              marginBottom: 20,
+              marginHorizontal: 100,
+            },
+          }}
+          onPress={openProposalSheet}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: 'white',
+              fontWeight: '700',
+            }}>
+            Open Proposal
+          </Text>
+        </TouchableOpacity>
+
         <TabView
           navigationState={{index, routes}}
           renderScene={renderScene}
@@ -324,6 +352,10 @@ const CommonProfile = ({navigation, route}) => {
 
       <BottomSheetContainer ref={sortProposalsSheetRef}>
         <SortProposals navigation={navigation} />
+      </BottomSheetContainer>
+
+      <BottomSheetContainer ref={proposalSheetRef} topSnapPoint={800}>
+        <ProposalSheetScreen navigation={navigation} />
       </BottomSheetContainer>
     </View>
   );

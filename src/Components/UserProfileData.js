@@ -55,8 +55,8 @@ const UserProfileData = ({
     if (isEditMode) {
       return (
         <ImageField
-          value={user?.profileImage}
-          placeholderUrl={user?.photo}
+          value={user?.photoURL}
+          placeholderUrl={user?.photoURL}
           validation={{
             name: EditProfileForm.FIELD_PROFILE_IMAGE,
             formStore: editProfileFormStore,
@@ -65,19 +65,12 @@ const UserProfileData = ({
         />
       );
     } else {
-      let imageUri = null;
-      if (user.profileImage) {
-        imageUri = `data:image/png;base64,${user.profileImage}`;
-      } else {
-        imageUri = user.photo;
-      }
-
       return (
         <View style={styles.imageFieldContainer}>
           <Image
             style={styles.imageFieldStyle}
             resizeMode="cover"
-            source={{uri: imageUri}}
+            source={{uri: user.photoURL}}
           />
           <View style={styles.imageFielFollowIcon}>
             <Icon name="follow" size={16} color={colors.white} />
