@@ -109,7 +109,7 @@ const CommonHome = () => {
 };
 
 const App = ({userStore}) => {
-  const [setOnboarded] = useState();
+  const [onboarded, setOnboarded] = useState();
 
   const onAuthStateChanged = async user => {
     try {

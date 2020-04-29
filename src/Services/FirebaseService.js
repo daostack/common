@@ -59,6 +59,17 @@ export default class FirebaseService {
       });
   }
 
+  async getDaos() {
+    return db.collection('daos').onSnapshot(snapshot => {
+      if (snapshot.empty) {
+        return [];
+      }
+      return snapshot.docs.map(doc => {
+        return {...{id: doc.id}, ...doc.data()};
+      });
+    });
+  }
+
   async addUser(googleId, newUser) {
     console.log('addUser -> ', newUser);
     try {

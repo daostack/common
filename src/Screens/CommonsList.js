@@ -9,41 +9,40 @@ import {
 } from 'react-native';
 import {CommonBox, BottomRightButton} from '../Components';
 import {layout} from '../Theme';
-import {db, firebase} from '../Firebase';
+import FirebaseService from '../Services/FirebaseService';
+import {db} from '../Firebase';
 
 const {width} = Dimensions.get('window');
-
-import {Arc} from '@daostack/client';
-
-const graphHttpLink =
-  'https://api.thegraph.com/subgraphs/name/daostack/v7_2_exp_rinkeby';
-const graphwsLink =
-  'wss://api.thegraph.com/subgraphs/name/daostack/v7_2_exp_rinkeby';
-//
-// create an Arc instance
-const arc = new Arc({
-  graphqlHttpProvider: graphHttpLink,
-  graphqlWsProvider: graphwsLink,
-  web3Provider: `https://mainnet.infura.io/ws/v3/${'4406c3acf862426c83991f1752c46dd8'}`,
-  ipfsProvider: {
-    host: 'subgraph.daostack.io',
-    port: '443',
-    protocol: 'https',
-    'api-path': '/ipfs/api/v0/',
-  },
-});
 
 const CommonsList = ({navigation}) => {
   const [hasError, setErrors] = useState(false);
   const [daos, setDaos] = useState([]);
 
   useEffect(() => {
-    db.collection('daos')
-      .get()
-      .then(snapshot => {
-        console.log('SNAPSHOT: ', snapshot.data);
-        setDaos(snapshot);
-      });
+    const getDaos = async () => {
+      try {
+        const appUsers = await FirebaseService.getInstance().getUsers();
+        console.log('users: ', appUsers);
+        const unsubscribe = db.collection('daos').onSnapshot(snapshot => {
+          if (snapshot.empty) {
+            return [];
+          }
+          let daosSnapshot = snapshot.docs.map(doc => {
+            return {...{id: doc.id}, ...doc.data()};
+          });
+          console.log('daos: ', daosSnapshot)
+          setDaos(daosSnapshot);
+        });
+        // console.log('DAOS: ', daosRes);
+        // setDaos(daosRes);
+      } catch (error) {
+        console.log('errror: ', error);
+      }
+    };
+    getDaos();
+    return function cleanup() {
+      unsubscribe();
+    }
   }, [0]);
 
   return (
@@ -81,7 +80,7 @@ const CommonsList = ({navigation}) => {
               return (
                 <CommonBox
                   image={`https://i.picsum.photos/id/${i * 10}/500/100.jpg`}
-                  common={dao.coreState}
+                  common={dao}
                   key={i}
                   navigation={navigation}
                 />
