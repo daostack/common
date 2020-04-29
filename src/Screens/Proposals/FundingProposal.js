@@ -1,13 +1,12 @@
 import React from 'react';
 import {
-  Dimensions,
   Text,
   ScrollView,
   StyleSheet,
   SafeAreaView,
   StatusBar,
 } from 'react-native';
-import {text, layout, colors, sizeM} from '../../Theme';
+import {text, layout, colors} from '../../Theme';
 import FundingRequestForm from '../../Components/Forms/FundingRequestForm';
 
 const FundingProposal = ({}) => {

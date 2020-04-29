@@ -1,12 +1,10 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useState} from 'react';
 import {
   Dimensions,
   Text,
   View,
   ScrollView,
   StyleSheet,
-  Image,
-  ImageBackground,
   TouchableOpacity,
 } from 'react-native';
 import {text, layout, colors, sizeM} from '../../Theme';
@@ -15,8 +13,6 @@ import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
 import ProposalDiscussion from './ProposalDiscussion';
 import MemberCard from '../../Components/MemberCard';
-
-let {height, width} = Dimensions.get('window');
 
 const mockData = {
   data: 'data',
@@ -29,7 +25,7 @@ const mockData = {
   },
 };
 
-const ProposalScreen = ({navigation}) => {
+const ProposalScreen = ({}) => {
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([
     {key: 'info', title: 'Information'},
@@ -47,7 +43,7 @@ const ProposalScreen = ({navigation}) => {
       indicatorStyle={{
         backgroundColor: colors.mainBlue,
       }}
-      renderLabel={({route, focused, color}) => {
+      renderLabel={({route, focused}) => {
         return (
           <View style={{...layout.content, padding: 0}}>
             <Icon
