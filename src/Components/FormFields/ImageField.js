@@ -74,31 +74,19 @@ class ImageField extends React.Component {
   };
 
   renderImage = () => {
-    const {value, validation, placeholderUrl} = this.props;
+    const {value, validation} = this.props;
 
     const currValue = validation
       ? validation.formStore.form.fields[validation.name].value
       : value;
 
-    if (currValue) {
-      return (
-        <Image
-          style={styles.formImageFieldStyle}
-          resizeMode="cover"
-          source={{
-            uri: currValue,
-          }}
-        />
-      );
-    } else {
-      return (
-        <Image
-          style={styles.formImageFieldStyle}
-          resizeMode="cover"
-          source={{uri: placeholderUrl}}
-        />
-      );
-    }
+    return (
+      <Image
+        style={styles.formImageFieldStyle}
+        resizeMode="cover"
+        source={{uri: currValue}}
+      />
+    );
   };
 
   render() {
