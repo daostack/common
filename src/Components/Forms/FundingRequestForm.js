@@ -16,7 +16,7 @@ class FundingRequestForm extends React.Component {
   static FIELD_DESCRIPTION = 'Description';
   static FIELD_LINKS = 'Links';
   static FIELD_IMAGES = 'Images';
-  static FIELD_FILES = 'Images';
+  static FIELD_FILES = 'Files';
 
   state = {
     linkCount: 1,
