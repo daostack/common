@@ -239,6 +239,10 @@ const CommonProfile = ({navigation, route}) => {
     commonOperationalStateNotifRef.current.snapTo(1);
   };
 
+  const requestToJoin = event => {
+    navigation.navigate('RequestStep1');
+  };
+
   const initialLayout = {width: Dimensions.get('window').width};
 
   return (
@@ -324,7 +328,9 @@ const CommonProfile = ({navigation, route}) => {
           </TouchableOpacity>
         ) : (
           <View style={styles.actionButtonContainer}>
-            <TouchableOpacity style={styles.headerButton}>
+            <TouchableOpacity
+              style={styles.headerButton}
+              onPress={requestToJoin}>
               <Text
                 style={{
                   fontSize: 16,

@@ -1,0 +1,107 @@
+import {
+  Image,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  SafeAreaView,
+} from 'react-native';
+import React, {useState, useRef} from 'react';
+
+import Icon from '../../Assets/iconfont/Icon';
+import {layout, colors, text} from '../../Theme';
+import JoinAmount from '../Commons/JoinAmount';
+import TextInputField from './TextInputField';
+import TextInputFieldWithIcon from './TextInputFieldWithIcon';
+
+import RequestToJoinForm from '../Forms/RequestToJoinForm';
+
+const AmountField = ({amount, isCustom, formStore}) => {
+  const [isCustomSelected, setIsCustomSelected] = useState(0);
+
+  const textInputRef = useRef();
+
+  const amount1Ref = useRef();
+  const amount2Ref = useRef();
+  const amount3Ref = useRef();
+
+  const onAmountPress = (isCustom, amount) => {
+    if (isCustom) {
+      setIsCustomSelected(true);
+      textInputRef.current.focus();
+      console.log(textInputRef.current);
+    } else {
+      /*
+      console.log(amount1Ref);
+      if (amount == '$10') {
+        amount1Ref.deselect();
+      } else if (amount == '$20') {
+        amount2Ref.deselect();
+      } else if (amount == '$50') {
+        amount3Ref.deselect();
+      }
+      */
+    }
+  };
+
+  const onCustomClose = e => {
+    setIsCustomSelected(false);
+  };
+
+  return (
+    <View>
+      <View style={isCustomSelected ? styles.hidden : {}}>
+        <JoinAmount ref={amount1Ref} amount="$10" onPress={onAmountPress} />
+        <JoinAmount ref={amount2Ref} amount="$20" onPress={onAmountPress} />
+        <JoinAmount ref={amount3Ref} amount="$50" onPress={onAmountPress} />
+        <JoinAmount isCustom={true} onPress={onAmountPress} />
+      </View>
+
+      <TextInputFieldWithIcon
+        forwardRef={textInputRef}
+        iconName="dollar"
+        iconSize={12}
+        iconStyle={{paddingRight: 5}}
+        iconEmptyColor={colors.grey3}
+        iconFillColor={colors.grey}
+        viewStyle={isCustomSelected ? styles.selectedCustom : styles.hidden}
+        autoCapitalize="none"
+        autoCorrect={false}
+        keyboardType="numeric"
+        onTogglePress={onCustomClose}
+        validation={{
+          name: RequestToJoinForm.FIELD_AMOUNT,
+          formStore: formStore,
+          validateRule: 'required|integer',
+        }}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  selectedCustom: {},
+
+  hidden: {
+    display: 'none',
+  },
+  container: {
+    ...layout.content,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: colors.grey4,
+  },
+  amount: {
+    ...text.h3Black,
+    fontWeight: '500',
+    color: colors.mainBlue,
+  },
+  ruleDescription: {
+    ...text.blackText,
+    ...layout.marginTopM,
+    marginLeft: 30,
+  },
+});
+
+export default AmountField;

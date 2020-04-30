@@ -1,0 +1,275 @@
+import React, {useEffect, useState} from 'react';
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+  SafeAreaView,
+  Animated,
+} from 'react-native';
+import TextInputFieldWithIcon from '../../Components/FormFields/TextInputFieldWithIcon';
+import ImageField from '../../Components/FormFields/ImageField';
+import TextInputField from '../../Components/FormFields/TextInputField';
+import MultiLinkField from '../../Components/FormFields/MultiLinkField';
+
+import {colors, text, layout} from '../../Theme';
+import {observer, inject} from 'mobx-react';
+const {width} = Dimensions.get('window');
+import SegmentedControlTab from 'react-native-segmented-control-tab';
+import CreateStepHeader from './RequestStepHeader';
+import CreateStepNavigation from './RequestStepNavigation';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
+import RequestToJoinForm from '../../Components/Forms/RequestToJoinForm';
+import Modal from 'react-native-modal';
+import moment from 'moment';
+import CreateStepDotHeader from './RequestStepDotHeader';
+
+const RequestStep2 = props => {
+  const [scrollY, setScrollY] = useState(new Animated.Value(0));
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const [segmentedIndex, setSegmentedIndex] = useState(0);
+  const [pickDate, setPickDate] = useState('Custom');
+  const [show, setShow] = useState(false);
+  const [pass, setPass] = useState(true);
+
+  useEffect(() => {
+    const height = scrollY.interpolate({
+      inputRange: [0, 50],
+      outputRange: [0, 125],
+      extrapolate: 'clamp',
+    });
+    setHeaderHeight(height);
+  }, [scrollY]);
+
+  useEffect(() => {
+    const name = RequestToJoinForm.DEADLINE;
+    props.requestToJoinFormStore.registerFormField(name, 'required');
+    switch (segmentedIndex) {
+      case 0: {
+        props.requestToJoinFormStore.fieldChanged(
+          name,
+          moment()
+            .add('7', 'days')
+            .toDate(),
+        );
+        setShow(false);
+        break;
+      }
+      case 1: {
+        props.requestToJoinFormStore.fieldChanged(
+          name,
+          moment()
+            .add('1', 'months')
+            .toDate(),
+        );
+        setShow(false);
+        break;
+      }
+      case 2: {
+        props.requestToJoinFormStore.fieldChanged(
+          name,
+          moment(pickDate, 'MMM DD, YYYY').toDate(),
+        );
+        setShow(true);
+        break;
+      }
+    }
+  }, [segmentedIndex, pickDate, props.requestToJoinFormStore]);
+
+  const isValid = () => {
+    const result = props.requestToJoinFormStore.isFormValidSelectedFields([
+      RequestToJoinForm.FUNDING_GOAL,
+      RequestToJoinForm.MINIMUM,
+      RequestToJoinForm.DEADLINE,
+    ]);
+    setPass(result);
+    return result;
+  };
+
+  const push = () => {
+    const vaild = isValid();
+    if (vaild) {
+      props.navigation.navigate('RequestStep3');
+      console.log(props.requestToJoinFormStore.getChangedFormFieldsJson());
+    }
+  };
+
+  const {userStore} = props;
+
+  return (
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: 'white',
+      }}>
+      <CreateStepNavigation
+        navigation={props.navigation}
+        title="Approve Common Rules"
+      />
+      <CreateStepDotHeader
+        title="Introduce Yourself"
+        currentIndex={2}
+        navigation={props.navigation}
+        headerHeight={headerHeight}
+      />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        width={width}
+        contentContainerStyle={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 24,
+        }}
+        scrollEventThrottle={16}
+        onScroll={Animated.event([
+          {nativeEvent: {contentOffset: {y: scrollY}}},
+        ])}>
+        <CreateStepHeader currentIndex={1} />
+        <View
+          style={{
+            flex: 1,
+            // alignItems: 'center',
+            // padding: 24,
+            backgroundColor: 'white',
+          }}>
+          <Text
+            style={{
+              marginTop: 24,
+              fontWeight: '700',
+              fontSize: 18,
+              textAlign: 'center',
+            }}>
+            Introduce Yourself
+          </Text>
+          <Text
+            style={{
+              marginTop: 12,
+              marginBottom: 23,
+              marginHorizontal: 20,
+              textAlign: 'center',
+            }}>
+            Let the other common members know what you bring to the table
+          </Text>
+          <View
+            style={{
+              backgroundColor: colors.grey4,
+              height: 1,
+              marginBottom: 40,
+            }}
+          />
+
+          <ImageField
+            isAvatar={true}
+            value={userStore.userInfo.photoURL}
+            allowsEditing={true}
+            title={'Select new avatar'}
+            validation={{
+              name: RequestToJoinForm.FIELD_IMAGE,
+              formStore: props.requestToJoinFormStore,
+              validateRule: 'string',
+            }}
+          />
+
+          <TextInputField
+            label="About me"
+            multiline={true}
+            numberOfLines={6}
+            validation={{
+              name: RequestToJoinForm.FIELD_ABOUT_ME,
+              formStore: props.requestToJoinFormStore,
+              validateRule: 'string',
+            }}
+          />
+
+          <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>Links</Text>
+
+          <MultiLinkField
+            allowsEditing={true}
+            title={'Add File'}
+            validation={{
+              name: RequestToJoinForm.FIELD_LINKS,
+              formStore: props.requestToJoinFormStore,
+              validateRule: 'string',
+            }}
+          />
+        </View>
+        <TouchableOpacity
+          style={[
+            styles.continueButton,
+            {backgroundColor: pass ? colors.mainBlue : colors.grey3},
+          ]}
+          onPress={push}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: 'white',
+              fontWeight: '700',
+            }}>
+            Continue
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  view: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
+  container: {
+    backgroundColor: colors.white,
+    borderBottomColor: colors.gray,
+    borderBottomWidth: 1,
+    marginVertical: 10,
+    marginHorizontal: 10,
+    justifyContent: 'center',
+    borderRadius: 2,
+    height: 50,
+  },
+  placeholderText: {
+    color: colors.grey3,
+  },
+  text: {
+    width: '100%',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    fontSize: 15,
+    color: colors.black,
+  },
+  readMoreButton: {
+    fontSize: 12,
+    // fontWeight: '700',
+    color: colors.grey3,
+  },
+  continueButton: {
+    width: '100%',
+    height: 48,
+    borderRadius: 32,
+    marginTop: 45,
+    flexDirection: 'row',
+    paddingHorizontal: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.mainBlue,
+  },
+  infoLabel: {
+    fontFamily: 'Roboto',
+    fontSize: 14,
+    fontWeight: 'normal',
+    fontStyle: 'italic',
+    letterSpacing: 0,
+    color: colors.paleblue,
+    textAlign: 'right',
+    flex: 1,
+  },
+});
+
+export default inject(
+  'userStore',
+  'requestToJoinFormStore',
+)(observer(RequestStep2));

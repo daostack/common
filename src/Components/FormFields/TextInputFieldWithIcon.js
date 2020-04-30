@@ -1,10 +1,15 @@
 import React from 'react';
-import {TextInput, View, Text, StyleSheet} from 'react-native';
+import {
+  TextInput,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
-import colors from '../../Theme/colors';
-import layout from '../../Theme/layout';
 import Icon from '../../Assets/iconfont/Icon';
+import {layout, colors} from '../../Theme';
 
 class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
@@ -20,7 +25,7 @@ class TextInputFieldWithIcon extends React.Component {
       onFocus: false,
     };
 
-    const {validation, value, fieldActionComponent} = this.props;
+    const {validation, value, fieldActionComponent, onTogglePress} = this.props;
     // Register form field for validation message component if name,formStore and validateRule props are provided
     if (validation) {
       const {name, formStore, validateRule} = validation;
@@ -32,6 +37,25 @@ class TextInputFieldWithIcon extends React.Component {
 
     if (fieldActionComponent) {
       this.placeFieldActionComponent = fieldActionComponent;
+    }
+    if (onTogglePress) {
+      this.toggleValueBtn = (
+        <View
+          style={{
+            position: 'absolute',
+            top: 7,
+            left: 15,
+            right: 15,
+            bottom: 7,
+            ...layout.content,
+            padding: 0,
+            alignItems: 'flex-end',
+          }}>
+          <TouchableOpacity onPress={onTogglePress}>
+            <Icon name="close" size={12} />
+          </TouchableOpacity>
+        </View>
+      );
     }
   }
 
@@ -127,6 +151,7 @@ class TextInputFieldWithIcon extends React.Component {
             />
           </View>
           <TextInput
+            ref={this.props.forwardRef}
             {...defaultMultilineProps}
             {...otherProps}
             multiline={multiline}

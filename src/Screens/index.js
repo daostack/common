@@ -20,3 +20,7 @@ export MyCommons from './MyCommons';
 export CommonAgenda from './CommonAgenda';
 export CommonMembers from './CommonMembers';
 export FundingProposal from './Proposals/FundingProposal';
+export RequestStep1 from './Commons/RequestStep1';
+export RequestStep2 from './Commons/RequestStep2';
+export RequestStep3 from './Commons/RequestStep3';
+export RequestStep4 from './Commons/RequestStep4';
