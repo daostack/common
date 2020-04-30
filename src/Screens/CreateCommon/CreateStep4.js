@@ -71,7 +71,7 @@ const CreateStep4 = props => {
       CreateCommonForm.IMAGE,
       'url',
     );
-  });
+  }, []);
 
   const pickImage = isAvatar => {
     const options = {
@@ -418,7 +418,7 @@ const CreateStep4 = props => {
               color: 'white',
               fontWeight: '700',
             }}>
-            Continue to Review
+            Publish Common
           </Text>
         </TouchableOpacity>
       </ScrollView>
