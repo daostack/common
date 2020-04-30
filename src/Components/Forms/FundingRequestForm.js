@@ -2,6 +2,7 @@ import React from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import MultiImageField from '../FormFields/MultiImageField';
+import MultiFileField from '../FormFields/MultiFileField';
 
 import ImageField from '../FormFields/ImageField';
 import {observer, inject} from 'mobx-react';
@@ -15,6 +16,7 @@ class FundingRequestForm extends React.Component {
   static FIELD_DESCRIPTION = 'Description';
   static FIELD_LINKS = 'Links';
   static FIELD_IMAGES = 'Images';
+  static FIELD_FILES = 'Images';
 
   state = {
     linkCount: 1,
@@ -132,7 +134,7 @@ class FundingRequestForm extends React.Component {
           }}>
           Have any resources or links to support your offer?
         </Text>
-        {/*
+
         {[...Array(this.state.linkCount).keys()].map(x => (
           <>
             <TextInputField
@@ -166,16 +168,33 @@ class FundingRequestForm extends React.Component {
             Add Link
           </Text>
         </TouchableOpacity>
-          */}
 
         <Text
           style={{
             ...text.h3Black,
-            ...layout.marginTopL,
+            ...layout.marginTopXL,
             ...{textAlign: 'left'},
           }}>
           Files
         </Text>
+        <Text
+          style={{
+            ...text.tapBarunselected,
+            ...layout.marginTopS,
+            ...{textAlign: 'left'},
+          }}>
+          Anything you want to attach to this proposal?
+        </Text>
+
+        <MultiFileField
+          allowsEditing={true}
+          title={'Add File'}
+          validation={{
+            name: FundingRequestForm.FIELD_FILES,
+            formStore: fundingRequestFormStore,
+            validateRule: 'string',
+          }}
+        />
 
         <Text
           style={{

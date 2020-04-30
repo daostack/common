@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
-import ImageField from './ImageField';
+import FileField from './FileField';
 import {text, layout, colors, sizeL} from '../../Theme';
 
 const MultiFileField = props => {
   const [count, setCount] = useState(1);
 
-  const onChangeImage = (url, index) => {
+  const onChangeFile = (fileName, index) => {
     if (index == count - 1) {
       if (!maxCount || count < maxCount) {
         setCount(count + 1);
@@ -23,11 +23,11 @@ const MultiFileField = props => {
         currItemValidation.name = `${currItemValidation.name}_${currIndex}`;
 
         return (
-          <ImageField
+          <FileField
             key={`key_${currItemValidation.name}_${currIndex}`}
-            onChangeImage={url => onChangeImage(url, currIndex)}
+            onChangeFile={fileName => onChangeFile(fileName, currIndex)}
             allowsEditing={true}
-            title={'Add Imagee'}
+            title={'Add File'}
             validation={currItemValidation}
           />
         );
