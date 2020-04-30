@@ -12,8 +12,6 @@ class EditProfileForm extends React.Component {
   static FIELD_INTRO = 'intro';
   static FIELD_PROFILE_IMAGE = 'photoURL';
 
-  formSkip() {}
-
   formSave = async e => {
     const {editProfileFormStore, userStore} = this.props;
     if (editProfileFormStore.isFormValid()) {
@@ -116,7 +114,7 @@ class EditProfileForm extends React.Component {
           {firstOpening ? (
             <TouchableOpacity
               style={{...layout.btnOutline, ...layout.marginRightS}}
-              onPress={this.formSkip}>
+              onPress={this.onFormClose}>
               <Text style={text.buttonblue}>Skip</Text>
             </TouchableOpacity>
           ) : (

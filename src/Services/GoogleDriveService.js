@@ -16,8 +16,7 @@ export default class GoogleDriveService {
     GDrive.init();
   }
 
-  static getInstance() {
-    const {accessToken} = AuthService.getInstance().getTokens();
+  static getInstance(accessToken) {
     if (
       !GoogleDriveService.instance ||
       GoogleDriveService.instance.accessToken !== accessToken
