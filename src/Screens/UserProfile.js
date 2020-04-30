@@ -19,7 +19,7 @@ import CreateAccount from '../Screens/CreateAccount';
 import {CommonActions} from '@react-navigation/native';
 import Toast from '../Util/Toast';
 import UserProfileData from '../Components/UserProfileData';
-import {firebase} from '../Firebase';
+import AuthService from '../Services/AuthService';
 
 const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
   //const [editMode, setEditMode] = useState(false);
@@ -32,7 +32,7 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
 
   _signOut = async () => {
     try {
-      await firebase.auth().signOut();
+      await AuthService.getInstance().signOut();
     } catch (error) {
       console.log('Error -> ', error);
     }

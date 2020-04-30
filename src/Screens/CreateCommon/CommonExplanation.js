@@ -1,12 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
   Image,
   Text,
   TouchableOpacity,
   View,
   StyleSheet,
-  Dimensions,
-  ScrollView,
   SafeAreaView,
   StatusBar,
 } from 'react-native';
@@ -14,11 +12,8 @@ import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors} from '../../Theme';
 import {observer, inject} from 'mobx-react';
 import Swiper from 'react-native-swiper';
-const {width} = Dimensions.get('window');
 
 const CommonExplanation = ({navigation}) => {
-  const [common, setCommon] = useState(false);
-
   return (
     <>
       <StatusBar barStyle="dark-content" />

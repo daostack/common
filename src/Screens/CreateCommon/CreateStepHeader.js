@@ -1,17 +1,7 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {
-  Image,
-  Text,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-  SafeAreaView,
-} from 'react-native';
-import TextInputField from '../../Components/FormFields/TextInputField';
+import React from 'react';
+import {View, StyleSheet, Dimensions} from 'react-native';
+import Icon from '../../Assets/iconfont/Icon';
 import {colors} from '../../Theme';
-import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
 import * as Progress from 'react-native-progress';
 
@@ -31,15 +21,15 @@ const CreateStepHeader = props => {
     }
   };
 
-  const iconStyle = index => {
+  const iconColor = index => {
     if (props.currentIndex > index) {
-      return styles.iconDone;
+      return colors.mainBlue;
     }
     if (props.currentIndex === index) {
-      return styles.iconBlue;
+      return colors.mainBlue;
     }
     if (props.currentIndex < index) {
-      return styles.iconGrey;
+      return colors.paleblue;
     }
   };
 
@@ -68,49 +58,36 @@ const CreateStepHeader = props => {
       {/* <TouchableOpacity onPress={() => setCurrentIndex(0)}> */}
       <View
         style={currentIndex === 0 ? {...styles.oval} : {...styles.ovalDone}}>
-        <Image
-          source={
-            currentIndex === 0
-              ? require('../../Assets/daoGeneralInfo.png')
-              : require('../../Assets/checkmark.png')
-          }
-          style={currentIndex > 0 ? {...styles.iconDone} : {...styles.iconBlue}}
+        <Icon
+          name={currentIndex === 0 ? 'dao-general-info' : 'check'}
+          size={currentIndex > 0 ? 16 : 24}
         />
       </View>
       {/* </TouchableOpacity> */}
       {/* <TouchableOpacity onPress={() => setCurrentIndex(1)}> */}
       <View style={ovalStyle(1)}>
-        <Image
-          source={
-            currentIndex <= 1
-              ? require('../../Assets/funding.png')
-              : require('../../Assets/checkmark.png')
-          }
-          style={iconStyle(1)}
+        <Icon
+          name={currentIndex < 2 ? 'funds' : 'check'}
+          size={currentIndex === 1 ? 24 : 16}
+          color={iconColor(1)}
         />
       </View>
       {/* </TouchableOpacity> */}
       {/* <TouchableOpacity onPress={() => setCurrentIndex(2)}> */}
       <View style={ovalStyle(2)}>
-        <Image
-          source={
-            currentIndex <= 2
-              ? require('../../Assets/agenda.png')
-              : require('../../Assets/checkmark.png')
-          }
-          style={iconStyle(2)}
+        <Icon
+          name={currentIndex < 3 ? 'agenda' : 'check'}
+          size={currentIndex === 2 ? 24 : 16}
+          color={iconColor(2)}
         />
       </View>
       {/* </TouchableOpacity>
       <TouchableOpacity onPress={() => setCurrentIndex(3)}> */}
       <View style={ovalStyle(3)}>
-        <Image
-          source={
-            currentIndex <= 3
-              ? require('../../Assets/members24.png')
-              : require('../../Assets/checkmark.png')
-          }
-          style={iconStyle(3)}
+        <Icon
+          name={currentIndex < 4 ? 'style' : 'check'}
+          size={currentIndex === 3 ? 24 : 16}
+          color={iconColor(3)}
         />
       </View>
       {/* </TouchableOpacity> */}
@@ -175,4 +152,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('createCommonFormStore')(observer(CreateStepHeader));
+export default CreateStepHeader;

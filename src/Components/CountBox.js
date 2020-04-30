@@ -1,5 +1,5 @@
-import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import {layout, text} from '../Theme';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {text} from '../Theme';
 import React from 'react';
 
 const CountBox = ({count, name, onPress}) => {

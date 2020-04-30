@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   Dimensions,
   Text,
@@ -6,13 +6,12 @@ import {
   ScrollView,
   StyleSheet,
   Image,
-  ImageBackground,
   TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
 import gql from 'graphql-tag';
 import {ApolloClientConfig as client} from '../Config';
 import {text, layout, colors} from '../Theme';
-import {kFormatter} from '../Util';
 import Icon from '../Assets/iconfont/Icon';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import ViewTabNoData from '../Components/ViewTabNoData';
@@ -20,12 +19,17 @@ import ViewTabNoData from '../Components/ViewTabNoData';
 import CommonOperationalStateNotif from './BottomSheetScreens/CommonOperationalStateNotif';
 import SortProposals from './BottomSheetScreens/SortProposals';
 import CommonProfileOptions from './BottomSheetScreens/CommonProfileOptions';
+import ProposalSheetScreen from './BottomSheetScreens/ProposalSheetScreen';
 import BottomSheetContainer from '../Components/BottomSheetContainer';
+import CommonCover from '../Components/Commons/CommonCover';
+import CommonStageSummary from '../Components/Commons/CommonStageSummary';
 
 const {cache} = client;
-let {height, width} = Dimensions.get('window');
+let {width} = Dimensions.get('window');
 const mockData = {
   commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
+  commonLogo:
+    'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
   description: 'If you wanna save the Amazon, own it.',
   name: 'Amazon Network',
   time: 26,
@@ -38,24 +42,25 @@ const mockData = {
   activeProposals: 142,
 };
 
-const CommonProfile = ({navigation}) => {
+const CommonProfile = ({navigation, route}) => {
   commonOperationalStateNotifRef = useRef();
   optionsSheetRef = useRef();
   sortProposalsSheetRef = useRef();
+  proposalSheetRef = useRef();
 
-  const [isMember, setIsMember] = useState(false);
-  const [isFundingStage, setIsFundingStage] = useState(true);
+  const [isMember] = useState(false);
+  const [isFundingStage] = useState(false);
 
   const [index, setIndex] = useState(0);
-  const [routes, setRoutes] = useState([
-    {key: 'discussions', title: 'Discussions'},
-    {key: 'proposals', title: 'Proposals'},
-    {key: 'history', title: 'History'},
+  const [routes] = useState([
+    {key: 'discussions', title: 'Discussions', icon: 'discussion'},
+    {key: 'proposals', title: 'Proposals', icon: 'proposals'},
+    {key: 'history', title: 'History', icon: 'history'},
   ]);
 
   useEffect(() => {
     // noinspection JSAnnotator
-    const getDao = async () => {
+    const getDao = async commonId => {
       // noinspection JSAnnotator
       try {
         console.log('CACHE: ', cache.data.data);
@@ -68,7 +73,7 @@ const CommonProfile = ({navigation}) => {
             }
           `,
           variables: {
-            id: '0x6bee9b81e434f7afce72a43a4016719315069539',
+            id: commonId,
             __typename: 'DAO',
           },
         });
@@ -78,8 +83,8 @@ const CommonProfile = ({navigation}) => {
       }
     };
 
-    getDao();
-  }, []);
+    getDao(route.params.commonId);
+  }, [route.params.commonId]);
 
   const renderTabBar = props => (
     <TabBar
@@ -91,7 +96,7 @@ const CommonProfile = ({navigation}) => {
         return (
           <View style={{...layout.content, padding: 0}}>
             <Icon
-              name="common"
+              name={route.icon}
               size={30}
               color={focused ? colors.mainBlue : colors.grey3}
             />
@@ -105,20 +110,6 @@ const CommonProfile = ({navigation}) => {
       tabStyle={{borderTopWidth: 1, borderColor: colors.grey4}}
     />
   );
-
-  const commonNumberBox = (numberComponent, title) => {
-    return (
-      <View
-        style={{
-          justifyContent: 'center',
-          alignContent: 'center',
-          alignItems: 'center',
-        }}>
-        <View style={styles.raisedContainer}>{numberComponent}</View>
-        <Text style={styles.headerSmallText}>{title}</Text>
-      </View>
-    );
-  };
 
   const Discussions = () => {
     return (
@@ -153,24 +144,8 @@ const CommonProfile = ({navigation}) => {
     history: History,
   });
 
-  const renderFundingProgressBar = () => {
-    if (isFundingStage) {
-      return (
-        <>
-          <View style={styles.fundingProgressBar}>
-            <View style={styles.innerProgressBar} />
-          </View>
-          <Text
-            style={{
-              ...styles.headerSmallText,
-              color: colors.grey3,
-              ...layout.marginTopS,
-            }}>
-            {mockData.time} days to go
-          </Text>
-        </>
-      );
-    }
+  const openAgendaScreen = e => {
+    navigation.navigate('CommonAgenda');
   };
 
   const renderAgendaForNonMembers = () => {
@@ -241,10 +216,6 @@ const CommonProfile = ({navigation}) => {
     }
   };
 
-  const openAgendaScreen = e => {
-    navigation.navigate('CommonAgenda');
-  };
-
   const openCommonMembers = e => {
     navigation.navigate('CommonMembers');
   };
@@ -258,6 +229,11 @@ const CommonProfile = ({navigation}) => {
     optionsSheetRef.current.snapTo(1);
   };
 
+  const openProposalSheet = event => {
+    proposalSheetRef.current.snapTo(1);
+    proposalSheetRef.current.snapTo(1);
+  };
+
   const openNotif = event => {
     commonOperationalStateNotifRef.current.snapTo(1);
     commonOperationalStateNotifRef.current.snapTo(1);
@@ -266,92 +242,40 @@ const CommonProfile = ({navigation}) => {
   const initialLayout = {width: Dimensions.get('window').width};
 
   return (
-    <>
+    <View style={{flex: 1, backgroundColor: colors.white}}>
       <ScrollView
         style={{
           flex: 1,
           backgroundColor: colors.white,
-          position: 'relative',
         }}>
-        <ImageBackground
-          source={{
-            uri: mockData.commonPicture,
+        <CommonCover
+          isMember={true}
+          navigation={navigation}
+          onHeaderMenuOpen={openCommonOptions}
+          commonInfo={{
+            cover: mockData.commonPicture,
+            logo:
+              'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
+            name: mockData.name,
+            description: mockData.description,
           }}
-          style={styles.imageHeader}>
-          <TouchableOpacity
-            style={{position: 'absolute', top: 60, left: 20}}
-            onPress={
-              //navigation.goBack
-              openNotif
-            }>
-            <Image
-              style={{resizeMode: 'contain', height: 20, width: 20}}
-              source={require('../Assets/left-arrow-32.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{position: 'absolute', top: 60, right: 20}}
-            onPress={openCommonOptions}>
-            <Icon
-              name="menu"
-              style={{height: 20, width: 20}}
-              color={colors.white}
-            />
-          </TouchableOpacity>
-          <View style={styles.headerContent}>
-            <Text style={styles.headerTitleWhite}>{mockData.name}</Text>
-            <Text style={styles.headerDescription}>{mockData.description}</Text>
-            {isMember ? (
-              <TouchableOpacity onPress={openAgendaScreen}>
-                <Text style={styles.headerViewAgenda}>View agenda</Text>
-              </TouchableOpacity>
-            ) : null}
-          </View>
-        </ImageBackground>
+        />
 
-        <View style={styles.commonProgressContainer}>
-          <View style={styles.commonNumbers}>
-            {commonNumberBox(
-              isFundingStage ? (
-                <>
-                  <Text style={styles.headerTitle}>
-                    ${mockData.raised.toLocaleString()}
-                  </Text>
-                </>
-              ) : (
-                <>
-                  <Text style={styles.headerTitleLight}>
-                    ${mockData.currentBudget.toLocaleString()}
-                  </Text>
-                  <Text style={styles.headerTitle}>
-                    / {kFormatter(mockData.raised)}
-                  </Text>
-                </>
-              ),
-              isFundingStage ? 'Raised' : 'Available funds',
-            )}
-            {commonNumberBox(
-              <Text style={styles.headerTitle}>{mockData.members}</Text>,
-              'Members',
-            )}
-            {commonNumberBox(
-              isFundingStage ? (
-                <Text style={styles.headerTitle}>
-                  ${kFormatter(mockData.goal).toLocaleString()}
-                </Text>
-              ) : (
-                <Text style={styles.headerTitle}>
-                  {mockData.activeProposals}
-                </Text>
-              ),
-              isFundingStage ? 'Goal' : 'ActiveProposals',
-            )}
-          </View>
-          {renderFundingProgressBar()}
+        <View style={{paddingVertical: 20}}>
+          <CommonStageSummary
+            isFundingStage={isFundingStage}
+            commonProgressInfo={{
+              time: mockData.time,
+              activeProposals: mockData.activeProposals,
+              goal: mockData.goal,
+              members: mockData.members,
+              raised: mockData.raised,
+              currentBudget: mockData.currentBudget,
+            }}
+          />
         </View>
 
         {renderMembersRowForMemberUsers()}
-
         <View style={{...layout.content, ...{paddingTop: 0}}}>
           <TouchableOpacity
             style={{
@@ -361,8 +285,27 @@ const CommonProfile = ({navigation}) => {
             <Text style={text.buttonblue}>Share Common</Text>
           </TouchableOpacity>
         </View>
-
         {renderAgendaForNonMembers()}
+
+        <TouchableOpacity
+          style={{
+            ...styles.headerButton,
+            ...{
+              justifyContent: 'center',
+              marginBottom: 20,
+              marginHorizontal: 100,
+            },
+          }}
+          onPress={openProposalSheet}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: 'white',
+              fontWeight: '700',
+            }}>
+            Open Proposal
+          </Text>
+        </TouchableOpacity>
 
         <TabView
           navigationState={{index, routes}}
@@ -372,22 +315,32 @@ const CommonProfile = ({navigation}) => {
           renderTabBar={renderTabBar}
           style={{}}
         />
-
-        <View style={styles.actionButtonContainer}>
-          <TouchableOpacity style={styles.headerButton}>
-            <Text
-              style={{
-                fontSize: 16,
-                color: 'white',
-                fontWeight: '700',
-                marginRight: 40,
-              }}>
-              Request to join
-            </Text>
-            <Text style={{fontSize: 16, color: 'white'}}>$50 Contribution</Text>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
+
+      <SafeAreaView>
+        {isMember ? (
+          <TouchableOpacity style={styles.addButton}>
+            <Icon name="plus" color={colors.white}></Icon>
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.actionButtonContainer}>
+            <TouchableOpacity style={styles.headerButton}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: 'white',
+                  fontWeight: '700',
+                  marginRight: 40,
+                }}>
+                Request to join
+              </Text>
+              <Text style={{fontSize: 16, color: 'white'}}>
+                $50 Contribution
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </SafeAreaView>
 
       <BottomSheetContainer ref={commonOperationalStateNotifRef}>
         <CommonOperationalStateNotif navigation={navigation} />
@@ -400,15 +353,19 @@ const CommonProfile = ({navigation}) => {
       <BottomSheetContainer ref={sortProposalsSheetRef}>
         <SortProposals navigation={navigation} />
       </BottomSheetContainer>
-    </>
+
+      <BottomSheetContainer ref={proposalSheetRef} topSnapPoint={800}>
+        <ProposalSheetScreen navigation={navigation} />
+      </BottomSheetContainer>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   memberImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     borderWidth: 2,
     borderColor: colors.white,
   },
@@ -442,28 +399,16 @@ const styles = StyleSheet.create({
   actionButtonContainer: {
     padding: 20,
     position: 'absolute',
-    bottom: -80,
+    bottom: 28,
     left: 0,
     right: 0,
     backgroundColor: colors.white,
     borderTopWidth: 1,
     borderTopColor: colors.grey2,
   },
-
-  raisedContainer: {
-    ...layout.flexRow,
-  },
-  commonProgressContainer: {
-    ...layout.content,
-  },
   agendaBox: {
     padding: 20,
     paddingTop: 0,
-  },
-  agendaTitle: {
-    ...text.runningblack,
-    fontWeight: '700',
-    marginBottom: 9,
   },
   agendaDescription: {
     marginBottom: 9,
@@ -480,14 +425,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  fundingProgressBar: {
-    width: 370,
-    borderRadius: 7,
-    backgroundColor: colors.grey4,
-    height: 8,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-  },
   headerButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -503,59 +440,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.mainBlue,
   },
-  innerProgressBar: {
-    width: 380 / 4,
-    borderRadius: 6,
+  addButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    margin: 20,
+    ...layout.content,
     backgroundColor: colors.mainBlue,
-    height: 8,
-  },
-  textContainer: {},
-  headerActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  headerTitleWhite: {
-    ...text.h1Black,
-    color: colors.white,
-  },
-  headerTitle: {
-    ...text.h3Black,
-  },
-  headerTitleLight: {
-    ...text.h3Black,
-    color: colors.grey3,
-  },
-  headerDescription: {
-    ...text.greyText,
-    fontWeight: '600',
-    color: colors.grey4,
-  },
-
-  headerViewAgenda: {
-    ...text.smallGreyText,
-
-    color: colors.grey4,
-    marginTop: 30,
-  },
-  headerSmallText: {
-    ...text.smallBlackText,
-  },
-  headerContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  image: {
-    resizeMode: 'contain',
-  },
-  imageHeader: {
-    width,
-    paddingLeft: 50,
-    paddingRight: 50,
-    paddingTop: 100,
-    paddingBottom: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: 48,
+    width: 48,
+    borderRadius: 24,
   },
 });
 

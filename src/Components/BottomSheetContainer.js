@@ -26,6 +26,7 @@ const BottomSheetContainer = forwardRef((props, ref) => {
       ...layout.content,
       ...layout.flexStart,
       ...styles.contentContainer,
+      ...{padding: 0, height: props.topSnapPoint ? props.topSnapPoint : 600},
     };
 
     return <View style={contentStyle}>{props.children}</View>;
@@ -34,7 +35,7 @@ const BottomSheetContainer = forwardRef((props, ref) => {
   return (
     <BottomSheet
       ref={ref}
-      snapPoints={[0, 500]}
+      snapPoints={[0, props.topSnapPoint ? props.topSnapPoint : 500]}
       renderContent={renderSheetContent}
       renderHeader={renderSheetHeader}
       enabledBottomInitialAnimation={true}
@@ -65,7 +66,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingTop: 0,
-    height: 600,
     backgroundColor: colors.white,
     zIndex: 6,
   },

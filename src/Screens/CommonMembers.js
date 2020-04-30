@@ -54,7 +54,7 @@ const commonMembersMock = [
 
 const CommonMembers = ({navigation}) => {
   const [index, setIndex] = useState(0);
-  const [routes, setRoutes] = useState([
+  const [routes] = useState([
     {key: 'members', title: getTabName('Members')},
     {key: 'pending', title: getTabName('Pending')},
   ]);
@@ -76,7 +76,7 @@ const CommonMembers = ({navigation}) => {
               name={member.name}
               approvePercent={member.approvePercent}
               imageUrl={member.imageUrl}
-              isPending={sceneIndex == 1}
+              isPending={sceneIndex === 1}
               date={member.date}
             />
           );

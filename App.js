@@ -7,7 +7,7 @@
  */
 
 import React, {useState, useEffect} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, Platform, View} from 'react-native';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -37,21 +37,31 @@ import {
   CreateStep2,
   CreateStep3,
   CreateStep4,
+  FundingProposal,
 } from './src/Screens';
+
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
-const firebaseService = new FirebaseService();
 import AuthService from './src/Services/AuthService';
+
+const firebaseService = new FirebaseService();
 import CommonHome from './src/Components/Navigation/CommonHome';
 const authService = new AuthService();
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 import {filterObjectByKeys} from './src/Util';
+import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
-import {firebase} from './src/Firebase';
+import {auth} from './src/Firebase';
 import Toast from './src/Util/Toast';
+import KeyboardManager from 'react-native-keyboard-manager';
+
+if (Platform.OS === 'ios') {
+  KeyboardManager.setEnable(true);
+  KeyboardManager.setToolbarPreviousNextButtonEnable(true);
+}
 
 const App = ({userStore}) => {
   const [onboarded, setOnboarded] = useState(false);
@@ -61,10 +71,13 @@ const App = ({userStore}) => {
     try {
       userStore.setIsLoading(true);
       if (user) {
-        const appUser = await FirebaseService.getInstance().getUserById(
-          user.uid,
-        );
-
+        await AuthService.getInstance().loadMnemonic(user.uid);
+        await WalletManager.init(user.uid);
+        let appUser = await FirebaseService.getInstance().getUserById(user.uid);
+        const isNewUser = !appUser;
+        if (isNewUser) {
+          appUser = await AuthService.getInstance().createUserAndWallet(user);
+        }
         const allUserInfo = {
           ...user._user,
           ...appUser,
@@ -72,20 +85,25 @@ const App = ({userStore}) => {
 
         const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
         userStore.setSignedInUser(filteredUser);
+        if (isNewUser) {
+        }
       } else {
         userStore.setSignedInUser(null);
       }
+
       userStore.setIsLoading(false);
     } catch (error) {
-      Toast.error(error);
+      console.log(error);
+      //Toast.error(error.toString());
     }
   };
 
   useEffect(() => {
-    const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
 
     const checkOnboardingStatus = async () => {
       try {
+        //await AuthService.getInstance().signOut();
         const isOnboarded = await AsyncStorage.getItem('onboarded');
         if (isOnboarded === 'true') {
           setOnboarded(true);
@@ -236,6 +254,13 @@ const App = ({userStore}) => {
             }}
             name="CommonMembers"
             component={CommonMembers}
+          />
+          <Stack.Screen
+            options={{
+              title: 'Funding request',
+            }}
+            name="FundingProposal"
+            component={FundingProposal}
           />
         </Stack.Navigator>
       </NavigationContainer>

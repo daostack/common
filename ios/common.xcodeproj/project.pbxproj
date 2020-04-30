@@ -18,9 +18,9 @@
 		15E907312417D1B9008A5750 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E9072F2417D1B9008A5750 /* Main.storyboard */; };
 		15E907332417D1BB008A5750 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15E907322417D1BB008A5750 /* Assets.xcassets */; };
 		15E907362417D1BB008A5750 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E907342417D1BB008A5750 /* LaunchScreen.storyboard */; };
+		4D1E80EEA8DA390BB539F9BA /* Pods_common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B7EFE26221B7191A66CF15E /* Pods_common.framework */; };
 		722E04BCC07344838A0DD949 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 27ABBCE0C26C4E15A8D7C307 /* Roboto-Regular.ttf */; };
 		8763DCF4554547D89A3F1417 /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3FFBB84F354F338A318FF0 /* Roboto-ThinItalic.ttf */; };
-		87B0C1E59CDCFC9100CDA4EB /* Pods_common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF0DD47D7175720C208EC137 /* Pods_common.framework */; };
 		8EA4A074BA5740A99672B554 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C9F83AD9B2084944A75E426E /* Roboto-Bold.ttf */; };
 		9AB34075096940B2939D3A3C /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DB1B9923E61C43618D76FCB5 /* Roboto-Thin.ttf */; };
 		AB1E0D83B8324C60AEA5B02C /* Roboto-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D4D02A4490CF40EBA056C20C /* Roboto-Italic.ttf */; };
@@ -29,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		13A2EC7A6A49307877755CB8 /* Pods-common.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common.release.xcconfig"; path = "Target Support Files/Pods-common/Pods-common.release.xcconfig"; sourceTree = "<group>"; };
 		1505B3D8243B76E300679F9C /* common.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = common.entitlements; sourceTree = "<group>"; };
 		15E1ED01241A26D600651ACD /* WalletManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletManager.swift; sourceTree = "<group>"; };
 		15E1ED03241A292C00651ACD /* common-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "common-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -45,15 +46,14 @@
 		15E907352417D1BB008A5750 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		15E907372417D1BB008A5750 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		27ABBCE0C26C4E15A8D7C307 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Regular.ttf"; path = "../src/Assets/fonts/roboto/Roboto-Regular.ttf"; sourceTree = "<group>"; };
+		4B7EFE26221B7191A66CF15E /* Pods_common.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_common.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		72AACE390AB74154A9B62F0C /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-BoldItalic.ttf"; path = "../src/Assets/fonts/roboto/Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
-		8176DBE3AB11163B0B306296 /* Pods-common.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common.debug.xcconfig"; path = "Target Support Files/Pods-common/Pods-common.debug.xcconfig"; sourceTree = "<group>"; };
 		BD5E78EB242011A300F61953 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		C82E1DD3DDC55F4EFC693D54 /* Pods-common.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common.debug.xcconfig"; path = "Target Support Files/Pods-common/Pods-common.debug.xcconfig"; sourceTree = "<group>"; };
 		C9F83AD9B2084944A75E426E /* Roboto-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Bold.ttf"; path = "../src/Assets/fonts/roboto/Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		D4D02A4490CF40EBA056C20C /* Roboto-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Italic.ttf"; path = "../src/Assets/fonts/roboto/Roboto-Italic.ttf"; sourceTree = "<group>"; };
 		DB1B9923E61C43618D76FCB5 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Thin.ttf"; path = "../src/Assets/fonts/roboto/Roboto-Thin.ttf"; sourceTree = "<group>"; };
-		F1BF1DE08F10CFCB6DA03FE3 /* Pods-common.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common.release.xcconfig"; path = "Target Support Files/Pods-common/Pods-common.release.xcconfig"; sourceTree = "<group>"; };
 		FA3FFBB84F354F338A318FF0 /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-ThinItalic.ttf"; path = "../src/Assets/fonts/roboto/Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
-		FF0DD47D7175720C208EC137 /* Pods_common.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_common.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,7 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				87B0C1E59CDCFC9100CDA4EB /* Pods_common.framework in Frameworks */,
+				4D1E80EEA8DA390BB539F9BA /* Pods_common.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,8 +83,8 @@
 				15E907282417D1B9008A5750 /* common */,
 				15E907272417D1B9008A5750 /* Products */,
 				909741A0B044660210AFA8BC /* Pods */,
-				5E4BD1D4B526A375F7F5CA2F /* Frameworks */,
 				3098661C0DFC471D9522B375 /* Resources */,
+				DB97E8264DC5EA5DC764264C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -178,21 +178,21 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		5E4BD1D4B526A375F7F5CA2F /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				FF0DD47D7175720C208EC137 /* Pods_common.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		909741A0B044660210AFA8BC /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				8176DBE3AB11163B0B306296 /* Pods-common.debug.xcconfig */,
-				F1BF1DE08F10CFCB6DA03FE3 /* Pods-common.release.xcconfig */,
+				C82E1DD3DDC55F4EFC693D54 /* Pods-common.debug.xcconfig */,
+				13A2EC7A6A49307877755CB8 /* Pods-common.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		DB97E8264DC5EA5DC764264C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4B7EFE26221B7191A66CF15E /* Pods_common.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -202,17 +202,17 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 15E9073A2417D1BB008A5750 /* Build configuration list for PBXNativeTarget "common" */;
 			buildPhases = (
-				95CC5F4E867E04ADB00B61B2 /* [CP] Check Pods Manifest.lock */,
+				D15700214E762E5378A12395 /* [CP] Check Pods Manifest.lock */,
 				15E907222417D1B9008A5750 /* Sources */,
 				15E907232417D1B9008A5750 /* Frameworks */,
 				15E9073F2417D51B008A5750 /* Bundle React Native code and images */,
 				15E907402417D541008A5750 /* Launch React Native Packager */,
 				15E907242417D1B9008A5750 /* Resources */,
 				15FFF66A2418682E00AEBE9D /* Fabric - Firebase */,
-				8246D95BAC3D5494F754901E /* [CP] Embed Pods Frameworks */,
-				CE29736C148A4C9D0BEF08CA /* [CP] Copy Pods Resources */,
-				143233F1BC788C809DB1B69C /* [CP-User] [RNFB] Core Configuration */,
-				1B8B3FC215033368ECE0B64F /* [CP-User] [RNFB] Crashlytics Configuration */,
+				28A7A7CA589E53632BD06E13 /* [CP] Embed Pods Frameworks */,
+				BAD81373887F9842D34989D2 /* [CP] Copy Pods Resources */,
+				0220BB20BBDD8F97A7EB65A7 /* [CP-User] [RNFB] Core Configuration */,
+				4AA1DF2410298F1D8EDC8670 /* [CP-User] [RNFB] Crashlytics Configuration */,
 			);
 			buildRules = (
 			);
@@ -279,7 +279,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		143233F1BC788C809DB1B69C /* [CP-User] [RNFB] Core Configuration */ = {
+		0220BB20BBDD8F97A7EB65A7 /* [CP-User] [RNFB] Core Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -344,17 +344,7 @@
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/Fabric/run\"\n";
 		};
-		1B8B3FC215033368ECE0B64F /* [CP-User] [RNFB] Crashlytics Configuration */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			name = "[CP-User] [RNFB] Crashlytics Configuration";
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "#!/usr/bin/env bash\n#\n# Copyright (c) 2016-present Invertase Limited & Contributors\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this library except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#   http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n#\nset -e\n\nif [[ ${PODS_ROOT} ]]; then\n  echo \"info: Exec Fabric Run from Pods\"\n  \"${PODS_ROOT}/Fabric/run\"\nelse\n  echo \"info: Exec Fabric Run from framework\"\n  \"${PROJECT_DIR}/Fabric.framework/run\"\nfi\n";
-		};
-		8246D95BAC3D5494F754901E /* [CP] Embed Pods Frameworks */ = {
+		28A7A7CA589E53632BD06E13 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -371,7 +361,34 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-common/Pods-common-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		95CC5F4E867E04ADB00B61B2 /* [CP] Check Pods Manifest.lock */ = {
+		4AA1DF2410298F1D8EDC8670 /* [CP-User] [RNFB] Crashlytics Configuration */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "[CP-User] [RNFB] Crashlytics Configuration";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/usr/bin/env bash\n#\n# Copyright (c) 2016-present Invertase Limited & Contributors\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this library except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#   http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n#\nset -e\n\nif [[ ${PODS_ROOT} ]]; then\n  echo \"info: Exec Fabric Run from Pods\"\n  \"${PODS_ROOT}/Fabric/run\"\nelse\n  echo \"info: Exec Fabric Run from framework\"\n  \"${PROJECT_DIR}/Fabric.framework/run\"\nfi\n";
+		};
+		BAD81373887F9842D34989D2 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-common/Pods-common-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-common/Pods-common-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-common/Pods-common-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D15700214E762E5378A12395 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -391,23 +408,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		CE29736C148A4C9D0BEF08CA /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-common/Pods-common-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-common/Pods-common-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-common/Pods-common-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -566,7 +566,7 @@
 		};
 		15E9073B2417D1BB008A5750 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8176DBE3AB11163B0B306296 /* Pods-common.debug.xcconfig */;
+			baseConfigurationReference = C82E1DD3DDC55F4EFC693D54 /* Pods-common.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -590,7 +590,7 @@
 		};
 		15E9073C2417D1BB008A5750 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F1BF1DE08F10CFCB6DA03FE3 /* Pods-common.release.xcconfig */;
+			baseConfigurationReference = 13A2EC7A6A49307877755CB8 /* Pods-common.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

@@ -71,17 +71,20 @@ export default StyleSheet.create({
   },
 
   // Margin TOP
+  marginTopXS: {
+    marginTop: sizeXS,
+  },
   marginTopS: {
-    marginTop: 10,
+    marginTop: sizeS,
   },
   marginTopM: {
-    marginTop: 15,
+    marginTop: sizeM,
   },
   marginTopL: {
-    marginTop: 20,
+    marginTop: sizeL,
   },
   marginTopXL: {
-    marginTop: 40,
+    marginTop: sizeXL,
   },
 
   // Margin Bottom
@@ -99,17 +102,22 @@ export default StyleSheet.create({
   },
 
   // Margin LEFT
+
+  marginLeftXS: {
+    marginLeft: sizeXS,
+  },
+
   marginLeftS: {
-    marginLeft: 10,
+    marginLeft: sizeS,
   },
   marginLeftM: {
-    marginLeft: 15,
+    marginLeft: sizeM,
   },
   marginLeftL: {
-    marginLeft: 20,
+    marginLeft: sizeL,
   },
   marginLeftXL: {
-    marginLeft: 40,
+    marginLeft: sizeXL,
   },
 
   // Margin RIGHT

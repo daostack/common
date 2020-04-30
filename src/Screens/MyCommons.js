@@ -33,9 +33,7 @@ const MyCommons = ({navigation}) => {
     {key: 'members', title: getTabName('Members')},
   ]);
 
-  const AllCommons = () => {
-    //return sceneRenderer(0);
-
+  const AllCommonsList = () => {
     return (
       <Query query={ALL_DAOS_SUBSCRIPTION()}>
         {({loading, error, data}) => {
@@ -53,7 +51,7 @@ const MyCommons = ({navigation}) => {
           setRoutes(tmpRoutes);
 
           return (
-            <View style={layout.marginTopL}>
+            <View style={layout.content}>
               {data.daos.map((dao, i) => {
                 return (
                   <CommonBox
@@ -71,7 +69,7 @@ const MyCommons = ({navigation}) => {
     );
   };
 
-  const MyCommons = () => {
+  const MyCommonsList = () => {
     return (
       <Query
         query={MY_DAOS_SUBSCRIPTION()}
@@ -97,7 +95,7 @@ const MyCommons = ({navigation}) => {
           setRoutes(tmpRoutes);
 
           return (
-            <View style={layout.marginTopL}>
+            <View style={layout.content}>
               {data.reputationHolders.map((currHolder, i) => {
                 return (
                   <CommonBox
@@ -115,13 +113,11 @@ const MyCommons = ({navigation}) => {
     );
   };
 
-  const sceneRenderer = sceneIndex => {};
-
   const initialLayout = {width: Dimensions.get('window').width};
 
   const renderScene = SceneMap({
-    all: AllCommons,
-    members: MyCommons,
+    all: AllCommonsList,
+    members: MyCommonsList,
   });
 
   const renderTabBar = props => (
@@ -163,7 +159,7 @@ const MyCommons = ({navigation}) => {
               onIndexChange={setIndex}
               initialLayout={initialLayout}
               renderTabBar={renderTabBar}
-              style={{paddingHorizontal: 20}}
+              style={{}}
             />
           </View>
         </ScrollView>

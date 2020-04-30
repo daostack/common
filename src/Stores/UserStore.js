@@ -7,7 +7,6 @@ export const userInfoFields = [
   'photoURL',
   'ethereumAddress',
   'intro',
-  'profileImage',
   'byLine',
   'preferences',
 ];
@@ -22,26 +21,37 @@ class UserStore {
     isLoading = false;
   }
 
-  setIsLoading = (loading) => {
+  setIsLoading = loading => {
     this.isLoading = loading;
   };
 
-  setSignedInUser = (newUserInfo) => {
+  setSignedInUser = newUserInfo => {
     if (newUserInfo) {
       let newUserObj = {};
-      if (newUserInfo.uid) newUserObj.uid = newUserInfo.uid;
-      if (newUserInfo.email) newUserObj.email = newUserInfo.email;
-      if (newUserInfo.displayName)
+      if (newUserInfo.uid) {
+        newUserObj.uid = newUserInfo.uid;
+      }
+      if (newUserInfo.email) {
+        newUserObj.email = newUserInfo.email;
+      }
+      if (newUserInfo.displayName) {
         newUserObj.displayName = newUserInfo.displayName;
-      if (newUserInfo.photoURL) newUserObj.photoURL = newUserInfo.photoURL;
-      if (newUserInfo.profileImage)
-        newUserObj.profileImage = newUserInfo.profileImage;
-      if (newUserInfo.intro) newUserObj.intro = newUserInfo.intro;
-      if (newUserInfo.ethereumAddress)
+      }
+      if (newUserInfo.photoURL) {
+        newUserObj.photoURL = newUserInfo.photoURL;
+      }
+      if (newUserInfo.intro) {
+        newUserObj.intro = newUserInfo.intro;
+      }
+      if (newUserInfo.ethereumAddress) {
         newUserObj.ethereumAddress = newUserInfo.ethereumAddress;
-      if (newUserInfo.preferences)
+      }
+      if (newUserInfo.preferences) {
         newUserObj.preferences = newUserInfo.preferences;
-      if (newUserInfo.byLine) newUserObj.byLine = newUserInfo.byLine;
+      }
+      if (newUserInfo.byLine) {
+        newUserObj.byLine = newUserInfo.byLine;
+      }
 
       this.userInfo = newUserObj;
     } else {

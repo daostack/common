@@ -1,6 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  Image,
   Text,
   TouchableOpacity,
   View,
@@ -9,7 +8,6 @@ import {
   Dimensions,
   SafeAreaView,
   Animated,
-  TextInput,
 } from 'react-native';
 import TextInputField from '../../Components/FormFields/TextInputField';
 import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
@@ -19,7 +17,7 @@ const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import NavigationBar from 'react-native-navbar';
 import Icon from '../../Assets/iconfont/Icon';
-import Toast from '../../Util/Toast.js';
+import CreateStepDotHeader from './CreateStepDotHeader';
 
 const CreateStep1 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
@@ -40,11 +38,11 @@ const CreateStep1 = props => {
 
   const isValid = () => {
     const links = [...Array(ruleCount).keys()].map(
-      x => `${CreateCommonForm.FIELD_LINKS}_${x}`,
+      x => `${CreateCommonForm.LINKS}_${x}`,
     );
     const result = props.createCommonFormStore.isFormValidSelectedFields([
-      CreateCommonForm.FIELD_NAME,
-      CreateCommonForm.FIELD_BYLINE,
+      CreateCommonForm.NAME,
+      CreateCommonForm.BYLINE,
       ...links,
     ]);
     setPass(result);
@@ -79,22 +77,12 @@ const CreateStep1 = props => {
           </TouchableOpacity>
         }
       />
-      <Animated.View style={[styles.header, {height: headerHeight}]}>
-        <View style={styles.bar}>
-          <View
-            style={{
-              marginTop: 80,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <View style={styles.dot} />
-            <View style={styles.dot2} />
-            <View style={styles.dot2} />
-            <View style={styles.dot2} />
-          </View>
-          <Text style={styles.title}>General info</Text>
-        </View>
-      </Animated.View>
+      <CreateStepDotHeader
+        title="General Info"
+        currentIndex={1}
+        navigation={props.navigation}
+        headerHeight={headerHeight}
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         width={width}
@@ -141,10 +129,11 @@ const CreateStep1 = props => {
             infoLabel="Required"
             placeholderText=""
             autoCapitalize="none"
+            returnKeyType="next"
             autoCorrect={false}
             onChangeText={isValid}
             validation={{
-              name: CreateCommonForm.FIELD_NAME,
+              name: CreateCommonForm.NAME,
               formStore: props.createCommonFormStore,
               // validateRule: 'required|min:4',
               validateRule: 'required',
@@ -156,16 +145,16 @@ const CreateStep1 = props => {
             label="Byline"
             infoLabel="Required"
             numberOfLines={3}
+            // returnKeyType="next"
             multiline={true}
             placeholderText="A sentence that describes what you want to achieve"
             autoCapitalize="none"
             autoCorrect={false}
             onChangeText={isValid}
             validation={{
-              name: CreateCommonForm.FIELD_BYLINE,
+              name: CreateCommonForm.BYLINE,
               formStore: props.createCommonFormStore,
               validateRule: 'required|min:10',
-              // validateRule: 'required',
             }}
           />
           <TextInputField
@@ -173,11 +162,12 @@ const CreateStep1 = props => {
             label="Description"
             numberOfLines={5}
             multiline={true}
+            returnKeyType="next"
             placeholderText="Give some more detail about your cause, how are you going to support it, why you are passionate about it and why others should join."
             autoCapitalize="none"
             autoCorrect={false}
             validation={{
-              name: CreateCommonForm.FIELD_DESCRIPTION,
+              name: CreateCommonForm.DESCRIPTION,
               formStore: props.createCommonFormStore,
               validateRule: 'string',
             }}
@@ -196,10 +186,9 @@ const CreateStep1 = props => {
               autoCorrect={false}
               onChangeText={isValid}
               validation={{
-                name: `${CreateCommonForm.FIELD_LINKS}_${x}`,
+                name: `${CreateCommonForm.LINKS}_${x}`,
                 formStore: props.createCommonFormStore,
                 validateRule: 'string|url',
-                // validateRule: 'string',
               }}
             />
           ))}
@@ -233,50 +222,6 @@ const CreateStep1 = props => {
 };
 
 const styles = StyleSheet.create({
-  dot: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: colors.grey5,
-    borderColor: colors.mainBlue,
-    borderWidth: 1,
-    marginHorizontal: 5,
-  },
-  dot2: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: colors.grey5,
-    borderColor: colors.grey3,
-    borderWidth: 1,
-    marginHorizontal: 5,
-  },
-  header: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'white',
-    overflow: 'hidden',
-    zIndex: 999,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.grey4,
-  },
-  bar: {
-    marginTop: 28,
-    height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-    // bottomborder: 'solid',
-  },
-  title: {
-    backgroundColor: 'transparent',
-    color: colors.black,
-    fontSize: 16,
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
-    paddingVertical: 10,
-  },
   readMoreButton: {
     fontSize: 16,
     fontWeight: '700',

@@ -1,15 +1,8 @@
 import * as React from 'react';
-import {
-  Image,
-  ImageProps,
-  View,
-  StyleSheet,
-  ViewStyle,
-  TouchableOpacity,
-} from 'react-native';
+import {Image, View, StyleSheet, TouchableOpacity} from 'react-native';
 
 import ValidationMessage from './ValidationMessage';
-import {observer, inject} from 'mobx-react';
+import {observer} from 'mobx-react';
 
 import ImagePicker from 'react-native-image-picker';
 import Toast from '../../Util/Toast';
@@ -42,7 +35,7 @@ class ImageField extends React.Component {
     }
   }
 
-  onChangeValue = (url) => {
+  onChangeValue = url => {
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
       formStore.fieldChanged(name, url);
@@ -59,7 +52,7 @@ class ImageField extends React.Component {
       quality: quality || 0.7,
       allowsEditing: allowsEditing || false,
     };
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.showImagePicker(options, response => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -70,55 +63,33 @@ class ImageField extends React.Component {
         this.toast.loading('Uploading...');
         firebaseService
           .uploadImage(response.uri)
-          .then((url) => {
+          .then(url => {
             this.toast.hide();
             this.toast.done('Done');
             this.onChangeValue(url);
           })
-          .catch((error) => this.toast.error(error));
+          .catch(error => this.toast.error(error));
       }
     });
   };
 
   renderImage = () => {
-    const {value, validation, placeholderUrl} = this.props;
+    const {value, validation} = this.props;
 
     const currValue = validation
       ? validation.formStore.form.fields[validation.name].value
       : value;
 
-    if (currValue) {
-      return (
-        <Image
-          style={styles.formImageFieldStyle}
-          resizeMode="cover"
-          source={{
-            uri: currValue,
-          }}
-        />
-      );
-    } else {
-      return (
-        <Image
-          style={styles.formImageFieldStyle}
-          resizeMode="cover"
-          source={{uri: placeholderUrl}}
-        />
-      );
-    }
+    return (
+      <Image
+        style={styles.formImageFieldStyle}
+        resizeMode="cover"
+        source={{uri: currValue}}
+      />
+    );
   };
 
   render() {
-    const {
-      value,
-      viewStyle,
-
-      // Validation management properties
-      validation,
-
-      ...otherProps
-    } = this.props;
-
     return (
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <View style={styles.formFieldContainer}>

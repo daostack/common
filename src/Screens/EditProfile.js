@@ -16,7 +16,7 @@ import UnsavedChanges from './BottomSheetScreens/UnsavedChanges';
 import BottomSheetContainer from '../Components/BottomSheetContainer';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '../Assets/iconfont/Icon';
-import UserStore from '../Stores/UserStore';
+import Loader from '../Components/Loader';
 
 const EditProfile = ({userStore, editProfileFormStore, route, navigation}) => {
   unsavedChangesSheetRef = useRef();
@@ -72,6 +72,19 @@ const EditProfile = ({userStore, editProfileFormStore, route, navigation}) => {
     );
   };
 
+  const renderBody = () => {
+    return (
+      <View style={styles.body}>
+        {route.params.isFirstOpening ? renderFirstTimeHeader() : null}
+        <EditProfileForm
+          firstOpening={route.params.isFirstOpening}
+          onFormClose={onFormClose}
+          onFormSubmit={onFormSubmit}
+        />
+      </View>
+    );
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -80,14 +93,7 @@ const EditProfile = ({userStore, editProfileFormStore, route, navigation}) => {
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
-          <View style={styles.body}>
-            {route.params.isFirstOpening ? renderFirstTimeHeader() : null}
-            <EditProfileForm
-              firstOpening={route.params.isFirstOpening}
-              onFormClose={onFormClose}
-              onFormSubmit={onFormSubmit}
-            />
-          </View>
+          {userStore.userInfo ? renderBody() : <Loader />}
         </ScrollView>
       </SafeAreaView>
 

@@ -4,34 +4,29 @@ import TextInputField from '../FormFields/TextInputField';
 import ImageField from '../FormFields/ImageField';
 import {observer, inject} from 'mobx-react';
 import {layout, text} from '../../Theme';
-import FirebaseService from '../../Services/FirebaseService';
 import AuthService from '../../Services/AuthService';
+import {filterObjectByKeys} from '../../Util';
 
 class EditProfileForm extends React.Component {
   static FIELD_NAME = 'displayName';
   static FIELD_INTRO = 'intro';
-  static FIELD_PROFILE_IMAGE = 'profileImage';
+  static FIELD_PROFILE_IMAGE = 'photoURL';
 
-  formSkip() {}
-
-  formSave = async (e) => {
+  formSave = async e => {
     const {editProfileFormStore, userStore} = this.props;
     if (editProfileFormStore.isFormValid()) {
       const changedFields = editProfileFormStore.getChangedFormFieldsJson();
 
-      let publicData = {};
-      let authData = {};
-
-      if (changedFields.displayName)
-        authData.displayName = changedFields.displayName;
-      if (changedFields.intro) publicData.intro = changedFields.intro;
+      let authData = filterObjectByKeys(changedFields, [
+        EditProfileForm.FIELD_NAME,
+        EditProfileForm.FIELD_PROFILE_IMAGE,
+      ]);
+      let publicData = filterObjectByKeys(changedFields, [
+        EditProfileForm.FIELD_INTRO,
+      ]);
 
       try {
-        await FirebaseService.getInstance().editUser(
-          userStore.userInfo.uid,
-          publicData,
-        );
-        await AuthService.getInstance().updateUserData(authData);
+        await AuthService.getInstance().updateUserData(authData, publicData);
       } catch (err) {
         console.log('Error -> ', err);
         editProfileFormStore.form.meta.submitError = `${err.toString()}  \n ${
@@ -49,7 +44,7 @@ class EditProfileForm extends React.Component {
     }
   };
 
-  onFormClose = (e) => {
+  onFormClose = e => {
     const {onFormClose} = this.props;
     if (onFormClose) {
       onFormClose();
@@ -75,8 +70,7 @@ class EditProfileForm extends React.Component {
           marginTop: 15,
         }}>
         <ImageField
-          value={userStore.userInfo.profileImage}
-          placeholderUrl={userStore.userInfo.photoURL}
+          value={userStore.userInfo.photoURL}
           allowsEditing={true}
           title={'Select new avatar'}
           validation={{
@@ -112,7 +106,7 @@ class EditProfileForm extends React.Component {
           validation={{
             name: EditProfileForm.FIELD_INTRO,
             formStore: this.props.editProfileFormStore,
-            validateRule: 'required',
+            validateRule: 'string',
           }}
         />
 
@@ -120,7 +114,7 @@ class EditProfileForm extends React.Component {
           {firstOpening ? (
             <TouchableOpacity
               style={{...layout.btnOutline, ...layout.marginRightS}}
-              onPress={this.formSkip}>
+              onPress={this.onFormClose}>
               <Text style={text.buttonblue}>Skip</Text>
             </TouchableOpacity>
           ) : (

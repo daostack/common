@@ -7,21 +7,10 @@ import {
 } from 'react-native';
 
 import React from 'react';
-import {text, layout, colors, sizeL} from '../../Theme';
+import {text, layout, colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
 const CommonProfileOptions = ({navigation, onContinueEditing}) => {
-  const liveWithoutSave = e => {
-    navigation.goBack();
-  };
-
-  const continueEditing = e => {
-    console.log('onContinueEditing -> ', onContinueEditing);
-    if (onContinueEditing) {
-      onContinueEditing();
-    }
-  };
-
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -45,7 +34,7 @@ const CommonProfileOptions = ({navigation, onContinueEditing}) => {
 
         <TouchableOpacity style={styles.optionBtn}>
           <Icon
-            name="agenda"
+            name="donate-16"
             style={layout.marginRightS}
             color={colors.black}
           />
@@ -63,7 +52,7 @@ const CommonProfileOptions = ({navigation, onContinueEditing}) => {
 
         <TouchableOpacity style={styles.optionBtn}>
           <Icon
-            name="agenda"
+            name="share-32"
             style={layout.marginRightS}
             color={colors.black}
           />
