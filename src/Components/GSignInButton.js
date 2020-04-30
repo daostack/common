@@ -6,14 +6,8 @@ import React from 'react';
 
 import Icon from '../Assets/iconfont/Icon';
 import {statusCodes} from '@react-native-community/google-signin';
-import GoogleDriveService from '../Services/GoogleDriveService';
-import {NativeModules} from 'react-native';
-import AuthService from '../Services/AuthService';
 
-let initialAppDataContent = {
-  mnemonic: null,
-  version: '0.1',
-};
+import AuthService from '../Services/AuthService';
 
 const GSignInButton = ({onSignIn}) => {
   const [signInError, setSignInError] = useState(null);
@@ -21,7 +15,6 @@ const GSignInButton = ({onSignIn}) => {
   _signIn = async () => {
     try {
       const userInfo = await AuthService.getInstance().signIn(false);
-      await _loadMnemonic(userInfo.user.uid);
       if (onSignIn) {
         onSignIn(userInfo);
       }
@@ -41,59 +34,6 @@ const GSignInButton = ({onSignIn}) => {
           setSignInError(error);
       }
     }
-  };
-
-  _loadMnemonic = async uid => {
-    // 1. Read mnemonic from the store
-
-    const mnemonicFromStore = NativeModules.WalletModule.retrieveMnemonic(uid);
-    if (mnemonicFromStore) {
-      return mnemonicFromStore;
-    }
-
-    // 2. Read mnemonic From the Google Drive app data
-
-    let appData = await GoogleDriveService.getInstance().getAppData();
-
-    if (appData.files && appData.files.length > 0) {
-      const appDataFileId = appData.files[0].id;
-      const fileContent = await GoogleDriveService.getInstance().getFileById(
-        appDataFileId,
-      );
-
-      let jsonContent;
-      try {
-        jsonContent = JSON.parse(fileContent);
-      } catch (error) {
-        /*
-        FIX FOR USESRS WITH BROKEN APP DATA FILES
-        TBD: Discuss on removing that logic or replace with better one.
-        */
-
-        // The file content is not a valid json
-        // In that case we are deleting the file
-        await GoogleDriveService.getInstance().deleteAppDataFileById(
-          appDataFileId,
-        );
-        // And then generate and store new mnemonic for the user
-        return _generateAndStoreMnemonic(uid);
-      }
-      await NativeModules.WalletModule.storeMnemonic(uid, jsonContent.mnemonic);
-      return jsonContent.mnemonic;
-    }
-
-    // 3. Generate mnemonic and store in Google Drive app data
-    return _generateAndStoreMnemonic(uid);
-  };
-
-  _generateAndStoreMnemonic = async uid => {
-    initialAppDataContent.mnemonic = await NativeModules.WalletModule.generateAndStoreMnemonic(
-      uid,
-    );
-    await GoogleDriveService.getInstance().setAppData(
-      JSON.stringify(initialAppDataContent),
-    );
-    return initialAppDataContent.mnemonic;
   };
 
   renderSignInButton = () => {
