@@ -20,10 +20,10 @@
 		15E907362417D1BB008A5750 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E907342417D1BB008A5750 /* LaunchScreen.storyboard */; };
 		722E04BCC07344838A0DD949 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 27ABBCE0C26C4E15A8D7C307 /* Roboto-Regular.ttf */; };
 		8763DCF4554547D89A3F1417 /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3FFBB84F354F338A318FF0 /* Roboto-ThinItalic.ttf */; };
-		87B0C1E59CDCFC9100CDA4EB /* Pods_common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF0DD47D7175720C208EC137 /* Pods_common.framework */; };
 		8EA4A074BA5740A99672B554 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C9F83AD9B2084944A75E426E /* Roboto-Bold.ttf */; };
 		9AB34075096940B2939D3A3C /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DB1B9923E61C43618D76FCB5 /* Roboto-Thin.ttf */; };
 		AB1E0D83B8324C60AEA5B02C /* Roboto-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D4D02A4490CF40EBA056C20C /* Roboto-Italic.ttf */; };
+		BD4F546A245A7B3D003A8586 /* Pods_common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF0DD47D7175720C208EC137 /* Pods_common.framework */; };
 		BD5E78EC242011A300F61953 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BD5E78EB242011A300F61953 /* GoogleService-Info.plist */; };
 		F0F88CD131F5416F9232A460 /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 72AACE390AB74154A9B62F0C /* Roboto-BoldItalic.ttf */; };
 /* End PBXBuildFile section */
@@ -61,7 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				87B0C1E59CDCFC9100CDA4EB /* Pods_common.framework in Frameworks */,
+				BD4F546A245A7B3D003A8586 /* Pods_common.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
