@@ -74,6 +74,7 @@ class EditProfileForm extends React.Component {
           marginTop: 15,
         }}>
         <ImageField
+          isAvatar={true}
           value={userStore.userInfo.profileImage}
           placeholderUrl={userStore.userInfo.photoURL}
           allowsEditing={true}

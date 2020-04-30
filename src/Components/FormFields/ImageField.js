@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Image, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {Image, View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
@@ -11,6 +11,7 @@ import FirebaseService from '../../Services/FirebaseService';
 import Icon from '../../Assets/iconfont/Icon';
 import colors from '../../Theme/colors';
 import layout from '../../Theme/layout';
+import text from '../../Theme/text';
 
 const firebaseService = new FirebaseService();
 
@@ -28,6 +29,8 @@ class ImageField extends React.Component {
 
     if (validation) {
       const {name, formStore, validateRule} = validation;
+      console.log('====== REGISTER FIELD NAME ======');
+      console.log(name, value);
       formStore.registerFormField(name, validateRule, value);
       this.fieldValidation = (
         <ValidationMessage formStore={formStore} name={name} />
@@ -41,7 +44,6 @@ class ImageField extends React.Component {
       formStore.fieldChanged(name, url);
     }
     this.props.onChangeImage && this.props.onChangeImage(url);
-    this.setState({});
   };
 
   pickImage = () => {
@@ -74,16 +76,24 @@ class ImageField extends React.Component {
   };
 
   renderImage = () => {
-    const {value, validation, placeholderUrl} = this.props;
+    const {isAvatar, validation} = this.props;
+
+    const imageStyle = isAvatar
+      ? styles.formImageFieldStyle
+      : styles.formImageFueldGeneralStyle;
 
     const currValue = validation
       ? validation.formStore.form.fields[validation.name].value
       : value;
 
+    console.log(validation.formStore.form.fields[validation.name].value);
+
+    console.log('CurrValue -> ', currValue);
+
     if (currValue) {
       return (
         <Image
-          style={styles.formImageFieldStyle}
+          style={imageStyle}
           resizeMode="cover"
           source={{
             uri: currValue,
@@ -92,25 +102,59 @@ class ImageField extends React.Component {
       );
     } else {
       return (
-        <Image
-          style={styles.formImageFieldStyle}
-          resizeMode="cover"
-          source={{uri: placeholderUrl}}
-        />
+        <View style={styles.imageFieldPlaceholderView}>
+          <Icon name="add-picture" size={34} />
+          <Text
+            style={{
+              ...text.h3Black,
+              ...layout.marginTopXL,
+              ...{color: colors.grey3},
+            }}>
+            An image is worth a 1,000 words
+          </Text>
+          <Text
+            style={{
+              ...text.h3Black,
+              ...layout.marginTopS,
+              ...{fontWeight: 'normal', color: colors.grey3},
+            }}>
+            Make your proposal pop out
+          </Text>
+          <View styles={layout.flexRow}>
+            <TouchableOpacity style={styles.btn} onPress={this.pickImage}>
+              <Text style={text.buttonblue}>Add Image</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       );
     }
   };
 
   render() {
+    const {isAvatar, value, validation} = this.props;
+
+    const currValue = validation
+      ? validation.formStore.form.fields[validation.name].value
+      : value;
+
     return (
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
-        <View style={styles.formFieldContainer}>
-          <TouchableOpacity onPress={this.pickImage}>
+        <View
+          style={
+            isAvatar
+              ? styles.formFieldContainer
+              : styles.formFieldContainerGenral
+          }>
+          <View>
             {this.renderImage()}
-            <View style={styles.formImageFielAddIcon}>
-              <Icon name="edit" size={16} color={colors.white} />
-            </View>
-          </TouchableOpacity>
+            {isAvatar || currValue ? (
+              <TouchableOpacity
+                style={styles.formImageFielAddIcon}
+                onPress={this.pickImage}>
+                <Icon name="edit" size={16} color={colors.white} />
+              </TouchableOpacity>
+            ) : null}
+          </View>
         </View>
         {this.fieldValidation}
       </View>
@@ -119,6 +163,17 @@ class ImageField extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  btn: {
+    ...layout.marginTopM,
+    ...layout.btnOutline,
+    flexDirection: 'row',
+    marginTop: 40,
+    borderRadius: 5,
+    backgroundColor: colors.white,
+    flexGrow: 0,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+  },
   textfield: {
     //minHeight: 48,
     alignSelf: 'stretch',
@@ -132,6 +187,10 @@ const styles = StyleSheet.create({
   },
   formFieldContainer: {
     width: 100,
+  },
+
+  formFieldContainerGenral: {
+    width: '100%',
   },
 
   formImageFieldStyle: {
@@ -148,6 +207,17 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOpacity: 1,
     alignSelf: 'center',
+  },
+  formImageFueldGeneralStyle: {
+    width: '100%',
+    height: 250,
+    borderRadius: 20,
+    backgroundColor: colors.paleGrey,
+    alignSelf: 'stretch',
+  },
+  imageFieldPlaceholderView: {
+    ...layout.content,
+    backgroundColor: colors.paleGrey,
   },
 
   formImageFielAddIcon: {

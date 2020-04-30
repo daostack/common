@@ -55,6 +55,7 @@ const UserProfileData = ({
     if (isEditMode) {
       return (
         <ImageField
+          isAvatar={true}
           value={user?.profileImage}
           placeholderUrl={user?.photo}
           validation={{
