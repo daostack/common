@@ -76,7 +76,7 @@ class ImageField extends React.Component {
   };
 
   renderImage = () => {
-    const {isAvatar, validation} = this.props;
+    const {isAvatar, validation, value} = this.props;
 
     const imageStyle = isAvatar
       ? styles.formImageFieldStyle
@@ -85,10 +85,6 @@ class ImageField extends React.Component {
     const currValue = validation
       ? validation.formStore.form.fields[validation.name].value
       : value;
-
-    console.log(validation.formStore.form.fields[validation.name].value);
-
-    console.log('CurrValue -> ', currValue);
 
     if (currValue) {
       return (
