@@ -39,7 +39,7 @@ const CreateStep4 = props => {
   const form = props.createCommonFormStore.getChangedFormFieldsJson();
   const [templateIndex, setTemplateIndex] = useState(1);
   const [imageURI, setImageURI] = useState(
-    'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media'
+    'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
   );
   const [avatarURL, setAvatarURL] = useState(null);
   const toast = useToast();
@@ -65,20 +65,20 @@ const CreateStep4 = props => {
     }
     setTemplateIndex(index);
     setImageURI(
-      `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`
+      `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`,
     );
   };
 
   useEffect(() => {
     props.createCommonFormStore.registerFormField(
       CreateCommonForm.AVATAR,
-      'url'
+      'url',
     );
     props.createCommonFormStore.registerFormField(
       CreateCommonForm.IMAGE,
-      'url'
+      'url',
     );
-  }, []);
+  }, [props.createCommonFormStore]);
 
   const pickImage = isAvatar => {
     const options = {
@@ -103,12 +103,12 @@ const CreateStep4 = props => {
               setAvatarURL(url);
               props.createCommonFormStore.fieldChanged(
                 CreateCommonForm.AVATAR,
-                url
+                url,
               );
             } else {
               props.createCommonFormStore.fieldChanged(
                 CreateCommonForm.IMAGE,
-                url
+                url,
               );
               setImageURI(url);
             }
@@ -128,7 +128,7 @@ const CreateStep4 = props => {
         mainValue1: formData.funding,
         mainValue2: formData.minimum,
         mainValue3: 'empty value',
-      })
+      }),
     );
 
   const forgeCommon = async () => {

@@ -34,11 +34,16 @@ const CommonBox = props => {
         isFundingStage={true}
         commonProgressInfo={{
           time: 55,
-          activeProposals: props.common.numberOfBoostedProposals + props.common.numberOfPreBoostedProposals + props.common.numberOfQueuedProposals,
+          activeProposals:
+            props.common.numberOfBoostedProposals +
+            props.common.numberOfPreBoostedProposals +
+            props.common.numberOfQueuedProposals,
           goal: 55,
-          members: props.common.memberCount * 1.,
+          members: props.common.memberCount * 1,
           raised: 55,
-          currentBudget: numberFormatter(props.common.tokenTotalSupply).toLocaleString(),
+          currentBudget: numberFormatter(
+            props.common.tokenTotalSupply,
+          ).toLocaleString(),
         }}
       />
     </TouchableOpacity>

@@ -6,7 +6,6 @@ import {inject, observer} from 'mobx-react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
 
-
 const CommonHome = ({userStore}) => {
   console.log('userInfo from CommonHome: ', userStore.userInfo);
   return (
@@ -56,7 +55,9 @@ const CommonHome = ({userStore}) => {
       tabBarOptions={{
         activeTintColor: colors.mainBlue,
       }}>
-      {userStore.userInfo && <Tab.Screen name="My feed" component={NativeBridgeTests} />}
+      {userStore.userInfo && (
+        <Tab.Screen name="My feed" component={NativeBridgeTests} />
+      )}
       <Tab.Screen name="Explore" component={CommonsList} />
       <Tab.Screen name="Profile" component={UserProfile} />
     </Tab.Navigator>

@@ -88,8 +88,8 @@ export default class nativeBridgeTests extends React.Component {
       const manager = WalletManager.getInstance();
       const address = await manager.getOwnerAccount();
       const balance = await manager.getBalance(address);
-      console.log('ADDRESS: ', address)
-      console.log('BALANCE: ', balance)
+      console.log('ADDRESS: ', address);
+      console.log('BALANCE: ', balance);
       this.setState({ownerAccount: address, ownerBalance: balance});
     } catch (e) {
       console.log(e);

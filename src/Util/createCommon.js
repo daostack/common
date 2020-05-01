@@ -28,22 +28,22 @@ async function createCommon(arc, givenOpts = {}) {
   let tx;
   let receipt;
 
-  console.log(`fetching contractinfo from graphql...`);
+  console.log('fetching contractinfo from graphql...');
   const contractInfo = arc.getContractInfoByName(
-    `DAOFactoryInstance`,
-    ARC_VERSION
+    'DAOFactoryInstance',
+    ARC_VERSION,
   );
   const contractABI = arc.getABI(undefined, 'DAOFactory', ARC_VERSION);
   const daoFactoryContract = await arc.getContract(
     contractInfo.address,
-    contractABI
+    contractABI,
   );
   const votingMachineInfo = arc.getContractInfoByName(
-    `GenesisProtocol`,
-    ARC_VERSION
+    'GenesisProtocol',
+    ARC_VERSION,
   );
 
-  console.log(`Calling DAOFactory.forgeOrg(...)`);
+  console.log('Calling DAOFactory.forgeOrg(...)');
   const forgeOrgData = getForgeOrgData({
     DAOFactoryInstance: contractInfo.address,
     orgName: opts.name,
@@ -51,14 +51,14 @@ async function createCommon(arc, givenOpts = {}) {
     repDist: [opts.memberReputation],
   });
   tx = await daoFactoryContract.forgeOrg(...forgeOrgData, OVERRIDES);
-  console.log(`waiting for tx to be mined`);
+  console.log('waiting for tx to be mined');
   receipt = await tx.wait();
-  console.log(`done!`);
+  console.log('done!');
   // get the new avatar address of the thing that was just created..
   const newOrgEvent = receipt.events.filter(e => e.event === 'NewOrg')[0];
   const newOrgAddress = newOrgEvent.args._avatar;
 
-  console.log(`Calling DAOFactory.setSchemes(...)`);
+  console.log('Calling DAOFactory.setSchemes(...)');
 
   const schemeData = getSetSchemesData({
     DAOFactoryInstance: contractInfo.address,
@@ -73,7 +73,7 @@ async function createCommon(arc, givenOpts = {}) {
   });
 
   tx = await daoFactoryContract.setSchemes(...schemeData, OVERRIDES);
-  console.log(`waiting for tx to be mined`);
+  console.log('waiting for tx to be mined');
   receipt = await tx.wait();
   console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
   return newOrgAddress;

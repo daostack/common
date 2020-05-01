@@ -100,7 +100,7 @@ export default class Toast {
 export function useToast() {
   const toastRef = useRef(new Toast());
   useEffect(() => {
-    const toast = toastRef.current;
+    // const toast = toastRef.current;
     return () => {
       //   toast.shutdown();
     };
