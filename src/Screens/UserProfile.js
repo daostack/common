@@ -29,7 +29,7 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
       Toast.done('Your profile is updated');
     }
   });
-
+  console.log('address: ', userStore.userInfo.ethereumAddress);
   _signOut = async () => {
     try {
       await AuthService.getInstance().signOut();

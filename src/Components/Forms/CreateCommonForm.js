@@ -1,24 +1,20 @@
+
 import React from 'react';
-import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
-import TextInputField from '../FormFields/TextInputField';
-import ImageField from '../FormFields/ImageField';
+import {View} from 'react-native';
 import {observer, inject} from 'mobx-react';
-import {layout, text} from '../../Theme';
-import FirebaseService from '../../Services/FirebaseService';
-const firebaseService = new FirebaseService();
 
 class CreateCommonForm extends React.Component {
-  static FIELD_NAME = 'name';
-  static FIELD_BYLINE = 'byline';
-  static FIELD_DESCRIPTION = 'description';
-  static FIELD_LINKS = 'links';
-  static FIELD_FUNDING_GOAL = 'funding';
-  static FIELD_DEADLINE = 'deadline';
-  static FIELD_MINIMUM = 'minimum';
-  static FIELD_ACTION = 'action';
-  static FIELD_RULES = 'rules';
-  static FIELD_AVATAR = 'avatar';
-  static FIELD_AVATAR = 'image';
+  static NAME = 'name';
+  static BYLINE = 'byline';
+  static DESCRIPTION = 'description';
+  static LINKS = 'links';
+  static FUNDING_GOAL = 'funding';
+  static DEADLINE = 'deadline';
+  static MINIMUM = 'minimun';
+  static ACTION = 'action';
+  static RULES = 'rules';
+  static AVATAR = 'avatar';
+  static IMAGE = 'image';
 
   formSkip() {}
 
@@ -40,13 +36,7 @@ class CreateCommonForm extends React.Component {
   };
 
   render() {
-    const {
-      createCommonFormStore,
-      name,
-      image,
-      email,
-      ...otherProps
-    } = this.props;
+    const {createCommonFormStore} = this.props;
 
     console.log('createCommonFormStore');
     console.log(createCommonFormStore);
