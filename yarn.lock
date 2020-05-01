@@ -818,10 +818,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@daostack/arc.js@2.0.0-experimental.4":
-  version "2.0.0-experimental.4"
-  resolved "https://registry.yarnpkg.com/@daostack/arc.js/-/arc.js-2.0.0-experimental.4.tgz#c0ab746fd2e7c891468ff445747eba1aa646f21f"
-  integrity sha512-j4z2xG3QYk1W2yqIL5YejG10at9ozxvLxDwrvZkOMiW+D530rWOVdiAUEPEJbrMRRp5sVrnX1beNvJydwTCnTw==
+"@daostack/arc.js@2.0.0-experimental.5":
+  version "2.0.0-experimental.5"
+  resolved "https://registry.yarnpkg.com/@daostack/arc.js/-/arc.js-2.0.0-experimental.5.tgz#6b2ee9424c9b77c943118aab4e665689d32724ab"
+  integrity sha512-P41Lbc2+FC9JepyUS+gfKQ3Vq/ejUfsEaU8vdJ7jZepcvTgdAK8Z2h/g4E8oqjmIOs4uRvVRk9AGWdlx7ix9/g==
   dependencies:
     apollo-cache-inmemory "^1.6.5"
     apollo-client "^2.6.8"
@@ -8793,6 +8793,11 @@ swap-case@^1.1.0:
   dependencies:
     lower-case "^1.1.1"
     upper-case "^1.1.1"
+
+symbol-observable@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.0.1.tgz#8340fc4702c3122df5d22288f88283f513d3fdd4"
+  integrity sha1-g0D8RwLDEi310iKI+IKD9RPT/dQ=
 
 symbol-observable@^1.0.2, symbol-observable@^1.0.4, symbol-observable@^1.1.0:
   version "1.2.0"
