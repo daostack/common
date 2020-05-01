@@ -1,5 +1,5 @@
 import {db, firebase} from '../Firebase';
-import uuid from 'uuid/v4';
+const uuid = require('uuid').v4;
 
 const DB_COLLECTIONS = {
   users: 'users',

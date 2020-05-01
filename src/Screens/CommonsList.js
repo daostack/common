@@ -24,15 +24,14 @@ const CommonsList = ({navigation}) => {
       try {
         const appUsers = await FirebaseService.getInstance().getUsers();
         console.log('users: ', appUsers);
-        // const unsubscribe =
-        db.collection('daos').onSnapshot(snapshot => {
+        const unsubscribe = db.collection('daos').onSnapshot(snapshot => {
           if (snapshot.empty) {
             return [];
           }
           let daosSnapshot = snapshot.docs.map(doc => {
             return {...{id: doc.id}, ...doc.data()};
           });
-          console.log('daos: ', daosSnapshot);
+          console.log('daos: ', daosSnapshot)
           setDaos(daosSnapshot);
         });
         // console.log('DAOS: ', daosRes);
@@ -44,8 +43,8 @@ const CommonsList = ({navigation}) => {
     getDaos();
     return function cleanup() {
       unsubscribe();
-    };
-  });
+    }
+  }, [0]);
 
   return (
     <View style={{flex: 1}}>

@@ -2,6 +2,7 @@ const {Arc} = require('@daostack/arc.js');
 // this value should coincide with the "migration-experimental" versoin
 const ARC_VERSION = '0.1.1-rc.16'; // we should probably read this from the package..
 
+// TODO: have this available as a global
 async function getArc(wallet) {
   const arc = new Arc({
     // we just use arc for writing..
