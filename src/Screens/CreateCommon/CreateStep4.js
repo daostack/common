@@ -10,25 +10,26 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
+import {observer, inject} from 'mobx-react';
+import ImagePicker from 'react-native-image-picker';
+import moment from 'moment';
+import {ethers} from 'ethers';
 import {colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
-import {observer, inject} from 'mobx-react';
-const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
-import ImagePicker from 'react-native-image-picker';
-import moment from 'moment';
 import {Ipfs as IpfsClient} from '../../Config';
 import WalletManager from '../../Util/WalletManager';
-import {ethers} from 'ethers';
-import DAOFactory from '../../Contracts/ABIs/DAOFactory';
-let provider = ethers.getDefaultProvider('rinkeby');
-const {getForgeOrgData, getSetSchemesData} = require('commonfactory');
 import FirebaseService from '../../Services/FirebaseService';
 import {useToast} from '../../Util/Toast';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import {numberFormatter} from '../../Util';
+import {createCommon} from '../../Util/createCommon';
+import {getArc} from '../../Util/arc';
+
+const {width} = Dimensions.get('window');
+const provider = ethers.getDefaultProvider('rinkeby');
 
 const firebaseService = new FirebaseService();
 
@@ -38,7 +39,7 @@ const CreateStep4 = props => {
   const form = props.createCommonFormStore.getChangedFormFieldsJson();
   const [templateIndex, setTemplateIndex] = useState(1);
   const [imageURI, setImageURI] = useState(
-    'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
+    'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media'
   );
   const [avatarURL, setAvatarURL] = useState(null);
   const toast = useToast();
@@ -64,18 +65,18 @@ const CreateStep4 = props => {
     }
     setTemplateIndex(index);
     setImageURI(
-      `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`,
+      `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`
     );
   };
 
   useEffect(() => {
     props.createCommonFormStore.registerFormField(
       CreateCommonForm.AVATAR,
-      'url',
+      'url'
     );
     props.createCommonFormStore.registerFormField(
       CreateCommonForm.IMAGE,
-      'url',
+      'url'
     );
   }, []);
 
@@ -102,12 +103,12 @@ const CreateStep4 = props => {
               setAvatarURL(url);
               props.createCommonFormStore.fieldChanged(
                 CreateCommonForm.AVATAR,
-                url,
+                url
               );
             } else {
               props.createCommonFormStore.fieldChanged(
                 CreateCommonForm.IMAGE,
-                url,
+                url
               );
               setImageURI(url);
             }
@@ -117,8 +118,8 @@ const CreateStep4 = props => {
     });
   };
 
-  const ipfsUpload = async formData => {
-    return await IpfsClient.addAndPinString(
+  const ipfsUpload = async formData =>
+    IpfsClient.addAndPinString(
       JSON.stringify({
         name: formData.name,
         byline: formData.byline,
@@ -127,113 +128,34 @@ const CreateStep4 = props => {
         mainValue1: formData.funding,
         mainValue2: formData.minimum,
         mainValue3: 'empty value',
-      }),
+      })
     );
-  };
 
-  const forgeCommon = async _ipfsHash => {
-    try {
-      const formData = props.createCommonFormStore.getChangedFormFieldsJson();
-      const manager = await WalletManager.getInstance();
-      const wallet = manager.ethWallet;
-      const address = await manager.getOwnerAccount();
-      console.log('owner account: ', address);
-      let contract = new ethers.Contract(
-        '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
-        DAOFactory,
-        provider,
-      );
-      let daoFactory = contract.connect(wallet);
-      let overrides = {
-        gasLimit: 6000000,
-      };
-      //TODO: add funding amounts??
-      const forgeOrgData = getForgeOrgData({
-        DAOFactoryInstance: '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
-        orgName: formData.name,
-        founderAddresses: [address],
-        tokenDist: [0],
-        repDist: [100],
-      });
+  const forgeCommon = async () => {
+    const commonFormData = props.createCommonFormStore.getChangedFormFieldsJson();
+    const ipfsHash = await ipfsUpload(commonFormData);
 
-      console.log('forgeOrgData: ', forgeOrgData);
-      const forgeOrg = await daoFactory.forgeOrg(...forgeOrgData, overrides);
+    const formData = props.createCommonFormStore.getChangedFormFieldsJson();
+    const manager = await WalletManager.getInstance();
+    const wallet = manager.ethWallet;
+    const address = await manager.getOwnerAccount();
+    console.log('owner account: ', address);
+    // we will want to have a global arc instance for all contract interactions!
+    const arc = await getArc(wallet);
 
-      console.log('forgeOrg: ', forgeOrg);
+    const commonAddress = await createCommon(arc, {
+      name: formData.name,
+      founderAddresses: [address],
+      tokenDist: [0],
+      repDist: [100],
+      minFeeToJoin: 100, // TDB: get from formData
+      fundingGoal: 1000, // TBD: get from formdata
+      // TBD: get form data for deadline; these are in secondSinceEpoch
+      fundingGoalDeadline: (await provider.getBlock('latest')).timestamp + 3000,
+      ipfsHash,
+    });
 
-      const {hash} = forgeOrg;
-      console.log('hash: ', hash);
-      let avatarAddress;
-      contract.on('NewOrg', (_avatarAddress, newValue, event) => {
-        setScheme(_ipfsHash, _avatarAddress);
-      });
-
-      return {avatarAddress: avatarAddress};
-    } catch (e) {
-      throw 'Send transaction failed with error: ' + e;
-    }
-  };
-
-  const setScheme = async (_ipfsHash, _avatarAddress) => {
-    try {
-      const manager = await WalletManager.getInstance();
-      const wallet = manager.ethWallet;
-
-      console.log('ethwallet: ', manager.ethWallet);
-      const address = await manager.getAddress();
-      let contract = new ethers.Contract(
-        '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
-        DAOFactory,
-        provider,
-      );
-      let daoFactory = contract.connect(wallet);
-
-      let overrides = {
-        gasLimit: 6000000,
-      };
-      const setSchemeData = getSetSchemesData({
-        DAOFactoryInstance: '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
-        avatar: _avatarAddress,
-        votingMachine: '0x59EC3731Dca0512678A5F6507d79Cf631005cAd4',
-        joinAndQuitVoteParams:
-          '0x1000000000000000000000000000000000000000000000000000000000000000',
-        fundingRequestVoteParams:
-          '0x1100000000000000000000000000000000000000000000000000000000000000',
-        schemeFactoryVoteParams:
-          '0x1110000000000000000000000000000000000000000000000000000000000000',
-        fundingToken: '0x0000000000000000000000000000000000000000',
-        minFeeToJoin: 100,
-        memberReputation: 100,
-        goal: 1000,
-        deadline: (await provider.getBlock('latest')).timestamp + 3000,
-        metaData: _ipfsHash,
-      });
-
-      console.log('setSchemeData: ', setSchemeData);
-      const setSchemes = await daoFactory.setSchemes(
-        ...setSchemeData,
-        overrides,
-      );
-      console.log('setSchemes: ', setSchemes);
-      const {hash} = setSchemes;
-      console.log('hash: ', hash);
-    } catch (e) {
-      throw 'Send transaction failed with error: ' + e;
-    }
-  };
-
-  const createCommon = async () => {
-    try {
-      console.log(
-        'commonfields: ',
-        props.createCommonFormStore.getChangedFormFieldsJson(),
-      );
-      const commonFormData = props.createCommonFormStore.getChangedFormFieldsJson();
-      const ipfsHash = await ipfsUpload(commonFormData);
-      await forgeCommon(ipfsHash);
-    } catch (e) {
-      console.log('error: ', e);
-    }
+    return {commonAddress};
   };
 
   return (
@@ -298,7 +220,7 @@ const CreateStep4 = props => {
               style={{
                 position: 'absolute',
                 height: 225,
-                width: width,
+                width,
                 backgroundColor: colors.grey4,
               }}
               source={{
@@ -401,9 +323,7 @@ const CreateStep4 = props => {
               </View>
             </View>
           )}
-          <View
-            style={{height: 1, width: width, backgroundColor: colors.grey4}}
-          />
+          <View style={{height: 1, width, backgroundColor: colors.grey4}} />
           <View style={styles.sectionTitle}>
             <View style={{minWidth: 90, marginRight: 10}}>
               <Text
@@ -533,7 +453,7 @@ const CreateStep4 = props => {
             <View />
           )}
         </View>
-        <TouchableOpacity style={styles.continueButton} onPress={createCommon}>
+        <TouchableOpacity style={styles.continueButton} onPress={forgeCommon}>
           <Text
             style={{
               fontSize: 16,
