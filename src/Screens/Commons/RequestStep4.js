@@ -21,6 +21,7 @@ import RequestToJoinForm from '../../Components/Forms/RequestToJoinForm';
 import JoinAmount from '../../Components/Commons/JoinAmount';
 
 import CreateStepDotHeader from './RequestStepDotHeader';
+import RequestStepActionButton from './RequestStepActionButton';
 
 const RequestStep4 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
@@ -33,7 +34,7 @@ const RequestStep4 = props => {
   useEffect(() => {
     const height = scrollY.interpolate({
       inputRange: [0, 50],
-      outputRange: [0, 125],
+      outputRange: [0, 67],
       extrapolate: 'clamp',
     });
     console.log(height);
@@ -79,127 +80,117 @@ const RequestStep4 = props => {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: 'white',
-      }}>
-      <CreateStepNavigation
-        navigation={props.navigation}
-        title="Personal contribution"
-      />
-      <CreateStepDotHeader
-        title="Payment"
-        currentIndex={4}
-        navigation={props.navigation}
-        headerHeight={headerHeight}
-      />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        width={width}
-        contentContainerStyle={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 24,
-        }}
-        scrollEventThrottle={16}
-        onScroll={Animated.event([
-          {nativeEvent: {contentOffset: {y: scrollY}}},
-        ])}>
-        <CreateStepHeader currentIndex={3} />
-        <View
-          style={{
-            flex: 1,
-            // padding: 24,
-            backgroundColor: 'white',
-          }}>
-          <Text
-            style={{
-              marginTop: 24,
-              fontWeight: 'bold',
-              fontSize: 18,
-              textAlign: 'center',
-            }}>
-            Payment
-          </Text>
-          <Text style={{marginTop: 12, marginBottom: 23, textAlign: 'center'}}>
-            You are contributing $25 to this common
-          </Text>
-
-          <TextInputField
-            label="Credit card number"
-            validation={{
-              name: RequestToJoinForm.FIELD_CARD_NUMBER,
-              formStore: props.requestToJoinFormStore,
-              validateRule: 'string',
-            }}
-          />
-
-          <TextInputField
-            label="Name on card"
-            validation={{
-              name: RequestToJoinForm.FIELD_CARD_NAME,
-              formStore: props.requestToJoinFormStore,
-              validateRule: 'string',
-            }}
-          />
-
+    <>
+      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+        }}>
+        <CreateStepNavigation
+          navigation={props.navigation}
+          title="Personal contribution"
+        />
+        <CreateStepDotHeader
+          title="Payment"
+          currentIndex={4}
+          navigation={props.navigation}
+          headerHeight={headerHeight}
+        />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          width={width}
+          contentContainerStyle={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 24,
+          }}
+          scrollEventThrottle={16}
+          onScroll={Animated.event([
+            {nativeEvent: {contentOffset: {y: scrollY}}},
+          ])}>
+          <CreateStepHeader currentIndex={3} />
           <View
             style={{
-              ...layout.content,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              ...{
-                padding: 0,
-                alignSelf: 'stretch',
-              },
+              flex: 1,
+              // padding: 24,
+              backgroundColor: 'white',
             }}>
-            <TextInputField
-              viewStyle={{alignSelf: 'stretch'}}
-              label="Expiration date                 "
-              validation={{
-                name: RequestToJoinForm.FIELD_CARD_NAME,
-                formStore: props.requestToJoinFormStore,
-                validateRule: 'string',
-              }}
-            />
-            <TextInputField
-              viewStyle={{alignSelf: 'stretch'}}
-              label="CVV                                 "
-              validation={{
-                name: RequestToJoinForm.FIELD_CARD_NAME,
-                formStore: props.requestToJoinFormStore,
-                validateRule: 'string',
-              }}
-            />
-          </View>
+            <Text
+              style={{
+                marginTop: 24,
+                fontWeight: 'bold',
+                fontSize: 18,
+                textAlign: 'center',
+              }}>
+              Payment
+            </Text>
+            <Text
+              style={{marginTop: 12, marginBottom: 23, textAlign: 'center'}}>
+              You are contributing $25 to this common
+            </Text>
 
-          <Text
-            style={{
-              ...text.blackText,
-              ...{color: colors.grey2, textAlign: 'center'},
-            }}>
-            Your money will be refunded if the common does not approve your
-            request or meet the funding goal
-          </Text>
-        </View>
-        <TouchableOpacity
-          style={[
-            styles.continueButton,
-            {backgroundColor: pass ? colors.mainBlue : colors.grey3},
-          ]}
-          onPress={push}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: 'white',
-              fontWeight: '700',
-            }}>
-            Pay Now
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+            <TextInputField
+              label="Credit card number"
+              validation={{
+                name: RequestToJoinForm.FIELD_CARD_NUMBER,
+                formStore: props.requestToJoinFormStore,
+                validateRule: 'string',
+              }}
+            />
+
+            <TextInputField
+              label="Name on card"
+              validation={{
+                name: RequestToJoinForm.FIELD_CARD_NAME,
+                formStore: props.requestToJoinFormStore,
+                validateRule: 'string',
+              }}
+            />
+
+            <View
+              style={{
+                ...layout.content,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                ...{
+                  padding: 0,
+                  alignSelf: 'stretch',
+                },
+              }}>
+              <TextInputField
+                viewStyle={{alignSelf: 'stretch'}}
+                label="Expiration date                 "
+                validation={{
+                  name: RequestToJoinForm.FIELD_CARD_NAME,
+                  formStore: props.requestToJoinFormStore,
+                  validateRule: 'string',
+                }}
+              />
+              <TextInputField
+                viewStyle={{alignSelf: 'stretch'}}
+                label="CVV                                 "
+                validation={{
+                  name: RequestToJoinForm.FIELD_CARD_NAME,
+                  formStore: props.requestToJoinFormStore,
+                  validateRule: 'string',
+                }}
+              />
+            </View>
+
+            <Text
+              style={{
+                ...text.blackText,
+                ...{color: colors.grey2, textAlign: 'center'},
+              }}>
+              Your money will be refunded if the common does not approve your
+              request or meet the funding goal
+            </Text>
+          </View>
+        </ScrollView>
+        <RequestStepActionButton title="Pay Now" pass={pass} onPress={push} />
+      </SafeAreaView>
+    </>
   );
 };
 

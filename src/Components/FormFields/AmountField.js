@@ -17,20 +17,27 @@ import TextInputFieldWithIcon from './TextInputFieldWithIcon';
 
 import RequestToJoinForm from '../Forms/RequestToJoinForm';
 
-const AmountField = ({amount, isCustom, formStore}) => {
+const AmountField = ({
+  amount,
+  isCustom,
+  formStore,
+  onCustomSelect,
+  onCustomClose,
+}) => {
   const [isCustomSelected, setIsCustomSelected] = useState(0);
 
   const textInputRef = useRef();
-
+  /*
   const amount1Ref = useRef();
   const amount2Ref = useRef();
   const amount3Ref = useRef();
-
+*/
   const onAmountPress = (isCustom, amount) => {
     if (isCustom) {
       setIsCustomSelected(true);
       textInputRef.current.focus();
       console.log(textInputRef.current);
+      onCustomSelect();
     } else {
       /*
       console.log(amount1Ref);
@@ -45,16 +52,17 @@ const AmountField = ({amount, isCustom, formStore}) => {
     }
   };
 
-  const onCustomClose = e => {
+  const onTogglePress = e => {
     setIsCustomSelected(false);
+    onCustomClose();
   };
 
   return (
     <View>
       <View style={isCustomSelected ? styles.hidden : {}}>
-        <JoinAmount ref={amount1Ref} amount="$10" onPress={onAmountPress} />
-        <JoinAmount ref={amount2Ref} amount="$20" onPress={onAmountPress} />
-        <JoinAmount ref={amount3Ref} amount="$50" onPress={onAmountPress} />
+        <JoinAmount amount="$10" onPress={onAmountPress} />
+        <JoinAmount amount="$20" onPress={onAmountPress} />
+        <JoinAmount amount="$50" onPress={onAmountPress} />
         <JoinAmount isCustom={true} onPress={onAmountPress} />
       </View>
 
@@ -69,7 +77,8 @@ const AmountField = ({amount, isCustom, formStore}) => {
         autoCapitalize="none"
         autoCorrect={false}
         keyboardType="numeric"
-        onTogglePress={onCustomClose}
+        onTogglePress={onTogglePress}
+        toggleName="Custom"
         validation={{
           name: RequestToJoinForm.FIELD_AMOUNT,
           formStore: formStore,

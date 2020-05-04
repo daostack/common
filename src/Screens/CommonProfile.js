@@ -409,8 +409,13 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: colors.white,
-    borderTopWidth: 1,
-    borderTopColor: colors.grey2,
+    shadowColor: 'rgba(79, 92, 105, 0.1)',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowRadius: 4,
+    shadowOpacity: 1,
   },
   agendaBox: {
     padding: 20,

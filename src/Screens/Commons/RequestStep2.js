@@ -26,6 +26,7 @@ import RequestToJoinForm from '../../Components/Forms/RequestToJoinForm';
 import Modal from 'react-native-modal';
 import moment from 'moment';
 import CreateStepDotHeader from './RequestStepDotHeader';
+import RequestStepActionButton from './RequestStepActionButton';
 
 const RequestStep2 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
@@ -38,7 +39,7 @@ const RequestStep2 = props => {
   useEffect(() => {
     const height = scrollY.interpolate({
       inputRange: [0, 50],
-      outputRange: [0, 125],
+      outputRange: [0, 67],
       extrapolate: 'clamp',
     });
     setHeaderHeight(height);
@@ -100,119 +101,96 @@ const RequestStep2 = props => {
   const {userStore} = props;
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: 'white',
-      }}>
-      <CreateStepNavigation
-        navigation={props.navigation}
-        title="Approve Common Rules"
-      />
-      <CreateStepDotHeader
-        title="Introduce Yourself"
-        currentIndex={2}
-        navigation={props.navigation}
-        headerHeight={headerHeight}
-      />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        width={width}
-        contentContainerStyle={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 24,
-        }}
-        scrollEventThrottle={16}
-        onScroll={Animated.event([
-          {nativeEvent: {contentOffset: {y: scrollY}}},
-        ])}>
-        <CreateStepHeader currentIndex={1} />
-        <View
-          style={{
-            flex: 1,
-            // alignItems: 'center',
-            // padding: 24,
-            backgroundColor: 'white',
-          }}>
-          <Text
-            style={{
-              marginTop: 24,
-              fontWeight: '700',
-              fontSize: 18,
-              textAlign: 'center',
-            }}>
-            Introduce Yourself
-          </Text>
-          <Text
-            style={{
-              marginTop: 12,
-              marginBottom: 23,
-              marginHorizontal: 20,
-              textAlign: 'center',
-            }}>
-            Let the other common members know what you bring to the table
-          </Text>
+    <>
+      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+        }}>
+        <CreateStepNavigation
+          navigation={props.navigation}
+          title="Approve Common Rules"
+        />
+        <CreateStepDotHeader
+          title="Introduce Yourself"
+          currentIndex={2}
+          navigation={props.navigation}
+          headerHeight={headerHeight}
+        />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          width={width}
+          contentContainerStyle={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 24,
+          }}
+          scrollEventThrottle={16}
+          onScroll={Animated.event([
+            {nativeEvent: {contentOffset: {y: scrollY}}},
+          ])}>
+          <CreateStepHeader currentIndex={1} />
           <View
             style={{
-              backgroundColor: colors.grey4,
-              height: 1,
-              marginBottom: 40,
-            }}
-          />
-
-          <ImageField
-            isAvatar={true}
-            value={userStore.userInfo.photoURL}
-            allowsEditing={true}
-            title={'Select new avatar'}
-            validation={{
-              name: RequestToJoinForm.FIELD_IMAGE,
-              formStore: props.requestToJoinFormStore,
-              validateRule: 'string',
-            }}
-          />
-
-          <TextInputField
-            label="About me"
-            multiline={true}
-            numberOfLines={6}
-            validation={{
-              name: RequestToJoinForm.FIELD_ABOUT_ME,
-              formStore: props.requestToJoinFormStore,
-              validateRule: 'string',
-            }}
-          />
-
-          <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>Links</Text>
-
-          <MultiLinkField
-            allowsEditing={true}
-            title={'Add File'}
-            validation={{
-              name: RequestToJoinForm.FIELD_LINKS,
-              formStore: props.requestToJoinFormStore,
-              validateRule: 'string',
-            }}
-          />
-        </View>
-        <TouchableOpacity
-          style={[
-            styles.continueButton,
-            {backgroundColor: pass ? colors.mainBlue : colors.grey3},
-          ]}
-          onPress={push}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: 'white',
-              fontWeight: '700',
+              flex: 1,
+              // alignItems: 'center',
+              // padding: 24,
+              backgroundColor: 'white',
             }}>
-            Continue
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+            <Text
+              style={{
+                marginTop: 24,
+                fontWeight: '700',
+                fontSize: 18,
+                textAlign: 'center',
+              }}>
+              Introduce Yourself
+            </Text>
+            <Text
+              style={{
+                marginTop: 12,
+                marginBottom: 23,
+                marginHorizontal: 20,
+                textAlign: 'center',
+              }}>
+              Let the other common members know what you bring to the table
+            </Text>
+            <View
+              style={{
+                backgroundColor: colors.grey4,
+                height: 1,
+                marginBottom: 40,
+              }}
+            />
+
+            <TextInputField
+              label="About me"
+              multiline={true}
+              numberOfLines={6}
+              validation={{
+                name: RequestToJoinForm.FIELD_ABOUT_ME,
+                formStore: props.requestToJoinFormStore,
+                validateRule: 'string',
+              }}
+            />
+
+            <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>Links</Text>
+
+            <MultiLinkField
+              allowsEditing={true}
+              title={'Add File'}
+              validation={{
+                name: RequestToJoinForm.FIELD_LINKS,
+                formStore: props.requestToJoinFormStore,
+                validateRule: 'string',
+              }}
+            />
+          </View>
+        </ScrollView>
+        <RequestStepActionButton title="Continue" pass={pass} onPress={push} />
+      </SafeAreaView>
+    </>
   );
 };
 
@@ -250,7 +228,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 48,
     borderRadius: 32,
-    marginTop: 45,
     flexDirection: 'row',
     paddingHorizontal: 18,
     justifyContent: 'center',
@@ -266,6 +243,17 @@ const styles = StyleSheet.create({
     color: colors.paleblue,
     textAlign: 'right',
     flex: 1,
+  },
+  actionBtnContainer: {
+    ...layout.content,
+    backgroundColor: colors.white,
+    shadowColor: 'rgba(79, 92, 105, 0.1)',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowRadius: 4,
+    shadowOpacity: 1,
   },
 });
 

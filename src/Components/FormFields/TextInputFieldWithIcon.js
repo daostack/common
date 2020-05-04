@@ -9,7 +9,7 @@ import {
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
-import {layout, colors} from '../../Theme';
+import {layout, colors, text} from '../../Theme';
 
 class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
@@ -23,9 +23,16 @@ class TextInputFieldWithIcon extends React.Component {
 
     this.state = {
       onFocus: false,
+      dynamicWidth: 30,
     };
 
-    const {validation, value, fieldActionComponent, onTogglePress} = this.props;
+    const {
+      validation,
+      value,
+      fieldActionComponent,
+      onTogglePress,
+      toggleName,
+    } = this.props;
     // Register form field for validation message component if name,formStore and validateRule props are provided
     if (validation) {
       const {name, formStore, validateRule} = validation;
@@ -39,20 +46,36 @@ class TextInputFieldWithIcon extends React.Component {
       this.placeFieldActionComponent = fieldActionComponent;
     }
     if (onTogglePress) {
-      this.toggleValueBtn = (
-        <View
-          style={{
-            position: 'absolute',
-            top: 7,
-            left: 15,
-            right: 15,
-            bottom: 7,
+      let toggleViewStyle = {
+        position: 'absolute',
+        top: 7,
+        left: 15,
+        right: 15,
+        ...layout.content,
+        padding: 0,
+      };
+
+      if (!toggleName) {
+        toggleViewStyle = {...toggleViewStyle, ...{bottom: 7}};
+      } else {
+        toggleViewStyle = {
+          ...toggleViewStyle,
+          ...{
             ...layout.content,
+            ...layout.flexRow,
+            alignSelf: 'stretch',
             padding: 0,
-            alignItems: 'flex-end',
-          }}>
+            justifyContent: 'space-between',
+          },
+        };
+      }
+
+      this.toggleValueBtn = (
+        <View style={toggleViewStyle}>
+          <View />
+          <Text style={text.textFieldplaceholder}>{toggleName}</Text>
           <TouchableOpacity onPress={onTogglePress}>
-            <Icon name="close" size={12} />
+            <Icon name="close" size={9} />
           </TouchableOpacity>
         </View>
       );
@@ -78,6 +101,10 @@ class TextInputFieldWithIcon extends React.Component {
       formStore.fieldBlured(name);
     }
     this.props.onBlur && this.props.onBlur(e);
+  };
+
+  updateSize = width => {
+    this.setState({dynamicWidth: width});
   };
 
   renderTextField() {
@@ -112,6 +139,20 @@ class TextInputFieldWithIcon extends React.Component {
     }
     if (this.state?.onFocus) {
       styleTextfield = {...styles.textfield, ...styles.textfieldFocus};
+    }
+
+    let fieldStyle = {};
+
+    if (this.props.toggleName) {
+      styleTextfield = {
+        ...styleTextfield,
+        ...{height: 100, position: 'relative'},
+      };
+      fieldStyle = {
+        width: 20 + this.state.dynamicWidth,
+      };
+    } else {
+      fieldStyle = {flex: 1};
     }
 
     let defaultMultilineProps = {minHeight: 48};
@@ -155,13 +196,16 @@ class TextInputFieldWithIcon extends React.Component {
             {...defaultMultilineProps}
             {...otherProps}
             multiline={multiline}
-            style={{flex: 1}}
+            style={fieldStyle}
             placeholder={placeholderText}
             onChangeText={this.onChangeText}
             keyboardType={keyboardType}
             onFocus={this.onFocus}
             onBlur={this.onBlur}
             secureTextEntry={this.state.showPassword}
+            onContentSizeChange={e =>
+              this.updateSize(e.nativeEvent.contentSize.width)
+            }
             value={
               validation
                 ? validation.formStore.form.fields[

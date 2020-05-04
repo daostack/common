@@ -1,31 +1,50 @@
 import React from 'react';
 import {View, StyleSheet, Animated, Text, TouchableOpacity} from 'react-native';
 import Icon from '../../Assets/iconfont/Icon';
-import {colors} from '../../Theme';
+import {colors, text, layout} from '../../Theme';
 
 const RequestStepDotHeader = props => {
   const headerHeight = props.headerHeight;
   const currentIndex = props.currentIndex;
 
   return (
-    <Animated.View style={[styles.header, {height: headerHeight}]}>
-      <TouchableOpacity
-        style={{left: 0, top: 49, position: 'absolute'}}
-        onPress={() => props.navigation.pop()}>
-        <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
-      </TouchableOpacity>
-      <View style={styles.bar}>
-        <View
-          style={{
-            marginTop: 80,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          {[...Array(4).keys()].map(x => (
-            <View key={x} style={x < currentIndex ? styles.dot : styles.dot2} />
-          ))}
+    <Animated.View
+      style={[
+        styles.header,
+        {
+          height: headerHeight,
+          shadowColor: 'rgba(79, 92, 105, 0.1)',
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowRadius: 4,
+          shadowOpacity: 1,
+        },
+      ]}>
+      <View style={{overflow: 'hidden'}}>
+        <TouchableOpacity
+          style={{position: 'absolute', left: 0, top: -2, padding: 10}}
+          onPress={() => props.navigation.pop()}>
+          <Icon name="left-arrow" size={32} />
+        </TouchableOpacity>
+        <View style={styles.bar}>
+          <Text style={styles.title}>{props.title}</Text>
+          <View
+            style={{
+              ...layout.marginTopS,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            {[...Array(4).keys()].map(x => (
+              <View
+                key={x}
+                style={x < currentIndex ? styles.dot : styles.dot2}
+              />
+            ))}
+          </View>
         </View>
-        <Text style={styles.title}>{props.title}</Text>
+        <View />
       </View>
     </Animated.View>
   );
@@ -33,8 +52,7 @@ const RequestStepDotHeader = props => {
 
 const styles = StyleSheet.create({
   bar: {
-    marginTop: 28,
-    height: 32,
+    marginTop: 15,
     alignItems: 'center',
     justifyContent: 'center',
     // bottomborder: 'solid',
@@ -44,11 +62,9 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'white',
-    overflow: 'hidden',
     zIndex: 999,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.grey4,
+
+    backgroundColor: colors.white,
   },
   dot: {
     height: 10,
@@ -69,12 +85,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   title: {
-    backgroundColor: 'transparent',
-    color: colors.black,
-    fontSize: 16,
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
-    paddingVertical: 10,
+    ...text.h3Black,
   },
 });
 

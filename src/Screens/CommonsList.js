@@ -36,10 +36,90 @@ const DAOS_SUBSCRIPTION = gql`
   }
 `;
 
+const mockDaos = [
+  {
+    type: 'id',
+    generated: false,
+    id: 'DAO:0x6bee9b81e434f7afce72a43a4016719315069539',
+    typename: 'DAO',
+  },
+  {
+    type: 'id',
+    generated: false,
+    id: 'DAO:0x519b70055af55a007110b4ff99b0ea33071c720a',
+    typename: 'DAO',
+  },
+  {
+    type: 'id',
+    generated: false,
+    id: 'DAO:0x294f999356ed03347c7a23bcbcf8d33fa41dc830',
+    typename: 'DAO',
+  },
+  {
+    type: 'id',
+    generated: false,
+    id: 'DAO:0x0c88aa3c4fe9f9f8da766e9b8bfbbaa1235928cc',
+    typename: 'DAO',
+  },
+  {
+    type: 'id',
+    generated: false,
+    id: 'DAO:0xe56b4d8d42b1c9ea7dda8a6950e3699755943de7',
+    typename: 'DAO',
+  },
+  {
+    type: 'id',
+    generated: false,
+    id: 'DAO:0x440583455bcd85ab2bd429c015d3aabcae135f0a',
+    typename: 'DAO',
+  },
+  {
+    type: 'id',
+    generated: false,
+    id: 'DAO:0x0ed985925bb42c6719d10dcd1cc02d8cf596c15b',
+    typename: 'DAO',
+  },
+  {
+    type: 'id',
+    generated: false,
+    id: 'DAO:0x2b8c70fffda7f3d7667f7cfede1429313886329c',
+    typename: 'DAO',
+  },
+  {
+    type: 'id',
+    generated: false,
+    id: 'DAO:0x9aa89db8556f93220ed38687b12bfb3a292ffbfc',
+    typename: 'DAO',
+  },
+  {
+    type: 'id',
+    generated: false,
+    id: 'DAO:0x0b93ba560283350d4216f29dc57e15df38d0eace',
+    typename: 'DAO',
+  },
+  {
+    type: 'id',
+    generated: false,
+    id: 'DAO:0x917e94d812364f8a4c9b8d906a0e9668023c8e38',
+    typename: 'DAO',
+  },
+  {
+    type: 'id',
+    generated: false,
+    id: 'DAO:0x84c2276acaf67b65bca212c8634688b5b2dc903e',
+    typename: 'DAO',
+  },
+];
+
+const mockData = {
+  daos: mockDaos,
+};
+
 const CommonsList = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       <SafeAreaView />
+      {/** 
       <Query query={DAOS_SUBSCRIPTION}>
         {({loading, error, data}) => {
           console.log('Query Commons -> ', loading, error, data);
@@ -125,6 +205,50 @@ const CommonsList = ({navigation}) => {
           );
         }}
       </Query>
+      */}
+
+      <>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '100%',
+            padding: 15,
+          }}>
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: 'bold',
+              fontStyle: 'normal',
+              letterSpacing: 0,
+            }}>
+            {mockData.daos.length} Commons
+          </Text>
+        </View>
+
+        <ScrollView>
+          <View style={styles.container}>
+            {mockData.daos.map((dao, i) => {
+              if (
+                ''.length > 0 &&
+                !dao.name.toLowerCase().includes(''.toLowerCase())
+              ) {
+                return;
+              }
+              return (
+                <CommonBox
+                  image={`https://i.picsum.photos/id/${i * 10}/500/100.jpg`}
+                  common={dao}
+                  key={i}
+                  navigation={navigation}
+                />
+              );
+            })}
+          </View>
+        </ScrollView>
+      </>
+
       <BottomRightButton
         onPress={() => navigation.navigate('CommonExplanation')}
       />

@@ -21,6 +21,7 @@ import RequestToJoinForm from '../../Components/Forms/RequestToJoinForm';
 import JoinAmount from '../../Components/Commons/JoinAmount';
 
 import CreateStepDotHeader from './RequestStepDotHeader';
+import RequestStepActionButton from './RequestStepActionButton';
 
 const RequestStep3 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
@@ -28,12 +29,14 @@ const RequestStep3 = props => {
   const [ruleCount, setRuleCount] = useState(1);
   const [ruleTitles, setRuleTitles] = useState([]);
   const [pass, setPass] = useState(true);
+  const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
+
   // var ruleBody = [];
 
   useEffect(() => {
     const height = scrollY.interpolate({
       inputRange: [0, 50],
-      outputRange: [0, 125],
+      outputRange: [0, 67],
       extrapolate: 'clamp',
     });
     console.log(height);
@@ -58,16 +61,21 @@ const RequestStep3 = props => {
   };
 
   const isValid = () => {
-    const titles = [...Array(ruleCount).keys()].map(x => `ruleTitles_${x}`);
-    const bodys = [...Array(ruleCount).keys()].map(x => `ruleBody_${x}`);
+    props.requestToJoinFormStore.isFormValid();
 
     const result = props.requestToJoinFormStore.isFormValidSelectedFields([
-      RequestToJoinForm.ACTION,
-      ...titles,
-      ...bodys,
+      RequestToJoinForm.FIELD_AMOUNT,
     ]);
-    setPass(result);
+
     return result;
+  };
+
+  const onCustomClose = e => {
+    setIsActionBtnHidden(true);
+  };
+
+  const onCustomSelect = e => {
+    setIsActionBtnHidden(false);
   };
 
   const push = () => {
@@ -79,72 +87,84 @@ const RequestStep3 = props => {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: 'white',
-      }}>
-      <CreateStepNavigation
-        navigation={props.navigation}
-        title="Introduce Yourself"
-      />
-      <CreateStepDotHeader
-        title="Personal contribution"
-        currentIndex={3}
-        navigation={props.navigation}
-        headerHeight={headerHeight}
-      />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        width={width}
-        contentContainerStyle={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 24,
-        }}
-        scrollEventThrottle={16}
-        onScroll={Animated.event([
-          {nativeEvent: {contentOffset: {y: scrollY}}},
-        ])}>
-        <CreateStepHeader currentIndex={2} />
-        <View
-          style={{
-            flex: 1,
-            // padding: 24,
-            backgroundColor: 'white',
-          }}>
-          <Text
+    <>
+      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+        }}>
+        <CreateStepNavigation
+          navigation={props.navigation}
+          title="Introduce Yourself"
+        />
+        <CreateStepDotHeader
+          title="Personal contribution"
+          currentIndex={3}
+          navigation={props.navigation}
+          headerHeight={headerHeight}
+        />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          width={width}
+          contentContainerStyle={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 24,
+          }}
+          scrollEventThrottle={16}
+          onScroll={Animated.event([
+            {nativeEvent: {contentOffset: {y: scrollY}}},
+          ])}>
+          <CreateStepHeader currentIndex={2} />
+          <View
             style={{
-              marginTop: 24,
-              fontWeight: 'bold',
-              fontSize: 18,
-              textAlign: 'center',
+              flex: 1,
+              // padding: 24,
+              backgroundColor: 'white',
             }}>
-            Personal contribution
-          </Text>
-          <Text style={{marginTop: 12, marginBottom: 23, textAlign: 'center'}}>
-            20% of the common members contributed more than $20
-          </Text>
+            <Text
+              style={{
+                marginTop: 24,
+                fontWeight: 'bold',
+                fontSize: 18,
+                textAlign: 'center',
+              }}>
+              Personal contribution
+            </Text>
+            <Text
+              style={{marginTop: 12, marginBottom: 23, textAlign: 'center'}}>
+              20% of the common members contributed more than $20
+            </Text>
+            <View
+              style={{
+                backgroundColor: colors.grey4,
+                height: 1,
+                marginBottom: 40,
+              }}
+            />
 
-          <AmountField formStore={props.requestToJoinFormStore} />
-        </View>
-        <TouchableOpacity
-          style={[
-            styles.continueButton,
-            {backgroundColor: pass ? colors.mainBlue : colors.grey3},
-          ]}
-          onPress={push}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: 'white',
-              fontWeight: '700',
-            }}>
-            Continue to payment
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+            <AmountField
+              formStore={props.requestToJoinFormStore}
+              onCustomSelect={onCustomSelect}
+              onCustomClose={onCustomClose}
+            />
+          </View>
+        </ScrollView>
+        <RequestStepActionButton
+          title="Continue to payment"
+          pass={
+            props.requestToJoinFormStore.form.fields[
+              RequestToJoinForm.FIELD_AMOUNT
+            ]?.error
+              ? false
+              : true
+          }
+          onPress={push}
+          hidden={isActionBtnHidden}
+        />
+      </SafeAreaView>
+    </>
   );
 };
 
