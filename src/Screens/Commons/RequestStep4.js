@@ -23,6 +23,8 @@ import JoinAmount from '../../Components/Commons/JoinAmount';
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from './RequestStepActionButton';
 
+import {CommonActions} from '@react-navigation/native';
+
 const RequestStep4 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -72,11 +74,21 @@ const RequestStep4 = props => {
   };
 
   const push = () => {
+    /*
     const vaild = isValid();
     if (vaild) {
       props.navigation.navigate('CreateStep4');
       console.log(props.requestToJoinFormStore.getChangedFormFieldsJson());
     }
+    */
+
+    const navigate = CommonActions.navigate({
+      name: 'CommonProfile',
+      params: {
+        showRequestSentModal: true,
+      },
+    });
+    props.navigation.dispatch(navigate);
   };
 
   return (

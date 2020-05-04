@@ -121,6 +121,9 @@ export default StyleSheet.create({
   },
 
   // Margin RIGHT
+  marginRightXS: {
+    marginRight: sizeXS,
+  },
   marginRightS: {
     marginRight: 10,
   },

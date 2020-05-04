@@ -2,6 +2,16 @@
 
 import React from 'react';
 
+import Iconlink from './Iconlink';
+import Iconfile from './Iconfile';
+import Iconfile1 from './Iconfile1';
+import Iconboosted from './Iconboosted';
+import Iconexplanation from './Iconexplanation';
+import Iconproposal from './Iconproposal';
+import Iconclcok16 from './Iconclcok16';
+import Iconcontribution24 from './Iconcontribution24';
+import IconpersonalInfo24 from './IconpersonalInfo24';
+import Iconwallet24 from './Iconwallet24';
 import Icondelete from './Icondelete';
 import Icondollar from './Icondollar';
 import Iconsort from './Iconsort';
@@ -53,8 +63,28 @@ import Iconfeed from './Iconfeed';
 import Icongoogle from './Icongoogle';
 import Iconaccount from './Iconaccount';
 
-export const Icon = ({name, ...rest}) => {
+export const Icon = ({ name, ...rest }) => {
   switch (name) {
+    case 'link':
+      return <Iconlink {...rest} />;
+    case 'file':
+      return <Iconfile {...rest} />;
+    case 'file-1':
+      return <Iconfile1 {...rest} />;
+    case 'boosted':
+      return <Iconboosted {...rest} />;
+    case 'explanation':
+      return <Iconexplanation {...rest} />;
+    case 'proposal':
+      return <Iconproposal {...rest} />;
+    case 'clcok-16':
+      return <Iconclcok16 {...rest} />;
+    case 'contribution-24':
+      return <Iconcontribution24 {...rest} />;
+    case 'personal-info-24':
+      return <IconpersonalInfo24 {...rest} />;
+    case 'wallet-24':
+      return <Iconwallet24 {...rest} />;
     case 'delete':
       return <Icondelete {...rest} />;
     case 'dollar':

@@ -145,6 +145,7 @@ const RequestStep3 = props => {
             />
 
             <AmountField
+              navigation={props.navigation}
               formStore={props.requestToJoinFormStore}
               onCustomSelect={onCustomSelect}
               onCustomClose={onCustomClose}

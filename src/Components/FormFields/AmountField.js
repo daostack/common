@@ -23,6 +23,7 @@ const AmountField = ({
   formStore,
   onCustomSelect,
   onCustomClose,
+  navigation,
 }) => {
   const [isCustomSelected, setIsCustomSelected] = useState(0);
 
@@ -39,16 +40,7 @@ const AmountField = ({
       console.log(textInputRef.current);
       onCustomSelect();
     } else {
-      /*
-      console.log(amount1Ref);
-      if (amount == '$10') {
-        amount1Ref.deselect();
-      } else if (amount == '$20') {
-        amount2Ref.deselect();
-      } else if (amount == '$50') {
-        amount3Ref.deselect();
-      }
-      */
+      navigation.navigate('RequestStep4');
     }
   };
 

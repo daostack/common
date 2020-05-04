@@ -106,10 +106,12 @@ const ProposalData = ({}) => {
       <View style={styles.container}>
         <View style={styles.proposalCard}>
           <View style={styles.proposalCardHeader}>
-            <Icon name={'common'} color={colors.orange} />
-            <Text style={text.orangeSmallBold}>Boosted</Text>
+            <Icon name={'boosted'} color={colors.orange} size={16} />
+            <Text style={{...text.orangeSmallBold, ...{marginHorizontal: 5}}}>
+              Boosted
+            </Text>
             <TouchableOpacity onPress={openBoostedInfo}>
-              <Icon name={'verification'} color={colors.grey2} size={24} />
+              <Icon name={'explanation'} size={12} />
             </TouchableOpacity>
           </View>
           <View style={layout.content}>
@@ -119,13 +121,25 @@ const ProposalData = ({}) => {
             </View>
 
             <View style={styles.proposalProgressInfo}>
-              <View style={layout.flexRow}>
-                <Icon name="common" color={colors.lightishGreen} size={22} />
+              <View
+                style={{...layout.content, ...layout.flexRow, ...{padding: 0}}}>
+                <Icon
+                  name="approved"
+                  color={colors.lightishGreen}
+                  size={14}
+                  style={layout.marginRightXS}
+                />
                 <Text style={text.lightishGreenText}>73</Text>
               </View>
 
-              <View style={layout.flexRow}>
-                <Icon name="common" color={colors.against} size={22} />
+              <View
+                style={{...layout.content, ...layout.flexRow, ...{padding: 0}}}>
+                <Icon
+                  name="declined"
+                  color={colors.against}
+                  size={14}
+                  style={layout.marginRightXS}
+                />
                 <Text style={text.againstText}>28</Text>
               </View>
             </View>
@@ -170,12 +184,12 @@ const ProposalData = ({}) => {
             </View>
 
             <View style={styles.adRow}>
-              <Icon name="common" color={colors.mainBlue} size={22} />
+              <Icon name="link" color={colors.mainBlue} size={16} />
               <Text style={styles.adsText}>Amazon Facebook group</Text>
             </View>
 
             <View style={styles.adRow}>
-              <Icon name="common" color={colors.mainBlue} size={22} />
+              <Icon name="file" color={colors.mainBlue} size={16} />
               <Text style={styles.adsText}>Facebook campaign segment.pdf</Text>
             </View>
           </View>
@@ -230,11 +244,7 @@ const ProposalData = ({}) => {
             </View>
             <View style={layout.contant}>
               <TouchableOpacity>
-                <Text
-                  style={styles.messageShowMoreBtn}
-                  onPress={this.pickImage}>
-                  Show more
-                </Text>
+                <Text style={styles.messageShowMoreBtn}>Show more</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -366,7 +376,9 @@ const styles = StyleSheet.create({
   },
 
   adRow: {
+    alignItems: 'center',
     ...layout.flexRow,
+    padding: 0,
     alignSelf: 'stretch',
     paddingVertical: sizeM,
   },

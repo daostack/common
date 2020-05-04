@@ -39,6 +39,7 @@ import {
   RequestStep3,
   RequestStep4,
   FundingProposal,
+  ProposalScreen,
 } from './src/Screens';
 
 import {ApolloClientConfig as client} from './src/Config';
@@ -233,6 +234,8 @@ const App = ({userStore}) => {
               ),
             })}
           />
+
+          <Stack.Screen name="ProposalScreen" component={ProposalScreen} />
           <Stack.Screen
             name="RequestStep1"
             component={RequestStep1}

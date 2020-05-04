@@ -9,6 +9,7 @@ import {observer, inject} from 'mobx-react';
 import {layout, text, colors} from '../../Theme';
 import FirebaseService from '../../Services/FirebaseService';
 import AuthService from '../../Services/AuthService';
+import RequestStepActionButton from '../../Screens/Commons/RequestStepActionButton';
 
 class FundingRequestForm extends React.Component {
   static FIELD_TITLE = 'Title';
@@ -25,37 +26,8 @@ class FundingRequestForm extends React.Component {
   formSkip() {}
 
   formSave = async e => {
-    const {fundingRequestFormStore, userStore} = this.props;
+    const {fundingRequestFormStore} = this.props;
     if (fundingRequestFormStore.isFormValid()) {
-      const changedFields = fundingRequestFormStore.getChangedFormFieldsJson();
-
-      let publicData = {};
-      let authData = {};
-
-      if (changedFields.displayName) {
-        authData.displayName = changedFields.displayName;
-      }
-      if (changedFields.intro) {
-        publicData.intro = changedFields.intro;
-      }
-
-      try {
-        await FirebaseService.getInstance().editUser(
-          userStore.userInfo.uid,
-          publicData,
-        );
-        await AuthService.getInstance().updateUserData(authData);
-      } catch (err) {
-        console.log('Error -> ', err);
-        fundingRequestFormStore.form.meta.submitError = `${err.toString()}  \n ${
-          err.response
-            ? `\nCode: ${err.response.data.code}  \nMessage: ${err.response.data.message}`
-            : ''
-        }`;
-        fundingRequestFormStore.form.meta.isLoadingSubmit = false;
-        throw err;
-      }
-
       if (this.props.onFormSubmit) {
         this.props.onFormSubmit(changedFields);
       }
@@ -215,13 +187,11 @@ class FundingRequestForm extends React.Component {
           }}
         />
 
-        <View style={styles.containerRow}>
-          <TouchableOpacity
-            style={{...layout.btnPrimary, ...layout.marginLeftS}}
-            onPress={this.formSave}>
-            <Text style={text.buttoncenterwhite}>Create Proposal</Text>
-          </TouchableOpacity>
-        </View>
+        <RequestStepActionButton
+          title="Create Proposal"
+          pass={fundingRequestFormStore.form.meta.isValid}
+          onPress={this.formSave}
+        />
       </View>
     );
   }
