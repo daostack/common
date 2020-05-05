@@ -20,11 +20,12 @@ const CommonsList = ({navigation}) => {
   const [daos, setDaos] = useState([]);
 
   useEffect(() => {
+    let unsubscribe;
     const getDaos = async () => {
       try {
         const appUsers = await FirebaseService.getInstance().getUsers();
         console.log('users: ', appUsers);
-        const unsubscribe = db.collection('daos').onSnapshot(snapshot => {
+        unsubscribe = db.collection('daos').onSnapshot(snapshot => {
           if (snapshot.empty) {
             return [];
           }
@@ -43,7 +44,7 @@ const CommonsList = ({navigation}) => {
     getDaos();
     return function cleanup() {
       unsubscribe();
-    }
+    };
   }, [0]);
 
   return (

@@ -8,6 +8,7 @@ const Tab = createBottomTabNavigator();
 
 const CommonHome = ({userStore}) => {
   console.log('userInfo from CommonHome: ', userStore.userInfo);
+  console.log('userInfo from CommonHome: ', userStore);
   return (
     <Tab.Navigator
       initialRouteName="Explore"
@@ -55,9 +56,10 @@ const CommonHome = ({userStore}) => {
       tabBarOptions={{
         activeTintColor: colors.mainBlue,
       }}>
-      {userStore.userInfo && (
-        <Tab.Screen name="My feed" component={NativeBridgeTests} />
-      )}
+      {/*{userStore.userInfo && (*/}
+        {/*<Tab.Screen name="My feed" component={NativeBridgeTests} />*/}
+      {/*)}*/}<Tab.Screen name="My feed" component={NativeBridgeTests} />
+
       <Tab.Screen name="Explore" component={CommonsList} />
       <Tab.Screen name="Profile" component={UserProfile} />
     </Tab.Navigator>

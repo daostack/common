@@ -11,6 +11,8 @@ import {
 const {width} = Dimensions.get('window');
 import WalletManager from '../Util/WalletManager';
 import MessageContract from '../Contracts/ABIs/MessageContract';
+import {createCommon} from '../Util/createCommon';
+import {getArc} from '../Util/arc';
 
 const uid = 'test';
 
@@ -32,6 +34,7 @@ export default class nativeBridgeTests extends React.Component {
       txHash: '',
       result: '',
       scTXHash: '',
+      commonStatus: '',
     };
 
     this.child = React.createRef();
@@ -159,10 +162,42 @@ export default class nativeBridgeTests extends React.Component {
     }
   };
 
+  createCommon = async () => {
+    const wallet = WalletManager.getInstance();
+
+    const arc = getArc(wallet.ethWallet);
+    const commonStatus = await createCommon(await arc, {
+      name: 'Test DAO',
+      founderAddresses: '0x9b99952d22016F3bF5ef844D856D382c2D0e13aB',
+      minFeeToJoin: 0,
+      fundingToken: '0x0000000000000000000000000000000000000000',
+      goal: 100000,
+      deadline: 20200404,
+      metaData: '',
+      ipfsHash: ''
+    });
+
+    this.setState({commonStatus: `${JSON.stringify(commonStatus)}`});
+  };
+
   render() {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
+          <Text style={{marginVertical: 10}}>
+            --------------- Common Interactions -----------------
+          </Text>
+          <Text>Common Tx: {this.state.commonStatus}</Text>
+          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
+            <Text>Create Common</Text>
+          </TouchableOpacity>
+
+          <Text>mnemonicsAndStore: {this.state.mnemonicsAndStore}</Text>
+          <TouchableOpacity
+            onPress={this.generateAndStoreMnemonic}
+            style={styles.button}>
+            <Text>Generate And Store Mnemonic</Text>
+          </TouchableOpacity>
           <Text style={{marginVertical: 10}}>
             --------------- Native Bridge -----------------
           </Text>

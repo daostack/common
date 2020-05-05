@@ -3,6 +3,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  Clipboard,
   ScrollView,
   View,
 } from 'react-native';
@@ -29,8 +30,7 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
       Toast.done('Your profile is updated');
     }
   });
-  console.log('address: ', userStore.userInfo.ethereumAddress);
-  _signOut = async () => {
+  const _signOut = async () => {
     try {
       await AuthService.getInstance().signOut();
     } catch (error) {
@@ -52,6 +52,7 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
 
   const onMyWalletPress = event => {
     navigation.navigate('MyWallet');
+    console.log('address: ', userStore.userInfo.ethereumAddress);
   };
 
   const onMyCommonsPress = event => {

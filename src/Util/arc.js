@@ -1,4 +1,5 @@
 const {Arc} = require('@daostack/arc.js');
+// const arc = require('@daostack/client')
 // this value should coincide with the "migration-experimental" versoin
 const ARC_VERSION = '0.1.1-rc.16'; // we should probably read this from the package..
 
@@ -16,8 +17,8 @@ async function getArc(wallet) {
   return arc;
 }
 const OVERRIDES = {
-  // gasLimit: 10000000,
-  // gasPrice: 1000000000,
+  gasLimit: 10000000,
+  gasPrice: 1000000000,
 };
 
 module.exports = {

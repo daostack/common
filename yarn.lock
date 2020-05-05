@@ -841,6 +841,29 @@
     subscriptions-transport-ws "^0.9.16"
     ws "^6.2.1"
 
+"@daostack/client@^2.0.0-experimental.2":
+  version "2.0.0-experimental.2"
+  resolved "https://registry.yarnpkg.com/@daostack/client/-/client-2.0.0-experimental.2.tgz#bcedea94e54c2d090fc11f6abc4fd9efddf6af61"
+  integrity sha512-9kIDewI5RWrUW/9jx/FowcvuH9WIzxlnARplB/5xXz/qB1utEqUsTTaftK+tO27CVPTpWHbH/mCtjGypEwAEVA==
+  dependencies:
+    apollo-cache-inmemory "^1.6.5"
+    apollo-client "^2.6.8"
+    apollo-client-ws "^2.5.0"
+    apollo-link-error "^1.1.12"
+    apollo-link-http "^1.5.15"
+    apollo-link-retry "^2.2.15"
+    apollo-link-ws "^1.0.18"
+    ethers "^4.0.45"
+    form-data "^3.0.0"
+    graphql "^14.4.2"
+    graphql-tag "^2.10.1"
+    isomorphic-fetch "^2.2.1"
+    isomorphic-ws "^4.0.1"
+    js-logger "^1.6.0"
+    rxjs "6.4.0"
+    subscriptions-transport-ws "^0.9.16"
+    ws "^6.2.1"
+
 "@daostack/common-factory@1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@daostack/common-factory/-/common-factory-1.2.0.tgz#0c80fa95300200b271c31c7deed0d9a138bc2e79"
@@ -8791,11 +8814,6 @@ swap-case@^1.1.0:
   dependencies:
     lower-case "^1.1.1"
     upper-case "^1.1.1"
-
-symbol-observable@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.0.1.tgz#8340fc4702c3122df5d22288f88283f513d3fdd4"
-  integrity sha1-g0D8RwLDEi310iKI+IKD9RPT/dQ=
 
 symbol-observable@^1.0.2, symbol-observable@^1.0.4, symbol-observable@^1.1.0:
   version "1.2.0"
