@@ -5,7 +5,7 @@ import {observer} from 'mobx-react';
 import colors from '../../Theme/colors';
 import layout from '../../Theme/layout';
 
-class TextInputField extends React.Component {
+class LinksField extends React.Component {
   fieldValidation;
   toggleValueBtn;
   placeFieldActionComponent;
@@ -74,11 +74,9 @@ class TextInputField extends React.Component {
 
     let styleTextfield = styles.textfield;
 
-    if (validation) {
-      const {formStore, name} = validation;
-      if (formStore.form.fields[name].error) {
-        styleTextfield = {...styles.textfield, ...styles.textfieldError};
-      }
+    const {formStore, name} = this.props.validation;
+    if (formStore.form.fields[name].error) {
+      styleTextfield = {...styles.textfield, ...styles.textfieldError};
     }
     if (this.state?.onFocus) {
       styleTextfield = {...styles.textfield, ...styles.textfieldFocus};
@@ -207,4 +205,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(TextInputField);
+export default observer(LinksField);
