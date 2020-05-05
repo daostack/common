@@ -71,4 +71,4 @@ GoogleService-Info.plist
 google-services.json
 
 # IconFont
-#/src/Assets/iconfont
+/src/Assets/iconfont
