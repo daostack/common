@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -6,46 +6,65 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
 import {text, layout, colors, sizeM, sizeXS} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import ReadMore from 'react-native-read-more-text';
 import UserMessageCard from '../../Components/Discussion/UserMessageCard';
+import ImageView from 'react-native-image-view';
 
 const ProposalData = ({}) => {
   const mockData = {
     images: [
       {
         id: '0',
-        author: 'Alejandro Escamilla',
+        title: 'Alejandro Escamilla',
         width: 5616,
         height: 3744,
-        url: 'https://unsplash.com/photos/yC-Yzbqy7PY',
-        download_url: 'https://picsum.photos/id/0/5616/3744',
+        source: {
+          uri: 'https://picsum.photos/id/0/5616/3744',
+        },
       },
       {
         id: '10',
-        author: 'Paul Jarvis',
+        title:
+          'I tool this photo in my back yard and i think this is the perfect cover photo for our campaign. I have other good suggestions but this is free and we will have no copyright issues since it’s my photo',
+        width: 2400,
+        height: 3840,
+        source: {
+          uri:
+            'https://www.ecopetit.cat/wpic/mpic/86-868861_nature-portrait.jpg',
+        },
+      },
+
+      {
+        id: '10',
+        title:
+          'I tool this photo in my back yard and i think this is the perfect cover photo for our campaign. I have other good suggestions but this is free and we will have no copyright issues since it’s my photo',
         width: 4200,
-        height: 1667,
-        url: 'https://unsplash.com/photos/6J--NXulQCs',
-        download_url: 'https://picsum.photos/id/10/2500/1667',
+        height: 2667,
+        source: {
+          uri: 'https://picsum.photos/id/10/2500/1667',
+        },
       },
       {
         id: '1',
-        author: 'Alejandro Escamilla',
+        title: 'Alejandro Escamilla',
         width: 5616,
         height: 3744,
-        url: 'https://unsplash.com/photos/LNRyGwIJr5c',
-        download_url: 'https://picsum.photos/id/1/5616/3744',
+        source: {
+          uri: 'https://picsum.photos/id/1/5616/3744',
+        },
       },
       {
         id: '100',
-        author: 'Tina Rataj',
+        title: 'Tina Rataj',
         width: 2500,
         height: 1656,
-        url: 'https://unsplash.com/photos/pwaaqfoMibI',
-        download_url: 'https://picsum.photos/id/100/2500/1656',
+        source: {
+          uri: 'https://picsum.photos/id/100/2500/1656',
+        },
       },
     ],
 
@@ -75,6 +94,8 @@ const ProposalData = ({}) => {
       },
     ],
   };
+
+  const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
 
   const _renderTruncatedFooter = handlePress => {
     return (
@@ -195,28 +216,36 @@ const ProposalData = ({}) => {
           </View>
         </View>
 
-        <ScrollView horizontal={true}>
+        <ScrollView horizontal={true} style={{paddingLeft: 20}}>
           <View style={styles.imageGallery}>
             {mockData.images.map((currImage, currIndex) => {
               console.log('Image -> ', currImage);
+
+              const currWidth = (currImage.width / currImage.height) * 220;
+
               return (
-                <View>
-                  <Image
-                    key={currIndex}
-                    style={{
-                      ...styles.galleryImage,
-                      ...{width: (currImage.width / currImage.height) * 100},
-                    }}
-                    resizeMode="cover"
-                    source={{uri: currImage.download_url}}
-                  />
-                  <Text
-                    style={{
-                      ...text.textFieldplaceholder,
-                      ...layout.marginTopS,
-                    }}>
-                    {currImage.author}
-                  </Text>
+                <View style={{width: currWidth + 10}}>
+                  <TouchableOpacity
+                    onPress={() => setImageGalleryIndex(currIndex)}>
+                    <Image
+                      key={currIndex}
+                      style={{
+                        ...styles.galleryImage,
+                        ...{width: currWidth},
+                      }}
+                      resizeMode="cover"
+                      source={{uri: currImage.source.uri}}
+                    />
+                  </TouchableOpacity>
+                  <ReadMore numberOfLines={1}>
+                    <Text
+                      style={{
+                        ...text.textFieldplaceholder,
+                        ...layout.marginTopS,
+                      }}>
+                      {currImage.title}
+                    </Text>
+                  </ReadMore>
                 </View>
               );
             })}
@@ -250,11 +279,48 @@ const ProposalData = ({}) => {
           </View>
         </View>
       </View>
+
+      <ImageView
+        images={mockData.images}
+        imageIndex={imageGalleryIndex}
+        isVisible={imageGalleryIndex > -1}
+        onClose={() => setImageGalleryIndex(-1)}
+        renderFooter={currentImage => (
+          <SafeAreaView style={layout.paddingBottomM}>
+            <View style={styles.imageGalleryTextContainer}>
+              <Text style={styles.imageGalleryText}>{currentImage.title}</Text>
+            </View>
+          </SafeAreaView>
+        )}
+      />
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  imageGalleryTextContainer: {
+    ...layout.content,
+    ...layout.flexStart,
+  },
+
+  imageGalleryTextContainerMaxHeight: {
+    backgroundColor: '#000000',
+    opacity: 0.6,
+  },
+
+  imageGalleryText: {
+    ...text.blackText,
+    fontSize: 16,
+
+    color: colors.white,
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    textShadowRadius: 4,
+  },
+
   imageGallery: {
     ...layout.flexRow,
     ...layout.flexStart,
@@ -281,6 +347,8 @@ const styles = StyleSheet.create({
   },
   container: {
     ...layout.content,
+    padding: 0,
+    paddingTop: 20,
     backgroundColor: colors.paleGrey,
     paddingBottom: 130,
   },
@@ -306,6 +374,7 @@ const styles = StyleSheet.create({
   },
 
   proposalCard: {
+    marginHorizontal: 20,
     ...layout.marginBottomL,
     backgroundColor: colors.white,
     borderRadius: 20,
