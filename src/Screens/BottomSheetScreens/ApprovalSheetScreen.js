@@ -1,20 +1,10 @@
-import {
-  Text,
-  View,
-  StyleSheet,
-  ScrollView,
-  Image,
-  SafeAreaView,
-} from 'react-native';
+import {Text, StyleSheet, SafeAreaView} from 'react-native';
 
 import React from 'react';
 import {text, layout, colors} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
-import SwipeButton from 'rn-swipe-button';
-import arrowRight from '../../Assets/rightArrow16.png';
 import ButtonSwiper from '../../Components/ButtonSwiper';
 
-const ApprovalSheetScreen = ({navigation, onApprove, voteType}) => {
+const ApprovalSheetScreen = ({onApprove, voteType}) => {
   return (
     <SafeAreaView style={styles.body}>
       <Text

@@ -1,25 +1,13 @@
-import {
-  Image,
-  ImageBackground,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  SafeAreaView,
-} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React, {useState, useRef} from 'react';
 
-import Icon from '../../Assets/iconfont/Icon';
 import {layout, colors, text} from '../../Theme';
 import JoinAmount from '../Commons/JoinAmount';
-import TextInputField from './TextInputField';
 import TextInputFieldWithIcon from './TextInputFieldWithIcon';
 
 import RequestToJoinForm from '../Forms/RequestToJoinForm';
 
 const AmountField = ({
-  amount,
-  isCustom,
   formStore,
   onCustomSelect,
   onCustomClose,

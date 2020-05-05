@@ -6,13 +6,12 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  SafeAreaView,
 } from 'react-native';
 import {text, layout, colors, sizeM, sizeXS} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import ReadMore from 'react-native-read-more-text';
 import UserMessageCard from '../../Components/Discussion/UserMessageCard';
-import ImageView from 'react-native-image-view';
+import ImageView from 'react-native-image-viewing';
 
 const ProposalData = ({}) => {
   const mockData = {
@@ -22,9 +21,7 @@ const ProposalData = ({}) => {
         title: 'Alejandro Escamilla',
         width: 5616,
         height: 3744,
-        source: {
-          uri: 'https://picsum.photos/id/0/5616/3744',
-        },
+        uri: 'https://picsum.photos/id/0/5616/3744',
       },
       {
         id: '10',
@@ -32,10 +29,7 @@ const ProposalData = ({}) => {
           'I tool this photo in my back yard and i think this is the perfect cover photo for our campaign. I have other good suggestions but this is free and we will have no copyright issues since it’s my photo',
         width: 2400,
         height: 3840,
-        source: {
-          uri:
-            'https://www.ecopetit.cat/wpic/mpic/86-868861_nature-portrait.jpg',
-        },
+        uri: 'https://www.ecopetit.cat/wpic/mpic/86-868861_nature-portrait.jpg',
       },
 
       {
@@ -44,27 +38,21 @@ const ProposalData = ({}) => {
           'I tool this photo in my back yard and i think this is the perfect cover photo for our campaign. I have other good suggestions but this is free and we will have no copyright issues since it’s my photo',
         width: 4200,
         height: 2667,
-        source: {
-          uri: 'https://picsum.photos/id/10/2500/1667',
-        },
+        uri: 'https://picsum.photos/id/10/2500/1667',
       },
       {
         id: '1',
         title: 'Alejandro Escamilla',
         width: 5616,
         height: 3744,
-        source: {
-          uri: 'https://picsum.photos/id/1/5616/3744',
-        },
+        uri: 'https://picsum.photos/id/1/5616/3744',
       },
       {
         id: '100',
         title: 'Tina Rataj',
         width: 2500,
         height: 1656,
-        source: {
-          uri: 'https://picsum.photos/id/100/2500/1656',
-        },
+        uri: 'https://picsum.photos/id/100/2500/1656',
       },
     ],
 
@@ -93,6 +81,16 @@ const ProposalData = ({}) => {
         time: '22:36',
       },
     ],
+  };
+
+  const ImageGalleryFooter = ({imageIndex}) => {
+    return (
+      <View style={styles.imageGalleryTextContainer}>
+        <Text style={styles.imageGalleryText}>
+          {mockData.images[imageIndex].title}
+        </Text>
+      </View>
+    );
   };
 
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
@@ -216,8 +214,12 @@ const ProposalData = ({}) => {
           </View>
         </View>
 
-        <ScrollView horizontal={true} style={{paddingLeft: 20}}>
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={{marginBottom: 20}}>
           <View style={styles.imageGallery}>
+            <View style={{width: 20}} />
             {mockData.images.map((currImage, currIndex) => {
               console.log('Image -> ', currImage);
 
@@ -234,10 +236,13 @@ const ProposalData = ({}) => {
                         ...{width: currWidth},
                       }}
                       resizeMode="cover"
-                      source={{uri: currImage.source.uri}}
+                      source={{uri: currImage.uri}}
                     />
                   </TouchableOpacity>
-                  <ReadMore numberOfLines={1}>
+                  <ReadMore
+                    numberOfLines={1}
+                    renderTruncatedFooter={() => <View />}
+                    renderRevealedFooter={() => <View />}>
                     <Text
                       style={{
                         ...text.textFieldplaceholder,
@@ -249,6 +254,7 @@ const ProposalData = ({}) => {
                 </View>
               );
             })}
+            <View style={{width: 20}} />
           </View>
         </ScrollView>
 
@@ -283,15 +289,9 @@ const ProposalData = ({}) => {
       <ImageView
         images={mockData.images}
         imageIndex={imageGalleryIndex}
-        isVisible={imageGalleryIndex > -1}
-        onClose={() => setImageGalleryIndex(-1)}
-        renderFooter={currentImage => (
-          <SafeAreaView style={layout.paddingBottomM}>
-            <View style={styles.imageGalleryTextContainer}>
-              <Text style={styles.imageGalleryText}>{currentImage.title}</Text>
-            </View>
-          </SafeAreaView>
-        )}
+        visible={imageGalleryIndex > -1}
+        onRequestClose={() => setImageGalleryIndex(-1)}
+        FooterComponent={ImageGalleryFooter}
       />
     </>
   );
@@ -301,11 +301,7 @@ const styles = StyleSheet.create({
   imageGalleryTextContainer: {
     ...layout.content,
     ...layout.flexStart,
-  },
-
-  imageGalleryTextContainerMaxHeight: {
-    backgroundColor: '#000000',
-    opacity: 0.6,
+    ...layout.marginBottomM,
   },
 
   imageGalleryText: {
@@ -325,7 +321,6 @@ const styles = StyleSheet.create({
     ...layout.flexRow,
     ...layout.flexStart,
 
-    height: 300,
     width: '100%',
   },
 

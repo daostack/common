@@ -1,16 +1,7 @@
-import {
-  Image,
-  ImageBackground,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  SafeAreaView,
-} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-import Icon from '../../Assets/iconfont/Icon';
-import {layout, colors, text} from '../../Theme';
+import {layout, text} from '../../Theme';
 
 const RequestToJoinRule = ({index, title, description}) => {
   return (

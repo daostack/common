@@ -1,17 +1,10 @@
-import {
-  Text,
-  View,
-  StyleSheet,
-  ScrollView,
-  Image,
-  SafeAreaView,
-} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 
 import React from 'react';
 import {text, layout, colors} from '../Theme';
 import SwipeButton from 'rn-swipe-button';
 
-const ButtonSwiper = ({navigation, onSwipeSuccess, title}) => {
+const ButtonSwiper = ({onSwipeSuccess, title}) => {
   const showToastMessage = msg => {
     console.log('MSG -> ', msg);
   };

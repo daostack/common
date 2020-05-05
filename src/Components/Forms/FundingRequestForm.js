@@ -4,11 +4,8 @@ import TextInputField from '../FormFields/TextInputField';
 import MultiImageField from '../FormFields/MultiImageField';
 import MultiFileField from '../FormFields/MultiFileField';
 
-import ImageField from '../FormFields/ImageField';
 import {observer, inject} from 'mobx-react';
 import {layout, text, colors} from '../../Theme';
-import FirebaseService from '../../Services/FirebaseService';
-import AuthService from '../../Services/AuthService';
 import RequestStepActionButton from '../../Screens/Commons/RequestStepActionButton';
 
 class FundingRequestForm extends React.Component {

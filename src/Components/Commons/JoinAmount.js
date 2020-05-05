@@ -1,23 +1,10 @@
-import {
-  Image,
-  ImageBackground,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  SafeAreaView,
-} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 
-import Icon from '../../Assets/iconfont/Icon';
 import {layout, colors, text} from '../../Theme';
 
 const JoinAmount = ({amount, isCustom, onPress}) => {
   const [isSelected, setIsSelected] = useState(false);
-
-  const deselect = () => {
-    setIsSelected(false);
-  };
 
   const onAmountPress = e => {
     setIsSelected(true);
