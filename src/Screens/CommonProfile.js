@@ -21,6 +21,8 @@ import SortProposals from './BottomSheetScreens/SortProposals';
 import CommonProfileOptions from './BottomSheetScreens/CommonProfileOptions';
 //import ProposalSheetScreen from './Proposals/ProposalSheetScreen';
 import ProposalSheetScreen from './BottomSheetScreens/ProposalSheetScreen';
+import ApprovalSheetScreen from './BottomSheetScreens/ApprovalSheetScreen';
+
 import BottomSheetContainer from '../Components/BottomSheetContainer';
 import CommonCover from '../Components/Commons/CommonCover';
 import CommonStageSummary from '../Components/Commons/CommonStageSummary';

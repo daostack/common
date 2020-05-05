@@ -60,6 +60,7 @@
     "react-native-swiper": "^1.6.0-nightly.5",
     "react-native-tab-view": "^2.13.0",
     "reanimated-bottom-sheet": "^1.0.0-alpha.19",
+    "rn-swipe-button": "^1.2.6",
     "subscriptions-transport-ws": "^0.9.16",
     "validatorjs": "^3.18.1"
   },

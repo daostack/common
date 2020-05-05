@@ -1,60 +1,49 @@
-import {Text, View, StyleSheet, ScrollView, Image} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  Image,
+  SafeAreaView,
+} from 'react-native';
 
 import React from 'react';
 import {text, layout, colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
+import SwipeButton from 'rn-swipe-button';
+import arrowRight from '../../Assets/rightArrow16.png';
+import ButtonSwiper from '../../Components/ButtonSwiper';
 
-const ApprovalSheetScreen = ({navigation, onContinueEditing}) => {
+const ApprovalSheetScreen = ({navigation, onApprove, voteType}) => {
   return (
-    <View style={styles.body}>
-      <Text style={styles.title}>Approve</Text>
+    <SafeAreaView style={styles.body}>
+      <Text
+        style={{
+          ...styles.title,
+          ...{color: voteType ? colors.lightishGreen : colors.error},
+        }}>
+        {voteType ? 'Approve' : 'Reject'}
+      </Text>
 
       <Text style={text.blackText}>This cannot be changed later</Text>
-    </View>
+
+      <ButtonSwiper
+        title="Swipe to vote"
+        onSwipeSuccess={() => onApprove(voteType)}
+      />
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   title: {
-    paddingVertical: 20,
     ...text.h1Black,
-    color: colors.lightishGreen,
+    ...layout.paddingBottomS,
   },
 
-  title2: {
-    ...layout.marginTopL,
-    paddingVertical: 10,
-    ...text.h2Black,
-    textAlign: 'left',
-  },
-  textWithIconContainer: {
-    ...layout.content,
-    ...layout.flexRow,
-    paddingHorizontal: 0,
-    paddingVertical: 7,
-  },
-  blackTextWithImage: {
-    ...text.blackText,
-    ...layout.marginLeftM,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  sheetTextStyle: {
-    ...text.greyText,
-    ...text.centered,
-  },
   body: {
-    flex: 1,
+    height: 250,
     ...layout.content,
-    width: '100%',
-    alignSelf: 'stretch',
-  },
-
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-    padding: 20,
   },
 });
 

@@ -7826,6 +7826,11 @@ rimraf@~2.2.6:
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
   integrity sha1-5Dm+Kq7jJzIZUnMPmaiSnk/FBYI=
 
+rn-swipe-button@^1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/rn-swipe-button/-/rn-swipe-button-1.2.6.tgz#6b5de8dac55220cbf9e29ca53a198704c349d1f8"
+  integrity sha512-CFHkqWPGrfDm7Rwsd9BPFKbX85Z8MZxwA4uZq9cDz1Z4MsavedTwHn8Tgxh6i2bqsGeqZj+ek1o/dBCv8Z50Ow==
+
 rsvp@^4.8.4:
   version "4.8.5"
   resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-4.8.5.tgz#c8f155311d167f68f21e168df71ec5b083113734"
