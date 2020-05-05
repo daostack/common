@@ -32,6 +32,8 @@ local.properties
 
 #ENV
 /env.json
+/android/gradle.properties
+/android/app/daostack_key.jks
 
 # node.js
 #
