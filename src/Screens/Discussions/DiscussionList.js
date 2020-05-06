@@ -10,7 +10,6 @@ import _ from 'lodash';
 const DiscussionList = props => {
   const commonId = props.commonId;
   const [list, setList] = useState([]);
-  const [update, setUpdate] = useState(false);
 
   let listRef = useRef([]);
   useEffect(() => {
@@ -45,7 +44,6 @@ const DiscussionList = props => {
             console.log('createList', createList);
             console.log('allList', listRef.current);
             setList(listRef.current);
-            setUpdate(!update);
           }
         },
         error => console.error(error),
@@ -68,7 +66,6 @@ const DiscussionList = props => {
               navigation={props.navigation}
             />
           )}
-          // extraData={update}
           extraData={listRef}
         />
       ) : (

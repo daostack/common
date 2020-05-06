@@ -418,7 +418,7 @@ const CommonProfile = ({navigation}) => {
       <BottomRightButton
         onPress={() =>
           navigation.navigate('New Post', {
-            commonId: "48NPcGnpskN9YkqVNXKA",
+            commonId: '48NPcGnpskN9YkqVNXKA',
           })
         }
       />
