@@ -438,7 +438,7 @@ const CommonProfile = ({navigation}) => {
       <BottomSheetContainer ref={proposalSheetRef} topSnapPoint={800}>
         <ProposalSheetScreen navigation={navigation} />
       </BottomSheetContainer>
-    </View>
+    </>
   );
 };
 
