@@ -72,7 +72,7 @@ const ProposalScreen = ({}) => {
         }}>
         <View style={{...layout.content, ...layout.flexStart}}>
           <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
-            Launch a facebook campaign to arise awareness about the amazon
+            Launch a facebook campaign to raise awareness about the amazon
           </Text>
 
           <MemberCard
