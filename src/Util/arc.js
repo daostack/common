@@ -1,4 +1,5 @@
-const {Arc} = require('@daostack/arc.js');
+import {Arc} from '@daostack/arc.js';
+import {graphHttpLink, graphwsLink} from '../Config';
 // const arc = require('@daostack/client')
 // this value should coincide with the "migration-experimental" versoin
 const ARC_VERSION = '0.1.1-rc.16'; // we should probably read this from the package..
@@ -7,10 +8,8 @@ const ARC_VERSION = '0.1.1-rc.16'; // we should probably read this from the pack
 async function getArc(wallet) {
   const arc = new Arc({
     // we just use arc for writing..
-    graphqlHttpProvider:
-      'https://api.thegraph.com/subgraphs/name/daostack/v7_5_exp_rinkeby',
-    graphqlWsProvider:
-      'wss://api.thegraph.com/subgraphs/name/daostack/v7_5_exp_rinkeby',
+    graphqlHttpProvider: graphHttpLink,
+    graphqlWsProvider: graphwsLink,
     web3Provider: wallet,
   });
   await arc.fetchContractInfos();
