@@ -248,6 +248,26 @@ export default StyleSheet.create({
     color: colors.grey3,
   },
 
+  smallBoldGreyText: {
+    ...appFontFamily,
+    fontSize: 12,
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.grey3,
+  },
+
+  orangeSmallBold: {
+    ...appFontFamily,
+    fontSize: 12,
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.orange,
+  },
+
   blackText: {
     ...appFontFamily,
     fontSize: 14,
@@ -257,6 +277,27 @@ export default StyleSheet.create({
     letterSpacing: 0,
     color: colors.black,
   },
+
+  lightishGreenText: {
+    ...appFontFamily,
+    fontSize: 18,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 22,
+    letterSpacing: 0,
+    color: colors.lightishGreen,
+  },
+
+  againstText: {
+    ...appFontFamily,
+    fontSize: 18,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    lineHeight: 22,
+    letterSpacing: 0,
+    color: colors.against,
+  },
+
   // Custom text styles
   centered: {
     textAlign: 'center',

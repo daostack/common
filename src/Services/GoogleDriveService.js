@@ -1,5 +1,6 @@
 import GDrive from 'react-native-google-drive-api-wrapper';
 import RNFS from 'react-native-fs';
+import AuthService from './AuthService';
 
 const mimeType = 'application/json';
 const appDataFileName = 'appData.json';

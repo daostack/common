@@ -10,8 +10,13 @@ export default {
   paleblue: '#d5dee4',
   grey4: '#eeeeee',
   grey5: '#fbfcfc',
+  grey6: '#aebeca',
   greyText: '#7a8189',
   redLight: '#fdedee',
   white: '#ffffff',
   lightishGreen: '#6ee569',
+  paleGrey: '#fbfcfc',
+  orangeLight: '#fdf7ed',
+  orange: '#ffae26',
+  against: '#ff603e',
 };

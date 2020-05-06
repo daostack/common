@@ -5,17 +5,16 @@ import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 
 import ImagePicker from 'react-native-image-picker';
+import DocumentPicker from 'react-native-document-picker';
 import Toast from '../../Util/Toast';
 import FirebaseService from '../../Services/FirebaseService';
 
 import Icon from '../../Assets/iconfont/Icon';
-import colors from '../../Theme/colors';
-import layout from '../../Theme/layout';
-import text from '../../Theme/text';
+import {text, layout, colors, sizeM, sizeXS} from '../../Theme';
 
 const firebaseService = new FirebaseService();
 
-class ImageField extends React.Component {
+class FileField extends React.Component {
   fieldValidation = null;
   placeFieldActionComponent = null;
 
@@ -38,15 +37,39 @@ class ImageField extends React.Component {
     }
   }
 
-  onChangeValue = url => {
+  onChangeValue = fileName => {
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
-      formStore.fieldChanged(name, url);
+      formStore.fieldChanged(name, fileName);
     }
-    this.props.onChangeImage && this.props.onChangeImage(url);
+    this.props.onChangeFile && this.props.onChangeFile(fileName);
   };
 
-  pickImage = () => {
+  pickImage = async () => {
+    console.log('AAAA');
+
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.allFiles],
+      });
+
+      console.log(
+        res.uri,
+        res.type, // mime type
+        res.name,
+        res.size,
+      );
+
+      this.onChangeValue(res.name);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        throw err;
+      }
+    }
+
+    /*
     const {title, quality, allowsEditing} = this.props;
     const options = {
       title: title,
@@ -72,55 +95,34 @@ class ImageField extends React.Component {
           .catch(error => this.toast.error(error));
       }
     });
+    */
   };
 
   renderImage = () => {
-    const {isAvatar, validation, value} = this.props;
-
-    const imageStyle = isAvatar
-      ? styles.formImageFieldStyle
-      : styles.formImageFueldGeneralStyle;
+    const {validation} = this.props;
 
     const currValue = validation
       ? validation.formStore.form.fields[validation.name].value
       : value;
 
+    console.log(validation.formStore.form.fields[validation.name].value);
+
+    console.log('CurrValue -> ', currValue);
+
     if (currValue) {
       return (
-        <Image
-          style={imageStyle}
-          resizeMode="cover"
-          source={{
-            uri: currValue,
-          }}
-        />
+        <View style={styles.adRow}>
+          <Icon name="common" color={colors.mainBlue} size={22} />
+          <Text style={styles.adsText}>{currValue}</Text>
+        </View>
       );
     } else {
       return (
-        <View style={styles.imageFieldPlaceholderView}>
-          <Icon name="add-picture" size={34} />
-          <Text
-            style={{
-              ...text.h3Black,
-              ...layout.marginTopXL,
-              ...{color: colors.grey3},
-            }}>
-            An image is worth a 1,000 words
+        <TouchableOpacity>
+          <Text style={styles.addFileBtn} onPress={this.pickImage}>
+            Add File
           </Text>
-          <Text
-            style={{
-              ...text.h3Black,
-              ...layout.marginTopS,
-              ...{fontWeight: 'normal', color: colors.grey3},
-            }}>
-            Make your proposal pop out
-          </Text>
-          <View styles={layout.flexRow}>
-            <TouchableOpacity style={styles.btn} onPress={this.pickImage}>
-              <Text style={text.buttonblue}>Add Image</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        </TouchableOpacity>
       );
     }
   };
@@ -158,6 +160,16 @@ class ImageField extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  adsText: {
+    ...text.h3Black,
+    ...layout.marginLeftXS,
+    fontWeight: '500',
+  },
+  adRow: {
+    ...layout.flexRow,
+    alignSelf: 'stretch',
+    paddingVertical: sizeM,
+  },
   btn: {
     ...layout.marginTopM,
     ...layout.btnOutline,
@@ -220,6 +232,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
     position: 'absolute',
+    top: 0,
     right: 0,
     bottom: 0,
     width: 30,
@@ -239,6 +252,12 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 30,
   },
+
+  addFileBtn: {
+    ...text.h3Black,
+    color: colors.mainBlue,
+    textAlign: 'left',
+  },
 });
 
-export default observer(ImageField);
+export default observer(FileField);

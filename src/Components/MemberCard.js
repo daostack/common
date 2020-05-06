@@ -31,7 +31,7 @@ const MemberCard = ({name, approvePercent, imageUrl, isPending, date}) => {
   };
 
   return (
-    <View style={styles.cardContainer}>
+    <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <View style={styles.memberInfoContainer}>
         <Image
           style={styles.memberImage}
@@ -67,7 +67,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderColor: colors.grey4,
-    paddingVertical: 0,
+    padding: 0,
+  },
+  noBottomBorder: {
+    borderBottomWidth: 0,
   },
   memberInfoContainer: {
     ...layout.flexRow,

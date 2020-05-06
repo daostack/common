@@ -20,6 +20,7 @@ import ViewTabNoData from '../Components/ViewTabNoData';
 import CommonOperationalStateNotif from './BottomSheetScreens/CommonOperationalStateNotif';
 import SortProposals from './BottomSheetScreens/SortProposals';
 import CommonProfileOptions from './BottomSheetScreens/CommonProfileOptions';
+import ProposalSheetScreen from './BottomSheetScreens/ProposalSheetScreen';
 import BottomSheetContainer from '../Components/BottomSheetContainer';
 import DiscussionCard from './Discussions/DiscussionCard';
 import BottomRightButton from '../Components/BottomRightButton';
@@ -45,6 +46,7 @@ const CommonProfile = ({navigation}) => {
   commonOperationalStateNotifRef = useRef();
   optionsSheetRef = useRef();
   sortProposalsSheetRef = useRef();
+  proposalSheetRef = useRef();
 
   const [isMember, setIsMember] = useState(false);
   const [isFundingStage, setIsFundingStage] = useState(true);
@@ -258,6 +260,11 @@ const CommonProfile = ({navigation}) => {
     optionsSheetRef.current.snapTo(1);
   };
 
+  const openProposalSheet = event => {
+    proposalSheetRef.current.snapTo(1);
+    proposalSheetRef.current.snapTo(1);
+  };
+
   const openNotif = event => {
     commonOperationalStateNotifRef.current.snapTo(1);
     commonOperationalStateNotifRef.current.snapTo(1);
@@ -363,6 +370,25 @@ const CommonProfile = ({navigation}) => {
         </View>
 
         {renderAgendaForNonMembers()}
+        <TouchableOpacity
+          style={{
+            ...styles.headerButton,
+            ...{
+              justifyContent: 'center',
+              marginBottom: 20,
+              marginHorizontal: 100,
+            },
+          }}
+          onPress={openProposalSheet}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: 'white',
+              fontWeight: '700',
+            }}>
+            Open Proposal
+          </Text>
+        </TouchableOpacity>
 
         <TabView
           navigationState={{index, routes}}
@@ -408,7 +434,11 @@ const CommonProfile = ({navigation}) => {
       <BottomSheetContainer ref={sortProposalsSheetRef}>
         <SortProposals navigation={navigation} />
       </BottomSheetContainer>
-    </>
+
+      <BottomSheetContainer ref={proposalSheetRef} topSnapPoint={800}>
+        <ProposalSheetScreen navigation={navigation} />
+      </BottomSheetContainer>
+    </View>
   );
 };
 

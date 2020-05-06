@@ -102,17 +102,22 @@ export default StyleSheet.create({
   },
 
   // Margin LEFT
+
+  marginLeftXS: {
+    marginLeft: sizeXS,
+  },
+
   marginLeftS: {
-    marginLeft: 10,
+    marginLeft: sizeS,
   },
   marginLeftM: {
-    marginLeft: 15,
+    marginLeft: sizeM,
   },
   marginLeftL: {
-    marginLeft: 20,
+    marginLeft: sizeL,
   },
   marginLeftXL: {
-    marginLeft: 40,
+    marginLeft: sizeXL,
   },
 
   // Margin RIGHT
