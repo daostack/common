@@ -50,6 +50,11 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
     }
   };
 
+  const onTestPagePress = event => {
+    navigation.navigate('NativeBridgeTests');
+    console.log('address: ', userStore.userInfo.ethereumAddress);
+  };
+
   const onMyWalletPress = event => {
     navigation.navigate('MyWallet');
     console.log('address: ', userStore.userInfo.ethereumAddress);
@@ -91,6 +96,7 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
                 : renderUnsignedUserData()}
 
               <View style={layout.marginTopL}>
+                <AccordionBtn title="Test Page" onPress={onTestPagePress} />
                 {userStore.userInfo ? (
                   <AccordionBtn
                     title="My wallet"

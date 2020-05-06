@@ -226,6 +226,13 @@ const App = ({userStore}) => {
             name="MyWallet"
             component={MyWallet}
           />
+          <Stack.Screen
+            options={{
+              title: 'NativeBridgeTests',
+            }}
+            name="NativeBridgeTests"
+            component={NativeBridgeTests}
+          />
           <Stack.Screen name="HUDTest" component={HUDTest} />
           <Stack.Screen
             name="UserProfileReadMode"
