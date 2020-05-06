@@ -164,6 +164,7 @@ export default class nativeBridgeTests extends React.Component {
 
   createCommon = async () => {
     const wallet = WalletManager.getInstance();
+    console.log(`Using wallet with account ${wallet.address}`);
 
     const arc = getArc(wallet.ethWallet);
     const commonStatus = await createCommon(await arc, {
@@ -174,7 +175,7 @@ export default class nativeBridgeTests extends React.Component {
       goal: 100000,
       deadline: 20200404,
       metaData: '',
-      ipfsHash: ''
+      ipfsHash: '',
     });
 
     this.setState({commonStatus: `${JSON.stringify(commonStatus)}`});
