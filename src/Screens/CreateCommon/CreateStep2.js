@@ -64,10 +64,7 @@ const CreateStep2 = props => {
         break;
       }
       case 2: {
-        props.createCommonFormStore.fieldChanged(
-          name,
-          pickDate,
-        );
+        props.createCommonFormStore.fieldChanged(name, pickDate);
         setShow(true);
         break;
       }
@@ -184,7 +181,11 @@ const CreateStep2 = props => {
               tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 40}}
               tabStyle={{borderColor: colors.grey4}}
               activeTabStyle={{backgroundColor: colors.mainBlue}}
-              values={['1 week', '1 month', pickDate ? moment(pickDate).format('MMM DD, YYYY') : 'Custom'] }
+              values={[
+                '1 week',
+                '1 month',
+                pickDate ? moment(pickDate).format('MMM DD, YYYY') : 'Custom',
+              ]}
               tabTextStyle={{color: colors.mainBlue}}
               borderRadius={8}
               selectedIndex={segmentedIndex}
@@ -220,16 +221,11 @@ const CreateStep2 = props => {
                 <DateTimePicker
                   testID="dateTimePicker"
                   timeZoneOffsetInMinutes={0}
-                  value={
-                    pickDate === null
-                      ? new Date() : pickDate
-                  }
+                  value={pickDate === null ? new Date() : pickDate}
                   minimumDate={new Date()}
                   is24Hour={true}
                   display="default"
-                  onChange={(event, date) =>
-                    setPickDate(date)
-                  }
+                  onChange={(event, date) => setPickDate(date)}
                 />
               </View>
             </Modal>

@@ -71,7 +71,7 @@ const CreateStep4 = props => {
       CreateCommonForm.IMAGE,
       'url',
     );
-  }, []);
+  }, [props.createCommonFormStore]);
 
   const pickImage = isAvatar => {
     const options = {
