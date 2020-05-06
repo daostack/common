@@ -5,7 +5,7 @@ const {
 } = require('@daostack/common-factory');
 const {ARC_VERSION, OVERRIDES} = require('./arc');
 
-import DAOFactory from '../Contracts/ABIs/DAOFactory';
+// import DAOFactory from '../Contracts/ABIs/DAOFactory';
 
 // this function is called like this:
 //
@@ -38,8 +38,11 @@ export const createCommon = async (arc, givenOpts = {}) => {
       ARC_VERSION,
     );
     //TODO: get abi manually
-    // const contractABI = arc.getABI({ abiName: 'DAOFactory', version: ARC_VERSION } );
-    const contractABI = DAOFactory;
+    const contractABI = arc.getABI({
+      abiName: 'DAOFactory',
+      version: ARC_VERSION,
+    });
+    // const contractABI = DAOFactory;
     const daoFactoryContract = await arc.getContract(
       daoFactoryInfo.address,
       contractABI,
@@ -94,6 +97,7 @@ export const createCommon = async (arc, givenOpts = {}) => {
     return receipt;
   } catch (e) {
     console.log('[Create Common error]: ', e);
+    throw `[Create Common error] ${e}`;
   }
 };
 
