@@ -33,7 +33,7 @@ export const createCommon = async (arc, givenOpts = {}) => {
     let receipt;
 
     console.log('fetching contractinfo from graphql...');
-    const contractInfo = arc.getContractInfoByName(
+    const daoFactoryInfo = arc.getContractInfoByName(
       'DAOFactoryInstance',
       ARC_VERSION,
     );
@@ -41,7 +41,7 @@ export const createCommon = async (arc, givenOpts = {}) => {
     // const contractABI = arc.getABI({ abiName: 'DAOFactory', version: ARC_VERSION } );
     const contractABI = DAOFactory;
     const daoFactoryContract = await arc.getContract(
-      contractInfo.address,
+      daoFactoryInfo.address,
       contractABI,
     );
     const votingMachineInfo = arc.getContractInfoByName(
@@ -58,7 +58,7 @@ export const createCommon = async (arc, givenOpts = {}) => {
 
     console.log('Calling DAOFactory.forgeOrg(...)');
     const forgeOrgData = getForgeOrgData({
-      DAOFactoryInstance: '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
+      DAOFactoryInstance: daoFactoryInfo.address,
       orgName: opts.name,
       founderAddresses: [opts.founderAddresses],
       repDist: [opts.memberReputation],
@@ -76,7 +76,7 @@ export const createCommon = async (arc, givenOpts = {}) => {
     console.log('Calling DAOFactory.setSchemes(...)', opts);
 
     const schemeData = getSetSchemesData({
-      DAOFactoryInstance: '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
+      DAOFactoryInstance: daoFactoryInfo.address,
       avatar: newOrgAddress,
       votingMachine: votingMachineInfo.address,
       fundingToken: opts.fundingToken,
