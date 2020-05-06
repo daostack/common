@@ -70,6 +70,7 @@ class EditProfileForm extends React.Component {
           marginTop: 15,
         }}>
         <ImageField
+          isAvatar={true}
           value={userStore.userInfo.photoURL}
           allowsEditing={true}
           title={'Select new avatar'}

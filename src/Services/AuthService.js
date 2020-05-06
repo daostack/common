@@ -33,6 +33,7 @@ export default class AuthService {
     await GoogleSignin.signIn();
 
     const {idToken, accessToken} = await GoogleSignin.getTokens();
+    GoogleDriveService.init(accessToken);
 
     const googleCredential = auth.GoogleAuthProvider.credential(
       idToken,
@@ -74,8 +75,11 @@ export default class AuthService {
 
   async loadMnemonic(uid) {
     const {accessToken} = await GoogleSignin.getTokens();
+    GoogleDriveService.init(accessToken);
+    //console.log('accessToken 2 -> ', accessToken);
     // 1. Read mnemonic from the store
     /*
+    
     const mnemonicFromStore = await NativeModules.WalletModule.retrieveMnemonic(
       uid,
     );
@@ -84,15 +88,13 @@ export default class AuthService {
     }
     */
     // 2. Read mnemonic From the Google Drive app data
-    let appData = await GoogleDriveService.getInstance(
-      accessToken,
-    ).getAppData();
+    let appData = await GoogleDriveService.getInstance().getAppData();
 
     if (appData.files && appData.files.length > 0) {
       const appDataFileId = appData.files[0].id;
-      const fileContent = await GoogleDriveService.getInstance(
-        accessToken,
-      ).getFileById(appDataFileId);
+      const fileContent = await GoogleDriveService.getInstance().getFileById(
+        appDataFileId,
+      );
 
       let jsonContent;
       try {
@@ -106,26 +108,26 @@ export default class AuthService {
         // The file content is not a valid json
         // In that case we are deleting the file
 
-        await GoogleDriveService.getInstance(accessToken).deleteAppDataFileById(
+        await GoogleDriveService.getInstance().deleteAppDataFileById(
           appDataFileId,
         );
         // And then generate and store new mnemonic for the user
-        return this._generateAndStoreMnemonic(uid, accessToken);
+        return this._generateAndStoreMnemonic(uid);
       }
       await NativeModules.WalletModule.storeMnemonic(uid, jsonContent.mnemonic);
       return jsonContent.mnemonic;
     }
     // 3. Generate mnemonic and store in Google Drive app data
-    return this._generateAndStoreMnemonic(uid, accessToken);
+    return this._generateAndStoreMnemonic(uid);
   }
 
   // Private functions
 
-  async _generateAndStoreMnemonic(uid, accessToken) {
+  async _generateAndStoreMnemonic(uid) {
     this.initialAppDataContent.mnemonic = await NativeModules.WalletModule.generateAndStoreMnemonic(
       uid,
     );
-    await GoogleDriveService.getInstance(accessToken).setAppData(
+    await GoogleDriveService.getInstance().setAppData(
       JSON.stringify(this.initialAppDataContent),
     );
     return this.initialAppDataContent.mnemonic;
