@@ -44,9 +44,12 @@ import {
 
 import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
+import AuthService from './src/Services/AuthService';
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 import {filterObjectByKeys} from './src/Util';
+import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
@@ -123,10 +126,13 @@ const App = ({userStore}) => {
     try {
       userStore.setIsLoading(true);
       if (user) {
-        const appUser = await FirebaseService.getInstance().getUserById(
-          user.uid,
-        );
-
+        await AuthService.getInstance().loadMnemonic(user.uid);
+        await WalletManager.init(user.uid);
+        let appUser = await FirebaseService.getInstance().getUserById(user.uid);
+        const isNewUser = !appUser;
+        if (isNewUser) {
+          appUser = await AuthService.getInstance().createUserAndWallet(user);
+        }
         const allUserInfo = {
           ...user._user,
           ...appUser,
@@ -134,12 +140,16 @@ const App = ({userStore}) => {
 
         const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
         userStore.setSignedInUser(filteredUser);
+        if (isNewUser) {
+        }
       } else {
         userStore.setSignedInUser(null);
       }
+
       userStore.setIsLoading(false);
     } catch (error) {
-      Toast.error(error);
+      console.log(error);
+      //Toast.error(error.toString());
     }
   };
 
@@ -148,6 +158,7 @@ const App = ({userStore}) => {
 
     const checkOnboardingStatus = async () => {
       try {
+        //await AuthService.getInstance().signOut();
         const isOnboarded = await AsyncStorage.getItem('onboarded');
         if (isOnboarded === 'true') {
           setOnboarded(true);

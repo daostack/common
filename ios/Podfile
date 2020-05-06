@@ -51,4 +51,7 @@ target 'common' do
   
   reactnative
   native
+
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
 end
