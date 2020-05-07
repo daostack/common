@@ -19,10 +19,16 @@ import ViewTabNoData from '../Components/ViewTabNoData';
 import CommonOperationalStateNotif from './BottomSheetScreens/CommonOperationalStateNotif';
 import SortProposals from './BottomSheetScreens/SortProposals';
 import CommonProfileOptions from './BottomSheetScreens/CommonProfileOptions';
+//import ProposalSheetScreen from './Proposals/ProposalSheetScreen';
 import ProposalSheetScreen from './BottomSheetScreens/ProposalSheetScreen';
+import ApprovalSheetScreen from './BottomSheetScreens/ApprovalSheetScreen';
+
 import BottomSheetContainer from '../Components/BottomSheetContainer';
 import CommonCover from '../Components/Commons/CommonCover';
 import CommonStageSummary from '../Components/Commons/CommonStageSummary';
+import Modal from 'react-native-modal';
+import SentTemplate from '../Components/ModalTemplates/SentTemplate';
+import ProposalApprovalTag from '../Components/Proposals/ProposalApprovalTag';
 
 const {cache} = client;
 let {width} = Dimensions.get('window');
@@ -58,6 +64,8 @@ const CommonProfile = ({navigation, route}) => {
     {key: 'history', title: 'History', icon: 'history'},
   ]);
 
+  const [showRequestSentModal, setShowRequestSentModal] = useState(false);
+
   useEffect(() => {
     // noinspection JSAnnotator
     const getDao = async commonId => {
@@ -83,8 +91,9 @@ const CommonProfile = ({navigation, route}) => {
       }
     };
 
+    setShowRequestSentModal(route.params.showRequestSentModal ? true : false);
     getDao(route.params.commonId);
-  }, [route.params.commonId]);
+  }, [route.params.commonId, route.params.showRequestSentModal]);
 
   const renderTabBar = props => (
     <TabBar
@@ -229,14 +238,79 @@ const CommonProfile = ({navigation, route}) => {
     optionsSheetRef.current.snapTo(1);
   };
 
-  const openProposalSheet = event => {
+  const openProposalCard = event => {
     proposalSheetRef.current.snapTo(1);
     proposalSheetRef.current.snapTo(1);
+  };
+
+  const openProposalScreen = event => {
+    navigation.navigate('ProposalScreen');
   };
 
   const openNotif = event => {
     commonOperationalStateNotifRef.current.snapTo(1);
     commonOperationalStateNotifRef.current.snapTo(1);
+  };
+
+  const requestToJoin = event => {
+    navigation.navigate('RequestStep1');
+  };
+
+  const viewProposal = () => {
+    //navigation.navigate('RequestStep1');
+  };
+
+  const goToToCommon = () => {
+    setShowRequestSentModal(false);
+  };
+
+  const renderPendingApproval = () => {
+    return (
+      <TouchableOpacity
+        onPress={openProposalCard}
+        style={{
+          ...layout.content,
+          paddingVertical: 15,
+          ...{borderBottomWidth: 1, borderBottomColor: colors.grey4},
+        }}>
+        <View
+          style={{
+            ...layout.content,
+            ...layout.flexRow,
+            ...{padding: 0},
+          }}>
+          <Icon name="clcok-16" size={16} style={layout.marginRightXS} />
+          <Text style={text.smallBoldGreyText}>Pending Approval</Text>
+        </View>
+        <View
+          style={{
+            ...layout.flexRow,
+            ...layout.marginTopS,
+            ...{width: '100%', justifyContent: 'space-between'},
+          }}>
+          <View style={layout.flexRow}>
+            <ProposalApprovalTag
+              iconName="approved"
+              value={40}
+              isMarked={true}
+            />
+            <ProposalApprovalTag
+              iconName="declined"
+              value={28}
+              isMarked={false}
+            />
+            <ProposalApprovalTag
+              iconName="discussion"
+              value={121}
+              isMarked={false}
+            />
+          </View>
+          <View>
+            <Text style={text.tapBarunselected}>02:00:10</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
   };
 
   const initialLayout = {width: Dimensions.get('window').width};
@@ -260,6 +334,8 @@ const CommonProfile = ({navigation, route}) => {
             description: mockData.description,
           }}
         />
+
+        {renderPendingApproval()}
 
         <View style={{paddingVertical: 20}}>
           <CommonStageSummary
@@ -296,7 +372,7 @@ const CommonProfile = ({navigation, route}) => {
               marginHorizontal: 100,
             },
           }}
-          onPress={openProposalSheet}>
+          onPress={openProposalScreen}>
           <Text
             style={{
               fontSize: 16,
@@ -316,44 +392,70 @@ const CommonProfile = ({navigation, route}) => {
           style={{}}
         />
       </ScrollView>
-
       <SafeAreaView>
         {isMember ? (
           <TouchableOpacity style={styles.addButton}>
             <Icon name="plus" color={colors.white}></Icon>
           </TouchableOpacity>
         ) : (
-          <View style={styles.actionButtonContainer}>
-            <TouchableOpacity style={styles.headerButton}>
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: 'white',
-                  fontWeight: '700',
-                  marginRight: 40,
-                }}>
-                Request to join
-              </Text>
-              <Text style={{fontSize: 16, color: 'white'}}>
-                $50 Contribution
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <>
+            <View style={styles.actionButtonContainer}>
+              <TouchableOpacity
+                style={styles.headerButton}
+                onPress={requestToJoin}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: 'white',
+                    fontWeight: '700',
+                    marginRight: 40,
+                  }}>
+                  Request to join
+                </Text>
+                <Text style={{fontSize: 16, color: 'white'}}>
+                  $50 Contribution
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <Modal
+              isVisible={showRequestSentModal}
+              avoidKeyboard={true}
+              backdropColor={colors.white}
+              backdropOpacity={1}
+              onBackdropPress={() => setShowRequestSentModal(false)}
+              style={{padding: 0}}>
+              <SentTemplate
+                title="Request Sent"
+                description="The common members will vote on your request to join, and if approved you will become an equal member with voting rights."
+                onClose={() => setShowRequestSentModal(false)}>
+                <View style={layout.flexRow}>
+                  <TouchableOpacity
+                    style={styles.modalRequestSentBtnPrimary}
+                    onPress={viewProposal}>
+                    <Text style={text.buttoncenterwhite}>View proposal</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={layout.flexRow}>
+                  <TouchableOpacity
+                    style={styles.modalRequestSentBtnOutline}
+                    onPress={goToToCommon}>
+                    <Text style={text.buttonblue}>Go to Common</Text>
+                  </TouchableOpacity>
+                </View>
+              </SentTemplate>
+            </Modal>
+          </>
         )}
       </SafeAreaView>
-
       <BottomSheetContainer ref={commonOperationalStateNotifRef}>
         <CommonOperationalStateNotif navigation={navigation} />
       </BottomSheetContainer>
-
       <BottomSheetContainer ref={optionsSheetRef}>
         <CommonProfileOptions navigation={navigation} />
       </BottomSheetContainer>
-
       <BottomSheetContainer ref={sortProposalsSheetRef}>
         <SortProposals navigation={navigation} />
       </BottomSheetContainer>
-
       <BottomSheetContainer ref={proposalSheetRef} topSnapPoint={800}>
         <ProposalSheetScreen navigation={navigation} />
       </BottomSheetContainer>
@@ -362,6 +464,19 @@ const CommonProfile = ({navigation, route}) => {
 };
 
 const styles = StyleSheet.create({
+  modalRequestSentBtnOutline: {
+    ...layout.btnOutline,
+    ...layout.marginTopL,
+    flexGrow: 0,
+    width: '100%',
+    alignSelf: 'stretch',
+  },
+  modalRequestSentBtnPrimary: {
+    ...layout.btnPrimary,
+    ...layout.marginTopL,
+    flexGrow: 0,
+    width: '100%',
+  },
   memberImage: {
     width: 50,
     height: 50,
@@ -403,8 +518,13 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: colors.white,
-    borderTopWidth: 1,
-    borderTopColor: colors.grey2,
+    shadowColor: 'rgba(79, 92, 105, 0.1)',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowRadius: 4,
+    shadowOpacity: 1,
   },
   agendaBox: {
     padding: 20,
