@@ -5,7 +5,7 @@ const {
 } = require('@daostack/common-factory');
 const {ARC_VERSION, OVERRIDES} = require('./arc');
 
-// import DAOFactory from '../Contracts/ABIs/DAOFactory';
+import DAOFactory from '../Contracts/ABIs/DAOFactory';
 
 // this function is called like this:
 //
@@ -32,35 +32,30 @@ export const createCommon = async (arc, givenOpts = {}) => {
     let tx;
 
     console.log('fetching contractinfo from graphql...');
-    const daoFactoryInfo = arc.getContractInfoByName(
+    const contractInfo = arc.getContractInfoByName(
       'DAOFactoryInstance',
       ARC_VERSION,
     );
     //TODO: get abi manually
-    const contractABI = arc.getABI({
-      abiName: 'DAOFactory',
-      version: ARC_VERSION,
-    });
-    // const contractABI = DAOFactory;
+    // const contractABI = arc.getABI({ abiName: 'DAOFactory', version: ARC_VERSION } );
+    const contractABI = DAOFactory;
     const daoFactoryContract = await arc.getContract(
-      daoFactoryInfo.address,
+      contractInfo.address,
       contractABI,
     );
-    const votingMachineInfo = arc.getContractInfoByName(
-      'GenesisProtocol',
-      '0.1.1-rc.13',
-      // Ideally, we would find the GeneisProtocol at ARC_VERSION
-      // instead, we need to use this custom version until https://github.com/daostack/subgraph/issues/542  is resolved
-    );
-    // const votingMachineInfo = { id: '0xf109310612daada3fbd979f8e635db7710cfee46',
-    //   name: 'GenesisProtocol',
-    //   version: '0.1.1-rc.13',
-    //   address: '0xf109310612daada3fbd979f8e635db7710cfee46',
-    //   __typename: 'ContractInfo' }
+    // const votingMachineInfo = arc.getContractInfoByName(
+    //   'GenesisProtocol.json',
+    //   ARC_VERSION,
+    // );
+    const votingMachineInfo = { id: '0xf109310612daada3fbd979f8e635db7710cfee46',
+      name: 'GenesisProtocol',
+      version: '0.1.1-rc.13',
+      address: '0xf109310612daada3fbd979f8e635db7710cfee46',
+      __typename: 'ContractInfo' }
 
     console.log('Calling DAOFactory.forgeOrg(...)');
     const forgeOrgData = getForgeOrgData({
-      DAOFactoryInstance: daoFactoryInfo.address,
+      DAOFactoryInstance: '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
       orgName: opts.name,
       founderAddresses: [opts.founderAddresses],
       repDist: [opts.memberReputation],
@@ -68,7 +63,11 @@ export const createCommon = async (arc, givenOpts = {}) => {
 
     tx = await daoFactoryContract.forgeOrg(...forgeOrgData, OVERRIDES);
     console.log('waiting for tx to be mined');
+<<<<<<< HEAD
     const receipt1 = await tx.wait();
+=======
+    receipt = await tx.wait();
+>>>>>>> f7df5e0d9ec1e9771c95bd27a11461d39b7ecf50
     console.log('done!');
     // get the new avatar address of the thing that was just created..
     const newOrgEvent = receipt1.events.filter(e => e.event === 'NewOrg')[0];
@@ -77,7 +76,7 @@ export const createCommon = async (arc, givenOpts = {}) => {
     console.log('Calling DAOFactory.setSchemes(...)', opts);
 
     const schemeData = getSetSchemesData({
-      DAOFactoryInstance: daoFactoryInfo.address,
+      DAOFactoryInstance: '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
       avatar: newOrgAddress,
       votingMachine: votingMachineInfo.address,
       fundingToken: opts.fundingToken,
@@ -92,13 +91,20 @@ export const createCommon = async (arc, givenOpts = {}) => {
     console.log('waiting for tx to be mined');
     const receipt2 = await tx.wait();
     console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
+<<<<<<< HEAD
     return `Created common with name ${opts.name} in transactions ${receipt1.transactionHash} and ${receipt2.transactionHash}`;
   } catch (e) {
     const msg = `[Create Common error] ${e}`;
     // TODO: error should be handled as an Error, not as a return value..
     return msg;
+=======
+    return receipt;
+
+  } catch (e) {
+    console.log('[Create Common error]: ', e);
+>>>>>>> f7df5e0d9ec1e9771c95bd27a11461d39b7ecf50
   }
-};
+}
 
 const ipfsUpload = async formData => {
   return await IpfsClient.addAndPinString(
@@ -114,48 +120,48 @@ const ipfsUpload = async formData => {
   );
 };
 
-// const forgeCommon = async _ipfsHash => {
-//   try {
-//     const formData = props.createCommonFormStore.getChangedFormFieldsJson();
-//     const manager = await WalletManager.getInstance();
-//     const wallet = manager.ethWallet;
-//     const address = await manager.getOwnerAccount();
-//     console.log('owner account: ', address);
-//     let contract = new ethers.Contract(
-//       '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
-//       DAOFactory,
-//       provider,
-//     );
-//     let daoFactory = contract.connect(wallet);
-//     let overrides = {
-//       gasLimit: 6000000,
-//     };
-//     //TODO: add funding amounts??
-//     const forgeOrgData = getForgeOrgData({
-//       DAOFactoryInstance: '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
-//       orgName: formData.name,
-//       founderAddresses: [address],
-//       tokenDist: [0],
-//       repDist: [100],
-//     });
+const forgeCommon = async _ipfsHash => {
+  try {
+    const formData = props.createCommonFormStore.getChangedFormFieldsJson();
+    const manager = await WalletManager.getInstance();
+    const wallet = manager.ethWallet;
+    const address = await manager.getOwnerAccount();
+    console.log('owner account: ', address);
+    let contract = new ethers.Contract(
+      '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
+      DAOFactory,
+      provider,
+    );
+    let daoFactory = contract.connect(wallet);
+    let overrides = {
+      gasLimit: 6000000,
+    };
+    //TODO: add funding amounts??
+    const forgeOrgData = getForgeOrgData({
+      DAOFactoryInstance: '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
+      orgName: formData.name,
+      founderAddresses: [address],
+      tokenDist: [0],
+      repDist: [100],
+    });
 
-//     console.log('forgeOrgData: ', forgeOrgData);
-//     const forgeOrg = await daoFactory.forgeOrg(...forgeOrgData, overrides);
+    console.log('forgeOrgData: ', forgeOrgData);
+    const forgeOrg = await daoFactory.forgeOrg(...forgeOrgData, overrides);
 
-//     console.log('forgeOrg: ', forgeOrg);
+    console.log('forgeOrg: ', forgeOrg);
 
-//     const {hash} = forgeOrg;
-//     console.log('hash: ', hash);
-//     let avatarAddress;
-//     contract.on('NewOrg', (_avatarAddress, newValue, event) => {
-//       setScheme(_ipfsHash, _avatarAddress);
-//     });
+    const {hash} = forgeOrg;
+    console.log('hash: ', hash);
+    let avatarAddress;
+    contract.on('NewOrg', (_avatarAddress, newValue, event) => {
+      setScheme(_ipfsHash, _avatarAddress);
+    });
 
-//     return {avatarAddress: avatarAddress};
-//   } catch (e) {
-//     throw 'Send transaction failed with error: ' + e;
-//   }
-// };
+    return {avatarAddress: avatarAddress};
+  } catch (e) {
+    throw 'Send transaction failed with error: ' + e;
+  }
+};
 
 // const setScheme = async (_ipfsHash, _avatarAddress) => {
 //   try {
