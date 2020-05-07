@@ -32,7 +32,7 @@ const CommonsList = ({navigation}) => {
           let daosSnapshot = snapshot.docs.map(doc => {
             return {...{id: doc.id}, ...doc.data()};
           });
-          console.log('daos: ', daosSnapshot)
+          console.log('daos: ', daosSnapshot);
           setDaos(daosSnapshot);
         });
         // console.log('DAOS: ', daosRes);

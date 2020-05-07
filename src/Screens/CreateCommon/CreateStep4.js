@@ -134,6 +134,7 @@ const CreateStep4 = props => {
   const forgeCommon = async () => {
     const commonFormData = props.createCommonFormStore.getChangedFormFieldsJson();
     const ipfsHash = await ipfsUpload(commonFormData);
+    console.log('ipfs Hash: ', ipfsHash);
 
     const formData = props.createCommonFormStore.getChangedFormFieldsJson();
     const manager = await WalletManager.getInstance();
