@@ -39,18 +39,13 @@ const CreateStep3 = props => {
   }, [scrollY]);
 
   const handleRuleTitles = (x, text) => {
-    // props.createCommonFormStore.registerFormField(`ruleTitles_${x}`, 'string');
-    // console.log(props.createCommonFormStore);
     props.createCommonFormStore.registerFormField(`ruleTitles_${x}`, 'string');
     props.createCommonFormStore.fieldChanged(`ruleTitles_${x}`, text);
-    // ruleTitles[x] = text;
     // console.log(x, text, ruleTitles);
   };
 
   const handleRuleBody = (x, text) => {
     props.createCommonFormStore.registerFormField(`ruleBody_${x}`, 'string');
-    // ruleBody[x] = text;
-    // console.log(ruleBody);
     props.createCommonFormStore.fieldChanged(`ruleBody_${x}`, text);
   };
 
