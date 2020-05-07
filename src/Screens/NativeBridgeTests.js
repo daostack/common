@@ -169,12 +169,12 @@ export default class nativeBridgeTests extends React.Component {
     const commonStatus = await createCommon(await arc, {
       name: 'Test DAO',
       founderAddresses: '0x9b99952d22016F3bF5ef844D856D382c2D0e13aB',
-      minFeeToJoin: 0,
+      minFeeToJoin: 100,
       fundingToken: '0x0000000000000000000000000000000000000000',
       goal: 100000,
       deadline: 20200404,
       metaData: '',
-      ipfsHash: ''
+      ipfsHash: '',
     });
 
     this.setState({commonStatus: `${JSON.stringify(commonStatus)}`});

@@ -56,7 +56,7 @@ export const createCommon = async (arc, givenOpts = {}) => {
 
     console.log('Calling DAOFactory.forgeOrg(...)');
     const forgeOrgData = getForgeOrgData({
-      DAOFactoryInstance: contractInfo.address,
+      DAOFactoryInstance: '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
       orgName: opts.name,
       founderAddresses: [opts.founderAddresses],
       repDist: [opts.memberReputation],
@@ -73,7 +73,7 @@ export const createCommon = async (arc, givenOpts = {}) => {
     console.log('Calling DAOFactory.setSchemes(...)', opts);
 
     const schemeData = getSetSchemesData({
-      DAOFactoryInstance: contractInfo.address,
+      DAOFactoryInstance: '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
       avatar: newOrgAddress,
       votingMachine: votingMachineInfo.address,
       fundingToken: opts.fundingToken,
@@ -88,7 +88,7 @@ export const createCommon = async (arc, givenOpts = {}) => {
     console.log('waiting for tx to be mined');
     receipt = await tx.wait();
     console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
-    return newOrgAddress;
+    return receipt;
 
   } catch (e) {
     console.log('[Create Common error]: ', e);
