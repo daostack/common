@@ -4,7 +4,14 @@ import {layout, colors, text, sizeXS} from '../Theme';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '../Assets/iconfont/Icon';
 
-const MemberCard = ({name, approvePercent, imageUrl, isPending, date}) => {
+const MemberCard = ({
+  name,
+  approvePercent,
+  memberSince,
+  imageUrl,
+  isPending,
+  date,
+}) => {
   renderRightContainer = () => {
     if (isPending) {
       return (
@@ -17,7 +24,7 @@ const MemberCard = ({name, approvePercent, imageUrl, isPending, date}) => {
           </TouchableOpacity>
         </>
       );
-    } else {
+    } else if (date) {
       return (
         <Text
           style={{
@@ -50,7 +57,9 @@ const MemberCard = ({name, approvePercent, imageUrl, isPending, date}) => {
               ...text.smallGreyText,
               marginTop: 2,
             }}>
-            {`Approved by ${approvePercent}%`}
+            {memberSince
+              ? `Member since by ${memberSince}`
+              : `Approved by ${approvePercent}%`}
           </Text>
         </View>
       </View>

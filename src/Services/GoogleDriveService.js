@@ -16,15 +16,15 @@ export default class GoogleDriveService {
     GDrive.init();
   }
 
-  static getInstance(accessToken) {
-    if (
-      !GoogleDriveService.instance ||
-      GoogleDriveService.instance.accessToken !== accessToken
-    ) {
-      GoogleDriveService.instance = new GoogleDriveService(accessToken);
-    }
+  static init = async accessToken => {
+    GoogleDriveService.instance = new GoogleDriveService(accessToken);
+  };
 
-    return GoogleDriveService.instance;
+  static getInstance() {
+    if (GoogleDriveService.instance == null) {
+      throw new Error('GoogleDrive have not initialized');
+    }
+    return this.instance;
   }
 
   deleteAppDataFile = async () => {
@@ -40,7 +40,12 @@ export default class GoogleDriveService {
   };
 
   getFileById = async id => {
-    await GDrive.files.download(id, {toFile: downloadHeaderPath}, {});
+    const downloadFileResult = await GDrive.files.download(
+      id,
+      {toFile: downloadHeaderPath},
+      {},
+    );
+    await downloadFileResult.promise;
     return await RNFS.readFile(downloadHeaderPath, 'utf8');
   };
 

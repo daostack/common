@@ -34,9 +34,14 @@ import {
   CreateStep2,
   CreateStep3,
   CreateStep4,
+  RequestStep1,
+  RequestStep2,
+  RequestStep3,
+  RequestStep4,
   FundingProposal,
   Discussions,
   DiscussionPost,
+  ProposalScreen,
 } from './src/Screens';
 
 import {ApolloClientConfig as client} from './src/Config';
@@ -218,11 +223,8 @@ const App = ({userStore}) => {
             component={CommonProfile}
             options={{headerShown: false}}
           />
-
           <Stack.Screen name="CommonAgenda" component={CommonAgenda} />
-
           <Stack.Screen name="Profile" component={UserProfile} />
-
           <Stack.Screen
             name="CommonExplanation"
             component={CommonExplanation}
@@ -243,6 +245,36 @@ const App = ({userStore}) => {
                   style={{resizeMode: 'contain', width: 20, height: 20}}
                 />
               ),
+            })}
+          />
+
+          <Stack.Screen name="ProposalScreen" component={ProposalScreen} />
+          <Stack.Screen
+            name="RequestStep1"
+            component={RequestStep1}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="RequestStep2"
+            component={RequestStep2}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="RequestStep3"
+            component={RequestStep3}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="RequestStep4"
+            component={RequestStep4}
+            options={({navigation, route}) => ({
+              headerShown: false,
             })}
           />
           <Stack.Screen

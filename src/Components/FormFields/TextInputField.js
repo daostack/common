@@ -107,6 +107,7 @@ class TextInputField extends React.Component {
           <Text style={styles.infoLabel}>{infoLabel}</Text>
         </View>
         <TextInput
+          ref={this.props.forwardRef}
           {...defaultMultilineProps}
           {...otherProps}
           multiline={multiline}
