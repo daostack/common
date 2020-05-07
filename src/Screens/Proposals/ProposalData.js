@@ -1,10 +1,81 @@
 import React from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from 'react-native';
 import {text, layout, colors, sizeM, sizeXS} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import ReadMore from 'react-native-read-more-text';
+import UserMessageCard from '../../Components/Discussion/UserMessageCard';
 
 const ProposalData = ({}) => {
+  const mockData = {
+    images: [
+      {
+        id: '0',
+        author: 'Alejandro Escamilla',
+        width: 5616,
+        height: 3744,
+        url: 'https://unsplash.com/photos/yC-Yzbqy7PY',
+        download_url: 'https://picsum.photos/id/0/5616/3744',
+      },
+      {
+        id: '10',
+        author: 'Paul Jarvis',
+        width: 4200,
+        height: 1667,
+        url: 'https://unsplash.com/photos/6J--NXulQCs',
+        download_url: 'https://picsum.photos/id/10/2500/1667',
+      },
+      {
+        id: '1',
+        author: 'Alejandro Escamilla',
+        width: 5616,
+        height: 3744,
+        url: 'https://unsplash.com/photos/LNRyGwIJr5c',
+        download_url: 'https://picsum.photos/id/1/5616/3744',
+      },
+      {
+        id: '100',
+        author: 'Tina Rataj',
+        width: 2500,
+        height: 1656,
+        url: 'https://unsplash.com/photos/pwaaqfoMibI',
+        download_url: 'https://picsum.photos/id/100/2500/1656',
+      },
+    ],
+
+    discussions: [
+      {
+        name: 'John Smith',
+        message: 'How can I help?',
+        imageUrl:
+          'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
+        time: '22:36',
+      },
+      {
+        name: 'John Smith',
+        message: 'Why now?',
+        imageUrl:
+          'https://live.envalab.com/html/cetus/demo/images/element/team/2.jpg',
+        time: '22:36',
+      },
+      {
+        name: 'John Smith',
+        message:
+          'I’ve worked with Neville. He is super professional and creative, we are lucky to have you here!',
+        approvePercent: 32,
+        imageUrl:
+          'https://live.envalab.com/html/cetus/demo/images/element/team/3.jpg',
+        time: '22:36',
+      },
+    ],
+  };
+
   const _renderTruncatedFooter = handlePress => {
     return (
       <Text style={styles.readMoreBtn} onPress={handlePress}>
@@ -110,12 +181,61 @@ const ProposalData = ({}) => {
           </View>
         </View>
 
+        <ScrollView horizontal={true}>
+          <View style={styles.imageGallery}>
+            {mockData.images.map((currImage, currIndex) => {
+              console.log('Image -> ', currImage);
+              return (
+                <View>
+                  <Image
+                    key={currIndex}
+                    style={{
+                      ...styles.galleryImage,
+                      ...{width: (currImage.width / currImage.height) * 100},
+                    }}
+                    resizeMode="cover"
+                    source={{uri: currImage.download_url}}
+                  />
+                  <Text
+                    style={{
+                      ...text.textFieldplaceholder,
+                      ...layout.marginTopS,
+                    }}>
+                    {currImage.author}
+                  </Text>
+                </View>
+              );
+            })}
+          </View>
+        </ScrollView>
+
         <View style={styles.proposalCard}>
           <View style={layout.content}>
-            <View style={styles.proposalColumnSubtitle}>
+            <View style={{...styles.proposalColumnSubtitle}}>
               <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
                 Recent comments
               </Text>
+            </View>
+            <View style={{...layout.content, ...layout.flexStart}}>
+              {mockData.discussions.map((currMessage, currIndex) => {
+                return (
+                  <UserMessageCard
+                    photoURL={currMessage.imageUrl}
+                    name={currMessage.name}
+                    message={currMessage.message}
+                    time={currMessage.time}
+                  />
+                );
+              })}
+            </View>
+            <View style={layout.contant}>
+              <TouchableOpacity>
+                <Text
+                  style={styles.messageShowMoreBtn}
+                  onPress={this.pickImage}>
+                  Show more
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -125,6 +245,21 @@ const ProposalData = ({}) => {
 };
 
 const styles = StyleSheet.create({
+  imageGallery: {
+    ...layout.flexRow,
+    ...layout.flexStart,
+
+    height: 300,
+    width: '100%',
+  },
+
+  galleryImage: {
+    marginRight: 15,
+    width: 120,
+    height: 250,
+    borderRadius: 10,
+  },
+
   readMoreBtn: {
     ...text.h3Black,
     fontWeight: '500',
@@ -234,6 +369,11 @@ const styles = StyleSheet.create({
     ...layout.flexRow,
     alignSelf: 'stretch',
     paddingVertical: sizeM,
+  },
+
+  messageShowMoreBtn: {
+    ...text.h3Black,
+    color: colors.mainBlue,
   },
 });
 
