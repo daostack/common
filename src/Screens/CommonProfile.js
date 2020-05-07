@@ -396,16 +396,16 @@ const CommonProfile = ({navigation, route}) => {
           renderTabBar={renderTabBar}
           style={{}}
         />
-
-        <BottomRightButton
-          onPress={() =>
-            navigation.navigate('New Post', {
-              commonId: '48NPcGnpskN9YkqVNXKA',
-            })
-          }
-          bottom={90}
-        />
       </ScrollView>
+
+      <BottomRightButton
+        onPress={() =>
+          navigation.navigate('New Post', {
+            commonId: '48NPcGnpskN9YkqVNXKA',
+          })
+        }
+        bottom={120}
+      />
 
       <SafeAreaView>
         {isMember ? (
