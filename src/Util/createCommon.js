@@ -30,7 +30,6 @@ export const createCommon = async (arc, givenOpts = {}) => {
     };
     const opts = {...defaultOptions, ...givenOpts};
     let tx;
-    let receipt;
 
     console.log('fetching contractinfo from graphql...');
     const daoFactoryInfo = arc.getContractInfoByName(
@@ -69,11 +68,10 @@ export const createCommon = async (arc, givenOpts = {}) => {
 
     tx = await daoFactoryContract.forgeOrg(...forgeOrgData, OVERRIDES);
     console.log('waiting for tx to be mined');
-    console.log(tx);
-    receipt = await tx.wait();
+    const receipt1 = await tx.wait();
     console.log('done!');
     // get the new avatar address of the thing that was just created..
-    const newOrgEvent = receipt.events.filter(e => e.event === 'NewOrg')[0];
+    const newOrgEvent = receipt1.events.filter(e => e.event === 'NewOrg')[0];
     const newOrgAddress = newOrgEvent.args._avatar;
 
     console.log('Calling DAOFactory.setSchemes(...)', opts);
@@ -92,12 +90,13 @@ export const createCommon = async (arc, givenOpts = {}) => {
 
     tx = await daoFactoryContract.setSchemes(...schemeData, OVERRIDES);
     console.log('waiting for tx to be mined');
-    receipt = await tx.wait();
+    const receipt2 = await tx.wait();
     console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
-    return receipt;
+    return `Created common with name ${opts.name} in transactions ${receipt1.transactionHash} and ${receipt2.transactionHash}`;
   } catch (e) {
-    console.log('[Create Common error]: ', e);
-    throw `[Create Common error] ${e}`;
+    const msg = `[Create Common error] ${e}`;
+    // TODO: error should be handled as an Error, not as a return value..
+    return msg;
   }
 };
 
