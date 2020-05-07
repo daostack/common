@@ -12,7 +12,7 @@ export const userInfoFields = [
 ];
 
 class DaoStore {
-  userInfo;
+  daoInfo;
   isLoading;
   myCommons;
   myProposals;
@@ -34,7 +34,7 @@ class DaoStore {
 
       this.daoInfo = daoObj;
     } else {
-      this.userInfo = null;
+      this.daoInfo = null;
     }
   };
 }
