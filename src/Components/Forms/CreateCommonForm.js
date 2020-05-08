@@ -10,7 +10,7 @@ class CreateCommonForm extends React.Component {
   static LINKS = 'links';
   static FUNDING_GOAL = 'funding';
   static DEADLINE = 'deadline';
-  static MINIMUM = 'minimun';
+  static MINIMUM = 'minimum';
   static ACTION = 'action';
   static RULES = 'rules';
   static AVATAR = 'avatar';

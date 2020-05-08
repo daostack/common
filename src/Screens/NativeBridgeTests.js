@@ -167,7 +167,7 @@ export default class nativeBridgeTests extends React.Component {
 
     const arc = getArc(wallet.ethWallet);
     const commonStatus = await createCommon(await arc, {
-      name: 'Mango DAO',
+      name: 'Car DAO',
       founderAddresses: wallet.ethWallet.address,
       minFeeToJoin: 100,
       fundingToken: '0x0000000000000000000000000000000000000000',

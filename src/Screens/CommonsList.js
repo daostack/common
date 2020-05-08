@@ -15,12 +15,13 @@ import {inject, observer} from 'mobx-react';
 
 const {width} = Dimensions.get('window');
 
-const CommonsList = ({navigation}) => {
+const CommonsList = ({navigation, daoStore}) => {
   // const [hasError, setErrors] = useState(false);
   const [daos, setDaos] = useState([]);
 
   useEffect(() => {
     let unsubscribe;
+    console.log('daos CL: , ', daoStore.daos);
     const getDaos = async () => {
       try {
         const appUsers = await FirebaseService.getInstance().getUsers();
@@ -72,22 +73,23 @@ const CommonsList = ({navigation}) => {
 
         <ScrollView>
           <View style={styles.container}>
-            {daos.map((dao, i) => {
-              if (
-                ''.length > 0 &&
-                !dao.name.toLowerCase().includes(''.toLowerCase())
-              ) {
-                return;
-              }
-              return (
-                <CommonBox
-                  image={`https://i.picsum.photos/id/${i * 10}/500/100.jpg`}
-                  common={dao}
-                  key={i}
-                  navigation={navigation}
-                />
-              );
-            })}
+            {daoStore.daos &&
+              daoStore.daos.map((dao, i) => {
+                if (
+                  ''.length > 0 &&
+                  !dao.name.toLowerCase().includes(''.toLowerCase())
+                ) {
+                  return;
+                }
+                return (
+                  <CommonBox
+                    image={`https://i.picsum.photos/id/${i * 10}/500/100.jpg`}
+                    common={dao}
+                    key={i}
+                    navigation={navigation}
+                  />
+                );
+              })}
           </View>
         </ScrollView>
       </>
@@ -178,4 +180,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('createCommonFormStore')(observer(CommonsList));
+export default inject(
+  'createCommonFormStore',
+  'daoStore',
+)(observer(CommonsList));

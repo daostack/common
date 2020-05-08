@@ -32,6 +32,7 @@ export const createCommon = async (arc, givenOpts = {}) => {
     let tx;
     let receipt;
 
+    console.log('opts: ', opts);
     console.log('fetching contractinfo from graphql...');
     const daoFactoryInfo = arc.getContractInfoByName(
       'DAOFactoryInstance',
@@ -77,6 +78,17 @@ export const createCommon = async (arc, givenOpts = {}) => {
     const newOrgAddress = newOrgEvent.args._avatar;
 
     console.log('Calling DAOFactory.setSchemes(...)', opts);
+    console.log('variables sending to Contract', {
+      DAOFactoryInstance: daoFactoryInfo.address,
+      avatar: newOrgAddress,
+      votingMachine: votingMachineInfo.address,
+      fundingToken: opts.fundingToken,
+      minFeeToJoin: [opts.minFeeToJoin],
+      memberReputation: opts.memberReputation,
+      fundingGoal: [parseInt(opts.fundingGoal)],
+      deadline: opts.fundingGoalDeadline,
+      metaData: opts.ipfsHash,
+    })
 
     const schemeData = getSetSchemesData({
       DAOFactoryInstance: daoFactoryInfo.address,
@@ -85,8 +97,8 @@ export const createCommon = async (arc, givenOpts = {}) => {
       fundingToken: opts.fundingToken,
       minFeeToJoin: [opts.minFeeToJoin],
       memberReputation: opts.memberReputation,
-      goal: opts.goal,
-      deadline: opts.deadline,
+      fundingGoal: parseInt(opts.fundingGoal),
+      fundingGoalDeadline: opts.fundingGoalDeadline,
       metaData: opts.ipfsHash,
     });
 
