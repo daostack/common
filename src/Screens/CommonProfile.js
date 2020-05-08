@@ -404,7 +404,7 @@ const CommonProfile = ({navigation, route}) => {
             commonId: '48NPcGnpskN9YkqVNXKA',
           })
         }
-        bottom={120}
+        bottom={0}
       />
 
       <SafeAreaView>

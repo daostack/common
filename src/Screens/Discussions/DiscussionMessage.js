@@ -24,23 +24,12 @@ const {width} = Dimensions.get('window');
 
 const DiscussionMessage = props => {
   const data = props.data;
-  const [user, setUser] = useState({});
-
   const currentUserUid = auth().currentUser.uid;
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const userData = await FirebaseService.getInstance().getUserById(
-        data.owner,
-      );
-      setUser(userData);
-    };
-    fetchUser();
-  }, [data]);
+  console.log('UUU', currentUserUid);
 
   return (
     <View style={styles.container}>
-      {currentUserUid === data.owner ? (
+      {currentUserUid === data.ownerId ? (
         <View
           style={{
             padding: 10,
@@ -81,7 +70,7 @@ const DiscussionMessage = props => {
                 width: 40,
                 borderRadius: 20,
               }}
-              source={{uri: user.photoURL}}
+              source={{uri: data.ownerAvatar}}
             />
             <View
               style={{
@@ -100,7 +89,7 @@ const DiscussionMessage = props => {
                 shadowRadius: 4,
                 shadowOpacity: 0.5,
               }}>
-              <Text style={{fontWeight: 'bold'}}>{user.displayName}</Text>
+              <Text style={{fontWeight: 'bold'}}>{data.ownerName}</Text>
 
               <Text style={{marginVertical: 2}}>{data.text}</Text>
               <View style={{flexDirection: 'row'}}>

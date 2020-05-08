@@ -12,6 +12,8 @@ import Icon from '../../Assets/iconfont/Icon';
 import ReadMore from 'react-native-read-more-text';
 import UserMessageCard from '../../Components/Discussion/UserMessageCard';
 import ImageView from 'react-native-image-viewing';
+import ChatRoom from '../Discussions/Chat/ChatRoom';
+import DiscussionMessage from '../Discussions/DiscussionMessage';
 
 const ProposalData = ({}) => {
   const mockData = {
@@ -272,11 +274,13 @@ const ProposalData = ({}) => {
                     photoURL={currMessage.imageUrl}
                     name={currMessage.name}
                     message={currMessage.message}
-                    time={currMessage.time}
+                    // time={currMessage.time}
                   />
+                  // <DiscussionMessage data={}/>
                 );
               })}
             </View>
+            {/* <ChatRoom path="common/48NPcGnpskN9YkqVNXKA/proposal/DmZFnbSbkwcQHMAyGa54/discussion/43Q9abICrp2KpE86c1Az/message"/> */}
             <View style={layout.contant}>
               <TouchableOpacity>
                 <Text style={styles.messageShowMoreBtn}>Show more</Text>

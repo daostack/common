@@ -13,41 +13,33 @@ import {
   Keyboard,
   SectionList,
 } from 'react-native';
-import {observer, inject} from 'mobx-react';
-import Icon from '../../Assets/iconfont/Icon';
-import {colors} from '../../Theme';
-import DiscussionMessage from './DiscussionMessage';
+import DiscussionMessage from '../DiscussionMessage';
+import Icon from '../../../Assets/iconfont/Icon';
 import firestore from '@react-native-firebase/firestore';
-import Toast from '../../Util/Toast.js';
-import FirebaseService from '../../Services/FirebaseService';
+import FirebaseService from '../../../Services/FirebaseService';
+import {colors} from '../../../Theme';
+import {observer, inject} from 'mobx-react';
+const {width, height} = Dimensions.get('window');
 import moment from 'moment';
-import ChatRoom from './Chat/ChatRoom';
-// import _ from 'lodash';
 
-const {width} = Dimensions.get('window');
-
-const Discussions = props => {
+const ChatRoom = props => {
   const [inputHeight, setInputHeight] = useState(60);
   const inputRef = useRef(null);
   const [user, setUser] = useState({});
   const [inputText, setInputText] = useState(null);
   const chatRef = useRef(null);
 
-  const data = props.route.params.data;
-  const commonId = props.route.params.commonId;
+  const path = props.path;
+  // 'common/48NPcGnpskN9YkqVNXKA/proposal/DmZFnbSbkwcQHMAyGa54/discussion/43Q9abICrp2KpE86c1Az/message';
+  const commonId = props.commonId;
   const [msgGroup, setMsgDroup] = useState([]);
 
   let listRef = useRef([]);
   useEffect(() => {
+    // `common/${commonId}/discussion/${data.id}/message`; 
     const unsubscribe = firestore()
-      .collection('common')
-      .doc(commonId)
-      .collection('discussion')
-      .doc(data.id)
-      .collection('message')
+      .collection(path)
       .orderBy('createTime', 'desc')
-      // .startAt(0)
-      // .limit(25)
       .onSnapshot(
         snapshot => {
           if (snapshot.docChanges().length !== 0) {
@@ -79,11 +71,11 @@ const Discussions = props => {
               }, []);
             console.log('groupDate', groupDate);
             setMsgDroup(groupDate);
-            // chatRef.current.scrollToLocation({
-            //   animated: true,
-            //   itemIndex: 0,
-            //   sectionIndex: 0,
-            // });
+            chatRef.current.scrollToLocation({
+              animated: true,
+              itemIndex: 0,
+              sectionIndex: 0,
+            });
           }
         },
         error => console.error(error),
@@ -91,29 +83,15 @@ const Discussions = props => {
     return () => {
       unsubscribe();
     };
-  }, [commonId, data.id]);
+  }, [path]);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const userData = await FirebaseService.getInstance().getUserById(
-        data.owner,
-      );
-      setUser(userData);
-    };
-    fetchUser();
-  }, [data]);
-
-  sendMessageToDiscussion = async () => {
+  const sendMessageToDiscussion = async () => {
     const userStore = props.userStore;
-    console.log('CCCCC', userStore);
     const message = inputRef.current._lastNativeText;
     if (message && message.trim().length) {
+      // let path = `common/${commonId}/discussion/${data.id}/message`;
       firestore()
-        .collection('common')
-        .doc(commonId)
-        .collection('discussion')
-        .doc(data.id)
-        .collection('message')
+        .collection(path)
         .doc()
         .set({
           text: message,
@@ -122,14 +100,12 @@ const Discussions = props => {
           ownerName: userStore.userInfo.displayName,
           ownerAvatar: userStore.userInfo.photoURL,
           commonId: commonId,
-          discussionId: data.id,
+          discussionId: discussionId,
+          proposalId: proposalId,
         })
         .then(() => {
           console.log('YES');
           inputRef.current.clear();
-          // inputRef.focused
-          // Toast.done('Sent');
-          // setTrigger(!trigger);
           Keyboard.dismiss();
         })
         .catch(error => {
@@ -139,90 +115,27 @@ const Discussions = props => {
     }
   };
 
-  const header = () => {
-    return (
-      <>
-        <View
-          style={{
-            backgroundColor: colors.white,
-            flex: 1,
-            padding: 20,
-            paddingBottom: 0,
-          }}>
-          <Text style={styles.title}>{data.title}</Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              paddingVertical: 10,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Image
-              style={styles.avatar}
-              source={{uri: user.photoURL}}
-              // source={require('../../Assets/daoGeneralInfo.png')}
-            />
-            <View style={{flex: 1, paddingHorizontal: 10}}>
-              <Text style={{fontWeight: 'bold'}}>{user.displayName}</Text>
-              {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-              <Text style={{color: colors.grey3}}>
-                {moment(data.createTime.toDate()).fromNow()}
-              </Text>
-            </View>
-
-            {/* <TouchableOpacity style={styles.button}>
-              <Text style={{color: colors.white}}>Quick reply</Text>
-            </TouchableOpacity> */}
-          </View>
-
-          <View>
-            <Text style={{fontSize: 16, lineHeight: 25, paddingVertical: 10}}>
-              {data.message}
-            </Text>
-          </View>
-          <View
-            style={{
-              height: 4,
-              marginTop: 20,
-              // paddingHorizontal: -20,
-              marginHorizontal: -20,
-              backgroundColor: colors.grey4,
-            }}
-          />
-        </View>
-      </>
-    );
-  };
-
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: colors.lightBlue}}>
-      <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
-        {header()}
-        <SectionList
-          sections={msgGroup}
-          ref={chatRef}
-          // ListFooterComponent={header}
-          renderItem={x => <DiscussionMessage data={x.item} />}
-          renderSectionFooter={({section: {date}}) => (
-            <Text style={styles.timeHeader}>
-              {moment().isSame(date, 'day') ? 'Today' : date}
-            </Text>
-          )}
-          keyExtractor={x => x.id}
-          stickySectionHeadersEnabled={true}
-          inverted={true}
-          contentContainerStyle={{paddingTop: 10}}
-          // initialScrollIndex={2}
-        />
-        {/* <View style={{flex: 1}}>
-        <ChatRoom
-          path={`common/${commonId}/discussion/${data.id}/message`}
-          commonId={commonId}
-        />
-        </View> */}
-      </ScrollView>
+    <View style={{}}>
+      <SectionList
+        // style={{flex: 1, height: height}}
+        sections={msgGroup}
+        ref={chatRef}
+        // ListFooterComponent={header}
+        renderItem={x => <DiscussionMessage data={x.item} />}
+        renderSectionFooter={({section: {date}}) => (
+          <Text style={styles.timeHeader}>
+            {moment().isSame(date, 'day') ? 'Today' : date}
+          </Text>
+        )}
+        keyExtractor={x => x.id}
+        stickySectionHeadersEnabled={true}
+        inverted={true}
+        contentContainerStyle={{paddingTop: 80}}
+        // initialScrollIndex={2}
+      />
 
-      <KeyboardAvoidingView
+      {/* <KeyboardAvoidingView
         // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
         <View style={styles.input}>
@@ -252,31 +165,12 @@ const Discussions = props => {
           </View>
         </View>
         <View style={{height: 30, backgroundColor: colors.white}} />
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      </KeyboardAvoidingView> */}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    fontFamily: 'Roboto',
-    color: colors.black,
-  },
-  avatar: {
-    width: 35,
-    height: 35,
-    backgroundColor: colors.grey4,
-    borderRadius: 17.5,
-  },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 20,
-    padding: 10,
-    backgroundColor: colors.mainBlue,
-  },
   input: {
     // backgroundColor: colors.white,
     backgroundColor: '#fbfdff',
@@ -315,4 +209,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(Discussions));
+export default inject('userStore')(observer(ChatRoom));

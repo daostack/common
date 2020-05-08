@@ -305,20 +305,8 @@ const App = ({userStore}) => {
               headerShown: false,
             })}
           />
-          <Stack.Screen
-            name="Discussions"
-            component={Discussions}
-            // options={({navigation, route}) => ({
-            //   headerShown: false,
-            // })}
-          />
-          <Stack.Screen
-            name="New Post"
-            component={DiscussionPost}
-            // options={({navigation, route}) => ({
-            //   headerShown: false,
-            // })}
-          />
+          <Stack.Screen name="Discussions" component={Discussions} />
+          <Stack.Screen name="New Topic" component={DiscussionPost} />
           <Stack.Screen
             options={{
               title: 'Edit my profile',
