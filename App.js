@@ -305,7 +305,13 @@ const App = ({userStore}) => {
               headerShown: false,
             })}
           />
-          <Stack.Screen name="Discussions" component={Discussions} />
+          <Stack.Screen
+            name="Discussions"
+            component={Discussions}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
           <Stack.Screen name="New Topic" component={DiscussionPost} />
           <Stack.Screen
             options={{

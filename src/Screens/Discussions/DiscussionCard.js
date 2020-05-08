@@ -97,32 +97,63 @@ const DiscussionCard = props => {
             marginHorizontal: -20,
           }}
         />
-        <View style={{flexDirection: 'row'}}>
+
+        {msgCount === 0 ? (
+          <View style={{}}>
+            <TouchableOpacity
+              style={{justifyContent: 'center', alignSelf: 'center'}}
+              onPress={() =>
+                props.navigation.navigate('Discussions', {
+                  data: data,
+                  commonId: commonId,
+                })
+              }>
+              <Text
+                style={{
+                  fontFamily: 'Roboto',
+                  fontSize: 16,
+                  fontWeight: '500',
+                  fontStyle: 'normal',
+                  color: colors.mainBlue,
+                  textAlign: 'center',
+                }}>
+                Start the discussion
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
           <View style={{flexDirection: 'row'}}>
-            <Icon name="discussion" size={20} />
-            <Text
+            <View style={{flexDirection: 'row'}}>
+              <Icon name="discussion" size={20} />
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: colors.grey3,
+                  paddingHorizontal: 5,
+                }}>
+                {msgCount}
+              </Text>
+            </View>
+            <View
               style={{
-                fontSize: 15,
-                color: colors.grey3,
-                paddingHorizontal: 5,
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
               }}>
-              {msgCount}
-            </Text>
+              <Text
+                style={{
+                  textAlign: 'right',
+                  fontSize: 16,
+                  fontFamily: 'Roboto',
+                  fontWeight: '500',
+                  color: colors.mainBlue,
+                }}>
+                Join the discussion
+              </Text>
+              <Icon name="right-arrow" size={20} color={colors.mainBlue}/>
+            </View>
           </View>
-          <View
-            style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end'}}>
-            <Text
-              style={{
-                textAlign: 'right',
-                fontSize: 16,
-                fontFamily: 'Roboto',
-                fontWeight: '400',
-              }}>
-              Read more
-            </Text>
-            <Icon name="right-arrow" size={20} />
-          </View>
-        </View>
+        )}
       </View>
     </TouchableWithoutFeedback>
   );

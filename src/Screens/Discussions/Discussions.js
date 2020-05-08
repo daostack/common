@@ -32,7 +32,7 @@ const Discussions = props => {
   const [user, setUser] = useState({});
   const [inputText, setInputText] = useState(null);
   const chatRef = useRef(null);
-
+  const [isExpanded, setIsExpanded] = useState(false);
   const data = props.route.params.data;
   const commonId = props.route.params.commonId;
   const [msgGroup, setMsgDroup] = useState([]);
@@ -141,63 +141,112 @@ const Discussions = props => {
 
   const header = () => {
     return (
+      // <SafeAreaView style={{flex: 1}}>
       <>
         <View
           style={{
             backgroundColor: colors.white,
-            flex: 1,
+            // flex: 1,
             padding: 20,
             paddingBottom: 0,
           }}>
-          <Text style={styles.title}>{data.title}</Text>
           <View
             style={{
               flexDirection: 'row',
-              paddingVertical: 10,
+              marginTop: 30,
+              marginBottom: 10,
+              // justifyContent: 'center',
               alignItems: 'center',
-              justifyContent: 'center',
             }}>
-            <Image
-              style={styles.avatar}
-              source={{uri: user.photoURL}}
-              // source={require('../../Assets/daoGeneralInfo.png')}
-            />
-            <View style={{flex: 1, paddingHorizontal: 10}}>
-              <Text style={{fontWeight: 'bold'}}>{user.displayName}</Text>
-              {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-              <Text style={{color: colors.grey3}}>
-                {moment(data.createTime.toDate()).fromNow()}
-              </Text>
-            </View>
+            <TouchableOpacity
+              style={{
+                alignSelf: 'flex-start',
+                marginLeft: -12,
+                paddingRight: 8,
+              }}
+              onPress={() => {
+                props.navigation.pop();
+              }}>
+              <Icon name="left-arrow" size={32} />
+            </TouchableOpacity>
+            <Text style={styles.title}>{data.title}</Text>
+            <TouchableOpacity
+              style={{alignSelf: 'flex-start', marginRight: -12}}>
+              <Icon name="menu-horizontal" size={32} />
+            </TouchableOpacity>
+          </View>
+          {isExpanded ? (
+            <>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  paddingVertical: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  style={styles.avatar}
+                  source={{uri: user.photoURL}}
+                  // source={require('../../Assets/daoGeneralInfo.png')}
+                />
+                <View style={{flex: 1, paddingHorizontal: 10}}>
+                  <Text style={{fontWeight: 'bold'}}>{user.displayName}</Text>
+                  {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
+                  <Text style={{color: colors.grey3}}>
+                    {moment(data.createTime.toDate()).fromNow()}
+                  </Text>
+                </View>
 
-            {/* <TouchableOpacity style={styles.button}>
+                {/* <TouchableOpacity style={styles.button}>
               <Text style={{color: colors.white}}>Quick reply</Text>
             </TouchableOpacity> */}
-          </View>
+              </View>
 
-          <View>
-            <Text style={{fontSize: 16, lineHeight: 25, paddingVertical: 10}}>
-              {data.message}
-            </Text>
-          </View>
+              <View>
+                <Text
+                  style={{fontSize: 16, lineHeight: 25, paddingVertical: 10}}>
+                  {data.message}
+                </Text>
+              </View>
+
+              <TouchableOpacity
+                style={{alignItems: 'center', }}
+                onPress={() => {
+                  setIsExpanded(!isExpanded);
+                }}>
+                <Icon name="up-arrow" size={32} />
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <TouchableOpacity
+                style={{alignItems: 'center'}}
+                onPress={() => {
+                  setIsExpanded(!isExpanded);
+                }}>
+                <Icon name="down-arrow" size={32} />
+              </TouchableOpacity>
+            </>
+          )}
           <View
             style={{
               height: 4,
-              marginTop: 20,
+              marginTop: 10,
               // paddingHorizontal: -20,
               marginHorizontal: -20,
               backgroundColor: colors.grey4,
             }}
           />
         </View>
+        {/* </SafeAreaView> */}
       </>
     );
   };
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: colors.lightBlue}}>
+      {header()}
       <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
-        {header()}
         <SectionList
           sections={msgGroup}
           ref={chatRef}
@@ -259,10 +308,14 @@ const Discussions = props => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 25,
+    fontSize: 16,
     fontWeight: 'bold',
     fontFamily: 'Roboto',
     color: colors.black,
+    textAlign: 'center',
+    // textAlignVertical: 'center',
+    flex: 1,
+    lineHeight: 20,
   },
   avatar: {
     width: 35,

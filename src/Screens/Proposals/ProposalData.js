@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   View,
@@ -12,7 +12,7 @@ import Icon from '../../Assets/iconfont/Icon';
 import ReadMore from 'react-native-read-more-text';
 import UserMessageCard from '../../Components/Discussion/UserMessageCard';
 import ImageView from 'react-native-image-viewing';
-import ChatRoom from '../Discussions/Chat/ChatRoom';
+import firestore from '@react-native-firebase/firestore';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 
 const ProposalData = ({}) => {
@@ -60,27 +60,29 @@ const ProposalData = ({}) => {
 
     discussions: [
       {
-        name: 'John Smith',
-        message: 'How can I help?',
-        imageUrl:
+        ownerName: 'John Smith',
+        text: 'How can I help?',
+        ownerAvatar:
           'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
-        time: '22:36',
+        // createTime: firestore.FieldValue.serverTimestamp(),
+        // createTime: '152117989365',
       },
       {
-        name: 'John Smith',
-        message: 'Why now?',
-        imageUrl:
+        ownerName: 'John Smith',
+        text: 'Why now?',
+        ownerAvatar:
           'https://live.envalab.com/html/cetus/demo/images/element/team/2.jpg',
-        time: '22:36',
+        // createTime: '152117989365',
       },
       {
-        name: 'John Smith',
-        message:
+        ownerName: 'John Smith',
+        text:
           'I’ve worked with Neville. He is super professional and creative, we are lucky to have you here!',
         approvePercent: 32,
-        imageUrl:
+        ownerAvatar:
           'https://live.envalab.com/html/cetus/demo/images/element/team/3.jpg',
-        time: '22:36',
+        // createTime: firestore.FieldValue.serverTimestamp(),
+        // createTime: '152117989365',
       },
     ],
   };
@@ -96,6 +98,7 @@ const ProposalData = ({}) => {
   };
 
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
+  const [topMessage, setTopMessage] = useState([]);
 
   const _renderTruncatedFooter = handlePress => {
     return (
@@ -121,6 +124,33 @@ const ProposalData = ({}) => {
   const _handleTextReady = () => {
     // ...
   };
+
+  useEffect(() => {
+    const commonId = '48NPcGnpskN9YkqVNXKA';
+    const proposalId = 'DmZFnbSbkwcQHMAyGa54';
+    const discussionId = '43Q9abICrp2KpE86c1Az';
+    firestore()
+      .collection('common')
+      .doc(commonId)
+      .collection('proposal')
+      .doc(proposalId)
+      .collection('discussion')
+      .doc(discussionId)
+      .collection('message')
+      .orderBy('createTime', 'desc')
+      .limit(4)
+      .get()
+      .then(snapshot => {
+        const list = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        console.log('AAA', list);
+        setTopMessage(list);
+      });
+  }, []);
+
+  // useEffect(() => {});
 
   return (
     <>
@@ -268,15 +298,15 @@ const ProposalData = ({}) => {
               </Text>
             </View>
             <View style={{...layout.content, ...layout.flexStart}}>
-              {mockData.discussions.map((currMessage, currIndex) => {
+              {topMessage.map((currMessage, currIndex) => {
                 return (
                   <UserMessageCard
-                    photoURL={currMessage.imageUrl}
-                    name={currMessage.name}
-                    message={currMessage.message}
-                    // time={currMessage.time}
+                    photoURL={currMessage.ownerAvatar}
+                    name={currMessage.ownerName}
+                    message={currMessage.text}
+                    time={currMessage.createTime}
                   />
-                  // <DiscussionMessage data={}/>
+                  // <DiscussionMessage data={currMessage} />
                 );
               })}
             </View>
