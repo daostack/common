@@ -125,29 +125,25 @@ const App = ({userStore, daoStore}) => {
     }
   };
 
-  useEffect(
-    () => {
-      const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
 
-      const checkOnboardingStatus = async () => {
-        try {
-          //await AuthService.getInstance().signOut();
-          const isOnboarded = await AsyncStorage.getItem('onboarded');
-          if (isOnboarded === 'true') {
-            setOnboarded(true);
-          }
-          setLoading(false);
-        } catch (e) {
-          console.log(e);
+    const checkOnboardingStatus = async () => {
+      try {
+        //await AuthService.getInstance().signOut();
+        const isOnboarded = await AsyncStorage.getItem('onboarded');
+        if (isOnboarded === 'true') {
+          setOnboarded(true);
         }
-      };
-      getDaos();
-      checkOnboardingStatus();
-      return subscriber;
-    },
-    // TODO: restore line below
-    //, [getDaos, onAuthStateChanged]
-  );
+        setLoading(false);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    getDaos();
+    checkOnboardingStatus();
+    return subscriber;
+  }, []);
 
   console.log('onboarded: ', onboarded);
   console.log('daoStore DAOs: ', daoStore.daos);
