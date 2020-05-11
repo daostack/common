@@ -14,7 +14,6 @@ import * as Progress from 'react-native-progress';
 const {width} = Dimensions.get('window');
 
 const CreateCommon = props => {
-  const [common, setCommon] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const swiper = useRef(null);
 

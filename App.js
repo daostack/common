@@ -115,7 +115,7 @@ const App = ({userStore, daoStore}) => {
         let daosSnapshot = snapshot.docs.map(doc => {
           return {...{id: doc.id}, ...doc.data()};
         });
-        console.log('daos: ', daosSnapshot)
+        console.log('daos: ', daosSnapshot);
         daoStore.setDaos(daosSnapshot);
       });
       // console.log('DAOS: ', daosRes);
@@ -125,25 +125,29 @@ const App = ({userStore, daoStore}) => {
     }
   };
 
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+  useEffect(
+    () => {
+      const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
 
-    const checkOnboardingStatus = async () => {
-      try {
-        //await AuthService.getInstance().signOut();
-        const isOnboarded = await AsyncStorage.getItem('onboarded');
-        if (isOnboarded === 'true') {
-          setOnboarded(true);
+      const checkOnboardingStatus = async () => {
+        try {
+          //await AuthService.getInstance().signOut();
+          const isOnboarded = await AsyncStorage.getItem('onboarded');
+          if (isOnboarded === 'true') {
+            setOnboarded(true);
+          }
+          setLoading(false);
+        } catch (e) {
+          console.log(e);
         }
-        setLoading(false);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    getDaos();
-    checkOnboardingStatus();
-    return subscriber;
-  },[]);
+      };
+      getDaos();
+      checkOnboardingStatus();
+      return subscriber;
+    },
+    // TODO: restore line below
+    //, [getDaos, onAuthStateChanged]
+  );
 
   console.log('onboarded: ', onboarded);
   console.log('daoStore DAOs: ', daoStore.daos);

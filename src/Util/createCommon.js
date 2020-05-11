@@ -1,4 +1,4 @@
-// import {Address} from '../../node_modules/@daostack/arc.js/src'
+import {BN} from '../../node_modules/@daostack/arc.js/src';
 const {
   getForgeOrgData,
   getSetSchemesData,
@@ -78,7 +78,7 @@ export const createCommon = async (arc, givenOpts = {}) => {
       fundingToken: opts.fundingToken,
       minFeeToJoin: [opts.minFeeToJoin],
       memberReputation: opts.memberReputation,
-      fundingGoal: [parseInt(opts.fundingGoal)],
+      fundingGoal: opts.fundingGoal,
       deadline: opts.fundingGoalDeadline,
       metaData: opts.ipfsHash,
     });
@@ -90,7 +90,7 @@ export const createCommon = async (arc, givenOpts = {}) => {
       fundingToken: opts.fundingToken,
       minFeeToJoin: [opts.minFeeToJoin],
       memberReputation: opts.memberReputation,
-      fundingGoal: parseInt(opts.fundingGoal),
+      fundingGoal: new BN(opts.fundingGoal),
       fundingGoalDeadline: opts.fundingGoalDeadline,
       metaData: opts.ipfsHash,
     });
@@ -107,16 +107,16 @@ export const createCommon = async (arc, givenOpts = {}) => {
   }
 };
 
-const ipfsUpload = async formData => {
-  return await IpfsClient.addAndPinString(
-    JSON.stringify({
-      name: formData.name,
-      byline: formData.byline,
-      description: formData.description,
-      courseOfAction: formData.action,
-      mainValue1: formData.funding,
-      mainValue2: formData.minimum,
-      mainValue3: 'empty value',
-    }),
-  );
-};
+// const ipfsUpload = async formData => {
+//   return await IpfsClient.addAndPinString(
+//     JSON.stringify({
+//       name: formData.name,
+//       byline: formData.byline,
+//       description: formData.description,
+//       courseOfAction: formData.action,
+//       mainValue1: formData.funding,
+//       mainValue2: formData.minimum,
+//       mainValue3: 'empty value',
+//     }),
+//   );
+// };
