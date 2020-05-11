@@ -16,6 +16,7 @@ const {ARC_VERSION, OVERRIDES} = require('./arc');
 //   ipfsHash,
 // });
 
+// TODO: let's keep this script limited to the arc.js interface?
 export const createCommonWithLoader = async (
   arc,
   givenOpts = {},
@@ -81,17 +82,17 @@ export const createCommon = async (arc, givenOpts = {}) => {
     const newOrgAddress = newOrgEvent.args._avatar;
 
     console.log('Calling DAOFactory.setSchemes(...)', opts);
-    console.log('variables sending to Contract', {
-      DAOFactoryInstance: daoFactoryInfo.address,
-      avatar: newOrgAddress,
-      votingMachine: votingMachineInfo.address,
-      fundingToken: opts.fundingToken,
-      minFeeToJoin: [opts.minFeeToJoin],
-      memberReputation: opts.memberReputation,
-      fundingGoal: opts.fundingGoal,
-      deadline: opts.fundingGoalDeadline,
-      metaData: opts.ipfsHash,
-    });
+    // console.log('variables sending to Contract', {
+    //   DAOFactoryInstance: daoFactoryInfo.address,
+    //   avatar: newOrgAddress,
+    //   votingMachine: votingMachineInfo.address,
+    //   fundingToken: opts.fundingToken,
+    //   minFeeToJoin: [opts.minFeeToJoin],
+    //   memberReputation: opts.memberReputation,
+    //   fundingGoal: opts.fundingGoal,
+    //   deadline: opts.fundingGoalDeadline,
+    //   metaData: opts.ipfsHash,
+    // });
 
     const schemeData = getSetSchemesData({
       DAOFactoryInstance: daoFactoryInfo.address,
@@ -100,8 +101,8 @@ export const createCommon = async (arc, givenOpts = {}) => {
       fundingToken: opts.fundingToken,
       minFeeToJoin: [opts.minFeeToJoin],
       memberReputation: opts.memberReputation,
-      fundingGoal: opts.fundingGoal,
-      fundingGoalDeadline: opts.fundingGoalDeadline,
+      goal: opts.fundingGoal,
+      deadline: opts.fundingGoalDeadline,
       metaData: opts.ipfsHash,
     });
 

@@ -197,6 +197,18 @@ export default class nativeBridgeTests extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
+          <Text style={{marginBottom: 10}}>
+            Network: {this.state.networkURL}
+          </Text>
+
+          <Text>Address: {this.state.ownerAccount}</Text>
+          <Text>Balance: {this.state.ownerBalance}</Text>
+          <TouchableOpacity
+            onPress={this.getOwnerBalance}
+            style={styles.button}>
+            <Text>Get local Address and balance</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity onPress={this.getSomeFunds} style={styles.button}>
             <Text>Get some funds!</Text>
           </TouchableOpacity>
@@ -256,23 +268,10 @@ export default class nativeBridgeTests extends React.Component {
           <Text style={{marginVertical: 10}}>
             --------------- JavaScript -----------------
           </Text>
-
-          <Text style={{marginBottom: 10}}>
-            Network: {this.state.networkURL}
-          </Text>
-
-          <Text>Address: {this.state.ownerAccount}</Text>
-          <Text>Balance: {this.state.ownerBalance}</Text>
-          <TouchableOpacity
-            onPress={this.getOwnerBalance}
-            style={styles.button}>
-            <Text>Get Owner Address</Text>
-          </TouchableOpacity>
-
           <Text>Address: {this.state.address}</Text>
           <Text>Balance: {this.state.balance}</Text>
           <TouchableOpacity onPress={this.getBalance} style={styles.button}>
-            <Text>Get Balance</Text>
+            <Text>Get Wallet address Balance (obsolete)</Text>
           </TouchableOpacity>
 
           <Text>Status: {this.state.txStatus}</Text>
