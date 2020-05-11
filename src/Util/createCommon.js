@@ -1,4 +1,4 @@
-import {BN} from '../../node_modules/@daostack/arc.js/src';
+import {BN} from '@daostack/arc.js';
 const {
   getForgeOrgData,
   getSetSchemesData,
