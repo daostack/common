@@ -1,31 +1,30 @@
+/* eslint-disable prettier/prettier */
 import React from 'react';
 import {Text, TouchableOpacity} from 'react-native';
 import NavigationBar from 'react-native-navbar';
 import Icon from '../../Assets/iconfont/Icon';
+import {text, layout, colors} from '../../Theme';
 
-const CreateStepNavigation = props => {
+const RequestStepNavigation = props => {
   return (
     <NavigationBar
       statusBar={{hidden: true}}
+      style={{
+        height: 48,
+      }}
+      title={{
+        title: props.title,
+        style: text.h3Black,
+      }}
       leftButton={
         <TouchableOpacity
-          style={{justifyContent: 'center', flexDirection: 'row'}}
+          style={{justifyContent: 'center'}}
           onPress={() => props.navigation.pop()}>
           <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
-          <Text
-            style={{
-              fontWeight: 'bold',
-              alignSelf: 'center',
-              fontSize: 16,
-              top: -6,
-              marginLeft: 3,
-            }}>
-            {props.title}
-          </Text>
         </TouchableOpacity>
       }
     />
   );
 };
 
-export default CreateStepNavigation;
+export default RequestStepNavigation;

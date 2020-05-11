@@ -37,7 +37,12 @@ import {
   CreateStep2,
   CreateStep3,
   CreateStep4,
+  RequestStep1,
+  RequestStep2,
+  RequestStep3,
+  RequestStep4,
   FundingProposal,
+  ProposalScreen,
 } from './src/Screens';
 
 import {ApolloClientConfig as client} from './src/Config';
@@ -111,7 +116,7 @@ const App = ({userStore, daoStore}) => {
         let daosSnapshot = snapshot.docs.map(doc => {
           return {...{id: doc.id}, ...doc.data()};
         });
-        console.log('daos: ', daosSnapshot)
+        console.log('daos: ', daosSnapshot);
         daoStore.setDaos(daosSnapshot);
       });
       // console.log('DAOS: ', daosRes);
@@ -121,25 +126,29 @@ const App = ({userStore, daoStore}) => {
     }
   };
 
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+  useEffect(
+    () => {
+      const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
 
-    const checkOnboardingStatus = async () => {
-      try {
-        //await AuthService.getInstance().signOut();
-        const isOnboarded = await AsyncStorage.getItem('onboarded');
-        if (isOnboarded === 'true') {
-          setOnboarded(true);
+      const checkOnboardingStatus = async () => {
+        try {
+          //await AuthService.getInstance().signOut();
+          const isOnboarded = await AsyncStorage.getItem('onboarded');
+          if (isOnboarded === 'true') {
+            setOnboarded(true);
+          }
+          setLoading(false);
+        } catch (e) {
+          console.log(e);
         }
-        setLoading(false);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    getDaos();
-    checkOnboardingStatus();
-    return subscriber;
-  },[]);
+      };
+      getDaos();
+      checkOnboardingStatus();
+      return subscriber;
+    },
+    // TODO: restore line below
+    //, [getDaos, onAuthStateChanged]
+  );
 
   console.log('onboarded: ', onboarded);
   console.log('daoStore DAOs: ', daoStore.daos);
@@ -181,11 +190,8 @@ const App = ({userStore, daoStore}) => {
             component={CommonProfile}
             options={{headerShown: false}}
           />
-
           <Stack.Screen name="CommonAgenda" component={CommonAgenda} />
-
           <Stack.Screen name="Profile" component={UserProfile} />
-
           <Stack.Screen
             name="CommonExplanation"
             component={CommonExplanation}
@@ -206,6 +212,36 @@ const App = ({userStore, daoStore}) => {
                   style={{resizeMode: 'contain', width: 20, height: 20}}
                 />
               ),
+            })}
+          />
+
+          <Stack.Screen name="ProposalScreen" component={ProposalScreen} />
+          <Stack.Screen
+            name="RequestStep1"
+            component={RequestStep1}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="RequestStep2"
+            component={RequestStep2}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="RequestStep3"
+            component={RequestStep3}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="RequestStep4"
+            component={RequestStep4}
+            options={({navigation, route}) => ({
+              headerShown: false,
             })}
           />
           <Stack.Screen

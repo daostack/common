@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
 import ImageField from './ImageField';
-import {text, layout, colors, sizeL} from '../../Theme';
+import {sizeL} from '../../Theme';
 
 const MultiImageField = props => {
   const [count, setCount] = useState(1);

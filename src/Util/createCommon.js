@@ -1,16 +1,11 @@
-// import {Address} from '../../node_modules/@daostack/arc.js/src'
+import {BN} from '@daostack/arc.js';
 const {
   getForgeOrgData,
   getSetSchemesData,
 } = require('@daostack/common-factory');
 const {ARC_VERSION, OVERRIDES} = require('./arc');
 
-// import DAOFactory from '../Contracts/ABIs/DAOFactory';
-
-// this function is called like this:
-//
-
-// const commonAddress = await createCommon({
+// const commonAddress = await createCommon(arc, {
 //   name: formData.name,
 //   founderAddresses: [address],
 //   tokenDist: [0],
@@ -34,7 +29,6 @@ export const createCommon2 = async (arc, givenOpts = {}, navigation) => {
     };
     const opts = {...defaultOptions, ...givenOpts};
     let tx;
-    let receipt;
 
     console.log('opts: ', opts);
     console.log('fetching contractinfo from graphql...');
@@ -74,11 +68,10 @@ export const createCommon2 = async (arc, givenOpts = {}, navigation) => {
 
     tx = await daoFactoryContract.forgeOrg(...forgeOrgData, OVERRIDES);
     console.log('waiting for tx to be mined');
-    console.log(tx);
-    receipt = await tx.wait();
+    const receipt1 = await tx.wait();
     console.log('done!');
     // get the new avatar address of the thing that was just created..
-    const newOrgEvent = receipt.events.filter(e => e.event === 'NewOrg')[0];
+    const newOrgEvent = receipt1.events.filter(e => e.event === 'NewOrg')[0];
     const newOrgAddress = newOrgEvent.args._avatar;
 
     console.log('Calling DAOFactory.setSchemes(...)', opts);
@@ -89,10 +82,10 @@ export const createCommon2 = async (arc, givenOpts = {}, navigation) => {
       fundingToken: opts.fundingToken,
       minFeeToJoin: [opts.minFeeToJoin],
       memberReputation: opts.memberReputation,
-      fundingGoal: [parseInt(opts.fundingGoal)],
+      fundingGoal: opts.fundingGoal,
       deadline: opts.fundingGoalDeadline,
       metaData: opts.ipfsHash,
-    })
+    });
 
     const schemeData = getSetSchemesData({
       DAOFactoryInstance: daoFactoryInfo.address,
@@ -101,137 +94,33 @@ export const createCommon2 = async (arc, givenOpts = {}, navigation) => {
       fundingToken: opts.fundingToken,
       minFeeToJoin: [opts.minFeeToJoin],
       memberReputation: opts.memberReputation,
-      fundingGoal: parseInt(opts.fundingGoal),
+      fundingGoal: new BN(opts.fundingGoal),
       fundingGoalDeadline: opts.fundingGoalDeadline,
       metaData: opts.ipfsHash,
     });
 
     tx = await daoFactoryContract.setSchemes(...schemeData, OVERRIDES);
     console.log('waiting for tx to be mined');
-    receipt = await tx.wait();
+    const receipt2 = await tx.wait();
     console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
-    return receipt;
+    return `Created common with name ${opts.name} in transactions ${receipt1.transactionHash} and ${receipt2.transactionHash}`;
   } catch (e) {
-    console.log('[Create Common error]: ', e);
-    throw `[Create Common error] ${e}`;
+    const msg = `[Create Common error] ${e}`;
+    // TODO: error should be handled as an Error, not as a return value..
+    return msg;
   }
 };
 
-const ipfsUpload = async formData => {
-  return await IpfsClient.addAndPinString(
-    JSON.stringify({
-      name: formData.name,
-      byline: formData.byline,
-      description: formData.description,
-      courseOfAction: formData.action,
-      mainValue1: formData.funding,
-      mainValue2: formData.minimum,
-      mainValue3: 'empty value',
-    }),
-  );
-};
-
-// const forgeCommon = async _ipfsHash => {
-//   try {
-//     const formData = props.createCommonFormStore.getChangedFormFieldsJson();
-//     const manager = await WalletManager.getInstance();
-//     const wallet = manager.ethWallet;
-//     const address = await manager.getOwnerAccount();
-//     console.log('owner account: ', address);
-//     let contract = new ethers.Contract(
-//       '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
-//       DAOFactory,
-//       provider,
-//     );
-//     let daoFactory = contract.connect(wallet);
-//     let overrides = {
-//       gasLimit: 6000000,
-//     };
-//     //TODO: add funding amounts??
-//     const forgeOrgData = getForgeOrgData({
-//       DAOFactoryInstance: '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
-//       orgName: formData.name,
-//       founderAddresses: [address],
-//       tokenDist: [0],
-//       repDist: [100],
-//     });
-
-//     console.log('forgeOrgData: ', forgeOrgData);
-//     const forgeOrg = await daoFactory.forgeOrg(...forgeOrgData, overrides);
-
-//     console.log('forgeOrg: ', forgeOrg);
-
-//     const {hash} = forgeOrg;
-//     console.log('hash: ', hash);
-//     let avatarAddress;
-//     contract.on('NewOrg', (_avatarAddress, newValue, event) => {
-//       setScheme(_ipfsHash, _avatarAddress);
-//     });
-
-//     return {avatarAddress: avatarAddress};
-//   } catch (e) {
-//     throw 'Send transaction failed with error: ' + e;
-//   }
-// };
-
-// const setScheme = async (_ipfsHash, _avatarAddress) => {
-//   try {
-//     const manager = await WalletManager.getInstance();
-//     const wallet = manager.ethWallet;
-//
-//     console.log('ethwallet: ', manager.ethWallet);
-//     const address = await manager.getAddress();
-//     let contract = new ethers.Contract(
-//       '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
-//       DAOFactory,
-//       provider,
-//     );
-//     let daoFactory = contract.connect(wallet);
-//
-//     let overrides = {
-//       gasLimit: 6000000,
-//     };
-//     const setSchemeData = getSetSchemesData({
-//       DAOFactoryInstance: '0x565737926597B88da5B851cd2e3d7Ad7F68bAc7F',
-//       avatar: _avatarAddress,
-//       votingMachine: '0x59EC3731Dca0512678A5F6507d79Cf631005cAd4',
-//       joinAndQuitVoteParams:
-//         '0x1000000000000000000000000000000000000000000000000000000000000000',
-//       fundingRequestVoteParams:
-//         '0x1100000000000000000000000000000000000000000000000000000000000000',
-//       schemeFactoryVoteParams:
-//         '0x1110000000000000000000000000000000000000000000000000000000000000',
-//       fundingToken: '0x0000000000000000000000000000000000000000',
-//       minFeeToJoin: 100,
-//       memberReputation: 100,
-//       goal: 1000,
-//       deadline: (await provider.getBlock('latest')).timestamp + 3000,
-//       metaData: _ipfsHash,
-//     });
-//
-//     console.log('setSchemeData: ', setSchemeData);
-//     const setSchemes = await daoFactory.setSchemes(
-//       ...setSchemeData,
-//       overrides,
-//     );
-//     console.log('setSchemes: ', setSchemes);
-//     const {hash} = setSchemes;
-//     console.log('hash: ', hash);
-//   } catch (e) {
-//     throw 'Send transaction failed with error: ' + e;
-//   }
-// };
-//
-// const createCommon = async () => {
-//   try {
-//     console.log(
-//       'commonfields: ',
-//       props.createCommonFormStore.getChangedFormFieldsJson(),
-//     );
-//     const commonFormData = props.createCommonFormStore.getChangedFormFieldsJson();
-//     const ipfsHash = await ipfsUpload(commonFormData);
-//     await forgeCommon(ipfsHash);
-//   } catch (e) {
-//     console.log('error: ', e);
-//   }
+// const ipfsUpload = async formData => {
+//   return await IpfsClient.addAndPinString(
+//     JSON.stringify({
+//       name: formData.name,
+//       byline: formData.byline,
+//       description: formData.description,
+//       courseOfAction: formData.action,
+//       mainValue1: formData.funding,
+//       mainValue2: formData.minimum,
+//       mainValue3: 'empty value',
+//     }),
+//   );
 // };

@@ -163,6 +163,7 @@ export default class nativeBridgeTests extends React.Component {
   };
 
   createCommon = async () => {
+<<<<<<< HEAD
     console.log('creating', );
     console.log('creating...');
     this.props.navigation.navigate('CommonCreationLoading');
@@ -184,6 +185,25 @@ export default class nativeBridgeTests extends React.Component {
     // }, props.navigation);
     //
     // this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
+=======
+    this.setState({commonStatus: 'Creating common -- please wait'});
+    const wallet = WalletManager.getInstance();
+
+    const arc = getArc(wallet.ethWallet);
+
+    const commonStatus = await createCommon(await arc, {
+      name: `Test DAO ${new Date()}`,
+      founderAddresses: wallet.ethWallet.address,
+      minFeeToJoin: 100,
+      fundingToken: '0x0000000000000000000000000000000000000000',
+      goal: 100000,
+      deadline: 20200404,
+      metaData: '',
+      ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
+    });
+
+    this.setState({commonStatus: `${commonStatus}`});
+>>>>>>> 5b2253ae70591ae977c276f4693c54027ee6ee9f
   };
 
   render() {
@@ -196,6 +216,14 @@ export default class nativeBridgeTests extends React.Component {
           <Text>Common Tx: {this.state.commonStatus}</Text>
           <TouchableOpacity onPress={this.createCommon} style={styles.button}>
             <Text>Create Common</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
+            <Text>Create a request to join [TODO]</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
+            <Text>Create a funding request [TODO]</Text>
           </TouchableOpacity>
 
           <Text>mnemonicsAndStore: {this.state.mnemonicsAndStore}</Text>

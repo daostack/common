@@ -14,6 +14,9 @@ const BottomSheetContainer = forwardRef((props, ref) => {
   };
 
   renderSheetHeader = () => {
+    if (props.withoutHeader) {
+      return null;
+    }
     return (
       <View style={styles.headerContainer}>
         <View style={styles.draggingElement} />
@@ -22,12 +25,15 @@ const BottomSheetContainer = forwardRef((props, ref) => {
   };
 
   renderSheetContent = () => {
-    const contentStyle = {
+    let contentStyle = {
       ...layout.content,
-      ...layout.flexStart,
       ...styles.contentContainer,
       ...{padding: 0, height: props.topSnapPoint ? props.topSnapPoint : 600},
     };
+
+    if (props.withoutHeader) {
+      contentStyle = {...contentStyle, ...styles.contentContainerShadow};
+    }
 
     return <View style={contentStyle}>{props.children}</View>;
   };
@@ -68,6 +74,20 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     backgroundColor: colors.white,
     zIndex: 6,
+  },
+
+  contentContainerShadow: {
+    shadowOffset: {
+      width: 0,
+      height: -20,
+    },
+    shadowRadius: 12,
+    shadowOpacity: 0.1,
+    ...layout.paddingTopM,
+    zIndex: 5,
+
+    borderTopWidth: 1,
+    borderTopColor: colors.grey3,
   },
 
   sheetTitleStyle: {

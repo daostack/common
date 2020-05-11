@@ -46,7 +46,7 @@ const CommonsList = ({navigation, daoStore}) => {
     return function cleanup() {
       unsubscribe();
     };
-  }, [0]);
+  }, [daoStore.daos]);
 
   return (
     <View style={{flex: 1}}>

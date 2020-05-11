@@ -2,6 +2,7 @@ import EditProfileFormStore from '../FormStores/EditProfileFormStore';
 import FundingRequestFormStore from '../FormStores/FundingRequestFormStore';
 import CompleteAccountFormStore from '../FormStores/CompleteAccountFormStore';
 import CreateCommonFormStore from '../FormStores/CreateCommonFormStore';
+import RequestToJoinFormStore from '../FormStores/RequestToJoinFormStore';
 import UserStore from './UserStore';
 import DaoStore from './DaoStore';
 
@@ -10,6 +11,7 @@ export default {
   createCommonFormStore: new CreateCommonFormStore(),
   editProfileFormStore: new EditProfileFormStore(),
   fundingRequestFormStore: new FundingRequestFormStore(),
+  requestToJoinFormStore: new RequestToJoinFormStore(),
   userStore: new UserStore(),
   daoStore: new DaoStore(),
 };

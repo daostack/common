@@ -2,24 +2,17 @@ import React from 'react';
 import {View} from 'react-native';
 import {observer, inject} from 'mobx-react';
 
-class CreateCommonForm extends React.Component {
-  static NAME = 'name';
-  static BYLINE = 'byline';
-  static DESCRIPTION = 'description';
-  static LINKS = 'links';
-  static FUNDING_GOAL = 'funding';
-  static DEADLINE = 'deadline';
-  static MINIMUM = 'minimum';
-  static ACTION = 'action';
-  static RULES = 'rules';
-  static AVATAR = 'avatar';
-  static IMAGE = 'image';
+class RequestToJoinForm extends React.Component {
+  static FIELD_IMAGE = 'image';
+  static FIELD_ABOUT_ME = 'about_me';
+  static FIELD_LINKS = 'links';
+  static FIELD_AMOUNT = 'amount';
 
   formSkip() {}
 
   formSave = () => {
-    const {createCommonFormStore, userId} = this.props;
-    if (createCommonFormStore.isFormValid()) {
+    const {requestToJoinFormStore, userId} = this.props;
+    if (requestToJoinFormStore.isFormValid()) {
       // firebaseService
       //   .editUser(userId, completeAccountFormStore.getChangedFormFieldsJson())
       //   .catch(err => {
@@ -35,12 +28,12 @@ class CreateCommonForm extends React.Component {
   };
 
   render() {
-    const {createCommonFormStore} = this.props;
+    const {requestToJoinFormStore} = this.props;
 
-    console.log('createCommonFormStore');
-    console.log(createCommonFormStore);
+    console.log('requestToJoinFormStore');
+    console.log(requestToJoinFormStore);
     return <View />;
   }
 }
 
-export default inject('createCommonFormStore')(observer(CreateCommonForm));
+export default inject('requestToJoinFormStore')(observer(RequestToJoinForm));
