@@ -47,11 +47,13 @@ export const createCommon = async (arc, givenOpts = {}) => {
     //   'GenesisProtocol.json',
     //   ARC_VERSION,
     // );
-    const votingMachineInfo = { id: '0xf109310612daada3fbd979f8e635db7710cfee46',
+    const votingMachineInfo = {
+      id: '0xf109310612daada3fbd979f8e635db7710cfee46',
       name: 'GenesisProtocol',
       version: '0.1.1-rc.13',
       address: '0xf109310612daada3fbd979f8e635db7710cfee46',
-      __typename: 'ContractInfo' }
+      __typename: 'ContractInfo',
+    };
 
     console.log('Calling DAOFactory.forgeOrg(...)');
     const forgeOrgData = getForgeOrgData({
@@ -63,11 +65,7 @@ export const createCommon = async (arc, givenOpts = {}) => {
 
     tx = await daoFactoryContract.forgeOrg(...forgeOrgData, OVERRIDES);
     console.log('waiting for tx to be mined');
-<<<<<<< HEAD
     const receipt1 = await tx.wait();
-=======
-    receipt = await tx.wait();
->>>>>>> f7df5e0d9ec1e9771c95bd27a11461d39b7ecf50
     console.log('done!');
     // get the new avatar address of the thing that was just created..
     const newOrgEvent = receipt1.events.filter(e => e.event === 'NewOrg')[0];
@@ -91,20 +89,13 @@ export const createCommon = async (arc, givenOpts = {}) => {
     console.log('waiting for tx to be mined');
     const receipt2 = await tx.wait();
     console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
-<<<<<<< HEAD
     return `Created common with name ${opts.name} in transactions ${receipt1.transactionHash} and ${receipt2.transactionHash}`;
   } catch (e) {
     const msg = `[Create Common error] ${e}`;
     // TODO: error should be handled as an Error, not as a return value..
     return msg;
-=======
-    return receipt;
-
-  } catch (e) {
-    console.log('[Create Common error]: ', e);
->>>>>>> f7df5e0d9ec1e9771c95bd27a11461d39b7ecf50
   }
-}
+};
 
 const ipfsUpload = async formData => {
   return await IpfsClient.addAndPinString(
