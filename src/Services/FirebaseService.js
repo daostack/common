@@ -1,4 +1,5 @@
 import {db, firebase} from '../Firebase';
+import moment from 'moment';
 import uuid from 'uuid/v4';
 
 const DB_COLLECTIONS = {
@@ -91,6 +92,21 @@ export default class FirebaseService {
     const path = `public_img/${filename}`;
     const ref = firebase.storage().ref(path);
     await ref.putFile(imageUri);
+    return await ref.getDownloadURL();
+  }
+
+  async uploadFile(fileUri) {
+    const name = fileUri
+      .substring(fileUri.lastIndexOf('/') + 1, fileUri.length)
+      .split('.')
+      .slice(0, -1)
+      .join('.');
+    const ext = fileUri.split('.').pop();
+    const timeStamp = new Date().getTime();
+    const filename = `${name}_${timeStamp}.${ext}`;
+    const path = `public_file/${filename}`;
+    const ref = firebase.storage().ref(path);
+    await ref.putFile(fileUri);
     return await ref.getDownloadURL();
   }
 }
