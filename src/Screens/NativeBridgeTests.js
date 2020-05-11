@@ -163,29 +163,8 @@ export default class nativeBridgeTests extends React.Component {
   };
 
   createCommon = async () => {
-<<<<<<< HEAD
-    console.log('creating', );
+    console.log('creating');
     console.log('creating...');
-    this.props.navigation.navigate('CommonCreationLoading');
-    // const wallet = WalletManager.getInstance();
-
-    // const arc = getArc(wallet.ethWallet);
-
-    // const commonAddress = await createCommon(await arc, {
-    //   name: 'Grass DAO',
-    //   founderAddresses: wallet.ethWallet.address,
-    //   tokenDist: [0],
-    //   repDist: [100],
-    //   minFeeToJoin: 100, // TDB: get from formData
-    //   fundingGoal: 100000, // TBD: get from formdata
-    //   // TBD: get form data for deadline; these are in secondSinceEpoch
-    //   //TODO: get data for deadline from form data
-    //   fundingGoalDeadline: 20200404,
-    //   ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
-    // }, props.navigation);
-    //
-    // this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
-=======
     this.setState({commonStatus: 'Creating common -- please wait'});
     const wallet = WalletManager.getInstance();
 
@@ -203,7 +182,6 @@ export default class nativeBridgeTests extends React.Component {
     });
 
     this.setState({commonStatus: `${commonStatus}`});
->>>>>>> 5b2253ae70591ae977c276f4693c54027ee6ee9f
   };
 
   render() {
