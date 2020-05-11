@@ -22,7 +22,11 @@ const {ARC_VERSION, OVERRIDES} = require('./arc');
 //   ipfsHash,
 // });
 
-export const createCommon = async (arc, givenOpts = {}) => {
+export const createCommon = async (arc, givenOpts = {}, navigation) => {
+  navigation.navigate('CommonCreationLoading');
+};
+
+export const createCommon2 = async (arc, givenOpts = {}, navigation) => {
   try {
     const defaultOptions = {
       fundingToken: '0x0000000000000000000000000000000000000000',
@@ -54,13 +58,13 @@ export const createCommon = async (arc, givenOpts = {}) => {
       // Ideally, we would find the GeneisProtocol at ARC_VERSION
       // instead, we need to use this custom version until https://github.com/daostack/subgraph/issues/542  is resolved
     );
-    // const votingMachineInfo = { id: '0xf109310612daada3fbd979f8e635db7710cfee46',
-    //   name: 'GenesisProtocol',
-    //   version: '0.1.1-rc.13',
-    //   address: '0xf109310612daada3fbd979f8e635db7710cfee46',
-    //   __typename: 'ContractInfo' }
+    console.log('Calling DAOFactory.forgeOrg(...)', {
+      DAOFactoryInstance: daoFactoryInfo.address,
+      orgName: opts.name,
+      founderAddresses: [opts.founderAddresses],
+      repDist: [opts.memberReputation],
+    });
 
-    console.log('Calling DAOFactory.forgeOrg(...)');
     const forgeOrgData = getForgeOrgData({
       DAOFactoryInstance: daoFactoryInfo.address,
       orgName: opts.name,

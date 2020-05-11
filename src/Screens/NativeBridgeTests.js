@@ -163,21 +163,27 @@ export default class nativeBridgeTests extends React.Component {
   };
 
   createCommon = async () => {
-    const wallet = WalletManager.getInstance();
+    console.log('creating', );
+    console.log('creating...');
+    this.props.navigation.navigate('CommonCreationLoading');
+    // const wallet = WalletManager.getInstance();
 
-    const arc = getArc(wallet.ethWallet);
-    const commonStatus = await createCommon(await arc, {
-      name: 'Car DAO',
-      founderAddresses: wallet.ethWallet.address,
-      minFeeToJoin: 100,
-      fundingToken: '0x0000000000000000000000000000000000000000',
-      goal: 100000,
-      deadline: 20200404,
-      metaData: '',
-      ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
-    });
+    // const arc = getArc(wallet.ethWallet);
 
-    this.setState({commonStatus: `${JSON.stringify(commonStatus)}`});
+    // const commonAddress = await createCommon(await arc, {
+    //   name: 'Grass DAO',
+    //   founderAddresses: wallet.ethWallet.address,
+    //   tokenDist: [0],
+    //   repDist: [100],
+    //   minFeeToJoin: 100, // TDB: get from formData
+    //   fundingGoal: 100000, // TBD: get from formdata
+    //   // TBD: get form data for deadline; these are in secondSinceEpoch
+    //   //TODO: get data for deadline from form data
+    //   fundingGoalDeadline: 20200404,
+    //   ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
+    // }, props.navigation);
+    //
+    // this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
   };
 
   render() {
