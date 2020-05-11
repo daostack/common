@@ -62,6 +62,7 @@ import Icon from './src/Assets/iconfont/Icon';
 import {auth, db} from './src/Firebase';
 import Toast from './src/Util/Toast';
 import KeyboardManager from 'react-native-keyboard-manager';
+import CommonCreationLoading from './src/Screens/CommonCreationLoading';
 
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
@@ -263,6 +264,13 @@ const App = ({userStore, daoStore}) => {
           <Stack.Screen
             name="CreateStep4"
             component={CreateStep4}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="CommonCreationLoading"
+            component={CommonCreationLoading}
             options={({navigation, route}) => ({
               headerShown: false,
             })}
