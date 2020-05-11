@@ -31,7 +31,6 @@ import SentTemplate from '../Components/ModalTemplates/SentTemplate';
 import ProposalApprovalTag from '../Components/Proposals/ProposalApprovalTag';
 
 const {cache} = client;
-let {width} = Dimensions.get('window');
 const mockData = {
   commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
   commonLogo:
