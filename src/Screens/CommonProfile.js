@@ -400,11 +400,11 @@ const CommonProfile = ({navigation, route}) => {
 
       <BottomRightButton
         onPress={() =>
-          navigation.navigate('New Post', {
+          navigation.navigate('New Topic', {
             commonId: '48NPcGnpskN9YkqVNXKA',
           })
         }
-        bottom={0}
+        bottom={120}
       />
 
       <SafeAreaView>

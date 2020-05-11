@@ -42,6 +42,7 @@ import {
   Discussions,
   DiscussionPost,
   ProposalScreen,
+  PDFViewer,
 } from './src/Screens';
 
 import {ApolloClientConfig as client} from './src/Config';
@@ -322,6 +323,7 @@ const App = ({userStore}) => {
           />
           <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
+          <Stack.Screen name="PDFViwer" component={PDFViewer} />
           <Stack.Screen
             options={{
               title: 'My wallet',

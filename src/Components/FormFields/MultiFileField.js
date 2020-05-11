@@ -29,6 +29,7 @@ const MultiFileField = props => {
             allowsEditing={true}
             title={'Add File'}
             validation={currItemValidation}
+            {...props}
           />
         );
       })}

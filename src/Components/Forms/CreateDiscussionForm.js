@@ -8,12 +8,15 @@ import FirebaseService from '../../Services/FirebaseService';
 import AuthService from '../../Services/AuthService';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast';
+import MultiFileField from '../FormFields/MultiFileField';
+import MultiImageField from '../FormFields/MultiImageField';
 
 class CreateDiscussionForm extends React.Component {
   static TITLE = 'title';
   static MESSAGE = 'message';
   static LINKS = 'links';
   static IMAGES = 'images';
+  static FILES = 'files';
 
   constructor(props) {
     super(props);
@@ -100,7 +103,7 @@ class CreateDiscussionForm extends React.Component {
           placeholderText="What do you want to say?"
           infoLabel="Required"
           multiline={true}
-          numberOfLines={15}
+          numberOfLines={10}
           value={''}
           validation={{
             name: CreateDiscussionForm.MESSAGE,
@@ -108,13 +111,40 @@ class CreateDiscussionForm extends React.Component {
             validateRule: 'required',
           }}
         />
-        <View style={{flexDirection: 'row'}}>
+        <View style={{marginVertical: 15}}>
+          <Text style={styles.title}>Files</Text>
+          <Text style={styles.subtitle}>
+            Anything you want to attach to this proposal?
+          </Text>
           {/* <TouchableOpacity style={{marginRight: 12}}>
-            <Text style={styles.addButton}>Add link</Text>
+            <Text style={styles.addButton}>Add file</Text>
           </TouchableOpacity> */}
+          <MultiFileField
+            navigation={this.props.navigation}
+            allowsEditing={true}
+            title={'Add file'}
+            validation={{
+              name: CreateDiscussionForm.FILES,
+              formStore: this.props.createDiscussionStore,
+              validateRule: 'string',
+            }}
+          />
+        </View>
+        <View style={{marginVertical: 15}}>
+          <Text style={styles.title}>Images</Text>
+          <Text style={styles.subtitle}>An image is worth a 1,000 words</Text>
           <TouchableOpacity style={{marginRight: 12}}>
-            <Text style={styles.addButton}>Add image</Text>
+            <Text style={styles.addButton}>Add Image</Text>
           </TouchableOpacity>
+                    {/* <MultiImageField
+            allowsEditing={true}
+            title={'Add Image'}
+            validation={{
+              name: CreateDiscussionForm.IMAGES,
+              formStore: this.props.createDiscussionStore,
+              validateRule: 'string',
+            }}
+          /> */}
         </View>
         <View style={styles.buttonConatiner}>
           <TouchableOpacity style={styles.button} onPress={this.formSave}>
@@ -128,9 +158,10 @@ class CreateDiscussionForm extends React.Component {
 
 const styles = StyleSheet.create({
   addButton: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     color: colors.mainBlue,
+    marginVertical: 8,
   },
   buttonConatiner: {
     flex: 1,
@@ -138,6 +169,20 @@ const styles = StyleSheet.create({
     // bottom: 0,
     marginVertical: 60,
     // backgroundColor: colors.grey4,
+  },
+  title: {
+    fontFamily: 'Roboto',
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+  },
+  subtitle: {
+    fontFamily: 'Roboto',
+    fontSize: 12,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    marginVertical: 8,
+    color: colors.grey3,
   },
   button: {
     alignItems: 'center',

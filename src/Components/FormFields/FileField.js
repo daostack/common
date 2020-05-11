@@ -1,5 +1,11 @@
 import * as React from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  Dimensions,
+} from 'react-native';
 
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
@@ -13,7 +19,6 @@ import {text, layout, colors, sizeM} from '../../Theme';
 class FileField extends React.Component {
   fieldValidation = null;
   placeFieldActionComponent = null;
-
   static defaultProps;
 
   constructor(props) {
@@ -65,7 +70,7 @@ class FileField extends React.Component {
   };
 
   renderImage = () => {
-    const {validation} = this.props;
+    const {validation, navigation} = this.props;
 
     const currValue = validation
       ? validation.formStore.form.fields[validation.name].value
@@ -79,7 +84,15 @@ class FileField extends React.Component {
       return (
         <View style={styles.adRow}>
           <Icon name="common" color={colors.mainBlue} size={22} />
-          <Text style={styles.adsText}>{currValue}</Text>
+          <TouchableOpacity
+            onPress={() => {
+              console.log('Click');
+              navigation.navigate('PDFViwer', {
+                uri: 'http://samples.leanpub.com/thereactnativebook-sample.pdf',
+              });
+            }}>
+            <Text style={styles.adsText}>{currValue}</Text>
+          </TouchableOpacity>
         </View>
       );
     } else {

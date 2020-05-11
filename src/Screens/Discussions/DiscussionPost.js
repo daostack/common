@@ -26,6 +26,7 @@ const DiscussionPost = props => {
         <View style={{backgroundColor: colors.white, flex: 1, padding: 20}}>
           <CreateDiscussionForm
             commonId={commonId}
+            navigation={props.navigation}
             onFormSubmit={() => {
               props.navigation.pop();
             }}
