@@ -136,7 +136,7 @@ class CreateDiscussionForm extends React.Component {
           <TouchableOpacity style={{marginRight: 12}}>
             <Text style={styles.addButton}>Add Image</Text>
           </TouchableOpacity>
-                    {/* <MultiImageField
+          {/* <MultiImageField
             allowsEditing={true}
             title={'Add Image'}
             validation={{

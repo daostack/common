@@ -11,12 +11,14 @@ import {colors, text, layout} from '../Theme';
 import React from 'react';
 import Icon from '../Assets/iconfont/Icon';
 import Pdf from 'react-native-pdf';
+import {useNavigation} from '@react-navigation/native';
 
-const PDFViewer = ({props, route, navigation}) => {
+const PDFViewer = ({props, route}) => {
   const uri = route.params.uri;
   const [pages, setPages] = useState(0);
   const [currPage, setCurrPage] = useState(0);
   const hideIndex = route.params.hideIndex || false;
+  const navigation = useNavigation();
   return (
     <SafeAreaView flex={1}>
       <View style={styles.container}>
@@ -35,6 +37,7 @@ const PDFViewer = ({props, route, navigation}) => {
           }}
           onPressLink={uri => {
             console.log(`Link presse: ${uri}`);
+            navigation.navigate('Browser', {url: uri});
           }}
           style={styles.pdf}
         />
@@ -44,7 +47,7 @@ const PDFViewer = ({props, route, navigation}) => {
       ) : (
         <View style={styles.index}>
           <Text style={{color: colors.black}}>
-            {currPage}/{pages}
+            {currPage} of {pages}
           </Text>
         </View>
       )}

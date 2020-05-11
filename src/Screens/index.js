@@ -28,3 +28,4 @@ export RequestStep2 from './Commons/RequestStep2';
 export RequestStep3 from './Commons/RequestStep3';
 export RequestStep4 from './Commons/RequestStep4';
 export PDFViewer from './PDFViewer';
+export Browser from './Browser';
