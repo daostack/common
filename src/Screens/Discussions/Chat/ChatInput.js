@@ -13,9 +13,9 @@ import {
   Keyboard,
   SectionList,
 } from 'react-native';
+import Icon from '../../../Assets/iconfont/Icon';
 
 const ChatInput = props => {
-  
   const sendMessageToDiscussion = async () => {
     const userStore = props.userStore;
     const message = inputRef.current._lastNativeText;
@@ -79,6 +79,6 @@ const ChatInput = props => {
       <View style={{height: 30, backgroundColor: colors.white}} />
     </KeyboardAvoidingView>
   );
-}
+};
 
 export default ChatInput;

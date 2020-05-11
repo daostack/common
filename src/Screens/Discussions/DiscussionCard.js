@@ -150,7 +150,7 @@ const DiscussionCard = props => {
                 }}>
                 Join the discussion
               </Text>
-              <Icon name="right-arrow" size={20} color={colors.mainBlue}/>
+              <Icon name="right-arrow" size={20} color={colors.mainBlue} />
             </View>
           </View>
         )}

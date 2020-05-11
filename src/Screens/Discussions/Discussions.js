@@ -210,7 +210,7 @@ const Discussions = props => {
               </View>
 
               <TouchableOpacity
-                style={{alignItems: 'center', }}
+                style={{alignItems: 'center'}}
                 onPress={() => {
                   setIsExpanded(!isExpanded);
                 }}>

@@ -410,7 +410,7 @@ const CommonProfile = ({navigation, route}) => {
       <SafeAreaView>
         {isMember ? (
           <TouchableOpacity style={styles.addButton}>
-            <Icon name="plus" color={colors.white}></Icon>
+            <Icon name="plus" color={colors.white} />
           </TouchableOpacity>
         ) : (
           <>

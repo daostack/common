@@ -36,7 +36,7 @@ const ChatRoom = props => {
 
   let listRef = useRef([]);
   useEffect(() => {
-    // `common/${commonId}/discussion/${data.id}/message`; 
+    // `common/${commonId}/discussion/${data.id}/message`;
     const unsubscribe = firestore()
       .collection(path)
       .orderBy('createTime', 'desc')

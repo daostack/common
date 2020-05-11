@@ -119,7 +119,7 @@ const CommonsList = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       <SafeAreaView />
-      {/** 
+      {/**
       <Query query={DAOS_SUBSCRIPTION}>
         {({loading, error, data}) => {
           console.log('Query Commons -> ', loading, error, data);
