@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   Dimensions,
   Text,
@@ -20,19 +20,56 @@ import Toast from '../../Util/Toast';
 
 import BottomSheetContainer from '../../Components/BottomSheetContainer';
 import BottomSheetModal from '../../Components/BottomSheetModal';
+import ProposalService from '../../Services/ProposalService';
 
-const mockData = {
-  data: 'data',
-  member: {
-    name: 'John Smith',
-    memberSince: 'may 12',
-    imageUrl:
-      'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
-    date: 'May 12',
-  },
-};
+import CountDown from 'react-native-countdown-component';
+import FirebaseService from '../../Services/FirebaseService';
 
-const ProposalScreen = ({navigation}) => {
+const ProposalScreen = ({navigation, route}) => {
+  const [proposalInfo, setProposalInfo] = useState(false);
+  const [proposedUser, setProposedUser] = useState(false);
+
+  useEffect(() => {
+    const getProposalInfo = async proposalId => {
+      try {
+        console.log('proposalId -> ', proposalId);
+        let proposalInfo = await ProposalService.getInstance().getProposalInfo(
+          proposalId,
+        );
+
+        console.log('proposalInfo', proposalInfo);
+
+        //RequestToJoin proposal
+        let proposedMemberId = null;
+        let funding = null;
+        if (proposalInfo.joinAndQuit) {
+          proposedMemberId = proposalInfo.joinAndQuit.proposedMemberId;
+          funding = proposalInfo.joinAndQuit.funding;
+        }
+        //FundingRequest proposal
+        else {
+          proposedMemberId = proposalInfo.fundingRequest.beneficiaryId;
+          funding = proposalInfo.joinAndQuit.amount;
+        }
+
+        console.log('proposedMemberId', proposedMemberId);
+
+        const proposedUser = await FirebaseService.getInstance().getUserById(
+          proposedMemberId,
+        );
+
+        setProposedUser(proposedUser);
+        setProposalInfo({...proposalInfo, ...{funding: funding}});
+      } catch (error) {
+        console.log('error: ', error);
+      }
+    };
+
+    if (route) {
+      getProposalInfo(route.params.proposalId);
+    }
+  }, [route?.params.proposalId]);
+
   const [
     isApprovalBottomModalVisible,
     setIsApprovalBottomModalVisible,
@@ -56,10 +93,14 @@ const ProposalScreen = ({navigation}) => {
     boostedInfoRef.current.snapTo(1);
   };
 
-  const renderScene = SceneMap({
-    info: ProposalData,
-    discussions: ProposalDiscussion,
-  });
+  const renderScene = ({route, jumpTo}) => {
+    switch (route.key) {
+      case 'info':
+        return <ProposalData proposalInfo={proposalInfo} />;
+      case 'discussions':
+        return <ProposalDiscussion jumpTo={jumpTo} />;
+    }
+  };
 
   const renderTabBar = props => (
     <TabBar
@@ -123,11 +164,47 @@ const ProposalScreen = ({navigation}) => {
         </View>
       );
     } else {
+      const remainingSeconds = proposalInfo?.closingAt?.seconds
+        ? proposalInfo?.closingAt?.seconds - Date.now() / 1000
+        : null;
+
+      const isLessThanOneHour = remainingSeconds < 3600;
+
+      let counterTextColor = styles.timerText;
+      let timerBackground = colors.paleblue;
+
+      if (isLessThanOneHour) {
+        counterTextColor = {...styles.timerText, ...{color: colors.white}};
+        timerBackground = colors.orangeDark;
+      }
+
       return (
-        <View style={{...layout.flexRow, ...{justifyContent: 'space-between'}}}>
+        <View
+          style={{
+            ...layout.flexRow,
+            ...{
+              justifyContent: 'space-between',
+              width: '100%',
+              paddingHorizontal: 20,
+            },
+          }}>
           <View style={styles.timerContainer}>
-            <View style={styles.timer}>
-              <Text style={text.smallBlackText}>00:14:32:12</Text>
+            <View
+              style={{...styles.timer, ...{backgroundColor: timerBackground}}}>
+              {remainingSeconds ? (
+                <CountDown
+                  digitTxtStyle={counterTextColor}
+                  timeLabels={false}
+                  showSeparator={true}
+                  separatorStyle={counterTextColor}
+                  digitStyle={{
+                    height: 'auto',
+                    width: 'auto',
+                  }}
+                  until={remainingSeconds}
+                  onFinish={() => console.log('finished')}
+                />
+              ) : null}
             </View>
           </View>
           <TouchableOpacity
@@ -166,13 +243,13 @@ const ProposalScreen = ({navigation}) => {
               ...{paddingBottom: 0},
             }}>
             <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
-              Launch a facebook campaign to arise awareness about the amazon
+              {proposalInfo?.title}
             </Text>
 
             <MemberCard
-              name={mockData.member.name}
-              memberSince={mockData.member.memberSince}
-              imageUrl={mockData.member.imageUrl}
+              name={proposedUser?.displayName}
+              memberSince="May 12" //TODO: set createdAt field in the user table and use it's value here
+              imageUrl={proposedUser.photoURL}
               isPending={false}
             />
           </View>
@@ -219,8 +296,13 @@ const styles = StyleSheet.create({
     color: colors.mainBlue,
   },
 
+  timerText: {
+    ...text.smallBlackText,
+    ...text.bold,
+    color: colors.slate,
+  },
+
   timer: {
-    backgroundColor: colors.paleblue,
     paddingHorizontal: sizeM,
     paddingVertical: 1,
     borderRadius: 12,
@@ -236,7 +318,7 @@ const styles = StyleSheet.create({
   },
 
   actionButtonContainer: {
-    padding: 20,
+    padding: 0,
     paddingVertical: 25,
     paddingBottom: 40,
     position: 'absolute',

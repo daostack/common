@@ -1,9 +1,10 @@
 import {db, firebase} from '../Firebase';
 import uuid from 'uuid/v4';
 
-const DB_COLLECTIONS = {
+export const DB_COLLECTIONS = {
   users: 'users',
   userInfo: 'userInfo',
+  proposals: 'proposals',
 };
 
 export default class FirebaseService {

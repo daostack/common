@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   View,
@@ -12,8 +12,27 @@ import Icon from '../../Assets/iconfont/Icon';
 import ReadMore from 'react-native-read-more-text';
 import UserMessageCard from '../../Components/Discussion/UserMessageCard';
 import ImageView from 'react-native-image-viewing';
+import Loader from '../../Components/Loader';
 
-const ProposalData = ({}) => {
+const ProposalData = props => {
+  const [proposalInfo, setProposalInfo] = useState(null);
+
+  useEffect(() => {
+    // noinspection JSAnnotator
+    const getDao = async currProposalInfo => {
+      // noinspection JSAnnotator
+      try {
+        setProposalInfo(currProposalInfo);
+
+        //console.log('HELLO!: ', res);
+      } catch (error) {
+        console.log('error: ', error);
+      }
+    };
+
+    getDao(props.proposalInfo);
+  }, [props.proposalInfo]);
+
   const mockData = {
     images: [
       {
@@ -87,7 +106,7 @@ const ProposalData = ({}) => {
     return (
       <View style={styles.imageGalleryTextContainer}>
         <Text style={styles.imageGalleryText}>
-          {mockData.images[imageIndex].title}
+          {proposalInfo.images[imageIndex].title}
         </Text>
       </View>
     );
@@ -120,22 +139,53 @@ const ProposalData = ({}) => {
     // ...
   };
 
-  return (
+  const progressBarWidthPercent = 75;
+
+  const proposalCardHeaderByStage = isBoosted => {
+    let iconName = 'star';
+    let iconColor = colors.mainBlue;
+    let headerTitle = 'Boosted';
+    let HeaderTitleBackground = '';
+
+    if (isBoosted) {
+      iconName = 'boosted';
+      iconColor = colors.orange;
+      headerTitle = 'Boosted';
+    }
+
+    return (
+      <View style={styles.proposalCardHeader}>
+        <Icon name={iconName} color={iconColor} size={16} />
+        <Text style={{...text.orangeSmallBold, ...{marginHorizontal: 5}}}>
+          {headerTitle}
+        </Text>
+        <TouchableOpacity onPress={openBoostedInfo}>
+          <Icon name={'explanation'} size={12} />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  /*  
+
+  (((proposalInfo.votesFor + proposalInfo.votesAgainst) /
+    proposalInfo.votesFor) - 1) *
+    100;
+  
+      */
+
+  const isBoosted = true; //Iaflnooopprs.stage === 'Boosted';
+
+  return proposalInfo ? (
     <>
       <View style={styles.container}>
         <View style={styles.proposalCard}>
-          <View style={styles.proposalCardHeader}>
-            <Icon name={'boosted'} color={colors.orange} size={16} />
-            <Text style={{...text.orangeSmallBold, ...{marginHorizontal: 5}}}>
-              Boosted
-            </Text>
-            <TouchableOpacity onPress={openBoostedInfo}>
-              <Icon name={'explanation'} size={12} />
-            </TouchableOpacity>
-          </View>
+          {proposalCardHeaderByStage(isBoosted)}
           <View style={layout.content}>
             <View style={styles.proposalRowSubtitle}>
-              <Text style={text.smallBoldGreyText}>143 votes</Text>
+              <Text style={text.smallBoldGreyText}>
+                {proposalInfo.votesFor + proposalInfo.votesAgainst} votes
+              </Text>
               <Text style={text.smallGreyText}>&nbsp;Created 3d ago</Text>
             </View>
 
@@ -148,7 +198,9 @@ const ProposalData = ({}) => {
                   size={14}
                   style={layout.marginRightXS}
                 />
-                <Text style={text.lightishGreenText}>73</Text>
+                <Text style={text.lightishGreenText}>
+                  {proposalInfo.votesFor}
+                </Text>
               </View>
 
               <View
@@ -159,11 +211,20 @@ const ProposalData = ({}) => {
                   size={14}
                   style={layout.marginRightXS}
                 />
-                <Text style={text.againstText}>28</Text>
+                <Text style={text.againstText}>
+                  {proposalInfo.votesAgainst}
+                </Text>
               </View>
             </View>
             <View style={styles.proposalProgressBar}>
-              <View style={styles.proposalInnerProgressBar} />
+              <View
+                style={{
+                  ...styles.proposalInnerProgressBar,
+                  ...{
+                    width: `${progressBarWidthPercent}%`,
+                  },
+                }}
+              />
             </View>
           </View>
         </View>
@@ -174,7 +235,7 @@ const ProposalData = ({}) => {
               <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
                 Cost
               </Text>
-              <Text style={text.h1Black}>$200</Text>
+              <Text style={text.h1Black}>{`$${proposalInfo.funding}`}</Text>
             </View>
 
             <ReadMore
@@ -182,14 +243,7 @@ const ProposalData = ({}) => {
               renderTruncatedFooter={_renderTruncatedFooter}
               renderRevealedFooter={_renderRevealedFooter}
               onReady={_handleTextReady}>
-              <Text style={text.blackText}>
-                Hello, my name is Michelle and I am the owner of the marketing
-                agency MZ Studio and I propose to create a FB campaign to
-                attract more members. This is divided into 3 steps: 1. Page
-                Creation… 2. Advertising 3. Administration and Management I can
-                undertake all the work required and have it up and running
-                within a week.
-              </Text>
+              <Text style={text.blackText}>{proposalInfo.description}</Text>
             </ReadMore>
           </View>
         </View>
@@ -220,9 +274,7 @@ const ProposalData = ({}) => {
           style={{marginBottom: 20}}>
           <View style={styles.imageGallery}>
             <View style={{width: 20}} />
-            {mockData.images.map((currImage, currIndex) => {
-              console.log('Image -> ', currImage);
-
+            {proposalInfo.images.map((currImage, currIndex) => {
               const currWidth = (currImage.width / currImage.height) * 220;
 
               return (
@@ -266,7 +318,8 @@ const ProposalData = ({}) => {
               </Text>
             </View>
             <View style={{...layout.content, ...layout.flexStart}}>
-              {mockData.discussions.map((currMessage, currIndex) => {
+              {/**
+              {proposalInfo.discussions.map((currMessage, currIndex) => {
                 return (
                   <UserMessageCard
                     photoURL={currMessage.imageUrl}
@@ -276,6 +329,7 @@ const ProposalData = ({}) => {
                   />
                 );
               })}
+              */}
             </View>
             <View style={layout.contant}>
               <TouchableOpacity>
@@ -287,13 +341,15 @@ const ProposalData = ({}) => {
       </View>
 
       <ImageView
-        images={mockData.images}
+        images={proposalInfo.images}
         imageIndex={imageGalleryIndex}
         visible={imageGalleryIndex > -1}
         onRequestClose={() => setImageGalleryIndex(-1)}
         FooterComponent={ImageGalleryFooter}
       />
     </>
+  ) : (
+    <Loader />
   );
 };
 
@@ -419,7 +475,6 @@ const styles = StyleSheet.create({
     ...layout.marginTopS,
   },
   proposalInnerProgressBar: {
-    width: 250,
     borderRadius: 6,
     backgroundColor: colors.lightishGreen,
     height: 8,

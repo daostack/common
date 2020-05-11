@@ -29,6 +29,7 @@ import CommonStageSummary from '../Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
 import SentTemplate from '../Components/ModalTemplates/SentTemplate';
 import ProposalApprovalTag from '../Components/Proposals/ProposalApprovalTag';
+import {CommonActions} from '@react-navigation/native';
 
 const {cache} = client;
 let {width} = Dimensions.get('window');
@@ -71,6 +72,7 @@ const CommonProfile = ({navigation, route}) => {
     const getDao = async commonId => {
       // noinspection JSAnnotator
       try {
+        /*
         console.log('CACHE: ', cache.data.data);
         const res = await cache.readQuery({
           query: gql`
@@ -86,6 +88,7 @@ const CommonProfile = ({navigation, route}) => {
           },
         });
         console.log('HELLO!: ', res);
+        */
       } catch (error) {
         console.log('error: ', error);
       }
@@ -244,7 +247,13 @@ const CommonProfile = ({navigation, route}) => {
   };
 
   const openProposalScreen = event => {
-    navigation.navigate('ProposalScreen');
+    const navigate = CommonActions.navigate({
+      name: 'ProposalScreen',
+      params: {
+        proposalId: 'ba02cba0-937a-11ea-b51a-77e469735457',
+      },
+    });
+    navigation.dispatch(navigate);
   };
 
   const openNotif = event => {
