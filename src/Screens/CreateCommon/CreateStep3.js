@@ -20,10 +20,9 @@ import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
 import CreateStepDotHeader from './CreateStepDotHeader';
 
 const CreateStep3 = props => {
-  const [scrollY, setScrollY] = useState(new Animated.Value(0));
+  const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [ruleCount, setRuleCount] = useState(1);
-  const [ruleTitles, setRuleTitles] = useState([]);
   const [pass, setPass] = useState(false);
   // var ruleBody = [];
 

@@ -21,7 +21,7 @@ import SortProposals from './BottomSheetScreens/SortProposals';
 import CommonProfileOptions from './BottomSheetScreens/CommonProfileOptions';
 //import ProposalSheetScreen from './Proposals/ProposalSheetScreen';
 import ProposalSheetScreen from './BottomSheetScreens/ProposalSheetScreen';
-import ApprovalSheetScreen from './BottomSheetScreens/ApprovalSheetScreen';
+// import ApprovalSheetScreen from './BottomSheetScreens/ApprovalSheetScreen';
 
 import BottomSheetContainer from '../Components/BottomSheetContainer';
 import CommonCover from '../Components/Commons/CommonCover';
@@ -31,7 +31,6 @@ import SentTemplate from '../Components/ModalTemplates/SentTemplate';
 import ProposalApprovalTag from '../Components/Proposals/ProposalApprovalTag';
 
 const {cache} = client;
-let {width} = Dimensions.get('window');
 const mockData = {
   commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
   commonLogo:
@@ -395,7 +394,7 @@ const CommonProfile = ({navigation, route}) => {
       <SafeAreaView>
         {isMember ? (
           <TouchableOpacity style={styles.addButton}>
-            <Icon name="plus" color={colors.white}></Icon>
+            <Icon name="plus" color={colors.white} />
           </TouchableOpacity>
         ) : (
           <>

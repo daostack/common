@@ -42,7 +42,7 @@ const ProposalScreen = ({navigation}) => {
   const [voteType, setVoteType] = useState(false);
 
   const [index, setIndex] = useState(0);
-  const [routes, setRoutes] = useState([
+  const [routes] = useState([
     {key: 'info', icon: 'proposal'},
     {key: 'discussions', icon: 'discussion'},
   ]);
@@ -50,11 +50,12 @@ const ProposalScreen = ({navigation}) => {
   boostedInfoRef = useRef();
   approvalSheetRef = useRef();
 
-  const openBoostedInfoBottomSheet = () => {
-    console.log('openBoostedInfo');
-    boostedInfoRef.current.snapTo(1);
-    boostedInfoRef.current.snapTo(1);
-  };
+  // TODO: can this be removed?
+  // const openBoostedInfoBottomSheet = () => {
+  //   console.log('openBoostedInfo');
+  //   boostedInfoRef.current.snapTo(1);
+  //   boostedInfoRef.current.snapTo(1);
+  // };
 
   const renderScene = SceneMap({
     info: ProposalData,
@@ -166,7 +167,7 @@ const ProposalScreen = ({navigation}) => {
               ...{paddingBottom: 0},
             }}>
             <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
-              Launch a facebook campaign to arise awareness about the amazon
+              Launch a facebook campaign to raise awareness about the amazon
             </Text>
 
             <MemberCard

@@ -29,8 +29,7 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
       Toast.done('Your profile is updated');
     }
   });
-
-  _signOut = async () => {
+  const _signOut = async () => {
     try {
       await AuthService.getInstance().signOut();
     } catch (error) {
@@ -50,8 +49,22 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
     }
   };
 
+  const onTestPagePress = event => {
+    navigation.navigate('NativeBridgeTests');
+    if (userStore.userInfo) {
+      console.log(
+        'fetching some Eth for your address',
+        userStore.userInfo.ethereumAddress,
+      );
+      fetch(
+        `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${userStore.userInfo.ethereumAddress}`,
+      );
+    }
+  };
+
   const onMyWalletPress = event => {
     navigation.navigate('MyWallet');
+    console.log('address: ', userStore.userInfo.ethereumAddress);
   };
 
   const onMyCommonsPress = event => {
@@ -90,6 +103,7 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
                 : renderUnsignedUserData()}
 
               <View style={layout.marginTopL}>
+                <AccordionBtn title="Test Page" onPress={onTestPagePress} />
                 {userStore.userInfo ? (
                   <AccordionBtn
                     title="My wallet"
@@ -186,7 +200,6 @@ const styles = StyleSheet.create({
   body: {
     paddingVertical: 10,
   },
-
   safeArea: {
     flex: 1,
     backgroundColor: Colors.white,

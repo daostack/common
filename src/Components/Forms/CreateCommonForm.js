@@ -9,7 +9,7 @@ class CreateCommonForm extends React.Component {
   static LINKS = 'links';
   static FUNDING_GOAL = 'funding';
   static DEADLINE = 'deadline';
-  static MINIMUM = 'minimun';
+  static MINIMUM = 'minimum';
   static ACTION = 'action';
   static RULES = 'rules';
   static AVATAR = 'avatar';
@@ -18,7 +18,7 @@ class CreateCommonForm extends React.Component {
   formSkip() {}
 
   formSave = () => {
-    const {createCommonFormStore, userId} = this.props;
+    const {createCommonFormStore} = this.props;
     if (createCommonFormStore.isFormValid()) {
       // firebaseService
       //   .editUser(userId, completeAccountFormStore.getChangedFormFieldsJson())

@@ -1,16 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {
   Text,
-  TouchableOpacity,
   View,
   StyleSheet,
   ScrollView,
   Dimensions,
   SafeAreaView,
   Animated,
-  TextInput,
 } from 'react-native';
-import TextInputField from '../../Components/FormFields/TextInputField';
 import AmountField from '../../Components/FormFields/AmountField';
 import {colors} from '../../Theme';
 import {observer, inject} from 'mobx-react';
@@ -18,17 +15,16 @@ const {width} = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepNavigation from './RequestStepNavigation';
 import RequestToJoinForm from '../../Components/Forms/RequestToJoinForm';
-import JoinAmount from '../../Components/Commons/JoinAmount';
 
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from './RequestStepActionButton';
 
 const RequestStep3 = props => {
-  const [scrollY, setScrollY] = useState(new Animated.Value(0));
+  const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [ruleCount, setRuleCount] = useState(1);
-  const [ruleTitles, setRuleTitles] = useState([]);
-  const [pass, setPass] = useState(true);
+  // const [ruleCount, setRuleCount] = useState(1);
+  // const [ruleTitles, setRuleTitles] = useState([]);
+  // const [pass, setPass] = useState(true);
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
 
   // var ruleBody = [];
