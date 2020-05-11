@@ -99,6 +99,15 @@ export default class nativeBridgeTests extends React.Component {
     }
   };
 
+  getSomeFunds = async () => {
+    const manager = WalletManager.getInstance();
+    const address = await manager.getOwnerAccount();
+    console.log(`fetching some Eth for your address ${address}`);
+    fetch(
+      `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
+    );
+  };
+
   getBalance = async () => {
     try {
       const manager = WalletManager.getInstance();
@@ -169,6 +178,7 @@ export default class nativeBridgeTests extends React.Component {
 
     const arc = await getArc(wallet.ethWallet);
 
+    console.log('calling the function');
     const commonStatus = await createCommon(arc, {
       name: `Test DAO ${new Date()}`,
       founderAddresses: wallet.ethWallet.address,
@@ -187,6 +197,10 @@ export default class nativeBridgeTests extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
+          <TouchableOpacity onPress={this.getSomeFunds} style={styles.button}>
+            <Text>Get some funds!</Text>
+          </TouchableOpacity>
+
           <Text style={{marginVertical: 10}}>
             --------------- Common Interactions -----------------
           </Text>

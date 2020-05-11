@@ -58,7 +58,7 @@ import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
-import {auth, db} from './src/Firebase';
+import {auth} from './src/Firebase';
 // import Toast from './src/Util/Toast';
 import KeyboardManager from 'react-native-keyboard-manager';
 import CommonCreationLoading from './src/Screens/CommonCreationLoading';

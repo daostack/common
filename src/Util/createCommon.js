@@ -98,7 +98,7 @@ export const createCommon = async (arc, givenOpts = {}) => {
       fundingToken: opts.fundingToken,
       minFeeToJoin: [opts.minFeeToJoin],
       memberReputation: opts.memberReputation,
-      fundingGoal: new BN(opts.fundingGoal),
+      fundingGoal: opts.fundingGoal,
       fundingGoalDeadline: opts.fundingGoalDeadline,
       metaData: opts.ipfsHash,
     });
