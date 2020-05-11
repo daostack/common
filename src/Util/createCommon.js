@@ -17,11 +17,15 @@ const {ARC_VERSION, OVERRIDES} = require('./arc');
 //   ipfsHash,
 // });
 
-export const createCommon = async (arc, givenOpts = {}, navigation) => {
+export const createCommonWithLoader = async (
+  arc,
+  givenOpts = {},
+  navigation,
+) => {
   navigation.navigate('CommonCreationLoading');
 };
 
-export const createCommon2 = async (arc, givenOpts = {}, navigation) => {
+export const createCommon = async (arc, givenOpts = {}) => {
   try {
     const defaultOptions = {
       fundingToken: '0x0000000000000000000000000000000000000000',

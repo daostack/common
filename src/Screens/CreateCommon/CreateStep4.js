@@ -160,7 +160,7 @@ const CreateStep4 = props => {
       ipfsHash,
     });
 
-    const commonAddress = await createCommon(arc, {
+    const commonAddress = await createCommonWithLoader(arc, {
       name: formData.name,
       founderAddresses: address,
       tokenDist: [0],

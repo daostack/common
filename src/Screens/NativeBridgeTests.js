@@ -163,14 +163,13 @@ export default class nativeBridgeTests extends React.Component {
   };
 
   createCommon = async () => {
-    console.log('creating');
-    console.log('creating...');
+    console.log('creating common -- please wait');
     this.setState({commonStatus: 'Creating common -- please wait'});
     const wallet = WalletManager.getInstance();
 
-    const arc = getArc(wallet.ethWallet);
+    const arc = await getArc(wallet.ethWallet);
 
-    const commonStatus = await createCommon(await arc, {
+    const commonStatus = await createCommon(arc, {
       name: `Test DAO ${new Date()}`,
       founderAddresses: wallet.ethWallet.address,
       minFeeToJoin: 100,

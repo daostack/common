@@ -11,12 +11,11 @@ import {Image, StyleSheet, Platform, View} from 'react-native';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+// import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {colors, text} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import {
-  CommonsList,
   CommonProfile,
   Onboarding,
   UserProfile,
@@ -49,10 +48,10 @@ import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
 import AuthService from './src/Services/AuthService';
 
-const firebaseService = new FirebaseService();
+// const firebaseService = new FirebaseService();
 import CommonHome from './src/Components/Navigation/CommonHome';
-const authService = new AuthService();
-const Tab = createBottomTabNavigator();
+// const authService = new AuthService();
+// const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 import {filterObjectByKeys} from './src/Util';
 import WalletManager from './src/Util/WalletManager';
@@ -60,7 +59,7 @@ import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import {auth, db} from './src/Firebase';
-import Toast from './src/Util/Toast';
+// import Toast from './src/Util/Toast';
 import KeyboardManager from 'react-native-keyboard-manager';
 import CommonCreationLoading from './src/Screens/CommonCreationLoading';
 

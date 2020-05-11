@@ -2,14 +2,13 @@ import React from 'react';
 import {
   Image,
   Text,
-  TouchableOpacity,
   View,
   StyleSheet,
   SafeAreaView,
   StatusBar,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {colors, text} from '../Theme';
+import {colors} from '../Theme';
 import {observer, inject} from 'mobx-react';
 import Swiper from 'react-native-swiper';
 
@@ -27,9 +26,7 @@ const CommonCreationLoading = ({navigation}) => {
             paginationStyle={{bottom: 0}}>
             <View style={styles.slide1}>
               <Text style={styles.text}>Creating your common</Text>
-              <Text style={styles.subtitle}>
-                This may take a few minutes
-              </Text>
+              <Text style={styles.subtitle}>This may take a few minutes</Text>
               <Image
                 source={require('../Assets/loader-1-analyzing.png')}
                 style={styles.image}
@@ -37,9 +34,7 @@ const CommonCreationLoading = ({navigation}) => {
             </View>
             <View style={styles.slide1}>
               <Text style={styles.text}>Creating your common</Text>
-              <Text style={styles.subtitle}>
-                This may take a few minutes
-              </Text>
+              <Text style={styles.subtitle}>This may take a few minutes</Text>
               <Image
                 source={require('../Assets/loader-2-securing-on-the-blockchain.png')}
                 style={styles.image}
@@ -47,28 +42,20 @@ const CommonCreationLoading = ({navigation}) => {
             </View>
             <View style={styles.slide1}>
               <Text style={styles.text}>Creating your common</Text>
-              <Text style={styles.subtitle}>
-                This may take a few minutes
-              </Text>
+              <Text style={styles.subtitle}>This may take a few minutes</Text>
               <Image
                 source={require('../Assets/loader-3-some-final-touches.png')}
                 style={styles.image}
               />
             </View>
             <View style={styles.slide1}>
-              <Text style={styles.text}>
-                Creating your common
-              </Text>
-              <Text style={styles.subtitle}>
-                This may take a few minutes
-              </Text>
+              <Text style={styles.text}>Creating your common</Text>
+              <Text style={styles.subtitle}>This may take a few minutes</Text>
               <Image
                 source={require('../Assets/loader-4-drumroll.png')}
                 style={styles.image}
               />
-              <Text style={styles.subtitle}>
-                This may take a few minutes
-              </Text>
+              <Text style={styles.subtitle}>This may take a few minutes</Text>
             </View>
           </Swiper>
         </View>
