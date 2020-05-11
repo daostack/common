@@ -185,7 +185,7 @@ export default class nativeBridgeTests extends React.Component {
       minFeeToJoin: 100,
       fundingToken: '0x0000000000000000000000000000000000000000',
       fundingGoal: 100000,
-      deadline: 20200404,
+      fundingGoalDeadline: 1589210661,
       metaData: '',
       ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
     });

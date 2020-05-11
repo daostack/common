@@ -72,60 +72,63 @@ const App = ({userStore, daoStore}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const onAuthStateChanged = async user => {
-    try {
-      userStore.setIsLoading(true);
-      daoStore.setIsLoading(true);
-      if (user) {
-        await AuthService.getInstance().loadMnemonic(user.uid);
-        await WalletManager.init(user.uid);
-        let appUser = await FirebaseService.getInstance().getUserById(user.uid);
-        const isNewUser = !appUser;
-        if (isNewUser) {
-          appUser = await AuthService.getInstance().createUserAndWallet(user);
-        }
-        const allUserInfo = {
-          ...user._user,
-          ...appUser,
-        };
-
-        const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
-        userStore.setSignedInUser(filteredUser);
-        if (isNewUser) {
-        }
-      } else {
-        userStore.setSignedInUser(null);
-      }
-
-      userStore.setIsLoading(false);
-    } catch (error) {
-      Toast.error(error.toString());
-    }
-  };
-
-  const getDaos = async () => {
-    try {
-      const appUsers = await FirebaseService.getInstance().getUsers();
-      console.log('users: ', appUsers);
-      // TODO: unsubscribe somewhere!
-      // const unsubscribe = db.collection('daos').onSnapshot(snapshot => {
-      //   if (snapshot.empty) {
-      //     return [];
-      //   }
-      //   let daosSnapshot = snapshot.docs.map(doc => {
-      //     return {...{id: doc.id}, ...doc.data()};
-      //   });
-      //   console.log('daos: ', daosSnapshot);
-      //   daoStore.setDaos(daosSnapshot);
-      // });
-      // console.log('DAOS: ', daosRes);
-      // setDaos(daosRes);
-    } catch (error) {
-      console.log('errror: ', error);
-    }
-  };
-
   useEffect(() => {
+    const onAuthStateChanged = async user => {
+      try {
+        userStore.setIsLoading(true);
+        daoStore.setIsLoading(true);
+        if (user) {
+          await AuthService.getInstance().loadMnemonic(user.uid);
+          await WalletManager.init(user.uid);
+          let appUser = await FirebaseService.getInstance().getUserById(
+            user.uid,
+          );
+          const isNewUser = !appUser;
+          if (isNewUser) {
+            appUser = await AuthService.getInstance().createUserAndWallet(user);
+          }
+          const allUserInfo = {
+            ...user._user,
+            ...appUser,
+          };
+
+          const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
+          userStore.setSignedInUser(filteredUser);
+          if (isNewUser) {
+          }
+        } else {
+          userStore.setSignedInUser(null);
+        }
+
+        userStore.setIsLoading(false);
+      } catch (error) {
+        Toast.error(error.toString());
+      }
+    };
+
+    // TODO: this function is really misnamed :/
+    const getDaos = async () => {
+      try {
+        const appUsers = await FirebaseService.getInstance().getUsers();
+        console.log('users: ', appUsers);
+        // TODO: unsubscribe somewhere!
+        // const unsubscribe = db.collection('daos').onSnapshot(snapshot => {
+        //   if (snapshot.empty) {
+        //     return [];
+        //   }
+        //   let daosSnapshot = snapshot.docs.map(doc => {
+        //     return {...{id: doc.id}, ...doc.data()};
+        //   });
+        //   console.log('daos: ', daosSnapshot);
+        //   daoStore.setDaos(daosSnapshot);
+        // });
+        // console.log('DAOS: ', daosRes);
+        // setDaos(daosRes);
+      } catch (error) {
+        console.log('errror: ', error);
+      }
+    };
+
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
 
     const checkOnboardingStatus = async () => {
@@ -143,7 +146,7 @@ const App = ({userStore, daoStore}) => {
     getDaos();
     checkOnboardingStatus();
     return subscriber;
-  }, []);
+  }, [daoStore, userStore]);
 
   console.log('onboarded: ', onboarded);
   console.log('daoStore DAOs: ', daoStore.daos);

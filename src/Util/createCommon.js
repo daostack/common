@@ -105,6 +105,7 @@ export const createCommon = async (arc, givenOpts = {}) => {
       metaData: opts.ipfsHash,
     });
 
+    console.log(schemeData);
     tx = await daoFactoryContract.setSchemes(...schemeData, OVERRIDES);
     console.log('waiting for tx to be mined');
     const receipt2 = await tx.wait();
