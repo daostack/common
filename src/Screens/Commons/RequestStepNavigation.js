@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import NavigationBar from 'react-native-navbar';
