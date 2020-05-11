@@ -40,7 +40,12 @@ export default class GoogleDriveService {
   };
 
   getFileById = async id => {
-    await GDrive.files.download(id, {toFile: downloadHeaderPath}, {});
+    const downloadFileResult = await GDrive.files.download(
+      id,
+      {toFile: downloadHeaderPath},
+      {},
+    );
+    await downloadFileResult.promise;
     return await RNFS.readFile(downloadHeaderPath, 'utf8');
   };
 

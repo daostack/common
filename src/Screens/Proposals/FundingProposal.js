@@ -6,10 +6,32 @@ import {
   SafeAreaView,
   StatusBar,
 } from 'react-native';
+import {observer, inject} from 'mobx-react';
 import {text, layout, colors} from '../../Theme';
 import FundingRequestForm from '../../Components/Forms/FundingRequestForm';
+import RequestStepActionButton from '../Commons/RequestStepActionButton';
+import {CommonActions} from '@react-navigation/native';
 
-const FundingProposal = ({}) => {
+const FundingProposal = ({fundingRequestFormStore, navigation}) => {
+  const viewProposal = () => {
+    //navigation.navigate('RequestStep1');
+  };
+
+  const goToToCommon = () => {
+    setShowRequestSentModal(false);
+  };
+
+  const createProposal = e => {
+    //setShowRequestSentModal(true);
+
+    const navigate = CommonActions.navigate({
+      name: 'CommonProfile',
+      params: {
+        showRequestSentModal: true,
+      },
+    });
+    navigation.dispatch(navigate);
+  };
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -29,6 +51,11 @@ const FundingProposal = ({}) => {
 
           <FundingRequestForm />
         </ScrollView>
+        <RequestStepActionButton
+          title="Create Proposal"
+          pass={fundingRequestFormStore.form.meta.isValid}
+          onPress={createProposal}
+        />
       </SafeAreaView>
     </>
   );
@@ -48,4 +75,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FundingProposal;
+export default inject('fundingRequestFormStore')(observer(FundingProposal));

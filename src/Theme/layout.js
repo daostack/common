@@ -121,6 +121,9 @@ export default StyleSheet.create({
   },
 
   // Margin RIGHT
+  marginRightXS: {
+    marginRight: sizeXS,
+  },
   marginRightS: {
     marginRight: 10,
   },
@@ -138,6 +141,20 @@ export default StyleSheet.create({
   paddingHorizontalXL: {
     paddingLeft: 40,
     paddingRight: 40,
+  },
+
+  // Pdding Bottom
+  paddingBottomS: {
+    marginBottom: 10,
+  },
+  paddingBottomM: {
+    marginBottom: 15,
+  },
+  paddingBottomL: {
+    marginBottom: 20,
+  },
+  paddingBottomXL: {
+    marginBottom: 40,
   },
 
   // Buttons

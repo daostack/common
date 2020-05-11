@@ -7648,6 +7648,11 @@ react-native-image-resizer@^1.2.0:
   resolved "https://registry.yarnpkg.com/react-native-image-resizer/-/react-native-image-resizer-1.2.2.tgz#fb17d136c03b1f3eb646dc778f1128f6008880a4"
   integrity sha512-zTS/jERFqLQ669uu+wzsVtIv1gxCeODLIVC5O5zsN7Iqwc5TuTLqBdNb890grrlrwHSPq/md3y7oAU6tRbpFfA==
 
+react-native-image-viewing@^0.1.8:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/react-native-image-viewing/-/react-native-image-viewing-0.1.8.tgz#b4cc3a382cfe289045e792879c71ea52ecf50286"
+  integrity sha512-cyFD92g4RFfQ5V7U5GYMQx4IQ8XJqEl/8BKJaaUeKC4l0X1O8XOQMa2SC+7OEEAfPHszp6QiKHpCNDR6b75PGQ==
+
 react-native-image-zoom-viewer@^2.2.27:
   version "2.2.27"
   resolved "https://registry.yarnpkg.com/react-native-image-zoom-viewer/-/react-native-image-zoom-viewer-2.2.27.tgz#fb3314c5dc86ac33da48cb31bf4920d97eecb6eb"
@@ -8093,6 +8098,11 @@ rimraf@~2.2.6:
   version "2.2.8"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
   integrity sha1-5Dm+Kq7jJzIZUnMPmaiSnk/FBYI=
+
+rn-swipe-button@^1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/rn-swipe-button/-/rn-swipe-button-1.2.6.tgz#6b5de8dac55220cbf9e29ca53a198704c349d1f8"
+  integrity sha512-CFHkqWPGrfDm7Rwsd9BPFKbX85Z8MZxwA4uZq9cDz1Z4MsavedTwHn8Tgxh6i2bqsGeqZj+ek1o/dBCv8Z50Ow==
 
 rsvp@^4.8.4:
   version "4.8.5"
