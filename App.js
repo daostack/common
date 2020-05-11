@@ -275,21 +275,21 @@ const App = ({userStore, daoStore}) => {
             })}
           />
           <Stack.Screen
-<<<<<<< HEAD
             name="Discussions"
             component={Discussions}
-=======
-            name="CommonCreationLoading"
-            component={CommonCreationLoading}
->>>>>>> master
             options={({navigation, route}) => ({
               headerShown: false,
             })}
           />
-<<<<<<< HEAD
+
+          <Stack.Screen
+            name="CommonCreationLoading"
+            component={CommonCreationLoading}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
           <Stack.Screen name="New Topic" component={DiscussionPost} />
-=======
->>>>>>> master
           <Stack.Screen
             options={{
               title: 'Edit my profile',
@@ -297,13 +297,10 @@ const App = ({userStore, daoStore}) => {
             name="EditProfile"
             component={EditProfile}
           />
-<<<<<<< HEAD
           <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen name="PDFViwer" component={PDFViewer} />
           <Stack.Screen name="Browser" component={Browser} />
-=======
->>>>>>> master
           <Stack.Screen
             options={{
               title: 'My wallet',
