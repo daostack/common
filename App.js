@@ -54,7 +54,7 @@ import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
-import {auth} from './src/Firebase';
+import {auth, db} from './src/Firebase';
 import Toast from './src/Util/Toast';
 import KeyboardManager from 'react-native-keyboard-manager';
 
@@ -63,13 +63,14 @@ if (Platform.OS === 'ios') {
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
 }
 
-const App = ({userStore}) => {
+const App = ({userStore, daoStore}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const onAuthStateChanged = async user => {
     try {
       userStore.setIsLoading(true);
+      daoStore.setIsLoading(true);
       if (user) {
         await AuthService.getInstance().loadMnemonic(user.uid);
         await WalletManager.init(user.uid);
@@ -98,6 +99,27 @@ const App = ({userStore}) => {
     }
   };
 
+  const getDaos = async () => {
+    try {
+      const appUsers = await FirebaseService.getInstance().getUsers();
+      console.log('users: ', appUsers);
+      const unsubscribe = db.collection('daos').onSnapshot(snapshot => {
+        if (snapshot.empty) {
+          return [];
+        }
+        let daosSnapshot = snapshot.docs.map(doc => {
+          return {...{id: doc.id}, ...doc.data()};
+        });
+        console.log('daos: ', daosSnapshot)
+        daoStore.setDaos(daosSnapshot);
+      });
+      // console.log('DAOS: ', daosRes);
+      // setDaos(daosRes);
+    } catch (error) {
+      console.log('errror: ', error);
+    }
+  };
+
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
 
@@ -113,12 +135,13 @@ const App = ({userStore}) => {
         console.log(e);
       }
     };
-
+    getDaos();
     checkOnboardingStatus();
     return subscriber;
-  });
+  },[]);
 
   console.log('onboarded: ', onboarded);
+  console.log('daoStore DAOs: ', daoStore.daos);
 
   if (loading) {
     return <View style={{flex: 1}} />;
@@ -290,4 +313,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(App));
+export default inject('userStore', 'daoStore')(observer(App));
