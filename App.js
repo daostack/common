@@ -99,8 +99,7 @@ const App = ({userStore, daoStore}) => {
 
       userStore.setIsLoading(false);
     } catch (error) {
-      console.log(error);
-      //Toast.error(error.toString());
+      Toast.error(error.toString());
     }
   };
 
@@ -108,16 +107,17 @@ const App = ({userStore, daoStore}) => {
     try {
       const appUsers = await FirebaseService.getInstance().getUsers();
       console.log('users: ', appUsers);
-      const unsubscribe = db.collection('daos').onSnapshot(snapshot => {
-        if (snapshot.empty) {
-          return [];
-        }
-        let daosSnapshot = snapshot.docs.map(doc => {
-          return {...{id: doc.id}, ...doc.data()};
-        });
-        console.log('daos: ', daosSnapshot);
-        daoStore.setDaos(daosSnapshot);
-      });
+      // TODO: unsubscribe somewhere!
+      // const unsubscribe = db.collection('daos').onSnapshot(snapshot => {
+      //   if (snapshot.empty) {
+      //     return [];
+      //   }
+      //   let daosSnapshot = snapshot.docs.map(doc => {
+      //     return {...{id: doc.id}, ...doc.data()};
+      //   });
+      //   console.log('daos: ', daosSnapshot);
+      //   daoStore.setDaos(daosSnapshot);
+      // });
       // console.log('DAOS: ', daosRes);
       // setDaos(daosRes);
     } catch (error) {

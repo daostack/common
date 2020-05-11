@@ -3,7 +3,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  Clipboard,
   ScrollView,
   View,
 } from 'react-native';
