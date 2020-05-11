@@ -1,5 +1,6 @@
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
+import {numberFormatter} from '../Util';
 import {CommonActions} from '@react-navigation/native';
 import CommonCover from './Commons/CommonCover';
 import CommonStageSummary from './Commons/CommonStageSummary';
@@ -33,11 +34,16 @@ const CommonBox = props => {
         isFundingStage={true}
         commonProgressInfo={{
           time: 55,
-          activeProposals: 55,
+          activeProposals:
+            props.common.numberOfBoostedProposals +
+            props.common.numberOfPreBoostedProposals +
+            props.common.numberOfQueuedProposals,
           goal: 55,
-          members: props.common.reputationHoldersCount * 1.5,
+          members: props.common.memberCount * 1,
           raised: 55,
-          currentBudget: 55,
+          currentBudget: numberFormatter(
+            props.common.tokenTotalSupply,
+          ).toLocaleString(),
         }}
       />
     </TouchableOpacity>

@@ -1,5 +1,4 @@
 import {db, firebase} from '../Firebase';
-import moment from 'moment';
 import uuid from 'uuid/v4';
 
 const DB_COLLECTIONS = {
@@ -58,6 +57,17 @@ export default class FirebaseService {
           return {...{id: doc.id}, ...doc.data()};
         });
       });
+  }
+
+  async getDaos() {
+    return db.collection('daos').onSnapshot(snapshot => {
+      if (snapshot.empty) {
+        return [];
+      }
+      return snapshot.docs.map(doc => {
+        return {...{id: doc.id}, ...doc.data()};
+      });
+    });
   }
 
   async addUser(googleId, newUser) {

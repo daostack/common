@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {kFormatter} from '../../Util';
+import {numberFormatter} from '../../Util';
 
 import {layout, colors, text} from '../../Theme';
 
@@ -47,7 +47,7 @@ const CommonStageSummary = ({isFundingStage, commonProgressInfo}) => {
           isFundingStage ? (
             <>
               <Text style={styles.headerTitle}>
-                ${kFormatter(commonProgressInfo.raised).toLocaleString()}
+                ${numberFormatter(commonProgressInfo.raised).toLocaleString()}
               </Text>
             </>
           ) : (
@@ -56,7 +56,7 @@ const CommonStageSummary = ({isFundingStage, commonProgressInfo}) => {
                 ${commonProgressInfo.currentBudget.toLocaleString()}
               </Text>
               <Text style={styles.headerTitle}>
-                / {kFormatter(commonProgressInfo.raised)}
+                / {numberFormatter(commonProgressInfo.raised)}
               </Text>
             </>
           ),
@@ -69,7 +69,7 @@ const CommonStageSummary = ({isFundingStage, commonProgressInfo}) => {
         {commonNumberBox(
           isFundingStage ? (
             <Text style={styles.headerTitle}>
-              ${kFormatter(commonProgressInfo.goal).toLocaleString()}
+              ${numberFormatter(commonProgressInfo.goal).toLocaleString()}
             </Text>
           ) : (
             <Text style={styles.headerTitle}>

@@ -23,7 +23,7 @@ import moment from 'moment';
 import CreateStepDotHeader from './CreateStepDotHeader';
 
 const CreateStep2 = props => {
-  const [scrollY, setScrollY] = useState(new Animated.Value(0));
+  const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [segmentedIndex, setSegmentedIndex] = useState(0);
   const [pickDate, setPickDate] = useState(null);

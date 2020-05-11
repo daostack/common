@@ -9,7 +9,7 @@ const MultiLinkField = props => {
   const {maxCount, validation} = props;
 
   const renderAddLinkBtn = index => {
-    if (index == count - 1 && (!maxCount || count < maxCount)) {
+    if (index === count - 1 && (!maxCount || count < maxCount)) {
       return (
         <TouchableOpacity>
           <Text style={styles.addLinkBtn} onPress={() => setCount(count + 1)}>

@@ -8,10 +8,10 @@ const ProposalApprovalTag = ({iconName, value, isMarked}) => {
   let markColor = colors.grey3;
   let mainColor = colors.grey3;
 
-  if (iconName == 'approved') {
+  if (iconName === 'approved') {
     markColor = colors.lightGreen;
     mainColor = colors.lightishGreen;
-  } else if (iconName == 'declined') {
+  } else if (iconName === 'declined') {
     markColor = colors.against;
     mainColor = colors.error;
   }

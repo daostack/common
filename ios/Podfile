@@ -47,7 +47,7 @@ end
 target 'common' do
   use_frameworks!
   use_native_modules!
-  
+
   reactnative
   native
 

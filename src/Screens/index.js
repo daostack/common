@@ -6,6 +6,7 @@ export CreateStep1 from './CreateCommon/CreateStep1';
 export CreateStep2 from './CreateCommon/CreateStep2';
 export CreateStep3 from './CreateCommon/CreateStep3';
 export CreateStep4 from './CreateCommon/CreateStep4';
+export CommonCreationLoading from './CommonCreationLoading';
 export CommonExplanation from './CreateCommon/CommonExplanation';
 export CompleteAccount from './CompleteAccount';
 export NativeBridgeTests from './NativeBridgeTests';

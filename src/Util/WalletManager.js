@@ -32,7 +32,7 @@ export default class WalletManager {
     };
     const provider = new ethers.providers.InfuraProvider(
       'rinkeby',
-      '3c08878d00734c0c98a3e4741d0b4cfc',
+      'e0cdf3bfda9b468fa908aa6ab03d5ba2',
     );
     WalletManager.myInstance = await new WalletManager(
       provider,

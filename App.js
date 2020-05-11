@@ -7,24 +7,26 @@
  */
 
 import React, {useState, useEffect} from 'react';
-import {Image, StyleSheet, Platform} from 'react-native';
+import {Image, StyleSheet, Platform, View} from 'react-native';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+// import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {colors, text} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import {
-  CommonsList,
   CommonProfile,
+  Onboarding,
   UserProfile,
   HUDTest,
   MyWallet,
   CreateAccount,
+  CreateCommon,
   CompleteAccount,
   EditProfile,
   UserProfileReadMode,
+  NativeBridgeTests,
   MyProposals,
   MyCommons,
   CommonAgenda,
@@ -50,7 +52,10 @@ import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
 import AuthService from './src/Services/AuthService';
 
-const Tab = createBottomTabNavigator();
+// const firebaseService = new FirebaseService();
+import CommonHome from './src/Components/Navigation/CommonHome';
+// const authService = new AuthService();
+// const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 import {filterObjectByKeys} from './src/Util';
 import WalletManager from './src/Util/WalletManager';
@@ -58,106 +63,76 @@ import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import {auth} from './src/Firebase';
-import Toast from './src/Util/Toast';
+// import Toast from './src/Util/Toast';
 import KeyboardManager from 'react-native-keyboard-manager';
+import CommonCreationLoading from './src/Screens/CommonCreationLoading';
 
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
 }
 
-const CommonHome = () => {
-  return (
-    <Tab.Navigator
-      initialRouteName="Explore"
-      screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => {
-          if (route.name === 'My feed') {
-            return (
-              <Image
-                source={require('./src/Assets/feed.png')}
-                style={{
-                  resizeMode: 'contain',
-                  width: 24,
-                  height: 24,
-                  tintColor: focused ? colors.mainBlue : '#92A2B5',
-                }}
-              />
-            );
-          } else if (route.name === 'Explore') {
-            return (
-              <Image
-                source={require('./src/Assets/commons.png')}
-                style={{
-                  resizeMode: 'contain',
-                  width: 24,
-                  height: 24,
-                  tintColor: focused ? colors.mainBlue : '#92A2B5',
-                }}
-              />
-            );
-          } else {
-            return (
-              <Image
-                source={require('./src/Assets/accountSelected.png')}
-                style={{
-                  resizeMode: 'contain',
-                  width: 20,
-                  height: 20,
-                  tintColor: focused ? colors.mainBlue : '#92A2B5',
-                }}
-              />
-            );
-          }
-        },
-      })}
-      tabBarOptions={{
-        activeTintColor: colors.mainBlue,
-      }}>
-      {/*<Tab.Screen name="Test" component={NativeBridgeTests} />*/}
-      <Tab.Screen name="My feed" component={UserProfileReadMode} />
-      <Tab.Screen name="Explore" component={CommonsList} />
-      <Tab.Screen name="Profile" component={UserProfile} />
-      <Tab.Screen name="FundingProposal" component={FundingProposal} />
-    </Tab.Navigator>
-  );
-};
-
-const App = ({userStore}) => {
-  const [setOnboarded] = useState();
-
-  const onAuthStateChanged = async user => {
-    try {
-      userStore.setIsLoading(true);
-      if (user) {
-        await AuthService.getInstance().loadMnemonic(user.uid);
-        await WalletManager.init(user.uid);
-        let appUser = await FirebaseService.getInstance().getUserById(user.uid);
-        const isNewUser = !appUser;
-        if (isNewUser) {
-          appUser = await AuthService.getInstance().createUserAndWallet(user);
-        }
-        const allUserInfo = {
-          ...user._user,
-          ...appUser,
-        };
-
-        const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
-        userStore.setSignedInUser(filteredUser);
-        if (isNewUser) {
-        }
-      } else {
-        userStore.setSignedInUser(null);
-      }
-
-      userStore.setIsLoading(false);
-    } catch (error) {
-      console.log(error);
-      //Toast.error(error.toString());
-    }
-  };
+const App = ({userStore, daoStore}) => {
+  const [onboarded, setOnboarded] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const onAuthStateChanged = async user => {
+      try {
+        userStore.setIsLoading(true);
+        daoStore.setIsLoading(true);
+        if (user) {
+          await AuthService.getInstance().loadMnemonic(user.uid);
+          await WalletManager.init(user.uid);
+          let appUser = await FirebaseService.getInstance().getUserById(
+            user.uid,
+          );
+          const isNewUser = !appUser;
+          if (isNewUser) {
+            appUser = await AuthService.getInstance().createUserAndWallet(user);
+          }
+          const allUserInfo = {
+            ...user._user,
+            ...appUser,
+          };
+
+          const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
+          userStore.setSignedInUser(filteredUser);
+          if (isNewUser) {
+          }
+        } else {
+          userStore.setSignedInUser(null);
+        }
+
+        userStore.setIsLoading(false);
+      } catch (error) {
+        Toast.error(error.toString());
+      }
+    };
+
+    // TODO: this function is really misnamed :/
+    const getDaos = async () => {
+      try {
+        const appUsers = await FirebaseService.getInstance().getUsers();
+        console.log('users: ', appUsers);
+        // TODO: unsubscribe somewhere!
+        // const unsubscribe = db.collection('daos').onSnapshot(snapshot => {
+        //   if (snapshot.empty) {
+        //     return [];
+        //   }
+        //   let daosSnapshot = snapshot.docs.map(doc => {
+        //     return {...{id: doc.id}, ...doc.data()};
+        //   });
+        //   console.log('daos: ', daosSnapshot);
+        //   daoStore.setDaos(daosSnapshot);
+        // });
+        // console.log('DAOS: ', daosRes);
+        // setDaos(daosRes);
+      } catch (error) {
+        console.log('errror: ', error);
+      }
+    };
+
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
 
     const checkOnboardingStatus = async () => {
@@ -167,44 +142,25 @@ const App = ({userStore}) => {
         if (isOnboarded === 'true') {
           setOnboarded(true);
         }
+        setLoading(false);
       } catch (e) {
         console.log(e);
       }
     };
-
+    getDaos();
     checkOnboardingStatus();
     return subscriber;
-  });
+  }, [daoStore, userStore]);
+
+  console.log('onboarded: ', onboarded);
+  console.log('daoStore DAOs: ', daoStore.daos);
+
+  if (loading) {
+    return <View style={{flex: 1}} />;
+  }
 
   return (
     <ApolloProvider client={client}>
-      {/**
-      <NavigationContainer>
-        <Stack.Navigator>
-          {!onboarded ? (
-            <Stack.Screen
-              name="Onboarding"
-              component={Onboarding}
-              options={{headerShown: false}}
-            />
-          ) : (
-            <Stack.Screen
-              name="CommonHome"
-              component={CommonHome}
-              options={{headerShown: false}}
-            />
-          )}
-          <Stack.Screen name="CommonProfile" component={CommonProfile} />
-          <Stack.Screen name="Login" component={Login} />
-        </Stack.Navigator>
-      </NavigationContainer>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="CreateAccount" component={CreateAccount} />
-          <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
-        </Stack.Navigator>
-      </NavigationContainer>
-      */}
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
@@ -215,11 +171,22 @@ const App = ({userStore}) => {
             headerTintColor: colors.black,
             headerBackImage: () => <Icon name="left-arrow" size={32} />,
           }}>
+          {!onboarded && (
+            <Stack.Screen
+              name="Onboarding"
+              component={Onboarding}
+              options={{headerShown: false}}
+            />
+          )}
           <Stack.Screen
             name="CommonHome"
             component={CommonHome}
             options={{headerShown: false}}
+            userStore={userStore}
           />
+          <Stack.Screen name="CreateCommon" component={CreateCommon} />
+          <Stack.Screen name="CreateAccount" component={CreateAccount} />
+          <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
           <Stack.Screen
             name="CommonProfile"
             component={CommonProfile}
@@ -308,13 +275,21 @@ const App = ({userStore}) => {
             })}
           />
           <Stack.Screen
+<<<<<<< HEAD
             name="Discussions"
             component={Discussions}
+=======
+            name="CommonCreationLoading"
+            component={CommonCreationLoading}
+>>>>>>> master
             options={({navigation, route}) => ({
               headerShown: false,
             })}
           />
+<<<<<<< HEAD
           <Stack.Screen name="New Topic" component={DiscussionPost} />
+=======
+>>>>>>> master
           <Stack.Screen
             options={{
               title: 'Edit my profile',
@@ -322,16 +297,26 @@ const App = ({userStore}) => {
             name="EditProfile"
             component={EditProfile}
           />
+<<<<<<< HEAD
           <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen name="PDFViwer" component={PDFViewer} />
           <Stack.Screen name="Browser" component={Browser} />
+=======
+>>>>>>> master
           <Stack.Screen
             options={{
               title: 'My wallet',
             }}
             name="MyWallet"
             component={MyWallet}
+          />
+          <Stack.Screen
+            options={{
+              title: 'NativeBridgeTests',
+            }}
+            name="NativeBridgeTests"
+            component={NativeBridgeTests}
           />
           <Stack.Screen name="HUDTest" component={HUDTest} />
           <Stack.Screen
@@ -390,4 +375,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(App));
+export default inject('userStore', 'daoStore')(observer(App));

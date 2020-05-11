@@ -7,7 +7,7 @@ const MultiFileField = props => {
   const [count, setCount] = useState(1);
 
   const onChangeFile = (fileName, index) => {
-    if (index == count - 1) {
+    if (index === count - 1) {
       if (!maxCount || count < maxCount) {
         setCount(count + 1);
       }

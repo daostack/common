@@ -13,13 +13,14 @@ import RequestStepActionButton from '../Commons/RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 
 const FundingProposal = ({fundingRequestFormStore, navigation}) => {
-  const viewProposal = () => {
-    //navigation.navigate('RequestStep1');
-  };
+  // TODO: can these lines be removed?
+  // const viewProposal = () => {
+  //   //navigation.navigate('RequestStep1');
+  // };
 
-  const goToToCommon = () => {
-    setShowRequestSentModal(false);
-  };
+  // const goToToCommon = () => {
+  //   setShowRequestSentModal(false);
+  // };
 
   const createProposal = e => {
     //setShowRequestSentModal(true);
