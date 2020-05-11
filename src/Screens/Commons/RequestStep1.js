@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
   Text,
-  TouchableOpacity,
   View,
   StyleSheet,
   ScrollView,
@@ -9,24 +8,21 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import TextInputField from '../../Components/FormFields/TextInputField';
 import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
 import RequestToJoinRule from '../../Components/Commons/RequestToJoinRule';
 
 import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
-import NavigationBar from 'react-native-navbar';
-import Icon from '../../Assets/iconfont/Icon';
 import CreateStepDotHeader from './RequestStepDotHeader';
-import {text, layout, colors} from '../../Theme';
+import {text, colors} from '../../Theme';
 import CreateStepNavigation from './RequestStepNavigation';
 import RequestStepActionButton from './RequestStepActionButton';
 
 const RequestStep1 = props => {
-  const [scrollY, setScrollY] = useState(new Animated.Value(0));
+  const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [ruleCount, setRuleCount] = useState(1);
+  // const [ruleCount] = useState(1);
   const [pass, setPass] = useState(false);
 
   useEffect(() => {
@@ -40,18 +36,19 @@ const RequestStep1 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const isValid = () => {
-    const links = [...Array(ruleCount).keys()].map(
-      x => `${CreateCommonForm.LINKS}_${x}`,
-    );
-    const result = props.requestToJoinFormStore.isFormValidSelectedFields([
-      CreateCommonForm.NAME,
-      CreateCommonForm.BYLINE,
-      ...links,
-    ]);
-    setPass(result);
-    return result;
-  };
+  // TODO: why is this code not used?
+  // const isValid = () => {
+  //   const links = [...Array(ruleCount).keys()].map(
+  //     x => `${CreateCommonForm.LINKS}_${x}`,
+  //   );
+  //   const result = props.requestToJoinFormStore.isFormValidSelectedFields([
+  //     CreateCommonForm.NAME,
+  //     CreateCommonForm.BYLINE,
+  //     ...links,
+  //   ]);
+  //   setPass(result);
+  //   return result;
+  // };
 
   const onScrollToBottom = () => {
     setPass(true);

@@ -25,7 +25,7 @@ import FirebaseService from '../../Services/FirebaseService';
 import {useToast} from '../../Util/Toast';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import {numberFormatter} from '../../Util';
-import {createCommon} from '../../Util/createCommon';
+// import {createCommon} from '../../Util/createCommon';
 import {getArc} from '../../Util/arc';
 import {StackActions} from '@react-navigation/native';
 
@@ -152,8 +152,8 @@ const CreateStep4 = props => {
       founderAddresses: address,
       tokenDist: [0],
       repDist: [100],
-      minFeeToJoin: parseInt(formData.minimum), // TDB: get from formData
-      fundingGoal: formData.funding, // TBD: get from formdata
+      minFeeToJoin: parseInt(formData.minimum),
+      fundingGoal: formData.funding,
       // TBD: get form data for deadline; these are in secondSinceEpoch
       //TODO: get data for deadline from form data
       fundingGoalDeadline: (await provider.getBlock('latest')).timestamp + 3000,

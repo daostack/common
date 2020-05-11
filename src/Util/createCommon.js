@@ -1,4 +1,3 @@
-import {BN} from '@daostack/arc.js';
 const {
   getForgeOrgData,
   getSetSchemesData,
@@ -36,6 +35,9 @@ export const createCommon = async (arc, givenOpts = {}) => {
 
     console.log('opts: ', opts);
     console.log('fetching contractinfo from graphql...');
+    if (!opts.fundingGoal) {
+      throw Error('fundingGoal must be provided');
+    }
     const daoFactoryInfo = arc.getContractInfoByName(
       'DAOFactoryInstance',
       ARC_VERSION,

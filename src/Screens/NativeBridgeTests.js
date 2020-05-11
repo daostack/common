@@ -184,7 +184,7 @@ export default class nativeBridgeTests extends React.Component {
       founderAddresses: wallet.ethWallet.address,
       minFeeToJoin: 100,
       fundingToken: '0x0000000000000000000000000000000000000000',
-      goal: 100000,
+      fundingGoal: 100000,
       deadline: 20200404,
       metaData: '',
       ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
