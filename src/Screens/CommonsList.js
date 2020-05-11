@@ -73,8 +73,8 @@ const CommonsList = ({navigation, daoStore}) => {
 
         <ScrollView>
           <View style={styles.container}>
-            {daoStore.daos &&
-              daoStore.daos.map((dao, i) => {
+            {daos &&
+              daos.map((dao, i) => {
                 if (
                   ''.length > 0 &&
                   !dao.name.toLowerCase().includes(''.toLowerCase())
