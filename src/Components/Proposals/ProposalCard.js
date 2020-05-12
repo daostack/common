@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Text, StyleSheet, View} from 'react-native';
 import {text, layout, colors} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
 import ProposalService from '../../Services/ProposalService';

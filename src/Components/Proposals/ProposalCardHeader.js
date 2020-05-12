@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
 import {text, layout, colors, sizeXS} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
-import MemberCard from '../MemberCard';
 
 const ProposalCardHeader = ({isBoosted, openBoostedInfo}) => {
   let iconName = 'star';
