@@ -1,6 +1,6 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-
+import moment from 'moment';
 import {layout, colors, text} from '../../Theme';
 
 const UserMessageCard = ({photoURL, name, message, time}) => {
@@ -11,7 +11,9 @@ const UserMessageCard = ({photoURL, name, message, time}) => {
       <View style={styles.messageContainer}>
         <Text style={styles.nameStyle}>{name}</Text>
         <Text style={styles.messageStyle}>{message}</Text>
-        <Text style={styles.timeStyle}>{time}</Text>
+        <Text style={styles.timeStyle}>
+          {moment(time.toDate()).format('hh:mm')}
+        </Text>
       </View>
     </View>
   );
