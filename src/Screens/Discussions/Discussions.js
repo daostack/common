@@ -15,12 +15,14 @@ import {
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
-import {colors} from '../../Theme';
+import {colors, text} from '../../Theme';
 import DiscussionMessage from './DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast.js';
 import FirebaseService from '../../Services/FirebaseService';
 import moment from 'moment';
+import NavigationBar from 'react-native-navbar';
+import auth from '@react-native-firebase/auth';
 import ChatRoom from './Chat/ChatRoom';
 // import _ from 'lodash';
 
@@ -104,10 +106,12 @@ const Discussions = props => {
   }, [data]);
 
   sendMessageToDiscussion = async () => {
-    const userStore = props.userStore;
-    console.log('CCCCC', userStore);
+    const userStore = auth().currentUser;
+    // props.userStore;
+    console.log('userStore', commonId, data.id, userStore);
     const message = inputRef.current._lastNativeText;
     if (message && message.trim().length) {
+      console.log('message', message);
       firestore()
         .collection('common')
         .doc(commonId)
@@ -118,65 +122,66 @@ const Discussions = props => {
         .set({
           text: message,
           createTime: new Date(),
-          ownerId: userStore.userInfo.uid,
-          ownerName: userStore.userInfo.displayName,
-          ownerAvatar: userStore.userInfo.photoURL,
+          ownerId: userStore.uid,
+          ownerName: userStore.displayName,
+          ownerAvatar: userStore.photoURL,
           commonId: commonId,
           discussionId: data.id,
         })
         .then(() => {
           console.log('YES');
           inputRef.current.clear();
-          // inputRef.focused
-          // Toast.done('Sent');
-          // setTrigger(!trigger);
           Keyboard.dismiss();
         })
         .catch(error => {
           console.log('NO', error);
           Toast.error(error);
         });
+    } else {
+      Toast.error('Empty Message');
     }
   };
 
   const header = () => {
     return (
-      // <SafeAreaView style={{flex: 1}}>
+      // <SafeAreaView flex={1}>
       <>
+        <NavigationBar
+          statusBar={{hidden: true}}
+          style={{
+            height: 48,
+          }}
+          title={{
+            title: data.title,
+            style: text.h3Black,
+          }}
+          leftButton={
+            <TouchableOpacity
+              style={{justifyContent: 'center'}}
+              onPress={() => props.navigation.pop()}>
+              <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
+            </TouchableOpacity>
+          }
+          rightButton={
+            <TouchableOpacity
+              style={{justifyContent: 'center'}}
+              onPress={() => props.navigation.pop()}>
+              <Icon
+                name="menu-horizontal"
+                size={32}
+                style={{marginRight: 10}}
+              />
+            </TouchableOpacity>
+          }
+        />
         <View
           style={{
             backgroundColor: colors.white,
             // flex: 1,
-            padding: 20,
             paddingBottom: 0,
           }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginTop: 30,
-              marginBottom: 10,
-              // justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <TouchableOpacity
-              style={{
-                alignSelf: 'flex-start',
-                marginLeft: -12,
-                paddingRight: 8,
-              }}
-              onPress={() => {
-                props.navigation.pop();
-              }}>
-              <Icon name="left-arrow" size={32} />
-            </TouchableOpacity>
-            <Text style={styles.title}>{data.title}</Text>
-            <TouchableOpacity
-              style={{alignSelf: 'flex-start', marginRight: -12}}>
-              <Icon name="menu-horizontal" size={32} />
-            </TouchableOpacity>
-          </View>
           {isExpanded ? (
-            <>
+            <View style={{paddingTop: 20, paddingHorizontal: 20}}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -196,10 +201,6 @@ const Discussions = props => {
                     {moment(data.createTime.toDate()).fromNow()}
                   </Text>
                 </View>
-
-                {/* <TouchableOpacity style={styles.button}>
-              <Text style={{color: colors.white}}>Quick reply</Text>
-            </TouchableOpacity> */}
               </View>
 
               <View>
@@ -216,7 +217,7 @@ const Discussions = props => {
                 }}>
                 <Icon name="up-arrow" size={32} />
               </TouchableOpacity>
-            </>
+            </View>
           ) : (
             <>
               <TouchableOpacity
