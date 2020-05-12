@@ -7,19 +7,26 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  KeyboardAvoidingView,
+  TextInput,
+  Keyboard,
 } from 'react-native';
 import {text, layout, colors, sizeM} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
-import ProposalDiscussion from './ProposalDiscussion';
+import ProposalDiscussion, {MessageInput} from './ProposalDiscussion';
 import MemberCard from '../../Components/MemberCard';
 import BoostedInfo from '../BottomSheetScreens/BoostedInfo';
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '../../Util/Toast';
-
+import {observer, inject} from 'mobx-react';
 import BottomSheetContainer from '../../Components/BottomSheetContainer';
 import BottomSheetModal from '../../Components/BottomSheetModal';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
+const {width} = Dimensions.get('window');
 
 const mockData = {
   data: 'data',
@@ -32,7 +39,7 @@ const mockData = {
   },
 };
 
-const ProposalScreen = ({navigation}) => {
+const ProposalScreen = ({props, navigation}) => {
   const [
     isApprovalBottomModalVisible,
     setIsApprovalBottomModalVisible,
@@ -40,13 +47,16 @@ const ProposalScreen = ({navigation}) => {
 
   const [isVoteByYou, setIsVoteByYou] = useState(false);
   const [voteType, setVoteType] = useState(false);
-
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'info', icon: 'proposal'},
     {key: 'discussions', icon: 'discussion'},
   ]);
 
+  const [inputHeight, setInputHeight] = useState(60);
+  const [inputText, setInputText] = useState(null);
+
+  const inputRef = useRef();
   boostedInfoRef = useRef();
   approvalSheetRef = useRef();
 
@@ -82,6 +92,83 @@ const ProposalScreen = ({navigation}) => {
       style={{backgroundColor: colors.white}}
     />
   );
+
+  const messageInput = () => {
+    const commonId = '48NPcGnpskN9YkqVNXKA';
+    const proposalId = 'DmZFnbSbkwcQHMAyGa54';
+    const discussionId = '43Q9abICrp2KpE86c1Az';
+
+    const sendMessageToDiscussion = async () => {
+      const userInfo = auth().currentUser;
+      const message = inputRef.current._lastNativeText;
+      if (message && message.trim().length) {
+        firestore()
+          .collection('common')
+          .doc(commonId)
+          .collection('proposal')
+          .doc(proposalId)
+          .collection('discussion')
+          .doc(discussionId)
+          .collection('message')
+          .doc()
+          .set({
+            text: message,
+            createTime: new Date(),
+            ownerId: userInfo.uid,
+            ownerName: userInfo.displayName,
+            ownerAvatar: userInfo.photoURL,
+            commonId: commonId,
+            discussionId: discussionId,
+          })
+          .then(() => {
+            console.log('YES');
+            inputRef.current.clear();
+            // inputRef.focused
+            // Toast.done('Sent');
+            // setTrigger(!trigger);
+            Keyboard.dismiss();
+          })
+          .catch(error => {
+            console.log('NO', error);
+            Toast.error(error);
+          });
+      }
+    };
+
+    return (
+      <KeyboardAvoidingView
+        // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
+        <View style={styles.input}>
+          <View style={styles.inputBorder}>
+            <TextInput
+              ref={inputRef}
+              editable={true}
+              multiline={true}
+              onContentSizeChange={e =>
+                setInputHeight(e.nativeEvent.contentSize.height)
+              }
+              style={{flex: 1, height: inputHeight, marginHorizontal: 10}}
+              fontSize={15}
+              onChangeText={text => setInputText(text)}
+            />
+            <TouchableOpacity
+              style={{paddingRight: 15, justifyContent: 'center'}}
+              onPress={sendMessageToDiscussion}>
+              <Icon
+                name="edit"
+                size={20}
+                color={
+                  inputText && inputText.trim() ? colors.mainBlue : colors.grey3
+                }
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={{height: 30, backgroundColor: colors.white}} />
+      </KeyboardAvoidingView>
+    );
+  };
 
   const openApprovalSheet = isApproval => {
     setVoteType(isApproval);
@@ -180,22 +267,28 @@ const ProposalScreen = ({navigation}) => {
 
           <TabView
             navigationState={{index, routes}}
-            renderScene={renderScene}
+            renderScene={() => null}
             onIndexChange={setIndex}
             initialLayout={initialLayout}
             renderTabBar={renderTabBar}
             style={{}}
           />
+          {index === 0 && <ProposalData />}
+          {index === 1 && <ProposalDiscussion inputRef={inputRef} />}
         </ScrollView>
 
-        <View style={styles.actionButtonContainer}>
-          {renderStickyBottomContent()}
-        </View>
+        {index === 0 ? (
+          <View style={styles.actionButtonContainer}>
+            {renderStickyBottomContent()}
+          </View>
+        ) : (
+          <>{messageInput()}</>
+        )}
       </SafeAreaView>
 
-      <BottomSheetContainer ref={boostedInfoRef} topSnapPoint={620}>
+      {/* <BottomSheetContainer ref={boostedInfoRef} topSnapPoint={620}>
         <BoostedInfo />
-      </BottomSheetContainer>
+      </BottomSheetContainer> */}
 
       <BottomSheetModal
         isVisible={isApprovalBottomModalVisible}
@@ -286,6 +379,35 @@ const styles = StyleSheet.create({
   votedByYouText: {
     ...text.buttonblue,
     ...text.bold,
+  },
+  input: {
+    // backgroundColor: colors.white,
+    backgroundColor: '#fbfdff',
+    borderColor: colors.grey4,
+    // borderwidth: 1,
+    borderBottomWidth: 1,
+    // height: 60,
+    width: width,
+    flexDirection: 'row',
+    shadowColor: 'rgba(0, 0, 0, 0.2)',
+    shadowOffset: {
+      width: 0,
+      height: -4,
+    },
+    shadowRadius: 4,
+    shadowOpacity: 0.5,
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+  },
+  inputBorder: {
+    flex: 1,
+    flexDirection: 'row',
+    borderColor: colors.grey4,
+    borderWidth: 1,
+    paddingVertical: 10,
+    marginHorizontal: 10,
+    borderRadius: 40,
   },
 });
 

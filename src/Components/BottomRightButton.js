@@ -4,7 +4,9 @@ import colors from '../Theme/colors';
 
 const BottomRightButton = props => {
   return (
-    <TouchableOpacity style={styles.button} onPress={props.onPress}>
+    <TouchableOpacity
+      style={{...styles.button, bottom: props.bottom || 12}}
+      onPress={props.onPress}>
       <Image
         source={require('../Assets/plus-sign.png')}
         style={styles.plusImage}

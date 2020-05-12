@@ -47,7 +47,6 @@ class ImageField extends React.Component {
   };
 
   pickImage = () => {
-    console.log('AAAA');
     const {title, quality, allowsEditing} = this.props;
     const options = {
       title: title,
