@@ -311,12 +311,12 @@ const CommonProfile = ({navigation, route}) => {
           <View style={layout.flexRow}>
             <ProposalApprovalTag
               iconName="approved"
-              value={40}
+              value={44}
               isMarked={true}
             />
             <ProposalApprovalTag
               iconName="declined"
-              value={28}
+              value={17}
               isMarked={false}
             />
             <ProposalApprovalTag
@@ -383,7 +383,7 @@ const CommonProfile = ({navigation, route}) => {
           </TouchableOpacity>
         </View>
         {renderAgendaForNonMembers()}
-
+        {/**
         <TouchableOpacity
           style={{
             ...styles.headerButton,
@@ -403,7 +403,7 @@ const CommonProfile = ({navigation, route}) => {
             Open Proposal
           </Text>
         </TouchableOpacity>
-
+ */}
         <TabView
           navigationState={{index, routes}}
           renderScene={renderScene}
