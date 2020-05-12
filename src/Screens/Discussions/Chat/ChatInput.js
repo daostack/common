@@ -1,17 +1,10 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React from 'react';
 import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  ScrollView,
   View,
   TouchableOpacity,
-  Image,
-  Dimensions,
   TextInput,
   KeyboardAvoidingView,
   Keyboard,
-  SectionList,
 } from 'react-native';
 import Icon from '../../../Assets/iconfont/Icon';
 
