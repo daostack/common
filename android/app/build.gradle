@@ -187,6 +187,10 @@ android {
 
         }
     }
+
+    packagingOptions {
+        pickFirst '**/libc++_shared.so'
+    }
 }
 
 dependencies {
