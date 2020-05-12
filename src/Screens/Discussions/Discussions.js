@@ -15,13 +15,16 @@ import {
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
-import {colors} from '../../Theme';
+import {colors, text} from '../../Theme';
 import DiscussionMessage from './DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast.js';
 import FirebaseService from '../../Services/FirebaseService';
 import moment from 'moment';
+import NavigationBar from 'react-native-navbar';
+import auth from '@react-native-firebase/auth';
 import ChatRoom from './Chat/ChatRoom';
+import BottomSheetModal from '../../Components/BottomSheetModal';
 // import _ from 'lodash';
 
 const {width} = Dimensions.get('window');
@@ -36,6 +39,11 @@ const Discussions = props => {
   const data = props.route.params.data;
   const commonId = props.route.params.commonId;
   const [msgGroup, setMsgDroup] = useState([]);
+  const [showMenu, setShowMenu] = useState(false);
+
+  const hideMenu = () => {
+    setShowMenu(false);
+  };
 
   let listRef = useRef([]);
   useEffect(() => {
@@ -104,10 +112,12 @@ const Discussions = props => {
   }, [data]);
 
   sendMessageToDiscussion = async () => {
-    const userStore = props.userStore;
-    console.log('CCCCC', userStore);
+    const userStore = auth().currentUser;
+    // props.userStore;
+    console.log('userStore', commonId, data.id, userStore);
     const message = inputRef.current._lastNativeText;
     if (message && message.trim().length) {
+      console.log('message', message);
       firestore()
         .collection('common')
         .doc(commonId)
@@ -118,65 +128,66 @@ const Discussions = props => {
         .set({
           text: message,
           createTime: new Date(),
-          ownerId: userStore.userInfo.uid,
-          ownerName: userStore.userInfo.displayName,
-          ownerAvatar: userStore.userInfo.photoURL,
+          ownerId: userStore.uid,
+          ownerName: userStore.displayName,
+          ownerAvatar: userStore.photoURL,
           commonId: commonId,
           discussionId: data.id,
         })
         .then(() => {
           console.log('YES');
           inputRef.current.clear();
-          // inputRef.focused
-          // Toast.done('Sent');
-          // setTrigger(!trigger);
           Keyboard.dismiss();
         })
         .catch(error => {
           console.log('NO', error);
           Toast.error(error);
         });
+    } else {
+      Toast.error('Empty Message');
     }
   };
 
   const header = () => {
     return (
-      // <SafeAreaView style={{flex: 1}}>
+      // <SafeAreaView flex={1}>
       <>
+        <NavigationBar
+          statusBar={{hidden: true}}
+          style={{
+            height: 48,
+          }}
+          title={{
+            title: data.title,
+            style: text.h3Black,
+          }}
+          leftButton={
+            <TouchableOpacity
+              style={{justifyContent: 'center'}}
+              onPress={() => props.navigation.pop()}>
+              <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
+            </TouchableOpacity>
+          }
+          rightButton={
+            <TouchableOpacity
+              style={{justifyContent: 'center'}}
+              onPress={() => setShowMenu(!showMenu)}>
+              <Icon
+                name="menu-horizontal"
+                size={32}
+                style={{marginRight: 10}}
+              />
+            </TouchableOpacity>
+          }
+        />
         <View
           style={{
             backgroundColor: colors.white,
             // flex: 1,
-            padding: 20,
             paddingBottom: 0,
           }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginTop: 30,
-              marginBottom: 10,
-              // justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <TouchableOpacity
-              style={{
-                alignSelf: 'flex-start',
-                marginLeft: -12,
-                paddingRight: 8,
-              }}
-              onPress={() => {
-                props.navigation.pop();
-              }}>
-              <Icon name="left-arrow" size={32} />
-            </TouchableOpacity>
-            <Text style={styles.title}>{data.title}</Text>
-            <TouchableOpacity
-              style={{alignSelf: 'flex-start', marginRight: -12}}>
-              <Icon name="menu-horizontal" size={32} />
-            </TouchableOpacity>
-          </View>
           {isExpanded ? (
-            <>
+            <View style={{paddingTop: 20, paddingHorizontal: 20}}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -196,10 +207,6 @@ const Discussions = props => {
                     {moment(data.createTime.toDate()).fromNow()}
                   </Text>
                 </View>
-
-                {/* <TouchableOpacity style={styles.button}>
-              <Text style={{color: colors.white}}>Quick reply</Text>
-            </TouchableOpacity> */}
               </View>
 
               <View>
@@ -216,7 +223,7 @@ const Discussions = props => {
                 }}>
                 <Icon name="up-arrow" size={32} />
               </TouchableOpacity>
-            </>
+            </View>
           ) : (
             <>
               <TouchableOpacity
@@ -302,6 +309,31 @@ const Discussions = props => {
         </View>
         <View style={{height: 30, backgroundColor: colors.white}} />
       </KeyboardAvoidingView>
+
+      <BottomSheetModal
+        isVisible={showMenu}
+        onClose={hideMenu}
+        style={styles.modalStyle}>
+        <View style={styles.bottomSheet}>
+          <Text style={styles.sheetTitle}>Options</Text>
+          <TouchableOpacity>
+            <View style={styles.sheetButton}>
+              <Icon name="following" color={colors.black} />
+              <View style={{flex: 1}}>
+                <Text style={[styles.sheetText, {color: colors.black}]}>
+                  Follow
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={styles.sheetButton}>
+              <Icon name="report" color={colors.against} />
+              <Text style={styles.sheetText}>Report</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </BottomSheetModal>
     </SafeAreaView>
   );
 };
@@ -365,6 +397,36 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginHorizontal: 10,
     borderRadius: 40,
+  },
+  sheetTitle: {
+    fontFamily: 'Roboto',
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.black,
+    paddingVertical: 15,
+    textAlign: 'center',
+  },
+  bottomSheet: {
+    paddingBottom: 40,
+  },
+  modalStyle: {
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+  },
+  sheetText: {
+    fontFamily: 'Roboto',
+    fontSize: 18,
+    fontWeight: '500',
+    color: colors.against,
+    marginLeft: 10,
+  },
+  sheetButton: {
+    flexDirection: 'row',
+    width: width,
+    paddingHorizontal: 30,
+    paddingVertical: 20,
+    marginHorizontal: 20,
+    justifyContent: 'flex-start',
   },
 });
 
