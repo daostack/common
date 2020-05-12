@@ -130,6 +130,14 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: colors.grey4,
+
+    shadowColor: 'rgba(0, 0, 0, 0.22)',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowRadius: 4,
+    shadowOpacity: 0.5,
   },
 });
 

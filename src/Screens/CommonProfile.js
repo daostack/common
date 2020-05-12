@@ -29,13 +29,10 @@ import CommonStageSummary from '../Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
 import SentTemplate from '../Components/ModalTemplates/SentTemplate';
 import ProposalApprovalTag from '../Components/Proposals/ProposalApprovalTag';
-<<<<<<< HEAD
 import {CommonActions} from '@react-navigation/native';
 import ProposalCard from '../Components/Proposals/ProposalCard';
-=======
 import BottomRightButton from '../Components/BottomRightButton';
 import DiscussionList from './Discussions/DiscussionList';
->>>>>>> master
 
 const {cache} = client;
 const mockData = {
@@ -350,7 +347,6 @@ const CommonProfile = ({navigation, route}) => {
         }}
         contentContainerStyle={{paddingBottom: 100}}
         showsVerticalScrollIndicator={false}>
-
         <CommonCover
           isMember={true}
           navigation={navigation}

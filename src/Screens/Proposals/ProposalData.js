@@ -15,6 +15,7 @@ import ImageView from 'react-native-image-viewing';
 import Loader from '../../Components/Loader';
 import ImageSize from 'react-native-image-size';
 import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
+import firestore from '@react-native-firebase/firestore';
 
 const ProposalData = props => {
   const [proposalInfo, setProposalInfo] = useState(null);
@@ -36,7 +37,6 @@ const ProposalData = props => {
               });
             }),
           );
-
           setProposalInfo({...currProposalInfo, ...{images: tempImages}});
         }
 
@@ -269,7 +269,6 @@ const ProposalData = props => {
               </Text>
             </View>
             <View style={{...layout.content, ...layout.flexStart}}>
-              {/**
               {topMessage.map((currMessage, currIndex) => {
                 return (
                   <UserMessageCard
@@ -281,7 +280,6 @@ const ProposalData = props => {
                   // <DiscussionMessage data={currMessage} />
                 );
               })}
-              */}
             </View>
             {/* <ChatRoom path="common/48NPcGnpskN9YkqVNXKA/proposal/DmZFnbSbkwcQHMAyGa54/discussion/43Q9abICrp2KpE86c1Az/message"/> */}
             <View style={layout.contant}>

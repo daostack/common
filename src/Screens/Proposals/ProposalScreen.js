@@ -358,7 +358,7 @@ const ProposalScreen = ({navigation, route, props}) => {
             renderTabBar={renderTabBar}
             style={{}}
           />
-          {index === 0 && <ProposalData />}
+          {index === 0 && <ProposalData proposalInfo={proposalInfo} />}
           {index === 1 && <ProposalDiscussion inputRef={inputRef} />}
         </ScrollView>
 
