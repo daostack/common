@@ -21,6 +21,7 @@ import BoostedInfo from '../BottomSheetScreens/BoostedInfo';
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '../../Util/Toast';
 import BottomSheetModal from '../../Components/BottomSheetModal';
+import BottomSheetContainer from '../../Components/BottomSheetContainer';
 import ProposalService from '../../Services/ProposalService';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -34,6 +35,8 @@ import {monthShortNames} from '../../Util/DateUtil';
 const ProposalScreen = ({navigation, route, props}) => {
   const [proposalInfo, setProposalInfo] = useState(false);
   const [proposedUser, setProposedUser] = useState(false);
+
+  const routeProposalId = route?.params.proposalId;
 
   useEffect(() => {
     const getProposalInfo = async proposalId => {
@@ -66,10 +69,10 @@ const ProposalScreen = ({navigation, route, props}) => {
       }
     };
 
-    if (route) {
-      getProposalInfo(route.params.proposalId);
+    if (routeProposalId) {
+      getProposalInfo(routeProposalId);
     }
-  }, [route?.params.proposalId]);
+  }, [routeProposalId]);
 
   const [
     isApprovalBottomModalVisible,
