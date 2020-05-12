@@ -60,5 +60,13 @@ const apolloClientConfig = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+// TODO: is this still needed?
 export const ApolloClientConfig = new ApolloClient(apolloClientConfig);
-export const Ipfs = new IPFSApiClient(ipfsLink);
+
+// We will need this until https://github.com/daostack/arc.js/issues/468 is resolved
+export const IpfsClient = new IPFSApiClient(ipfsLink);
+
+export const ipfsUpload = async data => {
+  // TODO: use arc.saveIPFSData({ name: formData.name}) once https://github.com/daostack/arc.js/issues/468 is resolved
+  return IpfsClient.addAndPinString(JSON.stringify(data));
+};

@@ -19,7 +19,7 @@ import Icon from '../../Assets/iconfont/Icon';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
-import {Ipfs as IpfsClient} from '../../Config';
+import {IpfsClient} from '../../Config';
 import WalletManager from '../../Util/WalletManager';
 import FirebaseService from '../../Services/FirebaseService';
 import {useToast} from '../../Util/Toast';
@@ -120,13 +120,14 @@ const CreateStep4 = props => {
   };
 
   const ipfsUpload = async formData =>
-    // TODO: use arc.saveIPFSData({ name: formData.name}) here
+    // TODO: use arc.saveIPFSData({ name: formData.name}) once https://github.com/daostack/arc.js/issues/468 is resolved
     IpfsClient.addAndPinString(
       JSON.stringify({
         name: formData.name,
         byline: formData.byline,
         description: formData.description,
         courseOfAction: formData.action,
+        // TODO: actuall add the values here (as an arry probably)
         mainValue1: formData.funding,
         mainValue2: formData.minimum,
         mainValue3: 'empty value',
