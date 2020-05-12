@@ -16,7 +16,7 @@ import firestore from '@react-native-firebase/firestore';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {useNavigation} from '@react-navigation/native';
 
-const ProposalData = ({}) => {
+const ProposalData = props => {
   const navigation = useNavigation();
   const mockData = {
     images: [
@@ -316,22 +316,24 @@ const ProposalData = ({}) => {
                 Recent comments
               </Text>
             </View>
-            <View style={{...layout.content, ...layout.flexStart}}>
-              {topMessage.map((currMessage, currIndex) => {
-                return (
-                  <UserMessageCard
-                    photoURL={currMessage.ownerAvatar}
-                    name={currMessage.ownerName}
-                    message={currMessage.text}
-                    time={currMessage.createTime}
-                  />
-                  // <DiscussionMessage data={currMessage} />
-                );
-              })}
-            </View>
+            {topMessage.length === 0 ? null : (
+              <View style={{...layout.content, ...layout.flexStart}}>
+                {topMessage.map((currMessage, currIndex) => {
+                  return (
+                    <UserMessageCard
+                      photoURL={currMessage.ownerAvatar}
+                      name={currMessage.ownerName}
+                      message={currMessage.text}
+                      time={currMessage.createTime}
+                    />
+                    // <DiscussionMessage data={currMessage} />
+                  );
+                })}
+              </View>
+            )}
             {/* <ChatRoom path="common/48NPcGnpskN9YkqVNXKA/proposal/DmZFnbSbkwcQHMAyGa54/discussion/43Q9abICrp2KpE86c1Az/message"/> */}
             <View style={layout.contant}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => props.showMore()}>
                 <Text style={styles.messageShowMoreBtn}>Show more</Text>
               </TouchableOpacity>
             </View>
