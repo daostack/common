@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
   Text,
-  TouchableOpacity,
   View,
   StyleSheet,
   ScrollView,
@@ -9,31 +8,26 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import TextInputFieldWithIcon from '../../Components/FormFields/TextInputFieldWithIcon';
-import ImageField from '../../Components/FormFields/ImageField';
 import TextInputField from '../../Components/FormFields/TextInputField';
 import MultiLinkField from '../../Components/FormFields/MultiLinkField';
 
 import {colors, text, layout} from '../../Theme';
 import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
-import SegmentedControlTab from 'react-native-segmented-control-tab';
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepNavigation from './RequestStepNavigation';
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 import RequestToJoinForm from '../../Components/Forms/RequestToJoinForm';
-import Modal from 'react-native-modal';
 import moment from 'moment';
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from './RequestStepActionButton';
 
 const RequestStep2 = props => {
-  const [scrollY, setScrollY] = useState(new Animated.Value(0));
+  const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [segmentedIndex, setSegmentedIndex] = useState(0);
-  const [pickDate, setPickDate] = useState('Custom');
-  const [show, setShow] = useState(false);
+  const [segmentedIndex] = useState(0);
+  const [pickDate] = useState('Custom');
+  const [_show, setShow] = useState(false);
   const [pass, setPass] = useState(true);
 
   useEffect(() => {

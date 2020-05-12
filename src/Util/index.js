@@ -8,10 +8,17 @@ export const WEB_CLIENT_ID =
   googleServicesData.client[0].services.appinvite_service
     .other_platform_oauth_client[0].client_id;
 
-export const kFormatter = num => {
-  return Math.abs(num) > 999
-    ? Math.sign(num) * (Math.abs(num) / 1000).toFixed(1) + 'k'
-    : Math.sign(num) * Math.abs(num);
+export const numberFormatter = num => {
+  let denom = num;
+  return Math.abs(Number(denom)) >= 1.0e9
+    ? Math.abs(Number(denom)) / 1.0e9 + 'B'
+    : // Six Zeroes for Millions
+    Math.abs(Number(denom)) >= 1.0e6
+    ? Math.abs(Number(denom)) / 1.0e6 + 'M'
+    : // Three Zeroes for Thousands
+    Math.abs(Number(denom)) >= 1.0e3
+    ? Math.abs(Number(denom)) / 1.0e3 + 'K'
+    : Math.abs(Number(denom));
 };
 
 export function filterObjectByKeys(currObj, allowedKeys) {
@@ -22,3 +29,8 @@ export function filterObjectByKeys(currObj, allowedKeys) {
       return obj;
     }, {});
 }
+
+export const getTestEth = address =>
+  fetch(
+    `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
+  );

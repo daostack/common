@@ -13,7 +13,7 @@ class EditProfileForm extends React.Component {
   static FIELD_PROFILE_IMAGE = 'photoURL';
 
   formSave = async e => {
-    const {editProfileFormStore, userStore} = this.props;
+    const {editProfileFormStore} = this.props;
     if (editProfileFormStore.isFormValid()) {
       const changedFields = editProfileFormStore.getChangedFormFieldsJson();
 

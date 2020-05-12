@@ -9,7 +9,7 @@ const ButtonSwiper = ({onSwipeSuccess, title}) => {
     console.log('MSG -> ', msg);
   };
 
-  const thumbComponent = () => <View style={styles.swiperThumbIcon}></View>;
+  const thumbComponent = () => <View style={styles.swiperThumbIcon} />;
 
   return (
     <View style={{...layout.marginTopXL, ...{height: 100}}}>

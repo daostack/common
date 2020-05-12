@@ -10,6 +10,9 @@ import {
 } from 'react-native';
 const {width} = Dimensions.get('window');
 import WalletManager from '../Util/WalletManager';
+import MessageContract from '../Contracts/ABIs/MessageContract';
+import {createCommon} from '../Util/createCommon';
+import {getArc} from '../Util/arc';
 
 const uid = 'test';
 
@@ -31,6 +34,7 @@ export default class nativeBridgeTests extends React.Component {
       txHash: '',
       result: '',
       scTXHash: '',
+      commonStatus: '',
     };
 
     this.child = React.createRef();
@@ -87,10 +91,21 @@ export default class nativeBridgeTests extends React.Component {
       const manager = WalletManager.getInstance();
       const address = await manager.getOwnerAccount();
       const balance = await manager.getBalance(address);
+      console.log('ADDRESS: ', address);
+      console.log('BALANCE: ', balance);
       this.setState({ownerAccount: address, ownerBalance: balance});
     } catch (e) {
       console.log(e);
     }
+  };
+
+  getSomeFunds = async () => {
+    const manager = WalletManager.getInstance();
+    const address = await manager.getOwnerAccount();
+    console.log(`fetching some Eth for your address ${address}`);
+    fetch(
+      `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
+    );
   };
 
   getBalance = async () => {
@@ -98,6 +113,8 @@ export default class nativeBridgeTests extends React.Component {
       const manager = WalletManager.getInstance();
       const address = manager.getAddress();
       const balance = await manager.getBalance(manager.address);
+      console.log('ADDRESS: ', address);
+      console.log('BALANCE: ', balance);
       this.setState({address, balance});
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
@@ -154,10 +171,70 @@ export default class nativeBridgeTests extends React.Component {
     }
   };
 
+  createCommon = async () => {
+    console.log('creating common -- please wait');
+    this.setState({commonStatus: 'Creating common -- please wait'});
+    const wallet = WalletManager.getInstance();
+
+    const arc = await getArc(wallet.ethWallet);
+
+    console.log('calling the function');
+    const commonStatus = await createCommon(arc, {
+      name: `Test DAO ${new Date()}`,
+      founderAddresses: wallet.ethWallet.address,
+      minFeeToJoin: 100,
+      fundingToken: '0x0000000000000000000000000000000000000000',
+      fundingGoal: 100000,
+      fundingGoalDeadline: 1589210661,
+      metaData: '',
+      ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
+    });
+
+    this.setState({commonStatus: `${commonStatus}`});
+  };
+
   render() {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
+          <Text style={{marginBottom: 10}}>
+            Network: {this.state.networkURL}
+          </Text>
+
+          <Text>Address: {this.state.ownerAccount}</Text>
+          <Text>Balance: {this.state.ownerBalance}</Text>
+          <TouchableOpacity
+            onPress={this.getOwnerBalance}
+            style={styles.button}>
+            <Text>Get local Address and balance</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.getSomeFunds} style={styles.button}>
+            <Text>Get some funds!</Text>
+          </TouchableOpacity>
+
+          <Text style={{marginVertical: 10}}>
+            --------------- Common Interactions -----------------
+          </Text>
+          <Text>Common Tx: {this.state.commonStatus}</Text>
+          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
+            <Text>Create Common</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
+            <Text>Create a request to join [TODO]</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
+            <Text>Create a funding request [TODO]</Text>
+          </TouchableOpacity>
+
+          <Text>mnemonicsAndStore: {this.state.mnemonicsAndStore}</Text>
+          <TouchableOpacity
+            onPress={this.generateAndStoreMnemonic}
+            style={styles.button}>
+            <Text>Generate And Store Mnemonic</Text>
+          </TouchableOpacity>
           <Text style={{marginVertical: 10}}>
             --------------- Native Bridge -----------------
           </Text>
@@ -191,23 +268,10 @@ export default class nativeBridgeTests extends React.Component {
           <Text style={{marginVertical: 10}}>
             --------------- JavaScript -----------------
           </Text>
-
-          <Text style={{marginBottom: 10}}>
-            Network: {this.state.networkURL}
-          </Text>
-
-          <Text>Address: {this.state.ownerAccount}</Text>
-          <Text>Balance: {this.state.ownerBalance}</Text>
-          <TouchableOpacity
-            onPress={this.getOwnerBalance}
-            style={styles.button}>
-            <Text>Get Owner Address</Text>
-          </TouchableOpacity>
-
           <Text>Address: {this.state.address}</Text>
           <Text>Balance: {this.state.balance}</Text>
           <TouchableOpacity onPress={this.getBalance} style={styles.button}>
-            <Text>Get Balance</Text>
+            <Text>Get Wallet address Balance (obsolete)</Text>
           </TouchableOpacity>
 
           <Text>Status: {this.state.txStatus}</Text>
@@ -258,34 +322,3 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
   },
 });
-
-const MessageContract = [
-  {
-    constant: false,
-    inputs: [
-      {
-        name: 'newMessage',
-        type: 'string',
-      },
-    ],
-    name: 'setMessage',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'getMessage',
-    outputs: [
-      {
-        name: '',
-        type: 'string',
-      },
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-];

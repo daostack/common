@@ -8,6 +8,8 @@ import App from './App';
 import {name as appName} from './app.json';
 import stores from './src/Stores';
 import {Provider} from 'mobx-react';
+import {getArc} from './src/Util/arc';
+global.arc = getArc();
 
 console.disableYellowBox = true;
 

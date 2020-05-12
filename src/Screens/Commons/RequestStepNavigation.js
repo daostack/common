@@ -1,9 +1,8 @@
-/* eslint-disable prettier/prettier */
 import React from 'react';
-import {Text, TouchableOpacity} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import NavigationBar from 'react-native-navbar';
 import Icon from '../../Assets/iconfont/Icon';
-import {text, layout, colors} from '../../Theme';
+import {text} from '../../Theme';
 
 const RequestStepNavigation = props => {
   return (

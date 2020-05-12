@@ -81,7 +81,7 @@ export default class AuthService {
     //console.log('accessToken 2 -> ', accessToken);
     // 1. Read mnemonic from the store
     /*
-    
+
     const mnemonicFromStore = await NativeModules.WalletModule.retrieveMnemonic(
       uid,
     );

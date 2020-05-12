@@ -10,19 +10,27 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
+import {observer, inject} from 'mobx-react';
+import ImagePicker from 'react-native-image-picker';
+import moment from 'moment';
+import {ethers} from 'ethers';
 import {colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
-import {observer, inject} from 'mobx-react';
-const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
-import ImagePicker from 'react-native-image-picker';
-import moment from 'moment';
+import {Ipfs as IpfsClient} from '../../Config';
+import WalletManager from '../../Util/WalletManager';
 import FirebaseService from '../../Services/FirebaseService';
 import {useToast} from '../../Util/Toast';
 import CreateStepDotHeader from './CreateStepDotHeader';
-import {kFormatter} from '../../Util';
+import {numberFormatter} from '../../Util';
+// import {createCommon} from '../../Util/createCommon';
+import {getArc} from '../../Util/arc';
+import {StackActions} from '@react-navigation/native';
+
+const {width} = Dimensions.get('window');
+const provider = ethers.getDefaultProvider('rinkeby');
 
 const firebaseService = new FirebaseService();
 
@@ -111,6 +119,67 @@ const CreateStep4 = props => {
     });
   };
 
+  const ipfsUpload = async formData =>
+    // TODO: use arc.saveIPFSData({ name: formData.name}) here
+    IpfsClient.addAndPinString(
+      JSON.stringify({
+        name: formData.name,
+        byline: formData.byline,
+        description: formData.description,
+        courseOfAction: formData.action,
+        mainValue1: formData.funding,
+        mainValue2: formData.minimum,
+        mainValue3: 'empty value',
+      }),
+    );
+
+  const forgeCommon = async () => {
+    const commonFormData = props.createCommonFormStore.getChangedFormFieldsJson();
+    const ipfsHash = await ipfsUpload(commonFormData);
+    console.log('ipfs Hash: ', ipfsHash);
+
+    const formData = props.createCommonFormStore.getChangedFormFieldsJson();
+    console.log('formDAta: ', formData.minimum);
+    console.log('formDAta: ', parseInt(formData.minimum));
+    const manager = await WalletManager.getInstance();
+    const wallet = manager.ethWallet;
+    const address = await manager.getOwnerAccount();
+    console.log('owner account: ', address);
+    // we will want to have a global arc instance for all contract interactions!
+    const arc = await getArc(wallet);
+    console.log({
+      name: formData.name,
+      founderAddresses: address,
+      tokenDist: [0],
+      repDist: [100],
+      minFeeToJoin: parseInt(formData.minimum),
+      fundingGoal: formData.funding,
+      // TBD: get form data for deadline; these are in secondSinceEpoch
+      //TODO: get data for deadline from form data
+      fundingGoalDeadline: (await provider.getBlock('latest')).timestamp + 3000,
+      ipfsHash,
+    });
+
+    const commonAddress = await createCommonWithLoader(arc, {
+      name: formData.name,
+      founderAddresses: address,
+      tokenDist: [0],
+      repDist: [100],
+      minFeeToJoin: parseInt(formData.minimum), // TDB: get from formData
+      fundingGoal: formData.funding, // TBD: get from formdata
+      // TBD: get form data for deadline; these are in secondSinceEpoch
+      //TODO: get data for deadline from form data
+      fundingGoalDeadline: (await provider.getBlock('latest')).timestamp + 3000,
+      ipfsHash,
+    });
+
+    if (commonAddress) {
+      props.navigation.dispatch(StackActions.popToTop());
+    }
+
+    return {commonAddress};
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -173,7 +242,7 @@ const CreateStep4 = props => {
               style={{
                 position: 'absolute',
                 height: 225,
-                width: width,
+                width,
                 backgroundColor: colors.grey4,
               }}
               source={{
@@ -276,14 +345,12 @@ const CreateStep4 = props => {
               </View>
             </View>
           )}
-          <View
-            style={{height: 1, width: width, backgroundColor: colors.grey4}}
-          />
+          <View style={{height: 1, width, backgroundColor: colors.grey4}} />
           <View style={styles.sectionTitle}>
             <View style={{minWidth: 90, marginRight: 10}}>
               <Text
                 style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>
-                ${kFormatter(form[CreateCommonForm.FUNDING_GOAL])}
+                ${numberFormatter(form[CreateCommonForm.FUNDING_GOAL])}
               </Text>
               <Text style={{fontSize: 14, textAlign: 'center', marginTop: 10}}>
                 Goal
@@ -292,7 +359,7 @@ const CreateStep4 = props => {
             <View style={{width: 90, marginHorizontal: 10}}>
               <Text
                 style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>
-                ${kFormatter(form[CreateCommonForm.MINIMUM])}
+                ${numberFormatter(form[CreateCommonForm.MINIMUM])}
               </Text>
               <Text style={{fontSize: 14, textAlign: 'center', marginTop: 10}}>
                 Contribution
@@ -368,17 +435,14 @@ const CreateStep4 = props => {
             <View />
           )}
         </View>
-        <TouchableOpacity
-          style={styles.continueButton}
-          // onPress={push}
-        >
+        <TouchableOpacity style={styles.continueButton} onPress={forgeCommon}>
           <Text
             style={{
               fontSize: 16,
               color: 'white',
               fontWeight: '700',
             }}>
-            Continue to Review
+            Publish Common
           </Text>
         </TouchableOpacity>
       </ScrollView>

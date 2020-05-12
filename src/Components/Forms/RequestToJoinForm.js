@@ -11,10 +11,10 @@ class RequestToJoinForm extends React.Component {
   formSkip() {}
 
   formSave = () => {
-    const {requestToJoinFormStore, userId} = this.props;
+    const {requestToJoinFormStore} = this.props;
     if (requestToJoinFormStore.isFormValid()) {
       // firebaseService
-      //   .editUser(userId, completeAccountFormStore.getChangedFormFieldsJson())
+      //   .editUser(this.props.userId, completeAccountFormStore.getChangedFormFieldsJson())
       //   .catch(err => {
       //     completeAccountFormStore.form.meta.submitError = `${err.toString()}  \n ${
       //       err.response

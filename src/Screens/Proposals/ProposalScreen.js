@@ -75,7 +75,7 @@ const ProposalScreen = ({navigation, route}) => {
   const [voteType, setVoteType] = useState(false);
 
   const [index, setIndex] = useState(0);
-  const [routes, setRoutes] = useState([
+  const [routes] = useState([
     {key: 'info', icon: 'proposal'},
     {key: 'discussions', icon: 'discussion'},
   ]);
@@ -83,11 +83,12 @@ const ProposalScreen = ({navigation, route}) => {
   boostedInfoRef = useRef();
   approvalSheetRef = useRef();
 
-  const openBoostedInfoBottomSheet = () => {
-    console.log('openBoostedInfo');
-    boostedInfoRef.current.snapTo(1);
-    boostedInfoRef.current.snapTo(1);
-  };
+  // TODO: can this be removed?
+  // const openBoostedInfoBottomSheet = () => {
+  //   console.log('openBoostedInfo');
+  //   boostedInfoRef.current.snapTo(1);
+  //   boostedInfoRef.current.snapTo(1);
+  // };
 
   const renderScene = ({route, jumpTo}) => {
     switch (route.key) {
