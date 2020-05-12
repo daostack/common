@@ -16,8 +16,11 @@ import Loader from '../../Components/Loader';
 import ImageSize from 'react-native-image-size';
 import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
 import firestore from '@react-native-firebase/firestore';
+import DiscussionMessage from '../Discussions/DiscussionMessage';
+import {useNavigation} from '@react-navigation/native';
 
 const ProposalData = props => {
+  const navigation = useNavigation();
   const [proposalInfo, setProposalInfo] = useState(null);
 
   useEffect(() => {
@@ -209,12 +212,29 @@ const ProposalData = props => {
 
             <View style={styles.adRow}>
               <Icon name="link" color={colors.mainBlue} size={16} />
-              <Text style={styles.adsText}>Amazon Facebook group</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('Browser', {
+                    url: 'https://daostack.io/',
+                  })
+                }>
+                <Text style={styles.adsText}>Amazon Facebook group</Text>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.adRow}>
               <Icon name="file" color={colors.mainBlue} size={16} />
-              <Text style={styles.adsText}>Facebook campaign segment.pdf</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('PDFViwer', {
+                    uri:
+                      'http://samples.leanpub.com/thereactnativebook-sample.pdf',
+                  })
+                }>
+                <Text style={styles.adsText}>
+                  Facebook campaign segment.pdf
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -268,22 +288,24 @@ const ProposalData = props => {
                 Recent comments
               </Text>
             </View>
-            <View style={{...layout.content, ...layout.flexStart}}>
-              {topMessage.map((currMessage, currIndex) => {
-                return (
-                  <UserMessageCard
-                    photoURL={currMessage.ownerAvatar}
-                    name={currMessage.ownerName}
-                    message={currMessage.text}
-                    time={currMessage.createTime}
-                  />
-                  // <DiscussionMessage data={currMessage} />
-                );
-              })}
-            </View>
+            {topMessage.length === 0 ? null : (
+              <View style={{...layout.content, ...layout.flexStart}}>
+                {topMessage.map((currMessage, currIndex) => {
+                  return (
+                    <UserMessageCard
+                      photoURL={currMessage.ownerAvatar}
+                      name={currMessage.ownerName}
+                      message={currMessage.text}
+                      time={currMessage.createTime}
+                    />
+                    // <DiscussionMessage data={currMessage} />
+                  );
+                })}
+              </View>
+            )}
             {/* <ChatRoom path="common/48NPcGnpskN9YkqVNXKA/proposal/DmZFnbSbkwcQHMAyGa54/discussion/43Q9abICrp2KpE86c1Az/message"/> */}
             <View style={layout.contant}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => props.showMore()}>
                 <Text style={styles.messageShowMoreBtn}>Show more</Text>
               </TouchableOpacity>
             </View>

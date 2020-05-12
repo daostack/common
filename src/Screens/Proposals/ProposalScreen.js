@@ -343,7 +343,12 @@ const ProposalScreen = ({navigation, route, props}) => {
             renderTabBar={renderTabBar}
             style={{}}
           />
-          {index === 0 && <ProposalData proposalInfo={proposalInfo} />}
+          {index === 0 && (
+            <ProposalData
+              proposalInfo={proposalInfo}
+              showMore={() => setIndex(1)}
+            />
+          )}
           {index === 1 && <ProposalDiscussion inputRef={inputRef} />}
         </ScrollView>
 

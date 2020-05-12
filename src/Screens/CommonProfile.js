@@ -420,14 +420,16 @@ const CommonProfile = ({navigation, route}) => {
         />
       </ScrollView>
 
-      <BottomRightButton
-        onPress={() =>
-          navigation.navigate('New Topic', {
-            commonId: '48NPcGnpskN9YkqVNXKA',
-          })
-        }
-        bottom={120}
-      />
+      {index === 0 ? (
+        <BottomRightButton
+          onPress={() =>
+            navigation.navigate('New Topic', {
+              commonId: '48NPcGnpskN9YkqVNXKA',
+            })
+          }
+          bottom={120}
+        />
+      ) : null}
 
       <SafeAreaView>
         {isMember ? (
