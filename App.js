@@ -297,8 +297,6 @@ const App = ({userStore, daoStore}) => {
             name="EditProfile"
             component={EditProfile}
           />
-          <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
-          <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen name="PDFViwer" component={PDFViewer} />
           <Stack.Screen name="Browser" component={Browser} />
           <Stack.Screen

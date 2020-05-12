@@ -1,5 +1,6 @@
 import {db, firebase} from '../Firebase';
-import uuid from 'uuid/v4';
+// import uuid from 'uuid/v4';
+import {v4 as uuidv4} from 'uuid';
 
 const DB_COLLECTIONS = {
   users: 'users',
@@ -98,7 +99,7 @@ export default class FirebaseService {
 
   async uploadImage(imageUri) {
     const ext = imageUri.split('.').pop();
-    const filename = `${uuid()}.${ext}`;
+    const filename = `${uuidv4()}.${ext}`;
     const path = `public_img/${filename}`;
     const ref = firebase.storage().ref(path);
     await ref.putFile(imageUri);
