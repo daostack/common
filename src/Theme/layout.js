@@ -145,16 +145,30 @@ export default StyleSheet.create({
 
   // Pdding Bottom
   paddingBottomS: {
-    marginBottom: 10,
+    paddingBottom: 10,
   },
   paddingBottomM: {
-    marginBottom: 15,
+    paddingBottom: 15,
   },
   paddingBottomL: {
-    marginBottom: 20,
+    paddingBottom: 20,
   },
   paddingBottomXL: {
-    marginBottom: 40,
+    paddingBottom: 40,
+  },
+
+  // Pdding Bottom
+  paddingTopS: {
+    paddingTop: 10,
+  },
+  paddingTopM: {
+    paddingTop: 15,
+  },
+  paddingTopL: {
+    paddingTop: 20,
+  },
+  paddingTopXL: {
+    paddingTop: 40,
   },
 
   // Buttons

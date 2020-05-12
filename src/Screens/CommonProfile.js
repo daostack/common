@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import gql from 'graphql-tag';
 import {ApolloClientConfig as client} from '../Config';
-import {text, layout, colors} from '../Theme';
+import {text, layout, colors, sizeL} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import ViewTabNoData from '../Components/ViewTabNoData';
@@ -30,6 +30,7 @@ import Modal from 'react-native-modal';
 import SentTemplate from '../Components/ModalTemplates/SentTemplate';
 import ProposalApprovalTag from '../Components/Proposals/ProposalApprovalTag';
 import {CommonActions} from '@react-navigation/native';
+import ProposalCard from '../Components/Proposals/ProposalCard';
 
 const {cache} = client;
 const mockData = {
@@ -133,11 +134,22 @@ const CommonProfile = ({navigation, route}) => {
 
   const Proposals = () => {
     return (
+      <View style={{paddingVertical: sizeL}}>
+        <ProposalCard
+          proposalId={'ba02cba0-937a-11ea-b51a-77e469735457'}
+          onReviewProposal={openProposalScreen}
+        />
+      </View>
+    );
+
+    /*
+    return (
       <ViewTabNoData
         title="No proposals yet"
         subtitle="Write your first proposals and invite members to make an impact together!"
       />
     );
+    */
   };
 
   const History = () => {
@@ -329,6 +341,7 @@ const CommonProfile = ({navigation, route}) => {
         style={{
           flex: 1,
           backgroundColor: colors.white,
+          marginBottom: 100,
         }}>
         <CommonCover
           isMember={true}

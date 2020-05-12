@@ -14,6 +14,7 @@ import UserMessageCard from '../../Components/Discussion/UserMessageCard';
 import ImageView from 'react-native-image-viewing';
 import Loader from '../../Components/Loader';
 import ImageSize from 'react-native-image-size';
+import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
 
 const ProposalData = props => {
   const [proposalInfo, setProposalInfo] = useState(null);
@@ -85,31 +86,6 @@ const ProposalData = props => {
     // ...
   };
 
-  const proposalCardHeaderByStage = isBoosted => {
-    let iconName = 'star';
-    let iconColor = colors.mainBlue;
-    let headerTitle = 'Boosted';
-    let HeaderTitleBackground = '';
-
-    if (isBoosted) {
-      iconName = 'boosted';
-      iconColor = colors.orange;
-      headerTitle = 'Boosted';
-    }
-
-    return (
-      <View style={styles.proposalCardHeader}>
-        <Icon name={iconName} color={iconColor} size={16} />
-        <Text style={{...text.orangeSmallBold, ...{marginHorizontal: 5}}}>
-          {headerTitle}
-        </Text>
-        <TouchableOpacity onPress={openBoostedInfo}>
-          <Icon name={'explanation'} size={12} />
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
   let progressBarWidthPercent = 0;
 
   if (proposalInfo) {
@@ -125,7 +101,10 @@ const ProposalData = props => {
     <>
       <View style={styles.container}>
         <View style={styles.proposalCard}>
-          {proposalCardHeaderByStage(isBoosted)}
+          <ProposalCardHeader
+            isBoosted={isBoosted}
+            openBoostedInfo={openBoostedInfo}
+          />
           <View style={layout.content}>
             <View style={styles.proposalRowSubtitle}>
               <Text style={text.smallBoldGreyText}>
@@ -379,14 +358,6 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: colors.grey4,
-  },
-
-  proposalCardHeader: {
-    ...layout.content,
-    ...layout.flexRow,
-    alignSelf: 'stretch',
-    backgroundColor: colors.orangeLight,
-    padding: sizeXS,
   },
 
   proposalRowSubtitle: {

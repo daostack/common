@@ -8,6 +8,7 @@ const MemberCard = ({
   name,
   approvePercent,
   memberSince,
+  memberCustomText,
   imageUrl,
   isPending,
   date,
@@ -57,7 +58,9 @@ const MemberCard = ({
               ...text.smallGreyText,
               marginTop: 2,
             }}>
-            {memberSince
+            {memberCustomText
+              ? memberCustomText
+              : memberSince
               ? `Member since by ${memberSince}`
               : `Approved by ${approvePercent}%`}
           </Text>
