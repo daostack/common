@@ -13,15 +13,13 @@ import {
 } from 'react-native';
 import {text, layout, colors, sizeM} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
-import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
+import {TabView, TabBar} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
-import ProposalDiscussion, {MessageInput} from './ProposalDiscussion';
+import ProposalDiscussion from './ProposalDiscussion';
 import MemberCard from '../../Components/MemberCard';
 import BoostedInfo from '../BottomSheetScreens/BoostedInfo';
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '../../Util/Toast';
-import {observer, inject} from 'mobx-react';
-import BottomSheetContainer from '../../Components/BottomSheetContainer';
 import BottomSheetModal from '../../Components/BottomSheetModal';
 import ProposalService from '../../Services/ProposalService';
 import auth from '@react-native-firebase/auth';
@@ -40,29 +38,29 @@ const ProposalScreen = ({navigation, route, props}) => {
   useEffect(() => {
     const getProposalInfo = async proposalId => {
       try {
-        let proposalInfo = await ProposalService.getInstance().getProposalInfo(
+        let currProposalInfo = await ProposalService.getInstance().getProposalInfo(
           proposalId,
         );
 
         //RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
-        if (proposalInfo.joinAndQuit) {
-          proposedMemberId = proposalInfo.joinAndQuit.proposedMemberId;
-          funding = proposalInfo.joinAndQuit.funding;
+        if (currProposalInfo.joinAndQuit) {
+          proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+          funding = currProposalInfo.joinAndQuit.funding;
         }
         //FundingRequest proposal
         else {
-          proposedMemberId = proposalInfo.fundingRequest.beneficiaryId;
-          funding = proposalInfo.joinAndQuit.amount;
+          proposedMemberId = currProposalInfo.fundingRequest.beneficiaryId;
+          funding = currProposalInfo.joinAndQuit.amount;
         }
 
-        const proposedUser = await FirebaseService.getInstance().getUserById(
+        const currProposedUser = await FirebaseService.getInstance().getUserById(
           proposedMemberId,
         );
 
-        setProposedUser(proposedUser);
-        setProposalInfo({...proposalInfo, ...{funding: funding}});
+        setProposedUser(currProposedUser);
+        setProposalInfo({...currProposalInfo, ...{funding: funding}});
       } catch (error) {
         console.log('error: ', error);
       }
@@ -92,22 +90,6 @@ const ProposalScreen = ({navigation, route, props}) => {
   const inputRef = useRef();
   boostedInfoRef = useRef();
   approvalSheetRef = useRef();
-
-  // TODO: can this be removed?
-  // const openBoostedInfoBottomSheet = () => {
-  //   console.log('openBoostedInfo');
-  //   boostedInfoRef.current.snapTo(1);
-  //   boostedInfoRef.current.snapTo(1);
-  // };
-
-  const renderScene = ({route, jumpTo}) => {
-    switch (route.key) {
-      case 'info':
-        return <ProposalData proposalInfo={proposalInfo} />;
-      case 'discussions':
-        return <ProposalDiscussion jumpTo={jumpTo} />;
-    }
-  };
 
   const renderTabBar = props => (
     <TabBar
@@ -371,9 +353,9 @@ const ProposalScreen = ({navigation, route, props}) => {
         )}
       </SafeAreaView>
 
-      {/* <BottomSheetContainer ref={boostedInfoRef} topSnapPoint={620}>
+      <BottomSheetContainer ref={boostedInfoRef} topSnapPoint={620}>
         <BoostedInfo />
-      </BottomSheetContainer> */}
+      </BottomSheetContainer>
 
       <BottomSheetModal
         isVisible={isApprovalBottomModalVisible}

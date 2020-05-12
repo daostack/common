@@ -1,19 +1,11 @@
 import {useState} from 'react';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  Dimensions,
-} from 'react-native';
-import {colors, text, layout} from '../Theme';
+import {Text, View, StyleSheet, SafeAreaView, Dimensions} from 'react-native';
+import {colors} from '../Theme';
 import React from 'react';
-import Icon from '../Assets/iconfont/Icon';
 import Pdf from 'react-native-pdf';
 import {useNavigation} from '@react-navigation/native';
 
-const PDFViewer = ({props, route}) => {
+const PDFViewer = ({route}) => {
   const uri = route.params.uri;
   const [pages, setPages] = useState(0);
   const [currPage, setCurrPage] = useState(0);

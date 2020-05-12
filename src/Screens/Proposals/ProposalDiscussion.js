@@ -1,22 +1,10 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {
-  Text,
-  StyleSheet,
-  SectionList,
-  KeyboardAvoidingView,
-  TouchableOpacity,
-  View,
-  TextInput,
-  Dimensions,
-  ScrollView,
-} from 'react-native';
+import {Text, StyleSheet, SectionList, View, ScrollView} from 'react-native';
 import {text, colors} from '../../Theme';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
-import ChatRoom from '../Discussions/Chat/ChatRoom';
 import moment from 'moment';
 import firestore from '@react-native-firebase/firestore';
-import Icon from '../../Assets/iconfont/Icon';
 
 const ProposalDiscussion = props => {
   const chatRef = useRef(null);
