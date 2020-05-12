@@ -7,7 +7,7 @@ import {
   Image,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {text, layout, colors} from '../../Theme';
+import {colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import FirebaseService from '../../Services/FirebaseService';
 import moment from 'moment';

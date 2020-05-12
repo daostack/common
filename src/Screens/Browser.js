@@ -1,17 +1,9 @@
 import {WebView} from 'react-native-webview';
-import {useState} from 'react';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  Dimensions,
-} from 'react-native';
-import {colors, text, layout} from '../Theme';
+import {SafeAreaView} from 'react-native';
+import {colors} from '../Theme';
 import React from 'react';
 
-const Browser = ({props, route, navigation}) => {
+const Browser = ({route}) => {
   const url = route.params.url;
   return (
     <SafeAreaView flex={1}>

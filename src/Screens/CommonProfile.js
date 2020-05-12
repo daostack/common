@@ -106,16 +106,16 @@ const CommonProfile = ({navigation, route}) => {
       indicatorStyle={{
         backgroundColor: colors.mainBlue,
       }}
-      renderLabel={({route, focused, color}) => {
+      renderLabel={label => {
         return (
           <View style={{...layout.content, padding: 0}}>
             <Icon
-              name={route.icon}
+              name={label.route.icon}
               size={30}
-              color={focused ? colors.mainBlue : colors.grey3}
+              color={label.focused ? colors.mainBlue : colors.grey3}
             />
             <Text style={focused ? styles.tabStyleActive : styles.tabStyle}>
-              {route.title}
+              {label.route.title}
             </Text>
           </View>
         );
@@ -270,10 +270,12 @@ const CommonProfile = ({navigation, route}) => {
     navigation.dispatch(navigate);
   };
 
+  /*
   const openNotif = event => {
     commonOperationalStateNotifRef.current.snapTo(1);
     commonOperationalStateNotifRef.current.snapTo(1);
   };
+  */
 
   const requestToJoin = event => {
     navigation.navigate('RequestStep1');

@@ -15,10 +15,10 @@ const {width, height} = Dimensions.get('window');
 import moment from 'moment';
 
 const ChatRoom = props => {
-  const [inputHeight, setInputHeight] = useState(60);
+  //const [inputHeight, setInputHeight] = useState(60);
   const inputRef = useRef(null);
-  const [user, setUser] = useState({});
-  const [inputText, setInputText] = useState(null);
+  //const [user, setUser] = useState({});
+  //const [inputText, setInputText] = useState(null);
   const chatRef = useRef(null);
 
   const path = props.path;

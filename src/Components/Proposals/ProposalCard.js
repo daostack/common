@@ -13,10 +13,10 @@ const ProposalCard = ({proposalId, onReviewProposal}) => {
   const [proposedUser, setProposedUser] = useState(false);
 
   useEffect(() => {
-    const getProposalInfo = async proposalId => {
+    const getProposalInfo = async currProposalId => {
       try {
         let proposalInfo = await ProposalService.getInstance().getProposalInfo(
-          proposalId,
+          currProposalId,
         );
 
         //RequestToJoin proposal
@@ -32,15 +32,12 @@ const ProposalCard = ({proposalId, onReviewProposal}) => {
           funding = proposalInfo.joinAndQuit.amount;
         }
 
-        const proposedUser = await FirebaseService.getInstance().getUserById(
+        const currProposedUser = await FirebaseService.getInstance().getUserById(
           proposedMemberId,
         );
 
-        setProposedUser(proposedUser);
+        setProposedUser(currProposedUser);
         setProposalInfo({...proposalInfo, ...{funding: funding}});
-
-        console.log('proposalInfo -> ', proposalInfo);
-        console.log('proposedUser -> ', proposedUser);
       } catch (error) {
         console.log('error: ', error);
       }
