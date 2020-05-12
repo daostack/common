@@ -41,7 +41,11 @@ import {
   RequestStep3,
   RequestStep4,
   FundingProposal,
+  Discussions,
+  DiscussionPost,
   ProposalScreen,
+  PDFViewer,
+  Browser,
 } from './src/Screens';
 
 import {ApolloClientConfig as client} from './src/Config';
@@ -271,12 +275,21 @@ const App = ({userStore, daoStore}) => {
             })}
           />
           <Stack.Screen
+            name="Discussions"
+            component={Discussions}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+
+          <Stack.Screen
             name="CommonCreationLoading"
             component={CommonCreationLoading}
             options={({navigation, route}) => ({
               headerShown: false,
             })}
           />
+          <Stack.Screen name="New Topic" component={DiscussionPost} />
           <Stack.Screen
             options={{
               title: 'Edit my profile',
@@ -284,6 +297,8 @@ const App = ({userStore, daoStore}) => {
             name="EditProfile"
             component={EditProfile}
           />
+          <Stack.Screen name="PDFViwer" component={PDFViewer} />
+          <Stack.Screen name="Browser" component={Browser} />
           <Stack.Screen
             options={{
               title: 'My wallet',

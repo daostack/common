@@ -1,5 +1,6 @@
 import {db, firebase} from '../Firebase';
-const uuid = require('uuid').v4;
+// import uuid from 'uuid/v4';
+import {v4 as uuidv4} from 'uuid';
 
 export const DB_COLLECTIONS = {
   users: 'users',
@@ -99,10 +100,25 @@ export default class FirebaseService {
 
   async uploadImage(imageUri) {
     const ext = imageUri.split('.').pop();
-    const filename = `${uuid()}.${ext}`;
+    const filename = `${uuidv4()}.${ext}`;
     const path = `public_img/${filename}`;
     const ref = firebase.storage().ref(path);
     await ref.putFile(imageUri);
+    return await ref.getDownloadURL();
+  }
+
+  async uploadFile(fileUri) {
+    const name = fileUri
+      .substring(fileUri.lastIndexOf('/') + 1, fileUri.length)
+      .split('.')
+      .slice(0, -1)
+      .join('.');
+    const ext = fileUri.split('.').pop();
+    const timeStamp = new Date().getTime();
+    const filename = `${name}_${timeStamp}.${ext}`;
+    const path = `public_file/${filename}`;
+    const ref = firebase.storage().ref(path);
+    await ref.putFile(fileUri);
     return await ref.getDownloadURL();
   }
 }

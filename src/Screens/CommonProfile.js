@@ -29,8 +29,13 @@ import CommonStageSummary from '../Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
 import SentTemplate from '../Components/ModalTemplates/SentTemplate';
 import ProposalApprovalTag from '../Components/Proposals/ProposalApprovalTag';
+<<<<<<< HEAD
 import {CommonActions} from '@react-navigation/native';
 import ProposalCard from '../Components/Proposals/ProposalCard';
+=======
+import BottomRightButton from '../Components/BottomRightButton';
+import DiscussionList from './Discussions/DiscussionList';
+>>>>>>> master
 
 const {cache} = client;
 const mockData = {
@@ -125,9 +130,10 @@ const CommonProfile = ({navigation, route}) => {
 
   const Discussions = () => {
     return (
-      <ViewTabNoData
-        title="No Discussions"
-        subtitle="Have things in common? This is the place to talk about them."
+      <DiscussionList
+        navigation={navigation}
+        commonId="48NPcGnpskN9YkqVNXKA"
+        // {route.params.commonId}
       />
     );
   };
@@ -341,8 +347,10 @@ const CommonProfile = ({navigation, route}) => {
         style={{
           flex: 1,
           backgroundColor: colors.white,
-          marginBottom: 100,
-        }}>
+        }}
+        contentContainerStyle={{paddingBottom: 100}}
+        showsVerticalScrollIndicator={false}>
+
         <CommonCover
           isMember={true}
           navigation={navigation}
@@ -413,6 +421,16 @@ const CommonProfile = ({navigation, route}) => {
           style={{}}
         />
       </ScrollView>
+
+      <BottomRightButton
+        onPress={() =>
+          navigation.navigate('New Topic', {
+            commonId: '48NPcGnpskN9YkqVNXKA',
+          })
+        }
+        bottom={120}
+      />
+
       <SafeAreaView>
         {isMember ? (
           <TouchableOpacity style={styles.addButton}>

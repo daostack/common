@@ -46,7 +46,33 @@ const ProposalData = props => {
       }
     };
 
+    const loadDiscussions = () => {
+      const commonId = '48NPcGnpskN9YkqVNXKA';
+      const proposalId = 'DmZFnbSbkwcQHMAyGa54';
+      const discussionId = '43Q9abICrp2KpE86c1Az';
+      firestore()
+        .collection('common')
+        .doc(commonId)
+        .collection('proposal')
+        .doc(proposalId)
+        .collection('discussion')
+        .doc(discussionId)
+        .collection('message')
+        .orderBy('createTime', 'desc')
+        .limit(4)
+        .get()
+        .then(snapshot => {
+          const list = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          console.log('AAA', list);
+          setTopMessage(list);
+        });
+    };
+
     loadProposalInfo(props.proposalInfo);
+    loadDiscussions();
   }, [props.proposalInfo]);
 
   const ImageGalleryFooter = ({imageIndex}) => {
@@ -60,6 +86,7 @@ const ProposalData = props => {
   };
 
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
+  const [topMessage, setTopMessage] = useState([]);
 
   const _renderTruncatedFooter = handlePress => {
     return (
@@ -243,18 +270,20 @@ const ProposalData = props => {
             </View>
             <View style={{...layout.content, ...layout.flexStart}}>
               {/**
-              {proposalInfo.discussions.map((currMessage, currIndex) => {
+              {topMessage.map((currMessage, currIndex) => {
                 return (
                   <UserMessageCard
-                    photoURL={currMessage.imageUrl}
-                    name={currMessage.name}
-                    message={currMessage.message}
-                    time={currMessage.time}
+                    photoURL={currMessage.ownerAvatar}
+                    name={currMessage.ownerName}
+                    message={currMessage.text}
+                    time={currMessage.createTime}
                   />
+                  // <DiscussionMessage data={currMessage} />
                 );
               })}
               */}
             </View>
+            {/* <ChatRoom path="common/48NPcGnpskN9YkqVNXKA/proposal/DmZFnbSbkwcQHMAyGa54/discussion/43Q9abICrp2KpE86c1Az/message"/> */}
             <View style={layout.contant}>
               <TouchableOpacity>
                 <Text style={styles.messageShowMoreBtn}>Show more</Text>
