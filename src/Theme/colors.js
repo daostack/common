@@ -19,5 +19,7 @@ export default {
   paleGrey: '#fbfcfc',
   orangeLight: '#fdf7ed',
   orange: '#ffae26',
+  orangeDark: '#ff7c00',
   against: '#ff603e',
+  lightishBlue: '#eff9ff',
 };

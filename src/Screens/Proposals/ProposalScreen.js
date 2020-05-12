@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   Dimensions,
   Text,
@@ -13,33 +13,67 @@ import {
 } from 'react-native';
 import {text, layout, colors, sizeM} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
-import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
+import {TabView, TabBar} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
-import ProposalDiscussion, {MessageInput} from './ProposalDiscussion';
+import ProposalDiscussion from './ProposalDiscussion';
 import MemberCard from '../../Components/MemberCard';
 import BoostedInfo from '../BottomSheetScreens/BoostedInfo';
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '../../Util/Toast';
-import {observer, inject} from 'mobx-react';
-import BottomSheetContainer from '../../Components/BottomSheetContainer';
 import BottomSheetModal from '../../Components/BottomSheetModal';
+import BottomSheetContainer from '../../Components/BottomSheetContainer';
+import ProposalService from '../../Services/ProposalService';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 const {width} = Dimensions.get('window');
 
-const mockData = {
-  data: 'data',
-  member: {
-    name: 'John Smith',
-    memberSince: 'may 12',
-    imageUrl:
-      'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
-    date: 'May 12',
-  },
-};
+import CountDown from 'react-native-countdown-component';
+import FirebaseService from '../../Services/FirebaseService';
+import {monthShortNames} from '../../Util/DateUtil';
 
-const ProposalScreen = ({props, navigation}) => {
+const ProposalScreen = ({navigation, route, props}) => {
+  const [proposalInfo, setProposalInfo] = useState(false);
+  const [proposedUser, setProposedUser] = useState(false);
+
+  const routeProposalId = route?.params.proposalId;
+
+  useEffect(() => {
+    const getProposalInfo = async proposalId => {
+      try {
+        let currProposalInfo = await ProposalService.getInstance().getProposalInfo(
+          proposalId,
+        );
+
+        //RequestToJoin proposal
+        let proposedMemberId = null;
+        let funding = null;
+        if (currProposalInfo.joinAndQuit) {
+          proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+          funding = currProposalInfo.joinAndQuit.funding;
+        }
+        //FundingRequest proposal
+        else {
+          proposedMemberId = currProposalInfo.fundingRequest.beneficiaryId;
+          funding = currProposalInfo.joinAndQuit.amount;
+        }
+
+        const currProposedUser = await FirebaseService.getInstance().getUserById(
+          proposedMemberId,
+        );
+
+        setProposedUser(currProposedUser);
+        setProposalInfo({...currProposalInfo, ...{funding: funding}});
+      } catch (error) {
+        console.log('error: ', error);
+      }
+    };
+
+    if (routeProposalId) {
+      getProposalInfo(routeProposalId);
+    }
+  }, [routeProposalId]);
+
   const [
     isApprovalBottomModalVisible,
     setIsApprovalBottomModalVisible,
@@ -59,18 +93,6 @@ const ProposalScreen = ({props, navigation}) => {
   const inputRef = useRef();
   boostedInfoRef = useRef();
   approvalSheetRef = useRef();
-
-  // TODO: can this be removed?
-  // const openBoostedInfoBottomSheet = () => {
-  //   console.log('openBoostedInfo');
-  //   boostedInfoRef.current.snapTo(1);
-  //   boostedInfoRef.current.snapTo(1);
-  // };
-
-  const renderScene = SceneMap({
-    info: ProposalData,
-    discussions: ProposalDiscussion,
-  });
 
   const renderTabBar = props => (
     <TabBar
@@ -211,11 +233,47 @@ const ProposalScreen = ({props, navigation}) => {
         </View>
       );
     } else {
+      const remainingSeconds = proposalInfo?.closingAt?.seconds
+        ? proposalInfo?.closingAt?.seconds - Date.now() / 1000
+        : null;
+
+      const isLessThanOneHour = remainingSeconds < 3600;
+
+      let counterTextColor = styles.timerText;
+      let timerBackground = colors.paleblue;
+
+      if (isLessThanOneHour) {
+        counterTextColor = {...styles.timerText, ...{color: colors.white}};
+        timerBackground = colors.orangeDark;
+      }
+
       return (
-        <View style={{...layout.flexRow, ...{justifyContent: 'space-between'}}}>
+        <View
+          style={{
+            ...layout.flexRow,
+            ...{
+              justifyContent: 'space-between',
+              width: '100%',
+              paddingHorizontal: 20,
+            },
+          }}>
           <View style={styles.timerContainer}>
-            <View style={styles.timer}>
-              <Text style={text.smallBlackText}>00:14:32:12</Text>
+            <View
+              style={{...styles.timer, ...{backgroundColor: timerBackground}}}>
+              {remainingSeconds ? (
+                <CountDown
+                  digitTxtStyle={counterTextColor}
+                  timeLabels={false}
+                  showSeparator={true}
+                  separatorStyle={counterTextColor}
+                  digitStyle={{
+                    height: 'auto',
+                    width: 'auto',
+                  }}
+                  until={remainingSeconds}
+                  onFinish={() => console.log('finished')}
+                />
+              ) : null}
             </View>
           </View>
           <TouchableOpacity
@@ -238,6 +296,12 @@ const ProposalScreen = ({props, navigation}) => {
 
   const initialLayout = {width: Dimensions.get('window').width};
 
+  let memberCreatedDate = null;
+
+  if (proposedUser) {
+    memberCreatedDate = new Date(proposedUser?.createdAt.seconds * 1000);
+  }
+
   return (
     <>
       <SafeAreaView style={{backgroundColor: colors.white}} />
@@ -254,13 +318,19 @@ const ProposalScreen = ({props, navigation}) => {
               ...{paddingBottom: 0},
             }}>
             <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
-              Launch a facebook campaign to raise awareness about the amazon
+              {proposalInfo?.title}
             </Text>
 
             <MemberCard
-              name={mockData.member.name}
-              memberSince={mockData.member.memberSince}
-              imageUrl={mockData.member.imageUrl}
+              name={proposedUser?.displayName}
+              memberSince={
+                memberCreatedDate
+                  ? `${
+                      monthShortNames[memberCreatedDate.getMonth()]
+                    } ${memberCreatedDate.getDay()} `
+                  : ''
+              }
+              imageUrl={proposedUser.photoURL}
               isPending={false}
             />
           </View>
@@ -273,7 +343,12 @@ const ProposalScreen = ({props, navigation}) => {
             renderTabBar={renderTabBar}
             style={{}}
           />
-          {index === 0 && <ProposalData showMore={() => setIndex(1)} />}
+          {index === 0 && (
+            <ProposalData
+              proposalInfo={proposalInfo}
+              showMore={() => setIndex(1)}
+            />
+          )}
           {index === 1 && <ProposalDiscussion inputRef={inputRef} />}
         </ScrollView>
 
@@ -286,9 +361,9 @@ const ProposalScreen = ({props, navigation}) => {
         )}
       </SafeAreaView>
 
-      {/* <BottomSheetContainer ref={boostedInfoRef} topSnapPoint={620}>
+      <BottomSheetContainer ref={boostedInfoRef} topSnapPoint={620}>
         <BoostedInfo />
-      </BottomSheetContainer> */}
+      </BottomSheetContainer>
 
       <BottomSheetModal
         isVisible={isApprovalBottomModalVisible}
@@ -313,8 +388,13 @@ const styles = StyleSheet.create({
     color: colors.mainBlue,
   },
 
+  timerText: {
+    ...text.smallBlackText,
+    ...text.bold,
+    color: colors.slate,
+  },
+
   timer: {
-    backgroundColor: colors.paleblue,
     paddingHorizontal: sizeM,
     paddingVertical: 1,
     borderRadius: 12,
@@ -330,7 +410,7 @@ const styles = StyleSheet.create({
   },
 
   actionButtonContainer: {
-    padding: 20,
+    padding: 0,
     paddingVertical: 25,
     paddingBottom: 40,
     position: 'absolute',

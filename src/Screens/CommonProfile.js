@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import gql from 'graphql-tag';
 import {ApolloClientConfig as client} from '../Config';
-import {text, layout, colors} from '../Theme';
+import {text, layout, colors, sizeL} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import ViewTabNoData from '../Components/ViewTabNoData';
@@ -29,6 +29,8 @@ import CommonStageSummary from '../Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
 import SentTemplate from '../Components/ModalTemplates/SentTemplate';
 import ProposalApprovalTag from '../Components/Proposals/ProposalApprovalTag';
+import {CommonActions} from '@react-navigation/native';
+import ProposalCard from '../Components/Proposals/ProposalCard';
 import BottomRightButton from '../Components/BottomRightButton';
 import DiscussionList from './Discussions/DiscussionList';
 
@@ -72,6 +74,7 @@ const CommonProfile = ({navigation, route}) => {
     const getDao = async commonId => {
       // noinspection JSAnnotator
       try {
+        /*
         console.log('CACHE: ', cache.data.data);
         const res = await cache.readQuery({
           query: gql`
@@ -87,6 +90,7 @@ const CommonProfile = ({navigation, route}) => {
           },
         });
         console.log('HELLO!: ', res);
+        */
       } catch (error) {
         console.log('error: ', error);
       }
@@ -102,16 +106,16 @@ const CommonProfile = ({navigation, route}) => {
       indicatorStyle={{
         backgroundColor: colors.mainBlue,
       }}
-      renderLabel={({route, focused, color}) => {
+      renderLabel={label => {
         return (
           <View style={{...layout.content, padding: 0}}>
             <Icon
-              name={route.icon}
+              name={label.route.icon}
               size={30}
-              color={focused ? colors.mainBlue : colors.grey3}
+              color={label.focused ? colors.mainBlue : colors.grey3}
             />
             <Text style={focused ? styles.tabStyleActive : styles.tabStyle}>
-              {route.title}
+              {label.route.title}
             </Text>
           </View>
         );
@@ -133,11 +137,22 @@ const CommonProfile = ({navigation, route}) => {
 
   const Proposals = () => {
     return (
+      <View style={{paddingVertical: sizeL}}>
+        <ProposalCard
+          proposalId={'ba02cba0-937a-11ea-b51a-77e469735457'}
+          onReviewProposal={openProposalScreen}
+        />
+      </View>
+    );
+
+    /*
+    return (
       <ViewTabNoData
         title="No proposals yet"
         subtitle="Write your first proposals and invite members to make an impact together!"
       />
     );
+    */
   };
 
   const History = () => {
@@ -246,13 +261,21 @@ const CommonProfile = ({navigation, route}) => {
   };
 
   const openProposalScreen = event => {
-    navigation.navigate('ProposalScreen');
+    const navigate = CommonActions.navigate({
+      name: 'ProposalScreen',
+      params: {
+        proposalId: 'ba02cba0-937a-11ea-b51a-77e469735457',
+      },
+    });
+    navigation.dispatch(navigate);
   };
 
+  /*
   const openNotif = event => {
     commonOperationalStateNotifRef.current.snapTo(1);
     commonOperationalStateNotifRef.current.snapTo(1);
   };
+  */
 
   const requestToJoin = event => {
     navigation.navigate('RequestStep1');
@@ -293,12 +316,12 @@ const CommonProfile = ({navigation, route}) => {
           <View style={layout.flexRow}>
             <ProposalApprovalTag
               iconName="approved"
-              value={40}
+              value={44}
               isMarked={true}
             />
             <ProposalApprovalTag
               iconName="declined"
-              value={28}
+              value={17}
               isMarked={false}
             />
             <ProposalApprovalTag
@@ -366,7 +389,7 @@ const CommonProfile = ({navigation, route}) => {
           </TouchableOpacity>
         </View>
         {renderAgendaForNonMembers()}
-
+        {/**
         <TouchableOpacity
           style={{
             ...styles.headerButton,
@@ -386,7 +409,7 @@ const CommonProfile = ({navigation, route}) => {
             Open Proposal
           </Text>
         </TouchableOpacity>
-
+ */}
         <TabView
           navigationState={{index, routes}}
           renderScene={renderScene}

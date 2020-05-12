@@ -1,21 +1,6 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  ScrollView,
-  View,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-  TextInput,
-  KeyboardAvoidingView,
-  Keyboard,
-  Platform,
-} from 'react-native';
-import {text, layout, colors} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
+import {SafeAreaView, StyleSheet, ScrollView, View} from 'react-native';
+import {colors} from '../../Theme';
 import CreateDiscussionForm from '../../Components/Forms/CreateDiscussionForm';
 
 const DiscussionPost = props => {

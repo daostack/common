@@ -1,15 +1,11 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import {View, TouchableOpacity, Text, StyleSheet, Keyboard} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
-import ImageField from '../FormFields/ImageField';
 import {observer, inject} from 'mobx-react';
-import {layout, text, colors} from '../../Theme';
-import FirebaseService from '../../Services/FirebaseService';
-import AuthService from '../../Services/AuthService';
+import {colors} from '../../Theme';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast';
 import MultiFileField from '../FormFields/MultiFileField';
-import MultiImageField from '../FormFields/MultiImageField';
 
 class CreateDiscussionForm extends React.Component {
   static TITLE = 'title';

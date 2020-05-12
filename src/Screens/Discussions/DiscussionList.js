@@ -1,7 +1,6 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {StyleSheet, FlatList} from 'react-native';
-import {text, layout, colors} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
+import {colors} from '../../Theme';
 import DiscussionCard from './DiscussionCard';
 import firestore from '@react-native-firebase/firestore';
 import ViewTabNoData from '../../Components/ViewTabNoData';

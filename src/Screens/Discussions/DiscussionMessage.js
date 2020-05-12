@@ -1,22 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  ScrollView,
-  View,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-  TextInput,
-  KeyboardAvoidingView,
-  Keyboard,
-  Platform,
-} from 'react-native';
-import {text, layout, colors} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
-import FirebaseService from '../../Services/FirebaseService';
+import React from 'react';
+import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
+import {colors} from '../../Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 

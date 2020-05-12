@@ -9,6 +9,7 @@ export const userInfoFields = [
   'intro',
   'byLine',
   'preferences',
+  'createdAt',
 ];
 
 class UserStore {

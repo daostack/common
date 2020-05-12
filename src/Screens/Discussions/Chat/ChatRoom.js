@@ -1,32 +1,24 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
   Text,
-  ScrollView,
   View,
-  TouchableOpacity,
-  Image,
   Dimensions,
-  TextInput,
-  KeyboardAvoidingView,
   Keyboard,
   SectionList,
 } from 'react-native';
 import DiscussionMessage from '../DiscussionMessage';
-import Icon from '../../../Assets/iconfont/Icon';
 import firestore from '@react-native-firebase/firestore';
-import FirebaseService from '../../../Services/FirebaseService';
 import {colors} from '../../../Theme';
 import {observer, inject} from 'mobx-react';
 const {width, height} = Dimensions.get('window');
 import moment from 'moment';
 
 const ChatRoom = props => {
-  const [inputHeight, setInputHeight] = useState(60);
+  //const [inputHeight, setInputHeight] = useState(60);
   const inputRef = useRef(null);
-  const [user, setUser] = useState({});
-  const [inputText, setInputText] = useState(null);
+  //const [user, setUser] = useState({});
+  //const [inputText, setInputText] = useState(null);
   const chatRef = useRef(null);
 
   const path = props.path;
