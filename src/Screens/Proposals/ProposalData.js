@@ -48,75 +48,6 @@ const ProposalData = props => {
     loadProposalInfo(props.proposalInfo);
   }, [props.proposalInfo]);
 
-  const mockData = {
-    images: [
-      {
-        id: '0',
-        title: 'Alejandro Escamilla',
-        width: 5616,
-        height: 3744,
-        uri: 'https://picsum.photos/id/0/5616/3744',
-      },
-      {
-        id: '10',
-        title:
-          'I tool this photo in my back yard and i think this is the perfect cover photo for our campaign. I have other good suggestions but this is free and we will have no copyright issues since it’s my photo',
-        width: 2400,
-        height: 3840,
-        uri: 'https://www.ecopetit.cat/wpic/mpic/86-868861_nature-portrait.jpg',
-      },
-
-      {
-        id: '10',
-        title:
-          'I tool this photo in my back yard and i think this is the perfect cover photo for our campaign. I have other good suggestions but this is free and we will have no copyright issues since it’s my photo',
-        width: 4200,
-        height: 2667,
-        uri: 'https://picsum.photos/id/10/2500/1667',
-      },
-      {
-        id: '1',
-        title: 'Alejandro Escamilla',
-        width: 5616,
-        height: 3744,
-        uri: 'https://picsum.photos/id/1/5616/3744',
-      },
-      {
-        id: '100',
-        title: 'Tina Rataj',
-        width: 2500,
-        height: 1656,
-        uri: 'https://picsum.photos/id/100/2500/1656',
-      },
-    ],
-
-    discussions: [
-      {
-        name: 'John Smith',
-        message: 'How can I help?',
-        imageUrl:
-          'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
-        time: '22:36',
-      },
-      {
-        name: 'John Smith',
-        message: 'Why now?',
-        imageUrl:
-          'https://live.envalab.com/html/cetus/demo/images/element/team/2.jpg',
-        time: '22:36',
-      },
-      {
-        name: 'John Smith',
-        message:
-          'I’ve worked with Neville. He is super professional and creative, we are lucky to have you here!',
-        approvePercent: 32,
-        imageUrl:
-          'https://live.envalab.com/html/cetus/demo/images/element/team/3.jpg',
-        time: '22:36',
-      },
-    ],
-  };
-
   const ImageGalleryFooter = ({imageIndex}) => {
     return (
       <View style={styles.imageGalleryTextContainer}>
@@ -154,8 +85,6 @@ const ProposalData = props => {
     // ...
   };
 
-  const progressBarWidthPercent = 75;
-
   const proposalCardHeaderByStage = isBoosted => {
     let iconName = 'star';
     let iconColor = colors.mainBlue;
@@ -181,13 +110,14 @@ const ProposalData = props => {
     );
   };
 
-  /*  
+  let progressBarWidthPercent = 0;
 
-  (((proposalInfo.votesFor + proposalInfo.votesAgainst) /
-    proposalInfo.votesFor) - 1) *
-    100;
-  
-      */
+  if (proposalInfo) {
+    progressBarWidthPercent =
+      (proposalInfo.votesFor /
+        (proposalInfo.votesFor + proposalInfo.votesAgainst)) *
+      100;
+  }
 
   const isBoosted = true; //Iaflnooopprs.stage === 'Boosted';
 

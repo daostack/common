@@ -24,6 +24,7 @@ import ProposalService from '../../Services/ProposalService';
 
 import CountDown from 'react-native-countdown-component';
 import FirebaseService from '../../Services/FirebaseService';
+import {monthShortNames} from '../../Util/DateUtil';
 
 const ProposalScreen = ({navigation, route}) => {
   const [proposalInfo, setProposalInfo] = useState(false);
@@ -32,12 +33,9 @@ const ProposalScreen = ({navigation, route}) => {
   useEffect(() => {
     const getProposalInfo = async proposalId => {
       try {
-        console.log('proposalId -> ', proposalId);
         let proposalInfo = await ProposalService.getInstance().getProposalInfo(
           proposalId,
         );
-
-        console.log('proposalInfo', proposalInfo);
 
         //RequestToJoin proposal
         let proposedMemberId = null;
@@ -51,8 +49,6 @@ const ProposalScreen = ({navigation, route}) => {
           proposedMemberId = proposalInfo.fundingRequest.beneficiaryId;
           funding = proposalInfo.joinAndQuit.amount;
         }
-
-        console.log('proposedMemberId', proposedMemberId);
 
         const proposedUser = await FirebaseService.getInstance().getUserById(
           proposedMemberId,
@@ -227,6 +223,12 @@ const ProposalScreen = ({navigation, route}) => {
 
   const initialLayout = {width: Dimensions.get('window').width};
 
+  let memberCreatedDate = null;
+
+  if (proposedUser) {
+    memberCreatedDate = new Date(proposedUser?.createdAt.seconds * 1000);
+  }
+
   return (
     <>
       <SafeAreaView style={{backgroundColor: colors.white}} />
@@ -248,7 +250,13 @@ const ProposalScreen = ({navigation, route}) => {
 
             <MemberCard
               name={proposedUser?.displayName}
-              memberSince="May 12" //TODO: set createdAt field in the user table and use it's value here
+              memberSince={
+                memberCreatedDate
+                  ? `${
+                      monthShortNames[memberCreatedDate.getMonth()]
+                    } ${memberCreatedDate.getDay()} `
+                  : ''
+              }
               imageUrl={proposedUser.photoURL}
               isPending={false}
             />
