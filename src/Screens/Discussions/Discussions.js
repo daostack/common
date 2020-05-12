@@ -24,6 +24,7 @@ import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
 import ChatRoom from './Chat/ChatRoom';
+import BottomSheetModal from '../../Components/BottomSheetModal';
 // import _ from 'lodash';
 
 const {width} = Dimensions.get('window');
@@ -38,6 +39,11 @@ const Discussions = props => {
   const data = props.route.params.data;
   const commonId = props.route.params.commonId;
   const [msgGroup, setMsgDroup] = useState([]);
+  const [showMenu, setShowMenu] = useState(false);
+
+  const hideMenu = () => {
+    setShowMenu(false);
+  };
 
   let listRef = useRef([]);
   useEffect(() => {
@@ -165,7 +171,7 @@ const Discussions = props => {
           rightButton={
             <TouchableOpacity
               style={{justifyContent: 'center'}}
-              onPress={() => props.navigation.pop()}>
+              onPress={() => setShowMenu(!showMenu)}>
               <Icon
                 name="menu-horizontal"
                 size={32}
@@ -303,6 +309,31 @@ const Discussions = props => {
         </View>
         <View style={{height: 30, backgroundColor: colors.white}} />
       </KeyboardAvoidingView>
+
+      <BottomSheetModal
+        isVisible={showMenu}
+        onClose={hideMenu}
+        style={styles.modalStyle}>
+        <View style={styles.bottomSheet}>
+          <Text style={styles.sheetTitle}>Options</Text>
+          <TouchableOpacity>
+            <View style={styles.sheetButton}>
+              <Icon name="following" color={colors.black} />
+              <View style={{flex: 1}}>
+                <Text style={[styles.sheetText, {color: colors.black}]}>
+                  Follow
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={styles.sheetButton}>
+              <Icon name="report" color={colors.against} />
+              <Text style={styles.sheetText}>Report</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </BottomSheetModal>
     </SafeAreaView>
   );
 };
@@ -366,6 +397,36 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginHorizontal: 10,
     borderRadius: 40,
+  },
+  sheetTitle: {
+    fontFamily: 'Roboto',
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.black,
+    paddingVertical: 15,
+    textAlign: 'center',
+  },
+  bottomSheet: {
+    paddingBottom: 40,
+  },
+  modalStyle: {
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+  },
+  sheetText: {
+    fontFamily: 'Roboto',
+    fontSize: 18,
+    fontWeight: '500',
+    color: colors.against,
+    marginLeft: 10,
+  },
+  sheetButton: {
+    flexDirection: 'row',
+    width: width,
+    paddingHorizontal: 30,
+    paddingVertical: 20,
+    marginHorizontal: 20,
+    justifyContent: 'flex-start',
   },
 });
 

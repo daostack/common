@@ -406,7 +406,7 @@ const CommonProfile = ({navigation, route}) => {
           }
           bottom={120}
         />
-      ): null}
+      ) : null}
 
       <SafeAreaView>
         {isMember ? (
