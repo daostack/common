@@ -13,16 +13,31 @@ import ReadMore from 'react-native-read-more-text';
 import UserMessageCard from '../../Components/Discussion/UserMessageCard';
 import ImageView from 'react-native-image-viewing';
 import Loader from '../../Components/Loader';
+import ImageSize from 'react-native-image-size';
 
 const ProposalData = props => {
   const [proposalInfo, setProposalInfo] = useState(null);
 
   useEffect(() => {
     // noinspection JSAnnotator
-    const getDao = async currProposalInfo => {
+    const loadProposalInfo = async currProposalInfo => {
       // noinspection JSAnnotator
       try {
-        setProposalInfo(currProposalInfo);
+        if (currProposalInfo) {
+          let tempImages = [];
+          await Promise.all(
+            currProposalInfo?.images?.map(async currImage => {
+              const {width, height} = await ImageSize.getSize(currImage.uri);
+              tempImages.push({
+                title: currImage.title,
+                widthRatio: (width / height) * 220,
+                uri: currImage.uri,
+              });
+            }),
+          );
+
+          setProposalInfo({...currProposalInfo, ...{images: tempImages}});
+        }
 
         //console.log('HELLO!: ', res);
       } catch (error) {
@@ -30,7 +45,7 @@ const ProposalData = props => {
       }
     };
 
-    getDao(props.proposalInfo);
+    loadProposalInfo(props.proposalInfo);
   }, [props.proposalInfo]);
 
   const mockData = {
@@ -275,17 +290,17 @@ const ProposalData = props => {
           <View style={styles.imageGallery}>
             <View style={{width: 20}} />
             {proposalInfo.images.map((currImage, currIndex) => {
-              const currWidth = (currImage.width / currImage.height) * 220;
-
               return (
-                <View style={{width: currWidth + 10}}>
+                <View
+                  style={{width: currImage.widthRatio + 10}}
+                  key={`proposalImg_${currIndex}`}>
                   <TouchableOpacity
                     onPress={() => setImageGalleryIndex(currIndex)}>
                     <Image
                       key={currIndex}
                       style={{
                         ...styles.galleryImage,
-                        ...{width: currWidth},
+                        ...{width: currImage.widthRatio},
                       }}
                       resizeMode="cover"
                       source={{uri: currImage.uri}}
