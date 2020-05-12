@@ -6,7 +6,7 @@ import Modal from 'react-native-modal';
 
 const BottomSheetModal = forwardRef(props => {
   const renderSheetContent = () => {
-    return <View style={styles.content}>{props.children}</View>;
+    return <View style={[styles.content, props.style]}>{props.children}</View>;
   };
 
   const onSwipeComplete = () => {
