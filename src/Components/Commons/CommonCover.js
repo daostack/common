@@ -87,20 +87,31 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
   };
 
   return (
-    <ImageBackground
-      source={{
-        uri: commonInfo.cover,
-      }}
-      imageStyle={navigation ? {} : styles.backgoundRoundedTopEdges}
-      style={styles.coverBackground}>
-      {navigation ? renderCoverInSafeArea() : renderCover()}
-    </ImageBackground>
+    <>
+      <ImageBackground
+        source={{
+          uri: commonInfo.cover,
+        }}
+        imageStyle={navigation ? {} : styles.backgoundRoundedTopEdges}
+        style={styles.coverBackground}>
+        <View style={styles.coverOverlay}>
+          {navigation ? renderCoverInSafeArea() : renderCover()}
+        </View>
+      </ImageBackground>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   coverBackground: {
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+  },
+  coverOverlay: {
     paddingBottom: 20,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
   },
   backgoundRoundedTopEdges: {
     borderTopLeftRadius: 28,
