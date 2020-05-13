@@ -106,7 +106,7 @@ const CommonProfile = ({navigation, route}) => {
       indicatorStyle={{
         backgroundColor: colors.mainBlue,
       }}
-      renderLabel={label => {
+      renderLabel={(label, focused) => {
         return (
           <View style={{...layout.content, padding: 0}}>
             <Icon
