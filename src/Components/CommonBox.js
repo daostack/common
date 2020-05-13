@@ -13,7 +13,7 @@ const CommonBox = props => {
         const navigate = CommonActions.navigate({
           name: 'CommonProfile',
           params: {
-            commonId: props.common.id,
+            currCommon: props.common,
           },
         });
         props.navigation.dispatch(navigate);

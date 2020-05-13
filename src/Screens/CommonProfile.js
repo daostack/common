@@ -67,38 +67,16 @@ const CommonProfile = ({navigation, route}) => {
     {key: 'history', title: 'History', icon: 'history'},
   ]);
 
+  const [currCommon, setCurrCommon] = useState(false);
+
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
 
-  useEffect(() => {
-    // noinspection JSAnnotator
-    const getDao = async commonId => {
-      // noinspection JSAnnotator
-      try {
-        /*
-        console.log('CACHE: ', cache.data.data);
-        const res = await cache.readQuery({
-          query: gql`
-            query readDao($id: String!) {
-              daos(id: $id) {
-                id
-              }
-            }
-          `,
-          variables: {
-            id: commonId,
-            __typename: 'DAO',
-          },
-        });
-        console.log('HELLO!: ', res);
-        */
-      } catch (error) {
-        console.log('error: ', error);
-      }
-    };
+  const routeCommon = route.params.currCommon;
 
+  useEffect(() => {
     setShowRequestSentModal(route.params.showRequestSentModal ? true : false);
-    getDao(route.params.commonId);
-  }, [route.params.commonId, route.params.showRequestSentModal]);
+    setCurrCommon(routeCommon);
+  }, [routeCommon, route.params.showRequestSentModal]);
 
   const renderTabBar = props => (
     <TabBar
@@ -354,11 +332,11 @@ const CommonProfile = ({navigation, route}) => {
           navigation={navigation}
           onHeaderMenuOpen={openCommonOptions}
           commonInfo={{
-            cover: mockData.commonPicture,
+            cover: currCommon.coverPhoto,
             logo:
               'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
-            name: mockData.name,
-            description: mockData.description,
+            name: currCommon.name,
+            description: currCommon.description,
           }}
         />
 
