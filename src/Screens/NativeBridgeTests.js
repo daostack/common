@@ -13,10 +13,11 @@ import WalletManager from '../Util/WalletManager';
 import MessageContract from '../Contracts/ABIs/MessageContract';
 import {createCommon} from '../Util/createCommon';
 import {getArc} from '../Util/arc';
+import {inject, observer} from 'mobx-react';
 
 const uid = 'test';
 
-export default class nativeBridgeTests extends React.Component {
+class nativeBridgeTests extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -163,27 +164,34 @@ export default class nativeBridgeTests extends React.Component {
   };
 
   createCommon = async () => {
-    console.log('creating', );
-    console.log('creating...');
-    this.props.navigation.navigate('CommonCreationLoading');
-    // const wallet = WalletManager.getInstance();
+    console.log('hello')
+    const wallet = WalletManager.getInstance();
 
-    // const arc = getArc(wallet.ethWallet);
+    const arc = getArc(wallet.ethWallet);
 
-    // const commonAddress = await createCommon(await arc, {
-    //   name: 'Grass DAO',
-    //   founderAddresses: wallet.ethWallet.address,
-    //   tokenDist: [0],
-    //   repDist: [100],
-    //   minFeeToJoin: 100, // TDB: get from formData
-    //   fundingGoal: 100000, // TBD: get from formdata
-    //   // TBD: get form data for deadline; these are in secondSinceEpoch
-    //   //TODO: get data for deadline from form data
-    //   fundingGoalDeadline: 20200404,
-    //   ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
-    // }, props.navigation);
-    //
-    // this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
+    const commonAddress = await createCommon(
+      await arc,
+      {
+        name: 'Green DAO',
+        founderAddresses: wallet.ethWallet.address,
+        tokenDist: [0],
+        repDist: [100],
+        minFeeToJoin: 100, // TDB: get from formData
+        fundingGoal: 100000, // TBD: get from formdata
+        // TBD: get form data for deadline; these are in secondSinceEpoch
+        //TODO: get data for deadline from form data
+        fundingGoalDeadline: 20200404,
+        ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
+      },
+      this.props.navigation,
+      this.props.daoStore
+    );
+
+    this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
+  };
+
+  error = () => {
+    this.props.daoStore.creationError('Error' + '2');
   };
 
   render() {
@@ -198,12 +206,10 @@ export default class nativeBridgeTests extends React.Component {
             <Text>Create Common</Text>
           </TouchableOpacity>
 
-          <Text>mnemonicsAndStore: {this.state.mnemonicsAndStore}</Text>
-          <TouchableOpacity
-            onPress={this.generateAndStoreMnemonic}
-            style={styles.button}>
-            <Text>Generate And Store Mnemonic</Text>
+          <TouchableOpacity onPress={this.error} style={styles.button}>
+            <Text>Error</Text>
           </TouchableOpacity>
+
           <Text style={{marginVertical: 10}}>
             --------------- Native Bridge -----------------
           </Text>
@@ -304,3 +310,5 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
   },
 });
+
+export default inject('daoStore')(observer(nativeBridgeTests));

@@ -22,11 +22,13 @@ const {ARC_VERSION, OVERRIDES} = require('./arc');
 //   ipfsHash,
 // });
 
-export const createCommon = async (arc, givenOpts = {}, navigation) => {
+export const createCommon = async (arc, givenOpts = {}, navigation, daoStore) => {
+//   navigation.navigate('CommonCreationLoading');
+// }
+// export const createCommon1 = async (arc, givenOpts = {}, navigation, daoStore) => {
   navigation.navigate('CommonCreationLoading');
-};
+  daoStore.setCreationStatus(1);
 
-export const createCommon2 = async (arc, givenOpts = {}, navigation) => {
   try {
     const defaultOptions = {
       fundingToken: '0x0000000000000000000000000000000000000000',
@@ -64,7 +66,6 @@ export const createCommon2 = async (arc, givenOpts = {}, navigation) => {
       founderAddresses: [opts.founderAddresses],
       repDist: [opts.memberReputation],
     });
-
     const forgeOrgData = getForgeOrgData({
       DAOFactoryInstance: daoFactoryInfo.address,
       orgName: opts.name,
@@ -76,6 +77,9 @@ export const createCommon2 = async (arc, givenOpts = {}, navigation) => {
     console.log('waiting for tx to be mined');
     console.log(tx);
     receipt = await tx.wait();
+    if (receipt) {
+      daoStore.setCreationStatus(2);
+    }
     console.log('done!');
     // get the new avatar address of the thing that was just created..
     const newOrgEvent = receipt.events.filter(e => e.event === 'NewOrg')[0];
@@ -87,7 +91,7 @@ export const createCommon2 = async (arc, givenOpts = {}, navigation) => {
       avatar: newOrgAddress,
       votingMachine: votingMachineInfo.address,
       fundingToken: opts.fundingToken,
-      minFeeToJoin: [opts.minFeeToJoin],
+      minFeeToJoin: opts.minFeeToJoin,
       memberReputation: opts.memberReputation,
       fundingGoal: [parseInt(opts.fundingGoal)],
       deadline: opts.fundingGoalDeadline,
@@ -99,7 +103,7 @@ export const createCommon2 = async (arc, givenOpts = {}, navigation) => {
       avatar: newOrgAddress,
       votingMachine: votingMachineInfo.address,
       fundingToken: opts.fundingToken,
-      minFeeToJoin: [opts.minFeeToJoin],
+      minFeeToJoin: opts.minFeeToJoin,
       memberReputation: opts.memberReputation,
       fundingGoal: parseInt(opts.fundingGoal),
       fundingGoalDeadline: opts.fundingGoalDeadline,
@@ -108,11 +112,14 @@ export const createCommon2 = async (arc, givenOpts = {}, navigation) => {
 
     tx = await daoFactoryContract.setSchemes(...schemeData, OVERRIDES);
     console.log('waiting for tx to be mined');
+    daoStore.setCreationStatus(4);
     receipt = await tx.wait();
     console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
+    daoStore.setCreationStatus(5);
     return receipt;
   } catch (e) {
     console.log('[Create Common error]: ', e);
+    daoStore.creationError(e);
     throw `[Create Common error] ${e}`;
   }
 };

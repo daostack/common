@@ -15,13 +15,25 @@ class DaoStore {
   daoInfo;
   daos;
   isLoading;
+  stage;
+  isError;
   constructor() {
     isLoading = false;
     daos = [];
+    stage= 0;
+    isError=null;
   }
 
   setIsLoading = loading => {
     this.isLoading = loading;
+  };
+
+  setCreationStatus = _stage => {
+    this.stage = _stage;
+  };
+
+  creationError = _error => {
+    this.isError = _error;
   };
 
   setDaos = daosList => {
@@ -39,6 +51,7 @@ decorate(DaoStore, {
   setDaos: action,
   daos: observable,
   isLoading: observable,
+  stage: observable,
 });
 
 export default DaoStore;

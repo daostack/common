@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Image,
   Text,
@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
+import {StackActions} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
 import ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
@@ -27,7 +28,6 @@ import CreateStepDotHeader from './CreateStepDotHeader';
 import {numberFormatter} from '../../Util';
 import {createCommon} from '../../Util/createCommon';
 import {getArc} from '../../Util/arc';
-import { StackActions } from '@react-navigation/native';
 
 
 const {width} = Dimensions.get('window');
@@ -45,6 +45,7 @@ const CreateStep4 = props => {
   );
   const [avatarURL, setAvatarURL] = useState(null);
   const toast = useToast();
+  const errorSheetRef = useRef();
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -134,14 +135,13 @@ const CreateStep4 = props => {
     );
 
   const forgeCommon = async () => {
-
     const commonFormData = props.createCommonFormStore.getChangedFormFieldsJson();
     const ipfsHash = await ipfsUpload(commonFormData);
     console.log('ipfs Hash: ', ipfsHash);
 
     const formData = props.createCommonFormStore.getChangedFormFieldsJson();
-    console.log('formDAta: ', formData.minimum)
-    console.log('formDAta: ', parseInt(formData.minimum))
+    console.log('formDAta: ', formData.minimum);
+    console.log('formDAta: ', parseInt(formData.minimum));
     const manager = await WalletManager.getInstance();
     const wallet = manager.ethWallet;
     const address = await manager.getOwnerAccount();
@@ -149,16 +149,17 @@ const CreateStep4 = props => {
     // we will want to have a global arc instance for all contract interactions!
     const arc = await getArc(wallet);
     console.log({
-          name: formData.name,
-          founderAddresses: address,
-          tokenDist: [0],
-          repDist: [100],
-          minFeeToJoin: parseInt(formData.minimum), // TDB: get from formData
-          fundingGoal: formData.funding, // TBD: get from formdata
-          // TBD: get form data for deadline; these are in secondSinceEpoch
-          //TODO: get data for deadline from form data
-          fundingGoalDeadline: (await provider.getBlock('latest')).timestamp + 3000,
-          ipfsHash,})
+      name: formData.name,
+      founderAddresses: address,
+      tokenDist: [0],
+      repDist: [100],
+      minFeeToJoin: parseInt(formData.minimum), // TDB: get from formData
+      fundingGoal: formData.funding, // TBD: get from formdata
+      // TBD: get form data for deadline; these are in secondSinceEpoch
+      //TODO: get data for deadline from form data
+      fundingGoalDeadline: (await provider.getBlock('latest')).timestamp + 3000,
+      ipfsHash,
+    });
 
     const commonAddress = await createCommon(arc, {
       name: formData.name,
@@ -178,6 +179,11 @@ const CreateStep4 = props => {
     }
 
     return {commonAddress};
+  };
+
+  const creationError = event => {
+    errorSheetRef.current.snapTo(1);
+    errorSheetRef.current.snapTo(1);
   };
 
   return (

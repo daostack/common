@@ -6,7 +6,7 @@
  * @flow
  */
 
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {Image, StyleSheet, Platform, View} from 'react-native';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
@@ -49,7 +49,7 @@ import CommonHome from './src/Components/Navigation/CommonHome';
 const authService = new AuthService();
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-import {filterObjectByKeys} from './src/Util';
+import {filterObjectByKeys, getTestEth} from './src/Util';
 import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
@@ -58,6 +58,9 @@ import {auth, db} from './src/Firebase';
 import Toast from './src/Util/Toast';
 import KeyboardManager from 'react-native-keyboard-manager';
 import CommonCreationLoading from './src/Screens/CommonCreationLoading';
+import BottomSheetContainer from './src/Components/BottomSheetContainer';
+import TransactionError from './src/Screens/TransactionError';
+
 
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
@@ -67,6 +70,13 @@ if (Platform.OS === 'ios') {
 const App = ({userStore, daoStore}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
+  const errorSheetRef = useRef();
+
+  const getTestEth = async address => {
+    console.log('getting test eth for user: ', address);
+    const req = await fetch(`https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`);
+    console.log('user request for eth: ', req);
+  };
 
   const onAuthStateChanged = async user => {
     try {
@@ -94,6 +104,9 @@ const App = ({userStore, daoStore}) => {
       }
 
       userStore.setIsLoading(false);
+      const manager = await WalletManager.getInstance();
+      const address = await manager.getOwnerAccount();
+      getTestEth(address);
     } catch (error) {
       console.log(error);
       //Toast.error(error.toString());
@@ -111,7 +124,7 @@ const App = ({userStore, daoStore}) => {
         let daosSnapshot = snapshot.docs.map(doc => {
           return {...{id: doc.id}, ...doc.data()};
         });
-        console.log('daos: ', daosSnapshot)
+        console.log('daos: ', daosSnapshot);
         daoStore.setDaos(daosSnapshot);
       });
       // console.log('DAOS: ', daosRes);
@@ -136,10 +149,15 @@ const App = ({userStore, daoStore}) => {
         console.log(e);
       }
     };
+
+    if (daoStore.isError) {
+      console.log('daostore error', daoStore.isError)
+      // errorSheetRef.current.snapTo(1);
+    }
     getDaos();
     checkOnboardingStatus();
     return subscriber;
-  },[]);
+  }, [daoStore.isError]);
 
   console.log('onboarded: ', onboarded);
   console.log('daoStore DAOs: ', daoStore.daos);
@@ -302,6 +320,9 @@ const App = ({userStore, daoStore}) => {
           />
         </Stack.Navigator>
       </NavigationContainer>
+      <BottomSheetContainer ref={errorSheetRef} topSnapPoint={400}>
+        <TransactionError/>
+      </BottomSheetContainer>
     </ApolloProvider>
   );
 };
