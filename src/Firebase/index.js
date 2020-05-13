@@ -7,7 +7,7 @@ import auth from '@react-native-firebase/auth';
 module.exports = {
   db: firestore(),
   messaging: messaging(),
-  storage: firebase.storage(),
+  storage: storage(),
   firebase,
   auth,
   utils,
