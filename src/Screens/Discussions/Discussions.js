@@ -87,11 +87,11 @@ const Discussions = props => {
               }, []);
             console.log('groupDate', groupDate);
             setMsgDroup(groupDate);
-            // chatRef.current.scrollToLocation({
-            //   animated: true,
-            //   itemIndex: 0,
-            //   sectionIndex: 0,
-            // });
+            chatRef.current.scrollToLocation({
+              animated: true,
+              itemIndex: 0,
+              sectionIndex: 0,
+            });
           }
         },
         error => console.error(error),
