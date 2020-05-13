@@ -191,7 +191,7 @@ class nativeBridgeTests extends React.Component {
         ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
       },
       this.props.navigation,
-      this.props.daoStore
+      this.props.daoStore,
     );
 
     this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});

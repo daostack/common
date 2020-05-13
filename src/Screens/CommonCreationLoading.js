@@ -15,7 +15,6 @@ import {observer, inject} from 'mobx-react';
 import Swiper from 'react-native-swiper';
 import NavigationHeader from '../Util/NavigationHeader';
 
-
 const CommonCreationLoading = ({daoStore, route, navigation}) => {
   const _swiper = useRef();
   return (
@@ -33,13 +32,10 @@ const CommonCreationLoading = ({daoStore, route, navigation}) => {
             index={daoStore.stage}
             paginationStyle={{bottom: 0}}
             ref={_swiper}
-            scrollEnabled={false}
-          >
+            scrollEnabled={false}>
             <View style={styles.slide1}>
               <Text style={styles.text}>Creating your common</Text>
-              <Text style={styles.subtitle}>
-                This may take a few minutes
-              </Text>
+              <Text style={styles.subtitle}>This may take a few minutes</Text>
               <Image
                 source={require('../Assets/loader-1-analyzing.png')}
                 style={styles.image}
@@ -50,9 +46,7 @@ const CommonCreationLoading = ({daoStore, route, navigation}) => {
             </View>
             <View style={styles.slide1}>
               <Text style={styles.text}>Creating your common</Text>
-              <Text style={styles.subtitle}>
-                This may take a few minutes
-              </Text>
+              <Text style={styles.subtitle}>This may take a few minutes</Text>
               <Image
                 source={require('../Assets/loader-2-securing-on-the-blockchain.png')}
                 style={styles.image}
@@ -60,49 +54,38 @@ const CommonCreationLoading = ({daoStore, route, navigation}) => {
               <Text style={styles.bottomText}>
                 Securing data on the blockchain
               </Text>
-
             </View>
             <View style={styles.slide1}>
               <Text style={styles.text}>Creating your common</Text>
-              <Text style={styles.subtitle}>
-                This may take a few minutes
-              </Text>
+              <Text style={styles.subtitle}>This may take a few minutes</Text>
               <Image
                 source={require('../Assets/loader-3-some-final-touches.png')}
                 style={styles.image}
               />
-              <Text style={styles.bottomText}>
-                Making some final touches
-              </Text>
+              <Text style={styles.bottomText}>Making some final touches</Text>
             </View>
             <View style={styles.slide1}>
-              <Text style={styles.text}>
-                Creating your common
-              </Text>
-              <Text style={styles.subtitle}>
-                This may take a few minutes
-              </Text>
+              <Text style={styles.text}>Creating your common</Text>
+              <Text style={styles.subtitle}>This may take a few minutes</Text>
               <Image
                 source={require('../Assets/loader-4-drumroll.png')}
                 style={styles.image}
               />
-              <Text style={styles.bottomText}>
-                Drumroll...
-              </Text>
+              <Text style={styles.bottomText}>Drumroll...</Text>
             </View>
             <View style={styles.slide1}>
               <Image
                 source={require('../Assets/launch.png')}
                 style={styles.image}
               />
-              <Text style={styles.text}>
-                Your journey starts now
-              </Text>
+              <Text style={styles.text}>Your journey starts now</Text>
               <Text style={styles.subtitle}>
-                Spread the word and invite others to partake in it.
-                You can always share later
+                Spread the word and invite others to partake in it. You can
+                always share later
               </Text>
-              <TouchableOpacity style={styles.continueButton} onPress={daoStore.creationError}>
+              <TouchableOpacity
+                style={styles.continueButton}
+                onPress={daoStore.creationError}>
                 <Text
                   style={{
                     fontSize: 16,
@@ -115,14 +98,14 @@ const CommonCreationLoading = ({daoStore, route, navigation}) => {
               <TouchableOpacity
                 style={{
                   ...layout.btnOutline,
-                  ...styles.shareButton
+                  ...styles.shareButton,
                 }}
                 onPress={() => {}}>
                 <Text style={text.buttonblue}>Share Common</Text>
               </TouchableOpacity>
             </View>
             <View>
-              <Text></Text>
+              <Text />
             </View>
           </Swiper>
         </View>
@@ -164,7 +147,7 @@ const styles = StyleSheet.create({
   },
   shareButton: {
     width: '80%',
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   continueButton: {
     width: '80%',
@@ -223,4 +206,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('createCommonFormStore', 'daoStore')(observer(CommonCreationLoading));
+export default inject(
+  'createCommonFormStore',
+  'daoStore',
+)(observer(CommonCreationLoading));

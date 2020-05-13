@@ -29,14 +29,13 @@ import {numberFormatter} from '../../Util';
 import {createCommon} from '../../Util/createCommon';
 import {getArc} from '../../Util/arc';
 
-
 const {width} = Dimensions.get('window');
 const provider = ethers.getDefaultProvider('rinkeby');
 
 const firebaseService = new FirebaseService();
 
 const CreateStep4 = props => {
-  const [scrollY, setScrollY] = useState(new Animated.Value(0));
+  const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const form = props.createCommonFormStore.getChangedFormFieldsJson();
   const [templateIndex, setTemplateIndex] = useState(1);
@@ -161,7 +160,9 @@ const CreateStep4 = props => {
       ipfsHash,
     });
 
-    const commonAddress = await createCommon(arc, {
+    const commonAddress = await createCommon(
+      arc,
+      {
         name: formData.name,
         founderAddresses: address,
         tokenDist: [0],
@@ -170,11 +171,13 @@ const CreateStep4 = props => {
         fundingGoal: formData.funding, // TBD: get from formdata
         // TBD: get form data for deadline; these are in secondSinceEpoch
         //TODO: get data for deadline from form data
-        fundingGoalDeadline: (await provider.getBlock('latest')).timestamp + 3000,
+        fundingGoalDeadline:
+          (await provider.getBlock('latest')).timestamp + 3000,
         ipfsHash,
       },
       props.navigation,
-      props.daoStore);
+      props.daoStore,
+    );
 
     if (commonAddress) {
       props.navigation.dispatch(StackActions.popToTop());
@@ -555,4 +558,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('createCommonFormStore', 'daoStore')(observer(CreateStep4));
+export default inject(
+  'createCommonFormStore',
+  'daoStore',
+)(observer(CreateStep4));

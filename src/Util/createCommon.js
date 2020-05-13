@@ -22,10 +22,15 @@ const {ARC_VERSION, OVERRIDES} = require('./arc');
 //   ipfsHash,
 // });
 
-export const createCommon = async (arc, givenOpts = {}, navigation, daoStore) => {
-//   navigation.navigate('CommonCreationLoading');
-// }
-// export const createCommon1 = async (arc, givenOpts = {}, navigation, daoStore) => {
+export const createCommon = async (
+  arc,
+  givenOpts = {},
+  navigation,
+  daoStore,
+) => {
+  //   navigation.navigate('CommonCreationLoading');
+  // }
+  // export const createCommon1 = async (arc, givenOpts = {}, navigation, daoStore) => {
   navigation.navigate('CommonCreationLoading');
   daoStore.setCreationStatus(1);
 

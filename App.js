@@ -11,12 +11,10 @@ import {Image, StyleSheet, Platform, View} from 'react-native';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {colors, text} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import {
-  CommonsList,
   CommonProfile,
   Onboarding,
   UserProfile,
@@ -53,23 +51,18 @@ import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
 import AuthService from './src/Services/AuthService';
 
-const firebaseService = new FirebaseService();
 import CommonHome from './src/Components/Navigation/CommonHome';
-const authService = new AuthService();
-const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-import {filterObjectByKeys, getTestEth} from './src/Util';
+import {filterObjectByKeys} from './src/Util';
 import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import {auth, db} from './src/Firebase';
-import Toast from './src/Util/Toast';
 import KeyboardManager from 'react-native-keyboard-manager';
 import CommonCreationLoading from './src/Screens/CommonCreationLoading';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import TransactionError from './src/Screens/TransactionError';
-
 
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
@@ -83,7 +76,9 @@ const App = ({userStore, daoStore}) => {
 
   const getTestEth = async address => {
     console.log('getting test eth for user: ', address);
-    const req = await fetch(`https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`);
+    const req = await fetch(
+      `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
+    );
     console.log('result from eth request: ', req);
   };
 
@@ -126,7 +121,7 @@ const App = ({userStore, daoStore}) => {
     try {
       const appUsers = await FirebaseService.getInstance().getUsers();
       console.log('users: ', appUsers);
-      const unsubscribe = db.collection('daos').onSnapshot(snapshot => {
+      db.collection('daos').onSnapshot(snapshot => {
         if (snapshot.empty) {
           return [];
         }
@@ -160,7 +155,7 @@ const App = ({userStore, daoStore}) => {
     };
 
     if (daoStore.isError) {
-      console.log('daostore error', daoStore.isError)
+      console.log('daostore error', daoStore.isError);
       // errorSheetRef.current.snapTo(1);
     }
     getDaos();
@@ -368,7 +363,7 @@ const App = ({userStore, daoStore}) => {
         </Stack.Navigator>
       </NavigationContainer>
       <BottomSheetContainer ref={errorSheetRef} topSnapPoint={400}>
-        <TransactionError/>
+        <TransactionError />
       </BottomSheetContainer>
     </ApolloProvider>
   );

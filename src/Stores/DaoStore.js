@@ -20,8 +20,8 @@ class DaoStore {
   constructor() {
     isLoading = false;
     daos = [];
-    stage= 0;
-    isError=null;
+    stage = 0;
+    isError = null;
   }
 
   setIsLoading = loading => {

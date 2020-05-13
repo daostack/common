@@ -1,4 +1,11 @@
-import {Text, View, StyleSheet, ScrollView, Image, TouchableOpacity} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 
 import React from 'react';
 import {text, layout, colors} from '../Theme';
@@ -14,24 +21,26 @@ const TransactionError = ({navigation, onContinueEditing}) => {
       <View style={styles.body}>
         <Image
           source={require('../Assets/alert.png')}
-          style={{alignSelf: 'center', padding: 80, resizeMode: 'contain', height: 50, width: 50}}
+          style={{
+            alignSelf: 'center',
+            padding: 80,
+            resizeMode: 'contain',
+            height: 50,
+            width: 50,
+          }}
         />
         <Text style={styles.title}>Something went wrong</Text>
 
         <View style={styles.textWithIconContainer}>
-          <Text style={styles.blackTextWithImage}>
-            Common creation failed.
-          </Text>
+          <Text style={styles.blackTextWithImage}>Common creation failed.</Text>
         </View>
         <TouchableOpacity
           style={{
             ...layout.btnOutline,
-
           }}
           onPress={() => {}}>
           <Text style={text.buttonblue}>Try Again</Text>
         </TouchableOpacity>
-
       </View>
     </ScrollView>
   );
@@ -63,7 +72,6 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     width: '100%',
-
   },
   sheetTextStyle: {
     ...text.greyText,
@@ -75,7 +83,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'stretch',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 
   safeArea: {
