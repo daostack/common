@@ -16,6 +16,12 @@
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Common want to access camera</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Common want to access album</string>
+	<key>NSFileProviderPresenceUsageDescription</key>
+	<string>Common  want to access file</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
