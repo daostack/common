@@ -7,8 +7,6 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
 
 const CommonHome = ({userStore}) => {
-  console.log('userInfo from CommonHome: ', userStore.userInfo);
-  console.log('userInfo from CommonHome: ', userStore);
   return (
     <Tab.Navigator
       initialRouteName="Explore"
