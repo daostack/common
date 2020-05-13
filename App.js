@@ -289,13 +289,7 @@ const App = ({userStore, daoStore}) => {
               headerShown: false,
             })}
           />
-          <Stack.Screen
-            name="New Topic"
-            component={DiscussionPost}
-            options={({navigation, route}) => ({
-              headerShown: false,
-            })}
-          />
+          <Stack.Screen name="New Topic" component={DiscussionPost} />
           <Stack.Screen
             options={{
               title: 'Edit my profile',
