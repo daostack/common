@@ -30,8 +30,15 @@ const CommonsList = ({navigation, daoStore}) => {
           if (snapshot.empty) {
             return [];
           }
-          let daosSnapshot = snapshot.docs.map(doc => {
-            return {...{id: doc.id}, ...doc.data()};
+          let daosSnapshot = snapshot.docs.map((doc, index) => {
+            return {
+              ...{id: doc.id},
+              ...doc.data(),
+              ...{
+                coverPhoto: `https://i.picsum.photos/id/${index *
+                10}/500/100.jpg`,
+              },
+            };
           });
           console.log('daos: ', daosSnapshot);
           setDaos(daosSnapshot);
@@ -46,7 +53,7 @@ const CommonsList = ({navigation, daoStore}) => {
     return function cleanup() {
       unsubscribe();
     };
-  }, [0]);
+  }, [daoStore.daos]);
 
   return (
     <View style={{flex: 1}}>
@@ -73,23 +80,22 @@ const CommonsList = ({navigation, daoStore}) => {
 
         <ScrollView>
           <View style={styles.container}>
-            {daoStore.daos &&
-              daoStore.daos.map((dao, i) => {
-                if (
-                  ''.length > 0 &&
-                  !dao.name.toLowerCase().includes(''.toLowerCase())
-                ) {
-                  return;
-                }
-                return (
-                  <CommonBox
-                    image={`https://i.picsum.photos/id/${i * 10}/500/100.jpg`}
-                    common={dao}
-                    key={i}
-                    navigation={navigation}
-                  />
-                );
-              })}
+            {daos &&
+            daos.map((dao, i) => {
+              if (
+                ''.length > 0 &&
+                !dao.name.toLowerCase().includes(''.toLowerCase())
+              ) {
+                return;
+              }
+              return (
+                <CommonBox
+                  key={`commonBox_${i}`}
+                  common={dao}
+                  navigation={navigation}
+                />
+              );
+            })}
           </View>
         </ScrollView>
       </>
