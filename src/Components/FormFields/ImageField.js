@@ -13,8 +13,6 @@ import colors from '../../Theme/colors';
 import layout from '../../Theme/layout';
 import text from '../../Theme/text';
 
-const firebaseService = new FirebaseService();
-
 class ImageField extends React.Component {
   fieldValidation = null;
   placeFieldActionComponent = null;
@@ -29,7 +27,6 @@ class ImageField extends React.Component {
 
     if (validation) {
       const {name, formStore, validateRule} = validation;
-      console.log('====== REGISTER FIELD NAME ======');
       console.log(name, value);
       formStore.registerFormField(name, validateRule, value);
       this.fieldValidation = (
@@ -62,7 +59,7 @@ class ImageField extends React.Component {
       } else {
         // const source = { uri: response.uri };
         this.toast.loading('Uploading...');
-        firebaseService
+        FirebaseService.getInstance()
           .uploadImage(response.uri)
           .then(url => {
             this.toast.hide();

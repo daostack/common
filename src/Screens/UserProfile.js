@@ -62,6 +62,10 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
     }
   };
 
+  const onFundingProposalPress = event => {
+    navigation.navigate('FundingProposal');
+  };
+
   const onMyWalletPress = event => {
     navigation.navigate('MyWallet');
     console.log('address: ', userStore.userInfo.ethereumAddress);
@@ -103,7 +107,19 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
                 : renderUnsignedUserData()}
 
               <View style={layout.marginTopL}>
-                <AccordionBtn title="Test Page" onPress={onTestPagePress} />
+                <View
+                  style={{
+                    ...layout.content,
+                    paddingHorizontal: 0,
+                    backgroundColor: colors.grey4,
+                  }}>
+                  <Text style={text.h4Black}>Temporary menu</Text>
+                  <AccordionBtn title="Test Page" onPress={onTestPagePress} />
+                  <AccordionBtn
+                    title="Funding Request"
+                    onPress={onFundingProposalPress}
+                  />
+                </View>
                 {userStore.userInfo ? (
                   <AccordionBtn
                     title="My wallet"

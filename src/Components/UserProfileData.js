@@ -96,7 +96,7 @@ const UserProfileData = ({
       ) : null}
       {renderUserProfilePicture()}
       <Text style={{...text.h1Black, ...{paddingTop: 0, paddingBottom: 2}}}>
-        {user.name}
+        {user.displayName}
       </Text>
       <Text style={text.ashleyjquimbacom2}>{user.email}</Text>
 
