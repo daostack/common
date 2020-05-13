@@ -13,7 +13,7 @@ const CommonBox = props => {
         const navigate = CommonActions.navigate({
           name: 'CommonProfile',
           params: {
-            commonId: props.common.id,
+            currCommon: props.common,
           },
         });
         props.navigation.dispatch(navigate);
@@ -22,9 +22,8 @@ const CommonBox = props => {
       <CommonCover
         isMember={false}
         commonInfo={{
-          cover: props.image,
-          logo:
-            'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
+          cover: props.common.coverPhoto,
+          logo: props.common.logo,
           name: props.common.name,
           description: props.common.name,
         }}

@@ -96,7 +96,7 @@ export const createCommon = async (arc, givenOpts = {}, navigation, daoStore) =>
       fundingGoal: [parseInt(opts.fundingGoal)],
       deadline: opts.fundingGoalDeadline,
       metaData: opts.ipfsHash,
-    })
+    });
 
     const schemeData = getSetSchemesData({
       DAOFactoryInstance: daoFactoryInfo.address,
@@ -105,8 +105,8 @@ export const createCommon = async (arc, givenOpts = {}, navigation, daoStore) =>
       fundingToken: opts.fundingToken,
       minFeeToJoin: opts.minFeeToJoin,
       memberReputation: opts.memberReputation,
-      fundingGoal: parseInt(opts.fundingGoal),
-      fundingGoalDeadline: opts.fundingGoalDeadline,
+      goal: parseInt(opts.fundingGoal),
+      deadline: opts.fundingGoalDeadline,
       metaData: opts.ipfsHash,
     });
 

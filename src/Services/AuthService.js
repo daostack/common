@@ -63,6 +63,7 @@ export default class AuthService {
       ethereumAddress: await manager.getOwnerAccount(),
       // store the google user info in the firestore DB
       ...{
+        createdAt: new Date(user._user.metadata.creationTime),
         displayName: user.displayName,
         email: user.email,
         photoURL: user.photoURL,
@@ -74,12 +75,13 @@ export default class AuthService {
   }
 
   async loadMnemonic(uid) {
+    await GoogleSignin.signInSilently();
     const {accessToken} = await GoogleSignin.getTokens();
     GoogleDriveService.init(accessToken);
     //console.log('accessToken 2 -> ', accessToken);
     // 1. Read mnemonic from the store
     /*
-    
+
     const mnemonicFromStore = await NativeModules.WalletModule.retrieveMnemonic(
       uid,
     );

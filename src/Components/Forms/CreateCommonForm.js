@@ -19,7 +19,7 @@ class CreateCommonForm extends React.Component {
   formSkip() {}
 
   formSave = () => {
-    const {createCommonFormStore, userId} = this.props;
+    const {createCommonFormStore} = this.props;
     if (createCommonFormStore.isFormValid()) {
       // firebaseService
       //   .editUser(userId, completeAccountFormStore.getChangedFormFieldsJson())

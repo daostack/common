@@ -133,7 +133,7 @@ const CreateStep4 = props => {
         mainValue3: 'empty value',
       }),
     );
-
+  // TODO: use arc.saveIPFSData({ name: formData.name}) here
   const forgeCommon = async () => {
     const commonFormData = props.createCommonFormStore.getChangedFormFieldsJson();
     const ipfsHash = await ipfsUpload(commonFormData);
@@ -162,17 +162,19 @@ const CreateStep4 = props => {
     });
 
     const commonAddress = await createCommon(arc, {
-      name: formData.name,
-      founderAddresses: address,
-      tokenDist: [0],
-      repDist: [100],
-      minFeeToJoin: parseInt(formData.minimum), // TDB: get from formData
-      fundingGoal: formData.funding, // TBD: get from formdata
-      // TBD: get form data for deadline; these are in secondSinceEpoch
-      //TODO: get data for deadline from form data
-      fundingGoalDeadline: (await provider.getBlock('latest')).timestamp + 3000,
-      ipfsHash,
-    });
+        name: formData.name,
+        founderAddresses: address,
+        tokenDist: [0],
+        repDist: [100],
+        minFeeToJoin: parseInt(formData.minimum), // TDB: get from formData
+        fundingGoal: formData.funding, // TBD: get from formdata
+        // TBD: get form data for deadline; these are in secondSinceEpoch
+        //TODO: get data for deadline from form data
+        fundingGoalDeadline: (await provider.getBlock('latest')).timestamp + 3000,
+        ipfsHash,
+      },
+      props.navigation,
+      props.daoStore);
 
     if (commonAddress) {
       props.navigation.dispatch(StackActions.popToTop());
@@ -248,7 +250,7 @@ const CreateStep4 = props => {
               style={{
                 position: 'absolute',
                 height: 225,
-                width,
+                width: width,
                 backgroundColor: colors.grey4,
               }}
               source={{
@@ -351,7 +353,9 @@ const CreateStep4 = props => {
               </View>
             </View>
           )}
-          <View style={{height: 1, width, backgroundColor: colors.grey4}} />
+          <View
+            style={{height: 1, width: width, backgroundColor: colors.grey4}}
+          />
           <View style={styles.sectionTitle}>
             <View style={{minWidth: 90, marginRight: 10}}>
               <Text
@@ -551,4 +555,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('createCommonFormStore')(observer(CreateStep4));
+export default inject('createCommonFormStore', 'daoStore')(observer(CreateStep4));

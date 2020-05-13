@@ -37,7 +37,16 @@ import {
   CreateStep2,
   CreateStep3,
   CreateStep4,
+  RequestStep1,
+  RequestStep2,
+  RequestStep3,
+  RequestStep4,
   FundingProposal,
+  Discussions,
+  DiscussionPost,
+  ProposalScreen,
+  PDFViewer,
+  Browser,
 } from './src/Screens';
 
 import {ApolloClientConfig as client} from './src/Config';
@@ -75,7 +84,7 @@ const App = ({userStore, daoStore}) => {
   const getTestEth = async address => {
     console.log('getting test eth for user: ', address);
     const req = await fetch(`https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`);
-    console.log('user request for eth: ', req);
+    console.log('result from eth request: ', req);
   };
 
   const onAuthStateChanged = async user => {
@@ -199,11 +208,8 @@ const App = ({userStore, daoStore}) => {
             component={CommonProfile}
             options={{headerShown: false}}
           />
-
           <Stack.Screen name="CommonAgenda" component={CommonAgenda} />
-
           <Stack.Screen name="Profile" component={UserProfile} />
-
           <Stack.Screen
             name="CommonExplanation"
             component={CommonExplanation}
@@ -224,6 +230,36 @@ const App = ({userStore, daoStore}) => {
                   style={{resizeMode: 'contain', width: 20, height: 20}}
                 />
               ),
+            })}
+          />
+
+          <Stack.Screen name="ProposalScreen" component={ProposalScreen} />
+          <Stack.Screen
+            name="RequestStep1"
+            component={RequestStep1}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="RequestStep2"
+            component={RequestStep2}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="RequestStep3"
+            component={RequestStep3}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="RequestStep4"
+            component={RequestStep4}
+            options={({navigation, route}) => ({
+              headerShown: false,
             })}
           />
           <Stack.Screen
@@ -255,8 +291,23 @@ const App = ({userStore, daoStore}) => {
             })}
           />
           <Stack.Screen
+            name="Discussions"
+            component={Discussions}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+
+          <Stack.Screen
             name="CommonCreationLoading"
             component={CommonCreationLoading}
+            options={({navigation, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="New Topic"
+            component={DiscussionPost}
             options={({navigation, route}) => ({
               headerShown: false,
             })}
@@ -268,6 +319,8 @@ const App = ({userStore, daoStore}) => {
             name="EditProfile"
             component={EditProfile}
           />
+          <Stack.Screen name="PDFViwer" component={PDFViewer} />
+          <Stack.Screen name="Browser" component={Browser} />
           <Stack.Screen
             options={{
               title: 'My wallet',

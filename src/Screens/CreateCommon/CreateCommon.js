@@ -14,13 +14,11 @@ import * as Progress from 'react-native-progress';
 const {width} = Dimensions.get('window');
 
 const CreateCommon = props => {
-  const [common, setCommon] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const swiper = useRef(null);
 
   useEffect(() => {
     swiper.current.scrollTo(currentIndex);
-    console.log('AAAA', currentIndex);
   }, [currentIndex]);
 
   const progressList = [0, 0.35, 0.7, 1.0];

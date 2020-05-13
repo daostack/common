@@ -1,23 +1,16 @@
 import * as React from 'react';
-import {Image, View, StyleSheet, TouchableOpacity, Text} from 'react-native';
-
+import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
-
-import ImagePicker from 'react-native-image-picker';
 import DocumentPicker from 'react-native-document-picker';
 import Toast from '../../Util/Toast';
-import FirebaseService from '../../Services/FirebaseService';
-
 import Icon from '../../Assets/iconfont/Icon';
-import {text, layout, colors, sizeM, sizeXS} from '../../Theme';
-
-const firebaseService = new FirebaseService();
+import {text, layout, colors, sizeM} from '../../Theme';
+import FirebaseService from '../../Services/FirebaseService';
 
 class FileField extends React.Component {
   fieldValidation = null;
   placeFieldActionComponent = null;
-
   static defaultProps;
 
   constructor(props) {
@@ -28,8 +21,6 @@ class FileField extends React.Component {
 
     if (validation) {
       const {name, formStore, validateRule} = validation;
-      console.log('====== REGISTER FIELD NAME ======');
-      console.log(name, value);
       formStore.registerFormField(name, validateRule, value);
       this.fieldValidation = (
         <ValidationMessage formStore={formStore} name={name} />
@@ -37,17 +28,15 @@ class FileField extends React.Component {
     }
   }
 
-  onChangeValue = fileName => {
+  onChangeValue = fileUrl => {
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
-      formStore.fieldChanged(name, fileName);
+      formStore.fieldChanged(name, fileUrl);
     }
-    this.props.onChangeFile && this.props.onChangeFile(fileName);
+    this.props.onChangeFile && this.props.onChangeFile(fileUrl);
   };
 
   pickImage = async () => {
-    console.log('AAAA');
-
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
@@ -60,7 +49,13 @@ class FileField extends React.Component {
         res.size,
       );
 
-      this.onChangeValue(res.name);
+      this.toast.loading('Uploading...');
+      const downloadUrl = await FirebaseService.getInstance().uploadFile(
+        res.uri,
+      );
+      console.log('downloadUrl', downloadUrl);
+      this.toast.done('Success');
+      this.onChangeValue(downloadUrl);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker, exit any dialogs or menus and move on
@@ -68,38 +63,10 @@ class FileField extends React.Component {
         throw err;
       }
     }
-
-    /*
-    const {title, quality, allowsEditing} = this.props;
-    const options = {
-      title: title,
-      quality: quality || 0.7,
-      allowsEditing: allowsEditing || false,
-    };
-    ImagePicker.showImagePicker(options, response => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        this.toast.error(response.error);
-        console.log('ImagePicker Error: ', response.error);
-      } else {
-        // const source = { uri: response.uri };
-        this.toast.loading('Uploading...');
-        firebaseService
-          .uploadImage(response.uri)
-          .then(url => {
-            this.toast.hide();
-            this.toast.done('Done');
-            this.onChangeValue(url);
-          })
-          .catch(error => this.toast.error(error));
-      }
-    });
-    */
   };
 
-  renderImage = () => {
-    const {validation} = this.props;
+  renderFile = () => {
+    const {validation, navigation} = this.props;
 
     const currValue = validation
       ? validation.formStore.form.fields[validation.name].value
@@ -109,11 +76,34 @@ class FileField extends React.Component {
 
     console.log('CurrValue -> ', currValue);
 
+    const fileName = currValue
+      .substring(currValue.lastIndexOf('/') + 1, currValue.length)
+      .split('?')[0]
+      .split('_')
+      .slice(0, -1)
+      .join('_')
+      .replace('public_file%2F', '');
+
+    const ext = currValue
+      .substring(currValue.lastIndexOf('/') + 1, currValue.length)
+      .split('?')[0]
+      .split('.')
+      .pop();
+
+    console.log('fileName -> ', fileName);
+
     if (currValue) {
       return (
         <View style={styles.adRow}>
           <Icon name="common" color={colors.mainBlue} size={22} />
-          <Text style={styles.adsText}>{currValue}</Text>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('PDFViwer', {
+                uri: currValue,
+              });
+            }}>
+            <Text style={styles.adsText}>{`${fileName}.${ext}`}</Text>
+          </TouchableOpacity>
         </View>
       );
     } else {
@@ -143,7 +133,7 @@ class FileField extends React.Component {
               : styles.formFieldContainerGenral
           }>
           <View>
-            {this.renderImage()}
+            {this.renderFile()}
             {isAvatar || currValue ? (
               <TouchableOpacity
                 style={styles.formImageFielAddIcon}

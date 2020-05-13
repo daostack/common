@@ -100,6 +100,15 @@ class nativeBridgeTests extends React.Component {
     }
   };
 
+  getSomeFunds = async () => {
+    const manager = WalletManager.getInstance();
+    const address = await manager.getOwnerAccount();
+    console.log(`fetching some Eth for your address ${address}`);
+    fetch(
+      `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
+    );
+  };
+
   getBalance = async () => {
     try {
       const manager = WalletManager.getInstance();
@@ -164,7 +173,6 @@ class nativeBridgeTests extends React.Component {
   };
 
   createCommon = async () => {
-    console.log('hello')
     const wallet = WalletManager.getInstance();
 
     const arc = getArc(wallet.ethWallet);
@@ -173,9 +181,8 @@ class nativeBridgeTests extends React.Component {
       await arc,
       {
         name: 'Green DAO',
+        // name: `Test DAO ${new Date()}`,
         founderAddresses: wallet.ethWallet.address,
-        tokenDist: [0],
-        repDist: [100],
         minFeeToJoin: 100, // TDB: get from formData
         fundingGoal: 100000, // TBD: get from formdata
         // TBD: get form data for deadline; these are in secondSinceEpoch
@@ -210,6 +217,44 @@ class nativeBridgeTests extends React.Component {
             <Text>Error</Text>
           </TouchableOpacity>
 
+          <Text style={{marginBottom: 10}}>
+            Network: {this.state.networkURL}
+          </Text>
+
+          <Text>Address: {this.state.ownerAccount}</Text>
+          <Text>Balance: {this.state.ownerBalance}</Text>
+          <TouchableOpacity
+            onPress={this.getOwnerBalance}
+            style={styles.button}>
+            <Text>Get local Address and balance</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.getSomeFunds} style={styles.button}>
+            <Text>Get some funds!</Text>
+          </TouchableOpacity>
+
+          <Text style={{marginVertical: 10}}>
+            --------------- Common Interactions -----------------
+          </Text>
+          <Text>Common Tx: {this.state.commonStatus}</Text>
+          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
+            <Text>Create Common</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
+            <Text>Create a request to join [TODO]</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
+            <Text>Create a funding request [TODO]</Text>
+          </TouchableOpacity>
+
+          <Text>mnemonicsAndStore: {this.state.mnemonicsAndStore}</Text>
+          <TouchableOpacity
+            onPress={this.generateAndStoreMnemonic}
+            style={styles.button}>
+            <Text>Generate And Store Mnemonic</Text>
+          </TouchableOpacity>
           <Text style={{marginVertical: 10}}>
             --------------- Native Bridge -----------------
           </Text>
@@ -243,23 +288,10 @@ class nativeBridgeTests extends React.Component {
           <Text style={{marginVertical: 10}}>
             --------------- JavaScript -----------------
           </Text>
-
-          <Text style={{marginBottom: 10}}>
-            Network: {this.state.networkURL}
-          </Text>
-
-          <Text>Address: {this.state.ownerAccount}</Text>
-          <Text>Balance: {this.state.ownerBalance}</Text>
-          <TouchableOpacity
-            onPress={this.getOwnerBalance}
-            style={styles.button}>
-            <Text>Get Owner Address</Text>
-          </TouchableOpacity>
-
           <Text>Address: {this.state.address}</Text>
           <Text>Balance: {this.state.balance}</Text>
           <TouchableOpacity onPress={this.getBalance} style={styles.button}>
-            <Text>Get Balance</Text>
+            <Text>Get Wallet address Balance (obsolete)</Text>
           </TouchableOpacity>
 
           <Text>Status: {this.state.txStatus}</Text>

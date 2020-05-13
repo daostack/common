@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
 import FileField from './FileField';
-import {text, layout, colors, sizeL} from '../../Theme';
+import {sizeL} from '../../Theme';
 
 const MultiFileField = props => {
   const [count, setCount] = useState(1);
 
   const onChangeFile = (fileName, index) => {
-    if (index == count - 1) {
+    if (index === count - 1) {
       if (!maxCount || count < maxCount) {
         setCount(count + 1);
       }
@@ -29,6 +29,7 @@ const MultiFileField = props => {
             allowsEditing={true}
             title={'Add File'}
             validation={currItemValidation}
+            {...props}
           />
         );
       })}

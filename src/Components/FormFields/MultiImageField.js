@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
 import ImageField from './ImageField';
-import {text, layout, colors, sizeL} from '../../Theme';
+import {sizeL} from '../../Theme';
 
 const MultiImageField = props => {
   const [count, setCount] = useState(1);
 
   const onChangeImage = (url, index) => {
-    if (index == count - 1) {
+    if (index === count - 1) {
       if (!maxCount || count < maxCount) {
         setCount(count + 1);
       }

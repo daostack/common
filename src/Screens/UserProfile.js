@@ -3,7 +3,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  Clipboard,
   ScrollView,
   View,
 } from 'react-native';
@@ -52,8 +51,15 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
 
   const onTestPagePress = event => {
     navigation.navigate('NativeBridgeTests');
-    console.log('address: ', userStore.userInfo.ethereumAddress);
-    fetch(`https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${userStore.userInfo.ethereumAddress}`)
+    if (userStore.userInfo) {
+      console.log(
+        'fetching some Eth for your address',
+        userStore.userInfo.ethereumAddress,
+      );
+      fetch(
+        `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${userStore.userInfo.ethereumAddress}`,
+      );
+    }
   };
 
   const onMyWalletPress = event => {
