@@ -130,47 +130,45 @@ const App = ({userStore, daoStore}) => {
             ...appUser,
           };
 
-
           const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
-         userStore.setSignedInUser(filteredUser);
-         if (isNewUser) {
-         }
-      } else {
-        userStore.setSignedInUser(null);
-      }
-
-      userStore.setIsLoading(false);
-      const manager = await WalletManager.getInstance();
-      const address = await manager.getOwnerAccount();
-      getTestEth(address);
-    } catch (error) {
-      // console.log(error);
-      Toast.error(error.toString());
-    }
-  };
-
-  const getDaos = async () => {
-    try {
-      const appUsers = await FirebaseService.getInstance().getUsers();
-      console.log('users: ', appUsers);
-      db.collection('daos').onSnapshot(snapshot => {
-        if (snapshot.empty) {
-          return [];
+          userStore.setSignedInUser(filteredUser);
+          if (isNewUser) {
+          }
+        } else {
+          userStore.setSignedInUser(null);
         }
-        let daosSnapshot = snapshot.docs.map(doc => {
-          return {...{id: doc.id}, ...doc.data()};
-        });
-        console.log('daos: ', daosSnapshot);
-        daoStore.setDaos(daosSnapshot);
-      });
-      // console.log('DAOS: ', daosRes);
-      // setDaos(daosRes);
-    } catch (error) {
-      console.log('errror: ', error);
-    }
-  };
 
-  useEffect(() => {
+        userStore.setIsLoading(false);
+        const manager = await WalletManager.getInstance();
+        const address = await manager.getOwnerAccount();
+        getTestEth(address);
+      } catch (error) {
+        // console.log(error);
+        Toast.error(error.toString());
+      }
+    };
+
+    const getDaos = async () => {
+      try {
+        const appUsers = await FirebaseService.getInstance().getUsers();
+        console.log('users: ', appUsers);
+        db.collection('daos').onSnapshot(snapshot => {
+          if (snapshot.empty) {
+            return [];
+          }
+          let daosSnapshot = snapshot.docs.map(doc => {
+            return {...{id: doc.id}, ...doc.data()};
+          });
+          console.log('daos: ', daosSnapshot);
+          daoStore.setDaos(daosSnapshot);
+        });
+        // console.log('DAOS: ', daosRes);
+        // setDaos(daosRes);
+      } catch (error) {
+        console.log('errror: ', error);
+      }
+    };
+
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
 
     const checkOnboardingStatus = async () => {
@@ -193,7 +191,7 @@ const App = ({userStore, daoStore}) => {
     getDaos();
     checkOnboardingStatus();
     return subscriber;
-  }, [daoStore.isError]);
+  }, [daoStore, userStore]);
 
   console.log('onboarded: ', onboarded);
   console.log('daoStore DAOs: ', daoStore.daos);
