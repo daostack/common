@@ -14,11 +14,12 @@ import MessageContract from '../Contracts/ABIs/MessageContract';
 import {createCommon} from '../Util/createCommon';
 import {createProposalRequestToJoin} from '../Util/createProposal';
 import {getArc} from '../Util/arc';
+import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
 
 const uid = 'test';
 
-export default class nativeBridgeTests extends React.Component {
+class nativeBridgeTests extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -175,25 +176,32 @@ export default class nativeBridgeTests extends React.Component {
   };
 
   createCommon = async () => {
-    console.log('creating common -- please wait');
-    this.setState({commonStatus: 'Creating common -- please wait'});
     const wallet = WalletManager.getInstance();
 
-    const arc = await getArc(wallet.ethWallet);
+    const arc = getArc(wallet.ethWallet);
 
-    console.log('calling the function');
-    const commonStatus = await createCommon(arc, {
-      name: `Test DAO ${new Date()}`,
-      founderAddresses: wallet.ethWallet.address,
-      minFeeToJoin: 100,
-      fundingToken: '0x0000000000000000000000000000000000000000',
-      fundingGoal: 100000,
-      fundingGoalDeadline: 1589210661,
-      metaData: '',
-      ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
-    });
+    const commonAddress = await createCommon(
+      await arc,
+      {
+        name: 'Green DAO',
+        // name: `Test DAO ${new Date()}`,
+        founderAddresses: wallet.ethWallet.address,
+        minFeeToJoin: 100, // TDB: get from formData
+        fundingGoal: 100000, // TBD: get from formdata
+        // TBD: get form data for deadline; these are in secondSinceEpoch
+        //TODO: get data for deadline from form data
+        fundingGoalDeadline: 20200404,
+        ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
+      },
+      this.props.navigation,
+      this.props.daoStore,
+    );
 
-    this.setState({commonStatus: `${commonStatus}`});
+    this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
+  };
+
+  error = () => {
+    this.props.daoStore.creationError('Error' + '2');
   };
 
   createProposal = async () => {
@@ -229,6 +237,18 @@ export default class nativeBridgeTests extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
+          <Text style={{marginVertical: 10}}>
+            --------------- Common Interactions -----------------
+          </Text>
+          <Text>Common Tx: {this.state.commonStatus}</Text>
+          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
+            <Text>Create Common</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.error} style={styles.button}>
+            <Text>Error</Text>
+          </TouchableOpacity>
+
           <Text style={{marginBottom: 10}}>
             Network: {this.state.networkURL}
           </Text>
@@ -362,3 +382,5 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
   },
 });
+
+export default inject('daoStore')(observer(nativeBridgeTests));

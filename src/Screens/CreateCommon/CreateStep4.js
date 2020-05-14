@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Image,
   Text,
@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
+import {StackActions} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
 import ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
@@ -25,9 +26,8 @@ import FirebaseService from '../../Services/FirebaseService';
 import {useToast} from '../../Util/Toast';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import {numberFormatter} from '../../Util';
-// import {createCommon} from '../../Util/createCommon';
+import {createCommon} from '../../Util/createCommon';
 import {getArc} from '../../Util/arc';
-import {StackActions} from '@react-navigation/native';
 
 const {width} = Dimensions.get('window');
 const provider = ethers.getDefaultProvider('rinkeby');
@@ -35,7 +35,7 @@ const provider = ethers.getDefaultProvider('rinkeby');
 const firebaseService = new FirebaseService();
 
 const CreateStep4 = props => {
-  const [scrollY, setScrollY] = useState(new Animated.Value(0));
+  const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const form = props.createCommonFormStore.getChangedFormFieldsJson();
   const [templateIndex, setTemplateIndex] = useState(1);
@@ -44,6 +44,7 @@ const CreateStep4 = props => {
   );
   const [avatarURL, setAvatarURL] = useState(null);
   const toast = useToast();
+  const errorSheetRef = useRef();
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -133,7 +134,7 @@ const CreateStep4 = props => {
         mainValue3: 'empty value',
       }),
     );
-
+  // TODO: use arc.saveIPFSData({ name: formData.name}) here
   const forgeCommon = async () => {
     const commonFormData = props.createCommonFormStore.getChangedFormFieldsJson();
     const ipfsHash = await ipfsUpload(commonFormData);
@@ -153,19 +154,6 @@ const CreateStep4 = props => {
       founderAddresses: address,
       tokenDist: [0],
       repDist: [100],
-      minFeeToJoin: parseInt(formData.minimum),
-      fundingGoal: formData.funding,
-      // TBD: get form data for deadline; these are in secondSinceEpoch
-      //TODO: get data for deadline from form data
-      fundingGoalDeadline: (await provider.getBlock('latest')).timestamp + 3000,
-      ipfsHash,
-    });
-
-    const commonAddress = await createCommonWithLoader(arc, {
-      name: formData.name,
-      founderAddresses: address,
-      tokenDist: [0],
-      repDist: [100],
       minFeeToJoin: parseInt(formData.minimum), // TDB: get from formData
       fundingGoal: formData.funding, // TBD: get from formdata
       // TBD: get form data for deadline; these are in secondSinceEpoch
@@ -174,11 +162,35 @@ const CreateStep4 = props => {
       ipfsHash,
     });
 
+    const commonAddress = await createCommon(
+      arc,
+      {
+        name: formData.name,
+        founderAddresses: address,
+        tokenDist: [0],
+        repDist: [100],
+        minFeeToJoin: parseInt(formData.minimum), // TDB: get from formData
+        fundingGoal: formData.funding, // TBD: get from formdata
+        // TBD: get form data for deadline; these are in secondSinceEpoch
+        //TODO: get data for deadline from form data
+        fundingGoalDeadline:
+          (await provider.getBlock('latest')).timestamp + 3000,
+        ipfsHash,
+      },
+      props.navigation,
+      props.daoStore,
+    );
+
     if (commonAddress) {
       props.navigation.dispatch(StackActions.popToTop());
     }
 
     return {commonAddress};
+  };
+
+  const creationError = event => {
+    errorSheetRef.current.snapTo(1);
+    errorSheetRef.current.snapTo(1);
   };
 
   return (
@@ -243,7 +255,7 @@ const CreateStep4 = props => {
               style={{
                 position: 'absolute',
                 height: 225,
-                width,
+                width: width,
                 backgroundColor: colors.grey4,
               }}
               source={{
@@ -346,7 +358,9 @@ const CreateStep4 = props => {
               </View>
             </View>
           )}
-          <View style={{height: 1, width, backgroundColor: colors.grey4}} />
+          <View
+            style={{height: 1, width: width, backgroundColor: colors.grey4}}
+          />
           <View style={styles.sectionTitle}>
             <View style={{minWidth: 90, marginRight: 10}}>
               <Text
@@ -546,4 +560,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('createCommonFormStore')(observer(CreateStep4));
+export default inject(
+  'createCommonFormStore',
+  'daoStore',
+)(observer(CreateStep4));

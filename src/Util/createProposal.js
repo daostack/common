@@ -2,7 +2,6 @@
 // import {getArc} from './arc';
 // const {ARC_VERSION, OVERRIDES} = require('./arc');
 const {first} = require('rxjs/operators');
-import BN from 'bn.js';
 import {ipfsUpload} from '../Config';
 
 export const createProposalRequestToJoin = async (arc, data) => {
