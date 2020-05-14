@@ -144,8 +144,8 @@ const App = ({userStore, daoStore}) => {
       const address = await manager.getOwnerAccount();
       getTestEth(address);
     } catch (error) {
-      console.log(error);
-      //Toast.error(error.toString());
+      // console.log(error);
+      Toast.error(error.toString());
     }
   };
 

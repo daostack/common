@@ -14,11 +14,8 @@ import MessageContract from '../Contracts/ABIs/MessageContract';
 import {createCommon} from '../Util/createCommon';
 import {createProposalRequestToJoin} from '../Util/createProposal';
 import {getArc} from '../Util/arc';
-<<<<<<< HEAD
 import {inject, observer} from 'mobx-react';
-=======
 import {BN} from 'bn.js';
->>>>>>> master
 
 const uid = 'test';
 

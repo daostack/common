@@ -121,10 +121,7 @@ const CreateStep4 = props => {
   };
 
   const ipfsUpload = async formData =>
-<<<<<<< HEAD
-=======
     // TODO: use arc.saveIPFSData({ name: formData.name}) once https://github.com/daostack/arc.js/issues/468 is resolved
->>>>>>> master
     IpfsClient.addAndPinString(
       JSON.stringify({
         name: formData.name,
