@@ -92,7 +92,7 @@ const CommonCreationLoading = ({daoStore, route, navigation}) => {
                     color: 'white',
                     fontWeight: '700',
                   }}>
-                  Publish Common
+                  Share Common
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -101,7 +101,7 @@ const CommonCreationLoading = ({daoStore, route, navigation}) => {
                   ...styles.shareButton,
                 }}
                 onPress={() => {}}>
-                <Text style={text.buttonblue}>Share Common</Text>
+                <Text style={text.buttonblue}>Goto Common</Text>
               </TouchableOpacity>
             </View>
             <View>
