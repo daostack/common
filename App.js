@@ -130,27 +130,11 @@ const App = ({userStore, daoStore}) => {
             ...appUser,
           };
 
-  const onAuthStateChanged = async user => {
-    try {
-      userStore.setIsLoading(true);
-      daoStore.setIsLoading(true);
-      if (user) {
-        await AuthService.getInstance().loadMnemonic(user.uid);
-        await WalletManager.init(user.uid);
-        let appUser = await FirebaseService.getInstance().getUserById(user.uid);
-        const isNewUser = !appUser;
-        if (isNewUser) {
-          appUser = await AuthService.getInstance().createUserAndWallet(user);
-        }
-        const allUserInfo = {
-          ...user._user,
-          ...appUser,
-        };
 
-        const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
-        userStore.setSignedInUser(filteredUser);
-        if (isNewUser) {
-        }
+          const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
+         userStore.setSignedInUser(filteredUser);
+         if (isNewUser) {
+         }
       } else {
         userStore.setSignedInUser(null);
       }
