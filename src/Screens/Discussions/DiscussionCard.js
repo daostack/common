@@ -30,17 +30,18 @@ const DiscussionCard = props => {
   }, [data]);
 
   useEffect(() => {
-    const fetchList = async () => {
-      const snapshot = await firestore()
-        .collection('common')
-        .doc(commonId)
-        .collection('discussion')
-        .doc(data.id)
-        .collection('message')
-        .get();
-      setMsgCount(snapshot.docs.length);
+    const unsubscribe = firestore()
+      .collection('common')
+      .doc(commonId)
+      .collection('discussion')
+      .doc(data.id)
+      .collection('message')
+      .onSnapshot(snapshot => {
+        setMsgCount(snapshot.docs.length);
+      });
+    return () => {
+      unsubscribe();
     };
-    fetchList();
   }, [commonId, data]);
 
   return (

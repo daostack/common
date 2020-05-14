@@ -120,7 +120,6 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
                   <Text style={text.h4Black}>Temporary menu</Text>
                   <AccordionBtn title="Test Page" onPress={onTestPagePress} />
                   <AccordionBtn title="Users list" onPress={onUsersListPress} />
-
                   <AccordionBtn
                     title="Funding Request"
                     onPress={onFundingProposalPress}
