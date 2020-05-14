@@ -7,12 +7,15 @@
  */
 
 import React, {useState, useEffect, useRef} from 'react';
-import {Image, StyleSheet, Platform, View} from 'react-native';
+import {Image, StyleSheet, Platform, View, Alert} from 'react-native';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {colors, text} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
+
+import buffer from 'buffer';
+global.Buffer = buffer.Buffer;
 
 import {
   CommonProfile,
@@ -63,6 +66,8 @@ import KeyboardManager from 'react-native-keyboard-manager';
 import CommonCreationLoading from './src/Screens/CommonCreationLoading';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import TransactionError from './src/Screens/TransactionError';
+import messaging from '@react-native-firebase/messaging';
+import NotificationService from './src/Services/NotificationService';
 
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
@@ -81,6 +86,49 @@ const App = ({userStore, daoStore}) => {
     );
     console.log('result from eth request: ', req);
   };
+  useEffect(() => {
+    messaging()
+      .registerDeviceForRemoteMessages()
+      .then(() => {
+        return messaging().requestPermission();
+      })
+      .then(settings => {
+        console.log('Notification settings', settings);
+        if (settings) {
+          return NotificationService.saveTokenToDatabase();
+        }
+      });
+    return messaging().onTokenRefresh(token => {
+      NotificationService.saveTokenToDatabase(token);
+    });
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('Foreground Message Arrived', JSON.stringify(remoteMessage));
+    });
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const onAuthStateChanged = async user => {
+      try {
+        userStore.setIsLoading(true);
+        daoStore.setIsLoading(true);
+        if (user) {
+          await AuthService.getInstance().loadMnemonic(user.uid);
+          await WalletManager.init(user.uid);
+          let appUser = await FirebaseService.getInstance().getUserById(
+            user.uid,
+          );
+          const isNewUser = !appUser;
+          if (isNewUser) {
+            appUser = await AuthService.getInstance().createUserAndWallet(user);
+          }
+          const allUserInfo = {
+            ...user._user,
+            ...appUser,
+          };
 
   const onAuthStateChanged = async user => {
     try {
