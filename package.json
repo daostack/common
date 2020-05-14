@@ -7,7 +7,7 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint .",
+    "lint": "eslint App.js src/ __tests__",
     "postinstall": "yarn icon",
     "icon": "rm -rf ./src/Assets/iconfont && npx iconfont-rn && rm -rf ./src/Assets/iconfont/*.ts"
   },

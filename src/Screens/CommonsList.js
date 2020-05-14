@@ -36,7 +36,7 @@ const CommonsList = ({navigation, daoStore}) => {
               ...doc.data(),
               ...{
                 coverPhoto: `https://i.picsum.photos/id/${index *
-                10}/500/100.jpg`,
+                  10}/500/100.jpg`,
               },
             };
           });
@@ -81,21 +81,21 @@ const CommonsList = ({navigation, daoStore}) => {
         <ScrollView>
           <View style={styles.container}>
             {daos &&
-            daos.map((dao, i) => {
-              if (
-                ''.length > 0 &&
-                !dao.name.toLowerCase().includes(''.toLowerCase())
-              ) {
-                return;
-              }
-              return (
-                <CommonBox
-                  key={`commonBox_${i}`}
-                  common={dao}
-                  navigation={navigation}
-                />
-              );
-            })}
+              daos.map((dao, i) => {
+                if (
+                  ''.length > 0 &&
+                  !dao.name.toLowerCase().includes(''.toLowerCase())
+                ) {
+                  return;
+                }
+                return (
+                  <CommonBox
+                    key={`commonBox_${i}`}
+                    common={dao}
+                    navigation={navigation}
+                  />
+                );
+              })}
           </View>
         </ScrollView>
       </>
