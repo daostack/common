@@ -12,7 +12,9 @@ const {width} = Dimensions.get('window');
 import WalletManager from '../Util/WalletManager';
 import MessageContract from '../Contracts/ABIs/MessageContract';
 import {createCommon} from '../Util/createCommon';
+import {createProposalRequestToJoin} from '../Util/createProposal';
 import {getArc} from '../Util/arc';
+import {BN} from 'bn.js';
 
 const uid = 'test';
 
@@ -35,6 +37,7 @@ export default class nativeBridgeTests extends React.Component {
       result: '',
       scTXHash: '',
       commonStatus: '',
+      proposalStatus: '',
     };
 
     this.child = React.createRef();
@@ -193,6 +196,35 @@ export default class nativeBridgeTests extends React.Component {
     this.setState({commonStatus: `${commonStatus}`});
   };
 
+  createProposal = async () => {
+    console.log('creating proposal -- please wait');
+    this.setState({
+      proposalStatus: 'Creating JoinAndQuit proposal -- please wait',
+    });
+    try {
+      const wallet = WalletManager.getInstance();
+      console.log('wallet', wallet);
+      const arc = await getArc(wallet.ethWallet);
+      console.log('calling the function', arc);
+      const data = {
+        title: `A test proposal on ${Date()}`,
+        description: 'Some description',
+        files: [],
+        images: [],
+        links: [], // {title: "title", url: "url"}
+        funding: new BN(100000),
+      };
+      const proposal = await createProposalRequestToJoin(arc, data);
+      this.setState({
+        proposalStatus: `JoinAndQuit Proposal with id ${proposal.id} created!`,
+      });
+    } catch (e) {
+      console.log(e);
+      this.setState({proposalState: `${e}`});
+    }
+    console.log(`proposal created: ${proposal.id}`);
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -211,6 +243,14 @@ export default class nativeBridgeTests extends React.Component {
 
           <TouchableOpacity onPress={this.getSomeFunds} style={styles.button}>
             <Text>Get some funds!</Text>
+          </TouchableOpacity>
+
+          <Text style={{marginVertical: 10}}>
+            --------------- Common Interactions -----------------
+          </Text>
+          <Text>Proposal Tx: {this.state.proposalStatus}</Text>
+          <TouchableOpacity onPress={this.createProposal} style={styles.button}>
+            <Text>Create Proposal</Text>
           </TouchableOpacity>
 
           <Text style={{marginVertical: 10}}>

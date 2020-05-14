@@ -15,6 +15,9 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {colors, text} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 
+import buffer from 'buffer';
+global.Buffer = buffer.Buffer;
+
 import {
   CommonProfile,
   Onboarding,
