@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		15CD0320246E87AD00EDADE2 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15CD031F246E87AD00EDADE2 /* NotificationService.swift */; };
+		15CD0324246E87AD00EDADE2 /* common-notification-service-ext.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 15CD031D246E87AD00EDADE2 /* common-notification-service-ext.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		15E1ED02241A26D600651ACD /* WalletManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED01241A26D600651ACD /* WalletManager.swift */; };
 		15E1ED07241A296400651ACD /* RNBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED06241A296400651ACD /* RNBridge.m */; };
 		15E1ED09241A298900651ACD /* WalletModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED08241A298900651ACD /* WalletModule.swift */; };
@@ -28,9 +30,38 @@
 		F0F88CD131F5416F9232A460 /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 72AACE390AB74154A9B62F0C /* Roboto-BoldItalic.ttf */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		15CD0322246E87AD00EDADE2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 15E9071E2417D1B9008A5750 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 15CD031C246E87AD00EDADE2;
+			remoteInfo = "common-notification-service-ext";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		15CD0315246E873C00EDADE2 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				15CD0324246E87AD00EDADE2 /* common-notification-service-ext.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		13A2EC7A6A49307877755CB8 /* Pods-common.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common.release.xcconfig"; path = "Target Support Files/Pods-common/Pods-common.release.xcconfig"; sourceTree = "<group>"; };
 		1505B3D8243B76E300679F9C /* common.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = common.entitlements; sourceTree = "<group>"; };
+		15CD0307246E873C00EDADE2 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		15CD0309246E873C00EDADE2 /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
+		15CD031D246E87AD00EDADE2 /* common-notification-service-ext.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "common-notification-service-ext.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		15CD031F246E87AD00EDADE2 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		15CD0321246E87AD00EDADE2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		15E1ED01241A26D600651ACD /* WalletManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletManager.swift; sourceTree = "<group>"; };
 		15E1ED03241A292C00651ACD /* common-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "common-Bridging-Header.h"; sourceTree = "<group>"; };
 		15E1ED06241A296400651ACD /* RNBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNBridge.m; sourceTree = "<group>"; };
@@ -57,6 +88,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		15CD031A246E87AD00EDADE2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		15E907232417D1B9008A5750 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -68,6 +106,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		15CD031E246E87AD00EDADE2 /* common-notification-service-ext */ = {
+			isa = PBXGroup;
+			children = (
+				15CD031F246E87AD00EDADE2 /* NotificationService.swift */,
+				15CD0321246E87AD00EDADE2 /* Info.plist */,
+			);
+			path = "common-notification-service-ext";
+			sourceTree = "<group>";
+		};
 		15E1ED11241B3A1D00651ACD /* Util */ = {
 			isa = PBXGroup;
 			children = (
@@ -81,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				15E907282417D1B9008A5750 /* common */,
+				15CD031E246E87AD00EDADE2 /* common-notification-service-ext */,
 				15E907272417D1B9008A5750 /* Products */,
 				909741A0B044660210AFA8BC /* Pods */,
 				3098661C0DFC471D9522B375 /* Resources */,
@@ -92,6 +140,7 @@
 			isa = PBXGroup;
 			children = (
 				15E907262417D1B9008A5750 /* common.app */,
+				15CD031D246E87AD00EDADE2 /* common-notification-service-ext.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -191,6 +240,8 @@
 			isa = PBXGroup;
 			children = (
 				4B7EFE26221B7191A66CF15E /* Pods_common.framework */,
+				15CD0307246E873C00EDADE2 /* UserNotifications.framework */,
+				15CD0309246E873C00EDADE2 /* UserNotificationsUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -198,6 +249,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		15CD031C246E87AD00EDADE2 /* common-notification-service-ext */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 15CD0325246E87AD00EDADE2 /* Build configuration list for PBXNativeTarget "common-notification-service-ext" */;
+			buildPhases = (
+				15CD0319246E87AD00EDADE2 /* Sources */,
+				15CD031A246E87AD00EDADE2 /* Frameworks */,
+				15CD031B246E87AD00EDADE2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "common-notification-service-ext";
+			productName = "common-notification-service-ext";
+			productReference = 15CD031D246E87AD00EDADE2 /* common-notification-service-ext.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		15E907252417D1B9008A5750 /* common */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 15E9073A2417D1BB008A5750 /* Build configuration list for PBXNativeTarget "common" */;
@@ -213,10 +281,12 @@
 				BAD81373887F9842D34989D2 /* [CP] Copy Pods Resources */,
 				0220BB20BBDD8F97A7EB65A7 /* [CP-User] [RNFB] Core Configuration */,
 				4AA1DF2410298F1D8EDC8670 /* [CP-User] [RNFB] Crashlytics Configuration */,
+				15CD0315246E873C00EDADE2 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				15CD0323246E87AD00EDADE2 /* PBXTargetDependency */,
 			);
 			name = common;
 			productName = common;
@@ -233,6 +303,9 @@
 				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = DAOstack;
 				TargetAttributes = {
+					15CD031C246E87AD00EDADE2 = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
 					15E907252417D1B9008A5750 = {
 						CreatedOnToolsVersion = 11.3;
 						LastSwiftMigration = 1130;
@@ -254,11 +327,19 @@
 			projectRoot = "";
 			targets = (
 				15E907252417D1B9008A5750 /* common */,
+				15CD031C246E87AD00EDADE2 /* common-notification-service-ext */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		15CD031B246E87AD00EDADE2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		15E907242417D1B9008A5750 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -413,6 +494,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		15CD0319246E87AD00EDADE2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15CD0320246E87AD00EDADE2 /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		15E907222417D1B9008A5750 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -429,6 +518,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		15CD0323246E87AD00EDADE2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 15CD031C246E87AD00EDADE2 /* common-notification-service-ext */;
+			targetProxy = 15CD0322246E87AD00EDADE2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		15E9072F2417D1B9008A5750 /* Main.storyboard */ = {
@@ -450,6 +547,44 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		15CD0326246E87AD00EDADE2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
+				INFOPLIST_FILE = "common-notification-service-ext/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.daostack.common.common-notification-service-ext";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		15CD0327246E87AD00EDADE2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
+				INFOPLIST_FILE = "common-notification-service-ext/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.daostack.common.common-notification-service-ext";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		15E907382417D1BB008A5750 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -568,6 +703,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C82E1DD3DDC55F4EFC693D54 /* Pods-common.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = common/common.entitlements;
@@ -592,6 +728,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 13A2EC7A6A49307877755CB8 /* Pods-common.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = common/common.entitlements;
@@ -614,6 +751,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		15CD0325246E87AD00EDADE2 /* Build configuration list for PBXNativeTarget "common-notification-service-ext" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				15CD0326246E87AD00EDADE2 /* Debug */,
+				15CD0327246E87AD00EDADE2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		15E907212417D1B9008A5750 /* Build configuration list for PBXProject "common" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
