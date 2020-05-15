@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
 } from 'react-native';
+import {observer, inject} from 'mobx-react';
 import {colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import FirebaseService from '../../Services/FirebaseService';
@@ -15,6 +16,7 @@ import moment from 'moment';
 import firestore from '@react-native-firebase/firestore';
 import BottomSheetModal from '../../Components/BottomSheetModal';
 import NotificationService from '../../Services/NotificationService';
+import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 
 const {width} = Dimensions.get('window');
 
@@ -61,6 +63,19 @@ const DiscussionCard = props => {
     };
   }, [commonId, data]);
 
+  follow = () => {
+    console.log('Follow user id', data.owner);
+    NotificationService.follow(data.owner);
+    props.bottomSheetStore.hideBottomSheet();
+  };
+
+  showOptions = () => {
+    props.bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
+      {onFollow: follow},
+    );
+  };
+
   return (
     <>
       <View
@@ -74,10 +89,7 @@ const DiscussionCard = props => {
         <View style={styles.container}>
           <TouchableOpacity
             style={{position: 'absolute', right: 0, top: 0, padding: 15}}
-            onPress={() => {
-              console.log('AAAA');
-              setShowMenu(!showMenu);
-            }}>
+            onPress={showOptions}>
             <Icon name="menu" size={20} />
           </TouchableOpacity>
           <Text style={styles.title} numberOfLines={2}>
@@ -184,36 +196,6 @@ const DiscussionCard = props => {
           )}
         </View>
       </View>
-
-      <BottomSheetModal
-        isVisible={showMenu}
-        onClose={hideMenu}
-        style={styles.modalStyle}>
-        <View style={styles.bottomSheet}>
-          <Text style={styles.sheetTitle}>Options</Text>
-          <TouchableOpacity
-            onPress={() => {
-              console.log('Follow user id', data.owner);
-              NotificationService.follow(data.owner);
-              setShowMenu(false);
-            }}>
-            <View style={styles.sheetButton}>
-              <Icon name="following" color={colors.black} />
-              <View style={{flex: 1}}>
-                <Text style={[styles.sheetText, {color: colors.black}]}>
-                  Follow
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.sheetButton}>
-              <Icon name="report" color={colors.against} />
-              <Text style={styles.sheetText}>Report</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </BottomSheetModal>
     </>
   );
 };
@@ -276,4 +258,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DiscussionCard;
+export default inject('bottomSheetStore')(observer(DiscussionCard));

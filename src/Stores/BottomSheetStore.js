@@ -6,11 +6,11 @@ import {
   CommonOperationalStateNotif,
   CommonProfileOptions,
   LoginSheetScreen,
-  ProposalSheetScreen,
   SortProposals,
   UnsavedChanges,
   UserProfileSheetScreen,
 } from '../Screens/BottomSheetScreens';
+import TransactionError from '../Screens/TransactionError';
 
 export const BOTTOM_SHEET_TEMPLATES = {
   BOOSTED_INFO: {
@@ -39,7 +39,10 @@ export const BOTTOM_SHEET_TEMPLATES = {
     topSnap: 480,
     content: LoginSheetScreen,
   },
-
+  TRANSACTION_ERROR: {
+    topSnap: 480,
+    content: TransactionError,
+  },
   SORT_PROPOSALS: {
     topSnap: 500,
     content: SortProposals,
