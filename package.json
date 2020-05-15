@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint .",
+    "lint": "eslint App.js src/ __tests__",
+    "postinstall": "yarn icon",
     "icon": "rm -rf ./src/Assets/iconfont && npx iconfont-rn && rm -rf ./src/Assets/iconfont/*.ts"
   },
   "dependencies": {
@@ -33,6 +34,8 @@
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.6.8",
     "apollo-link-ws": "^1.0.19",
+    "bn.js": "^5.1.1",
+    "buffer": "^5.6.0",
     "contract-proxy-kit": "^1.1.1",
     "ethers": "^4.0.45",
     "graphql": "^14.6.0",
