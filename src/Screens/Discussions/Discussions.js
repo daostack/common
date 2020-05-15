@@ -25,6 +25,7 @@ import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
 import ChatRoom from './Chat/ChatRoom';
 import BottomSheetModal from '../../Components/BottomSheetModal';
+import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 // import _ from 'lodash';
 
 const {width} = Dimensions.get('window');
@@ -39,11 +40,6 @@ const Discussions = props => {
   const data = props.route.params.data;
   const commonId = props.route.params.commonId;
   const [msgGroup, setMsgDroup] = useState([]);
-  const [showMenu, setShowMenu] = useState(false);
-
-  const hideMenu = () => {
-    setShowMenu(false);
-  };
 
   let listRef = useRef([]);
   useEffect(() => {
@@ -111,6 +107,12 @@ const Discussions = props => {
     fetchUser();
   }, [data]);
 
+  openOptionsMenu = () => {
+    props.bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
+    );
+  };
+
   sendMessageToDiscussion = async () => {
     const userStore = auth().currentUser;
     // props.userStore;
@@ -171,7 +173,7 @@ const Discussions = props => {
           rightButton={
             <TouchableOpacity
               style={{justifyContent: 'center'}}
-              onPress={() => setShowMenu(!showMenu)}>
+              onPress={openOptionsMenu}>
               <Icon
                 name="menu-horizontal"
                 size={32}
@@ -309,7 +311,7 @@ const Discussions = props => {
         </View>
         <View style={{height: 30, backgroundColor: colors.white}} />
       </KeyboardAvoidingView>
-
+      {/** 
       <BottomSheetModal
         isVisible={showMenu}
         onClose={hideMenu}
@@ -334,6 +336,7 @@ const Discussions = props => {
           </TouchableOpacity>
         </View>
       </BottomSheetModal>
+      */}
     </SafeAreaView>
   );
 };
@@ -430,4 +433,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(Discussions));
+export default inject('userStore', 'bottomSheetStore')(observer(Discussions));

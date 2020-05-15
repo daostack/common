@@ -7,13 +7,15 @@
  */
 
 import React, {useState, useEffect} from 'react';
-import {Image, StyleSheet, Platform, View} from 'react-native';
+import {Image, StyleSheet, Platform, View, Text} from 'react-native';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 // import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {colors, text} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
+
+import BottomSheetContainer from './src/Components/BottomSheetContainer';
 
 import {
   CommonProfile,
@@ -72,7 +74,7 @@ if (Platform.OS === 'ios') {
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
 }
 
-const App = ({userStore, daoStore}) => {
+const App = ({userStore, daoStore, bottomSheetStore}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -350,6 +352,7 @@ const App = ({userStore, daoStore}) => {
             component={FundingProposal}
           />
         </Stack.Navigator>
+        {bottomSheetStore.isVisible ? <BottomSheetContainer /> : null}
       </NavigationContainer>
     </ApolloProvider>
   );
@@ -370,4 +373,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'daoStore')(observer(App));
+export default inject(
+  'userStore',
+  'daoStore',
+  'bottomSheetStore',
+)(observer(App));

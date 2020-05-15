@@ -26,9 +26,11 @@ const ProposalSheetScreen = ({}) => {
         </View>
       </SafeAreaView>
 
+      {/**
       <BottomSheetContainer ref={boostedInfoRef} topSnapPoint={620}>
         <BoostedInfo />
       </BottomSheetContainer>
+       */}
     </>
   );
 };

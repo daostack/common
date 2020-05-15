@@ -6,14 +6,18 @@ import ProposalScreen from '../Proposals/ProposalScreen';
 
 import BoostedInfo from '../BottomSheetScreens/BoostedInfo';
 import BottomSheetContainer from '../../Components/BottomSheetContainer';
+import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
+import {observer, inject} from 'mobx-react';
 
-const ProposalSheetScreen = ({}) => {
+const ProposalSheetScreen = ({bottomSheetStore}) => {
   boostedInfoRef = useRef();
 
   const openBoostedInfoBottomSheet = () => {
+    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BOOSTED_INFO);
+
     console.log('openBoostedInfo');
-    boostedInfoRef.current.snapTo(1);
-    boostedInfoRef.current.snapTo(1);
+    //    boostedInfoRef.current.snapTo(1);
+    //    boostedInfoRef.current.snapTo(1);
   };
 
   return (
@@ -25,10 +29,11 @@ const ProposalSheetScreen = ({}) => {
           <ProposalScreen openBoostedInfo={openBoostedInfoBottomSheet} />
         </View>
       </SafeAreaView>
-
+      {/**
       <BottomSheetContainer ref={boostedInfoRef} topSnapPoint={620}>
         <BoostedInfo />
       </BottomSheetContainer>
+       */}
     </>
   );
 };
@@ -65,4 +70,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProposalSheetScreen;
+export default inject('bottomSheetStore')(observer(ProposalSheetScreen));

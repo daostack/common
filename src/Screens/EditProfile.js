@@ -17,10 +17,15 @@ import BottomSheetContainer from '../Components/BottomSheetContainer';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '../Assets/iconfont/Icon';
 import Loader from '../Components/Loader';
+import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
 
-const EditProfile = ({userStore, editProfileFormStore, route, navigation}) => {
-  unsavedChangesSheetRef = useRef();
-
+const EditProfile = ({
+  userStore,
+  editProfileFormStore,
+  bottomSheetStore,
+  route,
+  navigation,
+}) => {
   navigation.setOptions({
     headerLeft: () => (
       <TouchableOpacity
@@ -45,20 +50,19 @@ const EditProfile = ({userStore, editProfileFormStore, route, navigation}) => {
 
   const onFormClose = () => {
     if (editProfileFormStore.isFormChanged()) {
-      // Call snapTo twice because of an issue in the library :(  https://github.com/osdnk/react-native-reanimated-bottom-sheet/issues/198
-      if (unsavedChangesSheetRef) {
-        unsavedChangesSheetRef.current.snapTo(1);
-        unsavedChangesSheetRef.current.snapTo(1);
-      }
+      bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
+        navigation: navigation,
+        onContinueEditing: closeBottomSheet,
+        onLeaveWithoutSaving: closeBottomSheet,
+      });
     } else {
       navigation.goBack();
     }
   };
 
-  const onContinueEditing = () => {
+  const closeBottomSheet = () => {
     // Call snapTo twice because of an issue in the library :(  https://github.com/osdnk/react-native-reanimated-bottom-sheet/issues/198
-    unsavedChangesSheetRef.current.snapTo(0);
-    unsavedChangesSheetRef.current.snapTo(0);
+    bottomSheetStore.hideBottomSheet();
   };
 
   const renderFirstTimeHeader = () => {
@@ -96,13 +100,14 @@ const EditProfile = ({userStore, editProfileFormStore, route, navigation}) => {
           {userStore.userInfo ? renderBody() : <Loader />}
         </ScrollView>
       </SafeAreaView>
-
+      {/*
       <BottomSheetContainer ref={unsavedChangesSheetRef}>
         <UnsavedChanges
           navigation={navigation}
           onContinueEditing={onContinueEditing}
         />
       </BottomSheetContainer>
+    */}
     </>
   );
 };
@@ -128,4 +133,5 @@ const styles = StyleSheet.create({
 export default inject(
   'userStore',
   'editProfileFormStore',
+  'bottomSheetStore',
 )(observer(EditProfile));

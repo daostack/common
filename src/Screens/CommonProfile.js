@@ -24,6 +24,7 @@ import ProposalSheetScreen from './BottomSheetScreens/ProposalSheetScreen';
 // import ApprovalSheetScreen from './BottomSheetScreens/ApprovalSheetScreen';
 
 import BottomSheetContainer from '../Components/BottomSheetContainer';
+import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
 import CommonCover from '../Components/Commons/CommonCover';
 import CommonStageSummary from '../Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
@@ -33,6 +34,7 @@ import {CommonActions} from '@react-navigation/native';
 import ProposalCard from '../Components/Proposals/ProposalCard';
 import BottomRightButton from '../Components/BottomRightButton';
 import DiscussionList from './Discussions/DiscussionList';
+import {observer, inject} from 'mobx-react';
 
 const {cache} = client;
 const mockData = {
@@ -51,9 +53,7 @@ const mockData = {
   activeProposals: 142,
 };
 
-const CommonProfile = ({navigation, route}) => {
-  commonOperationalStateNotifRef = useRef();
-  optionsSheetRef = useRef();
+const CommonProfile = ({navigation, route, bottomSheetStore}) => {
   sortProposalsSheetRef = useRef();
   proposalSheetRef = useRef();
 
@@ -229,13 +229,9 @@ const CommonProfile = ({navigation, route}) => {
   };
 
   const openCommonOptions = event => {
-    optionsSheetRef.current.snapTo(1);
-    optionsSheetRef.current.snapTo(1);
-  };
-
-  const openProposalCard = event => {
-    proposalSheetRef.current.snapTo(1);
-    proposalSheetRef.current.snapTo(1);
+    bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+    );
   };
 
   const openProposalScreen = event => {
@@ -270,7 +266,7 @@ const CommonProfile = ({navigation, route}) => {
   const renderPendingApproval = () => {
     return (
       <TouchableOpacity
-        onPress={openProposalCard}
+        onPress={openProposalScreen}
         style={{
           ...layout.content,
           paddingVertical: 15,
@@ -464,18 +460,18 @@ const CommonProfile = ({navigation, route}) => {
           </>
         )}
       </SafeAreaView>
+      {/** 
       <BottomSheetContainer ref={commonOperationalStateNotifRef}>
         <CommonOperationalStateNotif navigation={navigation} />
       </BottomSheetContainer>
-      <BottomSheetContainer ref={optionsSheetRef}>
-        <CommonProfileOptions navigation={navigation} />
-      </BottomSheetContainer>
+      
       <BottomSheetContainer ref={sortProposalsSheetRef}>
         <SortProposals navigation={navigation} />
       </BottomSheetContainer>
       <BottomSheetContainer ref={proposalSheetRef} topSnapPoint={800}>
         <ProposalSheetScreen navigation={navigation} />
       </BottomSheetContainer>
+      */}
     </View>
   );
 };
@@ -590,4 +586,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommonProfile;
+export default inject('bottomSheetStore')(observer(CommonProfile));
