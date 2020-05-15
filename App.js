@@ -15,7 +15,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {colors, text} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 
-import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import buffer from 'buffer';
 global.Buffer = buffer.Buffer;
 

@@ -111,8 +111,6 @@ const ProposalData = props => {
 
   const openBoostedInfo = () => {
     props.bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BOOSTED_INFO);
-    //boostedInfoRef.current.snapTo(1);
-    //boostedInfoRef.current.snapTo(1);
   };
 
   const _handleTextReady = () => {
@@ -128,7 +126,7 @@ const ProposalData = props => {
       100;
   }
 
-  const isBoosted = true; //Iaflnooopprs.stage === 'Boosted';
+  const isBoosted = props.stage === 'Boosted';
 
   return proposalInfo ? (
     <>

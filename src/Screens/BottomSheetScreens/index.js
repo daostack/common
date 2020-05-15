@@ -3,7 +3,6 @@ export BoostedInfo from './BoostedInfo';
 export CommonOperationalStateNotif from './CommonOperationalStateNotif';
 export CommonProfileOptions from './CommonProfileOptions';
 export LoginSheetScreen from './LoginSheetScreen';
-export ProposalSheetScreen from './ProposalSheetScreen';
 export SortProposals from './SortProposals';
 export UnsavedChanges from './UnsavedChanges';
 export UserProfileSheetScreen from './UserProfileSheetScreen';

@@ -39,10 +39,7 @@ export const BOTTOM_SHEET_TEMPLATES = {
     topSnap: 480,
     content: LoginSheetScreen,
   },
-  PROPOSAL_SHEET_SCREEN: {
-    topSnap: 500,
-    content: ProposalSheetScreen,
-  },
+
   SORT_PROPOSALS: {
     topSnap: 500,
     content: SortProposals,
