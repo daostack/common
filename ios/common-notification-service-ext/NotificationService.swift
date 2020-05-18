@@ -18,7 +18,8 @@ class NotificationService: UNNotificationServiceExtension {
 
         // Dig in the payload to get the attachment-url.
         guard let bestAttemptContent = bestAttemptContent,
-            let attachmentURLAsString = request.content.userInfo["gcm.notification.image"] as? String,
+            let attachmentDict = request.content.userInfo["fcm_options"] as? Dictionary<String, Any>,
+            let attachmentURLAsString = attachmentDict["image"] as? String,
             let attachmentURL = URL(string: attachmentURLAsString) else {
             return
         }

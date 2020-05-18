@@ -25,8 +25,6 @@ const DiscussionCard = props => {
   const [user, setUser] = useState({});
   const [msgCount, setMsgCount] = useState(0);
   const [showMenu, setShowMenu] = useState(false);
-
-  console.log('UserInfo', props.userStore.userInfo);
   const isFollowing = props.userStore.userInfo.following.includes(data.owner);
 
   const hideMenu = () => {

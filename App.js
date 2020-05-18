@@ -68,7 +68,7 @@ import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import TransactionError from './src/Screens/TransactionError';
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
-
+import firestore from '@react-native-firebase/firestore';
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
@@ -86,30 +86,6 @@ const App = ({userStore, daoStore}) => {
     );
     console.log('result from eth request: ', req);
   };
-  useEffect(() => {
-    messaging()
-      .registerDeviceForRemoteMessages()
-      .then(() => {
-        return messaging().requestPermission();
-      })
-      .then(settings => {
-        console.log('Notification settings', settings);
-        if (settings) {
-          return NotificationService.saveTokenToDatabase();
-        }
-      });
-    return messaging().onTokenRefresh(token => {
-      NotificationService.saveTokenToDatabase(token);
-    });
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('Foreground Message Arrived', JSON.stringify(remoteMessage));
-    });
-    return unsubscribe;
-  }, []);
-
   useEffect(() => {
     messaging()
       .registerDeviceForRemoteMessages()
@@ -195,6 +171,21 @@ const App = ({userStore, daoStore}) => {
 
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
 
+    const updateUser = async () => {
+      try {
+        const uid = auth().currentUser.uid;
+        firestore()
+          .collection('users')
+          .doc(uid)
+          .onSnapshot(snapshot => {
+            console.log('FirebaseUser', snapshot.data());
+            userStore.setSignedInUser(snapshot.data());
+          });
+      } catch (error) {
+        console.log('errror: ', error);
+      }
+    };
+
     const checkOnboardingStatus = async () => {
       try {
         //await AuthService.getInstance().signOut();
@@ -214,6 +205,7 @@ const App = ({userStore, daoStore}) => {
     }
     getDaos();
     checkOnboardingStatus();
+    updateUser();
     return subscriber;
   }, [daoStore, userStore]);
 

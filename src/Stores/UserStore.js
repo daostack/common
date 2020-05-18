@@ -1,4 +1,5 @@
 import {observable, action, decorate} from 'mobx';
+import firestore from '@react-native-firebase/firestore';
 
 export const userInfoFields = [
   'uid',
