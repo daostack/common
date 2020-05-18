@@ -142,41 +142,30 @@ const CreateStep4 = props => {
 
     const formData = props.createCommonFormStore.getChangedFormFieldsJson();
     console.log('formDAta: ', formData.minimum);
-    console.log('formDAta: ', parseInt(formData.minimum));
+    console.log('formDAta: ', parseInt(formData.minimum, 10));
     const manager = await WalletManager.getInstance();
     const wallet = manager.ethWallet;
     const address = await manager.getOwnerAccount();
     console.log('owner account: ', address);
     // we will want to have a global arc instance for all contract interactions!
     const arc = await getArc(wallet);
-    console.log({
+    const data = {
       name: formData.name,
       founderAddresses: address,
       tokenDist: [0],
       repDist: [100],
-      minFeeToJoin: parseInt(formData.minimum), // TDB: get from formData
-      fundingGoal: formData.funding, // TBD: get from formdata
+      minFeeToJoin: parseInt(formData.minimum, 10),
+      fundingGoal: formData.funding,
       // TBD: get form data for deadline; these are in secondSinceEpoch
       //TODO: get data for deadline from form data
       fundingGoalDeadline: (await provider.getBlock('latest')).timestamp + 3000,
       ipfsHash,
-    });
+    };
+    console.log(data);
 
     const commonAddress = await createCommon(
       arc,
-      {
-        name: formData.name,
-        founderAddresses: address,
-        tokenDist: [0],
-        repDist: [100],
-        minFeeToJoin: parseInt(formData.minimum), // TDB: get from formData
-        fundingGoal: formData.funding, // TBD: get from formdata
-        // TBD: get form data for deadline; these are in secondSinceEpoch
-        //TODO: get data for deadline from form data
-        fundingGoalDeadline:
-          (await provider.getBlock('latest')).timestamp + 3000,
-        ipfsHash,
-      },
+      data,
       props.navigation,
       props.daoStore,
     );

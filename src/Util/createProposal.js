@@ -1,6 +1,3 @@
-// TODO: add here scripts for createRequestToJoin and createFundingRequest
-// import {getArc} from './arc';
-// const {ARC_VERSION, OVERRIDES} = require('./arc');
 const {first} = require('rxjs/operators');
 import {ipfsUpload} from '../Config';
 
@@ -13,10 +10,11 @@ export const createProposalRequestToJoin = async (arc, data) => {
   //   images: [],
   //   links: [], // {title: "title", url: "url"}
   //   funding: new BN(100000),
+  //   dao: °0xdB853007b8694D825cE567D527fB634caafD8282°
   // };
 
   try {
-    const dao = arc.dao('0x0f0c735f67fbe866a65c10ace6b3536fa09cddab');
+    const dao = arc.dao(data.dao);
     let plugins;
     try {
       plugins = await dao
@@ -27,6 +25,11 @@ export const createProposalRequestToJoin = async (arc, data) => {
       console.log(e);
       throw e;
     }
+    if (plugins.length === 0) {
+      throw Error(
+        `No JoinAndQuit plugin found in DAO ${dao.id} - this is not a correctly configured Common DAO`,
+      );
+    }
     const joinAndQuitPlugin = plugins[0];
     console.log('joinAndQuitPlugin', joinAndQuitPlugin.id);
 
@@ -36,9 +39,8 @@ export const createProposalRequestToJoin = async (arc, data) => {
       throw Error('Fee argument must be given');
     }
     console.log('saving ipfs data');
-    // not working :-()
     // ipfsHash = await arc.saveIPFSData(data);
-    ipfsHash = await ipfsUpload(data);
+    ipfsHash = await ipfsUpload({description: data});
     console.log('ipfsHash', ipfsHash);
 
     const args = {
@@ -47,8 +49,10 @@ export const createProposalRequestToJoin = async (arc, data) => {
       dao: dao.id,
       plugin: joinAndQuitPlugin.coreState.address,
     };
-    console.log(args);
     const transaction = await joinAndQuitPlugin.createProposal(args);
+    console.log(
+      `sending transaction ${transaction.hash}, please wait for it to be mined..`,
+    );
     const receipt = await transaction.send();
     console.log(
       `Transaction with ${receipt.transactionHash} was mined: proposal created!`,

@@ -14,6 +14,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {colors, text} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 
+// TODO: this dependency was added to bet BN.js to work. Check if we really need it
 import buffer from 'buffer';
 global.Buffer = buffer.Buffer;
 

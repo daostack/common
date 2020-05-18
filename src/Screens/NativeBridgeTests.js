@@ -1,4 +1,5 @@
 import React from 'react';
+import {IpfsClient} from '../Config';
 import {NativeWallet} from '../Util/NativeWallet';
 import {
   Text,
@@ -31,14 +32,15 @@ class nativeBridgeTests extends React.Component {
       networkURL: 'Rinkeby',
       address: '',
       balance: '',
+      commonStatus: '',
+      fetchSomeEthStatus: '',
       ownerAddress: '',
       ownerBalance: '',
+      proposalStatus: '',
+      scTXHash: '',
       txStatus: '',
       txHash: '',
       result: '',
-      scTXHash: '',
-      commonStatus: '',
-      proposalStatus: '',
     };
 
     this.child = React.createRef();
@@ -106,10 +108,12 @@ class nativeBridgeTests extends React.Component {
   getSomeFunds = async () => {
     const manager = WalletManager.getInstance();
     const address = await manager.getOwnerAccount();
-    console.log(`fetching some Eth for your address ${address}`);
-    fetch(
+    let msg = `..fetching some Eth for your address ${address}`;
+    this.setState({getSomeFundsStatus: msg});
+    const response = await fetch(
       `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
     );
+    this.setState({getSomeFundsStatus: `${await response.text()}`});
   };
 
   getBalance = async () => {
@@ -176,28 +180,50 @@ class nativeBridgeTests extends React.Component {
   };
 
   createCommon = async () => {
-    const wallet = WalletManager.getInstance();
+    console.log('Creating common..');
+    try {
+      const wallet = WalletManager.getInstance();
 
-    const arc = getArc(wallet.ethWallet);
+      const arc = getArc(wallet.ethWallet);
+      const name = `Test DAO ${Date()}`;
+      IpfsClient.addAndPinString(
+        JSON.stringify({
+          name,
+          byline: 'This is the byline',
+          description:
+            'This is the description, which can be loooooooooooooooooooonnnnnnnnnnnnnnnnnnnnnnnnggggggggggggggggggggg',
+          courseOfAction: 'This is the course of action',
+          // TODO: actuall add the values here (as an arry probably)
+          rules: [
+            {
+              title: 'rule 1',
+              description: 'description of rule 1',
+            },
+          ],
+        }),
+      );
 
-    const commonAddress = await createCommon(
-      await arc,
-      {
-        name: 'Green DAO',
-        // name: `Test DAO ${new Date()}`,
-        founderAddresses: wallet.ethWallet.address,
-        minFeeToJoin: 100, // TDB: get from formData
-        fundingGoal: 100000, // TBD: get from formdata
-        // TBD: get form data for deadline; these are in secondSinceEpoch
-        //TODO: get data for deadline from form data
-        fundingGoalDeadline: 20200404,
-        ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
-      },
-      this.props.navigation,
-      this.props.daoStore,
-    );
+      const receipt = await createCommon(
+        await arc,
+        {
+          name,
+          founderAddresses: wallet.ethWallet.address,
+          minFeeToJoin: 100, // TDB: get from formData
+          fundingGoal: 100000, // TBD: get from formdata
+          // TBD: get form data for deadline; these are in secondSinceEpoch
+          //TODO: get data for deadline from form data
+          fundingGoalDeadline: 20200404,
+          ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
+        },
+        this.props.navigation,
+        this.props.daoStore,
+      );
 
-    this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
+      this.setState({commonStatus: `Created common at ${receipt.result.id}`});
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   };
 
   error = () => {
@@ -215,6 +241,7 @@ class nativeBridgeTests extends React.Component {
       const arc = await getArc(wallet.ethWallet);
       console.log('calling the function', arc);
       const data = {
+        dao: '0x0495415bfd7525e315dd5ae7d46150ce90f87fad',
         title: `A test proposal on ${Date()}`,
         description: 'Some description',
         files: [],
@@ -237,18 +264,6 @@ class nativeBridgeTests extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
-          <Text style={{marginVertical: 10}}>
-            --------------- Common Interactions -----------------
-          </Text>
-          <Text>Common Tx: {this.state.commonStatus}</Text>
-          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
-            <Text>Create Common</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={this.error} style={styles.button}>
-            <Text>Error</Text>
-          </TouchableOpacity>
-
           <Text style={{marginBottom: 10}}>
             Network: {this.state.networkURL}
           </Text>
@@ -261,6 +276,7 @@ class nativeBridgeTests extends React.Component {
             <Text>Get local Address and balance</Text>
           </TouchableOpacity>
 
+          <Text>{this.state.getSomeFundsStatus}</Text>
           <TouchableOpacity onPress={this.getSomeFunds} style={styles.button}>
             <Text>Get some funds!</Text>
           </TouchableOpacity>
@@ -268,26 +284,24 @@ class nativeBridgeTests extends React.Component {
           <Text style={{marginVertical: 10}}>
             --------------- Common Interactions -----------------
           </Text>
-          <Text>Proposal Tx: {this.state.proposalStatus}</Text>
-          <TouchableOpacity onPress={this.createProposal} style={styles.button}>
-            <Text>Create Proposal</Text>
-          </TouchableOpacity>
-
-          <Text style={{marginVertical: 10}}>
-            --------------- Common Interactions -----------------
-          </Text>
-          <Text>Common Tx: {this.state.commonStatus}</Text>
+          <Text>{this.state.commonStatus}</Text>
           <TouchableOpacity onPress={this.createCommon} style={styles.button}>
             <Text>Create Common</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
-            <Text>Create a request to join [TODO]</Text>
+          <Text>{this.state.proposalStatus}</Text>
+          <TouchableOpacity onPress={this.createProposal} style={styles.button}>
+            <Text>Create a request-to-join Proposal</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
+          <Text>{this.state.proposal2Status}</Text>
+          <TouchableOpacity onPress={this.error} style={styles.button}>
             <Text>Create a funding request [TODO]</Text>
           </TouchableOpacity>
+
+          <Text style={{marginVertical: 10}}>
+            --------------- Wallet operrations -----------------
+          </Text>
 
           <Text>mnemonicsAndStore: {this.state.mnemonicsAndStore}</Text>
           <TouchableOpacity
@@ -295,9 +309,6 @@ class nativeBridgeTests extends React.Component {
             style={styles.button}>
             <Text>Generate And Store Mnemonic</Text>
           </TouchableOpacity>
-          <Text style={{marginVertical: 10}}>
-            --------------- Native Bridge -----------------
-          </Text>
 
           <Text>mnemonic: {this.state.mnemonic}</Text>
           <TouchableOpacity
@@ -325,6 +336,9 @@ class nativeBridgeTests extends React.Component {
             <Text>Store Mnemonic</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity onPress={this.error} style={styles.button}>
+            <Text>Error</Text>
+          </TouchableOpacity>
           <Text style={{marginVertical: 10}}>
             --------------- JavaScript -----------------
           </Text>

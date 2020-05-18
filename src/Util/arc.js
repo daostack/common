@@ -17,7 +17,7 @@ async function getArc(wallet) {
 }
 const OVERRIDES = {
   gasLimit: 10000000,
-  gasPrice: 15000000000,
+  gasPrice: 20000000000,
 };
 
 module.exports = {

@@ -1,4 +1,4 @@
-// import {Address} from '../../node_modules/@daostack/arc.js/src'
+// import {Addressr from '../../node_modules/@daostack/arc.js/src'
 const {
   getForgeOrgData,
   getSetSchemesData,
@@ -10,7 +10,7 @@ const {ARC_VERSION, OVERRIDES} = require('./arc');
 // this function is called like this:
 //
 
-// const commonAddress = await createCommon({
+// const commonAddress = await createCommon(arc, {
 //   name: formData.name,
 //   founderAddresses: [address],
 //   tokenDist: [0],
@@ -22,15 +22,7 @@ const {ARC_VERSION, OVERRIDES} = require('./arc');
 //   ipfsHash,
 // });
 
-export const createCommon = async (
-  arc,
-  givenOpts = {},
-  navigation,
-  daoStore,
-) => {
-  //   navigation.navigate('CommonCreationLoading');
-  // }
-  // export const createCommon1 = async (arc, givenOpts = {}, navigation, daoStore) => {
+export const createCommon = async (arc, data = {}, navigation, daoStore) => {
   navigation.navigate('CommonCreationLoading');
   daoStore.setCreationStatus(1);
 
@@ -39,7 +31,8 @@ export const createCommon = async (
       fundingToken: '0x0000000000000000000000000000000000000000',
       memberReputation: 1000,
     };
-    const opts = {...defaultOptions, ...givenOpts};
+    const opts = {...defaultOptions, ...data};
+
     let tx;
     let receipt;
 
@@ -79,8 +72,7 @@ export const createCommon = async (
     });
 
     tx = await daoFactoryContract.forgeOrg(...forgeOrgData, OVERRIDES);
-    console.log('waiting for tx to be mined');
-    console.log(tx);
+    console.log(`waiting for tx with hash ${tx.hash}to be mined`);
     receipt = await tx.wait();
     if (receipt) {
       daoStore.setCreationStatus(2);
@@ -89,36 +81,33 @@ export const createCommon = async (
     // get the new avatar address of the thing that was just created..
     const newOrgEvent = receipt.events.filter(e => e.event === 'NewOrg')[0];
     const newOrgAddress = newOrgEvent.args._avatar;
+    if (!newOrgAddress) {
+      throw Error(`Something went wrong, check tx ${tx.hash}`);
+    }
+
+    const schemePreData = {
+      DAOFactoryInstance: daoFactoryInfo.address,
+      avatar: newOrgAddress,
+      votingMachine: votingMachineInfo.address,
+      fundingToken: opts.fundingToken,
+      minFeeToJoin: opts.minFeeToJoin,
+      memberReputation: opts.memberReputation,
+      goal: parseInt(opts.fundingGoal, 10),
+      deadline: opts.fundingGoalDeadline,
+      metaData: opts.ipfsHash,
+    };
+    console.log('XXXXvariables sending to Contract', schemePreData);
+    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+    const schemeData = getSetSchemesData(schemePreData);
+    console.log('yyyyyyyyyyyyyyyyyyyyyyyy');
+    console.log(schemeData);
+    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
 
     console.log('Calling DAOFactory.setSchemes(...)', opts);
-    console.log('variables sending to Contract', {
-      DAOFactoryInstance: daoFactoryInfo.address,
-      avatar: newOrgAddress,
-      votingMachine: votingMachineInfo.address,
-      fundingToken: opts.fundingToken,
-      minFeeToJoin: opts.minFeeToJoin,
-      memberReputation: opts.memberReputation,
-      fundingGoal: [parseInt(opts.fundingGoal)],
-      deadline: opts.fundingGoalDeadline,
-      metaData: opts.ipfsHash,
-    });
-
-    const schemeData = getSetSchemesData({
-      DAOFactoryInstance: daoFactoryInfo.address,
-      avatar: newOrgAddress,
-      votingMachine: votingMachineInfo.address,
-      fundingToken: opts.fundingToken,
-      minFeeToJoin: opts.minFeeToJoin,
-      memberReputation: opts.memberReputation,
-      goal: parseInt(opts.fundingGoal),
-      deadline: opts.fundingGoalDeadline,
-      metaData: opts.ipfsHash,
-    });
-
-    tx = await daoFactoryContract.setSchemes(...schemeData, OVERRIDES);
-    console.log('waiting for tx to be mined');
+    // tx = await daoFactoryContract.setSchemes(...schemeData, OVERRIDES);
+    console.log('waiting for tx 2 to be mined');
     daoStore.setCreationStatus(4);
-    receipt = await tx.wait();
+    // receipt = await tx.wait();
     console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
     daoStore.setCreationStatus(5);
     return receipt;
