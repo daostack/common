@@ -6,14 +6,16 @@
  * @flow
  */
 
-import React, {useState, useEffect} from 'react';
-import {Image, StyleSheet, Platform, View} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {Image, StyleSheet, Platform, View, Alert} from 'react-native';
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-// import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {colors, text} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
+
+import buffer from 'buffer';
+global.Buffer = buffer.Buffer;
 
 import {
   CommonProfile,
@@ -52,20 +54,20 @@ import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
 import AuthService from './src/Services/AuthService';
 
-// const firebaseService = new FirebaseService();
 import CommonHome from './src/Components/Navigation/CommonHome';
-// const authService = new AuthService();
-// const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 import {filterObjectByKeys} from './src/Util';
 import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
-import {auth} from './src/Firebase';
-// import Toast from './src/Util/Toast';
+import {auth, db} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
 import CommonCreationLoading from './src/Screens/CommonCreationLoading';
+import BottomSheetContainer from './src/Components/BottomSheetContainer';
+import TransactionError from './src/Screens/TransactionError';
+import messaging from '@react-native-firebase/messaging';
+import NotificationService from './src/Services/NotificationService';
 
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
@@ -75,6 +77,38 @@ if (Platform.OS === 'ios') {
 const App = ({userStore, daoStore}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
+  const errorSheetRef = useRef();
+
+  const getTestEth = async address => {
+    console.log('getting test eth for user: ', address);
+    const req = await fetch(
+      `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
+    );
+    console.log('result from eth request: ', req);
+  };
+  useEffect(() => {
+    messaging()
+      .registerDeviceForRemoteMessages()
+      .then(() => {
+        return messaging().requestPermission();
+      })
+      .then(settings => {
+        console.log('Notification settings', settings);
+        if (settings) {
+          return NotificationService.saveTokenToDatabase();
+        }
+      });
+    return messaging().onTokenRefresh(token => {
+      NotificationService.saveTokenToDatabase(token);
+    });
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('Foreground Message Arrived', JSON.stringify(remoteMessage));
+    });
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     const onAuthStateChanged = async user => {
@@ -105,27 +139,29 @@ const App = ({userStore, daoStore}) => {
         }
 
         userStore.setIsLoading(false);
+        const manager = await WalletManager.getInstance();
+        const address = await manager.getOwnerAccount();
+        getTestEth(address);
       } catch (error) {
+        // console.log(error);
         Toast.error(error.toString());
       }
     };
 
-    // TODO: this function is really misnamed :/
     const getDaos = async () => {
       try {
         const appUsers = await FirebaseService.getInstance().getUsers();
         console.log('users: ', appUsers);
-        // TODO: unsubscribe somewhere!
-        // const unsubscribe = db.collection('daos').onSnapshot(snapshot => {
-        //   if (snapshot.empty) {
-        //     return [];
-        //   }
-        //   let daosSnapshot = snapshot.docs.map(doc => {
-        //     return {...{id: doc.id}, ...doc.data()};
-        //   });
-        //   console.log('daos: ', daosSnapshot);
-        //   daoStore.setDaos(daosSnapshot);
-        // });
+        db.collection('daos').onSnapshot(snapshot => {
+          if (snapshot.empty) {
+            return [];
+          }
+          let daosSnapshot = snapshot.docs.map(doc => {
+            return {...{id: doc.id}, ...doc.data()};
+          });
+          console.log('daos: ', daosSnapshot);
+          daoStore.setDaos(daosSnapshot);
+        });
         // console.log('DAOS: ', daosRes);
         // setDaos(daosRes);
       } catch (error) {
@@ -147,6 +183,11 @@ const App = ({userStore, daoStore}) => {
         console.log(e);
       }
     };
+
+    if (daoStore.isError) {
+      console.log('daostore error', daoStore.isError);
+      // errorSheetRef.current.snapTo(1);
+    }
     getDaos();
     checkOnboardingStatus();
     return subscriber;
@@ -351,6 +392,9 @@ const App = ({userStore, daoStore}) => {
           />
         </Stack.Navigator>
       </NavigationContainer>
+      <BottomSheetContainer ref={errorSheetRef} topSnapPoint={400}>
+        <TransactionError />
+      </BottomSheetContainer>
     </ApolloProvider>
   );
 };
