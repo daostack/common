@@ -62,6 +62,10 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
     }
   };
 
+  const onUsersListPress = event => {
+    navigation.navigate('UserProfileReadMode');
+  };
+
   const onFundingProposalPress = event => {
     navigation.navigate('FundingProposal');
   };
@@ -115,6 +119,7 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
                   }}>
                   <Text style={text.h4Black}>Temporary menu</Text>
                   <AccordionBtn title="Test Page" onPress={onTestPagePress} />
+                  <AccordionBtn title="Users list" onPress={onUsersListPress} />
                   <AccordionBtn
                     title="Funding Request"
                     onPress={onFundingProposalPress}
