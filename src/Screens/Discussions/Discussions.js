@@ -66,7 +66,7 @@ const Discussions = props => {
         }
       });
     return unsubscribe;
-  }, []);
+  }, [commonId, data.id]);
 
   useEffect(() => {
     const unsubscribe = firestore()
@@ -327,6 +327,7 @@ const Discussions = props => {
               ref={inputRef}
               editable={true}
               multiline={true}
+              placeholderText={'Say something'}
               onContentSizeChange={e =>
                 setInputHeight(e.nativeEvent.contentSize.height)
               }
