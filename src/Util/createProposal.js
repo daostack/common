@@ -40,7 +40,7 @@ export const createProposalRequestToJoin = async (arc, data) => {
     }
     console.log('saving ipfs data');
     // ipfsHash = await arc.saveIPFSData(data);
-    ipfsHash = await ipfsUpload({description: data});
+    ipfsHash = await ipfsUpload({description: JSON.stringify(data)});
     console.log('ipfsHash', ipfsHash);
 
     const args = {

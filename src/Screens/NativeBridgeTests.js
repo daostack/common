@@ -241,7 +241,7 @@ class nativeBridgeTests extends React.Component {
       const arc = await getArc(wallet.ethWallet);
       console.log('calling the function', arc);
       const data = {
-        dao: '0x0495415bfd7525e315dd5ae7d46150ce90f87fad',
+        dao: '0x00f39da92b448670a258161d9d4143611ff6d9c5',
         title: `A test proposal on ${Date()}`,
         description: 'Some description',
         files: [],
