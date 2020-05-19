@@ -36,30 +36,14 @@ const RequestStep1 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  // TODO: why is this code not used?
-  // const isValid = () => {
-  //   const links = [...Array(ruleCount).keys()].map(
-  //     x => `${CreateCommonForm.LINKS}_${x}`,
-  //   );
-  //   const result = props.requestToJoinFormStore.isFormValidSelectedFields([
-  //     CreateCommonForm.NAME,
-  //     CreateCommonForm.BYLINE,
-  //     ...links,
-  //   ]);
-  //   setPass(result);
-  //   return result;
-  // };
-
   const onScrollToBottom = () => {
     setPass(true);
   };
 
   const push = () => {
-    //const vaild = isValid();
-    //if (vaild) {
-    props.navigation.navigate('RequestStep2');
-    console.log(props.requestToJoinFormStore.getChangedFormFieldsJson());
-    //}
+    if (pass) {
+      props.navigation.navigate('RequestStep2');
+    }
   };
 
   return (

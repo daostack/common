@@ -24,9 +24,14 @@ const RequestStepDotHeader = props => {
       ]}>
       <View style={{overflow: 'hidden'}}>
         <TouchableOpacity
-          style={{position: 'absolute', left: 0, top: -2, padding: 10}}
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: -2,
+            padding: 0,
+          }}
           onPress={() => props.navigation.pop()}>
-          <Icon name="left-arrow" size={32} />
+          <Icon name="left-arrow" size={32} style={{margin: 10}} />
         </TouchableOpacity>
         <View style={styles.bar}>
           <Text style={styles.title}>{props.title}</Text>
@@ -52,10 +57,11 @@ const RequestStepDotHeader = props => {
 
 const styles = StyleSheet.create({
   bar: {
-    marginTop: 15,
+    paddingTop: 15,
     alignItems: 'center',
     justifyContent: 'center',
     // bottomborder: 'solid',
+    overflow: 'hidden',
   },
   header: {
     position: 'absolute',
