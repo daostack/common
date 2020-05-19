@@ -27,7 +27,7 @@ const RequestStep1 = props => {
 
   useEffect(() => {
     const height = scrollY.interpolate({
-      inputRange: [0, 50],
+      inputRange: [50, 50],
       outputRange: [0, 67],
       extrapolate: 'clamp',
     });
