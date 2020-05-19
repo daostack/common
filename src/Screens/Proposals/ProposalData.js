@@ -18,6 +18,8 @@ import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
 import firestore from '@react-native-firebase/firestore';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {useNavigation} from '@react-navigation/native';
+import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
+import {observer, inject} from 'mobx-react';
 
 const ProposalData = props => {
   const navigation = useNavigation();
@@ -108,8 +110,7 @@ const ProposalData = props => {
   };
 
   const openBoostedInfo = () => {
-    boostedInfoRef.current.snapTo(1);
-    boostedInfoRef.current.snapTo(1);
+    props.bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BOOSTED_INFO);
   };
 
   const _handleTextReady = () => {
@@ -125,7 +126,7 @@ const ProposalData = props => {
       100;
   }
 
-  const isBoosted = true; //Iaflnooopprs.stage === 'Boosted';
+  const isBoosted = props.stage === 'Boosted';
 
   return proposalInfo ? (
     <>
@@ -473,4 +474,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProposalData;
+export default inject('bottomSheetStore')(observer(ProposalData));

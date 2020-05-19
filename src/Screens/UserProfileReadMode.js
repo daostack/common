@@ -71,9 +71,11 @@ const UserProfileReadMode = ({navigation}) => {
             })}
           </View>
         </ScrollView>
+        {/** 
         <BottomSheetContainer ref={bottomSheetContainerRef}>
           <UserProfileSheetScreen navigation={navigation} userId={userId} />
         </BottomSheetContainer>
+        */}
       </SafeAreaView>
     </>
   );

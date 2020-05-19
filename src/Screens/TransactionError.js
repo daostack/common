@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import {text, layout, colors} from '../Theme';
 
-const TransactionError = ({navigation, onContinueEditing}) => {
+const TransactionError = ({navigation}) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
