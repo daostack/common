@@ -96,13 +96,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
   );
 
   const Discussions = () => {
-    return (
-      <DiscussionList
-        navigation={navigation}
-        commonId="48NPcGnpskN9YkqVNXKA"
-        // {route.params.commonId}
-      />
-    );
+    return <DiscussionList navigation={navigation} commonId={routeCommon.id} />;
   };
 
   const Proposals = () => {
@@ -390,7 +384,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
         <BottomRightButton
           onPress={() =>
             navigation.navigate('New Topic', {
-              commonId: '48NPcGnpskN9YkqVNXKA',
+              commonId: routeCommon.id,
             })
           }
           bottom={120}

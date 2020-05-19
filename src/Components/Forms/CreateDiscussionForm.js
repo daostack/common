@@ -28,16 +28,15 @@ class CreateDiscussionForm extends React.Component {
       console.log('createDiscussionStore', changedFields);
 
       firestore()
-        .collection('common')
-        .doc(this.props.commonId)
         .collection('discussion')
         .doc()
         .set({
           title: changedFields[CreateDiscussionForm.TITLE],
           message: changedFields[CreateDiscussionForm.MESSAGE],
           createTime: new Date(),
-          owner: userStore.userInfo.uid,
-          common: '0x...',
+          ownerId: userStore.userInfo.uid,
+          commonId: this.props.commonId,
+          follower: [],
         })
         .then(() => {
           console.log('YES');

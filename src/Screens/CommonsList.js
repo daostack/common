@@ -6,6 +6,7 @@ import {
   StyleSheet,
   View,
   Dimensions,
+  FlatList,
 } from 'react-native';
 import {CommonBox, BottomRightButton} from '../Components';
 import {layout} from '../Theme';
@@ -78,26 +79,19 @@ const CommonsList = ({navigation, daoStore}) => {
           </Text>
         </View>
 
-        <ScrollView>
-          <View style={styles.container}>
-            {daos &&
-              daos.map((dao, i) => {
-                if (
-                  ''.length > 0 &&
-                  !dao.name.toLowerCase().includes(''.toLowerCase())
-                ) {
-                  return;
-                }
-                return (
-                  <CommonBox
-                    key={`commonBox_${i}`}
-                    common={dao}
-                    navigation={navigation}
-                  />
-                );
-              })}
-          </View>
-        </ScrollView>
+        {daos && (
+          <FlatList
+            contentContainerStyle={{paddingHorizontal: 20}}
+            data={daos}
+            renderItem={({item}) => (
+              <CommonBox
+                common={item}
+                navigation={navigation}
+                keyExtractor={daos.id}
+              />
+            )}
+          />
+        )}
       </>
       <BottomRightButton
         onPress={() => navigation.navigate('CommonExplanation')}

@@ -39,27 +39,27 @@ const Discussions = props => {
   const [isExpanded, setIsExpanded] = useState(false);
   const data = props.route.params.data;
   const commonId = props.route.params.commonId;
+  const discussionId = data.id;
   const [msgGroup, setMsgDroup] = useState([]);
 
-  const [showInfo, setShowInfo] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [discussion, setDiscussion] = useState();
   const [followState, setFollowState] = useState(false);
 
+  console.log('data', data);
+
   const hideMenu = () => {
     setShowMenu(false);
   };
-  let listRef = useRef([]);
 
+  let listRef = useRef([]);
   useEffect(() => {
     const uid = auth().currentUser.uid;
     const unsubscribe = firestore()
-      .collection('common')
-      .doc(commonId)
       .collection('discussion')
-      .doc(data.id)
+      .doc(discussionId)
       .onSnapshot(snapshot => {
-        setDiscussion({id: data.id, ...snapshot.data()});
+        setDiscussion({id: discussionId, ...snapshot.data()});
         console.log(snapshot.data());
         const follower = snapshot.data().follower;
         if (follower) {
@@ -68,12 +68,10 @@ const Discussions = props => {
         }
       });
     return unsubscribe;
-  }, [commonId, data.id]);
+  }, [commonId, discussionId]);
 
   useEffect(() => {
     const unsubscribe = firestore()
-      .collection('common')
-      .doc(commonId)
       .collection('discussion')
       .doc(data.id)
       .collection('message')
@@ -120,35 +118,30 @@ const Discussions = props => {
         },
         error => console.error(error),
       );
-    return () => {
-      unsubscribe();
-    };
+    return unsubscribe;
   }, [commonId, data.id]);
 
   useEffect(() => {
     const fetchUser = async () => {
       const userData = await FirebaseService.getInstance().getUserById(
-        data.owner,
+        data.ownerId,
       );
       setUser(userData);
     };
     fetchUser();
   }, [data]);
 
-  openOptionsMenu = () => {
+  const openOptionsMenu = () => {
     props.bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
     );
   };
 
-  sendMessageToDiscussion = async () => {
   const followDiscussion = async () => {
     const uid = auth().currentUser.uid;
     firestore()
-      .collection('common')
-      .doc(commonId)
       .collection('discussion')
-      .doc(data.id)
+      .doc(discussionId)
       .update({
         follower: followState
           ? firestore.FieldValue.arrayRemove(uid)
@@ -163,15 +156,14 @@ const Discussions = props => {
   const sendMessageToDiscussion = async () => {
     const userStore = auth().currentUser;
     // props.userStore;
+    inputRef.current.clear();
     console.log('userStore', commonId, data.id, userStore);
     const message = inputRef.current._lastNativeText;
     if (message && message.trim().length) {
       console.log('message', message);
       firestore()
-        .collection('common')
-        .doc(commonId)
         .collection('discussion')
-        .doc(data.id)
+        .doc(discussionId)
         .collection('message')
         .doc()
         .set({
@@ -184,8 +176,7 @@ const Discussions = props => {
           discussionId: data.id,
         })
         .then(() => {
-          console.log('YES');
-          inputRef.current.clear();
+          console.log('YES', inputRef.current);
           Keyboard.dismiss();
         })
         .catch(error => {
