@@ -41,7 +41,35 @@ const Discussions = props => {
   const commonId = props.route.params.commonId;
   const [msgGroup, setMsgDroup] = useState([]);
 
+  const [showInfo, setShowInfo] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [discussion, setDiscussion] = useState();
+  const [followState, setFollowState] = useState(false);
+
+  const hideMenu = () => {
+    setShowMenu(false);
+  };
   let listRef = useRef([]);
+
+  useEffect(() => {
+    const uid = auth().currentUser.uid;
+    const unsubscribe = firestore()
+      .collection('common')
+      .doc(commonId)
+      .collection('discussion')
+      .doc(data.id)
+      .onSnapshot(snapshot => {
+        setDiscussion({id: data.id, ...snapshot.data()});
+        console.log(snapshot.data());
+        const follower = snapshot.data().follower;
+        if (follower) {
+          const state = follower.includes(uid);
+          setFollowState(state);
+        }
+      });
+    return unsubscribe;
+  }, [commonId, data.id]);
+
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('common')
@@ -114,6 +142,25 @@ const Discussions = props => {
   };
 
   sendMessageToDiscussion = async () => {
+  const followDiscussion = async () => {
+    const uid = auth().currentUser.uid;
+    firestore()
+      .collection('common')
+      .doc(commonId)
+      .collection('discussion')
+      .doc(data.id)
+      .update({
+        follower: followState
+          ? firestore.FieldValue.arrayRemove(uid)
+          : firestore.FieldValue.arrayUnion(uid),
+      })
+      .then(() => {
+        console.log('Follow State Change');
+        setShowMenu(false);
+      });
+  };
+
+  const sendMessageToDiscussion = async () => {
     const userStore = auth().currentUser;
     // props.userStore;
     console.log('userStore', commonId, data.id, userStore);
@@ -289,6 +336,7 @@ const Discussions = props => {
               ref={inputRef}
               editable={true}
               multiline={true}
+              placeholderText={'Say something'}
               onContentSizeChange={e =>
                 setInputHeight(e.nativeEvent.contentSize.height)
               }
@@ -311,19 +359,19 @@ const Discussions = props => {
         </View>
         <View style={{height: 30, backgroundColor: colors.white}} />
       </KeyboardAvoidingView>
-      {/** 
+
       <BottomSheetModal
         isVisible={showMenu}
         onClose={hideMenu}
         style={styles.modalStyle}>
         <View style={styles.bottomSheet}>
           <Text style={styles.sheetTitle}>Options</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => followDiscussion()}>
             <View style={styles.sheetButton}>
               <Icon name="following" color={colors.black} />
               <View style={{flex: 1}}>
                 <Text style={[styles.sheetText, {color: colors.black}]}>
-                  Follow
+                  {followState ? 'Unfollow' : 'Follow'}
                 </Text>
               </View>
             </View>
@@ -336,7 +384,6 @@ const Discussions = props => {
           </TouchableOpacity>
         </View>
       </BottomSheetModal>
-      */}
     </SafeAreaView>
   );
 };

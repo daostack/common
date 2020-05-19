@@ -78,7 +78,7 @@ export default class NotificationService {
     if (targetUid === userId) {
       Toast.error('Can not follow yourself');
     }
-    console.log('Follow', userId, targetUid);
+    console.log('Unfollow', userId, targetUid);
     firestore()
       .collection('users')
       .doc(userId)

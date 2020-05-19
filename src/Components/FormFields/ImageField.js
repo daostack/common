@@ -66,7 +66,7 @@ class ImageField extends React.Component {
             this.toast.done('Done');
             this.onChangeValue(url);
           })
-          .catch(error => this.toast.error(error));
+          .catch(error => this.toast.error(error.toString()));
       }
     });
   };
