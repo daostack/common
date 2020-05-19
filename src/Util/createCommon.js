@@ -96,18 +96,14 @@ export const createCommon = async (arc, data = {}, navigation, daoStore) => {
       deadline: opts.fundingGoalDeadline,
       metaData: opts.ipfsHash,
     };
-    console.log('XXXXvariables sending to Contract', schemePreData);
-    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
     const schemeData = getSetSchemesData(schemePreData);
-    console.log('yyyyyyyyyyyyyyyyyyyyyyyy');
-    console.log(schemeData);
-    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+    // console.log(schemeData);
 
     console.log('Calling DAOFactory.setSchemes(...)', opts);
-    // tx = await daoFactoryContract.setSchemes(...schemeData, OVERRIDES);
-    console.log('waiting for tx 2 to be mined');
+    tx = await daoFactoryContract.setSchemes(...schemeData, OVERRIDES);
+    console.log('waiting for tx to be mined');
     daoStore.setCreationStatus(4);
-    // receipt = await tx.wait();
+    receipt = await tx.wait();
     console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
     daoStore.setCreationStatus(5);
     return receipt;
