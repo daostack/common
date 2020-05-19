@@ -360,10 +360,11 @@ const ProposalScreen = ({navigation, route, props}) => {
           <>{messageInput()}</>
         )}
       </SafeAreaView>
-
+      {/**
       <BottomSheetContainer ref={boostedInfoRef} topSnapPoint={620}>
         <BoostedInfo />
       </BottomSheetContainer>
+       */}
 
       <BottomSheetModal
         isVisible={isApprovalBottomModalVisible}

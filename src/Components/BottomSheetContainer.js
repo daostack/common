@@ -1,16 +1,32 @@
-import {forwardRef} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 
-import React from 'react';
+import {observer, inject} from 'mobx-react';
+import React, {useRef, useEffect} from 'react';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors, text, layout} from '../Theme';
+import Animated from 'react-native-reanimated';
 
-const BottomSheetContainer = forwardRef((props, ref) => {
+const BottomSheetContainer = props => {
+  ref = useRef();
+  fall = new Animated.Value(0);
+
+  useEffect(() => {
+    if (ref.current) {
+      console.log('ref -> ', ref);
+      ref.current.snapTo(1);
+    }
+  }, []);
+
   openBottomSheet = () => {};
 
   closeBottomSheet = () => {
-    ref.snapTo(0);
+    ref.current.snapTo(0);
+  };
+
+  onClosed = () => {
+    console.log('onClosed');
+    props.bottomSheetStore.hideBottomSheet();
   };
 
   renderSheetHeader = () => {
@@ -28,26 +44,49 @@ const BottomSheetContainer = forwardRef((props, ref) => {
     let contentStyle = {
       ...layout.content,
       ...styles.contentContainer,
-      ...{padding: 0, height: props.topSnapPoint ? props.topSnapPoint : 600},
+      ...{
+        padding: 0,
+        height: props.bottomSheetStore.topSnap + 100,
+      },
     };
 
     if (props.withoutHeader) {
       contentStyle = {...contentStyle, ...styles.contentContainerShadow};
     }
-
-    return <View style={contentStyle}>{props.children}</View>;
+    return <View style={contentStyle}>{props.bottomSheetStore.template}</View>;
   };
 
+  console.log('bottomSheetStore -> ', props.bottomSheetStore);
+
+  const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
+
   return (
-    <BottomSheet
-      ref={ref}
-      snapPoints={[0, props.topSnapPoint ? props.topSnapPoint : 500]}
-      renderContent={renderSheetContent}
-      renderHeader={renderSheetHeader}
-      enabledBottomInitialAnimation={true}
-    />
+    <>
+      <AnimatedTouchable
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          flex: 1,
+          backgroundColor: '#000000',
+          alignItems: 'center',
+          opacity: Animated.sub(0.3, Animated.multiply(fall, 0.3)),
+        }}
+        onPress={closeBottomSheet}></AnimatedTouchable>
+
+      <BottomSheet
+        ref={ref}
+        snapPoints={[0, props.bottomSheetStore.topSnap]}
+        renderContent={renderSheetContent}
+        renderHeader={renderSheetHeader}
+        enabledBottomInitialAnimation={true}
+        enabledInnerScrolling={false}
+        onCloseEnd={onClosed}
+        callbackNode={fall}
+      />
+    </>
   );
-});
+};
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -110,4 +149,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BottomSheetContainer;
+export default inject('bottomSheetStore')(observer(BottomSheetContainer));

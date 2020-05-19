@@ -10,7 +10,7 @@ import React from 'react';
 import {text, layout, colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
-const CommonProfileOptions = ({navigation, onContinueEditing}) => {
+const CommonProfileOptions = ({navigation, onFollow, isCommonProfile}) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -23,7 +23,7 @@ const CommonProfileOptions = ({navigation, onContinueEditing}) => {
           Options
         </Text>
 
-        <TouchableOpacity style={styles.optionBtn}>
+        <TouchableOpacity style={styles.optionBtn} onPress={onFollow}>
           <Icon
             name="following"
             style={layout.marginRightS}
@@ -31,33 +31,36 @@ const CommonProfileOptions = ({navigation, onContinueEditing}) => {
           />
           <Text style={text.buttonblack}>Unfollow</Text>
         </TouchableOpacity>
+        {isCommonProfile ? (
+          <>
+            <TouchableOpacity style={styles.optionBtn}>
+              <Icon
+                name="donate-16"
+                style={layout.marginRightS}
+                color={colors.black}
+              />
+              <Text style={text.buttonblack}>Contribute</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity style={styles.optionBtn}>
-          <Icon
-            name="donate-16"
-            style={layout.marginRightS}
-            color={colors.black}
-          />
-          <Text style={text.buttonblack}>Contribute</Text>
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.optionBtn}>
+              <Icon
+                name="agenda"
+                style={layout.marginRightS}
+                color={colors.black}
+              />
+              <Text style={text.buttonblack}>View agenda</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity style={styles.optionBtn}>
-          <Icon
-            name="agenda"
-            style={layout.marginRightS}
-            color={colors.black}
-          />
-          <Text style={text.buttonblack}>View agenda</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.optionBtn}>
-          <Icon
-            name="share-32"
-            style={layout.marginRightS}
-            color={colors.black}
-          />
-          <Text style={text.buttonblack}>Share</Text>
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.optionBtn}>
+              <Icon
+                name="share-32"
+                style={layout.marginRightS}
+                color={colors.black}
+              />
+              <Text style={text.buttonblack}>Share</Text>
+            </TouchableOpacity>
+          </>
+        ) : null}
 
         <TouchableOpacity style={styles.optionBtn}>
           <Icon

@@ -9,7 +9,6 @@ const {width} = Dimensions.get('window');
 const DiscussionMessage = props => {
   const data = props.data;
   const currentUserUid = auth().currentUser.uid;
-  console.log('UUU', currentUserUid);
 
   return (
     <View style={styles.container}>

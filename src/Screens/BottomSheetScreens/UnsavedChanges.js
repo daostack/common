@@ -10,9 +10,16 @@ import React from 'react';
 import {text, layout, colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
-const UnsavedChanges = ({navigation, onContinueEditing}) => {
+const UnsavedChanges = ({
+  navigation,
+  onContinueEditing,
+  onLeaveWithoutSaving,
+}) => {
   const liveWithoutSave = e => {
     navigation.goBack();
+    if (onLeaveWithoutSaving) {
+      onLeaveWithoutSaving();
+    }
   };
 
   const continueEditing = e => {

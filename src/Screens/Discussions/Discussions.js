@@ -25,6 +25,7 @@ import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
 import ChatRoom from './Chat/ChatRoom';
 import BottomSheetModal from '../../Components/BottomSheetModal';
+import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 // import _ from 'lodash';
 
 const {width} = Dimensions.get('window');
@@ -39,13 +40,36 @@ const Discussions = props => {
   const data = props.route.params.data;
   const commonId = props.route.params.commonId;
   const [msgGroup, setMsgDroup] = useState([]);
+
+  const [showInfo, setShowInfo] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [discussion, setDiscussion] = useState();
+  const [followState, setFollowState] = useState(false);
 
   const hideMenu = () => {
     setShowMenu(false);
   };
-
   let listRef = useRef([]);
+
+  useEffect(() => {
+    const uid = auth().currentUser.uid;
+    const unsubscribe = firestore()
+      .collection('common')
+      .doc(commonId)
+      .collection('discussion')
+      .doc(data.id)
+      .onSnapshot(snapshot => {
+        setDiscussion({id: data.id, ...snapshot.data()});
+        console.log(snapshot.data());
+        const follower = snapshot.data().follower;
+        if (follower) {
+          const state = follower.includes(uid);
+          setFollowState(state);
+        }
+      });
+    return unsubscribe;
+  }, [commonId, data.id]);
+
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('common')
@@ -111,231 +135,262 @@ const Discussions = props => {
     fetchUser();
   }, [data]);
 
+  openOptionsMenu = () => {
+    props.bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
+    );
+  };
+
   sendMessageToDiscussion = async () => {
-    const userStore = auth().currentUser;
-    // props.userStore;
-    console.log('userStore', commonId, data.id, userStore);
-    const message = inputRef.current._lastNativeText;
-    if (message && message.trim().length) {
-      console.log('message', message);
+    const followDiscussion = async () => {
+      const uid = auth().currentUser.uid;
       firestore()
         .collection('common')
         .doc(commonId)
         .collection('discussion')
         .doc(data.id)
-        .collection('message')
-        .doc()
-        .set({
-          text: message,
-          createTime: new Date(),
-          ownerId: userStore.uid,
-          ownerName: userStore.displayName,
-          ownerAvatar: userStore.photoURL,
-          commonId: commonId,
-          discussionId: data.id,
+        .update({
+          follower: followState
+            ? firestore.FieldValue.arrayRemove(uid)
+            : firestore.FieldValue.arrayUnion(uid),
         })
         .then(() => {
-          console.log('YES');
-          inputRef.current.clear();
-          Keyboard.dismiss();
-        })
-        .catch(error => {
-          console.log('NO', error);
-          Toast.error(error);
+          console.log('Follow State Change');
+          setShowMenu(false);
         });
-    } else {
-      Toast.error('Empty Message');
-    }
-  };
+    };
 
-  const header = () => {
-    return (
-      // <SafeAreaView flex={1}>
-      <>
-        <NavigationBar
-          statusBar={{hidden: true}}
-          style={{
-            height: 48,
-          }}
-          title={{
-            title: data.title,
-            style: text.h3Black,
-          }}
-          leftButton={
-            <TouchableOpacity
-              style={{justifyContent: 'center'}}
-              onPress={() => props.navigation.pop()}>
-              <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
-            </TouchableOpacity>
-          }
-          rightButton={
-            <TouchableOpacity
-              style={{justifyContent: 'center'}}
-              onPress={() => setShowMenu(!showMenu)}>
-              <Icon
-                name="menu-horizontal"
-                size={32}
-                style={{marginRight: 10}}
-              />
-            </TouchableOpacity>
-          }
-        />
-        <View
-          style={{
-            backgroundColor: colors.white,
-            // flex: 1,
-            paddingBottom: 0,
-          }}>
-          {isExpanded ? (
-            <View style={{paddingTop: 20, paddingHorizontal: 20}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  paddingVertical: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Image
-                  style={styles.avatar}
-                  source={{uri: user.photoURL}}
-                  // source={require('../../Assets/daoGeneralInfo.png')}
+    const sendMessageToDiscussion = async () => {
+      const userStore = auth().currentUser;
+      // props.userStore;
+      console.log('userStore', commonId, data.id, userStore);
+      const message = inputRef.current._lastNativeText;
+      if (message && message.trim().length) {
+        console.log('message', message);
+        firestore()
+          .collection('common')
+          .doc(commonId)
+          .collection('discussion')
+          .doc(data.id)
+          .collection('message')
+          .doc()
+          .set({
+            text: message,
+            createTime: new Date(),
+            ownerId: userStore.uid,
+            ownerName: userStore.displayName,
+            ownerAvatar: userStore.photoURL,
+            commonId: commonId,
+            discussionId: data.id,
+          })
+          .then(() => {
+            console.log('YES');
+            inputRef.current.clear();
+            Keyboard.dismiss();
+          })
+          .catch(error => {
+            console.log('NO', error);
+            Toast.error(error);
+          });
+      } else {
+        Toast.error('Empty Message');
+      }
+    };
+
+    const header = () => {
+      return (
+        // <SafeAreaView flex={1}>
+        <>
+          <NavigationBar
+            statusBar={{hidden: true}}
+            style={{
+              height: 48,
+            }}
+            title={{
+              title: data.title,
+              style: text.h3Black,
+            }}
+            leftButton={
+              <TouchableOpacity
+                style={{justifyContent: 'center'}}
+                onPress={() => props.navigation.pop()}>
+                <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
+              </TouchableOpacity>
+            }
+            rightButton={
+              <TouchableOpacity
+                style={{justifyContent: 'center'}}
+                onPress={openOptionsMenu}>
+                <Icon
+                  name="menu-horizontal"
+                  size={32}
+                  style={{marginRight: 10}}
                 />
-                <View style={{flex: 1, paddingHorizontal: 10}}>
-                  <Text style={{fontWeight: 'bold'}}>{user.displayName}</Text>
-                  {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-                  <Text style={{color: colors.grey3}}>
-                    {moment(data.createTime.toDate()).fromNow()}
-                  </Text>
-                </View>
-              </View>
-
-              <View>
-                <Text
-                  style={{fontSize: 16, lineHeight: 25, paddingVertical: 10}}>
-                  {data.message}
-                </Text>
-              </View>
-
-              <TouchableOpacity
-                style={{alignItems: 'center'}}
-                onPress={() => {
-                  setIsExpanded(!isExpanded);
-                }}>
-                <Icon name="up-arrow" size={32} />
               </TouchableOpacity>
-            </View>
-          ) : (
-            <>
-              <TouchableOpacity
-                style={{alignItems: 'center'}}
-                onPress={() => {
-                  setIsExpanded(!isExpanded);
-                }}>
-                <Icon name="down-arrow" size={32} />
-              </TouchableOpacity>
-            </>
-          )}
+            }
+          />
           <View
             style={{
-              height: 4,
-              marginTop: 10,
-              // paddingHorizontal: -20,
-              marginHorizontal: -20,
-              backgroundColor: colors.grey4,
-            }}
-          />
-        </View>
-        {/* </SafeAreaView> */}
-      </>
-    );
-  };
+              backgroundColor: colors.white,
+              // flex: 1,
+              paddingBottom: 0,
+            }}>
+            {isExpanded ? (
+              <View style={{paddingTop: 20, paddingHorizontal: 20}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    paddingVertical: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Image
+                    style={styles.avatar}
+                    source={{uri: user.photoURL}}
+                    // source={require('../../Assets/daoGeneralInfo.png')}
+                  />
+                  <View style={{flex: 1, paddingHorizontal: 10}}>
+                    <Text style={{fontWeight: 'bold'}}>{user.displayName}</Text>
+                    {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
+                    <Text style={{color: colors.grey3}}>
+                      {moment(data.createTime.toDate()).fromNow()}
+                    </Text>
+                  </View>
+                </View>
 
-  return (
-    <SafeAreaView style={{flex: 1, backgroundColor: colors.lightBlue}}>
-      {header()}
-      <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
-        <SectionList
-          sections={msgGroup}
-          ref={chatRef}
-          // ListFooterComponent={header}
-          renderItem={x => <DiscussionMessage data={x.item} />}
-          renderSectionFooter={({section: {date}}) => (
-            <Text style={styles.timeHeader}>
-              {moment().isSame(date, 'day') ? 'Today' : date}
-            </Text>
-          )}
-          keyExtractor={x => x.id}
-          stickySectionHeadersEnabled={true}
-          inverted={true}
-          contentContainerStyle={{paddingTop: 10}}
-          // initialScrollIndex={2}
-        />
-        {/* <View style={{flex: 1}}>
+                <View>
+                  <Text
+                    style={{fontSize: 16, lineHeight: 25, paddingVertical: 10}}>
+                    {data.message}
+                  </Text>
+                </View>
+
+                <TouchableOpacity
+                  style={{alignItems: 'center'}}
+                  onPress={() => {
+                    setIsExpanded(!isExpanded);
+                  }}>
+                  <Icon name="up-arrow" size={32} />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <>
+                <TouchableOpacity
+                  style={{alignItems: 'center'}}
+                  onPress={() => {
+                    setIsExpanded(!isExpanded);
+                  }}>
+                  <Icon name="down-arrow" size={32} />
+                </TouchableOpacity>
+              </>
+            )}
+            <View
+              style={{
+                height: 4,
+                marginTop: 10,
+                // paddingHorizontal: -20,
+                marginHorizontal: -20,
+                backgroundColor: colors.grey4,
+              }}
+            />
+          </View>
+          {/* </SafeAreaView> */}
+        </>
+      );
+    };
+
+    return (
+      <SafeAreaView style={{flex: 1, backgroundColor: colors.lightBlue}}>
+        {header()}
+        <ScrollView
+          style={{flex: 1}}
+          contentContainerStyle={{paddingBottom: 60}}>
+          <SectionList
+            sections={msgGroup}
+            ref={chatRef}
+            // ListFooterComponent={header}
+            renderItem={x => <DiscussionMessage data={x.item} />}
+            renderSectionFooter={({section: {date}}) => (
+              <Text style={styles.timeHeader}>
+                {moment().isSame(date, 'day') ? 'Today' : date}
+              </Text>
+            )}
+            keyExtractor={x => x.id}
+            stickySectionHeadersEnabled={true}
+            inverted={true}
+            contentContainerStyle={{paddingTop: 10}}
+            // initialScrollIndex={2}
+          />
+          {/* <View style={{flex: 1}}>
         <ChatRoom
           path={`common/${commonId}/discussion/${data.id}/message`}
           commonId={commonId}
         />
         </View> */}
-      </ScrollView>
+        </ScrollView>
 
-      <KeyboardAvoidingView
-        // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
-        <View style={styles.input}>
-          <View style={styles.inputBorder}>
-            <TextInput
-              ref={inputRef}
-              editable={true}
-              multiline={true}
-              onContentSizeChange={e =>
-                setInputHeight(e.nativeEvent.contentSize.height)
-              }
-              style={{flex: 1, height: inputHeight, marginHorizontal: 10}}
-              fontSize={15}
-              onChangeText={text => setInputText(text)}
-            />
-            <TouchableOpacity
-              style={{paddingRight: 15, justifyContent: 'center'}}
-              onPress={sendMessageToDiscussion}>
-              <Icon
-                name="edit"
-                size={20}
-                color={
-                  inputText && inputText.trim() ? colors.mainBlue : colors.grey3
+        <KeyboardAvoidingView
+          // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
+          <View style={styles.input}>
+            <View style={styles.inputBorder}>
+              <TextInput
+                ref={inputRef}
+                editable={true}
+                multiline={true}
+                placeholderText={'Say something'}
+                onContentSizeChange={e =>
+                  setInputHeight(e.nativeEvent.contentSize.height)
                 }
+                style={{flex: 1, height: inputHeight, marginHorizontal: 10}}
+                fontSize={15}
+                onChangeText={text => setInputText(text)}
               />
+              <TouchableOpacity
+                style={{paddingRight: 15, justifyContent: 'center'}}
+                onPress={sendMessageToDiscussion}>
+                <Icon
+                  name="edit"
+                  size={20}
+                  color={
+                    inputText && inputText.trim()
+                      ? colors.mainBlue
+                      : colors.grey3
+                  }
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={{height: 30, backgroundColor: colors.white}} />
+        </KeyboardAvoidingView>
+
+        <BottomSheetModal
+          isVisible={showMenu}
+          onClose={hideMenu}
+          style={styles.modalStyle}>
+          <View style={styles.bottomSheet}>
+            <Text style={styles.sheetTitle}>Options</Text>
+            <TouchableOpacity onPress={() => followDiscussion()}>
+              <View style={styles.sheetButton}>
+                <Icon name="following" color={colors.black} />
+                <View style={{flex: 1}}>
+                  <Text style={[styles.sheetText, {color: colors.black}]}>
+                    {followState ? 'Unfollow' : 'Follow'}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <View style={styles.sheetButton}>
+                <Icon name="report" color={colors.against} />
+                <Text style={styles.sheetText}>Report</Text>
+              </View>
             </TouchableOpacity>
           </View>
-        </View>
-        <View style={{height: 30, backgroundColor: colors.white}} />
-      </KeyboardAvoidingView>
-
-      <BottomSheetModal
-        isVisible={showMenu}
-        onClose={hideMenu}
-        style={styles.modalStyle}>
-        <View style={styles.bottomSheet}>
-          <Text style={styles.sheetTitle}>Options</Text>
-          <TouchableOpacity>
-            <View style={styles.sheetButton}>
-              <Icon name="following" color={colors.black} />
-              <View style={{flex: 1}}>
-                <Text style={[styles.sheetText, {color: colors.black}]}>
-                  Follow
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.sheetButton}>
-              <Icon name="report" color={colors.against} />
-              <Text style={styles.sheetText}>Report</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </BottomSheetModal>
-    </SafeAreaView>
-  );
+        </BottomSheetModal>
+      </SafeAreaView>
+    );
+  };
 };
 
 const styles = StyleSheet.create({
@@ -430,4 +485,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(Discussions));
+export default inject('userStore', 'bottomSheetStore')(observer(Discussions));

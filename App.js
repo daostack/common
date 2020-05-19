@@ -8,6 +8,7 @@
 
 import React, {useState, useEffect, useRef} from 'react';
 import {Image, StyleSheet, Platform, View, Alert} from 'react-native';
+
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -60,22 +61,23 @@ const Stack = createStackNavigator();
 import {filterObjectByKeys} from './src/Util';
 import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
+import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import {auth, db} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
 import CommonCreationLoading from './src/Screens/CommonCreationLoading';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
-import TransactionError from './src/Screens/TransactionError';
+
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
-
+import firestore from '@react-native-firebase/firestore';
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
 }
 
-const App = ({userStore, daoStore}) => {
+const App = ({userStore, daoStore, bottomSheetStore}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
   const errorSheetRef = useRef();
@@ -172,6 +174,21 @@ const App = ({userStore, daoStore}) => {
 
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
 
+    const updateUser = async () => {
+      try {
+        const uid = auth().currentUser.uid;
+        firestore()
+          .collection('users')
+          .doc(uid)
+          .onSnapshot(snapshot => {
+            console.log('FirebaseUser', snapshot.data());
+            userStore.setSignedInUser(snapshot.data());
+          });
+      } catch (error) {
+        console.log('errror: ', error);
+      }
+    };
+
     const checkOnboardingStatus = async () => {
       try {
         //await AuthService.getInstance().signOut();
@@ -187,10 +204,13 @@ const App = ({userStore, daoStore}) => {
 
     if (daoStore.isError) {
       console.log('daostore error', daoStore.isError);
-      // errorSheetRef.current.snapTo(1);
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
+      );
     }
     getDaos();
     checkOnboardingStatus();
+    updateUser();
     return subscriber;
   }, [daoStore, userStore]);
 
@@ -392,10 +412,8 @@ const App = ({userStore, daoStore}) => {
             component={FundingProposal}
           />
         </Stack.Navigator>
+        {bottomSheetStore.isVisible ? <BottomSheetContainer /> : null}
       </NavigationContainer>
-      <BottomSheetContainer ref={errorSheetRef} topSnapPoint={400}>
-        <TransactionError />
-      </BottomSheetContainer>
     </ApolloProvider>
   );
 };
@@ -415,4 +433,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'daoStore')(observer(App));
+export default inject(
+  'userStore',
+  'daoStore',
+  'bottomSheetStore',
+)(observer(App));

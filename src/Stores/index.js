@@ -6,6 +6,7 @@ import CreateDiscussionStore from '../FormStores/CreateDiscussionStore';
 import RequestToJoinFormStore from '../FormStores/RequestToJoinFormStore';
 import UserStore from './UserStore';
 import DaoStore from './DaoStore';
+import BottomSheetStore from './BottomSheetStore';
 
 export default {
   completeAccountFormStore: new CompleteAccountFormStore(),
@@ -16,4 +17,5 @@ export default {
   requestToJoinFormStore: new RequestToJoinFormStore(),
   userStore: new UserStore(),
   daoStore: new DaoStore(),
+  bottomSheetStore: new BottomSheetStore(),
 };
