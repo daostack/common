@@ -15,7 +15,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {colors, text} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 
-import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import buffer from 'buffer';
 global.Buffer = buffer.Buffer;
 
@@ -61,13 +60,14 @@ const Stack = createStackNavigator();
 import {filterObjectByKeys} from './src/Util';
 import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
+import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import {auth, db} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
 import CommonCreationLoading from './src/Screens/CommonCreationLoading';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
-import TransactionError from './src/Screens/TransactionError';
+
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
 import firestore from '@react-native-firebase/firestore';
@@ -203,7 +203,9 @@ const App = ({userStore, daoStore, bottomSheetStore}) => {
 
     if (daoStore.isError) {
       console.log('daostore error', daoStore.isError);
-      // errorSheetRef.current.snapTo(1);
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
+      );
     }
     getDaos();
     checkOnboardingStatus();
@@ -411,9 +413,6 @@ const App = ({userStore, daoStore, bottomSheetStore}) => {
         </Stack.Navigator>
         {bottomSheetStore.isVisible ? <BottomSheetContainer /> : null}
       </NavigationContainer>
-      <BottomSheetContainer ref={errorSheetRef} topSnapPoint={400}>
-        <TransactionError />
-      </BottomSheetContainer>
     </ApolloProvider>
   );
 };

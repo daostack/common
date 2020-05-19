@@ -10,11 +10,7 @@ import React from 'react';
 import {text, layout, colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
-const CommonProfileOptions = ({
-  navigation,
-  onContinueEditing,
-  isCommonProfile,
-}) => {
+const CommonProfileOptions = ({navigation, onFollow, isCommonProfile}) => {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -27,7 +23,7 @@ const CommonProfileOptions = ({
           Options
         </Text>
 
-        <TouchableOpacity style={styles.optionBtn}>
+        <TouchableOpacity style={styles.optionBtn} onPress={onFollow}>
           <Icon
             name="following"
             style={layout.marginRightS}

@@ -16,14 +16,6 @@ import Icon from '../Assets/iconfont/Icon';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import ViewTabNoData from '../Components/ViewTabNoData';
 
-import CommonOperationalStateNotif from './BottomSheetScreens/CommonOperationalStateNotif';
-import SortProposals from './BottomSheetScreens/SortProposals';
-import CommonProfileOptions from './BottomSheetScreens/CommonProfileOptions';
-//import ProposalSheetScreen from './Proposals/ProposalSheetScreen';
-import ProposalSheetScreen from './BottomSheetScreens/ProposalSheetScreen';
-// import ApprovalSheetScreen from './BottomSheetScreens/ApprovalSheetScreen';
-
-import BottomSheetContainer from '../Components/BottomSheetContainer';
 import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
 import CommonCover from '../Components/Commons/CommonCover';
 import CommonStageSummary from '../Components/Commons/CommonStageSummary';
@@ -460,18 +452,6 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
           </>
         )}
       </SafeAreaView>
-      {/** 
-      <BottomSheetContainer ref={commonOperationalStateNotifRef}>
-        <CommonOperationalStateNotif navigation={navigation} />
-      </BottomSheetContainer>
-      
-      <BottomSheetContainer ref={sortProposalsSheetRef}>
-        <SortProposals navigation={navigation} />
-      </BottomSheetContainer>
-      <BottomSheetContainer ref={proposalSheetRef} topSnapPoint={800}>
-        <ProposalSheetScreen navigation={navigation} />
-      </BottomSheetContainer>
-      */}
     </View>
   );
 };
