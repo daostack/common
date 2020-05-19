@@ -25,8 +25,6 @@ const CommonsList = ({navigation, daoStore}) => {
     console.log('daos CL: , ', daoStore.daos);
     const getDaos = async () => {
       try {
-        const appUsers = await FirebaseService.getInstance().getUsers();
-        console.log('users: ', appUsers);
         unsubscribe = db.collection('daos').onSnapshot(snapshot => {
           if (snapshot.empty) {
             return [];
@@ -51,9 +49,7 @@ const CommonsList = ({navigation, daoStore}) => {
       }
     };
     getDaos();
-    return function cleanup() {
-      unsubscribe();
-    };
+    return unsubscribe;
   }, [daoStore.daos]);
 
   return (
