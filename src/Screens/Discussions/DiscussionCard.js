@@ -15,6 +15,7 @@ import moment from 'moment';
 import firestore from '@react-native-firebase/firestore';
 import BottomSheetModal from '../../Components/BottomSheetModal';
 import NotificationService from '../../Services/NotificationService';
+import {observer, inject} from 'mobx-react';
 
 const {width} = Dimensions.get('window');
 
@@ -24,6 +25,7 @@ const DiscussionCard = props => {
   const [user, setUser] = useState({});
   const [msgCount, setMsgCount] = useState(0);
   const [showMenu, setShowMenu] = useState(false);
+  const isFollowing = props.userStore.userInfo.following.includes(data.owner);
 
   const hideMenu = () => {
     setShowMenu(false);
@@ -194,14 +196,18 @@ const DiscussionCard = props => {
           <TouchableOpacity
             onPress={() => {
               console.log('Follow user id', data.owner);
-              NotificationService.follow(data.owner);
+              if (isFollowing) {
+                NotificationService.unfollow(data.owner);
+              } else {
+                NotificationService.follow(data.owner);
+              }
               setShowMenu(false);
             }}>
             <View style={styles.sheetButton}>
               <Icon name="following" color={colors.black} />
               <View style={{flex: 1}}>
                 <Text style={[styles.sheetText, {color: colors.black}]}>
-                  Follow
+                  {isFollowing ? 'UnFollow' : 'Follow'}
                 </Text>
               </View>
             </View>
@@ -276,4 +282,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DiscussionCard;
+export default inject('userStore')(observer(DiscussionCard));

@@ -68,7 +68,7 @@ import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import TransactionError from './src/Screens/TransactionError';
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
-
+import firestore from '@react-native-firebase/firestore';
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
@@ -171,6 +171,21 @@ const App = ({userStore, daoStore}) => {
 
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
 
+    const updateUser = async () => {
+      try {
+        const uid = auth().currentUser.uid;
+        firestore()
+          .collection('users')
+          .doc(uid)
+          .onSnapshot(snapshot => {
+            console.log('FirebaseUser', snapshot.data());
+            userStore.setSignedInUser(snapshot.data());
+          });
+      } catch (error) {
+        console.log('errror: ', error);
+      }
+    };
+
     const checkOnboardingStatus = async () => {
       try {
         //await AuthService.getInstance().signOut();
@@ -190,6 +205,7 @@ const App = ({userStore, daoStore}) => {
     }
     getDaos();
     checkOnboardingStatus();
+    updateUser();
     return subscriber;
   }, [daoStore, userStore]);
 
