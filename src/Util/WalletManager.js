@@ -1,7 +1,7 @@
 import {NativeWallet} from './NativeWallet';
 import {ethers, Contract} from 'ethers';
 import CPK from 'contract-proxy-kit';
-import {web3ProviderUrl, web3NetworkId} from '../Config';
+import {web3ProviderUrl} from '../Config';
 
 export default class WalletManager {
   static myInstance = null;
@@ -31,14 +31,7 @@ export default class WalletManager {
         fallbackHandlerAddress: '0x40A930851BD2e590Bd5A5C981b436de25742E980',
       },
     };
-    // const provider = new ethers.providers.InfuraProvider(
-    //   'rinkeby',
-    //   'e0cdf3bfda9b468fa908aa6ab03d5ba2',
-    // );
-    const provider = new ethers.providers.JsonRpcProvider(
-      web3ProviderUrl,
-      web3NetworkId,
-    );
+    const provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
     WalletManager.myInstance = await new WalletManager(
       provider,
       cpkAddress,
