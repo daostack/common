@@ -12,7 +12,8 @@ export const graphHttpLink = `https://api.thegraph.com/subgraphs/name/daostack/$
 export const graphwsLink = `wss://api.thegraph.com/subgraphs/name/daostack/${GRAPH_VERSION}`;
 export const ipfsLink = 'https://api.thegraph.com/ipfs-daostack/api/v0';
 export const web3ProviderUrl = 'https://dai.poa.network';
-// export const web3ProviderUrl = '​https://core.poanetwork.dev/'
+// export const web3ProviderUrl = '​https://core.poanetwork.dev/';
+export const web3NetworkId = 99;
 
 const httpLink = new HttpLink({
   uri: graphHttpLink,

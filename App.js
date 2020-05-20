@@ -169,7 +169,8 @@ const App = ({userStore, bottomSheetStore}) => {
         const address = await manager.getOwnerAccount();
         getTestEth(address);
       } catch (error) {
-        // console.log(error);
+        console.log(error);
+        throw error;
         // Toast.error(error.toString());
       }
     };
