@@ -27,7 +27,12 @@ const DiscussionCard = props => {
   const [user, setUser] = useState({});
   const [msgCount, setMsgCount] = useState(0);
   const [showMenu, setShowMenu] = useState(false);
-  const isFollowing = props.userStore.userInfo.following.includes(data.owner);
+  var isFollowing = false;
+
+  let userInfo = props.userStore.userInfo;
+  if (userInfo) {
+    isFollowing = userInfo.following.includes(data.owner);
+  }
 
   const hideMenu = () => {
     setShowMenu(false);
@@ -45,8 +50,10 @@ const DiscussionCard = props => {
       const userData = await FirebaseService.getInstance().getUserById(
         data.ownerId,
       );
-      setUser(userData);
-      console.log('userData', userData);
+      if (userData) {
+        console.log('userData', userData);
+        setUser(userData);
+      }
     };
     fetchUser();
   }, [data]);

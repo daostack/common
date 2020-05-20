@@ -49,11 +49,12 @@ export default class WalletManager {
   };
 
   getAddress() {
-    return this.wallet.address;
+    return this.wallet.address.toLowerCase();
   }
 
   getOwnerAccount = async () => {
-    return await this.wallet.getOwnerAccount();
+    const account = await this.wallet.getOwnerAccount();
+    return account.toLowerCase();
   };
 
   getBalance = async address => {
