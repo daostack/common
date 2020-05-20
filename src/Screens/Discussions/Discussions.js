@@ -41,12 +41,12 @@ const Discussions = props => {
   const commonId = props.route.params.commonId;
   const discussionId = data.id;
   const [msgGroup, setMsgDroup] = useState([]);
-
   const [showMenu, setShowMenu] = useState(false);
   const [discussion, setDiscussion] = useState();
   const [followState, setFollowState] = useState(false);
 
   console.log('data', data);
+  const currentUser = auth().currentUser;
 
   const hideMenu = () => {
     setShowMenu(false);
@@ -54,7 +54,10 @@ const Discussions = props => {
 
   let listRef = useRef([]);
   useEffect(() => {
-    const uid = auth().currentUser.uid;
+    let uid = null;
+    if (currentUser) {
+      uid = currentUser.uid;
+    }
     const unsubscribe = firestore()
       .collection('discussion')
       .doc(discussionId)
@@ -62,13 +65,13 @@ const Discussions = props => {
         setDiscussion({id: discussionId, ...snapshot.data()});
         console.log(snapshot.data());
         const follower = snapshot.data().follower;
-        if (follower) {
+        if (follower && uid) {
           const state = follower.includes(uid);
           setFollowState(state);
         }
       });
     return unsubscribe;
-  }, [commonId, discussionId]);
+  }, [commonId, discussionId, currentUser]);
 
   useEffect(() => {
     const unsubscribe = firestore()
@@ -132,13 +135,28 @@ const Discussions = props => {
   }, [data]);
 
   const openOptionsMenu = () => {
+    if (!currentUser) {
+      showLoginScreen();
+      return;
+    }
     props.bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
     );
   };
 
+  const showLoginScreen = () => {
+    props.bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
+    );
+  };
+
   const followDiscussion = async () => {
-    const uid = auth().currentUser.uid;
+    let uid = null;
+    if (currentUser) {
+      uid = currentUser.uid;
+    } else {
+      showLoginScreen();
+    }
     firestore()
       .collection('discussion')
       .doc(discussionId)
@@ -154,7 +172,10 @@ const Discussions = props => {
   };
 
   const sendMessageToDiscussion = async () => {
-    const userStore = auth().currentUser;
+    const userStore = currentUser;
+    if (!userStore) {
+      showLoginScreen();
+    }
     // props.userStore;
     inputRef.current.clear();
     console.log('userStore', commonId, data.id, userStore);
