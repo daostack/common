@@ -293,4 +293,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore','bottomSheetStore')(observer(DiscussionCard));
+export default inject(
+  'userStore',
+  'bottomSheetStore',
+)(observer(DiscussionCard));
