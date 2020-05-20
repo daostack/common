@@ -24,11 +24,6 @@ import AuthService from '../Services/AuthService';
 const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
   //const [editMode, setEditMode] = useState(false);
 
-  useEffect(() => {
-    if (route?.params?.userUpdated) {
-      Toast.done('Your profile is updated');
-    }
-  });
   const _signOut = async () => {
     try {
       await AuthService.getInstance().signOut();
