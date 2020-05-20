@@ -70,9 +70,9 @@ const RequestStep4 = props => {
         ),
         */
       };
-      const proposal = await ArcService.getInstance().createProposalRequestToJoin(
-        data,
-      );
+      console.log('ArcService.getInstance() --> ', ArcService.getInstance());
+
+      const proposal = await ArcService.getInstance().createRequestToJoin(data);
       setLoadingMessage(`JoinAndQuit Proposal with id ${proposal.id} created!`);
 
       /*

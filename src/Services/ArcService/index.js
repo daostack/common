@@ -27,7 +27,8 @@ export default class ArcService {
   static getInstance = async () => {
     if (ArcService.serviceInstance == null) {
       ArcService.serviceInstance = new ArcService();
-      await this.arc.fetchContractInfos();
+      console.log('this ->', this);
+      await ArcService.serviceInstance.arc.fetchContractInfos();
     }
     return this.serviceInstance;
   };
@@ -36,7 +37,7 @@ export default class ArcService {
 
   async createFundingProposal(data) {}
 
-  async createProposalRequestToJoin(data) {
+  async createRequestToJoin(data) {
     return createProposalRequestToJoin(this.arc, data);
   }
 
