@@ -241,7 +241,7 @@ class nativeBridgeTests extends React.Component {
       const arc = await getArc(wallet.ethWallet);
       console.log('calling the function', arc);
       const data = {
-        dao: '0x00f39da92b448670a258161d9d4143611ff6d9c5',
+        dao: '0x0f0c735f67fbe866a65c10ace6b3536fa09cddab',
         title: `A test proposal on ${Date()}`,
         description: 'Some description',
         files: [],
@@ -267,7 +267,6 @@ class nativeBridgeTests extends React.Component {
           <Text style={{marginBottom: 10}}>
             Network: {this.state.networkURL}
           </Text>
-
           <Text>Address: {this.state.ownerAccount}</Text>
           <Text>Balance: {this.state.ownerBalance}</Text>
           <TouchableOpacity
@@ -275,12 +274,10 @@ class nativeBridgeTests extends React.Component {
             style={styles.button}>
             <Text>Get local Address and balance</Text>
           </TouchableOpacity>
-
           <Text>{this.state.getSomeFundsStatus}</Text>
           <TouchableOpacity onPress={this.getSomeFunds} style={styles.button}>
             <Text>Get some funds!</Text>
           </TouchableOpacity>
-
           <Text style={{marginVertical: 10}}>
             --------------- Common Interactions -----------------
           </Text>
