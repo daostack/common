@@ -22,11 +22,17 @@ const {width} = Dimensions.get('window');
 
 const DiscussionCard = props => {
   const data = props.data;
+  const discussionId = data.id;
   const commonId = props.commonId;
   const [user, setUser] = useState({});
   const [msgCount, setMsgCount] = useState(0);
   const [showMenu, setShowMenu] = useState(false);
-  const isFollowing = props.userStore.userInfo.following.includes(data.owner);
+  var isFollowing = false;
+
+  let userInfo = props.userStore.userInfo;
+  if (userInfo) {
+    isFollowing = userInfo.following.includes(data.owner);
+  }
 
   const hideMenu = () => {
     setShowMenu(false);
@@ -42,19 +48,20 @@ const DiscussionCard = props => {
   useEffect(() => {
     const fetchUser = async () => {
       const userData = await FirebaseService.getInstance().getUserById(
-        data.owner,
+        data.ownerId,
       );
-      setUser(userData);
+      if (userData) {
+        console.log('userData', userData);
+        setUser(userData);
+      }
     };
     fetchUser();
   }, [data]);
 
   useEffect(() => {
     const unsubscribe = firestore()
-      .collection('common')
-      .doc(commonId)
       .collection('discussion')
-      .doc(data.id)
+      .doc(discussionId)
       .collection('message')
       .onSnapshot(snapshot => {
         setMsgCount(snapshot.docs.length);
@@ -62,15 +69,15 @@ const DiscussionCard = props => {
     return () => {
       unsubscribe();
     };
-  }, [commonId, data]);
+  }, [discussionId]);
 
-  follow = () => {
+  const follow = () => {
     console.log('Follow user id', data.owner);
     NotificationService.follow(data.owner);
     props.bottomSheetStore.hideBottomSheet();
   };
 
-  showOptions = () => {
+  const showOptions = () => {
     props.bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
       {onFollow: follow},
@@ -89,7 +96,7 @@ const DiscussionCard = props => {
       >
         <View style={styles.container}>
           <TouchableOpacity
-            style={{position: 'absolute', right: 0, top: 0, padding: 15}}
+            style={{position: 'absolute', right: 0, top: 0, padding: 20}}
             onPress={showOptions}>
             <Icon name="menu" size={20} />
           </TouchableOpacity>
@@ -293,4 +300,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore','bottomSheetStore')(observer(DiscussionCard));
+export default inject(
+  'userStore',
+  'bottomSheetStore',
+)(observer(DiscussionCard));

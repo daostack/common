@@ -24,11 +24,6 @@ import AuthService from '../Services/AuthService';
 const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
   //const [editMode, setEditMode] = useState(false);
 
-  useEffect(() => {
-    if (route?.params?.userUpdated) {
-      Toast.done('Your profile is updated');
-    }
-  });
   const _signOut = async () => {
     try {
       await AuthService.getInstance().signOut();
@@ -64,6 +59,10 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
 
   const onUsersListPress = event => {
     navigation.navigate('UserProfileReadMode');
+  };
+
+  const onHUDTestPress = event => {
+    navigation.navigate('HUDTest');
   };
 
   const onFundingProposalPress = event => {
@@ -119,6 +118,7 @@ const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
                   }}>
                   <Text style={text.h4Black}>Temporary menu</Text>
                   <AccordionBtn title="Test Page" onPress={onTestPagePress} />
+                  <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
                   <AccordionBtn title="Users list" onPress={onUsersListPress} />
                   <AccordionBtn
                     title="Funding Request"

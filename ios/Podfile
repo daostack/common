@@ -40,7 +40,6 @@ def native
   # Native Dependencies
   pod 'web3swift', git: 'https://github.com/matter-labs/web3swift', branch: 'master'
   pod 'KeychainAccess'
-  pod 'ToastHybrid', :path => './lib'
 #  pod 'IQKeyboardManagerSwift'
 end
 

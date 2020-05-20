@@ -16,7 +16,7 @@ export default class WalletManager {
         signer: this.ethWallet,
         networks: cpkAddress,
       });
-      this.address = this.wallet.address;
+      this.address = this.wallet.address.toLowerCase();
       return this;
     })();
   }
@@ -49,11 +49,12 @@ export default class WalletManager {
   };
 
   getAddress() {
-    return this.wallet.address;
+    return this.wallet.address.toLowerCase();
   }
 
   getOwnerAccount = async () => {
-    return await this.wallet.getOwnerAccount();
+    const account = await this.wallet.getOwnerAccount();
+    return account.toLowerCase();
   };
 
   getBalance = async address => {

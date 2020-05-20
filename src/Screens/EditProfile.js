@@ -18,6 +18,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '../Assets/iconfont/Icon';
 import Loader from '../Components/Loader';
 import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
+import Toast from '../Util/Toast';
 
 const EditProfile = ({
   userStore,
@@ -39,13 +40,8 @@ const EditProfile = ({
 
   const onFormSubmit = updatedFields => {
     userStore.setSignedInUser({...userStore.userInfo, ...updatedFields});
-    const navigate = CommonActions.navigate({
-      name: 'Profile',
-      params: {
-        userUpdated: true,
-      },
-    });
-    navigation.dispatch(navigate);
+    Toast.success('Your profile is updated');
+    navigation.goBack();
   };
 
   const onFormClose = () => {
@@ -56,7 +52,7 @@ const EditProfile = ({
         onLeaveWithoutSaving: closeBottomSheet,
       });
     } else {
-      navigation.goBack();
+      navigation.pop();
     }
   };
 
