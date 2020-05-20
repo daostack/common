@@ -38,7 +38,6 @@ export default function HUDTest() {
     Toast.success('Work is Done！');
   };
 
-
   const error = () => {
     Toast.error('Maybe somthing is wrong！');
   };
