@@ -1,44 +1,23 @@
 import React, {useEffect, useRef, useCallback} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import Toast, {useToast} from '../Util/Toast';
+import Toast from '../Util/Toast';
 
 export default function HUDTest() {
   const timerRef = useRef();
 
-  useEffect(() => {
-    Toast.config({
-      // backgroundColor: '#BB000000',
-      // tintColor: '#FFFFFF',
-      // cornerRadius: 5, // only for android
-      // duration: 2000,
-      // graceTime: 300,
-      // minShowTime: 800,
-      // dimAmount: 0.0, // only for andriod
-      loadingText: 'Loading...',
-    });
-
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  });
-
-  const toast = useToast();
-
   const loading = useCallback(() => {
-    toast.loading();
+    Toast.loading('Loading...');
     timerRef.current = setTimeout(() => {
-      toast.done('Work is done!');
+      Toast.done('Work is done!');
       timerRef.current = setTimeout(() => {
-        toast.loading('New task in progress...');
+        Toast.loading('New task in progress...');
         timerRef.current = setTimeout(() => {
           timerRef.current = undefined;
-          toast.hide();
+          Toast.hide();
         }, 2000);
       }, 1500);
     }, 2000);
-  }, [toast]);
+  }, []);
 
   const text = () => {
     Toast.text('Hello World!!');
@@ -46,17 +25,21 @@ export default function HUDTest() {
   };
 
   const info = () => {
-    toast.info(
+    Toast.info(
       'A long long message to tell you, A long long message to tell you, A long long message to tell you',
     );
   };
 
   const done = () => {
-    toast.done('Work is Done！');
+    Toast.done('Work is Done！');
+  };
+
+  const success = () => {
+    Toast.success('Work is Done！');
   };
 
   const error = () => {
-    toast.error('Maybe somthing is wrong！');
+    Toast.error('Maybe somthing is wrong！');
   };
 
   return (
@@ -87,6 +70,13 @@ export default function HUDTest() {
         activeOpacity={0.2}
         style={styles.button}>
         <Text style={styles.buttonText}> done </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={success}
+        activeOpacity={0.2}
+        style={styles.button}>
+        <Text style={styles.buttonText}> success</Text>
       </TouchableOpacity>
 
       <TouchableOpacity

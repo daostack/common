@@ -72,7 +72,8 @@ const BottomSheetContainer = props => {
           alignItems: 'center',
           opacity: Animated.sub(0.3, Animated.multiply(fall, 0.3)),
         }}
-        onPress={closeBottomSheet}></AnimatedTouchable>
+        onPress={closeBottomSheet}
+      />
 
       <BottomSheet
         ref={ref}

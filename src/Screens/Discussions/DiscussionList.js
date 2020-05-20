@@ -1,48 +1,50 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {StyleSheet, FlatList} from 'react-native';
+import {StyleSheet, FlatList, View} from 'react-native';
 import {colors} from '../../Theme';
 import DiscussionCard from './DiscussionCard';
 import firestore from '@react-native-firebase/firestore';
 import ViewTabNoData from '../../Components/ViewTabNoData';
-import _ from 'lodash';
 
 const DiscussionList = props => {
   const commonId = props.commonId;
   const [list, setList] = useState([]);
 
+  console.log('commonId', commonId);
+
   let listRef = useRef([]);
   useEffect(() => {
     const unsubscribe = firestore()
-      .collection('common')
-      .doc(commonId)
       .collection('discussion')
-      .orderBy('createTime', 'desc')
+      .where('commonId', '==', commonId)
+      // .orderBy('createTime', 'desc')
       .onSnapshot(
         snapshot => {
-          if (snapshot.docChanges().length !== 0) {
-            const newList = snapshot.docChanges().map(({doc}) => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-            let createList = newList
-              .map(item => {
-                let index = listRef.current.findIndex(v => v.id === item.id);
-                if (index > -1) {
-                  console.log('A', index, item);
-                  listRef.current[index] = item;
-                } else {
-                  console.log('B');
-                  return item;
-                }
-              })
-              .filter(item => item);
-            if (createList.length > 0) {
-              const allList = [...createList, ...listRef.current];
-              listRef.current = allList;
+          console.log('snapshot', snapshot);
+          if (snapshot.empty) {
+            setList([]);
+          } else {
+            if (snapshot.docChanges().length !== 0) {
+              const newList = snapshot.docChanges().map(({doc}) => ({
+                id: doc.id,
+                ...doc.data(),
+              }));
+              let createList = newList
+                .map(item => {
+                  let index = listRef.current.findIndex(v => v.id === item.id);
+                  if (index > -1) {
+                    listRef.current[index] = item;
+                  } else {
+                    return item;
+                  }
+                })
+                .filter(item => item);
+              if (createList.length > 0) {
+                const allList = [...createList, ...listRef.current];
+                listRef.current = allList;
+              }
+              setList(listRef.current);
+              console.log('DiscussionList', listRef.current);
             }
-            console.log('createList', createList);
-            console.log('allList', listRef.current);
-            setList(listRef.current);
           }
         },
         error => console.error(error),

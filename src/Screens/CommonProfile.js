@@ -27,6 +27,8 @@ import ProposalCard from '../Components/Proposals/ProposalCard';
 import BottomRightButton from '../Components/BottomRightButton';
 import DiscussionList from './Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
+import HUD from '../Util/Toast';
+import Toast from '../Util/Toast';
 
 const {cache} = client;
 const mockData = {
@@ -96,13 +98,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
   );
 
   const Discussions = () => {
-    return (
-      <DiscussionList
-        navigation={navigation}
-        commonId="48NPcGnpskN9YkqVNXKA"
-        // {route.params.commonId}
-      />
-    );
+    return <DiscussionList navigation={navigation} commonId={routeCommon.id} />;
   };
 
   const Proposals = () => {
@@ -218,6 +214,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
 
   const shareCommon = event => {
     console.log('TODO: share functionality');
+    Toast.info('TODO: share functionality');
   };
 
   const openCommonOptions = event => {
@@ -351,7 +348,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
               ...layout.btnOutline,
             }}
             onPress={shareCommon}>
-            <Text style={text.buttonblue}>Share Common</Text>
+            <Text style={text.buttonblue}>Share Com</Text>
           </TouchableOpacity>
         </View>
         {renderAgendaForNonMembers()}
@@ -390,7 +387,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
         <BottomRightButton
           onPress={() =>
             navigation.navigate('New Topic', {
-              commonId: '48NPcGnpskN9YkqVNXKA',
+              commonId: routeCommon.id,
             })
           }
           bottom={120}
