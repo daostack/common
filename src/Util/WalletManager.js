@@ -16,7 +16,7 @@ export default class WalletManager {
         signer: this.ethWallet,
         networks: cpkAddress,
       });
-      this.address = this.wallet.address;
+      this.address = this.wallet.address.toLowerCase();
       return this;
     })();
   }

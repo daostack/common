@@ -185,7 +185,7 @@ class nativeBridgeTests extends React.Component {
       {
         name: 'Green DAO',
         // name: `Test DAO ${new Date()}`,
-        founderAddresses: wallet.ethWallet.address,
+        founderAddresses: wallet.ethWallet.address.toLowerCase(),
         minFeeToJoin: 100, // TDB: get from formData
         fundingGoal: 100000, // TBD: get from formdata
         // TBD: get form data for deadline; these are in secondSinceEpoch
