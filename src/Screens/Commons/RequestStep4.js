@@ -18,11 +18,7 @@ import RequestToJoinForm from '../../Components/Forms/RequestToJoinForm';
 
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from './RequestStepActionButton';
-import WalletManager from '../../Util/WalletManager';
-
-import {CommonActions} from '@react-navigation/native';
-import {createProposalRequestToJoin} from '../../Util/createProposal';
-import {getArc} from '../../Util/arc';
+import ArcService from '../../Services/ArcService';
 import {BN} from 'bn.js';
 
 const RequestStep4 = props => {
@@ -56,15 +52,9 @@ const RequestStep4 = props => {
   const push = async () => {
     //if (isValid()) {
 
-    console.log('creating proposal -- please wait');
-
     setLoadingMessage('Creating JoinAndQuit proposal -- please wait');
 
     try {
-      const wallet = WalletManager.getInstance();
-      console.log('wallet', wallet);
-      const arc = await getArc(wallet.ethWallet);
-      console.log('calling the function', arc);
       const data = {
         title: `A test proposal on ${Date()}`,
         description: 'Some description',
@@ -80,7 +70,9 @@ const RequestStep4 = props => {
         ),
         */
       };
-      const proposal = await createProposalRequestToJoin(arc, data);
+      const proposal = await ArcService.getInstance().createProposalRequestToJoin(
+        data,
+      );
       setLoadingMessage(`JoinAndQuit Proposal with id ${proposal.id} created!`);
 
       /*

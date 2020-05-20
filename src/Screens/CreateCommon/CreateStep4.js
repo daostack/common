@@ -29,6 +29,8 @@ import {numberFormatter} from '../../Util';
 import {createCommon} from '../../Util/createCommon';
 import {getArc} from '../../Util/arc';
 
+import ArcService from '../../Services/ArcService';
+
 const {width} = Dimensions.get('window');
 const provider = ethers.getDefaultProvider('rinkeby');
 
@@ -144,11 +146,11 @@ const CreateStep4 = props => {
     console.log('formDAta: ', formData.minimum);
     console.log('formDAta: ', parseInt(formData.minimum));
     const manager = await WalletManager.getInstance();
-    const wallet = manager.ethWallet;
+    //const wallet = manager.ethWallet;
     const address = await manager.getOwnerAccount();
     console.log('owner account: ', address);
     // we will want to have a global arc instance for all contract interactions!
-    const arc = await getArc(wallet);
+    //const arc = await getArc(wallet);
     console.log({
       name: formData.name,
       founderAddresses: address,
@@ -162,7 +164,7 @@ const CreateStep4 = props => {
       ipfsHash,
     });
 
-    const commonAddress = await createCommon(
+    const commonAddress = await ArcService.getInstance().createCommon(
       arc,
       {
         name: formData.name,
