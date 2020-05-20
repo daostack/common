@@ -85,11 +85,11 @@ const RequestStep2 = props => {
   };
 
   const push = () => {
-    const vaild = isValid();
-    if (vaild) {
-      props.navigation.navigate('RequestStep3');
-      console.log(props.requestToJoinFormStore.getChangedFormFieldsJson());
-    }
+    //const vaild = isValid();
+    //if (vaild) {
+    props.navigation.navigate('RequestStep3');
+    console.log(props.requestToJoinFormStore.getChangedFormFieldsJson());
+    //}
   };
 
   const {userStore} = props;
