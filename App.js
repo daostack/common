@@ -212,7 +212,7 @@ const App = ({userStore, daoStore, bottomSheetStore}) => {
     checkOnboardingStatus();
     updateUser();
     return subscriber;
-  }, [daoStore, userStore]);
+  }, [daoStore, userStore, bottomSheetStore]);
 
   console.log('onboarded: ', onboarded);
   console.log('daoStore DAOs: ', daoStore.daos);

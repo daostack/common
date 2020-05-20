@@ -5,7 +5,6 @@ import {
   View,
   TouchableOpacity,
   Image,
-  TouchableWithoutFeedback,
   Dimensions,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
@@ -293,4 +292,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore','bottomSheetStore')(observer(DiscussionCard));
+export default inject(
+  'userStore',
+  'bottomSheetStore',
+)(observer(DiscussionCard));
