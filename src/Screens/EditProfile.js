@@ -56,7 +56,8 @@ const EditProfile = ({
         onLeaveWithoutSaving: closeBottomSheet,
       });
     } else {
-      navigation.goBack();
+      navigation.pop();
+      console.log('POP');
     }
   };
 

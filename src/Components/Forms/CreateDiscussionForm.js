@@ -40,7 +40,7 @@ class CreateDiscussionForm extends React.Component {
         })
         .then(() => {
           console.log('YES');
-          // Toast.done('Sent');
+          Toast.success('Done');
           Keyboard.dismiss();
 
           if (this.props.onFormSubmit) {

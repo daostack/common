@@ -16,13 +16,12 @@ import {inject, observer} from 'mobx-react';
 
 const {width} = Dimensions.get('window');
 
-const CommonsList = ({navigation, daoStore}) => {
+const CommonsList = ({navigation, daoStore, bottomSheetStore}) => {
   // const [hasError, setErrors] = useState(false);
   const [daos, setDaos] = useState([]);
 
   useEffect(() => {
     let unsubscribe;
-    console.log('daos CL: , ', daoStore.daos);
     const getDaos = async () => {
       try {
         unsubscribe = db.collection('daos').onSnapshot(snapshot => {
@@ -41,6 +40,14 @@ const CommonsList = ({navigation, daoStore}) => {
           });
           console.log('daos: ', daosSnapshot);
           setDaos(daosSnapshot);
+          daoStore.setDaos(daosSnapshot);
+
+          if (daoStore.isError) {
+            console.log('daostore error', daoStore.isError);
+            bottomSheetStore.showBottomSheet(
+              BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
+            );
+          }
         });
         // console.log('DAOS: ', daosRes);
         // setDaos(daosRes);
@@ -50,7 +57,7 @@ const CommonsList = ({navigation, daoStore}) => {
     };
     getDaos();
     return unsubscribe;
-  }, [daoStore.daos]);
+  }, [daoStore, bottomSheetStore]);
 
   return (
     <View style={{flex: 1}}>
@@ -101,79 +108,6 @@ const styles = StyleSheet.create({
     flex: 1,
     ...layout.content,
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  roundedProfileImage: {
-    width: 100,
-    height: 100,
-    borderWidth: 3,
-    borderColor: 'white',
-    borderRadius: 50,
-  },
-  input: {
-    backgroundColor: '#E6E6E6',
-    width: width - 20,
-    height: 70,
-    fontSize: 14,
-    margin: 10,
-    borderRadius: 10,
-    borderWidth: 0,
-    borderColor: 'white',
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowRadius: 10,
-    shadowOpacity: 0.1,
-  },
-  commonBox: {
-    width: width - 36,
-    borderRadius: 14,
-    backgroundColor: '#ffffff',
-    shadowColor: 'rgba(0, 0, 0, 0.09)',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowRadius: 13,
-    shadowOpacity: 1,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#eeeeee',
-    marginBottom: 10,
-  },
-  cheezeDaoBox: {
-    width: width - 20,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: 'black',
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowRadius: 10,
-    shadowOpacity: 0.1,
-  },
-  sharpShadow: {
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 4,
-      height: 4,
-    },
-    shadowRadius: 0,
-    shadowOpacity: 1,
-  },
 });
 
-export default inject('daoStore')(observer(CommonsList));
+export default inject('daoStore', 'bottomSheetStore')(observer(CommonsList));

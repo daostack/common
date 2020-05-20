@@ -1,123 +1,126 @@
-import {useRef, useEffect} from 'react';
-import {NativeModules, BackHandler} from 'react-native';
-const {ToastHybrid} = NativeModules;
+import React, {useState, useRef, useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  DeviceEventEmitter,
+  Dimensions,
+  ActivityIndicator,
+} from 'react-native';
+import colors from '../Theme/colors';
+import Icon from '../Assets/iconfont/Icon';
 
+const {width, height} = Dimensions.get('window');
+
+const showHud = v => {
+  DeviceEventEmitter.emit('HUD', v);
+};
+
+const showLoading = v => {
+  DeviceEventEmitter.emit('HUD', v, true);
+};
 export default class Toast {
-  constructor() {
-    this.underlying = null;
-    this.closed = false;
-    this.timer = null;
-  }
-  static config(options = {}) {
-    ToastHybrid.config(options);
-  }
-  static text(text, duration = 2000) {
-    new Toast().text(text, duration);
+  static text(text) {
+    showHud(
+      <View
+        style={{
+          backgroundColor: colors.mainBlue,
+          padding: 10,
+          borderRadius: 10,
+          width: width * 0.8,
+        }}>
+        <Text style={{color: colors.white}}>Text</Text>
+      </View>,
+    );
   }
   static info(text) {
-    new Toast().info(text);
+    showHud(
+      <View
+        style={{...styles.container, ...{backgroundColor: colors.mainBlue}}}>
+        <Icon name="check" size={20} color={colors.white} />
+        <Text style={styles.text}>{text}</Text>
+      </View>,
+    );
   }
   static done(text) {
-    new Toast().done(text);
+    showHud(
+      <View
+        style={{...styles.container, ...{backgroundColor: colors.mainBlue}}}>
+        <Icon name="check" size={20} color={colors.white} />
+        <Text style={styles.text}>{text}</Text>
+      </View>,
+    );
+  }
+  static success(text) {
+    showHud(
+      <View
+        style={{
+          ...styles.container,
+          ...{backgroundColor: colors.lightishGreen},
+        }}>
+        <Icon name="check" size={20} color={colors.white} />
+        <Text style={styles.text}>{text}</Text>
+      </View>,
+    );
   }
   static error(text) {
-    new Toast().error(text);
+    showHud(
+      <View style={{...styles.container, ...{backgroundColor: colors.error}}}>
+        <Icon name="close" size={10} color={colors.white} />
+        <Text style={styles.text}>{text}</Text>
+      </View>,
+    );
   }
+
   static loading(text) {
-    return new Toast().loading(text);
-  }
-  async ensure() {
-    if (this.underlying !== null) {
-      const key = await this.underlying;
-      const underlying = ToastHybrid.ensure(key);
-      this.underlying = underlying;
-      return underlying;
-    }
-    const underlying = ToastHybrid.create();
-    this.underlying = underlying;
-    return underlying;
-  }
-  loading(text) {
-    if (!this.closed) {
-      this.clearTimeout();
-      this.ensure().then(key => {
-        this.clearTimeout();
-        ToastHybrid.loading(key, text);
-      });
-    }
-    return this;
-  }
-  clearTimeout() {
-    if (this.timer !== null) {
-      clearTimeout(this.timer);
-      this.timer = null;
-    }
-  }
-  text(text, duration = 2000) {
-    return this.show(ToastHybrid.text, text, duration);
-  }
-  show(fn, text, duration) {
-    if (!this.closed) {
-      this.clearTimeout();
-      this.ensure().then(key => {
-        if (!this.closed) {
-          fn(key, text);
-          this.clearTimeout();
-          this.timer = setTimeout(() => this.hide(), duration);
-        } else {
-          this.hide();
-        }
-      });
-    }
-    return this;
-  }
-  info(text, duration = 2000) {
-    return this.show(ToastHybrid.info, text, duration);
-  }
-  done(text, duration = 2000) {
-    return this.show(ToastHybrid.done, text, duration);
-  }
-  error(text, duration = 2000) {
-    return this.show(ToastHybrid.error, text, duration);
+    showLoading(
+      // <View style={styles.loading} pointerEvents={'none'}>
+        <View
+          style={{...styles.container, ...{backgroundColor: colors.mainBlue}}}>
+          {/* <Icon name="check" size={20} color={colors.white} /> */}
+          <ActivityIndicator size="small" color={colors.white} />
+          <Text style={styles.text}>{text}</Text>
+        </View>
+      // </View>,
+    );
   }
 
-  hide() {
-    this.clearTimeout();
-    if (this.underlying !== null) {
-      this.underlying.then(key => {
-        ToastHybrid.hide(key);
-      });
-      this.underlying = null;
-    }
-  }
-
-  shutdown() {
-    this.closed = true;
-    this.hide();
+  static hide() {
+    DeviceEventEmitter.emit('HUDHide');
   }
 }
 
-export function useToast() {
-  const toastRef = useRef(new Toast());
-  useEffect(() => {
-    // const toast = toastRef.current;
-    return () => {
-      //   toast.shutdown();
-    };
-  }, []);
-  useEffect(() => {
-    function handleHardwareBack() {
-      const toast = toastRef.current;
-      if (toast.underlying !== null) {
-        toast.hide();
-        return true;
-      }
-      return false;
-    }
-    BackHandler.addEventListener('hardwareBackPress', handleHardwareBack);
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleHardwareBack);
-    };
-  }, []);
-  return toastRef.current;
-}
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+    borderRadius: 5,
+    width: width * 0.8,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: 'rgba(0, 0, 0, 0.22)',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 4,
+    shadowOpacity: 1,
+  },
+  text: {
+    color: colors.white,
+    flex: 1,
+    marginLeft: 10,
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    width: width,
+    height: height,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 99,
+  },
+});

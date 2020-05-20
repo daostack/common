@@ -1,4 +1,4 @@
-import {db, storage} from '../Firebase';
+import {db, storage, firebase} from '../Firebase';
 
 export const DB_COLLECTIONS = {
   users: 'users',

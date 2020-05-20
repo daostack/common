@@ -29,8 +29,6 @@ const DiscussionCard = props => {
   const [showMenu, setShowMenu] = useState(false);
   const isFollowing = props.userStore.userInfo.following.includes(data.owner);
 
-  console.log('item', data);
-
   const hideMenu = () => {
     setShowMenu(false);
   };
@@ -295,4 +293,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore','bottomSheetStore')(observer(DiscussionCard));
+export default inject(
+  'userStore',
+  'bottomSheetStore',
+)(observer(DiscussionCard));
