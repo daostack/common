@@ -23,7 +23,6 @@ class ImageField extends React.Component {
     super(props);
 
     const {validation, value} = this.props;
-    this.toast = new Toast();
 
     if (validation) {
       const {name, formStore, validateRule} = validation;
@@ -54,19 +53,19 @@ class ImageField extends React.Component {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
-        this.toast.error(response.error);
+        Toast.error(response.error);
         console.log('ImagePicker Error: ', response.error);
       } else {
         // const source = { uri: response.uri };
-        this.toast.loading('Uploading...');
+        Toast.loading('Uploading...');
         FirebaseService.getInstance()
           .uploadImage(response.uri)
           .then(url => {
-            this.toast.hide();
-            this.toast.done('Done');
+            Toast.hide();
+            Toast.success('Done');
             this.onChangeValue(url);
           })
-          .catch(error => this.toast.error(error.toString()));
+          .catch(error => Toast.error(error.toString()));
       }
     });
   };

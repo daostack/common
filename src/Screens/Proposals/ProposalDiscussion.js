@@ -9,20 +9,11 @@ import firestore from '@react-native-firebase/firestore';
 const ProposalDiscussion = props => {
   const chatRef = useRef(null);
   const [msgGroup, setMsgDroup] = useState([]);
-
-  const inputRef = props.inputRef;
-
-  const commonId = '48NPcGnpskN9YkqVNXKA';
-  const proposalId = 'DmZFnbSbkwcQHMAyGa54';
-  const discussionId = '43Q9abICrp2KpE86c1Az';
+  const discussionId = 'sW15wyPo3JtLDPr9E0vx';
 
   let listRef = useRef([]);
   useEffect(() => {
     const unsubscribe = firestore()
-      .collection('common')
-      .doc(commonId)
-      .collection('proposal')
-      .doc(proposalId)
       .collection('discussion')
       .doc(discussionId)
       .collection('message')
@@ -72,7 +63,7 @@ const ProposalDiscussion = props => {
     return () => {
       unsubscribe();
     };
-  }, [commonId, proposalId, discussionId]);
+  }, [discussionId]);
 
   return (
     <View style={{flex: 1, backgroundColor: colors.lightBlue}}>

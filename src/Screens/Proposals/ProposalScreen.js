@@ -116,19 +116,13 @@ const ProposalScreen = ({navigation, route, props}) => {
   );
 
   const messageInput = () => {
-    const commonId = '48NPcGnpskN9YkqVNXKA';
-    const proposalId = 'DmZFnbSbkwcQHMAyGa54';
-    const discussionId = '43Q9abICrp2KpE86c1Az';
+    const discussionId = 'sW15wyPo3JtLDPr9E0vx';
 
     const sendMessageToDiscussion = async () => {
       const userInfo = auth().currentUser;
       const message = inputRef.current._lastNativeText;
       if (message && message.trim().length) {
         firestore()
-          .collection('common')
-          .doc(commonId)
-          .collection('proposal')
-          .doc(proposalId)
           .collection('discussion')
           .doc(discussionId)
           .collection('message')
@@ -139,7 +133,7 @@ const ProposalScreen = ({navigation, route, props}) => {
             ownerId: userInfo.uid,
             ownerName: userInfo.displayName,
             ownerAvatar: userInfo.photoURL,
-            commonId: commonId,
+            proposalId: routeProposalId,
             discussionId: discussionId,
           })
           .then(() => {
