@@ -61,12 +61,6 @@ export default class WalletManager {
       chainId: chainId,
       gasLimit: 21000,
     };
-    console.log('UUUU', this.wallet, transaction);
-    const hash = await this.wallet.sign(transaction);
-    console.log('AAAA', hash);
-    // const repsonse = await this.provider.sendTransaction(hash);
-    let repsonse = await this.wallet.sendTransaction(transaction);
-    console.log('BBB', repsonse);
-    return response;
+    return await this.wallet.sendTransaction(transaction);
   };
 }
