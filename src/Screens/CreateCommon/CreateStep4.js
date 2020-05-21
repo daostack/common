@@ -14,7 +14,6 @@ import {StackActions} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
 import ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
-import {ethers} from 'ethers';
 import {colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import CreateStepHeader from './CreateStepHeader';
@@ -29,7 +28,6 @@ import {createCommon} from '../../Util/createCommon';
 import {getArc} from '../../Util/arc';
 
 const {width} = Dimensions.get('window');
-const provider = ethers.getDefaultProvider('rinkeby');
 
 const firebaseService = new FirebaseService();
 
@@ -147,34 +145,23 @@ const CreateStep4 = props => {
     console.log('owner account: ', address);
     // we will want to have a global arc instance for all contract interactions!
     const arc = await getArc(wallet);
-    console.log({
+    const data = {
       name: formData.name,
       founderAddresses: address,
       tokenDist: [0],
       repDist: [100],
-      minFeeToJoin: parseInt(formData.minimum), // TDB: get from formData
-      fundingGoal: formData.funding, // TBD: get from formdata
-      // TBD: get form data for deadline; these are in secondSinceEpoch
-      //TODO: get data for deadline from form data
-      fundingGoalDeadline: (await provider.getBlock('latest')).timestamp + 3000,
+      minFeeToJoin: parseInt(formData.minimum, 10),
+      fundingGoal: formData.funding,
+      // TBD: get form data for fundingGoalDeadline; these are in secondSinceEpoch
+      fundingGoalDeadline:
+        (await WalletManager.provider.getBlock('latest')).timestamp + 3000,
       ipfsHash,
-    });
+    };
+    console.log(data);
 
     const commonAddress = await createCommon(
       arc,
-      {
-        name: formData.name,
-        founderAddresses: address,
-        tokenDist: [0],
-        repDist: [100],
-        minFeeToJoin: parseInt(formData.minimum), // TDB: get from formData
-        fundingGoal: formData.funding, // TBD: get from formdata
-        // TBD: get form data for deadline; these are in secondSinceEpoch
-        //TODO: get data for deadline from form data
-        fundingGoalDeadline:
-          (await provider.getBlock('latest')).timestamp + 3000,
-        ipfsHash,
-      },
+      data,
       props.navigation,
       props.daoStore,
     );
@@ -186,10 +173,10 @@ const CreateStep4 = props => {
     return {commonAddress};
   };
 
-  const creationError = event => {
-    errorSheetRef.current.snapTo(1);
-    errorSheetRef.current.snapTo(1);
-  };
+  // const creationError = event => {
+  //   errorSheetRef.current.snapTo(1);
+  //   errorSheetRef.current.snapTo(1);
+  // };
 
   return (
     <SafeAreaView
