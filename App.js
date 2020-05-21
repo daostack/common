@@ -75,7 +75,6 @@ import {auth, db} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
 import CommonCreationLoading from './src/Screens/CommonCreationLoading';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
-import Toast, {DURATION} from 'react-native-easy-toast';
 
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
@@ -85,7 +84,7 @@ if (Platform.OS === 'ios') {
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
 }
 
-const App = ({userStore, bottomSheetStore}) => {
+const App = ({userStore, daoStore, bottomSheetStore}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
   const errorSheetRef = useRef();
@@ -142,6 +141,7 @@ const App = ({userStore, bottomSheetStore}) => {
     const onAuthStateChanged = async user => {
       try {
         userStore.setIsLoading(true);
+        daoStore.setIsLoading(true);
         if (user) {
           await AuthService.getInstance().loadMnemonic(user.uid);
           await WalletManager.init(user.uid);
@@ -206,10 +206,18 @@ const App = ({userStore, bottomSheetStore}) => {
         console.log(e);
       }
     };
+
+    if (daoStore.isError) {
+      console.log('daostore error', daoStore.isError);
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
+      );
+    }
+    getDaos();
     checkOnboardingStatus();
     updateUser();
     return subscriber;
-  }, [userStore]);
+  }, [daoStore, userStore, bottomSheetStore]);
 
   console.log('onboarded: ', onboarded);
 
@@ -409,11 +417,6 @@ const App = ({userStore, bottomSheetStore}) => {
           />
         </Stack.Navigator>
         {bottomSheetStore.isVisible ? <BottomSheetContainer /> : null}
-        <Toast
-          ref={hudRef}
-          style={{backgroundColor: 'transparent'}}
-          positionValue={160}
-        />
       </NavigationContainer>
     </ApolloProvider>
   );
