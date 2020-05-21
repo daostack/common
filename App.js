@@ -213,7 +213,6 @@ const App = ({userStore, daoStore, bottomSheetStore}) => {
         BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
       );
     }
-    getDaos();
     checkOnboardingStatus();
     updateUser();
     return subscriber;
