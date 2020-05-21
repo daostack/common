@@ -17,6 +17,7 @@ import {getArc} from '../Util/arc';
 import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
 import Toast from '../Util/Toast';
+import {web3ProviderUrl} from '../Config';
 
 const uid = 'test';
 
@@ -29,7 +30,7 @@ class nativeBridgeTests extends React.Component {
       storedMnemonic:
         'order cabin immune pond brave guilt boil index car aware snap list',
       keychainMnemonics: '',
-      networkURL: 'Rinkeby',
+      networkURL: web3ProviderUrl,
       address: '',
       balance: '',
       ownerAddress: '',
