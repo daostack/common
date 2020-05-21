@@ -434,8 +434,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'userStore',
-  'daoStore',
-  'bottomSheetStore',
-)(observer(App));
+export default inject('userStore', 'bottomSheetStore')(observer(App));
