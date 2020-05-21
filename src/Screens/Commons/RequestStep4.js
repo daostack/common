@@ -61,7 +61,7 @@ const RequestStep4 = props => {
         files: [],
         images: [],
         links: [], // {title: "title", url: "url"}
-        funding: new BN(100000),
+        funding: new BN(100000000),
         /*
         funding: new BN(
           props.requestToJoinFormStore.form.fields[
@@ -70,12 +70,11 @@ const RequestStep4 = props => {
         ),
         */
       };
-      console.log('ArcService.getInstance() --> ', ArcService.getInstance());
+      let instance = await ArcService.getInstance();
 
-      const proposal = await ArcService.getInstance().createRequestToJoin(data);
+      const proposal = await instance.createRequestToJoin(data);
       setLoadingMessage(`JoinAndQuit Proposal with id ${proposal.id} created!`);
 
-      /*
       const navigate = CommonActions.navigate({
         name: 'CommonProfile',
         params: {
@@ -83,7 +82,6 @@ const RequestStep4 = props => {
         },
       });
       props.navigation.dispatch(navigate);
-      */
     } catch (e) {
       console.log(e);
       setLoadingMessage(`${e}`);

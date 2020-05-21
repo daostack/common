@@ -28,18 +28,19 @@ export default class ArcService {
     if (ArcService.serviceInstance == null) {
       ArcService.serviceInstance = new ArcService();
       console.log('this ->', this);
+      console.log('ArcService.serviceInstance ->', ArcService.serviceInstance);
       await ArcService.serviceInstance.arc.fetchContractInfos();
     }
-    return this.serviceInstance;
+    return ArcService.serviceInstance;
   };
 
   // PROPOSALS
 
   async createFundingProposal(data) {}
 
-  async createRequestToJoin(data) {
+  createRequestToJoin = async data => {
     return createProposalRequestToJoin(this.arc, data);
-  }
+  };
 
   // COMMONS
 
