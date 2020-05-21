@@ -799,10 +799,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@daostack/arc.js@2.0.0-experimental.33":
-  version "2.0.0-experimental.33"
-  resolved "https://registry.yarnpkg.com/@daostack/arc.js/-/arc.js-2.0.0-experimental.33.tgz#e6f6fc75b5c294fd28eb4c6f804c6766873d2166"
-  integrity sha512-neaS6CAXSv/ST351EDOfKo0fMbwoIvTIQumvXMrc32LA6U5I51VByqAKhnPZar9TJxoZr14BMle2XeV1NPbdag==
+"@daostack/arc.js@2.0.0-experimental.34":
+  version "2.0.0-experimental.34"
+  resolved "https://registry.yarnpkg.com/@daostack/arc.js/-/arc.js-2.0.0-experimental.34.tgz#a10d17319de535df9e34db81b4659ffef175a39b"
+  integrity sha512-M7nYAofjRybdCZwuMjrGG3uSuaNEJN5GJbVcJ/CHDvC7GwYdFxAFVsXVonQTqz0DvG8qNS1e+nhAHnGi5K9L4A==
   dependencies:
     apollo-cache-inmemory "^1.6.5"
     apollo-client "^2.6.8"
