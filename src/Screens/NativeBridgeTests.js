@@ -36,6 +36,7 @@ class nativeBridgeTests extends React.Component {
       ownerBalance: '',
       txStatus: '',
       txHash: '',
+      signHash: '',
       result: '',
       scTXHash: '',
       commonStatus: '',
@@ -129,14 +130,32 @@ class nativeBridgeTests extends React.Component {
   signTransaction = async () => {
     try {
       console.log('YYYY');
-      // const manager = WalletManager.getInstance();
+      const manager = WalletManager.getInstance();
+      const hash = await manager.signTransaction(
+        '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB',
+        '0.001',
+      );
       // const hash = await manager.signTransaction(
       //   '0x41B788babf69FC7F98336ff7A47F5A80c3A63d40',
       //   '0.001',
       // );
-      // console.log('HASH', hash);
-      // this.setState({txHash: hash});
-      Toast.error('TODO: use Native Wallet to sign');
+      console.log('HASH', hash);
+      this.setState({signHash: hash});
+    } catch (e) {
+      throw 'Send transaction failed with error: ' + e;
+    }
+  };
+
+  sendTransaction = async () => {
+    try {
+      console.log('YYYY');
+      const manager = WalletManager.getInstance();
+      const {hash} = await manager.sendTransaction(
+        '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB',
+        '0.001',
+      );
+      console.log('HASH', hash);
+      this.setState({txHash: hash});
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
@@ -322,12 +341,19 @@ class nativeBridgeTests extends React.Component {
             <Text>Get Wallet address Balance (obsolete)</Text>
           </TouchableOpacity>
 
-          <Text>Status: {this.state.txStatus}</Text>
-          <Text>Hash: {this.state.txHash}</Text>
+          <Text>Status: {this.state.signHash}</Text>
           <TouchableOpacity
             onPress={this.signTransaction}
             style={styles.button}>
             <Text>Sign Transaction</Text>
+          </TouchableOpacity>
+
+          <Text>Status: {this.state.txStatus}</Text>
+          <Text>Hash: {this.state.txHash}</Text>
+          <TouchableOpacity
+            onPress={this.sendTransaction}
+            style={styles.button}>
+            <Text>Send Transaction</Text>
           </TouchableOpacity>
 
           <Text>Result: {this.state.result}</Text>

@@ -43,18 +43,30 @@ export default class WalletManager {
     return await contract[functionName]();
   };
 
-  signTransaction = async (
-    toAddress,
-    value,
-    data = '0x',
-    chainId = web3NetworkId,
-  ) => {
+  signTransaction = async (to, value, data = '0x', chainId = web3NetworkId) => {
     const transaction = {
-      to: toAddress,
-      value: value,
+      to: to,
+      value: ethers.utils.parseEther(value),
       data: data,
       chainId: chainId,
     };
-    return await this.wallet.signMessage(transaction);
+    return await this.wallet.sign(transaction);
+  };
+
+  sendTransaction = async (to, value, data = '0x', chainId = web3NetworkId) => {
+    const transaction = {
+      to: to,
+      value: ethers.utils.parseEther(value),
+      data: data,
+      chainId: chainId,
+      gasLimit: 21000,
+    };
+    console.log('UUUU', this.wallet, transaction);
+    const hash = await this.wallet.sign(transaction);
+    console.log('AAAA', hash);
+    // const repsonse = await this.provider.sendTransaction(hash);
+    let repsonse = await this.wallet.sendTransaction(transaction);
+    console.log('BBB', repsonse);
+    return response;
   };
 }
