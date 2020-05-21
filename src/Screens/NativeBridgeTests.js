@@ -16,6 +16,7 @@ import {createProposalRequestToJoin} from '../Util/createProposal';
 import {getArc} from '../Util/arc';
 import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
+import Toast from '../Util/Toast';
 
 const uid = 'test';
 
@@ -93,7 +94,7 @@ class nativeBridgeTests extends React.Component {
   getOwnerBalance = async () => {
     try {
       const manager = WalletManager.getInstance();
-      const address = await manager.getOwnerAccount();
+      const address = await manager.getAddress();
       const balance = await manager.getBalance(address);
       console.log('ADDRESS: ', address);
       console.log('BALANCE: ', balance);
@@ -105,7 +106,7 @@ class nativeBridgeTests extends React.Component {
 
   getSomeFunds = async () => {
     const manager = WalletManager.getInstance();
-    const address = await manager.getOwnerAccount();
+    const address = await manager.getAddress();
     console.log(`fetching some Eth for your address ${address}`);
     fetch(
       `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
@@ -125,18 +126,17 @@ class nativeBridgeTests extends React.Component {
     }
   };
 
-  sendTransaction = async () => {
+  signTransaction = async () => {
     try {
-      const manager = WalletManager.getInstance();
-      const {hash} = await manager.sendTransaction(
-        '0x41B788babf69FC7F98336ff7A47F5A80c3A63d40',
-        '0.001',
-      );
-      this.setState({txHash: hash, txStatus: 'pending'});
-      const receipt = await manager.provider.waitForTransaction(hash);
-      this.setState({
-        txStatus: receipt.status === 0 ? 'Failed' : 'Confirmed',
-      });
+      console.log('YYYY');
+      // const manager = WalletManager.getInstance();
+      // const hash = await manager.signTransaction(
+      //   '0x41B788babf69FC7F98336ff7A47F5A80c3A63d40',
+      //   '0.001',
+      // );
+      // console.log('HASH', hash);
+      // this.setState({txHash: hash});
+      Toast.error('TODO: use Native Wallet to sign');
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
@@ -158,34 +158,22 @@ class nativeBridgeTests extends React.Component {
 
   callSmartContract = async () => {
     try {
-      const manager = WalletManager.getInstance();
-      let message = `Hello ${Math.floor(Math.random() * Math.floor(50))}`;
-      console.log(message);
-      const {
-        hash,
-      } = await manager.writeSmartContract(
-        '0x2f21957c7147c3eE49235903D6471159a16c9ccd',
-        MessageContract,
-        'setMessage',
-        [message],
-      );
-      this.setState({scTXHash: hash});
+      Toast.error('TODO');
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
   };
 
   createCommon = async () => {
-    const wallet = WalletManager.getInstance();
-
-    const arc = getArc(wallet.ethWallet);
+    const wallet = WalletManager.getInstance().wallet;
+    const arc = getArc(wallet);
 
     const commonAddress = await createCommon(
       await arc,
       {
         name: 'Green DAO',
         // name: `Test DAO ${new Date()}`,
-        founderAddresses: wallet.ethWallet.address.toLowerCase(),
+        founderAddresses: wallet.address,
         minFeeToJoin: 100, // TDB: get from formData
         fundingGoal: 100000, // TBD: get from formdata
         // TBD: get form data for deadline; these are in secondSinceEpoch
@@ -212,7 +200,7 @@ class nativeBridgeTests extends React.Component {
     try {
       const wallet = WalletManager.getInstance();
       console.log('wallet', wallet);
-      const arc = await getArc(wallet.ethWallet);
+      const arc = await getArc(wallet.wallet);
       console.log('calling the function', arc);
       const data = {
         title: `A test proposal on ${Date()}`,
@@ -337,9 +325,9 @@ class nativeBridgeTests extends React.Component {
           <Text>Status: {this.state.txStatus}</Text>
           <Text>Hash: {this.state.txHash}</Text>
           <TouchableOpacity
-            onPress={this.sendTransaction}
+            onPress={this.signTransaction}
             style={styles.button}>
-            <Text>Send Transaction</Text>
+            <Text>Sign Transaction</Text>
           </TouchableOpacity>
 
           <Text>Result: {this.state.result}</Text>

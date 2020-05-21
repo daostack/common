@@ -36,7 +36,6 @@
     "apollo-link-ws": "^1.0.19",
     "bn.js": "^5.1.1",
     "buffer": "^5.6.0",
-    "contract-proxy-kit": "^1.1.1",
     "ethers": "^4.0.45",
     "graphql": "^14.6.0",
     "lodash": "^4.17.15",

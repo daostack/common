@@ -142,8 +142,8 @@ const CreateStep4 = props => {
     console.log('formDAta: ', formData.minimum);
     console.log('formDAta: ', parseInt(formData.minimum));
     const manager = await WalletManager.getInstance();
-    const wallet = manager.ethWallet;
-    const address = await manager.getOwnerAccount();
+    const wallet = manager.wallet;
+    const address = await manager.getAddress();
     console.log('owner account: ', address);
     // we will want to have a global arc instance for all contract interactions!
     const arc = await getArc(wallet);
