@@ -29,6 +29,7 @@ const RequestStepDotHeader = props => {
             left: 0,
             top: -2,
             padding: 0,
+            zIndex: 9999
           }}
           onPress={() => props.navigation.pop()}>
           <Icon name="left-arrow" size={32} style={{margin: 10}} />

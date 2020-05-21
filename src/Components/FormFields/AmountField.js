@@ -27,7 +27,9 @@ const AmountField = ({
       textInputRef.current.focus();
       console.log(textInputRef.current);
       onCustomSelect();
+      formStore.fieldChanged('amount', amount);
     } else {
+      formStore.fieldChanged('amount', amount);
       navigation.navigate('RequestStep4');
     }
   };
