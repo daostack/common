@@ -23,7 +23,6 @@ import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
 import {IpfsClient} from '../../Config';
 import WalletManager from '../../Util/WalletManager';
 import FirebaseService from '../../Services/FirebaseService';
-import {useToast} from '../../Util/Toast';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import {numberFormatter} from '../../Util';
 import {createCommon} from '../../Util/createCommon';
@@ -43,7 +42,6 @@ const CreateStep4 = props => {
     'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
   );
   const [avatarURL, setAvatarURL] = useState(null);
-  const toast = useToast();
   const errorSheetRef = useRef();
 
   useEffect(() => {
@@ -92,11 +90,11 @@ const CreateStep4 = props => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
-        toast.error(response.error);
+        // toast.error(response.error);
         console.log('ImagePicker Error: ', response.error);
       } else {
         // const source = { uri: response.uri };
-        toast.loading('Uploading...');
+        // toast.loading('Uploading...');
         firebaseService
           .uploadImage(response.uri)
           .then(url => {
@@ -144,8 +142,8 @@ const CreateStep4 = props => {
     console.log('formDAta: ', formData.minimum);
     console.log('formDAta: ', parseInt(formData.minimum));
     const manager = await WalletManager.getInstance();
-    const wallet = manager.ethWallet;
-    const address = await manager.getOwnerAccount();
+    const wallet = manager.wallet;
+    const address = await manager.getAddress();
     console.log('owner account: ', address);
     // we will want to have a global arc instance for all contract interactions!
     const arc = await getArc(wallet);

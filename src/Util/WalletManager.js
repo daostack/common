@@ -1,44 +1,23 @@
 import {NativeWallet} from './NativeWallet';
 import {ethers, Contract} from 'ethers';
-import CPK from 'contract-proxy-kit';
+import {web3ProviderUrl, web3NetworkId} from '../Config';
 
 export default class WalletManager {
   static myInstance = null;
-  constructor(provider, cpkAddress, uid) {
+  constructor(uid) {
     return (async () => {
       this.mnemonic = await NativeWallet.retrieveMnemonic(uid);
-      this.provider = provider;
-      this.ethWallet = ethers.Wallet.fromMnemonic(this.mnemonic).connect(
+      this.provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
+      this.wallet = ethers.Wallet.fromMnemonic(this.mnemonic).connect(
         this.provider,
       );
-      this.wallet = await CPK.create({
-        ethers,
-        signer: this.ethWallet,
-        networks: cpkAddress,
-      });
       this.address = this.wallet.address.toLowerCase();
       return this;
     })();
   }
 
   static init = async uid => {
-    const cpkAddress = {
-      4: {
-        masterCopyAddress: '0xaE32496491b53841efb51829d6f886387708F99B',
-        proxyFactoryAddress: '0x336c19296d3989e9e0c2561ef21c964068657c38',
-        multiSendAddress: '0xB522a9f781924eD250A11C54105E51840B138AdD',
-        fallbackHandlerAddress: '0x40A930851BD2e590Bd5A5C981b436de25742E980',
-      },
-    };
-    const provider = new ethers.providers.InfuraProvider(
-      'rinkeby',
-      'e0cdf3bfda9b468fa908aa6ab03d5ba2',
-    );
-    WalletManager.myInstance = await new WalletManager(
-      provider,
-      cpkAddress,
-      uid,
-    );
+    WalletManager.myInstance = await new WalletManager(uid);
   };
 
   static getInstance = () => {
@@ -49,34 +28,14 @@ export default class WalletManager {
   };
 
   getAddress() {
-    return this.wallet.address.toLowerCase();
+    return this.address;
   }
 
-  getOwnerAccount = async () => {
-    const account = await this.wallet.getOwnerAccount();
-    return account.toLowerCase();
-  };
-
-  getBalance = async address => {
+  getBalance = async (address = this.address) => {
     return this.provider.getBalance(address).then(balance => {
       let balanceString = ethers.utils.formatEther(balance);
       return balanceString;
     });
-  };
-
-  sendTransaction = async (toAddress, value, data = '0x') => {
-    return this.wallet
-      .execTransactions([
-        {
-          operation: CPK.CALL,
-          to: toAddress,
-          value: ethers.utils.parseEther(value),
-          data: data,
-        },
-      ])
-      .catch(e => {
-        console.log(e);
-      });
   };
 
   readSmartContract = async (contractAddress, abi, functionName) => {
@@ -84,29 +43,24 @@ export default class WalletManager {
     return await contract[functionName]();
   };
 
-  writeSmartContract = async (
-    contractAddress,
-    abi,
-    functionName,
-    params,
-    value = '0.0',
-  ) => {
-    const contract = new Contract(contractAddress, abi, this.provider);
+  signTransaction = async (to, value, data = '0x', chainId = web3NetworkId) => {
+    const transaction = {
+      to: to,
+      value: ethers.utils.parseEther(value),
+      data: data,
+      chainId: chainId,
+    };
+    return await this.wallet.sign(transaction);
+  };
 
-    let data = contract.interface.functions[functionName].encode(params);
-    let valueHex = ethers.utils.parseEther(value);
-
-    return this.wallet
-      .execTransactions([
-        {
-          operation: CPK.CALL,
-          to: contractAddress,
-          value: valueHex,
-          data: data,
-        },
-      ])
-      .catch(e => {
-        console.log(e);
-      });
+  sendTransaction = async (to, value, data = '0x', chainId = web3NetworkId) => {
+    const transaction = {
+      to: to,
+      value: ethers.utils.parseEther(value),
+      data: data,
+      chainId: chainId,
+      gasLimit: 21000,
+    };
+    return await this.wallet.sendTransaction(transaction);
   };
 }

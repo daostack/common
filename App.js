@@ -166,10 +166,11 @@ const App = ({userStore, bottomSheetStore}) => {
 
         userStore.setIsLoading(false);
         const manager = await WalletManager.getInstance();
-        const address = await manager.getOwnerAccount();
+        const address = await manager.getAddress();
         getTestEth(address);
       } catch (error) {
-        // console.log(error);
+        console.log(error);
+        throw error;
         // Toast.error(error.toString());
       }
     };
@@ -433,8 +434,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'userStore',
-  'daoStore',
-  'bottomSheetStore',
-)(observer(App));
+export default inject('userStore', 'bottomSheetStore')(observer(App));

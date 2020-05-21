@@ -14,12 +14,10 @@ import FirebaseService from '../Services/FirebaseService';
 
 import {layout, colors, text, sizeS} from '../Theme';
 import AccordionBtn from '../Components/AccordionBtn';
-import BottomSheetContainer from '../Components/BottomSheetContainer';
-import {UserProfileSheetScreen} from './BottomSheetScreens';
 
 const UserProfileReadMode = ({navigation}) => {
   const [users, setUsers] = useState(null);
-  const [userId, setUserId] = useState(null);
+  const [_userId, setUserId] = useState(null);
   bottomSheetContainerRef = useRef();
 
   useEffect(() => {
