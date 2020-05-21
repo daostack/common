@@ -118,12 +118,17 @@ class nativeBridgeTests extends React.Component {
 
   getBalance = async () => {
     try {
+      // const manager = WalletManager.getInstance();
+      // const address = manager.getAddress();
+      // const balance = await manager.getBalance(manager.address);
+
       const manager = WalletManager.getInstance();
-      const address = manager.getAddress();
-      const balance = await manager.getBalance(manager.address);
+      const address = manager.ethWallet.address;
+      const balance = await manager.getBalance(address);
+
       console.log('ADDRESS: ', address);
       console.log('BALANCE: ', balance);
-      this.setState({address, balance});
+      // this.setState({address, balance});
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
@@ -183,7 +188,6 @@ class nativeBridgeTests extends React.Component {
     console.log('Creating common..');
     try {
       const wallet = WalletManager.getInstance();
-
       const arc = getArc(wallet.ethWallet);
       const name = `Test DAO ${Date()}`;
       IpfsClient.addAndPinString(
@@ -270,7 +274,7 @@ class nativeBridgeTests extends React.Component {
           <Text>Address: {this.state.ownerAccount}</Text>
           <Text>Balance: {this.state.ownerBalance}</Text>
           <TouchableOpacity
-            onPress={this.getOwnerBalance}
+            onPress={this.getBalance}
             style={styles.button}>
             <Text>Get local Address and balance</Text>
           </TouchableOpacity>

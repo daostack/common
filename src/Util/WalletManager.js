@@ -11,12 +11,12 @@ export default class WalletManager {
       this.ethWallet = ethers.Wallet.fromMnemonic(this.mnemonic).connect(
         this.provider,
       );
-      this.wallet = await CPK.create({
-        ethers,
-        signer: this.ethWallet,
-        networks: cpkAddress,
-      });
-      this.address = this.wallet.address.toLowerCase();
+      // this.wallet = await CPK.create({
+      //   ethers,
+      //   signer: this.ethWallet,
+      //   networks: cpkAddress,
+      // });
+      // this.address = this.wallet.address.toLowerCase();
       return this;
     })();
   }
@@ -30,10 +30,13 @@ export default class WalletManager {
         fallbackHandlerAddress: '0x40A930851BD2e590Bd5A5C981b436de25742E980',
       },
     };
-    const provider = new ethers.providers.InfuraProvider(
-      'rinkeby',
-      'e0cdf3bfda9b468fa908aa6ab03d5ba2',
-    );
+    // const provider = new ethers.providers.(
+    //   'rinkeby',
+    //   'e0cdf3bfda9b468fa908aa6ab03d5ba2',
+    // );
+    const rpcUrl = "https://xdai.poanetwork.dev/";
+    let provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+
     WalletManager.myInstance = await new WalletManager(
       provider,
       cpkAddress,
