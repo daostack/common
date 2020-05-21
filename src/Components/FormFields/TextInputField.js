@@ -142,7 +142,7 @@ class TextInputField extends React.Component {
 
     if (this.placeFieldActionComponent) {
       return (
-        <View style={{...viewStyle}}>
+        <View style={{...layout.marginTopS, ...viewStyle}}>
           <View>
             <View>{this.renderTextField()}</View>
             <View>{this.placeFieldActionComponent}</View>
@@ -152,7 +152,7 @@ class TextInputField extends React.Component {
       );
     } else {
       return (
-        <View style={{...viewStyle}}>
+        <View style={{...layout.marginTopS, ...viewStyle}}>
           {this.renderTextField()}
           {this.fieldValidation}
         </View>
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.grey4,
     paddingHorizontal: 12,
-    ...layout.marginTopS,
+    margin: 0,
   },
   textfieldRegular: {
     borderColor: colors.grey4,
