@@ -4,7 +4,7 @@
 const {first} = require('rxjs/operators');
 import {ipfsUpload} from '../../Config';
 
-export const createFundingRequest = async (arc, data) => {
+export const createFundingProposal = async (arc, data) => {
   // data must look like this
   // {
   //   title: `A test proposal on ${Date()}`,
@@ -15,18 +15,28 @@ export const createFundingRequest = async (arc, data) => {
   //   funding: new BN(100000),
   // };
 
+  console.log('createFundingProposal -> ', data);
+
   try {
     const dao = arc.dao('0x0f0c735f67fbe866a65c10ace6b3536fa09cddab');
+
+    console.log('dao -> ', dao);
+
     let plugins;
     try {
       plugins = await dao
-        .plugins({where: {name: 'JoinAndQuit'}})
+        .plugins({where: {name: 'fundingRequest'}})
         .pipe(first())
         .toPromise();
     } catch (e) {
       console.log(e);
       throw e;
     }
+
+    console.log('plugins');
+    console.log(plugins);
+    /*
+
     const joinAndQuitPlugin = plugins[0];
     console.log('joinAndQuitPlugin', joinAndQuitPlugin.id);
 
@@ -54,6 +64,7 @@ export const createFundingRequest = async (arc, data) => {
       `Transaction with ${receipt.transactionHash} was mined: proposal created!`,
     );
     return receipt.result;
+    */
   } catch (e) {
     console.log(e);
     throw e;

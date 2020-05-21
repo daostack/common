@@ -16,6 +16,7 @@ import {createProposalRequestToJoin} from '../Util/createProposal';
 import {getArc} from '../Util/arc';
 import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
+import ArcService from '../Services/ArcService';
 
 const uid = 'test';
 
@@ -220,7 +221,7 @@ class nativeBridgeTests extends React.Component {
         files: [],
         images: [],
         links: [], // {title: "title", url: "url"}
-        funding: new BN(100000),
+        funding: new BN(200),
       };
       const proposal = await createProposalRequestToJoin(arc, data);
       this.setState({
@@ -231,6 +232,34 @@ class nativeBridgeTests extends React.Component {
       this.setState({proposalState: `${e}`});
     }
     console.log(`proposal created: ${proposal.id}`);
+  };
+
+  createFundingProposal = async () => {
+    try {
+      const data = {
+        title: `A test proposal on ${Date()}`,
+        description: 'Some description',
+        files: [],
+        images: [],
+        links: [], // {title: "title", url: "url"}
+        funding: new BN(100000),
+        /*
+        funding: new BN(
+          props.requestToJoinFormStore.form.fields[
+            RequestToJoinForm.FIELD_AMOUNT
+          ].value,
+        ),
+        */
+      };
+      let instance = await ArcService.getInstance();
+
+      const fundingProposal = await instance.createFundingProposal(data);
+
+      console.log('RESULT | Funding proposal -> ', fundingProposal);
+    } catch (e) {
+      console.log(e);
+      setLoadingMessage(`${e}`);
+    }
   };
 
   render() {
@@ -281,11 +310,13 @@ class nativeBridgeTests extends React.Component {
             <Text>Create Common</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
+          <TouchableOpacity onPress={this.createProposal} style={styles.button}>
             <Text>Create a request to join [TODO]</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
+          <TouchableOpacity
+            onPress={this.createFundingProposal}
+            style={styles.button}>
             <Text>Create a funding request [TODO]</Text>
           </TouchableOpacity>
 
