@@ -4,13 +4,7 @@ import {createProposalRequestToJoin} from './createProposal';
 import {createFundingProposal} from './createFundingProposal';
 
 import {Arc} from '@daostack/arc.js';
-import {
-  graphHttpLink,
-  graphwsLink,
-  ipfsLink,
-  ARC_VERSION,
-  OVERRIDES,
-} from '../../Config';
+import {graphHttpLink, graphwsLink, ipfsLink} from '../../Config';
 
 let serviceInstance = null;
 
@@ -48,13 +42,6 @@ export default class ArcService {
   // COMMONS
 
   async createCommon(givenOpts = {}, navigation, daoStore) {
-    return createCommon(
-      this.arc,
-      givenOpts,
-      navigation,
-      daoStore,
-      ARC_VERSION,
-      OVERRIDES,
-    );
+    return createCommon(this.arc, givenOpts, navigation, daoStore);
   }
 }
