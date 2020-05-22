@@ -181,11 +181,11 @@ class nativeBridgeTests extends React.Component {
 
   createCommon = async () => {
     const wallet = WalletManager.getInstance().wallet;
+
     try {
       const commonAddress = await ArcService.getInstance().createCommon(
         {
-          name: 'Green DAO',
-          // name: `Test DAO ${new Date()}`,
+          name: `Test DAO ${new Date()}`,
           founderAddresses: wallet.address,
           minFeeToJoin: 100, // TDB: get from formData
           fundingGoal: 100000, // TBD: get from formdata
@@ -201,6 +201,7 @@ class nativeBridgeTests extends React.Component {
       this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
     } catch (error) {
       console.log('Error -> ', error);
+      this.setState({commonStatus: `${error}`});
     }
   };
 
@@ -242,14 +243,6 @@ class nativeBridgeTests extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
-          <Text style={{marginVertical: 10}}>
-            --------------- Common Interactions -----------------
-          </Text>
-          <Text>Common Tx: {this.state.commonStatus}</Text>
-          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
-            <Text>Create Common</Text>
-          </TouchableOpacity>
-
           <TouchableOpacity onPress={this.error} style={styles.button}>
             <Text>Error</Text>
           </TouchableOpacity>
