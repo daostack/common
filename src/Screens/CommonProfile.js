@@ -9,8 +9,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import gql from 'graphql-tag';
-import {ApolloClientConfig as client} from '../Config';
 import {text, layout, colors, sizeL} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
@@ -27,10 +25,8 @@ import ProposalCard from '../Components/Proposals/ProposalCard';
 import BottomRightButton from '../Components/BottomRightButton';
 import DiscussionList from './Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
-import HUD from '../Util/Toast';
 import Toast from '../Util/Toast';
 
-const {cache} = client;
 const mockData = {
   commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
   commonLogo:

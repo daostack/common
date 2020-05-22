@@ -2,13 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
-  StyleSheet,
   ScrollView,
   Dimensions,
   SafeAreaView,
   Animated,
 } from 'react-native';
-import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
 import RequestToJoinRule from '../../Components/Commons/RequestToJoinRule';
 
 import {observer, inject} from 'mobx-react';
@@ -156,24 +154,5 @@ const RequestStep1 = props => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  readMoreButton: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.mainBlue,
-  },
-
-  continueButton: {
-    width: '100%',
-    height: 48,
-    borderRadius: 32,
-    flexDirection: 'row',
-    paddingHorizontal: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.mainBlue,
-  },
-});
 
 export default inject('requestToJoinFormStore')(observer(RequestStep1));

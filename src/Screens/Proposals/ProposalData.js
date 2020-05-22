@@ -7,7 +7,7 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import {text, layout, colors, sizeM, sizeXS} from '../../Theme';
+import {text, layout, colors, sizeM} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import ReadMore from 'react-native-read-more-text';
 import UserMessageCard from '../../Components/Discussion/UserMessageCard';
@@ -16,7 +16,6 @@ import Loader from '../../Components/Loader';
 import ImageSize from 'react-native-image-size';
 import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
 import firestore from '@react-native-firebase/firestore';
-import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {useNavigation} from '@react-navigation/native';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {observer, inject} from 'mobx-react';

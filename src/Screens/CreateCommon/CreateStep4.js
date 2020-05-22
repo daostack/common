@@ -139,6 +139,8 @@ const CreateStep4 = props => {
     const formData = props.createCommonFormStore.getChangedFormFieldsJson();
     const manager = await WalletManager.getInstance();
     const address = await manager.getAddress();
+    console.log('owner account: ', address);
+
     // TODO: get form data for fundingGoalDeadline; these are in secondSinceEpoch
     const deadline = '1621679337'; // in may 2021
     const data = {

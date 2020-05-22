@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React from 'react';
 
 import {
   SafeAreaView,
@@ -11,9 +11,6 @@ import {
 import EditProfileForm from '../Components/Forms/EditProfileForm';
 import {colors, text, layout} from '../Theme';
 import {observer, inject} from 'mobx-react';
-import {CommonActions} from '@react-navigation/native';
-import UnsavedChanges from './BottomSheetScreens/UnsavedChanges';
-import BottomSheetContainer from '../Components/BottomSheetContainer';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '../Assets/iconfont/Icon';
 import Loader from '../Components/Loader';
@@ -57,7 +54,6 @@ const EditProfile = ({
   };
 
   const closeBottomSheet = () => {
-    // Call snapTo twice because of an issue in the library :(  https://github.com/osdnk/react-native-reanimated-bottom-sheet/issues/198
     bottomSheetStore.hideBottomSheet();
   };
 
@@ -96,14 +92,6 @@ const EditProfile = ({
           {userStore.userInfo ? renderBody() : <Loader />}
         </ScrollView>
       </SafeAreaView>
-      {/*
-      <BottomSheetContainer ref={unsavedChangesSheetRef}>
-        <UnsavedChanges
-          navigation={navigation}
-          onContinueEditing={onContinueEditing}
-        />
-      </BottomSheetContainer>
-    */}
     </>
   );
 };
