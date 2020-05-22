@@ -7,7 +7,6 @@ const ProposalCardHeader = ({isBoosted, openBoostedInfo}) => {
   let iconName = 'star';
   let iconColor = colors.mainBlue;
   let headerTitle = 'Boosted';
-  let HeaderTitleBackground = '';
 
   if (isBoosted) {
     iconName = 'boosted';

@@ -61,12 +61,12 @@ class RequestToJoinFormStore extends FormStore {
     // console.log(validation.errors.errors);
     isValid = true;
     console.log('fields -> ', fields);
-    for (const key in fields) {
-      console.log('key -> ', key);
-      const field = fields[key];
+    for (const currKey in fields) {
+      console.log('key -> ', currKey);
+      const field = fields[currKey];
 
-      for (const key in validation.errors.errors) {
-        this.form.fields[field].error = validation.errors.first(key);
+      for (const currKey in validation.errors.errors) {
+        this.form.fields[field].error = validation.errors.first(currKey);
         isValid = false;
       }
     }

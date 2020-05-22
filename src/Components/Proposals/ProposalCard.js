@@ -15,21 +15,21 @@ const ProposalCard = ({proposalId, onReviewProposal}) => {
   useEffect(() => {
     const getProposalInfo = async currProposalId => {
       try {
-        let proposalInfo = await ProposalService.getInstance().getProposalInfo(
+        let currProposalInfo = await ProposalService.getInstance().getProposalInfo(
           currProposalId,
         );
 
         //RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
-        if (proposalInfo.joinAndQuit) {
-          proposedMemberId = proposalInfo.joinAndQuit.proposedMemberId;
-          funding = proposalInfo.joinAndQuit.funding;
+        if (currProposalInfo.joinAndQuit) {
+          proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+          funding = currProposalInfo.joinAndQuit.funding;
         }
         //FundingRequest proposal
         else {
-          proposedMemberId = proposalInfo.fundingRequest.beneficiaryId;
-          funding = proposalInfo.joinAndQuit.amount;
+          proposedMemberId = currProposalInfo.fundingRequest.beneficiaryId;
+          funding = currProposalInfo.joinAndQuit.amount;
         }
 
         const currProposedUser = await FirebaseService.getInstance().getUserById(
@@ -37,7 +37,7 @@ const ProposalCard = ({proposalId, onReviewProposal}) => {
         );
 
         setProposedUser(currProposedUser);
-        setProposalInfo({...proposalInfo, ...{funding: funding}});
+        setProposalInfo({...currProposalInfo, ...{funding: funding}});
       } catch (error) {
         console.log('error: ', error);
       }

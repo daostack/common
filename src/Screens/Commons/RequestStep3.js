@@ -41,22 +41,6 @@ const RequestStep3 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const handleRuleTitles = (x, text) => {
-    // props.requestToJoinFormStore.registerFormField(`ruleTitles_${x}`, 'string');
-    // console.log(props.requestToJoinFormStore);
-    props.requestToJoinFormStore.registerFormField(`ruleTitles_${x}`, 'string');
-    props.requestToJoinFormStore.fieldChanged(`ruleTitles_${x}`, text);
-    // ruleTitles[x] = text;
-    // console.log(x, text, ruleTitles);
-  };
-
-  const handleRuleBody = (x, text) => {
-    props.requestToJoinFormStore.registerFormField(`ruleBody_${x}`, 'string');
-    // ruleBody[x] = text;
-    // console.log(ruleBody);
-    props.requestToJoinFormStore.fieldChanged(`ruleBody_${x}`, text);
-  };
-
   const isValid = () => {
     props.requestToJoinFormStore.isFormValid();
 

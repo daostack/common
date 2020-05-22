@@ -18,7 +18,6 @@ import CreateStepHeader from './RequestStepHeader';
 import CreateStepNavigation from './RequestStepNavigation';
 
 import RequestToJoinForm from '../../Components/Forms/RequestToJoinForm';
-import moment from 'moment';
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from './RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
@@ -26,9 +25,6 @@ import {CommonActions} from '@react-navigation/native';
 const RequestStep2 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [segmentedIndex] = useState(0);
-  const [pickDate] = useState('Custom');
-  const [_show, setShow] = useState(false);
   const [pass, setPass] = useState(true);
 
   useEffect(() => {
@@ -39,41 +35,6 @@ const RequestStep2 = props => {
     });
     setHeaderHeight(height);
   }, [scrollY]);
-
-  useEffect(() => {
-    const name = RequestToJoinForm.DEADLINE;
-    props.requestToJoinFormStore.registerFormField(name, 'required');
-    switch (segmentedIndex) {
-      case 0: {
-        props.requestToJoinFormStore.fieldChanged(
-          name,
-          moment()
-            .add('7', 'days')
-            .toDate(),
-        );
-        setShow(false);
-        break;
-      }
-      case 1: {
-        props.requestToJoinFormStore.fieldChanged(
-          name,
-          moment()
-            .add('1', 'months')
-            .toDate(),
-        );
-        setShow(false);
-        break;
-      }
-      case 2: {
-        props.requestToJoinFormStore.fieldChanged(
-          name,
-          moment(pickDate, 'MMM DD, YYYY').toDate(),
-        );
-        setShow(true);
-        break;
-      }
-    }
-  }, [segmentedIndex, pickDate, props.requestToJoinFormStore]);
 
   const isValid = () => {
     const result = props.requestToJoinFormStore.isFormValidSelectedFields([

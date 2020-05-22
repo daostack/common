@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import MultiImageField from '../FormFields/MultiImageField';
 import MultiFileField from '../FormFields/MultiFileField';
@@ -174,23 +174,5 @@ class FundingRequestForm extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  containerRow: {
-    flexDirection: 'row',
-    alignSelf: 'stretch',
-    marginTop: 80,
-  },
-  emailContainer: {
-    ...layout.content,
-    ...layout.marginBottomXL,
-    marginTop: 0,
-  },
-  addLinkBtn: {
-    ...text.h3Black,
-    color: colors.mainBlue,
-    textAlign: 'left',
-  },
-});
 
 export default inject('fundingRequestFormStore')(observer(FundingRequestForm));
