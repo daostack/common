@@ -3,10 +3,11 @@ import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import MultiImageField from '../FormFields/MultiImageField';
 import MultiFileField from '../FormFields/MultiFileField';
+import MultiLinkField from '../FormFields/MultiLinkField';
 
 import {observer, inject} from 'mobx-react';
 import {layout, text, colors} from '../../Theme';
-import RequestStepActionButton from '../../Screens/Commons/RequestStepActionButton';
+import TextInputFieldWithIcon from '../../Components/FormFields/TextInputFieldWithIcon';
 
 class FundingRequestForm extends React.Component {
   static FIELD_TITLE = 'Title';
@@ -64,6 +65,7 @@ class FundingRequestForm extends React.Component {
           multiline={true}
           numberOfLines={2}
           autoCorrect={false}
+          infoLabel="Required"
           validation={{
             name: FundingRequestForm.FIELD_TITLE,
             formStore: this.props.fundingRequestFormStore,
@@ -71,18 +73,27 @@ class FundingRequestForm extends React.Component {
           }}
         />
 
-        <TextInputField
+        <TextInputFieldWithIcon
+          iconName="dollar"
+          iconSize={12}
+          iconStyle={{paddingRight: 5}}
+          iconEmptyColor={colors.grey3}
+          iconFillColor={colors.grey}
           viewStyle={{alignSelf: 'stretch'}}
           label="Amount requested"
-          placeholderText="$"
+          infoLabel="Required"
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType="numeric"
           validation={{
             name: FundingRequestForm.FIELD_AMOUNT_REQUESTED,
             formStore: this.props.fundingRequestFormStore,
-            validateRule: 'required',
+            validateRule: 'required|numeric',
           }}
         />
 
         <TextInputField
+          infoLabel="Required"
           label="Description"
           placeholderText="What exactly do you plan to do and how? How does it align with the common's agenda and goals?"
           multiline={true}
@@ -104,39 +115,15 @@ class FundingRequestForm extends React.Component {
           Have any resources or links to support your offer?
         </Text>
 
-        {[...Array(this.state.linkCount).keys()].map(x => (
-          <>
-            <TextInputField
-              key={x}
-              value={''}
-              viewStyle={{marginTop: x === 0 ? 0 : -30}}
-              placeholderText="Title"
-            />
-            <TextInputField
-              key={x}
-              value={''}
-              viewStyle={{marginTop: -25}}
-              placeholderText="https://"
-              autoCapitalize="none"
-              autoCorrect={false}
-              //onChangeText={isValid}
-              validation={{
-                name: `${FundingRequestForm.FIELD_LINKS}_${x}`,
-                formStore: fundingRequestFormStore,
-                validateRule: 'string|url',
-              }}
-            />
-          </>
-        ))}
-        <TouchableOpacity>
-          <Text
-            style={styles.addLinkBtn}
-            onPress={() =>
-              this.setState({linkCount: this.state.linkCount + 1})
-            }>
-            Add Link
-          </Text>
-        </TouchableOpacity>
+        <MultiLinkField
+          allowsEditing={true}
+          title="Title"
+          validation={{
+            name: FundingRequestForm.FIELD_LINKS,
+            formStore: fundingRequestFormStore,
+            validateRule: 'string|url',
+          }}
+        />
 
         <Text
           style={{
@@ -182,12 +169,6 @@ class FundingRequestForm extends React.Component {
             formStore: fundingRequestFormStore,
             validateRule: 'string',
           }}
-        />
-
-        <RequestStepActionButton
-          title="Create Proposal"
-          pass={fundingRequestFormStore.form.meta.isValid}
-          onPress={this.formSave}
         />
       </View>
     );

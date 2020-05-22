@@ -1,7 +1,4 @@
 package com.daostack.common.bridge;
-
-import android.widget.Toast;
-
 import com.daostack.common.manager.WalletManager;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;

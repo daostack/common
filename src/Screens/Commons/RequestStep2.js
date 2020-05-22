@@ -32,7 +32,7 @@ const RequestStep2 = props => {
 
   useEffect(() => {
     const height = scrollY.interpolate({
-      inputRange: [0, 50],
+      inputRange: [50, 50],
       outputRange: [0, 67],
       extrapolate: 'clamp',
     });
@@ -173,7 +173,7 @@ const RequestStep2 = props => {
 
             <MultiLinkField
               allowsEditing={true}
-              title={'Add File'}
+              title="Title"
               validation={{
                 name: RequestToJoinForm.FIELD_LINKS,
                 formStore: props.requestToJoinFormStore,

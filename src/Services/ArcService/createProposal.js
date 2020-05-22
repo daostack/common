@@ -16,9 +16,22 @@ export const createProposalRequestToJoin = async (arc, data) => {
   // };
 
   try {
-    const dao = arc.dao('0x0f0c735f67fbe866a65c10ace6b3536fa09cddab');
+    //const dao = arc.dao('0x0f0c735f67fbe866a65c10ace6b3536fa09cddab');
+    console.log('CREATE PROPOSAL | request to join');
+    const daoId = '0x99d48232e014891b9bc320aa6910f2bcfa2027f1'; // My dao
+    //const daoId = '0x4e95b0c6f9777a19b08487848ea125b6787f8944'; // New dao
+    const dao = arc.dao(daoId);
+    console.log('DAO -> ', dao);
     let plugins;
+
     try {
+      const allPlugins = await dao
+        .plugins()
+        .pipe(first())
+        .toPromise();
+
+      console.log('allPlugins -> ', allPlugins);
+
       plugins = await dao
         .plugins({where: {name: 'JoinAndQuit'}})
         .pipe(first())
@@ -27,6 +40,8 @@ export const createProposalRequestToJoin = async (arc, data) => {
       console.log(e);
       throw e;
     }
+    console.log('PLUGINS -> ', plugins);
+
     const joinAndQuitPlugin = plugins[0];
     console.log('joinAndQuitPlugin', joinAndQuitPlugin.id);
 

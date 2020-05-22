@@ -39,41 +39,42 @@ const Discussions = props => {
   const [isExpanded, setIsExpanded] = useState(false);
   const data = props.route.params.data;
   const commonId = props.route.params.commonId;
+  const discussionId = data.id;
   const [msgGroup, setMsgDroup] = useState([]);
-
-  const [showInfo, setShowInfo] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [discussion, setDiscussion] = useState();
   const [followState, setFollowState] = useState(false);
 
+  console.log('data', data);
+  const currentUser = auth().currentUser;
+
   const hideMenu = () => {
     setShowMenu(false);
   };
-  let listRef = useRef([]);
 
+  let listRef = useRef([]);
   useEffect(() => {
-    const uid = auth().currentUser.uid;
+    let uid = null;
+    if (currentUser) {
+      uid = currentUser.uid;
+    }
     const unsubscribe = firestore()
-      .collection('common')
-      .doc(commonId)
       .collection('discussion')
-      .doc(data.id)
+      .doc(discussionId)
       .onSnapshot(snapshot => {
-        setDiscussion({id: data.id, ...snapshot.data()});
+        setDiscussion({id: discussionId, ...snapshot.data()});
         console.log(snapshot.data());
         const follower = snapshot.data().follower;
-        if (follower) {
+        if (follower && uid) {
           const state = follower.includes(uid);
           setFollowState(state);
         }
       });
     return unsubscribe;
-  }, [commonId, data.id]);
+  }, [commonId, discussionId, currentUser]);
 
   useEffect(() => {
     const unsubscribe = firestore()
-      .collection('common')
-      .doc(commonId)
       .collection('discussion')
       .doc(data.id)
       .collection('message')
@@ -120,277 +121,283 @@ const Discussions = props => {
         },
         error => console.error(error),
       );
-    return () => {
-      unsubscribe();
-    };
+    return unsubscribe;
   }, [commonId, data.id]);
 
   useEffect(() => {
     const fetchUser = async () => {
       const userData = await FirebaseService.getInstance().getUserById(
-        data.owner,
+        data.ownerId,
       );
       setUser(userData);
     };
     fetchUser();
   }, [data]);
 
-  openOptionsMenu = () => {
+  const openOptionsMenu = () => {
+    if (!currentUser) {
+      showLoginScreen();
+      return;
+    }
     props.bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
     );
   };
 
-  sendMessageToDiscussion = async () => {
-    const followDiscussion = async () => {
-      const uid = auth().currentUser.uid;
+  const showLoginScreen = () => {
+    props.bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
+    );
+  };
+
+  const followDiscussion = async () => {
+    let uid = null;
+    if (currentUser) {
+      uid = currentUser.uid;
+    } else {
+      showLoginScreen();
+    }
+    firestore()
+      .collection('discussion')
+      .doc(discussionId)
+      .update({
+        follower: followState
+          ? firestore.FieldValue.arrayRemove(uid)
+          : firestore.FieldValue.arrayUnion(uid),
+      })
+      .then(() => {
+        console.log('Follow State Change');
+        setShowMenu(false);
+      });
+  };
+
+  const sendMessageToDiscussion = async () => {
+    const userStore = currentUser;
+    if (!userStore) {
+      showLoginScreen();
+    }
+    // props.userStore;
+    inputRef.current.clear();
+    console.log('userStore', commonId, data.id, userStore);
+    const message = inputRef.current._lastNativeText;
+    if (message && message.trim().length) {
+      console.log('message', message);
       firestore()
-        .collection('common')
-        .doc(commonId)
         .collection('discussion')
-        .doc(data.id)
-        .update({
-          follower: followState
-            ? firestore.FieldValue.arrayRemove(uid)
-            : firestore.FieldValue.arrayUnion(uid),
+        .doc(discussionId)
+        .collection('message')
+        .doc()
+        .set({
+          text: message,
+          createTime: new Date(),
+          ownerId: userStore.uid,
+          ownerName: userStore.displayName,
+          ownerAvatar: userStore.photoURL,
+          commonId: commonId,
+          discussionId: data.id,
         })
         .then(() => {
-          console.log('Follow State Change');
-          setShowMenu(false);
+          console.log('YES', inputRef.current);
+          Keyboard.dismiss();
+        })
+        .catch(error => {
+          console.log('NO', error);
+          Toast.error(error);
         });
-    };
+    } else {
+      Toast.error('Empty Message');
+    }
+  };
 
-    const sendMessageToDiscussion = async () => {
-      const userStore = auth().currentUser;
-      // props.userStore;
-      console.log('userStore', commonId, data.id, userStore);
-      const message = inputRef.current._lastNativeText;
-      if (message && message.trim().length) {
-        console.log('message', message);
-        firestore()
-          .collection('common')
-          .doc(commonId)
-          .collection('discussion')
-          .doc(data.id)
-          .collection('message')
-          .doc()
-          .set({
-            text: message,
-            createTime: new Date(),
-            ownerId: userStore.uid,
-            ownerName: userStore.displayName,
-            ownerAvatar: userStore.photoURL,
-            commonId: commonId,
-            discussionId: data.id,
-          })
-          .then(() => {
-            console.log('YES');
-            inputRef.current.clear();
-            Keyboard.dismiss();
-          })
-          .catch(error => {
-            console.log('NO', error);
-            Toast.error(error);
-          });
-      } else {
-        Toast.error('Empty Message');
-      }
-    };
-
-    const header = () => {
-      return (
-        // <SafeAreaView flex={1}>
-        <>
-          <NavigationBar
-            statusBar={{hidden: true}}
-            style={{
-              height: 48,
-            }}
-            title={{
-              title: data.title,
-              style: text.h3Black,
-            }}
-            leftButton={
-              <TouchableOpacity
-                style={{justifyContent: 'center'}}
-                onPress={() => props.navigation.pop()}>
-                <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
-              </TouchableOpacity>
-            }
-            rightButton={
-              <TouchableOpacity
-                style={{justifyContent: 'center'}}
-                onPress={openOptionsMenu}>
-                <Icon
-                  name="menu-horizontal"
-                  size={32}
-                  style={{marginRight: 10}}
+  const header = () => {
+    return (
+      // <SafeAreaView flex={1}>
+      <>
+        <NavigationBar
+          statusBar={{hidden: true}}
+          style={{
+            height: 48,
+          }}
+          title={{
+            title: data.title,
+            style: text.h3Black,
+          }}
+          leftButton={
+            <TouchableOpacity
+              style={{justifyContent: 'center'}}
+              onPress={() => props.navigation.pop()}>
+              <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
+            </TouchableOpacity>
+          }
+          rightButton={
+            <TouchableOpacity
+              style={{justifyContent: 'center'}}
+              onPress={openOptionsMenu}>
+              <Icon
+                name="menu-horizontal"
+                size={32}
+                style={{marginRight: 10}}
+              />
+            </TouchableOpacity>
+          }
+        />
+        <View
+          style={{
+            backgroundColor: colors.white,
+            // flex: 1,
+            paddingBottom: 0,
+          }}>
+          {isExpanded ? (
+            <View style={{paddingTop: 20, paddingHorizontal: 20}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  paddingVertical: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  style={styles.avatar}
+                  source={{uri: user.photoURL}}
+                  // source={require('../../Assets/daoGeneralInfo.png')}
                 />
-              </TouchableOpacity>
-            }
-          />
-          <View
-            style={{
-              backgroundColor: colors.white,
-              // flex: 1,
-              paddingBottom: 0,
-            }}>
-            {isExpanded ? (
-              <View style={{paddingTop: 20, paddingHorizontal: 20}}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    paddingVertical: 10,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Image
-                    style={styles.avatar}
-                    source={{uri: user.photoURL}}
-                    // source={require('../../Assets/daoGeneralInfo.png')}
-                  />
-                  <View style={{flex: 1, paddingHorizontal: 10}}>
-                    <Text style={{fontWeight: 'bold'}}>{user.displayName}</Text>
-                    {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-                    <Text style={{color: colors.grey3}}>
-                      {moment(data.createTime.toDate()).fromNow()}
-                    </Text>
-                  </View>
-                </View>
-
-                <View>
-                  <Text
-                    style={{fontSize: 16, lineHeight: 25, paddingVertical: 10}}>
-                    {data.message}
+                <View style={{flex: 1, paddingHorizontal: 10}}>
+                  <Text style={{fontWeight: 'bold'}}>{user.displayName}</Text>
+                  {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
+                  <Text style={{color: colors.grey3}}>
+                    {moment(data.createTime.toDate()).fromNow()}
                   </Text>
                 </View>
-
-                <TouchableOpacity
-                  style={{alignItems: 'center'}}
-                  onPress={() => {
-                    setIsExpanded(!isExpanded);
-                  }}>
-                  <Icon name="up-arrow" size={32} />
-                </TouchableOpacity>
               </View>
-            ) : (
-              <>
-                <TouchableOpacity
-                  style={{alignItems: 'center'}}
-                  onPress={() => {
-                    setIsExpanded(!isExpanded);
-                  }}>
-                  <Icon name="down-arrow" size={32} />
-                </TouchableOpacity>
-              </>
-            )}
-            <View
-              style={{
-                height: 4,
-                marginTop: 10,
-                // paddingHorizontal: -20,
-                marginHorizontal: -20,
-                backgroundColor: colors.grey4,
-              }}
-            />
-          </View>
-          {/* </SafeAreaView> */}
-        </>
-      );
-    };
 
-    return (
-      <SafeAreaView style={{flex: 1, backgroundColor: colors.lightBlue}}>
-        {header()}
-        <ScrollView
-          style={{flex: 1}}
-          contentContainerStyle={{paddingBottom: 60}}>
-          <SectionList
-            sections={msgGroup}
-            ref={chatRef}
-            // ListFooterComponent={header}
-            renderItem={x => <DiscussionMessage data={x.item} />}
-            renderSectionFooter={({section: {date}}) => (
-              <Text style={styles.timeHeader}>
-                {moment().isSame(date, 'day') ? 'Today' : date}
-              </Text>
-            )}
-            keyExtractor={x => x.id}
-            stickySectionHeadersEnabled={true}
-            inverted={true}
-            contentContainerStyle={{paddingTop: 10}}
-            // initialScrollIndex={2}
+              <View>
+                <Text
+                  style={{fontSize: 16, lineHeight: 25, paddingVertical: 10}}>
+                  {data.message}
+                </Text>
+              </View>
+
+              <TouchableOpacity
+                style={{alignItems: 'center'}}
+                onPress={() => {
+                  setIsExpanded(!isExpanded);
+                }}>
+                <Icon name="up-arrow" size={32} />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <>
+              <TouchableOpacity
+                style={{alignItems: 'center'}}
+                onPress={() => {
+                  setIsExpanded(!isExpanded);
+                }}>
+                <Icon name="down-arrow" size={32} />
+              </TouchableOpacity>
+            </>
+          )}
+          <View
+            style={{
+              height: 4,
+              marginTop: 10,
+              // paddingHorizontal: -20,
+              marginHorizontal: -20,
+              backgroundColor: colors.grey4,
+            }}
           />
-          {/* <View style={{flex: 1}}>
+        </View>
+        {/* </SafeAreaView> */}
+      </>
+    );
+  };
+
+  return (
+    <SafeAreaView style={{flex: 1, backgroundColor: colors.lightBlue}}>
+      {header()}
+      <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
+        <SectionList
+          sections={msgGroup}
+          ref={chatRef}
+          // ListFooterComponent={header}
+          renderItem={x => <DiscussionMessage data={x.item} />}
+          renderSectionFooter={({section: {date}}) => (
+            <Text style={styles.timeHeader}>
+              {moment().isSame(date, 'day') ? 'Today' : date}
+            </Text>
+          )}
+          keyExtractor={x => x.id}
+          stickySectionHeadersEnabled={true}
+          inverted={true}
+          contentContainerStyle={{paddingTop: 10}}
+          // initialScrollIndex={2}
+        />
+        {/* <View style={{flex: 1}}>
         <ChatRoom
           path={`common/${commonId}/discussion/${data.id}/message`}
           commonId={commonId}
         />
         </View> */}
-        </ScrollView>
+      </ScrollView>
 
-        <KeyboardAvoidingView
-          // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
-          <View style={styles.input}>
-            <View style={styles.inputBorder}>
-              <TextInput
-                ref={inputRef}
-                editable={true}
-                multiline={true}
-                placeholderText={'Say something'}
-                onContentSizeChange={e =>
-                  setInputHeight(e.nativeEvent.contentSize.height)
+      <KeyboardAvoidingView
+        // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
+        <View style={styles.input}>
+          <View style={styles.inputBorder}>
+            <TextInput
+              ref={inputRef}
+              editable={true}
+              multiline={true}
+              placeholderText={'Say something'}
+              onContentSizeChange={e =>
+                setInputHeight(e.nativeEvent.contentSize.height)
+              }
+              style={{flex: 1, height: inputHeight, marginHorizontal: 10}}
+              fontSize={15}
+              onChangeText={text => setInputText(text)}
+            />
+            <TouchableOpacity
+              style={{paddingRight: 15, justifyContent: 'center'}}
+              onPress={sendMessageToDiscussion}>
+              <Icon
+                name="edit"
+                size={20}
+                color={
+                  inputText && inputText.trim() ? colors.mainBlue : colors.grey3
                 }
-                style={{flex: 1, height: inputHeight, marginHorizontal: 10}}
-                fontSize={15}
-                onChangeText={text => setInputText(text)}
               />
-              <TouchableOpacity
-                style={{paddingRight: 15, justifyContent: 'center'}}
-                onPress={sendMessageToDiscussion}>
-                <Icon
-                  name="edit"
-                  size={20}
-                  color={
-                    inputText && inputText.trim()
-                      ? colors.mainBlue
-                      : colors.grey3
-                  }
-                />
-              </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           </View>
-          <View style={{height: 30, backgroundColor: colors.white}} />
-        </KeyboardAvoidingView>
+        </View>
+        <View style={{height: 30, backgroundColor: colors.white}} />
+      </KeyboardAvoidingView>
 
-        <BottomSheetModal
-          isVisible={showMenu}
-          onClose={hideMenu}
-          style={styles.modalStyle}>
-          <View style={styles.bottomSheet}>
-            <Text style={styles.sheetTitle}>Options</Text>
-            <TouchableOpacity onPress={() => followDiscussion()}>
-              <View style={styles.sheetButton}>
-                <Icon name="following" color={colors.black} />
-                <View style={{flex: 1}}>
-                  <Text style={[styles.sheetText, {color: colors.black}]}>
-                    {followState ? 'Unfollow' : 'Follow'}
-                  </Text>
-                </View>
+      <BottomSheetModal
+        isVisible={showMenu}
+        onClose={hideMenu}
+        style={styles.modalStyle}>
+        <View style={styles.bottomSheet}>
+          <Text style={styles.sheetTitle}>Options</Text>
+          <TouchableOpacity onPress={() => followDiscussion()}>
+            <View style={styles.sheetButton}>
+              <Icon name="following" color={colors.black} />
+              <View style={{flex: 1}}>
+                <Text style={[styles.sheetText, {color: colors.black}]}>
+                  {followState ? 'Unfollow' : 'Follow'}
+                </Text>
               </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={styles.sheetButton}>
-                <Icon name="report" color={colors.against} />
-                <Text style={styles.sheetText}>Report</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </BottomSheetModal>
-      </SafeAreaView>
-    );
-  };
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={styles.sheetButton}>
+              <Icon name="report" color={colors.against} />
+              <Text style={styles.sheetText}>Report</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </BottomSheetModal>
+    </SafeAreaView>
+  );
 };
 
 const styles = StyleSheet.create({

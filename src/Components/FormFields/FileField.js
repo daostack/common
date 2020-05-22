@@ -17,7 +17,6 @@ class FileField extends React.Component {
     super(props);
 
     const {validation, value} = this.props;
-    this.toast = new Toast();
 
     if (validation) {
       const {name, formStore, validateRule} = validation;
@@ -49,12 +48,12 @@ class FileField extends React.Component {
         res.size,
       );
 
-      this.toast.loading('Uploading...');
+      Toast.loading('Uploading...');
       const downloadUrl = await FirebaseService.getInstance().uploadFile(
         res.uri,
       );
       console.log('downloadUrl', downloadUrl);
-      this.toast.done('Success');
+      Toast.done('Success');
       this.onChangeValue(downloadUrl);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {

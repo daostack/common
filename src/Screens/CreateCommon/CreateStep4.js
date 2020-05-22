@@ -14,7 +14,6 @@ import {StackActions} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
 import ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
-import {ethers} from 'ethers';
 import {colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import CreateStepHeader from './CreateStepHeader';
@@ -23,7 +22,6 @@ import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
 import {IpfsClient} from '../../Config';
 import WalletManager from '../../Util/WalletManager';
 import FirebaseService from '../../Services/FirebaseService';
-import {useToast} from '../../Util/Toast';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import {numberFormatter} from '../../Util';
 import {createCommon} from '../../Util/createCommon';
@@ -32,7 +30,6 @@ import {getArc} from '../../Util/arc';
 import ArcService from '../../Services/ArcService';
 
 const {width} = Dimensions.get('window');
-const provider = ethers.getDefaultProvider('rinkeby');
 
 const firebaseService = new FirebaseService();
 
@@ -45,7 +42,6 @@ const CreateStep4 = props => {
     'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
   );
   const [avatarURL, setAvatarURL] = useState(null);
-  const toast = useToast();
   const errorSheetRef = useRef();
 
   useEffect(() => {
@@ -94,11 +90,11 @@ const CreateStep4 = props => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
-        toast.error(response.error);
+        // toast.error(response.error);
         console.log('ImagePicker Error: ', response.error);
       } else {
         // const source = { uri: response.uri };
-        toast.loading('Uploading...');
+        // toast.loading('Uploading...');
         firebaseService
           .uploadImage(response.uri)
           .then(url => {
@@ -146,39 +142,28 @@ const CreateStep4 = props => {
     console.log('formDAta: ', formData.minimum);
     console.log('formDAta: ', parseInt(formData.minimum));
     const manager = await WalletManager.getInstance();
-    //const wallet = manager.ethWallet;
-    const address = await manager.getOwnerAccount();
+    const wallet = manager.wallet;
+    const address = await manager.getAddress();
     console.log('owner account: ', address);
     // we will want to have a global arc instance for all contract interactions!
-    //const arc = await getArc(wallet);
-    console.log({
+    const arc = await getArc(wallet);
+    const data = {
       name: formData.name,
       founderAddresses: address,
       tokenDist: [0],
       repDist: [100],
-      minFeeToJoin: parseInt(formData.minimum), // TDB: get from formData
-      fundingGoal: formData.funding, // TBD: get from formdata
-      // TBD: get form data for deadline; these are in secondSinceEpoch
-      //TODO: get data for deadline from form data
-      fundingGoalDeadline: (await provider.getBlock('latest')).timestamp + 3000,
+      minFeeToJoin: parseInt(formData.minimum, 10),
+      fundingGoal: formData.funding,
+      // TBD: get form data for fundingGoalDeadline; these are in secondSinceEpoch
+      fundingGoalDeadline:
+        (await WalletManager.provider.getBlock('latest')).timestamp + 3000,
       ipfsHash,
-    });
+    };
+    console.log(data);
 
     const commonAddress = await ArcService.getInstance().createCommon(
       arc,
-      {
-        name: formData.name,
-        founderAddresses: address,
-        tokenDist: [0],
-        repDist: [100],
-        minFeeToJoin: parseInt(formData.minimum), // TDB: get from formData
-        fundingGoal: formData.funding, // TBD: get from formdata
-        // TBD: get form data for deadline; these are in secondSinceEpoch
-        //TODO: get data for deadline from form data
-        fundingGoalDeadline:
-          (await provider.getBlock('latest')).timestamp + 3000,
-        ipfsHash,
-      },
+      data,
       props.navigation,
       props.daoStore,
     );
@@ -190,10 +175,10 @@ const CreateStep4 = props => {
     return {commonAddress};
   };
 
-  const creationError = event => {
-    errorSheetRef.current.snapTo(1);
-    errorSheetRef.current.snapTo(1);
-  };
+  // const creationError = event => {
+  //   errorSheetRef.current.snapTo(1);
+  //   errorSheetRef.current.snapTo(1);
+  // };
 
   return (
     <SafeAreaView

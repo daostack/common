@@ -7,7 +7,14 @@
  */
 
 import React, {useState, useEffect, useRef} from 'react';
-import {Image, StyleSheet, Platform, View, Alert} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Platform,
+  View,
+  Alert,
+  DeviceEventEmitter,
+} from 'react-native';
 
 import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
@@ -67,6 +74,7 @@ import {auth, db} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
 import CommonCreationLoading from './src/Screens/CommonCreationLoading';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
+import Toast, {DURATION} from 'react-native-easy-toast';
 
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
@@ -76,10 +84,11 @@ if (Platform.OS === 'ios') {
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
 }
 
-const App = ({userStore, daoStore, bottomSheetStore}) => {
+const App = ({userStore, bottomSheetStore}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
   const errorSheetRef = useRef();
+  const hudRef = useRef();
 
   const getTestEth = async address => {
     console.log('getting test eth for user: ', address);
@@ -106,6 +115,22 @@ const App = ({userStore, daoStore, bottomSheetStore}) => {
   }, []);
 
   useEffect(() => {
+    const showLisenter = DeviceEventEmitter.addListener(
+      'HUD',
+      (content, isLoading = false) => {
+        hudRef.current.show(content, isLoading ? DURATION.FOREVER : 1500);
+      },
+    );
+    const hidelisenter = DeviceEventEmitter.addListener('HideHUD', () => {
+      hudRef.current.close();
+    });
+    return () => {
+      showLisenter.remove();
+      hidelisenter.remove();
+    };
+  }, []);
+
+  useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       Alert.alert('Foreground Message Arrived', JSON.stringify(remoteMessage));
     });
@@ -116,7 +141,6 @@ const App = ({userStore, daoStore, bottomSheetStore}) => {
     const onAuthStateChanged = async user => {
       try {
         userStore.setIsLoading(true);
-        daoStore.setIsLoading(true);
         if (user) {
           await AuthService.getInstance().loadMnemonic(user.uid);
           await WalletManager.init(user.uid);
@@ -142,32 +166,12 @@ const App = ({userStore, daoStore, bottomSheetStore}) => {
 
         userStore.setIsLoading(false);
         const manager = await WalletManager.getInstance();
-        const address = await manager.getOwnerAccount();
+        const address = await manager.getAddress();
         getTestEth(address);
       } catch (error) {
         console.log(error);
-        Toast.error(error.toString());
-      }
-    };
-
-    const getDaos = async () => {
-      try {
-        const appUsers = await FirebaseService.getInstance().getUsers();
-        console.log('users: ', appUsers);
-        db.collection('daos').onSnapshot(snapshot => {
-          if (snapshot.empty) {
-            return [];
-          }
-          let daosSnapshot = snapshot.docs.map(doc => {
-            return {...{id: doc.id}, ...doc.data()};
-          });
-          console.log('daos: ', daosSnapshot);
-          daoStore.setDaos(daosSnapshot);
-        });
-        // console.log('DAOS: ', daosRes);
-        // setDaos(daosRes);
-      } catch (error) {
-        console.log('errror: ', error);
+        throw error;
+        // Toast.error(error.toString());
       }
     };
 
@@ -181,7 +185,9 @@ const App = ({userStore, daoStore, bottomSheetStore}) => {
           .doc(uid)
           .onSnapshot(snapshot => {
             console.log('FirebaseUser', snapshot.data());
-            userStore.setSignedInUser(snapshot.data());
+            if (!snapshot.empty) {
+              userStore.setSignedInUser(snapshot.data());
+            }
           });
       } catch (error) {
         console.log('errror: ', error);
@@ -200,21 +206,12 @@ const App = ({userStore, daoStore, bottomSheetStore}) => {
         console.log(e);
       }
     };
-
-    if (daoStore.isError) {
-      console.log('daostore error', daoStore.isError);
-      bottomSheetStore.showBottomSheet(
-        BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
-      );
-    }
-    getDaos();
     checkOnboardingStatus();
     updateUser();
     return subscriber;
-  }, [daoStore, userStore]);
+  }, [userStore]);
 
   console.log('onboarded: ', onboarded);
-  console.log('daoStore DAOs: ', daoStore.daos);
 
   if (loading) {
     return <View style={{flex: 1}} />;
@@ -412,6 +409,11 @@ const App = ({userStore, daoStore, bottomSheetStore}) => {
           />
         </Stack.Navigator>
         {bottomSheetStore.isVisible ? <BottomSheetContainer /> : null}
+        <Toast
+          ref={hudRef}
+          style={{backgroundColor: 'transparent'}}
+          positionValue={160}
+        />
       </NavigationContainer>
     </ApolloProvider>
   );
@@ -432,8 +434,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'userStore',
-  'daoStore',
-  'bottomSheetStore',
-)(observer(App));
+export default inject('userStore', 'bottomSheetStore')(observer(App));

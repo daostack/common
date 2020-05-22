@@ -7,11 +7,14 @@ import {ApolloLink, split} from 'apollo-link';
 import {WebSocketLink} from 'apollo-link-ws';
 import {getMainDefinition} from 'apollo-utilities';
 
-export const graphHttpLink =
-  'https://api.thegraph.com/subgraphs/name/daostack/v7_5_exp_rinkeby';
-export const graphwsLink =
-  'wss://api.thegraph.com/subgraphs/name/daostack/v7_5_exp_rinkeby';
+export const GRAPH_VERSION = 'v8_1_exp_xdai';
+// the value of ARC_VERSION should coincide with the "migration-experimental" versoin
+export const ARC_VERSION = '0.1.1-rc.20'; // we should probably read this from the package..
+export const graphHttpLink = `https://api.thegraph.com/subgraphs/name/daostack/${GRAPH_VERSION}`;
+export const graphwsLink = `wss://api.thegraph.com/subgraphs/name/daostack/${GRAPH_VERSION}`;
 export const ipfsLink = 'https://api.thegraph.com/ipfs-daostack/api/v0';
+export const web3ProviderUrl = 'https://dai.poa.network';
+export const web3NetworkId = 100;
 
 const httpLink = new HttpLink({
   uri: graphHttpLink,

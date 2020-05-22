@@ -4,45 +4,46 @@ import {createProposalRequestToJoin} from './createProposal';
 import {createFundingProposal} from './createFundingProposal';
 
 import {Arc} from '@daostack/arc.js';
-import {graphHttpLink, graphwsLink, ipfsLink} from '../../Config';
+import {
+  graphHttpLink,
+  graphwsLink,
+  ipfsLink,
+  ARC_VERSION,
+  OVERRIDES,
+} from '../../Config';
+
+let serviceInstance = null;
 
 export default class ArcService {
-  static serviceInstance = null;
-  // this value should coincide with the "migration-experimental" versoin
-  ARC_VERSION = '0.1.1-rc.16'; // we should probably read this from the package..
-
-  OVERRIDES = {
-    gasLimit: 10000000,
-    gasPrice: 15000000000,
-  };
-
   constructor() {
     this.arc = new Arc({
       graphqlHttpProvider: graphHttpLink,
       graphqlWsProvider: graphwsLink,
       ipfsProvider: ipfsLink,
-      web3Provider: WalletManager.getInstance().ethWallet,
+      web3Provider: WalletManager.getInstance().wallet,
     });
   }
 
-  static getInstance = async () => {
-    if (ArcService.serviceInstance == null) {
-      ArcService.serviceInstance = new ArcService();
-      console.log('this ->', this);
-      console.log('ArcService.serviceInstance ->', ArcService.serviceInstance);
-      await ArcService.serviceInstance.arc.fetchContractInfos();
+  init = async () => {
+    await serviceInstance.arc.fetchContractInfos();
+  };
+
+  static getInstance = () => {
+    if (serviceInstance == null) {
+      serviceInstance = new ArcService();
+      serviceInstance.init();
     }
-    return ArcService.serviceInstance;
+    return serviceInstance;
   };
 
   // PROPOSALS
 
-  async createFundingProposal(data) {
-    return createFundingProposal(this.arc, data);
-  }
-
   createRequestToJoin = async data => {
     return createProposalRequestToJoin(this.arc, data);
+  };
+
+  createFundingProposal = async data => {
+    return createFundingProposal(this.arc, data);
   };
 
   // COMMONS
@@ -53,8 +54,8 @@ export default class ArcService {
       givenOpts,
       navigation,
       daoStore,
-      this.ARC_VERSION,
-      this.OVERRIDES,
+      ARC_VERSION,
+      OVERRIDES,
     );
   }
 }

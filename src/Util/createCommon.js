@@ -98,7 +98,7 @@ export const createCommon = async (
       fundingToken: opts.fundingToken,
       minFeeToJoin: opts.minFeeToJoin,
       memberReputation: opts.memberReputation,
-      fundingGoal: [parseInt(opts.fundingGoal)],
+      fundingGoal: [parseInt(opts.fundingGoal, 10)],
       deadline: opts.fundingGoalDeadline,
       metaData: opts.ipfsHash,
     });
@@ -110,7 +110,7 @@ export const createCommon = async (
       fundingToken: opts.fundingToken,
       minFeeToJoin: opts.minFeeToJoin,
       memberReputation: opts.memberReputation,
-      goal: parseInt(opts.fundingGoal),
+      goal: parseInt(opts.fundingGoal, 10),
       deadline: opts.fundingGoalDeadline,
       metaData: opts.ipfsHash,
     });

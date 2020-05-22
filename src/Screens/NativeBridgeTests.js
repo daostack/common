@@ -11,12 +11,16 @@ import {
 const {width} = Dimensions.get('window');
 import WalletManager from '../Util/WalletManager';
 import MessageContract from '../Contracts/ABIs/MessageContract';
-import {createCommon} from '../Util/createCommon';
-import {createProposalRequestToJoin} from '../Util/createProposal';
-import {getArc} from '../Util/arc';
+
 import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
 import ArcService from '../Services/ArcService';
+import Toast from '../Util/Toast';
+import {web3ProviderUrl} from '../Config';
+
+import {createCommon} from '../Util/createCommon';
+import {createProposalRequestToJoin} from '../Util/createProposal';
+import {getArc} from '../Util/arc';
 
 const uid = 'test';
 
@@ -29,13 +33,14 @@ class nativeBridgeTests extends React.Component {
       storedMnemonic:
         'order cabin immune pond brave guilt boil index car aware snap list',
       keychainMnemonics: '',
-      networkURL: 'Rinkeby',
+      networkURL: web3ProviderUrl,
       address: '',
       balance: '',
       ownerAddress: '',
       ownerBalance: '',
       txStatus: '',
       txHash: '',
+      signHash: '',
       result: '',
       scTXHash: '',
       commonStatus: '',
@@ -94,7 +99,7 @@ class nativeBridgeTests extends React.Component {
   getOwnerBalance = async () => {
     try {
       const manager = WalletManager.getInstance();
-      const address = await manager.getOwnerAccount();
+      const address = await manager.getAddress();
       const balance = await manager.getBalance(address);
       console.log('ADDRESS: ', address);
       console.log('BALANCE: ', balance);
@@ -106,7 +111,7 @@ class nativeBridgeTests extends React.Component {
 
   getSomeFunds = async () => {
     const manager = WalletManager.getInstance();
-    const address = await manager.getOwnerAccount();
+    const address = await manager.getAddress();
     console.log(`fetching some Eth for your address ${address}`);
     fetch(
       `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
@@ -126,11 +131,24 @@ class nativeBridgeTests extends React.Component {
     }
   };
 
+  signTransaction = async () => {
+    try {
+      const manager = WalletManager.getInstance();
+      const hash = await manager.signTransaction(
+        '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB',
+        '0.001',
+      );
+      this.setState({signHash: hash});
+    } catch (e) {
+      throw 'Send transaction failed with error: ' + e;
+    }
+  };
+
   sendTransaction = async () => {
     try {
       const manager = WalletManager.getInstance();
       const {hash} = await manager.sendTransaction(
-        '0x41B788babf69FC7F98336ff7A47F5A80c3A63d40',
+        '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB',
         '0.001',
       );
       this.setState({txHash: hash, txStatus: 'pending'});
@@ -159,34 +177,22 @@ class nativeBridgeTests extends React.Component {
 
   callSmartContract = async () => {
     try {
-      const manager = WalletManager.getInstance();
-      let message = `Hello ${Math.floor(Math.random() * Math.floor(50))}`;
-      console.log(message);
-      const {
-        hash,
-      } = await manager.writeSmartContract(
-        '0x2f21957c7147c3eE49235903D6471159a16c9ccd',
-        MessageContract,
-        'setMessage',
-        [message],
-      );
-      this.setState({scTXHash: hash});
+      Toast.error('TODO');
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
   };
 
   createCommon = async () => {
-    const wallet = WalletManager.getInstance();
-
-    const arc = getArc(wallet.ethWallet);
+    const wallet = WalletManager.getInstance().wallet;
+    const arc = getArc(wallet);
 
     const commonAddress = await createCommon(
       await arc,
       {
         name: 'Green DAO',
         // name: `Test DAO ${new Date()}`,
-        founderAddresses: wallet.ethWallet.address,
+        founderAddresses: wallet.address,
         minFeeToJoin: 100, // TDB: get from formData
         fundingGoal: 100000, // TBD: get from formdata
         // TBD: get form data for deadline; these are in secondSinceEpoch
@@ -211,9 +217,6 @@ class nativeBridgeTests extends React.Component {
       proposalStatus: 'Creating JoinAndQuit proposal -- please wait',
     });
     try {
-      const wallet = WalletManager.getInstance();
-      console.log('wallet', wallet);
-      const arc = await getArc(wallet.ethWallet);
       console.log('calling the function', arc);
       const data = {
         title: `A test proposal on ${Date()}`,
@@ -223,7 +226,7 @@ class nativeBridgeTests extends React.Component {
         links: [], // {title: "title", url: "url"}
         funding: new BN(200),
       };
-      const proposal = await createProposalRequestToJoin(arc, data);
+      //const proposal = await ArcService.getInstance().createRequestToJoin(data);
       this.setState({
         proposalStatus: `JoinAndQuit Proposal with id ${proposal.id} created!`,
       });
@@ -251,11 +254,13 @@ class nativeBridgeTests extends React.Component {
         ),
         */
       };
-      let instance = await ArcService.getInstance();
+      let instance = ArcService.getInstance();
 
-      const fundingProposal = await instance.createFundingProposal(data);
+      console.log('instance -> ', instance);
 
-      console.log('RESULT | Funding proposal -> ', fundingProposal);
+      //const fundingProposal = await instance.createFundingProposal(data);
+
+      //console.log('RESULT | Funding proposal -> ', fundingProposal);
     } catch (e) {
       console.log(e);
       setLoadingMessage(`${e}`);
@@ -363,6 +368,13 @@ class nativeBridgeTests extends React.Component {
           <Text>Balance: {this.state.balance}</Text>
           <TouchableOpacity onPress={this.getBalance} style={styles.button}>
             <Text>Get Wallet address Balance (obsolete)</Text>
+          </TouchableOpacity>
+
+          <Text>Status: {this.state.signHash}</Text>
+          <TouchableOpacity
+            onPress={this.signTransaction}
+            style={styles.button}>
+            <Text>Sign Transaction</Text>
           </TouchableOpacity>
 
           <Text>Status: {this.state.txStatus}</Text>

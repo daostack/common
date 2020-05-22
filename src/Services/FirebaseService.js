@@ -1,4 +1,4 @@
-import {db, storage} from '../Firebase';
+import {db, storage, firebase} from '../Firebase';
 
 export const DB_COLLECTIONS = {
   users: 'users',
@@ -102,7 +102,7 @@ export default class FirebaseService {
     const timeStamp = new Date().getTime();
     const filename = `img_${timeStamp}.${ext}`;
     const path = `public_img/${filename}`;
-    const ref = firebase.storage().ref(path);
+    const ref = storage.ref(path);
     await ref.putFile(imageUri);
     return await ref.getDownloadURL();
   }

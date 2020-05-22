@@ -1,5 +1,4 @@
 import {observable, action, decorate} from 'mobx';
-import firestore from '@react-native-firebase/firestore';
 
 export const userInfoFields = [
   'uid',
@@ -60,7 +59,7 @@ class UserStore {
       newUserObj.following = newUserInfo.following || [];
       newUserObj.follower = newUserInfo.follower || [];
 
-      console.log('newUserObj', newUserObj);
+      // console.log('newUserObj', newUserObj);
 
       this.userInfo = newUserObj;
     } else {
