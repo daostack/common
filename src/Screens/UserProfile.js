@@ -9,7 +9,7 @@ import {
 
 //import Swiper from 'react-native-swiper';
 
-import React, {useEffect} from 'react';
+import React from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
 import {observer, inject} from 'mobx-react';
@@ -17,11 +17,10 @@ import AccordionBtn from '../Components/AccordionBtn';
 import CreateAccount from '../Screens/CreateAccount';
 
 import {CommonActions} from '@react-navigation/native';
-import Toast from '../Util/Toast';
 import UserProfileData from '../Components/UserProfileData';
 import AuthService from '../Services/AuthService';
 
-const UserProfile = ({editProfileFormStore, userStore, navigation, route}) => {
+const UserProfile = ({userStore, navigation}) => {
   //const [editMode, setEditMode] = useState(false);
 
   const _signOut = async () => {
@@ -257,7 +256,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'editProfileFormStore',
-  'userStore',
-)(observer(UserProfile));
+export default inject('userStore')(observer(UserProfile));

@@ -140,7 +140,6 @@ const CreateStep4 = props => {
     console.log('formDAta: ', formData.minimum);
     console.log('formDAta: ', parseInt(formData.minimum));
     const manager = await WalletManager.getInstance();
-    const wallet = manager.wallet;
     const address = await manager.getAddress();
     console.log('owner account: ', address);
 

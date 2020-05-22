@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import {ApolloClientConfig as client} from '../Config';
 import {text, layout, colors, sizeL} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';

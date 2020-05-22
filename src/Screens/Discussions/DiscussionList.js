@@ -1,6 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {StyleSheet, FlatList, View} from 'react-native';
-import {colors} from '../../Theme';
+import {FlatList} from 'react-native';
 import DiscussionCard from './DiscussionCard';
 import firestore from '@react-native-firebase/firestore';
 import ViewTabNoData from '../../Components/ViewTabNoData';
@@ -78,15 +77,5 @@ const DiscussionList = props => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.grey4,
-    borderRadius: 8,
-    marginHorizontal: 25,
-    marginVertical: 10,
-    padding: 10,
-  },
-});
 
 export default DiscussionList;

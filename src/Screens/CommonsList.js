@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {
   Text,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   View,
   Dimensions,
@@ -10,11 +9,8 @@ import {
 } from 'react-native';
 import {CommonBox, BottomRightButton} from '../Components';
 import {layout} from '../Theme';
-import FirebaseService from '../Services/FirebaseService';
 import {db} from '../Firebase';
 import {inject, observer} from 'mobx-react';
-
-const {width} = Dimensions.get('window');
 
 const CommonsList = ({navigation, daoStore, bottomSheetStore}) => {
   // const [hasError, setErrors] = useState(false);

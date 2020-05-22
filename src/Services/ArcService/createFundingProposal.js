@@ -2,7 +2,6 @@
 // import {getArc} from './arc';
 // const {ARC_VERSION, OVERRIDES} = require('./arc');
 const {first} = require('rxjs/operators');
-import {ipfsUpload} from '../../Config';
 
 export const createFundingProposal = async (arc, data) => {
   // data must look like this

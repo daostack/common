@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
-  StyleSheet,
   ScrollView,
   Dimensions,
   SafeAreaView,
@@ -51,51 +50,49 @@ const RequestStep4 = props => {
   };
 
   const push = async () => {
-    //if (isValid()) {
-
-    setLoadingMessage('Creating JoinAndQuit proposal -- please wait');
-
-    try {
-      const data = {
-        title: `A test proposal on ${Date()}`,
-        description: 'Some description',
-        files: [],
-        images: [],
-        links: [], // {title: "title", url: "url"}
-        funding: new BN(200),
-        /*
+    if (isValid()) {
+      try {
+        const data = {
+          title: `A test proposal on ${Date()}`,
+          description: 'Some description',
+          files: [],
+          images: [],
+          links: [], // {title: "title", url: "url"}
+          funding: new BN(200),
+          /*
         funding: new BN(
           props.requestToJoinFormStore.form.fields[
             RequestToJoinForm.FIELD_AMOUNT
           ].value,
         ),
         */
-      };
+        };
 
-      console.log(
-        'props.route.params.currDaoId, -> ',
-        props.route.params.currDaoId,
-      );
+        console.log(
+          'props.route.params.currDaoId, -> ',
+          props.route.params.currDaoId,
+        );
 
-      const proposal = await ArcService.getInstance().createRequestToJoin(
-        props.route.params.currDaoId,
-        data,
-      );
-      setLoadingMessage(`JoinAndQuit Proposal with id ${proposal.id} created!`);
+        const proposal = await ArcService.getInstance().createRequestToJoin(
+          props.route.params.currDaoId,
+          data,
+        );
+        setLoadingMessage(
+          `JoinAndQuit Proposal with id ${proposal.id} created!`,
+        );
 
-      const navigate = CommonActions.navigate({
-        name: 'CommonProfile',
-        params: {
-          showRequestSentModal: true,
-        },
-      });
-      props.navigation.dispatch(navigate);
-    } catch (e) {
-      console.log(e);
-      setLoadingMessage(`${e}`);
+        const navigate = CommonActions.navigate({
+          name: 'CommonProfile',
+          params: {
+            showRequestSentModal: true,
+          },
+        });
+        props.navigation.dispatch(navigate);
+      } catch (e) {
+        console.log(e);
+        setLoadingMessage(`${e}`);
+      }
     }
-
-    //}
   };
 
   return (

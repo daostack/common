@@ -354,7 +354,7 @@ const Discussions = props => {
               }
               style={{flex: 1, height: inputHeight, marginHorizontal: 10}}
               fontSize={15}
-              onChangeText={text => setInputText(text)}
+              onChangeText={currText => setInputText(currText)}
             />
             <TouchableOpacity
               style={{paddingRight: 15, justifyContent: 'center'}}

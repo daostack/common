@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
-  StyleSheet,
   ScrollView,
   Dimensions,
   SafeAreaView,
@@ -47,21 +46,17 @@ const RequestStep2 = props => {
   };
 
   const push = () => {
-    //const vaild = isValid();
-    //if (vaild) {
-
-    const navigate = CommonActions.navigate({
-      name: 'RequestStep3',
-      params: {
-        currDaoId: props.route.params.currDaoId,
-      },
-    });
-    props.navigation.dispatch(navigate);
-
-    //}
+    const vaild = isValid();
+    if (vaild) {
+      const navigate = CommonActions.navigate({
+        name: 'RequestStep3',
+        params: {
+          currDaoId: props.route.params.currDaoId,
+        },
+      });
+      props.navigation.dispatch(navigate);
+    }
   };
-
-  const {userStore} = props;
 
   return (
     <>
@@ -156,69 +151,6 @@ const RequestStep2 = props => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  view: {
-    justifyContent: 'flex-end',
-    margin: 0,
-  },
-  container: {
-    backgroundColor: colors.white,
-    borderBottomColor: colors.gray,
-    borderBottomWidth: 1,
-    marginVertical: 10,
-    marginHorizontal: 10,
-    justifyContent: 'center',
-    borderRadius: 2,
-    height: 50,
-  },
-  placeholderText: {
-    color: colors.grey3,
-  },
-  text: {
-    width: '100%',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    fontSize: 15,
-    color: colors.black,
-  },
-  readMoreButton: {
-    fontSize: 12,
-    // fontWeight: '700',
-    color: colors.grey3,
-  },
-  continueButton: {
-    width: '100%',
-    height: 48,
-    borderRadius: 32,
-    flexDirection: 'row',
-    paddingHorizontal: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.mainBlue,
-  },
-  infoLabel: {
-    fontFamily: 'Roboto',
-    fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'italic',
-    letterSpacing: 0,
-    color: colors.paleblue,
-    textAlign: 'right',
-    flex: 1,
-  },
-  actionBtnContainer: {
-    ...layout.content,
-    backgroundColor: colors.white,
-    shadowColor: 'rgba(79, 92, 105, 0.1)',
-    shadowOffset: {
-      width: 0,
-      height: -2,
-    },
-    shadowRadius: 4,
-    shadowOpacity: 1,
-  },
-});
 
 export default inject(
   'userStore',
