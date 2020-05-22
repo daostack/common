@@ -137,13 +137,13 @@ const CreateStep4 = props => {
     console.log('ipfs Hash: ', ipfsHash);
 
     const formData = props.createCommonFormStore.getChangedFormFieldsJson();
-    console.log('formDAta: ', formData.minimum);
-    console.log('formDAta: ', parseInt(formData.minimum));
     const manager = await WalletManager.getInstance();
     const wallet = manager.wallet;
+    console.log(wallet);
     const address = await manager.getAddress();
-    console.log('owner account: ', address);
-    // we will want to have a global arc instance for all contract interactions!
+    // TODO: get form data for fundingGoalDeadline; these are in secondSinceEpoch
+    const deadline = '1621679337'; // in may 2021
+    console.log(deadline);
     const arc = await getArc(wallet);
     const data = {
       name: formData.name,
@@ -152,9 +152,7 @@ const CreateStep4 = props => {
       repDist: [100],
       minFeeToJoin: parseInt(formData.minimum, 10),
       fundingGoal: formData.funding,
-      // TBD: get form data for fundingGoalDeadline; these are in secondSinceEpoch
-      fundingGoalDeadline:
-        (await WalletManager.provider.getBlock('latest')).timestamp + 3000,
+      fundingGoalDeadline: deadline,
       ipfsHash,
     };
     console.log(data);

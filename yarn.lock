@@ -822,10 +822,10 @@
     subscriptions-transport-ws "^0.9.16"
     ws "^6.2.1"
 
-"@daostack/common-factory@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@daostack/common-factory/-/common-factory-1.2.0.tgz#0c80fa95300200b271c31c7deed0d9a138bc2e79"
-  integrity sha512-3bdTc8cd3zAdxmdx9W0A21JRxKNH6LheHE711XZXAe1iXCDxd/JuXZv2wG5/7R/mAlNMGfCiGqTh4670ViGSTQ==
+"@daostack/common-factory@1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@daostack/common-factory/-/common-factory-1.2.1.tgz#360e76ea671b7065a4dd92642f473e217e69ae7c"
+  integrity sha512-kPzIKl/Azqunw0LxnVR2T0T8gGnr585YR4spkp3pVLA+feSLK1kI3nB7Yp0G55piKY5niyPXhiFFHGH4gu0Rxg==
   dependencies:
     ethers "^4.0.46"
 
