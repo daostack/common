@@ -211,11 +211,11 @@ class nativeBridgeTests extends React.Component {
 
   createRequestToJoin = async () => {
     console.log('creating proposal -- please wait');
+    const daoId = '0xb01230c8c74eb336745bbae5b84b056caca5bbd2';
     this.setState({
       proposalStatus: 'Creating JoinAndQuit proposal -- please wait',
     });
     try {
-      console.log('calling the function', arc);
       const data = {
         title: `A test proposal on ${Date()}`,
         description: 'Some description',
@@ -224,7 +224,10 @@ class nativeBridgeTests extends React.Component {
         links: [], // {title: "title", url: "url"}
         funding: new BN(200),
       };
-      const proposal = await ArcService.getInstance().createRequestToJoin(data);
+      const proposal = await ArcService.getInstance().createRequestToJoin(
+        daoId,
+        data,
+      );
       this.setState({
         proposalStatus: `JoinAndQuit Proposal with id ${proposal.id} created!`,
       });
