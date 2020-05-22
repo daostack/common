@@ -18,6 +18,7 @@ import CreateStepHeader from './CreateStepHeader';
 import NavigationBar from 'react-native-navbar';
 import Icon from '../../Assets/iconfont/Icon';
 import CreateStepDotHeader from './CreateStepDotHeader';
+import MultiLinkField from '../../Components/FormFields/MultiLinkField';
 
 const CreateStep1 = props => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -172,7 +173,17 @@ const CreateStep1 = props => {
               validateRule: 'string',
             }}
           />
-          {[...Array(ruleCount).keys()].map(x => (
+          <MultiLinkField
+            allowsEditing={true}
+            title="Title"
+            onChangeText={isValid}
+            validation={{
+              name: CreateCommonForm.LINKS,
+              formStore: props.createCommonFormStore,
+              validateRule: 'string|url',
+            }}
+          />
+          {/*[...Array(ruleCount).keys()].map(x => (
             <TextInputField
               key={x}
               value={''}
@@ -191,7 +202,7 @@ const CreateStep1 = props => {
                 validateRule: 'string|url',
               }}
             />
-          ))}
+            ))
           <TouchableOpacity>
             <Text
               style={styles.readMoreButton}
@@ -199,6 +210,7 @@ const CreateStep1 = props => {
               Add Link
             </Text>
           </TouchableOpacity>
+          */}
         </View>
         <TouchableOpacity
           style={[

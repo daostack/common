@@ -173,7 +173,7 @@ const RequestStep2 = props => {
 
             <MultiLinkField
               allowsEditing={true}
-              title={'Add File'}
+              title="Title"
               validation={{
                 name: RequestToJoinForm.FIELD_LINKS,
                 formStore: props.requestToJoinFormStore,

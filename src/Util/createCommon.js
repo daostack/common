@@ -61,7 +61,7 @@ export const createCommon = async (
     );
     const votingMachineInfo = arc.getContractInfoByName(
       'GenesisProtocol',
-      '0.1.1-rc.13',
+      ARC_VERSION,
       // Ideally, we would find the GeneisProtocol at ARC_VERSION
       // instead, we need to use this custom version until https://github.com/daostack/subgraph/issues/542  is resolved
     );

@@ -67,10 +67,9 @@ const Stack = createStackNavigator();
 import {filterObjectByKeys} from './src/Util';
 import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
-import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
-import {auth, db} from './src/Firebase';
+import {auth} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
 import CommonCreationLoading from './src/Screens/CommonCreationLoading';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
@@ -87,7 +86,6 @@ if (Platform.OS === 'ios') {
 const App = ({userStore, bottomSheetStore}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
-  const errorSheetRef = useRef();
   const hudRef = useRef();
 
   const getTestEth = async address => {

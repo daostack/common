@@ -18,6 +18,7 @@ import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
 import Toast from '../Util/Toast';
 import {ethers, Contract} from 'ethers';
+import {web3ProviderUrl} from '../Config';
 
 const uid = 'test';
 
@@ -30,7 +31,7 @@ class nativeBridgeTests extends React.Component {
       storedMnemonic:
         'order cabin immune pond brave guilt boil index car aware snap list',
       keychainMnemonics: '',
-      networkURL: 'Rinkeby',
+      networkURL: web3ProviderUrl,
       address: '',
       balance: '',
       ownerAddress: '',
@@ -232,24 +233,27 @@ class nativeBridgeTests extends React.Component {
     const wallet = WalletManager.getInstance().wallet;
     const arc = getArc(wallet);
 
-    const commonAddress = await createCommon(
-      await arc,
-      {
-        name: 'Green DAO',
-        // name: `Test DAO ${new Date()}`,
-        founderAddresses: wallet.address,
-        minFeeToJoin: 100, // TDB: get from formData
-        fundingGoal: 100000, // TBD: get from formdata
-        // TBD: get form data for deadline; these are in secondSinceEpoch
-        //TODO: get data for deadline from form data
-        fundingGoalDeadline: 20200404,
-        ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
-      },
-      this.props.navigation,
-      this.props.daoStore,
-    );
+    try {
+      const commonAddress = await createCommon(
+        await arc,
+        {
+          name: `Test DAO ${new Date()}`,
+          founderAddresses: wallet.address,
+          minFeeToJoin: 100, // TDB: get from formData
+          fundingGoal: 100000, // TBD: get from formdata
+          // TBD: get form data for deadline; these are in secondSinceEpoch
+          //TODO: get data for deadline from form data
+          fundingGoalDeadline: 20200404,
+          ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
+        },
+        this.props.navigation,
+        this.props.daoStore,
+      );
 
-    this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
+      this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
+    } catch (err) {
+      this.setState({commonStatus: `${error}`});
+    }
   };
 
   error = () => {
@@ -289,14 +293,6 @@ class nativeBridgeTests extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
-          <Text style={{marginVertical: 10}}>
-            --------------- Common Interactions -----------------
-          </Text>
-          <Text>Common Tx: {this.state.commonStatus}</Text>
-          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
-            <Text>Create Common</Text>
-          </TouchableOpacity>
-
           <TouchableOpacity onPress={this.error} style={styles.button}>
             <Text>Error</Text>
           </TouchableOpacity>
