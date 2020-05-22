@@ -10,7 +10,7 @@ import {
 import TextInputField from '../../Components/FormFields/TextInputField';
 import MultiLinkField from '../../Components/FormFields/MultiLinkField';
 
-import {colors, text, layout} from '../../Theme';
+import {colors, text} from '../../Theme';
 import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';

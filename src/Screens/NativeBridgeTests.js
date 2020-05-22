@@ -16,6 +16,7 @@ import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
 import ArcService from '../Services/ArcService';
 import Toast from '../Util/Toast';
+import {ethers, Contract} from 'ethers';
 import {web3ProviderUrl} from '../Config';
 
 const uid = 'test';
@@ -38,7 +39,10 @@ class nativeBridgeTests extends React.Component {
       txHash: '',
       signHash: '',
       result: '',
-      scTXHash: '',
+      cwTXHash: '',
+      cwAddress: '',
+      cw2TXHash: '',
+      cw2Address: '',
       commonStatus: '',
       proposalStatus: '',
     };
@@ -171,12 +175,57 @@ class nativeBridgeTests extends React.Component {
     }
   };
 
-  callSmartContract = async () => {
+  createSmartContractWallet = async () => {
     try {
-      Toast.error('TODO');
+      const manager = WalletManager.getInstance();
+      const {txHash} = await manager.createSmartContractWallet();
+      console.log('txHash ->', txHash);
+      this.setState({cwTXHash: txHash});
+      const address = await this.getAddressFromEvent(txHash);
+      this.setState({cwAddress: address});
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
+  };
+
+  create2SmartContractWallet = async () => {
+    try {
+      const manager = WalletManager.getInstance();
+      const {txHash} = await manager.create2SmartContractWallet();
+      console.log('txHash ->', txHash);
+      this.setState({cw2TXHash: txHash});
+      const address = await this.getAddressFromEvent(txHash);
+      this.setState({cw2Address: address});
+    } catch (e) {
+      throw 'Send transaction failed with error: ' + e;
+    }
+  };
+
+  getAddressFromEvent = async hash => {
+    const manager = WalletManager.getInstance();
+    const receipt = await manager.provider.waitForTransaction(hash);
+    console.log('receipt', receipt);
+    let eventABI = [
+      {
+        type: 'event',
+        name: 'ProxyCreation',
+        inputs: [
+          {
+            type: 'address',
+            name: 'proxy',
+            internalType: 'contract GnosisSafeProxy',
+            indexed: false,
+          },
+        ],
+        anonymous: false,
+      },
+    ];
+    const iface = new ethers.utils.Interface(eventABI);
+    const events = receipt.logs.map(log => {
+      return iface.parseLog(log);
+    });
+    console.log('address', events[0].values.proxy);
+    return events[0].values.proxy;
   };
 
   createCommon = async () => {
@@ -192,7 +241,7 @@ class nativeBridgeTests extends React.Component {
           // TBD: get form data for deadline; these are in secondSinceEpoch
           //TODO: get data for deadline from form data
           fundingGoalDeadline: 20200404,
-          ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
+          ipfsHash: 'QmXLiGz859X4ktkEKupyda3duXVJQ7ax59t3Uha9odiSRp',
         },
         this.props.navigation,
         this.props.daoStore,
@@ -211,11 +260,11 @@ class nativeBridgeTests extends React.Component {
 
   createRequestToJoin = async () => {
     console.log('creating proposal -- please wait');
+    const daoId = '0xb01230c8c74eb336745bbae5b84b056caca5bbd2';
     this.setState({
       proposalStatus: 'Creating JoinAndQuit proposal -- please wait',
     });
     try {
-      console.log('calling the function', arc);
       const data = {
         title: `A test proposal on ${Date()}`,
         description: 'Some description',
@@ -224,7 +273,10 @@ class nativeBridgeTests extends React.Component {
         links: [], // {title: "title", url: "url"}
         funding: new BN(200),
       };
-      const proposal = await ArcService.getInstance().createRequestToJoin(data);
+      const proposal = await ArcService.getInstance().createRequestToJoin(
+        daoId,
+        data,
+      );
       this.setState({
         proposalStatus: `JoinAndQuit Proposal with id ${proposal.id} created!`,
       });
@@ -350,11 +402,24 @@ class nativeBridgeTests extends React.Component {
             <Text>Read Smart Contract</Text>
           </TouchableOpacity>
 
-          <Text>TXHash: {this.state.scTXHash}</Text>
+          <Text style={{marginVertical: 10}}>
+            --------------- Relayer -----------------
+          </Text>
+
+          <Text>TXHash: {this.state.cwTXHash}</Text>
+          <Text>Address: {this.state.cwAddress}</Text>
           <TouchableOpacity
-            onPress={this.callSmartContract}
+            onPress={this.createSmartContractWallet}
             style={styles.button}>
-            <Text>Write Smart Contract</Text>
+            <Text>Create Smart Wallet</Text>
+          </TouchableOpacity>
+
+          <Text>TXHash: {this.state.cw2TXHash}</Text>
+          <Text>Address: {this.state.cw2Address}</Text>
+          <TouchableOpacity
+            onPress={this.create2SmartContractWallet}
+            style={styles.button}>
+            <Text>Create2 Smart Wallet</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>

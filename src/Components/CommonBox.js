@@ -25,7 +25,7 @@ const CommonBox = props => {
           cover: props.common.coverPhoto,
           logo: props.common.logo,
           name: props.common.name,
-          description: props.common.name,
+          description: props.common.metadata.byline,
         }}
       />
 
@@ -37,10 +37,12 @@ const CommonBox = props => {
             props.common.numberOfBoostedProposals +
             props.common.numberOfPreBoostedProposals +
             props.common.numberOfQueuedProposals,
-          goal: 55,
+          goal: props.common.fundingGoal,
           members: props.common.memberCount * 1,
-          raised: 55,
+          // TODO: get this value. Is it even tracked in the contract? need to check.
+          raised: 0,
           currentBudget: numberFormatter(
+            // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
             props.common.tokenTotalSupply,
           ).toLocaleString(),
         }}
