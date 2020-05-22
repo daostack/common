@@ -2,9 +2,9 @@
 // import {getArc} from './arc';
 // const {ARC_VERSION, OVERRIDES} = require('./arc');
 const {first} = require('rxjs/operators');
-import {ipfsUpload} from '../Config';
+import {ipfsUpload} from '../../Config';
 
-export const createProposalRequestToJoin = async (arc, data) => {
+export const createProposalRequestToJoin = async (arc, daoId, data) => {
   // data must look like this
   // {
   //   title: `A test proposal on ${Date()}`,
@@ -16,8 +16,10 @@ export const createProposalRequestToJoin = async (arc, data) => {
   // };
 
   try {
-    const dao = arc.dao('0x0f0c735f67fbe866a65c10ace6b3536fa09cddab');
+    const dao = arc.dao(daoId);
+    console.log('DAO -> ', dao);
     let plugins;
+
     try {
       plugins = await dao
         .plugins({where: {name: 'JoinAndQuit'}})
@@ -27,6 +29,8 @@ export const createProposalRequestToJoin = async (arc, data) => {
       console.log(e);
       throw e;
     }
+    console.log('PLUGINS -> ', plugins);
+
     const joinAndQuitPlugin = plugins[0];
     console.log('joinAndQuitPlugin', joinAndQuitPlugin.id);
 

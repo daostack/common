@@ -21,6 +21,7 @@ import RequestToJoinForm from '../../Components/Forms/RequestToJoinForm';
 import moment from 'moment';
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from './RequestStepActionButton';
+import {CommonActions} from '@react-navigation/native';
 
 const RequestStep2 = props => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -85,11 +86,18 @@ const RequestStep2 = props => {
   };
 
   const push = () => {
-    const vaild = isValid();
-    if (vaild) {
-      props.navigation.navigate('RequestStep3');
-      console.log(props.requestToJoinFormStore.getChangedFormFieldsJson());
-    }
+    //const vaild = isValid();
+    //if (vaild) {
+
+    const navigate = CommonActions.navigate({
+      name: 'RequestStep3',
+      params: {
+        currDaoId: props.route.params.currDaoId,
+      },
+    });
+    props.navigation.dispatch(navigate);
+
+    //}
   };
 
   const {userStore} = props;

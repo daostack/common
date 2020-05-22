@@ -24,8 +24,8 @@ import WalletManager from '../../Util/WalletManager';
 import FirebaseService from '../../Services/FirebaseService';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import {numberFormatter} from '../../Util';
-import {createCommon} from '../../Util/createCommon';
-import {getArc} from '../../Util/arc';
+
+import ArcService from '../../Services/ArcService';
 
 const {width} = Dimensions.get('window');
 
@@ -133,18 +133,14 @@ const CreateStep4 = props => {
   // TODO: use arc.saveIPFSData({ name: formData.name}) here
   const forgeCommon = async () => {
     const commonFormData = props.createCommonFormStore.getChangedFormFieldsJson();
+    console.log('saving data on ipfs');
     const ipfsHash = await ipfsUpload(commonFormData);
-    console.log('ipfs Hash: ', ipfsHash);
 
     const formData = props.createCommonFormStore.getChangedFormFieldsJson();
     const manager = await WalletManager.getInstance();
-    const wallet = manager.wallet;
-    console.log(wallet);
     const address = await manager.getAddress();
     // TODO: get form data for fundingGoalDeadline; these are in secondSinceEpoch
     const deadline = '1621679337'; // in may 2021
-    console.log(deadline);
-    const arc = await getArc(wallet);
     const data = {
       name: formData.name,
       founderAddresses: address,
@@ -155,10 +151,9 @@ const CreateStep4 = props => {
       fundingGoalDeadline: deadline,
       ipfsHash,
     };
-    console.log(data);
+    console.log('calling createCommon(...)');
 
-    const commonAddress = await createCommon(
-      arc,
+    const commonAddress = await ArcService.getInstance().createCommon(
       data,
       props.navigation,
       props.daoStore,

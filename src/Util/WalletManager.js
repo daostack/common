@@ -1,7 +1,8 @@
 import {NativeWallet} from './NativeWallet';
 import {ethers, Contract} from 'ethers';
 import {web3ProviderUrl, web3NetworkId} from '../Config';
-
+import axios from 'axios';
+import auth from '@react-native-firebase/auth';
 export default class WalletManager {
   static myInstance = null;
   constructor(uid) {
@@ -62,5 +63,27 @@ export default class WalletManager {
       gasLimit: 21000,
     };
     return await this.wallet.sendTransaction(transaction);
+  };
+
+  createSmartContractWallet = async () => {
+    const idToken = await auth().currentUser.getIdToken();
+    const options = {headers: {idToken}};
+    console.log('Create SCW');
+    const response = await axios.get(
+      'https://us-central1-common-daostack.cloudfunctions.net/api/createWallet',
+      options,
+    );
+    return response.data;
+  };
+
+  create2SmartContractWallet = async () => {
+    const idToken = await auth().currentUser.getIdToken();
+    const options = {headers: {idToken}};
+    console.log('Create2 SCW');
+    const response = await axios.get(
+      'https://us-central1-common-daostack.cloudfunctions.net/api/create2Wallet',
+      options,
+    );
+    return response.data;
   };
 }
