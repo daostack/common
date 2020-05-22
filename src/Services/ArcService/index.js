@@ -37,9 +37,8 @@ export default class ArcService {
   };
 
   // PROPOSALS
-
-  createRequestToJoin = async data => {
-    return createProposalRequestToJoin(this.arc, data);
+  createRequestToJoin = async (daoId, data) => {
+    return createProposalRequestToJoin(this.arc, daoId, data);
   };
 
   createFundingProposal = async data => {

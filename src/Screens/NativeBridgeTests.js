@@ -18,10 +18,6 @@ import ArcService from '../Services/ArcService';
 import Toast from '../Util/Toast';
 import {web3ProviderUrl} from '../Config';
 
-import {createCommon} from '../Util/createCommon';
-import {createProposalRequestToJoin} from '../Util/createProposal';
-import {getArc} from '../Util/arc';
-
 const uid = 'test';
 
 class nativeBridgeTests extends React.Component {
@@ -185,33 +181,34 @@ class nativeBridgeTests extends React.Component {
 
   createCommon = async () => {
     const wallet = WalletManager.getInstance().wallet;
-    const arc = getArc(wallet);
+    try {
+      const commonAddress = await ArcService.getInstance().createCommon(
+        {
+          name: 'Green DAO',
+          // name: `Test DAO ${new Date()}`,
+          founderAddresses: wallet.address,
+          minFeeToJoin: 100, // TDB: get from formData
+          fundingGoal: 100000, // TBD: get from formdata
+          // TBD: get form data for deadline; these are in secondSinceEpoch
+          //TODO: get data for deadline from form data
+          fundingGoalDeadline: 20200404,
+          ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
+        },
+        this.props.navigation,
+        this.props.daoStore,
+      );
 
-    const commonAddress = await createCommon(
-      await arc,
-      {
-        name: 'Green DAO',
-        // name: `Test DAO ${new Date()}`,
-        founderAddresses: wallet.address,
-        minFeeToJoin: 100, // TDB: get from formData
-        fundingGoal: 100000, // TBD: get from formdata
-        // TBD: get form data for deadline; these are in secondSinceEpoch
-        //TODO: get data for deadline from form data
-        fundingGoalDeadline: 20200404,
-        ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
-      },
-      this.props.navigation,
-      this.props.daoStore,
-    );
-
-    this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
+      this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
+    } catch (error) {
+      console.log('Error -> ', error);
+    }
   };
 
   error = () => {
     this.props.daoStore.creationError('Error' + '2');
   };
 
-  createProposal = async () => {
+  createRequestToJoin = async () => {
     console.log('creating proposal -- please wait');
     this.setState({
       proposalStatus: 'Creating JoinAndQuit proposal -- please wait',
@@ -226,7 +223,7 @@ class nativeBridgeTests extends React.Component {
         links: [], // {title: "title", url: "url"}
         funding: new BN(200),
       };
-      //const proposal = await ArcService.getInstance().createRequestToJoin(data);
+      const proposal = await ArcService.getInstance().createRequestToJoin(data);
       this.setState({
         proposalStatus: `JoinAndQuit Proposal with id ${proposal.id} created!`,
       });
@@ -238,33 +235,7 @@ class nativeBridgeTests extends React.Component {
   };
 
   createFundingProposal = async () => {
-    try {
-      const data = {
-        title: `A test proposal on ${Date()}`,
-        description: 'Some description',
-        files: [],
-        images: [],
-        links: [], // {title: "title", url: "url"}
-        funding: new BN(100000),
-        /*
-        funding: new BN(
-          props.requestToJoinFormStore.form.fields[
-            RequestToJoinForm.FIELD_AMOUNT
-          ].value,
-        ),
-        */
-      };
-      let instance = ArcService.getInstance();
-
-      console.log('instance -> ', instance);
-
-      //const fundingProposal = await instance.createFundingProposal(data);
-
-      //console.log('RESULT | Funding proposal -> ', fundingProposal);
-    } catch (e) {
-      console.log(e);
-      setLoadingMessage(`${e}`);
-    }
+    // TODO
   };
 
   render() {
@@ -302,21 +273,15 @@ class nativeBridgeTests extends React.Component {
           <Text style={{marginVertical: 10}}>
             --------------- Common Interactions -----------------
           </Text>
-          <Text>Proposal Tx: {this.state.proposalStatus}</Text>
-          <TouchableOpacity onPress={this.createProposal} style={styles.button}>
-            <Text>Create Proposal</Text>
-          </TouchableOpacity>
-
-          <Text style={{marginVertical: 10}}>
-            --------------- Common Interactions -----------------
-          </Text>
           <Text>Common Tx: {this.state.commonStatus}</Text>
           <TouchableOpacity onPress={this.createCommon} style={styles.button}>
             <Text>Create Common</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.createProposal} style={styles.button}>
-            <Text>Create a request to join [TODO]</Text>
+          <TouchableOpacity
+            onPress={this.createRequestToJoin}
+            style={styles.button}>
+            <Text>Create a request to join</Text>
           </TouchableOpacity>
 
           <TouchableOpacity

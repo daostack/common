@@ -16,6 +16,11 @@ export const ipfsLink = 'https://api.thegraph.com/ipfs-daostack/api/v0';
 export const web3ProviderUrl = 'https://dai.poa.network';
 export const web3NetworkId = 100;
 
+export const OVERRIDES = {
+  gasLimit: 10000000,
+  gasPrice: 15000000000,
+};
+
 const httpLink = new HttpLink({
   uri: graphHttpLink,
   fetchOptions: {

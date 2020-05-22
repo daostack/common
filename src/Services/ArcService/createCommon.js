@@ -3,6 +3,7 @@ const {
   getForgeOrgData,
   getSetSchemesData,
 } = require('@daostack/common-factory');
+const {ARC_VERSION, OVERRIDES} = require('../../Config');
 
 // import DAOFactory from '../Contracts/ABIs/DAOFactory';
 
@@ -26,8 +27,6 @@ export const createCommon = async (
   givenOpts = {},
   navigation,
   daoStore,
-  ARC_VERSION,
-  OVERRIDES,
 ) => {
   //   navigation.navigate('CommonCreationLoading');
   // }
@@ -99,7 +98,7 @@ export const createCommon = async (
       fundingToken: opts.fundingToken,
       minFeeToJoin: opts.minFeeToJoin,
       memberReputation: opts.memberReputation,
-      fundingGoal: [parseInt(opts.fundingGoal)],
+      fundingGoal: [parseInt(opts.fundingGoal, 10)],
       deadline: opts.fundingGoalDeadline,
       metaData: opts.ipfsHash,
     });
@@ -111,7 +110,7 @@ export const createCommon = async (
       fundingToken: opts.fundingToken,
       minFeeToJoin: opts.minFeeToJoin,
       memberReputation: opts.memberReputation,
-      goal: parseInt(opts.fundingGoal),
+      goal: parseInt(opts.fundingGoal, 10),
       deadline: opts.fundingGoalDeadline,
       metaData: opts.ipfsHash,
     });

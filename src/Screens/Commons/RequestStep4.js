@@ -18,6 +18,7 @@ import RequestToJoinForm from '../../Components/Forms/RequestToJoinForm';
 
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from './RequestStepActionButton';
+import {CommonActions} from '@react-navigation/native';
 import ArcService from '../../Services/ArcService';
 import {BN} from 'bn.js';
 
@@ -61,7 +62,7 @@ const RequestStep4 = props => {
         files: [],
         images: [],
         links: [], // {title: "title", url: "url"}
-        funding: new BN(100000000),
+        funding: new BN(200),
         /*
         funding: new BN(
           props.requestToJoinFormStore.form.fields[
@@ -70,9 +71,16 @@ const RequestStep4 = props => {
         ),
         */
       };
-      let instance = await ArcService.getInstance();
 
-      const proposal = await instance.createRequestToJoin(data);
+      console.log(
+        'props.route.params.currDaoId, -> ',
+        props.route.params.currDaoId,
+      );
+
+      const proposal = await ArcService.getInstance().createRequestToJoin(
+        props.route.params.currDaoId,
+        data,
+      );
       setLoadingMessage(`JoinAndQuit Proposal with id ${proposal.id} created!`);
 
       const navigate = CommonActions.navigate({
