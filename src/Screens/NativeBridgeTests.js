@@ -241,7 +241,7 @@ class nativeBridgeTests extends React.Component {
           // TBD: get form data for deadline; these are in secondSinceEpoch
           //TODO: get data for deadline from form data
           fundingGoalDeadline: 20200404,
-          ipfsHash: 'QmNS94vjszCsBjnxYZLbfMSaQrnb7efuGs7zK6MXn34NCA',
+          ipfsHash: 'QmXLiGz859X4ktkEKupyda3duXVJQ7ax59t3Uha9odiSRp',
         },
         this.props.navigation,
         this.props.daoStore,
