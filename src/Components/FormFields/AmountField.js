@@ -11,6 +11,7 @@ const AmountField = ({
   formStore,
   onCustomSelect,
   onCustomClose,
+  onAmountSelected,
   navigation,
 }) => {
   const [isCustomSelected, setIsCustomSelected] = useState(0);
@@ -28,7 +29,7 @@ const AmountField = ({
       console.log(textInputRef.current);
       onCustomSelect();
     } else {
-      navigation.navigate('RequestStep4');
+      onAmountSelected();
     }
   };
 

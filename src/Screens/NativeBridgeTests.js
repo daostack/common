@@ -11,11 +11,10 @@ import {
 const {width} = Dimensions.get('window');
 import WalletManager from '../Util/WalletManager';
 import MessageContract from '../Contracts/ABIs/MessageContract';
-import {createCommon} from '../Util/createCommon';
-import {createProposalRequestToJoin} from '../Util/createProposal';
-import {getArc} from '../Util/arc';
+
 import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
+import ArcService from '../Services/ArcService';
 import Toast from '../Util/Toast';
 import {web3ProviderUrl} from '../Config';
 
@@ -182,11 +181,9 @@ class nativeBridgeTests extends React.Component {
 
   createCommon = async () => {
     const wallet = WalletManager.getInstance().wallet;
-    const arc = getArc(wallet);
 
     try {
-      const commonAddress = await createCommon(
-        await arc,
+      const commonAddress = await ArcService.getInstance().createCommon(
         {
           name: `Test DAO ${new Date()}`,
           founderAddresses: wallet.address,
@@ -202,7 +199,8 @@ class nativeBridgeTests extends React.Component {
       );
 
       this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
-    } catch (err) {
+    } catch (error) {
+      console.log('Error -> ', error);
       this.setState({commonStatus: `${error}`});
     }
   };
@@ -211,25 +209,25 @@ class nativeBridgeTests extends React.Component {
     this.props.daoStore.creationError('Error' + '2');
   };
 
-  createProposal = async () => {
+  createRequestToJoin = async () => {
     console.log('creating proposal -- please wait');
+    const daoId = '0xb01230c8c74eb336745bbae5b84b056caca5bbd2';
     this.setState({
       proposalStatus: 'Creating JoinAndQuit proposal -- please wait',
     });
     try {
-      const wallet = WalletManager.getInstance();
-      console.log('wallet', wallet);
-      const arc = await getArc(wallet.wallet);
-      console.log('calling the function', arc);
       const data = {
         title: `A test proposal on ${Date()}`,
         description: 'Some description',
         files: [],
         images: [],
         links: [], // {title: "title", url: "url"}
-        funding: new BN(100000),
+        funding: new BN(200),
       };
-      const proposal = await createProposalRequestToJoin(arc, data);
+      const proposal = await ArcService.getInstance().createRequestToJoin(
+        daoId,
+        data,
+      );
       this.setState({
         proposalStatus: `JoinAndQuit Proposal with id ${proposal.id} created!`,
       });
@@ -238,6 +236,10 @@ class nativeBridgeTests extends React.Component {
       this.setState({proposalState: `${e}`});
     }
     console.log(`proposal created: ${proposal.id}`);
+  };
+
+  createFundingProposal = async () => {
+    // TODO
   };
 
   render() {
@@ -267,24 +269,20 @@ class nativeBridgeTests extends React.Component {
           <Text style={{marginVertical: 10}}>
             --------------- Common Interactions -----------------
           </Text>
-          <Text>Proposal Tx: {this.state.proposalStatus}</Text>
-          <TouchableOpacity onPress={this.createProposal} style={styles.button}>
-            <Text>Create Proposal</Text>
-          </TouchableOpacity>
-
-          <Text style={{marginVertical: 10}}>
-            --------------- Common Interactions -----------------
-          </Text>
           <Text>Common Tx: {this.state.commonStatus}</Text>
           <TouchableOpacity onPress={this.createCommon} style={styles.button}>
             <Text>Create Common</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
-            <Text>Create a request to join [TODO]</Text>
+          <TouchableOpacity
+            onPress={this.createRequestToJoin}
+            style={styles.button}>
+            <Text>Create a request to join</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.createCommon} style={styles.button}>
+          <TouchableOpacity
+            onPress={this.createFundingProposal}
+            style={styles.button}>
             <Text>Create a funding request [TODO]</Text>
           </TouchableOpacity>
 

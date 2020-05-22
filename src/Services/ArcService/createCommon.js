@@ -3,7 +3,7 @@ const {
   getForgeOrgData,
   getSetSchemesData,
 } = require('@daostack/common-factory');
-const {ARC_VERSION, OVERRIDES} = require('./arc');
+const {ARC_VERSION, OVERRIDES} = require('../../Config');
 
 // import DAOFactory from '../Contracts/ABIs/DAOFactory';
 
@@ -61,7 +61,7 @@ export const createCommon = async (
     );
     const votingMachineInfo = arc.getContractInfoByName(
       'GenesisProtocol',
-      ARC_VERSION,
+      '0.1.1-rc.13',
       // Ideally, we would find the GeneisProtocol at ARC_VERSION
       // instead, we need to use this custom version until https://github.com/daostack/subgraph/issues/542  is resolved
     );

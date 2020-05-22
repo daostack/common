@@ -18,6 +18,7 @@ import RequestToJoinForm from '../../Components/Forms/RequestToJoinForm';
 
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from './RequestStepActionButton';
+import {CommonActions} from '@react-navigation/native';
 
 const RequestStep3 = props => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -74,11 +75,21 @@ const RequestStep3 = props => {
     setIsActionBtnHidden(false);
   };
 
+  const navigateToRequestStep4 = () => {
+    const navigate = CommonActions.navigate({
+      name: 'RequestStep4',
+      params: {
+        currDaoId: props.route.params.currDaoId,
+      },
+    });
+    props.navigation.dispatch(navigate);
+  };
+
   const push = () => {
     const vaild = isValid();
+
     if (vaild) {
-      props.navigation.navigate('RequestStep4');
-      console.log(props.requestToJoinFormStore.getChangedFormFieldsJson());
+      navigateToRequestStep4();
     }
   };
 
@@ -145,6 +156,7 @@ const RequestStep3 = props => {
               formStore={props.requestToJoinFormStore}
               onCustomSelect={onCustomSelect}
               onCustomClose={onCustomClose}
+              onAmountSelected={navigateToRequestStep4}
             />
           </View>
         </ScrollView>

@@ -241,7 +241,13 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
   */
 
   const requestToJoin = event => {
-    navigation.navigate('RequestStep1');
+    const navigate = CommonActions.navigate({
+      name: 'RequestStep1',
+      params: {
+        currDaoId: currCommon.id,
+      },
+    });
+    navigation.dispatch(navigate);
   };
 
   const viewProposal = () => {

@@ -18,6 +18,7 @@ import CreateStepDotHeader from './RequestStepDotHeader';
 import {text, colors} from '../../Theme';
 import CreateStepNavigation from './RequestStepNavigation';
 import RequestStepActionButton from './RequestStepActionButton';
+import {CommonActions} from '@react-navigation/native';
 
 const RequestStep1 = props => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -41,8 +42,16 @@ const RequestStep1 = props => {
   };
 
   const push = () => {
+    console.log(props);
+
     if (pass) {
-      props.navigation.navigate('RequestStep2');
+      const navigate = CommonActions.navigate({
+        name: 'RequestStep2',
+        params: {
+          currDaoId: props.route.params.currDaoId,
+        },
+      });
+      props.navigation.dispatch(navigate);
     }
   };
 

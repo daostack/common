@@ -24,8 +24,8 @@ import WalletManager from '../../Util/WalletManager';
 import FirebaseService from '../../Services/FirebaseService';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import {numberFormatter} from '../../Util';
-import {createCommon} from '../../Util/createCommon';
-import {getArc} from '../../Util/arc';
+
+import ArcService from '../../Services/ArcService';
 
 const {width} = Dimensions.get('window');
 
@@ -143,8 +143,7 @@ const CreateStep4 = props => {
     const wallet = manager.wallet;
     const address = await manager.getAddress();
     console.log('owner account: ', address);
-    // we will want to have a global arc instance for all contract interactions!
-    const arc = await getArc(wallet);
+
     const data = {
       name: formData.name,
       founderAddresses: address,
@@ -159,8 +158,7 @@ const CreateStep4 = props => {
     };
     console.log(data);
 
-    const commonAddress = await createCommon(
-      arc,
+    const commonAddress = await ArcService.getInstance().createCommon(
       data,
       props.navigation,
       props.daoStore,
