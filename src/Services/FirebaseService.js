@@ -71,6 +71,23 @@ export default class FirebaseService {
     });
   }
 
+  async getDaoInfo(dao) {
+    let daoCollection = db.collection('daos').doc(dao);
+    daoCollection.onSnapshot(daoSnapshot => {
+      console.log(`Received dao snapshot: ${daoSnapshot}`);
+    }, err => {
+      console.log(`Encountered error: ${err}`);
+    });
+    return db.collection('dao').onSnapshot(snapshot => {
+      if (snapshot.empty) {
+        return [];
+      }
+      return snapshot.docs.map(doc => {
+        return {...{id: doc.id}, ...doc.data()};
+      });
+    });
+  }
+
   async addUser(googleId, newUser) {
     console.log('addUser -> ', newUser);
     try {

@@ -260,7 +260,7 @@ class nativeBridgeTests extends React.Component {
 
   createRequestToJoin = async () => {
     console.log('creating proposal -- please wait');
-    const daoId = '0xb01230c8c74eb336745bbae5b84b056caca5bbd2';
+    const daoId = '0xb5d46494d6af8ff60effb7bb0605ca7158c5cf1f';
     this.setState({
       proposalStatus: 'Creating JoinAndQuit proposal -- please wait',
     });

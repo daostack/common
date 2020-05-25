@@ -170,7 +170,7 @@ export default StyleSheet.create({
     textAlign: 'center',
     color: colors.error,
   },
-  tapBarunselected: {
+  tapBarUnselected: {
     ...appFontFamily,
     fontSize: 12,
     fontWeight: 'normal',

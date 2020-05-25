@@ -26,6 +26,7 @@ import BottomRightButton from '../Components/BottomRightButton';
 import DiscussionList from './Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
 import Toast from '../Util/Toast';
+import {numberFormatter} from '../Util';
 
 const mockData = {
   commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
@@ -43,7 +44,7 @@ const mockData = {
   activeProposals: 142,
 };
 
-const CommonProfile = ({navigation, route, bottomSheetStore}) => {
+const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
   sortProposalsSheetRef = useRef();
   proposalSheetRef = useRef();
 
@@ -66,6 +67,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
   useEffect(() => {
     setShowRequestSentModal(route.params.showRequestSentModal ? true : false);
     setCurrCommon(routeCommon);
+    console.log('daoStore: ', route.params);
   }, [routeCommon, route.params.showRequestSentModal]);
 
   const renderTabBar = props => (
@@ -141,10 +143,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
       return (
         <View style={styles.agendaBox}>
           <Text style={styles.agendaDescription}>
-            We aim to ba a global non-profit initiative. Only small percentage
-            of creative directors are women and we want to help change this
-            through mentorship circles, portfolio reviews, talks & creative
-            meetups.
+            {daoStore.dao.metadata.courseOfAction}
           </Text>
 
           <TouchableOpacity onPress={openAgendaScreen}>
@@ -296,7 +295,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
             />
           </View>
           <View>
-            <Text style={text.tapBarunselected}>02:00:10</Text>
+            <Text style={text.tapBarUnselected}>02:00:10</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -333,12 +332,19 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
           <CommonStageSummary
             isFundingStage={isFundingStage}
             commonProgressInfo={{
-              time: mockData.time,
-              activeProposals: mockData.activeProposals,
-              goal: mockData.goal,
-              members: mockData.members,
-              raised: mockData.raised,
-              currentBudget: mockData.currentBudget,
+              time: 55,
+              activeProposals:
+                currCommon.numberOfBoostedProposals +
+                currCommon.numberOfPreBoostedProposals +
+                currCommon.numberOfQueuedProposals,
+              goal: currCommon.fundingGoal,
+              members: currCommon.memberCount * 1,
+              // TODO: get this value. Is it even tracked in the contract? need to check.
+              raised: 0,
+              currentBudget: numberFormatter(
+                // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
+                currCommon.tokenTotalSupply,
+              )
             }}
           />
         </View>
@@ -350,7 +356,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
               ...layout.btnOutline,
             }}
             onPress={shareCommon}>
-            <Text style={text.buttonblue}>Share Com</Text>
+            <Text style={text.buttonblue}>Share Common</Text>
           </TouchableOpacity>
         </View>
         {renderAgendaForNonMembers()}
@@ -417,7 +423,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
                   Request to join
                 </Text>
                 <Text style={{fontSize: 16, color: 'white'}}>
-                  $50 Contribution
+                  ${currCommon.minFeeToJoin} Contribution
                 </Text>
               </TouchableOpacity>
             </View>
@@ -565,4 +571,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(observer(CommonProfile));
+export default inject('bottomSheetStore', 'daoStore')(observer(CommonProfile));

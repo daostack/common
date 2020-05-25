@@ -11,6 +11,8 @@ import {CommonBox, BottomRightButton} from '../Components';
 import {layout} from '../Theme';
 import {db} from '../Firebase';
 import {inject, observer} from 'mobx-react';
+import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
+
 
 const CommonsList = ({navigation, daoStore, bottomSheetStore}) => {
   // const [hasError, setErrors] = useState(false);
@@ -55,6 +57,10 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore}) => {
     return unsubscribe;
   }, [daoStore, bottomSheetStore]);
 
+  const setDao = dao => {
+    daoStore.setDao(dao);
+  }
+
   return (
     <View style={{flex: 1}}>
       <SafeAreaView />
@@ -87,6 +93,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore}) => {
                 common={item}
                 navigation={navigation}
                 keyExtractor={daos.id}
+                onPress={() => setDao(item)}
               />
             )}
           />
