@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
-  StyleSheet,
   ScrollView,
   Dimensions,
   SafeAreaView,
@@ -18,16 +17,15 @@ import RequestToJoinForm from '../../Components/Forms/RequestToJoinForm';
 
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from './RequestStepActionButton';
-
 import {CommonActions} from '@react-navigation/native';
+import ArcService from '../../Services/ArcService';
+import {BN} from 'bn.js';
 
 const RequestStep4 = props => {
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [ruleCount, setRuleCount] = useState(1);
-  // const [ruleTitles, setRuleTitles] = useState([]);
   const [pass, setPass] = useState(true);
-  // var ruleBody = [];
+  const [loadingMessage, setLoadingMessage] = useState(null);
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -36,39 +34,65 @@ const RequestStep4 = props => {
       extrapolate: 'clamp',
     });
     console.log(height);
-    // const height = scrollY.value > 100 ? 125 : 0;
     setHeaderHeight(height);
   }, [scrollY]);
 
   const isValid = () => {
-    const titles = [...Array(ruleCount).keys()].map(x => `ruleTitles_${x}`);
-    const bodys = [...Array(ruleCount).keys()].map(x => `ruleBody_${x}`);
-
     const result = props.requestToJoinFormStore.isFormValidSelectedFields([
-      RequestToJoinForm.ACTION,
-      ...titles,
-      ...bodys,
+      RequestToJoinForm.FIELD_CARD_NAME,
+      RequestToJoinForm.FIELD_CARD_NUMBER,
+      RequestToJoinForm.FIELD_EXPIRATION_DATE,
+      RequestToJoinForm.FIELD_CVV,
     ]);
+    console.log('isValid result -> ', result);
     setPass(result);
     return result;
   };
 
-  const push = () => {
-    /*
-    const vaild = isValid();
-    if (vaild) {
-      props.navigation.navigate('CreateStep4');
-      console.log(props.requestToJoinFormStore.getChangedFormFieldsJson());
-    }
-    */
+  const push = async () => {
+    if (isValid()) {
+      try {
+        const data = {
+          title: `A test proposal on ${Date()}`,
+          description: 'Some description',
+          files: [],
+          images: [],
+          links: [], // {title: "title", url: "url"}
+          funding: new BN(200),
+          /*
+        funding: new BN(
+          props.requestToJoinFormStore.form.fields[
+            RequestToJoinForm.FIELD_AMOUNT
+          ].value,
+        ),
+        */
+        };
 
-    const navigate = CommonActions.navigate({
-      name: 'CommonProfile',
-      params: {
-        showRequestSentModal: true,
-      },
-    });
-    props.navigation.dispatch(navigate);
+        console.log(
+          'props.route.params.currDaoId, -> ',
+          props.route.params.currDaoId,
+        );
+
+        const proposal = await ArcService.getInstance().createRequestToJoin(
+          props.route.params.currDaoId,
+          data,
+        );
+        setLoadingMessage(
+          `JoinAndQuit Proposal with id ${proposal.id} created!`,
+        );
+
+        const navigate = CommonActions.navigate({
+          name: 'CommonProfile',
+          params: {
+            showRequestSentModal: true,
+          },
+        });
+        props.navigation.dispatch(navigate);
+      } catch (e) {
+        console.log(e);
+        setLoadingMessage(`${e}`);
+      }
+    }
   };
 
   return (
@@ -101,6 +125,7 @@ const RequestStep4 = props => {
           onScroll={Animated.event([
             {nativeEvent: {contentOffset: {y: scrollY}}},
           ])}>
+          {loadingMessage ? <Text>{loadingMessage}</Text> : null}
           <CreateStepHeader currentIndex={3} />
           <View
             style={{
@@ -127,7 +152,7 @@ const RequestStep4 = props => {
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NUMBER,
                 formStore: props.requestToJoinFormStore,
-                validateRule: 'string',
+                validateRule: 'required|numeric',
               }}
             />
 
@@ -136,7 +161,7 @@ const RequestStep4 = props => {
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NAME,
                 formStore: props.requestToJoinFormStore,
-                validateRule: 'string',
+                validateRule: 'required|string',
               }}
             />
 
@@ -152,20 +177,20 @@ const RequestStep4 = props => {
               }}>
               <TextInputField
                 viewStyle={{alignSelf: 'stretch'}}
-                label="Expiration date                 "
+                label="Expiration date"
                 validation={{
-                  name: RequestToJoinForm.FIELD_CARD_NAME,
+                  name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
                   formStore: props.requestToJoinFormStore,
-                  validateRule: 'string',
+                  validateRule: 'required|string',
                 }}
               />
               <TextInputField
                 viewStyle={{alignSelf: 'stretch'}}
-                label="CVV                                 "
+                label="CVV"
                 validation={{
-                  name: RequestToJoinForm.FIELD_CARD_NAME,
+                  name: RequestToJoinForm.FIELD_CVV,
                   formStore: props.requestToJoinFormStore,
-                  validateRule: 'string',
+                  validateRule: 'required|numeric',
                 }}
               />
             </View>

@@ -94,17 +94,17 @@ const ProposalScreen = ({navigation, route, props}) => {
   boostedInfoRef = useRef();
   approvalSheetRef = useRef();
 
-  const renderTabBar = props => (
+  const renderTabBar = currProps => (
     <TabBar
-      {...props}
+      {...currProps}
       indicatorStyle={{
         backgroundColor: colors.mainBlue,
       }}
-      renderLabel={({route, focused}) => {
+      renderLabel={({currRoute, focused}) => {
         return (
           <View style={{...layout.content, padding: 0}}>
             <Icon
-              name={route.icon}
+              name={currRoute.icon}
               size={24}
               color={focused ? colors.mainBlue : colors.grey3}
             />
@@ -166,7 +166,7 @@ const ProposalScreen = ({navigation, route, props}) => {
               }
               style={{flex: 1, height: inputHeight, marginHorizontal: 10}}
               fontSize={15}
-              onChangeText={text => setInputText(text)}
+              onChangeText={currText => setInputText(currText)}
             />
             <TouchableOpacity
               style={{paddingRight: 15, justifyContent: 'center'}}

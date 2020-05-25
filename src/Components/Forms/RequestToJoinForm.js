@@ -8,6 +8,11 @@ class RequestToJoinForm extends React.Component {
   static FIELD_LINKS = 'links';
   static FIELD_AMOUNT = 'amount';
 
+  static FIELD_CARD_NAME = 'card_name';
+  static FIELD_CARD_NUMBER = 'card_number';
+  static FIELD_EXPIRATION_DATE = 'expiration_date';
+  static FIELD_CVV = 'cvv';
+
   formSkip() {}
 
   formSave = () => {

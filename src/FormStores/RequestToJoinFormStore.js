@@ -58,14 +58,16 @@ class RequestToJoinFormStore extends FormStore {
   isFormValidSelectedFields = fields => {
     var validation = this.getValidator();
     this.form.meta.isValid = validation.passes();
-    // console.log(validation.errors.errors);
+    isValid = true;
     for (const key in fields) {
       const field = fields[key];
-      if (validation.errors.first(field)) {
-        return false;
+
+      for (const currKey in validation.errors.errors) {
+        this.form.fields[field].error = validation.errors.first(currKey);
+        isValid = false;
       }
     }
-    return true;
+    return isValid;
   };
 }
 export default RequestToJoinFormStore;

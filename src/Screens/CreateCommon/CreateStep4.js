@@ -24,8 +24,8 @@ import WalletManager from '../../Util/WalletManager';
 import FirebaseService from '../../Services/FirebaseService';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import {numberFormatter} from '../../Util';
-import {createCommon} from '../../Util/createCommon';
-import {getArc} from '../../Util/arc';
+
+import ArcService from '../../Services/ArcService';
 
 const {width} = Dimensions.get('window');
 
@@ -133,18 +133,16 @@ const CreateStep4 = props => {
   // TODO: use arc.saveIPFSData({ name: formData.name}) here
   const forgeCommon = async () => {
     const commonFormData = props.createCommonFormStore.getChangedFormFieldsJson();
+    console.log('saving data on ipfs');
     const ipfsHash = await ipfsUpload(commonFormData);
-    console.log('ipfs Hash: ', ipfsHash);
 
     const formData = props.createCommonFormStore.getChangedFormFieldsJson();
-    console.log('formDAta: ', formData.minimum);
-    console.log('formDAta: ', parseInt(formData.minimum));
     const manager = await WalletManager.getInstance();
-    const wallet = manager.wallet;
     const address = await manager.getAddress();
     console.log('owner account: ', address);
-    // we will want to have a global arc instance for all contract interactions!
-    const arc = await getArc(wallet);
+
+    // TODO: get form data for fundingGoalDeadline; these are in secondSinceEpoch
+    const deadline = '1621679337'; // in may 2021
     const data = {
       name: formData.name,
       founderAddresses: address,
@@ -152,15 +150,12 @@ const CreateStep4 = props => {
       repDist: [100],
       minFeeToJoin: parseInt(formData.minimum, 10),
       fundingGoal: formData.funding,
-      // TBD: get form data for fundingGoalDeadline; these are in secondSinceEpoch
-      fundingGoalDeadline:
-        (await WalletManager.provider.getBlock('latest')).timestamp + 3000,
+      fundingGoalDeadline: deadline,
       ipfsHash,
     };
-    console.log(data);
+    console.log('calling createCommon(...)');
 
-    const commonAddress = await createCommon(
-      arc,
+    const commonAddress = await ArcService.getInstance().createCommon(
       data,
       props.navigation,
       props.daoStore,

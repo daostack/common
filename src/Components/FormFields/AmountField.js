@@ -11,6 +11,7 @@ const AmountField = ({
   formStore,
   onCustomSelect,
   onCustomClose,
+  onAmountSelected,
   navigation,
 }) => {
   const [isCustomSelected, setIsCustomSelected] = useState(0);
@@ -31,6 +32,7 @@ const AmountField = ({
     } else {
       formStore.fieldChanged(RequestToJoinForm.FIELD_AMOUNT, amount);
       navigation.navigate('RequestStep4');
+      onAmountSelected();
     }
   };
 

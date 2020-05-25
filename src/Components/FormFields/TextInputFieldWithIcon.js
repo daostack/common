@@ -82,12 +82,12 @@ class TextInputFieldWithIcon extends React.Component {
     }
   }
 
-  onChangeText = text => {
+  onChangeText = currText => {
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
-      formStore.fieldChanged(name, text);
+      formStore.fieldChanged(name, currText);
     }
-    this.props.onChangeText && this.props.onChangeText(text);
+    this.props.onChangeText && this.props.onChangeText(currText);
   };
 
   onFocus = e => {

@@ -27,9 +27,9 @@ const PDFViewer = ({route}) => {
           onError={error => {
             console.log(error);
           }}
-          onPressLink={uri => {
-            console.log(`Link presse: ${uri}`);
-            navigation.navigate('Browser', {url: uri});
+          onPressLink={currUri => {
+            console.log(`Link presse: ${currUri}`);
+            navigation.navigate('Browser', {url: currUri});
           }}
           style={styles.pdf}
         />

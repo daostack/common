@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
-  StyleSheet,
   ScrollView,
   Dimensions,
   SafeAreaView,
@@ -18,6 +17,7 @@ import RequestToJoinForm from '../../Components/Forms/RequestToJoinForm';
 
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from './RequestStepActionButton';
+import {CommonActions} from '@react-navigation/native';
 
 const RequestStep3 = props => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -40,22 +40,6 @@ const RequestStep3 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const handleRuleTitles = (x, text) => {
-    // props.requestToJoinFormStore.registerFormField(`ruleTitles_${x}`, 'string');
-    // console.log(props.requestToJoinFormStore);
-    props.requestToJoinFormStore.registerFormField(`ruleTitles_${x}`, 'string');
-    props.requestToJoinFormStore.fieldChanged(`ruleTitles_${x}`, text);
-    // ruleTitles[x] = text;
-    // console.log(x, text, ruleTitles);
-  };
-
-  const handleRuleBody = (x, text) => {
-    props.requestToJoinFormStore.registerFormField(`ruleBody_${x}`, 'string');
-    // ruleBody[x] = text;
-    // console.log(ruleBody);
-    props.requestToJoinFormStore.fieldChanged(`ruleBody_${x}`, text);
-  };
-
   const isValid = () => {
     props.requestToJoinFormStore.isFormValid();
 
@@ -74,11 +58,21 @@ const RequestStep3 = props => {
     setIsActionBtnHidden(false);
   };
 
+  const navigateToRequestStep4 = () => {
+    const navigate = CommonActions.navigate({
+      name: 'RequestStep4',
+      params: {
+        currDaoId: props.route.params.currDaoId,
+      },
+    });
+    props.navigation.dispatch(navigate);
+  };
+
   const push = () => {
     const vaild = isValid();
+
     if (vaild) {
-      props.navigation.navigate('RequestStep4');
-      console.log(props.requestToJoinFormStore.getChangedFormFieldsJson());
+      navigateToRequestStep4();
     }
   };
 
@@ -145,6 +139,7 @@ const RequestStep3 = props => {
               formStore={props.requestToJoinFormStore}
               onCustomSelect={onCustomSelect}
               onCustomClose={onCustomClose}
+              onAmountSelected={navigateToRequestStep4}
             />
           </View>
         </ScrollView>
@@ -164,48 +159,5 @@ const RequestStep3 = props => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  view: {
-    justifyContent: 'flex-end',
-    margin: 0,
-  },
-  container: {
-    backgroundColor: colors.white,
-    borderBottomColor: colors.gray,
-    borderBottomWidth: 1,
-    marginVertical: 10,
-    marginHorizontal: 10,
-    justifyContent: 'center',
-    borderRadius: 2,
-    height: 50,
-  },
-  placeholderText: {
-    color: colors.grey3,
-  },
-  text: {
-    width: '100%',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    fontSize: 15,
-    color: colors.black,
-  },
-  readMoreButton: {
-    fontSize: 12,
-    // fontWeight: '700',
-    color: colors.grey3,
-  },
-  continueButton: {
-    width: '100%',
-    height: 48,
-    borderRadius: 32,
-    marginTop: 45,
-    flexDirection: 'row',
-    paddingHorizontal: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.mainBlue,
-  },
-});
 
 export default inject('requestToJoinFormStore')(observer(RequestStep3));

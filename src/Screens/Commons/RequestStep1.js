@@ -2,13 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
-  StyleSheet,
   ScrollView,
   Dimensions,
   SafeAreaView,
   Animated,
 } from 'react-native';
-import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
 import RequestToJoinRule from '../../Components/Commons/RequestToJoinRule';
 
 import {observer, inject} from 'mobx-react';
@@ -18,6 +16,7 @@ import CreateStepDotHeader from './RequestStepDotHeader';
 import {text, colors} from '../../Theme';
 import CreateStepNavigation from './RequestStepNavigation';
 import RequestStepActionButton from './RequestStepActionButton';
+import {CommonActions} from '@react-navigation/native';
 
 const RequestStep1 = props => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -41,8 +40,16 @@ const RequestStep1 = props => {
   };
 
   const push = () => {
+    console.log(props);
+
     if (pass) {
-      props.navigation.navigate('RequestStep2');
+      const navigate = CommonActions.navigate({
+        name: 'RequestStep2',
+        params: {
+          currDaoId: props.route.params.currDaoId,
+        },
+      });
+      props.navigation.dispatch(navigate);
     }
   };
 
@@ -147,24 +154,5 @@ const RequestStep1 = props => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  readMoreButton: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.mainBlue,
-  },
-
-  continueButton: {
-    width: '100%',
-    height: 48,
-    borderRadius: 32,
-    flexDirection: 'row',
-    paddingHorizontal: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.mainBlue,
-  },
-});
 
 export default inject('requestToJoinFormStore')(observer(RequestStep1));

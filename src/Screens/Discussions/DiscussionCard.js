@@ -5,7 +5,6 @@ import {
   View,
   TouchableOpacity,
   Image,
-  TouchableWithoutFeedback,
   Dimensions,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';

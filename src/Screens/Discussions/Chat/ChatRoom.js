@@ -11,7 +11,7 @@ import DiscussionMessage from '../DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
 import {colors} from '../../../Theme';
 import {observer, inject} from 'mobx-react';
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 import moment from 'moment';
 
 const ChatRoom = props => {
