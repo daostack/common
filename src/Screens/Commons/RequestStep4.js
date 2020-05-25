@@ -144,7 +144,9 @@ const RequestStep4 = props => {
             </Text>
             <Text
               style={{marginTop: 12, marginBottom: 23, textAlign: 'center'}}>
-              You are contributing $25 to this common
+              You are contributing{' '}
+              {props.requestToJoinFormStore.getChangedFormFieldsJson().amount}{' '}
+              to this common
             </Text>
 
             <TextInputField
