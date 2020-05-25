@@ -58,7 +58,7 @@ const RequestStep3 = props => {
     setIsActionBtnHidden(false);
   };
 
-  const navigateToRequestStep4 = () => {
+  const navigateToRequestStep4 = amount => {
     const navigate = CommonActions.navigate({
       name: 'RequestStep4',
       params: {
@@ -66,6 +66,10 @@ const RequestStep3 = props => {
       },
     });
     props.navigation.dispatch(navigate);
+    props.requestToJoinFormStore.fieldChanged(
+      RequestToJoinForm.FIELD_AMOUNT,
+      amount,
+    );
   };
 
   const push = () => {
