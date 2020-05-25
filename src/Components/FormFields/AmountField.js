@@ -28,11 +28,10 @@ const AmountField = ({
       textInputRef.current.focus();
       console.log(textInputRef.current);
       onCustomSelect();
-      formStore.fieldChanged(RequestToJoinForm.FIELD_AMOUNT, amount);
+      onAmountSelected(amount);
     } else {
-      formStore.fieldChanged(RequestToJoinForm.FIELD_AMOUNT, amount);
+      onAmountSelected(amount);
       navigation.navigate('RequestStep4');
-      onAmountSelected();
     }
   };
 
