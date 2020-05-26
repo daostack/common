@@ -133,7 +133,7 @@ const CreateStep4 = props => {
   // TODO: use arc.saveIPFSData({ name: formData.name}) here
   const forgeCommon = async () => {
     const commonFormData = props.createCommonFormStore.getChangedFormFieldsJson();
-    console.log('saving data on ipfs');
+    console.log('saving data on ipfs: ', commonFormData);
     const ipfsHash = await ipfsUpload(commonFormData);
 
     const formData = props.createCommonFormStore.getChangedFormFieldsJson();

@@ -38,10 +38,7 @@ const CommonAgenda = ({daoStore}) => {
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>About</Text>
             <Text style={{...text.blackText, ...layout.marginTopM}}>
-              We aim to ba a global non-profit initiative. Only small percentage
-              of creative directors are women and we want to help change this
-              through mentorship circles, portfolio reviews, talks & creative
-              meetups.
+              {daoStore.dao.metadata.description}
             </Text>
           </View>
 
