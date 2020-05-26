@@ -23,7 +23,7 @@ export default class WalletManager {
 
   static getInstance = () => {
     if (WalletManager.myInstance == null) {
-      throw new Error('WalletManager have not initialized');
+      throw new Error('WalletManager is not initialized');
     }
     return this.myInstance;
   };
