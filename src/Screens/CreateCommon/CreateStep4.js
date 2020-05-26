@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Text,
@@ -26,7 +26,6 @@ import CreateStepDotHeader from './CreateStepDotHeader';
 import {numberFormatter} from '../../Util';
 
 import ArcService from '../../Services/ArcService';
-
 const {width} = Dimensions.get('window');
 
 const firebaseService = new FirebaseService();
@@ -40,7 +39,6 @@ const CreateStep4 = props => {
     'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
   );
   const [avatarURL, setAvatarURL] = useState(null);
-  const errorSheetRef = useRef();
 
   useEffect(() => {
     const height = scrollY.interpolate({

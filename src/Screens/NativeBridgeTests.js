@@ -15,8 +15,7 @@ import MessageContract from '../Contracts/ABIs/MessageContract';
 import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
 import ArcService from '../Services/ArcService';
-import Toast from '../Util/Toast';
-import {ethers, Contract} from 'ethers';
+import {ethers} from 'ethers';
 import {web3ProviderUrl} from '../Config';
 
 const uid = 'test';

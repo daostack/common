@@ -23,7 +23,6 @@ import FirebaseService from '../../Services/FirebaseService';
 import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
-import ChatRoom from './Chat/ChatRoom';
 import BottomSheetModal from '../../Components/BottomSheetModal';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 // import _ from 'lodash';
@@ -42,7 +41,7 @@ const Discussions = props => {
   const discussionId = data.id;
   const [msgGroup, setMsgDroup] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
-  const [discussion, setDiscussion] = useState();
+  const [setDiscussion] = useState();
   const [followState, setFollowState] = useState(false);
 
   console.log('data', data);

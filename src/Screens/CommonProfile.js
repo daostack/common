@@ -28,21 +28,21 @@ import {observer, inject} from 'mobx-react';
 import Toast from '../Util/Toast';
 import {numberFormatter} from '../Util';
 
-const mockData = {
-  commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
-  commonLogo:
-    'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
-  description: 'If you wanna save the Amazon, own it.',
-  name: 'Amazon Network',
-  time: 26,
-  members: 55,
-  raised: 4200,
-  //Funding stage data
-  goal: 10000,
-  //Operating stage data
-  currentBudget: 1421,
-  activeProposals: 142,
-};
+// const mockData = {
+//   commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
+//   commonLogo:
+//     'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
+//   description: 'If you wanna save the Amazon, own it.',
+//   name: 'Amazon Network',
+//   time: 26,
+//   members: 55,
+//   raised: 4200,
+//   //Funding stage data
+//   goal: 10000,
+//   //Operating stage data
+//   currentBudget: 1421,
+//   activeProposals: 142,
+// };
 
 const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
   sortProposalsSheetRef = useRef();
@@ -344,7 +344,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
               currentBudget: numberFormatter(
                 // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
                 currCommon.tokenTotalSupply,
-              )
+              ),
             }}
           />
         </View>
