@@ -10,6 +10,7 @@ const CommonBox = props => {
     <TouchableOpacity
       key={props.key}
       onPress={() => {
+        props.onPress();
         const navigate = CommonActions.navigate({
           name: 'CommonProfile',
           params: {

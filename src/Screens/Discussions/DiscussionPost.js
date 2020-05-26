@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, ScrollView, View} from 'react-native';
+import {SafeAreaView, ScrollView, View} from 'react-native';
 import {colors} from '../../Theme';
 import CreateDiscussionForm from '../../Components/Forms/CreateDiscussionForm';
 
@@ -21,15 +21,5 @@ const DiscussionPost = props => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.grey4,
-    borderRadius: 8,
-    marginHorizontal: 25,
-    marginVertical: 10,
-    padding: 10,
-  },
-});
 
 export default DiscussionPost;

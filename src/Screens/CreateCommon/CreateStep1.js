@@ -23,7 +23,7 @@ import MultiLinkField from '../../Components/FormFields/MultiLinkField';
 const CreateStep1 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [ruleCount, setRuleCount] = useState(1);
+  const [ruleCount] = useState(1);
   const [pass, setPass] = useState(false);
 
   useEffect(() => {

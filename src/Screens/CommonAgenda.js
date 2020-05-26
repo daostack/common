@@ -13,8 +13,9 @@ import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import Icon from '../Assets/iconfont/Icon';
 
 import {layout, text, sizeS} from '../Theme';
+import {inject, observer} from 'mobx-react';
 
-const CommonAgenda = () => {
+const CommonAgenda = ({daoStore}) => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -37,18 +38,14 @@ const CommonAgenda = () => {
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>About</Text>
             <Text style={{...text.blackText, ...layout.marginTopM}}>
-              We aim to ba a global non-profit initiative. Only small percentage
-              of creative directors are women and we want to help change this
-              through mentorship circles, portfolio reviews, talks & creative
-              meetups.
+              {daoStore.dao.metadata.description}
             </Text>
           </View>
 
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Course of action</Text>
             <Text style={{...text.blackText, ...layout.marginTopM}}>
-              We created this community to help you along your journey. Links to
-              sponsored content or brands will vote you out.
+              {daoStore.dao.metadata.courseOfAction}
             </Text>
           </View>
 
@@ -120,4 +117,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommonAgenda;
+export default inject('daoStore')(observer(CommonAgenda));

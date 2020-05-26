@@ -17,11 +17,9 @@ import {TabView, TabBar} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
 import ProposalDiscussion from './ProposalDiscussion';
 import MemberCard from '../../Components/MemberCard';
-import BoostedInfo from '../BottomSheetScreens/BoostedInfo';
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '../../Util/Toast';
 import BottomSheetModal from '../../Components/BottomSheetModal';
-import BottomSheetContainer from '../../Components/BottomSheetContainer';
 import ProposalService from '../../Services/ProposalService';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -100,11 +98,11 @@ const ProposalScreen = ({navigation, route, props}) => {
       indicatorStyle={{
         backgroundColor: colors.mainBlue,
       }}
-      renderLabel={({currRoute, focused}) => {
+      renderLabel={({focused}) => {
         return (
           <View style={{...layout.content, padding: 0}}>
             <Icon
-              name={currRoute.icon}
+              name={route.icon}
               size={24}
               color={focused ? colors.mainBlue : colors.grey3}
             />

@@ -22,7 +22,7 @@ import ArcService from '../../Services/ArcService';
 import {BN} from 'bn.js';
 
 const RequestStep4 = props => {
-  const [scrollY, setScrollY] = useState(new Animated.Value(0));
+  const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [pass, setPass] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState(null);

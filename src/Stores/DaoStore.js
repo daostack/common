@@ -13,6 +13,7 @@ export const daoInfoFields = [
 
 class DaoStore {
   daoInfo;
+  dao;
   daos;
   isLoading;
   stage;
@@ -45,9 +46,14 @@ class DaoStore {
     }
     this.daos = daoArray;
   };
+
+  setDao = dao => {
+    this.dao = dao;
+  };
 }
 
 decorate(DaoStore, {
+  dao: observable,
   setDaos: action,
   daos: observable,
   isLoading: observable,

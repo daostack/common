@@ -4,7 +4,6 @@ import {
   Text,
   View,
   Dimensions,
-  Keyboard,
   SectionList,
 } from 'react-native';
 import DiscussionMessage from '../DiscussionMessage';
@@ -16,14 +15,14 @@ import moment from 'moment';
 
 const ChatRoom = props => {
   //const [inputHeight, setInputHeight] = useState(60);
-  const inputRef = useRef(null);
+  // const inputRef = useRef(null);
   //const [user, setUser] = useState({});
   //const [inputText, setInputText] = useState(null);
   const chatRef = useRef(null);
 
   const path = props.path;
   // 'common/48NPcGnpskN9YkqVNXKA/proposal/DmZFnbSbkwcQHMAyGa54/discussion/43Q9abICrp2KpE86c1Az/message';
-  const commonId = props.commonId;
+  // const commonId = props.commonId;
   const [msgGroup, setMsgDroup] = useState([]);
 
   let listRef = useRef([]);
@@ -77,35 +76,36 @@ const ChatRoom = props => {
     };
   }, [path]);
 
-  const sendMessageToDiscussion = async () => {
-    const userStore = props.userStore;
-    const message = inputRef.current._lastNativeText;
-    if (message && message.trim().length) {
-      // let path = `common/${commonId}/discussion/${data.id}/message`;
-      firestore()
-        .collection(path)
-        .doc()
-        .set({
-          text: message,
-          createTime: new Date(),
-          ownerId: userStore.userInfo.uid,
-          ownerName: userStore.userInfo.displayName,
-          ownerAvatar: userStore.userInfo.photoURL,
-          commonId: commonId,
-          discussionId: discussionId,
-          proposalId: proposalId,
-        })
-        .then(() => {
-          console.log('YES');
-          inputRef.current.clear();
-          Keyboard.dismiss();
-        })
-        .catch(error => {
-          console.log('NO', error);
-          Toast.error(error);
-        });
-    }
-  };
+  //TODO: remove this function completely if not being used
+  // const sendMessageToDiscussion = async () => {
+  //   const userStore = props.userStore;
+  //   const message = inputRef.current._lastNativeText;
+  //   if (message && message.trim().length) {
+  //     // let path = `common/${commonId}/discussion/${data.id}/message`;
+  //     firestore()
+  //       .collection(path)
+  //       .doc()
+  //       .set({
+  //         text: message,
+  //         createTime: new Date(),
+  //         ownerId: userStore.userInfo.uid,
+  //         ownerName: userStore.userInfo.displayName,
+  //         ownerAvatar: userStore.userInfo.photoURL,
+  //         commonId: commonId,
+  //         discussionId: discussionId,
+  //         proposalId: proposalId,
+  //       })
+  //       .then(() => {
+  //         console.log('YES');
+  //         inputRef.current.clear();
+  //         Keyboard.dismiss();
+  //       })
+  //       .catch(error => {
+  //         console.log('NO', error);
+  //         Toast.error(error);
+  //       });
+  //   }
+  // };
 
   return (
     <View style={{}}>
