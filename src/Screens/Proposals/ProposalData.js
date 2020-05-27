@@ -51,14 +51,8 @@ const ProposalData = props => {
     };
 
     const loadDiscussions = () => {
-      const commonId = '48NPcGnpskN9YkqVNXKA';
-      const proposalId = 'DmZFnbSbkwcQHMAyGa54';
       const discussionId = '43Q9abICrp2KpE86c1Az';
       firestore()
-        .collection('common')
-        .doc(commonId)
-        .collection('proposal')
-        .doc(proposalId)
         .collection('discussion')
         .doc(discussionId)
         .collection('message')

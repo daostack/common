@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Dimensions,
   Text,
@@ -11,9 +11,8 @@ import {
 } from 'react-native';
 import {text, layout, colors, sizeL} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
-import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
+import {TabView, TabBar} from 'react-native-tab-view';
 import ViewTabNoData from '../Components/ViewTabNoData';
-
 import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
 import CommonCover from '../Components/Commons/CommonCover';
 import CommonStageSummary from '../Components/Commons/CommonStageSummary';
@@ -46,8 +45,6 @@ import FirebaseService from '../Services/FirebaseService';
 // };
 
 const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore}) => {
-  const sortProposalsSheetRef = useRef();
-  const proposalSheetRef = useRef();
 
   const [isMember, setMemberState] = useState(false);
   const [members, setMembers] = useState(false);
@@ -76,13 +73,13 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
     } else {
       setMemberState(true)
     }
-    const members = route.params.currCommon.members.map(async member => {
+    const commonMembers = route.params.currCommon.commonMembers.map(async member => {
       return await FirebaseService.getInstance().getUserById(
         member.userId,
       );
     });
-    console.log('members : ', members);
-    setMembers(members)
+    console.log('commonMembers : ', commonMembers);
+    setMembers(commonMembers)
   }, [routeCommon, route.params.showRequestSentModal]);
 
   const renderTabBar = props => (
@@ -143,11 +140,18 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
     );
   };
 
-  const renderScene = SceneMap({
-    discussions: Discussions,
-    proposals: Proposals,
-    history: History,
-  });
+  const renderScene = (scene) => {
+    switch (scene.route.key) {
+      case 'discussions':
+        return Discussions();
+      case 'proposals':
+        return Proposals();
+      case 'history':
+        return History();
+      default:
+        return null;
+    }
+  };
 
   const openAgendaScreen = e => {
     navigation.navigate('CommonAgenda');
