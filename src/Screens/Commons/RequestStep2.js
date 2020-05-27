@@ -129,7 +129,7 @@ const RequestStep2 = props => {
               validation={{
                 name: RequestToJoinForm.FIELD_LINKS,
                 formStore: props.introduceYourselfFormStore,
-                validateRule: '',
+                validateRule: 'string|url',
               }}
             />
           </View>
