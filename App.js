@@ -153,7 +153,6 @@ const App = ({userStore, bottomSheetStore}) => {
             ...user._user,
             ...appUser,
           };
-
           const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
           userStore.setSignedInUser(filteredUser);
           if (isNewUser) {

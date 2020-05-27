@@ -27,6 +27,7 @@ import DiscussionList from './Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
 import Toast from '../Util/Toast';
 import {numberFormatter} from '../Util';
+import FirebaseService from '../Services/FirebaseService';
 
 // const mockData = {
 //   commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
@@ -44,11 +45,12 @@ import {numberFormatter} from '../Util';
 //   activeProposals: 142,
 // };
 
-const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
-  sortProposalsSheetRef = useRef();
-  proposalSheetRef = useRef();
+const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore}) => {
+  const sortProposalsSheetRef = useRef();
+  const proposalSheetRef = useRef();
 
-  const [isMember] = useState(false);
+  const [isMember, setMemberState] = useState(false);
+  const [members, setMembers] = useState(false);
   const [isFundingStage] = useState(false);
 
   const [index, setIndex] = useState(0);
@@ -68,6 +70,19 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
     setShowRequestSentModal(route.params.showRequestSentModal ? true : false);
     setCurrCommon(routeCommon);
     console.log('daoStore: ', route.params);
+    console.log('userStore: ', userStore);
+    if (route.params.currCommon.members.includes(userStore.ethereumAddress)) {
+      setMemberState(true)
+    } else {
+      setMemberState(true)
+    }
+    const members = route.params.currCommon.members.map(async member => {
+      return await FirebaseService.getInstance().getUserById(
+        member.userId,
+      );
+    });
+    console.log('members : ', members);
+    setMembers(members)
   }, [routeCommon, route.params.showRequestSentModal]);
 
   const renderTabBar = props => (
@@ -164,34 +179,21 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
             onPress={openCommonMembers}
             style={styles.membersAction}>
             <View style={styles.membersRow}>
-              <Image
-                style={styles.memberImage}
-                source={{
-                  uri:
-                    'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
-                }}
-              />
-              <Image
-                style={{...styles.memberImage, ...{marginLeft: -10}}}
-                source={{
-                  uri:
-                    'https://live.envalab.com/html/cetus/demo/images/element/team/2.jpg',
-                }}
-              />
-              <Image
-                style={{...styles.memberImage, ...{marginLeft: -10}}}
-                source={{
-                  uri:
-                    'https://live.envalab.com/html/cetus/demo/images/element/team/3.jpg',
-                }}
-              />
-              <Image
-                style={{...styles.memberImage, ...{marginLeft: -10}}}
-                source={{
-                  uri:
-                    'https://live.envalab.com/html/cetus/demo/images/element/team/4.jpg',
-                }}
-              />
+              {members.map( (member, i) => {
+                console.log('member: ', member)
+                console.log('member: ', member.photoURL)
+
+
+                if (i < 5) {
+                  return <Image
+                    style={styles.memberImage}
+                    source={{
+                      uri: 'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
+                    }}
+                  />
+                }
+              })}
+
             </View>
             <TouchableOpacity style={layout.flexRow}>
               <Text style={text.h4Black}>Pending (13)</Text>
@@ -314,7 +316,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
         contentContainerStyle={{paddingBottom: 100}}
         showsVerticalScrollIndicator={false}>
         <CommonCover
-          isMember={true}
+          isMember={isMember}
           navigation={navigation}
           onHeaderMenuOpen={openCommonOptions}
           commonInfo={{
@@ -390,23 +392,16 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
           style={{}}
         />
       </ScrollView>
-
-      {index === 0 ? (
-        <BottomRightButton
-          onPress={() =>
-            navigation.navigate('New Topic', {
-              commonId: routeCommon.id,
-            })
-          }
-          bottom={120}
-        />
-      ) : null}
-
       <SafeAreaView>
         {isMember ? (
-          <TouchableOpacity style={styles.addButton}>
-            <Icon name="plus" color={colors.white} />
-          </TouchableOpacity>
+          <BottomRightButton
+            onPress={() =>
+              navigation.navigate('New Topic', {
+                commonId: routeCommon.id,
+              })
+            }
+            bottom={120}
+          />
         ) : (
           <>
             <View style={styles.actionButtonContainer}>
@@ -571,4 +566,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore', 'daoStore')(observer(CommonProfile));
+export default inject('bottomSheetStore', 'daoStore', 'userStore')(observer(CommonProfile));
