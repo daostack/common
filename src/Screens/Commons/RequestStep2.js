@@ -24,7 +24,6 @@ import {CommonActions} from '@react-navigation/native';
 const RequestStep2 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [pass, setPass] = useState(true);
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -35,19 +34,8 @@ const RequestStep2 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const isValid = () => {
-    const result = props.requestToJoinFormStore.isFormValidSelectedFields([
-      RequestToJoinForm.FUNDING_GOAL,
-      RequestToJoinForm.MINIMUM,
-      RequestToJoinForm.DEADLINE,
-    ]);
-    setPass(result);
-    return result;
-  };
-
   const push = () => {
-    const vaild = isValid();
-    if (vaild) {
+    if (props.introduceYourselfFormStore.isFormValid()) {
       const navigate = CommonActions.navigate({
         name: 'RequestStep3',
         params: {
@@ -128,8 +116,8 @@ const RequestStep2 = props => {
               numberOfLines={6}
               validation={{
                 name: RequestToJoinForm.FIELD_ABOUT_ME,
-                formStore: props.requestToJoinFormStore,
-                validateRule: 'string',
+                formStore: props.introduceYourselfFormStore,
+                validateRule: '',
               }}
             />
 
@@ -140,13 +128,17 @@ const RequestStep2 = props => {
               title="Title"
               validation={{
                 name: RequestToJoinForm.FIELD_LINKS,
-                formStore: props.requestToJoinFormStore,
-                validateRule: 'string',
+                formStore: props.introduceYourselfFormStore,
+                validateRule: '',
               }}
             />
           </View>
         </ScrollView>
-        <RequestStepActionButton title="Continue" pass={pass} onPress={push} />
+        <RequestStepActionButton
+          title="Continue"
+          pass={props.introduceYourselfFormStore.isFormActionEnabled()}
+          onPress={push}
+        />
       </SafeAreaView>
     </>
   );
@@ -154,5 +146,5 @@ const RequestStep2 = props => {
 
 export default inject(
   'userStore',
-  'requestToJoinFormStore',
+  'introduceYourselfFormStore',
 )(observer(RequestStep2));
