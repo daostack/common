@@ -8,15 +8,6 @@ const MultiLinkField = props => {
 
   const {maxCount, validation} = props;
 
-  const isValid = () => {
-    const links = [...Array(count).keys()].map(
-      x => `key_${currItemValidation.name}_${currIndex}`,
-    );
-    const result = validation.formStore.isFormValidSelectedFields([...links]);
-    setPass(result);
-    return result;
-  };
-
   const renderAddLinkBtn = index => {
     if (index === count - 1 && (!maxCount || count < maxCount)) {
       return (
@@ -46,7 +37,6 @@ const MultiLinkField = props => {
               placeholderText="https://"
               autoCapitalize="none"
               autoCorrect={false}
-              onChangeText={isValid}
               validation={currItemValidation}
             />
             {renderAddLinkBtn(currIndex)}
