@@ -5,6 +5,9 @@ import Toast from '../Util/Toast';
 
 export default class NotificationService {
   static async saveTokenToDatabase() {
+    if (auth().currentUser === null) {
+      return;
+    }
     const userId = auth().currentUser.uid;
     const token = await messaging().getToken();
     await firestore()
@@ -41,6 +44,9 @@ export default class NotificationService {
   }
 
   static async listenTransaction(txHash) {
+    if (auth().currentUser === null) {
+      return;
+    }
     const userId = auth().currentUser.uid;
     firestore()
       .collection('users')
@@ -55,6 +61,9 @@ export default class NotificationService {
   }
 
   static async follow(targetUid) {
+    if (auth().currentUser === null) {
+      return;
+    }
     const userId = auth().currentUser.uid;
     if (targetUid === userId) {
       Toast.error('Can not follow yourself');
@@ -74,6 +83,9 @@ export default class NotificationService {
   }
 
   static async unfollow(targetUid) {
+    if (auth().currentUser === null) {
+      return;
+    }
     const userId = auth().currentUser.uid;
     if (targetUid === userId) {
       Toast.error('Can not follow yourself');

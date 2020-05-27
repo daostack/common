@@ -62,7 +62,7 @@ const DiscussionList = props => {
             <DiscussionCard
               key={item.id}
               data={item}
-              commonId={props.commonId}
+              discussionId={props.commonId}
               navigation={props.navigation}
             />
           )}
@@ -78,4 +78,4 @@ const DiscussionList = props => {
   );
 };
 
-export default DiscussionList;
+export default React.memo(DiscussionList);

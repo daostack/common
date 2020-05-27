@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
-import {colors, text} from '../../Theme';
+import {colors, layout, text} from '../../Theme';
 import DiscussionMessage from './DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast.js';
@@ -25,6 +25,7 @@ import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
 import BottomSheetModal from '../../Components/BottomSheetModal';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
+import ImageView from 'react-native-image-viewing';
 // import _ from 'lodash';
 
 const {width} = Dimensions.get('window');
@@ -41,8 +42,9 @@ const Discussions = props => {
   const discussionId = data.id;
   const [msgGroup, setMsgDroup] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
-  const [setDiscussion] = useState();
+  // const [discussion, setDiscussion] = useState();
   const [followState, setFollowState] = useState(false);
+  const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
 
   console.log('data', data);
   const currentUser = auth().currentUser;
@@ -61,7 +63,6 @@ const Discussions = props => {
       .collection('discussion')
       .doc(discussionId)
       .onSnapshot(snapshot => {
-        setDiscussion({id: discussionId, ...snapshot.data()});
         console.log(snapshot.data());
         const follower = snapshot.data().follower;
         if (follower && uid) {
@@ -276,6 +277,35 @@ const Discussions = props => {
                 </Text>
               </View>
 
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                style={{marginBottom: 20}}>
+                <View style={styles.imageGallery}>
+                  <View style={{width: 20}} />
+                  {data.images.map((currImage, currIndex) => {
+                    return (
+                      <View
+                        key={`proposalImg_${currIndex}`}>
+                        <TouchableOpacity
+                          onPress={() => setImageGalleryIndex(currIndex)}>
+                          <Image
+                            key={currIndex}
+                            style={{
+                              ...styles.galleryImage,
+                              ...{width: width * 0.8 },
+                            }}
+                            resizeMode="cover"
+                            source={{uri: currImage}}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    );
+                  })} 
+                  <View style={{width: 20}} />
+                </View>
+              </ScrollView>
+
               <TouchableOpacity
                 style={{alignItems: 'center'}}
                 onPress={() => {
@@ -395,6 +425,15 @@ const Discussions = props => {
           </TouchableOpacity>
         </View>
       </BottomSheetModal>
+
+      <ImageView
+        images={data.images.map(x => ({uri: x}) )}
+        imageIndex={imageGalleryIndex}
+        visible={imageGalleryIndex > -1}
+        onRequestClose={() => setImageGalleryIndex(-1)}
+        // FooterComponent={ImageGalleryFooter}
+      />
+
     </SafeAreaView>
   );
 };
@@ -409,6 +448,19 @@ const styles = StyleSheet.create({
     // textAlignVertical: 'center',
     flex: 1,
     lineHeight: 20,
+  },
+  galleryImage: {
+    marginRight: 15,
+    width: 120,
+    height: 250,
+    borderRadius: 10,
+    backgroundColor: colors.grey4
+  },
+  imageGallery: {
+    ...layout.flexRow,
+    ...layout.flexStart,
+
+    width: '100%',
   },
   avatar: {
     width: 35,

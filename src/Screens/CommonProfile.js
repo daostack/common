@@ -13,7 +13,7 @@ import {text, layout, colors, sizeL} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import ViewTabNoData from '../Components/ViewTabNoData';
-
+import auth from '@react-native-firebase/auth';
 import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
 import CommonCover from '../Components/Commons/CommonCover';
 import CommonStageSummary from '../Components/Commons/CommonStageSummary';
@@ -128,11 +128,18 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
     );
   };
 
-  const renderScene = SceneMap({
-    discussions: Discussions,
-    proposals: Proposals,
-    history: History,
-  });
+  const renderScene = ({route}) => {
+    switch (route.key) {
+      case 'discussions':
+        return Discussions();
+      case 'proposals':
+        return Proposals();
+      case 'history':
+        return History();
+      default:
+        return null;
+    }
+  };
 
   const openAgendaScreen = e => {
     navigation.navigate('CommonAgenda');
@@ -391,7 +398,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
         />
       </ScrollView>
 
-      {index === 0 ? (
+      {index === 0 && auth().currentUser ? (
         <BottomRightButton
           onPress={() =>
             navigation.navigate('New Topic', {
