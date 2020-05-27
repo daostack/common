@@ -64,22 +64,27 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
   const routeCommon = route.params.currCommon;
 
   useEffect(() => {
-    setShowRequestSentModal(route.params.showRequestSentModal ? true : false);
-    setCurrCommon(routeCommon);
-    console.log('daoStore: ', route.params);
-    console.log('userStore: ', userStore);
-    if (route.params.currCommon.members.includes(userStore.ethereumAddress)) {
-      setMemberState(true)
-    } else {
-      setMemberState(true)
+    try {
+      setShowRequestSentModal(route.params.showRequestSentModal);
+      setCurrCommon(routeCommon);
+      console.log('daoStore: ', route.params);
+      console.log('userStore: ', userStore);
+      if (route.params.currCommon.members.includes(userStore.ethereumAddress)) {
+        setMemberState(true)
+      } else {
+        setMemberState(true)
+      }
+      const commonMembers = route.params.currCommon.members.map(async member => {
+        return await FirebaseService.getInstance().getUserById(
+          member.userId,
+        );
+      });
+      console.log('commonMembers : ', commonMembers);
+      setMembers(commonMembers)
+
+    } catch(e) {
+      throw e
     }
-    const commonMembers = route.params.currCommon.commonMembers.map(async member => {
-      return await FirebaseService.getInstance().getUserById(
-        member.userId,
-      );
-    });
-    console.log('commonMembers : ', commonMembers);
-    setMembers(commonMembers)
   }, [routeCommon, route.params.showRequestSentModal]);
 
   const renderTabBar = props => (
@@ -190,6 +195,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
 
                 if (i < 5) {
                   return <Image
+                    key={i}
                     style={styles.memberImage}
                     source={{
                       uri: 'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
