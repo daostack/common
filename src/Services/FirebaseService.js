@@ -38,6 +38,7 @@ export default class FirebaseService {
       .doc(userId)
       .get()
       .then(snapshots => {
+        console.log('snapshots : ', snapshots)
         if (!snapshots) {
           return null;
         }

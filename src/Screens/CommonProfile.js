@@ -5,7 +5,6 @@ import {
   View,
   ScrollView,
   StyleSheet,
-  Image,
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
@@ -26,7 +25,7 @@ import DiscussionList from './Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
 import Toast from '../Util/Toast';
 import {numberFormatter} from '../Util';
-import FirebaseService from '../Services/FirebaseService';
+import MemberImage from '../Components/Commons/MemberImage';
 
 // const mockData = {
 //   commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
@@ -67,19 +66,14 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
     try {
       setShowRequestSentModal(route.params.showRequestSentModal);
       setCurrCommon(routeCommon);
-      console.log('daoStore: ', route.params);
-      console.log('userStore: ', userStore);
+
       if (route.params.currCommon.members.includes(userStore.ethereumAddress)) {
         setMemberState(true)
       } else {
         setMemberState(true)
       }
-      const commonMembers = route.params.currCommon.members.map(async member => {
-        return await FirebaseService.getInstance().getUserById(
-          member.userId,
-        );
-      });
-      console.log('commonMembers : ', commonMembers);
+
+      const commonMembers = route.params.currCommon.members;
       setMembers(commonMembers)
 
     } catch(e) {
@@ -188,22 +182,11 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
             onPress={openCommonMembers}
             style={styles.membersAction}>
             <View style={styles.membersRow}>
-              {members.map( (member, i) => {
-                console.log('member: ', member)
-                console.log('member: ', member.photoURL)
-
-
+              {members.map((member, i) => {
                 if (i < 5) {
-                  return <Image
-                    key={i}
-                    style={styles.memberImage}
-                    source={{
-                      uri: 'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
-                    }}
-                  />
+                  return <MemberImage member={member} key={i}/>
                 }
               })}
-
             </View>
             <TouchableOpacity style={layout.flexRow}>
               <Text style={text.h4Black}>Pending (13)</Text>
@@ -350,7 +333,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
                 currCommon.numberOfPreBoostedProposals +
                 currCommon.numberOfQueuedProposals,
               goal: currCommon.fundingGoal,
-              members: currCommon.memberCount * 1,
+              members: currCommon.memberCount,
               // TODO: get this value. Is it even tracked in the contract? need to check.
               raised: 0,
               currentBudget: numberFormatter(
