@@ -85,14 +85,9 @@ const DiscussionCard = props => {
 
   return (
     <>
-      <View
-      // onPress={() =>
-      //   props.navigation.navigate('Discussions', {
-      //     data: data,
-      //     commonId: commonId,
-      //   })
-      // }
-      >
+      <TouchableOpacity
+      onPress={() =>navigateToDiscussion()}
+        >
         <View style={styles.container}>
           <TouchableOpacity
             style={{position: 'absolute', right: 0, top: 0, padding: 20}}
@@ -202,7 +197,7 @@ const DiscussionCard = props => {
             </View>
           )}
         </View>
-      </View>
+      </TouchableOpacity>
 
       <BottomSheetModal
         isVisible={showMenu}
