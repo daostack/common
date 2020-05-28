@@ -45,6 +45,7 @@ class nativeBridgeTests extends React.Component {
       commonStatus: '',
       proposalStatus: '',
       signedData: '',
+      whiteListMsg: '',
     };
 
     this.child = React.createRef();
@@ -222,6 +223,18 @@ class nativeBridgeTests extends React.Component {
       const txHash = await manager.execTransaction(safeAddress, '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB', '0.01');
       console.log('txHash ->', txHash);
       this.setState({signedData: txHash});
+    } catch (e) {
+      console.log(e);
+      throw 'Send transaction failed with error: ' + e;
+    }
+  };
+
+  addToWhitelist = async () => {
+    try {
+      const manager = WalletManager.getInstance();
+      const response = await manager.addToWhitelist()
+      console.log('addWhitleList ->', response);
+      this.setState({whiteListMsg: response.data.message});
     } catch (e) {
       console.log(e);
       throw 'Send transaction failed with error: ' + e;
@@ -449,7 +462,14 @@ class nativeBridgeTests extends React.Component {
             <Text>Create2 Smart Wallet</Text>
           </TouchableOpacity>
 
-          <Text>Address: {this.state.signedData}</Text>
+          <Text>Msg: {this.state.whiteListMsg}</Text>
+          <TouchableOpacity
+            onPress={this.addToWhitelist}
+            style={styles.button}>
+            <Text>Add self white list</Text>
+          </TouchableOpacity>
+
+          <Text>TxHash: {this.state.signedData}</Text>
           <TouchableOpacity
             onPress={this.execTransaction}
             style={styles.button}>

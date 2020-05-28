@@ -114,6 +114,16 @@ export default class WalletManager {
     }
   }
 
+  addToWhitelist = async () => {
+    const idToken = await auth().currentUser.getIdToken();
+    const options = { headers: { idToken } };
+    const response = await axios.get(
+      'https://us-central1-common-daostack.cloudfunctions.net/api/addWhitleList',
+      options,
+    );
+    return response
+  }
+
   createSafeTransactionHash = async (myWallet, toAddress, value, data = '0x') => {
     try {
       const masterCopyContract = new ethers.Contract(
