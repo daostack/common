@@ -35,7 +35,7 @@ class FileField extends React.Component {
     this.props.onChangeFile && this.props.onChangeFile(fileUrl);
   };
 
-  pickImage = async () => {
+  pickFile = async () => {
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
@@ -108,7 +108,7 @@ class FileField extends React.Component {
     } else {
       return (
         <TouchableOpacity>
-          <Text style={styles.addFileBtn} onPress={this.pickImage}>
+          <Text style={styles.addFileBtn} onPress={this.pickFile}>
             Add File
           </Text>
         </TouchableOpacity>
@@ -136,7 +136,7 @@ class FileField extends React.Component {
             {isAvatar || currValue ? (
               <TouchableOpacity
                 style={styles.formImageFielAddIcon}
-                onPress={this.pickImage}>
+                onPress={this.pickFile}>
                 <Icon name="edit" size={16} color={colors.white} />
               </TouchableOpacity>
             ) : null}
