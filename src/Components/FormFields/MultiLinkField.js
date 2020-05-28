@@ -6,7 +6,7 @@ import {text, layout, colors, sizeL} from '../../Theme';
 const MultiLinkField = props => {
   const [count, setCount] = useState(1);
 
-  const {maxCount, validation} = props;
+  const {maxCount, validation, placeholderValueText, multiline} = props;
 
   const renderAddLinkBtn = index => {
     if (index === count - 1 && (!maxCount || count < maxCount)) {
@@ -24,19 +24,30 @@ const MultiLinkField = props => {
     <View style={{paddingTop: sizeL}}>
       {[...Array(count).keys()].map(currIndex => {
         const currItemValidation = {...validation};
-        currItemValidation.name = `${currItemValidation.name}_${currIndex}`;
+        currItemValidation.name = `${currItemValidation.name}_value_${currIndex}`;
+
+        const currTitleItemValidation = {...validation};
+        currTitleItemValidation.name = `${currItemValidation.name}_title_${currIndex}`;
+        currTitleItemValidation.validateRule = 'string';
+        currTitleItemValidation.topPosition = true;
 
         return (
           <View key={`key_${currItemValidation.name}_${currIndex}`}>
             {props.title ? (
-              <TextInputField placeholderText={props.title} />
+              <TextInputField
+                placeholderText={props.title}
+                validation={currTitleItemValidation}
+              />
             ) : null}
             <TextInputField
               value={''}
               viewStyle={{marginTop: 0}}
-              placeholderText="https://"
+              placeholderText={
+                placeholderValueText ? placeholderValueText : 'https://'
+              }
               autoCapitalize="none"
               autoCorrect={false}
+              multiline={multiline}
               validation={currItemValidation}
             />
             {renderAddLinkBtn(currIndex)}

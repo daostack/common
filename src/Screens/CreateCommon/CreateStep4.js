@@ -28,12 +28,15 @@ import {numberFormatter} from '../../Util';
 import ArcService from '../../Services/ArcService';
 const {width} = Dimensions.get('window');
 
-const firebaseService = new FirebaseService();
-
 const CreateStep4 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const form = props.createCommonFormStore.getChangedFormFieldsJson();
+  const form = getChangedReviewFormFieldsJson({
+    ...props.generalInfoFormStore.getChangedFormFieldsJson(),
+    ...props.fundingFormStore.getChangedFormFieldsJson(),
+    ...props.agendaFormStore.getChangedFormFieldsJson(),
+    ...props.reviewFormStore.getChangedFormFieldsJson(),
+  });
   const [templateIndex, setTemplateIndex] = useState(1);
   const [imageURI, setImageURI] = useState(
     'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
@@ -66,15 +69,9 @@ const CreateStep4 = props => {
   };
 
   useEffect(() => {
-    props.createCommonFormStore.registerFormField(
-      CreateCommonForm.AVATAR,
-      'url',
-    );
-    props.createCommonFormStore.registerFormField(
-      CreateCommonForm.IMAGE,
-      'url',
-    );
-  }, [props.createCommonFormStore]);
+    props.reviewFormStore.registerFormField(CreateCommonForm.AVATAR, 'url');
+    props.reviewFormStore.registerFormField(CreateCommonForm.IMAGE, 'url');
+  }, [props.reviewFormStore]);
 
   const pickImage = isAvatar => {
     const options = {
@@ -91,21 +88,15 @@ const CreateStep4 = props => {
       } else {
         // const source = { uri: response.uri };
         // toast.loading('Uploading...');
-        firebaseService
+        FirebaseService.getInstance()
           .uploadImage(response.uri)
           .then(url => {
             toast.hide();
             if (isAvatar) {
               setAvatarURL(url);
-              props.createCommonFormStore.fieldChanged(
-                CreateCommonForm.AVATAR,
-                url,
-              );
+              props.reviewFormStore.fieldChanged(CreateCommonForm.AVATAR, url);
             } else {
-              props.createCommonFormStore.fieldChanged(
-                CreateCommonForm.IMAGE,
-                url,
-              );
+              props.reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
               setImageURI(url);
             }
           })
@@ -130,11 +121,15 @@ const CreateStep4 = props => {
     );
   // TODO: use arc.saveIPFSData({ name: formData.name}) here
   const forgeCommon = async () => {
-    const commonFormData = props.createCommonFormStore.getChangedFormFieldsJson();
-    console.log('saving data on ipfs: ', commonFormData);
-    const ipfsHash = await ipfsUpload(commonFormData);
+    const formData = {
+      ...props.generalInfoFormStore.getChangedFormFieldsJson(),
+      ...props.fundingFormStore.getChangedFormFieldsJson(),
+      ...props.agendaFormStore.getChangedFormFieldsJson(),
+      ...props.reviewFormStore.getChangedFormFieldsJson(),
+    };
 
-    const formData = props.createCommonFormStore.getChangedFormFieldsJson();
+    console.log('saving data on ipfs: ', formData);
+    const ipfsHash = await ipfsUpload(formData);
     const manager = await WalletManager.getInstance();
     const address = await manager.getAddress();
     console.log('owner account: ', address);
@@ -170,6 +165,8 @@ const CreateStep4 = props => {
   //   errorSheetRef.current.snapTo(1);
   //   errorSheetRef.current.snapTo(1);
   // };
+
+  console.log('FORM -> ', form);
 
   return (
     <SafeAreaView
@@ -387,7 +384,7 @@ const CreateStep4 = props => {
                 />
               </TouchableOpacity> */}
             </View>
-            {form[CreateCommonForm.LINKS].length ? (
+            {form[CreateCommonForm.LINKS]?.length ? (
               form[CreateCommonForm.LINKS].map(x => (
                 <Text style={styles.textContent}>{x}</Text>
               ))
@@ -404,7 +401,7 @@ const CreateStep4 = props => {
             </Text>
           </>
 
-          {form[CreateCommonForm.RULES].length ? (
+          {form[CreateCommonForm.RULES]?.length ? (
             form[CreateCommonForm.RULES].map((rule, index) => (
               <>
                 <Text
@@ -441,6 +438,59 @@ const CreateStep4 = props => {
       </ScrollView>
     </SafeAreaView>
   );
+};
+
+const getChangedReviewFormFieldsJson = fields => {
+  let changedFieldsJson = {};
+
+  let linkTitles = [];
+  let linkUrls = [];
+
+  let titles = [];
+  let body = [];
+  for (const key in fields) {
+    const formField = fields[key];
+
+    const links = CreateCommonForm.LINKS;
+    if (key.startsWith(links)) {
+      if (!changedFieldsJson[links]) {
+        changedFieldsJson[links] = [];
+      }
+      if (formField.value?.length > 0) {
+        changedFieldsJson[links] = changedFieldsJson[links].concat(
+          formField.value,
+        );
+      }
+      continue;
+    }
+
+    if (key.startsWith('ruleTitles')) {
+      // console.log(key, formField.value);
+      titles = titles.concat(formField.value);
+      // console.log(titles);
+      continue;
+    }
+
+    if (key.startsWith('ruleBody')) {
+      // console.log(key, formField.value);
+      body = body.concat(formField.value);
+      continue;
+    }
+
+    if (formField.changed) {
+      changedFieldsJson[key] = formField.value;
+    }
+  }
+
+  if (titles.length > 0) {
+    changedFieldsJson[CreateCommonForm.RULES] = [...titles.keys()].map(x => {
+      return {title: titles[x], description: body[x]};
+    });
+  } else {
+    changedFieldsJson[CreateCommonForm.RULES] = [];
+  }
+
+  return changedFieldsJson;
 };
 
 const styles = StyleSheet.create({
@@ -539,6 +589,9 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
-  'createCommonFormStore',
+  'generalInfoFormStore',
+  'fundingFormStore',
+  'agendaFormStore',
+  'reviewFormStore',
   'daoStore',
 )(observer(CreateStep4));

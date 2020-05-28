@@ -61,7 +61,7 @@ const RequestStep4 = props => {
           funding: new BN(200),
           /*
         funding: new BN(
-          props.requestToJoinFormStore.form.fields[
+          props.paymentFormStore.form.fields[
             RequestToJoinForm.FIELD_AMOUNT
           ].value,
         ),

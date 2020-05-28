@@ -138,23 +138,25 @@ class TextInputField extends React.Component {
   };
 
   render() {
-    const {viewStyle} = this.props;
+    const {viewStyle, validation} = this.props;
 
     if (this.placeFieldActionComponent) {
       return (
         <View style={{...layout.marginTopS, ...viewStyle}}>
+          {validation.topPosition ? this.fieldValidation : null}
           <View>
             <View>{this.renderTextField()}</View>
             <View>{this.placeFieldActionComponent}</View>
           </View>
-          {this.fieldValidation}
+          {validation.topPosition ? null : this.fieldValidation}
         </View>
       );
     } else {
       return (
         <View style={{...layout.marginTopS, ...viewStyle}}>
+          {validation.topPosition ? this.fieldValidation : null}
           {this.renderTextField()}
-          {this.fieldValidation}
+          {validation.topPosition ? null : this.fieldValidation}
         </View>
       );
     }
