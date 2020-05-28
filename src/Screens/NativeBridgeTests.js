@@ -195,7 +195,7 @@ class nativeBridgeTests extends React.Component {
     try {
       const safeWallet = this.props.userStore.userInfo.safeAddress
       if (safeWallet) {
-        this.setState({cwTXHash: 'You already have a safe wallet', cwAddress: safeWallet});
+        this.setState({cw2TXHash: 'You already have a safe wallet', cw2Address: safeWallet});
         return
       }
       const manager = WalletManager.getInstance();

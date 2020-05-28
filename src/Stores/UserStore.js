@@ -12,6 +12,7 @@ export const userInfoFields = [
   'createdAt',
   'following',
   'follower',
+  'safeAddress'
 ];
 
 class UserStore {
