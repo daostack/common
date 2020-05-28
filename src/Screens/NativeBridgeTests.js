@@ -177,12 +177,15 @@ class nativeBridgeTests extends React.Component {
 
   createSmartContractWallet = async () => {
     try {
+      const safeWallet = this.props.userStore.userInfo.safeAddress
+      if (safeWallet) {
+        this.setState({cwTXHash: 'You already have a safe wallet', cwAddress: safeWallet});
+        return
+      }
       const manager = WalletManager.getInstance();
-      const {txHash} = await manager.createSmartContractWallet();
+      const {txHash, safeAddress} = await manager.createSmartContractWallet();
       console.log('txHash ->', txHash);
-      this.setState({cwTXHash: txHash});
-      const address = await this.getAddressFromEvent(txHash);
-      this.setState({cwAddress: address});
+      this.setState({cwTXHash: txHash, cwAddress: safeAddress});
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
@@ -190,6 +193,11 @@ class nativeBridgeTests extends React.Component {
 
   create2SmartContractWallet = async () => {
     try {
+      const safeWallet = this.props.userStore.userInfo.safeAddress
+      if (safeWallet) {
+        this.setState({cwTXHash: 'You already have a safe wallet', cwAddress: safeWallet});
+        return
+      }
       const manager = WalletManager.getInstance();
       const {txHash} = await manager.create2SmartContractWallet();
       console.log('txHash ->', txHash);
@@ -203,7 +211,9 @@ class nativeBridgeTests extends React.Component {
 
   execTransaction = async () => {
     try {
-      const safeAddress = this.userStore.userInfo.safeAddress
+      console.log('AAAAAA', this.props.userStore);
+      const safeAddress = this.props.userStore.userInfo.safeAddress
+      console.log('safeAddress', safeAddress);
       if (safeAddress === null) {
         this.setState({signedData: 'No wallet found'});
         return
@@ -213,6 +223,7 @@ class nativeBridgeTests extends React.Component {
       console.log('txHash ->', txHash);
       this.setState({signedData: txHash});
     } catch (e) {
+      console.log(e);
       throw 'Send transaction failed with error: ' + e;
     }
   };
