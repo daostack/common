@@ -52,14 +52,16 @@ const RequestStep4 = props => {
   const push = async () => {
     if (props.paymentFormStore.isFormValid()) {
       try {
+        // TODO: the data from the form real data
+        // remember to save the value of the funding request in dollar cents
         const data = {
           title: `A test proposal on ${Date()}`,
           description: 'Some description',
           files: [],
           images: [],
           links: [], // {title: "title", url: "url"}
-          funding: new BN(200),
-          /*
+          funding: new BN(200), 
+        /*
         funding: new BN(
           props.paymentFormStore.form.fields[
             RequestToJoinForm.FIELD_AMOUNT

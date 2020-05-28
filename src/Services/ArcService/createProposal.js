@@ -30,8 +30,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       console.log(e);
       throw e;
     }
-    console.log('PLUGINS -> ', plugins);
-
+    // console.log('PLUGINS -> ', plugins);
     const joinAndQuitPlugin = plugins[0];
     console.log('joinAndQuitPlugin', joinAndQuitPlugin.id);
 
