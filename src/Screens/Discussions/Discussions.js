@@ -302,7 +302,7 @@ const Discussions = props => {
                         </TouchableOpacity>
                       </View>
                     );
-                  })} 
+                  })}
                   <View style={{width: 20}} />
                 </View>
               </ScrollView>
@@ -456,7 +456,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 250,
     borderRadius: 10,
-    backgroundColor: colors.grey4
+    backgroundColor: colors.grey4,
   },
   imageGallery: {
     ...layout.flexRow,

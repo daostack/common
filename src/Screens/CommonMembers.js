@@ -73,6 +73,7 @@ const CommonMembers = ({navigation}) => {
         {commonMembersMock.map((member, i) => {
           return (
             <MemberCard
+              key={i}
               name={member.name}
               approvePercent={member.approvePercent}
               imageUrl={member.imageUrl}

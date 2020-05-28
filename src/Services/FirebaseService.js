@@ -37,10 +37,24 @@ export default class FirebaseService {
       .doc(userId)
       .get()
       .then(snapshots => {
+        console.log('snapshots : ', snapshots);
         if (!snapshots) {
           return null;
         }
         return snapshots.data();
+      });
+  }
+
+  async getUserByAddress(address) {
+    return db
+      .collection(DB_COLLECTIONS.users)
+      .where('ethereumAddress', '==', address).get()
+      .then(snapshots => {
+        console.log('adress user : ', snapshots.docs.data());
+        if (!snapshots) {
+          return null;
+        }
+        return snapshots;
       });
   }
 
