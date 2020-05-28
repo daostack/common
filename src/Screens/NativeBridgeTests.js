@@ -469,7 +469,7 @@ class nativeBridgeTests extends React.Component {
             <Text>Add self white list</Text>
           </TouchableOpacity>
 
-          <Text>TxHash: {this.state.signedData}</Text>
+          <Text>TxHash: {JSON.stringify(this.state.signedData)}</Text>
           <TouchableOpacity
             onPress={this.execTransaction}
             style={styles.button}>
