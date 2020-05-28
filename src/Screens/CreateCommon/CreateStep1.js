@@ -195,7 +195,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('generalInfoFormStore')(observer(CreateStep1));
+export default inject(
+  'generalInfoFormStore',
+  'fundingFormStore',
+  'agendaFormStore',
+  'reviewFormStore',
+  'daoStore',
+)(observer(CreateStep1));
 
 //generalInfoFormStore
 //fundingFormStore

@@ -22,8 +22,8 @@ class TextInputField extends React.Component {
     const {validation, value, fieldActionComponent} = this.props;
     // Register form field for validation message component if name,formStore and validateRule props are provided
     if (validation) {
-      const {name, formStore, validateRule} = validation;
-      formStore.registerFormField(name, validateRule, value);
+      const {name, formStore, validateRule, multiName} = validation;
+      formStore.registerFormField(name, validateRule, value, multiName);
       this.fieldValidation = (
         <ValidationMessage formStore={formStore} name={name} />
       );

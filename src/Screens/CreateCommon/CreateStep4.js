@@ -24,6 +24,7 @@ import WalletManager from '../../Util/WalletManager';
 import FirebaseService from '../../Services/FirebaseService';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import {numberFormatter} from '../../Util';
+import RequestStepActionButton from '../Commons/RequestStepActionButton';
 
 import ArcService from '../../Services/ArcService';
 const {width} = Dimensions.get('window');
@@ -31,12 +32,12 @@ const {width} = Dimensions.get('window');
 const CreateStep4 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const form = getChangedReviewFormFieldsJson({
+  const form = {
     ...props.generalInfoFormStore.getChangedFormFieldsJson(),
     ...props.fundingFormStore.getChangedFormFieldsJson(),
     ...props.agendaFormStore.getChangedFormFieldsJson(),
     ...props.reviewFormStore.getChangedFormFieldsJson(),
-  });
+  };
   const [templateIndex, setTemplateIndex] = useState(1);
   const [imageURI, setImageURI] = useState(
     'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
@@ -386,7 +387,7 @@ const CreateStep4 = props => {
             </View>
             {form[CreateCommonForm.LINKS]?.length ? (
               form[CreateCommonForm.LINKS].map(x => (
-                <Text style={styles.textContent}>{x}</Text>
+                <Text style={styles.textContent}>{x.title}</Text>
               ))
             ) : (
               <View />
@@ -425,22 +426,17 @@ const CreateStep4 = props => {
             <View />
           )}
         </View>
-        <TouchableOpacity style={styles.continueButton} onPress={forgeCommon}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: 'white',
-              fontWeight: '700',
-            }}>
-            Publish Common
-          </Text>
-        </TouchableOpacity>
       </ScrollView>
+      <RequestStepActionButton
+        title="Publish Common"
+        pass={props.agendaFormStore.isFormActionEnabled()}
+        onPress={forgeCommon}
+      />
     </SafeAreaView>
   );
 };
-
-const getChangedReviewFormFieldsJson = fields => {
+/*
+const getReviewFormFieldsJson = fields => {
   let changedFieldsJson = {};
 
   let linkTitles = [];
@@ -448,38 +444,39 @@ const getChangedReviewFormFieldsJson = fields => {
 
   let titles = [];
   let body = [];
+
+  console.log('FIELDs -> ', fields);
+
   for (const key in fields) {
-    const formField = fields[key];
+    const formFieldValue = fields[key];
 
-    const links = CreateCommonForm.LINKS;
-    if (key.startsWith(links)) {
-      if (!changedFieldsJson[links]) {
-        changedFieldsJson[links] = [];
-      }
-      if (formField.value?.length > 0) {
-        changedFieldsJson[links] = changedFieldsJson[links].concat(
-          formField.value,
-        );
-      }
-      continue;
-    }
-
-    if (key.startsWith('ruleTitles')) {
-      // console.log(key, formField.value);
-      titles = titles.concat(formField.value);
+    if (key.startsWith(`${CreateCommonForm.LINKS}_title`)) {
+      // console.log(key, formFieldValue);
+      linkTitles = linkTitles.concat(formFieldValue);
       // console.log(titles);
       continue;
     }
 
-    if (key.startsWith('ruleBody')) {
-      // console.log(key, formField.value);
-      body = body.concat(formField.value);
+    if (key.startsWith(`${CreateCommonForm.LINKS}_value`)) {
+      // console.log(key, formFieldValue);
+      linkUrls = linkUrls.concat(formFieldValue);
       continue;
     }
 
-    if (formField.changed) {
-      changedFieldsJson[key] = formField.value;
+    if (key.startsWith(`${CreateCommonForm.RULES}_title`)) {
+      // console.log(key, formFieldValue);
+      titles = titles.concat(formFieldValue);
+      // console.log(titles);
+      continue;
     }
+
+    if (key.startsWith(`${CreateCommonForm.RULES}_value`)) {
+      // console.log(key, formFieldValue);
+      body = body.concat(formFieldValue);
+      continue;
+    }
+
+    changedFieldsJson[key] = formFieldValue;
   }
 
   if (titles.length > 0) {
@@ -490,8 +487,19 @@ const getChangedReviewFormFieldsJson = fields => {
     changedFieldsJson[CreateCommonForm.RULES] = [];
   }
 
+  if (linkTitles.length > 0) {
+    changedFieldsJson[CreateCommonForm.LINKS] = [...linkTitles.keys()].map(
+      x => {
+        return {title: linkTitles[x], description: linkUrls[x]};
+      },
+    );
+  } else {
+    changedFieldsJson[CreateCommonForm.LINKS] = [];
+  }
+
   return changedFieldsJson;
 };
+*/
 
 const styles = StyleSheet.create({
   view: {
