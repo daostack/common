@@ -15,8 +15,7 @@ import MessageContract from '../Contracts/ABIs/MessageContract';
 import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
 import ArcService from '../Services/ArcService';
-import Toast from '../Util/Toast';
-import {ethers, Contract} from 'ethers';
+import {ethers} from 'ethers';
 import {web3ProviderUrl} from '../Config';
 
 const uid = 'test';
@@ -260,7 +259,7 @@ class nativeBridgeTests extends React.Component {
 
   createRequestToJoin = async () => {
     console.log('creating proposal -- please wait');
-    const daoId = '0xb5d46494d6af8ff60effb7bb0605ca7158c5cf1f';
+    const daoId = '0x36f1a4799d51ef86b51d8db496feedf53eac92a0';
     this.setState({
       proposalStatus: 'Creating JoinAndQuit proposal -- please wait',
     });

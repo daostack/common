@@ -28,10 +28,8 @@ const AmountField = ({
       textInputRef.current.focus();
       console.log(textInputRef.current);
       onCustomSelect();
-      onAmountSelected(amount);
     } else {
       onAmountSelected(amount);
-      navigation.navigate('RequestStep4');
     }
   };
 

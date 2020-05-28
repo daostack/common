@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Text,
@@ -26,7 +26,6 @@ import CreateStepDotHeader from './CreateStepDotHeader';
 import {numberFormatter} from '../../Util';
 
 import ArcService from '../../Services/ArcService';
-
 const {width} = Dimensions.get('window');
 
 const firebaseService = new FirebaseService();
@@ -40,7 +39,6 @@ const CreateStep4 = props => {
     'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
   );
   const [avatarURL, setAvatarURL] = useState(null);
-  const errorSheetRef = useRef();
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -80,7 +78,7 @@ const CreateStep4 = props => {
 
   const pickImage = isAvatar => {
     const options = {
-      title: 'Select Avatar',
+      title: isAvatar && 'Select Avatar' || 'Select profile image',
       quality: 0.7,
       allowsEditing: isAvatar,
     };
@@ -116,24 +114,26 @@ const CreateStep4 = props => {
     });
   };
 
-  const ipfsUpload = async formData =>
+  const ipfsUpload = async formData => {
     // TODO: use arc.saveIPFSData({ name: formData.name}) once https://github.com/daostack/arc.js/issues/468 is resolved
-    IpfsClient.addAndPinString(
+    console.log(formData);
+    return IpfsClient.addAndPinString(
       JSON.stringify({
         name: formData.name,
         byline: formData.byline,
         description: formData.description,
         courseOfAction: formData.action,
         // TODO: actuall add the values here (as an arry probably)
-        mainValue1: formData.funding,
-        mainValue2: formData.minimum,
-        mainValue3: 'empty value',
+        rules: formData.rules,
+        links: formData.links,
       }),
     );
-  // TODO: use arc.saveIPFSData({ name: formData.name}) here
+  };
+
   const forgeCommon = async () => {
     const commonFormData = props.createCommonFormStore.getChangedFormFieldsJson();
-    console.log('saving data on ipfs');
+    console.log(formData);
+    console.log('saving data on ipfs: ', commonFormData);
     const ipfsHash = await ipfsUpload(commonFormData);
 
     const formData = props.createCommonFormStore.getChangedFormFieldsJson();
@@ -141,16 +141,16 @@ const CreateStep4 = props => {
     const address = await manager.getAddress();
     console.log('owner account: ', address);
 
-    // TODO: get form data for fundingGoalDeadline; these are in secondSinceEpoch
-    const deadline = '1621679337'; // in may 2021
+    const deadline = formData[CreateCommonForm.DEADLINE];
+
     const data = {
       name: formData.name,
       founderAddresses: address,
       tokenDist: [0],
-      repDist: [100],
-      minFeeToJoin: parseInt(formData.minimum, 10),
-      fundingGoal: formData.funding,
-      fundingGoalDeadline: deadline,
+      repDist: [1000],
+      minFeeToJoin: parseInt(formData.minimum, 10) * 100, // multiply by 100 to get the value in cents
+      fundingGoal: parseInt(formData.funding, 10) * 100, // multiply by 100 to get the value in cents
+      fundingGoalDeadline: Math.round(deadline.getTime() / 1000),
       ipfsHash,
     };
     console.log('calling createCommon(...)');

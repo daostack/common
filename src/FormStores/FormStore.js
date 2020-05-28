@@ -50,8 +50,8 @@ class FormStore {
   };
 
   // Determine if the form action button has to be disabled
-  isFormActionDisabled = () => {
-    return this.form.meta.formValidationMade ? !this.form.meta.isValid : false;
+  isFormActionEnabled = () => {
+    return this.form.meta.formValidationMade ? this.form.meta.isValid : true;
   };
 
   fieldBlured = name => {

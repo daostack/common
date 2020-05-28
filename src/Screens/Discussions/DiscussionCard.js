@@ -50,7 +50,6 @@ const DiscussionCard = props => {
         data.ownerId,
       );
       if (userData) {
-        console.log('userData', userData);
         setUser(userData);
       }
     };
@@ -71,7 +70,6 @@ const DiscussionCard = props => {
   }, [discussionId]);
 
   const follow = () => {
-    console.log('Follow user id', data.owner);
     NotificationService.follow(data.owner);
     props.bottomSheetStore.hideBottomSheet();
   };
@@ -85,14 +83,9 @@ const DiscussionCard = props => {
 
   return (
     <>
-      <View
-      // onPress={() =>
-      //   props.navigation.navigate('Discussions', {
-      //     data: data,
-      //     commonId: commonId,
-      //   })
-      // }
-      >
+      <TouchableOpacity
+      onPress={() =>navigateToDiscussion()}
+        >
         <View style={styles.container}>
           <TouchableOpacity
             style={{position: 'absolute', right: 0, top: 0, padding: 20}}
@@ -103,15 +96,31 @@ const DiscussionCard = props => {
             {data.title}
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image
-              style={{
-                backgroundColor: colors.grey3,
-                height: 40,
-                width: 40,
-                borderRadius: 20,
-              }}
-              source={{uri: user.photoURL}}
-            />
+            {
+              user.photoURL ? <Image
+                style={{
+                  backgroundColor: colors.grey3,
+                  height: 40,
+                  width: 40,
+                  borderRadius: 20,
+                }}
+                source={{uri: user.photoURL}}
+              /> : <View
+                style={{
+                  backgroundColor: colors.grey3,
+                  height: 40,
+                  width: 40,
+                  borderRadius: 20,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Text style={{fontSize: 17, color: 'white', fontWeight: '700'}}>
+                  {user.displayName && user.displayName.substring(0,1)}
+                </Text>
+              </View>
+
+            }
             <View style={{flex: 1, marginLeft: 10}}>
               <Text
                 style={{
@@ -202,7 +211,7 @@ const DiscussionCard = props => {
             </View>
           )}
         </View>
-      </View>
+      </TouchableOpacity>
 
       <BottomSheetModal
         isVisible={showMenu}

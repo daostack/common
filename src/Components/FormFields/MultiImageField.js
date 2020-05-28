@@ -26,8 +26,8 @@ const MultiImageField = props => {
           <ImageField
             key={`key_${currItemValidation.name}_${currIndex}`}
             onChangeImage={url => onChangeImage(url, currIndex)}
-            allowsEditing={true}
-            title={'Add Imagee'}
+            allowsEditing={props.allowsEditing || false}
+            title={'Add Image'}
             validation={currItemValidation}
           />
         );

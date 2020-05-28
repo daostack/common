@@ -11,9 +11,8 @@ import {
 } from 'react-native';
 import {text, layout, colors, sizeL} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
-import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
+import {TabView, TabBar} from 'react-native-tab-view';
 import ViewTabNoData from '../Components/ViewTabNoData';
-
 import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
 import CommonCover from '../Components/Commons/CommonCover';
 import CommonStageSummary from '../Components/Commons/CommonStageSummary';
@@ -28,21 +27,21 @@ import {observer, inject} from 'mobx-react';
 import Toast from '../Util/Toast';
 import {numberFormatter} from '../Util';
 
-const mockData = {
-  commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
-  commonLogo:
-    'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
-  description: 'If you wanna save the Amazon, own it.',
-  name: 'Amazon Network',
-  time: 26,
-  members: 55,
-  raised: 4200,
-  //Funding stage data
-  goal: 10000,
-  //Operating stage data
-  currentBudget: 1421,
-  activeProposals: 142,
-};
+// const mockData = {
+//   commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
+//   commonLogo:
+//     'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
+//   description: 'If you wanna save the Amazon, own it.',
+//   name: 'Amazon Network',
+//   time: 26,
+//   members: 55,
+//   raised: 4200,
+//   //Funding stage data
+//   goal: 10000,
+//   //Operating stage data
+//   currentBudget: 1421,
+//   activeProposals: 142,
+// };
 
 const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
   sortProposalsSheetRef = useRef();
@@ -128,11 +127,18 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
     );
   };
 
-  const renderScene = SceneMap({
-    discussions: Discussions,
-    proposals: Proposals,
-    history: History,
-  });
+  const renderScene = (props) => {
+    switch (props.route.key) {
+      case 'discussions':
+        return Discussions();
+      case 'proposals':
+        return Proposals();
+      case 'history':
+        return History();
+      default:
+        return null;
+    }
+  };
 
   const openAgendaScreen = e => {
     navigation.navigate('CommonAgenda');
@@ -344,7 +350,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
               currentBudget: numberFormatter(
                 // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
                 currCommon.tokenTotalSupply,
-              )
+              ),
             }}
           />
         </View>
@@ -390,23 +396,16 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
           style={{}}
         />
       </ScrollView>
-
-      {index === 0 ? (
-        <BottomRightButton
-          onPress={() =>
-            navigation.navigate('New Topic', {
-              commonId: routeCommon.id,
-            })
-          }
-          bottom={120}
-        />
-      ) : null}
-
       <SafeAreaView>
         {isMember ? (
-          <TouchableOpacity style={styles.addButton}>
-            <Icon name="plus" color={colors.white} />
-          </TouchableOpacity>
+          <BottomRightButton
+            onPress={() =>
+              navigation.navigate('New Topic', {
+                commonId: routeCommon.id,
+              })
+            }
+            bottom={120}
+          />
         ) : (
           <>
             <View style={styles.actionButtonContainer}>

@@ -40,16 +40,6 @@ const RequestStep3 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const isValid = () => {
-    props.requestToJoinFormStore.isFormValid();
-
-    const result = props.requestToJoinFormStore.isFormValidSelectedFields([
-      RequestToJoinForm.FIELD_AMOUNT,
-    ]);
-
-    return result;
-  };
-
   const onCustomClose = e => {
     setIsActionBtnHidden(true);
   };
@@ -66,16 +56,16 @@ const RequestStep3 = props => {
       },
     });
     props.navigation.dispatch(navigate);
-    props.requestToJoinFormStore.fieldChanged(
+    /*
+    props.personalContributionFormStore.fieldChanged(
       RequestToJoinForm.FIELD_AMOUNT,
       amount,
     );
+    */
   };
 
   const push = () => {
-    const vaild = isValid();
-
-    if (vaild) {
+    if (props.personalContributionFormStore.isFormValid()) {
       navigateToRequestStep4();
     }
   };
@@ -140,7 +130,7 @@ const RequestStep3 = props => {
 
             <AmountField
               navigation={props.navigation}
-              formStore={props.requestToJoinFormStore}
+              formStore={props.personalContributionFormStore}
               onCustomSelect={onCustomSelect}
               onCustomClose={onCustomClose}
               onAmountSelected={navigateToRequestStep4}
@@ -150,7 +140,7 @@ const RequestStep3 = props => {
         <RequestStepActionButton
           title="Continue to payment"
           pass={
-            props.requestToJoinFormStore.form.fields[
+            props.personalContributionFormStore.form.fields[
               RequestToJoinForm.FIELD_AMOUNT
             ]?.error
               ? false
@@ -164,4 +154,4 @@ const RequestStep3 = props => {
   );
 };
 
-export default inject('requestToJoinFormStore')(observer(RequestStep3));
+export default inject('personalContributionFormStore')(observer(RequestStep3));
