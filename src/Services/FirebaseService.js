@@ -32,7 +32,6 @@ export default class FirebaseService {
   }
 
   async getUserById(userId) {
-    console.log('getUserById -> ', userId);
     return db
       .collection(DB_COLLECTIONS.users)
       .doc(userId)
@@ -43,6 +42,19 @@ export default class FirebaseService {
           return null;
         }
         return snapshots.data();
+      });
+  }
+
+  async getUserByAddress(address) {
+    return db
+      .collection(DB_COLLECTIONS.users)
+      .where('ethereumAddress', '==', address).get()
+      .then(snapshots => {
+        console.log('adress user : ', snapshots.docs.data())
+        if (!snapshots) {
+          return null;
+        }
+        return snapshots;
       });
   }
 

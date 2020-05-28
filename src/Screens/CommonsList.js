@@ -33,7 +33,6 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore}) => {
               },
             };
           });
-          console.log('daos: ', daosSnapshot);
           setDaos(daosSnapshot);
           daoStore.setDaos(daosSnapshot);
 
@@ -44,7 +43,6 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore}) => {
             );
           }
         });
-        // console.log('DAOS: ', daosRes);
         // setDaos(daosRes);
       } catch (error) {
         console.log('errror: ', error);
