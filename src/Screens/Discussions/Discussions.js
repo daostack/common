@@ -277,6 +277,7 @@ const Discussions = props => {
                 </Text>
               </View>
 
+            {data.images ? 
               <ScrollView
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
@@ -305,6 +306,7 @@ const Discussions = props => {
                   <View style={{width: 20}} />
                 </View>
               </ScrollView>
+              : null}
 
               <TouchableOpacity
                 style={{alignItems: 'center'}}
@@ -427,7 +429,7 @@ const Discussions = props => {
       </BottomSheetModal>
 
       <ImageView
-        images={data.images.map(x => ({uri: x}) )}
+        images={ data.images ? data.images.map(x => ({uri: x})) : [] }
         imageIndex={imageGalleryIndex}
         visible={imageGalleryIndex > -1}
         onRequestClose={() => setImageGalleryIndex(-1)}
