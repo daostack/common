@@ -67,7 +67,6 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
   useEffect(() => {
     setShowRequestSentModal(route.params.showRequestSentModal ? true : false);
     setCurrCommon(routeCommon);
-    console.log('daoStore: ', route.params);
   }, [routeCommon, route.params.showRequestSentModal]);
 
   const renderTabBar = props => (

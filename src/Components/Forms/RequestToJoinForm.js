@@ -35,7 +35,6 @@ class RequestToJoinForm extends React.Component {
   render() {
     const {requestToJoinFormStore} = this.props;
 
-    console.log('requestToJoinFormStore');
     console.log(requestToJoinFormStore);
     return <View />;
   }
