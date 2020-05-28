@@ -203,7 +203,11 @@ class nativeBridgeTests extends React.Component {
 
   execTransaction = async () => {
     try {
-      const safeAddress = this.userStore.safeAddress
+      const safeAddress = this.userStore.userInfo.safeAddress
+      if (safeAddress === null) {
+        this.setState({signedData: 'No wallet found'});
+        return
+      }
       const manager = WalletManager.getInstance();
       const txHash = await manager.execTransaction(safeAddress, '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB', '0.01');
       console.log('txHash ->', txHash);
