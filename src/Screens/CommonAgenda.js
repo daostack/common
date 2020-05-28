@@ -28,7 +28,7 @@ const CommonAgenda = ({daoStore}) => {
           nestedScrollEnabled={true}
           directionalLockEnabled={true}>
           <View style={styles.sectionContainer}>
-            <Text style={text.h1Black}>Agenda and Rules?</Text>
+            <Text style={text.h1Black}>Agenda and Rules</Text>
           </View>
 
           <View style={layout.content}>
@@ -51,26 +51,26 @@ const CommonAgenda = ({daoStore}) => {
 
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Links</Text>
+            <Text style={text.h3Black}>
+              TODO: format this {JSON.stringify(daoStore.dao.metadata.links)}
+            </Text>
             <Text style={{...text.blackText, ...layout.marginTopM}}>
               https://www.google.com/
-            </Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              https://www.google.co.il/
-            </Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              https://www.google.ru/
             </Text>
           </View>
 
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Deadline</Text>
             <Text style={{...text.blackText, ...layout.marginTopM}}>
-              April 03, 2021
+              {daoStore.dao.fundingGoalDeadline.toDate().toString()}
             </Text>
           </View>
 
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Rules</Text>
+            <Text style={{...text.blackText, ...layout.marginTopM}}>
+              TODO: format this {JSON.stringify(daoStore.dao.metadata.rules)}
+            </Text>
           </View>
 
           <View style={styles.sectionContainer}>
