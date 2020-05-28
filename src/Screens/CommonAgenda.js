@@ -7,6 +7,7 @@ import {
   Text,
   ScrollView,
   View,
+  Linking
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 
@@ -49,15 +50,15 @@ const CommonAgenda = ({daoStore}) => {
             </Text>
           </View>
 
-          <View style={styles.sectionContainer}>
+          {daoStore.dao.metadata.links.length > 0 && <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Links</Text>
-            <Text style={text.h3Black}>
-              TODO: format this {JSON.stringify(daoStore.dao.metadata.links)}
-            </Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              https://www.google.com/
-            </Text>
-          </View>
+              {daoStore.dao.metadata.links.map((link, i) => {
+                return (<Text key={i} style={{...text.blackText, ...layout.marginTopM}} onPress={() => Linking.openURL(link)}>
+                    {link}
+                  </Text>
+                )
+              })}
+          </View>}
 
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Deadline</Text>
@@ -66,12 +67,19 @@ const CommonAgenda = ({daoStore}) => {
             </Text>
           </View>
 
-          <View style={styles.sectionContainer}>
+          {daoStore.dao.metadata.rules.length > 0 && <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Rules</Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              TODO: format this {JSON.stringify(daoStore.dao.metadata.rules)}
-            </Text>
-          </View>
+            {daoStore.dao.metadata.rules.map((rule, i) => {
+              return (<>
+                <Text key={i} style={{...text.blackText, ...layout.marginTopM}}>
+                  {rule.title}
+                </Text><Text key={i} style={{...text.blackText, ...layout.marginTopM}}>
+                  {rule.description}
+                </Text>
+              </>
+              )
+            })}
+          </View> }
 
           <View style={styles.sectionContainer}>
             <Text style={text.h4Black}>No promotions or spam</Text>
