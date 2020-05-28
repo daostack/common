@@ -29,7 +29,7 @@ class CreateDiscussionForm extends React.Component {
       const changedFields = createDiscussionStore.getChangedFormFieldsJson();
       console.log('createDiscussionStore', changedFields);
 
-      const imageList = Object.keys(changedFields).filter( x => x.includes('images_')).map(x => changedFields[x])
+      const imageList = Object.keys(changedFields).filter( x => x.includes('images_')).map(x => changedFields[x]);
 
       firestore()
         .collection('discussion')
@@ -58,7 +58,7 @@ class CreateDiscussionForm extends React.Component {
         });
     }
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
   };
 

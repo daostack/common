@@ -15,7 +15,7 @@ const DiscussionList = props => {
     const unsubscribe = firestore()
       .collection('discussion')
       .where('commonId', '==', commonId)
-      // .orderBy('createTime', 'desc')
+      .orderBy('createTime', 'desc')
       .onSnapshot(
         snapshot => {
           console.log('snapshot', snapshot);

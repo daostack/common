@@ -98,7 +98,7 @@ const ProposalScreen = ({navigation, route, props}) => {
       indicatorStyle={{
         backgroundColor: colors.mainBlue,
       }}
-      renderLabel={({focused}) => {
+      renderLabel={({route, focused}) => {
         return (
           <View style={{...layout.content, padding: 0}}>
             <Icon

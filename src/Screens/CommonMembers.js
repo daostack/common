@@ -71,7 +71,6 @@ const CommonMembers = ({navigation, route}) => {
     return (
       <View style={layout.marginTopL}>
         {route.params.members.map((member, i) => {
-          console.log('LE MEMBURRR', member.photoURL)
           return (
             <MemberCard
               key={i}
