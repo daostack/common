@@ -3,6 +3,7 @@ import {ethers, Contract} from 'ethers';
 import {web3ProviderUrl, web3NetworkId} from '../Config';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
+import ABI from './abi.json';
 export default class WalletManager {
   static myInstance = null;
   constructor(uid) {
@@ -68,22 +69,64 @@ export default class WalletManager {
   createSmartContractWallet = async () => {
     const idToken = await auth().currentUser.getIdToken();
     const options = {headers: {idToken}};
-    console.log('Create SCW');
     const response = await axios.get(
       'https://us-central1-common-daostack.cloudfunctions.net/api/createWallet',
       options,
     );
+    console.log('Create SCW', response);
     return response.data;
   };
 
   create2SmartContractWallet = async () => {
     const idToken = await auth().currentUser.getIdToken();
     const options = {headers: {idToken}};
-    console.log('Create2 SCW');
     const response = await axios.get(
       'https://us-central1-common-daostack.cloudfunctions.net/api/create2Wallet',
       options,
     );
+    console.log('Create2 SCW', response);
     return response.data;
   };
+
+  execTransaction = async (safeWallet, toAddress, value, data='0x') => {
+    const txHash = await this.createSafeTransactionHash(safeWallet, toAddress, value, data);
+    const byteTxHash = ethers.utils.arrayify(txHash);
+    const signedTx = this.wallet.signMessage(byteTxHash)
+    // Add 4
+    let finalSignature = signedTx.replace(/1b$/,"1f").replace(/1c$/,"20");
+    const idToken = await auth().currentUser.getIdToken();
+    const options = {headers: {idToken}};
+    const body = {to: toAddress, value: ethers.utils.parseEther(value).toString(10), data, signature: finalSignature}
+    const response = await axios.post(
+      'https://us-central1-common-daostack.cloudfunctions.net/api/execTransaction',
+      options,
+      body
+    );
+    console.log('execTransaction ->', execTransaction)
+    return response
+  }
+
+  createSafeTransactionHash = async (myWallet, toAddress, value, data='0x') => {
+    const masterCopyContract = new ethers.Contract(
+      mySafeWallet,
+      ABI.MasterCopy,
+      this.provider,
+    );
+    const nonce = await masterCopyContract.nonce();
+    const SAFE_TX_TYPEHASH = "0xbb8310d486368db6bd6f849402fdd73ad53d316b5a4b2644ad6efe0f941286d8";
+    const DOMAIN_SEPARATOR_TYPEHASH = "0x035aff83d86937d35b32e04f0ddc6ff469290eef2f1b692d8a815c89404d4749";
+    const domainSeperator = ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(["bytes32", "address"], [DOMAIN_SEPARATOR_TYPEHASH, mySafeWallet]));
+    let mySafeTxHash = ethers.utils.keccak256(
+      ethers.utils.defaultAbiCoder.encode(
+        ["bytes32", "address", "uint", "bytes32", "uint8", "uint", "uint", "uint", "address", "address", "uint"],
+        [SAFE_TX_TYPEHASH, toAddress, value, ethers.utils.keccak256(data), 0, 0, 0, 0, zeroAddress, zeroAddress, nonce]
+      )
+    );
+
+    let myTxHash = ethers.utils.solidityKeccak256(
+      ["bytes1", "bytes1", "bytes32", "bytes32"],
+      ["0x19", "0x01", domainSeperator, mySafeTxHash]
+    );
+    return myTxHash;
+  }
 }

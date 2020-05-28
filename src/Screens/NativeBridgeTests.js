@@ -44,6 +44,7 @@ class nativeBridgeTests extends React.Component {
       cw2Address: '',
       commonStatus: '',
       proposalStatus: '',
+      signedData: '',
     };
 
     this.child = React.createRef();
@@ -195,6 +196,18 @@ class nativeBridgeTests extends React.Component {
       this.setState({cw2TXHash: txHash});
       const address = await this.getAddressFromEvent(txHash);
       this.setState({cw2Address: address});
+    } catch (e) {
+      throw 'Send transaction failed with error: ' + e;
+    }
+  };
+
+  execTransaction = async () => {
+    try {
+      const safeAddress = this.userStore.safeAddress
+      const manager = WalletManager.getInstance();
+      const txHash = await manager.execTransaction(safeAddress, '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB', '0.01');
+      console.log('txHash ->', txHash);
+      this.setState({signedData: txHash});
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
@@ -420,6 +433,13 @@ class nativeBridgeTests extends React.Component {
             style={styles.button}>
             <Text>Create2 Smart Wallet</Text>
           </TouchableOpacity>
+
+          <Text>Address: {this.state.signedData}</Text>
+          <TouchableOpacity
+            onPress={this.execTransaction}
+            style={styles.button}>
+            <Text>execTransaction</Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     );
@@ -448,4 +468,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('daoStore')(observer(nativeBridgeTests));
+export default inject('daoStore', 'userStore')(observer(nativeBridgeTests));
