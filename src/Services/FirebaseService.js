@@ -32,7 +32,6 @@ export default class FirebaseService {
   }
 
   async getUserById(userId) {
-    console.log('getUserById -> ', userId);
     return db
       .collection(DB_COLLECTIONS.users)
       .doc(userId)

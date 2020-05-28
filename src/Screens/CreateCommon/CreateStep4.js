@@ -78,7 +78,7 @@ const CreateStep4 = props => {
 
   const pickImage = isAvatar => {
     const options = {
-      title: 'Select Avatar',
+      title: isAvatar && 'Select Avatar' || 'Select profile image',
       quality: 0.7,
       allowsEditing: isAvatar,
     };

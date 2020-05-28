@@ -60,7 +60,7 @@ export default class AuthService {
   async createUserAndWallet(user) {
     const manager = await WalletManager.getInstance(user.uid);
     const userPublicData = {
-      ethereumAddress: await manager.getOwnerAccount(),
+      ethereumAddress: await manager.getAddress(),
       // store the google user info in the firestore DB
       ...{
         createdAt: new Date(user._user.metadata.creationTime),
