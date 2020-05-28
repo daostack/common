@@ -199,7 +199,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
   };
 
   const openCommonMembers = e => {
-    navigation.navigate('CommonMembers');
+    navigation.navigate('CommonMembers', {members});
   };
 
   const shareCommon = event => {

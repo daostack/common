@@ -52,10 +52,10 @@ const commonMembersMock = [
   },
 ];
 
-const CommonMembers = ({navigation}) => {
+const CommonMembers = ({navigation, route}) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    {key: 'members', title: getTabName('Members')},
+    {key: 'members', title: getTabName('Members', route.params.members.length)},
     {key: 'pending', title: getTabName('Pending')},
   ]);
 
@@ -70,15 +70,18 @@ const CommonMembers = ({navigation}) => {
   const sceneRenderer = sceneIndex => {
     return (
       <View style={layout.marginTopL}>
-        {commonMembersMock.map((member, i) => {
+        {route.params.members.map((member, i) => {
+          console.log('LE MEMBURRR', member.photoURL)
           return (
             <MemberCard
               key={i}
-              name={member.name}
-              approvePercent={member.approvePercent}
-              imageUrl={member.imageUrl}
+              name={member.displayName}
+              approvePercent={member.approvalPercentage}
+              imageUrl={member.photoURL}
+              //TODO: change pending status
               isPending={sceneIndex === 1}
               date={member.date}
+              member={member}
             />
           );
         })}

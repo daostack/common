@@ -14,11 +14,8 @@ const MemberImage = ({member, key}) => {
     const memberInformation = await FirebaseService.getInstance().getUserByAddress(
       member.address,
     );
-    console.log('memberInfo: ', memberInformation);
-
     setMemberInfo(memberInformation);
   };
-  console.log('member: ', member);
   return memberInfo ? memberInfo.photoURL ? <Image
       key={key}
       style={styles.memberImage}
