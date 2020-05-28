@@ -37,7 +37,7 @@ export default class FirebaseService {
       .doc(userId)
       .get()
       .then(snapshots => {
-        console.log('snapshots : ', snapshots)
+        console.log('snapshots : ', snapshots);
         if (!snapshots) {
           return null;
         }
@@ -50,7 +50,7 @@ export default class FirebaseService {
       .collection(DB_COLLECTIONS.users)
       .where('ethereumAddress', '==', address).get()
       .then(snapshots => {
-        console.log('adress user : ', snapshots.docs.data())
+        console.log('adress user : ', snapshots.docs.data());
         if (!snapshots) {
           return null;
         }

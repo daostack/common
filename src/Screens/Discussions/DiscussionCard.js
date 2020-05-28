@@ -112,7 +112,7 @@ const DiscussionCard = props => {
                   width: 40,
                   borderRadius: 20,
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
                 }}
               >
                 <Text style={{fontSize: 17, color: 'white', fontWeight: '700'}}>

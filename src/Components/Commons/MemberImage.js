@@ -30,7 +30,7 @@ const MemberImage = ({member, key}) => {
       <Text style={{width: 17, height: 17, color: 'white' }}>{memberInfo.displayName}</Text>
     </View>
     :
-    <View style={{...styles.memberImage, alignItems: 'center', justifyContent: 'center', backgroundColor: '#6e7d82'}}/>
+    <View style={{...styles.memberImage, alignItems: 'center', justifyContent: 'center', backgroundColor: '#6e7d82'}}/>;
 };
 
 const styles = StyleSheet.create({
