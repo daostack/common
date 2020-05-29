@@ -48,8 +48,8 @@ const RequestStep4 = props => {
         const data = {
           title: `request to join ${props.route.params.currDaoId} by ${props.userStore.userInfo.ethereumAddress}`,
           description: formData.about_me,
-          links: formData.about_me.links,
-          funding: new BN(formData.about_me.amount * 100),
+          links: formData.links,
+          funding: new BN(formData.amount * 100),
         };
 
         Toast.loading('Creating request to join...');
