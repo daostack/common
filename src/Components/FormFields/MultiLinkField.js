@@ -16,9 +16,7 @@ const MultiLinkField = props => {
   let fieldName = null;
 
   useEffect(() => {
-    console.log('!!!!!! USE EFFECT !!!!!');
     fieldName = validation.name;
-    console.log('fieldName ->', fieldName);
   }, []);
 
   const renderAddLinkBtn = index => {
