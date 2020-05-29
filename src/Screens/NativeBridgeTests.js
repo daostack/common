@@ -44,8 +44,10 @@ class nativeBridgeTests extends React.Component {
       cw2Address: '',
       commonStatus: '',
       proposalStatus: '',
-      signedData: '',
+      safeTxHash: '',
       whiteListMsg: '',
+      safeWallet: '',
+      safeWalletBalance: '',
     };
 
     this.child = React.createRef();
@@ -176,6 +178,19 @@ class nativeBridgeTests extends React.Component {
     }
   };
 
+  getSafeBalance = async () => {
+    try {
+      const safeWallet = this.props.userStore.userInfo.safeAddress
+      console.log('safeWallet', safeWallet);
+      const manager = WalletManager.getInstance();
+      const safeWalletBalance = await manager.getBalance(safeWallet);
+      console.log('safeWalletBalance', safeWalletBalance);
+      this.setState({safeWallet, safeWalletBalance});
+    } catch (e) {
+      throw 'Send transaction failed with error: ' + e;
+    }
+  };
+
   createSmartContractWallet = async () => {
     try {
       const safeWallet = this.props.userStore.userInfo.safeAddress
@@ -203,7 +218,7 @@ class nativeBridgeTests extends React.Component {
       const {txHash} = await manager.create2SmartContractWallet();
       console.log('txHash ->', txHash);
       this.setState({cw2TXHash: txHash});
-      const address = await this.getAddressFromEvent(txHash);
+      const address = await manager.getAddressFromEvent(txHash);
       this.setState({cw2Address: address});
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
@@ -212,17 +227,15 @@ class nativeBridgeTests extends React.Component {
 
   execTransaction = async () => {
     try {
-      console.log('AAAAAA', this.props.userStore);
       const safeAddress = this.props.userStore.userInfo.safeAddress
-      console.log('safeAddress', safeAddress);
       if (safeAddress === null) {
-        this.setState({signedData: 'No wallet found'});
+        this.setState({safeTxHash: 'No wallet found, you need create one'});
         return
       }
       const manager = WalletManager.getInstance();
-      const txHash = await manager.execTransaction(safeAddress, '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB', '0.01');
-      console.log('txHash ->', txHash);
-      this.setState({signedData: txHash});
+      const response = await manager.execTransaction(safeAddress, '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB', '0.01');
+      console.log('txHash ->', response.data.txHash);
+      this.setState({safeTxHash: response.data.txHash || response.data.message});
     } catch (e) {
       console.log(e);
       throw 'Send transaction failed with error: ' + e;
@@ -239,33 +252,6 @@ class nativeBridgeTests extends React.Component {
       console.log(e);
       throw 'Send transaction failed with error: ' + e;
     }
-  };
-
-  getAddressFromEvent = async hash => {
-    const manager = WalletManager.getInstance();
-    const receipt = await manager.provider.waitForTransaction(hash);
-    console.log('receipt', receipt);
-    let eventABI = [
-      {
-        type: 'event',
-        name: 'ProxyCreation',
-        inputs: [
-          {
-            type: 'address',
-            name: 'proxy',
-            internalType: 'contract GnosisSafeProxy',
-            indexed: false,
-          },
-        ],
-        anonymous: false,
-      },
-    ];
-    const iface = new ethers.utils.Interface(eventABI);
-    const events = receipt.logs.map(log => {
-      return iface.parseLog(log);
-    });
-    console.log('address', events[0].values.proxy);
-    return events[0].values.proxy;
   };
 
   createCommon = async () => {
@@ -446,6 +432,14 @@ class nativeBridgeTests extends React.Component {
             --------------- Relayer -----------------
           </Text>
 
+          <Text>Address: {this.state.safeWallet}</Text>
+          <Text>Balance: {this.state.safeWalletBalance}</Text>
+          <TouchableOpacity
+            onPress={this.getSafeBalance}
+            style={styles.button}>
+            <Text>Get Safe Wallet Balance</Text>
+          </TouchableOpacity>
+
           <Text>TXHash: {this.state.cwTXHash}</Text>
           <Text>Address: {this.state.cwAddress}</Text>
           <TouchableOpacity
@@ -469,7 +463,7 @@ class nativeBridgeTests extends React.Component {
             <Text>Add self white list</Text>
           </TouchableOpacity>
 
-          <Text>TxHash: {JSON.stringify(this.state.signedData)}</Text>
+          <Text>TxHash: {this.state.safeTxHash}</Text>
           <TouchableOpacity
             onPress={this.execTransaction}
             style={styles.button}>

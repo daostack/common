@@ -91,16 +91,13 @@ export default class WalletManager {
   execTransaction = async (safeWallet, toAddress, value = 0, data = '0x') => {
     try {
       const valueNumber = ethers.utils.parseEther(value).toString(10)
-      console.log('valueNumber', valueNumber);
       const txHash = await this.createSafeTransactionHash(safeWallet, toAddress, valueNumber, data);
       const byteTxHash = ethers.utils.arrayify(txHash);
       const signedTx = await this.wallet.signMessage(byteTxHash)
       // Add 4
       let finalSignature = signedTx.replace(/1b$/, "1f").replace(/1c$/, "20");
-      console.log('finalSignature', finalSignature)
+      // console.log('finalSignature', finalSignature)
       const idToken = await auth().currentUser.getIdToken();
-      // const options = { headers: { idToken } };
-      console.log('idToken', idToken)
       const body = { idToken, to: toAddress, value: valueNumber, data, signature: finalSignature }
       const response = await axios.post(
         'https://us-central1-common-daostack.cloudfunctions.net/api/execTransaction',
@@ -152,4 +149,30 @@ export default class WalletManager {
       console.log(err)
     }
   }
+
+  getAddressFromEvent = async hash => {
+    const receipt = await this.provider.waitForTransaction(hash);
+    console.log('receipt', receipt);
+    let eventABI = [
+      {
+        type: 'event',
+        name: 'ProxyCreation',
+        inputs: [
+          {
+            type: 'address',
+            name: 'proxy',
+            internalType: 'contract GnosisSafeProxy',
+            indexed: false,
+          },
+        ],
+        anonymous: false,
+      },
+    ];
+    const iface = new ethers.utils.Interface(eventABI);
+    const events = receipt.logs.map(log => {
+      return iface.parseLog(log);
+    });
+    console.log('address', events[0].values.proxy);
+    return events[0].values.proxy;
+  };
 }
