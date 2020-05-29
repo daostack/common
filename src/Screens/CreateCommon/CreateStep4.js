@@ -387,7 +387,11 @@ const CreateStep4 = props => {
             </View>
             {form[CreateCommonForm.LINKS]?.length ? (
               form[CreateCommonForm.LINKS].map(x => (
-                <Text style={styles.textContent}>{x.title}</Text>
+                <Text
+                  key={`key_${CreateCommonForm.LINKS}_${x}`}
+                  style={styles.textContent}>
+                  {x.title}
+                </Text>
               ))
             ) : (
               <View />
@@ -404,7 +408,7 @@ const CreateStep4 = props => {
 
           {form[CreateCommonForm.RULES]?.length ? (
             form[CreateCommonForm.RULES].map((rule, index) => (
-              <>
+              <View key={`key_${CreateCommonForm.RULES}_${index}`}>
                 <Text
                   style={{
                     fontSize: 14,
@@ -420,7 +424,7 @@ const CreateStep4 = props => {
                   </Text>
                 </View>
                 <Text style={styles.textContent}>{rule.description}</Text>
-              </>
+              </View>
             ))
           ) : (
             <View />
