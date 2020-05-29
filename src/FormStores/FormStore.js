@@ -4,6 +4,7 @@ import en from 'validatorjs/src/lang/en';
 
 class FormStore {
   form;
+  multiFieldNames;
 
   constructor() {
     // Hack for React Native - it's necessary to set a default language
@@ -18,6 +19,7 @@ class FormStore {
         isLoadingSubmit: false,
       },
     };
+    this.multiFieldNames = [];
   }
 
   registerValidationRule(ruleName, callback, validationMessage) {
@@ -25,13 +27,16 @@ class FormStore {
   }
 
   // Public functions
-  registerFormField(name, validateRule, initialValue = '') {
+  registerFormField(name, validateRule, initialValue = '', multiName = null) {
     this.form.fields[name] = {
       value: initialValue,
       error: false,
       rule: validateRule,
       changed: false,
     };
+    if (multiName && this.multiFieldNames.indexOf(multiName) === -1) {
+      this.multiFieldNames.push(multiName);
+    }
   }
 
   // Check if form is valid and display error for each form field if it's necessary
@@ -78,6 +83,48 @@ class FormStore {
       if (formField.changed) {
         changedFieldsJson[key] = formField.value;
       }
+    }
+
+    // Filter multiple fields
+    for (const key in this.multiFieldNames) {
+      const currMultiName = this.multiFieldNames[key];
+      changedFieldsJson = this.filterMultiFields(
+        currMultiName,
+        changedFieldsJson,
+      );
+    }
+
+    return changedFieldsJson;
+  };
+
+  filterMultiFields = (name, fields) => {
+    let changedFieldsJson = {};
+
+    let multiFieldTitles = [];
+    let multiFieldValues = [];
+
+    for (const key in fields) {
+      const formFieldValue = fields[key];
+
+      if (key.startsWith(`${name}_title`)) {
+        multiFieldTitles = multiFieldTitles.concat(formFieldValue);
+        continue;
+      }
+
+      if (key.startsWith(`${name}_value`)) {
+        multiFieldValues = multiFieldValues.concat(formFieldValue);
+        continue;
+      }
+
+      changedFieldsJson[key] = formFieldValue;
+    }
+
+    if (multiFieldTitles.length > 0) {
+      changedFieldsJson[name] = [...multiFieldTitles.keys()].map(x => {
+        return {title: multiFieldTitles[x], description: multiFieldValues[x]};
+      });
+    } else {
+      changedFieldsJson[name] = [];
     }
 
     return changedFieldsJson;

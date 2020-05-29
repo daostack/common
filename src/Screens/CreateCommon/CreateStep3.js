@@ -1,14 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {
   Text,
-  TouchableOpacity,
   View,
-  StyleSheet,
   ScrollView,
   Dimensions,
   SafeAreaView,
   Animated,
-  TextInput,
 } from 'react-native';
 import TextInputField from '../../Components/FormFields/TextInputField';
 import {colors} from '../../Theme';
@@ -17,13 +14,14 @@ const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
+import MultiLinkField from '../../Components/FormFields/MultiLinkField';
 import CreateStepDotHeader from './CreateStepDotHeader';
+import RequestStepActionButton from '../Commons/RequestStepActionButton';
 
 const CreateStep3 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [ruleCount, setRuleCount] = useState(1);
-  const [pass, setPass] = useState(false);
+
   // var ruleBody = [];
 
   useEffect(() => {
@@ -36,23 +34,24 @@ const CreateStep3 = props => {
     // const height = scrollY.value > 100 ? 125 : 0;
     setHeaderHeight(height);
   }, [scrollY]);
-
+  /*
   const handleRuleTitles = (x, text) => {
-    props.createCommonFormStore.registerFormField(`ruleTitles_${x}`, 'string');
-    props.createCommonFormStore.fieldChanged(`ruleTitles_${x}`, text);
+    props.agendaFormStore.registerFormField(`ruleTitles_${x}`, 'string');
+    props.agendaFormStore.fieldChanged(`ruleTitles_${x}`, text);
     // console.log(x, text, ruleTitles);
   };
 
   const handleRuleBody = (x, text) => {
-    props.createCommonFormStore.registerFormField(`ruleBody_${x}`, 'string');
-    props.createCommonFormStore.fieldChanged(`ruleBody_${x}`, text);
+    props.agendaFormStore.registerFormField(`ruleBody_${x}`, 'string');
+    props.agendaFormStore.fieldChanged(`ruleBody_${x}`, text);
   };
+
 
   const isValid = () => {
     const titles = [...Array(ruleCount).keys()].map(x => `ruleTitles_${x}`);
     const bodys = [...Array(ruleCount).keys()].map(x => `ruleBody_${x}`);
 
-    const result = props.createCommonFormStore.isFormValidSelectedFields([
+    const result = props.agendaFormStore.isFormValidSelectedFields([
       CreateCommonForm.ACTION,
       ...titles,
       ...bodys,
@@ -61,11 +60,11 @@ const CreateStep3 = props => {
     return result;
   };
 
+  */
+
   const push = () => {
-    const vaild = isValid();
-    if (vaild) {
+    if (props.agendaFormStore.isFormValid()) {
       props.navigation.navigate('CreateStep4');
-      console.log(props.createCommonFormStore.getChangedFormFieldsJson());
     }
   };
 
@@ -123,10 +122,9 @@ const CreateStep3 = props => {
             placeholderText="What action are you planning to take to fulfil your goal? Are there things this common will not do?"
             autoCapitalize="none"
             autoCorrect={false}
-            onChangeText={isValid}
             validation={{
               name: CreateCommonForm.ACTION,
-              formStore: props.createCommonFormStore,
+              formStore: props.agendaFormStore,
               validateRule: 'string',
             }}
           />
@@ -150,6 +148,19 @@ const CreateStep3 = props => {
             etc.)
           </Text>
 
+          <MultiLinkField
+            allowsEditing={true}
+            title="Rule title"
+            placeholderValueText="Rule description"
+            multiline={true}
+            validation={{
+              name: CreateCommonForm.RULES,
+              formStore: props.agendaFormStore,
+              validateRule: 'string',
+            }}
+          />
+
+          {/*
           {[...Array(ruleCount).keys()].map(x => (
             <View key={x}>
               <TextInput
@@ -183,6 +194,7 @@ const CreateStep3 = props => {
               />
             </View>
           ))}
+
           <TouchableOpacity onPress={() => setRuleCount(ruleCount + 1)}>
             <Text
               style={{
@@ -194,68 +206,27 @@ const CreateStep3 = props => {
               Add rule
             </Text>
           </TouchableOpacity>
+          */}
         </View>
-        <TouchableOpacity
-          style={[
-            styles.continueButton,
-            {backgroundColor: pass ? colors.mainBlue : colors.grey3},
-          ]}
-          onPress={push}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: 'white',
-              fontWeight: '700',
-            }}>
-            Continue to Review
-          </Text>
-        </TouchableOpacity>
       </ScrollView>
+      <RequestStepActionButton
+        title="Continue to Review"
+        pass={props.agendaFormStore.isFormActionEnabled()}
+        onPress={push}
+      />
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  view: {
-    justifyContent: 'flex-end',
-    margin: 0,
-  },
-  container: {
-    backgroundColor: colors.white,
-    borderBottomColor: colors.gray,
-    borderBottomWidth: 1,
-    marginVertical: 10,
-    marginHorizontal: 10,
-    justifyContent: 'center',
-    borderRadius: 2,
-    height: 50,
-  },
-  placeholderText: {
-    color: colors.grey3,
-  },
-  text: {
-    width: '100%',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    fontSize: 15,
-    color: colors.black,
-  },
-  readMoreButton: {
-    fontSize: 12,
-    // fontWeight: '700',
-    color: colors.grey3,
-  },
-  continueButton: {
-    width: '100%',
-    height: 48,
-    borderRadius: 32,
-    marginTop: 45,
-    flexDirection: 'row',
-    paddingHorizontal: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.mainBlue,
-  },
-});
+export default inject(
+  'generalInfoFormStore',
+  'fundingFormStore',
+  'agendaFormStore',
+  'reviewFormStore',
+  'daoStore',
+)(observer(CreateStep3));
 
-export default inject('createCommonFormStore')(observer(CreateStep3));
+//generalInfoFormStore
+//fundingFormStore
+//agendaFormStore
+//reviewFormStore

@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors} from '../../Theme';
-import {observer, inject} from 'mobx-react';
 import Swiper from 'react-native-swiper';
 
 const CommonExplanation = ({navigation}) => {
@@ -158,4 +157,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('createCommonFormStore')(observer(CommonExplanation));
+export default CommonExplanation;

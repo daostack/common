@@ -277,7 +277,7 @@ const Discussions = props => {
                 </Text>
               </View>
 
-            {data.images ? 
+            {data.images ?
               <ScrollView
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}

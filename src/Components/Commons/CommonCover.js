@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   headerContent: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   headerViewAgenda: {
     ...text.smallGreyText,

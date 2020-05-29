@@ -117,7 +117,7 @@ const RequestStep2 = props => {
               validation={{
                 name: RequestToJoinForm.FIELD_ABOUT_ME,
                 formStore: props.introduceYourselfFormStore,
-                validateRule: '',
+                validateRule: 'string',
               }}
             />
 

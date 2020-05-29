@@ -19,7 +19,6 @@ class UserStore {
   isLoading;
   myCommons;
   myProposals;
-  address;
   constructor() {
     userInfo = null;
     isLoading = false;
@@ -67,10 +66,6 @@ class UserStore {
       this.userInfo = null;
     }
   };
-
-  setAddress = address => {
-    this.address = address;
-  }
 }
 
 decorate(UserStore, {

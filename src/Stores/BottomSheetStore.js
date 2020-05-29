@@ -36,7 +36,7 @@ export const BOTTOM_SHEET_TEMPLATES = {
     },
   },
   LOGIN_SHEET_SCREEN: {
-    topSnap: 480,
+    topSnap: 400,
     content: LoginSheetScreen,
   },
   TRANSACTION_ERROR: {
