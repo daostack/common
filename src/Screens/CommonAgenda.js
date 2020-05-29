@@ -7,7 +7,7 @@ import {
   Text,
   ScrollView,
   View,
-  Linking
+  Linking,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 
@@ -50,13 +50,13 @@ const CommonAgenda = ({daoStore}) => {
             </Text>
           </View>
 
-          {daoStore.dao.metadata.links.length > 0 && <View style={styles.sectionContainer}>
+          {daoStore.dao.metadata.links > 0 && <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Links</Text>
               {daoStore.dao.metadata.links.map((link, i) => {
-                return (<Text key={i} style={{...text.blackText, ...layout.marginTopM}} onPress={() => Linking.openURL(link)}>
-                    {link}
+                return (<Text key={i} style={{...text.blackText, ...layout.marginTopM}} onPress={() => Linking.openURL(link.description)}>
+                    {link.title}
                   </Text>
-                )
+                );
               })}
           </View>}
 
@@ -67,7 +67,7 @@ const CommonAgenda = ({daoStore}) => {
             </Text>
           </View>
 
-          {daoStore.dao.metadata.rules.length > 0 && <View style={styles.sectionContainer}>
+          {daoStore.dao.metadata.rules && <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Rules</Text>
             {daoStore.dao.metadata.rules.map((rule, i) => {
               return (<>
@@ -77,24 +77,10 @@ const CommonAgenda = ({daoStore}) => {
                   {rule.description}
                 </Text>
               </>
-              )
+              );
             })}
           </View> }
 
-          <View style={styles.sectionContainer}>
-            <Text style={text.h4Black}>No promotions or spam</Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              We created this community to help you along your journey. Links to
-              sponsored content or brands will vote you out.
-            </Text>
-          </View>
-
-          <View style={styles.sectionContainer}>
-            <Text style={text.h4Black}>Be courteous and kind to others</Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              Be courteous and kind to others
-            </Text>
-          </View>
         </ScrollView>
       </SafeAreaView>
     </>
