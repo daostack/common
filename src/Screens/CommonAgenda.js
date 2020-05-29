@@ -81,24 +81,10 @@ const CommonAgenda = ({daoStore, navigation}) => {
                   {rule.description}
                 </Text>
               </>
-              )
+              );
             })}
           </View> }
 
-          <View style={styles.sectionContainer}>
-            <Text style={text.h4Black}>No promotions or spam</Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              We created this community to help you along your journey. Links to
-              sponsored content or brands will vote you out.
-            </Text>
-          </View>
-
-          <View style={styles.sectionContainer}>
-            <Text style={text.h4Black}>Be courteous and kind to others</Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              Be courteous and kind to others
-            </Text>
-          </View>
         </ScrollView>
       </SafeAreaView>
     </>

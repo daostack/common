@@ -21,37 +21,6 @@ const getTabName = (objectName, count) => {
   return `${objectName} (${count ? count : 0})`;
 };
 
-const commonMembersMock = [
-  {
-    name: 'John Smith',
-    approvePercent: 32,
-    imageUrl:
-      'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
-    date: 'May 12',
-  },
-  {
-    name: 'John Smith',
-    approvePercent: 32,
-    imageUrl:
-      'https://live.envalab.com/html/cetus/demo/images/element/team/2.jpg',
-    date: 'May 12',
-  },
-  {
-    name: 'John Smith',
-    approvePercent: 32,
-    imageUrl:
-      'https://live.envalab.com/html/cetus/demo/images/element/team/3.jpg',
-    date: 'May 12',
-  },
-  {
-    name: 'John Smith',
-    approvePercent: 32,
-    imageUrl:
-      'https://live.envalab.com/html/cetus/demo/images/element/team/4.jpg',
-    date: 'May 12',
-  },
-];
-
 const CommonMembers = ({navigation, route}) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([

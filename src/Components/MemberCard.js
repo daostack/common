@@ -7,14 +7,12 @@ import MemberImage from './Commons/MemberImage';
 import FirebaseService from '../Services/FirebaseService';
 
 const MemberCard = ({
-  name,
   approvePercent,
   memberSince,
   memberCustomText,
-  imageUrl,
   isPending,
   date,
-  member
+  member,
 }) => {
   const [memberInfo, setMemberInfo] = useState('');
   useEffect(() => {
@@ -25,11 +23,9 @@ const MemberCard = ({
     const memberInformation = await FirebaseService.getInstance().getUserByAddress(
       member.address,
     );
-    console.log('memberInfo: ', memberInformation);
 
     setMemberInfo(memberInformation);
   };
-  console.log('member: ', member);
 
   renderRightContainer = () => {
     if (isPending) {
@@ -55,7 +51,6 @@ const MemberCard = ({
       );
     }
   };
-  console.log('MEMBER: ', member)
   return (
     <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <View style={styles.memberInfoContainer}>

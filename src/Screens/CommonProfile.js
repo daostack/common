@@ -27,22 +27,6 @@ import Toast from '../Util/Toast';
 import {numberFormatter} from '../Util';
 import MemberImage from '../Components/Commons/MemberImage';
 
-// const mockData = {
-//   commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
-//   commonLogo:
-//     'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
-//   description: 'If you wanna save the Amazon, own it.',
-//   name: 'Amazon Network',
-//   time: 26,
-//   members: 55,
-//   raised: 4200,
-//   //Funding stage data
-//   goal: 10000,
-//   //Operating stage data
-//   currentBudget: 1421,
-//   activeProposals: 142,
-// };
-
 const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore}) => {
 
   const [isMember, setMemberState] = useState(false);
@@ -74,10 +58,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
       }
 
       const commonMembers = route.params.currCommon.members;
-      setMembers(commonMembers)
+      setMembers(commonMembers);
 
-    } catch(e) {
-      throw e
+    } catch (e) {
+      throw e;
     }
   }, [routeCommon, route.params.showRequestSentModal]);
 
@@ -184,7 +168,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
             <View style={styles.membersRow}>
               {members.map((member, i) => {
                 if (i < 5) {
-                  return <MemberImage member={member} key={i}/>
+                  return <MemberImage member={member} key={i}/>;
                 }
               })}
             </View>

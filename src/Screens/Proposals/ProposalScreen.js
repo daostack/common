@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Dimensions,
   Text,
@@ -11,9 +11,9 @@ import {
   TextInput,
   Keyboard,
 } from 'react-native';
-import {text, layout, colors, sizeM} from '../../Theme';
+import { text, layout, colors, sizeM } from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
-import {TabView, TabBar} from 'react-native-tab-view';
+import { TabView, TabBar } from 'react-native-tab-view';
 import ProposalData from './ProposalData';
 import ProposalDiscussion from './ProposalDiscussion';
 import MemberCard from '../../Components/MemberCard';
@@ -24,13 +24,13 @@ import ProposalService from '../../Services/ProposalService';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 import CountDown from 'react-native-countdown-component';
 import FirebaseService from '../../Services/FirebaseService';
-import {monthShortNames} from '../../Util/DateUtil';
+import { monthShortNames } from '../../Util/DateUtil';
 
-const ProposalScreen = ({navigation, route, props}) => {
+const ProposalScreen = ({ navigation, route, props }) => {
   const [proposalInfo, setProposalInfo] = useState(false);
   const [proposedUser, setProposedUser] = useState(false);
 
@@ -61,7 +61,7 @@ const ProposalScreen = ({navigation, route, props}) => {
         );
 
         setProposedUser(currProposedUser);
-        setProposalInfo({...currProposalInfo, ...{funding: funding}});
+        setProposalInfo({ ...currProposalInfo, ...{ funding: funding } });
       } catch (error) {
         console.log('error: ', error);
       }
@@ -81,8 +81,8 @@ const ProposalScreen = ({navigation, route, props}) => {
   const [voteType, setVoteType] = useState(false);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    {key: 'info', icon: 'proposal'},
-    {key: 'discussions', icon: 'discussion'},
+    { key: 'info', icon: 'proposal' },
+    { key: 'discussions', icon: 'discussion' },
   ]);
 
   const [inputHeight, setInputHeight] = useState(60);
@@ -98,9 +98,9 @@ const ProposalScreen = ({navigation, route, props}) => {
       indicatorStyle={{
         backgroundColor: colors.mainBlue,
       }}
-      renderLabel={({route, focused}) => {
+      renderLabel={({ route, focused }) => {
         return (
-          <View style={{...layout.content, padding: 0}}>
+          <View style={{ ...layout.content, padding: 0 }}>
             <Icon
               name={route.icon}
               size={24}
@@ -109,7 +109,7 @@ const ProposalScreen = ({navigation, route, props}) => {
           </View>
         );
       }}
-      style={{backgroundColor: colors.white}}
+      style={{ backgroundColor: colors.white }}
     />
   );
 
@@ -152,7 +152,7 @@ const ProposalScreen = ({navigation, route, props}) => {
     return (
       <KeyboardAvoidingView
         // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
+        style={{ position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff' }}>
         <View style={styles.input}>
           <View style={styles.inputBorder}>
             <TextInput
@@ -162,12 +162,12 @@ const ProposalScreen = ({navigation, route, props}) => {
               onContentSizeChange={e =>
                 setInputHeight(e.nativeEvent.contentSize.height)
               }
-              style={{flex: 1, height: inputHeight, marginHorizontal: 10}}
+              style={{ flex: 1, height: inputHeight, marginHorizontal: 10 }}
               fontSize={15}
               onChangeText={currText => setInputText(currText)}
             />
             <TouchableOpacity
-              style={{paddingRight: 15, justifyContent: 'center'}}
+              style={{ paddingRight: 15, justifyContent: 'center' }}
               onPress={sendMessageToDiscussion}>
               <Icon
                 name="edit"
@@ -179,7 +179,7 @@ const ProposalScreen = ({navigation, route, props}) => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{height: 30, backgroundColor: colors.white}} />
+        <View style={{ height: 30, backgroundColor: colors.white }} />
       </KeyboardAvoidingView>
     );
   };
@@ -196,7 +196,7 @@ const ProposalScreen = ({navigation, route, props}) => {
   const onVote = isApproved => {
     closeApprovalSheet();
     Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
-    setIsVoteByYou({isApproved: isApproved});
+    setIsVoteByYou({ isApproved: isApproved });
   };
 
   const renderStickyBottomContent = () => {
@@ -212,14 +212,14 @@ const ProposalScreen = ({navigation, route, props}) => {
       }
 
       return (
-        <View style={{...layout.content, ...layout.flexRow, ...{padding: 0}}}>
+        <View style={{ ...layout.content, ...layout.flexRow, ...{ padding: 0 } }}>
           <Icon
             name={iconName}
             color={color}
             size={12}
             style={layout.marginRightS}
           />
-          <Text style={{...styles.votedByYouText, ...{color: color}}}>
+          <Text style={{ ...styles.votedByYouText, ...{ color: color } }}>
             {message}
           </Text>
         </View>
@@ -235,7 +235,7 @@ const ProposalScreen = ({navigation, route, props}) => {
       let timerBackground = colors.paleblue;
 
       if (isLessThanOneHour) {
-        counterTextColor = {...styles.timerText, ...{color: colors.white}};
+        counterTextColor = { ...styles.timerText, ...{ color: colors.white } };
         timerBackground = colors.orangeDark;
       }
 
@@ -251,7 +251,7 @@ const ProposalScreen = ({navigation, route, props}) => {
           }}>
           <View style={styles.timerContainer}>
             <View
-              style={{...styles.timer, ...{backgroundColor: timerBackground}}}>
+              style={{ ...styles.timer, ...{ backgroundColor: timerBackground } }}>
               {remainingSeconds ? (
                 <CountDown
                   digitTxtStyle={counterTextColor}
@@ -270,14 +270,14 @@ const ProposalScreen = ({navigation, route, props}) => {
           </View>
           <TouchableOpacity
             onPress={e => openApprovalSheet(true)}
-            style={{...styles.actionBtnStyle, ...layout.marginRightS}}>
+            style={{ ...styles.actionBtnStyle, ...layout.marginRightS }}>
             <Icon name="approved" style={styles.actionBtnIcon} size={14} />
             <Text style={styles.actionBtnGreen}>Approve</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={e => openApprovalSheet(false)}
-            style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
+            style={{ ...styles.actionBtnStyle, ...layout.marginLeftS }}>
             <Icon name="declined" style={styles.actionBtnIcon} size={14} />
             <Text style={styles.actionBtnRed}>Reject</Text>
           </TouchableOpacity>
@@ -286,7 +286,7 @@ const ProposalScreen = ({navigation, route, props}) => {
     }
   };
 
-  const initialLayout = {width: Dimensions.get('window').width};
+  const initialLayout = { width: Dimensions.get('window').width };
 
   let memberCreatedDate = null;
 
@@ -296,8 +296,8 @@ const ProposalScreen = ({navigation, route, props}) => {
 
   return (
     <>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ backgroundColor: colors.white }} />
+      <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
           style={{
             flex: 1,
@@ -307,9 +307,9 @@ const ProposalScreen = ({navigation, route, props}) => {
             style={{
               ...layout.content,
               ...layout.flexStart,
-              ...{paddingBottom: 0},
+              ...{ paddingBottom: 0 },
             }}>
-            <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
+            <Text style={{ ...text.h3Black, ...{ textAlign: 'left' } }}>
               {proposalInfo?.title}
             </Text>
 
@@ -318,8 +318,8 @@ const ProposalScreen = ({navigation, route, props}) => {
               memberSince={
                 memberCreatedDate
                   ? `${
-                      monthShortNames[memberCreatedDate.getMonth()]
-                    } ${memberCreatedDate.getDay()} `
+                  monthShortNames[memberCreatedDate.getMonth()]
+                  } ${memberCreatedDate.getDay()} `
                   : ''
               }
               imageUrl={proposedUser.photoURL}
@@ -328,7 +328,7 @@ const ProposalScreen = ({navigation, route, props}) => {
           </View>
 
           <TabView
-            navigationState={{index, routes}}
+            navigationState={{ index, routes }}
             renderScene={() => null}
             onIndexChange={setIndex}
             initialLayout={initialLayout}
@@ -349,8 +349,8 @@ const ProposalScreen = ({navigation, route, props}) => {
             {renderStickyBottomContent()}
           </View>
         ) : (
-          <>{messageInput()}</>
-        )}
+            <>{messageInput()}</>
+          )}
       </SafeAreaView>
       {/**
       <BottomSheetContainer ref={boostedInfoRef} topSnapPoint={620}>
