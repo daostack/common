@@ -96,15 +96,31 @@ const DiscussionCard = props => {
             {data.title}
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image
-              style={{
-                backgroundColor: colors.grey3,
-                height: 40,
-                width: 40,
-                borderRadius: 20,
-              }}
-              source={{uri: user.photoURL}}
-            />
+            {
+              user.photoURL ? <Image
+                style={{
+                  backgroundColor: colors.grey3,
+                  height: 40,
+                  width: 40,
+                  borderRadius: 20,
+                }}
+                source={{uri: user.photoURL}}
+              /> : <View
+                style={{
+                  backgroundColor: colors.grey3,
+                  height: 40,
+                  width: 40,
+                  borderRadius: 20,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Text style={{fontSize: 17, color: 'white', fontWeight: '700'}}>
+                  {user.displayName && user.displayName.substring(0,1)}
+                </Text>
+              </View>
+
+            }
             <View style={{flex: 1, marginLeft: 10}}>
               <Text
                 style={{
