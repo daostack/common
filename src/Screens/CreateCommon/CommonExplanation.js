@@ -158,4 +158,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('createCommonFormStore')(observer(CommonExplanation));
+export default CommonExplanation;
