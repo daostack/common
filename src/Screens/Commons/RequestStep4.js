@@ -26,8 +26,6 @@ const RequestStep4 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
 
-  const [loadingMessage, setLoadingMessage] = useState(null);
-
   useEffect(() => {
     const height = scrollY.interpolate({
       inputRange: [50, 50],

@@ -157,6 +157,7 @@ const CreateStep3 = props => {
             title="Rule title"
             placeholderValueText="Rule description"
             multiline={true}
+            addMultiFieldBtnName="Add Rule"
             validation={{
               name: CreateCommonForm.RULES,
               formStore: props.agendaFormStore,
