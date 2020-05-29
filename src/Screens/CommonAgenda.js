@@ -50,7 +50,7 @@ const CommonAgenda = ({daoStore}) => {
             </Text>
           </View>
 
-          {daoStore.dao.metadata.links > 0 && <View style={styles.sectionContainer}>
+          {daoStore.dao.metadata.links && <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Links</Text>
               {daoStore.dao.metadata.links.map((link, i) => {
                 return (<Text key={i} style={{...text.blackText, ...layout.marginTopM}} onPress={() => Linking.openURL(link.description)}>
