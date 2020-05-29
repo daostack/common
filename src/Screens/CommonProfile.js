@@ -11,9 +11,8 @@ import {
 } from 'react-native';
 import {text, layout, colors, sizeL} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
-import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
+import {TabView, TabBar} from 'react-native-tab-view';
 import ViewTabNoData from '../Components/ViewTabNoData';
-import auth from '@react-native-firebase/auth';
 import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
 import CommonCover from '../Components/Commons/CommonCover';
 import CommonStageSummary from '../Components/Commons/CommonStageSummary';
@@ -128,8 +127,8 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
     );
   };
 
-  const renderScene = ({route}) => {
-    switch (route.key) {
+  const renderScene = (props) => {
+    switch (props.route.key) {
       case 'discussions':
         return Discussions();
       case 'proposals':
@@ -397,23 +396,16 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
           style={{}}
         />
       </ScrollView>
-
-      {index === 0 && auth().currentUser ? (
-        <BottomRightButton
-          onPress={() =>
-            navigation.navigate('New Topic', {
-              commonId: routeCommon.id,
-            })
-          }
-          bottom={120}
-        />
-      ) : null}
-
       <SafeAreaView>
         {isMember ? (
-          <TouchableOpacity style={styles.addButton}>
-            <Icon name="plus" color={colors.white} />
-          </TouchableOpacity>
+          <BottomRightButton
+            onPress={() =>
+              navigation.navigate('New Topic', {
+                commonId: routeCommon.id,
+              })
+            }
+            bottom={120}
+          />
         ) : (
           <>
             <View style={styles.actionButtonContainer}>

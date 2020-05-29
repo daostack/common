@@ -76,7 +76,7 @@ const CreateStep4 = props => {
 
   const pickImage = isAvatar => {
     const options = {
-      title: 'Select Avatar',
+      title: (isAvatar && 'Select Avatar') || 'Select profile image',
       quality: 0.7,
       allowsEditing: isAvatar,
     };
@@ -106,21 +106,22 @@ const CreateStep4 = props => {
     });
   };
 
-  const ipfsUpload = async formData =>
+  const ipfsUpload = async formData => {
     // TODO: use arc.saveIPFSData({ name: formData.name}) once https://github.com/daostack/arc.js/issues/468 is resolved
-    IpfsClient.addAndPinString(
+    console.log(formData);
+    return IpfsClient.addAndPinString(
       JSON.stringify({
         name: formData.name,
         byline: formData.byline,
         description: formData.description,
         courseOfAction: formData.action,
         // TODO: actuall add the values here (as an arry probably)
-        mainValue1: formData.funding,
-        mainValue2: formData.minimum,
-        mainValue3: 'empty value',
+        rules: formData.rules,
+        links: formData.links,
       }),
     );
-  // TODO: use arc.saveIPFSData({ name: formData.name}) here
+  };
+
   const forgeCommon = async () => {
     const formData = {
       ...props.generalInfoFormStore.getChangedFormFieldsJson(),
@@ -135,16 +136,16 @@ const CreateStep4 = props => {
     const address = await manager.getAddress();
     console.log('owner account: ', address);
 
-    // TODO: get form data for fundingGoalDeadline; these are in secondSinceEpoch
-    const deadline = '1621679337'; // in may 2021
+    const deadline = formData[CreateCommonForm.DEADLINE];
+
     const data = {
       name: formData.name,
       founderAddresses: address,
       tokenDist: [0],
-      repDist: [100],
-      minFeeToJoin: parseInt(formData.minimum, 10),
-      fundingGoal: formData.funding,
-      fundingGoalDeadline: deadline,
+      repDist: [1000],
+      minFeeToJoin: parseInt(formData.minimum, 10) * 100, // multiply by 100 to get the value in cents
+      fundingGoal: parseInt(formData.funding, 10) * 100, // multiply by 100 to get the value in cents
+      fundingGoalDeadline: Math.round(deadline.getTime() / 1000),
       ipfsHash,
     };
     console.log('calling createCommon(...)');
@@ -439,71 +440,6 @@ const CreateStep4 = props => {
     </SafeAreaView>
   );
 };
-/*
-const getReviewFormFieldsJson = fields => {
-  let changedFieldsJson = {};
-
-  let linkTitles = [];
-  let linkUrls = [];
-
-  let titles = [];
-  let body = [];
-
-  console.log('FIELDs -> ', fields);
-
-  for (const key in fields) {
-    const formFieldValue = fields[key];
-
-    if (key.startsWith(`${CreateCommonForm.LINKS}_title`)) {
-      // console.log(key, formFieldValue);
-      linkTitles = linkTitles.concat(formFieldValue);
-      // console.log(titles);
-      continue;
-    }
-
-    if (key.startsWith(`${CreateCommonForm.LINKS}_value`)) {
-      // console.log(key, formFieldValue);
-      linkUrls = linkUrls.concat(formFieldValue);
-      continue;
-    }
-
-    if (key.startsWith(`${CreateCommonForm.RULES}_title`)) {
-      // console.log(key, formFieldValue);
-      titles = titles.concat(formFieldValue);
-      // console.log(titles);
-      continue;
-    }
-
-    if (key.startsWith(`${CreateCommonForm.RULES}_value`)) {
-      // console.log(key, formFieldValue);
-      body = body.concat(formFieldValue);
-      continue;
-    }
-
-    changedFieldsJson[key] = formFieldValue;
-  }
-
-  if (titles.length > 0) {
-    changedFieldsJson[CreateCommonForm.RULES] = [...titles.keys()].map(x => {
-      return {title: titles[x], description: body[x]};
-    });
-  } else {
-    changedFieldsJson[CreateCommonForm.RULES] = [];
-  }
-
-  if (linkTitles.length > 0) {
-    changedFieldsJson[CreateCommonForm.LINKS] = [...linkTitles.keys()].map(
-      x => {
-        return {title: linkTitles[x], description: linkUrls[x]};
-      },
-    );
-  } else {
-    changedFieldsJson[CreateCommonForm.LINKS] = [];
-  }
-
-  return changedFieldsJson;
-};
-*/
 
 const styles = StyleSheet.create({
   view: {

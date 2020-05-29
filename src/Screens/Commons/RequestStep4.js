@@ -37,17 +37,17 @@ const RequestStep4 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const isValid = () => {
-    const result = props.paymentFormStore.isFormValidSelectedFields([
-      RequestToJoinForm.FIELD_CARD_NAME,
-      RequestToJoinForm.FIELD_CARD_NUMBER,
-      RequestToJoinForm.FIELD_EXPIRATION_DATE,
-      RequestToJoinForm.FIELD_CVV,
-    ]);
-    console.log('isValid result -> ', result);
-
-    return result;
-  };
+  // const isValid = () => {
+  //   const result = props.paymentFormStore.isFormValidSelectedFields([
+  //     RequestToJoinForm.FIELD_CARD_NAME,
+  //     RequestToJoinForm.FIELD_CARD_NUMBER,
+  //     RequestToJoinForm.FIELD_EXPIRATION_DATE,
+  //     RequestToJoinForm.FIELD_CVV,
+  //   ]);
+  //   console.log('isValid result -> ', result);
+  //
+  //   return result;
+  // };
 
   const push = async () => {
     if (props.paymentFormStore.isFormValid()) {
