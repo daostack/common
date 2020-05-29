@@ -1,11 +1,10 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Dimensions,
   Text,
   View,
   ScrollView,
   StyleSheet,
-  Image,
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
@@ -26,28 +25,12 @@ import DiscussionList from './Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
 import Toast from '../Util/Toast';
 import {numberFormatter} from '../Util';
+import MemberImage from '../Components/Commons/MemberImage';
 
-// const mockData = {
-//   commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
-//   commonLogo:
-//     'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
-//   description: 'If you wanna save the Amazon, own it.',
-//   name: 'Amazon Network',
-//   time: 26,
-//   members: 55,
-//   raised: 4200,
-//   //Funding stage data
-//   goal: 10000,
-//   //Operating stage data
-//   currentBudget: 1421,
-//   activeProposals: 142,
-// };
+const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore}) => {
 
-const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
-  sortProposalsSheetRef = useRef();
-  proposalSheetRef = useRef();
-
-  const [isMember] = useState(false);
+  const [isMember, setMemberState] = useState(false);
+  const [members, setMembers] = useState(false);
   const [isFundingStage] = useState(false);
 
   const [index, setIndex] = useState(0);
@@ -64,9 +47,22 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
   const routeCommon = route.params.currCommon;
 
   useEffect(() => {
-    setShowRequestSentModal(route.params.showRequestSentModal ? true : false);
-    setCurrCommon(routeCommon);
-    console.log('daoStore: ', route.params);
+    try {
+      setShowRequestSentModal(route.params.showRequestSentModal);
+      setCurrCommon(routeCommon);
+
+      if (route.params.currCommon.members.some( member => member.address === userStore.userInfo.ethereumAddress )) {
+        setMemberState(true);
+      } else {
+        setMemberState(false);
+      }
+
+      const commonMembers = route.params.currCommon.members;
+      setMembers(commonMembers);
+
+    } catch (e) {
+      throw e;
+    }
   }, [routeCommon, route.params.showRequestSentModal]);
 
   const renderTabBar = props => (
@@ -127,8 +123,8 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
     );
   };
 
-  const renderScene = (props) => {
-    switch (props.route.key) {
+  const renderScene = (scene) => {
+    switch (scene.route.key) {
       case 'discussions':
         return Discussions();
       case 'proposals':
@@ -170,34 +166,11 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
             onPress={openCommonMembers}
             style={styles.membersAction}>
             <View style={styles.membersRow}>
-              <Image
-                style={styles.memberImage}
-                source={{
-                  uri:
-                    'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
-                }}
-              />
-              <Image
-                style={{...styles.memberImage, ...{marginLeft: -10}}}
-                source={{
-                  uri:
-                    'https://live.envalab.com/html/cetus/demo/images/element/team/2.jpg',
-                }}
-              />
-              <Image
-                style={{...styles.memberImage, ...{marginLeft: -10}}}
-                source={{
-                  uri:
-                    'https://live.envalab.com/html/cetus/demo/images/element/team/3.jpg',
-                }}
-              />
-              <Image
-                style={{...styles.memberImage, ...{marginLeft: -10}}}
-                source={{
-                  uri:
-                    'https://live.envalab.com/html/cetus/demo/images/element/team/4.jpg',
-                }}
-              />
+              {members.map((member, i) => {
+                if (i < 5) {
+                  return <MemberImage member={member} key={i}/>;
+                }
+              })}
             </View>
             <TouchableOpacity style={layout.flexRow}>
               <Text style={text.h4Black}>Pending (13)</Text>
@@ -210,7 +183,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
   };
 
   const openCommonMembers = e => {
-    navigation.navigate('CommonMembers');
+    navigation.navigate('CommonMembers', {members});
   };
 
   const shareCommon = event => {
@@ -320,7 +293,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
         contentContainerStyle={{paddingBottom: 100}}
         showsVerticalScrollIndicator={false}>
         <CommonCover
-          isMember={true}
+          isMember={isMember}
           navigation={navigation}
           onHeaderMenuOpen={openCommonOptions}
           commonInfo={{
@@ -344,7 +317,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore}) => {
                 currCommon.numberOfPreBoostedProposals +
                 currCommon.numberOfQueuedProposals,
               goal: currCommon.fundingGoal,
-              members: currCommon.memberCount * 1,
+              members: currCommon.memberCount,
               // TODO: get this value. Is it even tracked in the contract? need to check.
               raised: 0,
               currentBudget: numberFormatter(
@@ -570,4 +543,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore', 'daoStore')(observer(CommonProfile));
+export default inject('bottomSheetStore', 'daoStore', 'userStore')(observer(CommonProfile));

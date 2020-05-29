@@ -50,11 +50,10 @@ export default class FirebaseService {
       .collection(DB_COLLECTIONS.users)
       .where('ethereumAddress', '==', address).get()
       .then(snapshots => {
-        console.log('adress user : ', snapshots.docs.data());
         if (!snapshots) {
           return null;
         }
-        return snapshots;
+        return snapshots.docs[0].data();
       });
   }
 

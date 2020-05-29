@@ -50,6 +50,7 @@ const DiscussionCard = props => {
         data.ownerId,
       );
       if (userData) {
+        console.log('userData', userData);
         setUser(userData);
       }
     };
@@ -70,6 +71,7 @@ const DiscussionCard = props => {
   }, [discussionId]);
 
   const follow = () => {
+    console.log('Follow user id', data.owner);
     NotificationService.follow(data.owner);
     props.bottomSheetStore.hideBottomSheet();
   };

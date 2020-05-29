@@ -21,41 +21,10 @@ const getTabName = (objectName, count) => {
   return `${objectName} (${count ? count : 0})`;
 };
 
-const commonMembersMock = [
-  {
-    name: 'John Smith',
-    approvePercent: 32,
-    imageUrl:
-      'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
-    date: 'May 12',
-  },
-  {
-    name: 'John Smith',
-    approvePercent: 32,
-    imageUrl:
-      'https://live.envalab.com/html/cetus/demo/images/element/team/2.jpg',
-    date: 'May 12',
-  },
-  {
-    name: 'John Smith',
-    approvePercent: 32,
-    imageUrl:
-      'https://live.envalab.com/html/cetus/demo/images/element/team/3.jpg',
-    date: 'May 12',
-  },
-  {
-    name: 'John Smith',
-    approvePercent: 32,
-    imageUrl:
-      'https://live.envalab.com/html/cetus/demo/images/element/team/4.jpg',
-    date: 'May 12',
-  },
-];
-
-const CommonMembers = ({navigation}) => {
+const CommonMembers = ({navigation, route}) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    {key: 'members', title: getTabName('Members')},
+    {key: 'members', title: getTabName('Members', route.params.members.length)},
     {key: 'pending', title: getTabName('Pending')},
   ]);
 
@@ -70,15 +39,17 @@ const CommonMembers = ({navigation}) => {
   const sceneRenderer = sceneIndex => {
     return (
       <View style={layout.marginTopL}>
-        {commonMembersMock.map((member, i) => {
+        {route.params.members.map((member, i) => {
           return (
             <MemberCard
               key={i}
-              name={member.name}
-              approvePercent={member.approvePercent}
-              imageUrl={member.imageUrl}
+              name={member.displayName}
+              approvePercent={member.approvalPercentage}
+              imageUrl={member.photoURL}
+              //TODO: change pending status
               isPending={sceneIndex === 1}
               date={member.date}
+              member={member}
             />
           );
         })}
@@ -99,10 +70,10 @@ const CommonMembers = ({navigation}) => {
       indicatorStyle={{
         backgroundColor: colors.black,
       }}
-      renderLabel={({route, focused, color}) => {
+      renderLabel={({labelRoute, focused, color}) => {
         return (
           <Text style={focused ? styles.tabStyleActive : styles.tabStyle}>
-            {route.title}
+            {labelRoute.title}
           </Text>
         );
       }}
