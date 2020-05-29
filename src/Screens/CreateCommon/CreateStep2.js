@@ -48,7 +48,7 @@ const CreateStep2 = props => {
           name,
           moment()
             .add('7', 'days')
-            .toDate(),
+            .unix(),
         );
         setShow(false);
         break;
@@ -58,13 +58,13 @@ const CreateStep2 = props => {
           name,
           moment()
             .add('1', 'months')
-            .toDate(),
+            .unix(),
         );
         setShow(false);
         break;
       }
       case 2: {
-        props.createCommonFormStore.fieldChanged(name, pickDate);
+        props.createCommonFormStore.fieldChanged(name, moment(pickDate).unix());
         setShow(true);
         break;
       }
@@ -85,7 +85,7 @@ const CreateStep2 = props => {
     const vaild = isValid();
     if (vaild) {
       props.navigation.navigate('CreateStep3');
-      console.log(props.createCommonFormStore.getChangedFormFieldsJson());
+      console.log('the data from step2:: ', props.createCommonFormStore.getChangedFormFieldsJson());
     }
   };
 
