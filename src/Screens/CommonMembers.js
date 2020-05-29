@@ -70,10 +70,10 @@ const CommonMembers = ({navigation, route}) => {
       indicatorStyle={{
         backgroundColor: colors.black,
       }}
-      renderLabel={({labelRoute, focused, color}) => {
+      renderLabel={({route, focused, color}) => {
         return (
           <Text style={focused ? styles.tabStyleActive : styles.tabStyle}>
-            {labelRoute.title}
+            {route.title}
           </Text>
         );
       }}
