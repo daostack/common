@@ -46,16 +46,11 @@ const RequestStep4 = props => {
         };
 
         const data = {
-          ...formData,
-          title: `A test proposal on ${Date()}`,
-          description: 'Some description',
-          funding: new BN(200),
+          title: `request to join ${props.route.params.currDaoId} by ${props.userStore.userInfo.ethereumAddress}`,
+          description: formData.about_me,
+          links: formData.about_me.links,
+          funding: new BN(formData.about_me.amount * 100),
         };
-
-        console.log(
-          'props.route.params.currDaoId, -> ',
-          props.route.params.currDaoId,
-        );
 
         Toast.loading('Creating request to join...');
 
@@ -214,4 +209,5 @@ export default inject(
   'introduceYourselfFormStore',
   'personalContributionFormStore',
   'paymentFormStore',
+  'userStore',
 )(observer(RequestStep4));
