@@ -46,9 +46,22 @@ const RequestStep3 = props => {
 
   const onCustomSelect = e => {
     setIsActionBtnHidden(false);
+    props.personalContributionFormStore.fieldChanged(
+      RequestToJoinForm.FIELD_AMOUNT,
+      '',
+      false,
+    );
   };
 
-  const navigateToRequestStep4 = amount => {
+  const onAmountSelected = amount => {
+    props.personalContributionFormStore.fieldChanged(
+      RequestToJoinForm.FIELD_AMOUNT,
+      amount,
+    );
+    navigateToRequestStep4();
+  };
+
+  const navigateToRequestStep4 = () => {
     const navigate = CommonActions.navigate({
       name: 'RequestStep4',
       params: {
@@ -56,12 +69,6 @@ const RequestStep3 = props => {
       },
     });
     props.navigation.dispatch(navigate);
-    /*
-    props.personalContributionFormStore.fieldChanged(
-      RequestToJoinForm.FIELD_AMOUNT,
-      amount,
-    );
-    */
   };
 
   const push = () => {
@@ -133,7 +140,7 @@ const RequestStep3 = props => {
               formStore={props.personalContributionFormStore}
               onCustomSelect={onCustomSelect}
               onCustomClose={onCustomClose}
-              onAmountSelected={navigateToRequestStep4}
+              onAmountSelected={onAmountSelected}
             />
           </View>
         </ScrollView>
