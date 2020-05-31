@@ -1,18 +1,32 @@
 import {StyleSheet, View, Text, Image} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {layout, colors, text, sizeXS} from '../Theme';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '../Assets/iconfont/Icon';
+import MemberImage from './Commons/MemberImage';
+import FirebaseService from '../Services/FirebaseService';
 
 const MemberCard = ({
-  name,
   approvePercent,
   memberSince,
   memberCustomText,
-  imageUrl,
   isPending,
   date,
+  member,
 }) => {
+  const [memberInfo, setMemberInfo] = useState('');
+  useEffect(() => {
+    getMemberInfo();
+  }, []);
+
+  const getMemberInfo = async () => {
+    const memberInformation = await FirebaseService.getInstance().getUserByAddress(
+      member.address,
+    );
+
+    setMemberInfo(memberInformation);
+  };
+
   renderRightContainer = () => {
     if (isPending) {
       return (
@@ -37,22 +51,18 @@ const MemberCard = ({
       );
     }
   };
-
   return (
     <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <View style={styles.memberInfoContainer}>
-        <Image
-          style={styles.memberImage}
-          source={{
-            uri: imageUrl,
-          }}
+        <MemberImage
+          member={member}
         />
         <View
           style={{
             ...layout.content,
             ...layout.flexStart,
           }}>
-          <Text style={{...text.h4Black}}>{name}</Text>
+          <Text style={{...text.h4Black}}>{memberInfo.displayName}</Text>
           <Text
             style={{
               ...text.smallGreyText,

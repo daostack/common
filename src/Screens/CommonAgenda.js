@@ -7,6 +7,7 @@ import {
   Text,
   ScrollView,
   View,
+  Linking,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 
@@ -49,15 +50,15 @@ const CommonAgenda = ({daoStore}) => {
             </Text>
           </View>
 
-          <View style={styles.sectionContainer}>
+          {daoStore.dao.metadata.links && <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Links</Text>
-            <Text style={text.h3Black}>
-              TODO: format this {JSON.stringify(daoStore.dao.metadata.links)}
-            </Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              https://www.google.com/
-            </Text>
-          </View>
+              {daoStore.dao.metadata.links.map((link, i) => {
+                return (<Text key={i} style={{...text.blackText, ...layout.marginTopM}} onPress={() => Linking.openURL(link.description)}>
+                    {link.title}
+                  </Text>
+                );
+              })}
+          </View>}
 
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Deadline</Text>
@@ -66,27 +67,20 @@ const CommonAgenda = ({daoStore}) => {
             </Text>
           </View>
 
-          <View style={styles.sectionContainer}>
+          {daoStore.dao.metadata.rules && <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Rules</Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              TODO: format this {JSON.stringify(daoStore.dao.metadata.rules)}
-            </Text>
-          </View>
+            {daoStore.dao.metadata.rules.map((rule, i) => {
+              return (<>
+                <Text key={i} style={{...text.blackText, ...layout.marginTopM}}>
+                  {rule.title}
+                </Text><Text key={i} style={{...text.blackText, ...layout.marginTopM}}>
+                  {rule.description}
+                </Text>
+              </>
+              );
+            })}
+          </View> }
 
-          <View style={styles.sectionContainer}>
-            <Text style={text.h4Black}>No promotions or spam</Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              We created this community to help you along your journey. Links to
-              sponsored content or brands will vote you out.
-            </Text>
-          </View>
-
-          <View style={styles.sectionContainer}>
-            <Text style={text.h4Black}>Be courteous and kind to others</Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              Be courteous and kind to others
-            </Text>
-          </View>
         </ScrollView>
       </SafeAreaView>
     </>

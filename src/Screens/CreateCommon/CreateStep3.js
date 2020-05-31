@@ -49,7 +49,7 @@ const CreateStep3 = props => {
     props.agendaFormStore.registerFormField(`ruleBody_${x}`, 'string');
     props.agendaFormStore.fieldChanged(`ruleBody_${x}`, text);
   };
-  
+
 
   const isValid = () => {
     const titles = [...Array(ruleCount).keys()].map(x => `ruleTitles_${x}`);
@@ -199,7 +199,7 @@ const CreateStep3 = props => {
               />
             </View>
           ))}
-              
+
           <TouchableOpacity onPress={() => setRuleCount(ruleCount + 1)}>
             <Text
               style={{

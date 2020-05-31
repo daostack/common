@@ -12,6 +12,7 @@ export const userInfoFields = [
   'createdAt',
   'following',
   'follower',
+  'safeAddress',
 ];
 
 class UserStore {
@@ -56,10 +57,12 @@ class UserStore {
       if (newUserInfo.byLine) {
         newUserObj.byLine = newUserInfo.byLine;
       }
+      if (newUserInfo.safeAddress) {
+        newUserObj.safeAddress = newUserInfo.safeAddress;
+      }
 
       newUserObj.following = newUserInfo.following || [];
       newUserObj.follower = newUserInfo.follower || [];
-
       // console.log('newUserObj', newUserObj);
 
       this.userInfo = newUserObj;
