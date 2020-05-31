@@ -164,7 +164,6 @@ const App = ({userStore, bottomSheetStore}) => {
         userStore.setIsLoading(false);
         const manager = await WalletManager.getInstance();
         const address = await manager.getAddress();
-        userStore.setAddress(address);
         getTestEth(address);
       } catch (error) {
         console.log(error);
