@@ -15,8 +15,7 @@ import MessageContract from '../Contracts/ABIs/MessageContract';
 import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
 import ArcService from '../Services/ArcService';
-import Toast from '../Util/Toast';
-import {ethers, Contract} from 'ethers';
+import {ethers} from 'ethers';
 import {web3ProviderUrl} from '../Config';
 
 const uid = 'test';
@@ -45,6 +44,10 @@ class nativeBridgeTests extends React.Component {
       cw2Address: '',
       commonStatus: '',
       proposalStatus: '',
+      safeTxHash: '',
+      whiteListMsg: '',
+      safeWallet: '',
+      safeWalletBalance: '',
     };
 
     this.child = React.createRef();
@@ -175,14 +178,30 @@ class nativeBridgeTests extends React.Component {
     }
   };
 
+  getSafeBalance = async () => {
+    try {
+      const safeWallet = this.props.userStore.userInfo.safeAddress;
+      console.log('safeWallet', safeWallet);
+      const manager = WalletManager.getInstance();
+      const safeWalletBalance = await manager.getBalance(safeWallet);
+      console.log('safeWalletBalance', safeWalletBalance);
+      this.setState({safeWallet, safeWalletBalance});
+    } catch (e) {
+      throw 'Send transaction failed with error: ' + e;
+    }
+  };
+
   createSmartContractWallet = async () => {
     try {
+      const safeWallet = this.props.userStore.userInfo.safeAddress;
+      if (safeWallet) {
+        this.setState({cwTXHash: 'You already have a safe wallet', cwAddress: safeWallet});
+        return;
+      }
       const manager = WalletManager.getInstance();
-      const {txHash} = await manager.createSmartContractWallet();
+      const {txHash, safeAddress} = await manager.createSmartContractWallet();
       console.log('txHash ->', txHash);
-      this.setState({cwTXHash: txHash});
-      const address = await this.getAddressFromEvent(txHash);
-      this.setState({cwAddress: address});
+      this.setState({cwTXHash: txHash, cwAddress: safeAddress});
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
@@ -190,42 +209,49 @@ class nativeBridgeTests extends React.Component {
 
   create2SmartContractWallet = async () => {
     try {
+      const safeWallet = this.props.userStore.userInfo.safeAddress;
+      if (safeWallet) {
+        this.setState({cw2TXHash: 'You already have a safe wallet', cw2Address: safeWallet});
+        return;
+      }
       const manager = WalletManager.getInstance();
       const {txHash} = await manager.create2SmartContractWallet();
       console.log('txHash ->', txHash);
       this.setState({cw2TXHash: txHash});
-      const address = await this.getAddressFromEvent(txHash);
+      const address = await manager.getAddressFromEvent(txHash);
       this.setState({cw2Address: address});
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
   };
 
-  getAddressFromEvent = async hash => {
-    const manager = WalletManager.getInstance();
-    const receipt = await manager.provider.waitForTransaction(hash);
-    console.log('receipt', receipt);
-    let eventABI = [
-      {
-        type: 'event',
-        name: 'ProxyCreation',
-        inputs: [
-          {
-            type: 'address',
-            name: 'proxy',
-            internalType: 'contract GnosisSafeProxy',
-            indexed: false,
-          },
-        ],
-        anonymous: false,
-      },
-    ];
-    const iface = new ethers.utils.Interface(eventABI);
-    const events = receipt.logs.map(log => {
-      return iface.parseLog(log);
-    });
-    console.log('address', events[0].values.proxy);
-    return events[0].values.proxy;
+  execTransaction = async () => {
+    try {
+      const safeAddress = this.props.userStore.userInfo.safeAddress;
+      if (safeAddress === null) {
+        this.setState({safeTxHash: 'No wallet found, you need create one'});
+        return;
+      }
+      const manager = WalletManager.getInstance();
+      const response = await manager.execTransaction(safeAddress, '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB', '0.01');
+      console.log('txHash ->', response.data.txHash);
+      this.setState({safeTxHash: response.data.txHash || response.data.message});
+    } catch (e) {
+      console.log(e);
+      throw 'Send transaction failed with error: ' + e;
+    }
+  };
+
+  addToWhitelist = async () => {
+    try {
+      const manager = WalletManager.getInstance();
+      const response = await manager.addToWhitelist();
+      console.log('addWhitleList ->', response);
+      this.setState({whiteListMsg: response.data.message});
+    } catch (e) {
+      console.log(e);
+      throw 'Send transaction failed with error: ' + e;
+    }
   };
 
   createCommon = async () => {
@@ -260,7 +286,7 @@ class nativeBridgeTests extends React.Component {
 
   createRequestToJoin = async () => {
     console.log('creating proposal -- please wait');
-    const daoId = '0xb01230c8c74eb336745bbae5b84b056caca5bbd2';
+    const daoId = '0x36f1a4799d51ef86b51d8db496feedf53eac92a0';
     this.setState({
       proposalStatus: 'Creating JoinAndQuit proposal -- please wait',
     });
@@ -406,6 +432,14 @@ class nativeBridgeTests extends React.Component {
             --------------- Relayer -----------------
           </Text>
 
+          <Text>Address: {this.state.safeWallet}</Text>
+          <Text>Balance: {this.state.safeWalletBalance}</Text>
+          <TouchableOpacity
+            onPress={this.getSafeBalance}
+            style={styles.button}>
+            <Text>Get Safe Wallet Balance</Text>
+          </TouchableOpacity>
+
           <Text>TXHash: {this.state.cwTXHash}</Text>
           <Text>Address: {this.state.cwAddress}</Text>
           <TouchableOpacity
@@ -420,6 +454,20 @@ class nativeBridgeTests extends React.Component {
             onPress={this.create2SmartContractWallet}
             style={styles.button}>
             <Text>Create2 Smart Wallet</Text>
+          </TouchableOpacity>
+
+          <Text>Msg: {this.state.whiteListMsg}</Text>
+          <TouchableOpacity
+            onPress={this.addToWhitelist}
+            style={styles.button}>
+            <Text>Add self white list</Text>
+          </TouchableOpacity>
+
+          <Text>TxHash: {this.state.safeTxHash}</Text>
+          <TouchableOpacity
+            onPress={this.execTransaction}
+            style={styles.button}>
+            <Text>execTransaction</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
@@ -449,4 +497,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('daoStore')(observer(nativeBridgeTests));
+export default inject('daoStore', 'userStore')(observer(nativeBridgeTests));

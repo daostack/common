@@ -12,6 +12,7 @@ export const userInfoFields = [
   'createdAt',
   'following',
   'follower',
+  'safeAddress',
 ];
 
 class UserStore {
@@ -19,6 +20,7 @@ class UserStore {
   isLoading;
   myCommons;
   myProposals;
+  address;
   constructor() {
     userInfo = null;
     isLoading = false;
@@ -55,10 +57,12 @@ class UserStore {
       if (newUserInfo.byLine) {
         newUserObj.byLine = newUserInfo.byLine;
       }
+      if (newUserInfo.safeAddress) {
+        newUserObj.safeAddress = newUserInfo.safeAddress;
+      }
 
       newUserObj.following = newUserInfo.following || [];
       newUserObj.follower = newUserInfo.follower || [];
-
       // console.log('newUserObj', newUserObj);
 
       this.userInfo = newUserObj;
@@ -66,9 +70,14 @@ class UserStore {
       this.userInfo = null;
     }
   };
+
+  setAddress = address => {
+    this.address = address;
+  }
 }
 
 decorate(UserStore, {
+  address: observable,
   setSignedInUser: action,
   userInfo: observable,
   isLoading: observable,

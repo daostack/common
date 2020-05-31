@@ -1,19 +1,17 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Dimensions,
   Text,
   View,
   ScrollView,
   StyleSheet,
-  Image,
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
 import {text, layout, colors, sizeL} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
-import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
+import {TabView, TabBar} from 'react-native-tab-view';
 import ViewTabNoData from '../Components/ViewTabNoData';
-
 import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
 import CommonCover from '../Components/Commons/CommonCover';
 import CommonStageSummary from '../Components/Commons/CommonStageSummary';
@@ -26,28 +24,13 @@ import BottomRightButton from '../Components/BottomRightButton';
 import DiscussionList from './Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
 import Toast from '../Util/Toast';
+import {numberFormatter} from '../Util';
+import MemberImage from '../Components/Commons/MemberImage';
 
-const mockData = {
-  commonPicture: 'https://i.picsum.photos/id/10/500/100.jpg',
-  commonLogo:
-    'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
-  description: 'If you wanna save the Amazon, own it.',
-  name: 'Amazon Network',
-  time: 26,
-  members: 55,
-  raised: 4200,
-  //Funding stage data
-  goal: 10000,
-  //Operating stage data
-  currentBudget: 1421,
-  activeProposals: 142,
-};
+const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore}) => {
 
-const CommonProfile = ({navigation, route, bottomSheetStore}) => {
-  sortProposalsSheetRef = useRef();
-  proposalSheetRef = useRef();
-
-  const [isMember] = useState(false);
+  const [isMember, setMemberState] = useState(false);
+  const [members, setMembers] = useState(false);
   const [isFundingStage] = useState(false);
 
   const [index, setIndex] = useState(0);
@@ -64,8 +47,22 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
   const routeCommon = route.params.currCommon;
 
   useEffect(() => {
-    setShowRequestSentModal(route.params.showRequestSentModal ? true : false);
-    setCurrCommon(routeCommon);
+    try {
+      setShowRequestSentModal(route.params.showRequestSentModal);
+      setCurrCommon(routeCommon);
+
+      if (route.params.currCommon.members.some( member => member.address === userStore.userInfo.ethereumAddress )) {
+        setMemberState(true);
+      } else {
+        setMemberState(false);
+      }
+
+      const commonMembers = route.params.currCommon.members;
+      setMembers(commonMembers);
+
+    } catch (e) {
+      throw e;
+    }
   }, [routeCommon, route.params.showRequestSentModal]);
 
   const renderTabBar = props => (
@@ -126,11 +123,18 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
     );
   };
 
-  const renderScene = SceneMap({
-    discussions: Discussions,
-    proposals: Proposals,
-    history: History,
-  });
+  const renderScene = (scene) => {
+    switch (scene.route.key) {
+      case 'discussions':
+        return Discussions();
+      case 'proposals':
+        return Proposals();
+      case 'history':
+        return History();
+      default:
+        return null;
+    }
+  };
 
   const openAgendaScreen = e => {
     navigation.navigate('CommonAgenda');
@@ -141,10 +145,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
       return (
         <View style={styles.agendaBox}>
           <Text style={styles.agendaDescription}>
-            We aim to ba a global non-profit initiative. Only small percentage
-            of creative directors are women and we want to help change this
-            through mentorship circles, portfolio reviews, talks & creative
-            meetups.
+            {daoStore.dao.metadata.courseOfAction}
           </Text>
 
           <TouchableOpacity onPress={openAgendaScreen}>
@@ -165,34 +166,11 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
             onPress={openCommonMembers}
             style={styles.membersAction}>
             <View style={styles.membersRow}>
-              <Image
-                style={styles.memberImage}
-                source={{
-                  uri:
-                    'https://live.envalab.com/html/cetus/demo/images/element/team/1.jpg',
-                }}
-              />
-              <Image
-                style={{...styles.memberImage, ...{marginLeft: -10}}}
-                source={{
-                  uri:
-                    'https://live.envalab.com/html/cetus/demo/images/element/team/2.jpg',
-                }}
-              />
-              <Image
-                style={{...styles.memberImage, ...{marginLeft: -10}}}
-                source={{
-                  uri:
-                    'https://live.envalab.com/html/cetus/demo/images/element/team/3.jpg',
-                }}
-              />
-              <Image
-                style={{...styles.memberImage, ...{marginLeft: -10}}}
-                source={{
-                  uri:
-                    'https://live.envalab.com/html/cetus/demo/images/element/team/4.jpg',
-                }}
-              />
+              {members.map((member, i) => {
+                if (i < 5) {
+                  return <MemberImage member={member} key={i}/>;
+                }
+              })}
             </View>
             <TouchableOpacity style={layout.flexRow}>
               <Text style={text.h4Black}>Pending (13)</Text>
@@ -205,7 +183,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
   };
 
   const openCommonMembers = e => {
-    navigation.navigate('CommonMembers');
+    navigation.navigate('CommonMembers', {members});
   };
 
   const shareCommon = event => {
@@ -296,7 +274,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
             />
           </View>
           <View>
-            <Text style={text.tapBarunselected}>02:00:10</Text>
+            <Text style={text.tapBarUnselected}>02:00:10</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -315,7 +293,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
         contentContainerStyle={{paddingBottom: 100}}
         showsVerticalScrollIndicator={false}>
         <CommonCover
-          isMember={true}
+          isMember={isMember}
           navigation={navigation}
           onHeaderMenuOpen={openCommonOptions}
           commonInfo={{
@@ -333,12 +311,19 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
           <CommonStageSummary
             isFundingStage={isFundingStage}
             commonProgressInfo={{
-              time: mockData.time,
-              activeProposals: mockData.activeProposals,
-              goal: mockData.goal,
-              members: mockData.members,
-              raised: mockData.raised,
-              currentBudget: mockData.currentBudget,
+              time: 55,
+              activeProposals:
+                currCommon.numberOfBoostedProposals +
+                currCommon.numberOfPreBoostedProposals +
+                currCommon.numberOfQueuedProposals,
+              goal: currCommon.fundingGoal,
+              members: currCommon.memberCount,
+              // TODO: get this value. Is it even tracked in the contract? need to check.
+              raised: 0,
+              currentBudget: numberFormatter(
+                // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
+                currCommon.tokenTotalSupply,
+              ),
             }}
           />
         </View>
@@ -350,7 +335,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
               ...layout.btnOutline,
             }}
             onPress={shareCommon}>
-            <Text style={text.buttonblue}>Share Com</Text>
+            <Text style={text.buttonblue}>Share Common</Text>
           </TouchableOpacity>
         </View>
         {renderAgendaForNonMembers()}
@@ -384,23 +369,16 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
           style={{}}
         />
       </ScrollView>
-
-      {index === 0 ? (
-        <BottomRightButton
-          onPress={() =>
-            navigation.navigate('New Topic', {
-              commonId: routeCommon.id,
-            })
-          }
-          bottom={120}
-        />
-      ) : null}
-
       <SafeAreaView>
         {isMember ? (
-          <TouchableOpacity style={styles.addButton}>
-            <Icon name="plus" color={colors.white} />
-          </TouchableOpacity>
+          <BottomRightButton
+            onPress={() =>
+              navigation.navigate('New Topic', {
+                commonId: routeCommon.id,
+              })
+            }
+            bottom={120}
+          />
         ) : (
           <>
             <View style={styles.actionButtonContainer}>
@@ -417,7 +395,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore}) => {
                   Request to join
                 </Text>
                 <Text style={{fontSize: 16, color: 'white'}}>
-                  $50 Contribution
+                  ${currCommon.minFeeToJoin} Contribution
                 </Text>
               </TouchableOpacity>
             </View>
@@ -565,4 +543,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(observer(CommonProfile));
+export default inject('bottomSheetStore', 'daoStore', 'userStore')(observer(CommonProfile));

@@ -6,6 +6,7 @@ import {colors} from '../../Theme';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast';
 import MultiFileField from '../FormFields/MultiFileField';
+import MultiImageField from '../FormFields/MultiImageField';
 
 class CreateDiscussionForm extends React.Component {
   static TITLE = 'title';
@@ -22,10 +23,13 @@ class CreateDiscussionForm extends React.Component {
   formSkip() {}
 
   formSave = async e => {
+    try {
     const {createDiscussionStore, userStore} = this.props;
     if (createDiscussionStore.isFormValid()) {
       const changedFields = createDiscussionStore.getChangedFormFieldsJson();
       console.log('createDiscussionStore', changedFields);
+
+      const imageList = Object.keys(changedFields).filter( x => x.includes('images_')).map(x => changedFields[x]);
 
       firestore()
         .collection('discussion')
@@ -33,6 +37,7 @@ class CreateDiscussionForm extends React.Component {
         .set({
           title: changedFields[CreateDiscussionForm.TITLE],
           message: changedFields[CreateDiscussionForm.MESSAGE],
+          images: imageList,
           createTime: new Date(),
           ownerId: userStore.userInfo.uid,
           commonId: this.props.commonId,
@@ -52,6 +57,9 @@ class CreateDiscussionForm extends React.Component {
           console.log('NO', error);
         });
     }
+  } catch (err) {
+    console.log(err);
+  }
   };
 
   onFormClose = e => {
@@ -69,7 +77,7 @@ class CreateDiscussionForm extends React.Component {
       ...otherProps
     } = this.props;
 
-    console.log('editProfileFormStore');
+    console.log('createDiscussionStore');
     console.log(createDiscussionStore);
     return (
       <View
@@ -127,19 +135,19 @@ class CreateDiscussionForm extends React.Component {
         </View>
         <View style={{marginVertical: 15}}>
           <Text style={styles.title}>Images</Text>
-          <Text style={styles.subtitle}>An image is worth a 1,000 words</Text>
-          <TouchableOpacity style={{marginRight: 12}}>
+          {/* <Text style={styles.subtitle}>An image is worth a 1,000 words</Text> */}
+          {/* <TouchableOpacity style={{marginRight: 12}}>
             <Text style={styles.addButton}>Add Image</Text>
-          </TouchableOpacity>
-          {/* <MultiImageField
-            allowsEditing={true}
+          </TouchableOpacity> */}
+          <MultiImageField
+            allowsEditing={false}
             title={'Add Image'}
             validation={{
               name: CreateDiscussionForm.IMAGES,
               formStore: this.props.createDiscussionStore,
               validateRule: 'string',
             }}
-          /> */}
+          />
         </View>
         <View style={styles.buttonConatiner}>
           <TouchableOpacity style={styles.button} onPress={this.formSave}>

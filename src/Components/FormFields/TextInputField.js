@@ -22,8 +22,8 @@ class TextInputField extends React.Component {
     const {validation, value, fieldActionComponent} = this.props;
     // Register form field for validation message component if name,formStore and validateRule props are provided
     if (validation) {
-      const {name, formStore, validateRule} = validation;
-      formStore.registerFormField(name, validateRule, value);
+      const {name, formStore, validateRule, multiName} = validation;
+      formStore.registerFormField(name, validateRule, value, multiName);
       this.fieldValidation = (
         <ValidationMessage formStore={formStore} name={name} />
       );
@@ -138,23 +138,25 @@ class TextInputField extends React.Component {
   };
 
   render() {
-    const {viewStyle} = this.props;
+    const {viewStyle, validation} = this.props;
 
     if (this.placeFieldActionComponent) {
       return (
         <View style={{...layout.marginTopS, ...viewStyle}}>
+          {validation.topPosition ? this.fieldValidation : null}
           <View>
             <View>{this.renderTextField()}</View>
             <View>{this.placeFieldActionComponent}</View>
           </View>
-          {this.fieldValidation}
+          {validation.topPosition ? null : this.fieldValidation}
         </View>
       );
     } else {
       return (
         <View style={{...layout.marginTopS, ...viewStyle}}>
+          {validation.topPosition ? this.fieldValidation : null}
           {this.renderTextField()}
-          {this.fieldValidation}
+          {validation.topPosition ? null : this.fieldValidation}
         </View>
       );
     }

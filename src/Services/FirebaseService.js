@@ -32,16 +32,28 @@ export default class FirebaseService {
   }
 
   async getUserById(userId) {
-    console.log('getUserById -> ', userId);
     return db
       .collection(DB_COLLECTIONS.users)
       .doc(userId)
       .get()
       .then(snapshots => {
+        console.log('snapshots : ', snapshots);
         if (!snapshots) {
           return null;
         }
         return snapshots.data();
+      });
+  }
+
+  async getUserByAddress(address) {
+    return db
+      .collection(DB_COLLECTIONS.users)
+      .where('ethereumAddress', '==', address).get()
+      .then(snapshots => {
+        if (!snapshots) {
+          return null;
+        }
+        return snapshots.docs[0].data();
       });
   }
 
@@ -62,6 +74,23 @@ export default class FirebaseService {
 
   async getDaos() {
     return db.collection('daos').onSnapshot(snapshot => {
+      if (snapshot.empty) {
+        return [];
+      }
+      return snapshot.docs.map(doc => {
+        return {...{id: doc.id}, ...doc.data()};
+      });
+    });
+  }
+
+  async getDaoInfo(dao) {
+    let daoCollection = db.collection('daos').doc(dao);
+    daoCollection.onSnapshot(daoSnapshot => {
+      console.log(`Received dao snapshot: ${daoSnapshot}`);
+    }, err => {
+      console.log(`Encountered error: ${err}`);
+    });
+    return db.collection('dao').onSnapshot(snapshot => {
       if (snapshot.empty) {
         return [];
       }

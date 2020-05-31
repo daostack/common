@@ -12,7 +12,6 @@ import EditProfileForm from '../Components/Forms/EditProfileForm';
 import {colors, text, layout} from '../Theme';
 
 const CompleteAccount = ({route, navigation}) => {
-  console.log('navigation -> ', navigation);
   return (
     <>
       <StatusBar barStyle="dark-content" />

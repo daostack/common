@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Text,
@@ -24,23 +24,26 @@ import WalletManager from '../../Util/WalletManager';
 import FirebaseService from '../../Services/FirebaseService';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import {numberFormatter} from '../../Util';
+import RequestStepActionButton from '../Commons/RequestStepActionButton';
+import Toast from '../../Util/Toast';
 
 import ArcService from '../../Services/ArcService';
-
 const {width} = Dimensions.get('window');
-
-const firebaseService = new FirebaseService();
 
 const CreateStep4 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const form = props.createCommonFormStore.getChangedFormFieldsJson();
+  const form = {
+    ...props.generalInfoFormStore.getChangedFormFieldsJson(),
+    ...props.fundingFormStore.getChangedFormFieldsJson(),
+    ...props.agendaFormStore.getChangedFormFieldsJson(),
+    ...props.reviewFormStore.getChangedFormFieldsJson(),
+  };
   const [templateIndex, setTemplateIndex] = useState(1);
   const [imageURI, setImageURI] = useState(
     'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
   );
   const [avatarURL, setAvatarURL] = useState(null);
-  const errorSheetRef = useRef();
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -68,19 +71,13 @@ const CreateStep4 = props => {
   };
 
   useEffect(() => {
-    props.createCommonFormStore.registerFormField(
-      CreateCommonForm.AVATAR,
-      'url',
-    );
-    props.createCommonFormStore.registerFormField(
-      CreateCommonForm.IMAGE,
-      'url',
-    );
-  }, [props.createCommonFormStore]);
+    props.reviewFormStore.registerFormField(CreateCommonForm.AVATAR, 'url');
+    props.reviewFormStore.registerFormField(CreateCommonForm.IMAGE, 'url');
+  }, [props.reviewFormStore]);
 
   const pickImage = isAvatar => {
     const options = {
-      title: 'Select Avatar',
+      title: (isAvatar && 'Select Avatar') || 'Select profile image',
       quality: 0.7,
       allowsEditing: isAvatar,
     };
@@ -88,26 +85,21 @@ const CreateStep4 = props => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
-        // toast.error(response.error);
+        Toast.error(response.error);
         console.log('ImagePicker Error: ', response.error);
       } else {
         // const source = { uri: response.uri };
-        // toast.loading('Uploading...');
-        firebaseService
+        Toast.loading('Uploading...');
+        FirebaseService.getInstance()
           .uploadImage(response.uri)
           .then(url => {
-            toast.hide();
+            Toast.hide();
+            Toast.success('Done');
             if (isAvatar) {
               setAvatarURL(url);
-              props.createCommonFormStore.fieldChanged(
-                CreateCommonForm.AVATAR,
-                url,
-              );
+              props.reviewFormStore.fieldChanged(CreateCommonForm.AVATAR, url);
             } else {
-              props.createCommonFormStore.fieldChanged(
-                CreateCommonForm.IMAGE,
-                url,
-              );
+              props.reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
               setImageURI(url);
             }
           })
@@ -116,41 +108,46 @@ const CreateStep4 = props => {
     });
   };
 
-  const ipfsUpload = async formData =>
+  const ipfsUpload = async formData => {
     // TODO: use arc.saveIPFSData({ name: formData.name}) once https://github.com/daostack/arc.js/issues/468 is resolved
-    IpfsClient.addAndPinString(
+    console.log(formData);
+    return IpfsClient.addAndPinString(
       JSON.stringify({
         name: formData.name,
         byline: formData.byline,
         description: formData.description,
         courseOfAction: formData.action,
         // TODO: actuall add the values here (as an arry probably)
-        mainValue1: formData.funding,
-        mainValue2: formData.minimum,
-        mainValue3: 'empty value',
+        rules: formData.rules,
+        links: formData.links,
       }),
     );
-  // TODO: use arc.saveIPFSData({ name: formData.name}) here
-  const forgeCommon = async () => {
-    const commonFormData = props.createCommonFormStore.getChangedFormFieldsJson();
-    console.log('saving data on ipfs');
-    const ipfsHash = await ipfsUpload(commonFormData);
+  };
 
-    const formData = props.createCommonFormStore.getChangedFormFieldsJson();
+  const forgeCommon = async () => {
+    const formData = {
+      ...props.generalInfoFormStore.getChangedFormFieldsJson(),
+      ...props.fundingFormStore.getChangedFormFieldsJson(),
+      ...props.agendaFormStore.getChangedFormFieldsJson(),
+      ...props.reviewFormStore.getChangedFormFieldsJson(),
+    };
+
+    console.log('saving data on ipfs: ', formData);
+    const ipfsHash = await ipfsUpload(formData);
     const manager = await WalletManager.getInstance();
     const address = await manager.getAddress();
     console.log('owner account: ', address);
 
-    // TODO: get form data for fundingGoalDeadline; these are in secondSinceEpoch
-    const deadline = '1621679337'; // in may 2021
+    const deadline = formData[CreateCommonForm.DEADLINE];
+
     const data = {
       name: formData.name,
       founderAddresses: address,
       tokenDist: [0],
-      repDist: [100],
-      minFeeToJoin: parseInt(formData.minimum, 10),
-      fundingGoal: formData.funding,
-      fundingGoalDeadline: deadline,
+      repDist: [1000],
+      minFeeToJoin: parseInt(formData.minimum, 10) * 100, // multiply by 100 to get the value in cents
+      fundingGoal: parseInt(formData.funding, 10) * 100, // multiply by 100 to get the value in cents
+      fundingGoalDeadline: Math.round(deadline.getTime() / 1000),
       ipfsHash,
     };
     console.log('calling createCommon(...)');
@@ -172,6 +169,8 @@ const CreateStep4 = props => {
   //   errorSheetRef.current.snapTo(1);
   //   errorSheetRef.current.snapTo(1);
   // };
+
+  console.log('FORM -> ', form);
 
   return (
     <SafeAreaView
@@ -389,9 +388,13 @@ const CreateStep4 = props => {
                 />
               </TouchableOpacity> */}
             </View>
-            {form[CreateCommonForm.LINKS].length ? (
+            {form[CreateCommonForm.LINKS]?.length ? (
               form[CreateCommonForm.LINKS].map(x => (
-                <Text style={styles.textContent}>{x}</Text>
+                <Text
+                  key={`key_${CreateCommonForm.LINKS}_${x}`}
+                  style={styles.textContent}>
+                  {x.title}
+                </Text>
               ))
             ) : (
               <View />
@@ -406,9 +409,9 @@ const CreateStep4 = props => {
             </Text>
           </>
 
-          {form[CreateCommonForm.RULES].length ? (
+          {form[CreateCommonForm.RULES]?.length ? (
             form[CreateCommonForm.RULES].map((rule, index) => (
-              <>
+              <View key={`key_${CreateCommonForm.RULES}_${index}`}>
                 <Text
                   style={{
                     fontSize: 14,
@@ -424,23 +427,18 @@ const CreateStep4 = props => {
                   </Text>
                 </View>
                 <Text style={styles.textContent}>{rule.description}</Text>
-              </>
+              </View>
             ))
           ) : (
             <View />
           )}
         </View>
-        <TouchableOpacity style={styles.continueButton} onPress={forgeCommon}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: 'white',
-              fontWeight: '700',
-            }}>
-            Publish Common
-          </Text>
-        </TouchableOpacity>
       </ScrollView>
+      <RequestStepActionButton
+        title="Publish Common"
+        pass={props.agendaFormStore.isFormActionEnabled()}
+        onPress={forgeCommon}
+      />
     </SafeAreaView>
   );
 };
@@ -541,6 +539,9 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
-  'createCommonFormStore',
+  'generalInfoFormStore',
+  'fundingFormStore',
+  'agendaFormStore',
+  'reviewFormStore',
   'daoStore',
 )(observer(CreateStep4));

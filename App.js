@@ -153,7 +153,6 @@ const App = ({userStore, bottomSheetStore}) => {
             ...user._user,
             ...appUser,
           };
-
           const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
           userStore.setSignedInUser(filteredUser);
           if (isNewUser) {
@@ -165,11 +164,11 @@ const App = ({userStore, bottomSheetStore}) => {
         userStore.setIsLoading(false);
         const manager = await WalletManager.getInstance();
         const address = await manager.getAddress();
+        userStore.setAddress(address);
         getTestEth(address);
       } catch (error) {
         console.log(error);
         throw error;
-        // Toast.error(error.toString());
       }
     };
 
@@ -177,6 +176,9 @@ const App = ({userStore, bottomSheetStore}) => {
 
     const updateUser = async () => {
       try {
+        if (auth().currentUser === null) {
+          return;
+        }
         const uid = auth().currentUser.uid;
         firestore()
           .collection('users')

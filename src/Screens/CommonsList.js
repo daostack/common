@@ -2,15 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {
   Text,
   SafeAreaView,
-  StyleSheet,
   View,
-  Dimensions,
   FlatList,
 } from 'react-native';
 import {CommonBox, BottomRightButton} from '../Components';
-import {layout} from '../Theme';
 import {db} from '../Firebase';
 import {inject, observer} from 'mobx-react';
+import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
+
 
 const CommonsList = ({navigation, daoStore, bottomSheetStore}) => {
   // const [hasError, setErrors] = useState(false);
@@ -34,7 +33,6 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore}) => {
               },
             };
           });
-          console.log('daos: ', daosSnapshot);
           setDaos(daosSnapshot);
           daoStore.setDaos(daosSnapshot);
 
@@ -45,7 +43,6 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore}) => {
             );
           }
         });
-        // console.log('DAOS: ', daosRes);
         // setDaos(daosRes);
       } catch (error) {
         console.log('errror: ', error);
@@ -54,6 +51,10 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore}) => {
     getDaos();
     return unsubscribe;
   }, [daoStore, bottomSheetStore]);
+
+  const setDao = dao => {
+    daoStore.setDao(dao);
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -87,6 +88,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore}) => {
                 common={item}
                 navigation={navigation}
                 keyExtractor={daos.id}
+                onPress={() => setDao(item)}
               />
             )}
           />
@@ -98,12 +100,5 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore}) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    ...layout.content,
-  },
-});
 
 export default inject('daoStore', 'bottomSheetStore')(observer(CommonsList));

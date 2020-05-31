@@ -19,13 +19,12 @@ import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from './RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '../../Services/ArcService';
+import Toast from '../../Util/Toast';
 import {BN} from 'bn.js';
 
 const RequestStep4 = props => {
-  const [scrollY, setScrollY] = useState(new Animated.Value(0));
+  const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [pass, setPass] = useState(true);
-  const [loadingMessage, setLoadingMessage] = useState(null);
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -37,49 +36,30 @@ const RequestStep4 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const isValid = () => {
-    const result = props.requestToJoinFormStore.isFormValidSelectedFields([
-      RequestToJoinForm.FIELD_CARD_NAME,
-      RequestToJoinForm.FIELD_CARD_NUMBER,
-      RequestToJoinForm.FIELD_EXPIRATION_DATE,
-      RequestToJoinForm.FIELD_CVV,
-    ]);
-    console.log('isValid result -> ', result);
-    setPass(result);
-    return result;
-  };
-
   const push = async () => {
-    if (isValid()) {
+    if (props.paymentFormStore.isFormValid()) {
       try {
-        const data = {
-          title: `A test proposal on ${Date()}`,
-          description: 'Some description',
-          files: [],
-          images: [],
-          links: [], // {title: "title", url: "url"}
-          funding: new BN(200),
-          /*
-        funding: new BN(
-          props.requestToJoinFormStore.form.fields[
-            RequestToJoinForm.FIELD_AMOUNT
-          ].value,
-        ),
-        */
+        const formData = {
+          ...props.introduceYourselfFormStore.getChangedFormFieldsJson(),
+          ...props.personalContributionFormStore.getChangedFormFieldsJson(),
+          ...props.paymentFormStore.getChangedFormFieldsJson(),
         };
 
-        console.log(
-          'props.route.params.currDaoId, -> ',
-          props.route.params.currDaoId,
-        );
+        const data = {
+          title: `request to join ${props.route.params.currDaoId} by ${props.userStore.userInfo.ethereumAddress}`,
+          description: formData.about_me,
+          links: formData.links,
+          funding: new BN(formData.amount * 100),
+        };
+
+        Toast.loading('Creating request to join...');
 
         const proposal = await ArcService.getInstance().createRequestToJoin(
           props.route.params.currDaoId,
           data,
         );
-        setLoadingMessage(
-          `JoinAndQuit Proposal with id ${proposal.id} created!`,
-        );
+        Toast.hide();
+        Toast.done(`JoinAndQuit Proposal with id ${proposal.id} created!`);
 
         const navigate = CommonActions.navigate({
           name: 'CommonProfile',
@@ -90,7 +70,7 @@ const RequestStep4 = props => {
         props.navigation.dispatch(navigate);
       } catch (e) {
         console.log(e);
-        setLoadingMessage(`${e}`);
+        Toast.error(e.toString());
       }
     }
   };
@@ -125,7 +105,6 @@ const RequestStep4 = props => {
           onScroll={Animated.event([
             {nativeEvent: {contentOffset: {y: scrollY}}},
           ])}>
-          {loadingMessage ? <Text>{loadingMessage}</Text> : null}
           <CreateStepHeader currentIndex={3} />
           <View
             style={{
@@ -145,16 +124,17 @@ const RequestStep4 = props => {
             <Text
               style={{marginTop: 12, marginBottom: 23, textAlign: 'center'}}>
               You are contributing{' '}
-              {props.requestToJoinFormStore.getChangedFormFieldsJson().amount}{' '}
-              to this common
+              {props.paymentFormStore.getChangedFormFieldsJson().amount} to this
+              common
             </Text>
 
             <TextInputField
               label="Credit card number"
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NUMBER,
-                formStore: props.requestToJoinFormStore,
-                validateRule: 'required|numeric',
+                formStore: props.paymentFormStore,
+                //validateRule: 'required|numeric',
+                validateRule: 'string',
               }}
             />
 
@@ -162,8 +142,9 @@ const RequestStep4 = props => {
               label="Name on card"
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NAME,
-                formStore: props.requestToJoinFormStore,
-                validateRule: 'required|string',
+                formStore: props.paymentFormStore,
+                //validateRule: 'required|string',
+                validateRule: 'string',
               }}
             />
 
@@ -172,27 +153,34 @@ const RequestStep4 = props => {
                 ...layout.content,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                ...{
-                  padding: 0,
-                  alignSelf: 'stretch',
-                },
+                alignContent: 'flex-start',
+                alignItems: 'flex-start',
+
+                padding: 0,
+                flex: 1,
               }}>
               <TextInputField
-                viewStyle={{alignSelf: 'stretch'}}
+                viewStyle={{
+                  width: '45%',
+                }}
                 label="Expiration date"
                 validation={{
                   name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
-                  formStore: props.requestToJoinFormStore,
-                  validateRule: 'required|string',
+                  formStore: props.paymentFormStore,
+                  //validateRule: 'required|string',
+                  validateRule: 'string',
                 }}
               />
               <TextInputField
-                viewStyle={{alignSelf: 'stretch'}}
+                viewStyle={{
+                  width: '45%',
+                }}
                 label="CVV"
                 validation={{
                   name: RequestToJoinForm.FIELD_CVV,
-                  formStore: props.requestToJoinFormStore,
-                  validateRule: 'required|numeric',
+                  formStore: props.paymentFormStore,
+                  //validateRule: 'required|numeric',
+                  validateRule: 'string',
                 }}
               />
             </View>
@@ -207,10 +195,19 @@ const RequestStep4 = props => {
             </Text>
           </View>
         </ScrollView>
-        <RequestStepActionButton title="Pay Now" pass={pass} onPress={push} />
+        <RequestStepActionButton
+          title="Pay Now"
+          pass={props.paymentFormStore.isFormActionEnabled()}
+          onPress={push}
+        />
       </SafeAreaView>
     </>
   );
 };
 
-export default inject('requestToJoinFormStore')(observer(RequestStep4));
+export default inject(
+  'introduceYourselfFormStore',
+  'personalContributionFormStore',
+  'paymentFormStore',
+  'userStore',
+)(observer(RequestStep4));

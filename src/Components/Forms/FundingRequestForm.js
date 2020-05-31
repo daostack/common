@@ -108,7 +108,7 @@ class FundingRequestForm extends React.Component {
         <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>Links</Text>
         <Text
           style={{
-            ...text.tapBarunselected,
+            ...text.tapBarUnselected,
             ...layout.marginTopS,
             ...{textAlign: 'left'},
           }}>
@@ -135,7 +135,7 @@ class FundingRequestForm extends React.Component {
         </Text>
         <Text
           style={{
-            ...text.tapBarunselected,
+            ...text.tapBarUnselected,
             ...layout.marginTopS,
             ...{textAlign: 'left'},
           }}>

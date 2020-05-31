@@ -205,7 +205,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'createCommonFormStore',
-  'daoStore',
-)(observer(CommonCreationLoading));
+export default inject('daoStore')(observer(CommonCreationLoading));

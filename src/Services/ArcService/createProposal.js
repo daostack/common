@@ -3,6 +3,7 @@
 // const {ARC_VERSION, OVERRIDES} = require('./arc');
 const {first} = require('rxjs/operators');
 import {ipfsUpload} from '../../Config';
+const {OVERRIDES} = require('../../Config');
 
 export const createProposalRequestToJoin = async (arc, daoId, data) => {
   // data must look like this
@@ -29,8 +30,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       console.log(e);
       throw e;
     }
-    console.log('PLUGINS -> ', plugins);
-
+    // console.log('PLUGINS -> ', plugins);
     const joinAndQuitPlugin = plugins[0];
     console.log('joinAndQuitPlugin', joinAndQuitPlugin.id);
 
@@ -51,13 +51,26 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       dao: dao.id,
       plugin: joinAndQuitPlugin.coreState.address,
     };
-    console.log(args);
-    const transaction = await joinAndQuitPlugin.createProposal(args);
-    const receipt = await transaction.send();
+    console.log('creating transaction');
+    const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
+
+    const opts = { ...OVERRIDES, value: transaction.opts.value};
+    tx = await transaction.contract[transaction.method](...transaction.args, opts);
+    const receipt = await tx.wait();
     console.log(
       `Transaction with ${receipt.transactionHash} was mined: proposal created!`,
     );
-    return receipt.result;
+    const proposal = joinAndQuitPlugin.createProposalTransactionMap(receipt);
+    return proposal;
+    /**  Original code, keep for reference until we are sure the current pattern works
+     *
+    const transaction = await joinAndQuitPlugin.createProposal(args);
+    console.log(`sending transaction ${transaction}`);
+    console.log(transaction)
+    const receipt = await transaction.send();
+    return receipt.result; // this is a arc.js Proposal instance
+     */
+
   } catch (e) {
     console.log(e);
     throw e;

@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import RequestToJoinRule from '../../Components/Commons/RequestToJoinRule';
 
-import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepDotHeader from './RequestStepDotHeader';
@@ -155,4 +154,4 @@ const RequestStep1 = props => {
   );
 };
 
-export default inject('requestToJoinFormStore')(observer(RequestStep1));
+export default RequestStep1;

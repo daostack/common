@@ -7,14 +7,16 @@ import {
   Text,
   ScrollView,
   View,
+  Linking,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 
 import Icon from '../Assets/iconfont/Icon';
 
 import {layout, text, sizeS} from '../Theme';
+import {inject, observer} from 'mobx-react';
 
-const CommonAgenda = () => {
+const CommonAgenda = ({daoStore}) => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -27,7 +29,7 @@ const CommonAgenda = () => {
           nestedScrollEnabled={true}
           directionalLockEnabled={true}>
           <View style={styles.sectionContainer}>
-            <Text style={text.h1Black}>Agenda and Rules?</Text>
+            <Text style={text.h1Black}>Agenda and Rules</Text>
           </View>
 
           <View style={layout.content}>
@@ -37,59 +39,48 @@ const CommonAgenda = () => {
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>About</Text>
             <Text style={{...text.blackText, ...layout.marginTopM}}>
-              We aim to ba a global non-profit initiative. Only small percentage
-              of creative directors are women and we want to help change this
-              through mentorship circles, portfolio reviews, talks & creative
-              meetups.
+              {daoStore.dao.metadata.description}
             </Text>
           </View>
 
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Course of action</Text>
             <Text style={{...text.blackText, ...layout.marginTopM}}>
-              We created this community to help you along your journey. Links to
-              sponsored content or brands will vote you out.
+              {daoStore.dao.metadata.courseOfAction}
             </Text>
           </View>
 
-          <View style={styles.sectionContainer}>
+          {daoStore.dao.metadata.links && <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Links</Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              https://www.google.com/
-            </Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              https://www.google.co.il/
-            </Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              https://www.google.ru/
-            </Text>
-          </View>
+              {daoStore.dao.metadata.links.map((link, i) => {
+                return (<Text key={i} style={{...text.blackText, ...layout.marginTopM}} onPress={() => Linking.openURL(link.description)}>
+                    {link.title}
+                  </Text>
+                );
+              })}
+          </View>}
 
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Deadline</Text>
             <Text style={{...text.blackText, ...layout.marginTopM}}>
-              April 03, 2021
+              {daoStore.dao.fundingGoalDeadline.toDate().toString()}
             </Text>
           </View>
 
-          <View style={styles.sectionContainer}>
+          {daoStore.dao.metadata.rules && <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Rules</Text>
-          </View>
+            {daoStore.dao.metadata.rules.map((rule, i) => {
+              return (<>
+                <Text key={i} style={{...text.blackText, ...layout.marginTopM}}>
+                  {rule.title}
+                </Text><Text key={i} style={{...text.blackText, ...layout.marginTopM}}>
+                  {rule.description}
+                </Text>
+              </>
+              );
+            })}
+          </View> }
 
-          <View style={styles.sectionContainer}>
-            <Text style={text.h4Black}>No promotions or spam</Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              We created this community to help you along your journey. Links to
-              sponsored content or brands will vote you out.
-            </Text>
-          </View>
-
-          <View style={styles.sectionContainer}>
-            <Text style={text.h4Black}>Be courteous and kind to others</Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
-              Be courteous and kind to others
-            </Text>
-          </View>
         </ScrollView>
       </SafeAreaView>
     </>
@@ -120,4 +111,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommonAgenda;
+export default inject('daoStore')(observer(CommonAgenda));

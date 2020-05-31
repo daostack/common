@@ -1,20 +1,43 @@
 import EditProfileFormStore from '../FormStores/EditProfileFormStore';
 import FundingRequestFormStore from '../FormStores/FundingRequestFormStore';
 import CompleteAccountFormStore from '../FormStores/CompleteAccountFormStore';
-import CreateCommonFormStore from '../FormStores/CreateCommonFormStore';
 import CreateDiscussionStore from '../FormStores/CreateDiscussionStore';
-import RequestToJoinFormStore from '../FormStores/RequestToJoinFormStore';
+
+import {
+  PaymentFormStore,
+  PersonalContributionFormStore,
+  IntroduceYourselfFormStore,
+} from '../FormStores/RequestToJoin';
+
+import {
+  GeneralInfoFormStore,
+  FundingFormStore,
+  AgendaFormStore,
+  ReviewFormStore,
+} from '../FormStores/CreateCommon';
+
 import UserStore from './UserStore';
 import DaoStore from './DaoStore';
 import BottomSheetStore from './BottomSheetStore';
 
 export default {
   completeAccountFormStore: new CompleteAccountFormStore(),
-  createCommonFormStore: new CreateCommonFormStore(),
+
   createDiscussionStore: new CreateDiscussionStore(),
   editProfileFormStore: new EditProfileFormStore(),
   fundingRequestFormStore: new FundingRequestFormStore(),
-  requestToJoinFormStore: new RequestToJoinFormStore(),
+
+  // Request To Join Form Stores
+  paymentFormStore: new PaymentFormStore(),
+  personalContributionFormStore: new PersonalContributionFormStore(),
+  introduceYourselfFormStore: new IntroduceYourselfFormStore(),
+
+  // Create Common Form Stores
+  generalInfoFormStore: new GeneralInfoFormStore(),
+  fundingFormStore: new FundingFormStore(),
+  agendaFormStore: new AgendaFormStore(),
+  reviewFormStore: new ReviewFormStore(),
+
   userStore: new UserStore(),
   daoStore: new DaoStore(),
   bottomSheetStore: new BottomSheetStore(),

@@ -20,11 +20,11 @@ import Icon from '../../Assets/iconfont/Icon';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import MultiLinkField from '../../Components/FormFields/MultiLinkField';
 
+import RequestStepActionButton from '../Commons/RequestStepActionButton';
+
 const CreateStep1 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [ruleCount, setRuleCount] = useState(1);
-  const [pass, setPass] = useState(false);
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -37,24 +37,9 @@ const CreateStep1 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const isValid = () => {
-    const links = [...Array(ruleCount).keys()].map(
-      x => `${CreateCommonForm.LINKS}_${x}`,
-    );
-    const result = props.createCommonFormStore.isFormValidSelectedFields([
-      CreateCommonForm.NAME,
-      CreateCommonForm.BYLINE,
-      ...links,
-    ]);
-    setPass(result);
-    return result;
-  };
-
   const push = () => {
-    const vaild = isValid();
-    if (vaild) {
+    if (props.generalInfoFormStore.isFormValid()) {
       props.navigation.navigate('CreateStep2');
-      console.log(props.createCommonFormStore.getChangedFormFieldsJson());
     }
   };
 
@@ -132,10 +117,9 @@ const CreateStep1 = props => {
             autoCapitalize="none"
             returnKeyType="next"
             autoCorrect={false}
-            onChangeText={isValid}
             validation={{
               name: CreateCommonForm.NAME,
-              formStore: props.createCommonFormStore,
+              formStore: props.generalInfoFormStore,
               // validateRule: 'required|min:4',
               validateRule: 'required',
             }}
@@ -151,10 +135,9 @@ const CreateStep1 = props => {
             placeholderText="A sentence that describes what you want to achieve"
             autoCapitalize="none"
             autoCorrect={false}
-            onChangeText={isValid}
             validation={{
               name: CreateCommonForm.BYLINE,
-              formStore: props.createCommonFormStore,
+              formStore: props.generalInfoFormStore,
               validateRule: 'required|min:10',
             }}
           />
@@ -169,66 +152,26 @@ const CreateStep1 = props => {
             autoCorrect={false}
             validation={{
               name: CreateCommonForm.DESCRIPTION,
-              formStore: props.createCommonFormStore,
+              formStore: props.generalInfoFormStore,
               validateRule: 'string',
             }}
           />
           <MultiLinkField
             allowsEditing={true}
             title="Title"
-            onChangeText={isValid}
             validation={{
               name: CreateCommonForm.LINKS,
-              formStore: props.createCommonFormStore,
+              formStore: props.generalInfoFormStore,
               validateRule: 'string|url',
             }}
           />
-          {/*[...Array(ruleCount).keys()].map(x => (
-            <TextInputField
-              key={x}
-              value={''}
-              viewStyle={{marginTop: -5, marginBottom: -15}}
-              label={x === 0 ? 'Add link' : ''}
-              infoLabel={
-                x === 0 ? 'Resources, related content or social pages' : ''
-              }
-              placeholderText="https://"
-              autoCapitalize="none"
-              autoCorrect={false}
-              onChangeText={isValid}
-              validation={{
-                name: `${CreateCommonForm.LINKS}_${x}`,
-                formStore: props.createCommonFormStore,
-                validateRule: 'string|url',
-              }}
-            />
-            ))
-          <TouchableOpacity>
-            <Text
-              style={styles.readMoreButton}
-              onPress={() => setRuleCount(ruleCount + 1)}>
-              Add Link
-            </Text>
-          </TouchableOpacity>
-          */}
         </View>
-        <TouchableOpacity
-          style={[
-            styles.continueButton,
-            {backgroundColor: pass ? colors.mainBlue : colors.grey3},
-          ]}
-          // onPress={() => props.navigation.navigate('CreateStep2')}
-          onPress={push}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: 'white',
-              fontWeight: '700',
-            }}>
-            Continue to Funding
-          </Text>
-        </TouchableOpacity>
       </ScrollView>
+      <RequestStepActionButton
+        title="Continue to Funding"
+        pass={props.generalInfoFormStore.isFormActionEnabled()}
+        onPress={push}
+      />
     </SafeAreaView>
   );
 };
@@ -252,4 +195,15 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('createCommonFormStore')(observer(CreateStep1));
+export default inject(
+  'generalInfoFormStore',
+  'fundingFormStore',
+  'agendaFormStore',
+  'reviewFormStore',
+  'daoStore',
+)(observer(CreateStep1));
+
+//generalInfoFormStore
+//fundingFormStore
+//agendaFormStore
+//reviewFormStore
