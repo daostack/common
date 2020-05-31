@@ -60,7 +60,7 @@ const RequestStep4 = props => {
           files: [],
           images: [],
           links: [], // {title: "title", url: "url"}
-          funding: new BN(200), 
+          funding: new BN(200),
         /*
         funding: new BN(
           props.paymentFormStore.form.fields[

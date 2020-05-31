@@ -180,7 +180,7 @@ class nativeBridgeTests extends React.Component {
 
   getSafeBalance = async () => {
     try {
-      const safeWallet = this.props.userStore.userInfo.safeAddress
+      const safeWallet = this.props.userStore.userInfo.safeAddress;
       console.log('safeWallet', safeWallet);
       const manager = WalletManager.getInstance();
       const safeWalletBalance = await manager.getBalance(safeWallet);
@@ -193,10 +193,10 @@ class nativeBridgeTests extends React.Component {
 
   createSmartContractWallet = async () => {
     try {
-      const safeWallet = this.props.userStore.userInfo.safeAddress
+      const safeWallet = this.props.userStore.userInfo.safeAddress;
       if (safeWallet) {
         this.setState({cwTXHash: 'You already have a safe wallet', cwAddress: safeWallet});
-        return
+        return;
       }
       const manager = WalletManager.getInstance();
       const {txHash, safeAddress} = await manager.createSmartContractWallet();
@@ -209,10 +209,10 @@ class nativeBridgeTests extends React.Component {
 
   create2SmartContractWallet = async () => {
     try {
-      const safeWallet = this.props.userStore.userInfo.safeAddress
+      const safeWallet = this.props.userStore.userInfo.safeAddress;
       if (safeWallet) {
         this.setState({cw2TXHash: 'You already have a safe wallet', cw2Address: safeWallet});
-        return
+        return;
       }
       const manager = WalletManager.getInstance();
       const {txHash} = await manager.create2SmartContractWallet();
@@ -227,10 +227,10 @@ class nativeBridgeTests extends React.Component {
 
   execTransaction = async () => {
     try {
-      const safeAddress = this.props.userStore.userInfo.safeAddress
+      const safeAddress = this.props.userStore.userInfo.safeAddress;
       if (safeAddress === null) {
         this.setState({safeTxHash: 'No wallet found, you need create one'});
-        return
+        return;
       }
       const manager = WalletManager.getInstance();
       const response = await manager.execTransaction(safeAddress, '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB', '0.01');
@@ -245,7 +245,7 @@ class nativeBridgeTests extends React.Component {
   addToWhitelist = async () => {
     try {
       const manager = WalletManager.getInstance();
-      const response = await manager.addToWhitelist()
+      const response = await manager.addToWhitelist();
       console.log('addWhitleList ->', response);
       this.setState({whiteListMsg: response.data.message});
     } catch (e) {
