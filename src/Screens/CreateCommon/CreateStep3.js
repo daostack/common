@@ -1,14 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {
   Text,
-  TouchableOpacity,
   View,
-  StyleSheet,
   ScrollView,
   Dimensions,
   SafeAreaView,
   Animated,
-  TextInput,
 } from 'react-native';
 import TextInputField from '../../Components/FormFields/TextInputField';
 import {colors} from '../../Theme';
@@ -24,7 +21,6 @@ import RequestStepActionButton from '../Commons/RequestStepActionButton';
 const CreateStep3 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [ruleCount, setRuleCount] = useState(1);
 
   // var ruleBody = [];
 
@@ -222,49 +218,6 @@ const CreateStep3 = props => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  view: {
-    justifyContent: 'flex-end',
-    margin: 0,
-  },
-  container: {
-    backgroundColor: colors.white,
-    borderBottomColor: colors.gray,
-    borderBottomWidth: 1,
-    marginVertical: 10,
-    marginHorizontal: 10,
-    justifyContent: 'center',
-    borderRadius: 2,
-    height: 50,
-  },
-  placeholderText: {
-    color: colors.grey3,
-  },
-  text: {
-    width: '100%',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    fontSize: 15,
-    color: colors.black,
-  },
-  readMoreButton: {
-    fontSize: 12,
-    // fontWeight: '700',
-    color: colors.grey3,
-  },
-  continueButton: {
-    width: '100%',
-    height: 48,
-    borderRadius: 32,
-    marginTop: 45,
-    flexDirection: 'row',
-    paddingHorizontal: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.mainBlue,
-  },
-});
 
 export default inject(
   'generalInfoFormStore',

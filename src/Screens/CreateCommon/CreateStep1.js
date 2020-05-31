@@ -3,7 +3,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  StyleSheet,
   ScrollView,
   Dimensions,
   SafeAreaView,
@@ -175,25 +174,6 @@ const CreateStep1 = props => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  readMoreButton: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.mainBlue,
-  },
-  continueButton: {
-    width: '100%',
-    height: 48,
-    borderRadius: 32,
-    marginTop: 25,
-    flexDirection: 'row',
-    paddingHorizontal: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.mainBlue,
-  },
-});
 
 export default inject(
   'generalInfoFormStore',

@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, Image} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {layout, colors, text, sizeXS} from '../Theme';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -6,7 +6,8 @@ import Icon from '../Assets/iconfont/Icon';
 import MemberImage from './Commons/MemberImage';
 import FirebaseService from '../Services/FirebaseService';
 
-const MemberCard = ({
+const
+  MemberCard = ({
   approvePercent,
   memberSince,
   memberCustomText,

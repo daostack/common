@@ -34,7 +34,7 @@ class FormStore {
       rule: validateRule,
       changed: false,
     };
-    if (multiName && this.multiFieldNames.indexOf(multiName) == -1) {
+    if (multiName && this.multiFieldNames.indexOf(multiName) === -1) {
       this.multiFieldNames.push(multiName);
     }
   }

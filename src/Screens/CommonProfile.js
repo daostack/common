@@ -50,13 +50,11 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
     try {
       setShowRequestSentModal(route.params.showRequestSentModal);
       setCurrCommon(routeCommon);
-
-      if (route.params.currCommon.members.some( member => member.address === userStore.userInfo.ethereumAddress )) {
+      if (userStore.userInfo && route.params.currCommon.members.some( member => member.address === userStore.userInfo.ethereumAddress )) {
         setMemberState(true);
       } else {
         setMemberState(false);
       }
-
       const commonMembers = route.params.currCommon.members;
       setMembers(commonMembers);
 
@@ -215,13 +213,17 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
   */
 
   const requestToJoin = event => {
-    const navigate = CommonActions.navigate({
-      name: 'RequestStep1',
-      params: {
-        currDaoId: currCommon.id,
-      },
-    });
-    navigation.dispatch(navigate);
+    if (userStore.userInfo) {
+      const navigate = CommonActions.navigate({
+        name: 'RequestStep1',
+        params: {
+          currDaoId: currCommon.id,
+        },
+      });
+      navigation.dispatch(navigate);
+    } else {
+      bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN);
+    }
   };
 
   const viewProposal = () => {
@@ -377,7 +379,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
                 commonId: routeCommon.id,
               })
             }
-            bottom={120}
+            bottom={50}
           />
         ) : (
           <>

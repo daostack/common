@@ -71,7 +71,7 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
         </View>
 
         <View style={styles.headerContent}>
-          <Text style={styles.headerDescription}>{commonInfo.description}</Text>
+          <Text style={styles.headerDescription} numberOfLines={2}>{commonInfo.description}</Text>
           {isMember && navigation ? (
             <TouchableOpacity onPress={openAgendaScreen}>
               <Text style={styles.headerViewAgenda}>View agenda</Text>
@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
   headerContent: {
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 20,
   },
   headerViewAgenda: {
     ...text.smallGreyText,
