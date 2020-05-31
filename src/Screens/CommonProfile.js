@@ -51,7 +51,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
       setShowRequestSentModal(route.params.showRequestSentModal);
       setCurrCommon(routeCommon);
 
-      if (route.params.currCommon.members.some( member => member.address === userStore.userInfo.ethereumAddress )) {
+      if (route.params.currCommon.members.some( member => member['address'] === userStore.userInfo.ethereumAddress )) {
         setMemberState(true);
       } else {
         setMemberState(false);
