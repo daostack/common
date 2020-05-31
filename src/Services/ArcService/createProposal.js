@@ -51,19 +51,19 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       dao: dao.id,
       plugin: joinAndQuitPlugin.coreState.address,
     };
-    console.log(`creating transaction`);
+    console.log('creating transaction');
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
 
-    const opts = { ...OVERRIDES, value: transaction.opts.value}
+    const opts = { ...OVERRIDES, value: transaction.opts.value};
     tx = await transaction.contract[transaction.method](...transaction.args, opts);
     const receipt = await tx.wait();
     console.log(
       `Transaction with ${receipt.transactionHash} was mined: proposal created!`,
     );
-    const proposal = joinAndQuitPlugin.createProposalTransactionMap(receipt)
-    return proposal
+    const proposal = joinAndQuitPlugin.createProposalTransactionMap(receipt);
+    return proposal;
     /**  Original code, keep for reference until we are sure the current pattern works
-     * 
+     *
     const transaction = await joinAndQuitPlugin.createProposal(args);
     console.log(`sending transaction ${transaction}`);
     console.log(transaction)
