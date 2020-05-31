@@ -11,7 +11,7 @@ import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
 
 
-const CommonsList = ({navigation, daoStore, bottomSheetStore}) => {
+const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
   // const [hasError, setErrors] = useState(false);
   const [daos, setDaos] = useState([]);
 
@@ -94,11 +94,11 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore}) => {
           />
         )}
       </>
-      <BottomRightButton
+      {userStore.userInfo && <BottomRightButton
         onPress={() => navigation.navigate('CommonExplanation')}
-      />
+      />}
     </View>
   );
 };
 
-export default inject('daoStore', 'bottomSheetStore')(observer(CommonsList));
+export default inject('daoStore', 'bottomSheetStore', 'userStore')(observer(CommonsList));
