@@ -21,6 +21,7 @@ import CreateCommonForm from '../../Components/Forms/CreateCommonForm';
 import Modal from 'react-native-modal';
 import moment from 'moment';
 import CreateStepDotHeader from './CreateStepDotHeader';
+import RequestStepActionButton from '../Commons/RequestStepActionButton';
 
 const CreateStep2 = props => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -28,7 +29,6 @@ const CreateStep2 = props => {
   const [segmentedIndex, setSegmentedIndex] = useState(0);
   const [pickDate, setPickDate] = useState(null);
   const [show, setShow] = useState(false);
-  const [pass, setPass] = useState(false);
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -41,10 +41,10 @@ const CreateStep2 = props => {
 
   useEffect(() => {
     const name = CreateCommonForm.DEADLINE;
-    props.createCommonFormStore.registerFormField(name, 'required');
+    props.fundingFormStore.registerFormField(name, 'required');
     switch (segmentedIndex) {
       case 0: {
-        props.createCommonFormStore.fieldChanged(
+        props.fundingFormStore.fieldChanged(
           name,
           moment()
             .add('7', 'days')
@@ -54,7 +54,7 @@ const CreateStep2 = props => {
         break;
       }
       case 1: {
-        props.createCommonFormStore.fieldChanged(
+        props.fundingFormStore.fieldChanged(
           name,
           moment()
             .add('1', 'months')
@@ -64,28 +64,16 @@ const CreateStep2 = props => {
         break;
       }
       case 2: {
-        props.createCommonFormStore.fieldChanged(name, pickDate);
+        props.fundingFormStore.fieldChanged(name, pickDate);
         setShow(true);
         break;
       }
     }
-  }, [segmentedIndex, pickDate, props.createCommonFormStore]);
-
-  const isValid = () => {
-    const result = props.createCommonFormStore.isFormValidSelectedFields([
-      CreateCommonForm.FUNDING_GOAL,
-      CreateCommonForm.MINIMUM,
-      CreateCommonForm.DEADLINE,
-    ]);
-    setPass(result);
-    return result;
-  };
+  }, [segmentedIndex, pickDate, props.fundingFormStore]);
 
   const push = () => {
-    const vaild = isValid();
-    if (vaild) {
+    if (props.fundingFormStore.isFormValid()) {
       props.navigation.navigate('CreateStep3');
-      console.log(props.createCommonFormStore.getChangedFormFieldsJson());
     }
   };
 
@@ -163,10 +151,9 @@ const CreateStep2 = props => {
             autoCapitalize="none"
             autoCorrect={false}
             keyboardType="numeric"
-            onChangeText={isValid}
             validation={{
               name: CreateCommonForm.FUNDING_GOAL,
-              formStore: props.createCommonFormStore,
+              formStore: props.fundingFormStore,
               validateRule: 'required|integer',
             }}
           />
@@ -242,10 +229,9 @@ const CreateStep2 = props => {
             autoCapitalize="none"
             autoCorrect={false}
             keyboardType="numeric"
-            onChangeText={isValid}
             validation={{
               name: CreateCommonForm.MINIMUM,
-              formStore: props.createCommonFormStore,
+              formStore: props.fundingFormStore,
               validateRule: 'required|integer',
             }}
           />
@@ -255,22 +241,12 @@ const CreateStep2 = props => {
             </Text>
           </View>
         </View>
-        <TouchableOpacity
-          style={[
-            styles.continueButton,
-            {backgroundColor: pass ? colors.mainBlue : colors.grey3},
-          ]}
-          onPress={push}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: 'white',
-              fontWeight: '700',
-            }}>
-            Continue to Agenda
-          </Text>
-        </TouchableOpacity>
       </ScrollView>
+      <RequestStepActionButton
+        title="Continue to Agenda"
+        pass={props.fundingFormStore.isFormActionEnabled()}
+        onPress={push}
+      />
     </SafeAreaView>
   );
 };
@@ -328,4 +304,15 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('createCommonFormStore')(observer(CreateStep2));
+export default inject(
+  'generalInfoFormStore',
+  'fundingFormStore',
+  'agendaFormStore',
+  'reviewFormStore',
+  'daoStore',
+)(observer(CreateStep2));
+
+//generalInfoFormStore
+//fundingFormStore
+//agendaFormStore
+//reviewFormStore

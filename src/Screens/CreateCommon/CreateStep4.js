@@ -24,16 +24,20 @@ import WalletManager from '../../Util/WalletManager';
 import FirebaseService from '../../Services/FirebaseService';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import {numberFormatter} from '../../Util';
+import RequestStepActionButton from '../Commons/RequestStepActionButton';
 
 import ArcService from '../../Services/ArcService';
 const {width} = Dimensions.get('window');
 
-const firebaseService = new FirebaseService();
-
 const CreateStep4 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const form = props.createCommonFormStore.getChangedFormFieldsJson();
+  const form = {
+    ...props.generalInfoFormStore.getChangedFormFieldsJson(),
+    ...props.fundingFormStore.getChangedFormFieldsJson(),
+    ...props.agendaFormStore.getChangedFormFieldsJson(),
+    ...props.reviewFormStore.getChangedFormFieldsJson(),
+  };
   const [templateIndex, setTemplateIndex] = useState(1);
   const [imageURI, setImageURI] = useState(
     'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
@@ -66,19 +70,13 @@ const CreateStep4 = props => {
   };
 
   useEffect(() => {
-    props.createCommonFormStore.registerFormField(
-      CreateCommonForm.AVATAR,
-      'url',
-    );
-    props.createCommonFormStore.registerFormField(
-      CreateCommonForm.IMAGE,
-      'url',
-    );
-  }, [props.createCommonFormStore]);
+    props.reviewFormStore.registerFormField(CreateCommonForm.AVATAR, 'url');
+    props.reviewFormStore.registerFormField(CreateCommonForm.IMAGE, 'url');
+  }, [props.reviewFormStore]);
 
   const pickImage = isAvatar => {
     const options = {
-      title: isAvatar && 'Select Avatar' || 'Select profile image',
+      title: (isAvatar && 'Select Avatar') || 'Select profile image',
       quality: 0.7,
       allowsEditing: isAvatar,
     };
@@ -91,21 +89,15 @@ const CreateStep4 = props => {
       } else {
         // const source = { uri: response.uri };
         // toast.loading('Uploading...');
-        firebaseService
+        FirebaseService.getInstance()
           .uploadImage(response.uri)
           .then(url => {
             toast.hide();
             if (isAvatar) {
               setAvatarURL(url);
-              props.createCommonFormStore.fieldChanged(
-                CreateCommonForm.AVATAR,
-                url,
-              );
+              props.reviewFormStore.fieldChanged(CreateCommonForm.AVATAR, url);
             } else {
-              props.createCommonFormStore.fieldChanged(
-                CreateCommonForm.IMAGE,
-                url,
-              );
+              props.reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
               setImageURI(url);
             }
           })
@@ -131,12 +123,15 @@ const CreateStep4 = props => {
   };
 
   const forgeCommon = async () => {
-    const commonFormData = props.createCommonFormStore.getChangedFormFieldsJson();
-    console.log(formData);
-    console.log('saving data on ipfs: ', commonFormData);
-    const ipfsHash = await ipfsUpload(commonFormData);
+    const formData = {
+      ...props.generalInfoFormStore.getChangedFormFieldsJson(),
+      ...props.fundingFormStore.getChangedFormFieldsJson(),
+      ...props.agendaFormStore.getChangedFormFieldsJson(),
+      ...props.reviewFormStore.getChangedFormFieldsJson(),
+    };
 
-    const formData = props.createCommonFormStore.getChangedFormFieldsJson();
+    console.log('saving data on ipfs: ', formData);
+    const ipfsHash = await ipfsUpload(formData);
     const manager = await WalletManager.getInstance();
     const address = await manager.getAddress();
     console.log('owner account: ', address);
@@ -172,6 +167,8 @@ const CreateStep4 = props => {
   //   errorSheetRef.current.snapTo(1);
   //   errorSheetRef.current.snapTo(1);
   // };
+
+  console.log('FORM -> ', form);
 
   return (
     <SafeAreaView
@@ -389,9 +386,13 @@ const CreateStep4 = props => {
                 />
               </TouchableOpacity> */}
             </View>
-            {form[CreateCommonForm.LINKS].length ? (
+            {form[CreateCommonForm.LINKS]?.length ? (
               form[CreateCommonForm.LINKS].map(x => (
-                <Text style={styles.textContent}>{x}</Text>
+                <Text
+                  key={`key_${CreateCommonForm.LINKS}_${x}`}
+                  style={styles.textContent}>
+                  {x.title}
+                </Text>
               ))
             ) : (
               <View />
@@ -406,9 +407,9 @@ const CreateStep4 = props => {
             </Text>
           </>
 
-          {form[CreateCommonForm.RULES].length ? (
+          {form[CreateCommonForm.RULES]?.length ? (
             form[CreateCommonForm.RULES].map((rule, index) => (
-              <>
+              <View key={`key_${CreateCommonForm.RULES}_${index}`}>
                 <Text
                   style={{
                     fontSize: 14,
@@ -424,23 +425,18 @@ const CreateStep4 = props => {
                   </Text>
                 </View>
                 <Text style={styles.textContent}>{rule.description}</Text>
-              </>
+              </View>
             ))
           ) : (
             <View />
           )}
         </View>
-        <TouchableOpacity style={styles.continueButton} onPress={forgeCommon}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: 'white',
-              fontWeight: '700',
-            }}>
-            Publish Common
-          </Text>
-        </TouchableOpacity>
       </ScrollView>
+      <RequestStepActionButton
+        title="Publish Common"
+        pass={props.agendaFormStore.isFormActionEnabled()}
+        onPress={forgeCommon}
+      />
     </SafeAreaView>
   );
 };
@@ -541,6 +537,9 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
-  'createCommonFormStore',
+  'generalInfoFormStore',
+  'fundingFormStore',
+  'agendaFormStore',
+  'reviewFormStore',
   'daoStore',
 )(observer(CreateStep4));

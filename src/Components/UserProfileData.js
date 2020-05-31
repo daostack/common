@@ -58,6 +58,7 @@ const UserProfileData = ({
           isAvatar={true}
           value={user?.photoURL}
           placeholderUrl={user?.photoURL}
+          disableEdit={true}
           validation={{
             name: EditProfileForm.FIELD_PROFILE_IMAGE,
             formStore: editProfileFormStore,

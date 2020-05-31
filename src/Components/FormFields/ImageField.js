@@ -122,7 +122,7 @@ class ImageField extends React.Component {
   };
 
   render() {
-    const {isAvatar, value, validation} = this.props;
+    const {isAvatar, value, validation, disableEdit} = this.props;
 
     const currValue = validation
       ? validation.formStore.form.fields[validation.name].value
@@ -138,7 +138,7 @@ class ImageField extends React.Component {
           }>
           <View>
             {this.renderImage()}
-            {isAvatar || currValue ? (
+            {!disableEdit && (isAvatar || currValue) ? (
               <TouchableOpacity
                 style={styles.formImageFielAddIcon}
                 onPress={this.pickImage}>
