@@ -41,9 +41,9 @@ const AmountField = ({
   return (
     <View>
       <View style={isCustomSelected ? styles.hidden : {}}>
-        <JoinAmount amount="$10" onPress={onAmountPress} />
-        <JoinAmount amount="$20" onPress={onAmountPress} />
-        <JoinAmount amount="$50" onPress={onAmountPress} />
+        <JoinAmount amount="10" onPress={onAmountPress} />
+        <JoinAmount amount="20" onPress={onAmountPress} />
+        <JoinAmount amount="50" onPress={onAmountPress} />
         <JoinAmount isCustom={true} onPress={onAmountPress} />
       </View>
 

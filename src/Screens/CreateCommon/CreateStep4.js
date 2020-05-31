@@ -25,6 +25,7 @@ import FirebaseService from '../../Services/FirebaseService';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import {numberFormatter} from '../../Util';
 import RequestStepActionButton from '../Commons/RequestStepActionButton';
+import Toast from '../../Util/Toast';
 
 import ArcService from '../../Services/ArcService';
 const {width} = Dimensions.get('window');
@@ -84,15 +85,16 @@ const CreateStep4 = props => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
-        // toast.error(response.error);
+        Toast.error(response.error);
         console.log('ImagePicker Error: ', response.error);
       } else {
         // const source = { uri: response.uri };
-        // toast.loading('Uploading...');
+        Toast.loading('Uploading...');
         FirebaseService.getInstance()
           .uploadImage(response.uri)
           .then(url => {
-            toast.hide();
+            Toast.hide();
+            Toast.success('Done');
             if (isAvatar) {
               setAvatarURL(url);
               props.reviewFormStore.fieldChanged(CreateCommonForm.AVATAR, url);

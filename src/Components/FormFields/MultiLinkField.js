@@ -5,14 +5,18 @@ import {text, layout, colors, sizeL} from '../../Theme';
 
 const MultiLinkField = props => {
   const [count, setCount] = useState(1);
-  const {maxCount, validation, placeholderValueText, multiline} = props;
+  const {
+    maxCount,
+    validation,
+    placeholderValueText,
+    multiline,
+    addMultiFieldBtnName,
+  } = props;
 
   let fieldName = null;
 
   useEffect(() => {
-    console.log('!!!!!! USE EFFECT !!!!!');
     fieldName = validation.name;
-    console.log('fieldName ->', fieldName);
   }, []);
 
   const renderAddLinkBtn = index => {
@@ -20,7 +24,7 @@ const MultiLinkField = props => {
       return (
         <TouchableOpacity>
           <Text style={styles.addLinkBtn} onPress={() => setCount(count + 1)}>
-            Add Link
+            {addMultiFieldBtnName ? addMultiFieldBtnName : 'Add Link'}
           </Text>
         </TouchableOpacity>
       );

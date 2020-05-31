@@ -16,7 +16,7 @@ const JoinAmount = ({amount, isCustom, onPress}) => {
       style={isSelected ? styles.containerSelected : styles.container}
       onPress={onAmountPress}>
       <Text style={isSelected ? styles.amountSelected : styles.amount}>{`${
-        isCustom ? 'Custom' : amount
+        isCustom ? 'Custom' : `$${amount}`
       }`}</Text>
     </TouchableOpacity>
   );
