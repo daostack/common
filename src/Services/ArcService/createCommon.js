@@ -49,12 +49,10 @@ export const createCommon = async (
       'DAOFactoryInstance',
       ARC_VERSION,
     );
-    //TODO: get abi manually
     const contractABI = arc.getABI({
       abiName: 'DAOFactory',
       version: ARC_VERSION,
     });
-    // const contractABI = DAOFactory;
     const daoFactoryContract = await arc.getContract(
       daoFactoryInfo.address,
       contractABI,
