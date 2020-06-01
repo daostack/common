@@ -88,13 +88,13 @@ const App = ({userStore, bottomSheetStore}) => {
   const [loading, setLoading] = useState(true);
   const hudRef = useRef();
 
-  const getTestEth = async address => {
-    console.log('getting test eth for user: ', address);
-    const req = await fetch(
-      `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
-    );
-    console.log('result from eth request: ', req);
-  };
+  // const getTestEth = async address => {
+  //   console.log('getting test eth for user: ', address);
+  //   const req = await fetch(
+  //     `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
+  //   );
+  //   console.log('result from eth request: ', req);
+  // };
   useEffect(() => {
     messaging()
       .registerDeviceForRemoteMessages()
@@ -140,8 +140,8 @@ const App = ({userStore, bottomSheetStore}) => {
       try {
         userStore.setIsLoading(true);
         if (user) {
-          await AuthService.getInstance().loadMnemonic(user.uid);
           await WalletManager.init(user.uid);
+          await AuthService.getInstance().loadMnemonic(user.uid);
           let appUser = await FirebaseService.getInstance().getUserById(
             user.uid,
           );
@@ -162,9 +162,9 @@ const App = ({userStore, bottomSheetStore}) => {
         }
 
         userStore.setIsLoading(false);
-        const manager = await WalletManager.getInstance();
-        const address = await manager.getAddress();
-        getTestEth(address);
+        // const manager = await WalletManager.getInstance();
+        // const address = await manager.getAddress();
+        // getTestEth(address);
       } catch (error) {
         console.log(error);
         throw error;
@@ -183,7 +183,7 @@ const App = ({userStore, bottomSheetStore}) => {
           .collection('users')
           .doc(uid)
           .onSnapshot(snapshot => {
-            console.log('FirebaseUser', snapshot.data());
+            // console.log('FirebaseUser', snapshot.data());
             if (!snapshot.empty) {
               userStore.setSignedInUser(snapshot.data());
             }
@@ -210,7 +210,7 @@ const App = ({userStore, bottomSheetStore}) => {
     return subscriber;
   }, [userStore]);
 
-  console.log('onboarded: ', onboarded);
+  // console.log('onboarded: ', onboarded);
 
   if (loading) {
     return <View style={{flex: 1}} />;
