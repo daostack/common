@@ -344,12 +344,11 @@ class nativeBridgeTests extends React.Component {
   };
 
   openTxhash = hash => {
-    this.props.navigation.navigate('Browser', {url: `https://blockscout.com/poa/xdai/tx/${hash}`})
+    this.props.navigation.navigate('Browser', {url: `https://blockscout.com/poa/xdai/tx/${hash}`});
   }
 
   openAddress = address => {
-    // const navigation = useNavigation();
-    this.props.navigation.navigate('Browser', {url: `https://blockscout.com/poa/xdai/address/${address}`})
+    this.props.navigation.navigate('Browser', {url: `https://blockscout.com/poa/xdai/address/${address}`});
   }
 
   render() {
