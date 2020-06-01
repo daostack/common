@@ -64,7 +64,7 @@ const CreateStep2 = props => {
         break;
       }
       case 2: {
-        props.createCommonFormStore.fieldChanged(name, moment(pickDate).unix());
+        props.fundingFormStore.fieldChanged(name, moment(pickDate).unix());
         setShow(true);
         break;
       }
@@ -74,7 +74,6 @@ const CreateStep2 = props => {
   const push = () => {
     if (props.fundingFormStore.isFormValid()) {
       props.navigation.navigate('CreateStep3');
-      console.log('the data from step2:: ', props.createCommonFormStore.getChangedFormFieldsJson());
     }
   };
 
