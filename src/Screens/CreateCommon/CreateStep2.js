@@ -74,10 +74,6 @@ const CreateStep2 = props => {
   const push = () => {
     if (props.fundingFormStore.isFormValid()) {
       props.navigation.navigate('CreateStep3');
-      console.log(
-        'the data from step2:: ',
-        props.fundingFormStore.getChangedFormFieldsJson(),
-      );
     }
   };
 
