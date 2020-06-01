@@ -8,7 +8,7 @@ import FirebaseService from '../../Services/FirebaseService';
 import ProposalApprovalTag from './ProposalApprovalTag';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
-const ProposalCard = ({proposalId, onReviewProposal}) => {
+const ProposalCard = ({proposalId, data, onReviewProposal}) => {
   const [proposalInfo, setProposalInfo] = useState(false);
   const [proposedUser, setProposedUser] = useState(false);
 
@@ -43,8 +43,46 @@ const ProposalCard = ({proposalId, onReviewProposal}) => {
       }
     };
 
-    getProposalInfo(proposalId);
+    console.log('Console.log proposalId -> ', proposalId);
+
+    if (proposalId) {
+      getProposalInfo(proposalId);
+    }
   }, [proposalId]);
+
+  useEffect(() => {
+    const loadProposalInfo = async currProposalInfo => {
+      try {
+        //RequestToJoin proposal
+        let proposedMemberId = null;
+        let funding = null;
+        if (currProposalInfo.joinAndQuit) {
+          proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+          funding = currProposalInfo.joinAndQuit.funding;
+        }
+        //FundingRequest proposal
+        else {
+          proposedMemberId = currProposalInfo.fundingRequest.beneficiaryId;
+          funding = currProposalInfo.joinAndQuit.amount;
+        }
+
+        const currProposedUser = await FirebaseService.getInstance().getUserById(
+          proposedMemberId,
+        );
+
+        setProposedUser(currProposedUser);
+        setProposalInfo(currProposalInfo);
+      } catch (error) {
+        console.log('error: ', error);
+      }
+    };
+
+    console.log('Console.log data -> ', data);
+
+    if (data) {
+      loadProposalInfo(data);
+    }
+  }, [data]);
 
   return (
     <View style={styles.proposalCard}>

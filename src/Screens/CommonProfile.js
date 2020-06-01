@@ -20,15 +20,22 @@ import SentTemplate from '../Components/ModalTemplates/SentTemplate';
 import ProposalApprovalTag from '../Components/Proposals/ProposalApprovalTag';
 import {CommonActions} from '@react-navigation/native';
 import ProposalCard from '../Components/Proposals/ProposalCard';
+import ProposalsList from './Proposals/ProposalsList';
 import BottomRightButton from '../Components/BottomRightButton';
 import DiscussionList from './Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
 import Toast from '../Util/Toast';
 import {numberFormatter} from '../Util';
+
 import MemberImage from '../Components/Commons/MemberImage';
 
-const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore}) => {
-
+const CommonProfile = ({
+  navigation,
+  route,
+  bottomSheetStore,
+  daoStore,
+  userStore,
+}) => {
   const [isMember, setMemberState] = useState(false);
   const [members, setMembers] = useState(false);
   const [isFundingStage] = useState(false);
@@ -41,23 +48,25 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
   ]);
 
   const [currCommon, setCurrCommon] = useState(false);
-
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
-
   const routeCommon = route.params.currCommon;
 
   useEffect(() => {
     try {
       setShowRequestSentModal(route.params.showRequestSentModal);
       setCurrCommon(routeCommon);
-      if (userStore.userInfo && route.params.currCommon.members.some( member => member.address === userStore.userInfo.ethereumAddress )) {
+      if (
+        userStore.userInfo &&
+        route.params.currCommon.members.some(
+          member => member.address === userStore.userInfo.ethereumAddress,
+        )
+      ) {
         setMemberState(true);
       } else {
         setMemberState(false);
       }
       const commonMembers = route.params.currCommon.members;
       setMembers(commonMembers);
-
     } catch (e) {
       throw e;
     }
@@ -95,33 +104,27 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
   const Proposals = () => {
     return (
       <View style={{paddingVertical: sizeL}}>
-        <ProposalCard
-          proposalId={'ba02cba0-937a-11ea-b51a-77e469735457'}
+        <ProposalsList
           onReviewProposal={openProposalScreen}
+          commonId={currCommon.id}
         />
       </View>
     );
-
-    /*
-    return (
-      <ViewTabNoData
-        title="No proposals yet"
-        subtitle="Write your first proposals and invite members to make an impact together!"
-      />
-    );
-    */
   };
 
   const History = () => {
     return (
-      <ViewTabNoData
-        title="No Past activity"
-        subtitle="You will be able to see proposals that passed or were rejected here."
-      />
+      <View style={{paddingVertical: sizeL}}>
+        <ProposalsList
+          onReviewProposal={openProposalScreen}
+          commonId={currCommon.id}
+          isHistory={true}
+        />
+      </View>
     );
   };
 
-  const renderScene = (scene) => {
+  const renderScene = scene => {
     switch (scene.route.key) {
       case 'discussions':
         return Discussions();
@@ -166,7 +169,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
             <View style={styles.membersRow}>
               {members.map((member, i) => {
                 if (i < 5) {
-                  return <MemberImage member={member} key={i}/>;
+                  return <MemberImage member={member} key={i} />;
                 }
               })}
             </View>
@@ -222,7 +225,9 @@ const CommonProfile = ({navigation, route, bottomSheetStore, daoStore, userStore
       });
       navigation.dispatch(navigate);
     } else {
-      bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN);
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
+      );
     }
   };
 
@@ -545,4 +550,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore', 'daoStore', 'userStore')(observer(CommonProfile));
+export default inject(
+  'bottomSheetStore',
+  'daoStore',
+  'userStore',
+)(observer(CommonProfile));
