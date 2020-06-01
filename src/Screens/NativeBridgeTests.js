@@ -170,19 +170,19 @@ class nativeBridgeTests extends React.Component {
     }
   };
 
-  readSmartContract = async () => {
-    try {
-      const manager = WalletManager.getInstance();
-      let value = await manager.readSmartContract(
-        '0x2f21957c7147c3eE49235903D6471159a16c9ccd',
-        MessageContract,
-        'getMessage',
-      );
-      this.setState({result: value});
-    } catch (e) {
-      throw 'Send transaction failed with error: ' + e;
-    }
-  };
+  // readSmartContract = async () => {
+  //   try {
+  //     const manager = WalletManager.getInstance();
+  //     let value = await manager.readSmartContract(
+  //       '0x2f21957c7147c3eE49235903D6471159a16c9ccd',
+  //       MessageContract,
+  //       'getMessage',
+  //     );
+  //     this.setState({result: value});
+  //   } catch (e) {
+  //     throw 'Send transaction failed with error: ' + e;
+  //   }
+  // };
 
   getSafeBalance = async () => {
     try {
@@ -432,7 +432,7 @@ class nativeBridgeTests extends React.Component {
           </TouchableOpacity>
 
           <Text style={{marginVertical: 10}}>
-            --------------- JavaScript -----------------
+            --------------- Local Wallet -----------------
           </Text>
           <TouchableOpacity onPress={() => this.openAddress(this.state.address)}>
           <Text>Address: {this.state.address}</Text>
@@ -459,12 +459,12 @@ class nativeBridgeTests extends React.Component {
             <Text>Send Transaction</Text>
           </TouchableOpacity>
 
-          <Text>Result: {this.state.result}</Text>
+          {/* <Text>Result: {this.state.result}</Text>
           <TouchableOpacity
             onPress={this.readSmartContract}
             style={styles.button}>
             <Text>Read Smart Contract</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <Text style={{marginVertical: 10}}>
             --------------- Relayer -----------------
