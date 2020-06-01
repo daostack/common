@@ -15,10 +15,11 @@ import MessageContract from '../Contracts/ABIs/MessageContract';
 import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
 import ArcService from '../Services/ArcService';
-import {ethers} from 'ethers';
 import {web3ProviderUrl} from '../Config';
-
-const uid = 'test';
+import Toast from '../Util/Toast';
+import {auth} from '../Firebase';
+import ABI from '../Util/abi.json';
+import { ethers } from 'ethers';
 
 class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -48,10 +49,15 @@ class nativeBridgeTests extends React.Component {
       whiteListMsg: '',
       safeWallet: '',
       safeWalletBalance: '',
+      safeSCHash: '',
     };
 
+    this.uid = auth().currentUser.uid;
     this.child = React.createRef();
-    WalletManager.init(uid);
+    if (!this.uid) {
+      Toast.error('uid is null');
+    }
+    // console.log('NativeBridgeTests------------', this.uid);
   }
 
   generateMnemonic = async () => {
@@ -67,7 +73,7 @@ class nativeBridgeTests extends React.Component {
   generateAndStoreMnemonic = async () => {
     try {
       const mnemonicsAndStore = await NativeWallet.generateAndStoreMnemonic(
-        uid,
+        this.uid,
       );
       console.log('mnemonicsAndStore: ', mnemonicsAndStore);
       this.setState({mnemonicsAndStore});
@@ -79,7 +85,7 @@ class nativeBridgeTests extends React.Component {
   storeMnemonic = async () => {
     try {
       const storedMnemonic = await NativeWallet.storeMnemonic(
-        uid,
+        this.uid,
         'order cabin immune pond brave guilt boil index car aware snap list',
       );
       console.log('storeMnemonic: ', storedMnemonic);
@@ -91,7 +97,7 @@ class nativeBridgeTests extends React.Component {
 
   retrieveMnemonic = async () => {
     try {
-      const keychainMnemonics = await NativeWallet.retrieveMnemonic(uid);
+      const keychainMnemonics = await NativeWallet.retrieveMnemonic(this.uid);
       console.log('keychainMnemonics: ', keychainMnemonics);
       this.setState({keychainMnemonics});
     } catch (e) {
@@ -164,19 +170,19 @@ class nativeBridgeTests extends React.Component {
     }
   };
 
-  readSmartContract = async () => {
-    try {
-      const manager = WalletManager.getInstance();
-      let value = await manager.readSmartContract(
-        '0x2f21957c7147c3eE49235903D6471159a16c9ccd',
-        MessageContract,
-        'getMessage',
-      );
-      this.setState({result: value});
-    } catch (e) {
-      throw 'Send transaction failed with error: ' + e;
-    }
-  };
+  // readSmartContract = async () => {
+  //   try {
+  //     const manager = WalletManager.getInstance();
+  //     let value = await manager.readSmartContract(
+  //       '0x2f21957c7147c3eE49235903D6471159a16c9ccd',
+  //       MessageContract,
+  //       'getMessage',
+  //     );
+  //     this.setState({result: value});
+  //   } catch (e) {
+  //     throw 'Send transaction failed with error: ' + e;
+  //   }
+  // };
 
   getSafeBalance = async () => {
     try {
@@ -241,6 +247,26 @@ class nativeBridgeTests extends React.Component {
       throw 'Send transaction failed with error: ' + e;
     }
   };
+
+  execSmartContract = async () => {
+    try {
+      const safeAddress = this.props.userStore.userInfo.safeAddress;
+      if (safeAddress === null) {
+        this.setState({safeSCHash: 'No wallet found, you need create one'});
+        return;
+      }
+      const manager = WalletManager.getInstance();
+      const tokenAddress = '0x3111C94B9243a8A99D5A867e00609900e437E2c0';
+      const iface = new ethers.utils.Interface(ABI.ERC20);
+      const data = iface.functions.transfer.encode(['0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB', ethers.utils.parseEther('0.1')]);
+      // console.log('iface ->', iface, data);
+      const response = await manager.execTransaction(safeAddress, tokenAddress, '0', data);
+      // console.log('response ->', response);
+      this.setState({safeSCHash: response.data.txHash || response.data.message});
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   addToWhitelist = async () => {
     try {
@@ -316,6 +342,14 @@ class nativeBridgeTests extends React.Component {
   createFundingProposal = async () => {
     // TODO
   };
+
+  openTxhash = hash => {
+    this.props.navigation.navigate('Browser', {url: `https://blockscout.com/poa/xdai/tx/${hash}`});
+  }
+
+  openAddress = address => {
+    this.props.navigation.navigate('Browser', {url: `https://blockscout.com/poa/xdai/address/${address}`});
+  }
 
   render() {
     return (
@@ -398,9 +432,11 @@ class nativeBridgeTests extends React.Component {
           </TouchableOpacity>
 
           <Text style={{marginVertical: 10}}>
-            --------------- JavaScript -----------------
+            --------------- Local Wallet -----------------
           </Text>
+          <TouchableOpacity onPress={() => this.openAddress(this.state.address)}>
           <Text>Address: {this.state.address}</Text>
+          </TouchableOpacity>
           <Text>Balance: {this.state.balance}</Text>
           <TouchableOpacity onPress={this.getBalance} style={styles.button}>
             <Text>Get Wallet address Balance (obsolete)</Text>
@@ -414,25 +450,29 @@ class nativeBridgeTests extends React.Component {
           </TouchableOpacity>
 
           <Text>Status: {this.state.txStatus}</Text>
+          <TouchableOpacity onPress={() => this.openTxhash(this.state.txHash)}>
           <Text>Hash: {this.state.txHash}</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={this.sendTransaction}
             style={styles.button}>
             <Text>Send Transaction</Text>
           </TouchableOpacity>
 
-          <Text>Result: {this.state.result}</Text>
+          {/* <Text>Result: {this.state.result}</Text>
           <TouchableOpacity
             onPress={this.readSmartContract}
             style={styles.button}>
             <Text>Read Smart Contract</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <Text style={{marginVertical: 10}}>
             --------------- Relayer -----------------
           </Text>
 
+          <TouchableOpacity onPress={() => this.openAddress(this.state.safeWallet)}>
           <Text>Address: {this.state.safeWallet}</Text>
+          </TouchableOpacity>
           <Text>Balance: {this.state.safeWalletBalance}</Text>
           <TouchableOpacity
             onPress={this.getSafeBalance}
@@ -440,30 +480,44 @@ class nativeBridgeTests extends React.Component {
             <Text>Get Safe Wallet Balance</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity onPress={() => this.openTxhash(this.state.cwTXHash)}>
           <Text>TXHash: {this.state.cwTXHash}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.openAddress(this.state.cwAddress)}>
           <Text>Address: {this.state.cwAddress}</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={this.createSmartContractWallet}
             style={styles.button}>
             <Text>Create Smart Wallet</Text>
           </TouchableOpacity>
 
-          <Text>TXHash: {this.state.cw2TXHash}</Text>
+          {/* <Text>TXHash: {this.state.cw2TXHash}</Text>
           <Text>Address: {this.state.cw2Address}</Text>
           <TouchableOpacity
             onPress={this.create2SmartContractWallet}
             style={styles.button}>
             <Text>Create2 Smart Wallet</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
-          <Text>Msg: {this.state.whiteListMsg}</Text>
+          {/* <Text>Msg: {this.state.whiteListMsg}</Text>
           <TouchableOpacity
             onPress={this.addToWhitelist}
             style={styles.button}>
             <Text>Add self white list</Text>
+          </TouchableOpacity> */}
+          <TouchableOpacity onPress={() => this.openTxhash(this.state.safeSCHash)}>
+          <Text>TxHash: {this.state.safeSCHash}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={this.execSmartContract}
+            style={styles.button}>
+            <Text>execSmartContract</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity onPress={() => this.openTxhash(this.state.safeTxHash)}>
           <Text>TxHash: {this.state.safeTxHash}</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={this.execTransaction}
             style={styles.button}>

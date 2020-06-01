@@ -17,27 +17,13 @@ export default class FirebaseService {
     return this.serviceInstance;
   };
 
-  async getUser() {
-    return db
-      .collection('users')
-      .doc('fwdzYtFOP9Q8tT65tBaU')
-      .collection('userInfo')
-      .get()
-      .then(snapshots => {
-        if (snapshots.empty) {
-          return [];
-        }
-        return snapshots.docs.map(doc => doc.data());
-      });
-  }
-
   async getUserById(userId) {
     return db
       .collection(DB_COLLECTIONS.users)
       .doc(userId)
       .get()
       .then(snapshots => {
-        console.log('snapshots : ', snapshots);
+        // console.log('snapshots : ', snapshots);
         if (!snapshots) {
           return null;
         }
