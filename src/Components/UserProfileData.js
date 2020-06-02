@@ -7,10 +7,12 @@ import CountBox from '../Components/CountBox';
 import Loader from '../Components/Loader';
 import EditProfileForm from '../Components/Forms/EditProfileForm';
 import FirebaseService from '../Services/FirebaseService';
+import ProposalsList from '../Screens/Proposals/ProposalsList';
 
 import {CommonActions} from '@react-navigation/native';
 
 import Icon from '../Assets/iconfont/Icon';
+import Swiper from 'react-native-swiper';
 
 const UserProfileData = ({
   userId,
@@ -19,6 +21,7 @@ const UserProfileData = ({
   editProfileFormStore,
 }) => {
   const [user, setUser] = useState(null);
+  const [proposalsCount, setProposalsCount] = useState(0);
   const [isEditMode, setIsEditMode] = useState(false);
 
   useEffect(() => {
@@ -86,6 +89,10 @@ const UserProfileData = ({
     return <Loader />;
   }
 
+  const onProposalsCountChange = newCount => {
+    setProposalsCount(newCount);
+  };
+
   return (
     <>
       {isEditMode ? (
@@ -150,8 +157,19 @@ const UserProfileData = ({
         </View>
       </View>
 
-      <View style={styles.contentContainer}>
-        <Text style={text.h3Black}>Proposals (0)</Text>
+      <View style={styles.contentContainerWithoutPadding}>
+        <Text
+          style={{
+            ...text.h3Black,
+            ...layout.marginBottomL,
+          }}>{`Proposals (${proposalsCount})`}</Text>
+
+        <ProposalsList
+          navigation={navigation}
+          userId={userId}
+          isSwiper={true}
+          onCountChange={onProposalsCountChange}
+        />
 
         <View style={styles.emptyObjectContainer}>
           <Icon name="pencil" size={46} />
@@ -169,25 +187,19 @@ const UserProfileData = ({
           </Text>
         </View>
 
-        {/*
+        <Swiper
+          style={styles.wrapper}
+          loop={false}
+          nestedScrollEnabled={true}
+          showsButtons={false}>
+          <View style={styles.swiperContentWrapper}>
+            <View style={styles.swiperContent}></View>
+          </View>
 
-<Swiper
-            style={styles.wrapper}
-            loop={false}
-            nestedScrollEnabled={true}
-            showsButtons={false}>
-            <View style={styles.swiperContentWrapper}>
-              <View style={styles.swiperContent}>
-
-              </View>
-            </View>
-
-            <View style={styles.swiperContentWrapper}>
-              <View style={styles.swiperContent} />
-            </View>
-          </Swiper>
-
-    */}
+          <View style={styles.swiperContentWrapper}>
+            <View style={styles.swiperContent} />
+          </View>
+        </Swiper>
       </View>
     </>
   );

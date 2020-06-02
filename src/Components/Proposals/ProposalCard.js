@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Text, StyleSheet, View} from 'react-native';
+import {Text, StyleSheet, View, Animated} from 'react-native';
 import {text, layout, colors} from '../../Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
@@ -8,7 +8,7 @@ import FirebaseService from '../../Services/FirebaseService';
 import ProposalApprovalTag from './ProposalApprovalTag';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
-const ProposalCard = ({proposalId, data, onReviewProposal}) => {
+const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
   const [proposalInfo, setProposalInfo] = useState(false);
   const [proposedUser, setProposedUser] = useState(false);
 
@@ -85,7 +85,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal}) => {
   }, [data]);
 
   return (
-    <View style={styles.proposalCard}>
+    <Animated.View style={[styles.proposalCard, containerStyle]}>
       <ProposalCardHeader isBoosted={true} />
 
       <View
@@ -93,8 +93,10 @@ const ProposalCard = ({proposalId, data, onReviewProposal}) => {
           ...layout.content,
           ...layout.flexStart,
           ...layout.paddingBottomL,
+          ...{flexWrap: 'wrap'},
         }}>
-        <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
+        <Text
+          style={{...text.h3Black, ...{textAlign: 'left', flexWrap: 'wrap'}}}>
           {proposalInfo?.title}
         </Text>
 
@@ -135,7 +137,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal}) => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -155,11 +157,11 @@ const styles = StyleSheet.create({
   },
 
   proposalCard: {
-    marginHorizontal: 20,
+    marginHorizontal: 5,
     ...layout.marginBottomL,
     backgroundColor: colors.white,
     borderRadius: 20,
-    alignSelf: 'stretch',
+    //alignSelf: 'stretch',
 
     borderStyle: 'solid',
     borderWidth: 1,
@@ -172,6 +174,9 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
+    //flex: 1,
+    //flexWrap: 'wrap',
+    //width: 350,
   },
 });
 

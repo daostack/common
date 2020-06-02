@@ -32,7 +32,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     }
     // console.log('PLUGINS -> ', plugins);
     const joinAndQuitPlugin = plugins[0];
-    console.log('joinAndQuitPlugin', joinAndQuitPlugin.id);
+    //console.log('joinAndQuitPlugin', joinAndQuitPlugin.id);
 
     let ipfsHash;
     const fee = data.funding;
@@ -54,8 +54,11 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     console.log('creating transaction');
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
 
-    const opts = { ...OVERRIDES, value: transaction.opts.value};
-    tx = await transaction.contract[transaction.method](...transaction.args, opts);
+    const opts = {...OVERRIDES, value: transaction.opts.value};
+    tx = await transaction.contract[transaction.method](
+      ...transaction.args,
+      opts,
+    );
     const receipt = await tx.wait();
     console.log(
       `Transaction with ${receipt.transactionHash} was mined: proposal created!`,
@@ -70,7 +73,6 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     const receipt = await transaction.send();
     return receipt.result; // this is a arc.js Proposal instance
      */
-
   } catch (e) {
     console.log(e);
     throw e;

@@ -19,7 +19,6 @@ import Modal from 'react-native-modal';
 import SentTemplate from '../Components/ModalTemplates/SentTemplate';
 import ProposalApprovalTag from '../Components/Proposals/ProposalApprovalTag';
 import {CommonActions} from '@react-navigation/native';
-import ProposalCard from '../Components/Proposals/ProposalCard';
 import ProposalsList from './Proposals/ProposalsList';
 import BottomRightButton from '../Components/BottomRightButton';
 import DiscussionList from './Discussions/DiscussionList';
@@ -104,10 +103,7 @@ const CommonProfile = ({
   const Proposals = () => {
     return (
       <View style={{paddingVertical: sizeL}}>
-        <ProposalsList
-          onReviewProposal={openProposalScreen}
-          commonId={currCommon.id}
-        />
+        <ProposalsList navigation={navigation} commonId={currCommon.id} />
       </View>
     );
   };
@@ -116,7 +112,7 @@ const CommonProfile = ({
     return (
       <View style={{paddingVertical: sizeL}}>
         <ProposalsList
-          onReviewProposal={openProposalScreen}
+          navigation={navigation}
           commonId={currCommon.id}
           isHistory={true}
         />
@@ -198,16 +194,6 @@ const CommonProfile = ({
     );
   };
 
-  const openProposalScreen = event => {
-    const navigate = CommonActions.navigate({
-      name: 'ProposalScreen',
-      params: {
-        proposalId: 'ba02cba0-937a-11ea-b51a-77e469735457',
-      },
-    });
-    navigation.dispatch(navigate);
-  };
-
   /*
   const openNotif = event => {
     commonOperationalStateNotifRef.current.snapTo(1);
@@ -237,6 +223,16 @@ const CommonProfile = ({
 
   const goToToCommon = () => {
     setShowRequestSentModal(false);
+  };
+
+  const openProposalScreen = event => {
+    const navigate = CommonActions.navigate({
+      name: 'ProposalScreen',
+      params: {
+        proposalId: 'ba02cba0-937a-11ea-b51a-77e469735457',
+      },
+    });
+    navigation.dispatch(navigate);
   };
 
   const renderPendingApproval = () => {
