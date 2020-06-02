@@ -28,6 +28,7 @@ import RequestStepActionButton from '../Commons/RequestStepActionButton';
 import Toast from '../../Util/Toast';
 
 import ArcService from '../../Services/ArcService';
+import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 const {width} = Dimensions.get('window');
 
 const CreateStep4 = props => {
@@ -125,45 +126,50 @@ const CreateStep4 = props => {
   };
 
   const forgeCommon = async () => {
-    const formData = {
-      ...props.generalInfoFormStore.getChangedFormFieldsJson(),
-      ...props.fundingFormStore.getChangedFormFieldsJson(),
-      ...props.agendaFormStore.getChangedFormFieldsJson(),
-      ...props.reviewFormStore.getChangedFormFieldsJson(),
-    };
+    try {
+      const formData = {
+        ...props.generalInfoFormStore.getChangedFormFieldsJson(),
+        ...props.fundingFormStore.getChangedFormFieldsJson(),
+        ...props.agendaFormStore.getChangedFormFieldsJson(),
+        ...props.reviewFormStore.getChangedFormFieldsJson(),
+      };
 
-    console.log('saving data on ipfs: ', formData);
-    const ipfsHash = await ipfsUpload(formData);
-    const manager = await WalletManager.getInstance();
-    const address = await manager.getAddress();
-    console.log('owner account: ', address);
+      console.log('saving data on ipfs: ', formData);
+      const ipfsHash = await ipfsUpload(formData);
+      const manager = await WalletManager.getInstance();
+      const address = await manager.getAddress();
+      console.log('owner account: ', address);
 
-    const deadline = formData[CreateCommonForm.DEADLINE];
+      const deadline = formData[CreateCommonForm.DEADLINE];
 
-    const data = {
-      name: formData.name,
-      founderAddresses: address,
-      tokenDist: [0],
-      repDist: [1000],
-      minFeeToJoin: parseInt(formData.minimum, 10) * 100, // multiply by 100 to get the value in cents
-      fundingGoal: parseInt(formData.funding, 10) * 100, // multiply by 100 to get the value in cents
-      fundingGoalDeadline: Math.round(deadline.getTime() / 1000),
-      ipfsHash,
-    };
-    console.log('calling createCommon(...)');
+      const data = {
+        name: formData.name,
+        founderAddresses: address,
+        tokenDist: [0],
+        repDist: [1000],
+        minFeeToJoin: parseInt(formData.minimum, 10) * 100, // multiply by 100 to get the value in cents
+        fundingGoal: parseInt(formData.funding, 10) * 100, // multiply by 100 to get the value in cents
+        fundingGoalDeadline: Math.round(deadline.getTime() / 1000),
+        ipfsHash,
+      };
+      console.log('calling createCommon(...)');
 
-    const commonAddress = await ArcService.getInstance().createCommon(
-      data,
-      props.navigation,
-      props.daoStore,
-    );
+      const commonAddress = await ArcService.getInstance().createCommon(
+        data,
+        props.navigation,
+        props.daoStore,
+      );
 
-    if (commonAddress) {
-      props.navigation.dispatch(StackActions.popToTop());
+      if (commonAddress) {
+        props.navigation.dispatch(StackActions.popToTop());
+      }
+
+      return {commonAddress};
+    } catch (e) {
+      props.bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {errorMessage: e.message});
     }
-
-    return {commonAddress};
   };
+
 
   // const creationError = event => {
   //   errorSheetRef.current.snapTo(1);
@@ -539,6 +545,7 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
+  'bottomSheetStore',
   'generalInfoFormStore',
   'fundingFormStore',
   'agendaFormStore',

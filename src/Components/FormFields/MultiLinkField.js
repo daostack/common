@@ -7,16 +7,16 @@ const MultiLinkField = props => {
   const [count, setCount] = useState(1);
   const {
     maxCount,
-    validation,
+    // validation,
     placeholderValueText,
     multiline,
     addMultiFieldBtnName,
   } = props;
 
-  let fieldName = null;
+  // let fieldName = null;
 
   useEffect(() => {
-    fieldName = validation.name;
+    // fieldName = validation.name;
   }, []);
 
   const renderAddLinkBtn = index => {

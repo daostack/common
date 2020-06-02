@@ -9,11 +9,10 @@ import {
   StyleSheet,
 } from 'react-native';
 const {width} = Dimensions.get('window');
-import WalletManager from '../Util/WalletManager';
-import MessageContract from '../Contracts/ABIs/MessageContract';
-
 import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
+import WalletManager from '../Util/WalletManager';
+import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
 import ArcService from '../Services/ArcService';
 import {web3ProviderUrl} from '../Config';
 import Toast from '../Util/Toast';
@@ -52,7 +51,7 @@ class nativeBridgeTests extends React.Component {
       safeSCHash: '',
     };
 
-    this.uid = auth().currentUser.uid;
+    this.uid = auth().currentUser?.uid;
     this.child = React.createRef();
     if (!this.uid) {
       Toast.error('uid is null');
@@ -281,9 +280,8 @@ class nativeBridgeTests extends React.Component {
   };
 
   createCommon = async () => {
-    const wallet = WalletManager.getInstance().wallet;
-
     try {
+      const wallet = WalletManager.getInstance().wallet;
       const commonAddress = await ArcService.getInstance().createCommon(
         {
           name: `Test DAO ${new Date()}`,
@@ -301,7 +299,7 @@ class nativeBridgeTests extends React.Component {
 
       this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
     } catch (error) {
-      console.log('Error -> ', error);
+      this.props.bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {errorMessage: error.message});
       this.setState({commonStatus: `${error}`});
     }
   };
@@ -333,7 +331,7 @@ class nativeBridgeTests extends React.Component {
         proposalStatus: `JoinAndQuit Proposal with id ${proposal.id} created!`,
       });
     } catch (e) {
-      console.log(e);
+      this.props.bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {errorMessage: e.message});
       this.setState({proposalState: `${e}`});
     }
     console.log(`proposal created: ${proposal.id}`);
@@ -551,4 +549,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('daoStore', 'userStore')(observer(nativeBridgeTests));
+export default inject('daoStore', 'userStore', 'bottomSheetStore')(observer(nativeBridgeTests));

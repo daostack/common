@@ -2,25 +2,21 @@ import {
   Text,
   View,
   StyleSheet,
-  ScrollView,
   Image,
   TouchableOpacity,
 } from 'react-native';
 
 import React from 'react';
-import {text, layout, colors} from '../Theme';
+import {text, layout, colors} from '../../Theme/index';
 
-const TransactionError = ({navigation}) => {
+const TransactionError = (props) => {
+  console.log('TX ERROR PROPS: ',  props.errorMessage);
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      style={styles.scrollView}
-      vertical={true}
-      nestedScrollEnabled={true}
-      directionalLockEnabled={true}>
+    <View
+      style={styles.scrollView} >
       <View style={styles.body}>
         <Image
-          source={require('../Assets/alert.png')}
+          source={require('../../Assets/alert.png')}
           style={{
             alignSelf: 'center',
             padding: 80,
@@ -32,7 +28,7 @@ const TransactionError = ({navigation}) => {
         <Text style={styles.title}>Something went wrong</Text>
 
         <View style={styles.textWithIconContainer}>
-          <Text style={styles.blackTextWithImage}>Common creation failed.</Text>
+          <Text style={styles.blackTextWithImage}>{props.errorMessage}</Text>
         </View>
         <TouchableOpacity
           style={{
@@ -42,7 +38,7 @@ const TransactionError = ({navigation}) => {
           <Text style={text.buttonblue}>Try Again</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -68,6 +64,7 @@ const styles = StyleSheet.create({
   blackTextWithImage: {
     ...text.blackText,
     ...layout.marginLeftM,
+    marginBottom: 20,
   },
   scrollView: {
     flex: 1,
