@@ -3,7 +3,10 @@ const {
   getForgeOrgData,
   getSetSchemesData,
 } = require('@daostack/common-factory');
-const {ARC_VERSION, OVERRIDES} = require('../../Config');
+const {
+  ARC_VERSION, OVERRIDES, COMMONTOKENADDRESS,
+  MEMBER_REPUTATION,
+} = require('../../Config');
 
 // import DAOFactory from '../Contracts/ABIs/DAOFactory';
 
@@ -33,11 +36,12 @@ export const createCommon = async (
   // export const createCommon1 = async (arc, givenOpts = {}, navigation, daoStore) => {
   navigation.navigate('CommonCreationLoading');
   daoStore.setCreationStatus(1);
+  console.log(MEMBER_REPUTATION);
 
   try {
     const defaultOptions = {
-      fundingToken: '0x0000000000000000000000000000000000000000',
-      memberReputation: 1000,
+      fundingToken: COMMONTOKENADDRESS,
+      memberReputation: MEMBER_REPUTATION,
     };
     const opts = {...defaultOptions, ...givenOpts};
     let tx;
@@ -49,12 +53,10 @@ export const createCommon = async (
       'DAOFactoryInstance',
       ARC_VERSION,
     );
-    //TODO: get abi manually
     const contractABI = arc.getABI({
       abiName: 'DAOFactory',
       version: ARC_VERSION,
     });
-    // const contractABI = DAOFactory;
     const daoFactoryContract = await arc.getContract(
       daoFactoryInfo.address,
       contractABI,

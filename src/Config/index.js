@@ -8,15 +8,19 @@ import {WebSocketLink} from 'apollo-link-ws';
 import {getMainDefinition} from 'apollo-utilities';
 
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
-export const ARC_VERSION = '0.1.1-rc.20'; // we should probably read this from the package..
-export const GRAPH_VERSION = 'v8_1_exp_xdai';
+// TODO: we should probably read this from the package..
+export const ARC_VERSION = '0.1.1-rc.21';
+export const GRAPH_VERSION = 'v8_2_exp_xdai';
 export const graphHttpLink = `https://api.thegraph.com/subgraphs/name/daostack/${GRAPH_VERSION}`;
 export const graphwsLink = `wss://api.thegraph.com/subgraphs/name/daostack/${GRAPH_VERSION}`;
 export const ipfsLink = 'https://api.thegraph.com/ipfs-daostack/api/v0';
 export const web3ProviderUrl = 'https://dai.poa.network';
 export const web3NetworkId = 100;
 
-export const OVERRIDES = {
+export const COMMONTOKENADDRESS = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
+export const MEMBER_REPUTATION = 1000; // how much rep a new members gets
+
+export const OVERRIDES = { // default settings for sending trasnsactions
   gasLimit: 10000000,
   gasPrice: 15000000000,
 };
