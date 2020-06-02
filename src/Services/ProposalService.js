@@ -42,7 +42,6 @@ export default class ProposalService {
     return db
       .collection(DB_COLLECTIONS.proposals)
       .where('dao', '==', commonId)
-      .where('stage', 'in', stages)
       .onSnapshot(
         snapshot => {
           console.log('snapshot', snapshot);
