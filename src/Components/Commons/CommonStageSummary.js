@@ -1,6 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {numberFormatter} from '../../Util';
+import moment from 'moment';
 
 import {layout, colors, text} from '../../Theme';
 
@@ -19,7 +20,7 @@ const CommonStageSummary = ({isFundingStage, commonProgressInfo}) => {
               ...layout.marginTopS,
               ...layout.marginBottomS,
             }}>
-            {commonProgressInfo.time} days to go
+            {moment.utc(commonProgressInfo.time * 1000).fromNow()}
           </Text>
         </>
       );
