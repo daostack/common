@@ -13,6 +13,7 @@ const AmountField = ({
   onCustomClose,
   onAmountSelected,
   navigation,
+  minFeeToJoin,
 }) => {
   const [isCustomSelected, setIsCustomSelected] = useState(0);
 
@@ -41,9 +42,9 @@ const AmountField = ({
   return (
     <View>
       <View style={isCustomSelected ? styles.hidden : {}}>
-        <JoinAmount amount="10" onPress={onAmountPress} />
-        <JoinAmount amount="20" onPress={onAmountPress} />
-        <JoinAmount amount="50" onPress={onAmountPress} />
+        <JoinAmount amount={minFeeToJoin} onPress={onAmountPress} />
+        <JoinAmount amount={2 * minFeeToJoin} onPress={onAmountPress} />
+        <JoinAmount amount={2.5 * minFeeToJoin} onPress={onAmountPress} />
         <JoinAmount isCustom={true} onPress={onAmountPress} />
       </View>
 
@@ -63,7 +64,7 @@ const AmountField = ({
         validation={{
           name: RequestToJoinForm.FIELD_AMOUNT,
           formStore: formStore,
-          validateRule: 'required|integer',
+          validateRule: `required|integer|min:${minFeeToJoin}`,
         }}
       />
     </View>
