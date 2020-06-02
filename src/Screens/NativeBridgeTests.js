@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 const {width} = Dimensions.get('window');
 import WalletManager from '../Util/WalletManager';
-import MessageContract from '../Contracts/ABIs/MessageContract';
 
 import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
