@@ -18,20 +18,21 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
 
   try {
     const dao = arc.dao(daoId);
-    console.log('DAO -> ', dao);
-    let plugins;
+    // let plugins;
 
+    let joinAndQuitPlugin;
     try {
-      plugins = await dao
-        .plugins({where: {name: 'JoinAndQuit'}})
-        .pipe(first())
-        .toPromise();
+      joinAndQuitPlugin = await dao.plugin({where: {name: 'JoinAndQuit'}});
     } catch (e) {
       console.log(e);
+      console.log(daoId);
+      const plugins = (await dao.plugins().pipe(first()).toPromise());
+      console.log(plugins.map(p => p.coreState.name));
       throw e;
     }
+
     // console.log('PLUGINS -> ', plugins);
-    const joinAndQuitPlugin = plugins[0];
+    // const joinAndQuitPlugin = plugins[0];
     console.log('joinAndQuitPlugin', joinAndQuitPlugin.id);
 
     let ipfsHash;
