@@ -64,7 +64,7 @@ const AmountField = ({
         validation={{
           name: RequestToJoinForm.FIELD_AMOUNT,
           formStore: formStore,
-          validateRule: 'required|integer',
+          validateRule: `required|integer|min:${minFeeToJoin}`,
         }}
       />
     </View>
