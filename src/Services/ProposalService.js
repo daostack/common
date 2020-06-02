@@ -3,12 +3,12 @@ import {DB_COLLECTIONS} from './FirebaseService';
 import {db} from '../Firebase';
 
 export const PROPOSAL_STAGE = {
-  ExpiredInQueue: 0,
-  Executed: 1,
-  Queued: 2,
-  PreBoosted: 3,
-  Boosted: 4,
-  QuietEndingPeriod: 5,
+  ExpiredInQueue: '0',
+  Executed: '1',
+  Queued: '2',
+  PreBoosted: '3',
+  Boosted: '4',
+  QuietEndingPeriod: '5',
 };
 
 export default class ProposalService {
@@ -42,6 +42,7 @@ export default class ProposalService {
     return db
       .collection(DB_COLLECTIONS.proposals)
       .where('dao', '==', commonId)
+      .where('stage', 'in', stages)
       .onSnapshot(
         snapshot => {
           console.log('snapshot', snapshot);
