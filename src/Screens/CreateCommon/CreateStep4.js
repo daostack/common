@@ -120,19 +120,28 @@ const CreateStep4 = props => {
         // TODO: actuall add the values here (as an arry probably)
         rules: formData.rules,
         links: formData.links,
+        minimum: formData.minimum,
+        funding: formData.funding,
       }),
     );
   };
 
   const forgeCommon = async () => {
-    const formData = {
+    const formDataInit = {
       ...props.generalInfoFormStore.getChangedFormFieldsJson(),
       ...props.fundingFormStore.getChangedFormFieldsJson(),
       ...props.agendaFormStore.getChangedFormFieldsJson(),
       ...props.reviewFormStore.getChangedFormFieldsJson(),
     };
 
+    const formData = {
+      ...formDataInit,
+      minimum: parseInt(formDataInit.minimum, 10) * 100,
+      funding: parseInt(formDataInit.funding, 10) * 100,
+    };
+
     console.log('saving data on ipfs: ', formData);
+
     const ipfsHash = await ipfsUpload(formData);
     const manager = await WalletManager.getInstance();
     const address = await manager.getAddress();
@@ -147,7 +156,7 @@ const CreateStep4 = props => {
       repDist: [1000],
       minFeeToJoin: parseInt(formData.minimum, 10) * 100, // multiply by 100 to get the value in cents
       fundingGoal: parseInt(formData.funding, 10) * 100, // multiply by 100 to get the value in cents
-      fundingGoalDeadline: deadline, // just passing unix timestamp in seconds
+      fundingGoalDeadline: Math.round(deadline.getTime() / 1000),
       ipfsHash,
     };
     console.log('calling createCommon(...)');
