@@ -156,7 +156,7 @@ const CreateStep4 = props => {
       repDist: [1000],
       minFeeToJoin: formData.minimum,
       fundingGoal: formData.funding,
-      fundingGoalDeadline: Math.round(deadline / 1000),
+      fundingGoalDeadline: Math.round(deadline.getTime() / 1000),
       ipfsHash,
     };
     console.log('calling createCommon(...)');
