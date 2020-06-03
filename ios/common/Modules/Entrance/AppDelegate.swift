@@ -6,6 +6,7 @@
 //  Copyright © 2020 DAOstack. All rights reserved.
 //
 
+import CodePush
 import UIKit
 import React
 import Firebase
@@ -23,6 +24,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let jsCodeLocation = RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
         bridge = RCTBridge(bundleURL: jsCodeLocation, moduleProvider: nil, launchOptions: nil)
+        func sourceURL(bridge _: RCTBridge?) -> URL? {
+            #if DEBUG
+                return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
+            #else
+                return CodePush.bundleURL()
+            #endif
+        }
         
         let rootView = RCTRootView(bridge: bridge!, moduleName: "common", initialProperties: launchOptions)
         
