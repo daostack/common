@@ -44,8 +44,6 @@ export default class ProposalService {
     listChangeCallback,
     listRef,
   ) {
-    console.log('stages -> ', stages);
-
     let proposalCollection = db.collection(DB_COLLECTIONS.proposals);
 
     if (commonId) {
@@ -57,7 +55,6 @@ export default class ProposalService {
 
     return proposalCollection.where('stage', 'in', stages).onSnapshot(
       snapshot => {
-        console.log('snapshot', snapshot);
         if (snapshot.empty) {
           listChangeCallback([]);
         } else {

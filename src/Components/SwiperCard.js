@@ -20,20 +20,15 @@ const SwiperCard = props => {
 
   const renderCard = (item, index) => {
     let proposalCardStyle = {marginLeft: 20, marginRight: 20};
-    console.log('item -> ', item);
-    console.log('index -> ', index);
-    console.log('swiperCurrentIndex -> ', swiperCurrentIndex);
 
     if (
       index == swiperCurrentIndex.prevIndex &&
       swiperCurrentIndex.prevIndex != swiperCurrentIndex.index
     ) {
-      console.log('PREV INDEX');
       proposalCardStyle = {marginLeft: 50, marginRight: -10};
     }
 
     if (index == swiperCurrentIndex.index + 1) {
-      console.log('NEX INDEX');
       proposalCardStyle = {marginLeft: -10, marginRight: 50};
     }
 

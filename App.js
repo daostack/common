@@ -140,8 +140,8 @@ const App = ({userStore, bottomSheetStore}) => {
       try {
         userStore.setIsLoading(true);
         if (user) {
-          await WalletManager.init(user.uid);
           await AuthService.getInstance().loadMnemonic(user.uid);
+          await WalletManager.init(user.uid);
           let appUser = await FirebaseService.getInstance().getUserById(
             user.uid,
           );

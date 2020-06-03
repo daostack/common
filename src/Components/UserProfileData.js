@@ -27,7 +27,7 @@ const UserProfileData = ({
   useEffect(() => {
     const getUser = async () => {
       try {
-        if (userId === userStore.userInfo?.id) {
+        if (userId === userStore.userInfo?.uid) {
           setUser(userStore.userInfo);
           setIsEditMode(true);
         } else {
