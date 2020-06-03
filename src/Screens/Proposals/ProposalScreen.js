@@ -290,7 +290,7 @@ const ProposalScreen = ({ navigation, route, props }) => {
 
   let memberCreatedDate = null;
 
-  if (proposedUser) {
+  if (proposedUser?.createdAt) {
     memberCreatedDate = new Date(proposedUser?.createdAt.seconds * 1000);
   }
 

@@ -87,7 +87,10 @@ const UserProfile = ({userStore, navigation}) => {
 
   const renderSignedInUserData = () => {
     return (
-      <UserProfileData navigation={navigation} userId={userStore.userInfo.id} />
+      <UserProfileData
+        navigation={navigation}
+        userId={userStore.userInfo.uid}
+      />
     );
   };
 

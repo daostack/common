@@ -120,19 +120,28 @@ const CreateStep4 = props => {
         // TODO: actuall add the values here (as an arry probably)
         rules: formData.rules,
         links: formData.links,
+        minimum: formData.minimum,
+        funding: formData.funding,
       }),
     );
   };
 
   const forgeCommon = async () => {
-    const formData = {
+    const formDataInit = {
       ...props.generalInfoFormStore.getChangedFormFieldsJson(),
       ...props.fundingFormStore.getChangedFormFieldsJson(),
       ...props.agendaFormStore.getChangedFormFieldsJson(),
       ...props.reviewFormStore.getChangedFormFieldsJson(),
     };
 
+    const formData = {
+      ...formDataInit,
+      minimum: parseInt(formDataInit.minimum, 10) * 100,
+      funding: parseInt(formDataInit.funding, 10) * 100,
+    };
+
     console.log('saving data on ipfs: ', formData);
+
     const ipfsHash = await ipfsUpload(formData);
     const manager = await WalletManager.getInstance();
     const address = await manager.getAddress();
@@ -405,7 +414,9 @@ const CreateStep4 = props => {
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>Deadline</Text>
             </View>
             <Text style={styles.textContent}>
-              {moment(form[CreateCommonForm.DEADLINE]).format('MMM DD, YYYY')}
+              {moment
+                .unix(form[CreateCommonForm.DEADLINE])
+                .format('MMM DD, YYYY')}
             </Text>
           </>
 
