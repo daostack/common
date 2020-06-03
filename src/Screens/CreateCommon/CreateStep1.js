@@ -119,8 +119,7 @@ const CreateStep1 = props => {
             validation={{
               name: CreateCommonForm.NAME,
               formStore: props.generalInfoFormStore,
-              // validateRule: 'required|min:4',
-              validateRule: 'required',
+              validateRule: 'required|max:24',
             }}
           />
           <TextInputField
@@ -137,12 +136,13 @@ const CreateStep1 = props => {
             validation={{
               name: CreateCommonForm.BYLINE,
               formStore: props.generalInfoFormStore,
-              validateRule: 'required|min:10',
+              validateRule: 'required|min:10|max:40',
             }}
           />
           <TextInputField
             value={''}
             label="Description"
+            infoLabel="Required"
             numberOfLines={5}
             multiline={true}
             returnKeyType="next"
@@ -152,12 +152,13 @@ const CreateStep1 = props => {
             validation={{
               name: CreateCommonForm.DESCRIPTION,
               formStore: props.generalInfoFormStore,
-              validateRule: 'string',
+              validateRule: 'required|string',
             }}
           />
           <MultiLinkField
             allowsEditing={true}
             title="Title"
+            maxCount={5}
             validation={{
               name: CreateCommonForm.LINKS,
               formStore: props.generalInfoFormStore,

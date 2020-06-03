@@ -154,7 +154,7 @@ const CreateStep2 = props => {
             validation={{
               name: CreateCommonForm.FUNDING_GOAL,
               formStore: props.fundingFormStore,
-              validateRule: 'required|integer',
+              validateRule: 'required|integer|min:100',
             }}
           />
           <View style={{}}>
