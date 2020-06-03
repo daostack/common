@@ -9,6 +9,7 @@ const Tab = createBottomTabNavigator();
 const CommonHome = ({userStore}) => {
   return (
     <Tab.Navigator
+      // initialRouteName="My feed"
       initialRouteName="Explore"
       screenOptions={({route}) => ({
         tabBarIcon: ({focused, color, size}) => {
