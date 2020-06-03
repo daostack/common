@@ -8,7 +8,7 @@ import {
   Animated,
 } from 'react-native';
 import RequestToJoinRule from '../../Components/Commons/RequestToJoinRule';
-
+import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepDotHeader from './RequestStepDotHeader';
@@ -22,7 +22,7 @@ const RequestStep1 = props => {
   const [headerHeight, setHeaderHeight] = useState(0);
   // const [ruleCount] = useState(1);
   const [pass, setPass] = useState(false);
-
+  const commonRules = props.daoStore.dao.metadata?.rules;
   useEffect(() => {
     const height = scrollY.interpolate({
       inputRange: [50, 50],
@@ -117,35 +117,14 @@ const RequestStep1 = props => {
                 marginBottom: 40,
               }}
             />
-            <RequestToJoinRule
-              index={1}
-              title="No promotions or spam"
-              description="We created this community to help you along your journey. Links to sponsored content or brands will vote you out."
-            />
-
-            <RequestToJoinRule
-              index={2}
-              title="No promotions or spam"
-              description="We created this community to help you along your journey. Links to sponsored content or brands will vote you out."
-            />
-
-            <RequestToJoinRule
-              index={3}
-              title="No promotions or spam"
-              description="We created this community to help you along your journey. Links to sponsored content or brands will vote you out."
-            />
-
-            <RequestToJoinRule
-              index={4}
-              title="No promotions or spam"
-              description="We created this community to help you along your journey. Links to sponsored content or brands will vote you out."
-            />
-
-            <RequestToJoinRule
-              index={5}
-              title="No promotions or spam"
-              description="We created this community to help you along your journey. Links to sponsored content or brands will vote you out."
-            />
+            {commonRules?.length &&
+              commonRules.map((rule, index) => (
+                <RequestToJoinRule
+                  index={index + 1}
+                  title={rule.title}
+                  description={rule.description}
+                />
+              ))}
           </View>
         </ScrollView>
         <RequestStepActionButton title="Continue" pass={pass} onPress={push} />
@@ -154,4 +133,4 @@ const RequestStep1 = props => {
   );
 };
 
-export default RequestStep1;
+export default inject('daoStore')(observer(RequestStep1));
