@@ -89,6 +89,7 @@ class EditProfileForm extends React.Component {
           value={userStore.userInfo.displayName}
           viewStyle={{alignSelf: 'stretch'}}
           label="Name"
+          infoLabel="Required"
           placeholderText="Firstname Lastname"
           autoCapitalize="none"
           autoCorrect={false}
