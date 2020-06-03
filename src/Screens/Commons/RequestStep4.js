@@ -133,8 +133,7 @@ const RequestStep4 = props => {
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NUMBER,
                 formStore: props.paymentFormStore,
-                //validateRule: 'required|numeric',
-                validateRule: 'string',
+                validateRule: 'required|numeric',
               }}
             />
 
@@ -143,8 +142,7 @@ const RequestStep4 = props => {
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NAME,
                 formStore: props.paymentFormStore,
-                //validateRule: 'required|string',
-                validateRule: 'string',
+                validateRule: 'required|string',
               }}
             />
 
@@ -164,11 +162,11 @@ const RequestStep4 = props => {
                   width: '45%',
                 }}
                 label="Expiration date"
+                placeholderText="MM/YY"
                 validation={{
                   name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
                   formStore: props.paymentFormStore,
-                  //validateRule: 'required|string',
-                  validateRule: 'string',
+                  validateRule: 'required|string',
                 }}
               />
               <TextInputField
@@ -179,8 +177,7 @@ const RequestStep4 = props => {
                 validation={{
                   name: RequestToJoinForm.FIELD_CVV,
                   formStore: props.paymentFormStore,
-                  //validateRule: 'required|numeric',
-                  validateRule: 'string',
+                  validateRule: 'required|numeric',
                 }}
               />
             </View>
