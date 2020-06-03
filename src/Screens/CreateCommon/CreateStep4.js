@@ -147,7 +147,7 @@ const CreateStep4 = props => {
       repDist: [1000],
       minFeeToJoin: parseInt(formData.minimum, 10) * 100, // multiply by 100 to get the value in cents
       fundingGoal: parseInt(formData.funding, 10) * 100, // multiply by 100 to get the value in cents
-      fundingGoalDeadline: Math.round(deadline.getTime() / 1000),
+      fundingGoalDeadline: deadline, // just passing unix timestamp in seconds
       ipfsHash,
     };
     console.log('calling createCommon(...)');
@@ -405,7 +405,9 @@ const CreateStep4 = props => {
               <Text style={{fontSize: 14, fontWeight: 'bold'}}>Deadline</Text>
             </View>
             <Text style={styles.textContent}>
-              {moment(form[CreateCommonForm.DEADLINE]).format('MMM DD, YYYY')}
+              {moment
+                .unix(form[CreateCommonForm.DEADLINE])
+                .format('MMM DD, YYYY')}
             </Text>
           </>
 
