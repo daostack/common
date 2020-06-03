@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
+import Share from 'react-native-share';
 import {text, layout, colors, sizeL} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 import {TabView, TabBar} from 'react-native-tab-view';
@@ -184,8 +185,12 @@ const CommonProfile = ({
   };
 
   const shareCommon = event => {
-    console.log('TODO: share functionality');
-    Toast.info('TODO: share functionality');
+    const options = {
+      url: 'https://common.daostack.io/',
+      title: 'Share Common',
+      message: 'Support this cause! ',
+    }
+    Share.open(options);
   };
 
   const openCommonOptions = event => {

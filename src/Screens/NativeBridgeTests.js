@@ -1,4 +1,6 @@
 import React from 'react';
+import Share from 'react-native-share';
+
 import {NativeWallet} from '../Util/NativeWallet';
 import {
   Text,
@@ -51,7 +53,7 @@ class nativeBridgeTests extends React.Component {
       safeSCHash: '',
     };
 
-    this.uid = auth().currentUser.uid;
+    this.uid = auth().currentUser?.uid;
     this.child = React.createRef();
     if (!this.uid) {
       Toast.error('uid is null');
@@ -350,6 +352,19 @@ class nativeBridgeTests extends React.Component {
     this.props.navigation.navigate('Browser', {url: `https://blockscout.com/poa/xdai/address/${address}`});
   }
 
+  shareCommon = () => {
+    try {
+      const options = {
+        url: 'https://common.daostack.io/',
+        title: 'Share Common',
+        message: 'Support this cause! ',
+      }
+      Share.open(options);
+    } catch (e) {
+      console.log('error: ', e)
+    }
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -380,6 +395,11 @@ class nativeBridgeTests extends React.Component {
           <Text>{this.state.commonStatus}</Text>
           <TouchableOpacity onPress={this.createCommon} style={styles.button}>
             <Text>Create Common</Text>
+          </TouchableOpacity>
+
+          <Text>{''}</Text>
+          <TouchableOpacity onPress={this.shareCommon} style={styles.button}>
+            <Text>Share Common</Text>
           </TouchableOpacity>
 
           <Text>{this.state.proposalState}</Text>
