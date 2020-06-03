@@ -53,7 +53,7 @@ export default class ProposalService {
       proposalCollection = proposalCollection.where('proposerId', '==', userId);
     }
 
-    return proposalCollection.where('stage', 'in', stages).onSnapshot(
+    return proposalCollection.where('stageStr', 'in', stages).onSnapshot(
       snapshot => {
         if (snapshot.empty) {
           listChangeCallback([]);
