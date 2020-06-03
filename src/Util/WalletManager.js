@@ -6,17 +6,15 @@ import auth from '@react-native-firebase/auth';
 import ABI from './abi.json';
 import FirebaseService from '../Services/FirebaseService';
 
-ethers.Contract.prototype.sendToRelayer = async function (funcName, params) {
-  console.log('sendToRelayer ->', this.interface.functions.forgeOrg, params);
+ethers.Contract.prototype.sendToRelayer = async function (funcName, params, value = '0') {
   const data = this.interface.functions[funcName].encode(params);
   const manager = WalletManager.getInstance();
-  const response = await manager.execTransaction(manager.safeAddress, this.address, '0', data);
-  console.log('response', response);
+  const response = await manager.execTransaction(manager.safeAddress, this.address, value, data);
   return response.data?.txHash;
 };
 
-ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, params) {
-  const txHash = await this.sendToRelayer(funcName, params);
+ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, params, value = '0') {
+  const txHash = await this.sendToRelayer(funcName, params, value);
   console.log('txHash ->', txHash);
   if (!txHash) {
     // throw new Error('');
@@ -24,11 +22,7 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
   }
   const manager = WalletManager.getInstance();
   const receipt = await manager.provider.waitForTransaction(txHash);
-  console.log('receipt', receipt);
-  console.log('interface', this, this.interface);
-  // const events = this.interface.parseLog(receipt.logs);
   const events = manager.getTransactionEvents(this.interface, receipt);
-  console.log('event ->', events);
   receipt.events = events;
   return receipt;
 };
