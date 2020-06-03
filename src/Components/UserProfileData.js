@@ -170,36 +170,6 @@ const UserProfileData = ({
           isSwiper={true}
           onCountChange={onProposalsCountChange}
         />
-
-        <View style={styles.emptyObjectContainer}>
-          <Icon name="pencil" size={46} />
-          <Text style={{...text.h3Black, ...layout.marginTopS}}>
-            No Proposals
-          </Text>
-          <Text
-            style={{
-              ...text.blackText,
-              ...text.centered,
-              ...layout.marginTopS,
-            }}>
-            Join a common and propose actions you think it should take to
-            achieve its goal
-          </Text>
-        </View>
-
-        <Swiper
-          style={styles.wrapper}
-          loop={false}
-          nestedScrollEnabled={true}
-          showsButtons={false}>
-          <View style={styles.swiperContentWrapper}>
-            <View style={styles.swiperContent}></View>
-          </View>
-
-          <View style={styles.swiperContentWrapper}>
-            <View style={styles.swiperContent} />
-          </View>
-        </Swiper>
       </View>
     </>
   );

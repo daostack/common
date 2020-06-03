@@ -102,7 +102,7 @@ const CommonProfile = ({
 
   const Proposals = () => {
     return (
-      <View style={{paddingVertical: sizeL}}>
+      <View style={{padding: sizeL}}>
         <ProposalsList navigation={navigation} commonId={currCommon.id} />
       </View>
     );
@@ -110,7 +110,7 @@ const CommonProfile = ({
 
   const History = () => {
     return (
-      <View style={{paddingVertical: sizeL}}>
+      <View style={{padding: sizeL}}>
         <ProposalsList
           navigation={navigation}
           commonId={currCommon.id}
