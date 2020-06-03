@@ -4,6 +4,35 @@ import { web3ProviderUrl, web3NetworkId } from '../Config';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 import ABI from './abi.json';
+import FirebaseService from '../Services/FirebaseService';
+
+ethers.Contract.prototype.sendToRelayer = async function (funcName, params) {
+  console.log('sendToRelayer ->', this.interface.functions.forgeOrg, params);
+  const data = this.interface.functions[funcName].encode(params);
+  const manager = WalletManager.getInstance();
+  const response = await manager.execTransaction(manager.safeAddress, this.address, '0', data);
+  console.log('response', response);
+  return response.data?.txHash;
+};
+
+ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, params) {
+  const txHash = await this.sendToRelayer(funcName, params);
+  console.log('txHash ->', txHash);
+  if (!txHash) {
+    // throw new Error('');
+    return null;
+  }
+  const manager = WalletManager.getInstance();
+  const receipt = await manager.provider.waitForTransaction(txHash);
+  console.log('receipt', receipt);
+  console.log('interface', this, this.interface);
+  // const events = this.interface.parseLog(receipt.logs);
+  const events = manager.getTransactionEvents(this.interface, receipt);
+  console.log('event ->', events);
+  receipt.events = events;
+  return receipt;
+};
+
 export default class WalletManager {
   static myInstance = null;
   constructor(uid) {
@@ -14,6 +43,10 @@ export default class WalletManager {
         this.provider,
       );
       this.address = this.wallet.address.toLowerCase();
+      // TODO: replace with userStore or user manager
+      const userData = await FirebaseService.getInstance().getUserById(uid);
+      this.safeAddress = userData.safeAddress;
+      console.log('safeAddress ->', this.safeAddress);
       return this;
     })();
   }
@@ -26,11 +59,15 @@ export default class WalletManager {
     if (WalletManager.myInstance == null) {
       throw new Error('WalletManager is not initialized');
     }
-    return this.myInstance;
+    return WalletManager.myInstance;
   };
 
   getAddress() {
     return this.address;
+  }
+
+  getSafeAddress() {
+    return this.safeAddress;
   }
 
   getBalance = async (address = this.address) => {
@@ -98,6 +135,22 @@ export default class WalletManager {
       let finalSignature = signedTx.replace(/1b$/, '1f').replace(/1c$/, '20');
       // console.log('finalSignature', finalSignature)
       const idToken = await auth().currentUser.getIdToken();
+
+      // const masterCopyContract = new ethers.Contract(
+      //   safeWallet,
+      //   ABI.MasterCopy,
+      //   this.wallet,
+      // );
+
+      // const OVERRIDES = {
+      //   gasLimit: 10000000,
+      //   gasPrice: 15000000000,
+      // };
+
+      // const zeroAddress = `0x${'0'.repeat(40)}`;
+      // const tx = await masterCopyContract.execTransaction(toAddress, valueNumber, data, 0, 0, 0, 0, zeroAddress, zeroAddress, finalSignature, OVERRIDES);
+      // console.log('execTransaction', tx);
+
       const body = { idToken, to: toAddress, value: valueNumber, data, signature: finalSignature };
       const response = await axios.post(
         'https://us-central1-common-daostack.cloudfunctions.net/api/execTransaction',
@@ -139,7 +192,6 @@ export default class WalletManager {
           [SAFE_TX_TYPEHASH, toAddress, value, ethers.utils.keccak256(data), 0, 0, 0, 0, zeroAddress, zeroAddress, nonce]
         )
       );
-
       let myTxHash = ethers.utils.solidityKeccak256(
         ['bytes1', 'bytes1', 'bytes32', 'bytes32'],
         ['0x19', '0x01', domainSeperator, mySafeTxHash]
@@ -175,4 +227,21 @@ export default class WalletManager {
     console.log('address', events[0].values.proxy);
     return events[0].values.proxy;
   };
+
+  getTransactionEvents = (interf, receipt) => {
+      const txEvents = {};
+      const abiEvents = Object.values(interf.events);
+      for (const log of receipt.logs)
+      {
+          for (const abiEvent of abiEvents)
+          {
+              if (abiEvent.topic === log.topics[0])
+              {
+                  txEvents[abiEvent.name] = abiEvent.decode(log.data, log.topics);
+                  break;
+              }
+          }
+      }
+      return txEvents;
+  }
 }

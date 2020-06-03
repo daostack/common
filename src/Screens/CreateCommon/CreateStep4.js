@@ -134,8 +134,7 @@ const CreateStep4 = props => {
 
     console.log('saving data on ipfs: ', formData);
     const ipfsHash = await ipfsUpload(formData);
-    const manager = await WalletManager.getInstance();
-    const address = await manager.getAddress();
+    const address = WalletManager.getInstance().safeAddress;
     console.log('owner account: ', address);
 
     const deadline = formData[CreateCommonForm.DEADLINE];

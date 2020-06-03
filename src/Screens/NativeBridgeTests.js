@@ -280,13 +280,13 @@ class nativeBridgeTests extends React.Component {
   };
 
   createCommon = async () => {
-    const wallet = WalletManager.getInstance().wallet;
+    const manager = WalletManager.getInstance();
 
     try {
       const commonAddress = await ArcService.getInstance().createCommon(
         {
           name: `Test DAO ${new Date()}`,
-          founderAddresses: wallet.address,
+          founderAddresses: manager.safeAddress,
           minFeeToJoin: 100, // TDB: get from formData
           fundingGoal: 100000, // TBD: get from formdata
           // TBD: get form data for deadline; these are in secondSinceEpoch
