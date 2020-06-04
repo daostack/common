@@ -11,7 +11,6 @@ import {
 import {text, layout, colors, sizeL} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 import {TabView, TabBar} from 'react-native-tab-view';
-import ViewTabNoData from '../Components/ViewTabNoData';
 import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
 import CommonCover from '../Components/Commons/CommonCover';
 import CommonStageSummary from '../Components/Commons/CommonStageSummary';

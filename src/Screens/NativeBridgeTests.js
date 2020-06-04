@@ -332,7 +332,7 @@ class nativeBridgeTests extends React.Component {
         proposalStatus: `JoinAndQuit Proposal with id ${proposal.id} created!`,
       });
     } catch (e) {
-      showErrorPopUp(this.props.bottomSheetStore, e.message)
+      showErrorPopUp(this.props.bottomSheetStore, e.message);
       this.setState({proposalState: `${e}`});
     }
     console.log(`proposal created: ${proposal.id}`);
