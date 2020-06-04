@@ -1,6 +1,8 @@
 apply plugin: "com.android.application"
 apply plugin: 'io.fabric'
 
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
+
 import com.android.build.OutputFile
 
 /**
@@ -191,6 +193,11 @@ android {
     packagingOptions {
         pickFirst '**/libc++_shared.so'
     }
+}
+
+apply plugin: 'com.google.gms.google-services'
+googleServices {
+    disableVersionCheck = true
 }
 
 dependencies {
