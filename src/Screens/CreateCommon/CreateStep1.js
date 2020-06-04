@@ -162,7 +162,7 @@ const CreateStep1 = props => {
             validation={{
               name: CreateCommonForm.LINKS,
               formStore: props.generalInfoFormStore,
-              validateRule: 'string|url',
+              validateRule: {common: 'string|url', title: 'string|max:30'},
             }}
           />
         </View>

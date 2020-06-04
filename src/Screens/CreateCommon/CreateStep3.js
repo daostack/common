@@ -158,7 +158,7 @@ const CreateStep3 = props => {
             validation={{
               name: CreateCommonForm.RULES,
               formStore: props.agendaFormStore,
-              validateRule: 'string',
+              validateRule: {common: 'string', title: 'string|max:80'},
             }}
           />
 
