@@ -1,19 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   SafeAreaView,
   View,
-  FlatList,
+  SectionList,
+  StyleSheet,
 } from 'react-native';
-import {CommonBox, BottomRightButton} from '../Components';
-import {db} from '../Firebase';
-import {inject, observer} from 'mobx-react';
-import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
+import { CommonBox, BottomRightButton } from '../Components';
+import { db } from '../Firebase';
+import { inject, observer } from 'mobx-react';
+import { BOTTOM_SHEET_TEMPLATES } from '../Stores/BottomSheetStore';
+import colors from '../Theme/colors';
 
-
-const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
+const CommonsList = ({ navigation, daoStore, bottomSheetStore, userStore }) => {
   // const [hasError, setErrors] = useState(false);
   const [daos, setDaos] = useState([]);
+  const [daoGroup, setDaoGroup] = useState();
 
   useEffect(() => {
     let unsubscribe;
@@ -25,7 +27,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
           }
           let daosSnapshot = snapshot.docs.map((doc, index) => {
             return {
-              ...{id: doc.id},
+              ...{ id: doc.id },
               ...doc.data(),
               ...{
                 coverPhoto: `https://i.picsum.photos/id/${index *
@@ -36,6 +38,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
           setDaos(daosSnapshot);
           daoStore.setDaos(daosSnapshot);
 
+          divideDao(daosSnapshot);
           if (daoStore.isError) {
             console.log('daostore error', daoStore.isError);
             bottomSheetStore.showBottomSheet(
@@ -50,46 +53,104 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     };
     getDaos();
     return unsubscribe;
-  }, [daoStore, bottomSheetStore]);
+  }, [daoStore, bottomSheetStore, userStore.isLoading]);
 
   const setDao = dao => {
     daoStore.setDao(dao);
   };
 
+  divideDao = daoList => {
+
+    if (!userStore.userInfo) {
+      setDaoGroup([{ title: '', data: daoList }]);
+      return
+    }
+
+    let myDaos = [];
+    let otherDaos = [];
+    for (let dao of daoList) {
+      const isMember = dao.members.some(
+        member => member.address === userStore.userInfo.safeAddress.toLowerCase() || member.address === userStore.userInfo.ethereumAddress.toLowerCase(),
+      );
+      if (isMember) {
+        myDaos.push(dao);
+      } else {
+        otherDaos.push(dao);
+      }
+    }
+
+    if (myDaos.length === 0) {
+      setDaoGroup([{ title: '', data: daoList }]);
+      return;
+    }
+
+    setDaoGroup(
+      [
+        {
+          title: `My Dao (${myDaos.length})`,
+          data: myDaos,
+        },
+        {
+          title: `Discover more Commons (${otherDaos.length})`,
+          data: otherDaos,
+        },
+      ]
+    );
+  };
+
+  const header = () => {
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          width: '100%',
+          paddingVertical: 15,
+        }}>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: 'bold',
+            fontStyle: 'normal',
+            letterSpacing: 0,
+          }}>
+          {daos.length} Commons
+      </Text>
+      </View>
+    )
+  }
+
+  const sectionHeader = title => {
+    return (title === '' ? null :
+      <View style={styles.sectionHeaderContainer}>
+        <Text style={styles.header}>
+          {title}
+        </Text>
+      </View>
+    );
+  }
+
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <SafeAreaView />
       <>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '100%',
-            padding: 15,
-          }}>
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: 'bold',
-              fontStyle: 'normal',
-              letterSpacing: 0,
-            }}>
-            {daos.length} Commons
-          </Text>
-        </View>
-
-        {daos && (
-          <FlatList
-            contentContainerStyle={{paddingHorizontal: 20}}
-            data={daos}
-            renderItem={({item}) => (
+        {daoGroup && (
+          <SectionList
+            sections={daoGroup}
+            ListHeaderComponent={header}
+            contentContainerStyle={{ paddingHorizontal: 20 }}
+            renderItem={x =>
               <CommonBox
-                common={item}
+                common={x.item}
                 navigation={navigation}
-                keyExtractor={daos.id}
-                onPress={() => setDao(item)}
-              />
+                // keyExtractor={x.item.id}
+                onPress={() => setDao(x.item)}
+              />}
+            keyExtractor={x => x.id}
+            stickySectionHeadersEnabled={true}
+            renderSectionHeader={({ section: { title } }) => (
+              sectionHeader(title)
             )}
           />
         )}
@@ -100,5 +161,23 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  header: {
+    fontFamily: 'Roboto',
+    fontSize: 18,
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+    lineHeight: 22,
+    letterSpacing: 0,
+    color: colors.grey3,
+    padding: 20,
+    // paddingTop: 10,
+  },
+  sectionHeaderContainer: {
+    marginHorizontal: -20,
+    backgroundColor: '#f2f2f2',
+  },
+})
 
 export default inject('daoStore', 'bottomSheetStore', 'userStore')(observer(CommonsList));
