@@ -6,28 +6,30 @@ import {createFundingProposal} from './createFundingProposal';
 import {Arc} from '@daostack/arc.js';
 import {graphHttpLink, graphwsLink, ipfsLink} from '../../Config';
 
-let serviceInstance = null;
-
 export default class ArcService {
+  static myInstance = null;
   constructor() {
-    this.arc = new Arc({
-      graphqlHttpProvider: graphHttpLink,
-      graphqlWsProvider: graphwsLink,
-      ipfsProvider: ipfsLink,
-      web3Provider: WalletManager.getInstance().wallet,
-    });
+    return ( async () => {
+      this.arc = new Arc({
+        graphqlHttpProvider: graphHttpLink,
+        graphqlWsProvider: graphwsLink,
+        ipfsProvider: ipfsLink,
+        web3Provider: WalletManager.getInstance().wallet,
+      });
+      await this.arc.fetchContractInfos();
+      return this;
+    })();
   }
 
-  init = async () => {
-    await serviceInstance.arc.fetchContractInfos();
+  static init = async () => {
+    ArcService.myInstance = await new ArcService();
   };
 
   static getInstance = () => {
-    if (serviceInstance == null) {
-      serviceInstance = new ArcService();
-      serviceInstance.init();
+    if (ArcService.myInstance == null) {
+      throw new Error('ArcService is not initialized');
     }
-    return serviceInstance;
+    return ArcService.myInstance;
   };
 
   // PROPOSALS

@@ -78,6 +78,7 @@ import Toast, {DURATION} from 'react-native-easy-toast';
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
 import firestore from '@react-native-firebase/firestore';
+import ArcService from './src/Services/ArcService';
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
@@ -141,6 +142,7 @@ const App = ({userStore, bottomSheetStore}) => {
         userStore.setIsLoading(true);
         if (user) {
           await WalletManager.init(user.uid);
+          await ArcService.init();
           await AuthService.getInstance().loadMnemonic(user.uid);
           let appUser = await FirebaseService.getInstance().getUserById(
             user.uid,

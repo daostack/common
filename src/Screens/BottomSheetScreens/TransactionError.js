@@ -10,7 +10,6 @@ import React from 'react';
 import {text, layout, colors} from '../../Theme/index';
 
 const TransactionError = (props) => {
-  console.log('TX ERROR PROPS: ',  props.errorMessage);
   return (
     <View
       style={styles.scrollView} >

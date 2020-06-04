@@ -19,6 +19,7 @@ import Toast from '../Util/Toast';
 import {auth} from '../Firebase';
 import ABI from '../Util/abi.json';
 import { ethers } from 'ethers';
+import {showErrorPopUp} from '../Util';
 
 class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -310,7 +311,7 @@ class nativeBridgeTests extends React.Component {
 
   createRequestToJoin = async () => {
     console.log('creating proposal -- please wait');
-    const daoId = '0x36f1a4799d51ef86b51d8db496feedf53eac92a0';
+    const daoId = '0x38e17c8e4b4cfb146a9d2ab533a9bf8dfb4ee306';
     this.setState({
       proposalStatus: 'Creating JoinAndQuit proposal -- please wait',
     });
@@ -331,7 +332,7 @@ class nativeBridgeTests extends React.Component {
         proposalStatus: `JoinAndQuit Proposal with id ${proposal.id} created!`,
       });
     } catch (e) {
-      this.props.bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {errorMessage: e.message});
+      showErrorPopUp(this.props.bottomSheetStore, e.message)
       this.setState({proposalState: `${e}`});
     }
     console.log(`proposal created: ${proposal.id}`);
@@ -376,21 +377,23 @@ class nativeBridgeTests extends React.Component {
           <Text style={{marginVertical: 10}}>
             --------------- Common Interactions -----------------
           </Text>
-          <Text>Common Tx: {this.state.commonStatus}</Text>
+          <Text>{this.state.commonStatus}</Text>
           <TouchableOpacity onPress={this.createCommon} style={styles.button}>
             <Text>Create Common</Text>
           </TouchableOpacity>
 
+          <Text>{this.state.proposalState}</Text>
           <TouchableOpacity
             onPress={this.createRequestToJoin}
             style={styles.button}>
             <Text>Create a request to join</Text>
           </TouchableOpacity>
 
+          <Text>{this.state.fundingProposalState}</Text>
           <TouchableOpacity
             onPress={this.createFundingProposal}
             style={styles.button}>
-            <Text>Create a funding request [TODO]</Text>
+            <Text>Create a funding request</Text>
           </TouchableOpacity>
 
           <Text>mnemonicsAndStore: {this.state.mnemonicsAndStore}</Text>

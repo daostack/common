@@ -35,19 +35,26 @@ const MultiLinkField = props => {
     <View style={{paddingTop: sizeL}}>
       {[...Array(count).keys()].map(currIndex => {
         const currItemValidation = {...props.validation}; //{...validation};
-        currItemValidation.name = `${props.validation.name}_value_${currIndex}`;
+        currItemValidation.name = `${props.validation.name}_value_${currIndex +
+          1}`;
         currItemValidation.multiName = props.validation.name;
+        currItemValidation.validateRule =
+          validation.validateRule?.common || validation.validateRule;
 
         const currTitleItemValidation = {...props.validation}; //{...validation};
-        currTitleItemValidation.name = `${props.validation.name}_title_${currIndex}`;
+        currTitleItemValidation.name = `${
+          props.validation.name
+        }_title_${currIndex + 1}`;
         currTitleItemValidation.multiName = props.validation.name;
-        currTitleItemValidation.validateRule = 'string';
+        currTitleItemValidation.validateRule =
+          validation.validateRule?.title || 'string';
         currTitleItemValidation.topPosition = true;
 
         return (
-          <View key={`key_${props.validation.name}_${currIndex}`}>
+          <View key={`key_${props.validation.name}_${currIndex + 1}`}>
             {props.title ? (
               <TextInputField
+                innerLabel={maxCount ? `${currIndex + 1}/${maxCount}` : false}
                 placeholderText={props.title}
                 validation={currTitleItemValidation}
               />

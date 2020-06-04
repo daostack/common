@@ -22,7 +22,7 @@ export default class GoogleDriveService {
 
   static getInstance() {
     if (GoogleDriveService.instance == null) {
-      throw new Error('GoogleDrive have not initialized');
+      throw new Error('GoogleDrive is not initialized');
     }
     return this.instance;
   }

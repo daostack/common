@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Text, StyleSheet, View} from 'react-native';
+import {Text, StyleSheet, View, Animated} from 'react-native';
 import {text, layout, colors} from '../../Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
@@ -8,7 +8,7 @@ import FirebaseService from '../../Services/FirebaseService';
 import ProposalApprovalTag from './ProposalApprovalTag';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
-const ProposalCard = ({proposalId, onReviewProposal}) => {
+const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
   const [proposalInfo, setProposalInfo] = useState(false);
   const [proposedUser, setProposedUser] = useState(false);
 
@@ -43,61 +43,105 @@ const ProposalCard = ({proposalId, onReviewProposal}) => {
       }
     };
 
-    getProposalInfo(proposalId);
+    console.log('Console.log proposalId -> ', proposalId);
+
+    if (proposalId) {
+      getProposalInfo(proposalId);
+    }
   }, [proposalId]);
 
+  useEffect(() => {
+    const loadProposalInfo = async currProposalInfo => {
+      try {
+        //RequestToJoin proposal
+        let proposedMemberId = null;
+        let funding = null;
+        if (currProposalInfo.joinAndQuit) {
+          proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+          funding = currProposalInfo.joinAndQuit.funding;
+        }
+        //FundingRequest proposal
+        else {
+          proposedMemberId = currProposalInfo.fundingRequest.beneficiaryId;
+          funding = currProposalInfo.joinAndQuit.amount;
+        }
+
+        const currProposedUser = await FirebaseService.getInstance().getUserById(
+          proposedMemberId,
+        );
+
+        setProposedUser(currProposedUser);
+        setProposalInfo(currProposalInfo);
+      } catch (error) {
+        console.log('error: ', error);
+      }
+    };
+
+    console.log('Console.log data -> ', data);
+
+    if (data) {
+      loadProposalInfo(data);
+    }
+  }, [data]);
+
   return (
-    <View style={styles.proposalCard}>
-      <ProposalCardHeader isBoosted={true} />
+    <Animated.View style={[styles.proposalCard, containerStyle]}>
+      <TouchableOpacity onPress={onReviewProposal}>
+        <ProposalCardHeader isBoosted={true} />
 
-      <View
-        style={{
-          ...layout.content,
-          ...layout.flexStart,
-          ...layout.paddingBottomL,
-        }}>
-        <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
-          {proposalInfo?.title}
-        </Text>
+        <View
+          style={{
+            ...layout.content,
+            ...layout.flexStart,
+            ...layout.paddingBottomL,
+            ...{flexWrap: 'wrap'},
+          }}>
+          <Text
+            style={{...text.h3Black, ...{textAlign: 'left', flexWrap: 'wrap'}}}>
+            {proposalInfo?.title}
+          </Text>
 
-        <View style={layout.flexRow}>
-          <MemberCard
-            name={proposedUser?.displayName}
-            memberCustomText={'3d ago'}
-            imageUrl={proposedUser.photoURL}
-            isPending={false}
-          />
-          <View
-            style={{
-              ...layout.content,
-              ...{alignItems: 'flex-end'},
-            }}>
-            <Text style={text.h2Black}>{`$${proposalInfo?.funding}`}</Text>
-            <Text style={text.smallGreyText}>02:02:02:02</Text>
+          <View style={layout.flexRow}>
+            <MemberCard
+              name={proposedUser?.displayName}
+              memberCustomText={'3d ago'}
+              imageUrl={proposedUser.photoURL}
+              isPending={false}
+            />
+            <View
+              style={{
+                ...layout.content,
+                ...{alignItems: 'flex-end'},
+              }}>
+              <Text style={text.h2Black}>{`$${proposalInfo?.funding}`}</Text>
+              <Text style={text.smallGreyText}>02:02:02:02</Text>
+            </View>
+          </View>
+
+          <View style={{...layout.flexRow, ...layout.marginTopS}}>
+            <ProposalApprovalTag
+              iconName="approved"
+              value={40}
+              isMarked={true}
+            />
+            <ProposalApprovalTag
+              iconName="declined"
+              value={28}
+              isMarked={false}
+            />
+            <ProposalApprovalTag
+              iconName="discussion"
+              value={121}
+              isMarked={false}
+            />
+          </View>
+
+          <View style={styles.proposalCardActionContainer}>
+            <Text style={styles.proposalActionBtnText}>Review proposal</Text>
           </View>
         </View>
-
-        <View style={{...layout.flexRow, ...layout.marginTopS}}>
-          <ProposalApprovalTag iconName="approved" value={40} isMarked={true} />
-          <ProposalApprovalTag
-            iconName="declined"
-            value={28}
-            isMarked={false}
-          />
-          <ProposalApprovalTag
-            iconName="discussion"
-            value={121}
-            isMarked={false}
-          />
-        </View>
-
-        <View style={styles.proposalCardActionContainer}>
-          <TouchableOpacity onPress={onReviewProposal}>
-            <Text style={styles.proposalActionBtnText}>Review proposal</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
+      </TouchableOpacity>
+    </Animated.View>
   );
 };
 
@@ -117,11 +161,11 @@ const styles = StyleSheet.create({
   },
 
   proposalCard: {
-    marginHorizontal: 20,
+    marginHorizontal: 5,
     ...layout.marginBottomL,
     backgroundColor: colors.white,
     borderRadius: 20,
-    alignSelf: 'stretch',
+    //alignSelf: 'stretch',
 
     borderStyle: 'solid',
     borderWidth: 1,
@@ -134,6 +178,9 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
+    //flex: 1,
+    //flexWrap: 'wrap',
+    //width: 350,
   },
 });
 

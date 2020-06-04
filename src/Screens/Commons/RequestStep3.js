@@ -141,6 +141,7 @@ const RequestStep3 = props => {
               onCustomSelect={onCustomSelect}
               onCustomClose={onCustomClose}
               onAmountSelected={onAmountSelected}
+              minFeeToJoin={props.daoStore.dao.minFeeToJoin}
             />
           </View>
         </ScrollView>
@@ -161,4 +162,7 @@ const RequestStep3 = props => {
   );
 };
 
-export default inject('personalContributionFormStore')(observer(RequestStep3));
+export default inject(
+  'personalContributionFormStore',
+  'daoStore',
+)(observer(RequestStep3));
