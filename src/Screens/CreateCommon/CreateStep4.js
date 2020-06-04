@@ -127,6 +127,8 @@ const CreateStep4 = props => {
   };
 
   const forgeCommon = async () => {
+    try {
+
     const formDataInit = {
       ...props.generalInfoFormStore.getChangedFormFieldsJson(),
       ...props.fundingFormStore.getChangedFormFieldsJson(),
@@ -143,8 +145,7 @@ const CreateStep4 = props => {
     console.log('saving data on ipfs: ', formData);
 
     const ipfsHash = await ipfsUpload(formData);
-    const manager = await WalletManager.getInstance();
-    const address = await manager.getAddress();
+    const address = WalletManager.getInstance().safeAddress;
     console.log('owner account: ', address);
 
     const deadline = formData[CreateCommonForm.DEADLINE];
@@ -172,6 +173,10 @@ const CreateStep4 = props => {
     }
 
     return {commonAddress};
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   };
 
   // const creationError = event => {

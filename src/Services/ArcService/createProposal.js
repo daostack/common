@@ -64,6 +64,10 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       opts,
     );
     const receipt = await tx.wait();
+
+    // TODO: Relayer
+    // const receipt = await transaction.contract.sendToRelayerWithReceipt(transaction.method, transaction.args, transaction.opts.value);
+
     console.log(
       `Transaction with ${receipt.transactionHash} was mined: proposal created!`,
     );
