@@ -32,12 +32,16 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           funding = currProposalInfo.joinAndQuit.amount;
         }
 
+        console.log('proposedMemberId 1 -> ', proposedMemberId);
+
         const currProposedUser = await FirebaseService.getInstance().getUserById(
           proposedMemberId,
         );
 
         setProposedUser(currProposedUser);
         setProposalInfo({...currProposalInfo, ...{funding: funding}});
+
+        console.log('proposedUser -> ', proposedUser);
       } catch (error) {
         console.log('error: ', error);
       }
@@ -66,9 +70,13 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           funding = currProposalInfo.joinAndQuit.amount;
         }
 
+        console.log('proposedMemberId 2 -> ', proposedMemberId);
+
         const currProposedUser = await FirebaseService.getInstance().getUserById(
           proposedMemberId,
         );
+
+        console.log('currProposedUser 2 -> ', currProposedUser);
 
         setProposedUser(currProposedUser);
         setProposalInfo(currProposalInfo);
@@ -86,7 +94,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
 
   return (
     <Animated.View style={[styles.proposalCard, containerStyle]}>
-      <ProposalCardHeader isBoosted={true} />
+      <ProposalCardHeader isBoosted={true} stage={proposalInfo.stage} />
 
       <View
         style={{
@@ -102,9 +110,8 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
 
         <View style={layout.flexRow}>
           <MemberCard
-            name={proposedUser?.displayName}
+            memberInfo={proposedUser}
             memberCustomText={'3d ago'}
-            imageUrl={proposedUser.photoURL}
             isPending={false}
           />
           <View

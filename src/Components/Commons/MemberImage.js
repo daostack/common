@@ -3,31 +3,54 @@ import React, {useEffect, useState} from 'react';
 import {colors} from '../../Theme';
 import FirebaseService from '../../Services/FirebaseService';
 
-
-const MemberImage = ({member, key}) => {
-  const [memberInfo, setMemberInfo] = useState('');
+const MemberImage = ({member, memberInfo, key}) => {
+  const [memberInformation, setMemberInformation] = useState('');
   useEffect(() => {
-    getMemberInfo();
+    if (member) {
+      getMemberInfo();
+    } else {
+      setMemberInformation(memberInfo);
+    }
   }, []);
 
   const getMemberInfo = async () => {
-    const memberInformation = await FirebaseService.getInstance().getUserByAddress(
+    const currMemberInformation = await FirebaseService.getInstance().getUserByAddress(
       member.address,
     );
-    setMemberInfo(memberInformation);
+    setMemberInformation(currMemberInformation);
   };
-  return memberInfo ? memberInfo.photoURL ? <Image
-      key={key}
-      style={styles.memberImage}
-      source={{
-        uri: memberInfo.photoURL,
+  return memberInformation ? (
+    memberInformation.photoURL ? (
+      <Image
+        key={key}
+        style={styles.memberImage}
+        source={{
+          uri: memberInformation.photoURL,
+        }}
+      />
+    ) : (
+      <View
+        style={{
+          ...styles.memberImage,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#6e7d82',
+        }}>
+        <Text style={{width: 17, height: 17, color: 'white'}}>
+          {memberInformation.displayName}
+        </Text>
+      </View>
+    )
+  ) : (
+    <View
+      style={{
+        ...styles.memberImage,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#6e7d82',
       }}
-    /> :
-    <View style={{...styles.memberImage, alignItems: 'center', justifyContent: 'center', backgroundColor: '#6e7d82'}}>
-      <Text style={{width: 17, height: 17, color: 'white' }}>{memberInfo.displayName}</Text>
-    </View>
-    :
-    <View style={{...styles.memberImage, alignItems: 'center', justifyContent: 'center', backgroundColor: '#6e7d82'}}/>;
+    />
+  );
 };
 
 const styles = StyleSheet.create({

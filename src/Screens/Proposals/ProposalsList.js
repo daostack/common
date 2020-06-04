@@ -20,6 +20,7 @@ const ProposalsList = props => {
   const isSwiper = props.isSwiper;
   const navigation = props.navigation;
   const onCountChange = props.onCountChange;
+  const onlyRequestsToJoin = props.onlyRequestsToJoin;
   const [list, setList] = useState([]);
 
   console.log('commonId', commonId);
@@ -63,6 +64,7 @@ const ProposalsList = props => {
           }
         },
         listRef,
+        onlyRequestsToJoin,
       );
     };
 

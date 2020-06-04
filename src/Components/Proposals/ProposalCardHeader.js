@@ -3,7 +3,7 @@ import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
 import {text, layout, colors, sizeXS} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
-const ProposalCardHeader = ({isBoosted, openBoostedInfo}) => {
+const ProposalCardHeader = ({isBoosted, openBoostedInfo, stage}) => {
   let iconName = 'star';
   let iconColor = colors.mainBlue;
   let headerTitle = 'Boosted';
@@ -18,7 +18,7 @@ const ProposalCardHeader = ({isBoosted, openBoostedInfo}) => {
     <View style={styles.proposalCardHeader}>
       <Icon name={iconName} color={iconColor} size={16} />
       <Text style={{...text.orangeSmallBold, ...{marginHorizontal: 5}}}>
-        {headerTitle}
+        {stage}
       </Text>
       {openBoostedInfo ? (
         <TouchableOpacity onPress={openBoostedInfo}>
