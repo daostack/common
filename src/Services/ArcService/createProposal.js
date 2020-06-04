@@ -26,7 +26,10 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     } catch (e) {
       console.log(e);
       console.log(daoId);
-      const plugins = (await dao.plugins().pipe(first()).toPromise());
+      const plugins = await dao
+        .plugins()
+        .pipe(first())
+        .toPromise();
       console.log(plugins.map(p => p.coreState.name));
       throw e;
     }
@@ -55,8 +58,11 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     console.log('creating transaction');
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
 
-    const opts = { ...OVERRIDES, value: transaction.opts.value};
-    tx = await transaction.contract[transaction.method](...transaction.args, opts);
+    const opts = {...OVERRIDES, value: transaction.opts.value};
+    tx = await transaction.contract[transaction.method](
+      ...transaction.args,
+      opts,
+    );
     const receipt = await tx.wait();
 
     // TODO: Relayer
@@ -75,7 +81,6 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     const receipt = await transaction.send();
     return receipt.result; // this is a arc.js Proposal instance
      */
-
   } catch (e) {
     console.log(e);
     throw e;
