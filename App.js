@@ -13,6 +13,7 @@ import {
   Platform,
   View,
   Alert,
+  Linking,
   DeviceEventEmitter,
 } from 'react-native';
 
@@ -74,7 +75,8 @@ import KeyboardManager from 'react-native-keyboard-manager';
 import CommonCreationLoading from './src/Screens/CommonCreationLoading';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import Toast, {DURATION} from 'react-native-easy-toast';
-
+import {CommonActions} from '@react-navigation/native'
+import { URL, URLSearchParams } from 'react-native-url-polyfill';
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
 import firestore from '@react-native-firebase/firestore';
@@ -107,6 +109,7 @@ const App = ({userStore, bottomSheetStore}) => {
           return NotificationService.saveTokenToDatabase();
         }
       });
+
     return messaging().onTokenRefresh(token => {
       NotificationService.saveTokenToDatabase(token);
     });
@@ -133,6 +136,51 @@ const App = ({userStore, bottomSheetStore}) => {
       Alert.alert('Foreground Message Arrived', JSON.stringify(remoteMessage));
     });
     return unsubscribe;
+  }, []);
+
+  const handleOpenURL = obj => {
+    const url = new URL(obj.url);
+    console.log('url: ', url)
+    try {
+      const page = url.pathname.split('/')[1];
+      const id = url.pathname.split('/')[2];
+      console.log('page: ',page);
+      console.log('id: ',id);
+      if ( page === 'common') {
+        console.log('true');
+        const actions = CommonActions.navigate({
+          name: 'CommonProfile',
+          params: {
+            currCommon: id,
+          },
+        });
+        this.props.navigation.dispatch(actions);
+      } else if ( page === 'proposal') {
+        const actions = CommonActions.navigate({
+          name: 'ProposalScreen',
+          params: {
+            proposalId: id,
+          },
+        });
+        this.props.navigation.dispatch(actions);
+      }
+    } catch (e) {
+      console.log('error: ', e)
+    }
+  };
+
+
+  const getURL = async () =>{
+    const initialUrl = await Linking.getInitialURL();
+    console.log('initialUrl: ', initialUrl)
+  }
+
+  useEffect(() => {
+    getURL();
+    Linking.addEventListener('url', handleOpenURL);
+    return (() => {
+      Linking.removeEventListener('url', handleOpenURL);
+    });
   }, []);
 
   useEffect(() => {
