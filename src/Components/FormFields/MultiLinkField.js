@@ -38,6 +38,8 @@ const MultiLinkField = props => {
         currItemValidation.name = `${props.validation.name}_value_${currIndex +
           1}`;
         currItemValidation.multiName = props.validation.name;
+        currItemValidation.validateRule =
+          validation.validateRule?.common || validation.validateRule;
 
         const currTitleItemValidation = {...props.validation}; //{...validation};
         currTitleItemValidation.name = `${
