@@ -16,34 +16,25 @@ import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import ProposalsList from '../../Proposals/ProposalsList';
 
 const getTabName = (objectName, count) => {
-  console.log('tab name ->', objectName, count);
   return `${objectName} (${count ? count : 0})`;
 };
 
 const CommonMembers = ({navigation, route}) => {
   const [index, setIndex] = useState(0);
-
+  const [pendingCount, setPendingCount] = useState(4);
   const members = route.params.members;
 
-  const [routes, setRoutes] = useState([
+  const routes = [
     {key: 'members', title: getTabName('Members', members.length)},
-    {key: 'pending', title: getTabName('Pending')},
-  ]);
-
-  console.log('route -> ', route);
+    {key: 'pending', title: getTabName('Pending', pendingCount)},
+  ];
 
   const Members = () => {
     return sceneRenderer(0);
   };
 
   const onProposalsCountChange = count => {
-    setRoutes([
-      {
-        key: 'members',
-        title: getTabName('Members', route.params.members.length),
-      },
-      {key: 'pending', title: getTabName('Pending', count)},
-    ]);
+    setPendingCount(count);
   };
 
   const Pending = () => {
