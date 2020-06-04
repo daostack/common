@@ -127,6 +127,8 @@ const CreateStep4 = props => {
   };
 
   const forgeCommon = async () => {
+    try {
+
     const formDataInit = {
       ...props.generalInfoFormStore.getChangedFormFieldsJson(),
       ...props.fundingFormStore.getChangedFormFieldsJson(),
@@ -171,6 +173,10 @@ const CreateStep4 = props => {
     }
 
     return {commonAddress};
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   };
 
   // const creationError = event => {
