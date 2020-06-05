@@ -117,6 +117,7 @@ const CreateStep3 = props => {
             value={''}
             viewStyle={{alignSelf: 'stretch'}}
             label="Course of action"
+            infoLabel="Required"
             numberOfLines={6}
             multiline={true}
             placeholderText="What action are you planning to take to fulfil your goal? Are there things this common will not do?"
@@ -125,7 +126,7 @@ const CreateStep3 = props => {
             validation={{
               name: CreateCommonForm.ACTION,
               formStore: props.agendaFormStore,
-              validateRule: 'string',
+              validateRule: 'string|required',
             }}
           />
           <Text
@@ -157,7 +158,7 @@ const CreateStep3 = props => {
             validation={{
               name: CreateCommonForm.RULES,
               formStore: props.agendaFormStore,
-              validateRule: 'string',
+              validateRule: {common: 'string', title: 'string|max:80'},
             }}
           />
 
