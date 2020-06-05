@@ -8,7 +8,7 @@ const DiscussionList = props => {
   const commonId = props.commonId;
   const [list, setList] = useState([]);
 
-  console.log('commonId', commonId);
+  console.log('commonId -->', commonId);
 
   let listRef = useRef([]);
   useEffect(() => {
@@ -62,7 +62,7 @@ const DiscussionList = props => {
             <DiscussionCard
               key={item.id}
               data={item}
-              discussionId={props.commonId}
+              commonId={props.commonId}
               navigation={props.navigation}
             />
           )}
