@@ -40,6 +40,7 @@ const DiscussionCard = props => {
   const navigateToDiscussion = () => {
     props.navigation.navigate('Discussions', {
       data: data,
+      discussionId: data.id,
       commonId: commonId,
     });
   };

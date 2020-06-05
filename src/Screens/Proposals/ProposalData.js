@@ -24,6 +24,8 @@ const ProposalData = props => {
   const navigation = useNavigation();
   const [proposalInfo, setProposalInfo] = useState(null);
 
+  const proposalId = props.proposalId;
+
   useEffect(() => {
     // noinspection JSAnnotator
     const loadProposalInfo = async currProposalInfo => {
@@ -51,11 +53,9 @@ const ProposalData = props => {
     };
 
     const loadDiscussions = () => {
-      const discussionId = '43Q9abICrp2KpE86c1Az';
       firestore()
-        .collection('discussion')
-        .doc(discussionId)
-        .collection('message')
+        .collection('discussionMessage')
+        .where('discussionId', '==', proposalId)
         .orderBy('createTime', 'desc')
         .limit(4)
         .get()
@@ -275,6 +275,7 @@ const ProposalData = props => {
           </View>
         </ScrollView>
 
+        {topMessage.length === 0 ? null : (
         <View style={styles.proposalCard}>
           <View style={layout.content}>
             <View style={{...styles.proposalColumnSubtitle}}>
@@ -282,7 +283,7 @@ const ProposalData = props => {
                 Recent comments
               </Text>
             </View>
-            {topMessage.length === 0 ? null : (
+
               <View style={{...layout.content, ...layout.flexStart}}>
                 {topMessage.map((currMessage, currIndex) => {
                   return (
@@ -296,8 +297,6 @@ const ProposalData = props => {
                   );
                 })}
               </View>
-            )}
-            {/* <ChatRoom path="common/48NPcGnpskN9YkqVNXKA/proposal/DmZFnbSbkwcQHMAyGa54/discussion/43Q9abICrp2KpE86c1Az/message"/> */}
             <View style={layout.contant}>
               <TouchableOpacity onPress={() => props.showMore()}>
                 <Text style={styles.messageShowMoreBtn}>Show more</Text>
@@ -305,8 +304,8 @@ const ProposalData = props => {
             </View>
           </View>
         </View>
+        )}
       </View>
-
       <ImageView
         images={proposalInfo.images}
         imageIndex={imageGalleryIndex}

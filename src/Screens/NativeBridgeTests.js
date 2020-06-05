@@ -283,10 +283,11 @@ class nativeBridgeTests extends React.Component {
   createCommon = async () => {
     try {
       const wallet = WalletManager.getInstance().wallet;
+    const manager = WalletManager.getInstance();
       const commonAddress = await ArcService.getInstance().createCommon(
         {
           name: `Test DAO ${new Date()}`,
-          founderAddresses: wallet.address,
+          founderAddresses: manager.safeAddress,
           minFeeToJoin: 100, // TDB: get from formData
           fundingGoal: 100000, // TBD: get from formdata
           // TBD: get form data for deadline; these are in secondSinceEpoch
@@ -311,7 +312,7 @@ class nativeBridgeTests extends React.Component {
 
   createRequestToJoin = async () => {
     console.log('creating proposal -- please wait');
-    const daoId = '0x38e17c8e4b4cfb146a9d2ab533a9bf8dfb4ee306';
+    const daoId = '0x59b1c80f882c38abd52a90c9b30edafa55f7e421'; // 0 min join fee
     this.setState({
       proposalStatus: 'Creating JoinAndQuit proposal -- please wait',
     });
@@ -322,7 +323,7 @@ class nativeBridgeTests extends React.Component {
         files: [],
         images: [],
         links: [], // {title: "title", url: "url"}
-        funding: new BN(200),
+        funding: new BN(0),
       };
       const proposal = await ArcService.getInstance().createRequestToJoin(
         daoId,

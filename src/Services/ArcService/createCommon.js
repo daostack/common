@@ -80,17 +80,18 @@ export const createCommon = async (
       repDist: [opts.memberReputation],
     });
 
-    tx = await daoFactoryContract.forgeOrg(...forgeOrgData, OVERRIDES);
     console.log('waiting for tx to be mined');
-    console.log(tx);
-    receipt = await tx.wait();
+    receipt = await daoFactoryContract.sendToRelayerWithReceipt('forgeOrg', forgeOrgData);
+    console.log('forgeOrg receipt ->', receipt);
     if (receipt) {
       daoStore.setCreationStatus(2);
     }
     console.log('done!');
     // get the new avatar address of the thing that was just created..
-    const newOrgEvent = receipt.events.filter(e => e.event === 'NewOrg')[0];
-    const newOrgAddress = newOrgEvent.args._avatar;
+    const newOrgEvent = receipt.events.NewOrg;
+    console.log('newOrgEvent', newOrgEvent);
+    const newOrgAddress = newOrgEvent._avatar;
+    console.log('newOrgAddress', newOrgAddress);
 
     console.log('Calling DAOFactory.setSchemes(...)', opts);
     console.log('variables sending to Contract', {
@@ -117,10 +118,9 @@ export const createCommon = async (
       metaData: opts.ipfsHash,
     });
 
-    tx = await daoFactoryContract.setSchemes(...schemeData, OVERRIDES);
-    console.log('waiting for tx to be mined');
     daoStore.setCreationStatus(4);
-    receipt = await tx.wait();
+    console.log('waiting for tx to be mined');
+    receipt = await daoFactoryContract.sendToRelayerWithReceipt('setSchemes', schemeData);
     console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
     daoStore.setCreationStatus(5);
     return receipt;
