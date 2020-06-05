@@ -24,7 +24,6 @@ import ProposalsList from './Proposals/ProposalsList';
 import BottomRightButton from '../Components/BottomRightButton';
 import DiscussionList from './Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
-import Toast from '../Util/Toast';
 import {numberFormatter} from '../Util';
 
 import MemberImage from '../Components/Commons/MemberImage';

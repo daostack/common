@@ -1,5 +1,7 @@
 import React from 'react';
 import Share from 'react-native-share';
+import {CommonActions} from '@react-navigation/native'
+import { URL, URLSearchParams } from 'react-native-url-polyfill';
 
 import {NativeWallet} from '../Util/NativeWallet';
 import {
@@ -21,6 +23,7 @@ import Toast from '../Util/Toast';
 import {auth} from '../Firebase';
 import ABI from '../Util/abi.json';
 import { ethers } from 'ethers';
+import {URL_SCHEMES} from '../Util/UniversalLinking';
 
 class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -352,14 +355,58 @@ class nativeBridgeTests extends React.Component {
     this.props.navigation.navigate('Browser', {url: `https://blockscout.com/poa/xdai/address/${address}`});
   }
 
-  shareCommon = () => {
+  shareCommon = (type) => {
     try {
-      const options = {
-        url: 'https://common.daostack.io/',
-        title: 'Share Common',
-        message: 'Support this cause! ',
+      let options;
+      if (type === 'common') {
+        options = {
+        url: 'https://lucid-elion-eb9949.netlify.app?common=0x38e17c8e4b4cfb146a9d2ab533a9bf8dfb4ee306',
+        title: 'Check out this Common',
+        message: 'Support the cause! ',
+      };
+      } else if (type === 'proposal') {
+
+        options = {
+        url: 'https://lucid-elion-eb9949.netlify.app?proposal=ba02cba0-937a-11ea-b51a-77e469735457',
+        title: 'Check out this proposal',
+        message: 'Give us some input! ',
+      };
+      } else {
+        options = {
+          url: 'https://lucid-elion-eb9949.netlify.app/',
+          title: 'Check out Common',
+          message: 'Support a cause today! ',
+        };
       }
       Share.open(options);
+    } catch (e) {
+      console.log('error: ', e)
+    }
+  };
+
+  filterUrl = () => {
+    const url = new URL('https://lucid-elion-eb9949.netlify.app?proposal=ba02cba0-937a-11ea-b51a-77e469735457');
+    console.log('URL: ', url);
+    const searchParams = new URLSearchParams(url.searchParams);
+    try {
+      if ( searchParams.has('common')) {
+        console.log('true');
+        const actions = CommonActions.navigate({
+          name: 'CommonProfile',
+          params: {
+            currCommon: searchParams.get('common'),
+          },
+        });
+        this.props.navigation.dispatch(actions);
+      } else if ( searchParams.has('proposal')) {
+        const actions = CommonActions.navigate({
+          name: 'ProposalScreen',
+          params: {
+            proposalId: searchParams.get('proposal'),
+          },
+        });
+        this.props.navigation.dispatch(actions);
+      }
     } catch (e) {
       console.log('error: ', e)
     }
@@ -398,8 +445,26 @@ class nativeBridgeTests extends React.Component {
           </TouchableOpacity>
 
           <Text>{''}</Text>
-          <TouchableOpacity onPress={this.shareCommon} style={styles.button}>
-            <Text>Share Common</Text>
+          <View style={{flexDirection: 'row',     alignItems: 'center',
+            justifyContent: 'space-between',
+            width: 200,
+            height: 40,
+          }}>
+            <TouchableOpacity onPress={() => this.shareCommon('app')} style={styles.smallButton}>
+              <Text>Share App</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.shareCommon('common')} style={styles.smallButton}>
+              <Text>Share Common</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.shareCommon('proposal')} style={styles.smallButton}>
+              <Text>Share Proposal</Text>
+            </TouchableOpacity>
+
+          </View>
+
+          <Text>{''}</Text>
+          <TouchableOpacity onPress={this.filterUrl} style={styles.button}>
+            <Text>Filter URL</Text>
           </TouchableOpacity>
 
           <Text>{this.state.proposalState}</Text>
@@ -567,6 +632,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: 200,
+    height: 40,
+    backgroundColor: 'grey',
+  },
+  smallButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 66,
     height: 40,
     backgroundColor: 'grey',
   },

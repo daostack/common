@@ -13,6 +13,7 @@ import {
   Platform,
   View,
   Alert,
+  Linking,
   DeviceEventEmitter,
 } from 'react-native';
 
@@ -74,7 +75,8 @@ import KeyboardManager from 'react-native-keyboard-manager';
 import CommonCreationLoading from './src/Screens/CommonCreationLoading';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import Toast, {DURATION} from 'react-native-easy-toast';
-
+import {CommonActions} from '@react-navigation/native'
+import { URL, URLSearchParams } from 'react-native-url-polyfill';
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
 import firestore from '@react-native-firebase/firestore';
@@ -84,10 +86,11 @@ if (Platform.OS === 'ios') {
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
 }
 
-const App = ({userStore, bottomSheetStore}) => {
+const App = ({userStore, bottomSheetStore, navigation}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
   const hudRef = useRef();
+  const navigationRef = useRef();
 
   // const getTestEth = async address => {
   //   console.log('getting test eth for user: ', address);
@@ -108,6 +111,7 @@ const App = ({userStore, bottomSheetStore}) => {
           return NotificationService.saveTokenToDatabase();
         }
       });
+
     return messaging().onTokenRefresh(token => {
       NotificationService.saveTokenToDatabase(token);
     });
@@ -134,6 +138,48 @@ const App = ({userStore, bottomSheetStore}) => {
       Alert.alert('Foreground Message Arrived', JSON.stringify(remoteMessage));
     });
     return unsubscribe;
+  }, []);
+
+  const handleOpenURL = obj => {
+    const url = new URL(obj.url);
+    console.log('url: ', navigationRef.current);
+    const searchParams = new URLSearchParams(url.searchParams);
+    try {
+      if ( searchParams.has('common')) {
+        console.log('true');
+        const actions = CommonActions.navigate({
+          name: 'CommonProfile',
+          params: {
+            currCommon: searchParams.get('common'),
+          },
+        });
+        navigationRef.current?.dispatch(actions);
+      } else if ( searchParams.has('proposal')) {
+        const actions = CommonActions.navigate({
+          name: 'ProposalScreen',
+          params: {
+            proposalId: searchParams.get('proposal'),
+          },
+        });
+        navigationRef.current?.dispatch(actions);
+      }
+    } catch (e) {
+      console.log('error: ', e)
+    }
+  };
+
+
+  const getURL = async () =>{
+    const initialUrl = await Linking.getInitialURL();
+    console.log('initialUrl: ', initialUrl)
+  }
+
+  useEffect(() => {
+    getURL();
+    Linking.addEventListener('url', handleOpenURL);
+    return (() => {
+      Linking.removeEventListener('url', handleOpenURL);
+    });
   }, []);
 
   useEffect(() => {
@@ -217,7 +263,7 @@ const App = ({userStore, bottomSheetStore}) => {
 
   return (
     <ApolloProvider client={client}>
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef}>
         <Stack.Navigator
           screenOptions={{
             headerStyle: styles.headerStyle,

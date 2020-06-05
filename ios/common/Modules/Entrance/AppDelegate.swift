@@ -17,6 +17,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     private var bridge: RCTBridge?
+    
+    func application(
+        _ application: UIApplication,
+        open url: URL,
+        sourceApplication: String?,
+        annotation: Any
+    ) -> Bool {
+        return RCTLinkingManager.application(
+            application,
+            open: url,
+            sourceApplication: sourceApplication,
+            annotation: annotation)
+    }
+    
+    func application(
+        _ application: UIApplication,
+        continue userActivity: NSUserActivity,
+        restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void
+    ) -> Bool {
+        return RCTLinkingManager.application(
+            application,
+            continue: userActivity,
+            restorationHandler: restorationHandler)
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
