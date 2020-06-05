@@ -51,15 +51,6 @@ const UserProfile = ({ userStore, navigation }) => {
 
   const onTestPagePress = event => {
     navigation.navigate('NativeBridgeTests');
-    if (userStore.userInfo) {
-      console.log(
-        'fetching some Eth for your address',
-        userStore.userInfo.ethereumAddress,
-      );
-      fetch(
-        `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${userStore.userInfo.ethereumAddress}`,
-      );
-    }
   };
 
   const onUsersListPress = event => {
