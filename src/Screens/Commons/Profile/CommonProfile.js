@@ -379,9 +379,12 @@ const CommonProfile = ({
         {isMember ? (
           <BottomRightButton
             onPress={() =>
-              navigation.navigate('New Topic', {
-                commonId: routeCommon.id,
-              })
+              navigation.navigate(
+                index === 1 ? 'FundingProposal' : 'New Topic',
+                {
+                  commonId: routeCommon.id,
+                },
+              )
             }
             bottom={50}
           />
