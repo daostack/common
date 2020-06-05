@@ -59,7 +59,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
 
     const opts = {...OVERRIDES, value: transaction.opts.value};
-    tx = await transaction.contract[transaction.method](
+    const tx = await transaction.contract[transaction.method](
       ...transaction.args,
       opts,
     );
