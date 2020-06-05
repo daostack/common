@@ -65,6 +65,8 @@ const CommonProfile = ({
     } else {
       setMemberState(false);
     }
+    const commonMembers = route.params.currCommon.members;
+    setMembers(commonMembers);
   }, [routeCommon, route.params.showRequestSentModal]);
 
   const renderTabBar = props => (

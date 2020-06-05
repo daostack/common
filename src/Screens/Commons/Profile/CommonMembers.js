@@ -10,6 +10,7 @@ import {
   Dimensions,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
+
 import MemberCard from '../../../Components/MemberCard';
 import {layout, colors, text, sizeS, sizeL, sizeXL} from '../../../Theme';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
