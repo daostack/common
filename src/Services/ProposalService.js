@@ -43,7 +43,10 @@ export default class ProposalService {
     stages,
     listChangeCallback,
     listRef,
+    onlyRequestsToJoin,
   ) {
+    console.log('subscribeToProposalList');
+
     let proposalCollection = db.collection(DB_COLLECTIONS.proposals);
 
     if (commonId) {
@@ -53,16 +56,26 @@ export default class ProposalService {
       proposalCollection = proposalCollection.where('proposerId', '==', userId);
     }
 
-    return proposalCollection.where('stageStr', 'in', stages).onSnapshot(
+    proposalCollection = proposalCollection.where('stageStr', 'in', stages);
+
+    return proposalCollection.onSnapshot(
       snapshot => {
         if (snapshot.empty) {
           listChangeCallback([]);
         } else {
           if (snapshot.docChanges().length !== 0) {
-            const newList = snapshot.docChanges().map(({doc}) => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
+            const newList = snapshot.docChanges().map(({doc}) => {
+              if (onlyRequestsToJoin) {
+                if (!doc.data().joinAndQuit) {
+                  return false;
+                }
+              }
+              return {
+                id: doc.id,
+                ...doc.data(),
+              };
+            });
+
             let createList = newList
               .map(item => {
                 let index = listRef.current.findIndex(v => v.id === item.id);

@@ -180,7 +180,10 @@ const CommonProfile = ({
   };
 
   const openCommonMembers = e => {
-    navigation.navigate('CommonMembers', {members});
+    navigation.navigate('CommonMembers', {
+      members: members,
+      commonId: currCommon.id,
+    });
   };
 
   const shareCommon = event => {
