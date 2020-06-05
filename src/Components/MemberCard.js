@@ -82,8 +82,8 @@ const MemberCard = ({
             {memberCustomText
               ? memberCustomText
               : showMemberCreatedDate
-              ? `Member in ${userInfo.daos.length} Common${
-                  userInfo.daos.length > 1 ? 's' : ''
+              ? `Member in ${userInfo?.daos?.length} Common${
+                  userInfo?.daos?.length > 1 ? 's' : ''
                 }`
               : `Member since by ${memberSince}`}
           </Text>
