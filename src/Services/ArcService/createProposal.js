@@ -58,15 +58,8 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     console.log('creating transaction');
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
 
-    const opts = {...OVERRIDES, value: transaction.opts.value};
-    const tx = await transaction.contract[transaction.method](
-      ...transaction.args,
-      opts,
-    );
-    const receipt = await tx.wait();
-
-    // TODO: Relayer
-    // const receipt = await transaction.contract.sendToRelayerWithReceipt(transaction.method, transaction.args, transaction.opts.value);
+    // TODO: test not 0 value
+    const receipt = await transaction.contract.sendToRelayerWithReceipt(transaction.method, transaction.args, transaction.opts.value);
 
     console.log(
       `Transaction with ${receipt.transactionHash} was mined: proposal created!`,
