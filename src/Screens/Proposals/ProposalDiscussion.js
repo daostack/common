@@ -10,15 +10,15 @@ const ProposalDiscussion = props => {
   const chatRef = useRef(null);
   const [msgGroup, setMsgDroup] = useState([]);
 
-  //TODO: Replace with real data
-  const discussionId = 'OaeeYwx4QnKFWeaJVeJu';
+  const proposalId = props.proposalId;
+
+  console.log('proposalId -->', proposalId);
 
   let listRef = useRef([]);
   useEffect(() => {
     const unsubscribe = firestore()
-      .collection('discussion')
-      .doc(discussionId)
-      .collection('message')
+      .collection('discussionMessage')
+      .where('discussionId', '==', proposalId)
       .orderBy('createTime', 'desc')
       // .startAt(0)
       // .limit(25)
@@ -65,7 +65,7 @@ const ProposalDiscussion = props => {
     return () => {
       unsubscribe();
     };
-  }, [discussionId]);
+  }, [proposalId]);
 
   return (
     <View style={{flex: 1, backgroundColor: colors.lightBlue}}>
