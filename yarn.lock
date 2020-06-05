@@ -8323,6 +8323,11 @@ rn-fetch-blob@^0.12.0:
     base-64 "0.1.0"
     glob "7.0.6"
 
+rn-placeholder@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/rn-placeholder/-/rn-placeholder-3.0.0.tgz#d51063cfc20cf702547205b936d934e92c4941b0"
+  integrity sha512-ydlIDoth4uvj9PPEOZLZxgNtNJlmUR49IGFtRKM7FWcKuMG2hC89kIPa8xRCO5vfxSDPwMGTyshYGGsQXOJJNA==
+
 rn-swipe-button@^1.2.6:
   version "1.2.8"
   resolved "https://registry.yarnpkg.com/rn-swipe-button/-/rn-swipe-button-1.2.8.tgz#2a85527b419c1df705f24258b61a286e19a66211"

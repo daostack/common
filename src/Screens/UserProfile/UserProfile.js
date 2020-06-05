@@ -11,6 +11,7 @@ import {
 
 import React from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
+
 import {layout, colors, text, sizeL, sizeXXL} from '../../Theme';
 import {observer, inject} from 'mobx-react';
 import AccordionBtn from '../../Components/AccordionBtn';
@@ -19,6 +20,13 @@ import CreateAccount from './CreateAccount';
 import {CommonActions} from '@react-navigation/native';
 import UserProfileData from '../../Components/UserProfileData';
 import AuthService from '../../Services/AuthService';
+
+import {
+  Placeholder,
+  PlaceholderMedia,
+  PlaceholderLine,
+  Fade,
+} from 'rn-placeholder';
 
 const UserProfile = ({userStore, navigation}) => {
   //const [editMode, setEditMode] = useState(false);
@@ -45,15 +53,6 @@ const UserProfile = ({userStore, navigation}) => {
 
   const onTestPagePress = event => {
     navigation.navigate('NativeBridgeTests');
-    if (userStore.userInfo) {
-      console.log(
-        'fetching some Eth for your address',
-        userStore.userInfo.ethereumAddress,
-      );
-      fetch(
-        `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${userStore.userInfo.ethereumAddress}`,
-      );
-    }
   };
 
   const onUsersListPress = event => {
@@ -161,9 +160,55 @@ const UserProfile = ({userStore, navigation}) => {
 
   const renderScreenLoader = () => {
     return (
-      <View style={{...layout.content, ...{flex: 1}, ...colors.white}}>
-        <Text style={text.h1Black}>Loading ...</Text>
-      </View>
+      <ScrollView
+        style={{flex: 1}}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Placeholder Animation={Fade}>
+          <PlaceholderMedia
+            size={100}
+            isRound={true}
+            style={{alignSelf: 'center', marginTop: 80, marginBottom: 20}}
+          />
+          <PlaceholderLine width={30} style={{alignSelf: 'center'}} />
+          <PlaceholderLine width={50} style={{alignSelf: 'center'}} />
+          <PlaceholderMedia
+            style={{
+              alignSelf: 'center',
+              marginTop: 10,
+              marginBottom: 20,
+              height: 100,
+              width: '100%',
+            }}
+          />
+          <PlaceholderLine width={30} />
+          <PlaceholderLine width={50} />
+          <PlaceholderLine width={80} />
+          <PlaceholderMedia
+            style={{
+              alignSelf: 'center',
+              marginTop: 10,
+              marginBottom: 20,
+              height: 150,
+              width: '100%',
+            }}
+          />
+          <PlaceholderLine width={50} />
+          <PlaceholderLine width={80} />
+          <PlaceholderMedia
+            style={{
+              alignSelf: 'center',
+              marginTop: 10,
+              marginBottom: 20,
+              height: 150,
+              width: '100%',
+            }}
+          />
+        </Placeholder>
+      </ScrollView>
     );
   };
   return userStore.isLoading ? renderScreenLoader() : renderScreen();
