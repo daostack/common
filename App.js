@@ -85,10 +85,11 @@ if (Platform.OS === 'ios') {
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
 }
 
-const App = ({userStore, bottomSheetStore}) => {
+const App = ({userStore, bottomSheetStore, navigation}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
   const hudRef = useRef();
+  const navigationRef = useRef();
 
   // const getTestEth = async address => {
   //   console.log('getting test eth for user: ', address);
@@ -140,29 +141,26 @@ const App = ({userStore, bottomSheetStore}) => {
 
   const handleOpenURL = obj => {
     const url = new URL(obj.url);
-    console.log('url: ', url)
+    console.log('url: ', navigationRef.current);
+    const searchParams = new URLSearchParams(url.searchParams);
     try {
-      const page = url.pathname.split('/')[1];
-      const id = url.pathname.split('/')[2];
-      console.log('page: ',page);
-      console.log('id: ',id);
-      if ( page === 'common') {
+      if ( searchParams.has('common')) {
         console.log('true');
         const actions = CommonActions.navigate({
           name: 'CommonProfile',
           params: {
-            currCommon: id,
+            currCommon: searchParams.get('common'),
           },
         });
-        this.props.navigation.dispatch(actions);
-      } else if ( page === 'proposal') {
+        navigationRef.current?.dispatch(actions);
+      } else if ( searchParams.has('proposal')) {
         const actions = CommonActions.navigate({
           name: 'ProposalScreen',
           params: {
-            proposalId: id,
+            proposalId: searchParams.get('proposal'),
           },
         });
-        this.props.navigation.dispatch(actions);
+        navigationRef.current?.dispatch(actions);
       }
     } catch (e) {
       console.log('error: ', e)
@@ -263,7 +261,7 @@ const App = ({userStore, bottomSheetStore}) => {
 
   return (
     <ApolloProvider client={client}>
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef}>
         <Stack.Navigator
           screenOptions={{
             headerStyle: styles.headerStyle,

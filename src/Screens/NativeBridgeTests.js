@@ -23,6 +23,7 @@ import Toast from '../Util/Toast';
 import {auth} from '../Firebase';
 import ABI from '../Util/abi.json';
 import { ethers } from 'ethers';
+import {URL_SCHEMES} from '../Util/UniversalLinking';
 
 class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -359,14 +360,14 @@ class nativeBridgeTests extends React.Component {
       let options;
       if (type === 'common') {
         options = {
-        url: 'https://lucid-elion-eb9949.netlify.app/common/0x38e17c8e4b4cfb146a9d2ab533a9bf8dfb4ee306',
+        url: 'https://lucid-elion-eb9949.netlify.app?common=0x38e17c8e4b4cfb146a9d2ab533a9bf8dfb4ee306',
         title: 'Check out this Common',
         message: 'Support the cause! ',
       };
       } else if (type === 'proposal') {
 
         options = {
-        url: 'https://lucid-elion-eb9949.netlify.app/proposal/ba02cba0-937a-11ea-b51a-77e469735457',
+        url: 'https://lucid-elion-eb9949.netlify.app?proposal=ba02cba0-937a-11ea-b51a-77e469735457',
         title: 'Check out this proposal',
         message: 'Give us some input! ',
       };
@@ -384,26 +385,24 @@ class nativeBridgeTests extends React.Component {
   };
 
   filterUrl = () => {
-    const url = new URL('https://lucid-elion-eb9949.netlify.app/proposal/ba02cba0-937a-11ea-b51a-77e469735457')
+    const url = new URL('https://lucid-elion-eb9949.netlify.app?proposal=ba02cba0-937a-11ea-b51a-77e469735457');
+    console.log('URL: ', url);
+    const searchParams = new URLSearchParams(url.searchParams);
     try {
-      const page = url.pathname.split('/')[1];
-      const id = url.pathname.split('/')[2];
-      console.log('page: ',page);
-      console.log('id: ',id);
-      if ( page === 'common') {
+      if ( searchParams.has('common')) {
         console.log('true');
         const actions = CommonActions.navigate({
           name: 'CommonProfile',
           params: {
-            currCommon: id,
+            currCommon: searchParams.get('common'),
           },
         });
         this.props.navigation.dispatch(actions);
-      } else if ( page === 'proposal') {
+      } else if ( searchParams.has('proposal')) {
         const actions = CommonActions.navigate({
           name: 'ProposalScreen',
           params: {
-            proposalId: id,
+            proposalId: searchParams.get('proposal'),
           },
         });
         this.props.navigation.dispatch(actions);
