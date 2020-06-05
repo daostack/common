@@ -117,7 +117,7 @@ const RequestStep1 = props => {
                 marginBottom: 40,
               }}
             />
-            {commonRules?.length &&
+            {Boolean(commonRules?.length) &&
               commonRules.map((rule, index) => (
                 <RequestToJoinRule
                   index={index + 1}
