@@ -57,7 +57,7 @@ const CommonProfile = ({
       if (
         userStore.userInfo &&
         route.params.currCommon.members.some(
-          member => member.address === userStore.userInfo.ethereumAddress,
+          member => member.address === userStore.userInfo.ethereumAddress || member.address === userStore.userInfo.safeAddress?.toLowerCase()
         )
       ) {
         setMemberState(true);
