@@ -25,8 +25,10 @@ import DiscussionList from '../../Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
 import Toast from '../../../Util/Toast';
 import {numberFormatter} from '../../../Util';
+import FirebaseService from '../../../Services/FirebaseService';
 
 import MemberImage from '../../../Components/Commons/MemberImage';
+import CommonMembersList from './CommonMembersList';
 
 const CommonProfile = ({
   navigation,
@@ -36,7 +38,6 @@ const CommonProfile = ({
   userStore,
 }) => {
   const [isMember, setMemberState] = useState(false);
-  const [members, setMembers] = useState(false);
   const [isFundingStage] = useState(false);
 
   const [index, setIndex] = useState(0);
@@ -49,25 +50,20 @@ const CommonProfile = ({
   const [currCommon, setCurrCommon] = useState(false);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const routeCommon = route.params.currCommon;
+  const daoMembers = route.params.currCommon.members;
 
   useEffect(() => {
-    try {
-      setShowRequestSentModal(route.params.showRequestSentModal);
-      setCurrCommon(routeCommon);
-      if (
-        userStore.userInfo &&
-        route.params.currCommon.members.some(
-          member => member.address === userStore.userInfo.ethereumAddress,
-        )
-      ) {
-        setMemberState(true);
-      } else {
-        setMemberState(false);
-      }
-      const commonMembers = route.params.currCommon.members;
-      setMembers(commonMembers);
-    } catch (e) {
-      throw e;
+    setShowRequestSentModal(route.params.showRequestSentModal);
+    setCurrCommon(routeCommon);
+    if (
+      userStore.userInfo &&
+      daoMembers.some(
+        member => member.address === userStore.userInfo.ethereumAddress,
+      )
+    ) {
+      setMemberState(true);
+    } else {
+      setMemberState(false);
     }
   }, [routeCommon, route.params.showRequestSentModal]);
 
@@ -163,11 +159,12 @@ const CommonProfile = ({
             onPress={openCommonMembers}
             style={styles.membersAction}>
             <View style={styles.membersRow}>
-              {members.map((member, i) => {
-                if (i < 5) {
-                  return <MemberImage member={member} key={i} />;
+              <CommonMembersList
+                horizontal={true}
+                members={
+                  daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers
                 }
-              })}
+              />
             </View>
             <TouchableOpacity style={layout.flexRow}>
               <Text style={text.h4Black}>Pending (13)</Text>
@@ -181,7 +178,7 @@ const CommonProfile = ({
 
   const openCommonMembers = e => {
     navigation.navigate('CommonMembers', {
-      members: members,
+      members: daoMembers,
       commonId: currCommon.id,
     });
   };
