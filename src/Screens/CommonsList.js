@@ -5,12 +5,19 @@ import {
   View,
   SectionList,
   StyleSheet,
+  ScrollView,
 } from 'react-native';
 import { CommonBox, BottomRightButton } from '../Components';
 import { db } from '../Firebase';
 import { inject, observer } from 'mobx-react';
 import { BOTTOM_SHEET_TEMPLATES } from '../Stores/BottomSheetStore';
 import colors from '../Theme/colors';
+import {
+  Placeholder,
+  PlaceholderMedia,
+  PlaceholderLine,
+  Fade,
+} from 'rn-placeholder';
 
 const CommonsList = ({ navigation, daoStore, bottomSheetStore, userStore }) => {
   // const [hasError, setErrors] = useState(false);
@@ -23,6 +30,8 @@ const CommonsList = ({ navigation, daoStore, bottomSheetStore, userStore }) => {
       try {
         unsubscribe = db.collection('daos').onSnapshot(snapshot => {
           if (snapshot.empty) {
+            setDaos([]);
+            setDaoGroup([{ title: '', data: [] }]);
             return [];
           }
           let daosSnapshot = snapshot.docs.map((doc, index) => {
@@ -63,7 +72,7 @@ const CommonsList = ({ navigation, daoStore, bottomSheetStore, userStore }) => {
 
     if (!userStore.userInfo) {
       setDaoGroup([{ title: '', data: daoList }]);
-      return
+      return;
     }
 
     let myDaos = [];
@@ -87,7 +96,7 @@ const CommonsList = ({ navigation, daoStore, bottomSheetStore, userStore }) => {
     setDaoGroup(
       [
         {
-          title: `My Dao (${myDaos.length})`,
+          title: `My Daos (${myDaos.length})`,
           data: myDaos,
         },
         {
@@ -118,8 +127,8 @@ const CommonsList = ({ navigation, daoStore, bottomSheetStore, userStore }) => {
           {daos.length} Commons
       </Text>
       </View>
-    )
-  }
+    );
+  };
 
   const sectionHeader = title => {
     return (title === '' ? null :
@@ -129,13 +138,39 @@ const CommonsList = ({ navigation, daoStore, bottomSheetStore, userStore }) => {
         </Text>
       </View>
     );
-  }
+  };
+
+  const loadingPlaceholder = () => {
+    return (
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, justifyContent: 'center', alignItems: 'center' }}>
+        <Placeholder
+          Animation={Fade}>
+          <PlaceholderLine width={30} />
+        </Placeholder>
+
+        <Placeholder
+          Animation={Fade}>
+          {[...Array(3).keys()].map(i => {
+            return (
+              <View key={`common_loading_${i}`}>
+                <PlaceholderMedia style={{ height: 200, width: '100%', marginBottom: 20 }} />
+                <PlaceholderLine width={80} />
+                <PlaceholderLine />
+                <PlaceholderLine width={30} />
+              </View>
+            );
+          }
+          )}
+        </Placeholder>
+      </ScrollView>
+    );
+  };
 
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView />
       <>
-        {daoGroup && (
+        {daoGroup ? (
           <SectionList
             sections={daoGroup}
             ListHeaderComponent={header}
@@ -153,7 +188,7 @@ const CommonsList = ({ navigation, daoStore, bottomSheetStore, userStore }) => {
               sectionHeader(title)
             )}
           />
-        )}
+        ) : loadingPlaceholder()}
       </>
       {userStore.userInfo && <BottomRightButton
         onPress={() => navigation.navigate('CommonExplanation')}
@@ -178,6 +213,6 @@ const styles = StyleSheet.create({
     marginHorizontal: -20,
     backgroundColor: '#f2f2f2',
   },
-})
+});
 
 export default inject('daoStore', 'bottomSheetStore', 'userStore')(observer(CommonsList));

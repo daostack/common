@@ -2,12 +2,11 @@ import React from 'react';
 import {TextInput, View, Text, StyleSheet} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
-import colors from '../../Theme/colors';
-import layout from '../../Theme/layout';
+import {layout, colors, text} from '../../Theme';
 
 class TextInputField extends React.Component {
   fieldValidation;
-  toggleValueBtn;
+  innerLabel;
   placeFieldActionComponent;
 
   static defaultProps;
@@ -19,7 +18,7 @@ class TextInputField extends React.Component {
       onFocus: false,
     };
 
-    const {validation, value, fieldActionComponent} = this.props;
+    const {validation, value, fieldActionComponent, innerLabel} = this.props;
     // Register form field for validation message component if name,formStore and validateRule props are provided
     if (validation) {
       const {name, formStore, validateRule, multiName} = validation;
@@ -31,6 +30,21 @@ class TextInputField extends React.Component {
 
     if (fieldActionComponent) {
       this.placeFieldActionComponent = fieldActionComponent;
+    }
+    if (innerLabel) {
+      let toggleViewStyle = {
+        position: 'absolute',
+        top: 28,
+        right: 12,
+        ...layout.content,
+        padding: 0,
+      };
+
+      this.innerLabel = (
+        <View style={toggleViewStyle}>
+          <Text style={text.textFieldplaceholder}>{innerLabel}</Text>
+        </View>
+      );
     }
   }
 
@@ -65,7 +79,7 @@ class TextInputField extends React.Component {
       multiline,
       numberOfLines,
       keyboardType,
-
+      innerLabel,
       // Validation management properties
       validation,
 
@@ -100,6 +114,10 @@ class TextInputField extends React.Component {
       };
     }
 
+    if (innerLabel) {
+      styleTextfield = {...styleTextfield, paddingRight: 22};
+    }
+
     return (
       <View style={{alignSelf: 'stretch'}}>
         <View style={{flexDirection: 'row'}}>
@@ -126,7 +144,7 @@ class TextInputField extends React.Component {
               : value
           }
         />
-        {this.toggleValueBtn}
+        {innerLabel && this.innerLabel}
       </View>
     );
   }

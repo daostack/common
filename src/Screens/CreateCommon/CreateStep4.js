@@ -127,6 +127,8 @@ const CreateStep4 = props => {
   };
 
   const forgeCommon = async () => {
+    try {
+
     const formDataInit = {
       ...props.generalInfoFormStore.getChangedFormFieldsJson(),
       ...props.fundingFormStore.getChangedFormFieldsJson(),
@@ -143,8 +145,7 @@ const CreateStep4 = props => {
     console.log('saving data on ipfs: ', formData);
 
     const ipfsHash = await ipfsUpload(formData);
-    const manager = await WalletManager.getInstance();
-    const address = await manager.getAddress();
+    const address = WalletManager.getInstance().safeAddress;
     console.log('owner account: ', address);
 
     const deadline = formData[CreateCommonForm.DEADLINE];
@@ -154,9 +155,9 @@ const CreateStep4 = props => {
       founderAddresses: address,
       tokenDist: [0],
       repDist: [1000],
-      minFeeToJoin: parseInt(formData.minimum, 10) * 100, // multiply by 100 to get the value in cents
-      fundingGoal: parseInt(formData.funding, 10) * 100, // multiply by 100 to get the value in cents
-      fundingGoalDeadline: Math.round(deadline.getTime() / 1000),
+      minFeeToJoin: formData.minimum,
+      fundingGoal: formData.funding,
+      fundingGoalDeadline: deadline, // just passing the unix timestamp
       ipfsHash,
     };
     console.log('calling createCommon(...)');
@@ -172,6 +173,10 @@ const CreateStep4 = props => {
     }
 
     return {commonAddress};
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   };
 
   // const creationError = event => {
