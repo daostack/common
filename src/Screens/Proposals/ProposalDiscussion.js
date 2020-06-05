@@ -9,7 +9,9 @@ import firestore from '@react-native-firebase/firestore';
 const ProposalDiscussion = props => {
   const chatRef = useRef(null);
   const [msgGroup, setMsgDroup] = useState([]);
-  const discussionId = 'sW15wyPo3JtLDPr9E0vx';
+
+  //TODO: Replace with real data
+  const discussionId = 'OaeeYwx4QnKFWeaJVeJu';
 
   let listRef = useRef([]);
   useEffect(() => {
