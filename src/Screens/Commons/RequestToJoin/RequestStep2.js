@@ -112,12 +112,13 @@ const RequestStep2 = props => {
 
             <TextInputField
               label="About me"
+              infoLabel="Required"
               multiline={true}
               numberOfLines={6}
               validation={{
                 name: RequestToJoinForm.FIELD_ABOUT_ME,
                 formStore: props.introduceYourselfFormStore,
-                validateRule: 'string',
+                validateRule: 'required|string',
               }}
             />
 

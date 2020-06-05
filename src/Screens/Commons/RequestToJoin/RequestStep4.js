@@ -130,21 +130,21 @@ const RequestStep4 = props => {
 
             <TextInputField
               label="Credit card number"
+              value={__DEV__ ? 1111000011110000 : ''}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NUMBER,
                 formStore: props.paymentFormStore,
-                //validateRule: 'required|numeric',
-                validateRule: 'string',
+                validateRule: 'required|numeric',
               }}
             />
 
             <TextInputField
               label="Name on card"
+              value={__DEV__ ? 'Tester Tester' : ''}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NAME,
                 formStore: props.paymentFormStore,
-                //validateRule: 'required|string',
-                validateRule: 'string',
+                validateRule: 'required|string',
               }}
             />
 
@@ -164,11 +164,16 @@ const RequestStep4 = props => {
                   width: '45%',
                 }}
                 label="Expiration date"
+                value={__DEV__ ? '01/12' : ''}
+                placeholderText="MM/YY"
                 validation={{
                   name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
                   formStore: props.paymentFormStore,
-                  //validateRule: 'required|string',
-                  validateRule: 'string',
+                  validateRule: [
+                    'required',
+                    'string',
+                    'regex:/^(0[1-9]|1[0-2])/?([0-9]{2})$/',
+                  ],
                 }}
               />
               <TextInputField
@@ -176,11 +181,11 @@ const RequestStep4 = props => {
                   width: '45%',
                 }}
                 label="CVV"
+                value={__DEV__ ? 123 : ''}
                 validation={{
                   name: RequestToJoinForm.FIELD_CVV,
                   formStore: props.paymentFormStore,
-                  //validateRule: 'required|numeric',
-                  validateRule: 'string',
+                  validateRule: 'required|numeric|digits_between:3,4',
                 }}
               />
             </View>

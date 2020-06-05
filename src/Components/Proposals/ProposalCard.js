@@ -94,49 +94,53 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
 
   return (
     <Animated.View style={[styles.proposalCard, containerStyle]}>
-      <ProposalCardHeader isBoosted={true} stage={proposalInfo.stage} />
+      <TouchableOpacity onPress={onReviewProposal}>
+        <ProposalCardHeader isBoosted={true} stage={proposalInfo.stage} />
 
-      <View
-        style={{
-          ...layout.content,
-          ...layout.flexStart,
-          ...layout.paddingBottomL,
-          ...{flexWrap: 'wrap'},
-        }}>
-        <Text
-          style={{...text.h3Black, ...{textAlign: 'left', flexWrap: 'wrap'}}}>
-          {proposalInfo?.title}
-        </Text>
+        <View
+          style={{
+            ...layout.content,
+            ...layout.flexStart,
+            ...layout.paddingBottomL,
+            ...{flexWrap: 'wrap'},
+          }}>
+          <Text
+            style={{...text.h3Black, ...{textAlign: 'left', flexWrap: 'wrap'}}}>
+            {proposalInfo?.title}
+          </Text>
 
-        <View style={layout.flexRow}>
-          <MemberCard
-            userInfo={proposedUser}
-            proposalInfo={proposalInfo}
-            memberCustomText={'3d ago'}
-            isPending={false}
-          />
-        </View>
+          <View style={layout.flexRow}>
+            <MemberCard
+              userInfo={proposedUser}
+              proposalInfo={proposalInfo}
+              memberCustomText={'3d ago'}
+              isPending={false}
+            />
+          </View>
 
-        <View style={{...layout.flexRow, ...layout.marginTopS}}>
-          <ProposalApprovalTag iconName="approved" value={40} isMarked={true} />
-          <ProposalApprovalTag
-            iconName="declined"
-            value={28}
-            isMarked={false}
-          />
-          <ProposalApprovalTag
-            iconName="discussion"
-            value={121}
-            isMarked={false}
-          />
-        </View>
+          <View style={{...layout.flexRow, ...layout.marginTopS}}>
+            <ProposalApprovalTag
+              iconName="approved"
+              value={40}
+              isMarked={true}
+            />
+            <ProposalApprovalTag
+              iconName="declined"
+              value={28}
+              isMarked={false}
+            />
+            <ProposalApprovalTag
+              iconName="discussion"
+              value={121}
+              isMarked={false}
+            />
+          </View>
 
-        <View style={styles.proposalCardActionContainer}>
-          <TouchableOpacity onPress={onReviewProposal}>
+          <View style={styles.proposalCardActionContainer}>
             <Text style={styles.proposalActionBtnText}>Review proposal</Text>
-          </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </Animated.View>
   );
 };
