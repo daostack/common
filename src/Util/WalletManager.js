@@ -1,6 +1,6 @@
 import { NativeWallet } from './NativeWallet';
 import { ethers, Contract } from 'ethers';
-import { web3ProviderUrl, web3NetworkId } from '../Config';
+import { web3ProviderUrl, web3NetworkId, COMMONTOKENADDRESS } from '../Config';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 import ABI from './abi.json';
@@ -119,10 +119,10 @@ export default class WalletManager {
     return response.data;
   };
 
-  execTransaction = async (safeWallet, toAddress, value = 0, data = '0x') => {
+  execTransaction = async (safeAddress, toAddress, value = 0, data = '0x') => {
     try {
       const valueNumber = ethers.utils.parseEther(value).toString(10);
-      const txHash = await this.createSafeTransactionHash(safeWallet, toAddress, valueNumber, data);
+      const txHash = await this.createSafeTransactionHash(safeAddress, toAddress, valueNumber, data);
       const byteTxHash = ethers.utils.arrayify(txHash);
       const signedTx = await this.wallet.signMessage(byteTxHash);
       // Add 4
@@ -131,7 +131,7 @@ export default class WalletManager {
       const idToken = await auth().currentUser.getIdToken();
 
       // const masterCopyContract = new ethers.Contract(
-      //   safeWallet,
+      //   safeAddress,
       //   ABI.MasterCopy,
       //   this.wallet,
       // );
@@ -166,6 +166,49 @@ export default class WalletManager {
       options,
     );
     return response;
+  }
+
+  requestToJoin = async (PluginAddress) => {
+    try {
+      let interf = new ethers.utils.Interface(ABI.CommonToken);
+      const data = interf.functions.approve.encode([PluginAddress, ethers.utils.parseEther('100000000000000000')]);
+      const valueNumber = ethers.utils.parseEther('0').toString(10);
+      const txHash = await this.createSafeTransactionHash(this.safeAddress, COMMONTOKENADDRESS, valueNumber, data);
+      const byteTxHash = ethers.utils.arrayify(txHash);
+      const signedTx = await this.wallet.signMessage(byteTxHash);
+      // Add 4
+      let finalSignature = signedTx.replace(/1b$/, '1f').replace(/1c$/, '20');
+      const idToken = await auth().currentUser.getIdToken();
+      const body = { idToken, to: COMMONTOKENADDRESS, value: valueNumber, data, signature: finalSignature, plugin: PluginAddress };
+      console.log('RequestToJoin Body ->', body);
+      const response = await axios.post(
+        'https://us-central1-common-daostack.cloudfunctions.net/api/requestToJoin',
+        body
+      );
+      console.log('testAllowence -->', response);
+      return response;
+
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
+  getAllowance = async PluginAddress => {
+    let contract = new ethers.Contract(COMMONTOKENADDRESS, ABI.CommonToken, this.provider);
+    let allowance = await contract.allowance(this.safeAddress, PluginAddress);
+    const allowanceStr = ethers.utils.formatEther(allowance);
+    console.log('allowance ->', allowanceStr);
+    return allowanceStr;
+  }
+
+  getTokenBalance = async () => {
+    const address = this.safeAddress;
+    const contract = new ethers.Contract(COMMONTOKENADDRESS, ABI.CommonToken, this.provider);
+    const balance = await contract.balanceOf(address);
+    const balanceStr =  ethers.utils.formatEther(balance);
+    console.log('balance ->', balance);
+    return balanceStr;
   }
 
   createSafeTransactionHash = async (myWallet, toAddress, value, data = '0x') => {
@@ -237,5 +280,5 @@ export default class WalletManager {
           }
       }
       return txEvents;
-  }
+  };
 }

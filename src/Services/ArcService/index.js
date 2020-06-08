@@ -41,6 +41,17 @@ export default class ArcService {
     return createFundingProposal(this.arc, data);
   };
 
+  getJoinAndQuitPluginAddress = async (daoId) => {
+    try {
+      const dao = this.arc.dao(daoId);
+      let joinAndQuitPlugin = await dao.plugin({where: {name: 'JoinAndQuit'}});
+      return joinAndQuitPlugin.coreState.address;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  };
+
   // COMMONS
 
   async createCommon(givenOpts = {}, navigation, daoStore) {

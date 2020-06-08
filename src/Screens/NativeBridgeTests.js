@@ -20,6 +20,7 @@ import {auth} from '../Firebase';
 import ABI from '../Util/abi.json';
 import { ethers } from 'ethers';
 import {showErrorPopUp} from '../Util';
+import { add } from 'react-native-reanimated';
 
 class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -50,6 +51,9 @@ class nativeBridgeTests extends React.Component {
       safeWallet: '',
       safeWalletBalance: '',
       safeSCHash: '',
+      CMNBalance:'',
+      CMNTxHash: '',
+      CMNAllowance: '',
     };
 
     this.uid = auth().currentUser?.uid;
@@ -279,6 +283,44 @@ class nativeBridgeTests extends React.Component {
       throw 'Send transaction failed with error: ' + e;
     }
   };
+
+  getTokenBalance = async () => {
+    try {
+      const manager = WalletManager.getInstance();
+      const balance = await manager.getTokenBalance();
+      this.setState({CMNBalance: balance});
+    } catch (e) {
+      console.log(e);
+      throw 'Send transaction failed with error: ' + e;
+    }
+  }
+
+  getTokenAllowance= async () => {
+    try {
+      const manager = WalletManager.getInstance();
+      const daoId = '0x59b1c80f882c38abd52a90c9b30edafa55f7e421';
+      const address = await ArcService.getInstance().getJoinAndQuitPluginAddress(daoId);
+      const balance = await manager.getAllowance(address);
+      this.setState({CMNAllowance: balance});
+    } catch (e) {
+      console.log(e);
+      throw 'Send transaction failed with error: ' + e;
+    }
+  }
+
+  requestToJoin = async () => {
+    try {
+      const manager = WalletManager.getInstance();
+      const daoId = '0x59b1c80f882c38abd52a90c9b30edafa55f7e421'; // 0 min join fee
+      const address = await ArcService.getInstance().getJoinAndQuitPluginAddress(daoId);
+      const result = await manager.requestToJoin(address);
+      // this.setState({CMNBalance: balance});
+      console.log('result -->', result);
+    } catch (e) {
+      console.log(e);
+      throw 'Send transaction failed with error: ' + e;
+    }
+  }
 
   createCommon = async () => {
     try {
@@ -525,6 +567,32 @@ class nativeBridgeTests extends React.Component {
             style={styles.button}>
             <Text>execTransaction</Text>
           </TouchableOpacity>
+
+          <Text style={{marginVertical: 10}}>
+            --------------- ERC20 -----------------
+          </Text>
+
+
+          <Text>{this.state.CMNBalance} CMN</Text>
+          <TouchableOpacity
+            onPress={this.getTokenBalance}
+            style={styles.button}>
+            <Text>Get Common Token Balance</Text>
+          </TouchableOpacity>
+
+          <Text>Allowance: {this.state.CMNAllowance} </Text>
+          <TouchableOpacity
+            onPress={this.getTokenAllowance}
+            style={styles.button}>
+            <Text>Get Common Token Allowance</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={this.requestToJoin}
+            style={styles.button}>
+            <Text>Request To Join</Text>
+          </TouchableOpacity>
+
         </ScrollView>
       </View>
     );
@@ -550,6 +618,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 40,
     backgroundColor: 'grey',
+    marginBottom: 5,
   },
 });
 
