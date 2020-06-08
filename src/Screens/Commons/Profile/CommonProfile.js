@@ -13,25 +13,20 @@ import Icon from '../../../Assets/iconfont/Icon';
 import {TabView, TabBar} from 'react-native-tab-view';
 import ViewTabNoData from '../../../Components/ViewTabNoData';
 import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
-import CommonCover from '../../../Components/Commons/CommonCover';
 import CommonStageSummary from '../../../Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
-import SentTemplate from '../Components/ModalTemplates/SentTemplate';
-import ProposalApprovalTag from '../Components/Proposals/ProposalApprovalTag';
+import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
+import ProposalApprovalTag from '../../../Components/Proposals/ProposalApprovalTag';
 import { CommonActions } from '@react-navigation/native';
-import ProposalsList from './Proposals/ProposalsList';
-import BottomRightButton from '../Components/BottomRightButton';
-import DiscussionList from './Discussions/DiscussionList';
+import ProposalsList from '../../Proposals/ProposalsList';
+import BottomRightButton from '../../../Components/BottomRightButton';
+import DiscussionList from '../../Discussions/DiscussionList';
 import { observer, inject } from 'mobx-react';
-import Toast from '../Util/Toast';
-import { numberFormatter } from '../Util';
+import Toast from '../../../Util/Toast';
+import { numberFormatter } from '../../../Util';
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
-import MemberImage from '../Components/Commons/MemberImage';
-import CommonHeader from '../Components/Commons/CommonHeader';
-import NavigationBar from 'react-native-navbar';
-import * as Animatable from 'react-native-animatable';
-// import { Header } from 'react-navigation';
-// const MIN_HEIGHT = Header.HEIGHT;
+import MemberImage from '../../../Components/Commons/MemberImage';
+import CommonHeader from '../../../Components/Commons/CommonHeader';
 
 const CommonProfile = ({
   navigation,
