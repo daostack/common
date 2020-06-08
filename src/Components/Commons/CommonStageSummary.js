@@ -6,7 +6,7 @@ import moment from 'moment';
 import {layout, colors, text} from '../../Theme';
 
 const CommonStageSummary = ({isFundingStage, commonProgressInfo}) => {
-  const deadlineMoment = moment.utc(commonProgressInfo.time * 1000);
+  const deadlineMoment = moment.unix(commonProgressInfo.time);
   const deadlineHasPassed = moment().isAfter(deadlineMoment);
   const renderFundingProgressBar = () => {
     if (isFundingStage) {
@@ -72,7 +72,7 @@ const CommonStageSummary = ({isFundingStage, commonProgressInfo}) => {
         {commonNumberBox(
           isFundingStage ? (
             <Text style={styles.headerTitle}>
-              ${numberFormatter(commonProgressInfo.goal).toLocaleString()}
+              ${numberFormatter(commonProgressInfo.goal / 100).toLocaleString()}
             </Text>
           ) : (
             <Text style={styles.headerTitle}>

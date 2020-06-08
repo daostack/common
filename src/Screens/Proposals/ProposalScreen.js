@@ -114,16 +114,13 @@ const ProposalScreen = ({ navigation, route, props }) => {
   );
 
   const messageInput = () => {
-    const discussionId = 'sW15wyPo3JtLDPr9E0vx';
 
     const sendMessageToDiscussion = async () => {
       const userInfo = auth().currentUser;
       const message = inputRef.current._lastNativeText;
       if (message && message.trim().length) {
         firestore()
-          .collection('discussion')
-          .doc(discussionId)
-          .collection('message')
+          .collection('discussionMessage')
           .doc()
           .set({
             text: message,
@@ -131,8 +128,8 @@ const ProposalScreen = ({ navigation, route, props }) => {
             ownerId: userInfo.uid,
             ownerName: userInfo.displayName,
             ownerAvatar: userInfo.photoURL,
-            proposalId: routeProposalId,
-            discussionId: discussionId,
+            // proposalId: routeProposalId,
+            discussionId: routeProposalId,
           })
           .then(() => {
             console.log('YES');
@@ -290,7 +287,7 @@ const ProposalScreen = ({ navigation, route, props }) => {
 
   let memberCreatedDate = null;
 
-  if (proposedUser) {
+  if (proposedUser?.createdAt) {
     memberCreatedDate = new Date(proposedUser?.createdAt.seconds * 1000);
   }
 
@@ -337,11 +334,12 @@ const ProposalScreen = ({ navigation, route, props }) => {
           />
           {index === 0 && (
             <ProposalData
+              proposalId={routeProposalId}
               proposalInfo={proposalInfo}
               showMore={() => setIndex(1)}
             />
           )}
-          {index === 1 && <ProposalDiscussion inputRef={inputRef} />}
+          {index === 1 && <ProposalDiscussion proposalId={routeProposalId} inputRef={inputRef} />}
         </ScrollView>
 
         {index === 0 ? (

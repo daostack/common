@@ -19,14 +19,7 @@
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
 
-            <!-- This is the important stuff. Link to Android docs below -->
-            <data android:scheme="https"
-                  android:host="lucid-elion-eb9949.netlify.app.com"
-                  android:pathPrefix="/bars" />
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />

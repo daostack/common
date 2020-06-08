@@ -6,29 +6,34 @@ import Icon from '../Assets/iconfont/Icon';
 import MemberImage from './Commons/MemberImage';
 import FirebaseService from '../Services/FirebaseService';
 
-const
-  MemberCard = ({
+const MemberCard = ({
   approvePercent,
   memberSince,
   memberCustomText,
   isPending,
   date,
   member,
+  memberInfo,
 }) => {
-  const [memberInfo, setMemberInfo] = useState('');
+  const [memberInformation, setMemberInformation] = useState('');
   useEffect(() => {
-    getMemberInfo();
+    console.log(member, memberInfo);
+    if (member) {
+      getMemberInfo();
+    } else {
+      setMemberInformation(memberInfo);
+    }
   }, []);
 
   const getMemberInfo = async () => {
-    const memberInformation = await FirebaseService.getInstance().getUserByAddress(
+    const currMemberInformation = await FirebaseService.getInstance().getUserByAddress(
       member.address,
     );
 
-    setMemberInfo(memberInformation);
+    setMemberInformation(currMemberInformation);
   };
 
-  renderRightContainer = () => {
+  const renderRightContainer = () => {
     if (isPending) {
       return (
         <>
@@ -55,15 +60,13 @@ const
   return (
     <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <View style={styles.memberInfoContainer}>
-        <MemberImage
-          member={member}
-        />
+        <MemberImage member={member} memberInfo={memberInformation} />
         <View
           style={{
             ...layout.content,
             ...layout.flexStart,
           }}>
-          <Text style={{...text.h4Black}}>{memberInfo.displayName}</Text>
+          <Text style={{...text.h4Black}}>{memberInformation.displayName}</Text>
           <Text
             style={{
               ...text.smallGreyText,

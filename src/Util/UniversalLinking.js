@@ -4,4 +4,4 @@ export const URL_SCHEMES = [
 
 export const urlFilter = url => {
 
-}
+};

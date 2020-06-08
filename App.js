@@ -57,6 +57,7 @@ import {
   ProposalScreen,
   PDFViewer,
   Browser,
+  CommonCreationLoading,
 } from './src/Screens';
 
 import {ApolloClientConfig as client} from './src/Config';
@@ -72,14 +73,15 @@ import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import {auth} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
-import CommonCreationLoading from './src/Screens/CommonCreationLoading';
+
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import Toast, {DURATION} from 'react-native-easy-toast';
-import {CommonActions} from '@react-navigation/native'
+import {CommonActions} from '@react-navigation/native';
 import { URL, URLSearchParams } from 'react-native-url-polyfill';
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
 import firestore from '@react-native-firebase/firestore';
+import ArcService from './src/Services/ArcService';
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
@@ -163,15 +165,15 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         navigationRef.current?.dispatch(actions);
       }
     } catch (e) {
-      console.log('error: ', e)
+      console.log('error: ', e);
     }
   };
 
 
   const getURL = async () =>{
     const initialUrl = await Linking.getInitialURL();
-    console.log('initialUrl: ', initialUrl)
-  }
+    console.log('initialUrl: ', initialUrl);
+  };
 
   useEffect(() => {
     getURL();
@@ -187,6 +189,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         userStore.setIsLoading(true);
         if (user) {
           await WalletManager.init(user.uid);
+          await ArcService.init();
           await AuthService.getInstance().loadMnemonic(user.uid);
           let appUser = await FirebaseService.getInstance().getUserById(
             user.uid,
