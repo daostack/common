@@ -20,6 +20,7 @@ const ProposalsList = props => {
   const isSwiper = props.isSwiper;
   const navigation = props.navigation;
   const onCountChange = props.onCountChange;
+  const onlyRequestsToJoin = props.onlyRequestsToJoin;
   const [list, setList] = useState([]);
 
   console.log('commonId', commonId);
@@ -28,12 +29,6 @@ const ProposalsList = props => {
   let listRef = useRef([]);
   let unsubscribe = null;
   useEffect(() => {
-    const proposal = ProposalService.getInstance().getProposalInfo(
-      '0x79557f003cc2f8d88435525f34480113ed8b6544b53ebf0f9092a96199021a7e',
-    );
-
-    console.log('proposal -> ', proposal);
-
     const loadProposalInfo = async (commonId, userId, isHistory) => {
       console.log('Load proposal info -> ', commonId, isHistory);
       let proposalStages = null;
@@ -63,13 +58,16 @@ const ProposalsList = props => {
           }
         },
         listRef,
+        onlyRequestsToJoin,
       );
     };
 
     loadProposalInfo(commonId, userId, isHistory);
 
     return () => {
+      console.log('Unsubscribe -> ', unsubscribe);
       if (unsubscribe) {
+        console.log('CALL UNSUBSCRIBE');
         unsubscribe();
       }
     };
