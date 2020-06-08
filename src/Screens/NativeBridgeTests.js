@@ -13,17 +13,17 @@ import {
   StyleSheet,
 } from 'react-native';
 const {width} = Dimensions.get('window');
-import WalletManager from '../Util/WalletManager';
-
 import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
+import WalletManager from '../Util/WalletManager';
+import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
 import ArcService from '../Services/ArcService';
 import {web3ProviderUrl} from '../Config';
 import Toast from '../Util/Toast';
 import {auth} from '../Firebase';
 import ABI from '../Util/abi.json';
 import { ethers } from 'ethers';
-import {URL_SCHEMES} from '../Util/UniversalLinking';
+import {showErrorPopUp} from '../Util';
 
 class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -285,13 +285,13 @@ class nativeBridgeTests extends React.Component {
   };
 
   createCommon = async () => {
-    const wallet = WalletManager.getInstance().wallet;
-
     try {
+      const wallet = WalletManager.getInstance().wallet;
+    const manager = WalletManager.getInstance();
       const commonAddress = await ArcService.getInstance().createCommon(
         {
           name: `Test DAO ${new Date()}`,
-          founderAddresses: wallet.address,
+          founderAddresses: manager.safeAddress,
           minFeeToJoin: 100, // TDB: get from formData
           fundingGoal: 100000, // TBD: get from formdata
           // TBD: get form data for deadline; these are in secondSinceEpoch
@@ -305,7 +305,7 @@ class nativeBridgeTests extends React.Component {
 
       this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
     } catch (error) {
-      console.log('Error -> ', error);
+      this.props.bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {errorMessage: error.message});
       this.setState({commonStatus: `${error}`});
     }
   };
@@ -316,7 +316,7 @@ class nativeBridgeTests extends React.Component {
 
   createRequestToJoin = async () => {
     console.log('creating proposal -- please wait');
-    const daoId = '0x38e17c8e4b4cfb146a9d2ab533a9bf8dfb4ee306';
+    const daoId = '0x59b1c80f882c38abd52a90c9b30edafa55f7e421'; // 0 min join fee
     this.setState({
       proposalStatus: 'Creating JoinAndQuit proposal -- please wait',
     });
@@ -327,7 +327,7 @@ class nativeBridgeTests extends React.Component {
         files: [],
         images: [],
         links: [], // {title: "title", url: "url"}
-        funding: new BN(200),
+        funding: new BN(0),
       };
       const proposal = await ArcService.getInstance().createRequestToJoin(
         daoId,
@@ -337,7 +337,7 @@ class nativeBridgeTests extends React.Component {
         proposalStatus: `JoinAndQuit Proposal with id ${proposal.id} created!`,
       });
     } catch (e) {
-      console.log(e);
+      showErrorPopUp(this.props.bottomSheetStore, e.message);
       this.setState({proposalState: `${e}`});
     }
     console.log(`proposal created: ${proposal.id}`);
@@ -644,4 +644,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('daoStore', 'userStore')(observer(nativeBridgeTests));
+export default inject('daoStore', 'userStore', 'bottomSheetStore')(observer(nativeBridgeTests));

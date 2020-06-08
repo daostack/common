@@ -1,33 +1,30 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {colors} from '../../Theme';
-import FirebaseService from '../../Services/FirebaseService';
 
-
-const MemberImage = ({member, key}) => {
-  const [memberInfo, setMemberInfo] = useState('');
-  useEffect(() => {
-    getMemberInfo();
-  }, []);
-
-  const getMemberInfo = async () => {
-    const memberInformation = await FirebaseService.getInstance().getUserByAddress(
-      member.address,
-    );
-    setMemberInfo(memberInformation);
-  };
-  return memberInfo ? memberInfo.photoURL ? <Image
+const MemberImage = ({userInfo, style, key}) => {
+  return userInfo.photoURL ? (
+    <Image
       key={key}
       style={styles.memberImage}
       source={{
-        uri: memberInfo.photoURL,
+        uri: userInfo.photoURL,
       }}
-    /> :
-    <View style={{...styles.memberImage, alignItems: 'center', justifyContent: 'center', backgroundColor: '#6e7d82'}}>
-      <Text style={{width: 17, height: 17, color: 'white' }}>{memberInfo.displayName}</Text>
+    />
+  ) : (
+    <View
+      style={{
+        ...styles.memberImage,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#6e7d82',
+        ...style,
+      }}>
+      <Text style={{width: 17, height: 17, color: 'white'}}>
+        {userInfo.displayName}
+      </Text>
     </View>
-    :
-    <View style={{...styles.memberImage, alignItems: 'center', justifyContent: 'center', backgroundColor: '#6e7d82'}}/>;
+  );
 };
 
 const styles = StyleSheet.create({

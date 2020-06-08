@@ -30,9 +30,21 @@
 				<string>com.googleusercontent.apps.854172758045-cgj72k292a2gm2iovv166j13l8el67ni</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.daostack.common</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>common</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<string>NO</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>

@@ -6,3 +6,4 @@ export LoginSheetScreen from './LoginSheetScreen';
 export SortProposals from './SortProposals';
 export UnsavedChanges from './UnsavedChanges';
 export UserProfileSheetScreen from './UserProfileSheetScreen';
+export TransactionError from './TransactionError';

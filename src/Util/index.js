@@ -1,3 +1,5 @@
+import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
+
 const googleServicesData = require('../../android/app/google-services.json');
 
 export const GOOGLE_SIGNIN_PERMISSIONS = {
@@ -34,3 +36,9 @@ export const getTestEth = address =>
   fetch(
     `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
   );
+
+export const showErrorPopUp = (bottomSheetStore, message) => {
+  /* this function requires the bottomSheetStore as a variable as you can't
+  access the mobx store outside of a react component */
+  bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {errorMessage: message});
+};

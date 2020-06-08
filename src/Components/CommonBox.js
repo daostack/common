@@ -33,7 +33,7 @@ const CommonBox = props => {
       <CommonStageSummary
         isFundingStage={true}
         commonProgressInfo={{
-          time: props.common.fundingGoalDeadline._seconds,
+          time: props.common.fundingGoalDeadline,
           activeProposals:
             props.common.numberOfBoostedProposals +
             props.common.numberOfPreBoostedProposals +

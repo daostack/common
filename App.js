@@ -57,6 +57,7 @@ import {
   ProposalScreen,
   PDFViewer,
   Browser,
+  CommonCreationLoading,
 } from './src/Screens';
 
 import {ApolloClientConfig as client} from './src/Config';
@@ -72,7 +73,7 @@ import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import {auth} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
-import CommonCreationLoading from './src/Screens/CommonCreationLoading';
+
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import {CommonActions} from '@react-navigation/native'

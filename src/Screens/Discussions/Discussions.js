@@ -37,16 +37,17 @@ const Discussions = props => {
   const [inputText, setInputText] = useState(null);
   const chatRef = useRef(null);
   const [isExpanded, setIsExpanded] = useState(false);
-  const data = props.route.params.data;
+  // const data = props.route.params.discussionId;
   const commonId = props.route.params.commonId;
-  const discussionId = data.id;
+  const discussionId = props.route.params.discussionId;
   const [msgGroup, setMsgDroup] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
   // const [discussion, setDiscussion] = useState();
   const [followState, setFollowState] = useState(false);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
+  const [data, setData] = useState(props.route.params.data);
 
-  console.log('data', data);
+  console.log('commonId', commonId);
   const currentUser = auth().currentUser;
 
   const hideMenu = () => {
@@ -63,7 +64,11 @@ const Discussions = props => {
       .collection('discussion')
       .doc(discussionId)
       .onSnapshot(snapshot => {
-        console.log(snapshot.data());
+        // console.log(snapshot.data());
+        if (!snapshot.exists) {
+          return;
+        }
+        setData({id: snapshot.id, ...snapshot.data()});
         const follower = snapshot.data().follower;
         if (follower && uid) {
           const state = follower.includes(uid);
@@ -75,9 +80,8 @@ const Discussions = props => {
 
   useEffect(() => {
     const unsubscribe = firestore()
-      .collection('discussion')
-      .doc(data.id)
-      .collection('message')
+      .collection('discussionMessage')
+      .where('discussionId', '==', discussionId)
       .orderBy('createTime', 'desc')
       // .startAt(0)
       // .limit(25)
@@ -183,9 +187,7 @@ const Discussions = props => {
     if (message && message.trim().length) {
       console.log('message', message);
       firestore()
-        .collection('discussion')
-        .doc(discussionId)
-        .collection('message')
+        .collection('discussionMessage')
         .doc()
         .set({
           text: message,
@@ -194,7 +196,7 @@ const Discussions = props => {
           ownerName: userStore.displayName,
           ownerAvatar: userStore.photoURL,
           commonId: commonId,
-          discussionId: data.id,
+          discussionId: discussionId,
         })
         .then(() => {
           console.log('YES', inputRef.current);

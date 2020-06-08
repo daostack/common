@@ -32,12 +32,16 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           funding = currProposalInfo.joinAndQuit.amount;
         }
 
+        console.log('proposedMemberId 1 -> ', proposedMemberId);
+
         const currProposedUser = await FirebaseService.getInstance().getUserById(
           proposedMemberId,
         );
 
         setProposedUser(currProposedUser);
         setProposalInfo({...currProposalInfo, ...{funding: funding}});
+
+        console.log('proposedUser -> ', proposedUser);
       } catch (error) {
         console.log('error: ', error);
       }
@@ -66,9 +70,13 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           funding = currProposalInfo.joinAndQuit.amount;
         }
 
+        console.log('proposedMemberId 2 -> ', proposedMemberId);
+
         const currProposedUser = await FirebaseService.getInstance().getUserById(
           proposedMemberId,
         );
+
+        console.log('currProposedUser 2 -> ', currProposedUser);
 
         setProposedUser(currProposedUser);
         setProposalInfo(currProposalInfo);
@@ -86,57 +94,53 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
 
   return (
     <Animated.View style={[styles.proposalCard, containerStyle]}>
-      <ProposalCardHeader isBoosted={true} />
+      <TouchableOpacity onPress={onReviewProposal}>
+        <ProposalCardHeader isBoosted={true} stage={proposalInfo.stage} />
 
-      <View
-        style={{
-          ...layout.content,
-          ...layout.flexStart,
-          ...layout.paddingBottomL,
-          ...{flexWrap: 'wrap'},
-        }}>
-        <Text
-          style={{...text.h3Black, ...{textAlign: 'left', flexWrap: 'wrap'}}}>
-          {proposalInfo?.title}
-        </Text>
+        <View
+          style={{
+            ...layout.content,
+            ...layout.flexStart,
+            ...layout.paddingBottomL,
+            ...{flexWrap: 'wrap'},
+          }}>
+          <Text
+            style={{...text.h3Black, ...{textAlign: 'left', flexWrap: 'wrap'}}}>
+            {proposalInfo?.title}
+          </Text>
 
-        <View style={layout.flexRow}>
-          <MemberCard
-            name={proposedUser?.displayName}
-            memberCustomText={'3d ago'}
-            imageUrl={proposedUser.photoURL}
-            isPending={false}
-          />
-          <View
-            style={{
-              ...layout.content,
-              ...{alignItems: 'flex-end'},
-            }}>
-            <Text style={text.h2Black}>{`$${proposalInfo?.funding}`}</Text>
-            <Text style={text.smallGreyText}>02:02:02:02</Text>
+          <View style={layout.flexRow}>
+            <MemberCard
+              userInfo={proposedUser}
+              proposalInfo={proposalInfo}
+              memberCustomText={'3d ago'}
+              isPending={false}
+            />
+          </View>
+
+          <View style={{...layout.flexRow, ...layout.marginTopS}}>
+            <ProposalApprovalTag
+              iconName="approved"
+              value={40}
+              isMarked={true}
+            />
+            <ProposalApprovalTag
+              iconName="declined"
+              value={28}
+              isMarked={false}
+            />
+            <ProposalApprovalTag
+              iconName="discussion"
+              value={121}
+              isMarked={false}
+            />
+          </View>
+
+          <View style={styles.proposalCardActionContainer}>
+            <Text style={styles.proposalActionBtnText}>Review proposal</Text>
           </View>
         </View>
-
-        <View style={{...layout.flexRow, ...layout.marginTopS}}>
-          <ProposalApprovalTag iconName="approved" value={40} isMarked={true} />
-          <ProposalApprovalTag
-            iconName="declined"
-            value={28}
-            isMarked={false}
-          />
-          <ProposalApprovalTag
-            iconName="discussion"
-            value={121}
-            isMarked={false}
-          />
-        </View>
-
-        <View style={styles.proposalCardActionContainer}>
-          <TouchableOpacity onPress={onReviewProposal}>
-            <Text style={styles.proposalActionBtnText}>Review proposal</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      </TouchableOpacity>
     </Animated.View>
   );
 };

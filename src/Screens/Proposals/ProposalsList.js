@@ -5,10 +5,9 @@ import ViewTabNoData from '../../Components/ViewTabNoData';
 import ProposalService, {PROPOSAL_STAGE} from '../../Services/ProposalService';
 import ProposalCard from '../../Components/Proposals/ProposalCard';
 import {CommonActions} from '@react-navigation/native';
-import {layout, colors, text, sizeL, sizeXXL} from '../../Theme';
+import {layout, colors, text, sizeXXL} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
-import SwiperFlatList from 'react-native-swiper-flatlist';
 import SwiperCard from '../../Components/SwiperCard';
 
 const {width, height} = Dimensions.get('window');
@@ -20,6 +19,7 @@ const ProposalsList = props => {
   const isSwiper = props.isSwiper;
   const navigation = props.navigation;
   const onCountChange = props.onCountChange;
+  const onlyRequestsToJoin = props.onlyRequestsToJoin;
   const [list, setList] = useState([]);
 
   console.log('commonId', commonId);
@@ -28,12 +28,6 @@ const ProposalsList = props => {
   let listRef = useRef([]);
   let unsubscribe = null;
   useEffect(() => {
-    const proposal = ProposalService.getInstance().getProposalInfo(
-      '0x79557f003cc2f8d88435525f34480113ed8b6544b53ebf0f9092a96199021a7e',
-    );
-
-    console.log('proposal -> ', proposal);
-
     const loadProposalInfo = async (commonId, userId, isHistory) => {
       console.log('Load proposal info -> ', commonId, isHistory);
       let proposalStages = null;
@@ -63,13 +57,16 @@ const ProposalsList = props => {
           }
         },
         listRef,
+        onlyRequestsToJoin,
       );
     };
 
     loadProposalInfo(commonId, userId, isHistory);
 
     return () => {
+      console.log('Unsubscribe -> ', unsubscribe);
       if (unsubscribe) {
+        console.log('CALL UNSUBSCRIBE');
         unsubscribe();
       }
     };

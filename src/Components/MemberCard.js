@@ -1,69 +1,79 @@
 import {StyleSheet, View, Text} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {layout, colors, text, sizeXS} from '../Theme';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import Icon from '../Assets/iconfont/Icon';
 import MemberImage from './Commons/MemberImage';
-import FirebaseService from '../Services/FirebaseService';
+import {monthShortNames} from '../Util/DateUtil';
 
-const
-  MemberCard = ({
-  approvePercent,
-  memberSince,
+const MemberCard = ({
   memberCustomText,
-  isPending,
-  date,
-  member,
+  // memberSince or commonsCount
+  memberSince,
+  commonsCount,
+  showMemberCreatedDate,
+
+  //-------------
+  userInfo,
+  proposalInfo,
 }) => {
-  const [memberInfo, setMemberInfo] = useState('');
-  useEffect(() => {
-    getMemberInfo();
-  }, []);
-
-  const getMemberInfo = async () => {
-    const memberInformation = await FirebaseService.getInstance().getUserByAddress(
-      member.address,
-    );
-
-    setMemberInfo(memberInformation);
-  };
-
-  renderRightContainer = () => {
-    if (isPending) {
+  const renderRightContainer = () => {
+    if (proposalInfo) {
       return (
-        <>
-          <TouchableOpacity style={styles.actionBtn}>
-            <Icon name="close" size={15} color={colors.error} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionBtn}>
-            <Icon name="check" size={30} color={colors.lightishGreen} />
-          </TouchableOpacity>
-        </>
+        <View style={styles.rightContainer}>
+          <View
+            style={{
+              ...layout.content,
+              ...{alignItems: 'flex-end'},
+            }}>
+            <Text style={text.h2Black}>{`$${proposalInfo?.joinAndQuit
+              ?.funding || proposalInfo?.fundingRequest?.funding}`}</Text>
+            <Text style={text.smallGreyText}>02:02:02:02</Text>
+          </View>
+        </View>
       );
-    } else if (date) {
+    } else if (showMemberCreatedDate) {
+      let memberCreatedDateInfo = null;
+      if (userInfo?.createdAt) {
+        const memberCreatedDate = new Date(userInfo.createdAt.seconds * 1000);
+        memberCreatedDateInfo = memberCreatedDate
+          ? `${
+              monthShortNames[memberCreatedDate.getMonth()]
+            } ${memberCreatedDate.getDay()} `
+          : '';
+      } else {
+        memberCreatedDateInfo = 'NOT app user';
+      }
+
       return (
-        <Text
-          style={{
-            ...text.smallGreyText,
-            marginTop: 2,
-          }}>
-          {date}
-        </Text>
+        <View style={styles.rightContainer}>
+          <Text
+            style={{
+              ...text.smallGreyText,
+              marginTop: 2,
+            }}>
+            {memberCreatedDateInfo}
+          </Text>
+        </View>
       );
     }
+    return null;
   };
+
   return (
     <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <View style={styles.memberInfoContainer}>
-        <MemberImage
-          member={member}
-        />
+        <MemberImage userInfo={userInfo} />
         <View
           style={{
             ...layout.content,
             ...layout.flexStart,
           }}>
-          <Text style={{...text.h4Black}}>{memberInfo.displayName}</Text>
+          <Text
+            style={{
+              ...text.h4Black,
+              ...{flexWrap: 'wrap'},
+            }}>
+            {userInfo.displayName}
+          </Text>
           <Text
             style={{
               ...text.smallGreyText,
@@ -71,13 +81,15 @@ const
             }}>
             {memberCustomText
               ? memberCustomText
-              : memberSince
-              ? `Member since by ${memberSince}`
-              : `Approved by ${approvePercent}%`}
+              : showMemberCreatedDate
+              ? `Member in ${userInfo?.daos?.length} Common${
+                  userInfo?.daos?.length > 1 ? 's' : ''
+                }`
+              : `Member since by ${memberSince}`}
           </Text>
         </View>
       </View>
-      <View style={styles.rightContainer}>{renderRightContainer()}</View>
+      {renderRightContainer()}
     </View>
   );
 };
@@ -91,19 +103,25 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: colors.grey4,
     padding: 0,
+    flex: 0.8,
   },
   noBottomBorder: {
     borderBottomWidth: 0,
   },
   memberInfoContainer: {
     ...layout.flexRow,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    alignContent: 'center',
+    alignContent: 'flex-start',
+    flexGrow: 1,
+    flexWrap: 'wrap',
   },
   rightContainer: {
     ...layout.content,
     ...layout.flexRow,
+    alignItems: 'center',
+    alignContent: 'flex-end',
+    justifyContent: 'flex-end',
   },
   actionBtn: {
     justifyContent: 'center',
