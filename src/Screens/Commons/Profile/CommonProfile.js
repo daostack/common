@@ -65,8 +65,6 @@ const CommonProfile = ({
     } else {
       setMemberState(false);
     }
-    const commonMembers = route.params.currCommon.members;
-    setMembers(commonMembers);
   }, [routeCommon, route.params.showRequestSentModal]);
 
   const renderTabBar = props => (
@@ -378,9 +376,12 @@ const CommonProfile = ({
         {isMember ? (
           <BottomRightButton
             onPress={() =>
-              navigation.navigate('New Topic', {
-                commonId: routeCommon.id,
-              })
+              navigation.navigate(
+                index === 1 ? 'FundingProposal' : 'New Topic',
+                {
+                  commonId: routeCommon.id,
+                },
+              )
             }
             bottom={50}
           />
