@@ -2,8 +2,9 @@
 // import {getArc} from './arc';
 // const {ARC_VERSION, OVERRIDES} = require('./arc');
 const {first} = require('rxjs/operators');
+import {ipfsUpload} from '../../Config';
 
-export const createFundingProposal = async (arc, data) => {
+export const createFundingProposal = async (arc, userAddress, daoId, data) => {
   // data must look like this
   // {
   //   title: `A test proposal on ${Date()}`,
@@ -14,30 +15,33 @@ export const createFundingProposal = async (arc, data) => {
   //   funding: new BN(100000),
   // };
 
-  console.log('createFundingProposal -> ', data);
-
   try {
-    const dao = arc.dao('0x0f0c735f67fbe866a65c10ace6b3536fa09cddab');
+    const dao = arc.dao(daoId);
+    // let plugins;
 
-    console.log('dao -> ', dao);
+    const plugins = await dao.plugins();
 
-    let plugins;
+    console.log('PLUGINS -> ', plugins);
+
+    let fundingRequestPlugin;
     try {
-      plugins = await dao
-        .plugins({where: {name: 'fundingRequest'}})
-        .pipe(first())
-        .toPromise();
+      fundingRequestPlugin = await dao.plugin({
+        where: {name: 'FundingRequest'},
+      });
     } catch (e) {
       console.log(e);
+      console.log(daoId);
+      const plugins = await dao
+        .plugins()
+        .pipe(first())
+        .toPromise();
+      console.log(plugins.map(p => p.coreState.name));
       throw e;
     }
 
-    console.log('plugins');
-    console.log(plugins);
-    /*
-
-    const joinAndQuitPlugin = plugins[0];
-    console.log('joinAndQuitPlugin', joinAndQuitPlugin.id);
+    // console.log('PLUGINS -> ', plugins);
+    // const fundingRequestPlugin = plugins[0];
+    console.log('fundingRequestPlugin', fundingRequestPlugin.id);
 
     let ipfsHash;
     const fee = data.funding;
@@ -52,18 +56,42 @@ export const createFundingProposal = async (arc, data) => {
 
     const args = {
       descriptionHash: ipfsHash,
-      fee,
+      amount: fee,
+      beneficiary: userAddress,
+
       dao: dao.id,
-      plugin: joinAndQuitPlugin.coreState.address,
+      plugin: fundingRequestPlugin.coreState.address,
     };
-    console.log(args);
-    const transaction = await joinAndQuitPlugin.createProposal(args);
-    const receipt = await transaction.send();
+    console.log('creating transaction');
+    const transaction = await fundingRequestPlugin.createProposalTransaction(
+      args,
+    );
+
+    console.log('Transaction -> ', transaction);
+
+    // TODO: test not 0 value
+    const receipt = await transaction.contract.sendToRelayerWithReceipt(
+      transaction.method,
+      transaction.args,
+    );
+
+    console.log('RECEIPT -> ', receipt);
+
     console.log(
       `Transaction with ${receipt.transactionHash} was mined: proposal created!`,
     );
-    return receipt.result;
-    */
+
+    const proposal = fundingRequestPlugin.createProposalTransactionMap(receipt);
+    console.log('PROPOSAL -> ', proposal);
+    return proposal;
+    /**  Original code, keep for reference until we are sure the current pattern works
+     *
+    const transaction = await fundingRequestPlugin.createProposal(args);
+    console.log(`sending transaction ${transaction}`);
+    console.log(transaction)
+    const receipt = await transaction.send();
+    return receipt.result; // this is a arc.js Proposal instance
+     */
   } catch (e) {
     console.log(e);
     throw e;

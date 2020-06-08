@@ -18,7 +18,7 @@ import {web3ProviderUrl} from '../Config';
 import Toast from '../Util/Toast';
 import {auth} from '../Firebase';
 import ABI from '../Util/abi.json';
-import { ethers } from 'ethers';
+import {ethers} from 'ethers';
 
 class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -200,7 +200,10 @@ class nativeBridgeTests extends React.Component {
     try {
       const safeWallet = this.props.userStore.userInfo.safeAddress;
       if (safeWallet) {
-        this.setState({cwTXHash: 'You already have a safe wallet', cwAddress: safeWallet});
+        this.setState({
+          cwTXHash: 'You already have a safe wallet',
+          cwAddress: safeWallet,
+        });
         return;
       }
       const manager = WalletManager.getInstance();
@@ -216,7 +219,10 @@ class nativeBridgeTests extends React.Component {
     try {
       const safeWallet = this.props.userStore.userInfo.safeAddress;
       if (safeWallet) {
-        this.setState({cw2TXHash: 'You already have a safe wallet', cw2Address: safeWallet});
+        this.setState({
+          cw2TXHash: 'You already have a safe wallet',
+          cw2Address: safeWallet,
+        });
         return;
       }
       const manager = WalletManager.getInstance();
@@ -238,9 +244,15 @@ class nativeBridgeTests extends React.Component {
         return;
       }
       const manager = WalletManager.getInstance();
-      const response = await manager.execTransaction(safeAddress, '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB', '0.01');
+      const response = await manager.execTransaction(
+        safeAddress,
+        '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB',
+        '0.01',
+      );
       console.log('txHash ->', response.data.txHash);
-      this.setState({safeTxHash: response.data.txHash || response.data.message});
+      this.setState({
+        safeTxHash: response.data.txHash || response.data.message,
+      });
     } catch (e) {
       console.log(e);
       throw 'Send transaction failed with error: ' + e;
@@ -257,15 +269,25 @@ class nativeBridgeTests extends React.Component {
       const manager = WalletManager.getInstance();
       const tokenAddress = '0x3111C94B9243a8A99D5A867e00609900e437E2c0';
       const iface = new ethers.utils.Interface(ABI.ERC20);
-      const data = iface.functions.transfer.encode(['0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB', ethers.utils.parseEther('0.1')]);
+      const data = iface.functions.transfer.encode([
+        '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB',
+        ethers.utils.parseEther('0.1'),
+      ]);
       // console.log('iface ->', iface, data);
-      const response = await manager.execTransaction(safeAddress, tokenAddress, '0', data);
+      const response = await manager.execTransaction(
+        safeAddress,
+        tokenAddress,
+        '0',
+        data,
+      );
       // console.log('response ->', response);
-      this.setState({safeSCHash: response.data.txHash || response.data.message});
+      this.setState({
+        safeSCHash: response.data.txHash || response.data.message,
+      });
     } catch (e) {
       console.log(e);
     }
-  }
+  };
 
   addToWhitelist = async () => {
     try {
@@ -339,16 +361,46 @@ class nativeBridgeTests extends React.Component {
   };
 
   createFundingProposal = async () => {
-    // TODO
+    console.log('creating Funding Proposal -- please wait');
+    const daoId = '0x59b1c80f882c38abd52a90c9b30edafa55f7e421'; // 0 min join fee
+    this.setState({
+      proposalStatus: 'Creating Funding Request proposal -- please wait',
+    });
+    try {
+      const data = {
+        title: `A test funding proposal on ${Date()}`,
+        description: 'Funding request description',
+        files: [],
+        images: [],
+        links: [], // {title: "title", url: "url"}
+        funding: new BN(3),
+      };
+      const proposal = await ArcService.getInstance().createFundingProposal(
+        this.props.userStore.userInfo.safeAddress,
+        daoId,
+        data,
+      );
+      this.setState({
+        proposalStatus: `Funding Request Proposal with id ${proposal.id} created!`,
+      });
+    } catch (e) {
+      console.log(e);
+      this.setState({proposalState: `${e}`});
+    }
+    console.log(`proposal created: ${proposal.id}`);
   };
 
   openTxhash = hash => {
-    this.props.navigation.navigate('Browser', {url: `https://blockscout.com/poa/xdai/tx/${hash}`});
-  }
+    this.props.navigation.navigate('Browser', {
+      url: `https://blockscout.com/poa/xdai/tx/${hash}`,
+    });
+  };
 
   openAddress = address => {
-    this.props.navigation.navigate('Browser', {url: `https://blockscout.com/poa/xdai/address/${address}`});
-  }
+    this.props.navigation.navigate('Browser', {
+      url: `https://blockscout.com/poa/xdai/address/${address}`,
+    });
+  };
 
   render() {
     return (
@@ -435,8 +487,9 @@ class nativeBridgeTests extends React.Component {
           <Text style={{marginVertical: 10}}>
             --------------- Local Wallet -----------------
           </Text>
-          <TouchableOpacity onPress={() => this.openAddress(this.state.address)}>
-          <Text>Address: {this.state.address}</Text>
+          <TouchableOpacity
+            onPress={() => this.openAddress(this.state.address)}>
+            <Text>Address: {this.state.address}</Text>
           </TouchableOpacity>
           <Text>Balance: {this.state.balance}</Text>
           <TouchableOpacity onPress={this.getBalance} style={styles.button}>
@@ -452,7 +505,7 @@ class nativeBridgeTests extends React.Component {
 
           <Text>Status: {this.state.txStatus}</Text>
           <TouchableOpacity onPress={() => this.openTxhash(this.state.txHash)}>
-          <Text>Hash: {this.state.txHash}</Text>
+            <Text>Hash: {this.state.txHash}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this.sendTransaction}
@@ -471,21 +524,22 @@ class nativeBridgeTests extends React.Component {
             --------------- Relayer -----------------
           </Text>
 
-          <TouchableOpacity onPress={() => this.openAddress(this.state.safeWallet)}>
-          <Text>Address: {this.state.safeWallet}</Text>
+          <TouchableOpacity
+            onPress={() => this.openAddress(this.state.safeWallet)}>
+            <Text>Address: {this.state.safeWallet}</Text>
           </TouchableOpacity>
           <Text>Balance: {this.state.safeWalletBalance}</Text>
-          <TouchableOpacity
-            onPress={this.getSafeBalance}
-            style={styles.button}>
+          <TouchableOpacity onPress={this.getSafeBalance} style={styles.button}>
             <Text>Get Safe Wallet Balance</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => this.openTxhash(this.state.cwTXHash)}>
-          <Text>TXHash: {this.state.cwTXHash}</Text>
+          <TouchableOpacity
+            onPress={() => this.openTxhash(this.state.cwTXHash)}>
+            <Text>TXHash: {this.state.cwTXHash}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.openAddress(this.state.cwAddress)}>
-          <Text>Address: {this.state.cwAddress}</Text>
+          <TouchableOpacity
+            onPress={() => this.openAddress(this.state.cwAddress)}>
+            <Text>Address: {this.state.cwAddress}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this.createSmartContractWallet}
@@ -507,8 +561,9 @@ class nativeBridgeTests extends React.Component {
             style={styles.button}>
             <Text>Add self white list</Text>
           </TouchableOpacity> */}
-          <TouchableOpacity onPress={() => this.openTxhash(this.state.safeSCHash)}>
-          <Text>TxHash: {this.state.safeSCHash}</Text>
+          <TouchableOpacity
+            onPress={() => this.openTxhash(this.state.safeSCHash)}>
+            <Text>TxHash: {this.state.safeSCHash}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this.execSmartContract}
@@ -516,8 +571,9 @@ class nativeBridgeTests extends React.Component {
             <Text>execSmartContract</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => this.openTxhash(this.state.safeTxHash)}>
-          <Text>TxHash: {this.state.safeTxHash}</Text>
+          <TouchableOpacity
+            onPress={() => this.openTxhash(this.state.safeTxHash)}>
+            <Text>TxHash: {this.state.safeTxHash}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this.execTransaction}
