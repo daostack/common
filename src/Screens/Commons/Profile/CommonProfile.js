@@ -26,9 +26,10 @@ import {observer, inject} from 'mobx-react';
 import Toast from '../../../Util/Toast';
 import {numberFormatter} from '../../../Util';
 import FirebaseService from '../../../Services/FirebaseService';
-
+import ProposalService from '../../../Services/ProposalService';
 import MemberImage from '../../../Components/Commons/MemberImage';
 import CommonMembersList from './CommonMembersList';
+import firestore from '@react-native-firebase/firestore';
 
 const CommonProfile = ({
   navigation,
@@ -49,6 +50,7 @@ const CommonProfile = ({
 
   const [currCommon, setCurrCommon] = useState(false);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
   const routeCommon = route.params.currCommon;
   const daoMembers = route.params.currCommon.members;
 
@@ -66,6 +68,20 @@ const CommonProfile = ({
       setMemberState(false);
     }
   }, [routeCommon, route.params.showRequestSentModal]);
+
+  useEffect(() => {
+    const unsubscribe = firestore()
+      .collection('proposals')
+      .where('dao', '==', routeCommon.id)
+      .where('stageStr', 'in', ['2', '3', '4', '5']) // only request to JOIN proposals
+      .onSnapshot(snapshot => {
+        setPendingCount(snapshot.docs?.length || 0);
+        console.log('SNAPSHOT DOCS LENGTH', snapshot.docs?.length);
+      });
+    return () => {
+      unsubscribe();
+    };
+  }, [routeCommon.id]);
 
   const renderTabBar = props => (
     <TabBar
