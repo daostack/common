@@ -386,7 +386,7 @@ class nativeBridgeTests extends React.Component {
       });
     } catch (e) {
       console.log(e);
-      this.setState({proposalState: `${e}`});
+      this.setState({fundingProposalState: `${e}`});
     }
     console.log(`proposal created: ${proposal.id}`);
   };
