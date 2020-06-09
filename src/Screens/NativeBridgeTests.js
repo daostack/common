@@ -346,13 +346,13 @@ class nativeBridgeTests extends React.Component {
 
   voteForJoinAndQuitProposal = async () => {
     console.log('Vote for proposal -- please wait');
-    const proposalId = '0x8099567003bd3a756b69a012c871bfa20cd99d353aec5e4a832a84e14055960e'; // Proposal for the 0 min funding dao made from user lyubomir.petkov@limechain.tech 
+    const proposalId = '0x8099567003bd3a756b69a012c871bfa20cd99d353aec5e4a832a84e14055960e'; // Proposal for the 0 min funding dao made from user lyubomir.petkov@limechain.tech
     this.setState({
       proposalVotingStatus: 'VOTING for JoinAndQuit proposal -- please wait',
     });
     try {
       const data = {
-        vote: 1
+        vote: 1,
       };
       const vote = await ArcService.getInstance().voteForJoinAndQuitProposal(
         proposalId,
@@ -362,8 +362,8 @@ class nativeBridgeTests extends React.Component {
         proposalVotingStatus: `VOTING for JoinAndQuit Proposal with id ${vote.id} created!`,
       });
     } catch (e) {
-      showErrorPopUp(this.props.bottomSheetStore, e.message);
-      this.setState({proposalState: `${e}`});
+      this.setState({voteState: `${e}`});
+      // showErrorPopUp(this.props.bottomSheetStore, e.message);
     }
     console.log(`proposal created: ${proposal.id}`);
   }
@@ -422,19 +422,16 @@ class nativeBridgeTests extends React.Component {
             <Text>Create a funding request</Text>
           </TouchableOpacity>
 
+          <Text>{this.state.voteState}</Text>
+          <TouchableOpacity onPress={this.voteForJoinAndQuitProposal} style={styles.button}>
+            <Text>Vote for proposal</Text>
+          </TouchableOpacity>
+
           <Text>mnemonicsAndStore: {this.state.mnemonicsAndStore}</Text>
           <TouchableOpacity
             onPress={this.generateAndStoreMnemonic}
             style={styles.button}>
             <Text>Generate And Store Mnemonic</Text>
-          </TouchableOpacity>
-          <Text style={{marginVertical: 10}}>
-            --------------- Proposal interaction -----------------
-          </Text>
-
-          <Text>{this.state.commonStatus}</Text>
-          <TouchableOpacity onPress={this.voteForJoinAndQuitProposal} style={styles.button}>
-            <Text>Vote for proposal</Text>
           </TouchableOpacity>
 
           <Text style={{marginVertical: 10}}>

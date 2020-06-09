@@ -155,7 +155,7 @@ export default class WalletManager {
         // options,
         body
       );
-      console.log('execTransaction ->', response);
+      // console.log('execTransaction ->', response);
       return response;
     } catch (err) {
       console.log(err);
