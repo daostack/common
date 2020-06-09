@@ -1,4 +1,6 @@
-// import {Address} from '../../node_modules/@daostack/arc.js/src'
+// import { IPFSClient } from '@daostack/arc.js';
+import {IpfsClient} from '../../Config';
+
 const {
   getForgeOrgData,
   getSetSchemesData,
@@ -9,22 +11,24 @@ const {
   MEMBER_REPUTATION,
 } = require('../../Config');
 
-// import DAOFactory from '../Contracts/ABIs/DAOFactory';
-
-// this function is called like this:
-//
 
 // const commonAddress = await createCommon({
 //   name: formData.name,
 //   founderAddresses: [address],
 //   tokenDist: [0],
 //   repDist: [100],
-//   minFeeToJoin: 100, // TDB: get from formData
-//   fundingGoal: 1000, // TBD: get from formdata
-//   // TBD: get form data for deadline; these are in "secondSinceEpoch"
+//   minFeeToJoin: 100, //
+//   fundingGoal: 1000, // T
 //   fundingGoalDeadline: (await provider.getBlock('latest')).timestamp + 3000,
-//   ipfsHash,
-// });
+//       byline: formData.byline,
+//       description: formData.description,
+//       courseOfAction: formData.action,
+//       // TODO: actuall add the values here (as an arry probably)
+//       rules: formData.rules,
+//       links: formData.links,
+/// });
+
+
 
 export const createCommon = async (
   arc,
@@ -32,17 +36,36 @@ export const createCommon = async (
   navigation,
   daoStore,
 ) => {
+  // TODO: save the data on ipfs and get the hash as a part of this functions
   navigation.navigate('CommonCreationLoading');
   daoStore.setCreationStatus(1);
-  console.log(MEMBER_REPUTATION);
+
+  // need these keys:
+  const MANDATORY_ARGS = [
+    'name', 'minFeeToJoin', 'fundingGoal', 'fundingGoalDeadline',
+  ];
+
+  for (const key of MANDATORY_ARGS) {
+    if (Object.keys(givenOpts).indexOf(key) === -1) {
+      console.log(givenOpts);
+      throw Error(`${key} is a mandatary option for the createCommon function`);
+    }
+  }
 
   try {
     const defaultOptions = {
-      fundingToken: COMMONTOKENADDRESS,
+      tokenDist: [0],
+      repDist: [MEMBER_REPUTATION],
       memberReputation: MEMBER_REPUTATION,
+      fundingToken: COMMONTOKENADDRESS,
+      VERSION: '000001', // just some alphanumberic marker  that is useful for filtering
     };
     const opts = {...defaultOptions, ...givenOpts};
-    let tx;
+
+    console.log('saving data on ipfs: ', opts);
+    ipfsHash = await IpfsClient.addAndPinString(JSON.stringify(opts));
+    console.log('ipfsHash ->', ipfsHash);
+
     let receipt;
 
     console.log('opts: ', opts);
@@ -62,20 +85,19 @@ export const createCommon = async (
     const votingMachineInfo = arc.getContractInfoByName(
       'GenesisProtocol',
       ARC_VERSION,
-      // Ideally, we would find the GeneisProtocol at ARC_VERSION
-      // instead, we need to use this custom version until https://github.com/daostack/subgraph/issues/542  is resolved
     );
     console.log('Calling DAOFactory.forgeOrg(...)', {
       DAOFactoryInstance: daoFactoryInfo.address,
       orgName: opts.name,
       founderAddresses: [opts.founderAddresses],
-      repDist: [opts.memberReputation],
+      repDist: opts.repDist,
     });
+
     const forgeOrgData = getForgeOrgData({
       DAOFactoryInstance: daoFactoryInfo.address,
       orgName: opts.name,
       founderAddresses: [opts.founderAddresses],
-      repDist: [opts.memberReputation],
+      repDist: opts.repDist,
     });
 
     console.log('waiting for tx to be mined');
@@ -92,29 +114,22 @@ export const createCommon = async (
     console.log('newOrgAddress', newOrgAddress);
 
     console.log('Calling DAOFactory.setSchemes(...)', opts);
-    console.log('variables sending to Contract', {
-      DAOFactoryInstance: daoFactoryInfo.address,
-      avatar: newOrgAddress,
-      votingMachine: votingMachineInfo.address,
-      fundingToken: opts.fundingToken,
-      minFeeToJoin: opts.minFeeToJoin,
-      memberReputation: opts.memberReputation,
-      fundingGoal: [parseInt(opts.fundingGoal, 10)],
-      deadline: opts.fundingGoalDeadline,
-      metaData: opts.ipfsHash,
-    });
+    console.log('variables sending to Contract', schemeDataToEncode);
 
-    const schemeData = getSetSchemesData({
+    const schemeDataToEncode = {
       DAOFactoryInstance: daoFactoryInfo.address,
       avatar: newOrgAddress,
       votingMachine: votingMachineInfo.address,
       fundingToken: opts.fundingToken,
       minFeeToJoin: opts.minFeeToJoin,
       memberReputation: opts.memberReputation,
-      goal: parseInt(opts.fundingGoal, 10),
+      // we set the OFFICIAL funding gaol to 0 - in the frontend we show the fundingGaol from ipfs data
+      // goal: parseInt(opts.fundingGoal, 10),
+      goal: 0,
       deadline: opts.fundingGoalDeadline,
-      metaData: opts.ipfsHash,
-    });
+      metaData: ipfsHash,
+    };
+    const schemeData = getSetSchemesData(schemeDataToEncode);
 
     daoStore.setCreationStatus(4);
     console.log('waiting for tx to be mined');

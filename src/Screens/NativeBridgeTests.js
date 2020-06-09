@@ -304,18 +304,14 @@ class nativeBridgeTests extends React.Component {
 
   createCommon = async () => {
     try {
-      const wallet = WalletManager.getInstance().wallet;
-    const manager = WalletManager.getInstance();
+      const manager = WalletManager.getInstance();
       const commonAddress = await ArcService.getInstance().createCommon(
         {
-          name: `Test DAO ${new Date()}`,
+          name: 'Test dao 2',
           founderAddresses: manager.safeAddress,
-          minFeeToJoin: 100, // TDB: get from formData
-          fundingGoal: 100000, // TBD: get from formdata
-          // TBD: get form data for deadline; these are in secondSinceEpoch
-          //TODO: get data for deadline from form data
-          fundingGoalDeadline: 20200404,
-          ipfsHash: 'QmXLiGz859X4ktkEKupyda3duXVJQ7ax59t3Uha9odiSRp',
+          minFeeToJoin: 0,
+          fundingGoal: 10000,
+          fundingGoalDeadline: Math.round(new Date().getTime() / 1000),
         },
         this.props.navigation,
         this.props.daoStore,
@@ -358,12 +354,14 @@ class nativeBridgeTests extends React.Component {
       showErrorPopUp(this.props.bottomSheetStore, e.message);
       this.setState({proposalState: `${e}`});
     }
-    console.log(`proposal created: ${proposal.id}`);
+    const msg = `proposal created: ${proposal.id}`;
+    console.log(msg);
+    this.setState({proposalState: msg});
   };
 
   createFundingProposal = async () => {
     console.log('creating Funding Proposal -- please wait');
-    const daoId = '0x59b1c80f882c38abd52a90c9b30edafa55f7e421'; // 0 min join fee
+    const daoId = '0x31f40d8843f46a29c43f5e7f1c88d86d5698bfb6';
     this.setState({
       proposalStatus: 'Creating Funding Request proposal -- please wait',
     });

@@ -72,7 +72,7 @@ const MemberCard = ({
               ...text.h4Black,
               ...{flexWrap: 'wrap'},
             }}>
-            {userInfo.displayName}
+            {userInfo?.displayName}
           </Text>
           <Text
             style={{
