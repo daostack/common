@@ -11,7 +11,6 @@ import {
 import {text, layout, colors, sizeL} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
 import {TabView, TabBar} from 'react-native-tab-view';
-import ViewTabNoData from '../../../Components/ViewTabNoData';
 import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
 import CommonCover from '../../../Components/Commons/CommonCover';
 import CommonStageSummary from '../../../Components/Commons/CommonStageSummary';
@@ -25,11 +24,9 @@ import DiscussionList from '../../Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
 import Toast from '../../../Util/Toast';
 import {numberFormatter} from '../../../Util';
-import FirebaseService from '../../../Services/FirebaseService';
-import ProposalService from '../../../Services/ProposalService';
-import MemberImage from '../../../Components/Commons/MemberImage';
 import CommonMembersList from './CommonMembersList';
 import firestore from '@react-native-firebase/firestore';
+import {PROPOSAL_STAGE} from '../../../Services/ProposalService';
 
 const CommonProfile = ({
   navigation,
@@ -70,18 +67,25 @@ const CommonProfile = ({
   }, [routeCommon, route.params.showRequestSentModal]);
 
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('proposals')
-      .where('dao', '==', routeCommon.id)
-      .where('stageStr', 'in', ['2', '3', '4', '5']) // only request to JOIN proposals
-      .onSnapshot(snapshot => {
-        setPendingCount(snapshot.docs?.length || 0);
-        console.log('SNAPSHOT DOCS LENGTH', snapshot.docs?.length);
-      });
-    return () => {
-      unsubscribe();
-    };
-  }, [routeCommon.id]);
+    if (isMember) {
+      const unsubscribe = firestore()
+        .collection('proposals')
+        .where('dao', '==', routeCommon.id)
+        .where('stageStr', 'in', [
+          PROPOSAL_STAGE.Queued,
+          PROPOSAL_STAGE.PreBoosted,
+          PROPOSAL_STAGE.Boosted,
+          PROPOSAL_STAGE.QuietEndingPeriod,
+        ]) // not Executed or Expired
+        .where('type', '==', 'JoinAndQuit') // only request to JOIN proposals
+        .onSnapshot(snapshot => {
+          setPendingCount(snapshot.docs?.length || 0);
+        });
+      return () => {
+        unsubscribe();
+      };
+    }
+  }, [routeCommon.id, isMember]);
 
   const renderTabBar = props => (
     <TabBar
@@ -183,7 +187,7 @@ const CommonProfile = ({
               />
             </View>
             <TouchableOpacity style={layout.flexRow}>
-              <Text style={text.h4Black}>Pending (13)</Text>
+              <Text style={text.h4Black}>Pending ({pendingCount})</Text>
               <Icon name="right-arrow" />
             </TouchableOpacity>
           </TouchableOpacity>
