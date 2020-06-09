@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Dimensions,
   Text,
@@ -11,24 +11,24 @@ import {
 import {text, layout, colors, sizeL} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
 import {TabView, TabBar} from 'react-native-tab-view';
-import ViewTabNoData from '../../../Components/ViewTabNoData';
 import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
 import CommonStageSummary from '../../../Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ProposalApprovalTag from '../../../Components/Proposals/ProposalApprovalTag';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '../../../Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
-import { observer, inject } from 'mobx-react';
+import {observer, inject} from 'mobx-react';
 import Toast from '../../../Util/Toast';
-import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
+import HeaderImageScrollView, {
+  TriggeringView,
+} from 'react-native-image-header-scroll-view';
 import CommonHeader from '../../../Components/Commons/CommonHeader';
 import {numberFormatter} from '../../../Util';
-import FirebaseService from '../../../Services/FirebaseService';
-import MemberImage from '../../../Components/Commons/MemberImage';
 import CommonMembersList from './CommonMembersList';
+import ProposalService from '../../../Services/ProposalService';
 
 const CommonProfile = ({
   navigation,
@@ -42,13 +42,14 @@ const CommonProfile = ({
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    { key: 'discussions', title: 'Discussions', icon: 'discussion' },
-    { key: 'proposals', title: 'Proposals', icon: 'proposals' },
-    { key: 'history', title: 'History', icon: 'history' },
+    {key: 'discussions', title: 'Discussions', icon: 'discussion'},
+    {key: 'proposals', title: 'Proposals', icon: 'proposals'},
+    {key: 'history', title: 'History', icon: 'history'},
   ]);
 
   const [currCommon, setCurrCommon] = useState(false);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
+  const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const routeCommon = route.params.currCommon;
   const daoMembers = route.params.currCommon.members;
 
@@ -67,6 +68,25 @@ const CommonProfile = ({
     }
   }, [routeCommon, route.params.showRequestSentModal]);
 
+  useEffect(() => {
+    let unsubscribe = null;
+    let getPendingProposalsData = async () => {
+      unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
+        routeCommon.id,
+        userStore.userInfo.safeAddress,
+        data => {
+          setPendingProposalsData({...data});
+        },
+      );
+    };
+    getPendingProposalsData();
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [routeCommon.id, isMember]);
+
   const renderTabBar = props => (
     <TabBar
       {...props}
@@ -75,7 +95,7 @@ const CommonProfile = ({
       }}
       renderLabel={(label, focused) => {
         return (
-          <View style={{ ...layout.content, padding: 0 }}>
+          <View style={{...layout.content, padding: 0}}>
             <Icon
               name={label.route.icon}
               size={30}
@@ -87,8 +107,8 @@ const CommonProfile = ({
           </View>
         );
       }}
-      style={{ backgroundColor: colors.white }}
-      tabStyle={{ borderTopWidth: 1, borderColor: colors.grey4 }}
+      style={{backgroundColor: colors.white}}
+      tabStyle={{borderTopWidth: 1, borderColor: colors.grey4}}
     />
   );
 
@@ -98,7 +118,7 @@ const CommonProfile = ({
 
   const Proposals = () => {
     return (
-      <View style={{ padding: sizeL }}>
+      <View style={{padding: sizeL}}>
         <ProposalsList navigation={navigation} commonId={currCommon.id} />
       </View>
     );
@@ -106,7 +126,7 @@ const CommonProfile = ({
 
   const History = () => {
     return (
-      <View style={{ padding: sizeL }}>
+      <View style={{padding: sizeL}}>
         <ProposalsList
           navigation={navigation}
           commonId={currCommon.id}
@@ -167,7 +187,12 @@ const CommonProfile = ({
               />
             </View>
             <TouchableOpacity style={layout.flexRow}>
-              <Text style={text.h4Black}>Pending (13)</Text>
+              <Text style={text.h4Black}>
+                Pending (
+                {pendingProposalsData &&
+                  pendingProposalsData.pendingProposalCount}
+                )
+              </Text>
               <Icon name="right-arrow" />
             </TouchableOpacity>
           </TouchableOpacity>
@@ -229,7 +254,7 @@ const CommonProfile = ({
     const navigate = CommonActions.navigate({
       name: 'ProposalScreen',
       params: {
-        proposalId: 'ba02cba0-937a-11ea-b51a-77e469735457',
+        proposalId: pendingProposalsData.usersPendingProposalId,
       },
     });
     navigation.dispatch(navigate);
@@ -242,13 +267,13 @@ const CommonProfile = ({
         style={{
           ...layout.content,
           paddingVertical: 15,
-          ...{ borderBottomWidth: 1, borderBottomColor: colors.grey4 },
+          ...{borderBottomWidth: 1, borderBottomColor: colors.grey4},
         }}>
         <View
           style={{
             ...layout.content,
             ...layout.flexRow,
-            ...{ padding: 0 },
+            ...{padding: 0},
           }}>
           <Icon name="clcok-16" size={16} style={layout.marginRightXS} />
           <Text style={text.smallBoldGreyText}>Pending Approval</Text>
@@ -257,7 +282,7 @@ const CommonProfile = ({
           style={{
             ...layout.flexRow,
             ...layout.marginTopS,
-            ...{ width: '100%', justifyContent: 'space-between' },
+            ...{width: '100%', justifyContent: 'space-between'},
           }}>
           <View style={layout.flexRow}>
             <ProposalApprovalTag
@@ -284,17 +309,27 @@ const CommonProfile = ({
     );
   };
 
-  const initialLayout = { width: Dimensions.get('window').width };
+  const initialLayout = {width: Dimensions.get('window').width};
 
   console.log('currCommon.coverPhoto', currCommon.coverPhoto);
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.white }}>
+    <View style={{flex: 1, backgroundColor: colors.white}}>
       <StatusBar barStyle="light-content" />
       <TouchableOpacity
-        style={{ justifyContent: 'center', position: 'absolute', top: 0, left: 0 }}
+        style={{
+          justifyContent: 'center',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+        }}
         onPress={() => props.navigation.pop()}>
-        <Icon name="left-arrow" size={32} color={colors.white} style={{ marginLeft: 10 }} />
+        <Icon
+          name="left-arrow"
+          size={32}
+          color={colors.white}
+          style={{marginLeft: 10}}
+        />
       </TouchableOpacity>
       <HeaderImageScrollView
         disableHeaderGrow
@@ -303,7 +338,7 @@ const CommonProfile = ({
         maxHeight={200}
         fadeOutForeground
         minHeight={120}
-        headerImage={{ uri: currCommon.coverPhoto }}
+        headerImage={{uri: currCommon.coverPhoto}}
         renderFixedForeground={() => (
           <CommonHeader
             isMember={isMember}
@@ -316,11 +351,13 @@ const CommonProfile = ({
               description: currCommon.description,
             }}
           />
-        )}
-      >
-        {renderPendingApproval()}
+        )}>
+        {!isMember &&
+          pendingProposalsData &&
+          pendingProposalsData.usersPendingProposalId &&
+          renderPendingApproval()}
 
-        <View style={{ paddingVertical: 20 }}>
+        <View style={{paddingVertical: 20}}>
           <CommonStageSummary
             isFundingStage={isFundingStage}
             commonProgressInfo={{
@@ -342,7 +379,7 @@ const CommonProfile = ({
         </View>
 
         {renderMembersRowForMemberUsers()}
-        <View style={{ ...layout.content, ...{ paddingTop: 0 } }}>
+        <View style={{...layout.content, ...{paddingTop: 0}}}>
           <TouchableOpacity
             style={{
               ...layout.btnOutline,
@@ -374,7 +411,7 @@ const CommonProfile = ({
         </TouchableOpacity>
  */}
         <TabView
-          navigationState={{ index, routes }}
+          navigationState={{index, routes}}
           renderScene={renderScene}
           onIndexChange={setIndex}
           initialLayout={initialLayout}
@@ -396,54 +433,57 @@ const CommonProfile = ({
             bottom={50}
           />
         ) : (
-            <>
-              <View style={styles.actionButtonContainer}>
-                <TouchableOpacity
-                  style={styles.headerButton}
-                  onPress={requestToJoin}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: 'white',
-                      fontWeight: '700',
-                      marginRight: 40,
-                    }}>
-                    Request to join
-                </Text>
-                  <Text style={{ fontSize: 16, color: 'white' }}>
-                    ${currCommon.minFeeToJoin} Contribution
-                </Text>
-                </TouchableOpacity>
-              </View>
-              <Modal
-                isVisible={showRequestSentModal}
-                avoidKeyboard={true}
-                backdropColor={colors.white}
-                backdropOpacity={1}
-                onBackdropPress={() => setShowRequestSentModal(false)}
-                style={{ padding: 0 }}>
-                <SentTemplate
-                  title="Request Sent"
-                  description="The common members will vote on your request to join, and if approved you will become an equal member with voting rights."
-                  onClose={() => setShowRequestSentModal(false)}>
-                  <View style={layout.flexRow}>
-                    <TouchableOpacity
-                      style={styles.modalRequestSentBtnPrimary}
-                      onPress={viewProposal}>
-                      <Text style={text.buttoncenterwhite}>View proposal</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={layout.flexRow}>
-                    <TouchableOpacity
-                      style={styles.modalRequestSentBtnOutline}
-                      onPress={goToToCommon}>
-                      <Text style={text.buttonblue}>Go to Common</Text>
-                    </TouchableOpacity>
-                  </View>
-                </SentTemplate>
-              </Modal>
-            </>
-          )}
+          <>
+            {pendingProposalsData &&
+              !pendingProposalsData.usersPendingProposalId && (
+                <View style={styles.actionButtonContainer}>
+                  <TouchableOpacity
+                    style={styles.headerButton}
+                    onPress={requestToJoin}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: 'white',
+                        fontWeight: '700',
+                        marginRight: 40,
+                      }}>
+                      Request to join
+                    </Text>
+                    <Text style={{fontSize: 16, color: 'white'}}>
+                      ${currCommon.minFeeToJoin} Contribution
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            <Modal
+              isVisible={showRequestSentModal}
+              avoidKeyboard={true}
+              backdropColor={colors.white}
+              backdropOpacity={1}
+              onBackdropPress={() => setShowRequestSentModal(false)}
+              style={{padding: 0}}>
+              <SentTemplate
+                title="Request Sent"
+                description="The common members will vote on your request to join, and if approved you will become an equal member with voting rights."
+                onClose={() => setShowRequestSentModal(false)}>
+                <View style={layout.flexRow}>
+                  <TouchableOpacity
+                    style={styles.modalRequestSentBtnPrimary}
+                    onPress={viewProposal}>
+                    <Text style={text.buttoncenterwhite}>View proposal</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={layout.flexRow}>
+                  <TouchableOpacity
+                    style={styles.modalRequestSentBtnOutline}
+                    onPress={goToToCommon}>
+                    <Text style={text.buttonblue}>Go to Common</Text>
+                  </TouchableOpacity>
+                </View>
+              </SentTemplate>
+            </Modal>
+          </>
+        )}
       </SafeAreaView>
     </View>
   );
