@@ -5,10 +5,9 @@ import ViewTabNoData from '../../Components/ViewTabNoData';
 import ProposalService, {PROPOSAL_STAGE} from '../../Services/ProposalService';
 import ProposalCard from '../../Components/Proposals/ProposalCard';
 import {CommonActions} from '@react-navigation/native';
-import {layout, colors, text, sizeL, sizeXXL} from '../../Theme';
+import {layout, colors, text, sizeXXL} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
-import SwiperFlatList from 'react-native-swiper-flatlist';
 import SwiperCard from '../../Components/SwiperCard';
 
 const {width, height} = Dimensions.get('window');

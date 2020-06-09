@@ -283,7 +283,7 @@ const ProposalData = props => {
                 Recent comments
               </Text>
             </View>
-            
+
               <View style={{...layout.content, ...layout.flexStart}}>
                 {topMessage.map((currMessage, currIndex) => {
                   return (
