@@ -1,5 +1,4 @@
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
-
 import {observer, inject} from 'mobx-react';
 import React, {useRef, useEffect} from 'react';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -24,7 +23,6 @@ const BottomSheetContainer = props => {
   };
 
   onClosed = () => {
-    console.log('onClosed');
     props.bottomSheetStore.hideBottomSheet();
   };
 
