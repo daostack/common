@@ -15,6 +15,7 @@ ethers.Contract.prototype.sendToRelayer = async function (funcName, params, valu
 };
 
 ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, params, value = '0') {
+  console.log(`HERE: ${funcName}`, params, value);
   const txHash = await this.sendToRelayer(funcName, params, value);
   console.log('txHash ->', txHash);
   if (!txHash) {
@@ -99,12 +100,15 @@ export default class WalletManager {
   };
 
   createSmartContractWallet = async () => {
-    const idToken = await auth().currentUser.getIdToken();
+    const currentUser = auth().currentUser;
+    const idToken = await currentUser.getIdToken();
     const options = { headers: { idToken } };
     const response = await axios.get(
       'https://us-central1-common-daostack.cloudfunctions.net/api/createWallet',
       options,
     );
+    await this.provider.waitForTransaction(response.data.txHash);
+    await WalletManager.init(currentUser.uid); // Re-init for safeAddress
     console.log('Create SCW', response);
     return response.data;
   };
@@ -160,7 +164,7 @@ export default class WalletManager {
         // options,
         body
       );
-      console.log('execTransaction ->', response);
+      // console.log('execTransaction ->', response);
       return response;
     } catch (err) {
       console.log(err);

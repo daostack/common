@@ -13,7 +13,6 @@ const BottomSheetContainer = props => {
 
   useEffect(() => {
     if (ref.current) {
-      console.log('ref -> ', ref);
       ref.current.snapTo(1);
     }
   }, []);
@@ -25,7 +24,6 @@ const BottomSheetContainer = props => {
   };
 
   onClosed = () => {
-    console.log('onClosed');
     props.bottomSheetStore.hideBottomSheet();
   };
 
@@ -56,7 +54,6 @@ const BottomSheetContainer = props => {
     return <View style={contentStyle}>{props.bottomSheetStore.template}</View>;
   };
 
-  console.log('bottomSheetStore -> ', props.bottomSheetStore);
 
   const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
