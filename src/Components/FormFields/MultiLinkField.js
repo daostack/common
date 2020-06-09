@@ -7,7 +7,7 @@ const MultiLinkField = props => {
   const [count, setCount] = useState(1);
   const {
     maxCount,
-    // validation,
+    validation,
     placeholderValueText,
     multiline,
     addMultiFieldBtnName,
