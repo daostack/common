@@ -58,12 +58,36 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     console.log('creating transaction');
 
     // check preconditions
+
+    // precondition: the FUNDED_BEFORE_DEADLINE should be true
     const daoContract = await arc.getContract(dao.id);
-    const fundingGoalReachedFlag = await daoContract.db('FUNDED_BEFORE_DEADLINE');
+    let fundingGoalReachedFlag = await daoContract.db('FUNDED_BEFORE_DEADLINE');
+
+    console.log('xxxx');
     console.log(fundingGoalReachedFlag);
-    if (fundingGoalReachedFlag !== 'true') {
-      throw Error('funding goal is not reached yet - cannot create a funding request');
+    if (fundingGoalReachedFlag !== 'TRUE') {
+      // we will try to set it
+      // TODO: this flag should be set on common creation instead
+      const joinAndQuitPlugin = await dao.plugin({
+        where: {name: 'JoinAndQuit'},
+      });
+      console.log('fundingGaolReachFlag is not TRUE, trying to reset it..');
+      const joinAndQuitContract = await arc.getContract(joinAndQuitPlugin.coreState.address);
+      const setFlagTx  = await joinAndQuitContract.setFundingGoalReachedFlag();
+      console.log(setFlagTx);
+//      console.log(await setFlagTx.wait());
+      const setFlagTxReceipt = await setFlagTx.contract.sendToRelayerWithReceipt(
+        setFlagTx.method,
+        setFlagTx.args,
+       );
+       console.log(setFlagTxReceipt);
+      fundingGoalReachedFlag = await daoContract.db('FUNDED_BEFORE_DEADLINE');
+      if (fundingGoalReachedFlag !== 'TRUE') {
+        throw Error('funding goal is not reached yet - cannot create a funding request');
+      }
     }
+    // TODO: check if the user is a member
+
 
     // send the acdtual transaction
     const transaction = await fundingRequestPlugin.createProposalTransaction(
