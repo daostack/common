@@ -1,32 +1,34 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dimensions,
   Text,
   View,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import {text, layout, colors, sizeL} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
 import {TabView, TabBar} from 'react-native-tab-view';
 import ViewTabNoData from '../../../Components/ViewTabNoData';
 import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
-import CommonCover from '../../../Components/Commons/CommonCover';
 import CommonStageSummary from '../../../Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ProposalApprovalTag from '../../../Components/Proposals/ProposalApprovalTag';
-import {CommonActions} from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '../../../Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
-import {observer, inject} from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import Toast from '../../../Util/Toast';
+import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
+import CommonHeader from '../../../Components/Commons/CommonHeader';
 import {numberFormatter} from '../../../Util';
-
+import FirebaseService from '../../../Services/FirebaseService';
 import MemberImage from '../../../Components/Commons/MemberImage';
+import CommonMembersList from './CommonMembersList';
 
 const CommonProfile = ({
   navigation,
@@ -36,38 +38,32 @@ const CommonProfile = ({
   userStore,
 }) => {
   const [isMember, setMemberState] = useState(false);
-  const [members, setMembers] = useState(false);
   const [isFundingStage] = useState(false);
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    {key: 'discussions', title: 'Discussions', icon: 'discussion'},
-    {key: 'proposals', title: 'Proposals', icon: 'proposals'},
-    {key: 'history', title: 'History', icon: 'history'},
+    { key: 'discussions', title: 'Discussions', icon: 'discussion' },
+    { key: 'proposals', title: 'Proposals', icon: 'proposals' },
+    { key: 'history', title: 'History', icon: 'history' },
   ]);
 
   const [currCommon, setCurrCommon] = useState(false);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const routeCommon = route.params.currCommon;
+  const daoMembers = route.params.currCommon.members;
 
   useEffect(() => {
-    try {
-      setShowRequestSentModal(route.params.showRequestSentModal);
-      setCurrCommon(routeCommon);
-      if (
-        userStore.userInfo &&
-        route.params.currCommon.members.some(
-          member => member.address === userStore.userInfo.ethereumAddress || member.address === userStore.userInfo.safeAddress?.toLowerCase()
-        )
-      ) {
-        setMemberState(true);
-      } else {
-        setMemberState(false);
-      }
-      const commonMembers = route.params.currCommon.members;
-      setMembers(commonMembers);
-    } catch (e) {
-      throw e;
+    setShowRequestSentModal(route.params.showRequestSentModal);
+    setCurrCommon(routeCommon);
+    if (
+      userStore.userInfo &&
+      daoMembers.some(
+        member => member.address === userStore.userInfo.ethereumAddress,
+      )
+    ) {
+      setMemberState(true);
+    } else {
+      setMemberState(false);
     }
   }, [routeCommon, route.params.showRequestSentModal]);
 
@@ -79,7 +75,7 @@ const CommonProfile = ({
       }}
       renderLabel={(label, focused) => {
         return (
-          <View style={{...layout.content, padding: 0}}>
+          <View style={{ ...layout.content, padding: 0 }}>
             <Icon
               name={label.route.icon}
               size={30}
@@ -91,8 +87,8 @@ const CommonProfile = ({
           </View>
         );
       }}
-      style={{backgroundColor: colors.white}}
-      tabStyle={{borderTopWidth: 1, borderColor: colors.grey4}}
+      style={{ backgroundColor: colors.white }}
+      tabStyle={{ borderTopWidth: 1, borderColor: colors.grey4 }}
     />
   );
 
@@ -102,7 +98,7 @@ const CommonProfile = ({
 
   const Proposals = () => {
     return (
-      <View style={{padding: sizeL}}>
+      <View style={{ padding: sizeL }}>
         <ProposalsList navigation={navigation} commonId={currCommon.id} />
       </View>
     );
@@ -110,7 +106,7 @@ const CommonProfile = ({
 
   const History = () => {
     return (
-      <View style={{padding: sizeL}}>
+      <View style={{ padding: sizeL }}>
         <ProposalsList
           navigation={navigation}
           commonId={currCommon.id}
@@ -163,11 +159,12 @@ const CommonProfile = ({
             onPress={openCommonMembers}
             style={styles.membersAction}>
             <View style={styles.membersRow}>
-              {members.map((member, i) => {
-                if (i < 5) {
-                  return <MemberImage member={member} key={i} />;
+              <CommonMembersList
+                horizontal={true}
+                members={
+                  daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers
                 }
-              })}
+              />
             </View>
             <TouchableOpacity style={layout.flexRow}>
               <Text style={text.h4Black}>Pending (13)</Text>
@@ -181,7 +178,7 @@ const CommonProfile = ({
 
   const openCommonMembers = e => {
     navigation.navigate('CommonMembers', {
-      members: members,
+      members: daoMembers,
       commonId: currCommon.id,
     });
   };
@@ -245,13 +242,13 @@ const CommonProfile = ({
         style={{
           ...layout.content,
           paddingVertical: 15,
-          ...{borderBottomWidth: 1, borderBottomColor: colors.grey4},
+          ...{ borderBottomWidth: 1, borderBottomColor: colors.grey4 },
         }}>
         <View
           style={{
             ...layout.content,
             ...layout.flexRow,
-            ...{padding: 0},
+            ...{ padding: 0 },
           }}>
           <Icon name="clcok-16" size={16} style={layout.marginRightXS} />
           <Text style={text.smallBoldGreyText}>Pending Approval</Text>
@@ -260,7 +257,7 @@ const CommonProfile = ({
           style={{
             ...layout.flexRow,
             ...layout.marginTopS,
-            ...{width: '100%', justifyContent: 'space-between'},
+            ...{ width: '100%', justifyContent: 'space-between' },
           }}>
           <View style={layout.flexRow}>
             <ProposalApprovalTag
@@ -287,33 +284,43 @@ const CommonProfile = ({
     );
   };
 
-  const initialLayout = {width: Dimensions.get('window').width};
+  const initialLayout = { width: Dimensions.get('window').width };
+
+  console.log('currCommon.coverPhoto', currCommon.coverPhoto);
 
   return (
-    <View style={{flex: 1, backgroundColor: colors.white}}>
-      <ScrollView
-        style={{
-          flex: 1,
-          backgroundColor: colors.white,
-        }}
-        contentContainerStyle={{paddingBottom: 100}}
-        showsVerticalScrollIndicator={false}>
-        <CommonCover
-          isMember={isMember}
-          navigation={navigation}
-          onHeaderMenuOpen={openCommonOptions}
-          commonInfo={{
-            cover: currCommon.coverPhoto,
-            logo:
-              'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
-            name: currCommon.name,
-            description: currCommon.description,
-          }}
-        />
-
+    <View style={{ flex: 1, backgroundColor: colors.white }}>
+      <StatusBar barStyle="light-content" />
+      <TouchableOpacity
+        style={{ justifyContent: 'center', position: 'absolute', top: 0, left: 0 }}
+        onPress={() => props.navigation.pop()}>
+        <Icon name="left-arrow" size={32} color={colors.white} style={{ marginLeft: 10 }} />
+      </TouchableOpacity>
+      <HeaderImageScrollView
+        disableHeaderGrow
+        maxOverlayOpacity={0.6}
+        minOverlayOpacity={0.3}
+        maxHeight={200}
+        fadeOutForeground
+        minHeight={120}
+        headerImage={{ uri: currCommon.coverPhoto }}
+        renderFixedForeground={() => (
+          <CommonHeader
+            isMember={isMember}
+            navigation={navigation}
+            onHeaderMenuOpen={openCommonOptions}
+            commonInfo={{
+              logo:
+                'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
+              name: currCommon.name,
+              description: currCommon.description,
+            }}
+          />
+        )}
+      >
         {renderPendingApproval()}
 
-        <View style={{paddingVertical: 20}}>
+        <View style={{ paddingVertical: 20 }}>
           <CommonStageSummary
             isFundingStage={isFundingStage}
             commonProgressInfo={{
@@ -335,7 +342,7 @@ const CommonProfile = ({
         </View>
 
         {renderMembersRowForMemberUsers()}
-        <View style={{...layout.content, ...{paddingTop: 0}}}>
+        <View style={{ ...layout.content, ...{ paddingTop: 0 } }}>
           <TouchableOpacity
             style={{
               ...layout.btnOutline,
@@ -367,14 +374,14 @@ const CommonProfile = ({
         </TouchableOpacity>
  */}
         <TabView
-          navigationState={{index, routes}}
+          navigationState={{ index, routes }}
           renderScene={renderScene}
           onIndexChange={setIndex}
           initialLayout={initialLayout}
           renderTabBar={renderTabBar}
           style={{}}
         />
-      </ScrollView>
+      </HeaderImageScrollView>
       <SafeAreaView>
         {isMember ? (
           <BottomRightButton
@@ -389,54 +396,54 @@ const CommonProfile = ({
             bottom={50}
           />
         ) : (
-          <>
-            <View style={styles.actionButtonContainer}>
-              <TouchableOpacity
-                style={styles.headerButton}
-                onPress={requestToJoin}>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: 'white',
-                    fontWeight: '700',
-                    marginRight: 40,
-                  }}>
-                  Request to join
+            <>
+              <View style={styles.actionButtonContainer}>
+                <TouchableOpacity
+                  style={styles.headerButton}
+                  onPress={requestToJoin}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: 'white',
+                      fontWeight: '700',
+                      marginRight: 40,
+                    }}>
+                    Request to join
                 </Text>
-                <Text style={{fontSize: 16, color: 'white'}}>
-                  ${currCommon.minFeeToJoin} Contribution
+                  <Text style={{ fontSize: 16, color: 'white' }}>
+                    ${currCommon.minFeeToJoin} Contribution
                 </Text>
-              </TouchableOpacity>
-            </View>
-            <Modal
-              isVisible={showRequestSentModal}
-              avoidKeyboard={true}
-              backdropColor={colors.white}
-              backdropOpacity={1}
-              onBackdropPress={() => setShowRequestSentModal(false)}
-              style={{padding: 0}}>
-              <SentTemplate
-                title="Request Sent"
-                description="The common members will vote on your request to join, and if approved you will become an equal member with voting rights."
-                onClose={() => setShowRequestSentModal(false)}>
-                <View style={layout.flexRow}>
-                  <TouchableOpacity
-                    style={styles.modalRequestSentBtnPrimary}
-                    onPress={viewProposal}>
-                    <Text style={text.buttoncenterwhite}>View proposal</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={layout.flexRow}>
-                  <TouchableOpacity
-                    style={styles.modalRequestSentBtnOutline}
-                    onPress={goToToCommon}>
-                    <Text style={text.buttonblue}>Go to Common</Text>
-                  </TouchableOpacity>
-                </View>
-              </SentTemplate>
-            </Modal>
-          </>
-        )}
+                </TouchableOpacity>
+              </View>
+              <Modal
+                isVisible={showRequestSentModal}
+                avoidKeyboard={true}
+                backdropColor={colors.white}
+                backdropOpacity={1}
+                onBackdropPress={() => setShowRequestSentModal(false)}
+                style={{ padding: 0 }}>
+                <SentTemplate
+                  title="Request Sent"
+                  description="The common members will vote on your request to join, and if approved you will become an equal member with voting rights."
+                  onClose={() => setShowRequestSentModal(false)}>
+                  <View style={layout.flexRow}>
+                    <TouchableOpacity
+                      style={styles.modalRequestSentBtnPrimary}
+                      onPress={viewProposal}>
+                      <Text style={text.buttoncenterwhite}>View proposal</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={layout.flexRow}>
+                    <TouchableOpacity
+                      style={styles.modalRequestSentBtnOutline}
+                      onPress={goToToCommon}>
+                      <Text style={text.buttonblue}>Go to Common</Text>
+                    </TouchableOpacity>
+                  </View>
+                </SentTemplate>
+              </Modal>
+            </>
+          )}
       </SafeAreaView>
     </View>
   );

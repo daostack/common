@@ -125,8 +125,6 @@ export const createCommon = async (
     daoStore.setCreationStatus(5);
     return receipt;
   } catch (e) {
-    console.log('[Create Common error]: ', e);
-    daoStore.creationError(e);
-    throw `[Create Common error] ${e}`;
+    throw e;
   }
 };

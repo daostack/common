@@ -9,16 +9,17 @@ import {
   StyleSheet,
 } from 'react-native';
 const {width} = Dimensions.get('window');
-import WalletManager from '../Util/WalletManager';
-
 import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
+import WalletManager from '../Util/WalletManager';
+import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
 import ArcService from '../Services/ArcService';
 import {web3ProviderUrl} from '../Config';
 import Toast from '../Util/Toast';
 import {auth} from '../Firebase';
 import ABI from '../Util/abi.json';
-import {ethers} from 'ethers';
+import { ethers } from 'ethers';
+import {showErrorPopUp} from '../Util';
 
 class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -51,7 +52,7 @@ class nativeBridgeTests extends React.Component {
       safeSCHash: '',
     };
 
-    this.uid = auth().currentUser.uid;
+    this.uid = auth().currentUser?.uid;
     this.child = React.createRef();
     if (!this.uid) {
       Toast.error('uid is null');
@@ -186,7 +187,7 @@ class nativeBridgeTests extends React.Component {
   getSafeBalance = async () => {
     try {
       const safeWallet = this.props.userStore.userInfo.safeAddress;
-      console.log('safeWallet', safeWallet);
+      console.log('safeWallet', safeWallet, WalletManager.getInstance().safeAddress);
       const manager = WalletManager.getInstance();
       const safeWalletBalance = await manager.getBalance(safeWallet);
       console.log('safeWalletBalance', safeWalletBalance);
@@ -302,9 +303,9 @@ class nativeBridgeTests extends React.Component {
   };
 
   createCommon = async () => {
-    const manager = WalletManager.getInstance();
-
     try {
+      const wallet = WalletManager.getInstance().wallet;
+    const manager = WalletManager.getInstance();
       const commonAddress = await ArcService.getInstance().createCommon(
         {
           name: `Test DAO ${new Date()}`,
@@ -322,7 +323,7 @@ class nativeBridgeTests extends React.Component {
 
       this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
     } catch (error) {
-      console.log('Error -> ', error);
+      this.props.bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {errorMessage: error.message});
       this.setState({commonStatus: `${error}`});
     }
   };
@@ -354,7 +355,7 @@ class nativeBridgeTests extends React.Component {
         proposalStatus: `JoinAndQuit Proposal with id ${proposal.id} created!`,
       });
     } catch (e) {
-      console.log(e);
+      showErrorPopUp(this.props.bottomSheetStore, e.message);
       this.setState({proposalState: `${e}`});
     }
     console.log(`proposal created: ${proposal.id}`);
@@ -608,4 +609,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('daoStore', 'userStore')(observer(nativeBridgeTests));
+export default inject('daoStore', 'userStore', 'bottomSheetStore')(observer(nativeBridgeTests));

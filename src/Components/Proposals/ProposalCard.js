@@ -111,18 +111,11 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
 
           <View style={layout.flexRow}>
             <MemberCard
-              memberInfo={proposedUser}
+              userInfo={proposedUser}
+              proposalInfo={proposalInfo}
               memberCustomText={'3d ago'}
               isPending={false}
             />
-            <View
-              style={{
-                ...layout.content,
-                ...{alignItems: 'flex-end'},
-              }}>
-              <Text style={text.h2Black}>{`$${proposalInfo?.funding}`}</Text>
-              <Text style={text.smallGreyText}>02:02:02:02</Text>
-            </View>
           </View>
 
           <View style={{...layout.flexRow, ...layout.marginTopS}}>

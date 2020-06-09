@@ -39,5 +39,4 @@ export Browser from './Viewers/Browser';
 export Onboarding from './Onboarding';
 export NativeBridgeTests from './NativeBridgeTests';
 export HUDTest from './HUDTest';
-export TransactionError from './TransactionError';
 

@@ -23,8 +23,8 @@ import {IpfsClient} from '../../../Config';
 import WalletManager from '../../../Util/WalletManager';
 import FirebaseService from '../../../Services/FirebaseService';
 import CreateStepDotHeader from './CreateStepDotHeader';
-import {numberFormatter} from '../../../Util';
 import RequestStepActionButton from '../RequestStepActionButton';
+import {numberFormatter, showErrorPopUp} from '../../../Util';
 import Toast from '../../../Util/Toast';
 
 import ArcService from '../../../Services/ArcService';
@@ -128,7 +128,6 @@ const CreateStep4 = props => {
 
   const forgeCommon = async () => {
     try {
-
     const formDataInit = {
       ...props.generalInfoFormStore.getChangedFormFieldsJson(),
       ...props.fundingFormStore.getChangedFormFieldsJson(),
@@ -136,11 +135,11 @@ const CreateStep4 = props => {
       ...props.reviewFormStore.getChangedFormFieldsJson(),
     };
 
-    const formData = {
-      ...formDataInit,
-      minimum: parseInt(formDataInit.minimum, 10) * 100,
-      funding: parseInt(formDataInit.funding, 10) * 100,
-    };
+      const formData = {
+        ...formDataInit,
+        minimum: parseInt(formDataInit.minimum, 10) * 100,
+        funding: parseInt(formDataInit.funding, 10) * 100,
+      };
 
     console.log('saving data on ipfs: ', formData);
 
@@ -173,9 +172,8 @@ const CreateStep4 = props => {
     }
 
     return {commonAddress};
-    } catch (err) {
-      console.log(err);
-      throw err;
+    } catch (e) {
+      showErrorPopUp(props.bottomSheetStore, e.message);
     }
   };
 
@@ -555,6 +553,7 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
+  'bottomSheetStore',
   'generalInfoFormStore',
   'fundingFormStore',
   'agendaFormStore',

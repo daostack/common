@@ -12,7 +12,6 @@ import ProposalsList from '../Screens/Proposals/ProposalsList';
 import {CommonActions} from '@react-navigation/native';
 
 import Icon from '../Assets/iconfont/Icon';
-import Swiper from 'react-native-swiper';
 
 const UserProfileData = ({
   userId,
