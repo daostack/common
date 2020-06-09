@@ -187,7 +187,7 @@ class nativeBridgeTests extends React.Component {
   getSafeBalance = async () => {
     try {
       const safeWallet = this.props.userStore.userInfo.safeAddress;
-      console.log('safeWallet', safeWallet);
+      console.log('safeWallet', safeWallet, WalletManager.getInstance().safeAddress);
       const manager = WalletManager.getInstance();
       const safeWalletBalance = await manager.getBalance(safeWallet);
       console.log('safeWalletBalance', safeWalletBalance);

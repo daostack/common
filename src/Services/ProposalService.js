@@ -37,7 +37,7 @@ export default class ProposalService {
       });
   }
 
-  async subscribeToPendingProposalsData(daoId, userId, callback) {
+  async subscribeToPendingProposalsData(daoId, userSafeAddress, callback) {
     let proposals = db
       .collection(DB_COLLECTIONS.proposals)
       .where('dao', '==', daoId)
@@ -53,7 +53,7 @@ export default class ProposalService {
       callback({
         pendingProposalCount: snapshot.docs.length,
         userHasPendingProposal: snapshot.docs.some(
-          doc => doc.proposerId === userId,
+          doc => doc.data().proposer === userSafeAddress,
         ),
       });
     });

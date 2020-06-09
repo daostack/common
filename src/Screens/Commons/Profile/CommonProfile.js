@@ -3,16 +3,15 @@ import {
   Dimensions,
   Text,
   View,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import {text, layout, colors, sizeL} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
 import {TabView, TabBar} from 'react-native-tab-view';
 import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
-import CommonCover from '../../../Components/Commons/CommonCover';
 import CommonStageSummary from '../../../Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
@@ -23,6 +22,10 @@ import BottomRightButton from '../../../Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
 import Toast from '../../../Util/Toast';
+import HeaderImageScrollView, {
+  TriggeringView,
+} from 'react-native-image-header-scroll-view';
+import CommonHeader from '../../../Components/Commons/CommonHeader';
 import {numberFormatter} from '../../../Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '../../../Services/ProposalService';
@@ -46,8 +49,6 @@ const CommonProfile = ({
 
   const [currCommon, setCurrCommon] = useState(false);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
-  /* const [pendingProposalStatus, SetPendingProposalStatus] = useState(null);
-  const [pendingCount, setPendingCount] = useState(0); */
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const routeCommon = route.params.currCommon;
   const daoMembers = route.params.currCommon.members;
@@ -72,9 +73,8 @@ const CommonProfile = ({
     let getPendingProposalsData = async () => {
       unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
         routeCommon.id,
-        userStore.userInfo.uid,
+        userStore.userInfo.safeAddress,
         data => {
-          console.log(('DATA FROM SUBSCRIPTION', data));
           setPendingProposalsData({...data});
         },
       );
@@ -311,28 +311,47 @@ const CommonProfile = ({
 
   const initialLayout = {width: Dimensions.get('window').width};
 
+  console.log('currCommon.coverPhoto', currCommon.coverPhoto);
+
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
-      <ScrollView
+      <StatusBar barStyle="light-content" />
+      <TouchableOpacity
         style={{
-          flex: 1,
-          backgroundColor: colors.white,
+          justifyContent: 'center',
+          position: 'absolute',
+          top: 0,
+          left: 0,
         }}
-        contentContainerStyle={{paddingBottom: 100}}
-        showsVerticalScrollIndicator={false}>
-        <CommonCover
-          isMember={isMember}
-          navigation={navigation}
-          onHeaderMenuOpen={openCommonOptions}
-          commonInfo={{
-            cover: currCommon.coverPhoto,
-            logo:
-              'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
-            name: currCommon.name,
-            description: currCommon.description,
-          }}
+        onPress={() => props.navigation.pop()}>
+        <Icon
+          name="left-arrow"
+          size={32}
+          color={colors.white}
+          style={{marginLeft: 10}}
         />
-
+      </TouchableOpacity>
+      <HeaderImageScrollView
+        disableHeaderGrow
+        maxOverlayOpacity={0.6}
+        minOverlayOpacity={0.3}
+        maxHeight={200}
+        fadeOutForeground
+        minHeight={120}
+        headerImage={{uri: currCommon.coverPhoto}}
+        renderFixedForeground={() => (
+          <CommonHeader
+            isMember={isMember}
+            navigation={navigation}
+            onHeaderMenuOpen={openCommonOptions}
+            commonInfo={{
+              logo:
+                'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
+              name: currCommon.name,
+              description: currCommon.description,
+            }}
+          />
+        )}>
         {!isMember &&
           pendingProposalsData &&
           pendingProposalsData.userHasPendingProposal &&
@@ -399,7 +418,7 @@ const CommonProfile = ({
           renderTabBar={renderTabBar}
           style={{}}
         />
-      </ScrollView>
+      </HeaderImageScrollView>
       <SafeAreaView>
         {isMember ? (
           <BottomRightButton
@@ -415,26 +434,27 @@ const CommonProfile = ({
           />
         ) : (
           <>
-            {pendingProposalsData && !pendingProposalsData.hasPendingProposal && (
-              <View style={styles.actionButtonContainer}>
-                <TouchableOpacity
-                  style={styles.headerButton}
-                  onPress={requestToJoin}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: 'white',
-                      fontWeight: '700',
-                      marginRight: 40,
-                    }}>
-                    Request to join
-                  </Text>
-                  <Text style={{fontSize: 16, color: 'white'}}>
-                    ${currCommon.minFeeToJoin} Contribution
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
+            {pendingProposalsData &&
+              !pendingProposalsData.userHasPendingProposal && (
+                <View style={styles.actionButtonContainer}>
+                  <TouchableOpacity
+                    style={styles.headerButton}
+                    onPress={requestToJoin}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: 'white',
+                        fontWeight: '700',
+                        marginRight: 40,
+                      }}>
+                      Request to join
+                    </Text>
+                    <Text style={{fontSize: 16, color: 'white'}}>
+                      ${currCommon.minFeeToJoin} Contribution
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             <Modal
               isVisible={showRequestSentModal}
               avoidKeyboard={true}
