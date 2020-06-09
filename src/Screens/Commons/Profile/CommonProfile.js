@@ -254,7 +254,7 @@ const CommonProfile = ({
     const navigate = CommonActions.navigate({
       name: 'ProposalScreen',
       params: {
-        proposalId: 'ba02cba0-937a-11ea-b51a-77e469735457',
+        proposalId: pendingProposalsData.usersPendingProposalId,
       },
     });
     navigation.dispatch(navigate);
@@ -354,7 +354,7 @@ const CommonProfile = ({
         )}>
         {!isMember &&
           pendingProposalsData &&
-          pendingProposalsData.userHasPendingProposal &&
+          pendingProposalsData.usersPendingProposalId &&
           renderPendingApproval()}
 
         <View style={{paddingVertical: 20}}>
@@ -435,7 +435,7 @@ const CommonProfile = ({
         ) : (
           <>
             {pendingProposalsData &&
-              !pendingProposalsData.userHasPendingProposal && (
+              !pendingProposalsData.usersPendingProposalId && (
                 <View style={styles.actionButtonContainer}>
                   <TouchableOpacity
                     style={styles.headerButton}

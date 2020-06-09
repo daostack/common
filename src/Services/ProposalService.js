@@ -52,9 +52,9 @@ export default class ProposalService {
     return proposals.onSnapshot(snapshot => {
       callback({
         pendingProposalCount: snapshot.docs.length,
-        userHasPendingProposal: snapshot.docs.some(
-          doc => doc.data().proposer === userSafeAddress,
-        ),
+        usersPendingProposalId:
+          snapshot.docs.find(doc => doc.data().proposer === userSafeAddress)
+            ?.id || false,
       });
     });
   }
