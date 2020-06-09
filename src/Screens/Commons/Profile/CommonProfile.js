@@ -46,7 +46,7 @@ const CommonProfile = ({
 
   const [currCommon, setCurrCommon] = useState(false);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
-  const [userHasPendingProposal, setUserHasPendingProposal] = useState(false);
+  const [pendingProposalStatus, SetPendingProposalStatus] = useState(null);
   const routeCommon = route.params.currCommon;
   const daoMembers = route.params.currCommon.members;
 
@@ -72,9 +72,7 @@ const CommonProfile = ({
           routeCommon.id,
           userStore.userInfo.uid,
         );
-        if (hasPendingProposal) {
-          setUserHasPendingProposal(true);
-        }
+        SetPendingProposalStatus({hasPendingProposal});
       };
       getHasPendingProposal();
     }
@@ -321,7 +319,10 @@ const CommonProfile = ({
           }}
         />
 
-        {!isMember && userHasPendingProposal && renderPendingApproval()}
+        {!isMember &&
+          pendingProposalStatus &&
+          pendingProposalStatus.hasPendingProposal &&
+          renderPendingApproval()}
 
         <View style={{paddingVertical: 20}}>
           <CommonStageSummary
@@ -400,24 +401,27 @@ const CommonProfile = ({
           />
         ) : (
           <>
-            <View style={styles.actionButtonContainer}>
-              <TouchableOpacity
-                style={styles.headerButton}
-                onPress={requestToJoin}>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: 'white',
-                    fontWeight: '700',
-                    marginRight: 40,
-                  }}>
-                  Request to join
-                </Text>
-                <Text style={{fontSize: 16, color: 'white'}}>
-                  ${currCommon.minFeeToJoin} Contribution
-                </Text>
-              </TouchableOpacity>
-            </View>
+            {pendingProposalStatus &&
+              !pendingProposalStatus.hasPendingProposal && (
+                <View style={styles.actionButtonContainer}>
+                  <TouchableOpacity
+                    style={styles.headerButton}
+                    onPress={requestToJoin}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: 'white',
+                        fontWeight: '700',
+                        marginRight: 40,
+                      }}>
+                      Request to join
+                    </Text>
+                    <Text style={{fontSize: 16, color: 'white'}}>
+                      ${currCommon.minFeeToJoin} Contribution
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             <Modal
               isVisible={showRequestSentModal}
               avoidKeyboard={true}
