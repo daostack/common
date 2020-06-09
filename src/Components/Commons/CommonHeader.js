@@ -1,22 +1,19 @@
 import {
   Image,
-  ImageBackground,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   SafeAreaView,
-  StatusBar,
   Dimensions,
 } from 'react-native';
 import React from 'react';
 
 import Icon from '../../Assets/iconfont/Icon';
 import { layout, colors, text } from '../../Theme';
-import NavigationBar from 'react-native-navbar';
 
 
-const { width } = Dimensions.get('window')
+const { width } = Dimensions.get('window');
 
 const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo }) => {
   const renderCoverInSafeArea = () => {

@@ -9,7 +9,7 @@ import {graphHttpLink, graphwsLink, ipfsLink} from '../../Config';
 export default class ArcService {
   static myInstance = null;
   constructor() {
-    return ( async () => {
+    return (async () => {
       this.arc = new Arc({
         graphqlHttpProvider: graphHttpLink,
         graphqlWsProvider: graphwsLink,
@@ -37,8 +37,8 @@ export default class ArcService {
     return createProposalRequestToJoin(this.arc, daoId, data);
   };
 
-  createFundingProposal = async data => {
-    return createFundingProposal(this.arc, data);
+  createFundingProposal = async (userAddress, daoId, data) => {
+    return createFundingProposal(this.arc, userAddress, daoId, data);
   };
 
   // COMMONS

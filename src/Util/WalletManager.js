@@ -14,6 +14,7 @@ ethers.Contract.prototype.sendToRelayer = async function (funcName, params, valu
 };
 
 ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, params, value = '0') {
+  console.log(`HERE: ${funcName}`, params, value);
   const txHash = await this.sendToRelayer(funcName, params, value);
   console.log('txHash ->', txHash);
   if (!txHash) {
@@ -154,7 +155,7 @@ export default class WalletManager {
         // options,
         body
       );
-      console.log('execTransaction ->', response);
+      // console.log('execTransaction ->', response);
       return response;
     } catch (err) {
       console.log(err);
