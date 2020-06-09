@@ -1,6 +1,3 @@
-// TODO: add here scripts for createRequestToJoin and createFundingRequest
-// import {getArc} from './arc';
-// const {ARC_VERSION, OVERRIDES} = require('./arc');
 const {first} = require('rxjs/operators');
 import {ipfsUpload} from '../../Config';
 
@@ -17,7 +14,6 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
 
   try {
     const dao = arc.dao(daoId);
-    // let plugins;
 
     const plugins = await dao.plugins();
 
@@ -39,8 +35,6 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
       throw e;
     }
 
-    // console.log('PLUGINS -> ', plugins);
-    // const fundingRequestPlugin = plugins[0];
     console.log('fundingRequestPlugin', fundingRequestPlugin.id);
 
     let ipfsHash;
@@ -58,11 +52,20 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
       descriptionHash: ipfsHash,
       amount: fee,
       beneficiary: userAddress,
-
       dao: dao.id,
       plugin: fundingRequestPlugin.coreState.address,
     };
     console.log('creating transaction');
+
+    // check preconditions
+    const daoContract = await arc.getContract(dao.id);
+    const fundingGoalReachedFlag = await daoContract.db('FUNDED_BEFORE_DEADLINE');
+    console.log(fundingGoalReachedFlag);
+    if (fundingGoalReachedFlag !== 'true') {
+      throw Error('funding goal is not reached yet - cannot create a funding request');
+    }
+
+    // send the acdtual transaction
     const transaction = await fundingRequestPlugin.createProposalTransaction(
       args,
     );

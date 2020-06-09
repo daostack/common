@@ -1,9 +1,6 @@
-// TODO: add here scripts for createRequestToJoin and createFundingRequest
-// import {getArc} from './arc';
-// const {ARC_VERSION, OVERRIDES} = require('./arc');
+// TODO: rename this file to °createProposalRequestToJoin.js°
 const {first} = require('rxjs/operators');
 import {ipfsUpload} from '../../Config';
-const {OVERRIDES} = require('../../Config');
 
 export const createProposalRequestToJoin = async (arc, daoId, data) => {
   // data must look like this
@@ -18,7 +15,6 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
 
   try {
     const dao = arc.dao(daoId);
-    // let plugins;
 
     let joinAndQuitPlugin;
     try {
@@ -34,8 +30,6 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       throw e;
     }
 
-    // console.log('PLUGINS -> ', plugins);
-    // const joinAndQuitPlugin = plugins[0];
     console.log('joinAndQuitPlugin', joinAndQuitPlugin.id);
 
     let ipfsHash;
