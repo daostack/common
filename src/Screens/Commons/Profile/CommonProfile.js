@@ -11,7 +11,6 @@ import {
 import {text, layout, colors, sizeL} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
 import {TabView, TabBar} from 'react-native-tab-view';
-import ViewTabNoData from '../../../Components/ViewTabNoData';
 import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
 import CommonCover from '../../../Components/Commons/CommonCover';
 import CommonStageSummary from '../../../Components/Commons/CommonStageSummary';
@@ -25,10 +24,8 @@ import DiscussionList from '../../Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
 import Toast from '../../../Util/Toast';
 import {numberFormatter} from '../../../Util';
-import FirebaseService from '../../../Services/FirebaseService';
-
-import MemberImage from '../../../Components/Commons/MemberImage';
 import CommonMembersList from './CommonMembersList';
+import ProposalService from '../../../Services/ProposalService';
 
 const CommonProfile = ({
   navigation,
@@ -49,6 +46,7 @@ const CommonProfile = ({
 
   const [currCommon, setCurrCommon] = useState(false);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
+  const [userHasPendingProposal, setUserHasPendingProposal] = useState(false);
   const routeCommon = route.params.currCommon;
   const daoMembers = route.params.currCommon.members;
 
@@ -66,6 +64,21 @@ const CommonProfile = ({
       setMemberState(false);
     }
   }, [routeCommon, route.params.showRequestSentModal]);
+
+  useEffect(() => {
+    if (!isMember) {
+      const getHasPendingProposal = async () => {
+        let hasPendingProposal = await ProposalService.getInstance().getUserHasPendingProposal(
+          routeCommon.id,
+          userStore.userInfo.uid,
+        );
+        if (hasPendingProposal) {
+          setUserHasPendingProposal(true);
+        }
+      };
+      getHasPendingProposal();
+    }
+  }, [routeCommon.id, isMember]);
 
   const renderTabBar = props => (
     <TabBar
@@ -308,7 +321,7 @@ const CommonProfile = ({
           }}
         />
 
-        {renderPendingApproval()}
+        {!isMember && userHasPendingProposal && renderPendingApproval()}
 
         <View style={{paddingVertical: 20}}>
           <CommonStageSummary

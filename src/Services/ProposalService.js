@@ -37,6 +37,27 @@ export default class ProposalService {
       });
   }
 
+  async getUserHasPendingProposal(daoId, userId) {
+    return db
+      .collection(DB_COLLECTIONS.proposals)
+      .where('dao', '==', daoId)
+      .where('proposerId', '==', userId)
+      .where('type', '==', 'JoinAndQuit')
+      .where('stageStr', 'in', [
+        PROPOSAL_STAGE.Queued,
+        PROPOSAL_STAGE.PreBoosted,
+        PROPOSAL_STAGE.Boosted,
+        PROPOSAL_STAGE.QuietEndingPeriod,
+      ])
+      .get()
+      .then(docs => {
+        if (docs?.length) {
+          return true;
+        }
+        return false;
+      });
+  }
+
   async subscribeToProposalList(
     commonId,
     userId,
