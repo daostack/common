@@ -56,7 +56,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     const receipt = await transaction.contract.sendToRelayerWithReceipt(transaction.method, transaction.args, transaction.opts.value);
 
     console.log(
-      `Transaction with ${receipt.transactionHash} was mined: proposal created!`,
+      `Transaction with ${receipt.transactionHash} was mined!`,
     );
     const proposal = joinAndQuitPlugin.createProposalTransactionMap(receipt);
     return proposal;

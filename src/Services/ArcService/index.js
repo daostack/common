@@ -44,8 +44,8 @@ export default class ArcService {
 
   // VOTIN
 
-  voteForJoinAndQuitProposal = async (proposalId, data) => {
-    return voteForJoinAndQuitProposal(this.arc, proposalId, data)
+  voteForJoinAndQuitProposal = async (proposalId, data, proposalType) => {
+    return voteForJoinAndQuitProposal(this.arc, proposalId, data, proposalType);
   }
 
   // COMMONS

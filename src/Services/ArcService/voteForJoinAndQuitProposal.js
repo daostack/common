@@ -1,5 +1,5 @@
 
-import {JoinAndQuitProposal} from '@daostack/arc.js';
+import {JoinAndQuitProposal, FundingRequestProposal} from '@daostack/arc.js';
 import {PROPOSAL_STAGES_HISTORY} from '../../Services/ProposalService';
 
 // TODO: move this to the config file
@@ -20,11 +20,18 @@ const createVoteTransaction = async (proposal, outcome) => {
 };
 
 // TODO: rename this function to "voteForProposal". It probably works without changes fro the FundingRequest as well
-export const voteForJoinAndQuitProposal = async (arc, proposalId, data) => {
+export const voteForJoinAndQuitProposal = async (arc, proposalId, data, proposalType = 'JoinAndQuit') => {
 
   try {
 
-    const proposal = new JoinAndQuitProposal(arc, proposalId);
+    let proposal;
+    // TODO: the next lines make it work for both types of proposals, but it is an ugly pattern
+
+    if (proposalType === 'JoinAndQuit') {
+      proposal = new JoinAndQuitProposal(arc, proposalId);
+    } else {
+      proposal = new FundingRequestProposal(arc, proposalId);
+    }
     // console.log('Proposal -> ', proposal);
 
     // TODO: error Handler shoudl only be called in case an error occurred, once https://daostack1.atlassian.net/browse/CM-402 is implemented

@@ -392,9 +392,9 @@ class nativeBridgeTests extends React.Component {
 
   voteForJoinAndQuitProposal = async () => {
     console.log('Vote for proposal -- please wait');
-    const proposalId = '0x8099567003bd3a756b69a012c871bfa20cd99d353aec5e4a832a84e14055960e'; // Proposal for the 0 min funding dao made from user lyubomir.petkov@limechain.tech
+    const proposalId = '0xb99e0a8daeb6dcaab9756202ec375153a8498b947d7b2ac864df0635e2928ef0'; // Proposal for the 0 min funding dao made from user lyubomir.petkov@limechain.tech
     this.setState({
-      proposalVotingStatus: 'VOTING for JoinAndQuit proposal -- please wait',
+      proposalVotingStatus: 'VOTING for  proposal -- please wait',
     });
     try {
       const data = {
@@ -403,9 +403,10 @@ class nativeBridgeTests extends React.Component {
       const vote = await ArcService.getInstance().voteForJoinAndQuitProposal(
         proposalId,
         data,
+        'FundingRequest'
       );
       this.setState({
-        proposalVotingStatus: `VOTING for JoinAndQuit Proposal with id ${vote.id} created!`,
+        proposalVotingStatus: `VOTING for a Proposal with id ${vote.id} created!`,
       });
     } catch (e) {
       this.setState({voteState: `${e}`});
