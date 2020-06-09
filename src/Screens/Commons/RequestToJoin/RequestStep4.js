@@ -60,11 +60,12 @@ const RequestStep4 = props => {
         );
         Toast.hide();
         Toast.done(`JoinAndQuit Proposal with id ${proposal.id} created!`);
-
+        
         const navigate = CommonActions.navigate({
           name: 'CommonProfile',
           params: {
             showRequestSentModal: true,
+            createdProposalId: proposal.id,
           },
         });
         props.navigation.dispatch(navigate);
