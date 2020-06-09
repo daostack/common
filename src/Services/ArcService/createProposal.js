@@ -3,6 +3,7 @@
 // const {ARC_VERSION, OVERRIDES} = require('./arc');
 const {first} = require('rxjs/operators');
 import {ipfsUpload} from '../../Config';
+import WalletManager from '../../Util/WalletManager';
 const {OVERRIDES} = require('../../Config');
 
 export const createProposalRequestToJoin = async (arc, daoId, data) => {
@@ -19,6 +20,8 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
   try {
     const dao = arc.dao(daoId);
     // let plugins;
+
+    console.log('arc --->', arc);
 
     let joinAndQuitPlugin;
     try {
@@ -58,12 +61,12 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     console.log('creating transaction');
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
 
-    // TODO: test not 0 value
-    const receipt = await transaction.contract.sendToRelayerWithReceipt(transaction.method, transaction.args, transaction.opts.value);
-
+    const receipt = await WalletManager.getInstance().requestToJoin(transaction.contract, transaction.method, transaction.args);
     console.log(
       `Transaction with ${receipt.transactionHash} was mined: proposal created!`,
     );
+
+    // TODO
     const proposal = joinAndQuitPlugin.createProposalTransactionMap(receipt);
     return proposal;
     /**  Original code, keep for reference until we are sure the current pattern works

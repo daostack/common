@@ -5,6 +5,7 @@ import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 import ABI from './abi.json';
 import FirebaseService from '../Services/FirebaseService';
+import Toast from './Toast';
 
 ethers.Contract.prototype.sendToRelayer = async function (funcName, params, value = '0') {
   const data = this.interface.functions[funcName].encode(params);
@@ -39,7 +40,7 @@ export default class WalletManager {
       this.address = this.wallet.address.toLowerCase();
       // TODO: replace with userStore or user manager
       const userData = await FirebaseService.getInstance().getUserById(uid);
-      this.safeAddress = userData.safeAddress;
+      this.safeAddress = userData?.safeAddress;
       console.log('safeAddress ->', this.safeAddress);
       return this;
     })();
@@ -119,7 +120,7 @@ export default class WalletManager {
     return response.data;
   };
 
-  execTransaction = async (safeAddress, toAddress, value = 0, data = '0x') => {
+  txHashSignature = async (safeAddress, toAddress, value = '0', data = '0x') => {
     try {
       const valueNumber = ethers.utils.parseEther(value).toString(10);
       const txHash = await this.createSafeTransactionHash(safeAddress, toAddress, valueNumber, data);
@@ -127,7 +128,15 @@ export default class WalletManager {
       const signedTx = await this.wallet.signMessage(byteTxHash);
       // Add 4
       let finalSignature = signedTx.replace(/1b$/, '1f').replace(/1c$/, '20');
-      // console.log('finalSignature', finalSignature)
+      return finalSignature;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  execTransaction = async (safeAddress, toAddress, value = 0, data = '0x') => {
+    try {
+      const finalSignature = await this.txHashSignature(safeAddress, toAddress, value, data);
       const idToken = await auth().currentUser.getIdToken();
 
       // const masterCopyContract = new ethers.Contract(
@@ -168,25 +177,56 @@ export default class WalletManager {
     return response;
   }
 
-  requestToJoin = async (PluginAddress) => {
+  requestToJoin = async (pluginContract, method, params) => {
     try {
+
+      console.log('JoinInProposal',pluginContract.address, pluginContract.interface.events.JoinInProposal);
+
+      const pluginAddress = pluginContract.address;
+      const zeroValue = ethers.utils.parseEther('0').toString(10);
       let interf = new ethers.utils.Interface(ABI.CommonToken);
-      const data = interf.functions.approve.encode([PluginAddress, ethers.utils.parseEther('100000000000000000')]);
-      const valueNumber = ethers.utils.parseEther('0').toString(10);
-      const txHash = await this.createSafeTransactionHash(this.safeAddress, COMMONTOKENADDRESS, valueNumber, data);
-      const byteTxHash = ethers.utils.arrayify(txHash);
-      const signedTx = await this.wallet.signMessage(byteTxHash);
-      // Add 4
-      let finalSignature = signedTx.replace(/1b$/, '1f').replace(/1c$/, '20');
+      const data1 = interf.functions.approve.encode([pluginAddress, ethers.utils.parseEther('100000000000000000')]);
+      const signature1 = await this.txHashSignature(this.safeAddress, COMMONTOKENADDRESS, zeroValue, data1);
+
+      console.log('signature1 -->', signature1);
+
+      const data2 = pluginContract.interface.functions[method].encode(params);
+      const signature2 = await this.txHashSignature(this.safeAddress, pluginAddress, zeroValue, data2);
+
+      console.log('signature2 -->', signature2);
+
       const idToken = await auth().currentUser.getIdToken();
-      const body = { idToken, to: COMMONTOKENADDRESS, value: valueNumber, data, signature: finalSignature, plugin: PluginAddress };
+      const body =
+      {
+        idToken,
+        to1: COMMONTOKENADDRESS,
+        value1: zeroValue,
+        data1,
+        signature1,
+        to2: pluginAddress,
+        value2: zeroValue,
+        data2,
+        signature2,
+        topic: pluginContract.interface.events.JoinInProposal,
+      };
       console.log('RequestToJoin Body ->', body);
       const response = await axios.post(
         'https://us-central1-common-daostack.cloudfunctions.net/api/requestToJoin',
+        // 'http://localhost:5001/api/requestToJoin',
         body
       );
-      console.log('testAllowence -->', response);
-      return response;
+      console.log('RequestToJoin response -->', response);
+
+      if (response.data?.errcode) {
+        Toast.error(`Code: ${response.data.errorCode}, Message: ${response.data.error}`);
+        return null;
+      }
+
+      if (!response.data?.proposalId) {
+        Toast.error('Execution success but join in failed');
+        return null;
+      }
+      return receipt;
 
     } catch (err) {
       console.log(err);
@@ -194,9 +234,9 @@ export default class WalletManager {
     }
   }
 
-  getAllowance = async PluginAddress => {
+  getAllowance = async pluginAddress => {
     let contract = new ethers.Contract(COMMONTOKENADDRESS, ABI.CommonToken, this.provider);
-    let allowance = await contract.allowance(this.safeAddress, PluginAddress);
+    let allowance = await contract.allowance(this.safeAddress, pluginAddress);
     const allowanceStr = ethers.utils.formatEther(allowance);
     console.log('allowance ->', allowanceStr);
     return allowanceStr;
