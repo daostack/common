@@ -46,7 +46,9 @@ const CommonProfile = ({
 
   const [currCommon, setCurrCommon] = useState(false);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
-  const [pendingProposalStatus, SetPendingProposalStatus] = useState(null);
+  /* const [pendingProposalStatus, SetPendingProposalStatus] = useState(null);
+  const [pendingCount, setPendingCount] = useState(0); */
+  const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const routeCommon = route.params.currCommon;
   const daoMembers = route.params.currCommon.members;
 
@@ -66,16 +68,23 @@ const CommonProfile = ({
   }, [routeCommon, route.params.showRequestSentModal]);
 
   useEffect(() => {
-    if (!isMember) {
-      const getHasPendingProposal = async () => {
-        let hasPendingProposal = await ProposalService.getInstance().getUserHasPendingProposal(
-          routeCommon.id,
-          userStore.userInfo.uid,
-        );
-        SetPendingProposalStatus({hasPendingProposal});
-      };
-      getHasPendingProposal();
-    }
+    let unsubscribe = null;
+    let getPendingProposalsData = async () => {
+      unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
+        routeCommon.id,
+        userStore.userInfo.uid,
+        data => {
+          console.log(('DATA FROM SUBSCRIPTION', data));
+          setPendingProposalsData({...data});
+        },
+      );
+    };
+    getPendingProposalsData();
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [routeCommon.id, isMember]);
 
   const renderTabBar = props => (
@@ -178,7 +187,12 @@ const CommonProfile = ({
               />
             </View>
             <TouchableOpacity style={layout.flexRow}>
-              <Text style={text.h4Black}>Pending (13)</Text>
+              <Text style={text.h4Black}>
+                Pending (
+                {pendingProposalsData &&
+                  pendingProposalsData.pendingProposalCount}
+                )
+              </Text>
               <Icon name="right-arrow" />
             </TouchableOpacity>
           </TouchableOpacity>
@@ -320,8 +334,8 @@ const CommonProfile = ({
         />
 
         {!isMember &&
-          pendingProposalStatus &&
-          pendingProposalStatus.hasPendingProposal &&
+          pendingProposalsData &&
+          pendingProposalsData.userHasPendingProposal &&
           renderPendingApproval()}
 
         <View style={{paddingVertical: 20}}>
@@ -401,27 +415,26 @@ const CommonProfile = ({
           />
         ) : (
           <>
-            {pendingProposalStatus &&
-              !pendingProposalStatus.hasPendingProposal && (
-                <View style={styles.actionButtonContainer}>
-                  <TouchableOpacity
-                    style={styles.headerButton}
-                    onPress={requestToJoin}>
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: 'white',
-                        fontWeight: '700',
-                        marginRight: 40,
-                      }}>
-                      Request to join
-                    </Text>
-                    <Text style={{fontSize: 16, color: 'white'}}>
-                      ${currCommon.minFeeToJoin} Contribution
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
+            {pendingProposalsData && !pendingProposalsData.hasPendingProposal && (
+              <View style={styles.actionButtonContainer}>
+                <TouchableOpacity
+                  style={styles.headerButton}
+                  onPress={requestToJoin}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: 'white',
+                      fontWeight: '700',
+                      marginRight: 40,
+                    }}>
+                    Request to join
+                  </Text>
+                  <Text style={{fontSize: 16, color: 'white'}}>
+                    ${currCommon.minFeeToJoin} Contribution
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
             <Modal
               isVisible={showRequestSentModal}
               avoidKeyboard={true}

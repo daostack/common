@@ -37,25 +37,26 @@ export default class ProposalService {
       });
   }
 
-  async getUserHasPendingProposal(daoId, userId) {
-    return db
+  async subscribeToPendingProposalsData(daoId, userId, callback) {
+    let proposals = db
       .collection(DB_COLLECTIONS.proposals)
       .where('dao', '==', daoId)
-      .where('proposerId', '==', userId)
       .where('type', '==', 'JoinAndQuit')
       .where('stageStr', 'in', [
         PROPOSAL_STAGE.Queued,
         PROPOSAL_STAGE.PreBoosted,
         PROPOSAL_STAGE.Boosted,
         PROPOSAL_STAGE.QuietEndingPeriod,
-      ])
-      .get()
-      .then(snapshots => {
-        if (snapshots.docs.length) {
-          return true;
-        }
-        return false;
+      ]);
+
+    return proposals.onSnapshot(snapshot => {
+      callback({
+        pendingProposalCount: snapshot.docs.length,
+        userHasPendingProposal: snapshot.docs.some(
+          doc => doc.proposerId === userId,
+        ),
       });
+    });
   }
 
   async subscribeToProposalList(
