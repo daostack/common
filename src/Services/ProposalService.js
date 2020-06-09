@@ -50,8 +50,8 @@ export default class ProposalService {
         PROPOSAL_STAGE.QuietEndingPeriod,
       ])
       .get()
-      .then(docs => {
-        if (docs?.length) {
+      .then(snapshots => {
+        if (snapshots.docs.length) {
           return true;
         }
         return false;
