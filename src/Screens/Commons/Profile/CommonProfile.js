@@ -243,7 +243,14 @@ const CommonProfile = ({
   };
 
   const viewProposal = () => {
-    //navigation.navigate('RequestStep1');
+    const navigate = CommonActions.navigate({
+      name: 'ProposalScreen',
+      params: {
+        proposalId: route.params.createdProposalId
+      },
+    });
+    navigation.dispatch(navigate);
+    setShowRequestSentModal(false);
   };
 
   const goToToCommon = () => {
