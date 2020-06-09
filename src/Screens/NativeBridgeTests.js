@@ -45,6 +45,7 @@ class nativeBridgeTests extends React.Component {
       cw2Address: '',
       commonStatus: '',
       proposalStatus: '',
+      proposalVotingStatus: '',
       safeTxHash: '',
       whiteListMsg: '',
       safeWallet: '',
@@ -389,6 +390,31 @@ class nativeBridgeTests extends React.Component {
     console.log(`proposal created: ${proposal.id}`);
   };
 
+  voteForJoinAndQuitProposal = async () => {
+    console.log('Vote for proposal -- please wait');
+    const proposalId = '0xb99e0a8daeb6dcaab9756202ec375153a8498b947d7b2ac864df0635e2928ef0'; // Proposal for the 0 min funding dao made from user lyubomir.petkov@limechain.tech
+    this.setState({
+      proposalVotingStatus: 'VOTING for  proposal -- please wait',
+    });
+    try {
+      const data = {
+        vote: 1,
+      };
+      const vote = await ArcService.getInstance().voteForJoinAndQuitProposal(
+        proposalId,
+        data,
+        'FundingRequest'
+      );
+      this.setState({
+        proposalVotingStatus: `VOTING for a Proposal with id ${vote.id} created!`,
+      });
+    } catch (e) {
+      this.setState({voteState: `${e}`});
+      // showErrorPopUp(this.props.bottomSheetStore, e.message);
+    }
+    console.log(`proposal created: ${proposal.id}`);
+  }
+
   openTxhash = hash => {
     this.props.navigation.navigate('Browser', {
       url: `https://blockscout.com/poa/xdai/tx/${hash}`,
@@ -447,16 +473,21 @@ class nativeBridgeTests extends React.Component {
             <Text>Create a funding request</Text>
           </TouchableOpacity>
 
+          <Text>{this.state.voteState}</Text>
+          <TouchableOpacity onPress={this.voteForJoinAndQuitProposal} style={styles.button}>
+            <Text>Vote for proposal</Text>
+          </TouchableOpacity>
+
           <Text>mnemonicsAndStore: {this.state.mnemonicsAndStore}</Text>
           <TouchableOpacity
             onPress={this.generateAndStoreMnemonic}
             style={styles.button}>
             <Text>Generate And Store Mnemonic</Text>
           </TouchableOpacity>
+
           <Text style={{marginVertical: 10}}>
             --------------- Native Bridge -----------------
           </Text>
-
           <Text>mnemonic: {this.state.mnemonic}</Text>
           <TouchableOpacity
             onPress={this.generateMnemonic}

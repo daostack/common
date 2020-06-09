@@ -76,7 +76,6 @@ class BottomSheetStore {
     this.topSnap = currTemplate.topSnap;
     this.template = React.createElement(currTemplate.content, allProps);
     this.isVisible = true;
-    console.log('showBottomSheet => ', currTemplate, this);
   };
 
   hideBottomSheet = () => {

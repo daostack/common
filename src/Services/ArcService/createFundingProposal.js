@@ -128,7 +128,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     console.log('RECEIPT -> ', receipt);
 
     console.log(
-      `Transaction with ${receipt.transactionHash} was mined: proposal created!`,
+      `Transaction with ${receipt.transactionHash} was mined`,
     );
 
     const proposal = fundingRequestPlugin.createProposalTransactionMap(receipt);
