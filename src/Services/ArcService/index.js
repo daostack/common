@@ -2,6 +2,7 @@ import WalletManager from '../../Util/WalletManager';
 import {createCommon} from './createCommon';
 import {createProposalRequestToJoin} from './createProposal';
 import {createFundingProposal} from './createFundingProposal';
+import {voteForJoinAndQuitProposal} from './voteForJoinAndQuitProposal';
 
 import {Arc} from '@daostack/arc.js';
 import {graphHttpLink, graphwsLink, ipfsLink} from '../../Config';
@@ -40,6 +41,12 @@ export default class ArcService {
   createFundingProposal = async data => {
     return createFundingProposal(this.arc, data);
   };
+
+  // VOTIN
+
+  voteForJoinAndQuitProposal = async (proposalId, data) => {
+    return voteForJoinAndQuitProposal(this.arc, proposalId, data)
+  }
 
   // COMMONS
 
