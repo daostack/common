@@ -134,14 +134,6 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     const proposal = fundingRequestPlugin.createProposalTransactionMap(receipt);
     console.log('PROPOSAL -> ', proposal);
     return proposal;
-    /**  Original code, keep for reference until we are sure the current pattern works
-     *
-    const transaction = await fundingRequestPlugin.createProposal(args);
-    console.log(`sending transaction ${transaction}`);
-    console.log(transaction)
-    const receipt = await transaction.send();
-    return receipt.result; // this is a arc.js Proposal instance
-     */
   } catch (e) {
     console.log(e);
     throw e;

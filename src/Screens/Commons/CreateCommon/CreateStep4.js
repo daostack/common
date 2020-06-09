@@ -117,13 +117,6 @@ const CreateStep4 = props => {
       ...props.reviewFormStore.getChangedFormFieldsJson(),
     };
 
-    // const formData = {
-     //   ...formDataInit,
-     //   minFeeToJoin: parseInt(formDataInit.minimum, 10) * 100,
-     //   fundingGaol: parseInt(formDataInit.funding, 10) * 100,
-     //   founderAddresses: address,
-      // };
-
     const fundingGoalDeadline = formData[CreateCommonForm.DEADLINE];
 
     const data = {

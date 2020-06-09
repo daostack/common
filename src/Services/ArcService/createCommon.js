@@ -1,4 +1,3 @@
-// import { IPFSClient } from '@daostack/arc.js';
 import {IpfsClient} from '../../Config';
 
 const {
@@ -12,6 +11,7 @@ const {
 } = require('../../Config');
 
 
+// USAGE:
 // const commonAddress = await createCommon({
 //   name: formData.name,
 //   founderAddresses: [address],
@@ -27,7 +27,6 @@ const {
 //       rules: formData.rules,
 //       links: formData.links,
 /// });
-
 
 
 export const createCommon = async (
@@ -58,7 +57,7 @@ export const createCommon = async (
       repDist: [MEMBER_REPUTATION],
       memberReputation: MEMBER_REPUTATION,
       fundingToken: COMMONTOKENADDRESS,
-      VERSION: '000001', // just some alphanumberic marker  that is useful for filtering
+      VERSION: '000001', // just some alphanumberic marker  that is useful for understanding what our data is shaped like
     };
     const opts = {...defaultOptions, ...givenOpts};
 
