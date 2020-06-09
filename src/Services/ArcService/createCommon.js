@@ -4,7 +4,8 @@ const {
   getSetSchemesData,
 } = require('@daostack/common-factory');
 const {
-  ARC_VERSION, OVERRIDES, COMMONTOKENADDRESS,
+  ARC_VERSION,
+  COMMONTOKENADDRESS,
   MEMBER_REPUTATION,
 } = require('../../Config');
 
@@ -31,9 +32,6 @@ export const createCommon = async (
   navigation,
   daoStore,
 ) => {
-  //   navigation.navigate('CommonCreationLoading');
-  // }
-  // export const createCommon1 = async (arc, givenOpts = {}, navigation, daoStore) => {
   navigation.navigate('CommonCreationLoading');
   daoStore.setCreationStatus(1);
   console.log(MEMBER_REPUTATION);

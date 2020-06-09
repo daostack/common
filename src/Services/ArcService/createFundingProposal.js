@@ -66,6 +66,12 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
         });
         console.log(`fundingGoalReachedFlag is not TRUE (its value is "${fundingGoalReachedFlag}") - so we cannot create a proposal`);
 
+        const fundingGoal = Number(joinAndQuitPluginState.pluginParams.fundingGoal);
+        console.log(`funding goal: ${fundingGoal}`);
+        if (fundingGoal !== 0) {
+          throw Error(`Invalidly configured DAO - funding goal is not 0, it is ${fundingGoal} instead`);
+        }
+
 
         if (joinAndQuitPluginState.pluginParams.fundingGoalDeadline < new Date()) {
           throw Error('Invalidly configured DAO - cannot create funding request (the fundingGoalDeadline of the joinAndQuit plugin is in the past, so we cannot set the fundingGoalReeched flag to true)');
