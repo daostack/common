@@ -11,6 +11,18 @@ export const PROPOSAL_STAGE = {
   QuietEndingPeriod: '5',
 };
 
+export const PROPOSAL_STAGES_ACTIVE = [
+  PROPOSAL_STAGE.Queued,
+  PROPOSAL_STAGE.PreBoosted,
+  PROPOSAL_STAGE.Boosted,
+  PROPOSAL_STAGE.QuietEndingPeriod,
+];
+
+export const PROPOSAL_STAGES_HISTORY = [
+  PROPOSAL_STAGE.ExpiredInQueue,
+  PROPOSAL_STAGE.Executed,
+];
+
 export default class ProposalService {
   static serviceInstance = null;
 

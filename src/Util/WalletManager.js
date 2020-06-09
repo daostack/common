@@ -13,6 +13,7 @@ ethers.Contract.prototype.sendToRelayer = async function (funcName, params, valu
   return response.data?.txHash;
 };
 
+
 ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, params, value = '0') {
   const txHash = await this.sendToRelayer(funcName, params, value);
   console.log('txHash ->', txHash);
