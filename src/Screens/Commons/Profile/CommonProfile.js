@@ -25,7 +25,7 @@ import {observer, inject} from 'mobx-react';
 import Toast from '../../../Util/Toast';
 import {numberFormatter} from '../../../Util';
 import CommonMembersList from './CommonMembersList';
-import firestore from '@react-native-firebase/firestore';
+import {db} from '../../../Firebase';
 import {PROPOSAL_STAGE} from '../../../Services/ProposalService';
 
 const CommonProfile = ({
@@ -68,7 +68,7 @@ const CommonProfile = ({
 
   useEffect(() => {
     if (isMember) {
-      const unsubscribe = firestore()
+      const unsubscribe = db
         .collection('proposals')
         .where('dao', '==', routeCommon.id)
         .where('stageStr', 'in', [
