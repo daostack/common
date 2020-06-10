@@ -89,3 +89,17 @@ https://rnfirebase.io/
 ##### React Hooks
 
 https://reactjs.org/docs/hooks-intro.html
+
+### CodePush Deployment
+
+To release a new version of common to the App Store without going through the App update process then
+you can use CodePush. This is applicable for a new release or any hot fixes you may want to push to
+the app.
+
+**NOTE** : This is only if you have made changes to the Javascript code. If you have made changes to the
+native iOS or Android code you will have to update the app through the Apple App Store and Google Play Store.
+
+To release a version of the app to Production, in the root of the common app.
+Enter `appcenter codepush release-react -a CommonApp/common -d Production` into the terminal
+To release a version of the app to Staging, in the root of the common app.
+Enter `appcenter codepush release-react -a CommonApp/common -d Staging` into the terminal

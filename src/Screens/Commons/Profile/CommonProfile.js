@@ -3,18 +3,16 @@ import {
   Dimensions,
   Text,
   View,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import Share from 'react-native-share';
 import {text, layout, colors, sizeL} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
 import {TabView, TabBar} from 'react-native-tab-view';
-import ViewTabNoData from '../../../Components/ViewTabNoData';
 import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
-import CommonCover from '../../../Components/Commons/CommonCover';
 import CommonStageSummary from '../../../Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
@@ -24,12 +22,14 @@ import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '../../../Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
-import {numberFormatter} from '../../../Util';
 import Toast from '../../../Util/Toast';
-import FirebaseService from '../../../Services/FirebaseService';
-
-import MemberImage from '../../../Components/Commons/MemberImage';
+import HeaderImageScrollView, {
+  TriggeringView,
+} from 'react-native-image-header-scroll-view';
+import CommonHeader from '../../../Components/Commons/CommonHeader';
+import {numberFormatter} from '../../../Util';
 import CommonMembersList from './CommonMembersList';
+import ProposalService from '../../../Services/ProposalService';
 
 const CommonProfile = ({
   navigation,
@@ -50,6 +50,7 @@ const CommonProfile = ({
 
   const [currCommon, setCurrCommon] = useState(false);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
+  const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const routeCommon = route.params.currCommon;
   const daoMembers = route.params.currCommon.members;
 
@@ -67,6 +68,25 @@ const CommonProfile = ({
       setMemberState(false);
     }
   }, [routeCommon, route.params.showRequestSentModal]);
+
+  useEffect(() => {
+    let unsubscribe = null;
+    let getPendingProposalsData = async () => {
+      unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
+        routeCommon.id,
+        userStore.userInfo.safeAddress,
+        data => {
+          setPendingProposalsData({...data});
+        },
+      );
+    };
+    getPendingProposalsData();
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [routeCommon.id, isMember]);
 
   const renderTabBar = props => (
     <TabBar
@@ -168,7 +188,12 @@ const CommonProfile = ({
               />
             </View>
             <TouchableOpacity style={layout.flexRow}>
-              <Text style={text.h4Black}>Pending (13)</Text>
+              <Text style={text.h4Black}>
+                Pending (
+                {pendingProposalsData &&
+                  pendingProposalsData.pendingProposalCount}
+                )
+              </Text>
               <Icon name="right-arrow" />
             </TouchableOpacity>
           </TouchableOpacity>
@@ -234,7 +259,7 @@ const CommonProfile = ({
     const navigate = CommonActions.navigate({
       name: 'ProposalScreen',
       params: {
-        proposalId: 'ba02cba0-937a-11ea-b51a-77e469735457',
+        proposalId: pendingProposalsData.usersPendingProposalId,
       },
     });
     navigation.dispatch(navigate);
@@ -291,29 +316,51 @@ const CommonProfile = ({
 
   const initialLayout = {width: Dimensions.get('window').width};
 
+  console.log('currCommon.coverPhoto', currCommon.coverPhoto);
+
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
-      <ScrollView
+      <StatusBar barStyle="light-content" />
+      <TouchableOpacity
         style={{
-          flex: 1,
-          backgroundColor: colors.white,
+          justifyContent: 'center',
+          position: 'absolute',
+          top: 0,
+          left: 0,
         }}
-        contentContainerStyle={{paddingBottom: 100}}
-        showsVerticalScrollIndicator={false}>
-        <CommonCover
-          isMember={isMember}
-          navigation={navigation}
-          onHeaderMenuOpen={openCommonOptions}
-          commonInfo={{
-            cover: currCommon.coverPhoto,
-            logo:
-              'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
-            name: currCommon.name,
-            description: currCommon.description,
-          }}
+        onPress={() => props.navigation.pop()}>
+        <Icon
+          name="left-arrow"
+          size={32}
+          color={colors.white}
+          style={{marginLeft: 10}}
         />
-
-        {renderPendingApproval()}
+      </TouchableOpacity>
+      <HeaderImageScrollView
+        disableHeaderGrow
+        maxOverlayOpacity={0.6}
+        minOverlayOpacity={0.3}
+        maxHeight={200}
+        fadeOutForeground
+        minHeight={120}
+        headerImage={{uri: currCommon.coverPhoto}}
+        renderFixedForeground={() => (
+          <CommonHeader
+            isMember={isMember}
+            navigation={navigation}
+            onHeaderMenuOpen={openCommonOptions}
+            commonInfo={{
+              logo:
+                'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
+              name: currCommon.name,
+              description: currCommon.description,
+            }}
+          />
+        )}>
+        {!isMember &&
+          pendingProposalsData &&
+          pendingProposalsData.usersPendingProposalId &&
+          renderPendingApproval()}
 
         <View style={{paddingVertical: 20}}>
           <CommonStageSummary
@@ -376,7 +423,7 @@ const CommonProfile = ({
           renderTabBar={renderTabBar}
           style={{}}
         />
-      </ScrollView>
+      </HeaderImageScrollView>
       <SafeAreaView>
         {isMember ? (
           <BottomRightButton
@@ -392,24 +439,27 @@ const CommonProfile = ({
           />
         ) : (
           <>
-            <View style={styles.actionButtonContainer}>
-              <TouchableOpacity
-                style={styles.headerButton}
-                onPress={requestToJoin}>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: 'white',
-                    fontWeight: '700',
-                    marginRight: 40,
-                  }}>
-                  Request to join
-                </Text>
-                <Text style={{fontSize: 16, color: 'white'}}>
-                  ${currCommon.minFeeToJoin} Contribution
-                </Text>
-              </TouchableOpacity>
-            </View>
+            {pendingProposalsData &&
+              !pendingProposalsData.usersPendingProposalId && (
+                <View style={styles.actionButtonContainer}>
+                  <TouchableOpacity
+                    style={styles.headerButton}
+                    onPress={requestToJoin}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: 'white',
+                        fontWeight: '700',
+                        marginRight: 40,
+                      }}>
+                      Request to join
+                    </Text>
+                    <Text style={{fontSize: 16, color: 'white'}}>
+                      ${currCommon.minFeeToJoin} Contribution
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             <Modal
               isVisible={showRequestSentModal}
               avoidKeyboard={true}

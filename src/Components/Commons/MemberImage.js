@@ -3,12 +3,12 @@ import React from 'react';
 import {colors} from '../../Theme';
 
 const MemberImage = ({userInfo, style, key}) => {
-  return userInfo.photoURL ? (
+  return userInfo?.photoURL ? (
     <Image
       key={key}
       style={styles.memberImage}
       source={{
-        uri: userInfo.photoURL,
+        uri: userInfo?.photoURL,
       }}
     />
   ) : (
@@ -21,7 +21,7 @@ const MemberImage = ({userInfo, style, key}) => {
         ...style,
       }}>
       <Text style={{width: 17, height: 17, color: 'white'}}>
-        {userInfo.displayName}
+        {userInfo?.displayName}
       </Text>
     </View>
   );

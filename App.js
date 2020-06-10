@@ -197,6 +197,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           const isNewUser = !appUser;
           if (isNewUser) {
             appUser = await AuthService.getInstance().createUserAndWallet(user);
+            WalletManager.getInstance().createSmartContractWallet();
           }
           const allUserInfo = {
             ...user._user,
@@ -206,6 +207,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           userStore.setSignedInUser(filteredUser);
           if (isNewUser) {
           }
+          updateUser();
         } else {
           userStore.setSignedInUser(null);
         }
@@ -252,7 +254,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       }
     };
     checkOnboardingStatus();
-    updateUser();
     return subscriber;
   }, [userStore]);
 
