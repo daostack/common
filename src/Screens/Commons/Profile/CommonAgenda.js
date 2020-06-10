@@ -51,17 +51,17 @@ const CommonAgenda = ({daoStore, navigation}) => {
 
           {daoStore.dao.metadata.links?.length > 0 && <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Links</Text>
-              {daoStore.dao.metadata.links.map((link, i) => {
-                return (<View key={i}>
-                    <Text style={{...text.blackText, ...layout.marginTopM}}>
-                      {link.title}
-                    </Text>
-                    <Text key={i} style={{...text.blackText, ...layout.marginTopM, textDecorationLine: 'underline'}} onPress={() => navigation.navigate('Browser', {url: link.description})}>
-                      {link.description}
-                    </Text>
-                </View>
-                );
-              })}
+            {daoStore.dao.metadata.links.map((link, i) => {
+              return (<View key={i}>
+                <Text style={{...text.blackText, ...layout.marginTopM}}>
+                  {link.title}
+                </Text>
+                <Text key={i} style={{...text.blackText, ...layout.marginTopM, textDecorationLine: 'underline'}} onPress={() => navigation.navigate('Browser', {url: link.description})}>
+                  {link.description}
+                </Text>
+              </View>
+              );
+            })}
           </View>}
 
           <View style={styles.sectionContainer}>
