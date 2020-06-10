@@ -29,6 +29,12 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
   return receipt;
 };
 
+const instance = axios.create({
+  baseURL: 'https://us-central1-common-daostack.cloudfunctions.net/api/',
+  timeout: 1000000, // milliseconds
+  // headers: {'X-Custom-Header': 'foobar'}
+});
+
 export default class WalletManager {
   static myInstance = null;
   constructor(uid) {
@@ -103,8 +109,8 @@ export default class WalletManager {
     const currentUser = auth().currentUser;
     const idToken = await currentUser.getIdToken();
     const options = { headers: { idToken } };
-    const response = await axios.get(
-      'https://us-central1-common-daostack.cloudfunctions.net/api/createWallet',
+    const response = await instance.get(
+      'createWallet',
       options,
     );
     await this.provider.waitForTransaction(response.data.txHash);
@@ -116,8 +122,8 @@ export default class WalletManager {
   create2SmartContractWallet = async () => {
     const idToken = await auth().currentUser.getIdToken();
     const options = { headers: { idToken } };
-    const response = await axios.get(
-      'https://us-central1-common-daostack.cloudfunctions.net/api/create2Wallet',
+    const response = await instance.get(
+      'create2Wallet',
       options,
     );
     console.log('Create2 SCW', response);
@@ -159,8 +165,8 @@ export default class WalletManager {
       // console.log('execTransaction', tx);
 
       const body = { idToken, to: toAddress, value: valueNumber, data, signature: finalSignature };
-      const response = await axios.post(
-        'https://us-central1-common-daostack.cloudfunctions.net/api/execTransaction',
+      const response = await instance.post(
+        'execTransaction',
         // options,
         body
       );
@@ -174,8 +180,8 @@ export default class WalletManager {
   addToWhitelist = async () => {
     const idToken = await auth().currentUser.getIdToken();
     const options = { headers: { idToken } };
-    const response = await axios.get(
-      'https://us-central1-common-daostack.cloudfunctions.net/api/addWhitleList',
+    const response = await instance.get(
+      'addWhitleList',
       options,
     );
     return response;
@@ -214,8 +220,8 @@ export default class WalletManager {
         topic: pluginContract.interface.events.JoinInProposal,
       };
       console.log('RequestToJoin Body ->', body);
-      const response = await axios.post(
-        'https://us-central1-common-daostack.cloudfunctions.net/api/requestToJoin',
+      const response = await instance.post(
+        'requestToJoin',
         // 'http://localhost:5001/api/requestToJoin',
         body
       );
@@ -281,6 +287,21 @@ export default class WalletManager {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  isRelayerTxSuccess = async txHash => {
+    const receipt = await this.provider.waitForTransaction(txHash);
+    return this.isRelayerTxSuccessWithReceipt(receipt);
+  }
+
+  isRelayerTxSuccessWithReceipt = receipt => {
+    const ExecutionFailureTopic = '0x23428b18acfb3ea64b08dc0c1d296ea9c09702c09083ca5272e64d115b687d23';
+    for (const log of receipt.logs) {
+      if (log.topics[0] === ExecutionFailureTopic) {
+        return false;
+      }
+    }
+    return true;
   }
 
   getAddressFromEvent = async hash => {
