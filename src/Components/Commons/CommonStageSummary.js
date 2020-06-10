@@ -56,7 +56,10 @@ const CommonStageSummary = ({isFundingStage, commonProgressInfo}) => {
           ) : (
             <>
               <Text style={styles.headerTitleLight}>
-                ${commonProgressInfo.currentBudget.toLocaleString()}
+                $
+                {numberFormatter(
+                  commonProgressInfo.raised / 100,
+                ).toLocaleString()}
               </Text>
               <Text style={styles.headerTitle}>
                 / {numberFormatter(commonProgressInfo.raised)}
