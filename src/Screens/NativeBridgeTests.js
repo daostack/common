@@ -330,20 +330,6 @@ class nativeBridgeTests extends React.Component {
     }
   }
 
-  requestToJoin = async () => {
-    try {
-      const manager = WalletManager.getInstance();
-      const daoId = '0x59b1c80f882c38abd52a90c9b30edafa55f7e421'; // 0 min join fee
-      const address = await ArcService.getInstance().getJoinAndQuitPluginAddress(daoId);
-      const result = await manager.requestToJoin(address);
-      // this.setState({CMNBalance: balance});
-      console.log('result -->', result);
-    } catch (e) {
-      console.log(e);
-      throw 'Send transaction failed with error: ' + e;
-    }
-  }
-
   createCommon = async () => {
     try {
       const manager = WalletManager.getInstance();
@@ -385,12 +371,12 @@ class nativeBridgeTests extends React.Component {
         links: [], // {title: "title", url: "url"}
         funding: new BN(0),
       };
-      const proposal = await ArcService.getInstance().createRequestToJoin(
+      const proposalId = await ArcService.getInstance().createRequestToJoin(
         daoId,
         data,
       );
       this.setState({
-        proposalStatus: `JoinAndQuit Proposal with id ${proposal.id} created!`,
+        proposalStatus: `JoinAndQuit Proposal with id ${proposalId} created!`,
       });
     } catch (e) {
       showErrorPopUp(this.props.bottomSheetStore, e.message);
@@ -640,13 +626,6 @@ class nativeBridgeTests extends React.Component {
             style={styles.button}>
             <Text>Get Common Token Allowance</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={this.requestToJoin}
-            style={styles.button}>
-            <Text>Request To Join</Text>
-          </TouchableOpacity>
-
         </ScrollView>
       </View>
     );

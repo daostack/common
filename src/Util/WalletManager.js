@@ -209,20 +209,22 @@ export default class WalletManager {
       const body =
       {
         idToken,
-        to1: COMMONTOKENADDRESS,
-        value1: zeroValue,
-        data1,
-        signature1,
-        to2: pluginAddress,
-        value2: zeroValue,
-        data2,
-        signature2,
-        topic: pluginContract.interface.events.JoinInProposal,
+        commonTx: {
+          to: COMMONTOKENADDRESS,
+          value: zeroValue,
+          data: data1,
+          signature: signature1,
+        },
+        pluginTx: {
+          to: pluginAddress,
+          value: zeroValue,
+          data: data2,
+          signature: signature2,
+        }
       };
       console.log('RequestToJoin Body ->', body);
       const response = await instance.post(
         'requestToJoin',
-        // 'http://localhost:5001/api/requestToJoin',
         body
       );
       console.log('RequestToJoin response -->', response);
@@ -236,8 +238,7 @@ export default class WalletManager {
         Toast.error('Execution success but join in failed');
         return null;
       }
-      return receipt;
-
+      return response.data?.proposalId;
     } catch (err) {
       console.log(err);
       throw err;

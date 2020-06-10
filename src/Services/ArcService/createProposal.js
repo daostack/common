@@ -54,15 +54,8 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     };
     console.log('creating transaction');
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
-
-    const receipt = await WalletManager.getInstance().requestToJoin(transaction.contract, transaction.method, transaction.args);
-    console.log(
-      `Transaction with ${receipt.transactionHash} was mined!`,
-    );
-
-    // TODO
-    const proposal = joinAndQuitPlugin.createProposalTransactionMap(receipt);
-    return proposal;
+    const proposalId = await WalletManager.getInstance().requestToJoin(transaction.contract, transaction.method, transaction.args);
+    return proposalId;
     /**  Original code, keep for reference until we are sure the current pattern works
      *
     const transaction = await joinAndQuitPlugin.createProposal(args);
