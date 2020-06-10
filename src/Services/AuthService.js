@@ -75,7 +75,7 @@ export default class AuthService {
   }
 
   async loadMnemonic(uid) {
-    //await GoogleSignin.signInSilently();
+    await GoogleSignin.signInSilently();
     const {accessToken} = await GoogleSignin.getTokens();
     GoogleDriveService.init(accessToken);
     // console.log('accessToken 2 -> ', accessToken);
