@@ -376,7 +376,7 @@ const CommonProfile = ({
               goal: currCommon.fundingGoal,
               members: currCommon.memberCount,
               // TODO: get this value. Is it even tracked in the contract? need to check.
-              raised: 0,
+              raised: currCommon.balance,
               currentBudget: numberFormatter(
                 // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
                 currCommon.tokenTotalSupply,
