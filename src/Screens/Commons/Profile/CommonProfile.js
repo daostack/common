@@ -59,7 +59,7 @@ const CommonProfile = ({
     if (
       userStore.userInfo &&
       daoMembers.some(
-        member => member.address === userStore.userInfo.ethereumAddress,
+        member => member.address === userStore.userInfo.safeAddress,
       )
     ) {
       setMemberState(true);
@@ -246,7 +246,7 @@ const CommonProfile = ({
     const navigate = CommonActions.navigate({
       name: 'ProposalScreen',
       params: {
-        proposalId: route.params.createdProposalId
+        proposalId: route.params.createdProposalId,
       },
     });
     navigation.dispatch(navigate);
