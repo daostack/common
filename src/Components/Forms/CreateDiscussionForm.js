@@ -24,42 +24,42 @@ class CreateDiscussionForm extends React.Component {
 
   formSave = async e => {
     try {
-    const {createDiscussionStore, userStore} = this.props;
-    if (createDiscussionStore.isFormValid()) {
-      const changedFields = createDiscussionStore.getChangedFormFieldsJson();
-      console.log('createDiscussionStore', changedFields);
+      const {createDiscussionStore, userStore} = this.props;
+      if (createDiscussionStore.isFormValid()) {
+        const changedFields = createDiscussionStore.getChangedFormFieldsJson();
+        console.log('createDiscussionStore', changedFields);
 
-      const imageList = Object.keys(changedFields).filter( x => x.includes('images_')).map(x => changedFields[x]);
+        const imageList = Object.keys(changedFields).filter( x => x.includes('images_')).map(x => changedFields[x]);
 
-      firestore()
-        .collection('discussion')
-        .doc()
-        .set({
-          title: changedFields[CreateDiscussionForm.TITLE],
-          message: changedFields[CreateDiscussionForm.MESSAGE],
-          images: imageList,
-          createTime: new Date(),
-          ownerId: userStore.userInfo.uid,
-          commonId: this.props.commonId,
-          follower: [],
-        })
-        .then(() => {
-          console.log('YES');
-          Toast.success('Done');
-          Keyboard.dismiss();
+        firestore()
+          .collection('discussion')
+          .doc()
+          .set({
+            title: changedFields[CreateDiscussionForm.TITLE],
+            message: changedFields[CreateDiscussionForm.MESSAGE],
+            images: imageList,
+            createTime: new Date(),
+            ownerId: userStore.userInfo.uid,
+            commonId: this.props.commonId,
+            follower: [],
+          })
+          .then(() => {
+            console.log('YES');
+            Toast.success('Done');
+            Keyboard.dismiss();
 
-          if (this.props.onFormSubmit) {
-            this.props.onFormSubmit(changedFields);
-          }
-        })
-        .catch(error => {
-          Toast.error(error);
-          console.log('NO', error);
-        });
+            if (this.props.onFormSubmit) {
+              this.props.onFormSubmit(changedFields);
+            }
+          })
+          .catch(error => {
+            Toast.error(error);
+            console.log('NO', error);
+          });
+      }
+    } catch (err) {
+      console.log(err);
     }
-  } catch (err) {
-    console.log(err);
-  }
   };
 
   onFormClose = e => {
