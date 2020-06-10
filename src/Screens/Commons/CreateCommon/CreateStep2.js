@@ -224,7 +224,7 @@ const CreateStep2 = props => {
             iconEmptyColor={colors.grey3}
             iconFillColor={colors.grey}
             viewStyle={{alignSelf: 'stretch'}}
-            label="Minimum contrubution"
+            label="Minimum contribution"
             infoLabel="Required"
             autoCapitalize="none"
             autoCorrect={false}
