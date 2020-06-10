@@ -114,7 +114,6 @@ const ProposalScreen = ({navigation, route, props}) => {
   );
 
   const messageInput = () => {
-
     const sendMessageToDiscussion = async () => {
       const userInfo = auth().currentUser;
       const message = inputRef.current._lastNativeText;
@@ -222,8 +221,8 @@ const ProposalScreen = ({navigation, route, props}) => {
         </View>
       );
     } else {
-      const remainingSeconds = proposalInfo?.closingAt?.seconds
-        ? proposalInfo?.closingAt?.seconds - Date.now() / 1000
+      const remainingSeconds = proposalInfo?.expiresInQueueAt
+        ? proposalInfo?.expiresInQueueAt - Date.now() / 1000
         : null;
 
       const isLessThanOneHour = remainingSeconds < 3600;
@@ -343,7 +342,12 @@ const ProposalScreen = ({navigation, route, props}) => {
               showMore={() => setIndex(1)}
             />
           )}
-          {index === 1 && <ProposalDiscussion proposalId={routeProposalId} inputRef={inputRef} />}
+          {index === 1 && (
+            <ProposalDiscussion
+              proposalId={routeProposalId}
+              inputRef={inputRef}
+            />
+          )}
         </ScrollView>
 
         {index === 0 ? (

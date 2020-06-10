@@ -113,7 +113,6 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
             <MemberCard
               userInfo={proposedUser}
               proposalInfo={proposalInfo}
-              memberCustomText={'3d ago'}
               isPending={false}
             />
           </View>
