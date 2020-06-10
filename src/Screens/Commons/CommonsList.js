@@ -68,7 +68,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     daoStore.setDao(dao);
   };
 
-  divideDao = daoList => {
+  const divideDao = daoList => {
     if (!userStore.userInfo) {
       setDaoGroup([{title: '', data: daoList}]);
       return;

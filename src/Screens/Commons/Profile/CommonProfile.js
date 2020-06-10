@@ -330,7 +330,7 @@ const CommonProfile = ({
           top: 0,
           left: 0,
         }}
-        onPress={() => props.navigation.pop()}>
+        onPress={() => navigation.pop()}>
         <Icon
           name="left-arrow"
           size={32}

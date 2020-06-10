@@ -10,7 +10,6 @@ const {
   MEMBER_REPUTATION,
 } = require('../../Config');
 
-
 // USAGE:
 // const commonAddress = await createCommon({
 //   name: formData.name,
@@ -28,7 +27,6 @@ const {
 //       links: formData.links,
 /// });
 
-
 export const createCommon = async (
   arc,
   givenOpts = {},
@@ -41,7 +39,10 @@ export const createCommon = async (
 
   // need these keys:
   const MANDATORY_ARGS = [
-    'name', 'minFeeToJoin', 'fundingGoal', 'fundingGoalDeadline',
+    'name',
+    'minFeeToJoin',
+    'fundingGoal',
+    'fundingGoalDeadline',
   ];
 
   for (const key of MANDATORY_ARGS) {
@@ -62,7 +63,7 @@ export const createCommon = async (
     const opts = {...defaultOptions, ...givenOpts};
 
     console.log('saving data on ipfs: ', opts);
-    ipfsHash = await IpfsClient.addAndPinString(JSON.stringify(opts));
+    const ipfsHash = await IpfsClient.addAndPinString(JSON.stringify(opts));
     console.log('ipfsHash ->', ipfsHash);
 
     let receipt;
@@ -100,7 +101,10 @@ export const createCommon = async (
     });
 
     console.log('waiting for tx to be mined');
-    receipt = await daoFactoryContract.sendToRelayerWithReceipt('forgeOrg', forgeOrgData);
+    receipt = await daoFactoryContract.sendToRelayerWithReceipt(
+      'forgeOrg',
+      forgeOrgData,
+    );
     console.log('forgeOrg receipt ->', receipt);
     if (receipt) {
       daoStore.setCreationStatus(2);
@@ -132,7 +136,10 @@ export const createCommon = async (
 
     daoStore.setCreationStatus(4);
     console.log('waiting for tx to be mined');
-    receipt = await daoFactoryContract.sendToRelayerWithReceipt('setSchemes', schemeData);
+    receipt = await daoFactoryContract.sendToRelayerWithReceipt(
+      'setSchemes',
+      schemeData,
+    );
     console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
     daoStore.setCreationStatus(5);
     return receipt;

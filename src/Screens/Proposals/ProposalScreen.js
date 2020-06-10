@@ -89,8 +89,8 @@ const ProposalScreen = ({navigation, route, props}) => {
   const [inputText, setInputText] = useState(null);
 
   const inputRef = useRef();
-  boostedInfoRef = useRef();
-  approvalSheetRef = useRef();
+  const boostedInfoRef = useRef();
+  const approvalSheetRef = useRef();
 
   const renderTabBar = currProps => (
     <TabBar
@@ -114,7 +114,6 @@ const ProposalScreen = ({navigation, route, props}) => {
   );
 
   const messageInput = () => {
-
     const sendMessageToDiscussion = async () => {
       const userInfo = auth().currentUser;
       const message = inputRef.current._lastNativeText;
@@ -343,7 +342,12 @@ const ProposalScreen = ({navigation, route, props}) => {
               showMore={() => setIndex(1)}
             />
           )}
-          {index === 1 && <ProposalDiscussion proposalId={routeProposalId} inputRef={inputRef} />}
+          {index === 1 && (
+            <ProposalDiscussion
+              proposalId={routeProposalId}
+              inputRef={inputRef}
+            />
+          )}
         </ScrollView>
 
         {index === 0 ? (

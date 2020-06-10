@@ -21,8 +21,8 @@ class UserStore {
   myCommons;
   myProposals;
   constructor() {
-    userInfo = null;
-    isLoading = false;
+    let userInfo = null;
+    let isLoading = false;
   }
 
   setIsLoading = loading => {
