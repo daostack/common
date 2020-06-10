@@ -45,6 +45,7 @@ class nativeBridgeTests extends React.Component {
       cw2Address: '',
       commonStatus: '',
       proposalStatus: '',
+      proposalVotingStatus: '',
       safeTxHash: '',
       whiteListMsg: '',
       safeWallet: '',
@@ -201,7 +202,10 @@ class nativeBridgeTests extends React.Component {
     try {
       const safeWallet = this.props.userStore.userInfo.safeAddress;
       if (safeWallet) {
-        this.setState({cwTXHash: 'You already have a safe wallet', cwAddress: safeWallet});
+        this.setState({
+          cwTXHash: 'You already have a safe wallet',
+          cwAddress: safeWallet,
+        });
         return;
       }
       const manager = WalletManager.getInstance();
@@ -217,7 +221,10 @@ class nativeBridgeTests extends React.Component {
     try {
       const safeWallet = this.props.userStore.userInfo.safeAddress;
       if (safeWallet) {
-        this.setState({cw2TXHash: 'You already have a safe wallet', cw2Address: safeWallet});
+        this.setState({
+          cw2TXHash: 'You already have a safe wallet',
+          cw2Address: safeWallet,
+        });
         return;
       }
       const manager = WalletManager.getInstance();
@@ -239,9 +246,15 @@ class nativeBridgeTests extends React.Component {
         return;
       }
       const manager = WalletManager.getInstance();
-      const response = await manager.execTransaction(safeAddress, '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB', '0.01');
+      const response = await manager.execTransaction(
+        safeAddress,
+        '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB',
+        '0.01',
+      );
       console.log('txHash ->', response.data.txHash);
-      this.setState({safeTxHash: response.data.txHash || response.data.message});
+      this.setState({
+        safeTxHash: response.data.txHash || response.data.message,
+      });
     } catch (e) {
       console.log(e);
       throw 'Send transaction failed with error: ' + e;
@@ -258,15 +271,25 @@ class nativeBridgeTests extends React.Component {
       const manager = WalletManager.getInstance();
       const tokenAddress = '0x3111C94B9243a8A99D5A867e00609900e437E2c0';
       const iface = new ethers.utils.Interface(ABI.ERC20);
-      const data = iface.functions.transfer.encode(['0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB', ethers.utils.parseEther('0.1')]);
+      const data = iface.functions.transfer.encode([
+        '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB',
+        ethers.utils.parseEther('0.1'),
+      ]);
       // console.log('iface ->', iface, data);
-      const response = await manager.execTransaction(safeAddress, tokenAddress, '0', data);
+      const response = await manager.execTransaction(
+        safeAddress,
+        tokenAddress,
+        '0',
+        data,
+      );
       // console.log('response ->', response);
-      this.setState({safeSCHash: response.data.txHash || response.data.message});
+      this.setState({
+        safeSCHash: response.data.txHash || response.data.message,
+      });
     } catch (e) {
       console.log(e);
     }
-  }
+  };
 
   addToWhitelist = async () => {
     try {
@@ -282,18 +305,14 @@ class nativeBridgeTests extends React.Component {
 
   createCommon = async () => {
     try {
-      const wallet = WalletManager.getInstance().wallet;
-    const manager = WalletManager.getInstance();
+      const manager = WalletManager.getInstance();
       const commonAddress = await ArcService.getInstance().createCommon(
         {
-          name: `Test DAO ${new Date()}`,
+          name: 'Test dao 2',
           founderAddresses: manager.safeAddress,
-          minFeeToJoin: 100, // TDB: get from formData
-          fundingGoal: 100000, // TBD: get from formdata
-          // TBD: get form data for deadline; these are in secondSinceEpoch
-          //TODO: get data for deadline from form data
-          fundingGoalDeadline: 20200404,
-          ipfsHash: 'QmXLiGz859X4ktkEKupyda3duXVJQ7ax59t3Uha9odiSRp',
+          minFeeToJoin: 0,
+          fundingGoal: 10000,
+          fundingGoalDeadline: Math.round(new Date().getTime() / 1000),
         },
         this.props.navigation,
         this.props.daoStore,
@@ -312,13 +331,13 @@ class nativeBridgeTests extends React.Component {
 
   createRequestToJoin = async () => {
     console.log('creating proposal -- please wait');
-    const daoId = '0x59b1c80f882c38abd52a90c9b30edafa55f7e421'; // 0 min join fee
+    const daoId = '0x31f40d8843f46a29c43f5e7f1c88d86d5698bfb6'; // 0 min join fee
     this.setState({
       proposalStatus: 'Creating JoinAndQuit proposal -- please wait',
     });
     try {
       const data = {
-        title: `A test proposal on ${Date()}`,
+        title: `A test proposal to join ${daoId}`,
         description: 'Some description',
         files: [],
         images: [],
@@ -336,20 +355,77 @@ class nativeBridgeTests extends React.Component {
       showErrorPopUp(this.props.bottomSheetStore, e.message);
       this.setState({proposalState: `${e}`});
     }
-    console.log(`proposal created: ${proposal.id}`);
+    const msg = `proposal created: ${proposal.id}`;
+    console.log(msg);
+    this.setState({proposalState: msg});
   };
 
   createFundingProposal = async () => {
-    // TODO
+    console.log('creating Funding Proposal -- please wait');
+    const daoId = '0x31f40d8843f46a29c43f5e7f1c88d86d5698bfb6';
+    this.setState({
+      proposalStatus: 'Creating Funding Request proposal -- please wait',
+    });
+    try {
+      const data = {
+        title: `A test funding proposal on ${Date()}`,
+        description: 'Funding request description',
+        files: [],
+        images: [],
+        links: [], // {title: "title", url: "url"}
+        funding: new BN(3),
+      };
+      const proposal = await ArcService.getInstance().createFundingProposal(
+        this.props.userStore.userInfo.safeAddress,
+        daoId,
+        data,
+      );
+      this.setState({
+        proposalStatus: `Funding Request Proposal with id ${proposal.id} created!`,
+      });
+    } catch (e) {
+      console.log(e);
+      this.setState({fundingProposalState: `${e}`});
+    }
+    console.log(`proposal created: ${proposal.id}`);
   };
 
-  openTxhash = hash => {
-    this.props.navigation.navigate('Browser', {url: `https://blockscout.com/poa/xdai/tx/${hash}`});
+  voteForJoinAndQuitProposal = async () => {
+    console.log('Vote for proposal -- please wait');
+    const proposalId = '0xb99e0a8daeb6dcaab9756202ec375153a8498b947d7b2ac864df0635e2928ef0'; // Proposal for the 0 min funding dao made from user lyubomir.petkov@limechain.tech
+    this.setState({
+      proposalVotingStatus: 'VOTING for  proposal -- please wait',
+    });
+    try {
+      const data = {
+        vote: 1,
+      };
+      const vote = await ArcService.getInstance().voteForJoinAndQuitProposal(
+        proposalId,
+        data,
+        'FundingRequest'
+      );
+      this.setState({
+        proposalVotingStatus: `VOTING for a Proposal with id ${vote.id} created!`,
+      });
+    } catch (e) {
+      this.setState({voteState: `${e}`});
+      // showErrorPopUp(this.props.bottomSheetStore, e.message);
+    }
+    console.log(`proposal created: ${proposal.id}`);
   }
 
+  openTxhash = hash => {
+    this.props.navigation.navigate('Browser', {
+      url: `https://blockscout.com/poa/xdai/tx/${hash}`,
+    });
+  };
+
   openAddress = address => {
-    this.props.navigation.navigate('Browser', {url: `https://blockscout.com/poa/xdai/address/${address}`});
-  }
+    this.props.navigation.navigate('Browser', {
+      url: `https://blockscout.com/poa/xdai/address/${address}`,
+    });
+  };
 
   render() {
     return (
@@ -397,16 +473,21 @@ class nativeBridgeTests extends React.Component {
             <Text>Create a funding request</Text>
           </TouchableOpacity>
 
+          <Text>{this.state.voteState}</Text>
+          <TouchableOpacity onPress={this.voteForJoinAndQuitProposal} style={styles.button}>
+            <Text>Vote for proposal</Text>
+          </TouchableOpacity>
+
           <Text>mnemonicsAndStore: {this.state.mnemonicsAndStore}</Text>
           <TouchableOpacity
             onPress={this.generateAndStoreMnemonic}
             style={styles.button}>
             <Text>Generate And Store Mnemonic</Text>
           </TouchableOpacity>
+
           <Text style={{marginVertical: 10}}>
             --------------- Native Bridge -----------------
           </Text>
-
           <Text>mnemonic: {this.state.mnemonic}</Text>
           <TouchableOpacity
             onPress={this.generateMnemonic}
@@ -436,8 +517,9 @@ class nativeBridgeTests extends React.Component {
           <Text style={{marginVertical: 10}}>
             --------------- Local Wallet -----------------
           </Text>
-          <TouchableOpacity onPress={() => this.openAddress(this.state.address)}>
-          <Text>Address: {this.state.address}</Text>
+          <TouchableOpacity
+            onPress={() => this.openAddress(this.state.address)}>
+            <Text>Address: {this.state.address}</Text>
           </TouchableOpacity>
           <Text>Balance: {this.state.balance}</Text>
           <TouchableOpacity onPress={this.getBalance} style={styles.button}>
@@ -453,7 +535,7 @@ class nativeBridgeTests extends React.Component {
 
           <Text>Status: {this.state.txStatus}</Text>
           <TouchableOpacity onPress={() => this.openTxhash(this.state.txHash)}>
-          <Text>Hash: {this.state.txHash}</Text>
+            <Text>Hash: {this.state.txHash}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this.sendTransaction}
@@ -472,21 +554,22 @@ class nativeBridgeTests extends React.Component {
             --------------- Relayer -----------------
           </Text>
 
-          <TouchableOpacity onPress={() => this.openAddress(this.state.safeWallet)}>
-          <Text>Address: {this.state.safeWallet}</Text>
+          <TouchableOpacity
+            onPress={() => this.openAddress(this.state.safeWallet)}>
+            <Text>Address: {this.state.safeWallet}</Text>
           </TouchableOpacity>
           <Text>Balance: {this.state.safeWalletBalance}</Text>
-          <TouchableOpacity
-            onPress={this.getSafeBalance}
-            style={styles.button}>
+          <TouchableOpacity onPress={this.getSafeBalance} style={styles.button}>
             <Text>Get Safe Wallet Balance</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => this.openTxhash(this.state.cwTXHash)}>
-          <Text>TXHash: {this.state.cwTXHash}</Text>
+          <TouchableOpacity
+            onPress={() => this.openTxhash(this.state.cwTXHash)}>
+            <Text>TXHash: {this.state.cwTXHash}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.openAddress(this.state.cwAddress)}>
-          <Text>Address: {this.state.cwAddress}</Text>
+          <TouchableOpacity
+            onPress={() => this.openAddress(this.state.cwAddress)}>
+            <Text>Address: {this.state.cwAddress}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this.createSmartContractWallet}
@@ -508,8 +591,9 @@ class nativeBridgeTests extends React.Component {
             style={styles.button}>
             <Text>Add self white list</Text>
           </TouchableOpacity> */}
-          <TouchableOpacity onPress={() => this.openTxhash(this.state.safeSCHash)}>
-          <Text>TxHash: {this.state.safeSCHash}</Text>
+          <TouchableOpacity
+            onPress={() => this.openTxhash(this.state.safeSCHash)}>
+            <Text>TxHash: {this.state.safeSCHash}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this.execSmartContract}
@@ -517,8 +601,9 @@ class nativeBridgeTests extends React.Component {
             <Text>execSmartContract</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => this.openTxhash(this.state.safeTxHash)}>
-          <Text>TxHash: {this.state.safeTxHash}</Text>
+          <TouchableOpacity
+            onPress={() => this.openTxhash(this.state.safeTxHash)}>
+            <Text>TxHash: {this.state.safeTxHash}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this.execTransaction}

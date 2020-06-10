@@ -1,5 +1,4 @@
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
-
 import {observer, inject} from 'mobx-react';
 import React, {useRef, useEffect} from 'react';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -13,7 +12,6 @@ const BottomSheetContainer = props => {
 
   useEffect(() => {
     if (ref.current) {
-      console.log('ref -> ', ref);
       ref.current.snapTo(1);
     }
   }, []);
@@ -25,7 +23,6 @@ const BottomSheetContainer = props => {
   };
 
   const onClosed = () => {
-    console.log('onClosed');
     props.bottomSheetStore.hideBottomSheet();
   };
 
@@ -55,8 +52,6 @@ const BottomSheetContainer = props => {
     }
     return <View style={contentStyle}>{props.bottomSheetStore.template}</View>;
   };
-
-  console.log('bottomSheetStore -> ', props.bottomSheetStore);
 
   const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
