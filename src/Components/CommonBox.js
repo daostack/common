@@ -31,7 +31,7 @@ const CommonBox = props => {
       />
 
       <CommonStageSummary
-        isFundingStage={true}
+        isCommonCard={true}
         commonProgressInfo={{
           time: props.common.fundingGoalDeadline,
           activeProposals:
