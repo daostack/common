@@ -1,9 +1,7 @@
-
 import {JoinAndQuitProposal, FundingRequestProposal} from '@daostack/arc.js';
-import {PROPOSAL_STAGES_HISTORY} from '../../Services/ProposalService';
+import {PROPOSAL_STAGES_HISTORY} from '../ProposalService';
 
-// TODO: move this to the config file
-export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+import {NULL_ADDRESS, PROPOSAL_TYPE} from '../../Config';
 
 const createVoteTransaction = async (proposal, outcome) => {
   const amount = 0;
@@ -20,35 +18,41 @@ const createVoteTransaction = async (proposal, outcome) => {
 };
 
 // TODO: rename this function to "voteForProposal". It probably works without changes fro the FundingRequest as well
-export const voteForJoinAndQuitProposal = async (arc, proposalId, data, proposalType = 'JoinAndQuit') => {
-
+export const voteForProposal = async (
+  arc,
+  proposalId,
+  data,
+  proposalType = PROPOSAL_TYPE.JointAndQuit,
+) => {
   try {
-
     let proposal;
-    // TODO: the next lines make it work for both types of proposals, but it is an ugly pattern
 
-    if (proposalType === 'JoinAndQuit') {
+    // TODO: the next lines make it work for both types of proposals, but it is an ugly pattern
+    if (proposalType === PROPOSAL_TYPE.JointAndQuit) {
       proposal = new JoinAndQuitProposal(arc, proposalId);
     } else {
       proposal = new FundingRequestProposal(arc, proposalId);
     }
-    // console.log('Proposal -> ', proposal);
 
     // TODO: error Handler shoudl only be called in case an error occurred, once https://daostack1.atlassian.net/browse/CM-402 is implemented
-    const errorHandler = async (receipt) => {
+    const errorHandler = async () => {
       const proposalState = await proposal.fetchState();
       if (proposalState.stage in PROPOSAL_STAGES_HISTORY) {
-        throw Error('Cannot vote: the proposal has been already executed, or it expired');
+        throw Error(
+          'Cannot vote: the proposal has been already executed, or it expired',
+        );
       }
       // TODO: we also want to check if the user is a member of the Common here
     };
-    await errorHandler(receipt);
-
+    await errorHandler();
 
     const voteTransaction = await createVoteTransaction(proposal, data.vote);
     // console.log('voteTransaction -> ', voteTransaction);
     const transaction = voteTransaction;
-    const receipt = await transaction.contract.sendToRelayerWithReceipt(transaction.method, transaction.args);
+    const receipt = await transaction.contract.sendToRelayerWithReceipt(
+      transaction.method,
+      transaction.args,
+    );
 
     // const receipt = await voteTransaction.send();
     // console.log('receipt -> ', receipt);
@@ -57,7 +61,6 @@ export const voteForJoinAndQuitProposal = async (arc, proposalId, data, proposal
     // TODO: get the voteId from the transaction receipt and return it
     // TODO: once we have https://daostack1.atlassian.net/browse/CM-404, we should call "updateVotes" with the voteId
     return receipt;
-
   } catch (e) {
     console.log(e);
     throw e;
