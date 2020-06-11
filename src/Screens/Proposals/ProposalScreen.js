@@ -339,8 +339,8 @@ const ProposalScreen = ({navigation, route, props}) => {
               memberSince={
                 memberCreatedDate
                   ? `${
-                      monthShortNames[memberCreatedDate.getMonth()]
-                    } ${memberCreatedDate.getDay()} `
+                    monthShortNames[memberCreatedDate.getMonth()]
+                  } ${memberCreatedDate.getDay()} `
                   : ''
               }
               isPending={false}
