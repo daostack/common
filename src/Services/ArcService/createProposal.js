@@ -54,6 +54,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     };
     console.log('creating transaction');
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
+
     const proposalId = await WalletManager.getInstance().requestToJoin(transaction.contract, transaction.method, transaction.args);
     return proposalId;
     /**  Original code, keep for reference until we are sure the current pattern works

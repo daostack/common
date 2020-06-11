@@ -80,14 +80,15 @@ export default class AuthService {
     GoogleDriveService.init(accessToken);
     // console.log('accessToken 2 -> ', accessToken);
     // 1. Read mnemonic from the store
+    /*
     const mnemonicFromStore = await NativeModules.WalletModule.retrieveMnemonic(
       uid,
     );
 
-    // console.log('mnemonicFromStore-> ', mnemonicFromStore);
     if (mnemonicFromStore) {
       return mnemonicFromStore;
     }
+    */
 
     // console.log('Google Drive-> ');
     // 2. Read mnemonic From the Google Drive app data

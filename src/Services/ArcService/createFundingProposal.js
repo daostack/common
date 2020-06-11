@@ -42,7 +42,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     if (!fee) {
       throw Error('Fee argument must be given');
     }
-   // check preconditions
+    // check preconditions
 
     // precondition: the FUNDED_BEFORE_DEADLINE should be true
     const daoContract = await arc.getContract(dao.id);
@@ -86,7 +86,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
         const setFlagTxReceipt = await setFlagTx.contract.sendToRelayerWithReceipt(
           setFlagTx.method,
           setFlagTx.args,
-         );
+        );
         // console.log(setFlagTxReceipt);
         console.log('setFlagTxReceipt.transactionHash ->', setFlagTxReceipt.transactionHash);
         fundingGoalReachedFlag = await daoContract.db('FUNDED_BEFORE_DEADLINE');
@@ -128,7 +128,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     console.log('RECEIPT -> ', receipt);
 
     console.log(
-      `Transaction with ${receipt.transactionHash} was mined: proposal created!`,
+      `Transaction with ${receipt.transactionHash} was mined`,
     );
 
     const proposal = fundingRequestPlugin.createProposalTransactionMap(receipt);

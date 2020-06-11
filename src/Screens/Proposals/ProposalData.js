@@ -276,13 +276,13 @@ const ProposalData = props => {
         </ScrollView>
 
         {topMessage.length === 0 ? null : (
-        <View style={styles.proposalCard}>
-          <View style={layout.content}>
-            <View style={{...styles.proposalColumnSubtitle}}>
-              <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
+          <View style={styles.proposalCard}>
+            <View style={layout.content}>
+              <View style={{...styles.proposalColumnSubtitle}}>
+                <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
                 Recent comments
-              </Text>
-            </View>
+                </Text>
+              </View>
 
               <View style={{...layout.content, ...layout.flexStart}}>
                 {topMessage.map((currMessage, currIndex) => {
@@ -297,13 +297,13 @@ const ProposalData = props => {
                   );
                 })}
               </View>
-            <View style={layout.contant}>
-              <TouchableOpacity onPress={() => props.showMore()}>
-                <Text style={styles.messageShowMoreBtn}>Show more</Text>
-              </TouchableOpacity>
+              <View style={layout.contant}>
+                <TouchableOpacity onPress={() => props.showMore()}>
+                  <Text style={styles.messageShowMoreBtn}>Show more</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
         )}
       </View>
       <ImageView

@@ -11,6 +11,18 @@ export const PROPOSAL_STAGE = {
   QuietEndingPeriod: '5',
 };
 
+export const PROPOSAL_STAGES_ACTIVE = [
+  PROPOSAL_STAGE.Queued,
+  PROPOSAL_STAGE.PreBoosted,
+  PROPOSAL_STAGE.Boosted,
+  PROPOSAL_STAGE.QuietEndingPeriod,
+];
+
+export const PROPOSAL_STAGES_HISTORY = [
+  PROPOSAL_STAGE.ExpiredInQueue,
+  PROPOSAL_STAGE.Executed,
+];
+
 export default class ProposalService {
   static serviceInstance = null;
 
@@ -35,6 +47,28 @@ export default class ProposalService {
         }
         return snapshots.data();
       });
+  }
+
+  async subscribeToPendingProposalsData(daoId, userSafeAddress, callback) {
+    let proposals = db
+      .collection(DB_COLLECTIONS.proposals)
+      .where('dao', '==', daoId)
+      .where('type', '==', 'JoinAndQuit')
+      .where('stageStr', 'in', [
+        PROPOSAL_STAGE.Queued,
+        PROPOSAL_STAGE.PreBoosted,
+        PROPOSAL_STAGE.Boosted,
+        PROPOSAL_STAGE.QuietEndingPeriod,
+      ]);
+
+    return proposals.onSnapshot(snapshot => {
+      callback({
+        pendingProposalCount: snapshot.docs.length,
+        usersPendingProposalId:
+          snapshot.docs.find(doc => doc.data().proposer === userSafeAddress)
+            ?.id || false,
+      });
+    });
   }
 
   async subscribeToProposalList(

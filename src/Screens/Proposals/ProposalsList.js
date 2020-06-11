@@ -32,11 +32,13 @@ const ProposalsList = props => {
       console.log('Load proposal info -> ', commonId, isHistory);
       let proposalStages = null;
       if (isHistory) {
+        // TODO: use ProposalsList.PROPOSAL_STAGES_HISTORY here
         proposalStages = [
           PROPOSAL_STAGE.ExpiredInQueue,
           PROPOSAL_STAGE.Executed,
         ];
       } else {
+        // TODO: use ProposalsList.PROPOSAL_STAGES_ACTIVE here
         proposalStages = [
           PROPOSAL_STAGE.Queued,
           PROPOSAL_STAGE.PreBoosted,

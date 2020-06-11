@@ -2,6 +2,7 @@ import WalletManager from '../../Util/WalletManager';
 import {createCommon} from './createCommon';
 import {createProposalRequestToJoin} from './createProposal';
 import {createFundingProposal} from './createFundingProposal';
+import {voteForJoinAndQuitProposal} from './voteForJoinAndQuitProposal';
 
 import {Arc} from '@daostack/arc.js';
 import {graphHttpLink, graphwsLink, ipfsLink} from '../../Config';
@@ -41,16 +42,11 @@ export default class ArcService {
     return createFundingProposal(this.arc, userAddress, daoId, data);
   };
 
-  getJoinAndQuitPluginAddress = async (daoId) => {
-    try {
-      const dao = this.arc.dao(daoId);
-      let joinAndQuitPlugin = await dao.plugin({where: {name: 'JoinAndQuit'}});
-      return joinAndQuitPlugin.coreState.address;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  };
+  // VOTIN
+
+  voteForJoinAndQuitProposal = async (proposalId, data, proposalType) => {
+    return voteForJoinAndQuitProposal(this.arc, proposalId, data, proposalType);
+  }
 
   // COMMONS
 

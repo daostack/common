@@ -65,6 +65,7 @@ const RequestStep4 = props => {
           name: 'CommonProfile',
           params: {
             showRequestSentModal: true,
+            createdProposalId: proposal.id,
           },
         });
         props.navigation.dispatch(navigate);

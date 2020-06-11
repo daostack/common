@@ -109,45 +109,43 @@ const CreateStep4 = props => {
 
   const forgeCommon = async () => {
     try {
-    const address = WalletManager.getInstance().safeAddress;
-    const formDataInit = {
-      ...props.generalInfoFormStore.getChangedFormFieldsJson(),
-      ...props.fundingFormStore.getChangedFormFieldsJson(),
-      ...props.agendaFormStore.getChangedFormFieldsJson(),
-      ...props.reviewFormStore.getChangedFormFieldsJson(),
-    };
+      const address = WalletManager.getInstance().safeAddress;
+      const formDataInit = {
+        ...props.generalInfoFormStore.getChangedFormFieldsJson(),
+        ...props.fundingFormStore.getChangedFormFieldsJson(),
+        ...props.agendaFormStore.getChangedFormFieldsJson(),
+        ...props.reviewFormStore.getChangedFormFieldsJson(),
+      };
 
-    const fundingGoalDeadline = formData[CreateCommonForm.DEADLINE];
+      const fundingGoalDeadline = formDataInit[CreateCommonForm.DEADLINE];
 
-    const data = {
-      ...formDataInit,
-      name: formData.name,
-      founderAddresses: address,
-      minFeeToJoin: parseInt(formDataInit.minimum, 10) * 100,
-      fundingGaol: parseInt(formDataInit.funding, 10) * 100,
-      fundingGoalDeadline, // just passing the unix timestamp
-      ipfsHash,
-    };
-    console.log('calling createCommon(...)');
+      const data = {
+        ...formDataInit,
+        founderAddresses: address,
+        minFeeToJoin: parseInt(formDataInit.minimum, 10) * 100,
+        fundingGoal: parseInt(formDataInit.funding, 10) * 100,
+        fundingGoalDeadline, // just passing the unix timestamp
+      };
+      console.log('calling createCommon(...)');
 
-    const commonAddress = await ArcService.getInstance().createCommon(
-      data,
-      props.navigation,
-      props.daoStore,
-    );
+      const commonAddress = await ArcService.getInstance().createCommon(
+        data,
+        props.navigation,
+        props.daoStore,
+      );
 
-    if (commonAddress) {
-      props.navigation.dispatch(StackActions.popToTop());
-    }
+      if (commonAddress) {
+        props.navigation.dispatch(StackActions.popToTop());
+      }
 
-    return {commonAddress};
+      return {commonAddress};
     } catch (e) {
       showErrorPopUp(props.bottomSheetStore, e.message);
     }
   };
 
 
-  console.log('FORM -> ', form);
+  // console.log('FORM -> ', form);
 
   return (
     <SafeAreaView

@@ -87,8 +87,8 @@ const DiscussionCard = props => {
   return (
     <>
       <TouchableOpacity
-      onPress={() =>navigateToDiscussion()}
-        >
+        onPress={() =>navigateToDiscussion()}
+      >
         <View style={styles.container}>
           <TouchableOpacity
             style={{position: 'absolute', right: 0, top: 0, padding: 20}}
