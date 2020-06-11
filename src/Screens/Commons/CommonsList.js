@@ -70,7 +70,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
 
   const onAddCommon = () => {
     if (userStore.userInfo) {
-      () => navigation.navigate('CommonExplanation');
+      navigation.navigate('CommonExplanation');
     } else {
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
