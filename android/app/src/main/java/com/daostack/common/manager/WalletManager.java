@@ -63,13 +63,14 @@ public class WalletManager {
     public String retrieveMnemonic(String uid ) throws Exception {
         try {
             String encryptedData = Hawk.get(uid);
+            if (encryptedData == null) {
+                return null;
+            }
             Crypto crypto = new Crypto(Options.TRANSFORMATION_SYMMETRIC);
             String decryptedData = crypto.decrypt(encryptedData, key);
             return decryptedData;
         } catch (Exception e){
             throw e;
         }
-
     }
-
 }
