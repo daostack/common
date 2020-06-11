@@ -44,20 +44,15 @@ export const voteForProposal = async (
       }
       // TODO: we also want to check if the user is a member of the Common here
     };
-    console.log('BEGIN Error handler call');
     await errorHandler();
-    console.log('END Error handler call');
 
     const voteTransaction = await createVoteTransaction(proposal, data.vote);
-    // console.log('voteTransaction -> ', voteTransaction);
     const transaction = voteTransaction;
     const receipt = await transaction.contract.sendToRelayerWithReceipt(
       transaction.method,
       transaction.args,
     );
 
-    // const receipt = await voteTransaction.send();
-    // console.log('receipt -> ', receipt);
     console.log('transactionHAsh -> ', receipt.transactionHash);
 
     // TODO: get the voteId from the transaction receipt and return it

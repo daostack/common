@@ -197,9 +197,6 @@ const ProposalScreen = ({navigation, route, props}) => {
     let votingResponse = null;
     const voteData = {vote: isApproved ? 1 : 0};
 
-    console.log('proposalInfo.type -> ', proposalInfo.type);
-    console.log('voteData -> ', voteData);
-
     if (proposalInfo.type == PROPOSAL_TYPE.JoinAndQuit) {
       votingResponse = await ArcService.getInstance().voteForJoinAndQuitProposal(
         routeProposalId,
