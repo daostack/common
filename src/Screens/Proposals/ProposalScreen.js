@@ -290,7 +290,17 @@ const ProposalScreen = ({navigation, route, props}) => {
   if (proposedUser?.createdAt) {
     memberCreatedDate = new Date(proposedUser?.createdAt.seconds * 1000);
   }
-
+  const headerContainerStyle =
+    proposalInfo.type === PROPOSAL_TYPES.FUNDING
+      ? {
+        ...layout.content,
+        ...layout.flexStart,
+        ...{paddingBottom: 0},
+      }
+      : {
+        ...layout.content,
+        ...{paddingBottom: 0},
+      };
   return (
     <>
       <SafeAreaView style={{backgroundColor: colors.white}} />
@@ -301,12 +311,7 @@ const ProposalScreen = ({navigation, route, props}) => {
             backgroundColor: colors.white,
           }}>
           {proposalInfo && (
-            <View
-              style={{
-                ...layout.content,
-                ...layout.flexStart,
-                ...{paddingBottom: 0},
-              }}>
+            <View style={{...headerContainerStyle}}>
               {proposalInfo.type === PROPOSAL_TYPES.FUNDING ? (
                 <>
                   <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
@@ -316,14 +321,14 @@ const ProposalScreen = ({navigation, route, props}) => {
                   <MemberCard
                     /*
                 name={proposedUser?.displayName}
-  
+
                 imageUrl={proposedUser.photoURL}
                 */
                     memberSince={
                       memberCreatedDate
                         ? `${
-                            monthShortNames[memberCreatedDate.getMonth()]
-                          } ${memberCreatedDate.getDay()} `
+                          monthShortNames[memberCreatedDate.getMonth()]
+                        } ${memberCreatedDate.getDay()} `
                         : ''
                     }
                     isPending={false}
@@ -331,12 +336,27 @@ const ProposalScreen = ({navigation, route, props}) => {
                   />
                 </>
               ) : (
-                <ImageField
-                  isAvatar={true}
-                  value={proposedUser?.photoURL}
-                  allowsEditing={false}
-                  title={'Select new avatar'}
-                />
+                <>
+                  <ImageField
+                    isAvatar={true}
+                    disableEdit={true}
+                    value={proposedUser?.photoURL}
+                    title={'Select new avatar'}
+                  />
+                  <View style={{marginTop: 28}}>
+                    <Text style={{...text.h3Black}}>
+                      {proposedUser.displayName + ' >'}
+                    </Text>
+                    <Text
+                      style={{
+                        ...text.textFieldfocus,
+                        textAlign: 'center',
+                        marginTop: 1,
+                      }}>
+                      {'Request to Join'}
+                    </Text>
+                  </View>
+                </>
               )}
             </View>
           )}
