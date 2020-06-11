@@ -338,12 +338,6 @@ const ProposalScreen = ({navigation, route, props}) => {
                 </>
               ) : (
                 <>
-                  {/* <ImageField
-                    isAvatar={true}
-                    disableEdit={true}
-                    value={proposedUser?.photoURL}
-                    title={'Select new avatar'}
-                  /> */}
                   <UserAvatar
                     image={proposedUser?.photoURL}
                     iconName={'clcok-16'}
