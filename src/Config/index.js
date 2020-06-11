@@ -26,9 +26,12 @@ export const OVERRIDES = {
   gasPrice: 15000000000,
 };
 
-export const PROPOSAL_TYPES = {
-  FUNDING: 'FundingRequest',
-  REQUEST_TO_JOIN: 'JoinAndQuit',
+export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+// Arc.js related string constants
+export const PROPOSAL_TYPE = {
+  JoinAndQuit: 'JoinAndQuit',
+  FundingRequest: 'FundingRequest',
 };
 
 const httpLink = new HttpLink({

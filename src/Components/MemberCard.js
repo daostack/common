@@ -5,7 +5,7 @@ import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
 import {monthShortNames} from '../Util/DateUtil';
 import moment from 'moment';
-import {PROPOSAL_TYPES} from '../Config';
+import {PROPOSAL_TYPE} from '../Config';
 
 const MemberCard = ({
   // memberSince or commonsCount
@@ -18,7 +18,7 @@ const MemberCard = ({
   const renderRightContainer = () => {
     if (proposalInfo) {
       const proposalValue =
-        proposalInfo.type === PROPOSAL_TYPES.REQUEST_TO_JOIN
+        proposalInfo.type === PROPOSAL_TYPE.JoinAndQuit
           ? proposalInfo.joinAndQuit.funding
           : proposalInfo.fundingRequest.amount;
       const remainingSeconds = proposalInfo.expiresInQueueAt - moment().unix();

@@ -20,7 +20,7 @@ import {useNavigation} from '@react-navigation/native';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {observer, inject} from 'mobx-react';
 import moment from 'moment';
-import {PROPOSAL_TYPES} from '../../Config';
+import {PROPOSAL_TYPE} from '../../Config';
 
 const ProposalData = props => {
   const navigation = useNavigation();
@@ -188,7 +188,7 @@ const ProposalData = props => {
                 Cost
               </Text>
               <Text style={text.h1Black}>{`$${
-                proposalInfo.type === PROPOSAL_TYPES.FUNDING
+                proposalInfo.type === PROPOSAL_TYPE.FundingRequest
                   ? proposalInfo.fundingRequest.amount
                   : proposalInfo.joinAndQuit.funding
               }`}</Text>
