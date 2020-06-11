@@ -23,6 +23,11 @@ export const PROPOSAL_STAGES_HISTORY = [
   PROPOSAL_STAGE.Executed,
 ];
 
+export const PROPOSAL_TYPE = {
+  JoinAndQuit: 'JoinAndQuit',
+  FundingRequest: 'FundingRequest',
+};
+
 export default class ProposalService {
   static serviceInstance = null;
 

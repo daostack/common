@@ -53,7 +53,7 @@ export default class ArcService {
       this.arc,
       proposalId,
       data,
-      PROPOSAL_TYPE.JointAndQuit,
+      PROPOSAL_TYPE.JoinAndQuit,
     );
   };
 

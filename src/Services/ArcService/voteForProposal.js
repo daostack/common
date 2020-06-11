@@ -22,13 +22,13 @@ export const voteForProposal = async (
   arc,
   proposalId,
   data,
-  proposalType = PROPOSAL_TYPE.JointAndQuit,
+  proposalType = PROPOSAL_TYPE.JoinAndQuit,
 ) => {
   try {
+    console.log('voteForProposal');
     let proposal;
 
-    // TODO: the next lines make it work for both types of proposals, but it is an ugly pattern
-    if (proposalType === PROPOSAL_TYPE.JointAndQuit) {
+    if (proposalType === PROPOSAL_TYPE.JoinAndQuit) {
       proposal = new JoinAndQuitProposal(arc, proposalId);
     } else {
       proposal = new FundingRequestProposal(arc, proposalId);
@@ -44,7 +44,9 @@ export const voteForProposal = async (
       }
       // TODO: we also want to check if the user is a member of the Common here
     };
+    console.log('BEGIN Error handler call');
     await errorHandler();
+    console.log('END Error handler call');
 
     const voteTransaction = await createVoteTransaction(proposal, data.vote);
     // console.log('voteTransaction -> ', voteTransaction);
@@ -62,6 +64,7 @@ export const voteForProposal = async (
     // TODO: once we have https://daostack1.atlassian.net/browse/CM-404, we should call "updateVotes" with the voteId
     return receipt;
   } catch (e) {
+    console.log('ERROR IN VOTE FOR PROPOSAL');
     console.log(e);
     throw e;
   }
