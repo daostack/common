@@ -26,9 +26,9 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
               navigation
                 ? styles.headerContainer
                 : {
-                    ...styles.headerContainer,
-                    ...styles.headerContainerCenterContent,
-                  }
+                  ...styles.headerContainer,
+                  ...styles.headerContainerCenterContent,
+                }
             }>
             {navigation ? (
               <TouchableOpacity onPress={navigation.goBack}>

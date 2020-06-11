@@ -16,11 +16,11 @@ export const numberFormatter = num => {
     ? denom / 1.0e9 + 'B'
     : // Six Zeroes for Millions
     denom >= 1.0e6
-    ? denom / 1.0e6 + 'M'
-    : // Three Zeroes for Thousands
-    denom >= 1.0e3
-    ? denom / 1.0e3 + 'K'
-    : Math.floor(denom);
+      ? denom / 1.0e6 + 'M'
+      : // Three Zeroes for Thousands
+      denom >= 1.0e3
+        ? denom / 1.0e3 + 'K'
+        : Math.floor(denom);
 };
 
 export function filterObjectByKeys(currObj, allowedKeys) {

@@ -18,9 +18,9 @@ const ProposalApprovalTag = ({iconName, value, isMarked}) => {
 
   let containerStyle = isMarked
     ? {
-        ...styles.container,
-        ...{borderColor: mainColor, backgroundColor: markColor},
-      }
+      ...styles.container,
+      ...{borderColor: mainColor, backgroundColor: markColor},
+    }
     : styles.container;
 
   return (

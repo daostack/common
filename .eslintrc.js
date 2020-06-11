@@ -9,5 +9,6 @@ module.exports = {
     'no-shadow': 0,
     'react-hooks/exhaustive-deps': 0,
     'prettier/prettier': 0,
+    "indent": ["error", 2]
   },
 };

@@ -279,36 +279,36 @@ const Discussions = props => {
                 </Text>
               </View>
 
-            {data.images ?
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                style={{marginBottom: 20}}>
-                <View style={styles.imageGallery}>
-                  <View style={{width: 20}} />
-                  {data.images.map((currImage, currIndex) => {
-                    return (
-                      <View
-                        key={`proposalImg_${currIndex}`}>
-                        <TouchableOpacity
-                          onPress={() => setImageGalleryIndex(currIndex)}>
-                          <Image
-                            key={currIndex}
-                            style={{
-                              ...styles.galleryImage,
-                              ...{width: width * 0.8 },
-                            }}
-                            resizeMode="cover"
-                            source={{uri: currImage}}
-                          />
-                        </TouchableOpacity>
-                      </View>
-                    );
-                  })}
-                  <View style={{width: 20}} />
-                </View>
-              </ScrollView>
-              : null}
+              {data.images ?
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  style={{marginBottom: 20}}>
+                  <View style={styles.imageGallery}>
+                    <View style={{width: 20}} />
+                    {data.images.map((currImage, currIndex) => {
+                      return (
+                        <View
+                          key={`proposalImg_${currIndex}`}>
+                          <TouchableOpacity
+                            onPress={() => setImageGalleryIndex(currIndex)}>
+                            <Image
+                              key={currIndex}
+                              style={{
+                                ...styles.galleryImage,
+                                ...{width: width * 0.8 },
+                              }}
+                              resizeMode="cover"
+                              source={{uri: currImage}}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      );
+                    })}
+                    <View style={{width: 20}} />
+                  </View>
+                </ScrollView>
+                : null}
 
               <TouchableOpacity
                 style={{alignItems: 'center'}}
