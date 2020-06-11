@@ -29,8 +29,10 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
   return receipt;
 };
 
+// TODO: please rename "instance" to something more meaningful
 const instance = axios.create({
-  baseURL: 'https://us-central1-common-daostack.cloudfunctions.net/api/',
+  // TOOD: please move this baseUrl to a settings file
+  baseURL: 'https://us-central1-common-daostack.cloudfunctions.net/relayer-relayer/',
   timeout: 1000000, // milliseconds
   // headers: {'X-Custom-Header': 'foobar'}
 });
@@ -220,7 +222,7 @@ export default class WalletManager {
           value: zeroValue,
           data: data2,
           signature: signature2,
-        }
+        },
       };
       console.log('RequestToJoin Body ->', body);
       const response = await instance.post(
