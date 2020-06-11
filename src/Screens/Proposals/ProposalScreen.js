@@ -312,14 +312,14 @@ const ProposalScreen = ({navigation, route, props}) => {
             <MemberCard
               /*
               name={proposedUser?.displayName}
-              
+
               imageUrl={proposedUser.photoURL}
               */
               memberSince={
                 memberCreatedDate
                   ? `${
-                      monthShortNames[memberCreatedDate.getMonth()]
-                    } ${memberCreatedDate.getDay()} `
+                    monthShortNames[memberCreatedDate.getMonth()]
+                  } ${memberCreatedDate.getDay()} `
                   : ''
               }
               isPending={false}

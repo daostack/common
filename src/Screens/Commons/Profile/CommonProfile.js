@@ -138,14 +138,14 @@ const CommonProfile = ({
 
   const renderScene = scene => {
     switch (scene.route.key) {
-      case 'discussions':
-        return Discussions();
-      case 'proposals':
-        return Proposals();
-      case 'history':
-        return History();
-      default:
-        return null;
+    case 'discussions':
+      return Discussions();
+    case 'proposals':
+      return Proposals();
+    case 'history':
+      return History();
+    default:
+      return null;
     }
   };
 
@@ -376,7 +376,7 @@ const CommonProfile = ({
               goal: currCommon.fundingGoal,
               members: currCommon.memberCount,
               // TODO: get this value. Is it even tracked in the contract? need to check.
-              raised: 0,
+              raised: currCommon.balance,
               currentBudget: numberFormatter(
                 // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
                 currCommon.tokenTotalSupply,
@@ -443,25 +443,25 @@ const CommonProfile = ({
           <>
             {pendingProposalsData &&
               !pendingProposalsData.usersPendingProposalId && (
-                <View style={styles.actionButtonContainer}>
-                  <TouchableOpacity
-                    style={styles.headerButton}
-                    onPress={requestToJoin}>
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: 'white',
-                        fontWeight: '700',
-                        marginRight: 40,
-                      }}>
+              <View style={styles.actionButtonContainer}>
+                <TouchableOpacity
+                  style={styles.headerButton}
+                  onPress={requestToJoin}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: 'white',
+                      fontWeight: '700',
+                      marginRight: 40,
+                    }}>
                       Request to join
-                    </Text>
-                    <Text style={{fontSize: 16, color: 'white'}}>
+                  </Text>
+                  <Text style={{fontSize: 16, color: 'white'}}>
                       ${currCommon.minFeeToJoin} Contribution
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
             <Modal
               isVisible={showRequestSentModal}
               avoidKeyboard={true}
