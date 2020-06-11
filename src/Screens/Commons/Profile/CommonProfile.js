@@ -86,7 +86,7 @@ const CommonProfile = ({
         }
       };
     }
-  }, [routeCommon.id, isMember]);
+  }, [routeCommon.id, isMember, userStore.userInfo]);
 
   const renderTabBar = props => (
     <TabBar
