@@ -86,7 +86,7 @@ const MemberCard = ({
               ...text.h4Black,
               ...{flexWrap: 'wrap'},
             }}>
-            {userInfo?.displayName}
+            {userInfo?.displayName || 'Unknown user'}
           </Text>
           <Text
             style={{
@@ -99,7 +99,7 @@ const MemberCard = ({
                 ? `Member in ${userInfo?.daos?.length} Common${
                   userInfo?.daos?.length > 1 ? 's' : ''
                 }`
-                : `Member since ${memberSince}`}
+                : `Member since ${memberSince || 'unknown'}`}
           </Text>
         </View>
       </View>
