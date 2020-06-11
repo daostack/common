@@ -23,7 +23,8 @@ import BottomSheetModal from '../../Components/BottomSheetModal';
 import ProposalService from '../../Services/ProposalService';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-
+import {PROPOSAL_TYPES} from '../../Config';
+import ImageField from '../../Components/FormFields/ImageField';
 const {width} = Dimensions.get('window');
 
 import CountDown from 'react-native-countdown-component';
@@ -114,7 +115,6 @@ const ProposalScreen = ({navigation, route, props}) => {
   );
 
   const messageInput = () => {
-
     const sendMessageToDiscussion = async () => {
       const userInfo = auth().currentUser;
       const message = inputRef.current._lastNativeText;
@@ -300,33 +300,46 @@ const ProposalScreen = ({navigation, route, props}) => {
             flex: 1,
             backgroundColor: colors.white,
           }}>
-          <View
-            style={{
-              ...layout.content,
-              ...layout.flexStart,
-              ...{paddingBottom: 0},
-            }}>
-            <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
-              {proposalInfo?.title}
-            </Text>
+          {proposalInfo && (
+            <View
+              style={{
+                ...layout.content,
+                ...layout.flexStart,
+                ...{paddingBottom: 0},
+              }}>
+              {proposalInfo.type === PROPOSAL_TYPES.FUNDING ? (
+                <>
+                  <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
+                    {proposalInfo?.title}
+                  </Text>
 
-            <MemberCard
-              /*
-              name={proposedUser?.displayName}
-
-              imageUrl={proposedUser.photoURL}
-              */
-              memberSince={
-                memberCreatedDate
-                  ? `${
-                    monthShortNames[memberCreatedDate.getMonth()]
-                  } ${memberCreatedDate.getDay()} `
-                  : ''
-              }
-              isPending={false}
-              userInfo={proposedUser}
-            />
-          </View>
+                  <MemberCard
+                    /*
+                name={proposedUser?.displayName}
+  
+                imageUrl={proposedUser.photoURL}
+                */
+                    memberSince={
+                      memberCreatedDate
+                        ? `${
+                            monthShortNames[memberCreatedDate.getMonth()]
+                          } ${memberCreatedDate.getDay()} `
+                        : ''
+                    }
+                    isPending={false}
+                    userInfo={proposedUser}
+                  />
+                </>
+              ) : (
+                <ImageField
+                  isAvatar={true}
+                  value={proposedUser?.photoURL}
+                  allowsEditing={false}
+                  title={'Select new avatar'}
+                />
+              )}
+            </View>
+          )}
 
           <TabView
             navigationState={{index, routes}}
@@ -343,7 +356,12 @@ const ProposalScreen = ({navigation, route, props}) => {
               showMore={() => setIndex(1)}
             />
           )}
-          {index === 1 && <ProposalDiscussion proposalId={routeProposalId} inputRef={inputRef} />}
+          {index === 1 && (
+            <ProposalDiscussion
+              proposalId={routeProposalId}
+              inputRef={inputRef}
+            />
+          )}
         </ScrollView>
 
         {index === 0 ? (
