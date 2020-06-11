@@ -21,16 +21,17 @@ import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '../../Util/Toast';
 import BottomSheetModal from '../../Components/BottomSheetModal';
 import ProposalService from '../../Services/ProposalService';
+import ArcService from '../../Services/ArcService';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import {PROPOSAL_TYPES} from '../../Config';
-import ImageField from '../../Components/FormFields/ImageField';
 const { width } = Dimensions.get('window');
 import {UserAvatar} from '../../Components';
 
 import CountDown from 'react-native-countdown-component';
 import FirebaseService from '../../Services/FirebaseService';
 import {monthShortNames} from '../../Util/DateUtil';
+
+import {PROPOSAL_TYPE} from '../../Services/ProposalService';
 
 const ProposalScreen = ({navigation, route, props}) => {
   const [proposalInfo, setProposalInfo] = useState(false);
@@ -191,7 +192,25 @@ const ProposalScreen = ({navigation, route, props}) => {
     setIsApprovalBottomModalVisible(false);
   };
 
-  const onVote = isApproved => {
+  const onVote = async isApproved => {
+    console.log('!!! onVote !!! ');
+    let votingResponse = null;
+    const voteData = {vote: isApproved ? 1 : 0};
+
+    if (proposalInfo.type == PROPOSAL_TYPE.JoinAndQuit) {
+      votingResponse = await ArcService.getInstance().voteForJoinAndQuitProposal(
+        routeProposalId,
+        voteData,
+      );
+    } else {
+      votingResponse = await ArcService.getInstance().voteForFundingRequestProposal(
+        routeProposalId,
+        voteData,
+      );
+    }
+
+    console.log('votingResponse -> ', votingResponse);
+
     closeApprovalSheet();
     Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
     setIsVoteByYou({isApproved: isApproved});
@@ -292,7 +311,7 @@ const ProposalScreen = ({navigation, route, props}) => {
     memberCreatedDate = new Date(proposedUser?.createdAt.seconds * 1000);
   }
   const headerContainerStyle =
-    proposalInfo.type === PROPOSAL_TYPES.FUNDING
+    proposalInfo.type === PROPOSAL_TYPE.FundingRequest
       ? {
         ...layout.content,
         ...layout.flexStart,
@@ -313,7 +332,7 @@ const ProposalScreen = ({navigation, route, props}) => {
           }}>
           {proposalInfo && (
             <View style={{...headerContainerStyle}}>
-              {proposalInfo.type === PROPOSAL_TYPES.FUNDING ? (
+              {proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
                 <>
                   <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
                     {proposalInfo?.title}
