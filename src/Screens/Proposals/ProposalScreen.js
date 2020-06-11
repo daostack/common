@@ -25,7 +25,8 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {PROPOSAL_TYPES} from '../../Config';
 import ImageField from '../../Components/FormFields/ImageField';
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
+import {UserAvatar} from '../../Components';
 
 import CountDown from 'react-native-countdown-component';
 import FirebaseService from '../../Services/FirebaseService';
@@ -337,11 +338,15 @@ const ProposalScreen = ({navigation, route, props}) => {
                 </>
               ) : (
                 <>
-                  <ImageField
+                  {/* <ImageField
                     isAvatar={true}
                     disableEdit={true}
                     value={proposedUser?.photoURL}
                     title={'Select new avatar'}
+                  /> */}
+                  <UserAvatar
+                    image={proposedUser?.photoURL}
+                    iconName={'clcok-16'}
                   />
                   <View style={{marginTop: 28}}>
                     <Text style={{...text.h3Black}}>

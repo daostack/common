@@ -144,11 +144,7 @@ class ImageField extends React.Component {
                 onPress={this.pickImage}>
                 <Icon name="edit" size={16} color={colors.white} />
               </TouchableOpacity>
-            ) : (
-              <View style={styles.formImageFielAddIcon}>
-                <Icon name="clcok-16" size={16} color={colors.white} />
-              </View>
-            )}
+            ) : null}
           </View>
         </View>
         {this.fieldValidation}
