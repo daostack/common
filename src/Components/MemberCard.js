@@ -50,8 +50,8 @@ const MemberCard = ({
         const memberCreatedDate = new Date(userInfo.createdAt.seconds * 1000);
         memberCreatedDateInfo = memberCreatedDate
           ? `${
-              monthShortNames[memberCreatedDate.getMonth()]
-            } ${memberCreatedDate.getDay()} `
+            monthShortNames[memberCreatedDate.getMonth()]
+          } ${memberCreatedDate.getDay()} `
           : '';
       } else {
         memberCreatedDateInfo = 'NOT app user';
@@ -96,10 +96,10 @@ const MemberCard = ({
             {proposalInfo
               ? moment.unix(proposalInfo.createdAt).fromNow()
               : showMemberCreatedDate
-              ? `Member in ${userInfo?.daos?.length} Common${
+                ? `Member in ${userInfo?.daos?.length} Common${
                   userInfo?.daos?.length > 1 ? 's' : ''
                 }`
-              : `Member since ${memberSince}`}
+                : `Member since ${memberSince}`}
           </Text>
         </View>
       </View>
