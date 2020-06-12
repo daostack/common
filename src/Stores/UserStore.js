@@ -25,6 +25,13 @@ class UserStore {
     let isLoading = false;
   }
 
+  isDaoMember = members => {
+    return members.some(
+      member =>
+        member.address === this.userInfo.safeAddress?.toLowerCase()
+    );
+  };
+
   setIsLoading = loading => {
     this.isLoading = loading;
   };

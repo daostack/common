@@ -1,5 +1,5 @@
 import React from 'react';
-import {NativeWallet} from '../Util/NativeWallet';
+import { NativeWallet } from '../Util/NativeWallet';
 import {
   Text,
   View,
@@ -8,19 +8,19 @@ import {
   Dimensions,
   StyleSheet,
 } from 'react-native';
-const {width} = Dimensions.get('window');
-import {inject, observer} from 'mobx-react';
-import {BN} from 'bn.js';
+const { width } = Dimensions.get('window');
+import { inject, observer } from 'mobx-react';
+import { BN } from 'bn.js';
 import WalletManager from '../Util/WalletManager';
-import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
+import { BOTTOM_SHEET_TEMPLATES } from '../Stores/BottomSheetStore';
 import ArcService from '../Services/ArcService';
-import {web3ProviderUrl} from '../Config';
-import {PROPOSAL_TYPE} from '../Config';
+import { web3ProviderUrl } from '../Config';
+import { PROPOSAL_TYPE } from '../Config';
 import Toast from '../Util/Toast';
-import {auth} from '../Firebase';
+import { auth } from '../Firebase';
 import ABI from '../Util/abi.json';
-import {ethers} from 'ethers';
-import {showErrorPopUp} from '../Util';
+import { ethers } from 'ethers';
+import { showErrorPopUp } from '../Util';
 
 class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -52,7 +52,7 @@ class nativeBridgeTests extends React.Component {
       safeWallet: '',
       safeWalletBalance: '',
       safeSCHash: '',
-      CMNBalance:'',
+      CMNBalance: '',
       CMNTxHash: '',
       CMNAllowance: '',
     };
@@ -69,7 +69,7 @@ class nativeBridgeTests extends React.Component {
     try {
       const mnemonic = await NativeWallet.generateMnemonic();
       console.log('mnemonic: ', mnemonic);
-      this.setState({mnemonic});
+      this.setState({ mnemonic });
     } catch (e) {
       console.log(e);
     }
@@ -81,7 +81,7 @@ class nativeBridgeTests extends React.Component {
         this.uid,
       );
       console.log('mnemonicsAndStore: ', mnemonicsAndStore);
-      this.setState({mnemonicsAndStore});
+      this.setState({ mnemonicsAndStore });
     } catch (e) {
       console.log(e);
     }
@@ -94,7 +94,7 @@ class nativeBridgeTests extends React.Component {
         'order cabin immune pond brave guilt boil index car aware snap list',
       );
       console.log('storeMnemonic: ', storedMnemonic);
-      this.setState({storedMnemonic: 'true'});
+      this.setState({ storedMnemonic: 'true' });
     } catch (e) {
       throw 'Store mnemonic failed with error: ' + e;
     }
@@ -104,7 +104,7 @@ class nativeBridgeTests extends React.Component {
     try {
       const keychainMnemonics = await NativeWallet.retrieveMnemonic(this.uid);
       console.log('keychainMnemonics: ', keychainMnemonics);
-      this.setState({keychainMnemonics});
+      this.setState({ keychainMnemonics });
     } catch (e) {
       console.log(e);
     }
@@ -117,7 +117,7 @@ class nativeBridgeTests extends React.Component {
       const balance = await manager.getBalance(address);
       console.log('ADDRESS: ', address);
       console.log('BALANCE: ', balance);
-      this.setState({ownerAccount: address, ownerBalance: balance});
+      this.setState({ ownerAccount: address, ownerBalance: balance });
     } catch (e) {
       console.log(e);
     }
@@ -139,7 +139,7 @@ class nativeBridgeTests extends React.Component {
       const balance = await manager.getBalance(manager.address);
       console.log('ADDRESS: ', address);
       console.log('BALANCE: ', balance);
-      this.setState({address, balance});
+      this.setState({ address, balance });
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
@@ -152,7 +152,7 @@ class nativeBridgeTests extends React.Component {
         '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB',
         '0.001',
       );
-      this.setState({signHash: hash});
+      this.setState({ signHash: hash });
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
@@ -161,11 +161,11 @@ class nativeBridgeTests extends React.Component {
   sendTransaction = async () => {
     try {
       const manager = WalletManager.getInstance();
-      const {hash} = await manager.sendTransaction(
+      const { hash } = await manager.sendTransaction(
         '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB',
         '0.001',
       );
-      this.setState({txHash: hash, txStatus: 'pending'});
+      this.setState({ txHash: hash, txStatus: 'pending' });
       const receipt = await manager.provider.waitForTransaction(hash);
       this.setState({
         txStatus: receipt.status === 0 ? 'Failed' : 'Confirmed',
@@ -191,11 +191,10 @@ class nativeBridgeTests extends React.Component {
 
   getSafeBalance = async () => {
     try {
-
-      const valueNumber = ethers.utils.parseEther('1').toString(10);
-
-      console.log('valueNumber  ->', valueNumber);
-
+      console.log('getSafeBalance');
+      if (!this.props.userStore) {
+        throw Error('No userinfo found - perhaps you are not logged in?');
+      }
       const safeWallet = this.props.userStore.userInfo.safeAddress;
       console.log(
         'safeWallet',
@@ -205,7 +204,7 @@ class nativeBridgeTests extends React.Component {
       const manager = WalletManager.getInstance();
       const safeWalletBalance = await manager.getBalance(safeWallet);
       console.log('safeWalletBalance', safeWalletBalance);
-      this.setState({safeWallet, safeWalletBalance});
+      this.setState({ safeWallet, safeWalletBalance });
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
@@ -222,9 +221,9 @@ class nativeBridgeTests extends React.Component {
         return;
       }
       const manager = WalletManager.getInstance();
-      const {txHash, safeAddress} = await manager.createSmartContractWallet();
+      const { txHash, safeAddress } = await manager.createSmartContractWallet();
       console.log('txHash ->', txHash);
-      this.setState({cwTXHash: txHash, cwAddress: safeAddress});
+      this.setState({ cwTXHash: txHash, cwAddress: safeAddress });
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
@@ -241,11 +240,11 @@ class nativeBridgeTests extends React.Component {
         return;
       }
       const manager = WalletManager.getInstance();
-      const {txHash} = await manager.create2SmartContractWallet();
+      const { txHash } = await manager.create2SmartContractWallet();
       console.log('txHash ->', txHash);
-      this.setState({cw2TXHash: txHash});
+      this.setState({ cw2TXHash: txHash });
       const address = await manager.getAddressFromEvent(txHash);
-      this.setState({cw2Address: address});
+      this.setState({ cw2Address: address });
     } catch (e) {
       throw 'Send transaction failed with error: ' + e;
     }
@@ -255,7 +254,7 @@ class nativeBridgeTests extends React.Component {
     try {
       const safeAddress = this.props.userStore.userInfo.safeAddress;
       if (safeAddress === null) {
-        this.setState({safeTxHash: 'No wallet found, you need create one'});
+        this.setState({ safeTxHash: 'No wallet found, you need create one' });
         return;
       }
       const manager = WalletManager.getInstance();
@@ -278,7 +277,7 @@ class nativeBridgeTests extends React.Component {
     try {
       const safeAddress = this.props.userStore.userInfo.safeAddress;
       if (safeAddress === null) {
-        this.setState({safeSCHash: 'No wallet found, you need create one'});
+        this.setState({ safeSCHash: 'No wallet found, you need create one' });
         return;
       }
       const manager = WalletManager.getInstance();
@@ -309,7 +308,7 @@ class nativeBridgeTests extends React.Component {
       const manager = WalletManager.getInstance();
       const response = await manager.addToWhitelist();
       console.log('addWhitleList ->', response);
-      this.setState({whiteListMsg: response.data.message});
+      this.setState({ whiteListMsg: response.data.message });
     } catch (e) {
       console.log(e);
       throw 'Send transaction failed with error: ' + e;
@@ -320,20 +319,20 @@ class nativeBridgeTests extends React.Component {
     try {
       const manager = WalletManager.getInstance();
       const balance = await manager.getTokenBalance();
-      this.setState({CMNBalance: balance});
+      this.setState({ CMNBalance: balance });
     } catch (e) {
       console.log(e);
       throw 'Send transaction failed with error: ' + e;
     }
   }
 
-  getTokenAllowance= async () => {
+  getTokenAllowance = async () => {
     try {
       const manager = WalletManager.getInstance();
       const daoId = '0x59b1c80f882c38abd52a90c9b30edafa55f7e421';
       const address = await ArcService.getInstance().getJoinAndQuitPluginAddress(daoId);
       const balance = await manager.getAllowance(address);
-      this.setState({CMNAllowance: balance});
+      this.setState({ CMNAllowance: balance });
     } catch (e) {
       console.log(e);
       throw 'Send transaction failed with error: ' + e;
@@ -342,6 +341,10 @@ class nativeBridgeTests extends React.Component {
 
   createCommon = async () => {
     try {
+      if (!this.props.userStore) {
+        throw Error('No userinfo found - perhaps you are not logged in?');
+      }
+
       const manager = WalletManager.getInstance();
       const commonAddress = await ArcService.getInstance().createCommon(
         {
@@ -355,13 +358,13 @@ class nativeBridgeTests extends React.Component {
         this.props.daoStore,
       );
 
-      this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
+      this.setState({ commonStatus: `${JSON.stringify(commonAddress)}` });
     } catch (error) {
       this.props.bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
-        {errorMessage: error.message},
+        { errorMessage: error.message },
       );
-      this.setState({commonStatus: `${error}`});
+      this.setState({ commonStatus: `${error}` });
     }
   };
 
@@ -382,7 +385,7 @@ class nativeBridgeTests extends React.Component {
         description: 'Some description',
         files: [],
         images: [],
-        links: [{title: 'title', url: 'http://www.common.io/'}],
+        links: [{ title: 'title', url: 'http://www.common.io/' }],
         funding: new BN(0), // this is the fee
       };
       proposalId = await ArcService.getInstance().createRequestToJoin(
@@ -394,11 +397,11 @@ class nativeBridgeTests extends React.Component {
       });
     } catch (e) {
       showErrorPopUp(this.props.bottomSheetStore, e.message);
-      this.setState({proposalState: `${e}`});
+      this.setState({ proposalState: `${e}` });
     }
     const msg = `proposal created: ${proposalId}`;
     console.log(msg);
-    this.setState({proposalState: msg});
+    this.setState({ proposalState: msg });
   };
 
   createFundingProposal = async () => {
@@ -427,7 +430,7 @@ class nativeBridgeTests extends React.Component {
       });
     } catch (e) {
       console.log(e);
-      this.setState({fundingProposalState: `${e}`});
+      this.setState({ fundingProposalState: `${e}` });
     }
     console.log(`proposal created: ${proposal.id}`);
   };
@@ -451,7 +454,7 @@ class nativeBridgeTests extends React.Component {
         proposalVotingStatus: `VOTING for a Proposal with id ${vote.id} created!`,
       });
     } catch (e) {
-      this.setState({voteState: `${e}`});
+      this.setState({ voteState: `${e}` });
       // showErrorPopUp(this.props.bottomSheetStore, e.message);
     }
     //console.log(`proposal created: ${proposal.id}`);
@@ -477,7 +480,7 @@ class nativeBridgeTests extends React.Component {
             <Text>Error</Text>
           </TouchableOpacity>
 
-          <Text style={{marginBottom: 10}}>
+          <Text style={{ marginBottom: 10 }}>
             Network: {this.state.networkURL}
           </Text>
 
@@ -493,7 +496,7 @@ class nativeBridgeTests extends React.Component {
             <Text>Get some funds!</Text>
           </TouchableOpacity>
 
-          <Text style={{marginVertical: 10}}>
+          <Text style={{ marginVertical: 10 }}>
             --------------- Common Interactions -----------------
           </Text>
           <Text>{this.state.commonStatus}</Text>
@@ -529,7 +532,7 @@ class nativeBridgeTests extends React.Component {
             <Text>Generate And Store Mnemonic</Text>
           </TouchableOpacity>
 
-          <Text style={{marginVertical: 10}}>
+          <Text style={{ marginVertical: 10 }}>
             --------------- Native Bridge -----------------
           </Text>
           <Text>mnemonic: {this.state.mnemonic}</Text>
@@ -558,7 +561,7 @@ class nativeBridgeTests extends React.Component {
             <Text>Store Mnemonic</Text>
           </TouchableOpacity>
 
-          <Text style={{marginVertical: 10}}>
+          <Text style={{ marginVertical: 10 }}>
             --------------- Local Wallet -----------------
           </Text>
           <TouchableOpacity
@@ -594,7 +597,7 @@ class nativeBridgeTests extends React.Component {
             <Text>Read Smart Contract</Text>
           </TouchableOpacity> */}
 
-          <Text style={{marginVertical: 10}}>
+          <Text style={{ marginVertical: 10 }}>
             --------------- Relayer -----------------
           </Text>
 
@@ -655,7 +658,7 @@ class nativeBridgeTests extends React.Component {
             <Text>execTransaction</Text>
           </TouchableOpacity>
 
-          <Text style={{marginVertical: 10}}>
+          <Text style={{ marginVertical: 10 }}>
             --------------- ERC20 -----------------
           </Text>
 

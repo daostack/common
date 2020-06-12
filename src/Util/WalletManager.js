@@ -10,6 +10,7 @@ import Toast from './Toast';
 ethers.Contract.prototype.sendToRelayer = async function (funcName, params, value = '0') {
   const data = this.interface.functions[funcName].encode(params);
   const manager = WalletManager.getInstance();
+  console.log(data);
   const response = await manager.execTransaction(manager.safeAddress, this.address, value, data);
   return response.data?.txHash;
 };
@@ -163,7 +164,7 @@ export default class WalletManager {
       // const tx = await masterCopyContract.execTransaction(toAddress, valueNumber, data, 0, 0, 0, 0, zeroAddress, zeroAddress, finalSignature, OVERRIDES);
       // console.log('execTransaction', tx);
 
-      const body = { idToken, to: toAddress, value, data, signature: finalSignature };
+      const body = { idToken, to: toAddress, value: value, data, signature: finalSignature };
       const response = await axiosClient.post(
         'execTransaction',
         // options,
@@ -244,6 +245,52 @@ export default class WalletManager {
       console.log(`Created proposal with id ${response.data.proposalId}`);
       return response.data.proposalId;
     } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
+  createCommonStep2 = async (contract, method, params) => {
+    try {
+      const idToken = await auth().currentUser.getIdToken();
+      const address = contract.address;
+      const zeroValue = '0';
+      const data = contract.interface.functions[method].encode(params);
+      const signature = await this.txHashSignature(this.safeAddress, address, zeroValue, data);
+
+      console.log('signature1 -->', signature);
+
+      const body = {
+        idToken,
+        commonTx: {
+          to: address,
+          value: zeroValue,
+          data,
+          signature,
+        },
+      };
+
+      const response = await axiosClient.post(
+        'createCommonStep2',
+        body
+      );
+
+      console.log('CreateCommonStep2 response -->', response);
+
+      if (!response.data) {
+        console.log(response);
+        throw Error('unexpected error sending request to createCommon2: empty response');
+      }
+      if (response.data.errcode) {
+        // TODO: throw an error here, do not show it
+        Toast.error(`Code: ${response.data.errorCode}, Message: ${response.data.error}`);
+        return null;
+      }
+
+      console.log(response.data);
+
+      return response.data;
+    } catch (err){
       console.log(err);
       throw err;
     }

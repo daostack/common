@@ -8,7 +8,6 @@ import {
   Dimensions,
 } from 'react-native';
 import React from 'react';
-
 import Icon from '../../Assets/iconfont/Icon';
 import { layout, colors, text } from '../../Theme';
 
@@ -22,7 +21,7 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo }) =>
 
   const renderCover = () => {
     return (
-      <View style={{ width: width }}>
+      <View style={{width: width}}>
         <View style={styles.headerContainerWrap}>
           <View
             style={
@@ -47,7 +46,7 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo }) =>
             <View
               style={{
                 ...layout.content,
-                ...{ padding: 0 },
+                ...{padding: 0},
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
@@ -59,7 +58,12 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo }) =>
                   }}
                 />
               ) : null}
-              <Text style={styles.headerTitleWhite} numberOfLines={5}>{commonInfo.name}</Text>
+              <Text style={styles.headerTitleWhite} numberOfLines={5}>
+                {commonInfo.name}
+              </Text>
+              <Text style={{...text.textFieldfocus, color: colors.white}} numberOfLines={5}>
+                {commonInfo.byline}
+              </Text>
             </View>
             {navigation ? (
               <TouchableOpacity onPress={onHeaderMenuOpen}>
@@ -75,7 +79,9 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo }) =>
         </View>
 
         <View style={styles.headerContent}>
-          <Text style={styles.headerDescription} numberOfLines={4}>{commonInfo.description}</Text>
+          <Text style={styles.headerDescription} numberOfLines={4}>
+            {commonInfo.description}
+          </Text>
           {isMember && navigation ? (
             <TouchableOpacity onPress={openAgendaScreen}>
               <Text style={styles.headerViewAgenda}>View agenda</Text>
