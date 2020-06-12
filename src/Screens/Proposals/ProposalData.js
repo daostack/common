@@ -189,8 +189,8 @@ const ProposalData = props => {
               </Text>
               <Text style={text.h1Black}>{`$${
                 proposalInfo.type === PROPOSAL_TYPE.FundingRequest
-                  ? proposalInfo.fundingRequest.amount
-                  : proposalInfo.joinAndQuit.funding
+                  ? proposalInfo.fundingRequest.amount / 100
+                  : proposalInfo.joinAndQuit.funding / 100
               }`}</Text>
             </View>
 

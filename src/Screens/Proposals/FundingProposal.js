@@ -35,6 +35,7 @@ const FundingProposal = ({
       try {
         const formData = fundingRequestFormStore.getChangedFormFieldsJson();
         console.log('FORM DATA', formData);
+        console.log(formData);
         const data = {
           title: formData[FundingRequestForm.FIELD_TITLE],
           description: formData[FundingRequestForm.FIELD_DESCRIPTION],

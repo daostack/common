@@ -19,8 +19,8 @@ const MemberCard = ({
     if (proposalInfo) {
       const proposalValue =
         proposalInfo.type === PROPOSAL_TYPE.JoinAndQuit
-          ? proposalInfo.joinAndQuit.funding
-          : proposalInfo.fundingRequest.amount;
+          ? proposalInfo.joinAndQuit.funding / 100
+          : proposalInfo.fundingRequest.amount / 100;
       const remainingSeconds = proposalInfo.expiresInQueueAt - moment().unix();
       return (
         <View style={styles.rightContainer}>
