@@ -206,6 +206,7 @@ const CommonProfile = ({
     navigation.navigate('CommonMembers', {
       members: daoMembers,
       commonId: currCommon.id,
+      commonTitle: currCommon.name,
     });
   };
 
