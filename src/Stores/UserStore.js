@@ -28,8 +28,7 @@ class UserStore {
   isDaoMember = members => {
     return members.some(
       member =>
-        member.address === this.userInfo.safeAddress?.toLowerCase() ||
-        member.address === this.userInfo.ethereumAddress.toLowerCase(),
+        member.address === this.userInfo.safeAddress?.toLowerCase()
     );
   };
 
