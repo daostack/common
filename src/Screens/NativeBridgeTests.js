@@ -499,7 +499,7 @@ class nativeBridgeTests extends React.Component {
             <Text>Create Common</Text>
           </TouchableOpacity>
 
-          <Text>{this.state.proposalState}</Text>
+          <Text>{this.state.proposalStatus}</Text>
           <TouchableOpacity
             onPress={this.createRequestToJoin}
             style={styles.button}>

@@ -223,19 +223,21 @@ export default class WalletManager {
         body
       );
 
+      let msg;
       if (!response.data) {
         console.log('RequestToJoin response -->', response);
-        Toast.error('Response has no "data" property - thats not good at all :(');
+        msg = 'Response has no "data" property - thats not good at all :(';
+        throw Error(msg);
       }
       console.log('RequestToJoin response.data -->', response.data);
-      if (response.data?.errcode) {
-        Toast.error(`Code: ${response.data.errorCode}, Message: ${response.data.error}`);
-        return null;
+      if (response.data.errcode) {
+        msg = `Code: ${response.data.errorCode}, Message: ${response.data.error}`;
+        throw Error(msg);
       }
 
-      if (!response.data?.proposalId) {
-        Toast.error('Execution success but join in failed');
-        return null;
+      if (!response.data.proposalId) {
+        msg = 'Execution success but join in failed';
+        throw Error(msg);
       }
       console.log(`Created proposal with id ${response.data.proposalId}`);
       return response.data.proposalId;
