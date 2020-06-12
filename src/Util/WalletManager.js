@@ -163,7 +163,7 @@ export default class WalletManager {
       // const tx = await masterCopyContract.execTransaction(toAddress, valueNumber, data, 0, 0, 0, 0, zeroAddress, zeroAddress, finalSignature, OVERRIDES);
       // console.log('execTransaction', tx);
 
-      const body = { idToken, to: toAddress, value: valueNumber, data, signature: finalSignature };
+      const body = { idToken, to: toAddress, value, data, signature: finalSignature };
       const response = await axiosClient.post(
         'execTransaction',
         // options,
