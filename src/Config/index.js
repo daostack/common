@@ -20,9 +20,18 @@ export const web3NetworkId = 100;
 export const COMMONTOKENADDRESS = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
 export const MEMBER_REPUTATION = 1000; // how much rep a new members gets
 
-export const OVERRIDES = { // default settings for sending trasnsactions
+export const OVERRIDES = {
+  // default settings for sending trasnsactions
   gasLimit: 10000000,
   gasPrice: 15000000000,
+};
+
+export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+// Arc.js related string constants
+export const PROPOSAL_TYPE = {
+  JoinAndQuit: 'JoinAndQuit',
+  FundingRequest: 'FundingRequest',
 };
 
 const httpLink = new HttpLink({

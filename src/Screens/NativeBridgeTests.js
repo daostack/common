@@ -15,10 +15,11 @@ import WalletManager from '../Util/WalletManager';
 import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
 import ArcService from '../Services/ArcService';
 import {web3ProviderUrl} from '../Config';
+import {PROPOSAL_TYPE} from '../Config';
 import Toast from '../Util/Toast';
 import {auth} from '../Firebase';
 import ABI from '../Util/abi.json';
-import { ethers } from 'ethers';
+import {ethers} from 'ethers';
 import {showErrorPopUp} from '../Util';
 
 class nativeBridgeTests extends React.Component {
@@ -188,7 +189,11 @@ class nativeBridgeTests extends React.Component {
   getSafeBalance = async () => {
     try {
       const safeWallet = this.props.userStore.userInfo.safeAddress;
-      console.log('safeWallet', safeWallet, WalletManager.getInstance().safeAddress);
+      console.log(
+        'safeWallet',
+        safeWallet,
+        WalletManager.getInstance().safeAddress,
+      );
       const manager = WalletManager.getInstance();
       const safeWalletBalance = await manager.getBalance(safeWallet);
       console.log('safeWalletBalance', safeWalletBalance);
@@ -320,7 +325,10 @@ class nativeBridgeTests extends React.Component {
 
       this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
     } catch (error) {
-      this.props.bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {errorMessage: error.message});
+      this.props.bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
+        {errorMessage: error.message},
+      );
       this.setState({commonStatus: `${error}`});
     }
   };
@@ -392,7 +400,8 @@ class nativeBridgeTests extends React.Component {
 
   voteForJoinAndQuitProposal = async () => {
     console.log('Vote for proposal -- please wait');
-    const proposalId = '0xb99e0a8daeb6dcaab9756202ec375153a8498b947d7b2ac864df0635e2928ef0'; // Proposal for the 0 min funding dao made from user lyubomir.petkov@limechain.tech
+    const proposalId =
+      '0xb99e0a8daeb6dcaab9756202ec375153a8498b947d7b2ac864df0635e2928ef0'; // Proposal for the 0 min funding dao made from user lyubomir.petkov@limechain.tech
     this.setState({
       proposalVotingStatus: 'VOTING for  proposal -- please wait',
     });
@@ -403,7 +412,6 @@ class nativeBridgeTests extends React.Component {
       const vote = await ArcService.getInstance().voteForJoinAndQuitProposal(
         proposalId,
         data,
-        'FundingRequest'
       );
       this.setState({
         proposalVotingStatus: `VOTING for a Proposal with id ${vote.id} created!`,
@@ -413,7 +421,7 @@ class nativeBridgeTests extends React.Component {
       // showErrorPopUp(this.props.bottomSheetStore, e.message);
     }
     console.log(`proposal created: ${proposal.id}`);
-  }
+  };
 
   openTxhash = hash => {
     this.props.navigation.navigate('Browser', {
@@ -474,7 +482,9 @@ class nativeBridgeTests extends React.Component {
           </TouchableOpacity>
 
           <Text>{this.state.voteState}</Text>
-          <TouchableOpacity onPress={this.voteForJoinAndQuitProposal} style={styles.button}>
+          <TouchableOpacity
+            onPress={this.voteForJoinAndQuitProposal}
+            style={styles.button}>
             <Text>Vote for proposal</Text>
           </TouchableOpacity>
 
@@ -638,4 +648,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('daoStore', 'userStore', 'bottomSheetStore')(observer(nativeBridgeTests));
+export default inject(
+  'daoStore',
+  'userStore',
+  'bottomSheetStore',
+)(observer(nativeBridgeTests));
