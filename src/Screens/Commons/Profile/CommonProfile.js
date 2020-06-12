@@ -357,6 +357,7 @@ const CommonProfile = ({
                 'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
               name: currCommon.name,
               description: currCommon.description,
+              byline: currCommon.metadata?.byline,
             }}
           />
         )}>
