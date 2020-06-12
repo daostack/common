@@ -62,7 +62,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       const memberFund = await joinAndQuitContract.fundings(proposer);
       if (memberFund[0] === true) {
         // If this error is thrown from a user action, there is a ui bug:s it means that some action was enabled where it shoudl not
-        throw Error(`Cannot create the proposal, because the proposer ${proposer} has created such a request befor`);
+        throw Error(`Cannot create the proposal, because the proposer ${proposer} has created such a request before`);
       }
 
       // TODO: check the other conditions

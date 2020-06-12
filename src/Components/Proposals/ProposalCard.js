@@ -113,7 +113,6 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
             <MemberCard
               userInfo={proposedUser}
               proposalInfo={proposalInfo}
-              memberCustomText={'3d ago'}
               isPending={false}
             />
           </View>
@@ -121,12 +120,12 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           <View style={{...layout.flexRow, ...layout.marginTopS}}>
             <ProposalApprovalTag
               iconName="approved"
-              value={40}
+              value={proposalInfo?.votesFor}
               isMarked={true}
             />
             <ProposalApprovalTag
               iconName="declined"
-              value={28}
+              value={proposalInfo?.votesAgainst}
               isMarked={false}
             />
             <ProposalApprovalTag

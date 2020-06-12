@@ -236,7 +236,9 @@ export default class WalletManager {
       }
 
       if (!response.data.proposalId) {
-        msg = 'Execution success but join in failed';
+        // TODO: print or return tha transaction hash, so we can debug more easily
+        // this happens typically when some preconditions are not met (say you are already a member)
+        msg = 'Execution success but no proposal Id was found';
         throw Error(msg);
       }
       console.log(`Created proposal with id ${response.data.proposalId}`);
