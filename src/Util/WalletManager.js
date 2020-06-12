@@ -189,7 +189,7 @@ export default class WalletManager {
   requestToJoin = async (pluginContract, method, params) => {
     try {
       const pluginAddress = pluginContract.address;
-      const zeroValue = ethers.constants.Zero;
+      const zeroValue = '0';
       let interf = new ethers.utils.Interface(ABI.CommonToken);
       const data1 = interf.functions.approve.encode([pluginAddress, ethers.utils.parseEther(defaultAllowance.toString())]);
       const signature1 = await this.txHashSignature(this.safeAddress, COMMONTOKENADDRESS, zeroValue, data1);
