@@ -30,7 +30,7 @@ const MemberCard = ({
               ...{alignItems: 'flex-end'},
             }}>
             <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
-            <CountDown
+            {remainingSeconds > 0 && <CountDown
               digitTxtStyle={text.smallGreyText}
               separatorStyle={text.smallGreyText}
               timeLabels={false}
@@ -40,7 +40,7 @@ const MemberCard = ({
                 width: 'auto',
               }}
               until={remainingSeconds}
-            />
+            />}
           </View>
         </View>
       );
