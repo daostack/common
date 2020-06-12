@@ -242,8 +242,8 @@ const ProposalScreen = ({navigation, route, props}) => {
         </View>
       );
     } else {
-      const remainingSeconds = proposalInfo?.closingAt?.seconds
-        ? proposalInfo?.closingAt?.seconds - Date.now() / 1000
+      const remainingSeconds = proposalInfo?.expiresInQueueAt
+        ? proposalInfo?.expiresInQueueAt - Date.now() / 1000
         : null;
 
       const isLessThanOneHour = remainingSeconds < 3600;
