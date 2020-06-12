@@ -64,7 +64,7 @@ const CommonProfile = ({
     ) {
       setMemberState(true);
     } else {
-      setMemberState(true);
+      setMemberState(false);
     }
   }, [routeCommon, route.params.showRequestSentModal]);
 
