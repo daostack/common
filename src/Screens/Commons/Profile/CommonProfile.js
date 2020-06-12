@@ -62,7 +62,7 @@ const CommonProfile = ({
     } else {
       setMemberState(false);
     }
-  }, [routeCommon, route.params.showRequestSentModal]);
+  }, [routeCommon, route.params.showRequestSentModal, userStore.userInfo]);
 
   useEffect(() => {
     if (userStore.userInfo) {
@@ -317,8 +317,6 @@ const CommonProfile = ({
   };
 
   const initialLayout = {width: Dimensions.get('window').width};
-
-  console.log('currCommon.coverPhoto', currCommon.coverPhoto);
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>

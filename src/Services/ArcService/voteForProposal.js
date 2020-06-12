@@ -43,6 +43,7 @@ export const voteForProposal = async (
         );
       }
       // TODO: we also want to check if the user is a member of the Common here
+
     };
     await errorHandler();
 

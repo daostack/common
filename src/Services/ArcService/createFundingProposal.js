@@ -38,9 +38,9 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     console.log('fundingRequestPlugin', fundingRequestPlugin.id);
 
     let ipfsHash;
-    const fee = data.funding;
-    if (!fee) {
-      throw Error('Fee argument must be given');
+    const funding = data.funding;
+    if (!funding) {
+      throw Error('"funding" argument must be given');
     }
     // check preconditions
 
@@ -107,7 +107,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
 
     const args = {
       descriptionHash: ipfsHash,
-      amount: fee,
+      amount: funding,
       beneficiary: userAddress,
       dao: dao.id,
       plugin: fundingRequestPlugin.coreState.address,
