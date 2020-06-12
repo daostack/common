@@ -10,6 +10,7 @@ import Toast from './Toast';
 ethers.Contract.prototype.sendToRelayer = async function (funcName, params, value = '0') {
   const data = this.interface.functions[funcName].encode(params);
   const manager = WalletManager.getInstance();
+  console.log(data);
   const response = await manager.execTransaction(manager.safeAddress, this.address, value, data);
   return response.data?.txHash;
 };
@@ -163,7 +164,7 @@ export default class WalletManager {
       // const tx = await masterCopyContract.execTransaction(toAddress, valueNumber, data, 0, 0, 0, 0, zeroAddress, zeroAddress, finalSignature, OVERRIDES);
       // console.log('execTransaction', tx);
 
-      const body = { idToken, to: toAddress, value: valueNumber, data, signature: finalSignature };
+      const body = { idToken, to: toAddress, value: value, data, signature: finalSignature };
       const response = await axiosClient.post(
         'execTransaction',
         // options,
@@ -251,11 +252,11 @@ export default class WalletManager {
 
   createCommonStep2 = async (contract, method, params) => {
     try {
+      const idToken = await auth().currentUser.getIdToken();
       const address = contract.address;
       const zeroValue = '0';
       const data = contract.interface.functions[method].encode(params);
       const signature = await this.txHashSignature(this.safeAddress, address, zeroValue, data);
-      const idToken = await auth().currentUser.getIdToken();
 
       console.log('signature1 -->', signature);
 
@@ -269,22 +270,24 @@ export default class WalletManager {
         },
       };
 
-      const response = await instance.post(
+      const response = await axiosClient.post(
         'createCommonStep2',
         body
       );
 
       console.log('CreateCommonStep2 response -->', response);
 
-      if (response.data?.errcode) {
+      if (!response.data) {
+        console.log(response);
+        throw Error('unexpected error sending request to createCommon2: empty response');
+      }
+      if (response.data.errcode) {
+        // TODO: throw an error here, do not show it
         Toast.error(`Code: ${response.data.errorCode}, Message: ${response.data.error}`);
         return null;
       }
 
-      if (!response.data?.proposalId) {
-        Toast.error('Execution success but join in failed');
-        return null;
-      }
+      console.log(response.data);
 
       return response.data;
     } catch (err){
