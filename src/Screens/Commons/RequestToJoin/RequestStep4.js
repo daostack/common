@@ -54,12 +54,12 @@ const RequestStep4 = props => {
 
         Toast.loading('Creating request to join...');
 
-        const proposal = await ArcService.getInstance().createRequestToJoin(
+        const proposalId = await ArcService.getInstance().createRequestToJoin(
           props.route.params.currDaoId,
           data,
         );
         Toast.hide();
-        Toast.done(`JoinAndQuit Proposal with id ${proposal.id} created!`);
+        Toast.done(`JoinAndQuit Proposal with id ${proposalId} created!`);
 
         const navigate = CommonActions.navigate({
           name: 'CommonProfile',
