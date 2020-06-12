@@ -70,7 +70,7 @@ export default class ProposalService {
       callback({
         pendingProposalCount: snapshot.docs.length,
         usersPendingProposal:
-          snapshot.docs.find(doc => doc.data().proposer === userSafeAddress).data() || false,
+          snapshot.docs.find(doc => doc.data().proposer === userSafeAddress)?.data() || false,
       });
     });
   }

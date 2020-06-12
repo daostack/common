@@ -314,7 +314,6 @@ const CommonProfile = ({
             />
           </View>
           <View>
-            {/* <Text style={text.tapBarUnselected}>02:00:10</Text> */}
             <CountDown
               digitTxtStyle={text.smallGreyText}
               separatorStyle={text.smallGreyText}
