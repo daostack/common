@@ -138,7 +138,7 @@ export const createCommon = async (
     const schemeData = getSetSchemesData(schemeDataToEncode);
 
     daoStore.setCreationStatus(4);
-    console.log('waiting for tx to be mined');
+    console.log('createCommonStep2: waiting for tx to be mined');
     // receipt = await daoFactoryContract.sendToRelayerWithReceipt('setSchemes', schemeData);
     await WalletManager.getInstance().createCommonStep2(daoFactoryContract, 'setSchemes', schemeData);
     console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);

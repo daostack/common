@@ -189,8 +189,10 @@ export default class WalletManager {
   requestToJoin = async (pluginContract, method, params) => {
     try {
       const pluginAddress = pluginContract.address;
+      // const zeroValue = ethers.constants.Zero;
       const zeroValue = '0';
       let interf = new ethers.utils.Interface(ABI.CommonToken);
+      // TODOç please to not use parseEther here, just pass on the intended allowance
       const data1 = interf.functions.approve.encode([pluginAddress, ethers.utils.parseEther(defaultAllowance.toString())]);
       const signature1 = await this.txHashSignature(this.safeAddress, COMMONTOKENADDRESS, zeroValue, data1);
       console.log('signature1 -->', signature1);
@@ -215,23 +217,32 @@ export default class WalletManager {
         },
       };
       console.log('RequestToJoin Body ->', body);
+      console.log('RequestToJoin sent to cloud function');
       const response = await axiosClient.post(
         'requestToJoin',
         body
       );
-      console.log('RequestToJoin response -->', response);
 
-      if (response.data?.errcode) {
-        Toast.error(`Code: ${response.data.errorCode}, Message: ${response.data.error}`);
-        return null;
+      let msg;
+      if (!response.data) {
+        console.log('RequestToJoin response -->', response);
+        msg = 'Response has no "data" property - thats not good at all :(';
+        throw Error(msg);
+      }
+      console.log('RequestToJoin response.data -->', response.data);
+      if (response.data.errcode) {
+        msg = `Code: ${response.data.errorCode}, Message: ${response.data.error}`;
+        throw Error(msg);
       }
 
-      if (!response.data?.proposalId) {
-        Toast.error('Execution success but join in failed');
-        return null;
+      if (!response.data.proposalId) {
+        // TODO: print or return tha transaction hash, so we can debug more easily
+        // this happens typically when some preconditions are not met (say you are already a member)
+        msg = 'Execution success but no proposal Id was found';
+        throw Error(msg);
       }
-
-      return response.data?.proposalId;
+      console.log(`Created proposal with id ${response.data.proposalId}`);
+      return response.data.proposalId;
     } catch (err) {
       console.log(err);
       throw err;

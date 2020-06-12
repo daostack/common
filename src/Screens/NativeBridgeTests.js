@@ -381,8 +381,8 @@ class nativeBridgeTests extends React.Component {
         description: 'Some description',
         files: [],
         images: [],
-        links: [], // {title: "title", url: "url"}
-        funding: new BN(0),
+        links: [{title: 'title', url: 'http://www.common.io/'}],
+        funding: new BN(0), // this is the fee
       };
       const proposalId = await ArcService.getInstance().createRequestToJoin(
         daoId,
@@ -499,7 +499,7 @@ class nativeBridgeTests extends React.Component {
             <Text>Create Common</Text>
           </TouchableOpacity>
 
-          <Text>{this.state.proposalState}</Text>
+          <Text>{this.state.proposalStatus}</Text>
           <TouchableOpacity
             onPress={this.createRequestToJoin}
             style={styles.button}>
