@@ -30,7 +30,7 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
 };
 
 const instance = axios.create({
-  baseURL: 'https://us-central1-common-daostack.cloudfunctions.net/api/',
+  baseURL: 'https://us-central1-common-daostack.cloudfunctions.net/relayer/',
   timeout: 1000000, // milliseconds
   // headers: {'X-Custom-Header': 'foobar'}
 });
@@ -220,7 +220,7 @@ export default class WalletManager {
           value: zeroValue,
           data: data2,
           signature: signature2,
-        }
+        },
       };
       console.log('RequestToJoin Body ->', body);
       const response = await instance.post(
@@ -238,8 +238,53 @@ export default class WalletManager {
         Toast.error('Execution success but join in failed');
         return null;
       }
+
       return response.data?.proposalId;
     } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
+  createCommonStep2 = async (contract, method, params) => {
+    try {
+      const address = contract.address;
+      const zeroValue = '0';
+      const data = contract.interface.functions[method].encode(params);
+      const signature = await this.txHashSignature(this.safeAddress, address, zeroValue, data);
+      const idToken = await auth().currentUser.getIdToken();
+
+      console.log('signature1 -->', signature);
+
+      const body = {
+        idToken,
+        commonTx: {
+          to: address,
+          value: zeroValue,
+          data,
+          signature,
+        },
+      };
+
+      const response = await instance.post(
+        'createCommonStep2',
+        body
+      );
+
+      console.log('CreateCommonStep2 response -->', response);
+
+      if (response.data?.errcode) {
+        Toast.error(`Code: ${response.data.errorCode}, Message: ${response.data.error}`);
+        return null;
+      }
+
+      if (!response.data?.proposalId) {
+        Toast.error('Execution success but join in failed');
+        return null;
+      }
+
+      return response.data;
+    } catch (err){
       console.log(err);
       throw err;
     }

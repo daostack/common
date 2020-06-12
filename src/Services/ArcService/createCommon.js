@@ -63,6 +63,11 @@ export const createCommon = async (
     };
     const opts = {...defaultOptions, ...givenOpts};
 
+    const contractABI1 = arc.getABI({
+      abiName: 'DAOFactory',
+      version: ARC_VERSION,
+    });
+
     console.log('saving data on ipfs: ', opts);
     ipfsHash = await IpfsClient.addAndPinString(JSON.stringify(opts));
     console.log('ipfsHash ->', ipfsHash);
@@ -134,7 +139,8 @@ export const createCommon = async (
 
     daoStore.setCreationStatus(4);
     console.log('waiting for tx to be mined');
-    receipt = await daoFactoryContract.sendToRelayerWithReceipt('setSchemes', schemeData);
+    // receipt = await daoFactoryContract.sendToRelayerWithReceipt('setSchemes', schemeData);
+    await WalletManager.getInstance().createCommonStep2(daoFactoryContract, 'setSchemes', schemeData);
     console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
     daoStore.setCreationStatus(5);
     return receipt;
