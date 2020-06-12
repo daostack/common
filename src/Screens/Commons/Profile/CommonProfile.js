@@ -62,7 +62,7 @@ const CommonProfile = ({
     } else {
       setMemberState(false);
     }
-  }, [routeCommon, route.params.showRequestSentModal]);
+  }, [routeCommon, route.params.showRequestSentModal, userStore.userInfo]);
 
   useEffect(() => {
     if (userStore.userInfo) {
