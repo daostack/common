@@ -217,12 +217,17 @@ export default class WalletManager {
         },
       };
       console.log('RequestToJoin Body ->', body);
+      console.log('RequestToJoin sent to cloud function');
       const response = await axiosClient.post(
         'requestToJoin',
         body
       );
-      console.log('RequestToJoin response -->', response);
 
+      if (!response.data) {
+        console.log('RequestToJoin response -->', response);
+        Toast.error('Response has no "data" property - thats not good at all :(');
+      }
+      console.log('RequestToJoin response.data -->', response.data);
       if (response.data?.errcode) {
         Toast.error(`Code: ${response.data.errorCode}, Message: ${response.data.error}`);
         return null;
@@ -232,7 +237,8 @@ export default class WalletManager {
         Toast.error('Execution success but join in failed');
         return null;
       }
-      return response.data?.proposalId;
+      console.log(`Created proposal with id ${response.data.proposalId}`);
+      return response.data.proposalId;
     } catch (err) {
       console.log(err);
       throw err;
