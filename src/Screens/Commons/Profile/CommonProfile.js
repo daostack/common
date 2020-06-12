@@ -22,9 +22,7 @@ import BottomRightButton from '../../../Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
 import Toast from '../../../Util/Toast';
-import HeaderImageScrollView, {
-  TriggeringView,
-} from 'react-native-image-header-scroll-view';
+import HeaderImageScrollView from 'react-native-image-header-scroll-view';
 import CommonHeader from '../../../Components/Commons/CommonHeader';
 import {numberFormatter} from '../../../Util';
 import CommonMembersList from './CommonMembersList';
@@ -52,6 +50,7 @@ const CommonProfile = ({
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const routeCommon = route.params.currCommon;
   const daoMembers = route.params.currCommon.members;
+  const showReqToJoin = !userStore.userInfo || (pendingProposalsData && !pendingProposalsData.usersPendingProposalId);
 
   useEffect(() => {
     setShowRequestSentModal(route.params.showRequestSentModal);
@@ -66,23 +65,25 @@ const CommonProfile = ({
   }, [routeCommon, route.params.showRequestSentModal]);
 
   useEffect(() => {
-    let unsubscribe = null;
-    let getPendingProposalsData = async () => {
-      unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
-        routeCommon.id,
-        userStore.userInfo.safeAddress,
-        data => {
-          setPendingProposalsData({...data});
-        },
-      );
-    };
-    getPendingProposalsData();
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  }, [routeCommon.id, isMember]);
+    if (userStore.userInfo) {
+      let unsubscribe = null;
+      let getPendingProposalsData = async () => {
+        unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
+          routeCommon.id,
+          userStore.userInfo.safeAddress,
+          data => {
+            setPendingProposalsData({...data});
+          },
+        );
+      };
+      getPendingProposalsData();
+      return () => {
+        if (unsubscribe) {
+          unsubscribe();
+        }
+      };
+    }
+  }, [routeCommon.id, isMember, userStore.userInfo]);
 
   const renderTabBar = props => (
     <TabBar
@@ -438,8 +439,7 @@ const CommonProfile = ({
           />
         ) : (
           <>
-            {pendingProposalsData &&
-              !pendingProposalsData.usersPendingProposalId && (
+            {showReqToJoin && (
               <View style={styles.actionButtonContainer}>
                 <TouchableOpacity
                   style={styles.headerButton}
@@ -451,10 +451,10 @@ const CommonProfile = ({
                       fontWeight: '700',
                       marginRight: 40,
                     }}>
-                      Request to join
+                    Request to join
                   </Text>
                   <Text style={{fontSize: 16, color: 'white'}}>
-                      ${currCommon.minFeeToJoin} Contribution
+                    ${currCommon.minFeeToJoin} Contribution
                   </Text>
                 </TouchableOpacity>
               </View>

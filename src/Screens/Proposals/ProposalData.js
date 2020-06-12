@@ -19,6 +19,8 @@ import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {observer, inject} from 'mobx-react';
+import moment from 'moment';
+import {PROPOSAL_TYPE} from '../../Config';
 
 const ProposalData = props => {
   const navigation = useNavigation();
@@ -134,7 +136,9 @@ const ProposalData = props => {
               <Text style={text.smallBoldGreyText}>
                 {proposalInfo.votesFor + proposalInfo.votesAgainst} votes
               </Text>
-              <Text style={text.smallGreyText}>&nbsp;Created 3d ago</Text>
+              <Text style={text.smallGreyText}>
+                &nbsp;Created {moment.unix(proposalInfo.createdAt).fromNow()}
+              </Text>
             </View>
 
             <View style={styles.proposalProgressInfo}>
@@ -183,7 +187,11 @@ const ProposalData = props => {
               <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
                 Cost
               </Text>
-              <Text style={text.h1Black}>{`$${proposalInfo.funding}`}</Text>
+              <Text style={text.h1Black}>{`$${
+                proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+                  ? proposalInfo.fundingRequest.amount
+                  : proposalInfo.joinAndQuit.funding
+              }`}</Text>
             </View>
 
             <ReadMore
@@ -280,7 +288,7 @@ const ProposalData = props => {
             <View style={layout.content}>
               <View style={{...styles.proposalColumnSubtitle}}>
                 <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
-                Recent comments
+                  Recent comments
                 </Text>
               </View>
 

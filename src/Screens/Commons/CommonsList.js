@@ -68,6 +68,20 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     daoStore.setDao(dao);
   };
 
+  const onAddCommon = () => {
+    if (userStore.userInfo) {
+      navigation.navigate('CommonExplanation');
+    } else {
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
+        {
+          message:
+            'To create new Common you need to be connected with your Google account',
+        },
+      );
+    }
+  };
+
   divideDao = daoList => {
     if (!userStore.userInfo) {
       setDaoGroup([{title: '', data: daoList}]);
@@ -188,11 +202,8 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
           loadingPlaceholder()
         )}
       </>
-      {userStore.userInfo && (
-        <BottomRightButton
-          onPress={() => navigation.navigate('CommonExplanation')}
-        />
-      )}
+
+      <BottomRightButton onPress={onAddCommon} />
     </View>
   );
 };
