@@ -17,8 +17,6 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
   try {
     const dao = arc.dao(daoId);
 
-    console.log('arc --->', arc);
-
     let joinAndQuitPlugin;
     try {
       joinAndQuitPlugin = await dao.plugin({where: {name: 'JoinAndQuit'}});

@@ -1,6 +1,6 @@
 import { NativeWallet } from './NativeWallet';
 import { ethers, Contract } from 'ethers';
-import { web3ProviderUrl, web3NetworkId, COMMONTOKENADDRESS } from '../Config';
+import { web3ProviderUrl, web3NetworkId, COMMONTOKENADDRESS, relayerUrl, defaultAllowance } from '../Config';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 import ABI from './abi.json';
@@ -29,12 +29,9 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
   return receipt;
 };
 
-// TODO: please rename "instance" to something more meaningful
-const instance = axios.create({
-  // TOOD: please move this baseUrl to a settings file
-  baseURL: 'https://us-central1-common-daostack.cloudfunctions.net/relayer-relayer/',
+const axiosClient = axios.create({
+  baseURL: relayerUrl,
   timeout: 1000000, // milliseconds
-  // headers: {'X-Custom-Header': 'foobar'}
 });
 
 export default class WalletManager {
@@ -111,7 +108,7 @@ export default class WalletManager {
     const currentUser = auth().currentUser;
     const idToken = await currentUser.getIdToken();
     const options = { headers: { idToken } };
-    const response = await instance.get(
+    const response = await axiosClient.get(
       'createWallet',
       options,
     );
@@ -124,7 +121,7 @@ export default class WalletManager {
   create2SmartContractWallet = async () => {
     const idToken = await auth().currentUser.getIdToken();
     const options = { headers: { idToken } };
-    const response = await instance.get(
+    const response = await axiosClient.get(
       'create2Wallet',
       options,
     );
@@ -167,7 +164,7 @@ export default class WalletManager {
       // console.log('execTransaction', tx);
 
       const body = { idToken, to: toAddress, value: valueNumber, data, signature: finalSignature };
-      const response = await instance.post(
+      const response = await axiosClient.post(
         'execTransaction',
         // options,
         body
@@ -182,7 +179,7 @@ export default class WalletManager {
   addToWhitelist = async () => {
     const idToken = await auth().currentUser.getIdToken();
     const options = { headers: { idToken } };
-    const response = await instance.get(
+    const response = await axiosClient.get(
       'addWhitleList',
       options,
     );
@@ -191,22 +188,15 @@ export default class WalletManager {
 
   requestToJoin = async (pluginContract, method, params) => {
     try {
-
-      console.log('JoinInProposal',pluginContract.address, pluginContract.interface.events.JoinInProposal);
-
       const pluginAddress = pluginContract.address;
-      const zeroValue = ethers.utils.parseEther('0').toString(10);
+      const zeroValue = ethers.constants.Zero;
       let interf = new ethers.utils.Interface(ABI.CommonToken);
-      const data1 = interf.functions.approve.encode([pluginAddress, ethers.utils.parseEther('100000000000000000')]);
+      const data1 = interf.functions.approve.encode([pluginAddress, ethers.utils.parseEther(defaultAllowance.toString())]);
       const signature1 = await this.txHashSignature(this.safeAddress, COMMONTOKENADDRESS, zeroValue, data1);
-
       console.log('signature1 -->', signature1);
-
       const data2 = pluginContract.interface.functions[method].encode(params);
       const signature2 = await this.txHashSignature(this.safeAddress, pluginAddress, zeroValue, data2);
-
       console.log('signature2 -->', signature2);
-
       const idToken = await auth().currentUser.getIdToken();
       const body =
       {
@@ -225,7 +215,7 @@ export default class WalletManager {
         },
       };
       console.log('RequestToJoin Body ->', body);
-      const response = await instance.post(
+      const response = await axiosClient.post(
         'requestToJoin',
         body
       );
@@ -271,7 +261,7 @@ export default class WalletManager {
         ABI.MasterCopy,
         this.provider,
       );
-      const zeroAddress = `0x${'0'.repeat(40)}`;
+      const zeroAddress = ethers.constants.AddressZero;
       const nonce = await masterCopyContract.nonce();
       const SAFE_TX_TYPEHASH = '0xbb8310d486368db6bd6f849402fdd73ad53d316b5a4b2644ad6efe0f941286d8';
       const DOMAIN_SEPARATOR_TYPEHASH = '0x035aff83d86937d35b32e04f0ddc6ff469290eef2f1b692d8a815c89404d4749';
@@ -307,6 +297,7 @@ export default class WalletManager {
     return true;
   }
 
+  // Safe Wallet Address Event
   getAddressFromEvent = async hash => {
     const receipt = await this.provider.waitForTransaction(hash);
     console.log('receipt', receipt);
@@ -329,7 +320,6 @@ export default class WalletManager {
     const events = receipt.logs.map(log => {
       return iface.parseLog(log);
     });
-    console.log('address', events[0].values.proxy);
     return events[0].values.proxy;
   };
 

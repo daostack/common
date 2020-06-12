@@ -20,7 +20,6 @@ import {auth} from '../Firebase';
 import ABI from '../Util/abi.json';
 import { ethers } from 'ethers';
 import {showErrorPopUp} from '../Util';
-import { add } from 'react-native-reanimated';
 
 class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -191,6 +190,11 @@ class nativeBridgeTests extends React.Component {
 
   getSafeBalance = async () => {
     try {
+
+      const valueNumber = ethers.utils.parseEther('1').toString(10);
+
+      console.log('valueNumber  ->', valueNumber);
+
       const safeWallet = this.props.userStore.userInfo.safeAddress;
       console.log('safeWallet', safeWallet, WalletManager.getInstance().safeAddress);
       const manager = WalletManager.getInstance();
