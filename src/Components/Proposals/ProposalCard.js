@@ -3,14 +3,13 @@ import {Text, StyleSheet, View, Animated} from 'react-native';
 import {text, layout, colors} from '../../Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
-import ProposalService from '../../Services/ProposalService';
+import ProposalService, { PROPOSAL_TYPE } from '../../Services/ProposalService';
 import FirebaseService from '../../Services/FirebaseService';
 import ProposalApprovalTag from './ProposalApprovalTag';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
-  const [proposalInfo, setProposalInfo] = useState(false);
-  const [proposedUser, setProposedUser] = useState(false);
+  const [proposalCardInfo, setProposalCardInfo] = useState(false);
 
   useEffect(() => {
     const getProposalInfo = async currProposalId => {
@@ -22,14 +21,18 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
         //RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
-        if (currProposalInfo.joinAndQuit) {
+        if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
           proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
           funding = currProposalInfo.joinAndQuit.funding;
         }
         //FundingRequest proposal
         else {
-          proposedMemberId = currProposalInfo.fundingRequest.beneficiaryId;
-          funding = currProposalInfo.joinAndQuit.amount;
+
+          const proposedMember = await FirebaseService.getInstance().getUserByAddress(
+            currProposalInfo.fundingRequest.beneficiary,
+          );
+          proposedMemberId = proposedMember.id;
+          funding = currProposalInfo.fundingRequest.amount;
         }
 
         console.log('proposedMemberId 1 -> ', proposedMemberId);
@@ -38,10 +41,12 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           proposedMemberId,
         );
 
-        setProposedUser(currProposedUser);
-        setProposalInfo({...currProposalInfo, ...{funding: funding}});
+        setProposalCardInfo({
+          proposedUser: currProposedUser,
+          proposalInfo: {...currProposalInfo, ...{funding: funding}},
+        });
 
-        console.log('proposedUser -> ', proposedUser);
+        console.log('proposedUser -> ', proposedCardInfo?.proposedUser);
       } catch (error) {
         console.log('error: ', error);
       }
@@ -60,14 +65,20 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
         //RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
-        if (currProposalInfo.joinAndQuit) {
+        console.log('currProposalInfo -> ', currProposalInfo);
+        if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
+          console.log('TESTs 1');
           proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
           funding = currProposalInfo.joinAndQuit.funding;
         }
         //FundingRequest proposal
         else {
-          proposedMemberId = currProposalInfo.fundingRequest.beneficiaryId;
-          funding = currProposalInfo.joinAndQuit.amount;
+          console.log('TEST 2');
+          const proposedMember = await FirebaseService.getInstance().getUserByAddress(
+            currProposalInfo.fundingRequest.beneficiary,
+          );
+          proposedMemberId = proposedMember.id;
+          funding = currProposalInfo.fundingRequest.amount;
         }
 
         console.log('proposedMemberId 2 -> ', proposedMemberId);
@@ -78,8 +89,16 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
 
         console.log('currProposedUser 2 -> ', currProposedUser);
 
-        setProposedUser(currProposedUser);
-        setProposalInfo(currProposalInfo);
+
+        const allProposalInfo = { ...currProposalInfo, ...{ funding: funding } };
+
+        setProposalCardInfo({
+          proposedUser: currProposedUser,
+          proposalInfo: allProposalInfo,
+        });
+        console.log('------------BEGIN--------------', currProposedUser, '   ||||||   ', allProposalInfo);
+
+        //setProposalInfo(currProposalInfo);
       } catch (error) {
         console.log('error: ', error);
       }
@@ -95,7 +114,10 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
   return (
     <Animated.View style={[styles.proposalCard, containerStyle]}>
       <TouchableOpacity onPress={onReviewProposal}>
-        <ProposalCardHeader isBoosted={true} stage={proposalInfo.stage} />
+        <ProposalCardHeader
+          isBoosted={true}
+          stage={proposalCardInfo.proposalInfo?.stage}
+        />
 
         <View
           style={{
@@ -106,13 +128,13 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           }}>
           <Text
             style={{...text.h3Black, ...{textAlign: 'left', flexWrap: 'wrap'}}}>
-            {proposalInfo?.title}
+            {proposalCardInfo.proposalInfo?.title}
           </Text>
 
           <View style={layout.flexRow}>
             <MemberCard
-              userInfo={proposedUser}
-              proposalInfo={proposalInfo}
+              userInfo={proposalCardInfo.proposedUser}
+              proposalInfo={proposalCardInfo.proposalInfo}
               isPending={false}
             />
           </View>
@@ -120,12 +142,12 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           <View style={{...layout.flexRow, ...layout.marginTopS}}>
             <ProposalApprovalTag
               iconName="approved"
-              value={proposalInfo?.votesFor}
+              value={proposalCardInfo.proposalInfo?.votesFor}
               isMarked={true}
             />
             <ProposalApprovalTag
               iconName="declined"
-              value={proposalInfo?.votesAgainst}
+              value={proposalCardInfo.proposalInfo?.votesAgainst}
               isMarked={false}
             />
             <ProposalApprovalTag
