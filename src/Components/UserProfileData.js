@@ -8,6 +8,7 @@ import Loader from '../Components/Loader';
 import EditProfileForm from '../Components/Forms/EditProfileForm';
 import FirebaseService from '../Services/FirebaseService';
 import ProposalsList from '../Screens/Proposals/ProposalsList';
+import CommonsSwiper from '../Screens/Commons/CommonsSwiper';
 
 import {CommonActions} from '@react-navigation/native';
 
@@ -21,6 +22,7 @@ const UserProfileData = ({
 }) => {
   const [user, setUser] = useState(null);
   const [proposalsCount, setProposalsCount] = useState(0);
+  const [commonsCount, setCommonsCount] = useState(0);
   const [isEditMode, setIsEditMode] = useState(false);
 
   useEffect(() => {
@@ -92,6 +94,10 @@ const UserProfileData = ({
     setProposalsCount(newCount);
   };
 
+  const onCommonsCountChange = newCount => {
+    setCommonsCount(newCount);
+  };
+
   return (
     <>
       {isEditMode ? (
@@ -132,28 +138,18 @@ const UserProfileData = ({
         </Text>
       </View>
 
-      <View style={styles.contentContainer}>
-        <Text style={text.h3Black}>Commons (0)</Text>
+      <View style={styles.contentContainerWithoutPadding}>
+        <Text
+          style={{
+            ...text.h3Black,
+            ...layout.marginBottomL,
+          }}>{`Commons (${commonsCount})`}</Text>
 
-        <View style={styles.emptyObjectContainer}>
-          <Icon name="group" size={56} />
-          <Text style={{...text.h3Black, ...layout.marginTopS}}>
-            No Commons
-          </Text>
-          <Text
-            style={{
-              ...text.blackText,
-              ...text.centered,
-              ...layout.marginTopS,
-            }}>
-            Join your first common and start making an impact
-          </Text>
-          <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity style={styles.btn}>
-              <Text style={text.buttonblue}>Explore Commons</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <CommonsSwiper
+          navigation={navigation}
+          userId={userId}
+          onCountChange={onCommonsCountChange}
+        />
       </View>
 
       <View style={styles.contentContainerWithoutPadding}>

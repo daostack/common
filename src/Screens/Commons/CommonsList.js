@@ -77,11 +77,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     let myDaos = [];
     let otherDaos = [];
     for (let dao of daoList) {
-      const isMember = dao.members.some(
-        member =>
-          member.address === userStore.userInfo.safeAddress?.toLowerCase() ||
-          member.address === userStore.userInfo.ethereumAddress.toLowerCase(),
-      );
+      const isMember = userStore.isDaoMember(dao.members);
       if (isMember) {
         myDaos.push(dao);
       } else {

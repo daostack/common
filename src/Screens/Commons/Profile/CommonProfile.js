@@ -57,10 +57,7 @@ const CommonProfile = ({
     setShowRequestSentModal(route.params.showRequestSentModal);
     setCurrCommon(routeCommon);
     if (
-      userStore.userInfo &&
-      daoMembers.some(
-        member => member.address === userStore.userInfo.safeAddress,
-      )
+      userStore.userInfo && userStore.isDaoMember(daoMembers)
     ) {
       setMemberState(true);
     } else {

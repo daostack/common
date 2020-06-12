@@ -10,6 +10,8 @@ import Icon from '../../Assets/iconfont/Icon';
 
 import SwiperCard from '../../Components/SwiperCard';
 
+import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
+
 const {width, height} = Dimensions.get('window');
 
 const ProposalsList = props => {
@@ -20,7 +22,7 @@ const ProposalsList = props => {
   const navigation = props.navigation;
   const onCountChange = props.onCountChange;
   const onlyRequestsToJoin = props.onlyRequestsToJoin;
-  const [list, setList] = useState([]);
+  const [list, setList] = useState(null);
 
   console.log('commonId', commonId);
   console.log('userId', userId);
@@ -29,7 +31,6 @@ const ProposalsList = props => {
   let unsubscribe = null;
   useEffect(() => {
     const loadProposalInfo = async (commonId, userId, isHistory) => {
-      console.log('Load proposal info -> ', commonId, isHistory);
       let proposalStages = null;
       if (isHistory) {
         // TODO: use ProposalsList.PROPOSAL_STAGES_HISTORY here
@@ -52,7 +53,6 @@ const ProposalsList = props => {
         userId,
         proposalStages,
         newList => {
-          console.log('subscribe new lisy');
           setList(newList);
           if (onCountChange) {
             onCountChange(newList.length);
@@ -95,34 +95,49 @@ const ProposalsList = props => {
   };
 
   return isSwiper ? (
-    list.length > 0 ? (
-      <View style={layout.flexRow}>
-        <SwiperCard
-          cardRenderer={(item, index) => renderProposalCard(item, index)}
-          data={list}
-          extraData={listRef}
-        />
-      </View>
+    list ? (
+      list.length > 0 ? (
+        <View style={layout.flexRow}>
+          <SwiperCard
+            cardRenderer={(item, index) => renderProposalCard(item, index)}
+            data={list}
+            extraData={listRef}
+          />
+        </View>
+      ) : (
+        <View style={styles.emptyObjectContainer}>
+          <Icon name="pencil" size={46} />
+          <Text style={{...text.h3Black, ...layout.marginTopS}}>
+            No Proposals
+          </Text>
+          <Text
+            style={{
+              ...text.blackText,
+              ...text.centered,
+              ...layout.marginTopS,
+            }}>
+            Join a common and propose actions you think it should take to
+            achieve its goal
+          </Text>
+        </View>
+      )
     ) : (
-      <View style={styles.emptyObjectContainer}>
-        <Icon name="pencil" size={46} />
-        <Text style={{...text.h3Black, ...layout.marginTopS}}>
-          No Proposals
-        </Text>
-        <Text
-          style={{
-            ...text.blackText,
-            ...text.centered,
-            ...layout.marginTopS,
-          }}>
-          Join a common and propose actions you think it should take to achieve
-          its goal
-        </Text>
+      <View style={{paddingHorizontal: 20}}>
+        <Placeholder Animation={Fade}>
+          <PlaceholderMedia
+            style={{
+              height: 200,
+              width: '100%',
+              marginBottom: 20,
+              borderRadius: 26,
+            }}
+          />
+        </Placeholder>
       </View>
     )
   ) : (
     <>
-      {list.length > 0 ? (
+      {list && list.length > 0 ? (
         <FlatList
           data={list}
           renderItem={({item}) => renderProposalCard(item)}
