@@ -24,8 +24,8 @@ import ProposalService from '../../Services/ProposalService';
 import ArcService from '../../Services/ArcService';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
+import {UserAvatar} from '../../Components';
 
 import CountDown from 'react-native-countdown-component';
 import FirebaseService from '../../Services/FirebaseService';
@@ -310,7 +310,17 @@ const ProposalScreen = ({navigation, route, props}) => {
   if (proposedUser?.createdAt) {
     memberCreatedDate = new Date(proposedUser?.createdAt.seconds * 1000);
   }
-
+  const headerContainerStyle =
+    proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+      ? {
+        ...layout.content,
+        ...layout.flexStart,
+        ...{paddingBottom: 0},
+      }
+      : {
+        ...layout.content,
+        ...{paddingBottom: 0},
+      };
   return (
     <>
       <SafeAreaView style={{backgroundColor: colors.white}} />
@@ -320,33 +330,54 @@ const ProposalScreen = ({navigation, route, props}) => {
             flex: 1,
             backgroundColor: colors.white,
           }}>
-          <View
-            style={{
-              ...layout.content,
-              ...layout.flexStart,
-              ...{paddingBottom: 0},
-            }}>
-            <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
-              {proposalInfo?.title}
-            </Text>
+          {proposalInfo && (
+            <View style={{...headerContainerStyle}}>
+              {proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
+                <>
+                  <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
+                    {proposalInfo?.title}
+                  </Text>
 
-            <MemberCard
-              /*
-              name={proposedUser?.displayName}
+                  <MemberCard
+                    /*
+                name={proposedUser?.displayName}
 
-              imageUrl={proposedUser.photoURL}
-              */
-              memberSince={
-                memberCreatedDate
-                  ? `${
-                    monthShortNames[memberCreatedDate.getMonth()]
-                  } ${memberCreatedDate.getDay()} `
-                  : ''
-              }
-              isPending={false}
-              userInfo={proposedUser}
-            />
-          </View>
+                imageUrl={proposedUser.photoURL}
+                */
+                    memberSince={
+                      memberCreatedDate
+                        ? `${
+                          monthShortNames[memberCreatedDate.getMonth()]
+                        } ${memberCreatedDate.getDay()} `
+                        : ''
+                    }
+                    isPending={false}
+                    userInfo={proposedUser}
+                  />
+                </>
+              ) : (
+                <>
+                  <UserAvatar
+                    image={proposedUser?.photoURL}
+                    iconName={'clcok-16'}
+                  />
+                  <View style={{marginTop: 28}}>
+                    <Text style={{...text.h3Black}}>
+                      {proposedUser.displayName + ' >'}
+                    </Text>
+                    <Text
+                      style={{
+                        ...text.textFieldfocus,
+                        textAlign: 'center',
+                        marginTop: 1,
+                      }}>
+                      {'Request to Join'}
+                    </Text>
+                  </View>
+                </>
+              )}
+            </View>
+          )}
 
           <TabView
             navigationState={{index, routes}}
