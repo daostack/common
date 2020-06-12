@@ -24,6 +24,7 @@ import {CommonActions} from '@react-navigation/native';
 const RequestStep2 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
+  const isFirstStepSkipped = props.route.params.skipFirstStep;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -40,6 +41,7 @@ const RequestStep2 = props => {
         name: 'RequestStep3',
         params: {
           currDaoId: props.route.params.currDaoId,
+          skipFirstStep: isFirstStepSkipped,
         },
       });
       props.navigation.dispatch(navigate);
@@ -56,11 +58,14 @@ const RequestStep2 = props => {
         }}>
         <CreateStepNavigation
           navigation={props.navigation}
-          title="Approve Common Rules"
+          title={
+            isFirstStepSkipped ? 'Request to Join' : 'Approve Common Rules'
+          }
         />
         <CreateStepDotHeader
           title="Introduce Yourself"
           currentIndex={2}
+          isFirstStepSkipped={isFirstStepSkipped}
           navigation={props.navigation}
           headerHeight={headerHeight}
         />
@@ -76,7 +81,10 @@ const RequestStep2 = props => {
           onScroll={Animated.event([
             {nativeEvent: {contentOffset: {y: scrollY}}},
           ])}>
-          <CreateStepHeader currentIndex={1} />
+          <CreateStepHeader
+            isFirstStepSkipped={isFirstStepSkipped}
+            currentIndex={1}
+          />
           <View
             style={{
               flex: 1,

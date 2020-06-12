@@ -25,6 +25,7 @@ import {BN} from 'bn.js';
 const RequestStep4 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
+  const isFirstStepSkipped = props.route.params.skipFirstStep;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -91,6 +92,7 @@ const RequestStep4 = props => {
         <CreateStepDotHeader
           title="Payment"
           currentIndex={4}
+          isFirstStepSkipped={isFirstStepSkipped}
           navigation={props.navigation}
           headerHeight={headerHeight}
         />
@@ -106,7 +108,10 @@ const RequestStep4 = props => {
           onScroll={Animated.event([
             {nativeEvent: {contentOffset: {y: scrollY}}},
           ])}>
-          <CreateStepHeader currentIndex={3} />
+          <CreateStepHeader
+            isFirstStepSkipped={isFirstStepSkipped}
+            currentIndex={3}
+          />
           <View
             style={{
               flex: 1,

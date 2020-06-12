@@ -26,7 +26,7 @@ const RequestStep3 = props => {
   // const [ruleTitles, setRuleTitles] = useState([]);
   // const [pass, setPass] = useState(true);
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
-
+  const isFirstStepSkipped = props.route.params.skipFirstStep;
   // var ruleBody = [];
 
   useEffect(() => {
@@ -66,6 +66,7 @@ const RequestStep3 = props => {
       name: 'RequestStep4',
       params: {
         currDaoId: props.route.params.currDaoId,
+        skipFirstStep: isFirstStepSkipped,
       },
     });
     props.navigation.dispatch(navigate);
@@ -92,6 +93,7 @@ const RequestStep3 = props => {
         <CreateStepDotHeader
           title="Personal contribution"
           currentIndex={3}
+          isFirstStepSkipped={isFirstStepSkipped}
           navigation={props.navigation}
           headerHeight={headerHeight}
         />
@@ -107,7 +109,10 @@ const RequestStep3 = props => {
           onScroll={Animated.event([
             {nativeEvent: {contentOffset: {y: scrollY}}},
           ])}>
-          <CreateStepHeader currentIndex={2} />
+          <CreateStepHeader
+            isFirstStepSkipped={isFirstStepSkipped}
+            currentIndex={2}
+          />
           <View
             style={{
               flex: 1,

@@ -228,9 +228,10 @@ const CommonProfile = ({
   const requestToJoin = event => {
     if (userStore.userInfo) {
       const navigate = CommonActions.navigate({
-        name: 'RequestStep1',
+        name: currCommon.metadata?.rules?.length ? 'RequestStep1' : 'RequestStep2',
         params: {
           currDaoId: currCommon.id,
+          skipFirstStep: !currCommon.metadata?.rules?.length,
         },
       });
       navigation.dispatch(navigate);
