@@ -21,14 +21,17 @@ import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '../../Util/Toast';
 import BottomSheetModal from '../../Components/BottomSheetModal';
 import ProposalService from '../../Services/ProposalService';
+import ArcService from '../../Services/ArcService';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
+import {UserAvatar} from '../../Components';
 
 import CountDown from 'react-native-countdown-component';
 import FirebaseService from '../../Services/FirebaseService';
 import {monthShortNames} from '../../Util/DateUtil';
+
+import {PROPOSAL_TYPE} from '../../Services/ProposalService';
 
 const ProposalScreen = ({navigation, route, props}) => {
   const [proposalInfo, setProposalInfo] = useState(false);
@@ -189,7 +192,25 @@ const ProposalScreen = ({navigation, route, props}) => {
     setIsApprovalBottomModalVisible(false);
   };
 
-  const onVote = isApproved => {
+  const onVote = async isApproved => {
+    console.log('!!! onVote !!! ');
+    let votingResponse = null;
+    const voteData = {vote: isApproved ? 1 : 0};
+
+    if (proposalInfo.type == PROPOSAL_TYPE.JoinAndQuit) {
+      votingResponse = await ArcService.getInstance().voteForJoinAndQuitProposal(
+        routeProposalId,
+        voteData,
+      );
+    } else {
+      votingResponse = await ArcService.getInstance().voteForFundingRequestProposal(
+        routeProposalId,
+        voteData,
+      );
+    }
+
+    console.log('votingResponse -> ', votingResponse);
+
     closeApprovalSheet();
     Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
     setIsVoteByYou({isApproved: isApproved});
@@ -221,8 +242,8 @@ const ProposalScreen = ({navigation, route, props}) => {
         </View>
       );
     } else {
-      const remainingSeconds = proposalInfo?.closingAt?.seconds
-        ? proposalInfo?.closingAt?.seconds - Date.now() / 1000
+      const remainingSeconds = proposalInfo?.expiresInQueueAt
+        ? proposalInfo?.expiresInQueueAt - Date.now() / 1000
         : null;
 
       const isLessThanOneHour = remainingSeconds < 3600;
@@ -289,7 +310,17 @@ const ProposalScreen = ({navigation, route, props}) => {
   if (proposedUser?.createdAt) {
     memberCreatedDate = new Date(proposedUser?.createdAt.seconds * 1000);
   }
-
+  const headerContainerStyle =
+    proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+      ? {
+        ...layout.content,
+        ...layout.flexStart,
+        ...{paddingBottom: 0},
+      }
+      : {
+        ...layout.content,
+        ...{paddingBottom: 0},
+      };
   return (
     <>
       <SafeAreaView style={{backgroundColor: colors.white}} />
@@ -299,33 +330,54 @@ const ProposalScreen = ({navigation, route, props}) => {
             flex: 1,
             backgroundColor: colors.white,
           }}>
-          <View
-            style={{
-              ...layout.content,
-              ...layout.flexStart,
-              ...{paddingBottom: 0},
-            }}>
-            <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
-              {proposalInfo?.title}
-            </Text>
+          {proposalInfo && (
+            <View style={{...headerContainerStyle}}>
+              {proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
+                <>
+                  <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
+                    {proposalInfo?.title}
+                  </Text>
 
-            <MemberCard
-              /*
-              name={proposedUser?.displayName}
-              
-              imageUrl={proposedUser.photoURL}
-              */
-              memberSince={
-                memberCreatedDate
-                  ? `${
-                      monthShortNames[memberCreatedDate.getMonth()]
-                    } ${memberCreatedDate.getDay()} `
-                  : ''
-              }
-              isPending={false}
-              userInfo={proposedUser}
-            />
-          </View>
+                  <MemberCard
+                    /*
+                name={proposedUser?.displayName}
+
+                imageUrl={proposedUser.photoURL}
+                */
+                    memberSince={
+                      memberCreatedDate
+                        ? `${
+                          monthShortNames[memberCreatedDate.getMonth()]
+                        } ${memberCreatedDate.getDay()} `
+                        : ''
+                    }
+                    isPending={false}
+                    userInfo={proposedUser}
+                  />
+                </>
+              ) : (
+                <>
+                  <UserAvatar
+                    image={proposedUser?.photoURL}
+                    iconName={'clcok-16'}
+                  />
+                  <View style={{marginTop: 28}}>
+                    <Text style={{...text.h3Black}}>
+                      {proposedUser.displayName + ' >'}
+                    </Text>
+                    <Text
+                      style={{
+                        ...text.textFieldfocus,
+                        textAlign: 'center',
+                        marginTop: 1,
+                      }}>
+                      {'Request to Join'}
+                    </Text>
+                  </View>
+                </>
+              )}
+            </View>
+          )}
 
           <TabView
             navigationState={{index, routes}}

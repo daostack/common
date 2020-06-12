@@ -123,7 +123,7 @@ const CreateStep4 = props => {
         ...formDataInit,
         founderAddresses: address,
         minFeeToJoin: parseInt(formDataInit.minimum, 10) * 100,
-        fundingGaol: parseInt(formDataInit.funding, 10) * 100,
+        fundingGoal: parseInt(formDataInit.funding, 10) * 100,
         fundingGoalDeadline, // just passing the unix timestamp
       };
       console.log('calling createCommon(...)');
@@ -144,7 +144,8 @@ const CreateStep4 = props => {
     }
   };
 
-  console.log('FORM -> ', form);
+
+  // console.log('FORM -> ', form);
 
   return (
     <SafeAreaView

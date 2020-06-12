@@ -44,6 +44,7 @@ export default class AuthService {
 
   async signOut() {
     //await GoogleSignin.revokeAccess();
+    await GoogleSignin.signOut();
     await auth().signOut();
   }
 
@@ -75,53 +76,58 @@ export default class AuthService {
   }
 
   async loadMnemonic(uid) {
-    await GoogleSignin.signInSilently();
-    const {accessToken} = await GoogleSignin.getTokens();
-    GoogleDriveService.init(accessToken);
-    // console.log('accessToken 2 -> ', accessToken);
-    // 1. Read mnemonic from the store
-    const mnemonicFromStore = await NativeModules.WalletModule.retrieveMnemonic(
-      uid,
-    );
-
-    // console.log('mnemonicFromStore-> ', mnemonicFromStore);
-    if (mnemonicFromStore) {
-      return mnemonicFromStore;
-    }
-
-    // console.log('Google Drive-> ');
-    // 2. Read mnemonic From the Google Drive app data
-    let appData = await GoogleDriveService.getInstance().getAppData();
-
-    if (appData.files && appData.files.length > 0) {
-      const appDataFileId = appData.files[0].id;
-      const fileContent = await GoogleDriveService.getInstance().getFileById(
-        appDataFileId,
+    try {
+      await GoogleSignin.signInSilently();
+      const {accessToken} = await GoogleSignin.getTokens();
+      GoogleDriveService.init(accessToken);
+      // console.log('accessToken 2 -> ', accessToken);
+      // 1. Read mnemonic from the store
+      const mnemonicFromStore = await NativeModules.WalletModule.retrieveMnemonic(
+        uid,
       );
 
-      let jsonContent;
-      try {
-        jsonContent = JSON.parse(fileContent);
-      } catch (error) {
-        /*
-        FIX FOR USESRS WITH BROKEN APP DATA FILES
-        TBD: Discuss on removing that logic or replace with better one.
-        */
+      if (mnemonicFromStore) {
+        return mnemonicFromStore;
+      }
 
-        // The file content is not a valid json
-        // In that case we are deleting the file
+      // console.log('Google Drive-> ');
+      // 2. Read mnemonic From the Google Drive app data
+      let appData = await GoogleDriveService.getInstance().getAppData();
 
-        await GoogleDriveService.getInstance().deleteAppDataFileById(
+      if (appData.files && appData.files.length > 0) {
+        const appDataFileId = appData.files[0].id;
+        const fileContent = await GoogleDriveService.getInstance().getFileById(
           appDataFileId,
         );
-        // And then generate and store new mnemonic for the user
-        return this._generateAndStoreMnemonic(uid);
+
+        let jsonContent;
+        try {
+          jsonContent = JSON.parse(fileContent);
+        } catch (error) {
+          /*
+          FIX FOR USESRS WITH BROKEN APP DATA FILES
+          TBD: Discuss on removing that logic or replace with better one.
+          */
+
+          // The file content is not a valid json
+          // In that case we are deleting the file
+
+          await GoogleDriveService.getInstance().deleteAppDataFileById(
+            appDataFileId,
+          );
+          // And then generate and store new mnemonic for the user
+          return this._generateAndStoreMnemonic(uid);
+        }
+        await NativeModules.WalletModule.storeMnemonic(uid, jsonContent.mnemonic);
+        return jsonContent.mnemonic;
       }
-      await NativeModules.WalletModule.storeMnemonic(uid, jsonContent.mnemonic);
-      return jsonContent.mnemonic;
+      // 3. Generate mnemonic and store in Google Drive app data
+      return this._generateAndStoreMnemonic(uid);
+    } catch (err) {
+      // console.error(err);
+      await GoogleSignin.signOut();
+      await this.signOut();
     }
-    // 3. Generate mnemonic and store in Google Drive app data
-    return this._generateAndStoreMnemonic(uid);
   }
 
   // Private functions

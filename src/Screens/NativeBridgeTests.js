@@ -15,10 +15,11 @@ import WalletManager from '../Util/WalletManager';
 import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
 import ArcService from '../Services/ArcService';
 import {web3ProviderUrl} from '../Config';
+import {PROPOSAL_TYPE} from '../Config';
 import Toast from '../Util/Toast';
 import {auth} from '../Firebase';
 import ABI from '../Util/abi.json';
-import { ethers } from 'ethers';
+import {ethers} from 'ethers';
 import {showErrorPopUp} from '../Util';
 
 class nativeBridgeTests extends React.Component {
@@ -51,6 +52,9 @@ class nativeBridgeTests extends React.Component {
       safeWallet: '',
       safeWalletBalance: '',
       safeSCHash: '',
+      CMNBalance:'',
+      CMNTxHash: '',
+      CMNAllowance: '',
     };
 
     this.uid = auth().currentUser?.uid;
@@ -187,8 +191,17 @@ class nativeBridgeTests extends React.Component {
 
   getSafeBalance = async () => {
     try {
+
+      const valueNumber = ethers.utils.parseEther('1').toString(10);
+
+      console.log('valueNumber  ->', valueNumber);
+
       const safeWallet = this.props.userStore.userInfo.safeAddress;
-      console.log('safeWallet', safeWallet, WalletManager.getInstance().safeAddress);
+      console.log(
+        'safeWallet',
+        safeWallet,
+        WalletManager.getInstance().safeAddress,
+      );
       const manager = WalletManager.getInstance();
       const safeWalletBalance = await manager.getBalance(safeWallet);
       console.log('safeWalletBalance', safeWalletBalance);
@@ -303,6 +316,30 @@ class nativeBridgeTests extends React.Component {
     }
   };
 
+  getTokenBalance = async () => {
+    try {
+      const manager = WalletManager.getInstance();
+      const balance = await manager.getTokenBalance();
+      this.setState({CMNBalance: balance});
+    } catch (e) {
+      console.log(e);
+      throw 'Send transaction failed with error: ' + e;
+    }
+  }
+
+  getTokenAllowance= async () => {
+    try {
+      const manager = WalletManager.getInstance();
+      const daoId = '0x59b1c80f882c38abd52a90c9b30edafa55f7e421';
+      const address = await ArcService.getInstance().getJoinAndQuitPluginAddress(daoId);
+      const balance = await manager.getAllowance(address);
+      this.setState({CMNAllowance: balance});
+    } catch (e) {
+      console.log(e);
+      throw 'Send transaction failed with error: ' + e;
+    }
+  }
+
   createCommon = async () => {
     try {
       const manager = WalletManager.getInstance();
@@ -320,7 +357,10 @@ class nativeBridgeTests extends React.Component {
 
       this.setState({commonStatus: `${JSON.stringify(commonAddress)}`});
     } catch (error) {
-      this.props.bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {errorMessage: error.message});
+      this.props.bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
+        {errorMessage: error.message},
+      );
       this.setState({commonStatus: `${error}`});
     }
   };
@@ -341,15 +381,15 @@ class nativeBridgeTests extends React.Component {
         description: 'Some description',
         files: [],
         images: [],
-        links: [], // {title: "title", url: "url"}
-        funding: new BN(0),
+        links: [{title: 'title', url: 'http://www.common.io/'}],
+        funding: new BN(0), // this is the fee
       };
-      const proposal = await ArcService.getInstance().createRequestToJoin(
+      const proposalId = await ArcService.getInstance().createRequestToJoin(
         daoId,
         data,
       );
       this.setState({
-        proposalStatus: `JoinAndQuit Proposal with id ${proposal.id} created!`,
+        proposalStatus: `JoinAndQuit Proposal with id ${proposalId} created!`,
       });
     } catch (e) {
       showErrorPopUp(this.props.bottomSheetStore, e.message);
@@ -392,7 +432,8 @@ class nativeBridgeTests extends React.Component {
 
   voteForJoinAndQuitProposal = async () => {
     console.log('Vote for proposal -- please wait');
-    const proposalId = '0xb99e0a8daeb6dcaab9756202ec375153a8498b947d7b2ac864df0635e2928ef0'; // Proposal for the 0 min funding dao made from user lyubomir.petkov@limechain.tech
+    const proposalId =
+      '0xb99e0a8daeb6dcaab9756202ec375153a8498b947d7b2ac864df0635e2928ef0'; // Proposal for the 0 min funding dao made from user lyubomir.petkov@limechain.tech
     this.setState({
       proposalVotingStatus: 'VOTING for  proposal -- please wait',
     });
@@ -403,7 +444,6 @@ class nativeBridgeTests extends React.Component {
       const vote = await ArcService.getInstance().voteForJoinAndQuitProposal(
         proposalId,
         data,
-        'FundingRequest'
       );
       this.setState({
         proposalVotingStatus: `VOTING for a Proposal with id ${vote.id} created!`,
@@ -413,7 +453,7 @@ class nativeBridgeTests extends React.Component {
       // showErrorPopUp(this.props.bottomSheetStore, e.message);
     }
     console.log(`proposal created: ${proposal.id}`);
-  }
+  };
 
   openTxhash = hash => {
     this.props.navigation.navigate('Browser', {
@@ -459,7 +499,7 @@ class nativeBridgeTests extends React.Component {
             <Text>Create Common</Text>
           </TouchableOpacity>
 
-          <Text>{this.state.proposalState}</Text>
+          <Text>{this.state.proposalStatus}</Text>
           <TouchableOpacity
             onPress={this.createRequestToJoin}
             style={styles.button}>
@@ -474,7 +514,9 @@ class nativeBridgeTests extends React.Component {
           </TouchableOpacity>
 
           <Text>{this.state.voteState}</Text>
-          <TouchableOpacity onPress={this.voteForJoinAndQuitProposal} style={styles.button}>
+          <TouchableOpacity
+            onPress={this.voteForJoinAndQuitProposal}
+            style={styles.button}>
             <Text>Vote for proposal</Text>
           </TouchableOpacity>
 
@@ -610,6 +652,25 @@ class nativeBridgeTests extends React.Component {
             style={styles.button}>
             <Text>execTransaction</Text>
           </TouchableOpacity>
+
+          <Text style={{marginVertical: 10}}>
+            --------------- ERC20 -----------------
+          </Text>
+
+
+          <Text>{this.state.CMNBalance} CMN</Text>
+          <TouchableOpacity
+            onPress={this.getTokenBalance}
+            style={styles.button}>
+            <Text>Get Common Token Balance</Text>
+          </TouchableOpacity>
+
+          <Text>Allowance: {this.state.CMNAllowance} </Text>
+          <TouchableOpacity
+            onPress={this.getTokenAllowance}
+            style={styles.button}>
+            <Text>Get Common Token Allowance</Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     );
@@ -635,7 +696,12 @@ const styles = StyleSheet.create({
     width: 200,
     height: 40,
     backgroundColor: 'grey',
+    marginBottom: 5,
   },
 });
 
-export default inject('daoStore', 'userStore', 'bottomSheetStore')(observer(nativeBridgeTests));
+export default inject(
+  'daoStore',
+  'userStore',
+  'bottomSheetStore',
+)(observer(nativeBridgeTests));

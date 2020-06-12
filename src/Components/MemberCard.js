@@ -2,21 +2,26 @@ import {StyleSheet, View, Text} from 'react-native';
 import React from 'react';
 import {layout, colors, text, sizeXS} from '../Theme';
 import MemberImage from './Commons/MemberImage';
+import CountDown from 'react-native-countdown-component';
 import {monthShortNames} from '../Util/DateUtil';
+import moment from 'moment';
+import {PROPOSAL_TYPE} from '../Config';
 
 const MemberCard = ({
-  memberCustomText,
   // memberSince or commonsCount
   memberSince,
   commonsCount,
   showMemberCreatedDate,
-
-  //-------------
   userInfo,
   proposalInfo,
 }) => {
   const renderRightContainer = () => {
     if (proposalInfo) {
+      const proposalValue =
+        proposalInfo.type === PROPOSAL_TYPE.JoinAndQuit
+          ? proposalInfo.joinAndQuit.funding
+          : proposalInfo.fundingRequest.amount;
+      const remainingSeconds = proposalInfo.expiresInQueueAt - moment().unix();
       return (
         <View style={styles.rightContainer}>
           <View
@@ -24,9 +29,18 @@ const MemberCard = ({
               ...layout.content,
               ...{alignItems: 'flex-end'},
             }}>
-            <Text style={text.h2Black}>{`$${proposalInfo?.joinAndQuit
-              ?.funding || proposalInfo?.fundingRequest?.funding}`}</Text>
-            <Text style={text.smallGreyText}>02:02:02:02</Text>
+            <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
+            <CountDown
+              digitTxtStyle={text.smallGreyText}
+              separatorStyle={text.smallGreyText}
+              timeLabels={false}
+              showSeparator={true}
+              digitStyle={{
+                height: 'auto',
+                width: 'auto',
+              }}
+              until={remainingSeconds}
+            />
           </View>
         </View>
       );
@@ -36,8 +50,8 @@ const MemberCard = ({
         const memberCreatedDate = new Date(userInfo.createdAt.seconds * 1000);
         memberCreatedDateInfo = memberCreatedDate
           ? `${
-              monthShortNames[memberCreatedDate.getMonth()]
-            } ${memberCreatedDate.getDay()} `
+            monthShortNames[memberCreatedDate.getMonth()]
+          } ${memberCreatedDate.getDay()} `
           : '';
       } else {
         memberCreatedDateInfo = 'NOT app user';
@@ -72,20 +86,20 @@ const MemberCard = ({
               ...text.h4Black,
               ...{flexWrap: 'wrap'},
             }}>
-            {userInfo?.displayName}
+            {userInfo?.displayName || 'Unknown user'}
           </Text>
           <Text
             style={{
               ...text.smallGreyText,
               marginTop: 2,
             }}>
-            {memberCustomText
-              ? memberCustomText
+            {proposalInfo
+              ? moment.unix(proposalInfo.createdAt).fromNow()
               : showMemberCreatedDate
-              ? `Member in ${userInfo?.daos?.length} Common${
+                ? `Member in ${userInfo?.daos?.length} Common${
                   userInfo?.daos?.length > 1 ? 's' : ''
                 }`
-              : `Member since by ${memberSince}`}
+                : `Member since ${memberSince || 'unknown'}`}
           </Text>
         </View>
       </View>
@@ -98,7 +112,6 @@ const styles = StyleSheet.create({
   cardContainer: {
     ...layout.content,
     ...layout.flexRow,
-
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderColor: colors.grey4,

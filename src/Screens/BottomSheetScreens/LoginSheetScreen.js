@@ -6,7 +6,7 @@ import GSignInButton from '../../Components/GSignInButton';
 import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 
-const LoginSheetScreen = ({bottomSheetStore}) => {
+const LoginSheetScreen = ({bottomSheetStore, ...props}) => {
   return (
     <View style={styles.contentContainer}>
       <Text style={styles.sheetTitleStyle}>Be a part of Common</Text>
@@ -15,7 +15,7 @@ const LoginSheetScreen = ({bottomSheetStore}) => {
           ...styles.sheetTextStyle,
           ...layout.marginBottomXL,
         }}>
-        To join this Common you need to be connected with your Google account
+        {props.message ? props.message : 'To join this Common you need to be connected with your Google account'}
       </Text>
 
       <View style={layout.flexRow}>

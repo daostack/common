@@ -19,17 +19,17 @@ const GSignInButton = ({onSignIn}) => {
       setSignInError(null);
     } catch (error) {
       switch (error.code) {
-        case statusCodes.SIGN_IN_CANCELLED:
-          setSignInError('Canceled');
-          break;
-        case statusCodes.IN_PROGRESS:
-          console.log('SignIn in progress');
-          break;
-        case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-          setSignInError('play services not available or outdated');
-          break;
-        default:
-          setSignInError(error);
+      case statusCodes.SIGN_IN_CANCELLED:
+        setSignInError('Canceled');
+        break;
+      case statusCodes.IN_PROGRESS:
+        console.log('SignIn in progress');
+        break;
+      case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+        setSignInError('play services not available or outdated');
+        break;
+      default:
+        setSignInError(error);
       }
     }
   };

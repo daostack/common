@@ -33,26 +33,25 @@ export const createCommon = async (
   navigation,
   daoStore,
 ) => {
-  // TODO: save the data on ipfs and get the hash as a part of this functions
-  navigation.navigate('CommonCreationLoading');
-  daoStore.setCreationStatus(1);
 
   // need these keys:
-  const MANDATORY_ARGS = [
-    'name',
-    'minFeeToJoin',
-    'fundingGoal',
-    'fundingGoalDeadline',
-  ];
-
-  for (const key of MANDATORY_ARGS) {
-    if (Object.keys(givenOpts).indexOf(key) === -1) {
-      console.log(givenOpts);
-      throw Error(`${key} is a mandatary option for the createCommon function`);
-    }
-  }
-
   try {
+    console.log('step 1');
+    navigation.navigate('CommonCreationLoading');
+    daoStore.setCreationStatus(1);
+    const MANDATORY_ARGS = [
+      'name', 'minFeeToJoin', 'fundingGoal', 'fundingGoalDeadline',
+    ];
+
+    for (const key of MANDATORY_ARGS) {
+      if (Object.keys(givenOpts).indexOf(key) === -1) {
+        console.log(givenOpts);
+        const msg = `${key} is a mandatary option for the createCommon function`;
+        console.error(msg);
+        throw Error(msg);
+      }
+    }
+
     const defaultOptions = {
       tokenDist: [0],
       repDist: [MEMBER_REPUTATION],

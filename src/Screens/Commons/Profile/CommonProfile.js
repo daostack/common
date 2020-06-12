@@ -22,9 +22,7 @@ import BottomRightButton from '../../../Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
 import Toast from '../../../Util/Toast';
-import HeaderImageScrollView, {
-  TriggeringView,
-} from 'react-native-image-header-scroll-view';
+import HeaderImageScrollView from 'react-native-image-header-scroll-view';
 import CommonHeader from '../../../Components/Commons/CommonHeader';
 import {numberFormatter} from '../../../Util';
 import CommonMembersList from './CommonMembersList';
@@ -52,6 +50,7 @@ const CommonProfile = ({
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const routeCommon = route.params.currCommon;
   const daoMembers = route.params.currCommon.members;
+  const showReqToJoin = !userStore.userInfo || (pendingProposalsData && !pendingProposalsData.usersPendingProposalId);
 
   useEffect(() => {
     setShowRequestSentModal(route.params.showRequestSentModal);
@@ -69,23 +68,25 @@ const CommonProfile = ({
   }, [routeCommon, route.params.showRequestSentModal]);
 
   useEffect(() => {
-    let unsubscribe = null;
-    let getPendingProposalsData = async () => {
-      unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
-        routeCommon.id,
-        userStore.userInfo.safeAddress,
-        data => {
-          setPendingProposalsData({...data});
-        },
-      );
-    };
-    getPendingProposalsData();
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  }, [routeCommon.id, isMember]);
+    if (userStore.userInfo) {
+      let unsubscribe = null;
+      let getPendingProposalsData = async () => {
+        unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
+          routeCommon.id,
+          userStore.userInfo.safeAddress,
+          data => {
+            setPendingProposalsData({...data});
+          },
+        );
+      };
+      getPendingProposalsData();
+      return () => {
+        if (unsubscribe) {
+          unsubscribe();
+        }
+      };
+    }
+  }, [routeCommon.id, isMember, userStore.userInfo]);
 
   const renderTabBar = props => (
     <TabBar
@@ -138,14 +139,14 @@ const CommonProfile = ({
 
   const renderScene = scene => {
     switch (scene.route.key) {
-      case 'discussions':
-        return Discussions();
-      case 'proposals':
-        return Proposals();
-      case 'history':
-        return History();
-      default:
-        return null;
+    case 'discussions':
+      return Discussions();
+    case 'proposals':
+      return Proposals();
+    case 'history':
+      return History();
+    default:
+      return null;
     }
   };
 
@@ -376,7 +377,7 @@ const CommonProfile = ({
               goal: currCommon.fundingGoal,
               members: currCommon.memberCount,
               // TODO: get this value. Is it even tracked in the contract? need to check.
-              raised: 0,
+              raised: currCommon.balance,
               currentBudget: numberFormatter(
                 // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
                 currCommon.tokenTotalSupply,
@@ -441,27 +442,26 @@ const CommonProfile = ({
           />
         ) : (
           <>
-            {pendingProposalsData &&
-              !pendingProposalsData.usersPendingProposalId && (
-                <View style={styles.actionButtonContainer}>
-                  <TouchableOpacity
-                    style={styles.headerButton}
-                    onPress={requestToJoin}>
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: 'white',
-                        fontWeight: '700',
-                        marginRight: 40,
-                      }}>
-                      Request to join
-                    </Text>
-                    <Text style={{fontSize: 16, color: 'white'}}>
-                      ${currCommon.minFeeToJoin} Contribution
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
+            {showReqToJoin && (
+              <View style={styles.actionButtonContainer}>
+                <TouchableOpacity
+                  style={styles.headerButton}
+                  onPress={requestToJoin}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: 'white',
+                      fontWeight: '700',
+                      marginRight: 40,
+                    }}>
+                    Request to join
+                  </Text>
+                  <Text style={{fontSize: 16, color: 'white'}}>
+                    ${currCommon.minFeeToJoin} Contribution
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
             <Modal
               isVisible={showRequestSentModal}
               avoidKeyboard={true}
