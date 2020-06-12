@@ -100,7 +100,7 @@ const CommonCreationLoading = ({daoStore, route, navigation}) => {
                   ...styles.shareButton,
                 }}
                 onPress={() => {}}>
-                <Text style={text.buttonblue}>Goto Common</Text>
+                <Text style={text.buttonblue}>Go to Common</Text>
               </TouchableOpacity>
             </View>
             <View>

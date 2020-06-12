@@ -268,7 +268,7 @@ const CreateStep4 = props => {
                 marginVertical: 15,
               }}>
               <Text style={{flex: 1, alignSelf: 'flex-start'}}>
-                Have an avatar for you Common?
+                Have an avatar for your Common?
               </Text>
               <TouchableOpacity onPress={() => pickImage(true)}>
                 <Text

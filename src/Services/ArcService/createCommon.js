@@ -1,4 +1,5 @@
 import {IpfsClient} from '../../Config';
+import WalletManager from '../../Util/WalletManager';
 
 const {
   getForgeOrgData,
@@ -63,14 +64,18 @@ export const createCommon = async (
     };
     const opts = {...defaultOptions, ...givenOpts};
 
+    // const contractABI1 = arc.getABI({
+    //   abiName: 'DAOFactory',
+    //   version: ARC_VERSION,
+    // });
+
     console.log('saving data on ipfs: ', opts);
     ipfsHash = await IpfsClient.addAndPinString(JSON.stringify(opts));
     console.log('ipfsHash ->', ipfsHash);
 
     let receipt;
 
-    console.log('opts: ', opts);
-    console.log('fetching contractinfo from graphql...');
+    // console.log('opts: ', opts);
     const daoFactoryInfo = arc.getContractInfoByName(
       'DAOFactoryInstance',
       ARC_VERSION,
@@ -87,21 +92,17 @@ export const createCommon = async (
       'GenesisProtocol',
       ARC_VERSION,
     );
-    console.log('Calling DAOFactory.forgeOrg(...)', {
+    const data = {
       DAOFactoryInstance: daoFactoryInfo.address,
       orgName: opts.name,
       founderAddresses: [opts.founderAddresses],
       repDist: opts.repDist,
-    });
+    };
+    console.log('Calling DAOFactory.forgeOrg(...)', data);
 
-    const forgeOrgData = getForgeOrgData({
-      DAOFactoryInstance: daoFactoryInfo.address,
-      orgName: opts.name,
-      founderAddresses: [opts.founderAddresses],
-      repDist: opts.repDist,
-    });
+    const forgeOrgData = getForgeOrgData(data);
 
-    console.log('waiting for tx to be mined');
+    console.log('waiting for forgeOrg transaction to be mined');
     receipt = await daoFactoryContract.sendToRelayerWithReceipt('forgeOrg', forgeOrgData);
     console.log('forgeOrg receipt ->', receipt);
     if (receipt) {
@@ -115,7 +116,6 @@ export const createCommon = async (
     console.log('newOrgAddress', newOrgAddress);
 
     console.log('Calling DAOFactory.setSchemes(...)', opts);
-    console.log('variables sending to Contract', schemeDataToEncode);
 
     const schemeDataToEncode = {
       DAOFactoryInstance: daoFactoryInfo.address,
@@ -124,20 +124,22 @@ export const createCommon = async (
       fundingToken: opts.fundingToken,
       minFeeToJoin: opts.minFeeToJoin,
       memberReputation: opts.memberReputation,
-      // we set the OFFICIAL funding gaol to 0 - in the frontend we show the fundingGaol from ipfs data
+      // we set the OFFICIAL funding goal to 0 - in the frontend we show the fundingGaol from ipfs data
       // goal: parseInt(opts.fundingGoal, 10),
       goal: 0,
       deadline: opts.fundingGoalDeadline,
       metaData: ipfsHash,
     };
+    console.log('variables sending to Contract', schemeDataToEncode);
     const schemeData = getSetSchemesData(schemeDataToEncode);
 
     daoStore.setCreationStatus(4);
-    console.log('waiting for tx to be mined');
-    receipt = await daoFactoryContract.sendToRelayerWithReceipt('setSchemes', schemeData);
+    console.log('createCommonStep2: waiting for tx to be mined');
+    // receipt = await daoFactoryContract.sendToRelayerWithReceipt('setSchemes', schemeData);
+    await WalletManager.getInstance().createCommonStep2(daoFactoryContract, 'setSchemes', schemeData);
     console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
     daoStore.setCreationStatus(5);
-    return receipt;
+    return newOrgAddress;
   } catch (e) {
     throw e;
   }

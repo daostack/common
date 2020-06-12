@@ -56,10 +56,7 @@ const CommonProfile = ({
     setShowRequestSentModal(route.params.showRequestSentModal);
     setCurrCommon(routeCommon);
     if (
-      userStore.userInfo &&
-      daoMembers.some(
-        member => member.address === userStore.userInfo.safeAddress,
-      )
+      userStore.userInfo && userStore.isDaoMember(daoMembers)
     ) {
       setMemberState(true);
     } else {
@@ -206,6 +203,7 @@ const CommonProfile = ({
     navigation.navigate('CommonMembers', {
       members: daoMembers,
       commonId: currCommon.id,
+      commonTitle: currCommon.name,
     });
   };
 
@@ -230,9 +228,10 @@ const CommonProfile = ({
   const requestToJoin = event => {
     if (userStore.userInfo) {
       const navigate = CommonActions.navigate({
-        name: 'RequestStep1',
+        name: currCommon.metadata?.rules?.length ? 'RequestStep1' : 'RequestStep2',
         params: {
           currDaoId: currCommon.id,
+          skipFirstStep: !currCommon.metadata?.rules?.length,
         },
       });
       navigation.dispatch(navigate);
@@ -357,6 +356,7 @@ const CommonProfile = ({
                 'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
               name: currCommon.name,
               description: currCommon.description,
+              byline: currCommon.metadata?.byline,
             }}
           />
         )}>

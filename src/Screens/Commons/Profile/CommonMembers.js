@@ -25,6 +25,12 @@ const CommonMembers = ({navigation, route}) => {
   const [pendingCount, setPendingCount] = useState(4);
   const members = route.params.members;
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerBackTitle: route.params.commonTitle,
+    });
+  }, [navigation]);
+
   const routes = [
     {key: 'members', title: getTabName('Members', members.length)},
     {key: 'pending', title: getTabName('Pending', pendingCount)},
