@@ -27,6 +27,8 @@ import CommonHeader from '../../../Components/Commons/CommonHeader';
 import {numberFormatter} from '../../../Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '../../../Services/ProposalService';
+import CountDown from 'react-native-countdown-component';
+import moment from 'moment';
 
 const CommonProfile = ({
   navigation,
@@ -50,7 +52,7 @@ const CommonProfile = ({
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const routeCommon = route.params.currCommon;
   const daoMembers = route.params.currCommon.members;
-  const showReqToJoin = !userStore.userInfo || (pendingProposalsData && !pendingProposalsData.usersPendingProposalId);
+  const showReqToJoin = !userStore.userInfo || (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
 
   useEffect(() => {
     setShowRequestSentModal(route.params.showRequestSentModal);
@@ -261,13 +263,16 @@ const CommonProfile = ({
     const navigate = CommonActions.navigate({
       name: 'ProposalScreen',
       params: {
-        proposalId: pendingProposalsData.usersPendingProposalId,
+        proposalId: pendingProposalsData.usersPendingProposal?.id,
       },
     });
     navigation.dispatch(navigate);
   };
 
   const renderPendingApproval = () => {
+    const remainingSeconds =
+      pendingProposalsData.usersPendingProposal.expiresInQueueAt -
+      moment().unix();
     return (
       <TouchableOpacity
         onPress={openProposalScreen}
@@ -294,12 +299,12 @@ const CommonProfile = ({
           <View style={layout.flexRow}>
             <ProposalApprovalTag
               iconName="approved"
-              value={44}
+              value={pendingProposalsData.usersPendingProposal.votesFor}
               isMarked={true}
             />
             <ProposalApprovalTag
               iconName="declined"
-              value={17}
+              value={pendingProposalsData.usersPendingProposal.votesAgainst}
               isMarked={false}
             />
             <ProposalApprovalTag
@@ -309,7 +314,18 @@ const CommonProfile = ({
             />
           </View>
           <View>
-            <Text style={text.tapBarUnselected}>02:00:10</Text>
+            {/* <Text style={text.tapBarUnselected}>02:00:10</Text> */}
+            <CountDown
+              digitTxtStyle={text.smallGreyText}
+              separatorStyle={text.smallGreyText}
+              timeLabels={false}
+              showSeparator={true}
+              digitStyle={{
+                height: 'auto',
+                width: 'auto',
+              }}
+              until={remainingSeconds}
+            />
           </View>
         </View>
       </TouchableOpacity>
@@ -362,7 +378,7 @@ const CommonProfile = ({
         )}>
         {!isMember &&
           pendingProposalsData &&
-          pendingProposalsData.usersPendingProposalId &&
+          pendingProposalsData.usersPendingProposal &&
           renderPendingApproval()}
 
         <View style={{paddingVertical: 20}}>
