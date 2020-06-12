@@ -382,7 +382,7 @@ class nativeBridgeTests extends React.Component {
         files: [],
         images: [],
         links: [], // {title: "title", url: "url"}
-        funding: new BN(0),
+        funding: new BN(0), // this is the fee
       };
       const proposalId = await ArcService.getInstance().createRequestToJoin(
         daoId,
