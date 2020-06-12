@@ -318,8 +318,6 @@ const CommonProfile = ({
 
   const initialLayout = {width: Dimensions.get('window').width};
 
-  console.log('currCommon.coverPhoto', currCommon.coverPhoto);
-
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       <StatusBar barStyle="light-content" />
