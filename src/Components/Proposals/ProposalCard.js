@@ -6,7 +6,8 @@ import ProposalCardHeader from './ProposalCardHeader';
 import ProposalService, { PROPOSAL_TYPE } from '../../Services/ProposalService';
 import FirebaseService from '../../Services/FirebaseService';
 import ProposalApprovalTag from './ProposalApprovalTag';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import Toast from '../../Util/Toast';
 
 const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
@@ -35,8 +36,6 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           funding = currProposalInfo.fundingRequest.amount;
         }
 
-        console.log('proposedMemberId 1 -> ', proposedMemberId);
-
         const currProposedUser = await FirebaseService.getInstance().getUserById(
           proposedMemberId,
         );
@@ -46,13 +45,11 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           proposalInfo: {...currProposalInfo, ...{funding: funding}},
         });
 
-        console.log('proposedUser -> ', proposedCardInfo?.proposedUser);
       } catch (error) {
         console.log('error: ', error);
+        Toast.error(error?.toString());
       }
     };
-
-    console.log('Console.log proposalId -> ', proposalId);
 
     if (proposalId) {
       getProposalInfo(proposalId);
@@ -65,15 +62,12 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
         //RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
-        console.log('currProposalInfo -> ', currProposalInfo);
         if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
-          console.log('TESTs 1');
           proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
           funding = currProposalInfo.joinAndQuit.funding;
         }
         //FundingRequest proposal
         else {
-          console.log('TEST 2');
           const proposedMember = await FirebaseService.getInstance().getUserByAddress(
             currProposalInfo.fundingRequest.beneficiary,
           );
@@ -81,14 +75,9 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           funding = currProposalInfo.fundingRequest.amount;
         }
 
-        console.log('proposedMemberId 2 -> ', proposedMemberId);
-
         const currProposedUser = await FirebaseService.getInstance().getUserById(
           proposedMemberId,
         );
-
-        console.log('currProposedUser 2 -> ', currProposedUser);
-
 
         const allProposalInfo = { ...currProposalInfo, ...{ funding: funding } };
 
@@ -96,15 +85,11 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           proposedUser: currProposedUser,
           proposalInfo: allProposalInfo,
         });
-        console.log('------------BEGIN--------------', currProposedUser, '   ||||||   ', allProposalInfo);
-
-        //setProposalInfo(currProposalInfo);
       } catch (error) {
         console.log('error: ', error);
+        Toast.error(error?.toString());
       }
     };
-
-    console.log('Console.log data -> ', data);
 
     if (data) {
       loadProposalInfo(data);

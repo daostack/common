@@ -26,12 +26,10 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 const { width } = Dimensions.get('window');
 import {UserAvatar} from '../../Components';
-
 import CountDown from 'react-native-countdown-component';
 import FirebaseService from '../../Services/FirebaseService';
 import {monthShortNames} from '../../Util/DateUtil';
-
-import {PROPOSAL_TYPE} from '../../Services/ProposalService';
+import { PROPOSAL_TYPE } from '../../Services/ProposalService';
 
 const ProposalScreen = ({navigation, route, props}) => {
   const [proposalInfo, setProposalInfo] = useState(false);
@@ -62,7 +60,6 @@ const ProposalScreen = ({navigation, route, props}) => {
           proposedMemberId = proposedMember.id;
           funding = currProposalInfo.fundingRequest.amount;
         }
-        console.log('proposedMemberId -> ', proposedMemberId);
         const currProposedUser = await FirebaseService.getInstance().getUserById(
           proposedMemberId,
         );
@@ -71,6 +68,7 @@ const ProposalScreen = ({navigation, route, props}) => {
         setProposalInfo({...currProposalInfo, ...{funding: funding}});
       } catch (error) {
         console.log('error: ', error);
+        Toast.error(error?.toString());
       }
     };
 
@@ -197,7 +195,6 @@ const ProposalScreen = ({navigation, route, props}) => {
   };
 
   const onVote = async isApproved => {
-    console.log('!!! onVote !!! ');
     let votingResponse = null;
     const voteData = {vote: isApproved ? 1 : 0};
 
