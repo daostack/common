@@ -113,6 +113,8 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
       plugin: fundingRequestPlugin.coreState.address,
     };
 
+    console.log('ARGS -> ', args);
+
     // send the acdtual transaction
     console.log('creating transaction');
     const transaction = await fundingRequestPlugin.createProposalTransaction(args);

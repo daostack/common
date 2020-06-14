@@ -48,16 +48,19 @@ const ProposalScreen = ({navigation, route, props}) => {
         //RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
-        if (currProposalInfo.joinAndQuit) {
+
+        if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
           proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
           funding = currProposalInfo.joinAndQuit.funding;
         }
         //FundingRequest proposal
         else {
-          proposedMemberId = currProposalInfo.fundingRequest.beneficiaryId;
-          funding = currProposalInfo.joinAndQuit.amount;
+          const proposedMember = await FirebaseService.getInstance().getUserByAddress(
+            currProposalInfo.fundingRequest.beneficiary,
+          );
+          proposedMemberId = proposedMember.id;
+          funding = currProposalInfo.fundingRequest.amount;
         }
-
         const currProposedUser = await FirebaseService.getInstance().getUserById(
           proposedMemberId,
         );
@@ -66,6 +69,7 @@ const ProposalScreen = ({navigation, route, props}) => {
         setProposalInfo({...currProposalInfo, ...{funding: funding}});
       } catch (error) {
         console.log('error: ', error);
+        Toast.error(error?.toString());
       }
     };
 
@@ -192,7 +196,6 @@ const ProposalScreen = ({navigation, route, props}) => {
   };
 
   const onVote = async isApproved => {
-    console.log('!!! onVote !!! ');
     let votingResponse = null;
     const voteData = {vote: isApproved ? 1 : 0};
 
