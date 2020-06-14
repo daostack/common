@@ -26,17 +26,16 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 const { width } = Dimensions.get('window');
 import {UserAvatar} from '../../Components';
-
 import CountDown from 'react-native-countdown-component';
 import FirebaseService from '../../Services/FirebaseService';
 import {monthShortNames} from '../../Util/DateUtil';
-
+import {PROPOSAL_STAGES_HISTORY} from '../../Services/ProposalService';
 import {PROPOSAL_TYPE} from '../../Services/ProposalService';
 
 const ProposalScreen = ({navigation, route, props}) => {
   const [proposalInfo, setProposalInfo] = useState(false);
   const [proposedUser, setProposedUser] = useState(false);
-
+  const renderVoting = proposalInfo && !PROPOSAL_STAGES_HISTORY.includes(proposalInfo?.stageStr);
   const routeProposalId = route?.params.proposalId;
 
   useEffect(() => {
@@ -404,7 +403,7 @@ const ProposalScreen = ({navigation, route, props}) => {
 
         {index === 0 ? (
           <View style={styles.actionButtonContainer}>
-            {renderStickyBottomContent()}
+            {renderVoting && renderStickyBottomContent()}
           </View>
         ) : (
           <>{messageInput()}</>
