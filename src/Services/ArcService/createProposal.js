@@ -34,10 +34,10 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     console.log('joinAndQuitPlugin', joinAndQuitPlugin.id);
 
     let ipfsHash;
-    const fee = data.funding;
-    if (!fee) {
-      throw Error('Fee argument must be given');
+    if (!data.funding) {
+      throw Error('"funding" argument must be given');
     }
+    const fee = Number(data.funding);
     console.log('saving ipfs data');
     // not working :-()
     // ipfsHash = await arc.saveIPFSData(data);
@@ -55,7 +55,8 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     const errorHandler = async () => {
       const joinAndQuitPlugin = await dao.plugin({where: {name: 'JoinAndQuit'}});
       const joinAndQuitContract  = await arc.getContract(joinAndQuitPlugin.coreState.address);
-      const proposer =   WalletManager.getInstance().safeAddress;
+      const proposer =  WalletManager.getInstance().safeAddress;
+
       // we check the conditions from the contract
 
       // require(!fundings[proposer].candidate, "already a candidate");
@@ -65,10 +66,30 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
         throw Error(`Cannot create the proposal, because the proposer ${proposer} has created such a request before`);
       }
 
-      // TODO: check the other conditions
       // require(avatar.nativeReputation().balanceOf(proposer) == 0, "already a member");
+      const daoState = await dao.fetchState();
+      const reputation = await daoState.reputation.entity;
+      const reputationContract = await reputation.contract();
+      const reputationBalanceOfProposer = await reputationContract.balanceOf(proposer);
+      if (Number(reputationBalanceOfProposer) !== 0) {
+        throw Error(`Request to join failed because you (${proposer}) are already a member of this DAO (${dao.id}) - rep: ${reputationBalanceOfProposer}`);
+
+      }
+
+      const minFeeToJoin = Number(joinAndQuitPlugin.coreState.pluginParams.minFeeToJoin);
+
+      if (fee < minFeeToJoin) {
+        msg = `fee (${fee}) should be >= minFeeToJoin (${minFeeToJoin})`;
+        throw Error(msg);
+      }
+      console.log(joinAndQuitPlugin.coreState.pluginParams.minFeeToJoin);
+      console.log('fee', fee);
+      console.log('minFeetoJoin', minFeeToJoin);
       // require(_feeAmount >= minFeeToJoin, "_feeAmount should be >= then the minFeeToJoin")
     };
+    // TODO: we are runnning the error handler here to check conditions before sending the transaction ...
+    // .. this is expensive, and once we have reduced such errors to the minimmum, we should to error handling only ...
+    // .. when the transaction actually failed
     await errorHandler();
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
     // send the request to the cloudfunction relayer
