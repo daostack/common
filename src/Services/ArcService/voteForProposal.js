@@ -35,7 +35,6 @@ export const voteForProposal = async (
       proposal = new FundingRequestProposal(arc, proposalId);
     }
 
-    // TODO: error Handler shoudl only be called in case an error occurred, once https://daostack1.atlassian.net/browse/CM-402 is implemented
     const errorHandler = async () => {
       const proposalState = await proposal.fetchState();
       if (proposalState.stage in PROPOSAL_STAGES_HISTORY) {
@@ -43,7 +42,7 @@ export const voteForProposal = async (
           'Cannot vote: the proposal has been already executed, or it expired',
         );
       }
-      // TODO: we also want to check if the user is a member of the Common here
+      // check if the user is a member of the Common
       const voter =  WalletManager.getInstance().safeAddress;
       const dao = proposalState.dao.entity;
       const daoState = await dao.fetchState();
@@ -56,7 +55,8 @@ export const voteForProposal = async (
       }
     };
 
-    // TODO: we are runnning the error handler here to check conditions before sending the transaction ...
+    // TODO: error Handler shoudl only be called in case an error occurred, once https://daostack1.atlassian.net/browse/CM-402 is implemented
+    // .. we are runnning the error handler here to check conditions before sending the transaction ...
     // .. this is expensive, and once we have reduced such errors to the minimmum, we should to error handling only ...
     // .. when the transaction actually failed
     await errorHandler();

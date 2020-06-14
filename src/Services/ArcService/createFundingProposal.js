@@ -135,7 +135,8 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
 
     const proposal = fundingRequestPlugin.createProposalTransactionMap(receipt);
     console.log('PROPOSAL -> ', proposal);
-    return proposal;
+    // TOOD: call update-proposal?proposalID=proposal.id endpoint here, so we are sure that the proposal is in the database
+    return proposal.id;
   } catch (e) {
     console.log(e);
     throw e;
