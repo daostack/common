@@ -43,6 +43,10 @@ export const voteForProposal = async (
         );
       }
       // TODO: we also want to check if the user is a member of the Common here
+      const dao = proposalState.dao.entity;
+      const reputation = dao.reputation.entity;
+      console.log(reputation);
+      console.log('---------------------------');
 
     };
     await errorHandler();

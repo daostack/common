@@ -190,10 +190,9 @@ export default class WalletManager {
   requestToJoin = async (pluginContract, method, params) => {
     try {
       const pluginAddress = pluginContract.address;
-      // const zeroValue = ethers.constants.Zero;
       const zeroValue = '0';
       let interf = new ethers.utils.Interface(ABI.CommonToken);
-      // TODOç please to not use parseEther here, just pass on the intended allowance
+      // TODO: please to not use parseEther here, just pass on the intended allowance
       const data1 = interf.functions.approve.encode([pluginAddress, ethers.utils.parseEther(defaultAllowance.toString())]);
       const signature1 = await this.txHashSignature(this.safeAddress, COMMONTOKENADDRESS, zeroValue, data1);
       console.log('signature1 -->', signature1);
@@ -239,9 +238,10 @@ export default class WalletManager {
       if (!response.data.proposalId) {
         // TODO: print or return tha transaction hash, so we can debug more easily
         // this happens typically when some preconditions are not met (say you are already a member)
-        msg = 'Execution success but no proposal Id was found';
+        msg = 'No proposal Id was found in the response';
         throw Error(msg);
       }
+      console.log(JSON.stringify(response));
       console.log(`Created proposal with id ${response.data.proposalId}`);
       return response.data.proposalId;
     } catch (err) {

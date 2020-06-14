@@ -2,6 +2,7 @@
 const {first} = require('rxjs/operators');
 import {ipfsUpload} from '../../Config';
 import WalletManager from '../../Util/WalletManager';
+import { joinSignature } from 'ethers/utils';
 
 export const createProposalRequestToJoin = async (arc, daoId, data) => {
   // data must look like this
@@ -67,6 +68,13 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
 
       // TODO: check the other conditions
       // require(avatar.nativeReputation().balanceOf(proposer) == 0, "already a member");
+      const minFeeToJoin = joinAndQuitPlugin.coreState.minFeeToJoin;
+      if (fee < minFeeToJoin) {
+        msg = `fee (${fee}) should be >= minFeeToJoin (${minFeeToJoin})`;
+        throw Error(msg);
+      }
+      console.log('fee', fee);
+      console.log('minFeetoJoin', minFeeToJoin);
       // require(_feeAmount >= minFeeToJoin, "_feeAmount should be >= then the minFeeToJoin")
     };
     await errorHandler();
