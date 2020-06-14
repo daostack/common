@@ -2,7 +2,6 @@
 const {first} = require('rxjs/operators');
 import {ipfsUpload} from '../../Config';
 import WalletManager from '../../Util/WalletManager';
-import { joinSignature } from 'ethers/utils';
 
 export const createProposalRequestToJoin = async (arc, daoId, data) => {
   // data must look like this
