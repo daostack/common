@@ -69,10 +69,9 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       // require(avatar.nativeReputation().balanceOf(proposer) == 0, "already a member");
       const daoState = await dao.fetchState();
       const reputation = await daoState.reputation.entity;
-      console.log(reputation);
       const reputationContract = await reputation.contract();
       const reputationBalanceOfProposer = await reputationContract.balanceOf(proposer);
-      if (reputationBalanceOfProposer !== 0) {
+      if (Number(reputationBalanceOfProposer) !== 0) {
         throw Error(`Request to join failed because you (${proposer}) are already a member of this DAO (${dao.id}) - rep: ${reputationBalanceOfProposer}`);
 
       }
@@ -88,6 +87,9 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       console.log('minFeetoJoin', minFeeToJoin);
       // require(_feeAmount >= minFeeToJoin, "_feeAmount should be >= then the minFeeToJoin")
     };
+    // TODO: we are runnning the error handler here to check conditions before sending the transaction ...
+    // .. this is expensive, and once we have reduced such errors to the minimmum, we should to error handling only ...
+    // .. when the transaction actually failed
     await errorHandler();
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
     // send the request to the cloudfunction relayer

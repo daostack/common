@@ -196,26 +196,32 @@ const ProposalScreen = ({navigation, route, props}) => {
   };
 
   const onVote = async isApproved => {
-    let votingResponse = null;
-    const voteData = {vote: isApproved ? 1 : 0};
+    try {
+      let votingResponse = null;
+      const voteData = {vote: isApproved ? 1 : 0};
 
-    if (proposalInfo.type == PROPOSAL_TYPE.JoinAndQuit) {
-      votingResponse = await ArcService.getInstance().voteForJoinAndQuitProposal(
-        routeProposalId,
-        voteData,
-      );
-    } else {
-      votingResponse = await ArcService.getInstance().voteForFundingRequestProposal(
-        routeProposalId,
-        voteData,
-      );
+      if (proposalInfo.type == PROPOSAL_TYPE.JoinAndQuit) {
+        votingResponse = await ArcService.getInstance().voteForJoinAndQuitProposal(
+          routeProposalId,
+          voteData,
+        );
+      } else {
+        votingResponse = await ArcService.getInstance().voteForFundingRequestProposal(
+          routeProposalId,
+          voteData,
+        );
+      }
+
+      console.log('votingResponse -> ', votingResponse);
+
+      closeApprovalSheet();
+      Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
+      setIsVoteByYou({isApproved: isApproved});
+    } catch (err) {
+      console.log(err);
+      closeApprovalSheet();
+      Toast.error(err.message);
     }
-
-    console.log('votingResponse -> ', votingResponse);
-
-    closeApprovalSheet();
-    Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
-    setIsVoteByYou({isApproved: isApproved});
   };
 
   const renderStickyBottomContent = () => {
