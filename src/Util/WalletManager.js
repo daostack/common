@@ -163,13 +163,13 @@ export default class WalletManager {
       if (txHash) {
         this.isRelayerTxSuccess(txHash).then( success => {
           if (success) {
-            this.reportToAnalytics('exeTxFailed', txHash);
+            this.reportToAnalytics('exe_tx_failed', txHash);
           }
         });
       }
 
       if (response.status !== 200 || txHash == null) {
-        this.reportToAnalytics('exeTxFailed');
+        this.reportToAnalytics('exe_tx_failed');
       }
 
       return response;
@@ -228,13 +228,13 @@ export default class WalletManager {
       if (!response.data) {
         console.log('RequestToJoin response -->', response);
         msg = 'Response has no "data" property - thats not good at all :(';
-        this.reportToAnalytics('requestToJoinFailed', msg);
+        this.reportToAnalytics('request_to_join_failed', msg);
         throw Error(msg);
       }
       console.log('RequestToJoin response.data -->', response.data);
       if (response.data.errcode) {
         msg = `Code: ${response.data.errorCode}, Message: ${response.data.error}`;
-        this.reportToAnalytics('requestToJoinFailed', msg);
+        this.reportToAnalytics('request_to_join_failed', msg);
         throw Error(msg);
       }
 
@@ -242,7 +242,7 @@ export default class WalletManager {
         // TODO: print or return tha transaction hash, so we can debug more easily
         // this happens typically when some preconditions are not met (say you are already a member)
         msg = 'Execution success but no proposal Id was found';
-        this.reportToAnalytics('requestToJoinFailed', msg);
+        this.reportToAnalytics('request_to_join_failed', msg);
         throw Error(msg);
       }
       console.log(JSON.stringify(response));
@@ -284,12 +284,12 @@ export default class WalletManager {
       if (!response.data) {
         console.log(response);
         let msg = 'unexpected error sending request to createCommon2: empty response';
-        this.reportToAnalytics('createCommonStep2Failed', msg);
+        this.reportToAnalytics('create_common_step2_failed', msg);
         throw Error(msg);
       }
       if (response.data.errcode) {
         let msg = `Code: ${response.data.errorCode}, Message: ${response.data.error}`;
-        this.reportToAnalytics('createCommonStep2Failed', msg);
+        this.reportToAnalytics('create_common_step2_failed', msg);
         throw Error(msg);
       }
       console.log(response.data);
