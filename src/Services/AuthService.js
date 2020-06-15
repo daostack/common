@@ -44,7 +44,7 @@ export default class AuthService {
 
   async signOut() {
     //await GoogleSignin.revokeAccess();
-    await GoogleSignin.signOut();
+    // await GoogleSignin.signOut();
     await auth().signOut();
   }
 
