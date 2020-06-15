@@ -31,6 +31,11 @@ class CreateDiscussionForm extends React.Component {
 
         const imageList = Object.keys(changedFields).filter( x => x.includes('images_')).map(x => changedFields[x]);
 
+        if (!userStore.userInfo.uid) {
+          Toast.error('We can not post your discussion at the moment');
+          return;
+        }
+
         firestore()
           .collection('discussion')
           .doc()
