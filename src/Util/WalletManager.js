@@ -6,6 +6,7 @@ import auth from '@react-native-firebase/auth';
 import ABI from './abi.json';
 import FirebaseService from '../Services/FirebaseService';
 import Toast from './Toast';
+import analytics from '@react-native-firebase/analytics';
 
 ethers.Contract.prototype.sendToRelayer = async function (funcName, params, value = '0') {
   const data = this.interface.functions[funcName].encode(params);
@@ -14,7 +15,6 @@ ethers.Contract.prototype.sendToRelayer = async function (funcName, params, valu
   const response = await manager.execTransaction(manager.safeAddress, this.address, value, data);
   return response.data?.txHash;
 };
-
 
 ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, params, value = '0') {
   const txHash = await this.sendToRelayer(funcName, params, value);
@@ -59,6 +59,9 @@ export default class WalletManager {
 
   static getInstance = () => {
     if (WalletManager.myInstance == null) {
+      analytics().logEvent('WM not init', {
+        userId: auth().currentUser.uid,
+      });
       throw new Error('WalletManager is not initialized');
     }
     return WalletManager.myInstance;
@@ -148,29 +151,24 @@ export default class WalletManager {
     try {
       const finalSignature = await this.txHashSignature(safeAddress, toAddress, value, data);
       const idToken = await auth().currentUser.getIdToken();
-
-      // const masterCopyContract = new ethers.Contract(
-      //   safeAddress,
-      //   ABI.MasterCopy,
-      //   this.wallet,
-      // );
-
-      // const OVERRIDES = {
-      //   gasLimit: 10000000,
-      //   gasPrice: 15000000000,
-      // };
-
-      // const zeroAddress = `0x${'0'.repeat(40)}`;
-      // const tx = await masterCopyContract.execTransaction(toAddress, valueNumber, data, 0, 0, 0, 0, zeroAddress, zeroAddress, finalSignature, OVERRIDES);
-      // console.log('execTransaction', tx);
-
       const body = { idToken, to: toAddress, value: value, data, signature: finalSignature };
       const response = await axiosClient.post(
         'execTransaction',
-        // options,
         body
       );
-      // console.log('execTransaction ->', response);
+      const txHash = response.data?.txHash;
+      if (txHash) {
+        isRelayerTxSuccess(txHash).then( success => {
+          if (success) {
+            reportToAnalytics('exeTxFailed', txHash);
+          }
+        });
+      }
+
+      if (response.status !== 200 || txHash == null) {
+        reportToAnalytics('exeTxFailed');
+      }
+
       return response;
     } catch (err) {
       console.log(err);
@@ -228,11 +226,13 @@ export default class WalletManager {
       if (!response.data) {
         console.log('RequestToJoin response -->', response);
         msg = 'Response has no "data" property - thats not good at all :(';
+        reportToAnalytics('requestToJoinFailed', msg);
         throw Error(msg);
       }
       console.log('RequestToJoin response.data -->', response.data);
       if (response.data.errcode) {
         msg = `Code: ${response.data.errorCode}, Message: ${response.data.error}`;
+        reportToAnalytics('requestToJoinFailed', msg);
         throw Error(msg);
       }
 
@@ -240,6 +240,7 @@ export default class WalletManager {
         // TODO: print or return tha transaction hash, so we can debug more easily
         // this happens typically when some preconditions are not met (say you are already a member)
         msg = 'Execution success but no proposal Id was found';
+        reportToAnalytics('requestToJoinFailed', msg);
         throw Error(msg);
       }
       console.log(`Created proposal with id ${response.data.proposalId}`);
@@ -279,16 +280,16 @@ export default class WalletManager {
 
       if (!response.data) {
         console.log(response);
-        throw Error('unexpected error sending request to createCommon2: empty response');
+        let msg = 'unexpected error sending request to createCommon2: empty response';
+        reportToAnalytics('createCommonStep2Failed', msg);
+        throw Error(msg);
       }
       if (response.data.errcode) {
-        // TODO: throw an error here, do not show it
-        Toast.error(`Code: ${response.data.errorCode}, Message: ${response.data.error}`);
-        return null;
+        let msg = `Code: ${response.data.errorCode}, Message: ${response.data.error}`;
+        reportToAnalytics('createCommonStep2Failed', msg);
+        throw Error(msg);
       }
-
       console.log(response.data);
-
       return response.data;
     } catch (err){
       console.log(err);
@@ -397,5 +398,13 @@ export default class WalletManager {
       }
     }
     return txEvents;
+  }
+
+  reportToAnalytics = (eventName, ...params) => {
+    analytics().logEvent(eventName, {
+      userId: auth().currentUser.uid,
+      safeAddress: this.safeAddress,
+      ...params,
+    });
   }
 }
