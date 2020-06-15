@@ -32,6 +32,8 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
 
 const axiosClient = axios.create({
   baseURL: relayerUrl,
+  // DEBUG
+  // 'http://localhost:5001/common-daostack/us-central1/relayer',
   timeout: 1000000, // milliseconds
 });
 
@@ -59,7 +61,7 @@ export default class WalletManager {
 
   static getInstance = () => {
     if (WalletManager.myInstance == null) {
-      analytics().logEvent('WM not init', {
+      analytics().logEvent('WalletManager_not_init', {
         userId: auth().currentUser.uid,
       });
       throw new Error('WalletManager is not initialized');
@@ -87,6 +89,7 @@ export default class WalletManager {
     return await contract[functionName]();
   };
 
+  /// Local Wallet
   signTransaction = async (to, value, data = '0x', chainId = web3NetworkId) => {
     const transaction = {
       to: to,
@@ -97,6 +100,7 @@ export default class WalletManager {
     return await this.wallet.sign(transaction);
   };
 
+  /// Local Wallet
   sendTransaction = async (to, value, data = '0x', chainId = web3NetworkId) => {
     const transaction = {
       to: to,
@@ -133,10 +137,9 @@ export default class WalletManager {
     return response.data;
   };
 
-  txHashSignature = async (safeAddress, toAddress, value = '0', data = '0x') => {
+  txHashSignature = async (safeAddress, toAddress, value = 0, data = '0x') => {
     try {
-      const valueNumber = ethers.utils.parseEther(value).toString(10);
-      const txHash = await this.createSafeTransactionHash(safeAddress, toAddress, valueNumber, data);
+      const txHash = await this.createSafeTransactionHash(safeAddress, toAddress, value, data);
       const byteTxHash = ethers.utils.arrayify(txHash);
       const signedTx = await this.wallet.signMessage(byteTxHash);
       // Add 4
@@ -158,15 +161,15 @@ export default class WalletManager {
       );
       const txHash = response.data?.txHash;
       if (txHash) {
-        isRelayerTxSuccess(txHash).then( success => {
+        this.isRelayerTxSuccess(txHash).then( success => {
           if (success) {
-            reportToAnalytics('exeTxFailed', txHash);
+            this.reportToAnalytics('exeTxFailed', txHash);
           }
         });
       }
 
       if (response.status !== 200 || txHash == null) {
-        reportToAnalytics('exeTxFailed');
+        this.reportToAnalytics('exeTxFailed');
       }
 
       return response;
@@ -225,13 +228,13 @@ export default class WalletManager {
       if (!response.data) {
         console.log('RequestToJoin response -->', response);
         msg = 'Response has no "data" property - thats not good at all :(';
-        reportToAnalytics('requestToJoinFailed', msg);
+        this.reportToAnalytics('requestToJoinFailed', msg);
         throw Error(msg);
       }
       console.log('RequestToJoin response.data -->', response.data);
       if (response.data.errcode) {
         msg = `Code: ${response.data.errorCode}, Message: ${response.data.error}`;
-        reportToAnalytics('requestToJoinFailed', msg);
+        this.reportToAnalytics('requestToJoinFailed', msg);
         throw Error(msg);
       }
 
@@ -239,7 +242,7 @@ export default class WalletManager {
         // TODO: print or return tha transaction hash, so we can debug more easily
         // this happens typically when some preconditions are not met (say you are already a member)
         msg = 'Execution success but no proposal Id was found';
-        reportToAnalytics('requestToJoinFailed', msg);
+        this.reportToAnalytics('requestToJoinFailed', msg);
         throw Error(msg);
       }
       console.log(JSON.stringify(response));
@@ -281,12 +284,12 @@ export default class WalletManager {
       if (!response.data) {
         console.log(response);
         let msg = 'unexpected error sending request to createCommon2: empty response';
-        reportToAnalytics('createCommonStep2Failed', msg);
+        this.reportToAnalytics('createCommonStep2Failed', msg);
         throw Error(msg);
       }
       if (response.data.errcode) {
         let msg = `Code: ${response.data.errorCode}, Message: ${response.data.error}`;
-        reportToAnalytics('createCommonStep2Failed', msg);
+        this.reportToAnalytics('createCommonStep2Failed', msg);
         throw Error(msg);
       }
       console.log(response.data);

@@ -261,7 +261,7 @@ class nativeBridgeTests extends React.Component {
       const response = await manager.execTransaction(
         safeAddress,
         '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB',
-        '0.01',
+        ethers.utils.parseEther('0.01').toString(10),
       );
       console.log('txHash ->', response.data.txHash);
       this.setState({
