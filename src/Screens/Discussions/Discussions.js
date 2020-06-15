@@ -26,7 +26,6 @@ import auth from '@react-native-firebase/auth';
 import BottomSheetModal from '../../Components/BottomSheetModal';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import ImageView from 'react-native-image-viewing';
-// import _ from 'lodash';
 
 const {width} = Dimensions.get('window');
 
@@ -260,11 +259,11 @@ const Discussions = props => {
                 }}>
                 <Image
                   style={styles.avatar}
-                  source={{uri: user.photoURL}}
+                  source={{uri: user?.photoURL || ''}}
                   // source={require('../../Assets/daoGeneralInfo.png')}
                 />
                 <View style={{flex: 1, paddingHorizontal: 10}}>
-                  <Text style={{fontWeight: 'bold'}}>{user.displayName}</Text>
+                  <Text style={{fontWeight: 'bold'}}>{user?.displayName || ''}</Text>
                   {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
                   <Text style={{color: colors.grey3}}>
                     {moment(data.createTime.toDate()).fromNow()}
