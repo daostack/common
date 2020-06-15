@@ -35,8 +35,9 @@ import {PROPOSAL_TYPE} from '../../Services/ProposalService';
 const ProposalScreen = ({navigation, route, props}) => {
   const [proposalInfo, setProposalInfo] = useState(false);
   const [proposedUser, setProposedUser] = useState(false);
-  const renderVoting = proposalInfo && !PROPOSAL_STAGES_HISTORY.includes(proposalInfo?.stageStr);
   const routeProposalId = route?.params.proposalId;
+  const isMember = route?.params?.isMember;
+  const renderVoting = proposalInfo && !PROPOSAL_STAGES_HISTORY.includes(proposalInfo?.stageStr);
 
   useEffect(() => {
     const getProposalInfo = async proposalId => {
@@ -412,7 +413,7 @@ const ProposalScreen = ({navigation, route, props}) => {
 
         {index === 0 ? (
           <View style={styles.actionButtonContainer}>
-            {renderVoting && renderStickyBottomContent()}
+            {isMember && renderVoting && renderStickyBottomContent()}
           </View>
         ) : (
           <>{messageInput()}</>
