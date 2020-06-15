@@ -130,7 +130,7 @@ const RequestStep3 = props => {
             </Text>
             <Text
               style={{marginTop: 12, marginBottom: 23, textAlign: 'center'}}>
-              20% of the common members contributed more than $20
+              100% of the Common members have contributed more than you did
             </Text>
             <View
               style={{
