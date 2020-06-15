@@ -1,16 +1,12 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import {CommonBox} from '../../Components';
 import {db} from '../../Firebase';
 import {inject, observer} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
 
 import SwiperCard from '../../Components/SwiperCard';
-import {layout, text} from '../../Theme';
+import {layout, text, sizeXXL, colors} from '../../Theme';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -143,6 +139,27 @@ const CommonsSwiper = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  emptyObjectContainer: {
+    ...layout.content,
+    ...layout.marginTopM,
+    borderRadius: 14,
+    paddingHorizontal: sizeXXL,
+    backgroundColor: colors.lightBlue,
+  },
+
+  btn: {
+    ...layout.btnOutline,
+    flexDirection: 'row',
+    marginTop: 20,
+    borderRadius: 5,
+    backgroundColor: colors.white,
+    flexGrow: 0,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+  },
+});
 
 export default inject(
   'daoStore',

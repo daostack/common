@@ -66,7 +66,6 @@ const ProposalData = props => {
             id: doc.id,
             ...doc.data(),
           }));
-          console.log('AAA', list);
           setTopMessage(list);
         });
     };
@@ -208,7 +207,7 @@ const ProposalData = props => {
           <View style={layout.content}>
             <View style={styles.proposalColumnSubtitle}>
               <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
-                Ad-ons
+                Links
               </Text>
             </View>
 
@@ -220,7 +219,7 @@ const ProposalData = props => {
                     url: 'https://daostack.io/',
                   })
                 }>
-                <Text style={styles.adsText}>Amazon Facebook group</Text>
+                <Text style={styles.adsText}>TODO: show actual links here</Text>
               </TouchableOpacity>
             </View>
 
@@ -234,7 +233,7 @@ const ProposalData = props => {
                   })
                 }>
                 <Text style={styles.adsText}>
-                  Facebook campaign segment.pdf
+                  TODO: show links to actually uploade files here
                 </Text>
               </TouchableOpacity>
             </View>
