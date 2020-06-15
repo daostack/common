@@ -163,9 +163,11 @@ const App = ({userStore, bottomSheetStore}) => {
           userStore.setSignedInUser(filteredUser);
           if (isNewUser) {
           }
+          userStore.setIsLogin(true);
           updateUser();
         } else {
           userStore.setSignedInUser(null);
+          userStore.setIsLogin(false);
         }
 
         userStore.setIsLoading(false);

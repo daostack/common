@@ -62,7 +62,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     };
     getDaos();
     return unsubscribe;
-  }, [daoStore, bottomSheetStore, userStore.isLoading]);
+  }, [daoStore, bottomSheetStore, userStore.isLogin]);
 
   const setDao = dao => {
     daoStore.setDao(dao);

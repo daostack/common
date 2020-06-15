@@ -18,11 +18,13 @@ export const userInfoFields = [
 class UserStore {
   userInfo;
   isLoading;
+  isLogin;
   myCommons;
   myProposals;
   constructor() {
     userInfo = null;
     isLoading = false;
+    isLogin = false;
   }
 
   isDaoMember = members => {
@@ -35,6 +37,10 @@ class UserStore {
   setIsLoading = loading => {
     this.isLoading = loading;
   };
+
+  setIsLogin = login => {
+    this.isLogin = login;
+  }
 
   setSignedInUser = newUserInfo => {
     if (newUserInfo) {
@@ -83,6 +89,7 @@ decorate(UserStore, {
   setSignedInUser: action,
   userInfo: observable,
   isLoading: observable,
+  isLogin: observable,
   myCommons: observable,
   myProposals: observable,
 });
