@@ -100,20 +100,6 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
     }
   }, [data]);
 
-  /* useEffect(() => {
-    const getDiscussionsCount = async (proposalId) => {
-      try {
-        const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(proposalId);
-        console.log('DISCUSSION COUNT', discussionsCount);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    if (proposalId || data) {
-      getDiscussionsCount(proposalId || data.id);
-    }
-  }, [proposalId, data]); */
-
   return (
     <Animated.View style={[styles.proposalCard, containerStyle]}>
       <TouchableOpacity onPress={onReviewProposal}>
