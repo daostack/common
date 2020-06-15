@@ -32,14 +32,20 @@ export default class FirebaseService {
   }
 
   async getUserByAddress(address) {
+
+    console.log('GETTING USER WITH ADDRESS -> ', address);
+
     return db
       .collection(DB_COLLECTIONS.users)
-      .where('ethereumAddress', '==', address).get()
+      .where('safeAddress', '==', address)
+      .get()
       .then(snapshots => {
         if (!snapshots) {
           return null;
         }
-        return snapshots.docs[0].data();
+        const doc = snapshots.docs[0];
+        return {...{id: doc.id}, ...doc.data()};
+
       });
   }
 

@@ -26,17 +26,16 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 const { width } = Dimensions.get('window');
 import {UserAvatar} from '../../Components';
-
 import CountDown from 'react-native-countdown-component';
 import FirebaseService from '../../Services/FirebaseService';
 import {monthShortNames} from '../../Util/DateUtil';
-
+import {PROPOSAL_STAGES_HISTORY} from '../../Services/ProposalService';
 import {PROPOSAL_TYPE} from '../../Services/ProposalService';
 
 const ProposalScreen = ({navigation, route, props}) => {
   const [proposalInfo, setProposalInfo] = useState(false);
   const [proposedUser, setProposedUser] = useState(false);
-
+  const renderVoting = proposalInfo && !PROPOSAL_STAGES_HISTORY.includes(proposalInfo?.stageStr);
   const routeProposalId = route?.params.proposalId;
 
   useEffect(() => {
@@ -49,16 +48,19 @@ const ProposalScreen = ({navigation, route, props}) => {
         //RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
-        if (currProposalInfo.joinAndQuit) {
+
+        if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
           proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
           funding = currProposalInfo.joinAndQuit.funding;
         }
         //FundingRequest proposal
         else {
-          proposedMemberId = currProposalInfo.fundingRequest.beneficiaryId;
-          funding = currProposalInfo.joinAndQuit.amount;
+          const proposedMember = await FirebaseService.getInstance().getUserByAddress(
+            currProposalInfo.fundingRequest.beneficiary,
+          );
+          proposedMemberId = proposedMember.id;
+          funding = currProposalInfo.fundingRequest.amount;
         }
-
         const currProposedUser = await FirebaseService.getInstance().getUserById(
           proposedMemberId,
         );
@@ -67,6 +69,7 @@ const ProposalScreen = ({navigation, route, props}) => {
         setProposalInfo({...currProposalInfo, ...{funding: funding}});
       } catch (error) {
         console.log('error: ', error);
+        Toast.error(error?.toString());
       }
     };
 
@@ -193,27 +196,32 @@ const ProposalScreen = ({navigation, route, props}) => {
   };
 
   const onVote = async isApproved => {
-    console.log('!!! onVote !!! ');
-    let votingResponse = null;
-    const voteData = {vote: isApproved ? 1 : 0};
+    try {
+      let votingResponse = null;
+      const voteData = {vote: isApproved ? 1 : 0};
 
-    if (proposalInfo.type == PROPOSAL_TYPE.JoinAndQuit) {
-      votingResponse = await ArcService.getInstance().voteForJoinAndQuitProposal(
-        routeProposalId,
-        voteData,
-      );
-    } else {
-      votingResponse = await ArcService.getInstance().voteForFundingRequestProposal(
-        routeProposalId,
-        voteData,
-      );
+      if (proposalInfo.type == PROPOSAL_TYPE.JoinAndQuit) {
+        votingResponse = await ArcService.getInstance().voteForJoinAndQuitProposal(
+          routeProposalId,
+          voteData,
+        );
+      } else {
+        votingResponse = await ArcService.getInstance().voteForFundingRequestProposal(
+          routeProposalId,
+          voteData,
+        );
+      }
+
+      console.log('votingResponse -> ', votingResponse);
+
+      closeApprovalSheet();
+      Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
+      setIsVoteByYou({isApproved: isApproved});
+    } catch (err) {
+      console.log(err);
+      closeApprovalSheet();
+      Toast.error(err.message);
     }
-
-    console.log('votingResponse -> ', votingResponse);
-
-    closeApprovalSheet();
-    Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
-    setIsVoteByYou({isApproved: isApproved});
   };
 
   const renderStickyBottomContent = () => {
@@ -404,7 +412,7 @@ const ProposalScreen = ({navigation, route, props}) => {
 
         {index === 0 ? (
           <View style={styles.actionButtonContainer}>
-            {renderStickyBottomContent()}
+            {renderVoting && renderStickyBottomContent()}
           </View>
         ) : (
           <>{messageInput()}</>

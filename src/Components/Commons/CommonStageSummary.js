@@ -41,7 +41,6 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
       </View>
     );
   };
-
   return (
     <View style={styles.commonProgressContainer}>
       <View style={styles.commonNumbers}>

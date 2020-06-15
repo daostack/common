@@ -35,7 +35,6 @@ const FundingProposal = ({
       try {
         const formData = fundingRequestFormStore.getChangedFormFieldsJson();
         console.log('FORM DATA', formData);
-        console.log(formData);
         const data = {
           title: formData[FundingRequestForm.FIELD_TITLE],
           description: formData[FundingRequestForm.FIELD_DESCRIPTION],
@@ -45,7 +44,7 @@ const FundingProposal = ({
           files: formData[FundingRequestForm.FIELD_FILES],
         };
 
-        console.log('DATA -> ', data);
+        // console.log('DATA -> ', data);
         Toast.loading('Creating funding proposal...');
 
         const proposalId = await ArcService.getInstance().createFundingProposal(
