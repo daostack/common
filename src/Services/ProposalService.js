@@ -59,6 +59,7 @@ export default class ProposalService {
       .collection(DB_COLLECTIONS.proposals)
       .where('dao', '==', daoId)
       .where('type', '==', 'JoinAndQuit')
+      .where('expiresInQueueAt', '>', moment().unix())
       .where('stageStr', 'in', [
         PROPOSAL_STAGE.Queued,
         PROPOSAL_STAGE.PreBoosted,
