@@ -104,7 +104,7 @@ export default class ProposalService {
           if (snapshot.docChanges().length !== 0) {
             const newList = snapshot.docChanges().map(({doc}) => {
               if (onlyRequestsToJoin) {
-                if (!doc.data().joinAndQuit) {
+                if (doc.data().type !== PROPOSAL_TYPE.JoinAndQuit) {
                   return false;
                 }
               }
