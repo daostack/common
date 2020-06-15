@@ -102,7 +102,7 @@ const CreateStep4 = props => {
               setImageURI(url);
             }
           })
-          .catch(error => toast.error(error));
+          .catch(error => Toast.error(error));
       }
     });
   };

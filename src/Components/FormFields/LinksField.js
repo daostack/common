@@ -158,11 +158,6 @@ class LinksField extends React.Component {
   }
 }
 
-// Set default props
-TextInputField.defaultProps = {
-  password: false,
-};
-
 const styles = StyleSheet.create({
   textfield: {
     //minHeight: 48,

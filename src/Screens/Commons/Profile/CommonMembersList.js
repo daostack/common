@@ -1,22 +1,11 @@
 import React, {useState, useEffect} from 'react';
-
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  ScrollView,
-  View,
-  Dimensions,
-} from 'react-native';
-import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
+import {View} from 'react-native';
 import MemberCard from '../../../Components/MemberCard';
-import {layout, colors, text, sizeS} from '../../../Theme';
-import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
-import ProposalsList from '../../Proposals/ProposalsList';
+import {layout} from '../../../Theme';
 import FirebaseService from '../../../Services/FirebaseService';
 import Loader from '../../../Components/Loader';
 import MemberImage from '../../../Components/Commons/MemberImage';
+import Toast from '../../../Util/Toast';
 
 const CommonMembersList = ({members, horizontal}) => {
   const [membersInfo, setMembersInfo] = useState([]);

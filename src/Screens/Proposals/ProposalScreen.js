@@ -96,8 +96,8 @@ const ProposalScreen = ({navigation, route, props}) => {
   const [inputText, setInputText] = useState(null);
 
   const inputRef = useRef();
-  boostedInfoRef = useRef();
-  approvalSheetRef = useRef();
+  const boostedInfoRef = useRef();
+  const approvalSheetRef = useRef();
 
   const renderTabBar = currProps => (
     <TabBar

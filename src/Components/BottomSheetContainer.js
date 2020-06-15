@@ -7,8 +7,8 @@ import {colors, text, layout} from '../Theme';
 import Animated from 'react-native-reanimated';
 
 const BottomSheetContainer = props => {
-  ref = useRef();
-  fall = new Animated.Value(0);
+  let ref = useRef();
+  let fall = new Animated.Value(0);
 
   useEffect(() => {
     if (ref.current) {
@@ -16,17 +16,17 @@ const BottomSheetContainer = props => {
     }
   }, []);
 
-  openBottomSheet = () => {};
+  let openBottomSheet = () => {};
 
-  closeBottomSheet = () => {
+  const closeBottomSheet = () => {
     ref.current.snapTo(0);
   };
 
-  onClosed = () => {
+  const onClosed = () => {
     props.bottomSheetStore.hideBottomSheet();
   };
 
-  renderSheetHeader = () => {
+  const renderSheetHeader = () => {
     if (props.withoutHeader) {
       return null;
     }
@@ -37,7 +37,7 @@ const BottomSheetContainer = props => {
     );
   };
 
-  renderSheetContent = () => {
+  const renderSheetContent = () => {
     let contentStyle = {
       ...layout.content,
       ...styles.contentContainer,

@@ -13,7 +13,7 @@ import Swiper from 'react-native-swiper';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const Onboarding = ({navigation}) => {
-  _onboardingClick = async () => {
+  const _onboardingClick = async () => {
     try {
       await AsyncStorage.setItem('onboarded', 'true');
       navigation.dispatch(

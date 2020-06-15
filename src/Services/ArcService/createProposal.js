@@ -79,7 +79,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       const minFeeToJoin = Number(joinAndQuitPlugin.coreState.pluginParams.minFeeToJoin);
 
       if (fee < minFeeToJoin) {
-        msg = `fee (${fee}) should be >= minFeeToJoin (${minFeeToJoin})`;
+        const msg = `fee (${fee}) should be >= minFeeToJoin (${minFeeToJoin})`;
         throw Error(msg);
       }
       console.log(joinAndQuitPlugin.coreState.pluginParams.minFeeToJoin);

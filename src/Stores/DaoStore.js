@@ -19,10 +19,10 @@ class DaoStore {
   stage;
   isError;
   constructor() {
-    isLoading = false;
-    daos = [];
-    stage = 0;
-    isError = null;
+    let isLoading = false;
+    let daos = [];
+    let stage = 0;
+    let isError = null;
   }
 
   setIsLoading = loading => {

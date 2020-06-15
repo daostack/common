@@ -1,4 +1,4 @@
-import React from 'react';
+/* import React from 'react';
 import {
   View,
   TouchableOpacity,
@@ -74,4 +74,4 @@ const ChatInput = props => {
   );
 };
 
-export default ChatInput;
+export default ChatInput; */
