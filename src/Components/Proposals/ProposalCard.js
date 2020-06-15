@@ -36,13 +36,15 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           funding = currProposalInfo.fundingRequest.amount;
         }
 
+        const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(currProposalId);
+
         const currProposedUser = await FirebaseService.getInstance().getUserById(
           proposedMemberId,
         );
 
         setProposalCardInfo({
           proposedUser: currProposedUser,
-          proposalInfo: {...currProposalInfo, ...{funding: funding}},
+          proposalInfo: {...currProposalInfo, ...{funding: funding}, discussionsCount},
         });
 
       } catch (error) {
@@ -79,7 +81,9 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           proposedMemberId,
         );
 
-        const allProposalInfo = { ...currProposalInfo, ...{ funding: funding } };
+        const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(currProposalInfo.id);
+
+        const allProposalInfo = { ...currProposalInfo, ...{ funding: funding }, discussionsCount };
 
         setProposalCardInfo({
           proposedUser: currProposedUser,
@@ -95,6 +99,20 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
       loadProposalInfo(data);
     }
   }, [data]);
+
+  /* useEffect(() => {
+    const getDiscussionsCount = async (proposalId) => {
+      try {
+        const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(proposalId);
+        console.log('DISCUSSION COUNT', discussionsCount);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    if (proposalId || data) {
+      getDiscussionsCount(proposalId || data.id);
+    }
+  }, [proposalId, data]); */
 
   return (
     <Animated.View style={[styles.proposalCard, containerStyle]}>
@@ -137,7 +155,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
             />
             <ProposalApprovalTag
               iconName="discussion"
-              value={121}
+              value={proposalCardInfo.proposalInfo?.discussionsCount}
               isMarked={false}
             />
           </View>
