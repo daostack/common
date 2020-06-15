@@ -119,7 +119,7 @@ const CommonProfile = ({
   const Proposals = () => {
     return (
       <View style={{padding: sizeL}}>
-        <ProposalsList navigation={navigation} commonId={currCommon.id} />
+        <ProposalsList isMember={isMember} navigation={navigation} commonId={currCommon.id} />
       </View>
     );
   };
@@ -128,6 +128,7 @@ const CommonProfile = ({
     return (
       <View style={{padding: sizeL}}>
         <ProposalsList
+          isMember={isMember}
           navigation={navigation}
           commonId={currCommon.id}
           isHistory={true}
@@ -249,6 +250,7 @@ const CommonProfile = ({
       name: 'ProposalScreen',
       params: {
         proposalId: route.params.createdProposalId,
+        isMember,
       },
     });
     navigation.dispatch(navigate);
@@ -264,6 +266,7 @@ const CommonProfile = ({
       name: 'ProposalScreen',
       params: {
         proposalId: pendingProposalsData.usersPendingProposal?.id,
+        isMember,
       },
     });
     navigation.dispatch(navigate);

@@ -14,7 +14,7 @@ import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 
 const {width, height} = Dimensions.get('window');
 
-const ProposalsList = props => {
+const ProposalsList = ({isMember, ...props}) => {
   const commonId = props.commonId;
   const userId = props.userId;
   const isHistory = props.isHistory;
@@ -79,6 +79,7 @@ const ProposalsList = props => {
       name: 'ProposalScreen',
       params: {
         proposalId: proposalId,
+        isMember,
       },
     });
     navigation.dispatch(navigate);
