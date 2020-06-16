@@ -31,7 +31,7 @@ const CommonBox = props => {
       />
 
       <CommonStageSummary
-        isFundingStage={true}
+        isCommonCard={true}
         commonProgressInfo={{
           time: props.common.fundingGoalDeadline,
           activeProposals:
@@ -41,7 +41,7 @@ const CommonBox = props => {
           goal: props.common.fundingGoal,
           members: props.common.memberCount * 1,
           // TODO: get this value. Is it even tracked in the contract? need to check.
-          raised: 0,
+          raised: props.common.balance,
           currentBudget: numberFormatter(
             // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
             props.common.tokenTotalSupply,

@@ -2,14 +2,20 @@ import WalletManager from '../../Util/WalletManager';
 import {createCommon} from './createCommon';
 import {createProposalRequestToJoin} from './createProposal';
 import {createFundingProposal} from './createFundingProposal';
+import {voteForProposal} from './voteForProposal';
 
 import {Arc} from '@daostack/arc.js';
-import {graphHttpLink, graphwsLink, ipfsLink} from '../../Config';
+import {
+  graphHttpLink,
+  graphwsLink,
+  ipfsLink,
+  PROPOSAL_TYPE,
+} from '../../Config';
 
 export default class ArcService {
   static myInstance = null;
   constructor() {
-    return ( async () => {
+    return (async () => {
       this.arc = new Arc({
         graphqlHttpProvider: graphHttpLink,
         graphqlWsProvider: graphwsLink,
@@ -37,12 +43,30 @@ export default class ArcService {
     return createProposalRequestToJoin(this.arc, daoId, data);
   };
 
-  createFundingProposal = async data => {
-    return createFundingProposal(this.arc, data);
+  createFundingProposal = async (userAddress, daoId, data) => {
+    return createFundingProposal(this.arc, userAddress, daoId, data);
+  };
+
+  // VOTING
+  voteForJoinAndQuitProposal = async (proposalId, data) => {
+    return voteForProposal(
+      this.arc,
+      proposalId,
+      data,
+      PROPOSAL_TYPE.JoinAndQuit,
+    );
+  };
+
+  voteForFundingRequestProposal = async (proposalId, data) => {
+    return voteForProposal(
+      this.arc,
+      proposalId,
+      data,
+      PROPOSAL_TYPE.FundingRequest,
+    );
   };
 
   // COMMONS
-
   async createCommon(givenOpts = {}, navigation, daoStore) {
     return createCommon(this.arc, givenOpts, navigation, daoStore);
   }

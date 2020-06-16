@@ -1,86 +1,109 @@
 import {StyleSheet, View, Text} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {layout, colors, text, sizeXS} from '../Theme';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import Icon from '../Assets/iconfont/Icon';
 import MemberImage from './Commons/MemberImage';
-import FirebaseService from '../Services/FirebaseService';
+import CountDown from 'react-native-countdown-component';
+import {monthShortNames} from '../Util/DateUtil';
+import moment from 'moment';
+import {PROPOSAL_TYPE} from '../Config';
 
 const MemberCard = ({
-  approvePercent,
+  // memberSince or commonsCount
   memberSince,
-  memberCustomText,
-  isPending,
-  date,
-  member,
-  memberInfo,
+  commonsCount,
+  showMemberCreatedDate,
+  userInfo,
+  proposalInfo,
 }) => {
-  const [memberInformation, setMemberInformation] = useState('');
-  useEffect(() => {
-    console.log(member, memberInfo);
-    if (member) {
-      getMemberInfo();
-    } else {
-      setMemberInformation(memberInfo);
-    }
-  }, []);
-
-  const getMemberInfo = async () => {
-    const currMemberInformation = await FirebaseService.getInstance().getUserByAddress(
-      member.address,
-    );
-
-    setMemberInformation(currMemberInformation);
-  };
-
   const renderRightContainer = () => {
-    if (isPending) {
+    if (proposalInfo) {
+      const proposalValue =
+        proposalInfo.type === PROPOSAL_TYPE.JoinAndQuit
+          ? proposalInfo.joinAndQuit.funding / 100
+          : proposalInfo.fundingRequest.amount / 100;
+      const remainingSeconds = proposalInfo.expiresInQueueAt - moment().unix();
       return (
-        <>
-          <TouchableOpacity style={styles.actionBtn}>
-            <Icon name="close" size={15} color={colors.error} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionBtn}>
-            <Icon name="check" size={30} color={colors.lightishGreen} />
-          </TouchableOpacity>
-        </>
+        <View style={styles.rightContainer}>
+          <View
+            style={{
+              ...layout.content,
+              ...{alignItems: 'flex-end'},
+            }}>
+            <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
+            {remainingSeconds > 0 && <CountDown
+              digitTxtStyle={text.smallGreyText}
+              separatorStyle={text.smallGreyText}
+              timeLabels={false}
+              showSeparator={true}
+              digitStyle={{
+                height: 'auto',
+                width: 'auto',
+              }}
+              until={remainingSeconds}
+            />}
+          </View>
+        </View>
       );
-    } else if (date) {
+    } else if (showMemberCreatedDate) {
+      let memberCreatedDateInfo = null;
+      if (userInfo?.createdAt) {
+        const memberCreatedDate = new Date(userInfo.createdAt.seconds * 1000);
+        memberCreatedDateInfo = memberCreatedDate
+          ? `${
+            monthShortNames[memberCreatedDate.getMonth()]
+          } ${memberCreatedDate.getDay()} `
+          : '';
+      } else {
+        memberCreatedDateInfo = 'NOT app user';
+      }
+
       return (
-        <Text
-          style={{
-            ...text.smallGreyText,
-            marginTop: 2,
-          }}>
-          {date}
-        </Text>
-      );
-    }
-  };
-  return (
-    <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
-      <View style={styles.memberInfoContainer}>
-        <MemberImage member={member} memberInfo={memberInformation} />
-        <View
-          style={{
-            ...layout.content,
-            ...layout.flexStart,
-          }}>
-          <Text style={{...text.h4Black}}>{memberInformation.displayName}</Text>
+        <View style={styles.rightContainer}>
           <Text
             style={{
               ...text.smallGreyText,
               marginTop: 2,
             }}>
-            {memberCustomText
-              ? memberCustomText
-              : memberSince
-              ? `Member since by ${memberSince}`
-              : `Approved by ${approvePercent}%`}
+            {memberCreatedDateInfo}
+          </Text>
+        </View>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
+      <View style={styles.memberInfoContainer}>
+        <MemberImage userInfo={userInfo} />
+        <View
+          style={{
+            ...layout.content,
+            ...layout.flexStart,
+          }}>
+          <Text
+            style={{
+              ...text.h4Black,
+              ...{flexWrap: 'wrap'},
+            }}>
+            {userInfo?.displayName || 'Unknown user'}
+          </Text>
+          <Text
+            style={{
+              ...text.smallGreyText,
+              marginTop: 2,
+            }}>
+            {proposalInfo
+              ? moment.unix(proposalInfo.createdAt).fromNow()
+              : showMemberCreatedDate
+                ? `Member in ${userInfo?.daos?.length} Common${
+                  userInfo?.daos?.length > 1 ? 's' : ''
+                }`
+                : `Member since ${memberSince || 'unknown'}`}
           </Text>
         </View>
       </View>
-      <View style={styles.rightContainer}>{renderRightContainer()}</View>
+      {renderRightContainer()}
     </View>
   );
 };
@@ -89,24 +112,29 @@ const styles = StyleSheet.create({
   cardContainer: {
     ...layout.content,
     ...layout.flexRow,
-
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderColor: colors.grey4,
     padding: 0,
+    flex: 0.8,
   },
   noBottomBorder: {
     borderBottomWidth: 0,
   },
   memberInfoContainer: {
     ...layout.flexRow,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    alignContent: 'center',
+    alignContent: 'flex-start',
+    flexGrow: 1,
+    flexWrap: 'wrap',
   },
   rightContainer: {
     ...layout.content,
     ...layout.flexRow,
+    alignItems: 'center',
+    alignContent: 'flex-end',
+    justifyContent: 'flex-end',
   },
   actionBtn: {
     justifyContent: 'center',

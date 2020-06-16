@@ -21,9 +21,16 @@ class UserStore {
   myCommons;
   myProposals;
   constructor() {
-    userInfo = null;
-    isLoading = false;
+    let userInfo = null;
+    let isLoading = false;
   }
+
+  isDaoMember = members => {
+    return members.some(
+      member =>
+        member.address === this.userInfo.safeAddress?.toLowerCase()
+    );
+  };
 
   setIsLoading = loading => {
     this.isLoading = loading;

@@ -1,4 +1,4 @@
-import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
 import {observer, inject} from 'mobx-react';
@@ -8,11 +8,12 @@ import Loader from '../Components/Loader';
 import EditProfileForm from '../Components/Forms/EditProfileForm';
 import FirebaseService from '../Services/FirebaseService';
 import ProposalsList from '../Screens/Proposals/ProposalsList';
+import CommonsSwiper from '../Screens/Commons/CommonsSwiper';
+import { UserAvatar } from '../Components';
 
 import {CommonActions} from '@react-navigation/native';
 
 import Icon from '../Assets/iconfont/Icon';
-import Swiper from 'react-native-swiper';
 
 const UserProfileData = ({
   userId,
@@ -22,6 +23,7 @@ const UserProfileData = ({
 }) => {
   const [user, setUser] = useState(null);
   const [proposalsCount, setProposalsCount] = useState(0);
+  const [commonsCount, setCommonsCount] = useState(0);
   const [isEditMode, setIsEditMode] = useState(false);
 
   useEffect(() => {
@@ -71,16 +73,7 @@ const UserProfileData = ({
       );
     } else {
       return (
-        <View style={styles.imageFieldContainer}>
-          <Image
-            style={styles.imageFieldStyle}
-            resizeMode="cover"
-            source={{uri: user.photoURL}}
-          />
-          <View style={styles.imageFielFollowIcon}>
-            <Icon name="follow" size={16} color={colors.white} />
-          </View>
-        </View>
+        <UserAvatar image={user.photoURL} iconName={'follow'}/>
       );
     }
   };
@@ -91,6 +84,10 @@ const UserProfileData = ({
 
   const onProposalsCountChange = newCount => {
     setProposalsCount(newCount);
+  };
+
+  const onCommonsCountChange = newCount => {
+    setCommonsCount(newCount);
   };
 
   return (
@@ -133,28 +130,18 @@ const UserProfileData = ({
         </Text>
       </View>
 
-      <View style={styles.contentContainer}>
-        <Text style={text.h3Black}>Commons (0)</Text>
+      <View style={styles.contentContainerWithoutPadding}>
+        <Text
+          style={{
+            ...text.h3Black,
+            ...layout.marginBottomL,
+          }}>{`Commons (${commonsCount})`}</Text>
 
-        <View style={styles.emptyObjectContainer}>
-          <Icon name="group" size={56} />
-          <Text style={{...text.h3Black, ...layout.marginTopS}}>
-            No Commons
-          </Text>
-          <Text
-            style={{
-              ...text.blackText,
-              ...text.centered,
-              ...layout.marginTopS,
-            }}>
-            Join your first common and start making an impact
-          </Text>
-          <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity style={styles.btn}>
-              <Text style={text.buttonblue}>Explore Commons</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <CommonsSwiper
+          navigation={navigation}
+          userId={userId}
+          onCountChange={onCommonsCountChange}
+        />
       </View>
 
       <View style={styles.contentContainerWithoutPadding}>
@@ -263,42 +250,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#efefef',
     borderRadius: 14,
     flex: 1,
-  },
-  imageFieldContainer: {
-    position: 'relative',
-    alignSelf: 'center',
-    width: 100,
-    height: 100,
-  },
-  imageFieldStyle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 2,
-    borderColor: colors.white,
-    shadowColor: 'rgba(0, 26, 54, 0.1)',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowRadius: 8,
-    shadowOpacity: 1,
-    alignSelf: 'center',
-  },
-  imageFielFollowIcon: {
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    right: 0,
-    bottom: 0,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    padding: 2,
-    backgroundColor: colors.mainBlue,
-    borderWidth: 2,
-    borderColor: colors.white,
   },
 });
 

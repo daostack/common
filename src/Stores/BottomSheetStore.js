@@ -10,7 +10,7 @@ import {
   UnsavedChanges,
   UserProfileSheetScreen,
 } from '../Screens/BottomSheetScreens';
-import TransactionError from '../Screens/TransactionError';
+import TransactionError from '../Screens/BottomSheetScreens/TransactionError';
 
 export const BOTTOM_SHEET_TEMPLATES = {
   BOOSTED_INFO: {
@@ -76,7 +76,6 @@ class BottomSheetStore {
     this.topSnap = currTemplate.topSnap;
     this.template = React.createElement(currTemplate.content, allProps);
     this.isVisible = true;
-    console.log('showBottomSheet => ', currTemplate, this);
   };
 
   hideBottomSheet = () => {

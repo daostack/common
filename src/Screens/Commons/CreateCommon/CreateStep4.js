@@ -19,12 +19,11 @@ import Icon from '../../../Assets/iconfont/Icon';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
-import {IpfsClient} from '../../../Config';
 import WalletManager from '../../../Util/WalletManager';
 import FirebaseService from '../../../Services/FirebaseService';
 import CreateStepDotHeader from './CreateStepDotHeader';
-import {numberFormatter} from '../../../Util';
 import RequestStepActionButton from '../RequestStepActionButton';
+import {numberFormatter, showErrorPopUp} from '../../../Util';
 import Toast from '../../../Util/Toast';
 
 import ArcService from '../../../Services/ArcService';
@@ -103,88 +102,50 @@ const CreateStep4 = props => {
               setImageURI(url);
             }
           })
-          .catch(error => toast.error(error));
+          .catch(error => Toast.error(error));
       }
     });
   };
 
-  const ipfsUpload = async formData => {
-    // TODO: use arc.saveIPFSData({ name: formData.name}) once https://github.com/daostack/arc.js/issues/468 is resolved
-    console.log(formData);
-    return IpfsClient.addAndPinString(
-      JSON.stringify({
-        name: formData.name,
-        byline: formData.byline,
-        description: formData.description,
-        courseOfAction: formData.action,
-        // TODO: actuall add the values here (as an arry probably)
-        rules: formData.rules,
-        links: formData.links,
-        minimum: formData.minimum,
-        funding: formData.funding,
-      }),
-    );
-  };
-
   const forgeCommon = async () => {
     try {
+      const address = WalletManager.getInstance().safeAddress;
+      const formDataInit = {
+        ...props.generalInfoFormStore.getChangedFormFieldsJson(),
+        ...props.fundingFormStore.getChangedFormFieldsJson(),
+        ...props.agendaFormStore.getChangedFormFieldsJson(),
+        ...props.reviewFormStore.getChangedFormFieldsJson(),
+      };
 
-    const formDataInit = {
-      ...props.generalInfoFormStore.getChangedFormFieldsJson(),
-      ...props.fundingFormStore.getChangedFormFieldsJson(),
-      ...props.agendaFormStore.getChangedFormFieldsJson(),
-      ...props.reviewFormStore.getChangedFormFieldsJson(),
-    };
+      const fundingGoalDeadline = formDataInit[CreateCommonForm.DEADLINE];
 
-    const formData = {
-      ...formDataInit,
-      minimum: parseInt(formDataInit.minimum, 10) * 100,
-      funding: parseInt(formDataInit.funding, 10) * 100,
-    };
+      const data = {
+        ...formDataInit,
+        founderAddresses: address,
+        minFeeToJoin: parseInt(formDataInit.minimum, 10) * 100,
+        fundingGoal: parseInt(formDataInit.funding, 10) * 100,
+        fundingGoalDeadline,
+      };
+      console.log('calling createCommon(...)');
 
-    console.log('saving data on ipfs: ', formData);
+      const commonAddress = await ArcService.getInstance().createCommon(
+        data,
+        props.navigation,
+        props.daoStore,
+      );
 
-    const ipfsHash = await ipfsUpload(formData);
-    const address = WalletManager.getInstance().safeAddress;
-    console.log('owner account: ', address);
+      if (commonAddress) {
+        props.navigation.dispatch(StackActions.popToTop());
+      }
 
-    const deadline = formData[CreateCommonForm.DEADLINE];
-
-    const data = {
-      name: formData.name,
-      founderAddresses: address,
-      tokenDist: [0],
-      repDist: [1000],
-      minFeeToJoin: formData.minimum,
-      fundingGoal: formData.funding,
-      fundingGoalDeadline: deadline, // just passing the unix timestamp
-      ipfsHash,
-    };
-    console.log('calling createCommon(...)');
-
-    const commonAddress = await ArcService.getInstance().createCommon(
-      data,
-      props.navigation,
-      props.daoStore,
-    );
-
-    if (commonAddress) {
-      props.navigation.dispatch(StackActions.popToTop());
-    }
-
-    return {commonAddress};
-    } catch (err) {
-      console.log(err);
-      throw err;
+      return {commonAddress};
+    } catch (e) {
+      showErrorPopUp(props.bottomSheetStore, e.message);
     }
   };
 
-  // const creationError = event => {
-  //   errorSheetRef.current.snapTo(1);
-  //   errorSheetRef.current.snapTo(1);
-  // };
 
-  console.log('FORM -> ', form);
+  // console.log('FORM -> ', form);
 
   return (
     <SafeAreaView
@@ -307,7 +268,7 @@ const CreateStep4 = props => {
                 marginVertical: 15,
               }}>
               <Text style={{flex: 1, alignSelf: 'flex-start'}}>
-                Have an avatar for you Common?
+                Have an avatar for your Common?
               </Text>
               <TouchableOpacity onPress={() => pickImage(true)}>
                 <Text
@@ -555,6 +516,7 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
+  'bottomSheetStore',
   'generalInfoFormStore',
   'fundingFormStore',
   'agendaFormStore',

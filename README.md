@@ -1,6 +1,7 @@
 # Common!
 
 ![Build Android and iOS](https://github.com/daostack/common/workflows/Build%20Android%20and%20iOS/badge.svg)
+[![Build Status](https://app.bitrise.io/app/9fc9ceef54ad43fc/status.svg?token=gXG1PVCISnISuX4rCSrESw&branch=master)](https://app.bitrise.io/app/9fc9ceef54ad43fc)
 
 A DAOstack Product
 

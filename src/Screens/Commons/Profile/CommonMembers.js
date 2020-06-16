@@ -11,10 +11,10 @@ import {
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 
-import MemberCard from '../../../Components/MemberCard';
 import {layout, colors, text, sizeS} from '../../../Theme';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import ProposalsList from '../../Proposals/ProposalsList';
+import CommonMembersList from './CommonMembersList';
 
 const getTabName = (objectName, count) => {
   return `${objectName} (${count ? count : 0})`;
@@ -25,13 +25,23 @@ const CommonMembers = ({navigation, route}) => {
   const [pendingCount, setPendingCount] = useState(4);
   const members = route.params.members;
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerBackTitle: route.params.commonTitle,
+    });
+  }, [navigation]);
+
   const routes = [
     {key: 'members', title: getTabName('Members', members.length)},
     {key: 'pending', title: getTabName('Pending', pendingCount)},
   ];
 
   const Members = () => {
-    return sceneRenderer(0);
+    return (
+      <View style={{padding: sizeS}}>
+        <CommonMembersList members={members} />
+      </View>
+    );
   };
 
   const onProposalsCountChange = count => {
@@ -47,27 +57,6 @@ const CommonMembers = ({navigation, route}) => {
           onlyRequestsToJoin={true}
           onCountChange={onProposalsCountChange}
         />
-      </View>
-    );
-  };
-
-  const sceneRenderer = sceneIndex => {
-    return (
-      <View style={layout.marginTopL}>
-        {members.map((member, i) => {
-          return (
-            <MemberCard
-              key={i}
-              name={member.displayName}
-              approvePercent={member.approvalPercentage}
-              imageUrl={member.photoURL}
-              //TODO: change pending status
-              isPending={sceneIndex === 1}
-              date={member.date}
-              member={member}
-            />
-          );
-        })}
       </View>
     );
   };

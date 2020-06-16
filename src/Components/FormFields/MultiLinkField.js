@@ -13,10 +13,10 @@ const MultiLinkField = props => {
     addMultiFieldBtnName,
   } = props;
 
-  let fieldName = null;
+  // let fieldName = null;
 
   useEffect(() => {
-    fieldName = validation.name;
+    // fieldName = validation.name;
   }, []);
 
   const renderAddLinkBtn = index => {

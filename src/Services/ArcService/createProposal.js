@@ -1,9 +1,7 @@
-// TODO: add here scripts for createRequestToJoin and createFundingRequest
-// import {getArc} from './arc';
-// const {ARC_VERSION, OVERRIDES} = require('./arc');
+// TODO: rename this file to °createProposalRequestToJoin.js°
 const {first} = require('rxjs/operators');
 import {ipfsUpload} from '../../Config';
-const {OVERRIDES} = require('../../Config');
+import WalletManager from '../../Util/WalletManager';
 
 export const createProposalRequestToJoin = async (arc, daoId, data) => {
   // data must look like this
@@ -18,7 +16,6 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
 
   try {
     const dao = arc.dao(daoId);
-    // let plugins;
 
     let joinAndQuitPlugin;
     try {
@@ -34,15 +31,13 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       throw e;
     }
 
-    // console.log('PLUGINS -> ', plugins);
-    // const joinAndQuitPlugin = plugins[0];
     console.log('joinAndQuitPlugin', joinAndQuitPlugin.id);
 
     let ipfsHash;
-    const fee = data.funding;
-    if (!fee) {
-      throw Error('Fee argument must be given');
+    if (!data.funding) {
+      throw Error('"funding" argument must be given');
     }
+    const fee = Number(data.funding);
     console.log('saving ipfs data');
     // not working :-()
     // ipfsHash = await arc.saveIPFSData(data);
@@ -55,17 +50,51 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       dao: dao.id,
       plugin: joinAndQuitPlugin.coreState.address,
     };
-    console.log('creating transaction');
+    console.log('creating request to join transaction');
+
+    const errorHandler = async () => {
+      const joinAndQuitPlugin = await dao.plugin({where: {name: 'JoinAndQuit'}});
+      const joinAndQuitContract  = await arc.getContract(joinAndQuitPlugin.coreState.address);
+      const proposer =  WalletManager.getInstance().safeAddress;
+
+      // we check the conditions from the contract
+
+      // require(!fundings[proposer].candidate, "already a candidate");
+      const memberFund = await joinAndQuitContract.fundings(proposer);
+      if (memberFund[0] === true) {
+        // If this error is thrown from a user action, there is a ui bug:s it means that some action was enabled where it shoudl not
+        throw Error(`Cannot create the proposal, because the proposer ${proposer} has created such a request before`);
+      }
+
+      // require(avatar.nativeReputation().balanceOf(proposer) == 0, "already a member");
+      const daoState = await dao.fetchState();
+      const reputation = await daoState.reputation.entity;
+      const reputationContract = await reputation.contract();
+      const reputationBalanceOfProposer = await reputationContract.balanceOf(proposer);
+      if (Number(reputationBalanceOfProposer) !== 0) {
+        throw Error(`Request to join failed because you (${proposer}) are already a member of this DAO (${dao.id}) - rep: ${reputationBalanceOfProposer}`);
+
+      }
+
+      const minFeeToJoin = Number(joinAndQuitPlugin.coreState.pluginParams.minFeeToJoin);
+
+      if (fee < minFeeToJoin) {
+        const msg = `fee (${fee}) should be >= minFeeToJoin (${minFeeToJoin})`;
+        throw Error(msg);
+      }
+      console.log(joinAndQuitPlugin.coreState.pluginParams.minFeeToJoin);
+      console.log('fee', fee);
+      console.log('minFeetoJoin', minFeeToJoin);
+      // require(_feeAmount >= minFeeToJoin, "_feeAmount should be >= then the minFeeToJoin")
+    };
+    // TODO: we are runnning the error handler here to check conditions before sending the transaction ...
+    // .. this is expensive, and once we have reduced such errors to the minimmum, we should to error handling only ...
+    // .. when the transaction actually failed
+    await errorHandler();
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
-
-    // TODO: test not 0 value
-    const receipt = await transaction.contract.sendToRelayerWithReceipt(transaction.method, transaction.args, transaction.opts.value);
-
-    console.log(
-      `Transaction with ${receipt.transactionHash} was mined: proposal created!`,
-    );
-    const proposal = joinAndQuitPlugin.createProposalTransactionMap(receipt);
-    return proposal;
+    // send the request to the cloudfunction relayer
+    const proposalId = await WalletManager.getInstance().requestToJoin(transaction.contract, transaction.method, transaction.args);
+    return proposalId;
     /**  Original code, keep for reference until we are sure the current pattern works
      *
     const transaction = await joinAndQuitPlugin.createProposal(args);

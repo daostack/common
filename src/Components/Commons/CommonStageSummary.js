@@ -5,28 +5,27 @@ import moment from 'moment';
 
 import {layout, colors, text} from '../../Theme';
 
-const CommonStageSummary = ({isFundingStage, commonProgressInfo}) => {
+const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
   const deadlineMoment = moment.unix(commonProgressInfo.time);
   const deadlineHasPassed = moment().isAfter(deadlineMoment);
+  const isFundingStage = !deadlineHasPassed;
   const renderFundingProgressBar = () => {
-    if (isFundingStage) {
-      return (
-        <>
-          <View style={styles.fundingProgressBar}>
-            <View style={styles.innerProgressBar} />
-          </View>
-          <Text
-            style={{
-              ...styles.headerSmallText,
-              color: colors.grey3,
-              ...layout.marginTopS,
-              ...layout.marginBottomS,
-            }}>
-            {!deadlineHasPassed ? deadlineMoment.fromNow() : ''}
-          </Text>
-        </>
-      );
-    }
+    return (
+      <>
+        <View style={styles.fundingProgressBar}>
+          <View style={styles.innerProgressBar} />
+        </View>
+        <Text
+          style={{
+            ...styles.headerSmallText,
+            color: colors.grey3,
+            ...layout.marginTopS,
+            ...layout.marginBottomS,
+          }}>
+          {!deadlineHasPassed ? deadlineMoment.fromNow() : ''}
+        </Text>
+      </>
+    );
   };
 
   const commonNumberBox = (numberComponent, title) => {
@@ -42,28 +41,33 @@ const CommonStageSummary = ({isFundingStage, commonProgressInfo}) => {
       </View>
     );
   };
-
   return (
     <View style={styles.commonProgressContainer}>
       <View style={styles.commonNumbers}>
         {commonNumberBox(
-          isFundingStage ? (
+          isFundingStage || isCommonCard ? (
             <>
               <Text style={styles.headerTitle}>
-                ${numberFormatter(commonProgressInfo.raised).toLocaleString()}
+                $
+                {numberFormatter(
+                  commonProgressInfo.raised / 100,
+                ).toLocaleString()}
               </Text>
             </>
           ) : (
             <>
-              <Text style={styles.headerTitleLight}>
-                ${commonProgressInfo.currentBudget.toLocaleString()}
+              <Text style={styles.headerTitle}>
+                $
+                {numberFormatter(
+                  commonProgressInfo.raised / 100,
+                ).toLocaleString() + ' '}
               </Text>
               <Text style={styles.headerTitle}>
                 / {numberFormatter(commonProgressInfo.raised)}
               </Text>
             </>
           ),
-          isFundingStage ? 'Raised' : 'Available funds',
+          isFundingStage || isCommonCard ? 'Raised' : 'Available funds',
         )}
         {commonNumberBox(
           <Text style={styles.headerTitle}>{commonProgressInfo.members}</Text>,
@@ -82,7 +86,7 @@ const CommonStageSummary = ({isFundingStage, commonProgressInfo}) => {
           isFundingStage ? 'Goal' : 'ActiveProposals',
         )}
       </View>
-      {renderFundingProgressBar()}
+      {isFundingStage && renderFundingProgressBar()}
     </View>
   );
 };

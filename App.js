@@ -188,15 +188,16 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       try {
         userStore.setIsLoading(true);
         if (user) {
+          await AuthService.getInstance().loadMnemonic(user.uid);
           await WalletManager.init(user.uid);
           await ArcService.init();
-          await AuthService.getInstance().loadMnemonic(user.uid);
           let appUser = await FirebaseService.getInstance().getUserById(
             user.uid,
           );
           const isNewUser = !appUser;
           if (isNewUser) {
             appUser = await AuthService.getInstance().createUserAndWallet(user);
+            WalletManager.getInstance().createSmartContractWallet();
           }
           const allUserInfo = {
             ...user._user,
@@ -206,6 +207,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           userStore.setSignedInUser(filteredUser);
           if (isNewUser) {
           }
+          updateUser();
         } else {
           userStore.setSignedInUser(null);
         }
@@ -252,7 +254,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       }
     };
     checkOnboardingStatus();
-    updateUser();
     return subscriber;
   }, [userStore]);
 

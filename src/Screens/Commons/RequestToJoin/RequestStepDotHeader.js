@@ -5,7 +5,7 @@ import {colors, text, layout} from '../../../Theme';
 
 const RequestStepDotHeader = props => {
   const headerHeight = props.headerHeight;
-  const currentIndex = props.currentIndex;
+  const currentIndex = props.isFirstStepSkipped ? props.currentIndex - 1 : props.currentIndex;
 
   return (
     <Animated.View
@@ -42,7 +42,7 @@ const RequestStepDotHeader = props => {
               flexDirection: 'row',
               justifyContent: 'space-between',
             }}>
-            {[...Array(4).keys()].map(x => (
+            {[...Array(3).keys()].map(x => (
               <View
                 key={x}
                 style={x < currentIndex ? styles.dot : styles.dot2}

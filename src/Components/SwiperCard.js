@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {View, Dimensions} from 'react-native';
 
-import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
+import {layout} from '../Theme';
 
 import SwiperFlatList from 'react-native-swiper-flatlist';
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 const SwiperCard = props => {
   const renderNoDataCard = props.renderNoDataCard;
@@ -22,13 +22,13 @@ const SwiperCard = props => {
     let proposalCardStyle = {marginLeft: 20, marginRight: 20};
 
     if (
-      index == swiperCurrentIndex.prevIndex &&
-      swiperCurrentIndex.prevIndex != swiperCurrentIndex.index
+      index === swiperCurrentIndex.prevIndex &&
+      swiperCurrentIndex.prevIndex !== swiperCurrentIndex.index
     ) {
       proposalCardStyle = {marginLeft: 50, marginRight: -10};
     }
 
-    if (index == swiperCurrentIndex.index + 1) {
+    if (index === swiperCurrentIndex.index + 1) {
       proposalCardStyle = {marginLeft: -10, marginRight: 50};
     }
 

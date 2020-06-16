@@ -19,6 +19,8 @@ import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {observer, inject} from 'mobx-react';
+import moment from 'moment';
+import {PROPOSAL_TYPE} from '../../Config';
 
 const ProposalData = props => {
   const navigation = useNavigation();
@@ -64,7 +66,6 @@ const ProposalData = props => {
             id: doc.id,
             ...doc.data(),
           }));
-          console.log('Discussions List: ', list);
           setTopMessage(list);
         });
     };
@@ -134,7 +135,9 @@ const ProposalData = props => {
               <Text style={text.smallBoldGreyText}>
                 {proposalInfo.votesFor + proposalInfo.votesAgainst} votes
               </Text>
-              <Text style={text.smallGreyText}>&nbsp;Created 3d ago</Text>
+              <Text style={text.smallGreyText}>
+                &nbsp;Created {moment.unix(proposalInfo.createdAt).fromNow()}
+              </Text>
             </View>
 
             <View style={styles.proposalProgressInfo}>
@@ -183,7 +186,11 @@ const ProposalData = props => {
               <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
                 Cost
               </Text>
-              <Text style={text.h1Black}>{`$${proposalInfo.funding}`}</Text>
+              <Text style={text.h1Black}>{`$${
+                proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+                  ? proposalInfo.fundingRequest.amount / 100
+                  : proposalInfo.joinAndQuit.funding / 100
+              }`}</Text>
             </View>
 
             <ReadMore
@@ -200,7 +207,7 @@ const ProposalData = props => {
           <View style={layout.content}>
             <View style={styles.proposalColumnSubtitle}>
               <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
-                Ad-ons
+                Links
               </Text>
             </View>
 
@@ -212,7 +219,7 @@ const ProposalData = props => {
                     url: 'https://daostack.io/',
                   })
                 }>
-                <Text style={styles.adsText}>Amazon Facebook group</Text>
+                <Text style={styles.adsText}>TODO: show actual links here</Text>
               </TouchableOpacity>
             </View>
 
@@ -226,7 +233,7 @@ const ProposalData = props => {
                   })
                 }>
                 <Text style={styles.adsText}>
-                  Facebook campaign segment.pdf
+                  TODO: show links to actually uploade files here
                 </Text>
               </TouchableOpacity>
             </View>
@@ -276,13 +283,13 @@ const ProposalData = props => {
         </ScrollView>
 
         {topMessage.length === 0 ? null : (
-        <View style={styles.proposalCard}>
-          <View style={layout.content}>
-            <View style={{...styles.proposalColumnSubtitle}}>
-              <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
-                Recent comments
-              </Text>
-            </View>
+          <View style={styles.proposalCard}>
+            <View style={layout.content}>
+              <View style={{...styles.proposalColumnSubtitle}}>
+                <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
+                  Recent comments
+                </Text>
+              </View>
 
               <View style={{...layout.content, ...layout.flexStart}}>
                 {topMessage.map((currMessage, currIndex) => {
@@ -297,13 +304,13 @@ const ProposalData = props => {
                   );
                 })}
               </View>
-            <View style={layout.contant}>
-              <TouchableOpacity onPress={() => props.showMore()}>
-                <Text style={styles.messageShowMoreBtn}>Show more</Text>
-              </TouchableOpacity>
+              <View style={layout.contant}>
+                <TouchableOpacity onPress={() => props.showMore()}>
+                  <Text style={styles.messageShowMoreBtn}>Show more</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
         )}
       </View>
       <ImageView

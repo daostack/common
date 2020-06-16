@@ -1,46 +1,16 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {colors} from '../../Theme';
-import FirebaseService from '../../Services/FirebaseService';
 
-const MemberImage = ({member, memberInfo, key}) => {
-  const [memberInformation, setMemberInformation] = useState('');
-  useEffect(() => {
-    if (member) {
-      getMemberInfo();
-    } else {
-      setMemberInformation(memberInfo);
-    }
-  }, []);
-
-  const getMemberInfo = async () => {
-    const currMemberInformation = await FirebaseService.getInstance().getUserByAddress(
-      member.address,
-    );
-    setMemberInformation(currMemberInformation);
-  };
-  return memberInformation ? (
-    memberInformation.photoURL ? (
-      <Image
-        key={key}
-        style={styles.memberImage}
-        source={{
-          uri: memberInformation.photoURL,
-        }}
-      />
-    ) : (
-      <View
-        style={{
-          ...styles.memberImage,
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#6e7d82',
-        }}>
-        <Text style={{width: 17, height: 17, color: 'white'}}>
-          {memberInformation.displayName}
-        </Text>
-      </View>
-    )
+const MemberImage = ({userInfo, style, key}) => {
+  return userInfo?.photoURL ? (
+    <Image
+      key={key}
+      style={styles.memberImage}
+      source={{
+        uri: userInfo?.photoURL,
+      }}
+    />
   ) : (
     <View
       style={{
@@ -48,8 +18,12 @@ const MemberImage = ({member, memberInfo, key}) => {
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#6e7d82',
-      }}
-    />
+        ...style,
+      }}>
+      <Text style={{width: 17, height: 17, color: 'white'}}>
+        {userInfo?.displayName}
+      </Text>
+    </View>
   );
 };
 

@@ -215,16 +215,6 @@ const UserProfile = ({userStore, navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  btn: {
-    ...layout.btnOutline,
-    flexDirection: 'row',
-    marginTop: 20,
-    borderRadius: 5,
-    backgroundColor: colors.white,
-    flexGrow: 0,
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-  },
   screenNav: {
     paddingBottom: sizeL,
     paddingHorizontal: sizeL,
@@ -257,13 +247,6 @@ const styles = StyleSheet.create({
     height: '100%',
     width: 1,
     backgroundColor: '#eeeeee',
-  },
-  emptyObjectContainer: {
-    ...layout.content,
-    ...layout.marginTopM,
-    borderRadius: 14,
-    paddingHorizontal: sizeXXL,
-    backgroundColor: colors.lightBlue,
   },
   body: {
     paddingVertical: 10,

@@ -1,25 +1,27 @@
 import {
   Image,
-  ImageBackground,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   SafeAreaView,
+  Dimensions,
 } from 'react-native';
 import React from 'react';
-
 import Icon from '../../Assets/iconfont/Icon';
-import {layout, colors, text} from '../../Theme';
+import { layout, colors, text } from '../../Theme';
 
-const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
+
+const { width } = Dimensions.get('window');
+
+const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo }) => {
   const renderCoverInSafeArea = () => {
     return <SafeAreaView>{renderCover()}</SafeAreaView>;
   };
 
   const renderCover = () => {
     return (
-      <>
+      <View style={{width: width}}>
         <View style={styles.headerContainerWrap}>
           <View
             style={
@@ -44,8 +46,9 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
             <View
               style={{
                 ...layout.content,
-
                 ...{padding: 0},
+                justifyContent: 'center',
+                alignItems: 'center',
               }}>
               {commonInfo.logo ? (
                 <Image
@@ -55,7 +58,12 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
                   }}
                 />
               ) : null}
-              <Text style={styles.headerTitleWhite}>{commonInfo.name}</Text>
+              <Text style={styles.headerTitleWhite} numberOfLines={5}>
+                {commonInfo.name}
+              </Text>
+              <Text style={{...text.textFieldfocus, color: colors.white}} numberOfLines={5}>
+                {commonInfo.byline}
+              </Text>
             </View>
             {navigation ? (
               <TouchableOpacity onPress={onHeaderMenuOpen}>
@@ -71,14 +79,16 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
         </View>
 
         <View style={styles.headerContent}>
-          <Text style={styles.headerDescription} numberOfLines={2}>{commonInfo.description}</Text>
+          <Text style={styles.headerDescription} numberOfLines={4}>
+            {commonInfo.description}
+          </Text>
           {isMember && navigation ? (
             <TouchableOpacity onPress={openAgendaScreen}>
               <Text style={styles.headerViewAgenda}>View agenda</Text>
             </TouchableOpacity>
           ) : null}
         </View>
-      </>
+      </View>
     );
   };
 
@@ -88,16 +98,9 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
 
   return (
     <>
-      <ImageBackground
-        source={{
-          uri: commonInfo.cover,
-        }}
-        imageStyle={navigation ? {} : styles.backgoundRoundedTopEdges}
-        style={styles.coverBackground}>
-        <View style={styles.coverOverlay}>
-          {navigation ? renderCoverInSafeArea() : renderCover()}
-        </View>
-      </ImageBackground>
+      <View style={styles.coverOverlay}>
+        {navigation ? renderCoverInSafeArea() : renderCover()}
+      </View>
     </>
   );
 };
@@ -108,8 +111,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 28,
   },
   coverOverlay: {
+    paddingVertical: 0,
     paddingBottom: 20,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    // backgroundColor: 'rgba(0,0,0,0.3)',
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
   },
@@ -119,7 +123,8 @@ const styles = StyleSheet.create({
   },
   headerContainerWrap: {
     ...layout.flexRow,
-
+    justifyContent: 'center',
+    alignItems: 'center',
     width: '100%',
   },
   headerContainer: {
@@ -136,7 +141,6 @@ const styles = StyleSheet.create({
   },
   logoImage: {
     ...layout.marginBottomM,
-
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -147,6 +151,8 @@ const styles = StyleSheet.create({
   headerTitleWhite: {
     ...text.h1Black,
     color: colors.white,
+    textAlign: 'center',
+    // width: '30%',
   },
   headerDescription: {
     ...text.greyText,
@@ -166,4 +172,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommonCover;
+export default CommonHeader;

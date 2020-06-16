@@ -10,12 +10,12 @@ import {layout, text, colors} from '../../Theme';
 import TextInputFieldWithIcon from '../../Components/FormFields/TextInputFieldWithIcon';
 
 class FundingRequestForm extends React.Component {
-  static FIELD_TITLE = 'Title';
-  static FIELD_AMOUNT_REQUESTED = 'Amount requested';
-  static FIELD_DESCRIPTION = 'Description';
-  static FIELD_LINKS = 'Links';
-  static FIELD_IMAGES = 'Images';
-  static FIELD_FILES = 'Files';
+  static FIELD_TITLE = 'title';
+  static FIELD_AMOUNT_REQUESTED = 'amount_requested';
+  static FIELD_DESCRIPTION = 'description';
+  static FIELD_LINKS = 'links';
+  static FIELD_IMAGES = 'images';
+  static FIELD_FILES = 'files';
 
   state = {
     linkCount: 1,
@@ -27,7 +27,7 @@ class FundingRequestForm extends React.Component {
     const {fundingRequestFormStore} = this.props;
     if (fundingRequestFormStore.isFormValid()) {
       if (this.props.onFormSubmit) {
-        this.props.onFormSubmit(changedFields);
+        this.props.onFormSubmit(/* changedFields */);
       }
     }
   };

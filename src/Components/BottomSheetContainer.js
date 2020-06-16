@@ -1,5 +1,4 @@
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
-
 import {observer, inject} from 'mobx-react';
 import React, {useRef, useEffect} from 'react';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -8,28 +7,26 @@ import {colors, text, layout} from '../Theme';
 import Animated from 'react-native-reanimated';
 
 const BottomSheetContainer = props => {
-  ref = useRef();
-  fall = new Animated.Value(0);
+  let ref = useRef();
+  let fall = new Animated.Value(0);
 
   useEffect(() => {
     if (ref.current) {
-      console.log('ref -> ', ref);
       ref.current.snapTo(1);
     }
   }, []);
 
-  openBottomSheet = () => {};
+  let openBottomSheet = () => {};
 
-  closeBottomSheet = () => {
+  const closeBottomSheet = () => {
     ref.current.snapTo(0);
   };
 
-  onClosed = () => {
-    console.log('onClosed');
+  const onClosed = () => {
     props.bottomSheetStore.hideBottomSheet();
   };
 
-  renderSheetHeader = () => {
+  const renderSheetHeader = () => {
     if (props.withoutHeader) {
       return null;
     }
@@ -40,7 +37,7 @@ const BottomSheetContainer = props => {
     );
   };
 
-  renderSheetContent = () => {
+  const renderSheetContent = () => {
     let contentStyle = {
       ...layout.content,
       ...styles.contentContainer,
@@ -55,8 +52,6 @@ const BottomSheetContainer = props => {
     }
     return <View style={contentStyle}>{props.bottomSheetStore.template}</View>;
   };
-
-  console.log('bottomSheetStore -> ', props.bottomSheetStore);
 
   const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 

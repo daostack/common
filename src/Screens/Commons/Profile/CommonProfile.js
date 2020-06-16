@@ -3,18 +3,16 @@ import {
   Dimensions,
   Text,
   View,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import Share from 'react-native-share';
 import {text, layout, colors, sizeL} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
 import {TabView, TabBar} from 'react-native-tab-view';
-import ViewTabNoData from '../../../Components/ViewTabNoData';
 import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
-import CommonCover from '../../../Components/Commons/CommonCover';
 import CommonStageSummary from '../../../Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
@@ -25,9 +23,13 @@ import BottomRightButton from '../../../Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
 import Toast from '../../../Util/Toast';
+import HeaderImageScrollView from 'react-native-image-header-scroll-view';
+import CommonHeader from '../../../Components/Commons/CommonHeader';
 import {numberFormatter} from '../../../Util';
-
-import MemberImage from '../../../Components/Commons/MemberImage';
+import CommonMembersList from './CommonMembersList';
+import ProposalService from '../../../Services/ProposalService';
+import CountDown from 'react-native-countdown-component';
+import moment from 'moment';
 
 const CommonProfile = ({
   navigation,
@@ -37,7 +39,6 @@ const CommonProfile = ({
   userStore,
 }) => {
   const [isMember, setMemberState] = useState(false);
-  const [members, setMembers] = useState(false);
   const [isFundingStage] = useState(false);
 
   const [index, setIndex] = useState(0);
@@ -49,28 +50,43 @@ const CommonProfile = ({
 
   const [currCommon, setCurrCommon] = useState(false);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
+  const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const routeCommon = route.params.currCommon;
+  const daoMembers = route.params.currCommon.members;
+  const showReqToJoin = !userStore.userInfo || (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
 
   useEffect(() => {
-    try {
-      setShowRequestSentModal(route.params.showRequestSentModal);
-      setCurrCommon(routeCommon);
-      if (
-        userStore.userInfo &&
-        route.params.currCommon.members.some(
-          member => member.address === userStore.userInfo.ethereumAddress || member.address === userStore.userInfo.safeAddress?.toLowerCase()
-        )
-      ) {
-        setMemberState(true);
-      } else {
-        setMemberState(false);
-      }
-      const commonMembers = route.params.currCommon.members;
-      setMembers(commonMembers);
-    } catch (e) {
-      throw e;
+    setShowRequestSentModal(route.params.showRequestSentModal);
+    setCurrCommon(routeCommon);
+    if (
+      userStore.userInfo && userStore.isDaoMember(daoMembers)
+    ) {
+      setMemberState(true);
+    } else {
+      setMemberState(false);
     }
-  }, [routeCommon, route.params.showRequestSentModal]);
+  }, [routeCommon, route.params.showRequestSentModal, userStore.userInfo]);
+
+  useEffect(() => {
+    if (userStore.userInfo) {
+      let unsubscribe = null;
+      let getPendingProposalsData = async () => {
+        unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
+          routeCommon.id,
+          userStore.userInfo.safeAddress,
+          data => {
+            setPendingProposalsData({...data});
+          },
+        );
+      };
+      getPendingProposalsData();
+      return () => {
+        if (unsubscribe) {
+          unsubscribe();
+        }
+      };
+    }
+  }, [routeCommon.id, isMember, userStore.userInfo]);
 
   const renderTabBar = props => (
     <TabBar
@@ -104,7 +120,7 @@ const CommonProfile = ({
   const Proposals = () => {
     return (
       <View style={{padding: sizeL}}>
-        <ProposalsList navigation={navigation} commonId={currCommon.id} />
+        <ProposalsList isMember={isMember} navigation={navigation} commonId={currCommon.id} />
       </View>
     );
   };
@@ -113,6 +129,7 @@ const CommonProfile = ({
     return (
       <View style={{padding: sizeL}}>
         <ProposalsList
+          isMember={isMember}
           navigation={navigation}
           commonId={currCommon.id}
           isHistory={true}
@@ -123,14 +140,14 @@ const CommonProfile = ({
 
   const renderScene = scene => {
     switch (scene.route.key) {
-      case 'discussions':
-        return Discussions();
-      case 'proposals':
-        return Proposals();
-      case 'history':
-        return History();
-      default:
-        return null;
+    case 'discussions':
+      return Discussions();
+    case 'proposals':
+      return Proposals();
+    case 'history':
+      return History();
+    default:
+      return null;
     }
   };
 
@@ -164,14 +181,20 @@ const CommonProfile = ({
             onPress={openCommonMembers}
             style={styles.membersAction}>
             <View style={styles.membersRow}>
-              {members.map((member, i) => {
-                if (i < 5) {
-                  return <MemberImage member={member} key={i} />;
+              <CommonMembersList
+                horizontal={true}
+                members={
+                  daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers
                 }
-              })}
+              />
             </View>
             <TouchableOpacity style={layout.flexRow}>
-              <Text style={text.h4Black}>Pending (13)</Text>
+              <Text style={text.h4Black}>
+                Pending (
+                {pendingProposalsData &&
+                  pendingProposalsData.pendingProposalCount}
+                )
+              </Text>
               <Icon name="right-arrow" />
             </TouchableOpacity>
           </TouchableOpacity>
@@ -182,8 +205,9 @@ const CommonProfile = ({
 
   const openCommonMembers = e => {
     navigation.navigate('CommonMembers', {
-      members: members,
+      members: daoMembers,
       commonId: currCommon.id,
+      commonTitle: currCommon.name,
     });
   };
 
@@ -212,9 +236,10 @@ const CommonProfile = ({
   const requestToJoin = event => {
     if (userStore.userInfo) {
       const navigate = CommonActions.navigate({
-        name: 'RequestStep1',
+        name: currCommon.metadata?.rules?.length ? 'RequestStep1' : 'RequestStep2',
         params: {
           currDaoId: currCommon.id,
+          skipFirstStep: !currCommon.metadata?.rules?.length,
         },
       });
       navigation.dispatch(navigate);
@@ -226,7 +251,15 @@ const CommonProfile = ({
   };
 
   const viewProposal = () => {
-    //navigation.navigate('RequestStep1');
+    const navigate = CommonActions.navigate({
+      name: 'ProposalScreen',
+      params: {
+        proposalId: route.params.createdProposalId,
+        isMember,
+      },
+    });
+    navigation.dispatch(navigate);
+    setShowRequestSentModal(false);
   };
 
   const goToToCommon = () => {
@@ -237,13 +270,17 @@ const CommonProfile = ({
     const navigate = CommonActions.navigate({
       name: 'ProposalScreen',
       params: {
-        proposalId: 'ba02cba0-937a-11ea-b51a-77e469735457',
+        proposalId: pendingProposalsData.usersPendingProposal?.id,
+        isMember,
       },
     });
     navigation.dispatch(navigate);
   };
 
   const renderPendingApproval = () => {
+    const remainingSeconds =
+      pendingProposalsData.usersPendingProposal.expiresInQueueAt -
+      moment().unix();
     return (
       <TouchableOpacity
         onPress={openProposalScreen}
@@ -270,12 +307,12 @@ const CommonProfile = ({
           <View style={layout.flexRow}>
             <ProposalApprovalTag
               iconName="approved"
-              value={44}
+              value={pendingProposalsData.usersPendingProposal.votesFor}
               isMarked={true}
             />
             <ProposalApprovalTag
               iconName="declined"
-              value={17}
+              value={pendingProposalsData.usersPendingProposal.votesAgainst}
               isMarked={false}
             />
             <ProposalApprovalTag
@@ -285,7 +322,17 @@ const CommonProfile = ({
             />
           </View>
           <View>
-            <Text style={text.tapBarUnselected}>02:00:10</Text>
+            <CountDown
+              digitTxtStyle={text.smallGreyText}
+              separatorStyle={text.smallGreyText}
+              timeLabels={false}
+              showSeparator={true}
+              digitStyle={{
+                height: 'auto',
+                width: 'auto',
+              }}
+              until={remainingSeconds}
+            />
           </View>
         </View>
       </TouchableOpacity>
@@ -296,27 +343,48 @@ const CommonProfile = ({
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
-      <ScrollView
+      <StatusBar barStyle="light-content" />
+      <TouchableOpacity
         style={{
-          flex: 1,
-          backgroundColor: colors.white,
+          justifyContent: 'center',
+          position: 'absolute',
+          top: 0,
+          left: 0,
         }}
-        contentContainerStyle={{paddingBottom: 100}}
-        showsVerticalScrollIndicator={false}>
-        <CommonCover
-          isMember={isMember}
-          navigation={navigation}
-          onHeaderMenuOpen={openCommonOptions}
-          commonInfo={{
-            cover: currCommon.coverPhoto,
-            logo:
-              'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
-            name: currCommon.name,
-            description: currCommon.description,
-          }}
+        onPress={() => navigation.pop()}>
+        <Icon
+          name="left-arrow"
+          size={32}
+          color={colors.white}
+          style={{marginLeft: 10}}
         />
-
-        {renderPendingApproval()}
+      </TouchableOpacity>
+      <HeaderImageScrollView
+        disableHeaderGrow
+        maxOverlayOpacity={0.6}
+        minOverlayOpacity={0.3}
+        maxHeight={200}
+        fadeOutForeground
+        minHeight={120}
+        headerImage={{uri: currCommon.coverPhoto}}
+        renderFixedForeground={() => (
+          <CommonHeader
+            isMember={isMember}
+            navigation={navigation}
+            onHeaderMenuOpen={openCommonOptions}
+            commonInfo={{
+              logo:
+                'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
+              name: currCommon.name,
+              description: currCommon.description,
+              byline: currCommon.metadata?.byline,
+            }}
+          />
+        )}>
+        {!isMember &&
+          pendingProposalsData &&
+          pendingProposalsData.usersPendingProposal &&
+          renderPendingApproval()}
 
         <View style={{paddingVertical: 20}}>
           <CommonStageSummary
@@ -330,7 +398,7 @@ const CommonProfile = ({
               goal: currCommon.fundingGoal,
               members: currCommon.memberCount,
               // TODO: get this value. Is it even tracked in the contract? need to check.
-              raised: 0,
+              raised: currCommon.balance,
               currentBudget: numberFormatter(
                 // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
                 currCommon.tokenTotalSupply,
@@ -379,7 +447,7 @@ const CommonProfile = ({
           renderTabBar={renderTabBar}
           style={{}}
         />
-      </ScrollView>
+      </HeaderImageScrollView>
       <SafeAreaView>
         {isMember ? (
           <BottomRightButton
@@ -395,24 +463,26 @@ const CommonProfile = ({
           />
         ) : (
           <>
-            <View style={styles.actionButtonContainer}>
-              <TouchableOpacity
-                style={styles.headerButton}
-                onPress={requestToJoin}>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: 'white',
-                    fontWeight: '700',
-                    marginRight: 40,
-                  }}>
-                  Request to join
-                </Text>
-                <Text style={{fontSize: 16, color: 'white'}}>
-                  ${currCommon.minFeeToJoin} Contribution
-                </Text>
-              </TouchableOpacity>
-            </View>
+            {showReqToJoin && (
+              <View style={styles.actionButtonContainer}>
+                <TouchableOpacity
+                  style={styles.headerButton}
+                  onPress={requestToJoin}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: 'white',
+                      fontWeight: '700',
+                      marginRight: 40,
+                    }}>
+                    Request to join
+                  </Text>
+                  <Text style={{fontSize: 16, color: 'white'}}>
+                    ${currCommon.minFeeToJoin} Contribution
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
             <Modal
               isVisible={showRequestSentModal}
               avoidKeyboard={true}
