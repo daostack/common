@@ -23,7 +23,7 @@ const CreateCommon = props => {
 
   const progressList = [0, 0.35, 0.7, 1.0];
 
-  nextIndex = () => {
+  const nextIndex = () => {
     if (currentIndex < 3) {
       setCurrentIndex(currentIndex + 1);
     } else {

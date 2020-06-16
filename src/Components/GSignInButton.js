@@ -10,7 +10,7 @@ import AuthService from '../Services/AuthService';
 const GSignInButton = ({onSignIn}) => {
   const [signInError, setSignInError] = useState(null);
 
-  _signIn = async () => {
+  const _signIn = async () => {
     try {
       const userInfo = await AuthService.getInstance().signIn(false);
       if (onSignIn) {
@@ -34,7 +34,7 @@ const GSignInButton = ({onSignIn}) => {
     }
   };
 
-  renderSignInButton = () => {
+  const renderSignInButton = () => {
     return (
       <>
         <TouchableOpacity style={layout.btnOutline} onPress={_signIn}>
@@ -45,7 +45,7 @@ const GSignInButton = ({onSignIn}) => {
     );
   };
 
-  renderError = () => {
+  const renderError = () => {
     if (signInError) {
       const errorText = `${signInError.toString()} ${
         signInError.code ? signInError.code : ''

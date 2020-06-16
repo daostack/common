@@ -378,6 +378,7 @@ class nativeBridgeTests extends React.Component {
     this.setState({
       proposalStatus: 'Creating JoinAndQuit proposal -- please wait',
     });
+    let proposalId;
     try {
       const data = {
         title: `A test proposal to join ${daoId}`,
@@ -387,7 +388,7 @@ class nativeBridgeTests extends React.Component {
         links: [{ title: 'title', url: 'http://www.common.io/' }],
         funding: new BN(0), // this is the fee
       };
-      const proposalId = await ArcService.getInstance().createRequestToJoin(
+      proposalId = await ArcService.getInstance().createRequestToJoin(
         daoId,
         data,
       );
@@ -398,7 +399,7 @@ class nativeBridgeTests extends React.Component {
       showErrorPopUp(this.props.bottomSheetStore, e.message);
       this.setState({ proposalState: `${e}` });
     }
-    const msg = `proposal created: ${proposal.id}`;
+    const msg = `proposal created: ${proposalId}`;
     console.log(msg);
     this.setState({ proposalState: msg });
   };
@@ -409,6 +410,7 @@ class nativeBridgeTests extends React.Component {
     this.setState({
       proposalStatus: 'Creating Funding Request proposal -- please wait',
     });
+    let proposal;
     try {
       const data = {
         title: `A test funding proposal on ${Date()}`,
@@ -418,7 +420,7 @@ class nativeBridgeTests extends React.Component {
         links: [], // {title: "title", url: "url"}
         funding: new BN(3),
       };
-      const proposal = await ArcService.getInstance().createFundingProposal(
+      proposal = await ArcService.getInstance().createFundingProposal(
         this.props.userStore.userInfo.safeAddress,
         daoId,
         data,
@@ -455,7 +457,7 @@ class nativeBridgeTests extends React.Component {
       this.setState({ voteState: `${e}` });
       // showErrorPopUp(this.props.bottomSheetStore, e.message);
     }
-    console.log(`proposal created: ${proposal.id}`);
+    //console.log(`proposal created: ${proposal.id}`);
   };
 
   openTxhash = hash => {

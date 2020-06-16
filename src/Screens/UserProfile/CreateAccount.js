@@ -7,13 +7,13 @@ import {layout} from '../../Theme';
 import {observer, inject} from 'mobx-react';
 
 const CreateAccount = ({onSignedIn}) => {
-  bottomSheetContainerRef = useRef();
+  const bottomSheetContainerRef = useRef();
 
-  openSheet = () => {
+  const openSheet = () => {
     bottomSheetContainerRef.current.snapTo(1);
   };
 
-  onSignIn = async userInfo => {
+  const onSignIn = async userInfo => {
     if (onSignedIn) {
       onSignedIn(userInfo.additionalUserInfo.isNewUser);
     }

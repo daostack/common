@@ -27,7 +27,7 @@ class FundingRequestForm extends React.Component {
     const {fundingRequestFormStore} = this.props;
     if (fundingRequestFormStore.isFormValid()) {
       if (this.props.onFormSubmit) {
-        this.props.onFormSubmit(changedFields);
+        this.props.onFormSubmit(/* changedFields */);
       }
     }
   };

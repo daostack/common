@@ -11,7 +11,6 @@ const {
   MEMBER_REPUTATION,
 } = require('../../Config');
 
-
 // USAGE:
 // const commonAddress = await createCommon({
 //   name: formData.name,
@@ -28,7 +27,6 @@ const {
 //       rules: formData.rules,
 //       links: formData.links,
 /// });
-
 
 export const createCommon = async (
   arc,
@@ -70,7 +68,7 @@ export const createCommon = async (
     // });
 
     console.log('saving data on ipfs: ', opts);
-    ipfsHash = await IpfsClient.addAndPinString(JSON.stringify(opts));
+    const ipfsHash = await IpfsClient.addAndPinString(JSON.stringify(opts));
     console.log('ipfsHash ->', ipfsHash);
 
     let receipt;

@@ -65,7 +65,7 @@ class FileField extends React.Component {
   };
 
   renderFile = () => {
-    const {validation, navigation} = this.props;
+    const {validation, navigation, value} = this.props;
 
     const currValue = validation
       ? validation.formStore.form.fields[validation.name].value

@@ -1,4 +1,6 @@
-import {DB_COLLECTIONS} from './FirebaseService';
+import { DB_COLLECTIONS } from './FirebaseService';
+import Toast from '../Util/Toast';
+import moment from 'moment';
 
 import {db} from '../Firebase';
 
@@ -55,9 +57,11 @@ export default class ProposalService {
   }
 
   async subscribeToPendingProposalsData(daoId, userSafeAddress, callback) {
+
     let proposals = db
       .collection(DB_COLLECTIONS.proposals)
       .where('dao', '==', daoId)
+      .where('expiresInQueueAt', '>', moment().unix())
       .where('type', '==', 'JoinAndQuit')
       .where('stageStr', 'in', [
         PROPOSAL_STAGE.Queued,
@@ -66,13 +70,14 @@ export default class ProposalService {
         PROPOSAL_STAGE.QuietEndingPeriod,
       ]);
 
-    return proposals.onSnapshot(snapshot => {
+    return proposals.onSnapshot(snapshot  => {
       callback({
         pendingProposalCount: snapshot.docs.length,
         usersPendingProposal:
-          snapshot.docs.find(doc => doc.data().proposer === userSafeAddress)?.data() || false,
+            snapshot.docs.find(doc => doc.data().proposer === userSafeAddress)?.data() || false,
       });
-    });
+    }, error => Toast.error(error));
+
   }
 
   async subscribeToProposalList(
@@ -104,7 +109,7 @@ export default class ProposalService {
           if (snapshot.docChanges().length !== 0) {
             const newList = snapshot.docChanges().map(({doc}) => {
               if (onlyRequestsToJoin) {
-                if (!doc.data().joinAndQuit) {
+                if (doc.data().type !== PROPOSAL_TYPE.JoinAndQuit) {
                   return false;
                 }
               }

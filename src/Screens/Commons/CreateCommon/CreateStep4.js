@@ -102,7 +102,7 @@ const CreateStep4 = props => {
               setImageURI(url);
             }
           })
-          .catch(error => toast.error(error));
+          .catch(error => Toast.error(error));
       }
     });
   };
@@ -124,7 +124,7 @@ const CreateStep4 = props => {
         founderAddresses: address,
         minFeeToJoin: parseInt(formDataInit.minimum, 10) * 100,
         fundingGoal: parseInt(formDataInit.funding, 10) * 100,
-        fundingGoalDeadline, // just passing the unix timestamp
+        fundingGoalDeadline,
       };
       console.log('calling createCommon(...)');
 

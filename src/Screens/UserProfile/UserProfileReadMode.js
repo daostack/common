@@ -17,8 +17,8 @@ import AccordionBtn from '../../Components/AccordionBtn';
 
 const UserProfileReadMode = ({navigation}) => {
   const [users, setUsers] = useState(null);
-  const [ setUserId] = useState(null);
-  bottomSheetContainerRef = useRef();
+  const [setUserId] = useState(null);
+  const bottomSheetContainerRef = useRef();
 
   useEffect(() => {
     const getUsers = async () => {
