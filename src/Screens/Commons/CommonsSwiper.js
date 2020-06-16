@@ -123,7 +123,9 @@ const CommonsSwiper = ({
           Join your first common and start making an impact
         </Text>
         <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity style={styles.btn}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => navigation.navigate('Explore')}>
             <Text style={text.buttonblue}>Explore Commons</Text>
           </TouchableOpacity>
         </View>
@@ -133,7 +135,12 @@ const CommonsSwiper = ({
     <View style={{paddingHorizontal: 20}}>
       <Placeholder Animation={Fade}>
         <PlaceholderMedia
-          style={{height: 200, width: '100%', marginBottom: 20, borderRadius: 26}}
+          style={{
+            height: 200,
+            width: '100%',
+            marginBottom: 20,
+            borderRadius: 26,
+          }}
         />
       </Placeholder>
     </View>
