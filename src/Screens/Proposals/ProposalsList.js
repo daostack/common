@@ -14,7 +14,7 @@ import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 
 const {width, height} = Dimensions.get('window');
 
-const ProposalsList = ({isMember, ...props}) => {
+const ProposalsList = ({isMember, safeAddress, showAll, ...props}) => {
   const commonId = props.commonId;
   const userId = props.userId;
   const isHistory = props.isHistory;
@@ -30,7 +30,7 @@ const ProposalsList = ({isMember, ...props}) => {
   let listRef = useRef([]);
   let unsubscribe = null;
   useEffect(() => {
-    const loadProposalInfo = async (commonId, userId, isHistory) => {
+    const loadProposalInfo = async (commonId, userId, isHistory, showAll) => {
       let proposalStages = null;
       if (isHistory) {
         // TODO: use ProposalsList.PROPOSAL_STAGES_HISTORY here
@@ -52,6 +52,8 @@ const ProposalsList = ({isMember, ...props}) => {
         commonId,
         userId,
         proposalStages,
+        safeAddress,
+        showAll,
         newList => {
           setList(newList);
           if (onCountChange) {
@@ -63,7 +65,7 @@ const ProposalsList = ({isMember, ...props}) => {
       );
     };
 
-    loadProposalInfo(commonId, userId, isHistory);
+    loadProposalInfo(commonId, userId, isHistory, showAll);
 
     return () => {
       console.log('Unsubscribe -> ', unsubscribe);
