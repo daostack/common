@@ -39,7 +39,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
               ...{id: doc.id},
               ...doc.data(),
               ...{
-                coverPhoto: `https://i.picsum.photos/id/${index *
+                coverPhoto: `https://picsum.photos/id/${index *
                   10}/500/100.jpg`,
               },
             };
