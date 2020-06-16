@@ -34,18 +34,15 @@ const FundingProposal = ({
     if (fundingRequestFormStore.isFormValid()) {
       try {
         const formData = fundingRequestFormStore.getChangedFormFieldsJson();
-        console.log('FORM DATA', formData);
         const data = {
           title: formData[FundingRequestForm.FIELD_TITLE],
-          proposal_description: formData[FundingRequestForm.FIELD_DESCRIPTION],
+          description: formData[FundingRequestForm.FIELD_DESCRIPTION],
           funding: new BN(formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,),
           links: formData[FundingRequestForm.FIELD_LINKS],
           images: formData[FundingRequestForm.FIELD_IMAGES],
           files: formData[FundingRequestForm.FIELD_FILES],
         };
 
-        console.log('DATA -> ', data);
-        
         Toast.loading('Creating funding proposal...');
 
         const proposalId = await ArcService.getInstance().createFundingProposal(

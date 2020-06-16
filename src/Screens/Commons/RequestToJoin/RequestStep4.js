@@ -46,8 +46,6 @@ const RequestStep4 = props => {
           ...props.paymentFormStore.getChangedFormFieldsJson(),
         };
 
-        console.log('FormData -> ', formData);
-
         const data = {
           title: `request to join ${props.route.params.currDaoId} by ${props.userStore.userInfo.ethereumAddress}`,
           description: formData.about_me,
@@ -55,8 +53,6 @@ const RequestStep4 = props => {
           funding: new BN(formData.amount * 100),
         };
 
-        console.log('data -> ', data);
-        
         Toast.loading('Creating request to join...');
 
         const proposalId = await ArcService.getInstance().createRequestToJoin(

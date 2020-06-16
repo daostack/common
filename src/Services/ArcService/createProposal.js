@@ -44,8 +44,6 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     ipfsHash = await ipfsUpload({description: data});
     console.log('ipfsHash', ipfsHash);
 
-    console.log("DATA -> ", data);
-
     const args = {
       descriptionHash: ipfsHash,
       fee,
