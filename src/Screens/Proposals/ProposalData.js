@@ -48,7 +48,6 @@ const ProposalData = props => {
           setProposalInfo({...currProposalInfo, ...{images: tempImages}});
         }
 
-        //console.log('HELLO!: ', res);
       } catch (error) {
         console.log('error: ', error);
       }

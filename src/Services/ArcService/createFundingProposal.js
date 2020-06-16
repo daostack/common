@@ -102,7 +102,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     console.log('saving ipfs data');
     // not working :-()
     // ipfsHash = await arc.saveIPFSData(data);
-    ipfsHash = await ipfsUpload(data);
+    ipfsHash = await ipfsUpload({description: data});
     console.log('ipfsHash', ipfsHash);
 
     const args = {
