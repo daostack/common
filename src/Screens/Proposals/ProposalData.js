@@ -35,20 +35,21 @@ const ProposalData = props => {
       try {
         if (currProposalInfo) {
           let tempImages = [];
-          await Promise.all(
-            currProposalInfo?.images?.map(async currImage => {
-              const {width, height} = await ImageSize.getSize(currImage.uri);
-              tempImages.push({
-                title: currImage.title,
-                widthRatio: (width / height) * 220,
-                uri: currImage.uri,
-              });
-            }),
-          );
+          if (currProposalInfo.description.images) {
+            await Promise.all(
+              currProposalInfo.description.images.map(async currImage => {
+                const {width, height} = await ImageSize.getSize(currImage.uri);
+                tempImages.push({
+                  title: currImage.title,
+                  widthRatio: (width / height) * 220,
+                  uri: currImage.uri,
+                });
+              }),
+            );
+          }
           setProposalInfo({...currProposalInfo, ...{images: tempImages}});
         }
 
-        //console.log('HELLO!: ', res);
       } catch (error) {
         console.log('error: ', error);
       }
@@ -198,7 +199,7 @@ const ProposalData = props => {
               renderTruncatedFooter={_renderTruncatedFooter}
               renderRevealedFooter={_renderRevealedFooter}
               onReady={_handleTextReady}>
-              <Text style={text.blackText}>{proposalInfo.description}</Text>
+              <Text style={text.blackText}>{proposalInfo.description.description}</Text>
             </ReadMore>
           </View>
         </View>
