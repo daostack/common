@@ -39,10 +39,19 @@ const CreateStep4 = props => {
     ...props.reviewFormStore.getChangedFormFieldsJson(),
   };
   const [templateIndex, setTemplateIndex] = useState(1);
+  const getImageUrl = index => `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
   const [imageURI, setImageURI] = useState(
-    'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
+    getImageUrl(1 + Math.floor(Math.random() * Math.floor(7)))
   );
   const [avatarURL, setAvatarURL] = useState(null);
+
+  //set default value for Avatar and Image fields
+  useEffect(() => {
+    props.reviewFormStore.registerFormField(CreateCommonForm.AVATAR);
+    props.reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
+
+    props.reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, imageURI);
+  }, []);
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -64,15 +73,10 @@ const CreateStep4 = props => {
       index = 8;
     }
     setTemplateIndex(index);
-    setImageURI(
-      `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`,
-    );
+    const currImageUrl = getImageUrl(index);
+    props.reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, currImageUrl);
+    setImageURI(currImageUrl);
   };
-
-  useEffect(() => {
-    props.reviewFormStore.registerFormField(CreateCommonForm.AVATAR, 'url');
-    props.reviewFormStore.registerFormField(CreateCommonForm.IMAGE, 'url');
-  }, [props.reviewFormStore]);
 
   const pickImage = isAvatar => {
     const options = {
