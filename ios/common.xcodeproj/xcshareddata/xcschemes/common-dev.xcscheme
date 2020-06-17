@@ -10,7 +10,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "# Type a script or drag a script file from your workspace to insert its path.&#10;cp ${PROJECT_DIR}/../.env.prod .env  # replace .env.staging for your file&#10;">
+               scriptText = "# Type a script or drag a script file from your workspace to insert its path.&#10;cp ${PROJECT_DIR}/../.env.dev .env &#10;">
             </ActionContent>
          </ExecutionAction>
       </PreActions>
@@ -23,9 +23,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "15E907252417D1B9008A5750"
-               BuildableName = "common.app"
-               BlueprintName = "common"
+               BlueprintIdentifier = "151C202C2499E3F4006170CC"
+               BuildableName = "common-dev.app"
+               BlueprintName = "common-dev"
                ReferencedContainer = "container:common.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -53,9 +53,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "15E907252417D1B9008A5750"
-            BuildableName = "common.app"
-            BlueprintName = "common"
+            BlueprintIdentifier = "151C202C2499E3F4006170CC"
+            BuildableName = "common-dev.app"
+            BlueprintName = "common-dev"
             ReferencedContainer = "container:common.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -70,9 +70,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "15E907252417D1B9008A5750"
-            BuildableName = "common.app"
-            BlueprintName = "common"
+            BlueprintIdentifier = "151C202C2499E3F4006170CC"
+            BuildableName = "common-dev.app"
+            BlueprintName = "common-dev"
             ReferencedContainer = "container:common.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

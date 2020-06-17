@@ -46,10 +46,13 @@ end
 target 'common' do
   use_frameworks!
   use_native_modules!
-
   reactnative
   native
+end
 
-
-
+target 'common-dev' do
+  use_frameworks!
+  use_native_modules!
+  reactnative
+  native
 end

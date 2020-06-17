@@ -7,6 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		151C201A2499CEA3006170CC /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15CD031F246E87AD00EDADE2 /* NotificationService.swift */; };
+		151C20312499E3F4006170CC /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED12241B3A2C00651ACD /* String+Extension.swift */; };
+		151C20322499E3F4006170CC /* CryptoTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED14241B3B8D00651ACD /* CryptoTools.swift */; };
+		151C20332499E3F4006170CC /* WalletModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED08241A298900651ACD /* WalletModule.swift */; };
+		151C20342499E3F4006170CC /* WalletManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED01241A26D600651ACD /* WalletManager.swift */; };
+		151C20352499E3F4006170CC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E9072D2417D1B9008A5750 /* ViewController.swift */; };
+		151C20362499E3F4006170CC /* RNBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED06241A296400651ACD /* RNBridge.m */; };
+		151C20372499E3F4006170CC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E907292417D1B9008A5750 /* AppDelegate.swift */; };
+		151C20382499E3F4006170CC /* WalletManager+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED0E241B363C00651ACD /* WalletManager+Error.swift */; };
+		151C203F2499E3F4006170CC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E907342417D1BB008A5750 /* LaunchScreen.storyboard */; };
+		151C20402499E3F4006170CC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15E907322417D1BB008A5750 /* Assets.xcassets */; };
+		151C20412499E3F4006170CC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E9072F2417D1B9008A5750 /* Main.storyboard */; };
+		151C20422499E3F4006170CC /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C9F83AD9B2084944A75E426E /* Roboto-Bold.ttf */; };
+		151C20432499E3F4006170CC /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 72AACE390AB74154A9B62F0C /* Roboto-BoldItalic.ttf */; };
+		151C20442499E3F4006170CC /* Roboto-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D4D02A4490CF40EBA056C20C /* Roboto-Italic.ttf */; };
+		151C20452499E3F4006170CC /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 27ABBCE0C26C4E15A8D7C307 /* Roboto-Regular.ttf */; };
+		151C20462499E3F4006170CC /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DB1B9923E61C43618D76FCB5 /* Roboto-Thin.ttf */; };
+		151C20472499E3F4006170CC /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3FFBB84F354F338A318FF0 /* Roboto-ThinItalic.ttf */; };
+		151C20542499E4C4006170CC /* common-dev-notification-service-ext.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 151C20202499CEA3006170CC /* common-dev-notification-service-ext.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		151C20602499E503006170CC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 151C205C2499E503006170CC /* GoogleService-Info.plist */; };
+		151C20622499E99B006170CC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 151C20612499E99B006170CC /* GoogleService-Info.plist */; };
 		15CD0320246E87AD00EDADE2 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15CD031F246E87AD00EDADE2 /* NotificationService.swift */; };
 		15CD0324246E87AD00EDADE2 /* common-notification-service-ext.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 15CD031D246E87AD00EDADE2 /* common-notification-service-ext.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		15E1ED02241A26D600651ACD /* WalletManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED01241A26D600651ACD /* WalletManager.swift */; };
@@ -20,17 +41,24 @@
 		15E907312417D1B9008A5750 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E9072F2417D1B9008A5750 /* Main.storyboard */; };
 		15E907332417D1BB008A5750 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15E907322417D1BB008A5750 /* Assets.xcassets */; };
 		15E907362417D1BB008A5750 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E907342417D1BB008A5750 /* LaunchScreen.storyboard */; };
-		4D1E80EEA8DA390BB539F9BA /* Pods_common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B7EFE26221B7191A66CF15E /* Pods_common.framework */; };
+		4D1E80EEA8DA390BB539F9BA /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		722E04BCC07344838A0DD949 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 27ABBCE0C26C4E15A8D7C307 /* Roboto-Regular.ttf */; };
 		8763DCF4554547D89A3F1417 /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3FFBB84F354F338A318FF0 /* Roboto-ThinItalic.ttf */; };
 		8EA4A074BA5740A99672B554 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C9F83AD9B2084944A75E426E /* Roboto-Bold.ttf */; };
 		9AB34075096940B2939D3A3C /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DB1B9923E61C43618D76FCB5 /* Roboto-Thin.ttf */; };
+		A306C8964DE9946BCD50E68C /* Pods_common_dev.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 972CBC5F31351EBA4A80B8AD /* Pods_common_dev.framework */; };
 		AB1E0D83B8324C60AEA5B02C /* Roboto-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D4D02A4490CF40EBA056C20C /* Roboto-Italic.ttf */; };
-		BD5E78EC242011A300F61953 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BD5E78EB242011A300F61953 /* GoogleService-Info.plist */; };
 		F0F88CD131F5416F9232A460 /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 72AACE390AB74154A9B62F0C /* Roboto-BoldItalic.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		151C20552499E4C4006170CC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 15E9071E2417D1B9008A5750 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 151C20182499CEA3006170CC;
+			remoteInfo = "common-dev-notification-service-ext";
+		};
 		15CD0322246E87AD00EDADE2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 15E9071E2417D1B9008A5750 /* Project object */;
@@ -41,6 +69,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		151C20572499E4C4006170CC /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				151C20542499E4C4006170CC /* common-dev-notification-service-ext.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		15CD0315246E873C00EDADE2 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -57,6 +96,12 @@
 /* Begin PBXFileReference section */
 		13A2EC7A6A49307877755CB8 /* Pods-common.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common.release.xcconfig"; path = "Target Support Files/Pods-common/Pods-common.release.xcconfig"; sourceTree = "<group>"; };
 		1505B3D8243B76E300679F9C /* common.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = common.entitlements; sourceTree = "<group>"; };
+		151C20172499CA52006170CC /* common-dev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "common-dev-Info.plist"; path = "/Users/lmcmz/temp/common/ios/common-dev-Info.plist"; sourceTree = "<absolute>"; };
+		151C20202499CEA3006170CC /* common-dev-notification-service-ext.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "common-dev-notification-service-ext.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		151C20212499CEA3006170CC /* common-notification-service-ext copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "common-notification-service-ext copy-Info.plist"; path = "/Users/lmcmz/temp/common/ios/common-notification-service-ext copy-Info.plist"; sourceTree = "<absolute>"; };
+		151C20522499E3F4006170CC /* common-dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "common-dev.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		151C205C2499E503006170CC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		151C20612499E99B006170CC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		15CD0307246E873C00EDADE2 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		15CD0309246E873C00EDADE2 /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
 		15CD031D246E87AD00EDADE2 /* common-notification-service-ext.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "common-notification-service-ext.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,9 +122,10 @@
 		15E907352417D1BB008A5750 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		15E907372417D1BB008A5750 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		27ABBCE0C26C4E15A8D7C307 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Regular.ttf"; path = "../src/Assets/fonts/roboto/Roboto-Regular.ttf"; sourceTree = "<group>"; };
-		4B7EFE26221B7191A66CF15E /* Pods_common.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_common.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		72AACE390AB74154A9B62F0C /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-BoldItalic.ttf"; path = "../src/Assets/fonts/roboto/Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
-		BD5E78EB242011A300F61953 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		8EC787CE03BAE17CBC894D57 /* Pods-common-dev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common-dev.release.xcconfig"; path = "Target Support Files/Pods-common-dev/Pods-common-dev.release.xcconfig"; sourceTree = "<group>"; };
+		972CBC5F31351EBA4A80B8AD /* Pods_common_dev.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_common_dev.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9DFFED9D36641BD1A1631D32 /* Pods-common-dev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common-dev.debug.xcconfig"; path = "Target Support Files/Pods-common-dev/Pods-common-dev.debug.xcconfig"; sourceTree = "<group>"; };
 		C82E1DD3DDC55F4EFC693D54 /* Pods-common.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common.debug.xcconfig"; path = "Target Support Files/Pods-common/Pods-common.debug.xcconfig"; sourceTree = "<group>"; };
 		C9F83AD9B2084944A75E426E /* Roboto-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Bold.ttf"; path = "../src/Assets/fonts/roboto/Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		D4D02A4490CF40EBA056C20C /* Roboto-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Italic.ttf"; path = "../src/Assets/fonts/roboto/Roboto-Italic.ttf"; sourceTree = "<group>"; };
@@ -88,6 +134,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		151C201B2499CEA3006170CC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		151C20392499E3F4006170CC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A306C8964DE9946BCD50E68C /* Pods_common_dev.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		15CD031A246E87AD00EDADE2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -99,13 +160,38 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4D1E80EEA8DA390BB539F9BA /* Pods_common.framework in Frameworks */,
+				4D1E80EEA8DA390BB539F9BA /* (null) in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		151C20582499E503006170CC /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				151C20592499E503006170CC /* Prod */,
+				151C205B2499E503006170CC /* Dev */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
+		151C20592499E503006170CC /* Prod */ = {
+			isa = PBXGroup;
+			children = (
+				151C20612499E99B006170CC /* GoogleService-Info.plist */,
+			);
+			path = Prod;
+			sourceTree = "<group>";
+		};
+		151C205B2499E503006170CC /* Dev */ = {
+			isa = PBXGroup;
+			children = (
+				151C205C2499E503006170CC /* GoogleService-Info.plist */,
+			);
+			path = Dev;
+			sourceTree = "<group>";
+		};
 		15CD031E246E87AD00EDADE2 /* common-notification-service-ext */ = {
 			isa = PBXGroup;
 			children = (
@@ -127,12 +213,15 @@
 		15E9071D2417D1B9008A5750 = {
 			isa = PBXGroup;
 			children = (
+				151C20582499E503006170CC /* Firebase */,
 				15E907282417D1B9008A5750 /* common */,
 				15CD031E246E87AD00EDADE2 /* common-notification-service-ext */,
 				15E907272417D1B9008A5750 /* Products */,
 				909741A0B044660210AFA8BC /* Pods */,
 				3098661C0DFC471D9522B375 /* Resources */,
 				DB97E8264DC5EA5DC764264C /* Frameworks */,
+				151C20172499CA52006170CC /* common-dev-Info.plist */,
+				151C20212499CEA3006170CC /* common-notification-service-ext copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -141,6 +230,8 @@
 			children = (
 				15E907262417D1B9008A5750 /* common.app */,
 				15CD031D246E87AD00EDADE2 /* common-notification-service-ext.appex */,
+				151C20202499CEA3006170CC /* common-dev-notification-service-ext.appex */,
+				151C20522499E3F4006170CC /* common-dev.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -188,7 +279,6 @@
 		15FFF667241866AA00AEBE9D /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				BD5E78EB242011A300F61953 /* GoogleService-Info.plist */,
 				15E907372417D1BB008A5750 /* Info.plist */,
 				15E1ED03241A292C00651ACD /* common-Bridging-Header.h */,
 			);
@@ -232,6 +322,8 @@
 			children = (
 				C82E1DD3DDC55F4EFC693D54 /* Pods-common.debug.xcconfig */,
 				13A2EC7A6A49307877755CB8 /* Pods-common.release.xcconfig */,
+				9DFFED9D36641BD1A1631D32 /* Pods-common-dev.debug.xcconfig */,
+				8EC787CE03BAE17CBC894D57 /* Pods-common-dev.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -239,9 +331,9 @@
 		DB97E8264DC5EA5DC764264C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4B7EFE26221B7191A66CF15E /* Pods_common.framework */,
 				15CD0307246E873C00EDADE2 /* UserNotifications.framework */,
 				15CD0309246E873C00EDADE2 /* UserNotificationsUI.framework */,
+				972CBC5F31351EBA4A80B8AD /* Pods_common_dev.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -249,6 +341,50 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		151C20182499CEA3006170CC /* common-dev-notification-service-ext */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 151C201D2499CEA3006170CC /* Build configuration list for PBXNativeTarget "common-dev-notification-service-ext" */;
+			buildPhases = (
+				151C20192499CEA3006170CC /* Sources */,
+				151C201B2499CEA3006170CC /* Frameworks */,
+				151C201C2499CEA3006170CC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "common-dev-notification-service-ext";
+			productName = "common-notification-service-ext";
+			productReference = 151C20202499CEA3006170CC /* common-dev-notification-service-ext.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		151C202C2499E3F4006170CC /* common-dev */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 151C204F2499E3F4006170CC /* Build configuration list for PBXNativeTarget "common-dev" */;
+			buildPhases = (
+				151C202F2499E3F4006170CC /* [CP] Check Pods Manifest.lock */,
+				151C20302499E3F4006170CC /* Sources */,
+				151C20392499E3F4006170CC /* Frameworks */,
+				151C203B2499E3F4006170CC /* Bundle React Native code and images */,
+				151C203D2499E3F4006170CC /* Launch React Native Packager */,
+				151C203E2499E3F4006170CC /* Resources */,
+				151C20482499E3F4006170CC /* Fabric - Firebase */,
+				151C20492499E3F4006170CC /* [CP] Embed Pods Frameworks */,
+				151C204A2499E3F4006170CC /* [CP] Copy Pods Resources */,
+				151C204B2499E3F4006170CC /* [CP-User] [RNFB] Core Configuration */,
+				151C204C2499E3F4006170CC /* [CP-User] [RNFB] Crashlytics Configuration */,
+				151C20572499E4C4006170CC /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				151C20562499E4C4006170CC /* PBXTargetDependency */,
+			);
+			name = "common-dev";
+			productName = common;
+			productReference = 151C20522499E3F4006170CC /* common-dev.app */;
+			productType = "com.apple.product-type.application";
+		};
 		15CD031C246E87AD00EDADE2 /* common-notification-service-ext */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 15CD0325246E87AD00EDADE2 /* Build configuration list for PBXNativeTarget "common-notification-service-ext" */;
@@ -328,11 +464,37 @@
 			targets = (
 				15E907252417D1B9008A5750 /* common */,
 				15CD031C246E87AD00EDADE2 /* common-notification-service-ext */,
+				151C20182499CEA3006170CC /* common-dev-notification-service-ext */,
+				151C202C2499E3F4006170CC /* common-dev */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		151C201C2499CEA3006170CC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		151C203E2499E3F4006170CC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				151C203F2499E3F4006170CC /* LaunchScreen.storyboard in Resources */,
+				151C20402499E3F4006170CC /* Assets.xcassets in Resources */,
+				151C20412499E3F4006170CC /* Main.storyboard in Resources */,
+				151C20422499E3F4006170CC /* Roboto-Bold.ttf in Resources */,
+				151C20432499E3F4006170CC /* Roboto-BoldItalic.ttf in Resources */,
+				151C20442499E3F4006170CC /* Roboto-Italic.ttf in Resources */,
+				151C20452499E3F4006170CC /* Roboto-Regular.ttf in Resources */,
+				151C20602499E503006170CC /* GoogleService-Info.plist in Resources */,
+				151C20462499E3F4006170CC /* Roboto-Thin.ttf in Resources */,
+				151C20472499E3F4006170CC /* Roboto-ThinItalic.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		15CD031B246E87AD00EDADE2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -345,13 +507,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				15E907362417D1BB008A5750 /* LaunchScreen.storyboard in Resources */,
-				BD5E78EC242011A300F61953 /* GoogleService-Info.plist in Resources */,
 				15E907332417D1BB008A5750 /* Assets.xcassets in Resources */,
 				15E907312417D1B9008A5750 /* Main.storyboard in Resources */,
 				8EA4A074BA5740A99672B554 /* Roboto-Bold.ttf in Resources */,
 				F0F88CD131F5416F9232A460 /* Roboto-BoldItalic.ttf in Resources */,
 				AB1E0D83B8324C60AEA5B02C /* Roboto-Italic.ttf in Resources */,
 				722E04BCC07344838A0DD949 /* Roboto-Regular.ttf in Resources */,
+				151C20622499E99B006170CC /* GoogleService-Info.plist in Resources */,
 				9AB34075096940B2939D3A3C /* Roboto-Thin.ttf in Resources */,
 				8763DCF4554547D89A3F1417 /* Roboto-ThinItalic.ttf in Resources */,
 			);
@@ -369,6 +531,137 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "#!/usr/bin/env bash\n#\n# Copyright (c) 2016-present Invertase Limited & Contributors\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this library except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#   http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n#\nset -e\n\n_MAX_LOOKUPS=2;\n_SEARCH_RESULT=''\n_RN_ROOT_EXISTS=''\n_CURRENT_LOOKUPS=1\n_JSON_ROOT=\"'react-native'\"\n_JSON_FILE_NAME='firebase.json'\n_JSON_OUTPUT_BASE64='e30=' # { }\n_CURRENT_SEARCH_DIR=${PROJECT_DIR}\n_PLIST_BUDDY=/usr/libexec/PlistBuddy\n_TARGET_PLIST=\"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"\n_DSYM_PLIST=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n# plist arrays\n_PLIST_ENTRY_KEYS=()\n_PLIST_ENTRY_TYPES=()\n_PLIST_ENTRY_VALUES=()\n\nfunction setPlistValue {\n  echo \"info:      setting plist entry '$1' of type '$2' in file '$4'\"\n  ${_PLIST_BUDDY} -c \"Add :$1 $2 '$3'\" $4 || echo \"info:      '$1' already exists\"\n}\n\nfunction getFirebaseJsonKeyValue () {\n  if [[ ${_RN_ROOT_EXISTS} ]]; then\n    ruby -e \"require 'rubygems';require 'json'; output=JSON.parse('$1'); puts output[$_JSON_ROOT]['$2']\"\n  else\n    echo \"\"\n  fi;\n}\n\nfunction jsonBoolToYesNo () {\n  if [[ $1 == \"false\" ]]; then\n    echo \"NO\"\n  elif [[ $1 == \"true\" ]]; then\n    echo \"YES\"\n  else echo \"NO\"\n  fi\n}\n\necho \"info: -> RNFB build script started\"\necho \"info: 1) Locating ${_JSON_FILE_NAME} file:\"\n\nif [[ -z ${_CURRENT_SEARCH_DIR} ]]; then\n  _CURRENT_SEARCH_DIR=$(pwd)\nfi;\n\nwhile true; do\n  _CURRENT_SEARCH_DIR=$(dirname \"$_CURRENT_SEARCH_DIR\")\n  if [[ \"$_CURRENT_SEARCH_DIR\" == \"/\" ]] || [[ ${_CURRENT_LOOKUPS} -gt ${_MAX_LOOKUPS} ]]; then break; fi;\n  echo \"info:      ($_CURRENT_LOOKUPS of $_MAX_LOOKUPS) Searching in '$_CURRENT_SEARCH_DIR' for a ${_JSON_FILE_NAME} file.\"\n  _SEARCH_RESULT=$(find \"$_CURRENT_SEARCH_DIR\" -maxdepth 2 -name ${_JSON_FILE_NAME} -print | head -n 1)\n  if [[ ${_SEARCH_RESULT} ]]; then\n    echo \"info:      ${_JSON_FILE_NAME} found at $_SEARCH_RESULT\"\n    break;\n  fi;\n  _CURRENT_LOOKUPS=$((_CURRENT_LOOKUPS+1))\ndone\n\nif [[ ${_SEARCH_RESULT} ]]; then\n  _JSON_OUTPUT_RAW=$(cat \"${_SEARCH_RESULT}\")\n  _RN_ROOT_EXISTS=$(ruby -e \"require 'rubygems';require 'json'; output=JSON.parse('$_JSON_OUTPUT_RAW'); puts output[$_JSON_ROOT]\" || echo '')\n\n  if [[ ${_RN_ROOT_EXISTS} ]]; then\n    _JSON_OUTPUT_BASE64=$(python -c 'import json,sys,base64;print(base64.b64encode(json.dumps(json.loads(open('\"'${_SEARCH_RESULT}'\"').read())['${_JSON_ROOT}'])))' || echo \"e30=\")\n  fi\n\n  _PLIST_ENTRY_KEYS+=(\"firebase_json_raw\")\n  _PLIST_ENTRY_TYPES+=(\"string\")\n  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")\n\n  # config.messaging_auto_init_enabled\n  _MESSAGING_AUTO_INIT=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"messaging_auto_init_enabled\")\n  if [[ $_MESSAGING_AUTO_INIT ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseMessagingAutoInitEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_MESSAGING_AUTO_INIT\")\")\n  fi\n\n  # config.crashlytics_disable_auto_disabler - undocumented for now - mainly for debugging, document if becomes usful\n  _CRASHLYTICS_AUTO_DISABLE_ENABLED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"crashlytics_disable_auto_disabler\")\n  if [[ $_CRASHLYTICS_AUTO_DISABLE_ENABLED == \"true\" ]]; then\n    echo \"Disabled Crashlytics auto disabler.\" # do nothing\n  else\n    _PLIST_ENTRY_KEYS+=(\"firebase_crashlytics_collection_enabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"NO\")\n  fi\n\n  # config.admob_delay_app_measurement_init\n  _ADMOB_DELAY_APP_MEASUREMENT=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"admob_delay_app_measurement_init\")\n  if [[ $_ADMOB_DELAY_APP_MEASUREMENT == \"true\" ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GADDelayAppMeasurementInit\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"YES\")\n  fi\n\n  # config.admob_ios_app_id\n  _ADMOB_IOS_APP_ID=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"admob_ios_app_id\")\n  if [[ $_ADMOB_IOS_APP_ID ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GADApplicationIdentifier\")\n    _PLIST_ENTRY_TYPES+=(\"string\")\n    _PLIST_ENTRY_VALUES+=(\"$_ADMOB_IOS_APP_ID\")\n  fi\nelse\n  _PLIST_ENTRY_KEYS+=(\"firebase_json_raw\")\n  _PLIST_ENTRY_TYPES+=(\"string\")\n  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")\n  echo \"warning:   A firebase.json file was not found, whilst this file is optional it is recommended to include it to configure firebase services in React Native Firebase.\"\nfi;\n\necho \"info: 2) Injecting Info.plist entries: \"\n\n# Log out the keys we're adding\nfor i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do\n  echo \"    ->  $i) ${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\"\ndone\n\nfor plist in \"${_TARGET_PLIST}\" \"${_DSYM_PLIST}\" ; do\n  if [[ -f \"${plist}\" ]]; then\n\n    # paths with spaces break the call to setPlistValue. temporarily modify\n    # the shell internal field separator variable (IFS), which normally \n    # includes spaces, to consist only of line breaks\n    oldifs=$IFS\n    IFS=\"\n\"\n\n    for i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do\n      setPlistValue \"${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\" \"${plist}\"\n    done\n\n    # restore the original internal field separator value\n    IFS=$oldifs\n  else\n    echo \"warning:   A Info.plist build output file was not found (${plist})\"\n  fi\ndone\n\necho \"info: <- RNFB build script finished\"\n\n";
+		};
+		151C202F2499E3F4006170CC /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-common-dev-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		151C203B2499E3F4006170CC /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle React Native code and images";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+		};
+		151C203D2499E3F4006170CC /* Launch React Native Packager */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Launch React Native Packager";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Launch React Native Packager\nif nc -w 5 -z localhost 8081 ; then\nif ! curl -s \"http://localhost:8081/status\" | grep -q \"packager-status:running\" ; then\necho \"Port 8081 already in use, packager is either not running or not running correctly\"\nexit 2\nfi\nelse\nopen -a Terminal $SRCROOT/../node_modules/react-native/scripts/launchPackager.command || echo \"Can't start packager automatically\"\nfi\n";
+		};
+		151C20482499E3F4006170CC /* Fabric - Firebase */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+			);
+			name = "Fabric - Firebase";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/Fabric/run\"\n";
+		};
+		151C20492499E3F4006170CC /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-common-dev/Pods-common-dev-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-common-dev/Pods-common-dev-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-common-dev/Pods-common-dev-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		151C204A2499E3F4006170CC /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-common-dev/Pods-common-dev-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-common-dev/Pods-common-dev-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-common-dev/Pods-common-dev-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		151C204B2499E3F4006170CC /* [CP-User] [RNFB] Core Configuration */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "[CP-User] [RNFB] Core Configuration";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/usr/bin/env bash\n#\n# Copyright (c) 2016-present Invertase Limited & Contributors\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this library except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#   http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n#\nset -e\n\n_MAX_LOOKUPS=2;\n_SEARCH_RESULT=''\n_RN_ROOT_EXISTS=''\n_CURRENT_LOOKUPS=1\n_JSON_ROOT=\"'react-native'\"\n_JSON_FILE_NAME='firebase.json'\n_JSON_OUTPUT_BASE64='e30=' # { }\n_CURRENT_SEARCH_DIR=${PROJECT_DIR}\n_PLIST_BUDDY=/usr/libexec/PlistBuddy\n_TARGET_PLIST=\"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"\n_DSYM_PLIST=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n# plist arrays\n_PLIST_ENTRY_KEYS=()\n_PLIST_ENTRY_TYPES=()\n_PLIST_ENTRY_VALUES=()\n\nfunction setPlistValue {\n  echo \"info:      setting plist entry '$1' of type '$2' in file '$4'\"\n  ${_PLIST_BUDDY} -c \"Add :$1 $2 '$3'\" $4 || echo \"info:      '$1' already exists\"\n}\n\nfunction getFirebaseJsonKeyValue () {\n  if [[ ${_RN_ROOT_EXISTS} ]]; then\n    ruby -e \"require 'rubygems';require 'json'; output=JSON.parse('$1'); puts output[$_JSON_ROOT]['$2']\"\n  else\n    echo \"\"\n  fi;\n}\n\nfunction jsonBoolToYesNo () {\n  if [[ $1 == \"false\" ]]; then\n    echo \"NO\"\n  elif [[ $1 == \"true\" ]]; then\n    echo \"YES\"\n  else echo \"NO\"\n  fi\n}\n\necho \"info: -> RNFB build script started\"\necho \"info: 1) Locating ${_JSON_FILE_NAME} file:\"\n\nif [[ -z ${_CURRENT_SEARCH_DIR} ]]; then\n  _CURRENT_SEARCH_DIR=$(pwd)\nfi;\n\nwhile true; do\n  _CURRENT_SEARCH_DIR=$(dirname \"$_CURRENT_SEARCH_DIR\")\n  if [[ \"$_CURRENT_SEARCH_DIR\" == \"/\" ]] || [[ ${_CURRENT_LOOKUPS} -gt ${_MAX_LOOKUPS} ]]; then break; fi;\n  echo \"info:      ($_CURRENT_LOOKUPS of $_MAX_LOOKUPS) Searching in '$_CURRENT_SEARCH_DIR' for a ${_JSON_FILE_NAME} file.\"\n  _SEARCH_RESULT=$(find \"$_CURRENT_SEARCH_DIR\" -maxdepth 2 -name ${_JSON_FILE_NAME} -print | head -n 1)\n  if [[ ${_SEARCH_RESULT} ]]; then\n    echo \"info:      ${_JSON_FILE_NAME} found at $_SEARCH_RESULT\"\n    break;\n  fi;\n  _CURRENT_LOOKUPS=$((_CURRENT_LOOKUPS+1))\ndone\n\nif [[ ${_SEARCH_RESULT} ]]; then\n  _JSON_OUTPUT_RAW=$(cat \"${_SEARCH_RESULT}\")\n  _RN_ROOT_EXISTS=$(ruby -e \"require 'rubygems';require 'json'; output=JSON.parse('$_JSON_OUTPUT_RAW'); puts output[$_JSON_ROOT]\" || echo '')\n\n  if [[ ${_RN_ROOT_EXISTS} ]]; then\n    _JSON_OUTPUT_BASE64=$(python -c 'import json,sys,base64;print(base64.b64encode(json.dumps(json.loads(open('\"'${_SEARCH_RESULT}'\"').read())['${_JSON_ROOT}'])))' || echo \"e30=\")\n  fi\n\n  _PLIST_ENTRY_KEYS+=(\"firebase_json_raw\")\n  _PLIST_ENTRY_TYPES+=(\"string\")\n  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")\n\n  # config.messaging_auto_init_enabled\n  _MESSAGING_AUTO_INIT=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"messaging_auto_init_enabled\")\n  if [[ $_MESSAGING_AUTO_INIT ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseMessagingAutoInitEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_MESSAGING_AUTO_INIT\")\")\n  fi\n\n  # config.crashlytics_disable_auto_disabler - undocumented for now - mainly for debugging, document if becomes usful\n  _CRASHLYTICS_AUTO_DISABLE_ENABLED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"crashlytics_disable_auto_disabler\")\n  if [[ $_CRASHLYTICS_AUTO_DISABLE_ENABLED == \"true\" ]]; then\n    echo \"Disabled Crashlytics auto disabler.\" # do nothing\n  else\n    _PLIST_ENTRY_KEYS+=(\"firebase_crashlytics_collection_enabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"NO\")\n  fi\n\n  # config.admob_delay_app_measurement_init\n  _ADMOB_DELAY_APP_MEASUREMENT=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"admob_delay_app_measurement_init\")\n  if [[ $_ADMOB_DELAY_APP_MEASUREMENT == \"true\" ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GADDelayAppMeasurementInit\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"YES\")\n  fi\n\n  # config.admob_ios_app_id\n  _ADMOB_IOS_APP_ID=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"admob_ios_app_id\")\n  if [[ $_ADMOB_IOS_APP_ID ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GADApplicationIdentifier\")\n    _PLIST_ENTRY_TYPES+=(\"string\")\n    _PLIST_ENTRY_VALUES+=(\"$_ADMOB_IOS_APP_ID\")\n  fi\nelse\n  _PLIST_ENTRY_KEYS+=(\"firebase_json_raw\")\n  _PLIST_ENTRY_TYPES+=(\"string\")\n  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")\n  echo \"warning:   A firebase.json file was not found, whilst this file is optional it is recommended to include it to configure firebase services in React Native Firebase.\"\nfi;\n\necho \"info: 2) Injecting Info.plist entries: \"\n\n# Log out the keys we're adding\nfor i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do\n  echo \"    ->  $i) ${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\"\ndone\n\nfor plist in \"${_TARGET_PLIST}\" \"${_DSYM_PLIST}\" ; do\n  if [[ -f \"${plist}\" ]]; then\n\n    # paths with spaces break the call to setPlistValue. temporarily modify\n    # the shell internal field separator variable (IFS), which normally \n    # includes spaces, to consist only of line breaks\n    oldifs=$IFS\n    IFS=\"\n\"\n\n    for i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do\n      setPlistValue \"${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\" \"${plist}\"\n    done\n\n    # restore the original internal field separator value\n    IFS=$oldifs\n  else\n    echo \"warning:   A Info.plist build output file was not found (${plist})\"\n  fi\ndone\n\necho \"info: <- RNFB build script finished\"\n\n";
+		};
+		151C204C2499E3F4006170CC /* [CP-User] [RNFB] Crashlytics Configuration */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "[CP-User] [RNFB] Crashlytics Configuration";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/usr/bin/env bash\n#\n# Copyright (c) 2016-present Invertase Limited & Contributors\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this library except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#   http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n#\nset -e\n\nif [[ ${PODS_ROOT} ]]; then\n  echo \"info: Exec Fabric Run from Pods\"\n  \"${PODS_ROOT}/Fabric/run\"\nelse\n  echo \"info: Exec Fabric Run from framework\"\n  \"${PROJECT_DIR}/Fabric.framework/run\"\nfi\n";
 		};
 		15E9073F2417D51B008A5750 /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -494,6 +787,29 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		151C20192499CEA3006170CC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				151C201A2499CEA3006170CC /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		151C20302499E3F4006170CC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				151C20312499E3F4006170CC /* String+Extension.swift in Sources */,
+				151C20322499E3F4006170CC /* CryptoTools.swift in Sources */,
+				151C20332499E3F4006170CC /* WalletModule.swift in Sources */,
+				151C20342499E3F4006170CC /* WalletManager.swift in Sources */,
+				151C20352499E3F4006170CC /* ViewController.swift in Sources */,
+				151C20362499E3F4006170CC /* RNBridge.m in Sources */,
+				151C20372499E3F4006170CC /* AppDelegate.swift in Sources */,
+				151C20382499E3F4006170CC /* WalletManager+Error.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		15CD0319246E87AD00EDADE2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -520,6 +836,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		151C20562499E4C4006170CC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 151C20182499CEA3006170CC /* common-dev-notification-service-ext */;
+			targetProxy = 151C20552499E4C4006170CC /* PBXContainerItemProxy */;
+		};
 		15CD0323246E87AD00EDADE2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 15CD031C246E87AD00EDADE2 /* common-notification-service-ext */;
@@ -547,6 +868,91 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		151C201E2499CEA3006170CC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
+				INFOPLIST_FILE = "common-notification-service-ext copy-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.daostack.common.test.dev.common-notification-service-ext";
+				PRODUCT_NAME = "common-dev-notification-service-ext";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		151C201F2499CEA3006170CC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
+				INFOPLIST_FILE = "common-notification-service-ext copy-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.daostack.common.test.dev.common-notification-service-ext";
+				PRODUCT_NAME = "common-dev-notification-service-ext";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		151C20502499E3F4006170CC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9DFFED9D36641BD1A1631D32 /* Pods-common-dev.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = common/common.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
+				INFOPLIST_FILE = "common-dev-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.daostack.common.test.dev;
+				PRODUCT_NAME = "common-dev";
+				SWIFT_OBJC_BRIDGING_HEADER = "common/Support/common-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		151C20512499E3F4006170CC /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8EC787CE03BAE17CBC894D57 /* Pods-common-dev.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = common/common.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
+				INFOPLIST_FILE = "common-dev-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.daostack.common.test.dev;
+				PRODUCT_NAME = "common-dev";
+				SWIFT_OBJC_BRIDGING_HEADER = "common/Support/common-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 		15CD0326246E87AD00EDADE2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -751,6 +1157,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		151C201D2499CEA3006170CC /* Build configuration list for PBXNativeTarget "common-dev-notification-service-ext" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				151C201E2499CEA3006170CC /* Debug */,
+				151C201F2499CEA3006170CC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		151C204F2499E3F4006170CC /* Build configuration list for PBXNativeTarget "common-dev" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				151C20502499E3F4006170CC /* Debug */,
+				151C20512499E3F4006170CC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		15CD0325246E87AD00EDADE2 /* Build configuration list for PBXNativeTarget "common-notification-service-ext" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
