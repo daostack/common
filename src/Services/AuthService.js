@@ -68,6 +68,7 @@ export default class AuthService {
         displayName: user.displayName,
         email: user.email,
         photoURL: user.photoURL,
+        uid: user.uid,
       },
     };
 
