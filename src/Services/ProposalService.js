@@ -56,6 +56,19 @@ export default class ProposalService {
       });
   }
 
+  async getProposalDiscussionsCount(proposalId) {
+    return db
+      .collection(DB_COLLECTIONS.discussionMessages)
+      .where('discussionId', '==', proposalId )
+      .get()
+      .then(snapshots => {
+        if (!snapshots) {
+          return 0;
+        }
+        return snapshots.docs.length;
+      });
+  }
+
   async subscribeToPendingProposalsData(daoId, userSafeAddress, callback) {
 
     let proposals = db
