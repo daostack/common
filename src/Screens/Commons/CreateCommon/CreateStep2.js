@@ -64,7 +64,7 @@ const CreateStep2 = props => {
       break;
     }
     case 2: {
-      props.fundingFormStore.fieldChanged(name, moment(pickDate).unix());
+      props.fundingFormStore.fieldChanged(name, moment(pickDate || {}).unix());
       setShow(true);
       break;
     }
