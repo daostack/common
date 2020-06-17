@@ -143,6 +143,11 @@ export default StyleSheet.create({
     paddingRight: 40,
   },
 
+  paddingHorizontalL: {
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
+
   // Pdding Bottom
   paddingBottomS: {
     paddingBottom: 10,

@@ -135,6 +135,7 @@ const UserProfileData = ({
           style={{
             ...text.h3Black,
             ...layout.marginBottomL,
+            ...layout.paddingHorizontalL,
           }}>{`Commons (${commonsCount})`}</Text>
 
         <CommonsSwiper
@@ -149,11 +150,13 @@ const UserProfileData = ({
           style={{
             ...text.h3Black,
             ...layout.marginBottomL,
+            ...layout.paddingHorizontalL,
           }}>{`Proposals (${proposalsCount})`}</Text>
 
         <ProposalsList
           navigation={navigation}
-          userId={userId}
+          safeAddress={userStore.userInfo.safeAddress}
+          showAll={true}
           isSwiper={true}
           onCountChange={onProposalsCountChange}
         />
