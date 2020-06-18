@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "151C202C2499E3F4006170CC"
-               BuildableName = "common-dev.app"
+               BuildableName = "common-stg.app"
                BlueprintName = "common-stg"
                ReferencedContainer = "container:common.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "151C202C2499E3F4006170CC"
-            BuildableName = "common-dev.app"
+            BuildableName = "common-stg.app"
             BlueprintName = "common-stg"
             ReferencedContainer = "container:common.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "151C202C2499E3F4006170CC"
-            BuildableName = "common-dev.app"
+            BuildableName = "common-stg.app"
             BlueprintName = "common-stg"
             ReferencedContainer = "container:common.xcodeproj">
          </BuildableReference>

@@ -137,7 +137,11 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
+
+        // react-native-config
+        resValue "string", "build_config_package", "com.daostack.common"
     }
+
     flavorDimensions "version"
     productFlavors {
         staging {
