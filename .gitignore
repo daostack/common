@@ -77,3 +77,4 @@ google-services.json
 /.env.prod
 /.env.dev
 /.env
+.env.stg

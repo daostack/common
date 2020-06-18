@@ -5,15 +5,6 @@
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
-      <PreActions>
-         <ExecutionAction
-            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
-            <ActionContent
-               title = "Run Script"
-               scriptText = "# Type a script or drag a script file from your workspace to insert its path.&#10;cp ${PROJECT_DIR}/../.env.dev .env &#10;">
-            </ActionContent>
-         </ExecutionAction>
-      </PreActions>
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -25,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "151C202C2499E3F4006170CC"
                BuildableName = "common-dev.app"
-               BlueprintName = "common-dev"
+               BlueprintName = "common-stg"
                ReferencedContainer = "container:common.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -55,7 +46,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "151C202C2499E3F4006170CC"
             BuildableName = "common-dev.app"
-            BlueprintName = "common-dev"
+            BlueprintName = "common-stg"
             ReferencedContainer = "container:common.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -72,7 +63,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "151C202C2499E3F4006170CC"
             BuildableName = "common-dev.app"
-            BlueprintName = "common-dev"
+            BlueprintName = "common-stg"
             ReferencedContainer = "container:common.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
