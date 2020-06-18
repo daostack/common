@@ -34,14 +34,16 @@ export const createCommon = async (
   navigation,
   daoStore,
 ) => {
-
   // need these keys:
   try {
     console.log('step 1');
     navigation.navigate('CommonCreationLoading');
-    daoStore.setCreationStatus(1);
+    //daoStore.setCreationStatus(1);
     const MANDATORY_ARGS = [
-      'name', 'minFeeToJoin', 'fundingGoal', 'fundingGoalDeadline',
+      'name',
+      'minFeeToJoin',
+      'fundingGoal',
+      'fundingGoalDeadline',
     ];
 
     for (const key of MANDATORY_ARGS) {
@@ -101,10 +103,13 @@ export const createCommon = async (
     const forgeOrgData = getForgeOrgData(data);
 
     console.log('waiting for forgeOrg transaction to be mined');
-    receipt = await daoFactoryContract.sendToRelayerWithReceipt('forgeOrg', forgeOrgData);
+    receipt = await daoFactoryContract.sendToRelayerWithReceipt(
+      'forgeOrg',
+      forgeOrgData,
+    );
     console.log('forgeOrg receipt ->', receipt);
     if (receipt) {
-      daoStore.setCreationStatus(2);
+      //daoStore.setCreationStatus(2);
     }
     console.log('done!');
     // get the new avatar address of the thing that was just created..
@@ -131,12 +136,16 @@ export const createCommon = async (
     console.log('variables sending to Contract', schemeDataToEncode);
     const schemeData = getSetSchemesData(schemeDataToEncode);
 
-    daoStore.setCreationStatus(4);
+    //daoStore.setCreationStatus(4);
     console.log('createCommonStep2: waiting for tx to be mined');
     // receipt = await daoFactoryContract.sendToRelayerWithReceipt('setSchemes', schemeData);
-    await WalletManager.getInstance().createCommonStep2(daoFactoryContract, 'setSchemes', schemeData);
+    await WalletManager.getInstance().createCommonStep2(
+      daoFactoryContract,
+      'setSchemes',
+      schemeData,
+    );
     console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
-    daoStore.setCreationStatus(5);
+    //daoStore.setCreationStatus(5);
     return newOrgAddress;
   } catch (e) {
     throw e;
