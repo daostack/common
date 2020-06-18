@@ -106,7 +106,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
 
     setDaoGroup([
       {
-        title: `My Daos (${myDaos.length})`,
+        title: `My Commons (${myDaos.length})`,
         data: myDaos,
       },
       {
