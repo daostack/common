@@ -29,7 +29,7 @@ import {UserAvatar} from '../../Components';
 import CountDown from 'react-native-countdown-component';
 import FirebaseService from '../../Services/FirebaseService';
 import {monthShortNames} from '../../Util/DateUtil';
-import {PROPOSAL_STAGES_HISTORY} from '../../Services/ProposalService';
+import { PROPOSAL_STAGES_ACTIVE} from '../../Services/ProposalService';
 import {PROPOSAL_TYPE} from '../../Services/ProposalService';
 
 const ProposalScreen = ({navigation, route, props}) => {
@@ -37,7 +37,7 @@ const ProposalScreen = ({navigation, route, props}) => {
   const [proposedUser, setProposedUser] = useState(false);
   const routeProposalId = route?.params.proposalId;
   const isMember = route?.params?.isMember;
-  const renderVoting = proposalInfo && !PROPOSAL_STAGES_HISTORY.includes(proposalInfo?.stageStr);
+  const renderVoting = proposalInfo && PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr);
 
   useEffect(() => {
     const getProposalInfo = async proposalId => {
