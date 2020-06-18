@@ -224,7 +224,7 @@ const CommonProfile = ({
 
   const shareCommon = event => {
     console.log('TODO: share functionality');
-    Toast.info('TODO: share functionality');
+    Toast.info('Share functionality will be implemented soon');
   };
 
   const openCommonOptions = event => {
