@@ -185,7 +185,8 @@ const ProposalData = props => {
           <View style={layout.content}>
             <View style={styles.proposalColumnSubtitle}>
               <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
-                Cost
+                { proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
+                  'Cost' : 'Contribution' }
               </Text>
               <Text style={text.h1Black}>{`$${
                 proposalInfo.type === PROPOSAL_TYPE.FundingRequest
