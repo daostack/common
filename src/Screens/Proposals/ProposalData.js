@@ -38,11 +38,11 @@ const ProposalData = props => {
           if (currProposalInfo.description.images) {
             await Promise.all(
               currProposalInfo.description.images.map(async currImage => {
-                const {width, height} = await ImageSize.getSize(currImage.uri);
+                const {width, height} = await ImageSize.getSize(currImage.value);
                 tempImages.push({
                   title: currImage.title,
                   widthRatio: (width / height) * 220,
-                  uri: currImage.uri,
+                  uri: currImage.value,
                 });
               }),
             );
@@ -212,32 +212,35 @@ const ProposalData = props => {
               </Text>
             </View>
 
-            <View style={styles.adRow}>
-              <Icon name="link" color={colors.mainBlue} size={16} />
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('Browser', {
-                    url: 'https://daostack.io/',
-                  })
-                }>
-                <Text style={styles.adsText}>TODO: show actual links here</Text>
-              </TouchableOpacity>
-            </View>
+            {proposalInfo.description?.links?.length && (
+              proposalInfo.description?.links.map((l) => <View style={styles.adRow}>
+                <Icon name="link" color={colors.mainBlue} size={16} />
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('Browser', {
+                      url: l.url,
+                    })
+                  }>
+                  <Text style={styles.adsText}>{l.title}</Text>
+                </TouchableOpacity>
+              </View>  )
+            )}
 
-            <View style={styles.adRow}>
-              <Icon name="file" color={colors.mainBlue} size={16} />
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('PDFViwer', {
-                    uri:
-                      'http://samples.leanpub.com/thereactnativebook-sample.pdf',
-                  })
-                }>
-                <Text style={styles.adsText}>
-                  TODO: show links to actually uploade files here
-                </Text>
-              </TouchableOpacity>
-            </View>
+            {proposalInfo.description?.files?.length && (
+              proposalInfo.description?.files.map((f, index) => <View style={styles.adRow}>
+                <Icon name="file" color={colors.mainBlue} size={16} />
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('PDFViwer', {
+                      uri: f.value,
+                    })
+                  }>
+                  <Text style={styles.adsText}>
+                    {`File ${index + 1}`}
+                  </Text>
+                </TouchableOpacity>
+              </View> )
+            )}
           </View>
         </View>
 
