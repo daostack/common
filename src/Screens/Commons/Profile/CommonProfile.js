@@ -397,7 +397,7 @@ const CommonProfile = ({
           <CommonStageSummary
             isFundingStage={isFundingStage}
             commonProgressInfo={{
-              time: 55,
+              time: currCommon.fundingGoalDeadline,
               activeProposals:
                 currCommon.numberOfBoostedProposals +
                 currCommon.numberOfPreBoostedProposals +
