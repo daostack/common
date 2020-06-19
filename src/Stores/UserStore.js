@@ -22,9 +22,9 @@ class UserStore {
   myCommons;
   myProposals;
   constructor() {
-    userInfo = null;
-    isLoading = false;
-    isLogin = false;
+    this.userInfo = null;
+    this.isLoading = false;
+    this.isLogin = false;
   }
 
   isDaoMember = members => {
