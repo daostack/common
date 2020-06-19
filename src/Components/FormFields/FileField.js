@@ -132,13 +132,13 @@ class FileField extends React.Component {
               ? styles.formFieldContainer
               : styles.formFieldContainerGenral
           }>
-          <View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             {this.renderFile()}
             {isAvatar || currValue ? (
               <TouchableOpacity
                 style={styles.formImageFielAddIcon}
-                onPress={this.pickFile}>
-                <Icon name="edit" size={16} color={colors.white} />
+                onPress={() => this.onChangeValue('')}>
+                <Icon name="delete" size={16} color={'rgb(0, 26, 54, 0.5)'} />
               </TouchableOpacity>
             ) : null}
           </View>
@@ -221,17 +221,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
     width: 30,
     height: 30,
     borderRadius: 15,
     padding: 2,
-    backgroundColor: colors.mainBlue,
-    borderWidth: 2,
-    borderColor: colors.white,
   },
 
   imagePlaceholder: {
