@@ -47,34 +47,47 @@ const ProposalScreen = ({navigation, route, props}) => {
   }, [navigation]);
 
   useEffect(() => {
+    let unsubscribe = null;
+
+    const loadProposalInfo = async (currProposalInfo) => {
+      let proposedMemberId = null;
+      let funding = null;
+
+      if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
+        proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+        funding = currProposalInfo.joinAndQuit.funding;
+      }
+      //FundingRequest proposal
+      else {
+        const proposedMember = await FirebaseService.getInstance().getUserByAddress(
+          currProposalInfo.fundingRequest.beneficiary,
+        );
+        proposedMemberId = proposedMember.id;
+        funding = currProposalInfo.fundingRequest.amount;
+      }
+      const currProposedUser = await FirebaseService.getInstance().getUserById(
+        proposedMemberId,
+      );
+
+      setProposedUser(currProposedUser);
+      setProposalInfo({ ...currProposalInfo, ...{ funding: funding } });
+    };
+
     const getProposalInfo = async proposalId => {
       try {
         let currProposalInfo = await ProposalService.getInstance().getProposalInfo(
           proposalId,
         );
 
-        //RequestToJoin proposal
-        let proposedMemberId = null;
-        let funding = null;
+        await loadProposalInfo(currProposalInfo);
 
-        if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
-          proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
-          funding = currProposalInfo.joinAndQuit.funding;
-        }
-        //FundingRequest proposal
-        else {
-          const proposedMember = await FirebaseService.getInstance().getUserByAddress(
-            currProposalInfo.fundingRequest.beneficiary,
-          );
-          proposedMemberId = proposedMember.id;
-          funding = currProposalInfo.fundingRequest.amount;
-        }
-        const currProposedUser = await FirebaseService.getInstance().getUserById(
-          proposedMemberId,
+        unsubscribe = await ProposalService.getInstance().subscribeToProposalById(proposalId,
+          async (updatedProposalInfo) => {
+            console.log('UPDATED -> ', updatedProposalInfo.votesFor);
+            await loadProposalInfo(updatedProposalInfo);
+          }
         );
 
-        setProposedUser(currProposedUser);
-        setProposalInfo({...currProposalInfo, ...{funding: funding}});
       } catch (error) {
         console.log('error: ', error);
         Toast.error(error?.toString());
@@ -84,6 +97,11 @@ const ProposalScreen = ({navigation, route, props}) => {
     if (routeProposalId) {
       getProposalInfo(routeProposalId);
     }
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [routeProposalId]);
 
   const [
