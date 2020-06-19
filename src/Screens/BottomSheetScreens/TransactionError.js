@@ -5,14 +5,13 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-
+import {inject, observer} from 'mobx-react';
 import React from 'react';
 import {text, layout, colors} from '../../Theme/index';
 
-const TransactionError = (props) => {
+const TransactionError = ({bottomSheetStore, ...props}) => {
   return (
-    <View
-      style={styles.scrollView} >
+    <View style={styles.scrollView}>
       <View style={styles.body}>
         <Image
           source={require('../../Assets/alert.png')}
@@ -33,8 +32,8 @@ const TransactionError = (props) => {
           style={{
             ...layout.btnOutline,
           }}
-          onPress={() => {}}>
-          <Text style={text.buttonblue}>Try Again</Text>
+          onPress={() => bottomSheetStore.hideBottomSheet()}>
+          <Text style={text.buttonblue}>Dismiss</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -89,4 +88,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TransactionError;
+export default inject('bottomSheetStore')(observer(TransactionError));

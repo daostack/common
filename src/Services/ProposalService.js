@@ -56,6 +56,19 @@ export default class ProposalService {
       });
   }
 
+  async getProposalDiscussionsCount(proposalId) {
+    return db
+      .collection(DB_COLLECTIONS.discussionMessages)
+      .where('discussionId', '==', proposalId )
+      .get()
+      .then(snapshots => {
+        if (!snapshots) {
+          return 0;
+        }
+        return snapshots.docs.length;
+      });
+  }
+
   async subscribeToPendingProposalsData(daoId, userSafeAddress, callback) {
 
     let proposals = db
@@ -84,6 +97,8 @@ export default class ProposalService {
     commonId,
     userId,
     stages,
+    safeAddress,
+    showAll,
     listChangeCallback,
     listRef,
     onlyRequestsToJoin,
@@ -99,7 +114,18 @@ export default class ProposalService {
       proposalCollection = proposalCollection.where('proposerId', '==', userId);
     }
 
-    proposalCollection = proposalCollection.where('stageStr', 'in', stages);
+    if (safeAddress) {
+      proposalCollection = proposalCollection.where(
+        'proposer',
+        '==',
+        safeAddress.toString(),
+      );
+    }
+
+    if (!showAll) {
+      proposalCollection = proposalCollection.where('stageStr', 'in', stages);
+    }
+
 
     return proposalCollection.onSnapshot(
       snapshot => {

@@ -50,6 +50,7 @@ const CommonProfile = ({
   const [currCommon, setCurrCommon] = useState(false);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
+  const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const routeCommon = route.params.currCommon;
   const daoMembers = route.params.currCommon.members;
   const showReqToJoin = !userStore.userInfo || (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
@@ -86,6 +87,17 @@ const CommonProfile = ({
       };
     }
   }, [routeCommon.id, isMember, userStore.userInfo]);
+
+  useEffect(() => {
+    if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
+      const getPendingProposalsDiscussionCount = async () => {
+        const count = await ProposalService.getInstance().getProposalDiscussionsCount(pendingProposalsData.usersPendingProposal.id);
+        if (userPendingPropDiscCount !== count)
+        {setUserPendingPropDiscCount(count);}
+      };
+      getPendingProposalsDiscussionCount();
+    }
+  }, [pendingProposalsData]);
 
   const renderTabBar = props => (
     <TabBar
@@ -212,7 +224,7 @@ const CommonProfile = ({
 
   const shareCommon = event => {
     console.log('TODO: share functionality');
-    Toast.info('TODO: share functionality');
+    Toast.info('Share functionality will be implemented soon');
   };
 
   const openCommonOptions = event => {
@@ -312,7 +324,7 @@ const CommonProfile = ({
             />
             <ProposalApprovalTag
               iconName="discussion"
-              value={121}
+              value={userPendingPropDiscCount}
               isMarked={false}
             />
           </View>

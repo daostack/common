@@ -66,13 +66,13 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo }) =>
               </Text>
             </View>
             {navigation ? (
-              <TouchableOpacity onPress={onHeaderMenuOpen}>
-                <Icon
+              <TouchableOpacity /* onPress={onHeaderMenuOpen} */>
+                {/* <Icon
                   name="menu-horizontal"
                   size={30}
                   color={colors.white}
                   style={layout.marginTopXS}
-                />
+                /> */}
               </TouchableOpacity>
             ) : null}
           </View>
