@@ -488,7 +488,7 @@ const CommonProfile = ({
                     Request to join
                   </Text>
                   <Text style={{fontSize: 16, color: 'white'}}>
-                    ${currCommon.minFeeToJoin} Contribution
+                    ${currCommon.minFeeToJoin / 100} Contribution
                   </Text>
                 </TouchableOpacity>
               </View>

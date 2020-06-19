@@ -146,7 +146,7 @@ const RequestStep3 = props => {
               onCustomSelect={onCustomSelect}
               onCustomClose={onCustomClose}
               onAmountSelected={onAmountSelected}
-              minFeeToJoin={props.daoStore.dao.minFeeToJoin}
+              minFeeToJoin={props.daoStore.dao.minFeeToJoin / 100}
             />
           </View>
         </ScrollView>
