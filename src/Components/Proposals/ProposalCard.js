@@ -117,7 +117,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           }}>
           <Text
             style={{...text.h3Black, ...{textAlign: 'left', flexWrap: 'wrap'}}}>
-            {proposalCardInfo.proposalInfo?.title}
+            {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
           </Text>
 
           <View style={layout.flexRow}>

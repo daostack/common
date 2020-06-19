@@ -38,6 +38,13 @@ const ProposalScreen = ({navigation, route, props}) => {
   const routeProposalId = route?.params.proposalId;
   const isMember = route?.params?.isMember;
   const renderVoting = proposalInfo && PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr);
+  const commonName = route?.params?.commonName;
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      title: commonName || 'Unknown common name',
+    });
+  }, [navigation]);
 
   useEffect(() => {
     const getProposalInfo = async proposalId => {
@@ -344,7 +351,7 @@ const ProposalScreen = ({navigation, route, props}) => {
               {proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
                 <>
                   <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
-                    {proposalInfo?.title}
+                    {proposalInfo?.description?.title || 'Unknown title'}
                   </Text>
 
                   <MemberCard

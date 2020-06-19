@@ -131,7 +131,7 @@ const CommonProfile = ({
   const Proposals = () => {
     return (
       <View style={{padding: sizeL}}>
-        <ProposalsList isMember={isMember} navigation={navigation} commonId={currCommon.id} />
+        <ProposalsList isMember={isMember} navigation={navigation} commonId={currCommon.id} commonName={routeCommon.name} />
       </View>
     );
   };
@@ -141,6 +141,7 @@ const CommonProfile = ({
       <View style={{padding: sizeL}}>
         <ProposalsList
           isMember={isMember}
+          commonName={routeCommon.name}
           navigation={navigation}
           commonId={currCommon.id}
           isHistory={true}
@@ -218,7 +219,7 @@ const CommonProfile = ({
     navigation.navigate('CommonMembers', {
       members: daoMembers,
       commonId: currCommon.id,
-      commonTitle: currCommon.name,
+      commonName: routeCommon.name,
     });
   };
 
@@ -262,6 +263,7 @@ const CommonProfile = ({
       name: 'ProposalScreen',
       params: {
         proposalId: route.params.createdProposalId,
+        commonName: routeCommon.name,
         isMember,
       },
     });
@@ -278,6 +280,7 @@ const CommonProfile = ({
       name: 'ProposalScreen',
       params: {
         proposalId: pendingProposalsData.usersPendingProposal?.id,
+        commonName: routeCommon.name,
         isMember,
       },
     });
@@ -397,7 +400,7 @@ const CommonProfile = ({
           <CommonStageSummary
             isFundingStage={isFundingStage}
             commonProgressInfo={{
-              time: 55,
+              time: currCommon.fundingGoalDeadline,
               activeProposals:
                 currCommon.numberOfBoostedProposals +
                 currCommon.numberOfPreBoostedProposals +

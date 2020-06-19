@@ -14,7 +14,7 @@ import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 
 const {width, height} = Dimensions.get('window');
 
-const ProposalsList = ({isMember, safeAddress, showAll, ...props}) => {
+const ProposalsList = ({isMember, commonName, safeAddress, showAll, ...props}) => {
   const commonId = props.commonId;
   const userId = props.userId;
   const isHistory = props.isHistory;
@@ -81,6 +81,7 @@ const ProposalsList = ({isMember, safeAddress, showAll, ...props}) => {
       name: 'ProposalScreen',
       params: {
         proposalId: proposalId,
+        commonName,
         isMember,
       },
     });
