@@ -383,8 +383,7 @@ const CommonProfile = ({
             navigation={navigation}
             onHeaderMenuOpen={openCommonOptions}
             commonInfo={{
-              logo:
-                'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
+              logo: currCommon.metadata?.avatar,
               name: currCommon.name,
               description: currCommon.description,
               byline: currCommon.metadata?.byline,
@@ -488,7 +487,7 @@ const CommonProfile = ({
                     Request to join
                   </Text>
                   <Text style={{fontSize: 16, color: 'white'}}>
-                    ${currCommon.minFeeToJoin} Contribution
+                    ${currCommon.minFeeToJoin / 100} Contribution
                   </Text>
                 </TouchableOpacity>
               </View>
