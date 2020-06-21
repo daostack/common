@@ -29,6 +29,7 @@ import CommonMembersList from './CommonMembersList';
 import ProposalService from '../../../Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
+import { calcIsFundingStage } from '../../../Util';
 
 const CommonProfile = ({
   navigation,
@@ -38,7 +39,6 @@ const CommonProfile = ({
   userStore,
 }) => {
   const [isMember, setMemberState] = useState(false);
-  const [isFundingStage] = useState(false);
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -54,6 +54,7 @@ const CommonProfile = ({
   const routeCommon = route.params.currCommon;
   const daoMembers = route.params.currCommon.members;
   const showReqToJoin = !userStore.userInfo || (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
+  const isFundingStage = calcIsFundingStage(routeCommon.fundingGoalDeadline);
 
   useEffect(() => {
     setShowRequestSentModal(route.params.showRequestSentModal);
@@ -459,10 +460,18 @@ const CommonProfile = ({
       </HeaderImageScrollView>
       <SafeAreaView>
         {isMember ? (
-          <BottomRightButton
+          !isFundingStage && index === 1 ? <BottomRightButton
             onPress={() =>
-              navigation.navigate(
-                index === 1 ? 'FundingProposal' : 'New Topic',
+              navigation.navigate('FundingProposal',
+                {
+                  commonId: routeCommon.id,
+                },
+              )
+            }
+            bottom={50}
+          /> : index !== 1 && <BottomRightButton
+            onPress={() =>
+              navigation.navigate('New Topic',
                 {
                   commonId: routeCommon.id,
                 },
