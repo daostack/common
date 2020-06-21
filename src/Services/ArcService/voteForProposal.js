@@ -1,8 +1,8 @@
 import WalletManager from '../../Util/WalletManager';
 import {JoinAndQuitProposal, FundingRequestProposal} from '@daostack/arc.js';
-import {PROPOSAL_STAGES_HISTORY} from '../ProposalService';
-
-import {NULL_ADDRESS, PROPOSAL_TYPE} from '../../Config';
+import { PROPOSAL_STAGES_HISTORY } from '../ProposalService';
+import axios from 'axios';
+import { NULL_ADDRESS, PROPOSAL_TYPE, graphqlUrl} from '../../Config';
 
 const createVoteTransaction = async (proposal, outcome) => {
   const amount = 0;
@@ -70,8 +70,17 @@ export const voteForProposal = async (
 
     console.log('transactionHAsh -> ', receipt.transactionHash);
 
+    const axiosClient = axios.create({
+      baseURL: graphqlUrl,
+      timeout: 1000000, // milliseconds
+    });
+
+    console.log('Proposals updating started.');
+    const proposalUpdateResponse = await axiosClient.get('update-proposals');
+    console.log('Proposals updated: ', proposalUpdateResponse);
+
     // TODO: get the voteId from the transaction receipt and return it
-    // TODO: once we have https://daostack1.atlassian.net/browse/CM-404, we should call "updateVotes" with the voteId
+
     return receipt;
   } catch (e) {
     console.log('ERROR IN VOTE FOR PROPOSAL');

@@ -93,6 +93,18 @@ export default class ProposalService {
 
   }
 
+  async subscribeToProposalById(proposalId, callback) {
+
+    let proposals = db
+      .collection(DB_COLLECTIONS.proposals)
+      .where('id', '==', proposalId);
+
+    return proposals.onSnapshot(snapshot => {
+      callback(snapshot.docChanges()[0].doc._data);
+    }, error => Toast.error(error));
+
+  }
+
   async subscribeToProposalList(
     commonId,
     userId,
