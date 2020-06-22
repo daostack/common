@@ -4,7 +4,6 @@ import moment from 'moment';
 import {layout, colors, text} from '../../Theme';
 
 const UserMessageCard = ({photoURL, name, message, time}) => {
-  console.log('photoURL -> ', photoURL);
   return (
     <View style={styles.messageCardContainer}>
       <Image style={styles.userImage} source={{uri: photoURL}} />
