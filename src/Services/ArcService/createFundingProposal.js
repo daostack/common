@@ -54,13 +54,13 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
       const fundingRequestPlugin = await dao.plugin({where: {name: 'FundingRequest'}});
       const fundingRequestPluginState = await fundingRequestPlugin.fetchState();
       const activationTime = fundingRequestPluginState.pluginParams.voteParams.activationTime;
-      if (activationTime > new Date()) {
+      if (activationTime > ((new Date()).getTime() / 1000)) {
         throw Error(`Canot create a funding request as the plugin is not actived yet (it activates on ${activationTime})`);
       }
+
+      // TODO: The "FUNDED_BEFORE_DEADLINE" flag can (and should) be set on common creation, not on "first proposal creation"
       let fundingGoalReachedFlag = await daoContract.functions.db('FUNDED_BEFORE_DEADLINE');
       if (fundingGoalReachedFlag !== 'TRUE') {
-        // we will try to set it
-        // TODO: this flag should be set on common creation instead
         const joinAndQuitPlugin = await dao.plugin({
           where: {name: 'JoinAndQuit'},
         });
@@ -90,9 +90,11 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
         // console.log(setFlagTxReceipt);
         console.log('setFlagTxReceipt.transactionHash ->', setFlagTxReceipt.transactionHash);
         fundingGoalReachedFlag = await daoContract.db('FUNDED_BEFORE_DEADLINE');
+        console.log(`fundingGoalReachedFlag value is now ${fundingGoalReachedFlag}`);
         if (fundingGoalReachedFlag !== 'TRUE') {
           throw Error('funding goal is not reached yet - cannot create a funding request');
         }
+
       }
       // TODO: check if the user is a member
     };
