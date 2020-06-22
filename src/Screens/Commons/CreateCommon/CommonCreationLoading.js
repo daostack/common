@@ -39,7 +39,7 @@ const CommonCreationLoading = ({daoStore, route, navigation}) => {
                 textAlign: 'center',
               }}>
               There are a lot of pieces to bring together. It might take a
-              couple of minutte.
+              couple of minutes.
             </Text>
           </View>
         </View>

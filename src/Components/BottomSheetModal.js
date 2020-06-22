@@ -10,7 +10,8 @@ const BottomSheetModal = forwardRef(props => {
   };
 
   const onSwipeComplete = () => {
-    console.log('On slipe complete');
+    // TODO: this function does not seem to do anything useful, please remove
+    console.log('On swipe complete');
   };
 
   return (

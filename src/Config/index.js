@@ -9,8 +9,8 @@ import {getMainDefinition} from 'apollo-utilities';
 
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
 // TODO: we should probably read this from the package..
-export const ARC_VERSION = '0.1.1-rc.21';
-export const GRAPH_VERSION = 'v8_2_exp_xdai';
+export const ARC_VERSION = '0.1.1-rc.23';
+export const GRAPH_VERSION = 'v8_5_exp_xdai';
 export const graphHttpLink = `https://api.thegraph.com/subgraphs/name/daostack/${GRAPH_VERSION}`;
 export const graphwsLink = `wss://api.thegraph.com/subgraphs/name/daostack/${GRAPH_VERSION}`;
 export const ipfsLink = 'https://api.thegraph.com/ipfs-daostack/api/v0';

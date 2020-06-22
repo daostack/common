@@ -27,7 +27,6 @@ const AmountField = ({
     if (isCustom) {
       setIsCustomSelected(true);
       textInputRef.current.focus();
-      console.log(textInputRef.current);
       onCustomSelect();
     } else {
       onAmountSelected(amount);

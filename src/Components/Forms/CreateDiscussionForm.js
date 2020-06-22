@@ -44,7 +44,6 @@ class CreateDiscussionForm extends React.Component {
             follower: [],
           })
           .then(() => {
-            console.log('YES');
             Toast.success('Done');
             Keyboard.dismiss();
 
@@ -54,11 +53,11 @@ class CreateDiscussionForm extends React.Component {
           })
           .catch(error => {
             Toast.error(error);
-            console.log('NO', error);
           });
       }
     } catch (err) {
       console.log(err);
+      throw err;
     }
   };
 
@@ -77,8 +76,6 @@ class CreateDiscussionForm extends React.Component {
       ...otherProps
     } = this.props;
 
-    console.log('createDiscussionStore');
-    console.log(createDiscussionStore);
     return (
       <View
         {...otherProps}

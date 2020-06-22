@@ -90,13 +90,6 @@ const App = ({userStore, bottomSheetStore}) => {
   const [loading, setLoading] = useState(true);
   const hudRef = useRef();
 
-  // const getTestEth = async address => {
-  //   console.log('getting test eth for user: ', address);
-  //   const req = await fetch(
-  //     `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
-  //   );
-  //   console.log('result from eth request: ', req);
-  // };
   useEffect(() => {
     messaging()
       .registerDeviceForRemoteMessages()
@@ -104,7 +97,7 @@ const App = ({userStore, bottomSheetStore}) => {
         return messaging().requestPermission();
       })
       .then(settings => {
-        console.log('Notification settings', settings);
+        // console.log('Notification settings', settings);
         if (settings) {
           return NotificationService.saveTokenToDatabase();
         }
@@ -118,7 +111,7 @@ const App = ({userStore, bottomSheetStore}) => {
     const showLisenter = DeviceEventEmitter.addListener(
       'HUD',
       (content, isLoading = false) => {
-        hudRef.current.show(content, isLoading ? DURATION.FOREVER : 1500);
+        hudRef.current.show(content, isLoading ? DURATION.FOREVER : 15000);
       },
     );
     const hidelisenter = DeviceEventEmitter.addListener('HideHUD', () => {
@@ -210,8 +203,6 @@ const App = ({userStore, bottomSheetStore}) => {
     checkOnboardingStatus();
     return subscriber;
   }, [userStore]);
-
-  // console.log('onboarded: ', onboarded);
 
   if (loading) {
     return <View style={{flex: 1}} />;
