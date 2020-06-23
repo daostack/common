@@ -107,7 +107,7 @@ const UserProfileData = ({
 
       <View style={styles.countBoxContainer}>
         <CountBox
-          count={0}
+          count={commonsCount}
           name="Commons"
           onPress={() => {
             console.log('Commons CardBox clicked');
@@ -115,7 +115,7 @@ const UserProfileData = ({
         />
         <View style={styles.countBoxDivider} />
         <CountBox
-          count={0}
+          count={proposalsCount}
           name="Proposals"
           onPress={() => {
             console.log('Proposals CardBox clicked');

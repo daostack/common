@@ -42,6 +42,25 @@ export default class ProposalService {
     return this.serviceInstance;
   };
 
+  async getUserProposalsCounts(uid) {
+    return db
+      .collection(DB_COLLECTIONS.proposals)
+      .where('proposerId', '==', uid)
+      .get()
+      .then(snapshots => {
+        if (!snapshots) {
+          return { all: 0, active: 0, history: 0 };
+        } else {
+          const stats = {
+            all: snapshots.docs.length,
+            active: snapshots.docs.filter((s) => PROPOSAL_STAGES_ACTIVE.includes(s.data().stageStr)).length,
+            history: snapshots.docs.filter((s) => PROPOSAL_STAGES_HISTORY.includes(s.data().stageStr)).length,
+          };
+          return stats;
+        }
+      });
+  }
+
   async getProposalInfo(proposalUid) {
     console.log('proposalUid -> ', proposalUid);
     return db
