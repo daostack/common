@@ -40,7 +40,6 @@ class FileField extends React.Component {
     if (this.props.validation) {
       const { formStore, name} = this.props.validation;
       formStore.removeFormField(name);
-      console.log('AFTER DELETE', formStore);
     }
     this.props.onFieldDeleted && this.props.onFieldDeleted();
   }
