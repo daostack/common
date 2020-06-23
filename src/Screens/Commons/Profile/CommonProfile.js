@@ -460,18 +460,9 @@ const CommonProfile = ({
       </HeaderImageScrollView>
       <SafeAreaView>
         {isMember ? (
-          !isFundingStage && index === 1 ? <BottomRightButton
+          !isFundingStage && <BottomRightButton
             onPress={() =>
-              navigation.navigate('FundingProposal',
-                {
-                  commonId: routeCommon.id,
-                },
-              )
-            }
-            bottom={50}
-          /> : index !== 1 && <BottomRightButton
-            onPress={() =>
-              navigation.navigate('New Topic',
+              navigation.navigate(index === 1 ? 'FundingProposal' : 'New Topic',
                 {
                   commonId: routeCommon.id,
                 },
