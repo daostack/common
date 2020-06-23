@@ -7,117 +7,65 @@ import {
   Text,
   ScrollView,
   View,
+  FlatList,
   Dimensions,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-
+import { inject, observer } from 'mobx-react';
 import CommonBox from '../../Components/CommonBox';
-import Loader from '../../Components/Loader';
 import {layout, colors, text, sizeS} from '../../Theme';
-
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
-import {
-  MY_DAOS_SUBSCRIPTION,
-  ALL_DAOS_SUBSCRIPTION,
-} from '../../GrapthSubscriptions';
-import {Query} from 'react-apollo';
 
 const getTabName = (objectName, count) => {
   return `${objectName} (${count ? count : 0})`;
 };
 
-const MyCommons = ({navigation}) => {
+const MyCommons = ({navigation, daoStore, userStore}) => {
   const [index, setIndex] = useState(0);
-  const [routes, setRoutes] = useState([
-    {key: 'all', title: getTabName('All')},
-    {key: 'members', title: getTabName('Members')},
-  ]);
+  const usersDaos = daoStore.daos.filter((dao) => userStore.isDaoMember(dao.members));
+  const routes = [
+    { key: 'all', title: getTabName('All', daoStore.daos.length) },
+    { key: 'members', title: getTabName('Members', usersDaos.length) },
+  ];
 
-  const AllCommonsList = () => {
-    return (
-      <Query query={ALL_DAOS_SUBSCRIPTION()}>
-        {({loading, error, data}) => {
-          if (error) {
-            return <Text>ERROR! ${error}</Text>;
-          }
-
-          if (loading) {
-            return <Loader />;
-          }
-
-          let tmpRoutes = routes;
-          tmpRoutes[0].title = getTabName('All', data.daos.length);
-
-          setRoutes(tmpRoutes);
-
-          return (
-            <View style={layout.content}>
-              {data.daos.map((dao, i) => {
-                return (
-                  <CommonBox
-                    image={`https://i.picsum.photos/id/${i * 10}/500/100.jpg`}
-                    common={dao}
-                    key={i}
-                    navigation={navigation}
-                  />
-                );
-              })}
-            </View>
-          );
-        }}
-      </Query>
-    );
+  const setDao = dao => {
+    daoStore.setDao(dao);
   };
+
+  const renderCommonCard = (dao, i) =>
+    <CommonBox
+      image={dao.coverPhoto}
+      common={dao}
+      key={i}
+      navigation={navigation}
+      onPress={() => setDao(dao)}
+    />;
+
+  const AllCommonsList = (daos) => (
+    <View style={{ flex: 1, padding: 20 }}>
+      <FlatList
+        data={daos}
+        renderItem={({ item, i }) => renderCommonCard(item, i, navigation)}
+      />
+    </View>
+  );
 
   const MyCommonsList = () => {
     return (
-      <Query
-        query={MY_DAOS_SUBSCRIPTION()}
-        variables={{address: '0xbe5cf9a0408d22cdd61f8990b33dd00a5272f65b'}}>
-        {({loading, error, data}) => {
-          console.log('Query -> ', loading, error, data);
-
-          if (error) {
-            console.log('Error -> ', error);
-            return <Text>ERROR!</Text>;
-          }
-
-          if (loading) {
-            console.log('Loading... -> ');
-            return <Loader />;
-          }
-
-          let tmpRoutes = routes;
-          tmpRoutes[1].title = getTabName(
-            'Members',
-            data.reputationHolders.length,
-          );
-          setRoutes(tmpRoutes);
-
-          return (
-            <View style={layout.content}>
-              {data.reputationHolders.map((currHolder, i) => {
-                return (
-                  <CommonBox
-                    image={`https://i.picsum.photos/id/${i * 10}/500/100.jpg`}
-                    common={currHolder.dao}
-                    key={i}
-                    navigation={navigation}
-                  />
-                );
-              })}
-            </View>
-          );
-        }}
-      </Query>
+      <View style={{ flex: 1, padding: 20 }}>
+        <FlatList
+          data={usersDaos}
+          renderItem={({ item, i }) => renderCommonCard(item, i)}
+        />
+      </View>
     );
   };
 
   const initialLayout = {width: Dimensions.get('window').width};
 
   const renderScene = SceneMap({
-    all: AllCommonsList,
-    members: MyCommonsList,
+    all: React.memo(() => AllCommonsList(daoStore.daos)),
+    members: React.memo(() => MyCommonsList(usersDaos)),
   });
 
   const renderTabBar = props => (
@@ -151,7 +99,6 @@ const MyCommons = ({navigation}) => {
           <View style={styles.sectionContainer}>
             <Text style={text.h2Black}>My Commons</Text>
           </View>
-
           <View style={styles.sectionTabView}>
             <TabView
               navigationState={{index, routes}}
@@ -195,4 +142,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyCommons;
+
+export default inject(
+  'daoStore',
+  'userStore',
+)(observer(MyCommons));
