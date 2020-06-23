@@ -23,7 +23,7 @@ export default class GraphqlSyncService {
 
     async syncProposalById(proposalId) {
       console.log('Proposal syncing started.');
-      const options = { headers: { proposalId } };
+      const options = { params: { proposalId } };
       const proposalUpdateResponse = await this.axiosClient.get('update-proposal-by-id', options);
       console.log('Proposal synced: ', proposalUpdateResponse);
     }
