@@ -15,7 +15,6 @@ ethers.Contract.prototype.sendToRelayer = async function (funcName, params, valu
   return response.data?.txHash;
 };
 
-
 ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, params, value = '0') {
   const txHash = await this.sendToRelayer(funcName, params, value);
   console.log('txHash ->', txHash);
@@ -31,9 +30,13 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
 };
 
 const axiosClient = axios.create({
-  baseURL: relayerUrl,
+  baseURL: 
+  // 'http://localhost:5001/common-staging-50741/us-central1/relayer',
+  relayerUrl,
   timeout: 1000000, // milliseconds
 });
+
+console.log('relayerUrl -->', relayerUrl);
 
 export default class WalletManager {
   static myInstance = null;

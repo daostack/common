@@ -5,8 +5,8 @@
   "scripts": {
     "android:prod": "ENVFILE=./env/env.prod react-native run-android --variant=ProdDebug",
     "android:stg": "ENVFILE=./env/env.stg react-native run-android --variant StagingDebug --appIdSuffix \"staging\"",
-    "ios:stg": "ENVFILE=./env/env.stg react-native run-ios --scheme \"common-stg\"",
-    "ios:prod": "ENVFILE=./env/env.prod react-native run-ios --scheme \"common\"",
+    "ios:stg": "react-native run-ios --scheme \"common-stg\"",
+    "ios:prod": "react-native run-ios --scheme \"common\"",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint App.js src/ __tests__",

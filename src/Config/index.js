@@ -11,8 +11,6 @@ import Config from 'react-native-config';
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
 // TODO: we should probably read this from the package..
 
-console.log('Config ---->', Config, Config.graphHttpLink);
-
 export const ARC_VERSION = Config.ARC_VERSION;
 export const GRAPH_VERSION = Config.GRAPH_VERSION;
 export const graphHttpLink = `${Config.graphHttpLink}${GRAPH_VERSION}`;
@@ -22,6 +20,7 @@ export const web3ProviderUrl = Config.web3ProviderUrl;
 export const relayerUrl = Config.relayerUrl;
 export const web3NetworkId = Config.eb3NetworkId;
 export const COMMONTOKENADDRESS = Config.COMMONTOKENADDRESS;
+export const firebaseWebClientId = Config.firebaseWebClientId;
 
 export const defaultAllowance = 100000000000000000;
 export const MEMBER_REPUTATION = 1000; // how much rep a new members gets

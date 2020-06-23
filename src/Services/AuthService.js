@@ -5,6 +5,7 @@ import FirebaseService from './FirebaseService';
 import WalletManager from '../Util/WalletManager';
 import GoogleDriveService from './GoogleDriveService';
 import {NativeModules} from 'react-native';
+import {firebaseWebClientId } from '../Config';
 
 export default class AuthService {
   static serviceInstance = null;
@@ -17,7 +18,7 @@ export default class AuthService {
   constructor() {
     GoogleSignin.configure({
       scopes: [GOOGLE_SIGNIN_PERMISSIONS.APP_DATA_RW],
-      webClientId: WEB_CLIENT_ID,
+      webClientId: firebaseWebClientId,
     });
   }
 
