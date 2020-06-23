@@ -107,6 +107,7 @@ const CommonsSwiper = ({
             cardRenderer={(item, index) => renderCommonCard(item, index)}
             data={myDaos}
             extraData={listRef}
+            showMax={5}
           />
         </View>
       </View>
