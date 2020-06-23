@@ -1,4 +1,4 @@
-import React from 'react';
+import React,  {useEffect} from 'react';
 
 import {
   SafeAreaView,
@@ -10,28 +10,28 @@ import {
   Dimensions,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-
-import CommonBox from '../../Components/CommonBox';
-import Loader from '../../Components/Loader';
 import {layout, colors, text, sizeS} from '../../Theme';
-
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
+import ProposalsList from '../../Screens/Proposals/ProposalsList';
+import { inject, observer } from 'mobx-react';
+import  ProposalService  from '../../Services/ProposalService';
 
-import {Query} from 'react-apollo';
 
-import {ALL_DAOS_SUBSCRIPTION} from '../../GrapthSubscriptions';
-
-const getTabName = (objectName, count) => {
-  return `${objectName} (${count ? count : 0})`;
-};
-
-const MyProposals = ({navigation}) => {
+const MyProposals = ({navigation, userStore}) => {
   const [index, setIndex] = React.useState(0);
-  const [routes, setRoutes] = React.useState([
-    {key: 'all', title: 'All (0)'},
-    {key: 'active', title: 'Active (0)'},
-    {key: 'history', title: 'History (0) '},
-  ]);
+  const [stats, setStats] = React.useState({ all: 0, active: 0, history: 0 });
+
+  useEffect(() => {
+    const getStats = async () => {
+      const userProposalsStats = await ProposalService.getInstance().getUserProposalsCounts(userStore.userInfo.uid);
+      setStats({ ...userProposalsStats });
+    };
+    getStats();
+  }, [userStore.userInfo.uid]);
+
+  const routes = [{key: 'all', title: `All (${stats.all})`},
+    { key: 'active', title: `Active (${stats.active})`},
+    { key: 'history', title: `History (${stats.history})`}];
 
   const AllProposals = () => {
     return SceneRenderer(0);
@@ -47,38 +47,16 @@ const MyProposals = ({navigation}) => {
 
   const SceneRenderer = sceneIndex => {
     return (
-      <Query query={ALL_DAOS_SUBSCRIPTION()}>
-        {({loading, error, data}) => {
-          if (error) {
-            return <Text>ERROR! ${error}</Text>;
-          }
-
-          if (loading) {
-            return <Loader />;
-          }
-
-          let tmpRoutes = routes;
-          tmpRoutes[sceneIndex].title = getTabName('All', data.daos.length);
-
-          setRoutes(tmpRoutes);
-
-          return (
-            <View style={layout.marginTopL}>
-              {data.daos.map((dao, i) => {
-                return (
-                  <CommonBox
-                    image={`https://i.picsum.photos/id/${i * 10}/500/100.jpg`}
-                    common={dao}
-                    key={i}
-                    navigation={navigation}
-                  />
-                );
-              })}
-            </View>
-          );
-        }}
-      </Query>
+      <View style={{ flex: 1, marginTop: 40, paddingHorizontal: 20}}>
+        <ProposalsList
+          navigation={navigation}
+          safeAddress={userStore.userInfo.safeAddress}
+          showAll={sceneIndex === 0 ? true : false}
+          isHistory={sceneIndex === 2 ? true : false}
+        />
+      </View>
     );
+
   };
 
   const initialLayout = {width: Dimensions.get('window').width};
@@ -120,7 +98,6 @@ const MyProposals = ({navigation}) => {
           <View style={styles.sectionContainer}>
             <Text style={text.h2Black}>My proposals</Text>
           </View>
-
           <View style={styles.sectionTabView}>
             <TabView
               navigationState={{index, routes}}
@@ -128,7 +105,6 @@ const MyProposals = ({navigation}) => {
               onIndexChange={setIndex}
               initialLayout={initialLayout}
               renderTabBar={renderTabBar}
-              style={{paddingHorizontal: 20}}
             />
           </View>
         </ScrollView>
@@ -165,4 +141,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyProposals;
+export default inject(
+  'userStore',
+)(observer(MyProposals));
