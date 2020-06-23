@@ -70,7 +70,7 @@ import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
-import {auth} from './src/Firebase';
+import {auth, db} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
 
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
@@ -139,7 +139,10 @@ const App = ({userStore, bottomSheetStore}) => {
   }, []);
 
   useEffect(() => {
+    const subscribers = { authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
+
     const onAuthStateChanged = async user => {
+      console.log('AUTH STATE CHANGED: ', user);
       try {
         userStore.setIsLoading(true);
         if (user) {
@@ -161,11 +164,15 @@ const App = ({userStore, bottomSheetStore}) => {
           };
           const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
           userStore.setSignedInUser(filteredUser);
-          if (isNewUser) {
+          if (subscribers.userInfoChangeUnsubscribe) {
+
+            subscribers.userInfoChangeUnsubscribe();
           }
-          userStore.setIsLogin(true);
-          updateUser();
+          subscribers.userInfoChangeUnsubscribe = await updateUser(user.uid);
         } else {
+          if (subscribers.userInfoChangeUnsubscribe) {
+            subscribers.userInfoChangeUnsubscribe();
+          }
           userStore.setSignedInUser(null);
           userStore.setIsLogin(false);
         }
@@ -177,23 +184,19 @@ const App = ({userStore, bottomSheetStore}) => {
       }
     };
 
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    subscribers.authChangeUnsubscribe = auth().onAuthStateChanged(onAuthStateChanged);
 
-    const updateUser = async () => {
+    const updateUser = async (uid) => {
       try {
         if (auth().currentUser === null) {
           return;
         }
-        const uid = auth().currentUser.uid;
-        firestore()
-          .collection('users')
-          .doc(uid)
-          .onSnapshot(snapshot => {
-            // console.log('FirebaseUser', snapshot.data());
-            if (!snapshot.empty) {
-              userStore.setSignedInUser(snapshot.data());
-            }
-          });
+        const unsubscribe = db.collection('users').doc(uid).onSnapshot(snapshot => {
+          if (!snapshot.empty) {
+            userStore.setSignedInUser(snapshot.data());
+          }
+        });
+        return unsubscribe;
       } catch (error) {
         console.log('errror: ', error);
       }
@@ -211,9 +214,18 @@ const App = ({userStore, bottomSheetStore}) => {
         console.log(e);
       }
     };
+
+    const unsubscribeAll = () => {
+      console.log('UNSUBSCRIBE ALL');
+      subscribers.authChangeUnsubscribe();
+      if (subscribers.userInfoChangeUnsubscribe) {
+        subscribers.userInfoChangeUnsubscribe();
+      }
+    };
+
     checkOnboardingStatus();
-    return subscriber;
-  }, [userStore]);
+    return unsubscribeAll;
+  }, []);
 
   // console.log('onboarded: ', onboarded);
 

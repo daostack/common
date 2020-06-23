@@ -29,7 +29,7 @@ import {UserAvatar} from '../../Components';
 import CountDown from 'react-native-countdown-component';
 import FirebaseService from '../../Services/FirebaseService';
 import {monthShortNames} from '../../Util/DateUtil';
-import {PROPOSAL_STAGES_HISTORY} from '../../Services/ProposalService';
+import { PROPOSAL_STAGES_ACTIVE} from '../../Services/ProposalService';
 import {PROPOSAL_TYPE} from '../../Services/ProposalService';
 
 const ProposalScreen = ({navigation, route, props}) => {
@@ -37,37 +37,57 @@ const ProposalScreen = ({navigation, route, props}) => {
   const [proposedUser, setProposedUser] = useState(false);
   const routeProposalId = route?.params.proposalId;
   const isMember = route?.params?.isMember;
-  const renderVoting = proposalInfo && !PROPOSAL_STAGES_HISTORY.includes(proposalInfo?.stageStr);
+  const renderVoting = proposalInfo && PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr);
+  const commonName = route?.params?.commonName;
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      title: commonName || 'Unknown common name',
+    });
+  }, [navigation]);
 
   useEffect(() => {
+    let unsubscribe = null;
+
+    const loadProposalInfo = async (currProposalInfo) => {
+      let proposedMemberId = null;
+      let funding = null;
+
+      if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
+        proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+        funding = currProposalInfo.joinAndQuit.funding;
+      }
+      //FundingRequest proposal
+      else {
+        const proposedMember = await FirebaseService.getInstance().getUserByAddress(
+          currProposalInfo.fundingRequest.beneficiary,
+        );
+        proposedMemberId = proposedMember.id;
+        funding = currProposalInfo.fundingRequest.amount;
+      }
+      const currProposedUser = await FirebaseService.getInstance().getUserById(
+        proposedMemberId,
+      );
+
+      setProposedUser(currProposedUser);
+      setProposalInfo({ ...currProposalInfo, ...{ funding: funding } });
+    };
+
     const getProposalInfo = async proposalId => {
       try {
         let currProposalInfo = await ProposalService.getInstance().getProposalInfo(
           proposalId,
         );
 
-        //RequestToJoin proposal
-        let proposedMemberId = null;
-        let funding = null;
+        await loadProposalInfo(currProposalInfo);
 
-        if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
-          proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
-          funding = currProposalInfo.joinAndQuit.funding;
-        }
-        //FundingRequest proposal
-        else {
-          const proposedMember = await FirebaseService.getInstance().getUserByAddress(
-            currProposalInfo.fundingRequest.beneficiary,
-          );
-          proposedMemberId = proposedMember.id;
-          funding = currProposalInfo.fundingRequest.amount;
-        }
-        const currProposedUser = await FirebaseService.getInstance().getUserById(
-          proposedMemberId,
+        unsubscribe = await ProposalService.getInstance().subscribeToProposalById(proposalId,
+          async (updatedProposalInfo) => {
+            console.log('UPDATED -> ', updatedProposalInfo.votesFor);
+            await loadProposalInfo(updatedProposalInfo);
+          }
         );
 
-        setProposedUser(currProposedUser);
-        setProposalInfo({...currProposalInfo, ...{funding: funding}});
       } catch (error) {
         console.log('error: ', error);
         Toast.error(error?.toString());
@@ -77,6 +97,11 @@ const ProposalScreen = ({navigation, route, props}) => {
     if (routeProposalId) {
       getProposalInfo(routeProposalId);
     }
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [routeProposalId]);
 
   const [
@@ -344,7 +369,7 @@ const ProposalScreen = ({navigation, route, props}) => {
               {proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
                 <>
                   <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
-                    {proposalInfo?.title}
+                    {proposalInfo?.description?.title || 'Unknown title'}
                   </Text>
 
                   <MemberCard

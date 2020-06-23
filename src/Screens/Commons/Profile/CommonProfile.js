@@ -29,6 +29,7 @@ import CommonMembersList from './CommonMembersList';
 import ProposalService from '../../../Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
+import { calcIsFundingStage } from '../../../Util';
 
 const CommonProfile = ({
   navigation,
@@ -38,7 +39,6 @@ const CommonProfile = ({
   userStore,
 }) => {
   const [isMember, setMemberState] = useState(false);
-  const [isFundingStage] = useState(false);
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -54,6 +54,7 @@ const CommonProfile = ({
   const routeCommon = route.params.currCommon;
   const daoMembers = route.params.currCommon.members;
   const showReqToJoin = !userStore.userInfo || (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
+  const isFundingStage = calcIsFundingStage(routeCommon.fundingGoalDeadline);
 
   useEffect(() => {
     setShowRequestSentModal(route.params.showRequestSentModal);
@@ -131,7 +132,7 @@ const CommonProfile = ({
   const Proposals = () => {
     return (
       <View style={{padding: sizeL}}>
-        <ProposalsList isMember={isMember} navigation={navigation} commonId={currCommon.id} />
+        <ProposalsList isMember={isMember} navigation={navigation} commonId={currCommon.id} commonName={routeCommon.name} />
       </View>
     );
   };
@@ -141,6 +142,7 @@ const CommonProfile = ({
       <View style={{padding: sizeL}}>
         <ProposalsList
           isMember={isMember}
+          commonName={routeCommon.name}
           navigation={navigation}
           commonId={currCommon.id}
           isHistory={true}
@@ -218,7 +220,7 @@ const CommonProfile = ({
     navigation.navigate('CommonMembers', {
       members: daoMembers,
       commonId: currCommon.id,
-      commonTitle: currCommon.name,
+      commonName: routeCommon.name,
     });
   };
 
@@ -262,6 +264,7 @@ const CommonProfile = ({
       name: 'ProposalScreen',
       params: {
         proposalId: route.params.createdProposalId,
+        commonName: routeCommon.name,
         isMember,
       },
     });
@@ -278,6 +281,7 @@ const CommonProfile = ({
       name: 'ProposalScreen',
       params: {
         proposalId: pendingProposalsData.usersPendingProposal?.id,
+        commonName: routeCommon.name,
         isMember,
       },
     });
@@ -380,8 +384,7 @@ const CommonProfile = ({
             navigation={navigation}
             onHeaderMenuOpen={openCommonOptions}
             commonInfo={{
-              logo:
-                'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
+              logo: currCommon.metadata?.avatar,
               name: currCommon.name,
               description: currCommon.description,
               byline: currCommon.metadata?.byline,
@@ -397,7 +400,7 @@ const CommonProfile = ({
           <CommonStageSummary
             isFundingStage={isFundingStage}
             commonProgressInfo={{
-              time: 55,
+              time: currCommon.fundingGoalDeadline,
               activeProposals:
                 currCommon.numberOfBoostedProposals +
                 currCommon.numberOfPreBoostedProposals +
@@ -457,10 +460,18 @@ const CommonProfile = ({
       </HeaderImageScrollView>
       <SafeAreaView>
         {isMember ? (
-          <BottomRightButton
+          !isFundingStage && index === 1 ? <BottomRightButton
             onPress={() =>
-              navigation.navigate(
-                index === 1 ? 'FundingProposal' : 'New Topic',
+              navigation.navigate('FundingProposal',
+                {
+                  commonId: routeCommon.id,
+                },
+              )
+            }
+            bottom={50}
+          /> : index !== 1 && <BottomRightButton
+            onPress={() =>
+              navigation.navigate('New Topic',
                 {
                   commonId: routeCommon.id,
                 },
@@ -485,7 +496,7 @@ const CommonProfile = ({
                     Request to join
                   </Text>
                   <Text style={{fontSize: 16, color: 'white'}}>
-                    ${currCommon.minFeeToJoin} Contribution
+                    ${currCommon.minFeeToJoin / 100} Contribution
                   </Text>
                 </TouchableOpacity>
               </View>
