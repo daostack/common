@@ -36,6 +36,15 @@ class FileField extends React.Component {
     this.props.onChangeFile && this.props.onChangeFile(fileUrl);
   };
 
+  onFieldDeleted = () => {
+    if (this.props.validation) {
+      const { formStore, name} = this.props.validation;
+      formStore.removeFormField(name);
+      console.log('AFTER DELETE', formStore);
+    }
+    this.props.onFieldDeleted && this.props.onFieldDeleted();
+  }
+
   pickFile = async () => {
     try {
       const res = await DocumentPicker.pick({
@@ -137,7 +146,7 @@ class FileField extends React.Component {
             {isAvatar || currValue ? (
               <TouchableOpacity
                 style={styles.formImageFielAddIcon}
-                onPress={() => this.onChangeValue('')}>
+                onPress={() => this.onFieldDeleted()}>
                 <Icon name="delete" size={16} color={'rgb(0, 26, 54, 0.5)'} />
               </TouchableOpacity>
             ) : null}

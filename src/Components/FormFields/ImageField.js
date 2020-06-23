@@ -42,6 +42,15 @@ class ImageField extends React.Component {
     this.props.onChangeImage && this.props.onChangeImage(url);
   };
 
+  onFieldDeleted = () => {
+    if (this.props.validation) {
+      const { formStore, name } = this.props.validation;
+      formStore.removeFormField(name);
+      console.log('AFTER DELETE', formStore);
+    }
+    this.props.onFieldDeleted && this.props.onFieldDeleted();
+  }
+
   pickImage = () => {
     const {title, quality, allowsEditing} = this.props;
     const options = {
@@ -141,7 +150,7 @@ class ImageField extends React.Component {
             {!disableEdit && (isAvatar || currValue) ? (
               <TouchableOpacity
                 style={isAvatar ? styles.formImageFielAddIconAvatar : styles.formImageFielAddIcon}
-                onPress={() => this.onChangeValue('')}>
+                onPress={() => this.onFieldDeleted()}>
                 <Icon name="delete" size={16} color={colors.white} />
               </TouchableOpacity>
             ) : null}
