@@ -1,5 +1,6 @@
 const {first} = require('rxjs/operators');
-import {ipfsUpload} from '../../Config';
+import { ipfsUpload } from '../../Config';
+import GraphqlSyncService from '../GraphqlSyncService';
 
 export const createFundingProposal = async (arc, userAddress, daoId, data) => {
   // data must look like this
@@ -135,6 +136,9 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
 
     const proposal = fundingRequestPlugin.createProposalTransactionMap(receipt);
     console.log('PROPOSAL -> ', proposal);
+
+    await GraphqlSyncService.getInstance().syncProposalById(proposal.id);
+
     // TOOD: call update-proposal?proposalID=proposal.id endpoint here, so we are sure that the proposal is in the database
     return proposal.id;
   } catch (e) {
