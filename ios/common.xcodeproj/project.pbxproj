@@ -170,18 +170,18 @@
 		151C20582499E503006170CC /* Firebase */ = {
 			isa = PBXGroup;
 			children = (
-				151C20592499E503006170CC /* Prod */,
+				151C20592499E503006170CC /* Production */,
 				151C205B2499E503006170CC /* Staging */,
 			);
 			path = Firebase;
 			sourceTree = "<group>";
 		};
-		151C20592499E503006170CC /* Prod */ = {
+		151C20592499E503006170CC /* Production */ = {
 			isa = PBXGroup;
 			children = (
 				151C20612499E99B006170CC /* GoogleService-Info.plist */,
 			);
-			path = Prod;
+			path = Production;
 			sourceTree = "<group>";
 		};
 		151C205B2499E503006170CC /* Staging */ = {
