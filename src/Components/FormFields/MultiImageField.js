@@ -8,8 +8,8 @@ const MultiImageField = props => {
   const [deletedFields, setDeletedFields] = useState([]);
 
   const onChangeImage = (url, index) => {
-    if (index === count - 1) {
-      if (!maxCount || count < maxCount) {
+    if (index === (count - deletedFields.length) - 1) {
+      if (!maxCount || (count - deletedFields.length) < maxCount) {
         setCount(count + 1);
       }
     }
