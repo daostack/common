@@ -192,6 +192,22 @@ const styles = StyleSheet.create({
     fontSize: width * 0.5,
     textAlign: 'center',
   },
+  commonBox: {
+    width: '100%',
+    height: 237,
+    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 26,
+    backgroundColor: '#ffffff',
+    shadowColor: 'rgba(0, 26, 54, 0.08)',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowRadius: 8,
+    shadowOpacity: 1,
+  },
 });
 
 export default React.memo(ProposalsList);
