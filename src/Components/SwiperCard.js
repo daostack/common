@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Dimensions} from 'react-native';
+import {View, Dimensions, Text} from 'react-native';
 
 import {layout} from '../Theme';
 
@@ -39,17 +39,20 @@ const SwiperCard = ({showMax, ...props}) => {
     );
   };
 
-  const renderLinkCard = () => {
-  };
+  const renderLinkCard = () =>
+    <View style={{ width: width }}>
+      <Text>{'OH YEAH'}</Text>
+    </View>;
+
 
   const onSwiperIndexChanged = ({index, prevIndex}) => {
-    //swiperCurrentIndex < showMax ? setSwiperCurrentIndex({index, prevIndex}) : null;
+    setSwiperCurrentIndex({index, prevIndex});
   };
 
   return data.length > 0 ? (
     <View style={layout.flexRow}>
       <SwiperFlatList
-        renderItem={({ item, index }) => index <= showMax ? renderCard(item, index) : renderLinkCard()}
+        renderItem={({ item, index }) => /* index < showMax ?  */renderCard(item, index) /* : renderLinkCard() */}
         data={data}
         extraData={extraData}
         onChangeIndex={onSwiperIndexChanged}
