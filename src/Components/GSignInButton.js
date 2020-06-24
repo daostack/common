@@ -3,21 +3,25 @@ import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import {colors, text, layout} from '../Theme';
 import React from 'react';
 import Icon from '../Assets/iconfont/Icon';
-import {statusCodes} from '@react-native-community/google-signin';
+import { statusCodes } from '@react-native-community/google-signin';
+import { observer, inject } from 'mobx-react';
 
 import AuthService from '../Services/AuthService';
 
-const GSignInButton = ({onSignIn}) => {
+const GSignInButton = ({ onSignIn, userStore}) => {
   const [signInError, setSignInError] = useState(null);
 
   const _signIn = async () => {
     try {
-      const userInfo = await AuthService.getInstance().signIn(false);
+      // That loading status will be changed to false in the onAuthStateChanged method in App.js
+      userStore.setIsLoading(true);
+      const userInfo = await AuthService.getInstance().signIn();
       if (onSignIn) {
         onSignIn(userInfo);
       }
       setSignInError(null);
     } catch (error) {
+      userStore.setIsLoading(false);
       switch (error.code) {
       case statusCodes.SIGN_IN_CANCELLED:
         setSignInError('Canceled');
@@ -81,4 +85,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GSignInButton;
+export default inject('userStore')(observer(GSignInButton));

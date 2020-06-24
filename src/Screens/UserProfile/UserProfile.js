@@ -20,6 +20,7 @@ import CreateAccount from './CreateAccount';
 import {CommonActions} from '@react-navigation/native';
 import UserProfileData from '../../Components/UserProfileData';
 import AuthService from '../../Services/AuthService';
+import Toast from '../../Util/Toast';
 
 import {
   Placeholder,
@@ -33,9 +34,13 @@ const UserProfile = ({userStore, navigation}) => {
 
   const _signOut = async () => {
     try {
+      // That loading status will be changed to false in the onAuthStateChanged method in App.js
+      userStore.setIsLoading(true);
       await AuthService.getInstance().signOut();
     } catch (error) {
-      console.log('Error -> ', error);
+      userStore.setIsLoading(false);
+      Toast.error(error?.toString());
+      console.log('SignOut Error -> ', error);
     }
   };
 
