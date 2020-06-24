@@ -164,6 +164,7 @@ const App = ({userStore, bottomSheetStore}) => {
           };
           const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
           userStore.setSignedInUser(filteredUser);
+          userStore.setIsLogin(true);
           if (subscribers.userInfoChangeUnsubscribe) {
 
             subscribers.userInfoChangeUnsubscribe();

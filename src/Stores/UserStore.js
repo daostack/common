@@ -87,6 +87,7 @@ class UserStore {
 decorate(UserStore, {
   address: observable,
   setSignedInUser: action,
+  setIsLogin: action,
   userInfo: observable,
   isLoading: observable,
   isLogin: observable,
