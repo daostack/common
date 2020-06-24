@@ -18,8 +18,8 @@ export const numberFormatter = num => {
     denom >= 1.0e6
       ? denom / 1.0e6 + 'M'
       : // Three Zeroes for Thousands
-      denom >= 1.0e3
-        ? denom / 1.0e3 + 'K'
+      denom >= 1.0e4
+        ? denom / 1.0e4 + 'K'
         : Math.floor(denom);
 };
 
