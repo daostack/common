@@ -150,7 +150,7 @@ export default class WalletManager {
     }
   }
 
-  execTransaction = async (safeAddress, toAddress, value = 0, data = '0x') => {
+  execTransaction = async (safeAddress, toAddress, value = '0', data = '0x') => {
     try {
       const finalSignature = await this.txHashSignature(safeAddress, toAddress, value, data);
       const idToken = await auth().currentUser.getIdToken();
@@ -159,10 +159,11 @@ export default class WalletManager {
         'execTransaction',
         body
       );
+
       const txHash = response.data?.txHash;
       if (txHash) {
         this.isRelayerTxSuccess(txHash).then( success => {
-          if (success) {
+          if (!success) {
             this.reportToAnalytics('exe_tx_failed', txHash);
           }
         });
@@ -171,7 +172,7 @@ export default class WalletManager {
       if (response.status !== 200 || txHash == null) {
         this.reportToAnalytics('exe_tx_failed');
       }
-
+      console.log('execTransaction ->', response);
       return response;
     } catch (err) {
       console.log(err);
