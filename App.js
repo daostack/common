@@ -169,12 +169,7 @@ const App = ({userStore, bottomSheetStore}) => {
 
             subscribers.userInfoChangeUnsubscribe();
           }
-<<<<<<< HEAD
           subscribers.userInfoChangeUnsubscribe = await updateUser(user.uid);
-=======
-          userStore.setIsLogin(true);
-          updateUser();
->>>>>>> Add islogin in User Store
         } else {
           if (subscribers.userInfoChangeUnsubscribe) {
             subscribers.userInfoChangeUnsubscribe();
