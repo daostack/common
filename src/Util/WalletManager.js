@@ -302,6 +302,7 @@ export default class WalletManager {
   getAllowance = async pluginAddress => {
     let contract = new ethers.Contract(COMMONTOKENADDRESS, ABI.CommonToken, this.provider);
     let allowance = await contract.allowance(this.safeAddress, pluginAddress);
+    // TODO: please remove the next call to "formatEther", which will dive the balance by 10 ** 18 and make it unreadable
     const allowanceStr = ethers.utils.formatEther(allowance);
     console.log('allowance ->', allowanceStr);
     return allowanceStr;
@@ -311,6 +312,7 @@ export default class WalletManager {
     const address = this.safeAddress;
     const contract = new ethers.Contract(COMMONTOKENADDRESS, ABI.CommonToken, this.provider);
     const balance = await contract.balanceOf(address);
+    // TODO: please remove the next call to "formatEther", which will dive the balance by 10 ** 18 and make it unreadable
     const balanceStr =  ethers.utils.formatEther(balance);
     console.log('balance ->', balance);
     return balanceStr;
