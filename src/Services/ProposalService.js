@@ -165,7 +165,6 @@ export default class ProposalService {
 
     return proposalCollection.onSnapshot(
       snapshot => {
-        console.log('SNAPSHOT', snapshot);
         if (snapshot.empty) {
           listChangeCallback([]);
         } else {
