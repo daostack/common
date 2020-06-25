@@ -5,13 +5,18 @@ import {sizeL} from '../../Theme';
 
 const MultiImageField = props => {
   const [count, setCount] = useState(1);
+  const [deletedFields, setDeletedFields] = useState([]);
 
   const onChangeImage = (url, index) => {
-    if (index === count - 1) {
-      if (!maxCount || count < maxCount) {
+    if (index === (count - deletedFields.length) - 1) {
+      if (!maxCount || (count - deletedFields.length) < maxCount) {
         setCount(count + 1);
       }
     }
+  };
+
+  const onFieldDeleted = (currIndex) => {
+    setDeletedFields([...deletedFields, currIndex]);
   };
 
   const {maxCount, validation} = props;
@@ -24,10 +29,11 @@ const MultiImageField = props => {
         currItemValidation.multiName = props.validation.name;
 
         return (
-          <ImageField
+          !deletedFields.includes(currIndex) && <ImageField
             key={`key_${currItemValidation.name}_${currIndex}`}
             onChangeImage={url => onChangeImage(url, currIndex)}
             allowsEditing={props.allowsEditing || false}
+            onFieldDeleted={() => onFieldDeleted(currIndex)}
             title={'Add Image'}
             validation={currItemValidation}
           />

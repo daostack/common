@@ -298,6 +298,16 @@ export default StyleSheet.create({
     color: colors.against,
   },
 
+  againstTextBlack: {
+    ...appFontFamily,
+    fontSize: 18,
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+    lineHeight: 22,
+    letterSpacing: 0,
+    color: colors.black,
+  },
+
   // Custom text styles
   centered: {
     textAlign: 'center',
