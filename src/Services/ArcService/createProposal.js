@@ -7,7 +7,7 @@ import auth from '@react-native-firebase/auth';
 
 
 const axiosClient = axios.create({
-  baseURL: mangoPayUrl,
+  baseURL: mangoPayUrl, //'http://localhost:5001/common-daostack/us-central1/mangopay/',
   timeout: 1000000, // milliseconds
 });
 
