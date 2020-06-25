@@ -133,6 +133,7 @@ export default class ProposalService {
     listChangeCallback,
     listRef,
     onlyRequestsToJoin,
+    onlyFundingRequests
   ) {
     console.log('subscribeToProposalList');
 
@@ -143,6 +144,10 @@ export default class ProposalService {
     }
     if (userId) {
       proposalCollection = proposalCollection.where('proposerId', '==', userId);
+    }
+
+    if (onlyFundingRequests) {
+      proposalCollection = proposalCollection.where('type', '==', PROPOSAL_TYPE.FundingRequest);
     }
 
     if (safeAddress) {
@@ -160,6 +165,7 @@ export default class ProposalService {
 
     return proposalCollection.onSnapshot(
       snapshot => {
+        console.log('SNAPSHOT', snapshot);
         if (snapshot.empty) {
           listChangeCallback([]);
         } else {
