@@ -1,6 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {FlatList, StyleSheet, View, Text, Dimensions} from 'react-native';
-
+import { FlatList, StyleSheet, View, Text, Dimensions, TouchableOpacity} from 'react-native';
 import ViewTabNoData from '../../Components/ViewTabNoData';
 import ProposalService, {PROPOSAL_STAGE} from '../../Services/ProposalService';
 import ProposalCard from '../../Components/Proposals/ProposalCard';
@@ -14,7 +13,7 @@ import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 
 const {width, height} = Dimensions.get('window');
 
-const ProposalsList = ({isMember, ...props}) => {
+const ProposalsList = ({isMember, commonName, safeAddress, showAll, showMax, ...props}) => {
   const commonId = props.commonId;
   const userId = props.userId;
   const isHistory = props.isHistory;
@@ -30,7 +29,7 @@ const ProposalsList = ({isMember, ...props}) => {
   let listRef = useRef([]);
   let unsubscribe = null;
   useEffect(() => {
-    const loadProposalInfo = async (commonId, userId, isHistory) => {
+    const loadProposalInfo = async (commonId, userId, isHistory, showAll) => {
       let proposalStages = null;
       if (isHistory) {
         // TODO: use ProposalsList.PROPOSAL_STAGES_HISTORY here
@@ -52,6 +51,8 @@ const ProposalsList = ({isMember, ...props}) => {
         commonId,
         userId,
         proposalStages,
+        safeAddress,
+        showAll,
         newList => {
           setList(newList);
           if (onCountChange) {
@@ -63,7 +64,7 @@ const ProposalsList = ({isMember, ...props}) => {
       );
     };
 
-    loadProposalInfo(commonId, userId, isHistory);
+    loadProposalInfo(commonId, userId, isHistory, showAll);
 
     return () => {
       console.log('Unsubscribe -> ', unsubscribe);
@@ -79,6 +80,7 @@ const ProposalsList = ({isMember, ...props}) => {
       name: 'ProposalScreen',
       params: {
         proposalId: proposalId,
+        commonName,
         isMember,
       },
     });
@@ -87,13 +89,22 @@ const ProposalsList = ({isMember, ...props}) => {
 
   const renderProposalCard = (item, index) => {
     return (
-      <ProposalCard
+      isSwiper ? (
+        index < showMax ? <ProposalCard
+          key={item.id}
+          data={item}
+          onReviewProposal={e => onReviewProposal(item.id)}
+        /> : <TouchableOpacity onPress={() => navigation.navigate('MyProposals')} style={{ ...styles.commonBox }}>
+          <Text style={text.buttonblue}>{`View all ${list.length} Proposals`}</Text>
+        </TouchableOpacity>
+
+      ) : <ProposalCard
         key={item.id}
         data={item}
         onReviewProposal={e => onReviewProposal(item.id)}
-      />
-    );
+      />);
   };
+
 
   return isSwiper ? (
     list ? (
@@ -103,6 +114,7 @@ const ProposalsList = ({isMember, ...props}) => {
             cardRenderer={(item, index) => renderProposalCard(item, index)}
             data={list}
             extraData={listRef}
+            showMax={showMax}
           />
         </View>
       ) : (
@@ -179,6 +191,22 @@ const styles = StyleSheet.create({
   text: {
     fontSize: width * 0.5,
     textAlign: 'center',
+  },
+  commonBox: {
+    width: '100%',
+    height: 237,
+    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 26,
+    backgroundColor: '#ffffff',
+    shadowColor: 'rgba(0, 26, 54, 0.08)',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowRadius: 8,
+    shadowOpacity: 1,
   },
 });
 

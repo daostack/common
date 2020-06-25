@@ -25,9 +25,9 @@ class ImageField extends React.Component {
     const {validation, value} = this.props;
 
     if (validation) {
-      const {name, formStore, validateRule} = validation;
-      console.log(name, value);
-      formStore.registerFormField(name, validateRule, value);
+      const {name, formStore, validateRule, multiName} = validation;
+      formStore.registerFormField(name, validateRule, value, multiName);
+
       this.fieldValidation = (
         <ValidationMessage formStore={formStore} name={name} />
       );
@@ -41,6 +41,14 @@ class ImageField extends React.Component {
     }
     this.props.onChangeImage && this.props.onChangeImage(url);
   };
+
+  onFieldDeleted = () => {
+    if (this.props.validation) {
+      const { formStore, name } = this.props.validation;
+      formStore.removeFormField(name);
+    }
+    this.props.onFieldDeleted && this.props.onFieldDeleted();
+  }
 
   pickImage = () => {
     const {title, quality, allowsEditing} = this.props;
@@ -140,9 +148,9 @@ class ImageField extends React.Component {
             {this.renderImage()}
             {!disableEdit && (isAvatar || currValue) ? (
               <TouchableOpacity
-                style={styles.formImageFielAddIcon}
-                onPress={this.pickImage}>
-                <Icon name="edit" size={16} color={colors.white} />
+                style={isAvatar ? styles.formImageFielAddIconAvatar : styles.formImageFielAddIcon}
+                onPress={() => this.onFieldDeleted()}>
+                <Icon name="delete" size={16} color={colors.white} />
               </TouchableOpacity>
             ) : null}
           </View>
@@ -212,6 +220,20 @@ const styles = StyleSheet.create({
   },
 
   formImageFielAddIcon: {
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    right: 8,
+    top: 8,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    padding: 2,
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+  },
+
+  formImageFielAddIconAvatar: {
     justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center',

@@ -39,6 +39,12 @@ class FormStore {
     }
   }
 
+  removeFormField(name) {
+    if (this.form.fields?.[name]) {
+      delete this.form.fields[name];
+    }
+  }
+
   // Check if form is valid and display error for each form field if it's necessary
   isFormValid = () => {
     this.form.meta.formValidationMade = true;
@@ -100,8 +106,12 @@ class FormStore {
   filterMultiFields = (name, fields) => {
     let changedFieldsJson = {};
 
+    // MultiLink
     let multiFieldTitles = [];
     let multiFieldValues = [];
+
+    // MultiFile and MultiImage
+    let multiValues = [];
 
     for (const key in fields) {
       const formFieldValue = fields[key];
@@ -116,14 +126,27 @@ class FormStore {
         continue;
       }
 
+      if (key.startsWith(`${name}_multi`)) {
+        multiValues = multiValues.concat(formFieldValue);
+        continue;
+      }
+
       changedFieldsJson[key] = formFieldValue;
+    }
+
+    if (multiValues.length > 0) {
+      changedFieldsJson[name] = [...multiValues.keys()].map(x => {
+        return { value: multiValues[x]};
+      });
     }
 
     if (multiFieldTitles.length > 0) {
       changedFieldsJson[name] = [...multiFieldTitles.keys()].map(x => {
-        return {title: multiFieldTitles[x], description: multiFieldValues[x]};
+        return {title: multiFieldTitles[x], url: multiFieldValues[x]};
       });
-    } else {
+    }
+
+    if (changedFieldsJson.length === 0) {
       changedFieldsJson[name] = [];
     }
 

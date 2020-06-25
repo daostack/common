@@ -14,7 +14,7 @@ import {StackActions} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
 import ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
-import {colors} from '../../../Theme';
+import {text, layout, colors} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
@@ -25,13 +25,16 @@ import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {numberFormatter, showErrorPopUp} from '../../../Util';
 import Toast from '../../../Util/Toast';
-
+import Modal from 'react-native-modal';
+import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ArcService from '../../../Services/ArcService';
 const {width} = Dimensions.get('window');
 
 const CreateStep4 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
   const form = {
     ...props.generalInfoFormStore.getChangedFormFieldsJson(),
     ...props.fundingFormStore.getChangedFormFieldsJson(),
@@ -39,10 +42,19 @@ const CreateStep4 = props => {
     ...props.reviewFormStore.getChangedFormFieldsJson(),
   };
   const [templateIndex, setTemplateIndex] = useState(1);
+  const getImageUrl = index => `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
   const [imageURI, setImageURI] = useState(
-    'https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_01.png?alt=media',
+    getImageUrl(1 + Math.floor(Math.random() * Math.floor(7)))
   );
   const [avatarURL, setAvatarURL] = useState(null);
+
+  //set default value for Avatar and Image fields
+  useEffect(() => {
+    props.reviewFormStore.registerFormField(CreateCommonForm.AVATAR);
+    props.reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
+
+    props.reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, imageURI);
+  }, []);
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -64,15 +76,10 @@ const CreateStep4 = props => {
       index = 8;
     }
     setTemplateIndex(index);
-    setImageURI(
-      `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`,
-    );
+    const currImageUrl = getImageUrl(index);
+    props.reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, currImageUrl);
+    setImageURI(currImageUrl);
   };
-
-  useEffect(() => {
-    props.reviewFormStore.registerFormField(CreateCommonForm.AVATAR, 'url');
-    props.reviewFormStore.registerFormField(CreateCommonForm.IMAGE, 'url');
-  }, [props.reviewFormStore]);
 
   const pickImage = isAvatar => {
     const options = {
@@ -135,7 +142,7 @@ const CreateStep4 = props => {
       );
 
       if (commonAddress) {
-        props.navigation.dispatch(StackActions.popToTop());
+        setShowSuccessModal(true);
       }
 
       return {commonAddress};
@@ -143,7 +150,6 @@ const CreateStep4 = props => {
       showErrorPopUp(props.bottomSheetStore, e.message);
     }
   };
-
 
   // console.log('FORM -> ', form);
 
@@ -416,6 +422,35 @@ const CreateStep4 = props => {
         pass={props.agendaFormStore.isFormActionEnabled()}
         onPress={forgeCommon}
       />
+      <Modal
+        isVisible={showSuccessModal}
+        avoidKeyboard={true}
+        backdropColor={colors.white}
+        backdropOpacity={1}
+        style={{padding: 0}}>
+        <SentTemplate
+          isCommonCreation={true}
+          title="Your journey starts now"
+          description="Spread the word and invite others to take part in it. You can always share later"
+          onClose={() => props.navigation.dispatch(StackActions.popToTop())}>
+          <View style={layout.flexRow}>
+            <TouchableOpacity
+              style={styles.modalRequestSentBtnPrimary}
+              /*  onPress={} */
+            >
+              <Text style={text.buttoncenterwhite}>Share now</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={layout.flexRow}>
+            <TouchableOpacity
+              style={styles.modalRequestSentBtnOutline}
+              /* onPress={} */
+            >
+              <Text style={text.buttonblue}>Go to Common</Text>
+            </TouchableOpacity>
+          </View>
+        </SentTemplate>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -512,6 +547,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.mainBlue,
     borderWidth: 2,
     borderColor: colors.white,
+  },
+  modalRequestSentBtnOutline: {
+    ...layout.btnOutline,
+    ...layout.marginTopL,
+    flexGrow: 0,
+    width: '100%',
+    alignSelf: 'stretch',
+  },
+  modalRequestSentBtnPrimary: {
+    ...layout.btnPrimary,
+    ...layout.marginTopL,
+    flexGrow: 0,
+    width: '100%',
   },
 });
 

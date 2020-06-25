@@ -19,6 +19,7 @@ const CommonsSwiper = ({
   daoStore,
   userStore,
   onCountChange,
+  showMax,
 }) => {
   const [myDaos, setMyDaos] = useState(myDaos);
   let listRef = useRef([]);
@@ -44,7 +45,7 @@ const CommonsSwiper = ({
                   id: doc.id,
                   ...doc.data(),
                   ...{
-                    coverPhoto: `https://i.picsum.photos/id/${index *
+                    coverPhoto: doc.data().metadata?.image || `https://picsum.photos/id/${index *
                       10}/500/100.jpg`,
                   },
                 };
@@ -83,12 +84,14 @@ const CommonsSwiper = ({
 
   const renderCommonCard = (item, index) => {
     return (
-      <CommonBox
+      index < showMax ? <CommonBox
         key={item.id}
         common={item}
         navigation={navigation}
         onPress={() => setDao(item)}
-      />
+      /> : <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ ...styles.commonBox }}>
+        <Text style={text.buttonblue}>{`View all ${myDaos.length} Commons`}</Text>
+      </TouchableOpacity>
     );
   };
 
@@ -107,6 +110,7 @@ const CommonsSwiper = ({
             cardRenderer={(item, index) => renderCommonCard(item, index)}
             data={myDaos}
             extraData={listRef}
+            showMax={showMax}
           />
         </View>
       </View>
@@ -123,7 +127,9 @@ const CommonsSwiper = ({
           Join your first common and start making an impact
         </Text>
         <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity style={styles.btn}>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => navigation.navigate('Explore')}>
             <Text style={text.buttonblue}>Explore Commons</Text>
           </TouchableOpacity>
         </View>
@@ -133,7 +139,12 @@ const CommonsSwiper = ({
     <View style={{paddingHorizontal: 20}}>
       <Placeholder Animation={Fade}>
         <PlaceholderMedia
-          style={{height: 200, width: '100%', marginBottom: 20, borderRadius: 26}}
+          style={{
+            height: 200,
+            width: '100%',
+            marginBottom: 20,
+            borderRadius: 26,
+          }}
         />
       </Placeholder>
     </View>
@@ -158,6 +169,22 @@ const styles = StyleSheet.create({
     flexGrow: 0,
     paddingHorizontal: 15,
     paddingVertical: 15,
+  },
+  commonBox: {
+    width: '100%',
+    height: 237,
+    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 26,
+    backgroundColor: '#ffffff',
+    shadowColor: 'rgba(0, 26, 54, 0.08)',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowRadius: 8,
+    shadowOpacity: 1,
   },
 });
 

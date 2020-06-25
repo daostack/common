@@ -19,8 +19,9 @@ class FileField extends React.Component {
     const {validation, value} = this.props;
 
     if (validation) {
-      const {name, formStore, validateRule} = validation;
-      formStore.registerFormField(name, validateRule, value);
+      const {name, formStore, validateRule, multiName} = validation;
+      formStore.registerFormField(name, validateRule, value, multiName);
+
       this.fieldValidation = (
         <ValidationMessage formStore={formStore} name={name} />
       );
@@ -34,6 +35,14 @@ class FileField extends React.Component {
     }
     this.props.onChangeFile && this.props.onChangeFile(fileUrl);
   };
+
+  onFieldDeleted = () => {
+    if (this.props.validation) {
+      const { formStore, name} = this.props.validation;
+      formStore.removeFormField(name);
+    }
+    this.props.onFieldDeleted && this.props.onFieldDeleted();
+  }
 
   pickFile = async () => {
     try {
@@ -131,13 +140,13 @@ class FileField extends React.Component {
               ? styles.formFieldContainer
               : styles.formFieldContainerGenral
           }>
-          <View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             {this.renderFile()}
             {isAvatar || currValue ? (
               <TouchableOpacity
                 style={styles.formImageFielAddIcon}
-                onPress={this.pickFile}>
-                <Icon name="edit" size={16} color={colors.white} />
+                onPress={() => this.onFieldDeleted()}>
+                <Icon name="delete" size={16} color={'rgb(0, 26, 54, 0.5)'} />
               </TouchableOpacity>
             ) : null}
           </View>
@@ -220,17 +229,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
     width: 30,
     height: 30,
     borderRadius: 15,
     padding: 2,
-    backgroundColor: colors.mainBlue,
-    borderWidth: 2,
-    borderColor: colors.white,
   },
 
   imagePlaceholder: {

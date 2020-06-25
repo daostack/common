@@ -5,6 +5,7 @@ export const DB_COLLECTIONS = {
   userInfo: 'userInfo',
   proposals: 'proposals',
   daos: 'daos',
+  discussionMessages: 'discussionMessage',
 };
 
 export default class FirebaseService {

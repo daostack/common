@@ -30,6 +30,7 @@ import CommonMembersList from './CommonMembersList';
 import ProposalService from '../../../Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
+import { calcIsFundingStage } from '../../../Util';
 
 const CommonProfile = ({
   navigation,
@@ -39,7 +40,6 @@ const CommonProfile = ({
   userStore,
 }) => {
   const [isMember, setMemberState] = useState(false);
-  const [isFundingStage] = useState(false);
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -51,9 +51,11 @@ const CommonProfile = ({
   const [currCommon, setCurrCommon] = useState(false);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
+  const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const routeCommon = route.params.currCommon;
   const daoMembers = route.params.currCommon.members;
   const showReqToJoin = !userStore.userInfo || (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
+  const isFundingStage = calcIsFundingStage(routeCommon.fundingGoalDeadline);
 
   useEffect(() => {
     setShowRequestSentModal(route.params.showRequestSentModal);
@@ -88,6 +90,17 @@ const CommonProfile = ({
     }
   }, [routeCommon.id, isMember, userStore.userInfo]);
 
+  useEffect(() => {
+    if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
+      const getPendingProposalsDiscussionCount = async () => {
+        const count = await ProposalService.getInstance().getProposalDiscussionsCount(pendingProposalsData.usersPendingProposal.id);
+        if (userPendingPropDiscCount !== count)
+        {setUserPendingPropDiscCount(count);}
+      };
+      getPendingProposalsDiscussionCount();
+    }
+  }, [pendingProposalsData]);
+
   const renderTabBar = props => (
     <TabBar
       {...props}
@@ -120,7 +133,7 @@ const CommonProfile = ({
   const Proposals = () => {
     return (
       <View style={{padding: sizeL}}>
-        <ProposalsList isMember={isMember} navigation={navigation} commonId={currCommon.id} />
+        <ProposalsList isMember={isMember} navigation={navigation} commonId={currCommon.id} commonName={routeCommon.name} />
       </View>
     );
   };
@@ -130,6 +143,7 @@ const CommonProfile = ({
       <View style={{padding: sizeL}}>
         <ProposalsList
           isMember={isMember}
+          commonName={routeCommon.name}
           navigation={navigation}
           commonId={currCommon.id}
           isHistory={true}
@@ -207,7 +221,7 @@ const CommonProfile = ({
     navigation.navigate('CommonMembers', {
       members: daoMembers,
       commonId: currCommon.id,
-      commonTitle: currCommon.name,
+      commonName: routeCommon.name,
     });
   };
 
@@ -255,6 +269,7 @@ const CommonProfile = ({
       name: 'ProposalScreen',
       params: {
         proposalId: route.params.createdProposalId,
+        commonName: routeCommon.name,
         isMember,
       },
     });
@@ -271,6 +286,7 @@ const CommonProfile = ({
       name: 'ProposalScreen',
       params: {
         proposalId: pendingProposalsData.usersPendingProposal?.id,
+        commonName: routeCommon.name,
         isMember,
       },
     });
@@ -317,7 +333,7 @@ const CommonProfile = ({
             />
             <ProposalApprovalTag
               iconName="discussion"
-              value={121}
+              value={userPendingPropDiscCount}
               isMarked={false}
             />
           </View>
@@ -373,8 +389,7 @@ const CommonProfile = ({
             navigation={navigation}
             onHeaderMenuOpen={openCommonOptions}
             commonInfo={{
-              logo:
-                'https://yf8pn4fsld-flywheel.netdna-ssl.com/wp-content/uploads/2017/11/logo-Placeholder.png',
+              logo: currCommon.metadata?.avatar,
               name: currCommon.name,
               description: currCommon.description,
               byline: currCommon.metadata?.byline,
@@ -390,7 +405,7 @@ const CommonProfile = ({
           <CommonStageSummary
             isFundingStage={isFundingStage}
             commonProgressInfo={{
-              time: 55,
+              time: currCommon.fundingGoalDeadline,
               activeProposals:
                 currCommon.numberOfBoostedProposals +
                 currCommon.numberOfPreBoostedProposals +
@@ -450,10 +465,9 @@ const CommonProfile = ({
       </HeaderImageScrollView>
       <SafeAreaView>
         {isMember ? (
-          <BottomRightButton
+          !isFundingStage && <BottomRightButton
             onPress={() =>
-              navigation.navigate(
-                index === 1 ? 'FundingProposal' : 'New Topic',
+              navigation.navigate(index === 1 ? 'FundingProposal' : 'New Topic',
                 {
                   commonId: routeCommon.id,
                 },
@@ -478,7 +492,7 @@ const CommonProfile = ({
                     Request to join
                   </Text>
                   <Text style={{fontSize: 16, color: 'white'}}>
-                    ${currCommon.minFeeToJoin} Contribution
+                    ${currCommon.minFeeToJoin / 100} Contribution
                   </Text>
                 </TouchableOpacity>
               </View>

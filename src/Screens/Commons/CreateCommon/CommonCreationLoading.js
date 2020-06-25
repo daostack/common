@@ -1,8 +1,7 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import {
   Image,
   Text,
-  TouchableOpacity,
   View,
   StyleSheet,
   SafeAreaView,
@@ -11,102 +10,38 @@ import {
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors, layout, text} from '../../../Theme';
 import {observer, inject} from 'mobx-react';
-import Swiper from 'react-native-swiper';
-import NavigationHeader from '../../../Util/NavigationHeader';
+import Loader from '../../../Components/Loader';
 
 const CommonCreationLoading = ({daoStore, route, navigation}) => {
-  const _swiper = useRef();
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeArea}>
-        <NavigationHeader navigation={navigation} title="Common!" />
         <View style={styles.body}>
-          <Swiper
-            style={styles.wrapper}
-            showsButtons={false}
-            activeDotColor={colors.mainBlue}
-            autoplay={false}
-            showsPagination={false}
-            index={daoStore.stage}
-            paginationStyle={{bottom: 0}}
-            ref={_swiper}
-            scrollEnabled={false}>
-            <View style={styles.slide1}>
-              <Text style={styles.text}>Creating your common</Text>
-              <Text style={styles.subtitle}>This may take a few minutes</Text>
-              <Image
-                source={require('../../../Assets/loader-1-analyzing.png')}
-                style={styles.image}
-              />
-              <Text style={styles.bottomText}>
-                Analyzing common information
-              </Text>
-            </View>
-            <View style={styles.slide1}>
-              <Text style={styles.text}>Creating your common</Text>
-              <Text style={styles.subtitle}>This may take a few minutes</Text>
-              <Image
-                source={require('../../../Assets/loader-2-securing-on-the-blockchain.png')}
-                style={styles.image}
-              />
-              <Text style={styles.bottomText}>
-                Securing data on the blockchain
-              </Text>
-            </View>
-            <View style={styles.slide1}>
-              <Text style={styles.text}>Creating your common</Text>
-              <Text style={styles.subtitle}>This may take a few minutes</Text>
-              <Image
-                source={require('../../../Assets/loader-3-some-final-touches.png')}
-                style={styles.image}
-              />
-              <Text style={styles.bottomText}>Making some final touches</Text>
-            </View>
-            <View style={styles.slide1}>
-              <Text style={styles.text}>Creating your common</Text>
-              <Text style={styles.subtitle}>This may take a few minutes</Text>
-              <Image
-                source={require('../../../Assets/loader-4-drumroll.png')}
-                style={styles.image}
-              />
-              <Text style={styles.bottomText}>Drumroll...</Text>
-            </View>
-            <View style={styles.slide1}>
-              <Image
-                source={require('../../../Assets/launch.png')}
-                style={styles.image}
-              />
-              <Text style={styles.text}>Your journey starts now</Text>
-              <Text style={styles.subtitle}>
-                Spread the word and invite others to partake in it. You can
-                always share later
-              </Text>
-              <TouchableOpacity
-                style={styles.continueButton}
-                onPress={daoStore.creationError}>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: 'white',
-                    fontWeight: '700',
-                  }}>
-                  Share Common
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  ...layout.btnOutline,
-                  ...styles.shareButton,
-                }}
-                onPress={() => {}}>
-                <Text style={text.buttonblue}>Go to Common</Text>
-              </TouchableOpacity>
-            </View>
-            <View>
-              <Text />
-            </View>
-          </Swiper>
+          <View style={{...styles.slide1, ...layout.content}}>
+            <Image
+              source={require('../../../Assets/loader-4-drumroll.png')}
+              style={styles.image}
+            />
+            <Loader />
+            <Text
+              style={{
+                ...text.h2Black,
+                ...layout.marginTopXL,
+                ...layout.marginBottomS,
+              }}>
+              Creating your common
+            </Text>
+            <Text
+              style={{
+                ...text.runningblack,
+                lineHeight: 18,
+                textAlign: 'center',
+              }}>
+              There are a lot of pieces to bring together. It might take a
+              couple of minutte.
+            </Text>
+          </View>
         </View>
       </SafeAreaView>
     </>
@@ -170,7 +105,7 @@ const styles = StyleSheet.create({
   image: {
     top: 0,
     width: '100%',
-    height: '70%',
+    height: '50%',
     // backgroundColor: '#efefef',
   },
   wrapper: {},
@@ -205,4 +140,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('daoStore')(observer(CommonCreationLoading));
+export default CommonCreationLoading;

@@ -1,5 +1,5 @@
 import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
-
+import moment from 'moment';
 const googleServicesData = require('../../android/app/google-services.json');
 
 export const GOOGLE_SIGNIN_PERMISSIONS = {
@@ -18,8 +18,8 @@ export const numberFormatter = num => {
     denom >= 1.0e6
       ? denom / 1.0e6 + 'M'
       : // Three Zeroes for Thousands
-      denom >= 1.0e3
-        ? denom / 1.0e3 + 'K'
+      denom >= 1.0e4
+        ? denom / 1.0e4 + 'K'
         : Math.floor(denom);
 };
 
@@ -36,6 +36,12 @@ export const getTestEth = address =>
   fetch(
     `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
   );
+
+export const calcIsFundingStage = (deadline) => {
+  const deadlineMoment = moment.unix(deadline);
+  return !moment().isAfter(deadlineMoment);
+};
+
 
 export const showErrorPopUp = (bottomSheetStore, message) => {
   /* this function requires the bottomSheetStore as a variable as you can't

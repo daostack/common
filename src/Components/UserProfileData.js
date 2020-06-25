@@ -107,7 +107,7 @@ const UserProfileData = ({
 
       <View style={styles.countBoxContainer}>
         <CountBox
-          count={0}
+          count={commonsCount}
           name="Commons"
           onPress={() => {
             console.log('Commons CardBox clicked');
@@ -115,7 +115,7 @@ const UserProfileData = ({
         />
         <View style={styles.countBoxDivider} />
         <CountBox
-          count={0}
+          count={proposalsCount}
           name="Proposals"
           onPress={() => {
             console.log('Proposals CardBox clicked');
@@ -131,30 +131,55 @@ const UserProfileData = ({
       </View>
 
       <View style={styles.contentContainerWithoutPadding}>
-        <Text
-          style={{
-            ...text.h3Black,
-            ...layout.marginBottomL,
-          }}>{`Commons (${commonsCount})`}</Text>
+        <View style={{justifyContent: 'space-between', flexDirection: 'row', width: '100%'}}>
+          <Text
+            style={{
+              ...text.againstTextBlack,
+              ...layout.marginBottomL,
+              ...layout.paddingHorizontalL,
+            }}>{`Commons (${commonsCount})`}</Text>
+          {commonsCount > 0 && <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ flexDirection: 'row', ...layout.paddingHorizontalL}}>
+            <Text
+              style={{
+                ...text.h3Black,
+                ...layout.marginBottomL,
+              }}>{'View all'}</Text>
+            <Icon name="right-arrow" size={20} />
+          </TouchableOpacity>}
+        </View>
 
         <CommonsSwiper
           navigation={navigation}
           userId={userId}
           onCountChange={onCommonsCountChange}
+          showMax={5}
         />
       </View>
 
       <View style={styles.contentContainerWithoutPadding}>
-        <Text
-          style={{
-            ...text.h3Black,
-            ...layout.marginBottomL,
-          }}>{`Proposals (${proposalsCount})`}</Text>
+        <View style={{ justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
+          <Text
+            style={{
+              ...text.againstTextBlack,
+              ...layout.marginBottomL,
+              ...layout.paddingHorizontalL,
+            }}>{`Proposals (${proposalsCount})`}</Text>
+          {proposalsCount > 0 && <TouchableOpacity onPress={() => navigation.navigate('MyProposals')} style={{ flexDirection: 'row', ...layout.paddingHorizontalL }}>
+            <Text
+              style={{
+                ...text.h3Black,
+                ...layout.marginBottomL,
+              }}>{'View all'}</Text>
+            <Icon name="right-arrow" size={20} />
+          </TouchableOpacity>}
+        </View>
 
         <ProposalsList
           navigation={navigation}
-          userId={userId}
+          safeAddress={userStore.userInfo.safeAddress}
+          showAll={true}
           isSwiper={true}
+          showMax={5}
           onCountChange={onProposalsCountChange}
         />
       </View>

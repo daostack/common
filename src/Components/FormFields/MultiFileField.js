@@ -5,27 +5,35 @@ import {sizeL} from '../../Theme';
 
 const MultiFileField = props => {
   const [count, setCount] = useState(1);
+  const [deletedFields, setDeletedFields] = useState([]);
 
   const onChangeFile = (fileName, index) => {
-    if (index === count - 1) {
-      if (!maxCount || count < maxCount) {
+    if (index === (count - deletedFields.length) - 1) {
+      if (!maxCount || (count - deletedFields.length) < maxCount) {
         setCount(count + 1);
       }
     }
   };
 
-  const {maxCount, validation} = props;
+  const onFieldDeleted = (currIndex) => {
+    setDeletedFields([...deletedFields, currIndex]);
+  };
+
+
+  const { maxCount, validation } = props;
 
   return (
     <View style={{paddingTop: sizeL}}>
       {[...Array(count).keys()].map(currIndex => {
-        const currItemValidation = {...validation};
-        currItemValidation.name = `${currItemValidation.name}_${currIndex}`;
+        const currItemValidation = { ...props.validation };
+        currItemValidation.name = `${currItemValidation.name}_multi_${currIndex}`;
+        currItemValidation.multiName = props.validation.name;
 
         return (
-          <FileField
+          !deletedFields.includes(currIndex) && <FileField
             key={`key_${currItemValidation.name}_${currIndex}`}
             onChangeFile={fileName => onChangeFile(fileName, currIndex)}
+            onFieldDeleted={() => onFieldDeleted(currIndex)}
             allowsEditing={true}
             title={'Add File'}
             validation={currItemValidation}

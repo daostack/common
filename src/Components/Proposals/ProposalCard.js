@@ -36,13 +36,15 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           funding = currProposalInfo.fundingRequest.amount;
         }
 
+        const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(currProposalId);
+
         const currProposedUser = await FirebaseService.getInstance().getUserById(
           proposedMemberId,
         );
 
         setProposalCardInfo({
           proposedUser: currProposedUser,
-          proposalInfo: {...currProposalInfo, ...{funding: funding}},
+          proposalInfo: {...currProposalInfo, ...{funding: funding}, discussionsCount},
         });
 
       } catch (error) {
@@ -79,7 +81,9 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           proposedMemberId,
         );
 
-        const allProposalInfo = { ...currProposalInfo, ...{ funding: funding } };
+        const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(currProposalInfo.id);
+
+        const allProposalInfo = { ...currProposalInfo, ...{ funding: funding }, discussionsCount };
 
         setProposalCardInfo({
           proposedUser: currProposedUser,
@@ -113,7 +117,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           }}>
           <Text
             style={{...text.h3Black, ...{textAlign: 'left', flexWrap: 'wrap'}}}>
-            {proposalCardInfo.proposalInfo?.title}
+            {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
           </Text>
 
           <View style={layout.flexRow}>
@@ -137,7 +141,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
             />
             <ProposalApprovalTag
               iconName="discussion"
-              value={121}
+              value={proposalCardInfo.proposalInfo?.discussionsCount}
               isMarked={false}
             />
           </View>

@@ -35,20 +35,21 @@ const ProposalData = props => {
       try {
         if (currProposalInfo) {
           let tempImages = [];
-          await Promise.all(
-            currProposalInfo?.images?.map(async currImage => {
-              const {width, height} = await ImageSize.getSize(currImage.uri);
-              tempImages.push({
-                title: currImage.title,
-                widthRatio: (width / height) * 220,
-                uri: currImage.uri,
-              });
-            }),
-          );
+          if (currProposalInfo.description.images) {
+            await Promise.all(
+              currProposalInfo.description.images.map(async currImage => {
+                const {width, height} = await ImageSize.getSize(currImage.value);
+                tempImages.push({
+                  title: currImage.title,
+                  widthRatio: (width / height) * 220,
+                  uri: currImage.value,
+                });
+              }),
+            );
+          }
           setProposalInfo({...currProposalInfo, ...{images: tempImages}});
         }
 
-        //console.log('HELLO!: ', res);
       } catch (error) {
         console.log('error: ', error);
       }
@@ -184,7 +185,8 @@ const ProposalData = props => {
           <View style={layout.content}>
             <View style={styles.proposalColumnSubtitle}>
               <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
-                Cost
+                { proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
+                  'Cost' : 'Contribution' }
               </Text>
               <Text style={text.h1Black}>{`$${
                 proposalInfo.type === PROPOSAL_TYPE.FundingRequest
@@ -198,7 +200,7 @@ const ProposalData = props => {
               renderTruncatedFooter={_renderTruncatedFooter}
               renderRevealedFooter={_renderRevealedFooter}
               onReady={_handleTextReady}>
-              <Text style={text.blackText}>{proposalInfo.description}</Text>
+              <Text style={text.blackText}>{proposalInfo.description.description}</Text>
             </ReadMore>
           </View>
         </View>
@@ -211,32 +213,35 @@ const ProposalData = props => {
               </Text>
             </View>
 
-            <View style={styles.adRow}>
-              <Icon name="link" color={colors.mainBlue} size={16} />
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('Browser', {
-                    url: 'https://daostack.io/',
-                  })
-                }>
-                <Text style={styles.adsText}>TODO: show actual links here</Text>
-              </TouchableOpacity>
-            </View>
+            {proposalInfo.description?.links?.length && (
+              proposalInfo.description?.links.map((l) => <View style={styles.adRow}>
+                <Icon name="link" color={colors.mainBlue} size={16} />
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('Browser', {
+                      url: l.url,
+                    })
+                  }>
+                  <Text style={styles.adsText}>{l.title}</Text>
+                </TouchableOpacity>
+              </View>  )
+            )}
 
-            <View style={styles.adRow}>
-              <Icon name="file" color={colors.mainBlue} size={16} />
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('PDFViwer', {
-                    uri:
-                      'http://samples.leanpub.com/thereactnativebook-sample.pdf',
-                  })
-                }>
-                <Text style={styles.adsText}>
-                  TODO: show links to actually uploade files here
-                </Text>
-              </TouchableOpacity>
-            </View>
+            {proposalInfo.description?.files?.length && (
+              proposalInfo.description?.files.map((f, index) => <View style={styles.adRow}>
+                <Icon name="file" color={colors.mainBlue} size={16} />
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('PDFViwer', {
+                      uri: f.value,
+                    })
+                  }>
+                  <Text style={styles.adsText}>
+                    {`File ${index + 1}`}
+                  </Text>
+                </TouchableOpacity>
+              </View> )
+            )}
           </View>
         </View>
 

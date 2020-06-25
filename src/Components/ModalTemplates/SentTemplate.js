@@ -11,7 +11,13 @@ import React from 'react';
 import Icon from '../../Assets/iconfont/Icon';
 import {layout, colors, text} from '../../Theme';
 
-const SentTemplate = ({children, title, description, onClose}) => {
+const SentTemplate = ({
+  children,
+  title,
+  description,
+  onClose,
+  isCommonCreation,
+}) => {
   return (
     <>
       <SafeAreaView />
@@ -22,7 +28,13 @@ const SentTemplate = ({children, title, description, onClose}) => {
       </View>
       <SafeAreaView style={styles.container}>
         <View style={layout.marginBottomXL}>
-          <Image source={require('../../Assets/sent_igraphic.png')} />
+          <Image
+            source={
+              isCommonCreation
+                ? require('../../Assets/launch.png')
+                : require('../../Assets/sent_igraphic.png')
+            }
+          />
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.description}>{description}</Text>
         </View>

@@ -51,7 +51,7 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
                 $
                 {numberFormatter(
                   commonProgressInfo.raised / 100,
-                ).toLocaleString()}
+                )}
               </Text>
             </>
           ) : (
@@ -60,7 +60,7 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
                 $
                 {numberFormatter(
                   commonProgressInfo.raised / 100,
-                ).toLocaleString() + ' '}
+                ) + ' '}
               </Text>
               <Text style={styles.headerTitle}>
                 / {numberFormatter(commonProgressInfo.raised)}
@@ -76,7 +76,7 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
         {commonNumberBox(
           isFundingStage ? (
             <Text style={styles.headerTitle}>
-              ${numberFormatter(commonProgressInfo.goal / 100).toLocaleString()}
+              ${numberFormatter(commonProgressInfo.goal / 100)}
             </Text>
           ) : (
             <Text style={styles.headerTitle}>

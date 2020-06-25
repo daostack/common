@@ -58,8 +58,6 @@ const CommonHome = ({userStore}) => {
       {/*{userStore.userInfo && (*/}
       {/*<Tab.Screen name="My feed" component={NativeBridgeTests} />*/}
       {/*)}*/}
-      <Tab.Screen name="My feed" component={NativeBridgeTests} />
-
       <Tab.Screen name="Explore" component={CommonsList} />
       <Tab.Screen name="Profile" component={UserProfile} />
     </Tab.Navigator>

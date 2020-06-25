@@ -16,6 +16,7 @@ export const graphwsLink = `wss://api.thegraph.com/subgraphs/name/daostack/${GRA
 export const ipfsLink = 'https://api.thegraph.com/ipfs-daostack/api/v0';
 export const web3ProviderUrl = 'https://dai.poa.network';
 export const relayerUrl = 'https://us-central1-common-daostack.cloudfunctions.net/relayer/';
+export const graphqlUrl = 'https://us-central1-common-daostack.cloudfunctions.net/graphql/';
 export const web3NetworkId = 100;
 
 export const defaultAllowance = 100000000000000000;
