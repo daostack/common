@@ -39,6 +39,12 @@ class FormStore {
     }
   }
 
+  removeFormField(name) {
+    if (this.form.fields?.[name]) {
+      delete this.form.fields[name];
+    }
+  }
+
   // Check if form is valid and display error for each form field if it's necessary
   isFormValid = () => {
     this.form.meta.formValidationMade = true;
