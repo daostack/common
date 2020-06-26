@@ -83,7 +83,6 @@ const ProposalScreen = ({navigation, route, props}) => {
 
         unsubscribe = await ProposalService.getInstance().subscribeToProposalById(proposalId,
           async (updatedProposalInfo) => {
-            console.log('UPDATED -> ', updatedProposalInfo.votesFor);
             await loadProposalInfo(updatedProposalInfo);
           }
         );
@@ -397,7 +396,7 @@ const ProposalScreen = ({navigation, route, props}) => {
                   />
                   <View style={{marginTop: 28}}>
                     <Text style={{...text.h3Black}}>
-                      {proposedUser.displayName + ' >'}
+                      {proposedUser ?  proposedUser.displayName  : 'unknown user'}
                     </Text>
                     <Text
                       style={{

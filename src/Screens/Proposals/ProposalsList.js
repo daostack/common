@@ -23,9 +23,6 @@ const ProposalsList = ({isMember, commonName, safeAddress, showAll, showMax, ...
   const onlyRequestsToJoin = props.onlyRequestsToJoin;
   const [list, setList] = useState(null);
 
-  console.log('commonId', commonId);
-  console.log('userId', userId);
-
   let listRef = useRef([]);
   let unsubscribe = null;
   useEffect(() => {
@@ -67,9 +64,7 @@ const ProposalsList = ({isMember, commonName, safeAddress, showAll, showMax, ...
     loadProposalInfo(commonId, userId, isHistory, showAll);
 
     return () => {
-      console.log('Unsubscribe -> ', unsubscribe);
       if (unsubscribe) {
-        console.log('CALL UNSUBSCRIBE');
         unsubscribe();
       }
     };
