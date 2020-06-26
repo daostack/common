@@ -143,6 +143,7 @@ export const createCommon = async (
       daoFactoryContract,
       'setSchemes',
       schemeData,
+      newOrgAddress
     );
     console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
     //daoStore.setCreationStatus(5);
