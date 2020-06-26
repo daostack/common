@@ -115,10 +115,10 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
             ...layout.paddingBottomL,
             ...{flexWrap: 'wrap'},
           }}>
-          <Text
-            style={{...text.h3Black, ...{textAlign: 'left', flexWrap: 'wrap'}}}>
+          {proposalCardInfo.proposalInfo.type === PROPOSAL_TYPE.FundingRequest && <Text
+            style={{ ...text.h3Black, ...{ textAlign: 'left', flexWrap: 'wrap' } }}>
             {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
-          </Text>
+          </Text>}
 
           <View style={layout.flexRow}>
             <MemberCard
