@@ -55,7 +55,8 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     const errorHandler = async () => {
       const joinAndQuitPlugin = await dao.plugin({where: {name: 'JoinAndQuit'}});
       const joinAndQuitContract  = await arc.getContract(joinAndQuitPlugin.coreState.address);
-      const proposer =  WalletManager.getInstance().safeAddress;
+      const manager = await WalletManager.getInstance();
+      const proposer =  manager.safeAddress;
 
       // we check the conditions from the contract
 
