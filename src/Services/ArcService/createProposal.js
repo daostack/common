@@ -94,7 +94,8 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     await errorHandler();
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
     // send the request to the cloudfunction relayer
-    const proposalId = await WalletManager.getInstance().requestToJoin(transaction.contract, transaction.method, transaction.args);
+    const manager = await WalletManager.getInstance();
+    const proposalId = manager.requestToJoin(transaction.contract, transaction.method, transaction.args);
     return proposalId;
     /**  Original code, keep for reference until we are sure the current pattern works
      *
