@@ -154,7 +154,8 @@ const App = ({userStore, bottomSheetStore}) => {
           const isNewUser = !appUser;
           if (isNewUser) {
             appUser = await AuthService.getInstance().createUserAndWallet(user);
-            WalletManager.getInstance().createSmartContractWallet();
+            const manager = await WalletManager.getInstance();
+            manager.createSmartContractWallet();
           }
           const allUserInfo = {
             ...user._user,

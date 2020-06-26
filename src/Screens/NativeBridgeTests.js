@@ -112,7 +112,7 @@ class nativeBridgeTests extends React.Component {
 
   getOwnerBalance = async () => {
     try {
-      const manager = WalletManager.getInstance();
+      const manager = await WalletManager.getInstance();
       const address = await manager.getAddress();
       const balance = await manager.getBalance(address);
       console.log('ADDRESS: ', address);
@@ -123,18 +123,9 @@ class nativeBridgeTests extends React.Component {
     }
   };
 
-  getSomeFunds = async () => {
-    const manager = WalletManager.getInstance();
-    const address = await manager.getAddress();
-    console.log(`fetching some Eth for your address ${address}`);
-    fetch(
-      `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
-    );
-  };
-
   getBalance = async () => {
     try {
-      const manager = WalletManager.getInstance();
+      const manager = await WalletManager.getInstance();
       const address = manager.getAddress();
       const balance = await manager.getBalance(manager.address);
       console.log('ADDRESS: ', address);
@@ -147,7 +138,7 @@ class nativeBridgeTests extends React.Component {
 
   signTransaction = async () => {
     try {
-      const manager = WalletManager.getInstance();
+      const manager = await WalletManager.getInstance();
       const hash = await manager.signTransaction(
         '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB',
         '0.001',
@@ -160,7 +151,7 @@ class nativeBridgeTests extends React.Component {
 
   sendTransaction = async () => {
     try {
-      const manager = WalletManager.getInstance();
+      const manager = await WalletManager.getInstance();
       const { hash } = await manager.sendTransaction(
         '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB',
         '0.001',
@@ -201,7 +192,7 @@ class nativeBridgeTests extends React.Component {
         safeWallet,
         WalletManager.getInstance().safeAddress,
       );
-      const manager = WalletManager.getInstance();
+      const manager = await WalletManager.getInstance();
       const safeWalletBalance = await manager.getBalance(safeWallet);
       console.log('safeWalletBalance', safeWalletBalance);
       this.setState({ safeWallet, safeWalletBalance });
@@ -220,7 +211,7 @@ class nativeBridgeTests extends React.Component {
         });
         return;
       }
-      const manager = WalletManager.getInstance();
+      const manager = await WalletManager.getInstance();
       const { txHash, safeAddress } = await manager.createSmartContractWallet();
       console.log('txHash ->', txHash);
       this.setState({ cwTXHash: txHash, cwAddress: safeAddress });
@@ -239,7 +230,7 @@ class nativeBridgeTests extends React.Component {
         });
         return;
       }
-      const manager = WalletManager.getInstance();
+      const manager = await WalletManager.getInstance();
       const { txHash } = await manager.create2SmartContractWallet();
       console.log('txHash ->', txHash);
       this.setState({ cw2TXHash: txHash });
@@ -257,7 +248,7 @@ class nativeBridgeTests extends React.Component {
         this.setState({ safeTxHash: 'No wallet found, you need create one' });
         return;
       }
-      const manager = WalletManager.getInstance();
+      const manager = await WalletManager.getInstance();
       const response = await manager.execTransaction(
         safeAddress,
         '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB',
@@ -280,7 +271,7 @@ class nativeBridgeTests extends React.Component {
         this.setState({ safeSCHash: 'No wallet found, you need create one' });
         return;
       }
-      const manager = WalletManager.getInstance();
+      const manager = await WalletManager.getInstance();
       const tokenAddress = '0x3111C94B9243a8A99D5A867e00609900e437E2c0';
       const iface = new ethers.utils.Interface(ABI.ERC20);
       const data = iface.functions.transfer.encode([
@@ -305,7 +296,7 @@ class nativeBridgeTests extends React.Component {
 
   addToWhitelist = async () => {
     try {
-      const manager = WalletManager.getInstance();
+      const manager = await WalletManager.getInstance();
       const response = await manager.addToWhitelist();
       console.log('addWhitleList ->', response);
       this.setState({ whiteListMsg: response.data.message });
@@ -317,7 +308,7 @@ class nativeBridgeTests extends React.Component {
 
   getTokenBalance = async () => {
     try {
-      const manager = WalletManager.getInstance();
+      const manager = await WalletManager.getInstance();
       const balance = await manager.getTokenBalance();
       this.setState({ CMNBalance: balance });
     } catch (e) {
@@ -328,7 +319,7 @@ class nativeBridgeTests extends React.Component {
 
   getTokenAllowance = async () => {
     try {
-      const manager = WalletManager.getInstance();
+      const manager = await WalletManager.getInstance();
       const daoId = '0x59b1c80f882c38abd52a90c9b30edafa55f7e421';
       const address = await ArcService.getInstance().getJoinAndQuitPluginAddress(daoId);
       const balance = await manager.getAllowance(address);
@@ -345,7 +336,7 @@ class nativeBridgeTests extends React.Component {
         throw Error('No userinfo found - perhaps you are not logged in?');
       }
 
-      const manager = WalletManager.getInstance();
+      const manager = await WalletManager.getInstance();
       const commonAddress = await ArcService.getInstance().createCommon(
         {
           name: 'Test dao 2',
