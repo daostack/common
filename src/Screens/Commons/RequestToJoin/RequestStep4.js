@@ -41,9 +41,9 @@ const RequestStep4 = props => {
     if (props.paymentFormStore.isFormValid()) {
       try {
         const formData = {
-          ...props.introduceYourselfFormStore.getChangedFormFieldsJson(),
-          ...props.personalContributionFormStore.getChangedFormFieldsJson(),
-          ...props.paymentFormStore.getChangedFormFieldsJson(),
+          ...props.introduceYourselfFormStore.getFormFieldsJson(),
+          ...props.personalContributionFormStore.getFormFieldsJson(),
+          ...props.paymentFormStore.getFormFieldsJson(),
         };
 
         console.log(formData);
