@@ -105,7 +105,8 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
           isBoosted={true}
-          stage={proposalCardInfo.proposalInfo?.stage}
+          stage={proposalCardInfo.proposalInfo?.stageStr}
+          winningOutcome={proposalCardInfo.proposalInfo?.winningOutcome}
         />
 
         <View

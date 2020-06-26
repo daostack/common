@@ -30,6 +30,14 @@ export const PROPOSAL_TYPE = {
   FundingRequest: 'FundingRequest',
 };
 
+export const LAUNCHED_STATES = [
+  PROPOSAL_STAGE.Queued, PROPOSAL_STAGE.PreBoosted,
+];
+
+export const COUNTDOWN_STATES = [
+  PROPOSAL_STAGE.Boosted, PROPOSAL_STAGE.QuietEndingPeriod,
+];
+
 export default class ProposalService {
   static serviceInstance = null;
 
