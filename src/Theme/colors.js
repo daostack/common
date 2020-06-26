@@ -22,4 +22,5 @@ export default {
   orangeDark: '#ff7c00',
   against: '#ff603e',
   lightishBlue: '#eff9ff',
+  countdown: '#F45184',
 };
