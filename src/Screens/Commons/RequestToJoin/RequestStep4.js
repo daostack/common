@@ -41,16 +41,19 @@ const RequestStep4 = props => {
     if (props.paymentFormStore.isFormValid()) {
       try {
         const formData = {
-          ...props.introduceYourselfFormStore.getChangedFormFieldsJson(),
-          ...props.personalContributionFormStore.getChangedFormFieldsJson(),
-          ...props.paymentFormStore.getChangedFormFieldsJson(),
+          ...props.introduceYourselfFormStore.getFormFieldsJson(),
+          ...props.personalContributionFormStore.getFormFieldsJson(),
+          ...props.paymentFormStore.getFormFieldsJson(),
         };
+
+        console.log(formData);
 
         const data = {
           title: `request to join ${props.route.params.currDaoId} by ${props.userStore.userInfo.ethereumAddress}`,
           description: formData.about_me,
           links: formData.links,
           funding: new BN(formData.amount * 100),
+          payment: { cardNumber: formData.card_number, cvv: formData.cvv, expDate: formData.expiration_date.replace('/', ''), funding: formData.amount * 100 },
         };
 
         Toast.loading('Creating request to join...');
@@ -136,7 +139,7 @@ const RequestStep4 = props => {
 
             <TextInputField
               label="Credit card number"
-              value={__DEV__ ? 1111000011110000 : ''}
+              value={__DEV__ ? 4970101122334422 : ''}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NUMBER,
                 formStore: props.paymentFormStore,
@@ -170,7 +173,7 @@ const RequestStep4 = props => {
                   width: '45%',
                 }}
                 label="Expiration date"
-                value={__DEV__ ? '01/12' : ''}
+                value={__DEV__ ? '10/20' : ''}
                 placeholderText="MM/YY"
                 validation={{
                   name: RequestToJoinForm.FIELD_EXPIRATION_DATE,

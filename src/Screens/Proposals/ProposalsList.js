@@ -13,7 +13,7 @@ import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 
 const {width, height} = Dimensions.get('window');
 
-const ProposalsList = ({isMember, commonName, safeAddress, showAll, showMax, ...props}) => {
+const ProposalsList = ({ isMember, commonName, safeAddress, showAll, showMax, onlyFundingRequests, ...props}) => {
   const commonId = props.commonId;
   const userId = props.userId;
   const isHistory = props.isHistory;
@@ -23,13 +23,10 @@ const ProposalsList = ({isMember, commonName, safeAddress, showAll, showMax, ...
   const onlyRequestsToJoin = props.onlyRequestsToJoin;
   const [list, setList] = useState(null);
 
-  console.log('commonId', commonId);
-  console.log('userId', userId);
-
   let listRef = useRef([]);
   let unsubscribe = null;
   useEffect(() => {
-    const loadProposalInfo = async (commonId, userId, isHistory, showAll) => {
+    const loadProposalInfo = async (commonId, userId, isHistory, showAll, onlyFundingRequests) => {
       let proposalStages = null;
       if (isHistory) {
         // TODO: use ProposalsList.PROPOSAL_STAGES_HISTORY here
@@ -61,15 +58,14 @@ const ProposalsList = ({isMember, commonName, safeAddress, showAll, showMax, ...
         },
         listRef,
         onlyRequestsToJoin,
+        onlyFundingRequests,
       );
     };
 
-    loadProposalInfo(commonId, userId, isHistory, showAll);
+    loadProposalInfo(commonId, userId, isHistory, showAll, onlyFundingRequests);
 
     return () => {
-      console.log('Unsubscribe -> ', unsubscribe);
       if (unsubscribe) {
-        console.log('CALL UNSUBSCRIBE');
         unsubscribe();
       }
     };

@@ -132,7 +132,7 @@ const CommonProfile = ({
   const Proposals = () => {
     return (
       <View style={{padding: sizeL}}>
-        <ProposalsList isMember={isMember} navigation={navigation} commonId={currCommon.id} commonName={routeCommon.name} />
+        <ProposalsList onlyFundingRequests={true} isMember={isMember} navigation={navigation} commonId={currCommon.id} commonName={routeCommon.name} />
       </View>
     );
   };

@@ -105,7 +105,8 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
           isBoosted={true}
-          stage={proposalCardInfo.proposalInfo?.stage}
+          stage={proposalCardInfo.proposalInfo?.stageStr}
+          winningOutcome={proposalCardInfo.proposalInfo?.winningOutcome}
         />
 
         <View
@@ -115,10 +116,10 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
             ...layout.paddingBottomL,
             ...{flexWrap: 'wrap'},
           }}>
-          <Text
-            style={{...text.h3Black, ...{textAlign: 'left', flexWrap: 'wrap'}}}>
+          {proposalCardInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && <Text
+            style={{ ...text.h3Black, ...{ textAlign: 'left', flexWrap: 'wrap' } }}>
             {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
-          </Text>
+          </Text>}
 
           <View style={layout.flexRow}>
             <MemberCard

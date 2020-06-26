@@ -81,12 +81,14 @@ class FormStore {
     this.form.fields[name].changed = true;
   };
 
-  getChangedFormFieldsJson = () => {
+  getFormFieldsJson = (onlyChangedFields = false) => {
     let changedFieldsJson = {};
 
     for (const key in this.form.fields) {
       const formField = this.form.fields[key];
-      if (formField.changed) {
+      if (onlyChangedFields && formField.changed) {
+        changedFieldsJson[key] = formField.value;
+      } else {
         changedFieldsJson[key] = formField.value;
       }
     }
@@ -101,6 +103,11 @@ class FormStore {
     }
 
     return changedFieldsJson;
+  };
+
+
+  getChangedFormFieldsJson = () => {
+    return this.getFormFieldsJson(true);
   };
 
   filterMultiFields = (name, fields) => {

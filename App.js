@@ -156,7 +156,8 @@ const App = ({userStore, bottomSheetStore}) => {
           const isNewUser = !appUser;
           if (isNewUser) {
             appUser = await AuthService.getInstance().createUserAndWallet(user);
-            WalletManager.getInstance().createSmartContractWallet();
+            const manager = await WalletManager.getInstance();
+            manager.createSmartContractWallet();
           }
           const allUserInfo = {
             ...user._user,
@@ -217,7 +218,6 @@ const App = ({userStore, bottomSheetStore}) => {
     };
 
     const unsubscribeAll = () => {
-      console.log('UNSUBSCRIBE ALL');
       subscribers.authChangeUnsubscribe();
       if (subscribers.userInfoChangeUnsubscribe) {
         subscribers.userInfoChangeUnsubscribe();
@@ -228,7 +228,6 @@ const App = ({userStore, bottomSheetStore}) => {
     return unsubscribeAll;
   }, []);
 
-  // console.log('onboarded: ', onboarded);
 
   if (loading) {
     return <View style={{flex: 1}} />;

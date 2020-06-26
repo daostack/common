@@ -43,7 +43,8 @@ export const voteForProposal = async (
         );
       }
       // check if the user is a member of the Common
-      const voter =  WalletManager.getInstance().safeAddress;
+      const manager = await WalletManager.getInstance();
+      const voter = manager.safeAddress;
       const dao = proposalState.dao.entity;
       const daoState = await dao.fetchState();
       const reputation = await daoState.reputation.entity;
