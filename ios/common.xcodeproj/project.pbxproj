@@ -42,11 +42,12 @@
 		15E907332417D1BB008A5750 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15E907322417D1BB008A5750 /* Assets.xcassets */; };
 		15E907362417D1BB008A5750 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E907342417D1BB008A5750 /* LaunchScreen.storyboard */; };
 		4D1E80EEA8DA390BB539F9BA /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		4F4B527332532A9FFD65C58C /* Pods_common_stg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7091E119E111F111FE6ADE7C /* Pods_common_stg.framework */; };
+		4FA6C39FAEF2B104BEE04325 /* Pods_common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDBC97E77DEA4729B8153169 /* Pods_common.framework */; };
 		722E04BCC07344838A0DD949 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 27ABBCE0C26C4E15A8D7C307 /* Roboto-Regular.ttf */; };
 		8763DCF4554547D89A3F1417 /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA3FFBB84F354F338A318FF0 /* Roboto-ThinItalic.ttf */; };
 		8EA4A074BA5740A99672B554 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C9F83AD9B2084944A75E426E /* Roboto-Bold.ttf */; };
 		9AB34075096940B2939D3A3C /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DB1B9923E61C43618D76FCB5 /* Roboto-Thin.ttf */; };
-		A306C8964DE9946BCD50E68C /* Pods_common_dev.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 972CBC5F31351EBA4A80B8AD /* Pods_common_dev.framework */; };
 		AB1E0D83B8324C60AEA5B02C /* Roboto-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D4D02A4490CF40EBA056C20C /* Roboto-Italic.ttf */; };
 		F0F88CD131F5416F9232A460 /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 72AACE390AB74154A9B62F0C /* Roboto-BoldItalic.ttf */; };
 /* End PBXBuildFile section */
@@ -94,6 +95,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1080F095D506AF74580F2D84 /* Pods-common-stg.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common-stg.debug.xcconfig"; path = "Target Support Files/Pods-common-stg/Pods-common-stg.debug.xcconfig"; sourceTree = "<group>"; };
 		13A2EC7A6A49307877755CB8 /* Pods-common.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common.release.xcconfig"; path = "Target Support Files/Pods-common/Pods-common.release.xcconfig"; sourceTree = "<group>"; };
 		1505B3D8243B76E300679F9C /* common.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = common.entitlements; sourceTree = "<group>"; };
 		151C20172499CA52006170CC /* common-dev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "common-dev-Info.plist"; path = "/Users/lmcmz/temp/common/ios/common-dev-Info.plist"; sourceTree = "<absolute>"; };
@@ -122,14 +124,16 @@
 		15E907352417D1BB008A5750 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		15E907372417D1BB008A5750 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		27ABBCE0C26C4E15A8D7C307 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Regular.ttf"; path = "../src/Assets/fonts/roboto/Roboto-Regular.ttf"; sourceTree = "<group>"; };
+		58FEABBAEBA43C58797B6B59 /* Pods-common-stg.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common-stg.release.xcconfig"; path = "Target Support Files/Pods-common-stg/Pods-common-stg.release.xcconfig"; sourceTree = "<group>"; };
+		7091E119E111F111FE6ADE7C /* Pods_common_stg.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_common_stg.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		72AACE390AB74154A9B62F0C /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-BoldItalic.ttf"; path = "../src/Assets/fonts/roboto/Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
 		8EC787CE03BAE17CBC894D57 /* Pods-common-dev.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common-dev.release.xcconfig"; path = "Target Support Files/Pods-common-dev/Pods-common-dev.release.xcconfig"; sourceTree = "<group>"; };
-		972CBC5F31351EBA4A80B8AD /* Pods_common_dev.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_common_dev.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DFFED9D36641BD1A1631D32 /* Pods-common-dev.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common-dev.debug.xcconfig"; path = "Target Support Files/Pods-common-dev/Pods-common-dev.debug.xcconfig"; sourceTree = "<group>"; };
 		C82E1DD3DDC55F4EFC693D54 /* Pods-common.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common.debug.xcconfig"; path = "Target Support Files/Pods-common/Pods-common.debug.xcconfig"; sourceTree = "<group>"; };
 		C9F83AD9B2084944A75E426E /* Roboto-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Bold.ttf"; path = "../src/Assets/fonts/roboto/Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		D4D02A4490CF40EBA056C20C /* Roboto-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Italic.ttf"; path = "../src/Assets/fonts/roboto/Roboto-Italic.ttf"; sourceTree = "<group>"; };
 		DB1B9923E61C43618D76FCB5 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Thin.ttf"; path = "../src/Assets/fonts/roboto/Roboto-Thin.ttf"; sourceTree = "<group>"; };
+		EDBC97E77DEA4729B8153169 /* Pods_common.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_common.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA3FFBB84F354F338A318FF0 /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-ThinItalic.ttf"; path = "../src/Assets/fonts/roboto/Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -145,7 +149,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A306C8964DE9946BCD50E68C /* Pods_common_dev.framework in Frameworks */,
+				4F4B527332532A9FFD65C58C /* Pods_common_stg.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -161,35 +165,36 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D1E80EEA8DA390BB539F9BA /* (null) in Frameworks */,
+				4FA6C39FAEF2B104BEE04325 /* Pods_common.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		151C20582499E503006170CC /* Firebase */ = {
+		151C20582499E503006170CC /* firebase */ = {
 			isa = PBXGroup;
 			children = (
-				151C20592499E503006170CC /* Production */,
-				151C205B2499E503006170CC /* Staging */,
+				151C20592499E503006170CC /* production */,
+				151C205B2499E503006170CC /* staging */,
 			);
-			path = Firebase;
+			path = firebase;
 			sourceTree = "<group>";
 		};
-		151C20592499E503006170CC /* Production */ = {
+		151C20592499E503006170CC /* production */ = {
 			isa = PBXGroup;
 			children = (
 				151C20612499E99B006170CC /* GoogleService-Info.plist */,
 			);
-			path = Production;
+			path = production;
 			sourceTree = "<group>";
 		};
-		151C205B2499E503006170CC /* Staging */ = {
+		151C205B2499E503006170CC /* staging */ = {
 			isa = PBXGroup;
 			children = (
 				151C205C2499E503006170CC /* GoogleService-Info.plist */,
 			);
-			path = Staging;
+			path = staging;
 			sourceTree = "<group>";
 		};
 		15CD031E246E87AD00EDADE2 /* common-notification-service-ext */ = {
@@ -213,7 +218,7 @@
 		15E9071D2417D1B9008A5750 = {
 			isa = PBXGroup;
 			children = (
-				151C20582499E503006170CC /* Firebase */,
+				151C20582499E503006170CC /* firebase */,
 				15E907282417D1B9008A5750 /* common */,
 				15CD031E246E87AD00EDADE2 /* common-notification-service-ext */,
 				15E907272417D1B9008A5750 /* Products */,
@@ -324,6 +329,8 @@
 				13A2EC7A6A49307877755CB8 /* Pods-common.release.xcconfig */,
 				9DFFED9D36641BD1A1631D32 /* Pods-common-dev.debug.xcconfig */,
 				8EC787CE03BAE17CBC894D57 /* Pods-common-dev.release.xcconfig */,
+				1080F095D506AF74580F2D84 /* Pods-common-stg.debug.xcconfig */,
+				58FEABBAEBA43C58797B6B59 /* Pods-common-stg.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -333,7 +340,8 @@
 			children = (
 				15CD0307246E873C00EDADE2 /* UserNotifications.framework */,
 				15CD0309246E873C00EDADE2 /* UserNotificationsUI.framework */,
-				972CBC5F31351EBA4A80B8AD /* Pods_common_dev.framework */,
+				EDBC97E77DEA4729B8153169 /* Pods_common.framework */,
+				7091E119E111F111FE6ADE7C /* Pods_common_stg.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -547,7 +555,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-common-dev-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-common-stg-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -615,15 +623,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-common-dev/Pods-common-dev-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-common-stg/Pods-common-stg-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-common-dev/Pods-common-dev-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-common-stg/Pods-common-stg-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-common-dev/Pods-common-dev-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-common-stg/Pods-common-stg-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		151C204A2499E3F4006170CC /* [CP] Copy Pods Resources */ = {
@@ -632,15 +640,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-common-dev/Pods-common-dev-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-common-stg/Pods-common-stg-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-common-dev/Pods-common-dev-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-common-stg/Pods-common-stg-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-common-dev/Pods-common-dev-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-common-stg/Pods-common-stg-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		151C204B2499E3F4006170CC /* [CP-User] [RNFB] Core Configuration */ = {
@@ -908,7 +916,7 @@
 		};
 		151C20502499E3F4006170CC /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9DFFED9D36641BD1A1631D32 /* Pods-common-dev.debug.xcconfig */;
+			baseConfigurationReference = 1080F095D506AF74580F2D84 /* Pods-common-stg.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -937,7 +945,7 @@
 		};
 		151C20512499E3F4006170CC /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8EC787CE03BAE17CBC894D57 /* Pods-common-dev.release.xcconfig */;
+			baseConfigurationReference = 58FEABBAEBA43C58797B6B59 /* Pods-common-stg.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
