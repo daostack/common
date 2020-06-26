@@ -31,15 +31,15 @@ const calcText = (stage, winningOutcome) => {
 };
 
 
-const ProposalCardHeader = ({isBoosted, openBoostedInfo, stage, winningOutcome}) => {
+const ProposalCardHeader = ({stage, winningOutcome}) => {
 
 
-  let iconColor = colors.mainBlue;
+  let iconColor = LAUNCHED_STATES.includes(stage) ? colors.mainBlue : colors.countdown;
 
   return (
     <View style={styles.proposalCardHeader}>
       <Icon name={calcIcon(stage, winningOutcome)} color={iconColor} size={16} />
-      <Text style={{...text.orangeSmallBold, ...{marginHorizontal: 5}}}>
+      <Text style={{ ...text.orangeSmallBold, ...{ marginHorizontal: 5 }, ...LAUNCHED_STATES.includes(stage) ? styles.launchedColor : styles.countdownColor }}>
         {calcText(stage, winningOutcome)}
       </Text>
     </View>
