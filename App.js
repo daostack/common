@@ -213,7 +213,6 @@ const App = ({userStore, bottomSheetStore}) => {
     };
 
     const unsubscribeAll = () => {
-      console.log('UNSUBSCRIBE ALL');
       subscribers.authChangeUnsubscribe();
       if (subscribers.userInfoChangeUnsubscribe) {
         subscribers.userInfoChangeUnsubscribe();
@@ -224,7 +223,6 @@ const App = ({userStore, bottomSheetStore}) => {
     return unsubscribeAll;
   }, []);
 
-  // console.log('onboarded: ', onboarded);
 
   if (loading) {
     return <View style={{flex: 1}} />;

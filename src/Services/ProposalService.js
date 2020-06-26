@@ -62,7 +62,6 @@ export default class ProposalService {
   }
 
   async getProposalInfo(proposalUid) {
-    console.log('proposalUid -> ', proposalUid);
     return db
       .collection(DB_COLLECTIONS.proposals)
       .doc(proposalUid)
@@ -135,7 +134,6 @@ export default class ProposalService {
     onlyRequestsToJoin,
     onlyFundingRequests
   ) {
-    console.log('subscribeToProposalList');
 
     let proposalCollection = db.collection(DB_COLLECTIONS.proposals);
 
