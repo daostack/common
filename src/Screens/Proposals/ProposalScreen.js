@@ -92,6 +92,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
     };
 
     if (routeProposalId) {
+      console.log(`proposalId --> ${routeProposalId}`);
       getProposalInfo(routeProposalId);
     }
     return () => {
