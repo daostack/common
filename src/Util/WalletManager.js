@@ -250,7 +250,7 @@ export default class WalletManager {
     }
   }
 
-  createCommonStep2 = async (contract, method, params) => {
+  createCommonStep2 = async (contract, method, params, commonId) => {
     try {
       const idToken = await auth().currentUser.getIdToken();
       const address = contract.address;
@@ -268,6 +268,7 @@ export default class WalletManager {
           data,
           signature,
         },
+        commonId,
       };
 
       const response = await axiosClient.post(
