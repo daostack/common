@@ -31,7 +31,7 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
 };
 
 const axiosClient = axios.create({
-  baseURL: relayerUrl,
+  baseURL: relayerUrl, //'http://localhost:5001/common-daostack/us-central1/relayer/',
   timeout: 1000000, // milliseconds
 });
 
@@ -192,7 +192,7 @@ export default class WalletManager {
     return response;
   }
 
-  requestToJoin = async (pluginContract, method, params) => {
+  requestToJoin = async (pluginContract, method, params, paymentData) => {
     try {
       const pluginAddress = pluginContract.address;
       const zeroValue = '0';
@@ -220,7 +220,15 @@ export default class WalletManager {
           data: data2,
           signature: signature2,
         },
+        paymentData,
       };
+      /* const idToken = await auth().currentUser.getIdToken();
+      const body =
+      {
+        idToken,
+        paymentData,
+      }; */
+
       console.log('RequestToJoin Body ->', body);
       console.log('RequestToJoin sent to cloud function');
       const response = await axiosClient.post(
