@@ -9,7 +9,7 @@ import Toast from './Toast';
 
 ethers.Contract.prototype.sendToRelayer = async function (funcName, params, value = '0') {
   const data = this.interface.functions[funcName].encode(params);
-  const manager = WalletManager.getInstance();
+  const manager = await WalletManager.getInstance();
   console.log(data);
   const response = await manager.execTransaction(manager.safeAddress, this.address, value, data);
   return response.data?.txHash;
@@ -23,7 +23,7 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
     // throw new Error('');
     return null;
   }
-  const manager = WalletManager.getInstance();
+  const manager = await WalletManager.getInstance();
   const receipt = await manager.provider.waitForTransaction(txHash);
   const events = manager.getTransactionEvents(this.interface, receipt);
   receipt.events = events;
@@ -57,9 +57,14 @@ export default class WalletManager {
     WalletManager.myInstance = await new WalletManager(uid);
   };
 
-  static getInstance = () => {
+  static getInstance = async () => {
     if (WalletManager.myInstance == null) {
-      throw new Error('WalletManager is not initialized');
+      const uid = auth().currentUser?.uid;
+      if (uid) {
+        await WalletManager.init(uid);
+        return WalletManager.myInstance;
+      }
+      throw new Error('WalletManager is not initialized, user is null');
     }
     return WalletManager.myInstance;
   };
@@ -258,7 +263,7 @@ export default class WalletManager {
     }
   }
 
-  createCommonStep2 = async (contract, method, params) => {
+  createCommonStep2 = async (contract, method, params, commonId) => {
     try {
       const idToken = await auth().currentUser.getIdToken();
       const address = contract.address;
@@ -276,6 +281,7 @@ export default class WalletManager {
           data,
           signature,
         },
+        commonId,
       };
 
       const response = await axiosClient.post(

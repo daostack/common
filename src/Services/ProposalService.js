@@ -62,7 +62,6 @@ export default class ProposalService {
   }
 
   async getProposalInfo(proposalUid) {
-    console.log('proposalUid -> ', proposalUid);
     return db
       .collection(DB_COLLECTIONS.proposals)
       .doc(proposalUid)
@@ -133,8 +132,8 @@ export default class ProposalService {
     listChangeCallback,
     listRef,
     onlyRequestsToJoin,
+    onlyFundingRequests
   ) {
-    console.log('subscribeToProposalList');
 
     let proposalCollection = db.collection(DB_COLLECTIONS.proposals);
 
@@ -143,6 +142,10 @@ export default class ProposalService {
     }
     if (userId) {
       proposalCollection = proposalCollection.where('proposerId', '==', userId);
+    }
+
+    if (onlyFundingRequests) {
+      proposalCollection = proposalCollection.where('type', '==', PROPOSAL_TYPE.FundingRequest);
     }
 
     if (safeAddress) {
