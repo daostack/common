@@ -30,6 +30,14 @@ export const PROPOSAL_TYPE = {
   FundingRequest: 'FundingRequest',
 };
 
+export const LAUNCHED_STATES = [
+  PROPOSAL_STAGE.Queued, PROPOSAL_STAGE.PreBoosted,
+];
+
+export const COUNTDOWN_STATES = [
+  PROPOSAL_STAGE.Boosted, PROPOSAL_STAGE.QuietEndingPeriod,
+];
+
 export default class ProposalService {
   static serviceInstance = null;
 
@@ -62,7 +70,6 @@ export default class ProposalService {
   }
 
   async getProposalInfo(proposalUid) {
-    console.log('proposalUid -> ', proposalUid);
     return db
       .collection(DB_COLLECTIONS.proposals)
       .doc(proposalUid)
@@ -133,8 +140,8 @@ export default class ProposalService {
     listChangeCallback,
     listRef,
     onlyRequestsToJoin,
+    onlyFundingRequests
   ) {
-    console.log('subscribeToProposalList');
 
     let proposalCollection = db.collection(DB_COLLECTIONS.proposals);
 
@@ -143,6 +150,10 @@ export default class ProposalService {
     }
     if (userId) {
       proposalCollection = proposalCollection.where('proposerId', '==', userId);
+    }
+
+    if (onlyFundingRequests) {
+      proposalCollection = proposalCollection.where('type', '==', PROPOSAL_TYPE.FundingRequest);
     }
 
     if (safeAddress) {

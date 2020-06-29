@@ -30,21 +30,17 @@ import CountDown from 'react-native-countdown-component';
 import FirebaseService from '../../Services/FirebaseService';
 import {monthShortNames} from '../../Util/DateUtil';
 import { PROPOSAL_STAGES_ACTIVE} from '../../Services/ProposalService';
-import {PROPOSAL_TYPE} from '../../Services/ProposalService';
+import { PROPOSAL_TYPE } from '../../Services/ProposalService';
+import { db } from '../../Firebase';
+import { observer, inject } from 'mobx-react';
 
-const ProposalScreen = ({navigation, route, props}) => {
+const ProposalScreen = ({navigation, route, userStore, props}) => {
   const [proposalInfo, setProposalInfo] = useState(false);
   const [proposedUser, setProposedUser] = useState(false);
+  const [daoInfo, setDaoInfo] = useState({});
+  const [isMember, setIsMember] = useState(false);
   const routeProposalId = route?.params.proposalId;
-  const isMember = route?.params?.isMember;
   const renderVoting = proposalInfo && PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr);
-  const commonName = route?.params?.commonName;
-
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      title: commonName || 'Unknown common name',
-    });
-  }, [navigation]);
 
   useEffect(() => {
     let unsubscribe = null;
@@ -78,12 +74,13 @@ const ProposalScreen = ({navigation, route, props}) => {
         let currProposalInfo = await ProposalService.getInstance().getProposalInfo(
           proposalId,
         );
-
+        const currentDao = await db.collection('daos').doc(currProposalInfo.dao).get().then((dao) => dao.data());
+        const isMember = userStore.userInfo && userStore.isDaoMember(currentDao.members);
+        setIsMember(isMember);
+        setDaoInfo(currentDao);
         await loadProposalInfo(currProposalInfo);
-
         unsubscribe = await ProposalService.getInstance().subscribeToProposalById(proposalId,
           async (updatedProposalInfo) => {
-            console.log('UPDATED -> ', updatedProposalInfo.votesFor);
             await loadProposalInfo(updatedProposalInfo);
           }
         );
@@ -95,6 +92,7 @@ const ProposalScreen = ({navigation, route, props}) => {
     };
 
     if (routeProposalId) {
+      console.log(`proposalId --> ${routeProposalId}`);
       getProposalInfo(routeProposalId);
     }
     return () => {
@@ -103,6 +101,13 @@ const ProposalScreen = ({navigation, route, props}) => {
       }
     };
   }, [routeProposalId]);
+
+
+  useEffect(() =>{
+    navigation.setOptions({
+      title: daoInfo.name,
+    });
+  }, [daoInfo]);
 
   const [
     isApprovalBottomModalVisible,
@@ -291,7 +296,7 @@ const ProposalScreen = ({navigation, route, props}) => {
       }
 
       return (
-        <View
+        remainingSeconds > 0 && <View
           style={{
             ...layout.flexRow,
             ...{
@@ -397,7 +402,7 @@ const ProposalScreen = ({navigation, route, props}) => {
                   />
                   <View style={{marginTop: 28}}>
                     <Text style={{...text.h3Black}}>
-                      {proposedUser.displayName + ' >'}
+                      {proposedUser ?  proposedUser.displayName  : 'unknown user'}
                     </Text>
                     <Text
                       style={{
@@ -576,4 +581,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProposalScreen;
+
+export default inject(
+  'userStore',
+)(observer(ProposalScreen));

@@ -80,9 +80,6 @@ class FileField extends React.Component {
       ? validation.formStore.form.fields[validation.name].value
       : value;
 
-    console.log(validation.formStore.form.fields[validation.name].value);
-
-    console.log('CurrValue -> ', currValue);
 
     const fileName = currValue
       .substring(currValue.lastIndexOf('/') + 1, currValue.length)
@@ -97,8 +94,6 @@ class FileField extends React.Component {
       .split('?')[0]
       .split('.')
       .pop();
-
-    console.log('fileName -> ', fileName);
 
     if (currValue) {
       return (

@@ -16,11 +16,12 @@ export default class ArcService {
   static myInstance = null;
   constructor() {
     return (async () => {
+      const manager = await WalletManager.getInstance();
       this.arc = new Arc({
         graphqlHttpProvider: graphHttpLink,
         graphqlWsProvider: graphwsLink,
         ipfsProvider: ipfsLink,
-        web3Provider: WalletManager.getInstance().wallet,
+        web3Provider: manager.wallet,
       });
       await this.arc.fetchContractInfos();
       return this;

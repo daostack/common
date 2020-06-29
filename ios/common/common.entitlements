@@ -6,7 +6,7 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:lucid-elion-eb9949.netlify.app</string>
+		<string>applinks:app.common.io</string>
 	</array>
 </dict>
 </plist>

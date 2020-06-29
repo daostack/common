@@ -116,21 +116,6 @@ const UserProfile = ({userStore, navigation}) => {
                 : renderUnsignedUserData()}
 
               <View style={layout.marginTopL}>
-                <View
-                  style={{
-                    ...layout.content,
-                    paddingHorizontal: 0,
-                    backgroundColor: colors.grey4,
-                  }}>
-                  <Text style={text.h4Black}>Temporary menu</Text>
-                  <AccordionBtn title="Test Page" onPress={onTestPagePress} />
-                  <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
-                  <AccordionBtn title="Users list" onPress={onUsersListPress} />
-                  <AccordionBtn
-                    title="Funding Request"
-                    onPress={onFundingProposalPress}
-                  />
-                </View>
                 {userStore.userInfo ? (
                   <AccordionBtn
                     title="My wallet"
@@ -143,19 +128,25 @@ const UserProfile = ({userStore, navigation}) => {
                 <AccordionBtn title="Privacy Policy" />
                 <AccordionBtn title="Help" />
                 <AccordionBtn title="Contact us" />
-                <AccordionBtn
-                  onPress={onMyProposalsPress}
-                  title="My Proposals"
-                />
-                <AccordionBtn onPress={onMyCommonsPress} title="My Commons" />
                 {userStore.userInfo ? (
                   <AccordionBtn
-                    lightStyle={true}
+                    lightStyle={false}
                     title="Logout"
                     onPress={_signOut}
                   />
                 ) : null}
               </View>
+              <View
+                style={{
+                  ...layout.content,
+                  paddingHorizontal: 0,
+                  backgroundColor: colors.grey4,
+                }}>
+                <Text style={text.h4Black}>Temporary menu</Text>
+                <AccordionBtn title="Test Page" onPress={onTestPagePress} />
+                <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
+              </View>
+
             </View>
           </ScrollView>
         </SafeAreaView>
