@@ -1,30 +1,47 @@
 import React from 'react';
-import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
+import {Text, StyleSheet, View} from 'react-native';
 import {text, layout, colors, sizeXS} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
+import { LAUNCHED_STATES, COUNTDOWN_STATES, PROPOSAL_STAGE } from '../../Services/ProposalService';
 
-const ProposalCardHeader = ({isBoosted, openBoostedInfo, stage}) => {
-  let iconName = 'star';
-  let iconColor = colors.mainBlue;
-  let headerTitle = 'Boosted';
-
-  if (isBoosted) {
-    iconName = 'boosted';
-    iconColor = colors.orange;
-    headerTitle = 'Boosted';
+const calcIcon = (stage, winningOutcome) => {
+  if (LAUNCHED_STATES.includes(stage)) {
+    return 'boosted';
   }
+  if (COUNTDOWN_STATES.includes(stage)) {
+    return 'clcok-16';
+  }
+};
+
+const calcText = (stage, winningOutcome) => {
+  if (LAUNCHED_STATES.includes(stage)) {
+    return 'Launched';
+  }
+  if (COUNTDOWN_STATES.includes(stage)) {
+    return 'Countdown';
+  }
+
+  if (stage === PROPOSAL_STAGE.Executed) {
+    return winningOutcome === 1 ?  'Passed' : 'Failed';
+  }
+
+  if (stage === PROPOSAL_STAGE.ExpiredInQueue) {
+    return 'Failed';
+  }
+};
+
+
+const ProposalCardHeader = ({stage, winningOutcome}) => {
+
+
+  let iconColor = LAUNCHED_STATES.includes(stage) ? colors.mainBlue : colors.countdown;
 
   return (
     <View style={styles.proposalCardHeader}>
-      <Icon name={iconName} color={iconColor} size={16} />
-      <Text style={{...text.orangeSmallBold, ...{marginHorizontal: 5}}}>
-        {stage}
+      <Icon name={calcIcon(stage, winningOutcome)} color={iconColor} size={16} />
+      <Text style={{ ...text.orangeSmallBold, ...{ marginHorizontal: 5 }, ...LAUNCHED_STATES.includes(stage) ? styles.launchedColor : styles.countdownColor }}>
+        {calcText(stage, winningOutcome)}
       </Text>
-      {openBoostedInfo ? (
-        <TouchableOpacity onPress={openBoostedInfo}>
-          <Icon name={'explanation'} size={12} />
-        </TouchableOpacity>
-      ) : null}
     </View>
   );
 };
@@ -36,6 +53,12 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     backgroundColor: colors.orangeLight,
     padding: sizeXS,
+  },
+  launchedColor: {
+    color: colors.mainBlue,
+  },
+  countdownColor: {
+    color: colors.countdown,
   },
 });
 

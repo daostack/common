@@ -1,8 +1,8 @@
 import WalletManager from '../../Util/WalletManager';
 import {JoinAndQuitProposal, FundingRequestProposal} from '@daostack/arc.js';
 import { PROPOSAL_STAGES_HISTORY } from '../ProposalService';
-import axios from 'axios';
-import { NULL_ADDRESS, PROPOSAL_TYPE, graphqlUrl} from '../../Config';
+import { NULL_ADDRESS, PROPOSAL_TYPE } from '../../Config';
+import GraphqlSyncService from '../GraphqlSyncService';
 
 const createVoteTransaction = async (proposal, outcome) => {
   const amount = 0;
@@ -42,7 +42,8 @@ export const voteForProposal = async (
         );
       }
       // check if the user is a member of the Common
-      const voter =  WalletManager.getInstance().safeAddress;
+      const manager = await WalletManager.getInstance();
+      const voter = manager.safeAddress;
       const dao = proposalState.dao.entity;
       const daoState = await dao.fetchState();
       const reputation = await daoState.reputation.entity;
@@ -69,14 +70,7 @@ export const voteForProposal = async (
 
     console.log('transactionHAsh -> ', receipt.transactionHash);
 
-    const axiosClient = axios.create({
-      baseURL: graphqlUrl,
-      timeout: 1000000, // milliseconds
-    });
-
-    console.log('Proposals updating started.');
-    const proposalUpdateResponse = await axiosClient.get('update-proposals');
-    console.log('Proposals updated: ', proposalUpdateResponse);
+    await GraphqlSyncService.getInstance().syncProposalById(proposalId);
 
     // TODO: get the voteId from the transaction receipt and return it
 

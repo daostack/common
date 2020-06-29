@@ -1,13 +1,11 @@
 import React, {useState} from 'react';
-import {View, Dimensions} from 'react-native';
-
+import { View, Dimensions} from 'react-native';
 import {layout} from '../Theme';
-
 import SwiperFlatList from 'react-native-swiper-flatlist';
 
 const {width} = Dimensions.get('window');
 
-const SwiperCard = props => {
+const SwiperCard = ({showMax, navigation, ...props}) => {
   const renderNoDataCard = props.renderNoDataCard;
   const cardRenderer = props.cardRenderer;
   const extraData = props.extraData;
@@ -39,15 +37,15 @@ const SwiperCard = props => {
     );
   };
 
-  const onSwiperIndexChanged = ({index, prevIndex}) => {
-    setSwiperCurrentIndex({index, prevIndex});
+  const onSwiperIndexChanged = ({ index, prevIndex }) => {
+    setSwiperCurrentIndex({ index, prevIndex });
   };
 
   return data.length > 0 ? (
     <View style={layout.flexRow}>
       <SwiperFlatList
-        renderItem={({item, index}) => renderCard(item, index)}
-        data={data}
+        renderItem={({ item, index }) => renderCard(item, index)}
+        data={data.length > showMax ? data.slice(0, showMax + 1) : data}
         extraData={extraData}
         onChangeIndex={onSwiperIndexChanged}
       />

@@ -36,9 +36,24 @@
 				<string>common</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>dynmaic-link</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.daostack.common</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>FirebaseDynamicLinksCustomDomains</key>
+	<array>
+		<string>https://app.common.io</string>
+		<string>https://app.common.io/common</string>
+	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<string>NO</string>
 	<key>LSRequiresIPhoneOS</key>

@@ -1,7 +1,17 @@
 // TODO: rename this file to °createProposalRequestToJoin.js°
 const {first} = require('rxjs/operators');
-import {ipfsUpload} from '../../Config';
+import { ipfsUpload, mangoPayUrl} from '../../Config';
 import WalletManager from '../../Util/WalletManager';
+import axios from 'axios';
+import auth from '@react-native-firebase/auth';
+
+
+const axiosClient = axios.create({
+  baseURL: mangoPayUrl,
+  // or for development:
+  // baseURL: 'http://localhost:5000/common-daostack/us-central1/mangopay/',
+  timeout: 1000000, // milliseconds
+});
 
 export const createProposalRequestToJoin = async (arc, daoId, data) => {
   // data must look like this
@@ -13,6 +23,18 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
   //   links: [], // {title: "title", url: "url"}
   //   funding: new BN(100000),
   // };
+
+  // just check if the user has mangopayId, wallet ID else create them
+  try {
+    const idToken = await auth().currentUser.getIdToken();
+    const response = await axiosClient.post(
+      'create-user',
+      {idToken},
+    );
+    console.log(response);
+  } catch (e) {
+    console.log(e);
+  }
 
   try {
     const dao = arc.dao(daoId);
@@ -55,7 +77,8 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     const errorHandler = async () => {
       const joinAndQuitPlugin = await dao.plugin({where: {name: 'JoinAndQuit'}});
       const joinAndQuitContract  = await arc.getContract(joinAndQuitPlugin.coreState.address);
-      const proposer =  WalletManager.getInstance().safeAddress;
+      const manager = await WalletManager.getInstance();
+      const proposer =  manager.safeAddress;
 
       // we check the conditions from the contract
 
@@ -90,7 +113,8 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     await errorHandler();
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
     // send the request to the cloudfunction relayer
-    const proposalId = await WalletManager.getInstance().requestToJoin(transaction.contract, transaction.method, transaction.args);
+    const manager = await WalletManager.getInstance();
+    const proposalId = manager.requestToJoin(transaction.contract, transaction.method, transaction.args, data.payment);
     return proposalId;
     /**  Original code, keep for reference until we are sure the current pattern works
      *

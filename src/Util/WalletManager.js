@@ -9,7 +9,7 @@ import Toast from './Toast';
 
 ethers.Contract.prototype.sendToRelayer = async function (funcName, params, value = '0') {
   const data = this.interface.functions[funcName].encode(params);
-  const manager = WalletManager.getInstance();
+  const manager = await WalletManager.getInstance();
   console.log(data);
   const response = await manager.execTransaction(manager.safeAddress, this.address, value, data);
   return response.data?.txHash;
@@ -22,7 +22,7 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
     // throw new Error('');
     return null;
   }
-  const manager = WalletManager.getInstance();
+  const manager = await WalletManager.getInstance();
   const receipt = await manager.provider.waitForTransaction(txHash);
   const events = manager.getTransactionEvents(this.interface, receipt);
   receipt.events = events;
@@ -30,9 +30,9 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
 };
 
 const axiosClient = axios.create({
-  baseURL: 
-  // 'http://localhost:5001/common-staging-50741/us-central1/relayer',
-  relayerUrl,
+  baseURL: relayerUrl,
+  // for dev
+  // baseURL: 'http://localhost:5000/common-daostack/us-central1/relayer/',
   timeout: 1000000, // milliseconds
 });
 
@@ -60,9 +60,14 @@ export default class WalletManager {
     WalletManager.myInstance = await new WalletManager(uid);
   };
 
-  static getInstance = () => {
+  static getInstance = async () => {
     if (WalletManager.myInstance == null) {
-      throw new Error('WalletManager is not initialized');
+      const uid = auth().currentUser?.uid;
+      if (uid) {
+        await WalletManager.init(uid);
+        return WalletManager.myInstance;
+      }
+      throw new Error('WalletManager is not initialized, user is null');
     }
     return WalletManager.myInstance;
   };
@@ -190,7 +195,7 @@ export default class WalletManager {
     return response;
   }
 
-  requestToJoin = async (pluginContract, method, params) => {
+  requestToJoin = async (pluginContract, method, params, paymentData) => {
     try {
       const pluginAddress = pluginContract.address;
       const zeroValue = '0';
@@ -218,7 +223,15 @@ export default class WalletManager {
           data: data2,
           signature: signature2,
         },
+        paymentData,
       };
+      /* const idToken = await auth().currentUser.getIdToken();
+      const body =
+      {
+        idToken,
+        paymentData,
+      }; */
+
       console.log('RequestToJoin Body ->', body);
       console.log('RequestToJoin sent to cloud function');
       const response = await axiosClient.post(
@@ -253,7 +266,7 @@ export default class WalletManager {
     }
   }
 
-  createCommonStep2 = async (contract, method, params) => {
+  createCommonStep2 = async (contract, method, params, commonId) => {
     try {
       const idToken = await auth().currentUser.getIdToken();
       const address = contract.address;
@@ -271,6 +284,7 @@ export default class WalletManager {
           data,
           signature,
         },
+        commonId,
       };
 
       const response = await axiosClient.post(

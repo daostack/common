@@ -130,6 +130,8 @@ const ProposalData = props => {
           <ProposalCardHeader
             isBoosted={isBoosted}
             openBoostedInfo={openBoostedInfo}
+            stage={proposalInfo.stageStr}
+            winningOutcome={proposalInfo.winningOutcome}
           />
           <View style={layout.content}>
             <View style={styles.proposalRowSubtitle}>

@@ -116,7 +116,8 @@ const CreateStep4 = props => {
 
   const forgeCommon = async () => {
     try {
-      const address = WalletManager.getInstance().safeAddress;
+      const manager = await WalletManager.getInstance();
+      const address = manager.safeAddress;
       const formDataInit = {
         ...props.generalInfoFormStore.getChangedFormFieldsJson(),
         ...props.fundingFormStore.getChangedFormFieldsJson(),
