@@ -59,19 +59,13 @@ export default class WalletManager {
 
   static getInstance = async () => {
     if (WalletManager.myInstance == null) {
-<<<<<<< HEAD
-      analytics().logEvent('WalletManager_not_init', {
-        userId: auth().currentUser.uid,
-      });
-      throw new Error('WalletManager is not initialized');
-=======
       const uid = auth().currentUser?.uid;
       if (uid) {
         await WalletManager.init(uid);
         return WalletManager.myInstance;
       }
+      analytics().logEvent('WalletManager_not_init');
       throw new Error('WalletManager is not initialized, user is null');
->>>>>>> master
     }
     return WalletManager.myInstance;
   };
