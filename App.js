@@ -77,9 +77,10 @@ import KeyboardManager from 'react-native-keyboard-manager';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import {CommonActions} from '@react-navigation/native';
-import { URL, URLSearchParams } from 'react-native-url-polyfill';
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import DeepLinking from 'react-native-deep-linking';
 
 import ArcService from './src/Services/ArcService';
 if (Platform.OS === 'ios') {
@@ -93,13 +94,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
   const hudRef = useRef();
   const navigationRef = useRef();
 
-  // const getTestEth = async address => {
-  //   console.log('getting test eth for user: ', address);
-  //   const req = await fetch(
-  //     `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
-  //   );
-  //   console.log('result from eth request: ', req);
-  // };
+  // Notification
   useEffect(() => {
     messaging()
       .registerDeviceForRemoteMessages()
@@ -119,6 +114,14 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
   }, []);
 
   useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('Foreground Message Arrived', JSON.stringify(remoteMessage));
+    });
+    return unsubscribe;
+  }, []);
+
+  // HUD
+  useEffect(() => {
     const showLisenter = DeviceEventEmitter.addListener(
       'HUD',
       (content, isLoading = false) => {
@@ -134,55 +137,64 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     };
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('Foreground Message Arrived', JSON.stringify(remoteMessage));
-    });
-    return unsubscribe;
-  }, []);
-
-  const handleOpenURL = obj => {
-    const url = new URL(obj.url);
-    console.log('url: ', navigationRef.current);
-    const searchParams = new URLSearchParams(url.searchParams);
-    try {
-      if ( searchParams.has('common')) {
-        console.log('true');
-        const actions = CommonActions.navigate({
-          name: 'CommonProfile',
-          params: {
-            currCommon: searchParams.get('common'),
-          },
-        });
-        navigationRef.current?.dispatch(actions);
-      } else if ( searchParams.has('proposal')) {
-        const actions = CommonActions.navigate({
-          name: 'ProposalScreen',
-          params: {
-            proposalId: searchParams.get('proposal'),
-          },
-        });
-        navigationRef.current?.dispatch(actions);
+  // Deep & Dynamic Link
+  const handleOpenURL = ({ url }) => {
+    console.log('handleOpenURL 111', url);
+    Linking.canOpenURL(url).then((supported) => {
+      if (!supported) {
+        return;
       }
-    } catch (e) {
-      console.log('error: ', e);
-    }
+      console.log('handleOpenURL ->', url);
+      if (!DeepLinking.evaluateUrl(url)) {
+        routing('Browser', {url: url});
+      }
+    });
   };
 
-
-  const getURL = async () =>{
-    const initialUrl = await Linking.getInitialURL();
-    console.log('initialUrl: ', initialUrl);
+  const routing = (screenName, params) => {
+    const actions = CommonActions.navigate({
+      name: screenName,
+      params: params,
+    });
+    navigationRef.current?.dispatch(actions);
   };
 
   useEffect(() => {
-    getURL();
+
+    DeepLinking.addScheme('common://');
+    DeepLinking.addScheme('com.daostack.common://');
+    DeepLinking.addScheme('https://app.common.io');
+
     Linking.addEventListener('url', handleOpenURL);
+
+    DeepLinking.addRoute('/common/:id', (response) => {
+      routing('CommonProfile', {commonId: response.id});
+    });
+
+    DeepLinking.addRoute('/proposal/:id', (response) => {
+      routing('ProposalScreen', {proposalId: response.id});
+    });
+
+    const foregroundLink = dynamicLinks().onLink(handleOpenURL);
+    dynamicLinks().getInitialLink().then(link => {
+      if (link) {
+        handleOpenURL(link);
+      } else {
+        Linking.getInitialURL()
+          .then((url) => {
+            handleOpenURL({url});
+          })
+          .catch(err => err);
+      }
+    });
+
     return (() => {
       Linking.removeEventListener('url', handleOpenURL);
+      foregroundLink();
     });
   }, []);
 
+  // Login
   useEffect(() => {
     const subscribers = { authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
 
