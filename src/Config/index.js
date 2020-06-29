@@ -11,6 +11,15 @@ import Config from 'react-native-config';
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
 // TODO: we should probably read this from the package..
 
+
+if (Config.ENV === 'production') {
+
+} else if (Config.ENV === 'staging') {
+
+} else {
+  throw Error(`Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`);
+}
+
 export const ARC_VERSION = Config.ARC_VERSION;
 export const GRAPH_VERSION = Config.GRAPH_VERSION;
 export const graphHttpLink = `${Config.graphHttpLink}${GRAPH_VERSION}`;
