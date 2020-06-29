@@ -148,7 +148,7 @@ android {
             applicationIdSuffix ".staging"
             dimension "version"
         }
-        prodution {
+        production {
             dimension "version"
         }
     }
