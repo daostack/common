@@ -228,22 +228,22 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
 
   const onVote = async isApproved => {
     try {
-      let votingResponse = null;
+      // let votingResponse = null;
       const voteData = {vote: isApproved ? 1 : 0};
 
       if (proposalInfo.type == PROPOSAL_TYPE.JoinAndQuit) {
-        votingResponse = await ArcService.getInstance().voteForJoinAndQuitProposal(
+        await ArcService.getInstance().voteForJoinAndQuitProposal(
           routeProposalId,
           voteData,
         );
       } else {
-        votingResponse = await ArcService.getInstance().voteForFundingRequestProposal(
+        await ArcService.getInstance().voteForFundingRequestProposal(
           routeProposalId,
           voteData,
         );
       }
 
-      console.log('votingResponse -> ', votingResponse);
+      // console.log('votingResponse -> ', votingResponse);
 
       closeApprovalSheet();
       Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');

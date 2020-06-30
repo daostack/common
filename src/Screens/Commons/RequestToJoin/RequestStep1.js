@@ -29,8 +29,6 @@ const RequestStep1 = props => {
       outputRange: [0, 67],
       extrapolate: 'clamp',
     });
-    console.log(height);
-    // const height = scrollY.value > 100 ? 125 : 0;
     setHeaderHeight(height);
   }, [scrollY]);
 

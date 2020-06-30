@@ -33,7 +33,6 @@ const RequestStep4 = props => {
       outputRange: [0, 67],
       extrapolate: 'clamp',
     });
-    console.log(height);
     setHeaderHeight(height);
   }, [scrollY]);
 

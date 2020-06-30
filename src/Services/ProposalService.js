@@ -107,7 +107,8 @@ export default class ProposalService {
         PROPOSAL_STAGE.PreBoosted,
         PROPOSAL_STAGE.Boosted,
         PROPOSAL_STAGE.QuietEndingPeriod,
-      ]);
+      ])
+      .orderBy('closingAt', 'desc');
 
     return proposals.onSnapshot(snapshot  => {
       callback({
@@ -167,6 +168,8 @@ export default class ProposalService {
     if (!showAll) {
       proposalCollection = proposalCollection.where('stageStr', 'in', stages);
     }
+
+    proposalCollection = proposalCollection.orderBy('closingAt', 'desc');
 
 
     return proposalCollection.onSnapshot(
