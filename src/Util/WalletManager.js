@@ -159,9 +159,7 @@ export default class WalletManager {
 
   execTransaction = async (safeAddress, toAddress, value = 0, data = '0x') => {
     try {
-      console.log(333333);
       const finalSignature = await this.txHashSignature(safeAddress, toAddress, value, data);
-      console.log(333333);
       const idToken = await auth().currentUser.getIdToken();
 
       // const masterCopyContract = new ethers.Contract(
@@ -180,17 +178,14 @@ export default class WalletManager {
       // console.log('execTransaction', tx);
 
       const body = { idToken, to: toAddress, value: value, data, signature: finalSignature };
-      console.log(333333);
       const response = await axiosClient.post(
         'execTransaction',
         // options,
         body
       );
-      console.log(333333);
       // console.log('execTransaction ->', response);
       return response;
     } catch (err) {
-      console.log(334444);
       console.log(err);
       throw err;
     }
