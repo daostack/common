@@ -75,3 +75,5 @@ google-services.json
 # IconFont
 /src/Assets/iconfont
 /.env
+.env.stg
+tmp.xcconfig

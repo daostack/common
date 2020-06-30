@@ -339,14 +339,13 @@ class nativeBridgeTests extends React.Component {
       const manager = await WalletManager.getInstance();
       const commonAddress = await ArcService.getInstance().createCommon(
         {
-          name: 'Test dao 2',
+          name: 'Test dao 666',
           founderAddresses: manager.safeAddress,
           minFeeToJoin: 0,
           fundingGoal: 10000,
           fundingGoalDeadline: Math.round(new Date().getTime() / 1000),
         },
-        this.props.navigation,
-        this.props.daoStore,
+        this.props.navigation
       );
 
       this.setState({ commonStatus: `${JSON.stringify(commonAddress)}` });
@@ -653,7 +652,6 @@ class nativeBridgeTests extends React.Component {
             --------------- ERC20 -----------------
           </Text>
 
-
           <Text>{this.state.CMNBalance} CMN</Text>
           <TouchableOpacity
             onPress={this.getTokenBalance}
@@ -667,6 +665,7 @@ class nativeBridgeTests extends React.Component {
             style={styles.button}>
             <Text>Get Common Token Allowance</Text>
           </TouchableOpacity>
+
         </ScrollView>
       </View>
     );

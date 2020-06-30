@@ -5,7 +5,6 @@ import WalletManager from '../../Util/WalletManager';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 
-
 const axiosClient = axios.create({
   baseURL: mangoPayUrl,
   // or for development:
