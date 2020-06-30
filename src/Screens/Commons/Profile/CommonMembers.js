@@ -10,7 +10,6 @@ import {
   Dimensions,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-
 import {layout, colors, text, sizeS} from '../../../Theme';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import ProposalsList from '../../Proposals/ProposalsList';
@@ -39,7 +38,7 @@ const CommonMembers = ({navigation, route}) => {
   const Members = () => {
     return (
       <View style={{padding: sizeS}}>
-        <CommonMembersList members={members} />
+        <CommonMembersList navigation={navigation} members={members} />
       </View>
     );
   };
