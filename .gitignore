@@ -78,3 +78,4 @@ google-services.json
 /.env.dev
 /.env
 .env.stg
+tmp.xcconfig
