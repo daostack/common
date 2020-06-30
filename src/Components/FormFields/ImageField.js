@@ -149,8 +149,10 @@ class ImageField extends React.Component {
             {!disableEdit && (isAvatar || currValue) ? (
               <TouchableOpacity
                 style={isAvatar ? styles.formImageFielAddIconAvatar : styles.formImageFielAddIcon}
-                onPress={() => this.onFieldDeleted()}>
-                <Icon name="delete" size={16} color={colors.white} />
+                onPress={() => this.pickImage()}>
+                {/* onPress={() => this.onFieldDeleted()}> */}
+                {/* <Icon name="delete" size={16} color={colors.white} /> */}
+                <Icon name="add-picture" size={16} color={colors.white} />
               </TouchableOpacity>
             ) : null}
           </View>
