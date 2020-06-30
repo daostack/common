@@ -47,7 +47,6 @@ const CommonMembers = ({navigation, route}) => {
   };
 
   const onProposalsCountChange = count => {
-    console.log('onProposalsCountChange -->', count);
     setPendingCount(count);
   };
 
