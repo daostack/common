@@ -18,7 +18,6 @@ const createVoteTransaction = async (proposal, outcome) => {
   };
 };
 
-// TODO: rename this function to "voteForProposal". It probably works without changes fro the FundingRequest as well
 export const voteForProposal = async (
   arc,
   proposalId,
