@@ -126,8 +126,6 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
   const [inputText, setInputText] = useState(null);
 
   const inputRef = useRef();
-  const boostedInfoRef = useRef();
-  const approvalSheetRef = useRef();
 
   const renderTabBar = currProps => (
     <TabBar
@@ -231,7 +229,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
       // let votingResponse = null;
       const voteData = {vote: isApproved ? 1 : 0};
 
-      if (proposalInfo.type == PROPOSAL_TYPE.JoinAndQuit) {
+      if (proposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
         await ArcService.getInstance().voteForJoinAndQuitProposal(
           routeProposalId,
           voteData,
