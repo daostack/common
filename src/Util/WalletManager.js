@@ -30,9 +30,9 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
 };
 
 const axiosClient = axios.create({
-  baseURL: relayerUrl,
+  // baseURL: relayerUrl,
   // for dev
-  // baseURL: 'http://localhost:5000/common-daostack/us-central1/relayer/',
+  baseURL: 'http://localhost:5000/common-daostack/us-central1/relayer/',
   timeout: 1000000, // milliseconds
 });
 
@@ -159,7 +159,9 @@ export default class WalletManager {
 
   execTransaction = async (safeAddress, toAddress, value = 0, data = '0x') => {
     try {
+      console.log(333333);
       const finalSignature = await this.txHashSignature(safeAddress, toAddress, value, data);
+      console.log(333333);
       const idToken = await auth().currentUser.getIdToken();
 
       // const masterCopyContract = new ethers.Contract(
@@ -178,15 +180,19 @@ export default class WalletManager {
       // console.log('execTransaction', tx);
 
       const body = { idToken, to: toAddress, value: value, data, signature: finalSignature };
+      console.log(333333);
       const response = await axiosClient.post(
         'execTransaction',
         // options,
         body
       );
+      console.log(333333);
       // console.log('execTransaction ->', response);
       return response;
     } catch (err) {
+      console.log(334444);
       console.log(err);
+      throw err;
     }
   }
 
@@ -208,10 +214,10 @@ export default class WalletManager {
       // TODO: please to not use parseEther here, just pass on the intended allowance
       const data1 = interf.functions.approve.encode([pluginAddress, ethers.utils.parseEther(defaultAllowance.toString())]);
       const signature1 = await this.txHashSignature(this.safeAddress, COMMONTOKENADDRESS, zeroValue, data1);
-      console.log('signature1 -->', signature1);
+      // console.log('signature1 -->', signature1);
       const data2 = pluginContract.interface.functions[method].encode(params);
       const signature2 = await this.txHashSignature(this.safeAddress, pluginAddress, zeroValue, data2);
-      console.log('signature2 -->', signature2);
+      // console.log('signature2 -->', signature2);
       const idToken = await auth().currentUser.getIdToken();
       const body =
       {
@@ -237,16 +243,14 @@ export default class WalletManager {
         paymentData,
       }; */
 
-      console.log('RequestToJoin Body ->', body);
-      console.log('RequestToJoin sent to cloud function');
+      // console.log('RequestToJoin Body ->', body);
       const response = await axiosClient.post(
         'requestToJoin',
         body
       );
-
       let msg;
       if (!response.data) {
-        console.log('RequestToJoin response -->', response);
+        // console.log('RequestToJoin response -->', response);
         msg = 'Response has no "data" property - thats not good at all :(';
         throw Error(msg);
       }

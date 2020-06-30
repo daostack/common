@@ -9,7 +9,9 @@ export default class GraphqlSyncService {
 
     constructor() {
       this.axiosClient = axios.create({
-        baseURL: graphqlUrl,
+        // baseURL: graphqlUrl,
+        // for dev
+        baseURL: 'http://localhost:5000/common-daostack/us-central1/graphql/',
         timeout: 1000000, // milliseconds
       });
     }
@@ -23,7 +25,7 @@ export default class GraphqlSyncService {
 
     async syncProposalById(proposalId) {
       console.log(`update proposal ${proposalId}`);
-      const options = { params: { proposalId } };
+      const options = { params: { proposalId, retries: 4 } };
       await this.axiosClient.get('update-proposal-by-id', options);
       console.log('Proposal updated: '); //, proposalUpdateResponse);
     }

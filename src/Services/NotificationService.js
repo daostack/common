@@ -16,9 +16,9 @@ export default class NotificationService {
       .update({
         tokens: firestore.FieldValue.arrayUnion(token),
       })
-      .then(() => {
-        console.log('FCM token updated');
-      })
+      // .then(() => {
+      //   console.log('FCM token updated');
+      // })
       .catch(err => console.log(err));
   }
 
