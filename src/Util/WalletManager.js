@@ -5,12 +5,12 @@ import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 import ABI from './abi.json';
 import FirebaseService from '../Services/FirebaseService';
-import Toast from './Toast';
+
 
 ethers.Contract.prototype.sendToRelayer = async function (funcName, params, value = '0') {
   const data = this.interface.functions[funcName].encode(params);
   const manager = await WalletManager.getInstance();
-  console.log(data);
+  // console.log(data);
   const response = await manager.execTransaction(manager.safeAddress, this.address, value, data);
   return response.data?.txHash;
 };
@@ -36,7 +36,12 @@ const axiosClient = axios.create({
   timeout: 1000000, // milliseconds
 });
 
-console.log('relayerUrl -->', relayerUrl);
+// return the content of the reponse from the server instead of a generic error message
+axiosClient.interceptors.response.use((response) => {
+  return response;
+}, function (error) {
+  return Promise.reject(error.response);
+});
 
 export default class WalletManager {
   static myInstance = null;
@@ -274,7 +279,7 @@ export default class WalletManager {
       const data = contract.interface.functions[method].encode(params);
       const signature = await this.txHashSignature(this.safeAddress, address, zeroValue, data);
 
-      console.log('signature1 -->', signature);
+      // console.log('signature1 -->', signature);
 
       const body = {
         idToken,
@@ -292,16 +297,18 @@ export default class WalletManager {
         body
       );
 
-      console.log('CreateCommonStep2 response -->', response);
+      // console.log('CreateCommonStep2 response -->', response);
 
       if (!response.data) {
         console.log(response);
         throw Error('unexpected error sending request to createCommon2: empty response');
       }
       if (response.data.errcode) {
-        // TODO: throw an error here, do not show it
-        Toast.error(`Code: ${response.data.errorCode}, Message: ${response.data.error}`);
-        return null;
+        throw Error(`Code: ${response.data.errorCode}, Message: ${response.data.error}`);
+      }
+
+      if (response.status !== 200) {
+        throw Error(`Status: ${response.status}, ${response.data}`);
       }
 
       console.log(response.data);

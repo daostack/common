@@ -53,6 +53,7 @@ class CreateDiscussionForm extends React.Component {
           })
           .catch(error => {
             Toast.error(error);
+            console.log(error);
           });
       }
     } catch (err) {
