@@ -1,14 +1,11 @@
 import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
+
 import moment from 'moment';
-const googleServicesData = require('../../android/app/google-services.json');
 
 export const GOOGLE_SIGNIN_PERMISSIONS = {
   APP_DATA_RW: 'https://www.googleapis.com/auth/drive.appdata',
 };
 
-export const WEB_CLIENT_ID =
-  googleServicesData.client[0].services.appinvite_service
-    .other_platform_oauth_client[0].client_id;
 
 export const numberFormatter = num => {
   const denom = Math.abs(Number(num));

@@ -15,7 +15,6 @@ it('getUser should return user', async () => {
     console.log('users: ', await FirebaseService.getUser());
   };
 
-  console.log('USERS >>>', user);
 
   expect(user.length).toBeGreaterThan(0);
 });

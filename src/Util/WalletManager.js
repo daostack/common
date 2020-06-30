@@ -15,7 +15,6 @@ ethers.Contract.prototype.sendToRelayer = async function (funcName, params, valu
   return response.data?.txHash;
 };
 
-
 ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, params, value = '0') {
   const txHash = await this.sendToRelayer(funcName, params, value);
   console.log('txHash ->', txHash);
@@ -43,7 +42,6 @@ axiosClient.interceptors.response.use((response) => {
 }, function (error) {
   return Promise.reject(error.response);
 });
-
 
 export default class WalletManager {
   static myInstance = null;
@@ -325,6 +323,7 @@ export default class WalletManager {
   getAllowance = async pluginAddress => {
     let contract = new ethers.Contract(COMMONTOKENADDRESS, ABI.CommonToken, this.provider);
     let allowance = await contract.allowance(this.safeAddress, pluginAddress);
+    // TODO: please remove the next call to "formatEther", which will dive the balance by 10 ** 18 and make it unreadable
     const allowanceStr = ethers.utils.formatEther(allowance);
     console.log('allowance ->', allowanceStr);
     return allowanceStr;
@@ -334,6 +333,7 @@ export default class WalletManager {
     const address = this.safeAddress;
     const contract = new ethers.Contract(COMMONTOKENADDRESS, ABI.CommonToken, this.provider);
     const balance = await contract.balanceOf(address);
+    // TODO: please remove the next call to "formatEther", which will dive the balance by 10 ** 18 and make it unreadable
     const balanceStr =  ethers.utils.formatEther(balance);
     console.log('balance ->', balance);
     return balanceStr;

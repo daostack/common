@@ -6,23 +6,32 @@ import {onError} from 'apollo-link-error';
 import {ApolloLink, split} from 'apollo-link';
 import {WebSocketLink} from 'apollo-link-ws';
 import {getMainDefinition} from 'apollo-utilities';
+import Config from 'react-native-config';
 
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
 // TODO: we should probably read this from the package..
-export const ARC_VERSION = '0.1.1-rc.21';
-export const GRAPH_VERSION = 'v8_2_exp_xdai';
-export const graphHttpLink = `https://api.thegraph.com/subgraphs/name/daostack/${GRAPH_VERSION}`;
-export const graphwsLink = `wss://api.thegraph.com/subgraphs/name/daostack/${GRAPH_VERSION}`;
-export const ipfsLink = 'https://api.thegraph.com/ipfs-daostack/api/v0';
-export const web3ProviderUrl = 'https://dai.poa.network';
-export const relayerUrl = 'https://us-central1-common-daostack.cloudfunctions.net/relayer/';
-export const graphqlUrl = 'https://us-central1-common-daostack.cloudfunctions.net/graphql/';
-export const mangoPayUrl = 'https://us-central1-common-daostack.cloudfunctions.net/mangopay/';
-export const web3NetworkId = 100;
+
+
+if (Config.ENV === 'production') {
+
+} else if (Config.ENV === 'staging') {
+
+} else {
+  throw Error(`Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`);
+}
+
+export const ARC_VERSION = Config.ARC_VERSION;
+export const GRAPH_VERSION = Config.GRAPH_VERSION;
+export const graphHttpLink = `${Config.graphHttpLink}${GRAPH_VERSION}`;
+export const graphwsLink = `${Config.graphwsLink}${GRAPH_VERSION}`;
+export const ipfsLink = Config.ipfsLink;
+export const web3ProviderUrl = Config.web3ProviderUrl;
+export const relayerUrl = Config.relayerUrl;
+export const web3NetworkId = Config.eb3NetworkId;
+export const COMMONTOKENADDRESS = Config.COMMONTOKENADDRESS;
+export const firebaseWebClientId = Config.firebaseWebClientId;
 
 export const defaultAllowance = 100000000000000000;
-
-export const COMMONTOKENADDRESS = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
 export const MEMBER_REPUTATION = 1000; // how much rep a new members gets
 
 export const OVERRIDES = {
