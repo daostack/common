@@ -30,9 +30,9 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
 };
 
 const axiosClient = axios.create({
-  // baseURL: relayerUrl,
+  baseURL: relayerUrl,
   // for dev
-  baseURL: 'http://localhost:5000/common-daostack/us-central1/relayer/',
+  // baseURL: 'http://localhost:5000/common-daostack/us-central1/relayer/',
   timeout: 1000000, // milliseconds
 });
 
