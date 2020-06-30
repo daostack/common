@@ -100,7 +100,7 @@ export default class ProposalService {
     let proposals = db
       .collection(DB_COLLECTIONS.proposals)
       .where('dao', '==', daoId)
-      .where('clasingAt', '>', moment().unix())
+      .where('closingAt', '>', moment().unix())
       .where('type', '==', 'JoinAndQuit')
       .where('stageStr', 'in', [
         PROPOSAL_STAGE.Queued,
