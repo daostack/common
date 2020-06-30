@@ -21,6 +21,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
   //   images: [],
   //   links: [], // {title: "title", url: "url"}
   //   funding: new BN(100000),
+  // .  payment: { ... }
   // };
 
   // just check if the user has mangopayId, wallet ID else create them
@@ -33,6 +34,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     console.log(response);
   } catch (e) {
     console.log(e);
+    console.log(e.response);
   }
 
   try {
@@ -71,7 +73,6 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       dao: dao.id,
       plugin: joinAndQuitPlugin.coreState.address,
     };
-    console.log('creating request to join transaction');
 
     const errorHandler = async () => {
       const joinAndQuitPlugin = await dao.plugin({where: {name: 'JoinAndQuit'}});
@@ -109,22 +110,19 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     // TODO: we are runnning the error handler here to check conditions before sending the transaction ...
     // .. this is expensive, and once we have reduced such errors to the minimmum, we should to error handling only ...
     // .. when the transaction actually failed
+    console.log('checking precondition for transaction');
     await errorHandler();
+    console.log('preconditions are ok - creating the transaction');
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
     // send the request to the cloudfunction relayer
     const manager = await WalletManager.getInstance();
     const proposalId = manager.requestToJoin(transaction.contract, transaction.method, transaction.args, data.payment);
     return proposalId;
-    /**  Original code, keep for reference until we are sure the current pattern works
-     *
-    const transaction = await joinAndQuitPlugin.createProposal(args);
-    console.log(`sending transaction ${transaction}`);
-    console.log(transaction)
-    const receipt = await transaction.send();
-    return receipt.result; // this is a arc.js Proposal instance
-     */
   } catch (e) {
+    console.log('---------------------------');
     console.log(e);
+    console.log(Object.keys(e));
+    console.log('---------------------------');
     throw e;
   }
 };

@@ -134,7 +134,7 @@ const App = ({userStore, bottomSheetStore}) => {
     const subscribers = { authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
 
     const onAuthStateChanged = async user => {
-      console.log('AUTH STATE CHANGED: ', user);
+      console.log('AUTH STATE CHANGED: ', user?.uid, user?.email, user?.displayName);
       try {
         userStore.setIsLoading(true);
         if (user) {

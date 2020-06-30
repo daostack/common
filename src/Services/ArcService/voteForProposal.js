@@ -59,16 +59,17 @@ export const voteForProposal = async (
     // .. we are runnning the error handler here to check conditions before sending the transaction ...
     // .. this is expensive, and once we have reduced such errors to the minimmum, we should to error handling only ...
     // .. when the transaction actually failed
+    console.log('checking preconditions for voting');
     await errorHandler();
-
-    const voteTransaction = await createVoteTransaction(proposal, data.vote);
-    const transaction = voteTransaction;
+    console.log('creating the vote transaction');
+    const transaction = await createVoteTransaction(proposal, data.vote);
+    console.log('waiting for the transaction to be processed');
     const receipt = await transaction.contract.sendToRelayerWithReceipt(
       transaction.method,
       transaction.args,
     );
 
-    console.log('transactionHAsh -> ', receipt.transactionHash);
+    console.log('transactionHash -> ', receipt.transactionHash);
 
     await GraphqlSyncService.getInstance().syncProposalById(proposalId);
 
