@@ -94,7 +94,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
   const hudRef = useRef();
   const navigationRef = useRef();
 
-  // Notification
   useEffect(() => {
     messaging()
       .registerDeviceForRemoteMessages()
@@ -102,7 +101,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         return messaging().requestPermission();
       })
       .then(settings => {
-        console.log('Notification settings', settings);
+        // console.log('Notification settings', settings);
         if (settings) {
           return NotificationService.saveTokenToDatabase();
         }
@@ -125,7 +124,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     const showLisenter = DeviceEventEmitter.addListener(
       'HUD',
       (content, isLoading = false) => {
-        hudRef.current.show(content, isLoading ? DURATION.FOREVER : 1500);
+        hudRef.current.show(content, isLoading ? DURATION.FOREVER : 15000);
       },
     );
     const hidelisenter = DeviceEventEmitter.addListener('HideHUD', () => {
@@ -281,7 +280,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     checkOnboardingStatus();
     return unsubscribeAll;
   }, []);
-
 
   if (loading) {
     return <View style={{flex: 1}} />;

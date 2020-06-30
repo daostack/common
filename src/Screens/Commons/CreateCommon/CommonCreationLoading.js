@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors, layout, text} from '../../../Theme';
-import {observer, inject} from 'mobx-react';
 import Loader from '../../../Components/Loader';
 
 const CommonCreationLoading = ({daoStore, route, navigation}) => {
@@ -39,7 +38,7 @@ const CommonCreationLoading = ({daoStore, route, navigation}) => {
                 textAlign: 'center',
               }}>
               There are a lot of pieces to bring together. It might take a
-              couple of minutte.
+              couple of minutes.
             </Text>
           </View>
         </View>

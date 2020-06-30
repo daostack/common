@@ -18,7 +18,6 @@ const createVoteTransaction = async (proposal, outcome) => {
   };
 };
 
-// TODO: rename this function to "voteForProposal". It probably works without changes fro the FundingRequest as well
 export const voteForProposal = async (
   arc,
   proposalId,
@@ -39,7 +38,7 @@ export const voteForProposal = async (
       const proposalState = await proposal.fetchState();
       if (proposalState.stage in PROPOSAL_STAGES_HISTORY) {
         throw Error(
-          'Cannot vote: the proposal has been already executed, or it expired',
+          `Cannot vote: the proposal ${proposalId} has been already executed, or it expired`,
         );
       }
       // check if the user is a member of the Common
@@ -77,7 +76,6 @@ export const voteForProposal = async (
 
     return receipt;
   } catch (e) {
-    console.log('ERROR IN VOTE FOR PROPOSAL');
     console.log(e);
     throw e;
   }

@@ -5,7 +5,6 @@ import WalletManager from '../../Util/WalletManager';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 
-
 const axiosClient = axios.create({
   baseURL: mangoPayUrl,
   // or for development:
@@ -105,9 +104,6 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
         const msg = `fee (${fee}) should be >= minFeeToJoin (${minFeeToJoin})`;
         throw Error(msg);
       }
-      console.log(joinAndQuitPlugin.coreState.pluginParams.minFeeToJoin);
-      console.log('fee', fee);
-      console.log('minFeetoJoin', minFeeToJoin);
       // require(_feeAmount >= minFeeToJoin, "_feeAmount should be >= then the minFeeToJoin")
     };
     // TODO: we are runnning the error handler here to check conditions before sending the transaction ...

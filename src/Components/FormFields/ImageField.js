@@ -59,7 +59,7 @@ class ImageField extends React.Component {
     };
     ImagePicker.showImagePicker(options, response => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        // console.log('User cancelled image picker');
       } else if (response.error) {
         Toast.error(response.error);
         console.log('ImagePicker Error: ', response.error);
@@ -149,8 +149,10 @@ class ImageField extends React.Component {
             {!disableEdit && (isAvatar || currValue) ? (
               <TouchableOpacity
                 style={isAvatar ? styles.formImageFielAddIconAvatar : styles.formImageFielAddIcon}
-                onPress={() => this.onFieldDeleted()}>
-                <Icon name="delete" size={16} color={colors.white} />
+                onPress={() => this.pickImage()}>
+                {/* onPress={() => this.onFieldDeleted()}> */}
+                {/* <Icon name="delete" size={16} color={colors.white} /> */}
+                <Icon name="add-picture" size={16} color={colors.white} />
               </TouchableOpacity>
             ) : null}
           </View>

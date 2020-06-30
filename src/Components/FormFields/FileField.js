@@ -50,12 +50,12 @@ class FileField extends React.Component {
         type: [DocumentPicker.types.allFiles],
       });
 
-      console.log(
-        res.uri,
-        res.type, // mime type
-        res.name,
-        res.size,
-      );
+      // console.log(
+      //   res.uri,
+      //   res.type, // mime type
+      //   res.name,
+      //   res.size,
+      // );
 
       Toast.loading('Uploading...');
       const downloadUrl = await FirebaseService.getInstance().uploadFile(

@@ -52,7 +52,7 @@ export const BOTTOM_SHEET_TEMPLATES = {
     content: UnsavedChanges,
   },
   USER_PROFILE_SHEET_SCREEN: {
-    topSnap: 500,
+    topSnap: 800,
     content: UserProfileSheetScreen,
   },
 };

@@ -100,14 +100,15 @@ export default class ProposalService {
     let proposals = db
       .collection(DB_COLLECTIONS.proposals)
       .where('dao', '==', daoId)
-      .where('expiresInQueueAt', '>', moment().unix())
+      .where('closingAt', '>', moment().unix())
       .where('type', '==', 'JoinAndQuit')
       .where('stageStr', 'in', [
         PROPOSAL_STAGE.Queued,
         PROPOSAL_STAGE.PreBoosted,
         PROPOSAL_STAGE.Boosted,
         PROPOSAL_STAGE.QuietEndingPeriod,
-      ]);
+      ])
+      .orderBy('closingAt', 'desc');
 
     return proposals.onSnapshot(snapshot  => {
       callback({
@@ -167,6 +168,8 @@ export default class ProposalService {
     if (!showAll) {
       proposalCollection = proposalCollection.where('stageStr', 'in', stages);
     }
+
+    proposalCollection = proposalCollection.orderBy('closingAt', 'desc');
 
 
     return proposalCollection.onSnapshot(

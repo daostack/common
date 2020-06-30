@@ -55,9 +55,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     if (!funding) {
       throw Error('"funding" argument must be given');
     }
-    // check preconditions
 
-    // precondition: the FUNDED_BEFORE_DEADLINE should be true
     const daoContract = await arc.getContract(dao.id);
 
     const errorHandler = async (receipt) => {
