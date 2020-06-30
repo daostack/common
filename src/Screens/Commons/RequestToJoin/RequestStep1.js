@@ -37,8 +37,6 @@ const RequestStep1 = props => {
   };
 
   const push = () => {
-    console.log(props);
-
     if (pass) {
       const navigate = CommonActions.navigate({
         name: 'RequestStep2',

@@ -85,7 +85,6 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
 
         const allProposalInfo = { ...currProposalInfo, ...{ funding: funding }, discussionsCount };
 
-        console.log(allProposalInfo);
         setProposalCardInfo({
           proposedUser: currProposedUser,
           proposalInfo: allProposalInfo,

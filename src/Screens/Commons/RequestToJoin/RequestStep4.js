@@ -45,8 +45,6 @@ const RequestStep4 = props => {
           ...props.paymentFormStore.getFormFieldsJson(),
         };
 
-        console.log(formData);
-
         const data = {
           title: `request to join ${props.route.params.currDaoId} by ${props.userStore.userInfo.ethereumAddress}`,
           description: formData.about_me,
