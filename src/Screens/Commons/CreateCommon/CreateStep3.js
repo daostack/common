@@ -30,15 +30,13 @@ const CreateStep3 = props => {
       outputRange: [0, 125],
       extrapolate: 'clamp',
     });
-    console.log(height);
-    // const height = scrollY.value > 100 ? 125 : 0;
     setHeaderHeight(height);
   }, [scrollY]);
+
   /*
   const handleRuleTitles = (x, text) => {
     props.agendaFormStore.registerFormField(`ruleTitles_${x}`, 'string');
     props.agendaFormStore.fieldChanged(`ruleTitles_${x}`, text);
-    // console.log(x, text, ruleTitles);
   };
 
   const handleRuleBody = (x, text) => {

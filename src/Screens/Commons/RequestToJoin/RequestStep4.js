@@ -33,7 +33,6 @@ const RequestStep4 = props => {
       outputRange: [0, 67],
       extrapolate: 'clamp',
     });
-    console.log(height);
     setHeaderHeight(height);
   }, [scrollY]);
 
@@ -45,8 +44,6 @@ const RequestStep4 = props => {
           ...props.personalContributionFormStore.getFormFieldsJson(),
           ...props.paymentFormStore.getFormFieldsJson(),
         };
-
-        console.log(formData);
 
         const data = {
           title: `request to join ${props.route.params.currDaoId} by ${props.userStore.userInfo.ethereumAddress}`,

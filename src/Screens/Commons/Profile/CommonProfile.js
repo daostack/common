@@ -290,7 +290,7 @@ const CommonProfile = ({
 
   const renderPendingApproval = () => {
     const remainingSeconds =
-      pendingProposalsData.usersPendingProposal.expiresInQueueAt -
+      pendingProposalsData.usersPendingProposal.closingAt -
       moment().unix();
     return (
       <TouchableOpacity

@@ -59,8 +59,6 @@ class EditProfileForm extends React.Component {
       ...otherProps
     } = this.props;
 
-    console.log('editProfileFormStore');
-    console.log(editProfileFormStore);
     return (
       <View
         {...otherProps}

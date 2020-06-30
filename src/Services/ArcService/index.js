@@ -68,7 +68,7 @@ export default class ArcService {
   };
 
   // COMMONS
-  async createCommon(givenOpts = {}, navigation, daoStore) {
-    return createCommon(this.arc, givenOpts, navigation, daoStore);
+  async createCommon(givenOpts = {}, navigation) {
+    return createCommon(this.arc, givenOpts, navigation);
   }
 }

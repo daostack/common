@@ -81,6 +81,18 @@ const CreateStep4 = props => {
     setImageURI(currImageUrl);
   };
 
+  const goToCommon = () => {
+    console.log('goto common');
+    Toast.error('This is not implemented yet');
+    // const navigate = CommonActions.navigate({
+    //   name: 'CommonProfile',
+    //   params: {
+    //     currCommon: props.common,
+    //   },
+    // });
+    // props.navigation.dispatch(navigate);
+  };
+
   const pickImage = isAvatar => {
     const options = {
       title: (isAvatar && 'Select Avatar') || 'Select profile image',
@@ -94,7 +106,6 @@ const CreateStep4 = props => {
         Toast.error(response.error);
         console.log('ImagePicker Error: ', response.error);
       } else {
-        // const source = { uri: response.uri };
         Toast.loading('Uploading...');
         FirebaseService.getInstance()
           .uploadImage(response.uri)
@@ -138,8 +149,7 @@ const CreateStep4 = props => {
 
       const commonAddress = await ArcService.getInstance().createCommon(
         data,
-        props.navigation,
-        props.daoStore,
+        props.navigation
       );
 
       if (commonAddress) {
@@ -445,7 +455,7 @@ const CreateStep4 = props => {
           <View style={layout.flexRow}>
             <TouchableOpacity
               style={styles.modalRequestSentBtnOutline}
-              /* onPress={} */
+              onPress={goToCommon}
             >
               <Text style={text.buttonblue}>Go to Common</Text>
             </TouchableOpacity>
