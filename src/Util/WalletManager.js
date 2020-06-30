@@ -5,13 +5,12 @@ import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 import ABI from './abi.json';
 import FirebaseService from '../Services/FirebaseService';
-import Toast from './Toast';
 import analytics from '@react-native-firebase/analytics';
 
 ethers.Contract.prototype.sendToRelayer = async function (funcName, params, value = '0') {
   const data = this.interface.functions[funcName].encode(params);
   const manager = await WalletManager.getInstance();
-  console.log(data);
+  // console.log(data);
   const response = await manager.execTransaction(manager.safeAddress, this.address, value, data);
   return response.data?.txHash;
 };
@@ -31,8 +30,17 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
 };
 
 const axiosClient = axios.create({
-  baseURL: relayerUrl, //'http://localhost:5001/common-daostack/us-central1/relayer/',
+  baseURL: relayerUrl,
+  // for dev
+  // baseURL: 'http://localhost:5000/common-daostack/us-central1/relayer/',
   timeout: 1000000, // milliseconds
+});
+
+// return the content of the reponse from the server instead of a generic error message
+axiosClient.interceptors.response.use((response) => {
+  return response;
+}, function (error) {
+  return Promise.reject(error.response);
 });
 
 export default class WalletManager {
@@ -272,7 +280,7 @@ export default class WalletManager {
       const data = contract.interface.functions[method].encode(params);
       const signature = await this.txHashSignature(this.safeAddress, address, zeroValue, data);
 
-      console.log('signature1 -->', signature);
+      // console.log('signature1 -->', signature);
 
       const body = {
         idToken,
@@ -290,7 +298,7 @@ export default class WalletManager {
         body
       );
 
-      console.log('CreateCommonStep2 response -->', response);
+      // console.log('CreateCommonStep2 response -->', response);
 
       if (!response.data) {
         console.log(response);
@@ -303,6 +311,10 @@ export default class WalletManager {
         this.reportToAnalytics('create_common_step2_failed', msg);
         throw Error(msg);
       }
+
+      if (response.status !== 200) {
+        throw Error(`Status: ${response.status}, ${response.data}`);
+      }
       console.log(response.data);
       return response.data;
     } catch (err){
@@ -314,6 +326,7 @@ export default class WalletManager {
   getAllowance = async pluginAddress => {
     let contract = new ethers.Contract(COMMONTOKENADDRESS, ABI.CommonToken, this.provider);
     let allowance = await contract.allowance(this.safeAddress, pluginAddress);
+    // TODO: please remove the next call to "formatEther", which will dive the balance by 10 ** 18 and make it unreadable
     const allowanceStr = ethers.utils.formatEther(allowance);
     console.log('allowance ->', allowanceStr);
     return allowanceStr;
@@ -323,6 +336,7 @@ export default class WalletManager {
     const address = this.safeAddress;
     const contract = new ethers.Contract(COMMONTOKENADDRESS, ABI.CommonToken, this.provider);
     const balance = await contract.balanceOf(address);
+    // TODO: please remove the next call to "formatEther", which will dive the balance by 10 ** 18 and make it unreadable
     const balanceStr =  ethers.utils.formatEther(balance);
     console.log('balance ->', balance);
     return balanceStr;

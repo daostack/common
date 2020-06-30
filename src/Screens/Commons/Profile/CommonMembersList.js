@@ -1,14 +1,26 @@
 import React, {useState, useEffect} from 'react';
-import {View} from 'react-native';
+import {View, TouchableOpacity} from 'react-native';
 import MemberCard from '../../../Components/MemberCard';
 import {layout} from '../../../Theme';
 import FirebaseService from '../../../Services/FirebaseService';
 import Loader from '../../../Components/Loader';
 import MemberImage from '../../../Components/Commons/MemberImage';
 import Toast from '../../../Util/Toast';
+import {observer, inject} from 'mobx-react';
+import { BOTTOM_SHEET_TEMPLATES } from '../../../Stores/BottomSheetStore';
 
-const CommonMembersList = ({members, horizontal}) => {
+const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) => {
   const [membersInfo, setMembersInfo] = useState([]);
+
+  const showUserProfile = uid => {
+    bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
+      {
+        navigation: navigation,
+        userId: uid,
+      }
+    );
+  };
 
   useEffect(() => {
     setMembersInfo([]);
@@ -51,25 +63,28 @@ const CommonMembersList = ({members, horizontal}) => {
         membersInfo.map((member, i) => {
           if (horizontal) {
             return (
-              <MemberImage
-                key={i}
-                userInfo={member}
-                style={{marginLeft: i > 0 ? -15 : 0}}
-              />
+              <TouchableOpacity onPress={ () => showUserProfile(member.uid) }>
+                <MemberImage
+                  key={i}
+                  userInfo={member}
+                  style={{marginLeft: i > 0 ? -15 : 0}}
+                />
+              </TouchableOpacity>
             );
           } else {
             return (
-              <MemberCard
-                key={i}
-                //name={member.displayName}
-                //approvePercent={member.approvalPercentage}
-                //imageUrl={member.photoURL}
-                //TODO: change pending status
-                //isPending={sceneIndex === 1}
-
-                showMemberCreatedDate={true}
-                userInfo={member}
-              />
+              <TouchableOpacity onPress={ () => showUserProfile(member.uid) }>
+                <MemberCard
+                  key={i}
+                  //name={member.displayName}
+                  //approvePercent={member.approvalPercentage}
+                  //imageUrl={member.photoURL}
+                  //TODO: change pending status
+                  //isPending={sceneIndex === 1}
+                  showMemberCreatedDate={true}
+                  userInfo={member}
+                />
+              </TouchableOpacity>
             );
           }
         })
@@ -80,4 +95,4 @@ const CommonMembersList = ({members, horizontal}) => {
   );
 };
 
-export default CommonMembersList;
+export default inject('bottomSheetStore')(observer(CommonMembersList));

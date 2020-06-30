@@ -1,6 +1,12 @@
 const {first} = require('rxjs/operators');
+import {ethers} from 'ethers';
+import WalletManager from '../../Util/WalletManager';
 import { ipfsUpload } from '../../Config';
 import GraphqlSyncService from '../GraphqlSyncService';
+const {
+  ARC_VERSION,
+} = require('../../Config');
+
 
 export const createFundingProposal = async (arc, userAddress, daoId, data) => {
   // data must look like this
@@ -17,6 +23,12 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     const dao = arc.dao(daoId);
 
     const plugins = await dao.plugins();
+    const abi = arc.getABI({abiName: 'FundingRequest', version: ARC_VERSION});
+    const interf = new ethers.utils.Interface(abi);
+
+    console.log(interf);
+    console.log(interf.events);
+
 
     console.log('PLUGINS -> ', plugins);
 
@@ -43,9 +55,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     if (!funding) {
       throw Error('"funding" argument must be given');
     }
-    // check preconditions
 
-    // precondition: the FUNDED_BEFORE_DEADLINE should be true
     const daoContract = await arc.getContract(dao.id);
 
     const errorHandler = async (receipt) => {
@@ -134,13 +144,19 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
       `Transaction with ${receipt.transactionHash} was mined`,
     );
 
-    const proposal = fundingRequestPlugin.createProposalTransactionMap(receipt);
-    console.log('PROPOSAL -> ', proposal);
+    const manager = await WalletManager.getInstance();
+    const events = manager.getTransactionEvents(interf, receipt);
 
-    await GraphqlSyncService.getInstance().syncProposalById(proposal.id);
+    // TODO:  if the transacdtion reverts, we can check for that here and include that in the error message
+    if (!events.NewFundingProposal) {
+      throw Error('Expected (but did not find a NewFundingProposal event: something went wrong');
+    }
+    console.log(events.NewFundingProposal);
 
-    // TOOD: call update-proposal?proposalID=proposal.id endpoint here, so we are sure that the proposal is in the database
-    return proposal.id;
+    const proposalId = events.NewFundingProposal._proposalId;
+
+    await GraphqlSyncService.getInstance().syncProposalById(proposalId);
+    return proposalId;
   } catch (e) {
     console.log(e);
     throw e;

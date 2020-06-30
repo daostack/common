@@ -92,6 +92,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
     };
 
     if (routeProposalId) {
+      console.log(`proposalId --> ${routeProposalId}`);
       getProposalInfo(routeProposalId);
     }
     return () => {
@@ -125,8 +126,6 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
   const [inputText, setInputText] = useState(null);
 
   const inputRef = useRef();
-  const boostedInfoRef = useRef();
-  const approvalSheetRef = useRef();
 
   const renderTabBar = currProps => (
     <TabBar
@@ -227,22 +226,22 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
 
   const onVote = async isApproved => {
     try {
-      let votingResponse = null;
+      // let votingResponse = null;
       const voteData = {vote: isApproved ? 1 : 0};
 
-      if (proposalInfo.type == PROPOSAL_TYPE.JoinAndQuit) {
-        votingResponse = await ArcService.getInstance().voteForJoinAndQuitProposal(
+      if (proposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
+        await ArcService.getInstance().voteForJoinAndQuitProposal(
           routeProposalId,
           voteData,
         );
       } else {
-        votingResponse = await ArcService.getInstance().voteForFundingRequestProposal(
+        await ArcService.getInstance().voteForFundingRequestProposal(
           routeProposalId,
           voteData,
         );
       }
 
-      console.log('votingResponse -> ', votingResponse);
+      // console.log('votingResponse -> ', votingResponse);
 
       closeApprovalSheet();
       Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
@@ -280,8 +279,8 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
         </View>
       );
     } else {
-      const remainingSeconds = proposalInfo?.expiresInQueueAt
-        ? proposalInfo?.expiresInQueueAt - Date.now() / 1000
+      const remainingSeconds = proposalInfo?.closingAt
+        ? proposalInfo?.closingAt - Date.now() / 1000
         : null;
 
       const isLessThanOneHour = remainingSeconds < 3600;

@@ -29,7 +29,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     const getDaos = async () => {
       try {
         unsubscribe = db.collection('daos').onSnapshot(snapshot => {
-          if (snapshot.empty) {
+          if (snapshot?.empty || !snapshot) {
             setDaos([]);
             setDaoGroup([{title: '', data: []}]);
             return [];
