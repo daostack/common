@@ -31,10 +31,12 @@ const CommonMembers = ({navigation, route}) => {
     });
   }, [navigation]);
 
-  const routes = [
-    {key: 'members', title: getTabName('Members', members.length)},
-    {key: 'pending', title: getTabName('Pending', pendingCount)},
-  ];
+  const routes = pendingCount == 0 ? 
+    [{key: 'members', title: getTabName('Members', members.length)}] :
+    [
+      {key: 'members', title: getTabName('Members', members.length)},
+      {key: 'pending', title: getTabName('Pending', pendingCount)},
+    ];
 
   const Members = () => {
     return (
@@ -45,6 +47,7 @@ const CommonMembers = ({navigation, route}) => {
   };
 
   const onProposalsCountChange = count => {
+    console.log('onProposalsCountChange -->', count);
     setPendingCount(count);
   };
 
