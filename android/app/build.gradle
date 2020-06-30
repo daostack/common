@@ -1,6 +1,8 @@
 apply plugin: "com.android.application"
 apply plugin: 'io.fabric'
 
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
 import com.android.build.OutputFile
 
 /**
@@ -135,6 +137,20 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
+
+        // react-native-config
+        resValue "string", "build_config_package", "com.daostack.common"
+    }
+
+    flavorDimensions "version"
+    productFlavors {
+        staging {
+            applicationIdSuffix ".staging"
+            dimension "version"
+        }
+        production {
+            dimension "version"
+        }
     }
     splits {
         abi {
