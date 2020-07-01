@@ -111,7 +111,7 @@ const App = ({userStore, bottomSheetStore}) => {
     const showLisenter = DeviceEventEmitter.addListener(
       'HUD',
       (content, isLoading = false) => {
-        hudRef.current.show(content, isLoading ? DURATION.FOREVER : 15000);
+        hudRef.current.show(content, isLoading ? DURATION.FOREVER : 1500);
       },
     );
     const hidelisenter = DeviceEventEmitter.addListener('HideHUD', () => {
