@@ -431,7 +431,7 @@ const Discussions = props => {
       </BottomSheetModal>
 
       <ImageView
-        images={ data.images ? data.images.map(x => ({uri: x})) : [] }
+        images={ data.images ? data.images.map(x => ({uri: x.value})) : [] }
         imageIndex={imageGalleryIndex}
         visible={imageGalleryIndex > -1}
         onRequestClose={() => setImageGalleryIndex(-1)}
