@@ -6,7 +6,7 @@ import ProposalCard from '../../Components/Proposals/ProposalCard';
 import {CommonActions} from '@react-navigation/native';
 import {layout, colors, text, sizeXXL} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
-
+import moment from 'moment';
 import SwiperCard from '../../Components/SwiperCard';
 
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
@@ -51,6 +51,9 @@ const ProposalsList = ({ isMember, commonName, safeAddress, showAll, showMax, on
         safeAddress,
         showAll,
         newList => {
+          if (onlyRequestsToJoin ) { // onlyRequestsToJoin hidden expired proposal
+            newList = newList.filter(item => item.closingAt > moment().unix());
+          }
           setList(newList);
           if (onCountChange) {
             onCountChange(newList.length);
