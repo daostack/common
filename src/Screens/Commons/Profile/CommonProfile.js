@@ -378,7 +378,7 @@ const CommonProfile = ({
         fadeOutForeground
         minHeight={120}
         headerImage={{uri: currCommon.coverPhoto}}
-        renderFixedForeground={() => (
+        renderTouchableFixedForeground={() => (
           <CommonHeader
             isMember={isMember}
             navigation={navigation}
