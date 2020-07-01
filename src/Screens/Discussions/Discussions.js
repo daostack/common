@@ -299,7 +299,7 @@ const Discussions = props => {
                                 ...{width: width * 0.8 },
                               }}
                               resizeMode="cover"
-                              source={{uri: currImage}}
+                              source={{uri: currImage.value}}
                             />
                           </TouchableOpacity>
                         </View>

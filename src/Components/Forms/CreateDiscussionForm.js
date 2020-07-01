@@ -29,7 +29,7 @@ class CreateDiscussionForm extends React.Component {
         const changedFields = createDiscussionStore.getChangedFormFieldsJson();
         console.log('createDiscussionStore', changedFields);
 
-        const imageList = Object.keys(changedFields).filter( x => x.includes('images_')).map(x => changedFields[x]);
+        // const imageList = Object.keys(changedFields).filter( x => x.includes('images_')).map(x => changedFields[x]);
 
         firestore()
           .collection('discussion')
@@ -37,7 +37,7 @@ class CreateDiscussionForm extends React.Component {
           .set({
             title: changedFields[CreateDiscussionForm.TITLE],
             message: changedFields[CreateDiscussionForm.MESSAGE],
-            images: imageList,
+            images: changedFields[CreateDiscussionForm.IMAGES].filter(image => image.value !== ''),
             createTime: new Date(),
             ownerId: userStore.userInfo.uid,
             commonId: this.props.commonId,
