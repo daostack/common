@@ -14,20 +14,17 @@ const calcIcon = (stage, winningOutcome, hasPassedExpiryDate) => {
 };
 
 const calcText = (stage, winningOutcome, hasPassedExpiryDate) => {
+  if (stage === PROPOSAL_STAGE.Executed) {
+    return winningOutcome === 1 ? 'Passed' : 'Failed';
+  }
+  if (hasPassedExpiryDate || stage === PROPOSAL_STAGE.ExpiredInQueue ) {
+    return 'Failed';
+  }
   if (LAUNCHED_STATES.includes(stage)) {
     return 'Launched';
   }
   if (COUNTDOWN_STATES.includes(stage)) {
     return 'Countdown';
-  }
-  if (stage === PROPOSAL_STAGE.Executed) {
-    return winningOutcome === 1 ?  'Passed' : 'Failed';
-  }
-  if (stage === PROPOSAL_STAGE.ExpiredInQueue) {
-    return 'Failed';
-  }
-  if (hasPassedExpiryDate) {
-    return 'Failed';
   }
 };
 
