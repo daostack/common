@@ -29,7 +29,8 @@ The `env.json` is to be placed into the root folder of the React Native project.
 
 The `GoogleService-Info.plist` is to be placed in the `ios/firebase/${ENV_FOLDER_NAME}/` where ENV_FOLDER_NAME is the specific env folder name (production or staging).
 If folders do not exist, create them.
-The `google-services.json` file is to be placed in the `common/android/app`
+
+The `google-services.json` file is to be placed in the `common/android/app/src/staging` and `common/android/app/src/production`
 
 ### Getting Started from the Common Github Repo
 
