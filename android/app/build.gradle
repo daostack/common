@@ -1,6 +1,14 @@
 apply plugin: "com.android.application"
 apply plugin: 'io.fabric'
 
+
+project.ext.envConfigFiles = [
+        stagingdebug: "./env/env.stg",
+        stagingrelease: "./env/env.stg",
+        productiondebug: "./env/env.prod",
+        productionrelease: "./env/env.prod",
+]
+
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 import com.android.build.OutputFile
