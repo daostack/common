@@ -187,6 +187,7 @@ export default class WalletManager {
       return response;
     } catch (err) {
       console.log(err);
+      throw err;
     }
   }
 
@@ -208,10 +209,10 @@ export default class WalletManager {
       // TODO: please to not use parseEther here, just pass on the intended allowance
       const data1 = interf.functions.approve.encode([pluginAddress, ethers.utils.parseEther(defaultAllowance.toString())]);
       const signature1 = await this.txHashSignature(this.safeAddress, COMMONTOKENADDRESS, zeroValue, data1);
-      console.log('signature1 -->', signature1);
+      // console.log('signature1 -->', signature1);
       const data2 = pluginContract.interface.functions[method].encode(params);
       const signature2 = await this.txHashSignature(this.safeAddress, pluginAddress, zeroValue, data2);
-      console.log('signature2 -->', signature2);
+      // console.log('signature2 -->', signature2);
       const idToken = await auth().currentUser.getIdToken();
       const body =
       {
@@ -237,16 +238,14 @@ export default class WalletManager {
         paymentData,
       }; */
 
-      console.log('RequestToJoin Body ->', body);
-      console.log('RequestToJoin sent to cloud function');
+      // console.log('RequestToJoin Body ->', body);
       const response = await axiosClient.post(
         'requestToJoin',
         body
       );
-
       let msg;
       if (!response.data) {
-        console.log('RequestToJoin response -->', response);
+        // console.log('RequestToJoin response -->', response);
         msg = 'Response has no "data" property - thats not good at all :(';
         throw Error(msg);
       }

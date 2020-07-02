@@ -9,4 +9,4 @@
 
 # Add any project specific keep options here:
 
--keep class <package_name>.BuildConfig { *; }
+-keep class com.daostack.common.BuildConfig { *; }

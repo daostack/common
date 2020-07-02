@@ -20,6 +20,7 @@ if (Config.ENV === 'production') {
   throw Error(`Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`);
 }
 
+export const graphqlUrl = `${Config.cloudFunctionURL}/graphql`;
 export const ARC_VERSION = Config.ARC_VERSION;
 export const GRAPH_VERSION = Config.GRAPH_VERSION;
 export const graphHttpLink = `${Config.graphHttpLink}${GRAPH_VERSION}`;

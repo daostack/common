@@ -16,8 +16,17 @@ import { BN } from 'bn.js';
 import WalletManager from '../Util/WalletManager';
 import { BOTTOM_SHEET_TEMPLATES } from '../Stores/BottomSheetStore';
 import ArcService from '../Services/ArcService';
-import { web3ProviderUrl } from '../Config';
-import { PROPOSAL_TYPE } from '../Config';
+import {
+  ARC_VERSION ,
+  GRAPH_VERSION ,
+  graphHttpLink ,
+  graphwsLink ,
+  ipfsLink ,
+  web3ProviderUrl ,
+  relayerUrl ,
+  web3NetworkId ,
+  COMMONTOKENADDRESS ,
+} from '../Config';
 import Toast from '../Util/Toast';
 import { auth } from '../Firebase';
 import ABI from '../Util/abi.json';
@@ -352,7 +361,7 @@ class nativeBridgeTests extends React.Component {
 
   createRequestToJoin = async () => {
     console.log('creating proposal -- please wait');
-    const daoId = '0x31f40d8843f46a29c43f5e7f1c88d86d5698bfb6'; // 0 min join fee
+    const daoId = '0x65b9355b8ab2e224693ca25bc9fa16f4a220edb9'; // 0 min join fee
     this.setState({
       proposalStatus: 'Creating JoinAndQuit proposal -- please wait',
     });
@@ -365,21 +374,24 @@ class nativeBridgeTests extends React.Component {
         images: [],
         links: [{ title: 'title', url: 'http://www.common.io/' }],
         funding: new BN(0), // this is the fee
+        payment: {
+          funding: 0,
+        },
       };
       proposalId = await ArcService.getInstance().createRequestToJoin(
         daoId,
-        data,
+        data
       );
       this.setState({
         proposalStatus: `JoinAndQuit Proposal with id ${proposalId} created!`,
       });
+      const msg = `proposal created: ${proposalId}`;
+      console.log(msg);
+      this.setState({ proposalState: msg });
     } catch (e) {
-      showErrorPopUp(this.props.bottomSheetStore, e.message);
-      this.setState({ proposalState: `${e}` });
+      showErrorPopUp(this.props.bottomSheetStore, JSON.stringify(e.data));
+      this.setState({ proposalState: `${JSON.stringify(e)}` });
     }
-    const msg = `proposal created: ${proposalId}`;
-    console.log(msg);
-    this.setState({ proposalState: msg });
   };
 
   createFundingProposal = async () => {
@@ -483,14 +495,10 @@ class nativeBridgeTests extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollView}>
+
           <TouchableOpacity onPress={this.error} style={styles.button}>
             <Text>Error</Text>
           </TouchableOpacity>
-
-          <Text style={{ marginBottom: 10 }}>
-            Network: {this.state.networkURL}
-          </Text>
-
           <Text>Address: {this.state.ownerAccount}</Text>
           <Text>Balance: {this.state.ownerBalance}</Text>
           <TouchableOpacity
@@ -700,6 +708,21 @@ class nativeBridgeTests extends React.Component {
             style={styles.button}>
             <Text>Get Common Token Allowance</Text>
           </TouchableOpacity>
+
+
+          <Text style={{ marginBottom: 10 }}>
+ ARC_VERSION: {ARC_VERSION}
+ GRAPH_VERSION: {GRAPH_VERSION}
+ graphHttpLink: {graphHttpLink}
+ ARC_VERSION: {ARC_VERSION}
+  graphwsLink
+  ipfsLink
+  web3ProviderUrl
+relayerUrl: {relayerUrl}
+COMMONTOKENADDRESS: {COMMONTOKENADDRESS}
+            Network: {this.state.networkURL}
+          </Text>
+
 
         </ScrollView>
       </View>
