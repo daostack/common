@@ -138,12 +138,10 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   // Deep & Dynamic Link
   const handleOpenURL = ({ url }) => {
-    console.log('handleOpenURL 111', url);
     Linking.canOpenURL(url).then((supported) => {
       if (!supported) {
         return;
       }
-      console.log('handleOpenURL ->', url);
       if (!DeepLinking.evaluateUrl(url)) {
         routing('Browser', {url: url});
       }
