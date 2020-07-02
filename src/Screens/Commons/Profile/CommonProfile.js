@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
+  ScrollView,
 } from 'react-native';
 import Share from 'react-native-share';
 import {text, layout, colors, sizeL} from '../../../Theme';
@@ -31,6 +32,13 @@ import ProposalService from '../../../Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
 import { calcIsFundingStage } from '../../../Util';
+import firestore from '@react-native-firebase/firestore';
+import {
+  Placeholder,
+  PlaceholderMedia,
+  PlaceholderLine,
+  Fade,
+} from 'rn-placeholder';
 
 const CommonProfile = ({
   navigation,
@@ -48,14 +56,27 @@ const CommonProfile = ({
     {key: 'history', title: 'History', icon: 'history'},
   ]);
 
-  const [currCommon, setCurrCommon] = useState(false);
+  const routeCommon = route.params.currCommon;
+  const [currCommon, setCurrCommon] = useState(routeCommon);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
-  const routeCommon = route.params.currCommon;
-  const daoMembers = route.params.currCommon.members;
+  const commonId = route.params.currCommon?.id || route.params.commonId;
+  const daoMembers = route.params.currCommon?.members;
   const showReqToJoin = !userStore.userInfo || (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
-  const isFundingStage = calcIsFundingStage(routeCommon.fundingGoalDeadline);
+  const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
+
+  useEffect(() => {
+    if (route.params.commonId) {
+      const unsubscribe = firestore()
+        .collection('daos')
+        .doc(commonId)
+        .onSnapshot(snapshot => {
+          setCurrCommon(snapshot.data());
+        });
+      return unsubscribe;
+    }
+  }, [commonId]);
 
   useEffect(() => {
     setShowRequestSentModal(route.params.showRequestSentModal);
@@ -74,7 +95,7 @@ const CommonProfile = ({
       let unsubscribe = null;
       let getPendingProposalsData = async () => {
         unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
-          routeCommon.id,
+          commonId,
           userStore.userInfo.safeAddress,
           data => {
             setPendingProposalsData({...data});
@@ -88,7 +109,7 @@ const CommonProfile = ({
         }
       };
     }
-  }, [routeCommon.id, isMember, userStore.userInfo]);
+  }, [commonId, isMember, userStore.userInfo]);
 
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
@@ -127,13 +148,13 @@ const CommonProfile = ({
   );
 
   const Discussions = () => {
-    return <DiscussionList navigation={navigation} commonId={routeCommon.id} />;
+    return <DiscussionList navigation={navigation} commonId={currCommon.id} />;
   };
 
   const Proposals = () => {
     return (
       <View style={{padding: sizeL}}>
-        <ProposalsList onlyFundingRequests={true} isMember={isMember} navigation={navigation} commonId={currCommon.id} commonName={routeCommon.name} />
+        <ProposalsList onlyFundingRequests={true} isMember={isMember} navigation={navigation} commonId={currCommon.id} commonName={currCommon.name} />
       </View>
     );
   };
@@ -143,7 +164,7 @@ const CommonProfile = ({
       <View style={{padding: sizeL}}>
         <ProposalsList
           isMember={isMember}
-          commonName={routeCommon.name}
+          commonName={currCommon.name}
           navigation={navigation}
           commonId={currCommon.id}
           isHistory={true}
@@ -174,7 +195,7 @@ const CommonProfile = ({
       return (
         <View style={styles.agendaBox}>
           <Text style={styles.agendaDescription}>
-            {daoStore.dao.metadata.courseOfAction}
+            {currCommon.metadata.courseOfAction}
           </Text>
 
           <TouchableOpacity onPress={openAgendaScreen}>
@@ -221,7 +242,7 @@ const CommonProfile = ({
     navigation.navigate('CommonMembers', {
       members: daoMembers,
       commonId: currCommon.id,
-      commonName: routeCommon.name,
+      commonName: currCommon.name,
     });
   };
 
@@ -269,7 +290,7 @@ const CommonProfile = ({
       name: 'ProposalScreen',
       params: {
         proposalId: route.params.createdProposalId,
-        commonName: routeCommon.name,
+        commonName: currCommon.name,
         isMember,
       },
     });
@@ -286,7 +307,7 @@ const CommonProfile = ({
       name: 'ProposalScreen',
       params: {
         proposalId: pendingProposalsData.usersPendingProposal?.id,
-        commonName: routeCommon.name,
+        commonName: currCommon.name,
         isMember,
       },
     });
@@ -355,10 +376,51 @@ const CommonProfile = ({
     );
   };
 
+  const loadingPlaceholder = () => {
+    return (
+      <ScrollView
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Placeholder Animation={Fade}>
+          <PlaceholderMedia
+            style={{height: 200, width: '100%', marginBottom: 20}}
+          />
+          <PlaceholderMedia
+            style={{height: 100, width: '100%', marginBottom: 20}}
+          />
+          <PlaceholderMedia
+            style={{height: 100, width: '100%', marginBottom: 20}}
+          />
+        </Placeholder>
+
+        <Placeholder Animation={Fade}>
+          {[...Array(3).keys()].map(i => {
+            return (
+              <View key={`common_loading_${i}`}>
+                <PlaceholderMedia
+                  style={{height: 80 * i, width: '100%', marginBottom: 20}}
+                />
+                <PlaceholderLine width={80} />
+                <PlaceholderLine />
+                <PlaceholderLine width={30} />
+              </View>
+            );
+          })}
+        </Placeholder>
+      </ScrollView>
+    );
+  };
+
   const initialLayout = {width: Dimensions.get('window').width};
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
+
+      { currCommon ? (
+      <>
       <StatusBar barStyle="light-content" />
       <TouchableOpacity
         style={{
@@ -453,7 +515,7 @@ const CommonProfile = ({
             Open Proposal
           </Text>
         </TouchableOpacity>
- */}
+      */}
         <TabView
           navigationState={{index, routes}}
           renderScene={renderScene}
@@ -470,7 +532,7 @@ const CommonProfile = ({
               onPress={() =>
                 navigation.navigate('New Topic',
                   {
-                    commonId: routeCommon.id,
+                    commonId: currCommon.id,
                   },
                 )
               }
@@ -481,7 +543,7 @@ const CommonProfile = ({
               onPress={() =>
                 navigation.navigate('FundingProposal',
                   {
-                    commonId: routeCommon.id,
+                    commonId: currCommon.id,
                   },
                 )
               }
@@ -540,6 +602,10 @@ const CommonProfile = ({
           </>
         )}
       </SafeAreaView>
+      </>
+      ) : (
+        loadingPlaceholder()
+      ) }
     </View>
   );
 };
