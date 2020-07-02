@@ -374,7 +374,7 @@ const CommonProfile = ({
         disableHeaderGrow
         maxOverlayOpacity={0.6}
         minOverlayOpacity={0.3}
-        maxHeight={200}
+        maxHeight={210}
         fadeOutForeground
         minHeight={120}
         headerImage={{uri: currCommon.coverPhoto}}
@@ -471,7 +471,7 @@ const CommonProfile = ({
               }
               bottom={50}
             />
-          ):(
+          ) : (
             !isFundingStage && <BottomRightButton
               onPress={() =>
                 navigation.navigate('FundingProposal',
