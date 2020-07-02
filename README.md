@@ -28,7 +28,7 @@ You can ge these files from one of the members of the developer team to get star
 The `env.json` is to be placed into the root folder of the React Native project.
 
 The `GoogleService-Info.plist` is to be placed in the `common/Support` folder
-The `google-services.json` file is to be placed in the `common/android/app`
+The `google-services.json` file is to be placed in the `common/android/app/src/staging` and `common/android/app/src/production`
 
 ### Getting Started from the Common Github Repo
 
