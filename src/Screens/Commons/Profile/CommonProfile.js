@@ -23,7 +23,6 @@ import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '../../../Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
-import Toast from '../../../Util/Toast';
 import HeaderImageScrollView from 'react-native-image-header-scroll-view';
 import CommonHeader from '../../../Components/Commons/CommonHeader';
 import {numberFormatter} from '../../../Util';
@@ -248,9 +247,9 @@ const CommonProfile = ({
 
   const shareCommon = event => {
     const options = {
-      url: 'https://common.daostack.io/',
-      title: 'Share Common',
-      message: 'Support this cause! ',
+      url: `https://app.common.io/common/${currCommon.id}`,
+      title: 'Let\'s make it happen',
+      message: `Join in ${currCommon.name} common`,
     };
     Share.open(options);
   };

@@ -1,6 +1,4 @@
 import React from 'react';
-import Share from 'react-native-share';
-import {CommonActions} from '@react-navigation/native';
 import {NativeWallet} from '../Util/NativeWallet';
 import {
   Text,
@@ -20,8 +18,6 @@ import {
   ARC_VERSION ,
   GRAPH_VERSION ,
   graphHttpLink ,
-  graphwsLink ,
-  ipfsLink ,
   web3ProviderUrl ,
   relayerUrl ,
   web3NetworkId ,
@@ -462,35 +458,6 @@ class nativeBridgeTests extends React.Component {
     });
   };
 
-  shareCommon = (type) => {
-    try {
-      let options;
-      if (type === 'common') {
-        options = {
-          url: 'https://app.common.io/common/0x38e17c8e4b4cfb146a9d2ab533a9bf8dfb4ee306',
-          title: 'Check out this Common',
-          message: 'Support the cause! ',
-        };
-      } else if (type === 'proposal') {
-
-        options = {
-          url: 'https://app.common.io/proposal/0x013029b5165942b84adb50375d76d3db235637272f2bb06acd9bf286c57cc98e',
-          title: 'Check out this proposal',
-          message: 'Give us some input! ',
-        };
-      } else {
-        options = {
-          url: 'https://app.common.io/',
-          title: 'Check out Common',
-          message: 'Support a cause today! ',
-        };
-      }
-      Share.open(options);
-    } catch (e) {
-      console.log('error: ', e);
-    }
-  };
-
   render() {
     return (
       <View style={styles.container}>
@@ -518,24 +485,6 @@ class nativeBridgeTests extends React.Component {
           <TouchableOpacity onPress={this.createCommon} style={styles.button}>
             <Text>Create Common</Text>
           </TouchableOpacity>
-
-          <Text>{''}</Text>
-          <View style={{flexDirection: 'row',     alignItems: 'center',
-            justifyContent: 'space-between',
-            width: 200,
-            height: 40,
-          }}>
-            <TouchableOpacity onPress={() => this.shareCommon('app')} style={styles.smallButton}>
-              <Text>Share App</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.shareCommon('common')} style={styles.smallButton}>
-              <Text>Share Common</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.shareCommon('proposal')} style={styles.smallButton}>
-              <Text>Share Proposal</Text>
-            </TouchableOpacity>
-
-          </View>
 
           <Text>{this.state.proposalState}</Text>
           <TouchableOpacity
