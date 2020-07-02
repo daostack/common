@@ -420,82 +420,82 @@ const CommonProfile = ({
     <View style={{flex: 1, backgroundColor: colors.white}}>
 
       { currCommon ? (
-      <>
-      <StatusBar barStyle="light-content" />
-      <TouchableOpacity
-        style={{
-          justifyContent: 'center',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-        }}
-        onPress={() => navigation.pop()}>
-        <Icon
-          name="left-arrow"
-          size={32}
-          color={colors.white}
-          style={{marginLeft: 10}}
-        />
-      </TouchableOpacity>
-      <HeaderImageScrollView
-        disableHeaderGrow
-        maxOverlayOpacity={0.6}
-        minOverlayOpacity={0.3}
-        maxHeight={200}
-        fadeOutForeground
-        minHeight={120}
-        headerImage={{uri: currCommon.coverPhoto}}
-        renderTouchableFixedForeground={() => (
-          <CommonHeader
-            isMember={isMember}
-            navigation={navigation}
-            onHeaderMenuOpen={openCommonOptions}
-            commonInfo={{
-              logo: currCommon.metadata?.avatar,
-              name: currCommon.name,
-              description: currCommon.description,
-              byline: currCommon.metadata?.byline,
+        <>
+          <StatusBar barStyle="light-content" />
+          <TouchableOpacity
+            style={{
+              justifyContent: 'center',
+              position: 'absolute',
+              top: 0,
+              left: 0,
             }}
-          />
-        )}>
-        {!isMember &&
+            onPress={() => navigation.pop()}>
+            <Icon
+              name="left-arrow"
+              size={32}
+              color={colors.white}
+              style={{marginLeft: 10}}
+            />
+          </TouchableOpacity>
+          <HeaderImageScrollView
+            disableHeaderGrow
+            maxOverlayOpacity={0.6}
+            minOverlayOpacity={0.3}
+            maxHeight={200}
+            fadeOutForeground
+            minHeight={120}
+            headerImage={{uri: currCommon.coverPhoto}}
+            renderTouchableFixedForeground={() => (
+              <CommonHeader
+                isMember={isMember}
+                navigation={navigation}
+                onHeaderMenuOpen={openCommonOptions}
+                commonInfo={{
+                  logo: currCommon.metadata?.avatar,
+                  name: currCommon.name,
+                  description: currCommon.description,
+                  byline: currCommon.metadata?.byline,
+                }}
+              />
+            )}>
+            {!isMember &&
           pendingProposalsData &&
           pendingProposalsData.usersPendingProposal &&
           renderPendingApproval()}
 
-        <View style={{paddingVertical: 20}}>
-          <CommonStageSummary
-            isFundingStage={isFundingStage}
-            commonProgressInfo={{
-              time: currCommon.fundingGoalDeadline,
-              activeProposals:
+            <View style={{paddingVertical: 20}}>
+              <CommonStageSummary
+                isFundingStage={isFundingStage}
+                commonProgressInfo={{
+                  time: currCommon.fundingGoalDeadline,
+                  activeProposals:
                 currCommon.numberOfBoostedProposals +
                 currCommon.numberOfPreBoostedProposals +
                 currCommon.numberOfQueuedProposals,
-              goal: currCommon.fundingGoal,
-              members: currCommon.memberCount,
-              // TODO: get this value. Is it even tracked in the contract? need to check.
-              raised: currCommon.balance,
-              currentBudget: numberFormatter(
-                // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
-                currCommon.tokenTotalSupply,
-              ),
-            }}
-          />
-        </View>
+                  goal: currCommon.fundingGoal,
+                  members: currCommon.memberCount,
+                  // TODO: get this value. Is it even tracked in the contract? need to check.
+                  raised: currCommon.balance,
+                  currentBudget: numberFormatter(
+                    // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
+                    currCommon.tokenTotalSupply,
+                  ),
+                }}
+              />
+            </View>
 
-        {renderMembersRowForMemberUsers()}
-        <View style={{...layout.content, ...{paddingTop: 0}}}>
-          <TouchableOpacity
-            style={{
-              ...layout.btnOutline,
-            }}
-            onPress={shareCommon}>
-            <Text style={text.buttonblue}>Share Common</Text>
-          </TouchableOpacity>
-        </View>
-        {renderAgendaForNonMembers()}
-        {/**
+            {renderMembersRowForMemberUsers()}
+            <View style={{...layout.content, ...{paddingTop: 0}}}>
+              <TouchableOpacity
+                style={{
+                  ...layout.btnOutline,
+                }}
+                onPress={shareCommon}>
+                <Text style={text.buttonblue}>Share Common</Text>
+              </TouchableOpacity>
+            </View>
+            {renderAgendaForNonMembers()}
+            {/**
         <TouchableOpacity
           style={{
             ...styles.headerButton,
@@ -516,93 +516,93 @@ const CommonProfile = ({
           </Text>
         </TouchableOpacity>
       */}
-        <TabView
-          navigationState={{index, routes}}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          initialLayout={initialLayout}
-          renderTabBar={renderTabBar}
-          style={{}}
-        />
-      </HeaderImageScrollView>
-      <SafeAreaView>
-        {isMember ? (
-          index === 0 ? (
-            <BottomRightButton
-              onPress={() =>
-                navigation.navigate('New Topic',
-                  {
-                    commonId: currCommon.id,
-                  },
-                )
-              }
-              bottom={50}
+            <TabView
+              navigationState={{index, routes}}
+              renderScene={renderScene}
+              onIndexChange={setIndex}
+              initialLayout={initialLayout}
+              renderTabBar={renderTabBar}
+              style={{}}
             />
-          ):(
-            !isFundingStage && <BottomRightButton
-              onPress={() =>
-                navigation.navigate('FundingProposal',
-                  {
-                    commonId: currCommon.id,
-                  },
-                )
-              }
-              bottom={50}
-            />
-          )
-        ) : (
-          <>
-            {showReqToJoin && (
-              <View style={styles.actionButtonContainer}>
-                <TouchableOpacity
-                  style={styles.headerButton}
-                  onPress={requestToJoin}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: 'white',
-                      fontWeight: '700',
-                      marginRight: 40,
-                    }}>
+          </HeaderImageScrollView>
+          <SafeAreaView>
+            {isMember ? (
+              index === 0 ? (
+                <BottomRightButton
+                  onPress={() =>
+                    navigation.navigate('New Topic',
+                      {
+                        commonId: currCommon.id,
+                      },
+                    )
+                  }
+                  bottom={50}
+                />
+              ) : (
+                !isFundingStage && <BottomRightButton
+                  onPress={() =>
+                    navigation.navigate('FundingProposal',
+                      {
+                        commonId: currCommon.id,
+                      },
+                    )
+                  }
+                  bottom={50}
+                />
+              )
+            ) : (
+              <>
+                {showReqToJoin && (
+                  <View style={styles.actionButtonContainer}>
+                    <TouchableOpacity
+                      style={styles.headerButton}
+                      onPress={requestToJoin}>
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          color: 'white',
+                          fontWeight: '700',
+                          marginRight: 40,
+                        }}>
                     Request to join
-                  </Text>
-                  <Text style={{fontSize: 16, color: 'white'}}>
+                      </Text>
+                      <Text style={{fontSize: 16, color: 'white'}}>
                     ${currCommon.minFeeToJoin / 100} Contribution
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+                <Modal
+                  isVisible={showRequestSentModal}
+                  avoidKeyboard={true}
+                  backdropColor={colors.white}
+                  backdropOpacity={1}
+                  onBackdropPress={() => setShowRequestSentModal(false)}
+                  style={{padding: 0}}>
+                  <SentTemplate
+                    title="Request Sent"
+                    description="The common members will vote on your request to join, and if approved you will become an equal member with voting rights."
+                    onClose={() => setShowRequestSentModal(false)}>
+                    <View style={layout.flexRow}>
+                      <TouchableOpacity
+                        style={styles.modalRequestSentBtnPrimary}
+                        onPress={viewProposal}>
+                        <Text style={text.buttoncenterwhite}>View proposal</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={layout.flexRow}>
+                      <TouchableOpacity
+                        style={styles.modalRequestSentBtnOutline}
+                        onPress={goToToCommon}>
+                        <Text style={text.buttonblue}>Go to Common</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </SentTemplate>
+                </Modal>
+              </>
             )}
-            <Modal
-              isVisible={showRequestSentModal}
-              avoidKeyboard={true}
-              backdropColor={colors.white}
-              backdropOpacity={1}
-              onBackdropPress={() => setShowRequestSentModal(false)}
-              style={{padding: 0}}>
-              <SentTemplate
-                title="Request Sent"
-                description="The common members will vote on your request to join, and if approved you will become an equal member with voting rights."
-                onClose={() => setShowRequestSentModal(false)}>
-                <View style={layout.flexRow}>
-                  <TouchableOpacity
-                    style={styles.modalRequestSentBtnPrimary}
-                    onPress={viewProposal}>
-                    <Text style={text.buttoncenterwhite}>View proposal</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={layout.flexRow}>
-                  <TouchableOpacity
-                    style={styles.modalRequestSentBtnOutline}
-                    onPress={goToToCommon}>
-                    <Text style={text.buttonblue}>Go to Common</Text>
-                  </TouchableOpacity>
-                </View>
-              </SentTemplate>
-            </Modal>
-          </>
-        )}
-      </SafeAreaView>
-      </>
+          </SafeAreaView>
+        </>
       ) : (
         loadingPlaceholder()
       ) }

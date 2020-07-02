@@ -83,6 +83,7 @@ import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DeepLinking from 'react-native-deep-linking';
 
 import ArcService from './src/Services/ArcService';
+import { BOTTOM_SHEET_TEMPLATES } from './src/Stores/BottomSheetStore';
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
@@ -170,6 +171,13 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
     DeepLinking.addRoute('/proposal/:id', (response) => {
       routing('ProposalScreen', {proposalId: response.id});
+    });
+
+    DeepLinking.addRoute('/user/:id', (response) => {
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
+        {userId: response.id}
+      );
     });
 
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);
