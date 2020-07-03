@@ -388,6 +388,7 @@ const CommonProfile = ({
               name: currCommon.name,
               description: currCommon.description,
               byline: currCommon.metadata?.byline,
+              cover: currCommon.coverPhoto,
             }}
           />
         )}>

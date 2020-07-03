@@ -1,5 +1,4 @@
 import {
-  Image,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -10,7 +9,7 @@ import {
 import React from 'react';
 import Icon from '../../Assets/iconfont/Icon';
 import { layout, colors, text } from '../../Theme';
-
+import FastImage from 'react-native-fast-image'
 
 const { width } = Dimensions.get('window');
 
@@ -51,7 +50,7 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo }) =>
                 alignItems: 'center',
               }}>
               {commonInfo.logo ? (
-                <Image
+                <FastImage
                   style={styles.logoImage}
                   source={{
                     uri: commonInfo.logo,

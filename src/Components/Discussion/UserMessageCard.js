@@ -1,12 +1,13 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import moment from 'moment';
 import {layout, colors, text} from '../../Theme';
+import FastImage from 'react-native-fast-image'
 
 const UserMessageCard = ({photoURL, name, message, time}) => {
   return (
     <View style={styles.messageCardContainer}>
-      <Image style={styles.userImage} source={{uri: photoURL}} />
+      <FastImage style={styles.userImage} source={{uri: photoURL}} />
       <View style={styles.messageContainer}>
         <Text style={styles.nameStyle}>{name}</Text>
         <Text style={styles.messageStyle}>{message}</Text>
