@@ -60,9 +60,8 @@ const DiscussionCard = props => {
 
   useEffect(() => {
     const unsubscribe = firestore()
-      .collection('discussion')
-      .doc(discussionId)
-      .collection('message')
+      .collection('discussionMessage')
+      .where('discussionId', '==', discussionId)
       .onSnapshot(snapshot => {
         setMsgCount(snapshot.docs.length);
       });

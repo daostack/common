@@ -20,7 +20,7 @@ const MultiFileField = props => {
   };
 
 
-  const { maxCount, validation } = props;
+  const { maxCount, validation, navigation } = props;
 
   return (
     <View style={{paddingTop: sizeL}}>
@@ -37,6 +37,7 @@ const MultiFileField = props => {
             allowsEditing={true}
             title={'Add File'}
             validation={currItemValidation}
+            navigation={navigation}
           />
         );
       })}

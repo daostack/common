@@ -30,7 +30,6 @@ class CreateDiscussionForm extends React.Component {
         console.log('createDiscussionStore', changedFields);
 
         // const imageList = Object.keys(changedFields).filter( x => x.includes('images_')).map(x => changedFields[x]);
-
         if (!userStore.userInfo.uid) {
           Toast.error('We can not post your discussion at the moment');
           return;
@@ -43,6 +42,7 @@ class CreateDiscussionForm extends React.Component {
             title: changedFields[CreateDiscussionForm.TITLE],
             message: changedFields[CreateDiscussionForm.MESSAGE],
             images: changedFields[CreateDiscussionForm.IMAGES].filter(image => image.value !== ''),
+            files: changedFields[CreateDiscussionForm.FILES].filter(file => file.value !== ''),
             createTime: new Date(),
             ownerId: userStore.userInfo.uid,
             commonId: this.props.commonId,
