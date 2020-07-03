@@ -26,7 +26,7 @@ const CommonBox = props => {
           cover: props.common.coverPhoto,
           logo: props.common.logo,
           name: props.common.name,
-          description: props.common.metadata.byline,
+          description: props.common.metadata?.byline,
         }}
       />
 
