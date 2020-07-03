@@ -64,6 +64,10 @@ Or this error `package android.support.annotation does not exist`
 
 Please enter command `npx jetify` in terminal. [StackOverflow](https://stackoverflow.com/questions/53235525/issues-using-androidx-and-react-native)
 
+### Documentation
+
+##### [icon documentation](./doc/icon.md)
+
 ### Useful Download links
 
 ##### Android Studio
