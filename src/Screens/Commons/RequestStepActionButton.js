@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
-import {layout, colors} from '../../Theme';
+import {layout, colors, font} from '../../Theme';
 
 const RequestStepActionButton = props => {
   let actionBtnStyle = styles.actionBtnContainer;
@@ -17,14 +17,7 @@ const RequestStepActionButton = props => {
           {backgroundColor: props.pass ? colors.mainBlue : colors.grey3},
         ]}
         onPress={props.onPress}>
-        <Text
-          style={{
-            fontSize: 16,
-            color: 'white',
-            fontWeight: '700',
-          }}>
-          {props.title}
-        </Text>
+        <Text style={styles.continueButtonText}>{props.title}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -40,6 +33,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.mainBlue,
+  },
+  continueButtonText: {
+    ...font.primary.regular,
+    ...font.fontSize(3),
+    color: 'white',
   },
   actionBtnContainer: {
     ...layout.content,

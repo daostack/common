@@ -9,7 +9,7 @@ import {
   StatusBar,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {colors} from '../../../Theme';
+import {colors, font} from '../../../Theme';
 import Swiper from 'react-native-swiper';
 
 const CommonExplanation = ({navigation}) => {
@@ -117,8 +117,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    ...font.primary.regular,
+    ...font.fontSize(4),
     paddingVertical: 15,
   },
   sectionTitle: {
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   image: {
     top: 0,
     width: '100%',
-    height: '70%',
+    height: '50%',
     // backgroundColor: '#efefef',
   },
   wrapper: {},
@@ -139,21 +139,20 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   text: {
-    paddingHorizontal: 33,
+    paddingHorizontal: 24,
     paddingVertical: 10,
     textAlign: 'center',
     color: colors.black,
-    fontSize: 16,
-    fontWeight: 'bold',
-    fontFamily: 'Roboto',
+    ...font.primary.bold,
+    ...font.fontSize(6),
   },
   subtitle: {
     paddingHorizontal: 40,
     paddingVertical: 10,
     textAlign: 'center',
     color: colors.black,
-    fontSize: 14,
-    fontFamily: 'Roboto',
+    ...font.primary.regular,
+    ...font.fontSize(2),
   },
 });
 
