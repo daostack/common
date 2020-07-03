@@ -235,8 +235,8 @@ const ProposalData = props => {
                 <Icon name="file" color={colors.mainBlue} size={16} />
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate('PDFViwer', {
-                      uri: f.value,
+                    navigation.navigate('Browser', {
+                      url: f.value,
                     })
                   }>
                   <Text style={styles.adsText}>
