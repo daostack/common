@@ -35,6 +35,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
   } catch (e) {
     console.log(e);
     console.log(e.response);
+    throw e;
   }
 
   try {
