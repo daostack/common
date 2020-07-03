@@ -280,7 +280,7 @@ const Discussions = props => {
       .join('_')
       .replace('public_file%2F', '')
       .concat('.pdf');
-  }
+  };
 
   const header = () => {
     return (
