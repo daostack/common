@@ -80,7 +80,7 @@ const CreateStep4 = props => {
           if (!snapshots) {
             return null;
           }
-          //console.log('dsa', snapshots.data());
+          console.log('New common fetched:', snapshots.data());
           setNewCommon(snapshots.data());
         });
     getNewDao();
@@ -454,7 +454,7 @@ const CreateStep4 = props => {
         onPress={forgeCommon}
       />
       <Modal
-        isVisible={newCommonAddress}
+        isVisible={Boolean(newCommonAddress)}
         avoidKeyboard={true}
         backdropColor={colors.white}
         backdropOpacity={1}
