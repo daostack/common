@@ -30,7 +30,7 @@ import CommonMembersList from './CommonMembersList';
 import ProposalService from '../../../Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
-import { calcIsFundingStage } from '../../../Util';
+import {calcIsFundingStage} from '../../../Util';
 import firestore from '@react-native-firebase/firestore';
 import {
   Placeholder,
@@ -62,7 +62,9 @@ const CommonProfile = ({
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = route.params.currCommon?.id || route.params.commonId;
   const daoMembers = route.params.currCommon?.members;
-  const showReqToJoin = !userStore.userInfo || (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
+  const showReqToJoin =
+    !userStore.userInfo ||
+    (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
   const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
 
   useEffect(() => {
@@ -80,9 +82,7 @@ const CommonProfile = ({
   useEffect(() => {
     setShowRequestSentModal(route.params.showRequestSentModal);
     setCurrCommon(routeCommon);
-    if (
-      userStore.userInfo && userStore.isDaoMember(daoMembers)
-    ) {
+    if (userStore.userInfo && userStore.isDaoMember(daoMembers)) {
       setMemberState(true);
     } else {
       setMemberState(false);
@@ -113,9 +113,12 @@ const CommonProfile = ({
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
       const getPendingProposalsDiscussionCount = async () => {
-        const count = await ProposalService.getInstance().getProposalDiscussionsCount(pendingProposalsData.usersPendingProposal.id);
-        if (userPendingPropDiscCount !== count)
-        {setUserPendingPropDiscCount(count);}
+        const count = await ProposalService.getInstance().getProposalDiscussionsCount(
+          pendingProposalsData.usersPendingProposal.id,
+        );
+        if (userPendingPropDiscCount !== count) {
+          setUserPendingPropDiscCount(count);
+        }
       };
       getPendingProposalsDiscussionCount();
     }
@@ -153,7 +156,13 @@ const CommonProfile = ({
   const Proposals = () => {
     return (
       <View style={{padding: sizeL}}>
-        <ProposalsList onlyFundingRequests={true} isMember={isMember} navigation={navigation} commonId={currCommon.id} commonName={currCommon.name} />
+        <ProposalsList
+          onlyFundingRequests={true}
+          isMember={isMember}
+          navigation={navigation}
+          commonId={currCommon.id}
+          commonName={currCommon.name}
+        />
       </View>
     );
   };
@@ -248,7 +257,7 @@ const CommonProfile = ({
   const shareCommon = event => {
     const options = {
       url: `https://app.common.io/common/${currCommon.id}`,
-      title: 'Let\'s make it happen',
+      title: "Let's make it happen",
       message: `Join in ${currCommon.name} common`,
     };
     Share.open(options);
@@ -270,7 +279,9 @@ const CommonProfile = ({
   const requestToJoin = event => {
     if (userStore.userInfo) {
       const navigate = CommonActions.navigate({
-        name: currCommon.metadata?.rules?.length ? 'RequestStep1' : 'RequestStep2',
+        name: currCommon.metadata?.rules?.length
+          ? 'RequestStep1'
+          : 'RequestStep2',
         params: {
           currDaoId: currCommon.id,
           skipFirstStep: !currCommon.metadata?.rules?.length,
@@ -315,8 +326,7 @@ const CommonProfile = ({
 
   const renderPendingApproval = () => {
     const remainingSeconds =
-      pendingProposalsData.usersPendingProposal.closingAt -
-      moment().unix();
+      pendingProposalsData.usersPendingProposal.closingAt - moment().unix();
     return (
       <TouchableOpacity
         onPress={openProposalScreen}
@@ -417,8 +427,7 @@ const CommonProfile = ({
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
-
-      { currCommon ? (
+      {currCommon ? (
         <>
           <StatusBar barStyle="light-content" />
           <TouchableOpacity
@@ -440,7 +449,7 @@ const CommonProfile = ({
             disableHeaderGrow
             maxOverlayOpacity={0.6}
             minOverlayOpacity={0.3}
-            maxHeight={200}
+            maxHeight={210}
             fadeOutForeground
             minHeight={120}
             headerImage={{uri: currCommon.coverPhoto}}
@@ -458,9 +467,9 @@ const CommonProfile = ({
               />
             )}>
             {!isMember &&
-          pendingProposalsData &&
-          pendingProposalsData.usersPendingProposal &&
-          renderPendingApproval()}
+              pendingProposalsData &&
+              pendingProposalsData.usersPendingProposal &&
+              renderPendingApproval()}
 
             <View style={{paddingVertical: 20}}>
               <CommonStageSummary
@@ -468,9 +477,9 @@ const CommonProfile = ({
                 commonProgressInfo={{
                   time: currCommon.fundingGoalDeadline,
                   activeProposals:
-                currCommon.numberOfBoostedProposals +
-                currCommon.numberOfPreBoostedProposals +
-                currCommon.numberOfQueuedProposals,
+                    currCommon.numberOfBoostedProposals +
+                    currCommon.numberOfPreBoostedProposals +
+                    currCommon.numberOfQueuedProposals,
                   goal: currCommon.fundingGoal,
                   members: currCommon.memberCount,
                   // TODO: get this value. Is it even tracked in the contract? need to check.
@@ -529,25 +538,23 @@ const CommonProfile = ({
               index === 0 ? (
                 <BottomRightButton
                   onPress={() =>
-                    navigation.navigate('New Topic',
-                      {
-                        commonId: currCommon.id,
-                      },
-                    )
+                    navigation.navigate('New Topic', {
+                      commonId: currCommon.id,
+                    })
                   }
                   bottom={50}
                 />
               ) : (
-                !isFundingStage && <BottomRightButton
-                  onPress={() =>
-                    navigation.navigate('FundingProposal',
-                      {
+                !isFundingStage && (
+                  <BottomRightButton
+                    onPress={() =>
+                      navigation.navigate('FundingProposal', {
                         commonId: currCommon.id,
-                      },
-                    )
-                  }
-                  bottom={50}
-                />
+                      })
+                    }
+                    bottom={50}
+                  />
+                )
               )
             ) : (
               <>
@@ -563,10 +570,10 @@ const CommonProfile = ({
                           fontWeight: '700',
                           marginRight: 40,
                         }}>
-                    Request to join
+                        Request to join
                       </Text>
                       <Text style={{fontSize: 16, color: 'white'}}>
-                    ${currCommon.minFeeToJoin / 100} Contribution
+                        ${currCommon.minFeeToJoin / 100} Contribution
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -586,7 +593,9 @@ const CommonProfile = ({
                       <TouchableOpacity
                         style={styles.modalRequestSentBtnPrimary}
                         onPress={viewProposal}>
-                        <Text style={text.buttoncenterwhite}>View proposal</Text>
+                        <Text style={text.buttoncenterwhite}>
+                          View proposal
+                        </Text>
                       </TouchableOpacity>
                     </View>
                     <View style={layout.flexRow}>
@@ -604,7 +613,7 @@ const CommonProfile = ({
         </>
       ) : (
         loadingPlaceholder()
-      ) }
+      )}
     </View>
   );
 };
