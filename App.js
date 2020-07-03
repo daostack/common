@@ -1,7 +1,7 @@
 /**
  * Sample React Native Screens
  * https://github.com/facebook/react-native
- *
+  *
  * @format
  * @flow
  */
@@ -79,14 +79,10 @@ import Toast, {DURATION} from 'react-native-easy-toast';
 import {CommonActions} from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
-<<<<<<< HEAD
-import firestore from '@react-native-firebase/firestore';
 import analytics from '@react-native-firebase/analytics';
-=======
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DeepLinking from 'react-native-deep-linking';
 
->>>>>>> master
 import ArcService from './src/Services/ArcService';
 import { BOTTOM_SHEET_TEMPLATES } from './src/Stores/BottomSheetStore';
 if (Platform.OS === 'ios') {
