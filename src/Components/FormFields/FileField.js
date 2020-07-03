@@ -101,8 +101,8 @@ class FileField extends React.Component {
           <Icon name="common" color={colors.mainBlue} size={22} />
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('PDFViwer', {
-                uri: currValue,
+              navigation.navigate('Browser', {
+                url: currValue,
               });
             }}>
             <Text style={styles.adsText}>{`${fileName}.${ext}`}</Text>

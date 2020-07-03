@@ -1,5 +1,5 @@
 import React from 'react';
-import { NativeWallet } from '../Util/NativeWallet';
+import {NativeWallet} from '../Util/NativeWallet';
 import {
   Text,
   View,
@@ -18,8 +18,6 @@ import {
   ARC_VERSION ,
   GRAPH_VERSION ,
   graphHttpLink ,
-  graphwsLink ,
-  ipfsLink ,
   web3ProviderUrl ,
   relayerUrl ,
   web3NetworkId ,
@@ -174,20 +172,6 @@ class nativeBridgeTests extends React.Component {
       throw 'Send transaction failed with error: ' + e;
     }
   };
-
-  // readSmartContract = async () => {
-  //   try {
-  //     const manager = WalletManager.getInstance();
-  //     let value = await manager.readSmartContract(
-  //       '0x2f21957c7147c3eE49235903D6471159a16c9ccd',
-  //       MessageContract,
-  //       'getMessage',
-  //     );
-  //     this.setState({result: value});
-  //   } catch (e) {
-  //     throw 'Send transaction failed with error: ' + e;
-  //   }
-  // };
 
   getSafeBalance = async () => {
     try {
@@ -502,7 +486,7 @@ class nativeBridgeTests extends React.Component {
             <Text>Create Common</Text>
           </TouchableOpacity>
 
-          <Text>{this.state.proposalStatus}</Text>
+          <Text>{this.state.proposalState}</Text>
           <TouchableOpacity
             onPress={this.createRequestToJoin}
             style={styles.button}>
@@ -715,6 +699,13 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: 'grey',
     marginBottom: 5,
+  },
+  smallButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 66,
+    height: 40,
+    backgroundColor: 'grey',
   },
 });
 
