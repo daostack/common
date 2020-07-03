@@ -2,7 +2,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import moment from 'moment';
 import {layout, colors, text} from '../../Theme';
-import FastImage from 'react-native-fast-image'
+import FastImage from 'react-native-fast-image';
 
 const UserMessageCard = ({photoURL, name, message, time}) => {
   return (

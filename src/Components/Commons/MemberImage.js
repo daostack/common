@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {colors} from '../../Theme';
-import FastImage from 'react-native-fast-image'
+import FastImage from 'react-native-fast-image';
 
 const MemberImage = ({userInfo, style, key}) => {
   return userInfo?.photoURL ? (

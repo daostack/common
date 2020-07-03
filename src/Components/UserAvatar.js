@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { colors } from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
-import FastImage from 'react-native-fast-image'
+import FastImage from 'react-native-fast-image';
 
 const UserAvatar = ({image, iconName}) =>
   <View style={styles.imageFieldContainer}>

@@ -472,7 +472,7 @@ const CommonProfile = ({
               }
               bottom={50}
             />
-          ):(
+          ) : (
             !isFundingStage && <BottomRightButton
               onPress={() =>
                 navigation.navigate('FundingProposal',
