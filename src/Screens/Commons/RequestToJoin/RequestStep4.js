@@ -50,7 +50,12 @@ const RequestStep4 = props => {
           description: formData.about_me,
           links: formData.links,
           funding: new BN(formData.amount * 100),
-          payment: { cardNumber: formData.card_number, cvv: formData.cvv, expDate: formData.expiration_date.replace('/', ''), funding: formData.amount * 100 },
+          payment: {
+            cardNumber: formData.card_number,
+            cvv: formData.cvv,
+            expDate: formData.expiration_date.replace('/', ''),
+            funding: formData.amount * 100,
+          },
         };
 
         Toast.loading('Creating request to join...');

@@ -18,7 +18,6 @@ const DiscussionList = props => {
       .orderBy('createTime', 'desc')
       .onSnapshot(
         snapshot => {
-          console.log('snapshot', snapshot);
           if (snapshot.empty) {
             setList([]);
           } else {
@@ -46,6 +45,7 @@ const DiscussionList = props => {
             }
           }
         },
+        // TOOD: please do not silence any errors like this
         error => console.error(error),
       );
     return () => {
