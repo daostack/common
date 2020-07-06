@@ -150,7 +150,7 @@ export default StyleSheet.create({
   },
 
   paddingVerticalM: {
-    paddingVertical: 15,
+    paddingVertical: sizeM,
   },
 
   // Pdding Bottom
