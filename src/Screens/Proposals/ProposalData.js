@@ -132,7 +132,7 @@ const ProposalData = props => {
             openBoostedInfo={openBoostedInfo}
             stage={proposalInfo.stageStr}
             winningOutcome={proposalInfo.winningOutcome}
-            hasPassedExpiryDate={moment().isAfter(proposalInfo?.closingAt)}
+            hasPassedExpiryDate={moment().isAfter(moment.unix(proposalInfo?.closingAt))}
           />
           <View style={layout.content}>
             <View style={styles.proposalRowSubtitle}>
