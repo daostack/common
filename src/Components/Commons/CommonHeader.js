@@ -7,100 +7,58 @@ import {
   Dimensions,
 } from 'react-native';
 import React from 'react';
-import Icon from '../../Assets/iconfont/Icon';
 import { layout, colors, text } from '../../Theme';
 import FastImage from 'react-native-fast-image';
-
+import { BlurView } from '@react-native-community/blur';
 const { width } = Dimensions.get('window');
 
-const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo }) => {
-  const renderCoverInSafeArea = () => {
-    return <SafeAreaView>{renderCover()}</SafeAreaView>;
-  };
-
-  const renderCover = () => {
-    return (
-      <View style={{width: width}}>
-        <View style={styles.headerContainerWrap}>
-          <View
-            style={
-              navigation
-                ? styles.headerContainer
-                : {
-                  ...styles.headerContainer,
-                  ...styles.headerContainerCenterContent,
-                }
-            }>
-            {navigation ? (
-              <TouchableOpacity onPress={navigation.goBack}>
-                <Icon
-                  name="left-arrow"
-                  size={30}
-                  color={colors.white}
-                  style={layout.marginTopXS}
-                />
-              </TouchableOpacity>
-            ) : null}
-
-            <View
-              style={{
-                ...layout.content,
-                ...{padding: 0},
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              {commonInfo.logo ? (
-                <FastImage
-                  style={styles.logoImage}
-                  source={{
-                    uri: commonInfo.logo,
-                  }}
-                />
-              ) : null}
-              <Text style={styles.headerTitleWhite} numberOfLines={5}>
-                {commonInfo.name}
-              </Text>
-              <Text style={{...text.textFieldfocus, color: colors.white}} numberOfLines={5}>
-                {commonInfo.byline}
-              </Text>
-            </View>
-            {navigation ? (
-              <TouchableOpacity /* onPress={onHeaderMenuOpen} */>
-                {/* <Icon
-                  name="menu-horizontal"
-                  size={30}
-                  color={colors.white}
-                  style={layout.marginTopXS}
-                /> */}
-              </TouchableOpacity>
-            ) : null}
-          </View>
-        </View>
-
-        <View style={styles.headerContent}>
-          <Text style={styles.headerDescription} numberOfLines={4}>
-            {commonInfo.description}
-          </Text>
-          {isMember && navigation ? (
-            <TouchableOpacity onPress={openAgendaScreen}>
-              <Text style={styles.headerViewAgenda}>View agenda</Text>
-            </TouchableOpacity>
-          ) : null}
-        </View>
-      </View>
-    );
-  };
+const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, headerHeightLayouted }) => {
 
   const openAgendaScreen = e => {
     navigation.navigate('CommonAgenda');
   };
 
   return (
-    <>
-      <View style={styles.coverOverlay}>
-        {navigation ? renderCoverInSafeArea() : renderCover()}
+    <SafeAreaView onLayout={ event => {
+      headerHeightLayouted(event.nativeEvent.layout.height);
+    }}>
+      <View
+        style={styles.headerContainer}>
+        <View
+          style={{
+            ...layout.content,
+            ...{padding: 0},
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          {commonInfo.logo ? (
+            <FastImage
+              style={styles.logoImage}
+              source={{
+                uri: commonInfo.logo,
+              }}
+            />
+          ) : null}
+          <Text style={styles.headerTitleWhite} numberOfLines={5}>
+            {commonInfo.name}
+          </Text>
+          <Text style={{...text.textFieldfocus, color: colors.white}} numberOfLines={5}>
+            {commonInfo.byline}
+          </Text>
+          <Text style={styles.headerDescription} numberOfLines={4}>
+            {commonInfo.description}
+          </Text>
+          {isMember && navigation ? (
+            <BlurView style={{ padding: 8, borderRadius: 8}}>
+              <TouchableOpacity onPress={openAgendaScreen}>
+                <Text style={styles.headerViewAgenda}>View agenda ➤</Text>
+              </TouchableOpacity>
+            </BlurView>
+          ) : null}
+
+        </View>
       </View>
-    </>
+    </SafeAreaView>
   );
 };
 
@@ -128,25 +86,25 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     ...layout.content,
-    ...layout.flexRow,
-    ...layout.flexStart,
+    // ...layout.flexRow,
+    // ...layout.flexStart,
     alignSelf: 'stretch',
     flexGrow: 1,
-    justifyContent: 'space-between',
     paddingBottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerContainerCenterContent: {
     justifyContent: 'center',
   },
   logoImage: {
     ...layout.marginBottomM,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     borderWidth: 2,
     borderColor: colors.white,
   },
-
   headerTitleWhite: {
     ...text.h1Black,
     color: colors.white,

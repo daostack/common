@@ -9,6 +9,7 @@ import {
   StatusBar,
   ScrollView,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
 import {text, layout, colors, sizeL} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
@@ -23,7 +24,8 @@ import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '../../../Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
-import HeaderImageScrollView from 'react-native-image-header-scroll-view';
+// import HeaderImageScrollView from 'react-native-image-header-scroll-view';
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '../../../Components/Commons/CommonHeader';
 import {numberFormatter} from '../../../Util';
 import CommonMembersList from './CommonMembersList';
@@ -38,6 +40,10 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import NavigationBar from 'react-native-navbar';
+
+const PARALLAX_HEADER_HEIGHT = 210;
+const STICKY_HEADER_HEIGHT = 80;
 
 const CommonProfile = ({
   navigation,
@@ -47,6 +53,8 @@ const CommonProfile = ({
   userStore,
 }) => {
   const [isMember, setMemberState] = useState(false);
+
+  const window = Dimensions.get('window');
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -66,6 +74,17 @@ const CommonProfile = ({
     !userStore.userInfo ||
     (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
   const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
+
+  const [dark, setDark] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(STICKY_HEADER_HEIGHT);
+
+  const headerHeightLayouted = height => {
+    if (height - headerHeight > 3 ) { // To avoid render multiple times
+      // console.log('height ->', height);
+      setHeaderHeight(height + 35);
+    }
+    return height;
+  };
 
   useEffect(() => {
     if (route.params.commonId) {
@@ -423,13 +442,46 @@ const CommonProfile = ({
     );
   };
 
+  const fixedHeaderHeight = () => {
+    return (
+      <NavigationBar
+        statusBar={{hidden: true}}
+        style={styles.fixedSection}
+        leftButton={
+          <TouchableOpacity
+            style={{justifyContent: 'center'}}
+            onPress={() => navigation.pop()}>
+            <Icon name="left-arrow" size={32} style={{marginLeft: 10}} color={dark ? 'black' : 'white'}/>
+          </TouchableOpacity>
+        }
+        rightButton={
+          <>
+            <TouchableOpacity
+              style={{justifyContent: 'center'}}
+              onPress={shareCommon}>
+              <Icon name="share-32" size={25} style={{marginRight: 10}} color={dark ? 'black' : 'white'}/>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{justifyContent: 'center'}}
+              onPress={shareCommon}>
+              <Icon name="menu-horizontal" size={32} style={{marginRight: 10}} color={dark ? 'black' : 'white'}/>
+            </TouchableOpacity>
+          </>
+        }
+      />
+    );
+  };
+
   const initialLayout = {width: Dimensions.get('window').width};
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       {currCommon ? (
         <>
-          <StatusBar barStyle="light-content" />
+          <StatusBar barStyle={dark ? 'dark-content' : 'light-content'}
+            translucent
+            backgroundColor="transparent"
+          />
           <TouchableOpacity
             style={{
               justifyContent: 'center',
@@ -445,27 +497,49 @@ const CommonProfile = ({
               style={{marginLeft: 10}}
             />
           </TouchableOpacity>
-          <HeaderImageScrollView
-            disableHeaderGrow
-            maxOverlayOpacity={0.6}
-            minOverlayOpacity={0.3}
-            maxHeight={210}
-            fadeOutForeground
-            minHeight={120}
-            headerImage={{uri: currCommon.coverPhoto}}
-            renderTouchableFixedForeground={() => (
+
+          <ParallaxScrollView
+            backgroundColor="white"
+            showsVerticalScrollIndicator={false}
+            stickyHeaderHeight={ STICKY_HEADER_HEIGHT }
+            parallaxHeaderHeight={headerHeight}
+            renderBackground={() => (
+              <FastImage
+                source={{
+                  uri: currCommon.coverPhoto,
+                }}
+                style={{
+                  width: window.width,
+                  height: headerHeight,
+                  backgroundColor: colors.grey4,
+                }}
+              />
+            )}
+            scrollEvent={ e => {
+              setDark(e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT - 20);
+            }}
+            renderForeground={() => (
               <CommonHeader
                 isMember={isMember}
                 navigation={navigation}
+                headerHeightLayouted={headerHeightLayouted}
                 onHeaderMenuOpen={openCommonOptions}
                 commonInfo={{
                   logo: currCommon.metadata?.avatar,
                   name: currCommon.name,
                   description: currCommon.description,
                   byline: currCommon.metadata?.byline,
+                  cover: currCommon.coverPhoto,
                 }}
               />
-            )}>
+            )}
+            renderStickyHeader={() => (
+              <View key="sticky-header" style={styles.stickySection}>
+                <Text style={styles.stickySectionText}>{currCommon.name}</Text>
+              </View>
+            )}
+            renderFixedHeader={fixedHeaderHeight}
+          >
             {!isMember &&
               pendingProposalsData &&
               pendingProposalsData.usersPendingProposal &&
@@ -532,7 +606,8 @@ const CommonProfile = ({
               renderTabBar={renderTabBar}
               style={{}}
             />
-          </HeaderImageScrollView>
+          </ParallaxScrollView>
+
           <SafeAreaView>
             {isMember ? (
               index === 0 ? (
@@ -725,6 +800,35 @@ const styles = StyleSheet.create({
     height: 48,
     width: 48,
     borderRadius: 24,
+  },
+  stickySection: {
+    height: STICKY_HEADER_HEIGHT,
+    width: '100%',
+    justifyContent: 'center',
+    // backgroundColor: 'white',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: colors.grey4,
+  },
+  stickySectionText: {
+    color: 'black',
+    // color: 'white',
+    fontFamily: 'Roboto',
+    fontWeight: '500',
+    fontSize: 20,
+    marginTop: 25,
+    // margin: 5,
+    textAlign: 'center',
+  },
+  fixedSection: {
+    width: '100%',
+    position: 'absolute',
+    bottom: 5,
+    left: 5,
+  },
+  fixedSectionText: {
+    color: '#999',
+    fontSize: 20,
   },
 });
 
