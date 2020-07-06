@@ -165,9 +165,7 @@ const styles = StyleSheet.create({
   },
   headerViewAgenda: {
     ...text.smallGreyText,
-
     color: colors.grey4,
-    marginTop: 30,
   },
 });
 

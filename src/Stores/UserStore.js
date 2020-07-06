@@ -26,6 +26,9 @@ class UserStore {
   }
 
   isDaoMember = members => {
+    if (!members){
+      return false;
+    }
     return members.some(
       member =>
         member.address === this.userInfo.safeAddress?.toLowerCase()

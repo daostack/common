@@ -105,7 +105,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
 
   useEffect(() =>{
     navigation.setOptions({
-      title: daoInfo.name,
+      title: daoInfo?.name || 'Common', // daoInfo might be null
     });
   }, [daoInfo]);
 

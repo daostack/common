@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
-import {colors, layout, text} from '../../Theme';
+import {colors, layout, text, sizeM} from '../../Theme';
 import DiscussionMessage from './DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast.js';
@@ -211,6 +211,77 @@ const Discussions = props => {
     }
   };
 
+  const headerImages = () => {
+    return (
+      <>
+      {data.images ?
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={{marginBottom: 20}}>
+          <View style={styles.imageGallery}>
+            <View style={{width: 20}} />
+            {data.images.map((currImage, currIndex) => {
+              return (
+                <View
+                  key={`proposalImg_${currIndex}`}>
+                  <TouchableOpacity
+                    onPress={() => setImageGalleryIndex(currIndex)}>
+                    <Image
+                      key={currIndex}
+                      style={{
+                        ...styles.galleryImage,
+                        ...{width: width * 0.8 },
+                      }}
+                      resizeMode="cover"
+                      source={{uri: currImage.value}}
+                    />
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
+            <View style={{width: 20}} />
+          </View>
+        </ScrollView>
+        : null}
+        </>
+    );
+  };
+
+  const headerFiles = () => {
+    return (
+      <>
+      {data.files && (
+        data.files.map((f, index) => <View style={styles.adRow} key={`discussion_file_${index}`}>
+          <Icon name="file" color={colors.mainBlue} size={16} />
+          <TouchableOpacity
+            onPress={() =>
+              props.navigation.navigate('Browser', {
+                url: f.value,
+              })
+            }>
+            <Text style={styles.adsText}>
+              {fileName(f.value)}
+            </Text>
+          </TouchableOpacity>
+        </View> )
+      )
+      }
+      </>
+    );
+  };
+
+  const fileName = url => {
+    return url
+      .substring(url.lastIndexOf('/') + 1, url.length)
+      .split('?')[0]
+      .split('_')
+      .slice(0, -1)
+      .join('_')
+      .replace('public_file%2F', '')
+      .concat('.pdf');
+  };
+
   const header = () => {
     return (
       // <SafeAreaView flex={1}>
@@ -279,36 +350,8 @@ const Discussions = props => {
                 </Text>
               </View>
 
-              {data.images ?
-                <ScrollView
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}
-                  style={{marginBottom: 20}}>
-                  <View style={styles.imageGallery}>
-                    <View style={{width: 20}} />
-                    {data.images.map((currImage, currIndex) => {
-                      return (
-                        <View
-                          key={`proposalImg_${currIndex}`}>
-                          <TouchableOpacity
-                            onPress={() => setImageGalleryIndex(currIndex)}>
-                            <Image
-                              key={currIndex}
-                              style={{
-                                ...styles.galleryImage,
-                                ...{width: width * 0.8 },
-                              }}
-                              resizeMode="cover"
-                              source={{uri: currImage.value}}
-                            />
-                          </TouchableOpacity>
-                        </View>
-                      );
-                    })}
-                    <View style={{width: 20}} />
-                  </View>
-                </ScrollView>
-                : null}
+              {headerImages()}
+              {headerFiles()}
 
               <TouchableOpacity
                 style={{alignItems: 'center'}}
@@ -544,6 +587,22 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     marginHorizontal: 20,
     justifyContent: 'flex-start',
+  },
+  adsText: {
+    ...text.h3Black,
+    ...layout.marginLeftXS,
+    fontWeight: '500',
+  },
+
+  adRow: {
+    alignItems: 'center',
+    ...layout.flexRow,
+    padding: 10,
+    alignSelf: 'stretch',
+    paddingVertical: sizeM,
+    borderRadius: 8,
+    borderColor: colors.mainBlue,
+    borderWidth: 1,
   },
 });
 
