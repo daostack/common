@@ -1,6 +1,4 @@
 import {
-  Image,
-  ImageBackground,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -8,6 +6,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import React from 'react';
+import FastImage from 'react-native-fast-image';
 
 import Icon from '../../Assets/iconfont/Icon';
 import {layout, colors, text} from '../../Theme';
@@ -48,7 +47,7 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
                 ...{padding: 0},
               }}>
               {commonInfo.logo ? (
-                <Image
+                <FastImage
                   style={styles.logoImage}
                   source={{
                     uri: commonInfo.logo,
@@ -88,7 +87,7 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
 
   return (
     <>
-      <ImageBackground
+      <FastImage
         source={{
           uri: commonInfo.cover,
         }}
@@ -97,7 +96,7 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
         <View style={styles.coverOverlay}>
           {navigation ? renderCoverInSafeArea() : renderCover()}
         </View>
-      </ImageBackground>
+      </FastImage>
     </>
   );
 };

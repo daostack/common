@@ -4,9 +4,9 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Image,
   Dimensions,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
 import {colors} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
@@ -99,7 +99,7 @@ const DiscussionCard = props => {
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             {
-              user.photoURL ? <Image
+              user.photoURL ? <FastImage
                 style={{
                   backgroundColor: colors.grey3,
                   height: 40,

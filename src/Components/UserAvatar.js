@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { colors } from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
-
+import FastImage from 'react-native-fast-image';
 
 const UserAvatar = ({image, iconName}) =>
   <View style={styles.imageFieldContainer}>
-    <Image
+    <FastImage
       style={styles.imageFieldStyle}
       resizeMode="cover"
       source={{uri: image}}
