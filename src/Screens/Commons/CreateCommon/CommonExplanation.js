@@ -9,7 +9,7 @@ import {
   StatusBar,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {colors, font} from '../../../Theme';
+import {colors, font, sizeXXL, sizeLineHeight, layout} from '../../../Theme';
 import Swiper from 'react-native-swiper';
 
 const CommonExplanation = ({navigation}) => {
@@ -23,6 +23,7 @@ const CommonExplanation = ({navigation}) => {
           </View> */}
 
           <Swiper
+            loadMinimal={true}
             style={styles.wrapper}
             showsButtons={false}
             activeDotColor={colors.mainBlue}
@@ -30,49 +31,47 @@ const CommonExplanation = ({navigation}) => {
             paginationStyle={{bottom: 0}}>
             <View style={styles.slide1}>
               <Image
-                source={require('../../../Assets/common.png')}
+                source={require('../../../Assets/CommonExplanation/common.png')}
                 style={styles.image}
               />
               <Text style={styles.text}>Create a Common</Text>
               <Text style={styles.subtitle}>
-                Organize a community to work together for a cause you care about
+                Collaborate on shared agendas by pooling funds and collectively
+                making decisions.
               </Text>
             </View>
             <View style={styles.slide1}>
               <Image
-                source={require('../../../Assets/funds.png')}
+                source={require('../../../Assets/CommonExplanation/funds.png')}
                 style={styles.image}
               />
-              <Text style={styles.text}>Raise the funds you need</Text>
+              <Text style={styles.text}>Invite members and pool funds</Text>
               <Text style={styles.subtitle}>
-                Set the amount of money you want to raise to reach your goal and
-                how much each member should donate.
+                Invite others to join your Common. Easily pool funds from all
+                members and work together to advance your cause.
               </Text>
             </View>
             <View style={styles.slide1}>
               <Image
-                source={require('../../../Assets/crowd.png')}
+                source={require('../../../Assets/CommonExplanation/decentralised.png')}
                 style={styles.image}
               />
-              <Text style={styles.text}>Harness the power of the crowd</Text>
+              <Text style={styles.text}>Work as a collective</Text>
               <Text style={styles.subtitle}>
-                All members of the common has equal weight in the decision
-                making process. From what action you should take, through how to
-                spend the money and even who should be a member.
+                All members get an equal vote and can take part in the shared
+                effort.
               </Text>
             </View>
             <View style={styles.slide1}>
               <Image
-                source={require('../../../Assets/decentralised.png')}
+                source={require('../../../Assets/CommonExplanation/crowd.png')}
                 style={styles.image}
               />
-              <Text style={styles.text}>
-                Keep things completely decentralised
-              </Text>
+              <Text style={styles.text}>Harness the power of communities</Text>
               <Text style={styles.subtitle}>
-                All members of the common has equal weight in the decision
-                making process. From what action you should take, through how to
-                spend the money and even who should be a member.
+                There's no limit to what we can achieve when working together.
+                By getting everyone involved, more people will actively promote
+                the cause.
               </Text>
             </View>
           </Swiper>
@@ -101,54 +100,58 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   sectionContainer: {
-    marginTop: 22,
+    ...layout.marginTopL,
     marginBottom: 34,
   },
   buttonConatiner: {
-    marginTop: 22,
-    marginBottom: 22,
+    ...layout.marginBottomL,
+    ...layout.marginTopL,
   },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 25,
     marginHorizontal: 24,
-    backgroundColor: '#3cc7e1',
+    backgroundColor: colors.mainBlue,
   },
   buttonText: {
-    color: '#fff',
+    color: colors.white,
     ...font.primary.regular,
     ...font.fontSize(4),
-    paddingVertical: 15,
+    ...layout.paddingVerticalM,
   },
-  sectionTitle: {
-    fontSize: 20,
-    //   fontFamily: 'Roboto',
-    fontWeight: '600',
-    color: Colors.black,
-    textAlign: 'center',
-  },
+  // sectionTitle: {
+  //   fontSize: 20,
+  //   //   fontFamily: 'Roboto',
+  //   fontWeight: '600',
+  //   color: Colors.black,
+  //   textAlign: 'center',
+  // },
   image: {
     top: 0,
     width: '100%',
-    height: '50%',
-    // backgroundColor: '#efefef',
+    height: '60%',
+    aspectRatio: 1,
   },
   wrapper: {},
   slide1: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    // justifyContent: 'center',
   },
   text: {
-    paddingHorizontal: 24,
-    paddingVertical: 10,
+    paddingHorizontal: 32,
     textAlign: 'center',
     color: colors.black,
-    ...font.primary.bold,
+    ...font.heading.bold,
     ...font.fontSize(6),
   },
   subtitle: {
-    paddingHorizontal: 40,
-    paddingVertical: 10,
+    paddingHorizontal: 24,
+    lineHeight: sizeLineHeight,
+    paddingTop: 8,
+    paddingBottom: sizeXXL,
     textAlign: 'center',
     color: colors.black,
     ...font.primary.regular,

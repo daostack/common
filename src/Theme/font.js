@@ -5,6 +5,7 @@ const fonts = [
   18, // 3
   20, // 4
   24, // 5
+  29,
   32,
   // 15?
   // 17?
@@ -15,6 +16,13 @@ export const fontSize = fontIndex => ({
 });
 
 const font = {
+  heading: {
+    bold: {
+      fontFamily: 'NotoSerif-Bold',
+      fontWeight: 'normal',
+      letterSpacing: -0.2, // Semi Compressed
+    },
+  },
   primary: {
     bold: {
       letterSpacing: 0.2,
@@ -23,7 +31,6 @@ const font = {
     },
     semiBold: {
       letterSpacing: 0.2,
-
       fontFamily: 'NunitoSans-SemiBold',
       fontWeight: 'normal',
     },
@@ -35,6 +42,10 @@ const font = {
     regular: {
       letterSpacing: 0.2,
       fontFamily: 'NunitoSans-Regular',
+      fontWeight: 'normal',
+    },
+    regular2: {
+      fontFamily: 'Nunito-Regular',
       fontWeight: 'normal',
     },
     thin: {
