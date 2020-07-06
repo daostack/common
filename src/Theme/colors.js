@@ -1,4 +1,5 @@
 export default {
+  // mainBlue: '#7786ff',
   mainBlue: '#3cc7e1',
   lightBlue: '#f7fcfe',
   black: '#001a36',

@@ -11,7 +11,9 @@ import {CommonBox, BottomRightButton} from '../../Components';
 import {db} from '../../Firebase';
 import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
-import colors from '../../Theme/colors';
+
+import {font, colors} from '../../Theme';
+
 import {
   Placeholder,
   PlaceholderMedia,
@@ -39,8 +41,9 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
               ...{id: doc.id},
               ...doc.data(),
               ...{
-                coverPhoto: doc.data().metadata?.image || `https://picsum.photos/id/${index *
-                  10}/500/100.jpg`,
+                coverPhoto:
+                  doc.data().metadata?.image ||
+                  `https://picsum.photos/id/${index * 10}/500/100.jpg`,
               },
             };
           });
@@ -126,15 +129,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
           width: '100%',
           paddingVertical: 15,
         }}>
-        <Text
-          style={{
-            fontSize: 24,
-            fontWeight: 'bold',
-            fontStyle: 'normal',
-            letterSpacing: 0,
-          }}>
-          {daos.length} Commons
-        </Text>
+        <Text style={styles.lengthCommons}>{daos.length} Commons</Text>
       </View>
     );
   };
@@ -219,6 +214,10 @@ const styles = StyleSheet.create({
     color: colors.grey3,
     padding: 20,
     // paddingTop: 10,
+  },
+  lengthCommons: {
+    ...font.primary.bold,
+    ...font.fontSize(5),
   },
   sectionHeaderContainer: {
     marginHorizontal: -20,

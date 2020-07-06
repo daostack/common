@@ -77,6 +77,13 @@
 		<string>Roboto-Regular.ttf</string>
 		<string>Roboto-Thin.ttf</string>
 		<string>Roboto-ThinItalic.ttf</string>
+		<string>NunitoSans-Bold.ttf</string>
+		<string>NunitoSans-Italic.ttf</string>
+		<string>NunitoSans-Light.ttf</string>
+		<string>NunitoSans-Regular.ttf</string>
+		<string>NunitoSans-SemiBold.ttf</string>
+		<string>Nunito-Regular.ttf</string>
+		<string>NotoSerif-Bold.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
