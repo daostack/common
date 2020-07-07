@@ -6,7 +6,6 @@ export CreateStep1 from './Commons/CreateCommon/CreateStep1';
 export CreateStep2 from './Commons/CreateCommon/CreateStep2';
 export CreateStep3 from './Commons/CreateCommon/CreateStep3';
 export CreateStep4 from './Commons/CreateCommon/CreateStep4';
-export CommonCreationLoading from './Commons/CreateCommon/CommonCreationLoading';
 export CommonExplanation from './Commons/CreateCommon/CommonExplanation';
 export CommonAgenda from './Commons/Profile/CommonAgenda';
 export CommonMembers from './Commons/Profile/CommonMembers';
@@ -39,5 +38,5 @@ export Browser from './Viewers/Browser';
 export Onboarding from './Onboarding';
 export NativeBridgeTests from './NativeBridgeTests';
 export HUDTest from './HUDTest';
-
+export FullScreenCreationLoader from './FullScreenCreationLoader';
 

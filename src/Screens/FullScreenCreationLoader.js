@@ -8,10 +8,10 @@ import {
   StatusBar,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {colors, layout, text} from '../../../Theme';
-import Loader from '../../../Components/Loader';
+import {colors, layout, text} from '../Theme';
+import Loader from '../Components/Loader';
 
-const CommonCreationLoading = ({daoStore, route, navigation}) => {
+const FullScreenCreationLoader = ({daoStore, route, navigation}) => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -19,7 +19,7 @@ const CommonCreationLoading = ({daoStore, route, navigation}) => {
         <View style={styles.body}>
           <View style={{...styles.slide1, ...layout.content}}>
             <Image
-              source={require('../../../Assets/loader-4-drumroll.png')}
+              source={require('../Assets/loader-4-drumroll.png')}
               style={styles.image}
             />
             <Loader />
@@ -29,7 +29,7 @@ const CommonCreationLoading = ({daoStore, route, navigation}) => {
                 ...layout.marginTopXL,
                 ...layout.marginBottomS,
               }}>
-              Creating your common
+              {route.params.title}
             </Text>
             <Text
               style={{
@@ -37,8 +37,7 @@ const CommonCreationLoading = ({daoStore, route, navigation}) => {
                 lineHeight: 18,
                 textAlign: 'center',
               }}>
-              There are a lot of pieces to bring together. It might take a
-              couple of minutes.
+              {route.params.message}
             </Text>
           </View>
         </View>
@@ -139,4 +138,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommonCreationLoading;
+export default FullScreenCreationLoader;
