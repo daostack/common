@@ -108,7 +108,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           isBoosted={true}
           stage={proposalCardInfo.proposalInfo?.stageStr}
           winningOutcome={proposalCardInfo.proposalInfo?.winningOutcome}
-          hasPassedExpiryDate={moment().isAfter(proposalCardInfo.proposalInfo?.closingAt)}
+          hasPassedExpiryDate={moment().isAfter(moment.unix(proposalCardInfo.proposalInfo?.closingAt))}
         />
 
         <View
