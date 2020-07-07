@@ -42,8 +42,8 @@ const AmountField = ({
     <View>
       <View style={isCustomSelected ? styles.hidden : {}}>
         <JoinAmount amount={minFeeToJoin} onPress={onAmountPress} />
-        <JoinAmount amount={2 * minFeeToJoin} onPress={onAmountPress} />
         <JoinAmount amount={2.5 * minFeeToJoin} onPress={onAmountPress} />
+        <JoinAmount amount={5 * minFeeToJoin} onPress={onAmountPress} />
         <JoinAmount isCustom={true} onPress={onAmountPress} />
       </View>
 
