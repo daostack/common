@@ -2,7 +2,7 @@ import React from 'react';
 import {TextInput, View, Text, StyleSheet} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
-import {layout, colors, text} from '../../Theme';
+import {layout, colors, text, font} from '../../Theme';
 
 class TextInputField extends React.Component {
   fieldValidation;
@@ -139,8 +139,8 @@ class TextInputField extends React.Component {
           value={
             validation
               ? validation.formStore.form.fields[
-                validation.name
-              ].value.toString()
+                  validation.name
+                ].value.toString()
               : value
           }
         />
@@ -197,9 +197,8 @@ const styles = StyleSheet.create({
     borderColor: colors.grey4,
     paddingHorizontal: 12,
     margin: 0,
-  },
-  textfieldRegular: {
-    borderColor: colors.grey4,
+    ...font.primary.regular,
+    ...font.fontSize(2),
   },
   textfieldFocus: {
     borderColor: colors.mainBlue,
@@ -209,19 +208,21 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    lineHeight: 38,
     letterSpacing: 0,
+    // marginBottom: 0,
+
     color: colors.slate,
     alignSelf: 'flex-start',
   },
   infoLabel: {
-    fontFamily: 'Roboto',
-    fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'italic',
-    letterSpacing: 0,
+    // marginTop: 12,
+    marginBottom: 0,
+    lineHeight: 38,
+    ...font.primary.italic,
+    ...font.fontSize(2),
     color: colors.paleblue,
     textAlign: 'right',
     flex: 1,

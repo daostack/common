@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
 import colors from './colors';
+import font from './font';
 
 const appFontFamily = {
   fontFamily: 'HelveticaNeue',
@@ -7,39 +8,27 @@ const appFontFamily = {
 
 export default StyleSheet.create({
   h1Black: {
-    ...appFontFamily,
-    fontSize: 24,
-    fontWeight: 'bold',
-    fontStyle: 'normal',
+    ...font.primary.bold,
+    ...font.fontSize(4),
     lineHeight: 29,
-    letterSpacing: 0,
     textAlign: 'center',
     color: colors.black,
   },
   h2Black: {
-    ...appFontFamily,
-    fontSize: 20,
-    fontWeight: 'bold',
-    fontStyle: 'normal',
-    letterSpacing: 0,
+    ...font.primary.bold,
+    ...font.fontSize(4),
     textAlign: 'center',
     color: colors.black,
   },
   h3Black: {
-    ...appFontFamily,
-    fontSize: 16,
-    fontWeight: 'bold',
-    fontStyle: 'normal',
-    letterSpacing: 0,
+    ...font.primary.bold,
+    ...font.fontSize(2),
     textAlign: 'center',
     color: colors.black,
   },
   h4Black: {
-    ...appFontFamily,
-    fontSize: 15,
-    fontWeight: 'bold',
-    fontStyle: 'normal',
-    letterSpacing: 0,
+    ...font.primary.bold,
+    ...font.fontSize(1),
     textAlign: 'center',
     color: colors.black,
   },
@@ -191,12 +180,8 @@ export default StyleSheet.create({
     color: colors.mainBlue,
   },
   smallBlackText: {
-    ...appFontFamily,
-    fontSize: 12,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 20,
-    letterSpacing: 0,
+    ...font.primary.regular,
+    ...font.fontSize(1),
     textAlign: 'center',
     color: colors.black,
   },
