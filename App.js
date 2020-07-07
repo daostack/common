@@ -57,7 +57,7 @@ import {
   ProposalScreen,
   PDFViewer,
   Browser,
-  CommonCreationLoading,
+  FullScreenCreationLoader,
 } from './src/Screens';
 
 import {ApolloClientConfig as client} from './src/Config';
@@ -415,8 +415,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           />
 
           <Stack.Screen
-            name="CommonCreationLoading"
-            component={CommonCreationLoading}
+            name="FullScreenCreationLoader"
+            component={FullScreenCreationLoader}
             options={({navigation, route}) => ({
               headerShown: false,
             })}

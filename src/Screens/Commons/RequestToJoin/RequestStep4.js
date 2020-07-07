@@ -27,6 +27,7 @@ const RequestStep4 = props => {
   const [headerHeight, setHeaderHeight] = useState(0);
   const isFirstStepSkipped = props.route.params.skipFirstStep;
 
+
   useEffect(() => {
     const height = scrollY.interpolate({
       inputRange: [50, 50],
@@ -58,14 +59,14 @@ const RequestStep4 = props => {
           },
         };
 
-        Toast.loading('Creating request to join...');
+        props.navigation.navigate({ name: 'FullScreenCreationLoader', params: { title: 'Piecing your request together' } });
 
         const proposalId = await ArcService.getInstance().createRequestToJoin(
           props.route.params.currDaoId,
           data,
         );
-        Toast.hide();
-        Toast.done(`JoinAndQuit Proposal with id ${proposalId} created!`);
+
+        props.navigation.pop();
 
         const navigate = CommonActions.navigate({
           name: 'CommonProfile',
@@ -77,6 +78,7 @@ const RequestStep4 = props => {
         props.navigation.dispatch(navigate);
       } catch (e) {
         console.log(e);
+        props.navigation.pop();
         Toast.error(e.toString());
       }
     }
