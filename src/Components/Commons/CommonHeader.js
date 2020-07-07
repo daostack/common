@@ -4,13 +4,11 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
-  Dimensions,
 } from 'react-native';
 import React from 'react';
 import { layout, colors, text } from '../../Theme';
 import FastImage from 'react-native-fast-image';
 import { BlurView } from '@react-native-community/blur';
-const { width } = Dimensions.get('window');
 
 const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, headerHeightLayouted }) => {
 

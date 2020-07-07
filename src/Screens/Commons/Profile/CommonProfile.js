@@ -42,14 +42,12 @@ import {
 } from 'rn-placeholder';
 import NavigationBar from 'react-native-navbar';
 
-const PARALLAX_HEADER_HEIGHT = 210;
 const STICKY_HEADER_HEIGHT = 80;
 
 const CommonProfile = ({
   navigation,
   route,
   bottomSheetStore,
-  daoStore,
   userStore,
 }) => {
   const [isMember, setMemberState] = useState(false);
@@ -408,7 +406,7 @@ const CommonProfile = ({
     return (
       <ScrollView
         contentContainerStyle={{
-          paddingHorizontal: 20,
+          padding: 20,
           justifyContent: 'center',
           alignItems: 'center',
         }}>
