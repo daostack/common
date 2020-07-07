@@ -514,7 +514,7 @@ const CommonProfile = ({
               />
             )}
             scrollEvent={ e => {
-              setDark(e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT - 20);
+              setDark(e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT - 40);
             }}
             renderForeground={() => (
               <CommonHeader
