@@ -210,17 +210,14 @@ const styles = StyleSheet.create({
   label: {
     ...font.primary.regular,
     ...font.fontSize(2),
-    lineHeight: 38,
+    lineHeight: font.lineHeightForm,
     letterSpacing: 0,
-    // marginBottom: 0,
-
     color: colors.slate,
     alignSelf: 'flex-start',
   },
   infoLabel: {
-    // marginTop: 12,
     marginBottom: 0,
-    lineHeight: 38,
+    lineHeight: font.lineHeightForm,
     ...font.primary.italic,
     ...font.fontSize(2),
     color: colors.paleblue,
