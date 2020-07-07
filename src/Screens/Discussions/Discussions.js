@@ -214,59 +214,59 @@ const Discussions = props => {
   const headerImages = () => {
     return (
       <>
-      {data.images ?
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={{marginBottom: 20}}>
-          <View style={styles.imageGallery}>
-            <View style={{width: 20}} />
-            {data.images.map((currImage, currIndex) => {
-              return (
-                <View
-                  key={`proposalImg_${currIndex}`}>
-                  <TouchableOpacity
-                    onPress={() => setImageGalleryIndex(currIndex)}>
-                    <Image
-                      key={currIndex}
-                      style={{
-                        ...styles.galleryImage,
-                        ...{width: width * 0.8 },
-                      }}
-                      resizeMode="cover"
-                      source={{uri: currImage.value}}
-                    />
-                  </TouchableOpacity>
-                </View>
-              );
-            })}
-            <View style={{width: 20}} />
-          </View>
-        </ScrollView>
-        : null}
-        </>
+        {data.images ?
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            style={{marginBottom: 20}}>
+            <View style={styles.imageGallery}>
+              <View style={{width: 20}} />
+              {data.images.map((currImage, currIndex) => {
+                return (
+                  <View
+                    key={`proposalImg_${currIndex}`}>
+                    <TouchableOpacity
+                      onPress={() => setImageGalleryIndex(currIndex)}>
+                      <Image
+                        key={currIndex}
+                        style={{
+                          ...styles.galleryImage,
+                          ...{width: width * 0.8 },
+                        }}
+                        resizeMode="cover"
+                        source={{uri: currImage.value}}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                );
+              })}
+              <View style={{width: 20}} />
+            </View>
+          </ScrollView>
+          : null}
+      </>
     );
   };
 
   const headerFiles = () => {
     return (
       <>
-      {data.files && (
-        data.files.map((f, index) => <View style={styles.adRow} key={`discussion_file_${index}`}>
-          <Icon name="file" color={colors.mainBlue} size={16} />
-          <TouchableOpacity
-            onPress={() =>
-              props.navigation.navigate('Browser', {
-                url: f.value,
-              })
-            }>
-            <Text style={styles.adsText}>
-              {fileName(f.value)}
-            </Text>
-          </TouchableOpacity>
-        </View> )
-      )
-      }
+        {data.files && (
+          data.files.map((f, index) => <View style={styles.adRow} key={`discussion_file_${index}`}>
+            <Icon name="file" color={colors.mainBlue} size={16} />
+            <TouchableOpacity
+              onPress={() =>
+                props.navigation.navigate('Browser', {
+                  url: f.value,
+                })
+              }>
+              <Text style={styles.adsText}>
+                {fileName(f.value)}
+              </Text>
+            </TouchableOpacity>
+          </View> )
+        )
+        }
       </>
     );
   };
