@@ -11,6 +11,7 @@ const MultiLinkField = props => {
     placeholderValueText,
     multiline,
     addMultiFieldBtnName,
+    label,
   } = props;
 
   // let fieldName = null;
@@ -32,7 +33,7 @@ const MultiLinkField = props => {
   };
 
   return (
-    <View style={{paddingTop: sizeL}}>
+    <View>
       {[...Array(count).keys()].map(currIndex => {
         const currItemValidation = {...props.validation}; //{...validation};
         currItemValidation.name = `${props.validation.name}_value_${currIndex +
@@ -54,6 +55,8 @@ const MultiLinkField = props => {
           <View key={`key_${props.validation.name}_${currIndex + 1}`}>
             {props.title ? (
               <TextInputField
+                label={label}
+                viewStyle={{marginTop: 0}}
                 innerLabel={maxCount ? `${currIndex + 1}/${maxCount}` : false}
                 placeholderText={props.title}
                 validation={currTitleItemValidation}
@@ -92,6 +95,8 @@ const styles = StyleSheet.create({
   addLinkBtn: {
     ...text.h3Black,
     color: colors.mainBlue,
+    ...font.primary.regular,
+    ...font.fontSize(2),
     textAlign: 'left',
   },
 });

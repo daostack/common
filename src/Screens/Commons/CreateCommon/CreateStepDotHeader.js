@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, StyleSheet, Animated, Text, TouchableOpacity} from 'react-native';
 import Icon from '../../../Assets/iconfont/Icon';
-import {colors} from '../../../Theme';
+import {colors, font} from '../../../Theme';
 
 const CreateStepDotHeader = props => {
   const headerHeight = props.headerHeight;
@@ -10,19 +10,17 @@ const CreateStepDotHeader = props => {
   return (
     <Animated.View style={[styles.header, {height: headerHeight}]}>
       <TouchableOpacity
-        style={{left: 0, top: 49, position: 'absolute'}}
+        style={styles.back}
         onPress={() => props.navigation.pop()}>
         <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
       </TouchableOpacity>
       <View style={styles.bar}>
-        <View
-          style={{
-            marginTop: 80,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
+        <View style={styles.barContent}>
           {[...Array(4).keys()].map(x => (
-            <View key={x} style={x < currentIndex ? styles.dot : styles.dot2} />
+            <View
+              key={x}
+              style={x === currentIndex - 1 ? styles.dot : styles.dot2}
+            />
           ))}
         </View>
         <Text style={styles.title}>{props.title}</Text>
@@ -39,6 +37,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     // bottomborder: 'solid',
   },
+  barContent: {
+    marginTop: 80,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  back: {
+    left: 0,
+    top: 49,
+    position: 'absolute',
+  },
   header: {
     position: 'absolute',
     top: 0,
@@ -54,7 +62,7 @@ const styles = StyleSheet.create({
     height: 10,
     width: 10,
     borderRadius: 5,
-    backgroundColor: colors.grey5,
+    backgroundColor: colors.mainBlue,
     borderColor: colors.mainBlue,
     borderWidth: 1,
     marginHorizontal: 5,
@@ -71,9 +79,8 @@ const styles = StyleSheet.create({
   title: {
     backgroundColor: 'transparent',
     color: colors.black,
-    fontSize: 16,
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
+    ...font.primary.bold,
+    ...font.fontSize(3),
     paddingVertical: 10,
   },
 });

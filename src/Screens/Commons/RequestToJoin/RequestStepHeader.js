@@ -6,8 +6,12 @@ const {width} = Dimensions.get('window');
 import * as Progress from 'react-native-progress';
 
 const RequestStepHeader = props => {
-  const currentIndex = props.isFirstStepSkipped ? props.currentIndex - 1 : props.currentIndex;
-  const progressList = props.isFirstStepSkipped ? [0, 0.5, 1.0] : [0, 0.35, 0.7, 1.0];
+  const currentIndex = props.isFirstStepSkipped
+    ? props.currentIndex - 1
+    : props.currentIndex;
+  const progressList = props.isFirstStepSkipped
+    ? [0, 0.5, 1.0]
+    : [0, 0.35, 0.7, 1.0];
 
   const ovalStyle = index => {
     if (props.currentIndex > index) {
@@ -56,13 +60,15 @@ const RequestStepHeader = props => {
         }}
       />
       {/* <TouchableOpacity onPress={() => setCurrentIndex(0)}> */}
-      {!props.isFirstStepSkipped && <View
-        style={currentIndex === 0 ? {...styles.oval} : {...styles.ovalDone}}>
-        <Icon
-          name={currentIndex === 0 ? 'agenda' : 'check'}
-          size={currentIndex > 0 ? 16 : 24}
-        />
-      </View>}
+      {!props.isFirstStepSkipped && (
+        <View
+          style={currentIndex === 0 ? {...styles.oval} : {...styles.ovalDone}}>
+          <Icon
+            name={currentIndex === 0 ? 'agenda' : 'check'}
+            size={currentIndex > 0 ? 16 : 24}
+          />
+        </View>
+      )}
       {/* </TouchableOpacity> */}
       {/* <TouchableOpacity onPress={() => setCurrentIndex(1)}> */}
       <View style={ovalStyle(1)}>
@@ -100,18 +106,18 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#ffffff',
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: colors.mainBlue,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: colors.backgroundBlue,
   },
   oval2: {
     width: 32,
     height: 32,
     borderRadius: 24,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.backgroundBlue,
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: colors.grey4,
@@ -127,7 +133,7 @@ const styles = StyleSheet.create({
     borderColor: colors.mainBlue,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#EBF9FC',
+    backgroundColor: colors.backgroundBlue,
   },
   iconBlue: {
     tintColor: colors.mainBlue,

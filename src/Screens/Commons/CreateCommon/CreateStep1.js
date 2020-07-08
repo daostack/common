@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Text,
   TouchableOpacity,
   View,
   ScrollView,
@@ -8,6 +7,7 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
+
 import TextInputField from '../../../Components/FormFields/TextInputField';
 import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
 import {colors} from '../../../Theme';
@@ -18,6 +18,8 @@ import NavigationBar from 'react-native-navbar';
 import Icon from '../../../Assets/iconfont/Icon';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import MultiLinkField from '../../../Components/FormFields/MultiLinkField';
+
+import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 
 import RequestStepActionButton from '../RequestStepActionButton';
 
@@ -54,11 +56,16 @@ const CreateStep1 = props => {
         title={{
           title: 'Create a common',
         }}
-        leftButton={
+        rightButton={
           <TouchableOpacity
             style={{justifyContent: 'center'}}
             onPress={() => props.navigation.pop()}>
-            <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
+            <Icon
+              name="close1"
+              size={18}
+              style={{marginRight: 20}}
+              color="black"
+            />
           </TouchableOpacity>
         }
       />
@@ -87,19 +94,12 @@ const CreateStep1 = props => {
             // alignItems: 'center',
             backgroundColor: 'white',
           }}>
-          <Text
-            style={{
-              marginTop: 14,
-              fontWeight: '700',
-              fontSize: 18,
-              textAlign: 'center',
-            }}>
-            General Info
-          </Text>
-          <Text style={{marginTop: 12, marginBottom: 23, textAlign: 'center'}}>
-            Describe your cause so people will understand what you want to
-            achieve and how
-          </Text>
+          <CreateStepHeaderTitle
+            title="General Info"
+            subtitle="
+            Describe your cause and let the community learn more about your
+            plans and goals"
+          />
           <View
             style={{
               backgroundColor: colors.grey4,
@@ -125,12 +125,12 @@ const CreateStep1 = props => {
           <TextInputField
             value={''}
             viewStyle={{alignSelf: 'stretch'}}
-            label="Byline"
+            label="Mision statement"
             infoLabel="Required"
             numberOfLines={3}
             // returnKeyType="next"
             multiline={true}
-            placeholderText="A sentence that describes what you want to achieve"
+            placeholderText="What is the ultimate goal of the Common?"
             autoCapitalize="none"
             autoCorrect={false}
             validation={{
@@ -141,12 +141,12 @@ const CreateStep1 = props => {
           />
           <TextInputField
             value={''}
-            label="Description"
+            label="About"
             infoLabel="Required"
             numberOfLines={5}
             multiline={true}
             returnKeyType="next"
-            placeholderText="Give some more detail about your cause, how are you going to support it, why you are passionate about it and why others should join."
+            placeholderText="Describe your cause and let others know why they should join you. What makes you passionate about it? What does success look like?"
             autoCapitalize="none"
             autoCorrect={false}
             validation={{
@@ -157,6 +157,7 @@ const CreateStep1 = props => {
           />
           <MultiLinkField
             allowsEditing={true}
+            label="Links"
             title="Title"
             maxCount={5}
             validation={{
