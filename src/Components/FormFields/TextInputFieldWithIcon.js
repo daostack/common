@@ -209,8 +209,8 @@ class TextInputFieldWithIcon extends React.Component {
             value={
               validation
                 ? validation.formStore.form.fields[
-                    validation.name
-                  ].value.toString()
+                  validation.name
+                ].value.toString()
                 : value
             }
           />
