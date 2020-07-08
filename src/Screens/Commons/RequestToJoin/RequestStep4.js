@@ -143,7 +143,7 @@ const RequestStep4 = props => {
 
             <TextInputField
               label="Credit card number"
-              value={__DEV__ ? 4970101122334422 : ''}
+              value={/* __DEV__ ? */ 4970101122334422}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NUMBER,
                 formStore: props.paymentFormStore,
@@ -153,7 +153,7 @@ const RequestStep4 = props => {
 
             <TextInputField
               label="Name on card"
-              value={__DEV__ ? 'Tester Tester' : ''}
+              value={/* __DEV__ ? */ 'Tester Tester'}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NAME,
                 formStore: props.paymentFormStore,
@@ -177,7 +177,7 @@ const RequestStep4 = props => {
                   width: '45%',
                 }}
                 label="Expiration date"
-                value={__DEV__ ? '10/20' : ''}
+                value={/* __DEV__ ?  */'10/20'}
                 placeholderText="MM/YY"
                 validation={{
                   name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
@@ -194,7 +194,7 @@ const RequestStep4 = props => {
                   width: '45%',
                 }}
                 label="CVV"
-                value={__DEV__ ? 123 : ''}
+                value={/* __DEV__ ? */ 123}
                 validation={{
                   name: RequestToJoinForm.FIELD_CVV,
                   formStore: props.paymentFormStore,
