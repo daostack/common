@@ -28,6 +28,13 @@
 		151C20542499E4C4006170CC /* common-dev-notification-service-ext.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 151C20202499CEA3006170CC /* common-dev-notification-service-ext.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		151C20602499E503006170CC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 151C205C2499E503006170CC /* GoogleService-Info.plist */; };
 		151C20622499E99B006170CC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 151C20612499E99B006170CC /* GoogleService-Info.plist */; };
+		153D23F924B5BE9A007E8F37 /* NunitoSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42C6A385306D40069FD183D7 /* NunitoSans-Bold.ttf */; };
+		153D23FA24B5BE9A007E8F37 /* NunitoSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F2C9B59F8FFB49DFA4FF15CA /* NunitoSans-Italic.ttf */; };
+		153D23FB24B5BE9A007E8F37 /* NunitoSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8D6FB52253054110853F2376 /* NunitoSans-Light.ttf */; };
+		153D23FC24B5BE9A007E8F37 /* NunitoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A40576CB8A1C45D8A51C0FD5 /* NunitoSans-Regular.ttf */; };
+		153D23FD24B5BE9A007E8F37 /* NunitoSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0EBB067512D6426FB6FE57F2 /* NunitoSans-SemiBold.ttf */; };
+		153D23FE24B5BE9A007E8F37 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 30000652B0094E87A70CF813 /* Nunito-Regular.ttf */; };
+		153D23FF24B5BE9A007E8F37 /* NotoSerif-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 22B4E7E823794DF1A2079007 /* NotoSerif-Bold.ttf */; };
 		15AD00A224AB2E0F004FDADE /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 15AD00A124AB2E0F004FDADE /* Config.xcconfig */; };
 		15AD00A324AB2E0F004FDADE /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 15AD00A124AB2E0F004FDADE /* Config.xcconfig */; };
 		15AD00A424AB2E0F004FDADE /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 15AD00A124AB2E0F004FDADE /* Config.xcconfig */; };
@@ -512,6 +519,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				153D23F924B5BE9A007E8F37 /* NunitoSans-Bold.ttf in Resources */,
+				153D23FA24B5BE9A007E8F37 /* NunitoSans-Italic.ttf in Resources */,
+				153D23FB24B5BE9A007E8F37 /* NunitoSans-Light.ttf in Resources */,
+				153D23FC24B5BE9A007E8F37 /* NunitoSans-Regular.ttf in Resources */,
+				153D23FD24B5BE9A007E8F37 /* NunitoSans-SemiBold.ttf in Resources */,
+				153D23FE24B5BE9A007E8F37 /* Nunito-Regular.ttf in Resources */,
+				153D23FF24B5BE9A007E8F37 /* NotoSerif-Bold.ttf in Resources */,
 				151C203F2499E3F4006170CC /* LaunchScreen.storyboard in Resources */,
 				151C20402499E3F4006170CC /* Assets.xcassets in Resources */,
 				151C20412499E3F4006170CC /* Main.storyboard in Resources */,
