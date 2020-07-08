@@ -449,7 +449,7 @@ const CommonProfile = ({
           <TouchableOpacity
             style={{justifyContent: 'center'}}
             onPress={() => navigation.pop()}>
-            <BlurView style={{padding:7, borderRadius: 20}} blurType={dark ? 'light' : 'dark'}>
+            <BlurView style={{padding:5, borderRadius: 15}} blurType={dark ? 'light' : 'dark'}>
               <Icon name="left-arrow" size={32} color={dark ? 'black' : 'white'}/>
             </BlurView>
           </TouchableOpacity>
@@ -459,14 +459,14 @@ const CommonProfile = ({
             <TouchableOpacity
               style={{justifyContent: 'center', marginRight: 5}}
               onPress={shareCommon}>
-              <BlurView style={{padding:8, borderRadius: 20}} blurType={dark ? 'light' : 'dark'}>
+              <BlurView style={{padding:8, borderRadius: 15}} blurType={dark ? 'light' : 'dark'}>
                 <Icon name="share-32" size={25} color={dark ? 'black' : 'white'}/>
               </BlurView>
             </TouchableOpacity>
             <TouchableOpacity
               style={{justifyContent: 'center'}}
               onPress={shareCommon}>
-              <BlurView style={{padding: 5, borderRadius: 18}} blurType={dark ? 'light' : 'dark'}>
+              <BlurView style={{padding: 5, borderRadius: 15}} blurType={dark ? 'light' : 'dark'}>
                 <Icon name="menu-horizontal" size={32}  color={dark ? 'black' : 'white'}/>
               </BlurView>
             </TouchableOpacity>
@@ -829,7 +829,7 @@ const styles = StyleSheet.create({
   fixedSection: {
     width: '100%',
     position: 'absolute',
-    bottom: 5,
+    bottom: 0,
     left: 5,
   },
   fixedSectionText: {
