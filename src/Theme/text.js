@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 import colors from './colors';
 
 const appFontFamily = {
-  fontFamily: 'HelveticaNeue',
+  fontFamily: 'NunitoSans-Regular',
 };
 
 export default StyleSheet.create({

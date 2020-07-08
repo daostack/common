@@ -9,6 +9,7 @@ import React from 'react';
 import { layout, colors, text } from '../../Theme';
 import FastImage from 'react-native-fast-image';
 import { BlurView } from '@react-native-community/blur';
+import Icon from '../../Assets/iconfont/Icon';
 
 const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, headerHeightLayouted }) => {
 
@@ -47,9 +48,12 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, head
             {commonInfo.description}
           </Text>
           {isMember && navigation ? (
-            <BlurView style={{ padding: 8, borderRadius: 8}}>
+            <BlurView style={{ paddingVertical: 10, paddingHorizontal: 15, borderRadius: 10}}>
               <TouchableOpacity onPress={openAgendaScreen}>
-                <Text style={styles.headerViewAgenda}>View agenda ➤</Text>
+                <View style={{flexDirection: 'row'}}>
+                  <Text style={styles.headerViewAgenda}>View agenda</Text>
+                  <Icon name="right-arrow" color="white" />
+                </View>
               </TouchableOpacity>
             </BlurView>
           ) : null}
@@ -105,6 +109,7 @@ const styles = StyleSheet.create({
   },
   headerTitleWhite: {
     ...text.h1Black,
+    fontFamily: 'NotoSerif-Bold',
     color: colors.white,
     textAlign: 'center',
     // width: '30%',
@@ -122,6 +127,8 @@ const styles = StyleSheet.create({
   headerViewAgenda: {
     ...text.smallGreyText,
     color: colors.grey4,
+    fontSize: 14,
+    marginRight: 5,
   },
 });
 
