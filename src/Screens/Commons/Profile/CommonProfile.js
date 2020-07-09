@@ -248,7 +248,7 @@ const CommonProfile = ({
                 }
               />
             </View>
-            <TouchableOpacity style={layout.flexRow}>
+            <View style={layout.flexRow}>
               <Text style={text.h4Black}>
                 Pending (
                 {pendingProposalsData &&
@@ -256,7 +256,7 @@ const CommonProfile = ({
                 )
               </Text>
               <Icon name="right-arrow" />
-            </TouchableOpacity>
+            </View>
           </TouchableOpacity>
         </View>
       );
