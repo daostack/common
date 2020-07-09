@@ -518,8 +518,8 @@
 			targets = (
 				15E907252417D1B9008A5750 /* common */,
 				15CD031C246E87AD00EDADE2 /* common-notification-service-ext */,
-				151C20182499CEA3006170CC /* common-dev-notification-service-ext */,
 				151C202C2499E3F4006170CC /* common-stg */,
+				151C20182499CEA3006170CC /* common-dev-notification-service-ext */,
 			);
 		};
 /* End PBXProject section */

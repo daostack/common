@@ -39,6 +39,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>CodePushDeploymentKey</key>
+	<string>l3krvcsAN1v6oVAplfCD6EyO1irem_ez6tiPF</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<string>NO</string>
 	<key>LSRequiresIPhoneOS</key>

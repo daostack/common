@@ -10,6 +10,7 @@ import UIKit
 import React
 import Firebase
 import GoogleSignIn
+import CodePush
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -45,7 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
         
-        let jsCodeLocation = RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
+        let jsCodeLocation = sourceURL()
         bridge = RCTBridge(bundleURL: jsCodeLocation, moduleProvider: nil, launchOptions: nil)
         
         let rootView = RCTRootView(bridge: bridge!, moduleName: "common", initialProperties: launchOptions)
@@ -58,6 +59,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.makeKeyAndVisible()
         
         return true
+    }
+    
+    func sourceURL() -> URL? { 
+        #if DEBUG
+            return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
+        #else
+            return CodePush.bundleURL()
+        #endif
     }
 
 }
