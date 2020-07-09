@@ -8,6 +8,7 @@ import {
   Dimensions,
   SafeAreaView,
   Animated,
+  Platform,
 } from 'react-native';
 import TextInputFieldWithIcon from '../../../Components/FormFields/TextInputFieldWithIcon';
 import {colors} from '../../../Theme';
@@ -39,7 +40,7 @@ const CreateStep2 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     const name = CreateCommonForm.DEADLINE;
     props.fundingFormStore.registerFormField(name, 'required');
     switch (segmentedIndex) {
@@ -69,13 +70,64 @@ const CreateStep2 = props => {
       break;
     }
     }
-  }, [segmentedIndex, pickDate, props.fundingFormStore]);
+  }, [segmentedIndex, pickDate, props.fundingFormStore]); */
+
+  const onDatePickerChange = (event, date) => {
+    console.log(date);
+    props.fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, moment(date || {}).unix());
+    if (Platform.OS === 'android') {
+      setShow(false);
+    }
+    setPickDate(date);
+  };
+
+  const onTabChange = (index) => {
+    const name = CreateCommonForm.DEADLINE;
+    props.fundingFormStore.registerFormField(name, 'required');
+    switch (index) {
+    case 0: {
+      props.fundingFormStore.fieldChanged(
+        name,
+        moment()
+          .add('7', 'days')
+          .unix(),
+      );
+      setShow(false);
+      break;
+    }
+    case 1: {
+      props.fundingFormStore.fieldChanged(
+        name,
+        moment()
+          .add('1', 'months')
+          .unix(),
+      );
+      setShow(false);
+      break;
+    }
+    case 2: {
+      setShow(true);
+      break;
+    }
+    }
+    setSegmentedIndex(index);
+  };
 
   const push = () => {
     if (props.fundingFormStore.isFormValid()) {
       props.navigation.navigate('CreateStep3');
     }
   };
+
+  const DatePicker = <DateTimePicker
+    testID="dateTimePicker"
+    timeZoneOffsetInMinutes={0}
+    value={pickDate ? pickDate : new Date()}
+    minimumDate={new Date()}
+    is24Hour={true}
+    display="default"
+    onChange={onDatePickerChange}
+  />;
 
   return (
     <SafeAreaView
@@ -165,26 +217,27 @@ const CreateStep2 = props => {
               </Text>
             </View>
             <SegmentedControlTab
-              tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 40}}
-              tabStyle={{borderColor: colors.grey4}}
-              activeTabStyle={{backgroundColor: colors.mainBlue}}
+              tabsContainerStyle={{ marginTop: 16, marginBottom: 40, height: 40 }}
+              tabStyle={{ borderColor: colors.grey4 }}
+              activeTabStyle={{ backgroundColor: colors.mainBlue }}
               values={[
                 '1 week',
                 '1 month',
                 pickDate ? moment(pickDate).format('MMM DD, YYYY') : 'Custom',
               ]}
-              tabTextStyle={{color: colors.mainBlue}}
+              tabTextStyle={{ color: colors.mainBlue }}
               borderRadius={8}
               selectedIndex={segmentedIndex}
-              onTabPress={index => setSegmentedIndex(index)}
+              onTabPress={onTabChange}
             />
-            <Modal
-              isVisible={show}
+            {Platform.OS === 'ios' ? <Modal
+              visible={show}
+              transparent={true}
               avoidKeyboard={true}
               backdropOpacity={0.3}
               onBackdropPress={() => setShow(false)}
               style={styles.view}>
-              <View style={{backgroundColor: 'white'}}>
+              <View style={{ backgroundColor: 'white' }}>
                 <View
                   style={{
                     height: 50,
@@ -205,17 +258,9 @@ const CreateStep2 = props => {
                     </Text>
                   </TouchableOpacity>
                 </View>
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  timeZoneOffsetInMinutes={0}
-                  value={pickDate === null ? new Date() : pickDate}
-                  minimumDate={new Date()}
-                  is24Hour={true}
-                  display="default"
-                  onChange={(event, date) => setPickDate(date)}
-                />
+                {DatePicker}
               </View>
-            </Modal>
+            </Modal> : show && (DatePicker) }
           </View>
           <TextInputFieldWithIcon
             iconName="dollar"
