@@ -45,34 +45,34 @@ const CreateStep2 = props => {
     const name = CreateCommonForm.DEADLINE;
     props.fundingFormStore.registerFormField(name, 'required');
     switch (segmentedIndex) {
-      case 0: {
-        props.fundingFormStore.fieldChanged(
-          name,
-          moment()
-            .add('7', 'days')
-            .unix(),
-        );
-        setShow(false);
-        break;
-      }
-      case 1: {
-        props.fundingFormStore.fieldChanged(
-          name,
-          moment()
-            .add('1', 'months')
-            .unix(),
-        );
-        setShow(false);
-        break;
-      }
-      case 2: {
-        props.fundingFormStore.fieldChanged(
-          name,
-          moment(pickDate || {}).unix(),
-        );
-        setShow(true);
-        break;
-      }
+    case 0: {
+      props.fundingFormStore.fieldChanged(
+        name,
+        moment()
+          .add('7', 'days')
+          .unix(),
+      );
+      setShow(false);
+      break;
+    }
+    case 1: {
+      props.fundingFormStore.fieldChanged(
+        name,
+        moment()
+          .add('1', 'months')
+          .unix(),
+      );
+      setShow(false);
+      break;
+    }
+    case 2: {
+      props.fundingFormStore.fieldChanged(
+        name,
+        moment(pickDate || {}).unix(),
+      );
+      setShow(true);
+      break;
+    }
     }
   }, [segmentedIndex, pickDate, props.fundingFormStore]);
 

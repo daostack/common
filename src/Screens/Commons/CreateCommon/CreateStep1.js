@@ -159,7 +159,6 @@ const CreateStep1 = props => {
             allowsEditing={true}
             label="Links"
             title="Title"
-            maxCount={5}
             validation={{
               name: CreateCommonForm.LINKS,
               formStore: props.generalInfoFormStore,
