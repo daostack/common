@@ -10,8 +10,9 @@ import FirebaseService from '../Services/FirebaseService';
 ethers.Contract.prototype.sendToRelayer = async function (funcName, params, value = '0') {
   const data = this.interface.functions[funcName].encode(params);
   const manager = await WalletManager.getInstance();
-  // console.log(data);
   const response = await manager.execTransaction(manager.safeAddress, this.address, value, data);
+  console.log(response);
+
   return response.data?.txHash;
 };
 
@@ -19,8 +20,7 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
   const txHash = await this.sendToRelayer(funcName, params, value);
   console.log('txHash ->', txHash);
   if (!txHash) {
-    // throw new Error('');
-    return null;
+    throw new Error('No transaction has found when sending transaction!', funcName, params, value);
   }
   const manager = await WalletManager.getInstance();
   const receipt = await manager.provider.waitForTransaction(txHash);

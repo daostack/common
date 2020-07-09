@@ -1,8 +1,10 @@
 export default {
-  mainBlue: '#3cc7e1',
+  mainBlue: '#7786ff',
   lightBlue: '#f7fcfe',
   black: '#001a36',
   error: '#ef5456',
+  greySteel: '#76839b',
+  backgroundBlue: '#EBF9FC',
   gray1: '#7f7f7f',
   slate: '#4f5c69',
   grey2: '#b2b2b2',

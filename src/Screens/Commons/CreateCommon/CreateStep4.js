@@ -28,15 +28,13 @@ import Toast from '../../../Util/Toast';
 import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ArcService from '../../../Services/ArcService';
-const { width } = Dimensions.get('window');
-import { CommonActions } from '@react-navigation/native';
-import { db } from '../../../Firebase';
+const {width} = Dimensions.get('window');
+import {CommonActions} from '@react-navigation/native';
 
 const CreateStep4 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
-  const [newCommon, setNewCommon] = useState(false);
 
   const form = {
     ...props.generalInfoFormStore.getChangedFormFieldsJson(),
@@ -45,9 +43,10 @@ const CreateStep4 = props => {
     ...props.reviewFormStore.getChangedFormFieldsJson(),
   };
   const [templateIndex, setTemplateIndex] = useState(1);
-  const getImageUrl = index => `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
+  const getImageUrl = index =>
+    `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
   const [imageURI, setImageURI] = useState(
-    getImageUrl(1 + Math.floor(Math.random() * Math.floor(7)))
+    getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))),
   );
   const [avatarURL, setAvatarURL] = useState(null);
 
@@ -69,25 +68,6 @@ const CreateStep4 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  useEffect(() => {
-    console.log('NEW COMMON ADDRESS', newCommonAddress);
-    const getNewDao = async (address) =>
-      await db
-        .collection('daos')
-        //.doc('0x00815d98179149e82aeeea34819f17e65ae6bf26')
-        .doc(address)
-        .get()
-        .then(snapshots => {
-          if (!snapshots) {
-            return null;
-          }
-          console.log('New common fetched:', snapshots.data());
-          setNewCommon(snapshots.data());
-          //setShowModal(true);
-        });
-    getNewDao(newCommonAddress);
-  }, [newCommonAddress]);
-
   const changeIndex = number => {
     let index = templateIndex + number;
     if (index <= 1) {
@@ -104,12 +84,10 @@ const CreateStep4 = props => {
   };
 
   const goToCommon = () => {
-    console.log('goto common');
-    //Toast.error('This is not implemented yet');
     const navigate = CommonActions.navigate({
       name: 'CommonProfile',
       params: {
-        currCommon: newCommon,
+        commonId: newCommonAddress,
       },
     });
     props.navigation.popToTop();
@@ -172,16 +150,16 @@ const CreateStep4 = props => {
 
       const commonAddress = await ArcService.getInstance().createCommon(
         data,
-        props.navigation
+        props.navigation,
       );
 
       if (commonAddress) {
         setNewCommonAddress(commonAddress);
-        //setShowModal(true);
       }
 
       return {commonAddress};
     } catch (e) {
+      props.navigation.pop();
       showErrorPopUp(props.bottomSheetStore, e.message);
     }
   };

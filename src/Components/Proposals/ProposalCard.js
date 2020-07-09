@@ -8,6 +8,7 @@ import FirebaseService from '../../Services/FirebaseService';
 import ProposalApprovalTag from './ProposalApprovalTag';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Toast from '../../Util/Toast';
+import moment from 'moment';
 
 const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
@@ -107,6 +108,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           isBoosted={true}
           stage={proposalCardInfo.proposalInfo?.stageStr}
           winningOutcome={proposalCardInfo.proposalInfo?.winningOutcome}
+          hasPassedExpiryDate={moment().isAfter(moment.unix(proposalCardInfo.proposalInfo?.closingAt))}
         />
 
         <View

@@ -63,7 +63,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
         membersInfo.map((member, i) => {
           if (horizontal) {
             return (
-              <TouchableOpacity onPress={ () => showUserProfile(member.uid) }>
+              <TouchableOpacity onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
                 <MemberImage
                   key={i}
                   userInfo={member}
@@ -73,7 +73,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
             );
           } else {
             return (
-              <TouchableOpacity onPress={ () => showUserProfile(member.uid) }>
+              <TouchableOpacity onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
                 <MemberCard
                   key={i}
                   //name={member.displayName}

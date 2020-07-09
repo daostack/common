@@ -132,6 +132,7 @@ const ProposalData = props => {
             openBoostedInfo={openBoostedInfo}
             stage={proposalInfo.stageStr}
             winningOutcome={proposalInfo.winningOutcome}
+            hasPassedExpiryDate={moment().isAfter(moment.unix(proposalInfo?.closingAt))}
           />
           <View style={layout.content}>
             <View style={styles.proposalRowSubtitle}>
@@ -234,8 +235,8 @@ const ProposalData = props => {
                 <Icon name="file" color={colors.mainBlue} size={16} />
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate('PDFViwer', {
-                      uri: f.value,
+                    navigation.navigate('Browser', {
+                      url: f.value,
                     })
                   }>
                   <Text style={styles.adsText}>

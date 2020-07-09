@@ -98,7 +98,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
           setFlagTx.method,
           setFlagTx.args,
         );
-        // console.log(setFlagTxReceipt);
+        console.log(setFlagTxReceipt);
         console.log('setFlagTxReceipt.transactionHash ->', setFlagTxReceipt.transactionHash);
         fundingGoalReachedFlag = await daoContract.db('FUNDED_BEFORE_DEADLINE');
         console.log(`fundingGoalReachedFlag value is now ${fundingGoalReachedFlag}`);
@@ -138,8 +138,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
       transaction.args,
     );
 
-    console.log('RECEIPT -> ', receipt);
-
+    // console.log('RECEIPT -> ', receipt);
     console.log(
       `Transaction with ${receipt.transactionHash} was mined`,
     );
@@ -151,7 +150,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     if (!events.NewFundingProposal) {
       throw Error('Expected (but did not find a NewFundingProposal event: something went wrong');
     }
-    console.log(events.NewFundingProposal);
+    // console.log(events.NewFundingProposal);
 
     const proposalId = events.NewFundingProposal._proposalId;
 
@@ -159,6 +158,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     return proposalId;
   } catch (e) {
     console.log(e);
+    console.log(e.response);
     throw e;
   }
 };

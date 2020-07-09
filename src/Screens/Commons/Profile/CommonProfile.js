@@ -7,7 +7,10 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
+  ScrollView,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
+import Share from 'react-native-share';
 import {text, layout, colors, sizeL} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
 import {TabView, TabBar} from 'react-native-tab-view';
@@ -21,24 +24,30 @@ import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '../../../Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
-import Toast from '../../../Util/Toast';
-import HeaderImageScrollView from 'react-native-image-header-scroll-view';
+// import HeaderImageScrollView from 'react-native-image-header-scroll-view';
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '../../../Components/Commons/CommonHeader';
 import {numberFormatter} from '../../../Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '../../../Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
-import { calcIsFundingStage } from '../../../Util';
+import {calcIsFundingStage} from '../../../Util';
+import firestore from '@react-native-firebase/firestore';
+import {
+  Placeholder,
+  PlaceholderMedia,
+  PlaceholderLine,
+  Fade,
+} from 'rn-placeholder';
+import NavigationBar from 'react-native-navbar';
 
-const CommonProfile = ({
-  navigation,
-  route,
-  bottomSheetStore,
-  daoStore,
-  userStore,
-}) => {
+const STICKY_HEADER_HEIGHT = 80;
+
+const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const [isMember, setMemberState] = useState(false);
+
+  const window = Dimensions.get('window');
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -46,21 +55,47 @@ const CommonProfile = ({
     {key: 'proposals', title: 'Proposals', icon: 'proposals'},
     {key: 'history', title: 'History', icon: 'history'},
   ]);
-  const [currCommon, setCurrCommon] = useState(false);
+
+  const routeCommon = route.params.currCommon;
+  const [currCommon, setCurrCommon] = useState(routeCommon);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
-  const routeCommon = route.params.currCommon;
-  const daoMembers = route.params.currCommon.members;
-  const showReqToJoin = !userStore.userInfo || (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
-  const isFundingStage = calcIsFundingStage(routeCommon.fundingGoalDeadline);
+  const commonId = route.params.currCommon?.id || route.params.commonId;
+  const daoMembers = route.params.currCommon?.members;
+  const showReqToJoin =
+    !userStore.userInfo ||
+    (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
+  const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
+
+  const [dark, setDark] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(STICKY_HEADER_HEIGHT);
+
+  const headerHeightLayouted = height => {
+    if (height - headerHeight > 3) {
+      // To avoid render multiple times
+      // console.log('height ->', height);
+      setHeaderHeight(height + 35);
+    }
+    return height;
+  };
+
+  useEffect(() => {
+    if (route.params.commonId) {
+      const unsubscribe = firestore()
+        .collection('daos')
+        .doc(commonId)
+        .onSnapshot(snapshot => {
+          setCurrCommon(snapshot.data());
+        });
+      return unsubscribe;
+    }
+  }, [commonId]);
 
   useEffect(() => {
     setShowRequestSentModal(route.params.showRequestSentModal);
     setCurrCommon(routeCommon);
-    if (
-      userStore.userInfo && userStore.isDaoMember(daoMembers)
-    ) {
+    if (userStore.userInfo && userStore.isDaoMember(daoMembers)) {
       setMemberState(true);
     } else {
       setMemberState(false);
@@ -72,7 +107,7 @@ const CommonProfile = ({
       let unsubscribe = null;
       let getPendingProposalsData = async () => {
         unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
-          routeCommon.id,
+          commonId,
           userStore.userInfo.safeAddress,
           data => {
             setPendingProposalsData({...data});
@@ -86,14 +121,17 @@ const CommonProfile = ({
         }
       };
     }
-  }, [routeCommon.id, isMember, userStore.userInfo]);
+  }, [commonId, isMember, userStore.userInfo]);
 
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
       const getPendingProposalsDiscussionCount = async () => {
-        const count = await ProposalService.getInstance().getProposalDiscussionsCount(pendingProposalsData.usersPendingProposal.id);
-        if (userPendingPropDiscCount !== count)
-        {setUserPendingPropDiscCount(count);}
+        const count = await ProposalService.getInstance().getProposalDiscussionsCount(
+          pendingProposalsData.usersPendingProposal.id,
+        );
+        if (userPendingPropDiscCount !== count) {
+          setUserPendingPropDiscCount(count);
+        }
       };
       getPendingProposalsDiscussionCount();
     }
@@ -125,13 +163,19 @@ const CommonProfile = ({
   );
 
   const Discussions = () => {
-    return <DiscussionList navigation={navigation} commonId={routeCommon.id} />;
+    return <DiscussionList navigation={navigation} commonId={currCommon.id} />;
   };
 
   const Proposals = () => {
     return (
       <View style={{padding: sizeL}}>
-        <ProposalsList onlyFundingRequests={true} isMember={isMember} navigation={navigation} commonId={currCommon.id} commonName={routeCommon.name} />
+        <ProposalsList
+          onlyFundingRequests={true}
+          isMember={isMember}
+          navigation={navigation}
+          commonId={currCommon.id}
+          commonName={currCommon.name}
+        />
       </View>
     );
   };
@@ -141,7 +185,7 @@ const CommonProfile = ({
       <View style={{padding: sizeL}}>
         <ProposalsList
           isMember={isMember}
-          commonName={routeCommon.name}
+          commonName={currCommon.name}
           navigation={navigation}
           commonId={currCommon.id}
           isHistory={true}
@@ -152,14 +196,14 @@ const CommonProfile = ({
 
   const renderScene = scene => {
     switch (scene.route.key) {
-    case 'discussions':
-      return Discussions();
-    case 'proposals':
-      return Proposals();
-    case 'history':
-      return History();
-    default:
-      return null;
+      case 'discussions':
+        return Discussions();
+      case 'proposals':
+        return Proposals();
+      case 'history':
+        return History();
+      default:
+        return null;
     }
   };
 
@@ -172,7 +216,7 @@ const CommonProfile = ({
       return (
         <View style={styles.agendaBox}>
           <Text style={styles.agendaDescription}>
-            {currCommon.metadata?.courseOfAction}
+            {currCommon.metadata.courseOfAction}
           </Text>
 
           <TouchableOpacity onPress={openAgendaScreen}>
@@ -200,7 +244,7 @@ const CommonProfile = ({
                 }
               />
             </View>
-            <TouchableOpacity style={layout.flexRow}>
+            <View style={layout.flexRow}>
               <Text style={text.h4Black}>
                 Pending (
                 {pendingProposalsData &&
@@ -208,7 +252,7 @@ const CommonProfile = ({
                 )
               </Text>
               <Icon name="right-arrow" />
-            </TouchableOpacity>
+            </View>
           </TouchableOpacity>
         </View>
       );
@@ -219,13 +263,17 @@ const CommonProfile = ({
     navigation.navigate('CommonMembers', {
       members: daoMembers,
       commonId: currCommon.id,
-      commonName: routeCommon.name,
+      commonName: currCommon.name,
     });
   };
 
   const shareCommon = event => {
-    console.log('TODO: share functionality');
-    Toast.info('Share functionality will be implemented soon');
+    const options = {
+      url: `https://app.common.io/common/${currCommon.id}`,
+      title: "Let's make it happen",
+      message: `Join in ${currCommon.name} common`,
+    };
+    Share.open(options);
   };
 
   const openCommonOptions = event => {
@@ -244,7 +292,9 @@ const CommonProfile = ({
   const requestToJoin = event => {
     if (userStore.userInfo) {
       const navigate = CommonActions.navigate({
-        name: currCommon.metadata?.rules?.length ? 'RequestStep1' : 'RequestStep2',
+        name: currCommon.metadata?.rules?.length
+          ? 'RequestStep1'
+          : 'RequestStep2',
         params: {
           currDaoId: currCommon.id,
           skipFirstStep: !currCommon.metadata?.rules?.length,
@@ -263,7 +313,7 @@ const CommonProfile = ({
       name: 'ProposalScreen',
       params: {
         proposalId: route.params.createdProposalId,
-        commonName: routeCommon.name,
+        commonName: currCommon.name,
         isMember,
       },
     });
@@ -280,7 +330,7 @@ const CommonProfile = ({
       name: 'ProposalScreen',
       params: {
         proposalId: pendingProposalsData.usersPendingProposal?.id,
-        commonName: routeCommon.name,
+        commonName: currCommon.name,
         isMember,
       },
     });
@@ -289,8 +339,7 @@ const CommonProfile = ({
 
   const renderPendingApproval = () => {
     const remainingSeconds =
-      pendingProposalsData.usersPendingProposal.closingAt -
-      moment().unix();
+      pendingProposalsData.usersPendingProposal.closingAt - moment().unix();
     return (
       <TouchableOpacity
         onPress={openProposalScreen}
@@ -349,85 +398,197 @@ const CommonProfile = ({
     );
   };
 
+  const loadingPlaceholder = () => {
+    return (
+      <ScrollView
+        contentContainerStyle={{
+          padding: 20,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Placeholder Animation={Fade}>
+          <PlaceholderMedia
+            style={{height: 200, width: '100%', marginBottom: 20}}
+          />
+          <PlaceholderMedia
+            style={{height: 100, width: '100%', marginBottom: 20}}
+          />
+          <PlaceholderMedia
+            style={{height: 100, width: '100%', marginBottom: 20}}
+          />
+        </Placeholder>
+
+        <Placeholder Animation={Fade}>
+          {[...Array(3).keys()].map(i => {
+            return (
+              <View key={`common_loading_${i}`}>
+                <PlaceholderMedia
+                  style={{height: 80 * i, width: '100%', marginBottom: 20}}
+                />
+                <PlaceholderLine width={80} />
+                <PlaceholderLine />
+                <PlaceholderLine width={30} />
+              </View>
+            );
+          })}
+        </Placeholder>
+      </ScrollView>
+    );
+  };
+
+  const fixedHeaderHeight = () => {
+    return (
+      <NavigationBar
+        statusBar={{hidden: true}}
+        style={styles.fixedSection}
+        leftButton={
+          <TouchableOpacity
+            style={{justifyContent: 'center'}}
+            onPress={() => navigation.pop()}>
+            <Icon
+              name="left-arrow"
+              size={32}
+              style={{marginLeft: 10}}
+              color={dark ? 'black' : 'white'}
+            />
+          </TouchableOpacity>
+        }
+        rightButton={
+          <>
+            <TouchableOpacity
+              style={{justifyContent: 'center'}}
+              onPress={shareCommon}>
+              <Icon
+                name="share-32"
+                size={25}
+                style={{marginRight: 10}}
+                color={dark ? 'black' : 'white'}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{justifyContent: 'center'}}
+              onPress={shareCommon}>
+              <Icon
+                name="menu-horizontal"
+                size={32}
+                style={{marginRight: 10}}
+                color={dark ? 'black' : 'white'}
+              />
+            </TouchableOpacity>
+          </>
+        }
+      />
+    );
+  };
+
   const initialLayout = {width: Dimensions.get('window').width};
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
-      <StatusBar barStyle="light-content" />
-      <TouchableOpacity
-        style={{
-          justifyContent: 'center',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-        }}
-        onPress={() => navigation.pop()}>
-        <Icon
-          name="left-arrow"
-          size={32}
-          color={colors.white}
-          style={{marginLeft: 10}}
-        />
-      </TouchableOpacity>
-      <HeaderImageScrollView
-        disableHeaderGrow
-        maxOverlayOpacity={0.6}
-        minOverlayOpacity={0.3}
-        maxHeight={200}
-        fadeOutForeground
-        minHeight={120}
-        headerImage={{uri: currCommon.coverPhoto}}
-        renderTouchableFixedForeground={() => (
-          <CommonHeader
-            isMember={isMember}
-            navigation={navigation}
-            onHeaderMenuOpen={openCommonOptions}
-            commonInfo={{
-              logo: currCommon.metadata?.avatar,
-              name: currCommon.name,
-              description: currCommon.description,
-              byline: currCommon.metadata?.byline,
-            }}
+      {currCommon ? (
+        <>
+          <StatusBar
+            barStyle={dark ? 'dark-content' : 'light-content'}
+            translucent
+            backgroundColor="transparent"
           />
-        )}>
-        {!isMember &&
-          pendingProposalsData &&
-          pendingProposalsData.usersPendingProposal &&
-          renderPendingApproval()}
-
-        <View style={{paddingVertical: 20}}>
-          <CommonStageSummary
-            isFundingStage={isFundingStage}
-            commonProgressInfo={{
-              time: currCommon.fundingGoalDeadline,
-              activeProposals:
-                currCommon.numberOfBoostedProposals +
-                currCommon.numberOfPreBoostedProposals +
-                currCommon.numberOfQueuedProposals,
-              goal: currCommon.fundingGoal,
-              members: currCommon.memberCount,
-              // TODO: get this value. Is it even tracked in the contract? need to check.
-              raised: currCommon.balance,
-              currentBudget: numberFormatter(
-                // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
-                currCommon.tokenTotalSupply,
-              ),
-            }}
-          />
-        </View>
-
-        {renderMembersRowForMemberUsers()}
-        <View style={{...layout.content, ...{paddingTop: 0}}}>
           <TouchableOpacity
             style={{
-              ...layout.btnOutline,
+              justifyContent: 'center',
+              position: 'absolute',
+              top: 0,
+              left: 0,
             }}
-            onPress={shareCommon}>
-            <Text style={text.buttonblue}>Share Common</Text>
+            onPress={() => navigation.pop()}>
+            <Icon
+              name="left-arrow"
+              size={32}
+              color={colors.white}
+              style={{marginLeft: 10}}
+            />
           </TouchableOpacity>
-        </View>
-        {renderAgendaForNonMembers()}
-        {/**
+
+          <ParallaxScrollView
+            backgroundColor="white"
+            showsVerticalScrollIndicator={false}
+            stickyHeaderHeight={STICKY_HEADER_HEIGHT}
+            parallaxHeaderHeight={headerHeight}
+            renderBackground={() => (
+              <FastImage
+                source={{
+                  uri: currCommon.coverPhoto,
+                }}
+                style={{
+                  width: window.width,
+                  height: headerHeight,
+                  backgroundColor: colors.grey4,
+                }}
+              />
+            )}
+            scrollEvent={e => {
+              setDark(
+                e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT - 40,
+              );
+            }}
+            renderForeground={() => (
+              <CommonHeader
+                isMember={isMember}
+                navigation={navigation}
+                headerHeightLayouted={headerHeightLayouted}
+                onHeaderMenuOpen={openCommonOptions}
+                commonInfo={{
+                  logo: currCommon.metadata?.avatar,
+                  name: currCommon.name,
+                  description: currCommon.description,
+                  byline: currCommon.metadata?.byline,
+                  cover: currCommon.coverPhoto,
+                }}
+              />
+            )}
+            renderStickyHeader={() => (
+              <View key="sticky-header" style={styles.stickySection}>
+                <Text style={styles.stickySectionText}>{currCommon.name}</Text>
+              </View>
+            )}
+            renderFixedHeader={fixedHeaderHeight}>
+            {!isMember &&
+              pendingProposalsData &&
+              pendingProposalsData.usersPendingProposal &&
+              renderPendingApproval()}
+
+            <View style={{paddingVertical: 20}}>
+              <CommonStageSummary
+                isFundingStage={isFundingStage}
+                commonProgressInfo={{
+                  time: currCommon.fundingGoalDeadline,
+                  activeProposals:
+                    currCommon.numberOfBoostedProposals +
+                    currCommon.numberOfPreBoostedProposals +
+                    currCommon.numberOfQueuedProposals,
+                  goal: currCommon.fundingGoal,
+                  members: currCommon.memberCount,
+                  // TODO: get this value. Is it even tracked in the contract? need to check.
+                  raised: currCommon.balance,
+                  currentBudget: numberFormatter(
+                    // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
+                    currCommon.tokenTotalSupply,
+                  ),
+                }}
+              />
+            </View>
+
+            {renderMembersRowForMemberUsers()}
+            <View style={{...layout.content, ...{paddingTop: 0}}}>
+              <TouchableOpacity
+                style={{
+                  ...layout.btnOutline,
+                }}
+                onPress={shareCommon}>
+                <Text style={text.buttonblue}>Share Common</Text>
+              </TouchableOpacity>
+            </View>
+            {renderAgendaForNonMembers()}
+            {/**
         <TouchableOpacity
           style={{
             ...styles.headerButton,
@@ -447,93 +608,98 @@ const CommonProfile = ({
             Open Proposal
           </Text>
         </TouchableOpacity>
- */}
-        <TabView
-          navigationState={{index, routes}}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          initialLayout={initialLayout}
-          renderTabBar={renderTabBar}
-          style={{}}
-        />
-      </HeaderImageScrollView>
-      <SafeAreaView>
-        {isMember ? (
-          index === 0 ? (
-            <BottomRightButton
-              onPress={() =>
-                navigation.navigate('New Topic',
-                  {
-                    commonId: routeCommon.id,
-                  },
-                )
-              }
-              bottom={50}
+      */}
+            <TabView
+              navigationState={{index, routes}}
+              renderScene={renderScene}
+              onIndexChange={setIndex}
+              initialLayout={initialLayout}
+              renderTabBar={renderTabBar}
+              style={{}}
             />
-          ) : (
-            !isFundingStage && <BottomRightButton
-              onPress={() =>
-                navigation.navigate('FundingProposal',
-                  {
-                    commonId: routeCommon.id,
-                  },
+          </ParallaxScrollView>
+
+          <SafeAreaView>
+            {isMember ? (
+              index === 0 ? (
+                <BottomRightButton
+                  onPress={() =>
+                    navigation.navigate('New Topic', {
+                      commonId: currCommon.id,
+                    })
+                  }
+                  bottom={50}
+                />
+              ) : (
+                !isFundingStage && (
+                  <BottomRightButton
+                    onPress={() =>
+                      navigation.navigate('FundingProposal', {
+                        commonId: currCommon.id,
+                      })
+                    }
+                    bottom={50}
+                  />
                 )
-              }
-              bottom={50}
-            />
-          )
-        ) : (
-          <>
-            {showReqToJoin && (
-              <View style={styles.actionButtonContainer}>
-                <TouchableOpacity
-                  style={styles.headerButton}
-                  onPress={requestToJoin}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: 'white',
-                      fontWeight: '700',
-                      marginRight: 40,
-                    }}>
-                    Request to join
-                  </Text>
-                  <Text style={{fontSize: 16, color: 'white'}}>
-                    ${currCommon.minFeeToJoin / 100} Contribution
-                  </Text>
-                </TouchableOpacity>
-              </View>
+              )
+            ) : (
+              <>
+                {showReqToJoin && (
+                  <View style={styles.actionButtonContainer}>
+                    <TouchableOpacity
+                      style={styles.headerButton}
+                      onPress={requestToJoin}>
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          color: 'white',
+                          fontWeight: '700',
+                          marginRight: 40,
+                        }}>
+                        Request to join
+                      </Text>
+                      <Text style={{fontSize: 16, color: 'white'}}>
+                        ${currCommon.minFeeToJoin / 100} Contribution
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+                <Modal
+                  isVisible={showRequestSentModal}
+                  avoidKeyboard={true}
+                  backdropColor={colors.white}
+                  backdropOpacity={1}
+                  onBackdropPress={() => setShowRequestSentModal(false)}
+                  style={{padding: 0}}>
+                  <SentTemplate
+                    title="Request Sent"
+                    description="The common members will vote on your request to join, and if approved you will become an equal member with voting rights."
+                    onClose={() => setShowRequestSentModal(false)}>
+                    <View style={layout.flexRow}>
+                      <TouchableOpacity
+                        style={styles.modalRequestSentBtnPrimary}
+                        onPress={viewProposal}>
+                        <Text style={text.buttoncenterwhite}>
+                          View proposal
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={layout.flexRow}>
+                      <TouchableOpacity
+                        style={styles.modalRequestSentBtnOutline}
+                        onPress={goToToCommon}>
+                        <Text style={text.buttonblue}>Go to Common</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </SentTemplate>
+                </Modal>
+              </>
             )}
-            <Modal
-              isVisible={showRequestSentModal}
-              avoidKeyboard={true}
-              backdropColor={colors.white}
-              backdropOpacity={1}
-              onBackdropPress={() => setShowRequestSentModal(false)}
-              style={{padding: 0}}>
-              <SentTemplate
-                title="Request Sent"
-                description="The common members will vote on your request to join, and if approved you will become an equal member with voting rights."
-                onClose={() => setShowRequestSentModal(false)}>
-                <View style={layout.flexRow}>
-                  <TouchableOpacity
-                    style={styles.modalRequestSentBtnPrimary}
-                    onPress={viewProposal}>
-                    <Text style={text.buttoncenterwhite}>View proposal</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={layout.flexRow}>
-                  <TouchableOpacity
-                    style={styles.modalRequestSentBtnOutline}
-                    onPress={goToToCommon}>
-                    <Text style={text.buttonblue}>Go to Common</Text>
-                  </TouchableOpacity>
-                </View>
-              </SentTemplate>
-            </Modal>
-          </>
-        )}
-      </SafeAreaView>
+          </SafeAreaView>
+        </>
+      ) : (
+        loadingPlaceholder()
+      )}
     </View>
   );
 };
@@ -645,6 +811,35 @@ const styles = StyleSheet.create({
     height: 48,
     width: 48,
     borderRadius: 24,
+  },
+  stickySection: {
+    height: STICKY_HEADER_HEIGHT,
+    width: '100%',
+    justifyContent: 'center',
+    // backgroundColor: 'white',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: colors.grey4,
+  },
+  stickySectionText: {
+    color: 'black',
+    // color: 'white',
+    fontFamily: 'Roboto',
+    fontWeight: '500',
+    fontSize: 20,
+    marginTop: 25,
+    // margin: 5,
+    textAlign: 'center',
+  },
+  fixedSection: {
+    width: '100%',
+    position: 'absolute',
+    bottom: 5,
+    left: 5,
+  },
+  fixedSectionText: {
+    color: '#999',
+    fontSize: 20,
   },
 });
 

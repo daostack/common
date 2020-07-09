@@ -13,6 +13,7 @@ import {
   Platform,
   View,
   Alert,
+  Linking,
   DeviceEventEmitter,
 } from 'react-native';
 
@@ -56,7 +57,7 @@ import {
   ProposalScreen,
   PDFViewer,
   Browser,
-  CommonCreationLoading,
+  FullScreenCreationLoader,
 } from './src/Screens';
 
 import {ApolloClientConfig as client} from './src/Config';
@@ -75,20 +76,24 @@ import KeyboardManager from 'react-native-keyboard-manager';
 
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import Toast, {DURATION} from 'react-native-easy-toast';
-
+import {CommonActions} from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import DeepLinking from 'react-native-deep-linking';
 
 import ArcService from './src/Services/ArcService';
+import { BOTTOM_SHEET_TEMPLATES } from './src/Stores/BottomSheetStore';
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
 }
 
-const App = ({userStore, bottomSheetStore}) => {
+const App = ({userStore, bottomSheetStore, navigation}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
   const hudRef = useRef();
+  const navigationRef = useRef();
 
   useEffect(() => {
     messaging()
@@ -102,11 +107,20 @@ const App = ({userStore, bottomSheetStore}) => {
           return NotificationService.saveTokenToDatabase();
         }
       });
+
     return messaging().onTokenRefresh(token => {
       NotificationService.saveTokenToDatabase(token);
     });
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('Foreground Message Arrived', JSON.stringify(remoteMessage));
+    });
+    return unsubscribe;
+  }, []);
+
+  // HUD
   useEffect(() => {
     const showLisenter = DeviceEventEmitter.addListener(
       'HUD',
@@ -123,13 +137,69 @@ const App = ({userStore, bottomSheetStore}) => {
     };
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('Foreground Message Arrived', JSON.stringify(remoteMessage));
+  // Deep & Dynamic Link
+  const handleOpenURL = ({ url }) => {
+    Linking.canOpenURL(url).then((supported) => {
+      if (!supported) {
+        return;
+      }
+      if (!DeepLinking.evaluateUrl(url)) {
+        routing('Browser', {url: url});
+      }
     });
-    return unsubscribe;
+  };
+
+  const routing = (screenName, params) => {
+    const actions = CommonActions.navigate({
+      name: screenName,
+      params: params,
+    });
+    navigationRef.current?.dispatch(actions);
+  };
+
+  useEffect(() => {
+
+    DeepLinking.addScheme('common://');
+    DeepLinking.addScheme('com.daostack.common://');
+    DeepLinking.addScheme('https://app.common.io');
+
+    Linking.addEventListener('url', handleOpenURL);
+
+    DeepLinking.addRoute('/common/:id', (response) => {
+      routing('CommonProfile', {commonId: response.id});
+    });
+
+    DeepLinking.addRoute('/proposal/:id', (response) => {
+      routing('ProposalScreen', {proposalId: response.id});
+    });
+
+    DeepLinking.addRoute('/user/:id', (response) => {
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
+        {userId: response.id}
+      );
+    });
+
+    const foregroundLink = dynamicLinks().onLink(handleOpenURL);
+    dynamicLinks().getInitialLink().then(link => {
+      if (link) {
+        handleOpenURL(link);
+      } else {
+        Linking.getInitialURL()
+          .then((url) => {
+            handleOpenURL({url});
+          })
+          .catch(err => err);
+      }
+    });
+
+    return (() => {
+      Linking.removeEventListener('url', handleOpenURL);
+      foregroundLink();
+    });
   }, []);
 
+  // Login
   useEffect(() => {
     const subscribers = { authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
 
@@ -223,7 +293,7 @@ const App = ({userStore, bottomSheetStore}) => {
 
   return (
     <ApolloProvider client={client}>
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef}>
         <Stack.Navigator
           screenOptions={{
             headerStyle: styles.headerStyle,
@@ -345,8 +415,8 @@ const App = ({userStore, bottomSheetStore}) => {
           />
 
           <Stack.Screen
-            name="CommonCreationLoading"
-            component={CommonCreationLoading}
+            name="FullScreenCreationLoader"
+            component={FullScreenCreationLoader}
             options={({navigation, route}) => ({
               headerShown: false,
             })}
