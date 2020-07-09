@@ -158,6 +158,7 @@ const CreateStep4 = props => {
 
       return {commonAddress};
     } catch (e) {
+      props.navigation.pop();
       showErrorPopUp(props.bottomSheetStore, e.message);
     }
   };
