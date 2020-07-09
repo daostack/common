@@ -24,7 +24,7 @@ class TextInputField extends React.Component {
       const {name, formStore, validateRule, multiName} = validation;
       formStore.registerFormField(name, validateRule, value, multiName);
       this.fieldValidation = (
-        <ValidationMessage formStore={formStore} name={name} />
+        <ValidationMessage formStore={formStore} name={name} ivisibleContainer={validation.ivisibleContainer}/>
       );
     }
 
@@ -106,7 +106,7 @@ class TextInputField extends React.Component {
         rowsNumber = 4;
       }
 
-      const height = 24 * rowsNumber;
+      const height = 32 * rowsNumber;
 
       defaultMultilineProps = {
         minHeight: height,
@@ -119,11 +119,11 @@ class TextInputField extends React.Component {
     }
 
     return (
-      <View style={{alignSelf: 'stretch'}}>
-        <View style={{flexDirection: 'row'}}>
+      <View style={{alignSelf: 'stretch', padding: 0}}>
+        { label || infoLabel ? <View style={{flexDirection: 'row', marginBottom: 8}}>
           <Text style={styles.label}>{label}</Text>
           <Text style={styles.infoLabel}>{infoLabel}</Text>
-        </View>
+        </View> : null }
         <TextInput
           ref={this.props.forwardRef}
           {...defaultMultilineProps}
@@ -131,6 +131,7 @@ class TextInputField extends React.Component {
           multiline={multiline}
           style={styleTextfield}
           placeholder={placeholderText}
+          placeholderTextColor={colors.grey3}
           onChangeText={this.onChangeText}
           keyboardType={keyboardType}
           onFocus={this.onFocus}
@@ -196,6 +197,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.grey4,
     paddingHorizontal: 12,
+    paddingTop: 12,
+    paddingBottom: 12,
     margin: 0,
     ...font.primary.regular,
     ...font.fontSize(2),
@@ -206,7 +209,6 @@ const styles = StyleSheet.create({
   textfieldError: {
     borderColor: colors.error,
   },
-
   label: {
     ...font.primary.regular,
     ...font.fontSize(2),

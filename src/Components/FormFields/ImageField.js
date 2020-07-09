@@ -102,22 +102,22 @@ class ImageField extends React.Component {
     } else {
       return (
         <View style={styles.imageFieldPlaceholderView}>
-          <Icon name="add-picture" size={34} />
+          <Icon name="addpicture" size={34} />
           <Text
             style={{
               ...text.h3Black,
               ...layout.marginTopXL,
-              ...{color: colors.grey3},
+              
             }}>
-            An image is worth a 1,000 words
+            Upload images from your phone
           </Text>
           <Text
             style={{
               ...text.h3Black,
               ...layout.marginTopS,
-              ...{fontWeight: 'normal', color: colors.grey3},
+              ...{fontWeight: 'normal'},
             }}>
-            Make your proposal pop out
+            Get more attention to your proposal
           </Text>
           <View styles={layout.flexRow}>
             <TouchableOpacity style={styles.btn} onPress={this.pickImage}>
@@ -219,6 +219,7 @@ const styles = StyleSheet.create({
   imageFieldPlaceholderView: {
     ...layout.content,
     backgroundColor: colors.paleGrey,
+    borderRadius: 20,
   },
 
   formImageFielAddIcon: {

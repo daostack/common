@@ -6,7 +6,7 @@ import MultiFileField from '../FormFields/MultiFileField';
 import MultiLinkField from '../FormFields/MultiLinkField';
 
 import {observer, inject} from 'mobx-react';
-import {layout, text, colors} from '../../Theme';
+import {layout, text, colors, font} from '../../Theme';
 import TextInputFieldWithIcon from '../../Components/FormFields/TextInputFieldWithIcon';
 
 class FundingRequestForm extends React.Component {
@@ -60,7 +60,7 @@ class FundingRequestForm extends React.Component {
         <TextInputField
           viewStyle={{alignSelf: 'stretch'}}
           label="Title"
-          placeholderText="Briefly describe how you wish to spend these funds"
+          placeholderText="Briefly describe your proposal"
           autoCapitalize="none"
           multiline={true}
           numberOfLines={2}
@@ -95,9 +95,9 @@ class FundingRequestForm extends React.Component {
         <TextInputField
           infoLabel="Required"
           label="Description"
-          placeholderText="What exactly do you plan to do and how? How does it align with the common's agenda and goals?"
+          placeholderText="What exactly do you plan to do and how? How does it align with the Common's agenda and goals?"
           multiline={true}
-          numberOfLines={6}
+          numberOfLines={5}
           validation={{
             name: FundingRequestForm.FIELD_DESCRIPTION,
             formStore: this.props.fundingRequestFormStore,
@@ -105,14 +105,16 @@ class FundingRequestForm extends React.Component {
           }}
         />
 
-        <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>Links</Text>
+        <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>Related Links</Text>
         <Text
           style={{
-            ...text.tapBarUnselected,
             ...layout.marginTopS,
-            ...{textAlign: 'left'},
+            ...font.primary.regular,
+            ...font.fontSize(2),
+            letterSpacing: 0,
+            color: colors.slate,
           }}>
-          Have any resources or links to support your offer?
+          Add links to resources and content related to your proposal
         </Text>
 
         <MultiLinkField
@@ -135,11 +137,13 @@ class FundingRequestForm extends React.Component {
         </Text>
         <Text
           style={{
-            ...text.tapBarUnselected,
             ...layout.marginTopS,
-            ...{textAlign: 'left'},
+            ...font.primary.regular,
+            ...font.fontSize(2),
+            letterSpacing: 0,
+            color: colors.slate,
           }}>
-          Anything you want to attach to this proposal?
+          Attach documents and files
         </Text>
 
         <MultiFileField

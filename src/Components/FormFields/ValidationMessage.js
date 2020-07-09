@@ -13,12 +13,24 @@ const styles = StyleSheet.create({
   },
 });
 class ValidationMessage extends React.Component {
+
+  constructor(props) {
+    super(props);
+  }
+
   render() {
-    return (
-      <Text style={styles.errorMessage}>
-        {this.props.formStore.form.fields[this.props.name].error || ''}
+    const validationMessage = this.props.formStore.form.fields[this.props.name].error;
+    let messageStyle = styles.errorMessage;
+
+    if (!this.props.ivisibleContainer) {
+      messageStyle = {...styles.errorMessage, ...{minHeight: font.lineHeightForm}};
+    }
+
+    return validationMessage || !this.props.ivisibleContainer ? (
+      <Text style={messageStyle}>
+        { validationMessage || ''}
       </Text>
-    );
+    ) : null;
   }
 }
 
