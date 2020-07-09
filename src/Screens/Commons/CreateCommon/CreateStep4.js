@@ -70,11 +70,12 @@ const CreateStep4 = props => {
   }, [scrollY]);
 
   useEffect(() => {
-    const getNewDao = async () =>
+    console.log('NEW COMMON ADDRESS', newCommonAddress);
+    const getNewDao = async (address) =>
       await db
         .collection('daos')
-        //.doc('0x6d0707b2331bAb0E3ca68f43234443E66cC8c3d7')
-        .doc(newCommonAddress)
+        //.doc('0x00815d98179149e82aeeea34819f17e65ae6bf26')
+        .doc(address)
         .get()
         .then(snapshots => {
           if (!snapshots) {
@@ -82,8 +83,9 @@ const CreateStep4 = props => {
           }
           console.log('New common fetched:', snapshots.data());
           setNewCommon(snapshots.data());
+          //setShowModal(true);
         });
-    getNewDao();
+    getNewDao(newCommonAddress);
   }, [newCommonAddress]);
 
   const changeIndex = number => {
@@ -110,6 +112,7 @@ const CreateStep4 = props => {
         currCommon: newCommon,
       },
     });
+    props.navigation.popToTop();
     props.navigation.dispatch(navigate);
   };
 
@@ -174,6 +177,7 @@ const CreateStep4 = props => {
 
       if (commonAddress) {
         setNewCommonAddress(commonAddress);
+        //setShowModal(true);
       }
 
       return {commonAddress};
@@ -475,8 +479,7 @@ const CreateStep4 = props => {
           <View style={layout.flexRow}>
             <TouchableOpacity
               style={styles.modalRequestSentBtnOutline}
-              onPress={goToCommon}
-            >
+              onPress={goToCommon}>
               <Text style={text.buttonblue}>Go to Common</Text>
             </TouchableOpacity>
           </View>

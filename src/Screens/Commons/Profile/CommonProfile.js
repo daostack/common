@@ -46,7 +46,6 @@ const CommonProfile = ({
     {key: 'proposals', title: 'Proposals', icon: 'proposals'},
     {key: 'history', title: 'History', icon: 'history'},
   ]);
-
   const [currCommon, setCurrCommon] = useState(false);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
@@ -173,7 +172,7 @@ const CommonProfile = ({
       return (
         <View style={styles.agendaBox}>
           <Text style={styles.agendaDescription}>
-            {daoStore.dao.metadata.courseOfAction}
+            {currCommon.metadata?.courseOfAction}
           </Text>
 
           <TouchableOpacity onPress={openAgendaScreen}>
@@ -471,7 +470,7 @@ const CommonProfile = ({
               }
               bottom={50}
             />
-          ):(
+          ) : (
             !isFundingStage && <BottomRightButton
               onPress={() =>
                 navigation.navigate('FundingProposal',
