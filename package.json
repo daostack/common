@@ -11,7 +11,13 @@
     "test": "jest",
     "lint": "eslint App.js src/ __tests__",
     "postinstall": "yarn icon",
-    "icon": "rm -rf ./src/Assets/iconfont && npx iconfont-rn && rm -rf ./src/Assets/iconfont/*.ts"
+    "icon": "rm -rf ./src/Assets/iconfont && npx iconfont-rn && rm -rf ./src/Assets/iconfont/*.ts",
+    "codepush:ios:info": "code-push deployment ls DAOstack/common-iOS -k",
+    "codepush:android:info": "code-push deployment ls DAOstack/common-android -k",
+    "codepush:ios:release": "code-push release-react DAOstack-iOS ios -m",
+    "codepush:android:release": "code-push release-react DAOstack-android android -m",
+    "codepush:ios:release:production": "code-push release-react DAOstack-iOS ios -m -d Production",
+    "codepush:android:release:production": "code-push release-react DAOstack-android android -m -d Production"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",
