@@ -98,7 +98,7 @@ const CommonProfile = ({
 
   useEffect(() => {
     setShowRequestSentModal(route.params.showRequestSentModal);
-    setCurrCommon(routeCommon);
+    //setCurrCommon(routeCommon);
     if (userStore.userInfo && userStore.isDaoMember(daoMembers)) {
       setMemberState(true);
     } else {
