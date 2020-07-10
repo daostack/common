@@ -66,7 +66,9 @@ Please enter command `npx jetify` in terminal. [StackOverflow](https://stackover
 
 ### Documentation
 
-##### [icon documentation](./doc/icon.md)
+[iconfont](./doc/icon.md)
+
+[Code Push](./doc/codepush.md)
 
 ### Useful Download links
 

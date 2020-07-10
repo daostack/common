@@ -38,8 +38,8 @@
 
    Or you can use this shorter command
 
-   ```
-   codepush:[ios|android]:release
+   ```shell
+   yarn codepush:[ios|android]:release
    ```
 
    To Production env
@@ -50,8 +50,8 @@
 
    Or you can use this shorter command
 
-   ```
-   codepush:[ios|android]:release:production
+   ```shell
+   yarn codepush:[ios|android]:release:production
    ```
 
 5. Find the release package in AppCenter
