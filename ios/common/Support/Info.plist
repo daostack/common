@@ -49,6 +49,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>CodePushDeploymentKey</key>
+	<string>D1ZiSH4ey7IGwXkFirx-2V5ijJw8vXIDWhH8a</string>
 	<key>FirebaseDynamicLinksCustomDomains</key>
 	<array>
 		<string>https://app.common.io</string>

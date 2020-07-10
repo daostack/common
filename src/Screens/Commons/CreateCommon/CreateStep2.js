@@ -10,7 +10,9 @@ import {
   Animated,
 } from 'react-native';
 import TextInputFieldWithIcon from '../../../Components/FormFields/TextInputFieldWithIcon';
-import {colors} from '../../../Theme';
+import {colors, font} from '../../../Theme';
+
+import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
 import SegmentedControlTab from 'react-native-segmented-control-tab';
@@ -64,7 +66,10 @@ const CreateStep2 = props => {
       break;
     }
     case 2: {
-      props.fundingFormStore.fieldChanged(name, moment(pickDate || {}).unix());
+      props.fundingFormStore.fieldChanged(
+        name,
+        moment(pickDate || {}).unix(),
+      );
       setShow(true);
       break;
     }
@@ -106,6 +111,7 @@ const CreateStep2 = props => {
           {nativeEvent: {contentOffset: {y: scrollY}}},
         ])}>
         <CreateStepHeader currentIndex={1} />
+
         <View
           style={{
             flex: 1,
@@ -113,25 +119,11 @@ const CreateStep2 = props => {
             // padding: 24,
             backgroundColor: 'white',
           }}>
-          <Text
-            style={{
-              marginTop: 24,
-              fontWeight: '700',
-              fontSize: 18,
-              textAlign: 'center',
-            }}>
-            Funding
-          </Text>
-          <Text
-            style={{
-              marginTop: 12,
-              marginBottom: 23,
-              marginHorizontal: 20,
-              textAlign: 'center',
-            }}>
-            Set the amount you would like to raise. Until you reach this goal
-            the common will not be able to spend any of the funds.
-          </Text>
+          <CreateStepHeaderTitle
+            title="Funding"
+            subtitle="Set a time period to invite members and raise initial funds. You can
+            continue raising funds forever."
+          />
           <View
             style={{
               backgroundColor: colors.grey4,
@@ -139,33 +131,21 @@ const CreateStep2 = props => {
               marginBottom: 40,
             }}
           />
-          <TextInputFieldWithIcon
-            iconName="dollar"
-            iconSize={12}
-            iconStyle={{paddingRight: 5}}
-            iconEmptyColor={colors.grey3}
-            iconFillColor={colors.grey}
-            viewStyle={{alignSelf: 'stretch'}}
-            label="Funding goal"
-            infoLabel="Required"
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="numeric"
-            validation={{
-              name: CreateCommonForm.FUNDING_GOAL,
-              formStore: props.fundingFormStore,
-              validateRule: 'required|integer|min:100',
-            }}
-          />
           <View style={{}}>
             <View style={{flexDirection: 'row'}}>
-              <Text style={styles.label}>Deadline</Text>
+              <Text style={styles.label}>Campaign period</Text>
               <Text style={[styles.infoLabel, {alignSelf: 'flex-end'}]}>
                 Required
               </Text>
             </View>
+            <Text style={styles.info2}>
+              When this period is over, you will be able to create proposals and
+              use the funds you raised, even if you don’t reach your funding
+              goal.
+            </Text>
+
             <SegmentedControlTab
-              tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 40}}
+              tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 44}}
               tabStyle={{borderColor: colors.grey4}}
               activeTabStyle={{backgroundColor: colors.mainBlue}}
               values={[
@@ -173,7 +153,7 @@ const CreateStep2 = props => {
                 '1 month',
                 pickDate ? moment(pickDate).format('MMM DD, YYYY') : 'Custom',
               ]}
-              tabTextStyle={{color: colors.mainBlue}}
+              tabTextStyle={styles.tabTextStyle}
               borderRadius={8}
               selectedIndex={segmentedIndex}
               onTabPress={index => setSegmentedIndex(index)}
@@ -224,7 +204,25 @@ const CreateStep2 = props => {
             iconEmptyColor={colors.grey3}
             iconFillColor={colors.grey}
             viewStyle={{alignSelf: 'stretch'}}
-            label="Minimum contribution"
+            label="Campaign goal"
+            infoLabel="Required"
+            autoCapitalize="none"
+            autoCorrect={false}
+            keyboardType="numeric"
+            validation={{
+              name: CreateCommonForm.FUNDING_GOAL,
+              formStore: props.fundingFormStore,
+              validateRule: 'required|integer|min:100',
+            }}
+          />
+          <TextInputFieldWithIcon
+            iconName="dollar"
+            iconSize={12}
+            iconStyle={{paddingRight: 5}}
+            iconEmptyColor={colors.grey3}
+            iconFillColor={colors.grey}
+            viewStyle={{alignSelf: 'stretch'}}
+            label="Minimum joining contribution (min $5)"
             infoLabel="Required"
             autoCapitalize="none"
             autoCorrect={false}
@@ -266,6 +264,18 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     height: 50,
   },
+  tabTextStyle: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.mainBlue,
+  },
+  info2: {
+    marginVertical: 5,
+    lineHeight: 22,
+    ...font.primary.regular,
+    color: colors.grey3,
+    ...font.fontSize(1),
+  },
   placeholderText: {
     color: colors.grey3,
   },
@@ -277,8 +287,8 @@ const styles = StyleSheet.create({
     color: colors.black,
   },
   readMoreButton: {
-    fontSize: 12,
-    // fontWeight: '700',
+    ...font.primary.regular,
+    ...font.fontSize(2),
     color: colors.grey3,
   },
   continueButton: {
@@ -292,12 +302,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.mainBlue,
   },
+  label: {
+    ...font.primary.primary,
+    ...font.fontSize(2),
+    color: colors.slate,
+  },
   infoLabel: {
-    fontFamily: 'Roboto',
-    fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'italic',
-    letterSpacing: 0,
+    ...font.primary.italic,
+    ...font.fontSize(2),
     color: colors.paleblue,
     textAlign: 'right',
     flex: 1,

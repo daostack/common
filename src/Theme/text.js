@@ -3,7 +3,7 @@ import colors from './colors';
 import font from './font';
 
 const appFontFamily = {
-  fontFamily: 'HelveticaNeue',
+  fontFamily: 'NunitoSans-Regular',
 };
 
 export default StyleSheet.create({

@@ -1,6 +1,7 @@
 export default {
   mainBlue: '#7786ff',
   lightBlue: '#f7fcfe',
+  lighterBlue: '#f4f5ff',
   black: '#001a36',
   error: '#ef5456',
   greySteel: '#76839b',

@@ -14,6 +14,7 @@ import com.facebook.soloader.SoLoader;
 import com.daostack.common.RNBridgePackage;
 import com.daostack.common.async.MainHandler;
 import com.daostack.common.config.IConfig;
+import com.microsoft.codepush.react.CodePush;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -47,6 +48,9 @@ public class MainApplication extends Application implements ReactApplication {
         protected String getJSMainModuleName() {
           return "index";
         }
+
+        @Override
+        protected String getJSBundleFile() { return CodePush.getJSBundleFile(); }
       };
 
   @Override

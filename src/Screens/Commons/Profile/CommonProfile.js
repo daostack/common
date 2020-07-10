@@ -41,8 +41,8 @@ import {
   Fade,
 } from 'rn-placeholder';
 import NavigationBar from 'react-native-navbar';
-
-const STICKY_HEADER_HEIGHT = 80;
+import { BlurView } from '@react-native-community/blur';
+const STICKY_HEADER_HEIGHT = 85;
 
 const CommonProfile = ({
   navigation,
@@ -449,22 +449,28 @@ const CommonProfile = ({
           <TouchableOpacity
             style={{justifyContent: 'center'}}
             onPress={() => navigation.pop()}>
-            <Icon name="left-arrow" size={32} style={{marginLeft: 10}} color={dark ? 'black' : 'white'}/>
+            <BlurView style={{padding:5, borderRadius: 15}} blurType={dark ? 'light' : 'dark'}>
+              <Icon name="left-arrow" size={32} color={dark ? 'black' : 'white'}/>
+            </BlurView>
           </TouchableOpacity>
         }
         rightButton={
-          <>
+          <View style={{flexDirection: 'row', alignItems: 'space-between', marginHorizontal: 10}}>
             <TouchableOpacity
-              style={{justifyContent: 'center'}}
+              style={{justifyContent: 'center', marginRight: 5}}
               onPress={shareCommon}>
-              <Icon name="share-32" size={25} style={{marginRight: 10}} color={dark ? 'black' : 'white'}/>
+              <BlurView style={{padding:8, borderRadius: 15}} blurType={dark ? 'light' : 'dark'}>
+                <Icon name="share-32" size={25} color={dark ? 'black' : 'white'}/>
+              </BlurView>
             </TouchableOpacity>
             <TouchableOpacity
               style={{justifyContent: 'center'}}
               onPress={shareCommon}>
-              <Icon name="menu-horizontal" size={32} style={{marginRight: 10}} color={dark ? 'black' : 'white'}/>
+              <BlurView style={{padding: 5, borderRadius: 15}} blurType={dark ? 'light' : 'dark'}>
+                <Icon name="menu-horizontal" size={32}  color={dark ? 'black' : 'white'}/>
+              </BlurView>
             </TouchableOpacity>
-          </>
+          </View>
         }
       />
     );
@@ -511,7 +517,9 @@ const CommonProfile = ({
                   height: headerHeight,
                   backgroundColor: colors.grey4,
                 }}
-              />
+              >
+                <View style={{backgroundColor: 'rgba(0,0,0,0.2)', flex: 1}}/>
+              </FastImage>
             )}
             scrollEvent={ e => {
               setDark(e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT - 40);
@@ -811,7 +819,7 @@ const styles = StyleSheet.create({
   stickySectionText: {
     color: 'black',
     // color: 'white',
-    fontFamily: 'Roboto',
+    fontFamily: 'NotoSerif-Bold',
     fontWeight: '500',
     fontSize: 20,
     marginTop: 25,
@@ -821,7 +829,7 @@ const styles = StyleSheet.create({
   fixedSection: {
     width: '100%',
     position: 'absolute',
-    bottom: 5,
+    bottom: 0,
     left: 5,
   },
   fixedSectionText: {
