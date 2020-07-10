@@ -1,16 +1,36 @@
 import React from 'react';
 
-import {Text} from 'react-native';
+import {Text, StyleSheet} from 'react-native';
 import {observer} from 'mobx-react';
-import {colors, layout} from '../../Theme';
+import {colors, layout, font} from '../../Theme';
 
+const styles = StyleSheet.create({
+  errorMessage: {
+    color: colors.error,
+    ...layout.marginBottomM,
+    ...font.primary.regular,
+    ...font.fontSize(2),
+  },
+});
 class ValidationMessage extends React.Component {
+
+  constructor(props) {
+    super(props);
+  }
+
   render() {
-    return (
-      <Text style={{color: colors.error, ...layout.marginBottomM}}>
-        {this.props.formStore.form.fields[this.props.name].error || ''}
+    const validationMessage = this.props.formStore.form.fields[this.props.name].error;
+    let messageStyle = styles.errorMessage;
+
+    if (!this.props.ivisibleContainer) {
+      messageStyle = {...styles.errorMessage, ...{minHeight: font.lineHeightForm}};
+    }
+
+    return validationMessage || !this.props.ivisibleContainer ? (
+      <Text style={messageStyle}>
+        { validationMessage || ''}
       </Text>
-    );
+    ) : null;
   }
 }
 

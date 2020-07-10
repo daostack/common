@@ -1,7 +1,7 @@
 const fonts = [
   12, // 0
-  14, // 1
-  16, // 2
+  13, // 1
+  14, // 2
   18, // 3
   20, // 4
   24, // 5
@@ -11,8 +11,17 @@ const fonts = [
   // 17?
 ];
 
+const letterSpacing = [0.4, 0.3, 0.2, 0.1, -0.1, -0.2, -0.2, -0.2];
+
 export const fontSize = fontIndex => ({
   fontSize: fonts[fontIndex],
+  letterSpacing: letterSpacing[fontIndex],
+});
+
+const lineHeights = [28, 28, 28];
+const lineHeightForm = 28;
+export const lineHeight = lineHeightIndex => ({
+  lineHeight: lineHeights[lineHeightIndex],
 });
 
 const font = {
@@ -20,27 +29,22 @@ const font = {
     bold: {
       fontFamily: 'NotoSerif-Bold',
       fontWeight: 'normal',
-      letterSpacing: -0.2, // Semi Compressed
     },
   },
   primary: {
     bold: {
-      letterSpacing: 0.2,
       fontFamily: 'NunitoSans-Bold',
       fontWeight: 'bold',
     },
     semiBold: {
-      letterSpacing: 0.2,
       fontFamily: 'NunitoSans-SemiBold',
       fontWeight: 'normal',
     },
     italic: {
-      letterSpacing: 0.2,
       fontFamily: 'NunitoSans-Italic',
       fontWeight: 'normal',
     },
     regular: {
-      letterSpacing: 0.2,
       fontFamily: 'NunitoSans-Regular',
       fontWeight: 'normal',
     },
@@ -49,7 +53,6 @@ const font = {
       fontWeight: 'normal',
     },
     thin: {
-      letterSpacing: 0.2,
       fontFamily: 'NunitoSans-Light',
       fontWeight: '100',
     },
@@ -72,5 +75,7 @@ const font = {
 
 export default {
   fontSize,
+  lineHeight,
+  lineHeightForm,
   ...font,
 };

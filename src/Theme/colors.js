@@ -1,9 +1,11 @@
 export default {
-  // mainBlue: '#7786ff',
-  mainBlue: '#3cc7e1',
+  mainBlue: '#7786ff',
   lightBlue: '#f7fcfe',
+  lighterBlue: '#f4f5ff',
   black: '#001a36',
   error: '#ef5456',
+  greySteel: '#76839b',
+  backgroundBlue: '#EBF9FC',
   gray1: '#7f7f7f',
   slate: '#4f5c69',
   grey2: '#b2b2b2',
@@ -24,4 +26,5 @@ export default {
   against: '#ff603e',
   lightishBlue: '#eff9ff',
   countdown: '#F45184',
+  formPlaceholderColor: '#92a2b5',
 };

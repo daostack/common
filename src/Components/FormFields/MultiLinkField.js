@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from './TextInputField';
-import {text, layout, colors, sizeL} from '../../Theme';
+import {text, layout, colors, font, sizeL} from '../../Theme';
 
 const MultiLinkField = props => {
   const [count, setCount] = useState(1);
@@ -40,6 +40,7 @@ const MultiLinkField = props => {
         currItemValidation.multiName = props.validation.name;
         currItemValidation.validateRule =
           validation.validateRule?.common || validation.validateRule;
+        currItemValidation.ivisibleContainer = true;
 
         const currTitleItemValidation = {...props.validation}; //{...validation};
         currTitleItemValidation.name = `${
@@ -49,11 +50,13 @@ const MultiLinkField = props => {
         currTitleItemValidation.validateRule =
           validation.validateRule?.title || 'string';
         currTitleItemValidation.topPosition = true;
+        currTitleItemValidation.ivisibleContainer = true;
 
         return (
-          <View key={`key_${props.validation.name}_${currIndex + 1}`}>
+          <View key={`key_${props.validation.name}_${currIndex + 1}`} style={layout.marginBottomM}>
             {props.title ? (
               <TextInputField
+                viewStyle={{marginTop: 0}}
                 innerLabel={maxCount ? `${currIndex + 1}/${maxCount}` : false}
                 placeholderText={props.title}
                 validation={currTitleItemValidation}
@@ -93,6 +96,7 @@ const styles = StyleSheet.create({
     ...text.h3Black,
     color: colors.mainBlue,
     textAlign: 'left',
+    ...layout.marginTopM,
   },
 });
 

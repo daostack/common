@@ -9,7 +9,7 @@ import {
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
-import {layout, colors, text} from '../../Theme';
+import {layout, colors, font, text} from '../../Theme';
 
 class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
@@ -280,18 +280,14 @@ const styles = StyleSheet.create({
     borderColor: colors.error,
   },
   label: {
-    fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    letterSpacing: 0,
+    ...font.primary.regular,
+    ...font.fontSize(2),
     color: colors.slate,
     alignSelf: 'flex-start',
   },
   infoLabel: {
-    fontFamily: 'Roboto',
-    fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'italic',
+    ...font.primary.italic,
+    ...font.fontSize(2),
     letterSpacing: 0,
     color: colors.paleblue,
     textAlign: 'right',

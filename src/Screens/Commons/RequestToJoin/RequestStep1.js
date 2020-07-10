@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import RequestToJoinRule from '../../../Components/Commons/RequestToJoinRule';
 import {observer, inject} from 'mobx-react';
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepDotHeader from './RequestStepDotHeader';
 import {text, colors} from '../../../Theme';
@@ -23,6 +23,7 @@ const RequestStep1 = props => {
   // const [ruleCount] = useState(1);
   const [pass, setPass] = useState(false);
   const commonRules = props.daoStore.dao.metadata?.rules;
+
   useEffect(() => {
     const height = scrollY.interpolate({
       inputRange: [50, 50],
@@ -74,6 +75,9 @@ const RequestStep1 = props => {
             justifyContent: 'center',
             padding: 24,
           }}
+          onContentSizeChange={(_width, contentHeight) =>
+            contentHeight < (height - 150) && setPass(true)
+          }
           scrollEventThrottle={16}
           onScroll={Animated.event([
             {nativeEvent: {contentOffset: {y: scrollY}}},
