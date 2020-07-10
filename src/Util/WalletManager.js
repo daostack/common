@@ -12,7 +12,6 @@ ethers.Contract.prototype.sendToRelayer = async function (funcName, params, valu
   const manager = await WalletManager.getInstance();
   const response = await manager.execTransaction(manager.safeAddress, this.address, value, data);
   console.log(response);
-
   return response.data?.txHash;
 };
 
@@ -162,29 +161,29 @@ export default class WalletManager {
       const finalSignature = await this.txHashSignature(safeAddress, toAddress, value, data);
       const idToken = await auth().currentUser.getIdToken();
 
-      // const masterCopyContract = new ethers.Contract(
-      //   safeAddress,
-      //   ABI.MasterCopy,
-      //   this.wallet,
-      // );
-
-      // const OVERRIDES = {
-      //   gasLimit: 10000000,
-      //   gasPrice: 15000000000,
-      // };
-
-      // const zeroAddress = `0x${'0'.repeat(40)}`;
-      // const tx = await masterCopyContract.execTransaction(toAddress, valueNumber, data, 0, 0, 0, 0, zeroAddress, zeroAddress, finalSignature, OVERRIDES);
-      // console.log('execTransaction', tx);
-
-      const body = { idToken, to: toAddress, value: value, data, signature: finalSignature };
-      const response = await axiosClient.post(
-        'execTransaction',
-        // options,
-        body
+      const masterCopyContract = new ethers.Contract(
+        safeAddress,
+        ABI.MasterCopy,
+        this.wallet,
       );
-      // console.log('execTransaction ->', response);
-      return response;
+
+      const OVERRIDES = {
+        gasLimit: 10000000,
+        gasPrice: 15000000000,
+      };
+
+      const zeroAddress = `0x${'0'.repeat(40)}`;
+      const tx = await masterCopyContract.execTransaction(toAddress, 0, data, 0, 0, 0, 0, zeroAddress, zeroAddress, finalSignature, OVERRIDES);
+      console.log('execTransaction', tx);
+
+      // const body = { idToken, to: toAddress, value: value, data, signature: finalSignature };
+      // const response = await axiosClient.post(
+      //   'execTransaction',
+      //   // options,
+      //   body
+      // );
+      // // console.log('execTransaction ->', response);
+      // return response;
     } catch (err) {
       console.log(err);
       throw err;

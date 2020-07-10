@@ -11,6 +11,8 @@ import Config from 'react-native-config';
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
 // TODO: we should probably read this from the package..
 
+console.log('Config  ->', Config);
+
 if (Config.ENV === 'production') {
 
 } else if (Config.ENV === 'staging') {
