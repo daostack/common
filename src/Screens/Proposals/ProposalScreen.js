@@ -18,6 +18,7 @@ import ProposalData from './ProposalData';
 import ProposalDiscussion from './ProposalDiscussion';
 import MemberCard from '../../Components/MemberCard';
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
+import ApprovalProgressSheetScreen from '../BottomSheetScreens/ApprovalProgressSheetScreen';
 import Toast from '../../Util/Toast';
 import BottomSheetModal from '../../Components/BottomSheetModal';
 import ProposalService from '../../Services/ProposalService';
@@ -33,8 +34,10 @@ import { PROPOSAL_STAGES_ACTIVE} from '../../Services/ProposalService';
 import { PROPOSAL_TYPE } from '../../Services/ProposalService';
 import { db } from '../../Firebase';
 import { observer, inject } from 'mobx-react';
+import ApprovalTryAgainSheetScreen from '../BottomSheetScreens/ApprovalTryAgainSheetScreen';
 
 const ProposalScreen = ({navigation, route, userStore, props}) => {
+  const [votingProcessState, setVotingProcessState] = useState({ inProgress: false, error: false });
   const [proposalInfo, setProposalInfo] = useState(false);
   const [proposedUser, setProposedUser] = useState(false);
   const [daoInfo, setDaoInfo] = useState({});
@@ -95,6 +98,9 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
       console.log(`proposalId --> ${routeProposalId}`);
       getProposalInfo(routeProposalId);
     }
+
+    openApprovalSheet(true);
+
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -224,11 +230,22 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
     setIsApprovalBottomModalVisible(false);
   };
 
+  async function timeout(ms) { //pass a time in milliseconds to this function
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   const onVote = async isApproved => {
+    setVotingProcessState( {inProgress: true, error: false});
+
     try {
       // let votingResponse = null;
-      const voteData = {vote: isApproved ? 1 : 0};
+      const voteData = { vote: isApproved ? 1 : 0 };
 
+      await timeout(3000);
+
+      //throw new Error('fake error');
+      setVotingProcessState({ inProgress: false, error: true });
+      /*
       if (proposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
         await ArcService.getInstance().voteForJoinAndQuitProposal(
           routeProposalId,
@@ -240,15 +257,18 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
           voteData,
         );
       }
-
+      */
+      /*
       // console.log('votingResponse -> ', votingResponse);
-
+      setVotingProcessState({ inProgress: false, error: false });
       closeApprovalSheet();
       Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
       setIsVoteByYou({isApproved: isApproved});
+      */
     } catch (err) {
+      setVotingProcessState( {inProgress: false, error: true});
       console.log(err);
-      closeApprovalSheet();
+      //closeApprovalSheet();
       Toast.error(err.message);
     }
   };
@@ -441,7 +461,10 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
 
         {index === 0 ? (
           <View style={styles.actionButtonContainer}>
-            {isMember && renderVoting && renderStickyBottomContent()}
+            {
+              renderStickyBottomContent()
+            //isMember && renderVoting &&
+            }
           </View>
         ) : (
           <>{messageInput()}</>
@@ -456,11 +479,22 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
       <BottomSheetModal
         isVisible={isApprovalBottomModalVisible}
         onClose={closeApprovalSheet}>
-        <ApprovalSheetScreen
-          voteType={voteType}
-          navigation={navigation}
-          onApprove={onVote}
-        />
+
+        {votingProcessState.error ?
+          <ApprovalTryAgainSheetScreen
+            voteType={voteType}
+            onClose={e => openApprovalSheet(false)}
+            onTryAgain={e => onVote(voteType)} />
+          :
+          (votingProcessState.inProgress ?
+            <ApprovalProgressSheetScreen voteType={voteType} /> :
+            <ApprovalSheetScreen
+              voteType={voteType}
+              navigation={navigation}
+              onApprove={onVote}
+            />)
+        }
+
       </BottomSheetModal>
     </>
   );

@@ -1,7 +1,7 @@
 import {Text, StyleSheet, SafeAreaView} from 'react-native';
 
 import React from 'react';
-import {text, layout, colors} from '../../Theme';
+import {text, layout, colors, font} from '../../Theme';
 import ButtonSwiper from '../../Components/ButtonSwiper';
 
 const ApprovalSheetScreen = ({onApprove, voteType}) => {
@@ -15,10 +15,10 @@ const ApprovalSheetScreen = ({onApprove, voteType}) => {
         {voteType ? 'Approve' : 'Reject'}
       </Text>
 
-      <Text style={text.blackText}>This cannot be changed later</Text>
+      <Text style={styles.voteDescription}>Are you sure? You will not be able to change your vote after you confirm it.</Text>
 
       <ButtonSwiper
-        title="Swipe to vote"
+        title="Swipe to confirm your vote"
         onSwipeSuccess={() => onApprove(voteType)}
       />
     </SafeAreaView>
@@ -30,7 +30,11 @@ const styles = StyleSheet.create({
     ...text.h1Black,
     ...layout.paddingBottomS,
   },
-
+  voteDescription: {
+    ...text.blackText,
+    ...font.fontSize(0),
+    textAlign: 'center',
+  },
   body: {
     height: 250,
     ...layout.content,
