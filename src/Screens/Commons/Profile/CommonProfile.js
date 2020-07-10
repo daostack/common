@@ -196,14 +196,14 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   const renderScene = scene => {
     switch (scene.route.key) {
-      case 'discussions':
-        return Discussions();
-      case 'proposals':
-        return Proposals();
-      case 'history':
-        return History();
-      default:
-        return null;
+    case 'discussions':
+      return Discussions();
+    case 'proposals':
+      return Proposals();
+    case 'history':
+      return History();
+    default:
+      return null;
     }
   };
 
