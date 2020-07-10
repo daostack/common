@@ -6,6 +6,7 @@ import {
   SectionList,
   StyleSheet,
   ScrollView,
+  Image,
 } from 'react-native';
 import {CommonBox, BottomRightButton} from '../../Components';
 import {db} from '../../Firebase';
@@ -172,9 +173,22 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     );
   };
 
+  const listFooter = () => {
+    return (
+      <View style={styles.footerContainer}>
+        <Image source={require('../../Assets/commonListFooter.png')} style={{
+          resizeMode: 'contain',
+          width: 84,
+          height: 84,
+        }}/>
+        <Text style={{fontFamily: 'NotoSerif-Bold', fontSize: 20, textAlign: 'center'}}>Create a common</Text>
+        <Text style={{fontFamily: 'NunitoSans-Regular', fontSize: 16, textAlign: 'center', marginVertical: 10}}>Anyone can create a Common, invite their friends, and work together to achieve common goals. Start now!</Text>
+      </View>
+    );
+  }
+
   return (
-    <View style={{flex: 1}}>
-      <SafeAreaView />
+    <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
       <>
         {daoGroup ? (
           <SectionList
@@ -192,20 +206,19 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
             keyExtractor={x => x.id}
             stickySectionHeadersEnabled={true}
             renderSectionHeader={({section: {title}}) => sectionHeader(title)}
+            ListFooterComponent={listFooter}
           />
         ) : (
           loadingPlaceholder()
         )}
       </>
-
       <BottomRightButton onPress={onAddCommon} />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   header: {
-    fontFamily: 'Roboto',
     fontSize: 18,
     fontWeight: 'bold',
     fontStyle: 'normal',
@@ -218,11 +231,19 @@ const styles = StyleSheet.create({
   lengthCommons: {
     ...font.primary.bold,
     ...font.fontSize(5),
+    fontFamily: 'NotoSerif-Bold',
   },
   sectionHeaderContainer: {
     marginHorizontal: -20,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#FBFCFC',
   },
+  footerContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal:47,
+    marginTop: 60,
+    marginBottom: 100,
+  }
 });
 
 export default inject(

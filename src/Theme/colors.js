@@ -25,4 +25,5 @@ export default {
   against: '#ff603e',
   lightishBlue: '#eff9ff',
   countdown: '#F45184',
+  formPlaceholderColor: '#92a2b5',
 };
