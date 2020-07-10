@@ -3,7 +3,7 @@ import colors from './colors';
 import font from './font';
 
 const appFontFamily = {
-  fontFamily: 'HelveticaNeue',
+  fontFamily: 'NunitoSans-Regular',
 };
 
 export default StyleSheet.create({
@@ -16,7 +16,7 @@ export default StyleSheet.create({
   },
   h2Black: {
     ...font.primary.bold,
-    ...font.fontSize(4),
+    ...font.fontSize(3),
     textAlign: 'center',
     color: colors.black,
   },
@@ -55,7 +55,7 @@ export default StyleSheet.create({
   buttonblue: {
     ...appFontFamily,
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '400',
     fontStyle: 'normal',
     lineHeight: 20,
     letterSpacing: 0,

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   SafeAreaView,
   StatusBar,
+  View,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import {text, layout, colors} from '../../Theme';
@@ -78,11 +79,11 @@ const FundingProposal = ({
             backgroundColor: colors.white,
           }}
           contentContainerStyle={layout.content}>
-          <Text style={styles.title}>Funding request</Text>
+          <Text style={styles.title}>New proposal</Text>
           <Text style={styles.subtitle}>
-            If a majority approves your initiative the funds (and
-            responsibility) are yours.
+            Get funding to promote the Common's agenda. If your proposal is accepted you will be responsible to follow it through.
           </Text>
+          <View style={styles.divider}/>
 
           <FundingRequestForm />
         </ScrollView>
@@ -98,15 +99,21 @@ const FundingProposal = ({
 
 const styles = StyleSheet.create({
   title: {
-    ...text.h3Black,
+    ...text.h2Black,
     ...layout.marginTopM,
     textAlign: 'left',
   },
   subtitle: {
     ...text.blackText,
+    color: colors.slate,
     ...layout.marginTopXL,
     ...layout.marginBottomM,
     textAlign: 'center',
+  },
+  divider: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderColor: colors.grey4,
   },
 });
 

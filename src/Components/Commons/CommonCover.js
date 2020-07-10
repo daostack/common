@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
 
   headerTitleWhite: {
     ...text.h1Black,
+    fontFamily: 'NotoSerif-Bold',
     color: colors.white,
   },
   headerDescription: {
