@@ -59,7 +59,7 @@ const CreateStepHeader = props => {
       <View
         style={currentIndex === 0 ? {...styles.oval} : {...styles.ovalDone}}>
         <Icon
-          name={currentIndex === 0 ? 'dao-general-info' : 'check'}
+          name={currentIndex === 0 ? 'dao-general-info-24' : 'check'}
           size={currentIndex > 0 ? 16 : 24}
         />
       </View>
