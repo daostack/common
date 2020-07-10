@@ -34,6 +34,7 @@ import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
 import {calcIsFundingStage} from '../../../Util';
 import firestore from '@react-native-firebase/firestore';
+import  Toast  from '../../../Util/Toast';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -90,7 +91,12 @@ const CommonProfile = ({
         .collection('daos')
         .doc(commonId)
         .onSnapshot(snapshot => {
-          setCurrCommon(snapshot.data());
+          if (snapshot.exists) {
+            setCurrCommon(snapshot.data());
+          } else {
+            Toast.error('This DAO cannot be found try again later');
+            navigation.pop();
+          }
         });
       return unsubscribe;
     }
