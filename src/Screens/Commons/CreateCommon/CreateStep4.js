@@ -117,7 +117,7 @@ const CreateStep4 = props => {
     const navigate = CommonActions.navigate({
       name: 'CommonProfile',
       params: {
-        commonId: newCommonAddress,
+        commonId: newCommonAddress.toLowerCase(),
       },
     });
     props.navigation.popToTop();
