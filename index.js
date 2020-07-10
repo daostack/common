@@ -8,6 +8,7 @@ import App from './App';
 import {name as appName} from './app.json';
 import stores from './src/Stores';
 import {Provider} from 'mobx-react';
+import CodePush from 'react-native-code-push';
 
 console.disableYellowBox = true;
 
@@ -19,4 +20,9 @@ const MobX = () => {
   );
 };
 
-AppRegistry.registerComponent(appName, () => MobX);
+const AppBundle = CodePush({
+  checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
+  installMode: CodePush.InstallMode.ON_NEXT_RESUME,
+})(MobX);
+
+AppRegistry.registerComponent(appName, () => AppBundle);
