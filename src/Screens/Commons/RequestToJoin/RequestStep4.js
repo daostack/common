@@ -79,7 +79,7 @@ const RequestStep4 = props => {
       } catch (e) {
         console.log(e);
         props.navigation.pop();
-        Toast.error(e.toString());
+        Toast.error(e.data.error);
       }
     }
   };
