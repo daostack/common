@@ -143,7 +143,7 @@ const RequestStep4 = props => {
 
             <TextInputField
               label="Credit card number"
-              value={/* __DEV__ ? */ 4970101122334422}
+              value={/* __DEV__ ? */ 4972485830400056}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NUMBER,
                 formStore: props.paymentFormStore,
