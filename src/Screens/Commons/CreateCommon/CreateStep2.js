@@ -275,12 +275,12 @@ const CreateStep2 = props => {
             validation={{
               name: CreateCommonForm.MINIMUM,
               formStore: props.fundingFormStore,
-              validateRule: 'required|integer',
+              validateRule: 'required|integer|min:5',
             }}
           />
           <View style={{width: '100%'}}>
             <Text style={styles.readMoreButton}>
-              Min. $10. Members can donate more if they want.{' '}
+              Min. $5. Members can donate more if they want.{' '}
             </Text>
           </View>
         </View>
