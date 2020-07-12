@@ -28,6 +28,7 @@ import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ArcService from '../../../Services/ArcService';
 const {width} = Dimensions.get('window');
+import {CommonActions} from '@react-navigation/native';
 import {
   colors,
   font,
@@ -63,7 +64,7 @@ import CreateStep4Indicators from './CreateStep4Indicators';
 const CreateStep4 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [newCommonAddress, setNewCommonAddress] = useState(false);
 
   const form = {
     ...props.generalInfoFormStore.getChangedFormFieldsJson(),
@@ -113,15 +114,14 @@ const CreateStep4 = props => {
   };
 
   const goToCommon = () => {
-    console.log('goto common');
-    Toast.error('This is not implemented yet');
-    // const navigate = CommonActions.navigate({
-    //   name: 'CommonProfile',
-    //   params: {
-    //     currCommon: props.common,
-    //   },
-    // });
-    // props.navigation.dispatch(navigate);
+    const navigate = CommonActions.navigate({
+      name: 'CommonProfile',
+      params: {
+        commonId: newCommonAddress.toLowerCase(),
+      },
+    });
+    props.navigation.popToTop();
+    props.navigation.dispatch(navigate);
   };
 
   const pickImage = isAvatar => {
@@ -184,7 +184,7 @@ const CreateStep4 = props => {
       );
 
       if (commonAddress) {
-        setShowSuccessModal(true);
+        setNewCommonAddress(commonAddress);
       }
 
       return {commonAddress};
@@ -442,7 +442,7 @@ const CreateStep4 = props => {
         onPress={forgeCommon}
       />
       <Modal
-        isVisible={showSuccessModal}
+        isVisible={Boolean(newCommonAddress)}
         avoidKeyboard={true}
         backdropColor={colors.white}
         backdropOpacity={1}

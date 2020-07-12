@@ -41,15 +41,10 @@ import {
   Fade,
 } from 'rn-placeholder';
 import NavigationBar from 'react-native-navbar';
-import { BlurView } from '@react-native-community/blur';
+import {BlurView} from '@react-native-community/blur';
 const STICKY_HEADER_HEIGHT = 85;
 
-const CommonProfile = ({
-  navigation,
-  route,
-  bottomSheetStore,
-  userStore,
-}) => {
+const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const [isMember, setMemberState] = useState(false);
 
   const window = Dimensions.get('window');
@@ -77,7 +72,8 @@ const CommonProfile = ({
   const [headerHeight, setHeaderHeight] = useState(STICKY_HEADER_HEIGHT);
 
   const headerHeightLayouted = height => {
-    if (height - headerHeight > 3 ) { // To avoid render multiple times
+    if (height - headerHeight > 3) {
+      // To avoid render multiple times
       // console.log('height ->', height);
       setHeaderHeight(height + 35);
     }
@@ -449,25 +445,48 @@ const CommonProfile = ({
           <TouchableOpacity
             style={{justifyContent: 'center'}}
             onPress={() => navigation.pop()}>
-            <BlurView style={{padding:5, borderRadius: 15}} blurType={dark ? 'light' : 'dark'}>
-              <Icon name="left-arrow" size={32} color={dark ? 'black' : 'white'}/>
+            <BlurView
+              style={{padding: 5, borderRadius: 15}}
+              blurType={dark ? 'light' : 'dark'}>
+              <Icon
+                name="left-arrow"
+                size={32}
+                color={dark ? 'black' : 'white'}
+              />
             </BlurView>
           </TouchableOpacity>
         }
         rightButton={
-          <View style={{flexDirection: 'row', alignItems: 'space-between', marginHorizontal: 10}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'space-between',
+              marginHorizontal: 10,
+            }}>
             <TouchableOpacity
               style={{justifyContent: 'center', marginRight: 5}}
               onPress={shareCommon}>
-              <BlurView style={{padding:8, borderRadius: 15}} blurType={dark ? 'light' : 'dark'}>
-                <Icon name="share-32" size={25} color={dark ? 'black' : 'white'}/>
+              <BlurView
+                style={{padding: 8, borderRadius: 15}}
+                blurType={dark ? 'light' : 'dark'}>
+                <Icon
+                  name="share-32"
+                  size={25}
+                  color={dark ? 'black' : 'white'}
+                />
               </BlurView>
             </TouchableOpacity>
             <TouchableOpacity
               style={{justifyContent: 'center'}}
               onPress={shareCommon}>
-              <BlurView style={{padding: 5, borderRadius: 15}} blurType={dark ? 'light' : 'dark'}>
-                <Icon name="menu-horizontal" size={32}  color={dark ? 'black' : 'white'}/>
+              <BlurView
+                style={{padding: 5, borderRadius: 15}}
+                blurType={dark ? 'light' : 'dark'}>
+                <Icon
+                  name="menu-horizontal"
+                  size={32}
+                  color={dark ? 'black' : 'white'}
+                />
               </BlurView>
             </TouchableOpacity>
           </View>
@@ -482,7 +501,8 @@ const CommonProfile = ({
     <View style={{flex: 1, backgroundColor: colors.white}}>
       {currCommon ? (
         <>
-          <StatusBar barStyle={dark ? 'dark-content' : 'light-content'}
+          <StatusBar
+            barStyle={dark ? 'dark-content' : 'light-content'}
             translucent
             backgroundColor="transparent"
           />
@@ -505,7 +525,7 @@ const CommonProfile = ({
           <ParallaxScrollView
             backgroundColor="white"
             showsVerticalScrollIndicator={false}
-            stickyHeaderHeight={ STICKY_HEADER_HEIGHT }
+            stickyHeaderHeight={STICKY_HEADER_HEIGHT}
             parallaxHeaderHeight={headerHeight}
             renderBackground={() => (
               <FastImage
@@ -516,13 +536,14 @@ const CommonProfile = ({
                   width: window.width,
                   height: headerHeight,
                   backgroundColor: colors.grey4,
-                }}
-              >
-                <View style={{backgroundColor: 'rgba(0,0,0,0.2)', flex: 1}}/>
+                }}>
+                <View style={{backgroundColor: 'rgba(0,0,0,0.2)', flex: 1}} />
               </FastImage>
             )}
-            scrollEvent={ e => {
-              setDark(e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT - 40);
+            scrollEvent={e => {
+              setDark(
+                e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT - 40,
+              );
             }}
             renderForeground={() => (
               <CommonHeader
@@ -544,8 +565,7 @@ const CommonProfile = ({
                 <Text style={styles.stickySectionText}>{currCommon.name}</Text>
               </View>
             )}
-            renderFixedHeader={fixedHeaderHeight}
-          >
+            renderFixedHeader={fixedHeaderHeight}>
             {!isMember &&
               pendingProposalsData &&
               pendingProposalsData.usersPendingProposal &&
