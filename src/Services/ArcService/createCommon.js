@@ -121,13 +121,16 @@ export const createCommon = async (
     const newOrgEvent = receipt.events.NewOrg;
     const newOrgAddress = newOrgEvent._avatar;
 
+    console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
+
     // Wait for 3 seconds then update database
     await new Promise(resolve => setTimeout(resolve, 3000));
 
-    await axios.get(`${graphqlUrl}/update-daos`);
-    console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
+    console.log('Updating database');
+    await axios.get(`${graphqlUrl}/update-dao-by-id?daoId=${newOrgAddress}`);
+    console.log('Common database have been updated');
+    
     return newOrgAddress;
-    // return null;
   } catch (e) {
     navigation.pop();
     throw e;
