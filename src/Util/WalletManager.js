@@ -266,55 +266,6 @@ export default class WalletManager {
     }
   }
 
-  createCommonStep2 = async (contract, method, params, commonId) => {
-    try {
-      const idToken = await auth().currentUser.getIdToken();
-      const address = contract.address;
-      const zeroValue = '0';
-      const data = contract.interface.functions[method].encode(params);
-      const signature = await this.txHashSignature(this.safeAddress, address, zeroValue, data);
-
-      // console.log('signature1 -->', signature);
-
-      const body = {
-        idToken,
-        commonTx: {
-          to: address,
-          value: zeroValue,
-          data,
-          signature,
-        },
-        commonId,
-      };
-
-      const response = await axiosClient.post(
-        'createCommonStep2',
-        body
-      );
-
-      // console.log('CreateCommonStep2 response -->', response);
-
-      if (!response.data) {
-        console.log(response);
-        throw Error('unexpected error sending request to createCommon2: empty response');
-      }
-      if (response.data.errcode) {
-        throw Error(`Code: ${response.data.errorCode}, Message: ${response.data.error}`);
-      }
-
-      if (response.status !== 200) {
-        throw Error(`Status: ${response.status}, ${response.data}`);
-      }
-
-      console.log(response.data);
-
-      return response.data;
-    } catch (err){
-      console.log(err);
-      throw err;
-    }
-  }
-
   getAllowance = async pluginAddress => {
     let contract = new ethers.Contract(COMMONTOKENADDRESS, ABI.CommonToken, this.provider);
     let allowance = await contract.allowance(this.safeAddress, pluginAddress);
