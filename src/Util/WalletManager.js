@@ -142,10 +142,9 @@ export default class WalletManager {
     return response.data;
   };
 
-  txHashSignature = async (safeAddress, toAddress, value = '0', data = '0x') => {
+  txHashSignature = async (safeAddress, toAddress, value = 0, data = '0x') => {
     try {
-      const valueNumber = ethers.utils.parseEther(value).toString(10);
-      const txHash = await this.createSafeTransactionHash(safeAddress, toAddress, valueNumber, data);
+      const txHash = await this.createSafeTransactionHash(safeAddress, toAddress, value, data);
       const byteTxHash = ethers.utils.arrayify(txHash);
       const signedTx = await this.wallet.signMessage(byteTxHash);
       // Add 4
@@ -160,30 +159,28 @@ export default class WalletManager {
     try {
       const finalSignature = await this.txHashSignature(safeAddress, toAddress, value, data);
       const idToken = await auth().currentUser.getIdToken();
-
-      const masterCopyContract = new ethers.Contract(
-        safeAddress,
-        ABI.MasterCopy,
-        this.wallet,
-      );
-
-      const OVERRIDES = {
-        gasLimit: 10000000,
-        gasPrice: 15000000000,
-      };
-
-      const zeroAddress = `0x${'0'.repeat(40)}`;
-      const tx = await masterCopyContract.execTransaction(toAddress, 0, data, 0, 0, 0, 0, zeroAddress, zeroAddress, finalSignature, OVERRIDES);
-      console.log('execTransaction', tx);
-
-      // const body = { idToken, to: toAddress, value: value, data, signature: finalSignature };
-      // const response = await axiosClient.post(
-      //   'execTransaction',
-      //   // options,
-      //   body
+      
+      // const masterCopyContract = new ethers.Contract(
+      //   safeAddress,
+      //   ABI.MasterCopy,
+      //   this.wallet,
       // );
-      // // console.log('execTransaction ->', response);
-      // return response;
+      // const OVERRIDES = {
+      //   gasLimit: 1000000,
+      //   gasPrice: 15000000000,
+      // };
+      // const zeroAddress = `0x${'0'.repeat(40)}`;
+      // const tx = await masterCopyContract.execTransaction(toAddress, 0, data, 0, 0, 0, 0, zeroAddress, zeroAddress, finalSignature, OVERRIDES);
+      // console.log('execTransaction', tx);
+
+      const body = { idToken, to: toAddress, value: value, data, signature: finalSignature };
+      const response = await axiosClient.post(
+        'execTransaction',
+        // options,
+        body
+      );
+      console.log('execTransaction ->', response);
+      return response;
     } catch (err) {
       console.log(err);
       throw err;

@@ -180,12 +180,12 @@ class nativeBridgeTests extends React.Component {
         throw Error('No userinfo found - perhaps you are not logged in?');
       }
       const safeWallet = this.props.userStore.userInfo.safeAddress;
+      const manager = await WalletManager.getInstance();
       console.log(
         'safeWallet',
         safeWallet,
-        WalletManager.getInstance().safeAddress,
+        manager.safeAddress,
       );
-      const manager = await WalletManager.getInstance();
       const safeWalletBalance = await manager.getBalance(safeWallet);
       console.log('safeWalletBalance', safeWalletBalance);
       this.setState({ safeWallet, safeWalletBalance });
@@ -245,7 +245,7 @@ class nativeBridgeTests extends React.Component {
       const response = await manager.execTransaction(
         safeAddress,
         '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB',
-        '0.01',
+        ethers.utils.parseEther('0.01').toString(10)
       );
       console.log('txHash ->', response.data.txHash);
       this.setState({

@@ -1,10 +1,9 @@
 import {IpfsClient} from '../../Config';
 import WalletManager from '../../Util/WalletManager';
-// import DAOFactory from '../../../node_modules/@daostack/common-factory/abis';
-
+import {graphqlUrl} from '../../Config';
 const { getForgeOrgData } = require('@daostack/common-factory');
 const DAOFactoryABI = require('@daostack/common-factory/abis/DAOFactory');
-
+import axios from 'axios';
 
 const {
   ARC_VERSION,
@@ -36,9 +35,7 @@ export const createCommon = async (
 ) => {
   try {
   // need these keys:
-    console.log('step 1');
-    // navigation.navigate('CommonCreationLoading');
-    //daoStore.setCreationStatus(1);
+    console.log('Create Common');
     const MANDATORY_ARGS = [
       'name',
       'minFeeToJoin',
@@ -59,9 +56,7 @@ export const createCommon = async (
       tokenDist: [0],
       repDist: [MEMBER_REPUTATION],
       memberReputation: MEMBER_REPUTATION,
-      fundingToken: 
-      // '0x0000000000000000000000000000000000000000',
-      COMMONTOKENADDRESS,
+      fundingToken: COMMONTOKENADDRESS,
       VERSION: '000001', // just some alphanumberic marker  that is useful for understanding what our data is shaped like
     };
     const opts = {...defaultOptions, ...givenOpts};
@@ -72,33 +67,21 @@ export const createCommon = async (
 
     await arc.fetchContractInfos();
 
-    console.log('daoFactoryInfo -->', arc);
-
-    console.log('DAOFactory -->', DAOFactoryABI);
-
-    console.log('ARC_VERSION ->', ARC_VERSION);
-
     // console.log('opts: ', opts);
     const daoFactoryInfo = arc.getContractInfoByName(
       'DAOFactoryInstance',
       ARC_VERSION,
     );
 
-    console.log('daoFactoryInfo -->', daoFactoryInfo);
-
     const daoFactoryContract = await arc.getContract(
       daoFactoryInfo.address,
       DAOFactoryABI,
     );
-
-    console.log('daoFactoryContract -->', daoFactoryContract);
   
     const votingMachineInfo = arc.getContractInfoByName(
       'GenesisProtocol',
       ARC_VERSION,
     );
-
-    console.log('votingMachineInfo -->', votingMachineInfo);
 
     const data = {
       DAOFactoryInstance: daoFactoryInfo.address,
@@ -119,63 +102,32 @@ export const createCommon = async (
 
     const [encodedForgeOrgParams, encodedSetSchemesParams] = getForgeOrgData(data);
 
-    // console.log('encodedForgeOrgParams  ->', encodedForgeOrgParams);
-    // console.log('encodedSetSchemesParams  ->', encodedSetSchemesParams);
     console.log('waiting for forgeOrg transaction to be mined');
+    const receipt = await daoFactoryContract.sendToRelayerWithReceipt(
+      'forgeOrg',
+      [encodedForgeOrgParams, encodedSetSchemesParams]
+    );
 
-    // let receipt;
-    // receipt = await daoFactoryContract.sendToRelayerWithReceipt(
-    //   'forgeOrg',
-    //   [encodedForgeOrgParams, encodedSetSchemesParams]
-    // );
-
-    const OVERRIDES = {
-      gasLimit: 10000000,
-      gasPrice: 15000000000,
-    };
-
-    const receipt = await daoFactoryContract.forgeOrg(encodedForgeOrgParams, encodedSetSchemesParams, OVERRIDES);
+    // const OVERRIDES = {
+    //   gasLimit: 10000000,
+    //   gasPrice: 15000000000,
+    // };
+    // const receipt = await daoFactoryContract.forgeOrg(encodedForgeOrgParams, encodedSetSchemesParams, OVERRIDES);
 
     console.log('forgeOrg receipt ->', receipt);
     console.log('forgeOrg transaction was mined..');
 
-    // // get the new avatar address of the thing that was just created..
-    // const newOrgEvent = receipt.events.NewOrg;
-    // // console.log('newOrgEvent', newOrgEvent);
-    // const newOrgAddress = newOrgEvent._avatar;
-    // console.log('newOrgAddress', newOrgAddress);
+    // Get the new avatar address of the thing that was just created..
+    const newOrgEvent = receipt.events.NewOrg;
+    const newOrgAddress = newOrgEvent._avatar;
 
-    // console.log('Calling DAOFactory.setSchemes(...)');
-    // const schemeDataToEncode = {
-    //   DAOFactoryInstance: daoFactoryInfo.address,
-    //   avatar: newOrgAddress,
-    //   votingMachine: votingMachineInfo.address,
-    //   fundingToken: opts.fundingToken,
-    //   minFeeToJoin: opts.minFeeToJoin,
-    //   memberReputation: opts.memberReputation,
-    //   // we set the OFFICIAL funding goal to 0 - in the frontend we show the fundingGaol from ipfs data
-    //   // goal: parseInt(opts.fundingGoal, 10),
-    //   goal: 0,
-    //   deadline: opts.fundingGoalDeadline,
-    //   metaData: ipfsHash,
-    // };
-    //   // console.log('variables sending to Contract', schemeDataToEncode);
-    // const schemeData = getSetSchemesData(schemeDataToEncode);
+    // Wait for 3 seconds then update database
+    await new Promise(resolve => setTimeout(resolve, 3000));
 
-    // //daoStore.setCreationStatus(4);
-    // console.log('createCommonStep2: waiting for tx to be mined');
-    // // receipt = await daoFactoryContract.sendToRelayerWithReceipt('setSchemes', schemeData);
-    // const manager = await WalletManager.getInstance();
-    // await manager.createCommonStep2(
-    //   daoFactoryContract,
-    //   'setSchemes',
-    //   schemeData,
-    //   newOrgAddress
-    // );
-    // console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
-    // return newOrgAddress;
-
-    return null;
+    await axios.get(`${graphqlUrl}/update-daos`);
+    console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
+    return newOrgAddress;
+    // return null;
   } catch (e) {
     navigation.pop();
     throw e;
