@@ -1,7 +1,7 @@
 const fonts = [
   12, // 0
-  14, // 1
-  16, // 2
+  13, // 1
+  14, // 2
   18, // 3
   20, // 4
   24, // 5
@@ -19,7 +19,7 @@ export const fontSize = fontIndex => ({
 });
 
 const lineHeights = [28, 28, 28];
-const lineHeightForm = 38;
+const lineHeightForm = 28;
 export const lineHeight = lineHeightIndex => ({
   lineHeight: lineHeights[lineHeightIndex],
 });

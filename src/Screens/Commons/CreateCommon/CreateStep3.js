@@ -8,7 +8,7 @@ import {
   Animated,
 } from 'react-native';
 import TextInputField from '../../../Components/FormFields/TextInputField';
-import {colors} from '../../../Theme';
+import {colors, font} from '../../../Theme';
 import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
@@ -17,6 +17,7 @@ import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
 import MultiLinkField from '../../../Components/FormFields/MultiLinkField';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
+import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 
 const CreateStep3 = props => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -98,19 +99,11 @@ const CreateStep3 = props => {
             // padding: 24,
             backgroundColor: 'white',
           }}>
-          <Text
-            style={{
-              marginTop: 24,
-              fontWeight: 'bold',
-              fontSize: 18,
-              textAlign: 'center',
-            }}>
-            Agenda
-          </Text>
-          <Text style={{marginTop: 12, marginBottom: 23, textAlign: 'center'}}>
-            Describe your cause so people will understand what you want to
-            achieve and how
-          </Text>
+          <CreateStepHeaderTitle
+            title="Agenda"
+            subtitle="Describe your cause so people will understand what you want to
+            achieve and how"
+          />
           <TextInputField
             value={''}
             viewStyle={{alignSelf: 'stretch'}}
@@ -130,16 +123,17 @@ const CreateStep3 = props => {
           <Text
             style={{
               marginTop: 24,
-              fontWeight: 'bold',
-              fontSize: 18,
+              ...font.primary.bold,
+              ...font.fontSize(3),
+              ...font.lineHeight(2),
             }}>
             Rules of conduct
           </Text>
           <Text
             style={{
-              // marginVertical: 15,
-              marginTop: 15,
-              fontSize: 12,
+              ...font.primary.regular,
+              ...font.fontSize(2),
+              ...font.lineHeight(2),
               color: colors.grey3,
             }}>
             Any restrictions members should know about (Advertising in common

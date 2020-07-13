@@ -2,7 +2,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {numberFormatter} from '../../Util';
 import moment from 'moment';
-
+import * as Progress from 'react-native-progress';
 import {layout, colors, text} from '../../Theme';
 
 const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
@@ -12,8 +12,16 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
   const renderFundingProgressBar = () => {
     return (
       <>
-        <View style={styles.fundingProgressBar}>
-          <View style={styles.innerProgressBar} />
+        <View style={{width: '100%', ...layout.marginTopS, marginBottom: 10}}>
+          <Progress.Bar
+            progress={commonProgressInfo.raised / commonProgressInfo.goal}
+            width={null} // null is filling the View width
+            height={8}
+            color={colors.mainBlue}
+            borderWidth={0}
+            borderRadius={7}
+            unfilledColor={colors.grey4}
+          />
         </View>
         <Text
           style={{
@@ -48,19 +56,13 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
           isFundingStage || isCommonCard ? (
             <>
               <Text style={styles.headerTitle}>
-                $
-                {numberFormatter(
-                  commonProgressInfo.raised / 100,
-                )}
+                ${numberFormatter(commonProgressInfo.raised / 100)}
               </Text>
             </>
           ) : (
             <>
               <Text style={styles.headerTitle}>
-                $
-                {numberFormatter(
-                  commonProgressInfo.raised / 100,
-                ) + ' '}
+                ${numberFormatter(commonProgressInfo.raised / 100) + ' '}
               </Text>
               <Text style={styles.headerTitle}>
                 / {numberFormatter(commonProgressInfo.raised)}
@@ -113,21 +115,6 @@ const styles = StyleSheet.create({
   headerTitleLight: {
     ...text.h3Black,
     color: colors.grey3,
-  },
-  fundingProgressBar: {
-    width: '100%',
-    borderRadius: 7,
-    backgroundColor: colors.grey4,
-    height: 8,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    ...layout.marginTopS,
-  },
-  innerProgressBar: {
-    width: 380 / 4,
-    borderRadius: 6,
-    backgroundColor: colors.mainBlue,
-    height: 8,
   },
   headerSmallText: {
     ...text.smallBlackText,

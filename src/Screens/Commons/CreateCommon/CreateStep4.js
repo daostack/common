@@ -14,7 +14,6 @@ import {StackActions} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
 import ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
-import {text, layout, colors} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
@@ -29,11 +28,43 @@ import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ArcService from '../../../Services/ArcService';
 const {width} = Dimensions.get('window');
+import {CommonActions} from '@react-navigation/native';
+import {
+  colors,
+  font,
+  text,
+  layout,
+  sizeM,
+  sizeS,
+  sizeL,
+  sizeLineHeight,
+} from '../../../Theme';
+
+const stylesHeader = StyleSheet.create({
+  generalInfoTitle: {
+    marginTop: sizeM,
+    ...font.primary.bold,
+    ...font.fontSize(4),
+    textAlign: 'center',
+  },
+  generalInfoSubtitle: {
+    marginHorizontal: 20,
+    marginTop: sizeS,
+    color: colors.slate,
+    marginBottom: sizeL,
+    textAlign: 'center',
+    lineHeight: sizeLineHeight,
+    ...font.primary.regular,
+    ...font.fontSize(2),
+  },
+});
+
+import CreateStep4Indicators from './CreateStep4Indicators';
 
 const CreateStep4 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [newCommonAddress, setNewCommonAddress] = useState(false);
 
   const form = {
     ...props.generalInfoFormStore.getChangedFormFieldsJson(),
@@ -42,9 +73,10 @@ const CreateStep4 = props => {
     ...props.reviewFormStore.getChangedFormFieldsJson(),
   };
   const [templateIndex, setTemplateIndex] = useState(1);
-  const getImageUrl = index => `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
+  const getImageUrl = index =>
+    `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
   const [imageURI, setImageURI] = useState(
-    getImageUrl(1 + Math.floor(Math.random() * Math.floor(7)))
+    getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))),
   );
   const [avatarURL, setAvatarURL] = useState(null);
 
@@ -82,15 +114,14 @@ const CreateStep4 = props => {
   };
 
   const goToCommon = () => {
-    console.log('goto common');
-    Toast.error('This is not implemented yet');
-    // const navigate = CommonActions.navigate({
-    //   name: 'CommonProfile',
-    //   params: {
-    //     currCommon: props.common,
-    //   },
-    // });
-    // props.navigation.dispatch(navigate);
+    const navigate = CommonActions.navigate({
+      name: 'CommonProfile',
+      params: {
+        commonId: newCommonAddress.toLowerCase(),
+      },
+    });
+    props.navigation.popToTop();
+    props.navigation.dispatch(navigate);
   };
 
   const pickImage = isAvatar => {
@@ -149,11 +180,11 @@ const CreateStep4 = props => {
 
       const commonAddress = await ArcService.getInstance().createCommon(
         data,
-        props.navigation
+        props.navigation,
       );
 
       if (commonAddress) {
-        setShowSuccessModal(true);
+        setNewCommonAddress(commonAddress);
       }
 
       return {commonAddress};
@@ -198,22 +229,10 @@ const CreateStep4 = props => {
             // padding: 24,
             backgroundColor: 'white',
           }}>
-          <Text
-            style={{
-              marginTop: 24,
-              fontWeight: '700',
-              fontSize: 18,
-              textAlign: 'center',
-            }}>
+          <Text style={stylesHeader.generalInfoTitle}>
             Final touches and review
           </Text>
-          <Text
-            style={{
-              marginTop: 12,
-              marginBottom: 23,
-              textAlign: 'center',
-              marginHorizontal: 20,
-            }}>
+          <Text style={stylesHeader.generalInfoSubtitle}>
             You will not be able to make changes to the common info after it is
             published
           </Text>
@@ -285,21 +304,19 @@ const CreateStep4 = props => {
                 marginHorizontal: 10,
                 marginVertical: 15,
               }}>
-              <Text style={{flex: 1, alignSelf: 'flex-start'}}>
+              <Text
+                style={{
+                  ...font.primary.regular,
+                  ...font.fontSize(2),
+                  marginLeft: 10,
+                  color: colors.grey,
+                  flex: 1,
+                  alignSelf: 'flex-start',
+                }}>
                 Have an avatar for your Common?
               </Text>
               <TouchableOpacity onPress={() => pickImage(true)}>
-                <Text
-                  style={{
-                    alignSelf: 'flex-end',
-                    flex: 1,
-                    color: colors.mainBlue,
-                    fontSize: 16,
-                    fontFamily: 'Roboto',
-                    fontWeight: 'bold',
-                  }}>
-                  Upload avatar
-                </Text>
+                <Text style={styles.uploadLogo}>Upload logo</Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -335,35 +352,37 @@ const CreateStep4 = props => {
           />
           <View style={styles.sectionTitle}>
             <View style={{minWidth: 90, marginRight: 10}}>
-              <Text
-                style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>
-                ${numberFormatter(form[CreateCommonForm.FUNDING_GOAL])}
-              </Text>
-              <Text style={{fontSize: 14, textAlign: 'center', marginTop: 10}}>
-                Goal
-              </Text>
+              <CreateStep4Indicators
+                title="Goal"
+                number={numberFormatter(form[CreateCommonForm.FUNDING_GOAL])}
+              />
             </View>
-            <View style={{width: 90, marginHorizontal: 10}}>
-              <Text
-                style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>
-                ${numberFormatter(form[CreateCommonForm.MINIMUM])}
-              </Text>
-              <Text style={{fontSize: 14, textAlign: 'center', marginTop: 10}}>
-                Contribution
-              </Text>
+            <View style={{width: 120, marginHorizontal: 10}}>
+              <CreateStep4Indicators
+                title="Min. Contribution"
+                number={numberFormatter(form[CreateCommonForm.MINIMUM])}
+              />
+            </View>
+
+            <View style={{width: 120, marginHorizontal: 10}}>
+              <CreateStep4Indicators
+                title="Period"
+                currencySymbol={false}
+                number={moment
+                  .unix(form[CreateCommonForm.DEADLINE])
+                  .format('MMM DD, YYYY')}
+              />
             </View>
           </View>
           <View style={styles.sectionTitle}>
-            <Text style={{fontSize: 18, fontWeight: 'bold'}}>About</Text>
+            <Text style={styles.textTitle}>About</Text>
           </View>
           <Text style={styles.textContent}>
             {form[CreateCommonForm.DESCRIPTION]}
           </Text>
           <>
             <View style={styles.sectionTitle}>
-              <Text style={{fontSize: 14, fontWeight: 'bold'}}>
-                Course of action
-              </Text>
+              <Text style={styles.textSubtitle}>Course of action</Text>
             </View>
             <Text style={styles.textContent}>
               {form[CreateCommonForm.ACTION]}
@@ -371,7 +390,7 @@ const CreateStep4 = props => {
           </>
           <>
             <View style={styles.sectionTitle}>
-              <Text style={{fontSize: 14, fontWeight: 'bold'}}>Link</Text>
+              <Text style={styles.textSubtitle}>Links</Text>
               {/* <TouchableOpacity
                 style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
                 <Icon
@@ -393,23 +412,13 @@ const CreateStep4 = props => {
               <View />
             )}
           </>
-          <>
-            <View style={styles.sectionTitle}>
-              <Text style={{fontSize: 14, fontWeight: 'bold'}}>Deadline</Text>
-            </View>
-            <Text style={styles.textContent}>
-              {moment
-                .unix(form[CreateCommonForm.DEADLINE])
-                .format('MMM DD, YYYY')}
-            </Text>
-          </>
-
           {form[CreateCommonForm.RULES]?.length ? (
             form[CreateCommonForm.RULES].map((rule, index) => (
               <View key={`key_${CreateCommonForm.RULES}_${index}`}>
                 <Text
                   style={{
-                    fontSize: 14,
+                    ...font.primary.regular,
+                    ...font.fontSize(2),
                     marginTop: 20,
                     paddingHorizontal: 24,
                     color: colors.grey3,
@@ -417,9 +426,7 @@ const CreateStep4 = props => {
                   Rule #{index + 1}
                 </Text>
                 <View style={[styles.sectionTitle, {marginTop: 10}]}>
-                  <Text style={{fontSize: 14, fontWeight: 'bold'}}>
-                    {rule.title}
-                  </Text>
+                  <Text style={styles.textSubtitle}>{rule.title}</Text>
                 </View>
                 <Text style={styles.textContent}>{rule.description}</Text>
               </View>
@@ -435,7 +442,7 @@ const CreateStep4 = props => {
         onPress={forgeCommon}
       />
       <Modal
-        isVisible={showSuccessModal}
+        isVisible={Boolean(newCommonAddress)}
         avoidKeyboard={true}
         backdropColor={colors.white}
         backdropOpacity={1}
@@ -456,8 +463,7 @@ const CreateStep4 = props => {
           <View style={layout.flexRow}>
             <TouchableOpacity
               style={styles.modalRequestSentBtnOutline}
-              onPress={goToCommon}
-            >
+              onPress={goToCommon}>
               <Text style={text.buttonblue}>Go to Common</Text>
             </TouchableOpacity>
           </View>
@@ -489,7 +495,8 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 10,
     paddingVertical: 10,
-    fontSize: 15,
+    ...font.primary.regular,
+    ...font.fontSize(2),
     color: colors.black,
   },
   readMoreButton: {
@@ -515,11 +522,28 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 24,
   },
+  textTitle: {
+    ...font.primary.bold,
+    ...font.fontSize(4),
+  },
+  textSubtitle: {
+    ...font.primary.bold,
+    ...font.fontSize(3),
+  },
   textContent: {
-    fontSize: 14,
+    ...font.primary.regular,
+    ...font.fontSize(2),
     marginTop: 0,
     paddingHorizontal: 24,
-    marginBottom: 15,
+    // marginBottom: 15,
+  },
+  uploadLogo: {
+    alignSelf: 'flex-end',
+    flex: 1,
+    color: colors.mainBlue,
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    marginRight: 10,
   },
   titleName: {
     color: 'white',
@@ -527,9 +551,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignSelf: 'center',
     textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    fontFamily: 'Roboto',
-    fontSize: 20,
-    fontWeight: 'bold',
+    ...font.primary.bold,
+    ...font.fontSize(2),
     textShadowOffset: {
       width: 0,
       height: 2,
@@ -542,8 +565,8 @@ const styles = StyleSheet.create({
     opacity: 0.8,
     textAlign: 'center',
     alignSelf: 'center',
-    fontFamily: 'Roboto',
-    fontSize: 14,
+    ...font.primary.regular,
+    ...font.fontSize(2),
   },
   formImageFielAddIcon: {
     justifyContent: 'center',

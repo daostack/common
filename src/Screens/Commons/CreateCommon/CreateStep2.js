@@ -8,9 +8,12 @@ import {
   Dimensions,
   SafeAreaView,
   Animated,
+  Platform,
 } from 'react-native';
 import TextInputFieldWithIcon from '../../../Components/FormFields/TextInputFieldWithIcon';
-import {colors} from '../../../Theme';
+import {colors, font} from '../../../Theme';
+
+import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
 import SegmentedControlTab from 'react-native-segmented-control-tab';
@@ -39,7 +42,7 @@ const CreateStep2 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     const name = CreateCommonForm.DEADLINE;
     props.fundingFormStore.registerFormField(name, 'required');
     switch (segmentedIndex) {
@@ -64,18 +67,72 @@ const CreateStep2 = props => {
       break;
     }
     case 2: {
-      props.fundingFormStore.fieldChanged(name, moment(pickDate || {}).unix());
+      props.fundingFormStore.fieldChanged(
+        name,
+        moment(pickDate || {}).unix(),
+      );
       setShow(true);
       break;
     }
     }
-  }, [segmentedIndex, pickDate, props.fundingFormStore]);
+  }, [segmentedIndex, pickDate, props.fundingFormStore]); */
+
+  const onDatePickerChange = (event, date) => {
+    console.log(date);
+    props.fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, moment(date || {}).unix());
+    if (Platform.OS === 'android') {
+      setShow(false);
+    }
+    setPickDate(date);
+  };
+
+  const onTabChange = (index) => {
+    const name = CreateCommonForm.DEADLINE;
+    props.fundingFormStore.registerFormField(name, 'required');
+    switch (index) {
+    case 0: {
+      props.fundingFormStore.fieldChanged(
+        name,
+        moment()
+          .add('7', 'days')
+          .unix(),
+      );
+      setShow(false);
+      break;
+    }
+    case 1: {
+      props.fundingFormStore.fieldChanged(
+        name,
+        moment()
+          .add('1', 'months')
+          .unix(),
+      );
+      setShow(false);
+      break;
+    }
+    case 2: {
+      setShow(true);
+      break;
+    }
+    }
+    setSegmentedIndex(index);
+  };
 
   const push = () => {
     if (props.fundingFormStore.isFormValid()) {
       props.navigation.navigate('CreateStep3');
     }
   };
+
+  const DatePicker = <DateTimePicker
+    testID="dateTimePicker"
+    timeZoneOffsetInMinutes={0}
+    value={pickDate ? pickDate : new Date()}
+    minimumDate={new Date()}
+    is24Hour={true}
+    display="default"
+    onChange={onDatePickerChange}
+  />;
 
   return (
     <SafeAreaView
@@ -106,6 +163,7 @@ const CreateStep2 = props => {
           {nativeEvent: {contentOffset: {y: scrollY}}},
         ])}>
         <CreateStepHeader currentIndex={1} />
+
         <View
           style={{
             flex: 1,
@@ -113,25 +171,11 @@ const CreateStep2 = props => {
             // padding: 24,
             backgroundColor: 'white',
           }}>
-          <Text
-            style={{
-              marginTop: 24,
-              fontWeight: '700',
-              fontSize: 18,
-              textAlign: 'center',
-            }}>
-            Funding
-          </Text>
-          <Text
-            style={{
-              marginTop: 12,
-              marginBottom: 23,
-              marginHorizontal: 20,
-              textAlign: 'center',
-            }}>
-            Set the amount you would like to raise. Until you reach this goal
-            the common will not be able to spend any of the funds.
-          </Text>
+          <CreateStepHeaderTitle
+            title="Funding"
+            subtitle="Set a time period to invite members and raise initial funds. You can
+            continue raising funds forever."
+          />
           <View
             style={{
               backgroundColor: colors.grey4,
@@ -139,33 +183,21 @@ const CreateStep2 = props => {
               marginBottom: 40,
             }}
           />
-          <TextInputFieldWithIcon
-            iconName="dollar"
-            iconSize={12}
-            iconStyle={{paddingRight: 5}}
-            iconEmptyColor={colors.grey3}
-            iconFillColor={colors.grey}
-            viewStyle={{alignSelf: 'stretch'}}
-            label="Funding goal"
-            infoLabel="Required"
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="numeric"
-            validation={{
-              name: CreateCommonForm.FUNDING_GOAL,
-              formStore: props.fundingFormStore,
-              validateRule: 'required|integer|min:100',
-            }}
-          />
           <View style={{}}>
             <View style={{flexDirection: 'row'}}>
-              <Text style={styles.label}>Deadline</Text>
+              <Text style={styles.label}>Campaign period</Text>
               <Text style={[styles.infoLabel, {alignSelf: 'flex-end'}]}>
                 Required
               </Text>
             </View>
+            <Text style={styles.info2}>
+              When this period is over, you will be able to create proposals and
+              use the funds you raised, even if you don’t reach your funding
+              goal.
+            </Text>
+
             <SegmentedControlTab
-              tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 40}}
+              tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 44}}
               tabStyle={{borderColor: colors.grey4}}
               activeTabStyle={{backgroundColor: colors.mainBlue}}
               values={[
@@ -173,18 +205,19 @@ const CreateStep2 = props => {
                 '1 month',
                 pickDate ? moment(pickDate).format('MMM DD, YYYY') : 'Custom',
               ]}
-              tabTextStyle={{color: colors.mainBlue}}
+              tabTextStyle={styles.tabTextStyle}
               borderRadius={8}
               selectedIndex={segmentedIndex}
-              onTabPress={index => setSegmentedIndex(index)}
+              onTabPress={onTabChange}
             />
-            <Modal
-              isVisible={show}
+            {Platform.OS === 'ios' ? <Modal
+              visible={show}
+              transparent={true}
               avoidKeyboard={true}
               backdropOpacity={0.3}
               onBackdropPress={() => setShow(false)}
               style={styles.view}>
-              <View style={{backgroundColor: 'white'}}>
+              <View style={{ backgroundColor: 'white' }}>
                 <View
                   style={{
                     height: 50,
@@ -205,17 +238,9 @@ const CreateStep2 = props => {
                     </Text>
                   </TouchableOpacity>
                 </View>
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  timeZoneOffsetInMinutes={0}
-                  value={pickDate === null ? new Date() : pickDate}
-                  minimumDate={new Date()}
-                  is24Hour={true}
-                  display="default"
-                  onChange={(event, date) => setPickDate(date)}
-                />
+                {DatePicker}
               </View>
-            </Modal>
+            </Modal> : show && (DatePicker) }
           </View>
           <TextInputFieldWithIcon
             iconName="dollar"
@@ -224,7 +249,25 @@ const CreateStep2 = props => {
             iconEmptyColor={colors.grey3}
             iconFillColor={colors.grey}
             viewStyle={{alignSelf: 'stretch'}}
-            label="Minimum contribution"
+            label="Campaign goal"
+            infoLabel="Required"
+            autoCapitalize="none"
+            autoCorrect={false}
+            keyboardType="numeric"
+            validation={{
+              name: CreateCommonForm.FUNDING_GOAL,
+              formStore: props.fundingFormStore,
+              validateRule: 'required|integer|min:100',
+            }}
+          />
+          <TextInputFieldWithIcon
+            iconName="dollar"
+            iconSize={12}
+            iconStyle={{paddingRight: 5}}
+            iconEmptyColor={colors.grey3}
+            iconFillColor={colors.grey}
+            viewStyle={{alignSelf: 'stretch'}}
+            label="Minimum joining contribution (min $5)"
             infoLabel="Required"
             autoCapitalize="none"
             autoCorrect={false}
@@ -232,12 +275,12 @@ const CreateStep2 = props => {
             validation={{
               name: CreateCommonForm.MINIMUM,
               formStore: props.fundingFormStore,
-              validateRule: 'required|integer',
+              validateRule: 'required|integer|min:5',
             }}
           />
           <View style={{width: '100%'}}>
             <Text style={styles.readMoreButton}>
-              Min. $10. Members can donate more if they want.{' '}
+              Min. $5. Members can donate more if they want.{' '}
             </Text>
           </View>
         </View>
@@ -266,6 +309,18 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     height: 50,
   },
+  tabTextStyle: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.mainBlue,
+  },
+  info2: {
+    marginVertical: 5,
+    lineHeight: 22,
+    ...font.primary.regular,
+    color: colors.grey3,
+    ...font.fontSize(1),
+  },
   placeholderText: {
     color: colors.grey3,
   },
@@ -277,8 +332,8 @@ const styles = StyleSheet.create({
     color: colors.black,
   },
   readMoreButton: {
-    fontSize: 12,
-    // fontWeight: '700',
+    ...font.primary.regular,
+    ...font.fontSize(2),
     color: colors.grey3,
   },
   continueButton: {
@@ -292,12 +347,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.mainBlue,
   },
+  label: {
+    ...font.primary.primary,
+    ...font.fontSize(2),
+    color: colors.slate,
+  },
   infoLabel: {
-    fontFamily: 'Roboto',
-    fontSize: 14,
-    fontWeight: 'normal',
-    fontStyle: 'italic',
-    letterSpacing: 0,
+    ...font.primary.italic,
+    ...font.fontSize(2),
     color: colors.paleblue,
     textAlign: 'right',
     flex: 1,

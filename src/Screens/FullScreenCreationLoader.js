@@ -8,7 +8,7 @@ import {
   StatusBar,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {colors, layout, text} from '../Theme';
+import {colors, layout, font, text} from '../Theme';
 import Loader from '../Components/Loader';
 
 const FullScreenCreationLoader = ({daoStore, route, navigation}) => {
@@ -22,23 +22,11 @@ const FullScreenCreationLoader = ({daoStore, route, navigation}) => {
               source={require('../Assets/loader-4-drumroll.png')}
               style={styles.image}
             />
+            <Text style={styles.creatingText}>Creating your common</Text>
+            <Text style={styles.waitText}>
+              This might take a couple of minutes.
+            </Text>
             <Loader />
-            <Text
-              style={{
-                ...text.h2Black,
-                ...layout.marginTopXL,
-                ...layout.marginBottomS,
-              }}>
-              {route.params.title}
-            </Text>
-            <Text
-              style={{
-                ...text.runningblack,
-                lineHeight: 18,
-                textAlign: 'center',
-              }}>
-              {route.params.message}
-            </Text>
           </View>
         </View>
       </SafeAreaView>
@@ -50,6 +38,17 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: Colors.white,
+  },
+  creatingText: {
+    ...font.heading.bold,
+    ...font.fontSize(6),
+    ...layout.marginTopXL,
+    ...layout.marginBottomXL,
+  },
+  waitText: {
+    ...font.primary.regular,
+    ...font.fontSize(4),
+    textAlign: 'center',
   },
   body: {
     backgroundColor: Colors.white,
