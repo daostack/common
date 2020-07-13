@@ -3,7 +3,7 @@ import React from 'react';
 import {numberFormatter} from '../../Util';
 import moment from 'moment';
 
-import {layout, colors, text} from '../../Theme';
+import {layout, colors,font, text} from '../../Theme';
 
 const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
   const deadlineMoment = moment.unix(commonProgressInfo.time);
@@ -17,7 +17,7 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
         </View>
         <Text
           style={{
-            ...styles.headerSmallText,
+            ...styles.headerText,
             color: colors.grey3,
             ...layout.marginTopS,
             ...layout.marginBottomS,
@@ -36,8 +36,8 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
           alignContent: 'center',
           alignItems: 'center',
         }}>
+        <Text style={styles.headerText}>{title}</Text>
         <View style={styles.raisedContainer}>{numberComponent}</View>
-        <Text style={styles.headerSmallText}>{title}</Text>
       </View>
     );
   };
@@ -83,7 +83,7 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
               {commonProgressInfo.activeProposals}
             </Text>
           ),
-          isFundingStage ? 'Goal' : 'ActiveProposals',
+          isFundingStage ? 'Goal' : 'Proposals',
         )}
       </View>
       {isFundingStage && renderFundingProgressBar()}
@@ -108,7 +108,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerTitle: {
-    ...text.h3Black,
+    ...font.primary.bold,
+    ...font.fontSize(3),
   },
   headerTitleLight: {
     ...text.h3Black,
@@ -129,8 +130,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.mainBlue,
     height: 8,
   },
-  headerSmallText: {
-    ...text.smallBlackText,
+  headerText: {
+    textAlign: 'center',
+    marginBottom: 10,
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.slate,
   },
 });
 

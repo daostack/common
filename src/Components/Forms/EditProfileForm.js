@@ -100,7 +100,7 @@ class EditProfileForm extends React.Component {
 
         <TextInputField
           label="Intro"
-          placeholderText="What are you passionate about, really good at or love"
+          placeholderText="I work on a DAO project at iteratec and am interested in DAOs, coops as well as crypto and blockchain in general."
           multiline={true}
           value={userStore.userInfo.intro}
           validation={{
