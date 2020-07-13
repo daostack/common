@@ -12,13 +12,12 @@ const ApprovalProgressSheetScreen = ({ voteType }) => {
       <Text
         style={{
           ...styles.title,
-          ...{ color: voteColor},
+          ...{color: voteColor},
         }}>
         {voteType ? 'Approve' : 'Reject'}
       </Text>
 
-      <Loader color={voteColor}/>
-
+      <Loader color={voteColor} isBigger={true}/>
     </SafeAreaView>
   );
 };
@@ -30,8 +29,10 @@ const styles = StyleSheet.create({
   },
 
   body: {
-    height: 250,
+    height: 200,
     ...layout.content,
+    ...layout.flexStart,
+    alignItems: 'center',
   },
 });
 

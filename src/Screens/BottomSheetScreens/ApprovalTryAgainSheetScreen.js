@@ -1,7 +1,7 @@
 import {Text, StyleSheet, SafeAreaView, View, TouchableOpacity} from 'react-native';
 
 import React from 'react';
-import {text, layout, colors, font} from '../../Theme';
+import {text, layout, colors, font, sizeL} from '../../Theme';
 
 const ApprovalTryAgainSheetScreen = ({onTryAgain, onClose, voteType}) => {
   return (
@@ -39,17 +39,20 @@ const styles = StyleSheet.create({
   },
   voteDescription: {
     ...text.blackText,
-    ...font.fontSize(0),
+    ...font.fontSize(2),
+    paddingHorizontal: sizeL,
     textAlign: 'center',
   },
   body: {
-    height: 250,
+    height: 200,
     ...layout.content,
+    ...layout.flexStart,
+    alignItems: 'center',
   },
   containerRow: {
     flexDirection: 'row',
     alignSelf: 'stretch',
-    marginTop: 80,
+    ...layout.marginTopL,
   },
 });
 

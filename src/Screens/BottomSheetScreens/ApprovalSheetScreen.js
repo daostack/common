@@ -1,7 +1,7 @@
 import {Text, StyleSheet, SafeAreaView} from 'react-native';
 
 import React from 'react';
-import {text, layout, colors, font} from '../../Theme';
+import {text, layout, colors, font, sizeL} from '../../Theme';
 import ButtonSwiper from '../../Components/ButtonSwiper';
 
 const ApprovalSheetScreen = ({onApprove, voteType}) => {
@@ -33,11 +33,14 @@ const styles = StyleSheet.create({
   voteDescription: {
     ...text.blackText,
     ...font.fontSize(0),
+    paddingHorizontal: sizeL,
     textAlign: 'center',
   },
   body: {
-    height: 250,
+    height: 200,
     ...layout.content,
+    ...layout.flexStart,
+    alignItems: 'center',
   },
 });
 
