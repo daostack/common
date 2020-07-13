@@ -109,7 +109,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('Foreground Message Arrived', JSON.stringify(remoteMessage));
+      console.log('Foreground Message Arrived', JSON.stringify(remoteMessage));
     });
     return unsubscribe;
   }, []);
