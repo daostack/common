@@ -1,12 +1,11 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
+import {Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {CommonBox} from '../../Components';
 import {db} from '../../Firebase';
 import {inject, observer} from 'mobx-react';
-import Icon from '../../Assets/iconfont/Icon';
 
 import SwiperCard from '../../Components/SwiperCard';
-import {layout, text, sizeXXL, colors} from '../../Theme';
+import {layout, text, font,sizeXXL, colors} from '../../Theme';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -116,14 +115,12 @@ const CommonsSwiper = ({
       </View>
     ) : (
       <View style={styles.emptyObjectContainer}>
-        <Icon name="group" size={56} />
-        <Text style={{...text.h3Black, ...layout.marginTopS}}>No Commons</Text>
+        <Image
+          source={require('../../../src/Assets/group.png')}
+        />
+        <Text style={{...text.h2Black, ...layout.marginTopS}}>No Commons</Text>
         <Text
-          style={{
-            ...text.blackText,
-            ...text.centered,
-            ...layout.marginTopS,
-          }}>
+          style={styles.textNoCommons}>
           Join your first common and start making an impact
         </Text>
         <View style={{flexDirection: 'row'}}>
@@ -154,10 +151,16 @@ const CommonsSwiper = ({
 const styles = StyleSheet.create({
   emptyObjectContainer: {
     ...layout.content,
-    ...layout.marginTopM,
     borderRadius: 14,
+    backgroundColor: colors.iceBlue,
     paddingHorizontal: sizeXXL,
-    backgroundColor: colors.lightBlue,
+  },
+
+  textNoCommons: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    ...text.centered,
+    ...layout.marginTopS,
   },
 
   btn: {

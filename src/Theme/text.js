@@ -242,7 +242,6 @@ export default StyleSheet.create({
   },
 
   blackText: {
-    ...appFontFamily,
     ...font.primary.bold,
     ...font.fontSize(2),
     lineHeight: 20,
@@ -261,10 +260,8 @@ export default StyleSheet.create({
   },
 
   againstText: {
-    ...appFontFamily,
-    fontSize: 18,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
+    ...font.primary.bold,
+    ...font.fontSize(3),
     lineHeight: 22,
     letterSpacing: 0,
     color: colors.against,
