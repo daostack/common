@@ -18,7 +18,6 @@ import ProposalData from './ProposalData';
 import ProposalDiscussion from './ProposalDiscussion';
 import MemberCard from '../../Components/MemberCard';
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
-import ApprovalProgressSheetScreen from '../BottomSheetScreens/ApprovalProgressSheetScreen';
 import Toast from '../../Util/Toast';
 import BottomSheetModal from '../../Components/BottomSheetModal';
 import ProposalService from '../../Services/ProposalService';
@@ -34,7 +33,6 @@ import { PROPOSAL_STAGES_ACTIVE} from '../../Services/ProposalService';
 import { PROPOSAL_TYPE } from '../../Services/ProposalService';
 import { db } from '../../Firebase';
 import { observer, inject } from 'mobx-react';
-import ApprovalTryAgainSheetScreen from '../BottomSheetScreens/ApprovalTryAgainSheetScreen';
 
 const ProposalScreen = ({navigation, route, userStore, props}) => {
   const [votingProcessState, setVotingProcessState] = useState({ inProgress: false, error: false });
@@ -420,7 +418,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
                   />
                   <View style={{marginTop: 28}}>
                     <Text style={{...text.h3Black}}>
-                      {proposedUser ?  proposedUser.displayName  : 'unknown user'}
+                      {proposedUser ? proposedUser.displayName : 'unknown user'}
                     </Text>
                     <Text
                       style={{
@@ -461,8 +459,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
 
         {index === 0 ? (
           <View style={styles.actionButtonContainer}>
-            {
-              renderStickyBottomContent()
+            {renderStickyBottomContent()
             //isMember && renderVoting &&
             }
           </View>
@@ -479,22 +476,12 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
       <BottomSheetModal
         isVisible={isApprovalBottomModalVisible}
         onClose={closeApprovalSheet}>
-
-        {votingProcessState.error ?
-          <ApprovalTryAgainSheetScreen
-            voteType={voteType}
-            onClose={e => openApprovalSheet(false)}
-            onTryAgain={e => onVote(voteType)} />
-          :
-          (votingProcessState.inProgress ?
-            <ApprovalProgressSheetScreen voteType={voteType} /> :
-            <ApprovalSheetScreen
-              voteType={voteType}
-              navigation={navigation}
-              onApprove={onVote}
-            />)
-        }
-
+        <ApprovalSheetScreen
+          voteType={voteType}
+          onApprove={onVote}
+          onClose={e => openApprovalSheet(false)}
+          votingProcessState={votingProcessState}
+        />
       </BottomSheetModal>
     </>
   );
