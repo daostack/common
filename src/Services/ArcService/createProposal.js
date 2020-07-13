@@ -24,19 +24,6 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
   // .  payment: { ... }
   // };
 
-  // just check if the user has mangopayId, wallet ID else create them
-  try {
-    const idToken = await auth().currentUser.getIdToken();
-    const response = await axiosClient.post(
-      'create-user',
-      {idToken},
-    );
-    console.log(response);
-  } catch (e) {
-    console.log(e);
-    console.log(e.response);
-    throw e;
-  }
 
   try {
     const dao = arc.dao(daoId);
