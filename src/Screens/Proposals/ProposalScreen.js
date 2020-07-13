@@ -97,8 +97,6 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
       getProposalInfo(routeProposalId);
     }
 
-    openApprovalSheet(true);
-
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -241,9 +239,6 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
 
       await timeout(3000);
 
-      //throw new Error('fake error');
-      setVotingProcessState({ inProgress: false, error: true });
-      /*
       if (proposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
         await ArcService.getInstance().voteForJoinAndQuitProposal(
           routeProposalId,
@@ -255,14 +250,13 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
           voteData,
         );
       }
-      */
-      /*
+
       // console.log('votingResponse -> ', votingResponse);
       setVotingProcessState({ inProgress: false, error: false });
       closeApprovalSheet();
       Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
       setIsVoteByYou({isApproved: isApproved});
-      */
+
     } catch (err) {
       setVotingProcessState( {inProgress: false, error: true});
       console.log(err);
@@ -459,9 +453,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
 
         {index === 0 ? (
           <View style={styles.actionButtonContainer}>
-            {renderStickyBottomContent()
-            //isMember && renderVoting &&
-            }
+            { isMember && renderVoting && renderStickyBottomContent() }
           </View>
         ) : (
           <>{messageInput()}</>
