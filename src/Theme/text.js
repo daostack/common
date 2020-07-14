@@ -1,18 +1,30 @@
 import {StyleSheet} from 'react-native';
 import colors from './colors';
 import font from './font';
+import layout from './layout';
 
 const appFontFamily = {
   fontFamily: 'NunitoSans-Regular',
 };
 
-export default StyleSheet.create({
+const style = {
   h1Black: {
     ...font.primary.bold,
     ...font.fontSize(4),
     lineHeight: 29,
     textAlign: 'center',
     color: colors.black,
+  },
+};
+
+export default StyleSheet.create({
+  h1Black: style.h1Black,
+  h1BlackTitle: {
+    ...style.h1Black,
+    ...font.heading.reguar,
+    ...font.fontSize(5),
+    ...layout.marginTopM,
+    ...layout.marginBottomM,
   },
   h2Black: {
     ...font.primary.bold,

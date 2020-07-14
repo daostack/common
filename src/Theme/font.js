@@ -30,6 +30,10 @@ const font = {
       fontFamily: 'NotoSerif-Bold',
       fontWeight: 'normal',
     },
+    reguar: {
+      fontFamily: 'NotoSerif-Bold',
+      fontWeight: '200',
+    },
   },
   primary: {
     bold: {

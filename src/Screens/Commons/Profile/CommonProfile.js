@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
-import {text, layout, colors, sizeL} from '../../../Theme';
+import {text, layout, colors, sizeS, sizeL} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
 import {TabView, TabBar} from 'react-native-tab-view';
 import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
@@ -43,6 +43,14 @@ import {
 } from 'rn-placeholder';
 import NavigationBar from 'react-native-navbar';
 import {BlurView} from '@react-native-community/blur';
+
+import Animated, {
+  Easing as OldEasing,
+  // @ts-ignore
+  EasingNode,
+} from 'react-native-reanimated';
+import TabBarIndicator from '../../../Components/TabView/TabBarIndicator';
+
 const STICKY_HEADER_HEIGHT = 85;
 
 const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
@@ -53,7 +61,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'discussions', title: 'Discussions', icon: 'discussion'},
-    {key: 'proposals', title: 'Proposals', icon: 'proposals'},
+    {key: 'proposals', title: 'Proposals', icon: 'proposal1'},
     {key: 'history', title: 'History', icon: 'history'},
   ]);
 
@@ -144,11 +152,22 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   }, [pendingProposalsData]);
 
   const renderTabBar = props => (
+
     <TabBar
       {...props}
-      indicatorStyle={{
-        backgroundColor: colors.mainBlue,
+      renderIndicator={(indicator) => {
+        return (
+          <TabBarIndicator
+            position={indicator.position}
+            navigationState={indicator.navigationState}
+            getTabWidth={indicator.getTabWidth}
+            width={indicator.width}
+            style={indicator.style}
+            layout={indicator.layout}
+          />
+        );
       }}
+
       renderLabel={(label, focused) => {
         return (
           <View style={{...layout.content, padding: 0}}>
@@ -157,24 +176,45 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               size={30}
               color={label.focused ? colors.mainBlue : colors.grey3}
             />
-            <Text style={focused ? styles.tabStyleActive : styles.tabStyle}>
-              {label.route.title}
-            </Text>
           </View>
         );
       }}
-      style={{backgroundColor: colors.white}}
-      tabStyle={{borderTopWidth: 1, borderColor: colors.grey4}}
+      style={
+        {
+          backgroundColor: colors.white,
+          borderBottomLeftRadius: 28,
+          borderBottomRightRadius: 28,
+
+          elevation: 4,
+          shadowColor: 'black',
+          shadowOpacity: 0.1,
+          shadowRadius: 3,
+          shadowOffset: {
+            height: 3,
+            width: 0,
+          },
+          zIndex: 1,
+        }
+      }
+      tabStyle={{height: 76}}
     />
   );
 
   const Discussions = () => {
-    return <DiscussionList navigation={navigation} commonId={currCommon.id} />;
+    return (
+      <View style={{...styles.paleBackground, ...{paddingVertical: sizeL}}}>
+        <Text style={text.h1BlackTitle}>Discussions</Text>
+
+        <DiscussionList navigation={navigation} commonId={currCommon.id} />
+      </View>
+    );
   };
 
   const Proposals = () => {
     return (
-      <View style={{padding: sizeL}}>
+      <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
+        <Text style={text.h1BlackTitle}>Proposals</Text>
+
         <ProposalsList
           onlyFundingRequests={true}
           isMember={isMember}
@@ -188,7 +228,9 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   const History = () => {
     return (
-      <View style={{padding: sizeL}}>
+      <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
+        <Text style={text.h1BlackTitle}>History</Text>
+
         <ProposalsList
           isMember={isMember}
           commonName={currCommon.name}
@@ -225,11 +267,20 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             {currCommon.metadata.courseOfAction}
           </Text>
 
-          <TouchableOpacity onPress={openAgendaScreen}>
-            <Text style={styles.readMoreButton}>
-              View agenda and rules of conduct
+          <View style={layout.flexStart}>
+            <Text style={text.h1Black}>Our Mission</Text>
+            <Text style={{...text.blackText, ...layout.marginTopM}}>
+              {currCommon.metadata.description}
             </Text>
+          </View>
+          
+          <TouchableOpacity onPress={openAgendaScreen} style={layout.marginTopS}>
+            <View style={styles.viewAgendaBtn}>
+              <Text style={styles.viewFullAgenda}>View full agenda</Text>
+              <Icon name="right-arrow" color={colors.black} />
+            </View>
           </TouchableOpacity>
+
         </View>
       );
     }
@@ -599,15 +650,6 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             </View>
 
             {renderMembersRowForMemberUsers()}
-            <View style={{...layout.content, ...{paddingTop: 0}}}>
-              <TouchableOpacity
-                style={{
-                  ...layout.btnOutline,
-                }}
-                onPress={shareCommon}>
-                <Text style={text.buttonblue}>Share Common</Text>
-              </TouchableOpacity>
-            </View>
             {renderAgendaForNonMembers()}
             {/**
         <TouchableOpacity
@@ -636,7 +678,11 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               onIndexChange={setIndex}
               initialLayout={initialLayout}
               renderTabBar={renderTabBar}
-              style={{}}
+              style={
+                {
+                  backgroundColor: colors.paleGrey,
+                }
+              }
             />
           </ParallaxScrollView>
 
@@ -726,6 +772,21 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 };
 
 const styles = StyleSheet.create({
+  paleBackground: {
+    backgroundColor: colors.paleGrey,
+  },
+  viewAgendaBtn: {
+    ...layout.content, 
+    ...layout.flexRow, 
+    justifyContent: 'flex-start',
+    padding: 0,
+  },
+  viewFullAgenda: {
+    ...text.h3Black,
+    color: colors.mainBlue,
+    fontSize: 16,
+    marginRight: 5,
+  },
   modalRequestSentBtnOutline: {
     ...layout.btnOutline,
     ...layout.marginTopL,
