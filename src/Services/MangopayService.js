@@ -5,13 +5,13 @@ const qs = require('qs');
 
 
 const axiosClient = axios.create({
-  baseURL: mangoPayUrl,
+  //baseURL: mangoPayUrl,
   // or for development:
-  //baseURL: 'http://localhost:5001/common-daostack/us-central1/mangopay/',
+  baseURL: 'http://localhost:5001/common-daostack/us-central1/mangopay/',
   timeout: 1000000, // milliseconds
 });
 
-export const preauthorizePayment = async (cardData, funding) => {
+export const preauthorizePayment = async (cardData, funding, navigation) => {
   try {
     const idToken = await auth().currentUser.getIdToken();
     // first create the user in mangopay if isn't already created
@@ -43,13 +43,30 @@ export const preauthorizePayment = async (cardData, funding) => {
       },
     });
     // finalize the card registration - save cardId to firebase and preauthorize payment
-    const {data: {preAuthData: {preAuthId}}} = await axiosClient.post('finalize-card-reg',
+    const { data: { preAuthData: { preAuthId, SecureModeRedirectURL}}} = await axiosClient.post('finalize-card-reg',
       { idToken, cardRegistrationResult, Id, funding  }
     );
+    if (SecureModeRedirectURL) {
+      const is3DCheckFinished = () => new Promise((resolve, reject) => {
+        navigation.navigate('Browser', {
+          url: SecureModeRedirectURL, onNavStateChange: (e) => {
+            if (e.url.indexOf('common.io') > -1) {
+              navigation.pop();
+              resolve();
+            }
+          },
+        });
+      });
+      await is3DCheckFinished();
+      const {data: {Status}} = await axiosClient.post('view-preauth', { preAuthId });
+      if (Status === 'SUCCEEDED') {
+        return preAuthId;
+      } else
+      { throw new Error('3D Authentication failed'); }
+    }
     return preAuthId;
   } catch (e) {
     console.log(e);
-    console.log(e.response);
     throw e;
   }
 };

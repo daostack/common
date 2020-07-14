@@ -3,11 +3,12 @@ import {SafeAreaView} from 'react-native';
 import {colors} from '../../Theme';
 import React from 'react';
 
-const Browser = ({route}) => {
+const Browser = ({route, navigation}) => {
   const url = route.params.url;
+  const navigationStateChangeHandler = route.params.onNavStateChange || null;
   return (
     <SafeAreaView flex={1}>
-      <WebView source={{uri: url}} style={{backgroundColor: colors.grey4}} />
+      <WebView onNavigationStateChange={navigationStateChangeHandler} source={{uri: url}} style={{backgroundColor: colors.grey4}} />
     </SafeAreaView>
   );
 };
