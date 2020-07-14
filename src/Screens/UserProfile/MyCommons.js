@@ -13,8 +13,10 @@ import {
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import { inject, observer } from 'mobx-react';
 import CommonBox from '../../Components/CommonBox';
-import {layout, colors, text, sizeS} from '../../Theme';
-import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
+import {layout, colors, text, font, sizeS} from '../../Theme';
+import {TabView, SceneMap} from 'react-native-tab-view';
+
+import CommonTabBar from '../CommonTabBar';
 
 const getTabName = (objectName, count) => {
   return `${objectName} (${count ? count : 0})`;
@@ -68,23 +70,6 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
     members: React.memo(() => MyCommonsList(usersDaos)),
   });
 
-  const renderTabBar = props => (
-    <TabBar
-      {...props}
-      indicatorStyle={{
-        backgroundColor: colors.black,
-      }}
-      renderLabel={({route, focused, color}) => {
-        return (
-          <Text style={focused ? styles.tabStyleActive : styles.tabStyle}>
-            {route.title}
-          </Text>
-        );
-      }}
-      style={{backgroundColor: colors.white}}
-      tabStyle={{width: 'auto'}}
-    />
-  );
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -97,7 +82,7 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
           nestedScrollEnabled={true}
           directionalLockEnabled={true}>
           <View style={styles.sectionContainer}>
-            <Text style={text.h2Black}>My Commons</Text>
+            <Text style={styles.title}>My Commons</Text>
           </View>
           <View style={styles.sectionTabView}>
             <TabView
@@ -105,7 +90,7 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
               renderScene={renderScene}
               onIndexChange={setIndex}
               initialLayout={initialLayout}
-              renderTabBar={renderTabBar}
+              renderTabBar={CommonTabBar}
               style={{}}
             />
           </View>
@@ -129,7 +114,11 @@ const styles = StyleSheet.create({
   sectionContainer: {
     ...layout.content,
     marginVertical: sizeS,
-    alignItems: 'flex-start',
+    alignItems: 'center',
+  },
+  title: {
+    ...font.heading.bold,
+    ...font.fontSize(5),
   },
 
   tabStyleActive: {

@@ -1,21 +1,27 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
-import {text} from '../Theme';
+import {text, font, colors} from '../Theme';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const CountBox = ({count, name, onPress}) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.countBox}>
-      <Text style={{...styles.btnText, ...text.h1Black}}>{count}</Text>
       <Text style={styles.btnText}>{name}</Text>
+      <Text style={text.h1Black}>{count}</Text>
     </TouchableOpacity>
   );
+};
+
+CountBox.propTypes = {
+  count: PropTypes.any.isRequired,
+  name: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({
   countBox: {
     flexDirection: 'column',
     justifyContent: 'space-between',
-
     alignSelf: 'stretch',
     paddingLeft: 20,
     paddingRight: 20,
@@ -23,12 +29,11 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   btnText: {
-    fontSize: 16,
-    fontWeight: '500',
-    fontStyle: 'normal',
-    lineHeight: 20,
-    letterSpacing: 0,
+    ...font.fontSize(2),
+    ...font.primary.regular,
+    color: colors.greySteel,
     alignSelf: 'center',
+    marginVertical: 10,
   },
 });
 

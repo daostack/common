@@ -1,11 +1,10 @@
 import React, {useEffect, useState, useRef} from 'react';
-import { FlatList, StyleSheet, View, Text, Dimensions, TouchableOpacity} from 'react-native';
+import { FlatList, StyleSheet, View, Text, Image, Dimensions, TouchableOpacity} from 'react-native';
 import ViewTabNoData from '../../Components/ViewTabNoData';
 import ProposalService, {PROPOSAL_STAGE} from '../../Services/ProposalService';
 import ProposalCard from '../../Components/Proposals/ProposalCard';
 import {CommonActions} from '@react-navigation/native';
-import {layout, colors, text, sizeXXL} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
+import {layout, colors, font,text, sizeXXL} from '../../Theme';
 
 import SwiperCard from '../../Components/SwiperCard';
 
@@ -115,16 +114,14 @@ const ProposalsList = ({ isMember, commonName, safeAddress, showAll, showMax, on
         </View>
       ) : (
         <View style={styles.emptyObjectContainer}>
-          <Icon name="pencil" size={46} />
-          <Text style={{...text.h3Black, ...layout.marginTopS}}>
+          <Image
+            source={require('../../../src/Assets/pencil.png')}
+          />
+          <Text style={{...text.h2Black, ...layout.marginTopS}}>
             No Proposals
           </Text>
           <Text
-            style={{
-              ...text.blackText,
-              ...text.centered,
-              ...layout.marginTopS,
-            }}>
+            style={styles.textNoProposals}>
             Join a common and propose actions you think it should take to
             achieve its goal
           </Text>
@@ -169,10 +166,16 @@ const ProposalsList = ({ isMember, commonName, safeAddress, showAll, showMax, on
 const styles = StyleSheet.create({
   emptyObjectContainer: {
     ...layout.content,
-    ...layout.marginTopM,
     borderRadius: 14,
     paddingHorizontal: sizeXXL,
-    backgroundColor: colors.lightBlue,
+    backgroundColor: colors.iceBlue,
+  },
+
+  textNoProposals: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    ...text.centered,
+    ...layout.marginTopS,
   },
 
   container: {

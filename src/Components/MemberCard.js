@@ -1,6 +1,6 @@
 import {StyleSheet, View, Text} from 'react-native';
 import React from 'react';
-import {layout, colors, text, sizeXS} from '../Theme';
+import {layout, colors, text, font,sizeXS} from '../Theme';
 import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
 import {monthShortNames} from '../Util/DateUtil';
@@ -82,10 +82,7 @@ const MemberCard = ({
             ...layout.flexStart,
           }}>
           <Text
-            style={{
-              ...text.h4Black,
-              ...{flexWrap: 'wrap'},
-            }}>
+            style={styles.displayName}>
             {userInfo?.displayName || 'Unknown user'}
           </Text>
           <Text
@@ -112,11 +109,11 @@ const styles = StyleSheet.create({
   cardContainer: {
     ...layout.content,
     ...layout.flexRow,
+    flex: 1,
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderColor: colors.grey4,
     padding: 0,
-    flex: 0.8,
   },
   noBottomBorder: {
     borderBottomWidth: 0,
@@ -127,6 +124,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignContent: 'flex-start',
     flexGrow: 1,
+    flexWrap: 'wrap',
+  },
+  displayName: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
     flexWrap: 'wrap',
   },
   rightContainer: {

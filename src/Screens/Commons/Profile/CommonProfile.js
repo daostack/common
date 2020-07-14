@@ -13,7 +13,7 @@ import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
 import {text, layout, colors, sizeL} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
-import {TabView, TabBar} from 'react-native-tab-view';
+import {TabView} from 'react-native-tab-view';
 import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
 import CommonStageSummary from '../../../Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
@@ -43,6 +43,7 @@ import {
 } from 'rn-placeholder';
 import NavigationBar from 'react-native-navbar';
 import {BlurView} from '@react-native-community/blur';
+import CommonTabBar from '../../CommonTabBar';
 const STICKY_HEADER_HEIGHT = 85;
 
 const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
@@ -142,31 +143,6 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
       getPendingProposalsDiscussionCount();
     }
   }, [pendingProposalsData]);
-
-  const renderTabBar = props => (
-    <TabBar
-      {...props}
-      indicatorStyle={{
-        backgroundColor: colors.mainBlue,
-      }}
-      renderLabel={(label, focused) => {
-        return (
-          <View style={{...layout.content, padding: 0}}>
-            <Icon
-              name={label.route.icon}
-              size={30}
-              color={label.focused ? colors.mainBlue : colors.grey3}
-            />
-            <Text style={focused ? styles.tabStyleActive : styles.tabStyle}>
-              {label.route.title}
-            </Text>
-          </View>
-        );
-      }}
-      style={{backgroundColor: colors.white}}
-      tabStyle={{borderTopWidth: 1, borderColor: colors.grey4}}
-    />
-  );
 
   const Discussions = () => {
     return <DiscussionList navigation={navigation} commonId={currCommon.id} />;
@@ -635,8 +611,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               renderScene={renderScene}
               onIndexChange={setIndex}
               initialLayout={initialLayout}
-              renderTabBar={renderTabBar}
-              style={{}}
+              renderTabBar={CommonTabBar}
             />
           </ParallaxScrollView>
 
