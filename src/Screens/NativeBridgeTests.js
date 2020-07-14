@@ -15,13 +15,12 @@ import WalletManager from '../Util/WalletManager';
 import { BOTTOM_SHEET_TEMPLATES } from '../Stores/BottomSheetStore';
 import ArcService from '../Services/ArcService';
 import {
-  ARC_VERSION ,
-  GRAPH_VERSION ,
-  graphHttpLink ,
-  web3ProviderUrl ,
-  relayerUrl ,
-  web3NetworkId ,
-  COMMONTOKENADDRESS ,
+  ARC_VERSION,
+  GRAPH_VERSION,
+  graphHttpLink,
+  web3ProviderUrl,
+  relayerUrl,
+  COMMONTOKENADDRESS,
 } from '../Config';
 import Toast from '../Util/Toast';
 import { auth } from '../Firebase';

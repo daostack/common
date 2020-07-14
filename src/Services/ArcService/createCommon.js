@@ -1,5 +1,4 @@
 import {IpfsClient} from '../../Config';
-import WalletManager from '../../Util/WalletManager';
 import {graphqlUrl} from '../../Config';
 const { getForgeOrgData } = require('@daostack/common-factory');
 const DAOFactoryABI = require('@daostack/common-factory/abis/DAOFactory');
@@ -77,7 +76,7 @@ export const createCommon = async (
       daoFactoryInfo.address,
       DAOFactoryABI,
     );
-  
+
     const votingMachineInfo = arc.getContractInfoByName(
       'GenesisProtocol',
       ARC_VERSION,
@@ -108,28 +107,21 @@ export const createCommon = async (
       [encodedForgeOrgParams, encodedSetSchemesParams]
     );
 
-    // const OVERRIDES = {
-    //   gasLimit: 10000000,
-    //   gasPrice: 15000000000,
-    // };
-    // const receipt = await daoFactoryContract.forgeOrg(encodedForgeOrgParams, encodedSetSchemesParams, OVERRIDES);
-
-    console.log('forgeOrg receipt ->', receipt);
+    // console.log('forgeOrg receipt ->', receipt);
     console.log('forgeOrg transaction was mined..');
 
     // Get the new avatar address of the thing that was just created..
     const newOrgEvent = receipt.events.NewOrg;
     const newOrgAddress = newOrgEvent._avatar;
 
-    console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
-
+    console.log(`Created a Common at ${newOrgAddress} with name "${opts.name}"`);
     // Wait for 3 seconds then update database
     await new Promise(resolve => setTimeout(resolve, 3000));
 
     console.log('Updating database');
     await axios.get(`${graphqlUrl}/update-dao-by-id?daoId=${newOrgAddress}`);
-    console.log('Common database have been updated');
-    
+    console.log('Common database has been updated');
+
     return newOrgAddress;
   } catch (e) {
     navigation.pop();

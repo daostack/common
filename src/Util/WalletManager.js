@@ -159,7 +159,7 @@ export default class WalletManager {
     try {
       const finalSignature = await this.txHashSignature(safeAddress, toAddress, value, data);
       const idToken = await auth().currentUser.getIdToken();
-      
+
       // const masterCopyContract = new ethers.Contract(
       //   safeAddress,
       //   ABI.MasterCopy,
