@@ -45,7 +45,7 @@ import NavigationBar from 'react-native-navbar';
 import {BlurView} from '@react-native-community/blur';
 import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
 
-const STICKY_HEADER_HEIGHT = 85;
+const STICKY_HEADER_HEIGHT = 114;
 
 const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const [isMember, setMemberState] = useState(false);
@@ -55,7 +55,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'discussions', title: 'Discussions', icon: 'discussion'},
-    {key: 'proposals', title: 'Proposals', icon: 'proposal1'},
+    {key: 'proposals', title: 'Proposals', icon: 'proposal'},
     {key: 'history', title: 'History', icon: 'history'},
   ]);
 

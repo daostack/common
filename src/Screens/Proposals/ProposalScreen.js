@@ -124,7 +124,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
   const [voteType, setVoteType] = useState(false);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    {key: 'info', icon: 'proposal1'},
+    {key: 'info', icon: 'proposal'},
     {key: 'discussions', icon: 'discussion'},
   ]);
 
