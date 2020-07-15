@@ -15,6 +15,12 @@ const style = {
     textAlign: 'center',
     color: colors.black,
   },
+  h4Black: {
+    ...font.primary.bold,
+    ...font.fontSize(1),
+    textAlign: 'center',
+    color: colors.black
+  }
 };
 
 export default StyleSheet.create({
@@ -25,6 +31,10 @@ export default StyleSheet.create({
     ...font.fontSize(5),
     ...layout.marginTopM,
     ...layout.marginBottomM,
+  },
+  h1BlackRegular: {
+    ...style.h1Black,
+    fontWeight: '200',
   },
   h2Black: {
     ...font.primary.bold,
@@ -39,10 +49,11 @@ export default StyleSheet.create({
     color: colors.black,
   },
   h4Black: {
-    ...font.primary.bold,
-    ...font.fontSize(1),
-    textAlign: 'center',
-    color: colors.black,
+    ...style.h4Black,
+  },
+  h4BlackRegular: {
+    ...style.h4Black,
+    fontWeight: '200',
   },
   buttonblack: {
     ...appFontFamily,
@@ -312,5 +323,11 @@ export default StyleSheet.create({
 
   bold: {
     fontWeight: 'bold',
+  },
+
+  // Font Colors
+
+  fontColorGreySteel: {
+    color: colors.greySteel,
   },
 });

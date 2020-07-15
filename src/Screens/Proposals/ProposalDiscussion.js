@@ -68,7 +68,7 @@ const ProposalDiscussion = props => {
   }, [proposalId]);
 
   return (
-    <View style={{flex: 1, backgroundColor: colors.lightBlue}}>
+    <View style={{flex: 1, backgroundColor: colors.paleGrey}}>
       {/* <ChatRoom
         path={`common/${commonId}/proposal/${proposalId}/discussion/${discussionId}/message`}
       /> */}

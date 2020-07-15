@@ -3,7 +3,7 @@ import React from 'react';
 import {numberFormatter} from '../../Util';
 import moment from 'moment';
 import * as Progress from 'react-native-progress';
-import {layout, colors, text} from '../../Theme';
+import {layout, colors, text, font} from '../../Theme';
 
 const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
   const deadlineMoment = moment.unix(commonProgressInfo.time);
@@ -44,8 +44,8 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
           alignContent: 'center',
           alignItems: 'center',
         }}>
-        <View style={styles.raisedContainer}>{numberComponent}</View>
         <Text style={styles.headerSmallText}>{title}</Text>
+        <View style={styles.raisedContainer}>{numberComponent}</View>
       </View>
     );
   };
@@ -62,10 +62,7 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
           ) : (
             <>
               <Text style={styles.headerTitle}>
-                ${numberFormatter(commonProgressInfo.raised / 100) + ' '}
-              </Text>
-              <Text style={styles.headerTitle}>
-                / {numberFormatter(commonProgressInfo.raised)}
+                ${numberFormatter(commonProgressInfo.raised / 100) }
               </Text>
             </>
           ),
@@ -111,13 +108,16 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     ...text.h3Black,
+    ...font.primary.bold,
+    ...font.lineHeight(2),
   },
   headerTitleLight: {
     ...text.h3Black,
-    color: colors.grey3,
+    
   },
   headerSmallText: {
     ...text.smallBlackText,
+    ...text.fontColorGreySteel,
   },
 });
 

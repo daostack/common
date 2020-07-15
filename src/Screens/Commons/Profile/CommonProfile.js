@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   Dimensions,
   Text,
@@ -13,7 +13,7 @@ import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
 import {text, layout, colors, sizeS, sizeL} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
-import {TabView, TabBar} from 'react-native-tab-view';
+import {TabView} from 'react-native-tab-view';
 import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
 import CommonStageSummary from '../../../Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
@@ -44,12 +44,8 @@ import {
 import NavigationBar from 'react-native-navbar';
 import {BlurView} from '@react-native-community/blur';
 
-import Animated, {
-  Easing as OldEasing,
-  // @ts-ignore
-  EasingNode,
-} from 'react-native-reanimated';
-import TabBarIndicator from '../../../Components/TabView/TabBarIndicator';
+import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
+
 
 const STICKY_HEADER_HEIGHT = 85;
 
@@ -75,10 +71,20 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const showReqToJoin =
     !userStore.userInfo ||
     (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
+  const [ showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(false)
   const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(STICKY_HEADER_HEIGHT);
+  
+  
+  const upperRequestToJoinBtnRef = useRef(null);
+
+  // Sticky Tab Bar 
+  const [showStickyTabBar, setShowStickyTabBar] = useState(false);
+  const stickyTabBarRef = useRef(null);
+  const originTabBarRef = useRef(null);
+  
 
   const headerHeightLayouted = height => {
     if (height - headerHeight > 3) {
@@ -152,52 +158,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   }, [pendingProposalsData]);
 
   const renderTabBar = props => (
-
-    <TabBar
-      {...props}
-      renderIndicator={(indicator) => {
-        return (
-          <TabBarIndicator
-            position={indicator.position}
-            navigationState={indicator.navigationState}
-            getTabWidth={indicator.getTabWidth}
-            width={indicator.width}
-            style={indicator.style}
-            layout={indicator.layout}
-          />
-        );
-      }}
-
-      renderLabel={(label, focused) => {
-        return (
-          <View style={{...layout.content, padding: 0}}>
-            <Icon
-              name={label.route.icon}
-              size={30}
-              color={label.focused ? colors.mainBlue : colors.grey3}
-            />
-          </View>
-        );
-      }}
-      style={
-        {
-          backgroundColor: colors.white,
-          borderBottomLeftRadius: 28,
-          borderBottomRightRadius: 28,
-
-          elevation: 4,
-          shadowColor: 'black',
-          shadowOpacity: 0.1,
-          shadowRadius: 3,
-          shadowOffset: {
-            height: 3,
-            width: 0,
-          },
-          zIndex: 1,
-        }
-      }
-      tabStyle={{height: 76}}
-    />
+    <TabBarRenderer originRef={originTabBarRef} {...props} />
   );
 
   const Discussions = () => {
@@ -289,28 +250,34 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const renderMembersRowForMemberUsers = () => {
     if (isMember) {
       return (
-        <View style={styles.membersContainer}>
-          <TouchableOpacity
-            onPress={openCommonMembers}
-            style={styles.membersAction}>
-            <View style={styles.membersRow}>
-              <CommonMembersList
-                horizontal={true}
-                members={
-                  daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers
-                }
-              />
-            </View>
+        <View style={styles.membersContainerWrapper}>
+          <View style={styles.membersContainer}>
             <View style={layout.flexRow}>
-              <Text style={text.h4Black}>
-                Pending (
-                {pendingProposalsData &&
-                  pendingProposalsData.pendingProposalCount}
-                )
-              </Text>
-              <Icon name="right-arrow" />
+              <TouchableOpacity style={layout.flexRow}>
+                <Text style={text.h4Black}>
+                  {pendingProposalsData && pendingProposalsData.pendingProposalCount} Members
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{...layout.flexRow, ...layout.marginLeftS}}>
+                <Text style={text.h4BlackRegular}>
+                  {pendingProposalsData && pendingProposalsData.pendingProposalCount} Pending
+                </Text>
+                <Icon name="right-arrow" />
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={openCommonMembers}
+              style={styles.membersAction}>
+              <View style={styles.membersRow}>
+                <CommonMembersList
+                  horizontal={true}
+                  members={
+                    daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers
+                  }
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
       );
     }
@@ -552,12 +519,32 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     );
   };
 
+  const renderRequestToJoinBtn = () => {
+    return (
+      <TouchableOpacity
+        style={styles.headerButton}
+        onPress={requestToJoin}>
+        <Text
+          style={{
+            fontSize: 16,
+            color: 'white',
+            fontWeight: '700',
+            marginRight: 40,
+          }}>
+          Request to join
+        </Text>
+        <Text style={{fontSize: 16, color: 'white'}}>
+          ${currCommon.minFeeToJoin / 100} min. contribution
+        </Text>
+      </TouchableOpacity>);
+  };
+
   const initialLayout = {width: Dimensions.get('window').width};
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       {currCommon ? (
-        <>
+        <View style={{flex: 1, position: 'relative'}}>
           <StatusBar
             barStyle={dark ? 'dark-content' : 'light-content'}
             translucent
@@ -578,6 +565,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               style={{marginLeft: 10}}
             />
           </TouchableOpacity>
+
+          {showStickyTabBar && (<View style={{position: 'absolute', top: 70, width: '100%', paddingBottom: 5, zIndex: 999}}>
+            <TabBarRenderer navigationState={{index: 0, routes: routes}} parentRef={originTabBarRef} />
+          </View>)}
 
           <ParallaxScrollView
             backgroundColor="white"
@@ -601,6 +592,16 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               setDark(
                 e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT - 40,
               );
+              upperRequestToJoinBtnRef?.current?.measure( (fx, fy, width, height, px, py) => {
+                setShowStickyRequestToJoinBtn(py < 36 );
+              });
+              stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
+                const isVisible = py < 76;
+                if (isVisible != showStickyTabBar) {
+                  setShowStickyTabBar(isVisible);
+                }
+              });
+
             }}
             renderForeground={() => (
               <CommonHeader
@@ -628,7 +629,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               pendingProposalsData.usersPendingProposal &&
               renderPendingApproval()}
 
-            <View style={{paddingVertical: 20}}>
+            <View style={{paddingVertical: sizeS}}>
               <CommonStageSummary
                 isFundingStage={isFundingStage}
                 commonProgressInfo={{
@@ -649,6 +650,11 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               />
             </View>
 
+            {!isMember && showReqToJoin && (
+              <View style={styles.upperActionButtonContainer} ref={upperRequestToJoinBtnRef}>
+                {renderRequestToJoinBtn()}
+              </View>
+            )}
             {renderMembersRowForMemberUsers()}
             {renderAgendaForNonMembers()}
             {/**
@@ -671,19 +677,23 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             Open Proposal
           </Text>
         </TouchableOpacity>
+
       */}
-            <TabView
-              navigationState={{index, routes}}
-              renderScene={renderScene}
-              onIndexChange={setIndex}
-              initialLayout={initialLayout}
-              renderTabBar={renderTabBar}
-              style={
-                {
-                  backgroundColor: colors.paleGrey,
+
+            <View ref={stickyTabBarRef}>
+              <TabView
+                navigationState={{index, routes}}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                initialLayout={initialLayout}
+                renderTabBar={renderTabBar}
+                style={
+                  {
+                    backgroundColor: colors.paleGrey,
+                  }
                 }
-              }
-            />
+              />
+            </View>
           </ParallaxScrollView>
 
           <SafeAreaView>
@@ -711,24 +721,9 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               )
             ) : (
               <>
-                {showReqToJoin && (
+                {showStickyRequestToJoinBtn && showReqToJoin && (
                   <View style={styles.actionButtonContainer}>
-                    <TouchableOpacity
-                      style={styles.headerButton}
-                      onPress={requestToJoin}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          color: 'white',
-                          fontWeight: '700',
-                          marginRight: 40,
-                        }}>
-                        Request to join
-                      </Text>
-                      <Text style={{fontSize: 16, color: 'white'}}>
-                        ${currCommon.minFeeToJoin / 100} Contribution
-                      </Text>
-                    </TouchableOpacity>
+                    {renderRequestToJoinBtn()}
                   </View>
                 )}
                 <Modal
@@ -763,7 +758,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               </>
             )}
           </SafeAreaView>
-        </>
+        </View>
       ) : (
         loadingPlaceholder()
       )}
@@ -810,20 +805,22 @@ const styles = StyleSheet.create({
   membersRow: {
     ...layout.flexRow,
   },
+  membersContainerWrapper: {
+    paddingHorizontal: 20,
+  },
   membersContainer: {
     ...layout.content,
-    ...layout.flexRow,
     paddingVertical: 0,
+    borderTopWidth: 1,
+    borderColor: colors.grey4,
+    paddingTop: sizeS,
   },
   membersAction: {
     ...layout.content,
     ...layout.flexRow,
     paddingHorizontal: 0,
-    alignSelf: 'stretch',
     flexGrow: 1,
     justifyContent: 'space-between',
-    borderTopWidth: 1,
-    borderColor: colors.grey4,
   },
   tabStyle: {
     ...text.ashleyjquimbacom2,
@@ -833,21 +830,15 @@ const styles = StyleSheet.create({
 
     color: colors.mainBlue,
   },
-
+  upperActionButtonContainer: {
+    paddingHorizontal: 20,
+  },
   actionButtonContainer: {
     padding: 20,
     position: 'absolute',
     bottom: 28,
     left: 0,
     right: 0,
-    backgroundColor: colors.white,
-    shadowColor: 'rgba(79, 92, 105, 0.1)',
-    shadowOffset: {
-      width: 0,
-      height: -2,
-    },
-    shadowRadius: 4,
-    shadowOpacity: 1,
   },
   agendaBox: {
     padding: 20,
@@ -882,6 +873,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: colors.mainBlue,
+
+    shadowColor: 'rgba(79, 92, 105, 0.1)',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowRadius: 4,
+    shadowOpacity: 1,
   },
   addButton: {
     position: 'absolute',
