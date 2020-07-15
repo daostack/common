@@ -1,5 +1,5 @@
 import {GoogleSignin} from '@react-native-community/google-signin';
-import {GOOGLE_SIGNIN_PERMISSIONS, WEB_CLIENT_ID} from '../Util';
+import {GOOGLE_SIGNIN_PERMISSIONS } from '../Util';
 import {auth} from '../Firebase';
 import FirebaseService from './FirebaseService';
 import WalletManager from '../Util/WalletManager';

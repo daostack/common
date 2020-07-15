@@ -17,14 +17,10 @@ import {
   DeviceEventEmitter,
 } from 'react-native';
 
-import {ApolloProvider} from 'react-apollo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {colors, text} from './src/Theme';
+import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
-
-import buffer from 'buffer';
-global.Buffer = buffer.Buffer;
 
 import {
   CommonProfile,
@@ -60,7 +56,6 @@ import {
   FullScreenCreationLoader,
 } from './src/Screens';
 
-import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
 import AuthService from './src/Services/AuthService';
 
@@ -292,201 +287,199 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
   }
 
   return (
-    <ApolloProvider client={client}>
-      <NavigationContainer ref={navigationRef}>
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: styles.headerStyle,
-            headerTintColor: colors.black,
-            headerBackImage: () => <Icon name="left-arrow" size={32} />,
-          }}>
-          {!onboarded && (
-            <Stack.Screen
-              name="Onboarding"
-              component={Onboarding}
-              options={{headerShown: false}}
-            />
-          )}
+    <NavigationContainer ref={navigationRef}>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: styles.headerStyle,
+          headerTintColor: colors.black,
+          headerBackImage: () => <Icon name="left-arrow" size={32} />,
+        }}>
+        {!onboarded && (
           <Stack.Screen
-            name="CommonHome"
-            component={CommonHome}
-            options={{headerShown: false}}
-            userStore={userStore}
-          />
-          <Stack.Screen name="CreateCommon" component={CreateCommon} />
-          <Stack.Screen name="CreateAccount" component={CreateAccount} />
-          <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
-          <Stack.Screen
-            name="CommonProfile"
-            component={CommonProfile}
+            name="Onboarding"
+            component={Onboarding}
             options={{headerShown: false}}
           />
-          <Stack.Screen name="CommonAgenda" component={CommonAgenda} />
-          <Stack.Screen name="Profile" component={UserProfile} />
-          <Stack.Screen
-            name="CommonExplanation"
-            component={CommonExplanation}
-            options={({navigation, route}) => ({
-              headerTitle: 'Common!',
-              headerBackTitleVisible: false,
-              headerLeftContainerStyle: {marginLeft: 20},
-              headerRightContainerStyle: {marginRight: 20},
-              headerBackImage: () => (
-                <Image
-                  source={require('./src/Assets/backArrow.png')}
-                  style={{resizeMode: 'contain', width: 32, height: 32}}
-                />
-              ),
-              headerRight: () => (
-                <Image
-                  source={require('./src/Assets/questionmark.png')}
-                  style={{resizeMode: 'contain', width: 20, height: 20}}
-                />
-              ),
-            })}
-          />
-
-          <Stack.Screen name="ProposalScreen" component={ProposalScreen} />
-          <Stack.Screen
-            name="RequestStep1"
-            component={RequestStep1}
-            options={({navigation, route}) => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="RequestStep2"
-            component={RequestStep2}
-            options={({navigation, route}) => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="RequestStep3"
-            component={RequestStep3}
-            options={({navigation, route}) => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="RequestStep4"
-            component={RequestStep4}
-            options={({navigation, route}) => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="CreateStep1"
-            component={CreateStep1}
-            options={({navigation, route}) => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="CreateStep2"
-            component={CreateStep2}
-            options={({navigation, route}) => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="CreateStep3"
-            component={CreateStep3}
-            options={({navigation, route}) => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="CreateStep4"
-            component={CreateStep4}
-            options={({navigation, route}) => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="Discussions"
-            component={Discussions}
-            options={({navigation, route}) => ({
-              headerShown: false,
-            })}
-          />
-
-          <Stack.Screen
-            name="FullScreenCreationLoader"
-            component={FullScreenCreationLoader}
-            options={({navigation, route}) => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen name="New Topic" component={DiscussionPost} />
-          <Stack.Screen
-            options={{
-              title: 'Edit my profile',
-            }}
-            name="EditProfile"
-            component={EditProfile}
-          />
-          <Stack.Screen name="PDFViwer" component={PDFViewer} />
-          <Stack.Screen name="Browser" component={Browser} />
-          <Stack.Screen
-            options={{
-              title: 'My wallet',
-            }}
-            name="MyWallet"
-            component={MyWallet}
-          />
-          <Stack.Screen
-            options={{
-              title: 'NativeBridgeTests',
-            }}
-            name="NativeBridgeTests"
-            component={NativeBridgeTests}
-          />
-          <Stack.Screen name="HUDTest" component={HUDTest} />
-          <Stack.Screen
-            name="UserProfileReadMode"
-            component={UserProfileReadMode}
-          />
-          <Stack.Screen
-            options={{
-              title: null,
-              headerBackTitleVisible: true,
-            }}
-            name="MyProposals"
-            component={MyProposals}
-          />
-          <Stack.Screen
-            options={{
-              title: null,
-              headerBackTitleVisible: true,
-            }}
-            name="MyCommons"
-            component={MyCommons}
-          />
-          <Stack.Screen
-            options={{
-              title: null,
-              headerBackTitleVisible: true,
-            }}
-            name="CommonMembers"
-            component={CommonMembers}
-          />
-          <Stack.Screen
-            options={{
-              title: 'New proposal',
-            }}
-            name="FundingProposal"
-            component={FundingProposal}
-          />
-        </Stack.Navigator>
-        {bottomSheetStore.isVisible ? <BottomSheetContainer /> : null}
-        <Toast
-          ref={hudRef}
-          style={{backgroundColor: 'transparent'}}
-          positionValue={160}
+        )}
+        <Stack.Screen
+          name="CommonHome"
+          component={CommonHome}
+          options={{headerShown: false}}
+          userStore={userStore}
         />
-      </NavigationContainer>
-    </ApolloProvider>
+        <Stack.Screen name="CreateCommon" component={CreateCommon} />
+        <Stack.Screen name="CreateAccount" component={CreateAccount} />
+        <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
+        <Stack.Screen
+          name="CommonProfile"
+          component={CommonProfile}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen name="CommonAgenda" component={CommonAgenda} />
+        <Stack.Screen name="Profile" component={UserProfile} />
+        <Stack.Screen
+          name="CommonExplanation"
+          component={CommonExplanation}
+          options={({navigation, route}) => ({
+            headerTitle: 'Common!',
+            headerBackTitleVisible: false,
+            headerLeftContainerStyle: {marginLeft: 20},
+            headerRightContainerStyle: {marginRight: 20},
+            headerBackImage: () => (
+              <Image
+                source={require('./src/Assets/backArrow.png')}
+                style={{resizeMode: 'contain', width: 32, height: 32}}
+              />
+            ),
+            headerRight: () => (
+              <Image
+                source={require('./src/Assets/questionmark.png')}
+                style={{resizeMode: 'contain', width: 20, height: 20}}
+              />
+            ),
+          })}
+        />
+
+        <Stack.Screen name="ProposalScreen" component={ProposalScreen} />
+        <Stack.Screen
+          name="RequestStep1"
+          component={RequestStep1}
+          options={({navigation, route}) => ({
+            headerShown: false,
+          })}
+        />
+        <Stack.Screen
+          name="RequestStep2"
+          component={RequestStep2}
+          options={({navigation, route}) => ({
+            headerShown: false,
+          })}
+        />
+        <Stack.Screen
+          name="RequestStep3"
+          component={RequestStep3}
+          options={({navigation, route}) => ({
+            headerShown: false,
+          })}
+        />
+        <Stack.Screen
+          name="RequestStep4"
+          component={RequestStep4}
+          options={({navigation, route}) => ({
+            headerShown: false,
+          })}
+        />
+        <Stack.Screen
+          name="CreateStep1"
+          component={CreateStep1}
+          options={({navigation, route}) => ({
+            headerShown: false,
+          })}
+        />
+        <Stack.Screen
+          name="CreateStep2"
+          component={CreateStep2}
+          options={({navigation, route}) => ({
+            headerShown: false,
+          })}
+        />
+        <Stack.Screen
+          name="CreateStep3"
+          component={CreateStep3}
+          options={({navigation, route}) => ({
+            headerShown: false,
+          })}
+        />
+        <Stack.Screen
+          name="CreateStep4"
+          component={CreateStep4}
+          options={({navigation, route}) => ({
+            headerShown: false,
+          })}
+        />
+        <Stack.Screen
+          name="Discussions"
+          component={Discussions}
+          options={({navigation, route}) => ({
+            headerShown: false,
+          })}
+        />
+
+        <Stack.Screen
+          name="FullScreenCreationLoader"
+          component={FullScreenCreationLoader}
+          options={({navigation, route}) => ({
+            headerShown: false,
+          })}
+        />
+        <Stack.Screen name="New Topic" component={DiscussionPost} />
+        <Stack.Screen
+          options={{
+            title: 'Edit my profile',
+          }}
+          name="EditProfile"
+          component={EditProfile}
+        />
+        <Stack.Screen name="PDFViwer" component={PDFViewer} />
+        <Stack.Screen name="Browser" component={Browser} />
+        <Stack.Screen
+          options={{
+            title: 'My wallet',
+          }}
+          name="MyWallet"
+          component={MyWallet}
+        />
+        <Stack.Screen
+          options={{
+            title: 'NativeBridgeTests',
+          }}
+          name="NativeBridgeTests"
+          component={NativeBridgeTests}
+        />
+        <Stack.Screen name="HUDTest" component={HUDTest} />
+        <Stack.Screen
+          name="UserProfileReadMode"
+          component={UserProfileReadMode}
+        />
+        <Stack.Screen
+          options={{
+            title: null,
+            headerBackTitleVisible: true,
+          }}
+          name="MyProposals"
+          component={MyProposals}
+        />
+        <Stack.Screen
+          options={{
+            title: null,
+            headerBackTitleVisible: true,
+          }}
+          name="MyCommons"
+          component={MyCommons}
+        />
+        <Stack.Screen
+          options={{
+            title: null,
+            headerBackTitleVisible: true,
+          }}
+          name="CommonMembers"
+          component={CommonMembers}
+        />
+        <Stack.Screen
+          options={{
+            title: 'New proposal',
+          }}
+          name="FundingProposal"
+          component={FundingProposal}
+        />
+      </Stack.Navigator>
+      {bottomSheetStore.isVisible ? <BottomSheetContainer /> : null}
+      <Toast
+        ref={hudRef}
+        style={{backgroundColor: 'transparent'}}
+        positionValue={160}
+      />
+    </NavigationContainer>
   );
 };
 
