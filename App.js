@@ -19,7 +19,7 @@ import {
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {colors, text} from './src/Theme';
+import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import {
@@ -56,7 +56,6 @@ import {
   FullScreenCreationLoader,
 } from './src/Screens';
 
-import {ApolloClientConfig as client} from './src/Config';
 import FirebaseService from './src/Services/FirebaseService';
 import AuthService from './src/Services/AuthService';
 

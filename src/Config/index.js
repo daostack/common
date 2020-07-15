@@ -1,10 +1,4 @@
 import {IPFSApiClient} from './ipfs-api';
-import {InMemoryCache} from 'apollo-cache-inmemory';
-import {HttpLink} from 'apollo-link-http';
-import {onError} from 'apollo-link-error';
-import {ApolloLink, split} from 'apollo-link';
-import {WebSocketLink} from 'apollo-link-ws';
-import {getMainDefinition} from 'apollo-utilities';
 import Config from 'react-native-config';
 
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
