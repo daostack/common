@@ -39,7 +39,7 @@ const UnsavedChanges = ({
       <View style={styles.body}>
         <Image
           style={styles.image}
-          source={require('../../../src/Assets/edit.png')}
+          source={require('../../../src/Assets/save.png')}
         />
 
         <Text style={styles.title}>
