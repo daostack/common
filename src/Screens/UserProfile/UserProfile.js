@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {layout, colors, text, sizeL, sizeXXL} from '../../Theme';
+import {layout, colors, text, sizeL} from '../../Theme';
 import {observer, inject} from 'mobx-react';
 import AccordionBtn from '../../Components/AccordionBtn';
 import CreateAccount from './CreateAccount';
