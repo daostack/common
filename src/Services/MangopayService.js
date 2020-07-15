@@ -60,7 +60,7 @@ export const preauthorizePayment = async (cardData, funding, navigation) => {
         });
       });
       await is3DCheckFinished();
-      const {data: {Status}} = await axiosClient.post('view-preauth', { preAuthId });
+      const {data: {Status}} = await axiosClient.post('get-preauthorisation-status', { preAuthId });
       if (Status === 'SUCCEEDED') {
         return preAuthId;
       } else
