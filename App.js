@@ -297,9 +297,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Navigator
           screenOptions={{
             headerStyle: styles.headerStyle,
-            headerTitleStyle: styles.headerTitleStyle,
-            headerBackTitleStyle: styles.headerTitleStyle,
-            headerBackTitleVisible: false,
             headerTintColor: colors.black,
             headerBackImage: () => <Icon name="left-arrow" size={32} />,
           }}>
@@ -501,10 +498,7 @@ const styles = StyleSheet.create({
     shadowOffset: {
       height: 0,
     },
-  },
-
-  headerTitleStyle: {
-    ...text.h4Black,
+    textAlign: 'center',
   },
 });
 

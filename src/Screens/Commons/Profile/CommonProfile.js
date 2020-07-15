@@ -43,9 +43,7 @@ import {
 } from 'rn-placeholder';
 import NavigationBar from 'react-native-navbar';
 import {BlurView} from '@react-native-community/blur';
-
 import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
-
 
 const STICKY_HEADER_HEIGHT = 85;
 

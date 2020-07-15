@@ -130,8 +130,8 @@ const UserProfile = ({userStore, navigation}) => {
                 <AccordionBtn title="Contact us" />
                 {userStore.userInfo ? (
                   <AccordionBtn
-                    lightStyle={false}
-                    title="Logout"
+                    lightStyle={true}
+                    title="Log out"
                     onPress={_signOut}
                   />
                 ) : null}

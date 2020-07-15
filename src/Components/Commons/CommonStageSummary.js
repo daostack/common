@@ -25,7 +25,7 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
         </View>
         <Text
           style={{
-            ...styles.headerSmallText,
+            ...styles.headerText,
             color: colors.grey3,
             ...layout.marginTopS,
             ...layout.marginBottomS,
@@ -82,7 +82,7 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
               {commonProgressInfo.activeProposals}
             </Text>
           ),
-          isFundingStage ? 'Goal' : 'ActiveProposals',
+          isFundingStage ? 'Goal' : 'Proposals',
         )}
       </View>
       {isFundingStage && renderFundingProgressBar()}

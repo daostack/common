@@ -1,8 +1,8 @@
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import {text, layout, colors} from '../Theme';
+import {text, font,layout, colors} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 import React from 'react';
-
+import {string, func, any} from 'prop-types';
 const AccordionBtn = ({title, subtitle, onPress, lightStyle}) => {
   const renderBtnTitle = () => {
     let btnTitleStyle = {...styles.btnText};
@@ -53,32 +53,36 @@ const AccordionBtn = ({title, subtitle, onPress, lightStyle}) => {
   );
 };
 
+AccordionBtn.propTypes = {
+  title: string.isRequired,
+  subtitle: string.isRequired,
+  onPress: func.isRequired,
+  lightStyle: any,
+};
 const styles = StyleSheet.create({
   accordionBtn: {
     ...layout.content,
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
-    borderBottomColor: '#eeeeee',
+    borderBottomColor: colors.grey4,
     alignSelf: 'stretch',
     paddingHorizontal: 20,
+    height: 60,
     paddingVertical: 0,
-    height: 56,
+
   },
   accordionBtnLight: {
     borderBottomWidth: 0,
   },
   btnText: {
-    fontSize: 16,
-    fontWeight: '500',
-    fontStyle: 'normal',
+    ...font.primary.semiBold,
+    ...font.fontSize(3),
     lineHeight: 20,
-    letterSpacing: 0,
   },
   btnTextLight: {
-    fontSize: 16,
-    fontWeight: '500',
-    fontStyle: 'normal',
+    ...font.primary.semiBold,
+    ...font.fontSize(3),
     lineHeight: 20,
     letterSpacing: 0,
     color: colors.grey3,
