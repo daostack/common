@@ -297,7 +297,7 @@ const CreateStep4 = props => {
             </View>
           </View>
 
-          {avatarURL === null ? (
+          {/* {avatarURL === null ? (
             <View
               style={{
                 flexDirection: 'row',
@@ -346,7 +346,7 @@ const CreateStep4 = props => {
                 </TouchableOpacity>
               </View>
             </View>
-          )}
+          )} */}
           <View
             style={{height: 1, width: width, backgroundColor: colors.grey4}}
           />
