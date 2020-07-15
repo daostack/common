@@ -18,7 +18,7 @@ export const preauthorizePayment = async (cardData, funding) => {
     await axiosClient.post('create-user', { idToken });
     // then get card pre-registration data
     const { data: { preRegData}} = await axiosClient.post(
-      'pre-reg-data',
+      'get-card-registration',
       { idToken },
     );
 
@@ -37,14 +37,14 @@ export const preauthorizePayment = async (cardData, funding) => {
       cardCvx: cardData.cvv,
     };
     // post card sensitive data directly to tokenization server
-    const cardRegistrationResult = await axios.post(CardRegistrationURL, qs.stringify(cardInfo), {
+    const cardRegistrationData = await axios.post(CardRegistrationURL, qs.stringify(cardInfo), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     });
     // finalize the card registration - save cardId to firebase and preauthorize payment
-    const {data: {preAuthData: {preAuthId}}} = await axiosClient.post('finalize-card-reg',
-      { idToken, cardRegistrationResult, Id, funding  }
+    const {data: {preAuthData: {preAuthId}}} = await axiosClient.post('register-card',
+      { idToken, cardRegistrationData, Id, funding  }
     );
     return preAuthId;
   } catch (e) {
