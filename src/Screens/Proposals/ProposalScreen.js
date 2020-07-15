@@ -35,6 +35,7 @@ import { db } from '../../Firebase';
 import { observer, inject } from 'mobx-react';
 
 const ProposalScreen = ({navigation, route, userStore, props}) => {
+  const [votingProcessState, setVotingProcessState] = useState({ inProgress: false, error: false });
   const [proposalInfo, setProposalInfo] = useState(false);
   const [proposedUser, setProposedUser] = useState(false);
   const [daoInfo, setDaoInfo] = useState({});
@@ -95,6 +96,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
       console.log(`proposalId --> ${routeProposalId}`);
       getProposalInfo(routeProposalId);
     }
+
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -224,10 +226,18 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
     setIsApprovalBottomModalVisible(false);
   };
 
+  async function timeout(ms) { //pass a time in milliseconds to this function
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   const onVote = async isApproved => {
+    setVotingProcessState( {inProgress: true, error: false});
+
     try {
       // let votingResponse = null;
-      const voteData = {vote: isApproved ? 1 : 0};
+      const voteData = { vote: isApproved ? 1 : 0 };
+
+      await timeout(3000);
 
       if (proposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
         await ArcService.getInstance().voteForJoinAndQuitProposal(
@@ -242,13 +252,15 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
       }
 
       // console.log('votingResponse -> ', votingResponse);
-
+      setVotingProcessState({ inProgress: false, error: false });
       closeApprovalSheet();
       Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
       setIsVoteByYou({isApproved: isApproved});
+
     } catch (err) {
+      setVotingProcessState( {inProgress: false, error: true});
       console.log(err);
-      closeApprovalSheet();
+      //closeApprovalSheet();
       Toast.error(err.message);
     }
   };
@@ -400,7 +412,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
                   />
                   <View style={{marginTop: 28}}>
                     <Text style={{...text.h3Black}}>
-                      {proposedUser ?  proposedUser.displayName  : 'unknown user'}
+                      {proposedUser ? proposedUser.displayName : 'unknown user'}
                     </Text>
                     <Text
                       style={{
@@ -441,7 +453,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
 
         {index === 0 ? (
           <View style={styles.actionButtonContainer}>
-            {isMember && renderVoting && renderStickyBottomContent()}
+            { isMember && renderVoting && renderStickyBottomContent() }
           </View>
         ) : (
           <>{messageInput()}</>
@@ -458,8 +470,9 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
         onClose={closeApprovalSheet}>
         <ApprovalSheetScreen
           voteType={voteType}
-          navigation={navigation}
           onApprove={onVote}
+          onClose={e => openApprovalSheet(false)}
+          votingProcessState={votingProcessState}
         />
       </BottomSheetModal>
     </>
