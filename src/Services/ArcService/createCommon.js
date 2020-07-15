@@ -36,8 +36,12 @@ export const createCommon = async (
   // need these keys:
   console.log('step 1');
   navigation.navigate({
-    name: 'FullScreenCreationLoader', params: {
-      title: 'Creating your Common', message: 'There are a lot of pieces to bring together. It might take acouple of minutes.' }});
+    name: 'FullScreenCreationLoader',
+    params: {
+      title: 'Creating your Common',
+      message: 'This might take a couple of minutes.',
+    },
+  });
   //daoStore.setCreationStatus(1);
   const MANDATORY_ARGS = [
     'name',

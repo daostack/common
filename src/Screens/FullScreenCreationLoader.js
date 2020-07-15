@@ -11,7 +11,7 @@ import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors, layout, font, text} from '../Theme';
 import Loader from '../Components/Loader';
 
-const FullScreenCreationLoader = ({daoStore, route, navigation}) => {
+const FullScreenCreationLoader = ({daoStore, route: {params: {title = '', message = ''}}, navigation}) => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -22,9 +22,9 @@ const FullScreenCreationLoader = ({daoStore, route, navigation}) => {
               source={require('../Assets/loader-4-drumroll.png')}
               style={styles.image}
             />
-            <Text style={styles.creatingText}>Creating your common</Text>
+            <Text style={styles.creatingText}>{title}</Text>
             <Text style={styles.waitText}>
-              This might take a couple of minutes.
+              {message}
             </Text>
             <Loader />
           </View>

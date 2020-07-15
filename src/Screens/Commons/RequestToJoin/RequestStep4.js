@@ -59,7 +59,7 @@ const RequestStep4 = props => {
           },
         };
 
-        props.navigation.navigate({ name: 'FullScreenCreationLoader', params: { title: 'Piecing your request together' } });
+        props.navigation.navigate({ name: 'FullScreenCreationLoader', params: { title: 'Creating your membership request' } });
 
         const proposalId = await ArcService.getInstance().createRequestToJoin(
           props.route.params.currDaoId,
