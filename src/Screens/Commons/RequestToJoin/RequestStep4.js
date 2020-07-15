@@ -67,8 +67,7 @@ const RequestStep4 = ({navigation, ...props}) => {
           data = { ...data, preAuthId };
           console.log('PREAUTH ID', preAuthId);
         }
-        navigation.pop();
-        return;
+
         const proposalId = await ArcService.getInstance().createRequestToJoin(
           props.route.params.currDaoId,
           data,
