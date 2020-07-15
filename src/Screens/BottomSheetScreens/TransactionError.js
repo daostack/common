@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import {inject, observer} from 'mobx-react';
 import React from 'react';
-import {text, layout, colors} from '../../Theme/index';
+import {text, layout, colors, font} from '../../Theme/index';
 
 const TransactionError = ({bottomSheetStore, ...props}) => {
   return (
@@ -15,13 +15,7 @@ const TransactionError = ({bottomSheetStore, ...props}) => {
       <View style={styles.body}>
         <Image
           source={require('../../Assets/alert.png')}
-          style={{
-            alignSelf: 'center',
-            padding: 80,
-            resizeMode: 'contain',
-            height: 50,
-            width: 50,
-          }}
+          style={styles.imgAlert}
         />
         <Text style={styles.title}>Something went wrong</Text>
 
@@ -29,9 +23,7 @@ const TransactionError = ({bottomSheetStore, ...props}) => {
           <Text style={styles.blackTextWithImage}>{props.errorMessage}</Text>
         </View>
         <TouchableOpacity
-          style={{
-            ...layout.btnOutline,
-          }}
+          style={styles.dismissButton}
           onPress={() => bottomSheetStore.hideBottomSheet()}>
           <Text style={text.buttonblue}>Dismiss</Text>
         </TouchableOpacity>
@@ -42,15 +34,24 @@ const TransactionError = ({bottomSheetStore, ...props}) => {
 
 const styles = StyleSheet.create({
   title: {
-    paddingVertical: 20,
+    // paddingVertical: 20,
     ...text.h1Black,
     textAlign: 'left',
   },
 
+  dismissButton: {
+    ...layout.btnOutline,
+    flexGrow: 0,
+    width: '100%',
+    alignSelf: 'stretch',
+  },
+  imgAlert: {
+    height: '50%',
+    aspectRatio: 1,
+  },
   title2: {
     ...layout.marginTopL,
-    paddingVertical: 10,
-    ...text.h2Black,
+    ...text.regularText,
     textAlign: 'left',
   },
   textWithIconContainer: {
@@ -60,8 +61,9 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   blackTextWithImage: {
-    ...text.blackText,
+    ...text.regularText,
     ...layout.marginLeftM,
+    ...font.fontSize(3),
     marginBottom: 20,
   },
   scrollView: {

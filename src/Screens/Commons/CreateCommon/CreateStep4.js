@@ -27,6 +27,8 @@ import Toast from '../../../Util/Toast';
 import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ArcService from '../../../Services/ArcService';
+import Share from 'react-native-share';
+
 const {width} = Dimensions.get('window');
 import {CommonActions} from '@react-navigation/native';
 import {
@@ -156,6 +158,15 @@ const CreateStep4 = props => {
     });
   };
 
+  const shareCommon = event => {
+    const currCommonId = newCommonAddress.toLowerCase();
+    const options = {
+      url: `https://app.common.io/common/${currCommonId}`,
+      title: "Let's make it happen",
+      message: `Join in common`,
+    };
+    Share.open(options);
+  };
   const forgeCommon = async () => {
     try {
       const manager = await WalletManager.getInstance();
@@ -450,17 +461,15 @@ const CreateStep4 = props => {
         <SentTemplate
           isCommonCreation={true}
           title="Your journey starts now"
-          description="Spread the word and invite others to take part in it. You can always share later"
+          description="Your Common is ready. Spread the word and invite others to join you. You can always share it later."
           onClose={() => props.navigation.dispatch(StackActions.popToTop())}>
-          <View style={layout.flexRow}>
+          <View style={styles.shareContainer}>
             <TouchableOpacity
               style={styles.modalRequestSentBtnPrimary}
               /*  onPress={} */
             >
               <Text style={text.buttoncenterwhite}>Share now</Text>
             </TouchableOpacity>
-          </View>
-          <View style={layout.flexRow}>
             <TouchableOpacity
               style={styles.modalRequestSentBtnOutline}
               onPress={goToCommon}>
@@ -477,6 +486,9 @@ const styles = StyleSheet.create({
   view: {
     justifyContent: 'flex-end',
     margin: 0,
+  },
+  shareContainer: {
+    flexDirection: 'column',
   },
   container: {
     backgroundColor: colors.white,
