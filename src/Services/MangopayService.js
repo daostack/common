@@ -5,9 +5,9 @@ const qs = require('qs');
 
 
 const axiosClient = axios.create({
-  //baseURL: mangoPayUrl,
+  baseURL: mangoPayUrl,
   // or for development:
-  baseURL: 'http://localhost:5001/common-daostack/us-central1/mangopay/',
+  //baseURL: 'http://localhost:5001/common-daostack/us-central1/mangopay/',
   timeout: 1000000, // milliseconds
 });
 
@@ -49,12 +49,14 @@ export const preauthorizePayment = async (cardData, funding, navigation) => {
     if (SecureModeRedirectURL) {
       const is3DCheckFinished = () => new Promise((resolve, reject) => {
         navigation.navigate('Browser', {
-          url: SecureModeRedirectURL, onNavStateChange: (e) => {
+          url: SecureModeRedirectURL,
+          onNavStateChange: (e) => {
             if (e.url.indexOf('common.io') > -1) {
               navigation.pop();
               resolve();
             }
           },
+          onBack: () => resolve(),
         });
       });
       await is3DCheckFinished();
@@ -70,9 +72,3 @@ export const preauthorizePayment = async (cardData, funding, navigation) => {
     throw e;
   }
 };
-
-
-
-/* export const registerCard = async () => {
-
-}; */
