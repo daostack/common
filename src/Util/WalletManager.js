@@ -245,7 +245,7 @@ export default class WalletManager {
         msg = 'Response has no "data" property - thats not good at all :(';
         throw Error(msg);
       }
-      console.log('RequestToJoin response.data -->', response.data);
+      console.log('RequestToJoin response.data -->', response.status, response.data);
       if (response.data.errcode) {
         msg = `Code: ${response.data.errorCode}, Message: ${response.data.error}`;
         throw Error(msg);
