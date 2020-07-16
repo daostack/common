@@ -125,7 +125,7 @@ const UserProfileData = ({
 
       <View style={styles.contentContainer}>
         <Text style={text.h2Black}>Intro</Text>
-        <Text style={{...text.blackText, ...layout.marginTopM}}>
+        <Text style={styles.userIntro}>
           {user.intro}
         </Text>
       </View>
@@ -204,6 +204,10 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'center',
     color: colors.black,
+  },
+  userIntro: {
+    ...text.regularText,
+    ...layout.marginTopM,
   },
   screenNav: {
     paddingBottom: sizeL,

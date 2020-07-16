@@ -1,15 +1,9 @@
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  SafeAreaView,
-} from 'react-native';
 import React from 'react';
+import {Image, StyleSheet, Text, SafeAreaView} from 'react-native';
+import LayoutHeader from './LayoutHeader';
 
-import Icon from '../../Assets/iconfont/Icon';
-import {layout, colors, text} from '../../Theme';
+import {font, sizeM} from '../../Theme';
+import {func, string, bool} from 'prop-types';
 
 const SentTemplate = ({
   children,
@@ -19,54 +13,51 @@ const SentTemplate = ({
   isCommonCreation,
 }) => {
   return (
-    <>
-      <SafeAreaView />
-      <View style={styles.headerSafeArea}>
-        <TouchableOpacity style={styles.closeBtn}>
-          <Icon name="close" color={colors.black} size={12} onPress={onClose} />
-        </TouchableOpacity>
-      </View>
-      <SafeAreaView style={styles.container}>
-        <View style={layout.marginBottomXL}>
-          <Image
-            source={
-              isCommonCreation
-                ? require('../../Assets/launch.png')
-                : require('../../Assets/sent_igraphic.png')
-            }
-          />
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.description}>{description}</Text>
-        </View>
-        {children}
-      </SafeAreaView>
-    </>
+    <SafeAreaView style={styles.areaView}>
+      <LayoutHeader onClose={onClose} />
+      <Image
+        style={styles.image}
+        source={
+          isCommonCreation
+            ? require('../../Assets/launch.png')
+            : require('../../Assets/sent_igraphic.png')
+        }
+      />
+      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.description}>{description}</Text>
+      {children}
+    </SafeAreaView>
   );
 };
-
+SentTemplate.propTypes = {
+  title: string.isRequired,
+  description: string.isRequired,
+  onClose: func.isRequired,
+  isCommonCreation: bool,
+};
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.white,
-    flex: 1,
-    ...layout.content,
-    padding: 0,
+  image: {
+    top: 0,
+    height: '50%',
+    alignSelf: 'center',
+    aspectRatio: 1,
   },
   title: {
-    ...text.h1Black,
+    ...font.fontSize(6),
+    textAlign: 'center',
+    ...font.heading.bold,
+  },
+  areaView: {
+    justifyContent: 'space-between',
+    flex: 1,
+    marginVertical: sizeM,
   },
   description: {
-    ...text.blackText,
-    ...layout.marginTopM,
+    ...font.fontSize(2),
+    ...font.primary.regular,
     textAlign: 'center',
   },
-  closeBtn: {
-    ...layout.content,
-    padding: 5,
-  },
-  headerSafeArea: {
-    ...layout.content,
-    alignItems: 'flex-end',
-  },
+  text: {},
 });
 
 export default SentTemplate;

@@ -60,7 +60,7 @@ const RequestStep4 = ({navigation, ...props}) => {
           expDate: formData.expiration_date.replace('/', ''),
         };
 
-        navigation.navigate({ name: 'FullScreenCreationLoader', params: { title: 'Piecing your request together' } });
+        props.navigation.navigate({ name: 'FullScreenCreationLoader', params: { title: 'Creating your membership request' } });
 
         if (Number(data.funding) > 0) {
           const preAuthId = await preauthorizePayment(cardData, Number(data.funding), navigation);

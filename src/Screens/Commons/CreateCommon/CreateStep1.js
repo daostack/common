@@ -61,7 +61,7 @@ const CreateStep1 = props => {
             style={{justifyContent: 'center'}}
             onPress={() => props.navigation.pop()}>
             <Icon
-              name="close1"
+              name="close"
               size={18}
               style={{marginRight: 20}}
               color="black"
