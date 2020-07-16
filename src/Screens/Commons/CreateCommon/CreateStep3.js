@@ -111,7 +111,7 @@ const CreateStep3 = props => {
             infoLabel="Required"
             numberOfLines={6}
             multiline={true}
-            placeholderText="What action are you planning to take to fulfil your goal? Are there things this common will not do?"
+            placeholderText="How do you plan to promote your agenda? Anything you want to avoid? Keep it simple and relatively broad - your plans can always change as you go."
             autoCapitalize="none"
             autoCorrect={false}
             validation={{
