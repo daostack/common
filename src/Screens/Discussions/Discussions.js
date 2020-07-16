@@ -331,8 +331,7 @@ const Discussions = props => {
                 }}>
                 <Image
                   style={styles.avatar}
-                  source={{uri: user.photoURL}}
-                  // source={require('../../Assets/daoGeneralInfo.png')}
+                  source={{uri: user?.photoURL || ''}}
                 />
                 <View style={{flex: 1, paddingHorizontal: 10}}>
                   <Text style={{fontWeight: 'bold'}}>{user.displayName}</Text>
