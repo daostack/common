@@ -197,7 +197,7 @@ export default class WalletManager {
     return response;
   }
 
-  requestToJoin = async (pluginContract, method, params, paymentData) => {
+  requestToJoin = async (pluginContract, method, params, funding, preAuthId) => {
     try {
       const pluginAddress = pluginContract.address;
       const zeroValue = '0';
@@ -225,7 +225,8 @@ export default class WalletManager {
           data: data2,
           signature: signature2,
         },
-        paymentData,
+        funding,
+        preAuthId,
       };
       /* const idToken = await auth().currentUser.getIdToken();
       const body =
