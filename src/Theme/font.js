@@ -3,7 +3,7 @@ const fonts = [
   13, // 1
   14, // 2
   18, // 3
-  20, // 4
+  21, // 4
   24, // 5
   29,
   32,
@@ -29,6 +29,10 @@ const font = {
     bold: {
       fontFamily: 'NotoSerif-Bold',
       fontWeight: 'normal',
+    },
+    reguar: {
+      fontFamily: 'NotoSerif-Bold',
+      fontWeight: '200',
     },
   },
   primary: {

@@ -33,14 +33,21 @@ import { PROPOSAL_STAGES_ACTIVE} from '../../Services/ProposalService';
 import { PROPOSAL_TYPE } from '../../Services/ProposalService';
 import { db } from '../../Firebase';
 import { observer, inject } from 'mobx-react';
+import TabBarRenderer from '../../Components/TabView/TabBarRenderer';
 
 const ProposalScreen = ({navigation, route, userStore, props}) => {
+  const [votingProcessState, setVotingProcessState] = useState({ inProgress: false, error: false });
   const [proposalInfo, setProposalInfo] = useState(false);
   const [proposedUser, setProposedUser] = useState(false);
   const [daoInfo, setDaoInfo] = useState({});
   const [isMember, setIsMember] = useState(false);
   const routeProposalId = route?.params.proposalId;
   const renderVoting = proposalInfo && PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr);
+
+  // Sticky Tab Bar 
+  const [showStickyTabBar, setShowStickyTabBar] = useState(false);
+  const stickyTabBarRef = useRef(null);
+  const originTabBarRef = useRef(null);
 
   useEffect(() => {
     let unsubscribe = null;
@@ -95,6 +102,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
       console.log(`proposalId --> ${routeProposalId}`);
       getProposalInfo(routeProposalId);
     }
+
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -128,24 +136,9 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
   const inputRef = useRef();
 
   const renderTabBar = currProps => (
-    <TabBar
-      {...currProps}
-      indicatorStyle={{
-        backgroundColor: colors.mainBlue,
-      }}
-      renderLabel={({route, focused}) => {
-        return (
-          <View style={{...layout.content, padding: 0}}>
-            <Icon
-              name={route.icon}
-              size={24}
-              color={focused ? colors.mainBlue : colors.grey3}
-            />
-          </View>
-        );
-      }}
-      style={{backgroundColor: colors.white}}
-    />
+    <View style={{paddingBottom: 5}}>
+      <TabBarRenderer originRef={originTabBarRef} {...currProps}/>
+    </View>
   );
 
   const messageInput = () => {
@@ -224,10 +217,18 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
     setIsApprovalBottomModalVisible(false);
   };
 
+  async function timeout(ms) { //pass a time in milliseconds to this function
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   const onVote = async isApproved => {
+    setVotingProcessState( {inProgress: true, error: false});
+
     try {
       // let votingResponse = null;
-      const voteData = {vote: isApproved ? 1 : 0};
+      const voteData = { vote: isApproved ? 1 : 0 };
+
+      await timeout(3000);
 
       if (proposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
         await ArcService.getInstance().voteForJoinAndQuitProposal(
@@ -242,13 +243,15 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
       }
 
       // console.log('votingResponse -> ', votingResponse);
-
+      setVotingProcessState({ inProgress: false, error: false });
       closeApprovalSheet();
       Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
       setIsVoteByYou({isApproved: isApproved});
+
     } catch (err) {
+      setVotingProcessState( {inProgress: false, error: true});
       console.log(err);
-      closeApprovalSheet();
+      //closeApprovalSheet();
       Toast.error(err.message);
     }
   };
@@ -362,10 +365,23 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
     <>
       <SafeAreaView style={{backgroundColor: colors.white}} />
       <SafeAreaView style={{flex: 1}}>
+        {showStickyTabBar && (<View style={{position: 'absolute', top: 0, width: '100%', paddingBottom: 5, zIndex: 999}}>
+          <TabBarRenderer navigationState={{index: 0, routes: routes}} parentRef={originTabBarRef} />
+        </View>)}
         <ScrollView
           style={{
             flex: 1,
             backgroundColor: colors.white,
+          }}
+          scrollEventThrottle={16}
+          onScroll={(e) => {
+            //e.nativeEvent.contentOffset.y
+            stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
+              const isVisible = py < 76;
+              if (isVisible != showStickyTabBar) {
+                setShowStickyTabBar(isVisible);
+              }
+            });
           }}>
           {proposalInfo && (
             <View style={{...headerContainerStyle}}>
@@ -400,7 +416,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
                   />
                   <View style={{marginTop: 28}}>
                     <Text style={{...text.h3Black}}>
-                      {proposedUser ?  proposedUser.displayName  : 'unknown user'}
+                      {proposedUser ? proposedUser.displayName : 'unknown user'}
                     </Text>
                     <Text
                       style={{
@@ -416,32 +432,38 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
             </View>
           )}
 
-          <TabView
-            navigationState={{index, routes}}
-            renderScene={() => null}
-            onIndexChange={setIndex}
-            initialLayout={initialLayout}
-            renderTabBar={renderTabBar}
-            style={{}}
-          />
-          {index === 0 && (
-            <ProposalData
-              proposalId={routeProposalId}
-              proposalInfo={proposalInfo}
-              showMore={() => setIndex(1)}
+          <View ref={stickyTabBarRef}>
+            <TabView
+              navigationState={{index, routes}}
+              renderScene={() => null}
+              onIndexChange={setIndex}
+              initialLayout={initialLayout}
+              renderTabBar={renderTabBar}
+              style={
+                {
+                  backgroundColor: colors.paleGrey,
+                }
+              }
             />
-          )}
-          {index === 1 && (
-            <ProposalDiscussion
-              proposalId={routeProposalId}
-              inputRef={inputRef}
-            />
-          )}
+            {index === 0 && (
+              <ProposalData
+                proposalId={routeProposalId}
+                proposalInfo={proposalInfo}
+                showMore={() => setIndex(1)}
+              />
+            )}
+            {index === 1 && (
+              <ProposalDiscussion
+                proposalId={routeProposalId}
+                inputRef={inputRef}
+              />
+            )}
+          </View>
         </ScrollView>
 
         {index === 0 ? (
           <View style={styles.actionButtonContainer}>
-            {isMember && renderVoting && renderStickyBottomContent()}
+            { isMember && renderVoting && renderStickyBottomContent() }
           </View>
         ) : (
           <>{messageInput()}</>
@@ -458,8 +480,9 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
         onClose={closeApprovalSheet}>
         <ApprovalSheetScreen
           voteType={voteType}
-          navigation={navigation}
           onApprove={onVote}
+          onClose={e => openApprovalSheet(false)}
+          votingProcessState={votingProcessState}
         />
       </BottomSheetModal>
     </>

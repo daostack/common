@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   Dimensions,
   Text,
@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
-import {text, layout, colors, sizeL} from '../../../Theme';
+import {text, layout, colors, sizeS, sizeL} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
 import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
@@ -43,8 +43,9 @@ import {
 } from 'rn-placeholder';
 import NavigationBar from 'react-native-navbar';
 import {BlurView} from '@react-native-community/blur';
-import CommonTabBar from '../../CommonTabBar';
-const STICKY_HEADER_HEIGHT = 85;
+import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
+
+const STICKY_HEADER_HEIGHT = 114;
 
 const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const [isMember, setMemberState] = useState(false);
@@ -54,7 +55,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'discussions', title: 'Discussions', icon: 'discussion'},
-    {key: 'proposals', title: 'Proposals', icon: 'proposals'},
+    {key: 'proposals', title: 'Proposals', icon: 'proposal'},
     {key: 'history', title: 'History', icon: 'history'},
   ]);
 
@@ -68,10 +69,20 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const showReqToJoin =
     !userStore.userInfo ||
     (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
+  const [ showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(false)
   const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(STICKY_HEADER_HEIGHT);
+  
+  
+  const upperRequestToJoinBtnRef = useRef(null);
+
+  // Sticky Tab Bar 
+  const [showStickyTabBar, setShowStickyTabBar] = useState(false);
+  const stickyTabBarRef = useRef(null);
+  const originTabBarRef = useRef(null);
+  
 
   const headerHeightLayouted = height => {
     if (height - headerHeight > 3) {
@@ -144,13 +155,25 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     }
   }, [pendingProposalsData]);
 
+  const renderTabBar = props => (
+    <TabBarRenderer originRef={originTabBarRef} {...props} />
+  );
+
   const Discussions = () => {
-    return <DiscussionList navigation={navigation} commonId={currCommon.id} />;
+    return (
+      <View style={{...styles.paleBackground, ...{paddingVertical: sizeL}}}>
+        <Text style={text.h1BlackTitle}>Discussions</Text>
+
+        <DiscussionList navigation={navigation} commonId={currCommon.id} />
+      </View>
+    );
   };
 
   const Proposals = () => {
     return (
-      <View style={{padding: sizeL}}>
+      <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
+        <Text style={text.h1BlackTitle}>Proposals</Text>
+
         <ProposalsList
           onlyFundingRequests={true}
           isMember={isMember}
@@ -164,7 +187,9 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   const History = () => {
     return (
-      <View style={{padding: sizeL}}>
+      <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
+        <Text style={text.h1BlackTitle}>History</Text>
+
         <ProposalsList
           isMember={isMember}
           commonName={currCommon.name}
@@ -201,11 +226,20 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             {currCommon.metadata.courseOfAction}
           </Text>
 
-          <TouchableOpacity onPress={openAgendaScreen}>
-            <Text style={styles.readMoreButton}>
-              View agenda and rules of conduct
+          <View style={layout.flexStart}>
+            <Text style={text.h1Black}>Our Mission</Text>
+            <Text style={{...text.blackText, ...layout.marginTopM}}>
+              {currCommon.metadata.description}
             </Text>
+          </View>
+          
+          <TouchableOpacity onPress={openAgendaScreen} style={layout.marginTopS}>
+            <View style={styles.viewAgendaBtn}>
+              <Text style={styles.viewFullAgenda}>View full agenda</Text>
+              <Icon name="right-arrow" color={colors.black} />
+            </View>
           </TouchableOpacity>
+
         </View>
       );
     }
@@ -214,28 +248,34 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const renderMembersRowForMemberUsers = () => {
     if (isMember) {
       return (
-        <View style={styles.membersContainer}>
-          <TouchableOpacity
-            onPress={openCommonMembers}
-            style={styles.membersAction}>
-            <View style={styles.membersRow}>
-              <CommonMembersList
-                horizontal={true}
-                members={
-                  daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers
-                }
-              />
-            </View>
+        <View style={styles.membersContainerWrapper}>
+          <View style={styles.membersContainer}>
             <View style={layout.flexRow}>
-              <Text style={text.h4Black}>
-                Pending (
-                {pendingProposalsData &&
-                  pendingProposalsData.pendingProposalCount}
-                )
-              </Text>
-              <Icon name="right-arrow" />
+              <TouchableOpacity style={layout.flexRow}>
+                <Text style={text.h4Black}>
+                  {pendingProposalsData && pendingProposalsData.pendingProposalCount} Members
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{...layout.flexRow, ...layout.marginLeftS}}>
+                <Text style={text.h4BlackRegular}>
+                  {pendingProposalsData && pendingProposalsData.pendingProposalCount} Pending
+                </Text>
+                <Icon name="right-arrow" />
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={openCommonMembers}
+              style={styles.membersAction}>
+              <View style={styles.membersRow}>
+                <CommonMembersList
+                  horizontal={true}
+                  members={
+                    daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers
+                  }
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
       );
     }
@@ -477,12 +517,32 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     );
   };
 
+  const renderRequestToJoinBtn = () => {
+    return (
+      <TouchableOpacity
+        style={styles.headerButton}
+        onPress={requestToJoin}>
+        <Text
+          style={{
+            fontSize: 16,
+            color: 'white',
+            fontWeight: '700',
+            marginRight: 40,
+          }}>
+          Request to join
+        </Text>
+        <Text style={{fontSize: 16, color: 'white'}}>
+          ${currCommon.minFeeToJoin / 100} min. contribution
+        </Text>
+      </TouchableOpacity>);
+  };
+
   const initialLayout = {width: Dimensions.get('window').width};
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       {currCommon ? (
-        <>
+        <View style={{flex: 1, position: 'relative'}}>
           <StatusBar
             barStyle={dark ? 'dark-content' : 'light-content'}
             translucent
@@ -503,6 +563,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               style={{marginLeft: 10}}
             />
           </TouchableOpacity>
+
+          {showStickyTabBar && (<View style={{position: 'absolute', top: 70, width: '100%', paddingBottom: 5, zIndex: 999}}>
+            <TabBarRenderer navigationState={{index: 0, routes: routes}} parentRef={originTabBarRef} />
+          </View>)}
 
           <ParallaxScrollView
             backgroundColor="white"
@@ -526,6 +590,16 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               setDark(
                 e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT - 40,
               );
+              upperRequestToJoinBtnRef?.current?.measure( (fx, fy, width, height, px, py) => {
+                setShowStickyRequestToJoinBtn(py < 36 );
+              });
+              stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
+                const isVisible = py < 76;
+                if (isVisible != showStickyTabBar) {
+                  setShowStickyTabBar(isVisible);
+                }
+              });
+
             }}
             renderForeground={() => (
               <CommonHeader
@@ -553,7 +627,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               pendingProposalsData.usersPendingProposal &&
               renderPendingApproval()}
 
-            <View style={{paddingVertical: 20}}>
+            <View style={{paddingVertical: sizeS}}>
               <CommonStageSummary
                 isFundingStage={isFundingStage}
                 commonProgressInfo={{
@@ -574,16 +648,12 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               />
             </View>
 
+            {!isMember && showReqToJoin && (
+              <View style={styles.upperActionButtonContainer} ref={upperRequestToJoinBtnRef}>
+                {renderRequestToJoinBtn()}
+              </View>
+            )}
             {renderMembersRowForMemberUsers()}
-            <View style={{...layout.content, ...{paddingTop: 0}}}>
-              <TouchableOpacity
-                style={{
-                  ...layout.btnOutline,
-                }}
-                onPress={shareCommon}>
-                <Text style={text.buttonblue}>Share Common</Text>
-              </TouchableOpacity>
-            </View>
             {renderAgendaForNonMembers()}
             {/**
         <TouchableOpacity
@@ -605,14 +675,23 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             Open Proposal
           </Text>
         </TouchableOpacity>
+
       */}
-            <TabView
-              navigationState={{index, routes}}
-              renderScene={renderScene}
-              onIndexChange={setIndex}
-              initialLayout={initialLayout}
-              renderTabBar={CommonTabBar}
-            />
+
+            <View ref={stickyTabBarRef}>
+              <TabView
+                navigationState={{index, routes}}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                initialLayout={initialLayout}
+                renderTabBar={renderTabBar}
+                style={
+                  {
+                    backgroundColor: colors.paleGrey,
+                  }
+                }
+              />
+            </View>
           </ParallaxScrollView>
 
           <SafeAreaView>
@@ -640,24 +719,9 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               )
             ) : (
               <>
-                {showReqToJoin && (
+                {showStickyRequestToJoinBtn && showReqToJoin && (
                   <View style={styles.actionButtonContainer}>
-                    <TouchableOpacity
-                      style={styles.headerButton}
-                      onPress={requestToJoin}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          color: 'white',
-                          fontWeight: '700',
-                          marginRight: 40,
-                        }}>
-                        Request to join
-                      </Text>
-                      <Text style={{fontSize: 16, color: 'white'}}>
-                        ${currCommon.minFeeToJoin / 100} Contribution
-                      </Text>
-                    </TouchableOpacity>
+                    {renderRequestToJoinBtn()}
                   </View>
                 )}
                 <Modal
@@ -692,7 +756,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               </>
             )}
           </SafeAreaView>
-        </>
+        </View>
       ) : (
         loadingPlaceholder()
       )}
@@ -701,6 +765,21 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 };
 
 const styles = StyleSheet.create({
+  paleBackground: {
+    backgroundColor: colors.paleGrey,
+  },
+  viewAgendaBtn: {
+    ...layout.content, 
+    ...layout.flexRow, 
+    justifyContent: 'flex-start',
+    padding: 0,
+  },
+  viewFullAgenda: {
+    ...text.h3Black,
+    color: colors.mainBlue,
+    fontSize: 16,
+    marginRight: 5,
+  },
   modalRequestSentBtnOutline: {
     ...layout.btnOutline,
     ...layout.marginTopL,
@@ -724,20 +803,22 @@ const styles = StyleSheet.create({
   membersRow: {
     ...layout.flexRow,
   },
+  membersContainerWrapper: {
+    paddingHorizontal: 20,
+  },
   membersContainer: {
     ...layout.content,
-    ...layout.flexRow,
     paddingVertical: 0,
+    borderTopWidth: 1,
+    borderColor: colors.grey4,
+    paddingTop: sizeS,
   },
   membersAction: {
     ...layout.content,
     ...layout.flexRow,
     paddingHorizontal: 0,
-    alignSelf: 'stretch',
     flexGrow: 1,
     justifyContent: 'space-between',
-    borderTopWidth: 1,
-    borderColor: colors.grey4,
   },
   tabStyle: {
     ...text.ashleyjquimbacom2,
@@ -747,21 +828,15 @@ const styles = StyleSheet.create({
 
     color: colors.mainBlue,
   },
-
+  upperActionButtonContainer: {
+    paddingHorizontal: 20,
+  },
   actionButtonContainer: {
     padding: 20,
     position: 'absolute',
     bottom: 28,
     left: 0,
     right: 0,
-    backgroundColor: colors.white,
-    shadowColor: 'rgba(79, 92, 105, 0.1)',
-    shadowOffset: {
-      width: 0,
-      height: -2,
-    },
-    shadowRadius: 4,
-    shadowOpacity: 1,
   },
   agendaBox: {
     padding: 20,
@@ -796,6 +871,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: colors.mainBlue,
+
+    shadowColor: 'rgba(79, 92, 105, 0.1)',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowRadius: 4,
+    shadowOpacity: 1,
   },
   addButton: {
     position: 'absolute',

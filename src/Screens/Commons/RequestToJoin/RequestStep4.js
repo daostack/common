@@ -20,7 +20,8 @@ import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '../../../Services/ArcService';
 import Toast from '../../../Util/Toast';
-import {BN} from 'bn.js';
+import { BN } from 'bn.js';
+import { preauthorizePayment } from '../../../Services/MangopayService';
 
 const RequestStep4 = props => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -46,20 +47,27 @@ const RequestStep4 = props => {
           ...props.paymentFormStore.getFormFieldsJson(),
         };
 
-        const data = {
+        let data = {
           title: `request to join ${props.route.params.currDaoId} by ${props.userStore.userInfo.ethereumAddress}`,
           description: formData.about_me,
           links: formData.links,
           funding: new BN(formData.amount * 100),
-          payment: {
-            cardNumber: formData.card_number,
-            cvv: formData.cvv,
-            expDate: formData.expiration_date.replace('/', ''),
-            funding: formData.amount * 100,
-          },
+          preAuthId: false,
+        };
+
+        const cardData = {
+          cardNumber: formData.card_number,
+          cvv: formData.cvv,
+          expDate: formData.expiration_date.replace('/', ''),
         };
 
         props.navigation.navigate({ name: 'FullScreenCreationLoader', params: { title: 'Creating your membership request' } });
+
+        if (Number(data.funding) > 0) {
+          const preAuthId = await preauthorizePayment(cardData, Number(data.funding));
+          data = { ...data, preAuthId };
+          console.log('PREAUTH ID', preAuthId);
+        }
 
         const proposalId = await ArcService.getInstance().createRequestToJoin(
           props.route.params.currDaoId,
