@@ -44,7 +44,7 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
           alignContent: 'center',
           alignItems: 'center',
         }}>
-        <Text style={styles.headerText}>{title}</Text>
+        <Text style={styles.headerSmallText}>{title}</Text>
         <View style={styles.raisedContainer}>{numberComponent}</View>
       </View>
     );
@@ -62,10 +62,7 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
           ) : (
             <>
               <Text style={styles.headerTitle}>
-                ${numberFormatter(commonProgressInfo.raised / 100) + ' '}
-              </Text>
-              <Text style={styles.headerTitle}>
-                / {numberFormatter(commonProgressInfo.raised)}
+                ${numberFormatter(commonProgressInfo.raised / 100) }
               </Text>
             </>
           ),
@@ -110,15 +107,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerTitle: {
+    ...text.h3Black,
     ...font.primary.bold,
-    ...font.fontSize(3),
+    ...font.lineHeight(2),
   },
   headerTitleLight: {
     ...text.h3Black,
-    color: colors.grey3,
+    
   },
   headerSmallText: {
     ...text.smallBlackText,
+    ...text.fontColorGreySteel,
   },
 });
 

@@ -75,7 +75,7 @@ import NotificationService from './src/Services/NotificationService';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DeepLinking from 'react-native-deep-linking';
 import buffer from 'buffer';
- global.Buffer = buffer.Buffer;
+global.Buffer = buffer.Buffer;
 
 import ArcService from './src/Services/ArcService';
 import { BOTTOM_SHEET_TEMPLATES } from './src/Stores/BottomSheetStore';
