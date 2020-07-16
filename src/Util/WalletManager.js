@@ -11,7 +11,7 @@ ethers.Contract.prototype.sendToRelayer = async function (funcName, params, valu
   const data = this.interface.functions[funcName].encode(params);
   const manager = await WalletManager.getInstance();
   const response = await manager.execTransaction(manager.safeAddress, this.address, value, data);
-  console.log(response);
+  console.log(response.data);
   return response.data?.txHash;
 };
 
@@ -179,7 +179,7 @@ export default class WalletManager {
         // options,
         body
       );
-      console.log('execTransaction ->', response);
+      console.log('execTransaction ->', response.data);
       return response;
     } catch (err) {
       console.log(err);

@@ -95,13 +95,10 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
     // send the request to the cloudfunction relayer
     const manager = await WalletManager.getInstance();
-    const proposalId = manager.requestToJoin(transaction.contract, transaction.method, transaction.args, fee, data.preAuthId);
+    const proposalId = await manager.requestToJoin(transaction.contract, transaction.method, transaction.args, fee, data.preAuthId);
     return proposalId;
   } catch (e) {
-    console.log('---------------------------');
-    console.log(e);
-    console.log(Object.keys(e));
-    console.log('---------------------------');
+    console.log(e.data);
     throw e;
   }
 };
