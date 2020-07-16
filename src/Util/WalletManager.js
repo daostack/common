@@ -12,6 +12,7 @@ ethers.Contract.prototype.sendToRelayer = async function (funcName, params, valu
   const manager = await WalletManager.getInstance();
   const response = await manager.execTransaction(manager.safeAddress, this.address, value, data);
   console.log(response);
+
   return response.data?.txHash;
 };
 
@@ -142,9 +143,10 @@ export default class WalletManager {
     return response.data;
   };
 
-  txHashSignature = async (safeAddress, toAddress, value = 0, data = '0x') => {
+  txHashSignature = async (safeAddress, toAddress, value = '0', data = '0x') => {
     try {
-      const txHash = await this.createSafeTransactionHash(safeAddress, toAddress, value, data);
+      const valueNumber = ethers.utils.parseEther(value).toString(10);
+      const txHash = await this.createSafeTransactionHash(safeAddress, toAddress, valueNumber, data);
       const byteTxHash = ethers.utils.arrayify(txHash);
       const signedTx = await this.wallet.signMessage(byteTxHash);
       // Add 4
@@ -165,12 +167,14 @@ export default class WalletManager {
       //   ABI.MasterCopy,
       //   this.wallet,
       // );
+
       // const OVERRIDES = {
-      //   gasLimit: 1000000,
+      //   gasLimit: 10000000,
       //   gasPrice: 15000000000,
       // };
+
       // const zeroAddress = `0x${'0'.repeat(40)}`;
-      // const tx = await masterCopyContract.execTransaction(toAddress, 0, data, 0, 0, 0, 0, zeroAddress, zeroAddress, finalSignature, OVERRIDES);
+      // const tx = await masterCopyContract.execTransaction(toAddress, valueNumber, data, 0, 0, 0, 0, zeroAddress, zeroAddress, finalSignature, OVERRIDES);
       // console.log('execTransaction', tx);
 
       const body = { idToken, to: toAddress, value: value, data, signature: finalSignature };
@@ -179,7 +183,7 @@ export default class WalletManager {
         // options,
         body
       );
-      console.log('execTransaction ->', response);
+      // console.log('execTransaction ->', response);
       return response;
     } catch (err) {
       console.log(err);
@@ -261,6 +265,55 @@ export default class WalletManager {
       console.log(`Created proposal with id ${response.data.proposalId}`);
       return response.data.proposalId;
     } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
+  createCommonStep2 = async (contract, method, params, commonId) => {
+    try {
+      const idToken = await auth().currentUser.getIdToken();
+      const address = contract.address;
+      const zeroValue = '0';
+      const data = contract.interface.functions[method].encode(params);
+      const signature = await this.txHashSignature(this.safeAddress, address, zeroValue, data);
+
+      // console.log('signature1 -->', signature);
+
+      const body = {
+        idToken,
+        commonTx: {
+          to: address,
+          value: zeroValue,
+          data,
+          signature,
+        },
+        commonId,
+      };
+
+      const response = await axiosClient.post(
+        'createCommonStep2',
+        body
+      );
+
+      // console.log('CreateCommonStep2 response -->', response);
+
+      if (!response.data) {
+        console.log(response);
+        throw Error('unexpected error sending request to createCommon2: empty response');
+      }
+      if (response.data.errcode) {
+        throw Error(`Code: ${response.data.errorCode}, Message: ${response.data.error}`);
+      }
+
+      if (response.status !== 200) {
+        throw Error(`Status: ${response.status}, ${response.data}`);
+      }
+
+      console.log(response.data);
+
+      return response.data;
+    } catch (err){
       console.log(err);
       throw err;
     }

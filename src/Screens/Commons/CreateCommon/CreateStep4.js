@@ -178,8 +178,6 @@ const CreateStep4 = props => {
       };
       console.log('calling createCommon(...)');
 
-      props.navigation.navigate({ name: 'FullScreenCreationLoader', params: { title: 'Common' } });
-
       const commonAddress = await ArcService.getInstance().createCommon(
         data,
         props.navigation,
