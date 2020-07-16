@@ -159,11 +159,12 @@ const CreateStep4 = props => {
   };
 
   const shareCommon = event => {
+    const { name } = props.generalInfoFormStore.getChangedFormFieldsJson();
     const currCommonId = newCommonAddress.toLowerCase();
     const options = {
       url: `https://app.common.io/common/${currCommonId}`,
       title: "Let's make it happen",
-      message: 'Join in common',
+      message: `Join in ${name} common`,
     };
     Share.open(options);
   };
@@ -468,7 +469,7 @@ const CreateStep4 = props => {
           <View style={styles.shareContainer}>
             <TouchableOpacity
               style={styles.modalRequestSentBtnPrimary}
-              /*  onPress={} */
+              onPress={shareCommon}
             >
               <Text style={text.buttoncenterwhite}>Share now</Text>
             </TouchableOpacity>

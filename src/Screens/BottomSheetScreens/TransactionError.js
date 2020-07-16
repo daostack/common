@@ -34,7 +34,6 @@ const TransactionError = ({bottomSheetStore, ...props}) => {
 
 const styles = StyleSheet.create({
   title: {
-    // paddingVertical: 20,
     ...text.h1Black,
     textAlign: 'left',
   },
