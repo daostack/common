@@ -331,7 +331,7 @@ const Discussions = props => {
                 }}>
                 <Image
                   style={styles.avatar}
-                  source={{uri: user?.photoURL || ''}}
+                  source={user.photoURL ? {uri: user.photoURL} : null}
                 />
                 <View style={{flex: 1, paddingHorizontal: 10}}>
                   <Text style={{fontWeight: 'bold'}}>{user.displayName}</Text>
