@@ -19,7 +19,7 @@ const FullScreenCreationLoader = ({daoStore, route: {params: {title = '', messag
         <View style={styles.body}>
           <View style={{...styles.slide1, ...layout.content}}>
             <Image
-              source={require('../Assets/loader-4-drumroll.png')}
+              source={require('../Assets/creating-a-common.png')}
               style={styles.image}
             />
             <Text style={styles.creatingText}>{title}</Text>
