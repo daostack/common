@@ -34,15 +34,21 @@ const ProposalData = props => {
       try {
         if (currProposalInfo) {
           let tempImages = [];
-          if (currProposalInfo.description.images) {
+          if (currProposalInfo.description.images.length) {
             await Promise.all(
               currProposalInfo.description.images.map(async currImage => {
-                const {width, height} = await ImageSize.getSize(currImage.value);
-                tempImages.push({
-                  title: currImage.title,
-                  widthRatio: (width / height) * 220,
-                  uri: currImage.value,
-                });
+                if (currImage.value) {
+                  try {
+                    const { width, height } = await ImageSize.getSize(currImage.value);
+                    tempImages.push({
+                      title: currImage.title,
+                      widthRatio: (width / height) * 220,
+                      uri: currImage.value,
+                    });
+                  } catch (e) {
+                    console.log(e);
+                  }
+                }
               }),
             );
           }
@@ -267,7 +273,7 @@ const ProposalData = props => {
                         ...{width: currImage.widthRatio},
                       }}
                       resizeMode="cover"
-                      source={{uri: currImage.uri}}
+                      source={currImage.uri ? {uri: currImage.uri} : null}
                     />
                   </TouchableOpacity>
                   <ReadMore

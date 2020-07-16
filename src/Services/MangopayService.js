@@ -69,6 +69,7 @@ export const preauthorizePayment = async (cardData, funding, navigation) => {
     return preAuthId;
   } catch (e) {
     console.log(e);
+    console.log(e.response?.data);
     throw e;
   }
 };

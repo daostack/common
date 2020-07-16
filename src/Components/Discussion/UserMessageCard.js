@@ -7,7 +7,7 @@ import FastImage from 'react-native-fast-image';
 const UserMessageCard = ({photoURL, name, message, time}) => {
   return (
     <View style={styles.messageCardContainer}>
-      <FastImage style={styles.userImage} source={{uri: photoURL}} />
+      <FastImage style={styles.userImage} source={photoURL ? {uri: photoURL} : null} />
       <View style={styles.messageContainer}>
         <Text style={styles.nameStyle}>{name}</Text>
         <Text style={styles.messageStyle}>{message}</Text>
