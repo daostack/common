@@ -56,7 +56,7 @@ const DiscussionMessage = props => {
                 width: 40,
                 borderRadius: 20,
               }}
-              source={{uri: data.ownerAvatar || ''}}
+              source={data.ownerAvatar ? {uri: data.ownerAvatar} : null}
             />
             <View
               style={{
