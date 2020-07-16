@@ -78,7 +78,8 @@ const CreateStep4 = props => {
   const [imageURI, setImageURI] = useState(
     getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))),
   );
-  const [avatarURL, setAvatarURL] = useState(null);
+  /* [avatarURL, setAvatarURL] = useState(null);
+  */
 
   //set default value for Avatar and Image fields
   useEffect(() => {
@@ -299,7 +300,7 @@ const CreateStep4 = props => {
             </View>
           </View>
 
-          {avatarURL === null ? (
+          {/* {avatarURL === null ? (
             <View
               style={{
                 flexDirection: 'row',
@@ -348,7 +349,7 @@ const CreateStep4 = props => {
                 </TouchableOpacity>
               </View>
             </View>
-          )}
+          )} */}
           <View
             style={{height: 1, width: width, backgroundColor: colors.grey4}}
           />
