@@ -1,0 +1,68 @@
+import GDrive from 'react-native-google-drive-api-wrapper';
+import RNFS from 'react-native-fs';
+// import AuthService from './AuthService';
+
+const mimeType = 'application/json';
+const appDataFileName = 'appData.json';
+const appDataFolder = 'appDataFolder';
+const downloadHeaderPath = RNFS.DocumentDirectoryPath + '/' + appDataFileName;
+
+export default class IClouldService {
+  constructor(accessToken) {
+    this.instance = null;
+    this.acessToken = accessToken;
+
+    GDrive.setAccessToken(accessToken);
+    GDrive.init();
+  }
+
+  static init = async accessToken => {
+    IClouldService.instance = new IClouldService(accessToken);
+  };
+
+  static getInstance() {
+    if (IClouldService.instance == null) {
+      throw new Error('IClould is not initialized');
+    }
+    return this.instance;
+  }
+
+  deleteAppDataFile = async () => {
+    const response = await this.getAppData();
+    console.log('files -> ', response.files);
+    response.files.forEach((file, index) => {
+      GDrive.files.delete(file.id);
+    });
+  };
+
+  deleteAppDataFileById = async id => {
+    GDrive.files.delete(id);
+  };
+
+  getFileById = async id => {
+    const downloadFileResult = await GDrive.files.download(
+      id,
+      {toFile: downloadHeaderPath},
+      {},
+    );
+    await downloadFileResult.promise;
+    return await RNFS.readFile(downloadHeaderPath, 'utf8');
+  };
+
+  async getAppData() {
+    const response = await GDrive.files.list({spaces: appDataFolder});
+    return response.json();
+  }
+
+  async setAppData(appDataJson) {
+    return await GDrive.files.createFileMultipart(
+      appDataJson,
+      mimeType,
+      {
+        parents: [appDataFolder],
+        name: appDataFileName,
+      },
+      false,
+    );
+  }
+}

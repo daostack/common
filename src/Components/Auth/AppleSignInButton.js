@@ -17,6 +17,10 @@ const AppleSignInButton = ({ onSignIn, userStore, customStyle}) => {
       console.log("sign In");
       const userInfo = await AuthService.getInstance().signInApple();
       console.log("userInfo -> ", userInfo);
+
+      //userInfo.user.uid
+      //userInfo.user.email
+
       //if (onSignIn) {
       //  onSignIn(userInfo);
       //}

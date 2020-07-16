@@ -205,16 +205,18 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
     const onAuthStateChanged = async user => {
       console.log('AUTH STATE CHANGED: ', user?.uid, user?.email, user?.displayName);
+      console.log("USER -> ", user);
       try {
         userStore.setIsLoading(true);
         if (user) {
-          await AuthService.getInstance().loadMnemonic(user.uid);
+          await AuthService.getInstance().loadMnemonic(user.uid, user.providerData[0].providerId);
           await WalletManager.init(user.uid);
           await ArcService.init();
           let appUser = await FirebaseService.getInstance().getUserById(
             user.uid,
           );
           const isNewUser = !appUser;
+          console.log("isNewUser -> ", isNewUser);
           if (isNewUser) {
             appUser = await AuthService.getInstance().createUserAndWallet(user);
             const manager = await WalletManager.getInstance();
