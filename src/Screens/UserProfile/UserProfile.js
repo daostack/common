@@ -6,21 +6,18 @@ import {
   ScrollView,
   View,
 } from 'react-native';
-
-//import Swiper from 'react-native-swiper';
-
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-
-import {layout, colors, text, sizeL, sizeXXL} from '../../Theme';
+import {layout, colors, text, sizeL} from '../../Theme';
 import {observer, inject} from 'mobx-react';
 import AccordionBtn from '../../Components/AccordionBtn';
 import CreateAccount from './CreateAccount';
-
+import VersionNumber from 'react-native-version-number';
 import {CommonActions} from '@react-navigation/native';
 import UserProfileData from '../../Components/UserProfileData';
 import AuthService from '../../Services/AuthService';
 import Toast from '../../Util/Toast';
+import CodePush from 'react-native-code-push';
 
 import {
   Placeholder,
@@ -31,6 +28,16 @@ import {
 
 const UserProfile = ({userStore, navigation}) => {
   //const [editMode, setEditMode] = useState(false);
+
+  const [codePushVersion, setCodePushVersion] = useState('');
+  useEffect(() => {
+    const getStatus = async () => {
+      const status = await CodePush.getUpdateMetadata();
+      console.log('getStatus -->', status);
+      setCodePushVersion(status.label.replace('v', ''));
+    };
+    getStatus();
+  }, []);
 
   const _signOut = async () => {
     try {
@@ -130,8 +137,8 @@ const UserProfile = ({userStore, navigation}) => {
                 <AccordionBtn title="Contact us" />
                 {userStore.userInfo ? (
                   <AccordionBtn
-                    lightStyle={false}
-                    title="Logout"
+                    lightStyle={true}
+                    title="Log out"
                     onPress={_signOut}
                   />
                 ) : null}
@@ -146,7 +153,7 @@ const UserProfile = ({userStore, navigation}) => {
                 <AccordionBtn title="Test Page" onPress={onTestPagePress} />
                 <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
               </View>
-
+              <Text style={{ textAlign: 'center', paddingVertical: 10, color: colors.grey2 }}>Common v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : '' })</Text>
             </View>
           </ScrollView>
         </SafeAreaView>

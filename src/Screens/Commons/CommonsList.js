@@ -185,7 +185,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
         <Text style={{fontFamily: 'NunitoSans-Regular', fontSize: 16, textAlign: 'center', marginVertical: 10}}>Anyone can create a Common, invite their friends, and work together to achieve common goals. Start now!</Text>
       </View>
     );
-  }
+  };
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     marginHorizontal:47,
     marginTop: 60,
     marginBottom: 100,
-  }
+  },
 });
 
 export default inject(

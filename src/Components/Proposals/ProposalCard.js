@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Text, StyleSheet, View, Animated} from 'react-native';
-import {text, layout, colors} from '../../Theme';
+import {text, layout, colors, font} from '../../Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
 import ProposalService, { PROPOSAL_TYPE } from '../../Services/ProposalService';
@@ -168,8 +168,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   proposalActionBtnText: {
-    ...text.h3Black,
-    fontWeight: '500',
+    ...font.primary.regular,
+    ...font.fontSize(3),
     color: colors.mainBlue,
   },
 

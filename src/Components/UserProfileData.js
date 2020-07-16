@@ -1,6 +1,6 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {layout, colors, text, sizeL, sizeXXL} from '../Theme';
+import {layout, font,colors, text, sizeL, sizeXXL} from '../Theme';
 import {observer, inject} from 'mobx-react';
 import ImageField from '../Components/FormFields/ImageField';
 import CountBox from '../Components/CountBox';
@@ -100,7 +100,7 @@ const UserProfileData = ({
         </View>
       ) : null}
       {renderUserProfilePicture()}
-      <Text style={{...text.h1Black, ...{paddingTop: 0, paddingBottom: 2}}}>
+      <Text style={styles.name}>
         {user.displayName}
       </Text>
       <Text style={text.ashleyjquimbacom2}>{user.email}</Text>
@@ -124,7 +124,7 @@ const UserProfileData = ({
       </View>
 
       <View style={styles.contentContainer}>
-        <Text style={text.h3Black}>About</Text>
+        <Text style={text.h2Black}>Intro</Text>
         <Text style={{...text.blackText, ...layout.marginTopM}}>
           {user.intro}
         </Text>
@@ -197,6 +197,13 @@ const styles = StyleSheet.create({
     flexGrow: 0,
     paddingHorizontal: 15,
     paddingVertical: 15,
+  },
+  name: {
+    ...font.heading.bold,
+    ...font.fontSize(4),
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: colors.black,
   },
   screenNav: {
     paddingBottom: sizeL,

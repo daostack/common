@@ -12,7 +12,7 @@ const ButtonSwiper = ({onSwipeSuccess, title}) => {
   const thumbComponent = () => <View style={styles.swiperThumbIcon} />;
 
   return (
-    <View style={{...layout.marginTopXL, ...{height: 100}}}>
+    <View style={{...layout.marginTopS, ...{height: 100}}}>
       <SwipeButton
         width={340}
         height={60}

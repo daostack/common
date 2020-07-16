@@ -10,12 +10,12 @@ import {
   Dimensions,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {layout, colors, text, sizeS} from '../../Theme';
-import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
+import {layout, colors, text, font,sizeS} from '../../Theme';
+import {TabView, SceneMap} from 'react-native-tab-view';
 import ProposalsList from '../../Screens/Proposals/ProposalsList';
 import { inject, observer } from 'mobx-react';
 import  ProposalService  from '../../Services/ProposalService';
-
+import CommonTabBar from '../CommonTabBar';
 
 const MyProposals = ({navigation, userStore}) => {
   const [index, setIndex] = React.useState(0);
@@ -67,23 +67,6 @@ const MyProposals = ({navigation, userStore}) => {
     history: HistoryProposals,
   });
 
-  const renderTabBar = props => (
-    <TabBar
-      {...props}
-      indicatorStyle={{
-        backgroundColor: colors.black,
-      }}
-      renderLabel={({route, focused, color}) => {
-        return (
-          <Text style={focused ? styles.tabStyleActive : styles.tabStyle}>
-            {route.title}
-          </Text>
-        );
-      }}
-      style={{backgroundColor: colors.white}}
-      tabStyle={{width: 'auto'}}
-    />
-  );
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -96,7 +79,7 @@ const MyProposals = ({navigation, userStore}) => {
           nestedScrollEnabled={true}
           directionalLockEnabled={true}>
           <View style={styles.sectionContainer}>
-            <Text style={text.h2Black}>My proposals</Text>
+            <Text style={styles.title}>My proposals</Text>
           </View>
           <View style={styles.sectionTabView}>
             <TabView
@@ -104,7 +87,7 @@ const MyProposals = ({navigation, userStore}) => {
               renderScene={renderScene}
               onIndexChange={setIndex}
               initialLayout={initialLayout}
-              renderTabBar={renderTabBar}
+              renderTabBar={CommonTabBar}
             />
           </View>
         </ScrollView>
@@ -123,11 +106,15 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     padding: 20,
   },
+  title: {
+    ...font.heading.bold,
+    ...font.fontSize(4),
+  },
   sectionTabView: {},
   sectionContainer: {
     ...layout.content,
     marginVertical: sizeS,
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
 
   tabStyleActive: {
