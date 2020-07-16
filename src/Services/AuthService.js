@@ -1,5 +1,5 @@
 import {GoogleSignin} from '@react-native-community/google-signin';
-import {GOOGLE_SIGNIN_PERMISSIONS, WEB_CLIENT_ID} from '../Util';
+import {GOOGLE_SIGNIN_PERMISSIONS } from '../Util';
 import {auth} from '../Firebase';
 import FirebaseService from './FirebaseService';
 import WalletManager from '../Util/WalletManager';
@@ -64,7 +64,7 @@ export default class AuthService {
   async createUserAndWallet(user) {
     const manager = await WalletManager.getInstance(user.uid);
     const userPublicData = {
-      ethereumAddress: await manager.getAddress(),
+      ethereumAddress: manager.getAddress(),
       // store the google user info in the firestore DB
       ...{
         createdAt: new Date(user._user.metadata.creationTime),
