@@ -51,7 +51,7 @@ export const createCommon = async (
     ];
 
     for (const key of MANDATORY_ARGS) {
-      if (Object.keys(givenOpts).indexOf(key) === -1) {
+      if (Object.keys(givenOpts).indexOf(key) === -1 || !givenOpts[key]  ) {
         console.log(givenOpts);
         const msg = `${key} is a mandatary option for the createCommon function`;
         console.error(msg);

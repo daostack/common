@@ -69,10 +69,10 @@ const CreateStep4 = props => {
   const [newCommonAddress, setNewCommonAddress] = useState(false);
 
   const form = {
-    ...props.generalInfoFormStore.getChangedFormFieldsJson(),
-    ...props.fundingFormStore.getChangedFormFieldsJson(),
-    ...props.agendaFormStore.getChangedFormFieldsJson(),
-    ...props.reviewFormStore.getChangedFormFieldsJson(),
+    ...props.generalInfoFormStore.getFormFieldsJson(),
+    ...props.fundingFormStore.getFormFieldsJson(),
+    ...props.agendaFormStore.getFormFieldsJson(),
+    ...props.reviewFormStore.getFormFieldsJson(),
   };
   const [templateIndex, setTemplateIndex] = useState(1);
   const getImageUrl = index =>
