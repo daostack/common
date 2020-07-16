@@ -34,7 +34,7 @@ const ProposalData = props => {
       try {
         if (currProposalInfo) {
           let tempImages = [];
-          if (currProposalInfo.description.images.length) {
+          if (currProposalInfo.description.images?.length) {
             await Promise.all(
               currProposalInfo.description.images.map(async currImage => {
                 if (currImage.value) {
