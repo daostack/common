@@ -25,7 +25,6 @@ import {PROPOSAL_TYPE} from '../../Config';
 const ProposalData = props => {
   const navigation = useNavigation();
   const [proposalInfo, setProposalInfo] = useState(null);
-
   const proposalId = props.proposalId;
 
   useEffect(() => {
@@ -215,8 +214,8 @@ const ProposalData = props => {
                 Links
               </Text>
             </View>
-
-            {proposalInfo.description?.links?.length && (
+            <Text>
+              {proposalInfo.description?.links?.length > 0 && (
               proposalInfo.description?.links.map((l) => <View style={styles.adRow}>
                 <Icon name="link" color={colors.mainBlue} size={16} />
                 <TouchableOpacity
@@ -228,9 +227,9 @@ const ProposalData = props => {
                   <Text style={styles.adsText}>{l.title}</Text>
                 </TouchableOpacity>
               </View>  )
-            )}
-
-            {proposalInfo.description?.files?.length && (
+              )}
+            </Text>
+            {proposalInfo.description?.files?.length > 0 && (
               proposalInfo.description?.files.map((f, index) => <View style={styles.adRow}>
                 <Icon name="file" color={colors.mainBlue} size={16} />
                 <TouchableOpacity
