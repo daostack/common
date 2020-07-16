@@ -327,15 +327,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             name="CommonExplanation"
             component={CommonExplanation}
             options={({navigation, route}) => ({
-              headerTitle: 'Common!',
+              headerTitle: 'Create a Common',
               headerBackTitleVisible: false,
               headerLeftContainerStyle: {marginLeft: 20},
               headerRightContainerStyle: {marginRight: 20},
               headerBackImage: () => (
-                <Image
-                  source={require('./src/Assets/backArrow.png')}
-                  style={{resizeMode: 'contain', width: 32, height: 32}}
-                />
+                <Icon name="left-arrow" color={colors.black} size={32} />
               ),
               headerRight: () => (
                 <Image
