@@ -75,7 +75,7 @@ import NotificationService from './src/Services/NotificationService';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DeepLinking from 'react-native-deep-linking';
 import buffer from 'buffer';
- global.Buffer = buffer.Buffer;
+global.Buffer = buffer.Buffer;
 
 import ArcService from './src/Services/ArcService';
 import { BOTTOM_SHEET_TEMPLATES } from './src/Stores/BottomSheetStore';
@@ -321,15 +321,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           name="CommonExplanation"
           component={CommonExplanation}
           options={({navigation, route}) => ({
-            headerTitle: 'Common!',
+            headerTitle: 'Create a Common',
             headerBackTitleVisible: false,
             headerLeftContainerStyle: {marginLeft: 20},
             headerRightContainerStyle: {marginRight: 20},
             headerBackImage: () => (
-              <Image
-                source={require('./src/Assets/backArrow.png')}
-                style={{resizeMode: 'contain', width: 32, height: 32}}
-              />
+              <Icon name="left-arrow" color={colors.black} size={32} />
             ),
             headerRight: () => (
               <Image
