@@ -2,9 +2,10 @@ import React, {useRef} from 'react';
 
 import {StyleSheet, View, Image} from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import GSignInButton from '../../Components/GSignInButton';
+import GSignInButton from '../../Components/Auth/GSignInButton';
 import {layout} from '../../Theme';
 import {observer, inject} from 'mobx-react';
+import AppleSignInButton from '../../Components/Auth/AppleSignInButton';
 
 const CreateAccount = ({onSignedIn}) => {
   const bottomSheetContainerRef = useRef();
@@ -25,7 +26,10 @@ const CreateAccount = ({onSignedIn}) => {
         <Image source={require('../../Assets/accountPlaceHolder.png')} />
       </View>
 
-      <GSignInButton style={styles.googleSignInButton} onSignIn={onSignIn} />
+      <AppleSignInButton customStyle={layout.marginBottomM}/>
+
+      <GSignInButton onSignIn={onSignIn} />
+      
     </View>
   );
 };
@@ -44,23 +48,6 @@ const styles = StyleSheet.create({
 
   sectionContainer: {
     ...layout.content,
-  },
-  googleSignInButton: {
-    alignSelf: 'stretch',
-    height: 56,
-    borderWidth: 1,
-    borderRadius: 28,
-    borderStyle: 'solid',
-    borderColor: '#eeeeee',
-
-    shadowOpacity: 0,
-    shadowColor: Colors.white,
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
-    shadowRadius: 0,
-    elevation: 0,
   },
   buttonsArea: {
     alignSelf: 'stretch',

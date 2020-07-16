@@ -1,11 +1,23 @@
-import {GoogleSignin} from '@react-native-community/google-signin';
+
+import { NativeModules, Platform } from 'react-native';
+
 import {GOOGLE_SIGNIN_PERMISSIONS, WEB_CLIENT_ID} from '../Util';
+import WalletManager from '../Util/WalletManager';
+import { firebaseWebClientId } from '../Config';
+
+// Firebase imports
 import {auth} from '../Firebase';
 import FirebaseService from './FirebaseService';
-import WalletManager from '../Util/WalletManager';
+
+// Google imports
+import {GoogleSignin} from '@react-native-community/google-signin';
 import GoogleDriveService from './GoogleDriveService';
-import { NativeModules, Platform } from 'react-native';
-import { firebaseWebClientId } from '../Config';
+
+// Apple imports
+import appleAuth, {
+  AppleAuthRequestScope,
+  AppleAuthRequestOperation,
+} from '@invertase/react-native-apple-authentication';
 
 export default class AuthService {
   static serviceInstance = null;
@@ -29,6 +41,43 @@ export default class AuthService {
     return this.serviceInstance;
   };
 
+  // Apple Auth flow
+
+  async signInApple() {
+    console.log("Sign in For Apple");
+
+    // Start the sign-in request
+    const appleAuthRequestResponse = await appleAuth.performRequest({
+      requestedOperation: AppleAuthRequestOperation.LOGIN,
+      requestedScopes: [AppleAuthRequestScope.EMAIL, AppleAuthRequestScope.FULL_NAME],
+    });
+  
+    // Ensure Apple returned a user identityToken
+    if (!appleAuthRequestResponse.identityToken) {
+      throw 'Apple Sign-In failed - no identify token returned';
+    }
+  
+    // Create a Firebase credential from the response
+    const { identityToken, nonce } = appleAuthRequestResponse;
+    const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce);
+  
+    // Sign the user in with the credential
+    return auth().signInWithCredential(appleCredential);
+  }
+  
+  async signOutApple() {
+    console.log("Sign Out For Apple");
+
+    /*
+    if (Platform.OS === 'android') {
+      await GoogleSignin.revokeAccess();
+    }
+    await GoogleSignin.signOut();
+    await auth().signOut();
+    */
+  }
+
+  // Google Auth flow
   async signIn() {
     await GoogleSignin.hasPlayServices();
     await GoogleSignin.signIn();
