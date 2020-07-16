@@ -107,7 +107,7 @@ class ImageField extends React.Component {
             style={{
               ...text.h3Black,
               ...layout.marginTopXL,
-              
+
             }}>
             Upload images from your phone
           </Text>
