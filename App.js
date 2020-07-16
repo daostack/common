@@ -67,7 +67,6 @@ import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import {auth, db} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
-
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import {CommonActions} from '@react-navigation/native';
@@ -75,6 +74,8 @@ import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DeepLinking from 'react-native-deep-linking';
+import buffer from 'buffer';
+ global.Buffer = buffer.Buffer;
 
 import ArcService from './src/Services/ArcService';
 import { BOTTOM_SHEET_TEMPLATES } from './src/Stores/BottomSheetStore';
