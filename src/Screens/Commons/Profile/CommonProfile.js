@@ -69,20 +69,20 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const showReqToJoin =
     !userStore.userInfo ||
     (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
-  const [ showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(false)
+  const [ showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(false);
   const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(STICKY_HEADER_HEIGHT);
-  
-  
+
+
   const upperRequestToJoinBtnRef = useRef(null);
 
-  // Sticky Tab Bar 
+  // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
-  
+
 
   const headerHeightLayouted = height => {
     if (height - headerHeight > 3) {
@@ -232,7 +232,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               {currCommon.metadata.description}
             </Text>
           </View>
-          
+
           <TouchableOpacity onPress={openAgendaScreen} style={layout.marginTopS}>
             <View style={styles.viewAgendaBtn}>
               <Text style={styles.viewFullAgenda}>View full agenda</Text>
@@ -636,7 +636,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                     currCommon.numberOfBoostedProposals +
                     currCommon.numberOfPreBoostedProposals +
                     currCommon.numberOfQueuedProposals,
-                  goal: currCommon.fundingGoal,
+                  /* goal: currCommon.fundingGoal, */
                   members: currCommon.memberCount,
                   // TODO: get this value. Is it even tracked in the contract? need to check.
                   raised: currCommon.balance,
@@ -769,8 +769,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.paleGrey,
   },
   viewAgendaBtn: {
-    ...layout.content, 
-    ...layout.flexRow, 
+    ...layout.content,
+    ...layout.flexRow,
     justifyContent: 'flex-start',
     padding: 0,
   },
