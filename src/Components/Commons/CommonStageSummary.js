@@ -9,7 +9,6 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
   const deadlineMoment = moment.unix(commonProgressInfo.time);
   const deadlineHasPassed = moment().isAfter(deadlineMoment);
   const isFundingStage = !deadlineHasPassed;
-  console.log('isFUnding stage', isFundingStage);
   /* const renderFundingProgressBar = () => {
     return (
       <>
