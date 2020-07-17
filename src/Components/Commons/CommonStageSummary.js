@@ -9,12 +9,13 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
   const deadlineMoment = moment.unix(commonProgressInfo.time);
   const deadlineHasPassed = moment().isAfter(deadlineMoment);
   const isFundingStage = !deadlineHasPassed;
+
   const renderFundingProgressBar = () => {
     return (
       <>
         <View style={{width: '100%', ...layout.marginTopS, marginBottom: 10}}>
           <Progress.Bar
-            progress={commonProgressInfo.raised / commonProgressInfo.goal}
+            progress={ commonProgressInfo.goal <= 0 ? 0 : commonProgressInfo.raised / commonProgressInfo.goal}
             width={null} // null is filling the View width
             height={8}
             color={colors.mainBlue}
