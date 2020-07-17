@@ -46,7 +46,7 @@ export const createCommon = async (
     const MANDATORY_ARGS = [
       'name',
       'minFeeToJoin',
-      'fundingGoal',
+      /* 'fundingGoal', */
       'fundingGoalDeadline',
     ];
 

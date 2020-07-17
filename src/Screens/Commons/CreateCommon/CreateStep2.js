@@ -257,7 +257,7 @@ const CreateStep2 = props => {
               </View>
             </Modal> : show && (DatePicker) }
           </View>
-          <TextInputFieldWithIcon
+          {/* <TextInputFieldWithIcon
             iconName="dollar"
             iconSize={12}
             iconStyle={{paddingRight: 5}}
@@ -274,7 +274,7 @@ const CreateStep2 = props => {
               formStore: props.fundingFormStore,
               validateRule: 'required|integer|min:100',
             }}
-          />
+          /> */}
           <TextInputFieldWithIcon
             iconName="dollar"
             iconSize={12}
