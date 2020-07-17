@@ -19,8 +19,8 @@ const style = {
     ...font.primary.bold,
     ...font.fontSize(1),
     textAlign: 'center',
-    color: colors.black
-  }
+    color: colors.black,
+  },
 };
 
 export default StyleSheet.create({
