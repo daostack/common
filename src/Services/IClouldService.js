@@ -7,13 +7,17 @@ const appDataFileName = 'appData.json';
 const appDataFolder = 'appDataFolder';
 const downloadHeaderPath = RNFS.DocumentDirectoryPath + '/' + appDataFileName;
 
+import RNCloudFs from 'react-native-cloud-fs';
+
+
+
 export default class IClouldService {
   constructor(accessToken) {
     this.instance = null;
     this.acessToken = accessToken;
 
-    GDrive.setAccessToken(accessToken);
-    GDrive.init();
+    //GDrive.setAccessToken(accessToken);
+    //GDrive.init();
   }
 
   static init = async accessToken => {
@@ -22,7 +26,8 @@ export default class IClouldService {
 
   static getInstance() {
     if (IClouldService.instance == null) {
-      throw new Error('IClould is not initialized');
+      IClouldService.instance = new IClouldService();
+      //throw new Error('IClould is not initialized');
     }
     return this.instance;
   }
@@ -50,8 +55,24 @@ export default class IClouldService {
   };
 
   async getAppData() {
-    const response = await GDrive.files.list({spaces: appDataFolder});
-    return response.json();
+    // const response = await GDrive.files.list({spaces: appDataFolder});
+    // return response.json();
+    console.log("GET APP DATA from path -> ", downloadHeaderPath);
+    try {
+
+      console.log("RNCloudFs -> ", RNCloudFs);
+
+      const isExisting = await RNCloudFs.fileExists({ targetPath: downloadHeaderPath, scope: 'hidden' });
+        
+      console.log("Is existing -> ", isExisting);
+
+      const appDataFiles = await RNCloudFs.listFiles({targetPath: downloadHeaderPath, scope: 'hidden'});
+      
+      console.log("App data files ->", appDataFiles);
+    
+    } catch(err) {
+      console.log("it failed", err);
+    }
   }
 
   async setAppData(appDataJson) {

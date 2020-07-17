@@ -21,9 +21,9 @@ const AppleSignInButton = ({ onSignIn, userStore, customStyle}) => {
       //userInfo.user.uid
       //userInfo.user.email
 
-      //if (onSignIn) {
-      //  onSignIn(userInfo);
-      //}
+      if (onSignIn) {
+        onSignIn(userInfo);
+      }
       //setSignInError(null);
     } catch (error) {
       userStore.setIsLoading(false);

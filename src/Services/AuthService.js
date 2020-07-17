@@ -18,6 +18,7 @@ import appleAuth, {
   AppleAuthRequestScope,
   AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication';
+import IClouldService from './IClouldService';
 
 export default class AuthService {
   static serviceInstance = null;
@@ -129,25 +130,30 @@ export default class AuthService {
   }
 
   async loadMnemonic(uid, providerId) {
+    console.log("LOAD MNEMONIC");
+
     try {
 
       const mnemonicFromStore = await NativeModules.WalletModule.retrieveMnemonic(
         uid,
       );
 
+      console.log("mnemonicFromStore -> ", mnemonicFromStore);
+
       if (mnemonicFromStore) {
         return mnemonicFromStore;
       }
 
       switch (providerId) {
-      case AUTH_PROVIDER_ID.AUTH_PROVIDER_ID:
+      case AUTH_PROVIDER_ID.APPLE:
         return await this._loadMnemonicFromiCloud(uid);
-      case AUTH_PROVIDER_ID.UNKNOWN:
+      case AUTH_PROVIDER_ID.GOOGLE:
         return await this._loadMnemonicFromGoogleDrive(uid);
       default:
       }
 
     } catch (err) {
+      console.log(err);
       console.log('[AUTH] Invalid session. Please login again.');
       await this.signOut();
     }
@@ -197,43 +203,50 @@ export default class AuthService {
 
   // APPLE
   async _loadMnemonicFromiCloud(uid) {
+    console.log("LOAD MNEMONIC FROM ICLOUD with uid: ", uid);
+
     //await GoogleSignin.signInSilently();
     //const { accessToken } = await GoogleSignin.getTokens();
     //GoogleDriveService.init(accessToken);
 
     // 2. Read mnemonic From the iClould app data
-    let appData = await GoogleDriveService.getInstance().getAppData();
+    console.log("Read mnemonic from iClould");
+    let appData = await IClouldService.getInstance().getAppData();
 
-    if (appData.files && appData.files.length > 0) {
-      const appDataFileId = appData.files[0].id;
-      const fileContent = await GoogleDriveService.getInstance().getFileById(
-        appDataFileId,
-      );
+    console.log("appData -> ", appData);
 
-      let jsonContent;
-      try {
-        jsonContent = JSON.parse(fileContent);
-      } catch (error) {
-        /*
-        FIX FOR USESRS WITH BROKEN APP DATA FILES
-        TBD: Discuss on removing that logic or replace with better one.
-        */
 
-        // The file content is not a valid json
-        // In that case we are deleting the file
 
-        await GoogleDriveService.getInstance().deleteAppDataFileById(
-          appDataFileId,
-        );
-        // And then generate and store new mnemonic for the user
-        return this._generateAndStoreMnemonic(uid);
-      }
-      await NativeModules.WalletModule.storeMnemonic(uid, jsonContent.mnemonic);
-      return jsonContent.mnemonic;
-    }
+    // if (appData.files && appData.files.length > 0) {
+    //   const appDataFileId = appData.files[0].id;
+    //   const fileContent = await GoogleDriveService.getInstance().getFileById(
+    //     appDataFileId,
+    //   );
+
+    //   let jsonContent;
+    //   try {
+    //     jsonContent = JSON.parse(fileContent);
+    //   } catch (error) {
+    //     /*
+    //     FIX FOR USESRS WITH BROKEN APP DATA FILES
+    //     TBD: Discuss on removing that logic or replace with better one.
+    //     */
+
+    //     // The file content is not a valid json
+    //     // In that case we are deleting the file
+
+    //     await GoogleDriveService.getInstance().deleteAppDataFileById(
+    //       appDataFileId,
+    //     );
+    //     // And then generate and store new mnemonic for the user
+    //     return this._generateAndStoreMnemonic(uid);
+    //   }
+    //   await NativeModules.WalletModule.storeMnemonic(uid, jsonContent.mnemonic);
+    //   return jsonContent.mnemonic;
+    // }
 
     // 3. Generate mnemonic and store in Google Drive app data
-    return this._generateAndStoreMnemonic(uid);
+    //   return this._generateAndStoreMnemonic(uid);
   }
 
   async _generateAndStoreMnemonic(uid) {

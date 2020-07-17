@@ -207,9 +207,10 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       console.log('AUTH STATE CHANGED: ', user?.uid, user?.email, user?.displayName);
       console.log("USER -> ", user);
       try {
-        userStore.setIsLoading(true);
+        //userStore.setIsLoading(true);
         if (user) {
           await AuthService.getInstance().loadMnemonic(user.uid, user.providerData[0].providerId);
+          /*
           await WalletManager.init(user.uid);
           await ArcService.init();
           let appUser = await FirebaseService.getInstance().getUserById(
@@ -233,6 +234,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             subscribers.userInfoChangeUnsubscribe();
           }
           subscribers.userInfoChangeUnsubscribe = await updateUser(user.uid);
+          */
         } else {
           if (subscribers.userInfoChangeUnsubscribe) {
             subscribers.userInfoChangeUnsubscribe();
