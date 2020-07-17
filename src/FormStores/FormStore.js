@@ -89,6 +89,7 @@ class FormStore {
       if (onlyChangedFields) {
         if (formField.changed) {
           changedFieldsJson[key] = formField.value;
+          // formField.value.length > 0 ? changedFieldsJson[key] = formField.value : null;
         }
       } else {
         changedFieldsJson[key] = formField.value;
