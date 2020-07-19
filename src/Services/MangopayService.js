@@ -11,7 +11,7 @@ const axiosClient = axios.create({
   timeout: 1000000, // milliseconds
 });
 
-export const preauthorizePayment = async (cardData, funding) => {
+export const preauthorizePayment = async (cardData, funding, navigation) => {
   try {
     const idToken = await auth().currentUser.getIdToken();
     // first create the user in mangopay if isn't already created
@@ -43,9 +43,29 @@ export const preauthorizePayment = async (cardData, funding) => {
       },
     });
     // finalize the card registration - save cardId to firebase and preauthorize payment
-    const {data: {preAuthData: {preAuthId}}} = await axiosClient.post('register-card',
+    const { data: { preAuthData: { preAuthId, SecureModeRedirectURL}}} = await axiosClient.post('register-card',
       { idToken, cardRegistrationData, Id, funding  }
     );
+    if (SecureModeRedirectURL) {
+      const is3DCheckFinished = () => new Promise((resolve, reject) => {
+        navigation.navigate('Browser', {
+          url: SecureModeRedirectURL,
+          onNavStateChange: (e) => {
+            if (e.url.indexOf('common.io') > -1) {
+              navigation.pop();
+              resolve();
+            }
+          },
+          onBack: () => resolve(),
+        });
+      });
+      await is3DCheckFinished();
+      const {data: {Status}} = await axiosClient.post('get-preauthorisation-status', { preAuthId });
+      if (Status === 'SUCCEEDED') {
+        return preAuthId;
+      } else
+      { throw new Error('3D Authentication failed'); }
+    }
     return preAuthId;
   } catch (e) {
     console.log(e);
@@ -53,9 +73,3 @@ export const preauthorizePayment = async (cardData, funding) => {
     throw e;
   }
 };
-
-
-
-/* export const registerCard = async () => {
-
-}; */
