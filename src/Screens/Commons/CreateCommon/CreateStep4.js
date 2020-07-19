@@ -28,6 +28,7 @@ import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ArcService from '../../../Services/ArcService';
 import Share from 'react-native-share';
+import {BlurView} from '@react-native-community/blur';
 
 const {width} = Dimensions.get('window');
 import {CommonActions} from '@react-navigation/native';
@@ -147,7 +148,7 @@ const CreateStep4 = props => {
             Toast.hide();
             Toast.success('Done');
             if (isAvatar) {
-              setAvatarURL(url);
+              //setAvatarURL(url);
               props.reviewFormStore.fieldChanged(CreateCommonForm.AVATAR, url);
             } else {
               props.reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
@@ -278,7 +279,11 @@ const CreateStep4 = props => {
                 color: 'white',
               }}
               onPress={() => pickImage(false)}>
-              <Icon name="add-picture" color="white" size={20} />
+              <BlurView
+                style={{padding: 12, borderRadius: 14}}
+                blurType={ 'dark' }>
+                <Icon name={'addpicture'} color="white" size={20} />
+              </BlurView>
             </TouchableOpacity>
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity
