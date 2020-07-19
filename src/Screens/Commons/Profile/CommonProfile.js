@@ -253,12 +253,18 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             <View style={layout.flexRow}>
               <TouchableOpacity style={layout.flexRow}>
                 <Text style={text.h4Black}>
-                  {pendingProposalsData && pendingProposalsData.pendingProposalCount} Members
+                  {pendingProposalsData && // just to be showed at the same time
+                    currCommon.memberCount +
+                      ' ' +
+                      `Member${currCommon.memberCount !== 1 ? 's' : ''}`}
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{...layout.flexRow, ...layout.marginLeftS}}>
+              <TouchableOpacity
+                style={{...layout.flexRow, ...layout.marginLeftS}}>
                 <Text style={text.h4BlackRegular}>
-                  {pendingProposalsData && pendingProposalsData.pendingProposalCount} Pending
+                  {pendingProposalsData &&
+                    pendingProposalsData.pendingProposalCount}{' '}
+                  Pending
                 </Text>
                 <Icon name="right-arrow" />
               </TouchableOpacity>
