@@ -421,7 +421,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen name="Browser" component={Browser} />
         <Stack.Screen
           options={{
-            title: 'My wallet',
+            title: 'My Profile',
+            headerBackTitleVisible: false,
           }}
           name="MyWallet"
           component={MyWallet}
