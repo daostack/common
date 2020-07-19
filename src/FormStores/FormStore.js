@@ -86,8 +86,11 @@ class FormStore {
 
     for (const key in this.form.fields) {
       const formField = this.form.fields[key];
-      if (onlyChangedFields && formField.changed) {
-        changedFieldsJson[key] = formField.value;
+      if (onlyChangedFields) {
+        if (formField.changed) {
+          changedFieldsJson[key] = formField.value;
+          // formField.value.length > 0 ? changedFieldsJson[key] = formField.value : null;
+        }
       } else {
         changedFieldsJson[key] = formField.value;
       }

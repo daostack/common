@@ -317,15 +317,23 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   };
   */
 
+  const calcShouldSkipRules = () => {
+    const rules = currCommon.metadata?.rules;
+    if (rules?.length > 0) {
+      return rules.some(rule => rule?.title && rule?.url) ? false : true;
+    } else {
+      return true;
+    }
+  };
+
   const requestToJoin = event => {
     if (userStore.userInfo) {
+      const shouldSkipRules = calcShouldSkipRules();
       const navigate = CommonActions.navigate({
-        name: currCommon.metadata?.rules?.length
-          ? 'RequestStep1'
-          : 'RequestStep2',
+        name: shouldSkipRules ? 'RequestStep2' : 'RequestStep1',
         params: {
           currDaoId: currCommon.id,
-          skipFirstStep: !currCommon.metadata?.rules?.length,
+          skipFirstStep: shouldSkipRules,
         },
       });
       navigation.dispatch(navigate);
