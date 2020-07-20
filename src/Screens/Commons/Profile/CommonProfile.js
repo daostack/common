@@ -275,6 +275,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               <View style={styles.membersRow}>
                 <CommonMembersList
                   horizontal={true}
+                  navigation={navigation}
                   members={
                     daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers
                   }
