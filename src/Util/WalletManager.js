@@ -52,7 +52,6 @@ export default class WalletManager {
       this.wallet = ethers.Wallet.fromMnemonic(this.mnemonic).connect(
         this.provider,
       );
-      console.log("WALLET INSTANCEE -> ", this.wallet);
       this.address = this.wallet.address.toLowerCase();
       // TODO: replace with userStore or user manager
       const userData = await FirebaseService.getInstance().getUserById(uid);

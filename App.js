@@ -83,7 +83,7 @@ import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DeepLinking from 'react-native-deep-linking';
 
 import ArcService from './src/Services/ArcService';
-import { BOTTOM_SHEET_TEMPLATES } from './src/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
@@ -138,8 +138,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
   }, []);
 
   // Deep & Dynamic Link
-  const handleOpenURL = ({ url }) => {
-    Linking.canOpenURL(url).then((supported) => {
+  const handleOpenURL = ({url}) => {
+    Linking.canOpenURL(url).then(supported => {
       if (!supported) {
         return;
       }
@@ -158,65 +158,76 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
   };
 
   useEffect(() => {
-
     DeepLinking.addScheme('common://');
     DeepLinking.addScheme('com.daostack.common://');
     DeepLinking.addScheme('https://app.common.io');
 
     Linking.addEventListener('url', handleOpenURL);
 
-    DeepLinking.addRoute('/common/:id', (response) => {
+    DeepLinking.addRoute('/common/:id', response => {
       routing('CommonProfile', {commonId: response.id});
     });
 
-    DeepLinking.addRoute('/proposal/:id', (response) => {
+    DeepLinking.addRoute('/proposal/:id', response => {
       routing('ProposalScreen', {proposalId: response.id});
     });
 
-    DeepLinking.addRoute('/user/:id', (response) => {
+    DeepLinking.addRoute('/user/:id', response => {
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
-        {userId: response.id}
+        {userId: response.id},
       );
     });
 
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);
-    dynamicLinks().getInitialLink().then(link => {
-      if (link) {
-        handleOpenURL(link);
-      } else {
-        Linking.getInitialURL()
-          .then((url) => {
-            handleOpenURL({url});
-          })
-          .catch(err => err);
-      }
-    });
+    dynamicLinks()
+      .getInitialLink()
+      .then(link => {
+        if (link) {
+          handleOpenURL(link);
+        } else {
+          Linking.getInitialURL()
+            .then(url => {
+              handleOpenURL({url});
+            })
+            .catch(err => err);
+        }
+      });
 
-    return (() => {
+    return () => {
       Linking.removeEventListener('url', handleOpenURL);
       foregroundLink();
-    });
+    };
   }, []);
 
   // Login
   useEffect(() => {
-    const subscribers = { authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
+    const subscribers = {
+      authChangeUnsubscribe: null,
+      userInfoChangeUnsubscribe: null,
+    };
 
     const onAuthStateChanged = async user => {
-      console.log('AUTH STATE CHANGED: ', user?.uid, user?.email, user?.displayName);
-      console.log("USER -> ", user);
+      console.log(
+        'AUTH STATE CHANGED: ',
+        user?.uid,
+        user?.email,
+        user?.displayName,
+      );
       try {
-        //userStore.setIsLoading(true);
+        userStore.setIsLoading(true);
         if (user) {
-          await AuthService.getInstance().loadMnemonic(user.uid, user.providerData[0].providerId);
+          await AuthService.getInstance().loadMnemonic(
+            user.uid,
+            user.providerData[0].providerId,
+          );
           await WalletManager.init(user.uid);
           await ArcService.init();
           let appUser = await FirebaseService.getInstance().getUserById(
             user.uid,
           );
           const isNewUser = !appUser;
-          console.log("isNewUser -> ", isNewUser);
+          console.log('isNewUser -> ', isNewUser);
           if (isNewUser) {
             appUser = await AuthService.getInstance().createUserAndWallet(user);
             const manager = await WalletManager.getInstance();
@@ -229,7 +240,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
           userStore.setSignedInUser(filteredUser);
           if (subscribers.userInfoChangeUnsubscribe) {
-
             subscribers.userInfoChangeUnsubscribe();
           }
           subscribers.userInfoChangeUnsubscribe = await updateUser(user.uid);
@@ -247,18 +257,23 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       }
     };
 
-    subscribers.authChangeUnsubscribe = auth().onAuthStateChanged(onAuthStateChanged);
+    subscribers.authChangeUnsubscribe = auth().onAuthStateChanged(
+      onAuthStateChanged,
+    );
 
-    const updateUser = async (uid) => {
+    const updateUser = async uid => {
       try {
         if (auth().currentUser === null) {
           return;
         }
-        const unsubscribe = db.collection('users').doc(uid).onSnapshot(snapshot => {
-          if (!snapshot.empty) {
-            userStore.setSignedInUser(snapshot.data());
-          }
-        });
+        const unsubscribe = db
+          .collection('users')
+          .doc(uid)
+          .onSnapshot(snapshot => {
+            if (!snapshot.empty) {
+              userStore.setSignedInUser(snapshot.data());
+            }
+          });
         return unsubscribe;
       } catch (error) {
         console.log('errror: ', error);

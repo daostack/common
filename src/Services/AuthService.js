@@ -1,11 +1,7 @@
 import {NativeModules, Platform} from 'react-native';
 import RNFS from 'react-native-fs';
 
-import {
-  GOOGLE_SIGNIN_PERMISSIONS,
-  WEB_CLIENT_ID,
-  AUTH_PROVIDER_ID,
-} from '../Util';
+import {GOOGLE_SIGNIN_PERMISSIONS, AUTH_PROVIDER_ID} from '../Util';
 import WalletManager from '../Util/WalletManager';
 import {firebaseWebClientId} from '../Config';
 
@@ -95,7 +91,7 @@ export default class AuthService {
     await auth().signOut();
   }
 
-  // Firebase 
+  // Firebase
   async updateUserData(userData, publicData) {
     const currentUser = await auth().currentUser;
     currentUser.updateProfile(userData);
