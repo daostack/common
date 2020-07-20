@@ -217,7 +217,7 @@ export default StyleSheet.create({
   },
   bvBmseYstWetqTFn5Au: {
     ...font.primary.regular,
-    ...font.fontSize(1),
+    ...font.fontSize(0),
     textAlign: 'center',
     lineHeight: 16,
     color: colors.slate,
