@@ -13,18 +13,12 @@ const AppleSignInButton = ({ onSignIn, userStore, customStyle}) => {
   const _signIn = async () => {
     try {
       // That loading status will be changed to false in the onAuthStateChanged method in App.js
-      //userStore.setIsLoading(true);
-      console.log("sign In");
+      userStore.setIsLoading(true);
       const userInfo = await AuthService.getInstance().signInApple();
-      console.log("userInfo -> ", userInfo);
-
-      //userInfo.user.uid
-      //userInfo.user.email
-
       if (onSignIn) {
         onSignIn(userInfo);
       }
-      //setSignInError(null);
+      setSignInError(null);
     } catch (error) {
       userStore.setIsLoading(false);
       console.log(error);
@@ -60,18 +54,6 @@ const AppleSignInButton = ({ onSignIn, userStore, customStyle}) => {
       </>
     );
   };
-
-  // <>
-  //       <AppleButton
-  //         buttonStyle={AppleButton.Style.WHITE}
-  //         buttonType={AppleButton.Type.SIGN_IN}
-  //         style={{
-  //           width: 160,
-  //           height: 45,
-  //         }}
-  //         onPress={_signIn}
-  //       />
-  //     </>
 
   const renderError = () => {
     if (signInError) {

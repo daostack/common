@@ -1,89 +1,55 @@
-import GDrive from 'react-native-google-drive-api-wrapper';
 import RNFS from 'react-native-fs';
-// import AuthService from './AuthService';
+import RNCloudFs from 'react-native-cloud-fs';
 
 const mimeType = 'application/json';
-const appDataFileName = 'appData.json';
+const appDataFileName = 'appDataCloud.json';
 const appDataFolder = 'appDataFolder';
 const downloadHeaderPath = RNFS.DocumentDirectoryPath + '/' + appDataFileName;
 
-import RNCloudFs from 'react-native-cloud-fs';
-
-
+const appDataFilePath = `${appDataFolder}/${appDataFileName}`;
+const iCloudScope = 'hidden';
 
 export default class IClouldService {
-  constructor(accessToken) {
+  constructor() {
     this.instance = null;
-    this.acessToken = accessToken;
-
-    //GDrive.setAccessToken(accessToken);
-    //GDrive.init();
   }
 
-  static init = async accessToken => {
-    IClouldService.instance = new IClouldService(accessToken);
+  static init = async () => {
+    IClouldService.instance = new IClouldService();
   };
 
   static getInstance() {
     if (IClouldService.instance == null) {
       IClouldService.instance = new IClouldService();
-      //throw new Error('IClould is not initialized');
     }
     return this.instance;
   }
 
-  deleteAppDataFile = async () => {
-    const response = await this.getAppData();
-    console.log('files -> ', response.files);
-    response.files.forEach((file, index) => {
-      GDrive.files.delete(file.id);
-    });
-  };
-
-  deleteAppDataFileById = async id => {
-    GDrive.files.delete(id);
-  };
-
-  getFileById = async id => {
-    const downloadFileResult = await GDrive.files.download(
-      id,
-      {toFile: downloadHeaderPath},
-      {},
-    );
-    await downloadFileResult.promise;
-    return await RNFS.readFile(downloadHeaderPath, 'utf8');
-  };
-
   async getAppData() {
-    // const response = await GDrive.files.list({spaces: appDataFolder});
-    // return response.json();
-    console.log("GET APP DATA from path -> ", downloadHeaderPath);
-    try {
+    const isExisting = await RNCloudFs.fileExists({
+      targetPath: appDataFilePath,
+      scope: 'hidden',
+    });
 
-      console.log("RNCloudFs -> ", RNCloudFs);
-
-      const isExisting = await RNCloudFs.fileExists({ targetPath: downloadHeaderPath, scope: 'hidden' });
-        
-      console.log("Is existing -> ", isExisting);
-
-      const appDataFiles = await RNCloudFs.listFiles({targetPath: downloadHeaderPath, scope: 'hidden'});
-      
-      console.log("App data files ->", appDataFiles);
-    
-    } catch(err) {
-      console.log("it failed", err);
+    if (isExisting) {
+      const appDataFiles = await RNCloudFs.listFiles({
+        targetPath: appDataFilePath,
+        scope: 'hidden',
+      });
+      return appDataFiles;
     }
+
+    return null;
   }
 
   async setAppData(appDataJson) {
-    return await GDrive.files.createFileMultipart(
-      appDataJson,
-      mimeType,
-      {
-        parents: [appDataFolder],
-        name: appDataFileName,
-      },
-      false,
-    );
+    await RNFS.writeFile(downloadHeaderPath, appDataJson, 'utf8');
+
+    return await RNCloudFs.copyToCloud({
+      sourcePath: {path: downloadHeaderPath},
+      targetPath: appDataFilePath,
+      mimeType: mimeType,
+      scope: iCloudScope,
+    });
   }
 }

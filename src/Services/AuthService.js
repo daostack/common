@@ -1,9 +1,13 @@
+import {NativeModules, Platform} from 'react-native';
+import RNFS from 'react-native-fs';
 
-import { NativeModules, Platform } from 'react-native';
-
-import {GOOGLE_SIGNIN_PERMISSIONS, WEB_CLIENT_ID, AUTH_PROVIDER_ID} from '../Util';
+import {
+  GOOGLE_SIGNIN_PERMISSIONS,
+  WEB_CLIENT_ID,
+  AUTH_PROVIDER_ID,
+} from '../Util';
 import WalletManager from '../Util/WalletManager';
-import { firebaseWebClientId } from '../Config';
+import {firebaseWebClientId} from '../Config';
 
 // Firebase imports
 import {auth} from '../Firebase';
@@ -43,39 +47,29 @@ export default class AuthService {
   };
 
   // Apple Auth flow
-
   async signInApple() {
-    console.log("Sign in For Apple");
-
-    // Start the sign-in request
     const appleAuthRequestResponse = await appleAuth.performRequest({
       requestedOperation: AppleAuthRequestOperation.LOGIN,
-      requestedScopes: [AppleAuthRequestScope.EMAIL, AppleAuthRequestScope.FULL_NAME],
+      requestedScopes: [
+        AppleAuthRequestScope.EMAIL,
+        AppleAuthRequestScope.FULL_NAME,
+      ],
     });
-  
+
     // Ensure Apple returned a user identityToken
     if (!appleAuthRequestResponse.identityToken) {
       throw 'Apple Sign-In failed - no identify token returned';
     }
-  
+
     // Create a Firebase credential from the response
-    const { identityToken, nonce } = appleAuthRequestResponse;
-    const appleCredential = auth.AppleAuthProvider.credential(identityToken, nonce);
-  
+    const {identityToken, nonce} = appleAuthRequestResponse;
+    const appleCredential = auth.AppleAuthProvider.credential(
+      identityToken,
+      nonce,
+    );
+
     // Sign the user in with the credential
     return auth().signInWithCredential(appleCredential);
-  }
-  
-  async signOutApple() {
-    console.log("Sign Out For Apple");
-
-    /*
-    if (Platform.OS === 'android') {
-      await GoogleSignin.revokeAccess();
-    }
-    await GoogleSignin.signOut();
-    await auth().signOut();
-    */
   }
 
   // Google Auth flow
@@ -101,6 +95,7 @@ export default class AuthService {
     await auth().signOut();
   }
 
+  // Firebase 
   async updateUserData(userData, publicData) {
     const currentUser = await auth().currentUser;
     currentUser.updateProfile(userData);
@@ -130,28 +125,22 @@ export default class AuthService {
   }
 
   async loadMnemonic(uid, providerId) {
-    console.log("LOAD MNEMONIC");
-
     try {
-
       const mnemonicFromStore = await NativeModules.WalletModule.retrieveMnemonic(
         uid,
       );
-
-      console.log("mnemonicFromStore -> ", mnemonicFromStore);
 
       if (mnemonicFromStore) {
         return mnemonicFromStore;
       }
 
       switch (providerId) {
-      case AUTH_PROVIDER_ID.APPLE:
-        return await this._loadMnemonicFromiCloud(uid);
-      case AUTH_PROVIDER_ID.GOOGLE:
-        return await this._loadMnemonicFromGoogleDrive(uid);
-      default:
+        case AUTH_PROVIDER_ID.APPLE:
+          return await this._loadMnemonicFromiCloud(uid);
+        case AUTH_PROVIDER_ID.GOOGLE:
+          return await this._loadMnemonicFromGoogleDrive(uid);
+        default:
       }
-
     } catch (err) {
       console.log(err);
       console.log('[AUTH] Invalid session. Please login again.');
@@ -163,7 +152,7 @@ export default class AuthService {
 
   async _loadMnemonicFromGoogleDrive(uid) {
     await GoogleSignin.signInSilently();
-    const { accessToken } = await GoogleSignin.getTokens();
+    const {accessToken} = await GoogleSignin.getTokens();
     GoogleDriveService.init(accessToken);
 
     // 2. Read mnemonic From the Google Drive app data
@@ -179,6 +168,7 @@ export default class AuthService {
       try {
         jsonContent = JSON.parse(fileContent);
       } catch (error) {
+        // TBD: Do we need to handle that case anymore ?
         /*
         FIX FOR USESRS WITH BROKEN APP DATA FILES
         TBD: Discuss on removing that logic or replace with better one.
@@ -191,69 +181,59 @@ export default class AuthService {
           appDataFileId,
         );
         // And then generate and store new mnemonic for the user
-        return this._generateAndStoreMnemonic(uid);
+        return this._generateAndStoreMnemonicGCloud(uid);
       }
       await NativeModules.WalletModule.storeMnemonic(uid, jsonContent.mnemonic);
       return jsonContent.mnemonic;
     }
 
     // 3. Generate mnemonic and store in Google Drive app data
-    return this._generateAndStoreMnemonic(uid);
+    return this._generateAndStoreMnemonicGCloud(uid);
   }
 
   // APPLE
   async _loadMnemonicFromiCloud(uid) {
-    console.log("LOAD MNEMONIC FROM ICLOUD with uid: ", uid);
-
-    //await GoogleSignin.signInSilently();
-    //const { accessToken } = await GoogleSignin.getTokens();
-    //GoogleDriveService.init(accessToken);
-
     // 2. Read mnemonic From the iClould app data
-    console.log("Read mnemonic from iClould");
     let appData = await IClouldService.getInstance().getAppData();
 
-    console.log("appData -> ", appData);
+    if (appData && appData.files && appData.files.length > 0) {
+      const appDataLocalPath = appData.files[0].path;
 
+      const fileContent = await RNFS.readFile(appDataLocalPath, 'utf8');
 
+      let jsonContent;
+      try {
+        jsonContent = JSON.parse(fileContent);
+      } catch (error) {
+        // TBD: Do we need to handle that case anymore ?
+        console.log('ERROR IN PARSING JSON with content: ', fileContent);
+        console.log(error);
+        throw error;
+      }
 
-    // if (appData.files && appData.files.length > 0) {
-    //   const appDataFileId = appData.files[0].id;
-    //   const fileContent = await GoogleDriveService.getInstance().getFileById(
-    //     appDataFileId,
-    //   );
-
-    //   let jsonContent;
-    //   try {
-    //     jsonContent = JSON.parse(fileContent);
-    //   } catch (error) {
-    //     /*
-    //     FIX FOR USESRS WITH BROKEN APP DATA FILES
-    //     TBD: Discuss on removing that logic or replace with better one.
-    //     */
-
-    //     // The file content is not a valid json
-    //     // In that case we are deleting the file
-
-    //     await GoogleDriveService.getInstance().deleteAppDataFileById(
-    //       appDataFileId,
-    //     );
-    //     // And then generate and store new mnemonic for the user
-    //     return this._generateAndStoreMnemonic(uid);
-    //   }
-    //   await NativeModules.WalletModule.storeMnemonic(uid, jsonContent.mnemonic);
-    //   return jsonContent.mnemonic;
-    // }
+      await NativeModules.WalletModule.storeMnemonic(uid, jsonContent.mnemonic);
+      return jsonContent.mnemonic;
+    }
 
     // 3. Generate mnemonic and store in Google Drive app data
-    //   return this._generateAndStoreMnemonic(uid);
+    return this._generateAndStoreMnemonicICloud(uid);
   }
 
-  async _generateAndStoreMnemonic(uid) {
+  async _generateAndStoreMnemonicGCloud(uid) {
     this.initialAppDataContent.mnemonic = await NativeModules.WalletModule.generateAndStoreMnemonic(
       uid,
     );
     await GoogleDriveService.getInstance().setAppData(
+      JSON.stringify(this.initialAppDataContent),
+    );
+    return this.initialAppDataContent.mnemonic;
+  }
+
+  async _generateAndStoreMnemonicICloud(uid) {
+    this.initialAppDataContent.mnemonic = await NativeModules.WalletModule.generateAndStoreMnemonic(
+      uid,
+    );
+    await IClouldService.getInstance().setAppData(
       JSON.stringify(this.initialAppDataContent),
     );
     return this.initialAppDataContent.mnemonic;
