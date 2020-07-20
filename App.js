@@ -12,6 +12,7 @@ import {
   StyleSheet,
   Platform,
   View,
+  Alert,
   Linking,
   DeviceEventEmitter,
 } from 'react-native';
@@ -67,6 +68,7 @@ import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import {auth, db} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
+
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import {CommonActions} from '@react-navigation/native';
@@ -110,7 +112,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log('Foreground Message Arrived', JSON.stringify(remoteMessage));
+      Alert.alert('Foreground Message Arrived', JSON.stringify(remoteMessage));
     });
     return unsubscribe;
   }, []);

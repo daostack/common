@@ -18,7 +18,7 @@ You can upload new icons using following button.
 
 #### 2. Regenerate new link
 
-Once the icon set has been changed or updated, it will have a warning text above current js link, it will ask to regenerate new JS link after you click it. 
+Once the icon set have been changed or updated, it will have a warning text above current js link, it will ask to regenerate new JS link after you click it. 
 
 ![icon_doc](./Asset/icon_doc_4.png)
 
