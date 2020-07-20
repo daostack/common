@@ -1,10 +1,13 @@
-import {Image} from 'react-native';
-import {colors} from '../../Theme';
-import {CommonsList, NativeBridgeTests, UserProfile} from '../../Screens';
+
 import React from 'react';
+import {colors} from '../../Theme';
+import {CommonsList, UserProfile} from '../../Screens';
+import {Platform} from 'react-native';
+
 import {inject, observer} from 'mobx-react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
+import Icon from '../../Assets/iconfont/Icon';
 
 const CommonHome = ({userStore}) => {
   return (
@@ -12,49 +15,43 @@ const CommonHome = ({userStore}) => {
       // initialRouteName="My feed"
       initialRouteName="Explore"
       screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => {
-          if (route.name === 'My feed') {
+        tabBarIcon: ({focused}) => {
+          switch (route.name) {
+          case 'Explore': {
+            if (focused) {
+              return (
+                <Icon name="commons-selected" size={30} />
+              );
+            }
             return (
-              <Image
-                source={require('../../../src/Assets/feed.png')}
-                style={{
-                  resizeMode: 'contain',
-                  width: 24,
-                  height: 24,
-                  tintColor: focused ? colors.mainBlue : '#92A2B5',
-                }}
-              />
-            );
-          } else if (route.name === 'Explore') {
-            return (
-              <Image
-                source={require('../../../src/Assets/commons.png')}
-                style={{
-                  resizeMode: 'contain',
-                  width: 24,
-                  height: 24,
-                  tintColor: focused ? colors.mainBlue : '#92A2B5',
-                }}
-              />
-            );
-          } else {
-            return (
-              <Image
-                source={require('../../../src/Assets/accountSelected.png')}
-                style={{
-                  resizeMode: 'contain',
-                  width: 20,
-                  height: 20,
-                  tintColor: focused ? colors.mainBlue : '#92A2B5',
-                }}
-              />
+              <Icon name="commons" size={30} />
             );
           }
-        },
-      })}
+          default: {
+            if (focused) {
+              return (
+                <Icon name="account-selected" size={30} />
+              );
+            }
+            return (
+              <Icon name="account" size={30} />
+            );
+          }
+          }
+        }})}
       tabBarOptions={{
         activeTintColor: colors.mainBlue,
-      }}>
+        showLabel: false,
+        style: {
+          elevation: 5,
+          shadowColor: '#333',
+          shadowOffset: { height: 5 },
+          shadowOpacity: 0.75,
+          shadowRadius: 5,
+          height: Platform.OS === 'ios' ? 100 : 60,
+        },
+      }}
+    >
       {/*{userStore.userInfo && (*/}
       {/*<Tab.Screen name="My feed" component={NativeBridgeTests} />*/}
       {/*)}*/}
