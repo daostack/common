@@ -1,6 +1,6 @@
-import React, {useRef} from 'react';
+import React from 'react';
 
-import {StyleSheet, View, Image} from 'react-native';
+import {StyleSheet, View, Image, Platform} from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import GSignInButton from '../../Components/Auth/GSignInButton';
 import {layout} from '../../Theme';
@@ -8,17 +8,16 @@ import {observer, inject} from 'mobx-react';
 import AppleSignInButton from '../../Components/Auth/AppleSignInButton';
 
 const CreateAccount = ({onSignedIn}) => {
-  const bottomSheetContainerRef = useRef();
-
-  const openSheet = () => {
-    bottomSheetContainerRef.current.snapTo(1);
-  };
-
   const onSignIn = async userInfo => {
     if (onSignedIn) {
       onSignedIn(userInfo.additionalUserInfo.isNewUser);
     }
   };
+
+  console.log("Platform.Version -> ", Platform.Version);
+
+  const isIos = Platform.OS === 'ios';
+  const isLoginWithAppleEnabled = isIos ? parseInt(Platform.Version, 10) >= 13 : false;
 
   return (
     <View style={styles.componentContainer}>
@@ -26,7 +25,7 @@ const CreateAccount = ({onSignedIn}) => {
         <Image source={require('../../Assets/accountPlaceHolder.png')} />
       </View>
 
-      <AppleSignInButton customStyle={layout.marginBottomM}/>
+      { isIos && isLoginWithAppleEnabled ? <AppleSignInButton customStyle={layout.marginBottomM} onSignIn={onSignIn}/> : null }
 
       <GSignInButton onSignIn={onSignIn} />
       
