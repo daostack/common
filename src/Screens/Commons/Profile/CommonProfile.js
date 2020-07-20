@@ -65,7 +65,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = route.params.currCommon?.id || route.params.commonId;
-  const daoMembers = route.params.currCommon?.members;
+  const daoMembers = route.params.currCommon?.members || currCommon?.members;
   const showReqToJoin =
     !userStore.userInfo ||
     (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
@@ -74,7 +74,6 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(STICKY_HEADER_HEIGHT);
-
 
   const upperRequestToJoinBtnRef = useRef(null);
 
@@ -118,7 +117,11 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     } else {
       setMemberState(false);
     }
-  }, [routeCommon, route.params.showRequestSentModal, userStore.userInfo]);
+  }, [
+    route.params.showRequestSentModal,
+    userStore.userInfo,
+    daoMembers,
+  ]);
 
   useEffect(() => {
     if (userStore.userInfo) {
@@ -590,7 +593,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             renderBackground={() => (
               <FastImage
                 source={{
-                  uri: currCommon.coverPhoto,
+                  uri: currCommon.coverPhoto || currCommon?.metadata?.image,
                 }}
                 style={{
                   width: window.width,
