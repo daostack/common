@@ -1,36 +1,58 @@
 import {IPFSApiClient} from './ipfs-api';
-import {ApolloClient} from 'apollo-client';
-import {InMemoryCache} from 'apollo-cache-inmemory';
-import {HttpLink} from 'apollo-link-http';
-import {onError} from 'apollo-link-error';
-import {ApolloLink, split} from 'apollo-link';
-import {WebSocketLink} from 'apollo-link-ws';
-import {getMainDefinition} from 'apollo-utilities';
 import Config from 'react-native-config';
 
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
 // TODO: we should probably read this from the package..
 
+let arcVersion;
+let graphVersion;
+let cloudFunctionURL;
+let networkId;
+let clientId;
+let graphUrl;
+let graphWS;
+let web3Provider;
+let commonTokenAddress;
+let ipfsUrl;
+
 if (Config.ENV === 'production') {
-
+  arcVersion = '0.1.2-rc.0';
+  graphVersion = 'v8_7_exp_xdai';
+  cloudFunctionURL = 'https://us-central1-common-daostack.cloudfunctions.net';
+  graphUrl = 'https://api.thegraph.com/subgraphs-daostack/name/daostack';
+  graphWS = 'wss://api.thegraph.com/subgraphs-daostack/name/daostack';
+  ipfsUrl = 'https://api.thegraph.com/ipfs-daostack/api/v0';
+  networkId = 100;
+  web3Provider = 'https://dai.poa.network';
+  commonTokenAddress = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
+  clientId = '854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com';
 } else if (Config.ENV === 'staging') {
-
+  arcVersion = '0.1.2-rc.0';
+  graphVersion = 'v8_7_exp_kovan';
+  cloudFunctionURL = 'https://us-central1-common-staging-50741.cloudfunctions.net';
+  graphUrl = 'https://api.thegraph.com/subgraphs-daostack/name/daostack';
+  graphWS = 'wss://api.thegraph.com/subgraphs-daostack/name/daostack';
+  ipfsUrl = 'https://api.thegraph.com/ipfs-daostack/api/v0';
+  networkId = 42;
+  web3Provider = 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';
+  commonTokenAddress = '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01';
+  clientId = '78965953367-gp6r7vuvceqj4k8gngrqkng98thgqmo8.apps.googleusercontent.com';
 } else {
   throw Error(`Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`);
 }
 
-export const mangoPayUrl = `${Config.cloudFunctionURL}/mangopay`;
-export const graphqlUrl = `${Config.cloudFunctionURL}/graphql`;
-export const ARC_VERSION = Config.ARC_VERSION;
-export const GRAPH_VERSION = Config.GRAPH_VERSION;
-export const graphHttpLink = `${Config.graphHttpLink}${GRAPH_VERSION}`;
-export const graphwsLink = `${Config.graphwsLink}${GRAPH_VERSION}`;
-export const ipfsLink = Config.ipfsLink;
-export const web3ProviderUrl = Config.web3ProviderUrl;
-export const relayerUrl = Config.relayerUrl;
-export const web3NetworkId = Config.eb3NetworkId;
-export const COMMONTOKENADDRESS = Config.COMMONTOKENADDRESS;
-export const firebaseWebClientId = Config.firebaseWebClientId;
+export const ARC_VERSION = arcVersion;
+export const GRAPH_VERSION = graphVersion;
+export const mangoPayUrl = `${cloudFunctionURL}/mangopay`;
+export const graphqlUrl = `${cloudFunctionURL}/graphql`;
+export const relayerUrl = `${cloudFunctionURL}/relayer`;
+export const graphHttpLink = `${graphUrl}/${graphVersion}`;
+export const graphwsLink = `${graphWS}/${graphVersion}`;
+export const ipfsLink = ipfsUrl;
+export const web3ProviderUrl = web3Provider;
+export const web3NetworkId = networkId;
+export const COMMONTOKENADDRESS = commonTokenAddress;
+export const firebaseWebClientId = clientId;
 
 export const defaultAllowance = 100000000000000000;
 export const MEMBER_REPUTATION = 1000; // how much rep a new members gets
@@ -48,56 +70,6 @@ export const PROPOSAL_TYPE = {
   JoinAndQuit: 'JoinAndQuit',
   FundingRequest: 'FundingRequest',
 };
-
-const httpLink = new HttpLink({
-  uri: graphHttpLink,
-  fetchOptions: {
-    mode: 'no-cors',
-  },
-});
-
-// Create a WebSocket link:
-const wsLink = new WebSocketLink({
-  uri: graphwsLink,
-  options: {
-    reconnect: true,
-  },
-});
-
-const link = split(
-  // split based on operation type
-  ({query}) => {
-    const definition = getMainDefinition(query);
-    return (
-      definition.kind === 'OperationDefinition' &&
-      definition.operation === 'subscription'
-    );
-  },
-  wsLink,
-  httpLink,
-);
-
-const apolloClientConfig = new ApolloClient({
-  link: ApolloLink.from([
-    onError(({graphQLErrors, networkError}) => {
-      if (graphQLErrors) {
-        graphQLErrors.forEach(({message, locations, path}) =>
-          console.log(
-            `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-          ),
-        );
-      }
-      if (networkError) {
-        console.log(`[Network error]: ${networkError}`);
-      }
-    }),
-    link,
-  ]),
-  cache: new InMemoryCache(),
-});
-
-// TODO: is this still needed?
-export const ApolloClientConfig = new ApolloClient(apolloClientConfig);
 
 // We will need this until https://github.com/daostack/arc.js/issues/468 is resolved
 export const IpfsClient = new IPFSApiClient(ipfsLink);

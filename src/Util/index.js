@@ -33,11 +33,6 @@ export function filterObjectByKeys(currObj, allowedKeys) {
     }, {});
 }
 
-export const getTestEth = address =>
-  fetch(
-    `https://us-central1-common-daostack.cloudfunctions.net/api/send-test-eth/${address}`,
-  );
-
 export const calcIsFundingStage = (deadline) => {
   const deadlineMoment = moment.unix(deadline);
   return !moment().isAfter(deadlineMoment);

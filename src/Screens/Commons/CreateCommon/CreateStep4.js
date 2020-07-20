@@ -27,6 +27,9 @@ import Toast from '../../../Util/Toast';
 import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ArcService from '../../../Services/ArcService';
+import Share from 'react-native-share';
+import {BlurView} from '@react-native-community/blur';
+
 const {width} = Dimensions.get('window');
 import {CommonActions} from '@react-navigation/native';
 import {
@@ -67,10 +70,10 @@ const CreateStep4 = props => {
   const [newCommonAddress, setNewCommonAddress] = useState(false);
 
   const form = {
-    ...props.generalInfoFormStore.getChangedFormFieldsJson(),
-    ...props.fundingFormStore.getChangedFormFieldsJson(),
-    ...props.agendaFormStore.getChangedFormFieldsJson(),
-    ...props.reviewFormStore.getChangedFormFieldsJson(),
+    ...props.generalInfoFormStore.getFormFieldsJson(),
+    ...props.fundingFormStore.getFormFieldsJson(),
+    ...props.agendaFormStore.getFormFieldsJson(),
+    ...props.reviewFormStore.getFormFieldsJson(),
   };
   const [templateIndex, setTemplateIndex] = useState(1);
   const getImageUrl = index =>
@@ -78,7 +81,8 @@ const CreateStep4 = props => {
   const [imageURI, setImageURI] = useState(
     getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))),
   );
-  const [avatarURL, setAvatarURL] = useState(null);
+  /* [avatarURL, setAvatarURL] = useState(null);
+  */
 
   //set default value for Avatar and Image fields
   useEffect(() => {
@@ -144,7 +148,7 @@ const CreateStep4 = props => {
             Toast.hide();
             Toast.success('Done');
             if (isAvatar) {
-              setAvatarURL(url);
+              //setAvatarURL(url);
               props.reviewFormStore.fieldChanged(CreateCommonForm.AVATAR, url);
             } else {
               props.reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
@@ -156,6 +160,16 @@ const CreateStep4 = props => {
     });
   };
 
+  const shareCommon = event => {
+    const { name } = props.generalInfoFormStore.getChangedFormFieldsJson();
+    const currCommonId = newCommonAddress.toLowerCase();
+    const options = {
+      url: `https://app.common.io/common/${currCommonId}`,
+      title: "Let's make it happen",
+      message: `Join in ${name} common`,
+    };
+    Share.open(options);
+  };
   const forgeCommon = async () => {
     try {
       const manager = await WalletManager.getInstance();
@@ -177,6 +191,8 @@ const CreateStep4 = props => {
         fundingGoalDeadline,
       };
       console.log('calling createCommon(...)');
+
+      props.navigation.navigate({ name: 'FullScreenCreationLoader', params: { title: 'Common' } });
 
       const commonAddress = await ArcService.getInstance().createCommon(
         data,
@@ -263,7 +279,11 @@ const CreateStep4 = props => {
                 color: 'white',
               }}
               onPress={() => pickImage(false)}>
-              <Icon name="add-picture" color="white" size={20} />
+              <BlurView
+                style={{padding: 12, borderRadius: 14}}
+                blurType={ 'dark' }>
+                <Icon name={'addpicture'} color="white" size={20} />
+              </BlurView>
             </TouchableOpacity>
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity
@@ -297,7 +317,7 @@ const CreateStep4 = props => {
             </View>
           </View>
 
-          {avatarURL === null ? (
+          {/* {avatarURL === null ? (
             <View
               style={{
                 flexDirection: 'row',
@@ -346,17 +366,17 @@ const CreateStep4 = props => {
                 </TouchableOpacity>
               </View>
             </View>
-          )}
+          )} */}
           <View
             style={{height: 1, width: width, backgroundColor: colors.grey4}}
           />
-          <View style={styles.sectionTitle}>
-            <View style={{minWidth: 90, marginRight: 10}}>
+          <View style={{ ...styles.sectionTitle, justifyContent: 'center' }}>
+            {/* <View style={{minWidth: 90, marginRight: 10}}>
               <CreateStep4Indicators
                 title="Goal"
                 number={numberFormatter(form[CreateCommonForm.FUNDING_GOAL])}
               />
-            </View>
+            </View> */}
             <View style={{width: 120, marginHorizontal: 10}}>
               <CreateStep4Indicators
                 title="Min. Contribution"
@@ -373,6 +393,7 @@ const CreateStep4 = props => {
                   .format('MMM DD, YYYY')}
               />
             </View>
+
           </View>
           <View style={styles.sectionTitle}>
             <Text style={styles.textTitle}>About</Text>
@@ -450,17 +471,14 @@ const CreateStep4 = props => {
         <SentTemplate
           isCommonCreation={true}
           title="Your journey starts now"
-          description="Spread the word and invite others to take part in it. You can always share later"
+          description="Your Common is ready. Spread the word and invite others to join you. You can always share it later."
           onClose={() => props.navigation.dispatch(StackActions.popToTop())}>
-          <View style={layout.flexRow}>
+          <View style={styles.shareContainer}>
             <TouchableOpacity
               style={styles.modalRequestSentBtnPrimary}
-              /*  onPress={} */
-            >
+              onPress={shareCommon}>
               <Text style={text.buttoncenterwhite}>Share now</Text>
             </TouchableOpacity>
-          </View>
-          <View style={layout.flexRow}>
             <TouchableOpacity
               style={styles.modalRequestSentBtnOutline}
               onPress={goToCommon}>
@@ -477,6 +495,9 @@ const styles = StyleSheet.create({
   view: {
     justifyContent: 'flex-end',
     margin: 0,
+  },
+  shareContainer: {
+    flexDirection: 'column',
   },
   container: {
     backgroundColor: colors.white,

@@ -14,15 +14,15 @@ const {width} = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepNavigation from './RequestStepNavigation';
 import RequestToJoinForm from '../../../Components/Forms/RequestToJoinForm';
-
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '../../../Services/ArcService';
 import Toast from '../../../Util/Toast';
-import {BN} from 'bn.js';
+import { BN } from 'bn.js';
+import { preauthorizePayment } from '../../../Services/MangopayService';
 
-const RequestStep4 = props => {
+const RequestStep4 = ({navigation, ...props}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const isFirstStepSkipped = props.route.params.skipFirstStep;
@@ -46,27 +46,34 @@ const RequestStep4 = props => {
           ...props.paymentFormStore.getFormFieldsJson(),
         };
 
-        const data = {
+        let data = {
           title: `request to join ${props.route.params.currDaoId} by ${props.userStore.userInfo.ethereumAddress}`,
           description: formData.about_me,
           links: formData.links,
           funding: new BN(formData.amount * 100),
-          payment: {
-            cardNumber: formData.card_number,
-            cvv: formData.cvv,
-            expDate: formData.expiration_date.replace('/', ''),
-            funding: formData.amount * 100,
-          },
+          preAuthId: false,
         };
 
-        props.navigation.navigate({ name: 'FullScreenCreationLoader', params: { title: 'Piecing your request together' } });
+        const cardData = {
+          cardNumber: formData.card_number,
+          cvv: formData.cvv,
+          expDate: formData.expiration_date.replace('/', ''),
+        };
+
+        props.navigation.navigate({ name: 'FullScreenCreationLoader', params: { title: 'Creating your membership request' } });
+
+        if (Number(data.funding) > 0) {
+          const preAuthId = await preauthorizePayment(cardData, Number(data.funding), navigation);
+          data = { ...data, preAuthId };
+          console.log('PREAUTH ID', preAuthId);
+        }
 
         const proposalId = await ArcService.getInstance().createRequestToJoin(
           props.route.params.currDaoId,
           data,
         );
 
-        props.navigation.pop();
+        navigation.pop();
 
         const navigate = CommonActions.navigate({
           name: 'CommonProfile',
@@ -78,8 +85,8 @@ const RequestStep4 = props => {
         props.navigation.dispatch(navigate);
       } catch (e) {
         console.log(e);
-        props.navigation.pop();
-        Toast.error(e.data.error);
+        navigation.pop();
+        e.message ? Toast.error(e.message) : Toast.error(e.data.error);
       }
     }
   };
@@ -93,14 +100,14 @@ const RequestStep4 = props => {
           backgroundColor: 'white',
         }}>
         <CreateStepNavigation
-          navigation={props.navigation}
+          navigation={navigation}
           title="Personal contribution"
         />
         <CreateStepDotHeader
           title="Payment"
           currentIndex={4}
           isFirstStepSkipped={isFirstStepSkipped}
-          navigation={props.navigation}
+          navigation={navigation}
           headerHeight={headerHeight}
         />
         <ScrollView

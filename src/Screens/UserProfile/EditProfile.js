@@ -37,7 +37,7 @@ const EditProfile = ({
 
   const onFormSubmit = updatedFields => {
     userStore.setSignedInUser({...userStore.userInfo, ...updatedFields});
-    Toast.success('Your profile is updated');
+    Toast.done('Your profile is updated');
     navigation.goBack();
   };
 

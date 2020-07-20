@@ -1,18 +1,40 @@
 import {StyleSheet} from 'react-native';
 import colors from './colors';
 import font from './font';
+import layout from './layout';
 
 const appFontFamily = {
   fontFamily: 'NunitoSans-Regular',
 };
 
-export default StyleSheet.create({
+const style = {
   h1Black: {
     ...font.primary.bold,
     ...font.fontSize(5),
     lineHeight: 29,
     textAlign: 'center',
     color: colors.black,
+  },
+  h4Black: {
+    ...font.primary.bold,
+    ...font.fontSize(1),
+    textAlign: 'center',
+    color: colors.black,
+  },
+};
+
+export default StyleSheet.create({
+  h1Black: style.h1Black,
+  h1BlackTitle: {
+    ...style.h1Black,
+    ...font.heading.reguar,
+    ...font.fontSize(5),
+    ...layout.marginTopM,
+    ...layout.marginBottomM,
+  },
+  h1BlackRegular: {
+    ...style.h1Black,
+    fontWeight: '200',
   },
   h2Black: {
     ...font.primary.bold,
@@ -27,46 +49,38 @@ export default StyleSheet.create({
     color: colors.black,
   },
   h4Black: {
-    ...font.primary.bold,
-    ...font.fontSize(1),
-    textAlign: 'center',
-    color: colors.black,
+    ...style.h4Black,
+  },
+  h4BlackRegular: {
+    ...style.h4Black,
+    fontWeight: '200',
   },
   buttonblack: {
-    ...appFontFamily,
-    fontSize: 16,
-    fontWeight: '500',
-    fontStyle: 'normal',
+    ...font.primary.regular,
+    ...font.fontSize(3),
     lineHeight: 20,
     letterSpacing: 0,
     textAlign: 'center',
     color: colors.black,
   },
   buttoncenterwhite: {
-    ...appFontFamily,
-    fontSize: 16,
-    fontWeight: '500',
-    fontStyle: 'normal',
+    ...font.primary.regular,
+    ...font.fontSize(3),
     lineHeight: 20,
-    letterSpacing: 0,
     textAlign: 'center',
     color: '#ffffff',
   },
   buttonblue: {
-    ...appFontFamily,
-    fontSize: 16,
-    fontWeight: '400',
-    fontStyle: 'normal',
+    ...font.primary.regular,
+    ...font.fontSize(3),
     lineHeight: 20,
     letterSpacing: 0,
     textAlign: 'center',
     color: colors.mainBlue,
   },
   buttonred: {
-    ...appFontFamily,
-    fontSize: 16,
-    fontWeight: '500',
-    fontStyle: 'normal',
+    ...font.primary.regular,
+    ...font.fontSize(3),
     lineHeight: 20,
     letterSpacing: 0,
     textAlign: 'center',
@@ -248,6 +262,13 @@ export default StyleSheet.create({
     letterSpacing: 0,
     color: colors.black,
   },
+  regularText: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    lineHeight: 20,
+    letterSpacing: 0,
+    color: colors.black,
+  },
 
   lightishGreenText: {
     ...appFontFamily,
@@ -284,5 +305,11 @@ export default StyleSheet.create({
 
   bold: {
     fontWeight: 'bold',
+  },
+
+  // Font Colors
+
+  fontColorGreySteel: {
+    color: colors.greySteel,
   },
 });

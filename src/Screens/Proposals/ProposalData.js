@@ -25,7 +25,6 @@ import {PROPOSAL_TYPE} from '../../Config';
 const ProposalData = props => {
   const navigation = useNavigation();
   const [proposalInfo, setProposalInfo] = useState(null);
-
   const proposalId = props.proposalId;
 
   useEffect(() => {
@@ -35,15 +34,21 @@ const ProposalData = props => {
       try {
         if (currProposalInfo) {
           let tempImages = [];
-          if (currProposalInfo.description.images) {
+          if (currProposalInfo.description.images?.length) {
             await Promise.all(
               currProposalInfo.description.images.map(async currImage => {
-                const {width, height} = await ImageSize.getSize(currImage.value);
-                tempImages.push({
-                  title: currImage.title,
-                  widthRatio: (width / height) * 220,
-                  uri: currImage.value,
-                });
+                if (currImage.value) {
+                  try {
+                    const { width, height } = await ImageSize.getSize(currImage.value);
+                    tempImages.push({
+                      title: currImage.title,
+                      widthRatio: (width / height) * 220,
+                      uri: currImage.value,
+                    });
+                  } catch (e) {
+                    console.log(e);
+                  }
+                }
               }),
             );
           }
@@ -215,8 +220,8 @@ const ProposalData = props => {
                 Links
               </Text>
             </View>
-
-            {proposalInfo.description?.links?.length && (
+            <Text>
+              {proposalInfo.description?.links?.length > 0 && (
               proposalInfo.description?.links.map((l) => <View style={styles.adRow}>
                 <Icon name="link" color={colors.mainBlue} size={16} />
                 <TouchableOpacity
@@ -228,9 +233,9 @@ const ProposalData = props => {
                   <Text style={styles.adsText}>{l.title}</Text>
                 </TouchableOpacity>
               </View>  )
-            )}
-
-            {proposalInfo.description?.files?.length && (
+              )}
+            </Text>
+            {proposalInfo.description?.files?.length > 0 && (
               proposalInfo.description?.files.map((f, index) => <View style={styles.adRow}>
                 <Icon name="file" color={colors.mainBlue} size={16} />
                 <TouchableOpacity
@@ -268,7 +273,7 @@ const ProposalData = props => {
                         ...{width: currImage.widthRatio},
                       }}
                       resizeMode="cover"
-                      source={{uri: currImage.uri}}
+                      source={currImage.uri ? {uri: currImage.uri} : null}
                     />
                   </TouchableOpacity>
                   <ReadMore

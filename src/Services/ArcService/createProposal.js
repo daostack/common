@@ -1,16 +1,7 @@
 // TODO: rename this file to °createProposalRequestToJoin.js°
 const {first} = require('rxjs/operators');
-import { ipfsUpload, mangoPayUrl} from '../../Config';
+import { ipfsUpload} from '../../Config';
 import WalletManager from '../../Util/WalletManager';
-import axios from 'axios';
-import auth from '@react-native-firebase/auth';
-
-const axiosClient = axios.create({
-  baseURL: mangoPayUrl,
-  // or for development:
-  // baseURL: 'http://localhost:5000/common-daostack/us-central1/mangopay/',
-  timeout: 1000000, // milliseconds
-});
 
 export const createProposalRequestToJoin = async (arc, daoId, data) => {
   // data must look like this
@@ -24,19 +15,6 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
   // .  payment: { ... }
   // };
 
-  // just check if the user has mangopayId, wallet ID else create them
-  try {
-    const idToken = await auth().currentUser.getIdToken();
-    const response = await axiosClient.post(
-      'create-user',
-      {idToken},
-    );
-    console.log(response);
-  } catch (e) {
-    console.log(e);
-    console.log(e.response);
-    throw e;
-  }
 
   try {
     const dao = arc.dao(daoId);
@@ -117,13 +95,10 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
     // send the request to the cloudfunction relayer
     const manager = await WalletManager.getInstance();
-    const proposalId = manager.requestToJoin(transaction.contract, transaction.method, transaction.args, data.payment);
+    const proposalId = await manager.requestToJoin(transaction.contract, transaction.method, transaction.args, fee, data.preAuthId);
     return proposalId;
   } catch (e) {
-    console.log('---------------------------');
-    console.log(e);
-    console.log(Object.keys(e));
-    console.log('---------------------------');
+    console.log(e.data);
     throw e;
   }
 };
