@@ -34,29 +34,28 @@ export const createCommon = async (
   navigation
 ) => {
   // need these keys:
-    console.log('step 1');
-    navigation.navigate({
-      name: 'FullScreenCreationLoader',
-      params: {
-        title: 'Creating your Common',
-        message: 'This might take a couple of minutes.',
-      },
-    });
-    //daoStore.setCreationStatus(1);
-    const MANDATORY_ARGS = [
-      'name',
-      'minFeeToJoin',
-      /* 'fundingGoal', */
-      'fundingGoalDeadline',
-    ];
+  console.log('step 1');
+  navigation.navigate({
+    name: 'FullScreenCreationLoader',
+    params: {
+      title: 'Creating your Common',
+      message: 'This might take a couple of minutes.',
+    },
+  });
+  //daoStore.setCreationStatus(1);
+  const MANDATORY_ARGS = [
+    'name',
+    'minFeeToJoin',
+    /* 'fundingGoal', */
+    'fundingGoalDeadline',
+  ];
 
-    for (const key of MANDATORY_ARGS) {
-      if (Object.keys(givenOpts).indexOf(key) === -1 || !givenOpts[key]  ) {
-        console.log(givenOpts);
-        const msg = `${key} is a mandatary option for the createCommon function`;
-        console.error(msg);
-        throw Error(msg);
-      }
+  for (const key of MANDATORY_ARGS) {
+    if (Object.keys(givenOpts).indexOf(key) === -1 || !givenOpts[key]  ) {
+      console.log(givenOpts);
+      const msg = `${key} is a mandatary option for the createCommon function`;
+      console.error(msg);
+      throw Error(msg);
     }
   }
 
@@ -130,7 +129,7 @@ export const createCommon = async (
     deadline: opts.fundingGoalDeadline,
     metaData: ipfsHash,
   };
-    // console.log('variables sending to Contract', schemeDataToEncode);
+  // console.log('variables sending to Contract', schemeDataToEncode);
   const schemeData = getSetSchemesData(schemeDataToEncode);
 
   //daoStore.setCreationStatus(4);
@@ -146,3 +145,4 @@ export const createCommon = async (
   console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
   return newOrgAddress;
 };
+
