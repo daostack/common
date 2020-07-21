@@ -9,7 +9,7 @@ import React from 'react';
 import FastImage from 'react-native-fast-image';
 
 import Icon from '../../Assets/iconfont/Icon';
-import {layout, colors, text} from '../../Theme';
+import {layout, colors, text, font} from '../../Theme';
 
 const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
   const renderCoverInSafeArea = () => {
@@ -144,8 +144,8 @@ const styles = StyleSheet.create({
   },
 
   headerTitleWhite: {
-    ...text.h1Black,
-    fontFamily: 'NotoSerif-Bold',
+    ...font.fontSize(4),
+    ...font.heading.bold,
     color: colors.white,
   },
   headerDescription: {

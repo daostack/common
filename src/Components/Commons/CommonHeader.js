@@ -6,7 +6,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import React from 'react';
-import { layout, colors, text } from '../../Theme';
+import { layout, colors, text, font } from '../../Theme';
 import FastImage from 'react-native-fast-image';
 import { BlurView } from '@react-native-community/blur';
 import Icon from '../../Assets/iconfont/Icon';
@@ -108,8 +108,7 @@ const styles = StyleSheet.create({
     borderColor: colors.white,
   },
   headerTitleWhite: {
-    ...text.h1Black,
-    fontFamily: 'NotoSerif-Bold',
+    ...font.heading.bold,
     color: colors.white,
     textAlign: 'center',
     // width: '30%',

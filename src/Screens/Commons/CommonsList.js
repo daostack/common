@@ -181,7 +181,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
           width: 84,
           height: 84,
         }}/>
-        <Text style={{fontFamily: 'NotoSerif-Bold', fontSize: 20, textAlign: 'center'}}>Create a common</Text>
+        <Text style={styles.createACommon}>Create a common</Text>
         <Text style={{fontFamily: 'NunitoSans-Regular', fontSize: 16, textAlign: 'center', marginVertical: 10}}>Anyone can create a Common, invite their friends, and work together to achieve common goals. Start now!</Text>
       </View>
     );
@@ -218,6 +218,11 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
 };
 
 const styles = StyleSheet.create({
+  createACommon: {
+    ...font.heading.bold,
+    fontSize: 20,
+    textAlign: 'center',
+  },
   header: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -229,9 +234,8 @@ const styles = StyleSheet.create({
     // paddingTop: 10,
   },
   lengthCommons: {
-    ...font.primary.bold,
     ...font.fontSize(5),
-    fontFamily: 'NotoSerif-Bold',
+    ...font.heading.bold,
   },
   sectionHeaderContainer: {
     marginHorizontal: -20,

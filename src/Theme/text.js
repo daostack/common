@@ -27,7 +27,7 @@ export default StyleSheet.create({
   h1Black: style.h1Black,
   h1BlackTitle: {
     ...style.h1Black,
-    ...font.heading.reguar,
+    ...font.heading.bold,
     ...font.fontSize(5),
     ...layout.marginTopM,
     ...layout.marginBottomM,

@@ -69,7 +69,7 @@
 		<string>NunitoSans-Light.ttf</string>
 		<string>NunitoSans-Regular.ttf</string>
 		<string>NunitoSans-SemiBold.ttf</string>
-		<string>NotoSerif-Bold.ttf</string>
+		<string>NotoSerif-SemiCondensedSemiBold.ttf</string>
 		<string>Nunito-Regular.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
