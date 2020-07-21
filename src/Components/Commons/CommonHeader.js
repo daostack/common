@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
     borderColor: colors.white,
   },
   headerTitleWhite: {
+    ...font.fontSize(4),
     ...font.heading.bold,
     color: colors.white,
     textAlign: 'center',
