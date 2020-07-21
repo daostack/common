@@ -3,12 +3,13 @@ import React from 'react';
 import {numberFormatter} from '../../Util';
 import moment from 'moment';
 /* import * as Progress from 'react-native-progress'; */
-import {layout, colors, text, font} from '../../Theme';
+import {layout, text, font} from '../../Theme';
 
 const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
   const deadlineMoment = moment.unix(commonProgressInfo.time);
   const deadlineHasPassed = moment().isAfter(deadlineMoment);
   const isFundingStage = !deadlineHasPassed;
+  const isFundingOrIsCommonCard = isFundingStage || isCommonCard;
   /* const renderFundingProgressBar = () => {
     return (
       <>
@@ -53,7 +54,7 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
     <View style={styles.commonProgressContainer}>
       <View style={styles.commonNumbers}>
         {commonNumberBox(
-          isFundingStage || isCommonCard ? (
+          isFundingOrIsCommonCard ? (
             <>
               <Text style={styles.headerTitle}>
                 ${numberFormatter(commonProgressInfo.raised / 100)}
@@ -62,15 +63,17 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
           ) : (
             <>
               <Text style={styles.headerTitle}>
-                ${numberFormatter(commonProgressInfo.raised / 100) }
+                ${numberFormatter(commonProgressInfo.raised / 100)}
               </Text>
             </>
           ),
-          isFundingStage || isCommonCard ? 'Raised' : 'Available funds',
+          isFundingOrIsCommonCard ? 'Raised' : 'Available funds',
         )}
         {commonNumberBox(
-          <Text style={styles.headerTitle}>{commonProgressInfo.members}</Text>,
-          'Members',
+          <Text style={styles.headerTitle}>
+            {isFundingOrIsCommonCard ? commonProgressInfo.members : '$' + numberFormatter(commonProgressInfo.raised / 100)}
+          </Text>,
+          isFundingOrIsCommonCard ? 'Members' : 'Total raised',
         )}
         {/* {commonNumberBox(
           isFundingStage ? (
