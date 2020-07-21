@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {layout, colors, text, sizeS} from '../../../Theme';
-import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
+import {TabView, TabBar} from 'react-native-tab-view';
 import ProposalsList from '../../Proposals/ProposalsList';
 import CommonMembersList from './CommonMembersList';
 
@@ -19,10 +19,67 @@ const getTabName = (objectName, count) => {
   return `${objectName} (${count ? count : 0})`;
 };
 
+const renderTabBar = props => (
+  <TabBar
+    {...props}
+    indicatorStyle={{
+      backgroundColor: colors.black,
+    }}
+    renderLabel={({route, focused, color}) => {
+      return (
+        <Text style={focused ? styles.tabStyleActive : styles.tabStyle}>
+          {route.title}
+        </Text>
+      );
+    }}
+    style={{backgroundColor: colors.white}}
+    tabStyle={{width: 'auto'}}
+  />
+);
+
+const Members = ({navigation, members}) => {
+  return (
+    <View style={{padding: sizeS}}>
+      <CommonMembersList navigation={navigation} members={members} />
+    </View>
+  );
+};
+
+const Pending = ({navigation, commonId, onProposalsCountChange}) => {
+  return (
+    <View style={layout.content}>
+      <ProposalsList
+        navigation={navigation}
+        commonId={commonId}
+        onlyRequestsToJoin={true}
+        onCountChange={onProposalsCountChange}
+      />
+    </View>
+  );
+};
+
+const History = ({navigation, commonId, onProposalsCountChange}) => {
+  return (
+    <View style={layout.content}>
+      <ProposalsList
+        navigation={navigation}
+        commonId={commonId}
+        onlyRequestsToJoin={true}
+        isHistory={true}
+        onCountChange={onProposalsCountChange}
+      />
+    </View>
+  );
+};
+
+const initialLayout = {width: Dimensions.get('window').width};
+
 const CommonMembers = ({navigation, route}) => {
   const [index, setIndex] = useState(0);
-  const [pendingCount, setPendingCount] = useState(4);
+  const [pendingCount, setPendingCount] = useState(0);
+  const [historyCount, setHistoryCount] = useState(0);
   const members = route.params.members;
+  const commonId = route.params.commonId;
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -33,57 +90,35 @@ const CommonMembers = ({navigation, route}) => {
   const routes = [
     {key: 'members', title: getTabName('Members', members.length)},
     {key: 'pending', title: getTabName('Pending', pendingCount)},
+    {key: 'history', title: getTabName('History', historyCount)},
   ];
 
-  const Members = () => {
-    return (
-      <View style={{padding: sizeS}}>
-        <CommonMembersList navigation={navigation} members={members} />
-      </View>
-    );
-  };
-
-  const onProposalsCountChange = count => {
-    setPendingCount(count);
-  };
-
-  const Pending = () => {
-    return (
-      <View style={layout.content}>
-        <ProposalsList
+  const renderScene = ({route}) => {
+    switch (route.key) {
+    case 'members':
+      return <Members navigation={navigation} members={members} />;
+    case 'pending':
+      return (
+        <Pending
           navigation={navigation}
-          commonId={route.params.commonId}
-          onlyRequestsToJoin={true}
-          onCountChange={onProposalsCountChange}
+          commonId={commonId}
+          onProposalsCountChange={(count)=> setPendingCount(count)}
         />
-      </View>
-    );
+      );
+    case 'history':
+      return (
+        <History
+          navigation={navigation}
+          commonId={commonId}
+          onProposalsCountChange={count => setHistoryCount(count)}
+        />
+      );
+    default:
+      return null;
+    }
   };
 
-  const initialLayout = {width: Dimensions.get('window').width};
 
-  const renderScene = SceneMap({
-    members: Members,
-    pending: Pending,
-  });
-
-  const renderTabBar = props => (
-    <TabBar
-      {...props}
-      indicatorStyle={{
-        backgroundColor: colors.black,
-      }}
-      renderLabel={({route, focused, color}) => {
-        return (
-          <Text style={focused ? styles.tabStyleActive : styles.tabStyle}>
-            {route.title}
-          </Text>
-        );
-      }}
-      style={{backgroundColor: colors.white}}
-      tabStyle={{width: 'auto'}}
-    />
-  );
   return (
     <>
       <StatusBar barStyle="dark-content" />
