@@ -64,8 +64,8 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
-  const commonId = route.params.currCommon?.id || route.params.commonId;
-  const daoMembers = route.params.currCommon?.members || currCommon?.members;
+  const commonId = currCommon?.id;
+  const daoMembers = currCommon?.members;
   const showReqToJoin =
     !userStore.userInfo ||
     (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
@@ -96,7 +96,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     if (route.params.commonId) {
       const unsubscribe = firestore()
         .collection('daos')
-        .doc(commonId)
+        .doc(route.params.commonId)
         .onSnapshot(snapshot => {
           if (snapshot.exists) {
             setCurrCommon(snapshot.data());
@@ -107,11 +107,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
         });
       return unsubscribe;
     }
-  }, [commonId]);
+  }, [route.params.commonId]);
 
   useEffect(() => {
     setShowRequestSentModal(route.params.showRequestSentModal);
-    //setCurrCommon(routeCommon);
     if (userStore.userInfo && userStore.isDaoMember(daoMembers)) {
       setMemberState(true);
     } else {
