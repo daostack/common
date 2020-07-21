@@ -44,7 +44,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
   const routeProposalId = route?.params.proposalId;
   const renderVoting = proposalInfo && PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr);
 
-  // Sticky Tab Bar 
+  // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);

@@ -713,7 +713,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               index === 0 ? (
                 <BottomRightButton
                   onPress={() =>
-                    navigation.navigate('New Topic', {
+                    navigation.navigate('New Post', {
                       commonId: currCommon.id,
                     })
                   }
@@ -893,17 +893,6 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 1,
-  },
-  addButton: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    margin: 20,
-    ...layout.content,
-    backgroundColor: colors.mainBlue,
-    height: 48,
-    width: 48,
-    borderRadius: 24,
   },
   stickySection: {
     height: STICKY_HEADER_HEIGHT,
