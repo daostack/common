@@ -550,7 +550,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
           Request to join
         </Text>
         <Text style={{fontSize: 16, color: 'white'}}>
-          ${currCommon.minFeeToJoin / 100} min. contribution
+          ${currCommon.metadata.minFeeToJoin / 100} min. contribution
         </Text>
       </TouchableOpacity>);
   };
