@@ -44,6 +44,7 @@ import {
 import NavigationBar from 'react-native-navbar';
 import {BlurView} from '@react-native-community/blur';
 import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
+import ProposalActivationDate from '../../../Components/Proposals/ProposalActivationDate';
 
 const STICKY_HEADER_HEIGHT = 114;
 
@@ -181,7 +182,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
           commonId={currCommon.id}
           commonName={currCommon.name}
         />
+        <ProposalActivationDate activationDate={currCommon.fundingGoalDeadline} />
       </View>
+
+      
     );
   };
 
