@@ -184,8 +184,6 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
         />
         <ProposalActivationDate activationDate={currCommon.fundingGoalDeadline} />
       </View>
-
-      
     );
   };
 
