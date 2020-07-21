@@ -9,7 +9,6 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
   const deadlineMoment = moment.unix(commonProgressInfo.time);
   const deadlineHasPassed = moment().isAfter(deadlineMoment);
   const isFundingStage = !deadlineHasPassed;
-  const isFundingOrIsCommonCard = isFundingStage || isCommonCard;
   /* const renderFundingProgressBar = () => {
     return (
       <>
@@ -54,26 +53,18 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
     <View style={styles.commonProgressContainer}>
       <View style={styles.commonNumbers}>
         {commonNumberBox(
-          isFundingOrIsCommonCard ? (
-            <>
-              <Text style={styles.headerTitle}>
+          <Text style={styles.headerTitle}>
                 ${numberFormatter(commonProgressInfo.raised / 100)}
-              </Text>
-            </>
-          ) : (
-            <>
-              <Text style={styles.headerTitle}>
-                ${numberFormatter(commonProgressInfo.raised / 100)}
-              </Text>
-            </>
-          ),
-          isFundingOrIsCommonCard ? 'Raised' : 'Available funds',
+          </Text>,
+          isCommonCard ? 'Raised' : 'Available funds',
         )}
         {commonNumberBox(
           <Text style={styles.headerTitle}>
-            {isFundingOrIsCommonCard ? commonProgressInfo.members : '$' + numberFormatter(commonProgressInfo.raised / 100)}
+            {isCommonCard
+              ? commonProgressInfo.members
+              : '$' + numberFormatter(commonProgressInfo.raised / 100)}
           </Text>,
-          isFundingOrIsCommonCard ? 'Members' : 'Total raised',
+          isCommonCard ? 'Members' : 'Raised',
         )}
         {/* {commonNumberBox(
           isFundingStage ? (
