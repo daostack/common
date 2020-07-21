@@ -70,11 +70,13 @@ const CreateStep4 = props => {
   const [newCommonAddress, setNewCommonAddress] = useState(false);
 
   const form = {
-    ...props.generalInfoFormStore.getFormFieldsJson(),
-    ...props.fundingFormStore.getFormFieldsJson(),
-    ...props.agendaFormStore.getFormFieldsJson(),
-    ...props.reviewFormStore.getFormFieldsJson(),
+    ...props.generalInfoFormStore.getChangedFormFieldsJson(),
+    ...props.fundingFormStore.getChangedFormFieldsJson(),
+    ...props.agendaFormStore.getChangedFormFieldsJson(),
+    ...props.reviewFormStore.getChangedFormFieldsJson(),
   };
+
+  console.log(form);
   const [templateIndex, setTemplateIndex] = useState(1);
   const getImageUrl = index =>
     `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
@@ -174,12 +176,7 @@ const CreateStep4 = props => {
     try {
       const manager = await WalletManager.getInstance();
       const address = manager.safeAddress;
-      const formDataInit = {
-        ...props.generalInfoFormStore.getChangedFormFieldsJson(),
-        ...props.fundingFormStore.getChangedFormFieldsJson(),
-        ...props.agendaFormStore.getChangedFormFieldsJson(),
-        ...props.reviewFormStore.getChangedFormFieldsJson(),
-      };
+      const formDataInit = {...form};
 
       const fundingGoalDeadline = formDataInit[CreateCommonForm.DEADLINE];
 
@@ -433,7 +430,7 @@ const CreateStep4 = props => {
               <View />
             )}
           </>
-          {form[CreateCommonForm.RULES]?.length ? (
+          {form[CreateCommonForm.RULES]?.length > 0 ? (
             form[CreateCommonForm.RULES].map((rule, index) => (
               <View key={`key_${CreateCommonForm.RULES}_${index}`}>
                 <Text
@@ -449,7 +446,7 @@ const CreateStep4 = props => {
                 <View style={[styles.sectionTitle, {marginTop: 10}]}>
                   <Text style={styles.textSubtitle}>{rule.title}</Text>
                 </View>
-                <Text style={styles.textContent}>{rule.description}</Text>
+                <Text style={styles.textContent}>{rule.url}</Text>
               </View>
             ))
           ) : (
@@ -540,7 +537,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 40,
     marginBottom: 10,
-    flex: 1,
     paddingHorizontal: 24,
   },
   textTitle: {
