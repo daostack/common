@@ -12,7 +12,6 @@ import {
   StyleSheet,
   Platform,
   View,
-  Alert,
   Linking,
   DeviceEventEmitter,
 } from 'react-native';

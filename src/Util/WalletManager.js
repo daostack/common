@@ -31,7 +31,6 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
 const axiosClient = axios.create({
   baseURL: relayerUrl,
   // for dev
-  // baseURL: 'http://localhost:5000/common-daostack/us-central1/relayer/',
   timeout: 1000000, // milliseconds
 });
 
@@ -197,45 +196,27 @@ export default class WalletManager {
     return response;
   }
 
-  requestToJoin = async (pluginContract, method, params, funding, preAuthId) => {
+  requestToJoin = async (pluginContract, method, params, preAuthId) => {
     try {
       const pluginAddress = pluginContract.address;
       const zeroValue = '0';
-      let interf = new ethers.utils.Interface(ABI.CommonToken);
-      // TODO: please to not use parseEther here, just pass on the intended allowance
-      const data1 = interf.functions.approve.encode([pluginAddress, ethers.utils.parseEther(defaultAllowance.toString())]);
-      const signature1 = await this.txHashSignature(this.safeAddress, COMMONTOKENADDRESS, zeroValue, data1);
-      // console.log('signature1 -->', signature1);
-      const data2 = pluginContract.interface.functions[method].encode(params);
-      const signature2 = await this.txHashSignature(this.safeAddress, pluginAddress, zeroValue, data2);
-      // console.log('signature2 -->', signature2);
+      const data = pluginContract.interface.functions[method].encode(params);
+      const signature = await this.txHashSignature(this.safeAddress, pluginAddress, zeroValue, data2);
+      console.log('signature2 -->', signature);
       const idToken = await auth().currentUser.getIdToken();
       const body =
       {
         idToken,
-        commonTx: {
-          to: COMMONTOKENADDRESS,
-          value: zeroValue,
-          data: data1,
-          signature: signature1,
-        },
-        pluginTx: {
+        createProposalTx: {
           to: pluginAddress,
           value: zeroValue,
-          data: data2,
-          signature: signature2,
+          data,
+          signature,
         },
-        funding,
         preAuthId,
       };
-      /* const idToken = await auth().currentUser.getIdToken();
-      const body =
-      {
-        idToken,
-        paymentData,
-      }; */
 
-      // console.log('RequestToJoin Body ->', body);
+      console.log('RequestToJoin Body ->', body);
       const response = await axiosClient.post(
         'requestToJoin',
         body

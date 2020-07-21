@@ -1,8 +1,9 @@
 import {IpfsClient} from '../../Config';
 import {graphqlUrl} from '../../Config';
+import axios from 'axios';
 const { getForgeOrgData } = require('@daostack/common-factory');
 const DAOFactoryABI = require('@daostack/common-factory/abis/DAOFactory');
-import axios from 'axios';
+
 const {
   ARC_VERSION,
   COMMONTOKENADDRESS,
@@ -33,23 +34,6 @@ export const createCommon = async (
 ) => {
   // need these keys:
   try {
-    console.log('Create Common');
-    const MANDATORY_ARGS = [
-      'name',
-      'minFeeToJoin',
-      'fundingGoal',
-      'fundingGoalDeadline',
-    ];
-
-    for (const key of MANDATORY_ARGS) {
-      if (Object.keys(givenOpts).indexOf(key) === -1) {
-        console.log(givenOpts);
-        const msg = `${key} is a mandatary option for the createCommon function`;
-        console.error(msg);
-        throw Error(msg);
-      }
-    }
-
     const defaultOptions = {
       tokenDist: [0],
       repDist: [MEMBER_REPUTATION],
@@ -63,9 +47,6 @@ export const createCommon = async (
     const ipfsHash = await IpfsClient.addAndPinString(JSON.stringify(opts));
     console.log('ipfsHash ->', ipfsHash);
 
-    await arc.fetchContractInfos();
-
-    // console.log('opts: ', opts);
     const daoFactoryInfo = arc.getContractInfoByName(
       'DAOFactoryInstance',
       ARC_VERSION,
@@ -75,7 +56,7 @@ export const createCommon = async (
       daoFactoryInfo.address,
       DAOFactoryABI,
     );
-  
+
     const votingMachineInfo = arc.getContractInfoByName(
       'GenesisProtocol',
       ARC_VERSION,
@@ -88,7 +69,7 @@ export const createCommon = async (
       repDist: opts.repDist,
       votingMachine: votingMachineInfo.address,
       fundingToken: opts.fundingToken,
-      minFeeToJoin: opts.minFeeToJoin,
+      minFeeToJoin: 0, // Make the min fee to 0, simplify request to join logic
       memberReputation: opts.memberReputation,
       // we set the OFFICIAL funding goal to 0 - in the frontend we show the fundingGaol from ipfs data
       // goal: parseInt(opts.fundingGoal, 10),
@@ -106,21 +87,21 @@ export const createCommon = async (
       [encodedForgeOrgParams, encodedSetSchemesParams]
     );
 
-    console.log('forgeOrg receipt ->', receipt);
+    // console.log('forgeOrg receipt ->', receipt);
     console.log('forgeOrg transaction was mined..');
 
     // Get the new avatar address of the thing that was just created..
     const newOrgEvent = receipt.events.NewOrg;
     const newOrgAddress = newOrgEvent._avatar;
 
-    console.log(`Created a DAO at ${newOrgAddress} with name "${opts.name}"`);
-
-    // Wait for 3 seconds then update database
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    console.log(`Created a Common at ${newOrgAddress} with name "${opts.name}"`);
 
     console.log('Updating database');
-    await axios.get(`${graphqlUrl}/update-dao-by-id?daoId=${newOrgAddress}`);
-    console.log('Common database have been updated');
+    // we try to update the database, and we will retry four times, which should give us more than enough time
+    // for the graph to index the data
+    await axios.get(`${graphqlUrl}/update-dao-by-id?daoId=${newOrgAddress}&retries=4`);
+    console.log('Common database has been updated');
+
     return newOrgAddress;
   } catch (e) {
     navigation.pop();
