@@ -71,7 +71,7 @@ export default StyleSheet.create({
     color: '#ffffff',
   },
   buttonblue: {
-    ...font.primary.regular,
+    ...font.primary.semiBold,
     ...font.fontSize(3),
     lineHeight: 20,
     letterSpacing: 0,

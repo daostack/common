@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
 import FileField from './FileField';
-import {sizeL} from '../../Theme';
+import {sizeM} from '../../Theme';
 
 const MultiFileField = props => {
   const [count, setCount] = useState(1);
@@ -23,7 +23,7 @@ const MultiFileField = props => {
   const { maxCount, validation, navigation } = props;
 
   return (
-    <View style={{paddingTop: sizeL}}>
+    <View style={{paddingTop: sizeM}}>
       {[...Array(count).keys()].map(currIndex => {
         const currItemValidation = { ...props.validation };
         currItemValidation.name = `${currItemValidation.name}_multi_${currIndex}`;

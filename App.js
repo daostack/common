@@ -407,7 +407,11 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             headerShown: false,
           })}
         />
-        <Stack.Screen name="New Topic" component={DiscussionPost} />
+        <Stack.Screen name="New Post"
+          options={({navigation, route}) => ({
+            headerBackTitleVisible: false,
+          })}
+          component={DiscussionPost} />
         <Stack.Screen
           options={{
             title: 'Edit my profile',
