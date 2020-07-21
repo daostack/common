@@ -64,8 +64,8 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
-  const commonId = route.params.currCommon?.id || route.params.commonId;
-  const daoMembers = route.params.currCommon?.members;
+  const commonId = currCommon?.id;
+  const daoMembers = currCommon?.members;
   const showReqToJoin =
     !userStore.userInfo ||
     (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
@@ -74,7 +74,6 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(STICKY_HEADER_HEIGHT);
-
 
   const upperRequestToJoinBtnRef = useRef(null);
 
@@ -97,7 +96,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     if (route.params.commonId) {
       const unsubscribe = firestore()
         .collection('daos')
-        .doc(commonId)
+        .doc(route.params.commonId)
         .onSnapshot(snapshot => {
           if (snapshot.exists) {
             setCurrCommon(snapshot.data());
@@ -108,17 +107,20 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
         });
       return unsubscribe;
     }
-  }, [commonId]);
+  }, [route.params.commonId]);
 
   useEffect(() => {
     setShowRequestSentModal(route.params.showRequestSentModal);
-    //setCurrCommon(routeCommon);
     if (userStore.userInfo && userStore.isDaoMember(daoMembers)) {
       setMemberState(true);
     } else {
       setMemberState(false);
     }
-  }, [routeCommon, route.params.showRequestSentModal, userStore.userInfo]);
+  }, [
+    route.params.showRequestSentModal,
+    userStore.userInfo,
+    daoMembers,
+  ]);
 
   useEffect(() => {
     if (userStore.userInfo) {
@@ -592,7 +594,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             renderBackground={() => (
               <FastImage
                 source={{
-                  uri: currCommon.coverPhoto,
+                  uri: currCommon.coverPhoto || currCommon?.metadata?.image,
                 }}
                 style={{
                   width: window.width,
