@@ -201,7 +201,7 @@ export default class WalletManager {
       const pluginAddress = pluginContract.address;
       const zeroValue = '0';
       const data = pluginContract.interface.functions[method].encode(params);
-      const signature = await this.txHashSignature(this.safeAddress, pluginAddress, zeroValue, data2);
+      const signature = await this.txHashSignature(this.safeAddress, pluginAddress, zeroValue, data);
       console.log('signature2 -->', signature);
       const idToken = await auth().currentUser.getIdToken();
       const body =
@@ -210,8 +210,8 @@ export default class WalletManager {
         createProposalTx: {
           to: pluginAddress,
           value: zeroValue,
-          data,
-          signature,
+          data: data,
+          signature: signature,
         },
         preAuthId,
       };
