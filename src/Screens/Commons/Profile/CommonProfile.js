@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
-import {text, layout, colors, sizeS, sizeL} from '../../../Theme';
+import {text, layout, colors, sizeS, sizeL, font} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
 import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
@@ -910,8 +910,7 @@ const styles = StyleSheet.create({
   stickySectionText: {
     color: 'black',
     // color: 'white',
-    fontFamily: 'NotoSerif-Bold',
-    fontWeight: '500',
+    ...font.heading.bold,
     fontSize: 20,
     marginTop: 25,
     // margin: 5,
