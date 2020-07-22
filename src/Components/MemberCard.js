@@ -17,9 +17,10 @@ const MemberCard = ({
 }) => {
   const renderRightContainer = () => {
     if (proposalInfo) {
+      const funding = parseInt(proposalInfo.description.funding, 16);
       const proposalValue =
         proposalInfo.type === PROPOSAL_TYPE.JoinAndQuit
-          ? proposalInfo.joinAndQuit.funding / 100
+          ? funding / 100
           : proposalInfo.fundingRequest.amount / 100;
       const remainingSeconds = proposalInfo.closingAt - moment().unix();
       return (

@@ -58,7 +58,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
 
       if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
         proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
-        funding = currProposalInfo.joinAndQuit.funding;
+        funding = parseInt(currProposalInfo.description.funding, 16);
       }
       //FundingRequest proposal
       else {

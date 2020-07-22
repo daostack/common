@@ -50,6 +50,7 @@ const RequestStep4 = ({navigation, ...props}) => {
           title: `request to join ${props.route.params.currDaoId} by ${props.userStore.userInfo.ethereumAddress}`,
           description: formData.about_me,
           links: formData.links,
+          // Should we change it to decimal instead of hex ???
           funding: new BN(formData.amount * 100),
           preAuthId: false,
         };
