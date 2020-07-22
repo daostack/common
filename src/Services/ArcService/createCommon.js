@@ -39,7 +39,7 @@ export const createCommon = async (
       repDist: [MEMBER_REPUTATION],
       memberReputation: MEMBER_REPUTATION,
       fundingToken: COMMONTOKENADDRESS,
-      VERSION: '000001', // just some alphanumberic marker  that is useful for understanding what our data is shaped like
+      VERSION: '000002', // just some alphanumberic marker  that is useful for understanding what our data is shaped like
     };
     const opts = {...defaultOptions, ...givenOpts};
 
