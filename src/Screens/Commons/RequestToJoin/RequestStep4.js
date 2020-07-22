@@ -93,7 +93,7 @@ const RequestStep4 = ({navigation, ...props}) => {
     }
   };
 
-  const subtitle =  `You are contributing $${props.personalContributionFormStore.form?.fields?.amount?.value} to this common`;
+  const subtitle =  `You are contributing $${props.personalContributionFormStore.form.fields.amount?.value} to this common`;
 
   return (
     <>
