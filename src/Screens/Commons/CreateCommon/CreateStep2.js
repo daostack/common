@@ -42,6 +42,10 @@ const CreateStep2 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
+  useEffect(() => {
+    onTabChange(0); // pre-select 1 week at first render
+  }, []);
+
   /* useEffect(() => {
     const name = CreateCommonForm.DEADLINE;
     props.fundingFormStore.registerFormField(name, 'required');
@@ -78,7 +82,6 @@ const CreateStep2 = props => {
   }, [segmentedIndex, pickDate, props.fundingFormStore]); */
 
   const onDatePickerChange = (event, date) => {
-    console.log(date);
     props.fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, moment(date || {}).unix());
     if (Platform.OS === 'android') {
       setShow(false);
