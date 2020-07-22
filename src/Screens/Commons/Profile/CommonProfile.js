@@ -173,7 +173,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   const Proposals = () => {
     return (
-      <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
+      <View style={{...styles.paleBackground, ...{padding: sizeL, height: 3000}}}>
         <Text style={text.h1BlackTitle}>Proposals</Text>
 
         <ProposalsList
@@ -605,6 +605,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               </FastImage>
             )}
             scrollEvent={e => {
+              console.log("Scroll e -> ", e);
               setDark(
                 e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT - 40,
               );

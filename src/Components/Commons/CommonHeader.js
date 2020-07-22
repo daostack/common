@@ -18,7 +18,7 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, head
   };
 
   return (
-    <SafeAreaView onLayout={ event => {
+    <View onLayout={ event => {
       headerHeightLayouted(event.nativeEvent.layout.height);
     }}>
       <View
@@ -60,7 +60,7 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, head
 
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

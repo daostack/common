@@ -313,7 +313,13 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           component={CommonProfile}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="CommonAgenda" component={CommonAgenda} />
+        <Stack.Screen 
+          name="CommonAgenda" 
+          component={CommonAgenda} 
+          options={({navigation, route}) => ({
+            headerBackTitleVisible: false,
+          })}
+        />
         <Stack.Screen name="Profile" component={UserProfile} />
         <Stack.Screen
           name="CommonExplanation"
