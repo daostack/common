@@ -6,7 +6,8 @@ const {width} = Dimensions.get('window');
 import * as Progress from 'react-native-progress';
 
 const RequestStepHeader = props => {
-  const currentIndex = props.currentIndex;
+  const deltaIndex = props.isFirstStepSkipped ? 1 : 0;
+  const currentIndex = props.currentIndex - deltaIndex;
   const progressList = props.isFirstStepSkipped ? [0, 0.5, 1.0] : [0, 0.35, 0.7, 1.0];
 
   const ovalStyle = index => {
@@ -67,8 +68,8 @@ const RequestStepHeader = props => {
       {/* <TouchableOpacity onPress={() => setCurrentIndex(1)}> */}
       <View style={ovalStyle(1)}>
         <Icon
-          name={currentIndex < 2 ? 'account-selected' : 'check'}
-          size={currentIndex === 1 ? 24 : 16}
+          name={currentIndex < (2 - deltaIndex) ? 'account-selected' : 'check'}
+          size={currentIndex === (1 - deltaIndex) ? 24 : 16}
           color={iconColor(1)}
         />
       </View>
@@ -76,8 +77,8 @@ const RequestStepHeader = props => {
       {/* <TouchableOpacity onPress={() => setCurrentIndex(2)}> */}
       <View style={ovalStyle(2)}>
         <Icon
-          name={currentIndex < 3 ? 'contribution-24' : 'check'}
-          size={currentIndex === 2 ? 24 : 16}
+          name={currentIndex < (3 - deltaIndex) ? 'contribution-24' : 'check'}
+          size={currentIndex === (2 - deltaIndex) ? 24 : 16}
           color={iconColor(2)}
         />
       </View>
@@ -85,8 +86,8 @@ const RequestStepHeader = props => {
       <TouchableOpacity onPress={() => setCurrentIndex(3)}> */}
       <View style={ovalStyle(3)}>
         <Icon
-          name={currentIndex < 4 ? 'wallet-24' : 'check'}
-          size={currentIndex === 3 ? 24 : 16}
+          name={currentIndex < (4 - deltaIndex) ? 'wallet-24' : 'check'}
+          size={currentIndex === (3 - deltaIndex) ? 24 : 16}
           color={iconColor(3)}
         />
       </View>
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: colors.lighterBlue,
+    backgroundColor: '#ffffff',
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: colors.mainBlue,
