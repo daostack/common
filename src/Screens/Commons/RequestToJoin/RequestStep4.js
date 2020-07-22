@@ -19,7 +19,6 @@ import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '../../../Services/ArcService';
 import Toast from '../../../Util/Toast';
-import { BN } from 'bn.js';
 import { preauthorizePayment } from '../../../Services/MangopayService';
 
 const RequestStep4 = ({navigation, ...props}) => {
@@ -50,7 +49,7 @@ const RequestStep4 = ({navigation, ...props}) => {
           title: `request to join ${props.route.params.currDaoId} by ${props.userStore.userInfo.ethereumAddress}`,
           description: formData.about_me,
           links: formData.links,
-          funding: new BN(formData.amount * 100),
+          funding: formData.amount * 100,
           preAuthId: false,
         };
 
