@@ -59,7 +59,7 @@ const AmountField = ({
         autoCorrect={false}
         keyboardType="numeric"
         onTogglePress={onTogglePress}
-        toggleName="Custom"
+        toggleName="Other"
         validation={{
           name: RequestToJoinForm.FIELD_AMOUNT,
           formStore: formStore,
