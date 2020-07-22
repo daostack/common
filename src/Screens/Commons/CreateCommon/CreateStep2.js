@@ -128,7 +128,8 @@ const CreateStep2 = props => {
     testID="dateTimePicker"
     timeZoneOffsetInMinutes={0}
     value={pickDate ? pickDate : new Date()}
-    minimumDate={moment().add('7', 'days').toDate()}
+    minimumDate={new Date()}
+    maximumDate={moment().add('100', 'days').toDate()}
     is24Hour={true}
     display="default"
     onChange={onDatePickerChange}
@@ -227,7 +228,7 @@ const CreateStep2 = props => {
                     justifyContent: 'flex-end',
                     position: 'relative',
                   }}>
-                  <Text
+                  {/* <Text
                     style={{
                       color: colors.slate,
                       fontSize: 14,
@@ -239,7 +240,7 @@ const CreateStep2 = props => {
                       marginRight: 'auto',
                     }}>
                     {'Min. 1 week'}
-                  </Text>
+                  </Text> */}
                   <TouchableOpacity onPress={() => setShow(false)}>
                     <Text
                       style={{
