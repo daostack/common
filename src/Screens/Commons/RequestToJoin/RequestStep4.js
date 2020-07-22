@@ -84,9 +84,8 @@ const RequestStep4 = ({navigation, ...props}) => {
         });
         navigation.dispatch(navigate);
       } catch (e) {
-        console.log(e);
         navigation.pop();
-        e.message ? Toast.error(e.message) : Toast.error(e.data.error);
+        e?.response?.data?.error ? Toast.error(e.response.data.error) : Toast.error(e.message);
       }
     }
   };
