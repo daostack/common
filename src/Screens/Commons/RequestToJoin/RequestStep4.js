@@ -28,6 +28,7 @@ const RequestStep4 = ({navigation, ...props}) => {
   const [headerHeight, setHeaderHeight] = useState(0);
   const isFirstStepSkipped = props.route.params.skipFirstStep;
 
+  const { name } = props.daoStore.dao;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -104,7 +105,7 @@ const RequestStep4 = ({navigation, ...props}) => {
         }}>
         <CreateStepNavigation
           navigation={navigation}
-          title="TLV Common"
+          title={name}
         />
         <CreateStepDotHeader
           title="Payment"
@@ -223,4 +224,5 @@ export default inject(
   'personalContributionFormStore',
   'paymentFormStore',
   'userStore',
+  'daoStore'
 )(observer(RequestStep4));

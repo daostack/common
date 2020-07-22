@@ -27,6 +27,8 @@ const RequestStep1 = props => {
   const [pass, setPass] = useState(false);
   const commonRules = props.daoStore.dao.metadata?.rules;
 
+  const { name } = props.daoStore.dao;
+
   useEffect(() => {
     const height = scrollY.interpolate({
       inputRange: [50, 50],
@@ -62,7 +64,7 @@ const RequestStep1 = props => {
         }}>
         <CreateStepNavigation
           navigation={props.navigation}
-          title="TLV Common"
+          title={name}
         />
         <CreateStepDotHeader
           title="Approve Common Rules"

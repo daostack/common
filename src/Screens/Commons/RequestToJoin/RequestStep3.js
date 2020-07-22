@@ -30,6 +30,7 @@ const RequestStep3 = props => {
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
   const isFirstStepSkipped = props.route.params.skipFirstStep;
   // var ruleBody = [];
+  const { name } = props.daoStore.dao;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -88,7 +89,7 @@ const RequestStep3 = props => {
         }}>
         <CreateStepNavigation
           navigation={props.navigation}
-          title="TLV Common"
+          title={name}
         />
         <CreateStepDotHeader
           title="Personal contribution"
