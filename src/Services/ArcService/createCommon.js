@@ -8,6 +8,7 @@ const {
   ARC_VERSION,
   COMMONTOKENADDRESS,
   MEMBER_REPUTATION,
+  IPFS_DATA_VERSION,
 } = require('../../Config');
 
 // USAGE:
@@ -39,7 +40,7 @@ export const createCommon = async (
       repDist: [MEMBER_REPUTATION],
       memberReputation: MEMBER_REPUTATION,
       fundingToken: COMMONTOKENADDRESS,
-      VERSION: '000001', // just some alphanumberic marker  that is useful for understanding what our data is shaped like
+      VERSION: IPFS_DATA_VERSION, // just some alphanumberic marker  that is useful for understanding what our data is shaped like
     };
     const opts = {...defaultOptions, ...givenOpts};
 

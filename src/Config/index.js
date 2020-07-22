@@ -14,6 +14,7 @@ let graphWS;
 let web3Provider;
 let commonTokenAddress;
 let ipfsUrl;
+let ipfsDataVersion;
 
 if (Config.ENV === 'production') {
   arcVersion = '0.1.2-rc.0';
@@ -22,6 +23,7 @@ if (Config.ENV === 'production') {
   graphUrl = 'https://api.thegraph.com/subgraphs-daostack/name/daostack';
   graphWS = 'wss://api.thegraph.com/subgraphs-daostack/name/daostack';
   ipfsUrl = 'https://api.thegraph.com/ipfs-daostack/api/v0';
+  ipfsDataVersion = '000002';
   networkId = 100;
   web3Provider = 'https://dai.poa.network';
   commonTokenAddress = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
@@ -33,6 +35,7 @@ if (Config.ENV === 'production') {
   graphUrl = 'https://api.thegraph.com/subgraphs-daostack/name/daostack';
   graphWS = 'wss://api.thegraph.com/subgraphs-daostack/name/daostack';
   ipfsUrl = 'https://api.thegraph.com/ipfs-daostack/api/v0';
+  ipfsDataVersion = '000002';
   networkId = 42;
   web3Provider = 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';
   commonTokenAddress = '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01';
@@ -43,6 +46,7 @@ if (Config.ENV === 'production') {
 
 export const ARC_VERSION = arcVersion;
 export const GRAPH_VERSION = graphVersion;
+export const IPFS_DATA_VERSION = ipfsDataVersion;
 export const mangoPayUrl = `${cloudFunctionURL}/mangopay`;
 export const graphqlUrl = `${cloudFunctionURL}/graphql`;
 export const relayerUrl = `${cloudFunctionURL}/relayer`;
