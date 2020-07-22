@@ -6,6 +6,7 @@ import GSignInButton from '../../Components/Auth/GSignInButton';
 import {layout} from '../../Theme';
 import {observer, inject} from 'mobx-react';
 import AppleSignInButton from '../../Components/Auth/AppleSignInButton';
+import AuthService from '../../Services/AuthService';
 
 const CreateAccount = ({onSignedIn}) => {
   const onSignIn = async userInfo => {
@@ -17,7 +18,8 @@ const CreateAccount = ({onSignedIn}) => {
   console.log("Platform.Version -> ", Platform.Version);
 
   const isIos = Platform.OS === 'ios';
-  const isLoginWithAppleEnabled = isIos ? parseInt(Platform.Version, 10) >= 13 : false;
+  const isLoginWithAppleEnabled = isIos ? AuthService.getInstance().isAppleLoginSupported() : false;
+  
 
   return (
     <View style={styles.componentContainer}>

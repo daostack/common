@@ -42,6 +42,10 @@ export default class AuthService {
     return this.serviceInstance;
   };
 
+  isAppleLoginSupported() {
+    return appleAuth.isSupported
+  }
+
   // Apple Auth flow
   async signInApple() {
     const appleAuthRequestResponse = await appleAuth.performRequest({
@@ -126,9 +130,12 @@ export default class AuthService {
         uid,
       );
 
-      if (mnemonicFromStore) {
-        return mnemonicFromStore;
-      }
+      console.log("MNEMONIC IN STORE -> ", mnemonicFromStore);
+      console.log("providerId -> ", providerId)
+
+      //if (mnemonicFromStore) {
+      //  return mnemonicFromStore;
+      //}
 
       switch (providerId) {
         case AUTH_PROVIDER_ID.APPLE:
@@ -190,8 +197,9 @@ export default class AuthService {
   // APPLE
   async _loadMnemonicFromiCloud(uid) {
     // 2. Read mnemonic From the iClould app data
+    console.log("_loadMnemonicFromiCloud ->", uid);
     let appData = await IClouldService.getInstance().getAppData();
-
+    console.log("appData ->", appData);
     if (appData && appData.files && appData.files.length > 0) {
       const appDataLocalPath = appData.files[0].path;
 
@@ -210,6 +218,8 @@ export default class AuthService {
       await NativeModules.WalletModule.storeMnemonic(uid, jsonContent.mnemonic);
       return jsonContent.mnemonic;
     }
+
+    console.log("generate");
 
     // 3. Generate mnemonic and store in Google Drive app data
     return this._generateAndStoreMnemonicICloud(uid);
