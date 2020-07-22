@@ -12,7 +12,6 @@ import {
   StyleSheet,
   Platform,
   View,
-  Alert,
   Linking,
   DeviceEventEmitter,
 } from 'react-native';
@@ -109,7 +108,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('Foreground Message Arrived', JSON.stringify(remoteMessage));
+      console.log('Foreground Message Arrived', JSON.stringify(remoteMessage));
     });
     return unsubscribe;
   }, []);
@@ -408,7 +407,11 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             headerShown: false,
           })}
         />
-        <Stack.Screen name="New Topic" component={DiscussionPost} />
+        <Stack.Screen name="New Post"
+          options={({navigation, route}) => ({
+            headerBackTitleVisible: false,
+          })}
+          component={DiscussionPost} />
         <Stack.Screen
           options={{
             title: 'Edit my profile',

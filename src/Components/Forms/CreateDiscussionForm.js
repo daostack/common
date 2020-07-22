@@ -1,12 +1,13 @@
 import React from 'react';
-import {View, TouchableOpacity, Text, StyleSheet, Keyboard} from 'react-native';
+import {View, ScrollView, Text, StyleSheet, Keyboard} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import {observer, inject} from 'mobx-react';
-import {colors} from '../../Theme';
+import {colors, font, sizeM} from '../../Theme';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast';
 import MultiFileField from '../FormFields/MultiFileField';
 import MultiImageField from '../FormFields/MultiImageField';
+import RequestStepActionButton from '../../Screens/Commons/RequestStepActionButton';
 
 class CreateDiscussionForm extends React.Component {
   static TITLE = 'title';
@@ -29,14 +30,16 @@ class CreateDiscussionForm extends React.Component {
         const changedFields = createDiscussionStore.getChangedFormFieldsJson();
         console.log('createDiscussionStore', changedFields);
 
+        const images = changedFields[CreateDiscussionForm.IMAGES] || [];
+        const files = changedFields[CreateDiscussionForm.FILES] || [];
         firestore()
           .collection('discussion')
           .doc()
           .set({
             title: changedFields[CreateDiscussionForm.TITLE],
             message: changedFields[CreateDiscussionForm.MESSAGE],
-            images: changedFields[CreateDiscussionForm.IMAGES].filter(image => image.value !== ''),
-            files: changedFields[CreateDiscussionForm.FILES].filter(file => file.value !== ''),
+            images: images.filter(image => image.value !== ''),
+            files: files.filter(file => file.value !== ''),
             createTime: new Date(),
             ownerId: userStore.userInfo.uid,
             commonId: this.props.commonId,
@@ -77,126 +80,100 @@ class CreateDiscussionForm extends React.Component {
     } = this.props;
 
     return (
-      <View
-        {...otherProps}
-        style={{
-          alignSelf: 'stretch',
-          flexGrow: 1,
-          marginTop: 15,
-        }}>
-        <TextInputField
-          value={''}
-          viewStyle={{alignSelf: 'stretch'}}
-          label="Title"
-          infoLabel="Required"
-          autoCapitalize="sentences"
-          autoCorrect={false}
-          validation={{
-            name: CreateDiscussionForm.TITLE,
-            formStore: this.props.createDiscussionStore,
-            validateRule: 'required',
-          }}
-        />
+      <>
 
-        <TextInputField
-          label="Message"
-          placeholderText="What do you want to say?"
-          infoLabel="Required"
-          multiline={true}
-          numberOfLines={10}
-          value={''}
-          validation={{
-            name: CreateDiscussionForm.MESSAGE,
-            formStore: this.props.createDiscussionStore,
-            validateRule: 'required',
-          }}
+        <ScrollView style={{flex: 1}} contentContainerStyle={{padding: 24}}>
+          <View
+            {...otherProps}
+            style={styles.container}>
+            <TextInputField
+              value={''}
+              viewStyle={{alignSelf: 'stretch'}}
+              label="Title"
+              infoLabel="Required"
+              autoCapitalize="sentences"
+              autoCorrect={false}
+              validation={{
+                name: CreateDiscussionForm.TITLE,
+                formStore: this.props.createDiscussionStore,
+                validateRule: 'required',
+              }}
+            />
+
+            <TextInputField
+              label="Message"
+              placeholderText="What do you want to say?"
+              infoLabel="Required"
+              multiline={true}
+              numberOfLines={5}
+              value={''}
+              validation={{
+                name: CreateDiscussionForm.MESSAGE,
+                formStore: this.props.createDiscussionStore,
+                validateRule: 'required',
+              }}
+            />
+            <View style={styles.filesContainer}>
+              <Text style={styles.title}>Files</Text>
+              <Text style={styles.subtitle}>
+                Anything you want to attach to this proposal?
+              </Text>
+              <MultiFileField
+                navigation={this.props.navigation}
+                allowsEditing={true}
+                title={'Add file'}
+                validation={{
+                  name: CreateDiscussionForm.FILES,
+                  formStore: this.props.createDiscussionStore,
+                  validateRule: 'string',
+                }}
+              />
+            </View>
+            <View style={styles.filesContainer}>
+              <Text style={styles.title}>Images</Text>
+              <Text style={styles.subtitle}>An image is worth a 1,000 words</Text>
+              <MultiImageField
+                allowsEditing={false}
+                title={'Add Image'}
+                validation={{
+                  name: CreateDiscussionForm.IMAGES,
+                  formStore: this.props.createDiscussionStore,
+                  validateRule: 'string',
+                }}
+              />
+            </View>
+          </View>
+
+        </ScrollView>
+        <RequestStepActionButton
+          title="Publish post"
+          pass={this.props.createDiscussionStore.form.meta.isValid}
+          onPress={this.formSave}
         />
-        <View style={{marginVertical: 15}}>
-          <Text style={styles.title}>Files</Text>
-          <Text style={styles.subtitle}>
-            Anything you want to attach to this proposal?
-          </Text>
-          {/* <TouchableOpacity style={{marginRight: 12}}>
-            <Text style={styles.addButton}>Add file</Text>
-          </TouchableOpacity> */}
-          <MultiFileField
-            navigation={this.props.navigation}
-            allowsEditing={true}
-            title={'Add file'}
-            validation={{
-              name: CreateDiscussionForm.FILES,
-              formStore: this.props.createDiscussionStore,
-              validateRule: 'string',
-            }}
-          />
-        </View>
-        <View style={{marginVertical: 15}}>
-          <Text style={styles.title}>Images</Text>
-          {/* <Text style={styles.subtitle}>An image is worth a 1,000 words</Text> */}
-          {/* <TouchableOpacity style={{marginRight: 12}}>
-            <Text style={styles.addButton}>Add Image</Text>
-          </TouchableOpacity> */}
-          <MultiImageField
-            allowsEditing={false}
-            title={'Add Image'}
-            validation={{
-              name: CreateDiscussionForm.IMAGES,
-              formStore: this.props.createDiscussionStore,
-              validateRule: 'string',
-            }}
-          />
-        </View>
-        <View style={styles.buttonConatiner}>
-          <TouchableOpacity style={styles.button} onPress={this.formSave}>
-            <Text style={styles.buttonText}>Post</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      </>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  addButton: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.mainBlue,
-    marginVertical: 8,
-  },
-  buttonConatiner: {
-    flex: 1,
-    // position: 'absolute',
-    // bottom: 0,
-    marginVertical: 60,
-    // backgroundColor: colors.grey4,
+  container: {
+    alignSelf: 'stretch',
+    flexGrow: 1,
+    marginTop: 15,
   },
   title: {
-    fontFamily: 'Roboto',
-    fontSize: 16,
-    fontWeight: 'bold',
-    fontStyle: 'normal',
+    ...font.primary.bold,
+    ...font.fontSize(2),
+    color: colors.againstBlackColor,
   },
   subtitle: {
-    fontFamily: 'Roboto',
-    fontSize: 12,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
+    ...font.primary.regular,
+    ...font.fontSize(2),
     marginVertical: 8,
-    color: colors.grey3,
+    color: colors.againstBlackColor,
   },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 30,
-    height: 60,
-    marginHorizontal: 0,
-    backgroundColor: '#3cc7e1',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-    paddingVertical: 15,
+  filesContainer: {
+    marginVertical: sizeM,
   },
 });
 

@@ -27,7 +27,6 @@ const CommonExplanation = ({navigation}) => {
             style={styles.wrapper}
             showsButtons={false}
             activeDotColor={colors.mainBlue}
-            autoplay={true}
             paginationStyle={{bottom: 0}}>
             <View style={styles.slide1}>
               <Image

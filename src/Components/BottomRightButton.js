@@ -20,9 +20,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 12,
     right: 15,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     backgroundColor: colors.mainBlue,
     shadowColor: 'rgba(0, 0, 0, 0.22)',
     shadowOffset: {
@@ -36,8 +36,8 @@ const styles = StyleSheet.create({
   },
   plusImage: {
     resizeMode: 'contain',
-    width: 39,
-    height: 39,
+    width: 52,
+    height: 52,
   },
 });
 

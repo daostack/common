@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
-import {text, layout, colors, sizeS, sizeL} from '../../../Theme';
+import {text, layout, colors, sizeS, sizeL, font} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
 import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
@@ -65,8 +65,8 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
-  const commonId = route.params.currCommon?.id || route.params.commonId;
-  const daoMembers = route.params.currCommon?.members;
+  const commonId = currCommon?.id;
+  const daoMembers = currCommon?.members;
   const showReqToJoin =
     !userStore.userInfo ||
     (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
@@ -75,7 +75,6 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(STICKY_HEADER_HEIGHT);
-
 
   const upperRequestToJoinBtnRef = useRef(null);
 
@@ -98,7 +97,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     if (route.params.commonId) {
       const unsubscribe = firestore()
         .collection('daos')
-        .doc(commonId)
+        .doc(route.params.commonId)
         .onSnapshot(snapshot => {
           if (snapshot.exists) {
             setCurrCommon(snapshot.data());
@@ -109,17 +108,20 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
         });
       return unsubscribe;
     }
-  }, [commonId]);
+  }, [route.params.commonId]);
 
   useEffect(() => {
     setShowRequestSentModal(route.params.showRequestSentModal);
-    //setCurrCommon(routeCommon);
     if (userStore.userInfo && userStore.isDaoMember(daoMembers)) {
       setMemberState(true);
     } else {
       setMemberState(false);
     }
-  }, [routeCommon, route.params.showRequestSentModal, userStore.userInfo]);
+  }, [
+    route.params.showRequestSentModal,
+    userStore.userInfo,
+    daoMembers,
+  ]);
 
   useEffect(() => {
     if (userStore.userInfo) {
@@ -550,7 +552,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
           Request to join
         </Text>
         <Text style={{fontSize: 16, color: 'white'}}>
-          ${currCommon.minFeeToJoin / 100} min. contribution
+          ${currCommon.metadata.minFeeToJoin / 100} min. contribution
         </Text>
       </TouchableOpacity>);
   };
@@ -594,7 +596,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             renderBackground={() => (
               <FastImage
                 source={{
-                  uri: currCommon.coverPhoto,
+                  uri: currCommon.coverPhoto || currCommon?.metadata?.image,
                 }}
                 style={{
                   width: window.width,
@@ -717,7 +719,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               index === 0 ? (
                 <BottomRightButton
                   onPress={() =>
-                    navigation.navigate('New Topic', {
+                    navigation.navigate('New Post', {
                       commonId: currCommon.id,
                     })
                   }
@@ -898,17 +900,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     shadowOpacity: 1,
   },
-  addButton: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    margin: 20,
-    ...layout.content,
-    backgroundColor: colors.mainBlue,
-    height: 48,
-    width: 48,
-    borderRadius: 24,
-  },
   stickySection: {
     height: STICKY_HEADER_HEIGHT,
     width: '100%',
@@ -921,8 +912,7 @@ const styles = StyleSheet.create({
   stickySectionText: {
     color: 'black',
     // color: 'white',
-    fontFamily: 'NotoSerif-Bold',
-    fontWeight: '500',
+    ...font.heading.bold,
     fontSize: 20,
     marginTop: 25,
     // margin: 5,

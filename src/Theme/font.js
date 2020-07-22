@@ -11,7 +11,7 @@ const fonts = [
   // 17?
 ];
 
-const letterSpacing = [0.4, 0.3, 0.2, 0.1, -0.1, -0.2, -0.2, -0.2];
+const letterSpacing = [0.4, 0.3, 0.2, 0.1, 0.4, 0.4, 0.4, 0.4,];
 
 export const fontSize = fontIndex => ({
   fontSize: fonts[fontIndex],
@@ -27,12 +27,7 @@ export const lineHeight = lineHeightIndex => ({
 const font = {
   heading: {
     bold: {
-      fontFamily: 'NotoSerif-Bold',
-      fontWeight: 'normal',
-    },
-    reguar: {
-      fontFamily: 'NotoSerif-Bold',
-      fontWeight: '200',
+      fontFamily: 'NotoSerif-SemiCondensedSemiBold',
     },
   },
   primary: {

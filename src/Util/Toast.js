@@ -56,7 +56,7 @@ export default class Toast {
       <View
         style={{
           ...styles.container,
-          ...{backgroundColor: colors.lightishGreen},
+          ...{backgroundColor: colors.mainBlue},
         }}>
         <Icon name="check" size={20} color={colors.white} />
         <Text style={styles.text}>{text}</Text>

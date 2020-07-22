@@ -3,7 +3,7 @@ import React from 'react';
 import {numberFormatter} from '../../Util';
 import moment from 'moment';
 /* import * as Progress from 'react-native-progress'; */
-import {layout, colors, text, font} from '../../Theme';
+import {layout, text, font} from '../../Theme';
 
 const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
   const deadlineMoment = moment.unix(commonProgressInfo.time);
@@ -53,24 +53,18 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
     <View style={styles.commonProgressContainer}>
       <View style={styles.commonNumbers}>
         {commonNumberBox(
-          isFundingStage || isCommonCard ? (
-            <>
-              <Text style={styles.headerTitle}>
+          <Text style={styles.headerTitle}>
                 ${numberFormatter(commonProgressInfo.raised / 100)}
-              </Text>
-            </>
-          ) : (
-            <>
-              <Text style={styles.headerTitle}>
-                ${numberFormatter(commonProgressInfo.raised / 100) }
-              </Text>
-            </>
-          ),
-          isFundingStage || isCommonCard ? 'Raised' : 'Available funds',
+          </Text>,
+          isCommonCard ? 'Raised' : 'Available funds',
         )}
         {commonNumberBox(
-          <Text style={styles.headerTitle}>{commonProgressInfo.members}</Text>,
-          'Members',
+          <Text style={styles.headerTitle}>
+            {isCommonCard
+              ? commonProgressInfo.members
+              : '$' + numberFormatter(commonProgressInfo.raised / 100)}
+          </Text>,
+          isCommonCard ? 'Members' : 'Raised',
         )}
         {/* {commonNumberBox(
           isFundingStage ? (

@@ -15,7 +15,6 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
   // .  payment: { ... }
   // };
 
-
   try {
     const dao = arc.dao(daoId);
 
@@ -48,7 +47,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
 
     const args = {
       descriptionHash: ipfsHash,
-      fee,
+      fee: 0,
       dao: dao.id,
       plugin: joinAndQuitPlugin.coreState.address,
     };
@@ -58,6 +57,8 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       const joinAndQuitContract  = await arc.getContract(joinAndQuitPlugin.coreState.address);
       const manager = await WalletManager.getInstance();
       const proposer =  manager.safeAddress;
+
+      console.log('proposer ->', proposer, manager.address);
 
       // we check the conditions from the contract
 
@@ -75,15 +76,13 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       const reputationBalanceOfProposer = await reputationContract.balanceOf(proposer);
       if (Number(reputationBalanceOfProposer) !== 0) {
         throw Error(`Request to join failed because you (${proposer}) are already a member of this DAO (${dao.id}) - rep: ${reputationBalanceOfProposer}`);
-
       }
 
-      const minFeeToJoin = Number(joinAndQuitPlugin.coreState.pluginParams.minFeeToJoin);
-
-      if (fee < minFeeToJoin) {
-        const msg = `fee (${fee}) should be >= minFeeToJoin (${minFeeToJoin})`;
-        throw Error(msg);
-      }
+      // const minFeeToJoin = Number(joinAndQuitPlugin.coreState.pluginParams.minFeeToJoin);
+      // if (fee < minFeeToJoin) {
+      //   const msg = `fee (${fee}) should be >= minFeeToJoin (${minFeeToJoin})`;
+      //   throw Error(msg);
+      // }
       // require(_feeAmount >= minFeeToJoin, "_feeAmount should be >= then the minFeeToJoin")
     };
     // TODO: we are runnning the error handler here to check conditions before sending the transaction ...
@@ -94,8 +93,10 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     console.log('preconditions are ok - creating the transaction');
     const transaction = await joinAndQuitPlugin.createProposalTransaction(args);
     // send the request to the cloudfunction relayer
+
+    console.log('fee ->', fee);
     const manager = await WalletManager.getInstance();
-    const proposalId = await manager.requestToJoin(transaction.contract, transaction.method, transaction.args, fee, data.preAuthId);
+    const proposalId = await manager.requestToJoin(transaction.contract, transaction.method, transaction.args, data.preAuthId);
     return proposalId;
   } catch (e) {
     console.log(e.data);

@@ -5,7 +5,7 @@ import {observer} from 'mobx-react';
 import DocumentPicker from 'react-native-document-picker';
 import Toast from '../../Util/Toast';
 import Icon from '../../Assets/iconfont/Icon';
-import {text, layout, colors, sizeM} from '../../Theme';
+import {text, layout, colors, font} from '../../Theme';
 import FirebaseService from '../../Services/FirebaseService';
 
 class FileField extends React.Component {
@@ -98,7 +98,7 @@ class FileField extends React.Component {
     if (currValue) {
       return (
         <View style={styles.adRow}>
-          <Icon name="common" color={colors.mainBlue} size={22} />
+          <Icon name="file" color={colors.mainBlue} size={20} />
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('Browser', {
@@ -111,8 +111,8 @@ class FileField extends React.Component {
       );
     } else {
       return (
-        <TouchableOpacity>
-          <Text style={styles.addFileBtn} onPress={this.pickFile}>
+        <TouchableOpacity onPress={this.pickFile}>
+          <Text style={styles.addFileBtn} >
             Add File
           </Text>
         </TouchableOpacity>
@@ -121,27 +121,22 @@ class FileField extends React.Component {
   };
 
   render() {
-    const {isAvatar, value, validation} = this.props;
+    const { value, validation} = this.props;
 
     const currValue = validation
       ? validation.formStore.form.fields[validation.name].value
       : value;
 
     return (
-      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.container}>
         <View
-          style={
-            isAvatar
-              ? styles.formFieldContainer
-              : styles.formFieldContainerGenral
-          }>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          style={styles.formFieldContainerGenral}>
+          <View style={styles.fileContainer}>
             {this.renderFile()}
-            {isAvatar || currValue ? (
+            {currValue ? (
               <TouchableOpacity
-                style={styles.formImageFielAddIcon}
                 onPress={() => this.onFieldDeleted()}>
-                <Icon name="delete" size={16} color={'rgb(0, 26, 54, 0.5)'} />
+                <Icon name="delete" size={16} />
               </TouchableOpacity>
             ) : null}
           </View>
@@ -153,37 +148,23 @@ class FileField extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fileContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   adsText: {
     ...text.h3Black,
     ...layout.marginLeftXS,
-    fontWeight: '500',
+    textDecorationLine: 'underline',
   },
   adRow: {
     ...layout.flexRow,
     alignSelf: 'stretch',
-    paddingVertical: sizeM,
-  },
-  btn: {
-    ...layout.marginTopM,
-    ...layout.btnOutline,
-    flexDirection: 'row',
-    marginTop: 40,
-    borderRadius: 5,
-    backgroundColor: colors.white,
-    flexGrow: 0,
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-  },
-  textfield: {
-    //minHeight: 48,
-    alignSelf: 'stretch',
-    borderRadius: 3,
-    backgroundColor: colors.white,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: colors.grey4,
-    paddingHorizontal: 12,
-    ...layout.marginTopS,
   },
   formFieldContainer: {
     width: 100,
@@ -192,55 +173,9 @@ const styles = StyleSheet.create({
   formFieldContainerGenral: {
     width: '100%',
   },
-
-  formImageFieldStyle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 2,
-    borderColor: colors.white,
-    shadowColor: 'rgba(0, 26, 54, 0.1)',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowRadius: 8,
-    shadowOpacity: 1,
-    alignSelf: 'center',
-  },
-  formImageFueldGeneralStyle: {
-    width: '100%',
-    height: 250,
-    borderRadius: 20,
-    backgroundColor: colors.paleGrey,
-    alignSelf: 'stretch',
-  },
-  imageFieldPlaceholderView: {
-    ...layout.content,
-    backgroundColor: colors.paleGrey,
-  },
-
-  formImageFielAddIcon: {
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    padding: 2,
-  },
-
-  imagePlaceholder: {
-    ...layout.content,
-    ...layout.marginTopXL,
-    backgroundColor: '#effafd',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-  },
-
   addFileBtn: {
-    ...text.h3Black,
+    ...font.fontSize(2),
+    ...font.primary.semiBold,
     color: colors.mainBlue,
     textAlign: 'left',
   },

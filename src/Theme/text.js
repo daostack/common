@@ -27,7 +27,7 @@ export default StyleSheet.create({
   h1Black: style.h1Black,
   h1BlackTitle: {
     ...style.h1Black,
-    ...font.heading.reguar,
+    ...font.heading.bold,
     ...font.fontSize(5),
     ...layout.marginTopM,
     ...layout.marginBottomM,
@@ -71,7 +71,7 @@ export default StyleSheet.create({
     color: '#ffffff',
   },
   buttonblue: {
-    ...font.primary.regular,
+    ...font.primary.semiBold,
     ...font.fontSize(3),
     lineHeight: 20,
     letterSpacing: 0,
@@ -217,7 +217,7 @@ export default StyleSheet.create({
   },
   bvBmseYstWetqTFn5Au: {
     ...font.primary.regular,
-    ...font.fontSize(1),
+    fontSize: 11,
     textAlign: 'center',
     lineHeight: 16,
     color: colors.slate,
