@@ -48,7 +48,7 @@ export const sizeM = 15;
 export const sizeL = 20;
 export const sizeXL = 40;
 export const sizeXXL = 55;
-export const sizeLineHeight = 28;
+export const sizeLineHeight = 26;
 
 // Layout Stylesheet
 export default StyleSheet.create({

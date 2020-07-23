@@ -20,11 +20,15 @@ import RequestToJoinForm from '../../../Components/Forms/RequestToJoinForm';
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
+import RequestStepHeaderTitle from './RequestStepHeaderTitle';
+import MembershipRequest from './MembershipRequest';
 
 const RequestStep2 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const isFirstStepSkipped = props.route.params.skipFirstStep;
+
+  const { name } = props.daoStore.dao;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -58,9 +62,7 @@ const RequestStep2 = props => {
         }}>
         <CreateStepNavigation
           navigation={props.navigation}
-          title={
-            isFirstStepSkipped ? 'Request to Join' : 'Approve Common Rules'
-          }
+          title={name}
         />
         <CreateStepDotHeader
           title="Introduce Yourself"
@@ -81,6 +83,8 @@ const RequestStep2 = props => {
           onScroll={Animated.event([
             {nativeEvent: {contentOffset: {y: scrollY}}},
           ])}>
+          <MembershipRequest />
+
           <CreateStepHeader
             isFirstStepSkipped={isFirstStepSkipped}
             currentIndex={1}
@@ -92,24 +96,7 @@ const RequestStep2 = props => {
               // padding: 24,
               backgroundColor: 'white',
             }}>
-            <Text
-              style={{
-                marginTop: 24,
-                fontWeight: '700',
-                fontSize: 18,
-                textAlign: 'center',
-              }}>
-              Introduce Yourself
-            </Text>
-            <Text
-              style={{
-                marginTop: 12,
-                marginBottom: 23,
-                marginHorizontal: 20,
-                textAlign: 'center',
-              }}>
-              Let the other common members know what you bring to the table
-            </Text>
+            <RequestStepHeaderTitle title="Introduce Yourself" subtitle="Let the Common members learn more about you and how you relate to the cause." />
             <View
               style={{
                 backgroundColor: colors.grey4,
@@ -117,10 +104,10 @@ const RequestStep2 = props => {
                 marginBottom: 40,
               }}
             />
-
             <TextInputField
-              label="About me"
+              label="Intro"
               infoLabel="Required"
+              placeholderText="Let the Common members learn more about you and how you relate to the cause."
               multiline={true}
               numberOfLines={6}
               validation={{
@@ -156,4 +143,5 @@ const RequestStep2 = props => {
 export default inject(
   'userStore',
   'introduceYourselfFormStore',
+  'daoStore'
 )(observer(RequestStep2));

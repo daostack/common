@@ -18,6 +18,8 @@ import RequestToJoinForm from '../../../Components/Forms/RequestToJoinForm';
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
+import MembershipRequest from './MembershipRequest';
+import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 
 const RequestStep3 = props => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -28,6 +30,7 @@ const RequestStep3 = props => {
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
   const isFirstStepSkipped = props.route.params.skipFirstStep;
   // var ruleBody = [];
+  const { name } = props.daoStore.dao;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -76,6 +79,8 @@ const RequestStep3 = props => {
     }
   };
 
+  const minContributionMessage = `Select the amount you would like to contribute ($${props.daoStore.dao.metadata.minFeeToJoin / 100} min.)`
+
   return (
     <>
       <SafeAreaView style={{backgroundColor: colors.white}} />
@@ -86,7 +91,7 @@ const RequestStep3 = props => {
         }}>
         <CreateStepNavigation
           navigation={props.navigation}
-          title="Introduce Yourself"
+          title={name}
         />
         <CreateStepDotHeader
           title="Personal contribution"
@@ -107,6 +112,8 @@ const RequestStep3 = props => {
           onScroll={Animated.event([
             {nativeEvent: {contentOffset: {y: scrollY}}},
           ])}>
+          <MembershipRequest />
+
           <CreateStepHeader
             isFirstStepSkipped={isFirstStepSkipped}
             currentIndex={2}
@@ -117,19 +124,8 @@ const RequestStep3 = props => {
               // padding: 24,
               backgroundColor: 'white',
             }}>
-            <Text
-              style={{
-                marginTop: 24,
-                fontWeight: 'bold',
-                fontSize: 18,
-                textAlign: 'center',
-              }}>
-              Personal contribution
-            </Text>
-            <Text
-              style={{marginTop: 12, marginBottom: 23, textAlign: 'center'}}>
-              100% of the Common members have contributed more than you did
-            </Text>
+            <RequestStepHeaderTitle title="Personal contribution" subtitle={minContributionMessage} />
+
             <View
               style={{
                 backgroundColor: colors.grey4,
