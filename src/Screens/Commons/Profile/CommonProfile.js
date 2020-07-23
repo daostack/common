@@ -73,7 +73,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
 
   const [dark, setDark] = useState(false);
-  const [headerHeight, setHeaderHeight] = useState(STICKY_HEADER_HEIGHT);
+  const [headerHeight, setHeaderHeight] = useState(STICKY_HEADER_HEIGHT + 70);
 
   const upperRequestToJoinBtnRef = useRef(null);
 
@@ -82,8 +82,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
 
+  //setHeaderHeight(height + 35);
 
   const headerHeightLayouted = height => {
+    console.log("headerHeightLayouted -> ", height, headerHeight);
     if (height - headerHeight > 3) {
       // To avoid render multiple times
       // console.log('height ->', height);
@@ -217,7 +219,9 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   };
 
   const openAgendaScreen = e => {
-    navigation.navigate('CommonAgenda');
+    navigation.navigate('CommonAgenda', {
+      screenTitle: currCommon.name,
+    });
   };
 
   const renderAgendaForNonMembers = () => {
@@ -295,7 +299,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     navigation.navigate('CommonMembers', {
       members: daoMembers,
       commonId: currCommon.id,
-      commonName: currCommon.name,
+      screenTitle: currCommon.name,
     });
   };
 
@@ -349,15 +353,27 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   };
 
   const viewProposal = () => {
+    navigation.navigate('ProposalScreen', {
+        proposalId: route.params.createdProposalId,
+        screenTitle: currCommon.name,
+        isMember,
+    });
+
+/*
     const navigate = CommonActions.navigate({
       name: 'ProposalScreen',
       params: {
         proposalId: route.params.createdProposalId,
-        commonName: currCommon.name,
+        screenTitle: currCommon.name,
         isMember,
       },
     });
-    navigation.dispatch(navigate);
+
+
+    screenTitle: currCommon.name,
+
+*/
+  
     setShowRequestSentModal(false);
   };
 
@@ -366,6 +382,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   };
 
   const openProposalScreen = event => {
+    /*
     const navigate = CommonActions.navigate({
       name: 'ProposalScreen',
       params: {
@@ -375,6 +392,13 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
       },
     });
     navigation.dispatch(navigate);
+
+    */
+    navigation.navigate('ProposalScreen', {
+      proposalId: pendingProposalsData.usersPendingProposal?.id,
+      commonName: currCommon.name,
+      isMember,
+  });
   };
 
   const renderPendingApproval = () => {
@@ -485,7 +509,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
           <TouchableOpacity
             style={{justifyContent: 'center'}}
             onPress={() => navigation.pop()}>
-            <BlurView
+            <View
               style={{padding: 5, borderRadius: 15}}
               blurType={dark ? 'light' : 'dark'}>
               <Icon
@@ -493,7 +517,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                 size={32}
                 color={dark ? 'black' : 'white'}
               />
-            </BlurView>
+            </View>
           </TouchableOpacity>
         }
         rightButton={
@@ -506,7 +530,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             <TouchableOpacity
               style={{justifyContent: 'center', marginRight: 5}}
               onPress={shareCommon}>
-              <BlurView
+              <View
                 style={{padding: 8, borderRadius: 15}}
                 blurType={dark ? 'light' : 'dark'}>
                 <Icon
@@ -514,12 +538,12 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                   size={25}
                   color={dark ? 'black' : 'white'}
                 />
-              </BlurView>
+              </View>
             </TouchableOpacity>
             <TouchableOpacity
               style={{justifyContent: 'center'}}
               onPress={shareCommon}>
-              <BlurView
+              <View
                 style={{padding: 5, borderRadius: 15}}
                 blurType={dark ? 'light' : 'dark'}>
                 <Icon
@@ -527,7 +551,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                   size={32}
                   color={dark ? 'black' : 'white'}
                 />
-              </BlurView>
+              </View>
             </TouchableOpacity>
           </View>
         }
@@ -561,11 +585,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     <View style={{flex: 1, backgroundColor: colors.white}}>
       {currCommon ? (
         <View style={{flex: 1, position: 'relative'}}>
-          <StatusBar
-            barStyle={dark ? 'dark-content' : 'light-content'}
-            translucent
-            backgroundColor="transparent"
-          />
+          
           <TouchableOpacity
             style={{
               justifyContent: 'center',
@@ -922,6 +942,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     left: 5,
+    elevation: 99,
   },
   fixedSectionText: {
     color: '#999',

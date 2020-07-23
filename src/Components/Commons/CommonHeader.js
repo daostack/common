@@ -10,15 +10,23 @@ import { layout, colors, text, font } from '../../Theme';
 import FastImage from 'react-native-fast-image';
 import { BlurView } from '@react-native-community/blur';
 import Icon from '../../Assets/iconfont/Icon';
+import {CommonActions} from '@react-navigation/native';
 
 const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, headerHeightLayouted }) => {
 
   const openAgendaScreen = e => {
-    navigation.navigate('CommonAgenda');
+    console.log("commonInfo -> ", commonInfo.name);
+    const navigate = CommonActions.navigate({
+      name: 'CommonAgenda',
+      params: {
+        screenTitle: commonInfo.name,
+      },
+    });
+    navigation.dispatch(navigate);
   };
 
   return (
-    <View onLayout={ event => {
+    <SafeAreaView onLayout={ event => {
       headerHeightLayouted(event.nativeEvent.layout.height);
     }}>
       <View
@@ -48,19 +56,19 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, head
             {commonInfo.description}
           </Text>
           {isMember && navigation ? (
-            <BlurView style={{ paddingVertical: 10, paddingHorizontal: 15, borderRadius: 10}}>
+            <View style={{ paddingVertical: 10, paddingHorizontal: 15, borderRadius: 10}}>
               <TouchableOpacity onPress={openAgendaScreen}>
                 <View style={{flexDirection: 'row'}}>
                   <Text style={styles.headerViewAgenda}>View agenda</Text>
                   <Icon name="right-arrow" color="white" />
                 </View>
               </TouchableOpacity>
-            </BlurView>
+            </View>
           ) : null}
 
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
