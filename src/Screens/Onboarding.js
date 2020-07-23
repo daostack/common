@@ -111,7 +111,6 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    //   fontFamily: 'Roboto',
     fontWeight: '600',
     color: Colors.black,
     textAlign: 'center',

@@ -56,20 +56,6 @@ const font = {
       fontWeight: '100',
     },
   },
-  secondary: {
-    semiBold: {
-      fontFamily: 'Roboto',
-      fontWeight: '500',
-    },
-    bold: {
-      fontFamily: 'Roboto',
-      fontWeight: 'bold',
-    },
-    regular: {
-      fontFamily: 'Roboto',
-      fontWeight: 'normal',
-    },
-  },
 };
 
 export default {

@@ -94,7 +94,6 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    //   fontFamily: 'Roboto',
     fontWeight: '600',
     color: Colors.black,
     textAlign: 'center',
@@ -108,32 +107,6 @@ const styles = StyleSheet.create({
   wrapper: {},
   slide1: {
     flex: 1,
-  },
-  text: {
-    paddingHorizontal: 33,
-    paddingVertical: 10,
-    textAlign: 'center',
-    color: colors.black,
-    fontSize: 16,
-    fontWeight: 'bold',
-    fontFamily: 'Roboto',
-  },
-  subtitle: {
-    paddingHorizontal: 40,
-    paddingVertical: 10,
-    textAlign: 'center',
-    color: colors.black,
-    fontSize: 14,
-    fontFamily: 'Roboto',
-  },
-  bottomText: {
-    ...text.runningboldblue,
-    paddingHorizontal: 40,
-    paddingVertical: 10,
-    textAlign: 'center',
-    color: colors.mainBlue,
-    fontSize: 14,
-    fontFamily: 'Roboto',
   },
 });
 
