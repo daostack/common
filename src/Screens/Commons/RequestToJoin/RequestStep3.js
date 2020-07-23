@@ -79,6 +79,8 @@ const RequestStep3 = props => {
     }
   };
 
+  const minContributionMessage = `Select the amount you would like to contribute ($${props.daoStore.dao.metadata.minFeeToJoin / 100} min.)`
+
   return (
     <>
       <SafeAreaView style={{backgroundColor: colors.white}} />
@@ -122,7 +124,7 @@ const RequestStep3 = props => {
               // padding: 24,
               backgroundColor: 'white',
             }}>
-            <RequestStepHeaderTitle title="Personal contribution" subtitle="Select the amount you would like to contribute ($10 min.)" />
+            <RequestStepHeaderTitle title="Personal contribution" subtitle={minContributionMessage} />
 
             <View
               style={{
