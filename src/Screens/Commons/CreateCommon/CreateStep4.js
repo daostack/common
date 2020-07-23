@@ -28,7 +28,6 @@ import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ArcService from '../../../Services/ArcService';
 import Share from 'react-native-share';
-import {BlurView} from '@react-native-community/blur';
 
 const {width} = Dimensions.get('window');
 import {CommonActions} from '@react-navigation/native';
@@ -276,11 +275,15 @@ const CreateStep4 = props => {
                 color: 'white',
               }}
               onPress={() => pickImage(false)}>
-              <BlurView
-                style={{padding: 12, borderRadius: 14}}
-                blurType={ 'dark' }>
+              <View
+                style={{
+                  padding: 12,
+                  borderRadius: 14,
+                  backgroundColor: 'rgba(0, 0, 0, 0.15)',
+                }}
+              >
                 <Icon name={'addpicture'} color="white" size={20} />
-              </BlurView>
+              </View>
             </TouchableOpacity>
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity
@@ -367,7 +370,7 @@ const CreateStep4 = props => {
           <View
             style={{height: 1, width: width, backgroundColor: colors.grey4}}
           />
-          <View style={{ ...styles.sectionTitle, justifyContent: 'center' }}>
+          <View style={{...styles.sectionTitle, justifyContent: 'center'}}>
             {/* <View style={{minWidth: 90, marginRight: 10}}>
               <CreateStep4Indicators
                 title="Goal"
@@ -390,7 +393,6 @@ const CreateStep4 = props => {
                   .format('MMM DD, YYYY')}
               />
             </View>
-
           </View>
           <View style={styles.sectionTitle}>
             <Text style={styles.textTitle}>About</Text>
