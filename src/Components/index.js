@@ -4,3 +4,4 @@ export BottomSheetContainer from './BottomSheetContainer.js';
 export CommonBox from './CommonBox';
 export GSignInButton from './GSignInButton';
 export {default as UserAvatar} from './UserAvatar.js';
+export {default as BlurView} from './BlurView.js';

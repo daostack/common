@@ -42,9 +42,9 @@ import {
   Fade,
 } from 'rn-placeholder';
 import NavigationBar from 'react-native-navbar';
-import {BlurView} from '@react-native-community/blur';
 import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
 import ProposalActivationDate from '../../../Components/Proposals/ProposalActivationDate';
+import { BlurView } from '../../../Components';
 
 const STICKY_HEADER_HEIGHT = 114;
 
@@ -487,9 +487,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
           <TouchableOpacity
             style={{justifyContent: 'center'}}
             onPress={() => navigation.pop()}>
-            <BlurView
-              style={{padding: 5, borderRadius: 15}}
-              blurType={dark ? 'light' : 'dark'}>
+            <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
               <Icon
                 name="left-arrow"
                 size={32}
@@ -510,7 +508,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               onPress={shareCommon}>
               <BlurView
                 style={{padding: 8, borderRadius: 15}}
-                blurType={dark ? 'light' : 'dark'}>
+                isBlurring={dark}>
                 <Icon
                   name="share-32"
                   size={25}
@@ -523,7 +521,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               onPress={shareCommon}>
               <BlurView
                 style={{padding: 5, borderRadius: 15}}
-                blurType={dark ? 'light' : 'dark'}>
+                isBlurring={dark}>
                 <Icon
                   name="menu-horizontal"
                   size={32}
