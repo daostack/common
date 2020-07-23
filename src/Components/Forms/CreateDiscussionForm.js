@@ -164,13 +164,13 @@ const styles = StyleSheet.create({
   title: {
     ...font.primary.bold,
     ...font.fontSize(2),
-    color: colors.againstBlackColor,
+    color: colors.against,
   },
   subtitle: {
     ...font.primary.regular,
     ...font.fontSize(2),
     marginVertical: 8,
-    color: colors.againstBlackColor,
+    color: colors.against,
   },
   filesContainer: {
     marginVertical: sizeM,
