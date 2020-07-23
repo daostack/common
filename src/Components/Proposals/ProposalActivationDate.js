@@ -7,7 +7,7 @@ import moment from 'moment';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const ProposalActivationDate = ({activationDate}) => {
-  const deadlineMoment = moment.unix(activationDate - 3600 * 38);
+  const deadlineMoment = moment.unix(activationDate);
   const deadlineHasPassed = moment().isAfter(deadlineMoment);
 
   return !deadlineHasPassed ? (
