@@ -1,13 +1,15 @@
+import React from 'react';
 import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
+  Image,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
+import {colors, font, sizeXXL, sizeLineHeight, layout} from '../Theme';
 import {CommonActions} from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -31,36 +33,64 @@ const Onboarding = ({navigation}) => {
       console.log(e);
     }
   };
-
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Common!</Text>
+          <Image
+                source={require('../Assets/appLogo.png')}
+                style={styles.logo}
+              />
           </View>
-
           <Swiper
+            loadMinimal={true}
             style={styles.wrapper}
             showsButtons={false}
-            activeDotColor="#3cc7e1"
+            activeDotColor={colors.mainBlue}
             paginationStyle={{bottom: 0}}>
             <View style={styles.slide1}>
-              <View style={styles.image} />
-              <Text style={styles.text}>
-                Easily manage large scale collaborative missions in one place
+              <Image
+                source={require('../Assets/creating-a-common.png')}
+                style={styles.image}
+              />
+              <Text style={styles.text}>Join a Common or launch a new one</Text>
+              <Text style={styles.subtitle}>
+              Collaborate on shared agendas by pooling funds and collectively making decisions.
               </Text>
             </View>
             <View style={styles.slide1}>
-              <View style={styles.image} />
-              <Text style={styles.text}>Decentralisation is awesome</Text>
+              <Image
+                source={require('../Assets/CommonExplanation/funds.png')}
+                style={styles.image}
+              />
+              <Text style={styles.text}>Vote and make funding decisions together</Text>
+              <Text style={styles.subtitle}>
+              All members get an equal vote and
+can take part in the shared effort.
+              </Text>
             </View>
             <View style={styles.slide1}>
-              <View style={styles.image} />
-              <Text style={styles.text}>
-                Blockchain promises true decentralisation and we made it super
-                easy
+              <Image
+                source={require('../Assets/CommonExplanation/decentralised.png')}
+                style={styles.image}
+              />
+              <Text style={styles.text}>Operate in complete transparency</Text>
+              <Text style={styles.subtitle}>
+              All discussions, decisions, and expenses are visible to all Common members.
+              </Text>
+            </View>
+            <View style={styles.slide1}>
+              <Image
+                source={require('../Assets/CommonExplanation/crowd.png')}
+                style={styles.image}
+              />
+              <Text style={styles.text}>Harness the power of communities</Text>
+              <Text style={styles.subtitle}>
+                There's no limit to what we can achieve when working together.
+                By getting everyone involved, more people will actively promote
+                the cause.
               </Text>
             </View>
           </Swiper>
@@ -69,7 +99,7 @@ const Onboarding = ({navigation}) => {
             <TouchableOpacity
               style={styles.button}
               onPress={() => _onboardingClick(navigation)}>
-              <Text style={styles.buttonText}>Explore Commons!</Text>
+              <Text style={styles.buttonText}>Get started</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -89,50 +119,60 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   sectionContainer: {
-    marginTop: 22,
+    ...layout.marginTopL,
     marginBottom: 34,
+    alignItems: 'center',
   },
   buttonConatiner: {
-    marginTop: 22,
-    marginBottom: 22,
+    ...layout.marginBottomL,
+    ...layout.marginTopL,
   },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 25,
     marginHorizontal: 24,
-    backgroundColor: '#3cc7e1',
+    backgroundColor: colors.mainBlue,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-    paddingVertical: 15,
+    color: colors.white,
+    ...font.primary.regular,
+    ...font.fontSize(4),
+    ...layout.paddingVerticalM,
   },
-  sectionTitle: {
-    fontSize: 20,
-    //   fontFamily: 'Roboto',
-    fontWeight: '600',
-    color: Colors.black,
-    textAlign: 'center',
+  logo: {
+    height: 26,
+    resizeMode: 'contain',
   },
+
   image: {
     top: 0,
     width: '100%',
-    height: '80%',
-    backgroundColor: '#efefef',
+    height: '60%',
+    aspectRatio: 1,
   },
   wrapper: {},
   slide1: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
   text: {
-    paddingHorizontal: 33,
-    paddingVertical: 20,
+    paddingHorizontal: 32,
     textAlign: 'center',
-    color: '#001a36',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: colors.black,
+    ...font.heading.bold,
+    ...font.fontSize(6),
+  },
+  subtitle: {
+    paddingHorizontal: 24,
+    lineHeight: sizeLineHeight,
+    paddingTop: 8,
+    paddingBottom: sizeXXL,
+    textAlign: 'center',
+    color: colors.black,
+    ...font.primary.regular,
+    ...font.fontSize(2),
   },
 });
 
