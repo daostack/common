@@ -62,7 +62,7 @@ const Onboarding = ({navigation}) => {
             </View>
             <View style={styles.slide1}>
               <Image
-                source={require('../Assets/CommonExplanation/funds.png')}
+                source={require('../Assets/volunteering.png')}
                 style={styles.image}
               />
               <Text style={styles.text}>Vote and make funding decisions together</Text>
@@ -73,7 +73,7 @@ can take part in the shared effort.
             </View>
             <View style={styles.slide1}>
               <Image
-                source={require('../Assets/CommonExplanation/decentralised.png')}
+                source={require('../Assets/transparent.png')}
                 style={styles.image}
               />
               <Text style={styles.text}>Operate in complete transparency</Text>
