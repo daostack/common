@@ -4,7 +4,7 @@ import ViewTabNoData from '../../Components/ViewTabNoData';
 import ProposalService, {PROPOSAL_STAGE} from '../../Services/ProposalService';
 import ProposalCard from '../../Components/Proposals/ProposalCard';
 import {CommonActions} from '@react-navigation/native';
-import {layout, colors, font,text, sizeXXL} from '../../Theme';
+import {layout, colors, font, text, sizeXXL, sizeM} from '../../Theme';
 
 import SwiperCard from '../../Components/SwiperCard';
 
@@ -141,11 +141,16 @@ const ProposalsList = ({ isMember, commonName, safeAddress, showAll, showMax, on
   ) : (
     <>
       {list && list.length > 0 ? (
-        <FlatList
-          data={list}
-          renderItem={({item}) => renderProposalCard(item)}
-          extraData={listRef}
-        />
+        <>
+          {!props.isHistory && <View style={styles.newMemberMsgContainer}>
+            <Text style={styles.newMemberMsg}>New members need to be approved to join the Common.</Text>
+          </View>}
+          <FlatList
+            data={list}
+            renderItem={({item}) => renderProposalCard(item)}
+            extraData={listRef}
+          />
+        </>
       ) : (
         <ViewTabNoData
           title={isHistory ? 'No Past activity' : 'No proposals yet'}
@@ -187,6 +192,14 @@ const styles = StyleSheet.create({
   text: {
     fontSize: width * 0.5,
     textAlign: 'center',
+  },
+  newMemberMsg: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.slate,
+  },
+  newMemberMsgContainer: {
+    paddingBottom: sizeM,
   },
   commonBox: {
     width: '100%',

@@ -79,7 +79,7 @@ const RequestStep3 = props => {
     }
   };
 
-  const minContributionMessage = `Select the amount you would like to contribute ($${props.daoStore.dao.metadata.minFeeToJoin / 100} min.)`
+  const minContributionMessage = `Select the amount you would like to contribute ($${props.daoStore.dao.metadata.minFeeToJoin / 100} min.)`;
 
   return (
     <>
