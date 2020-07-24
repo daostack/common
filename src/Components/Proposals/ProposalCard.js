@@ -25,7 +25,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
         let funding = null;
         if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
           proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
-          funding = currProposalInfo.joinAndQuit.funding;
+          funding = currProposalInfo.description.funding;
         }
         //FundingRequest proposal
         else {
@@ -67,7 +67,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
         let funding = null;
         if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
           proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
-          funding = currProposalInfo.joinAndQuit.funding;
+          funding = currProposalInfo.description.funding;
         }
         //FundingRequest proposal
         else {
