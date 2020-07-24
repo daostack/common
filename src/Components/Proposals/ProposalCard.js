@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Text, StyleSheet, View, Animated} from 'react-native';
+import {Text, StyleSheet, View, Animated, Dimensions} from 'react-native';
 import {text, layout, colors, font} from '../../Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
@@ -9,6 +9,7 @@ import ProposalApprovalTag from './ProposalApprovalTag';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Toast from '../../Util/Toast';
 import moment from 'moment';
+const {width} = Dimensions.get('window');
 
 const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
@@ -191,9 +192,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
-    //flex: 1,
-    //flexWrap: 'wrap',
-    //width: 350,
+    width: width - 50,
   },
 });
 
