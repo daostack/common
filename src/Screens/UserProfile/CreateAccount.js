@@ -1,12 +1,12 @@
 import React, {useRef} from 'react';
 
-import {StyleSheet, View, Image} from 'react-native';
+import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import GSignInButton from '../../Components/GSignInButton';
-import {layout} from '../../Theme';
+import {layout, text} from '../../Theme';
 import {observer, inject} from 'mobx-react';
 
-const CreateAccount = ({onSignedIn}) => {
+const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
   const bottomSheetContainerRef = useRef();
 
   const openSheet = () => {
@@ -20,20 +20,28 @@ const CreateAccount = ({onSignedIn}) => {
   };
 
   return (
-    <View style={styles.componentContainer}>
-      <View style={styles.sectionContainer}>
-        <Image source={require('../../Assets/accountPlaceHolder.png')} />
-      </View>
+    <View>
+      { !hidePlaceholder && <View style={styles.sectionContainer}>
+        <Image source={require('../../Assets/Account/account-place-holder.png')} />
+      </View> }
 
       <GSignInButton style={styles.googleSignInButton} onSignIn={onSignIn} />
+
+      <View style={styles.termsOfUseContainer}>
+        <Text style={styles.termsOfUseText}>
+          By using Common you agree to the app’s
+        </Text>
+        <TouchableOpacity>
+          <Text style={styles.termsOfUseTextBtn}>
+            terms of use
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  componentContainer: {
-    marginBottom: 100,
-  },
   container: {
     flex: 1,
   },
@@ -79,6 +87,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingVertical: 15,
   },
+  termsOfUseContainer: {
+    ...layout.content,
+    paddingHorizontal: 40,
+  },
+  termsOfUseText: {
+    ...text.smallGreyText,
+    ...text.greyText,
+    textAlign: 'center',
+  },
+  termsOfUseTextBtn: {
+    ...text.smallBlackText,
+  }
 });
 
 export default inject('userStore')(observer(CreateAccount));

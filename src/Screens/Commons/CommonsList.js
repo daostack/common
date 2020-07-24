@@ -80,7 +80,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
         BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
         {
           message:
-            'To create new Common you need to be connected with your Google account',
+            'Connect your account to join this Common',
         },
       );
     }
