@@ -12,23 +12,20 @@ const AmountField = ({
   onCustomSelect,
   onCustomClose,
   onAmountSelected,
-  navigation,
   minFeeToJoin,
 }) => {
   const [isCustomSelected, setIsCustomSelected] = useState(0);
-
+  const [selectedAmountId, setSelectedAmountId] = useState(-1);
   const textInputRef = useRef();
-  /*
-  const amount1Ref = useRef();
-  const amount2Ref = useRef();
-  const amount3Ref = useRef();
-*/
-  const onAmountPress = (isCustom, amount) => {
+
+  const onAmountPress = (isCustom, amount, id) => {
     if (isCustom) {
       setIsCustomSelected(true);
+      setSelectedAmountId(-1);
       textInputRef.current.focus();
       onCustomSelect();
     } else {
+      setSelectedAmountId(id);
       onAmountSelected(amount);
     }
   };
@@ -41,10 +38,15 @@ const AmountField = ({
   return (
     <View>
       <View style={isCustomSelected ? styles.hidden : {}}>
-        <JoinAmount amount={minFeeToJoin} onPress={onAmountPress} />
-        <JoinAmount amount={2.5 * minFeeToJoin} onPress={onAmountPress} />
-        <JoinAmount amount={5 * minFeeToJoin} onPress={onAmountPress} />
-        <JoinAmount isCustom={true} onPress={onAmountPress} />
+        {
+          [1, 2.5, 5, 1].map((c, index) =>
+            <JoinAmount
+              id={index}
+              isSelected={index === selectedAmountId}
+              isCustom={index === 3}
+              amount={c * minFeeToJoin}
+              onPress={onAmountPress} />)
+        }
       </View>
 
       <TextInputFieldWithIcon

@@ -18,9 +18,9 @@ import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '../../../Services/ArcService';
-import Toast from '../../../Util/Toast';
 import { preauthorizePayment } from '../../../Services/MangopayService';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
+import {showErrorPopUp} from '../../../Util';
 
 const RequestStep4 = ({navigation, ...props}) => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -86,7 +86,7 @@ const RequestStep4 = ({navigation, ...props}) => {
         navigation.dispatch(navigate);
       } catch (e) {
         navigation.pop();
-        e?.response?.data?.error ? Toast.error(e.response.data.error) : Toast.error(e.message);
+        showErrorPopUp(props.bottomSheetStore, e?.response?.data?.error ? e.response.data.error : e.message);
       }
     }
   };
@@ -218,6 +218,7 @@ const RequestStep4 = ({navigation, ...props}) => {
 };
 
 export default inject(
+  'bottomSheetStore',
   'introduceYourselfFormStore',
   'personalContributionFormStore',
   'paymentFormStore',

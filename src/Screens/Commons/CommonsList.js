@@ -188,32 +188,35 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
-      <>
-        {daoGroup ? (
-          <SectionList
-            sections={daoGroup}
-            ListHeaderComponent={header}
-            contentContainerStyle={{paddingHorizontal: 20}}
-            renderItem={x => (
-              <CommonBox
-                common={x.item}
-                navigation={navigation}
-                // keyExtractor={x.item.id}
-                onPress={() => setDao(x.item)}
-              />
-            )}
-            keyExtractor={x => x.id}
-            stickySectionHeadersEnabled={true}
-            renderSectionHeader={({section: {title}}) => sectionHeader(title)}
-            ListFooterComponent={listFooter}
-          />
-        ) : (
-          loadingPlaceholder()
-        )}
-      </>
-      <BottomRightButton onPress={onAddCommon} />
-    </SafeAreaView>
+    <>
+      <SafeAreaView style={{backgroundColor: colors.mainBlue}}/>
+      <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
+        
+          {daoGroup ? (
+            <SectionList
+              sections={daoGroup}
+              ListHeaderComponent={header}
+              contentContainerStyle={{paddingHorizontal: 20}}
+              renderItem={x => (
+                <CommonBox
+                  common={x.item}
+                  navigation={navigation}
+                  // keyExtractor={x.item.id}
+                  onPress={() => setDao(x.item)}
+                />
+              )}
+              keyExtractor={x => x.id}
+              stickySectionHeadersEnabled={true}
+              renderSectionHeader={({section: {title}}) => sectionHeader(title)}
+              ListFooterComponent={listFooter}
+            />
+          ) : (
+            loadingPlaceholder()
+          )}
+        
+        <BottomRightButton onPress={onAddCommon} />
+      </SafeAreaView>
+    </>
   );
 };
 

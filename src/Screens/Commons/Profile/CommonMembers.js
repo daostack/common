@@ -81,11 +81,6 @@ const CommonMembers = ({navigation, route}) => {
   const members = route.params.members;
   const commonId = route.params.commonId;
 
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerBackTitle: route.params.commonTitle,
-    });
-  }, [navigation]);
 
   const routes = [
     {key: 'members', title: getTabName('Members', members.length)},

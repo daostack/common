@@ -1,12 +1,12 @@
 import {useState} from 'react';
 import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
-import {colors, text, layout} from '../Theme';
+import {colors, text, layout} from '../../Theme';
 import React from 'react';
-import Icon from '../Assets/iconfont/Icon';
+import Icon from '../../Assets/iconfont/Icon';
 import { statusCodes } from '@react-native-community/google-signin';
 import { observer, inject } from 'mobx-react';
 
-import AuthService from '../Services/AuthService';
+import AuthService from '../../Services/AuthService';
 
 const GSignInButton = ({ onSignIn, userStore}) => {
   const [signInError, setSignInError] = useState(null);
@@ -43,7 +43,7 @@ const GSignInButton = ({ onSignIn, userStore}) => {
       <>
         <TouchableOpacity style={layout.btnOutline} onPress={_signIn}>
           <Icon style={layout.btnLeftIcon} name="google" size={32} />
-          <Text style={text.buttonblack}>Sign in with Google</Text>
+          <Text style={text.buttonblack}>Continue with Google</Text>
         </TouchableOpacity>
       </>
     );
