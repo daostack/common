@@ -21,12 +21,9 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
     }
   };
 
-  console.log("Platform.Version -> ", Platform.Version);
-
   const isIos = Platform.OS === 'ios';
   const isLoginWithAppleEnabled = isIos ? AuthService.getInstance().isAppleLoginSupported() : false;
   
-
   return (
     <View>
       { !hidePlaceholder && <View style={styles.sectionContainer}>
