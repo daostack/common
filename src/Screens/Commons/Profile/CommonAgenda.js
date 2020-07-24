@@ -92,7 +92,7 @@ const CommonAgenda = ({daoStore, navigation}) => {
                 .format('MMM DD, YYYY')}
             </Text>
           </View>
-          
+
           {daoStore.dao.metadata.rules?.length > 0 && (
             <View style={styles.sectionContainer}>
               <Text style={text.h1Black}>Rules of conduct</Text>
