@@ -189,9 +189,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
 
   return (
     <>
-      <SafeAreaView style={{backgroundColor: colors.mainBlue}}/>
       <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
-        
           {daoGroup ? (
             <SectionList
               sections={daoGroup}
