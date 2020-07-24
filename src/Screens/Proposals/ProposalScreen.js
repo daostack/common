@@ -110,13 +110,6 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
     };
   }, [routeProposalId]);
 
-
-  useEffect(() =>{
-    navigation.setOptions({
-      title: daoInfo?.name || 'Common', // daoInfo might be null
-    });
-  }, [daoInfo]);
-
   const [
     isApprovalBottomModalVisible,
     setIsApprovalBottomModalVisible,

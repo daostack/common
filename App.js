@@ -320,7 +320,15 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           component={CommonProfile}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="CommonAgenda" component={CommonAgenda} />
+        <Stack.Screen 
+          name="CommonAgenda" 
+          component={CommonAgenda} 
+          options={({route}) => ({
+            title: route.params.screenTitle,
+            headerBackTitleVisible: false,
+          })}
+
+        />
         <Stack.Screen name="Profile" component={UserProfile} />
         <Stack.Screen
           name="CommonExplanation"
@@ -342,7 +350,14 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
         />
 
-        <Stack.Screen name="ProposalScreen" component={ProposalScreen} />
+        <Stack.Screen 
+          name="ProposalScreen" 
+          component={ProposalScreen} 
+          options={({route}) => ({
+            title: route?.params.screenTitle,
+            headerBackTitleVisible: false,
+          })}
+        />
         <Stack.Screen
           name="RequestStep1"
           component={RequestStep1}
@@ -465,12 +480,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           component={MyCommons}
         />
         <Stack.Screen
-          options={{
-            title: null,
-            headerBackTitleVisible: true,
-          }}
           name="CommonMembers"
           component={CommonMembers}
+          options={({route}) => ({
+            title: route?.params.screenTitle,
+            headerBackTitleVisible: false,
+          })}
         />
         <Stack.Screen
           options={{
