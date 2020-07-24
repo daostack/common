@@ -1,7 +1,6 @@
 //Commons
 export CommonsList from './Commons/CommonsList';
 export CommonProfile from './Commons/Profile/CommonProfile';
-export CreateCommon from './Commons/CreateCommon/CreateCommon';
 export CreateStep1 from './Commons/CreateCommon/CreateStep1';
 export CreateStep2 from './Commons/CreateCommon/CreateStep2';
 export CreateStep3 from './Commons/CreateCommon/CreateStep3';
