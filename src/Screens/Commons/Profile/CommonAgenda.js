@@ -105,7 +105,7 @@ const CommonAgenda = ({daoStore, navigation}) => {
                     <Text
                       key={i}
                       style={{...text.blackText, ...layout.marginTopM}}>
-                      {rule.description}
+                      {rule.url}
                     </Text>
                   </View>
                 );
