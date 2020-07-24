@@ -6,6 +6,11 @@ export const GOOGLE_SIGNIN_PERMISSIONS = {
   APP_DATA_RW: 'https://www.googleapis.com/auth/drive.appdata',
 };
 
+export const AUTH_PROVIDER_ID = {
+  APPLE: 'apple.com',
+  GOOGLE: 'google.com',
+}
+
 export const numberFormatter = num => {
   const denom = Math.abs(Number(num));
   return denom >= 1.0e9
