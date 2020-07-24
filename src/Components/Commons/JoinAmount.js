@@ -1,14 +1,12 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 
 import {layout, colors, text, font} from '../../Theme';
 
-const JoinAmount = ({amount, isCustom, onPress}) => {
-  const [isSelected, setIsSelected] = useState(false);
+const JoinAmount = ({id, amount, isCustom, onPress, isSelected}) => {
 
   const onAmountPress = e => {
-    setIsSelected(true);
-    onPress(isCustom, amount);
+    onPress(isCustom, amount, id);
   };
 
   return (

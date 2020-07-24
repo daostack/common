@@ -2,7 +2,7 @@ import {Text, View, StyleSheet} from 'react-native';
 
 import React from 'react';
 import {colors, text, layout} from '../../Theme';
-import GSignInButton from '../../Components/GSignInButton';
+import GSignInButton from '../../Components/Auth/GSignInButton';
 import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 

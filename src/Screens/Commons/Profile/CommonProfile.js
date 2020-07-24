@@ -43,10 +43,10 @@ import {
   Fade,
 } from 'rn-placeholder';
 import NavigationBar from 'react-native-navbar';
-import {BlurView} from '@react-native-community/blur';
 import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import ProposalActivationDate from '../../../Components/Proposals/ProposalActivationDate';
+import { BlurView } from '../../../Components';
 
 let stickyHeighAddon = 0;
 if (Platform.OS === 'ios') {
@@ -494,15 +494,13 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
           <TouchableOpacity
             style={{justifyContent: 'center'}}
             onPress={() => navigation.pop()}>
-            <View
-              style={{padding: 5, borderRadius: 15}}
-              blurType={dark ? 'light' : 'dark'}>
+            <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
               <Icon
                 name="left-arrow"
                 size={32}
                 color={dark ? 'black' : 'white'}
               />
-            </View>
+            </BlurView>
           </TouchableOpacity>
         }
         rightButton={
@@ -515,28 +513,28 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             <TouchableOpacity
               style={{justifyContent: 'center', marginRight: 5}}
               onPress={shareCommon}>
-              <View
+              <BlurView
                 style={{padding: 8, borderRadius: 15}}
-                blurType={dark ? 'light' : 'dark'}>
+                isBlurring={dark}>
                 <Icon
                   name="share-32"
                   size={25}
                   color={dark ? 'black' : 'white'}
                 />
-              </View>
+              </BlurView>
             </TouchableOpacity>
             <TouchableOpacity
               style={{justifyContent: 'center'}}
               onPress={shareCommon}>
-              <View
+              <BlurView
                 style={{padding: 5, borderRadius: 15}}
-                blurType={dark ? 'light' : 'dark'}>
+                isBlurring={dark}>
                 <Icon
                   name="menu-horizontal"
                   size={32}
                   color={dark ? 'black' : 'white'}
                 />
-              </View>
+              </BlurView>
             </TouchableOpacity>
           </View>
         }

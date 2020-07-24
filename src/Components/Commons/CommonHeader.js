@@ -8,8 +8,8 @@ import {
 import React from 'react';
 import { layout, colors, text, font } from '../../Theme';
 import FastImage from 'react-native-fast-image';
-import { BlurView } from '@react-native-community/blur';
 import Icon from '../../Assets/iconfont/Icon';
+import { BlurView } from '../../Components';
 import {CommonActions} from '@react-navigation/native';
 
 const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, headerHeightLayouted }) => {
@@ -45,14 +45,14 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, head
             {commonInfo.description}
           </Text>
           {isMember && navigation ? (
-            <View style={{ paddingVertical: 10, paddingHorizontal: 15, borderRadius: 10}}>
+            <BlurView style={{ paddingVertical: 10, paddingHorizontal: 15, borderRadius: 10}}>
               <TouchableOpacity onPress={openAgendaScreen}>
                 <View style={{flexDirection: 'row'}}>
                   <Text style={styles.headerViewAgenda}>View agenda</Text>
                   <Icon name="right-arrow" color="white" />
                 </View>
               </TouchableOpacity>
-            </View>
+            </BlurView>
           ) : null}
 
         

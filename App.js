@@ -28,7 +28,6 @@ import {
   HUDTest,
   MyWallet,
   CreateAccount,
-  CreateCommon,
   CompleteAccount,
   EditProfile,
   UserProfileReadMode,
@@ -201,7 +200,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       try {
         userStore.setIsLoading(true);
         if (user) {
-          await AuthService.getInstance().loadMnemonic(user.uid);
+          await AuthService.getInstance().loadMnemonic(user.uid, user.providerData[0].providerId);
           await WalletManager.init(user.uid);
           await ArcService.init();
           let appUser = await FirebaseService.getInstance().getUserById(
@@ -305,7 +304,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           options={{headerShown: false}}
           userStore={userStore}
         />
-        <Stack.Screen name="CreateCommon" component={CreateCommon} />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
         <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
         <Stack.Screen
