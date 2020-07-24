@@ -5,6 +5,7 @@ import {
   Text,
   ScrollView,
   View,
+  Linking,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
@@ -130,11 +131,11 @@ const UserProfile = ({userStore, navigation}) => {
                     onPress={onMyWalletPress}
                   />
                 ) : null}
-                <AccordionBtn title="FAQ" />
-                <AccordionBtn title="Terms of use" />
-                <AccordionBtn title="Privacy Policy" />
-                <AccordionBtn title="Help" />
-                <AccordionBtn title="Contact us" />
+                <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" />
+                <AccordionBtn onPress={() => Linking.openURL('https://common.io/tos')} title="Terms of use" />
+                <AccordionBtn onPress={() => Linking.openURL('https://common.io/privacy')} title="Privacy Policy" />
+                <AccordionBtn onPress={() => Linking.openURL('https://common.io/help')} title="Help" />
+                <AccordionBtn onPress={() => Linking.openURL('mailto:support@example.com')} title="Contact us" />
                 {userStore.userInfo ? (
                   <AccordionBtn
                     lightStyle={true}
