@@ -71,15 +71,12 @@ const ProposalsList = ({ isMember, commonName, safeAddress, showAll, showMax, on
   }, [commonId, isHistory]);
 
   const onReviewProposal = proposalId => {
-    const navigate = CommonActions.navigate({
-      name: 'ProposalScreen',
-      params: {
+    
+    navigation.navigate('ProposalScreen', {
         proposalId: proposalId,
-        commonName,
+        screenTitle: commonName,
         isMember,
-      },
     });
-    navigation.dispatch(navigate);
   };
 
   const renderProposalCard = (item, index) => {

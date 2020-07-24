@@ -15,15 +15,7 @@ import moment from 'moment';
 import {layout, text, sizeS} from '../../../Theme';
 import {inject, observer} from 'mobx-react';
 
-const CommonAgenda = ({daoStore, navigation, route}) => {
-
-  const commonName = route?.params.commonName;
-
-  useEffect(() => {
-    navigation.setOptions({
-      title: commonName || ''
-    });
-  }, []);
+const CommonAgenda = ({daoStore, navigation}) => {
 
   return (
     <>

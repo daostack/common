@@ -369,20 +369,6 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
         isMember,
     });
 
-/*
-    const navigate = CommonActions.navigate({
-      name: 'ProposalScreen',
-      params: {
-        proposalId: route.params.createdProposalId,
-        screenTitle: currCommon.name,
-        isMember,
-      },
-    });
-
-
-    screenTitle: currCommon.name,
-
-*/
   
     setShowRequestSentModal(false);
   };
@@ -392,21 +378,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   };
 
   const openProposalScreen = event => {
-    /*
-    const navigate = CommonActions.navigate({
-      name: 'ProposalScreen',
-      params: {
-        proposalId: pendingProposalsData.usersPendingProposal?.id,
-        commonName: currCommon.name,
-        isMember,
-      },
-    });
-    navigation.dispatch(navigate);
-
-    */
+    
     navigation.navigate('ProposalScreen', {
       proposalId: pendingProposalsData.usersPendingProposal?.id,
-      commonName: currCommon.name,
+      screenTitle: currCommon.name,
       isMember,
   });
   };

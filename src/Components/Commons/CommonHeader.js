@@ -15,14 +15,9 @@ import {CommonActions} from '@react-navigation/native';
 const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, headerHeightLayouted }) => {
 
   const openAgendaScreen = e => {
-    console.log("commonInfo -> ", commonInfo.name);
-    const navigate = CommonActions.navigate({
-      name: 'CommonAgenda',
-      params: {
-        screenTitle: commonInfo.name,
-      },
+    navigation.navigate('CommonAgenda', {
+      screenTitle: commonInfo.name,
     });
-    navigation.dispatch(navigate);
   };
 
   return (
