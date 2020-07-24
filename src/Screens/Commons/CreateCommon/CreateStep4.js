@@ -174,8 +174,7 @@ const CreateStep4 = props => {
   };
   const forgeCommon = async () => {
     try {
-      const manager = await WalletManager.getInstance();
-      const address = manager.safeAddress;
+      const address = props.userStore.userInfo.safeAddress;
       const formDataInit = {...form};
 
       const fundingGoalDeadline = formDataInit[CreateCommonForm.DEADLINE];
@@ -621,5 +620,6 @@ export default inject(
   'fundingFormStore',
   'agendaFormStore',
   'reviewFormStore',
+  'userStore',
   'daoStore',
 )(observer(CreateStep4));

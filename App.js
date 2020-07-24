@@ -245,10 +245,19 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         if (auth().currentUser === null) {
           return;
         }
-        const unsubscribe = db.collection('users').doc(uid).onSnapshot(snapshot => {
+        const unsubscribe = db.collection('users').doc(uid).onSnapshot( async snapshot => {
           if (!snapshot.empty) {
             userStore.setSignedInUser(snapshot.data());
           }
+
+          // WalletManager Inited before safeAddress created
+          // The safeAddress in wallet manager will be null
+          // We need to update it.
+          const manager = await WalletManager.getInstance();
+          if (manager.safeAddress == null) {
+            manager.safeAddress = snapshot.data().safeAddress;
+          }
+
         });
         return unsubscribe;
       } catch (error) {
