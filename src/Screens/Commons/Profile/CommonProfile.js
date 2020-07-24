@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   StatusBar,
   ScrollView,
+  Platform,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
@@ -44,12 +45,20 @@ import {
 import NavigationBar from 'react-native-navbar';
 import {BlurView} from '@react-native-community/blur';
 import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 
-const STICKY_HEADER_HEIGHT = 114;
+console.log("getStatusBarHeight() -> ", getStatusBarHeight());
+
+let stickyHeighAddon = 0;
+if (Platform.OS === 'ios') {
+  stickyHeighAddon += 36;
+}
+
+const STICKY_HEADER_HEIGHT = Math.round( getStatusBarHeight() ) + stickyHeighAddon;
+const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 80;
 
 const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const [isMember, setMemberState] = useState(false);
-
   const window = Dimensions.get('window');
 
   const [index, setIndex] = useState(0);
@@ -73,7 +82,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
 
   const [dark, setDark] = useState(false);
-  const [headerHeight, setHeaderHeight] = useState(STICKY_HEADER_HEIGHT + 70);
+  const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
 
   const upperRequestToJoinBtnRef = useRef(null);
 
@@ -89,7 +98,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     if (height - headerHeight > 3) {
       // To avoid render multiple times
       // console.log('height ->', height);
-      setHeaderHeight(height + 35);
+      //setHeaderHeight(height + 35);
     }
     return height;
   };
@@ -115,8 +124,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     setShowRequestSentModal(route.params.showRequestSentModal);
     if (userStore.userInfo && userStore.isDaoMember(daoMembers)) {
       setMemberState(true);
+      setHeaderHeight(DEFAULT_HEADER_HEIGHT + 36);
     } else {
       setMemberState(false);
+      setHeaderHeight(DEFAULT_HEADER_HEIGHT);
     }
   }, [
     route.params.showRequestSentModal,
@@ -504,7 +515,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     return (
       <NavigationBar
         statusBar={{hidden: true}}
-        style={styles.fixedSection}
+        containerStyle={styles.fixedSection}
         leftButton={
           <TouchableOpacity
             style={{justifyContent: 'center'}}
@@ -602,7 +613,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             />
           </TouchableOpacity>
 
-          {showStickyTabBar && (<View style={{position: 'absolute', top: 70, width: '100%', paddingBottom: 5, zIndex: 999}}>
+          {showStickyTabBar && (<View style={{position: 'absolute', top: STICKY_HEADER_HEIGHT, width: '100%', paddingBottom: 5, zIndex: 999}}>
             <TabBarRenderer navigationState={{index: 0, routes: routes}} parentRef={originTabBarRef} />
           </View>)}
 
@@ -625,15 +636,15 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               </FastImage>
             )}
             scrollEvent={e => {
-              console.log("Scroll e -> ", e);
+              //console.log("Scroll e -> ", e);
               setDark(
-                e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT - 40,
+                e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT,
               );
               upperRequestToJoinBtnRef?.current?.measure( (fx, fy, width, height, px, py) => {
-                setShowStickyRequestToJoinBtn(py < 36 );
+                setShowStickyRequestToJoinBtn(py < (stickyHeighAddon) );
               });
               stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
-                const isVisible = py < 76;
+                const isVisible = py < (STICKY_HEADER_HEIGHT);
                 if (isVisible != showStickyTabBar) {
                   setShowStickyTabBar(isVisible);
                 }
@@ -688,7 +699,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             </View>
 
             {!isMember && showReqToJoin && (
-              <View style={styles.upperActionButtonContainer} ref={upperRequestToJoinBtnRef}>
+              <View style={styles.upperActionButtonContainer} ref={upperRequestToJoinBtnRef} collapsable={false}>
                 {renderRequestToJoinBtn()}
               </View>
             )}
@@ -717,7 +728,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
       */}
 
-            <View ref={stickyTabBarRef}>
+            <View ref={stickyTabBarRef} collapsable={false}>
               <TabView
                 navigationState={{index, routes}}
                 renderScene={renderScene}
@@ -922,19 +933,16 @@ const styles = StyleSheet.create({
   stickySection: {
     height: STICKY_HEADER_HEIGHT,
     width: '100%',
-    justifyContent: 'center',
-    // backgroundColor: 'white',
-    alignItems: 'center',
+    ...layout.content,
+    padding: 0,
     borderBottomWidth: 1,
     borderBottomColor: colors.grey4,
   },
   stickySectionText: {
     color: 'black',
-    // color: 'white',
     ...font.heading.bold,
     fontSize: 20,
-    marginTop: 25,
-    // margin: 5,
+    marginTop: stickyHeighAddon,
     textAlign: 'center',
   },
   fixedSection: {
@@ -942,7 +950,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     left: 5,
-    elevation: 99,
+    backgroundColor: 'transparent',
   },
   fixedSectionText: {
     color: '#999',

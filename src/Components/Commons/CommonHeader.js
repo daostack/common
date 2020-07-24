@@ -28,16 +28,10 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, head
   return (
     <SafeAreaView onLayout={ event => {
       headerHeightLayouted(event.nativeEvent.layout.height);
-    }}>
-      <View
-        style={styles.headerContainer}>
-        <View
-          style={{
-            ...layout.content,
-            ...{padding: 0},
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+    }}
+    style={styles.headerContainer}
+    >
+        
           {commonInfo.logo ? (
             <FastImage
               style={styles.logoImage}
@@ -66,8 +60,8 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, head
             </View>
           ) : null}
 
-        </View>
-      </View>
+        
+      
     </SafeAreaView>
   );
 };
@@ -96,13 +90,11 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     ...layout.content,
-    // ...layout.flexRow,
-    // ...layout.flexStart,
     alignSelf: 'stretch',
     flexGrow: 1,
-    paddingBottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 0,
+    marginBottom: 10,
+    ...layout.flexEnd,
   },
   headerContainerCenterContent: {
     justifyContent: 'center',
