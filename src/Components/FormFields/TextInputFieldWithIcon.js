@@ -9,7 +9,7 @@ import {
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
-import {layout, colors, font, text} from '../../Theme';
+import {layout, colors, font, text, sizeS, sizeL } from '../../Theme';
 
 class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
@@ -127,7 +127,7 @@ class TextInputFieldWithIcon extends React.Component {
 
       // Validation management properties
       validation,
-
+      subLabel,
       ...otherProps
     } = this.props;
 
@@ -177,6 +177,7 @@ class TextInputFieldWithIcon extends React.Component {
           <Text style={styles.label}>{label}</Text>
           <Text style={styles.infoLabel}>{infoLabel}</Text>
         </View>
+        {subLabel && <Text style={styles.subLabel}>{subLabel}</Text>}
         <View style={styleTextfield}>
           <View style={iconStyle}>
             <Icon
@@ -269,6 +270,13 @@ const styles = StyleSheet.create({
     borderColor: colors.grey4,
     paddingHorizontal: 12,
     ...layout.marginTopS,
+  },
+  subLabel: {
+    marginVertical: sizeS,
+    lineHeight: sizeL,
+    ...font.primary.regular,
+    color: colors.greySubtitle,
+    ...font.fontSize(1),
   },
   textfieldRegular: {
     borderColor: colors.grey4,

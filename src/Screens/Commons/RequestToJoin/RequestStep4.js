@@ -19,14 +19,15 @@ import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '../../../Services/ArcService';
 import Toast from '../../../Util/Toast';
-import { BN } from 'bn.js';
 import { preauthorizePayment } from '../../../Services/MangopayService';
+import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 
 const RequestStep4 = ({navigation, ...props}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const isFirstStepSkipped = props.route.params.skipFirstStep;
 
+  const { name } = props.daoStore.dao;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -50,7 +51,7 @@ const RequestStep4 = ({navigation, ...props}) => {
           title: `request to join ${props.route.params.currDaoId} by ${props.userStore.userInfo.ethereumAddress}`,
           description: formData.about_me,
           links: formData.links,
-          funding: new BN(formData.amount * 100),
+          funding: formData.amount * 100,
           preAuthId: false,
         };
 
@@ -84,12 +85,13 @@ const RequestStep4 = ({navigation, ...props}) => {
         });
         navigation.dispatch(navigate);
       } catch (e) {
-        console.log(e);
         navigation.pop();
-        e.message ? Toast.error(e.message) : Toast.error(e.data.error);
+        e?.response?.data?.error ? Toast.error(e.response.data.error) : Toast.error(e.message);
       }
     }
   };
+
+  const subtitle =  `You are contributing $${props.personalContributionFormStore.form.fields.amount?.value} to this common`;
 
   return (
     <>
@@ -101,7 +103,7 @@ const RequestStep4 = ({navigation, ...props}) => {
         }}>
         <CreateStepNavigation
           navigation={navigation}
-          title="Personal contribution"
+          title={name}
         />
         <CreateStepDotHeader
           title="Payment"
@@ -132,22 +134,7 @@ const RequestStep4 = ({navigation, ...props}) => {
               // padding: 24,
               backgroundColor: 'white',
             }}>
-            <Text
-              style={{
-                marginTop: 24,
-                fontWeight: 'bold',
-                fontSize: 18,
-                textAlign: 'center',
-              }}>
-              Payment
-            </Text>
-            <Text
-              style={{marginTop: 12, marginBottom: 23, textAlign: 'center'}}>
-              You are contributing{' '}
-              {props.paymentFormStore.getChangedFormFieldsJson().amount} to this
-              common
-            </Text>
-
+            <RequestStepHeaderTitle title="Payment" subtitle={subtitle} />
             <TextInputField
               label="Credit card number"
               value={/* __DEV__ ? */ 4972485830400056}
@@ -235,4 +222,5 @@ export default inject(
   'personalContributionFormStore',
   'paymentFormStore',
   'userStore',
+  'daoStore'
 )(observer(RequestStep4));

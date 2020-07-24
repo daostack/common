@@ -11,7 +11,7 @@ import {
   Platform,
 } from 'react-native';
 import TextInputFieldWithIcon from '../../../Components/FormFields/TextInputFieldWithIcon';
-import {colors, font} from '../../../Theme';
+import {colors, font, sizeL, sizeS} from '../../../Theme';
 
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import {observer, inject} from 'mobx-react';
@@ -41,6 +41,10 @@ const CreateStep2 = props => {
     });
     setHeaderHeight(height);
   }, [scrollY]);
+
+  useEffect(() => {
+    onTabChange(0); // pre-select 1 week at first render
+  }, []);
 
   /* useEffect(() => {
     const name = CreateCommonForm.DEADLINE;
@@ -78,7 +82,6 @@ const CreateStep2 = props => {
   }, [segmentedIndex, pickDate, props.fundingFormStore]); */
 
   const onDatePickerChange = (event, date) => {
-    console.log(date);
     props.fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, moment(date || {}).unix());
     if (Platform.OS === 'android') {
       setShow(false);
@@ -128,7 +131,8 @@ const CreateStep2 = props => {
     testID="dateTimePicker"
     timeZoneOffsetInMinutes={0}
     value={pickDate ? pickDate : new Date()}
-    minimumDate={moment().add('7', 'days').toDate()}
+    minimumDate={new Date()}
+    maximumDate={moment().add('100', 'days').toDate()}
     is24Hour={true}
     display="default"
     onChange={onDatePickerChange}
@@ -173,8 +177,7 @@ const CreateStep2 = props => {
           }}>
           <CreateStepHeaderTitle
             title="Funding"
-            subtitle="Set a time period to invite members and raise initial funds. You can
-            continue raising funds forever."
+            subtitle="Set a minimum amount each member needs to contribute to the Common’s cause, And protect the money you raise from fraud."
           />
           <View
             style={{
@@ -183,17 +186,34 @@ const CreateStep2 = props => {
               marginBottom: 40,
             }}
           />
+          <TextInputFieldWithIcon
+            iconName="dollar"
+            iconSize={12}
+            iconStyle={{paddingRight: 5}}
+            iconEmptyColor={colors.grey3}
+            iconFillColor={colors.grey}
+            viewStyle={{alignSelf: 'stretch'}}
+            label="Minimum joining contribution (min $5)"
+            subLabel="Set the minimum amount that members have to donate in order to join the Common. "
+            infoLabel="Required"
+            autoCapitalize="none"
+            autoCorrect={false}
+            keyboardType="numeric"
+            validation={{
+              name: CreateCommonForm.MINIMUM,
+              formStore: props.fundingFormStore,
+              validateRule: 'required|integer|min:5',
+            }}
+          />
           <View style={{}}>
             <View style={{flexDirection: 'row'}}>
-              <Text style={styles.label}>Campaign period</Text>
+              <Text style={styles.label}>Funds safety period</Text>
               <Text style={[styles.infoLabel, {alignSelf: 'flex-end'}]}>
                 Required
               </Text>
             </View>
             <Text style={styles.info2}>
-              When this period is over, you will be able to create proposals and
-              use the funds you raised, even if you don’t reach your funding
-              goal.
+            Set a period of time before members can create proposals and allocate the funds. this will allow more members to join and participate in the decision making process.
             </Text>
 
             <SegmentedControlTab
@@ -227,7 +247,7 @@ const CreateStep2 = props => {
                     justifyContent: 'flex-end',
                     position: 'relative',
                   }}>
-                  <Text
+                  {/* <Text
                     style={{
                       color: colors.slate,
                       fontSize: 14,
@@ -239,7 +259,7 @@ const CreateStep2 = props => {
                       marginRight: 'auto',
                     }}>
                     {'Min. 1 week'}
-                  </Text>
+                  </Text> */}
                   <TouchableOpacity onPress={() => setShow(false)}>
                     <Text
                       style={{
@@ -275,29 +295,11 @@ const CreateStep2 = props => {
               validateRule: 'required|integer|min:100',
             }}
           /> */}
-          <TextInputFieldWithIcon
-            iconName="dollar"
-            iconSize={12}
-            iconStyle={{paddingRight: 5}}
-            iconEmptyColor={colors.grey3}
-            iconFillColor={colors.grey}
-            viewStyle={{alignSelf: 'stretch'}}
-            label="Minimum joining contribution (min $5)"
-            infoLabel="Required"
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="numeric"
-            validation={{
-              name: CreateCommonForm.MINIMUM,
-              formStore: props.fundingFormStore,
-              validateRule: 'required|integer|min:5',
-            }}
-          />
-          <View style={{width: '100%'}}>
+          {/* <View style={{width: '100%'}}>
             <Text style={styles.readMoreButton}>
               Min. $5. Members can donate more if they want.{' '}
             </Text>
-          </View>
+          </View> */}
         </View>
       </ScrollView>
       <RequestStepActionButton
@@ -330,10 +332,10 @@ const styles = StyleSheet.create({
     color: colors.mainBlue,
   },
   info2: {
-    marginVertical: 5,
-    lineHeight: 22,
+    marginVertical: sizeS,
+    lineHeight: sizeL,
     ...font.primary.regular,
-    color: colors.grey3,
+    color: colors.greySubtitle,
     ...font.fontSize(1),
   },
   placeholderText: {

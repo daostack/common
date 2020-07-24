@@ -5,6 +5,7 @@ import { ipfsUpload } from '../../Config';
 import GraphqlSyncService from '../GraphqlSyncService';
 const {
   ARC_VERSION,
+  IPFS_DATA_VERSION,
 } = require('../../Config');
 
 
@@ -115,6 +116,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     console.log('saving ipfs data');
     // not working :-()
     // ipfsHash = await arc.saveIPFSData(data);
+    data = {...data, VERSION: IPFS_DATA_VERSION};
     ipfsHash = await ipfsUpload({description: JSON.stringify(data)});
     console.log('ipfsHash', ipfsHash);
 

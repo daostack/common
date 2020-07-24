@@ -11,7 +11,7 @@ const fonts = [
   // 17?
 ];
 
-const letterSpacing = [0.4, 0.3, 0.2, 0.1, 0.4, 0.4, 0.4, 0.4,];
+const letterSpacing = [0.4, 0.3, 0.2, 0.1, 0.4, 0.4, 0.4, 0.4];
 
 export const fontSize = fontIndex => ({
   fontSize: fonts[fontIndex],
@@ -54,20 +54,6 @@ const font = {
     thin: {
       fontFamily: 'NunitoSans-Light',
       fontWeight: '100',
-    },
-  },
-  secondary: {
-    semiBold: {
-      fontFamily: 'Roboto',
-      fontWeight: '500',
-    },
-    bold: {
-      fontFamily: 'Roboto',
-      fontWeight: 'bold',
-    },
-    regular: {
-      fontFamily: 'Roboto',
-      fontWeight: 'normal',
     },
   },
 };

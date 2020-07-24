@@ -1,21 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Text,
   View,
   ScrollView,
   Dimensions,
+  StyleSheet,
   SafeAreaView,
   Animated,
 } from 'react-native';
+import RequestStepHeaderTitle from './RequestStepHeaderTitle';
+
 import RequestToJoinRule from '../../../Components/Commons/RequestToJoinRule';
 import {observer, inject} from 'mobx-react';
 const {width, height} = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepDotHeader from './RequestStepDotHeader';
-import {text, colors} from '../../../Theme';
+import {colors} from '../../../Theme';
 import CreateStepNavigation from './RequestStepNavigation';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
+import MembershipRequest from './MembershipRequest';
 
 const RequestStep1 = props => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -23,6 +26,8 @@ const RequestStep1 = props => {
   // const [ruleCount] = useState(1);
   const [pass, setPass] = useState(false);
   const commonRules = props.daoStore.dao.metadata?.rules;
+
+  const { name } = props.daoStore.dao;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -59,7 +64,7 @@ const RequestStep1 = props => {
         }}>
         <CreateStepNavigation
           navigation={props.navigation}
-          title="Request to join"
+          title={name}
         />
         <CreateStepDotHeader
           title="Approve Common Rules"
@@ -83,39 +88,20 @@ const RequestStep1 = props => {
             {nativeEvent: {contentOffset: {y: scrollY}}},
           ])}
           onScrollEndDrag={onScrollToBottom}>
-          <CreateStepHeader currentIndex={0} />
+          <MembershipRequest />
+          <CreateStepHeader
+            currentIndex={0}
+            isFirstStepSkipped={false}
+          />
           <View
             style={{
               flex: 1,
               // alignItems: 'center',
               backgroundColor: 'white',
             }}>
-            <Text
-              style={{
-                marginTop: 14,
-                fontWeight: '700',
-                fontSize: 18,
-                textAlign: 'center',
-              }}>
-              Approve Common Rules
-            </Text>
-            <Text
-              style={{
-                ...text.blackText,
-                marginTop: 12,
-                marginBottom: 23,
-                paddingHorizontal: 20,
-                textAlign: 'center',
-              }}>
-              If the common approves your request you will become an equal
-              member with voting rights.
-            </Text>
+            <RequestStepHeaderTitle title="Accept Common Rules" subtitle="If the Common approves your request you will become a member with equal voting rights." />
             <View
-              style={{
-                backgroundColor: colors.grey4,
-                height: 1,
-                marginBottom: 40,
-              }}
+              style={styles.content}
             />
             {Boolean(commonRules?.length) &&
               commonRules.map((rule, index) => (
@@ -132,5 +118,13 @@ const RequestStep1 = props => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  content: {
+    backgroundColor: colors.grey4,
+    height: 1,
+    marginBottom: 40,
+  },
+});
 
 export default inject('daoStore')(observer(RequestStep1));

@@ -1,6 +1,6 @@
 // TODO: rename this file to °createProposalRequestToJoin.js°
 const {first} = require('rxjs/operators');
-import { ipfsUpload} from '../../Config';
+import { ipfsUpload, IPFS_DATA_VERSION} from '../../Config';
 import WalletManager from '../../Util/WalletManager';
 
 export const createProposalRequestToJoin = async (arc, daoId, data) => {
@@ -39,6 +39,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       throw Error('"funding" argument must be given');
     }
     const fee = Number(data.funding);
+    data = {...data, VERSION: IPFS_DATA_VERSION};
     console.log('saving ipfs data');
     // not working :-()
     // ipfsHash = await arc.saveIPFSData(data);

@@ -46,8 +46,7 @@ import NavigationBar from 'react-native-navbar';
 import {BlurView} from '@react-native-community/blur';
 import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-
-console.log("getStatusBarHeight() -> ", getStatusBarHeight());
+import ProposalActivationDate from '../../../Components/Proposals/ProposalActivationDate';
 
 let stickyHeighAddon = 0;
 if (Platform.OS === 'ios') {
@@ -94,7 +93,6 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   //setHeaderHeight(height + 35);
 
   const headerHeightLayouted = height => {
-    console.log("headerHeightLayouted -> ", height, headerHeight);
     if (height - headerHeight > 3) {
       // To avoid render multiple times
       // console.log('height ->', height);
@@ -196,6 +194,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
           commonId={currCommon.id}
           commonName={currCommon.name}
         />
+        <ProposalActivationDate activationDate={currCommon.fundingGoalDeadline} />
       </View>
     );
   };
