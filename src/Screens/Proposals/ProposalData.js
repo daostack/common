@@ -220,8 +220,8 @@ const ProposalData = props => {
                 Links
               </Text>
             </View>
-            <Text>
-              {proposalInfo.description?.links?.length > 0 && (
+
+            {proposalInfo.description?.links?.length > 0 && (
               proposalInfo.description?.links.map((l) => <View style={styles.adRow}>
                 <Icon name="link" color={colors.mainBlue} size={16} />
                 <TouchableOpacity
@@ -233,8 +233,8 @@ const ProposalData = props => {
                   <Text style={styles.adsText}>{l.title}</Text>
                 </TouchableOpacity>
               </View>  )
-              )}
-            </Text>
+            )}
+
             {proposalInfo.description?.files?.length > 0 && (
               proposalInfo.description?.files.map((f, index) => <View style={styles.adRow}>
                 <Icon name="file" color={colors.mainBlue} size={16} />
