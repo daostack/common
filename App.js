@@ -28,7 +28,6 @@ import {
   HUDTest,
   MyWallet,
   CreateAccount,
-  CreateCommon,
   CompleteAccount,
   EditProfile,
   UserProfileReadMode,
@@ -305,7 +304,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           options={{headerShown: false}}
           userStore={userStore}
         />
-        <Stack.Screen name="CreateCommon" component={CreateCommon} />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
         <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
         <Stack.Screen
