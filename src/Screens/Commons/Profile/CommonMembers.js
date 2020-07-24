@@ -10,32 +10,15 @@ import {
   Dimensions,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {layout, colors, text, sizeS} from '../../../Theme';
-import {TabView, TabBar} from 'react-native-tab-view';
+import {layout, font, colors, text, sizeS} from '../../../Theme';
+import {TabView} from 'react-native-tab-view';
 import ProposalsList from '../../Proposals/ProposalsList';
 import CommonMembersList from './CommonMembersList';
+import CommonTabBar from '../../CommonTabBar';
 
 const getTabName = (objectName, count) => {
   return `${objectName} (${count ? count : 0})`;
 };
-
-const renderTabBar = props => (
-  <TabBar
-    {...props}
-    indicatorStyle={{
-      backgroundColor: colors.black,
-    }}
-    renderLabel={({route, focused, color}) => {
-      return (
-        <Text style={focused ? styles.tabStyleActive : styles.tabStyle}>
-          {route.title}
-        </Text>
-      );
-    }}
-    style={{backgroundColor: colors.white}}
-    tabStyle={{width: 'auto'}}
-  />
-);
 
 const Members = ({navigation, members}) => {
   return (
@@ -131,7 +114,7 @@ const CommonMembers = ({navigation, route}) => {
           nestedScrollEnabled={true}
           directionalLockEnabled={true}>
           <View style={styles.sectionContainer}>
-            <Text style={text.h2Black}>Members</Text>
+            <Text style={styles.title}>Members</Text>
           </View>
 
           <View style={styles.sectionTabView}>
@@ -140,7 +123,7 @@ const CommonMembers = ({navigation, route}) => {
               renderScene={renderScene}
               onIndexChange={setIndex}
               initialLayout={initialLayout}
-              renderTabBar={renderTabBar}
+              renderTabBar={CommonTabBar}
             />
           </View>
         </ScrollView>
@@ -163,9 +146,12 @@ const styles = StyleSheet.create({
   sectionContainer: {
     ...layout.content,
     marginVertical: sizeS,
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
-
+  title: {
+    ...font.heading.bold,
+    ...font.fontSize(5),
+  },
   tabStyleActive: {
     ...text.ashleyjquimbacom2,
     color: colors.black,
