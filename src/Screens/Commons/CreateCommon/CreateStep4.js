@@ -190,7 +190,13 @@ const CreateStep4 = props => {
       };
       console.log('calling createCommon(...)');
 
-      props.navigation.navigate({ name: 'FullScreenCreationLoader', params: { title: 'Common' } });
+      props.navigation.navigate({
+        name: 'FullScreenCreationLoader',
+        params: {
+          title: 'Creating your Common',
+          message: 'This might take a couple of minutes.',
+        },
+      });
 
       const commonAddress = await ArcService.getInstance().createCommon(
         data,
