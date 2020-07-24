@@ -39,10 +39,10 @@ const Onboarding = ({navigation}) => {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
-          <Image
-                source={require('../Assets/appLogo.png')}
-                style={styles.logo}
-              />
+            <Image
+              source={require('../Assets/appLogo.png')}
+              style={styles.logo}
+            />
           </View>
           <Swiper
             loadMinimal={true}
