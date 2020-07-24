@@ -20,12 +20,14 @@ import {CommonActions} from '@react-navigation/native';
 import ArcService from '../../../Services/ArcService';
 import Toast from '../../../Util/Toast';
 import { preauthorizePayment } from '../../../Services/MangopayService';
+import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 
 const RequestStep4 = ({navigation, ...props}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const isFirstStepSkipped = props.route.params.skipFirstStep;
 
+  const { name } = props.daoStore.dao;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -89,6 +91,8 @@ const RequestStep4 = ({navigation, ...props}) => {
     }
   };
 
+  const subtitle =  `You are contributing $${props.personalContributionFormStore.form.fields.amount?.value} to this common`;
+
   return (
     <>
       <SafeAreaView style={{backgroundColor: colors.white}} />
@@ -99,7 +103,7 @@ const RequestStep4 = ({navigation, ...props}) => {
         }}>
         <CreateStepNavigation
           navigation={navigation}
-          title="Personal contribution"
+          title={name}
         />
         <CreateStepDotHeader
           title="Payment"
@@ -130,22 +134,7 @@ const RequestStep4 = ({navigation, ...props}) => {
               // padding: 24,
               backgroundColor: 'white',
             }}>
-            <Text
-              style={{
-                marginTop: 24,
-                fontWeight: 'bold',
-                fontSize: 18,
-                textAlign: 'center',
-              }}>
-              Payment
-            </Text>
-            <Text
-              style={{marginTop: 12, marginBottom: 23, textAlign: 'center'}}>
-              You are contributing{' '}
-              {props.paymentFormStore.getChangedFormFieldsJson().amount} to this
-              common
-            </Text>
-
+            <RequestStepHeaderTitle title="Payment" subtitle={subtitle} />
             <TextInputField
               label="Credit card number"
               value={/* __DEV__ ? */ 4972485830400056}
@@ -233,4 +222,5 @@ export default inject(
   'personalContributionFormStore',
   'paymentFormStore',
   'userStore',
+  'daoStore'
 )(observer(RequestStep4));

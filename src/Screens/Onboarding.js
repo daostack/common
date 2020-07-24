@@ -144,6 +144,12 @@ const styles = StyleSheet.create({
     height: 26,
     resizeMode: 'contain',
   },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: Colors.black,
+    textAlign: 'center',
+  },
 
   image: {
     top: 0,

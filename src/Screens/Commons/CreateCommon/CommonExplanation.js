@@ -119,13 +119,6 @@ const styles = StyleSheet.create({
     ...font.fontSize(4),
     ...layout.paddingVerticalM,
   },
-  // sectionTitle: {
-  //   fontSize: 20,
-  //   //   fontFamily: 'Roboto',
-  //   fontWeight: '600',
-  //   color: Colors.black,
-  //   textAlign: 'center',
-  // },
   image: {
     top: 0,
     width: '100%',
