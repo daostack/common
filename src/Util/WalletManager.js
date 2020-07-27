@@ -292,6 +292,7 @@ export default class WalletManager {
       return myTxHash;
     } catch (err) {
       console.log(err);
+      throw (err);
     }
   }
 
