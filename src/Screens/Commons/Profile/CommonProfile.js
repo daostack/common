@@ -209,6 +209,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
           commonName={currCommon.name}
           navigation={navigation}
           commonId={currCommon.id}
+          onlyFundingRequests={true}
           isHistory={true}
         />
       </View>
