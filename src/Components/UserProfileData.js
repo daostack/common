@@ -57,7 +57,7 @@ const UserProfileData = ({
   };
 
   const renderUserProfilePicture = () => {
-    if (true) {
+    if (isEditMode) {
       return (
         <ImageField
           isAvatar={true}

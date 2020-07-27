@@ -147,7 +147,7 @@ class ImageField extends React.Component {
           <View>
 
             {this.renderImage()}
-            { (isAvatar || currValue) ? (
+            {!disableEdit && (isAvatar || currValue) ? (
               <TouchableOpacity
                 style={isAvatar ? styles.formImageFielAddIconAvatar : styles.formImageFielAddIcon}
                 onPress={() => this.pickImage()}>
