@@ -22,6 +22,7 @@ export default {
   lightishGreen: '#6ee569',
   lightGreen: '#f1fdf0',
   paleGrey: '#fafaff',
+  paleLilacTwo: '#f0f2ff',
   orangeLight: '#fdf7ed',
   orange: '#ffae26',
   orangeDark: '#ff7c00',
