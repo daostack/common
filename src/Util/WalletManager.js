@@ -181,6 +181,11 @@ export default class WalletManager {
       console.log('execTransaction ->', response);
       return response;
     } catch (err) {
+      if (err.message.match(/contract not deployed/) && err.message.search(safeAddress)) {
+        const msg = `Trying to send a transaction using safeAddress ${safeAddress}, but got ${err}`;
+        console.log(msg);
+        throw Error(msg);
+      }
       console.log(err);
       throw err;
     }
