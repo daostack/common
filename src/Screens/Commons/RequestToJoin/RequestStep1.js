@@ -108,7 +108,7 @@ const RequestStep1 = props => {
                 <RequestToJoinRule
                   index={index + 1}
                   title={rule.title}
-                  description={rule.description}
+                  description={rule.url}
                 />
               ))}
           </View>

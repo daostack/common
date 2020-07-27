@@ -10,6 +10,9 @@ import SwiperCard from '../../Components/SwiperCard';
 
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 
+
+import { PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '../../Services/ProposalService';
+
 const {width, height} = Dimensions.get('window');
 
 const ProposalsList = ({ isMember, commonName, safeAddress, showAll, showMax, onlyFundingRequests, ...props}) => {
@@ -25,24 +28,12 @@ const ProposalsList = ({ isMember, commonName, safeAddress, showAll, showMax, on
   let listRef = useRef([]);
   let unsubscribe = null;
   useEffect(() => {
-    const loadProposalInfo = async (commonId, userId, isHistory, showAll, onlyFundingRequests) => {
-      let proposalStages = null;
-      if (isHistory) {
-        // TODO: use ProposalsList.PROPOSAL_STAGES_HISTORY here
-        proposalStages = [
-          PROPOSAL_STAGE.ExpiredInQueue,
-          PROPOSAL_STAGE.Executed,
-        ];
-      } else {
-        // TODO: use ProposalsList.PROPOSAL_STAGES_ACTIVE here
-        proposalStages = [
-          PROPOSAL_STAGE.Queued,
-          PROPOSAL_STAGE.PreBoosted,
-          PROPOSAL_STAGE.Boosted,
-          PROPOSAL_STAGE.QuietEndingPeriod,
-        ];
-      }
 
+    console.log("PROPOSALS LIST useEffect");
+
+    const loadProposalInfo = async (commonId, userId, isHistory, showAll, onlyFundingRequests) => {
+      let proposalStages = isHistory ? PROPOSAL_STAGES_HISTORY : PROPOSAL_STAGES_ACTIVE;
+      
       unsubscribe = await ProposalService.getInstance().subscribeToProposalList(
         commonId,
         userId,
