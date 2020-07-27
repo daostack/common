@@ -810,6 +810,7 @@ const styles = StyleSheet.create({
   backButton: {
     ...font.primary.regular,
     ...font.fontSize(3),
+    color: colors.black,
   },
   modalRequestSentBtnPrimary: {
     ...layout.btnPrimary,
