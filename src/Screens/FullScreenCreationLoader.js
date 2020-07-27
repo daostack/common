@@ -55,6 +55,46 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
   },
+<<<<<<< HEAD
+=======
+  sectionContainer: {
+    marginTop: 22,
+    marginBottom: 34,
+  },
+  buttonConatiner: {
+    marginTop: 22,
+    marginBottom: 22,
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 25,
+    marginHorizontal: 24,
+    backgroundColor: '#3cc7e1',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    paddingVertical: 15,
+  },
+  shareButton: {
+    width: '80%',
+    alignSelf: 'center',
+  },
+  continueButton: {
+    width: '80%',
+    height: 48,
+    alignSelf: 'center',
+    borderRadius: 32,
+    marginTop: 45,
+    flexDirection: 'row',
+    paddingHorizontal: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.mainBlue,
+  },
+>>>>>>> removed unused style on FullScreenCreationLoader
   image: {
     top: 0,
     width: '100%',
