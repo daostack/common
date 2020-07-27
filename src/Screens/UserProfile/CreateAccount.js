@@ -9,12 +9,7 @@ import AppleSignInButton from '../../Components/Auth/AppleSignInButton';
 import AuthService from '../../Services/AuthService';
 
 const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
-  const bottomSheetContainerRef = useRef();
-
-  const openSheet = () => {
-    bottomSheetContainerRef.current.snapTo(1);
-  };
-
+  
   const onSignIn = async userInfo => {
     if (onSignedIn) {
       onSignedIn(userInfo.additionalUserInfo.isNewUser);
