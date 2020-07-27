@@ -93,12 +93,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.mainBlue,
   },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: Colors.black,
-    textAlign: 'center',
-  },
   image: {
     top: 0,
     width: '100%',
