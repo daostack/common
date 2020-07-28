@@ -30,6 +30,7 @@ const CreateStep2 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [segmentedIndex, setSegmentedIndex] = useState(0);
+  const [contributionIndex, setContributionIndex] = useState(0);
   const [pickDate, setPickDate] = useState(null);
   const [show, setShow] = useState(false);
 
@@ -44,7 +45,30 @@ const CreateStep2 = props => {
 
   useEffect(() => {
     onTabChange(0); // pre-select 1 week at first render
+    onContributionTabChange(0); // pre-select
   }, []);
+
+  const onContributionTabChange = (index) => {
+    const name = CreateCommonForm.CONTRIBUTION;
+    props.fundingFormStore.registerFormField(name, 'required');
+    switch (index) {
+    case 0: {
+      props.fundingFormStore.fieldChanged(
+        name,
+        'one-time'
+      );
+      break;
+    }
+    case 1: {
+      props.fundingFormStore.fieldChanged(
+        name,
+        'monthly'
+      );
+      break;
+    }
+    }
+    setContributionIndex(index);
+  };
 
   /* useEffect(() => {
     const name = CreateCommonForm.DEADLINE;
@@ -186,6 +210,17 @@ const CreateStep2 = props => {
               marginBottom: 40,
             }}
           />
+          <Text style={styles.label}>{'Contribution'}</Text>
+          <SegmentedControlTab
+            tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 44}}
+            tabStyle={{borderColor: colors.grey4}}
+            activeTabStyle={{backgroundColor: colors.mainBlue}}
+            values={['One-time', 'Monthly']}
+            tabTextStyle={styles.tabTextStyle}
+            borderRadius={8}
+            selectedIndex={contributionIndex}
+            onTabPress={onContributionTabChange}
+          />
           <TextInputFieldWithIcon
             iconName="dollar"
             iconSize={12}
@@ -213,7 +248,9 @@ const CreateStep2 = props => {
               </Text>
             </View>
             <Text style={styles.info2}>
-            Set a period of time before members can create proposals and allocate the funds. this will allow more members to join and participate in the decision making process.
+              Set a period of time before members can create proposals and
+              allocate the funds. this will allow more members to join and
+              participate in the decision making process.
             </Text>
 
             <SegmentedControlTab
@@ -230,24 +267,25 @@ const CreateStep2 = props => {
               selectedIndex={segmentedIndex}
               onTabPress={onTabChange}
             />
-            {Platform.OS === 'ios' ? <Modal
-              visible={show}
-              transparent={true}
-              avoidKeyboard={true}
-              backdropOpacity={0.3}
-              onBackdropPress={() => setShow(false)}
-              style={styles.view}>
-              <View style={{ backgroundColor: 'white' }}>
-                <View
-                  style={{
-                    height: 50,
-                    backgroundColor: colors.grey4,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'flex-end',
-                    position: 'relative',
-                  }}>
-                  {/* <Text
+            {Platform.OS === 'ios' ? (
+              <Modal
+                visible={show}
+                transparent={true}
+                avoidKeyboard={true}
+                backdropOpacity={0.3}
+                onBackdropPress={() => setShow(false)}
+                style={styles.view}>
+                <View style={{backgroundColor: 'white'}}>
+                  <View
+                    style={{
+                      height: 50,
+                      backgroundColor: colors.grey4,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'flex-end',
+                      position: 'relative',
+                    }}>
+                    {/* <Text
                     style={{
                       color: colors.slate,
                       fontSize: 14,
@@ -260,22 +298,25 @@ const CreateStep2 = props => {
                     }}>
                     {'Min. 1 week'}
                   </Text> */}
-                  <TouchableOpacity onPress={() => setShow(false)}>
-                    <Text
-                      style={{
-                        color: colors.mainBlue,
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                        paddingRight: 20,
-                        textAlign: 'center',
-                      }}>
-                      {'Done'}
-                    </Text>
-                  </TouchableOpacity>
+                    <TouchableOpacity onPress={() => setShow(false)}>
+                      <Text
+                        style={{
+                          color: colors.mainBlue,
+                          fontSize: 16,
+                          fontWeight: 'bold',
+                          paddingRight: 20,
+                          textAlign: 'center',
+                        }}>
+                        {'Done'}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  {DatePicker}
                 </View>
-                {DatePicker}
-              </View>
-            </Modal> : show && (DatePicker) }
+              </Modal>
+            ) : (
+              show && DatePicker
+            )}
           </View>
           {/* <TextInputFieldWithIcon
             iconName="dollar"
