@@ -1,6 +1,6 @@
 import { NativeWallet } from './NativeWallet';
 import { ethers, Contract } from 'ethers';
-import { web3ProviderUrl, web3NetworkId, COMMONTOKENADDRESS, relayerUrl, defaultAllowance } from '../Config';
+import { web3ProviderUrl, web3NetworkId, COMMONTOKENADDRESS, relayerUrl } from '../Config';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 import ABI from './abi.json';
@@ -29,7 +29,7 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
 };
 
 const axiosClient = axios.create({
-  baseURL: relayerUrl,
+  baseURL: relayerUrl(),
   // for dev
   timeout: 1000000, // milliseconds
 });
