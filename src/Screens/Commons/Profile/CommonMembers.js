@@ -22,7 +22,9 @@ const getTabName = (objectName, count) => {
 
 const Members = ({navigation, members}) => {
   return (
-    <CommonMembersList navigation={navigation} members={members} />
+    <View style={{padding: sizeS}}>
+      <CommonMembersList navigation={navigation} members={members} />
+    </View>
   );
 };
 

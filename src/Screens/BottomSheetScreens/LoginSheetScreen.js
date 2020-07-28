@@ -5,7 +5,6 @@ import {colors, text, layout} from '../../Theme';
 import GSignInButton from '../../Components/Auth/GSignInButton';
 import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
-import CreateAccount from '../UserProfile/CreateAccount';
 
 const LoginSheetScreen = ({bottomSheetStore, ...props}) => {
   return (
@@ -16,14 +15,9 @@ const LoginSheetScreen = ({bottomSheetStore, ...props}) => {
           ...styles.sheetTextStyle,
           ...layout.marginBottomXL,
         }}>
-        {props.message ? props.message : 'Connect your account to join this Common'}
+        {props.message ? props.message : 'To join this Common you need to be connected with your Google account'}
       </Text>
 
-      <View style={layout.flexRow}>
-        <CreateAccount hidePlaceholder={true} onSignedIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)}/>
-      </View>
-
-{/** 
       <View style={layout.flexRow}>
         <GSignInButton style={styles.googleSignInButton} onSignIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)} />
       </View>
@@ -37,7 +31,6 @@ const LoginSheetScreen = ({bottomSheetStore, ...props}) => {
           By clicking next you are accepting the Common app terms of use
         </Text>
       </View>
-      */}
     </View>
   );
 };
@@ -53,7 +46,7 @@ const styles = StyleSheet.create({
 
   sheetTitleStyle: {
     ...text.centered,
-    ...text.h2Black,
+    ...text.h3Black,
     ...layout.marginTopM,
   },
 

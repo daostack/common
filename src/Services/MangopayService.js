@@ -5,7 +5,7 @@ const qs = require('qs');
 
 
 const axiosClient = axios.create({
-  baseURL: mangoPayUrl(),
+  baseURL: mangoPayUrl,
   // or for development:
   //baseURL: 'http://localhost:5001/common-daostack/us-central1/mangopay/',
   timeout: 1000000, // milliseconds

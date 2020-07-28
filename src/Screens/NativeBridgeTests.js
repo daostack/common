@@ -660,30 +660,18 @@ class nativeBridgeTests extends React.Component {
 
 
           <Text style={{ marginBottom: 10 }}>
-            ARC_VERSION: {ARC_VERSION}
-          </Text>
-          <Text style={{ marginBottom: 10 }}>
-            GRAPH_VERSION: {GRAPH_VERSION}
-          </Text>
-          <Text style={{ marginBottom: 10 }}>
-            graphHttpLink: {graphHttpLink}
-          </Text>
-          <Text style={{ marginBottom: 10 }}>
-            ARC_VERSION: {ARC_VERSION}
-          </Text>
-          <Text style={{ marginBottom: 10 }}>
-            relayerUrl: {relayerUrl()}
-          </Text>
-          <Text style={{ marginBottom: 10 }}>
-            COMMONTOKENADDRESS: {COMMONTOKENADDRESS}
-          </Text>
-          <Text style={{ marginBottom: 10 }}>
-          Network: {this.state.networkURL}
+ ARC_VERSION: {ARC_VERSION}
+ GRAPH_VERSION: {GRAPH_VERSION}
+ graphHttpLink: {graphHttpLink}
+ ARC_VERSION: {ARC_VERSION}
+  graphwsLink
+  ipfsLink
+  web3ProviderUrl
+relayerUrl: {relayerUrl}
+COMMONTOKENADDRESS: {COMMONTOKENADDRESS}
+            Network: {this.state.networkURL}
           </Text>
 
-          {/* graphwsLink
-  ipfsLink
-  web3ProviderUrl */}
 
         </ScrollView>
       </View>

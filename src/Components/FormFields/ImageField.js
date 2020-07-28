@@ -99,15 +99,7 @@ class ImageField extends React.Component {
           }}
         />
       );
-    } 
-    else if(isAvatar){
-      return (
-        <View style={styles.imageStyle}>
-          <Icon name="account-place-holder" size={100} />
-        </View>
-      );
-    }
-    else {
+    } else {
       return (
         <View style={styles.imageFieldPlaceholderView}>
           <Icon name="addpicture" size={34} />
@@ -128,7 +120,7 @@ class ImageField extends React.Component {
             Get more attention to your proposal
           </Text>
           <View styles={layout.flexRow}>
-            <TouchableOpacity style={styles.btn} onPress={this.pickImage} >
+            <TouchableOpacity style={styles.btn} onPress={this.pickImage}>
               <Text style={text.buttonblue}>Add Image</Text>
             </TouchableOpacity>
           </View>
@@ -153,7 +145,6 @@ class ImageField extends React.Component {
               : styles.formFieldContainerGenral
           }>
           <View>
-
             {this.renderImage()}
             {!disableEdit && (isAvatar || currValue) ? (
               <TouchableOpacity
@@ -161,7 +152,7 @@ class ImageField extends React.Component {
                 onPress={() => this.pickImage()}>
                 {/* onPress={() => this.onFieldDeleted()}> */}
                 {/* <Icon name="delete" size={16} color={colors.white} /> */}
-                <Icon name="addpicture" size={16} color={colors.white} />
+                <Icon name="add-picture" size={16} color={colors.white} />
               </TouchableOpacity>
             ) : null}
           </View>

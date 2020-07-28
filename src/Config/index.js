@@ -1,12 +1,11 @@
-import { IPFSApiClient } from './ipfs-api';
+import {IPFSApiClient} from './ipfs-api';
 import Config from 'react-native-config';
-import axios from 'axios';
+
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
 // TODO: we should probably read this from the package..
 
 let arcVersion;
 let graphVersion;
-let localFunctionURL;
 let cloudFunctionURL;
 let networkId;
 let clientId;
@@ -17,11 +16,9 @@ let commonTokenAddress;
 let ipfsUrl;
 let ipfsDataVersion;
 
-
 if (Config.ENV === 'production') {
   arcVersion = '0.1.2-rc.0';
   graphVersion = 'v8_7_exp_xdai';
-  localFunctionURL = 'http://localhost:5001/common-daostack/us-central1'
   cloudFunctionURL = 'https://us-central1-common-daostack.cloudfunctions.net';
   graphUrl = 'https://api.thegraph.com/subgraphs-daostack/name/daostack';
   graphWS = 'wss://api.thegraph.com/subgraphs-daostack/name/daostack';
@@ -34,8 +31,7 @@ if (Config.ENV === 'production') {
 } else if (Config.ENV === 'staging') {
   arcVersion = '0.1.2-rc.0';
   graphVersion = 'v8_7_exp_kovan';
-  localFunctionURL = 'http://localhost:5001/common-staging-50741/us-central1'
-  cloudFunctionURL ='https://us-central1-common-staging-50741.cloudfunctions.net';
+  cloudFunctionURL = 'https://us-central1-common-staging-50741.cloudfunctions.net';
   graphUrl = 'https://api.thegraph.com/subgraphs-daostack/name/daostack';
   graphWS = 'wss://api.thegraph.com/subgraphs-daostack/name/daostack';
   ipfsUrl = 'https://api.thegraph.com/ipfs-daostack/api/v0';
@@ -48,29 +44,12 @@ if (Config.ENV === 'production') {
   throw Error(`Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`);
 }
 
-let isLocalPort = false;
-if (__DEV__) {
-  axios.get('http://localhost:5001')
-    .catch(error => {
-      isLocalPort = error.response.status === 404;
-    });
-}
-
-const cloudFuncURL = () => {
-  return isLocalPort ?  localFunctionURL : cloudFunctionURL;
-};
-
-const functionEndpoint = endpoint => {
-  return `${cloudFuncURL()}/${endpoint}`;
-};
-
-
 export const ARC_VERSION = arcVersion;
 export const GRAPH_VERSION = graphVersion;
 export const IPFS_DATA_VERSION = ipfsDataVersion;
-export const mangoPayUrl = () => { return functionEndpoint('mangopay'); };
-export const graphqlUrl = () => { return functionEndpoint('graphql'); };
-export const relayerUrl = () => { return functionEndpoint('relayer'); };
+export const mangoPayUrl = `${cloudFunctionURL}/mangopay`;
+export const graphqlUrl = `${cloudFunctionURL}/graphql`;
+export const relayerUrl = `${cloudFunctionURL}/relayer`;
 export const graphHttpLink = `${graphUrl}/${graphVersion}`;
 export const graphwsLink = `${graphWS}/${graphVersion}`;
 export const ipfsLink = ipfsUrl;
