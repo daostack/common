@@ -375,7 +375,6 @@ const styles = StyleSheet.create({
 
   readMoreBtn: {
     ...text.h3Black,
-    fontWeight: '500',
     ...layout.flexStart,
     ...layout.marginTopL,
     textAlign: 'left',
