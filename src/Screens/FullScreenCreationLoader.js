@@ -55,8 +55,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
   },
-<<<<<<< HEAD
-=======
   sectionContainer: {
     marginTop: 22,
     marginBottom: 34,
@@ -94,7 +92,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.mainBlue,
   },
->>>>>>> removed unused style on FullScreenCreationLoader
   image: {
     top: 0,
     width: '100%',
