@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import moment from 'moment';
-import {layout, colors, text} from '../../Theme';
+import {layout, colors, text, font} from '../../Theme';
 import FastImage from 'react-native-fast-image';
 
 const UserMessageCard = ({photoURL, name, message, time}) => {
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 2,
     borderColor: colors.white,
-    marginRight: 20,
+    marginRight: 15,
   },
   messageCardContainer: {
     ...layout.content,
@@ -39,14 +39,21 @@ const styles = StyleSheet.create({
     ...layout.content,
     paddingVertical: 10,
     borderRadius: 15,
-    backgroundColor: colors.grey4,
+    backgroundColor: colors.paleLilacTwo,
     ...layout.flexStart,
   },
   nameStyle: {
-    ...text.h3Black,
+    ...font.primary.bold,
+    ...font.fontSize(2),
+    color: colors.black,
     textAlign: 'left',
   },
-  messageStyle: {...text.blackText, ...layout.marginTopS},
+  messageStyle: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.black,
+    ...layout.marginTopS,
+  },
   timeStyle: {
     ...text.textFieldplaceholder,
     textAlign: 'right',
