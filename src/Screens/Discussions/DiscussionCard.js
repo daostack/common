@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
   sheetText: {
     ...font.primary.regular,
     ...font.fontSize(3),
-    color: colors.black,
+    color: colors.against,
     marginLeft: 10,
   },
   sheetButton: {
