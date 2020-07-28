@@ -13,8 +13,6 @@ const styles = StyleSheet.create({
     color: colors.slate,
   },
   val: {
-    fontSize: 20,
-    fontWeight: 'bold',
     ...font.primary.bold,
     ...font.fontSize(3),
     textAlign: 'center',

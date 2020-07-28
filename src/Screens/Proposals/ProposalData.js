@@ -468,7 +468,6 @@ const styles = StyleSheet.create({
   adsText: {
     ...text.h3Black,
     ...layout.marginLeftXS,
-    fontWeight: '500',
   },
 
   adRow: {

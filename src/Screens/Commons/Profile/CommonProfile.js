@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
-  StatusBar,
   ScrollView,
   Platform,
 } from 'react-native';
@@ -878,8 +877,8 @@ const styles = StyleSheet.create({
     marginBottom: 9,
   },
   readMoreButton: {
-    fontSize: 16,
-    fontWeight: '700',
+    ...font.primary.bold,
+    ...font.fontSize(3),
     color: colors.black,
   },
   commonNumbers: {
