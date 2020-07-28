@@ -56,7 +56,7 @@ export default class TabBarIndicator extends React.Component {
 
       // every index contains widths at all previous indices
       const outputRange = routes.reduce((acc, _, i) => {
-        if (i === 0) return [0];
+        if (i === 0) {return [0];}
         return [...acc, acc[i - 1] + getTabWidth(i - 1)];
       }, []);
 
@@ -111,7 +111,7 @@ export default class TabBarIndicator extends React.Component {
           // If layout is not available, use `left` property for positioning the indicator
           // This avoids rendering delay until we are able to calculate translateX
           { width: indicatorWidth },
-          
+
           layout.width
             ? { transform: [{ translateX }] }
             : { left: `${(100 / routes.length) * navigationState.index}%` },
@@ -142,5 +142,5 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     marginTop: sizeS,
     marginBottom: sizeS,
-  }
+  },
 });

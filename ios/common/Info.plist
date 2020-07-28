@@ -61,5 +61,17 @@
 	<string>Camera Permission</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>$(PRODUCT_NAME) photos and video use.</string>
+	<key>NSUbiquitousContainers</key>
+	<dict>
+		<key>iCloud.${PRODUCT_BUNDLE_IDENTIFIER}</key>
+		<dict>
+			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
+			<true/>
+			<key>NSUbiquitousContainerSupportedFolderLevels</key>
+			<string>One</string>
+			<key>NSUbiquitousContainerName</key>
+			<string>$(PRODUCT_NAME)</string>
+		</dict>
+	</dict>
 </dict>
 </plist>

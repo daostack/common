@@ -8,28 +8,25 @@ import {
 import React from 'react';
 import { layout, colors, text, font } from '../../Theme';
 import FastImage from 'react-native-fast-image';
-import { BlurView } from '@react-native-community/blur';
 import Icon from '../../Assets/iconfont/Icon';
+import { BlurView } from '../../Components';
+import {CommonActions} from '@react-navigation/native';
 
 const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, headerHeightLayouted }) => {
 
   const openAgendaScreen = e => {
-    navigation.navigate('CommonAgenda');
+    navigation.navigate('CommonAgenda', {
+      screenTitle: commonInfo.name,
+    });
   };
 
   return (
     <SafeAreaView onLayout={ event => {
       headerHeightLayouted(event.nativeEvent.layout.height);
-    }}>
-      <View
-        style={styles.headerContainer}>
-        <View
-          style={{
-            ...layout.content,
-            ...{padding: 0},
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+    }}
+    style={styles.headerContainer}
+    >
+        
           {commonInfo.logo ? (
             <FastImage
               style={styles.logoImage}
@@ -58,8 +55,8 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, head
             </BlurView>
           ) : null}
 
-        </View>
-      </View>
+        
+      
     </SafeAreaView>
   );
 };
@@ -88,13 +85,11 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     ...layout.content,
-    // ...layout.flexRow,
-    // ...layout.flexStart,
     alignSelf: 'stretch',
     flexGrow: 1,
-    paddingBottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 0,
+    marginBottom: 10,
+    ...layout.flexEnd,
   },
   headerContainerCenterContent: {
     justifyContent: 'center',

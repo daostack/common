@@ -19,7 +19,7 @@ const MemberCard = ({
     if (proposalInfo) {
       const proposalValue =
         proposalInfo.type === PROPOSAL_TYPE.JoinAndQuit
-          ? proposalInfo.joinAndQuit.funding / 100
+          ? proposalInfo.description.funding / 100
           : proposalInfo.fundingRequest.amount / 100;
       const remainingSeconds = proposalInfo.closingAt - moment().unix();
       return (
@@ -93,7 +93,7 @@ const MemberCard = ({
             {proposalInfo
               ? moment.unix(proposalInfo.createdAt).fromNow()
               : showMemberCreatedDate
-                ? `Member in ${userInfo?.daos?.length} Common${
+                ? `Member in ${userInfo?.daos?.length || 0} Common${
                   userInfo?.daos?.length > 1 ? 's' : ''
                 }`
                 : `Member since ${memberSince || 'unknown'}`}

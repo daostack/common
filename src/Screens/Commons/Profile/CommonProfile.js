@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   StatusBar,
   ScrollView,
+  Platform,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
@@ -42,15 +43,21 @@ import {
   Fade,
 } from 'rn-placeholder';
 import NavigationBar from 'react-native-navbar';
-import {BlurView} from '@react-native-community/blur';
 import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 import ProposalActivationDate from '../../../Components/Proposals/ProposalActivationDate';
+import { BlurView } from '../../../Components';
 
-const STICKY_HEADER_HEIGHT = 114;
+let stickyHeighAddon = 0;
+if (Platform.OS === 'ios') {
+  stickyHeighAddon += 36;
+}
+
+const STICKY_HEADER_HEIGHT = Math.round( getStatusBarHeight() ) + stickyHeighAddon;
+const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 80;
 
 const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const [isMember, setMemberState] = useState(false);
-
   const window = Dimensions.get('window');
 
   const [index, setIndex] = useState(0);
@@ -74,7 +81,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
 
   const [dark, setDark] = useState(false);
-  const [headerHeight, setHeaderHeight] = useState(STICKY_HEADER_HEIGHT);
+  const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
 
   const upperRequestToJoinBtnRef = useRef(null);
 
@@ -83,12 +90,13 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
 
+  //setHeaderHeight(height + 35);
 
   const headerHeightLayouted = height => {
     if (height - headerHeight > 3) {
       // To avoid render multiple times
       // console.log('height ->', height);
-      setHeaderHeight(height + 35);
+      //setHeaderHeight(height + 35);
     }
     return height;
   };
@@ -114,8 +122,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     setShowRequestSentModal(route.params.showRequestSentModal);
     if (userStore.userInfo && userStore.isDaoMember(daoMembers)) {
       setMemberState(true);
+      setHeaderHeight(DEFAULT_HEADER_HEIGHT + 36);
     } else {
       setMemberState(false);
+      setHeaderHeight(DEFAULT_HEADER_HEIGHT);
     }
   }, [
     route.params.showRequestSentModal,
@@ -174,7 +184,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   const Proposals = () => {
     return (
-      <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
+      <View style={{...styles.paleBackground, ...{padding: sizeL, height: 3000}}}>
         <Text style={text.h1BlackTitle}>Proposals</Text>
 
         <ProposalsList
@@ -199,6 +209,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
           commonName={currCommon.name}
           navigation={navigation}
           commonId={currCommon.id}
+          onlyFundingRequests={true}
           isHistory={true}
         />
       </View>
@@ -219,7 +230,9 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   };
 
   const openAgendaScreen = e => {
-    navigation.navigate('CommonAgenda');
+    navigation.navigate('CommonAgenda', {
+      screenTitle: currCommon.name,
+    });
   };
 
   const renderAgendaForNonMembers = () => {
@@ -297,7 +310,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     navigation.navigate('CommonMembers', {
       members: daoMembers,
       commonId: currCommon.id,
-      commonName: currCommon.name,
+      screenTitle: currCommon.name,
     });
   };
 
@@ -351,15 +364,13 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   };
 
   const viewProposal = () => {
-    const navigate = CommonActions.navigate({
-      name: 'ProposalScreen',
-      params: {
-        proposalId: route.params.createdProposalId,
-        commonName: currCommon.name,
-        isMember,
-      },
+    navigation.navigate('ProposalScreen', {
+      proposalId: route.params.createdProposalId,
+      screenTitle: currCommon.name,
+      isMember,
     });
-    navigation.dispatch(navigate);
+
+
     setShowRequestSentModal(false);
   };
 
@@ -368,15 +379,12 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   };
 
   const openProposalScreen = event => {
-    const navigate = CommonActions.navigate({
-      name: 'ProposalScreen',
-      params: {
-        proposalId: pendingProposalsData.usersPendingProposal?.id,
-        commonName: currCommon.name,
-        isMember,
-      },
+
+    navigation.navigate('ProposalScreen', {
+      proposalId: pendingProposalsData.usersPendingProposal?.id,
+      screenTitle: currCommon.name,
+      isMember,
     });
-    navigation.dispatch(navigate);
   };
 
   const renderPendingApproval = () => {
@@ -482,14 +490,12 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     return (
       <NavigationBar
         statusBar={{hidden: true}}
-        style={styles.fixedSection}
+        containerStyle={styles.fixedSection}
         leftButton={
           <TouchableOpacity
             style={{justifyContent: 'center'}}
             onPress={() => navigation.pop()}>
-            <BlurView
-              style={{padding: 5, borderRadius: 15}}
-              blurType={dark ? 'light' : 'dark'}>
+            <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
               <Icon
                 name="left-arrow"
                 size={32}
@@ -510,7 +516,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               onPress={shareCommon}>
               <BlurView
                 style={{padding: 8, borderRadius: 15}}
-                blurType={dark ? 'light' : 'dark'}>
+                isBlurring={dark}>
                 <Icon
                   name="share-32"
                   size={25}
@@ -523,7 +529,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               onPress={shareCommon}>
               <BlurView
                 style={{padding: 5, borderRadius: 15}}
-                blurType={dark ? 'light' : 'dark'}>
+                isBlurring={dark}>
                 <Icon
                   name="menu-horizontal"
                   size={32}
@@ -563,11 +569,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     <View style={{flex: 1, backgroundColor: colors.white}}>
       {currCommon ? (
         <View style={{flex: 1, position: 'relative'}}>
-          <StatusBar
-            barStyle={dark ? 'dark-content' : 'light-content'}
-            translucent
-            backgroundColor="transparent"
-          />
+
           <TouchableOpacity
             style={{
               justifyContent: 'center',
@@ -584,7 +586,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             />
           </TouchableOpacity>
 
-          {showStickyTabBar && (<View style={{position: 'absolute', top: 70, width: '100%', paddingBottom: 5, zIndex: 999}}>
+          {showStickyTabBar && (<View style={{position: 'absolute', top: STICKY_HEADER_HEIGHT, width: '100%', paddingBottom: 5, zIndex: 999}}>
             <TabBarRenderer navigationState={{index: 0, routes: routes}} parentRef={originTabBarRef} />
           </View>)}
 
@@ -607,14 +609,15 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               </FastImage>
             )}
             scrollEvent={e => {
+              //console.log("Scroll e -> ", e);
               setDark(
-                e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT - 40,
+                e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT,
               );
               upperRequestToJoinBtnRef?.current?.measure( (fx, fy, width, height, px, py) => {
-                setShowStickyRequestToJoinBtn(py < 36 );
+                setShowStickyRequestToJoinBtn(py < (stickyHeighAddon) );
               });
               stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
-                const isVisible = py < 76;
+                const isVisible = py < (STICKY_HEADER_HEIGHT);
                 if (isVisible != showStickyTabBar) {
                   setShowStickyTabBar(isVisible);
                 }
@@ -669,7 +672,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             </View>
 
             {!isMember && showReqToJoin && (
-              <View style={styles.upperActionButtonContainer} ref={upperRequestToJoinBtnRef}>
+              <View style={styles.upperActionButtonContainer} ref={upperRequestToJoinBtnRef} collapsable={false}>
                 {renderRequestToJoinBtn()}
               </View>
             )}
@@ -698,7 +701,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
       */}
 
-            <View ref={stickyTabBarRef}>
+            <View ref={stickyTabBarRef} collapsable={false}>
               <TabView
                 navigationState={{index, routes}}
                 renderScene={renderScene}
@@ -752,10 +755,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                   onBackdropPress={() => setShowRequestSentModal(false)}
                   style={{padding: 0}}>
                   <SentTemplate
-                    title="Request Sent"
-                    description="The common members will vote on your request to join, and if approved you will become an equal member with voting rights."
+                    title="Membership request sent"
+                    description="The common members will vote on your membership request. If it's approved, you will become a member with equal voting rights."
                     onClose={() => setShowRequestSentModal(false)}>
-                    <View style={layout.flexRow}>
+                    <View>
                       <TouchableOpacity
                         style={styles.modalRequestSentBtnPrimary}
                         onPress={viewProposal}>
@@ -763,12 +766,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                           View proposal
                         </Text>
                       </TouchableOpacity>
-                    </View>
-                    <View style={layout.flexRow}>
                       <TouchableOpacity
                         style={styles.modalRequestSentBtnOutline}
                         onPress={goToToCommon}>
-                        <Text style={text.buttonblue}>Go to Common</Text>
+                        <Text style={styles.backButton}>Back to Common</Text>
                       </TouchableOpacity>
                     </View>
                   </SentTemplate>
@@ -806,6 +807,11 @@ const styles = StyleSheet.create({
     flexGrow: 0,
     width: '100%',
     alignSelf: 'stretch',
+  },
+  backButton: {
+    ...font.primary.regular,
+    ...font.fontSize(3),
+    color: colors.black,
   },
   modalRequestSentBtnPrimary: {
     ...layout.btnPrimary,
@@ -903,19 +909,16 @@ const styles = StyleSheet.create({
   stickySection: {
     height: STICKY_HEADER_HEIGHT,
     width: '100%',
-    justifyContent: 'center',
-    // backgroundColor: 'white',
-    alignItems: 'center',
+    ...layout.content,
+    padding: 0,
     borderBottomWidth: 1,
     borderBottomColor: colors.grey4,
   },
   stickySectionText: {
     color: 'black',
-    // color: 'white',
     ...font.heading.bold,
     fontSize: 20,
-    marginTop: 25,
-    // margin: 5,
+    marginTop: stickyHeighAddon,
     textAlign: 'center',
   },
   fixedSection: {
@@ -923,6 +926,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     left: 5,
+    backgroundColor: 'transparent',
   },
   fixedSectionText: {
     color: '#999',

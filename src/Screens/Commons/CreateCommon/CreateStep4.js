@@ -28,7 +28,8 @@ import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ArcService from '../../../Services/ArcService';
 import Share from 'react-native-share';
-import {BlurView} from '@react-native-community/blur';
+import { BlurView } from '../../../Components';
+
 
 const {width} = Dimensions.get('window');
 import {CommonActions} from '@react-navigation/native';
@@ -174,8 +175,7 @@ const CreateStep4 = props => {
   };
   const forgeCommon = async () => {
     try {
-      const manager = await WalletManager.getInstance();
-      const address = manager.safeAddress;
+      const address = props.userStore.userInfo.safeAddress;
       const formDataInit = {...form};
 
       const fundingGoalDeadline = formDataInit[CreateCommonForm.DEADLINE];
@@ -189,7 +189,13 @@ const CreateStep4 = props => {
       };
       console.log('calling createCommon(...)');
 
-      props.navigation.navigate({ name: 'FullScreenCreationLoader', params: { title: 'Common' } });
+      props.navigation.navigate({
+        name: 'FullScreenCreationLoader',
+        params: {
+          title: 'Creating your Common',
+          message: 'This might take a couple of minutes.',
+        },
+      });
 
       const commonAddress = await ArcService.getInstance().createCommon(
         data,
@@ -276,9 +282,7 @@ const CreateStep4 = props => {
                 color: 'white',
               }}
               onPress={() => pickImage(false)}>
-              <BlurView
-                style={{padding: 12, borderRadius: 14}}
-                blurType={ 'dark' }>
+              <BlurView style={{padding: 12, borderRadius: 14}}>
                 <Icon name={'addpicture'} color="white" size={20} />
               </BlurView>
             </TouchableOpacity>
@@ -367,7 +371,7 @@ const CreateStep4 = props => {
           <View
             style={{height: 1, width: width, backgroundColor: colors.grey4}}
           />
-          <View style={{ ...styles.sectionTitle, justifyContent: 'center' }}>
+          <View style={{...styles.sectionTitle, justifyContent: 'center'}}>
             {/* <View style={{minWidth: 90, marginRight: 10}}>
               <CreateStep4Indicators
                 title="Goal"
@@ -390,7 +394,6 @@ const CreateStep4 = props => {
                   .format('MMM DD, YYYY')}
               />
             </View>
-
           </View>
           <View style={styles.sectionTitle}>
             <Text style={styles.textTitle}>About</Text>
@@ -621,5 +624,6 @@ export default inject(
   'fundingFormStore',
   'agendaFormStore',
   'reviewFormStore',
+  'userStore',
   'daoStore',
 )(observer(CreateStep4));

@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",
+    "@invertase/react-native-apple-authentication": "^1.1.2",
     "@daostack/arc.js": "2.0.0-experimental.44",
     "@daostack/common-factory": "1.3.6",
     "@react-native-community/async-storage": "^1.8.1",
@@ -49,6 +50,7 @@
     "moment": "^2.24.0",
     "react": "16.9.0",
     "react-native": "0.61.5",
+    "react-native-cloud-fs": "https://github.com/npomfret/react-native-cloud-fs.git",
     "react-native-code-push": "^6.2.1",
     "react-native-config": "^1.2.1",
     "react-native-countdown-component": "^2.7.1",
@@ -77,6 +79,7 @@
     "react-native-screens": "^2.3.0",
     "react-native-segmented-control-tab": "^3.4.1",
     "react-native-share": "^3.5.0",
+    "react-native-status-bar-height": "^2.5.0",
     "react-native-svg": "^12.0.3",
     "react-native-swiper": "^1.6.0-nightly.5",
     "react-native-swiper-flatlist": "^2.0.4",

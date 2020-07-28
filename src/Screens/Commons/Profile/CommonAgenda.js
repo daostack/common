@@ -9,10 +9,9 @@ import {
   View,
   Image,
 } from 'react-native';
-import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import moment from 'moment';
 
-import {layout, text, sizeS} from '../../../Theme';
+import {layout, text, font, colors} from '../../../Theme';
 import {inject, observer} from 'mobx-react';
 
 const CommonAgenda = ({daoStore, navigation}) => {
@@ -20,7 +19,6 @@ const CommonAgenda = ({daoStore, navigation}) => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
-
       <SafeAreaView style={styles.safeArea}>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
@@ -28,14 +26,7 @@ const CommonAgenda = ({daoStore, navigation}) => {
           vertical={true}
           nestedScrollEnabled={true}
           directionalLockEnabled={true}>
-          <View
-            style={{
-              ...styles.sectionContainer,
-              ...{alignContent: 'center', alignItems: 'center'},
-            }}>
-            <Text style={styles.agendaTitletext}>Agenda and Rules</Text>
-          </View>
-
+          <Text style={styles.agendaTitletext}>Agenda and Rules</Text>
           <View style={layout.content}>
             <Image
               source={require('../../../Assets/Common/rules.png')}
@@ -44,39 +35,32 @@ const CommonAgenda = ({daoStore, navigation}) => {
           </View>
 
           <View style={styles.sectionContainer}>
-            <Text style={text.h1Black}>About</Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
+            <Text style={text.h2Black}>About</Text>
+            <Text style={styles.description}>
               {daoStore.dao.metadata.description}
             </Text>
           </View>
 
-          <View style={styles.sectionContainer}>
+          {daoStore.dao.metadata.courseOfAction && <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Course of action</Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
+            <Text style={styles.description}>
               {daoStore.dao.metadata.courseOfAction}
             </Text>
-          </View>
-
+          </View>}
           {daoStore.dao.metadata.links?.length > 0 && (
             <View style={styles.sectionContainer}>
               <Text style={text.h3Black}>Links</Text>
               {daoStore.dao.metadata.links.map((link, i) => {
                 return (
                   <View key={i}>
-                    <Text style={{...text.blackText, ...layout.marginTopM}}>
-                      {link.title}
-                    </Text>
                     <Text
-                      key={i}
-                      style={{
-                        ...text.blackText,
-                        ...layout.marginTopM,
-                        textDecorationLine: 'underline',
-                      }}
+                      style={styles.linkText}
                       onPress={() =>
-                        navigation.navigate('Browser', {url: link.description})
+                        navigation.navigate('Browser', {
+                          url: link.url,
+                        })
                       }>
-                      {link.description}
+                      {link.url}
                     </Text>
                   </View>
                 );
@@ -86,31 +70,35 @@ const CommonAgenda = ({daoStore, navigation}) => {
 
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Campaign period deadline</Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
+            <Text style={styles.description}>
               {moment
                 .unix(daoStore.dao.fundingGoalDeadline)
                 .format('MMM DD, YYYY')}
             </Text>
           </View>
-          
+
           {daoStore.dao.metadata.rules?.length > 0 && (
+            <>
+            <View style={styles.sectionDividerContent}>
+              <View style={styles.sectionDivider} />
+            </View>
             <View style={styles.sectionContainer}>
-              <Text style={text.h1Black}>Rules of conduct</Text>
+              <Text style={text.h2Black}>Rules of conduct</Text>
               {daoStore.dao.metadata.rules.map((rule, i) => {
                 return (
                   <View key={i}>
-                    <Text style={{...text.blackText, ...layout.marginTopM}}>
+                    <Text style={styles.ruleTitle}>
                       {rule.title}
                     </Text>
                     <Text
-                      key={i}
-                      style={{...text.blackText, ...layout.marginTopM}}>
-                      {rule.description}
+                      style={styles.ruleDescription}>
+                      {rule.url}
                     </Text>
                   </View>
                 );
               })}
             </View>
+            </>
           )}
         </ScrollView>
       </SafeAreaView>
@@ -129,18 +117,50 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  linkText: {
+    ...layout.marginTopS,
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.black,
+    textDecorationLine: 'underline',
+  },
   scrollView: {
     flexGrow: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
   },
   safeArea: {
     flex: 1,
-    backgroundColor: Colors.white,
-    padding: 20,
+    backgroundColor: colors.white,
+  },
+  description: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    ...layout.marginTopS,
+    color: colors.black,
+  },
+  ruleTitle: {
+    ...text.blackText,
+    ...layout.marginTopM,
+    color: colors.black,
+  },
+  sectionDividerContent: {
+    paddingHorizontal: 20,
+  },
+  sectionDivider: {
+    width: '100%',
+    height: 1,
+    backgroundColor: colors.grey4,
+    ...layout.paddingLeftL,
+    ...layout.paddingRightL,
+  },
+  ruleDescription: {
+    ...layout.marginTopS,
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.black,
   },
   sectionContainer: {
     ...layout.content,
-    marginVertical: sizeS,
     alignItems: 'flex-start',
   },
 });

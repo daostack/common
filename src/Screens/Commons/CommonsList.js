@@ -80,7 +80,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
         BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
         {
           message:
-            'To create new Common you need to be connected with your Google account',
+            'Connect your account to join this Common',
         },
       );
     }
@@ -188,32 +188,33 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
-      <>
-        {daoGroup ? (
-          <SectionList
-            sections={daoGroup}
-            ListHeaderComponent={header}
-            contentContainerStyle={{paddingHorizontal: 20}}
-            renderItem={x => (
-              <CommonBox
-                common={x.item}
-                navigation={navigation}
-                // keyExtractor={x.item.id}
-                onPress={() => setDao(x.item)}
-              />
-            )}
-            keyExtractor={x => x.id}
-            stickySectionHeadersEnabled={true}
-            renderSectionHeader={({section: {title}}) => sectionHeader(title)}
-            ListFooterComponent={listFooter}
-          />
-        ) : (
-          loadingPlaceholder()
-        )}
-      </>
-      <BottomRightButton onPress={onAddCommon} />
-    </SafeAreaView>
+    <>
+      <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
+          {daoGroup ? (
+            <SectionList
+              sections={daoGroup}
+              ListHeaderComponent={header}
+              contentContainerStyle={{paddingHorizontal: 20}}
+              renderItem={x => (
+                <CommonBox
+                  common={x.item}
+                  navigation={navigation}
+                  // keyExtractor={x.item.id}
+                  onPress={() => setDao(x.item)}
+                />
+              )}
+              keyExtractor={x => x.id}
+              stickySectionHeadersEnabled={true}
+              renderSectionHeader={({section: {title}}) => sectionHeader(title)}
+              ListFooterComponent={listFooter}
+            />
+          ) : (
+            loadingPlaceholder()
+          )}
+        
+        <BottomRightButton onPress={onAddCommon} />
+      </SafeAreaView>
+    </>
   );
 };
 

@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     ...font.fontSize(6),
     ...layout.marginTopXL,
     ...layout.marginBottomXL,
+    textAlign: 'center',
   },
   waitText: {
     ...font.primary.regular,

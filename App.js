@@ -28,7 +28,6 @@ import {
   HUDTest,
   MyWallet,
   CreateAccount,
-  CreateCommon,
   CompleteAccount,
   EditProfile,
   UserProfileReadMode,
@@ -201,7 +200,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       try {
         userStore.setIsLoading(true);
         if (user) {
-          await AuthService.getInstance().loadMnemonic(user.uid);
+          await AuthService.getInstance().loadMnemonic(user.uid, user.providerData[0].providerId);
           await WalletManager.init(user.uid);
           await ArcService.init();
           let appUser = await FirebaseService.getInstance().getUserById(
@@ -245,10 +244,19 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         if (auth().currentUser === null) {
           return;
         }
-        const unsubscribe = db.collection('users').doc(uid).onSnapshot(snapshot => {
+        const unsubscribe = db.collection('users').doc(uid).onSnapshot( async snapshot => {
           if (!snapshot.empty) {
             userStore.setSignedInUser(snapshot.data());
           }
+
+          // WalletManager Inited before safeAddress created
+          // The safeAddress in wallet manager will be null
+          // We need to update it.
+          const manager = await WalletManager.getInstance();
+          if (manager.safeAddress == null) {
+            manager.safeAddress = snapshot.data().safeAddress;
+          }
+
         });
         return unsubscribe;
       } catch (error) {
@@ -305,7 +313,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           options={{headerShown: false}}
           userStore={userStore}
         />
-        <Stack.Screen name="CreateCommon" component={CreateCommon} />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
         <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
         <Stack.Screen
@@ -313,7 +320,15 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           component={CommonProfile}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="CommonAgenda" component={CommonAgenda} />
+        <Stack.Screen 
+          name="CommonAgenda" 
+          component={CommonAgenda} 
+          options={({route}) => ({
+            title: route.params.screenTitle,
+            headerBackTitleVisible: false,
+          })}
+
+        />
         <Stack.Screen name="Profile" component={UserProfile} />
         <Stack.Screen
           name="CommonExplanation"
@@ -335,7 +350,14 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
         />
 
-        <Stack.Screen name="ProposalScreen" component={ProposalScreen} />
+        <Stack.Screen 
+          name="ProposalScreen" 
+          component={ProposalScreen} 
+          options={({route}) => ({
+            title: route?.params.screenTitle,
+            headerBackTitleVisible: false,
+          })}
+        />
         <Stack.Screen
           name="RequestStep1"
           component={RequestStep1}
@@ -458,12 +480,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           component={MyCommons}
         />
         <Stack.Screen
-          options={{
-            title: null,
-            headerBackTitleVisible: true,
-          }}
           name="CommonMembers"
           component={CommonMembers}
+          options={({route}) => ({
+            title: route?.params.screenTitle,
+            headerBackTitleVisible: false,
+          })}
         />
         <Stack.Screen
           options={{
