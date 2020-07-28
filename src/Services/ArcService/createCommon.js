@@ -100,13 +100,12 @@ export const createCommon = async (
     console.log('Updating database');
     // we try to update the database, and we will retry four times, which should give us more than enough time
     // for the graph to index the data
-    const endpoint = graphqlUrl();
-    await axios.get(`${endpoint}/update-dao-by-id?daoId=${newOrgAddress}&retries=4`);
+    await axios.get(`${graphqlUrl}/update-dao-by-id?daoId=${newOrgAddress}&retries=4`);
     console.log('Common database has been updated');
 
     return newOrgAddress;
   } catch (e) {
-    // navigation.pop();
+    navigation.pop();
     throw e;
   }
 };

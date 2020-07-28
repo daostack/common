@@ -9,7 +9,7 @@ export default class GraphqlSyncService {
 
     constructor() {
       this.axiosClient = axios.create({
-        baseURL: graphqlUrl(),
+        baseURL: graphqlUrl,
         // for dev
         // baseURL: 'http://localhost:5000/common-daostack/us-central1/graphql/',
         timeout: 1000000, // milliseconds
