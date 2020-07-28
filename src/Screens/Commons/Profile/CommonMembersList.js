@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import MemberCard from '../../../Components/MemberCard';
-import {layout} from '../../../Theme';
+import {layout, sizeS, colors} from '../../../Theme';
 import FirebaseService from '../../../Services/FirebaseService';
 import Loader from '../../../Components/Loader';
 import MemberImage from '../../../Components/Commons/MemberImage';
@@ -55,15 +55,13 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
     containerStyle = layout.flexRow;
   }
 
-  const renderMembers = () => {};
-
   return (
     <View style={containerStyle}>
       {membersInfo ? (
         membersInfo.map((member, i) => {
           if (horizontal) {
             return (
-              <TouchableOpacity onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
+              <TouchableOpacity style={styles.item} onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
                 <MemberImage
                   key={i}
                   userInfo={member}
@@ -73,7 +71,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
             );
           } else {
             return (
-              <TouchableOpacity onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
+              <TouchableOpacity style={styles.item} onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
                 <MemberCard
                   key={i}
                   //name={member.displayName}
@@ -94,5 +92,13 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  item: {
+    paddingHorizontal: sizeS,
+    borderBottomColor: colors.grey4,
+    borderBottomWidth: 1,
+  },
+});
 
 export default inject('bottomSheetStore')(observer(CommonMembersList));
