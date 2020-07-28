@@ -435,8 +435,8 @@ const Discussions = props => {
               style={{paddingRight: 15, justifyContent: 'center'}}
               onPress={sendMessageToDiscussion}>
               <Icon
-                name="edit"
-                size={20}
+                name="send-message"
+                size={25}
                 color={
                   inputText && inputText.trim() ? colors.mainBlue : colors.grey3
                 }
