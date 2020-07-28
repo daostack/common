@@ -121,6 +121,20 @@ const CreateStep2 = props => {
     setSegmentedIndex(index);
   };
 
+  // iOS only
+  const onDone = () => {
+    if (pickDate) {
+      setShow(false);
+    } else {
+      props.fundingFormStore.fieldChanged(
+        CreateCommonForm.DEADLINE,
+        moment({}).unix(),
+      );
+      setPickDate(moment().toDate());
+      setShow(false);
+    }
+  };
+
   const push = () => {
     if (props.fundingFormStore.isFormValid()) {
       props.navigation.navigate('CreateStep3');
@@ -260,7 +274,7 @@ const CreateStep2 = props => {
                     }}>
                     {'Min. 1 week'}
                   </Text> */}
-                  <TouchableOpacity onPress={() => setShow(false)}>
+                  <TouchableOpacity onPress={onDone}>
                     <Text
                       style={{
                         color: colors.mainBlue,
