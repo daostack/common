@@ -7,11 +7,10 @@ import {
   SafeAreaView,
   StatusBar,
 } from 'react-native';
-import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {colors, layout, font, text} from '../Theme';
+import {colors, layout, font} from '../Theme';
 import Loader from '../Components/Loader';
 
-const FullScreenCreationLoader = ({daoStore, route: {params: {title = '', message = ''}}, navigation}) => {
+const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}, navigation}) => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -37,7 +36,7 @@ const FullScreenCreationLoader = ({daoStore, route: {params: {title = '', messag
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
   },
   creatingText: {
     ...font.heading.bold,
@@ -52,46 +51,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   body: {
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
     flex: 1,
     flexDirection: 'column',
-  },
-  sectionContainer: {
-    marginTop: 22,
-    marginBottom: 34,
-  },
-  buttonConatiner: {
-    marginTop: 22,
-    marginBottom: 22,
-  },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 25,
-    marginHorizontal: 24,
-    backgroundColor: '#3cc7e1',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-    paddingVertical: 15,
-  },
-  shareButton: {
-    width: '80%',
-    alignSelf: 'center',
-  },
-  continueButton: {
-    width: '80%',
-    height: 48,
-    alignSelf: 'center',
-    borderRadius: 32,
-    marginTop: 45,
-    flexDirection: 'row',
-    paddingHorizontal: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.mainBlue,
   },
   image: {
     top: 0,
