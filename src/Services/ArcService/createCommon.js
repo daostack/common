@@ -105,7 +105,7 @@ export const createCommon = async (
 
     return newOrgAddress;
   } catch (e) {
-    navigation.pop();
+    // navigation.pop();
     throw e;
   }
 };
