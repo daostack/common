@@ -12,10 +12,11 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   SectionList,
+  Platform,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
-import {colors, layout, text, sizeM} from '../../Theme';
+import {colors, layout, font, text, sizeM} from '../../Theme';
 import DiscussionMessage from './DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast.js';
@@ -31,7 +32,7 @@ import ImageView from 'react-native-image-viewing';
 const {width} = Dimensions.get('window');
 
 const Discussions = props => {
-  const [inputHeight, setInputHeight] = useState(60);
+  const [inputHeight, setInputHeight] = useState(65);
   const inputRef = useRef(null);
   const [user, setUser] = useState({});
   const [inputText, setInputText] = useState(null);
@@ -293,7 +294,7 @@ const Discussions = props => {
           }}
           title={{
             title: data.title,
-            style: text.h3Black,
+            style: text.h2Black,
           }}
           leftButton={
             <TouchableOpacity
@@ -334,9 +335,9 @@ const Discussions = props => {
                   source={user.photoURL ? {uri: user.photoURL} : null}
                 />
                 <View style={{flex: 1, paddingHorizontal: 10}}>
-                  <Text style={{fontWeight: 'bold'}}>{user.displayName}</Text>
+                  <Text style={styles.displayName}>{user.displayName}</Text>
                   {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-                  <Text style={{color: colors.grey3}}>
+                  <Text style={styles.date}>
                     {moment(data.createTime.toDate()).fromNow()}
                   </Text>
                 </View>
@@ -344,7 +345,7 @@ const Discussions = props => {
 
               <View>
                 <Text
-                  style={{fontSize: 16, lineHeight: 25, paddingVertical: 10}}>
+                  style={styles.message}>
                   {data.message}
                 </Text>
               </View>
@@ -387,7 +388,7 @@ const Discussions = props => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: colors.lightBlue}}>
+    <SafeAreaView style={styles.safeView}>
       {header()}
       <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
         <SectionList
@@ -406,45 +407,37 @@ const Discussions = props => {
           contentContainerStyle={{paddingTop: 10}}
           // initialScrollIndex={2}
         />
-        {/* <View style={{flex: 1}}>
-        <ChatRoom
-          path={`common/${commonId}/discussion/${data.id}/message`}
-          commonId={commonId}
-        />
-        </View> */}
       </ScrollView>
 
       <KeyboardAvoidingView
-        // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={'height'}
         style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
         <View style={styles.input}>
-          <View style={styles.inputBorder}>
-            <TextInput
-              ref={inputRef}
-              editable={true}
-              multiline={true}
-              placeholderText={'Say something'}
-              onContentSizeChange={e =>
-                setInputHeight(e.nativeEvent.contentSize.height)
+          <TextInput
+            ref={inputRef}
+            editable={true}
+            multiline={true}
+            placeholder="What do you think?"
+            onContentSizeChange={e =>
+              setInputHeight(e.nativeEvent.contentSize.height)
+            }
+            style={{...styles.textInput, height: inputHeight}}
+            fontSize={16}
+            onChangeText={currText => setInputText(currText)}
+          />
+          <TouchableOpacity
+            style={{paddingRight: 15, justifyContent: 'center'}}
+            onPress={sendMessageToDiscussion}>
+            <Icon
+              name="send-message"
+              style={styles.sendMessageIcon}
+              size={32}
+              color={
+                inputText && inputText.trim() ? colors.mainBlue : colors.grey3
               }
-              style={{flex: 1, height: inputHeight, marginHorizontal: 10}}
-              fontSize={15}
-              onChangeText={currText => setInputText(currText)}
             />
-            <TouchableOpacity
-              style={{paddingRight: 15, justifyContent: 'center'}}
-              onPress={sendMessageToDiscussion}>
-              <Icon
-                name="edit"
-                size={20}
-                color={
-                  inputText && inputText.trim() ? colors.mainBlue : colors.grey3
-                }
-              />
-            </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         </View>
-        <View style={{height: 30, backgroundColor: colors.white}} />
       </KeyboardAvoidingView>
 
       <BottomSheetModal
@@ -485,10 +478,26 @@ const Discussions = props => {
 };
 
 const styles = StyleSheet.create({
+  message: {
+    marginVertical: 10,
+    lineHeight: 24,
+    color: colors.black,
+    ...font.primary.regular,
+    ...font.fontSize(2),
+  },
+  date: {
+    color: colors.formPlaceholderColor,
+    ...font.primary.regular,
+    ...font.fontSize(2),
+  },
+  displayName: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.black,
+  },
   title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    fontFamily: 'Roboto',
+    ...font.fontSize(3),
+    ...font.primary.bold,
     color: colors.black,
     textAlign: 'center',
     // textAlignVertical: 'center',
@@ -501,6 +510,10 @@ const styles = StyleSheet.create({
     height: 250,
     borderRadius: 10,
     backgroundColor: colors.grey4,
+  },
+  safeView: {
+    flex: 1,
+    backgroundColor: colors.paleGrey,
   },
   imageGallery: {
     ...layout.flexRow,
@@ -524,16 +537,16 @@ const styles = StyleSheet.create({
   input: {
     // backgroundColor: colors.white,
     backgroundColor: '#fbfdff',
-    borderColor: colors.grey4,
-    // borderwidth: 1,
-    borderBottomWidth: 1,
-    // height: 60,
+    flex: 1,
+    borderTopColor: colors.grey4,
+    borderTopWidth: 1,
+    height: 65,
     width: width,
     flexDirection: 'row',
     shadowColor: 'rgba(0, 0, 0, 0.2)',
     shadowOffset: {
       width: 0,
-      height: -4,
+      height: -1,
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
@@ -541,26 +554,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 15,
   },
+  textInput: {
+    flex: 1,
+    paddingTop: 0,
+    marginBottom: Platform.OS === 'ios' ? 10 : 0,
+    marginHorizontal: 10,
+  },
+  sendMessageIcon: {
+    marginBottom: Platform.OS === 'ios' ? 10 : 0,
+  },
   timeHeader: {
     textAlign: 'center',
     marginVertical: 3,
     color: colors.grey3,
-    fontSize: 12,
-    fontFamily: 'Roboto',
+    ...font.fontSize(2),
+    ...font.primary.regular,
   },
-  inputBorder: {
-    flex: 1,
-    flexDirection: 'row',
-    borderColor: colors.grey4,
-    borderWidth: 1,
-    paddingVertical: 10,
-    marginHorizontal: 10,
-    borderRadius: 40,
-  },
+
   sheetTitle: {
-    fontFamily: 'Roboto',
-    fontSize: 20,
-    fontWeight: 'bold',
+    ...font.fontSize(4),
+    ...font.primary.bold,
     color: colors.black,
     paddingVertical: 15,
     textAlign: 'center',
@@ -573,10 +586,9 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
   },
   sheetText: {
-    fontFamily: 'Roboto',
-    fontSize: 18,
-    fontWeight: '500',
-    color: colors.against,
+    ...font.fontSize(3),
+    ...font.primary.bold,
+    color: colors.black,
     marginLeft: 10,
   },
   sheetButton: {
@@ -588,20 +600,17 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   adsText: {
-    ...text.h3Black,
+    ...font.fontSize(2),
+    textDecorationLine: 'underline',
+    ...font.primary.regular,
     ...layout.marginLeftXS,
-    fontWeight: '500',
   },
 
   adRow: {
     alignItems: 'center',
     ...layout.flexRow,
-    padding: 10,
     alignSelf: 'stretch',
     paddingVertical: sizeM,
-    borderRadius: 8,
-    borderColor: colors.mainBlue,
-    borderWidth: 1,
   },
 });
 

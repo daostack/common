@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {Text, StyleSheet, SectionList, View, ScrollView} from 'react-native';
-import {text, colors} from '../../Theme';
+import {text, colors, font} from '../../Theme';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
 import moment from 'moment';
@@ -69,9 +69,6 @@ const ProposalDiscussion = props => {
 
   return (
     <View style={{flex: 1, backgroundColor: colors.paleGrey}}>
-      {/* <ChatRoom
-        path={`common/${commonId}/proposal/${proposalId}/discussion/${discussionId}/message`}
-      /> */}
       <ScrollView style={{flex: 1}}>
         <SectionList
           sections={msgGroup}
@@ -103,8 +100,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 3,
     color: colors.grey3,
-    fontSize: 12,
-    fontFamily: 'Roboto',
+    ...font.fontSize(2),
+    ...font.primary.regular,
   },
 });
 
