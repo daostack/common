@@ -23,7 +23,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
   try {
     const dao = arc.dao(daoId);
 
-    const plugins = await dao.plugins();
+    const plugins = await dao.plugins().first();
     const abi = arc.getABI({abiName: 'FundingRequest', version: ARC_VERSION});
     const interf = new ethers.utils.Interface(abi);
 

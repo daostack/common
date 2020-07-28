@@ -1,8 +1,8 @@
 import React from 'react';
-import {Image, StyleSheet, Text, SafeAreaView} from 'react-native';
+import {Image, View, StyleSheet, Text, SafeAreaView} from 'react-native';
 import LayoutHeader from './LayoutHeader';
 
-import {font, sizeM} from '../../Theme';
+import {font, sizeM, sizeLineHeight} from '../../Theme';
 import {func, string, bool} from 'prop-types';
 
 const SentTemplate = ({
@@ -20,12 +20,14 @@ const SentTemplate = ({
         source={
           isCommonCreation
             ? require('../../Assets/launch.png')
-            : require('../../Assets/sent_igraphic.png')
+            : require('../../Assets/send.png')
         }
       />
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.description}>{description}</Text>
-      {children}
+      <View style={styles.container}>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.description}>{description}</Text>
+        {children}
+      </View>
     </SafeAreaView>
   );
 };
@@ -42,10 +44,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     aspectRatio: 1,
   },
+  container: {
+    flex: 1,
+    justifyContent: 'space-around',
+  },
   title: {
     ...font.fontSize(6),
     textAlign: 'center',
     ...font.heading.bold,
+    marginBottom: sizeM,
   },
   areaView: {
     justifyContent: 'space-between',
@@ -53,9 +60,11 @@ const styles = StyleSheet.create({
     marginVertical: sizeM,
   },
   description: {
+    lineHeight: sizeLineHeight,
     ...font.fontSize(2),
     ...font.primary.regular,
     textAlign: 'center',
+    marginBottom: sizeM,
   },
   text: {},
 });
