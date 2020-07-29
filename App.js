@@ -513,7 +513,6 @@ const styles = StyleSheet.create({
     shadowOffset: {
       height: 0,
     },
-    //textAlign: 'center',
   },
 });
 
