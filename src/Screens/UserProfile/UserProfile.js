@@ -125,13 +125,6 @@ const UserProfile = ({userStore, navigation}) => {
                 : renderUnsignedUserData()}
 
               <View style={layout.marginTopL}>
-                {userStore.userInfo ? (
-                  <AccordionBtn
-                    title="My wallet"
-                    subtitle={userStore.userInfo.ethereumAddress}
-                    onPress={onMyWalletPress}
-                  />
-                ) : null}
                 <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" />
                 <AccordionBtn onPress={() => Linking.openURL('https://common.io/tos')} title="Terms of use" />
                 <AccordionBtn onPress={() => Linking.openURL('https://common.io/privacy')} title="Privacy Policy" />
