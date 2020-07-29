@@ -307,8 +307,6 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     backgroundColor: colors.paleGrey,
     paddingBottom: 130,
-
-    height: 3000,
   },
 
   tabStyle: {

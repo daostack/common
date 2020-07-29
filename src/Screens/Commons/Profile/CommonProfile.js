@@ -184,7 +184,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   const Proposals = () => {
     return (
-      <View style={{...styles.paleBackground, ...{padding: sizeL, height: 3000}}}>
+      <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
         <Text style={text.h1BlackTitle}>Proposals</Text>
 
         <ProposalsList
