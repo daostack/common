@@ -19,6 +19,7 @@ import UserProfileData from '../../Components/UserProfileData';
 import AuthService from '../../Services/AuthService';
 import Toast from '../../Util/Toast';
 import CodePush from 'react-native-code-push';
+import Config from 'react-native-config';
 
 import {
   Placeholder,
@@ -144,7 +145,7 @@ const UserProfile = ({userStore, navigation}) => {
                   />
                 ) : null}
               </View>
-              <View
+              {Config.ENV !== 'production' && <View
                 style={{
                   ...layout.content,
                   paddingHorizontal: 0,
@@ -153,7 +154,7 @@ const UserProfile = ({userStore, navigation}) => {
                 <Text style={text.h4Black}>Temporary menu</Text>
                 <AccordionBtn title="Test Page" onPress={onTestPagePress} />
                 <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
-              </View>
+              </View>}
               <Text style={{ textAlign: 'center', paddingVertical: 10, color: colors.grey2 }}>Common v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : '' })</Text>
             </View>
           </ScrollView>

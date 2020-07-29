@@ -207,6 +207,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
           isMember={isMember}
           commonInfo={{ name: currCommon.name, id: currCommon.id, balance: currCommon.balance }}
           navigation={navigation}
+          onlyFundingRequests={true}
           isHistory={true}
         />
       </View>
@@ -368,7 +369,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
         isMember,
     });
 
-  
+
     setShowRequestSentModal(false);
   };
 
@@ -377,13 +378,13 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   };
 
   const openProposalScreen = event => {
-    
+
     navigation.navigate('ProposalScreen', {
       proposalId: pendingProposalsData.usersPendingProposal?.id,
       screenTitle: currCommon.name,
       commonBalance: currCommon.balance,
       isMember,
-  });
+    });
   };
 
   const renderPendingApproval = () => {
@@ -568,7 +569,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     <View style={{flex: 1, backgroundColor: colors.white}}>
       {currCommon ? (
         <View style={{flex: 1, position: 'relative'}}>
-          
+
           <TouchableOpacity
             style={{
               justifyContent: 'center',
@@ -754,10 +755,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                   onBackdropPress={() => setShowRequestSentModal(false)}
                   style={{padding: 0}}>
                   <SentTemplate
-                    title="Request Sent"
-                    description="The common members will vote on your request to join, and if approved you will become an equal member with voting rights."
+                    title="Membership request sent"
+                    description="The common members will vote on your membership request. If it's approved, you will become a member with equal voting rights."
                     onClose={() => setShowRequestSentModal(false)}>
-                    <View style={layout.flexRow}>
+                    <View>
                       <TouchableOpacity
                         style={styles.modalRequestSentBtnPrimary}
                         onPress={viewProposal}>
@@ -765,12 +766,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                           View proposal
                         </Text>
                       </TouchableOpacity>
-                    </View>
-                    <View style={layout.flexRow}>
                       <TouchableOpacity
                         style={styles.modalRequestSentBtnOutline}
                         onPress={goToToCommon}>
-                        <Text style={text.buttonblue}>Go to Common</Text>
+                        <Text style={styles.backButton}>Back to Common</Text>
                       </TouchableOpacity>
                     </View>
                   </SentTemplate>
@@ -808,6 +807,11 @@ const styles = StyleSheet.create({
     flexGrow: 0,
     width: '100%',
     alignSelf: 'stretch',
+  },
+  backButton: {
+    ...font.primary.regular,
+    ...font.fontSize(3),
+    color: colors.black,
   },
   modalRequestSentBtnPrimary: {
     ...layout.btnPrimary,
