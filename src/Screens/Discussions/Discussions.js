@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
-import {colors, layout, text, sizeM, sizeL, sizeXL} from '../../Theme';
+import {colors, layout, text, sizeS, sizeM} from '../../Theme';
 import DiscussionMessage from './DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast.js';
@@ -424,7 +424,7 @@ const Discussions = ({userStore, daoStore, ...props}) => {
       <KeyboardAvoidingView
         // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
-        <View style={styles.input}>
+        <View style={{ ...styles.input, borderBottomWidth: !isMember && 0}}>
           {isMember ? <View style={styles.inputBorder}>
             <TextInput
               ref={inputRef}
@@ -613,8 +613,8 @@ const styles = StyleSheet.create({
   joinCommonText: {
     ...text.textFieldplaceholder,
     color: colors.greySubtitle,
-    marginTop: sizeM,
-    marginBottom: sizeL,
+    marginTop: sizeS,
+    marginBottom: sizeM,
   },
 });
 
