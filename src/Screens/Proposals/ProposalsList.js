@@ -12,8 +12,10 @@ import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 
 const {width, height} = Dimensions.get('window');
 
-const ProposalsList = ({ isMember, commonName, safeAddress, showAll, showMax, onlyFundingRequests, ...props}) => {
-  const commonId = props.commonId;
+const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, onlyFundingRequests, ...props}) => {
+  const commonId = commonInfo.id;
+  const commonName = commonInfo.name;
+
   const userId = props.userId;
   const isHistory = props.isHistory;
   const isSwiper = props.isSwiper;
@@ -75,6 +77,7 @@ const ProposalsList = ({ isMember, commonName, safeAddress, showAll, showMax, on
     navigation.navigate('ProposalScreen', {
         proposalId: proposalId,
         screenTitle: commonName,
+        commonBalance: commonInfo.balance,
         isMember,
     });
   };

@@ -3,6 +3,8 @@ export default {
   lightBlue: '#f7fcfe',
   lighterBlue: '#f4f5ff',
   iceBlue: '#f4f6ff',
+  iceBlue2: '#f1f5ff',
+  blue: '#3823ba',
   black: '#001a36',
   error: '#ef5456',
   greySteel: '#76839b',

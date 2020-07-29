@@ -33,7 +33,7 @@ const Pending = ({navigation, commonId, onProposalsCountChange}) => {
     <View style={layout.content}>
       <ProposalsList
         navigation={navigation}
-        commonId={commonId}
+        commonInfo={{ id: commonId }}
         onlyRequestsToJoin={true}
         onCountChange={onProposalsCountChange}
       />
@@ -46,7 +46,7 @@ const History = ({navigation, commonId, onProposalsCountChange}) => {
     <View style={layout.content}>
       <ProposalsList
         navigation={navigation}
-        commonId={commonId}
+        commonInfo={{ id: commonId }}
         onlyRequestsToJoin={true}
         isHistory={true}
         onCountChange={onProposalsCountChange}

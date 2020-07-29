@@ -62,9 +62,9 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    {key: 'discussions', title: 'Discussions', icon: 'discussion'},
-    {key: 'proposals', title: 'Proposals', icon: 'proposal'},
-    {key: 'history', title: 'History', icon: 'history'},
+    {key: 'discussions', title: 'Discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
+    {key: 'proposals', title: 'Proposals', icon: 'proposal', iconSelected: 'proposal-selected'},
+    {key: 'history', title: 'History', icon: 'history', iconSelected: 'history-selected'},
   ]);
 
   const routeCommon = route.params.currCommon;
@@ -191,8 +191,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
           onlyFundingRequests={true}
           isMember={isMember}
           navigation={navigation}
-          commonId={currCommon.id}
-          commonName={currCommon.name}
+          commonInfo={{ name: currCommon.name, id: currCommon.id, balance: currCommon.balance }}
         />
         <ProposalActivationDate activationDate={currCommon.fundingGoalDeadline} />
       </View>
@@ -206,9 +205,8 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
         <ProposalsList
           isMember={isMember}
-          commonName={currCommon.name}
+          commonInfo={{ name: currCommon.name, id: currCommon.id, balance: currCommon.balance }}
           navigation={navigation}
-          commonId={currCommon.id}
           isHistory={true}
         />
       </View>
@@ -366,6 +364,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     navigation.navigate('ProposalScreen', {
         proposalId: route.params.createdProposalId,
         screenTitle: currCommon.name,
+        commonBalance: currCommon.balance,
         isMember,
     });
 
@@ -382,6 +381,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     navigation.navigate('ProposalScreen', {
       proposalId: pendingProposalsData.usersPendingProposal?.id,
       screenTitle: currCommon.name,
+      commonBalance: currCommon.balance,
       isMember,
   });
   };

@@ -131,7 +131,7 @@ const ProposalData = props => {
   return proposalInfo ? (
     <>
       <View style={styles.container}>
-        <View style={styles.proposalCard}>
+        {/* <View style={styles.proposalCard}>
           <ProposalCardHeader
             isBoosted={isBoosted}
             openBoostedInfo={openBoostedInfo}
@@ -187,7 +187,7 @@ const ProposalData = props => {
               />
             </View>
           </View>
-        </View>
+        </View> 
 
         <View style={styles.proposalCard}>
           <View style={layout.content}>
@@ -212,45 +212,47 @@ const ProposalData = props => {
             </ReadMore>
           </View>
         </View>
+        */}
 
-        <View style={styles.proposalCard}>
-          <View style={layout.content}>
-            <View style={styles.proposalColumnSubtitle}>
-              <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
-                Links
-              </Text>
-            </View>
+        <Text style={text.h1BlackTitle}>Intro</Text>
 
-            {proposalInfo.description?.links?.length > 0 && (
-              proposalInfo.description?.links.map((l) => <View style={styles.adRow}>
-                <Icon name="link" color={colors.mainBlue} size={16} />
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('Browser', {
-                      url: l.url,
-                    })
-                  }>
-                  <Text style={styles.adsText}>{l.title}</Text>
-                </TouchableOpacity>
-              </View>  )
-            )}
+        <View style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
+          <Text style={{...text.regularTextBig }}>{proposalInfo.description.description}</Text>
+        </View>
+        
 
-            {proposalInfo.description?.files?.length > 0 && (
-              proposalInfo.description?.files.map((f, index) => <View style={styles.adRow}>
-                <Icon name="file" color={colors.mainBlue} size={16} />
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('Browser', {
-                      url: f.value,
-                    })
-                  }>
-                  <Text style={styles.adsText}>
-                    {`File ${index + 1}`}
-                  </Text>
-                </TouchableOpacity>
-              </View> )
-            )}
-          </View>
+        
+        <View style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
+          
+          {proposalInfo.description?.links?.length > 0 && (
+            proposalInfo.description?.links.map((l) => <View style={styles.adRow}>
+              <Icon name="link" color={colors.mainBlue} size={16} />
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('Browser', {
+                    url: l.url,
+                  })
+                }>
+                <Text style={styles.adsText}>{l.title}</Text>
+              </TouchableOpacity>
+            </View>  )
+          )}
+
+          {proposalInfo.description?.files?.length > 0 && (
+            proposalInfo.description?.files.map((f, index) => <View style={styles.adRow}>
+              <Icon name="file" color={colors.mainBlue} size={16} />
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('Browser', {
+                    url: f.value,
+                  })
+                }>
+                <Text style={styles.adsText}>
+                  {`File ${index + 1}`}
+                </Text>
+              </TouchableOpacity>
+            </View> )
+          )}
         </View>
 
         <ScrollView
@@ -388,6 +390,8 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     backgroundColor: colors.paleGrey,
     paddingBottom: 130,
+
+    height: 3000,
   },
 
   tabStyle: {
