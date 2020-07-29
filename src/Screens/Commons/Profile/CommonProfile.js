@@ -47,7 +47,6 @@ import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import ProposalActivationDate from '../../../Components/Proposals/ProposalActivationDate';
 import { BlurView } from '../../../Components';
-import { red } from 'bn.js';
 
 let stickyHeighAddon = 0;
 if (Platform.OS === 'ios') {
