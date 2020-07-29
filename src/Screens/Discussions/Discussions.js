@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
-import {colors, layout, text, sizeM} from '../../Theme';
+import {colors, layout, text, sizeM, sizeL, sizeXL} from '../../Theme';
 import DiscussionMessage from './DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast.js';
@@ -30,7 +30,7 @@ import ImageView from 'react-native-image-viewing';
 
 const {width} = Dimensions.get('window');
 
-const Discussions = props => {
+const Discussions = ({userStore, daoStore, ...props}) => {
   const [inputHeight, setInputHeight] = useState(60);
   const inputRef = useRef(null);
   const [user, setUser] = useState({});
@@ -46,9 +46,16 @@ const Discussions = props => {
   const [followState, setFollowState] = useState(false);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [data, setData] = useState(props.route.params.data);
+  const [isMember, setIsMember] = useState(false);
 
   console.log('commonId', commonId);
   const currentUser = auth().currentUser;
+
+  useEffect(() => {
+    const currentDao = daoStore.daos.find((dao) => dao.id === commonId);
+    const isMember = userStore.userInfo && userStore.isDaoMember(currentDao.members);
+    setIsMember(isMember);
+  }, []);
 
   const hideMenu = () => {
     setShowMenu(false);
@@ -418,7 +425,7 @@ const Discussions = props => {
         // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
         <View style={styles.input}>
-          <View style={styles.inputBorder}>
+          {isMember ? <View style={styles.inputBorder}>
             <TextInput
               ref={inputRef}
               editable={true}
@@ -442,7 +449,7 @@ const Discussions = props => {
                 }
               />
             </TouchableOpacity>
-          </View>
+          </View> : <Text style={{ ...styles.joinCommonText }}>{'Only members can send messages'}</Text>}
         </View>
         <View style={{height: 30, backgroundColor: colors.white}} />
       </KeyboardAvoidingView>
@@ -522,8 +529,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.mainBlue,
   },
   input: {
-    // backgroundColor: colors.white,
-    backgroundColor: '#fbfdff',
+    backgroundColor: colors.white,
     borderColor: colors.grey4,
     // borderwidth: 1,
     borderBottomWidth: 1,
@@ -538,6 +544,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     shadowOpacity: 0.5,
     alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 15,
     paddingVertical: 15,
   },
@@ -603,6 +610,12 @@ const styles = StyleSheet.create({
     borderColor: colors.mainBlue,
     borderWidth: 1,
   },
+  joinCommonText: {
+    ...text.textFieldplaceholder,
+    color: colors.greySubtitle,
+    marginTop: sizeM,
+    marginBottom: sizeL,
+  },
 });
 
-export default inject('userStore', 'bottomSheetStore')(observer(Discussions));
+export default inject('userStore', 'bottomSheetStore', 'daoStore')(observer(Discussions));
