@@ -14,12 +14,10 @@ import UserMessageCard from '../../Components/Discussion/UserMessageCard';
 import ImageView from 'react-native-image-viewing';
 import Loader from '../../Components/Loader';
 import ImageSize from 'react-native-image-size';
-import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
 import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {observer, inject} from 'mobx-react';
-import moment from 'moment';
 import {PROPOSAL_TYPE} from '../../Config';
 
 const ProposalData = props => {
@@ -131,90 +129,9 @@ const ProposalData = props => {
   return proposalInfo ? (
     <>
       <View style={styles.container}>
-        {/* <View style={styles.proposalCard}>
-          <ProposalCardHeader
-            isBoosted={isBoosted}
-            openBoostedInfo={openBoostedInfo}
-            stage={proposalInfo.stageStr}
-            winningOutcome={proposalInfo.winningOutcome}
-            hasPassedExpiryDate={moment().isAfter(moment.unix(proposalInfo?.closingAt))}
-          />
-          <View style={layout.content}>
-            <View style={styles.proposalRowSubtitle}>
-              <Text style={text.smallBoldGreyText}>
-                {proposalInfo.votesFor + proposalInfo.votesAgainst} votes
-              </Text>
-              <Text style={text.smallGreyText}>
-                &nbsp;Created {moment.unix(proposalInfo.createdAt).fromNow()}
-              </Text>
-            </View>
-
-            <View style={styles.proposalProgressInfo}>
-              <View
-                style={{...layout.content, ...layout.flexRow, ...{padding: 0}}}>
-                <Icon
-                  name="approved"
-                  color={colors.lightishGreen}
-                  size={14}
-                  style={layout.marginRightXS}
-                />
-                <Text style={text.lightishGreenText}>
-                  {proposalInfo.votesFor}
-                </Text>
-              </View>
-
-              <View
-                style={{...layout.content, ...layout.flexRow, ...{padding: 0}}}>
-                <Icon
-                  name="declined"
-                  color={colors.against}
-                  size={14}
-                  style={layout.marginRightXS}
-                />
-                <Text style={text.againstText}>
-                  {proposalInfo.votesAgainst}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.proposalProgressBar}>
-              <View
-                style={{
-                  ...styles.proposalInnerProgressBar,
-                  ...{
-                    width: `${progressBarWidthPercent}%`,
-                  },
-                }}
-              />
-            </View>
-          </View>
-        </View> 
-
-        <View style={styles.proposalCard}>
-          <View style={layout.content}>
-            <View style={styles.proposalColumnSubtitle}>
-              <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
-                { proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
-                  'Cost' : 'Contribution' }
-              </Text>
-              <Text style={text.h1Black}>{`$${
-                proposalInfo.type === PROPOSAL_TYPE.FundingRequest
-                  ? proposalInfo.fundingRequest.amount / 100
-                  : proposalInfo.description.funding / 100
-              }`}</Text>
-            </View>
-
-            <ReadMore
-              numberOfLines={5}
-              renderTruncatedFooter={_renderTruncatedFooter}
-              renderRevealedFooter={_renderRevealedFooter}
-              onReady={_handleTextReady}>
-              <Text style={text.blackText}>{proposalInfo.description.description}</Text>
-            </ReadMore>
-          </View>
-        </View>
-        */}
-
-        <Text style={text.h1BlackTitle}>Intro</Text>
+       
+        <Text style={text.h1BlackTitle}>{ proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
+                  'Proposal Pitch' : 'Intro' }</Text>
 
         <View style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
           <Text style={{...text.regularTextBig }}>{proposalInfo.description.description}</Text>

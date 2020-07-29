@@ -46,7 +46,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   const [showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer] = useState(false);
   const routeProposalId = route?.params.proposalId;
   const commonBalance = route?.params.commonBalance;
-  const renderVoting = proposalInfo && PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr);
+  const renderVoting = proposalInfo && PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr) && showBottomVotingButtonsContainer;
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -298,7 +298,6 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
     } else {
       return (
         remainingSeconds > 0 
-        && showBottomVotingButtonsContainer 
         && <View style={styles.stickyVotingContainer}>{renderVotingButtons()}</View>
       );
     }
@@ -343,6 +342,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
               style={{...styles.timer}}>
               {remainingSeconds ? (
                 <CountDown
+                  timeToShow={['H', 'M', 'S']}
                   digitTxtStyle={counterTextColor}
                   timeLabels={false}
                   showSeparator={true}
@@ -394,7 +394,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   return (
     <>
       <SafeAreaView style={{backgroundColor: colors.white}} />
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
         {showStickyTabBar && (<View style={{position: 'absolute', top: 0, width: '100%', paddingBottom: 5, zIndex: 999}}>
           <TabBarRenderer navigationState={{index: 0, routes: routes}} parentRef={originTabBarRef} />
         </View>)}
@@ -421,7 +421,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
             <View style={{...headerContainerStyle}}>
               {proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
                 <View style={{...layout.content, ...{width: '100%', padding: 0}}}>
-                  <View style={{...styles.stateCard, ...{backgroundColor: colors.orange}}}>
+                  <View style={{...styles.stateCard, ...{backgroundColor: colors.orange, paddingHorizontal: 50}}}>
                     <Icon style={styles.stateIcon} name={'boosted'} color={colors.white}/>
                     <Text style={styles.stateText}>Countdown</Text>
                     {renderCountDown()}
@@ -429,7 +429,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
                   <UserAvatar
                     image={proposedUser?.photoURL}
                     displayName={proposedUser?.displayName}
-                    imageStyle={{ width: 64, height: 64 }}
+                    imageStyle={{ width: 46, height: 46 }}
                   />
                   <Text style={{...text.h2Black, ...layout.marginBottomL, ...layout.marginTopXS}}>
                     {proposalInfo?.description?.title || 'Unknown title'}
@@ -561,11 +561,13 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
           </View>
         </ScrollView>
 
-        {index === 0 ? (
-          <View style={styles.actionButtonContainer}>
-            { isMember && renderVoting && renderStickyBottomContent() }
-          </View>
-        ) : (
+        {index === 0 ?
+             isMember && renderVoting
+             && <View style={styles.actionButtonContainer}>
+                  { renderStickyBottomContent() }
+                </View>
+          
+        : (
           <>{messageInput()}</>
         )}
       </SafeAreaView>
@@ -677,10 +679,11 @@ const styles = StyleSheet.create({
     ...text.smallBlackText,
     ...text.bold,
     color: colors.white,
+    ...font.fontSize(0),
   },
 
   timer: {
-    paddingHorizontal: sizeM,
+    paddingHorizontal: 0,
     paddingVertical: 1,
     borderRadius: 12,
   },
@@ -688,6 +691,7 @@ const styles = StyleSheet.create({
   timerContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    paddingLeft: 5,
   },
 
   actionButtonContainer: {

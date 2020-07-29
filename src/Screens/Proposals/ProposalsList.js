@@ -13,8 +13,8 @@ import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 const {width, height} = Dimensions.get('window');
 
 const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, onlyFundingRequests, ...props}) => {
-  const commonId = commonInfo.id;
-  const commonName = commonInfo.name;
+  const commonId = commonInfo?.id;
+  const commonName = commonInfo?.name;
 
   const userId = props.userId;
   const isHistory = props.isHistory;
