@@ -8,7 +8,8 @@ import AuthService from '../../Services/AuthService';
 import {filterObjectByKeys} from '../../Util';
 
 class EditProfileForm extends React.Component {
-  static FIELD_NAME = 'displayName';
+  static FIELD_FIRST_NAME = 'firstName';
+  static FIELD_LAST_NAME = 'lastName';
   static FIELD_INTRO = 'intro';
   static FIELD_PROFILE_IMAGE = 'photoURL';
 
@@ -18,7 +19,8 @@ class EditProfileForm extends React.Component {
       const changedFields = editProfileFormStore.getChangedFormFieldsJson();
 
       let authData = filterObjectByKeys(changedFields, [
-        EditProfileForm.FIELD_NAME,
+        EditProfileForm.FIELD_FIRST_NAME,
+        EditProfileForm.FIELD_LAST_NAME,
         EditProfileForm.FIELD_PROFILE_IMAGE,
       ]);
       let publicData = filterObjectByKeys(changedFields, [
@@ -86,13 +88,28 @@ class EditProfileForm extends React.Component {
         <TextInputField
           value={userStore.userInfo.displayName}
           viewStyle={{alignSelf: 'stretch'}}
-          label="Name"
+          label="First name"
           infoLabel="Required"
-          placeholderText="Firstname Lastname"
+          placeholderText="Firstname"
           autoCapitalize="none"
           autoCorrect={false}
           validation={{
-            name: EditProfileForm.FIELD_NAME,
+            name: EditProfileForm.FIELD_FIRST_NAME,
+            formStore: this.props.editProfileFormStore,
+            validateRule: 'required',
+          }}
+        />
+
+        <TextInputField
+          value={userStore.userInfo.displayName}
+          viewStyle={{alignSelf: 'stretch'}}
+          label="Last name"
+          infoLabel="Required"
+          placeholderText="Lastname"
+          autoCapitalize="none"
+          autoCorrect={false}
+          validation={{
+            name: EditProfileForm.FIELD_LAST_NAME,
             formStore: this.props.editProfileFormStore,
             validateRule: 'required',
           }}
