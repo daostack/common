@@ -43,6 +43,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
   const [isMember, setIsMember] = useState(false);
   const routeProposalId = route?.params.proposalId;
   const renderVoting = proposalInfo && PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr);
+  const userHasVoted = proposalInfo && proposalInfo.votes.some(vote => vote.voter === userStore.userInfo.safeAddress);
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -456,7 +457,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
 
         {index === 0 ? (
           <View style={styles.actionButtonContainer}>
-            { isMember && renderVoting && renderStickyBottomContent() }
+            { isMember && renderVoting && !userHasVoted && renderStickyBottomContent() }
           </View>
         ) : (
           <>{messageInput()}</>
