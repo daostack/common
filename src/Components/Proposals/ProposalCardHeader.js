@@ -129,8 +129,8 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     backgroundColor: colors.orangeLight,
     padding: sizeXS,
-    borderTopLeftRadius: 22,
-    borderTopRightRadius: 22,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   launchedColor: {
     color: colors.mainBlue,
