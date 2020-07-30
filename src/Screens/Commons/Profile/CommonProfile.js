@@ -265,7 +265,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const renderMembersRow = () => {
     return (
       <View style={styles.membersContainerWrapper}>
-        <View style={{ ...styles.membersContainer, paddingTop: !isMember ? sizeL : sizeS  }}>
+        <View style={{ ...styles.membersContainer, paddingTop: !isMember ? sizeL : sizeS, paddingBottom: isMember ? 0 : sizeL }}>
           <TouchableOpacity
             onPress={openCommonMembers}
             style={layout.flexRow}>
@@ -669,15 +669,14 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               />
             </View>
 
+            {renderMembersRow()}
+
             {!isMember && showReqToJoin && (
-              <>
-                <View style={{ paddingBottom: sizeL }}>{renderMembersRow()}</View>
               <View style={styles.upperActionButtonContainer} ref={upperRequestToJoinBtnRef} collapsable={false}>
                 {renderRequestToJoinBtn()}
               </View>
-              </>
             )}
-            {isMember && renderMembersRow()}
+            
             {renderAgendaForNonMembers()}
             {/**
         <TouchableOpacity
