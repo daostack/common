@@ -7,7 +7,7 @@ import {colors, layout, font} from '../../Theme';
 const styles = StyleSheet.create({
   errorMessage: {
     color: colors.error,
-    ...layout.marginBottomM,
+    ...layout.marginBottomS,
     ...font.primary.regular,
     ...font.fontSize(2),
   },

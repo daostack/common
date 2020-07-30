@@ -29,7 +29,7 @@ class ImageField extends React.Component {
       formStore.registerFormField(name, validateRule, value, multiName);
 
       this.fieldValidation = (
-        <ValidationMessage formStore={formStore} name={name} />
+        <ValidationMessage formStore={formStore} name={name} ivisibleContainer={true}/>
       );
     }
   }
@@ -153,7 +153,6 @@ class ImageField extends React.Component {
               : styles.formFieldContainerGenral
           }>
           <View>
-
             {this.renderImage()}
             {!disableEdit && (isAvatar || currValue) ? (
               <TouchableOpacity
