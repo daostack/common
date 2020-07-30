@@ -5,6 +5,7 @@ import ProposalService, {PROPOSAL_STAGE} from '../../Services/ProposalService';
 import ProposalCard from '../../Components/Proposals/ProposalCard';
 import {CommonActions} from '@react-navigation/native';
 import {layout, colors, font, text, sizeXXL, sizeM} from '../../Theme';
+import FirebaseService from '../../Services/FirebaseService';
 
 import SwiperCard from '../../Components/SwiperCard';
 
@@ -72,11 +73,11 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
     };
   }, [commonId, isHistory]);
 
-  const onReviewProposal = proposalId => {
+  const onReviewProposal = async ( proposalId, daoId ) => {
     
     navigation.navigate('ProposalScreen', {
         proposalId: proposalId,
-        screenTitle: commonName,
+        screenTitle: commonName || await FirebaseService.getInstance().getDaoNameById(daoId),
         commonBalance: commonInfo?.balance,
         isMember,
     });
@@ -88,7 +89,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
         index < showMax ? <ProposalCard
           key={item.id}
           data={item}
-          onReviewProposal={e => onReviewProposal(item.id)}
+          onReviewProposal={e => onReviewProposal(item.id, item.dao)}
         /> : <TouchableOpacity onPress={() => navigation.navigate('MyProposals')} style={{ ...styles.commonBox }}>
           <Text style={text.buttonblue}>{`View all ${list.length} Proposals`}</Text>
         </TouchableOpacity>
@@ -96,7 +97,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
       ) : <ProposalCard
         key={item.id}
         data={item}
-        onReviewProposal={e => onReviewProposal(item.id)}
+        onReviewProposal={e => onReviewProposal(item.id, item.dao)}
       />);
   };
 

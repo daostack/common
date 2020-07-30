@@ -393,11 +393,6 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
                     hasPassedExpiryDate={hasPassedExpiryDate}
                     closingAt={proposalInfo.closingAt}
                   />
-                  {/* <View style={{...styles.stateCard, ...{backgroundColor: colors.orange, paddingHorizontal: 50}}}>
-                    <Icon style={styles.stateIcon} name={'boosted'} color={colors.white}/>
-                    <Text style={styles.stateText}>Countdown</Text>
-                    {renderCountDown()}
-                  </View> */}
                   <UserAvatar
                     image={proposedUser?.photoURL}
                     displayName={proposedUser?.displayName}
@@ -409,10 +404,14 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
                 </View>
               ) : (
                 <>
-                  <View style={styles.stateCard}>
-                    <Icon style={styles.stateIcon} name={'boosted'} color={colors.white}/>
-                    <Text style={styles.stateText}>New</Text>
-                  </View>
+                  <ProposalCardHeader
+                    isScreenHeader={true}
+                    isBoosted={true}
+                    stage={proposalInfo?.stageStr}
+                    winningOutcome={proposalInfo?.winningOutcome}
+                    hasPassedExpiryDate={hasPassedExpiryDate}
+                    closingAt={proposalInfo.closingAt}
+                  />
                   <UserAvatar
                     image={proposedUser?.photoURL}
                     imageStyle={{ width: 64, height: 64 }}
