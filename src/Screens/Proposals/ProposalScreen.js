@@ -47,7 +47,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   const [showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer] = useState(false);
   const routeProposalId = route?.params.proposalId;
   const commonBalance = route?.params.commonBalance;
-  const renderVoting = proposalInfo && PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr);
+  const renderVoting = proposalInfo && PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr) && isMember;
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -533,7 +533,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
         </ScrollView>
 
         {index === 0 ?
-             isMember && renderVoting && showBottomVotingButtonsContainer
+             renderVoting && showBottomVotingButtonsContainer
              && <View style={styles.actionButtonContainer}>
                   { renderStickyBottomContent() }
                 </View>
