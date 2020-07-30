@@ -26,11 +26,13 @@ const style = {
 export default StyleSheet.create({
   h1Black: style.h1Black,
   h1BlackTitle: {
-    ...style.h1Black,
-    ...font.heading.bold,
-    ...font.fontSize(5),
+    lineHeight: 29,
+    textAlign: 'center',
     ...layout.marginTopM,
     ...layout.marginBottomM,
+    color: colors.black,
+    ...font.heading.bold,
+    ...font.fontSize(5),
   },
   h1BlackRegular: {
     ...style.h1Black,

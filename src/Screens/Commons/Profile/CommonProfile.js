@@ -243,8 +243,8 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
           </Text>
 
           <View style={layout.flexStart}>
-            <Text style={text.h1Black}>Our Mission</Text>
-            <Text style={{...text.blackText, ...layout.marginTopM}}>
+            <Text style={text.h2Black}>About</Text>
+            <Text style={{...text.regularText, ...layout.marginTopS}}>
               {currCommon.metadata.description}
             </Text>
           </View>
@@ -252,7 +252,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
           <TouchableOpacity onPress={openAgendaScreen} style={layout.marginTopS}>
             <View style={styles.viewAgendaBtn}>
               <Text style={styles.viewFullAgenda}>View full agenda</Text>
-              <Icon name="right-arrow" color={colors.black} />
+              <Icon style={styles.icon} name="right-arrow" color={colors.mainBlue} />
             </View>
           </TouchableOpacity>
 
@@ -801,10 +801,9 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
   viewFullAgenda: {
-    ...text.h3Black,
+    ...font.primary.regular,
+    ...font.fontSize(2),
     color: colors.mainBlue,
-    fontSize: 16,
-    marginRight: 5,
   },
   modalRequestSentBtnOutline: {
     ...layout.btnOutline,
@@ -850,6 +849,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     flexGrow: 1,
     justifyContent: 'space-between',
+  },
+  icon: {
+    marginTop: 2,
   },
   tabStyle: {
     ...text.ashleyjquimbacom2,
