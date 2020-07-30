@@ -47,7 +47,13 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   const [showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer] = useState(false);
   const routeProposalId = route?.params.proposalId;
   const commonBalance = route?.params.commonBalance;
-  const renderVoting = proposalInfo && PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr) && isMember;
+  const renderVoting =
+    proposalInfo &&
+    PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr) &&
+    isMember &&
+    !proposalInfo.votes.some(
+      vote => vote.voter === userStore.userInfo.safeAddress,
+    );
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -318,10 +324,10 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
           <Icon name="reject-24" color={colors.against} size={24} />
         </TouchableOpacity>
       </View>
-    </View>
-  }
+    </View>;
+  };
 
-  
+
 
   const initialLayout = {width: Dimensions.get('window').width};
 
@@ -343,7 +349,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
       };
 
 
-  
+
   let progressBarWidthPercent = 0;
 
   if (proposalInfo) {
@@ -425,34 +431,34 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
                       <Text style={text.smallBlackText}>View Profile</Text>
                       <Icon name="right-arrow" size={20} />
                     </TouchableOpacity>
-                    
+
                   </View>
                 </>
               )}
 
               <View style={styles.contributionCard}>
-                
-                  <View style={styles.requestedAmountContainer}>
-                    <Text style={{...text.smallBlackText, ...layout.marginRightS}}>
-                      { proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
-                        'Requested amount' : 'Contribution' }
-                    </Text>
-                    <Text style={text.h2Black}>{`$${
-                      proposalInfo.type === PROPOSAL_TYPE.FundingRequest
-                        ? proposalInfo.fundingRequest.amount / 100
-                        : proposalInfo.description.funding / 100
-                    }`}
-                    </Text>
-                  </View>
-                  { proposalInfo.type === PROPOSAL_TYPE.FundingRequest 
-                    ? <Text style={text.smallBlackText}>{`Available funds: $${commonBalance}`}</Text>
-                    : null 
-                  }
-                
+
+                <View style={styles.requestedAmountContainer}>
+                  <Text style={{...text.smallBlackText, ...layout.marginRightS}}>
+                    { proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
+                      'Requested amount' : 'Contribution' }
+                  </Text>
+                  <Text style={text.h2Black}>{`$${
+                    proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+                      ? proposalInfo.fundingRequest.amount / 100
+                      : proposalInfo.description.funding / 100
+                  }`}
+                  </Text>
+                </View>
+                { proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+                  ? <Text style={text.smallBlackText}>{`Available funds: $${commonBalance}`}</Text>
+                  : null
+                }
+
               </View>
 
               <View style={{...layout.content, width: '100%', paddingHorizontal: 0}}>
-                
+
                 <View style={styles.proposalProgressInfo}>
                   <View
                     style={{...layout.content, ...layout.flexRow, ...{padding: 0}}}>
@@ -533,14 +539,14 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
         </ScrollView>
 
         {index === 0 ?
-             renderVoting && showBottomVotingButtonsContainer
+          renderVoting && showBottomVotingButtonsContainer
              && <View style={styles.actionButtonContainer}>
-                  { renderStickyBottomContent() }
-                </View>
-          
-        : (
+               { renderStickyBottomContent() }
+             </View>
+
+          : (
           <>{messageInput()}</>
-        )}
+          )}
       </SafeAreaView>
       {/**
       <BottomSheetContainer ref={boostedInfoRef} topSnapPoint={620}>
@@ -576,7 +582,7 @@ const styles = StyleSheet.create({
     ...layout.flexRow,
     padding: 0,
   },
-  
+
   stickyVotingContainer: {
     ...layout.flexRow,
     justifyContent: 'space-between',
@@ -609,11 +615,11 @@ const styles = StyleSheet.create({
   },
   topSheetVotingText: {
     ...text.smallBlackText,
-    ...font.primary.bold, 
+    ...font.primary.bold,
     ...layout.marginBottomM,
   },
   bottomSheetVotingText: {
-    ...text.smallBlackText, 
+    ...text.smallBlackText,
     ...layout.marginBottomXS,
   },
 
