@@ -77,7 +77,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
     navigation.navigate('ProposalScreen', {
         proposalId: proposalId,
         screenTitle: commonName,
-        commonBalance: commonInfo.balance,
+        commonBalance: commonInfo?.balance,
         isMember,
     });
   };
