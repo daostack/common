@@ -261,48 +261,46 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     }
   };
 
-  const renderMembersRowForMemberUsers = () => {
-    if (isMember) {
-      return (
-        <View style={styles.membersContainerWrapper}>
-          <View style={styles.membersContainer}>
-            <TouchableOpacity
-              onPress={openCommonMembers}
-              style={layout.flexRow}>
-              <View style={layout.flexRow}>
-                <Text style={text.h4Black}>
-                  {pendingProposalsData && // just to be showed at the same time
+  const renderMembersRow = () => {
+    return (
+      <View style={styles.membersContainerWrapper}>
+        <View style={{ ...styles.membersContainer, paddingTop: !isMember ? sizeL : sizeS, paddingBottom: isMember ? 0 : sizeL }}>
+          <TouchableOpacity
+            onPress={openCommonMembers}
+            style={layout.flexRow}>
+            <View style={layout.flexRow}>
+              <Text style={text.h4Black}>
+                {pendingProposalsData && // just to be showed at the same time
                     currCommon.memberCount +
                       ' ' +
                       `Member${currCommon.memberCount !== 1 ? 's' : ''}`}
-                </Text>
-              </View>
-              <View style={{...layout.flexRow, ...layout.marginLeftS}}>
-                <Text style={text.h4BlackRegular}>
-                  {pendingProposalsData &&
+              </Text>
+            </View>
+            <View style={{...layout.flexRow, ...layout.marginLeftS}}>
+              <Text style={text.h4BlackRegular}>
+                {pendingProposalsData &&
                     pendingProposalsData.pendingProposalCount}{' '}
                   Pending
-                </Text>
-                <Icon name="right-arrow" />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={openCommonMembers}
-              style={styles.membersAction}>
-              <View style={styles.membersRow}>
-                <CommonMembersList
-                  horizontal={true}
-                  navigation={navigation}
-                  members={
-                    daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers
-                  }
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
+              </Text>
+              <Icon name="right-arrow" />
+            </View>
+          </TouchableOpacity>
+          {isMember && <TouchableOpacity
+            onPress={openCommonMembers}
+            style={styles.membersAction}>
+            <View style={styles.membersRow}>
+              <CommonMembersList
+                horizontal={true}
+                navigation={navigation}
+                members={
+                  daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers
+                }
+              />
+            </View>
+          </TouchableOpacity>}
         </View>
-      );
-    }
+      </View>
+    );
   };
 
   const openCommonMembers = e => {
@@ -665,12 +663,14 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               />
             </View>
 
+            {renderMembersRow()}
+
             {!isMember && showReqToJoin && (
               <View style={styles.upperActionButtonContainer} ref={upperRequestToJoinBtnRef} collapsable={false}>
                 {renderRequestToJoinBtn()}
               </View>
             )}
-            {renderMembersRowForMemberUsers()}
+            
             {renderAgendaForNonMembers()}
             {/**
         <TouchableOpacity
@@ -842,7 +842,6 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     borderTopWidth: 1,
     borderColor: colors.grey4,
-    paddingTop: sizeS,
   },
   membersAction: {
     ...layout.content,
