@@ -68,7 +68,7 @@ export default StyleSheet.create({
     ...font.fontSize(3),
     lineHeight: 20,
     textAlign: 'center',
-    color: '#ffffff',
+    color: colors.white,
   },
   buttonblue: {
     ...font.primary.semiBold,
@@ -119,7 +119,7 @@ export default StyleSheet.create({
     fontStyle: 'normal',
     lineHeight: 20,
     letterSpacing: 0,
-    color: '#000000',
+    color: colors.black,
   },
   textFielddisabled: {
     ...appFontFamily,

@@ -1,15 +1,22 @@
 import React from 'react';
 
-import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
-import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+  Platform,
+  Linking,
+} from 'react-native';
+
 import GSignInButton from '../../Components/Auth/GSignInButton';
-import {layout, text} from '../../Theme';
+import {layout, text, colors} from '../../Theme';
 import {observer, inject} from 'mobx-react';
 import AppleSignInButton from '../../Components/Auth/AppleSignInButton';
 import AuthService from '../../Services/AuthService';
 
 const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
-  
   const onSignIn = async userInfo => {
     if (onSignedIn) {
       onSignedIn(userInfo.additionalUserInfo.isNewUser);
@@ -17,29 +24,37 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
   };
 
   const isIos = Platform.OS === 'ios';
-  const isLoginWithAppleEnabled = isIos ? AuthService.getInstance().isAppleLoginSupported() : false;
-  
+  const isLoginWithAppleEnabled = isIos
+    ? AuthService.getInstance().isAppleLoginSupported()
+    : false;
+
   return (
     <View>
-      { !hidePlaceholder && <View style={styles.sectionContainer}>
-        <Image source={require('../../Assets/Account/account-place-holder.png')} />
-      </View> }
+      {!hidePlaceholder && (
+        <View style={styles.sectionContainer}>
+          <Image
+            source={require('../../Assets/Account/account-place-holder.png')}
+          />
+        </View>
+      )}
 
-      { isIos && isLoginWithAppleEnabled ? <AppleSignInButton customStyle={layout.marginBottomM} onSignIn={onSignIn}/> : null }
-      
+      {isIos && isLoginWithAppleEnabled ? (
+        <AppleSignInButton
+          customStyle={layout.marginBottomM}
+          onSignIn={onSignIn}
+        />
+      ) : null}
+
       <GSignInButton style={styles.googleSignInButton} onSignIn={onSignIn} />
 
       <View style={styles.termsOfUseContainer}>
         <Text style={styles.termsOfUseText}>
           By using Common you agree to the app’s
         </Text>
-        <TouchableOpacity>
-          <Text style={styles.termsOfUseTextBtn}>
-            terms of use
-          </Text>
+        <TouchableOpacity onPress={() => Linking.openURL('https://common.io/tos')}>
+          <Text style={styles.termsOfUseTextBtn}>terms of use</Text>
         </TouchableOpacity>
       </View>
-
     </View>
   );
 };
@@ -50,7 +65,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flexGrow: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
   },
 
   sectionContainer: {
@@ -67,12 +82,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
     backgroundColor: '#3cc7e1',
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-    paddingVertical: 15,
-  },
   termsOfUseContainer: {
     ...layout.content,
     paddingHorizontal: 40,
@@ -84,7 +93,7 @@ const styles = StyleSheet.create({
   },
   termsOfUseTextBtn: {
     ...text.smallBlackText,
-  }
+  },
 });
 
 export default inject('userStore')(observer(CreateAccount));

@@ -375,7 +375,6 @@ const styles = StyleSheet.create({
 
   readMoreBtn: {
     ...text.h3Black,
-    fontWeight: '500',
     ...layout.flexStart,
     ...layout.marginTopL,
     textAlign: 'left',
@@ -469,7 +468,6 @@ const styles = StyleSheet.create({
   adsText: {
     ...text.h3Black,
     ...layout.marginLeftXS,
-    fontWeight: '500',
   },
 
   adRow: {

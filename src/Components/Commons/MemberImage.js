@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {colors} from '../../Theme';
+import {colors, font} from '../../Theme';
 import FastImage from 'react-native-fast-image';
 
 const MemberImage = ({userInfo, style, key}) => {
@@ -21,7 +21,7 @@ const MemberImage = ({userInfo, style, key}) => {
         backgroundColor: '#6e7d82',
         ...style,
       }}>
-      <Text style={{width: 17, height: 17, color: 'white'}}>
+      <Text style={styles.memberImageDisplayName}>
         {userInfo?.displayName}
       </Text>
     </View>
@@ -29,6 +29,13 @@ const MemberImage = ({userInfo, style, key}) => {
 };
 
 const styles = StyleSheet.create({
+  memberImageDisplayName: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    width: 17,
+    height: 17,
+    color: colors.white,
+  },
   memberImage: {
     width: 50,
     height: 50,

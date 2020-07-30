@@ -226,13 +226,11 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 18,
-    fontWeight: 'bold',
-    fontStyle: 'normal',
+    ...font.primary.bold,
     lineHeight: 22,
     letterSpacing: 0,
     color: colors.grey3,
     padding: 20,
-    // paddingTop: 10,
   },
   lengthCommons: {
     ...font.fontSize(5),

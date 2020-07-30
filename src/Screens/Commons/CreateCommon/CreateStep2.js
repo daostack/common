@@ -276,14 +276,8 @@ const CreateStep2 = props => {
                   </Text> */}
                   <TouchableOpacity onPress={onDone}>
                     <Text
-                      style={{
-                        color: colors.mainBlue,
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                        paddingRight: 20,
-                        textAlign: 'center',
-                      }}>
-                      {'Done'}
+                      style={styles.done}>
+                      Done
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -344,6 +338,13 @@ const styles = StyleSheet.create({
     ...font.primary.regular,
     ...font.fontSize(2),
     color: colors.mainBlue,
+  },
+  done: {
+    color: colors.mainBlue,
+    ...font.primary.bold,
+    ...font.fontSize(3),
+    paddingRight: 20,
+    textAlign: 'center',
   },
   info2: {
     marginVertical: sizeS,

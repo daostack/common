@@ -7,7 +7,7 @@ import {
   Dimensions,
   ActivityIndicator,
 } from 'react-native';
-import colors from '../Theme/colors';
+import {colors, font} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 
 const {width, height} = Dimensions.get('window');
@@ -107,6 +107,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
   },
   text: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
     color: colors.white,
     flex: 1,
     marginLeft: 10,
