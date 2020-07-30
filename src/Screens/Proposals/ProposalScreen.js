@@ -26,7 +26,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 const { width } = Dimensions.get('window');
 import {UserAvatar} from '../../Components';
-import CountDown from 'react-native-countdown-component';
+
 import FirebaseService from '../../Services/FirebaseService';
 import {monthShortNames} from '../../Util/DateUtil';
 import { PROPOSAL_STAGES_ACTIVE} from '../../Services/ProposalService';
@@ -36,6 +36,7 @@ import { observer, inject } from 'mobx-react';
 import TabBarRenderer from '../../Components/TabView/TabBarRenderer';
 import moment from 'moment';
 import { BOTTOM_SHEET_TEMPLATES } from '../../Stores/BottomSheetStore';
+import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
 
 const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props}) => {
   const [votingProcessState, setVotingProcessState] = useState({ inProgress: false, error: false });
@@ -140,10 +141,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
       <TabBarRenderer originRef={originTabBarRef} {...currProps}/>
     </View>
   );
-
-  const remainingSeconds = proposalInfo?.closingAt
-        ? proposalInfo?.closingAt - Date.now() / 1000
-        : null;
+  const hasPassedExpiryDate = moment().isAfter(moment.unix(proposalInfo?.closingAt));
 
   const messageInput = () => {
     const sendMessageToDiscussion = async () => {
@@ -297,7 +295,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
       );
     } else {
       return (
-        remainingSeconds > 0 
+        !hasPassedExpiryDate
         && <View style={styles.stickyVotingContainer}>{renderVotingButtons()}</View>
       );
     }
@@ -323,41 +321,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
     </View>
   }
 
-  const renderCountDown = () => {
-/*
-    const isLessThanOneHour = remainingSeconds < 3600;
-
-    let counterTextColor = styles.timerText;
-    let timerBackground = colors.paleblue;
-
-    if (isLessThanOneHour) {
-      counterTextColor = {...styles.timerText, ...{color: colors.white}};
-      timerBackground = colors.orangeDark;
-    }
-*/
-    let counterTextColor = styles.timerText;
-    
-    return <View style={styles.timerContainer}>
-            <View
-              style={{...styles.timer}}>
-              {remainingSeconds ? (
-                <CountDown
-                  timeToShow={['H', 'M', 'S']}
-                  digitTxtStyle={counterTextColor}
-                  timeLabels={false}
-                  showSeparator={true}
-                  separatorStyle={counterTextColor}
-                  digitStyle={{
-                    height: 'auto',
-                    width: 'auto',
-                  }}
-                  until={remainingSeconds}
-                  onFinish={() => console.log('finished')}
-                />
-              ) : null}
-            </View>
-          </View>
-  }
+  
 
   const initialLayout = {width: Dimensions.get('window').width};
 
@@ -421,11 +385,19 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
             <View style={{...headerContainerStyle}}>
               {proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
                 <View style={{...layout.content, ...{width: '100%', padding: 0}}}>
-                  <View style={{...styles.stateCard, ...{backgroundColor: colors.orange, paddingHorizontal: 50}}}>
+                  <ProposalCardHeader
+                    isScreenHeader={true}
+                    isBoosted={true}
+                    stage={proposalInfo?.stageStr}
+                    winningOutcome={proposalInfo?.winningOutcome}
+                    hasPassedExpiryDate={hasPassedExpiryDate}
+                    closingAt={proposalInfo.closingAt}
+                  />
+                  {/* <View style={{...styles.stateCard, ...{backgroundColor: colors.orange, paddingHorizontal: 50}}}>
                     <Icon style={styles.stateIcon} name={'boosted'} color={colors.white}/>
                     <Text style={styles.stateText}>Countdown</Text>
                     {renderCountDown()}
-                  </View>
+                  </View> */}
                   <UserAvatar
                     image={proposedUser?.photoURL}
                     displayName={proposedUser?.displayName}
@@ -605,26 +577,7 @@ const styles = StyleSheet.create({
     ...layout.flexRow,
     padding: 0,
   },
-  stateCard: {
-    position: 'relative',
-    ...layout.content,
-    ...layout.flexRow,
-    backgroundColor: colors.blue,
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 100,
-    ...layout.marginBottomL,
-  },
-  stateText: {
-    ...text.smallBlackText,
-    color: colors.white,
-    ...font.fontSize(1),
-    ...font.primary.bold,
-  },
-  stateIcon: {
-    position: 'absolute',
-    left: sizeS,
-  },
+  
   stickyVotingContainer: {
     ...layout.flexRow,
     justifyContent: 'space-between',
@@ -673,25 +626,6 @@ const styles = StyleSheet.create({
     ...text.ashleyjquimbacom2,
 
     color: colors.mainBlue,
-  },
-
-  timerText: {
-    ...text.smallBlackText,
-    ...text.bold,
-    color: colors.white,
-    ...font.fontSize(0),
-  },
-
-  timer: {
-    paddingHorizontal: 0,
-    paddingVertical: 1,
-    borderRadius: 12,
-  },
-
-  timerContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingLeft: 5,
   },
 
   actionButtonContainer: {

@@ -20,6 +20,7 @@ export default {
   grey6: '#aebeca',
   greyText: '#7a8189',
   redLight: '#fdedee',
+  redLightish: '#ffefec',
   white: '#ffffff',
   lightishGreen: '#6ee569',
   lightGreen: '#f1fdf0',
@@ -27,8 +28,10 @@ export default {
   orangeLight: '#fdf7ed',
   orange: '#ffae26',
   orangeDark: '#ff7c00',
+  lightishOrange: '#ffc23d',
   against: '#ff603e',
   lightishBlue: '#eff9ff',
+  lightBlue: '#dcd8f3',
   countdown: '#F45184',
   formPlaceholderColor: '#92a2b5',
 };
