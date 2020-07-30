@@ -11,7 +11,7 @@ import {
   TextInput,
   Keyboard,
 } from 'react-native';
-import {text, layout, colors, sizeM} from '../../Theme';
+import {text, layout, colors, sizeM, sizeS} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import {TabView, TabBar} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
@@ -170,31 +170,39 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
       <KeyboardAvoidingView
         // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
-        <View style={styles.input}>
-          <View style={styles.inputBorder}>
-            <TextInput
-              ref={inputRef}
-              editable={true}
-              multiline={true}
-              onContentSizeChange={e =>
-                setInputHeight(e.nativeEvent.contentSize.height)
-              }
-              style={{flex: 1, height: inputHeight, marginHorizontal: 10}}
-              fontSize={15}
-              onChangeText={currText => setInputText(currText)}
-            />
-            <TouchableOpacity
-              style={{paddingRight: 15, justifyContent: 'center'}}
-              onPress={sendMessageToDiscussion}>
-              <Icon
-                name="edit"
-                size={20}
-                color={
-                  inputText && inputText.trim() ? colors.mainBlue : colors.grey3
+        <View style={{ ...styles.input, borderBottomWidth: !isMember && 0}}>
+          {isMember ? (
+            <View style={styles.inputBorder}>
+              <TextInput
+                ref={inputRef}
+                editable={true}
+                multiline={true}
+                onContentSizeChange={e =>
+                  setInputHeight(e.nativeEvent.contentSize.height)
                 }
+                style={{flex: 1, height: inputHeight, marginHorizontal: 10}}
+                fontSize={15}
+                onChangeText={currText => setInputText(currText)}
               />
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                style={{paddingRight: 15, justifyContent: 'center'}}
+                onPress={sendMessageToDiscussion}>
+                <Icon
+                  name="edit"
+                  size={20}
+                  color={
+                    inputText && inputText.trim()
+                      ? colors.mainBlue
+                      : colors.grey3
+                  }
+                />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <Text style={{...styles.joinCommonText}}>
+              {'Only members can send messages'}
+            </Text>
+          )}
         </View>
         <View style={{height: 30, backgroundColor: colors.white}} />
       </KeyboardAvoidingView>
@@ -565,9 +573,9 @@ const styles = StyleSheet.create({
     ...text.bold,
   },
   input: {
-    // backgroundColor: colors.white,
-    backgroundColor: '#fbfdff',
+    backgroundColor: colors.white,
     borderColor: colors.grey4,
+    justifyContent: 'center',
     // borderwidth: 1,
     borderBottomWidth: 1,
     // height: 60,
@@ -592,6 +600,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginHorizontal: 10,
     borderRadius: 40,
+  },
+  joinCommonText: {
+    ...text.textFieldplaceholder,
+    color: colors.greySubtitle,
+    marginTop: sizeS,
+    marginBottom: sizeM,
   },
 });
 
