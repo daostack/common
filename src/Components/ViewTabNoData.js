@@ -1,12 +1,12 @@
 import {StyleSheet, View, Text} from 'react-native';
 import React from 'react';
-import {layout, colors, text} from '../Theme';
+import {layout, colors, font, sizeXL} from '../Theme';
 
 const ViewTabNoData = ({title, subtitle}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.subtitle}>{subtitle}</Text>
+      {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
     </View>
   );
 };
@@ -16,19 +16,19 @@ const styles = StyleSheet.create({
     ...layout.content,
     backgroundColor: colors.grey5,
     height: 'auto',
-    padding: 40,
-    paddingHorizontal: 50,
+    paddingHorizontal: sizeXL,
   },
   subtitle: {
-    ...text.h3Black,
-    fontWeight: 'normal',
+    ...font.primary.regular,
+    ...font.fontSize(3),
     textAlign: 'center',
-    color: colors.grey3,
+    color: colors.black,
     ...layout.marginTopS,
   },
   title: {
-    ...text.h2Black,
-    color: colors.grey3,
+    ...font.primary.bold,
+    ...font.fontSize(3),
+    color: colors.black,
   },
 });
 

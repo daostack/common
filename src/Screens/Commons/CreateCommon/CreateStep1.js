@@ -125,7 +125,7 @@ const CreateStep1 = props => {
           <TextInputField
             value={''}
             viewStyle={{alignSelf: 'stretch'}}
-            label="Mision statement"
+            label="Mission statement"
             infoLabel="Required"
             numberOfLines={3}
             // returnKeyType="next"

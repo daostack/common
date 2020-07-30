@@ -7,11 +7,10 @@ import {
   SafeAreaView,
   StatusBar,
 } from 'react-native';
-import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {colors, layout, font, text} from '../Theme';
+import {colors, layout, font} from '../Theme';
 import Loader from '../Components/Loader';
 
-const FullScreenCreationLoader = ({daoStore, route: {params: {title = '', message = ''}}, navigation}) => {
+const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}, navigation}) => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -37,7 +36,7 @@ const FullScreenCreationLoader = ({daoStore, route: {params: {title = '', messag
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
   },
   creatingText: {
     ...font.heading.bold,
@@ -52,7 +51,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   body: {
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
     flex: 1,
     flexDirection: 'column',
   },
@@ -92,12 +91,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.mainBlue,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: Colors.black,
-    textAlign: 'center',
   },
   image: {
     top: 0,
