@@ -474,7 +474,7 @@ const ProposalScreen = ({navigation, route, userStore, props}) => {
         <ApprovalSheetScreen
           voteType={voteType}
           onApprove={onVote}
-          onClose={e => openApprovalSheet(false)}
+          onClose={closeApprovalSheet}
           votingProcessState={votingProcessState}
         />
       </BottomSheetModal>
