@@ -99,8 +99,8 @@ class ImageField extends React.Component {
           }}
         />
       );
-    } 
-    else if(isAvatar){
+    }
+    else if (isAvatar){
       return (
         <View style={styles.imageStyle}>
           <Icon name="account-place-holder" size={100} />

@@ -9,7 +9,7 @@ import AppleSignInButton from '../../Components/Auth/AppleSignInButton';
 import AuthService from '../../Services/AuthService';
 
 const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
-  
+
   const onSignIn = async userInfo => {
     if (onSignedIn) {
       onSignedIn(userInfo.additionalUserInfo.isNewUser);
@@ -18,7 +18,7 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
 
   const isIos = Platform.OS === 'ios';
   const isLoginWithAppleEnabled = isIos ? AuthService.getInstance().isAppleLoginSupported() : false;
-  
+
   return (
     <View>
       { !hidePlaceholder && <View style={styles.sectionContainer}>
@@ -26,7 +26,7 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
       </View> }
 
       { isIos && isLoginWithAppleEnabled ? <AppleSignInButton customStyle={layout.marginBottomM} onSignIn={onSignIn}/> : null }
-      
+
       <GSignInButton style={styles.googleSignInButton} onSignIn={onSignIn} />
 
       <View style={styles.termsOfUseContainer}>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   },
   termsOfUseTextBtn: {
     ...text.smallBlackText,
-  }
+  },
 });
 
 export default inject('userStore')(observer(CreateAccount));

@@ -320,9 +320,9 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           component={CommonProfile}
           options={{headerShown: false}}
         />
-        <Stack.Screen 
-          name="CommonAgenda" 
-          component={CommonAgenda} 
+        <Stack.Screen
+          name="CommonAgenda"
+          component={CommonAgenda}
           options={({route}) => ({
             title: route.params.screenTitle,
             headerBackTitleVisible: false,
@@ -350,9 +350,9 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
         />
 
-        <Stack.Screen 
-          name="ProposalScreen" 
-          component={ProposalScreen} 
+        <Stack.Screen
+          name="ProposalScreen"
+          component={ProposalScreen}
           options={({route}) => ({
             title: route?.params.screenTitle,
             headerBackTitleVisible: false,

@@ -71,11 +71,11 @@ const ProposalsList = ({ isMember, commonName, safeAddress, showAll, showMax, on
   }, [commonId, isHistory]);
 
   const onReviewProposal = proposalId => {
-    
+
     navigation.navigate('ProposalScreen', {
-        proposalId: proposalId,
-        screenTitle: commonName,
-        isMember,
+      proposalId: proposalId,
+      screenTitle: commonName,
+      isMember,
     });
   };
 

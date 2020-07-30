@@ -23,7 +23,7 @@ const LoginSheetScreen = ({bottomSheetStore, ...props}) => {
         <CreateAccount hidePlaceholder={true} onSignedIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)}/>
       </View>
 
-{/** 
+      {/**
       <View style={layout.flexRow}>
         <GSignInButton style={styles.googleSignInButton} onSignIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)} />
       </View>

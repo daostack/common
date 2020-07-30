@@ -26,37 +26,37 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, head
     }}
     style={styles.headerContainer}
     >
-        
-          {commonInfo.logo ? (
-            <FastImage
-              style={styles.logoImage}
-              source={{
-                uri: commonInfo.logo,
-              }}
-            />
-          ) : null}
-          <Text style={styles.headerTitleWhite} numberOfLines={5}>
-            {commonInfo.name}
-          </Text>
-          <Text style={{...text.textFieldfocus, color: colors.white}} numberOfLines={5}>
-            {commonInfo.byline}
-          </Text>
-          <Text style={styles.headerDescription} numberOfLines={4}>
-            {commonInfo.description}
-          </Text>
-          {isMember && navigation ? (
-            <BlurView style={{ paddingVertical: 10, paddingHorizontal: 15, borderRadius: 10}}>
-              <TouchableOpacity onPress={openAgendaScreen}>
-                <View style={{flexDirection: 'row'}}>
-                  <Text style={styles.headerViewAgenda}>View agenda</Text>
-                  <Icon name="right-arrow" color="white" />
-                </View>
-              </TouchableOpacity>
-            </BlurView>
-          ) : null}
 
-        
-      
+      {commonInfo.logo ? (
+        <FastImage
+          style={styles.logoImage}
+          source={{
+            uri: commonInfo.logo,
+          }}
+        />
+      ) : null}
+      <Text style={styles.headerTitleWhite} numberOfLines={5}>
+        {commonInfo.name}
+      </Text>
+      <Text style={{...text.textFieldfocus, color: colors.white}} numberOfLines={5}>
+        {commonInfo.byline}
+      </Text>
+      <Text style={styles.headerDescription} numberOfLines={4}>
+        {commonInfo.description}
+      </Text>
+      {isMember && navigation ? (
+        <BlurView style={{ paddingVertical: 10, paddingHorizontal: 15, borderRadius: 10}}>
+          <TouchableOpacity onPress={openAgendaScreen}>
+            <View style={{flexDirection: 'row'}}>
+              <Text style={styles.headerViewAgenda}>View agenda</Text>
+              <Icon name="right-arrow" color="white" />
+            </View>
+          </TouchableOpacity>
+        </BlurView>
+      ) : null}
+
+
+
     </SafeAreaView>
   );
 };

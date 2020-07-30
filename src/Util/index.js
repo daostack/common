@@ -9,7 +9,7 @@ export const GOOGLE_SIGNIN_PERMISSIONS = {
 export const AUTH_PROVIDER_ID = {
   APPLE: 'apple.com',
   GOOGLE: 'google.com',
-}
+};
 
 export const numberFormatter = num => {
   const denom = Math.abs(Number(num));
