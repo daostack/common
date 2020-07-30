@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
-  StatusBar,
   ScrollView,
   Platform,
 } from 'react-native';
@@ -62,9 +61,9 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    {key: 'discussions', title: 'Discussions', icon: 'discussion'},
-    {key: 'proposals', title: 'Proposals', icon: 'proposal'},
-    {key: 'history', title: 'History', icon: 'history'},
+    {key: 'discussions', title: 'Discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
+    {key: 'proposals', title: 'Proposals', icon: 'proposal', iconSelected: 'proposal-selected'},
+    {key: 'history', title: 'History', icon: 'history', iconSelected: 'history-selected'},
   ]);
 
   const routeCommon = route.params.currCommon;
@@ -184,15 +183,14 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   const Proposals = () => {
     return (
-      <View style={{...styles.paleBackground, ...{padding: sizeL, height: 3000}}}>
+      <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
         <Text style={text.h1BlackTitle}>Proposals</Text>
 
         <ProposalsList
           onlyFundingRequests={true}
           isMember={isMember}
           navigation={navigation}
-          commonId={currCommon.id}
-          commonName={currCommon.name}
+          commonInfo={{ name: currCommon.name, id: currCommon.id, balance: currCommon.balance }}
         />
         <ProposalActivationDate activationDate={currCommon.fundingGoalDeadline} />
       </View>
@@ -206,9 +204,8 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
         <ProposalsList
           isMember={isMember}
-          commonName={currCommon.name}
+          commonInfo={{ name: currCommon.name, id: currCommon.id, balance: currCommon.balance }}
           navigation={navigation}
-          commonId={currCommon.id}
           onlyFundingRequests={true}
           isHistory={true}
         />
@@ -262,48 +259,46 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     }
   };
 
-  const renderMembersRowForMemberUsers = () => {
-    if (isMember) {
-      return (
-        <View style={styles.membersContainerWrapper}>
-          <View style={styles.membersContainer}>
-            <TouchableOpacity
-              onPress={openCommonMembers}
-              style={layout.flexRow}>
-              <View style={layout.flexRow}>
-                <Text style={text.h4Black}>
-                  {pendingProposalsData && // just to be showed at the same time
+  const renderMembersRow = () => {
+    return (
+      <View style={styles.membersContainerWrapper}>
+        <View style={{ ...styles.membersContainer, paddingTop: !isMember ? sizeL : sizeS, paddingBottom: isMember ? 0 : sizeL }}>
+          <TouchableOpacity
+            onPress={openCommonMembers}
+            style={layout.flexRow}>
+            <View style={layout.flexRow}>
+              <Text style={text.h4Black}>
+                {pendingProposalsData && // just to be showed at the same time
                     currCommon.memberCount +
                       ' ' +
                       `Member${currCommon.memberCount !== 1 ? 's' : ''}`}
-                </Text>
-              </View>
-              <View style={{...layout.flexRow, ...layout.marginLeftS}}>
-                <Text style={text.h4BlackRegular}>
-                  {pendingProposalsData &&
+              </Text>
+            </View>
+            <View style={{...layout.flexRow, ...layout.marginLeftS}}>
+              <Text style={text.h4BlackRegular}>
+                {pendingProposalsData &&
                     pendingProposalsData.pendingProposalCount}{' '}
                   Pending
-                </Text>
-                <Icon name="right-arrow" />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={openCommonMembers}
-              style={styles.membersAction}>
-              <View style={styles.membersRow}>
-                <CommonMembersList
-                  horizontal={true}
-                  navigation={navigation}
-                  members={
-                    daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers
-                  }
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
+              </Text>
+              <Icon name="right-arrow" />
+            </View>
+          </TouchableOpacity>
+          {isMember && <TouchableOpacity
+            onPress={openCommonMembers}
+            style={styles.membersAction}>
+            <View style={styles.membersRow}>
+              <CommonMembersList
+                horizontal={true}
+                navigation={navigation}
+                members={
+                  daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers
+                }
+              />
+            </View>
+          </TouchableOpacity>}
         </View>
-      );
-    }
+      </View>
+    );
   };
 
   const openCommonMembers = e => {
@@ -365,9 +360,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   const viewProposal = () => {
     navigation.navigate('ProposalScreen', {
-      proposalId: route.params.createdProposalId,
-      screenTitle: currCommon.name,
-      isMember,
+        proposalId: route.params.createdProposalId,
+        screenTitle: currCommon.name,
+        commonBalance: currCommon.balance,
+        isMember,
     });
 
 
@@ -383,6 +379,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     navigation.navigate('ProposalScreen', {
       proposalId: pendingProposalsData.usersPendingProposal?.id,
       screenTitle: currCommon.name,
+      commonBalance: currCommon.balance,
       isMember,
     });
   };
@@ -549,15 +546,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
         style={styles.headerButton}
         onPress={requestToJoin}>
         <Text
-          style={{
-            fontSize: 16,
-            color: 'white',
-            fontWeight: '700',
-            marginRight: 40,
-          }}>
+          style={styles.requestToJoin}>
           Request to join
         </Text>
-        <Text style={{fontSize: 16, color: 'white'}}>
+        <Text style={styles.contribution}>
           ${currCommon.metadata.minFeeToJoin / 100} min. contribution
         </Text>
       </TouchableOpacity>);
@@ -671,12 +663,14 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               />
             </View>
 
+            {renderMembersRow()}
+
             {!isMember && showReqToJoin && (
               <View style={styles.upperActionButtonContainer} ref={upperRequestToJoinBtnRef} collapsable={false}>
                 {renderRequestToJoinBtn()}
               </View>
             )}
-            {renderMembersRowForMemberUsers()}
+            
             {renderAgendaForNonMembers()}
             {/**
         <TouchableOpacity
@@ -789,11 +783,22 @@ const styles = StyleSheet.create({
   paleBackground: {
     backgroundColor: colors.paleGrey,
   },
+  requestToJoin: {
+    ...font.primary.bold,
+    color: colors.white,
+    ...font.fontSize(3),
+    marginRight: 40,
+  },
   viewAgendaBtn: {
     ...layout.content,
     ...layout.flexRow,
     justifyContent: 'flex-start',
     padding: 0,
+  },
+  contribution: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.white,
   },
   viewFullAgenda: {
     ...text.h3Black,
@@ -837,7 +842,6 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     borderTopWidth: 1,
     borderColor: colors.grey4,
-    paddingTop: sizeS,
   },
   membersAction: {
     ...layout.content,
@@ -872,8 +876,8 @@ const styles = StyleSheet.create({
     marginBottom: 9,
   },
   readMoreButton: {
-    fontSize: 16,
-    fontWeight: '700',
+    ...font.primary.bold,
+    ...font.fontSize(3),
     color: colors.black,
   },
   commonNumbers: {
