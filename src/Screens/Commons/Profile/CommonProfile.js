@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
-  StatusBar,
   ScrollView,
   Platform,
 } from 'react-native';
@@ -549,15 +548,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
         style={styles.headerButton}
         onPress={requestToJoin}>
         <Text
-          style={{
-            fontSize: 16,
-            color: 'white',
-            fontWeight: '700',
-            marginRight: 40,
-          }}>
+          style={styles.requestToJoin}>
           Request to join
         </Text>
-        <Text style={{fontSize: 16, color: 'white'}}>
+        <Text style={styles.contribution}>
           ${currCommon.metadata.minFeeToJoin / 100} min. contribution
         </Text>
       </TouchableOpacity>);
@@ -789,11 +783,22 @@ const styles = StyleSheet.create({
   paleBackground: {
     backgroundColor: colors.paleGrey,
   },
+  requestToJoin: {
+    ...font.primary.bold,
+    color: colors.white,
+    ...font.fontSize(3),
+    marginRight: 40,
+  },
   viewAgendaBtn: {
     ...layout.content,
     ...layout.flexRow,
     justifyContent: 'flex-start',
     padding: 0,
+  },
+  contribution: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.white,
   },
   viewFullAgenda: {
     ...text.h3Black,
@@ -872,8 +877,8 @@ const styles = StyleSheet.create({
     marginBottom: 9,
   },
   readMoreButton: {
-    fontSize: 16,
-    fontWeight: '700',
+    ...font.primary.bold,
+    ...font.fontSize(3),
     color: colors.black,
   },
   commonNumbers: {

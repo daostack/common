@@ -101,8 +101,6 @@ const ProposalCardHeader = ({ stage, winningOutcome, hasPassedExpiryDate, closin
 
   const headerStatus = calcStatus(stage, winningOutcome, hasPassedExpiryDate);
 
-  console.log("headerStatus -> ", headerStatus);
-
   return isScreenHeader 
     ? (
       <View style={{...styles.stateCard, ...{backgroundColor: headerStatus.darkColor, paddingHorizontal: 50}}}>

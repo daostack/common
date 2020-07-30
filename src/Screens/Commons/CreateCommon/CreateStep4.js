@@ -521,8 +521,8 @@ const styles = StyleSheet.create({
     color: colors.black,
   },
   readMoreButton: {
-    fontSize: 12,
-    // fontWeight: '700',
+    ...font.primary.regular,
+    ...font.fontSize(1),
     color: colors.grey3,
   },
   continueButton: {
