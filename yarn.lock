@@ -738,10 +738,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@daostack/arc.js@2.0.0-experimental.44":
-  version "2.0.0-experimental.44"
-  resolved "https://registry.yarnpkg.com/@daostack/arc.js/-/arc.js-2.0.0-experimental.44.tgz#2d220f1d07f29ee23ec346a0cad2713a0045a3d7"
-  integrity sha512-T++UTqswylqe3N/ktivqOb7Y1R4yYbw/QhGTjZ9iR8nB4DqxrkaRI2bMXvIDQa3qnFSJ5S3108/IQLl4N9Fdhw==
+"@daostack/arc.js@2.0.0-experimental.49":
+  version "2.0.0-experimental.49"
+  resolved "https://registry.yarnpkg.com/@daostack/arc.js/-/arc.js-2.0.0-experimental.49.tgz#e392ee51a1466550a4eadb698c7a247eeaa34b69"
+  integrity sha512-HVKcNRQ4H74jS1RaJvUy5hSPcN0rjCKCMLL8A1cuEURv3IUM0jItd3l4Rl9gd0OAAjYSsPHRTRAOn5bBLyeY2w==
   dependencies:
     abi-decoder "^2.3.0"
     apollo-cache-inmemory "^1.6.5"
@@ -762,10 +762,10 @@
     subscriptions-transport-ws "^0.9.16"
     ws "^6.2.1"
 
-"@daostack/common-factory@1.3.6":
-  version "1.3.6"
-  resolved "https://registry.yarnpkg.com/@daostack/common-factory/-/common-factory-1.3.6.tgz#c7b273b59892357a1257e3962965d6f72b0ea1c6"
-  integrity sha512-WGcC8usBV8BaXaHR2XPMyo1RXrhQwvLQJ6NMn6pXvKkRq10yI4WywlqKfz4arLFrXdhvnaeXzqtwD0O7SFEhCg==
+"@daostack/common-factory@1.3.7":
+  version "1.3.7"
+  resolved "https://registry.yarnpkg.com/@daostack/common-factory/-/common-factory-1.3.7.tgz#d4b7f78ee25c8bd7c0bcc8b81c2de2bf482cb690"
+  integrity sha512-uvbb2KwP14Ex5Ka4F8nJ8NDPjMylBdlCUrqVcCaNeEdbHEV8e1zMdrefaOWvJ2YAQhF2eWpW6ZwTGKSGPaeWVQ==
   dependencies:
     ethers "^4.0.46"
 
