@@ -204,9 +204,9 @@ class TextInputFieldWithIcon extends React.Component {
             onFocus={this.onFocus}
             onBlur={this.onBlur}
             secureTextEntry={this.state.showPassword}
-            onContentSizeChange={e =>
+            /* onContentSizeChange={e =>
               this.updateSize(e.nativeEvent.contentSize.width)
-            }
+            } */
             value={
               validation
                 ? validation.formStore.form.fields[

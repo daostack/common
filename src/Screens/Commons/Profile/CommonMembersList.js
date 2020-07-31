@@ -52,7 +52,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
   let containerStyle = {};
 
   if (horizontal) {
-    containerStyle = layout.flexRow;
+    containerStyle = {...layout.flexRow, ...{paddingLeft: (membersInfo.length - 1) * 15}};
   }
 
   return (
@@ -60,8 +60,15 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
       {membersInfo ? (
         membersInfo.map((member, i) => {
           if (horizontal) {
+
+            let itemStyle = styles.horizontalItem;
+
+            if (i > 0) {
+              itemStyle={...itemStyle, ...{position: 'relative', left: i*-15}}
+            }
+
             return (
-              <TouchableOpacity style={styles.item} onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
+              <TouchableOpacity style={itemStyle} onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
                 <MemberImage
                   key={i}
                   userInfo={member}
@@ -99,6 +106,10 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.grey4,
     borderBottomWidth: 1,
   },
+  horizontalItem: {
+    paddingHorizontal: 0,
+  },
+  
 });
 
 export default inject('bottomSheetStore')(observer(CommonMembersList));

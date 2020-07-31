@@ -102,6 +102,7 @@ class TextInputField extends React.Component {
 
     if (multiline) {
       let rowsNumber = numberOfLines;
+      styleTextfield = {...styleTextfield, textAlignVertical: 'top' };
       if (!numberOfLines) {
         rowsNumber = 4;
       }
