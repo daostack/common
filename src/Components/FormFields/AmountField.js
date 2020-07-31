@@ -86,7 +86,6 @@ const styles = StyleSheet.create({
   },
   amount: {
     ...text.h3Black,
-    fontWeight: '500',
     color: colors.mainBlue,
   },
   ruleDescription: {

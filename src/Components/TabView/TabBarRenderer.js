@@ -41,7 +41,7 @@ const TabBarRenderer = (props) => {
         return (
           <View style={{...layout.content, padding: 0}}>
             <Icon
-              name={label.route.icon}
+              name={label.route.iconSelected && label.focused ? label.route.iconSelected : label.route.icon}
               size={30}
               color={label.focused ? colors.mainBlue : colors.grey3}
             />

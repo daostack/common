@@ -76,6 +76,15 @@ export default class FirebaseService {
     });
   }
 
+  async getDaoNameById(daoId) {
+
+    const dao = await db.collection(DB_COLLECTIONS.daos)
+          .doc(daoId)
+          .get();
+
+    return dao.data().metadata.name;
+  }
+
   async getDaoInfo(dao) {
     let daoCollection = db.collection('daos').doc(dao);
     daoCollection.onSnapshot(daoSnapshot => {

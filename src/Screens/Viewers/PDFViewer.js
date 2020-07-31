@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {Text, View, StyleSheet, SafeAreaView, Dimensions} from 'react-native';
-import {colors} from '../../Theme';
+import {colors, font} from '../../Theme';
 import React from 'react';
 import Pdf from 'react-native-pdf';
 import {useNavigation} from '@react-navigation/native';
@@ -38,7 +38,7 @@ const PDFViewer = ({route}) => {
         <></>
       ) : (
         <View style={styles.index}>
-          <Text style={{color: colors.black}}>
+          <Text style={styles.pager}>
             {currPage} of {pages}
           </Text>
         </View>
@@ -48,6 +48,11 @@ const PDFViewer = ({route}) => {
 };
 
 const styles = StyleSheet.create({
+  pager: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.black,
+  },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
