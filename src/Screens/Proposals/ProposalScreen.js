@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Keyboard,
+  Animated,
 } from 'react-native';
 import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
@@ -53,6 +54,8 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
+
+  const [stickyTabBarState, setStickyTabBarState] = useState({animation: new Animated.Value(0)});
 
   // Top voting buttons ref
   const topVotingButtonsRef = useRef(null);
@@ -223,6 +226,15 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  const stickyTopSheet = () => {
+    bottomSheetStore.showBottomSheet(
+      TOP_SHEET_TEMPLATES.STICKY_TOP_SHEET_SCREEN,
+      {
+        navigation: navigation,
+      }
+    );
+  };
+
   const viewUserProfile = () => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
@@ -355,13 +367,31 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
 
   const votesCount = proposalInfo.votesFor + proposalInfo.votesAgainst;
 
+
+  const slideUp = {
+    transform: [
+      {
+        translateY: stickyTabBarState.animation.interpolate({
+          inputRange: [0.01, 1],
+          outputRange: [0, 80],
+          extrapolate: "clamp",
+        }),
+      },
+    ],
+  };
+
+  const stickyTabBarStyle = {position: 'absolute', top: -80, width: '100%', paddingBottom: 5, zIndex: 999}
+
+  
+
   return (
     <>
       <SafeAreaView style={{backgroundColor: colors.white}} />
       <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
-        {showStickyTabBar && (<View style={{position: 'absolute', top: 0, width: '100%', paddingBottom: 5, zIndex: 999}}>
+        {(<Animated.View style={[stickyTabBarStyle, slideUp]}>
           <TabBarRenderer navigationState={{index: 0, routes: routes}} parentRef={originTabBarRef} />
-        </View>)}
+        </Animated.View>)}
+
         <ScrollView
           style={{
             flex: 1,
@@ -371,9 +401,26 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
           onScroll={(e) => {
             //e.nativeEvent.contentOffset.y
             stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
-              const isVisible = py < 76;
+              const isVisible = py < 0;
               if (isVisible != showStickyTabBar) {
-                setShowStickyTabBar(isVisible);
+                
+                //stickyTopSheet();
+
+                if (isVisible) {
+                  Animated.timing(stickyTabBarState.animation, {
+                    toValue: 1,
+                    duration: 200,
+                    useNativeDriver: true,
+                  }).start();
+                  setShowStickyTabBar(isVisible);
+                } else {
+                  setShowStickyTabBar(isVisible);
+                  Animated.timing(stickyTabBarState.animation, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: true,
+                  }).start();
+                }
               }
             });
 
@@ -383,6 +430,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
           }}>
           {proposalInfo && (
             <View style={{...headerContainerStyle}}>
+              
               {proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
                 <View style={{...layout.content, ...{width: '100%', padding: 0}}}>
                   <ProposalCardHeader
