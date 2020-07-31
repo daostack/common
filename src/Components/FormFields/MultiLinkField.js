@@ -49,6 +49,7 @@ const MultiLinkField = props => {
         currTitleItemValidation.multiName = props.validation.name;
         currTitleItemValidation.validateRule =
           validation.validateRule?.title || 'string';
+        const { formStore } = validation;
         currTitleItemValidation.topPosition = true;
         currTitleItemValidation.ivisibleContainer = true;
 
@@ -64,6 +65,13 @@ const MultiLinkField = props => {
             ) : null}
             <TextInputField
               value={''}
+              onChangeText={(value) => {
+                if (value.length > 0) {
+                  formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule + '|required');
+                } else {
+                  formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule);
+                }
+              }}
               viewStyle={{marginTop: 0}}
               placeholderText={
                 placeholderValueText ? placeholderValueText : 'https://'
