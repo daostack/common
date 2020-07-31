@@ -56,6 +56,7 @@ const MultiLinkField = props => {
           <View key={`key_${props.validation.name}_${currIndex + 1}`} style={layout.marginBottomM}>
             {props.title ? (
               <TextInputField
+                label={props.label}
                 viewStyle={{marginTop: 0}}
                 innerLabel={maxCount ? `${currIndex + 1}/${maxCount}` : false}
                 placeholderText={props.title}
