@@ -47,13 +47,10 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import ProposalActivationDate from '../../../Components/Proposals/ProposalActivationDate';
 import { BlurView } from '../../../Components';
 
-let stickyHeighAddon = 0;
-if (Platform.OS === 'ios') {
-  stickyHeighAddon += 36;
-}
+let stickyHeighAddon = 36;
 
 const STICKY_HEADER_HEIGHT = Math.round( getStatusBarHeight() ) + stickyHeighAddon;
-const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 80;
+const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
 const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const [isMember, setMemberState] = useState(false);
@@ -360,10 +357,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   const viewProposal = () => {
     navigation.navigate('ProposalScreen', {
-        proposalId: route.params.createdProposalId,
-        screenTitle: currCommon.name,
-        commonBalance: currCommon.balance,
-        isMember,
+      proposalId: route.params.createdProposalId,
+      screenTitle: currCommon.name,
+      commonBalance: currCommon.balance,
+      isMember,
     });
 
 
@@ -503,25 +500,19 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
         }
         rightButton={
           <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'space-between',
-              marginHorizontal: 10,
-            }}>
+            style={{flexDirection:'row', alignItems:'center'}}>
             <TouchableOpacity
-              style={{justifyContent: 'center', marginRight: 5}}
+              style={{justifyContent: 'center', marginRight: 10}}
               onPress={shareCommon}>
-              <BlurView
-                style={{padding: 8, borderRadius: 15}}
-                isBlurring={dark}>
+              <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
                 <Icon
                   name="share-32"
-                  size={25}
+                  size={32}
                   color={dark ? 'black' : 'white'}
                 />
               </BlurView>
             </TouchableOpacity>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{justifyContent: 'center'}}
               onPress={shareCommon}>
               <BlurView
@@ -533,7 +524,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                   color={dark ? 'black' : 'white'}
                 />
               </BlurView>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         }
       />
@@ -670,7 +661,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                 {renderRequestToJoinBtn()}
               </View>
             )}
-            
+
             {renderAgendaForNonMembers()}
             {/**
         <TouchableOpacity
@@ -914,23 +905,21 @@ const styles = StyleSheet.create({
   },
   stickySection: {
     height: STICKY_HEADER_HEIGHT,
-    width: '100%',
-    ...layout.content,
-    padding: 0,
     borderBottomWidth: 1,
+    backgroundColor: colors.white,
     borderBottomColor: colors.grey4,
   },
   stickySectionText: {
-    color: 'black',
+    paddingTop: Platform.OS === 'ios' ? 40 : 20,
     ...font.heading.bold,
     fontSize: 20,
-    marginTop: stickyHeighAddon,
+    color: colors.black,
     textAlign: 'center',
   },
   fixedSection: {
     width: '100%',
     position: 'absolute',
-    bottom: 0,
+    bottom: 10,
     left: 5,
     backgroundColor: 'transparent',
   },
