@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Text, StyleSheet, View, Animated, Dimensions} from 'react-native';
+import {Text, StyleSheet, Platform, View, Animated, Dimensions} from 'react-native';
 import {text, layout, colors, font} from '../../Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
   },
 
   proposalCard: {
-    marginHorizontal: 5,
+    // marginHorizontal: 5,
     ...layout.marginBottomL,
     backgroundColor: colors.white,
     borderRadius: 20,
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
-    width: width - 50,
+    width: Platform.OS === 'ios' ? '100%' : width - 60,
   },
 });
 

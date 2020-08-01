@@ -43,12 +43,11 @@ const styles = StyleSheet.create({
   textStyle: {
     ...font.primary.regular,
     color: colors.grey3,
-    ...font.fontSize(3),
+    ...font.fontSize(2),
   },
   textStyleActive: {
     ...font.primary.semiBold,
-    ...font.fontSize(3),
+    ...font.fontSize(2),
     color: colors.mainBlue,
   },
-
 });
