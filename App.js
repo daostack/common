@@ -208,8 +208,10 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           if (isNewUser) {
             appUser = await AuthService.getInstance().createUserAndWallet(user);
             manager.createSmartContractWallet();
+          } else {
+            await manager.addressCheck(user.uid);
           }
-          await manager.addressCheck(user.uid);
+          
           const allUserInfo = {
             ...user._user,
             ...appUser,
