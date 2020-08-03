@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   SafeAreaView,
@@ -8,7 +8,7 @@ import {
   ScrollView,
   View,
   FlatList,
-  Dimensions,
+  Dimensions, Animated
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import { inject, observer } from 'mobx-react';
@@ -29,6 +29,12 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
     { key: 'all', title: getTabName('All', daoStore.daos.length) },
     { key: 'members', title: getTabName('Members', usersDaos.length) },
   ];
+
+  const onScreenScroll = (event) => {
+    navigation.setOptions({
+      title: event.nativeEvent.contentOffset.y > 75 ? 'My Commons' : 'My Profile',
+    });
+  };
 
   const setDao = dao => {
     daoStore.setDao(dao);
@@ -81,7 +87,10 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
           style={styles.scrollView}
           vertical={true}
           nestedScrollEnabled={true}
-          directionalLockEnabled={true}>
+          directionalLockEnabled={true}
+          onScroll={onScreenScroll}
+          scrollEventThrottle={16}
+        >
           <View style={styles.sectionContainer}>
             <Text style={styles.title}>My Commons</Text>
           </View>

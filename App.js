@@ -465,7 +465,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         />
         <Stack.Screen
           options={{
-            title: 'My Profile',
+            title: "My Profile",
             headerBackTitleVisible: false,
           }}
           name="MyProposals"
@@ -473,8 +473,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         />
         <Stack.Screen
           options={{
-            title: null,
-            headerBackTitleVisible: true,
+            title: "My Profile",
+            headerBackTitleVisible: false,
           }}
           name="MyCommons"
           component={MyCommons}
