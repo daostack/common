@@ -89,12 +89,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   useEffect(() => {
     messaging()
-      .registerDeviceForRemoteMessages()
-      .then(() => {
-        return messaging().requestPermission();
-      })
+      .requestPermission()
       .then(settings => {
-        // console.log('Notification settings', settings);
         if (settings) {
           return NotificationService.saveTokenToDatabase();
         }
@@ -136,6 +132,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         return;
       }
       if (!DeepLinking.evaluateUrl(url)) {
+        console.log('Routing Browser ->', url);
         routing('Browser', {url: url});
       }
     });
@@ -204,6 +201,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           await AuthService.getInstance().loadMnemonic(user.uid, providerId);
           await WalletManager.init(user.uid);
           await ArcService.init();
+          const manager = await WalletManager.getInstance();
           let appUser = await FirebaseService.getInstance().getUserById(
             user.uid,
           );
@@ -213,9 +211,11 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
             const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}}
             appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
-            const manager = await WalletManager.getInstance();
             manager.createSmartContractWallet();
+          } else {
+            await manager.addressCheck(user.uid);
           }
+          
           const allUserInfo = {
             ...user._user,
             ...appUser,
