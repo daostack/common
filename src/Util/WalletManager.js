@@ -1,5 +1,6 @@
 import { NativeWallet } from './NativeWallet';
 import { ethers, Contract } from 'ethers';
+import { Alert } from 'react-native';
 import { web3ProviderUrl, web3NetworkId, COMMONTOKENADDRESS, relayerUrl } from '../Config';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
@@ -55,6 +56,7 @@ export default class WalletManager {
       const userData = await FirebaseService.getInstance().getUserById(uid);
       this.safeAddress = userData?.safeAddress;
       console.log('safeAddress ->', this.safeAddress);
+      this.isCreatingWallet = false;
       return this;
     })();
   }
@@ -74,6 +76,30 @@ export default class WalletManager {
     }
     return WalletManager.myInstance;
   };
+
+  addressCheck = async uid => {
+    // Check local address and database address is matched
+    const userData = await FirebaseService.getInstance().getUserById(uid);
+    if (userData.ethereumAddress !== this.address && userData.ethereumAddress?.trim()) {
+      Alert.alert('Hands up',
+        'There is a fatal error - local address mismatched, please contact us to help',
+        [{ text: 'OK', onPress: () => console.log('Ok Pressed'), style: 'danger' }],
+        {cancelable: false}
+      );
+      // If local address is mismatched, no need to create smart wallet
+      return;
+    }
+
+    // If safe wallet is creating, stop checking
+    if (this.isCreatingWallet) {
+      return;
+    }
+
+    // Create safe wallet if user don't have it
+    if (!userData.safeAddress?.trim()) {
+      this.createSmartContractWallet();
+    }
+  }
 
   getAddress() {
     return this.address;
@@ -117,17 +143,24 @@ export default class WalletManager {
   };
 
   createSmartContractWallet = async () => {
-    const currentUser = auth().currentUser;
-    const idToken = await currentUser.getIdToken();
-    const options = { headers: { idToken } };
-    const response = await axiosClient.get(
-      'createWallet',
-      options,
-    );
-    await this.provider.waitForTransaction(response.data.txHash);
-    await WalletManager.init(currentUser.uid); // Re-init for safeAddress
-    console.log('Create SCW', response);
-    return response.data;
+    try {
+      this.isCreatingWallet = true;
+      const currentUser = auth().currentUser;
+      const idToken = await currentUser.getIdToken();
+      const options = { headers: { idToken } };
+      const response = await axiosClient.get(
+        'createWallet',
+        options,
+      );
+      await this.provider.waitForTransaction(response.data.txHash);
+      await WalletManager.init(currentUser.uid); // Re-init for safeAddress
+      console.log('Create SCW', response);
+      this.isCreatingWallet = false;
+      return response.data;
+    } catch (e) {
+      this.isCreatingWallet = false;
+      throw e;
+    }
   };
 
   create2SmartContractWallet = async () => {
