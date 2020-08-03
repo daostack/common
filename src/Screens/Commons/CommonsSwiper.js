@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import {Text, View, Dimensions, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {CommonBox} from '../../Components';
 import {db} from '../../Firebase';
 import {inject, observer} from 'mobx-react';
@@ -12,6 +12,7 @@ import {
   Fade,
 } from 'rn-placeholder';
 import Toast from '../../Util/Toast';
+const {width} = Dimensions.get('window');
 
 const CommonsSwiper = ({
   navigation,
@@ -85,6 +86,7 @@ const CommonsSwiper = ({
     return (
       index < showMax ? <CommonBox
         key={item.id}
+        width={width - 60}
         common={item}
         navigation={navigation}
         onPress={() => setDao(item)}

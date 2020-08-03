@@ -39,6 +39,7 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
       image={dao.coverPhoto}
       common={dao}
       key={i}
+      width="100%"
       navigation={navigation}
       onPress={() => setDao(dao)}
     />;

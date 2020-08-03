@@ -14,7 +14,7 @@ const ViewTabNoData = ({title, subtitle}) => {
 const styles = StyleSheet.create({
   container: {
     ...layout.content,
-    backgroundColor: colors.grey5,
+    backgroundColor: 'transparent',
     height: 'auto',
     paddingHorizontal: sizeXL,
   },
