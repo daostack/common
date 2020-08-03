@@ -29,6 +29,12 @@ const MyProposals = ({navigation, userStore}) => {
     getStats();
   }, [userStore.userInfo.uid]);
 
+  const onScreenScroll = (event) => {
+    navigation.setOptions({
+      title: event.nativeEvent.contentOffset.y > 75 ? "My Proposals" : "My Profile"
+    });
+  };
+
   const routes = [{key: 'all', title: `All (${stats.all})`},
     { key: 'active', title: `Active (${stats.active})`},
     { key: 'history', title: `History (${stats.history})`}];
@@ -77,7 +83,10 @@ const MyProposals = ({navigation, userStore}) => {
           style={styles.scrollView}
           vertical={true}
           nestedScrollEnabled={true}
-          directionalLockEnabled={true}>
+          directionalLockEnabled={true}
+          onScroll={onScreenScroll}
+          scrollEventThrottle={16}
+        >
           <View style={styles.sectionContainer}>
             <Text style={styles.title}>My proposals</Text>
           </View>

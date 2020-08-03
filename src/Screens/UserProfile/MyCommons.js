@@ -32,7 +32,7 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
 
   const onScreenScroll = (event) => {
     navigation.setOptions({
-      title: event.nativeEvent.contentOffset.y > 75 ? 'My Commons' : 'My Profile',
+      title: event.nativeEvent.contentOffset.y > 75 ? "My Commons" : "My Profile"
     });
   };
 
