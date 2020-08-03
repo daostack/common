@@ -91,7 +91,7 @@ class EditProfileForm extends React.Component {
           viewStyle={{alignSelf: 'stretch'}}
           label="First name"
           infoLabel="Required"
-          placeholderText="Firstname"
+          placeholderText="First name"
           autoCapitalize="none"
           autoCorrect={false}
           validation={{
@@ -106,7 +106,7 @@ class EditProfileForm extends React.Component {
           viewStyle={{alignSelf: 'stretch'}}
           label="Last name"
           infoLabel="Required"
-          placeholderText="Lastname"
+          placeholderText="Last name"
           autoCapitalize="none"
           autoCorrect={false}
           validation={{

@@ -196,7 +196,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     const subscribers = { authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
 
     const onAuthStateChanged = async user => {
-      console.log('AUTH STATE CHANGED: ', user, user?.uid, user?.email, user?.displayName);
+      console.log('AUTH STATE CHANGED: ', user?.uid, user?.email, user?.displayName);
       try {
         userStore.setIsLoading(true);
         if (user) {
@@ -211,10 +211,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
           if (isNewUser) {
             const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
-            console.log("providerUserInfo -> ", providerUserInfo);
-            console.log("user -> ", user);
             const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}}
-            console.log("userInfo -> ", userInfo);
             appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
             const manager = await WalletManager.getInstance();
             manager.createSmartContractWallet();

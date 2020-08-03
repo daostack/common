@@ -22,11 +22,11 @@ class ValidationMessage extends React.Component {
     const validationMessage = this.props.formStore.form.fields[this.props.name].error;
     let messageStyle = styles.errorMessage;
 
-    if (!this.props.ivisibleContainer) {
+    if (!this.props.invisibleContainer) {
       messageStyle = {...styles.errorMessage, ...{minHeight: font.lineHeightForm}};
     }
 
-    return validationMessage || !this.props.ivisibleContainer ? (
+    return validationMessage || !this.props.invisibleContainer ? (
       <Text style={messageStyle}>
         { validationMessage || ''}
       </Text>
