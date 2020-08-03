@@ -23,7 +23,7 @@ You will need three files
 2.  For iOS `GoogleService-Info.plist`
 3.  For Android `google-services.json`
 
-You can ge these files [here](https://daostack1.atlassian.net/wiki/spaces/CMN/pages/9994241/SECRETS+needed+to+run+Common) or from one of the members of the developer team to get started.
+To get started you should ask one of the members of the developer for those files.
 
 The `env.json` is to be placed into the root folder of the React Native project.
 
