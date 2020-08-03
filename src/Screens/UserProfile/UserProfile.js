@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {layout, colors, text, sizeL} from '../../Theme';
+import {layout, colors, text, sizeL, font} from '../../Theme';
 import {observer, inject} from 'mobx-react';
 import AccordionBtn from '../../Components/AccordionBtn';
 import CreateAccount from './CreateAccount';
@@ -125,13 +125,6 @@ const UserProfile = ({userStore, navigation}) => {
                 : renderUnsignedUserData()}
 
               <View style={layout.marginTopL}>
-                {userStore.userInfo ? (
-                  <AccordionBtn
-                    title="My wallet"
-                    subtitle={userStore.userInfo.ethereumAddress}
-                    onPress={onMyWalletPress}
-                  />
-                ) : null}
                 <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" />
                 <AccordionBtn onPress={() => Linking.openURL('https://common.io/tos')} title="Terms of use" />
                 <AccordionBtn onPress={() => Linking.openURL('https://common.io/privacy')} title="Privacy Policy" />
@@ -155,7 +148,7 @@ const UserProfile = ({userStore, navigation}) => {
                 <AccordionBtn title="Test Page" onPress={onTestPagePress} />
                 <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
               </View>}
-              <Text style={{ textAlign: 'center', paddingVertical: 10, color: colors.grey2 }}>Common v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : '' })</Text>
+              <Text style={styles.version}>Common v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : '' })</Text>
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -227,7 +220,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignSelf: 'stretch',
   },
-
+  version: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    textAlign: 'center',
+    paddingVertical: 10,
+    color: colors.grey2,
+  },
   contentContainer: {
     ...layout.content,
     ...layout.flexStart,
@@ -251,7 +250,7 @@ const styles = StyleSheet.create({
   countBoxDivider: {
     height: '100%',
     width: 1,
-    backgroundColor: '#eeeeee',
+    backgroundColor: colors.grey4,
   },
   body: {
     paddingVertical: 10,
@@ -286,7 +285,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   swiperContent: {
-    backgroundColor: '#efefef',
+    backgroundColor: colors.grey4,
     borderRadius: 14,
     flex: 1,
   },

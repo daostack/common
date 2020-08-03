@@ -49,6 +49,7 @@ const MultiLinkField = props => {
         currTitleItemValidation.multiName = props.validation.name;
         currTitleItemValidation.validateRule =
           validation.validateRule?.title || 'string';
+        const { formStore } = validation;
         currTitleItemValidation.topPosition = true;
         currTitleItemValidation.ivisibleContainer = true;
 
@@ -56,6 +57,7 @@ const MultiLinkField = props => {
           <View key={`key_${props.validation.name}_${currIndex + 1}`} style={layout.marginBottomM}>
             {props.title ? (
               <TextInputField
+                label={props.label}
                 viewStyle={{marginTop: 0}}
                 innerLabel={maxCount ? `${currIndex + 1}/${maxCount}` : false}
                 placeholderText={props.title}
@@ -64,6 +66,13 @@ const MultiLinkField = props => {
             ) : null}
             <TextInputField
               value={''}
+              onChangeText={(value) => {
+                if (value.length > 0) {
+                  formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule + '|required');
+                } else {
+                  formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule);
+                }
+              }}
               viewStyle={{marginTop: 0}}
               placeholderText={
                 placeholderValueText ? placeholderValueText : 'https://'
