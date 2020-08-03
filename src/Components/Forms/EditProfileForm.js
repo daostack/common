@@ -87,7 +87,7 @@ class EditProfileForm extends React.Component {
         </View>
 
         <TextInputField
-          value={userStore.userInfo.displayName}
+          value={userStore.userInfo.firstName}
           viewStyle={{alignSelf: 'stretch'}}
           label="First name"
           infoLabel="Required"
@@ -102,7 +102,7 @@ class EditProfileForm extends React.Component {
         />
 
         <TextInputField
-          value={userStore.userInfo.displayName}
+          value={userStore.userInfo.lastName}
           viewStyle={{alignSelf: 'stretch'}}
           label="Last name"
           infoLabel="Required"

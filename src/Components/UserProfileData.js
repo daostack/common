@@ -176,6 +176,7 @@ const UserProfileData = ({
 
         <ProposalsList
           navigation={navigation}
+          //userId={userId}
           safeAddress={userStore.userInfo.safeAddress}
           showAll={true}
           isSwiper={true}

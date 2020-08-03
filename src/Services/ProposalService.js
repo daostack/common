@@ -146,18 +146,24 @@ export default class ProposalService {
 
     let proposalCollection = db.collection(DB_COLLECTIONS.proposals);
 
+    console.log("=== SUBSCRIBE TO PROPOSAL LIST ===");
+
     if (commonId) {
+      console.log("commonId -> ", commonId);
       proposalCollection = proposalCollection.where('dao', '==', commonId);
     }
     if (userId) {
+      console.log("userId -> ", userId);
       proposalCollection = proposalCollection.where('proposerId', '==', userId);
     }
 
     if (onlyFundingRequests) {
+      console.log("onlyFundingRequests -> ", onlyFundingRequests);
       proposalCollection = proposalCollection.where('type', '==', PROPOSAL_TYPE.FundingRequest);
     }
 
     if (safeAddress) {
+      console.log("safeAddress -> ", safeAddress);
       proposalCollection = proposalCollection.where(
         'proposer',
         '==',
@@ -166,6 +172,7 @@ export default class ProposalService {
     }
 
     if (!showAll) {
+      console.log("stages -> ", stages);
       proposalCollection = proposalCollection.where('stageStr', 'in', stages);
     }
 

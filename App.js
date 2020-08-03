@@ -196,19 +196,26 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     const subscribers = { authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
 
     const onAuthStateChanged = async user => {
-      console.log('AUTH STATE CHANGED: ', user?.uid, user?.email, user?.displayName);
+      console.log('AUTH STATE CHANGED: ', user, user?.uid, user?.email, user?.displayName);
       try {
         userStore.setIsLoading(true);
         if (user) {
-          await AuthService.getInstance().loadMnemonic(user.uid, user.providerData[0].providerId);
+          const providerId = user.providerData[0].providerId;
+          await AuthService.getInstance().loadMnemonic(user.uid, providerId);
           await WalletManager.init(user.uid);
           await ArcService.init();
           let appUser = await FirebaseService.getInstance().getUserById(
             user.uid,
           );
           const isNewUser = !appUser;
+
           if (isNewUser) {
-            appUser = await AuthService.getInstance().createUserAndWallet(user);
+            const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
+            console.log("providerUserInfo -> ", providerUserInfo);
+            console.log("user -> ", user);
+            const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}}
+            console.log("userInfo -> ", userInfo);
+            appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
             const manager = await WalletManager.getInstance();
             manager.createSmartContractWallet();
           }

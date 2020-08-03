@@ -18,6 +18,7 @@ import AuthService from '../../Services/AuthService';
 
 const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
   const onSignIn = async userInfo => {
+    console.log("User Info -> ", userInfo);
     if (onSignedIn) {
       onSignedIn(userInfo.additionalUserInfo.isNewUser);
     }
