@@ -104,7 +104,6 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
 
   return (
     <Animated.View style={[styles.proposalCard, containerStyle]}>
-      {console.log("Proposal card props", data)}
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
           isBoosted={true}

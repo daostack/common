@@ -17,13 +17,13 @@ import { inject, observer } from 'mobx-react';
 import  ProposalService  from '../../Services/ProposalService';
 import CommonTabBar from '../CommonTabBar';
 
-const MyProposals = ({navigation, userStore}) => {
+const MyProposals = ({route, navigation, userStore}) => {
   const [index, setIndex] = React.useState(0);
   const [stats, setStats] = React.useState({ all: 0, active: 0, history: 0 });
 
   useEffect(() => {
     const getStats = async () => {
-      const userProposalsStats = await ProposalService.getInstance().getUserProposalsCounts(userStore.userInfo.uid);
+      const userProposalsStats = await ProposalService.getInstance().getUserProposalsCounts(userStore.userInfo.uid, route.params.onlyMembershipRequests, route.params.onlyFundingRequests);
       setStats({ ...userProposalsStats });
     };
     getStats();
@@ -49,6 +49,8 @@ const MyProposals = ({navigation, userStore}) => {
     return (
       <View style={{ flex: 1, marginTop: 40, paddingHorizontal: 20}}>
         <ProposalsList
+          membershipRequests={route.params.onlyMembershipRequests}
+          onlyFundingRequests={route.params.onlyFundingRequests}
           navigation={navigation}
           safeAddress={userStore.userInfo.safeAddress}
           showAll={sceneIndex === 0 ? true : false}
@@ -79,7 +81,7 @@ const MyProposals = ({navigation, userStore}) => {
           nestedScrollEnabled={true}
           directionalLockEnabled={true}>
           <View style={styles.sectionContainer}>
-            <Text style={styles.title}>My proposals</Text>
+            <Text style={styles.title}>My {route.params.onlyMembershipRequests ? 'membership requests' : 'proposals'}</Text>
           </View>
           <View style={styles.sectionTabView}>
             <TabView

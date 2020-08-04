@@ -1,4 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
+import PropTypes from 'prop-types';
 import { FlatList, StyleSheet, View, Text, Image, Dimensions, TouchableOpacity} from 'react-native';
 import ViewTabNoData from '../../Components/ViewTabNoData';
 import ProposalService, {PROPOSAL_STAGE} from '../../Services/ProposalService';
@@ -100,7 +101,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
             style={{ ...styles.commonBox }}
           >
             <Text style={text.buttonblue}>
-              {`View all ${list.length} ${membershipRequests ? 'Membership requests' : 'Proposals'}`}
+              {`View all ${list.length} ${membershipRequests ? 'Requests' : 'Proposals'}`}
             </Text>
           </TouchableOpacity>
         )
@@ -132,7 +133,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
           />
           <Text style={{...text.h2Black, ...layout.marginTopS}}>
             {membershipRequests
-              ? 'No Membership Requests'
+              ? 'No Requests'
               : 'No Proposals'
             }
           </Text>
@@ -176,7 +177,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
             isHistory
               ? 'No Past activity'
               : membershipRequests
-                ? 'No membership requests yet'
+                ? 'No requests yet'
                 : 'No proposals yet'
           }
           subtitle={
@@ -243,5 +244,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
   },
 });
+
+ProposalsList.propTypes = {
+  onlyFundingRequests: PropTypes.bool,
+  membershipRequests: PropTypes.bool,
+};
 
 export default React.memo(ProposalsList);

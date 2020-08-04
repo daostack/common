@@ -50,11 +50,21 @@ export default class ProposalService {
     return this.serviceInstance;
   };
 
-  async getUserProposalsCounts(uid) {
-    return db
+  async getUserProposalsCounts(uid, onlyMembershipRequests = false, onlyFundingProposals = false) {
+    let query = db
       .collection(DB_COLLECTIONS.proposals)
-      .where('proposerId', '==', uid)
-      .get()
+      .where('proposerId', '==', uid);
+
+    if(onlyFundingProposals) {
+      query = query.where('type', '==', PROPOSAL_TYPE.FundingRequest);
+    }
+
+    if(onlyMembershipRequests) {
+      query = query.where('type', '==', PROPOSAL_TYPE.JoinAndQuit);
+    }
+
+
+    return query.get()
       .then(snapshots => {
         if (!snapshots) {
           return { all: 0, active: 0, history: 0 };
@@ -167,29 +177,31 @@ export default class ProposalService {
     }
 
     if(membershipRequests) {
-      // Start the query from the beginning because we want
-      // all request for the user commons, not only those made by
-      // the user itself
-      proposalCollection = db.collection(DB_COLLECTIONS.proposals);
+      // // Start the query from the beginning because we want
+      // // all request for the user commons, not only those made by
+      // // the user itself
+      // proposalCollection = db.collection(DB_COLLECTIONS.proposals);
+      //
+      // // List of the ids of all daos that the user is part of
+      // let daos  = await db.collection(DB_COLLECTIONS.daos)
+      //   .get();
+      // let userDaos = [];
+      //
+      // daos.forEach(doc => {
+      //   if(doc.data().members.some(x => x.address == safeAddress)) {
+      //     userDaos.push(doc.data().id)
+      //   }
+      //
+      //   return doc;
+      // })
+      //
+      // proposalCollection = proposalCollection
+      //   // Only the join and quit proposals
+      //   .where('type', '==', PROPOSAL_TYPE.JoinAndQuit)
+      //   // Only those made to dao that the user is member of
+      //   .where('dao', 'in', userDaos);
 
-      // List of the ids of all daos that the user is part of
-      let daos  = await db.collection(DB_COLLECTIONS.daos)
-        .get();
-      let userDaos = [];
-
-      daos.forEach(doc => {
-        if(doc.data().members.some(x => x.address == safeAddress)) {
-          userDaos.push(doc.data().id)
-        }
-
-        return doc;
-      })
-
-      proposalCollection = proposalCollection
-        // Only the join and quit proposals
-        .where('type', '==', PROPOSAL_TYPE.JoinAndQuit)
-        // Only those made to dao that the user is member of
-        .where('dao', 'in', userDaos);
+      proposalCollection = proposalCollection.where('type', '==', PROPOSAL_TYPE.JoinAndQuit);
     }
 
     if (!showAll) {
