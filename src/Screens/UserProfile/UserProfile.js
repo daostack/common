@@ -20,6 +20,7 @@ import AuthService from '../../Services/AuthService';
 import Toast from '../../Util/Toast';
 import CodePush from 'react-native-code-push';
 import Config from 'react-native-config';
+import isProduction from '../../Config';
 
 import {
   Placeholder,
@@ -148,7 +149,7 @@ const UserProfile = ({userStore, navigation}) => {
                 <AccordionBtn title="Test Page" onPress={onTestPagePress} />
                 <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
               </View>}
-              <Text style={styles.version}>Common v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : '' })</Text>
+              <Text style={styles.version}>Common{isProduction ? '' : '-stg'} v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : '' })</Text>
             </View>
           </ScrollView>
         </SafeAreaView>
