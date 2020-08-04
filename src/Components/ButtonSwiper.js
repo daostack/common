@@ -5,10 +5,6 @@ import {text, layout, colors} from '../Theme';
 import SwipeButton from 'rn-swipe-button';
 
 const ButtonSwiper = ({onSwipeSuccess, title}) => {
-  const showToastMessage = msg => {
-    console.log('MSG -> ', msg);
-  };
-
   const thumbComponent = () => <View style={styles.swiperThumbIcon} />;
 
   return (
@@ -24,8 +20,6 @@ const ButtonSwiper = ({onSwipeSuccess, title}) => {
         thumbIconComponent={thumbComponent}
         railBackgroundColor={colors.grey4}
         railBorderColor={colors.grey4}
-        onSwipeStart={() => showToastMessage('Swipe started!')}
-        onSwipeFail={() => showToastMessage('Incomplete swipe!')}
         onSwipeSuccess={onSwipeSuccess}
       />
     </View>
