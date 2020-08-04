@@ -141,7 +141,8 @@ export default class ProposalService {
     listChangeCallback,
     listRef,
     onlyRequestsToJoin,
-    onlyFundingRequests
+    onlyFundingRequests,
+    membershipRequests = false
   ) {
 
     let proposalCollection = db.collection(DB_COLLECTIONS.proposals);
@@ -163,6 +164,32 @@ export default class ProposalService {
         '==',
         safeAddress.toString(),
       );
+    }
+
+    if(membershipRequests) {
+      // Start the query from the beginning because we want
+      // all request for the user commons, not only those made by
+      // the user itself
+      proposalCollection = db.collection(DB_COLLECTIONS.proposals);
+
+      // List of the ids of all daos that the user is part of
+      let daos  = await db.collection(DB_COLLECTIONS.daos)
+        .get();
+      let userDaos = [];
+
+      daos.forEach(doc => {
+        if(doc.data().members.some(x => x.address == safeAddress)) {
+          userDaos.push(doc.data().id)
+        }
+
+        return doc;
+      })
+
+      proposalCollection = proposalCollection
+        // Only the join and quit proposals
+        .where('type', '==', PROPOSAL_TYPE.JoinAndQuit)
+        // Only those made to dao that the user is member of
+        .where('dao', 'in', userDaos);
     }
 
     if (!showAll) {

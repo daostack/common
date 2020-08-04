@@ -214,6 +214,7 @@ const UserProfileData = ({
         </View>
 
         <ProposalsList
+          membershipRequests
           navigation={navigation}
           safeAddress={userStore.userInfo.safeAddress}
           showAll={true}
