@@ -44,9 +44,11 @@ class FundingRequestForm extends React.Component {
       userStore,
       fundingRequestFormStore,
       firstOpening,
+      common,
       ...otherProps
     } = this.props;
 
+    console.log('common.balance ->', common.balance);
     console.log('fundingRequestFormStore');
     console.log(fundingRequestFormStore);
     return (
@@ -88,7 +90,7 @@ class FundingRequestForm extends React.Component {
           validation={{
             name: FundingRequestForm.FIELD_AMOUNT_REQUESTED,
             formStore: this.props.fundingRequestFormStore,
-            validateRule: 'required|numeric',
+            validateRule: `required|numeric|max:${common.balance / 100}`,
           }}
         />
 
