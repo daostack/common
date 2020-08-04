@@ -15,7 +15,6 @@ const MemberCard = ({
   showMemberCreatedDate,
   userInfo,
   proposalInfo,
-  showDate = false
 }) => {
   const renderRightContainer = () => {
     if (proposalInfo) {
@@ -33,7 +32,9 @@ const MemberCard = ({
             }}>
             <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
             {remainingSeconds > 0 && (
-              showDate
+              // If the remaining time is more than 1 day show the date,
+              // if it is less show countdown till it
+              remainingSeconds > 24 * 60 * 60
                 ? (
                   <Text>{moment.unix(proposalInfo.closingAt).format('dddd, h:mm')}</Text>
                 ) : (
@@ -166,9 +167,5 @@ const styles = StyleSheet.create({
     borderColor: colors.white,
   },
 });
-
-MemberCard.propTypes = {
-  showDate: PropTypes.bool
-};
 
 export default MemberCard;
