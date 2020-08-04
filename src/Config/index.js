@@ -78,7 +78,7 @@ export const web3ProviderUrl = web3Provider;
 export const web3NetworkId = networkId;
 export const COMMONTOKENADDRESS = commonTokenAddress;
 export const firebaseWebClientId = clientId;
-
+export const isProduction = Config.ENV === 'production';
 export const defaultAllowance = 100000000000000000;
 export const MEMBER_REPUTATION = 1000; // how much rep a new members gets
 
