@@ -11,11 +11,10 @@ import { PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '../../Services/P
 
 const {width, height} = Dimensions.get('window');
 
-const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, onlyFundingRequests, ...props}) => {
+const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, onlyFundingRequests, userId, ...props}) => {
   const commonId = commonInfo?.id;
   const commonName = commonInfo?.name;
 
-  const userId = props.userId;
   const isHistory = props.isHistory;
   const isSwiper = props.isSwiper;
   const navigation = props.navigation;
@@ -54,7 +53,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
         unsubscribe();
       }
     };
-  }, [commonId, isHistory, userId]);
+  }, [commonId, isHistory, userId, safeAddress]);
 
   const onReviewProposal = async ( proposalId, daoId ) => {
     
