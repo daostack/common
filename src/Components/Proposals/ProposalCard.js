@@ -11,7 +11,7 @@ import Toast from '../../Util/Toast';
 import moment from 'moment';
 const {width} = Dimensions.get('window');
 
-const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
+const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membershipRequest}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
 
   useEffect(() => {
@@ -104,9 +104,11 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
 
   return (
     <Animated.View style={[styles.proposalCard, containerStyle]}>
+      {console.log("Proposal card props", data)}
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
           isBoosted={true}
+          showDate={membershipRequest}
           stage={proposalCardInfo.proposalInfo?.stageStr}
           winningOutcome={proposalCardInfo.proposalInfo?.winningOutcome}
           hasPassedExpiryDate={moment().isAfter(moment.unix(proposalCardInfo.proposalInfo?.closingAt))}
@@ -126,6 +128,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
 
           <View style={layout.flexRow}>
             <MemberCard
+              showDate={membershipRequest}
               userInfo={proposalCardInfo.proposedUser}
               proposalInfo={proposalCardInfo.proposalInfo}
               isPending={false}
@@ -151,7 +154,12 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle}) => {
           </View>
 
           <View style={styles.proposalCardActionContainer}>
-            <Text style={styles.proposalActionBtnText}>Review proposal</Text>
+            <Text style={styles.proposalActionBtnText}>
+              {membershipRequest
+                ? 'Review membership request'
+                : 'Review proposal'
+              }
+            </Text>
           </View>
         </View>
       </TouchableOpacity>

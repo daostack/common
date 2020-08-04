@@ -14,6 +14,7 @@ const MemberCard = ({
   showMemberCreatedDate,
   userInfo,
   proposalInfo,
+  showDate = false
 }) => {
   const renderRightContainer = () => {
     if (proposalInfo) {
@@ -30,17 +31,23 @@ const MemberCard = ({
               ...{alignItems: 'flex-end'},
             }}>
             <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
-            {remainingSeconds > 0 && <CountDown
-              digitTxtStyle={text.smallGreyText}
-              separatorStyle={text.smallGreyText}
-              timeLabels={false}
-              showSeparator={true}
-              digitStyle={{
-                height: 'auto',
-                width: 'auto',
-              }}
-              until={remainingSeconds}
-            />}
+            {remainingSeconds > 0 && showDate
+              ? (
+                <Text>{moment.unix(proposalInfo.closingAt).format('dddd, h:mm')}</Text>
+              ) : (
+                <CountDown
+                  digitTxtStyle={text.smallGreyText}
+                  separatorStyle={text.smallGreyText}
+                  timeLabels={false}
+                  showSeparator={true}
+                  digitStyle={{
+                    height: 'auto',
+                    width: 'auto',
+                  }}
+                  until={remainingSeconds}
+                />
+              )
+            }
           </View>
         </View>
       );
