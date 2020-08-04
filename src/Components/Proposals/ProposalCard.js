@@ -155,8 +155,8 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
           <View style={styles.proposalCardActionContainer}>
             <Text style={styles.proposalActionBtnText}>
               {membershipRequest
-                ? 'Review membership request'
-                : 'Review proposal'
+                ? 'View request'
+                : 'View proposal'
               }
             </Text>
           </View>

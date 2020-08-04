@@ -1,5 +1,6 @@
 import {StyleSheet, View, Text} from 'react-native';
 import React from 'react';
+import PropTypes from 'prop-types';
 import {layout, colors, text, font,sizeXS} from '../Theme';
 import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
@@ -31,23 +32,24 @@ const MemberCard = ({
               ...{alignItems: 'flex-end'},
             }}>
             <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
-            {remainingSeconds > 0 && showDate
-              ? (
-                <Text>{moment.unix(proposalInfo.closingAt).format('dddd, h:mm')}</Text>
-              ) : (
-                <CountDown
-                  digitTxtStyle={text.smallGreyText}
-                  separatorStyle={text.smallGreyText}
-                  timeLabels={false}
-                  showSeparator={true}
-                  digitStyle={{
-                    height: 'auto',
-                    width: 'auto',
-                  }}
-                  until={remainingSeconds}
-                />
-              )
-            }
+            {remainingSeconds > 0 && (
+              showDate
+                ? (
+                  <Text>{moment.unix(proposalInfo.closingAt).format('dddd, h:mm')}</Text>
+                ) : (
+                  <CountDown
+                    digitTxtStyle={text.smallGreyText}
+                    separatorStyle={text.smallGreyText}
+                    timeLabels={false}
+                    showSeparator={true}
+                    digitStyle={{
+                      height: 'auto',
+                      width: 'auto',
+                    }}
+                    until={remainingSeconds}
+                  />
+                )
+            )}
           </View>
         </View>
       );
@@ -164,5 +166,9 @@ const styles = StyleSheet.create({
     borderColor: colors.white,
   },
 });
+
+MemberCard.propTypes = {
+  showDate: PropTypes.bool
+};
 
 export default MemberCard;
