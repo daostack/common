@@ -104,6 +104,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
 
   return (
     <Animated.View style={[styles.proposalCard, containerStyle]}>
+      {console.log("Proposal card props", data)}
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
           isBoosted={true}
@@ -127,7 +128,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
 
           <View style={layout.flexRow}>
             <MemberCard
-              membershipRequest={membershipRequest}
+              showDate={membershipRequest}
               userInfo={proposalCardInfo.proposedUser}
               proposalInfo={proposalCardInfo.proposalInfo}
               isPending={false}
