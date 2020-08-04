@@ -85,7 +85,7 @@ const FundingProposal = ({
           </Text>
           <View style={styles.divider}/>
 
-          <FundingRequestForm />
+          <FundingRequestForm common={route.params.common} />
         </ScrollView>
         <RequestStepActionButton
           title="Create Proposal"
