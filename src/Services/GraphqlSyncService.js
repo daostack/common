@@ -23,9 +23,9 @@ export default class GraphqlSyncService {
       return this.serviceInstance;
     };
 
-    async syncProposalById(proposalId) {
+    async syncProposalById(proposalId, txBlockNumber) {
       console.log(`update proposal ${proposalId}`);
-      const options = { params: { proposalId, retries: 4 } };
+      const options = { params: { proposalId, retries: 4, txBlockNumber } };
       await this.axiosClient.get('update-proposal-by-id', options);
       console.log('Proposal updated: '); //, proposalUpdateResponse);
     }
