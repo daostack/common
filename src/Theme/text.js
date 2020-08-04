@@ -26,11 +26,13 @@ const style = {
 export default StyleSheet.create({
   h1Black: style.h1Black,
   h1BlackTitle: {
-    ...style.h1Black,
-    ...font.heading.bold,
-    ...font.fontSize(5),
+    lineHeight: 29,
+    textAlign: 'center',
     ...layout.marginTopM,
     ...layout.marginBottomM,
+    color: colors.black,
+    ...font.heading.bold,
+    ...font.fontSize(5),
   },
   h1BlackRegular: {
     ...style.h1Black,
@@ -269,12 +271,17 @@ export default StyleSheet.create({
     letterSpacing: 0,
     color: colors.black,
   },
+  regularTextBig: {
+    ...font.primary.regular,
+    ...font.fontSize(3),
+    lineHeight: 22,
+    letterSpacing: 0,
+    color: colors.black,
+  },
 
   lightishGreenText: {
-    ...appFontFamily,
-    fontSize: 18,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
+    ...font.primary.bold,
+    ...font.fontSize(3),
     lineHeight: 22,
     letterSpacing: 0,
     color: colors.lightishGreen,

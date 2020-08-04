@@ -566,13 +566,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   titleName: {
-    color: 'white',
-    opacity: 0.8,
+    color: colors.white,
     textAlign: 'center',
     alignSelf: 'center',
     textShadowColor: 'rgba(0, 0, 0, 0.2)',
     ...font.primary.bold,
-    ...font.fontSize(2),
+    ...font.fontSize(4),
     textShadowOffset: {
       width: 0,
       height: 2,
@@ -581,8 +580,7 @@ const styles = StyleSheet.create({
   },
   byline: {
     width: '100%',
-    color: 'white',
-    opacity: 0.8,
+    color: colors.white,
     textAlign: 'center',
     alignSelf: 'center',
     ...font.primary.regular,

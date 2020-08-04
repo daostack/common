@@ -27,7 +27,7 @@ export const lineHeight = lineHeightIndex => ({
 const font = {
   heading: {
     bold: {
-      fontFamily: 'NotoSerif-SemiCondensedSemiBold',
+      fontFamily: 'NotoSerif-SemiBold',
     },
   },
   primary: {

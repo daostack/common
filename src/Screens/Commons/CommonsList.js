@@ -79,8 +79,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
         {
-          message:
-            'Connect your account to join this Common',
+          message: 'Connect your account to join this Common',
         },
       );
     }
@@ -176,13 +175,25 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
   const listFooter = () => {
     return (
       <View style={styles.footerContainer}>
-        <Image source={require('../../Assets/commonListFooter.png')} style={{
-          resizeMode: 'contain',
-          width: 84,
-          height: 84,
-        }}/>
+        <Image
+          source={require('../../Assets/commonListFooter.png')}
+          style={{
+            resizeMode: 'contain',
+            width: 84,
+            height: 84,
+          }}
+        />
         <Text style={styles.createACommon}>Create a common</Text>
-        <Text style={{fontFamily: 'NunitoSans-Regular', fontSize: 16, textAlign: 'center', marginVertical: 10}}>Anyone can create a Common, invite their friends, and work together to achieve common goals. Start now!</Text>
+        <Text
+          style={{
+            fontFamily: 'NunitoSans-Regular',
+            fontSize: 16,
+            textAlign: 'center',
+            marginVertical: 10,
+          }}>
+          Anyone can create a Common, invite their friends, and work together to
+          achieve common goals. Start now!
+        </Text>
       </View>
     );
   };
@@ -190,28 +201,29 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
   return (
     <>
       <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
-          {daoGroup ? (
-            <SectionList
-              sections={daoGroup}
-              ListHeaderComponent={header}
-              contentContainerStyle={{paddingHorizontal: 20}}
-              renderItem={x => (
-                <CommonBox
-                  common={x.item}
-                  navigation={navigation}
-                  // keyExtractor={x.item.id}
-                  onPress={() => setDao(x.item)}
-                />
-              )}
-              keyExtractor={x => x.id}
-              stickySectionHeadersEnabled={true}
-              renderSectionHeader={({section: {title}}) => sectionHeader(title)}
-              ListFooterComponent={listFooter}
-            />
-          ) : (
-            loadingPlaceholder()
-          )}
-        
+        {daoGroup ? (
+          <SectionList
+            sections={daoGroup}
+            ListHeaderComponent={header}
+            contentContainerStyle={{paddingHorizontal: 20}}
+            renderItem={x => (
+              <CommonBox
+                common={x.item}
+                width="100%"
+                navigation={navigation}
+                // keyExtractor={x.item.id}
+                onPress={() => setDao(x.item)}
+              />
+            )}
+            keyExtractor={x => x.id}
+            stickySectionHeadersEnabled={true}
+            renderSectionHeader={({section: {title}}) => sectionHeader(title)}
+            ListFooterComponent={listFooter}
+          />
+        ) : (
+          loadingPlaceholder()
+        )}
+
         <BottomRightButton onPress={onAddCommon} />
       </SafeAreaView>
     </>
@@ -243,7 +255,7 @@ const styles = StyleSheet.create({
   footerContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal:47,
+    marginHorizontal: 47,
     marginTop: 60,
     marginBottom: 100,
   },

@@ -5,6 +5,7 @@ import ProposalService, {PROPOSAL_STAGE} from '../../Services/ProposalService';
 import ProposalCard from '../../Components/Proposals/ProposalCard';
 import {CommonActions} from '@react-navigation/native';
 import {layout, colors, font, text, sizeXXL, sizeM} from '../../Theme';
+import FirebaseService from '../../Services/FirebaseService';
 
 import SwiperCard from '../../Components/SwiperCard';
 
@@ -12,8 +13,10 @@ import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 
 const {width, height} = Dimensions.get('window');
 
-const ProposalsList = ({ isMember, commonName, safeAddress, showAll, showMax, onlyFundingRequests, ...props}) => {
-  const commonId = props.commonId;
+const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, onlyFundingRequests, ...props}) => {
+  const commonId = commonInfo?.id;
+  const commonName = commonInfo?.name;
+
   const userId = props.userId;
   const isHistory = props.isHistory;
   const isSwiper = props.isSwiper;
@@ -70,11 +73,12 @@ const ProposalsList = ({ isMember, commonName, safeAddress, showAll, showMax, on
     };
   }, [commonId, isHistory]);
 
-  const onReviewProposal = proposalId => {
+  const onReviewProposal = async ( proposalId, daoId ) => {
     
     navigation.navigate('ProposalScreen', {
         proposalId: proposalId,
-        screenTitle: commonName,
+        screenTitle: commonName || await FirebaseService.getInstance().getDaoNameById(daoId),
+        commonBalance: commonInfo?.balance,
         isMember,
     });
   };
@@ -85,7 +89,7 @@ const ProposalsList = ({ isMember, commonName, safeAddress, showAll, showMax, on
         index < showMax ? <ProposalCard
           key={item.id}
           data={item}
-          onReviewProposal={e => onReviewProposal(item.id)}
+          onReviewProposal={e => onReviewProposal(item.id, item.dao)}
         /> : <TouchableOpacity onPress={() => navigation.navigate('MyProposals')} style={{ ...styles.commonBox }}>
           <Text style={text.buttonblue}>{`View all ${list.length} Proposals`}</Text>
         </TouchableOpacity>
@@ -93,7 +97,7 @@ const ProposalsList = ({ isMember, commonName, safeAddress, showAll, showMax, on
       ) : <ProposalCard
         key={item.id}
         data={item}
-        onReviewProposal={e => onReviewProposal(item.id)}
+        onReviewProposal={e => onReviewProposal(item.id, item.dao)}
       />);
   };
 

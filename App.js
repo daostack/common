@@ -89,12 +89,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   useEffect(() => {
     messaging()
-      .registerDeviceForRemoteMessages()
-      .then(() => {
-        return messaging().requestPermission();
-      })
+      .requestPermission()
       .then(settings => {
-        // console.log('Notification settings', settings);
         if (settings) {
           return NotificationService.saveTokenToDatabase();
         }
@@ -136,6 +132,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         return;
       }
       if (!DeepLinking.evaluateUrl(url)) {
+        console.log('Routing Browser ->', url);
         routing('Browser', {url: url});
       }
     });
@@ -203,15 +200,18 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           await AuthService.getInstance().loadMnemonic(user.uid, user.providerData[0].providerId);
           await WalletManager.init(user.uid);
           await ArcService.init();
+          const manager = await WalletManager.getInstance();
           let appUser = await FirebaseService.getInstance().getUserById(
             user.uid,
           );
           const isNewUser = !appUser;
           if (isNewUser) {
             appUser = await AuthService.getInstance().createUserAndWallet(user);
-            const manager = await WalletManager.getInstance();
             manager.createSmartContractWallet();
+          } else {
+            await manager.addressCheck(user.uid);
           }
+          
           const allUserInfo = {
             ...user._user,
             ...appUser,
@@ -513,7 +513,6 @@ const styles = StyleSheet.create({
     shadowOffset: {
       height: 0,
     },
-    textAlign: 'center',
   },
 });
 
