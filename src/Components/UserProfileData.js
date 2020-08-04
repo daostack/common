@@ -183,6 +183,45 @@ const UserProfileData = ({
           onCountChange={onProposalsCountChange}
         />
       </View>
+
+      <View style={styles.contentContainerWithoutPadding}>
+        <View style={{ justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
+          <Text
+            style={{
+              ...text.againstTextBlack,
+              ...layout.marginBottomL,
+              ...layout.paddingHorizontalL,
+            }}>{`Membership requests`}</Text>
+          {proposalsCount > 0 && (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('MyProposals')}
+              style={{
+                flexDirection: 'row',
+                ...layout.paddingHorizontalL
+              }}
+            >
+              <Text
+                style={{
+                  ...text.h3Black,
+                  ...layout.marginBottomL,
+                }}
+              >
+                {'View all'}
+              </Text>
+              <Icon name="right-arrow" size={20} />
+            </TouchableOpacity>
+          )}
+        </View>
+
+        <ProposalsList
+          navigation={navigation}
+          safeAddress={userStore.userInfo.safeAddress}
+          showAll={true}
+          isSwiper={true}
+          showMax={5}
+          onCountChange={onProposalsCountChange}
+        />
+      </View>
     </>
   );
 };
