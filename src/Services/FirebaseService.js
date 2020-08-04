@@ -102,6 +102,14 @@ export default class FirebaseService {
     });
   }
 
+  async getDaoById(daoId) {
+    const dao =  await db.collection(DB_COLLECTIONS.daos)
+      .where("address", "==", daoId)
+      .get();
+
+    return dao;
+  }
+
   async addUser(googleId, newUser) {
     console.log('addUser -> ', newUser);
     try {

@@ -6,6 +6,7 @@ import CountDown from 'react-native-countdown-component';
 import {monthShortNames} from '../Util/DateUtil';
 import moment from 'moment';
 import {PROPOSAL_TYPE} from '../Config';
+import FirebaseService from '../Services/FirebaseService';
 
 const MemberCard = ({
   // memberSince or commonsCount
@@ -14,8 +15,22 @@ const MemberCard = ({
   showMemberCreatedDate,
   userInfo,
   proposalInfo,
-  showDate = false
+  membershipRequest = false
 }) => {
+  const [daoInfo, setDaoInfo] = React.useState(null);
+
+  React.useEffect(() => {
+    console.log('ef', membershipRequest)
+
+    if(membershipRequest) {
+      const setDao = async () => {
+        setDaoInfo((await FirebaseService.getInstance().getDaoById(proposalInfo.dao)).data());
+      };
+
+      setDao().then(() => console.log(daoInfo));
+    }
+  }, [proposalInfo])
+
   const renderRightContainer = () => {
     if (proposalInfo) {
       const proposalValue =
@@ -31,9 +46,18 @@ const MemberCard = ({
               ...{alignItems: 'flex-end'},
             }}>
             <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
-            {remainingSeconds > 0 && showDate
+            {remainingSeconds > 0 && membershipRequest
               ? (
-                <Text>{moment.unix(proposalInfo.closingAt).format('dddd, h:mm')}</Text>
+                <Text>
+                  {/*{moment.unix(proposalInfo.closingAt).calendar( null, {*/}
+                  {/*  lastDay:  '[Yesterday at ]h:mm',*/}
+                  {/*  sameDay:  '[Today at ]h:mm',*/}
+                  {/*  nextDay:  '[Tomorrow at ]h:mm',*/}
+                  {/*  sameElse: () => "[" +  moment.unix(proposalInfo.createdAt).fromNow('dddd, h:mm') + "]"*/}
+                  {/*})}*/}
+
+                  {moment.unix(proposalInfo.createdAt).format('dddd, h:mm')}
+                </Text>
               ) : (
                 <CountDown
                   digitTxtStyle={text.smallGreyText}
@@ -82,30 +106,61 @@ const MemberCard = ({
   return (
     <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <View style={styles.memberInfoContainer}>
-        <MemberImage userInfo={userInfo} />
-        <View
-          style={{
-            ...layout.content,
-            ...layout.flexStart,
-          }}>
-          <Text
-            style={styles.displayName}>
-            {userInfo?.displayName || 'Unknown user'}
-          </Text>
-          <Text
-            style={{
-              ...text.smallGreyText,
-              marginTop: 2,
-            }}>
-            {proposalInfo
-              ? moment.unix(proposalInfo.createdAt).fromNow()
-              : showMemberCreatedDate
-                ? `Member in ${userInfo?.daos?.length || 0} Common${
-                  userInfo?.daos?.length > 1 ? 's' : ''
-                }`
-                : `Member since ${memberSince || 'unknown'}`}
-          </Text>
-        </View>
+        {membershipRequest ? (
+          <React.Fragment>
+            <MemberImage userInfo={userInfo} />
+            <View
+              style={{
+                ...layout.content,
+                ...layout.flexStart,
+              }}>
+              <Text
+                style={styles.displayName}>
+                {userInfo?.displayName || 'Unknown user'}
+              </Text>
+              <Text
+                style={{
+                  ...text.smallGreyText,
+                  marginTop: 2,
+                }}>
+                {proposalInfo
+                  ? moment.unix(proposalInfo.createdAt).fromNow()
+                  : showMemberCreatedDate
+                    ? `Member in ${userInfo?.daos?.length || 0} Common${
+                      userInfo?.daos?.length > 1 ? 's' : ''
+                    }`
+                    : `Member since ${memberSince || 'unknown'}`}
+              </Text>
+            </View>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <MemberImage userInfo={userInfo} />
+            <View
+              style={{
+                ...layout.content,
+                ...layout.flexStart,
+              }}>
+              <Text
+                style={styles.displayName}>
+                {userInfo?.displayName || 'Unknown user'}
+              </Text>
+              <Text
+                style={{
+                  ...text.smallGreyText,
+                  marginTop: 2,
+                }}>
+                {proposalInfo
+                  ? moment.unix(proposalInfo.createdAt).fromNow()
+                  : showMemberCreatedDate
+                    ? `Member in ${userInfo?.daos?.length || 0} Common${
+                      userInfo?.daos?.length > 1 ? 's' : ''
+                    }`
+                    : `Member since ${memberSince || 'unknown'}`}
+              </Text>
+            </View>
+          </React.Fragment>
+        )}
       </View>
       {renderRightContainer()}
     </View>
