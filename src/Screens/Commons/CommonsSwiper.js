@@ -193,5 +193,4 @@ const styles = StyleSheet.create({
 
 export default inject(
   'daoStore',
-  'userStore',
 )(observer(CommonsSwiper));
