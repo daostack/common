@@ -12,7 +12,7 @@ import {CommonBox, BottomRightButton} from '../../Components';
 import {db} from '../../Firebase';
 import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
-import isProduction from '../../Config';
+import { isProduction } from '../../Config';
 import {font, colors} from '../../Theme';
 
 import {
