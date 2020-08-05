@@ -24,6 +24,7 @@ export default class ArcService {
         web3Provider: manager.wallet,
       });
       await this.arc.fetchContractInfos();
+      this.voteRefreshFlag = true;
       return this;
     })();
   }
@@ -41,7 +42,9 @@ export default class ArcService {
 
   // PROPOSALS
   createRequestToJoin = async (daoId, data) => {
-    return createProposalRequestToJoin(this.arc, daoId, data);
+    const receipt = createProposalRequestToJoin(this.arc, daoId, data);
+    this.voteRefreshFlag = !this.voteRefreshFlag;
+    return receipt;
   };
 
   createFundingProposal = async (userAddress, daoId, data) => {

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import {
   SafeAreaView,
@@ -15,6 +15,7 @@ import {TabView} from 'react-native-tab-view';
 import ProposalsList from '../../Proposals/ProposalsList';
 import CommonMembersList from './CommonMembersList';
 import CommonTabBar from '../../CommonTabBar';
+import ArcService from '../../../Services/ArcService';
 
 const getTabName = (objectName, count) => {
   return `${objectName} (${count ? count : 0})`;
@@ -62,6 +63,11 @@ const CommonMembers = ({navigation, route}) => {
   const members = route.params.members;
   const commonId = route.params.commonId;
 
+  const service = ArcService.getInstance();
+
+  useEffect(() => {
+    console.log('CommonMembers --> refresh');
+  }, [service.voteRefreshFlag]);
 
   const routes = [
     {key: 'members', title: getTabName('Members', members.length)},
