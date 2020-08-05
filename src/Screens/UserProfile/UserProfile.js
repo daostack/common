@@ -6,6 +6,7 @@ import {
   ScrollView,
   View,
   Linking,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
@@ -44,9 +45,24 @@ const UserProfile = ({userStore, navigation}) => {
 
   const _signOut = async () => {
     try {
-      // That loading status will be changed to false in the onAuthStateChanged method in App.js
-      userStore.setIsLoading(true);
-      await AuthService.getInstance().signOut();
+      Alert.alert(
+        'Oops',
+        'Do you want to sign out?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          { text: 'OK', onPress: async () => {
+            // That loading status will be changed to false in the onAuthStateChanged method in App.js
+            userStore.setIsLoading(true);
+            await AuthService.getInstance().signOut();
+          },
+          },
+        ],
+      );
+
     } catch (error) {
       userStore.setIsLoading(false);
       Toast.error(error?.toString());
