@@ -1,4 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
+import PropTypes from 'prop-types';
 import { FlatList, StyleSheet, View, Text, Image, Dimensions, TouchableOpacity} from 'react-native';
 import ViewTabNoData from '../../Components/ViewTabNoData';
 import ProposalService, {PROPOSAL_STAGE} from '../../Services/ProposalService';
@@ -13,7 +14,7 @@ import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 
 const {width, height} = Dimensions.get('window');
 
-const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, onlyFundingRequests, ...props}) => {
+const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, onlyFundingRequests, membershipRequests, ...props}) => {
   const commonId = commonInfo?.id;
   const commonName = commonInfo?.name;
 
@@ -28,7 +29,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
   let listRef = useRef([]);
   let unsubscribe = null;
   useEffect(() => {
-    const loadProposalInfo = async (commonId, userId, isHistory, showAll, onlyFundingRequests) => {
+    const loadProposalInfo = async (commonId, userId, isHistory, showAll, onlyFundingRequests, membershipRequests) => {
       let proposalStages = null;
       if (isHistory) {
         // TODO: use ProposalsList.PROPOSAL_STAGES_HISTORY here
@@ -61,10 +62,11 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
         listRef,
         onlyRequestsToJoin,
         onlyFundingRequests,
+        membershipRequests
       );
     };
 
-    loadProposalInfo(commonId, userId, isHistory, showAll, onlyFundingRequests);
+    loadProposalInfo(commonId, userId, isHistory, showAll, onlyFundingRequests, membershipRequests);
 
     return () => {
       if (unsubscribe) {
@@ -86,17 +88,28 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
   const renderProposalCard = (item, index) => {
     return (
       isSwiper ? (
-        index < showMax ? <ProposalCard
-          key={item.id}
-          data={item}
-          onReviewProposal={e => onReviewProposal(item.id, item.dao)}
-        /> : <TouchableOpacity onPress={() => navigation.navigate('MyProposals')} style={{ ...styles.commonBox }}>
-          <Text style={text.buttonblue}>{`View all ${list.length} Proposals`}</Text>
-        </TouchableOpacity>
+        index < showMax ? (
+          <ProposalCard
+            key={item.id}
+            data={item}
+            membershipRequest={membershipRequests}
+            onReviewProposal={e => onReviewProposal(item.id, item.dao)}
+          />
+        ) : (
+          <TouchableOpacity
+            onPress={() => navigation.navigate('MyProposals')}
+            style={{ ...styles.commonBox }}
+          >
+            <Text style={text.buttonblue}>
+              {`View all ${list.length} ${membershipRequests ? 'Requests' : 'Proposals'}`}
+            </Text>
+          </TouchableOpacity>
+        )
 
       ) : <ProposalCard
         key={item.id}
         data={item}
+        membershipRequest={membershipRequests}
         onReviewProposal={e => onReviewProposal(item.id, item.dao)}
       />);
   };
@@ -119,7 +132,10 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
             source={require('../../../src/Assets/pencil.png')}
           />
           <Text style={{...text.h2Black, ...layout.marginTopS}}>
-            No Proposals
+            {membershipRequests
+              ? 'No Requests'
+              : 'No Proposals'
+            }
           </Text>
           <Text
             style={styles.textNoProposals}>
@@ -157,7 +173,13 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
         </>
       ) : (
         <ViewTabNoData
-          title={isHistory ? 'No Past activity' : 'No proposals yet'}
+          title={
+            isHistory
+              ? 'No Past activity'
+              : membershipRequests
+                ? 'No requests yet'
+                : 'No proposals yet'
+          }
           subtitle={
             isHistory
               ? 'You will be able to see proposals that passed or were rejected here.'
@@ -222,5 +244,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
   },
 });
+
+ProposalsList.propTypes = {
+  onlyFundingRequests: PropTypes.bool,
+  membershipRequests: PropTypes.bool,
+};
 
 export default React.memo(ProposalsList);
