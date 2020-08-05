@@ -150,7 +150,7 @@ const UserProfileData = ({
 
         <CommonsSwiper
           navigation={navigation}
-          userId={userId}
+          safeAddress={user.safeAddress}
           onCountChange={onCommonsCountChange}
           showMax={5}
         />
@@ -176,7 +176,7 @@ const UserProfileData = ({
 
         <ProposalsList
           navigation={navigation}
-          safeAddress={userStore.userInfo.safeAddress}
+          safeAddress={user.safeAddress}
           showAll={true}
           isSwiper={true}
           showMax={5}
