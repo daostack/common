@@ -35,7 +35,6 @@ import { db } from '../../Firebase';
 import { observer, inject } from 'mobx-react';
 import TabBarRenderer from '../../Components/TabView/TabBarRenderer';
 import moment from 'moment';
-import { BOTTOM_SHEET_TEMPLATES } from '../../Stores/BottomSheetStore';
 import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
 
 const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props}) => {
@@ -181,11 +180,16 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
       }
     };
 
+    let viewStyle = styles.input;
+    if (isMember) {
+      viewStyle = { ...viewStyle, ...{borderBottomWidth: 0} };
+    }
+
     return (
       <KeyboardAvoidingView
         // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
-        <View style={{ ...styles.input, borderBottomWidth: !isMember && 0}}>
+        <View style={viewStyle}>
           {isMember ? (
             <View style={styles.inputBorder}>
               <TextInput
@@ -238,13 +242,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   }
 
   const viewUserProfile = () => {
-    bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
-      {
-        navigation: navigation,
-        userId: proposedUser.uid,
-      }
-    );
+    navigation.navigate("Profile", {userId: proposedUser.uid});
   };
 
   const onVote = async isApproved => {

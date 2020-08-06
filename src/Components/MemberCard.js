@@ -1,5 +1,6 @@
 import {StyleSheet, View, Text} from 'react-native';
 import React from 'react';
+import PropTypes from 'prop-types';
 import {layout, colors, text, font,sizeXS} from '../Theme';
 import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
@@ -30,17 +31,26 @@ const MemberCard = ({
               ...{alignItems: 'flex-end'},
             }}>
             <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
-            {remainingSeconds > 0 && <CountDown
-              digitTxtStyle={text.smallGreyText}
-              separatorStyle={text.smallGreyText}
-              timeLabels={false}
-              showSeparator={true}
-              digitStyle={{
-                height: 'auto',
-                width: 'auto',
-              }}
-              until={remainingSeconds}
-            />}
+            {remainingSeconds > 0 && (
+              // If the remaining time is more than 1 day show the date,
+              // if it is less show countdown till it
+              remainingSeconds > 24 * 60 * 60
+                ? (
+                  <Text>{moment.unix(proposalInfo.closingAt).format('dddd, h:mm')}</Text>
+                ) : (
+                  <CountDown
+                    digitTxtStyle={text.smallGreyText}
+                    separatorStyle={text.smallGreyText}
+                    timeLabels={false}
+                    showSeparator={true}
+                    digitStyle={{
+                      height: 'auto',
+                      width: 'auto',
+                    }}
+                    until={remainingSeconds}
+                  />
+                )
+            )}
           </View>
         </View>
       );
@@ -90,11 +100,12 @@ const MemberCard = ({
               ...text.smallGreyText,
               marginTop: 2,
             }}>
+            
             {proposalInfo
               ? moment.unix(proposalInfo.createdAt).fromNow()
               : showMemberCreatedDate
                 ? `Member in ${userInfo?.daos?.length || 0} Common${
-                  userInfo?.daos?.length > 1 ? 's' : ''
+                  userInfo?.daos?.length !== 1 ? 's' : ''
                 }`
                 : `Member since ${memberSince || 'unknown'}`}
           </Text>

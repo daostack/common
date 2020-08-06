@@ -719,6 +719,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                     onPress={() =>
                       navigation.navigate('FundingProposal', {
                         commonId: currCommon.id,
+                        common: currCommon,
                       })
                     }
                     bottom={50}
