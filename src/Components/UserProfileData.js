@@ -234,7 +234,7 @@ const UserProfileData = ({
         <ProposalsList
           membershipRequests
           navigation={navigation}
-          safeAddress={userStore.userInfo.safeAddress}
+          safeAddress={user.safeAddress}
           showAll={true}
           isSwiper={true}
           showMax={5}
