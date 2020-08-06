@@ -1,4 +1,5 @@
 import {observable, action, decorate} from 'mobx';
+import { isDaoMemberBySafeAddress } from '../Util';
 
 export const userInfoFields = [
   'uid',
@@ -26,13 +27,7 @@ class UserStore {
   }
 
   isDaoMember = members => {
-    if (!members){
-      return false;
-    }
-    return members.some(
-      member =>
-        member.address === this.userInfo.safeAddress?.toLowerCase()
-    );
+    return isDaoMemberBySafeAddress(members, this.userInfo.safeAddress);
   };
 
   setIsLoading = loading => {

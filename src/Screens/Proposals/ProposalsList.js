@@ -88,7 +88,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
   const renderProposalCard = (item, index) => {
     return (
       isSwiper ? (
-        index < showMax ? (
+        !showMax || (index < showMax) ? (
           <ProposalCard
             key={item.id}
             data={item}

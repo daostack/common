@@ -30,7 +30,7 @@ import {
   Fade,
 } from 'rn-placeholder';
 
-const UserProfile = ({userStore, navigation}) => {
+const UserProfile = ({userStore, navigation, route}) => {
   //const [editMode, setEditMode] = useState(false);
 
   const [codePushVersion, setCodePushVersion] = useState('');
@@ -119,7 +119,7 @@ const UserProfile = ({userStore, navigation}) => {
     return (
       <UserProfileData
         navigation={navigation}
-        userId={userStore.userInfo.uid}
+        userId={route.params?.userId || userStore.userInfo.uid}
       />
     );
   };

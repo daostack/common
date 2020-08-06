@@ -45,7 +45,7 @@ const SwiperCard = ({showMax, navigation, ...props}) => {
     <View style={layout.flexRow}>
       <SwiperFlatList
         renderItem={({ item, index }) => renderCard(item, index)}
-        data={data.length > showMax ? data.slice(0, showMax + 1) : data}
+        data={showMax && data.length > showMax ? data.slice(0, showMax + 1) : data}
         extraData={extraData}
         onChangeIndex={onSwiperIndexChanged}
       />

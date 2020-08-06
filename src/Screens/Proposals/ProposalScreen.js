@@ -35,7 +35,6 @@ import { db } from '../../Firebase';
 import { observer, inject } from 'mobx-react';
 import TabBarRenderer from '../../Components/TabView/TabBarRenderer';
 import moment from 'moment';
-import { BOTTOM_SHEET_TEMPLATES } from '../../Stores/BottomSheetStore';
 import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
 
 const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props}) => {
@@ -238,13 +237,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   }
 
   const viewUserProfile = () => {
-    bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
-      {
-        navigation: navigation,
-        userId: proposedUser.uid,
-      }
-    );
+    navigation.navigate("Profile", {userId: proposedUser.uid});
   };
 
   const onVote = async isApproved => {
