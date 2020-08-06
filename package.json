@@ -92,6 +92,7 @@
     "rn-placeholder": "^3.0.0",
     "rn-swipe-button": "^1.2.6",
     "subscriptions-transport-ws": "^0.9.16",
+    "valid-url": "^1.0.9",
     "validatorjs": "^3.18.1"
   },
   "devDependencies": {
