@@ -21,7 +21,7 @@ import AuthService from '../../Services/AuthService';
 import Toast from '../../Util/Toast';
 import CodePush from 'react-native-code-push';
 import Config from 'react-native-config';
-import isProduction from '../../Config';
+import { isProduction } from '../../Config';
 
 import {
   Placeholder,
