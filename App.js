@@ -88,14 +88,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
   const navigationRef = useRef();
 
   useEffect(() => {
-    messaging()
-      .requestPermission()
-      .then(settings => {
-        if (settings) {
-          return NotificationService.saveTokenToDatabase();
-        }
-      });
-
     return messaging().onTokenRefresh(token => {
       NotificationService.saveTokenToDatabase(token);
     });
