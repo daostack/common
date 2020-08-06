@@ -181,11 +181,16 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
       }
     };
 
+    let viewStyle = styles.input;
+    if (isMember) {
+      viewStyle = { ...viewStyle, ...{borderBottomWidth: 0} };
+    }
+
     return (
       <KeyboardAvoidingView
         // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
-        <View style={{ ...styles.input, borderBottomWidth: !isMember && 0}}>
+        <View style={viewStyle}>
           {isMember ? (
             <View style={styles.inputBorder}>
               <TextInput
