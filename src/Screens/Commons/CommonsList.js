@@ -12,7 +12,6 @@ import {CommonBox, BottomRightButton} from '../../Components';
 import {db} from '../../Firebase';
 import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
-import isProduction from '../../Config';
 import {font, colors} from '../../Theme';
 
 import {
@@ -129,7 +128,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
           width: '100%',
           paddingVertical: 15,
         }}>
-        <Text style={styles.lengthCommons}>{daos.length} Commons{isProduction ? '' : '-stg'}</Text>
+        <Text style={styles.lengthCommons}>{daos.length} Commons</Text>
       </View>
     );
   };

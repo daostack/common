@@ -465,16 +465,16 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         />
         <Stack.Screen
           options={{
-            title: null,
-            headerBackTitleVisible: true,
+            title: "My Profile",
+            headerBackTitleVisible: false,
           }}
           name="MyProposals"
           component={MyProposals}
         />
         <Stack.Screen
           options={{
-            title: null,
-            headerBackTitleVisible: true,
+            title: "My Profile",
+            headerBackTitleVisible: false,
           }}
           name="MyCommons"
           component={MyCommons}
