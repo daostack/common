@@ -329,7 +329,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
 
         />
-        <Stack.Screen name="Profile" component={UserProfile} />
+        <Stack.Screen 
+            name="Profile" 
+            component={UserProfile} 
+            options={({route}) => ({
+              headerBackTitleVisible: false,
+          })}/>
         <Stack.Screen
           name="CommonExplanation"
           component={CommonExplanation}

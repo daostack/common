@@ -98,6 +98,8 @@ const UserProfileData = ({
     setRequestsCount(newCount);
   };
 
+  const showMaxData = user.uid == userStore.userInfo.uid ? 5 : null;
+
   return (
     <>
       {isEditMode ? (
@@ -146,7 +148,7 @@ const UserProfileData = ({
               ...layout.marginBottomL,
               ...layout.paddingHorizontalL,
             }}>{`Commons (${commonsCount})`}</Text>
-          {commonsCount > 0 && <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ flexDirection: 'row', ...layout.paddingHorizontalL}}>
+          {showMaxData && commonsCount > 0 && <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ flexDirection: 'row', ...layout.paddingHorizontalL}}>
             <Text
               style={{
                 ...text.h3Black,
@@ -160,7 +162,7 @@ const UserProfileData = ({
           navigation={navigation}
           safeAddress={user.safeAddress}
           onCountChange={onCommonsCountChange}
-          showMax={5}
+          showMax={showMaxData}
         />
       </View>
 
@@ -172,7 +174,7 @@ const UserProfileData = ({
               ...layout.marginBottomL,
               ...layout.paddingHorizontalL,
             }}>{`Proposals (${proposalsCount})`}</Text>
-          {proposalsCount > 0 && (
+          {showMaxData && proposalsCount > 0 && (
             <TouchableOpacity
               onPress={() => navigation.navigate('MyProposals', { onlyFundingRequests: true })}
               style={{ flexDirection: 'row', ...layout.paddingHorizontalL }}
@@ -193,7 +195,7 @@ const UserProfileData = ({
           safeAddress={user.safeAddress}
           showAll={true}
           isSwiper={true}
-          showMax={5}
+          showMax={showMaxData}
           onCountChange={onProposalsCountChange}
         />
       </View>
@@ -210,7 +212,7 @@ const UserProfileData = ({
             Membership requests ({requestsCount})
           </Text>
 
-          {(requestsCount > 0) && (
+          {showMaxData && (requestsCount > 0) && (
             <TouchableOpacity
               onPress={() => navigation.navigate('MyProposals', { onlyMembershipRequests: true })}
               style={{
@@ -237,7 +239,7 @@ const UserProfileData = ({
           safeAddress={user.safeAddress}
           showAll={true}
           isSwiper={true}
-          showMax={5}
+          showMax={showMaxData}
           onCountChange={onRequestsCountChange}
         />
       </View>

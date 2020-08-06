@@ -82,7 +82,7 @@ const CommonsSwiper = ({
 
   const renderCommonCard = (item, index) => {
     return (
-      index < showMax ? <CommonBox
+      !showMax || (index < showMax) ? <CommonBox
         key={item.id}
         width={width - 60}
         common={item}
