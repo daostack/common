@@ -66,7 +66,7 @@ import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import {auth, db} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
-import validUrl form 'valid-url';
+import validUrl from 'valid-url';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import {CommonActions} from '@react-navigation/native';
