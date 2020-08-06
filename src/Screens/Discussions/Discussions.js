@@ -310,17 +310,17 @@ const Discussions = ({daoStore, userStore, ...props}) => {
               <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
             </TouchableOpacity>
           }
-          rightButton={
-            <TouchableOpacity
-              style={{justifyContent: 'center'}}
-              onPress={openOptionsMenu}>
-              <Icon
-                name="menu-horizontal"
-                size={32}
-                style={{marginRight: 10}}
-              />
-            </TouchableOpacity>
-          }
+          // rightButton={
+          //   <TouchableOpacity
+          //     style={{justifyContent: 'center'}}
+          //     onPress={openOptionsMenu}>
+          //     <Icon
+          //       name="menu-horizontal"
+          //       size={32}
+          //       style={{marginRight: 10}}
+          //     />
+          //   </TouchableOpacity>
+          // }
         />
         <View
           style={{
