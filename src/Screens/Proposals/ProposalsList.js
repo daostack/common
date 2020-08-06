@@ -4,21 +4,18 @@ import { FlatList, StyleSheet, View, Text, Image, Dimensions, TouchableOpacity} 
 import ViewTabNoData from '../../Components/ViewTabNoData';
 import ProposalService, {PROPOSAL_STAGE} from '../../Services/ProposalService';
 import ProposalCard from '../../Components/Proposals/ProposalCard';
-import {CommonActions} from '@react-navigation/native';
 import {layout, colors, font, text, sizeXXL, sizeM} from '../../Theme';
 import FirebaseService from '../../Services/FirebaseService';
-
 import SwiperCard from '../../Components/SwiperCard';
-
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
+import { PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '../../Services/ProposalService';
 
 const {width, height} = Dimensions.get('window');
 
-const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, onlyFundingRequests, membershipRequests, ...props}) => {
+const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, onlyFundingRequests, userId, membershipRequests, ...props}) => {
   const commonId = commonInfo?.id;
   const commonName = commonInfo?.name;
 
-  const userId = props.userId;
   const isHistory = props.isHistory;
   const isSwiper = props.isSwiper;
   const navigation = props.navigation;
@@ -30,23 +27,8 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
   let unsubscribe = null;
   useEffect(() => {
     const loadProposalInfo = async (commonId, userId, isHistory, showAll, onlyFundingRequests, membershipRequests) => {
-      let proposalStages = null;
-      if (isHistory) {
-        // TODO: use ProposalsList.PROPOSAL_STAGES_HISTORY here
-        proposalStages = [
-          PROPOSAL_STAGE.ExpiredInQueue,
-          PROPOSAL_STAGE.Executed,
-        ];
-      } else {
-        // TODO: use ProposalsList.PROPOSAL_STAGES_ACTIVE here
-        proposalStages = [
-          PROPOSAL_STAGE.Queued,
-          PROPOSAL_STAGE.PreBoosted,
-          PROPOSAL_STAGE.Boosted,
-          PROPOSAL_STAGE.QuietEndingPeriod,
-        ];
-      }
-
+      let proposalStages = isHistory ? PROPOSAL_STAGES_HISTORY : PROPOSAL_STAGES_ACTIVE;
+      
       unsubscribe = await ProposalService.getInstance().subscribeToProposalList(
         commonId,
         userId,
@@ -73,7 +55,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
         unsubscribe();
       }
     };
-  }, [commonId, isHistory]);
+  }, [commonId, isHistory, userId, safeAddress]);
 
   const onReviewProposal = async ( proposalId, daoId ) => {
     

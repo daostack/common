@@ -169,11 +169,15 @@ export default class ProposalService {
     }
 
     if (safeAddress) {
-      proposalCollection = proposalCollection.where(
-        'proposer',
-        '==',
-        safeAddress.toString(),
-      );
+      if (safeAddress.isCreatingInProgress) {
+        
+      } else {
+        proposalCollection = proposalCollection.where(
+          'proposer',
+          '==',
+          safeAddress.toString(),
+        );
+      }
     }
 
     if(membershipRequests) {
