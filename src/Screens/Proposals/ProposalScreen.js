@@ -62,6 +62,10 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   // Top voting buttons ref
   const topVotingButtonsRef = useRef(null);
 
+  // Values for vote param required from the blockchain
+  const VOTE_APPROVE = 1;
+  const VOTE_REJECT = 2;
+
   useEffect(() => {
     let unsubscribe = null;
 
@@ -250,7 +254,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
 
     try {
       // let votingResponse = null;
-      const voteData = { vote: isApproved ? 1 : 0 };
+      const voteData = { vote: isApproved ? VOTE_APPROVE : VOTE_REJECT };
 
       await timeout(3000);
 

@@ -95,6 +95,17 @@ export default class AuthService {
     await auth().signOut();
   }
 
+  async getCurrentLoggedUser(providerId) {
+    switch (providerId) {
+      case AUTH_PROVIDER_ID.APPLE:
+        throw new Error("TODO: Implementat getting current logged in user in Apple ");
+        //TODO: return userInfo object which contains the users display name;
+      case AUTH_PROVIDER_ID.GOOGLE:
+        return await GoogleSignin.getCurrentUser();
+      default:
+    }
+  }
+
   // Firebase
   async updateUserData(userData, publicData) {
     const currentUser = await auth().currentUser;
@@ -117,8 +128,10 @@ export default class AuthService {
       ethereumAddress: manager.getAddress(),
       // store the google user info in the firestore DB
       ...{
-        createdAt: new Date(user._user.metadata.creationTime),
+        createdAt: new Date(user.metadata.creationTime),
         displayName: user.displayName,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         photoURL: userPhotoUrl,
         uid: user.uid,

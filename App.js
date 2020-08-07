@@ -189,7 +189,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       try {
         userStore.setIsLoading(true);
         if (user) {
-          await AuthService.getInstance().loadMnemonic(user.uid, user.providerData[0].providerId);
+          const providerId = user.providerData[0].providerId;
+          await AuthService.getInstance().loadMnemonic(user.uid, providerId);
           await WalletManager.init(user.uid);
           await ArcService.init();
           const manager = await WalletManager.getInstance();
@@ -197,8 +198,11 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             user.uid,
           );
           const isNewUser = !appUser;
+
           if (isNewUser) {
-            appUser = await AuthService.getInstance().createUserAndWallet(user);
+            const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
+            const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}}
+            appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
             await manager.createSmartContractWallet();
           } else {
             await manager.addressCheck(user.uid);
