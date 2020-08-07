@@ -6,9 +6,11 @@ import {observer, inject} from 'mobx-react';
 import {layout, text} from '../../Theme';
 import AuthService from '../../Services/AuthService';
 import {filterObjectByKeys} from '../../Util';
+import colors from '../../Theme/colors';
 
 class EditProfileForm extends React.Component {
-  static FIELD_NAME = 'displayName';
+  static FIELD_FIRST_NAME = 'firstName';
+  static FIELD_LAST_NAME = 'lastName';
   static FIELD_INTRO = 'intro';
   static FIELD_PROFILE_IMAGE = 'photoURL';
 
@@ -18,7 +20,8 @@ class EditProfileForm extends React.Component {
       const changedFields = editProfileFormStore.getChangedFormFieldsJson();
 
       let authData = filterObjectByKeys(changedFields, [
-        EditProfileForm.FIELD_NAME,
+        EditProfileForm.FIELD_FIRST_NAME,
+        EditProfileForm.FIELD_LAST_NAME,
         EditProfileForm.FIELD_PROFILE_IMAGE,
       ]);
       let publicData = filterObjectByKeys(changedFields, [
@@ -84,15 +87,30 @@ class EditProfileForm extends React.Component {
         </View>
 
         <TextInputField
-          value={userStore.userInfo.displayName}
+          value={userStore.userInfo.firstName}
           viewStyle={{alignSelf: 'stretch'}}
-          label="Name"
+          label="First name"
           infoLabel="Required"
-          placeholderText="Firstname Lastname"
+          placeholderText="First name"
           autoCapitalize="none"
           autoCorrect={false}
           validation={{
-            name: EditProfileForm.FIELD_NAME,
+            name: EditProfileForm.FIELD_FIRST_NAME,
+            formStore: this.props.editProfileFormStore,
+            validateRule: 'required'
+          }}
+        />
+
+        <TextInputField
+          value={userStore.userInfo.lastName}
+          viewStyle={{alignSelf: 'stretch'}}
+          label="Last name"
+          infoLabel="Required"
+          placeholderText="Last name"
+          autoCapitalize="none"
+          autoCorrect={false}
+          validation={{
+            name: EditProfileForm.FIELD_LAST_NAME,
             formStore: this.props.editProfileFormStore,
             validateRule: 'required',
           }}
@@ -144,7 +162,7 @@ const styles = StyleSheet.create({
   },
   emailContainer: {
     ...layout.content,
-    ...layout.marginBottomXL,
+    ...layout.marginBottomS,
     marginTop: 0,
   },
 });

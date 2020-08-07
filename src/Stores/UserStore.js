@@ -1,8 +1,11 @@
 import {observable, action, decorate} from 'mobx';
+import { isDaoMemberBySafeAddress } from '../Util';
 
 export const userInfoFields = [
   'uid',
   'displayName',
+  'firstName',
+  'lastName',
   'email',
   'photoURL',
   'ethereumAddress',
@@ -26,13 +29,7 @@ class UserStore {
   }
 
   isDaoMember = members => {
-    if (!members){
-      return false;
-    }
-    return members.some(
-      member =>
-        member.address === this.userInfo.safeAddress?.toLowerCase()
-    );
+    return isDaoMemberBySafeAddress(members, this.userInfo.safeAddress);
   };
 
   setIsLoading = loading => {
@@ -48,8 +45,13 @@ class UserStore {
       if (newUserInfo.email) {
         newUserObj.email = newUserInfo.email;
       }
-      if (newUserInfo.displayName) {
-        newUserObj.displayName = newUserInfo.displayName;
+      if (newUserInfo.firstName) {
+        newUserObj.firstName = newUserInfo.firstName;
+        newUserObj.displayName = newUserInfo.firstName;
+      }
+      if (newUserInfo.lastName) {
+        newUserObj.lastName = newUserInfo.lastName;
+        newUserObj.displayName = (newUserInfo.firstName ? `${newUserInfo.firstName} ` : '' ) +  newUserInfo.lastName;
       }
       if (newUserInfo.photoURL) {
         newUserObj.photoURL = newUserInfo.photoURL;

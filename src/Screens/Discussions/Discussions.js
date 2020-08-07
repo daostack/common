@@ -397,24 +397,32 @@ const Discussions = ({daoStore, userStore, ...props}) => {
   return (
     <SafeAreaView style={styles.safeView}>
       {header()}
-      <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
-        <SectionList
-          sections={msgGroup}
-          ref={chatRef}
-          // ListFooterComponent={header}
-          renderItem={x => <DiscussionMessage data={x.item} />}
-          renderSectionFooter={({section: {date}}) => (
-            <Text style={styles.timeHeader}>
-              {moment().isSame(date, 'day') ? 'Today' : date}
-            </Text>
-          )}
-          keyExtractor={x => x.id}
-          stickySectionHeadersEnabled={true}
-          inverted={true}
-          contentContainerStyle={{paddingTop: 10}}
-          // initialScrollIndex={2}
-        />
-      </ScrollView>
+      { msgGroup.length > 0 ?
+        <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
+          <SectionList
+            sections={msgGroup}
+            ref={chatRef}
+            // ListFooterComponent={header}
+            renderItem={x => <DiscussionMessage data={x.item} />}
+            renderSectionFooter={({section: {date}}) => (
+              <Text style={styles.timeHeader}>
+                {moment().isSame(date, 'day') ? 'Today' : date}
+              </Text>
+            )}
+            keyExtractor={x => x.id}
+            stickySectionHeadersEnabled={true}
+            inverted={true}
+            contentContainerStyle={{paddingTop: 10}}
+            // initialScrollIndex={2}
+          />
+        </ScrollView>
+        : 
+        <View style={styles.emptyContainer}>
+          <Image source={require('../../Assets/empty-discussion.png')} style={{ width: 240, height: 240 }} />
+          <Text style={styles.emptyTitle}> No comments yet</Text>
+          <Text style={styles.emptyBody}>Have any thoughts? Share them with other members by adding the first comment.</Text>
+        </View>
+      }
 
       <KeyboardAvoidingView
         behavior={'height'}
@@ -632,6 +640,22 @@ const styles = StyleSheet.create({
     paddingTop: sizeS,
     paddingBottom: sizeXL,
   },
+  emptyContainer: {
+    flex: 0.8,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyTitle: {
+    ...font.fontSize(3),
+    ...font.primary.bold,
+    paddingVertical: 12,
+  },
+  emptyBody: {
+    textAlign: 'center',
+    ...font.fontSize(2),
+    ...font.primary.regular,
+  }
 });
 
 export default inject('userStore', 'bottomSheetStore', 'daoStore')(observer(Discussions));

@@ -13,11 +13,13 @@ import {colors, font, sizeXXL, sizeLineHeight, layout} from '../Theme';
 import {CommonActions} from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
 import AsyncStorage from '@react-native-community/async-storage';
+import messaging from '@react-native-firebase/messaging';
 
 const Onboarding = ({navigation}) => {
   const _onboardingClick = async () => {
     try {
       await AsyncStorage.setItem('onboarded', 'true');
+      messaging().requestPermission();
       navigation.dispatch(
         CommonActions.reset({
           index: 1,

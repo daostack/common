@@ -66,7 +66,7 @@ import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import {auth, db} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
-
+import validUrl from 'valid-url';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import {CommonActions} from '@react-navigation/native';
@@ -88,14 +88,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
   const navigationRef = useRef();
 
   useEffect(() => {
-    messaging()
-      .requestPermission()
-      .then(settings => {
-        if (settings) {
-          return NotificationService.saveTokenToDatabase();
-        }
-      });
-
     return messaging().onTokenRefresh(token => {
       NotificationService.saveTokenToDatabase(token);
     });
@@ -131,7 +123,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       if (!supported) {
         return;
       }
-      if (!DeepLinking.evaluateUrl(url)) {
+      if (!DeepLinking.evaluateUrl(url) && validUrl.isWebUri(url)) {
         console.log('Routing Browser ->', url);
         routing('Browser', {url: url});
       }
@@ -197,7 +189,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       try {
         userStore.setIsLoading(true);
         if (user) {
-          await AuthService.getInstance().loadMnemonic(user.uid, user.providerData[0].providerId);
+          const providerId = user.providerData[0].providerId;
+          await AuthService.getInstance().loadMnemonic(user.uid, providerId);
           await WalletManager.init(user.uid);
           await ArcService.init();
           const manager = await WalletManager.getInstance();
@@ -205,9 +198,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             user.uid,
           );
           const isNewUser = !appUser;
+
           if (isNewUser) {
-            appUser = await AuthService.getInstance().createUserAndWallet(user);
-            manager.createSmartContractWallet();
+            const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
+            const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}}
+            appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
+            await manager.createSmartContractWallet();
           } else {
             await manager.addressCheck(user.uid);
           }
@@ -329,7 +325,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
 
         />
-        <Stack.Screen name="Profile" component={UserProfile} />
+        <Stack.Screen 
+            name="Profile" 
+            component={UserProfile} 
+            options={({route}) => ({
+              headerBackTitleVisible: false,
+          })}/>
         <Stack.Screen
           name="CommonExplanation"
           component={CommonExplanation}

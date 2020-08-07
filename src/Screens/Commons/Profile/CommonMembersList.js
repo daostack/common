@@ -7,19 +7,12 @@ import Loader from '../../../Components/Loader';
 import MemberImage from '../../../Components/Commons/MemberImage';
 import Toast from '../../../Util/Toast';
 import {observer, inject} from 'mobx-react';
-import { BOTTOM_SHEET_TEMPLATES } from '../../../Stores/BottomSheetStore';
 
 const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) => {
   const [membersInfo, setMembersInfo] = useState([]);
 
   const showUserProfile = uid => {
-    bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
-      {
-        navigation: navigation,
-        userId: uid,
-      }
-    );
+    navigation.navigate("Profile", {userId: uid});
   };
 
   useEffect(() => {
