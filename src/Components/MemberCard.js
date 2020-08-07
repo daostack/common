@@ -100,12 +100,11 @@ const MemberCard = ({
               ...text.smallGreyText,
               marginTop: 2,
             }}>
-            
             {proposalInfo
               ? moment.unix(proposalInfo.createdAt).fromNow()
               : showMemberCreatedDate
                 ? `Member in ${userInfo?.daos?.length || 0} Common${
-                  userInfo?.daos?.length !== 1 ? 's' : ''
+                  userInfo?.daos?.length > 1 ? 's' : ''
                 }`
                 : `Member since ${memberSince || 'unknown'}`}
           </Text>

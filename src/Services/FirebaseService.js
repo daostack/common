@@ -32,22 +32,6 @@ export default class FirebaseService {
       });
   }
 
-  async getUserDaos(userId, safeAddress) {
-    if(safeAddress) {
-      const user = await this.getUserById(userId);
-
-      safeAddress = user.safeAddress;
-    }
-
-    return db
-      .collection(DB_COLLECTIONS.daos)
-      .where('members', 'array-contains', {
-        address: safeAddress,
-        userId
-      })
-      .get();
-  }
-
   async getUserByAddress(address) {
 
     console.log('GETTING USER WITH ADDRESS -> ', address);

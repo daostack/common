@@ -11,8 +11,6 @@ import {observer, inject} from 'mobx-react';
 const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) => {
   const [membersInfo, setMembersInfo] = useState([]);
 
-  console.log("Members", membersInfo);
-
   const showUserProfile = uid => {
     navigation.navigate("Profile", {userId: uid});
   };
@@ -21,15 +19,9 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
     setMembersInfo([]);
     const loadMemberUser = async userId => {
       try {
-        let currUserInfo = await FirebaseService.getInstance().getUserById(
+        const currUserInfo = await FirebaseService.getInstance().getUserById(
           userId,
         );
-
-        currUserInfo = {
-          ...currUserInfo,
-          daos: (await FirebaseService.getInstance().getUserDaos(currUserInfo.uid, currUserInfo.safeAddress)).docs?.map(dao => dao.data())
-        };
-
         setMembersInfo(prevMembers => [...prevMembers, currUserInfo]);
       } catch (e) {
         Toast.error(e.toString());
@@ -110,7 +102,7 @@ const styles = StyleSheet.create({
   horizontalItem: {
     paddingHorizontal: 0,
   },
-
+  
 });
 
 export default inject('bottomSheetStore')(observer(CommonMembersList));
