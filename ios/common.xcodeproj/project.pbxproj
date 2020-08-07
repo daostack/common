@@ -28,6 +28,7 @@
 		153D23FC24B5BE9A007E8F37 /* NunitoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A40576CB8A1C45D8A51C0FD5 /* NunitoSans-Regular.ttf */; };
 		153D23FD24B5BE9A007E8F37 /* NunitoSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0EBB067512D6426FB6FE57F2 /* NunitoSans-SemiBold.ttf */; };
 		153D23FE24B5BE9A007E8F37 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 30000652B0094E87A70CF813 /* Nunito-Regular.ttf */; };
+		155E056E24DD58AA000BE6A4 /* NotoSerif-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 267EC9C3E82F4ED9B159DC28 /* NotoSerif-SemiBold.ttf */; };
 		15AD00A224AB2E0F004FDADE /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 15AD00A124AB2E0F004FDADE /* Config.xcconfig */; };
 		15AD00A324AB2E0F004FDADE /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 15AD00A124AB2E0F004FDADE /* Config.xcconfig */; };
 		15AD00A424AB2E0F004FDADE /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 15AD00A124AB2E0F004FDADE /* Config.xcconfig */; };
@@ -46,14 +47,13 @@
 		15E907332417D1BB008A5750 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15E907322417D1BB008A5750 /* Assets.xcassets */; };
 		15E907362417D1BB008A5750 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E907342417D1BB008A5750 /* LaunchScreen.storyboard */; };
 		1F88078D5AE44AD180187B06 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 30000652B0094E87A70CF813 /* Nunito-Regular.ttf */; };
-		5E1E0E0B8DEE49E7ABF93516 /* NotoSerif-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 60F0429F89134960BD93E338 /* NotoSerif-SemiBold.ttf */; };
+		633AADEFA12A4EEF840ED24D /* NotoSerif-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 267EC9C3E82F4ED9B159DC28 /* NotoSerif-SemiBold.ttf */; };
 		736A9726E429ECF26A555355 /* Pods_common_stg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9237886088EA31D00DEDB8D /* Pods_common_stg.framework */; };
 		88F102D71F0644038ECC212B /* NunitoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A40576CB8A1C45D8A51C0FD5 /* NunitoSans-Regular.ttf */; };
 		9932C9CC0B2948FE94025468 /* NunitoSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42C6A385306D40069FD183D7 /* NunitoSans-Bold.ttf */; };
 		BCAAB2F57FB2D1883DF8DD68 /* Pods_common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDBC858FCC7ADE69882AE33A /* Pods_common.framework */; };
 		CDD5E5B60C08404981150417 /* NunitoSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8D6FB52253054110853F2376 /* NunitoSans-Light.ttf */; };
 		CF0B3799DD99422BA7B8AE3C /* NunitoSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0EBB067512D6426FB6FE57F2 /* NunitoSans-SemiBold.ttf */; };
-		D6D75C0724D1B40E004B517D /* NotoSerif-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D6D75C0624D1B40E004B517D /* NotoSerif-SemiBold.ttf */; };
 		FCD9335756174A92AE4AC3F6 /* NunitoSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F2C9B59F8FFB49DFA4FF15CA /* NunitoSans-Italic.ttf */; };
 /* End PBXBuildFile section */
 
@@ -129,17 +129,16 @@
 		15E907352417D1BB008A5750 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		15E907372417D1BB008A5750 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1A380D74495F911BF60AD72C /* Pods-common.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common.debug.xcconfig"; path = "Target Support Files/Pods-common/Pods-common.debug.xcconfig"; sourceTree = "<group>"; };
+		267EC9C3E82F4ED9B159DC28 /* NotoSerif-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSerif-SemiBold.ttf"; path = "../src/Assets/fonts/NotoSerif/NotoSerif-SemiBold.ttf"; sourceTree = "<group>"; };
 		30000652B0094E87A70CF813 /* Nunito-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Nunito-Regular.ttf"; path = "../src/Assets/fonts/Nunito/Nunito-Regular.ttf"; sourceTree = "<group>"; };
 		39E20148204889116EC54866 /* Pods-common-stg.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common-stg.debug.xcconfig"; path = "Target Support Files/Pods-common-stg/Pods-common-stg.debug.xcconfig"; sourceTree = "<group>"; };
 		42C6A385306D40069FD183D7 /* NunitoSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-Bold.ttf"; path = "../src/Assets/fonts/NunitoSans/NunitoSans-Bold.ttf"; sourceTree = "<group>"; };
 		4CE18B1CFFA458FD7071C73C /* Pods-common.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common.release.xcconfig"; path = "Target Support Files/Pods-common/Pods-common.release.xcconfig"; sourceTree = "<group>"; };
-		60F0429F89134960BD93E338 /* NotoSerif-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSerif-SemiBold.ttf"; path = "../src/Assets/fonts/NotoSerif/NotoSerif-SemiBold.ttf"; sourceTree = "<group>"; };
 		6FB3EBC73DAEFA8B1995804F /* Pods-common-stg.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common-stg.release.xcconfig"; path = "Target Support Files/Pods-common-stg/Pods-common-stg.release.xcconfig"; sourceTree = "<group>"; };
 		8D6FB52253054110853F2376 /* NunitoSans-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-Light.ttf"; path = "../src/Assets/fonts/NunitoSans/NunitoSans-Light.ttf"; sourceTree = "<group>"; };
 		A40576CB8A1C45D8A51C0FD5 /* NunitoSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-Regular.ttf"; path = "../src/Assets/fonts/NunitoSans/NunitoSans-Regular.ttf"; sourceTree = "<group>"; };
 		A9237886088EA31D00DEDB8D /* Pods_common_stg.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_common_stg.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDBC858FCC7ADE69882AE33A /* Pods_common.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_common.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D6D75C0624D1B40E004B517D /* NotoSerif-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NotoSerif-SemiBold.ttf"; path = "../src/Assets/fonts/NotoSerif/NotoSerif-SemiBold.ttf"; sourceTree = "<group>"; };
 		F2C9B59F8FFB49DFA4FF15CA /* NunitoSans-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-Italic.ttf"; path = "../src/Assets/fonts/NunitoSans/NunitoSans-Italic.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -223,7 +222,6 @@
 		15E9071D2417D1B9008A5750 = {
 			isa = PBXGroup;
 			children = (
-				D6D75C0624D1B40E004B517D /* NotoSerif-SemiBold.ttf */,
 				15AD00A124AB2E0F004FDADE /* Config.xcconfig */,
 				151C20582499E503006170CC /* firebase */,
 				15E907282417D1B9008A5750 /* common */,
@@ -325,7 +323,7 @@
 				A40576CB8A1C45D8A51C0FD5 /* NunitoSans-Regular.ttf */,
 				0EBB067512D6426FB6FE57F2 /* NunitoSans-SemiBold.ttf */,
 				30000652B0094E87A70CF813 /* Nunito-Regular.ttf */,
-				60F0429F89134960BD93E338 /* NotoSerif-SemiBold.ttf */,
+				267EC9C3E82F4ED9B159DC28 /* NotoSerif-SemiBold.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -382,7 +380,6 @@
 				151C20392499E3F4006170CC /* Frameworks */,
 				151C203B2499E3F4006170CC /* Bundle React Native code and images */,
 				151C203D2499E3F4006170CC /* Launch React Native Packager */,
-				151C20482499E3F4006170CC /* Fabric - Firebase */,
 				151C20572499E4C4006170CC /* Embed App Extensions */,
 				8445570E72FFB9CB56511080 /* [CP] Embed Pods Frameworks */,
 				A1739A1D167877922DDADE04 /* [CP] Copy Pods Resources */,
@@ -426,7 +423,6 @@
 				15E9073F2417D51B008A5750 /* Bundle React Native code and images */,
 				15E907402417D541008A5750 /* Launch React Native Packager */,
 				15E907242417D1B9008A5750 /* Resources */,
-				15FFF66A2418682E00AEBE9D /* Fabric - Firebase */,
 				15CD0315246E873C00EDADE2 /* Embed App Extensions */,
 				D67AA8BF1C56E07D1E1FF40E /* [CP] Embed Pods Frameworks */,
 				CAFA4702C41ECF472DEFB925 /* [CP] Copy Pods Resources */,
@@ -497,7 +493,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D6D75C0724D1B40E004B517D /* NotoSerif-SemiBold.ttf in Resources */,
+				155E056E24DD58AA000BE6A4 /* NotoSerif-SemiBold.ttf in Resources */,
 				153D23F924B5BE9A007E8F37 /* NunitoSans-Bold.ttf in Resources */,
 				153D23FA24B5BE9A007E8F37 /* NunitoSans-Italic.ttf in Resources */,
 				153D23FB24B5BE9A007E8F37 /* NunitoSans-Light.ttf in Resources */,
@@ -535,7 +531,7 @@
 				88F102D71F0644038ECC212B /* NunitoSans-Regular.ttf in Resources */,
 				CF0B3799DD99422BA7B8AE3C /* NunitoSans-SemiBold.ttf in Resources */,
 				1F88078D5AE44AD180187B06 /* Nunito-Regular.ttf in Resources */,
-				5E1E0E0B8DEE49E7ABF93516 /* NotoSerif-SemiBold.ttf in Resources */,
+				633AADEFA12A4EEF840ED24D /* NotoSerif-SemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -588,25 +584,6 @@
 			shellPath = /bin/sh;
 			shellScript = "# Launch React Native Packager\nif nc -w 5 -z localhost 8081 ; then\nif ! curl -s \"http://localhost:8081/status\" | grep -q \"packager-status:running\" ; then\necho \"Port 8081 already in use, packager is either not running or not running correctly\"\nexit 2\nfi\nelse\nopen -a Terminal $SRCROOT/../node_modules/react-native/scripts/launchPackager.command || echo \"Can't start packager automatically\"\nfi\n";
 		};
-		151C20482499E3F4006170CC /* Fabric - Firebase */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
-			);
-			name = "Fabric - Firebase";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/Fabric/run\"\n";
-		};
 		15E9073F2417D51B008A5750 /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -642,25 +619,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Launch React Native Packager\nif nc -w 5 -z localhost 8081 ; then\nif ! curl -s \"http://localhost:8081/status\" | grep -q \"packager-status:running\" ; then\necho \"Port 8081 already in use, packager is either not running or not running correctly\"\nexit 2\nfi\nelse\nopen -a Terminal $SRCROOT/../node_modules/react-native/scripts/launchPackager.command || echo \"Can't start packager automatically\"\nfi\n";
-		};
-		15FFF66A2418682E00AEBE9D /* Fabric - Firebase */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
-			);
-			name = "Fabric - Firebase";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/Fabric/run\"\n";
 		};
 		6D16BA5388657A078816E949 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
