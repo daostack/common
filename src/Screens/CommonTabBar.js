@@ -13,12 +13,12 @@ const CommonTabBar = props => (
     }}
     renderLabel={(props) => {
       return (
-        <View style={{...layout.content, padding: 0}}>
-          <Icon
+        <View style={{...layout.content, ...layout.flexRow, ...{padding: 0, width: '100%'}}}>
+          { props.route.icon ? <Icon
             name={props.route.icon}
             size={30}
             color={props.focused ? colors.mainBlue : colors.grey3}
-          />
+          /> : null }
           <Text style={props.focused ? styles.textStyleActive : styles.textStyle}>
             {props.route.title}
           </Text>
