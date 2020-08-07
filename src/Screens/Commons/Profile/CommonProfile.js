@@ -903,6 +903,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 1,
+    elevation: 4,
   },
   stickySection: {
     height: STICKY_HEADER_HEIGHT,

@@ -63,6 +63,7 @@ const TabBarRenderer = (props) => {
             width: 0,
           },
           zIndex: 1,
+          elevation: 2,
         }
       }
       tabStyle={{height: 76}}

@@ -662,6 +662,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 1,
+    elevation: 4,
   },
 
   actionBtnStyle: {
@@ -704,6 +705,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 15,
+    elevation: 4,
   },
   inputBorder: {
     flex: 1,

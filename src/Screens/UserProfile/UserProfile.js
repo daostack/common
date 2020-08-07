@@ -132,7 +132,6 @@ const UserProfile = ({userStore, navigation, route}) => {
         <SafeAreaView style={styles.safeArea}>
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"
-            style={styles.scrollView}
             vertical={true}
             nestedScrollEnabled={true}
             directionalLockEnabled={true}>
@@ -178,7 +177,7 @@ const UserProfile = ({userStore, navigation, route}) => {
       <ScrollView
         style={{flex: 1}}
         contentContainerStyle={{
-          paddingHorizontal: 20,
+          //paddingHorizontal: 20,
           justifyContent: 'center',
           alignItems: 'center',
         }}>
@@ -275,7 +274,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: Colors.white,
-    padding: 20,
   },
   googleSignInButton: {
     alignSelf: 'stretch',
@@ -292,7 +290,7 @@ const styles = StyleSheet.create({
       height: 6,
     },
     shadowRadius: 0,
-    elevation: 0,
+    elevation: 6,
   },
   wrapper: {
     height: 240,

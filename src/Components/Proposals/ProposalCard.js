@@ -200,6 +200,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     shadowOpacity: 0.5,
     width: Platform.OS === 'ios' ? '100%' : width - 60,
+
+    elevation: 4,
   },
 });
 

@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 12,
     shadowOpacity: 0.1,
+    elevation: 10,
     ...layout.paddingTopM,
     zIndex: 5,
   },
@@ -118,6 +119,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 12,
     shadowOpacity: 0.1,
+    elevation: 10,
     ...layout.paddingTopM,
     zIndex: 5,
 

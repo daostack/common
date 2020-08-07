@@ -284,10 +284,13 @@ const styles = StyleSheet.create({
   },
 
   contentContainerWithoutPadding: {
+    
     ...layout.content,
     ...layout.flexStart,
     ...layout.marginTopL,
     paddingHorizontal: 0,
+    paddingLeft: 0,
+    paddingRight: 0,
   },
 
   countBoxContainer: {
@@ -316,7 +319,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: colors.white,
-    padding: 20,
   },
   googleSignInButton: {
     alignSelf: 'stretch',
@@ -333,7 +335,7 @@ const styles = StyleSheet.create({
       height: 6,
     },
     shadowRadius: 0,
-    elevation: 0,
+    elevation: 6,
   },
   wrapper: {
     height: 240,
