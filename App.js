@@ -487,6 +487,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           options={{
             title: 'New proposal',
+            headerBackTitleVisible: false
           }}
           name="FundingProposal"
           component={FundingProposal}
