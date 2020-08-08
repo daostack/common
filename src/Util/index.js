@@ -44,3 +44,13 @@ export const showErrorPopUp = (bottomSheetStore, message) => {
   access the mobx store outside of a react component */
   bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {errorMessage: message});
 };
+
+export const isDaoMemberBySafeAddress = (members, userSafeAddress) => {
+  if (!members){
+    return false;
+  }
+  return members.some(
+    member =>
+      member.address === userSafeAddress?.toLowerCase()
+  );
+};

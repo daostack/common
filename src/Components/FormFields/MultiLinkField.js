@@ -40,7 +40,7 @@ const MultiLinkField = props => {
         currItemValidation.multiName = props.validation.name;
         currItemValidation.validateRule =
           validation.validateRule?.common || validation.validateRule;
-        currItemValidation.ivisibleContainer = true;
+        currItemValidation.invisibleContainer = true;
 
         const currTitleItemValidation = {...props.validation}; //{...validation};
         currTitleItemValidation.name = `${
@@ -51,7 +51,7 @@ const MultiLinkField = props => {
           validation.validateRule?.title || 'string';
         const { formStore } = validation;
         currTitleItemValidation.topPosition = true;
-        currTitleItemValidation.ivisibleContainer = true;
+        currTitleItemValidation.invisibleContainer = true;
 
         return (
           <View key={`key_${props.validation.name}_${currIndex + 1}`} style={layout.marginBottomM}>

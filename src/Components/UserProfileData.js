@@ -23,6 +23,7 @@ const UserProfileData = ({
 }) => {
   const [user, setUser] = useState(null);
   const [proposalsCount, setProposalsCount] = useState(0);
+  const [requestsCount, setRequestsCount] = useState(0);
   const [commonsCount, setCommonsCount] = useState(0);
   const [isEditMode, setIsEditMode] = useState(false);
 
@@ -90,6 +91,15 @@ const UserProfileData = ({
     setCommonsCount(newCount);
   };
 
+  /**
+   * @param newCount {number} - the new count of the requests
+   */
+  const onRequestsCountChange = newCount => {
+    setRequestsCount(newCount);
+  };
+
+  const showMaxData = user.uid == userStore.userInfo.uid ? 5 : null;
+
   return (
     <>
       {isEditMode ? (
@@ -138,7 +148,7 @@ const UserProfileData = ({
               ...layout.marginBottomL,
               ...layout.paddingHorizontalL,
             }}>{`Commons (${commonsCount})`}</Text>
-          {commonsCount > 0 && <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ flexDirection: 'row', ...layout.paddingHorizontalL}}>
+          {showMaxData && commonsCount > 0 && <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ flexDirection: 'row', ...layout.paddingHorizontalL}}>
             <Text
               style={{
                 ...text.h3Black,
@@ -150,9 +160,9 @@ const UserProfileData = ({
 
         <CommonsSwiper
           navigation={navigation}
-          userId={userId}
+          safeAddress={user.safeAddress}
           onCountChange={onCommonsCountChange}
-          showMax={5}
+          showMax={showMaxData}
         />
       </View>
 
@@ -164,23 +174,73 @@ const UserProfileData = ({
               ...layout.marginBottomL,
               ...layout.paddingHorizontalL,
             }}>{`Proposals (${proposalsCount})`}</Text>
-          {proposalsCount > 0 && <TouchableOpacity onPress={() => navigation.navigate('MyProposals')} style={{ flexDirection: 'row', ...layout.paddingHorizontalL }}>
-            <Text
-              style={{
-                ...text.h3Black,
-                ...layout.marginBottomL,
-              }}>{'View all'}</Text>
-            <Icon name="right-arrow" size={20} />
-          </TouchableOpacity>}
+          {showMaxData && proposalsCount > 0 && (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('MyProposals', { onlyFundingRequests: true })}
+              style={{ flexDirection: 'row', ...layout.paddingHorizontalL }}
+            >
+              <Text
+                style={{
+                  ...text.h3Black,
+                  ...layout.marginBottomL,
+                }}>{'View all'}</Text>
+              <Icon name="right-arrow" size={20} />
+            </TouchableOpacity>
+          )}
         </View>
 
         <ProposalsList
+          onlyFundingRequests
           navigation={navigation}
-          safeAddress={userStore.userInfo.safeAddress}
+          safeAddress={user.safeAddress}
           showAll={true}
           isSwiper={true}
-          showMax={5}
+          showMax={showMaxData}
           onCountChange={onProposalsCountChange}
+        />
+      </View>
+
+      <View style={styles.contentContainerWithoutPadding}>
+        <View style={{ justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
+          <Text
+            style={{
+              ...text.againstTextBlack,
+              ...layout.marginBottomL,
+              ...layout.paddingHorizontalL,
+            }}
+          >
+            Membership requests ({requestsCount})
+          </Text>
+
+          {showMaxData && (requestsCount > 0) && (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('MyProposals', { onlyMembershipRequests: true })}
+              style={{
+                flexDirection: 'row',
+                ...layout.paddingHorizontalL,
+              }}
+            >
+              <Text
+                style={{
+                  ...text.h3Black,
+                  ...layout.marginBottomL,
+                }}
+              >
+                {'View all'}
+              </Text>
+              <Icon name="right-arrow" size={20} />
+            </TouchableOpacity>
+          )}
+        </View>
+
+        <ProposalsList
+          membershipRequests
+          navigation={navigation}
+          safeAddress={user.safeAddress}
+          showAll={true}
+          isSwiper={true}
+          showMax={showMaxData}
+          onCountChange={onRequestsCountChange}
         />
       </View>
     </>

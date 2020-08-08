@@ -70,9 +70,9 @@ export const voteForProposal = async (
     );
 
     console.log('transactionHash -> ', receipt.transactionHash);
-
-    await GraphqlSyncService.getInstance().syncProposalById(proposalId);
-
+    
+    await GraphqlSyncService.getInstance().syncProposalById(proposalId, receipt.blockNumber);
+    
     // TODO: get the voteId from the transaction receipt and return it
 
     return receipt;

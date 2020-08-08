@@ -50,11 +50,7 @@ export const BOTTOM_SHEET_TEMPLATES = {
   UNSAVED_CHANGES: {
     topSnap: 500,
     content: UnsavedChanges,
-  },
-  USER_PROFILE_SHEET_SCREEN: {
-    topSnap: 800,
-    content: UserProfileSheetScreen,
-  },
+  }
 };
 
 class BottomSheetStore {

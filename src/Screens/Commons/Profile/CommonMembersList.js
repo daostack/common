@@ -7,28 +7,29 @@ import Loader from '../../../Components/Loader';
 import MemberImage from '../../../Components/Commons/MemberImage';
 import Toast from '../../../Util/Toast';
 import {observer, inject} from 'mobx-react';
-import { BOTTOM_SHEET_TEMPLATES } from '../../../Stores/BottomSheetStore';
 
 const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) => {
   const [membersInfo, setMembersInfo] = useState([]);
 
+  console.log("Members", membersInfo);
+
   const showUserProfile = uid => {
-    bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
-      {
-        navigation: navigation,
-        userId: uid,
-      }
-    );
+    navigation.navigate("Profile", {userId: uid});
   };
 
   useEffect(() => {
     setMembersInfo([]);
     const loadMemberUser = async userId => {
       try {
-        const currUserInfo = await FirebaseService.getInstance().getUserById(
+        let currUserInfo = await FirebaseService.getInstance().getUserById(
           userId,
         );
+
+        currUserInfo = {
+          ...currUserInfo,
+          daos: (await FirebaseService.getInstance().getUserDaos(currUserInfo.uid, currUserInfo.safeAddress)).docs?.map(dao => dao.data())
+        };
+
         setMembersInfo(prevMembers => [...prevMembers, currUserInfo]);
       } catch (e) {
         Toast.error(e.toString());
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
   horizontalItem: {
     paddingHorizontal: 0,
   },
-  
+
 });
 
 export default inject('bottomSheetStore')(observer(CommonMembersList));

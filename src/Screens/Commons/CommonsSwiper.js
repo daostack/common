@@ -12,12 +12,13 @@ import {
   Fade,
 } from 'rn-placeholder';
 import Toast from '../../Util/Toast';
+import { isDaoMemberBySafeAddress } from '../../Util';
 const {width} = Dimensions.get('window');
 
 const CommonsSwiper = ({
   navigation,
   daoStore,
-  userStore,
+  safeAddress,
   onCountChange,
   showMax,
 }) => {
@@ -34,10 +35,7 @@ const CommonsSwiper = ({
           } else {
             if (snapshot.docChanges().length !== 0) {
               const newList = snapshot.docChanges().map(({ doc}, index) => {
-                const isMember = userStore.isDaoMember(
-                  doc.data().members,
-                );
-
+                const isMember = isDaoMemberBySafeAddress(doc.data().members, safeAddress);
                 if (!isMember) {
                   return false;
                 }
@@ -76,7 +74,7 @@ const CommonsSwiper = ({
     };
     getMyDaos();
     return unsubscribe;
-  }, []);
+  }, [safeAddress]);
 
   const setDao = dao => {
     daoStore.setDao(dao);
@@ -84,7 +82,7 @@ const CommonsSwiper = ({
 
   const renderCommonCard = (item, index) => {
     return (
-      index < showMax ? <CommonBox
+      !showMax || (index < showMax) ? <CommonBox
         key={item.id}
         width={width - 60}
         common={item}
@@ -195,5 +193,4 @@ const styles = StyleSheet.create({
 
 export default inject(
   'daoStore',
-  'userStore',
 )(observer(CommonsSwiper));

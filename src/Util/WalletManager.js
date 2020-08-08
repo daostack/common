@@ -97,7 +97,7 @@ export default class WalletManager {
 
     // Create safe wallet if user don't have it
     if (!userData.safeAddress?.trim()) {
-      this.createSmartContractWallet();
+      await this.createSmartContractWallet();
     }
   }
 
@@ -215,7 +215,7 @@ export default class WalletManager {
       return response;
     } catch (err) {
       console.log(err);
-      if (err.message.match(/contract not deployed/) && err.message.search(safeAddress)) {
+      if (err.message?.match(/contract not deployed/) && err.message.search(safeAddress)) {
         const msg = `Trying to send a transaction using safeAddress ${safeAddress}, but got ${err}`;
         console.log(msg);
         throw Error(msg);
