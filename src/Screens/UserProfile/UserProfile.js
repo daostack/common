@@ -86,29 +86,8 @@ const UserProfile = ({userStore, navigation, route}) => {
     navigation.navigate('NativeBridgeTests');
   };
 
-  const onUsersListPress = event => {
-    navigation.navigate('UserProfileReadMode');
-  };
-
   const onHUDTestPress = event => {
     navigation.navigate('HUDTest');
-  };
-
-  const onFundingProposalPress = event => {
-    navigation.navigate('FundingProposal');
-  };
-
-  const onMyWalletPress = event => {
-    navigation.navigate('MyWallet');
-    console.log('address: ', userStore.userInfo.ethereumAddress);
-  };
-
-  const onMyCommonsPress = event => {
-    navigation.navigate('MyCommons');
-  };
-
-  const onMyProposalsPress = event => {
-    navigation.navigate('MyProposals');
   };
 
   const renderUnsignedUserData = () => {

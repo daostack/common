@@ -31,7 +31,7 @@ const MyProposals = ({route, navigation, userStore}) => {
 
   const onScreenScroll = (event) => {
     navigation.setOptions({
-      title: event.nativeEvent.contentOffset.y > 75 ? "My Proposals" : "My Profile"
+      title: event.nativeEvent.contentOffset.y > 75 ? 'My Proposals' : 'My Profile',
     });
   };
 

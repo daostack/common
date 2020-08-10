@@ -201,13 +201,13 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
           if (isNewUser) {
             const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
-            const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}}
+            const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
             appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
             await manager.createSmartContractWallet();
           } else {
             await manager.addressCheck(user.uid);
           }
-          
+
           const allUserInfo = {
             ...user._user,
             ...appUser,
@@ -316,20 +316,20 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           component={CommonProfile}
           options={{headerShown: false}}
         />
-        <Stack.Screen 
-          name="CommonAgenda" 
-          component={CommonAgenda} 
+        <Stack.Screen
+          name="CommonAgenda"
+          component={CommonAgenda}
           options={({route}) => ({
             title: route.params.screenTitle,
             headerBackTitleVisible: false,
           })}
 
         />
-        <Stack.Screen 
-            name="Profile" 
-            component={UserProfile} 
-            options={({route}) => ({
-              headerBackTitleVisible: false,
+        <Stack.Screen
+          name="Profile"
+          component={UserProfile}
+          options={({route}) => ({
+            headerBackTitleVisible: false,
           })}/>
         <Stack.Screen
           name="CommonExplanation"
@@ -351,9 +351,9 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
         />
 
-        <Stack.Screen 
-          name="ProposalScreen" 
-          component={ProposalScreen} 
+        <Stack.Screen
+          name="ProposalScreen"
+          component={ProposalScreen}
           options={({route}) => ({
             title: route?.params.screenTitle,
             headerBackTitleVisible: false,
@@ -466,7 +466,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         />
         <Stack.Screen
           options={{
-            title: "My Profile",
+            title: 'My Profile',
             headerBackTitleVisible: false,
           }}
           name="MyProposals"
@@ -474,7 +474,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         />
         <Stack.Screen
           options={{
-            title: "My Profile",
+            title: 'My Profile',
             headerBackTitleVisible: false,
           }}
           name="MyCommons"

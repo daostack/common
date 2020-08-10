@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { StyleSheet, I18nManager, View, StyleProp, ViewStyle } from 'react-native';
+import { StyleSheet, I18nManager, View } from 'react-native';
 import Animated, {
   Easing as OldEasing,
   // @ts-ignore
   EasingNode,
 } from 'react-native-reanimated';
-import {text, layout, colors, sizeXS, sizeS, sizeM, sizeL, sizeXL, sizeXXL} from '../../Theme';
+import {layout, colors, sizeS} from '../../Theme';
 
 import memoize from './memoize';
 

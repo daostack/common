@@ -98,7 +98,7 @@ const UserProfileData = ({
     setRequestsCount(newCount);
   };
 
-  const showMaxData = user.uid == userStore.userInfo.uid ? 5 : null;
+  const showMaxData = user.uid === userStore.userInfo.uid ? 5 : null;
 
   return (
     <>

@@ -55,11 +55,11 @@ export default class ProposalService {
       .collection(DB_COLLECTIONS.proposals)
       .where('proposerId', '==', uid);
 
-    if(onlyFundingProposals) {
+    if (onlyFundingProposals) {
       query = query.where('type', '==', PROPOSAL_TYPE.FundingRequest);
     }
 
-    if(onlyMembershipRequests) {
+    if (onlyMembershipRequests) {
       query = query.where('type', '==', PROPOSAL_TYPE.JoinAndQuit);
     }
 
@@ -170,7 +170,7 @@ export default class ProposalService {
 
     if (safeAddress) {
       if (safeAddress.isCreatingInProgress) {
-        
+
       } else {
         proposalCollection = proposalCollection.where(
           'proposer',
@@ -180,7 +180,7 @@ export default class ProposalService {
       }
     }
 
-    if(membershipRequests) {
+    if (membershipRequests) {
       // // Start the query from the beginning because we want
       // // all request for the user commons, not only those made by
       // // the user itself

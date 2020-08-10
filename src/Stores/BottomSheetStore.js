@@ -8,7 +8,6 @@ import {
   LoginSheetScreen,
   SortProposals,
   UnsavedChanges,
-  UserProfileSheetScreen,
 } from '../Screens/BottomSheetScreens';
 import TransactionError from '../Screens/BottomSheetScreens/TransactionError';
 
@@ -50,7 +49,7 @@ export const BOTTOM_SHEET_TEMPLATES = {
   UNSAVED_CHANGES: {
     topSnap: 500,
     content: UnsavedChanges,
-  }
+  },
 };
 
 class BottomSheetStore {

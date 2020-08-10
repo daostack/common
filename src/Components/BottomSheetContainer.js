@@ -16,8 +16,6 @@ const BottomSheetContainer = props => {
     }
   }, []);
 
-  let openBottomSheet = () => {};
-
   const closeBottomSheet = () => {
     ref.current.snapTo(0);
   };

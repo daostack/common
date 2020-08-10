@@ -33,7 +33,7 @@ export default class FirebaseService {
   }
 
   async getUserDaos(userId, safeAddress) {
-    if(safeAddress) {
+    if (safeAddress) {
       const user = await this.getUserById(userId);
 
       safeAddress = user.safeAddress;
@@ -43,7 +43,7 @@ export default class FirebaseService {
       .collection(DB_COLLECTIONS.daos)
       .where('members', 'array-contains', {
         address: safeAddress,
-        userId
+        userId,
       })
       .get();
   }
@@ -95,8 +95,8 @@ export default class FirebaseService {
   async getDaoNameById(daoId) {
 
     const dao = await db.collection(DB_COLLECTIONS.daos)
-          .doc(daoId)
-          .get();
+      .doc(daoId)
+      .get();
 
     return dao.data().metadata.name;
   }
