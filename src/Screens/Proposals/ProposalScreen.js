@@ -461,7 +461,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
                   </Text>
                 </View>
                 { proposalInfo.type === PROPOSAL_TYPE.FundingRequest
-                  ? <Text style={text.smallBlackText}>{`Available funds: $${commonBalance}`}</Text>
+                  ? <Text style={text.smallBlackText}>{`Available funds: ${commonBalance !== undefined ? '$' + commonBalance / 100 : ''}`}</Text>
                   : null
                 }
 
