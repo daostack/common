@@ -14,6 +14,7 @@ import {
   View,
   Linking,
   DeviceEventEmitter,
+  Text,
 } from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
@@ -86,6 +87,11 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
   const [loading, setLoading] = useState(true);
   const hudRef = useRef();
   const navigationRef = useRef();
+
+  useEffect(() => {
+    Text.defaultProps = Text.defaultProps || {};
+    Text.defaultProps.maxFontSizeMultiplier = 1.1;
+  }, []);
 
   useEffect(() => {
     return messaging().onTokenRefresh(token => {
