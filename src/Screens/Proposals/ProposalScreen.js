@@ -246,7 +246,11 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   }
 
   const viewUserProfile = () => {
-    navigation.navigate("Profile", {userId: proposedUser.uid});
+    if (proposedUser.uid) {
+      navigation.navigate('Profile', {userId: proposedUser.uid});
+    } else {
+      Toast.error('User is not loaded.');
+    }
   };
 
   const onVote = async isApproved => {
