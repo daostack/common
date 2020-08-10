@@ -107,7 +107,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
       return '100%';
     }
     return width - 40;
-  }
+  };
 
   return (
     <Animated.View style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
@@ -206,9 +206,6 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
-    // width: cardWidth(),
-    // Platform.OS === 'ios' ? ('100%') : width - 60,
-    // width: width - 60,
   },
 });
 
