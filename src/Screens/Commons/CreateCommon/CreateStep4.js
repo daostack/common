@@ -577,6 +577,7 @@ const styles = StyleSheet.create({
       height: 2,
     },
     textShadowRadius: 4,
+    elevation: 2,
   },
   byline: {
     width: '100%',

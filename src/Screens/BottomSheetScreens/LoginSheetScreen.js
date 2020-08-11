@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
       height: 6,
     },
     shadowRadius: 0,
-    elevation: 0,
+    elevation: 3,
   },
 
   sheetTextStyle: {

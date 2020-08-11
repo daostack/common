@@ -275,6 +275,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
+    elevation: 2,
   },
   primaryNameContainer: {
     flex: 1,
