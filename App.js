@@ -59,7 +59,7 @@ import AuthService from './src/Services/AuthService';
 
 import CommonHome from './src/Components/Navigation/CommonHome';
 const Stack = createStackNavigator();
-import {filterObjectByKeys} from './src/Util';
+import { filterObjectByKeys, prepareUserObject } from './src/Util';
 import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
@@ -201,18 +201,25 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
           if (isNewUser) {
             const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
-            const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}}
+            const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
             appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
             await manager.createSmartContractWallet();
           } else {
             await manager.addressCheck(user.uid);
           }
-          
+
+          console.log('user._user -> ', user._user);
+          console.log('appUser -> ', appUser);
+
           const allUserInfo = {
             ...user._user,
             ...appUser,
           };
+
+          console.log('allUserInfo -> ', allUserInfo);
+
           const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
+          console.log('filteredUser -> ', filteredUser);
           userStore.setSignedInUser(filteredUser);
           if (subscribers.userInfoChangeUnsubscribe) {
 
@@ -242,7 +249,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         }
         const unsubscribe = db.collection('users').doc(uid).onSnapshot( async snapshot => {
           if (!snapshot.empty) {
-            userStore.setSignedInUser(snapshot.data());
+
+            userStore.setSignedInUser(prepareUserObject(snapshot.data()));
           }
 
           // WalletManager Inited before safeAddress created
@@ -316,20 +324,20 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           component={CommonProfile}
           options={{headerShown: false}}
         />
-        <Stack.Screen 
-          name="CommonAgenda" 
-          component={CommonAgenda} 
+        <Stack.Screen
+          name="CommonAgenda"
+          component={CommonAgenda}
           options={({route}) => ({
             title: route.params.screenTitle,
             headerBackTitleVisible: false,
           })}
 
         />
-        <Stack.Screen 
-            name="Profile" 
-            component={UserProfile} 
-            options={({route}) => ({
-              headerBackTitleVisible: false,
+        <Stack.Screen
+          name="Profile"
+          component={UserProfile}
+          options={({route}) => ({
+            headerBackTitleVisible: false,
           })}/>
         <Stack.Screen
           name="CommonExplanation"
@@ -351,9 +359,9 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
         />
 
-        <Stack.Screen 
-          name="ProposalScreen" 
-          component={ProposalScreen} 
+        <Stack.Screen
+          name="ProposalScreen"
+          component={ProposalScreen}
           options={({route}) => ({
             title: route?.params.screenTitle,
             headerBackTitleVisible: false,
@@ -466,7 +474,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         />
         <Stack.Screen
           options={{
-            title: "My Profile",
+            title: 'My Profile',
             headerBackTitleVisible: false,
           }}
           name="MyProposals"
@@ -474,7 +482,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         />
         <Stack.Screen
           options={{
-            title: "My Profile",
+            title: 'My Profile',
             headerBackTitleVisible: false,
           }}
           name="MyCommons"

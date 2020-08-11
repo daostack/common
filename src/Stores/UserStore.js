@@ -45,13 +45,14 @@ class UserStore {
       if (newUserInfo.email) {
         newUserObj.email = newUserInfo.email;
       }
+      if (newUserInfo.displayName) {
+        newUserObj.displayName = newUserInfo.displayName;
+      }
       if (newUserInfo.firstName) {
         newUserObj.firstName = newUserInfo.firstName;
-        newUserObj.displayName = newUserInfo.firstName;
       }
       if (newUserInfo.lastName) {
         newUserObj.lastName = newUserInfo.lastName;
-        newUserObj.displayName = (newUserInfo.firstName ? `${newUserInfo.firstName} ` : '' ) +  newUserInfo.lastName;
       }
       if (newUserInfo.photoURL) {
         newUserObj.photoURL = newUserInfo.photoURL;
