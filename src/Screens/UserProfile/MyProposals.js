@@ -69,11 +69,16 @@ const MyProposals = ({route, navigation, userStore}) => {
 
   const initialLayout = {width: Dimensions.get('window').width};
 
-  const renderScene = SceneMap({
-    all: AllProposals,
-    active: ActiveProposals,
-    history: HistoryProposals,
-  });
+  const renderScene = ({route}) => {
+    switch (route.key) {
+    case 'all':
+      return AllProposals();
+    case 'active':
+      return ActiveProposals();
+    case 'history':
+      return HistoryProposals();
+    }
+  };
 
   return (
     <>
