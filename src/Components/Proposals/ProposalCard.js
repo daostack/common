@@ -11,7 +11,7 @@ import Toast from '../../Util/Toast';
 import moment from 'moment';
 const {width} = Dimensions.get('window');
 
-const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membershipRequest}) => {
+const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membershipRequest, isSwiper}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
 
   useEffect(() => {
@@ -102,8 +102,15 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
     }
   }, [data]);
 
+  const cardWidth = () => {
+    if (isSwiper && Platform.OS === 'ios') {
+      return '100%';
+    }
+    return width - 40;
+  };
+
   return (
-    <Animated.View style={[styles.proposalCard, containerStyle]}>
+    <Animated.View style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
           isBoosted={true}
@@ -199,7 +206,6 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
-    width: Platform.OS === 'ios' ? '100%' : width - 60,
   },
 });
 
