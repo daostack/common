@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     ...font.fontSize(2),
     ...font.primary.regular,
-  }
+  },
 });
 
 export default inject('userStore')(observer(ProposalDiscussion));

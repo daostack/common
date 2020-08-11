@@ -53,8 +53,7 @@ const TabBarRenderer = (props) => {
           backgroundColor: colors.white,
           borderBottomLeftRadius: 28,
           borderBottomRightRadius: 28,
-
-          elevation: 4,
+          elevation: 2,
           shadowColor: 'black',
           shadowOpacity: 0.1,
           shadowRadius: 3,
@@ -63,7 +62,6 @@ const TabBarRenderer = (props) => {
             width: 0,
           },
           zIndex: 1,
-          elevation: 2,
         }
       }
       tabStyle={{height: 76}}

@@ -6,7 +6,6 @@ import {observer, inject} from 'mobx-react';
 import {layout, text} from '../../Theme';
 import AuthService from '../../Services/AuthService';
 import {filterObjectByKeys} from '../../Util';
-import colors from '../../Theme/colors';
 
 class EditProfileForm extends React.Component {
   static FIELD_FIRST_NAME = 'firstName';
@@ -97,7 +96,7 @@ class EditProfileForm extends React.Component {
           validation={{
             name: EditProfileForm.FIELD_FIRST_NAME,
             formStore: this.props.editProfileFormStore,
-            validateRule: 'required'
+            validateRule: 'required',
           }}
         />
 

@@ -6,11 +6,11 @@ import {
   Dimensions,
   Text,
   ViewPropTypes as RNViewPropTypes,
-} from 'react-native'
+} from 'react-native';
 
 import PropTypes from 'prop-types';
 const ViewPropTypes = RNViewPropTypes || View.propTypes;
-export const DURATION = { 
+export const DURATION = {
   LENGTH_SHORT: 500,
   FOREVER: 0,
 };
@@ -25,7 +25,7 @@ export default class ToastView extends Component {
       isShow: false,
       text: '',
       opacityValue: new Animated.Value(this.props.opacity),
-    }
+    };
   }
 
   show(text, duration, callback) {
@@ -42,19 +42,19 @@ export default class ToastView extends Component {
         toValue: this.props.opacity,
         duration: this.props.fadeInDuration,
       }
-    )
+    );
     this.animation.start(() => {
       this.isShow = true;
-      if(duration !== DURATION.FOREVER) this.close();
+      if (duration !== DURATION.FOREVER) {this.close();}
     });
   }
 
   close( duration ) {
     let delay = typeof duration === 'undefined' ? this.duration : duration;
 
-    if(delay === DURATION.FOREVER) delay = this.props.defaultCloseDelay || 250;
+    if (delay === DURATION.FOREVER) {delay = this.props.defaultCloseDelay || 250;}
 
-    if (!this.isShow && !this.state.isShow) return;
+    if (!this.isShow && !this.state.isShow) {return;}
     this.timer && clearTimeout(this.timer);
     this.timer = setTimeout(() => {
       this.animation = Animated.timing(
@@ -63,13 +63,13 @@ export default class ToastView extends Component {
           toValue: 0.0,
           duration: this.props.fadeOutDuration,
         }
-      )
+      );
       this.animation.start(() => {
         this.setState({
           isShow: false,
         });
         this.isShow = false;
-        if(typeof this.callback === 'function') {
+        if (typeof this.callback === 'function') {
           this.callback();
         }
       });
@@ -77,7 +77,7 @@ export default class ToastView extends Component {
   }
 
   componentWillUnmount() {
-    this.animation && this.animation.stop()
+    this.animation && this.animation.stop();
     this.timer && clearTimeout(this.timer);
   }
 
@@ -98,7 +98,7 @@ export default class ToastView extends Component {
     console.log('TOAST ->', this.duration);
 
     const view = this.state.isShow ?
-      <View 
+      <View
         style={styles.container}
         pointerEvents= { this.duration === DURATION.FOREVER ? 'auto' : 'none'}
       >
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    elevation: 999, 
+    elevation: 999,
     alignItems: 'center',
     zIndex: 10000,
     height: height,
@@ -130,8 +130,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   text: {
-    color: 'white'
-  }
+    color: 'white',
+  },
 });
 
 ToastView.propTypes = {
@@ -145,8 +145,8 @@ ToastView.propTypes = {
   positionValue:PropTypes.number,
   fadeInDuration:PropTypes.number,
   fadeOutDuration:PropTypes.number,
-  opacity:PropTypes.number
-}
+  opacity:PropTypes.number,
+};
 
 ToastView.defaultProps = {
   position: 'bottom',
@@ -154,5 +154,5 @@ ToastView.defaultProps = {
   positionValue: 120,
   fadeInDuration: 500,
   fadeOutDuration: 500,
-  opacity: 1
-}
+  opacity: 1,
+};

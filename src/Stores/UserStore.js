@@ -24,8 +24,8 @@ class UserStore {
   myCommons;
   myProposals;
   constructor() {
-    let userInfo = null;
-    let isLoading = false;
+    this.userInfo = null;
+    this.isLoading = false;
   }
 
   isDaoMember = members => {

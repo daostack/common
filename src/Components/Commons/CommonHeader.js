@@ -10,7 +10,6 @@ import { layout, colors, text, font } from '../../Theme';
 import FastImage from 'react-native-fast-image';
 import Icon from '../../Assets/iconfont/Icon';
 import { BlurView } from '../../Components';
-import {CommonActions} from '@react-navigation/native';
 
 const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, headerHeightLayouted }) => {
 
@@ -25,7 +24,8 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, head
       headerHeightLayouted(event.nativeEvent.layout.height);
     }}
     style={styles.headerContainer}
-    >   
+    >
+
       {commonInfo.logo ? (
         <FastImage
           style={styles.logoImage}
@@ -54,8 +54,8 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, head
         </BlurView>
       ) : null}
 
-        
-      
+
+
     </SafeAreaView>
   );
 };

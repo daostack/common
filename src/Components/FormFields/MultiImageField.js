@@ -19,7 +19,7 @@ const MultiImageField = props => {
     setDeletedFields([...deletedFields, currIndex]);
   };
 
-  const {maxCount, validation} = props;
+  const {maxCount} = props;
 
   return (
     <View style={{paddingTop: sizeL}}>
