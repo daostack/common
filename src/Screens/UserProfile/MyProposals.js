@@ -31,7 +31,7 @@ const MyProposals = ({route, navigation, userStore}) => {
 
   const onScreenScroll = (event) => {
     navigation.setOptions({
-      title: event.nativeEvent.contentOffset.y > 75 ? "My Proposals" : "My Profile"
+      title: event.nativeEvent.contentOffset.y > 75 ? 'My Proposals' : 'My Profile',
     });
   };
 
@@ -115,7 +115,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: Colors.white,
-    padding: 20,
   },
   title: {
     ...font.heading.bold,

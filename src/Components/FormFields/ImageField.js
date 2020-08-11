@@ -99,8 +99,8 @@ class ImageField extends React.Component {
           }}
         />
       );
-    } 
-    else if(isAvatar){
+    }
+    else if (isAvatar){
       return (
         <View style={styles.imageStyle}>
           <Icon name="account-place-holder" size={100} />
@@ -215,6 +215,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 8,
     shadowOpacity: 1,
+    elevation: 3,
     alignSelf: 'center',
   },
   formImageFueldGeneralStyle: {

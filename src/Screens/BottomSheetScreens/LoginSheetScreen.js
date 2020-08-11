@@ -2,7 +2,6 @@ import {Text, View, StyleSheet} from 'react-native';
 
 import React from 'react';
 import {colors, text, layout} from '../../Theme';
-import GSignInButton from '../../Components/Auth/GSignInButton';
 import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import CreateAccount from '../UserProfile/CreateAccount';
@@ -23,7 +22,7 @@ const LoginSheetScreen = ({bottomSheetStore, ...props}) => {
         <CreateAccount hidePlaceholder={true} onSignedIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)}/>
       </View>
 
-{/** 
+      {/**
       <View style={layout.flexRow}>
         <GSignInButton style={styles.googleSignInButton} onSignIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)} />
       </View>
@@ -72,7 +71,7 @@ const styles = StyleSheet.create({
       height: 6,
     },
     shadowRadius: 0,
-    elevation: 0,
+    elevation: 3,
   },
 
   sheetTextStyle: {

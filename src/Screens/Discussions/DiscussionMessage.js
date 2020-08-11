@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.2,
+    elevation: 2,
   },
   contentMember: {
     flexDirection: 'row',

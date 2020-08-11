@@ -19,7 +19,12 @@ const CommonBox = props => {
         });
         props.navigation.dispatch(navigate);
       }}
-      style={[styles.commonBox, {width: Platform.OS === 'ios' ? '100%' : props.width }]}>
+      style={[styles.commonBox, {width: Platform.OS === 'ios' ? '100%' : props.width }]}
+      onLayout={ event => {
+        if (props.headerHeightLayouted) {
+          props.headerHeightLayouted(event.nativeEvent.layout.height);
+        }
+      }}>
       <CommonCover
         isMember={false}
         commonInfo={{
@@ -65,6 +70,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 8,
     shadowOpacity: 1,
+    elevation: 4,
   },
 });
 

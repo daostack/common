@@ -74,14 +74,11 @@ export default class Toast {
 
   static loading(text) {
     showLoading(
-      // <View style={styles.loading} pointerEvents={'none'}>
       <View
         style={{...styles.container, ...{backgroundColor: colors.mainBlue}}}>
-        {/* <Icon name="check" size={20} color={colors.white} /> */}
         <ActivityIndicator size="small" color={colors.white} />
         <Text style={styles.text}>{text}</Text>
-      </View>,
-      // </View>,
+      </View>
     );
   }
 
@@ -105,6 +102,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 1,
+    elevation: 4,
   },
   text: {
     ...font.primary.regular,

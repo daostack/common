@@ -9,7 +9,7 @@ export const GOOGLE_SIGNIN_PERMISSIONS = {
 export const AUTH_PROVIDER_ID = {
   APPLE: 'apple.com',
   GOOGLE: 'google.com',
-}
+};
 
 export const numberFormatter = num => {
   const denom = Math.abs(Number(num));
@@ -23,6 +23,14 @@ export const numberFormatter = num => {
         ? denom / 1.0e4 + 'K'
         : Math.floor(denom);
 };
+
+export function prepareUserObject(user) {
+  let displayName = user.firstName ? user.firstName : null;
+  if (user.lastName) {
+    displayName = (displayName ? `${displayName} ` : '') + user.lastName;
+  }
+  return { ...user, ... { displayName } };
+}
 
 export function filterObjectByKeys(currObj, allowedKeys) {
   return Object.keys(currObj)

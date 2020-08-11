@@ -2,7 +2,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import PropTypes from 'prop-types';
 import { FlatList, StyleSheet, View, Text, Image, Dimensions, TouchableOpacity} from 'react-native';
 import ViewTabNoData from '../../Components/ViewTabNoData';
-import ProposalService, {PROPOSAL_STAGE} from '../../Services/ProposalService';
+import ProposalService from '../../Services/ProposalService';
 import ProposalCard from '../../Components/Proposals/ProposalCard';
 import {layout, colors, font, text, sizeXXL, sizeM} from '../../Theme';
 import FirebaseService from '../../Services/FirebaseService';
@@ -28,7 +28,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
   useEffect(() => {
     const loadProposalInfo = async (commonId, userId, isHistory, showAll, onlyFundingRequests, membershipRequests) => {
       let proposalStages = isHistory ? PROPOSAL_STAGES_HISTORY : PROPOSAL_STAGES_ACTIVE;
-      
+
       unsubscribe = await ProposalService.getInstance().subscribeToProposalList(
         commonId,
         userId,
@@ -58,12 +58,11 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
   }, [commonId, isHistory, userId, safeAddress]);
 
   const onReviewProposal = async ( proposalId, daoId ) => {
-    
     navigation.navigate('ProposalScreen', {
-        proposalId: proposalId,
-        screenTitle: commonName || await FirebaseService.getInstance().getDaoNameById(daoId),
-        commonBalance: commonInfo?.balance,
-        isMember,
+      proposalId: proposalId,
+      screenTitle: commonName || await FirebaseService.getInstance().getDaoNameById(daoId),
+      commonBalance: commonInfo?.balance,
+      isMember,
     });
   };
 
@@ -74,6 +73,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
           <ProposalCard
             key={item.id}
             data={item}
+            isSwiper={true}
             membershipRequest={membershipRequests}
             onReviewProposal={e => onReviewProposal(item.id, item.dao)}
           />
@@ -91,6 +91,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
       ) : <ProposalCard
         key={item.id}
         data={item}
+        isSwiper={false}
         membershipRequest={membershipRequests}
         onReviewProposal={e => onReviewProposal(item.id, item.dao)}
       />);
@@ -224,6 +225,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 8,
     shadowOpacity: 1,
+    elevation: 6,
   },
 });
 
