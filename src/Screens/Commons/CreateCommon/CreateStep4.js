@@ -18,7 +18,6 @@ import Icon from '../../../Assets/iconfont/Icon';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
-import WalletManager from '../../../Util/WalletManager';
 import FirebaseService from '../../../Services/FirebaseService';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';

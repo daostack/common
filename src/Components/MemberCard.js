@@ -1,6 +1,5 @@
 import {StyleSheet, View, Text} from 'react-native';
 import React from 'react';
-import PropTypes from 'prop-types';
 import {layout, colors, text, font,sizeXS} from '../Theme';
 import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
@@ -103,7 +102,7 @@ const MemberCard = ({
               ...text.smallGreyText,
               marginTop: 2,
             }}>
-            
+
             {proposalInfo
               ? moment.unix(proposalInfo.createdAt).fromNow()
               : showMemberCreatedDate

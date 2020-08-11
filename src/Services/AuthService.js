@@ -43,7 +43,7 @@ export default class AuthService {
   };
 
   isAppleLoginSupported() {
-    return appleAuth.isSupported
+    return appleAuth.isSupported;
   }
 
   // Apple Auth flow
@@ -97,12 +97,12 @@ export default class AuthService {
 
   async getCurrentLoggedUser(providerId) {
     switch (providerId) {
-      case AUTH_PROVIDER_ID.APPLE:
-        throw new Error("TODO: Implementat getting current logged in user in Apple ");
-        //TODO: return userInfo object which contains the users display name;
-      case AUTH_PROVIDER_ID.GOOGLE:
-        return await GoogleSignin.getCurrentUser();
-      default:
+    case AUTH_PROVIDER_ID.APPLE:
+      throw new Error('TODO: Implementat getting current logged in user in Apple ');
+      //TODO: return userInfo object which contains the users display name;
+    case AUTH_PROVIDER_ID.GOOGLE:
+      return await GoogleSignin.getCurrentUser();
+    default:
     }
   }
 
@@ -120,8 +120,8 @@ export default class AuthService {
   async createUserAndWallet(user) {
     const manager = await WalletManager.getInstance(user.uid);
     const userPhotoUrl = user.photoURL
-    ? user.photoURL
-    : `https://eu.ui-avatars.com/api/?background=7786ff&color=fff&name=${
+      ? user.photoURL
+      : `https://eu.ui-avatars.com/api/?background=7786ff&color=fff&name=${
         user.displayName ? user.displayName : user.email
       }&rounded=true`;
     const userPublicData = {
@@ -153,11 +153,11 @@ export default class AuthService {
       }
 
       switch (providerId) {
-        case AUTH_PROVIDER_ID.APPLE:
-          return await this._loadMnemonicFromiCloud(uid);
-        case AUTH_PROVIDER_ID.GOOGLE:
-          return await this._loadMnemonicFromGoogleDrive(uid);
-        default:
+      case AUTH_PROVIDER_ID.APPLE:
+        return await this._loadMnemonicFromiCloud(uid);
+      case AUTH_PROVIDER_ID.GOOGLE:
+        return await this._loadMnemonicFromGoogleDrive(uid);
+      default:
       }
     } catch (err) {
       console.log(err);
@@ -213,7 +213,7 @@ export default class AuthService {
   async _loadMnemonicFromiCloud(uid) {
     // 2. Read mnemonic From the iClould app data
     let appData = await IClouldService.getInstance().getAppData();
-    
+
     if (appData && appData.files && appData.files.length > 0) {
       const appDataLocalPath = appData.files[0].path;
 

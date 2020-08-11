@@ -13,10 +13,9 @@ import {
 } from 'react-native';
 import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
-import {TabView, TabBar} from 'react-native-tab-view';
+import {TabView} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
 import ProposalDiscussion from './ProposalDiscussion';
-import MemberCard from '../../Components/MemberCard';
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '../../Util/Toast';
 import BottomSheetModal from '../../Components/BottomSheetModal';
@@ -28,7 +27,6 @@ const { width } = Dimensions.get('window');
 import {UserAvatar} from '../../Components';
 
 import FirebaseService from '../../Services/FirebaseService';
-import {monthShortNames} from '../../Util/DateUtil';
 import { PROPOSAL_STAGES_ACTIVE} from '../../Services/ProposalService';
 import { PROPOSAL_TYPE } from '../../Services/ProposalService';
 import { db } from '../../Firebase';
@@ -336,11 +334,6 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
 
   const initialLayout = {width: Dimensions.get('window').width};
 
-  let memberCreatedDate = null;
-
-  if (proposedUser?.createdAt) {
-    memberCreatedDate = new Date(proposedUser?.createdAt.seconds * 1000);
-  }
   const headerContainerStyle =
     proposalInfo.type === PROPOSAL_TYPE.FundingRequest
       ? {
@@ -383,7 +376,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
             //e.nativeEvent.contentOffset.y
             stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
               const isVisible = py < 76;
-              if (isVisible != showStickyTabBar) {
+              if (isVisible !== showStickyTabBar) {
                 setShowStickyTabBar(isVisible);
               }
             });
@@ -482,7 +475,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
                   </View>
 
                   <Text style={text.smallBlackText}>
-                    {votesCount == 0 ? 'No votes yet' : `${votesCount} ${votesCount > 1 ? 'votes' : 'vote'}`}
+                    {votesCount === 0 ? 'No votes yet' : `${votesCount} ${votesCount > 1 ? 'votes' : 'vote'}`}
                   </Text>
 
                   <View

@@ -601,7 +601,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               });
               stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
                 const isVisible = py < (STICKY_HEADER_HEIGHT);
-                if (isVisible != showStickyTabBar) {
+                if (isVisible !== showStickyTabBar) {
                   setShowStickyTabBar(isVisible);
                 }
               });
