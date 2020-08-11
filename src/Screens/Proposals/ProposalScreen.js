@@ -241,7 +241,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   }
 
   const viewUserProfile = () => {
-    navigation.navigate("Profile", {userId: proposedUser.uid});
+    navigation.navigate('Profile', {userId: proposedUser.uid});
   };
 
   const onVote = async isApproved => {
@@ -432,10 +432,13 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
                     <Text style={{...text.h2Black}}>
                       {proposedUser ? proposedUser.displayName : 'unknown user'}
                     </Text>
-                    <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}} onPress={viewUserProfile}>
-                      <Text style={text.smallBlackText}>View Profile</Text>
-                      <Icon name="right-arrow" size={20} />
-                    </TouchableOpacity>
+
+                    {proposedUser ? 
+                      <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}} onPress={viewUserProfile}>
+                        <Text style={text.smallBlackText}>View Profile</Text>
+                        <Icon name="right-arrow" size={20} />
+                      </TouchableOpacity>
+                      : null}
 
                   </View>
                 </>
