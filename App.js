@@ -60,7 +60,7 @@ import AuthService from './src/Services/AuthService';
 
 import CommonHome from './src/Components/Navigation/CommonHome';
 const Stack = createStackNavigator();
-import {filterObjectByKeys} from './src/Util';
+import { filterObjectByKeys, prepareUserObject } from './src/Util';
 import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
@@ -207,7 +207,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
           if (isNewUser) {
             const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
-            const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}}
+            const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
             appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
             await manager.createSmartContractWallet();
           } else {
@@ -218,6 +218,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             ...user._user,
             ...appUser,
           };
+
           const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
           userStore.setSignedInUser(filteredUser);
           if (subscribers.userInfoChangeUnsubscribe) {
@@ -248,7 +249,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         }
         const unsubscribe = db.collection('users').doc(uid).onSnapshot( async snapshot => {
           if (!snapshot.empty) {
-            userStore.setSignedInUser(snapshot.data());
+
+            userStore.setSignedInUser(prepareUserObject(snapshot.data()));
           }
 
           // WalletManager Inited before safeAddress created
@@ -472,7 +474,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         />
         <Stack.Screen
           options={{
-            title: "My Profile",
+            title: 'My Profile',
             headerBackTitleVisible: false,
           }}
           name="MyProposals"
@@ -480,7 +482,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         />
         <Stack.Screen
           options={{
-            title: "My Profile",
+            title: 'My Profile',
             headerBackTitleVisible: false,
           }}
           name="MyCommons"
