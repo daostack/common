@@ -398,7 +398,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             ...layout.flexRow,
             ...{padding: 0},
           }}>
-          <Icon name="clcok-16" size={16} style={layout.marginRightXS} />
+          <Icon name="clcok" size={16} style={layout.marginRightXS} />
           <Text style={text.smallBoldGreyText}>Pending Approval</Text>
         </View>
         <View
@@ -601,7 +601,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               });
               stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
                 const isVisible = py < (STICKY_HEADER_HEIGHT);
-                if (isVisible != showStickyTabBar) {
+                if (isVisible !== showStickyTabBar) {
                   setShowStickyTabBar(isVisible);
                 }
               });
@@ -706,6 +706,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             {isMember ? (
               index === 0 ? (
                 <BottomRightButton
+                  iconName="add-proposal-32"
                   onPress={() =>
                     navigation.navigate('New Post', {
                       commonId: currCommon.id,
@@ -714,8 +715,9 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                   bottom={50}
                 />
               ) : (
-                !isFundingStage && (
+                !isFundingStage && index === 1 && (
                   <BottomRightButton
+                    iconName="create-proposal"
                     onPress={() =>
                       navigation.navigate('FundingProposal', {
                         commonId: currCommon.id,
@@ -903,6 +905,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 1,
+    elevation: 4,
   },
   stickySection: {
     height: STICKY_HEADER_HEIGHT,

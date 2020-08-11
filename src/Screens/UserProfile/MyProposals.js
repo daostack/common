@@ -31,7 +31,7 @@ const MyProposals = ({route, navigation, userStore}) => {
 
   const onScreenScroll = (event) => {
     navigation.setOptions({
-      title: event.nativeEvent.contentOffset.y > 75 ? "My Proposals" : "My Profile"
+      title: event.nativeEvent.contentOffset.y > 75 ? 'My Proposals' : 'My Profile',
     });
   };
 
@@ -69,11 +69,16 @@ const MyProposals = ({route, navigation, userStore}) => {
 
   const initialLayout = {width: Dimensions.get('window').width};
 
-  const renderScene = SceneMap({
-    all: AllProposals,
-    active: ActiveProposals,
-    history: HistoryProposals,
-  });
+  const renderScene = ({route}) => {
+    switch (route.key) {
+    case 'all':
+      return AllProposals();
+    case 'active':
+      return ActiveProposals();
+    case 'history':
+      return HistoryProposals();
+    }
+  };
 
   return (
     <>
@@ -115,7 +120,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: Colors.white,
-    padding: 20,
   },
   title: {
     ...font.heading.bold,

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from './TextInputField';
-import {text, layout, colors, font, sizeL} from '../../Theme';
+import {text, layout, colors, sizeL} from '../../Theme';
 
 const MultiLinkField = props => {
   const [count, setCount] = useState(1);

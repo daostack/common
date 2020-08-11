@@ -43,7 +43,6 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
             <View
               style={{
                 ...layout.content,
-
                 ...{padding: 0},
               }}>
               {commonInfo.logo ? (
@@ -129,6 +128,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'space-between',
     paddingBottom: 0,
+    paddingTop: 40,
   },
   headerContainerCenterContent: {
     justifyContent: 'center',
@@ -156,7 +156,8 @@ const styles = StyleSheet.create({
   headerContent: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 32,
+    paddingBottom: 5,
   },
   headerViewAgenda: {
     ...text.smallGreyText,

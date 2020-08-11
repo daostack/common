@@ -4,6 +4,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 
 import React from 'react';
@@ -30,7 +31,10 @@ const SortProposals = ({navigation, onContinueEditing}) => {
       nestedScrollEnabled={true}
       directionalLockEnabled={true}>
       <View style={styles.body}>
-        <Icon name="save1" size={100} />
+        <Image
+          style={styles.image}
+          source={require('../../Assets/save.png')}
+        />
         <Text style={{...text.h3Black, ...layout.marginTopM}}>
           Unsaved Changes
         </Text>
@@ -64,7 +68,10 @@ const styles = StyleSheet.create({
   body: {
     ...layout.content,
   },
-
+  image: {
+    height: 116,
+    resizeMode: 'contain',
+  },
   safeArea: {
     flex: 1,
     backgroundColor: colors.white,

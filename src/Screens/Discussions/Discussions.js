@@ -146,15 +146,15 @@ const Discussions = ({daoStore, userStore, ...props}) => {
     fetchUser();
   }, [data]);
 
-  const openOptionsMenu = () => {
-    if (!currentUser) {
-      showLoginScreen();
-      return;
-    }
-    props.bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
-    );
-  };
+  // const openOptionsMenu = () => {
+  //   if (!currentUser) {
+  //     showLoginScreen();
+  //     return;
+  //   }
+  //   props.bottomSheetStore.showBottomSheet(
+  //     BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
+  //   );
+  // };
 
   const showLoginScreen = () => {
     props.bottomSheetStore.showBottomSheet(
@@ -191,7 +191,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
     // props.userStore;
     inputRef.current.clear();
     console.log('userStore', commonId, data.id, userStore);
-    const message = inputRef.current._lastNativeText;
+    const message = inputText;
     if (message && message.trim().length) {
       console.log('message', message);
       firestore()
@@ -207,11 +207,9 @@ const Discussions = ({daoStore, userStore, ...props}) => {
           discussionId: discussionId,
         })
         .then(() => {
-          console.log('YES', inputRef.current);
           Keyboard.dismiss();
         })
         .catch(error => {
-          console.log('NO', error);
           Toast.error(error);
         });
     } else {
@@ -416,7 +414,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
             // initialScrollIndex={2}
           />
         </ScrollView>
-        : 
+        :
         <View style={styles.emptyContainer}>
           <Image source={require('../../Assets/empty-discussion.png')} style={{ width: 240, height: 240 }} />
           <Text style={styles.emptyTitle}> No comments yet</Text>
@@ -571,6 +569,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
+    elevation: 2,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 15,
@@ -655,7 +654,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     ...font.fontSize(2),
     ...font.primary.regular,
-  }
+  },
 });
 
 export default inject('userStore', 'bottomSheetStore', 'daoStore')(observer(Discussions));
