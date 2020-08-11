@@ -191,7 +191,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
     // props.userStore;
     inputRef.current.clear();
     console.log('userStore', commonId, data.id, userStore);
-    const message = inputRef.current._lastNativeText;
+    const message = inputText;
     if (message && message.trim().length) {
       console.log('message', message);
       firestore()
@@ -207,11 +207,9 @@ const Discussions = ({daoStore, userStore, ...props}) => {
           discussionId: discussionId,
         })
         .then(() => {
-          console.log('YES', inputRef.current);
           Keyboard.dismiss();
         })
         .catch(error => {
-          console.log('NO', error);
           Toast.error(error);
         });
     } else {

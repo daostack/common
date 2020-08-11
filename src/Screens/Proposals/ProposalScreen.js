@@ -155,7 +155,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   const messageInput = () => {
     const sendMessageToDiscussion = async () => {
       const userInfo = auth().currentUser;
-      const message = inputRef.current._lastNativeText;
+      const message = inputText;
       if (message && message.trim().length) {
         firestore()
           .collection('discussionMessage')
@@ -170,15 +170,10 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
             discussionId: routeProposalId,
           })
           .then(() => {
-            console.log('YES');
             inputRef.current.clear();
-            // inputRef.focused
-            // Toast.done('Sent');
-            // setTrigger(!trigger);
             Keyboard.dismiss();
           })
           .catch(error => {
-            console.log('NO', error);
             Toast.error(error);
           });
       }
