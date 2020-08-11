@@ -79,7 +79,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
           />
         ) : (
           <TouchableOpacity
-            onPress={() => navigation.navigate('MyProposals')}
+            onPress={() => navigation.navigate('MyProposals', { onlyFundingRequests: onlyFundingRequests, onlyMembershipRequests: membershipRequests })}
             style={{ ...styles.commonBox }}
           >
             <Text style={text.buttonblue}>
