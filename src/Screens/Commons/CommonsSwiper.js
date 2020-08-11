@@ -125,6 +125,7 @@ const CommonsSwiper = ({
     ) : (
       <View style={styles.emptyObjectContainer}>
         <Image
+          style={{height: 120, width: 120}}
           source={require('../../../src/Assets/group.png')}
         />
         <Text style={{...text.h2Black, ...layout.marginTopS}}>No Commons</Text>

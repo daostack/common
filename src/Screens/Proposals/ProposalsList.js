@@ -112,6 +112,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
       ) : (
         <View style={styles.emptyObjectContainer}>
           <Image
+            style={{height: 100, width: 100}}
             source={require('../../../src/Assets/pencil.png')}
           />
           <Text style={{...text.h2Black, ...layout.marginTopS}}>
