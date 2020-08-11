@@ -243,7 +243,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         }
         const unsubscribe = db.collection('users').doc(uid).onSnapshot( async snapshot => {
           if (!snapshot.empty) {
-
             userStore.setSignedInUser(prepareUserObject(snapshot.data()));
           }
 

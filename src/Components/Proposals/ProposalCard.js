@@ -132,14 +132,12 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
             {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
           </Text>}
 
-          <View style={layout.flexRow}>
-            <MemberCard
-              showDate={membershipRequest}
-              userInfo={proposalCardInfo.proposedUser}
-              proposalInfo={proposalCardInfo.proposalInfo}
-              isPending={false}
-            />
-          </View>
+          <MemberCard
+            showDate={membershipRequest}
+            userInfo={proposalCardInfo.proposedUser}
+            proposalInfo={proposalCardInfo.proposalInfo}
+            isPending={false}
+          />
 
           <View style={{...layout.flexRow, ...layout.marginTopS}}>
             <ProposalApprovalTag
