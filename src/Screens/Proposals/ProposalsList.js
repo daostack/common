@@ -28,7 +28,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
   useEffect(() => {
     const loadProposalInfo = async (commonId, userId, isHistory, showAll, onlyFundingRequests, membershipRequests) => {
       let proposalStages = isHistory ? PROPOSAL_STAGES_HISTORY : PROPOSAL_STAGES_ACTIVE;
-      
+
       unsubscribe = await ProposalService.getInstance().subscribeToProposalList(
         commonId,
         userId,
@@ -79,7 +79,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
           />
         ) : (
           <TouchableOpacity
-            onPress={() => navigation.navigate('MyProposals')}
+            onPress={() => navigation.navigate('MyProposals', { onlyFundingRequests: onlyFundingRequests, onlyMembershipRequests: membershipRequests })}
             style={{ ...styles.commonBox }}
           >
             <Text style={text.buttonblue}>
