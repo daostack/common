@@ -11,7 +11,7 @@ import {
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import { inject, observer } from 'mobx-react';
 import CommonBox from '../../Components/CommonBox';
-import {layout, colors, text, font, sizeS} from '../../Theme';;
+import {layout, colors, text, font, sizeS} from '../../Theme';
 
 const MyCommons = ({navigation, daoStore, userStore}) => {
   const onScreenScroll = (event) => {

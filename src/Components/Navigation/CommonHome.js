@@ -48,7 +48,6 @@ const CommonHome = ({userStore}) => {
           shadowOffset: { height: 5 },
           shadowOpacity: 0.75,
           shadowRadius: 5,
-          elevation: 5,
           height: Platform.OS === 'ios' ? 100 : 60,
         },
       }}

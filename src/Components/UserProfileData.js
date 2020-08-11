@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
   },
 
   contentContainerWithoutPadding: {
-    
+
     ...layout.content,
     ...layout.flexStart,
     ...layout.marginTopL,
