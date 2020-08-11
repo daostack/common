@@ -16,14 +16,15 @@ const styles = StyleSheet.create({
     ...layout.content,
     backgroundColor: 'transparent',
     height: 'auto',
-    paddingHorizontal: sizeXL,
+    // paddingHorizontal: sizeXL,
   },
   subtitle: {
     ...font.primary.regular,
-    ...font.fontSize(3),
+    fontSize: 16,
     textAlign: 'center',
     color: colors.black,
     ...layout.marginTopS,
+    ...layout.marginBottomXL,
   },
   title: {
     ...font.primary.bold,

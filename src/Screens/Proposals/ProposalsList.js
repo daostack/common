@@ -161,12 +161,12 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
               ? 'No Past activity'
               : membershipRequests
                 ? 'No requests yet'
-                : 'No proposals yet'
+                : 'No proposals'
           }
           subtitle={
             isHistory
               ? 'You will be able to see proposals that passed or were rejected here.'
-              : 'Write your first proposals and invite members to make an impact together!'
+              : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
           }
         />
       )}

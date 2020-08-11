@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, StyleSheet, View} from 'react-native';
-import {text, layout, colors} from '../../Theme';
+import {text, layout, colors, font} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
 import moment from 'moment';
@@ -12,10 +12,12 @@ const ProposalActivationDate = ({activationDate}) => {
 
   return !deadlineHasPassed ? (
     <View style={styles.container}>
-      <Text style={styles.title}>Safety period</Text>
-      <Text style={styles.subtitle}>You will be able to create proposals</Text>
-      <Text style={styles.timeLeftStyle}>
-        {!deadlineHasPassed ? deadlineMoment.fromNow() : ''}
+      {/* <Text style={styles.title}>Safety period</Text> */}
+      <Text>
+        <Text style={styles.subtitle}>You will be able to create proposals </Text>
+        <Text style={[styles.subtitle, { fontWeight: 'bold' }]}>
+          {!deadlineHasPassed ? deadlineMoment.fromNow() : ''}
+        </Text>
       </Text>
       <TouchableOpacity style={styles.explanationBtn}>
         <Icon
@@ -32,17 +34,16 @@ const ProposalActivationDate = ({activationDate}) => {
 const styles = StyleSheet.create({
   container: {
     ...layout.content,
-
     borderWidth: 0,
-    borderRadius: 28,
+    borderRadius: 14,
     backgroundColor: colors.iceBlue,
   },
   subtitle: {
     ...text.h2Black,
     fontWeight: 'normal',
     textAlign: 'center',
-
     ...layout.marginTopS,
+    ...font.fontSize(2),
   },
   title: {
     ...text.h2Black,
@@ -55,6 +56,7 @@ const styles = StyleSheet.create({
     ...text.h2Black,
     color: colors.mainBlue,
     fontWeight: 'normal',
+    ...font.fontSize(2),
   },
   explanationBtn: {
     ...layout.flexRow,
