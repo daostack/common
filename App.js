@@ -68,7 +68,7 @@ import {auth, db} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
 import validUrl from 'valid-url';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
-import Toast, {DURATION} from 'react-native-easy-toast';
+import ToastView, {DURATION} from './src/Util/ToastView';
 import {CommonActions} from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
@@ -207,7 +207,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           } else {
             await manager.addressCheck(user.uid);
           }
-          
+
           const allUserInfo = {
             ...user._user,
             ...appUser,
@@ -316,20 +316,20 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           component={CommonProfile}
           options={{headerShown: false}}
         />
-        <Stack.Screen 
-          name="CommonAgenda" 
-          component={CommonAgenda} 
+        <Stack.Screen
+          name="CommonAgenda"
+          component={CommonAgenda}
           options={({route}) => ({
             title: route.params.screenTitle,
             headerBackTitleVisible: false,
           })}
 
         />
-        <Stack.Screen 
-            name="Profile" 
-            component={UserProfile} 
-            options={({route}) => ({
-              headerBackTitleVisible: false,
+        <Stack.Screen
+          name="Profile"
+          component={UserProfile}
+          options={({route}) => ({
+            headerBackTitleVisible: false,
           })}/>
         <Stack.Screen
           name="CommonExplanation"
@@ -351,9 +351,9 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
         />
 
-        <Stack.Screen 
-          name="ProposalScreen" 
-          component={ProposalScreen} 
+        <Stack.Screen
+          name="ProposalScreen"
+          component={ProposalScreen}
           options={({route}) => ({
             title: route?.params.screenTitle,
             headerBackTitleVisible: false,
@@ -497,7 +497,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         />
       </Stack.Navigator>
       {bottomSheetStore.isVisible ? <BottomSheetContainer /> : null}
-      <Toast
+      <ToastView
         ref={hudRef}
         style={{backgroundColor: 'transparent'}}
         positionValue={160}
