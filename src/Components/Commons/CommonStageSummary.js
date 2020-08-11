@@ -99,15 +99,18 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-around',
+    paddingTop: 20,
+    paddingBottom: 30,
   },
   headerTitle: {
     ...text.h3Black,
     ...font.primary.bold,
     ...font.lineHeight(2),
+    ...font.fontSize(4),
+    paddingTop: 5,
   },
   headerTitleLight: {
     ...text.h3Black,
-
   },
   headerSmallText: {
     ...text.smallBlackText,

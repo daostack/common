@@ -58,12 +58,11 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
   }, [commonId, isHistory, userId, safeAddress]);
 
   const onReviewProposal = async ( proposalId, daoId ) => {
-    
     navigation.navigate('ProposalScreen', {
-        proposalId: proposalId,
-        screenTitle: commonName || await FirebaseService.getInstance().getDaoNameById(daoId),
-        commonBalance: commonInfo?.balance,
-        isMember,
+      proposalId: proposalId,
+      screenTitle: commonName || await FirebaseService.getInstance().getDaoNameById(daoId),
+      commonBalance: commonInfo?.balance,
+      isMember,
     });
   };
 
@@ -74,6 +73,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
           <ProposalCard
             key={item.id}
             data={item}
+            isSwiper={true}
             membershipRequest={membershipRequests}
             onReviewProposal={e => onReviewProposal(item.id, item.dao)}
           />
@@ -91,6 +91,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
       ) : <ProposalCard
         key={item.id}
         data={item}
+        isSwiper={false}
         membershipRequest={membershipRequests}
         onReviewProposal={e => onReviewProposal(item.id, item.dao)}
       />);

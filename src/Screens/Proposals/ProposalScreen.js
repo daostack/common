@@ -62,6 +62,10 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   // Top voting buttons ref
   const topVotingButtonsRef = useRef(null);
 
+  // Values for vote param required from the blockchain
+  const VOTE_APPROVE = 1;
+  const VOTE_REJECT = 2;
+
   useEffect(() => {
     let unsubscribe = null;
 
@@ -151,7 +155,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   const messageInput = () => {
     const sendMessageToDiscussion = async () => {
       const userInfo = auth().currentUser;
-      const message = inputRef.current._lastNativeText;
+      const message = inputText;
       if (message && message.trim().length) {
         firestore()
           .collection('discussionMessage')
@@ -166,15 +170,10 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
             discussionId: routeProposalId,
           })
           .then(() => {
-            console.log('YES');
             inputRef.current.clear();
-            // inputRef.focused
-            // Toast.done('Sent');
-            // setTrigger(!trigger);
             Keyboard.dismiss();
           })
           .catch(error => {
-            console.log('NO', error);
             Toast.error(error);
           });
       }
@@ -250,7 +249,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
 
     try {
       // let votingResponse = null;
-      const voteData = { vote: isApproved ? 1 : 0 };
+      const voteData = { vote: isApproved ? VOTE_APPROVE : VOTE_REJECT };
 
       await timeout(3000);
 

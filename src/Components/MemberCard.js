@@ -7,6 +7,7 @@ import CountDown from 'react-native-countdown-component';
 import {monthShortNames} from '../Util/DateUtil';
 import moment from 'moment';
 import {PROPOSAL_TYPE} from '../Config';
+import { LAUNCHED_STATES } from '../Services/ProposalService';
 
 const MemberCard = ({
   // memberSince or commonsCount
@@ -31,7 +32,9 @@ const MemberCard = ({
               ...{alignItems: 'flex-end'},
             }}>
             <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
-            {remainingSeconds > 0 && (
+
+            {/* Hide the time if the proposal is expired or new */}
+            {(remainingSeconds > 0 && !LAUNCHED_STATES.includes(proposalInfo?.stageStr)) && (
               // If the remaining time is more than 1 day show the date,
               // if it is less show countdown till it
               remainingSeconds > 24 * 60 * 60
@@ -100,11 +103,12 @@ const MemberCard = ({
               ...text.smallGreyText,
               marginTop: 2,
             }}>
+            
             {proposalInfo
               ? moment.unix(proposalInfo.createdAt).fromNow()
               : showMemberCreatedDate
                 ? `Member in ${userInfo?.daos?.length || 0} Common${
-                  userInfo?.daos?.length > 1 ? 's' : ''
+                  userInfo?.daos?.length !== 1 ? 's' : ''
                 }`
                 : `Member since ${memberSince || 'unknown'}`}
           </Text>
