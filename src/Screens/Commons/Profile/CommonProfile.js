@@ -398,7 +398,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             ...layout.flexRow,
             ...{padding: 0},
           }}>
-          <Icon name="clcok-16" size={16} style={layout.marginRightXS} />
+          <Icon name="clcok" size={16} style={layout.marginRightXS} />
           <Text style={text.smallBoldGreyText}>Pending Approval</Text>
         </View>
         <View

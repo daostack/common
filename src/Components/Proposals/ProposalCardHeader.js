@@ -52,7 +52,7 @@ const calcStatus = (stage, winningOutcome, hasPassedExpiryDate) => {
     status.text = TITLES.COUNTDOWN;
     status.lightColor = colors.lightishOrange;
     status.darkColor = colors.orange;
-    status.icon = 'clcok-16';
+    status.icon = 'clcok';
     return status;
   }
 
@@ -74,26 +74,26 @@ const renderCountDown = (closingAt) => {
   let counterTextColor = styles.timerText;
 
   const remainingSeconds = closingAt
-        ? closingAt - Date.now() / 1000
-        : null;
+    ? closingAt - Date.now() / 1000
+    : null;
   
   return <View style={styles.timerContainer}>
-          <View
-            style={{...styles.timer}}>
-              <CountDown
-                timeToShow={['H', 'M', 'S']}
-                digitTxtStyle={counterTextColor}
-                timeLabels={false}
-                showSeparator={true}
-                separatorStyle={counterTextColor}
-                digitStyle={{
-                  height: 'auto',
-                  width: 'auto',
-                }}
-                until={remainingSeconds}
-              />
-          </View>
-        </View>
+    <View
+      style={{...styles.timer}}>
+      <CountDown
+        timeToShow={['H', 'M', 'S']}
+        digitTxtStyle={counterTextColor}
+        timeLabels={false}
+        showSeparator={true}
+        separatorStyle={counterTextColor}
+        digitStyle={{
+          height: 'auto',
+          width: 'auto',
+        }}
+        until={remainingSeconds}
+      />
+    </View>
+  </View>
 }
 
 
@@ -110,13 +110,13 @@ const ProposalCardHeader = ({ stage, winningOutcome, hasPassedExpiryDate, closin
       </View>
     ) 
     : (
-    <View style={{...styles.proposalCardHeader, ...{backgroundColor: headerStatus.lightColor}}}>
-      <Icon name={headerStatus.icon} color={headerStatus.darkColor} size={16} />
-      <Text style={{ ...text.orangeSmallBold, ...{ marginHorizontal: 5 }, color: headerStatus.darkColor }}>
-        {headerStatus.text}
-      </Text>
-    </View>
-  );
+      <View style={{...styles.proposalCardHeader, ...{backgroundColor: headerStatus.lightColor}}}>
+        <Icon name={headerStatus.icon} color={headerStatus.darkColor} size={16} />
+        <Text style={{ ...text.orangeSmallBold, ...{ marginHorizontal: 5 }, color: headerStatus.darkColor }}>
+          {headerStatus.text}
+        </Text>
+      </View>
+    );
 };
 
 const styles = StyleSheet.create({

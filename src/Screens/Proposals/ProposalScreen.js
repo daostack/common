@@ -431,7 +431,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
                   <UserAvatar
                     image={proposedUser?.photoURL}
                     imageStyle={{ width: 64, height: 64 }}
-                    iconName={'clcok-16'}
+                    iconName={'clcok'}
                   />
                   <View style={{...layout.content, ...layout.marginTopS}}>
                     <Text style={{...text.h2Black}}>
