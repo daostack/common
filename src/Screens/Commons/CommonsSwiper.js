@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     ...layout.content,
     borderRadius: 14,
     backgroundColor: colors.iceBlue,
-    paddingHorizontal: sizeXXL,
+    alignSelf: 'center',
   },
 
   textNoCommons: {

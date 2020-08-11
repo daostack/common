@@ -28,10 +28,11 @@ const MemberCard = ({
         <View style={styles.rightContainer}>
           <View
             style={{
-              ...layout.content,
+              // ...layout.content,
               ...{alignItems: 'flex-end'},
             }}>
             <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
+            <Text style={text.runninglightGray}>{moment.unix(proposalInfo.createdAt).fromNow()}</Text>
 
             {/* Hide the time if the proposal is expired or new */}
             {(remainingSeconds > 0 && !LAUNCHED_STATES.includes(proposalInfo?.stageStr)) && (
@@ -103,10 +104,11 @@ const MemberCard = ({
               ...text.smallGreyText,
               marginTop: 2,
             }}>
-            
-            {proposalInfo
-              ? moment.unix(proposalInfo.createdAt).fromNow()
-              : showMemberCreatedDate
+            {
+            // proposalInfo
+              // ? moment.unix(proposalInfo.createdAt).fromNow()
+              // : 
+              showMemberCreatedDate
                 ? `Member in ${userInfo?.daos?.length || 0} Common${
                   userInfo?.daos?.length !== 1 ? 's' : ''
                 }`
@@ -146,7 +148,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   rightContainer: {
-    ...layout.content,
+    // ...layout.content,
     ...layout.flexRow,
     alignItems: 'center',
     alignContent: 'flex-end',

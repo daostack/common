@@ -178,8 +178,9 @@ const styles = StyleSheet.create({
   emptyObjectContainer: {
     ...layout.content,
     borderRadius: 14,
-    paddingHorizontal: sizeXXL,
     backgroundColor: colors.iceBlue,
+    alignSelf: 'center',
+    marginHorizontal: 12,
   },
 
   textNoProposals: {

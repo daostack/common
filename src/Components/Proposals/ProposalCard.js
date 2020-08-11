@@ -122,9 +122,12 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
 
         <View
           style={{
-            ...layout.content,
+            // ...layout.content,
+            paddingTop: 0,
+            // paddingBottom: 0,
+            paddingHorizontal: 16,
             ...layout.flexStart,
-            ...layout.paddingBottomL,
+            // ...layout.paddingBottomL,
             ...{flexWrap: 'wrap'},
           }}>
           {proposalCardInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && <Text
@@ -132,16 +135,17 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
             {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
           </Text>}
 
-          <View style={layout.flexRow}>
+          <View style={{flexDirection: 'row'}}>
             <MemberCard
               showDate={membershipRequest}
               userInfo={proposalCardInfo.proposedUser}
               proposalInfo={proposalCardInfo.proposalInfo}
               isPending={false}
+              showMemberCreatedDate={true}
             />
           </View>
 
-          <View style={{...layout.flexRow, ...layout.marginTopS}}>
+          <View style={{...layout.flexRow }}>
             <ProposalApprovalTag
               iconName="approved"
               value={proposalCardInfo.proposalInfo?.votesFor}
@@ -175,17 +179,21 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
 
 const styles = StyleSheet.create({
   proposalCardActionContainer: {
-    ...layout.content,
+    // ...layout.content,
     ...layout.marginTopL,
+    // ...layout.marginBottomL,
     paddingBottom: 0,
     borderTopWidth: 1,
     borderTopColor: colors.grey4,
+    alignContent: 'center',
+    alignItems: 'center',
     width: '100%',
   },
   proposalActionBtnText: {
     ...font.primary.regular,
-    ...font.fontSize(3),
+    fontSize: 16,
     color: colors.mainBlue,
+    marginVertical: 14,
   },
 
   proposalCard: {
