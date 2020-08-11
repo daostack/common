@@ -208,18 +208,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             await manager.addressCheck(user.uid);
           }
 
-          console.log('user._user -> ', user._user);
-          console.log('appUser -> ', appUser);
-
           const allUserInfo = {
             ...user._user,
             ...appUser,
           };
 
-          console.log('allUserInfo -> ', allUserInfo);
-
           const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
-          console.log('filteredUser -> ', filteredUser);
           userStore.setSignedInUser(filteredUser);
           if (subscribers.userInfoChangeUnsubscribe) {
 
