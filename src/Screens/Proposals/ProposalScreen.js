@@ -426,7 +426,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
                       {proposedUser ? proposedUser.displayName : 'unknown user'}
                     </Text>
 
-                    {proposedUser ? 
+                    {proposedUser ?
                       <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}} onPress={viewUserProfile}>
                         <Text style={text.smallBlackText}>View Profile</Text>
                         <Icon name="right-arrow" size={20} />
@@ -452,7 +452,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
                   </Text>
                 </View>
                 { proposalInfo.type === PROPOSAL_TYPE.FundingRequest
-                  ? <Text style={text.smallBlackText}>{`Available funds: ${commonBalance != undefined ? '$' + commonBalance / 100 : ''}`}</Text>
+                  ? <Text style={text.smallBlackText}>{`Available funds: ${commonBalance !== undefined ? '$' + commonBalance / 100 : ''}`}</Text>
                   : null
                 }
 
