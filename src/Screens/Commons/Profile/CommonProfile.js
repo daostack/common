@@ -398,7 +398,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             ...layout.flexRow,
             ...{padding: 0},
           }}>
-          <Icon name="clcok-16" size={16} style={layout.marginRightXS} />
+          <Icon name="clcok" size={16} style={layout.marginRightXS} />
           <Text style={text.smallBoldGreyText}>Pending Approval</Text>
         </View>
         <View
@@ -706,6 +706,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             {isMember ? (
               index === 0 ? (
                 <BottomRightButton
+                  iconName="add-proposal-32"
                   onPress={() =>
                     navigation.navigate('New Post', {
                       commonId: currCommon.id,
@@ -714,8 +715,9 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                   bottom={50}
                 />
               ) : (
-                !isFundingStage && (
+                !isFundingStage && index === 1 && (
                   <BottomRightButton
+                    iconName="create-proposal"
                     onPress={() =>
                       navigation.navigate('FundingProposal', {
                         commonId: currCommon.id,
