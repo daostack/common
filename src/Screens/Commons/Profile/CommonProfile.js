@@ -721,6 +721,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                       navigation.navigate('FundingProposal', {
                         commonId: currCommon.id,
                         common: currCommon,
+                        screenTitle: currCommon.name,
                       })
                     }
                     bottom={50}

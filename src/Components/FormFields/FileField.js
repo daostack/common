@@ -174,10 +174,11 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   addFileBtn: {
-    ...font.fontSize(2),
-    ...font.primary.semiBold,
+    ...text.h3Black,
     color: colors.mainBlue,
     textAlign: 'left',
+    ...layout.marginTopS,
+    fontSize: 16,
   },
 });
 

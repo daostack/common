@@ -110,26 +110,29 @@ class ImageField extends React.Component {
     else {
       return (
         <View style={styles.imageFieldPlaceholderView}>
-          <Icon name="addpicture" size={34} />
+          <View style={{ borderColor: colors.grey3, borderWidth: 2, borderRadius: 5, padding: 15}}>
+            <Icon name="addpicture" size={18} />
+          </View>
           <Text
             style={{
-              ...text.h3Black,
-              ...layout.marginTopXL,
-
+              ...text.h2Black,
+              ...layout.marginTopM,
+              fontSize: 16,
             }}>
             Upload images from your phone
           </Text>
           <Text
             style={{
-              ...text.h3Black,
+              ...text.h2Black,
               ...layout.marginTopS,
               ...{fontWeight: 'normal'},
+              fontSize: 16,
             }}>
             Get more attention to your proposal
           </Text>
           <View styles={layout.flexRow}>
             <TouchableOpacity style={styles.btn} onPress={this.pickImage} >
-              <Text style={text.buttonblue}>Add Image</Text>
+              <Text style={[text.buttonblue, {fontSize: 16}]}>Add Image</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -177,7 +180,7 @@ const styles = StyleSheet.create({
     ...layout.btnOutline,
     flexDirection: 'row',
     marginTop: 40,
-    borderRadius: 5,
+    borderRadius: 10,
     backgroundColor: colors.white,
     flexGrow: 0,
     paddingHorizontal: 15,
@@ -203,9 +206,9 @@ const styles = StyleSheet.create({
   },
 
   formImageFieldStyle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     borderWidth: 2,
     borderColor: colors.white,
     shadowColor: 'rgba(0, 26, 54, 0.1)',
@@ -259,14 +262,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.mainBlue,
     borderWidth: 2,
     borderColor: colors.white,
-  },
-  imagePlaceholder: {
-    ...layout.content,
-    ...layout.marginTopXL,
-    backgroundColor: '#effafd',
-    width: 80,
-    height: 80,
-    borderRadius: 40,
   },
 });
 
