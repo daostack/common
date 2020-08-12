@@ -144,6 +144,8 @@ const styles = StyleSheet.create({
     ...font.primary.regular,
     ...font.fontSize(2),
     flexWrap: 'wrap',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   rightContainer: {
     // ...layout.content,
