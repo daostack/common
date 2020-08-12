@@ -87,33 +87,32 @@ const MemberCard = ({
 
   return (
     <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
-      <View style={styles.memberInfoContainer}>
-        <MemberImage userInfo={userInfo} />
-        <View
+      <MemberImage userInfo={userInfo} />
+      <View
+        style={{
+          ...layout.content,
+          ...layout.flexStart,
+          ...{flex: 2, flexWrap: 'wrap'},
+        }}>
+        <Text
+          style={styles.displayName}>
+          {userInfo?.displayName || 'Unknown user'}
+        </Text>
+        <Text
           style={{
-            ...layout.content,
-            ...layout.flexStart,
+            ...text.smallGreyText,
+            marginTop: 2,
           }}>
-          <Text
-            style={styles.displayName}>
-            {userInfo?.displayName || 'Unknown user'}
-          </Text>
-          <Text
-            style={{
-              ...text.smallGreyText,
-              marginTop: 2,
-            }}>
-            {
-            // proposalInfo
-              // ? moment.unix(proposalInfo.createdAt).fromNow()
-              // : 
-              showMemberCreatedDate
-                ? `Member in ${userInfo?.daos?.length || 0} Common${
+          {
+          // proposalInfo
+            // ? moment.unix(proposalInfo.createdAt).fromNow()
+            // : 
+            showMemberCreatedDate
+              ? `Member in ${userInfo?.daos?.length || 0} Common${
                   userInfo?.daos?.length !== 1 ? 's' : ''
-                }`
-                : `Member since ${memberSince || 'unknown'}`}
-          </Text>
-        </View>
+              }`
+              : `Member since ${memberSince || 'unknown'}`}
+        </Text>
       </View>
       {renderRightContainer()}
     </View>
@@ -148,8 +147,11 @@ const styles = StyleSheet.create({
   },
   rightContainer: {
     // ...layout.content,
-    ...layout.flexRow,
-    alignItems: 'center',
+    //...layout.flexRow,
+    //alignItems: 'center',
+    flex: 1,
+    padding: 0,
+    alignItems: 'flex-end',
     alignContent: 'flex-end',
     justifyContent: 'flex-end',
   },

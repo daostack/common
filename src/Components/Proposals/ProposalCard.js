@@ -134,17 +134,13 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
             style={{ ...text.h3Black, ...{ textAlign: 'left', flexWrap: 'wrap' } }}>
             {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
           </Text>}
-
-          <View style={{flexDirection: 'row'}}>
-            <MemberCard
-              showDate={membershipRequest}
-              userInfo={proposalCardInfo.proposedUser}
-              proposalInfo={proposalCardInfo.proposalInfo}
-              isPending={false}
-              showMemberCreatedDate={true}
-            />
-          </View>
-
+          <MemberCard
+            showDate={membershipRequest}
+            userInfo={proposalCardInfo.proposedUser}
+            proposalInfo={proposalCardInfo.proposalInfo}
+            isPending={false}
+            showMemberCreatedDate={true}
+          />
           <View style={{...layout.flexRow }}>
             <ProposalApprovalTag
               iconName="approved"

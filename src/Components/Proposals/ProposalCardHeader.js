@@ -52,7 +52,7 @@ const calcStatus = (stage, winningOutcome, hasPassedExpiryDate) => {
     status.text = TITLES.COUNTDOWN;
     status.lightColor = colors.lightishOrange;
     status.darkColor = colors.orange;
-    status.icon = 'clcok-16';
+    status.icon = 'clcok';
     return status;
   }
 

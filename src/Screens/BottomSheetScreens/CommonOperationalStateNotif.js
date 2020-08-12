@@ -4,11 +4,11 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 
 import React from 'react';
 import {text, layout, colors} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
 
 const CommonOperationalStateNotif = ({navigation, onCreateFundingProposal}) => {
   const createFundingProposal = e => {
@@ -25,7 +25,10 @@ const CommonOperationalStateNotif = ({navigation, onCreateFundingProposal}) => {
       nestedScrollEnabled={true}
       directionalLockEnabled={true}>
       <View style={styles.body}>
-        <Icon name="save1" size={100} />
+        <Image
+          style={styles.image}
+          source={require('../../Assets/save.png')}
+        />
         <Text style={{...text.h2Black, ...layout.marginTopXL}}>
           This common is now operational
         </Text>
@@ -55,7 +58,10 @@ const styles = StyleSheet.create({
   body: {
     ...layout.content,
   },
-
+  image: {
+    height: 116,
+    resizeMode: 'contain',
+  },
   safeArea: {
     flex: 1,
     backgroundColor: colors.white,
