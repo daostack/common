@@ -5,7 +5,7 @@ import ViewTabNoData from '../../Components/ViewTabNoData';
 import ProposalService from '../../Services/ProposalService';
 import ProposalCard from '../../Components/Proposals/ProposalCard';
 import {layout, colors, font, text, sizeXXL, sizeM} from '../../Theme';
-import FirebaseService from '../../Services/FirebaseService';
+import DaoService from '../../Services/DaoService';
 import SwiperCard from '../../Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import { PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '../../Services/ProposalService';
@@ -60,7 +60,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
   const onReviewProposal = async ( proposalId, daoId ) => {
     navigation.navigate('ProposalScreen', {
       proposalId: proposalId,
-      screenTitle: commonName || await FirebaseService.getInstance().getDaoNameById(daoId),
+      screenTitle: commonName || await DaoService.getInstance().getDaoNameById(daoId),
       commonBalance: commonInfo?.balance,
       isMember,
     });

@@ -6,7 +6,7 @@ import {observer} from 'mobx-react';
 
 import ImagePicker from 'react-native-image-picker';
 import Toast from '../../Util/Toast';
-import FirebaseService from '../../Services/FirebaseService';
+import StorageService from '../../Services/StorageService';
 
 import Icon from '../../Assets/iconfont/Icon';
 import colors from '../../Theme/colors';
@@ -66,7 +66,7 @@ class ImageField extends React.Component {
       } else {
         // const source = { uri: response.uri };
         Toast.loading('Uploading...');
-        FirebaseService.getInstance()
+        StorageService.getInstance()
           .uploadImage(response.uri)
           .then(url => {
             Toast.hide();

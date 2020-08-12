@@ -4,7 +4,7 @@ import {text, layout, colors, font} from '../../Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
 import ProposalService, { PROPOSAL_TYPE } from '../../Services/ProposalService';
-import FirebaseService from '../../Services/FirebaseService';
+import UserService from '../../Services/UserService';
 import ProposalApprovalTag from './ProposalApprovalTag';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Toast from '../../Util/Toast';
@@ -31,7 +31,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
         //FundingRequest proposal
         else {
 
-          const proposedMember = await FirebaseService.getInstance().getUserByAddress(
+          const proposedMember = await UserService.getInstance().getUserByAddress(
             currProposalInfo.fundingRequest.beneficiary,
           );
           proposedMemberId = proposedMember.id;
@@ -40,7 +40,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
 
         const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(currProposalId);
 
-        const currProposedUser = await FirebaseService.getInstance().getUserById(
+        const currProposedUser = await UserService.getInstance().getUserById(
           proposedMemberId,
         );
 
@@ -72,14 +72,14 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
         }
         //FundingRequest proposal
         else {
-          const proposedMember = await FirebaseService.getInstance().getUserByAddress(
+          const proposedMember = await UserService.getInstance().getUserByAddress(
             currProposalInfo.fundingRequest.beneficiary,
           );
           proposedMemberId = proposedMember.id;
           funding = currProposalInfo.fundingRequest.amount;
         }
 
-        const currProposedUser = await FirebaseService.getInstance().getUserById(
+        const currProposedUser = await UserService.getInstance().getUserById(
           proposedMemberId,
         );
 

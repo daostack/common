@@ -1,4 +1,5 @@
-import { DB_COLLECTIONS } from './FirebaseService';
+
+import { DB_COLLECTIONS } from '../Firebase/Databasee';
 import Toast from '../Util/Toast';
 import moment from 'moment';
 

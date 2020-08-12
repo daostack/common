@@ -26,7 +26,7 @@ import firestore from '@react-native-firebase/firestore';
 const { width } = Dimensions.get('window');
 import {UserAvatar} from '../../Components';
 
-import FirebaseService from '../../Services/FirebaseService';
+import UserService from '../../Services/UserService';
 import { PROPOSAL_STAGES_ACTIVE} from '../../Services/ProposalService';
 import { PROPOSAL_TYPE } from '../../Services/ProposalService';
 import { db } from '../../Firebase';
@@ -77,13 +77,13 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
       }
       //FundingRequest proposal
       else {
-        const proposedMember = await FirebaseService.getInstance().getUserByAddress(
+        const proposedMember = await UserService.getInstance().getUserByAddress(
           currProposalInfo.fundingRequest.beneficiary,
         );
         proposedMemberId = proposedMember.id;
         funding = currProposalInfo.fundingRequest.amount;
       }
-      const currProposedUser = await FirebaseService.getInstance().getUserById(
+      const currProposedUser = await UserService.getInstance().getUserById(
         proposedMemberId,
       );
 

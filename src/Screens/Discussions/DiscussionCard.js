@@ -10,7 +10,7 @@ import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
 import {colors, sizeM, font} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
-import FirebaseService from '../../Services/FirebaseService';
+import UserService from '../../Services/UserService';
 import moment from 'moment';
 import firestore from '@react-native-firebase/firestore';
 import BottomSheetModal from '../../Components/BottomSheetModal';
@@ -47,7 +47,7 @@ const DiscussionCard = props => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userData = await FirebaseService.getInstance().getUserById(
+      const userData = await UserService.getInstance().getUserById(
         data.ownerId,
       );
       if (userData) {

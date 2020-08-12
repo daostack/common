@@ -18,7 +18,7 @@ import Icon from '../../../Assets/iconfont/Icon';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
-import FirebaseService from '../../../Services/FirebaseService';
+import StorageService from '../../../Services/StorageService';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {numberFormatter, showErrorPopUp} from '../../../Util';
@@ -144,7 +144,7 @@ const CreateStep4 = props => {
         console.log('ImagePicker Error: ', response.error);
       } else {
         Toast.loading('Uploading...');
-        FirebaseService.getInstance()
+        StorageService.getInstance()
           .uploadImage(response.uri)
           .then(url => {
             Toast.hide();
