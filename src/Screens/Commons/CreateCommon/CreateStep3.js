@@ -117,6 +117,7 @@ const CreateStep3 = props => {
               name: CreateCommonForm.ACTION,
               formStore: props.agendaFormStore,
               validateRule: 'string|required',
+              displayName: 'course of action',
             }}
           />
           <Text

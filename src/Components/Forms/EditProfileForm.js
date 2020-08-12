@@ -103,6 +103,7 @@ class EditProfileForm extends React.Component {
             name: EditProfileForm.FIELD_FIRST_NAME,
             formStore: this.props.editProfileFormStore,
             validateRule: 'required',
+            displayName: 'first name',
           }}
         />
 
@@ -118,6 +119,7 @@ class EditProfileForm extends React.Component {
             name: EditProfileForm.FIELD_LAST_NAME,
             formStore: this.props.editProfileFormStore,
             validateRule: 'required',
+            displayName: 'last name',
           }}
         />
 

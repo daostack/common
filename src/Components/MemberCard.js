@@ -104,9 +104,9 @@ const MemberCard = ({
             marginTop: 2,
           }}>
           {
-          // proposalInfo
-            // ? moment.unix(proposalInfo.createdAt).fromNow()
-            // : 
+            // proposalInfo
+            //   ? moment.unix(proposalInfo.createdAt).fromNow()
+            //   :
             showMemberCreatedDate
               ? `Member in ${userInfo?.daos?.length || 0} Common${
                   userInfo?.daos?.length !== 1 ? 's' : ''
