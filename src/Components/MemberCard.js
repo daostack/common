@@ -28,7 +28,7 @@ const MemberCard = ({
           <View
             style={{
               ...layout.content,
-              ...{alignItems: 'flex-end'},
+              ...{ padding: 0 },
             }}>
             <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
 
@@ -85,33 +85,33 @@ const MemberCard = ({
   };
 
   return (
-    <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
-      <View style={styles.memberInfoContainer}>
-        <MemberImage userInfo={userInfo} />
-        <View
-          style={{
-            ...layout.content,
-            ...layout.flexStart,
-          }}>
-          <Text
-            style={styles.displayName}>
-            {userInfo?.displayName || 'Unknown user'}
-          </Text>
-          <Text
-            style={{
-              ...text.smallGreyText,
-              marginTop: 2,
-            }}>
+    <View style={{ ...styles.cardContainer, ...styles.noBottomBorder }}>
+      <MemberImage userInfo={userInfo} />
 
-            {proposalInfo
-              ? moment.unix(proposalInfo.createdAt).fromNow()
-              : showMemberCreatedDate
-                ? `Member in ${userInfo?.daos?.length || 0} Common${
+
+      <View
+        style={{
+          ...layout.content,
+          ...layout.flexStart,
+          ...{flex: 2, flexWrap: 'wrap'},
+        }}>
+        <Text
+          style={styles.displayName}>
+          {userInfo?.displayName || 'Unknown user'}
+        </Text>
+        <Text
+          style={{
+            ...text.smallGreyText,
+            marginTop: 2,
+          }}>
+          {proposalInfo
+            ? moment.unix(proposalInfo.createdAt).fromNow()
+            : showMemberCreatedDate
+              ? `Member in ${userInfo?.daos?.length || 0} Common${
                   userInfo?.daos?.length !== 1 ? 's' : ''
-                }`
-                : `Member since ${memberSince || 'unknown'}`}
-          </Text>
-        </View>
+              }`
+              : `Member since ${memberSince || 'unknown'}`}
+        </Text>
       </View>
       {renderRightContainer()}
     </View>
@@ -122,7 +122,6 @@ const styles = StyleSheet.create({
   cardContainer: {
     ...layout.content,
     ...layout.flexRow,
-    flex: 1,
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderColor: colors.grey4,
@@ -131,23 +130,15 @@ const styles = StyleSheet.create({
   noBottomBorder: {
     borderBottomWidth: 0,
   },
-  memberInfoContainer: {
-    ...layout.flexRow,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    alignContent: 'flex-start',
-    flexGrow: 1,
-    flexWrap: 'wrap',
-  },
   displayName: {
     ...font.primary.regular,
     ...font.fontSize(2),
     flexWrap: 'wrap',
   },
   rightContainer: {
-    ...layout.content,
-    ...layout.flexRow,
-    alignItems: 'center',
+    flex: 1,
+    padding: 0,
+    alignItems: 'flex-end',
     alignContent: 'flex-end',
     justifyContent: 'flex-end',
   },
