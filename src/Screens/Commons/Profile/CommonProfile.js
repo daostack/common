@@ -30,10 +30,10 @@ import CommonHeader from '../../../Components/Commons/CommonHeader';
 import {numberFormatter} from '../../../Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '../../../Services/ProposalService';
+import DaoService from '../../../Services/DaoService';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
 import {calcIsFundingStage} from '../../../Util';
-import firestore from '@react-native-firebase/firestore';
 import  Toast  from '../../../Util/Toast';
 import {
   Placeholder,
@@ -97,21 +97,30 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     return height;
   };
 
-  useEffect(() => {
-    if (route.params.commonId) {
-      const unsubscribe = firestore()
-        .collection('daos')
-        .doc(route.params.commonId)
-        .onSnapshot(snapshot => {
-          if (snapshot.exists) {
-            setCurrCommon(snapshot.data());
-          } else {
-            Toast.error('This DAO cannot be found try again later');
-            navigation.pop();
-          }
-        });
-      return unsubscribe;
+  const loadCurrCommon = (snapshot) => {
+    if (snapshot.exists) {
+      setCurrCommon(snapshot.data());
+    } else {
+      Toast.error('This DAO cannot be found try again later');
+      navigation.pop();
     }
+  };
+
+  useEffect(() => {
+    let unsubscribe = null;
+    const loadDao = async (daoId) => {
+      unsubscribe = await DaoService.getInstance().subscribeToDaoById(daoId, loadCurrCommon);
+    };
+
+    if (route.params.commonId) {
+      loadDao(route.params.commonId);
+    }
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [route.params.commonId]);
 
   useEffect(() => {

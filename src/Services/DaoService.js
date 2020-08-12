@@ -1,5 +1,6 @@
 import { db } from '../Firebase';
 import UserService from './UserService';
+import Toast from '../Util/Toast';
 
 import { DB_COLLECTIONS } from '../Firebase/Databasee';
 
@@ -12,15 +13,14 @@ export default class DaoService {
     }
     return this.serviceInstance;
   };
-  async getDaos() {
-    return db.collection(DB_COLLECTIONS.daos).onSnapshot(snapshot => {
-      if (snapshot.empty) {
-        return [];
-      }
-      return snapshot.docs.map(doc => {
-        return {...{id: doc.id}, ...doc.data()};
-      });
-    });
+
+  async getDaoById(daoId) {
+
+    const dao = await db.collection(DB_COLLECTIONS.daos)
+      .doc(daoId)
+      .get();
+
+    return dao.data();
   }
 
   async getDaoNameById(daoId) {
@@ -30,23 +30,6 @@ export default class DaoService {
       .get();
 
     return dao.data().metadata.name;
-  }
-
-  async getDaoInfo(dao) {
-    let daoCollection = db.collection(DB_COLLECTIONS.daos).doc(dao);
-    daoCollection.onSnapshot(daoSnapshot => {
-      console.log(`Received dao snapshot: ${daoSnapshot}`);
-    }, err => {
-      console.log(`Encountered error: ${err}`);
-    });
-    return db.collection('dao').onSnapshot(snapshot => {
-      if (snapshot.empty) {
-        return [];
-      }
-      return snapshot.docs.map(doc => {
-        return {...{id: doc.id}, ...doc.data()};
-      });
-    });
   }
 
   async getUserDaos(userId, safeAddress) {
@@ -64,4 +47,53 @@ export default class DaoService {
       })
       .get();
   }
+
+  async subscribeToDaosList(callback) {
+    let daos = db
+      .collection(DB_COLLECTIONS.daos);
+
+    return daos.onSnapshot(snapshot => {
+      callback(snapshot);
+    }, error => Toast.error(error));
+
+  }
+
+  async subscribeToDaoById(daoId, callback) {
+    let daos = db
+      .collection(DB_COLLECTIONS.daos)
+      .doc(daoId);
+
+    return daos.onSnapshot(snapshot => {
+      callback(snapshot);
+    }, error => Toast.error(error));
+
+  }
+
+  // async getDaoInfo(dao) {
+  //   let daoCollection = db.collection(DB_COLLECTIONS.daos).doc(dao);
+  //   daoCollection.onSnapshot(daoSnapshot => {
+  //     console.log(`Received dao snapshot: ${daoSnapshot}`);
+  //   }, err => {
+  //     console.log(`Encountered error: ${err}`);
+  //   });
+  //   return db.collection('dao').onSnapshot(snapshot => {
+  //     if (snapshot.empty) {
+  //       return [];
+  //     }
+  //     return snapshot.docs.map(doc => {
+  //       return {...{id: doc.id}, ...doc.data()};
+  //     });
+  //   });
+  // }
+
+  // async getDaos() {
+  //   return db.collection(DB_COLLECTIONS.daos).onSnapshot(snapshot => {
+  //     if (snapshot.empty) {
+  //       return [];
+  //     }
+  //     return snapshot.docs.map(doc => {
+  //       return {...{id: doc.id}, ...doc.data()};
+  //     });
+  //   });
+  // }
 }

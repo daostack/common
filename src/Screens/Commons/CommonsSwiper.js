@@ -1,20 +1,18 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {Text, View, Dimensions, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {CommonBox} from '../../Components';
-import {db} from '../../Firebase';
 import {inject, observer} from 'mobx-react';
-
 import SwiperCard from '../../Components/SwiperCard';
+import DaoService from '../../Services/DaoService';
 import {layout, text, font,sizeXXL, colors} from '../../Theme';
 import {
   Placeholder,
   PlaceholderMedia,
   Fade,
 } from 'rn-placeholder';
-import Toast from '../../Util/Toast';
 import { isDaoMemberBySafeAddress } from '../../Util';
-const {width} = Dimensions.get('window');
 
+const {width} = Dimensions.get('window');
 const DEFAULT_HEADER_HEIGHT = 145;
 
 const CommonsSwiper = ({
@@ -28,55 +26,57 @@ const CommonsSwiper = ({
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
   let listRef = useRef([]);
 
-  useEffect(() => {
-    let unsubscribe;
-    const getMyDaos = async () => {
-      try {
-        unsubscribe = db.collection('daos').onSnapshot(snapshot => {
-          if (snapshot.empty) {
-            listChangeCallback([]);
-          } else {
-            if (snapshot.docChanges().length !== 0) {
-              const newList = snapshot.docChanges().map(({ doc}, index) => {
-                const isMember = isDaoMemberBySafeAddress(doc.data().members, safeAddress);
-                if (!isMember) {
-                  return false;
-                }
-                return {
-                  id: doc.id,
-                  ...doc.data(),
-                  ...{
-                    coverPhoto: doc.data().metadata?.image || `https://picsum.photos/id/${index *
-                      10}/500/100.jpg`,
-                  },
-                };
-              });
-
-              let createList = newList
-                .map(item => {
-                  let index = listRef.current.findIndex(v => v.id === item.id);
-                  if (index > -1) {
-                    listRef.current[index] = item;
-                  } else {
-                    return item;
-                  }
-                })
-                .filter(item => item);
-              if (createList.length > 0) {
-                const allList = [...createList, ...listRef.current];
-                listRef.current = allList;
-              }
-              listChangeCallback(listRef.current);
-            }
+  const loadMydaos = (snapshot) => {
+    if (snapshot.empty) {
+      listChangeCallback([]);
+    } else {
+      if (snapshot.docChanges().length !== 0) {
+        const newList = snapshot.docChanges().map(({ doc }, index) => {
+          const isMember = isDaoMemberBySafeAddress(doc.data().members, safeAddress);
+          if (!isMember) {
+            return false;
           }
+          return {
+            id: doc.id,
+            ...doc.data(),
+            ...{
+              coverPhoto: doc.data().metadata?.image || `https://picsum.photos/id/${index *
+                10}/500/100.jpg`,
+            },
+          };
         });
-      } catch (error) {
-        Toast.error(error);
-        console.log('errror: ', error);
+
+        let createList = newList
+          .map(item => {
+            let index = listRef.current.findIndex(v => v.id === item.id);
+            if (index > -1) {
+              listRef.current[index] = item;
+            } else {
+              return item;
+            }
+          })
+          .filter(item => item);
+        if (createList.length > 0) {
+          const allList = [...createList, ...listRef.current];
+          listRef.current = allList;
+        }
+        listChangeCallback(listRef.current);
+      }
+    }
+  };
+
+  useEffect(() => {
+    let unsubscribe = null;
+    const getMyDaos = async () => {
+      unsubscribe = await DaoService.getInstance().subscribeToDaosList(loadMydaos);
+    };
+
+    getMyDaos();
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
       }
     };
-    getMyDaos();
-    return unsubscribe;
   }, [safeAddress]);
 
   const setDao = dao => {

@@ -34,6 +34,7 @@ import { observer, inject } from 'mobx-react';
 import TabBarRenderer from '../../Components/TabView/TabBarRenderer';
 import moment from 'moment';
 import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
+import DaoService from '../../Services/DaoService';
 
 const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props}) => {
   const [votingProcessState, setVotingProcessState] = useState({ inProgress: false, error: false });
@@ -96,7 +97,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
         let currProposalInfo = await ProposalService.getInstance().getProposalInfo(
           proposalId,
         );
-        const currentDao = await db.collection('daos').doc(currProposalInfo.dao).get().then((dao) => dao.data());
+        const currentDao = await DaoService.getInstance().getDaoById(currProposalInfo.dao);
         const isMember = userStore.userInfo && userStore.isDaoMember(currentDao.members);
         setIsMember(isMember);
         setDaoInfo(currentDao);
