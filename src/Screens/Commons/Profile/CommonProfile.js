@@ -172,7 +172,6 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     return (
       <View style={{...styles.paleBackground, ...{paddingVertical: sizeL}}}>
         <Text style={text.h1BlackTitle}>Discussions</Text>
-
         <DiscussionList navigation={navigation} commonId={currCommon.id} />
       </View>
     );
@@ -310,7 +309,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     const options = {
       url: `https://app.common.io/common/${currCommon.id}`,
       title: "Let's make it happen",
-      message: `Join in ${currCommon.name} common`,
+      message: `${currCommon.name} common`,
     };
     Share.open(options);
   };
@@ -775,7 +774,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
 const styles = StyleSheet.create({
   paleBackground: {
-    backgroundColor: colors.paleGrey,
+    backgroundColor: '#fcfcfc',
   },
   requestToJoin: {
     ...font.primary.bold,

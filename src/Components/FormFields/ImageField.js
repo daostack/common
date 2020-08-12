@@ -203,9 +203,9 @@ const styles = StyleSheet.create({
   },
 
   formImageFieldStyle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     borderWidth: 2,
     borderColor: colors.white,
     shadowColor: 'rgba(0, 26, 54, 0.1)',
@@ -260,14 +260,13 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: colors.white,
   },
-
   imagePlaceholder: {
     ...layout.content,
     ...layout.marginTopXL,
     backgroundColor: '#effafd',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
 });
 
