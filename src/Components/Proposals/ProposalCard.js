@@ -131,9 +131,10 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
             ...{flexWrap: 'wrap'},
           }}>
           {proposalCardInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && <Text
-            style={{ ...text.h3Black, ...{ textAlign: 'left', flexWrap: 'wrap' } }}>
+            style={{ ...text.h3Black, ...{ textAlign: 'left', flexWrap: 'wrap', padding:10, fontSize: 16 } }}>
             {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
           </Text>}
+
           <MemberCard
             showDate={membershipRequest}
             userInfo={proposalCardInfo.proposedUser}
