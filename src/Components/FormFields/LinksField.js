@@ -21,10 +21,10 @@ class LinksField extends React.Component {
     const {validation, value, fieldActionComponent} = this.props;
     // Register form field for validation message component if name,formStore and validateRule props are provided
     if (validation) {
-      const {name, formStore, validateRule} = validation;
+      const {name, formStore, validateRule, displayName, customErrorMessage} = validation;
       formStore.registerFormField(name, validateRule, value);
       this.fieldValidation = (
-        <ValidationMessage formStore={formStore} name={name} />
+        <ValidationMessage customErrorMessage={customErrorMessage} displayName={displayName} formStore={formStore} name={name} />
       );
     }
 
