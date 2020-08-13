@@ -57,21 +57,9 @@ const EditProfile = ({
     bottomSheetStore.hideBottomSheet();
   };
 
-  const renderFirstTimeHeader = () => {
-    return (
-      <View style={layout.marginBottomXL}>
-        <Text style={text.h1Black}>Complete your account</Text>
-        <Text style={styles.subtitle}>
-          Help the community get to know you better
-        </Text>
-      </View>
-    );
-  };
-
   const renderBody = () => {
     return (
       <View style={styles.body}>
-        {route.params.isFirstOpening ? renderFirstTimeHeader() : null}
         <EditProfileForm
           firstOpening={route.params.isFirstOpening}
           onFormClose={onFormClose}
