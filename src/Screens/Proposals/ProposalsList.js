@@ -4,7 +4,7 @@ import { FlatList, StyleSheet, View, Text, Image, Dimensions, TouchableOpacity} 
 import ViewTabNoData from '../../Components/ViewTabNoData';
 import ProposalService from '../../Services/ProposalService';
 import ProposalCard from '../../Components/Proposals/ProposalCard';
-import {layout, colors, font, text, sizeXXL, sizeM} from '../../Theme';
+import {layout, colors, font, text, sizeM} from '../../Theme';
 import FirebaseService from '../../Services/FirebaseService';
 import SwiperCard from '../../Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
@@ -112,6 +112,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
       ) : (
         <View style={styles.emptyObjectContainer}>
           <Image
+            style={{height: 100, width: 100}}
             source={require('../../../src/Assets/pencil.png')}
           />
           <Text style={{...text.h2Black, ...layout.marginTopS}}>
@@ -161,12 +162,12 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
               ? 'No Past activity'
               : membershipRequests
                 ? 'No requests yet'
-                : 'No proposals yet'
+                : 'No proposals'
           }
           subtitle={
             isHistory
               ? 'You will be able to see proposals that passed or were rejected here.'
-              : 'Write your first proposals and invite members to make an impact together!'
+              : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
           }
         />
       )}
@@ -178,8 +179,9 @@ const styles = StyleSheet.create({
   emptyObjectContainer: {
     ...layout.content,
     borderRadius: 14,
-    paddingHorizontal: sizeXXL,
     backgroundColor: colors.iceBlue,
+    alignSelf: 'center',
+    marginHorizontal: 12,
   },
 
   textNoProposals: {

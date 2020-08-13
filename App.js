@@ -496,10 +496,10 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
         />
         <Stack.Screen
-          options={{
-            title: 'New proposal',
+          options={({route}) => ({
+            title: route?.params.screenTitle,
             headerBackTitleVisible: false,
-          }}
+          })}
           name="FundingProposal"
           component={FundingProposal}
         />

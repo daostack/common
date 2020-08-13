@@ -120,11 +120,11 @@ const UserProfile = ({userStore, navigation, route}) => {
                 : renderUnsignedUserData()}
 
               <View style={layout.marginTopL}>
-                <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" />
+                {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
                 <AccordionBtn onPress={() => Linking.openURL('https://common.io/tos')} title="Terms of use" />
                 <AccordionBtn onPress={() => Linking.openURL('https://common.io/privacy')} title="Privacy Policy" />
                 <AccordionBtn onPress={() => Linking.openURL('https://common.io/help')} title="Help" />
-                <AccordionBtn onPress={() => Linking.openURL('mailto:support@example.com')} title="Contact us" />
+                <AccordionBtn onPress={() => Linking.openURL('mailto:hi@common.io')} title="Contact us" />
                 {userStore.userInfo ? (
                   <AccordionBtn
                     lightStyle={true}
@@ -156,7 +156,7 @@ const UserProfile = ({userStore, navigation, route}) => {
       <ScrollView
         style={{flex: 1}}
         contentContainerStyle={{
-          //paddingHorizontal: 20,
+          paddingHorizontal: 20,
           justifyContent: 'center',
           alignItems: 'center',
         }}>

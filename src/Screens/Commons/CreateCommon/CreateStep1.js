@@ -120,6 +120,7 @@ const CreateStep1 = props => {
               name: CreateCommonForm.NAME,
               formStore: props.generalInfoFormStore,
               validateRule: 'required|max:24',
+              displayName: 'common name',
             }}
           />
           <TextInputField
@@ -137,6 +138,7 @@ const CreateStep1 = props => {
               name: CreateCommonForm.BYLINE,
               formStore: props.generalInfoFormStore,
               validateRule: 'required|min:10|max:40',
+              displayName: 'mission statement',
             }}
           />
           <TextInputField
@@ -153,6 +155,7 @@ const CreateStep1 = props => {
               name: CreateCommonForm.DESCRIPTION,
               formStore: props.generalInfoFormStore,
               validateRule: 'required|string',
+              displayName: 'about',
             }}
           />
           <MultiLinkField
