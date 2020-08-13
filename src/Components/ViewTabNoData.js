@@ -1,6 +1,6 @@
 import {StyleSheet, View, Text} from 'react-native';
 import React from 'react';
-import {layout, colors, font, sizeXL} from '../Theme';
+import {layout, colors, font} from '../Theme';
 
 const ViewTabNoData = ({title, subtitle}) => {
   return (

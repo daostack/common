@@ -94,7 +94,7 @@ export default class ToastView extends Component {
       pos = height - this.props.positionValue;
       break;
     }
-    
+
     const view = this.state.isShow ?
       <View
         style={styles.container}

@@ -5,7 +5,7 @@ import {observer} from 'mobx-react';
 import DocumentPicker from 'react-native-document-picker';
 import Toast from '../../Util/Toast';
 import Icon from '../../Assets/iconfont/Icon';
-import {text, layout, colors, font} from '../../Theme';
+import {text, layout, colors} from '../../Theme';
 import FirebaseService from '../../Services/FirebaseService';
 
 class FileField extends React.Component {

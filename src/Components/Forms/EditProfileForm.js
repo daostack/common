@@ -182,8 +182,8 @@ const styles = StyleSheet.create({
     color: colors.grey3,
     ...font.fontSize(2),
     ...font.regular,
-    paddingVertical: 5, 
-  }
+    paddingVertical: 5,
+  },
 });
 
 export default inject(

@@ -4,7 +4,7 @@ import { FlatList, StyleSheet, View, Text, Image, Dimensions, TouchableOpacity} 
 import ViewTabNoData from '../../Components/ViewTabNoData';
 import ProposalService from '../../Services/ProposalService';
 import ProposalCard from '../../Components/Proposals/ProposalCard';
-import {layout, colors, font, text, sizeXXL, sizeM} from '../../Theme';
+import {layout, colors, font, text, sizeM} from '../../Theme';
 import FirebaseService from '../../Services/FirebaseService';
 import SwiperCard from '../../Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
