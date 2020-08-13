@@ -6,4 +6,6 @@ export const DB_COLLECTIONS = {
   discussionMessages: 'discussionMessage',
 };
 
+export const DAO_REGISTER_APPROVED = 'approved';
+
 

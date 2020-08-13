@@ -20,15 +20,13 @@ import {
   Fade,
 } from 'rn-placeholder';
 import DaoService from '../../Services/DaoService';
+import { DAO_REGISTER_APPROVED } from '../../Firebase/Databasee';
 
 const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
-  // const [hasError, setErrors] = useState(false);
-  const [daos, setDaos] = useState([]);
   const [daoGroup, setDaoGroup] = useState();
 
   const loadDaosList = (snapshot) => {
     if (snapshot?.empty || !snapshot) {
-      setDaos([]);
       setDaoGroup([{ title: '', data: [] }]);
       return [];
     }
@@ -43,8 +41,6 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
         },
       };
     });
-    setDaos(daosSnapshot);
-    daoStore.setDaos(daosSnapshot);
 
     divideDao(daosSnapshot);
     if (daoStore.isError) {
@@ -99,7 +95,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       const isMember = userStore.isDaoMember(dao.members);
       if (isMember) {
         myDaos.push(dao);
-      } else {
+      } else if (dao.register === DAO_REGISTER_APPROVED) {
         otherDaos.push(dao);
       }
     }
@@ -109,6 +105,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       return;
     }
 
+    daoStore.setDaos([...myDaos, ...otherDaos]);
     setDaoGroup([
       {
         title: `My Commons (${myDaos.length})`,
@@ -122,6 +119,12 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
   };
 
   const header = () => {
+
+    let daosLength = 0;
+    daoGroup?.forEach(daoGroup => {
+      daosLength = daosLength + daoGroup.data.length;
+    });
+
     return (
       <View
         style={{
@@ -131,7 +134,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
           width: '100%',
           paddingVertical: 15,
         }}>
-        <Text style={styles.lengthCommons}>{daos.length} Commons</Text>
+        <Text style={styles.lengthCommons}>{daosLength} Commons</Text>
       </View>
     );
   };
