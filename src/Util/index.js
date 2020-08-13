@@ -25,6 +25,10 @@ export const numberFormatter = num => {
 };
 
 export function prepareUserObject(user) {
+  if (!user) {
+    return null;
+  }
+
   let displayName = user.firstName ? user.firstName : null;
   if (user.lastName) {
     displayName = (displayName ? `${displayName} ` : '') + user.lastName;
