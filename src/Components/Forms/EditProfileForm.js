@@ -1,11 +1,9 @@
 import React from 'react';
-import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import ImageField from '../FormFields/ImageField';
 import {observer, inject} from 'mobx-react';
 import {layout, text} from '../../Theme';
-import AuthService from '../../Services/AuthService';
-import {filterObjectByKeys} from '../../Util';
 
 class EditProfileForm extends React.Component {
   static FIELD_FIRST_NAME = 'firstName';
@@ -13,51 +11,10 @@ class EditProfileForm extends React.Component {
   static FIELD_INTRO = 'intro';
   static FIELD_PROFILE_IMAGE = 'photoURL';
 
-  formSave = async e => {
-    const {editProfileFormStore} = this.props;
-    if (editProfileFormStore.isFormValid()) {
-      const changedFields = editProfileFormStore.getChangedFormFieldsJson();
-
-      let authData = filterObjectByKeys(changedFields, [
-        EditProfileForm.FIELD_FIRST_NAME,
-        EditProfileForm.FIELD_LAST_NAME,
-        EditProfileForm.FIELD_PROFILE_IMAGE,
-      ]);
-      let publicData = filterObjectByKeys(changedFields, [
-        EditProfileForm.FIELD_INTRO,
-      ]);
-
-      try {
-        await AuthService.getInstance().updateUserData(authData, publicData);
-      } catch (err) {
-        console.log('Error -> ', err);
-        editProfileFormStore.form.meta.submitError = `${err.toString()}  \n ${
-          err.response
-            ? `\nCode: ${err.response.data.code}  \nMessage: ${err.response.data.message}`
-            : ''
-        }`;
-        editProfileFormStore.form.meta.isLoadingSubmit = false;
-        throw err;
-      }
-
-      if (this.props.onFormSubmit) {
-        this.props.onFormSubmit(changedFields);
-      }
-    }
-  };
-
-  onFormClose = e => {
-    const {onFormClose} = this.props;
-    if (onFormClose) {
-      onFormClose();
-    }
-  };
-
   render() {
     const {
       userStore,
       editProfileFormStore,
-      firstOpening,
       ...otherProps
     } = this.props;
 
@@ -127,38 +84,13 @@ class EditProfileForm extends React.Component {
           }}
         />
 
-        <View style={styles.containerRow}>
-          {firstOpening ? (
-            <TouchableOpacity
-              style={{...layout.btnOutline, ...layout.marginRightS}}
-              onPress={this.onFormClose}>
-              <Text style={text.buttonblue}>Skip</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={{...layout.btnOutline, ...layout.marginRightS}}
-              onPress={this.onFormClose}>
-              <Text style={text.buttonblue}>Cancel</Text>
-            </TouchableOpacity>
-          )}
 
-          <TouchableOpacity
-            style={{...layout.btnPrimary, ...layout.marginLeftS}}
-            onPress={this.formSave}>
-            <Text style={text.buttoncenterwhite}>Save</Text>
-          </TouchableOpacity>
-        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  containerRow: {
-    flexDirection: 'row',
-    alignSelf: 'stretch',
-    marginTop: 80,
-  },
   emailContainer: {
     ...layout.content,
     ...layout.marginBottomS,
