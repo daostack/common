@@ -22,17 +22,48 @@ import {
 import DaoService from '../../Services/DaoService';
 
 const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
-  // const [hasError, setErrors] = useState(false);
-  const [daos, setDaos] = useState([]);
-  const [daoGroup, setDaoGroup] = useState();
+  const [myDaosGroup, setMyDaosGroup] = useState(null);
+  const [allDaosGroup, setAllDaosGroup] = useState(null);
+
+  const loadMyDaosList = (snapshot) => {
+    if (snapshot?.empty || !snapshot) {
+      setMyDaosGroup({ title: '', data: [] });
+      return [];
+    }
+    let docs = snapshot.docs.map((doc, index) => {
+      return {
+        ...{ id: doc.id },
+        ...doc.data(),
+        ...{
+          coverPhoto:
+            doc.data().metadata?.image ||
+            `https://picsum.photos/id/${index * 10}/500/100.jpg`,
+        },
+      };
+    });
+
+    daoStore.setDaos(docs);
+
+    setMyDaosGroup({
+      title: `My Commons (${docs?.length})`,
+      data: docs,
+    });
+
+    if (daoStore.isError) {
+      console.log('daostore error', daoStore.isError);
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
+      );
+    }
+  };
 
   const loadDaosList = (snapshot) => {
     if (snapshot?.empty || !snapshot) {
-      setDaos([]);
-      setDaoGroup([{ title: '', data: [] }]);
+      setAllDaosGroup({ title: '', data: [] });
       return [];
     }
-    let daosSnapshot = snapshot.docs.map((doc, index) => {
+
+    let docs = snapshot.docs.map((doc, index) => {
       return {
         ...{ id: doc.id },
         ...doc.data(),
@@ -43,10 +74,14 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
         },
       };
     });
-    setDaos(daosSnapshot);
-    daoStore.setDaos(daosSnapshot);
 
-    divideDao(daosSnapshot);
+    daoStore.setDaos(docs);
+
+    setAllDaosGroup({
+      title: `Discover more Commons (${docs?.length})`,
+      data: docs,
+    });
+
     if (daoStore.isError) {
       console.log('daostore error', daoStore.isError);
       bottomSheetStore.showBottomSheet(
@@ -57,15 +92,20 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
   };
 
   useEffect(() => {
-    let unsubscribe = null;
+    let unsubscribeAllDaos = null;
+    let unsubscribeMyDaos = null;
     const getDaos = async () => {
-      unsubscribe = await DaoService.getInstance().subscribeToDaosList(loadDaosList);
+      unsubscribeAllDaos = await DaoService.getInstance().subscribeToDaosList(userStore.userInfo.uid, userStore.userInfo.safeAddress, loadDaosList);
+      unsubscribeMyDaos = await DaoService.getInstance().subscribeToMyDaosList(userStore.userInfo.uid, userStore.userInfo.safeAddress, loadMyDaosList);
     };
 
     getDaos();
     return () => {
-      if (unsubscribe) {
-        unsubscribe();
+      if (unsubscribeAllDaos) {
+        unsubscribeAllDaos();
+      }
+      if (unsubscribeMyDaos) {
+        unsubscribeMyDaos();
       }
     };
   }, [daoStore, bottomSheetStore, userStore.isLoading]);
@@ -87,40 +127,6 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     }
   };
 
-  const divideDao = daoList => {
-    if (!userStore.userInfo) {
-      setDaoGroup([{title: '', data: daoList}]);
-      return;
-    }
-
-    let myDaos = [];
-    let otherDaos = [];
-    for (let dao of daoList) {
-      const isMember = userStore.isDaoMember(dao.members);
-      if (isMember) {
-        myDaos.push(dao);
-      } else {
-        otherDaos.push(dao);
-      }
-    }
-
-    if (myDaos.length === 0) {
-      setDaoGroup([{title: '', data: daoList}]);
-      return;
-    }
-
-    setDaoGroup([
-      {
-        title: `My Commons (${myDaos.length})`,
-        data: myDaos,
-      },
-      {
-        title: `Discover more Commons (${otherDaos.length})`,
-        data: otherDaos,
-      },
-    ]);
-  };
-
   const header = () => {
     return (
       <View
@@ -131,7 +137,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
           width: '100%',
           paddingVertical: 15,
         }}>
-        <Text style={styles.lengthCommons}>{daos.length} Commons</Text>
+        <Text style={styles.lengthCommons}>{`${(myDaosGroup?.data.length + allDaosGroup?.data.length)} Commons`}</Text>
       </View>
     );
   };
@@ -200,12 +206,14 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     );
   };
 
+
+
   return (
     <>
       <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
-        {daoGroup ? (
+        {myDaosGroup && allDaosGroup ? (
           <SectionList
-            sections={daoGroup}
+            sections={[myDaosGroup, allDaosGroup]}
             ListHeaderComponent={header}
             contentContainerStyle={{paddingHorizontal: 20}}
             renderItem={x => (

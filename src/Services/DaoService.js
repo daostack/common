@@ -48,14 +48,27 @@ export default class DaoService {
       .get();
   }
 
-  async subscribeToDaosList(callback) {
+  async subscribeToMyDaosList(userId, safeAddress, callback) {
+    let daos = db
+      .collection(DB_COLLECTIONS.daos)
+      .where('members', 'array-contains', {
+        address: safeAddress,
+        userId,
+      });
+
+    return daos.onSnapshot(snapshot => {
+      callback(snapshot);
+    }, error => Toast.error(error));
+
+  }
+
+  async subscribeToDaosList(userId, safeAddress, callback) {
     let daos = db
       .collection(DB_COLLECTIONS.daos);
 
     return daos.onSnapshot(snapshot => {
       callback(snapshot);
     }, error => Toast.error(error));
-
   }
 
   async subscribeToDaoById(daoId, callback) {
