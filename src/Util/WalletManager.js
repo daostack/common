@@ -97,7 +97,7 @@ export default class WalletManager {
 
     // Create safe wallet if user don't have it
     if (!userData.safeAddress?.trim()) {
-      await this.createSmartContractWallet();
+      this.createSmartContractWallet();
     }
   }
 

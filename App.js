@@ -209,7 +209,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
             const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
             appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
-            await manager.createSmartContractWallet();
+            manager.createSmartContractWallet();
           } else {
             await manager.addressCheck(user.uid);
           }
@@ -443,9 +443,9 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
           component={DiscussionPost} />
         <Stack.Screen
-          options={{
-            title: 'Edit my profile',
-          }}
+          options={({ route }) => ({
+            title: route.params.isFirstOpening ? false : 'Edit my profile',
+          })}
           name="EditProfile"
           component={EditProfile}
         />
