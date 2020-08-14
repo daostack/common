@@ -27,6 +27,7 @@ import auth from '@react-native-firebase/auth';
 import BottomSheetModal from '../../Components/BottomSheetModal';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import ImageView from 'react-native-image-viewing';
+import { RotationGestureHandler } from 'react-native-gesture-handler';
 // import _ from 'lodash';
 
 const {width} = Dimensions.get('window');
@@ -48,6 +49,8 @@ const Discussions = ({daoStore, userStore, ...props}) => {
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [data, setData] = useState(props.route.params.data);
   const [isMember, setIsMember] = useState(false);
+
+  let isSending = false;
 
   console.log('commonId', commonId);
   const currentUser = auth().currentUser;
@@ -187,7 +190,14 @@ const Discussions = ({daoStore, userStore, ...props}) => {
     const userStore = currentUser;
     if (!userStore) {
       showLoginScreen();
+      return;
     }
+
+    if (isSending) {
+      return;
+    }
+
+    isSending = true;
     // props.userStore;
     inputRef.current.clear();
     console.log('userStore', commonId, data.id, userStore);
@@ -208,12 +218,15 @@ const Discussions = ({daoStore, userStore, ...props}) => {
         })
         .then(() => {
           Keyboard.dismiss();
+          isSending = false;
         })
         .catch(error => {
           Toast.error(error);
+          isSending = false;
         });
     } else {
       Toast.error('Empty Message');
+      isSending = false;
     }
   };
 

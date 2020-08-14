@@ -63,6 +63,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   // Values for vote param required from the blockchain
   const VOTE_APPROVE = 1;
   const VOTE_REJECT = 2;
+  let isSending = false;
 
   useEffect(() => {
     let unsubscribe = null;
@@ -152,6 +153,13 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
 
   const messageInput = () => {
     const sendMessageToDiscussion = async () => {
+
+      if (isSending || !userInfo?.uid) {
+        return;
+      }
+
+      isSending = true;
+
       const userInfo = auth().currentUser;
       const message = inputText;
       if (message && message.trim().length) {
@@ -164,16 +172,20 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
             ownerId: userInfo.uid,
             ownerName: userInfo.displayName,
             ownerAvatar: userInfo.photoURL,
-            // proposalId: routeProposalId,
             discussionId: routeProposalId,
           })
           .then(() => {
             inputRef.current.clear();
             Keyboard.dismiss();
+            isSending = false;
           })
           .catch(error => {
             Toast.error(error);
+            isSending = false;
           });
+      } else {
+        Toast.error('Empty Message');
+        isSending = false;
       }
     };
 
