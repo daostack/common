@@ -3,7 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import ImageField from '../FormFields/ImageField';
 import {observer, inject} from 'mobx-react';
-import {layout, text} from '../../Theme';
+import {layout, text, font, colors} from '../../Theme';
 
 class EditProfileForm extends React.Component {
   static FIELD_FIRST_NAME = 'firstName';
@@ -15,6 +15,7 @@ class EditProfileForm extends React.Component {
     const {
       userStore,
       editProfileFormStore,
+      firstOpening,
       ...otherProps
     } = this.props;
 
@@ -24,8 +25,14 @@ class EditProfileForm extends React.Component {
         style={{
           alignSelf: 'stretch',
           flexGrow: 1,
-          marginTop: 15,
+          marginTop: 0,
         }}>
+        {firstOpening && (
+          <View style={{marginBottom: 32}}>
+            <Text style={styles.title}>Complete your account</Text>
+            <Text style={styles.subtitle}>Help the community to get to know you better</Text>
+          </View>
+        )}
         <ImageField
           isAvatar={true}
           value={userStore.userInfo.photoURL}
@@ -54,6 +61,7 @@ class EditProfileForm extends React.Component {
             name: EditProfileForm.FIELD_FIRST_NAME,
             formStore: this.props.editProfileFormStore,
             validateRule: 'required',
+            displayName: 'first name',
           }}
         />
 
@@ -69,6 +77,7 @@ class EditProfileForm extends React.Component {
             name: EditProfileForm.FIELD_LAST_NAME,
             formStore: this.props.editProfileFormStore,
             validateRule: 'required',
+            displayName: 'last name',
           }}
         />
 
@@ -95,6 +104,18 @@ const styles = StyleSheet.create({
     ...layout.content,
     ...layout.marginBottomS,
     marginTop: 0,
+  },
+  title: {
+    ...font.heading.bold,
+    ...font.fontSize(5),
+    textAlign: 'center',
+  },
+  subtitle: {
+    textAlign: 'center',
+    color: colors.grey3,
+    ...font.fontSize(2),
+    ...font.regular,
+    paddingVertical: 5,
   },
 });
 

@@ -209,7 +209,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
             const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
             appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
-            await manager.createSmartContractWallet();
+            manager.createSmartContractWallet();
           } else {
             await manager.addressCheck(user.uid);
           }
@@ -349,12 +349,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             headerBackImage: () => (
               <Icon name="left-arrow" color={colors.black} size={32} />
             ),
-            headerRight: () => (
-              <Image
-                source={require('./src/Assets/questionmark.png')}
-                style={{resizeMode: 'contain', width: 20, height: 20}}
-              />
-            ),
+            // headerRight: () => (
+            //   <Image
+            //     source={require('./src/Assets/questionmark.png')}
+            //     style={{resizeMode: 'contain', width: 20, height: 20}}
+            //   />
+            // ),
           })}
         />
 
@@ -443,9 +443,9 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
           component={DiscussionPost} />
         <Stack.Screen
-          options={{
-            title: 'Edit my profile',
-          }}
+          options={({ route }) => ({
+            title: route.params.isFirstOpening ? false : 'Edit my profile',
+          })}
           name="EditProfile"
           component={EditProfile}
         />
@@ -496,10 +496,10 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
         />
         <Stack.Screen
-          options={{
-            title: 'New proposal',
+          options={({route}) => ({
+            title: route?.params.screenTitle,
             headerBackTitleVisible: false,
-          }}
+          })}
           name="FundingProposal"
           component={FundingProposal}
         />

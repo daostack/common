@@ -8,8 +8,6 @@ const DiscussionList = props => {
   const commonId = props.commonId;
   const [list, setList] = useState([]);
 
-  console.log('commonId -->', commonId);
-
   let listRef = useRef([]);
   useEffect(() => {
     const unsubscribe = firestore()
@@ -41,7 +39,6 @@ const DiscussionList = props => {
                 listRef.current = allList;
               }
               setList(listRef.current);
-              console.log('DiscussionList', listRef.current);
             }
           }
         },
@@ -71,7 +68,7 @@ const DiscussionList = props => {
       ) : (
         <ViewTabNoData
           title="No Discussions"
-          subtitle="Have things in common? This is the place to talk about them."
+          subtitle="This is where you can discuss and share your thoughts and ideas."
         />
       )}
     </>
