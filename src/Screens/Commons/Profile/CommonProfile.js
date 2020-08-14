@@ -141,7 +141,13 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
           },
         );
       };
-      getPendingProposalsData();
+      if (userStore.userInfo) {
+        console.log('has userInfo');
+        getPendingProposalsData();
+      } else {
+        console.log('no userInfo');
+        setPendingProposalsData('test');
+      }
       return () => {
         if (unsubscribe) {
           unsubscribe();
@@ -264,7 +270,8 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             style={layout.flexRow}>
             <View style={layout.flexRow}>
               <Text style={text.h4Black}>
-                {pendingProposalsData && // just to be showed at the same time
+                {`${pendingProposalsData}`}
+                {pendingProposalsData &&// just to be showed at the same time
                     currCommon.memberCount +
                       ' ' +
                       `Member${currCommon.memberCount !== 1 ? 's' : ''}`}
