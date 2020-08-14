@@ -6,6 +6,7 @@ import CountDown from 'react-native-countdown-component';
 import {monthShortNames} from '../Util/DateUtil';
 import moment from 'moment';
 import {PROPOSAL_TYPE} from '../Config';
+import { LAUNCHED_STATES } from '../Services/ProposalService';
 
 const MemberCard = ({
   // memberSince or commonsCount
@@ -26,21 +27,33 @@ const MemberCard = ({
         <View style={styles.rightContainer}>
           <View
             style={{
-              ...layout.content,
+              // ...layout.content,
               ...{alignItems: 'flex-end'},
             }}>
             <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
-            {remainingSeconds > 0 && <CountDown
-              digitTxtStyle={text.smallGreyText}
-              separatorStyle={text.smallGreyText}
-              timeLabels={false}
-              showSeparator={true}
-              digitStyle={{
-                height: 'auto',
-                width: 'auto',
-              }}
-              until={remainingSeconds}
-            />}
+            <Text style={text.runninglightGray}>{moment.unix(proposalInfo.createdAt).fromNow()}</Text>
+
+            {/* Hide the time if the proposal is expired or new */}
+            {(remainingSeconds > 0 && !LAUNCHED_STATES.includes(proposalInfo?.stageStr)) && (
+              // If the remaining time is more than 1 day show the date,
+              // if it is less show countdown till it
+              remainingSeconds > 24 * 60 * 60
+                ? (
+                  <Text>{moment.unix(proposalInfo.closingAt).format('dddd, h:mm')}</Text>
+                ) : (
+                  <CountDown
+                    digitTxtStyle={text.smallGreyText}
+                    separatorStyle={text.smallGreyText}
+                    timeLabels={false}
+                    showSeparator={true}
+                    digitStyle={{
+                      height: 'auto',
+                      width: 'auto',
+                    }}
+                    until={remainingSeconds}
+                  />
+                )
+            )}
           </View>
         </View>
       );
@@ -74,31 +87,32 @@ const MemberCard = ({
 
   return (
     <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
-      <View style={styles.memberInfoContainer}>
-        <MemberImage userInfo={userInfo} />
-        <View
+      <MemberImage userInfo={userInfo} />
+      <View
+        style={{
+          ...layout.content,
+          ...layout.flexStart,
+          ...{flex: 2, flexWrap: 'wrap'},
+        }}>
+        <Text
+          style={styles.displayName}>
+          {userInfo?.displayName || 'Unknown user'}
+        </Text>
+        <Text
           style={{
-            ...layout.content,
-            ...layout.flexStart,
+            ...text.smallGreyText,
+            marginTop: 2,
           }}>
-          <Text
-            style={styles.displayName}>
-            {userInfo?.displayName || 'Unknown user'}
-          </Text>
-          <Text
-            style={{
-              ...text.smallGreyText,
-              marginTop: 2,
-            }}>
-            {proposalInfo
-              ? moment.unix(proposalInfo.createdAt).fromNow()
-              : showMemberCreatedDate
-                ? `Member in ${userInfo?.daos?.length || 0} Common${
-                  userInfo?.daos?.length > 1 ? 's' : ''
-                }`
-                : `Member since ${memberSince || 'unknown'}`}
-          </Text>
-        </View>
+          {
+            // proposalInfo
+            //   ? moment.unix(proposalInfo.createdAt).fromNow()
+            //   :
+            showMemberCreatedDate
+              ? `Member in ${userInfo?.daos?.length || 0} Common${
+                  userInfo?.daos?.length !== 1 ? 's' : ''
+              }`
+              : `Member since ${memberSince || 'unknown'}`}
+        </Text>
       </View>
       {renderRightContainer()}
     </View>
@@ -130,11 +144,16 @@ const styles = StyleSheet.create({
     ...font.primary.regular,
     ...font.fontSize(2),
     flexWrap: 'wrap',
+    fontWeight: '500',
+    fontSize: 16,
   },
   rightContainer: {
-    ...layout.content,
-    ...layout.flexRow,
-    alignItems: 'center',
+    // ...layout.content,
+    //...layout.flexRow,
+    //alignItems: 'center',
+    flex: 1,
+    padding: 0,
+    alignItems: 'flex-end',
     alignContent: 'flex-end',
     justifyContent: 'flex-end',
   },

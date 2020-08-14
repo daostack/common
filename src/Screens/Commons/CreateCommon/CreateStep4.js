@@ -18,7 +18,6 @@ import Icon from '../../../Assets/iconfont/Icon';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
-import WalletManager from '../../../Util/WalletManager';
 import FirebaseService from '../../../Services/FirebaseService';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
@@ -521,8 +520,8 @@ const styles = StyleSheet.create({
     color: colors.black,
   },
   readMoreButton: {
-    fontSize: 12,
-    // fontWeight: '700',
+    ...font.primary.regular,
+    ...font.fontSize(1),
     color: colors.grey3,
   },
   continueButton: {
@@ -566,23 +565,22 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   titleName: {
-    color: 'white',
-    opacity: 0.8,
+    color: colors.white,
     textAlign: 'center',
     alignSelf: 'center',
     textShadowColor: 'rgba(0, 0, 0, 0.2)',
     ...font.primary.bold,
-    ...font.fontSize(2),
+    ...font.fontSize(4),
     textShadowOffset: {
       width: 0,
       height: 2,
     },
     textShadowRadius: 4,
+    elevation: 2,
   },
   byline: {
     width: '100%',
-    color: 'white',
-    opacity: 0.8,
+    color: colors.white,
     textAlign: 'center',
     alignSelf: 'center',
     ...font.primary.regular,

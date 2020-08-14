@@ -6,10 +6,11 @@ import {
   ScrollView,
   View,
   Linking,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {layout, colors, text, sizeL} from '../../Theme';
+import {layout, colors, text, sizeL, font} from '../../Theme';
 import {observer, inject} from 'mobx-react';
 import AccordionBtn from '../../Components/AccordionBtn';
 import CreateAccount from './CreateAccount';
@@ -19,6 +20,8 @@ import UserProfileData from '../../Components/UserProfileData';
 import AuthService from '../../Services/AuthService';
 import Toast from '../../Util/Toast';
 import CodePush from 'react-native-code-push';
+import Config from 'react-native-config';
+import { isProduction } from '../../Config';
 
 import {
   Placeholder,
@@ -27,7 +30,7 @@ import {
   Fade,
 } from 'rn-placeholder';
 
-const UserProfile = ({userStore, navigation}) => {
+const UserProfile = ({userStore, navigation, route}) => {
   //const [editMode, setEditMode] = useState(false);
 
   const [codePushVersion, setCodePushVersion] = useState('');
@@ -42,9 +45,24 @@ const UserProfile = ({userStore, navigation}) => {
 
   const _signOut = async () => {
     try {
-      // That loading status will be changed to false in the onAuthStateChanged method in App.js
-      userStore.setIsLoading(true);
-      await AuthService.getInstance().signOut();
+      Alert.alert(
+        'Oops',
+        'Do you want to sign out?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          { text: 'OK', onPress: async () => {
+            // That loading status will be changed to false in the onAuthStateChanged method in App.js
+            userStore.setIsLoading(true);
+            await AuthService.getInstance().signOut();
+          },
+          },
+        ],
+      );
+
     } catch (error) {
       userStore.setIsLoading(false);
       Toast.error(error?.toString());
@@ -68,29 +86,8 @@ const UserProfile = ({userStore, navigation}) => {
     navigation.navigate('NativeBridgeTests');
   };
 
-  const onUsersListPress = event => {
-    navigation.navigate('UserProfileReadMode');
-  };
-
   const onHUDTestPress = event => {
     navigation.navigate('HUDTest');
-  };
-
-  const onFundingProposalPress = event => {
-    navigation.navigate('FundingProposal');
-  };
-
-  const onMyWalletPress = event => {
-    navigation.navigate('MyWallet');
-    console.log('address: ', userStore.userInfo.ethereumAddress);
-  };
-
-  const onMyCommonsPress = event => {
-    navigation.navigate('MyCommons');
-  };
-
-  const onMyProposalsPress = event => {
-    navigation.navigate('MyProposals');
   };
 
   const renderUnsignedUserData = () => {
@@ -101,7 +98,7 @@ const UserProfile = ({userStore, navigation}) => {
     return (
       <UserProfileData
         navigation={navigation}
-        userId={userStore.userInfo.uid}
+        userId={route.params?.userId || userStore.userInfo.uid}
       />
     );
   };
@@ -114,7 +111,6 @@ const UserProfile = ({userStore, navigation}) => {
         <SafeAreaView style={styles.safeArea}>
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"
-            style={styles.scrollView}
             vertical={true}
             nestedScrollEnabled={true}
             directionalLockEnabled={true}>
@@ -124,18 +120,11 @@ const UserProfile = ({userStore, navigation}) => {
                 : renderUnsignedUserData()}
 
               <View style={layout.marginTopL}>
-                {userStore.userInfo ? (
-                  <AccordionBtn
-                    title="My wallet"
-                    subtitle={userStore.userInfo.ethereumAddress}
-                    onPress={onMyWalletPress}
-                  />
-                ) : null}
-                <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" />
+                {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
                 <AccordionBtn onPress={() => Linking.openURL('https://common.io/tos')} title="Terms of use" />
                 <AccordionBtn onPress={() => Linking.openURL('https://common.io/privacy')} title="Privacy Policy" />
                 <AccordionBtn onPress={() => Linking.openURL('https://common.io/help')} title="Help" />
-                <AccordionBtn onPress={() => Linking.openURL('mailto:support@example.com')} title="Contact us" />
+                <AccordionBtn onPress={() => Linking.openURL('mailto:hi@common.io')} title="Contact us" />
                 {userStore.userInfo ? (
                   <AccordionBtn
                     lightStyle={true}
@@ -144,7 +133,7 @@ const UserProfile = ({userStore, navigation}) => {
                   />
                 ) : null}
               </View>
-              <View
+              {Config.ENV !== 'production' && <View
                 style={{
                   ...layout.content,
                   paddingHorizontal: 0,
@@ -153,8 +142,8 @@ const UserProfile = ({userStore, navigation}) => {
                 <Text style={text.h4Black}>Temporary menu</Text>
                 <AccordionBtn title="Test Page" onPress={onTestPagePress} />
                 <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
-              </View>
-              <Text style={{ textAlign: 'center', paddingVertical: 10, color: colors.grey2 }}>Common v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : '' })</Text>
+              </View>}
+              <Text style={styles.version}>Common{isProduction ? '' : '-stg'} v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : '' })</Text>
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -226,7 +215,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignSelf: 'stretch',
   },
-
+  version: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    textAlign: 'center',
+    paddingVertical: 10,
+    color: colors.grey2,
+  },
   contentContainer: {
     ...layout.content,
     ...layout.flexStart,
@@ -250,7 +245,7 @@ const styles = StyleSheet.create({
   countBoxDivider: {
     height: '100%',
     width: 1,
-    backgroundColor: '#eeeeee',
+    backgroundColor: colors.grey4,
   },
   body: {
     paddingVertical: 10,
@@ -258,7 +253,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: Colors.white,
-    padding: 20,
   },
   googleSignInButton: {
     alignSelf: 'stretch',
@@ -275,7 +269,7 @@ const styles = StyleSheet.create({
       height: 6,
     },
     shadowRadius: 0,
-    elevation: 0,
+    elevation: 6,
   },
   wrapper: {
     height: 240,
@@ -285,7 +279,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   swiperContent: {
-    backgroundColor: '#efefef',
+    backgroundColor: colors.grey4,
     borderRadius: 14,
     flex: 1,
   },

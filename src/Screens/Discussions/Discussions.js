@@ -12,10 +12,11 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   SectionList,
+  Platform,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
-import {colors, layout, text, sizeM} from '../../Theme';
+import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '../../Theme';
 import DiscussionMessage from './DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast.js';
@@ -30,8 +31,8 @@ import ImageView from 'react-native-image-viewing';
 
 const {width} = Dimensions.get('window');
 
-const Discussions = props => {
-  const [inputHeight, setInputHeight] = useState(60);
+const Discussions = ({daoStore, userStore, ...props}) => {
+  const [inputHeight, setInputHeight] = useState(65);
   const inputRef = useRef(null);
   const [user, setUser] = useState({});
   const [inputText, setInputText] = useState(null);
@@ -46,9 +47,16 @@ const Discussions = props => {
   const [followState, setFollowState] = useState(false);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [data, setData] = useState(props.route.params.data);
+  const [isMember, setIsMember] = useState(false);
 
   console.log('commonId', commonId);
   const currentUser = auth().currentUser;
+
+  useEffect(() => {
+    const currentDao = daoStore.daos.find((dao) => dao.id === commonId);
+    const isMember = userStore.userInfo && userStore.isDaoMember(currentDao.members);
+    setIsMember(isMember);
+  }, []);
 
   const hideMenu = () => {
     setShowMenu(false);
@@ -138,15 +146,15 @@ const Discussions = props => {
     fetchUser();
   }, [data]);
 
-  const openOptionsMenu = () => {
-    if (!currentUser) {
-      showLoginScreen();
-      return;
-    }
-    props.bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
-    );
-  };
+  // const openOptionsMenu = () => {
+  //   if (!currentUser) {
+  //     showLoginScreen();
+  //     return;
+  //   }
+  //   props.bottomSheetStore.showBottomSheet(
+  //     BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
+  //   );
+  // };
 
   const showLoginScreen = () => {
     props.bottomSheetStore.showBottomSheet(
@@ -183,7 +191,7 @@ const Discussions = props => {
     // props.userStore;
     inputRef.current.clear();
     console.log('userStore', commonId, data.id, userStore);
-    const message = inputRef.current._lastNativeText;
+    const message = inputText;
     if (message && message.trim().length) {
       console.log('message', message);
       firestore()
@@ -199,11 +207,9 @@ const Discussions = props => {
           discussionId: discussionId,
         })
         .then(() => {
-          console.log('YES', inputRef.current);
           Keyboard.dismiss();
         })
         .catch(error => {
-          console.log('NO', error);
           Toast.error(error);
         });
     } else {
@@ -293,7 +299,7 @@ const Discussions = props => {
           }}
           title={{
             title: data.title,
-            style: text.h3Black,
+            style: text.h2Black,
           }}
           leftButton={
             <TouchableOpacity
@@ -302,76 +308,76 @@ const Discussions = props => {
               <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
             </TouchableOpacity>
           }
-          rightButton={
-            <TouchableOpacity
-              style={{justifyContent: 'center'}}
-              onPress={openOptionsMenu}>
-              <Icon
-                name="menu-horizontal"
-                size={32}
-                style={{marginRight: 10}}
-              />
-            </TouchableOpacity>
-          }
+          // rightButton={
+          //   <TouchableOpacity
+          //     style={{justifyContent: 'center'}}
+          //     onPress={openOptionsMenu}>
+          //     <Icon
+          //       name="menu-horizontal"
+          //       size={32}
+          //       style={{marginRight: 10}}
+          //     />
+          //   </TouchableOpacity>
+          // }
         />
-        <View
-          style={{
-            backgroundColor: colors.white,
-            // flex: 1,
-            paddingBottom: 0,
-          }}>
-          {isExpanded ? (
-            <View style={{paddingTop: 20, paddingHorizontal: 20}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  paddingVertical: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Image
-                  style={styles.avatar}
-                  source={user.photoURL ? {uri: user.photoURL} : null}
-                />
-                <View style={{flex: 1, paddingHorizontal: 10}}>
-                  <Text style={{fontWeight: 'bold'}}>{user.displayName}</Text>
-                  {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-                  <Text style={{color: colors.grey3}}>
-                    {moment(data.createTime.toDate()).fromNow()}
+        <View style={{ overflow: 'hidden', paddingBottom: 5 }}>
+          <View
+            style={styles.headerContainer}>
+            {isExpanded ? (
+              <View style={{
+                paddingTop: 20,
+                paddingHorizontal: 20,
+              }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    paddingVertical: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Image
+                    style={styles.avatar}
+                    source={user.photoURL ? {uri: user.photoURL} : null}
+                  />
+                  <View style={{flex: 1, paddingHorizontal: 10}}>
+                    <Text style={styles.displayName}>{user.displayName}</Text>
+                    {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
+                    <Text style={styles.date}>
+                      {moment(data.createTime.toDate()).fromNow()}
+                    </Text>
+                  </View>
+                </View>
+
+                <View>
+                  <Text
+                    style={styles.message}>
+                    {data.message}
                   </Text>
                 </View>
+
+                {headerImages()}
+                {headerFiles()}
+
+                <TouchableOpacity
+                  style={{alignItems: 'center', paddingVertical: 10}}
+                  onPress={() => {
+                    setIsExpanded(!isExpanded);
+                  }}>
+                  <Image style={{ height: 10, width: 60 }} source={require('../../Assets/collapse.png')} />
+                </TouchableOpacity>
               </View>
-
-              <View>
-                <Text
-                  style={{fontSize: 16, lineHeight: 25, paddingVertical: 10}}>
-                  {data.message}
-                </Text>
-              </View>
-
-              {headerImages()}
-              {headerFiles()}
-
-              <TouchableOpacity
-                style={{alignItems: 'center'}}
-                onPress={() => {
-                  setIsExpanded(!isExpanded);
-                }}>
-                <Icon name="up-arrow" size={32} />
-              </TouchableOpacity>
-            </View>
-          ) : (
+            ) : (
             <>
               <TouchableOpacity
-                style={{alignItems: 'center'}}
+                style={{alignItems: 'center', paddingVertical: 10}}
                 onPress={() => {
                   setIsExpanded(!isExpanded);
                 }}>
-                <Icon name="down-arrow" size={32} />
+                <Image style={{ height: 10, width: 60  }} source={require('../../Assets/expand.png')} />
               </TouchableOpacity>
             </>
-          )}
-          <View
+            )}
+            {/* <View
             style={{
               height: 4,
               marginTop: 10,
@@ -379,7 +385,8 @@ const Discussions = props => {
               marginHorizontal: -20,
               backgroundColor: colors.grey4,
             }}
-          />
+          /> */}
+          </View>
         </View>
         {/* </SafeAreaView> */}
       </>
@@ -387,64 +394,71 @@ const Discussions = props => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: colors.lightBlue}}>
+    <SafeAreaView style={styles.safeView}>
       {header()}
-      <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
-        <SectionList
-          sections={msgGroup}
-          ref={chatRef}
-          // ListFooterComponent={header}
-          renderItem={x => <DiscussionMessage data={x.item} />}
-          renderSectionFooter={({section: {date}}) => (
-            <Text style={styles.timeHeader}>
-              {moment().isSame(date, 'day') ? 'Today' : date}
-            </Text>
-          )}
-          keyExtractor={x => x.id}
-          stickySectionHeadersEnabled={true}
-          inverted={true}
-          contentContainerStyle={{paddingTop: 10}}
-          // initialScrollIndex={2}
-        />
-        {/* <View style={{flex: 1}}>
-        <ChatRoom
-          path={`common/${commonId}/discussion/${data.id}/message`}
-          commonId={commonId}
-        />
-        </View> */}
-      </ScrollView>
+      { msgGroup.length > 0 ?
+        <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
+          <SectionList
+            sections={msgGroup}
+            ref={chatRef}
+            // ListFooterComponent={header}
+            renderItem={x => <DiscussionMessage data={x.item} />}
+            renderSectionFooter={({section: {date}}) => (
+              <Text style={styles.timeHeader}>
+                {moment().isSame(date, 'day') ? 'Today' : date}
+              </Text>
+            )}
+            keyExtractor={x => x.id}
+            stickySectionHeadersEnabled={true}
+            inverted={true}
+            contentContainerStyle={{paddingTop: 10}}
+            // initialScrollIndex={2}
+          />
+        </ScrollView>
+        :
+        <View style={styles.emptyContainer}>
+          <Image source={require('../../Assets/empty-discussion.png')} style={{ width: 240, height: 240 }} />
+          <Text style={styles.emptyTitle}> No comments yet</Text>
+          <Text style={styles.emptyBody}>Have any thoughts? Share them with other members by adding the first comment.</Text>
+        </View>
+      }
 
       <KeyboardAvoidingView
-        // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={'height'}
         style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
         <View style={styles.input}>
-          <View style={styles.inputBorder}>
+          {isMember ? (<>
             <TextInput
               ref={inputRef}
               editable={true}
               multiline={true}
-              placeholderText={'Say something'}
+              placeholder="What do you think?"
               onContentSizeChange={e =>
                 setInputHeight(e.nativeEvent.contentSize.height)
               }
-              style={{flex: 1, height: inputHeight, marginHorizontal: 10}}
-              fontSize={15}
+              style={{...styles.textInput, height: inputHeight}}
+              fontSize={16}
               onChangeText={currText => setInputText(currText)}
             />
             <TouchableOpacity
               style={{paddingRight: 15, justifyContent: 'center'}}
               onPress={sendMessageToDiscussion}>
               <Icon
-                name="edit"
-                size={20}
+                name="send-message"
+                style={styles.sendMessageIcon}
+                size={32}
                 color={
                   inputText && inputText.trim() ? colors.mainBlue : colors.grey3
                 }
               />
             </TouchableOpacity>
-          </View>
+          </>
+          ) : (
+            <Text style={{...styles.joinCommonText}}>
+              {'Only members can send messages'}
+            </Text>
+          )}
         </View>
-        <View style={{height: 30, backgroundColor: colors.white}} />
       </KeyboardAvoidingView>
 
       <BottomSheetModal
@@ -473,22 +487,37 @@ const Discussions = props => {
       </BottomSheetModal>
 
       <ImageView
-        images={ data.images ? data.images.map(x => ({uri: x.value})) : [] }
+        images={data.images ? data.images.map(x => ({uri: x.value})) : []}
         imageIndex={imageGalleryIndex}
         visible={imageGalleryIndex > -1}
         onRequestClose={() => setImageGalleryIndex(-1)}
         // FooterComponent={ImageGalleryFooter}
       />
-
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  message: {
+    marginVertical: 10,
+    lineHeight: 24,
+    color: colors.black,
+    ...font.primary.regular,
+    ...font.fontSize(2),
+  },
+  date: {
+    color: colors.formPlaceholderColor,
+    ...font.primary.regular,
+    ...font.fontSize(2),
+  },
+  displayName: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.black,
+  },
   title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    fontFamily: 'Roboto',
+    ...font.fontSize(3),
+    ...font.primary.bold,
     color: colors.black,
     textAlign: 'center',
     // textAlignVertical: 'center',
@@ -501,6 +530,10 @@ const styles = StyleSheet.create({
     height: 250,
     borderRadius: 10,
     backgroundColor: colors.grey4,
+  },
+  safeView: {
+    flex: 1,
+    backgroundColor: colors.paleGrey,
   },
   imageGallery: {
     ...layout.flexRow,
@@ -524,43 +557,45 @@ const styles = StyleSheet.create({
   input: {
     // backgroundColor: colors.white,
     backgroundColor: '#fbfdff',
-    borderColor: colors.grey4,
-    // borderwidth: 1,
-    borderBottomWidth: 1,
-    // height: 60,
+    flex: 1,
+    borderTopColor: colors.grey4,
+    borderTopWidth: 1,
+    height: 65,
     width: width,
     flexDirection: 'row',
     shadowColor: 'rgba(0, 0, 0, 0.2)',
     shadowOffset: {
       width: 0,
-      height: -4,
+      height: -1,
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
+    elevation: 2,
     alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 15,
     paddingVertical: 15,
+  },
+  textInput: {
+    flex: 1,
+    paddingTop: 0,
+    marginBottom: Platform.OS === 'ios' ? 10 : 0,
+    marginHorizontal: 10,
+  },
+  sendMessageIcon: {
+    marginBottom: Platform.OS === 'ios' ? 10 : 0,
   },
   timeHeader: {
     textAlign: 'center',
     marginVertical: 3,
     color: colors.grey3,
-    fontSize: 12,
-    fontFamily: 'Roboto',
+    ...font.fontSize(2),
+    ...font.primary.regular,
   },
-  inputBorder: {
-    flex: 1,
-    flexDirection: 'row',
-    borderColor: colors.grey4,
-    borderWidth: 1,
-    paddingVertical: 10,
-    marginHorizontal: 10,
-    borderRadius: 40,
-  },
+
   sheetTitle: {
-    fontFamily: 'Roboto',
-    fontSize: 20,
-    fontWeight: 'bold',
+    ...font.fontSize(4),
+    ...font.primary.bold,
     color: colors.black,
     paddingVertical: 15,
     textAlign: 'center',
@@ -573,10 +608,9 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
   },
   sheetText: {
-    fontFamily: 'Roboto',
-    fontSize: 18,
-    fontWeight: '500',
-    color: colors.against,
+    ...font.fontSize(3),
+    ...font.primary.bold,
+    color: colors.black,
     marginLeft: 10,
   },
   sheetButton: {
@@ -588,21 +622,55 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   adsText: {
-    ...text.h3Black,
+    ...font.fontSize(2),
+    textDecorationLine: 'underline',
+    ...font.primary.regular,
     ...layout.marginLeftXS,
-    fontWeight: '500',
   },
 
   adRow: {
     alignItems: 'center',
     ...layout.flexRow,
-    padding: 10,
     alignSelf: 'stretch',
     paddingVertical: sizeM,
-    borderRadius: 8,
-    borderColor: colors.mainBlue,
-    borderWidth: 1,
   },
+  joinCommonText: {
+    ...text.textFieldplaceholder,
+    color: colors.greySubtitle,
+    paddingTop: sizeS,
+    paddingBottom: sizeXL,
+  },
+  emptyContainer: {
+    flex: 0.8,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyTitle: {
+    ...font.fontSize(3),
+    ...font.primary.bold,
+    paddingVertical: 12,
+  },
+  emptyBody: {
+    textAlign: 'center',
+    ...font.fontSize(2),
+    ...font.primary.regular,
+  },
+  headerContainer: {
+    backgroundColor: colors.white,
+    // flex: 1,
+    paddingBottom: 0,
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
+    shadowColor: 'rgba(0, 0, 0, 0.12)',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 5,
+    shadowOpacity: 0.8,
+    elevation: 5,
+  }
 });
 
-export default inject('userStore', 'bottomSheetStore')(observer(Discussions));
+export default inject('userStore', 'bottomSheetStore', 'daoStore')(observer(Discussions));

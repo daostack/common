@@ -24,6 +24,7 @@ const messageContainer = {
   },
   shadowRadius: 3,
   shadowOpacity: 0.1,
+  elevation: 3,
 };
 
 const messageContainerTriangle = {
@@ -89,17 +90,20 @@ export default StyleSheet.create({
   },
 
   // Margin Bottom
+  marginBottomXS: {
+    marginBottom: sizeXS,
+  },
   marginBottomS: {
-    marginBottom: 10,
+    marginBottom: sizeS,
   },
   marginBottomM: {
-    marginBottom: 15,
+    marginBottom: sizeM,
   },
   marginBottomL: {
-    marginBottom: 20,
+    marginBottom: sizeL,
   },
   marginBottomXL: {
-    marginBottom: 40,
+    marginBottom: sizeXL,
   },
 
   // Margin LEFT

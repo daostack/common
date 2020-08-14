@@ -23,30 +23,18 @@ You will need three files
 2.  For iOS `GoogleService-Info.plist`
 3.  For Android `google-services.json`
 
-You can ge these files from one of the members of the developer team to get started.
+To get started you should ask one of the members of the developer for those files.
 
 The `env.json` is to be placed into the root folder of the React Native project.
 
-The `GoogleService-Info.plist` is to be placed in the `ios/firebase/${ENV_FOLDER_NAME}/` where ENV_FOLDER_NAME is the specific env folder name (production or staging).
-If folders do not exist, create them.
-
-The `google-services.json` file is to be placed in the `common/android/app/src/staging` and `common/android/app/src/production`
+The `GoogleService-Info.plist` is to be placed in the `ios/firebase/${ENV_FOLDER_NAME}/` and `google-services.json` file is to be placed in the `/android/app/src/${ENV_FOLDER_NAME}` where ENV_FOLDER_NAME is the specific env folder name (production or staging). If folders do not exist, create them.
 
 ### Getting Started from the Common Github Repo
 
 1. Clone the repo `git clone https://github.com/daostack/common.git`
-2. `cd common` and run `yarn` or `npm install`
+2. `cd common` and run `yarn`
 3. `cd ios` and run `pod install`
-
-### For iOS
-
-4. To run the project from the command line run `react-native run-ios`
-5. To run from Xcode, open the `common.xcworkspace` file and then enter `command + r`
-
-### For Android
-
-6. Run an Android simulator device
-7. Enter `react-native run-android` in the command line
+4. To run the application go back to the root of the project and run `yarn ios:staging` for iOS or `yarn android:staging` for Android
 
 If the project doesn't run there may be a few reasons.
 

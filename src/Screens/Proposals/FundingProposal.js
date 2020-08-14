@@ -15,6 +15,7 @@ import { CommonActions } from '@react-navigation/native';
 import ArcService from '../../Services/ArcService';
 import { BN } from 'bn.js';
 import Toast from '../../Util/Toast';
+import font from '../../Theme/font';
 
 const FundingProposal = ({
   userStore,
@@ -84,8 +85,7 @@ const FundingProposal = ({
             Get funding to promote the Common's agenda. If your proposal is accepted you will be responsible to follow it through.
           </Text>
           <View style={styles.divider}/>
-
-          <FundingRequestForm />
+          <FundingRequestForm common={route.params.common} />
         </ScrollView>
         <RequestStepActionButton
           title="Create Proposal"
@@ -102,13 +102,16 @@ const styles = StyleSheet.create({
     ...text.h2Black,
     ...layout.marginTopM,
     textAlign: 'left',
+    ...font.fontSize(4),
   },
   subtitle: {
-    ...text.blackText,
+    ...font.regular,
     color: colors.slate,
-    ...layout.marginTopXL,
-    ...layout.marginBottomM,
+    marginTop: 24,
+    ...layout.marginBottomL,
     textAlign: 'center',
+    lineHeight: 23,
+    fontSize: 14,
   },
   divider: {
     width: '100%',

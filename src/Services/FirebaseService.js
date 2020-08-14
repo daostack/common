@@ -1,4 +1,5 @@
-import {db, storage} from '../Firebase';
+import { db, storage } from '../Firebase';
+import { prepareUserObject } from '../Util';
 
 export const DB_COLLECTIONS = {
   users: 'users',
@@ -28,8 +29,24 @@ export default class FirebaseService {
         if (!snapshots) {
           return null;
         }
-        return snapshots.data();
+        return prepareUserObject(snapshots.data());
       });
+  }
+
+  async getUserDaos(userId, safeAddress) {
+    if (safeAddress) {
+      const user = await this.getUserById(userId);
+
+      safeAddress = user.safeAddress;
+    }
+
+    return db
+      .collection(DB_COLLECTIONS.daos)
+      .where('members', 'array-contains', {
+        address: safeAddress,
+        userId,
+      })
+      .get();
   }
 
   async getUserByAddress(address) {
@@ -74,6 +91,15 @@ export default class FirebaseService {
         return {...{id: doc.id}, ...doc.data()};
       });
     });
+  }
+
+  async getDaoNameById(daoId) {
+
+    const dao = await db.collection(DB_COLLECTIONS.daos)
+      .doc(daoId)
+      .get();
+
+    return dao.data().metadata.name;
   }
 
   async getDaoInfo(dao) {

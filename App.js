@@ -14,6 +14,7 @@ import {
   View,
   Linking,
   DeviceEventEmitter,
+  Text,
 } from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
@@ -59,16 +60,16 @@ import AuthService from './src/Services/AuthService';
 
 import CommonHome from './src/Components/Navigation/CommonHome';
 const Stack = createStackNavigator();
-import {filterObjectByKeys} from './src/Util';
+import { filterObjectByKeys, prepareUserObject } from './src/Util';
 import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import {auth, db} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
-
+import validUrl from 'valid-url';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
-import Toast, {DURATION} from 'react-native-easy-toast';
+import ToastView, {DURATION} from './src/Util/ToastView';
 import {CommonActions} from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
@@ -88,18 +89,11 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
   const navigationRef = useRef();
 
   useEffect(() => {
-    messaging()
-      .registerDeviceForRemoteMessages()
-      .then(() => {
-        return messaging().requestPermission();
-      })
-      .then(settings => {
-        // console.log('Notification settings', settings);
-        if (settings) {
-          return NotificationService.saveTokenToDatabase();
-        }
-      });
+    Text.defaultProps = Text.defaultProps || {};
+    Text.defaultProps.maxFontSizeMultiplier = 1.1;
+  }, []);
 
+  useEffect(() => {
     return messaging().onTokenRefresh(token => {
       NotificationService.saveTokenToDatabase(token);
     });
@@ -135,7 +129,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       if (!supported) {
         return;
       }
-      if (!DeepLinking.evaluateUrl(url)) {
+      if (!DeepLinking.evaluateUrl(url) && validUrl.isWebUri(url)) {
+        console.log('Routing Browser ->', url);
         routing('Browser', {url: url});
       }
     });
@@ -200,22 +195,30 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       try {
         userStore.setIsLoading(true);
         if (user) {
-          await AuthService.getInstance().loadMnemonic(user.uid, user.providerData[0].providerId);
+          const providerId = user.providerData[0].providerId;
+          await AuthService.getInstance().loadMnemonic(user.uid, providerId);
           await WalletManager.init(user.uid);
           await ArcService.init();
+          const manager = await WalletManager.getInstance();
           let appUser = await FirebaseService.getInstance().getUserById(
             user.uid,
           );
           const isNewUser = !appUser;
+
           if (isNewUser) {
-            appUser = await AuthService.getInstance().createUserAndWallet(user);
-            const manager = await WalletManager.getInstance();
+            const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
+            const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
+            appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
             manager.createSmartContractWallet();
+          } else {
+            await manager.addressCheck(user.uid);
           }
+
           const allUserInfo = {
             ...user._user,
             ...appUser,
           };
+
           const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
           userStore.setSignedInUser(filteredUser);
           if (subscribers.userInfoChangeUnsubscribe) {
@@ -246,7 +249,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         }
         const unsubscribe = db.collection('users').doc(uid).onSnapshot( async snapshot => {
           if (!snapshot.empty) {
-            userStore.setSignedInUser(snapshot.data());
+            userStore.setSignedInUser(prepareUserObject(snapshot.data()));
           }
 
           // WalletManager Inited before safeAddress created
@@ -320,16 +323,21 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           component={CommonProfile}
           options={{headerShown: false}}
         />
-        <Stack.Screen 
-          name="CommonAgenda" 
-          component={CommonAgenda} 
+        <Stack.Screen
+          name="CommonAgenda"
+          component={CommonAgenda}
           options={({route}) => ({
             title: route.params.screenTitle,
             headerBackTitleVisible: false,
           })}
 
         />
-        <Stack.Screen name="Profile" component={UserProfile} />
+        <Stack.Screen
+          name="Profile"
+          component={UserProfile}
+          options={({route}) => ({
+            headerBackTitleVisible: false,
+          })}/>
         <Stack.Screen
           name="CommonExplanation"
           component={CommonExplanation}
@@ -341,18 +349,18 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             headerBackImage: () => (
               <Icon name="left-arrow" color={colors.black} size={32} />
             ),
-            headerRight: () => (
-              <Image
-                source={require('./src/Assets/questionmark.png')}
-                style={{resizeMode: 'contain', width: 20, height: 20}}
-              />
-            ),
+            // headerRight: () => (
+            //   <Image
+            //     source={require('./src/Assets/questionmark.png')}
+            //     style={{resizeMode: 'contain', width: 20, height: 20}}
+            //   />
+            // ),
           })}
         />
 
-        <Stack.Screen 
-          name="ProposalScreen" 
-          component={ProposalScreen} 
+        <Stack.Screen
+          name="ProposalScreen"
+          component={ProposalScreen}
           options={({route}) => ({
             title: route?.params.screenTitle,
             headerBackTitleVisible: false,
@@ -435,9 +443,9 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
           component={DiscussionPost} />
         <Stack.Screen
-          options={{
-            title: 'Edit my profile',
-          }}
+          options={({ route }) => ({
+            title: route.params.isFirstOpening ? false : 'Edit my profile',
+          })}
           name="EditProfile"
           component={EditProfile}
         />
@@ -465,16 +473,16 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         />
         <Stack.Screen
           options={{
-            title: null,
-            headerBackTitleVisible: true,
+            title: 'My Profile',
+            headerBackTitleVisible: false,
           }}
           name="MyProposals"
           component={MyProposals}
         />
         <Stack.Screen
           options={{
-            title: null,
-            headerBackTitleVisible: true,
+            title: 'My Profile',
+            headerBackTitleVisible: false,
           }}
           name="MyCommons"
           component={MyCommons}
@@ -488,15 +496,16 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
         />
         <Stack.Screen
-          options={{
-            title: 'New proposal',
-          }}
+          options={({route}) => ({
+            title: route?.params.screenTitle,
+            headerBackTitleVisible: false,
+          })}
           name="FundingProposal"
           component={FundingProposal}
         />
       </Stack.Navigator>
       {bottomSheetStore.isVisible ? <BottomSheetContainer /> : null}
-      <Toast
+      <ToastView
         ref={hudRef}
         style={{backgroundColor: 'transparent'}}
         positionValue={160}
@@ -513,7 +522,6 @@ const styles = StyleSheet.create({
     shadowOffset: {
       height: 0,
     },
-    textAlign: 'center',
   },
 });
 

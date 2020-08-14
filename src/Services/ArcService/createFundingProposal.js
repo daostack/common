@@ -23,7 +23,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
   try {
     const dao = arc.dao(daoId);
 
-    const plugins = await dao.plugins();
+    const plugins = await dao.plugins().first();
     const abi = arc.getABI({abiName: 'FundingRequest', version: ARC_VERSION});
     const interf = new ethers.utils.Interface(abi);
 
@@ -84,6 +84,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
           throw Error(`Invalidly configured DAO - funding goal is not 0, it is ${fundingGoal} instead`);
         }
 
+        // TODO: check fundingGoal < dao.balance ?
 
         if (joinAndQuitPluginState.pluginParams.fundingGoalDeadline < new Date()) {
           throw Error('Invalidly configured DAO - cannot create funding request (the fundingGoalDeadline of the joinAndQuit plugin is in the past, so we cannot set the fundingGoalReeched flag to true)');
@@ -106,7 +107,6 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
         if (fundingGoalReachedFlag !== 'TRUE') {
           throw Error('funding goal is not reached yet - cannot create a funding request');
         }
-
       }
       // TODO: check if the user is a member
     };

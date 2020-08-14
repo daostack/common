@@ -35,10 +35,10 @@ class TextInputFieldWithIcon extends React.Component {
     } = this.props;
     // Register form field for validation message component if name,formStore and validateRule props are provided
     if (validation) {
-      const {name, formStore, validateRule} = validation;
+      const {name, formStore, displayName, validateRule, invisibleContainer = true, customErrorMessage } = validation;
       formStore.registerFormField(name, validateRule, value);
       this.fieldValidation = (
-        <ValidationMessage formStore={formStore} name={name} />
+        <ValidationMessage displayName={displayName} formStore={formStore} customErrorMessage={customErrorMessage} name={name} invisibleContainer={invisibleContainer}/>
       );
     }
 
@@ -204,9 +204,9 @@ class TextInputFieldWithIcon extends React.Component {
             onFocus={this.onFocus}
             onBlur={this.onBlur}
             secureTextEntry={this.state.showPassword}
-            onContentSizeChange={e =>
+            /* onContentSizeChange={e =>
               this.updateSize(e.nativeEvent.contentSize.width)
-            }
+            } */
             value={
               validation
                 ? validation.formStore.form.fields[

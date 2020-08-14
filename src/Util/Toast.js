@@ -7,7 +7,7 @@ import {
   Dimensions,
   ActivityIndicator,
 } from 'react-native';
-import colors from '../Theme/colors';
+import {colors, font} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 
 const {width, height} = Dimensions.get('window');
@@ -74,14 +74,11 @@ export default class Toast {
 
   static loading(text) {
     showLoading(
-      // <View style={styles.loading} pointerEvents={'none'}>
       <View
         style={{...styles.container, ...{backgroundColor: colors.mainBlue}}}>
-        {/* <Icon name="check" size={20} color={colors.white} /> */}
         <ActivityIndicator size="small" color={colors.white} />
         <Text style={styles.text}>{text}</Text>
-      </View>,
-      // </View>,
+      </View>
     );
   }
 
@@ -105,8 +102,11 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 1,
+    elevation: 4,
   },
   text: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
     color: colors.white,
     flex: 1,
     marginLeft: 10,

@@ -1,19 +1,22 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { colors } from '../Theme';
+import { View, StyleSheet, Text } from 'react-native';
+import { colors, text } from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 import FastImage from 'react-native-fast-image';
 
-const UserAvatar = ({image, iconName}) =>
+const UserAvatar = ({image, iconName, displayName, imageStyle = {}}) =>
   <View style={styles.imageFieldContainer}>
     <FastImage
-      style={styles.imageFieldStyle}
+      style={{...styles.imageFieldStyle, ...imageStyle}}
       resizeMode="cover"
       source={{uri: image}}
     />
-    <View style={styles.imageFielFollowIcon}>
-      <Icon name={iconName} size={16} color={colors.white} />
-    </View>
+    { iconName && <View style={styles.imageFielFollowIcon}>
+      <Icon name={iconName} size={17} color={colors.white} />
+    </View> }
+
+    { displayName && <Text style={text.regularText}>{displayName}</Text> }
+
   </View>;
 
 
@@ -21,8 +24,8 @@ const styles = StyleSheet.create({
   imageFieldContainer: {
     position: 'relative',
     alignSelf: 'center',
-    width: 100,
-    height: 100,
+    alignContent: 'center',
+    alignItems: 'center',
   },
   imageFieldStyle: {
     width: 100,
@@ -37,6 +40,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 8,
     shadowOpacity: 1,
+    elevation: 3,
     alignSelf: 'center',
   },
   imageFielFollowIcon: {
@@ -44,11 +48,11 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    right: 0,
-    bottom: 0,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    right: -5,
+    bottom: -5,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     padding: 2,
     backgroundColor: colors.mainBlue,
     borderWidth: 2,

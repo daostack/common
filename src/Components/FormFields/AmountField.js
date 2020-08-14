@@ -41,6 +41,7 @@ const AmountField = ({
         {
           [1, 2.5, 5, 1].map((c, index) =>
             <JoinAmount
+              key={`JoinAmount_${index}`}
               id={index}
               isSelected={index === selectedAmountId}
               isCustom={index === 3}
@@ -86,7 +87,6 @@ const styles = StyleSheet.create({
   },
   amount: {
     ...text.h3Black,
-    fontWeight: '500',
     color: colors.mainBlue,
   },
   ruleDescription: {

@@ -21,10 +21,10 @@ class TextInputField extends React.Component {
     const {validation, value, fieldActionComponent, innerLabel} = this.props;
     // Register form field for validation message component if name,formStore and validateRule props are provided
     if (validation) {
-      const {name, formStore, validateRule, multiName} = validation;
+      const {name, formStore, validateRule, multiName, invisibleContainer = true, displayName, customErrorMessage } = validation;
       formStore.registerFormField(name, validateRule, value, multiName);
       this.fieldValidation = (
-        <ValidationMessage formStore={formStore} name={name} ivisibleContainer={validation.ivisibleContainer}/>
+        <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} invisibleContainer={invisibleContainer}/>
       );
     }
 
@@ -102,6 +102,7 @@ class TextInputField extends React.Component {
 
     if (multiline) {
       let rowsNumber = numberOfLines;
+      styleTextfield = {...styleTextfield, textAlignVertical: 'top' };
       if (!numberOfLines) {
         rowsNumber = 4;
       }
@@ -119,7 +120,7 @@ class TextInputField extends React.Component {
     }
 
     return (
-      <View style={{alignSelf: 'stretch', padding: 0}}>
+      <View style={{alignSelf: 'stretch', paddingBottom: 5}}>
         { label || infoLabel ? <View style={{flexDirection: 'row', marginBottom: 8}}>
           <Text style={styles.label}>{label}</Text>
           <Text style={styles.infoLabel}>{infoLabel}</Text>
