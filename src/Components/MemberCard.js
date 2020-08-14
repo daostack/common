@@ -27,10 +27,11 @@ const MemberCard = ({
         <View style={styles.rightContainer}>
           <View
             style={{
-              ...layout.content,
-              ...{ padding: 0 },
+              // ...layout.content,
+              ...{alignItems: 'flex-end'},
             }}>
             <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
+            <Text style={text.runninglightGray}>{moment.unix(proposalInfo.createdAt).fromNow()}</Text>
 
             {/* Hide the time if the proposal is expired or new */}
             {(remainingSeconds > 0 && !LAUNCHED_STATES.includes(proposalInfo?.stageStr)) && (
@@ -85,10 +86,8 @@ const MemberCard = ({
   };
 
   return (
-    <View style={{ ...styles.cardContainer, ...styles.noBottomBorder }}>
+    <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <MemberImage userInfo={userInfo} />
-
-
       <View
         style={{
           ...layout.content,
@@ -104,9 +103,11 @@ const MemberCard = ({
             ...text.smallGreyText,
             marginTop: 2,
           }}>
-          {proposalInfo
-            ? moment.unix(proposalInfo.createdAt).fromNow()
-            : showMemberCreatedDate
+          {
+            // proposalInfo
+            //   ? moment.unix(proposalInfo.createdAt).fromNow()
+            //   :
+            showMemberCreatedDate
               ? `Member in ${userInfo?.daos?.length || 0} Common${
                   userInfo?.daos?.length !== 1 ? 's' : ''
               }`
@@ -122,6 +123,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     ...layout.content,
     ...layout.flexRow,
+    flex: 1,
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderColor: colors.grey4,
@@ -130,12 +132,25 @@ const styles = StyleSheet.create({
   noBottomBorder: {
     borderBottomWidth: 0,
   },
+  memberInfoContainer: {
+    ...layout.flexRow,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    alignContent: 'flex-start',
+    flexGrow: 1,
+    flexWrap: 'wrap',
+  },
   displayName: {
     ...font.primary.regular,
     ...font.fontSize(2),
     flexWrap: 'wrap',
+    fontWeight: '500',
+    fontSize: 16,
   },
   rightContainer: {
+    // ...layout.content,
+    //...layout.flexRow,
+    //alignItems: 'center',
     flex: 1,
     padding: 0,
     alignItems: 'flex-end',

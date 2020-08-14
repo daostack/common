@@ -75,7 +75,7 @@ const CreateStep3 = props => {
       }}>
       <CreateStepNavigation navigation={props.navigation} title="Funding" />
       <CreateStepDotHeader
-        title="Agenda"
+        title="Addtional Info"
         currentIndex={3}
         navigation={props.navigation}
         headerHeight={headerHeight}
@@ -100,9 +100,8 @@ const CreateStep3 = props => {
             backgroundColor: 'white',
           }}>
           <CreateStepHeaderTitle
-            title="Agenda"
-            subtitle="Describe your cause so people will understand what you want to
-            achieve and how"
+            title="Addtional Info"
+            subtitle="Define your course of action and rules of conduct."
           />
           <TextInputField
             value={''}
@@ -118,6 +117,7 @@ const CreateStep3 = props => {
               name: CreateCommonForm.ACTION,
               formStore: props.agendaFormStore,
               validateRule: 'string|required',
+              displayName: 'course of action',
             }}
           />
           <Text
@@ -136,9 +136,8 @@ const CreateStep3 = props => {
               ...font.lineHeight(2),
               color: colors.grey3,
             }}>
-            Any restrictions members should know about (Advertising in common
-            discussion, accepted language, you do not talk about Fight Club
-            etc.)
+            Use rules to set the tone for your Common's discussions.
+            (No advertising and spam, accepted language, etc.)
           </Text>
 
           <MultiLinkField

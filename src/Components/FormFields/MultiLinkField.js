@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
     color: colors.mainBlue,
     textAlign: 'left',
     ...layout.marginTopM,
+    fontSize: 16,
   },
 });
 

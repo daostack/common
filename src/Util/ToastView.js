@@ -95,8 +95,6 @@ export default class ToastView extends Component {
       break;
     }
 
-    console.log('TOAST ->', this.duration);
-
     const view = this.state.isShow ?
       <View
         style={styles.container}

@@ -893,7 +893,7 @@
 				CODE_SIGN_ENTITLEMENTS = common/common.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Z35C7M6SF6;
+				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
 				INFOPLIST_FILE = "common-dev-Info.plist";
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
 				INFOPLIST_PREFIX_HEADER = "${BUILD_DIR}/GeneratedInfoPlistDotEnv.h";
@@ -922,7 +922,7 @@
 				CODE_SIGN_ENTITLEMENTS = common/common.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Z35C7M6SF6;
+				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
 				INFOPLIST_FILE = "common-dev-Info.plist";
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
 				INFOPLIST_PREFIX_HEADER = "${BUILD_DIR}/GeneratedInfoPlistDotEnv.h";
