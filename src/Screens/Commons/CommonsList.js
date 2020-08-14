@@ -95,7 +95,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     let unsubscribeAllDaos = null;
     let unsubscribeMyDaos = null;
     const getDaos = async () => {
-      unsubscribeAllDaos = await DaoService.getInstance().subscribeToDaosList(userStore.userInfo.uid, userStore.userInfo.safeAddress, loadDaosList);
+      unsubscribeAllDaos = await DaoService.getInstance().subscribeToDaosList(loadDaosList);
       unsubscribeMyDaos = await DaoService.getInstance().subscribeToMyDaosList(userStore.userInfo.uid, userStore.userInfo.safeAddress, loadMyDaosList);
     };
 
@@ -205,8 +205,6 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       </View>
     );
   };
-
-
 
   return (
     <>

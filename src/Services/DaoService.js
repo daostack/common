@@ -62,7 +62,7 @@ export default class DaoService {
 
   }
 
-  async subscribeToDaosList(userId, safeAddress, callback) {
+  async subscribeToDaosList(callback) {
     let daos = db
       .collection(DB_COLLECTIONS.daos);
 
