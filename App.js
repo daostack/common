@@ -349,12 +349,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             headerBackImage: () => (
               <Icon name="left-arrow" color={colors.black} size={32} />
             ),
-            headerRight: () => (
-              <Image
-                source={require('./src/Assets/questionmark.png')}
-                style={{resizeMode: 'contain', width: 20, height: 20}}
-              />
-            ),
+            // headerRight: () => (
+            //   <Image
+            //     source={require('./src/Assets/questionmark.png')}
+            //     style={{resizeMode: 'contain', width: 20, height: 20}}
+            //   />
+            // ),
           })}
         />
 
