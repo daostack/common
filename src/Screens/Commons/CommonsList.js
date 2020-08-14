@@ -62,15 +62,15 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       setAllDaosGroup({ title: '', data: [] });
       return [];
     }
-
-    let docs = snapshot.docs.map((doc, index) => {
+    const allCommons = snapshot.docs.filter(doc => !userStore.isDaoMember(doc.data().members));
+    let docs = allCommons.map((doc, index) => {
       return {
         ...{ id: doc.id },
         ...doc.data(),
         ...{
           coverPhoto:
-              doc.data().metadata?.image ||
-              `https://picsum.photos/id/${index * 10}/500/100.jpg`,
+            doc.data().metadata?.image ||
+            `https://picsum.photos/id/${index * 10}/500/100.jpg`,
         },
       };
     });
@@ -78,7 +78,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     daoStore.setDaos(docs);
 
     setAllDaosGroup({
-      title: `Discover more Commons (${docs?.length})`,
+      title: myDaosGroup?.data.length > 0 ? `Discover more Commons (${docs?.length})` : '',
       data: docs,
     });
 
@@ -95,8 +95,12 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     let unsubscribeAllDaos = null;
     let unsubscribeMyDaos = null;
     const getDaos = async () => {
+      if (userStore.userInfo) {
+        unsubscribeMyDaos = await DaoService.getInstance().subscribeToMyDaosList(userStore.userInfo.uid, userStore.userInfo.safeAddress, loadMyDaosList);
+      } else {
+        setMyDaosGroup({ title: '', data: [] });
+      }
       unsubscribeAllDaos = await DaoService.getInstance().subscribeToDaosList(loadDaosList);
-      unsubscribeMyDaos = await DaoService.getInstance().subscribeToMyDaosList(userStore.userInfo.uid, userStore.userInfo.safeAddress, loadMyDaosList);
     };
 
     getDaos();
@@ -108,7 +112,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
         unsubscribeMyDaos();
       }
     };
-  }, [daoStore, bottomSheetStore, userStore.isLoading]);
+  }, [daoStore, bottomSheetStore, userStore.userInfo]);
 
   const setDao = dao => {
     daoStore.setDao(dao);

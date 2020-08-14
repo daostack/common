@@ -161,6 +161,7 @@ const UserProfileData = ({
         <CommonsSwiper
           navigation={navigation}
           safeAddress={user.safeAddress}
+          userId={user.uid}
           onCountChange={onCommonsCountChange}
           showMax={showMaxData}
         />

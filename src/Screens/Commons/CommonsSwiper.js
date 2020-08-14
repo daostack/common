@@ -19,6 +19,7 @@ const CommonsSwiper = ({
   navigation,
   daoStore,
   safeAddress,
+  userId,
   onCountChange,
   showMax,
 }) => {
@@ -68,7 +69,7 @@ const CommonsSwiper = ({
   useEffect(() => {
     let unsubscribe = null;
     const getMyDaos = async () => {
-      unsubscribe = await DaoService.getInstance().subscribeToDaosList(loadMydaos);
+      unsubscribe = await DaoService.getInstance().subscribeToMyDaosList(userId, safeAddress, loadMydaos);
     };
 
     getMyDaos();
