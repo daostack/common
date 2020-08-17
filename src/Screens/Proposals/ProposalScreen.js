@@ -491,7 +491,9 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
                     />
                   </View>
                 </View>
-                <View style={styles.proposalProgressBar}>
+                <View style={{
+                  ...styles.proposalProgressBar,
+                  ...{ backgroundColor: isNaN(progressBarWidthPercent) ? colors.grey4 : colors.against}}}>
                   <View
                     style={{
                       ...styles.proposalInnerProgressBar,
@@ -595,7 +597,6 @@ const styles = StyleSheet.create({
   proposalProgressBar: {
     width: '100%',
     borderRadius: 7,
-    backgroundColor: colors.against,
     height: 8,
     alignItems: 'flex-start',
     justifyContent: 'center',
