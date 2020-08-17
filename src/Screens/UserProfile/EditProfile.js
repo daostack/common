@@ -16,6 +16,8 @@ import Icon from '../../Assets/iconfont/Icon';
 import Loader from '../../Components/Loader';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import Toast from '../../Util/Toast';
+import AuthService from '../../Services/AuthService';
+import { filterObjectByKeys } from '../../Util';
 
 const EditProfile = ({
   userStore,
@@ -35,8 +37,46 @@ const EditProfile = ({
     ),
   });
 
-  const onFormSubmit = updatedFields => {
-    userStore.setSignedInUser({...userStore.userInfo, ...updatedFields});
+  const formSave = async e => {
+
+    if (editProfileFormStore.isFormValid()) {
+
+      onFormSubmitStart();
+
+      const changedFields = editProfileFormStore.getChangedFormFieldsJson();
+
+      let authData = filterObjectByKeys(changedFields, [
+        EditProfileForm.FIELD_FIRST_NAME,
+        EditProfileForm.FIELD_LAST_NAME,
+        EditProfileForm.FIELD_PROFILE_IMAGE,
+      ]);
+      let publicData = filterObjectByKeys(changedFields, [
+        EditProfileForm.FIELD_INTRO,
+      ]);
+
+      try {
+        await AuthService.getInstance().updateUserData(authData, publicData);
+      } catch (err) {
+        console.log('Error -> ', err);
+        editProfileFormStore.form.meta.submitError = `${err.toString()}  \n ${
+          err.response
+            ? `\nCode: ${err.response.data.code}  \nMessage: ${err.response.data.message}`
+            : ''
+        }`;
+        editProfileFormStore.form.meta.isLoadingSubmit = false;
+        throw err;
+      }
+
+      onFormSubmitEnd(changedFields);
+    }
+  };
+
+  const onFormSubmitStart = updatedFields => {
+    Toast.loading('Updating your profile...');
+  };
+
+  const onFormSubmitEnd = updatedFields => {
+    userStore.setSignedInUser({ ...userStore.userInfo, ...updatedFields });
     Toast.done('Your profile is updated');
     navigation.goBack();
   };
@@ -60,11 +100,7 @@ const EditProfile = ({
   const renderBody = () => {
     return (
       <View style={styles.body}>
-        <EditProfileForm
-          firstOpening={route.params.isFirstOpening}
-          onFormClose={onFormClose}
-          onFormSubmit={onFormSubmit}
-        />
+        <EditProfileForm isFirstOpening={route.params.isFirstOpening }/>
       </View>
     );
   };
@@ -79,12 +115,44 @@ const EditProfile = ({
           style={styles.scrollView}>
           {userStore.userInfo ? renderBody() : <Loader />}
         </ScrollView>
+
+        <View style={styles.containerRow}>
+          {route.params.isFirstOpening ? (
+            <TouchableOpacity
+              style={{ ...styles.btns, ...layout.btnOutline, ...layout.marginRightS }}
+              onPress={onFormClose}>
+              <Text style={text.buttonblue}>Skip</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={{ ...styles.btns, ...layout.btnOutline, ...layout.marginRightS }}
+              onPress={onFormClose}>
+              <Text style={text.buttonblue}>Cancel</Text>
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity
+            style={{ ...styles.btns, ...layout.btnPrimary, ...layout.marginLeftS }}
+            onPress={formSave}>
+            <Text style={text.buttoncenterwhite}>Save</Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  btns: {
+    alignSelf: 'stretch',
+  },
+  containerRow: {
+    ...layout.content,
+    ...layout.flexRow,
+    justifyContent: 'space-between',
+    width: '100%',
+    backgroundColor: colors.white,
+  },
   scrollView: {
     flexGrow: 1,
 
