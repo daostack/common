@@ -106,7 +106,6 @@ export default class ProposalService {
   }
 
   async subscribeToPendingProposalsData(daoId, userSafeAddress, callback) {
-
     let proposals = db
       .collection(DB_COLLECTIONS.proposals)
       .where('dao', '==', daoId)
@@ -120,11 +119,10 @@ export default class ProposalService {
       ])
       .orderBy('closingAt', 'desc');
 
-    return proposals.onSnapshot(snapshot  => {
+    return proposals.onSnapshot(snapshot => {
       callback({
         pendingProposalCount: snapshot.docs.length,
-        usersPendingProposal:
-            snapshot.docs.find(doc => doc.data().proposer === userSafeAddress)?.data() || false,
+        usersPendingProposal: (userSafeAddress && snapshot.docs.find(doc => doc.data().proposer === userSafeAddress)?.data()) || false,
       });
     }, error => Toast.error(error));
 
