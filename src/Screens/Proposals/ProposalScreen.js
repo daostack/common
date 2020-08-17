@@ -40,6 +40,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   const [proposalInfo, setProposalInfo] = useState(false);
   const [proposedUser, setProposedUser] = useState(false);
   const [daoInfo, setDaoInfo] = useState({});
+  const [isSending, setIsSending] = useState(false);
   const [isMember, setIsMember] = useState(false);
   const [showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer] = useState(false);
   const routeProposalId = route?.params.proposalId;
@@ -63,7 +64,6 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   // Values for vote param required from the blockchain
   const VOTE_APPROVE = 1;
   const VOTE_REJECT = 2;
-  let isSending = false;
 
   useEffect(() => {
     let unsubscribe = null;
@@ -157,8 +157,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
       if (isSending || !userInfo?.uid) {
         return;
       }
-
-      isSending = true;
+      setIsSending(true);
 
       const userInfo = auth().currentUser;
       const message = inputText;
@@ -177,15 +176,15 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
           .then(() => {
             inputRef.current.clear();
             Keyboard.dismiss();
-            isSending = false;
+            setIsSending(false);
           })
           .catch(error => {
             Toast.error(error);
-            isSending = false;
+            setIsSending(false);
           });
       } else {
         Toast.error('Empty Message');
-        isSending = false;
+        setIsSending(false);
       }
     };
 
