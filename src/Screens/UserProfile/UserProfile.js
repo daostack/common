@@ -144,6 +144,7 @@ const UserProfile = ({userStore, navigation, route}) => {
                 <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
               </View>}
               <Text style={styles.version}>Common{isProduction ? '' : '-stg'} v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : '' })</Text>
+              <Text> code push is active </Text>
             </View>
           </ScrollView>
         </SafeAreaView>
