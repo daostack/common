@@ -4,63 +4,81 @@ import {numberFormatter} from '../Util';
 import {CommonActions} from '@react-navigation/native';
 import CommonCover from './Commons/CommonCover';
 import CommonStageSummary from './Commons/CommonStageSummary';
+import {string, object, number, func, shape} from 'prop-types';
 
-const CommonBox = props => {
-  return (
-    <TouchableOpacity
-      key={props.key}
-      onPress={() => {
-        props.onPress();
-        const navigate = CommonActions.navigate({
-          name: 'CommonProfile',
-          params: {
-            currCommon: props.common,
-          },
-        });
-        props.navigation.dispatch(navigate);
+const CommonBox = ({common, onPress, width, navigation, headerHeightLayouted}) => (
+  <TouchableOpacity
+    onPress={() => {
+      onPress();
+      const navigate = CommonActions.navigate({
+        name: 'CommonProfile',
+        params: {
+          currCommon: common,
+        },
+      });
+      navigation.dispatch(navigate);
+    }}
+    style={[styles.commonBox, {width: Platform.OS === 'ios' ? '100%' : width }]}
+    onLayout={ event => {
+      if (headerHeightLayouted) {
+        headerHeightLayouted(event.nativeEvent.layout.height);
+      }
+    }}>
+    <CommonCover
+      isMember={false}
+      commonInfo={{
+        cover: common.coverPhoto,
+        logo: common.logo,
+        name: common.name,
+        description: common.metadata?.byline,
       }}
-      style={[styles.commonBox, {width: Platform.OS === 'ios' ? '100%' : props.width }]}
-      onLayout={ event => {
-        if (props.headerHeightLayouted) {
-          props.headerHeightLayouted(event.nativeEvent.layout.height);
-        }
-      }}>
-      <CommonCover
-        isMember={false}
-        commonInfo={{
-          cover: props.common.coverPhoto,
-          logo: props.common.logo,
-          name: props.common.name,
-          description: props.common.metadata?.byline,
-        }}
-      />
+    />
 
-      <CommonStageSummary
-        isCommonCard={true}
-        commonProgressInfo={{
-          time: props.common.fundingGoalDeadline,
-          activeProposals:
-            props.common.numberOfBoostedProposals +
-            props.common.numberOfPreBoostedProposals +
-            props.common.numberOfQueuedProposals,
-          goal: props.common.fundingGoal,
-          members: props.common.memberCount * 1,
-          // TODO: get this value. Is it even tracked in the contract? need to check.
-          raised: props.common.balance,
-          currentBudget: numberFormatter(
-            // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
-            props.common.tokenTotalSupply,
-          ).toLocaleString(),
-        }}
-      />
-    </TouchableOpacity>
-  );
+    <CommonStageSummary
+      isCommonCard={true}
+      commonProgressInfo={{
+        time: common.fundingGoalDeadline,
+        activeProposals:
+          common.numberOfBoostedProposals +
+          common.numberOfPreBoostedProposals +
+          common.numberOfQueuedProposals,
+        goal: common.fundingGoal,
+        members: common.memberCount * 1,
+        // TODO: get this value. Is it even tracked in the contract? need to check.
+        raised: common.balance,
+        currentBudget: numberFormatter(
+          // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
+          common.tokenTotalSupply,
+        ).toLocaleString(),
+      }}
+    />
+  </TouchableOpacity>
+);
+
+CommonBox.propTypes = {
+  common: shape({
+    coverPhoto: string,
+    logo: string,
+    name: string,
+    metadata: object,
+    fundingGoalDeadline: number,
+    numberOfBoostedProposals: number,
+    numberOfPreBoostedProposals: number,
+    numberOfQueuedProposals: number,
+    fundingGoal: number,
+    memberCount: number,
+    balance: number,
+    tokenTotalSupply: string,
+  }).isRequired,
+  onPress: func.isRequired,
+  width: string.isRequired,
+  navigation: object.isRequired,
+  headerHeightLayouted: func,
 };
 
 const styles = StyleSheet.create({
   commonBox: {
     marginBottom: 20,
-
     borderRadius: 26,
     backgroundColor: '#ffffff',
     shadowColor: 'rgba(0, 26, 54, 0.08)',

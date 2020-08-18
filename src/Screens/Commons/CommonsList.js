@@ -13,6 +13,7 @@ import {db} from '../../Firebase';
 import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {font, colors} from '../../Theme';
+import {object} from 'prop-types';
 
 import {
   Placeholder,
@@ -227,6 +228,13 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       </SafeAreaView>
     </>
   );
+};
+
+CommonsList.propTypes = {
+  navigation: object,
+  daoStore: object,
+  bottomSheetStore: object,
+  userStore: object,
 };
 
 const styles = StyleSheet.create({
