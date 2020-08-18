@@ -3,7 +3,7 @@ import React from 'react';
 
 import {layout, colors, text, font} from '../../Theme';
 
-const JoinAmount = ({id, amount, isCustom, onPress, isSelected}) => {
+const JoinAmount = ({ id, amount, isCustom, onPress, isSelected, isMonthly}) => {
 
   const onAmountPress = e => {
     onPress(isCustom, amount, id);
@@ -14,7 +14,7 @@ const JoinAmount = ({id, amount, isCustom, onPress, isSelected}) => {
       style={isSelected ? styles.containerSelected : styles.container}
       onPress={onAmountPress}>
       <Text style={isSelected ? styles.amountSelected : styles.amount}>{`${
-        isCustom ? 'Other' : `$${amount}`
+        isCustom ? 'Other' : `$${amount}${isMonthly ? '/mo' : ''}`
       }`}</Text>
     </TouchableOpacity>
   );

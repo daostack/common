@@ -13,6 +13,7 @@ const AmountField = ({
   onCustomClose,
   onAmountSelected,
   minFeeToJoin,
+  isMonthly,
 }) => {
   const [isCustomSelected, setIsCustomSelected] = useState(0);
   const [selectedAmountId, setSelectedAmountId] = useState(-1);
@@ -46,7 +47,8 @@ const AmountField = ({
               isSelected={index === selectedAmountId}
               isCustom={index === 3}
               amount={c * minFeeToJoin}
-              onPress={onAmountPress} />)
+              onPress={onAmountPress}
+              isMonthly={isMonthly}/>)
         }
       </View>
 

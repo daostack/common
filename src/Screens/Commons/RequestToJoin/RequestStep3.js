@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {
   View,
+  Text,
   ScrollView,
   Dimensions,
   SafeAreaView,
   Animated,
 } from 'react-native';
 import AmountField from '../../../Components/FormFields/AmountField';
-import {colors} from '../../../Theme';
+import { colors, text, font, sizeLineHeight } from '../../../Theme';
 import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
@@ -29,7 +30,8 @@ const RequestStep3 = props => {
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
   const isFirstStepSkipped = props.route.params.skipFirstStep;
   // var ruleBody = [];
-  const { name } = props.daoStore.dao;
+  const { name, metadata } = props.daoStore.dao;
+  const isMonthly = metadata.contribution === 'monthly';
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -78,7 +80,7 @@ const RequestStep3 = props => {
     }
   };
 
-  const minContributionMessage = `Select the amount you would like to contribute ($${props.daoStore.dao.metadata.minFeeToJoin / 100} min.)`;
+  const minContributionMessage = `Select the amount you would like to contribute ${isMonthly ? 'each month' : ''} ($${props.daoStore.dao.metadata.minFeeToJoin / 100}${isMonthly ? '/mo' : ''} min.)`;
 
   return (
     <>
@@ -123,7 +125,11 @@ const RequestStep3 = props => {
               // padding: 24,
               backgroundColor: 'white',
             }}>
-            <RequestStepHeaderTitle title="Personal contribution" subtitle={minContributionMessage} />
+            {
+              isMonthly
+                ? <RequestStepHeaderTitle title="Monthly contribution" subtitle={minContributionMessage} />
+                : <RequestStepHeaderTitle title="Personal contribution" subtitle={minContributionMessage} />
+            }
 
             <View
               style={{
@@ -134,6 +140,7 @@ const RequestStep3 = props => {
             />
 
             <AmountField
+              isMonthly={isMonthly}
               navigation={props.navigation}
               formStore={props.personalContributionFormStore}
               onCustomSelect={onCustomSelect}
@@ -141,6 +148,12 @@ const RequestStep3 = props => {
               onAmountSelected={onAmountSelected}
               minFeeToJoin={props.daoStore.dao.metadata.minFeeToJoin / 100}
             />
+            <Text style={{
+              ...text.regularText,
+              textAlign: 'center',
+              color: colors.slate,
+            }}>
+              You can cancel the recurring payment at any time</Text>
           </View>
         </ScrollView>
         <RequestStepActionButton
