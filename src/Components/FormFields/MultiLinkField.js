@@ -1,10 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from './TextInputField';
-import {text, layout, colors, sizeL} from '../../Theme';
+import { text, layout, colors, sizeL } from '../../Theme';
+import Icon from '../../Assets/iconfont/Icon';
 
 const MultiLinkField = props => {
   const [count, setCount] = useState(1);
+  const [deletedFields, setDeletedFields] = useState([]);
+
   const {
     maxCount,
     validation,
@@ -19,8 +22,25 @@ const MultiLinkField = props => {
     // fieldName = validation.name;
   }, []);
 
+  const onFieldDeleted = (currIndex, currTitleItemValidation, currItemValidation) => {
+    if (currTitleItemValidation && currItemValidation) {
+      currTitleItemValidation.formStore.removeFormField(currTitleItemValidation.name);
+      currItemValidation.formStore.removeFormField(currItemValidation.name);
+    }
+    setDeletedFields([...deletedFields, currIndex]);
+  };
+
+  const onChangeText = (value, currTitleItemValidation) => {
+    if (value.length > 0) {
+      validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule + '|required');
+    } else {
+      validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule);
+    }
+
+  };
+
   const renderAddLinkBtn = index => {
-    if (index === count - 1 && (!maxCount || count < maxCount)) {
+    if (!maxCount || (count - deletedFields.length) < maxCount) {
       return (
         <TouchableOpacity>
           <Text style={styles.addLinkBtn} onPress={() => setCount(count + 1)}>
@@ -29,6 +49,15 @@ const MultiLinkField = props => {
         </TouchableOpacity>
       );
     }
+  };
+
+  const renderRemoveLinkBtn = (index, currTitleItemValidation, currItemValidation) => {
+    return (
+      <TouchableOpacity
+        onPress={() => onFieldDeleted(index, currTitleItemValidation, currItemValidation)}>
+        <Icon name="delete" size={16} />
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -54,7 +83,7 @@ const MultiLinkField = props => {
         currTitleItemValidation.invisibleContainer = true;
 
         return (
-          <View key={`key_${props.validation.name}_${currIndex + 1}`} style={layout.marginBottomM}>
+          !deletedFields.includes(currIndex) && <View key={`key_${props.validation.name}_${currIndex + 1}`} style={layout.marginBottomM}>
             {props.title ? (
               <TextInputField
                 label={props.label}
@@ -66,13 +95,7 @@ const MultiLinkField = props => {
             ) : null}
             <TextInputField
               value={''}
-              onChangeText={(value) => {
-                if (value.length > 0) {
-                  formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule + '|required');
-                } else {
-                  formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule);
-                }
-              }}
+              onChangeText={value => onChangeText(value, currTitleItemValidation)}
               viewStyle={{marginTop: 0}}
               placeholderText={
                 placeholderValueText ? placeholderValueText : 'https://'
@@ -82,10 +105,14 @@ const MultiLinkField = props => {
               multiline={multiline}
               validation={currItemValidation}
             />
-            {renderAddLinkBtn(currIndex)}
+            <View style={{ ...layout.flexRow, ...layout.marginTopM, ...{ justifyContent: 'flex-end' }}}>
+              {renderRemoveLinkBtn(currIndex, currTitleItemValidation, currItemValidation)}
+            </View>
           </View>
         );
       })}
+
+      {renderAddLinkBtn()}
     </View>
   );
 };
@@ -105,7 +132,6 @@ const styles = StyleSheet.create({
     ...text.h3Black,
     color: colors.mainBlue,
     textAlign: 'left',
-    ...layout.marginTopM,
     fontSize: 16,
   },
 });
