@@ -145,6 +145,20 @@ const CreateStep2 = props => {
     setSegmentedIndex(index);
   };
 
+  // iOS only
+  const onDone = () => {
+    if (pickDate) {
+      setShow(false);
+    } else {
+      props.fundingFormStore.fieldChanged(
+        CreateCommonForm.DEADLINE,
+        moment({}).unix(),
+      );
+      setPickDate(moment().toDate());
+      setShow(false);
+    }
+  };
+
   const push = () => {
     if (props.fundingFormStore.isFormValid()) {
       props.navigation.navigate('CreateStep3');
@@ -201,7 +215,7 @@ const CreateStep2 = props => {
           }}>
           <CreateStepHeaderTitle
             title="Funding"
-            subtitle="Set a minimum amount each member needs to contribute to the Common’s cause, And protect the money you raise from fraud."
+            subtitle="Control how this Common will collect and manage funds."
           />
           <View
             style={{
@@ -228,8 +242,8 @@ const CreateStep2 = props => {
             iconEmptyColor={colors.grey3}
             iconFillColor={colors.grey}
             viewStyle={{alignSelf: 'stretch'}}
-            label="Minimum joining contribution (min $5)"
-            subLabel="Set the minimum amount that members have to donate in order to join the Common. "
+            label="Minimum one-time contribution (min. $5)"
+            subLabel="Set the minimum amount that new members will have to contribute in order to join this Common."
             infoLabel="Required"
             autoCapitalize="none"
             autoCorrect={false}
@@ -237,10 +251,10 @@ const CreateStep2 = props => {
             validation={{
               name: CreateCommonForm.MINIMUM,
               formStore: props.fundingFormStore,
-              validateRule: 'required|integer|min:5',
+              validateRule: 'required|integer|min:5|max:1000',
             }}
           />
-          <View style={{}}>
+          <View style={{marginTop: 24}}>
             <View style={{flexDirection: 'row'}}>
               <Text style={styles.label}>Funds safety period</Text>
               <Text style={[styles.infoLabel, {alignSelf: 'flex-end'}]}>
@@ -248,9 +262,7 @@ const CreateStep2 = props => {
               </Text>
             </View>
             <Text style={styles.info2}>
-              Set a period of time before members can create proposals and
-              allocate the funds. this will allow more members to join and
-              participate in the decision making process.
+              Set a period in which members will not be able to create proposals and allocate the funds. This will allow more members to join and participate in the decision-making process.
             </Text>
 
             <SegmentedControlTab
@@ -276,16 +288,7 @@ const CreateStep2 = props => {
                 onBackdropPress={() => setShow(false)}
                 style={styles.view}>
                 <View style={{backgroundColor: 'white'}}>
-                  <View
-                    style={{
-                      height: 50,
-                      backgroundColor: colors.grey4,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'flex-end',
-                      position: 'relative',
-                    }}>
-                    {/* <Text
+                  {/* <Text
                     style={{
                       color: colors.slate,
                       fontSize: 14,
@@ -298,20 +301,12 @@ const CreateStep2 = props => {
                     }}>
                     {'Min. 1 week'}
                   </Text> */}
-                    <TouchableOpacity onPress={() => setShow(false)}>
-                      <Text
-                        style={{
-                          color: colors.mainBlue,
-                          fontSize: 16,
-                          fontWeight: 'bold',
-                          paddingRight: 20,
-                          textAlign: 'center',
-                        }}>
-                        {'Done'}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  {DatePicker}
+                  <TouchableOpacity onPress={onDone}>
+                    <Text
+                      style={styles.done}>
+                      Done
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               </Modal>
             ) : (
@@ -371,6 +366,13 @@ const styles = StyleSheet.create({
     ...font.primary.regular,
     ...font.fontSize(2),
     color: colors.mainBlue,
+  },
+  done: {
+    color: colors.mainBlue,
+    ...font.primary.bold,
+    ...font.fontSize(3),
+    paddingRight: 20,
+    textAlign: 'center',
   },
   info2: {
     marginVertical: sizeS,

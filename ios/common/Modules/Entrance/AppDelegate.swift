@@ -9,6 +9,7 @@
 import UIKit
 import React
 import Firebase
+import FirebaseCore
 import GoogleSignIn
 import CodePush
 

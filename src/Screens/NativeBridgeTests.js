@@ -20,7 +20,6 @@ import {
   graphHttpLink ,
   web3ProviderUrl ,
   relayerUrl ,
-  web3NetworkId ,
   COMMONTOKENADDRESS ,
 } from '../Config';
 import Toast from '../Util/Toast';

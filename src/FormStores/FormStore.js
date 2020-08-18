@@ -39,6 +39,11 @@ class FormStore {
     }
   }
 
+  updateFieldValidationRule(name, newRule) {
+    this.form.fields[name].rule = newRule;
+    this.validateField(name);
+  }
+
   removeFormField(name) {
     if (this.form.fields?.[name]) {
       delete this.form.fields[name];

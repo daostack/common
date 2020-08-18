@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {Text, StyleSheet, SectionList, View, ScrollView} from 'react-native';
-import {text, colors} from '../../Theme';
+import {Text, StyleSheet, SectionList, View, ScrollView, Image} from 'react-native';
+import {text, colors, font} from '../../Theme';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
 import moment from 'moment';
@@ -69,26 +69,31 @@ const ProposalDiscussion = props => {
 
   return (
     <View style={{flex: 1, backgroundColor: colors.paleGrey}}>
-      {/* <ChatRoom
-        path={`common/${commonId}/proposal/${proposalId}/discussion/${discussionId}/message`}
-      /> */}
-      <ScrollView style={{flex: 1}}>
-        <SectionList
-          sections={msgGroup}
-          ref={chatRef}
-          // ListFooterComponent={header}
-          renderItem={x => <DiscussionMessage data={x.item} />}
-          renderSectionFooter={({section: {date}}) => (
-            <Text style={styles.timeHeader}>
-              {moment().isSame(date, 'day') ? 'Today' : date}
-            </Text>
-          )}
-          keyExtractor={x => x.id}
-          stickySectionHeadersEnabled={true}
-          inverted={true}
-          contentContainerStyle={{paddingTop: 100}}
+      <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 120}}>
+        { msgGroup.length > 0 ?
+          <SectionList
+            sections={msgGroup}
+            ref={chatRef}
+            // ListFooterComponent={header}
+            renderItem={x => <DiscussionMessage data={x.item} />}
+            renderSectionFooter={({section: {date}}) => (
+              <Text style={styles.timeHeader}>
+                {moment().isSame(date, 'day') ? 'Today' : date}
+              </Text>
+            )}
+            keyExtractor={x => x.id}
+            stickySectionHeadersEnabled={true}
+            inverted={true}
+            contentContainerStyle={{paddingTop: 100}}
           // initialScrollIndex={2}
-        />
+          />
+          :
+          <View style={styles.emptyContainer}>
+            <Image source={require('../../Assets/empty-discussion.png')} style={{ width: 240, height: 240 }} />
+            <Text style={styles.emptyTitle}> No comments yet</Text>
+            <Text style={styles.emptyBody}>Have any thoughts? Share them with other members by adding the first comment.</Text>
+          </View>
+        }
       </ScrollView>
     </View>
   );
@@ -103,8 +108,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 3,
     color: colors.grey3,
-    fontSize: 12,
-    fontFamily: 'Roboto',
+    ...font.fontSize(2),
+    ...font.primary.regular,
+  },
+  emptyContainer: {
+    flex: 0.8,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyTitle: {
+    ...font.fontSize(3),
+    ...font.primary.bold,
+    paddingVertical: 12,
+  },
+  emptyBody: {
+    textAlign: 'center',
+    ...font.fontSize(2),
+    ...font.primary.regular,
   },
 });
 

@@ -14,12 +14,9 @@ import UserMessageCard from '../../Components/Discussion/UserMessageCard';
 import ImageView from 'react-native-image-viewing';
 import Loader from '../../Components/Loader';
 import ImageSize from 'react-native-image-size';
-import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
 import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {observer, inject} from 'mobx-react';
-import moment from 'moment';
 import {PROPOSAL_TYPE} from '../../Config';
 
 const ProposalData = props => {
@@ -93,164 +90,85 @@ const ProposalData = props => {
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [topMessage, setTopMessage] = useState([]);
 
-  const _renderTruncatedFooter = handlePress => {
-    return (
-      <Text style={styles.readMoreBtn} onPress={handlePress}>
-        Show more
-      </Text>
-    );
-  };
+  // const _renderTruncatedFooter = handlePress => {
+  //   return (
+  //     <Text style={styles.readMoreBtn} onPress={handlePress}>
+  //       Show more
+  //     </Text>
+  //   );
+  // };
 
-  const _renderRevealedFooter = handlePress => {
-    return (
-      <Text style={styles.readMoreBtn} onPress={handlePress}>
-        Show less
-      </Text>
-    );
-  };
+  // const _renderRevealedFooter = handlePress => {
+  //   return (
+  //     <Text style={styles.readMoreBtn} onPress={handlePress}>
+  //       Show less
+  //     </Text>
+  //   );
+  // };
 
-  const openBoostedInfo = () => {
-    props.bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BOOSTED_INFO);
-  };
+  // const openBoostedInfo = () => {
+  //   props.bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BOOSTED_INFO);
+  // };
 
-  const _handleTextReady = () => {
-    // ...
-  };
+  // const _handleTextReady = () => {
+  //   // ...
+  // };
 
-  let progressBarWidthPercent = 0;
+  // let progressBarWidthPercent = 0;
 
-  if (proposalInfo) {
-    progressBarWidthPercent =
-      (proposalInfo.votesFor /
-        (proposalInfo.votesFor + proposalInfo.votesAgainst)) *
-      100;
-  }
+  // if (proposalInfo) {
+  //   progressBarWidthPercent =
+  //     (proposalInfo.votesFor /
+  //       (proposalInfo.votesFor + proposalInfo.votesAgainst)) *
+  //     100;
+  // }
 
-  const isBoosted = props.stage === 'Boosted';
+  // const isBoosted = props.stage === 'Boosted';
 
   return proposalInfo ? (
     <>
       <View style={styles.container}>
-        <View style={styles.proposalCard}>
-          <ProposalCardHeader
-            isBoosted={isBoosted}
-            openBoostedInfo={openBoostedInfo}
-            stage={proposalInfo.stageStr}
-            winningOutcome={proposalInfo.winningOutcome}
-            hasPassedExpiryDate={moment().isAfter(moment.unix(proposalInfo?.closingAt))}
-          />
-          <View style={layout.content}>
-            <View style={styles.proposalRowSubtitle}>
-              <Text style={text.smallBoldGreyText}>
-                {proposalInfo.votesFor + proposalInfo.votesAgainst} votes
-              </Text>
-              <Text style={text.smallGreyText}>
-                &nbsp;Created {moment.unix(proposalInfo.createdAt).fromNow()}
-              </Text>
-            </View>
 
-            <View style={styles.proposalProgressInfo}>
-              <View
-                style={{...layout.content, ...layout.flexRow, ...{padding: 0}}}>
-                <Icon
-                  name="approved"
-                  color={colors.lightishGreen}
-                  size={14}
-                  style={layout.marginRightXS}
-                />
-                <Text style={text.lightishGreenText}>
-                  {proposalInfo.votesFor}
-                </Text>
-              </View>
+        <Text style={text.h1BlackTitle}>{ proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
+          'Proposal Pitch' : 'Intro' }</Text>
 
-              <View
-                style={{...layout.content, ...layout.flexRow, ...{padding: 0}}}>
-                <Icon
-                  name="declined"
-                  color={colors.against}
-                  size={14}
-                  style={layout.marginRightXS}
-                />
-                <Text style={text.againstText}>
-                  {proposalInfo.votesAgainst}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.proposalProgressBar}>
-              <View
-                style={{
-                  ...styles.proposalInnerProgressBar,
-                  ...{
-                    width: `${progressBarWidthPercent}%`,
-                  },
-                }}
-              />
-            </View>
-          </View>
+        <View style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
+          <Text style={{...text.regularTextBig }}>{proposalInfo.description.description}</Text>
         </View>
 
-        <View style={styles.proposalCard}>
-          <View style={layout.content}>
-            <View style={styles.proposalColumnSubtitle}>
-              <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
-                { proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
-                  'Cost' : 'Contribution' }
-              </Text>
-              <Text style={text.h1Black}>{`$${
-                proposalInfo.type === PROPOSAL_TYPE.FundingRequest
-                  ? proposalInfo.fundingRequest.amount / 100
-                  : proposalInfo.description.funding / 100
-              }`}</Text>
-            </View>
 
-            <ReadMore
-              numberOfLines={5}
-              renderTruncatedFooter={_renderTruncatedFooter}
-              renderRevealedFooter={_renderRevealedFooter}
-              onReady={_handleTextReady}>
-              <Text style={text.blackText}>{proposalInfo.description.description}</Text>
-            </ReadMore>
-          </View>
-        </View>
 
-        <View style={styles.proposalCard}>
-          <View style={layout.content}>
-            <View style={styles.proposalColumnSubtitle}>
-              <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
-                Links
-              </Text>
-            </View>
+        <View style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
 
-            {proposalInfo.description?.links?.length > 0 && (
-              proposalInfo.description?.links.map((l) => <View style={styles.adRow}>
-                <Icon name="link" color={colors.mainBlue} size={16} />
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('Browser', {
-                      url: l.url,
-                    })
-                  }>
-                  <Text style={styles.adsText}>{l.title}</Text>
-                </TouchableOpacity>
-              </View>  )
-            )}
+          {proposalInfo.description?.links?.length > 0 && (
+            proposalInfo.description?.links.map((l) => <View style={styles.adRow}>
+              <Icon name="link" color={colors.mainBlue} size={16} />
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('Browser', {
+                    url: l.url,
+                  })
+                }>
+                <Text style={styles.adsText}>{l.title}</Text>
+              </TouchableOpacity>
+            </View>  )
+          )}
 
-            {proposalInfo.description?.files?.length > 0 && (
-              proposalInfo.description?.files.map((f, index) => <View style={styles.adRow}>
-                <Icon name="file" color={colors.mainBlue} size={16} />
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('Browser', {
-                      url: f.value,
-                    })
-                  }>
-                  <Text style={styles.adsText}>
-                    {`File ${index + 1}`}
-                  </Text>
-                </TouchableOpacity>
-              </View> )
-            )}
-          </View>
+          {proposalInfo.description?.files?.length > 0 && (
+            proposalInfo.description?.files.map((f, index) => <View style={styles.adRow}>
+              <Icon name="file" color={colors.mainBlue} size={16} />
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('Browser', {
+                    url: f.value,
+                  })
+                }>
+                <Text style={styles.adsText}>
+                  {`File ${index + 1}`}
+                </Text>
+              </TouchableOpacity>
+            </View> )
+          )}
         </View>
 
         <ScrollView
@@ -357,6 +275,7 @@ const styles = StyleSheet.create({
       height: 2,
     },
     textShadowRadius: 4,
+    elevation: 2,
   },
 
   imageGallery: {
@@ -375,7 +294,6 @@ const styles = StyleSheet.create({
 
   readMoreBtn: {
     ...text.h3Black,
-    fontWeight: '500',
     ...layout.flexStart,
     ...layout.marginTopL,
     textAlign: 'left',
@@ -469,7 +387,6 @@ const styles = StyleSheet.create({
   adsText: {
     ...text.h3Black,
     ...layout.marginLeftXS,
-    fontWeight: '500',
   },
 
   adRow: {

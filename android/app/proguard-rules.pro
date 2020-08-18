@@ -11,6 +11,10 @@
 
 -keep class com.daostack.common.BuildConfig { *; }
 
+# Hermes
+-keep class com.facebook.hermes.unicode.** { *; }
+-keep class com.facebook.jni.** { *; }
+
 # React native fast image
 -keep public class com.dylanvann.fastimage.* {*;}
 -keep public class com.dylanvann.fastimage.** {*;}

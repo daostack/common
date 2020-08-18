@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import {Text, View, Dimensions, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {CommonBox} from '../../Components';
 import {db} from '../../Firebase';
 import {inject, observer} from 'mobx-react';
@@ -12,15 +12,20 @@ import {
   Fade,
 } from 'rn-placeholder';
 import Toast from '../../Util/Toast';
+import { isDaoMemberBySafeAddress } from '../../Util';
+const {width} = Dimensions.get('window');
+
+const DEFAULT_HEADER_HEIGHT = 145;
 
 const CommonsSwiper = ({
   navigation,
   daoStore,
-  userStore,
+  safeAddress,
   onCountChange,
   showMax,
 }) => {
   const [myDaos, setMyDaos] = useState(myDaos);
+  const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
   let listRef = useRef([]);
 
   useEffect(() => {
@@ -33,10 +38,7 @@ const CommonsSwiper = ({
           } else {
             if (snapshot.docChanges().length !== 0) {
               const newList = snapshot.docChanges().map(({ doc}, index) => {
-                const isMember = userStore.isDaoMember(
-                  doc.data().members,
-                );
-
+                const isMember = isDaoMemberBySafeAddress(doc.data().members, safeAddress);
                 if (!isMember) {
                   return false;
                 }
@@ -75,20 +77,27 @@ const CommonsSwiper = ({
     };
     getMyDaos();
     return unsubscribe;
-  }, []);
+  }, [safeAddress]);
 
   const setDao = dao => {
+    // TODO: Remove it
     daoStore.setDao(dao);
+  };
+
+  const headerHeightLayouted = height => {
+    setHeaderHeight(height);
   };
 
   const renderCommonCard = (item, index) => {
     return (
-      index < showMax ? <CommonBox
+      !showMax || (index < showMax) ? <CommonBox
         key={item.id}
+        width={width - 60}
         common={item}
         navigation={navigation}
         onPress={() => setDao(item)}
-      /> : <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ ...styles.commonBox }}>
+        headerHeightLayouted={headerHeightLayouted}
+      /> : <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ ...styles.commonBox, height: headerHeight }}>
         <Text style={text.buttonblue}>{`View all ${myDaos.length} Commons`}</Text>
       </TouchableOpacity>
     );
@@ -116,6 +125,7 @@ const CommonsSwiper = ({
     ) : (
       <View style={styles.emptyObjectContainer}>
         <Image
+          style={{height: 120, width: 120}}
           source={require('../../../src/Assets/group.png')}
         />
         <Text style={{...text.h2Black, ...layout.marginTopS}}>No Commons</Text>
@@ -153,7 +163,7 @@ const styles = StyleSheet.create({
     ...layout.content,
     borderRadius: 14,
     backgroundColor: colors.iceBlue,
-    paddingHorizontal: sizeXXL,
+    alignSelf: 'center',
   },
 
   textNoCommons: {
@@ -175,7 +185,7 @@ const styles = StyleSheet.create({
   },
   commonBox: {
     width: '100%',
-    height: 237,
+    // height: 137,
     marginBottom: 20,
     alignItems: 'center',
     justifyContent: 'center',
@@ -188,10 +198,10 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 8,
     shadowOpacity: 1,
+    elevation: 6,
   },
 });
 
 export default inject(
   'daoStore',
-  'userStore',
 )(observer(CommonsSwiper));

@@ -1,4 +1,4 @@
-import {StyleSheet, TouchableOpacity} from 'react-native';
+import {StyleSheet, Platform, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {numberFormatter} from '../Util';
 import {CommonActions} from '@react-navigation/native';
@@ -19,7 +19,12 @@ const CommonBox = props => {
         });
         props.navigation.dispatch(navigate);
       }}
-      style={styles.commonBox}>
+      style={[styles.commonBox, {width: Platform.OS === 'ios' ? '100%' : props.width }]}
+      onLayout={ event => {
+        if (props.headerHeightLayouted) {
+          props.headerHeightLayouted(event.nativeEvent.layout.height);
+        }
+      }}>
       <CommonCover
         isMember={false}
         commonInfo={{
@@ -54,7 +59,6 @@ const CommonBox = props => {
 
 const styles = StyleSheet.create({
   commonBox: {
-    width: '100%',
     marginBottom: 20,
 
     borderRadius: 26,
@@ -66,6 +70,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 8,
     shadowOpacity: 1,
+    elevation: 4,
   },
 });
 

@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
-import {colors} from '../../Theme';
+import {colors, sizeM, font} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import FirebaseService from '../../Services/FirebaseService';
 import moment from 'moment';
@@ -85,13 +85,9 @@ const DiscussionCard = props => {
 
   return (
     <>
-      <TouchableOpacity
-        onPress={() =>navigateToDiscussion()}
-      >
+      <TouchableOpacity onPress={() =>navigateToDiscussion()}      >
         <View style={styles.container}>
-          <TouchableOpacity
-            style={{position: 'absolute', right: 0, top: 0, padding: 20}}
-            onPress={showOptions}>
+          <TouchableOpacity onPress={showOptions}>
             <Icon name="menu" size={20} />
           </TouchableOpacity>
           <Text style={styles.title} numberOfLines={2}>
@@ -100,52 +96,29 @@ const DiscussionCard = props => {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             {
               user.photoURL ? <FastImage
-                style={{
-                  backgroundColor: colors.grey3,
-                  height: 40,
-                  width: 40,
-                  borderRadius: 20,
-                }}
+                style={styles.image}
                 source={{uri: user.photoURL}}
               /> : <View
-                style={{
-                  backgroundColor: colors.grey3,
-                  height: 40,
-                  width: 40,
-                  borderRadius: 20,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
+                style={styles.displayNameContainer}
               >
-                <Text style={{fontSize: 17, color: 'white', fontWeight: '700'}}>
+                <Text style={styles.displayName}>
                   {user.displayName && user.displayName.substring(0,1)}
                 </Text>
               </View>
 
             }
-            <View style={{flex: 1, marginLeft: 10}}>
+            <View style={styles.primaryNameContainer}>
               <Text
-                style={{
-                  fontWeight: 'normal',
-                  fontFamily: 'Roboto',
-                  fontSize: 14,
-                }}>
+                style={styles.primaryName}>
                 {user.displayName}
               </Text>
               {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-              <Text style={{color: colors.grey3, fontSize: 12}}>
+              <Text style={styles.date}>
                 {moment(data.createTime.toDate()).fromNow()}
               </Text>
             </View>
           </View>
-          <Text
-            style={{
-              marginVertical: 10,
-              fontSize: 14,
-              lineHeight: 20,
-              fontFamily: 'Roboto',
-            }}
-            numberOfLines={3}>
+          <Text style={styles.message}     numberOfLines={3}>
             {data.message}
           </Text>
           <View
@@ -164,47 +137,26 @@ const DiscussionCard = props => {
                 style={{justifyContent: 'center', alignSelf: 'center'}}
                 onPress={() => navigateToDiscussion()}>
                 <Text
-                  style={{
-                    fontFamily: 'Roboto',
-                    fontSize: 16,
-                    fontWeight: '500',
-                    fontStyle: 'normal',
-                    color: colors.mainBlue,
-                    textAlign: 'center',
-                  }}>
+                  style={styles.startTheDiscussion}>
                   Start the discussion
                 </Text>
               </TouchableOpacity>
             </View>
           ) : (
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flexDirection: 'row'}}>
+            <View style={styles.messageCountContainer}>
+              <View style={styles.messageCountContainer}>
                 <Icon name="discussion" size={20} />
                 <Text
-                  style={{
-                    fontSize: 15,
-                    color: colors.grey3,
-                    paddingHorizontal: 5,
-                  }}>
+                  style={styles.msgCount}>
                   {msgCount}
                 </Text>
               </View>
               {/* <TouchableOpacity onPress={() => navigateToDiscussion()}> */}
               <TouchableOpacity
-                style={{
-                  flex: 1,
-                  flexDirection: 'row',
-                  justifyContent: 'flex-end',
-                }}
+                style={styles.navigateToDiscussion}
                 onPress={() => navigateToDiscussion()}>
                 <Text
-                  style={{
-                    textAlign: 'right',
-                    fontSize: 16,
-                    fontFamily: 'Roboto',
-                    fontWeight: '500',
-                    color: colors.mainBlue,
-                  }}>
+                  style={styles.joinTheDiscussion}>
                   Join the discussion
                 </Text>
                 <Icon name="right-arrow" size={20} color={colors.mainBlue} />
@@ -253,6 +205,59 @@ const DiscussionCard = props => {
 };
 
 const styles = StyleSheet.create({
+  messageCountContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  image: {
+    backgroundColor: colors.grey3,
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+  },
+  displayNameContainer: {
+    backgroundColor: colors.grey3,
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  navigateToDiscussion: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  date: {
+    color: colors.formPlaceholderColor,
+    ...font.primary.regular,
+    ...font.fontSize(2),
+  },
+  message: {
+    marginVertical: 10,
+    lineHeight: 22,
+    color: colors.black,
+    ...font.primary.regular,
+    ...font.fontSize(2),
+  },
+  joinTheDiscussion: {
+    textAlign: 'right',
+    ...font.primary.regular,
+    ...font.fontSize(3),
+    color: colors.mainBlue,
+  },
+  msgCount: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.grey3,
+    paddingHorizontal: 5,
+  },
+  primaryName: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.black,
+  },
   container: {
     backgroundColor: colors.white,
     // borderTopWidth: 1,
@@ -270,18 +275,26 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
+    elevation: 2,
+  },
+  primaryNameContainer: {
+    flex: 1,
+    marginLeft: sizeM,
+  },
+  displayName: {
+    ...font.primary.bold,
+    ...font.fontSize(3),
+    color: colors.white,
   },
   title: {
-    fontSize: 16,
+    ...font.primary.bold,
+    ...font.fontSize(3),
     marginBottom: 20,
-    fontWeight: 'bold',
-    fontFamily: 'Roboto',
     color: colors.black,
   },
   sheetTitle: {
-    fontFamily: 'Roboto',
-    fontSize: 20,
-    fontWeight: 'bold',
+    ...font.primary.bold,
+    ...font.fontSize(4),
     color: colors.black,
     paddingVertical: 15,
     textAlign: 'center',
@@ -294,9 +307,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
   },
   sheetText: {
-    fontFamily: 'Roboto',
-    fontSize: 18,
-    fontWeight: '500',
+    ...font.primary.regular,
+    ...font.fontSize(3),
     color: colors.against,
     marginLeft: 10,
   },
@@ -307,6 +319,12 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     marginHorizontal: 20,
     justifyContent: 'flex-start',
+  },
+  startTheDiscussion: {
+    ...font.primary.regular,
+    ...font.fontSize(3),
+    color: colors.mainBlue,
+    textAlign: 'center',
   },
 });
 
