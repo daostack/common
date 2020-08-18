@@ -54,6 +54,7 @@ const MultiLinkField = props => {
   const renderRemoveLinkBtn = (index, currTitleItemValidation, currItemValidation) => {
     return (
       <TouchableOpacity
+        style={styles.removeBtnContainer}
         onPress={() => onFieldDeleted(index, currTitleItemValidation, currItemValidation)}>
         <Icon name="delete" size={16} />
       </TouchableOpacity>
@@ -105,7 +106,7 @@ const MultiLinkField = props => {
               multiline={multiline}
               validation={currItemValidation}
             />
-            <View style={{ ...layout.flexRow, ...layout.marginTopM, ...{ justifyContent: 'flex-end' }}}>
+            <View style={styles.removeBtn}>
               {renderRemoveLinkBtn(currIndex, currTitleItemValidation, currItemValidation)}
             </View>
           </View>
@@ -118,6 +119,21 @@ const MultiLinkField = props => {
 };
 
 const styles = StyleSheet.create({
+  removeBtnContainer: {
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    backgroundColor: `${colors.black}10`,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  removeBtn: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    justifyContent: 'center',
+  },
   containerRow: {
     flexDirection: 'row',
     alignSelf: 'stretch',

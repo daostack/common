@@ -161,7 +161,7 @@ class FormStore {
       const allMultiLinksFields = [...multiFieldTitles.keys()].map(x => {
         return {title: multiFieldTitles[x], url: multiFieldValues[x]};
       });
-      // Remove
+      // Remove fields with empty values.
       changedFieldsJson[name] = allMultiLinksFields.filter(item => item.title || item.url);
     }
 
