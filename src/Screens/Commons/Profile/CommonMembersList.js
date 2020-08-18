@@ -11,8 +11,6 @@ import {observer, inject} from 'mobx-react';
 const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) => {
   const [membersInfo, setMembersInfo] = useState([]);
 
-  console.log('Members', membersInfo);
-
   const showUserProfile = uid => {
     navigation.navigate('Profile', {userId: uid});
   };
