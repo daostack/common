@@ -62,6 +62,8 @@ class FormStore {
       }
       return false;
     }
+
+    // Filter multiple fields
     return true;
   };
 
@@ -156,9 +158,11 @@ class FormStore {
     }
 
     if (multiFieldTitles.length > 0) {
-      changedFieldsJson[name] = [...multiFieldTitles.keys()].map(x => {
+      const allMultiLinksFields = [...multiFieldTitles.keys()].map(x => {
         return {title: multiFieldTitles[x], url: multiFieldValues[x]};
       });
+      // Remove
+      changedFieldsJson[name] = allMultiLinksFields.filter(item => item.title || item.url);
     }
 
     if (changedFieldsJson.length === 0) {
