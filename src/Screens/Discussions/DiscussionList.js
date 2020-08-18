@@ -76,8 +76,8 @@ const DiscussionList = ({commonId, navigation}) => {
 };
 
 DiscussionList.propTypes = {
-  commonId: string,
-  navigation: object,
+  commonId: string.isRequired,
+  navigation: object.isRequired,
 };
 
 export default React.memo(DiscussionList);

@@ -63,7 +63,7 @@ const CommonHome = ({userStore}) => {
 };
 
 CommonHome.propTypes = {
-  userStore: object,
+  userStore: object.isRequired ,
 };
 
 export default inject('userStore')(observer(CommonHome));

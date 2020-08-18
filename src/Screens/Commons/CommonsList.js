@@ -231,10 +231,10 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
 };
 
 CommonsList.propTypes = {
-  navigation: object,
-  daoStore: object,
-  bottomSheetStore: object,
-  userStore: object,
+  navigation: object.isRequired,
+  daoStore: object.isRequired,
+  bottomSheetStore: object.isRequired,
+  userStore: object.isRequired,
 };
 
 const styles = StyleSheet.create({
