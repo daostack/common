@@ -11,6 +11,7 @@ const MultiLinkField = props => {
     placeholderValueText,
     multiline,
     addMultiFieldBtnName,
+    maxLength,
   } = props;
 
   // let fieldName = null;
@@ -62,6 +63,7 @@ const MultiLinkField = props => {
                 innerLabel={maxCount ? `${currIndex + 1}/${maxCount}` : false}
                 placeholderText={props.title}
                 validation={currTitleItemValidation}
+                maxLength = {maxLength}
               />
             ) : null}
             <TextInputField

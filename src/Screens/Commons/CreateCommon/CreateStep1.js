@@ -116,6 +116,7 @@ const CreateStep1 = props => {
             autoCapitalize="none"
             returnKeyType="next"
             autoCorrect={false}
+            maxLength={24}
             validation={{
               name: CreateCommonForm.NAME,
               formStore: props.generalInfoFormStore,
@@ -134,6 +135,7 @@ const CreateStep1 = props => {
             placeholderText="What is the ultimate goal of the Common?"
             autoCapitalize="none"
             autoCorrect={false}
+            maxLength={40}
             validation={{
               name: CreateCommonForm.BYLINE,
               formStore: props.generalInfoFormStore,
@@ -162,6 +164,7 @@ const CreateStep1 = props => {
             allowsEditing={true}
             label="Links"
             title="Title"
+            maxLength={30}
             validation={{
               name: CreateCommonForm.LINKS,
               formStore: props.generalInfoFormStore,
