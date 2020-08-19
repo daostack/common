@@ -64,7 +64,7 @@ const MemberCard = ({
         memberCreatedDateInfo = memberCreatedDate
           ? `${
             monthShortNames[memberCreatedDate.getMonth()]
-          } ${memberCreatedDate.getDay()} `
+          } ${memberCreatedDate.getDate()} `
           : '';
       } else {
         memberCreatedDateInfo = 'NOT app user';
