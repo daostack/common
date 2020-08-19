@@ -120,7 +120,7 @@ const CreateStep1 = props => {
             validation={{
               name: CreateCommonForm.NAME,
               formStore: props.generalInfoFormStore,
-              validateRule: 'required|max:24',
+              validateRule: 'required',
               displayName: 'common name',
             }}
           />
@@ -139,7 +139,7 @@ const CreateStep1 = props => {
             validation={{
               name: CreateCommonForm.BYLINE,
               formStore: props.generalInfoFormStore,
-              validateRule: 'required|min:10|max:40',
+              validateRule: 'required|min:10',
               displayName: 'mission statement',
             }}
           />
@@ -168,7 +168,7 @@ const CreateStep1 = props => {
             validation={{
               name: CreateCommonForm.LINKS,
               formStore: props.generalInfoFormStore,
-              validateRule: {common: 'string|url', title: 'string|max:30'},
+              validateRule: {common: 'string|url', title: 'string'},
             }}
           />
         </View>
