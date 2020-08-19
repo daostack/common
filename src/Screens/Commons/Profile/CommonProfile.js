@@ -58,6 +58,12 @@ const CommonProfile = ({
   userStore,
   route: {params},
 })=> {
+  /* all of  params.commonId,
+  params.showRequestSentModal,
+  params.createdProposalId
+  are undefined
+  is this sth we plan on having in future?
+   */
   const [isMember, setMemberState] = useState(false);
   const window = Dimensions.get('window');
 

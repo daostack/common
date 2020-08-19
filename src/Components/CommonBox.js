@@ -1,4 +1,4 @@
-import {StyleSheet, Platform, TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {numberFormatter} from '../Util';
 import {CommonActions} from '@react-navigation/native';
@@ -6,7 +6,7 @@ import CommonCover from './Commons/CommonCover';
 import CommonStageSummary from './Commons/CommonStageSummary';
 import {string, object, number, func, shape} from 'prop-types';
 
-const CommonBox = ({common, onPress, width, navigation, headerHeightLayouted}) => (
+const CommonBox = ({common, onPress, width = '100%', navigation, headerHeightLayouted}) => (
   <TouchableOpacity
     onPress={() => {
       onPress();
@@ -18,7 +18,7 @@ const CommonBox = ({common, onPress, width, navigation, headerHeightLayouted}) =
       });
       navigation.dispatch(navigate);
     }}
-    style={[styles.commonBox, {width: Platform.OS === 'ios' ? '100%' : width }]}
+    style={[styles.commonBox, {width}]}
     onLayout={ event => {
       if (headerHeightLayouted) {
         headerHeightLayouted(event.nativeEvent.layout.height);
@@ -49,7 +49,7 @@ const CommonBox = ({common, onPress, width, navigation, headerHeightLayouted}) =
         currentBudget: numberFormatter(
           // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
           common.tokenTotalSupply,
-        ).toLocaleString(),
+        ),
       }}
     />
   </TouchableOpacity>
@@ -71,7 +71,7 @@ CommonBox.propTypes = {
     tokenTotalSupply: string,
   }).isRequired,
   onPress: func.isRequired,
-  width: string.isRequired,
+  width: number,
   navigation: object.isRequired,
   headerHeightLayouted: func,
 };

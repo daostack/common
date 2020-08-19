@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import {func, string, bool, shape, object} from 'prop-types';
+import {string, shape, object} from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
 import {colors, sizeM, font} from '../../Theme';
@@ -27,6 +27,7 @@ const DiscussionCard = ({
   navigation,
   bottomSheetStore,
 }) => {
+  //when will data.owner be not undefined?
   const discussionId = data.id;
   const [user, setUser] = useState({});
   const [msgCount, setMsgCount] = useState(0);

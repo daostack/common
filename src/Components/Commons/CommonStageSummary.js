@@ -4,11 +4,11 @@ import {numberFormatter} from '../../Util';
 import moment from 'moment';
 /* import * as Progress from 'react-native-progress'; */
 import {layout, text, font} from '../../Theme';
-import {bool, shape, number, string} from 'prop-types';
+import {bool, shape, number} from 'prop-types';
 
 const CommonStageSummary = ({
   isCommonCard,
-  commonProgressInfo: {time, raised, members},
+  commonProgressInfo: {time, raised, members, currentBudget},
 }) => {
   const deadlineMoment = moment.unix(time);
   const deadlineHasPassed = moment().isAfter(deadlineMoment);
@@ -95,7 +95,7 @@ CommonStageSummary.propTypes = {
     goal: number,
     members: number,
     raised: number,
-    currentBudget: string,
+    currentBudget: number,
   }),
 };
 

@@ -209,7 +209,6 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
             renderItem={x => (
               <CommonBox
                 common={x.item}
-                width="100%"
                 navigation={navigation}
                 // keyExtractor={x.item.id}
                 onPress={() => setDao(x.item)}
