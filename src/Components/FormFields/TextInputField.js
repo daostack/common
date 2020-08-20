@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingTop: 12,
     paddingBottom: 12,
+    color: colors.black,
     margin: 0,
     ...font.primary.regular,
     ...font.fontSize(2),
