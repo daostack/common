@@ -52,7 +52,7 @@ let isLocalPort = false;
 if (__DEV__) {
   axios.get('http://localhost:5001')
     .catch(error => {
-      isLocalPort = error.response.status === 404;
+      isLocalPort = error.response?.status === 404;
     });
 }
 

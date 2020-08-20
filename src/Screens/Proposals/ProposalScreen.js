@@ -40,6 +40,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
   const [proposalInfo, setProposalInfo] = useState(false);
   const [proposedUser, setProposedUser] = useState(false);
   const [daoInfo, setDaoInfo] = useState({});
+  const [isSending, setIsSending] = useState(false);
   const [isMember, setIsMember] = useState(false);
   const [showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer] = useState(false);
   const routeProposalId = route?.params.proposalId;
@@ -152,6 +153,12 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
 
   const messageInput = () => {
     const sendMessageToDiscussion = async () => {
+
+      if (isSending || !userInfo?.uid) {
+        return;
+      }
+      setIsSending(true);
+
       const userInfo = auth().currentUser;
       const message = inputText;
       if (message && message.trim().length) {
@@ -164,16 +171,20 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
             ownerId: userInfo.uid,
             ownerName: userInfo.displayName,
             ownerAvatar: userInfo.photoURL,
-            // proposalId: routeProposalId,
             discussionId: routeProposalId,
           })
           .then(() => {
             inputRef.current.clear();
             Keyboard.dismiss();
+            setIsSending(false);
           })
           .catch(error => {
             Toast.error(error);
+            setIsSending(false);
           });
+      } else {
+        Toast.error('Empty Message');
+        setIsSending(false);
       }
     };
 
