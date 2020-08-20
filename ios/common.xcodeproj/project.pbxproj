@@ -28,6 +28,8 @@
 		153D23FC24B5BE9A007E8F37 /* NunitoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A40576CB8A1C45D8A51C0FD5 /* NunitoSans-Regular.ttf */; };
 		153D23FD24B5BE9A007E8F37 /* NunitoSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0EBB067512D6426FB6FE57F2 /* NunitoSans-SemiBold.ttf */; };
 		153D23FE24B5BE9A007E8F37 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 30000652B0094E87A70CF813 /* Nunito-Regular.ttf */; };
+		155BDF7424EE766200499ABF /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 155BDF7324EE766100499ABF /* main.jsbundle */; };
+		155BDF7524EE766200499ABF /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 155BDF7324EE766100499ABF /* main.jsbundle */; };
 		155E056E24DD58AA000BE6A4 /* NotoSerif-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 267EC9C3E82F4ED9B159DC28 /* NotoSerif-SemiBold.ttf */; };
 		15AD00A224AB2E0F004FDADE /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 15AD00A124AB2E0F004FDADE /* Config.xcconfig */; };
 		15AD00A324AB2E0F004FDADE /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 15AD00A124AB2E0F004FDADE /* Config.xcconfig */; };
@@ -108,6 +110,7 @@
 		151C20522499E3F4006170CC /* common-stg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "common-stg.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		151C205C2499E503006170CC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		151C20612499E99B006170CC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		155BDF7324EE766100499ABF /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.jsbundle; path = ../main.jsbundle; sourceTree = "<group>"; };
 		15AD00A124AB2E0F004FDADE /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		15CD0307246E873C00EDADE2 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		15CD0309246E873C00EDADE2 /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
@@ -222,6 +225,7 @@
 		15E9071D2417D1B9008A5750 = {
 			isa = PBXGroup;
 			children = (
+				155BDF7324EE766100499ABF /* main.jsbundle */,
 				15AD00A124AB2E0F004FDADE /* Config.xcconfig */,
 				151C20582499E503006170CC /* firebase */,
 				15E907282417D1B9008A5750 /* common */,
@@ -504,6 +508,7 @@
 				151C20402499E3F4006170CC /* Assets.xcassets in Resources */,
 				151C20412499E3F4006170CC /* Main.storyboard in Resources */,
 				15AD00A524AB2E0F004FDADE /* Config.xcconfig in Resources */,
+				155BDF7524EE766200499ABF /* main.jsbundle in Resources */,
 				151C20602499E503006170CC /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -531,6 +536,7 @@
 				88F102D71F0644038ECC212B /* NunitoSans-Regular.ttf in Resources */,
 				CF0B3799DD99422BA7B8AE3C /* NunitoSans-SemiBold.ttf in Resources */,
 				1F88078D5AE44AD180187B06 /* Nunito-Regular.ttf in Resources */,
+				155BDF7424EE766200499ABF /* main.jsbundle in Resources */,
 				633AADEFA12A4EEF840ED24D /* NotoSerif-SemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -850,18 +856,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
 				INFOPLIST_FILE = "common-notification-service-ext copy-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.daostack.common.staging.common-notification-service-ext";
 				PRODUCT_NAME = "common-dev-notification-service-ext";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -869,18 +878,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
 				INFOPLIST_FILE = "common-notification-service-ext copy-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.daostack.common.staging.common-notification-service-ext";
 				PRODUCT_NAME = "common-dev-notification-service-ext";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -893,6 +905,7 @@
 				CODE_SIGN_ENTITLEMENTS = common/common.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
 				INFOPLIST_FILE = "common-dev-Info.plist";
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
@@ -903,6 +916,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.daostack.common.staging;
 				PRODUCT_NAME = "common-stg";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -922,6 +936,7 @@
 				CODE_SIGN_ENTITLEMENTS = common/common.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
 				INFOPLIST_FILE = "common-dev-Info.plist";
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
@@ -932,6 +947,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.daostack.common.staging;
 				PRODUCT_NAME = "common-stg";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -945,18 +961,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
 				INFOPLIST_FILE = "common-notification-service-ext/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.daostack.common.common-notification-service-ext";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -964,18 +983,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
 				INFOPLIST_FILE = "common-notification-service-ext/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.daostack.common.common-notification-service-ext";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -1105,6 +1127,7 @@
 				CODE_SIGN_ENTITLEMENTS = common/common.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
 				INFOPLIST_FILE = common/Support/Info.plist;
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
@@ -1115,6 +1138,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.daostack.common;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1135,6 +1159,7 @@
 				CODE_SIGN_ENTITLEMENTS = common/common.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
 				INFOPLIST_FILE = common/Support/Info.plist;
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
@@ -1145,6 +1170,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.daostack.common;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
