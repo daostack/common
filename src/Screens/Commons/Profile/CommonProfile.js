@@ -130,24 +130,24 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   ]);
 
   useEffect(() => {
-    if (userStore.userInfo) {
-      let unsubscribe = null;
-      let getPendingProposalsData = async () => {
-        unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
-          commonId,
-          userStore.userInfo.safeAddress,
-          data => {
-            setPendingProposalsData({...data});
-          },
-        );
-      };
-      getPendingProposalsData();
-      return () => {
-        if (unsubscribe) {
-          unsubscribe();
-        }
-      };
-    }
+    let unsubscribe = null;
+    let getPendingProposalsData = async () => {
+      unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
+        commonId,
+        userStore.userInfo?.safeAddress,
+        data => {
+          setPendingProposalsData({...data});
+        },
+      );
+    };
+
+    getPendingProposalsData();
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [commonId, isMember, userStore.userInfo]);
 
   useEffect(() => {
@@ -264,7 +264,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             style={layout.flexRow}>
             <View style={layout.flexRow}>
               <Text style={text.h4Black}>
-                {pendingProposalsData && // just to be showed at the same time
+                {pendingProposalsData &&// just to be showed at the same time
                     currCommon.memberCount +
                       ' ' +
                       `Member${currCommon.memberCount !== 1 ? 's' : ''}`}
