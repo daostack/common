@@ -545,7 +545,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   };
 
   const initialLayout = {width: Dimensions.get('window').width};
-  console.log(currCommon.id);
+  console.log('currCommon.id ->', currCommon.id);
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       {currCommon ? (
