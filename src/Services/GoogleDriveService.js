@@ -5,7 +5,7 @@ import RNFS from 'react-native-fs';
 const mimeType = 'application/json';
 const appDataFileName = 'appData.json';
 const appDataFolder = 'appDataFolder';
-const downloadHeaderPath = RNFS.DocumentDirectoryPath + '/' + appDataFileName;
+const downloadHeaderPath = `${RNFS.DocumentDirectoryPath}/${appDataFileName}`;
 
 export default class GoogleDriveService {
   constructor(accessToken) {
@@ -16,7 +16,7 @@ export default class GoogleDriveService {
     GDrive.init();
   }
 
-  static init = async accessToken => {
+  static init = async (accessToken) => {
     GoogleDriveService.instance = new GoogleDriveService(accessToken);
   };
 
@@ -35,14 +35,14 @@ export default class GoogleDriveService {
     });
   };
 
-  deleteAppDataFileById = async id => {
+  deleteAppDataFileById = async (id) => {
     GDrive.files.delete(id);
   };
 
-  getFileById = async id => {
+  getFileById = async (id) => {
     const downloadFileResult = await GDrive.files.download(
       id,
-      {toFile: downloadHeaderPath},
+      { toFile: downloadHeaderPath },
       {},
     );
     await downloadFileResult.promise;
@@ -50,7 +50,7 @@ export default class GoogleDriveService {
   };
 
   async getAppData() {
-    const response = await GDrive.files.list({spaces: appDataFolder});
+    const response = await GDrive.files.list({ spaces: appDataFolder });
     return response.json();
   }
 

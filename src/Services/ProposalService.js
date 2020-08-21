@@ -1,8 +1,8 @@
+import moment from 'moment';
 import { DB_COLLECTIONS } from './FirebaseService';
 import Toast from '../Util/Toast';
-import moment from 'moment';
 
-import {db} from '../Firebase';
+import { db } from '../Firebase';
 
 export const PROPOSAL_STAGE = {
   ExpiredInQueue: '0',
@@ -63,19 +63,17 @@ export default class ProposalService {
       query = query.where('type', '==', PROPOSAL_TYPE.JoinAndQuit);
     }
 
-
     return query.get()
-      .then(snapshots => {
+      .then((snapshots) => {
         if (!snapshots) {
           return { all: 0, active: 0, history: 0 };
-        } else {
-          const stats = {
-            all: snapshots.docs.length,
-            active: snapshots.docs.filter((s) => PROPOSAL_STAGES_ACTIVE.includes(s.data().stageStr)).length,
-            history: snapshots.docs.filter((s) => PROPOSAL_STAGES_HISTORY.includes(s.data().stageStr)).length,
-          };
-          return stats;
         }
+        const stats = {
+          all: snapshots.docs.length,
+          active: snapshots.docs.filter((s) => PROPOSAL_STAGES_ACTIVE.includes(s.data().stageStr)).length,
+          history: snapshots.docs.filter((s) => PROPOSAL_STAGES_HISTORY.includes(s.data().stageStr)).length,
+        };
+        return stats;
       });
   }
 
@@ -84,7 +82,7 @@ export default class ProposalService {
       .collection(DB_COLLECTIONS.proposals)
       .doc(proposalUid)
       .get()
-      .then(snapshots => {
+      .then((snapshots) => {
         if (!snapshots) {
           return null;
         }
@@ -95,9 +93,9 @@ export default class ProposalService {
   async getProposalDiscussionsCount(proposalId) {
     return db
       .collection(DB_COLLECTIONS.discussionMessages)
-      .where('discussionId', '==', proposalId )
+      .where('discussionId', '==', proposalId)
       .get()
-      .then(snapshots => {
+      .then((snapshots) => {
         if (!snapshots) {
           return 0;
         }
@@ -106,7 +104,7 @@ export default class ProposalService {
   }
 
   async subscribeToPendingProposalsData(daoId, userSafeAddress, callback) {
-    let proposals = db
+    const proposals = db
       .collection(DB_COLLECTIONS.proposals)
       .where('dao', '==', daoId)
       .where('closingAt', '>', moment().unix())
@@ -119,25 +117,22 @@ export default class ProposalService {
       ])
       .orderBy('closingAt', 'desc');
 
-    return proposals.onSnapshot(snapshot => {
+    return proposals.onSnapshot((snapshot) => {
       callback({
         pendingProposalCount: snapshot.docs.length,
-        usersPendingProposal: (userSafeAddress && snapshot.docs.find(doc => doc.data().proposer === userSafeAddress)?.data()) || false,
+        usersPendingProposal: (userSafeAddress && snapshot.docs.find((doc) => doc.data().proposer === userSafeAddress)?.data()) || false,
       });
-    }, error => Toast.error(error));
-
+    }, (error) => Toast.error(error));
   }
 
   async subscribeToProposalById(proposalId, callback) {
-
-    let proposals = db
+    const proposals = db
       .collection(DB_COLLECTIONS.proposals)
       .where('id', '==', proposalId);
 
-    return proposals.onSnapshot(snapshot => {
+    return proposals.onSnapshot((snapshot) => {
       callback(snapshot.docChanges()[0].doc._data);
-    }, error => Toast.error(error));
-
+    }, (error) => Toast.error(error));
   }
 
   async subscribeToProposalList(
@@ -150,9 +145,8 @@ export default class ProposalService {
     listRef,
     onlyRequestsToJoin,
     onlyFundingRequests,
-    membershipRequests = false
+    membershipRequests = false,
   ) {
-
     let proposalCollection = db.collection(DB_COLLECTIONS.proposals);
 
     if (commonId) {
@@ -212,44 +206,41 @@ export default class ProposalService {
 
     proposalCollection = proposalCollection.orderBy('closingAt', 'desc');
 
-
     return proposalCollection.onSnapshot(
-      snapshot => {
+      (snapshot) => {
         if (snapshot.empty) {
           listChangeCallback([]);
-        } else {
-          if (snapshot.docChanges().length !== 0) {
-            const newList = snapshot.docChanges().map(({doc}) => {
-              if (onlyRequestsToJoin) {
-                if (doc.data().type !== PROPOSAL_TYPE.JoinAndQuit) {
-                  return false;
-                }
+        } else if (snapshot.docChanges().length !== 0) {
+          const newList = snapshot.docChanges().map(({ doc }) => {
+            if (onlyRequestsToJoin) {
+              if (doc.data().type !== PROPOSAL_TYPE.JoinAndQuit) {
+                return false;
               }
-              return {
-                id: doc.id,
-                ...doc.data(),
-              };
-            });
-
-            let createList = newList
-              .map(item => {
-                let index = listRef.current.findIndex(v => v.id === item.id);
-                if (index > -1) {
-                  listRef.current[index] = item;
-                } else {
-                  return item;
-                }
-              })
-              .filter(item => item);
-            if (createList.length > 0) {
-              const allList = [...createList, ...listRef.current];
-              listRef.current = allList;
             }
-            listChangeCallback(listRef.current);
+            return {
+              id: doc.id,
+              ...doc.data(),
+            };
+          });
+
+          const createList = newList
+            .map((item) => {
+              const index = listRef.current.findIndex((v) => v.id === item.id);
+              if (index > -1) {
+                listRef.current[index] = item;
+              } else {
+                return item;
+              }
+            })
+            .filter((item) => item);
+          if (createList.length > 0) {
+            const allList = [...createList, ...listRef.current];
+            listRef.current = allList;
           }
+          listChangeCallback(listRef.current);
         }
       },
-      error => console.error(error),
+      (error) => console.error(error),
     );
   }
 }

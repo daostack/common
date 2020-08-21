@@ -1,9 +1,11 @@
 import React from 'react';
-import {Image, View, StyleSheet, Text, SafeAreaView} from 'react-native';
+import {
+  Image, View, StyleSheet, Text, SafeAreaView,
+} from 'react-native';
+import { func, string, bool } from 'prop-types';
 import LayoutHeader from './LayoutHeader';
 
-import {font, sizeM, sizeLineHeight} from '../../Theme';
-import {func, string, bool} from 'prop-types';
+import { font, sizeM, sizeLineHeight } from '../../Theme';
 
 const SentTemplate = ({
   children,
@@ -11,26 +13,24 @@ const SentTemplate = ({
   description,
   onClose,
   isCommonCreation,
-}) => {
-  return (
-    <SafeAreaView style={styles.areaView}>
-      <LayoutHeader onClose={onClose} />
-      <Image
-        style={styles.image}
-        source={
+}) => (
+  <SafeAreaView style={styles.areaView}>
+    <LayoutHeader onClose={onClose} />
+    <Image
+      style={styles.image}
+      source={
           isCommonCreation
             ? require('../../Assets/launch.png')
             : require('../../Assets/send.png')
         }
-      />
-      <View style={styles.container}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
-        {children}
-      </View>
-    </SafeAreaView>
-  );
-};
+    />
+    <View style={styles.container}>
+      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.description}>{description}</Text>
+      {children}
+    </View>
+  </SafeAreaView>
+);
 SentTemplate.propTypes = {
   title: string.isRequired,
   description: string.isRequired,

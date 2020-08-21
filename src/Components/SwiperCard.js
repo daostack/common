@@ -1,15 +1,15 @@
-import React, {useState} from 'react';
-import { View, Dimensions} from 'react-native';
-import {layout} from '../Theme';
+import React, { useState } from 'react';
+import { View, Dimensions } from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
+import { layout } from '../Theme';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-const SwiperCard = ({showMax, navigation, ...props}) => {
-  const renderNoDataCard = props.renderNoDataCard;
-  const cardRenderer = props.cardRenderer;
-  const extraData = props.extraData;
-  const data = props.data;
+const SwiperCard = ({ showMax, navigation, ...props }) => {
+  const { renderNoDataCard } = props;
+  const { cardRenderer } = props;
+  const { extraData } = props;
+  const { data } = props;
 
   const [swiperCurrentIndex, setSwiperCurrentIndex] = useState({
     index: 0,
@@ -17,21 +17,21 @@ const SwiperCard = ({showMax, navigation, ...props}) => {
   });
 
   const renderCard = (item, index) => {
-    let proposalCardStyle = {marginLeft: 20, marginRight: 20};
+    let proposalCardStyle = { marginLeft: 20, marginRight: 20 };
 
     if (
-      index === swiperCurrentIndex.prevIndex &&
-      swiperCurrentIndex.prevIndex !== swiperCurrentIndex.index
+      index === swiperCurrentIndex.prevIndex
+      && swiperCurrentIndex.prevIndex !== swiperCurrentIndex.index
     ) {
-      proposalCardStyle = {marginLeft: 50, marginRight: -10};
+      proposalCardStyle = { marginLeft: 50, marginRight: -10 };
     }
 
     if (index === swiperCurrentIndex.index + 1) {
-      proposalCardStyle = {marginLeft: -10, marginRight: 50};
+      proposalCardStyle = { marginLeft: -10, marginRight: 50 };
     }
 
     return (
-      <View style={{width: width}}>
+      <View style={{ width }}>
         <View style={proposalCardStyle}>{cardRenderer(item, index)}</View>
       </View>
     );

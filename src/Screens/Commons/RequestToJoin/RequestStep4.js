@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   View,
@@ -7,22 +7,23 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
+import { observer, inject } from 'mobx-react';
+import { CommonActions } from '@react-navigation/native';
 import TextInputField from '../../../Components/FormFields/TextInputField';
-import {colors, layout, text} from '../../../Theme';
-import {observer, inject} from 'mobx-react';
-const {width} = Dimensions.get('window');
+import { colors, layout, text } from '../../../Theme';
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepNavigation from './RequestStepNavigation';
 import RequestToJoinForm from '../../../Components/Forms/RequestToJoinForm';
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
-import {CommonActions} from '@react-navigation/native';
 import ArcService from '../../../Services/ArcService';
 import { preauthorizePayment } from '../../../Services/MangopayService';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
-import {showErrorPopUp} from '../../../Util';
+import { showErrorPopUp } from '../../../Util';
 
-const RequestStep4 = ({navigation, ...props}) => {
+const { width } = Dimensions.get('window');
+
+const RequestStep4 = ({ navigation, ...props }) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const isFirstStepSkipped = props.route.params.skipFirstStep;
@@ -91,16 +92,17 @@ const RequestStep4 = ({navigation, ...props}) => {
     }
   };
 
-  const subtitle =  `You are contributing $${props.personalContributionFormStore.form.fields.amount?.value} to this common`;
+  const subtitle = `You are contributing $${props.personalContributionFormStore.form.fields.amount?.value} to this common`;
 
   return (
     <>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView style={{ backgroundColor: colors.white }} />
       <SafeAreaView
         style={{
           flex: 1,
           backgroundColor: 'white',
-        }}>
+        }}
+      >
         <CreateStepNavigation
           navigation={navigation}
           title={name}
@@ -122,8 +124,9 @@ const RequestStep4 = ({navigation, ...props}) => {
           }}
           scrollEventThrottle={16}
           onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
-          ])}>
+            { nativeEvent: { contentOffset: { y: scrollY } } },
+          ])}
+        >
           <CreateStepHeader
             isFirstStepSkipped={isFirstStepSkipped}
             currentIndex={3}
@@ -133,7 +136,8 @@ const RequestStep4 = ({navigation, ...props}) => {
               flex: 1,
               // padding: 24,
               backgroundColor: 'white',
-            }}>
+            }}
+          >
             <RequestStepHeaderTitle title="Payment" subtitle={subtitle} />
             <TextInputField
               label="Credit card number"
@@ -148,7 +152,7 @@ const RequestStep4 = ({navigation, ...props}) => {
 
             <TextInputField
               label="Name on card"
-              value={/* __DEV__ ? */ 'Tester Tester'}
+              value="Tester Tester"
               editable={false}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NAME,
@@ -167,13 +171,14 @@ const RequestStep4 = ({navigation, ...props}) => {
 
                 padding: 0,
                 flex: 1,
-              }}>
+              }}
+            >
               <TextInputField
                 viewStyle={{
                   width: '45%',
                 }}
                 label="Expiration date"
-                value={/* __DEV__ ?  */'10/20'}
+                value="10/20"
                 placeholderText="MM/YY"
                 editable={false}
                 validation={{
@@ -204,8 +209,9 @@ const RequestStep4 = ({navigation, ...props}) => {
             <Text
               style={{
                 ...text.blackText,
-                ...{color: colors.grey2, textAlign: 'center'},
-              }}>
+                ...{ color: colors.grey2, textAlign: 'center' },
+              }}
+            >
               Your money will be refunded if the common does not approve your
               request or meet the funding goal
             </Text>
@@ -227,5 +233,5 @@ export default inject(
   'personalContributionFormStore',
   'paymentFormStore',
   'userStore',
-  'daoStore'
+  'daoStore',
 )(observer(RequestStep4));

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   ScrollView,
@@ -7,20 +7,21 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
+import { observer, inject } from 'mobx-react';
+import { CommonActions } from '@react-navigation/native';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 
 import RequestToJoinRule from '../../../Components/Commons/RequestToJoinRule';
-import {observer, inject} from 'mobx-react';
-const {width, height} = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepDotHeader from './RequestStepDotHeader';
-import {colors} from '../../../Theme';
+import { colors } from '../../../Theme';
 import CreateStepNavigation from './RequestStepNavigation';
 import RequestStepActionButton from '../RequestStepActionButton';
-import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from './MembershipRequest';
 
-const RequestStep1 = props => {
+const { width, height } = Dimensions.get('window');
+
+const RequestStep1 = (props) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   // const [ruleCount] = useState(1);
@@ -56,12 +57,13 @@ const RequestStep1 = props => {
 
   return (
     <>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView style={{ backgroundColor: colors.white }} />
       <SafeAreaView
         style={{
           flex: 1,
           backgroundColor: 'white',
-        }}>
+        }}
+      >
         <CreateStepNavigation
           navigation={props.navigation}
           title={name}
@@ -80,14 +82,13 @@ const RequestStep1 = props => {
             justifyContent: 'center',
             padding: 24,
           }}
-          onContentSizeChange={(_width, contentHeight) =>
-            contentHeight < (height - 150) && setPass(true)
-          }
+          onContentSizeChange={(_width, contentHeight) => contentHeight < (height - 150) && setPass(true)}
           scrollEventThrottle={16}
           onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
+            { nativeEvent: { contentOffset: { y: scrollY } } },
           ])}
-          onScrollEndDrag={onScrollToBottom}>
+          onScrollEndDrag={onScrollToBottom}
+        >
           <MembershipRequest />
           <CreateStepHeader
             currentIndex={0}
@@ -98,13 +99,14 @@ const RequestStep1 = props => {
               flex: 1,
               // alignItems: 'center',
               backgroundColor: 'white',
-            }}>
+            }}
+          >
             <RequestStepHeaderTitle title="Accept Common Rules" subtitle="If the Common approves your request you will become a member with equal voting rights." />
             <View
               style={styles.content}
             />
-            {Boolean(commonRules?.length) &&
-              commonRules.map((rule, index) => (
+            {Boolean(commonRules?.length)
+              && commonRules.map((rule, index) => (
                 <RequestToJoinRule
                   index={index + 1}
                   title={rule.title}

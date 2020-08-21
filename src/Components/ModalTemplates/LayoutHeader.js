@@ -1,21 +1,21 @@
 import React from 'react';
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  Image, StyleSheet, TouchableOpacity, View,
+} from 'react-native';
 
+import { func } from 'prop-types';
 import Icon from '../../Assets/iconfont/Icon';
-import {colors} from '../../Theme';
-import {func} from 'prop-types';
+import { colors } from '../../Theme';
 
-const LayoutHeader = ({onClose}) => {
-  return (
-    <View style={styles.headerSafeArea}>
-      <View style={styles.spacer} />
-      <Image style={styles.logo} source={require('../../Assets/appLogo.png')} />
-      <TouchableOpacity style={styles.closeBtn}>
-        <Icon name="close" color={colors.black} size={20} onPress={onClose} />
-      </TouchableOpacity>
-    </View>
-  );
-};
+const LayoutHeader = ({ onClose }) => (
+  <View style={styles.headerSafeArea}>
+    <View style={styles.spacer} />
+    <Image style={styles.logo} source={require('../../Assets/appLogo.png')} />
+    <TouchableOpacity style={styles.closeBtn}>
+      <Icon name="close" color={colors.black} size={20} onPress={onClose} />
+    </TouchableOpacity>
+  </View>
+);
 
 LayoutHeader.propTypes = {
   onClose: func.isRequired,

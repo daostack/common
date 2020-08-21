@@ -9,78 +9,80 @@ import React from 'react';
 import FastImage from 'react-native-fast-image';
 
 import Icon from '../../Assets/iconfont/Icon';
-import {layout, colors, text, font} from '../../Theme';
+import {
+  layout, colors, text, font,
+} from '../../Theme';
 
-const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
-  const renderCoverInSafeArea = () => {
-    return <SafeAreaView>{renderCover()}</SafeAreaView>;
-  };
+const CommonCover = ({
+  navigation, isMember, onHeaderMenuOpen, commonInfo,
+}) => {
+  const renderCoverInSafeArea = () => <SafeAreaView>{renderCover()}</SafeAreaView>;
 
-  const renderCover = () => {
-    return (
-      <>
-        <View style={styles.headerContainerWrap}>
-          <View
-            style={
+  const renderCover = () => (
+    <>
+      <View style={styles.headerContainerWrap}>
+        <View
+          style={
               navigation
                 ? styles.headerContainer
                 : {
                   ...styles.headerContainer,
                   ...styles.headerContainerCenterContent,
                 }
-            }>
-            {navigation ? (
-              <TouchableOpacity onPress={navigation.goBack}>
-                <Icon
-                  name="left-arrow"
-                  size={30}
-                  color={colors.white}
-                  style={layout.marginTopXS}
-                />
-              </TouchableOpacity>
-            ) : null}
+            }
+        >
+          {navigation ? (
+            <TouchableOpacity onPress={navigation.goBack}>
+              <Icon
+                name="left-arrow"
+                size={30}
+                color={colors.white}
+                style={layout.marginTopXS}
+              />
+            </TouchableOpacity>
+          ) : null}
 
-            <View
-              style={{
-                ...layout.content,
-                ...{padding: 0},
-              }}>
-              {commonInfo.logo ? (
-                <FastImage
-                  style={styles.logoImage}
-                  source={{
-                    uri: commonInfo.logo,
-                  }}
-                />
-              ) : null}
-              <Text style={styles.headerTitleWhite}>{commonInfo.name}</Text>
-            </View>
-            {navigation ? (
-              <TouchableOpacity onPress={onHeaderMenuOpen}>
-                <Icon
-                  name="menu-horizontal"
-                  size={30}
-                  color={colors.white}
-                  style={layout.marginTopXS}
-                />
-              </TouchableOpacity>
+          <View
+            style={{
+              ...layout.content,
+              ...{ padding: 0 },
+            }}
+          >
+            {commonInfo.logo ? (
+              <FastImage
+                style={styles.logoImage}
+                source={{
+                  uri: commonInfo.logo,
+                }}
+              />
             ) : null}
+            <Text style={styles.headerTitleWhite}>{commonInfo.name}</Text>
           </View>
-        </View>
-
-        <View style={styles.headerContent}>
-          <Text style={styles.headerDescription} numberOfLines={2}>{commonInfo.description}</Text>
-          {isMember && navigation ? (
-            <TouchableOpacity onPress={openAgendaScreen}>
-              <Text style={styles.headerViewAgenda}>View agenda</Text>
+          {navigation ? (
+            <TouchableOpacity onPress={onHeaderMenuOpen}>
+              <Icon
+                name="menu-horizontal"
+                size={30}
+                color={colors.white}
+                style={layout.marginTopXS}
+              />
             </TouchableOpacity>
           ) : null}
         </View>
-      </>
-    );
-  };
+      </View>
 
-  const openAgendaScreen = e => {
+      <View style={styles.headerContent}>
+        <Text style={styles.headerDescription} numberOfLines={2}>{commonInfo.description}</Text>
+        {isMember && navigation ? (
+          <TouchableOpacity onPress={openAgendaScreen}>
+            <Text style={styles.headerViewAgenda}>View agenda</Text>
+          </TouchableOpacity>
+        ) : null}
+      </View>
+    </>
+  );
+
+  const openAgendaScreen = (e) => {
     navigation.navigate('CommonAgenda');
   };
 
@@ -91,7 +93,8 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
           uri: commonInfo.cover,
         }}
         imageStyle={navigation ? {} : styles.backgoundRoundedTopEdges}
-        style={styles.coverBackground}>
+        style={styles.coverBackground}
+      >
         <View style={styles.coverOverlay}>
           {navigation ? renderCoverInSafeArea() : renderCover()}
         </View>

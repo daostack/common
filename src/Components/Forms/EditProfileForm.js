@@ -1,14 +1,19 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { observer, inject } from 'mobx-react';
 import TextInputField from '../FormFields/TextInputField';
 import ImageField from '../FormFields/ImageField';
-import {observer, inject} from 'mobx-react';
-import {layout, text, font, colors} from '../../Theme';
+import {
+  layout, text, font, colors,
+} from '../../Theme';
 
 class EditProfileForm extends React.Component {
   static FIELD_FIRST_NAME = 'firstName';
+
   static FIELD_LAST_NAME = 'lastName';
+
   static FIELD_INTRO = 'intro';
+
   static FIELD_PROFILE_IMAGE = 'photoURL';
 
   render() {
@@ -26,18 +31,19 @@ class EditProfileForm extends React.Component {
           alignSelf: 'stretch',
           flexGrow: 1,
           marginTop: 0,
-        }}>
+        }}
+      >
         {firstOpening && (
-          <View style={{marginBottom: 32}}>
+          <View style={{ marginBottom: 32 }}>
             <Text style={styles.title}>Complete your account</Text>
             <Text style={styles.subtitle}>Help the community to get to know you better</Text>
           </View>
         )}
         <ImageField
-          isAvatar={true}
+          isAvatar
           value={userStore.userInfo.photoURL}
-          allowsEditing={true}
-          title={'Select new avatar'}
+          allowsEditing
+          title="Select new avatar"
           validation={{
             name: EditProfileForm.FIELD_PROFILE_IMAGE,
             formStore: this.props.editProfileFormStore,
@@ -51,7 +57,7 @@ class EditProfileForm extends React.Component {
 
         <TextInputField
           value={userStore.userInfo.firstName}
-          viewStyle={{alignSelf: 'stretch'}}
+          viewStyle={{ alignSelf: 'stretch' }}
           label="First name"
           infoLabel="Required"
           placeholderText="First name"
@@ -67,7 +73,7 @@ class EditProfileForm extends React.Component {
 
         <TextInputField
           value={userStore.userInfo.lastName}
-          viewStyle={{alignSelf: 'stretch'}}
+          viewStyle={{ alignSelf: 'stretch' }}
           label="Last name"
           infoLabel="Required"
           placeholderText="Last name"
@@ -84,7 +90,7 @@ class EditProfileForm extends React.Component {
         <TextInputField
           label="Intro"
           placeholderText="I work on a DAO project at iteratec and am interested in DAOs, coops as well as crypto and blockchain in general."
-          multiline={true}
+          multiline
           value={userStore.userInfo.intro}
           validation={{
             name: EditProfileForm.FIELD_INTRO,
@@ -92,7 +98,6 @@ class EditProfileForm extends React.Component {
             validateRule: 'string',
           }}
         />
-
 
       </View>
     );

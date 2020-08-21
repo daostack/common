@@ -1,25 +1,31 @@
 import * as React from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
-import ValidationMessage from './ValidationMessage';
-import {observer} from 'mobx-react';
+import {
+  View, StyleSheet, TouchableOpacity, Text,
+} from 'react-native';
+import { observer } from 'mobx-react';
 import DocumentPicker from 'react-native-document-picker';
+import ValidationMessage from './ValidationMessage';
 import Toast from '../../Util/Toast';
 import Icon from '../../Assets/iconfont/Icon';
-import {text, layout, colors} from '../../Theme';
+import { text, layout, colors } from '../../Theme';
 import FirebaseService from '../../Services/FirebaseService';
 
 class FileField extends React.Component {
   fieldValidation = null;
+
   placeFieldActionComponent = null;
+
   static defaultProps;
 
   constructor(props) {
     super(props);
 
-    const {validation, value} = this.props;
+    const { validation, value } = this.props;
 
     if (validation) {
-      const {name, formStore, validateRule, multiName, displayName, customErrorMessage} = validation;
+      const {
+        name, formStore, validateRule, multiName, displayName, customErrorMessage,
+      } = validation;
       formStore.registerFormField(name, validateRule, value, multiName);
 
       this.fieldValidation = (
@@ -28,9 +34,9 @@ class FileField extends React.Component {
     }
   }
 
-  onChangeValue = fileUrl => {
+  onChangeValue = (fileUrl) => {
     if (this.props.validation) {
-      const {formStore, name} = this.props.validation;
+      const { formStore, name } = this.props.validation;
       formStore.fieldChanged(name, fileUrl);
     }
     this.props.onChangeFile && this.props.onChangeFile(fileUrl);
@@ -38,7 +44,7 @@ class FileField extends React.Component {
 
   onFieldDeleted = () => {
     if (this.props.validation) {
-      const { formStore, name} = this.props.validation;
+      const { formStore, name } = this.props.validation;
       formStore.removeFormField(name);
     }
     this.props.onFieldDeleted && this.props.onFieldDeleted();
@@ -74,12 +80,11 @@ class FileField extends React.Component {
   };
 
   renderFile = () => {
-    const {validation, navigation, value} = this.props;
+    const { validation, navigation, value } = this.props;
 
     const currValue = validation
       ? validation.formStore.form.fields[validation.name].value
       : value;
-
 
     const fileName = currValue
       .substring(currValue.lastIndexOf('/') + 1, currValue.length)
@@ -104,24 +109,24 @@ class FileField extends React.Component {
               navigation.navigate('Browser', {
                 url: currValue,
               });
-            }}>
+            }}
+          >
             <Text style={styles.adsText}>{`${fileName}.${ext}`}</Text>
           </TouchableOpacity>
         </View>
       );
-    } else {
-      return (
-        <TouchableOpacity onPress={this.pickFile}>
-          <Text style={styles.addFileBtn} >
-            Add File
-          </Text>
-        </TouchableOpacity>
-      );
     }
+    return (
+      <TouchableOpacity onPress={this.pickFile}>
+        <Text style={styles.addFileBtn}>
+          Add File
+        </Text>
+      </TouchableOpacity>
+    );
   };
 
   render() {
-    const { value, validation} = this.props;
+    const { value, validation } = this.props;
 
     const currValue = validation
       ? validation.formStore.form.fields[validation.name].value
@@ -130,12 +135,14 @@ class FileField extends React.Component {
     return (
       <View style={styles.container}>
         <View
-          style={styles.formFieldContainerGenral}>
+          style={styles.formFieldContainerGenral}
+        >
           <View style={styles.fileContainer}>
             {this.renderFile()}
             {currValue ? (
               <TouchableOpacity
-                onPress={() => this.onFieldDeleted()}>
+                onPress={() => this.onFieldDeleted()}
+              >
                 <Icon name="delete" size={16} />
               </TouchableOpacity>
             ) : null}

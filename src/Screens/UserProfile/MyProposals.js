@@ -1,4 +1,4 @@
-import React,  {useEffect} from 'react';
+import React, { useEffect } from 'react';
 
 import {
   SafeAreaView,
@@ -10,14 +10,16 @@ import {
   Dimensions,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {layout, colors, text, font,sizeS} from '../../Theme';
-import {TabView} from 'react-native-tab-view';
-import ProposalsList from '../../Screens/Proposals/ProposalsList';
+import { TabView } from 'react-native-tab-view';
 import { inject, observer } from 'mobx-react';
-import  ProposalService  from '../../Services/ProposalService';
+import {
+  layout, colors, text, font, sizeS,
+} from '../../Theme';
+import ProposalsList from '../Proposals/ProposalsList';
+import ProposalService from '../../Services/ProposalService';
 import CommonTabBar from '../CommonTabBar';
 
-const MyProposals = ({route, navigation, userStore}) => {
+const MyProposals = ({ route, navigation, userStore }) => {
   const [index, setIndex] = React.useState(0);
   const [stats, setStats] = React.useState({ all: 0, active: 0, history: 0 });
 
@@ -35,48 +37,39 @@ const MyProposals = ({route, navigation, userStore}) => {
     });
   };
 
-  const routes = [{key: 'all', title: `All (${stats.all})`},
-    { key: 'active', title: `Active (${stats.active})`},
-    { key: 'history', title: `History (${stats.history})`}];
+  const routes = [{ key: 'all', title: `All (${stats.all})` },
+    { key: 'active', title: `Active (${stats.active})` },
+    { key: 'history', title: `History (${stats.history})` }];
 
-  const AllProposals = () => {
-    return SceneRenderer(0);
-  };
+  const AllProposals = () => SceneRenderer(0);
 
-  const ActiveProposals = () => {
-    return SceneRenderer(1);
-  };
+  const ActiveProposals = () => SceneRenderer(1);
 
-  const HistoryProposals = () => {
-    return SceneRenderer(2);
-  };
+  const HistoryProposals = () => SceneRenderer(2);
 
-  const SceneRenderer = sceneIndex => {
-    return (
-      <View style={{ flex: 1, marginTop: 40, paddingHorizontal: 20}}>
-        <ProposalsList
-          membershipRequests={route.params.onlyMembershipRequests}
-          onlyFundingRequests={route.params.onlyFundingRequests}
-          navigation={navigation}
-          safeAddress={userStore.userInfo.safeAddress}
-          showAll={sceneIndex === 0 ? true : false}
-          isHistory={sceneIndex === 2 ? true : false}
-        />
-      </View>
-    );
+  const SceneRenderer = (sceneIndex) => (
+    <View style={{ flex: 1, marginTop: 40, paddingHorizontal: 20 }}>
+      <ProposalsList
+        membershipRequests={route.params.onlyMembershipRequests}
+        onlyFundingRequests={route.params.onlyFundingRequests}
+        navigation={navigation}
+        safeAddress={userStore.userInfo.safeAddress}
+        showAll={sceneIndex === 0}
+        isHistory={sceneIndex === 2}
+      />
+    </View>
+  );
 
-  };
+  const initialLayout = { width: Dimensions.get('window').width };
 
-  const initialLayout = {width: Dimensions.get('window').width};
-
-  const renderScene = ({route}) => {
+  const renderScene = ({ route }) => {
     switch (route.key) {
-    case 'all':
-      return AllProposals();
-    case 'active':
-      return ActiveProposals();
-    case 'history':
-      return HistoryProposals();
+      case 'all':
+        return AllProposals();
+      case 'active':
+        return ActiveProposals();
+      case 'history':
+        return HistoryProposals();
     }
   };
 
@@ -88,18 +81,21 @@ const MyProposals = ({route, navigation, userStore}) => {
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}
-          vertical={true}
-          nestedScrollEnabled={true}
-          directionalLockEnabled={true}
+          vertical
+          nestedScrollEnabled
+          directionalLockEnabled
           onScroll={onScreenScroll}
           scrollEventThrottle={16}
         >
           <View style={styles.sectionContainer}>
-            <Text style={styles.title}>My {route.params.onlyMembershipRequests ? 'membership requests' : 'proposals'}</Text>
+            <Text style={styles.title}>
+              My
+              {route.params.onlyMembershipRequests ? 'membership requests' : 'proposals'}
+            </Text>
           </View>
           <View style={styles.sectionTabView}>
             <TabView
-              navigationState={{index, routes}}
+              navigationState={{ index, routes }}
               renderScene={renderScene}
               onIndexChange={setIndex}
               initialLayout={initialLayout}

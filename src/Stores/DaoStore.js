@@ -1,4 +1,4 @@
-import {observable, action, decorate} from 'mobx';
+import { observable, action, decorate } from 'mobx';
 
 export const daoInfoFields = [
   'uid',
@@ -13,11 +13,17 @@ export const daoInfoFields = [
 
 class DaoStore {
   daoInfo;
+
   dao;
+
   daos;
+
   isLoading;
+
   stage;
+
   isError;
+
   constructor() {
     this.isLoading = false;
     this.daos = [];
@@ -25,19 +31,19 @@ class DaoStore {
     this.isError = null;
   }
 
-  setIsLoading = loading => {
+  setIsLoading = (loading) => {
     this.isLoading = loading;
   };
 
-  setCreationStatus = _stage => {
+  setCreationStatus = (_stage) => {
     this.stage = _stage;
   };
 
-  creationError = _error => {
+  creationError = (_error) => {
     this.isError = _error;
   };
 
-  setDaos = daosList => {
+  setDaos = (daosList) => {
     let daoArray = [];
     if (daosList) {
       daoArray = daosList;
@@ -47,7 +53,7 @@ class DaoStore {
     this.daos = daoArray;
   };
 
-  setDao = dao => {
+  setDao = (dao) => {
     this.dao = dao;
   };
 }

@@ -6,14 +6,18 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
+import { observer } from 'mobx-react';
 import ValidationMessage from './ValidationMessage';
-import {observer} from 'mobx-react';
 import Icon from '../../Assets/iconfont/Icon';
-import {layout, colors, font, text, sizeS, sizeL } from '../../Theme';
+import {
+  layout, colors, font, text, sizeS, sizeL,
+} from '../../Theme';
 
 class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
+
   toggleValueBtn;
+
   placeFieldActionComponent;
 
   static defaultProps;
@@ -35,10 +39,12 @@ class TextInputFieldWithIcon extends React.Component {
     } = this.props;
     // Register form field for validation message component if name,formStore and validateRule props are provided
     if (validation) {
-      const {name, formStore, displayName, validateRule, invisibleContainer = true, customErrorMessage } = validation;
+      const {
+        name, formStore, displayName, validateRule, invisibleContainer = true, customErrorMessage,
+      } = validation;
       formStore.registerFormField(name, validateRule, value);
       this.fieldValidation = (
-        <ValidationMessage displayName={displayName} formStore={formStore} customErrorMessage={customErrorMessage} name={name} invisibleContainer={invisibleContainer}/>
+        <ValidationMessage displayName={displayName} formStore={formStore} customErrorMessage={customErrorMessage} name={name} invisibleContainer={invisibleContainer} />
       );
     }
 
@@ -56,7 +62,7 @@ class TextInputFieldWithIcon extends React.Component {
       };
 
       if (!toggleName) {
-        toggleViewStyle = {...toggleViewStyle, ...{bottom: 7}};
+        toggleViewStyle = { ...toggleViewStyle, ...{ bottom: 7 } };
       } else {
         toggleViewStyle = {
           ...toggleViewStyle,
@@ -82,29 +88,29 @@ class TextInputFieldWithIcon extends React.Component {
     }
   }
 
-  onChangeText = currText => {
+  onChangeText = (currText) => {
     if (this.props.validation) {
-      const {formStore, name} = this.props.validation;
+      const { formStore, name } = this.props.validation;
       formStore.fieldChanged(name, currText);
     }
     this.props.onChangeText && this.props.onChangeText(currText);
   };
 
-  onFocus = e => {
-    this.setState({onFocus: true});
+  onFocus = (e) => {
+    this.setState({ onFocus: true });
   };
 
-  onBlur = e => {
-    this.setState({onFocus: false});
+  onBlur = (e) => {
+    this.setState({ onFocus: false });
     if (this.props.validation) {
-      const {formStore, name} = this.props.validation;
+      const { formStore, name } = this.props.validation;
       formStore.fieldBlured(name);
     }
     this.props.onBlur && this.props.onBlur(e);
   };
 
-  updateSize = width => {
-    this.setState({dynamicWidth: width});
+  updateSize = (width) => {
+    this.setState({ dynamicWidth: width });
   };
 
   renderTextField() {
@@ -133,12 +139,12 @@ class TextInputFieldWithIcon extends React.Component {
 
     let styleTextfield = styles.textfield;
 
-    const {formStore, name} = this.props.validation;
+    const { formStore, name } = this.props.validation;
     if (formStore.form.fields[name].error) {
-      styleTextfield = {...styles.textfield, ...styles.textfieldError};
+      styleTextfield = { ...styles.textfield, ...styles.textfieldError };
     }
     if (this.state?.onFocus) {
-      styleTextfield = {...styles.textfield, ...styles.textfieldFocus};
+      styleTextfield = { ...styles.textfield, ...styles.textfieldFocus };
     }
 
     let fieldStyle = {};
@@ -146,16 +152,16 @@ class TextInputFieldWithIcon extends React.Component {
     if (this.props.toggleName) {
       styleTextfield = {
         ...styleTextfield,
-        ...{height: 100, position: 'relative'},
+        ...{ height: 100, position: 'relative' },
       };
       fieldStyle = {
         width: 20 + this.state.dynamicWidth,
       };
     } else {
-      fieldStyle = {flex: 1};
+      fieldStyle = { flex: 1 };
     }
 
-    let defaultMultilineProps = {minHeight: 48};
+    let defaultMultilineProps = { minHeight: 48 };
 
     if (multiline) {
       let rowsNumber = numberOfLines;
@@ -172,8 +178,8 @@ class TextInputFieldWithIcon extends React.Component {
     }
 
     return (
-      <View style={{alignSelf: 'stretch'}}>
-        <View style={{flexDirection: 'row'}}>
+      <View style={{ alignSelf: 'stretch' }}>
+        <View style={{ flexDirection: 'row' }}>
           <Text style={styles.label}>{label}</Text>
           <Text style={styles.infoLabel}>{infoLabel}</Text>
         </View>
@@ -221,18 +227,18 @@ class TextInputFieldWithIcon extends React.Component {
     );
   }
 
-  renderPlaceholderForNotEditableField = editable => {
+  renderPlaceholderForNotEditableField = (editable) => {
     if (editable === false) {
       return <Text>{this.props.placeholderText || ''}</Text>;
     }
   };
 
   render() {
-    const {viewStyle} = this.props;
+    const { viewStyle } = this.props;
 
     if (this.placeFieldActionComponent) {
       return (
-        <View style={{...viewStyle}}>
+        <View style={{ ...viewStyle }}>
           <View>
             <View>{this.renderTextField()}</View>
             <View>{this.placeFieldActionComponent}</View>
@@ -240,14 +246,13 @@ class TextInputFieldWithIcon extends React.Component {
           {this.fieldValidation}
         </View>
       );
-    } else {
-      return (
-        <View style={{...viewStyle}}>
-          {this.renderTextField()}
-          {this.fieldValidation}
-        </View>
-      );
     }
+    return (
+      <View style={{ ...viewStyle }}>
+        {this.renderTextField()}
+        {this.fieldValidation}
+      </View>
+    );
   }
 }
 
@@ -258,7 +263,7 @@ TextInputFieldWithIcon.defaultProps = {
 
 const styles = StyleSheet.create({
   textfield: {
-    //minHeight: 48,
+    // minHeight: 48,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

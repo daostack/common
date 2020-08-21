@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-import {View} from 'react-native';
+import React, { useState } from 'react';
+import { View } from 'react-native';
 import FileField from './FileField';
-import {sizeM} from '../../Theme';
+import { sizeM } from '../../Theme';
 
-const MultiFileField = props => {
+const MultiFileField = (props) => {
   const [count, setCount] = useState(1);
   const [deletedFields, setDeletedFields] = useState([]);
 
@@ -19,26 +19,27 @@ const MultiFileField = props => {
     setDeletedFields([...deletedFields, currIndex]);
   };
 
-
   const { maxCount, navigation } = props;
 
   return (
-    <View style={{paddingTop: sizeM}}>
-      {[...Array(count).keys()].map(currIndex => {
+    <View style={{ paddingTop: sizeM }}>
+      {[...Array(count).keys()].map((currIndex) => {
         const currItemValidation = { ...props.validation };
         currItemValidation.name = `${currItemValidation.name}_multi_${currIndex}`;
         currItemValidation.multiName = props.validation.name;
 
         return (
-          !deletedFields.includes(currIndex) && <FileField
+          !deletedFields.includes(currIndex) && (
+          <FileField
             key={`key_${currItemValidation.name}_${currIndex}`}
-            onChangeFile={fileName => onChangeFile(fileName, currIndex)}
+            onChangeFile={(fileName) => onChangeFile(fileName, currIndex)}
             onFieldDeleted={() => onFieldDeleted(currIndex)}
-            allowsEditing={true}
-            title={'Add File'}
+            allowsEditing
+            title="Add File"
             validation={currItemValidation}
             navigation={navigation}
           />
+          )
         );
       })}
     </View>

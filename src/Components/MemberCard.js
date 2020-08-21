@@ -1,11 +1,13 @@
-import {StyleSheet, View, Text} from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import React from 'react';
-import {layout, colors, text, font,sizeXS} from '../Theme';
-import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
-import {monthShortNames} from '../Util/DateUtil';
 import moment from 'moment';
-import {PROPOSAL_TYPE} from '../Config';
+import {
+  layout, colors, text, font, sizeXS,
+} from '../Theme';
+import MemberImage from './Commons/MemberImage';
+import { monthShortNames } from '../Util/DateUtil';
+import { PROPOSAL_TYPE } from '../Config';
 import { LAUNCHED_STATES } from '../Services/ProposalService';
 
 const MemberCard = ({
@@ -18,18 +20,18 @@ const MemberCard = ({
 }) => {
   const renderRightContainer = () => {
     if (proposalInfo) {
-      const proposalValue =
-        proposalInfo.type === PROPOSAL_TYPE.JoinAndQuit
-          ? proposalInfo.description.funding / 100
-          : proposalInfo.fundingRequest.amount / 100;
+      const proposalValue = proposalInfo.type === PROPOSAL_TYPE.JoinAndQuit
+        ? proposalInfo.description.funding / 100
+        : proposalInfo.fundingRequest.amount / 100;
       const remainingSeconds = proposalInfo.closingAt - moment().unix();
       return (
         <View style={styles.rightContainer}>
           <View
             style={{
               // ...layout.content,
-              ...{alignItems: 'flex-end'},
-            }}>
+              ...{ alignItems: 'flex-end' },
+            }}
+          >
             <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
             <Text style={text.runninglightGray}>{moment.unix(proposalInfo.createdAt).fromNow()}</Text>
 
@@ -45,7 +47,7 @@ const MemberCard = ({
                     digitTxtStyle={text.smallGreyText}
                     separatorStyle={text.smallGreyText}
                     timeLabels={false}
-                    showSeparator={true}
+                    showSeparator
                     digitStyle={{
                       height: 'auto',
                       width: 'auto',
@@ -57,7 +59,7 @@ const MemberCard = ({
           </View>
         </View>
       );
-    } else if (showMemberCreatedDate) {
+    } if (showMemberCreatedDate) {
       let memberCreatedDateInfo = null;
       if (userInfo?.createdAt) {
         const memberCreatedDate = new Date(userInfo.createdAt.seconds * 1000);
@@ -76,7 +78,8 @@ const MemberCard = ({
             style={{
               ...text.smallGreyText,
               marginTop: 2,
-            }}>
+            }}
+          >
             {memberCreatedDateInfo}
           </Text>
         </View>
@@ -86,23 +89,26 @@ const MemberCard = ({
   };
 
   return (
-    <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
+    <View style={{ ...styles.cardContainer, ...styles.noBottomBorder }}>
       <MemberImage userInfo={userInfo} />
       <View
         style={{
           ...layout.content,
           ...layout.flexStart,
-          ...{flex: 2, flexWrap: 'wrap'},
-        }}>
+          ...{ flex: 2, flexWrap: 'wrap' },
+        }}
+      >
         <Text
-          style={styles.displayName}>
+          style={styles.displayName}
+        >
           {userInfo?.displayName || 'Unknown user'}
         </Text>
         <Text
           style={{
             ...text.smallGreyText,
             marginTop: 2,
-          }}>
+          }}
+        >
           {
             // proposalInfo
             //   ? moment.unix(proposalInfo.createdAt).fromNow()
@@ -111,7 +117,8 @@ const MemberCard = ({
               ? `Member in ${userInfo?.daos?.length || 0} Common${
                   userInfo?.daos?.length !== 1 ? 's' : ''
               }`
-              : `Member since ${memberSince || 'unknown'}`}
+              : `Member since ${memberSince || 'unknown'}`
+}
         </Text>
       </View>
       {renderRightContainer()}
@@ -149,8 +156,8 @@ const styles = StyleSheet.create({
   },
   rightContainer: {
     // ...layout.content,
-    //...layout.flexRow,
-    //alignItems: 'center',
+    // ...layout.flexRow,
+    // alignItems: 'center',
     flex: 1,
     padding: 0,
     alignItems: 'flex-end',

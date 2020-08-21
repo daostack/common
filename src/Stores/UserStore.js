@@ -1,4 +1,4 @@
-import {observable, action, decorate} from 'mobx';
+import { observable, action, decorate } from 'mobx';
 import { isDaoMemberBySafeAddress } from '../Util';
 
 export const userInfoFields = [
@@ -20,25 +20,27 @@ export const userInfoFields = [
 
 class UserStore {
   userInfo;
+
   isLoading;
+
   myCommons;
+
   myProposals;
+
   constructor() {
     this.userInfo = null;
     this.isLoading = false;
   }
 
-  isDaoMember = members => {
-    return isDaoMemberBySafeAddress(members, this.userInfo.safeAddress);
-  };
+  isDaoMember = (members) => isDaoMemberBySafeAddress(members, this.userInfo.safeAddress);
 
-  setIsLoading = loading => {
+  setIsLoading = (loading) => {
     this.isLoading = loading;
   };
 
-  setSignedInUser = newUserInfo => {
+  setSignedInUser = (newUserInfo) => {
     if (newUserInfo) {
-      let newUserObj = {};
+      const newUserObj = {};
       if (newUserInfo.uid) {
         newUserObj.uid = newUserInfo.uid;
       }

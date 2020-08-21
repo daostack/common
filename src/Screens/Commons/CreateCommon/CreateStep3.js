@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   View,
@@ -7,10 +7,9 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
+import { observer, inject } from 'mobx-react';
 import TextInputField from '../../../Components/FormFields/TextInputField';
-import {colors, font} from '../../../Theme';
-import {observer, inject} from 'mobx-react';
-const {width} = Dimensions.get('window');
+import { colors, font } from '../../../Theme';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
@@ -19,7 +18,9 @@ import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 
-const CreateStep3 = props => {
+const { width } = Dimensions.get('window');
+
+const CreateStep3 = (props) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
 
@@ -44,7 +45,6 @@ const CreateStep3 = props => {
     props.agendaFormStore.registerFormField(`ruleBody_${x}`, 'string');
     props.agendaFormStore.fieldChanged(`ruleBody_${x}`, text);
   };
-
 
   const isValid = () => {
     const titles = [...Array(ruleCount).keys()].map(x => `ruleTitles_${x}`);
@@ -72,7 +72,8 @@ const CreateStep3 = props => {
       style={{
         flex: 1,
         backgroundColor: 'white',
-      }}>
+      }}
+    >
       <CreateStepNavigation navigation={props.navigation} title="Funding" />
       <CreateStepDotHeader
         title="Addtional Info"
@@ -90,26 +91,28 @@ const CreateStep3 = props => {
         }}
         scrollEventThrottle={16}
         onScroll={Animated.event([
-          {nativeEvent: {contentOffset: {y: scrollY}}},
-        ])}>
+          { nativeEvent: { contentOffset: { y: scrollY } } },
+        ])}
+      >
         <CreateStepHeader currentIndex={2} />
         <View
           style={{
             flex: 1,
             // padding: 24,
             backgroundColor: 'white',
-          }}>
+          }}
+        >
           <CreateStepHeaderTitle
             title="Addtional Info"
             subtitle="Define your course of action and rules of conduct."
           />
           <TextInputField
-            value={''}
-            viewStyle={{alignSelf: 'stretch'}}
+            value=""
+            viewStyle={{ alignSelf: 'stretch' }}
             label="Course of action"
             infoLabel="Required"
             numberOfLines={6}
-            multiline={true}
+            multiline
             placeholderText="How do you plan to promote your agenda? Anything you want to avoid? Keep it simple and relatively broad - your plans can always change as you go."
             autoCapitalize="none"
             autoCorrect={false}
@@ -126,7 +129,8 @@ const CreateStep3 = props => {
               ...font.primary.bold,
               ...font.fontSize(3),
               ...font.lineHeight(2),
-            }}>
+            }}
+          >
             Rules of conduct
           </Text>
           <Text
@@ -135,21 +139,22 @@ const CreateStep3 = props => {
               ...font.fontSize(2),
               ...font.lineHeight(2),
               color: colors.grey3,
-            }}>
+            }}
+          >
             Use rules to set the tone for your Common's discussions.
             (No advertising and spam, accepted language, etc.)
           </Text>
 
           <MultiLinkField
-            allowsEditing={true}
+            allowsEditing
             title="Rule title"
             placeholderValueText="Rule description"
-            multiline={true}
+            multiline
             addMultiFieldBtnName="Add Rule"
             validation={{
               name: CreateCommonForm.RULES,
               formStore: props.agendaFormStore,
-              validateRule: {common: 'string', title: 'string|max:80'},
+              validateRule: { common: 'string', title: 'string|max:80' },
             }}
           />
 
@@ -219,7 +224,7 @@ export default inject(
   'daoStore',
 )(observer(CreateStep3));
 
-//generalInfoFormStore
-//fundingFormStore
-//agendaFormStore
-//reviewFormStore
+// generalInfoFormStore
+// fundingFormStore
+// agendaFormStore
+// reviewFormStore

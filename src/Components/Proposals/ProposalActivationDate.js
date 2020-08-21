@@ -1,12 +1,13 @@
 import React from 'react';
-import {Text, StyleSheet, View} from 'react-native';
-import {text, layout, colors, font} from '../../Theme';
+import { Text, StyleSheet, View } from 'react-native';
+import moment from 'moment';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import {
+  text, layout, colors, font,
+} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
-import moment from 'moment';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-
-const ProposalActivationDate = ({activationDate}) => {
+const ProposalActivationDate = ({ activationDate }) => {
   const deadlineMoment = moment.unix(activationDate);
   const deadlineHasPassed = moment().isAfter(deadlineMoment);
 

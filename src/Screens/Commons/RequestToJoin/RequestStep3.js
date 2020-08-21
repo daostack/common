@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   ScrollView,
@@ -6,21 +6,22 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
+import { observer, inject } from 'mobx-react';
+import { CommonActions } from '@react-navigation/native';
 import AmountField from '../../../Components/FormFields/AmountField';
-import {colors} from '../../../Theme';
-import {observer, inject} from 'mobx-react';
-const {width} = Dimensions.get('window');
+import { colors } from '../../../Theme';
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepNavigation from './RequestStepNavigation';
 import RequestToJoinForm from '../../../Components/Forms/RequestToJoinForm';
 
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
-import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from './MembershipRequest';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 
-const RequestStep3 = props => {
+const { width } = Dimensions.get('window');
+
+const RequestStep3 = (props) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   // const [ruleCount, setRuleCount] = useState(1);
@@ -40,11 +41,11 @@ const RequestStep3 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const onCustomClose = e => {
+  const onCustomClose = (e) => {
     setIsActionBtnHidden(true);
   };
 
-  const onCustomSelect = e => {
+  const onCustomSelect = (e) => {
     setIsActionBtnHidden(false);
     props.personalContributionFormStore.fieldChanged(
       RequestToJoinForm.FIELD_AMOUNT,
@@ -53,7 +54,7 @@ const RequestStep3 = props => {
     );
   };
 
-  const onAmountSelected = amount => {
+  const onAmountSelected = (amount) => {
     props.personalContributionFormStore.fieldChanged(
       RequestToJoinForm.FIELD_AMOUNT,
       amount,
@@ -82,12 +83,13 @@ const RequestStep3 = props => {
 
   return (
     <>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView style={{ backgroundColor: colors.white }} />
       <SafeAreaView
         style={{
           flex: 1,
           backgroundColor: 'white',
-        }}>
+        }}
+      >
         <CreateStepNavigation
           navigation={props.navigation}
           title={name}
@@ -109,8 +111,9 @@ const RequestStep3 = props => {
           }}
           scrollEventThrottle={16}
           onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
-          ])}>
+            { nativeEvent: { contentOffset: { y: scrollY } } },
+          ])}
+        >
           <MembershipRequest />
 
           <CreateStepHeader
@@ -122,7 +125,8 @@ const RequestStep3 = props => {
               flex: 1,
               // padding: 24,
               backgroundColor: 'white',
-            }}>
+            }}
+          >
             <RequestStepHeaderTitle title="Personal contribution" subtitle={minContributionMessage} />
 
             <View
@@ -146,11 +150,9 @@ const RequestStep3 = props => {
         <RequestStepActionButton
           title="Continue to payment"
           pass={
-            props.personalContributionFormStore.form.fields[
+            !props.personalContributionFormStore.form.fields[
               RequestToJoinForm.FIELD_AMOUNT
             ]?.error
-              ? false
-              : true
           }
           onPress={push}
           hidden={isActionBtnHidden}

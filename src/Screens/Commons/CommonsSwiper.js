@@ -1,19 +1,24 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {Text, View, Dimensions, Image, TouchableOpacity, StyleSheet} from 'react-native';
-import {CommonBox} from '../../Components';
-import {db} from '../../Firebase';
-import {inject, observer} from 'mobx-react';
-
-import SwiperCard from '../../Components/SwiperCard';
-import {layout, text, font,sizeXXL, colors} from '../../Theme';
+import React, { useEffect, useState, useRef } from 'react';
+import {
+  Text, View, Dimensions, Image, TouchableOpacity, StyleSheet,
+} from 'react-native';
+import { inject, observer } from 'mobx-react';
 import {
   Placeholder,
   PlaceholderMedia,
   Fade,
 } from 'rn-placeholder';
+import { CommonBox } from '../../Components';
+import { db } from '../../Firebase';
+
+import SwiperCard from '../../Components/SwiperCard';
+import {
+  layout, text, font, sizeXXL, colors,
+} from '../../Theme';
 import Toast from '../../Util/Toast';
 import { isDaoMemberBySafeAddress } from '../../Util';
-const {width} = Dimensions.get('window');
+
+const { width } = Dimensions.get('window');
 
 const DEFAULT_HEADER_HEIGHT = 145;
 
@@ -26,48 +31,46 @@ const CommonsSwiper = ({
 }) => {
   const [myDaos, setMyDaos] = useState(myDaos);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
-  let listRef = useRef([]);
+  const listRef = useRef([]);
 
   useEffect(() => {
     let unsubscribe;
     const getMyDaos = async () => {
       try {
-        unsubscribe = db.collection('daos').onSnapshot(snapshot => {
+        unsubscribe = db.collection('daos').onSnapshot((snapshot) => {
           if (snapshot.empty) {
             listChangeCallback([]);
-          } else {
-            if (snapshot.docChanges().length !== 0) {
-              const newList = snapshot.docChanges().map(({ doc}, index) => {
-                const isMember = isDaoMemberBySafeAddress(doc.data().members, safeAddress);
-                if (!isMember) {
-                  return false;
-                }
-                return {
-                  id: doc.id,
-                  ...doc.data(),
-                  ...{
-                    coverPhoto: doc.data().metadata?.image || `https://picsum.photos/id/${index *
-                      10}/500/100.jpg`,
-                  },
-                };
-              });
-
-              let createList = newList
-                .map(item => {
-                  let index = listRef.current.findIndex(v => v.id === item.id);
-                  if (index > -1) {
-                    listRef.current[index] = item;
-                  } else {
-                    return item;
-                  }
-                })
-                .filter(item => item);
-              if (createList.length > 0) {
-                const allList = [...createList, ...listRef.current];
-                listRef.current = allList;
+          } else if (snapshot.docChanges().length !== 0) {
+            const newList = snapshot.docChanges().map(({ doc }, index) => {
+              const isMember = isDaoMemberBySafeAddress(doc.data().members, safeAddress);
+              if (!isMember) {
+                return false;
               }
-              listChangeCallback(listRef.current);
+              return {
+                id: doc.id,
+                ...doc.data(),
+                ...{
+                  coverPhoto: doc.data().metadata?.image || `https://picsum.photos/id/${index
+                      * 10}/500/100.jpg`,
+                },
+              };
+            });
+
+            const createList = newList
+              .map((item) => {
+                const index = listRef.current.findIndex((v) => v.id === item.id);
+                if (index > -1) {
+                  listRef.current[index] = item;
+                } else {
+                  return item;
+                }
+              })
+              .filter((item) => item);
+            if (createList.length > 0) {
+              const allList = [...createList, ...listRef.current];
+              listRef.current = allList;
             }
+            listChangeCallback(listRef.current);
           }
         });
       } catch (error) {
@@ -79,31 +82,33 @@ const CommonsSwiper = ({
     return unsubscribe;
   }, [safeAddress]);
 
-  const setDao = dao => {
+  const setDao = (dao) => {
     // TODO: Remove it
     daoStore.setDao(dao);
   };
 
-  const headerHeightLayouted = height => {
+  const headerHeightLayouted = (height) => {
     setHeaderHeight(height);
   };
 
-  const renderCommonCard = (item, index) => {
-    return (
-      !showMax || (index < showMax) ? <CommonBox
+  const renderCommonCard = (item, index) => (
+    !showMax || (index < showMax) ? (
+      <CommonBox
         key={item.id}
         width={width - 60}
         common={item}
         navigation={navigation}
         onPress={() => setDao(item)}
         headerHeightLayouted={headerHeightLayouted}
-      /> : <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ ...styles.commonBox, height: headerHeight }}>
+      />
+    ) : (
+      <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ ...styles.commonBox, height: headerHeight }}>
         <Text style={text.buttonblue}>{`View all ${myDaos.length} Commons`}</Text>
       </TouchableOpacity>
-    );
-  };
+    )
+  );
 
-  const listChangeCallback = newList => {
+  const listChangeCallback = (newList) => {
     setMyDaos(newList);
     if (onCountChange) {
       onCountChange(newList.length);
@@ -125,25 +130,27 @@ const CommonsSwiper = ({
     ) : (
       <View style={styles.emptyObjectContainer}>
         <Image
-          style={{height: 120, width: 120}}
-          source={require('../../../src/Assets/group.png')}
+          style={{ height: 120, width: 120 }}
+          source={require('../../Assets/group.png')}
         />
-        <Text style={{...text.h2Black, ...layout.marginTopS}}>No Commons</Text>
+        <Text style={{ ...text.h2Black, ...layout.marginTopS }}>No Commons</Text>
         <Text
-          style={styles.textNoCommons}>
+          style={styles.textNoCommons}
+        >
           Join your first common and start making an impact
         </Text>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity
             style={styles.btn}
-            onPress={() => navigation.navigate('Explore')}>
+            onPress={() => navigation.navigate('Explore')}
+          >
             <Text style={text.buttonblue}>Explore Commons</Text>
           </TouchableOpacity>
         </View>
       </View>
     )
   ) : (
-    <View style={{paddingHorizontal: 20}}>
+    <View style={{ paddingHorizontal: 20 }}>
       <Placeholder Animation={Fade}>
         <PlaceholderMedia
           style={{

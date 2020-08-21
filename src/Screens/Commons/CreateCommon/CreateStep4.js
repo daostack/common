@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   Text,
@@ -10,10 +10,12 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import {StackActions} from '@react-navigation/native';
-import {observer, inject} from 'mobx-react';
+import { StackActions, CommonActions } from '@react-navigation/native';
+import { observer, inject } from 'mobx-react';
 import ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
+import Modal from 'react-native-modal';
+import Share from 'react-native-share';
 import Icon from '../../../Assets/iconfont/Icon';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
@@ -21,17 +23,12 @@ import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
 import FirebaseService from '../../../Services/FirebaseService';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
-import {numberFormatter, showErrorPopUp} from '../../../Util';
+import { numberFormatter, showErrorPopUp } from '../../../Util';
 import Toast from '../../../Util/Toast';
-import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ArcService from '../../../Services/ArcService';
-import Share from 'react-native-share';
 import { BlurView } from '../../../Components';
 
-
-const {width} = Dimensions.get('window');
-import {CommonActions} from '@react-navigation/native';
 import {
   colors,
   font,
@@ -42,6 +39,10 @@ import {
   sizeL,
   sizeLineHeight,
 } from '../../../Theme';
+
+import CreateStep4Indicators from './CreateStep4Indicators';
+
+const { width } = Dimensions.get('window');
 
 const stylesHeader = StyleSheet.create({
   generalInfoTitle: {
@@ -62,9 +63,7 @@ const stylesHeader = StyleSheet.create({
   },
 });
 
-import CreateStep4Indicators from './CreateStep4Indicators';
-
-const CreateStep4 = props => {
+const CreateStep4 = (props) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
@@ -78,15 +77,14 @@ const CreateStep4 = props => {
 
   console.log(form);
   const [templateIndex, setTemplateIndex] = useState(1);
-  const getImageUrl = index =>
-    `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
+  const getImageUrl = (index) => `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
   const [imageURI, setImageURI] = useState(
     getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))),
   );
   /* [avatarURL, setAvatarURL] = useState(null);
   */
 
-  //set default value for Avatar and Image fields
+  // set default value for Avatar and Image fields
   useEffect(() => {
     props.reviewFormStore.registerFormField(CreateCommonForm.AVATAR);
     props.reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
@@ -104,7 +102,7 @@ const CreateStep4 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const changeIndex = number => {
+  const changeIndex = (number) => {
     let index = templateIndex + number;
     if (index <= 1) {
       index = 1;
@@ -130,13 +128,13 @@ const CreateStep4 = props => {
     props.navigation.dispatch(navigate);
   };
 
-  const pickImage = isAvatar => {
+  const pickImage = (isAvatar) => {
     const options = {
       title: (isAvatar && 'Select Avatar') || 'Select profile image',
       quality: 0.7,
       allowsEditing: isAvatar,
     };
-    ImagePicker.showImagePicker(options, response => {
+    ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -146,23 +144,23 @@ const CreateStep4 = props => {
         Toast.loading('Uploading...');
         FirebaseService.getInstance()
           .uploadImage(response.uri)
-          .then(url => {
+          .then((url) => {
             Toast.hide();
             Toast.success('Done');
             if (isAvatar) {
-              //setAvatarURL(url);
+              // setAvatarURL(url);
               props.reviewFormStore.fieldChanged(CreateCommonForm.AVATAR, url);
             } else {
               props.reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
               setImageURI(url);
             }
           })
-          .catch(error => Toast.error(error));
+          .catch((error) => Toast.error(error));
       }
     });
   };
 
-  const shareCommon = event => {
+  const shareCommon = (event) => {
     const { name } = props.generalInfoFormStore.getChangedFormFieldsJson();
     const currCommonId = newCommonAddress.toLowerCase();
     const options = {
@@ -175,7 +173,7 @@ const CreateStep4 = props => {
   const forgeCommon = async () => {
     try {
       const address = props.userStore.userInfo.safeAddress;
-      const formDataInit = {...form};
+      const formDataInit = { ...form };
 
       const fundingGoalDeadline = formDataInit[CreateCommonForm.DEADLINE];
 
@@ -205,7 +203,7 @@ const CreateStep4 = props => {
         setNewCommonAddress(commonAddress);
       }
 
-      return {commonAddress};
+      return { commonAddress };
     } catch (e) {
       props.navigation.pop();
       showErrorPopUp(props.bottomSheetStore, e.message);
@@ -219,7 +217,8 @@ const CreateStep4 = props => {
       style={{
         flex: 1,
         backgroundColor: 'white',
-      }}>
+      }}
+    >
       <CreateStepNavigation navigation={props.navigation} title="Agenda" />
       <CreateStepDotHeader
         title="Final touches and review"
@@ -237,8 +236,9 @@ const CreateStep4 = props => {
         }}
         scrollEventThrottle={16}
         onScroll={Animated.event([
-          {nativeEvent: {contentOffset: {y: scrollY}}},
-        ])}>
+          { nativeEvent: { contentOffset: { y: scrollY } } },
+        ])}
+      >
         <CreateStepHeader currentIndex={3} />
         <View
           style={{
@@ -246,7 +246,8 @@ const CreateStep4 = props => {
             // alignItems: 'center',
             // padding: 24,
             backgroundColor: 'white',
-          }}>
+          }}
+        >
           <Text style={stylesHeader.generalInfoTitle}>
             Final touches and review
           </Text>
@@ -259,12 +260,13 @@ const CreateStep4 = props => {
               height: 225,
               justifyContent: 'center',
               alignItems: 'center',
-            }}>
+            }}
+          >
             <Image
               style={{
                 position: 'absolute',
                 height: 225,
-                width: width,
+                width,
                 backgroundColor: colors.grey4,
               }}
               source={{
@@ -280,12 +282,13 @@ const CreateStep4 = props => {
                 padding: 10,
                 color: 'white',
               }}
-              onPress={() => pickImage(false)}>
-              <BlurView style={{padding: 12, borderRadius: 14}}>
-                <Icon name={'addpicture'} color="white" size={20} />
+              onPress={() => pickImage(false)}
+            >
+              <BlurView style={{ padding: 12, borderRadius: 14 }}>
+                <Icon name="addpicture" color="white" size={20} />
               </BlurView>
             </TouchableOpacity>
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity
                 style={{
                   padding: 10,
@@ -293,7 +296,8 @@ const CreateStep4 = props => {
                   justifyContent: 'center',
                   alignContent: 'center',
                 }}
-                onPress={() => changeIndex(-1)}>
+                onPress={() => changeIndex(-1)}
+              >
                 <Icon name="left-arrow" color="white" size={35} />
               </TouchableOpacity>
               <View width={width - 100}>
@@ -311,7 +315,8 @@ const CreateStep4 = props => {
                   justifyContent: 'center',
                   alignContent: 'center',
                 }}
-                onPress={() => changeIndex(1)}>
+                onPress={() => changeIndex(1)}
+              >
                 <Icon name="right-arrow" color="white" size={35} />
               </TouchableOpacity>
             </View>
@@ -368,23 +373,23 @@ const CreateStep4 = props => {
             </View>
           )} */}
           <View
-            style={{height: 1, width: width, backgroundColor: colors.grey4}}
+            style={{ height: 1, width, backgroundColor: colors.grey4 }}
           />
-          <View style={{...styles.sectionTitle, justifyContent: 'center'}}>
+          <View style={{ ...styles.sectionTitle, justifyContent: 'center' }}>
             {/* <View style={{minWidth: 90, marginRight: 10}}>
               <CreateStep4Indicators
                 title="Goal"
                 number={numberFormatter(form[CreateCommonForm.FUNDING_GOAL])}
               />
             </View> */}
-            <View style={{width: 120, marginHorizontal: 10}}>
+            <View style={{ width: 120, marginHorizontal: 10 }}>
               <CreateStep4Indicators
                 title="Min. Contribution"
                 number={numberFormatter(form[CreateCommonForm.MINIMUM])}
               />
             </View>
 
-            <View style={{width: 120, marginHorizontal: 10}}>
+            <View style={{ width: 120, marginHorizontal: 10 }}>
               <CreateStep4Indicators
                 title="Period"
                 currencySymbol={false}
@@ -421,10 +426,11 @@ const CreateStep4 = props => {
               </TouchableOpacity> */}
             </View>
             {form[CreateCommonForm.LINKS]?.length ? (
-              form[CreateCommonForm.LINKS].map(x => (
+              form[CreateCommonForm.LINKS].map((x) => (
                 <Text
                   key={`key_${CreateCommonForm.LINKS}_${x}`}
-                  style={styles.textContent}>
+                  style={styles.textContent}
+                >
                   {x.title}
                 </Text>
               ))
@@ -442,10 +448,12 @@ const CreateStep4 = props => {
                     marginTop: 20,
                     paddingHorizontal: 24,
                     color: colors.grey3,
-                  }}>
-                  Rule #{index + 1}
+                  }}
+                >
+                  Rule #
+                  {index + 1}
                 </Text>
-                <View style={[styles.sectionTitle, {marginTop: 10}]}>
+                <View style={[styles.sectionTitle, { marginTop: 10 }]}>
                   <Text style={styles.textSubtitle}>{rule.title}</Text>
                 </View>
                 <Text style={styles.textContent}>{rule.url}</Text>
@@ -463,24 +471,28 @@ const CreateStep4 = props => {
       />
       <Modal
         isVisible={Boolean(newCommonAddress)}
-        avoidKeyboard={true}
+        avoidKeyboard
         backdropColor={colors.white}
         backdropOpacity={1}
-        style={{padding: 0}}>
+        style={{ padding: 0 }}
+      >
         <SentTemplate
-          isCommonCreation={true}
+          isCommonCreation
           title="Your journey starts now"
           description="Your Common is ready. Spread the word and invite others to join you. You can always share it later."
-          onClose={() => props.navigation.dispatch(StackActions.popToTop())}>
+          onClose={() => props.navigation.dispatch(StackActions.popToTop())}
+        >
           <View style={styles.shareContainer}>
             <TouchableOpacity
               style={styles.modalRequestSentBtnPrimary}
-              onPress={shareCommon}>
+              onPress={shareCommon}
+            >
               <Text style={text.buttoncenterwhite}>Share now</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.modalRequestSentBtnOutline}
-              onPress={goToCommon}>
+              onPress={goToCommon}
+            >
               <Text style={text.buttonblue}>Go to Common</Text>
             </TouchableOpacity>
           </View>

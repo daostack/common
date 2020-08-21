@@ -1,17 +1,20 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {layout, font,colors, text, sizeL, sizeXXL} from '../Theme';
-import {observer, inject} from 'mobx-react';
-import ImageField from '../Components/FormFields/ImageField';
-import CountBox from '../Components/CountBox';
-import Loader from '../Components/Loader';
-import EditProfileForm from '../Components/Forms/EditProfileForm';
+import {
+  StyleSheet, Text, TouchableOpacity, View,
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { observer, inject } from 'mobx-react';
+import { CommonActions } from '@react-navigation/native';
+import {
+  layout, font, colors, text, sizeL, sizeXXL,
+} from '../Theme';
+import ImageField from './FormFields/ImageField';
+import CountBox from './CountBox';
+import Loader from './Loader';
+import EditProfileForm from './Forms/EditProfileForm';
 import FirebaseService from '../Services/FirebaseService';
 import ProposalsList from '../Screens/Proposals/ProposalsList';
 import CommonsSwiper from '../Screens/Commons/CommonsSwiper';
-import { UserAvatar } from '../Components';
-
-import {CommonActions} from '@react-navigation/native';
+import { UserAvatar } from '.';
 
 import Icon from '../Assets/iconfont/Icon';
 
@@ -47,11 +50,11 @@ const UserProfileData = ({
     getUser();
   }, [userId, userStore.userInfo]);
 
-  const navigateToEditProfile = isFirstOpening => {
+  const navigateToEditProfile = (isFirstOpening) => {
     const navigate = CommonActions.navigate({
       name: 'EditProfile',
       params: {
-        isFirstOpening: isFirstOpening,
+        isFirstOpening,
       },
     });
     navigation.dispatch(navigate);
@@ -61,10 +64,10 @@ const UserProfileData = ({
     if (isEditMode) {
       return (
         <ImageField
-          isAvatar={true}
+          isAvatar
           value={user?.photoURL}
           placeholderUrl={user?.photoURL}
-          disableEdit={true}
+          disableEdit
           validation={{
             name: EditProfileForm.FIELD_PROFILE_IMAGE,
             formStore: editProfileFormStore,
@@ -72,29 +75,28 @@ const UserProfileData = ({
           }}
         />
       );
-    } else {
-      return (
-        <UserAvatar image={user.photoURL} iconName={'follow'}/>
-      );
     }
+    return (
+      <UserAvatar image={user.photoURL} iconName="follow" />
+    );
   };
 
   if (!user) {
     return <Loader />;
   }
 
-  const onProposalsCountChange = newCount => {
+  const onProposalsCountChange = (newCount) => {
     setProposalsCount(newCount);
   };
 
-  const onCommonsCountChange = newCount => {
+  const onCommonsCountChange = (newCount) => {
     setCommonsCount(newCount);
   };
 
   /**
    * @param newCount {number} - the new count of the requests
    */
-  const onRequestsCountChange = newCount => {
+  const onRequestsCountChange = (newCount) => {
     setRequestsCount(newCount);
   };
 
@@ -141,21 +143,29 @@ const UserProfileData = ({
       </View>
 
       <View style={styles.contentContainerWithoutPadding}>
-        <View style={{justifyContent: 'space-between', flexDirection: 'row', width: '100%'}}>
+        <View style={{ justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
           <Text
             style={{
               ...text.againstTextBlack,
               ...layout.marginBottomL,
               ...layout.paddingHorizontalL,
-            }}>{`Commons (${commonsCount})`}</Text>
-          {showMaxData && commonsCount > 0 && <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ flexDirection: 'row', ...layout.paddingHorizontalL}}>
+            }}
+          >
+            {`Commons (${commonsCount})`}
+          </Text>
+          {showMaxData && commonsCount > 0 && (
+          <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ flexDirection: 'row', ...layout.paddingHorizontalL }}>
             <Text
               style={{
                 ...text.h3Black,
                 ...layout.marginBottomL,
-              }}>{'View all'}</Text>
+              }}
+            >
+              View all
+            </Text>
             <Icon name="right-arrow" size={20} />
-          </TouchableOpacity>}
+          </TouchableOpacity>
+          )}
         </View>
 
         <CommonsSwiper
@@ -173,7 +183,10 @@ const UserProfileData = ({
               ...text.againstTextBlack,
               ...layout.marginBottomL,
               ...layout.paddingHorizontalL,
-            }}>{`Proposals (${proposalsCount})`}</Text>
+            }}
+          >
+            {`Proposals (${proposalsCount})`}
+          </Text>
           {showMaxData && proposalsCount > 0 && (
             <TouchableOpacity
               onPress={() => navigation.navigate('MyProposals', { onlyFundingRequests: true })}
@@ -183,7 +196,10 @@ const UserProfileData = ({
                 style={{
                   ...text.h3Black,
                   ...layout.marginBottomL,
-                }}>{'View all'}</Text>
+                }}
+              >
+                View all
+              </Text>
               <Icon name="right-arrow" size={20} />
             </TouchableOpacity>
           )}
@@ -193,8 +209,8 @@ const UserProfileData = ({
           onlyFundingRequests
           navigation={navigation}
           safeAddress={user.safeAddress}
-          showAll={true}
-          isSwiper={true}
+          showAll
+          isSwiper
           showMax={showMaxData}
           onCountChange={onProposalsCountChange}
         />
@@ -209,7 +225,9 @@ const UserProfileData = ({
               ...layout.paddingHorizontalL,
             }}
           >
-            Membership requests ({requestsCount})
+            Membership requests (
+            {requestsCount}
+            )
           </Text>
 
           {showMaxData && (requestsCount > 0) && (
@@ -226,7 +244,7 @@ const UserProfileData = ({
                   ...layout.marginBottomL,
                 }}
               >
-                {'View all'}
+                View all
               </Text>
               <Icon name="right-arrow" size={20} />
             </TouchableOpacity>
@@ -237,8 +255,8 @@ const UserProfileData = ({
           membershipRequests
           navigation={navigation}
           safeAddress={user.safeAddress}
-          showAll={true}
-          isSwiper={true}
+          showAll
+          isSwiper
           showMax={showMaxData}
           onCountChange={onRequestsCountChange}
         />

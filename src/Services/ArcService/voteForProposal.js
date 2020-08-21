@@ -1,5 +1,5 @@
+import { JoinAndQuitProposal, FundingRequestProposal } from '@daostack/arc.js';
 import WalletManager from '../../Util/WalletManager';
-import {JoinAndQuitProposal, FundingRequestProposal} from '@daostack/arc.js';
 import { PROPOSAL_STAGES_HISTORY } from '../ProposalService';
 import { NULL_ADDRESS, PROPOSAL_TYPE } from '../../Config';
 import GraphqlSyncService from '../GraphqlSyncService';
@@ -51,7 +51,6 @@ export const voteForProposal = async (
       const reputationBalance = await reputationContract.balanceOf(voter);
       if (Number(reputationBalance) === 0) {
         throw Error(`Voting failed because you (${voter}) are not a member of this DAO (${dao.id}) - rep: ${reputationBalance}`);
-
       }
     };
 

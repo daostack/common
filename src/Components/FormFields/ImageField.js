@@ -1,10 +1,12 @@
 import * as React from 'react';
-import {Image, View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {
+  Image, View, StyleSheet, TouchableOpacity, Text,
+} from 'react-native';
 
-import ValidationMessage from './ValidationMessage';
-import {observer} from 'mobx-react';
+import { observer } from 'mobx-react';
 
 import ImagePicker from 'react-native-image-picker';
+import ValidationMessage from './ValidationMessage';
 import Toast from '../../Util/Toast';
 import FirebaseService from '../../Services/FirebaseService';
 
@@ -15,6 +17,7 @@ import text from '../../Theme/text';
 
 class ImageField extends React.Component {
   fieldValidation = null;
+
   placeFieldActionComponent = null;
 
   static defaultProps;
@@ -22,21 +25,23 @@ class ImageField extends React.Component {
   constructor(props) {
     super(props);
 
-    const {validation, value} = this.props;
+    const { validation, value } = this.props;
 
     if (validation) {
-      const {name, formStore, validateRule, multiName, displayName, customErrorMessage} = validation;
+      const {
+        name, formStore, validateRule, multiName, displayName, customErrorMessage,
+      } = validation;
       formStore.registerFormField(name, validateRule, value, multiName);
 
       this.fieldValidation = (
-        <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} invisibleContainer={true}/>
+        <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} invisibleContainer />
       );
     }
   }
 
-  onChangeValue = url => {
+  onChangeValue = (url) => {
     if (this.props.validation) {
-      const {formStore, name} = this.props.validation;
+      const { formStore, name } = this.props.validation;
       formStore.fieldChanged(name, url);
     }
     this.props.onChangeImage && this.props.onChangeImage(url);
@@ -51,13 +56,13 @@ class ImageField extends React.Component {
   }
 
   pickImage = () => {
-    const {title, quality, allowsEditing} = this.props;
+    const { title, quality, allowsEditing } = this.props;
     const options = {
-      title: title,
+      title,
       quality: quality || 0.7,
       allowsEditing: allowsEditing || false,
     };
-    ImagePicker.showImagePicker(options, response => {
+    ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
         // console.log('User cancelled image picker');
       } else if (response.error) {
@@ -68,18 +73,18 @@ class ImageField extends React.Component {
         Toast.loading('Uploading...');
         FirebaseService.getInstance()
           .uploadImage(response.uri)
-          .then(url => {
+          .then((url) => {
             Toast.hide();
             Toast.success('Done');
             this.onChangeValue(url);
           })
-          .catch(error => Toast.error(error.toString()));
+          .catch((error) => Toast.error(error.toString()));
       }
     });
   };
 
   renderImage = () => {
-    const {isAvatar, validation, value} = this.props;
+    const { isAvatar, validation, value } = this.props;
 
     const imageStyle = isAvatar
       ? styles.formImageFieldStyle
@@ -100,68 +105,76 @@ class ImageField extends React.Component {
         />
       );
     }
-    else if (isAvatar){
+    if (isAvatar) {
       return (
         <View style={styles.imageStyle}>
           <Icon name="account-place-holder" size={100} />
         </View>
       );
     }
-    else {
-      return (
-        <View style={styles.imageFieldPlaceholderView}>
-          <View style={{ borderColor: colors.grey3, borderWidth: 2, borderRadius: 5, padding: 15}}>
-            <Icon name="addpicture" size={18} />
-          </View>
-          <Text
-            style={{
-              ...text.h2Black,
-              ...layout.marginTopM,
-              fontSize: 16,
-            }}>
-            Upload images from your phone
-          </Text>
-          <Text
-            style={{
-              ...text.h2Black,
-              ...layout.marginTopS,
-              ...{fontWeight: 'normal'},
-              fontSize: 16,
-            }}>
-            Get more attention to your proposal
-          </Text>
-          <View styles={layout.flexRow}>
-            <TouchableOpacity style={styles.btn} onPress={this.pickImage} >
-              <Text style={[text.buttonblue, {fontSize: 16}]}>Add Image</Text>
-            </TouchableOpacity>
-          </View>
+
+    return (
+      <View style={styles.imageFieldPlaceholderView}>
+        <View style={{
+          borderColor: colors.grey3, borderWidth: 2, borderRadius: 5, padding: 15,
+        }}
+        >
+          <Icon name="addpicture" size={18} />
         </View>
-      );
-    }
+        <Text
+          style={{
+            ...text.h2Black,
+            ...layout.marginTopM,
+            fontSize: 16,
+          }}
+        >
+          Upload images from your phone
+        </Text>
+        <Text
+          style={{
+            ...text.h2Black,
+            ...layout.marginTopS,
+            ...{ fontWeight: 'normal' },
+            fontSize: 16,
+          }}
+        >
+          Get more attention to your proposal
+        </Text>
+        <View styles={layout.flexRow}>
+          <TouchableOpacity style={styles.btn} onPress={this.pickImage}>
+            <Text style={[text.buttonblue, { fontSize: 16 }]}>Add Image</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
   };
 
   render() {
-    const {isAvatar, value, validation, disableEdit} = this.props;
+    const {
+      isAvatar, value, validation, disableEdit,
+    } = this.props;
 
     const currValue = validation
       ? validation.formStore.form.fields[validation.name].value
       : value;
 
     return (
-      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
         <View
           style={
             isAvatar
               ? styles.formFieldContainer
               : styles.formFieldContainerGenral
-          }>
+          }
+        >
           <View>
             {this.renderImage()}
             {!disableEdit && (isAvatar || currValue) ? (
               <TouchableOpacity
                 style={isAvatar ? styles.formImageFielAddIconAvatar : styles.formImageFielAddIcon}
-                onPress={() => { isAvatar ? this.pickImage() : this.onFieldDeleted();} }>
-                <Icon name={ isAvatar ? 'addpicture' : 'delete' } size={16} color={colors.white} />
+                onPress={() => { isAvatar ? this.pickImage() : this.onFieldDeleted(); }}
+              >
+                <Icon name={isAvatar ? 'addpicture' : 'delete'} size={16} color={colors.white} />
               </TouchableOpacity>
             ) : null}
           </View>
@@ -185,7 +198,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   textfield: {
-    //minHeight: 48,
+    // minHeight: 48,
     alignSelf: 'stretch',
     borderRadius: 3,
     backgroundColor: colors.white,

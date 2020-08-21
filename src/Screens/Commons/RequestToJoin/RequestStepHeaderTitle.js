@@ -1,5 +1,6 @@
 import React from 'react';
-import {Text, StyleSheet} from 'react-native';
+import { Text, StyleSheet } from 'react-native';
+import { string } from 'prop-types';
 import {
   colors,
   font,
@@ -8,7 +9,6 @@ import {
   sizeL,
   sizeS,
 } from '../../../Theme';
-import {string} from 'prop-types';
 
 const styles = StyleSheet.create({
   generalInfoTitle: {
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const RequestStepHeaderTitle = ({title, subtitle}) => (
+const RequestStepHeaderTitle = ({ title, subtitle }) => (
   <>
     <Text style={styles.generalInfoTitle}>{title}</Text>
     <Text style={styles.generalInfoSubtitle}>{subtitle}</Text>

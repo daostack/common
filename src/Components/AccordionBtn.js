@@ -1,13 +1,20 @@
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import {text, font,layout, colors} from '../Theme';
-import Icon from '../Assets/iconfont/Icon';
+import {
+  StyleSheet, View, Text, TouchableOpacity,
+} from 'react-native';
 import React from 'react';
-import {string, func, any} from 'prop-types';
-const AccordionBtn = ({title, subtitle, onPress, lightStyle}) => {
+import { string, func, any } from 'prop-types';
+import {
+  text, font, layout, colors,
+} from '../Theme';
+import Icon from '../Assets/iconfont/Icon';
+
+const AccordionBtn = ({
+  title, subtitle, onPress, lightStyle,
+}) => {
   const renderBtnTitle = () => {
-    let btnTitleStyle = {...styles.btnText};
+    let btnTitleStyle = { ...styles.btnText };
     if (lightStyle) {
-      btnTitleStyle = {...styles.btnText, ...styles.btnTextLight};
+      btnTitleStyle = { ...styles.btnText, ...styles.btnTextLight };
     }
 
     return <Text style={btnTitleStyle}>{title}</Text>;
@@ -30,14 +37,13 @@ const AccordionBtn = ({title, subtitle, onPress, lightStyle}) => {
           {renderArrow()}
         </>
       );
-    } else {
-      return (
-        <>
-          {renderBtnTitle()}
-          {renderArrow()}
-        </>
-      );
     }
+    return (
+      <>
+        {renderBtnTitle()}
+        {renderArrow()}
+      </>
+    );
   };
 
   return (
@@ -45,9 +51,10 @@ const AccordionBtn = ({title, subtitle, onPress, lightStyle}) => {
       onPress={onPress}
       style={
         lightStyle
-          ? {...styles.accordionBtn, ...styles.accordionBtnLight}
+          ? { ...styles.accordionBtn, ...styles.accordionBtnLight }
           : styles.accordionBtn
-      }>
+      }
+    >
       {renderBtnContent()}
     </TouchableOpacity>
   );

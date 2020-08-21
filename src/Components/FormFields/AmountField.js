@@ -1,7 +1,7 @@
-import {StyleSheet, View} from 'react-native';
-import React, {useState, useRef} from 'react';
+import { StyleSheet, View } from 'react-native';
+import React, { useState, useRef } from 'react';
 
-import {layout, colors, text} from '../../Theme';
+import { layout, colors, text } from '../../Theme';
 import JoinAmount from '../Commons/JoinAmount';
 import TextInputFieldWithIcon from './TextInputFieldWithIcon';
 
@@ -30,7 +30,7 @@ const AmountField = ({
     }
   };
 
-  const onTogglePress = e => {
+  const onTogglePress = (e) => {
     setIsCustomSelected(false);
     onCustomClose();
   };
@@ -39,14 +39,16 @@ const AmountField = ({
     <View>
       <View style={isCustomSelected ? styles.hidden : {}}>
         {
-          [1, 2.5, 5, 1].map((c, index) =>
+          [1, 2.5, 5, 1].map((c, index) => (
             <JoinAmount
               key={`JoinAmount_${index}`}
               id={index}
               isSelected={index === selectedAmountId}
               isCustom={index === 3}
               amount={c * minFeeToJoin}
-              onPress={onAmountPress} />)
+              onPress={onAmountPress}
+            />
+          ))
         }
       </View>
 
@@ -54,7 +56,7 @@ const AmountField = ({
         forwardRef={textInputRef}
         iconName="dollar"
         iconSize={12}
-        iconStyle={{paddingRight: 5}}
+        iconStyle={{ paddingRight: 5 }}
         iconEmptyColor={colors.grey3}
         iconFillColor={colors.grey}
         viewStyle={isCustomSelected ? styles.selectedCustom : styles.hidden}
@@ -65,7 +67,7 @@ const AmountField = ({
         toggleName="Other"
         validation={{
           name: RequestToJoinForm.FIELD_AMOUNT,
-          formStore: formStore,
+          formStore,
           validateRule: `required|integer|min:${minFeeToJoin}`,
         }}
       />

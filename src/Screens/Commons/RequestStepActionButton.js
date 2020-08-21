@@ -1,12 +1,14 @@
 import React from 'react';
-import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
-import {layout, colors, font} from '../../Theme';
+import {
+  Text, TouchableOpacity, StyleSheet, View,
+} from 'react-native';
+import { layout, colors, font } from '../../Theme';
 
-const RequestStepActionButton = props => {
+const RequestStepActionButton = (props) => {
   let actionBtnStyle = styles.actionBtnContainer;
 
   if (props.hidden) {
-    actionBtnStyle = {...actionBtnStyle, ...{display: 'none'}};
+    actionBtnStyle = { ...actionBtnStyle, ...{ display: 'none' } };
   }
 
   return (
@@ -14,9 +16,10 @@ const RequestStepActionButton = props => {
       <TouchableOpacity
         style={[
           styles.continueButton,
-          {backgroundColor: props.pass ? colors.mainBlue : colors.grey3},
+          { backgroundColor: props.pass ? colors.mainBlue : colors.grey3 },
         ]}
-        onPress={props.onPress}>
+        onPress={props.onPress}
+      >
         <Text style={styles.continueButtonText}>{props.title}</Text>
       </TouchableOpacity>
     </View>

@@ -1,11 +1,11 @@
-import {StyleSheet, Text, View} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import {numberFormatter} from '../../Util';
 import moment from 'moment';
+import { numberFormatter } from '../../Util';
 /* import * as Progress from 'react-native-progress'; */
-import {layout, text, font} from '../../Theme';
+import { layout, text, font } from '../../Theme';
 
-const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
+const CommonStageSummary = ({ isCommonCard, commonProgressInfo }) => {
   const deadlineMoment = moment.unix(commonProgressInfo.time);
   const deadlineHasPassed = moment().isAfter(deadlineMoment);
   const isFundingStage = !deadlineHasPassed;
@@ -36,25 +36,25 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
     );
   }; */
 
-  const commonNumberBox = (numberComponent, title) => {
-    return (
-      <View
-        style={{
-          justifyContent: 'center',
-          alignContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Text style={styles.headerSmallText}>{title}</Text>
-        <View style={styles.raisedContainer}>{numberComponent}</View>
-      </View>
-    );
-  };
+  const commonNumberBox = (numberComponent, title) => (
+    <View
+      style={{
+        justifyContent: 'center',
+        alignContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Text style={styles.headerSmallText}>{title}</Text>
+      <View style={styles.raisedContainer}>{numberComponent}</View>
+    </View>
+  );
   return (
     <View style={styles.commonProgressContainer}>
       <View style={styles.commonNumbers}>
         {commonNumberBox(
           <Text style={styles.headerTitle}>
-                ${numberFormatter(commonProgressInfo.raised / 100)}
+            $
+            {numberFormatter(commonProgressInfo.raised / 100)}
           </Text>,
           isCommonCard ? 'Raised' : 'Available funds',
         )}
@@ -62,7 +62,7 @@ const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
           <Text style={styles.headerTitle}>
             {isCommonCard
               ? commonProgressInfo.members
-              : '$' + numberFormatter(commonProgressInfo.raised / 100)}
+              : `$${numberFormatter(commonProgressInfo.raised / 100)}`}
           </Text>,
           isCommonCard ? 'Members' : 'Raised',
         )}

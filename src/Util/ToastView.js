@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
@@ -9,16 +9,16 @@ import {
 } from 'react-native';
 
 import PropTypes from 'prop-types';
+
 const ViewPropTypes = RNViewPropTypes || View.propTypes;
 export const DURATION = {
   LENGTH_SHORT: 500,
   FOREVER: 0,
 };
 
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 export default class ToastView extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -33,7 +33,7 @@ export default class ToastView extends Component {
     this.callback = callback;
     this.setState({
       isShow: true,
-      text: text,
+      text,
     });
 
     this.animation = Animated.timing(
@@ -41,20 +41,20 @@ export default class ToastView extends Component {
       {
         toValue: this.props.opacity,
         duration: this.props.fadeInDuration,
-      }
+      },
     );
     this.animation.start(() => {
       this.isShow = true;
-      if (duration !== DURATION.FOREVER) {this.close();}
+      if (duration !== DURATION.FOREVER) { this.close(); }
     });
   }
 
-  close( duration ) {
+  close(duration) {
     let delay = typeof duration === 'undefined' ? this.duration : duration;
 
-    if (delay === DURATION.FOREVER) {delay = this.props.defaultCloseDelay || 250;}
+    if (delay === DURATION.FOREVER) { delay = this.props.defaultCloseDelay || 250; }
 
-    if (!this.isShow && !this.state.isShow) {return;}
+    if (!this.isShow && !this.state.isShow) { return; }
     this.timer && clearTimeout(this.timer);
     this.timer = setTimeout(() => {
       this.animation = Animated.timing(
@@ -62,7 +62,7 @@ export default class ToastView extends Component {
         {
           toValue: 0.0,
           duration: this.props.fadeOutDuration,
-        }
+        },
       );
       this.animation.start(() => {
         this.setState({
@@ -84,28 +84,30 @@ export default class ToastView extends Component {
   render() {
     let pos;
     switch (this.props.position) {
-    case 'top':
-      pos = this.props.positionValue;
-      break;
-    case 'center':
-      pos = height / 2;
-      break;
-    case 'bottom':
-      pos = height - this.props.positionValue;
-      break;
+      case 'top':
+        pos = this.props.positionValue;
+        break;
+      case 'center':
+        pos = height / 2;
+        break;
+      case 'bottom':
+        pos = height - this.props.positionValue;
+        break;
     }
 
-    const view = this.state.isShow ?
-      <View
-        style={styles.container}
-        pointerEvents= { this.duration === DURATION.FOREVER ? 'auto' : 'none'}
-      >
-        <Animated.View
-          style={[styles.content, { opacity: this.state.opacityValue }, this.props.style, { top: pos }]}
+    const view = this.state.isShow
+      ? (
+        <View
+          style={styles.container}
+          pointerEvents={this.duration === DURATION.FOREVER ? 'auto' : 'none'}
         >
-          {React.isValidElement(this.state.text) ? this.state.text : <Text style={this.props.textStyle}>{this.state.text}</Text>}
-        </Animated.View>
-      </View> : null;
+          <Animated.View
+            style={[styles.content, { opacity: this.state.opacityValue }, this.props.style, { top: pos }]}
+          >
+            {React.isValidElement(this.state.text) ? this.state.text : <Text style={this.props.textStyle}>{this.state.text}</Text>}
+          </Animated.View>
+        </View>
+      ) : null;
     return view;
   }
 }
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
     elevation: 999,
     alignItems: 'center',
     zIndex: 10000,
-    height: height,
+    height,
   },
   content: {
     backgroundColor: 'black',
@@ -140,10 +142,10 @@ ToastView.propTypes = {
     'bottom',
   ]),
   textStyle: Text.propTypes.style,
-  positionValue:PropTypes.number,
-  fadeInDuration:PropTypes.number,
-  fadeOutDuration:PropTypes.number,
-  opacity:PropTypes.number,
+  positionValue: PropTypes.number,
+  fadeInDuration: PropTypes.number,
+  fadeOutDuration: PropTypes.number,
+  opacity: PropTypes.number,
 };
 
 ToastView.defaultProps = {

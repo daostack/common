@@ -1,14 +1,14 @@
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import {observer, inject} from 'mobx-react';
-import React, {useRef, useEffect} from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { observer, inject } from 'mobx-react';
+import React, { useRef, useEffect } from 'react';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {colors, text, layout} from '../Theme';
 import Animated from 'react-native-reanimated';
+import { colors, text, layout } from '../Theme';
 
-const BottomSheetContainer = props => {
-  let ref = useRef();
-  let fall = new Animated.Value(0);
+const BottomSheetContainer = (props) => {
+  const ref = useRef();
+  const fall = new Animated.Value(0);
 
   useEffect(() => {
     if (ref.current) {
@@ -46,7 +46,7 @@ const BottomSheetContainer = props => {
     };
 
     if (props.withoutHeader) {
-      contentStyle = {...contentStyle, ...styles.contentContainerShadow};
+      contentStyle = { ...contentStyle, ...styles.contentContainerShadow };
     }
     return <View style={contentStyle}>{props.bottomSheetStore.template}</View>;
   };
@@ -73,7 +73,7 @@ const BottomSheetContainer = props => {
         snapPoints={[0, props.bottomSheetStore.topSnap]}
         renderContent={renderSheetContent}
         renderHeader={renderSheetHeader}
-        enabledBottomInitialAnimation={true}
+        enabledBottomInitialAnimation
         enabledInnerScrolling={false}
         onCloseEnd={onClosed}
         callbackNode={fall}

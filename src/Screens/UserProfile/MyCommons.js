@@ -11,20 +11,22 @@ import {
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import { inject, observer } from 'mobx-react';
 import CommonBox from '../../Components/CommonBox';
-import {layout, colors, text, font, sizeS} from '../../Theme';
+import {
+  layout, colors, text, font, sizeS,
+} from '../../Theme';
 
-const MyCommons = ({navigation, daoStore, userStore}) => {
+const MyCommons = ({ navigation, daoStore, userStore }) => {
   const onScreenScroll = (event) => {
     navigation.setOptions({
       title: event.nativeEvent.contentOffset.y > 75 ? 'My Commons' : 'My Profile',
     });
   };
 
-  const setDao = dao => {
+  const setDao = (dao) => {
     daoStore.setDao(dao);
   };
 
-  const renderCommonCard = (dao, i) =>
+  const renderCommonCard = (dao, i) => (
     <CommonBox
       image={dao.coverPhoto}
       common={dao}
@@ -32,7 +34,8 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
       width="100%"
       navigation={navigation}
       onPress={() => setDao(dao)}
-    />;
+    />
+  );
 
   const AllCommonsList = (daos) => (
     <View style={{ flex: 1, padding: 20 }}>
@@ -51,9 +54,9 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}
-          vertical={true}
-          nestedScrollEnabled={true}
-          directionalLockEnabled={true}
+          vertical
+          nestedScrollEnabled
+          directionalLockEnabled
           onScroll={onScreenScroll}
           scrollEventThrottle={16}
         >
@@ -98,7 +101,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
 
 export default inject(
   'daoStore',

@@ -1,13 +1,13 @@
 import axios from 'axios';
-import { mangoPayUrl } from '../Config';
 import auth from '@react-native-firebase/auth';
-const qs = require('qs');
+import { mangoPayUrl } from '../Config';
 
+const qs = require('qs');
 
 const axiosClient = axios.create({
   baseURL: mangoPayUrl(),
   // or for development:
-  //baseURL: 'http://localhost:5001/common-daostack/us-central1/mangopay/',
+  // baseURL: 'http://localhost:5001/common-daostack/us-central1/mangopay/',
   timeout: 1000000, // milliseconds
 });
 
@@ -17,7 +17,7 @@ export const preauthorizePayment = async (cardData, funding, navigation) => {
     // first create the user in mangopay if isn't already created
     await axiosClient.post('create-user', { idToken });
     // then get card pre-registration data
-    const { data: { preRegData}} = await axiosClient.post(
+    const { data: { preRegData } } = await axiosClient.post(
       'get-card-registration',
       { idToken },
     );
@@ -43,9 +43,10 @@ export const preauthorizePayment = async (cardData, funding, navigation) => {
       },
     });
     // finalize the card registration - save cardId to firebase and preauthorize payment
-    const { data: { preAuthData: { preAuthId, SecureModeRedirectURL}}} = await axiosClient.post('register-card',
-      { idToken, cardRegistrationData, Id, funding  }
-    );
+    const { data: { preAuthData: { preAuthId, SecureModeRedirectURL } } } = await axiosClient.post('register-card',
+      {
+        idToken, cardRegistrationData, Id, funding,
+      });
     if (SecureModeRedirectURL) {
       const is3DCheckFinished = () => new Promise((resolve, reject) => {
         navigation.navigate('Browser', {
@@ -60,11 +61,10 @@ export const preauthorizePayment = async (cardData, funding, navigation) => {
         });
       });
       await is3DCheckFinished();
-      const {data: {Status}} = await axiosClient.post('get-preauthorisation-status', { preAuthId });
+      const { data: { Status } } = await axiosClient.post('get-preauthorisation-status', { preAuthId });
       if (Status === 'SUCCEEDED') {
         return preAuthId;
-      } else
-      { throw new Error('3D Authentication failed'); }
+      } throw new Error('3D Authentication failed');
     }
     return preAuthId;
   } catch (e) {

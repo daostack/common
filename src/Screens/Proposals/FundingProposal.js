@@ -7,13 +7,13 @@ import {
   StatusBar,
   View,
 } from 'react-native';
-import {observer, inject} from 'mobx-react';
-import {text, layout, colors} from '../../Theme';
+import { observer, inject } from 'mobx-react';
+import { CommonActions } from '@react-navigation/native';
+import { BN } from 'bn.js';
+import { text, layout, colors } from '../../Theme';
 import FundingRequestForm from '../../Components/Forms/FundingRequestForm';
 import RequestStepActionButton from '../Commons/RequestStepActionButton';
-import { CommonActions } from '@react-navigation/native';
 import ArcService from '../../Services/ArcService';
-import { BN } from 'bn.js';
 import Toast from '../../Util/Toast';
 import font from '../../Theme/font';
 
@@ -32,14 +32,14 @@ const FundingProposal = ({
   //   setShowRequestSentModal(false);
   // };
 
-  const createProposal = async e => {
+  const createProposal = async (e) => {
     if (fundingRequestFormStore.isFormValid()) {
       try {
         const formData = fundingRequestFormStore.getChangedFormFieldsJson();
         const data = {
           title: formData[FundingRequestForm.FIELD_TITLE],
           description: formData[FundingRequestForm.FIELD_DESCRIPTION],
-          funding: new BN(formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,),
+          funding: new BN(formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100),
           links: formData[FundingRequestForm.FIELD_LINKS],
           images: formData[FundingRequestForm.FIELD_IMAGES],
           files: formData[FundingRequestForm.FIELD_FILES],
@@ -73,18 +73,19 @@ const FundingProposal = ({
     <>
       <StatusBar barStyle="dark-content" />
 
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
           style={{
             flex: 1,
             backgroundColor: colors.white,
           }}
-          contentContainerStyle={layout.content}>
+          contentContainerStyle={layout.content}
+        >
           <Text style={styles.title}>New proposal</Text>
           <Text style={styles.subtitle}>
             Get funding to promote the Common's agenda. If your proposal is accepted you will be responsible to follow it through.
           </Text>
-          <View style={styles.divider}/>
+          <View style={styles.divider} />
           <FundingRequestForm common={route.params.common} />
         </ScrollView>
         <RequestStepActionButton

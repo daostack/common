@@ -6,24 +6,28 @@ import {
   SafeAreaView,
 } from 'react-native';
 import React from 'react';
-import { layout, colors, text, font } from '../../Theme';
 import FastImage from 'react-native-fast-image';
+import {
+  layout, colors, text, font,
+} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
-import { BlurView } from '../../Components';
+import { BlurView } from '..';
 
-const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, headerHeightLayouted }) => {
-
-  const openAgendaScreen = e => {
+const CommonHeader = ({
+  navigation, isMember, onHeaderMenuOpen, commonInfo, headerHeightLayouted,
+}) => {
+  const openAgendaScreen = (e) => {
     navigation.navigate('CommonAgenda', {
       screenTitle: commonInfo.name,
     });
   };
 
   return (
-    <SafeAreaView onLayout={ event => {
-      headerHeightLayouted(event.nativeEvent.layout.height);
-    }}
-    style={styles.headerContainer}
+    <SafeAreaView
+      onLayout={(event) => {
+        headerHeightLayouted(event.nativeEvent.layout.height);
+      }}
+      style={styles.headerContainer}
     >
 
       {commonInfo.logo ? (
@@ -37,24 +41,22 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, head
       <Text style={styles.headerTitleWhite} numberOfLines={5}>
         {commonInfo.name}
       </Text>
-      <Text style={{...text.textFieldfocus, color: colors.white}} numberOfLines={5}>
+      <Text style={{ ...text.textFieldfocus, color: colors.white }} numberOfLines={5}>
         {commonInfo.byline}
       </Text>
       <Text style={styles.headerDescription} numberOfLines={4}>
         {commonInfo.description}
       </Text>
       {isMember && navigation ? (
-        <BlurView style={{ paddingVertical: 10, paddingHorizontal: 15, borderRadius: 10}}>
+        <BlurView style={{ paddingVertical: 10, paddingHorizontal: 15, borderRadius: 10 }}>
           <TouchableOpacity onPress={openAgendaScreen}>
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               <Text style={styles.headerViewAgenda}>View agenda</Text>
               <Icon name="right-arrow" color="white" />
             </View>
           </TouchableOpacity>
         </BlurView>
       ) : null}
-
-
 
     </SafeAreaView>
   );

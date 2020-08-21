@@ -6,7 +6,7 @@
  * @flow
  */
 import 'mobx-react-lite/batchingForReactNative';
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Image,
   StyleSheet,
@@ -17,10 +17,16 @@ import {
   Text,
 } from 'react-native';
 
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import {colors} from './src/Theme';
+import { NavigationContainer, CommonActions } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-community/async-storage';
+import { observer, inject } from 'mobx-react';
+import KeyboardManager from 'react-native-keyboard-manager';
+import validUrl from 'valid-url';
+import messaging from '@react-native-firebase/messaging';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import DeepLinking from 'react-native-deep-linking';
+import { colors } from './src/Theme';
 
 import {
   CommonProfile,
@@ -59,30 +65,25 @@ import FirebaseService from './src/Services/FirebaseService';
 import AuthService from './src/Services/AuthService';
 
 import CommonHome from './src/Components/Navigation/CommonHome';
-const Stack = createStackNavigator();
 import { filterObjectByKeys, prepareUserObject } from './src/Util';
 import WalletManager from './src/Util/WalletManager';
-import {userInfoFields} from './src/Stores/UserStore';
-import {observer, inject} from 'mobx-react';
+import { userInfoFields } from './src/Stores/UserStore';
 import Icon from './src/Assets/iconfont/Icon';
-import {auth, db} from './src/Firebase';
-import KeyboardManager from 'react-native-keyboard-manager';
-import validUrl from 'valid-url';
+import { auth, db } from './src/Firebase';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
-import ToastView, {DURATION} from './src/Util/ToastView';
-import {CommonActions} from '@react-navigation/native';
-import messaging from '@react-native-firebase/messaging';
+import ToastView, { DURATION } from './src/Util/ToastView';
+
 import NotificationService from './src/Services/NotificationService';
-import dynamicLinks from '@react-native-firebase/dynamic-links';
-import DeepLinking from 'react-native-deep-linking';
 import ArcService from './src/Services/ArcService';
 import { BOTTOM_SHEET_TEMPLATES } from './src/Stores/BottomSheetStore';
+
+const Stack = createStackNavigator();
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
 }
 
-const App = ({userStore, bottomSheetStore, navigation}) => {
+const App = ({ userStore, bottomSheetStore, navigation }) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
   const hudRef = useRef();
@@ -93,14 +94,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     Text.defaultProps.maxFontSizeMultiplier = 1.1;
   }, []);
 
-  useEffect(() => {
-    return messaging().onTokenRefresh(token => {
-      NotificationService.saveTokenToDatabase(token);
-    });
-  }, []);
+  useEffect(() => messaging().onTokenRefresh((token) => {
+    NotificationService.saveTokenToDatabase(token);
+  }), []);
 
   useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
       console.log('Foreground Message Arrived', JSON.stringify(remoteMessage));
     });
     return unsubscribe;
@@ -131,7 +130,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       }
       if (!DeepLinking.evaluateUrl(url) && validUrl.isWebUri(url)) {
         console.log('Routing Browser ->', url);
-        routing('Browser', {url: url});
+        routing('Browser', { url });
       }
     });
   };
@@ -139,13 +138,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
   const routing = (screenName, params) => {
     const actions = CommonActions.navigate({
       name: screenName,
-      params: params,
+      params,
     });
     navigationRef.current?.dispatch(actions);
   };
 
   useEffect(() => {
-
     DeepLinking.addScheme('common://');
     DeepLinking.addScheme('com.daostack.common://');
     DeepLinking.addScheme('https://app.common.io');
@@ -153,30 +151,30 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     Linking.addEventListener('url', handleOpenURL);
 
     DeepLinking.addRoute('/common/:id', (response) => {
-      routing('CommonProfile', {commonId: response.id});
+      routing('CommonProfile', { commonId: response.id });
     });
 
     DeepLinking.addRoute('/proposal/:id', (response) => {
-      routing('ProposalScreen', {proposalId: response.id});
+      routing('ProposalScreen', { proposalId: response.id });
     });
 
     DeepLinking.addRoute('/user/:id', (response) => {
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
-        {userId: response.id}
+        { userId: response.id },
       );
     });
 
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);
-    dynamicLinks().getInitialLink().then(link => {
+    dynamicLinks().getInitialLink().then((link) => {
       if (link) {
         handleOpenURL(link);
       } else {
         Linking.getInitialURL()
           .then((url) => {
-            handleOpenURL({url});
+            handleOpenURL({ url });
           })
-          .catch(err => err);
+          .catch((err) => err);
       }
     });
 
@@ -188,14 +186,14 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   // Login
   useEffect(() => {
-    const subscribers = { authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
+    const subscribers = { authChangeUnsubscribe: null, userInfoChangeUnsubscribe: null };
 
-    const onAuthStateChanged = async user => {
+    const onAuthStateChanged = async (user) => {
       console.log('AUTH STATE CHANGED: ', user?.uid, user?.email, user?.displayName);
       try {
         userStore.setIsLoading(true);
         if (user) {
-          const providerId = user.providerData[0].providerId;
+          const { providerId } = user.providerData[0];
           await AuthService.getInstance().loadMnemonic(user.uid, providerId);
           await WalletManager.init(user.uid);
           await ArcService.init();
@@ -207,7 +205,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
           if (isNewUser) {
             const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
-            const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
+            const userInfo = { ...user._user, ...{ firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName } };
             appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
             manager.createSmartContractWallet();
           } else {
@@ -222,7 +220,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
           userStore.setSignedInUser(filteredUser);
           if (subscribers.userInfoChangeUnsubscribe) {
-
             subscribers.userInfoChangeUnsubscribe();
           }
           subscribers.userInfoChangeUnsubscribe = await updateUser(user.uid);
@@ -247,7 +244,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         if (auth().currentUser === null) {
           return;
         }
-        const unsubscribe = db.collection('users').doc(uid).onSnapshot( async snapshot => {
+        const unsubscribe = db.collection('users').doc(uid).onSnapshot(async (snapshot) => {
           if (!snapshot.empty) {
             userStore.setSignedInUser(prepareUserObject(snapshot.data()));
           }
@@ -259,7 +256,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           if (manager.safeAddress == null) {
             manager.safeAddress = snapshot.data().safeAddress;
           }
-
         });
         return unsubscribe;
       } catch (error) {
@@ -269,7 +265,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
     const checkOnboardingStatus = async () => {
       try {
-        //await AuthService.getInstance().signOut();
+        // await AuthService.getInstance().signOut();
         const isOnboarded = await AsyncStorage.getItem('onboarded');
         if (isOnboarded === 'true') {
           setOnboarded(true);
@@ -292,7 +288,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
   }, []);
 
   if (loading) {
-    return <View style={{flex: 1}} />;
+    return <View style={{ flex: 1 }} />;
   }
 
   return (
@@ -302,18 +298,19 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           headerStyle: styles.headerStyle,
           headerTintColor: colors.black,
           headerBackImage: () => <Icon name="left-arrow" size={32} />,
-        }}>
+        }}
+      >
         {!onboarded && (
           <Stack.Screen
             name="Onboarding"
             component={Onboarding}
-            options={{headerShown: false}}
+            options={{ headerShown: false }}
           />
         )}
         <Stack.Screen
           name="CommonHome"
           component={CommonHome}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
           userStore={userStore}
         />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
@@ -321,12 +318,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           name="CommonProfile"
           component={CommonProfile}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="CommonAgenda"
           component={CommonAgenda}
-          options={({route}) => ({
+          options={({ route }) => ({
             title: route.params.screenTitle,
             headerBackTitleVisible: false,
           })}
@@ -335,17 +332,18 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           name="Profile"
           component={UserProfile}
-          options={({route}) => ({
+          options={({ route }) => ({
             headerBackTitleVisible: false,
-          })}/>
+          })}
+        />
         <Stack.Screen
           name="CommonExplanation"
           component={CommonExplanation}
-          options={({navigation, route}) => ({
+          options={({ navigation, route }) => ({
             headerTitle: 'Create a Common',
             headerBackTitleVisible: false,
-            headerLeftContainerStyle: {marginLeft: 20},
-            headerRightContainerStyle: {marginRight: 20},
+            headerLeftContainerStyle: { marginLeft: 20 },
+            headerRightContainerStyle: { marginRight: 20 },
             headerBackImage: () => (
               <Icon name="left-arrow" color={colors.black} size={32} />
             ),
@@ -361,7 +359,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           name="ProposalScreen"
           component={ProposalScreen}
-          options={({route}) => ({
+          options={({ route }) => ({
             title: route?.params.screenTitle,
             headerBackTitleVisible: false,
           })}
@@ -369,63 +367,63 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           name="RequestStep1"
           component={RequestStep1}
-          options={({navigation, route}) => ({
+          options={({ navigation, route }) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="RequestStep2"
           component={RequestStep2}
-          options={({navigation, route}) => ({
+          options={({ navigation, route }) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="RequestStep3"
           component={RequestStep3}
-          options={({navigation, route}) => ({
+          options={({ navigation, route }) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="RequestStep4"
           component={RequestStep4}
-          options={({navigation, route}) => ({
+          options={({ navigation, route }) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="CreateStep1"
           component={CreateStep1}
-          options={({navigation, route}) => ({
+          options={({ navigation, route }) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="CreateStep2"
           component={CreateStep2}
-          options={({navigation, route}) => ({
+          options={({ navigation, route }) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="CreateStep3"
           component={CreateStep3}
-          options={({navigation, route}) => ({
+          options={({ navigation, route }) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="CreateStep4"
           component={CreateStep4}
-          options={({navigation, route}) => ({
+          options={({ navigation, route }) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="Discussions"
           component={Discussions}
-          options={({navigation, route}) => ({
+          options={({ navigation, route }) => ({
             headerShown: false,
           })}
         />
@@ -433,15 +431,17 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           name="FullScreenCreationLoader"
           component={FullScreenCreationLoader}
-          options={({navigation, route}) => ({
+          options={({ navigation, route }) => ({
             headerShown: false,
           })}
         />
-        <Stack.Screen name="New Post"
-          options={({navigation, route}) => ({
+        <Stack.Screen
+          name="New Post"
+          options={({ navigation, route }) => ({
             headerBackTitleVisible: false,
           })}
-          component={DiscussionPost} />
+          component={DiscussionPost}
+        />
         <Stack.Screen
           options={({ route }) => ({
             title: route.params.isFirstOpening ? false : 'Edit my profile',
@@ -490,13 +490,13 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           name="CommonMembers"
           component={CommonMembers}
-          options={({route}) => ({
+          options={({ route }) => ({
             title: route?.params.screenTitle,
             headerBackTitleVisible: false,
           })}
         />
         <Stack.Screen
-          options={({route}) => ({
+          options={({ route }) => ({
             title: route?.params.screenTitle,
             headerBackTitleVisible: false,
           })}
@@ -507,7 +507,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       {bottomSheetStore.isVisible ? <BottomSheetContainer /> : null}
       <ToastView
         ref={hudRef}
-        style={{backgroundColor: 'transparent'}}
+        style={{ backgroundColor: 'transparent' }}
         positionValue={160}
       />
     </NavigationContainer>

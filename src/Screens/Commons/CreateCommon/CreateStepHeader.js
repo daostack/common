@@ -1,15 +1,16 @@
 import React from 'react';
-import {View, StyleSheet, Dimensions} from 'react-native';
-import Icon from '../../../Assets/iconfont/Icon';
-import {colors} from '../../../Theme';
-const {width} = Dimensions.get('window');
+import { View, StyleSheet, Dimensions } from 'react-native';
 import * as Progress from 'react-native-progress';
+import Icon from '../../../Assets/iconfont/Icon';
+import { colors } from '../../../Theme';
 
-const CreateStepHeader = props => {
-  const currentIndex = props.currentIndex;
+const { width } = Dimensions.get('window');
+
+const CreateStepHeader = (props) => {
+  const { currentIndex } = props;
   const progressList = [0, 0.35, 0.7, 1.0];
 
-  const ovalStyle = index => {
+  const ovalStyle = (index) => {
     if (props.currentIndex > index) {
       return styles.ovalDone;
     }
@@ -21,7 +22,7 @@ const CreateStepHeader = props => {
     }
   };
 
-  const iconColor = index => {
+  const iconColor = (index) => {
     if (props.currentIndex > index) {
       return colors.mainBlue;
     }
@@ -42,7 +43,8 @@ const CreateStepHeader = props => {
         width: '100%',
         marginBottom: 24,
         paddingHorizontal: 30,
-      }}>
+      }}
+    >
       <Progress.Bar
         progress={progressList[currentIndex]} // 0 0.35 0.7 1.0
         width={width - 48 - 60}
@@ -57,7 +59,8 @@ const CreateStepHeader = props => {
       />
       {/* <TouchableOpacity onPress={() => setCurrentIndex(0)}> */}
       <View
-        style={currentIndex === 0 ? {...styles.oval} : {...styles.ovalDone}}>
+        style={currentIndex === 0 ? { ...styles.oval } : { ...styles.ovalDone }}
+      >
         <Icon
           name={currentIndex === 0 ? 'dao-general-info-24' : 'check'}
           size={currentIndex > 0 ? 16 : 24}

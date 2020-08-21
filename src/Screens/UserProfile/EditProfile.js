@@ -8,13 +8,13 @@ import {
   View,
   Text,
 } from 'react-native';
+import { observer, inject } from 'mobx-react';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import EditProfileForm from '../../Components/Forms/EditProfileForm';
-import {colors, text, layout} from '../../Theme';
-import {observer, inject} from 'mobx-react';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import { colors, text, layout } from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import Loader from '../../Components/Loader';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
+import { BOTTOM_SHEET_TEMPLATES } from '../../Stores/BottomSheetStore';
 import Toast from '../../Util/Toast';
 import AuthService from '../../Services/AuthService';
 import { filterObjectByKeys } from '../../Util';
@@ -31,26 +31,25 @@ const EditProfile = ({
       <TouchableOpacity
         onPress={async () => {
           onFormClose();
-        }}>
+        }}
+      >
         <Icon name="left-arrow" size={32} />
       </TouchableOpacity>
     ),
   });
 
-  const formSave = async e => {
-
+  const formSave = async (e) => {
     if (editProfileFormStore.isFormValid()) {
-
       onFormSubmitStart();
 
       const changedFields = editProfileFormStore.getChangedFormFieldsJson();
 
-      let authData = filterObjectByKeys(changedFields, [
+      const authData = filterObjectByKeys(changedFields, [
         EditProfileForm.FIELD_FIRST_NAME,
         EditProfileForm.FIELD_LAST_NAME,
         EditProfileForm.FIELD_PROFILE_IMAGE,
       ]);
-      let publicData = filterObjectByKeys(changedFields, [
+      const publicData = filterObjectByKeys(changedFields, [
         EditProfileForm.FIELD_INTRO,
       ]);
 
@@ -71,11 +70,11 @@ const EditProfile = ({
     }
   };
 
-  const onFormSubmitStart = updatedFields => {
+  const onFormSubmitStart = (updatedFields) => {
     Toast.loading('Updating your profile...');
   };
 
-  const onFormSubmitEnd = updatedFields => {
+  const onFormSubmitEnd = (updatedFields) => {
     userStore.setSignedInUser({ ...userStore.userInfo, ...updatedFields });
     Toast.done('Your profile is updated');
     navigation.goBack();
@@ -84,7 +83,7 @@ const EditProfile = ({
   const onFormClose = () => {
     if (editProfileFormStore.isFormChanged()) {
       bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
-        navigation: navigation,
+        navigation,
         onContinueEditing: closeBottomSheet,
         onLeaveWithoutSaving: closeBottomSheet,
       });
@@ -97,13 +96,11 @@ const EditProfile = ({
     bottomSheetStore.hideBottomSheet();
   };
 
-  const renderBody = () => {
-    return (
-      <View style={styles.body}>
-        <EditProfileForm isFirstOpening={route.params.isFirstOpening }/>
-      </View>
-    );
-  };
+  const renderBody = () => (
+    <View style={styles.body}>
+      <EditProfileForm isFirstOpening={route.params.isFirstOpening} />
+    </View>
+  );
 
   return (
     <>
@@ -112,7 +109,8 @@ const EditProfile = ({
       <SafeAreaView style={styles.container}>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
+          style={styles.scrollView}
+        >
           {userStore.userInfo ? renderBody() : <Loader />}
         </ScrollView>
 
@@ -120,20 +118,23 @@ const EditProfile = ({
           {route.params.isFirstOpening ? (
             <TouchableOpacity
               style={{ ...styles.btns, ...layout.btnOutline, ...layout.marginRightS }}
-              onPress={onFormClose}>
+              onPress={onFormClose}
+            >
               <Text style={text.buttonblue}>Skip</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
               style={{ ...styles.btns, ...layout.btnOutline, ...layout.marginRightS }}
-              onPress={onFormClose}>
+              onPress={onFormClose}
+            >
               <Text style={text.buttonblue}>Cancel</Text>
             </TouchableOpacity>
           )}
 
           <TouchableOpacity
             style={{ ...styles.btns, ...layout.btnPrimary, ...layout.marginLeftS }}
-            onPress={formSave}>
+            onPress={formSave}
+          >
             <Text style={text.buttoncenterwhite}>Save</Text>
           </TouchableOpacity>
         </View>

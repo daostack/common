@@ -1,45 +1,53 @@
-import {Text, StyleSheet, SafeAreaView, TouchableOpacity, View} from 'react-native';
+import {
+  Text, StyleSheet, SafeAreaView, TouchableOpacity, View,
+} from 'react-native';
 
 import React from 'react';
-import {text, layout, colors, font, sizeL} from '../../Theme';
+import {
+  text, layout, colors, font, sizeL,
+} from '../../Theme';
 import ButtonSwiper from '../../Components/ButtonSwiper';
 import Loader from '../../Components/Loader';
 
-const ApprovalSheetScreen = ({onApprove, onClose, voteType, votingProcessState}) => {
-  const voteColor =
-    votingProcessState.error || !voteType ? colors.error : colors.lightishGreen;
+const ApprovalSheetScreen = ({
+  onApprove, onClose, voteType, votingProcessState,
+}) => {
+  const voteColor = votingProcessState.error || !voteType ? colors.error : colors.lightishGreen;
 
   return (
     <SafeAreaView style={styles.body}>
       <Text
         style={{
           ...styles.title,
-          ...{color: voteColor},
-        }}>
+          ...{ color: voteColor },
+        }}
+      >
         {voteType ? 'Approve' : 'Reject'}
       </Text>
 
       {votingProcessState.error ? (
         <>
-          <Text style={{...styles.voteDescription, ...{...font.fontSize(2)}}}>
+          <Text style={{ ...styles.voteDescription, ...{ ...font.fontSize(2) } }}>
             We couldn’t submit your vote to approve this proposal
           </Text>
 
           <View style={styles.containerRow}>
             <TouchableOpacity
-              style={{...layout.btnOutline, ...layout.marginRightS}}
-              onPress={onClose}>
+              style={{ ...layout.btnOutline, ...layout.marginRightS }}
+              onPress={onClose}
+            >
               <Text style={text.buttonblue}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={{...layout.btnPrimary, ...layout.marginLeftS}}
-              onPress={() => onApprove(voteType)}>
+              style={{ ...layout.btnPrimary, ...layout.marginLeftS }}
+              onPress={() => onApprove(voteType)}
+            >
               <Text style={text.buttoncenterwhite}>Try again</Text>
             </TouchableOpacity>
           </View>
         </>
       ) : votingProcessState.inProgress ? (
-        <Loader color={voteColor} isBigger={true} />
+        <Loader color={voteColor} isBigger />
       ) : (
         <>
           <Text style={styles.voteDescription}>

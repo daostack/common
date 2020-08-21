@@ -1,8 +1,8 @@
 import React from 'react';
 
-import {Text, StyleSheet} from 'react-native';
-import {observer} from 'mobx-react';
-import {colors, layout, font} from '../../Theme';
+import { Text, StyleSheet } from 'react-native';
+import { observer } from 'mobx-react';
+import { colors, layout, font } from '../../Theme';
 
 const styles = StyleSheet.create({
   errorMessage: {
@@ -13,7 +13,6 @@ const styles = StyleSheet.create({
   },
 });
 class ValidationMessage extends React.Component {
-
   constructor(props) {
     super(props);
   }
@@ -33,7 +32,7 @@ class ValidationMessage extends React.Component {
     }
 
     if (!this.props.invisibleContainer) {
-      messageStyle = {...styles.errorMessage, ...{minHeight: font.lineHeightForm}};
+      messageStyle = { ...styles.errorMessage, ...{ minHeight: font.lineHeightForm } };
     }
 
     return validationMessage || !this.props.invisibleContainer ? (

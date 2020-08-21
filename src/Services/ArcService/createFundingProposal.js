@@ -1,13 +1,13 @@
-const {first} = require('rxjs/operators');
-import {ethers} from 'ethers';
+import { ethers } from 'ethers';
 import WalletManager from '../../Util/WalletManager';
 import { ipfsUpload } from '../../Config';
 import GraphqlSyncService from '../GraphqlSyncService';
+
+const { first } = require('rxjs/operators');
 const {
   ARC_VERSION,
   IPFS_DATA_VERSION,
 } = require('../../Config');
-
 
 export const createFundingProposal = async (arc, userAddress, daoId, data) => {
   // data must look like this
@@ -24,19 +24,18 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     const dao = arc.dao(daoId);
 
     const plugins = await dao.plugins().first();
-    const abi = arc.getABI({abiName: 'FundingRequest', version: ARC_VERSION});
+    const abi = arc.getABI({ abiName: 'FundingRequest', version: ARC_VERSION });
     const interf = new ethers.utils.Interface(abi);
 
     console.log(interf);
     console.log(interf.events);
-
 
     console.log('PLUGINS -> ', plugins);
 
     let fundingRequestPlugin;
     try {
       fundingRequestPlugin = await dao.plugin({
-        where: {name: 'FundingRequest'},
+        where: { name: 'FundingRequest' },
       });
     } catch (e) {
       console.log(e);
@@ -45,14 +44,14 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
         .plugins()
         .pipe(first())
         .toPromise();
-      console.log(plugins.map(p => p.coreState.name));
+      console.log(plugins.map((p) => p.coreState.name));
       throw e;
     }
 
     console.log('fundingRequestPlugin', fundingRequestPlugin.id);
 
     let ipfsHash;
-    const funding = data.funding;
+    const { funding } = data;
     if (!funding) {
       throw Error('"funding" argument must be given');
     }
@@ -61,11 +60,11 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
 
     const errorHandler = async (receipt) => {
       // lets first check some sanity things about the dao
-      const joinAndQuitPlugin = await dao.plugin({where: {name: 'JoinAndQuit'}});
+      const joinAndQuitPlugin = await dao.plugin({ where: { name: 'JoinAndQuit' } });
       const joinAndQuitPluginState = await joinAndQuitPlugin.fetchState();
-      const fundingRequestPlugin = await dao.plugin({where: {name: 'FundingRequest'}});
+      const fundingRequestPlugin = await dao.plugin({ where: { name: 'FundingRequest' } });
       const fundingRequestPluginState = await fundingRequestPlugin.fetchState();
-      const activationTime = fundingRequestPluginState.pluginParams.voteParams.activationTime;
+      const { activationTime } = fundingRequestPluginState.pluginParams.voteParams;
       if (activationTime > ((new Date()).getTime() / 1000)) {
         throw Error(`Canot create a funding request as the plugin is not actived yet (it activates on ${activationTime})`);
       }
@@ -74,7 +73,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
       let fundingGoalReachedFlag = await daoContract.functions.db('FUNDED_BEFORE_DEADLINE');
       if (fundingGoalReachedFlag !== 'TRUE') {
         const joinAndQuitPlugin = await dao.plugin({
-          where: {name: 'JoinAndQuit'},
+          where: { name: 'JoinAndQuit' },
         });
         console.log(`fundingGoalReachedFlag is not TRUE (its value is "${fundingGoalReachedFlag}") - so we cannot create a proposal`);
 
@@ -91,7 +90,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
         }
         console.log('We will try to reset the fundingGoalReachedFlag');
         const joinAndQuitContract = await arc.getContract(joinAndQuitPlugin.coreState.address);
-        const setFlagTx  = {
+        const setFlagTx = {
           contract: joinAndQuitContract,
           method: 'setFundingGoalReachedFlag',
           args: [],
@@ -116,8 +115,8 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     console.log('saving ipfs data');
     // not working :-()
     // ipfsHash = await arc.saveIPFSData(data);
-    data = {...data, VERSION: IPFS_DATA_VERSION};
-    ipfsHash = await ipfsUpload({description: JSON.stringify(data)});
+    data = { ...data, VERSION: IPFS_DATA_VERSION };
+    ipfsHash = await ipfsUpload({ description: JSON.stringify(data) });
     console.log('ipfsHash', ipfsHash);
 
     const args = {

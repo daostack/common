@@ -1,12 +1,13 @@
-import { NativeWallet } from './NativeWallet';
 import { ethers, Contract } from 'ethers';
 import { Alert } from 'react-native';
-import { web3ProviderUrl, web3NetworkId, COMMONTOKENADDRESS, relayerUrl } from '../Config';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
+import {
+  web3ProviderUrl, web3NetworkId, COMMONTOKENADDRESS, relayerUrl,
+} from '../Config';
+import { NativeWallet } from './NativeWallet';
 import ABI from './abi.json';
 import FirebaseService from '../Services/FirebaseService';
-
 
 ethers.Contract.prototype.sendToRelayer = async function (funcName, params, value = '0') {
   const data = this.interface.functions[funcName].encode(params);
@@ -36,14 +37,11 @@ const axiosClient = axios.create({
 });
 
 // return the content of the reponse from the server instead of a generic error message
-axiosClient.interceptors.response.use((response) => {
-  return response;
-}, function (error) {
-  return Promise.reject(error.response);
-});
+axiosClient.interceptors.response.use((response) => response, (error) => Promise.reject(error.response));
 
 export default class WalletManager {
   static myInstance = null;
+
   constructor(uid) {
     return (async () => {
       this.mnemonic = await NativeWallet.retrieveMnemonic(uid);
@@ -61,7 +59,7 @@ export default class WalletManager {
     })();
   }
 
-  static init = async uid => {
+  static init = async (uid) => {
     WalletManager.myInstance = await new WalletManager(uid);
   };
 
@@ -77,15 +75,14 @@ export default class WalletManager {
     return WalletManager.myInstance;
   };
 
-  addressCheck = async uid => {
+  addressCheck = async (uid) => {
     // Check local address and database address is matched
     const userData = await FirebaseService.getInstance().getUserById(uid);
     if (userData.ethereumAddress !== this.address && userData.ethereumAddress?.trim()) {
       Alert.alert('Hands up',
         'There is a fatal error - local address mismatched, please contact us to help',
         [{ text: 'OK', onPress: () => console.log('Ok Pressed'), style: 'danger' }],
-        {cancelable: false}
-      );
+        { cancelable: false });
       // If local address is mismatched, no need to create smart wallet
       return;
     }
@@ -109,12 +106,10 @@ export default class WalletManager {
     return this.safeAddress;
   }
 
-  getBalance = async (address = this.address) => {
-    return this.provider.getBalance(address).then(balance => {
-      let balanceString = ethers.utils.formatEther(balance);
-      return balanceString;
-    });
-  };
+  getBalance = async (address = this.address) => this.provider.getBalance(address).then((balance) => {
+    const balanceString = ethers.utils.formatEther(balance);
+    return balanceString;
+  });
 
   readSmartContract = async (contractAddress, abi, functionName) => {
     const contract = new Contract(contractAddress, abi, this.provider);
@@ -123,20 +118,20 @@ export default class WalletManager {
 
   signTransaction = async (to, value, data = '0x', chainId = web3NetworkId) => {
     const transaction = {
-      to: to,
+      to,
       value: ethers.utils.parseEther(value),
-      data: data,
-      chainId: chainId,
+      data,
+      chainId,
     };
     return await this.wallet.sign(transaction);
   };
 
   sendTransaction = async (to, value, data = '0x', chainId = web3NetworkId) => {
     const transaction = {
-      to: to,
+      to,
       value: ethers.utils.parseEther(value),
-      data: data,
-      chainId: chainId,
+      data,
+      chainId,
       gasLimit: 21000,
     };
     return await this.wallet.sendTransaction(transaction);
@@ -145,7 +140,7 @@ export default class WalletManager {
   createSmartContractWallet = async () => {
     try {
       this.isCreatingWallet = true;
-      const currentUser = auth().currentUser;
+      const { currentUser } = auth();
       const idToken = await currentUser.getIdToken();
       const options = { headers: { idToken } };
       const response = await axiosClient.get(
@@ -180,7 +175,7 @@ export default class WalletManager {
       const byteTxHash = ethers.utils.arrayify(txHash);
       const signedTx = await this.wallet.signMessage(byteTxHash);
       // Add 4
-      let finalSignature = signedTx.replace(/1b$/, '1f').replace(/1c$/, '20');
+      const finalSignature = signedTx.replace(/1b$/, '1f').replace(/1c$/, '20');
       return finalSignature;
     } catch (err) {
       throw err;
@@ -205,11 +200,13 @@ export default class WalletManager {
       // const tx = await masterCopyContract.execTransaction(toAddress, 0, data, 0, 0, 0, 0, zeroAddress, zeroAddress, finalSignature, OVERRIDES);
       // console.log('execTransaction', tx);
 
-      const body = { idToken, to: toAddress, value: value, data, signature: finalSignature };
+      const body = {
+        idToken, to: toAddress, value, data, signature: finalSignature,
+      };
       const response = await axiosClient.post(
         'execTransaction',
         // options,
-        body
+        body,
       );
       console.log('execTransaction ->', response);
       return response;
@@ -242,14 +239,13 @@ export default class WalletManager {
       const signature = await this.txHashSignature(this.safeAddress, pluginAddress, zeroValue, data);
       console.log('signature2 -->', signature);
       const idToken = await auth().currentUser.getIdToken();
-      const body =
-      {
+      const body = {
         idToken,
         createProposalTx: {
           to: pluginAddress,
           value: zeroValue,
-          data: data,
-          signature: signature,
+          data,
+          signature,
         },
         preAuthId,
       };
@@ -257,7 +253,7 @@ export default class WalletManager {
       console.log('RequestToJoin Body ->', body);
       const response = await axiosClient.post(
         'requestToJoin',
-        body
+        body,
       );
       let msg;
       if (!response.data) {
@@ -286,9 +282,9 @@ export default class WalletManager {
     }
   }
 
-  getAllowance = async pluginAddress => {
-    let contract = new ethers.Contract(COMMONTOKENADDRESS, ABI.CommonToken, this.provider);
-    let allowance = await contract.allowance(this.safeAddress, pluginAddress);
+  getAllowance = async (pluginAddress) => {
+    const contract = new ethers.Contract(COMMONTOKENADDRESS, ABI.CommonToken, this.provider);
+    const allowance = await contract.allowance(this.safeAddress, pluginAddress);
     // TODO: please remove the next call to "formatEther", which will dive the balance by 10 ** 18 and make it unreadable
     const allowanceStr = ethers.utils.formatEther(allowance);
     console.log('allowance ->', allowanceStr);
@@ -300,7 +296,7 @@ export default class WalletManager {
     const contract = new ethers.Contract(COMMONTOKENADDRESS, ABI.CommonToken, this.provider);
     const balance = await contract.balanceOf(address);
     // TODO: please remove the next call to "formatEther", which will dive the balance by 10 ** 18 and make it unreadable
-    const balanceStr =  ethers.utils.formatEther(balance);
+    const balanceStr = ethers.utils.formatEther(balance);
     console.log('balance ->', balance);
     return balanceStr;
   }
@@ -317,15 +313,15 @@ export default class WalletManager {
       const SAFE_TX_TYPEHASH = '0xbb8310d486368db6bd6f849402fdd73ad53d316b5a4b2644ad6efe0f941286d8';
       const DOMAIN_SEPARATOR_TYPEHASH = '0x035aff83d86937d35b32e04f0ddc6ff469290eef2f1b692d8a815c89404d4749';
       const domainSeperator = ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['bytes32', 'address'], [DOMAIN_SEPARATOR_TYPEHASH, myWallet]));
-      let mySafeTxHash = ethers.utils.keccak256(
+      const mySafeTxHash = ethers.utils.keccak256(
         ethers.utils.defaultAbiCoder.encode(
           ['bytes32', 'address', 'uint256', 'bytes32', 'uint8', 'uint256', 'uint256', 'uint256', 'address', 'address', 'uint'],
-          [SAFE_TX_TYPEHASH, toAddress, value, ethers.utils.keccak256(data), 0, 0, 0, 0, zeroAddress, zeroAddress, nonce]
-        )
+          [SAFE_TX_TYPEHASH, toAddress, value, ethers.utils.keccak256(data), 0, 0, 0, 0, zeroAddress, zeroAddress, nonce],
+        ),
       );
-      let myTxHash = ethers.utils.solidityKeccak256(
+      const myTxHash = ethers.utils.solidityKeccak256(
         ['bytes1', 'bytes1', 'bytes32', 'bytes32'],
-        ['0x19', '0x01', domainSeperator, mySafeTxHash]
+        ['0x19', '0x01', domainSeperator, mySafeTxHash],
       );
       return myTxHash;
     } catch (err) {
@@ -334,12 +330,12 @@ export default class WalletManager {
     }
   }
 
-  isRelayerTxSuccess = async txHash => {
+  isRelayerTxSuccess = async (txHash) => {
     const receipt = await this.provider.waitForTransaction(txHash);
     return this.isRelayerTxSuccessWithReceipt(receipt);
   }
 
-  isRelayerTxSuccessWithReceipt = receipt => {
+  isRelayerTxSuccessWithReceipt = (receipt) => {
     const ExecutionFailureTopic = '0x23428b18acfb3ea64b08dc0c1d296ea9c09702c09083ca5272e64d115b687d23';
     for (const log of receipt.logs) {
       if (log.topics[0] === ExecutionFailureTopic) {
@@ -350,10 +346,10 @@ export default class WalletManager {
   }
 
   // Safe Wallet Address Event
-  getAddressFromEvent = async hash => {
+  getAddressFromEvent = async (hash) => {
     const receipt = await this.provider.waitForTransaction(hash);
     console.log('receipt', receipt);
-    let eventABI = [
+    const eventABI = [
       {
         type: 'event',
         name: 'ProxyCreation',
@@ -369,21 +365,16 @@ export default class WalletManager {
       },
     ];
     const iface = new ethers.utils.Interface(eventABI);
-    const events = receipt.logs.map(log => {
-      return iface.parseLog(log);
-    });
+    const events = receipt.logs.map((log) => iface.parseLog(log));
     return events[0].values.proxy;
   };
 
   getTransactionEvents = (interf, receipt) => {
     const txEvents = {};
     const abiEvents = Object.values(interf.events);
-    for (const log of receipt.logs)
-    {
-      for (const abiEvent of abiEvents)
-      {
-        if (abiEvent.topic === log.topics[0])
-        {
+    for (const log of receipt.logs) {
+      for (const abiEvent of abiEvents) {
+        if (abiEvent.topic === log.topics[0]) {
           txEvents[abiEvent.name] = abiEvent.decode(log.data, log.topics);
           break;
         }

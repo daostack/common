@@ -1,32 +1,31 @@
-import {StyleSheet, Text, View} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import {colors, font} from '../../Theme';
 import FastImage from 'react-native-fast-image';
+import { colors, font } from '../../Theme';
 
-const MemberImage = ({userInfo, style, key}) => {
-  return userInfo?.photoURL ? (
-    <FastImage
-      key={key}
-      style={styles.memberImage}
-      source={{
-        uri: userInfo?.photoURL,
-      }}
-    />
-  ) : (
-    <View
-      style={{
-        ...styles.memberImage,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#6e7d82',
-        ...style,
-      }}>
-      <Text style={styles.memberImageDisplayName}>
-        {userInfo?.displayName}
-      </Text>
-    </View>
-  );
-};
+const MemberImage = ({ userInfo, style, key }) => (userInfo?.photoURL ? (
+  <FastImage
+    key={key}
+    style={styles.memberImage}
+    source={{
+      uri: userInfo?.photoURL,
+    }}
+  />
+) : (
+  <View
+    style={{
+      ...styles.memberImage,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#6e7d82',
+      ...style,
+    }}
+  >
+    <Text style={styles.memberImageDisplayName}>
+      {userInfo?.displayName}
+    </Text>
+  </View>
+));
 
 const styles = StyleSheet.create({
   memberImageDisplayName: {

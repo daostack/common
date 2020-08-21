@@ -9,37 +9,36 @@ import {
   Text,
 } from 'react-native';
 import EditProfileForm from '../../Components/Forms/EditProfileForm';
-import {colors, text, layout} from '../../Theme';
+import { colors, text, layout } from '../../Theme';
 
-const CompleteAccount = ({route, navigation}) => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
+const CompleteAccount = ({ route, navigation }) => (
+  <>
+    <StatusBar barStyle="dark-content" />
 
-      <SafeAreaView style={styles.container}>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <View style={styles.body}>
-            <View style={layout.marginBottomXL}>
-              <Text style={text.h1Black}>Complete your account</Text>
-              <Text style={styles.subtitle}>
-                Help the community get to know you better
-              </Text>
-            </View>
-
-            <EditProfileForm
-              userId={route.params.userId}
-              name={route.params.name}
-              image={route.params.image}
-              email={route.params.email}
-            />
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={styles.scrollView}
+      >
+        <View style={styles.body}>
+          <View style={layout.marginBottomXL}>
+            <Text style={text.h1Black}>Complete your account</Text>
+            <Text style={styles.subtitle}>
+              Help the community get to know you better
+            </Text>
           </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
+
+          <EditProfileForm
+            userId={route.params.userId}
+            name={route.params.name}
+            image={route.params.image}
+            email={route.params.email}
+          />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  </>
+);
 
 const styles = StyleSheet.create({
   scrollView: {

@@ -1,9 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View, TouchableOpacity, Text, StyleSheet,
+} from 'react-native';
 import TextInputField from './TextInputField';
-import {text, layout, colors, sizeL} from '../../Theme';
+import {
+  text, layout, colors, sizeL,
+} from '../../Theme';
 
-const MultiLinkField = props => {
+const MultiLinkField = (props) => {
   const [count, setCount] = useState(1);
   const {
     maxCount,
@@ -19,12 +23,12 @@ const MultiLinkField = props => {
     // fieldName = validation.name;
   }, []);
 
-  const renderAddLinkBtn = index => {
+  const renderAddLinkBtn = (index) => {
     if (index === count - 1 && (!maxCount || count < maxCount)) {
       return (
         <TouchableOpacity>
           <Text style={styles.addLinkBtn} onPress={() => setCount(count + 1)}>
-            {addMultiFieldBtnName ? addMultiFieldBtnName : 'Add Link'}
+            {addMultiFieldBtnName || 'Add Link'}
           </Text>
         </TouchableOpacity>
       );
@@ -32,23 +36,21 @@ const MultiLinkField = props => {
   };
 
   return (
-    <View style={{paddingTop: sizeL}}>
-      {[...Array(count).keys()].map(currIndex => {
-        const currItemValidation = {...props.validation}; //{...validation};
-        currItemValidation.name = `${props.validation.name}_value_${currIndex +
-          1}`;
+    <View style={{ paddingTop: sizeL }}>
+      {[...Array(count).keys()].map((currIndex) => {
+        const currItemValidation = { ...props.validation }; // {...validation};
+        currItemValidation.name = `${props.validation.name}_value_${currIndex
+          + 1}`;
         currItemValidation.multiName = props.validation.name;
-        currItemValidation.validateRule =
-          validation.validateRule?.common || validation.validateRule;
+        currItemValidation.validateRule = validation.validateRule?.common || validation.validateRule;
         currItemValidation.invisibleContainer = true;
 
-        const currTitleItemValidation = {...props.validation}; //{...validation};
+        const currTitleItemValidation = { ...props.validation }; // {...validation};
         currTitleItemValidation.name = `${
           props.validation.name
         }_title_${currIndex + 1}`;
         currTitleItemValidation.multiName = props.validation.name;
-        currTitleItemValidation.validateRule =
-          validation.validateRule?.title || 'string';
+        currTitleItemValidation.validateRule = validation.validateRule?.title || 'string';
         const { formStore } = validation;
         currTitleItemValidation.topPosition = true;
         currTitleItemValidation.invisibleContainer = true;
@@ -58,24 +60,24 @@ const MultiLinkField = props => {
             {props.title ? (
               <TextInputField
                 label={props.label}
-                viewStyle={{marginTop: 0}}
+                viewStyle={{ marginTop: 0 }}
                 innerLabel={maxCount ? `${currIndex + 1}/${maxCount}` : false}
                 placeholderText={props.title}
                 validation={currTitleItemValidation}
               />
             ) : null}
             <TextInputField
-              value={''}
+              value=""
               onChangeText={(value) => {
                 if (value.length > 0) {
-                  formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule + '|required');
+                  formStore.updateFieldValidationRule(currTitleItemValidation.name, `${currTitleItemValidation.validateRule}|required`);
                 } else {
                   formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule);
                 }
               }}
-              viewStyle={{marginTop: 0}}
+              viewStyle={{ marginTop: 0 }}
               placeholderText={
-                placeholderValueText ? placeholderValueText : 'https://'
+                placeholderValueText || 'https://'
               }
               autoCapitalize="none"
               autoCorrect={false}

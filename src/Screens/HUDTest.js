@@ -1,5 +1,7 @@
-import React, {useRef, useCallback} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import React, { useRef, useCallback } from 'react';
+import {
+  StyleSheet, Text, View, TouchableOpacity,
+} from 'react-native';
 import Toast from '../Util/Toast';
 
 export default function HUDTest() {
@@ -47,42 +49,48 @@ export default function HUDTest() {
       <TouchableOpacity
         onPress={loading}
         activeOpacity={0.2}
-        style={styles.button}>
+        style={styles.button}
+      >
         <Text style={styles.buttonText}> loading </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={text}
         activeOpacity={0.2}
-        style={styles.button}>
+        style={styles.button}
+      >
         <Text style={styles.buttonText}> text </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={info}
         activeOpacity={0.2}
-        style={styles.button}>
+        style={styles.button}
+      >
         <Text style={styles.buttonText}> info </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={done}
         activeOpacity={0.2}
-        style={styles.button}>
+        style={styles.button}
+      >
         <Text style={styles.buttonText}> done </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={success}
         activeOpacity={0.2}
-        style={styles.button}>
+        style={styles.button}
+      >
         <Text style={styles.buttonText}> success</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={error}
         activeOpacity={0.2}
-        style={styles.button}>
+        style={styles.button}
+      >
         <Text style={styles.buttonText}> error </Text>
       </TouchableOpacity>
     </View>

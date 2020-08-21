@@ -1,5 +1,4 @@
 import React from 'react';
-import {NativeWallet} from '../Util/NativeWallet';
 import {
   Text,
   View,
@@ -8,25 +7,27 @@ import {
   Dimensions,
   StyleSheet,
 } from 'react-native';
-const { width } = Dimensions.get('window');
 import { inject, observer } from 'mobx-react';
 import { BN } from 'bn.js';
+import { ethers } from 'ethers';
+import { NativeWallet } from '../Util/NativeWallet';
 import WalletManager from '../Util/WalletManager';
 import { BOTTOM_SHEET_TEMPLATES } from '../Stores/BottomSheetStore';
 import ArcService from '../Services/ArcService';
 import {
-  ARC_VERSION ,
-  GRAPH_VERSION ,
-  graphHttpLink ,
-  web3ProviderUrl ,
-  relayerUrl ,
-  COMMONTOKENADDRESS ,
+  ARC_VERSION,
+  GRAPH_VERSION,
+  graphHttpLink,
+  web3ProviderUrl,
+  relayerUrl,
+  COMMONTOKENADDRESS,
 } from '../Config';
 import Toast from '../Util/Toast';
 import { auth } from '../Firebase';
 import ABI from '../Util/abi.json';
-import { ethers } from 'ethers';
 import { showErrorPopUp } from '../Util';
+
+const { width } = Dimensions.get('window');
 
 class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -102,7 +103,7 @@ class nativeBridgeTests extends React.Component {
       console.log('storeMnemonic: ', storedMnemonic);
       this.setState({ storedMnemonic: 'true' });
     } catch (e) {
-      throw 'Store mnemonic failed with error: ' + e;
+      throw `Store mnemonic failed with error: ${e}`;
     }
   };
 
@@ -138,7 +139,7 @@ class nativeBridgeTests extends React.Component {
       console.log('BALANCE: ', balance);
       this.setState({ address, balance });
     } catch (e) {
-      throw 'Send transaction failed with error: ' + e;
+      throw `Send transaction failed with error: ${e}`;
     }
   };
 
@@ -151,7 +152,7 @@ class nativeBridgeTests extends React.Component {
       );
       this.setState({ signHash: hash });
     } catch (e) {
-      throw 'Send transaction failed with error: ' + e;
+      throw `Send transaction failed with error: ${e}`;
     }
   };
 
@@ -168,7 +169,7 @@ class nativeBridgeTests extends React.Component {
         txStatus: receipt.status === 0 ? 'Failed' : 'Confirmed',
       });
     } catch (e) {
-      throw 'Send transaction failed with error: ' + e;
+      throw `Send transaction failed with error: ${e}`;
     }
   };
 
@@ -189,7 +190,7 @@ class nativeBridgeTests extends React.Component {
       console.log('safeWalletBalance', safeWalletBalance);
       this.setState({ safeWallet, safeWalletBalance });
     } catch (e) {
-      throw 'Send transaction failed with error: ' + e;
+      throw `Send transaction failed with error: ${e}`;
     }
   };
 
@@ -208,7 +209,7 @@ class nativeBridgeTests extends React.Component {
       console.log('txHash ->', txHash);
       this.setState({ cwTXHash: txHash, cwAddress: safeAddress });
     } catch (e) {
-      throw 'Send transaction failed with error: ' + e;
+      throw `Send transaction failed with error: ${e}`;
     }
   };
 
@@ -229,13 +230,13 @@ class nativeBridgeTests extends React.Component {
       const address = await manager.getAddressFromEvent(txHash);
       this.setState({ cw2Address: address });
     } catch (e) {
-      throw 'Send transaction failed with error: ' + e;
+      throw `Send transaction failed with error: ${e}`;
     }
   };
 
   execTransaction = async () => {
     try {
-      const safeAddress = this.props.userStore.userInfo.safeAddress;
+      const { safeAddress } = this.props.userStore.userInfo;
       if (safeAddress === null) {
         this.setState({ safeTxHash: 'No wallet found, you need create one' });
         return;
@@ -244,7 +245,7 @@ class nativeBridgeTests extends React.Component {
       const response = await manager.execTransaction(
         safeAddress,
         '0xA60f8a3E6586aA590a4AD9EE0F264A1473Bab7cB',
-        ethers.utils.parseEther('0.01').toString(10)
+        ethers.utils.parseEther('0.01').toString(10),
       );
       console.log('txHash ->', response.data.txHash);
       this.setState({
@@ -252,13 +253,13 @@ class nativeBridgeTests extends React.Component {
       });
     } catch (e) {
       console.log(e);
-      throw 'Send transaction failed with error: ' + e;
+      throw `Send transaction failed with error: ${e}`;
     }
   };
 
   execSmartContract = async () => {
     try {
-      const safeAddress = this.props.userStore.userInfo.safeAddress;
+      const { safeAddress } = this.props.userStore.userInfo;
       if (safeAddress === null) {
         this.setState({ safeSCHash: 'No wallet found, you need create one' });
         return;
@@ -294,7 +295,7 @@ class nativeBridgeTests extends React.Component {
       this.setState({ whiteListMsg: response.data.message });
     } catch (e) {
       console.log(e);
-      throw 'Send transaction failed with error: ' + e;
+      throw `Send transaction failed with error: ${e}`;
     }
   };
 
@@ -305,7 +306,7 @@ class nativeBridgeTests extends React.Component {
       this.setState({ CMNBalance: balance });
     } catch (e) {
       console.log(e);
-      throw 'Send transaction failed with error: ' + e;
+      throw `Send transaction failed with error: ${e}`;
     }
   }
 
@@ -318,7 +319,7 @@ class nativeBridgeTests extends React.Component {
       this.setState({ CMNAllowance: balance });
     } catch (e) {
       console.log(e);
-      throw 'Send transaction failed with error: ' + e;
+      throw `Send transaction failed with error: ${e}`;
     }
   }
 
@@ -337,7 +338,7 @@ class nativeBridgeTests extends React.Component {
           fundingGoal: 10000,
           fundingGoalDeadline: Math.round(new Date().getTime() / 1000),
         },
-        this.props.navigation
+        this.props.navigation,
       );
 
       this.setState({ commonStatus: `${JSON.stringify(commonAddress)}` });
@@ -375,7 +376,7 @@ class nativeBridgeTests extends React.Component {
       };
       proposalId = await ArcService.getInstance().createRequestToJoin(
         daoId,
-        data
+        data,
       );
       this.setState({
         proposalStatus: `JoinAndQuit Proposal with id ${proposalId} created!`,
@@ -422,8 +423,7 @@ class nativeBridgeTests extends React.Component {
 
   voteForJoinAndQuitProposal = async () => {
     console.log('Vote for proposal -- please wait');
-    const proposalId =
-      '0xb99e0a8daeb6dcaab9756202ec375153a8498b947d7b2ac864df0635e2928ef0'; // Proposal for the 0 min funding dao made from user lyubomir.petkov@limechain.tech
+    const proposalId = '0xb99e0a8daeb6dcaab9756202ec375153a8498b947d7b2ac864df0635e2928ef0'; // Proposal for the 0 min funding dao made from user lyubomir.petkov@limechain.tech
     this.setState({
       proposalVotingStatus: 'VOTING for  proposal -- please wait',
     });
@@ -442,16 +442,16 @@ class nativeBridgeTests extends React.Component {
       this.setState({ voteState: `${e}` });
       // showErrorPopUp(this.props.bottomSheetStore, e.message);
     }
-    //console.log(`proposal created: ${proposal.id}`);
+    // console.log(`proposal created: ${proposal.id}`);
   };
 
-  openTxhash = hash => {
+  openTxhash = (hash) => {
     this.props.navigation.navigate('Browser', {
       url: `https://blockscout.com/poa/xdai/tx/${hash}`,
     });
   };
 
-  openAddress = address => {
+  openAddress = (address) => {
     this.props.navigation.navigate('Browser', {
       url: `https://blockscout.com/poa/xdai/address/${address}`,
     });
@@ -465,11 +465,18 @@ class nativeBridgeTests extends React.Component {
           <TouchableOpacity onPress={this.error} style={styles.button}>
             <Text>Error</Text>
           </TouchableOpacity>
-          <Text>Address: {this.state.ownerAccount}</Text>
-          <Text>Balance: {this.state.ownerBalance}</Text>
+          <Text>
+            Address:
+            {this.state.ownerAccount}
+          </Text>
+          <Text>
+            Balance:
+            {this.state.ownerBalance}
+          </Text>
           <TouchableOpacity
             onPress={this.getOwnerBalance}
-            style={styles.button}>
+            style={styles.button}
+          >
             <Text>Get local Address and balance</Text>
           </TouchableOpacity>
 
@@ -488,56 +495,78 @@ class nativeBridgeTests extends React.Component {
           <Text>{this.state.proposalState}</Text>
           <TouchableOpacity
             onPress={this.createRequestToJoin}
-            style={styles.button}>
+            style={styles.button}
+          >
             <Text>Create a request to join</Text>
           </TouchableOpacity>
 
           <Text>{this.state.fundingProposalState}</Text>
           <TouchableOpacity
             onPress={this.createFundingProposal}
-            style={styles.button}>
+            style={styles.button}
+          >
             <Text>Create a funding request</Text>
           </TouchableOpacity>
 
           <Text>{this.state.voteState}</Text>
           <TouchableOpacity
             onPress={this.voteForJoinAndQuitProposal}
-            style={styles.button}>
+            style={styles.button}
+          >
             <Text>Vote for proposal</Text>
           </TouchableOpacity>
 
-          <Text>mnemonicsAndStore: {this.state.mnemonicsAndStore}</Text>
+          <Text>
+            mnemonicsAndStore:
+            {this.state.mnemonicsAndStore}
+          </Text>
           <TouchableOpacity
             onPress={this.generateAndStoreMnemonic}
-            style={styles.button}>
+            style={styles.button}
+          >
             <Text>Generate And Store Mnemonic</Text>
           </TouchableOpacity>
 
           <Text style={{ marginVertical: 10 }}>
             --------------- Native Bridge -----------------
           </Text>
-          <Text>mnemonic: {this.state.mnemonic}</Text>
+          <Text>
+            mnemonic:
+            {this.state.mnemonic}
+          </Text>
           <TouchableOpacity
             onPress={this.generateMnemonic}
-            style={styles.button}>
+            style={styles.button}
+          >
             <Text>Generate Mnemonic</Text>
           </TouchableOpacity>
 
-          <Text>mnemonicsAndStore: {this.state.mnemonicsAndStore}</Text>
+          <Text>
+            mnemonicsAndStore:
+            {this.state.mnemonicsAndStore}
+          </Text>
           <TouchableOpacity
             onPress={this.generateAndStoreMnemonic}
-            style={styles.button}>
+            style={styles.button}
+          >
             <Text>Generate And Store Mnemonic</Text>
           </TouchableOpacity>
 
-          <Text>local: {this.state.keychainMnemonics}</Text>
+          <Text>
+            local:
+            {this.state.keychainMnemonics}
+          </Text>
           <TouchableOpacity
             onPress={this.retrieveMnemonic}
-            style={styles.button}>
+            style={styles.button}
+          >
             <Text>Retrieve Mnemonic From Local</Text>
           </TouchableOpacity>
 
-          <Text>storeMnemonic: {this.state.storedMnemonic}</Text>
+          <Text>
+            storeMnemonic:
+            {this.state.storedMnemonic}
+          </Text>
           <TouchableOpacity onPress={this.storeMnemonic} style={styles.button}>
             <Text>Store Mnemonic</Text>
           </TouchableOpacity>
@@ -546,28 +575,46 @@ class nativeBridgeTests extends React.Component {
             --------------- Local Wallet -----------------
           </Text>
           <TouchableOpacity
-            onPress={() => this.openAddress(this.state.address)}>
-            <Text>Address: {this.state.address}</Text>
+            onPress={() => this.openAddress(this.state.address)}
+          >
+            <Text>
+              Address:
+              {this.state.address}
+            </Text>
           </TouchableOpacity>
-          <Text>Balance: {this.state.balance}</Text>
+          <Text>
+            Balance:
+            {this.state.balance}
+          </Text>
           <TouchableOpacity onPress={this.getBalance} style={styles.button}>
             <Text>Get Wallet address Balance (obsolete)</Text>
           </TouchableOpacity>
 
-          <Text>Status: {this.state.signHash}</Text>
+          <Text>
+            Status:
+            {this.state.signHash}
+          </Text>
           <TouchableOpacity
             onPress={this.signTransaction}
-            style={styles.button}>
+            style={styles.button}
+          >
             <Text>Sign Transaction</Text>
           </TouchableOpacity>
 
-          <Text>Status: {this.state.txStatus}</Text>
+          <Text>
+            Status:
+            {this.state.txStatus}
+          </Text>
           <TouchableOpacity onPress={() => this.openTxhash(this.state.txHash)}>
-            <Text>Hash: {this.state.txHash}</Text>
+            <Text>
+              Hash:
+              {this.state.txHash}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this.sendTransaction}
-            style={styles.button}>
+            style={styles.button}
+          >
             <Text>Send Transaction</Text>
           </TouchableOpacity>
 
@@ -583,25 +630,41 @@ class nativeBridgeTests extends React.Component {
           </Text>
 
           <TouchableOpacity
-            onPress={() => this.openAddress(this.state.safeWallet)}>
-            <Text>Address: {this.state.safeWallet}</Text>
+            onPress={() => this.openAddress(this.state.safeWallet)}
+          >
+            <Text>
+              Address:
+              {this.state.safeWallet}
+            </Text>
           </TouchableOpacity>
-          <Text>Balance: {this.state.safeWalletBalance}</Text>
+          <Text>
+            Balance:
+            {this.state.safeWalletBalance}
+          </Text>
           <TouchableOpacity onPress={this.getSafeBalance} style={styles.button}>
             <Text>Get Safe Wallet Balance</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => this.openTxhash(this.state.cwTXHash)}>
-            <Text>TXHash: {this.state.cwTXHash}</Text>
+            onPress={() => this.openTxhash(this.state.cwTXHash)}
+          >
+            <Text>
+              TXHash:
+              {this.state.cwTXHash}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => this.openAddress(this.state.cwAddress)}>
-            <Text>Address: {this.state.cwAddress}</Text>
+            onPress={() => this.openAddress(this.state.cwAddress)}
+          >
+            <Text>
+              Address:
+              {this.state.cwAddress}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this.createSmartContractWallet}
-            style={styles.button}>
+            style={styles.button}
+          >
             <Text>Create Smart Wallet</Text>
           </TouchableOpacity>
 
@@ -620,22 +683,32 @@ class nativeBridgeTests extends React.Component {
             <Text>Add self white list</Text>
           </TouchableOpacity> */}
           <TouchableOpacity
-            onPress={() => this.openTxhash(this.state.safeSCHash)}>
-            <Text>TxHash: {this.state.safeSCHash}</Text>
+            onPress={() => this.openTxhash(this.state.safeSCHash)}
+          >
+            <Text>
+              TxHash:
+              {this.state.safeSCHash}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this.execSmartContract}
-            style={styles.button}>
+            style={styles.button}
+          >
             <Text>execSmartContract</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => this.openTxhash(this.state.safeTxHash)}>
-            <Text>TxHash: {this.state.safeTxHash}</Text>
+            onPress={() => this.openTxhash(this.state.safeTxHash)}
+          >
+            <Text>
+              TxHash:
+              {this.state.safeTxHash}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this.execTransaction}
-            style={styles.button}>
+            style={styles.button}
+          >
             <Text>execTransaction</Text>
           </TouchableOpacity>
 
@@ -643,41 +716,63 @@ class nativeBridgeTests extends React.Component {
             --------------- ERC20 -----------------
           </Text>
 
-          <Text>{this.state.CMNBalance} CMN</Text>
+          <Text>
+            {this.state.CMNBalance}
+            {' '}
+            CMN
+          </Text>
           <TouchableOpacity
             onPress={this.getTokenBalance}
-            style={styles.button}>
+            style={styles.button}
+          >
             <Text>Get Common Token Balance</Text>
           </TouchableOpacity>
 
-          <Text>Allowance: {this.state.CMNAllowance} </Text>
+          <Text>
+            Allowance:
+            {this.state.CMNAllowance}
+          </Text>
           <TouchableOpacity
             onPress={this.getTokenAllowance}
-            style={styles.button}>
+            style={styles.button}
+          >
             <Text>Get Common Token Allowance</Text>
           </TouchableOpacity>
 
-
           <Text style={{ marginBottom: 10 }}>
-            ARC_VERSION: {ARC_VERSION}
+            ARC_VERSION:
+            {' '}
+            {ARC_VERSION}
           </Text>
           <Text style={{ marginBottom: 10 }}>
-            GRAPH_VERSION: {GRAPH_VERSION}
+            GRAPH_VERSION:
+            {' '}
+            {GRAPH_VERSION}
           </Text>
           <Text style={{ marginBottom: 10 }}>
-            graphHttpLink: {graphHttpLink}
+            graphHttpLink:
+            {' '}
+            {graphHttpLink}
           </Text>
           <Text style={{ marginBottom: 10 }}>
-            ARC_VERSION: {ARC_VERSION}
+            ARC_VERSION:
+            {' '}
+            {ARC_VERSION}
           </Text>
           <Text style={{ marginBottom: 10 }}>
-            relayerUrl: {relayerUrl()}
+            relayerUrl:
+            {' '}
+            {relayerUrl()}
           </Text>
           <Text style={{ marginBottom: 10 }}>
-            COMMONTOKENADDRESS: {COMMONTOKENADDRESS}
+            COMMONTOKENADDRESS:
+            {' '}
+            {COMMONTOKENADDRESS}
           </Text>
           <Text style={{ marginBottom: 10 }}>
-          Network: {this.state.networkURL}
+            Network:
+            {' '}
+            {this.state.networkURL}
           </Text>
 
           {/* graphwsLink
