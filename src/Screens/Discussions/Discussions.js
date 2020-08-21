@@ -27,7 +27,6 @@ import auth from '@react-native-firebase/auth';
 import BottomSheetModal from '../../Components/BottomSheetModal';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import ImageView from 'react-native-image-viewing';
-// import _ from 'lodash';
 
 const {width} = Dimensions.get('window');
 
@@ -49,7 +48,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
   const [data, setData] = useState(props.route.params.data);
   const [isMember, setIsMember] = useState(false);
 
-  console.log('commonId', commonId);
+  const [isSending, setIsSending] = useState(false);
   const currentUser = auth().currentUser;
 
   useEffect(() => {
@@ -124,11 +123,6 @@ const Discussions = ({daoStore, userStore, ...props}) => {
               }, []);
             console.log('groupDate', groupDate);
             setMsgDroup(groupDate);
-            chatRef.current.scrollToLocation({
-              animated: true,
-              itemIndex: 0,
-              sectionIndex: 0,
-            });
           }
         },
         error => console.error(error),
@@ -143,18 +137,25 @@ const Discussions = ({daoStore, userStore, ...props}) => {
       );
       setUser(userData);
     };
+
+    // chatRef.scrollToLocation({
+    //   animated: true,
+    //   sectionIndex: 0,
+    //   itemIndex: 0,
+    //   viewPosition: 0,
+    // });
     fetchUser();
   }, [data]);
 
-  const openOptionsMenu = () => {
-    if (!currentUser) {
-      showLoginScreen();
-      return;
-    }
-    props.bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
-    );
-  };
+  // const openOptionsMenu = () => {
+  //   if (!currentUser) {
+  //     showLoginScreen();
+  //     return;
+  //   }
+  //   props.bottomSheetStore.showBottomSheet(
+  //     BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
+  //   );
+  // };
 
   const showLoginScreen = () => {
     props.bottomSheetStore.showBottomSheet(
@@ -184,16 +185,22 @@ const Discussions = ({daoStore, userStore, ...props}) => {
   };
 
   const sendMessageToDiscussion = async () => {
+
+    if (isSending) {
+      return;
+    }
+    setIsSending(true);
+
     const userStore = currentUser;
     if (!userStore) {
       showLoginScreen();
+      setIsSending(false);
+      return;
     }
-    // props.userStore;
-    inputRef.current.clear();
-    console.log('userStore', commonId, data.id, userStore);
-    const message = inputRef.current._lastNativeText;
+
+    const message = inputText;
     if (message && message.trim().length) {
-      console.log('message', message);
+      inputRef.current.clear();
       firestore()
         .collection('discussionMessage')
         .doc()
@@ -207,15 +214,17 @@ const Discussions = ({daoStore, userStore, ...props}) => {
           discussionId: discussionId,
         })
         .then(() => {
-          console.log('YES', inputRef.current);
           Keyboard.dismiss();
+          setIsSending(false);
+          setInputText(null);
         })
         .catch(error => {
-          console.log('NO', error);
           Toast.error(error);
+          setIsSending(false);
         });
     } else {
       Toast.error('Empty Message');
+      setIsSending(false);
     }
   };
 
@@ -322,64 +331,64 @@ const Discussions = ({daoStore, userStore, ...props}) => {
           //   </TouchableOpacity>
           // }
         />
-        <View
-          style={{
-            backgroundColor: colors.white,
-            // flex: 1,
-            paddingBottom: 0,
-          }}>
-          {isExpanded ? (
-            <View style={{paddingTop: 20, paddingHorizontal: 20}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  paddingVertical: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Image
-                  style={styles.avatar}
-                  source={user.photoURL ? {uri: user.photoURL} : null}
-                />
-                <View style={{flex: 1, paddingHorizontal: 10}}>
-                  <Text style={styles.displayName}>{user.displayName}</Text>
-                  {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-                  <Text style={styles.date}>
-                    {moment(data.createTime.toDate()).fromNow()}
+        <View style={{ overflow: 'hidden', paddingBottom: 5 }}>
+          <View
+            style={styles.headerContainer}>
+            {isExpanded ? (
+              <View style={{
+                paddingTop: 20,
+                paddingHorizontal: 20,
+              }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    paddingVertical: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Image
+                    style={styles.avatar}
+                    source={user.photoURL ? {uri: user.photoURL} : null}
+                  />
+                  <View style={{flex: 1, paddingHorizontal: 10}}>
+                    <Text style={styles.displayName}>{user.displayName}</Text>
+                    {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
+                    <Text style={styles.date}>
+                      {moment(data.createTime.toDate()).fromNow()}
+                    </Text>
+                  </View>
+                </View>
+
+                <View>
+                  <Text
+                    style={styles.message}>
+                    {data.message}
                   </Text>
                 </View>
+
+                {headerImages()}
+                {headerFiles()}
+
+                <TouchableOpacity
+                  style={{alignItems: 'center', paddingVertical: 10}}
+                  onPress={() => {
+                    setIsExpanded(!isExpanded);
+                  }}>
+                  <Image style={{ height: 10, width: 60 }} source={require('../../Assets/collapse.png')} />
+                </TouchableOpacity>
               </View>
-
-              <View>
-                <Text
-                  style={styles.message}>
-                  {data.message}
-                </Text>
-              </View>
-
-              {headerImages()}
-              {headerFiles()}
-
-              <TouchableOpacity
-                style={{alignItems: 'center'}}
-                onPress={() => {
-                  setIsExpanded(!isExpanded);
-                }}>
-                <Icon name="up-arrow" size={32} />
-              </TouchableOpacity>
-            </View>
-          ) : (
+            ) : (
             <>
               <TouchableOpacity
-                style={{alignItems: 'center'}}
+                style={{alignItems: 'center', paddingVertical: 10}}
                 onPress={() => {
                   setIsExpanded(!isExpanded);
                 }}>
-                <Icon name="down-arrow" size={32} />
+                <Image style={{ height: 10, width: 60  }} source={require('../../Assets/expand.png')} />
               </TouchableOpacity>
             </>
-          )}
-          <View
+            )}
+            {/* <View
             style={{
               height: 4,
               marginTop: 10,
@@ -387,7 +396,8 @@ const Discussions = ({daoStore, userStore, ...props}) => {
               marginHorizontal: -20,
               backgroundColor: colors.grey4,
             }}
-          />
+          /> */}
+          </View>
         </View>
         {/* </SafeAreaView> */}
       </>
@@ -413,10 +423,16 @@ const Discussions = ({daoStore, userStore, ...props}) => {
             stickySectionHeadersEnabled={true}
             inverted={true}
             contentContainerStyle={{paddingTop: 10}}
-            // initialScrollIndex={2}
+            // initialScrollIndex={1}
+            onScrollToIndexFailed={info => {
+              const wait = new Promise(resolve => setTimeout(resolve, 500));
+              wait.then(() => {
+                chatRef.current?.scrollToIndex({ index: info.index, animated: true });
+              });
+            }}
           />
         </ScrollView>
-        : 
+        :
         <View style={styles.emptyContainer}>
           <Image source={require('../../Assets/empty-discussion.png')} style={{ width: 240, height: 240 }} />
           <Text style={styles.emptyTitle}> No comments yet</Text>
@@ -571,6 +587,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
+    elevation: 2,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 15,
@@ -655,6 +672,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     ...font.fontSize(2),
     ...font.primary.regular,
+  },
+  headerContainer: {
+    backgroundColor: colors.white,
+    // flex: 1,
+    paddingBottom: 0,
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
+    shadowColor: 'rgba(0, 0, 0, 0.12)',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 5,
+    shadowOpacity: 0.8,
+    elevation: 5,
   }
 });
 

@@ -2,9 +2,9 @@ import React, {useEffect, useState, useRef} from 'react';
 import PropTypes from 'prop-types';
 import { FlatList, StyleSheet, View, Text, Image, Dimensions, TouchableOpacity} from 'react-native';
 import ViewTabNoData from '../../Components/ViewTabNoData';
-import ProposalService, {PROPOSAL_STAGE} from '../../Services/ProposalService';
+import ProposalService from '../../Services/ProposalService';
 import ProposalCard from '../../Components/Proposals/ProposalCard';
-import {layout, colors, font, text, sizeXXL, sizeM} from '../../Theme';
+import {layout, colors, font, text, sizeM} from '../../Theme';
 import FirebaseService from '../../Services/FirebaseService';
 import SwiperCard from '../../Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
@@ -28,7 +28,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
   useEffect(() => {
     const loadProposalInfo = async (commonId, userId, isHistory, showAll, onlyFundingRequests, membershipRequests) => {
       let proposalStages = isHistory ? PROPOSAL_STAGES_HISTORY : PROPOSAL_STAGES_ACTIVE;
-      
+
       unsubscribe = await ProposalService.getInstance().subscribeToProposalList(
         commonId,
         userId,
@@ -58,12 +58,11 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
   }, [commonId, isHistory, userId, safeAddress]);
 
   const onReviewProposal = async ( proposalId, daoId ) => {
-    
     navigation.navigate('ProposalScreen', {
-        proposalId: proposalId,
-        screenTitle: commonName || await FirebaseService.getInstance().getDaoNameById(daoId),
-        commonBalance: commonInfo?.balance,
-        isMember,
+      proposalId: proposalId,
+      screenTitle: commonName || await FirebaseService.getInstance().getDaoNameById(daoId),
+      commonBalance: commonInfo?.balance,
+      isMember,
     });
   };
 
@@ -74,12 +73,13 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
           <ProposalCard
             key={item.id}
             data={item}
+            isSwiper={true}
             membershipRequest={membershipRequests}
             onReviewProposal={e => onReviewProposal(item.id, item.dao)}
           />
         ) : (
           <TouchableOpacity
-            onPress={() => navigation.navigate('MyProposals')}
+            onPress={() => navigation.navigate('MyProposals', { onlyFundingRequests: onlyFundingRequests, onlyMembershipRequests: membershipRequests })}
             style={{ ...styles.commonBox }}
           >
             <Text style={text.buttonblue}>
@@ -91,6 +91,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
       ) : <ProposalCard
         key={item.id}
         data={item}
+        isSwiper={false}
         membershipRequest={membershipRequests}
         onReviewProposal={e => onReviewProposal(item.id, item.dao)}
       />);
@@ -111,6 +112,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
       ) : (
         <View style={styles.emptyObjectContainer}>
           <Image
+            style={{height: 100, width: 100}}
             source={require('../../../src/Assets/pencil.png')}
           />
           <Text style={{...text.h2Black, ...layout.marginTopS}}>
@@ -160,12 +162,12 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
               ? 'No Past activity'
               : membershipRequests
                 ? 'No requests yet'
-                : 'No proposals yet'
+                : 'No proposals'
           }
           subtitle={
             isHistory
               ? 'You will be able to see proposals that passed or were rejected here.'
-              : 'Write your first proposals and invite members to make an impact together!'
+              : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
           }
         />
       )}
@@ -177,8 +179,9 @@ const styles = StyleSheet.create({
   emptyObjectContainer: {
     ...layout.content,
     borderRadius: 14,
-    paddingHorizontal: sizeXXL,
     backgroundColor: colors.iceBlue,
+    alignSelf: 'center',
+    marginHorizontal: 12,
   },
 
   textNoProposals: {
@@ -224,6 +227,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 8,
     shadowOpacity: 1,
+    elevation: 6,
   },
 });
 

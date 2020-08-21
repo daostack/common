@@ -51,7 +51,7 @@ const DiscussionCard = props => {
         data.ownerId,
       );
       if (userData) {
-        console.log('userData', userData);
+        // console.log('userData', userData);
         setUser(userData);
       }
     };
@@ -275,6 +275,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
+    elevation: 2,
   },
   primaryNameContainer: {
     flex: 1,

@@ -11,7 +11,7 @@ import Toast from '../../Util/Toast';
 import moment from 'moment';
 const {width} = Dimensions.get('window');
 
-const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membershipRequest}) => {
+const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membershipRequest, isSwiper}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
 
   useEffect(() => {
@@ -102,8 +102,15 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
     }
   }, [data]);
 
+  const cardWidth = () => {
+    if (isSwiper && Platform.OS === 'ios') {
+      return '100%';
+    }
+    return width - 40;
+  };
+
   return (
-    <Animated.View style={[styles.proposalCard, containerStyle]}>
+    <Animated.View style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
           isBoosted={true}
@@ -115,26 +122,27 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
 
         <View
           style={{
-            ...layout.content,
+            // ...layout.content,
+            paddingTop: 0,
+            // paddingBottom: 0,
+            paddingHorizontal: 16,
             ...layout.flexStart,
-            ...layout.paddingBottomL,
+            // ...layout.paddingBottomL,
             ...{flexWrap: 'wrap'},
           }}>
           {proposalCardInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && <Text
-            style={{ ...text.h3Black, ...{ textAlign: 'left', flexWrap: 'wrap' } }}>
+            style={{ ...text.h3Black, ...{ textAlign: 'left', flexWrap: 'wrap', padding:10, fontSize: 16 } }}>
             {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
           </Text>}
 
-          <View style={layout.flexRow}>
-            <MemberCard
-              showDate={membershipRequest}
-              userInfo={proposalCardInfo.proposedUser}
-              proposalInfo={proposalCardInfo.proposalInfo}
-              isPending={false}
-            />
-          </View>
-
-          <View style={{...layout.flexRow, ...layout.marginTopS}}>
+          <MemberCard
+            showDate={membershipRequest}
+            userInfo={proposalCardInfo.proposedUser}
+            proposalInfo={proposalCardInfo.proposalInfo}
+            isPending={false}
+            showMemberCreatedDate={true}
+          />
+          <View style={{...layout.flexRow }}>
             <ProposalApprovalTag
               iconName="approved"
               value={proposalCardInfo.proposalInfo?.votesFor}
@@ -168,17 +176,21 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
 
 const styles = StyleSheet.create({
   proposalCardActionContainer: {
-    ...layout.content,
+    // ...layout.content,
     ...layout.marginTopL,
+    // ...layout.marginBottomL,
     paddingBottom: 0,
     borderTopWidth: 1,
     borderTopColor: colors.grey4,
+    alignContent: 'center',
+    alignItems: 'center',
     width: '100%',
   },
   proposalActionBtnText: {
     ...font.primary.regular,
-    ...font.fontSize(3),
+    fontSize: 16,
     color: colors.mainBlue,
+    marginVertical: 14,
   },
 
   proposalCard: {
@@ -199,7 +211,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
-    width: Platform.OS === 'ios' ? '100%' : width - 60,
+    elevation: 4,
   },
 });
 

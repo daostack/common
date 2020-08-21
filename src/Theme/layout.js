@@ -24,6 +24,7 @@ const messageContainer = {
   },
   shadowRadius: 3,
   shadowOpacity: 0.1,
+  elevation: 3,
 };
 
 const messageContainerTriangle = {

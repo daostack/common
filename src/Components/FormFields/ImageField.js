@@ -25,11 +25,11 @@ class ImageField extends React.Component {
     const {validation, value} = this.props;
 
     if (validation) {
-      const {name, formStore, validateRule, multiName} = validation;
+      const {name, formStore, validateRule, multiName, displayName, customErrorMessage} = validation;
       formStore.registerFormField(name, validateRule, value, multiName);
 
       this.fieldValidation = (
-        <ValidationMessage formStore={formStore} name={name} invisibleContainer={true}/>
+        <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} invisibleContainer={true}/>
       );
     }
   }
@@ -99,8 +99,8 @@ class ImageField extends React.Component {
           }}
         />
       );
-    } 
-    else if(isAvatar){
+    }
+    else if (isAvatar){
       return (
         <View style={styles.imageStyle}>
           <Icon name="account-place-holder" size={100} />
@@ -110,26 +110,29 @@ class ImageField extends React.Component {
     else {
       return (
         <View style={styles.imageFieldPlaceholderView}>
-          <Icon name="addpicture" size={34} />
+          <View style={{ borderColor: colors.grey3, borderWidth: 2, borderRadius: 5, padding: 15}}>
+            <Icon name="addpicture" size={18} />
+          </View>
           <Text
             style={{
-              ...text.h3Black,
-              ...layout.marginTopXL,
-
+              ...text.h2Black,
+              ...layout.marginTopM,
+              fontSize: 16,
             }}>
             Upload images from your phone
           </Text>
           <Text
             style={{
-              ...text.h3Black,
+              ...text.h2Black,
               ...layout.marginTopS,
               ...{fontWeight: 'normal'},
+              fontSize: 16,
             }}>
             Get more attention to your proposal
           </Text>
           <View styles={layout.flexRow}>
             <TouchableOpacity style={styles.btn} onPress={this.pickImage} >
-              <Text style={text.buttonblue}>Add Image</Text>
+              <Text style={[text.buttonblue, {fontSize: 16}]}>Add Image</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -157,10 +160,8 @@ class ImageField extends React.Component {
             {!disableEdit && (isAvatar || currValue) ? (
               <TouchableOpacity
                 style={isAvatar ? styles.formImageFielAddIconAvatar : styles.formImageFielAddIcon}
-                onPress={() => this.pickImage()}>
-                {/* onPress={() => this.onFieldDeleted()}> */}
-                {/* <Icon name="delete" size={16} color={colors.white} /> */}
-                <Icon name="addpicture" size={16} color={colors.white} />
+                onPress={() => { isAvatar ? this.pickImage() : this.onFieldDeleted();} }>
+                <Icon name={ isAvatar ? 'addpicture' : 'delete' } size={16} color={colors.white} />
               </TouchableOpacity>
             ) : null}
           </View>
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
     ...layout.btnOutline,
     flexDirection: 'row',
     marginTop: 40,
-    borderRadius: 5,
+    borderRadius: 10,
     backgroundColor: colors.white,
     flexGrow: 0,
     paddingHorizontal: 15,
@@ -215,6 +216,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 8,
     shadowOpacity: 1,
+    elevation: 3,
     alignSelf: 'center',
   },
   formImageFueldGeneralStyle: {
@@ -258,15 +260,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.mainBlue,
     borderWidth: 2,
     borderColor: colors.white,
-  },
-
-  imagePlaceholder: {
-    ...layout.content,
-    ...layout.marginTopXL,
-    backgroundColor: '#effafd',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
   },
 });
 

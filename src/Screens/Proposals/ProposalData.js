@@ -16,7 +16,6 @@ import Loader from '../../Components/Loader';
 import ImageSize from 'react-native-image-size';
 import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {observer, inject} from 'mobx-react';
 import {PROPOSAL_TYPE} from '../../Config';
 
@@ -91,56 +90,56 @@ const ProposalData = props => {
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [topMessage, setTopMessage] = useState([]);
 
-  const _renderTruncatedFooter = handlePress => {
-    return (
-      <Text style={styles.readMoreBtn} onPress={handlePress}>
-        Show more
-      </Text>
-    );
-  };
+  // const _renderTruncatedFooter = handlePress => {
+  //   return (
+  //     <Text style={styles.readMoreBtn} onPress={handlePress}>
+  //       Show more
+  //     </Text>
+  //   );
+  // };
 
-  const _renderRevealedFooter = handlePress => {
-    return (
-      <Text style={styles.readMoreBtn} onPress={handlePress}>
-        Show less
-      </Text>
-    );
-  };
+  // const _renderRevealedFooter = handlePress => {
+  //   return (
+  //     <Text style={styles.readMoreBtn} onPress={handlePress}>
+  //       Show less
+  //     </Text>
+  //   );
+  // };
 
-  const openBoostedInfo = () => {
-    props.bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BOOSTED_INFO);
-  };
+  // const openBoostedInfo = () => {
+  //   props.bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BOOSTED_INFO);
+  // };
 
-  const _handleTextReady = () => {
-    // ...
-  };
+  // const _handleTextReady = () => {
+  //   // ...
+  // };
 
-  let progressBarWidthPercent = 0;
+  // let progressBarWidthPercent = 0;
 
-  if (proposalInfo) {
-    progressBarWidthPercent =
-      (proposalInfo.votesFor /
-        (proposalInfo.votesFor + proposalInfo.votesAgainst)) *
-      100;
-  }
+  // if (proposalInfo) {
+  //   progressBarWidthPercent =
+  //     (proposalInfo.votesFor /
+  //       (proposalInfo.votesFor + proposalInfo.votesAgainst)) *
+  //     100;
+  // }
 
-  const isBoosted = props.stage === 'Boosted';
+  // const isBoosted = props.stage === 'Boosted';
 
   return proposalInfo ? (
     <>
       <View style={styles.container}>
-       
+
         <Text style={text.h1BlackTitle}>{ proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
-                  'Proposal Pitch' : 'Intro' }</Text>
+          'Proposal Pitch' : 'Intro' }</Text>
 
         <View style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
           <Text style={{...text.regularTextBig }}>{proposalInfo.description.description}</Text>
         </View>
-        
 
-        
+
+
         <View style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
-          
+
           {proposalInfo.description?.links?.length > 0 && (
             proposalInfo.description?.links.map((l) => <View style={styles.adRow}>
               <Icon name="link" color={colors.mainBlue} size={16} />
@@ -276,6 +275,7 @@ const styles = StyleSheet.create({
       height: 2,
     },
     textShadowRadius: 4,
+    elevation: 2,
   },
 
   imageGallery: {

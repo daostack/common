@@ -24,7 +24,6 @@ import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '../../../Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
-// import HeaderImageScrollView from 'react-native-image-header-scroll-view';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '../../../Components/Commons/CommonHeader';
 import {numberFormatter} from '../../../Util';
@@ -130,24 +129,24 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   ]);
 
   useEffect(() => {
-    if (userStore.userInfo) {
-      let unsubscribe = null;
-      let getPendingProposalsData = async () => {
-        unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
-          commonId,
-          userStore.userInfo.safeAddress,
-          data => {
-            setPendingProposalsData({...data});
-          },
-        );
-      };
-      getPendingProposalsData();
-      return () => {
-        if (unsubscribe) {
-          unsubscribe();
-        }
-      };
-    }
+    let unsubscribe = null;
+    let getPendingProposalsData = async () => {
+      unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
+        commonId,
+        userStore.userInfo?.safeAddress,
+        data => {
+          setPendingProposalsData({...data});
+        },
+      );
+    };
+
+    getPendingProposalsData();
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [commonId, isMember, userStore.userInfo]);
 
   useEffect(() => {
@@ -172,7 +171,6 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     return (
       <View style={{...styles.paleBackground, ...{paddingVertical: sizeL}}}>
         <Text style={text.h1BlackTitle}>Discussions</Text>
-
         <DiscussionList navigation={navigation} commonId={currCommon.id} />
       </View>
     );
@@ -265,7 +263,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             style={layout.flexRow}>
             <View style={layout.flexRow}>
               <Text style={text.h4Black}>
-                {pendingProposalsData && // just to be showed at the same time
+                {pendingProposalsData &&// just to be showed at the same time
                     currCommon.memberCount +
                       ' ' +
                       `Member${currCommon.memberCount !== 1 ? 's' : ''}`}
@@ -310,7 +308,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     const options = {
       url: `https://app.common.io/common/${currCommon.id}`,
       title: "Let's make it happen",
-      message: `Join in ${currCommon.name} common`,
+      message: `${currCommon.name} common`,
     };
     Share.open(options);
   };
@@ -398,7 +396,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             ...layout.flexRow,
             ...{padding: 0},
           }}>
-          <Icon name="clcok-16" size={16} style={layout.marginRightXS} />
+          <Icon name="clcok" size={16} style={layout.marginRightXS} />
           <Text style={text.smallBoldGreyText}>Pending Approval</Text>
         </View>
         <View
@@ -547,7 +545,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   };
 
   const initialLayout = {width: Dimensions.get('window').width};
-
+  console.log('currCommon.id ->', currCommon.id);
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       {currCommon ? (
@@ -601,7 +599,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
               });
               stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
                 const isVisible = py < (STICKY_HEADER_HEIGHT);
-                if (isVisible != showStickyTabBar) {
+                if (isVisible !== showStickyTabBar) {
                   setShowStickyTabBar(isVisible);
                 }
               });
@@ -706,6 +704,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             {isMember ? (
               index === 0 ? (
                 <BottomRightButton
+                  iconName="add-proposal-32"
                   onPress={() =>
                     navigation.navigate('New Post', {
                       commonId: currCommon.id,
@@ -714,12 +713,14 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                   bottom={50}
                 />
               ) : (
-                !isFundingStage && (
+                !isFundingStage && index === 1 && (
                   <BottomRightButton
+                    iconName="create-proposal"
                     onPress={() =>
                       navigation.navigate('FundingProposal', {
                         commonId: currCommon.id,
                         common: currCommon,
+                        screenTitle: currCommon.name,
                       })
                     }
                     bottom={50}
@@ -773,7 +774,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
 const styles = StyleSheet.create({
   paleBackground: {
-    backgroundColor: colors.paleGrey,
+    backgroundColor: '#fcfcfc',
   },
   requestToJoin: {
     ...font.primary.bold,
@@ -903,6 +904,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 1,
+    elevation: 4,
   },
   stickySection: {
     height: STICKY_HEADER_HEIGHT,

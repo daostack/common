@@ -21,10 +21,10 @@ class TextInputField extends React.Component {
     const {validation, value, fieldActionComponent, innerLabel} = this.props;
     // Register form field for validation message component if name,formStore and validateRule props are provided
     if (validation) {
-      const {name, formStore, validateRule, multiName, invisibleContainer = true } = validation;
+      const {name, formStore, validateRule, multiName, invisibleContainer = true, displayName, customErrorMessage } = validation;
       formStore.registerFormField(name, validateRule, value, multiName);
       this.fieldValidation = (
-        <ValidationMessage formStore={formStore} name={name} invisibleContainer={invisibleContainer}/>
+        <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} invisibleContainer={invisibleContainer}/>
       );
     }
 
@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingTop: 12,
     paddingBottom: 12,
+    color: colors.black,
     margin: 0,
     ...font.primary.regular,
     ...font.fontSize(2),

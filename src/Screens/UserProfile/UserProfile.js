@@ -86,29 +86,8 @@ const UserProfile = ({userStore, navigation, route}) => {
     navigation.navigate('NativeBridgeTests');
   };
 
-  const onUsersListPress = event => {
-    navigation.navigate('UserProfileReadMode');
-  };
-
   const onHUDTestPress = event => {
     navigation.navigate('HUDTest');
-  };
-
-  const onFundingProposalPress = event => {
-    navigation.navigate('FundingProposal');
-  };
-
-  const onMyWalletPress = event => {
-    navigation.navigate('MyWallet');
-    console.log('address: ', userStore.userInfo.ethereumAddress);
-  };
-
-  const onMyCommonsPress = event => {
-    navigation.navigate('MyCommons');
-  };
-
-  const onMyProposalsPress = event => {
-    navigation.navigate('MyProposals');
   };
 
   const renderUnsignedUserData = () => {
@@ -132,7 +111,6 @@ const UserProfile = ({userStore, navigation, route}) => {
         <SafeAreaView style={styles.safeArea}>
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"
-            style={styles.scrollView}
             vertical={true}
             nestedScrollEnabled={true}
             directionalLockEnabled={true}>
@@ -142,11 +120,11 @@ const UserProfile = ({userStore, navigation, route}) => {
                 : renderUnsignedUserData()}
 
               <View style={layout.marginTopL}>
-                <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" />
+                {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
                 <AccordionBtn onPress={() => Linking.openURL('https://common.io/tos')} title="Terms of use" />
                 <AccordionBtn onPress={() => Linking.openURL('https://common.io/privacy')} title="Privacy Policy" />
                 <AccordionBtn onPress={() => Linking.openURL('https://common.io/help')} title="Help" />
-                <AccordionBtn onPress={() => Linking.openURL('mailto:support@example.com')} title="Contact us" />
+                <AccordionBtn onPress={() => Linking.openURL('mailto:hi@common.io')} title="Contact us" />
                 {userStore.userInfo ? (
                   <AccordionBtn
                     lightStyle={true}
@@ -275,7 +253,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: Colors.white,
-    padding: 20,
   },
   googleSignInButton: {
     alignSelf: 'stretch',
@@ -292,7 +269,7 @@ const styles = StyleSheet.create({
       height: 6,
     },
     shadowRadius: 0,
-    elevation: 0,
+    elevation: 6,
   },
   wrapper: {
     height: 240,

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {layout, colors, text, font,sizeS} from '../../Theme';
-import {TabView, SceneMap} from 'react-native-tab-view';
+import {TabView} from 'react-native-tab-view';
 import ProposalsList from '../../Screens/Proposals/ProposalsList';
 import { inject, observer } from 'mobx-react';
 import  ProposalService  from '../../Services/ProposalService';
@@ -31,7 +31,7 @@ const MyProposals = ({route, navigation, userStore}) => {
 
   const onScreenScroll = (event) => {
     navigation.setOptions({
-      title: event.nativeEvent.contentOffset.y > 75 ? "My Proposals" : "My Profile"
+      title: event.nativeEvent.contentOffset.y > 75 ? 'My Proposals' : 'My Profile',
     });
   };
 
@@ -69,11 +69,16 @@ const MyProposals = ({route, navigation, userStore}) => {
 
   const initialLayout = {width: Dimensions.get('window').width};
 
-  const renderScene = SceneMap({
-    all: AllProposals,
-    active: ActiveProposals,
-    history: HistoryProposals,
-  });
+  const renderScene = ({route}) => {
+    switch (route.key) {
+    case 'all':
+      return AllProposals();
+    case 'active':
+      return ActiveProposals();
+    case 'history':
+      return HistoryProposals();
+    }
+  };
 
   return (
     <>
@@ -115,7 +120,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: Colors.white,
-    padding: 20,
   },
   title: {
     ...font.heading.bold,

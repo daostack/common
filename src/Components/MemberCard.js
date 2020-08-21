@@ -1,6 +1,5 @@
 import {StyleSheet, View, Text} from 'react-native';
 import React from 'react';
-import PropTypes from 'prop-types';
 import {layout, colors, text, font,sizeXS} from '../Theme';
 import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
@@ -28,10 +27,11 @@ const MemberCard = ({
         <View style={styles.rightContainer}>
           <View
             style={{
-              ...layout.content,
+              // ...layout.content,
               ...{alignItems: 'flex-end'},
             }}>
             <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
+            <Text style={text.runninglightGray}>{moment.unix(proposalInfo.createdAt).fromNow()}</Text>
 
             {/* Hide the time if the proposal is expired or new */}
             {(remainingSeconds > 0 && !LAUNCHED_STATES.includes(proposalInfo?.stageStr)) && (
@@ -64,7 +64,7 @@ const MemberCard = ({
         memberCreatedDateInfo = memberCreatedDate
           ? `${
             monthShortNames[memberCreatedDate.getMonth()]
-          } ${memberCreatedDate.getDay()} `
+          } ${memberCreatedDate.getDate()} `
           : '';
       } else {
         memberCreatedDateInfo = 'NOT app user';
@@ -87,32 +87,32 @@ const MemberCard = ({
 
   return (
     <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
-      <View style={styles.memberInfoContainer}>
-        <MemberImage userInfo={userInfo} />
-        <View
+      <MemberImage userInfo={userInfo} />
+      <View
+        style={{
+          ...layout.content,
+          ...layout.flexStart,
+          ...{flex: 2, flexWrap: 'wrap'},
+        }}>
+        <Text
+          style={styles.displayName}>
+          {userInfo?.displayName || 'Unknown user'}
+        </Text>
+        <Text
           style={{
-            ...layout.content,
-            ...layout.flexStart,
+            ...text.smallGreyText,
+            marginTop: 2,
           }}>
-          <Text
-            style={styles.displayName}>
-            {userInfo?.displayName || 'Unknown user'}
-          </Text>
-          <Text
-            style={{
-              ...text.smallGreyText,
-              marginTop: 2,
-            }}>
-            
-            {proposalInfo
-              ? moment.unix(proposalInfo.createdAt).fromNow()
-              : showMemberCreatedDate
-                ? `Member in ${userInfo?.daos?.length || 0} Common${
+          {
+            // proposalInfo
+            //   ? moment.unix(proposalInfo.createdAt).fromNow()
+            //   :
+            showMemberCreatedDate
+              ? `Member in ${userInfo?.daos?.length || 0} Common${
                   userInfo?.daos?.length !== 1 ? 's' : ''
-                }`
-                : `Member since ${memberSince || 'unknown'}`}
-          </Text>
-        </View>
+              }`
+              : `Member since ${memberSince || 'unknown'}`}
+        </Text>
       </View>
       {renderRightContainer()}
     </View>
@@ -144,11 +144,16 @@ const styles = StyleSheet.create({
     ...font.primary.regular,
     ...font.fontSize(2),
     flexWrap: 'wrap',
+    fontWeight: '500',
+    fontSize: 16,
   },
   rightContainer: {
-    ...layout.content,
-    ...layout.flexRow,
-    alignItems: 'center',
+    // ...layout.content,
+    //...layout.flexRow,
+    //alignItems: 'center',
+    flex: 1,
+    padding: 0,
+    alignItems: 'flex-end',
     alignContent: 'flex-end',
     justifyContent: 'flex-end',
   },

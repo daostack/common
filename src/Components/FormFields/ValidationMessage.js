@@ -19,8 +19,18 @@ class ValidationMessage extends React.Component {
   }
 
   render() {
-    const validationMessage = this.props.formStore.form.fields[this.props.name].error;
+    let validationMessage = this.props.formStore.form.fields[this.props.name].error;
     let messageStyle = styles.errorMessage;
+
+    if (this.props.displayName && validationMessage) {
+      validationMessage = validationMessage.replace(this.props.name, this.props.displayName);
+    }
+
+    // console.log('this.props.customErrorMessage ->', this.props.customErrorMessage);
+
+    if (this.props.customErrorMessage && validationMessage) {
+      validationMessage = this.props.customErrorMessage;
+    }
 
     if (!this.props.invisibleContainer) {
       messageStyle = {...styles.errorMessage, ...{minHeight: font.lineHeightForm}};

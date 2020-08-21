@@ -11,10 +11,8 @@ import {observer, inject} from 'mobx-react';
 const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) => {
   const [membersInfo, setMembersInfo] = useState([]);
 
-  console.log("Members", membersInfo);
-
   const showUserProfile = uid => {
-    navigation.navigate("Profile", {userId: uid});
+    navigation.navigate('Profile', {userId: uid});
   };
 
   useEffect(() => {
@@ -27,7 +25,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
 
         currUserInfo = {
           ...currUserInfo,
-          daos: (await FirebaseService.getInstance().getUserDaos(currUserInfo.uid, currUserInfo.safeAddress)).docs?.map(dao => dao.data())
+          daos: (await FirebaseService.getInstance().getUserDaos(currUserInfo.uid, currUserInfo.safeAddress)).docs?.map(dao => dao.data()),
         };
 
         setMembersInfo(prevMembers => [...prevMembers, currUserInfo]);
@@ -65,7 +63,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
             let itemStyle = styles.horizontalItem;
 
             if (i > 0) {
-              itemStyle={...itemStyle, ...{position: 'relative', left: i*-15}}
+              itemStyle = {...itemStyle, ...{position: 'relative', left: i * -15}};
             }
 
             return (
