@@ -24,7 +24,6 @@ import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '../../../Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
 import {observer, inject} from 'mobx-react';
-// import HeaderImageScrollView from 'react-native-image-header-scroll-view';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '../../../Components/Commons/CommonHeader';
 import {numberFormatter} from '../../../Util';
@@ -546,7 +545,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   };
 
   const initialLayout = {width: Dimensions.get('window').width};
-
+  console.log('currCommon.id ->', currCommon.id);
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       {currCommon ? (

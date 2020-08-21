@@ -23,8 +23,8 @@ if (Config.ENV === 'production') {
   graphVersion = 'v8_10_exp_xdai';
   localFunctionURL = 'http://localhost:5001/common-daostack/us-central1';
   cloudFunctionURL = 'https://us-central1-common-daostack.cloudfunctions.net';
-  graphUrl = 'https://api.thegraph.com/subgraphs-daostack/name/daostack';
-  graphWS = 'wss://api.thegraph.com/subgraphs-daostack/name/daostack';
+  graphUrl = 'https://api.thegraph.com/subgraphs/name/daostack';
+  graphWS = 'wss://api.thegraph.com/subgraphs/name/daostack';
   ipfsUrl = 'https://api.thegraph.com/ipfs-daostack/api/v0';
   ipfsDataVersion = '000003';
   networkId = 100;
@@ -36,8 +36,8 @@ if (Config.ENV === 'production') {
   graphVersion = 'v8_10_exp_kovan';
   localFunctionURL = 'http://localhost:5001/common-staging-50741/us-central1';
   cloudFunctionURL = 'https://us-central1-common-staging-50741.cloudfunctions.net';
-  graphUrl = 'https://api.thegraph.com/subgraphs-daostack/name/daostack';
-  graphWS = 'wss://api.thegraph.com/subgraphs-daostack/name/daostack';
+  graphUrl = 'https://api.thegraph.com/subgraphs/name/daostack';
+  graphWS = 'wss://api.thegraph.com/subgraphs/name/daostack';
   ipfsUrl = 'https://api.thegraph.com/ipfs-daostack/api/v0';
   ipfsDataVersion = '000003';
   networkId = 42;
