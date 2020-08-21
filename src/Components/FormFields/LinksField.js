@@ -1,12 +1,16 @@
 import React from 'react';
-import {TextInput, View, Text, StyleSheet} from 'react-native';
+import {
+  TextInput, View, Text, StyleSheet,
+} from 'react-native';
+import { observer } from 'mobx-react';
 import ValidationMessage from './ValidationMessage';
-import {observer} from 'mobx-react';
-import {colors, layout, font} from '../../Theme';
+import { colors, layout, font } from '../../Theme';
 
 class LinksField extends React.Component {
   fieldValidation;
+
   toggleValueBtn;
+
   placeFieldActionComponent;
 
   static defaultProps;
@@ -18,10 +22,12 @@ class LinksField extends React.Component {
       onFocus: false,
     };
 
-    const {validation, value, fieldActionComponent} = this.props;
+    const { validation, value, fieldActionComponent } = this.props;
     // Register form field for validation message component if name,formStore and validateRule props are provided
     if (validation) {
-      const {name, formStore, validateRule, displayName, customErrorMessage} = validation;
+      const {
+        name, formStore, validateRule, displayName, customErrorMessage,
+      } = validation;
       formStore.registerFormField(name, validateRule, value);
       this.fieldValidation = (
         <ValidationMessage customErrorMessage={customErrorMessage} displayName={displayName} formStore={formStore} name={name} />
@@ -33,22 +39,22 @@ class LinksField extends React.Component {
     }
   }
 
-  onChangeText = text => {
+  onChangeText = (text) => {
     if (this.props.validation) {
-      const {formStore, name} = this.props.validation;
+      const { formStore, name } = this.props.validation;
       formStore.fieldChanged(name, text);
     }
     this.props.onChangeText && this.props.onChangeText(text);
   };
 
-  onFocus = e => {
-    this.setState({onFocus: true});
+  onFocus = (e) => {
+    this.setState({ onFocus: true });
   };
 
-  onBlur = e => {
-    this.setState({onFocus: false});
+  onBlur = (e) => {
+    this.setState({ onFocus: false });
     if (this.props.validation) {
-      const {formStore, name} = this.props.validation;
+      const { formStore, name } = this.props.validation;
       formStore.fieldBlured(name);
     }
     this.props.onBlur && this.props.onBlur(e);
@@ -73,15 +79,15 @@ class LinksField extends React.Component {
 
     let styleTextfield = styles.textfield;
 
-    const {formStore, name} = this.props.validation;
+    const { formStore, name } = this.props.validation;
     if (formStore.form.fields[name].error) {
-      styleTextfield = {...styles.textfield, ...styles.textfieldError};
+      styleTextfield = { ...styles.textfield, ...styles.textfieldError };
     }
     if (this.state?.onFocus) {
-      styleTextfield = {...styles.textfield, ...styles.textfieldFocus};
+      styleTextfield = { ...styles.textfield, ...styles.textfieldFocus };
     }
 
-    let defaultMultilineProps = {minHeight: 48};
+    let defaultMultilineProps = { minHeight: 48 };
 
     if (multiline) {
       let rowsNumber = numberOfLines;
@@ -98,8 +104,8 @@ class LinksField extends React.Component {
     }
 
     return (
-      <View style={{alignSelf: 'stretch'}}>
-        <View style={{flexDirection: 'row'}}>
+      <View style={{ alignSelf: 'stretch' }}>
+        <View style={{ flexDirection: 'row' }}>
           <Text style={styles.label}>{label}</Text>
           <Text style={styles.infoLabel}>{infoLabel}</Text>
         </View>
@@ -127,18 +133,18 @@ class LinksField extends React.Component {
     );
   }
 
-  renderPlaceholderForNotEditableField = editable => {
+  renderPlaceholderForNotEditableField = (editable) => {
     if (editable === false) {
       return <Text>{this.props.placeholderText || ''}</Text>;
     }
   };
 
   render() {
-    const {viewStyle} = this.props;
+    const { viewStyle } = this.props;
 
     if (this.placeFieldActionComponent) {
       return (
-        <View style={{...viewStyle}}>
+        <View style={{ ...viewStyle }}>
           <View>
             <View>{this.renderTextField()}</View>
             <View>{this.placeFieldActionComponent}</View>
@@ -146,20 +152,19 @@ class LinksField extends React.Component {
           {this.fieldValidation}
         </View>
       );
-    } else {
-      return (
-        <View style={{...viewStyle}}>
-          {this.renderTextField()}
-          {this.fieldValidation}
-        </View>
-      );
     }
+    return (
+      <View style={{ ...viewStyle }}>
+        {this.renderTextField()}
+        {this.fieldValidation}
+      </View>
+    );
   }
 }
 
 const styles = StyleSheet.create({
   textfield: {
-    //minHeight: 48,
+    // minHeight: 48,
     alignSelf: 'stretch',
     borderRadius: 3,
     backgroundColor: colors.white,

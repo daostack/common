@@ -1,14 +1,14 @@
-import {View, StyleSheet} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import React from 'react';
-import {text, layout, colors} from '../Theme';
 import SwipeButton from 'rn-swipe-button';
+import { text, layout, colors } from '../Theme';
 
-const ButtonSwiper = ({onSwipeSuccess, title}) => {
+const ButtonSwiper = ({ onSwipeSuccess, title }) => {
   const thumbComponent = () => <View style={styles.swiperThumbIcon} />;
 
   return (
-    <View style={{...layout.marginTopS, ...{height: 100}}}>
+    <View style={{ ...layout.marginTopS, ...{ height: 100 } }}>
       <SwipeButton
         width={340}
         height={60}

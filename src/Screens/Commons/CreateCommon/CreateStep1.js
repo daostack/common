@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   TouchableOpacity,
   View,
@@ -8,13 +8,12 @@ import {
   Animated,
 } from 'react-native';
 
+import { observer, inject } from 'mobx-react';
+import NavigationBar from 'react-native-navbar';
 import TextInputField from '../../../Components/FormFields/TextInputField';
 import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
-import {colors} from '../../../Theme';
-import {observer, inject} from 'mobx-react';
-const {width} = Dimensions.get('window');
+import { colors } from '../../../Theme';
 import CreateStepHeader from './CreateStepHeader';
-import NavigationBar from 'react-native-navbar';
 import Icon from '../../../Assets/iconfont/Icon';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import MultiLinkField from '../../../Components/FormFields/MultiLinkField';
@@ -23,7 +22,9 @@ import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 
 import RequestStepActionButton from '../RequestStepActionButton';
 
-const CreateStep1 = props => {
+const { width } = Dimensions.get('window');
+
+const CreateStep1 = (props) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
 
@@ -49,25 +50,27 @@ const CreateStep1 = props => {
       style={{
         flex: 1,
         backgroundColor: 'white',
-      }}>
+      }}
+    >
       <NavigationBar
-        statusBar={{hidden: true}}
-        style={{borderBottomWidth: 1, borderBottomColor: colors.grey4}}
+        statusBar={{ hidden: true }}
+        style={{ borderBottomWidth: 1, borderBottomColor: colors.grey4 }}
         title={{
           title: 'Create a common',
         }}
-        rightButton={
+        rightButton={(
           <TouchableOpacity
-            style={{justifyContent: 'center'}}
-            onPress={() => props.navigation.pop()}>
+            style={{ justifyContent: 'center' }}
+            onPress={() => props.navigation.pop()}
+          >
             <Icon
               name="close"
               size={18}
-              style={{marginRight: 20}}
+              style={{ marginRight: 20 }}
               color="black"
             />
           </TouchableOpacity>
-        }
+        )}
       />
       <CreateStepDotHeader
         title="General Info"
@@ -85,15 +88,17 @@ const CreateStep1 = props => {
         }}
         scrollEventThrottle={16}
         onScroll={Animated.event([
-          {nativeEvent: {contentOffset: {y: scrollY}}},
-        ])}>
+          { nativeEvent: { contentOffset: { y: scrollY } } },
+        ])}
+      >
         <CreateStepHeader currentIndex={0} />
         <View
           style={{
             flex: 1,
             // alignItems: 'center',
             backgroundColor: 'white',
-          }}>
+          }}
+        >
           <CreateStepHeaderTitle
             title="General Info"
             subtitle="
@@ -108,8 +113,8 @@ const CreateStep1 = props => {
             }}
           />
           <TextInputField
-            value={''}
-            viewStyle={{alignSelf: 'stretch'}}
+            value=""
+            viewStyle={{ alignSelf: 'stretch' }}
             label="Common name"
             infoLabel="Required"
             placeholderText=""
@@ -124,13 +129,13 @@ const CreateStep1 = props => {
             }}
           />
           <TextInputField
-            value={''}
-            viewStyle={{alignSelf: 'stretch'}}
+            value=""
+            viewStyle={{ alignSelf: 'stretch' }}
             label="Mission statement"
             infoLabel="Required"
             numberOfLines={3}
             // returnKeyType="next"
-            multiline={true}
+            multiline
             placeholderText="What is the ultimate goal of the Common?"
             autoCapitalize="none"
             autoCorrect={false}
@@ -142,11 +147,11 @@ const CreateStep1 = props => {
             }}
           />
           <TextInputField
-            value={''}
+            value=""
             label="About"
             infoLabel="Required"
             numberOfLines={5}
-            multiline={true}
+            multiline
             returnKeyType="next"
             placeholderText="Describe your cause and let others know why they should join you. What makes you passionate about it? What does success look like?"
             autoCapitalize="none"
@@ -159,13 +164,13 @@ const CreateStep1 = props => {
             }}
           />
           <MultiLinkField
-            allowsEditing={true}
+            allowsEditing
             label="Links"
             title="Title"
             validation={{
               name: CreateCommonForm.LINKS,
               formStore: props.generalInfoFormStore,
-              validateRule: {common: 'string|url', title: 'string|max:30'},
+              validateRule: { common: 'string|url', title: 'string|max:30' },
             }}
           />
         </View>
@@ -187,7 +192,7 @@ export default inject(
   'daoStore',
 )(observer(CreateStep1));
 
-//generalInfoFormStore
-//fundingFormStore
-//agendaFormStore
-//reviewFormStore
+// generalInfoFormStore
+// fundingFormStore
+// agendaFormStore
+// reviewFormStore

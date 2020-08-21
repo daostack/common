@@ -1,10 +1,10 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet} from 'react-native';
-import {colors} from '../../Theme';
+import { SafeAreaView, StyleSheet } from 'react-native';
+import { colors } from '../../Theme';
 import CreateDiscussionForm from '../../Components/Forms/CreateDiscussionForm';
 
-const DiscussionPost = props => {
-  const commonId = props.route.params.commonId;
+const DiscussionPost = (props) => {
+  const { commonId } = props.route.params;
   return (
     <SafeAreaView style={styles.container}>
       <CreateDiscussionForm

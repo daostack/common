@@ -1,9 +1,10 @@
-import {observable, action, decorate} from 'mobx';
+import { observable, action, decorate } from 'mobx';
 import Validator from 'validatorjs';
 import en from 'validatorjs/src/lang/en';
 
 class FormStore {
   form;
+
   multiFieldNames;
 
   constructor() {
@@ -53,7 +54,7 @@ class FormStore {
   // Check if form is valid and display error for each form field if it's necessary
   isFormValid = () => {
     this.form.meta.formValidationMade = true;
-    var validation = this.getValidator();
+    const validation = this.getValidator();
     this.form.meta.isValid = validation.passes();
     console.log(this.form.meta.isValid, validation.errors.errors);
     if (!this.form.meta.isValid) {
@@ -66,20 +67,18 @@ class FormStore {
   };
 
   // Determine if the form action button has to be disabled
-  isFormActionEnabled = () => {
-    return this.form.meta.formValidationMade ? this.form.meta.isValid : true;
-  };
+  isFormActionEnabled = () => (this.form.meta.formValidationMade ? this.form.meta.isValid : true);
 
-  fieldBlured = name => {
+  fieldBlured = (name) => {
     this.validateField(name);
   };
 
   fieldChanged = (name, value, triggerValidation = false) => {
     this.form.fields[name].value = value;
     if (
-      triggerValidation ||
-      this.form.fields[name].error ||
-      !this.form.fields[name].value
+      triggerValidation
+      || this.form.fields[name].error
+      || !this.form.fields[name].value
     ) {
       this.validateField(name);
     }
@@ -113,13 +112,10 @@ class FormStore {
     return changedFieldsJson;
   };
 
-
-  getChangedFormFieldsJson = () => {
-    return this.getFormFieldsJson(true);
-  };
+  getChangedFormFieldsJson = () => this.getFormFieldsJson(true);
 
   filterMultiFields = (name, fields) => {
-    let changedFieldsJson = {};
+    const changedFieldsJson = {};
 
     // MultiLink
     let multiFieldTitles = [];
@@ -150,15 +146,11 @@ class FormStore {
     }
 
     if (multiValues.length > 0) {
-      changedFieldsJson[name] = [...multiValues.keys()].map(x => {
-        return { value: multiValues[x]};
-      });
+      changedFieldsJson[name] = [...multiValues.keys()].map((x) => ({ value: multiValues[x] }));
     }
 
     if (multiFieldTitles.length > 0) {
-      changedFieldsJson[name] = [...multiFieldTitles.keys()].map(x => {
-        return {title: multiFieldTitles[x], url: multiFieldValues[x]};
-      });
+      changedFieldsJson[name] = [...multiFieldTitles.keys()].map((x) => ({ title: multiFieldTitles[x], url: multiFieldValues[x] }));
     }
 
     if (changedFieldsJson.length === 0) {
@@ -168,13 +160,11 @@ class FormStore {
     return changedFieldsJson;
   };
 
-  isFormChanged = () => {
-    return Object.keys(this.getChangedFormFieldsJson()).length > 0;
-  };
+  isFormChanged = () => Object.keys(this.getChangedFormFieldsJson()).length > 0;
 
   // Private functions
-  validateField = field => {
-    var validation = this.getValidator();
+  validateField = (field) => {
+    const validation = this.getValidator();
     this.form.meta.isValid = validation.passes();
     this.form.fields[field].error = validation.errors.first(field);
     if (this.form.fields[field].error) {
@@ -183,7 +173,7 @@ class FormStore {
   };
 
   getValidator = () => {
-    let validatorParams = this.getValidatorParams();
+    const validatorParams = this.getValidatorParams();
     return new Validator(
       validatorParams.fieldsData,
       validatorParams.fieldsRule,
@@ -191,8 +181,8 @@ class FormStore {
   };
 
   getValidatorParams = () => {
-    let fieldsData = {};
-    let fieldsRule = {};
+    const fieldsData = {};
+    const fieldsRule = {};
 
     for (const key in this.form.fields) {
       const formField = this.form.fields[key];
@@ -201,12 +191,12 @@ class FormStore {
     }
 
     return {
-      fieldsData: fieldsData,
-      fieldsRule: fieldsRule,
+      fieldsData,
+      fieldsRule,
     };
   };
 
-  setError = errMsg => {
+  setError = (errMsg) => {
     this.form.meta.error = errMsg;
   };
 }

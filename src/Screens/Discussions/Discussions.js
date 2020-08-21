@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,23 +14,25 @@ import {
   SectionList,
   Platform,
 } from 'react-native';
-import {observer, inject} from 'mobx-react';
-import Icon from '../../Assets/iconfont/Icon';
-import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '../../Theme';
-import DiscussionMessage from './DiscussionMessage';
+import { observer, inject } from 'mobx-react';
 import firestore from '@react-native-firebase/firestore';
-import Toast from '../../Util/Toast.js';
-import FirebaseService from '../../Services/FirebaseService';
 import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
-import BottomSheetModal from '../../Components/BottomSheetModal';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import ImageView from 'react-native-image-viewing';
+import Icon from '../../Assets/iconfont/Icon';
+import {
+  colors, layout, font, text, sizeM, sizeS, sizeXL,
+} from '../../Theme';
+import DiscussionMessage from './DiscussionMessage';
+import Toast from '../../Util/Toast.js';
+import FirebaseService from '../../Services/FirebaseService';
+import BottomSheetModal from '../../Components/BottomSheetModal';
+import { BOTTOM_SHEET_TEMPLATES } from '../../Stores/BottomSheetStore';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-const Discussions = ({daoStore, userStore, ...props}) => {
+const Discussions = ({ daoStore, userStore, ...props }) => {
   const [inputHeight, setInputHeight] = useState(65);
   const inputRef = useRef(null);
   const [user, setUser] = useState({});
@@ -38,8 +40,8 @@ const Discussions = ({daoStore, userStore, ...props}) => {
   const chatRef = useRef(null);
   const [isExpanded, setIsExpanded] = useState(false);
   // const data = props.route.params.discussionId;
-  const commonId = props.route.params.commonId;
-  const discussionId = props.route.params.discussionId;
+  const { commonId } = props.route.params;
+  const { discussionId } = props.route.params;
   const [msgGroup, setMsgDroup] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
   // const [discussion, setDiscussion] = useState();
@@ -49,7 +51,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
   const [isMember, setIsMember] = useState(false);
 
   const [isSending, setIsSending] = useState(false);
-  const currentUser = auth().currentUser;
+  const { currentUser } = auth();
 
   useEffect(() => {
     const currentDao = daoStore.daos.find((dao) => dao.id === commonId);
@@ -61,7 +63,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
     setShowMenu(false);
   };
 
-  let listRef = useRef([]);
+  const listRef = useRef([]);
   useEffect(() => {
     let uid = null;
     if (currentUser) {
@@ -70,13 +72,13 @@ const Discussions = ({daoStore, userStore, ...props}) => {
     const unsubscribe = firestore()
       .collection('discussion')
       .doc(discussionId)
-      .onSnapshot(snapshot => {
+      .onSnapshot((snapshot) => {
         // console.log(snapshot.data());
         if (!snapshot.exists) {
           return;
         }
-        setData({id: snapshot.id, ...snapshot.data()});
-        const follower = snapshot.data().follower;
+        setData({ id: snapshot.id, ...snapshot.data() });
+        const { follower } = snapshot.data();
         if (follower && uid) {
           const state = follower.includes(uid);
           setFollowState(state);
@@ -93,9 +95,9 @@ const Discussions = ({daoStore, userStore, ...props}) => {
       // .startAt(0)
       // .limit(25)
       .onSnapshot(
-        snapshot => {
+        (snapshot) => {
           if (snapshot.docChanges().length !== 0) {
-            const newList = snapshot.docChanges().map(({doc}) => ({
+            const newList = snapshot.docChanges().map(({ doc }) => ({
               id: doc.id,
               ...doc.data(),
             }));
@@ -104,13 +106,13 @@ const Discussions = ({daoStore, userStore, ...props}) => {
             listRef.current = msgList;
             console.log('newMessage', newList);
             const groupDate = msgList
-              .map(msg => ({
+              .map((msg) => ({
                 date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
                 data: msg,
               }))
               .reduce((acc, curr) => {
-                var key = curr.date;
-                let el = acc.find(x => x && x.date === key);
+                const key = curr.date;
+                const el = acc.find((x) => x && x.date === key);
                 if (el) {
                   el.data.push(curr.data);
                 } else {
@@ -125,7 +127,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
             setMsgDroup(groupDate);
           }
         },
-        error => console.error(error),
+        (error) => console.error(error),
       );
     return unsubscribe;
   }, [commonId, data.id]);
@@ -185,7 +187,6 @@ const Discussions = ({daoStore, userStore, ...props}) => {
   };
 
   const sendMessageToDiscussion = async () => {
-
     if (isSending) {
       return;
     }
@@ -210,15 +211,15 @@ const Discussions = ({daoStore, userStore, ...props}) => {
           ownerId: userStore.uid,
           ownerName: userStore.displayName,
           ownerAvatar: userStore.photoURL,
-          commonId: commonId,
-          discussionId: discussionId,
+          commonId,
+          discussionId,
         })
         .then(() => {
           Keyboard.dismiss();
           setIsSending(false);
           setInputText(null);
         })
-        .catch(error => {
+        .catch((error) => {
           Toast.error(error);
           setIsSending(false);
         });
@@ -228,167 +229,159 @@ const Discussions = ({daoStore, userStore, ...props}) => {
     }
   };
 
-  const headerImages = () => {
-    return (
-      <>
-        {data.images ?
+  const headerImages = () => (
+    <>
+      {data.images
+        ? (
           <ScrollView
-            horizontal={true}
+            horizontal
             showsHorizontalScrollIndicator={false}
-            style={{marginBottom: 20}}>
+            style={{ marginBottom: 20 }}
+          >
             <View style={styles.imageGallery}>
-              <View style={{width: 20}} />
-              {data.images.map((currImage, currIndex) => {
-                return (
-                  <View
-                    key={`proposalImg_${currIndex}`}>
-                    <TouchableOpacity
-                      onPress={() => setImageGalleryIndex(currIndex)}>
-                      <Image
-                        key={currIndex}
-                        style={{
-                          ...styles.galleryImage,
-                          ...{width: width * 0.8 },
-                        }}
-                        resizeMode="cover"
-                        source={{uri: currImage.value}}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                );
-              })}
-              <View style={{width: 20}} />
+              <View style={{ width: 20 }} />
+              {data.images.map((currImage, currIndex) => (
+                <View
+                  key={`proposalImg_${currIndex}`}
+                >
+                  <TouchableOpacity
+                    onPress={() => setImageGalleryIndex(currIndex)}
+                  >
+                    <Image
+                      key={currIndex}
+                      style={{
+                        ...styles.galleryImage,
+                        ...{ width: width * 0.8 },
+                      }}
+                      resizeMode="cover"
+                      source={{ uri: currImage.value }}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ))}
+              <View style={{ width: 20 }} />
             </View>
           </ScrollView>
-          : null}
-      </>
-    );
-  };
+        )
+        : null}
+    </>
+  );
 
-  const headerFiles = () => {
-    return (
-      <>
-        {data.files && (
-          data.files.map((f, index) => <View style={styles.adRow} key={`discussion_file_${index}`}>
+  const headerFiles = () => (
+    <>
+      {data.files && (
+        data.files.map((f, index) => (
+          <View style={styles.adRow} key={`discussion_file_${index}`}>
             <Icon name="file" color={colors.mainBlue} size={16} />
             <TouchableOpacity
-              onPress={() =>
-                props.navigation.navigate('Browser', {
-                  url: f.value,
-                })
-              }>
+              onPress={() => props.navigation.navigate('Browser', {
+                url: f.value,
+              })}
+            >
               <Text style={styles.adsText}>
                 {fileName(f.value)}
               </Text>
             </TouchableOpacity>
-          </View> )
-        )
-        }
-      </>
-    );
-  };
+          </View>
+        ))
+      )}
+    </>
+  );
 
-  const fileName = url => {
-    return url
-      .substring(url.lastIndexOf('/') + 1, url.length)
-      .split('?')[0]
-      .split('_')
-      .slice(0, -1)
-      .join('_')
-      .replace('public_file%2F', '')
-      .concat('.pdf');
-  };
+  const fileName = (url) => url
+    .substring(url.lastIndexOf('/') + 1, url.length)
+    .split('?')[0]
+    .split('_')
+    .slice(0, -1)
+    .join('_')
+    .replace('public_file%2F', '')
+    .concat('.pdf');
 
-  const header = () => {
-    return (
-      // <SafeAreaView flex={1}>
-      <>
-        <NavigationBar
-          statusBar={{hidden: true}}
-          style={{
-            height: 48,
-          }}
-          title={{
-            title: data.title,
-            style: text.h2Black,
-          }}
-          leftButton={
-            <TouchableOpacity
-              style={{justifyContent: 'center'}}
-              onPress={() => props.navigation.pop()}>
-              <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
-            </TouchableOpacity>
-          }
-          // rightButton={
-          //   <TouchableOpacity
-          //     style={{justifyContent: 'center'}}
-          //     onPress={openOptionsMenu}>
-          //     <Icon
-          //       name="menu-horizontal"
-          //       size={32}
-          //       style={{marginRight: 10}}
-          //     />
-          //   </TouchableOpacity>
-          // }
-        />
-        <View style={{ overflow: 'hidden', paddingBottom: 5 }}>
-          <View
-            style={styles.headerContainer}>
-            {isExpanded ? (
-              <View style={{
-                paddingTop: 20,
-                paddingHorizontal: 20,
-              }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    paddingVertical: 10,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Image
-                    style={styles.avatar}
-                    source={user.photoURL ? {uri: user.photoURL} : null}
-                  />
-                  <View style={{flex: 1, paddingHorizontal: 10}}>
-                    <Text style={styles.displayName}>{user.displayName}</Text>
-                    {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-                    <Text style={styles.date}>
-                      {moment(data.createTime.toDate()).fromNow()}
-                    </Text>
-                  </View>
-                </View>
-
-                <View>
-                  <Text
-                    style={styles.message}>
-                    {data.message}
+  const header = () => (
+    // <SafeAreaView flex={1}>
+    <>
+      <NavigationBar
+        statusBar={{ hidden: true }}
+        style={{
+          height: 48,
+        }}
+        title={{
+          title: data.title,
+          style: text.h2Black,
+        }}
+        leftButton={(
+          <TouchableOpacity
+            style={{ justifyContent: 'center' }}
+            onPress={() => props.navigation.pop()}
+          >
+            <Icon name="left-arrow" size={32} style={{ marginLeft: 10 }} />
+          </TouchableOpacity>
+          )}
+      />
+      <View style={{ overflow: 'hidden', paddingBottom: 5 }}>
+        <View
+          style={styles.headerContainer}
+        >
+          {isExpanded ? (
+            <View style={{
+              paddingTop: 20,
+              paddingHorizontal: 20,
+            }}
+            >
+              <View
+                style={{
+                  flexDirection: 'row',
+                  paddingVertical: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Image
+                  style={styles.avatar}
+                  source={user.photoURL ? { uri: user.photoURL } : null}
+                />
+                <View style={{ flex: 1, paddingHorizontal: 10 }}>
+                  <Text style={styles.displayName}>{user.displayName}</Text>
+                  {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
+                  <Text style={styles.date}>
+                    {moment(data.createTime.toDate()).fromNow()}
                   </Text>
                 </View>
-
-                {headerImages()}
-                {headerFiles()}
-
-                <TouchableOpacity
-                  style={{alignItems: 'center', paddingVertical: 10}}
-                  onPress={() => {
-                    setIsExpanded(!isExpanded);
-                  }}>
-                  <Image style={{ height: 10, width: 60 }} source={require('../../Assets/collapse.png')} />
-                </TouchableOpacity>
               </View>
-            ) : (
-            <>
+
+              <View>
+                <Text
+                  style={styles.message}
+                >
+                  {data.message}
+                </Text>
+              </View>
+
+              {headerImages()}
+              {headerFiles()}
+
               <TouchableOpacity
-                style={{alignItems: 'center', paddingVertical: 10}}
+                style={{ alignItems: 'center', paddingVertical: 10 }}
                 onPress={() => {
                   setIsExpanded(!isExpanded);
-                }}>
-                <Image style={{ height: 10, width: 60  }} source={require('../../Assets/expand.png')} />
+                }}
+              >
+                <Image style={{ height: 10, width: 60 }} source={require('../../Assets/collapse.png')} />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <>
+              <TouchableOpacity
+                style={{ alignItems: 'center', paddingVertical: 10 }}
+                onPress={() => {
+                  setIsExpanded(!isExpanded);
+                }}
+              >
+                <Image style={{ height: 10, width: 60 }} source={require('../../Assets/expand.png')} />
               </TouchableOpacity>
             </>
-            )}
-            {/* <View
+          )}
+          {/* <View
             style={{
               height: 4,
               marginTop: 10,
@@ -397,82 +390,86 @@ const Discussions = ({daoStore, userStore, ...props}) => {
               backgroundColor: colors.grey4,
             }}
           /> */}
-          </View>
         </View>
-        {/* </SafeAreaView> */}
-      </>
-    );
-  };
+      </View>
+      {/* </SafeAreaView> */}
+    </>
+  );
 
   return (
     <SafeAreaView style={styles.safeView}>
       {header()}
-      { msgGroup.length > 0 ?
-        <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
-          <SectionList
-            sections={msgGroup}
-            ref={chatRef}
+      { msgGroup.length > 0
+        ? (
+          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 60 }}>
+            <SectionList
+              sections={msgGroup}
+              ref={chatRef}
             // ListFooterComponent={header}
-            renderItem={x => <DiscussionMessage data={x.item} />}
-            renderSectionFooter={({section: {date}}) => (
-              <Text style={styles.timeHeader}>
-                {moment().isSame(date, 'day') ? 'Today' : date}
-              </Text>
-            )}
-            keyExtractor={x => x.id}
-            stickySectionHeadersEnabled={true}
-            inverted={true}
-            contentContainerStyle={{paddingTop: 10}}
+              renderItem={(x) => <DiscussionMessage data={x.item} />}
+              renderSectionFooter={({ section: { date } }) => (
+                <Text style={styles.timeHeader}>
+                  {moment().isSame(date, 'day') ? 'Today' : date}
+                </Text>
+              )}
+              keyExtractor={(x) => x.id}
+              stickySectionHeadersEnabled
+              inverted
+              contentContainerStyle={{ paddingTop: 10 }}
             // initialScrollIndex={1}
-            onScrollToIndexFailed={info => {
-              const wait = new Promise(resolve => setTimeout(resolve, 500));
-              wait.then(() => {
+              onScrollToIndexFailed={(info) => {
+                const wait = new Promise((resolve) => setTimeout(resolve, 500));
+                wait.then(() => {
                 chatRef.current?.scrollToIndex({ index: info.index, animated: true });
-              });
-            }}
-          />
-        </ScrollView>
-        :
-        <View style={styles.emptyContainer}>
-          <Image source={require('../../Assets/empty-discussion.png')} style={{ width: 240, height: 240 }} />
-          <Text style={styles.emptyTitle}> No comments yet</Text>
-          <Text style={styles.emptyBody}>Have any thoughts? Share them with other members by adding the first comment.</Text>
-        </View>
-      }
+                });
+              }}
+            />
+          </ScrollView>
+        )
+        : (
+          <View style={styles.emptyContainer}>
+            <Image source={require('../../Assets/empty-discussion.png')} style={{ width: 240, height: 240 }} />
+            <Text style={styles.emptyTitle}> No comments yet</Text>
+            <Text style={styles.emptyBody}>Have any thoughts? Share them with other members by adding the first comment.</Text>
+          </View>
+        )}
 
       <KeyboardAvoidingView
-        behavior={'height'}
-        style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
+        behavior="height"
+        style={{
+          position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff',
+        }}
+      >
         <View style={styles.input}>
-          {isMember ? (<>
-            <TextInput
-              ref={inputRef}
-              editable={true}
-              multiline={true}
-              placeholder="What do you think?"
-              onContentSizeChange={e =>
-                setInputHeight(e.nativeEvent.contentSize.height)
-              }
-              style={{...styles.textInput, height: inputHeight}}
-              fontSize={16}
-              onChangeText={currText => setInputText(currText)}
-            />
-            <TouchableOpacity
-              style={{paddingRight: 15, justifyContent: 'center'}}
-              onPress={sendMessageToDiscussion}>
-              <Icon
-                name="send-message"
-                style={styles.sendMessageIcon}
-                size={32}
-                color={
+          {isMember ? (
+            <>
+              <TextInput
+                ref={inputRef}
+                editable
+                multiline
+                placeholder="What do you think?"
+                onContentSizeChange={(e) => setInputHeight(e.nativeEvent.contentSize.height)}
+                style={{ ...styles.textInput, height: inputHeight }}
+                fontSize={16}
+                onChangeText={(currText) => setInputText(currText)}
+              />
+              <TouchableOpacity
+                style={{ paddingRight: 15, justifyContent: 'center' }}
+                onPress={sendMessageToDiscussion}
+              >
+                <Icon
+                  name="send-message"
+                  style={styles.sendMessageIcon}
+                  size={32}
+                  color={
                   inputText && inputText.trim() ? colors.mainBlue : colors.grey3
                 }
-              />
-            </TouchableOpacity>
-          </>
+                />
+              </TouchableOpacity>
+            </>
           ) : (
-            <Text style={{...styles.joinCommonText}}>
-              {'Only members can send messages'}
+            <Text style={{ ...styles.joinCommonText }}>
+              Only members can send messages
             </Text>
           )}
         </View>
@@ -481,14 +478,15 @@ const Discussions = ({daoStore, userStore, ...props}) => {
       <BottomSheetModal
         isVisible={showMenu}
         onClose={hideMenu}
-        style={styles.modalStyle}>
+        style={styles.modalStyle}
+      >
         <View style={styles.bottomSheet}>
           <Text style={styles.sheetTitle}>Options</Text>
           <TouchableOpacity onPress={() => followDiscussion()}>
             <View style={styles.sheetButton}>
               <Icon name="following" color={colors.black} />
-              <View style={{flex: 1}}>
-                <Text style={[styles.sheetText, {color: colors.black}]}>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.sheetText, { color: colors.black }]}>
                   {followState ? 'Unfollow' : 'Follow'}
                 </Text>
               </View>
@@ -504,7 +502,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
       </BottomSheetModal>
 
       <ImageView
-        images={data.images ? data.images.map(x => ({uri: x.value})) : []}
+        images={data.images ? data.images.map((x) => ({ uri: x.value })) : []}
         imageIndex={imageGalleryIndex}
         visible={imageGalleryIndex > -1}
         onRequestClose={() => setImageGalleryIndex(-1)}
@@ -578,7 +576,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.grey4,
     borderTopWidth: 1,
     height: 65,
-    width: width,
+    width,
     flexDirection: 'row',
     shadowColor: 'rgba(0, 0, 0, 0.2)',
     shadowOffset: {
@@ -632,7 +630,7 @@ const styles = StyleSheet.create({
   },
   sheetButton: {
     flexDirection: 'row',
-    width: width,
+    width,
     paddingHorizontal: 30,
     paddingVertical: 20,
     marginHorizontal: 20,
@@ -687,7 +685,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOpacity: 0.8,
     elevation: 5,
-  }
+  },
 });
 
 export default inject('userStore', 'bottomSheetStore', 'daoStore')(observer(Discussions));

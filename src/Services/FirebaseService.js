@@ -24,7 +24,7 @@ export default class FirebaseService {
       .collection(DB_COLLECTIONS.users)
       .doc(userId)
       .get()
-      .then(snapshots => {
+      .then((snapshots) => {
         // console.log('snapshots : ', snapshots);
         if (!snapshots) {
           return null;
@@ -50,20 +50,18 @@ export default class FirebaseService {
   }
 
   async getUserByAddress(address) {
-
     console.log('GETTING USER WITH ADDRESS -> ', address);
 
     return db
       .collection(DB_COLLECTIONS.users)
       .where('safeAddress', '==', address)
       .get()
-      .then(snapshots => {
+      .then((snapshots) => {
         if (!snapshots) {
           return null;
         }
         const doc = snapshots.docs[0];
-        return {id: doc.id, ...doc.data()};
-
+        return { id: doc.id, ...doc.data() };
       });
   }
 
@@ -72,29 +70,24 @@ export default class FirebaseService {
     return db
       .collection(DB_COLLECTIONS.users)
       .get()
-      .then(snapshots => {
+      .then((snapshots) => {
         if (snapshots.empty) {
           return [];
         }
-        return snapshots.docs.map(doc => {
-          return {...{id: doc.id}, ...doc.data()};
-        });
+        return snapshots.docs.map((doc) => ({ ...{ id: doc.id }, ...doc.data() }));
       });
   }
 
   async getDaos() {
-    return db.collection('daos').onSnapshot(snapshot => {
+    return db.collection('daos').onSnapshot((snapshot) => {
       if (snapshot.empty) {
         return [];
       }
-      return snapshot.docs.map(doc => {
-        return {...{id: doc.id}, ...doc.data()};
-      });
+      return snapshot.docs.map((doc) => ({ ...{ id: doc.id }, ...doc.data() }));
     });
   }
 
   async getDaoNameById(daoId) {
-
     const dao = await db.collection(DB_COLLECTIONS.daos)
       .doc(daoId)
       .get();
@@ -103,19 +96,17 @@ export default class FirebaseService {
   }
 
   async getDaoInfo(dao) {
-    let daoCollection = db.collection('daos').doc(dao);
-    daoCollection.onSnapshot(daoSnapshot => {
+    const daoCollection = db.collection('daos').doc(dao);
+    daoCollection.onSnapshot((daoSnapshot) => {
       console.log(`Received dao snapshot: ${daoSnapshot}`);
-    }, err => {
+    }, (err) => {
       console.log(`Encountered error: ${err}`);
     });
-    return db.collection('dao').onSnapshot(snapshot => {
+    return db.collection('dao').onSnapshot((snapshot) => {
       if (snapshot.empty) {
         return [];
       }
-      return snapshot.docs.map(doc => {
-        return {...{id: doc.id}, ...doc.data()};
-      });
+      return snapshot.docs.map((doc) => ({ ...{ id: doc.id }, ...doc.data() }));
     });
   }
 
@@ -126,9 +117,7 @@ export default class FirebaseService {
         .collection(DB_COLLECTIONS.users)
         .doc(googleId)
         .set(newUser)
-        .then(ref => {
-          return ref;
-        });
+        .then((ref) => ref);
     } catch (error) {
       console.log('ERROR -> ', error);
     }
@@ -140,8 +129,8 @@ export default class FirebaseService {
       .collection(DB_COLLECTIONS.users)
       .doc(userId)
       .update(user)
-      .then(ref => {
-        //console.log('Edited document with ID: ', ref.id);
+      .then((ref) => {
+        // console.log('Edited document with ID: ', ref.id);
       });
   }
 

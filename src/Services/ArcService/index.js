@@ -1,10 +1,10 @@
+import { Arc } from '@daostack/arc.js';
 import WalletManager from '../../Util/WalletManager';
-import {createCommon} from './createCommon';
-import {createProposalRequestToJoin} from './createProposal';
-import {createFundingProposal} from './createFundingProposal';
-import {voteForProposal} from './voteForProposal';
+import { createCommon } from './createCommon';
+import { createProposalRequestToJoin } from './createProposal';
+import { createFundingProposal } from './createFundingProposal';
+import { voteForProposal } from './voteForProposal';
 
-import {Arc} from '@daostack/arc.js';
 import {
   graphHttpLink,
   graphwsLink,
@@ -14,6 +14,7 @@ import {
 
 export default class ArcService {
   static myInstance = null;
+
   constructor() {
     return (async () => {
       const manager = await WalletManager.getInstance();
@@ -40,32 +41,24 @@ export default class ArcService {
   };
 
   // PROPOSALS
-  createRequestToJoin = async (daoId, data) => {
-    return createProposalRequestToJoin(this.arc, daoId, data);
-  };
+  createRequestToJoin = async (daoId, data) => createProposalRequestToJoin(this.arc, daoId, data);
 
-  createFundingProposal = async (userAddress, daoId, data) => {
-    return createFundingProposal(this.arc, userAddress, daoId, data);
-  };
+  createFundingProposal = async (userAddress, daoId, data) => createFundingProposal(this.arc, userAddress, daoId, data);
 
   // VOTING
-  voteForJoinAndQuitProposal = async (proposalId, data) => {
-    return voteForProposal(
-      this.arc,
-      proposalId,
-      data,
-      PROPOSAL_TYPE.JoinAndQuit,
-    );
-  };
+  voteForJoinAndQuitProposal = async (proposalId, data) => voteForProposal(
+    this.arc,
+    proposalId,
+    data,
+    PROPOSAL_TYPE.JoinAndQuit,
+  );
 
-  voteForFundingRequestProposal = async (proposalId, data) => {
-    return voteForProposal(
-      this.arc,
-      proposalId,
-      data,
-      PROPOSAL_TYPE.FundingRequest,
-    );
-  };
+  voteForFundingRequestProposal = async (proposalId, data) => voteForProposal(
+    this.arc,
+    proposalId,
+    data,
+    PROPOSAL_TYPE.FundingRequest,
+  );
 
   // COMMONS
   async createCommon(givenOpts = {}, navigation) {

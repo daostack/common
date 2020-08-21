@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -10,23 +10,26 @@ import {
   Animated,
   Platform,
 } from 'react-native';
-import TextInputFieldWithIcon from '../../../Components/FormFields/TextInputFieldWithIcon';
-import {colors, font, sizeL, sizeS} from '../../../Theme';
-
-import CreateStepHeaderTitle from './CreateStepHeaderTitle';
-import {observer, inject} from 'mobx-react';
-const {width} = Dimensions.get('window');
+import { observer, inject } from 'mobx-react';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
-import CreateStepHeader from './CreateStepHeader';
-import CreateStepNavigation from './CreateStepNavigation';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
 import Modal from 'react-native-modal';
 import moment from 'moment';
+import TextInputFieldWithIcon from '../../../Components/FormFields/TextInputFieldWithIcon';
+import {
+  colors, font, sizeL, sizeS,
+} from '../../../Theme';
+
+import CreateStepHeaderTitle from './CreateStepHeaderTitle';
+import CreateStepHeader from './CreateStepHeader';
+import CreateStepNavigation from './CreateStepNavigation';
+import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 
-const CreateStep2 = props => {
+const { width } = Dimensions.get('window');
+
+const CreateStep2 = (props) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [segmentedIndex, setSegmentedIndex] = useState(0);
@@ -93,30 +96,30 @@ const CreateStep2 = props => {
     const name = CreateCommonForm.DEADLINE;
     props.fundingFormStore.registerFormField(name, 'required');
     switch (index) {
-    case 0: {
-      props.fundingFormStore.fieldChanged(
-        name,
-        moment()
-          .add('7', 'days')
-          .unix(),
-      );
-      setShow(false);
-      break;
-    }
-    case 1: {
-      props.fundingFormStore.fieldChanged(
-        name,
-        moment()
-          .add('1', 'months')
-          .unix(),
-      );
-      setShow(false);
-      break;
-    }
-    case 2: {
-      setShow(true);
-      break;
-    }
+      case 0: {
+        props.fundingFormStore.fieldChanged(
+          name,
+          moment()
+            .add('7', 'days')
+            .unix(),
+        );
+        setShow(false);
+        break;
+      }
+      case 1: {
+        props.fundingFormStore.fieldChanged(
+          name,
+          moment()
+            .add('1', 'months')
+            .unix(),
+        );
+        setShow(false);
+        break;
+      }
+      case 2: {
+        setShow(true);
+        break;
+      }
     }
     setSegmentedIndex(index);
   };
@@ -141,23 +144,26 @@ const CreateStep2 = props => {
     }
   };
 
-  const DatePicker = <DateTimePicker
-    testID="dateTimePicker"
-    timeZoneOffsetInMinutes={0}
-    value={pickDate ? pickDate : new Date()}
-    minimumDate={new Date()}
-    maximumDate={moment().add('100', 'days').toDate()}
-    is24Hour={true}
-    display="default"
-    onChange={onDatePickerChange}
-  />;
+  const DatePicker = (
+    <DateTimePicker
+      testID="dateTimePicker"
+      timeZoneOffsetInMinutes={0}
+      value={pickDate || new Date()}
+      minimumDate={new Date()}
+      maximumDate={moment().add('100', 'days').toDate()}
+      is24Hour
+      display="default"
+      onChange={onDatePickerChange}
+    />
+  );
 
   return (
     <SafeAreaView
       style={{
         flex: 1,
         backgroundColor: 'white',
-      }}>
+      }}
+    >
       <CreateStepNavigation
         navigation={props.navigation}
         title="General info"
@@ -178,8 +184,9 @@ const CreateStep2 = props => {
         }}
         scrollEventThrottle={16}
         onScroll={Animated.event([
-          {nativeEvent: {contentOffset: {y: scrollY}}},
-        ])}>
+          { nativeEvent: { contentOffset: { y: scrollY } } },
+        ])}
+      >
         <CreateStepHeader currentIndex={1} />
 
         <View
@@ -188,7 +195,8 @@ const CreateStep2 = props => {
             // alignItems: 'center',
             // padding: 24,
             backgroundColor: 'white',
-          }}>
+          }}
+        >
           <CreateStepHeaderTitle
             title="Funding"
             subtitle="Control how this Common will collect and manage funds."
@@ -203,10 +211,10 @@ const CreateStep2 = props => {
           <TextInputFieldWithIcon
             iconName="dollar"
             iconSize={12}
-            iconStyle={{paddingRight: 5}}
+            iconStyle={{ paddingRight: 5 }}
             iconEmptyColor={colors.grey3}
             iconFillColor={colors.grey}
-            viewStyle={{alignSelf: 'stretch'}}
+            viewStyle={{ alignSelf: 'stretch' }}
             label="Minimum one-time contribution (min. $5)"
             subLabel="Set the minimum amount that new members will have to contribute in order to join this Common."
             infoLabel="Required"
@@ -219,21 +227,21 @@ const CreateStep2 = props => {
               validateRule: 'required|integer|min:5|max:1000',
             }}
           />
-          <View style={{marginTop: 24}}>
-            <View style={{flexDirection: 'row'}}>
+          <View style={{ marginTop: 24 }}>
+            <View style={{ flexDirection: 'row' }}>
               <Text style={styles.label}>Funds safety period</Text>
-              <Text style={[styles.infoLabel, {alignSelf: 'flex-end'}]}>
+              <Text style={[styles.infoLabel, { alignSelf: 'flex-end' }]}>
                 Required
               </Text>
             </View>
             <Text style={styles.info2}>
-            Set a period in which members will not be able to create proposals and allocate the funds. This will allow more members to join and participate in the decision-making process.
+              Set a period in which members will not be able to create proposals and allocate the funds. This will allow more members to join and participate in the decision-making process.
             </Text>
 
             <SegmentedControlTab
-              tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 44}}
-              tabStyle={{borderColor: colors.grey4}}
-              activeTabStyle={{backgroundColor: colors.mainBlue}}
+              tabsContainerStyle={{ marginTop: 16, marginBottom: 40, height: 44 }}
+              tabStyle={{ borderColor: colors.grey4 }}
+              activeTabStyle={{ backgroundColor: colors.mainBlue }}
               values={[
                 '1 week',
                 '1 month',
@@ -244,24 +252,27 @@ const CreateStep2 = props => {
               selectedIndex={segmentedIndex}
               onTabPress={onTabChange}
             />
-            {Platform.OS === 'ios' ? <Modal
-              visible={show}
-              transparent={true}
-              avoidKeyboard={true}
-              backdropOpacity={0.3}
-              onBackdropPress={() => setShow(false)}
-              style={styles.view}>
-              <View style={{ backgroundColor: 'white' }}>
-                <View
-                  style={{
-                    height: 50,
-                    backgroundColor: colors.grey4,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'flex-end',
-                    position: 'relative',
-                  }}>
-                  {/* <Text
+            {Platform.OS === 'ios' ? (
+              <Modal
+                visible={show}
+                transparent
+                avoidKeyboard
+                backdropOpacity={0.3}
+                onBackdropPress={() => setShow(false)}
+                style={styles.view}
+              >
+                <View style={{ backgroundColor: 'white' }}>
+                  <View
+                    style={{
+                      height: 50,
+                      backgroundColor: colors.grey4,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'flex-end',
+                      position: 'relative',
+                    }}
+                  >
+                    {/* <Text
                     style={{
                       color: colors.slate,
                       fontSize: 14,
@@ -274,16 +285,18 @@ const CreateStep2 = props => {
                     }}>
                     {'Min. 1 week'}
                   </Text> */}
-                  <TouchableOpacity onPress={onDone}>
-                    <Text
-                      style={styles.done}>
-                      Done
-                    </Text>
-                  </TouchableOpacity>
+                    <TouchableOpacity onPress={onDone}>
+                      <Text
+                        style={styles.done}
+                      >
+                        Done
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  {DatePicker}
                 </View>
-                {DatePicker}
-              </View>
-            </Modal> : show && (DatePicker) }
+              </Modal>
+            ) : show && (DatePicker) }
           </View>
           {/* <TextInputFieldWithIcon
             iconName="dollar"
@@ -401,7 +414,7 @@ export default inject(
   'daoStore',
 )(observer(CreateStep2));
 
-//generalInfoFormStore
-//fundingFormStore
-//agendaFormStore
-//reviewFormStore
+// generalInfoFormStore
+// fundingFormStore
+// agendaFormStore
+// reviewFormStore

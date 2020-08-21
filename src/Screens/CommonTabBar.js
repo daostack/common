@@ -1,30 +1,30 @@
 import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 
-import {layout, colors, font} from '../Theme';
+import { TabBar } from 'react-native-tab-view';
+import { layout, colors, font } from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
-import {TabBar} from 'react-native-tab-view';
 
-const CommonTabBar = props => (
+const CommonTabBar = (props) => (
   <TabBar
     {...props}
     indicatorStyle={{
       backgroundColor: colors.mainBlue,
     }}
-    renderLabel={(props) => {
-      return (
-        <View style={{...layout.content, ...layout.flexRow, ...{padding: 0, width: '100%'}}}>
-          { props.route.icon ? <Icon
+    renderLabel={(props) => (
+      <View style={{ ...layout.content, ...layout.flexRow, ...{ padding: 0, width: '100%' } }}>
+        { props.route.icon ? (
+          <Icon
             name={props.route.icon}
             size={30}
             color={props.focused ? colors.mainBlue : colors.grey3}
-          /> : null }
-          <Text style={props.focused ? styles.textStyleActive : styles.textStyle}>
-            {props.route.title}
-          </Text>
-        </View>
-      );
-    }}
+          />
+        ) : null }
+        <Text style={props.focused ? styles.textStyleActive : styles.textStyle}>
+          {props.route.title}
+        </Text>
+      </View>
+    )}
     style={styles.commonStyles}
     tabStyle={styles.tabStyle}
   />

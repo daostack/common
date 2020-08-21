@@ -1,16 +1,18 @@
 import React from 'react';
-import {View, StyleSheet, Animated, Text, TouchableOpacity} from 'react-native';
+import {
+  View, StyleSheet, Animated, Text, TouchableOpacity,
+} from 'react-native';
 import Icon from '../../../Assets/iconfont/Icon';
-import {colors, text, layout} from '../../../Theme';
+import { colors, text, layout } from '../../../Theme';
 
-const RequestStepDotHeader = props => {
-  const headerHeight = props.headerHeight;
+const RequestStepDotHeader = (props) => {
+  const { headerHeight } = props;
   const currentIndex = !props.isFirstStepSkipped ? props.currentIndex - 1 : props.currentIndex;
-  const totalDots =  props.isFirstStepSkipped ? 3 : 4;
+  const totalDots = props.isFirstStepSkipped ? 3 : 4;
   return (
-    <Animated.View style={[styles.header, {height: headerHeight}]}>
+    <Animated.View style={[styles.header, { height: headerHeight }]}>
 
-      <View style={{overflow: 'hidden'}}>
+      <View style={{ overflow: 'hidden' }}>
         <TouchableOpacity
           style={{
             position: 'absolute',
@@ -19,19 +21,22 @@ const RequestStepDotHeader = props => {
             padding: 0,
             zIndex: 9999,
           }}
-          onPress={() => props.navigation.pop()}>
-          <Icon name="left-arrow" size={32} style={{margin: 10}} />
+          onPress={() => props.navigation.pop()}
+        >
+          <Icon name="left-arrow" size={32} style={{ margin: 10 }} />
         </TouchableOpacity>
         <View style={styles.bar}>
-          <Text style={styles.title}>{props.title}
+          <Text style={styles.title}>
+            {props.title}
           </Text>
           <View
             style={{
               ...layout.marginTopS,
               flexDirection: 'row',
               justifyContent: 'space-between',
-            }}>
-            {[...Array(totalDots).keys()].map(x => (
+            }}
+          >
+            {[...Array(totalDots).keys()].map((x) => (
               <View
                 key={x}
                 style={x < currentIndex ? styles.dot : styles.dot2}

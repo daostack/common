@@ -1,23 +1,23 @@
-import {NativeModules, Platform} from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 import RNFS from 'react-native-fs';
 
-import {GOOGLE_SIGNIN_PERMISSIONS, AUTH_PROVIDER_ID} from '../Util';
-import WalletManager from '../Util/WalletManager';
-import {firebaseWebClientId} from '../Config';
-
-// Firebase imports
-import {auth} from '../Firebase';
-import FirebaseService from './FirebaseService';
-
-// Google imports
-import {GoogleSignin} from '@react-native-community/google-signin';
-import GoogleDriveService from './GoogleDriveService';
-
-// Apple imports
+import { GoogleSignin } from '@react-native-community/google-signin';
 import appleAuth, {
   AppleAuthRequestScope,
   AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication';
+import { GOOGLE_SIGNIN_PERMISSIONS, AUTH_PROVIDER_ID } from '../Util';
+import WalletManager from '../Util/WalletManager';
+import { firebaseWebClientId } from '../Config';
+
+// Firebase imports
+import { auth } from '../Firebase';
+import FirebaseService from './FirebaseService';
+
+// Google imports
+import GoogleDriveService from './GoogleDriveService';
+
+// Apple imports
 import IClouldService from './IClouldService';
 
 export default class AuthService {
@@ -62,7 +62,7 @@ export default class AuthService {
     }
 
     // Create a Firebase credential from the response
-    const {identityToken, nonce} = appleAuthRequestResponse;
+    const { identityToken, nonce } = appleAuthRequestResponse;
     const appleCredential = auth.AppleAuthProvider.credential(
       identityToken,
       nonce,
@@ -77,7 +77,7 @@ export default class AuthService {
     await GoogleSignin.hasPlayServices();
     await GoogleSignin.signIn();
 
-    const {idToken, accessToken} = await GoogleSignin.getTokens();
+    const { idToken, accessToken } = await GoogleSignin.getTokens();
     GoogleDriveService.init(accessToken);
 
     const googleCredential = auth.GoogleAuthProvider.credential(
@@ -97,12 +97,12 @@ export default class AuthService {
 
   async getCurrentLoggedUser(providerId) {
     switch (providerId) {
-    case AUTH_PROVIDER_ID.APPLE:
-      throw new Error('TODO: Implementat getting current logged in user in Apple ');
-      //TODO: return userInfo object which contains the users display name;
-    case AUTH_PROVIDER_ID.GOOGLE:
-      return await GoogleSignin.getCurrentUser();
-    default:
+      case AUTH_PROVIDER_ID.APPLE:
+        throw new Error('TODO: Implementat getting current logged in user in Apple ');
+      // TODO: return userInfo object which contains the users display name;
+      case AUTH_PROVIDER_ID.GOOGLE:
+        return await GoogleSignin.getCurrentUser();
+      default:
     }
   }
 
@@ -153,11 +153,11 @@ export default class AuthService {
       }
 
       switch (providerId) {
-      case AUTH_PROVIDER_ID.APPLE:
-        return await this._loadMnemonicFromiCloud(uid);
-      case AUTH_PROVIDER_ID.GOOGLE:
-        return await this._loadMnemonicFromGoogleDrive(uid);
-      default:
+        case AUTH_PROVIDER_ID.APPLE:
+          return await this._loadMnemonicFromiCloud(uid);
+        case AUTH_PROVIDER_ID.GOOGLE:
+          return await this._loadMnemonicFromGoogleDrive(uid);
+        default:
       }
     } catch (err) {
       console.log(err);
@@ -170,11 +170,11 @@ export default class AuthService {
 
   async _loadMnemonicFromGoogleDrive(uid) {
     await GoogleSignin.signInSilently();
-    const {accessToken} = await GoogleSignin.getTokens();
+    const { accessToken } = await GoogleSignin.getTokens();
     GoogleDriveService.init(accessToken);
 
     // 2. Read mnemonic From the Google Drive app data
-    let appData = await GoogleDriveService.getInstance().getAppData();
+    const appData = await GoogleDriveService.getInstance().getAppData();
 
     if (appData.files && appData.files.length > 0) {
       const appDataFileId = appData.files[0].id;
@@ -212,7 +212,7 @@ export default class AuthService {
   // APPLE
   async _loadMnemonicFromiCloud(uid) {
     // 2. Read mnemonic From the iClould app data
-    let appData = await IClouldService.getInstance().getAppData();
+    const appData = await IClouldService.getInstance().getAppData();
 
     if (appData && appData.files && appData.files.length > 0) {
       const appDataLocalPath = appData.files[0].path;

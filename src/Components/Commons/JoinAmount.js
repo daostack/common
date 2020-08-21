@@ -1,21 +1,27 @@
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
 
-import {layout, colors, text, font} from '../../Theme';
+import {
+  layout, colors, text, font,
+} from '../../Theme';
 
-const JoinAmount = ({id, amount, isCustom, onPress, isSelected}) => {
-
-  const onAmountPress = e => {
+const JoinAmount = ({
+  id, amount, isCustom, onPress, isSelected,
+}) => {
+  const onAmountPress = (e) => {
     onPress(isCustom, amount, id);
   };
 
   return (
     <TouchableOpacity
       style={isSelected ? styles.containerSelected : styles.container}
-      onPress={onAmountPress}>
-      <Text style={isSelected ? styles.amountSelected : styles.amount}>{`${
-        isCustom ? 'Other' : `$${amount}`
-      }`}</Text>
+      onPress={onAmountPress}
+    >
+      <Text style={isSelected ? styles.amountSelected : styles.amount}>
+        {`${
+          isCustom ? 'Other' : `$${amount}`
+        }`}
+      </Text>
     </TouchableOpacity>
   );
 };

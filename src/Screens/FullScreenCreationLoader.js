@@ -7,31 +7,29 @@ import {
   SafeAreaView,
   StatusBar,
 } from 'react-native';
-import {colors, layout, font} from '../Theme';
+import { colors, layout, font } from '../Theme';
 import Loader from '../Components/Loader';
 
-const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}, navigation}) => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.body}>
-          <View style={{...styles.slide1, ...layout.content}}>
-            <Image
-              source={require('../Assets/creating-a-common.png')}
-              style={styles.image}
-            />
-            <Text style={styles.creatingText}>{title}</Text>
-            <Text style={styles.waitText}>
-              {message}
-            </Text>
-            <Loader />
-          </View>
+const FullScreenCreationLoader = ({ route: { params: { title = '', message = '' } }, navigation }) => (
+  <>
+    <StatusBar barStyle="dark-content" />
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.body}>
+        <View style={{ ...styles.slide1, ...layout.content }}>
+          <Image
+            source={require('../Assets/creating-a-common.png')}
+            style={styles.image}
+          />
+          <Text style={styles.creatingText}>{title}</Text>
+          <Text style={styles.waitText}>
+            {message}
+          </Text>
+          <Loader />
         </View>
-      </SafeAreaView>
-    </>
-  );
-};
+      </View>
+    </SafeAreaView>
+  </>
+);
 
 const styles = StyleSheet.create({
   safeArea: {

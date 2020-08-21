@@ -1,16 +1,17 @@
 import React from 'react';
-import {View, StyleSheet, Dimensions} from 'react-native';
-import Icon from '../../../Assets/iconfont/Icon';
-import {colors} from '../../../Theme';
-const {width} = Dimensions.get('window');
+import { View, StyleSheet, Dimensions } from 'react-native';
 import * as Progress from 'react-native-progress';
+import Icon from '../../../Assets/iconfont/Icon';
+import { colors } from '../../../Theme';
 
-const RequestStepHeader = props => {
+const { width } = Dimensions.get('window');
+
+const RequestStepHeader = (props) => {
   const deltaIndex = props.isFirstStepSkipped ? 1 : 0;
   const currentIndex = props.currentIndex - deltaIndex;
   const progressList = props.isFirstStepSkipped ? [0, 0.5, 1.0] : [0, 0.35, 0.7, 1.0];
 
-  const ovalStyle = index => {
+  const ovalStyle = (index) => {
     if (props.currentIndex > index) {
       return styles.ovalDone;
     }
@@ -22,7 +23,7 @@ const RequestStepHeader = props => {
     }
   };
 
-  const iconColor = index => {
+  const iconColor = (index) => {
     if (props.currentIndex > index) {
       return colors.mainBlue;
     }
@@ -43,7 +44,8 @@ const RequestStepHeader = props => {
         width: '100%',
         marginBottom: 24,
         paddingHorizontal: 30,
-      }}>
+      }}
+    >
       <Progress.Bar
         progress={progressList[currentIndex]} // 0 0.35 0.7 1.0
         width={width - 48 - 60}
@@ -57,13 +59,16 @@ const RequestStepHeader = props => {
         }}
       />
       {/* <TouchableOpacity onPress={() => setCurrentIndex(0)}> */}
-      {!props.isFirstStepSkipped && <View
-        style={currentIndex === 0 ? {...styles.oval} : {...styles.ovalDone}}>
+      {!props.isFirstStepSkipped && (
+      <View
+        style={currentIndex === 0 ? { ...styles.oval } : { ...styles.ovalDone }}
+      >
         <Icon
           name={currentIndex === 0 ? 'agenda-24' : 'check'}
           size={currentIndex > 0 ? 16 : 24}
         />
-      </View>}
+      </View>
+      )}
       {/* </TouchableOpacity> */}
       {/* <TouchableOpacity onPress={() => setCurrentIndex(1)}> */}
       <View style={ovalStyle(1)}>

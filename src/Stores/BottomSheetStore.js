@@ -1,5 +1,5 @@
 import React from 'react';
-import {observable, action, decorate} from 'mobx';
+import { observable, action, decorate } from 'mobx';
 
 import {
   BoostedInfo,
@@ -54,8 +54,11 @@ export const BOTTOM_SHEET_TEMPLATES = {
 
 class BottomSheetStore {
   template;
+
   topSnap;
+
   isVisible;
+
   constructor() {
     this.template = null;
     this.topSnap = 0;
@@ -65,7 +68,7 @@ class BottomSheetStore {
   showBottomSheet = (currTemplate, props) => {
     let allProps = props;
     if (currTemplate.props) {
-      allProps = {...currTemplate.props, ...props};
+      allProps = { ...currTemplate.props, ...props };
     }
 
     this.topSnap = currTemplate.topSnap;

@@ -1,9 +1,9 @@
 import React from 'react';
-import {Text, StyleSheet, View} from 'react-native';
-import {text, layout, colors} from '../../Theme';
+import { Text, StyleSheet, View } from 'react-native';
+import { text, layout, colors } from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
-const ProposalApprovalTag = ({iconName, value, isMarked}) => {
+const ProposalApprovalTag = ({ iconName, value, isMarked }) => {
   // Default colors
   let markColor = colors.grey3;
   let mainColor = colors.grey3;
@@ -16,17 +16,17 @@ const ProposalApprovalTag = ({iconName, value, isMarked}) => {
     mainColor = colors.error;
   }
 
-  let containerStyle = isMarked
+  const containerStyle = isMarked
     ? {
       ...styles.container,
-      ...{borderColor: mainColor, backgroundColor: markColor},
+      ...{ borderColor: mainColor, backgroundColor: markColor },
     }
     : styles.container;
 
   return (
     <View style={containerStyle}>
       <Icon name={iconName} size={10} style={styles.iconStyle} />
-      <Text style={{...styles.title, ...{color: mainColor}}}>{value}</Text>
+      <Text style={{ ...styles.title, ...{ color: mainColor } }}>{value}</Text>
     </View>
   );
 };

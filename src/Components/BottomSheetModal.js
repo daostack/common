@@ -1,26 +1,24 @@
-import {forwardRef} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, { forwardRef } from 'react';
+import { View, StyleSheet } from 'react-native';
 
-import React from 'react';
 import Modal from 'react-native-modal';
 
-const BottomSheetModal = forwardRef(props => {
-  const renderSheetContent = () => {
-    return <View style={[styles.content, props.style]}>{props.children}</View>;
-  };
+const BottomSheetModal = forwardRef((props) => {
+  const renderSheetContent = () => <View style={[styles.content, props.style]}>{props.children}</View>;
 
   const onSwipeComplete = () => {
   };
 
   return (
     <Modal
-      testID={'modal'}
+      testID="modal"
       isVisible={props.isVisible}
       onSwipeComplete={onSwipeComplete}
       backdropOpacity={0.2}
       onBackButtonPress={props.onClose}
       onBackdropPress={props.onClose}
-      style={styles.view}>
+      style={styles.view}
+    >
       {renderSheetContent()}
     </Modal>
   );

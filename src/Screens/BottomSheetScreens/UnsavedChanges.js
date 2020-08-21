@@ -8,21 +8,23 @@ import {
 } from 'react-native';
 
 import React from 'react';
-import {text, layout, colors,font} from '../../Theme';
+import {
+  text, layout, colors, font,
+} from '../../Theme';
 
 const UnsavedChanges = ({
   navigation,
   onContinueEditing,
   onLeaveWithoutSaving,
 }) => {
-  const liveWithoutSave = e => {
+  const liveWithoutSave = (e) => {
     navigation.goBack();
     if (onLeaveWithoutSaving) {
       onLeaveWithoutSaving();
     }
   };
 
-  const continueEditing = e => {
+  const continueEditing = (e) => {
     console.log('onContinueEditing -> ', onContinueEditing);
     if (onContinueEditing) {
       onContinueEditing();
@@ -33,30 +35,34 @@ const UnsavedChanges = ({
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       style={styles.scrollView}
-      vertical={true}
-      nestedScrollEnabled={true}
-      directionalLockEnabled={true}>
+      vertical
+      nestedScrollEnabled
+      directionalLockEnabled
+    >
       <View style={styles.body}>
         <Image
           style={styles.image}
-          source={require('../../../src/Assets/save.png')}
+          source={require('../../Assets/save.png')}
         />
 
         <Text style={styles.title}>
           Unsaved changes
         </Text>
         <Text
-          style={styles.message}>
+          style={styles.message}
+        >
           You are about to leave this page without saving your changes
         </Text>
         <TouchableOpacity
           style={styles.leave}
-          onPress={liveWithoutSave}>
+          onPress={liveWithoutSave}
+        >
           <Text style={text.buttonred}>Leave without saving</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.continue}
-          onPress={continueEditing}>
+          onPress={continueEditing}
+        >
           <Text style={text.buttonblack}>Continue editing</Text>
         </TouchableOpacity>
       </View>

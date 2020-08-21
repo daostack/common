@@ -9,13 +9,15 @@ import {
   View,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {colors, font, sizeXXL, sizeLineHeight, layout} from '../Theme';
-import {CommonActions} from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
 import AsyncStorage from '@react-native-community/async-storage';
 import messaging from '@react-native-firebase/messaging';
+import {
+  colors, font, sizeXXL, sizeLineHeight, layout,
+} from '../Theme';
 
-const Onboarding = ({navigation}) => {
+const Onboarding = ({ navigation }) => {
   const _onboardingClick = async () => {
     try {
       await AsyncStorage.setItem('onboarded', 'true');
@@ -26,7 +28,7 @@ const Onboarding = ({navigation}) => {
           routes: [
             {
               name: 'CommonHome',
-              params: {user: 'jane'},
+              params: { user: 'jane' },
             },
           ],
         }),
@@ -47,11 +49,12 @@ const Onboarding = ({navigation}) => {
             />
           </View>
           <Swiper
-            loadMinimal={true}
+            loadMinimal
             style={styles.wrapper}
             showsButtons={false}
             activeDotColor={colors.mainBlue}
-            paginationStyle={{bottom: 0}}>
+            paginationStyle={{ bottom: 0 }}
+          >
             <View style={styles.slide1}>
               <Image
                 source={require('../Assets/creating-a-common.png')}
@@ -59,7 +62,7 @@ const Onboarding = ({navigation}) => {
               />
               <Text style={styles.text}>Join a Common or launch a new one</Text>
               <Text style={styles.subtitle}>
-              Collaborate on shared agendas by pooling funds and collectively making decisions.
+                Collaborate on shared agendas by pooling funds and collectively making decisions.
               </Text>
             </View>
             <View style={styles.slide1}>
@@ -69,8 +72,8 @@ const Onboarding = ({navigation}) => {
               />
               <Text style={styles.text}>Vote and make funding decisions together</Text>
               <Text style={styles.subtitle}>
-              All members get an equal vote and
-can take part in the shared effort.
+                All members get an equal vote and
+                can take part in the shared effort.
               </Text>
             </View>
             <View style={styles.slide1}>
@@ -80,7 +83,7 @@ can take part in the shared effort.
               />
               <Text style={styles.text}>Operate in complete transparency</Text>
               <Text style={styles.subtitle}>
-              All discussions, decisions, and expenses are visible to all Common members.
+                All discussions, decisions, and expenses are visible to all Common members.
               </Text>
             </View>
             <View style={styles.slide1}>
@@ -100,7 +103,8 @@ can take part in the shared effort.
           <View style={styles.buttonConatiner}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => _onboardingClick(navigation)}>
+              onPress={() => _onboardingClick(navigation)}
+            >
               <Text style={styles.buttonText}>Get started</Text>
             </TouchableOpacity>
           </View>

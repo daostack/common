@@ -1,49 +1,47 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {FlatList} from 'react-native';
-import DiscussionCard from './DiscussionCard';
+import React, { useEffect, useState, useRef } from 'react';
+import { FlatList } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
+import DiscussionCard from './DiscussionCard';
 import ViewTabNoData from '../../Components/ViewTabNoData';
 
-const DiscussionList = props => {
-  const commonId = props.commonId;
+const DiscussionList = (props) => {
+  const { commonId } = props;
   const [list, setList] = useState([]);
 
-  let listRef = useRef([]);
+  const listRef = useRef([]);
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('discussion')
       .where('commonId', '==', commonId)
       .orderBy('createTime', 'desc')
       .onSnapshot(
-        snapshot => {
+        (snapshot) => {
           if (snapshot.empty) {
             setList([]);
-          } else {
-            if (snapshot.docChanges().length !== 0) {
-              const newList = snapshot.docChanges().map(({doc}) => ({
-                id: doc.id,
-                ...doc.data(),
-              }));
-              let createList = newList
-                .map(item => {
-                  let index = listRef.current.findIndex(v => v.id === item.id);
-                  if (index > -1) {
-                    listRef.current[index] = item;
-                  } else {
-                    return item;
-                  }
-                })
-                .filter(item => item);
-              if (createList.length > 0) {
-                const allList = [...createList, ...listRef.current];
-                listRef.current = allList;
-              }
-              setList(listRef.current);
+          } else if (snapshot.docChanges().length !== 0) {
+            const newList = snapshot.docChanges().map(({ doc }) => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
+            const createList = newList
+              .map((item) => {
+                const index = listRef.current.findIndex((v) => v.id === item.id);
+                if (index > -1) {
+                  listRef.current[index] = item;
+                } else {
+                  return item;
+                }
+              })
+              .filter((item) => item);
+            if (createList.length > 0) {
+              const allList = [...createList, ...listRef.current];
+              listRef.current = allList;
             }
+            setList(listRef.current);
           }
         },
         // TOOD: please do not silence any errors like this
-        error => console.error(error),
+        (error) => console.error(error),
       );
     return () => {
       unsubscribe();
@@ -55,7 +53,7 @@ const DiscussionList = props => {
       {list.length > 0 ? (
         <FlatList
           data={list}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <DiscussionCard
               key={item.id}
               data={item}

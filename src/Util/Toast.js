@@ -7,16 +7,16 @@ import {
   Dimensions,
   ActivityIndicator,
 } from 'react-native';
-import {colors, font} from '../Theme';
+import { colors, font } from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-const showHud = v => {
+const showHud = (v) => {
   DeviceEventEmitter.emit('HUD', v);
 };
 
-const showLoading = v => {
+const showLoading = (v) => {
   DeviceEventEmitter.emit('HUD', v, true);
 };
 export default class Toast {
@@ -28,44 +28,52 @@ export default class Toast {
           padding: 10,
           borderRadius: 10,
           width: width * 0.8,
-        }}>
-        <Text style={{color: colors.white}}>Text</Text>
+        }}
+      >
+        <Text style={{ color: colors.white }}>Text</Text>
       </View>,
     );
   }
+
   static info(text) {
     showHud(
       <View
-        style={{...styles.container, ...{backgroundColor: colors.mainBlue}}}>
+        style={{ ...styles.container, ...{ backgroundColor: colors.mainBlue } }}
+      >
         <Icon name="check" size={20} color={colors.white} />
         <Text style={styles.text}>{text}</Text>
       </View>,
     );
   }
+
   static done(text) {
     showHud(
       <View
-        style={{...styles.container, ...{backgroundColor: colors.mainBlue}}}>
+        style={{ ...styles.container, ...{ backgroundColor: colors.mainBlue } }}
+      >
         <Icon name="check" size={20} color={colors.white} />
         <Text style={styles.text}>{text}</Text>
       </View>,
     );
   }
+
   static success(text) {
     showHud(
       <View
         style={{
           ...styles.container,
-          ...{backgroundColor: colors.mainBlue},
-        }}>
+          ...{ backgroundColor: colors.mainBlue },
+        }}
+      >
         <Icon name="check" size={20} color={colors.white} />
         <Text style={styles.text}>{text}</Text>
       </View>,
     );
   }
+
   static error(text) {
     showHud(
-      <View style={{...styles.container, ...{backgroundColor: colors.error}}}>
+      <View style={{ ...styles.container, ...{ backgroundColor: colors.error } }}>
         <Icon name="close" size={10} color={colors.white} />
         <Text style={styles.text}>{text}</Text>
       </View>,
@@ -75,10 +83,11 @@ export default class Toast {
   static loading(text) {
     showLoading(
       <View
-        style={{...styles.container, ...{backgroundColor: colors.mainBlue}}}>
+        style={{ ...styles.container, ...{ backgroundColor: colors.mainBlue } }}
+      >
         <ActivityIndicator size="small" color={colors.white} />
         <Text style={styles.text}>{text}</Text>
-      </View>
+      </View>,
     );
   }
 
@@ -117,8 +126,8 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    width: width,
-    height: height,
+    width,
+    height,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 99,

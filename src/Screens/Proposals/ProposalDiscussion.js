@@ -1,18 +1,20 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {Text, StyleSheet, SectionList, View, ScrollView, Image} from 'react-native';
-import {text, colors, font} from '../../Theme';
-import DiscussionMessage from '../Discussions/DiscussionMessage';
-import {observer, inject} from 'mobx-react';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Text, StyleSheet, SectionList, View, ScrollView, Image,
+} from 'react-native';
+import { observer, inject } from 'mobx-react';
 import moment from 'moment';
 import firestore from '@react-native-firebase/firestore';
+import DiscussionMessage from '../Discussions/DiscussionMessage';
+import { text, colors, font } from '../../Theme';
 
-const ProposalDiscussion = props => {
+const ProposalDiscussion = (props) => {
   const chatRef = useRef(null);
   const [msgGroup, setMsgDroup] = useState([]);
 
-  const proposalId = props.proposalId;
+  const { proposalId } = props;
 
-  let listRef = useRef([]);
+  const listRef = useRef([]);
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('discussionMessage')
@@ -21,9 +23,9 @@ const ProposalDiscussion = props => {
       // .startAt(0)
       // .limit(25)
       .onSnapshot(
-        snapshot => {
+        (snapshot) => {
           if (snapshot.docChanges().length !== 0) {
-            const newList = snapshot.docChanges().map(({doc}) => ({
+            const newList = snapshot.docChanges().map(({ doc }) => ({
               id: doc.id,
               ...doc.data(),
             }));
@@ -32,13 +34,13 @@ const ProposalDiscussion = props => {
             listRef.current = msgList;
             console.log('newMessage', newList);
             const groupDate = msgList
-              .map(msg => ({
+              .map((msg) => ({
                 date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
                 data: msg,
               }))
               .reduce((acc, curr) => {
-                var key = curr.date;
-                let el = acc.find(x => x && x.date === key);
+                const key = curr.date;
+                const el = acc.find((x) => x && x.date === key);
                 if (el) {
                   el.data.push(curr.data);
                 } else {
@@ -58,7 +60,7 @@ const ProposalDiscussion = props => {
             });
           }
         },
-        error => console.error(error),
+        (error) => console.error(error),
       );
     return () => {
       unsubscribe();
@@ -66,32 +68,33 @@ const ProposalDiscussion = props => {
   }, [proposalId]);
 
   return (
-    <View style={{flex: 1, backgroundColor: colors.paleGrey}}>
-      <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 120}}>
-        { msgGroup.length > 0 ?
-          <SectionList
-            sections={msgGroup}
-            ref={chatRef}
+    <View style={{ flex: 1, backgroundColor: colors.paleGrey }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 120 }}>
+        { msgGroup.length > 0
+          ? (
+            <SectionList
+              sections={msgGroup}
+              ref={chatRef}
             // ListFooterComponent={header}
-            renderItem={x => <DiscussionMessage data={x.item} />}
-            renderSectionFooter={({section: {date}}) => (
-              <Text style={styles.timeHeader}>
-                {moment().isSame(date, 'day') ? 'Today' : date}
-              </Text>
-            )}
-            keyExtractor={x => x.id}
-            stickySectionHeadersEnabled={true}
-            inverted={true}
-            contentContainerStyle={{paddingTop: 100}}
-          // initialScrollIndex={2}
-          />
-          :
-          <View style={styles.emptyContainer}>
-            <Image source={require('../../Assets/empty-discussion.png')} style={{ width: 240, height: 240 }} />
-            <Text style={styles.emptyTitle}> No comments yet</Text>
-            <Text style={styles.emptyBody}>Have any thoughts? Share them with other members by adding the first comment.</Text>
-          </View>
-        }
+              renderItem={(x) => <DiscussionMessage data={x.item} />}
+              renderSectionFooter={({ section: { date } }) => (
+                <Text style={styles.timeHeader}>
+                  {moment().isSame(date, 'day') ? 'Today' : date}
+                </Text>
+              )}
+              keyExtractor={(x) => x.id}
+              stickySectionHeadersEnabled
+              inverted
+              contentContainerStyle={{ paddingTop: 100 }}
+            />
+          )
+          : (
+            <View style={styles.emptyContainer}>
+              <Image source={require('../../Assets/empty-discussion.png')} style={{ width: 240, height: 240 }} />
+              <Text style={styles.emptyTitle}> No comments yet</Text>
+              <Text style={styles.emptyBody}>Have any thoughts? Share them with other members by adding the first comment.</Text>
+            </View>
+          )}
       </ScrollView>
     </View>
   );

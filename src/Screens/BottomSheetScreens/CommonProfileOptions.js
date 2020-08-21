@@ -7,73 +7,72 @@ import {
 } from 'react-native';
 
 import React from 'react';
-import {text, layout, colors} from '../../Theme';
+import { text, layout, colors } from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
-const CommonProfileOptions = ({navigation, onFollow, isCommonProfile}) => {
-  return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      style={styles.scrollView}
-      vertical={true}
-      nestedScrollEnabled={true}
-      directionalLockEnabled={true}>
-      <View style={styles.body}>
-        <Text style={{...text.h2Black, alignSelf: 'center', marginBottom: 30}}>
-          Options
-        </Text>
+const CommonProfileOptions = ({ navigation, onFollow, isCommonProfile }) => (
+  <ScrollView
+    contentInsetAdjustmentBehavior="automatic"
+    style={styles.scrollView}
+    vertical
+    nestedScrollEnabled
+    directionalLockEnabled
+  >
+    <View style={styles.body}>
+      <Text style={{ ...text.h2Black, alignSelf: 'center', marginBottom: 30 }}>
+        Options
+      </Text>
 
-        <TouchableOpacity style={styles.optionBtn} onPress={onFollow}>
-          <Icon
-            name="following"
-            style={layout.marginRightS}
-            color={colors.black}
-          />
-          <Text style={text.buttonblack}>Unfollow</Text>
-        </TouchableOpacity>
-        {isCommonProfile ? (
-          <>
-            <TouchableOpacity style={styles.optionBtn}>
-              <Icon
-                name="donate-16"
-                style={layout.marginRightS}
-                color={colors.black}
-              />
-              <Text style={text.buttonblack}>Contribute</Text>
-            </TouchableOpacity>
+      <TouchableOpacity style={styles.optionBtn} onPress={onFollow}>
+        <Icon
+          name="following"
+          style={layout.marginRightS}
+          color={colors.black}
+        />
+        <Text style={text.buttonblack}>Unfollow</Text>
+      </TouchableOpacity>
+      {isCommonProfile ? (
+        <>
+          <TouchableOpacity style={styles.optionBtn}>
+            <Icon
+              name="donate-16"
+              style={layout.marginRightS}
+              color={colors.black}
+            />
+            <Text style={text.buttonblack}>Contribute</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity style={styles.optionBtn}>
-              <Icon
-                name="agenda"
-                style={layout.marginRightS}
-                color={colors.black}
-              />
-              <Text style={text.buttonblack}>View agenda</Text>
-            </TouchableOpacity>
+          <TouchableOpacity style={styles.optionBtn}>
+            <Icon
+              name="agenda"
+              style={layout.marginRightS}
+              color={colors.black}
+            />
+            <Text style={text.buttonblack}>View agenda</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity style={styles.optionBtn}>
-              <Icon
-                name="share-32"
-                style={layout.marginRightS}
-                color={colors.black}
-              />
-              <Text style={text.buttonblack}>Share</Text>
-            </TouchableOpacity>
-          </>
-        ) : null}
+          <TouchableOpacity style={styles.optionBtn}>
+            <Icon
+              name="share-32"
+              style={layout.marginRightS}
+              color={colors.black}
+            />
+            <Text style={text.buttonblack}>Share</Text>
+          </TouchableOpacity>
+        </>
+      ) : null}
 
-        <TouchableOpacity style={styles.optionBtn}>
-          <Icon
-            name="report"
-            style={layout.marginRightS}
-            color={colors.error}
-          />
-          <Text style={text.buttonred}>Report</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
-  );
-};
+      <TouchableOpacity style={styles.optionBtn}>
+        <Icon
+          name="report"
+          style={layout.marginRightS}
+          color={colors.error}
+        />
+        <Text style={text.buttonred}>Report</Text>
+      </TouchableOpacity>
+    </View>
+  </ScrollView>
+);
 
 const styles = StyleSheet.create({
   scrollView: {

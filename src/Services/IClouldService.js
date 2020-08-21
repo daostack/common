@@ -4,7 +4,7 @@ import RNCloudFs from 'react-native-cloud-fs';
 const mimeType = 'application/json';
 const appDataFileName = 'appDataCloud.json';
 const appDataFolder = 'appDataFolder';
-const downloadHeaderPath = RNFS.DocumentDirectoryPath + '/' + appDataFileName;
+const downloadHeaderPath = `${RNFS.DocumentDirectoryPath}/${appDataFileName}`;
 
 const appDataFilePath = `${appDataFolder}/${appDataFileName}`;
 const iCloudScope = 'hidden';
@@ -46,9 +46,9 @@ export default class IClouldService {
     await RNFS.writeFile(downloadHeaderPath, appDataJson, 'utf8');
 
     return await RNCloudFs.copyToCloud({
-      sourcePath: {path: downloadHeaderPath},
+      sourcePath: { path: downloadHeaderPath },
       targetPath: appDataFilePath,
-      mimeType: mimeType,
+      mimeType,
       scope: iCloudScope,
     });
   }

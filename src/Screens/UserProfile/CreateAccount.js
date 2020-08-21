@@ -10,14 +10,14 @@ import {
   Linking,
 } from 'react-native';
 
+import { observer, inject } from 'mobx-react';
 import GSignInButton from '../../Components/Auth/GSignInButton';
-import {layout, text, colors} from '../../Theme';
-import {observer, inject} from 'mobx-react';
+import { layout, text, colors } from '../../Theme';
 import AppleSignInButton from '../../Components/Auth/AppleSignInButton';
 import AuthService from '../../Services/AuthService';
 
-const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
-  const onSignIn = async userInfo => {
+const CreateAccount = ({ onSignedIn, hidePlaceholder }) => {
+  const onSignIn = async (userInfo) => {
     if (onSignedIn) {
       onSignedIn(userInfo.additionalUserInfo.isNewUser);
     }

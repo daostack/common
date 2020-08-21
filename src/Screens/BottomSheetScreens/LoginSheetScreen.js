@@ -1,28 +1,28 @@
-import {Text, View, StyleSheet} from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 
 import React from 'react';
-import {colors, text, layout} from '../../Theme';
-import {inject, observer} from 'mobx-react';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
+import { inject, observer } from 'mobx-react';
+import { colors, text, layout } from '../../Theme';
+import { BOTTOM_SHEET_TEMPLATES } from '../../Stores/BottomSheetStore';
 import CreateAccount from '../UserProfile/CreateAccount';
 
-const LoginSheetScreen = ({bottomSheetStore, ...props}) => {
-  return (
-    <View style={styles.contentContainer}>
-      <Text style={styles.sheetTitleStyle}>Be a part of Common</Text>
-      <Text
-        style={{
-          ...styles.sheetTextStyle,
-          ...layout.marginBottomXL,
-        }}>
-        {props.message ? props.message : 'Connect your account to join this Common'}
-      </Text>
+const LoginSheetScreen = ({ bottomSheetStore, ...props }) => (
+  <View style={styles.contentContainer}>
+    <Text style={styles.sheetTitleStyle}>Be a part of Common</Text>
+    <Text
+      style={{
+        ...styles.sheetTextStyle,
+        ...layout.marginBottomXL,
+      }}
+    >
+      {props.message ? props.message : 'Connect your account to join this Common'}
+    </Text>
 
-      <View style={layout.flexRow}>
-        <CreateAccount hidePlaceholder={true} onSignedIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)}/>
-      </View>
+    <View style={layout.flexRow}>
+      <CreateAccount hidePlaceholder onSignedIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)} />
+    </View>
 
-      {/**
+    {/**
       <View style={layout.flexRow}>
         <GSignInButton style={styles.googleSignInButton} onSignIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)} />
       </View>
@@ -37,9 +37,8 @@ const LoginSheetScreen = ({bottomSheetStore, ...props}) => {
         </Text>
       </View>
       */}
-    </View>
-  );
-};
+  </View>
+);
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -81,5 +80,3 @@ const styles = StyleSheet.create({
 });
 
 export default inject('bottomSheetStore')(observer(LoginSheetScreen));
-
-

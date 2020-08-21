@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   View,
@@ -7,23 +7,24 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
+import { observer, inject } from 'mobx-react';
+import { CommonActions } from '@react-navigation/native';
 import TextInputField from '../../../Components/FormFields/TextInputField';
 import MultiLinkField from '../../../Components/FormFields/MultiLinkField';
 
-import {colors, text} from '../../../Theme';
-import {observer, inject} from 'mobx-react';
-const {width} = Dimensions.get('window');
+import { colors, text } from '../../../Theme';
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepNavigation from './RequestStepNavigation';
 
 import RequestToJoinForm from '../../../Components/Forms/RequestToJoinForm';
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
-import {CommonActions} from '@react-navigation/native';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import MembershipRequest from './MembershipRequest';
 
-const RequestStep2 = props => {
+const { width } = Dimensions.get('window');
+
+const RequestStep2 = (props) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const isFirstStepSkipped = props.route.params.skipFirstStep;
@@ -54,12 +55,13 @@ const RequestStep2 = props => {
 
   return (
     <>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView style={{ backgroundColor: colors.white }} />
       <SafeAreaView
         style={{
           flex: 1,
           backgroundColor: 'white',
-        }}>
+        }}
+      >
         <CreateStepNavigation
           navigation={props.navigation}
           title={name}
@@ -81,8 +83,9 @@ const RequestStep2 = props => {
           }}
           scrollEventThrottle={16}
           onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
-          ])}>
+            { nativeEvent: { contentOffset: { y: scrollY } } },
+          ])}
+        >
           <MembershipRequest />
 
           <CreateStepHeader
@@ -95,7 +98,8 @@ const RequestStep2 = props => {
               // alignItems: 'center',
               // padding: 24,
               backgroundColor: 'white',
-            }}>
+            }}
+          >
             <RequestStepHeaderTitle title="Introduce Yourself" subtitle="Let the Common members learn more about you and how you relate to the cause." />
             <View
               style={{
@@ -108,7 +112,7 @@ const RequestStep2 = props => {
               label="Intro"
               infoLabel="Required"
               placeholderText="Let the Common members learn more about you and how you relate to the cause."
-              multiline={true}
+              multiline
               numberOfLines={6}
               validation={{
                 name: RequestToJoinForm.FIELD_ABOUT_ME,
@@ -117,10 +121,10 @@ const RequestStep2 = props => {
               }}
             />
 
-            <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>Links</Text>
+            <Text style={{ ...text.h3Black, ...{ textAlign: 'left' } }}>Links</Text>
 
             <MultiLinkField
-              allowsEditing={true}
+              allowsEditing
               title="Title"
               validation={{
                 name: RequestToJoinForm.FIELD_LINKS,
@@ -143,5 +147,5 @@ const RequestStep2 = props => {
 export default inject(
   'userStore',
   'introduceYourselfFormStore',
-  'daoStore'
+  'daoStore',
 )(observer(RequestStep2));

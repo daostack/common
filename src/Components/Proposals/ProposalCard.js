@@ -1,36 +1,42 @@
-import React, {useState, useEffect} from 'react';
-import {Text, StyleSheet, Platform, View, Animated, Dimensions} from 'react-native';
-import {text, layout, colors, font} from '../../Theme';
+import React, { useState, useEffect } from 'react';
+import {
+  Text, StyleSheet, Platform, View, Animated, Dimensions,
+} from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import moment from 'moment';
+import {
+  text, layout, colors, font,
+} from '../../Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
 import ProposalService, { PROPOSAL_TYPE } from '../../Services/ProposalService';
 import FirebaseService from '../../Services/FirebaseService';
 import ProposalApprovalTag from './ProposalApprovalTag';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import Toast from '../../Util/Toast';
-import moment from 'moment';
-const {width} = Dimensions.get('window');
 
-const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membershipRequest, isSwiper}) => {
+const { width } = Dimensions.get('window');
+
+const ProposalCard = ({
+  proposalId, data, onReviewProposal, containerStyle, membershipRequest, isSwiper,
+}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
 
   useEffect(() => {
-    const getProposalInfo = async currProposalId => {
+    const getProposalInfo = async (currProposalId) => {
       try {
-        let currProposalInfo = await ProposalService.getInstance().getProposalInfo(
+        const currProposalInfo = await ProposalService.getInstance().getProposalInfo(
           currProposalId,
         );
 
-        //RequestToJoin proposal
+        // RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
         if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
           proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
           funding = currProposalInfo.description.funding;
         }
-        //FundingRequest proposal
+        // FundingRequest proposal
         else {
-
           const proposedMember = await FirebaseService.getInstance().getUserByAddress(
             currProposalInfo.fundingRequest.beneficiary,
           );
@@ -46,9 +52,8 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
 
         setProposalCardInfo({
           proposedUser: currProposedUser,
-          proposalInfo: {...currProposalInfo, ...{funding: funding}, discussionsCount},
+          proposalInfo: { ...currProposalInfo, ...{ funding }, discussionsCount },
         });
-
       } catch (error) {
         console.log('error: ', error);
         Toast.error(error?.toString());
@@ -61,16 +66,16 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
   }, [proposalId]);
 
   useEffect(() => {
-    const loadProposalInfo = async currProposalInfo => {
+    const loadProposalInfo = async (currProposalInfo) => {
       try {
-        //RequestToJoin proposal
+        // RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
         if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
           proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
           funding = currProposalInfo.description.funding;
         }
-        //FundingRequest proposal
+        // FundingRequest proposal
         else {
           const proposedMember = await FirebaseService.getInstance().getUserByAddress(
             currProposalInfo.fundingRequest.beneficiary,
@@ -85,7 +90,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
 
         const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(currProposalInfo.id);
 
-        const allProposalInfo = { ...currProposalInfo, ...{ funding: funding }, discussionsCount };
+        const allProposalInfo = { ...currProposalInfo, ...{ funding }, discussionsCount };
 
         setProposalCardInfo({
           proposedUser: currProposedUser,
@@ -110,10 +115,10 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
   };
 
   return (
-    <Animated.View style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
+    <Animated.View style={[styles.proposalCard, containerStyle, { width: cardWidth() }]}>
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
-          isBoosted={true}
+          isBoosted
           showDate={membershipRequest}
           stage={proposalCardInfo.proposalInfo?.stageStr}
           winningOutcome={proposalCardInfo.proposalInfo?.winningOutcome}
@@ -128,25 +133,34 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
             paddingHorizontal: 16,
             ...layout.flexStart,
             // ...layout.paddingBottomL,
-            ...{flexWrap: 'wrap'},
-          }}>
-          {proposalCardInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && <Text
-            style={{ ...text.h3Black, ...{ textAlign: 'left', flexWrap: 'wrap', padding:10, fontSize: 16 } }}>
+            ...{ flexWrap: 'wrap' },
+          }}
+        >
+          {proposalCardInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && (
+          <Text
+            style={{
+              ...text.h3Black,
+              ...{
+                textAlign: 'left', flexWrap: 'wrap', padding: 10, fontSize: 16,
+              },
+            }}
+          >
             {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
-          </Text>}
+          </Text>
+)}
 
           <MemberCard
             showDate={membershipRequest}
             userInfo={proposalCardInfo.proposedUser}
             proposalInfo={proposalCardInfo.proposalInfo}
             isPending={false}
-            showMemberCreatedDate={true}
+            showMemberCreatedDate
           />
-          <View style={{...layout.flexRow }}>
+          <View style={{ ...layout.flexRow }}>
             <ProposalApprovalTag
               iconName="approved"
               value={proposalCardInfo.proposalInfo?.votesFor}
-              isMarked={true}
+              isMarked
             />
             <ProposalApprovalTag
               iconName="declined"
@@ -164,8 +178,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
             <Text style={styles.proposalActionBtnText}>
               {membershipRequest
                 ? 'View request'
-                : 'View proposal'
-              }
+                : 'View proposal'}
             </Text>
           </View>
         </View>
@@ -198,7 +211,7 @@ const styles = StyleSheet.create({
     ...layout.marginBottomL,
     backgroundColor: colors.white,
     borderRadius: 20,
-    //alignSelf: 'stretch',
+    // alignSelf: 'stretch',
 
     borderStyle: 'solid',
     borderWidth: 1,
