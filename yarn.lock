@@ -3508,7 +3508,7 @@ eslint-config-airbnb-base@^14.2.0:
     object.assign "^4.1.0"
     object.entries "^1.1.2"
 
-eslint-config-airbnb@^18.1.0:
+eslint-config-airbnb@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/eslint-config-airbnb/-/eslint-config-airbnb-18.2.0.tgz#8a82168713effce8fc08e10896a63f1235499dcd"
   integrity sha512-Fz4JIUKkrhO0du2cg5opdyPKQXOI2MvF8KUvN2710nJMT6jaRUpRE2swrJftAjVGL7T1otLM5ieo5RqS1v9Udg==
@@ -3612,7 +3612,7 @@ eslint-plugin-jest@22.4.1:
   resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-22.4.1.tgz#a5fd6f7a2a41388d16f527073b778013c5189a9c"
   integrity sha512-gcLfn6P2PrFAVx3AobaOzlIEevpAEf9chTpFZz7bYfc7pz8XRv7vuKTIE4hxPKZSha6XWKKplDQ0x9Pq8xX2mg==
 
-eslint-plugin-jsx-a11y@^6.2.3:
+eslint-plugin-jsx-a11y@^6.3.1:
   version "6.3.1"
   resolved "https://registry.yarnpkg.com/eslint-plugin-jsx-a11y/-/eslint-plugin-jsx-a11y-6.3.1.tgz#99ef7e97f567cc6a5b8dd5ab95a94a67058a2660"
   integrity sha512-i1S+P+c3HOlBJzMFORRbC58tHa65Kbo8b52/TwCwSKLohwvpfT5rm2GjGWzOHTEuq4xxf2aRlHHTtmExDQOP+g==
@@ -3709,13 +3709,6 @@ eslint-plugin-react@^7.20.6:
     prop-types "^15.7.2"
     resolve "^1.17.0"
     string.prototype.matchall "^4.0.2"
-
-eslint-plugin-relay@1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-relay/-/eslint-plugin-relay-1.4.1.tgz#5af2ac13e24bd01ad17b6a4014204918d65021cd"
-  integrity sha512-yb+p+4AxZTi2gXN7cZRfXMBFlRa5j6TtiVeq3yHXyy+tlgYNpxi/dDrP1+tcUTNP9vdaJovnfGZ5jp6kMiH9eg==
-  dependencies:
-    graphql "^14.0.0"
 
 eslint-rule-composer@^0.3.0:
   version "0.3.0"
