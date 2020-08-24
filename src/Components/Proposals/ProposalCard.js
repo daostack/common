@@ -79,9 +79,14 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
           funding = currProposalInfo.fundingRequest.amount;
         }
 
-        const currProposedUser = await FirebaseService.getInstance().getUserById(
+        const userFromDb = await FirebaseService.getInstance().getUserById(
           proposedMemberId,
         );
+
+        const currProposedUser = {
+          ...userFromDb,
+          daos: (await FirebaseService.getInstance().getUserDaos(userFromDb.uid, userFromDb.safeAddress)).docs?.map(dao => dao.data()),
+        };
 
         const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(currProposalInfo.id);
 
