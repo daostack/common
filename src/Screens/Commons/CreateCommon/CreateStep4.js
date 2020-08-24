@@ -63,6 +63,7 @@ const stylesHeader = StyleSheet.create({
 });
 
 import CreateStep4Indicators from './CreateStep4Indicators';
+import Iconlink from '../../../Assets/iconfont/Iconlink';
 
 const CreateStep4 = props => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -419,14 +420,28 @@ const CreateStep4 = props => {
                   style={{textAlign: 'right', alignSelf: 'flex-end'}}
                 />
               </TouchableOpacity> */}
+
             </View>
             {form[CreateCommonForm.LINKS]?.length ? (
               form[CreateCommonForm.LINKS].map(x => (
-                <Text
-                  key={`key_${CreateCommonForm.LINKS}_${x}`}
-                  style={styles.textContent}>
-                  {x.title}
-                </Text>
+                <View key={`key_${CreateCommonForm.LINKS}_${x}`}>
+                  <Text
+                    onPress={() => {
+                      props.navigation.navigate('Browser', {
+                        url: x.url,
+                      });
+                    }}
+                    style={{
+                      display: 'flex',
+                      flexFlow: 'row',
+                      alignContent: 'center',
+                      ...styles.linkText,
+                      ...styles.textContent,
+                    }}
+                  >
+                    {x.title}
+                  </Text>
+                </View>
               ))
             ) : (
               <View />
@@ -577,6 +592,13 @@ const styles = StyleSheet.create({
     },
     textShadowRadius: 4,
     elevation: 2,
+  },
+  linkText: {
+    ...layout.marginTopS,
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.black,
+    textDecorationLine: 'underline',
   },
   byline: {
     width: '100%',
