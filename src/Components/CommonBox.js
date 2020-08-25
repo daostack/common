@@ -32,6 +32,7 @@ const CommonBox = ({common, onPress, width = '100%', navigation, headerHeightLay
         name: common.name,
         description: common.metadata?.byline,
       }}
+      common={common}
     />
 
     <CommonStageSummary

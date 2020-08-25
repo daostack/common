@@ -100,17 +100,12 @@ const CommonProfile = ({
   //setHeaderHeight(height + 35);
 
   const headerHeightLayouted = height => {
-    if (height - headerHeight > 3) {
-      // To avoid render multiple times
-      // console.log('height ->', height);
-      //setHeaderHeight(height + 35);
-    }
     return height;
   };
 
   useEffect(() => {
     if (params.commonId) {
-      console.log('tkt happening?!?!')
+      console.log('tkt happening?!?!');
       const unsubscribe = firestore()
         .collection('daos')
         .doc(params.commonId)
@@ -237,6 +232,7 @@ const CommonProfile = ({
   const openAgendaScreen = e => {
     navigation.navigate('CommonAgenda', {
       screenTitle: currCommon.name,
+      common: currCommon,
     });
   };
 
@@ -558,7 +554,6 @@ const CommonProfile = ({
   };
 
   const initialLayout = {width: Dimensions.get('window').width};
-  console.log('currCommon.id ->', currCommon.id);
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       {currCommon ? (
@@ -631,6 +626,7 @@ const CommonProfile = ({
                   byline: currCommon.metadata?.byline,
                   cover: currCommon.coverPhoto,
                 }}
+                common={currCommon}
               />
             )}
             renderStickyHeader={() => (

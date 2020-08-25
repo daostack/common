@@ -60,7 +60,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
   const onReviewProposal = async ( proposalId, daoId ) => {
     navigation.navigate('ProposalScreen', {
       proposalId: proposalId,
-      screenTitle: commonName || await FirebaseService.getInstance().getDaoNameById(daoId),
+      screenTitle: commonName || await FirebaseService.getInstance().getDaoById(daoId),
       commonBalance: commonInfo?.balance,
       isMember,
     });

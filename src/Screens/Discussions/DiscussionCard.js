@@ -223,7 +223,7 @@ DiscussionCard.propTypes = {
     userInfo: object,
   }).isRequired,
   navigation: object.isRequired,
-  bottomSheetStore: object.isRequired
+  bottomSheetStore: object.isRequired,
 };
 
 const styles = StyleSheet.create({

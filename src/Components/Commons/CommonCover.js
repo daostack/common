@@ -17,6 +17,7 @@ const CommonCover = ({
   isMember,
   onHeaderMenuOpen,
   commonInfo: {cover, logo, name, description},
+  common,
 }) => {
   const renderCoverInSafeArea = () => {
     return <SafeAreaView>{renderCover()}</SafeAreaView>;
@@ -87,7 +88,9 @@ const CommonCover = ({
   };
 
   const openAgendaScreen = e => {
-    navigation.navigate('CommonAgenda');
+    navigation.navigate('CommonAgenda', {
+      common: common,
+    });
   };
 
   return (
