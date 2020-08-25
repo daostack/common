@@ -25,6 +25,7 @@ const CommonBox = ({common, onPress, width = '100%', navigation, headerHeightLay
       }
     }}>
     <CommonCover
+      isMember={false}
       commonInfo={{
         cover: common.coverPhoto,
         logo: common.logo,
