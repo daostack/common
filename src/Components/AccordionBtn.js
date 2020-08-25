@@ -55,10 +55,11 @@ const AccordionBtn = ({title, subtitle, onPress, lightStyle}) => {
 
 AccordionBtn.propTypes = {
   title: string.isRequired,
-  subtitle: string.isRequired,
+  subtitle: string,
   onPress: func.isRequired,
   lightStyle: any,
 };
+
 const styles = StyleSheet.create({
   accordionBtn: {
     ...layout.content,

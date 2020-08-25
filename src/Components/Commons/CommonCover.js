@@ -11,7 +11,7 @@ import FastImage from 'react-native-fast-image';
 import Icon from '../../Assets/iconfont/Icon';
 import {layout, colors, text, font} from '../../Theme';
 
-const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
+const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo, common}) => {
   const renderCoverInSafeArea = () => {
     return <SafeAreaView>{renderCover()}</SafeAreaView>;
   };
@@ -81,7 +81,9 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
   };
 
   const openAgendaScreen = e => {
-    navigation.navigate('CommonAgenda');
+    navigation.navigate('CommonAgenda', {
+      common: common,
+    });
   };
 
   return (

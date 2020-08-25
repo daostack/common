@@ -33,6 +33,7 @@ const CommonBox = props => {
           name: props.common.name,
           description: props.common.metadata?.byline,
         }}
+        common={props.common}
       />
 
       <CommonStageSummary

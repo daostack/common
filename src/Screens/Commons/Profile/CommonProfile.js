@@ -88,11 +88,6 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   //setHeaderHeight(height + 35);
 
   const headerHeightLayouted = height => {
-    if (height - headerHeight > 3) {
-      // To avoid render multiple times
-      // console.log('height ->', height);
-      //setHeaderHeight(height + 35);
-    }
     return height;
   };
 
@@ -224,6 +219,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const openAgendaScreen = e => {
     navigation.navigate('CommonAgenda', {
       screenTitle: currCommon.name,
+      common: currCommon,
     });
   };
 
@@ -545,7 +541,6 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   };
 
   const initialLayout = {width: Dimensions.get('window').width};
-  console.log('currCommon.id ->', currCommon.id);
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       {currCommon ? (
@@ -618,6 +613,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                   byline: currCommon.metadata?.byline,
                   cover: currCommon.coverPhoto,
                 }}
+                common={currCommon}
               />
             )}
             renderStickyHeader={() => (
