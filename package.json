@@ -89,7 +89,7 @@
     "reanimated-bottom-sheet": "^1.0.0-alpha.19",
     "rn-fetch-blob": "^0.12.0",
     "rn-placeholder": "^3.0.0",
-    "rn-swipe-button": "^1.2.6",
+    "rn-swipe-button": "^1.3.0",
     "subscriptions-transport-ws": "^0.9.16",
     "valid-url": "^1.0.9",
     "validatorjs": "^3.18.1"
