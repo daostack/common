@@ -9,7 +9,7 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   TextInput,
-  Keyboard
+  Keyboard,
 } from 'react-native';
 import { text, layout, colors, sizeM, sizeS, sizeXS, font } from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
@@ -129,7 +129,7 @@ const ProposalScreen = ({ navigation, route, userStore, bottomSheetStore, props 
 
   const [
     isApprovalBottomModalVisible,
-    setIsApprovalBottomModalVisible
+    setIsApprovalBottomModalVisible,
   ] = useState(false);
 
   const [ isVoteByYou, setIsVoteByYou ] = useState(false);
@@ -137,7 +137,7 @@ const ProposalScreen = ({ navigation, route, userStore, bottomSheetStore, props 
   const [ index, setIndex ] = useState(0);
   const [ routes ] = useState([
     { key: 'info', icon: 'proposal', iconSelected: 'proposal-selected' },
-    { key: 'discussions', icon: 'discussion', iconSelected: 'discussion-selected' }
+    { key: 'discussions', icon: 'discussion', iconSelected: 'discussion-selected' },
   ]);
 
   const [ inputHeight, setInputHeight ] = useState(60);
@@ -172,7 +172,7 @@ const ProposalScreen = ({ navigation, route, userStore, bottomSheetStore, props 
             ownerId: userInfo.uid,
             ownerName: userInfo.displayName,
             ownerAvatar: userInfo.photoURL,
-            discussionId: routeProposalId
+            discussionId: routeProposalId,
           })
           .then(() => {
             inputRef.current.clear();
@@ -352,11 +352,11 @@ const ProposalScreen = ({ navigation, route, userStore, bottomSheetStore, props 
       ? {
         ...layout.content,
         ...layout.flexStart,
-        ...{ paddingBottom: 0 }
+        ...{ paddingBottom: 0 },
       }
       : {
         ...layout.content,
-        ...{ paddingBottom: 0 }
+        ...{ paddingBottom: 0 },
       };
 
 
@@ -382,7 +382,7 @@ const ProposalScreen = ({ navigation, route, userStore, bottomSheetStore, props 
         <ScrollView
           style={{
             flex: 1,
-            backgroundColor: colors.white
+            backgroundColor: colors.white,
           }}
           scrollEventThrottle={16}
           onScroll={(e) => {
@@ -507,14 +507,14 @@ const ProposalScreen = ({ navigation, route, userStore, bottomSheetStore, props 
                 </View>
                 <View style={{
                   ...styles.proposalProgressBar,
-                  ...{ backgroundColor: isNaN(progressBarWidthPercent) ? colors.grey4 : colors.against }
+                  ...{ backgroundColor: isNaN(progressBarWidthPercent) ? colors.grey4 : colors.against },
                 }}>
                   <View
                     style={{
                       ...styles.proposalInnerProgressBar,
                       ...{
-                        width: `${progressBarWidthPercent}%`
-                      }
+                        width: `${progressBarWidthPercent}%`,
+                      },
                     }}
                   />
                 </View>
@@ -536,7 +536,7 @@ const ProposalScreen = ({ navigation, route, userStore, bottomSheetStore, props 
               renderTabBar={renderTabBar}
               style={
                 {
-                  backgroundColor: colors.paleGrey
+                  backgroundColor: colors.paleGrey,
                 }
               }
             />
@@ -593,19 +593,19 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: colors.iceBlue2,
     borderRadius: 28,
-    paddingVertical: 14
+    paddingVertical: 14,
   },
   requestedAmountContainer: {
     ...layout.content,
     ...layout.flexRow,
-    padding: 0
+    padding: 0,
   },
 
   stickyVotingContainer: {
     ...layout.flexRow,
     justifyContent: 'space-between',
     width: '100%',
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   //Proposal progressbar style
 
@@ -615,12 +615,12 @@ const styles = StyleSheet.create({
     height: 8,
     alignItems: 'flex-start',
     justifyContent: 'center',
-    ...layout.marginTopS
+    ...layout.marginTopS,
   },
   proposalInnerProgressBar: {
     borderRadius: 6,
     backgroundColor: colors.lightishGreen,
-    height: 8
+    height: 8,
   },
 
   proposalProgressInfo: {
@@ -628,26 +628,26 @@ const styles = StyleSheet.create({
     ...layout.flexRow,
     alignSelf: 'stretch',
     padding: 0,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   topSheetVotingText: {
     ...text.smallBlackText,
     ...font.primary.bold,
-    ...layout.marginBottomM
+    ...layout.marginBottomM,
   },
   bottomSheetVotingText: {
     ...text.smallBlackText,
-    ...layout.marginBottomXS
+    ...layout.marginBottomXS,
   },
 
   // Old styles
   tabStyle: {
-    ...text.ashleyjquimbacom2
+    ...text.ashleyjquimbacom2,
   },
   tabStyleActive: {
     ...text.ashleyjquimbacom2,
 
-    color: colors.mainBlue
+    color: colors.mainBlue,
   },
 
   actionButtonContainer: {
@@ -669,33 +669,33 @@ const styles = StyleSheet.create({
     shadowColor: 'rgba(79, 92, 105, 0.1)',
     shadowOffset: {
       width: 0,
-      height: -2
+      height: -2,
     },
     shadowRadius: 4,
     shadowOpacity: 1,
-    elevation: 4
+    elevation: 4,
   },
 
   actionBtnStyle: {
     ...layout.btnOutline,
     borderRadius: 10,
     position: 'relative',
-    height: 48
+    height: 48,
   },
 
   actionBtnRed: {
     ...text.buttonblue,
-    color: colors.against
+    color: colors.against,
   },
 
   actionBtnGreen: {
     ...text.buttonblue,
-    color: colors.lightishGreen
+    color: colors.lightishGreen,
   },
 
   votedByYouText: {
     ...text.buttonblue,
-    ...text.bold
+    ...text.bold,
   },
   input: {
     backgroundColor: colors.white,
@@ -709,14 +709,14 @@ const styles = StyleSheet.create({
     shadowColor: 'rgba(0, 0, 0, 0.2)',
     shadowOffset: {
       width: 0,
-      height: -4
+      height: -4,
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 15,
-    elevation: 4
+    elevation: 4,
   },
   inputBorder: {
     flex: 1,
@@ -725,14 +725,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingVertical: 10,
     marginHorizontal: 10,
-    borderRadius: 40
+    borderRadius: 40,
   },
   joinCommonText: {
     ...text.textFieldplaceholder,
     color: colors.greySubtitle,
     marginTop: sizeS,
-    marginBottom: sizeM
-  }
+    marginBottom: sizeM,
+  },
 });
 
 
