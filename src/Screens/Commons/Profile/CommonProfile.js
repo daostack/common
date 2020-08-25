@@ -105,7 +105,7 @@ const CommonProfile = ({
 
   useEffect(() => {
     if (params.commonId) {
-      console.log('tkt happening?!?!')
+      console.log('tkt happening?!?!');
       const unsubscribe = firestore()
         .collection('daos')
         .doc(params.commonId)
