@@ -40,6 +40,7 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import {string, object, shape, func} from 'prop-types';
 import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
@@ -51,7 +52,18 @@ let stickyHeighAddon = 36;
 const STICKY_HEADER_HEIGHT = Math.round( getStatusBarHeight() ) + stickyHeighAddon;
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
-const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
+const CommonProfile = ({
+  navigation,
+  bottomSheetStore,
+  userStore,
+  route: {params},
+})=> {
+  /* all of  params.commonId,
+  params.showRequestSentModal,
+  params.createdProposalId
+  are undefined
+  is this sth we plan on having in future?
+   */
   const [isMember, setMemberState] = useState(false);
   const window = Dimensions.get('window');
 
@@ -62,8 +74,8 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     {key: 'history', title: 'History', icon: 'history', iconSelected: 'history-selected'},
   ]);
 
-  const routeCommon = route.params.currCommon;
-  const [currCommon, setCurrCommon] = useState(routeCommon);
+  //const routeCommon = params.currCommon;
+  const [currCommon, setCurrCommon] = useState(params.currCommon);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
@@ -92,10 +104,11 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   };
 
   useEffect(() => {
-    if (route.params.commonId) {
+    if (params.commonId) {
+      console.log('tkt happening?!?!')
       const unsubscribe = firestore()
         .collection('daos')
-        .doc(route.params.commonId)
+        .doc(params.commonId)
         .onSnapshot(snapshot => {
           if (snapshot.exists) {
             setCurrCommon(snapshot.data());
@@ -106,10 +119,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
         });
       return unsubscribe;
     }
-  }, [route.params.commonId]);
+  }, [params.commonId]);
 
   useEffect(() => {
-    setShowRequestSentModal(route.params.showRequestSentModal);
+    setShowRequestSentModal(params.showRequestSentModal);
     if (userStore.userInfo && userStore.isDaoMember(daoMembers)) {
       setMemberState(true);
       setHeaderHeight(DEFAULT_HEADER_HEIGHT + 36);
@@ -118,7 +131,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
       setHeaderHeight(DEFAULT_HEADER_HEIGHT);
     }
   }, [
-    route.params.showRequestSentModal,
+    params.showRequestSentModal,
     userStore.userInfo,
     daoMembers,
   ]);
@@ -351,7 +364,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   const viewProposal = () => {
     navigation.navigate('ProposalScreen', {
-      proposalId: route.params.createdProposalId,
+      proposalId: params.createdProposalId,
       screenTitle: currCommon.name,
       commonBalance: currCommon.balance,
       isMember,
@@ -766,6 +779,21 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
       )}
     </View>
   );
+};
+
+CommonProfile.propTypes = {
+  navigation: object.isRequired,
+  route: shape({
+    params: shape({
+      //commonId: string,
+      currCommon: object,
+      //showRequestSentModal: func,
+      //createdProposalId: func,
+
+    }),
+  }),
+  bottomSheetStore: object,
+  userStore: object,
 };
 
 const styles = StyleSheet.create({

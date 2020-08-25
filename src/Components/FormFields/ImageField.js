@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Image, View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {Image, View, StyleSheet, TouchableOpacity, Text, Platform} from 'react-native';
 
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
@@ -216,8 +216,12 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 8,
     shadowOpacity: 1,
-    // elevation: 3,
     alignSelf: 'center',
+    ...Platform.select({
+      android: {
+        elevation: 3,
+      },
+    }),
   },
   formImageFueldGeneralStyle: {
     width: '100%',
