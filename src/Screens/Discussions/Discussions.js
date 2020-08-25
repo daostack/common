@@ -687,7 +687,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOpacity: 0.8,
     elevation: 5,
-  }
+  },
 });
 
 export default inject('userStore', 'bottomSheetStore', 'daoStore')(observer(Discussions));

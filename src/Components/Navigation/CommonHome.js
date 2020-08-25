@@ -3,6 +3,7 @@ import React from 'react';
 import {colors} from '../../Theme';
 import {CommonsList, UserProfile} from '../../Screens';
 import {Platform} from 'react-native';
+import {object} from 'prop-types';
 
 import {inject, observer} from 'mobx-react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -59,6 +60,10 @@ const CommonHome = ({userStore}) => {
       <Tab.Screen name="Profile" component={UserProfile} />
     </Tab.Navigator>
   );
+};
+
+CommonHome.propTypes = {
+  userStore: object.isRequired ,
 };
 
 export default inject('userStore')(observer(CommonHome));
