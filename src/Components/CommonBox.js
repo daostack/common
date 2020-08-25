@@ -18,6 +18,7 @@ const CommonBox = ({common, onPress, width = '100%', navigation, headerHeightLay
       });
       navigation.dispatch(navigate);
     }}
+    /* eslint-disable no-undef */
     style={[styles.commonBox, {width: Platform.OS === 'ios' ? '100%' : width }]}
     onLayout={ event => {
       if (headerHeightLayouted) {
