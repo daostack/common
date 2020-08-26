@@ -58,8 +58,8 @@
 
    The default behaviour will upload it in Staging env
 
-   ![code](./Asset/code_push_1.png)
+   ![code](./asset/code_push_1.png)
 
 6. Move staging to production
 
-   ![code2](./Asset/code_push_2.png)
+   ![code2](./asset/code_push_2.png)
