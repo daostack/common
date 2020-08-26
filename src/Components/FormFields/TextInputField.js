@@ -5,14 +5,13 @@ import {observer} from 'mobx-react';
 import {layout, colors, font} from '../../Theme';
 import {string, func, bool, number, object} from 'prop-types';
 
-const CharCount = ({currCount, maxLength}) => (maxLength ? <Text style = {{color: colors.grey3, paddingTop: 5}}>{currCount}/{maxLength}</Text> : null);
+const CharCount = ({currCount, maxLength}) => <Text style = {{color: colors.grey3, paddingTop: 5}}>{currCount}/{maxLength}</Text>;
 
-const Label = ({label, infoLabel}) =>  ((label || infoLabel)
-  ? <View style={{flexDirection: 'row', marginBottom: 8}}>
+const Label = ({label, infoLabel}) => (
+  <View style={{flexDirection: 'row', marginBottom: 8}}>
     <Text style={styles.label}>{label}</Text>
     <Text style={styles.infoLabel}>{infoLabel}</Text>
-  </View>
-  : null);
+  </View>);
 
 class TextInputField extends React.Component {
 
@@ -26,12 +25,10 @@ class TextInputField extends React.Component {
       charsLeft: 0,
     };
 
-    this.validate(this.props.validation, this.props.value);
+    this.validate(this.props);
   }
 
-  /* Register form field for validation message component if name,
-  formStore and validateRule props are provided */
-  validate = (validation, value) => {
+  validate = ({validation, value}) => {
     const {name, formStore, validateRule,
       multiName, invisibleContainer = true,
       displayName, customErrorMessage} = validation;
@@ -48,8 +45,8 @@ class TextInputField extends React.Component {
   }
 
   onChangeText = (text) => {
-    this.setState({charsLeft: text.length});
     const {formStore, name} = this.props.validation;
+    this.setState({charsLeft: text.length});
     formStore.fieldChanged(name, text);
     this.props.onChangeText && this.props.onChangeText(text);
   };
@@ -57,8 +54,8 @@ class TextInputField extends React.Component {
   onFocus = (e) => {this.setState({onFocus: true});};
 
   onBlur = (e) => {
-    this.setState({onFocus: false});
     const {formStore, name} = this.props.validation;
+    this.setState({onFocus: false});
     formStore.fieldBlured(name);
     this.props.onBlur && this.props.onBlur(e);
   };
@@ -99,7 +96,7 @@ class TextInputField extends React.Component {
 
     return (
       <View style={{alignSelf: 'stretch', paddingBottom: 5}}>
-        <Label {...{label, infoLabel}} />
+        {(label || infoLabel) && <Label {...{label, infoLabel}} />}
         <View style = {styleTextfield} >
           <TextInput
             ref={this.props.forwardRef}
@@ -120,7 +117,7 @@ class TextInputField extends React.Component {
                 ? validation.formStore.form.fields[
                   validation.name].value.toString()
                 : value}/>
-          <CharCount currCount={this.state.charsLeft} maxLength={maxLength} />
+          {maxLength && <CharCount currCount={this.state.charsLeft} maxLength={maxLength} />}
         </View>
       </View>
     );
@@ -169,7 +166,6 @@ const styles = StyleSheet.create({
   textfield: {
     flex: 1,
     alignSelf: 'stretch',
-    backgroundColor: colors.white,
     color: colors.black,
     margin: 0,
     ...font.primary.regular,

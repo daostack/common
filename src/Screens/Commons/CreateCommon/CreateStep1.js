@@ -91,6 +91,7 @@ const CreateStep1 = props => {
         <View
           style={{
             flex: 1,
+            width: '100%',
             // alignItems: 'center',
             backgroundColor: 'white',
           }}>
