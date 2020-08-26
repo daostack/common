@@ -36,4 +36,4 @@ There is command to regenerate the icon
 yarn icon
 ```
 
-![icon_doc](./Asset/icon_doc_5.png)
+![icon_doc](./asset/icon_doc_5.png)
