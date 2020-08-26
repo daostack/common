@@ -93,7 +93,7 @@ export default class FirebaseService {
     });
   }
 
-  async getDaoNameById(daoId) {
+  async getDaoById(daoId) {
 
     const dao = await db.collection(DB_COLLECTIONS.daos)
       .doc(daoId)

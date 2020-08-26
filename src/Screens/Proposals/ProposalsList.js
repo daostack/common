@@ -2,13 +2,14 @@ import React, {useEffect, useState, useRef} from 'react';
 import PropTypes from 'prop-types';
 import { FlatList, StyleSheet, View, Text, Image, Dimensions, TouchableOpacity} from 'react-native';
 import ViewTabNoData from '../../Components/ViewTabNoData';
-import ProposalService from '../../Services/ProposalService';
+import ProposalService, { PROPOSAL_STAGE } from '../../Services/ProposalService';
 import ProposalCard from '../../Components/Proposals/ProposalCard';
 import {layout, colors, font, text, sizeM} from '../../Theme';
 import FirebaseService from '../../Services/FirebaseService';
 import SwiperCard from '../../Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import { PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '../../Services/ProposalService';
+import moment from 'moment';
 
 const {width, height} = Dimensions.get('window');
 
@@ -27,7 +28,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
   let unsubscribe = null;
   useEffect(() => {
     const loadProposalInfo = async (commonId, userId, isHistory, showAll, onlyFundingRequests, membershipRequests) => {
-      let proposalStages = isHistory ? PROPOSAL_STAGES_HISTORY : PROPOSAL_STAGES_ACTIVE;
+      let proposalStages = [...PROPOSAL_STAGES_HISTORY, ...PROPOSAL_STAGES_ACTIVE];
 
       unsubscribe = await ProposalService.getInstance().subscribeToProposalList(
         commonId,
@@ -36,9 +37,15 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
         safeAddress,
         showAll,
         newList => {
-          setList(newList);
+          console.log(newList, PROPOSAL_STAGE.Executed);
+
+          const filteredList = isHistory
+            ? newList.filter(proposal => PROPOSAL_STAGES_HISTORY.some(stg => stg === proposal.stageStr) || moment().isAfter(moment.unix(proposal.closingAt)))
+            : newList.filter(proposal => PROPOSAL_STAGES_ACTIVE.some(stg => stg === proposal.stageStr) && !moment().isAfter(moment.unix(proposal.closingAt)));
+
+          setList(filteredList);
           if (onCountChange) {
-            onCountChange(newList.length);
+            onCountChange(filteredList.length);
           }
         },
         listRef,
@@ -60,7 +67,7 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
   const onReviewProposal = async ( proposalId, daoId ) => {
     navigation.navigate('ProposalScreen', {
       proposalId: proposalId,
-      screenTitle: commonName || await FirebaseService.getInstance().getDaoNameById(daoId),
+      screenTitle: commonName || await FirebaseService.getInstance().getDaoById(daoId),
       commonBalance: commonInfo?.balance,
       isMember,
     });
