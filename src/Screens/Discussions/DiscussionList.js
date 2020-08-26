@@ -1,13 +1,9 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {FlatList} from 'react-native';
 import DiscussionCard from './DiscussionCard';
-import firestore from '@react-native-firebase/firestore';
 import ViewTabNoData from '../../Components/ViewTabNoData';
-<<<<<<< Updated upstream
 import {string, object} from 'prop-types';
-=======
 import { db } from '../../Firebase';
->>>>>>> Stashed changes
 
 const DiscussionList = ({commonId, navigation}) => {
   const [list, setList] = useState([]);
