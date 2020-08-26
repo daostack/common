@@ -28,9 +28,7 @@ import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ArcService from '../../../Services/ArcService';
 import Share from 'react-native-share';
 import { BlurView } from '../../../Components';
-
-
-const {width} = Dimensions.get('window');
+import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
 import {
   colors,
@@ -42,6 +40,8 @@ import {
   sizeL,
   sizeLineHeight,
 } from '../../../Theme';
+
+const {width} = Dimensions.get('window');
 
 const stylesHeader = StyleSheet.create({
   generalInfoTitle: {
@@ -62,8 +62,6 @@ const stylesHeader = StyleSheet.create({
   },
 });
 
-import CreateStep4Indicators from './CreateStep4Indicators';
-import Iconlink from '../../../Assets/iconfont/Iconlink';
 
 const CreateStep4 = props => {
   const [scrollY] = useState(new Animated.Value(0));
