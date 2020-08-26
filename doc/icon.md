@@ -1,6 +1,6 @@
 # Icon configuration
 
-For common, we are using **[iconfont.cn](https://www.iconfont.cn/) ** to manage icon and **[react-native-iconfont-cli](https://github.com/iconfont-cli/react-native-iconfont-cli)** to generate icon.
+For common, we are using **[iconfont.cn](https://www.iconfont.cn/)** to manage icon and **[react-native-iconfont-cli](https://github.com/iconfont-cli/react-native-iconfont-cli)** to generate icon.
 
 The full icon set locate in my project in iconfont, the js link represent everything. 
 
