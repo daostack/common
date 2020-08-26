@@ -82,6 +82,7 @@ class TextInputField extends React.Component {
       innerLabel,
       // Validation management properties
       validation,
+      maxLength,
 
       ...otherProps
     } = this.props;
@@ -125,27 +126,31 @@ class TextInputField extends React.Component {
           <Text style={styles.label}>{label}</Text>
           <Text style={styles.infoLabel}>{infoLabel}</Text>
         </View> : null }
-        <TextInput
-          ref={this.props.forwardRef}
-          {...defaultMultilineProps}
-          {...otherProps}
-          multiline={multiline}
-          style={styleTextfield}
-          placeholder={placeholderText}
-          placeholderTextColor={colors.grey3}
-          onChangeText={this.onChangeText}
-          keyboardType={keyboardType}
-          onFocus={this.onFocus}
-          onBlur={this.onBlur}
-          secureTextEntry={this.state.showPassword}
-          value={
-            validation
-              ? validation.formStore.form.fields[
-                validation.name
-              ].value.toString()
-              : value
-          }
-        />
+        <View style = {{borderWidth: 1, borderRadius: 3, borderColor: colors.grey4, flexDirection: 'row', paddingLeft: 10, paddingRight: 10}} >
+          <TextInput
+            ref={this.props.forwardRef}
+            {...defaultMultilineProps}
+            {...otherProps}
+            multiline={multiline}
+            style={styleTextfield}
+            placeholder={placeholderText}
+            placeholderTextColor={colors.grey3}
+            onChangeText={this.onChangeText}
+            keyboardType={keyboardType}
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
+            secureTextEntry={this.state.showPassword}
+            value={
+              validation
+                ? validation.formStore.form.fields[
+                  validation.name
+                ].value.toString()
+                : value
+            }
+          />
+          {console.log(`tkt vale ${maxLength} `)}
+          {maxLength && <Text style = {{color: colors.grey3, paddingTop: 5}}>0/{maxLength}</Text>}
+        </View>
         {innerLabel && this.innerLabel}
       </View>
     );
@@ -190,16 +195,9 @@ TextInputField.defaultProps = {
 
 const styles = StyleSheet.create({
   textfield: {
-    //minHeight: 48,
+    flex: 1,
     alignSelf: 'stretch',
-    borderRadius: 3,
     backgroundColor: colors.white,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: colors.grey4,
-    paddingHorizontal: 12,
-    paddingTop: 12,
-    paddingBottom: 12,
     color: colors.black,
     margin: 0,
     ...font.primary.regular,
