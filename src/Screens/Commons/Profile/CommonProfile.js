@@ -46,6 +46,7 @@ import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import ProposalActivationDate from '../../../Components/Proposals/ProposalActivationDate';
 import { BlurView } from '../../../Components';
+import {db} from '../../../Firebase';
 
 let stickyHeighAddon = 36;
 
@@ -105,8 +106,7 @@ const CommonProfile = ({
 
   useEffect(() => {
     if (params.commonId) {
-      console.log('tkt happening?!?!');
-      const unsubscribe = firestore()
+      const unsubscribe = db
         .collection('daos')
         .doc(params.commonId)
         .onSnapshot(snapshot => {
@@ -961,3 +961,4 @@ export default inject(
   'daoStore',
   'userStore',
 )(observer(CommonProfile));
+

@@ -9,7 +9,7 @@ import {
   Image,
 } from 'react-native';
 import {CommonBox, BottomRightButton} from '../../Components';
-import {db} from '../../Firebase';
+import { db } from '../../Firebase';
 import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {font, colors} from '../../Theme';

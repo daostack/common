@@ -77,6 +77,8 @@ import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DeepLinking from 'react-native-deep-linking';
 import ArcService from './src/Services/ArcService';
 import { BOTTOM_SHEET_TEMPLATES } from './src/Stores/BottomSheetStore';
+import firestore from '@react-native-firebase/firestore';
+import firebase from '@react-native-firebase/app';
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
@@ -287,7 +289,14 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       }
     };
 
+    const testFirestore = async () => {
+      // const result = await firestore().settings(;
+      const result = await firebase.firestore().settings({ host: 'localhost:8082', ssl: false });
+      console.log('testFirestore -->', result);
+    };
+
     checkOnboardingStatus();
+    testFirestore();
     return unsubscribeAll;
   }, []);
 

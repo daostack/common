@@ -14,10 +14,10 @@ import UserMessageCard from '../../Components/Discussion/UserMessageCard';
 import ImageView from 'react-native-image-viewing';
 import Loader from '../../Components/Loader';
 import ImageSize from 'react-native-image-size';
-import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
 import {PROPOSAL_TYPE} from '../../Config';
+import {db} from '../../Firebase';
 
 const ProposalData = props => {
   const navigation = useNavigation();
@@ -58,7 +58,7 @@ const ProposalData = props => {
     };
 
     const loadDiscussions = () => {
-      firestore()
+      db
         .collection('discussionMessage')
         .where('discussionId', '==', proposalId)
         .orderBy('createTime', 'desc')
