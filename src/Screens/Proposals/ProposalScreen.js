@@ -23,24 +23,21 @@ import ProposalService from '../../Services/ProposalService';
 import ArcService from '../../Services/ArcService';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-
-const {width} = Dimensions.get('window');
 import {UserAvatar} from '../../Components';
-
-import UserService from '../../Services/UserService';
+import FirebaseService from '../../Services/FirebaseService';
 import {PROPOSAL_STAGES_ACTIVE} from '../../Services/ProposalService';
 import {PROPOSAL_TYPE} from '../../Services/ProposalService';
+import {db} from '../../Firebase';
 import {observer, inject} from 'mobx-react';
 import TabBarRenderer from '../../Components/TabView/TabBarRenderer';
 import moment from 'moment';
 import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
-import DaoService from '../../Services/DaoService';
+const {width} = Dimensions.get('window');
 
 const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props}) => {
   const [ votingProcessState, setVotingProcessState ] = useState({inProgress: false, error: false});
   const [ proposalInfo, setProposalInfo ] = useState(false);
   const [ proposedUser, setProposedUser ] = useState(false);
-  const [ daoInfo, setDaoInfo ] = useState({});
   const [ isSending, setIsSending ] = useState(false);
   const [ isMember, setIsMember ] = useState(false);
   const [ showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer ] = useState(false);
@@ -50,9 +47,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
     proposalInfo &&
     PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr) &&
     isMember &&
-    !proposalInfo.votes.some(
-      (vote) => vote.voter === userStore.userInfo.safeAddress
-    );
+    !proposalInfo.votes.some((vote) => vote.voter === userStore.userInfo.safeAddress);
 
   // Sticky Tab Bar
   const [ showStickyTabBar, setShowStickyTabBar ] = useState(false);
@@ -100,7 +95,6 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
         const currentDao = await DaoService.getInstance().getDaoById(currProposalInfo.dao);
         const isMember = userStore.userInfo && userStore.isDaoMember(currentDao.members);
         setIsMember(isMember);
-        setDaoInfo(currentDao);
         await loadProposalInfo(currProposalInfo);
         unsubscribe = await ProposalService.getInstance().subscribeToProposalById(proposalId,
           async (updatedProposalInfo) => {
@@ -195,7 +189,6 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
 
     return (
       <KeyboardAvoidingView
-        // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
         <View style={viewStyle}>
           {isMember ? (
@@ -220,15 +213,11 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
                   color={
                     inputText && inputText.trim()
                       ? colors.mainBlue
-                      : colors.grey3
-                  }
-                />
+                      : colors.grey3}/>
               </TouchableOpacity>
             </View>
           ) : (
-            <Text style={{...styles.joinCommonText}}>
-              {'Only members can send messages'}
-            </Text>
+            <Text style={{...styles.joinCommonText}}>Only members can send messages</Text>
           )}
         </View>
         <View style={{height: 30, backgroundColor: colors.white}}/>
@@ -257,7 +246,6 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
     setVotingProcessState({inProgress: true, error: false});
 
     try {
-      // let votingResponse = null;
       const voteData = {vote: isApproved ? VOTE_APPROVE : VOTE_REJECT};
 
       await timeout(3000);
@@ -274,7 +262,6 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
         );
       }
 
-      // console.log('votingResponse -> ', votingResponse);
       setVotingProcessState({inProgress: false, error: false});
       closeApprovalSheet();
       Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
@@ -283,7 +270,6 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
     } catch (err) {
       setVotingProcessState({inProgress: false, error: true});
       console.log(err);
-      //closeApprovalSheet();
       Toast.error(err.message);
     }
   };
@@ -308,9 +294,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
             size={12}
             style={layout.marginRightS}
           />
-          <Text style={{...styles.votedByYouText, ...{color: color}}}>
-            {message}
-          </Text>
+          <Text style={{...styles.votedByYouText, color}}>{message}</Text>
         </View>
       );
     } else {
@@ -320,42 +304,35 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
       );
     }
   };
+  const renderVotingButtons = (reference) => (
+    (moment().isBefore(moment.unix(proposalInfo?.closingAt)) || !proposalInfo?.closingAt)
+      ? (
+        <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
+          <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>{votesCount === 0 ? 'Be the first to vote' : 'What\'s your vote'}</Text>
+          <View style={layout.flexRow}>
+            <TouchableOpacity
+              onPress={(e) => openApprovalSheet(true)}
+              style={{...styles.actionBtnStyle, ...layout.marginRightS}}>
+              <Icon name="approved-24" color={colors.lightishGreen} size={24}/>
+            </TouchableOpacity>
 
-  const renderVotingButtons = (reference) => (moment().isBefore(moment.unix(proposalInfo?.closingAt)) || !proposalInfo?.closingAt)
-    ? (
-      <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
-        <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>Whats your vote?</Text>
-        <View style={layout.flexRow}>
-          <TouchableOpacity
-            onPress={(e) => openApprovalSheet(true)}
-            style={{...styles.actionBtnStyle, ...layout.marginRightS}}>
-            <Icon name="approved-24" color={colors.lightishGreen} size={24}/>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={(e) => openApprovalSheet(false)}
-            style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
-            <Icon name="reject-24" color={colors.against} size={24}/>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={(e) => openApprovalSheet(false)}
+              style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
+              <Icon name="reject-24" color={colors.against} size={24}/>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    ) : null;
+      ) : null);
 
 
   const initialLayout = {width: Dimensions.get('window').width};
 
-  const headerContainerStyle =
-    proposalInfo.type === PROPOSAL_TYPE.FundingRequest
-      ? {
-        ...layout.content,
-        ...layout.flexStart,
-        ...{paddingBottom: 0},
-      }
-      : {
-        ...layout.content,
-        ...{paddingBottom: 0},
-      };
-
+  const headerContainerStyle = {
+    ...layout.content,
+    ...{paddingBottom: 0},
+    ...proposalInfo.type === PROPOSAL_TYPE.FundingRequest && {...layout.flexStart},
+  };
 
   let progressBarWidthPercent = 0;
 
@@ -398,7 +375,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
           {proposalInfo && (
             <View style={{...headerContainerStyle}}>
               {proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
-                <View style={{...layout.content, ...{width: '100%', padding: 0}}}>
+                <View style={{...layout.content, width: '100%', padding: 0}}>
                   <ProposalCardHeader
                     isScreenHeader={true}
                     isBoosted={true}
@@ -432,7 +409,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
                     iconName={'clcok'}
                   />
                   <View style={{...layout.content, ...layout.marginTopS}}>
-                    <Text style={{...text.h2Black}}>
+                    <Text style={text.h2Black}>
                       {proposedUser ? proposedUser.displayName : 'unknown user'}
                     </Text>
 
@@ -473,7 +450,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
 
                 <View style={styles.proposalProgressInfo}>
                   <View
-                    style={{...layout.content, ...layout.flexRow, ...{padding: 0}}}>
+                    style={{...layout.content, ...layout.flexRow, padding: 0}}>
                     <Icon
                       name="user-approved"
                       color={colors.lightishGreen}
@@ -490,7 +467,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
                   </Text>
 
                   <View
-                    style={{...layout.content, ...layout.flexRow, ...{padding: 0}}}>
+                    style={{...layout.content, ...layout.flexRow, padding: 0}}>
                     <Text style={text.againstText}>
                       {proposalInfo.votesAgainst}
                     </Text>
@@ -507,12 +484,7 @@ const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props})
                   ...{backgroundColor: isNaN(progressBarWidthPercent) ? colors.grey4 : colors.against},
                 }}>
                   <View
-                    style={{
-                      ...styles.proposalInnerProgressBar,
-                      ...{
-                        width: `${progressBarWidthPercent}%`,
-                      },
-                    }}
+                    style={{...styles.proposalInnerProgressBar, width: `${progressBarWidthPercent}%`}}
                   />
                 </View>
               </View>
@@ -597,15 +569,12 @@ const styles = StyleSheet.create({
     ...layout.flexRow,
     padding: 0,
   },
-
   stickyVotingContainer: {
     ...layout.flexRow,
     justifyContent: 'space-between',
     width: '100%',
     paddingHorizontal: 20,
   },
-  //Proposal progressbar style
-
   proposalProgressBar: {
     width: '100%',
     borderRadius: 7,
@@ -619,7 +588,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightishGreen,
     height: 8,
   },
-
   proposalProgressInfo: {
     ...layout.content,
     ...layout.flexRow,
@@ -636,17 +604,6 @@ const styles = StyleSheet.create({
     ...text.smallBlackText,
     ...layout.marginBottomXS,
   },
-
-  // Old styles
-  tabStyle: {
-    ...text.ashleyjquimbacom2,
-  },
-  tabStyleActive: {
-    ...text.ashleyjquimbacom2,
-
-    color: colors.mainBlue,
-  },
-
   actionButtonContainer: {
     padding: 0,
     paddingVertical: sizeXS,
@@ -657,12 +614,10 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 9,
     backgroundColor: colors.white,
-
     flexDirection: 'row',
     justifyContent: 'center',
     alignSelf: 'stretch',
     width: '100%',
-
     shadowColor: 'rgba(79, 92, 105, 0.1)',
     shadowOffset: {
       width: 0,
@@ -672,22 +627,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     elevation: 4,
   },
-
   actionBtnStyle: {
     ...layout.btnOutline,
     borderRadius: 10,
     position: 'relative',
     height: 48,
-  },
-
-  actionBtnRed: {
-    ...text.buttonblue,
-    color: colors.against,
-  },
-
-  actionBtnGreen: {
-    ...text.buttonblue,
-    color: colors.lightishGreen,
   },
 
   votedByYouText: {
