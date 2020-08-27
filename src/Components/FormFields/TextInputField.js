@@ -5,7 +5,7 @@ import {observer} from 'mobx-react';
 import {layout, colors, font} from '../../Theme';
 import {string, func, bool, number, object} from 'prop-types';
 
-const CharCount = ({currCount, maxLength}) => <Text style = {{color: colors.grey3, paddingTop: 5}}>{currCount}/{maxLength}</Text>;
+const CharCount = ({currCount, maxLength}) => <Text style = {{color: currCount === maxLength ? colors.error : colors.grey3, paddingTop: 5}}>{currCount}/{maxLength}</Text>;
 
 const Label = ({label, infoLabel}) => (
   <View style={{flexDirection: 'row', marginBottom: 8}}>
