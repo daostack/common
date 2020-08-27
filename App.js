@@ -5,7 +5,7 @@
  * @format
  * @flow
  */
-
+import 'mobx-react-lite/batchingForReactNative';
 import React, {useState, useEffect, useRef} from 'react';
 import {
   Image,
@@ -17,7 +17,7 @@ import {
   Text,
 } from 'react-native';
 
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, CommonActions} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -70,7 +70,6 @@ import KeyboardManager from 'react-native-keyboard-manager';
 import validUrl from 'valid-url';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import ToastView, {DURATION} from './src/Util/ToastView';
-import {CommonActions} from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
@@ -349,12 +348,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             headerBackImage: () => (
               <Icon name="left-arrow" color={colors.black} size={32} />
             ),
-            headerRight: () => (
-              <Image
-                source={require('./src/Assets/questionmark.png')}
-                style={{resizeMode: 'contain', width: 20, height: 20}}
-              />
-            ),
+            // headerRight: () => (
+            //   <Image
+            //     source={require('./src/Assets/questionmark.png')}
+            //     style={{resizeMode: 'contain', width: 20, height: 20}}
+            //   />
+            // ),
           })}
         />
 

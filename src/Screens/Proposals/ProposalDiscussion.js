@@ -12,8 +12,6 @@ const ProposalDiscussion = props => {
 
   const proposalId = props.proposalId;
 
-  console.log('proposalId -->', proposalId);
-
   let listRef = useRef([]);
   useEffect(() => {
     const unsubscribe = firestore()

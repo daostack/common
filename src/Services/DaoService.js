@@ -1,8 +1,8 @@
-import { db } from '../Firebase';
+import {db} from '../Firebase';
 import UserService from './UserService';
 import Toast from '../Util/Toast';
 
-import { DB_COLLECTIONS } from '../Firebase/Databasee';
+import {DB_COLLECTIONS} from '../Firebase/Databasee';
 
 export default class DaoService {
   static serviceInstance = null;
@@ -25,11 +25,9 @@ export default class DaoService {
 
   async getDaoNameById(daoId) {
 
-    const dao = await db.collection(DB_COLLECTIONS.daos)
-      .doc(daoId)
-      .get();
+    const dao = await this.getDaoById(daoId);
 
-    return dao.data().metadata.name;
+    return dao.metadata.name;
   }
 
   async getUserDaos(userId, safeAddress) {
@@ -56,9 +54,9 @@ export default class DaoService {
         userId,
       });
 
-    return daos.onSnapshot(snapshot => {
+    return daos.onSnapshot((snapshot) => {
       callback(snapshot);
-    }, error => Toast.error(error));
+    }, (error) => Toast.error(error));
 
   }
 
@@ -66,9 +64,9 @@ export default class DaoService {
     let daos = db
       .collection(DB_COLLECTIONS.daos);
 
-    return daos.onSnapshot(snapshot => {
+    return daos.onSnapshot((snapshot) => {
       callback(snapshot);
-    }, error => Toast.error(error));
+    }, (error) => Toast.error(error));
   }
 
   async subscribeToDaoById(daoId, callback) {
@@ -76,9 +74,9 @@ export default class DaoService {
       .collection(DB_COLLECTIONS.daos)
       .doc(daoId);
 
-    return daos.onSnapshot(snapshot => {
+    return daos.onSnapshot((snapshot) => {
       callback(snapshot);
-    }, error => Toast.error(error));
+    }, (error) => Toast.error(error));
 
   }
 

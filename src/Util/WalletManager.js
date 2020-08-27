@@ -266,8 +266,8 @@ export default class WalletManager {
         throw Error(msg);
       }
       console.log('RequestToJoin response.data -->', response.status, response.data);
-      if (response.data.errcode) {
-        msg = `Code: ${response.data.errorCode}, Message: ${response.data.error}`;
+      if (response.status !== 200) {
+        msg = `${response.data.error}`;
         throw Error(msg);
       }
 
@@ -277,11 +277,10 @@ export default class WalletManager {
         msg = 'No proposal Id was found in the response';
         throw Error(msg);
       }
-      console.log(JSON.stringify(response));
       console.log(`Created proposal with id ${response.data.proposalId}`);
       return response.data.proposalId;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       throw err;
     }
   }

@@ -12,6 +12,7 @@ import {CommonBox, BottomRightButton} from '../../Components';
 import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {font, colors} from '../../Theme';
+import {object} from 'prop-types';
 
 import {
   Placeholder,
@@ -27,20 +28,18 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
 
   const loadMyDaosList = (snapshot) => {
     if (snapshot?.empty || !snapshot) {
-      setMyDaosGroup({ title: '', data: [] });
+      setMyDaosGroup({title: '', data: []});
       return [];
     }
-    let docs = snapshot.docs.map((doc, index) => {
-      return {
-        ...{ id: doc.id },
-        ...doc.data(),
-        ...{
-          coverPhoto:
+    let docs = snapshot.docs.map((doc, index) => ({
+      ...{id: doc.id},
+      ...doc.data(),
+      ...{
+        coverPhoto:
             doc.data().metadata?.image ||
             `https://picsum.photos/id/${index * 10}/500/100.jpg`,
-        },
-      };
-    });
+      },
+    }));
 
     daoStore.setDaos(docs);
 
@@ -59,21 +58,19 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
 
   const loadDaosList = (snapshot) => {
     if (snapshot?.empty || !snapshot) {
-      setAllDaosGroup({ title: '', data: [] });
+      setAllDaosGroup({title: '', data: []});
       return [];
     }
-    const allCommons = snapshot.docs.filter(doc => !userStore.isDaoMember(doc.data().members));
-    let docs = allCommons.map((doc, index) => {
-      return {
-        ...{ id: doc.id },
-        ...doc.data(),
-        ...{
-          coverPhoto:
+    const allCommons = snapshot.docs.filter((doc) => !userStore.isDaoMember(doc.data().members));
+    let docs = allCommons.map((doc, index) => ({
+      ...{id: doc.id},
+      ...doc.data(),
+      ...{
+        coverPhoto:
             doc.data().metadata?.image ||
             `https://picsum.photos/id/${index * 10}/500/100.jpg`,
-        },
-      };
-    });
+      },
+    }));
 
     daoStore.setDaos(docs);
 
@@ -98,7 +95,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       if (userStore.userInfo) {
         unsubscribeMyDaos = await DaoService.getInstance().subscribeToMyDaosList(userStore.userInfo.uid, userStore.userInfo.safeAddress, loadMyDaosList);
       } else {
-        setMyDaosGroup({ title: '', data: [] });
+        setMyDaosGroup({title: '', data: []});
       }
       unsubscribeAllDaos = await DaoService.getInstance().subscribeToDaosList(loadDaosList);
     };
@@ -114,7 +111,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     };
   }, [daoStore, bottomSheetStore, userStore.userInfo]);
 
-  const setDao = dao => {
+  const setDao = (dao) => {
     daoStore.setDao(dao);
   };
 
@@ -131,84 +128,74 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     }
   };
 
-  const header = () => {
-    return (
-      <View
+  const header = () => (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+        paddingVertical: 15,
+      }}>
+      <Text style={styles.lengthCommons}>{`${(myDaosGroup?.data.length + allDaosGroup?.data.length)} Commons`}</Text>
+    </View>
+  );
+
+  const sectionHeader = (title) => title === '' ? null : (
+    <View style={styles.sectionHeaderContainer}>
+      <Text style={styles.header}>{title}</Text>
+    </View>
+  );
+
+  const loadingPlaceholder = () => (
+    <ScrollView
+      contentContainerStyle={{
+        paddingHorizontal: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+      <Placeholder Animation={Fade}>
+        <PlaceholderLine width={30} />
+      </Placeholder>
+
+      <Placeholder Animation={Fade}>
+        {[...Array(3).keys()].map((i) => (
+          <View key={`common_loading_${i}`}>
+            <PlaceholderMedia
+              style={{height: 200, width: '100%', marginBottom: 20}}
+            />
+            <PlaceholderLine width={80} />
+            <PlaceholderLine />
+            <PlaceholderLine width={30} />
+          </View>
+        ))}
+      </Placeholder>
+    </ScrollView>
+  );
+
+  const listFooter = () => (
+    <View style={styles.footerContainer}>
+      <Image
+        source={require('../../Assets/commonListFooter.png')}
         style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '100%',
-          paddingVertical: 15,
+          resizeMode: 'contain',
+          width: 84,
+          height: 84,
+        }}
+      />
+      <Text style={styles.createACommon}>Create a common</Text>
+      <Text
+        style={{
+          fontFamily: 'NunitoSans-Regular',
+          fontSize: 16,
+          textAlign: 'center',
+          marginVertical: 10,
         }}>
-        <Text style={styles.lengthCommons}>{`${(myDaosGroup?.data.length + allDaosGroup?.data.length)} Commons`}</Text>
-      </View>
-    );
-  };
-
-  const sectionHeader = title => {
-    return title === '' ? null : (
-      <View style={styles.sectionHeaderContainer}>
-        <Text style={styles.header}>{title}</Text>
-      </View>
-    );
-  };
-
-  const loadingPlaceholder = () => {
-    return (
-      <ScrollView
-        contentContainerStyle={{
-          paddingHorizontal: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Placeholder Animation={Fade}>
-          <PlaceholderLine width={30} />
-        </Placeholder>
-
-        <Placeholder Animation={Fade}>
-          {[...Array(3).keys()].map(i => {
-            return (
-              <View key={`common_loading_${i}`}>
-                <PlaceholderMedia
-                  style={{height: 200, width: '100%', marginBottom: 20}}
-                />
-                <PlaceholderLine width={80} />
-                <PlaceholderLine />
-                <PlaceholderLine width={30} />
-              </View>
-            );
-          })}
-        </Placeholder>
-      </ScrollView>
-    );
-  };
-
-  const listFooter = () => {
-    return (
-      <View style={styles.footerContainer}>
-        <Image
-          source={require('../../Assets/commonListFooter.png')}
-          style={{
-            resizeMode: 'contain',
-            width: 84,
-            height: 84,
-          }}
-        />
-        <Text style={styles.createACommon}>Create a common</Text>
-        <Text
-          style={{
-            fontFamily: 'NunitoSans-Regular',
-            fontSize: 16,
-            textAlign: 'center',
-            marginVertical: 10,
-          }}>
           Anyone can create a Common, invite their friends, and work together to
           achieve common goals. Start now!
-        </Text>
-      </View>
-    );
-  };
+      </Text>
+    </View>
+  );
 
   return (
     <>
@@ -218,16 +205,17 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
             sections={[myDaosGroup, allDaosGroup]}
             ListHeaderComponent={header}
             contentContainerStyle={{paddingHorizontal: 20}}
-            renderItem={x => (
+            renderItem={(x) => (
               <CommonBox
                 common={x.item}
                 width="100%"
+                key={x.item.id}
                 navigation={navigation}
                 // keyExtractor={x.item.id}
                 onPress={() => setDao(x.item)}
               />
             )}
-            keyExtractor={x => x.id}
+            keyExtractor={(x) => x.id}
             stickySectionHeadersEnabled={true}
             renderSectionHeader={({section: {title}}) => sectionHeader(title)}
             ListFooterComponent={listFooter}
@@ -240,6 +228,13 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       </SafeAreaView>
     </>
   );
+};
+
+CommonsList.propTypes = {
+  navigation: object.isRequired,
+  daoStore: object.isRequired,
+  bottomSheetStore: object.isRequired,
+  userStore: object.isRequired,
 };
 
 const styles = StyleSheet.create({

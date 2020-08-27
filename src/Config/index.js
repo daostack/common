@@ -23,10 +23,10 @@ if (Config.ENV === 'production') {
   graphVersion = 'v8_10_exp_xdai';
   localFunctionURL = 'http://localhost:5001/common-daostack/us-central1';
   cloudFunctionURL = 'https://us-central1-common-daostack.cloudfunctions.net';
-  graphUrl = 'https://api.thegraph.com/subgraphs-daostack/name/daostack';
-  graphWS = 'wss://api.thegraph.com/subgraphs-daostack/name/daostack';
+  graphUrl = 'https://api.thegraph.com/subgraphs/name/daostack';
+  graphWS = 'wss://api.thegraph.com/subgraphs/name/daostack';
   ipfsUrl = 'https://api.thegraph.com/ipfs-daostack/api/v0';
-  ipfsDataVersion = '000002';
+  ipfsDataVersion = '000003';
   networkId = 100;
   web3Provider = 'https://dai.poa.network';
   commonTokenAddress = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
@@ -36,10 +36,10 @@ if (Config.ENV === 'production') {
   graphVersion = 'v8_10_exp_kovan';
   localFunctionURL = 'http://localhost:5001/common-staging-50741/us-central1';
   cloudFunctionURL = 'https://us-central1-common-staging-50741.cloudfunctions.net';
-  graphUrl = 'https://api.thegraph.com/subgraphs-daostack/name/daostack';
-  graphWS = 'wss://api.thegraph.com/subgraphs-daostack/name/daostack';
+  graphUrl = 'https://api.thegraph.com/subgraphs/name/daostack';
+  graphWS = 'wss://api.thegraph.com/subgraphs/name/daostack';
   ipfsUrl = 'https://api.thegraph.com/ipfs-daostack/api/v0';
-  ipfsDataVersion = '000002';
+  ipfsDataVersion = '000003';
   networkId = 42;
   web3Provider = 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';
   commonTokenAddress = '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01';
@@ -52,7 +52,7 @@ let isLocalPort = false;
 if (__DEV__) {
   axios.get('http://localhost:5001')
     .catch(error => {
-      isLocalPort = error.response.status === 404;
+      isLocalPort = error.response?.status === 404;
     });
 }
 

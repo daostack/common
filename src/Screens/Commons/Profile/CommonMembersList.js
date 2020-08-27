@@ -12,8 +12,6 @@ import {observer, inject} from 'mobx-react';
 const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) => {
   const [membersInfo, setMembersInfo] = useState([]);
 
-  console.log('Members', membersInfo);
-
   const showUserProfile = uid => {
     navigation.navigate('Profile', {userId: uid});
   };
@@ -72,7 +70,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
             return (
               <TouchableOpacity style={itemStyle} onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
                 <MemberImage
-                  key={i}
+                  id={i}
                   userInfo={member}
                   style={{marginLeft: i > 0 ? -15 : 0}}
                 />
