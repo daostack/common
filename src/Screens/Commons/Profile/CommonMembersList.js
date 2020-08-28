@@ -2,7 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import MemberCard from '../../../Components/MemberCard';
 import {layout, sizeS, colors} from '../../../Theme';
-import FirebaseService from '../../../Services/FirebaseService';
+import UserService from '../../../Services/UserService';
+import DaoService from '../../../Services/DaoService';
 import Loader from '../../../Components/Loader';
 import MemberImage from '../../../Components/Commons/MemberImage';
 import Toast from '../../../Util/Toast';
@@ -10,8 +11,6 @@ import {observer, inject} from 'mobx-react';
 
 const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) => {
   const [membersInfo, setMembersInfo] = useState([]);
-
-  console.log('Members', membersInfo);
 
   const showUserProfile = uid => {
     navigation.navigate('Profile', {userId: uid});
@@ -21,13 +20,13 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
     setMembersInfo([]);
     const loadMemberUser = async userId => {
       try {
-        let currUserInfo = await FirebaseService.getInstance().getUserById(
+        let currUserInfo = await UserService.getInstance().getUserById(
           userId,
         );
 
         currUserInfo = {
           ...currUserInfo,
-          daos: (await FirebaseService.getInstance().getUserDaos(currUserInfo.uid, currUserInfo.safeAddress)).docs?.map(dao => dao.data()),
+          daos: (await DaoService.getInstance().getUserDaos(currUserInfo.uid, currUserInfo.safeAddress)).docs?.map(dao => dao.data()),
         };
 
         setMembersInfo(prevMembers => [...prevMembers, currUserInfo]);
@@ -71,7 +70,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
             return (
               <TouchableOpacity style={itemStyle} onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
                 <MemberImage
-                  key={i}
+                  id={i}
                   userInfo={member}
                   style={{marginLeft: i > 0 ? -15 : 0}}
                 />

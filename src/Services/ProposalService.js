@@ -1,4 +1,5 @@
-import { DB_COLLECTIONS } from './FirebaseService';
+
+import { DB_COLLECTIONS } from '../Firebase/Databasee';
 import Toast from '../Util/Toast';
 import moment from 'moment';
 
@@ -106,25 +107,18 @@ export default class ProposalService {
   }
 
   async subscribeToPendingProposalsData(daoId, userSafeAddress, callback) {
-
     let proposals = db
       .collection(DB_COLLECTIONS.proposals)
       .where('dao', '==', daoId)
       .where('closingAt', '>', moment().unix())
       .where('type', '==', 'JoinAndQuit')
-      .where('stageStr', 'in', [
-        PROPOSAL_STAGE.Queued,
-        PROPOSAL_STAGE.PreBoosted,
-        PROPOSAL_STAGE.Boosted,
-        PROPOSAL_STAGE.QuietEndingPeriod,
-      ])
+      .where('stageStr', 'in', PROPOSAL_STAGES_ACTIVE)
       .orderBy('closingAt', 'desc');
 
-    return proposals.onSnapshot(snapshot  => {
+    return proposals.onSnapshot(snapshot => {
       callback({
         pendingProposalCount: snapshot.docs.length,
-        usersPendingProposal:
-            snapshot.docs.find(doc => doc.data().proposer === userSafeAddress)?.data() || false,
+        usersPendingProposal: (userSafeAddress && snapshot.docs.find(doc => doc.data().proposer === userSafeAddress)?.data()) || false,
       });
     }, error => Toast.error(error));
 

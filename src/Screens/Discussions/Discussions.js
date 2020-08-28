@@ -20,14 +20,13 @@ import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '../../Theme';
 import DiscussionMessage from './DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast.js';
-import FirebaseService from '../../Services/FirebaseService';
+import UserService from '../../Services/UserService';
 import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
 import BottomSheetModal from '../../Components/BottomSheetModal';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import ImageView from 'react-native-image-viewing';
-// import _ from 'lodash';
 
 const {width} = Dimensions.get('window');
 
@@ -49,7 +48,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
   const [data, setData] = useState(props.route.params.data);
   const [isMember, setIsMember] = useState(false);
 
-  console.log('commonId', commonId);
+  const [isSending, setIsSending] = useState(false);
   const currentUser = auth().currentUser;
 
   useEffect(() => {
@@ -124,11 +123,6 @@ const Discussions = ({daoStore, userStore, ...props}) => {
               }, []);
             console.log('groupDate', groupDate);
             setMsgDroup(groupDate);
-            chatRef.current.scrollToLocation({
-              animated: true,
-              itemIndex: 0,
-              sectionIndex: 0,
-            });
           }
         },
         error => console.error(error),
@@ -138,11 +132,18 @@ const Discussions = ({daoStore, userStore, ...props}) => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userData = await FirebaseService.getInstance().getUserById(
+      const userData = await UserService.getInstance().getUserById(
         data.ownerId,
       );
       setUser(userData);
     };
+
+    // chatRef.scrollToLocation({
+    //   animated: true,
+    //   sectionIndex: 0,
+    //   itemIndex: 0,
+    //   viewPosition: 0,
+    // });
     fetchUser();
   }, [data]);
 
@@ -184,16 +185,22 @@ const Discussions = ({daoStore, userStore, ...props}) => {
   };
 
   const sendMessageToDiscussion = async () => {
+
+    if (isSending) {
+      return;
+    }
+    setIsSending(true);
+
     const userStore = currentUser;
     if (!userStore) {
       showLoginScreen();
+      setIsSending(false);
+      return;
     }
-    // props.userStore;
-    inputRef.current.clear();
-    console.log('userStore', commonId, data.id, userStore);
+
     const message = inputText;
     if (message && message.trim().length) {
-      console.log('message', message);
+      inputRef.current.clear();
       firestore()
         .collection('discussionMessage')
         .doc()
@@ -208,12 +215,16 @@ const Discussions = ({daoStore, userStore, ...props}) => {
         })
         .then(() => {
           Keyboard.dismiss();
+          setIsSending(false);
+          setInputText(null);
         })
         .catch(error => {
           Toast.error(error);
+          setIsSending(false);
         });
     } else {
       Toast.error('Empty Message');
+      setIsSending(false);
     }
   };
 
@@ -412,7 +423,13 @@ const Discussions = ({daoStore, userStore, ...props}) => {
             stickySectionHeadersEnabled={true}
             inverted={true}
             contentContainerStyle={{paddingTop: 10}}
-            // initialScrollIndex={2}
+            // initialScrollIndex={1}
+            onScrollToIndexFailed={info => {
+              const wait = new Promise(resolve => setTimeout(resolve, 500));
+              wait.then(() => {
+                chatRef.current?.scrollToIndex({ index: info.index, animated: true });
+              });
+            }}
           />
         </ScrollView>
         :
@@ -670,7 +687,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOpacity: 0.8,
     elevation: 5,
-  }
+  },
 });
 
 export default inject('userStore', 'bottomSheetStore', 'daoStore')(observer(Discussions));

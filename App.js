@@ -17,7 +17,7 @@ import {
   Text,
 } from 'react-native';
 
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, CommonActions} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -55,7 +55,7 @@ import {
   FullScreenCreationLoader,
 } from './src/Screens';
 
-import FirebaseService from './src/Services/FirebaseService';
+import UserService from './src/Services/UserService';
 import AuthService from './src/Services/AuthService';
 
 import CommonHome from './src/Components/Navigation/CommonHome';
@@ -70,7 +70,6 @@ import KeyboardManager from 'react-native-keyboard-manager';
 import validUrl from 'valid-url';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import ToastView, {DURATION} from './src/Util/ToastView';
-import {CommonActions} from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
@@ -200,7 +199,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           await WalletManager.init(user.uid);
           await ArcService.init();
           const manager = await WalletManager.getInstance();
-          let appUser = await FirebaseService.getInstance().getUserById(
+          let appUser = await UserService.getInstance().getUserById(
             user.uid,
           );
           const isNewUser = !appUser;
