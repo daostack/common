@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from './TextInputField';
-import { text, layout, colors, sizeL } from '../../Theme';
+import {text, layout, colors, sizeL} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 
-const MultiLinkField = props => {
+const MultiLinkField = (props) => {
   const [count, setCount] = useState(1);
   const [deletedFields, setDeletedFields] = useState([]);
 
@@ -40,31 +40,21 @@ const MultiLinkField = props => {
 
   };
 
-  const renderAddLinkBtn = index => {
-    if (!maxCount || (count - deletedFields.length) < maxCount) {
-      return (
-        <TouchableOpacity>
-          <Text style={styles.addLinkBtn} onPress={() => setCount(count + 1)}>
-            {addMultiFieldBtnName ? addMultiFieldBtnName : 'Add Link'}
-          </Text>
-        </TouchableOpacity>
-      );
-    }
-  };
+  const AddLinkBtn = ({addMultiFieldBtnName, setCount}) => <TouchableOpacity>
+    <Text style={styles.addLinkBtn} onPress={() => setCount()}>
+      {addMultiFieldBtnName || 'Add Link'}
+    </Text>
+  </TouchableOpacity>;
 
-  const renderRemoveLinkBtn = (index, currTitleItemValidation, currItemValidation) => {
-    return (
-      <TouchableOpacity
-        style={styles.removeBtnContainer}
-        onPress={() => onFieldDeleted(index, currTitleItemValidation, currItemValidation)}>
-        <Icon name="delete" size={16} />
-      </TouchableOpacity>
-    );
-  };
+  const RemoveLinkBtn = ({onFieldDeleted}) => <TouchableOpacity
+    style={styles.removeBtnContainer}
+    onPress={() => onFieldDeleted()}>
+    <Icon name="delete" size={16} />
+  </TouchableOpacity>;
 
   return (
     <View style={{paddingTop: sizeL}}>
-      {[...Array(count).keys()].map(currIndex => {
+      {[...Array(count).keys()].map((currIndex) => {
         const currItemValidation = {...props.validation}; //{...validation};
         currItemValidation.name = `${props.validation.name}_value_${currIndex +
           1}`;
@@ -80,7 +70,7 @@ const MultiLinkField = props => {
         currTitleItemValidation.multiName = props.validation.name;
         currTitleItemValidation.validateRule =
           validation.validateRule?.title || 'string';
-        const { formStore } = validation;
+        const {formStore} = validation;
         currTitleItemValidation.topPosition = true;
         currTitleItemValidation.invisibleContainer = true;
 
@@ -97,8 +87,8 @@ const MultiLinkField = props => {
             ) : null}
             <TextInputField
               value={''}
-              onChangeText={value => onChangeText(value, currTitleItemValidation)}
-              viewStyle={{marginTop: 0}}
+              onChangeText={(value) => onChangeText(value, currTitleItemValidation)}
+              viewStyle={{marginTop: -5}}
               placeholderText={
                 placeholderValueText ? placeholderValueText : 'https://'
               }
@@ -107,14 +97,17 @@ const MultiLinkField = props => {
               multiline={multiline}
               validation={currItemValidation}
             />
-            <View style={styles.removeBtn}>
-              {renderRemoveLinkBtn(currIndex, currTitleItemValidation, currItemValidation)}
-            </View>
+            {/* <View style={styles.removeBtn}>
+              {<RemoveLinkBtn onFieldDeleted={() => onFieldDeleted(currIndex, currTitleItemValidation, currItemValidation)} />}
+            </View> */}
           </View>
         );
       })}
 
-      {renderAddLinkBtn()}
+      {
+        (!maxCount || (count - deletedFields.length) < maxCount)
+        && <AddLinkBtn setCount={() => setCount(count + 1)} />
+      }
     </View>
   );
 };
