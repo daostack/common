@@ -428,12 +428,11 @@ const ProposalScreen = ({navigation,
                     {proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
                       'Requested amount' : 'Contribution'}
                   </Text>
-                  <Text style={text.h2Black}>{`$${ proposalInfo.type === PROPOSAL_TYPE.FundingRequest
-                    ? proposalInfo.fundingRequest.amoun : proposalInfo.description.funding / 100
-                  }`}
+                  <Text style={text.h2Black}>{`$${proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+                    ? proposalInfo.fundingRequest.amount / 100
+                    : proposalInfo.description.funding / 100}`}
                   </Text>
                 </View>
-                {console.log(`tkt  commonBalance ${JSON.stringify(commonBalance)}`)}
                 {proposalInfo.type === PROPOSAL_TYPE.FundingRequest &&
                   <Text style={{...text.smallBlackText, backgroundColor: 'pink'}}>
                     {`Available funds: ${commonBalance ? '$' + commonBalance / 100 : ''}`}</Text>}
