@@ -12,7 +12,7 @@ const useLocalFirestore = true;
 if (useLocalFirestore) {
   db.settings({
     host: 'localhost:8080',
-    ssl: false,
+    ssl: false
   });
 }
 
