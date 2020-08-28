@@ -55,7 +55,7 @@ import {
   FullScreenCreationLoader,
 } from './src/Screens';
 
-import FirebaseService from './src/Services/FirebaseService';
+import UserService from './src/Services/UserService';
 import AuthService from './src/Services/AuthService';
 
 import CommonHome from './src/Components/Navigation/CommonHome';
@@ -199,7 +199,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           await WalletManager.init(user.uid);
           await ArcService.init();
           const manager = await WalletManager.getInstance();
-          let appUser = await FirebaseService.getInstance().getUserById(
+          let appUser = await UserService.getInstance().getUserById(
             user.uid,
           );
           const isNewUser = !appUser;

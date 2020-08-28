@@ -12,7 +12,7 @@ import {
 import moment from 'moment';
 
 import {layout, text, font, colors} from '../../../Theme';
-import FirebaseService from '../../../Services/FirebaseService';
+import DaoService from '../../../Services/DaoService';
 
 const CommonAgenda = ({navigation, route}) => {
 
@@ -20,7 +20,7 @@ const CommonAgenda = ({navigation, route}) => {
 
   useEffect( async () => {
     if (route.params.commonId) {
-      const common = await FirebaseService.getInstance().getDaoById();
+      const common = await DaoService.getInstance().getDaoById();
       setCommon(common);
     }
 
@@ -63,21 +63,19 @@ const CommonAgenda = ({navigation, route}) => {
           {common.metadata?.links?.length > 0 && (
             <View style={styles.sectionContainer}>
               <Text style={text.h3Black}>Links</Text>
-              {common.metadata.links.map((link, i) => {
-                return (
-                  <View key={i}>
-                    <Text
-                      style={styles.linkText}
-                      onPress={() =>
-                        navigation.navigate('Browser', {
-                          url: link.url,
-                        })
-                      }>
-                      {link.url}
-                    </Text>
-                  </View>
-                );
-              })}
+              {common.metadata.links.map((link, i) => (
+                <View key={i}>
+                  <Text
+                    style={styles.linkText}
+                    onPress={() =>
+                      navigation.navigate('Browser', {
+                        url: link.url,
+                      })
+                    }>
+                    {link.url}
+                  </Text>
+                </View>
+              ))}
             </View>
           )}
 
@@ -97,19 +95,17 @@ const CommonAgenda = ({navigation, route}) => {
             </View>
             <View style={styles.sectionContainer}>
               <Text style={text.h2Black}>Rules of conduct</Text>
-              {common.metadata.rules.map((rule, i) => {
-                return (
-                  <View key={i}>
-                    <Text style={styles.ruleTitle}>
-                      {rule.title}
-                    </Text>
-                    <Text
-                      style={styles.ruleDescription}>
-                      {rule.url}
-                    </Text>
-                  </View>
-                );
-              })}
+              {common.metadata.rules.map((rule, i) => (
+                <View key={i}>
+                  <Text style={styles.ruleTitle}>
+                    {rule.title}
+                  </Text>
+                  <Text
+                    style={styles.ruleDescription}>
+                    {rule.url}
+                  </Text>
+                </View>
+              ))}
             </View>
             </>
           )}

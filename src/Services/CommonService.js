@@ -1,6 +1,3 @@
-// import {DB_COLLECTIONS} from './FirebaseService';
-// import {db} from '../Firebase';
-
 export default class CommonService {
   static serviceInstance = null;
 
