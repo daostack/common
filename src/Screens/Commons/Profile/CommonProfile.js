@@ -1,51 +1,36 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {
-  Dimensions,
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-  Platform,
-} from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Dimensions, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
-import {text, layout, colors, sizeS, sizeL, font} from '../../../Theme';
+import { colors, font, layout, sizeL, sizeS, text } from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
-import {TabView} from 'react-native-tab-view';
-import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
+import { TabView } from 'react-native-tab-view';
+import { BOTTOM_SHEET_TEMPLATES } from '../../../Stores/BottomSheetStore';
 import CommonStageSummary from '../../../Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ProposalApprovalTag from '../../../Components/Proposals/ProposalApprovalTag';
-import {CommonActions} from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '../../../Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
-import {observer, inject} from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '../../../Components/Commons/CommonHeader';
-import {numberFormatter} from '../../../Util';
+import { calcIsFundingStage, numberFormatter } from '../../../Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '../../../Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
-import {calcIsFundingStage} from '../../../Util';
-import firestore from '@react-native-firebase/firestore';
-import  Toast  from '../../../Util/Toast';
-import {
-  Placeholder,
-  PlaceholderMedia,
-  PlaceholderLine,
-  Fade,
-} from 'rn-placeholder';
-import {string, object, shape, func} from 'prop-types';
+import Toast from '../../../Util/Toast';
+import { Fade, Placeholder, PlaceholderLine, PlaceholderMedia } from 'rn-placeholder';
+import { object, shape } from 'prop-types';
 import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import ProposalActivationDate from '../../../Components/Proposals/ProposalActivationDate';
 import { BlurView } from '../../../Components';
+import { db } from '../../../Firebase';
 
 let stickyHeighAddon = 36;
 
@@ -106,8 +91,8 @@ const CommonProfile = ({
   useEffect(() => {
     if (params.commonId) {
       console.log('tkt happening?!?!');
-      const unsubscribe = firestore()
-        .collection('daos')
+
+      return db.collection('daos')
         .doc(params.commonId)
         .onSnapshot(snapshot => {
           if (snapshot.exists) {
@@ -117,7 +102,6 @@ const CommonProfile = ({
             navigation.pop();
           }
         });
-      return unsubscribe;
     }
   }, [params.commonId]);
 

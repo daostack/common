@@ -3,11 +3,12 @@ import {View, ScrollView, Text, StyleSheet, Keyboard} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import {observer, inject} from 'mobx-react';
 import {colors, font, sizeM} from '../../Theme';
-import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast';
 import MultiFileField from '../FormFields/MultiFileField';
 import MultiImageField from '../FormFields/MultiImageField';
 import RequestStepActionButton from '../../Screens/Commons/RequestStepActionButton';
+
+import { db } from '../../Firebase';
 
 class CreateDiscussionForm extends React.Component {
   static TITLE = 'title';
@@ -32,7 +33,7 @@ class CreateDiscussionForm extends React.Component {
 
         const images = changedFields[CreateDiscussionForm.IMAGES] || [];
         const files = changedFields[CreateDiscussionForm.FILES] || [];
-        firestore()
+        db
           .collection('discussion')
           .doc()
           .set({

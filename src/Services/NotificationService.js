@@ -2,6 +2,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
 import Toast from '../Util/Toast';
+import { db } from '../Firebase';
 
 export default class NotificationService {
   static async saveTokenToDatabase() {
@@ -10,8 +11,7 @@ export default class NotificationService {
     }
     const userId = auth().currentUser.uid;
     const token = await messaging().getToken();
-    await firestore()
-      .collection('users')
+    await db.collection('users')
       .doc(userId)
       .update({
         tokens: firestore.FieldValue.arrayUnion(token),
@@ -48,8 +48,8 @@ export default class NotificationService {
       return;
     }
     const userId = auth().currentUser.uid;
-    firestore()
-      .collection('users')
+
+    db.collection('users')
       .doc(userId)
       .update({
         transactionHistory: firestore.FieldValue.arrayUnion(txHash),
@@ -69,8 +69,8 @@ export default class NotificationService {
       Toast.error('Can not follow yourself');
     }
     console.log('Follow', userId, targetUid);
-    firestore()
-      .collection('users')
+
+    db.collection('users')
       .doc(userId)
       .update({
         following: firestore.FieldValue.arrayUnion(targetUid),
@@ -91,8 +91,8 @@ export default class NotificationService {
       Toast.error('Can not follow yourself');
     }
     console.log('Unfollow', userId, targetUid);
-    firestore()
-      .collection('users')
+
+    db.collection('users')
       .doc(userId)
       .update({
         following: firestore.FieldValue.arrayRemove(targetUid),

@@ -163,8 +163,7 @@ const ProposalScreen = ({ navigation, route, userStore, bottomSheetStore, props 
       const userInfo = auth().currentUser;
       const message = inputText;
       if (message && message.trim().length) {
-        firestore()
-          .collection('discussionMessage')
+        db.collection('discussionMessage')
           .doc()
           .set({
             text: message,

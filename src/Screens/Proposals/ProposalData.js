@@ -18,6 +18,7 @@ import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
 import {PROPOSAL_TYPE} from '../../Config';
+import { db } from '../../Firebase';
 
 const ProposalData = props => {
   const navigation = useNavigation();
@@ -58,8 +59,7 @@ const ProposalData = props => {
     };
 
     const loadDiscussions = () => {
-      firestore()
-        .collection('discussionMessage')
+      db.collection('discussionMessage')
         .where('discussionId', '==', proposalId)
         .orderBy('createTime', 'desc')
         .limit(4)
