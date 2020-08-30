@@ -145,7 +145,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       }
     });
     return () => { unsubscribe(); };
-    // return unsubscribe();
   }, []);
 
   // Deep & Dynamic Link
