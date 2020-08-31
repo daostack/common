@@ -1,18 +1,18 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {Text, View, Dimensions, Image, TouchableOpacity, StyleSheet} from 'react-native';
-import {CommonBox} from '../../Components';
-import {inject, observer} from 'mobx-react';
-import SwiperCard from '../../Components/SwiperCard';
-import DaoService from '../../Services/DaoService';
-import {layout, text, font,sizeXXL, colors} from '../../Theme';
+import React, { useEffect, useState, useRef } from 'react';
+import { Text, View, Dimensions, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { CommonBox } from '~/Components';
+import { inject, observer } from 'mobx-react';
+import SwiperCard from '~/Components/SwiperCard';
+import DaoService from '~/Services/DaoService';
+import { layout, text, font, sizeXXL, colors } from '~/Theme';
 import {
   Placeholder,
   PlaceholderMedia,
   Fade,
 } from 'rn-placeholder';
-import { isDaoMemberBySafeAddress } from '../../Util';
+import { isDaoMemberBySafeAddress } from '~/Util';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const DEFAULT_HEADER_HEIGHT = 145;
 
 const CommonsSwiper = ({
@@ -99,8 +99,8 @@ const CommonsSwiper = ({
         onPress={() => setDao(item)}
         headerHeightLayouted={headerHeightLayouted}
       /> : <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ ...styles.commonBox, height: headerHeight }}>
-        <Text style={text.buttonblue}>{`View all ${myDaos.length} Commons`}</Text>
-      </TouchableOpacity>
+          <Text style={text.buttonblue}>{`View all ${myDaos.length} Commons`}</Text>
+        </TouchableOpacity>
     );
   };
 
@@ -124,39 +124,39 @@ const CommonsSwiper = ({
         </View>
       </View>
     ) : (
-      <View style={styles.emptyObjectContainer}>
-        <Image
-          style={{height: 120, width: 120}}
-          source={require('../../../src/Assets/group.png')}
-        />
-        <Text style={{...text.h2Black, ...layout.marginTopS}}>No Commons</Text>
-        <Text
-          style={styles.textNoCommons}>
-          Join your first common and start making an impact
+        <View style={styles.emptyObjectContainer}>
+          <Image
+            style={{ height: 120, width: 120 }}
+            source={require('../../../src/Assets/group.png')}
+          />
+          <Text style={{ ...text.h2Black, ...layout.marginTopS }}>No Commons</Text>
+          <Text
+            style={styles.textNoCommons}>
+            Join your first common and start making an impact
         </Text>
-        <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={() => navigation.navigate('Explore')}>
-            <Text style={text.buttonblue}>Explore Commons</Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => navigation.navigate('Explore')}>
+              <Text style={text.buttonblue}>Explore Commons</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    )
+      )
   ) : (
-    <View style={{paddingHorizontal: 20}}>
-      <Placeholder Animation={Fade}>
-        <PlaceholderMedia
-          style={{
-            height: 200,
-            width: '100%',
-            marginBottom: 20,
-            borderRadius: 26,
-          }}
-        />
-      </Placeholder>
-    </View>
-  );
+      <View style={{ paddingHorizontal: 20 }}>
+        <Placeholder Animation={Fade}>
+          <PlaceholderMedia
+            style={{
+              height: 200,
+              width: '100%',
+              marginBottom: 20,
+              borderRadius: 26,
+            }}
+          />
+        </Placeholder>
+      </View>
+    );
 };
 
 const styles = StyleSheet.create({

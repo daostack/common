@@ -1,9 +1,9 @@
 import {Text, StyleSheet, SafeAreaView, TouchableOpacity, View} from 'react-native';
 
 import React from 'react';
-import {text, layout, colors, font, sizeL} from '../../Theme';
-import ButtonSwiper from '../../Components/ButtonSwiper';
-import Loader from '../../Components/Loader';
+import {text, layout, colors, font, sizeL} from '~/Theme';
+import ButtonSwiper from '~/Components/ButtonSwiper';
+import Loader from '~/Components/Loader';
 
 const ApprovalSheetScreen = ({onApprove, onClose, voteType, votingProcessState}) => {
   const voteColor =

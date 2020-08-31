@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import {Text, StyleSheet, Platform, View, Animated, Dimensions} from 'react-native';
-import {text, layout, colors, font} from '../../Theme';
+import {text, layout, colors, font} from '~/Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
-import ProposalService, {PROPOSAL_TYPE} from '../../Services/ProposalService';
-import UserService from '../../Services/UserService';
-import DaoService from '../../Services/DaoService';
+import ProposalService, {PROPOSAL_TYPE} from '~/Services/ProposalService';
+import UserService from '~/Services/UserService';
+import DaoService from '~/Services/DaoService';
 import ProposalApprovalTag from './ProposalApprovalTag';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import Toast from '../../Util/Toast';
+import Toast from '~/Util/Toast';
 import moment from 'moment';
 const {width} = Dimensions.get('window');
 

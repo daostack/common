@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from './TextInputField';
-import {text, layout, colors, sizeL} from '../../Theme';
+import {text, layout, colors, sizeL} from '~/Theme';
 
-const MultiLinkField = props => {
+const MultiLinkField = (props) => {
   const [count, setCount] = useState(1);
   const {
     maxCount,
@@ -20,7 +20,7 @@ const MultiLinkField = props => {
     // fieldName = validation.name;
   }, []);
 
-  const renderAddLinkBtn = index => {
+  const renderAddLinkBtn = (index) => {
     if (index === count - 1 && (!maxCount || count < maxCount)) {
       return (
         <TouchableOpacity>
@@ -34,7 +34,7 @@ const MultiLinkField = props => {
 
   return (
     <View style={{paddingTop: sizeL}}>
-      {[...Array(count).keys()].map(currIndex => {
+      {[...Array(count).keys()].map((currIndex) => {
         const currItemValidation = {...props.validation}; //{...validation};
         currItemValidation.name = `${props.validation.name}_value_${currIndex +
           1}`;
@@ -50,7 +50,7 @@ const MultiLinkField = props => {
         currTitleItemValidation.multiName = props.validation.name;
         currTitleItemValidation.validateRule =
           validation.validateRule?.title || 'string';
-        const { formStore } = validation;
+        const {formStore} = validation;
         currTitleItemValidation.topPosition = true;
         currTitleItemValidation.invisibleContainer = true;
 

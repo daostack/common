@@ -1,4 +1,4 @@
-import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
+import { BOTTOM_SHEET_TEMPLATES } from '~/Stores/BottomSheetStore';
 
 import moment from 'moment';
 
@@ -54,11 +54,11 @@ export const calcIsFundingStage = (deadline) => {
 export const showErrorPopUp = (bottomSheetStore, message) => {
   /* this function requires the bottomSheetStore as a variable as you can't
   access the mobx store outside of a react component */
-  bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {errorMessage: message});
+  bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, { errorMessage: message });
 };
 
 export const isDaoMemberBySafeAddress = (members, userSafeAddress) => {
-  if (!members){
+  if (!members) {
     return false;
   }
   return members.some(

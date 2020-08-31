@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   View,
@@ -7,22 +7,22 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import TextInputField from '../../../Components/FormFields/TextInputField';
-import {colors, layout, text} from '../../../Theme';
-import {observer, inject} from 'mobx-react';
-const {width} = Dimensions.get('window');
+import TextInputField from '~/Components/FormFields/TextInputField';
+import { colors, layout, text } from '~/Theme';
+import { observer, inject } from 'mobx-react';
+const { width } = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepNavigation from './RequestStepNavigation';
-import RequestToJoinForm from '../../../Components/Forms/RequestToJoinForm';
+import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
-import {CommonActions} from '@react-navigation/native';
-import ArcService from '../../../Services/ArcService';
-import { preauthorizePayment } from '../../../Services/MangopayService';
+import { CommonActions } from '@react-navigation/native';
+import ArcService from '~/Services/ArcService';
+import { preauthorizePayment } from '~/Services/MangopayService';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
-import {showErrorPopUp} from '../../../Util';
+import { showErrorPopUp } from '~/Util';
 
-const RequestStep4 = ({navigation, ...props}) => {
+const RequestStep4 = ({ navigation, ...props }) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const isFirstStepSkipped = props.route.params.skipFirstStep;
@@ -91,11 +91,11 @@ const RequestStep4 = ({navigation, ...props}) => {
     }
   };
 
-  const subtitle =  `You are contributing $${props.personalContributionFormStore.form.fields.amount?.value} to this common`;
+  const subtitle = `You are contributing $${props.personalContributionFormStore.form.fields.amount?.value} to this common`;
 
   return (
     <>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView style={{ backgroundColor: colors.white }} />
       <SafeAreaView
         style={{
           flex: 1,
@@ -122,7 +122,7 @@ const RequestStep4 = ({navigation, ...props}) => {
           }}
           scrollEventThrottle={16}
           onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
+            { nativeEvent: { contentOffset: { y: scrollY } } },
           ])}>
           <CreateStepHeader
             isFirstStepSkipped={isFirstStepSkipped}
@@ -204,7 +204,7 @@ const RequestStep4 = ({navigation, ...props}) => {
             <Text
               style={{
                 ...text.blackText,
-                ...{color: colors.grey2, textAlign: 'center'},
+                ...{ color: colors.grey2, textAlign: 'center' },
               }}>
               Your money will be refunded if the common does not approve your
               request or meet the funding goal

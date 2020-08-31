@@ -1,19 +1,19 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {layout, font,colors, text, sizeL, sizeXXL} from '../Theme';
-import {observer, inject} from 'mobx-react';
-import ImageField from '../Components/FormFields/ImageField';
-import CountBox from '../Components/CountBox';
-import Loader from '../Components/Loader';
-import EditProfileForm from '../Components/Forms/EditProfileForm';
-import UserService from '../Services/UserService';
-import ProposalsList from '../Screens/Proposals/ProposalsList';
-import CommonsSwiper from '../Screens/Commons/CommonsSwiper';
-import { UserAvatar } from '../Components';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { layout, font, colors, text, sizeL, sizeXXL } from '~/Theme';
+import { observer, inject } from 'mobx-react';
+import ImageField from '~/Components/FormFields/ImageField';
+import CountBox from '~/Components/CountBox';
+import Loader from '~/Components/Loader';
+import EditProfileForm from '~/Components/Forms/EditProfileForm';
+import UserService from '~/Services/UserService';
+import ProposalsList from '~/Screens/Proposals/ProposalsList';
+import CommonsSwiper from '~/Screens/Commons/CommonsSwiper';
+import { UserAvatar } from '~/Components';
 
-import {CommonActions} from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 
-import Icon from '../Assets/iconfont/Icon';
+import Icon from '~/Assets/iconfont/Icon';
 
 const UserProfileData = ({
   userId,
@@ -74,7 +74,7 @@ const UserProfileData = ({
       );
     } else {
       return (
-        <UserAvatar image={user.photoURL} iconName={'follow'}/>
+        <UserAvatar image={user.photoURL} iconName={'follow'} />
       );
     }
   };
@@ -141,14 +141,14 @@ const UserProfileData = ({
       </View>
 
       <View style={styles.contentContainerWithoutPadding}>
-        <View style={{justifyContent: 'space-between', flexDirection: 'row', width: '100%'}}>
+        <View style={{ justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
           <Text
             style={{
               ...text.againstTextBlack,
               ...layout.marginBottomL,
               ...layout.paddingHorizontalL,
             }}>{`Commons (${commonsCount})`}</Text>
-          {showMaxData && commonsCount > 0 && <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ flexDirection: 'row', ...layout.paddingHorizontalL}}>
+          {showMaxData && commonsCount > 0 && <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ flexDirection: 'row', ...layout.paddingHorizontalL }}>
             <Text
               style={{
                 ...text.h3Black,

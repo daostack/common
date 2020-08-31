@@ -1,7 +1,7 @@
-import { db } from '../Firebase';
-import { prepareUserObject } from '../Util';
+import { db } from '~/Firebase';
+import { prepareUserObject } from '~/Util';
 
-import { DB_COLLECTIONS } from '../Firebase/Databasee';
+import { DB_COLLECTIONS } from '~/Firebase/Databasee';
 
 export default class UserService {
   static serviceInstance = null;
@@ -41,7 +41,7 @@ export default class UserService {
           return null;
         }
         const doc = snapshots.docs[0];
-        return {id: doc.id, ...doc.data()};
+        return { id: doc.id, ...doc.data() };
 
       });
   }
@@ -56,7 +56,7 @@ export default class UserService {
           return [];
         }
         return snapshots.docs.map(doc => {
-          return {...{id: doc.id}, ...doc.data()};
+          return { ...{ id: doc.id }, ...doc.data() };
         });
       });
   }

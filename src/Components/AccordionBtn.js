@@ -1,6 +1,6 @@
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import {text, font,layout, colors} from '../Theme';
-import Icon from '../Assets/iconfont/Icon';
+import {text, font,layout, colors} from 'common/src/Theme';
+import Icon from '~/Assets/iconfont/Icon';
 import React from 'react';
 import {string, func, bool} from 'prop-types';
 
@@ -18,20 +18,17 @@ const BtnContent = ({lightStyle, title, subtitle}) => (
   </>
 );
 
-const AccordionBtn = ({title, subtitle, onPress, lightStyle}) => {
-
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={
-        lightStyle
-          ? {...styles.accordionBtn, ...styles.accordionBtnLight}
-          : styles.accordionBtn
-      }>
-      <BtnContent {...{lightStyle, title, subtitle}} />
-    </TouchableOpacity>
-  );
-};
+const AccordionBtn = ({title, subtitle, onPress, lightStyle}) => (
+  <TouchableOpacity
+    onPress={onPress}
+    style={
+      lightStyle
+        ? {...styles.accordionBtn, ...styles.accordionBtnLight}
+        : styles.accordionBtn
+    }>
+    <BtnContent {...{lightStyle, title, subtitle}} />
+  </TouchableOpacity>
+);
 
 AccordionBtn.propTypes = {
   title: string.isRequired,

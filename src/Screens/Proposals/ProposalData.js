@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   View,
@@ -7,17 +7,17 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import {text, layout, colors, sizeM} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
+import { text, layout, colors, sizeM } from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
 import ReadMore from 'react-native-read-more-text';
-import UserMessageCard from '../../Components/Discussion/UserMessageCard';
+import UserMessageCard from '~/Components/Discussion/UserMessageCard';
 import ImageView from 'react-native-image-viewing';
-import Loader from '../../Components/Loader';
+import Loader from '~/Components/Loader';
 import ImageSize from 'react-native-image-size';
 import firestore from '@react-native-firebase/firestore';
-import {useNavigation} from '@react-navigation/native';
-import {observer, inject} from 'mobx-react';
-import {PROPOSAL_TYPE} from '../../Config';
+import { useNavigation } from '@react-navigation/native';
+import { observer, inject } from 'mobx-react';
+import { PROPOSAL_TYPE } from '~/Config';
 
 const ProposalData = props => {
   const navigation = useNavigation();
@@ -49,7 +49,7 @@ const ProposalData = props => {
               }),
             );
           }
-          setProposalInfo({...currProposalInfo, ...{images: tempImages}});
+          setProposalInfo({ ...currProposalInfo, ...{ images: tempImages } });
         }
 
       } catch (error) {
@@ -77,7 +77,7 @@ const ProposalData = props => {
     loadDiscussions();
   }, [props.proposalInfo]);
 
-  const ImageGalleryFooter = ({imageIndex}) => {
+  const ImageGalleryFooter = ({ imageIndex }) => {
     return (
       <View style={styles.imageGalleryTextContainer}>
         <Text style={styles.imageGalleryText}>
@@ -129,16 +129,16 @@ const ProposalData = props => {
     <>
       <View style={styles.container}>
 
-        <Text style={text.h1BlackTitle}>{ proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
-          'Proposal Pitch' : 'Intro' }</Text>
+        <Text style={text.h1BlackTitle}>{proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
+          'Proposal Pitch' : 'Intro'}</Text>
 
-        <View style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
-          <Text style={{...text.regularTextBig }}>{proposalInfo.description.description}</Text>
+        <View style={{ ...layout.content, ...layout.flexStart, ...{ width: '100%' } }}>
+          <Text style={{ ...text.regularTextBig }}>{proposalInfo.description.description}</Text>
         </View>
 
 
 
-        <View style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
+        <View style={{ ...layout.content, ...layout.flexStart, ...{ width: '100%' } }}>
 
           {proposalInfo.description?.links?.length > 0 && (
             proposalInfo.description?.links.map((l, index) => (
@@ -178,13 +178,13 @@ const ProposalData = props => {
         <ScrollView
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          style={{marginBottom: 20}}>
+          style={{ marginBottom: 20 }}>
           <View style={styles.imageGallery}>
-            <View style={{width: 20}} />
+            <View style={{ width: 20 }} />
             {proposalInfo.images.map((currImage, currIndex) => {
               return (
                 <View
-                  style={{width: currImage.widthRatio + 10}}
+                  style={{ width: currImage.widthRatio + 10 }}
                   key={`proposalImg_${currIndex}`}>
                   <TouchableOpacity
                     onPress={() => setImageGalleryIndex(currIndex)}>
@@ -192,10 +192,10 @@ const ProposalData = props => {
                       key={currIndex}
                       style={{
                         ...styles.galleryImage,
-                        ...{width: currImage.widthRatio},
+                        ...{ width: currImage.widthRatio },
                       }}
                       resizeMode="cover"
-                      source={currImage.uri ? {uri: currImage.uri} : null}
+                      source={currImage.uri ? { uri: currImage.uri } : null}
                     />
                   </TouchableOpacity>
                   <ReadMore
@@ -213,20 +213,20 @@ const ProposalData = props => {
                 </View>
               );
             })}
-            <View style={{width: 20}} />
+            <View style={{ width: 20 }} />
           </View>
         </ScrollView>
 
         {topMessage.length === 0 ? null : (
           <View style={styles.proposalCard}>
             <View style={layout.content}>
-              <View style={{...styles.proposalColumnSubtitle}}>
-                <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
+              <View style={{ ...styles.proposalColumnSubtitle }}>
+                <Text style={{ ...text.smallGreyText, ...layout.marginBottomS }}>
                   Recent comments
                 </Text>
               </View>
 
-              <View style={{...layout.content, ...layout.flexStart}}>
+              <View style={{ ...layout.content, ...layout.flexStart }}>
                 {topMessage.map((currMessage, currIndex) => {
                   return (
                     <UserMessageCard
@@ -257,8 +257,8 @@ const ProposalData = props => {
       />
     </>
   ) : (
-    <Loader />
-  );
+      <Loader />
+    );
 };
 
 const styles = StyleSheet.create({

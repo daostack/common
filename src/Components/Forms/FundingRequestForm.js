@@ -6,8 +6,8 @@ import MultiFileField from '../FormFields/MultiFileField';
 import MultiLinkField from '../FormFields/MultiLinkField';
 
 import {observer, inject} from 'mobx-react';
-import {layout, text, colors, font} from '../../Theme';
-import TextInputFieldWithIcon from '../../Components/FormFields/TextInputFieldWithIcon';
+import {layout, text, colors, font} from '~/Theme';
+import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 
 class FundingRequestForm extends React.Component {
   static FIELD_TITLE = 'title';
@@ -23,7 +23,7 @@ class FundingRequestForm extends React.Component {
 
   formSkip() {}
 
-  formSave = async e => {
+  formSave = async (e) => {
     const {fundingRequestFormStore} = this.props;
     if (fundingRequestFormStore.isFormValid()) {
       if (this.props.onFormSubmit) {
@@ -32,7 +32,7 @@ class FundingRequestForm extends React.Component {
     }
   };
 
-  onFormClose = e => {
+  onFormClose = (e) => {
     const {onFormClose} = this.props;
     if (onFormClose) {
       onFormClose();

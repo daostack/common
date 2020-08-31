@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   Text,
@@ -10,26 +10,26 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import {StackActions} from '@react-navigation/native';
-import {observer, inject} from 'mobx-react';
+import { StackActions } from '@react-navigation/native';
+import { observer, inject } from 'mobx-react';
 import ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
-import Icon from '../../../Assets/iconfont/Icon';
+import Icon from '~/Assets/iconfont/Icon';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
-import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
-import StorageService from '../../../Services/StorageService';
+import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
+import StorageService from '~/Services/StorageService';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
-import {numberFormatter, showErrorPopUp} from '../../../Util';
-import Toast from '../../../Util/Toast';
+import { numberFormatter, showErrorPopUp } from '~/Util';
+import Toast from '~/Util/Toast';
 import Modal from 'react-native-modal';
-import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
-import ArcService from '../../../Services/ArcService';
+import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
+import ArcService from '~/Services/ArcService';
 import Share from 'react-native-share';
-import { BlurView } from '../../../Components';
+import { BlurView } from '~/Components';
 import CreateStep4Indicators from './CreateStep4Indicators';
-import {CommonActions} from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 import {
   colors,
   font,
@@ -39,9 +39,9 @@ import {
   sizeS,
   sizeL,
   sizeLineHeight,
-} from '../../../Theme';
+} from '~/Theme';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const stylesHeader = StyleSheet.create({
   generalInfoTitle: {
@@ -174,7 +174,7 @@ const CreateStep4 = props => {
   const forgeCommon = async () => {
     try {
       const address = props.userStore.userInfo.safeAddress;
-      const formDataInit = {...form};
+      const formDataInit = { ...form };
 
       const fundingGoalDeadline = formDataInit[CreateCommonForm.DEADLINE];
 
@@ -204,7 +204,7 @@ const CreateStep4 = props => {
         setNewCommonAddress(commonAddress);
       }
 
-      return {commonAddress};
+      return { commonAddress };
     } catch (e) {
       props.navigation.pop();
       showErrorPopUp(props.bottomSheetStore, e.message);
@@ -236,7 +236,7 @@ const CreateStep4 = props => {
         }}
         scrollEventThrottle={16}
         onScroll={Animated.event([
-          {nativeEvent: {contentOffset: {y: scrollY}}},
+          { nativeEvent: { contentOffset: { y: scrollY } } },
         ])}>
         <CreateStepHeader currentIndex={3} />
         <View
@@ -280,11 +280,11 @@ const CreateStep4 = props => {
                 color: 'white',
               }}
               onPress={() => pickImage(false)}>
-              <BlurView style={{padding: 12, borderRadius: 14}}>
+              <BlurView style={{ padding: 12, borderRadius: 14 }}>
                 <Icon name={'addpicture'} color="white" size={20} />
               </BlurView>
             </TouchableOpacity>
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity
                 style={{
                   padding: 10,
@@ -367,23 +367,23 @@ const CreateStep4 = props => {
             </View>
           )} */}
           <View
-            style={{height: 1, width: width, backgroundColor: colors.grey4}}
+            style={{ height: 1, width: width, backgroundColor: colors.grey4 }}
           />
-          <View style={{...styles.sectionTitle, justifyContent: 'center'}}>
+          <View style={{ ...styles.sectionTitle, justifyContent: 'center' }}>
             {/* <View style={{minWidth: 90, marginRight: 10}}>
               <CreateStep4Indicators
                 title="Goal"
                 number={numberFormatter(form[CreateCommonForm.FUNDING_GOAL])}
               />
             </View> */}
-            <View style={{width: 120, marginHorizontal: 10}}>
+            <View style={{ width: 120, marginHorizontal: 10 }}>
               <CreateStep4Indicators
                 title="Min. Contribution"
                 number={numberFormatter(form[CreateCommonForm.MINIMUM])}
               />
             </View>
 
-            <View style={{width: 120, marginHorizontal: 10}}>
+            <View style={{ width: 120, marginHorizontal: 10 }}>
               <CreateStep4Indicators
                 title="Period"
                 currencySymbol={false}
@@ -442,8 +442,8 @@ const CreateStep4 = props => {
                 </View>
               ))
             ) : (
-              <View />
-            )}
+                <View />
+              )}
           </>
           {form[CreateCommonForm.RULES]?.length > 0 ? (
             form[CreateCommonForm.RULES].map((rule, index) => (
@@ -458,15 +458,15 @@ const CreateStep4 = props => {
                   }}>
                   Rule #{index + 1}
                 </Text>
-                <View style={[styles.sectionTitle, {marginTop: 10}]}>
+                <View style={[styles.sectionTitle, { marginTop: 10 }]}>
                   <Text style={styles.textSubtitle}>{rule.title}</Text>
                 </View>
                 <Text style={styles.textContent}>{rule.url}</Text>
               </View>
             ))
           ) : (
-            <View />
-          )}
+              <View />
+            )}
         </View>
       </ScrollView>
       <RequestStepActionButton
@@ -479,7 +479,7 @@ const CreateStep4 = props => {
         avoidKeyboard={true}
         backdropColor={colors.white}
         backdropOpacity={1}
-        style={{padding: 0}}>
+        style={{ padding: 0 }}>
         <SentTemplate
           isCommonCreation={true}
           title="Your journey starts now"

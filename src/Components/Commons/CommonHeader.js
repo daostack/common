@@ -6,14 +6,14 @@ import {
   SafeAreaView,
 } from 'react-native';
 import React from 'react';
-import { layout, colors, text, font } from '../../Theme';
+import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
-import Icon from '../../Assets/iconfont/Icon';
-import { BlurView } from '../../Components';
+import Icon from '~/Assets/iconfont/Icon';
+import {BlurView} from '~/Components';
 
-const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, headerHeightLayouted, common}) => {
+const CommonHeader = ({navigation, isMember, onHeaderMenuOpen, commonInfo, headerHeightLayouted, common}) => {
 
-  const openAgendaScreen = e => {
+  const openAgendaScreen = (e) => {
     navigation.navigate('CommonAgenda', {
       screenTitle: commonInfo.name,
       common: common,
@@ -21,7 +21,7 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, head
   };
 
   return (
-    <SafeAreaView onLayout={ event => {
+    <SafeAreaView onLayout={ (event) => {
       headerHeightLayouted(event.nativeEvent.layout.height);
     }}
     style={styles.headerContainer}
@@ -45,7 +45,7 @@ const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, head
         {commonInfo.description}
       </Text>
       {isMember && navigation ? (
-        <BlurView style={{ paddingVertical: 10, paddingHorizontal: 15, borderRadius: 10}}>
+        <BlurView style={{paddingVertical: 10, paddingHorizontal: 15, borderRadius: 10}}>
           <TouchableOpacity onPress={openAgendaScreen}>
             <View style={{flexDirection: 'row'}}>
               <Text style={styles.headerViewAgenda}>View agenda</Text>

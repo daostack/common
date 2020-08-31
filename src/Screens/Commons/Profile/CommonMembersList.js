@@ -1,19 +1,19 @@
-import React, {useState, useEffect} from 'react';
-import {View, TouchableOpacity, StyleSheet} from 'react-native';
-import MemberCard from '../../../Components/MemberCard';
-import {layout, sizeS, colors} from '../../../Theme';
-import UserService from '../../../Services/UserService';
-import DaoService from '../../../Services/DaoService';
-import Loader from '../../../Components/Loader';
-import MemberImage from '../../../Components/Commons/MemberImage';
-import Toast from '../../../Util/Toast';
-import {observer, inject} from 'mobx-react';
+import React, { useState, useEffect } from 'react';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import MemberCard from '~/Components/MemberCard';
+import { layout, sizeS, colors } from '~/Theme';
+import UserService from '~/Services/UserService';
+import DaoService from '~/Services/DaoService';
+import Loader from '~/Components/Loader';
+import MemberImage from '~/Components/Commons/MemberImage';
+import Toast from '~/Util/Toast';
+import { observer, inject } from 'mobx-react';
 
-const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) => {
+const CommonMembersList = ({ navigation, members, horizontal, bottomSheetStore }) => {
   const [membersInfo, setMembersInfo] = useState([]);
 
   const showUserProfile = uid => {
-    navigation.navigate('Profile', {userId: uid});
+    navigation.navigate('Profile', { userId: uid });
   };
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
         currUserInfo = loadMemberUser(daoMember.userId);
       } else {
         // TODO: Think about what data to put in the userInfo object in case there is no userId in the daoMember.
-        currUserInfo = {displayName: daoMember.address};
+        currUserInfo = { displayName: daoMember.address };
         setMembersInfo(prevMembers => [...prevMembers, currUserInfo]);
       }
     });
@@ -52,7 +52,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
   let containerStyle = {};
 
   if (horizontal) {
-    containerStyle = {...layout.flexRow, ...{paddingLeft: (membersInfo.length - 1) * 15}};
+    containerStyle = { ...layout.flexRow, ...{ paddingLeft: (membersInfo.length - 1) * 15 } };
   }
 
   return (
@@ -64,21 +64,21 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
             let itemStyle = styles.horizontalItem;
 
             if (i > 0) {
-              itemStyle = {...itemStyle, ...{position: 'relative', left: i * -15}};
+              itemStyle = { ...itemStyle, ...{ position: 'relative', left: i * -15 } };
             }
 
             return (
-              <TouchableOpacity style={itemStyle} onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
+              <TouchableOpacity style={itemStyle} onPress={() => showUserProfile(member.uid)} key={`touch_${i}`}>
                 <MemberImage
                   id={i}
                   userInfo={member}
-                  style={{marginLeft: i > 0 ? -15 : 0}}
+                  style={{ marginLeft: i > 0 ? -15 : 0 }}
                 />
               </TouchableOpacity>
             );
           } else {
             return (
-              <TouchableOpacity style={styles.item} onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
+              <TouchableOpacity style={styles.item} onPress={() => showUserProfile(member.uid)} key={`touch_${i}`}>
                 <MemberCard
                   key={i}
                   //name={member.displayName}
@@ -94,8 +94,8 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
           }
         })
       ) : (
-        <Loader />
-      )}
+          <Loader />
+        )}
     </View>
   );
 };

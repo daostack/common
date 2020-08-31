@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   SafeAreaView,
@@ -11,14 +11,14 @@ import {
 } from 'react-native';
 import moment from 'moment';
 
-import {layout, text, font, colors} from '../../../Theme';
-import DaoService from '../../../Services/DaoService';
+import { layout, text, font, colors } from '~/Theme';
+import DaoService from '~/Services/DaoService';
 
-const CommonAgenda = ({navigation, route}) => {
+const CommonAgenda = ({ navigation, route }) => {
 
   const [common, setCommon] = useState(null);
 
-  useEffect( async () => {
+  useEffect(async () => {
     if (route.params.commonId) {
       const common = await DaoService.getInstance().getDaoById();
       setCommon(common);
@@ -27,7 +27,7 @@ const CommonAgenda = ({navigation, route}) => {
     if (route.params.common) {
       setCommon(route.params.common);
     }
-  },[]);
+  }, []);
 
   return (
     <>
@@ -42,7 +42,7 @@ const CommonAgenda = ({navigation, route}) => {
           <Text style={styles.agendaTitletext}>Agenda and Rules</Text>
           <View style={layout.content}>
             <Image
-              source={require('../../../Assets/Common/rules.png')}
+              source={require('~/Assets/Common/rules.png')}
               style={styles.image}
             />
           </View>
@@ -90,23 +90,23 @@ const CommonAgenda = ({navigation, route}) => {
 
           {common.metadata.rules?.length > 0 && (
             <>
-            <View style={styles.sectionDividerContent}>
-              <View style={styles.sectionDivider} />
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={text.h2Black}>Rules of conduct</Text>
-              {common.metadata.rules.map((rule, i) => (
-                <View key={i}>
-                  <Text style={styles.ruleTitle}>
-                    {rule.title}
-                  </Text>
-                  <Text
-                    style={styles.ruleDescription}>
-                    {rule.url}
-                  </Text>
-                </View>
-              ))}
-            </View>
+              <View style={styles.sectionDividerContent}>
+                <View style={styles.sectionDivider} />
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={text.h2Black}>Rules of conduct</Text>
+                {common.metadata.rules.map((rule, i) => (
+                  <View key={i}>
+                    <Text style={styles.ruleTitle}>
+                      {rule.title}
+                    </Text>
+                    <Text
+                      style={styles.ruleDescription}>
+                      {rule.url}
+                    </Text>
+                  </View>
+                ))}
+              </View>
             </>
           )}
         </ScrollView>

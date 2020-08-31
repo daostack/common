@@ -1,7 +1,7 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
-import Toast from '../Util/Toast';
+import Toast from '~/Util/Toast';
 
 export default class NotificationService {
   static async saveTokenToDatabase() {

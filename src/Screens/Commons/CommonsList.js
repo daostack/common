@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   SafeAreaView,
@@ -8,11 +8,11 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-import {CommonBox, BottomRightButton} from '../../Components';
-import {inject, observer} from 'mobx-react';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
-import {font, colors} from '../../Theme';
-import {object} from 'prop-types';
+import { CommonBox, BottomRightButton } from '~/Components';
+import { inject, observer } from 'mobx-react';
+import { BOTTOM_SHEET_TEMPLATES } from '~/Stores/BottomSheetStore';
+import { font, colors } from '~/Theme';
+import { object } from 'prop-types';
 
 import {
   Placeholder,
@@ -20,24 +20,24 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
-import DaoService from '../../Services/DaoService';
+import DaoService from '~/Services/DaoService';
 
-const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
+const CommonsList = ({ navigation, daoStore, bottomSheetStore, userStore }) => {
   const [myDaosGroup, setMyDaosGroup] = useState(null);
   const [allDaosGroup, setAllDaosGroup] = useState(null);
 
   const loadMyDaosList = (snapshot) => {
     if (snapshot?.empty || !snapshot) {
-      setMyDaosGroup({title: '', data: []});
+      setMyDaosGroup({ title: '', data: [] });
       return [];
     }
     let docs = snapshot.docs.map((doc, index) => ({
-      ...{id: doc.id},
+      ...{ id: doc.id },
       ...doc.data(),
       ...{
         coverPhoto:
-            doc.data().metadata?.image ||
-            `https://picsum.photos/id/${index * 10}/500/100.jpg`,
+          doc.data().metadata?.image ||
+          `https://picsum.photos/id/${index * 10}/500/100.jpg`,
       },
     }));
 
@@ -58,17 +58,17 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
 
   const loadDaosList = (snapshot) => {
     if (snapshot?.empty || !snapshot) {
-      setAllDaosGroup({title: '', data: []});
+      setAllDaosGroup({ title: '', data: [] });
       return [];
     }
     const allCommons = snapshot.docs.filter((doc) => !userStore.isDaoMember(doc.data().members));
     let docs = allCommons.map((doc, index) => ({
-      ...{id: doc.id},
+      ...{ id: doc.id },
       ...doc.data(),
       ...{
         coverPhoto:
-            doc.data().metadata?.image ||
-            `https://picsum.photos/id/${index * 10}/500/100.jpg`,
+          doc.data().metadata?.image ||
+          `https://picsum.photos/id/${index * 10}/500/100.jpg`,
       },
     }));
 
@@ -95,7 +95,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       if (userStore.userInfo) {
         unsubscribeMyDaos = await DaoService.getInstance().subscribeToMyDaosList(userStore.userInfo.uid, userStore.userInfo.safeAddress, loadMyDaosList);
       } else {
-        setMyDaosGroup({title: '', data: []});
+        setMyDaosGroup({ title: '', data: [] });
       }
       unsubscribeAllDaos = await DaoService.getInstance().subscribeToDaosList(loadDaosList);
     };
@@ -162,7 +162,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
         {[...Array(3).keys()].map((i) => (
           <View key={`common_loading_${i}`}>
             <PlaceholderMedia
-              style={{height: 200, width: '100%', marginBottom: 20}}
+              style={{ height: 200, width: '100%', marginBottom: 20 }}
             />
             <PlaceholderLine width={80} />
             <PlaceholderLine />
@@ -176,7 +176,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
   const listFooter = () => (
     <View style={styles.footerContainer}>
       <Image
-        source={require('../../Assets/commonListFooter.png')}
+        source={require('~/Assets/commonListFooter.png')}
         style={{
           resizeMode: 'contain',
           width: 84,
@@ -191,20 +191,20 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
           textAlign: 'center',
           marginVertical: 10,
         }}>
-          Anyone can create a Common, invite their friends, and work together to
-          achieve common goals. Start now!
+        Anyone can create a Common, invite their friends, and work together to
+        achieve common goals. Start now!
       </Text>
     </View>
   );
 
   return (
     <>
-      <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#FBFCFC' }}>
         {myDaosGroup && allDaosGroup ? (
           <SectionList
             sections={[myDaosGroup, allDaosGroup]}
             ListHeaderComponent={header}
-            contentContainerStyle={{paddingHorizontal: 20}}
+            contentContainerStyle={{ paddingHorizontal: 20 }}
             renderItem={(x) => (
               <CommonBox
                 common={x.item}
@@ -217,12 +217,12 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
             )}
             keyExtractor={(x) => x.id}
             stickySectionHeadersEnabled={true}
-            renderSectionHeader={({section: {title}}) => sectionHeader(title)}
+            renderSectionHeader={({ section: { title } }) => sectionHeader(title)}
             ListFooterComponent={listFooter}
           />
         ) : (
-          loadingPlaceholder()
-        )}
+            loadingPlaceholder()
+          )}
 
         <BottomRightButton onPress={onAddCommon} />
       </SafeAreaView>

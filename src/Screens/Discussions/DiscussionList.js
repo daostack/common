@@ -1,11 +1,11 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {FlatList} from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { FlatList } from 'react-native';
 import DiscussionCard from './DiscussionCard';
 import firestore from '@react-native-firebase/firestore';
-import ViewTabNoData from '../../Components/ViewTabNoData';
-import {string, object} from 'prop-types';
+import ViewTabNoData from '~/Components/ViewTabNoData';
+import { string, object } from 'prop-types';
 
-const DiscussionList = ({commonId, navigation}) => {
+const DiscussionList = ({ commonId, navigation }) => {
   const [list, setList] = useState([]);
 
   let listRef = useRef([]);
@@ -20,7 +20,7 @@ const DiscussionList = ({commonId, navigation}) => {
             setList([]);
           } else {
             if (snapshot.docChanges().length !== 0) {
-              const newList = snapshot.docChanges().map(({doc}) => ({
+              const newList = snapshot.docChanges().map(({ doc }) => ({
                 id: doc.id,
                 ...doc.data(),
               }));
@@ -55,7 +55,7 @@ const DiscussionList = ({commonId, navigation}) => {
       {list.length > 0 ? (
         <FlatList
           data={list}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <DiscussionCard
               key={item.id}
               data={item}
@@ -66,11 +66,11 @@ const DiscussionList = ({commonId, navigation}) => {
           extraData={listRef}
         />
       ) : (
-        <ViewTabNoData
-          title="No Discussions"
-          subtitle="This is where you can discuss and share your thoughts and ideas."
-        />
-      )}
+          <ViewTabNoData
+            title="No Discussions"
+            subtitle="This is where you can discuss and share your thoughts and ideas."
+          />
+        )}
     </>
   );
 };

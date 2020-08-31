@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 
 import React from 'react';
-import {text, layout, colors,font} from '../../Theme';
+import { text, layout, colors, font } from '~/Theme';
 
 const UnsavedChanges = ({
   navigation,

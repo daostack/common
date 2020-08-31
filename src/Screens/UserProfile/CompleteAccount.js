@@ -8,10 +8,10 @@ import {
   View,
   Text,
 } from 'react-native';
-import EditProfileForm from '../../Components/Forms/EditProfileForm';
-import {colors, text, layout} from '../../Theme';
+import EditProfileForm from '~/Components/Forms/EditProfileForm';
+import { colors, text, layout } from '~/Theme';
 
-const CompleteAccount = ({route, navigation}) => {
+const CompleteAccount = ({ route, navigation }) => {
   return (
     <>
       <StatusBar barStyle="dark-content" />

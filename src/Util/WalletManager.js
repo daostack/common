@@ -1,11 +1,11 @@
 import { NativeWallet } from './NativeWallet';
 import { ethers, Contract } from 'ethers';
 import { Alert } from 'react-native';
-import { web3ProviderUrl, web3NetworkId, COMMONTOKENADDRESS, relayerUrl } from '../Config';
+import { web3ProviderUrl, web3NetworkId, COMMONTOKENADDRESS, relayerUrl } from '~/Config';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 import ABI from './abi.json';
-import UserService from '../Services/UserService';
+import UserService from '~/Services/UserService';
 
 
 ethers.Contract.prototype.sendToRelayer = async function (funcName, params, value = '0') {
@@ -84,7 +84,7 @@ export default class WalletManager {
       Alert.alert('Hands up',
         'There is a fatal error - local address mismatched, please contact us to help',
         [{ text: 'OK', onPress: () => console.log('Ok Pressed'), style: 'danger' }],
-        {cancelable: false}
+        { cancelable: false }
       );
       // If local address is mismatched, no need to create smart wallet
       return;
@@ -299,7 +299,7 @@ export default class WalletManager {
     const contract = new ethers.Contract(COMMONTOKENADDRESS, ABI.CommonToken, this.provider);
     const balance = await contract.balanceOf(address);
     // TODO: please remove the next call to "formatEther", which will dive the balance by 10 ** 18 and make it unreadable
-    const balanceStr =  ethers.utils.formatEther(balance);
+    const balanceStr = ethers.utils.formatEther(balance);
     console.log('balance ->', balance);
     return balanceStr;
   }
@@ -377,12 +377,9 @@ export default class WalletManager {
   getTransactionEvents = (interf, receipt) => {
     const txEvents = {};
     const abiEvents = Object.values(interf.events);
-    for (const log of receipt.logs)
-    {
-      for (const abiEvent of abiEvents)
-      {
-        if (abiEvent.topic === log.topics[0])
-        {
+    for (const log of receipt.logs) {
+      for (const abiEvent of abiEvents) {
+        if (abiEvent.topic === log.topics[0]) {
           txEvents[abiEvent.name] = abiEvent.decode(log.data, log.topics);
           break;
         }

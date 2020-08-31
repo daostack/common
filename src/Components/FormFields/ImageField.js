@@ -5,13 +5,13 @@ import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 
 import ImagePicker from 'react-native-image-picker';
-import Toast from '../../Util/Toast';
-import StorageService from '../../Services/StorageService';
+import Toast from '~/Util/Toast';
+import StorageService from '~/Services/StorageService';
 
-import Icon from '../../Assets/iconfont/Icon';
-import colors from '../../Theme/colors';
-import layout from '../../Theme/layout';
-import text from '../../Theme/text';
+import Icon from '~/Assets/iconfont/Icon';
+import colors from '~/Theme/colors';
+import layout from '~/Theme/layout';
+import text from '~/Theme/text';
 
 class ImageField extends React.Component {
   fieldValidation = null;
@@ -34,7 +34,7 @@ class ImageField extends React.Component {
     }
   }
 
-  onChangeValue = url => {
+  onChangeValue = (url) => {
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
       formStore.fieldChanged(name, url);
@@ -44,7 +44,7 @@ class ImageField extends React.Component {
 
   onFieldDeleted = () => {
     if (this.props.validation) {
-      const { formStore, name } = this.props.validation;
+      const {formStore, name} = this.props.validation;
       formStore.removeFormField(name);
     }
     this.props.onFieldDeleted && this.props.onFieldDeleted();
@@ -57,7 +57,7 @@ class ImageField extends React.Component {
       quality: quality || 0.7,
       allowsEditing: allowsEditing || false,
     };
-    ImagePicker.showImagePicker(options, response => {
+    ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
         // console.log('User cancelled image picker');
       } else if (response.error) {
@@ -68,12 +68,12 @@ class ImageField extends React.Component {
         Toast.loading('Uploading...');
         StorageService.getInstance()
           .uploadImage(response.uri)
-          .then(url => {
+          .then((url) => {
             Toast.hide();
             Toast.success('Done');
             this.onChangeValue(url);
           })
-          .catch(error => Toast.error(error.toString()));
+          .catch((error) => Toast.error(error.toString()));
       }
     });
   };
@@ -110,7 +110,7 @@ class ImageField extends React.Component {
     else {
       return (
         <View style={styles.imageFieldPlaceholderView}>
-          <View style={{ borderColor: colors.grey3, borderWidth: 2, borderRadius: 5, padding: 15}}>
+          <View style={{borderColor: colors.grey3, borderWidth: 2, borderRadius: 5, padding: 15}}>
             <Icon name="addpicture" size={18} />
           </View>
           <Text

@@ -3,10 +3,10 @@ import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import DocumentPicker from 'react-native-document-picker';
-import Toast from '../../Util/Toast';
-import Icon from '../../Assets/iconfont/Icon';
-import {text, layout, colors} from '../../Theme';
-import StorageService from '../../Services/StorageService';
+import Toast from '~/Util/Toast';
+import Icon from '~/Assets/iconfont/Icon';
+import {text, layout, colors} from '~/Theme';
+import StorageService from '~/Services/StorageService';
 
 class FileField extends React.Component {
   fieldValidation = null;
@@ -28,7 +28,7 @@ class FileField extends React.Component {
     }
   }
 
-  onChangeValue = fileUrl => {
+  onChangeValue = (fileUrl) => {
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
       formStore.fieldChanged(name, fileUrl);
@@ -38,7 +38,7 @@ class FileField extends React.Component {
 
   onFieldDeleted = () => {
     if (this.props.validation) {
-      const { formStore, name} = this.props.validation;
+      const {formStore, name} = this.props.validation;
       formStore.removeFormField(name);
     }
     this.props.onFieldDeleted && this.props.onFieldDeleted();
@@ -121,7 +121,7 @@ class FileField extends React.Component {
   };
 
   render() {
-    const { value, validation} = this.props;
+    const {value, validation} = this.props;
 
     const currValue = validation
       ? validation.formStore.form.fields[validation.name].value
