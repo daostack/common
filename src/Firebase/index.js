@@ -1,3 +1,5 @@
+import Config from 'react-native-config';
+
 import firebase, {utils} from '@react-native-firebase/app';
 import messaging from '@react-native-firebase/messaging';
 import storage from '@react-native-firebase/storage';
@@ -6,17 +8,23 @@ import auth from '@react-native-firebase/auth';
 import '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
 
-const db = firestore();
-const useLocalFirestore = true;
 
-if (useLocalFirestore) {
+const db = firestore();
+
+console.log(Config);
+
+if (Config.local === 'true') {
+  console.warn('Using local fiestore');
+
+  console.log(db);
+
   db.settings({
     host: 'localhost:8080',
-    ssl: false
+    ssl: false,
   });
 }
 
-console.log(db)
+console.log(db);
 
 module.exports = {
   messaging: messaging(),

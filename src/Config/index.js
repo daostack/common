@@ -1,6 +1,5 @@
 import { IPFSApiClient } from './ipfs-api';
 import Config from 'react-native-config';
-import axios from 'axios';
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
 // TODO: we should probably read this from the package..
 
@@ -48,21 +47,16 @@ if (Config.ENV === 'production') {
   throw Error(`Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`);
 }
 
-let isLocalPort = false;
-if (__DEV__) {
-  axios.get('http://localhost:5001')
-    .catch(error => {
-      isLocalPort = error.response?.status === 404;
-    });
+if (Config.local) {
+  console.warn('Using local firebase');
 }
 
-const cloudFuncURL = () => {
-  return isLocalPort ?  localFunctionURL : cloudFunctionURL;
-};
+const cloudFuncURL = () =>
+  Config.local
+    ? localFunctionURL
+    : cloudFunctionURL;
 
-const functionEndpoint = endpoint => {
-  return `${cloudFuncURL()}/${endpoint}`;
-};
+const functionEndpoint = (endpoint) => `${cloudFuncURL()}/${endpoint}`;
 
 
 export const ARC_VERSION = arcVersion;

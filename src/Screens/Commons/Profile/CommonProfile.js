@@ -23,7 +23,6 @@ import ProposalService from '../../../Services/ProposalService';
 import DaoService from '../../../Services/DaoService';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
-import {calcIsFundingStage} from '../../../Util';
 import  Toast  from '../../../Util/Toast';
 import {
   Placeholder,
