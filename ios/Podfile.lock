@@ -611,6 +611,8 @@ PODS:
     - React
   - react-native-image-resizer (1.2.3):
     - React
+  - react-native-netinfo (5.9.6):
+    - React
   - react-native-pdf (6.2.0):
     - React
   - react-native-safe-area-context (0.7.3):
@@ -789,6 +791,7 @@ DEPENDENCIES:
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
+  - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-pdf (from `../node_modules/react-native-pdf`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-version-number (from `../node_modules/react-native-version-number`)
@@ -917,6 +920,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-picker"
   react-native-image-resizer:
     :path: "../node_modules/react-native-image-resizer"
+  react-native-netinfo:
+    :path: "../node_modules/@react-native-community/netinfo"
   react-native-pdf:
     :path: "../node_modules/react-native-pdf"
   react-native-safe-area-context:
@@ -1059,6 +1064,7 @@ SPEC CHECKSUMS:
   react-native-document-picker: 825552b827012282baf4b7cbf119d3b37a280c90
   react-native-image-picker: 6a850c41f57f0848d918c2a77aedd7aa272ffa30
   react-native-image-resizer: 2f1577efa3bc762597681f530c8e8d05ce0ceeb3
+  react-native-netinfo: 38a1e0b3e89b48e4b5833ed475d8df5f049f6f90
   react-native-pdf: 909cd849e6a806731b2135263189fea39494b55e
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
   react-native-version-number: b415bbec6a13f2df62bf978e85bc0d699462f37f
@@ -1105,4 +1111,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: f1a92796a2d9e6333c6ac56a2ee21a6b60ab1a0b
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.8.4
