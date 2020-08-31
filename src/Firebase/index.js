@@ -11,20 +11,14 @@ import firestore from '@react-native-firebase/firestore';
 
 const db = firestore();
 
-console.log(Config);
-
 if (Config.local === 'true') {
-  console.warn('Using local fiestore');
-
-  console.log(db);
+  console.warn('Using local firestore');
 
   db.settings({
     host: 'localhost:8080',
     ssl: false,
   });
 }
-
-console.log(db);
 
 module.exports = {
   messaging: messaging(),
