@@ -35,6 +35,7 @@ import TabBarRenderer from '../../Components/TabView/TabBarRenderer';
 import moment from 'moment';
 import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
 import DaoService from '../../Services/DaoService';
+import {db} from '../../Firebase';
 
 const ProposalScreen = ({navigation, route, userStore, bottomSheetStore, props}) => {
   const [ votingProcessState, setVotingProcessState ] = useState({inProgress: false, error: false});
