@@ -3,7 +3,7 @@ import { SafeAreaView, StyleSheet } from 'react-native';
 import { colors } from '~/Theme';
 import CreateDiscussionForm from '~/Components/Forms/CreateDiscussionForm';
 
-const DiscussionPost = props => {
+const DiscussionPost = (props) => {
   const commonId = props.route.params.commonId;
   return (
     <SafeAreaView style={styles.container}>

@@ -27,9 +27,10 @@ class CreateDiscussionForm extends React.Component {
     try {
       const {createDiscussionStore, userStore} = this.props;
       if (createDiscussionStore.isFormValid()) {
+        Keyboard.dismiss();
         const changedFields = createDiscussionStore.getChangedFormFieldsJson();
         console.log('createDiscussionStore', changedFields);
-
+        Toast.loading('Creating new discussion ...');
         const images = changedFields[CreateDiscussionForm.IMAGES] || [];
         const files = changedFields[CreateDiscussionForm.FILES] || [];
         firestore()
@@ -47,8 +48,6 @@ class CreateDiscussionForm extends React.Component {
           })
           .then(() => {
             Toast.success('Done');
-            Keyboard.dismiss();
-
             if (this.props.onFormSubmit) {
               this.props.onFormSubmit(changedFields);
             }
