@@ -108,7 +108,6 @@
     "@types/react-native": "^0.63.9",
     "@types/react-test-renderer": "^16.9.3",
     "babel-jest": "^25.1.0",
-    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-node": "^4.0.0",
