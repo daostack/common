@@ -168,7 +168,7 @@ const CommonProfile = ({
   }, [pendingProposalsData]);
 
   const renderTabBar = (props) => (
-    <TabBarRenderer originRef={originTabBarRef} {...props} />
+    <TabBarRenderer originRef={originTabBarRef} jumpTo = {originTabBarRef.current?.props?.jumpTo} {...props} indexChange = {setIndex}/>
   );
 
   const Discussions = () => (
@@ -556,7 +556,7 @@ const CommonProfile = ({
           </TouchableOpacity>
 
           {showStickyTabBar && (<View style={{position: 'absolute', top: STICKY_HEADER_HEIGHT, width: '100%', paddingBottom: 5, zIndex: 999}}>
-            <TabBarRenderer navigationState={{index: 0, routes: routes}} parentRef={originTabBarRef} jumpTo = {setIndex} />
+            <TabBarRenderer navigationState={{index, routes}} jumpTo = {originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange = {setIndex} />
           </View>)}
 
           <ParallaxScrollView
