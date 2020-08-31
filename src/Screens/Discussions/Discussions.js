@@ -20,7 +20,7 @@ import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '../../Theme';
 import DiscussionMessage from './DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '../../Util/Toast.js';
-import FirebaseService from '../../Services/FirebaseService';
+import UserService from '../../Services/UserService';
 import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
@@ -131,7 +131,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userData = await FirebaseService.getInstance().getUserById(
+      const userData = await UserService.getInstance().getUserById(
         data.ownerId,
       );
       setUser(userData);

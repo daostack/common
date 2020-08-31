@@ -1,19 +1,19 @@
 import React, {useEffect, useState, useRef} from 'react';
 import PropTypes from 'prop-types';
-import { FlatList, StyleSheet, View, Text, Image, Dimensions, TouchableOpacity} from 'react-native';
+import {FlatList, StyleSheet, View, Text, Image, Dimensions, TouchableOpacity} from 'react-native';
 import ViewTabNoData from '../../Components/ViewTabNoData';
-import ProposalService, { PROPOSAL_STAGE } from '../../Services/ProposalService';
+import ProposalService, {PROPOSAL_STAGE} from '../../Services/ProposalService';
 import ProposalCard from '../../Components/Proposals/ProposalCard';
 import {layout, colors, font, text, sizeM} from '../../Theme';
-import FirebaseService from '../../Services/FirebaseService';
+import DaoService from '../../Services/DaoService';
 import SwiperCard from '../../Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
-import { PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '../../Services/ProposalService';
+import {PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '../../Services/ProposalService';
 import moment from 'moment';
 
 const {width, height} = Dimensions.get('window');
 
-const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, onlyFundingRequests, userId, membershipRequests, ...props}) => {
+const ProposalsList = ({isMember, commonInfo, safeAddress, showAll, showMax, onlyFundingRequests, userId, membershipRequests, ...props}) => {
   const commonId = commonInfo?.id;
   const commonName = commonInfo?.name;
 
@@ -36,12 +36,12 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
         proposalStages,
         safeAddress,
         showAll,
-        newList => {
+        (newList) => {
           console.log(newList, PROPOSAL_STAGE.Executed);
 
           const filteredList = isHistory
-            ? newList.filter(proposal => PROPOSAL_STAGES_HISTORY.some(stg => stg === proposal.stageStr) || moment().isAfter(moment.unix(proposal.closingAt)))
-            : newList.filter(proposal => PROPOSAL_STAGES_ACTIVE.some(stg => stg === proposal.stageStr) && !moment().isAfter(moment.unix(proposal.closingAt)));
+            ? newList.filter((proposal) => PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.stageStr) || moment().isAfter(moment.unix(proposal.closingAt)))
+            : newList.filter((proposal) => PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.stageStr) && !moment().isAfter(moment.unix(proposal.closingAt)));
 
           setList(filteredList);
           if (onCountChange) {
@@ -67,42 +67,40 @@ const ProposalsList = ({ isMember, commonInfo, safeAddress, showAll, showMax, on
   const onReviewProposal = async ( proposalId, daoId ) => {
     navigation.navigate('ProposalScreen', {
       proposalId: proposalId,
-      screenTitle: commonName || await FirebaseService.getInstance().getDaoById(daoId),
+      screenTitle: commonName || await DaoService.getInstance().getDaoNameById(daoId),
       commonBalance: commonInfo?.balance,
       isMember,
     });
   };
 
-  const renderProposalCard = (item, index) => {
-    return (
-      isSwiper ? (
-        !showMax || (index < showMax) ? (
-          <ProposalCard
-            key={item.id}
-            data={item}
-            isSwiper={true}
-            membershipRequest={membershipRequests}
-            onReviewProposal={e => onReviewProposal(item.id, item.dao)}
-          />
-        ) : (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('MyProposals', { onlyFundingRequests: onlyFundingRequests, onlyMembershipRequests: membershipRequests })}
-            style={{ ...styles.commonBox }}
-          >
-            <Text style={text.buttonblue}>
-              {`View all ${list.length} ${membershipRequests ? 'Requests' : 'Proposals'}`}
-            </Text>
-          </TouchableOpacity>
-        )
+  const renderProposalCard = (item, index) => (
+    isSwiper ? (
+      !showMax || (index < showMax) ? (
+        <ProposalCard
+          key={item.id}
+          data={item}
+          isSwiper={true}
+          membershipRequest={membershipRequests}
+          onReviewProposal={(e) => onReviewProposal(item.id, item.dao)}
+        />
+      ) : (
+        <TouchableOpacity
+          onPress={() => navigation.navigate('MyProposals', {onlyFundingRequests: onlyFundingRequests, onlyMembershipRequests: membershipRequests})}
+          style={{...styles.commonBox}}
+        >
+          <Text style={text.buttonblue}>
+            {`View all ${list.length} ${membershipRequests ? 'Requests' : 'Proposals'}`}
+          </Text>
+        </TouchableOpacity>
+      )
 
-      ) : <ProposalCard
-        key={item.id}
-        data={item}
-        isSwiper={false}
-        membershipRequest={membershipRequests}
-        onReviewProposal={e => onReviewProposal(item.id, item.dao)}
-      />);
-  };
+    ) : <ProposalCard
+      key={item.id}
+      data={item}
+      isSwiper={false}
+      membershipRequest={membershipRequests}
+      onReviewProposal={(e) => onReviewProposal(item.id, item.dao)}
+    />);
 
 
   return isSwiper ? (
