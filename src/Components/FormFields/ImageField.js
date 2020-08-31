@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Image, View, StyleSheet, TouchableOpacity, Text, Platform, BackHandler} from 'react-native';
+import {Image, View, StyleSheet, TouchableOpacity, Text, Platform} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import ImagePicker from 'react-native-image-picker';
@@ -37,11 +37,6 @@ class ImageField extends React.Component {
     );
   }
 
-  androidBackListener = () => true;
-
-  addBackBtnListener = () => BackHandler.addEventListener('hardwareBackPress', this.androidBackListener);
-  removeBackBtnListener = () =>  BackHandler.removeEventListener('hardwareBackPress', this.androidBackListener);
-
   onChangeValue = (url) => {
     const {formStore, name} = this.props.validation;
     formStore.fieldChanged(name, url);
@@ -69,18 +64,15 @@ class ImageField extends React.Component {
         console.log('ImagePicker Error: ', response.error);
       } else {
         // const source = { uri: response.uri };
-        this.addBackBtnListener();
         Toast.loading('Uploading...');
         StorageService.getInstance()
           .uploadImage(response.uri)
           .then((url) => {
             Toast.hide();
             Toast.success('Done');
-            this.removeBackBtnListener();
             this.onChangeValue(url);
           })
           .catch((error) => {
-            this.removeBackBtnListener();
             Toast.error(error.toString());
           });
       }
