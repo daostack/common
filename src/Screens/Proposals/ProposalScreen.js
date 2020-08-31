@@ -24,10 +24,10 @@ import ArcService from '../../Services/ArcService';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {UserAvatar} from '../../Components';
-import FirebaseService from '../../Services/FirebaseService';
 import {PROPOSAL_STAGES_ACTIVE} from '../../Services/ProposalService';
 import {PROPOSAL_TYPE} from '../../Services/ProposalService';
-import {db} from '../../Firebase';
+import UserService from '../../Services/UserService';
+import DaoService from '../../Services/DaoService';
 import {observer, inject} from 'mobx-react';
 import TabBarRenderer from '../../Components/TabView/TabBarRenderer';
 import moment from 'moment';
@@ -100,7 +100,7 @@ const ProposalScreen = ({navigation,
           proposalId
         );
         const currentDao = await DaoService.getInstance().getDaoById(currProposalInfo.dao);
-        const isMember = userStore.userInfo && userStore.isDaoMember(currentDao.members);
+        const isMember = userInfo && isDaoMember(currentDao.members);
         setIsMember(isMember);
         await loadProposalInfo(currProposalInfo);
         unsubscribe = await ProposalService.getInstance().subscribeToProposalById(proposalId,
