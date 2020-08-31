@@ -2,6 +2,7 @@
 const {first} = require('rxjs/operators');
 import { ipfsUpload, IPFS_DATA_VERSION} from '../../Config';
 import WalletManager from '../../Util/WalletManager';
+import {BN} from 'bn.js';
 
 export const createProposalRequestToJoin = async (arc, daoId, data) => {
   // data must look like this
@@ -33,6 +34,9 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     }
 
     console.log('joinAndQuitPlugin', joinAndQuitPlugin.id);
+
+    // default is 1000000000000000000
+    joinAndQuitPlugin.coreState.pluginParams.voteParams.minimumDaoBounty = new BN(1);
 
     let ipfsHash;
     if (!data.funding) {
