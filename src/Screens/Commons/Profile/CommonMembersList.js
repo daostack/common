@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import MemberCard from '~/Components/MemberCard';
-import { layout, sizeS, colors } from '~/Theme';
+import {layout, sizeS, colors} from '~/Theme';
 import UserService from '~/Services/UserService';
 import DaoService from '~/Services/DaoService';
 import Loader from '~/Components/Loader';
 import MemberImage from '~/Components/Commons/MemberImage';
 import Toast from '~/Util/Toast';
-import { observer, inject } from 'mobx-react';
+import {observer, inject} from 'mobx-react';
 
-const CommonMembersList = ({ navigation, members, horizontal, bottomSheetStore }) => {
+const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) => {
   const [membersInfo, setMembersInfo] = useState([]);
 
-  const showUserProfile = uid => {
-    navigation.navigate('Profile', { userId: uid });
+  const showUserProfile = (uid) => {
+    navigation.navigate('Profile', {userId: uid});
   };
 
   useEffect(() => {
     setMembersInfo([]);
-    const loadMemberUser = async userId => {
+    const loadMemberUser = async (userId) => {
       try {
         let currUserInfo = await UserService.getInstance().getUserById(
           userId,
@@ -26,25 +26,25 @@ const CommonMembersList = ({ navigation, members, horizontal, bottomSheetStore }
 
         currUserInfo = {
           ...currUserInfo,
-          daos: (await DaoService.getInstance().getUserDaos(currUserInfo.uid, currUserInfo.safeAddress)).docs?.map(dao => dao.data()),
+          daos: (await DaoService.getInstance().getUserDaos(currUserInfo.uid, currUserInfo.safeAddress)).docs?.map((dao) => dao.data()),
         };
 
-        setMembersInfo(prevMembers => [...prevMembers, currUserInfo]);
+        setMembersInfo((prevMembers) => [...prevMembers, currUserInfo]);
       } catch (e) {
         Toast.error(e.toString());
         console.log(e);
       }
     };
 
-    members.forEach(async daoMember => {
+    members.forEach(async (daoMember) => {
       let currUserInfo = null;
 
       if (daoMember.userId) {
         currUserInfo = loadMemberUser(daoMember.userId);
       } else {
         // TODO: Think about what data to put in the userInfo object in case there is no userId in the daoMember.
-        currUserInfo = { displayName: daoMember.address };
-        setMembersInfo(prevMembers => [...prevMembers, currUserInfo]);
+        currUserInfo = {displayName: daoMember.address};
+        setMembersInfo((prevMembers) => [...prevMembers, currUserInfo]);
       }
     });
   }, [members]);
@@ -52,7 +52,7 @@ const CommonMembersList = ({ navigation, members, horizontal, bottomSheetStore }
   let containerStyle = {};
 
   if (horizontal) {
-    containerStyle = { ...layout.flexRow, ...{ paddingLeft: (membersInfo.length - 1) * 15 } };
+    containerStyle = {...layout.flexRow, ...{paddingLeft: (membersInfo.length - 1) * 15}};
   }
 
   return (
@@ -64,7 +64,7 @@ const CommonMembersList = ({ navigation, members, horizontal, bottomSheetStore }
             let itemStyle = styles.horizontalItem;
 
             if (i > 0) {
-              itemStyle = { ...itemStyle, ...{ position: 'relative', left: i * -15 } };
+              itemStyle = {...itemStyle, ...{position: 'relative', left: i * -15}};
             }
 
             return (
@@ -72,7 +72,7 @@ const CommonMembersList = ({ navigation, members, horizontal, bottomSheetStore }
                 <MemberImage
                   id={i}
                   userInfo={member}
-                  style={{ marginLeft: i > 0 ? -15 : 0 }}
+                  style={{marginLeft: i > 0 ? -15 : 0}}
                 />
               </TouchableOpacity>
             );
@@ -94,8 +94,8 @@ const CommonMembersList = ({ navigation, members, horizontal, bottomSheetStore }
           }
         })
       ) : (
-          <Loader />
-        )}
+        <Loader />
+      )}
     </View>
   );
 };

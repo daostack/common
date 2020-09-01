@@ -1,22 +1,22 @@
 import React from 'react';
-import { View, StyleSheet, Animated, Text, TouchableOpacity } from 'react-native';
+import {View, StyleSheet, Animated, Text, TouchableOpacity} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
-import { colors, font } from '~/Theme';
+import {colors, font} from '~/Theme';
 
-const CreateStepDotHeader = props => {
+const CreateStepDotHeader = (props) => {
   const headerHeight = props.headerHeight;
   const currentIndex = props.currentIndex;
 
   return (
-    <Animated.View style={[styles.header, { height: headerHeight }]}>
+    <Animated.View style={[styles.header, {height: headerHeight}]}>
       <TouchableOpacity
         style={styles.back}
         onPress={() => props.navigation.pop()}>
-        <Icon name="left-arrow" size={32} style={{ marginLeft: 10 }} />
+        <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
       </TouchableOpacity>
       <View style={styles.bar}>
         <View style={styles.barContent}>
-          {[...Array(4).keys()].map(x => (
+          {[...Array(4).keys()].map((x) => (
             <View
               key={x}
               style={x === currentIndex - 1 ? styles.dot : styles.dot2}

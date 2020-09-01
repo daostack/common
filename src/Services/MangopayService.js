@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { mangoPayUrl } from '~/Config';
+import {mangoPayUrl} from '~/Config';
 import auth from '@react-native-firebase/auth';
 const qs = require('qs');
 
@@ -15,11 +15,11 @@ export const preauthorizePayment = async (cardData, funding, navigation) => {
   try {
     const idToken = await auth().currentUser.getIdToken();
     // first create the user in mangopay if isn't already created
-    await axiosClient.post('create-user', { idToken });
+    await axiosClient.post('create-user', {idToken});
     // then get card pre-registration data
-    const { data: { preRegData } } = await axiosClient.post(
+    const {data: {preRegData}} = await axiosClient.post(
       'get-card-registration',
-      { idToken },
+      {idToken},
     );
 
     const {
@@ -43,8 +43,8 @@ export const preauthorizePayment = async (cardData, funding, navigation) => {
       },
     });
     // finalize the card registration - save cardId to firebase and preauthorize payment
-    const { data: { preAuthData: { preAuthId, SecureModeRedirectURL } } } = await axiosClient.post('register-card',
-      { idToken, cardRegistrationData, Id, funding }
+    const {data: {preAuthData: {preAuthId, SecureModeRedirectURL}}} = await axiosClient.post('register-card',
+      {idToken, cardRegistrationData, Id, funding}
     );
     if (SecureModeRedirectURL) {
       const is3DCheckFinished = () => new Promise((resolve, reject) => {
@@ -60,7 +60,7 @@ export const preauthorizePayment = async (cardData, funding, navigation) => {
         });
       });
       await is3DCheckFinished();
-      const { data: { Status } } = await axiosClient.post('get-preauthorisation-status', { preAuthId });
+      const {data: {Status}} = await axiosClient.post('get-preauthorisation-status', {preAuthId});
       if (Status === 'SUCCEEDED') {
         return preAuthId;
       } else { throw new Error('3D Authentication failed'); }

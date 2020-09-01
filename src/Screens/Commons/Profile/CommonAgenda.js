@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {
   SafeAreaView,
@@ -11,10 +11,10 @@ import {
 } from 'react-native';
 import moment from 'moment';
 
-import { layout, text, font, colors } from '~/Theme';
+import {layout, text, font, colors} from '~/Theme';
 import DaoService from '~/Services/DaoService';
 
-const CommonAgenda = ({ navigation, route }) => {
+const CommonAgenda = ({navigation, route}) => {
 
   const [common, setCommon] = useState(null);
 

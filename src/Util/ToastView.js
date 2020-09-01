@@ -101,7 +101,7 @@ export default class ToastView extends Component {
         pointerEvents= { this.duration === DURATION.FOREVER ? 'auto' : 'none'}
       >
         <Animated.View
-          style={[styles.content, { opacity: this.state.opacityValue }, this.props.style, { top: pos }]}
+          style={[styles.content, {opacity: this.state.opacityValue}, this.props.style, {top: pos}]}
         >
           {React.isValidElement(this.state.text) ? this.state.text : <Text style={this.props.textStyle}>{this.state.text}</Text>}
         </Animated.View>

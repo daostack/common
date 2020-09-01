@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,24 +6,24 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import { string, shape, object } from 'prop-types';
+import {string, shape, object} from 'prop-types';
 import FastImage from 'react-native-fast-image';
-import { observer, inject } from 'mobx-react';
-import { colors, sizeM, font } from '~/Theme';
+import {observer, inject} from 'mobx-react';
+import {colors, sizeM, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import UserService from '~/Services/UserService';
 import moment from 'moment';
 import firestore from '@react-native-firebase/firestore';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import NotificationService from '~/Services/NotificationService';
-import { BOTTOM_SHEET_TEMPLATES } from '~/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 const DiscussionCard = ({
   data,
   commonId,
-  userStore: { userInfo },
+  userStore: {userInfo},
   navigation,
   bottomSheetStore,
 }) => {
@@ -67,7 +67,7 @@ const DiscussionCard = ({
     const unsubscribe = firestore()
       .collection('discussionMessage')
       .where('discussionId', '==', discussionId)
-      .onSnapshot(snapshot => {
+      .onSnapshot((snapshot) => {
         setMsgCount(snapshot.docs.length);
       });
     return () => {
@@ -84,7 +84,7 @@ const DiscussionCard = ({
   const showOptions = () => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
-      { onFollow: follow },
+      {onFollow: follow},
     );
   };
 
@@ -98,18 +98,18 @@ const DiscussionCard = ({
           <Text style={styles.title} numberOfLines={2}>
             {data.title}
           </Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
             {
               user.photoURL ? <FastImage
                 style={styles.image}
-                source={{ uri: user.photoURL }}
+                source={{uri: user.photoURL}}
               /> : <View
                 style={styles.displayNameContainer}
               >
-                  <Text style={styles.displayName}>
-                    {user.displayName && user.displayName.substring(0, 1)}
-                  </Text>
-                </View>
+                <Text style={styles.displayName}>
+                  {user.displayName && user.displayName.substring(0, 1)}
+                </Text>
+              </View>
 
             }
             <View style={styles.primaryNameContainer}>
@@ -139,7 +139,7 @@ const DiscussionCard = ({
           {msgCount === 0 ? (
             <View style={{}}>
               <TouchableOpacity
-                style={{ justifyContent: 'center', alignSelf: 'center' }}
+                style={{justifyContent: 'center', alignSelf: 'center'}}
                 onPress={() => navigateToDiscussion()}>
                 <Text
                   style={styles.startTheDiscussion}>
@@ -148,27 +148,27 @@ const DiscussionCard = ({
               </TouchableOpacity>
             </View>
           ) : (
+            <View style={styles.messageCountContainer}>
               <View style={styles.messageCountContainer}>
-                <View style={styles.messageCountContainer}>
-                  <Icon name="discussion" size={20} />
-                  <Text
-                    style={styles.msgCount}>
-                    {msgCount}
-                  </Text>
-                </View>
-                {/* <TouchableOpacity onPress={() => navigateToDiscussion()}> */}
-                <TouchableOpacity
-                  style={styles.navigateToDiscussion}
-                  onPress={() => navigateToDiscussion()}>
-                  <Text
-                    style={styles.joinTheDiscussion}>
+                <Icon name="discussion" size={20} />
+                <Text
+                  style={styles.msgCount}>
+                  {msgCount}
+                </Text>
+              </View>
+              {/* <TouchableOpacity onPress={() => navigateToDiscussion()}> */}
+              <TouchableOpacity
+                style={styles.navigateToDiscussion}
+                onPress={() => navigateToDiscussion()}>
+                <Text
+                  style={styles.joinTheDiscussion}>
                     Join the discussion
                 </Text>
-                  <Icon name="right-arrow" size={20} color={colors.mainBlue} />
-                </TouchableOpacity>
-                {/* </TouchableOpacity> */}
-              </View>
-            )}
+                <Icon name="right-arrow" size={20} color={colors.mainBlue} />
+              </TouchableOpacity>
+              {/* </TouchableOpacity> */}
+            </View>
+          )}
         </View>
       </TouchableOpacity>
 
@@ -190,8 +190,8 @@ const DiscussionCard = ({
             }}>
             <View style={styles.sheetButton}>
               <Icon name="following" color={colors.black} />
-              <View style={{ flex: 1 }}>
-                <Text style={[styles.sheetText, { color: colors.black }]}>
+              <View style={{flex: 1}}>
+                <Text style={[styles.sheetText, {color: colors.black}]}>
                   {isFollowing ? 'UnFollow' : 'Follow'}
                 </Text>
               </View>

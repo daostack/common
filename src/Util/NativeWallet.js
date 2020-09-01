@@ -8,7 +8,7 @@ const generateMnemonic = async () => {
   }
 };
 
-const generateAndStoreMnemonic = async uid => {
+const generateAndStoreMnemonic = async (uid) => {
   try {
     return await NativeModules.WalletModule.generateAndStoreMnemonic(uid);
   } catch (e) {
@@ -24,7 +24,7 @@ const storeMnemonic = async (uid, mnemonic) => {
   }
 };
 
-const retrieveMnemonic = async uid => {
+const retrieveMnemonic = async (uid) => {
   try {
     return await NativeModules.WalletModule.retrieveMnemonic(uid);
   } catch (e) {

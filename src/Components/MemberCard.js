@@ -1,12 +1,12 @@
-import { StyleSheet, View, Text } from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import React from 'react';
-import { layout, colors, text, font, sizeXS } from '~/Theme';
+import {layout, colors, text, font, sizeXS} from '~/Theme';
 import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
-import { monthShortNames } from '~/Util/DateUtil';
+import {monthShortNames} from '~/Util/DateUtil';
 import moment from 'moment';
-import { PROPOSAL_TYPE } from '~/Config';
-import { LAUNCHED_STATES } from '~/Services/ProposalService';
+import {PROPOSAL_TYPE} from '~/Config';
+import {LAUNCHED_STATES} from '~/Services/ProposalService';
 
 const MemberCard = ({
   // memberSince or commonsCount
@@ -28,7 +28,7 @@ const MemberCard = ({
           <View
             style={{
               // ...layout.content,
-              ...{ alignItems: 'flex-end' },
+              ...{alignItems: 'flex-end'},
             }}>
             <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
             <Text style={text.runninglightGray}>{moment.unix(proposalInfo.createdAt).fromNow()}</Text>
@@ -63,7 +63,7 @@ const MemberCard = ({
         const memberCreatedDate = new Date(userInfo.createdAt.seconds * 1000);
         memberCreatedDateInfo = memberCreatedDate
           ? `${
-          monthShortNames[memberCreatedDate.getMonth()]
+            monthShortNames[memberCreatedDate.getMonth()]
           } ${memberCreatedDate.getDate()} `
           : '';
       } else {
@@ -86,13 +86,13 @@ const MemberCard = ({
   };
 
   return (
-    <View style={{ ...styles.cardContainer, ...styles.noBottomBorder }}>
+    <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <MemberImage userInfo={userInfo} />
       <View
         style={{
           ...layout.content,
           ...layout.flexStart,
-          ...{ flex: 2, flexWrap: 'wrap' },
+          ...{flex: 2, flexWrap: 'wrap'},
         }}>
         <Text
           style={styles.displayName}>

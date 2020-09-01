@@ -1,7 +1,7 @@
 import WalletManager from '~/Util/WalletManager';
-import { JoinAndQuitProposal, FundingRequestProposal } from '@daostack/arc.js';
-import { PROPOSAL_STAGES_HISTORY } from '../ProposalService';
-import { NULL_ADDRESS, PROPOSAL_TYPE } from '~/Config';
+import {JoinAndQuitProposal, FundingRequestProposal} from '@daostack/arc.js';
+import {PROPOSAL_STAGES_HISTORY} from '../ProposalService';
+import {NULL_ADDRESS, PROPOSAL_TYPE} from '~/Config';
 import GraphqlSyncService from '../GraphqlSyncService';
 
 const createVoteTransaction = async (proposal, outcome) => {

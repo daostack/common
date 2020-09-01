@@ -1,4 +1,4 @@
-import { graphqlUrl } from '~/Config';
+import {graphqlUrl} from '~/Config';
 import axios from 'axios';
 
 
@@ -25,7 +25,7 @@ export default class GraphqlSyncService {
 
   async syncProposalById(proposalId, blockNumber) {
     console.log(`update proposal ${proposalId}`);
-    const options = { params: { proposalId, retries: 4, blockNumber } };
+    const options = {params: {proposalId, retries: 4, blockNumber}};
     await this.axiosClient.get('update-proposal-by-id', options);
     console.log('Proposal updated: '); //, proposalUpdateResponse);
   }

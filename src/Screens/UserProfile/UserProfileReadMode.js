@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 
 import {
   SafeAreaView,
@@ -12,10 +12,10 @@ import {
 import Icon from '~/Assets/iconfont/Icon';
 import UserService from '~/Services/UserService';
 
-import { layout, colors, text, sizeS } from '~/Theme';
+import {layout, colors, text, sizeS} from '~/Theme';
 import AccordionBtn from '~/Components/AccordionBtn';
 
-const UserProfileReadMode = ({ navigation }) => {
+const UserProfileReadMode = ({navigation}) => {
   const [users, setUsers] = useState(null);
   const [setUserId] = useState(null);
   const bottomSheetContainerRef = useRef();
@@ -35,7 +35,7 @@ const UserProfileReadMode = ({ navigation }) => {
     getUsers();
   }, [users]);
 
-  const onUserSelected = selectedUserId => {
+  const onUserSelected = (selectedUserId) => {
     setUserId(selectedUserId);
     bottomSheetContainerRef.current.snapTo(1);
   };
@@ -56,17 +56,15 @@ const UserProfileReadMode = ({ navigation }) => {
           </View>
 
           <View style={layout.content}>
-            {users?.map((user, i) => {
-              return (
-                <AccordionBtn
-                  key={i}
-                  navigation={navigation}
-                  title={user.name}
-                  subtitle={user.email}
-                  onPress={() => onUserSelected(user.id)}
-                />
-              );
-            })}
+            {users?.map((user, i) => (
+              <AccordionBtn
+                key={i}
+                navigation={navigation}
+                title={user.name}
+                subtitle={user.email}
+                onPress={() => onUserSelected(user.id)}
+              />
+            ))}
           </View>
         </ScrollView>
         {/**

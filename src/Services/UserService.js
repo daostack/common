@@ -1,7 +1,7 @@
-import { db } from '~/Firebase';
-import { prepareUserObject } from '~/Util';
+import {db} from '~/Firebase';
+import {prepareUserObject} from '~/Util';
 
-import { DB_COLLECTIONS } from '~/Firebase/Databasee';
+import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 
 export default class UserService {
   static serviceInstance = null;
@@ -18,7 +18,7 @@ export default class UserService {
       .collection(DB_COLLECTIONS.users)
       .doc(userId)
       .get()
-      .then(snapshots => {
+      .then((snapshots) => {
         // console.log('snapshots : ', snapshots);
         if (!snapshots) {
           return null;
@@ -36,12 +36,12 @@ export default class UserService {
       .collection(DB_COLLECTIONS.users)
       .where('safeAddress', '==', address)
       .get()
-      .then(snapshots => {
+      .then((snapshots) => {
         if (!snapshots) {
           return null;
         }
         const doc = snapshots.docs[0];
-        return { id: doc.id, ...doc.data() };
+        return {id: doc.id, ...doc.data()};
 
       });
   }
@@ -51,13 +51,11 @@ export default class UserService {
     return db
       .collection(DB_COLLECTIONS.users)
       .get()
-      .then(snapshots => {
+      .then((snapshots) => {
         if (snapshots.empty) {
           return [];
         }
-        return snapshots.docs.map(doc => {
-          return { ...{ id: doc.id }, ...doc.data() };
-        });
+        return snapshots.docs.map((doc) => ({...{id: doc.id}, ...doc.data()}));
       });
   }
   async addUser(googleId, newUser) {
@@ -67,9 +65,7 @@ export default class UserService {
         .collection(DB_COLLECTIONS.users)
         .doc(googleId)
         .set(newUser)
-        .then(ref => {
-          return ref;
-        });
+        .then((ref) => ref);
     } catch (error) {
       console.log('ERROR -> ', error);
     }
@@ -81,7 +77,7 @@ export default class UserService {
       .collection(DB_COLLECTIONS.users)
       .doc(userId)
       .update(user)
-      .then(ref => {
+      .then((ref) => {
         //console.log('Edited document with ID: ', ref.id);
       });
   }

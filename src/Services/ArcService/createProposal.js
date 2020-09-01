@@ -1,6 +1,6 @@
 // TODO: rename this file to °createProposalRequestToJoin.js°
-const { first } = require('rxjs/operators');
-import { ipfsUpload, IPFS_DATA_VERSION } from '~/Config';
+const {first} = require('rxjs/operators');
+import {ipfsUpload, IPFS_DATA_VERSION} from '~/Config';
 import WalletManager from '~/Util/WalletManager';
 
 export const createProposalRequestToJoin = async (arc, daoId, data) => {
@@ -20,7 +20,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
 
     let joinAndQuitPlugin;
     try {
-      joinAndQuitPlugin = await dao.plugin({ where: { name: 'JoinAndQuit' } });
+      joinAndQuitPlugin = await dao.plugin({where: {name: 'JoinAndQuit'}});
     } catch (e) {
       console.log(e);
       console.log(daoId);
@@ -28,7 +28,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
         .plugins()
         .pipe(first())
         .toPromise();
-      console.log(plugins.map(p => p.coreState.name));
+      console.log(plugins.map((p) => p.coreState.name));
       throw e;
     }
 
@@ -39,11 +39,11 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       throw Error('"funding" argument must be given');
     }
     const fee = Number(data.funding);
-    data = { ...data, VERSION: IPFS_DATA_VERSION };
+    data = {...data, VERSION: IPFS_DATA_VERSION};
     console.log('saving ipfs data');
     // not working :-()
     // ipfsHash = await arc.saveIPFSData(data);
-    ipfsHash = await ipfsUpload({ description: JSON.stringify(data) });
+    ipfsHash = await ipfsUpload({description: JSON.stringify(data)});
     console.log('ipfsHash', ipfsHash);
 
     const args = {
@@ -54,7 +54,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     };
 
     const errorHandler = async () => {
-      const joinAndQuitPlugin = await dao.plugin({ where: { name: 'JoinAndQuit' } });
+      const joinAndQuitPlugin = await dao.plugin({where: {name: 'JoinAndQuit'}});
       const joinAndQuitContract = await arc.getContract(joinAndQuitPlugin.coreState.address);
       const manager = await WalletManager.getInstance();
       const proposer = manager.safeAddress;

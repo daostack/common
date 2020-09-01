@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { Text, View, StyleSheet, SafeAreaView, Dimensions } from 'react-native';
-import { colors, font } from '~/Theme';
+import {useState} from 'react';
+import {Text, View, StyleSheet, SafeAreaView, Dimensions} from 'react-native';
+import {colors, font} from '~/Theme';
 import React from 'react';
 import Pdf from 'react-native-pdf';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
-const PDFViewer = ({ route }) => {
+const PDFViewer = ({route}) => {
   const uri = route.params.uri;
   const [pages, setPages] = useState(0);
   const [currPage, setCurrPage] = useState(0);
@@ -24,12 +24,12 @@ const PDFViewer = ({ route }) => {
           onPageChanged={(page, numberOfPages) => {
             setCurrPage(page);
           }}
-          onError={error => {
+          onError={(error) => {
             console.log(error);
           }}
-          onPressLink={currUri => {
+          onPressLink={(currUri) => {
             console.log(`Link presse: ${currUri}`);
-            navigation.navigate('Browser', { url: currUri });
+            navigation.navigate('Browser', {url: currUri});
           }}
           style={styles.pdf}
         />
@@ -37,12 +37,12 @@ const PDFViewer = ({ route }) => {
       {hideIndex ? (
         <></>
       ) : (
-          <View style={styles.index}>
-            <Text style={styles.pager}>
-              {currPage} of {pages}
-            </Text>
-          </View>
-        )}
+        <View style={styles.index}>
+          <Text style={styles.pager}>
+            {currPage} of {pages}
+          </Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
