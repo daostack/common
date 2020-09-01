@@ -1,6 +1,8 @@
-import { IPFSApiClient } from './ipfs-api';
+import {IPFSApiClient} from './ipfs-api';
 import Config from 'react-native-config';
+
 import axios from 'axios';
+
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
 // TODO: we should probably read this from the package..
 
@@ -48,29 +50,31 @@ if (Config.ENV === 'production') {
   throw Error(`Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`);
 }
 
-let isLocalPort = false;
-if (__DEV__) {
+if (Config.local === 'true' && __DEV__) {
+  console.warn('Using local firebase');
+
   axios.get('http://localhost:5001')
-    .catch(error => {
-      isLocalPort = error.response?.status === 404;
+    .catch((error) => {
+      if (error.response?.status !== 404) {
+        console.error('Set to use local firebase, but the local firebase is not accessible');
+      }
     });
 }
 
-const cloudFuncURL = () => {
-  return isLocalPort ?  localFunctionURL : cloudFunctionURL;
-};
+const cloudFuncURL = () =>
+  (Config.local === 'true' && __DEV__)
+    ? localFunctionURL
+    : cloudFunctionURL;
 
-const functionEndpoint = endpoint => {
-  return `${cloudFuncURL()}/${endpoint}`;
-};
+const functionEndpoint = (endpoint) => `${cloudFuncURL()}/${endpoint}`;
 
 
 export const ARC_VERSION = arcVersion;
 export const GRAPH_VERSION = graphVersion;
 export const IPFS_DATA_VERSION = ipfsDataVersion;
-export const mangoPayUrl = () => { return functionEndpoint('mangopay'); };
-export const graphqlUrl = () => { return functionEndpoint('graphql'); };
-export const relayerUrl = () => { return functionEndpoint('relayer'); };
+export const mangoPayUrl = () => functionEndpoint('mangopay');
+export const graphqlUrl = () => functionEndpoint('graphql');
+export const relayerUrl = () => functionEndpoint('relayer');
 export const graphHttpLink = `${graphUrl}/${graphVersion}`;
 export const graphwsLink = `${graphWS}/${graphVersion}`;
 export const ipfsLink = ipfsUrl;
@@ -99,7 +103,7 @@ export const PROPOSAL_TYPE = {
 // We will need this until https://github.com/daostack/arc.js/issues/468 is resolved
 export const IpfsClient = new IPFSApiClient(ipfsLink);
 
-export const ipfsUpload = async data => {
+export const ipfsUpload = async (data) =>
   // TODO: use arc.saveIPFSData({ name: formData.name}) once https://github.com/daostack/arc.js/issues/468 is resolved
-  return IpfsClient.addAndPinString(JSON.stringify(data));
-};
+  IpfsClient.addAndPinString(JSON.stringify(data))
+;
