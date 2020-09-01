@@ -22,7 +22,6 @@ import BottomSheetModal from '../../Components/BottomSheetModal';
 import ProposalService from '../../Services/ProposalService';
 import ArcService from '../../Services/ArcService';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import {UserAvatar} from '../../Components';
 import {PROPOSAL_STAGES_ACTIVE} from '../../Services/ProposalService';
 import {PROPOSAL_TYPE} from '../../Services/ProposalService';
@@ -32,6 +31,7 @@ import {observer, inject} from 'mobx-react';
 import TabBarRenderer from '../../Components/TabView/TabBarRenderer';
 import moment from 'moment';
 import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
+import {db} from '../../Firebase';
 import {string, bool, object, shape} from 'prop-types';
 const {width} = Dimensions.get('window');
 
@@ -163,8 +163,7 @@ const ProposalScreen = ({navigation,
       const userInfo = auth().currentUser;
       const message = inputText;
       if (message && message.trim().length) {
-        firestore()
-          .collection('discussionMessage')
+        db.collection('discussionMessage')
           .doc()
           .set({
             text: message,

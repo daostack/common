@@ -14,29 +14,29 @@ import UserMessageCard from '../../Components/Discussion/UserMessageCard';
 import ImageView from 'react-native-image-viewing';
 import Loader from '../../Components/Loader';
 import ImageSize from 'react-native-image-size';
-import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
 import {PROPOSAL_TYPE} from '../../Config';
+import {db} from '../../Firebase';
 
-const ProposalData = props => {
+const ProposalData = (props) => {
   const navigation = useNavigation();
   const [proposalInfo, setProposalInfo] = useState(null);
   const proposalId = props.proposalId;
 
   useEffect(() => {
     // noinspection JSAnnotator
-    const loadProposalInfo = async currProposalInfo => {
+    const loadProposalInfo = async (currProposalInfo) => {
       // noinspection JSAnnotator
       try {
         if (currProposalInfo) {
           let tempImages = [];
           if (currProposalInfo.description.images?.length) {
             await Promise.all(
-              currProposalInfo.description.images.map(async currImage => {
+              currProposalInfo.description.images.map(async (currImage) => {
                 if (currImage.value) {
                   try {
-                    const { width, height } = await ImageSize.getSize(currImage.value);
+                    const {width, height} = await ImageSize.getSize(currImage.value);
                     tempImages.push({
                       title: currImage.title,
                       widthRatio: (width / height) * 220,
@@ -58,14 +58,13 @@ const ProposalData = props => {
     };
 
     const loadDiscussions = () => {
-      firestore()
-        .collection('discussionMessage')
+      db.collection('discussionMessage')
         .where('discussionId', '==', proposalId)
         .orderBy('createTime', 'desc')
         .limit(4)
         .get()
-        .then(snapshot => {
-          const list = snapshot.docs.map(doc => ({
+        .then((snapshot) => {
+          const list = snapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
           }));
@@ -77,15 +76,13 @@ const ProposalData = props => {
     loadDiscussions();
   }, [props.proposalInfo]);
 
-  const ImageGalleryFooter = ({imageIndex}) => {
-    return (
-      <View style={styles.imageGalleryTextContainer}>
-        <Text style={styles.imageGalleryText}>
-          {proposalInfo.images[imageIndex].title}
-        </Text>
-      </View>
-    );
-  };
+  const ImageGalleryFooter = ({imageIndex}) => (
+    <View style={styles.imageGalleryTextContainer}>
+      <Text style={styles.imageGalleryText}>
+        {proposalInfo.images[imageIndex].title}
+      </Text>
+    </View>
+  );
 
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [topMessage, setTopMessage] = useState([]);
@@ -133,7 +130,7 @@ const ProposalData = props => {
           'Proposal Pitch' : 'Intro' }</Text>
 
         <View style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
-          <Text style={{...text.regularTextBig }}>{proposalInfo.description.description}</Text>
+          <Text style={{...text.regularTextBig}}>{proposalInfo.description.description}</Text>
         </View>
 
 
@@ -181,38 +178,36 @@ const ProposalData = props => {
           style={{marginBottom: 20}}>
           <View style={styles.imageGallery}>
             <View style={{width: 20}} />
-            {proposalInfo.images.map((currImage, currIndex) => {
-              return (
-                <View
-                  style={{width: currImage.widthRatio + 10}}
-                  key={`proposalImg_${currIndex}`}>
-                  <TouchableOpacity
-                    onPress={() => setImageGalleryIndex(currIndex)}>
-                    <Image
-                      key={currIndex}
-                      style={{
-                        ...styles.galleryImage,
-                        ...{width: currImage.widthRatio},
-                      }}
-                      resizeMode="cover"
-                      source={currImage.uri ? {uri: currImage.uri} : null}
-                    />
-                  </TouchableOpacity>
-                  <ReadMore
-                    numberOfLines={1}
-                    renderTruncatedFooter={() => <View />}
-                    renderRevealedFooter={() => <View />}>
-                    <Text
-                      style={{
-                        ...text.textFieldplaceholder,
-                        ...layout.marginTopS,
-                      }}>
-                      {currImage.title}
-                    </Text>
-                  </ReadMore>
-                </View>
-              );
-            })}
+            {proposalInfo.images.map((currImage, currIndex) => (
+              <View
+                style={{width: currImage.widthRatio + 10}}
+                key={`proposalImg_${currIndex}`}>
+                <TouchableOpacity
+                  onPress={() => setImageGalleryIndex(currIndex)}>
+                  <Image
+                    key={currIndex}
+                    style={{
+                      ...styles.galleryImage,
+                      ...{width: currImage.widthRatio},
+                    }}
+                    resizeMode="cover"
+                    source={currImage.uri ? {uri: currImage.uri} : null}
+                  />
+                </TouchableOpacity>
+                <ReadMore
+                  numberOfLines={1}
+                  renderTruncatedFooter={() => <View />}
+                  renderRevealedFooter={() => <View />}>
+                  <Text
+                    style={{
+                      ...text.textFieldplaceholder,
+                      ...layout.marginTopS,
+                    }}>
+                    {currImage.title}
+                  </Text>
+                </ReadMore>
+              </View>
+            ))}
             <View style={{width: 20}} />
           </View>
         </ScrollView>
@@ -227,17 +222,15 @@ const ProposalData = props => {
               </View>
 
               <View style={{...layout.content, ...layout.flexStart}}>
-                {topMessage.map((currMessage, currIndex) => {
-                  return (
-                    <UserMessageCard
-                      photoURL={currMessage.ownerAvatar}
-                      name={currMessage.ownerName}
-                      message={currMessage.text}
-                      time={currMessage.createTime}
-                    />
-                    // <DiscussionMessage data={currMessage} />
-                  );
-                })}
+                {topMessage.map((currMessage, currIndex) => (
+                  <UserMessageCard
+                    photoURL={currMessage.ownerAvatar}
+                    name={currMessage.ownerName}
+                    message={currMessage.text}
+                    time={currMessage.createTime}
+                  />
+                  // <DiscussionMessage data={currMessage} />
+                ))}
               </View>
               <View style={layout.contant}>
                 <TouchableOpacity onPress={() => props.showMore()}>
