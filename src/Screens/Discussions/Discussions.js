@@ -70,7 +70,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
     }
     const unsubscribe = db.collection('discussion')
       .doc(discussionId)
-      .onSnapshot(snapshot => {
+      .onSnapshot((snapshot) => {
         // console.log(snapshot.data());
         if (!snapshot.exists) {
           return;
@@ -92,7 +92,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
       // .startAt(0)
       // .limit(25)
       .onSnapshot(
-        snapshot => {
+        (snapshot) => {
           if (snapshot.docChanges().length !== 0) {
             const newList = snapshot.docChanges().map(({doc}) => ({
               id: doc.id,
@@ -103,13 +103,13 @@ const Discussions = ({daoStore, userStore, ...props}) => {
             listRef.current = msgList;
             console.log('newMessage', newList);
             const groupDate = msgList
-              .map(msg => ({
+              .map((msg) => ({
                 date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
                 data: msg,
               }))
               .reduce((acc, curr) => {
                 var key = curr.date;
-                let el = acc.find(x => x && x.date === key);
+                let el = acc.find((x) => x && x.date === key);
                 if (el) {
                   el.data.push(curr.data);
                 } else {
@@ -124,7 +124,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
             setMsgDroup(groupDate);
           }
         },
-        error => console.error(error),
+        (error) => console.error(error),
       );
     return unsubscribe;
   }, [commonId, data.id]);
@@ -217,7 +217,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
           setIsSending(false);
           setInputText(null);
         })
-        .catch(error => {
+        .catch((error) => {
           Toast.error(error);
           setIsSending(false);
         });
@@ -227,8 +227,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
     }
   };
 
-  const headerImages = () => {
-    return (
+  const headerImages = () => (
       <>
         {data.images ?
           <ScrollView
@@ -237,35 +236,31 @@ const Discussions = ({daoStore, userStore, ...props}) => {
             style={{marginBottom: 20}}>
             <View style={styles.imageGallery}>
               <View style={{width: 20}} />
-              {data.images.map((currImage, currIndex) => {
-                return (
-                  <View
-                    key={`proposalImg_${currIndex}`}>
-                    <TouchableOpacity
-                      onPress={() => setImageGalleryIndex(currIndex)}>
-                      <Image
-                        key={currIndex}
-                        style={{
-                          ...styles.galleryImage,
-                          ...{width: width * 0.8 },
-                        }}
-                        resizeMode="cover"
-                        source={{uri: currImage.value}}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                );
-              })}
+              {data.images.map((currImage, currIndex) => (
+                <View
+                  key={`proposalImg_${currIndex}`}>
+                  <TouchableOpacity
+                    onPress={() => setImageGalleryIndex(currIndex)}>
+                    <Image
+                      key={currIndex}
+                      style={{
+                        ...styles.galleryImage,
+                        ...{width: width * 0.8},
+                      }}
+                      resizeMode="cover"
+                      source={{uri: currImage.value}}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ))}
               <View style={{width: 20}} />
             </View>
           </ScrollView>
           : null}
       </>
-    );
-  };
+  );
 
-  const headerFiles = () => {
-    return (
+  const headerFiles = () => (
       <>
         {data.files && (
           data.files.map((f, index) => <View style={styles.adRow} key={`discussion_file_${index}`}>
@@ -284,22 +279,18 @@ const Discussions = ({daoStore, userStore, ...props}) => {
         )
         }
       </>
-    );
-  };
+  );
 
-  const fileName = url => {
-    return url
-      .substring(url.lastIndexOf('/') + 1, url.length)
-      .split('?')[0]
-      .split('_')
-      .slice(0, -1)
-      .join('_')
-      .replace('public_file%2F', '')
-      .concat('.pdf');
-  };
+  const fileName = (url) => url
+    .substring(url.lastIndexOf('/') + 1, url.length)
+    .split('?')[0]
+    .split('_')
+    .slice(0, -1)
+    .join('_')
+    .replace('public_file%2F', '')
+    .concat('.pdf');
 
-  const header = () => {
-    return (
+  const header = () => (
       // <SafeAreaView flex={1}>
       <>
         <NavigationBar
@@ -330,7 +321,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
           //   </TouchableOpacity>
           // }
         />
-        <View style={{ overflow: 'hidden', paddingBottom: 5 }}>
+        <View style={{overflow: 'hidden', paddingBottom: 5}}>
           <View
             style={styles.headerContainer}>
             {isExpanded ? (
@@ -373,7 +364,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
                   onPress={() => {
                     setIsExpanded(!isExpanded);
                   }}>
-                  <Image style={{ height: 10, width: 60 }} source={require('../../Assets/collapse.png')} />
+                  <Image style={{height: 10, width: 60}} source={require('../../Assets/collapse.png')} />
                 </TouchableOpacity>
               </View>
             ) : (
@@ -383,7 +374,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
                 onPress={() => {
                   setIsExpanded(!isExpanded);
                 }}>
-                <Image style={{ height: 10, width: 60  }} source={require('../../Assets/expand.png')} />
+                <Image style={{height: 10, width: 60}} source={require('../../Assets/expand.png')} />
               </TouchableOpacity>
             </>
             )}
@@ -400,8 +391,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
         </View>
         {/* </SafeAreaView> */}
       </>
-    );
-  };
+  );
 
   return (
     <SafeAreaView style={styles.safeView}>
@@ -412,28 +402,28 @@ const Discussions = ({daoStore, userStore, ...props}) => {
             sections={msgGroup}
             ref={chatRef}
             // ListFooterComponent={header}
-            renderItem={x => <DiscussionMessage data={x.item} />}
+            renderItem={(x) => <DiscussionMessage data={x.item} />}
             renderSectionFooter={({section: {date}}) => (
               <Text style={styles.timeHeader}>
                 {moment().isSame(date, 'day') ? 'Today' : date}
               </Text>
             )}
-            keyExtractor={x => x.id}
+            keyExtractor={(x) => x.id}
             stickySectionHeadersEnabled={true}
             inverted={true}
             contentContainerStyle={{paddingTop: 10}}
             // initialScrollIndex={1}
-            onScrollToIndexFailed={info => {
-              const wait = new Promise(resolve => setTimeout(resolve, 500));
+            onScrollToIndexFailed={(info) => {
+              const wait = new Promise((resolve) => setTimeout(resolve, 500));
               wait.then(() => {
-                chatRef.current?.scrollToIndex({ index: info.index, animated: true });
+                chatRef.current?.scrollToIndex({index: info.index, animated: true});
               });
             }}
           />
         </ScrollView>
         :
         <View style={styles.emptyContainer}>
-          <Image source={require('../../Assets/empty-discussion.png')} style={{ width: 240, height: 240 }} />
+          <Image source={require('../../Assets/empty-discussion.png')} style={{width: 240, height: 240}} />
           <Text style={styles.emptyTitle}> No comments yet</Text>
           <Text style={styles.emptyBody}>Have any thoughts? Share them with other members by adding the first comment.</Text>
         </View>
@@ -441,7 +431,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
 
       <KeyboardAvoidingView
         behavior={'height'}
-        style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
+        style={{position: 'absolute', height: 90, bottom: 0, flex: 1, color: '#fbfdff'}}>
         <View style={styles.input}>
           {isMember ? (<>
             <TextInput
@@ -449,12 +439,12 @@ const Discussions = ({daoStore, userStore, ...props}) => {
               editable={true}
               multiline={true}
               placeholder="What do you think?"
-              onContentSizeChange={e =>
+              onContentSizeChange={(e) =>
                 setInputHeight(e.nativeEvent.contentSize.height)
               }
               style={{...styles.textInput, height: inputHeight}}
               fontSize={16}
-              onChangeText={currText => setInputText(currText)}
+              onChangeText={(currText) => setInputText(currText)}
             />
             <TouchableOpacity
               style={{paddingRight: 15, justifyContent: 'center'}}
@@ -503,7 +493,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
       </BottomSheetModal>
 
       <ImageView
-        images={data.images ? data.images.map(x => ({uri: x.value})) : []}
+        images={data.images ? data.images.map((x) => ({uri: x.value})) : []}
         imageIndex={imageGalleryIndex}
         visible={imageGalleryIndex > -1}
         onRequestClose={() => setImageGalleryIndex(-1)}
