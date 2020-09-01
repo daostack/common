@@ -50,7 +50,7 @@ if (Config.ENV === 'production') {
   throw Error(`Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`);
 }
 
-if (Config.local === 'true') {
+if (Config.local === 'true' && __DEV__) {
   console.warn('Using local firebase');
 
   axios.get('http://localhost:5001')
@@ -62,7 +62,7 @@ if (Config.local === 'true') {
 }
 
 const cloudFuncURL = () =>
-  Config.local === 'true'
+  (Config.local === 'true' && __DEV__)
     ? localFunctionURL
     : cloudFunctionURL;
 

@@ -11,7 +11,7 @@ import firestore from '@react-native-firebase/firestore';
 
 const db = firestore();
 
-if (Config.local === 'true') {
+if (Config.local === 'true' && __DEV__) {
   console.warn('Using local firestore');
 
   db.settings({
