@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {
   SafeAreaView,
@@ -12,9 +12,22 @@ import {
 import moment from 'moment';
 
 import {layout, text, font, colors} from '../../../Theme';
-import {inject, observer} from 'mobx-react';
+import DaoService from '../../../Services/DaoService';
 
-const CommonAgenda = ({daoStore, navigation}) => {
+const CommonAgenda = ({navigation, route}) => {
+
+  const [common, setCommon] = useState(null);
+
+  useEffect( async () => {
+    if (route.params.commonId) {
+      const common = await DaoService.getInstance().getDaoById();
+      setCommon(common);
+    }
+
+    if (route.params.common) {
+      setCommon(route.params.common);
+    }
+  },[]);
 
   return (
     <>
@@ -37,34 +50,32 @@ const CommonAgenda = ({daoStore, navigation}) => {
           <View style={styles.sectionContainer}>
             <Text style={text.h2Black}>About</Text>
             <Text style={styles.description}>
-              {daoStore.dao.metadata.description}
+              {common.metadata?.description}
             </Text>
           </View>
 
-          {daoStore.dao.metadata.courseOfAction && <View style={styles.sectionContainer}>
+          {common.metadata?.courseOfAction && <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Course of action</Text>
             <Text style={styles.description}>
-              {daoStore.dao.metadata.courseOfAction}
+              {common.metadata.courseOfAction}
             </Text>
           </View>}
-          {daoStore.dao.metadata.links?.length > 0 && (
+          {common.metadata?.links?.length > 0 && (
             <View style={styles.sectionContainer}>
               <Text style={text.h3Black}>Links</Text>
-              {daoStore.dao.metadata.links.map((link, i) => {
-                return (
-                  <View key={i}>
-                    <Text
-                      style={styles.linkText}
-                      onPress={() =>
-                        navigation.navigate('Browser', {
-                          url: link.url,
-                        })
-                      }>
-                      {link.url}
-                    </Text>
-                  </View>
-                );
-              })}
+              {common.metadata.links.map((link, i) => (
+                <View key={i}>
+                  <Text
+                    style={styles.linkText}
+                    onPress={() =>
+                      navigation.navigate('Browser', {
+                        url: link.url,
+                      })
+                    }>
+                    {link.url}
+                  </Text>
+                </View>
+              ))}
             </View>
           )}
 
@@ -72,31 +83,29 @@ const CommonAgenda = ({daoStore, navigation}) => {
             <Text style={text.h3Black}>Campaign period deadline</Text>
             <Text style={styles.description}>
               {moment
-                .unix(daoStore.dao.fundingGoalDeadline)
+                .unix(common.fundingGoalDeadline)
                 .format('MMM DD, YYYY')}
             </Text>
           </View>
 
-          {daoStore.dao.metadata.rules?.length > 0 && (
+          {common.metadata.rules?.length > 0 && (
             <>
             <View style={styles.sectionDividerContent}>
               <View style={styles.sectionDivider} />
             </View>
             <View style={styles.sectionContainer}>
               <Text style={text.h2Black}>Rules of conduct</Text>
-              {daoStore.dao.metadata.rules.map((rule, i) => {
-                return (
-                  <View key={i}>
-                    <Text style={styles.ruleTitle}>
-                      {rule.title}
-                    </Text>
-                    <Text
-                      style={styles.ruleDescription}>
-                      {rule.url}
-                    </Text>
-                  </View>
-                );
-              })}
+              {common.metadata.rules.map((rule, i) => (
+                <View key={i}>
+                  <Text style={styles.ruleTitle}>
+                    {rule.title}
+                  </Text>
+                  <Text
+                    style={styles.ruleDescription}>
+                    {rule.url}
+                  </Text>
+                </View>
+              ))}
             </View>
             </>
           )}
@@ -165,4 +174,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('daoStore')(observer(CommonAgenda));
+export default CommonAgenda;

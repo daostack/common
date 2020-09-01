@@ -141,33 +141,37 @@ const ProposalData = props => {
         <View style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
 
           {proposalInfo.description?.links?.length > 0 && (
-            proposalInfo.description?.links.map((l) => <View style={styles.adRow}>
-              <Icon name="link" color={colors.mainBlue} size={16} />
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('Browser', {
-                    url: l.url,
-                  })
-                }>
-                <Text style={styles.adsText}>{l.title}</Text>
-              </TouchableOpacity>
-            </View>  )
+            proposalInfo.description?.links.map((l, index) => (
+              <View style={styles.adRow} key={index}>
+                <Icon name="link" color={colors.mainBlue} size={16} />
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('Browser', {
+                      url: l.url,
+                    })
+                  }>
+                  <Text style={styles.adsText}>{l.title}</Text>
+                </TouchableOpacity>
+              </View>
+            ))
           )}
 
           {proposalInfo.description?.files?.length > 0 && (
-            proposalInfo.description?.files.map((f, index) => <View style={styles.adRow}>
-              <Icon name="file" color={colors.mainBlue} size={16} />
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('Browser', {
-                    url: f.value,
-                  })
-                }>
-                <Text style={styles.adsText}>
-                  {`File ${index + 1}`}
-                </Text>
-              </TouchableOpacity>
-            </View> )
+            proposalInfo.description?.files.map((f, index) => (
+              <View style={styles.adRow} key={index}>
+                <Icon name="file" color={colors.mainBlue} size={16} />
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('Browser', {
+                      url: f.value,
+                    })
+                  }>
+                  <Text style={styles.adsText}>
+                    {`File ${index + 1}`}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ))
           )}
         </View>
 
