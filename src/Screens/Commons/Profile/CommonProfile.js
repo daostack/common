@@ -1,23 +1,23 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Dimensions, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
-import { colors, font, layout, sizeL, sizeS, text } from '../../../Theme';
+import {colors, font, layout, sizeL, sizeS, text} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
-import { TabView } from 'react-native-tab-view';
-import { BOTTOM_SHEET_TEMPLATES } from '../../../Stores/BottomSheetStore';
+import {TabView} from 'react-native-tab-view';
+import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
 import CommonStageSummary from '../../../Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ProposalApprovalTag from '../../../Components/Proposals/ProposalApprovalTag';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '../../../Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
-import { inject, observer } from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '../../../Components/Commons/CommonHeader';
-import { calcIsFundingStage, numberFormatter } from '../../../Util';
+import {calcIsFundingStage, numberFormatter} from '../../../Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '../../../Services/ProposalService';
 import DaoService from '../../../Services/DaoService';
@@ -30,16 +30,16 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
-import {string, object, shape, func} from 'prop-types';
+import {object, shape} from 'prop-types';
 import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import ProposalActivationDate from '../../../Components/Proposals/ProposalActivationDate';
 import {BlurView} from '../../../Components';
 
-let stickyHeighAddon = 36;
+let stickyHeightAddon = 36;
 
-const STICKY_HEADER_HEIGHT = Math.round( getStatusBarHeight() ) + stickyHeighAddon;
+const STICKY_HEADER_HEIGHT = Math.round( getStatusBarHeight() ) + stickyHeightAddon;
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
 const CommonProfile = ({
@@ -188,7 +188,10 @@ const CommonProfile = ({
         navigation={navigation}
         commonInfo={{name: currCommon.name, id: currCommon.id, balance: currCommon.balance}}
       />
-      <ProposalActivationDate activationDate={currCommon.fundingGoalDeadline} />
+
+      {isMember && (
+        <ProposalActivationDate activationDate={currCommon.fundingGoalDeadline} />
+      )}
     </View>
   );
 
@@ -326,7 +329,7 @@ const CommonProfile = ({
   const calcShouldSkipRules = () => {
     const rules = currCommon.metadata?.rules;
     if (rules?.length > 0) {
-      return rules.some((rule) => rule?.title && rule?.url) ? false : true;
+      return !rules.some((rule) => rule?.title && rule?.url);
     } else {
       return true;
     }
@@ -583,7 +586,7 @@ const CommonProfile = ({
                 e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT,
               );
               upperRequestToJoinBtnRef?.current?.measure( (fx, fy, width, height, px, py) => {
-                setShowStickyRequestToJoinBtn(py < (stickyHeighAddon) );
+                setShowStickyRequestToJoinBtn(py < (stickyHeightAddon) );
               });
               stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
                 const isVisible = py < (STICKY_HEADER_HEIGHT);
