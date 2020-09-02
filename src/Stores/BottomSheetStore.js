@@ -2,14 +2,15 @@ import React from 'react';
 import {observable, action, decorate} from 'mobx';
 
 import {
-  BoostedInfo,
   CommonOperationalStateNotif,
   CommonProfileOptions,
+  SafetyPeriodAbout,
   LoginSheetScreen,
-  SortProposals,
+  TransactionError,
   UnsavedChanges,
+  SortProposals,
+  BoostedInfo,
 } from '../Screens/BottomSheetScreens';
-import TransactionError from '../Screens/BottomSheetScreens/TransactionError';
 
 export const BOTTOM_SHEET_TEMPLATES = {
   BOOSTED_INFO: {
@@ -49,6 +50,10 @@ export const BOTTOM_SHEET_TEMPLATES = {
   UNSAVED_CHANGES: {
     topSnap: 500,
     content: UnsavedChanges,
+  },
+  SAFETY_PERIOD_ABOUT: {
+    topSnap: 550,
+    content: SafetyPeriodAbout,
   },
 };
 

@@ -188,7 +188,10 @@ const CommonProfile = ({
         navigation={navigation}
         commonInfo={{name: currCommon.name, id: currCommon.id, balance: currCommon.balance}}
       />
-      <ProposalActivationDate activationDate={currCommon.fundingGoalDeadline} />
+      <ProposalActivationDate
+        activationDate={currCommon.fundingGoalDeadline}
+        bottomSheetStore={bottomSheetStore}
+      />
     </View>
   );
 
