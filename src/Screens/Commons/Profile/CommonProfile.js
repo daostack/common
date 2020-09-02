@@ -30,7 +30,7 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
-import {string, object, shape, func} from 'prop-types';
+import {object, shape} from 'prop-types';
 import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
