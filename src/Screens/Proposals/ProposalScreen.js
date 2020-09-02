@@ -33,7 +33,7 @@ import moment from 'moment';
 import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
 import {db} from '../../Firebase';
 import {string, bool, object, shape} from 'prop-types';
-const {width} = Dimensions.get('window');
+const screenWidth = Dimensions.get('window').width;
 
 const ProposalScreen = ({navigation,
   userStore: {userInfo, isDaoMember},
