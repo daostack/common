@@ -303,37 +303,32 @@ const ProposalScreen = ({navigation,
           <Text style={{...styles.votedByYouText, color}}>{message}</Text>
         </View>
       );
-    } else {
-      return (
-        !hasPassedExpiryDate
-        && <View style={styles.stickyVotingContainer}>{renderVotingButtons()}</View>
-      );
     }
   };
+
   const renderVotingButtons = (reference) => (
     (moment().isBefore(moment.unix(proposalInfo?.closingAt)) || !proposalInfo?.closingAt)
-      ? (
-        <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
-          <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>
-            {votesCount === 0 ? 'Be the first to vote!' : 'What\'s your vote'}</Text>
-          <View style={layout.flexRow}>
-            <TouchableOpacity
-              onPress={(e) => openApprovalSheet(true)}
-              style={{...styles.actionBtnStyle, ...layout.marginRightS}}>
-              <Icon name="approved-24" color={colors.lightishGreen} size={24}/>
-            </TouchableOpacity>
+    && (
+      <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
+        <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>Whats your vote?</Text>
+        <View style={layout.flexRow}>
+          <TouchableOpacity
+            onPress={(e) => openApprovalSheet(true)}
+            style={{...styles.actionBtnStyle, ...layout.marginRightS}}>
+            <Icon name="approved-24" color={colors.lightishGreen} size={24}/>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={(e) => openApprovalSheet(false)}
-              style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
-              <Icon name="reject-24" color={colors.against} size={24}/>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            onPress={(e) => openApprovalSheet(false)}
+            style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
+            <Icon name="reject-24" color={colors.against} size={24}/>
+          </TouchableOpacity>
         </View>
-      ) : null);
+      </View>
+    ));
 
 
-  const initialLayout = {width: Dimensions.get('window').width};
+  const initialLayout = {width: screenWidth};
 
   const headerContainerStyle = {
     ...layout.content,
@@ -352,7 +347,7 @@ const ProposalScreen = ({navigation,
       <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
         {showStickyTabBar && (
           <View style={{position: 'absolute', top: 0, width: '100%', paddingBottom: 5, zIndex: 999}}>
-            <TabBarRenderer navigationState={{index: 0, routes}} parentRef={originTabBarRef}/>
+            <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef}/>
           </View>)}
         <ScrollView
           style={{
@@ -410,11 +405,12 @@ const ProposalScreen = ({navigation,
                       {proposedUser ? proposedUser.displayName : 'unknown user'}
                     </Text>
 
-                    {proposedUser &&
+                    {proposedUser && (
                       <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}} onPress={viewUserProfile}>
                         <Text style={text.smallBlackText}>View Profile</Text>
                         <Icon name="right-arrow" size={20}/>
-                      </TouchableOpacity>}
+                      </TouchableOpacity>)
+                    }
 
                   </View>
                 </>
@@ -432,10 +428,10 @@ const ProposalScreen = ({navigation,
                     : proposalInfo.description.funding / 100}`}
                   </Text>
                 </View>
-                {proposalInfo.type === PROPOSAL_TYPE.FundingRequest &&
-                  <Text style={{...text.smallBlackText, backgroundColor: 'pink'}}>
-                    {`Available funds: ${commonBalance ? '$' + commonBalance / 100 : ''}`}</Text>}
-
+                {proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+                  && <Text
+                    style={text.smallBlackText}>{`Available funds: ${commonBalance !== undefined ? '$' + commonBalance / 100 : ''}`}</Text>
+                }
               </View>
 
               <View style={{...layout.content, width: '100%', paddingHorizontal: 0}}>
@@ -635,7 +631,7 @@ const styles = StyleSheet.create({
     // borderwidth: 1,
     borderBottomWidth: 1,
     // height: 60,
-    width: width,
+    width: screenWidth,
     flexDirection: 'row',
     shadowColor: 'rgba(0, 0, 0, 0.2)',
     shadowOffset: {
