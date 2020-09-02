@@ -433,8 +433,8 @@ const ProposalScreen = ({navigation,
                   </Text>
                 </View>
                 {proposalInfo.type === PROPOSAL_TYPE.FundingRequest &&
-                  <Text style={{...text.smallBlackText, backgroundColor: 'pink'}}>
-                    {`Available funds: ${commonBalance ? '$' + commonBalance / 100 : ''}`}</Text>}
+                  <Text style={{...text.smallBlackText}}>
+                    {`Available funds: ${commonBalance || commonBalance === 0 ? '$' + commonBalance / 100 : ''}`}</Text>}
 
               </View>
 
