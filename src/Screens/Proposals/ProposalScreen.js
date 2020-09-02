@@ -316,7 +316,7 @@ const ProposalScreen = ({navigation,
       ? (
         <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
           <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>
-            {votesCount === 0 ? 'Be the first to vote' : 'What\'s your vote'}</Text>
+            {votesCount === 0 ? 'Be the first to vote!' : 'What\'s your vote'}</Text>
           <View style={layout.flexRow}>
             <TouchableOpacity
               onPress={(e) => openApprovalSheet(true)}
