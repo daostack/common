@@ -30,6 +30,7 @@ import Share from 'react-native-share';
 import {BlurView} from '../../../Components';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
+import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
 import {
   colors,
   font,
@@ -67,6 +68,7 @@ const CreateStep4 = (props) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
+  const [confirmModal, setConfirmModal] = useState(false);
 
   const form = {
     ...props.generalInfoFormStore.getChangedFormFieldsJson(),
@@ -89,7 +91,6 @@ const CreateStep4 = (props) => {
   useEffect(() => {
     props.reviewFormStore.registerFormField(CreateCommonForm.AVATAR);
     props.reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
-
     props.reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, imageURI);
   }, []);
 
@@ -159,6 +160,15 @@ const CreateStep4 = (props) => {
           .catch((error) => Toast.error(error));
       }
     });
+  };
+
+  const openModal = () => {
+    props.bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.PUBLISH_COMMON,
+      {
+        forgeCommon: forgeCommon,
+      }
+    );
   };
 
   const shareCommon = (event) => {
@@ -480,7 +490,7 @@ const CreateStep4 = (props) => {
       <RequestStepActionButton
         title="Publish Common"
         pass={props.agendaFormStore.isFormActionEnabled()}
-        onPress={forgeCommon}
+        onPress={() => openModal()}
       />
       <Modal
         isVisible={Boolean(newCommonAddress)}
@@ -507,6 +517,7 @@ const CreateStep4 = (props) => {
           </View>
         </SentTemplate>
       </Modal>
+
     </SafeAreaView>
   );
 };
@@ -544,17 +555,6 @@ const styles = StyleSheet.create({
     ...font.primary.regular,
     ...font.fontSize(1),
     color: colors.grey3,
-  },
-  continueButton: {
-    width: '100%',
-    height: 48,
-    borderRadius: 32,
-    marginTop: 45,
-    flexDirection: 'row',
-    paddingHorizontal: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.mainBlue,
   },
   sectionTitle: {
     flexDirection: 'row',
@@ -641,6 +641,54 @@ const styles = StyleSheet.create({
     ...layout.marginTopL,
     flexGrow: 0,
     width: '100%',
+  },
+  body: {
+    ...layout.content,
+    ...layout.flexStart,
+    width: width,
+    height: '100%',
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  title: {
+    ...text.h1Black,
+    textAlign: 'left',
+  },
+  subtitle: {
+    ...text.regularText,
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+
+  },
+  modalStyle: {
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+    height: '70%',
+  },
+  imgAlert: {
+    height: '30%',
+    aspectRatio: 1,
+  },
+  continueButtonText: {
+    ...font.primary.regular,
+    ...font.fontSize(3),
+    color: 'white',
+  },
+  publishButton: {
+    ...layout.btnPrimary,
+    flexGrow: 0,
+    width: '100%',
+    alignSelf: 'stretch',
+    height: 48,
+  },
+  dismissButton: {
+    ...layout.btnOutline,
+    flexGrow: 0,
+    width: '100%',
+    alignSelf: 'stretch',
+    height: 48,
   },
 });
 
