@@ -25,8 +25,8 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
         //RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
-        if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
-          proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+        if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
+          proposedMemberId = currProposalInfo.join.proposedMemberId;
           funding = currProposalInfo.description.funding;
         }
         //FundingRequest proposal
@@ -67,8 +67,8 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
         //RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
-        if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
-          proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+        if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
+          proposedMemberId = currProposalInfo.join.proposedMemberId;
           funding = currProposalInfo.description.funding;
         }
         //FundingRequest proposal

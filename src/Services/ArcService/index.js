@@ -49,12 +49,12 @@ export default class ArcService {
   };
 
   // VOTING
-  voteForJoinAndQuitProposal = async (proposalId, data) => {
+  voteForJoinProposal = async (proposalId, data) => {
     return voteForProposal(
       this.arc,
       proposalId,
       data,
-      PROPOSAL_TYPE.JoinAndQuit,
+      PROPOSAL_TYPE.Join,
     );
   };
 

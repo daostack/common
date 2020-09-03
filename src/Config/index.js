@@ -96,7 +96,7 @@ export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 // Arc.js related string constants
 export const PROPOSAL_TYPE = {
-  JoinAndQuit: 'Join',
+  Join: 'Join',
   FundingRequest: 'FundingRequest',
 };
 

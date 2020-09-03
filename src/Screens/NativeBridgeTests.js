@@ -313,7 +313,7 @@ class nativeBridgeTests extends React.Component {
     try {
       const manager = await WalletManager.getInstance();
       const daoId = '0x59b1c80f882c38abd52a90c9b30edafa55f7e421';
-      const address = await ArcService.getInstance().getJoinAndQuitPluginAddress(daoId);
+      const address = await ArcService.getInstance().getJoinPluginAddress(daoId);
       const balance = await manager.getAllowance(address);
       this.setState({ CMNAllowance: balance });
     } catch (e) {
@@ -358,7 +358,7 @@ class nativeBridgeTests extends React.Component {
     console.log('creating proposal -- please wait');
     const daoId = '0x65b9355b8ab2e224693ca25bc9fa16f4a220edb9'; // 0 min join fee
     this.setState({
-      proposalStatus: 'Creating JoinAndQuit proposal -- please wait',
+      proposalStatus: 'Creating Join proposal -- please wait',
     });
     let proposalId;
     try {
@@ -378,7 +378,7 @@ class nativeBridgeTests extends React.Component {
         data
       );
       this.setState({
-        proposalStatus: `JoinAndQuit Proposal with id ${proposalId} created!`,
+        proposalStatus: `Join Proposal with id ${proposalId} created!`,
       });
       const msg = `proposal created: ${proposalId}`;
       console.log(msg);
@@ -420,7 +420,7 @@ class nativeBridgeTests extends React.Component {
     console.log(`proposal created: ${proposal.id}`);
   };
 
-  voteForJoinAndQuitProposal = async () => {
+  voteForJoinProposal = async () => {
     console.log('Vote for proposal -- please wait');
     const proposalId =
       '0xb99e0a8daeb6dcaab9756202ec375153a8498b947d7b2ac864df0635e2928ef0'; // Proposal for the 0 min funding dao made from user lyubomir.petkov@limechain.tech
@@ -431,7 +431,7 @@ class nativeBridgeTests extends React.Component {
       const data = {
         vote: 1,
       };
-      const vote = await ArcService.getInstance().voteForJoinAndQuitProposal(
+      const vote = await ArcService.getInstance().voteForJoinProposal(
         proposalId,
         data,
       );
@@ -501,7 +501,7 @@ class nativeBridgeTests extends React.Component {
 
           <Text>{this.state.voteState}</Text>
           <TouchableOpacity
-            onPress={this.voteForJoinAndQuitProposal}
+            onPress={this.voteForJoinProposal}
             style={styles.button}>
             <Text>Vote for proposal</Text>
           </TouchableOpacity>
