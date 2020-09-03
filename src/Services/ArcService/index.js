@@ -11,9 +11,7 @@ import {
   ipfsLink,
   PROPOSAL_TYPE,
 } from '../../Config';
-
 import gql from 'graphql-tag';
-
 
 export default class ArcService {
   static myInstance = null;
@@ -27,12 +25,7 @@ export default class ArcService {
         web3Provider: manager.wallet,
       });
 
-      //await this.arc.fetchContractInfos();
       await this.fetchAllContrarcts(this.arc);
-
-      console.log('ARC');
-      console.log(this.arc);
-
       return this;
     })();
   }
