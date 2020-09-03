@@ -36,14 +36,6 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     return daoList;
   };
 
-  const loadPendingDaoList = async () => {
-    if (allDaosGroup.data.length === 0) {
-      setPendingDaosGroup({title: '', data: []});
-      return [];
-    }
-    return await getPendingDAOList();
-  };
-
   const splitDaoList = async (daoList) => {
     if (daoList.length === 0) {
       setMyDaosGroup({title: '', data: []});
