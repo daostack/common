@@ -7,18 +7,11 @@ import {
 } from 'react-native';
 import React from 'react';
 import FastImage from 'react-native-fast-image';
-import {object, bool, func, string, shape} from 'prop-types';
 
 import Icon from '../../Assets/iconfont/Icon';
 import {layout, colors, text, font} from '../../Theme';
 
-const CommonCover = ({
-  navigation,
-  isMember,
-  onHeaderMenuOpen,
-  commonInfo: {cover, logo, name, description},
-  common,
-}) => {
+const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
   const renderCoverInSafeArea = () => {
     return <SafeAreaView>{renderCover()}</SafeAreaView>;
   };
@@ -52,15 +45,15 @@ const CommonCover = ({
                 ...layout.content,
                 ...{padding: 0},
               }}>
-              {logo ? (
+              {commonInfo.logo ? (
                 <FastImage
                   style={styles.logoImage}
                   source={{
-                    uri: logo,
+                    uri: commonInfo.logo,
                   }}
                 />
               ) : null}
-              <Text style={styles.headerTitleWhite}>{name}</Text>
+              <Text style={styles.headerTitleWhite}>{commonInfo.name}</Text>
             </View>
             {navigation ? (
               <TouchableOpacity onPress={onHeaderMenuOpen}>
@@ -76,7 +69,7 @@ const CommonCover = ({
         </View>
 
         <View style={styles.headerContent}>
-          <Text style={styles.headerDescription} numberOfLines={2}>{description}</Text>
+          <Text style={styles.headerDescription} numberOfLines={2}>{commonInfo.description}</Text>
           {isMember && navigation ? (
             <TouchableOpacity onPress={openAgendaScreen}>
               <Text style={styles.headerViewAgenda}>View agenda</Text>
@@ -88,16 +81,14 @@ const CommonCover = ({
   };
 
   const openAgendaScreen = e => {
-    navigation.navigate('CommonAgenda', {
-      common: common,
-    });
+    navigation.navigate('CommonAgenda');
   };
 
   return (
     <>
       <FastImage
         source={{
-          uri: cover,
+          uri: commonInfo.cover,
         }}
         imageStyle={navigation ? {} : styles.backgoundRoundedTopEdges}
         style={styles.coverBackground}>
@@ -107,18 +98,6 @@ const CommonCover = ({
       </FastImage>
     </>
   );
-};
-
-CommonCover.propTypes = {
-  navigation: object,
-  isMember: bool,
-  onHeaderMenuOpen: func,
-  commonInfo: shape({
-    cover: string,
-    logo: string,
-    name: string,
-    description: string,
-  }),
 };
 
 const styles = StyleSheet.create({

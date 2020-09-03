@@ -29,7 +29,7 @@ class UserStore {
   }
 
   isDaoMember = members => {
-    return this.userInfo ? isDaoMemberBySafeAddress(members, this.userInfo.safeAddress) : false;
+    return isDaoMemberBySafeAddress(members, this.userInfo.safeAddress);
   };
 
   setIsLoading = loading => {

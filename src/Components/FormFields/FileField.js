@@ -6,7 +6,7 @@ import DocumentPicker from 'react-native-document-picker';
 import Toast from '../../Util/Toast';
 import Icon from '../../Assets/iconfont/Icon';
 import {text, layout, colors} from '../../Theme';
-import StorageService from '../../Services/StorageService';
+import FirebaseService from '../../Services/FirebaseService';
 
 class FileField extends React.Component {
   fieldValidation = null;
@@ -58,7 +58,7 @@ class FileField extends React.Component {
       // );
 
       Toast.loading('Uploading...');
-      const downloadUrl = await StorageService.getInstance().uploadFile(
+      const downloadUrl = await FirebaseService.getInstance().uploadFile(
         res.uri,
       );
       console.log('downloadUrl', downloadUrl);

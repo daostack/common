@@ -6,12 +6,11 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import {string, shape, object} from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
 import {colors, sizeM, font} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
-import UserService from '../../Services/UserService';
+import FirebaseService from '../../Services/FirebaseService';
 import moment from 'moment';
 import firestore from '@react-native-firebase/firestore';
 import BottomSheetModal from '../../Components/BottomSheetModal';
@@ -20,20 +19,16 @@ import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 
 const {width} = Dimensions.get('window');
 
-const DiscussionCard = ({
-  data,
-  commonId,
-  userStore: {userInfo},
-  navigation,
-  bottomSheetStore,
-}) => {
-  //when will data.owner be not undefined?
+const DiscussionCard = props => {
+  const data = props.data;
   const discussionId = data.id;
+  const commonId = props.commonId;
   const [user, setUser] = useState({});
   const [msgCount, setMsgCount] = useState(0);
   const [showMenu, setShowMenu] = useState(false);
   var isFollowing = false;
 
+  let userInfo = props.userStore.userInfo;
   if (userInfo) {
     isFollowing = userInfo.following.includes(data.owner);
   }
@@ -43,7 +38,7 @@ const DiscussionCard = ({
   };
 
   const navigateToDiscussion = () => {
-    navigation.navigate('Discussions', {
+    props.navigation.navigate('Discussions', {
       data: data,
       discussionId: data.id,
       commonId: commonId,
@@ -52,7 +47,7 @@ const DiscussionCard = ({
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userData = await UserService.getInstance().getUserById(
+      const userData = await FirebaseService.getInstance().getUserById(
         data.ownerId,
       );
       if (userData) {
@@ -78,11 +73,11 @@ const DiscussionCard = ({
   const follow = () => {
     console.log('Follow user id', data.owner);
     NotificationService.follow(data.owner);
-    bottomSheetStore.hideBottomSheet();
+    props.bottomSheetStore.hideBottomSheet();
   };
 
   const showOptions = () => {
-    bottomSheetStore.showBottomSheet(
+    props.bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
       {onFollow: follow},
     );
@@ -207,23 +202,6 @@ const DiscussionCard = ({
       </BottomSheetModal>
     </>
   );
-};
-
-DiscussionCard.propTypes = {
-  data: shape({
-    id: string.isRequired,
-    owner: string.isRequired,
-    ownerId: string.isRequired,
-    title: string.isRequired,
-    createTime: object.isRequired,
-    message: string.isRequired,
-  }),
-  commonId: string,
-  userStore: shape({
-    userInfo: object,
-  }).isRequired,
-  navigation: object.isRequired,
-  bottomSheetStore: object.isRequired,
 };
 
 const styles = StyleSheet.create({

@@ -4,13 +4,9 @@ import {numberFormatter} from '../../Util';
 import moment from 'moment';
 /* import * as Progress from 'react-native-progress'; */
 import {layout, text, font} from '../../Theme';
-import {bool, shape, number} from 'prop-types';
 
-const CommonStageSummary = ({
-  isCommonCard,
-  commonProgressInfo: {time, raised, members, currentBudget},
-}) => {
-  const deadlineMoment = moment.unix(time);
+const CommonStageSummary = ({isCommonCard, commonProgressInfo}) => {
+  const deadlineMoment = moment.unix(commonProgressInfo.time);
   const deadlineHasPassed = moment().isAfter(deadlineMoment);
   const isFundingStage = !deadlineHasPassed;
   /* const renderFundingProgressBar = () => {
@@ -18,7 +14,7 @@ const CommonStageSummary = ({
       <>
         <View style={{width: '100%', ...layout.marginTopS, marginBottom: 10}}>
           <Progress.Bar
-            progress={raised / goal}
+            progress={commonProgressInfo.raised / commonProgressInfo.goal}
             width={null} // null is filling the View width
             height={8}
             color={colors.mainBlue}
@@ -40,43 +36,44 @@ const CommonStageSummary = ({
     );
   }; */
 
-  const commonNumberBox = (numberComponent, title) => (
-    <View
-      style={{
-        justifyContent: 'center',
-        alignContent: 'center',
-        alignItems: 'center',
-      }}>
-      <Text style={styles.headerSmallText}>{title}</Text>
-      <View style={styles.raisedContainer}>{numberComponent}</View>
-    </View>
-  );
-
+  const commonNumberBox = (numberComponent, title) => {
+    return (
+      <View
+        style={{
+          justifyContent: 'center',
+          alignContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Text style={styles.headerSmallText}>{title}</Text>
+        <View style={styles.raisedContainer}>{numberComponent}</View>
+      </View>
+    );
+  };
   return (
     <View style={styles.commonProgressContainer}>
       <View style={styles.commonNumbers}>
         {commonNumberBox(
           <Text style={styles.headerTitle}>
-                ${numberFormatter(raised / 100)}
+                ${numberFormatter(commonProgressInfo.raised / 100)}
           </Text>,
           isCommonCard ? 'Raised' : 'Available funds',
         )}
         {commonNumberBox(
           <Text style={styles.headerTitle}>
             {isCommonCard
-              ? members
-              : '$' + numberFormatter(raised / 100)}
+              ? commonProgressInfo.members
+              : '$' + numberFormatter(commonProgressInfo.raised / 100)}
           </Text>,
           isCommonCard ? 'Members' : 'Raised',
         )}
         {/* {commonNumberBox(
           isFundingStage ? (
             <Text style={styles.headerTitle}>
-              ${numberFormatter(goal / 100)}
+              ${numberFormatter(commonProgressInfo.goal / 100)}
             </Text>
           ) : (
             <Text style={styles.headerTitle}>
-              {activeProposals}
+              {commonProgressInfo.activeProposals}
             </Text>
           ),
           isFundingStage ? 'Goal' : 'Proposals',
@@ -86,19 +83,6 @@ const CommonStageSummary = ({
     </View>
   );
 };
-
-CommonStageSummary.propTypes = {
-  isCommonCard: bool,
-  commonProgressInfo: shape({
-    time: number,
-    activeProposals: number,
-    goal: number,
-    members: number,
-    raised: number,
-    currentBudget: number,
-  }),
-};
-
 
 const styles = StyleSheet.create({
   raisedContainer: {

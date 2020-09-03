@@ -43,10 +43,6 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
     </View>
   );
 
-  const myDaos = daoList => {
-    return daoList.filter(dao => userStore.isDaoMember(dao.members));
-  };
-
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -65,7 +61,7 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
             <Text style={styles.title}>My Commons</Text>
           </View>
           <View style={styles.sectionTabView}>
-            {AllCommonsList(myDaos(daoStore.daos))}
+            {AllCommonsList(daoStore.daos)}
           </View>
         </ScrollView>
       </SafeAreaView>

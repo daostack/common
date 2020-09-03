@@ -18,7 +18,7 @@ import Icon from '../../../Assets/iconfont/Icon';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
-import StorageService from '../../../Services/StorageService';
+import FirebaseService from '../../../Services/FirebaseService';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {numberFormatter, showErrorPopUp} from '../../../Util';
@@ -28,7 +28,9 @@ import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ArcService from '../../../Services/ArcService';
 import Share from 'react-native-share';
 import { BlurView } from '../../../Components';
-import CreateStep4Indicators from './CreateStep4Indicators';
+
+
+const {width} = Dimensions.get('window');
 import {CommonActions} from '@react-navigation/native';
 import {
   colors,
@@ -40,8 +42,6 @@ import {
   sizeL,
   sizeLineHeight,
 } from '../../../Theme';
-
-const {width} = Dimensions.get('window');
 
 const stylesHeader = StyleSheet.create({
   generalInfoTitle: {
@@ -62,6 +62,7 @@ const stylesHeader = StyleSheet.create({
   },
 });
 
+import CreateStep4Indicators from './CreateStep4Indicators';
 
 const CreateStep4 = props => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -143,7 +144,7 @@ const CreateStep4 = props => {
         console.log('ImagePicker Error: ', response.error);
       } else {
         Toast.loading('Uploading...');
-        StorageService.getInstance()
+        FirebaseService.getInstance()
           .uploadImage(response.uri)
           .then(url => {
             Toast.hide();
@@ -418,28 +419,14 @@ const CreateStep4 = props => {
                   style={{textAlign: 'right', alignSelf: 'flex-end'}}
                 />
               </TouchableOpacity> */}
-
             </View>
             {form[CreateCommonForm.LINKS]?.length ? (
               form[CreateCommonForm.LINKS].map(x => (
-                <View key={`key_${CreateCommonForm.LINKS}_${x}`}>
-                  <Text
-                    onPress={() => {
-                      props.navigation.navigate('Browser', {
-                        url: x.url,
-                      });
-                    }}
-                    style={{
-                      display: 'flex',
-                      flexFlow: 'row',
-                      alignContent: 'center',
-                      ...styles.linkText,
-                      ...styles.textContent,
-                    }}
-                  >
-                    {x.title}
-                  </Text>
-                </View>
+                <Text
+                  key={`key_${CreateCommonForm.LINKS}_${x}`}
+                  style={styles.textContent}>
+                  {x.title}
+                </Text>
               ))
             ) : (
               <View />
@@ -590,13 +577,6 @@ const styles = StyleSheet.create({
     },
     textShadowRadius: 4,
     elevation: 2,
-  },
-  linkText: {
-    ...layout.marginTopS,
-    ...font.primary.regular,
-    ...font.fontSize(2),
-    color: colors.black,
-    textDecorationLine: 'underline',
   },
   byline: {
     width: '100%',

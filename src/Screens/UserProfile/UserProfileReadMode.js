@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import Icon from '../../Assets/iconfont/Icon';
-import UserService from '../../Services/UserService';
+import FirebaseService from '../../Services/FirebaseService';
 
 import {layout, colors, text, sizeS} from '../../Theme';
 import AccordionBtn from '../../Components/AccordionBtn';
@@ -24,7 +24,7 @@ const UserProfileReadMode = ({navigation}) => {
     const getUsers = async () => {
       if (!users) {
         try {
-          const appUsers = await UserService.getInstance().getUsers();
+          const appUsers = await FirebaseService.getInstance().getUsers();
           setUsers(appUsers);
         } catch (error) {
           console.log('error: ', error);

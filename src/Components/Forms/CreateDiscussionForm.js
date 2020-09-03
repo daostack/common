@@ -23,14 +23,13 @@ class CreateDiscussionForm extends React.Component {
 
   formSkip() {}
 
-  formSave = async (e) => {
+  formSave = async e => {
     try {
       const {createDiscussionStore, userStore} = this.props;
       if (createDiscussionStore.isFormValid()) {
-        Keyboard.dismiss();
         const changedFields = createDiscussionStore.getChangedFormFieldsJson();
         console.log('createDiscussionStore', changedFields);
-        Toast.loading('Creating new discussion ...');
+
         const images = changedFields[CreateDiscussionForm.IMAGES] || [];
         const files = changedFields[CreateDiscussionForm.FILES] || [];
         firestore()
@@ -39,8 +38,8 @@ class CreateDiscussionForm extends React.Component {
           .set({
             title: changedFields[CreateDiscussionForm.TITLE],
             message: changedFields[CreateDiscussionForm.MESSAGE],
-            images: images.filter((image) => image.value !== ''),
-            files: files.filter((file) => file.value !== ''),
+            images: images.filter(image => image.value !== ''),
+            files: files.filter(file => file.value !== ''),
             createTime: new Date(),
             ownerId: userStore.userInfo.uid,
             commonId: this.props.commonId,
@@ -48,11 +47,13 @@ class CreateDiscussionForm extends React.Component {
           })
           .then(() => {
             Toast.success('Done');
+            Keyboard.dismiss();
+
             if (this.props.onFormSubmit) {
               this.props.onFormSubmit(changedFields);
             }
           })
-          .catch((error) => {
+          .catch(error => {
             Toast.error(error);
             console.log(error);
           });
@@ -63,7 +64,7 @@ class CreateDiscussionForm extends React.Component {
     }
   };
 
-  onFormClose = (e) => {
+  onFormClose = e => {
     const {onFormClose} = this.props;
     if (onFormClose) {
       onFormClose();

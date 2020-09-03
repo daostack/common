@@ -2,18 +2,17 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {colors, font} from '../../Theme';
 import FastImage from 'react-native-fast-image';
-import {number, object} from 'prop-types';
 
-const MemberImage = ({userInfo, style, id}) => (
-  userInfo?.photoURL ?
+const MemberImage = ({userInfo, style, key}) => {
+  return userInfo?.photoURL ? (
     <FastImage
-      key={id}
+      key={key}
       style={styles.memberImage}
       source={{
         uri: userInfo?.photoURL,
       }}
     />
-    :
+  ) : (
     <View
       style={{
         ...styles.memberImage,
@@ -26,12 +25,7 @@ const MemberImage = ({userInfo, style, id}) => (
         {userInfo?.displayName}
       </Text>
     </View>
-);
-
-MemberImage.propTypes = {
-  userInfo: object,
-  style: object.isRequired,
-  id: number,
+  );
 };
 
 const styles = StyleSheet.create({

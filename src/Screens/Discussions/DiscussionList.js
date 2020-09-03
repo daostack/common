@@ -3,9 +3,9 @@ import {FlatList} from 'react-native';
 import DiscussionCard from './DiscussionCard';
 import firestore from '@react-native-firebase/firestore';
 import ViewTabNoData from '../../Components/ViewTabNoData';
-import {string, object} from 'prop-types';
 
-const DiscussionList = ({commonId, navigation}) => {
+const DiscussionList = props => {
+  const commonId = props.commonId;
   const [list, setList] = useState([]);
 
   let listRef = useRef([]);
@@ -59,8 +59,8 @@ const DiscussionList = ({commonId, navigation}) => {
             <DiscussionCard
               key={item.id}
               data={item}
-              commonId={commonId}
-              navigation={navigation}
+              commonId={props.commonId}
+              navigation={props.navigation}
             />
           )}
           extraData={listRef}
@@ -73,11 +73,6 @@ const DiscussionList = ({commonId, navigation}) => {
       )}
     </>
   );
-};
-
-DiscussionList.propTypes = {
-  commonId: string.isRequired,
-  navigation: object.isRequired,
 };
 
 export default React.memo(DiscussionList);

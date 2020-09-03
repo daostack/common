@@ -2,65 +2,74 @@ import React from 'react';
 import {TextInput, View, Text, StyleSheet} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
-import {layout, colors, font} from '../../Theme';
-import {string, func, bool, number, object} from 'prop-types';
-
-const CharCount = ({currCount, maxLength}) => <Text style = {{color: currCount === maxLength ? colors.error : colors.grey3, paddingTop: 5}}>{currCount}/{maxLength}</Text>;
-
-const Label = ({label, infoLabel}) => (
-  <View style={{flexDirection: 'row', marginBottom: 8}}>
-    <Text style={styles.label}>{label}</Text>
-    <Text style={styles.infoLabel}>{infoLabel}</Text>
-  </View>);
+import {layout, colors, text, font} from '../../Theme';
 
 class TextInputField extends React.Component {
-
   fieldValidation;
+  innerLabel;
+  placeFieldActionComponent;
+
+  static defaultProps;
 
   constructor(props) {
     super(props);
 
     this.state = {
       onFocus: false,
-      charsLeft: 0,
     };
 
-    this.validate(this.props);
+    const {validation, value, fieldActionComponent, innerLabel} = this.props;
+    // Register form field for validation message component if name,formStore and validateRule props are provided
+    if (validation) {
+      const {name, formStore, validateRule, multiName, invisibleContainer = true, displayName, customErrorMessage } = validation;
+      formStore.registerFormField(name, validateRule, value, multiName);
+      this.fieldValidation = (
+        <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} invisibleContainer={invisibleContainer}/>
+      );
+    }
+
+    if (fieldActionComponent) {
+      this.placeFieldActionComponent = fieldActionComponent;
+    }
+    if (innerLabel) {
+      let toggleViewStyle = {
+        position: 'absolute',
+        top: 28,
+        right: 12,
+        ...layout.content,
+        padding: 0,
+      };
+
+      this.innerLabel = (
+        <View style={toggleViewStyle}>
+          <Text style={text.textFieldplaceholder}>{innerLabel}</Text>
+        </View>
+      );
+    }
   }
 
-  validate = ({validation, value}) => {
-    const {name, formStore, validateRule,
-      multiName, invisibleContainer = true,
-      displayName, customErrorMessage} = validation;
-
-    formStore.registerFormField(name, validateRule, value, multiName);
-    this.fieldValidation = (
-      <ValidationMessage
-        displayName={displayName}
-        customErrorMessage={customErrorMessage}
-        formStore={formStore}
-        name={name}
-        invisibleContainer={invisibleContainer} />
-    );
-  }
-
-  onChangeText = (text) => {
-    const {formStore, name} = this.props.validation;
-    this.setState({charsLeft: text.length});
-    formStore.fieldChanged(name, text);
+  onChangeText = text => {
+    if (this.props.validation) {
+      const {formStore, name} = this.props.validation;
+      formStore.fieldChanged(name, text);
+    }
     this.props.onChangeText && this.props.onChangeText(text);
   };
 
-  onFocus = (e) => {this.setState({onFocus: true});};
+  onFocus = e => {
+    this.setState({onFocus: true});
+  };
 
-  onBlur = (e) => {
-    const {formStore, name} = this.props.validation;
+  onBlur = e => {
     this.setState({onFocus: false});
-    formStore.fieldBlured(name);
+    if (this.props.validation) {
+      const {formStore, name} = this.props.validation;
+      formStore.fieldBlured(name);
+    }
     this.props.onBlur && this.props.onBlur(e);
   };
 
-  renderTextField = () => {
+  renderTextField() {
     const {
       placeholderText,
       label,
@@ -70,23 +79,35 @@ class TextInputField extends React.Component {
       multiline,
       numberOfLines,
       keyboardType,
+      innerLabel,
+      // Validation management properties
       validation,
-      maxLength,
+
       ...otherProps
     } = this.props;
 
-    const {formStore, name} = validation;
-    let styleTextfield = styles.textfieldContainer;
+    let styleTextfield = styles.textfield;
+
+    if (validation) {
+      const {formStore, name} = validation;
+      if (formStore.form.fields[name].error) {
+        styleTextfield = {...styles.textfield, ...styles.textfieldError};
+      }
+    }
+    if (this.state?.onFocus) {
+      styleTextfield = {...styles.textfield, ...styles.textfieldFocus};
+    }
+
     let defaultMultilineProps = {minHeight: 48};
 
-    styleTextfield = formStore.form.fields[name].error
-      ? {...styles.textfieldContainer, ...{borderColor: colors.error}}
-      : {...styles.textfieldContainer, ...{borderColor: this.state.onFocus ? colors.mainBlue : colors.grey4}};
-
     if (multiline) {
-      const rowsNumber = numberOfLines || 4;
+      let rowsNumber = numberOfLines;
+      styleTextfield = {...styleTextfield, textAlignVertical: 'top' };
+      if (!numberOfLines) {
+        rowsNumber = 4;
+      }
+
       const height = 32 * rowsNumber;
-      styleTextfield = {...styleTextfield, textAlignVertical: 'top'};
 
       defaultMultilineProps = {
         minHeight: height,
@@ -94,82 +115,101 @@ class TextInputField extends React.Component {
       };
     }
 
+    if (innerLabel) {
+      styleTextfield = {...styleTextfield, paddingRight: 22};
+    }
+
     return (
       <View style={{alignSelf: 'stretch', paddingBottom: 5}}>
-        {(label || infoLabel) && <Label {...{label, infoLabel}} />}
-        <View style = {styleTextfield} >
-          <TextInput
-            ref={this.props.forwardRef}
-            {...defaultMultilineProps}
-            {...otherProps}
-            maxLength={maxLength}
-            multiline={multiline}
-            style={styles.textfield}
-            placeholder={placeholderText}
-            placeholderTextColor={colors.grey3}
-            onChangeText={this.onChangeText}
-            keyboardType={keyboardType}
-            onFocus={this.onFocus}
-            onBlur={this.onBlur}
-            secureTextEntry={this.state.showPassword}
-            value={
-              validation
-                ? validation.formStore.form.fields[
-                  validation.name].value.toString()
-                : value}/>
-          {maxLength && <CharCount currCount={this.state.charsLeft} maxLength={maxLength} />}
-        </View>
+        { label || infoLabel ? <View style={{flexDirection: 'row', marginBottom: 8}}>
+          <Text style={styles.label}>{label}</Text>
+          <Text style={styles.infoLabel}>{infoLabel}</Text>
+        </View> : null }
+        <TextInput
+          ref={this.props.forwardRef}
+          {...defaultMultilineProps}
+          {...otherProps}
+          multiline={multiline}
+          style={styleTextfield}
+          placeholder={placeholderText}
+          placeholderTextColor={colors.grey3}
+          onChangeText={this.onChangeText}
+          keyboardType={keyboardType}
+          onFocus={this.onFocus}
+          onBlur={this.onBlur}
+          secureTextEntry={this.state.showPassword}
+          value={
+            validation
+              ? validation.formStore.form.fields[
+                validation.name
+              ].value.toString()
+              : value
+          }
+        />
+        {innerLabel && this.innerLabel}
       </View>
     );
   }
+
+  renderPlaceholderForNotEditableField = editable => {
+    if (editable === false) {
+      return <Text>{this.props.placeholderText || ''}</Text>;
+    }
+  };
 
   render() {
     const {viewStyle, validation} = this.props;
-    return (
-      <View style={{...layout.marginTopS, ...viewStyle}}>
-        {validation.topPosition && this.fieldValidation}
-        {this.renderTextField()}
-        {!validation.topPosition && this.fieldValidation}
-      </View>
-    );
+
+    if (this.placeFieldActionComponent) {
+      return (
+        <View style={{...layout.marginTopS, ...viewStyle}}>
+          {validation.topPosition ? this.fieldValidation : null}
+          <View>
+            <View>{this.renderTextField()}</View>
+            <View>{this.placeFieldActionComponent}</View>
+          </View>
+          {validation.topPosition ? null : this.fieldValidation}
+        </View>
+      );
+    } else {
+      return (
+        <View style={{...layout.marginTopS, ...viewStyle}}>
+          {validation.topPosition ? this.fieldValidation : null}
+          {this.renderTextField()}
+          {validation.topPosition ? null : this.fieldValidation}
+        </View>
+      );
+    }
   }
 }
 
-CharCount.propTypes = {
-  currCount: number,
-  maxLength: number,
-};
-
-Label.propTypes = {
-  label: string,
-  infoLabel: string,
-};
-
-TextInputField.propTypes = {
-  validation: object.isRequired,
-  value: string,
-  onChangeText: func,
-  onBlur: func,
-  placeholderText: string,
-  label: string,
-  infoLabel: string,
-  password: string,
-  multiline: bool,
-  numberOfLines: number,
-  keyboardType: string,
-  maxLength: number,
-  viewStyle: object,
-  forwardRef: object,
+// Set default props
+TextInputField.defaultProps = {
+  password: false,
 };
 
 const styles = StyleSheet.create({
   textfield: {
-    flex: 1,
+    //minHeight: 48,
     alignSelf: 'stretch',
+    borderRadius: 3,
+    backgroundColor: colors.white,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: colors.grey4,
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    paddingBottom: 12,
     color: colors.black,
     margin: 0,
     ...font.primary.regular,
     ...font.fontSize(2),
+  },
+  textfieldFocus: {
+    borderColor: colors.mainBlue,
+  },
+  textfieldError: {
+    borderColor: colors.error,
   },
   label: {
     ...font.primary.regular,
@@ -187,22 +227,6 @@ const styles = StyleSheet.create({
     color: colors.paleblue,
     textAlign: 'right',
     flex: 1,
-  },
-  textfieldContainer:
-  {
-    borderWidth: 1,
-    borderRadius: 3,
-    flexDirection: 'row',
-    paddingLeft: 10,
-    paddingRight: 10,
-  },
-  toggleViewStyle:
-  {
-    position: 'absolute',
-    top: 28,
-    right: 12,
-    ...layout.content,
-    padding: 0,
   },
 });
 

@@ -6,7 +6,7 @@ import ImageField from '../Components/FormFields/ImageField';
 import CountBox from '../Components/CountBox';
 import Loader from '../Components/Loader';
 import EditProfileForm from '../Components/Forms/EditProfileForm';
-import UserService from '../Services/UserService';
+import FirebaseService from '../Services/FirebaseService';
 import ProposalsList from '../Screens/Proposals/ProposalsList';
 import CommonsSwiper from '../Screens/Commons/CommonsSwiper';
 import { UserAvatar } from '../Components';
@@ -34,7 +34,7 @@ const UserProfileData = ({
           setUser(userStore.userInfo);
           setIsEditMode(true);
         } else {
-          setUser(await UserService.getInstance().getUserById(userId));
+          setUser(await FirebaseService.getInstance().getUserById(userId));
           setIsEditMode(false);
         }
       } catch (error) {
@@ -161,7 +161,6 @@ const UserProfileData = ({
         <CommonsSwiper
           navigation={navigation}
           safeAddress={user.safeAddress}
-          userId={user.uid}
           onCountChange={onCommonsCountChange}
           showMax={showMaxData}
         />

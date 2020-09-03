@@ -11,12 +11,11 @@ import FastImage from 'react-native-fast-image';
 import Icon from '../../Assets/iconfont/Icon';
 import { BlurView } from '../../Components';
 
-const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, headerHeightLayouted, common}) => {
+const CommonHeader = ({ navigation, isMember, onHeaderMenuOpen, commonInfo, headerHeightLayouted }) => {
 
   const openAgendaScreen = e => {
     navigation.navigate('CommonAgenda', {
       screenTitle: commonInfo.name,
-      common: common,
     });
   };
 

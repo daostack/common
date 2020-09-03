@@ -91,7 +91,6 @@ const CreateStep1 = props => {
         <View
           style={{
             flex: 1,
-            width: '100%',
             // alignItems: 'center',
             backgroundColor: 'white',
           }}>
@@ -117,11 +116,10 @@ const CreateStep1 = props => {
             autoCapitalize="none"
             returnKeyType="next"
             autoCorrect={false}
-            maxLength={24}
             validation={{
               name: CreateCommonForm.NAME,
               formStore: props.generalInfoFormStore,
-              validateRule: 'required',
+              validateRule: 'required|max:24',
               displayName: 'common name',
             }}
           />
@@ -136,11 +134,10 @@ const CreateStep1 = props => {
             placeholderText="What is the ultimate goal of the Common?"
             autoCapitalize="none"
             autoCorrect={false}
-            maxLength={40}
             validation={{
               name: CreateCommonForm.BYLINE,
               formStore: props.generalInfoFormStore,
-              validateRule: 'required|min:10',
+              validateRule: 'required|min:10|max:40',
               displayName: 'mission statement',
             }}
           />
@@ -165,11 +162,10 @@ const CreateStep1 = props => {
             allowsEditing={true}
             label="Links"
             title="Title"
-            maxLength={30}
             validation={{
               name: CreateCommonForm.LINKS,
               formStore: props.generalInfoFormStore,
-              validateRule: {common: 'string|url', title: 'string'},
+              validateRule: {common: 'string|url', title: 'string|max:30'},
             }}
           />
         </View>

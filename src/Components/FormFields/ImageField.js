@@ -1,12 +1,12 @@
 import * as React from 'react';
-import {Image, View, StyleSheet, TouchableOpacity, Text, Platform} from 'react-native';
+import {Image, View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 
 import ImagePicker from 'react-native-image-picker';
 import Toast from '../../Util/Toast';
-import StorageService from '../../Services/StorageService';
+import FirebaseService from '../../Services/FirebaseService';
 
 import Icon from '../../Assets/iconfont/Icon';
 import colors from '../../Theme/colors';
@@ -66,7 +66,7 @@ class ImageField extends React.Component {
       } else {
         // const source = { uri: response.uri };
         Toast.loading('Uploading...');
-        StorageService.getInstance()
+        FirebaseService.getInstance()
           .uploadImage(response.uri)
           .then(url => {
             Toast.hide();
@@ -216,12 +216,8 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 8,
     shadowOpacity: 1,
+    elevation: 3,
     alignSelf: 'center',
-    ...Platform.select({
-      android: {
-        elevation: 3,
-      },
-    }),
   },
   formImageFueldGeneralStyle: {
     width: '100%',

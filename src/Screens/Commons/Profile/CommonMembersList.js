@@ -2,8 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import MemberCard from '../../../Components/MemberCard';
 import {layout, sizeS, colors} from '../../../Theme';
-import UserService from '../../../Services/UserService';
-import DaoService from '../../../Services/DaoService';
+import FirebaseService from '../../../Services/FirebaseService';
 import Loader from '../../../Components/Loader';
 import MemberImage from '../../../Components/Commons/MemberImage';
 import Toast from '../../../Util/Toast';
@@ -20,13 +19,13 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
     setMembersInfo([]);
     const loadMemberUser = async userId => {
       try {
-        let currUserInfo = await UserService.getInstance().getUserById(
+        let currUserInfo = await FirebaseService.getInstance().getUserById(
           userId,
         );
 
         currUserInfo = {
           ...currUserInfo,
-          daos: (await DaoService.getInstance().getUserDaos(currUserInfo.uid, currUserInfo.safeAddress)).docs?.map(dao => dao.data()),
+          daos: (await FirebaseService.getInstance().getUserDaos(currUserInfo.uid, currUserInfo.safeAddress)).docs?.map(dao => dao.data()),
         };
 
         setMembersInfo(prevMembers => [...prevMembers, currUserInfo]);
@@ -70,7 +69,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
             return (
               <TouchableOpacity style={itemStyle} onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
                 <MemberImage
-                  id={i}
+                  key={i}
                   userInfo={member}
                   style={{marginLeft: i > 0 ? -15 : 0}}
                 />
