@@ -2,9 +2,12 @@ import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from './TextInputField';
 import {text, layout, colors, sizeL} from '../../Theme';
+import Icon from '../../Assets/iconfont/Icon';
 
-const MultiLinkField = props => {
+const MultiLinkField = (props) => {
   const [count, setCount] = useState(1);
+  const [deletedFields, setDeletedFields] = useState([]);
+
   const {
     maxCount,
     validation,
@@ -20,21 +23,38 @@ const MultiLinkField = props => {
     // fieldName = validation.name;
   }, []);
 
-  const renderAddLinkBtn = index => {
-    if (index === count - 1 && (!maxCount || count < maxCount)) {
-      return (
-        <TouchableOpacity>
-          <Text style={styles.addLinkBtn} onPress={() => setCount(count + 1)}>
-            {addMultiFieldBtnName ? addMultiFieldBtnName : 'Add Link'}
-          </Text>
-        </TouchableOpacity>
-      );
+  const onFieldDeleted = (currIndex, currTitleItemValidation, currItemValidation) => {
+    if (currTitleItemValidation && currItemValidation) {
+      currTitleItemValidation.formStore.removeFormField(currTitleItemValidation.name);
+      currItemValidation.formStore.removeFormField(currItemValidation.name);
     }
+    setDeletedFields([...deletedFields, currIndex]);
   };
+
+  const onChangeText = (value, currTitleItemValidation) => {
+    if (value.length > 0) {
+      validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule + '|required');
+    } else {
+      validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule);
+    }
+
+  };
+
+  const AddLinkBtn = ({addMultiFieldBtnName, setCount}) => <TouchableOpacity>
+    <Text style={styles.addLinkBtn} onPress={() => setCount()}>
+      {addMultiFieldBtnName || 'Add Link'}
+    </Text>
+  </TouchableOpacity>;
+
+  const RemoveLinkBtn = ({onFieldDeleted}) => <TouchableOpacity
+    style={styles.removeBtnContainer}
+    onPress={() => onFieldDeleted()}>
+    <Icon name="delete" size={16} />
+  </TouchableOpacity>;
 
   return (
     <View style={{paddingTop: sizeL}}>
-      {[...Array(count).keys()].map(currIndex => {
+      {[...Array(count).keys()].map((currIndex) => {
         const currItemValidation = {...props.validation}; //{...validation};
         currItemValidation.name = `${props.validation.name}_value_${currIndex +
           1}`;
@@ -50,12 +70,12 @@ const MultiLinkField = props => {
         currTitleItemValidation.multiName = props.validation.name;
         currTitleItemValidation.validateRule =
           validation.validateRule?.title || 'string';
-        const { formStore } = validation;
+        const {formStore} = validation;
         currTitleItemValidation.topPosition = true;
         currTitleItemValidation.invisibleContainer = true;
 
         return (
-          <View key={`key_${props.validation.name}_${currIndex + 1}`} style={layout.marginBottomM}>
+          !deletedFields.includes(currIndex) && <View key={`key_${props.validation.name}_${currIndex + 1}`} style={layout.marginBottomM}>
             {props.title ? (
               <TextInputField
                 label={props.label}
@@ -67,14 +87,8 @@ const MultiLinkField = props => {
             ) : null}
             <TextInputField
               value={''}
-              onChangeText={(value) => {
-                if (value.length > 0) {
-                  formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule + '|required');
-                } else {
-                  formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule);
-                }
-              }}
-              viewStyle={{marginTop: 0}}
+              onChangeText={(value) => onChangeText(value, currTitleItemValidation)}
+              viewStyle={{marginTop: -5}}
               placeholderText={
                 placeholderValueText ? placeholderValueText : 'https://'
               }
@@ -83,15 +97,37 @@ const MultiLinkField = props => {
               multiline={multiline}
               validation={currItemValidation}
             />
-            {renderAddLinkBtn(currIndex)}
+            {/* <View style={styles.removeBtn}>
+              {<RemoveLinkBtn onFieldDeleted={() => onFieldDeleted(currIndex, currTitleItemValidation, currItemValidation)} />}
+            </View> */}
           </View>
         );
       })}
+
+      {
+        (!maxCount || (count - deletedFields.length) < maxCount)
+        && <AddLinkBtn setCount={() => setCount(count + 1)} />
+      }
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  removeBtnContainer: {
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    backgroundColor: `${colors.black}10`,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  removeBtn: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    justifyContent: 'center',
+  },
   containerRow: {
     flexDirection: 'row',
     alignSelf: 'stretch',
@@ -106,7 +142,6 @@ const styles = StyleSheet.create({
     ...text.h3Black,
     color: colors.mainBlue,
     textAlign: 'left',
-    ...layout.marginTopM,
     fontSize: 16,
   },
 });

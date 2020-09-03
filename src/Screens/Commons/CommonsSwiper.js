@@ -1,10 +1,10 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {Text, View, Dimensions, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import {Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {CommonBox} from '../../Components';
 import {inject, observer} from 'mobx-react';
 import SwiperCard from '../../Components/SwiperCard';
 import DaoService from '../../Services/DaoService';
-import {layout, text, font,sizeXXL, colors} from '../../Theme';
+import {layout, text, font, colors} from '../../Theme';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -12,8 +12,8 @@ import {
 } from 'rn-placeholder';
 import {isDaoMemberBySafeAddress} from '../../Util';
 import { CommonActions } from '@react-navigation/native';
+import {string, object, number, func} from 'prop-types';
 
-const {width} = Dimensions.get('window');
 const DEFAULT_HEADER_HEIGHT = 145;
 
 const CommonsSwiper = ({
@@ -80,6 +80,7 @@ const CommonsSwiper = ({
     };
   }, [safeAddress]);
 
+
   const headerHeightLayouted = (height) => {
     setHeaderHeight(height);
   };
@@ -95,16 +96,18 @@ const CommonsSwiper = ({
   };
 
   const renderCommonCard = (item, index) => (
-    !showMax || (index < showMax) ? <CommonBox
-      key={item.id}
-      width={width - 60}
-      common={item}
-      navigation={navigation}
-      onPress={() => navigateToCommon(item)}
-      headerHeightLayouted={headerHeightLayouted}
-    /> : <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{...styles.commonBox, height: headerHeight}}>
-      <Text style={text.buttonblue}>{`View all ${myDaos.length} Commons`}</Text>
-    </TouchableOpacity>
+    (!showMax || (index < showMax))
+      ? <CommonBox
+        key={item.id}
+        common={item}
+        navigation={navigation}
+        onPress={() => navigateToCommon(item)}
+        headerHeightLayouted={headerHeightLayouted}/>
+      : <TouchableOpacity
+        onPress={() => navigation.navigate('MyCommons')}
+        style={{...styles.commonBox, height: headerHeight}}>
+        <Text style={text.buttonblue}>{`View all ${myDaos.length} Commons`}</Text>
+      </TouchableOpacity>
   );
 
   const listChangeCallback = (newList) => {
@@ -160,6 +163,15 @@ const CommonsSwiper = ({
       </Placeholder>
     </View>
   );
+};
+
+CommonsSwiper.propTypes = {
+  navigation: object,
+  daoStore: object,
+  safeAddress: string,
+  userId: string,
+  onCountChange: func,
+  showMax: number,
 };
 
 const styles = StyleSheet.create({

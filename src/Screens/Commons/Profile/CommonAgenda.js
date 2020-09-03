@@ -9,14 +9,13 @@ import {
   Image,
 } from 'react-native';
 import moment from 'moment';
-
+import {object, shape, number, array, string} from 'prop-types';
 import {layout, text, font, colors} from '../../../Theme';
 
-const CommonAgenda = ({navigation, route}) => {
-
-  const common = route.params.common;
-
-  return (
+const CommonAgenda = ({navigation,
+  route: {
+    params: {common: {metadata, fundingGoalDeadline}},
+  }}) => (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeArea}>
@@ -37,20 +36,20 @@ const CommonAgenda = ({navigation, route}) => {
           <View style={styles.sectionContainer}>
             <Text style={text.h2Black}>About</Text>
             <Text style={styles.description}>
-              {common.metadata?.description}
+              {metadata.description}
             </Text>
           </View>
 
-          {common.metadata?.courseOfAction && <View style={styles.sectionContainer}>
+          {metadata.courseOfAction && <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Course of action</Text>
             <Text style={styles.description}>
-              {common.metadata.courseOfAction}
+              {metadata.courseOfAction}
             </Text>
           </View>}
-          {common.metadata?.links?.length > 0 && (
+          {metadata.links?.length > 0 && (
             <View style={styles.sectionContainer}>
               <Text style={text.h3Black}>Links</Text>
-              {common.metadata.links.map((link, i) => (
+              {metadata.links.map((link, i) => (
                 <View key={i}>
                   <Text
                     style={styles.linkText}
@@ -70,19 +69,19 @@ const CommonAgenda = ({navigation, route}) => {
             <Text style={text.h3Black}>Campaign period deadline</Text>
             <Text style={styles.description}>
               {moment
-                .unix(common.fundingGoalDeadline)
+                .unix(fundingGoalDeadline)
                 .format('MMM DD, YYYY')}
             </Text>
           </View>
 
-          {common.metadata.rules?.length > 0 && (
+          {metadata.rules?.length > 0 && (
             <>
             <View style={styles.sectionDividerContent}>
               <View style={styles.sectionDivider} />
             </View>
             <View style={styles.sectionContainer}>
               <Text style={text.h2Black}>Rules of conduct</Text>
-              {common.metadata.rules.map((rule, i) => (
+              {metadata.rules.map((rule, i) => (
                 <View key={i}>
                   <Text style={styles.ruleTitle}>
                     {rule.title}
@@ -99,7 +98,23 @@ const CommonAgenda = ({navigation, route}) => {
         </ScrollView>
       </SafeAreaView>
     </>
-  );
+);
+
+CommonAgenda.propTypes = {
+  navigation: object,
+  route: shape({
+    params: shape({
+      common: shape({
+        metadata: shape({
+          description: string.isRequired,
+          courseOfAction: string,
+          links: array,
+          rules: array,
+        }),
+        fundingGoalDeadline: number,
+      }).isRequired,
+    }),
+  }),
 };
 
 const styles = StyleSheet.create({
