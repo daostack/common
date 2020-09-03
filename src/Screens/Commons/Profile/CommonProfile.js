@@ -59,9 +59,9 @@ const CommonProfile = ({
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    {key: 'discussions', title: 'Discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
-    {key: 'proposals', title: 'Proposals', icon: 'proposal', iconSelected: 'proposal-selected'},
-    {key: 'history', title: 'History', icon: 'history', iconSelected: 'history-selected'},
+    {index: 0, key: 'discussions', title: 'Discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
+    {index: 1, key: 'proposals', title: 'Proposals', icon: 'proposal', iconSelected: 'proposal-selected'},
+    {index: 2, key: 'history', title: 'History', icon: 'history', iconSelected: 'history-selected'},
   ]);
 
   //const routeCommon = params.currCommon;
@@ -168,7 +168,7 @@ const CommonProfile = ({
   }, [pendingProposalsData]);
 
   const renderTabBar = (props) => (
-    <TabBarRenderer originRef={originTabBarRef} {...props} />
+    <TabBarRenderer originRef={originTabBarRef} jumpTo = {originTabBarRef.current?.props?.jumpTo} {...props} indexChange = {setIndex}/>
   );
 
   const Discussions = () => (
@@ -179,7 +179,7 @@ const CommonProfile = ({
   );
 
   const Proposals = () => (
-    <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
+    <View style={{...styles.paleBackground, padding: sizeL}}>
       <Text style={text.h1BlackTitle}>Proposals</Text>
 
       <ProposalsList
@@ -556,7 +556,7 @@ const CommonProfile = ({
           </TouchableOpacity>
 
           {showStickyTabBar && (<View style={{position: 'absolute', top: STICKY_HEADER_HEIGHT, width: '100%', paddingBottom: 5, zIndex: 999}}>
-            <TabBarRenderer navigationState={{index: 0, routes: routes}} parentRef={originTabBarRef} />
+            <TabBarRenderer navigationState={{index, routes}} jumpTo = {originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange = {setIndex} />
           </View>)}
 
           <ParallaxScrollView
