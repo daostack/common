@@ -14,6 +14,8 @@ export const PROPOSAL_STAGE = {
   QuietEndingPeriod: '5',
 };
 
+import {PROPOSAL_TYPE} from '../Config';
+
 export const PROPOSAL_STAGES_ACTIVE = [
   PROPOSAL_STAGE.Queued,
   PROPOSAL_STAGE.PreBoosted,
@@ -25,11 +27,6 @@ export const PROPOSAL_STAGES_HISTORY = [
   PROPOSAL_STAGE.ExpiredInQueue,
   PROPOSAL_STAGE.Executed,
 ];
-
-export const PROPOSAL_TYPE = {
-  JoinAndQuit: 'JoinAndQuit',
-  FundingRequest: 'FundingRequest',
-};
 
 export const LAUNCHED_STATES = [
   PROPOSAL_STAGE.Queued, PROPOSAL_STAGE.PreBoosted,
@@ -111,7 +108,7 @@ export default class ProposalService {
       .collection(DB_COLLECTIONS.proposals)
       .where('dao', '==', daoId)
       .where('closingAt', '>', moment().unix())
-      .where('type', '==', 'JoinAndQuit')
+      .where('type', '==', PROPOSAL_TYPE.JoinAndQuit)
       .where('stageStr', 'in', PROPOSAL_STAGES_ACTIVE)
       .orderBy('closingAt', 'desc');
 

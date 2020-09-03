@@ -6,6 +6,7 @@ import GraphqlSyncService from '../GraphqlSyncService';
 const {
   ARC_VERSION,
   IPFS_DATA_VERSION,
+  PROPOSAL_TYPE,
 } = require('../../Config');
 
 
@@ -61,7 +62,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
 
     const errorHandler = async (receipt) => {
       // lets first check some sanity things about the dao
-      const joinAndQuitPlugin = await dao.plugin({where: {name: 'JoinAndQuit'}});
+      const joinAndQuitPlugin = await dao.plugin({where: {name: PROPOSAL_TYPE.JoinAndQuit}});
       const joinAndQuitPluginState = await joinAndQuitPlugin.fetchState();
       const fundingRequestPlugin = await dao.plugin({where: {name: 'FundingRequest'}});
       const fundingRequestPluginState = await fundingRequestPlugin.fetchState();
@@ -74,7 +75,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
       let fundingGoalReachedFlag = await daoContract.functions.db('FUNDED_BEFORE_DEADLINE');
       if (fundingGoalReachedFlag !== 'TRUE') {
         const joinAndQuitPlugin = await dao.plugin({
-          where: {name: 'JoinAndQuit'},
+          where: {name: PROPOSAL_TYPE.JoinAndQuit},
         });
         console.log(`fundingGoalReachedFlag is not TRUE (its value is "${fundingGoalReachedFlag}") - so we cannot create a proposal`);
 
