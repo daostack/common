@@ -167,7 +167,6 @@ const CommonsSwiper = ({
 
 CommonsSwiper.propTypes = {
   navigation: object,
-  daoStore: object,
   safeAddress: string,
   userId: string,
   onCountChange: func,

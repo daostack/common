@@ -1238,6 +1238,13 @@
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
+"@react-native-community/async-storage@^1.12.0":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@react-native-community/async-storage/-/async-storage-1.12.0.tgz#d2fc65bc08aa1c3e9514bbe9fe7095eab8e8aca3"
+  integrity sha512-y3zVxuVyiOxI8TXrvajmYfDbIt2vFNxzV5MiA28v15DQTxDk6uJH3rpc9my+la7u2Tiwt3PpdU2+59ZgZ4h7wA==
+  dependencies:
+    deep-assign "^3.0.0"
+
 "@react-native-community/async-storage@^1.8.1":
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/async-storage/-/async-storage-1.11.0.tgz#bf81b8813080846f150c67f531987c429b442166"
@@ -7403,6 +7410,13 @@ react-native-animatable@1.3.3:
   integrity sha512-2ckIxZQAsvWn25Ho+DK3d1mXIgj7tITkrS4pYDvx96WyOttSvzzFeQnM2od0+FUMzILbdHDsDEqZvnz1DYNQ1w==
   dependencies:
     prop-types "^15.7.2"
+
+react-native-cache@^2.0.0-rc.5:
+  version "2.0.0-rc.5"
+  resolved "https://registry.yarnpkg.com/react-native-cache/-/react-native-cache-2.0.0-rc.5.tgz#1ccc74e86477b3d59d310750a02901ee6b0580c3"
+  integrity sha512-MUrCJ0DKXltcZ9sswapIeiygX0Na8ZXVnpzEyT7TRp2JOLvUNC35LyOuoYgjlq0Wqrm/tuXLoYmblrpPd3/JUg==
+  dependencies:
+    "@react-native-community/async-storage" "^1.8.1"
 
 "react-native-cloud-fs@https://github.com/npomfret/react-native-cloud-fs.git":
   version "1.0.0"

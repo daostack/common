@@ -14,6 +14,7 @@ import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {font, colors} from '../../Theme';
 import {object} from 'prop-types';
+import {cache} from '../../Config';
 
 import {
   Placeholder,
@@ -72,7 +73,6 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
         setIsSplited(true);
       }
     } catch (err) {
-      console.error('AAAAA', err);
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
       );
@@ -96,7 +96,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
       }));
 
       daoStore.setDaos(docs);
-
+      cache.set('daoList', docs);
       setAllDaosGroup({
         title: myDaosGroup?.data.length > 0 ? `Discover more Commons (${docs?.length})` : '',
         data: docs,
@@ -104,7 +104,6 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
       splitDaoList(docs);
       setRefreshing(false);
     } catch (err) {
-      console.error('AAAAA', err);
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
       );
@@ -117,6 +116,17 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   }, []);
 
   useEffect(() => {
+    cache.get('daoList').then((docs) => {
+      if (docs.length === 0) {
+        return;
+      }
+      daoStore.setDaos(docs);
+      setAllDaosGroup({
+        title: myDaosGroup?.data.length > 0 ? `Discover more Commons (${docs?.length})` : '',
+        data: docs,
+      });
+      splitDaoList(docs);
+    });
     DaoService.getInstance().getDaoList(loadDaosList);
   }, [ bottomSheetStore, userStore.userInfo]);
 
