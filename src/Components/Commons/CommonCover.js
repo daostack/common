@@ -8,7 +8,6 @@ import {
 import React from 'react';
 import FastImage from 'react-native-fast-image';
 import {object, bool, func, string, shape} from 'prop-types';
-
 import Icon from '../../Assets/iconfont/Icon';
 import {layout, colors, text, font} from '../../Theme';
 
@@ -19,12 +18,9 @@ const CommonCover = ({
   commonInfo: {cover, logo, name, description},
   common,
 }) => {
-  const renderCoverInSafeArea = () => {
-    return <SafeAreaView>{renderCover()}</SafeAreaView>;
-  };
+  const renderCoverInSafeArea = () => <SafeAreaView>{renderCover()}</SafeAreaView>;
 
-  const renderCover = () => {
-    return (
+  const renderCover = () => (
       <>
         <View style={styles.headerContainerWrap}>
           <View
@@ -36,7 +32,7 @@ const CommonCover = ({
                   ...styles.headerContainerCenterContent,
                 }
             }>
-            {navigation ? (
+            {navigation && (
               <TouchableOpacity onPress={navigation.goBack}>
                 <Icon
                   name="left-arrow"
@@ -45,24 +41,24 @@ const CommonCover = ({
                   style={layout.marginTopXS}
                 />
               </TouchableOpacity>
-            ) : null}
+            )}
 
             <View
               style={{
                 ...layout.content,
                 ...{padding: 0},
               }}>
-              {logo ? (
+              {logo && (
                 <FastImage
                   style={styles.logoImage}
                   source={{
                     uri: logo,
                   }}
                 />
-              ) : null}
+              )}
               <Text style={styles.headerTitleWhite}>{name}</Text>
             </View>
-            {navigation ? (
+            {navigation && (
               <TouchableOpacity onPress={onHeaderMenuOpen}>
                 <Icon
                   name="menu-horizontal"
@@ -71,23 +67,22 @@ const CommonCover = ({
                   style={layout.marginTopXS}
                 />
               </TouchableOpacity>
-            ) : null}
+            )}
           </View>
         </View>
 
         <View style={styles.headerContent}>
           <Text style={styles.headerDescription} numberOfLines={2}>{description}</Text>
-          {isMember && navigation ? (
+          {isMember && navigation && (
             <TouchableOpacity onPress={openAgendaScreen}>
               <Text style={styles.headerViewAgenda}>View agenda</Text>
             </TouchableOpacity>
-          ) : null}
+          )}
         </View>
       </>
-    );
-  };
+  );
 
-  const openAgendaScreen = e => {
+  const openAgendaScreen = (e) => {
     navigation.navigate('CommonAgenda', {
       common: common,
     });
@@ -96,9 +91,7 @@ const CommonCover = ({
   return (
     <>
       <FastImage
-        source={{
-          uri: cover,
-        }}
+        source={{uri: cover}}
         imageStyle={navigation ? {} : styles.backgoundRoundedTopEdges}
         style={styles.coverBackground}>
         <View style={styles.coverOverlay}>
@@ -119,6 +112,7 @@ CommonCover.propTypes = {
     name: string,
     description: string,
   }),
+  common: object,
 };
 
 const styles = StyleSheet.create({

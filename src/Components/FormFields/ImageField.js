@@ -1,52 +1,51 @@
 import * as React from 'react';
 import {Image, View, StyleSheet, TouchableOpacity, Text, Platform} from 'react-native';
-
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
-
 import ImagePicker from 'react-native-image-picker';
 import Toast from '../../Util/Toast';
 import StorageService from '../../Services/StorageService';
-
 import Icon from '../../Assets/iconfont/Icon';
 import colors from '../../Theme/colors';
 import layout from '../../Theme/layout';
 import text from '../../Theme/text';
+import {string, func, bool, shape, object, number} from 'prop-types';
 
 class ImageField extends React.Component {
   fieldValidation = null;
   placeFieldActionComponent = null;
+  goBack = false;
 
   static defaultProps;
 
   constructor(props) {
     super(props);
 
-    const {validation, value} = this.props;
+    const {validation: {
+      name,
+      formStore,
+      validateRule,
+      multiName,
+      displayName,
+      customErrorMessage,
+    }, value} = this.props;
 
-    if (validation) {
-      const {name, formStore, validateRule, multiName, displayName, customErrorMessage} = validation;
-      formStore.registerFormField(name, validateRule, value, multiName);
+    formStore.registerFormField(name, validateRule, value, multiName);
 
-      this.fieldValidation = (
-        <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} invisibleContainer={true}/>
-      );
-    }
+    this.fieldValidation = (
+      <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} invisibleContainer={true}/>
+    );
   }
 
-  onChangeValue = url => {
-    if (this.props.validation) {
-      const {formStore, name} = this.props.validation;
-      formStore.fieldChanged(name, url);
-    }
+  onChangeValue = (url) => {
+    const {formStore, name} = this.props.validation;
+    formStore.fieldChanged(name, url);
     this.props.onChangeImage && this.props.onChangeImage(url);
   };
 
   onFieldDeleted = () => {
-    if (this.props.validation) {
-      const { formStore, name } = this.props.validation;
-      formStore.removeFormField(name);
-    }
+    const {formStore, name} = this.props.validation;
+    formStore.removeFormField(name);
     this.props.onFieldDeleted && this.props.onFieldDeleted();
   }
 
@@ -57,7 +56,7 @@ class ImageField extends React.Component {
       quality: quality || 0.7,
       allowsEditing: allowsEditing || false,
     };
-    ImagePicker.showImagePicker(options, response => {
+    ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
         // console.log('User cancelled image picker');
       } else if (response.error) {
@@ -68,26 +67,24 @@ class ImageField extends React.Component {
         Toast.loading('Uploading...');
         StorageService.getInstance()
           .uploadImage(response.uri)
-          .then(url => {
+          .then((url) => {
             Toast.hide();
             Toast.success('Done');
             this.onChangeValue(url);
           })
-          .catch(error => Toast.error(error.toString()));
+          .catch((error) => {
+            Toast.error(error.toString());
+          });
       }
     });
   };
 
-  renderImage = () => {
-    const {isAvatar, validation, value} = this.props;
-
+  renderImage = (isAvatar, validation, value) => {
     const imageStyle = isAvatar
       ? styles.formImageFieldStyle
       : styles.formImageFueldGeneralStyle;
 
-    const currValue = validation
-      ? validation.formStore.form.fields[validation.name].value
-      : value;
+    const currValue = validation.formStore.form.fields[validation.name].value || value;
 
     if (currValue) {
       return (
@@ -110,7 +107,7 @@ class ImageField extends React.Component {
     else {
       return (
         <View style={styles.imageFieldPlaceholderView}>
-          <View style={{ borderColor: colors.grey3, borderWidth: 2, borderRadius: 5, padding: 15}}>
+          <View style={{borderColor: colors.grey3, borderWidth: 2, borderRadius: 5, padding: 15}}>
             <Icon name="addpicture" size={18} />
           </View>
           <Text
@@ -142,10 +139,7 @@ class ImageField extends React.Component {
 
   render() {
     const {isAvatar, value, validation, disableEdit} = this.props;
-
-    const currValue = validation
-      ? validation.formStore.form.fields[validation.name].value
-      : value;
+    const currValue = validation.formStore.form.fields[validation.name].value || value;
 
     return (
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -156,14 +150,13 @@ class ImageField extends React.Component {
               : styles.formFieldContainerGenral
           }>
           <View>
-            {this.renderImage()}
-            {!disableEdit && (isAvatar || currValue) ? (
+            {this.renderImage(isAvatar, validation, value)}
+            {!disableEdit && (isAvatar || currValue) &&
               <TouchableOpacity
                 style={isAvatar ? styles.formImageFielAddIconAvatar : styles.formImageFielAddIcon}
                 onPress={() => { isAvatar ? this.pickImage() : this.onFieldDeleted();} }>
                 <Icon name={ isAvatar ? 'addpicture' : 'delete' } size={16} color={colors.white} />
-              </TouchableOpacity>
-            ) : null}
+              </TouchableOpacity>}
           </View>
         </View>
         {this.fieldValidation}
@@ -171,6 +164,25 @@ class ImageField extends React.Component {
     );
   }
 }
+
+ImageField.propTypes = {
+  validation: shape({
+    name: string,
+    formStore: object,
+    validateRule: string,
+    multiName: string,
+    displayName: string,
+    customErrorMessage: string,
+  }),
+  value: string,
+  onChangeImage: func,
+  onFieldDeleted: func,
+  title: string,
+  quality: number,
+  allowsEditing: bool,
+  isAvatar: bool,
+  disableEdit: bool,
+};
 
 const styles = StyleSheet.create({
   btn: {
@@ -217,11 +229,6 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOpacity: 1,
     alignSelf: 'center',
-    ...Platform.select({
-      android: {
-        elevation: 3,
-      },
-    }),
   },
   formImageFueldGeneralStyle: {
     width: '100%',

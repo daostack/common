@@ -27,6 +27,7 @@ import auth from '@react-native-firebase/auth';
 import BottomSheetModal from '../../Components/BottomSheetModal';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import ImageView from 'react-native-image-viewing';
+import { db } from '../../Firebase';
 
 const {width} = Dimensions.get('window');
 
@@ -67,8 +68,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
     if (currentUser) {
       uid = currentUser.uid;
     }
-    const unsubscribe = firestore()
-      .collection('discussion')
+    const unsubscribe = db.collection('discussion')
       .doc(discussionId)
       .onSnapshot((snapshot) => {
         // console.log(snapshot.data());
@@ -86,8 +86,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
   }, [commonId, discussionId, currentUser]);
 
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('discussionMessage')
+    const unsubscribe = db.collection('discussionMessage')
       .where('discussionId', '==', discussionId)
       .orderBy('createTime', 'desc')
       // .startAt(0)
@@ -170,8 +169,8 @@ const Discussions = ({daoStore, userStore, ...props}) => {
     } else {
       showLoginScreen();
     }
-    firestore()
-      .collection('discussion')
+
+    db.collection('discussion')
       .doc(discussionId)
       .update({
         follower: followState
@@ -201,8 +200,8 @@ const Discussions = ({daoStore, userStore, ...props}) => {
     const message = inputText;
     if (message && message.trim().length) {
       inputRef.current.clear();
-      firestore()
-        .collection('discussionMessage')
+
+      db.collection('discussionMessage')
         .doc()
         .set({
           text: message,
