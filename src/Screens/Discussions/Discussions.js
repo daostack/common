@@ -31,7 +31,7 @@ import { db } from '../../Firebase';
 
 const {width} = Dimensions.get('window');
 
-const Discussions = ({daoStore, userStore, ...props}) => {
+const Discussions = ({userStore, daoStore, route:{params}, ...props}) => {
   const [inputHeight, setInputHeight] = useState(65);
   const inputRef = useRef(null);
   const [user, setUser] = useState({});
@@ -39,14 +39,14 @@ const Discussions = ({daoStore, userStore, ...props}) => {
   const chatRef = useRef(null);
   const [isExpanded, setIsExpanded] = useState(false);
   // const data = props.route.params.discussionId;
-  const commonId = props.route.params.commonId;
-  const discussionId = props.route.params.discussionId;
+  const commonId = params.commonId;
+  const discussionId = params.discussionId;
   const [msgGroup, setMsgDroup] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
   // const [discussion, setDiscussion] = useState();
   const [followState, setFollowState] = useState(false);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
-  const [data, setData] = useState(props.route.params.data);
+  const [data, setData] = useState(params.data);
   const [isMember, setIsMember] = useState(false);
 
   const [isSending, setIsSending] = useState(false);

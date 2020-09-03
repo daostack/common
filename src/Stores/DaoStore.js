@@ -25,19 +25,19 @@ class DaoStore {
     this.isError = null;
   }
 
-  setIsLoading = loading => {
+  setIsLoading = (loading) => {
     this.isLoading = loading;
   };
 
-  setCreationStatus = _stage => {
+  setCreationStatus = (_stage) => {
     this.stage = _stage;
   };
 
-  creationError = _error => {
+  creationError = (_error) => {
     this.isError = _error;
   };
 
-  setDaos = daosList => {
+  setDaos = (daosList) => {
     let daoArray = [];
     if (daosList) {
       daoArray = daosList;
@@ -45,10 +45,6 @@ class DaoStore {
       this.daos = null;
     }
     this.daos = daoArray;
-  };
-
-  setDao = dao => {
-    this.dao = dao;
   };
 }
 

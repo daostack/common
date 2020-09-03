@@ -12,6 +12,7 @@ import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import { inject, observer } from 'mobx-react';
 import CommonBox from '../../Components/CommonBox';
 import {layout, colors, text, font, sizeS} from '../../Theme';
+import { CommonActions } from '@react-navigation/native';
 
 const MyCommons = ({navigation, daoStore, userStore}) => {
   const onScreenScroll = (event) => {
@@ -20,8 +21,14 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
     });
   };
 
-  const setDao = dao => {
-    daoStore.setDao(dao);
+  const navigateToCommon = (common) => {
+    const navigate = CommonActions.navigate({
+      name: 'CommonProfile',
+      params: {
+        currCommon: common,
+      },
+    });
+    navigation.dispatch(navigate);
   };
 
   const renderCommonCard = (dao, i) =>
@@ -31,7 +38,7 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
       key={i}
       width="100%"
       navigation={navigation}
-      onPress={() => setDao(dao)}
+      onPress={() => navigateToCommon(dao)}
     />;
 
   const AllCommonsList = (daos) => (
@@ -43,8 +50,8 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
     </View>
   );
 
-  const myDaos = daoList => {
-    return daoList.filter(dao => userStore.isDaoMember(dao.members));
+  const myDaos = (daoList) => {
+    return daoList.filter((dao) => userStore.isDaoMember(dao.members));
   };
 
   return (

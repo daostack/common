@@ -20,16 +20,16 @@ import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from './MembershipRequest';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 
-const RequestStep3 = props => {
+const RequestStep3 = ({navigation, personalContributionFormStore, route: {params}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   // const [ruleCount, setRuleCount] = useState(1);
   // const [ruleTitles, setRuleTitles] = useState([]);
   // const [pass, setPass] = useState(true);
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
-  const isFirstStepSkipped = props.route.params.skipFirstStep;
+  const isFirstStepSkipped = params.skipFirstStep;
   // var ruleBody = [];
-  const { name } = props.daoStore.dao;
+  const name = params.currCommon.name;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -40,21 +40,21 @@ const RequestStep3 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const onCustomClose = e => {
+  const onCustomClose = (e) => {
     setIsActionBtnHidden(true);
   };
 
-  const onCustomSelect = e => {
+  const onCustomSelect = (e) => {
     setIsActionBtnHidden(false);
-    props.personalContributionFormStore.fieldChanged(
+    personalContributionFormStore.fieldChanged(
       RequestToJoinForm.FIELD_AMOUNT,
       '',
       false,
     );
   };
 
-  const onAmountSelected = amount => {
-    props.personalContributionFormStore.fieldChanged(
+  const onAmountSelected = (amount) => {
+    personalContributionFormStore.fieldChanged(
       RequestToJoinForm.FIELD_AMOUNT,
       amount,
     );
@@ -65,20 +65,21 @@ const RequestStep3 = props => {
     const navigate = CommonActions.navigate({
       name: 'RequestStep4',
       params: {
-        currDaoId: props.route.params.currDaoId,
+        currDaoId: params.currDaoId,
+        currCommon: params.currCommon,
         skipFirstStep: isFirstStepSkipped,
       },
     });
-    props.navigation.dispatch(navigate);
+    navigation.dispatch(navigate);
   };
 
   const push = () => {
-    if (props.personalContributionFormStore.isFormValid()) {
+    if (personalContributionFormStore.isFormValid()) {
       navigateToRequestStep4();
     }
   };
 
-  const minContributionMessage = `Select the amount you would like to contribute ($${props.daoStore.dao.metadata.minFeeToJoin / 100} min.)`;
+  const minContributionMessage = `Select the amount you would like to contribute ($${params.currCommon.metadata.minFeeToJoin / 100} min.)`;
 
   return (
     <>
@@ -89,14 +90,14 @@ const RequestStep3 = props => {
           backgroundColor: 'white',
         }}>
         <CreateStepNavigation
-          navigation={props.navigation}
+          navigation={navigation}
           title={name}
         />
         <CreateStepDotHeader
           title="Personal contribution"
           currentIndex={3}
           isFirstStepSkipped={isFirstStepSkipped}
-          navigation={props.navigation}
+          navigation={navigation}
           headerHeight={headerHeight}
         />
         <ScrollView
@@ -134,19 +135,19 @@ const RequestStep3 = props => {
             />
 
             <AmountField
-              navigation={props.navigation}
-              formStore={props.personalContributionFormStore}
+              navigation={navigation}
+              formStore={personalContributionFormStore}
               onCustomSelect={onCustomSelect}
               onCustomClose={onCustomClose}
               onAmountSelected={onAmountSelected}
-              minFeeToJoin={props.daoStore.dao.metadata.minFeeToJoin / 100}
+              minFeeToJoin={params.currCommon.metadata.minFeeToJoin / 100}
             />
           </View>
         </ScrollView>
         <RequestStepActionButton
           title="Continue to payment"
           pass={
-            props.personalContributionFormStore.form.fields[
+            personalContributionFormStore.form.fields[
               RequestToJoinForm.FIELD_AMOUNT
             ]?.error
               ? false
@@ -162,5 +163,4 @@ const RequestStep3 = props => {
 
 export default inject(
   'personalContributionFormStore',
-  'daoStore',
 )(observer(RequestStep3));

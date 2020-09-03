@@ -22,12 +22,12 @@ import { preauthorizePayment } from '../../../Services/MangopayService';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import {showErrorPopUp} from '../../../Util';
 
-const RequestStep4 = ({navigation, ...props}) => {
+const RequestStep4 = ({navigation, route:{params}, ...props}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const isFirstStepSkipped = props.route.params.skipFirstStep;
 
-  const { name } = props.daoStore.dao;
+  const name = params.currCommon.name;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -227,5 +227,4 @@ export default inject(
   'personalContributionFormStore',
   'paymentFormStore',
   'userStore',
-  'daoStore'
 )(observer(RequestStep4));

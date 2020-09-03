@@ -23,12 +23,11 @@ import {CommonActions} from '@react-navigation/native';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import MembershipRequest from './MembershipRequest';
 
-const RequestStep2 = props => {
+const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const isFirstStepSkipped = props.route.params.skipFirstStep;
-
-  const { name } = props.daoStore.dao;
+  const isFirstStepSkipped = params.skipFirstStep;
+  const { name } = params.currCommon.name;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -40,15 +39,16 @@ const RequestStep2 = props => {
   }, [scrollY]);
 
   const push = () => {
-    if (props.introduceYourselfFormStore.isFormValid()) {
+    if (introduceYourselfFormStore.isFormValid()) {
       const navigate = CommonActions.navigate({
         name: 'RequestStep3',
         params: {
-          currDaoId: props.route.params.currDaoId,
+          currDaoId: params.currDaoId,
+          currCommon: params.currCommon,
           skipFirstStep: isFirstStepSkipped,
         },
       });
-      props.navigation.dispatch(navigate);
+      navigation.dispatch(navigate);
     }
   };
 
@@ -61,14 +61,14 @@ const RequestStep2 = props => {
           backgroundColor: 'white',
         }}>
         <CreateStepNavigation
-          navigation={props.navigation}
+          navigation={navigation}
           title={name}
         />
         <CreateStepDotHeader
           title="Introduce Yourself"
           currentIndex={2}
           isFirstStepSkipped={isFirstStepSkipped}
-          navigation={props.navigation}
+          navigation={navigation}
           headerHeight={headerHeight}
         />
         <ScrollView
@@ -112,7 +112,7 @@ const RequestStep2 = props => {
               numberOfLines={6}
               validation={{
                 name: RequestToJoinForm.FIELD_ABOUT_ME,
-                formStore: props.introduceYourselfFormStore,
+                formStore: introduceYourselfFormStore,
                 validateRule: 'required|string',
               }}
             />
@@ -124,7 +124,7 @@ const RequestStep2 = props => {
               title="Title"
               validation={{
                 name: RequestToJoinForm.FIELD_LINKS,
-                formStore: props.introduceYourselfFormStore,
+                formStore: introduceYourselfFormStore,
                 validateRule: 'string|url',
               }}
             />
@@ -132,7 +132,7 @@ const RequestStep2 = props => {
         </ScrollView>
         <RequestStepActionButton
           title="Continue"
-          pass={props.introduceYourselfFormStore.isFormActionEnabled()}
+          pass={introduceYourselfFormStore.isFormActionEnabled()}
           onPress={push}
         />
       </SafeAreaView>
@@ -143,5 +143,4 @@ const RequestStep2 = props => {
 export default inject(
   'userStore',
   'introduceYourselfFormStore',
-  'daoStore'
 )(observer(RequestStep2));

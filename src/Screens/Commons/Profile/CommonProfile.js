@@ -338,6 +338,7 @@ const CommonProfile = ({
       const navigate = CommonActions.navigate({
         name: shouldSkipRules ? 'RequestStep2' : 'RequestStep1',
         params: {
+          currCommon: currCommon,
           currDaoId: currCommon.id,
           skipFirstStep: shouldSkipRules,
         },
@@ -938,6 +939,5 @@ const styles = StyleSheet.create({
 
 export default inject(
   'bottomSheetStore',
-  'daoStore',
   'userStore',
 )(observer(CommonProfile));

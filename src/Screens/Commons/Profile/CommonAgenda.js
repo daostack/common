@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from 'react';
-
+import React from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -12,22 +11,10 @@ import {
 import moment from 'moment';
 
 import {layout, text, font, colors} from '../../../Theme';
-import DaoService from '../../../Services/DaoService';
 
 const CommonAgenda = ({navigation, route}) => {
 
-  const [common, setCommon] = useState(null);
-
-  useEffect( async () => {
-    if (route.params.commonId) {
-      const common = await DaoService.getInstance().getDaoById();
-      setCommon(common);
-    }
-
-    if (route.params.common) {
-      setCommon(route.params.common);
-    }
-  },[]);
+  const common = route.params.common;
 
   return (
     <>

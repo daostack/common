@@ -13,11 +13,11 @@ import {colors, sizeM, font} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import UserService from '../../Services/UserService';
 import moment from 'moment';
-import firestore from '@react-native-firebase/firestore';
 import BottomSheetModal from '../../Components/BottomSheetModal';
 import NotificationService from '../../Services/NotificationService';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import { db } from '../../Firebase';
+import { CommonActions } from '@react-navigation/native';
 
 const {width} = Dimensions.get('window');
 
@@ -44,11 +44,15 @@ const DiscussionCard = ({
   };
 
   const navigateToDiscussion = () => {
-    navigation.navigate('Discussions', {
-      data: data,
-      discussionId: data.id,
-      commonId: commonId,
+    const navigate = CommonActions.navigate({
+      name: 'Discussions',
+      params: {
+        data: data,
+        discussionId: data.id,
+        commonId: commonId,
+      },
     });
+    navigation.dispatch(navigate);
   };
 
   useEffect(() => {

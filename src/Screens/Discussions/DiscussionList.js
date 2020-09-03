@@ -15,7 +15,7 @@ const DiscussionList = ({commonId, navigation}) => {
       .where('commonId', '==', commonId)
       .orderBy('createTime', 'desc')
       .onSnapshot(
-        snapshot => {
+        (snapshot) => {
           if (snapshot.empty) {
             setList([]);
           } else {
@@ -25,15 +25,15 @@ const DiscussionList = ({commonId, navigation}) => {
                 ...doc.data(),
               }));
               let createList = newList
-                .map(item => {
-                  let index = listRef.current.findIndex(v => v.id === item.id);
+                .map((item) => {
+                  let index = listRef.current.findIndex((v) => v.id === item.id);
                   if (index > -1) {
                     listRef.current[index] = item;
                   } else {
                     return item;
                   }
                 })
-                .filter(item => item);
+                .filter((item) => item);
               if (createList.length > 0) {
                 const allList = [...createList, ...listRef.current];
                 listRef.current = allList;
@@ -43,7 +43,7 @@ const DiscussionList = ({commonId, navigation}) => {
           }
         },
         // TOOD: please do not silence any errors like this
-        error => console.error(error),
+        (error) => console.error(error),
       );
     return () => {
       unsubscribe();

@@ -350,10 +350,6 @@ class nativeBridgeTests extends React.Component {
     }
   };
 
-  error = () => {
-    this.props.daoStore.creationError('Error' + '2');
-  };
-
   createRequestToJoin = async () => {
     console.log('creating proposal -- please wait');
     const daoId = '0x65b9355b8ab2e224693ca25bc9fa16f4a220edb9'; // 0 min join fee
@@ -721,7 +717,6 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
-  'daoStore',
   'userStore',
   'bottomSheetStore',
 )(observer(nativeBridgeTests));
