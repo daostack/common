@@ -16,8 +16,8 @@ import {
   DeviceEventEmitter,
   Text,
 } from 'react-native';
-
-import {NavigationContainer} from '@react-navigation/native';
+import NetInfo from '@react-native-community/netinfo';
+import {NavigationContainer, CommonActions} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -55,12 +55,12 @@ import {
   FullScreenCreationLoader,
 } from './src/Screens';
 
-import FirebaseService from './src/Services/FirebaseService';
+import UserService from './src/Services/UserService';
 import AuthService from './src/Services/AuthService';
 
 import CommonHome from './src/Components/Navigation/CommonHome';
 const Stack = createStackNavigator();
-import { filterObjectByKeys, prepareUserObject } from './src/Util';
+import {filterObjectByKeys, prepareUserObject} from './src/Util';
 import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
@@ -70,13 +70,13 @@ import KeyboardManager from 'react-native-keyboard-manager';
 import validUrl from 'valid-url';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import ToastView, {DURATION} from './src/Util/ToastView';
-import {CommonActions} from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DeepLinking from 'react-native-deep-linking';
 import ArcService from './src/Services/ArcService';
-import { BOTTOM_SHEET_TEMPLATES } from './src/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
+import Toast from './src/Util/Toast';
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
@@ -93,14 +93,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     Text.defaultProps.maxFontSizeMultiplier = 1.1;
   }, []);
 
-  useEffect(() => {
-    return messaging().onTokenRefresh(token => {
-      NotificationService.saveTokenToDatabase(token);
-    });
-  }, []);
+  useEffect(() => messaging().onTokenRefresh((token) => {
+    NotificationService.saveTokenToDatabase(token);
+  }), []);
 
   useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
       console.log('Foreground Message Arrived', JSON.stringify(remoteMessage));
     });
     return unsubscribe;
@@ -123,8 +121,34 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     };
   }, []);
 
+  // NetInfo
+  useEffect(() => {
+    let checkConnection = null;
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      if (state.isInternetReachable === false) {
+        if (!checkConnection) {
+          checkConnection = setInterval(() => {
+            NetInfo.fetch().then((connectState) => {
+              if (connectState.isInternetReachable === false) {
+                Toast.error('Internet connection lost');
+              } else {
+                clearInterval(this);
+              }
+            });
+          }, 5000);
+        }
+      } else {
+        if (checkConnection) {
+          clearInterval(checkConnection);
+          checkConnection = null;
+        }
+      }
+    });
+    return () => { unsubscribe(); };
+  }, []);
+
   // Deep & Dynamic Link
-  const handleOpenURL = ({ url }) => {
+  const handleOpenURL = ({url}) => {
     Linking.canOpenURL(url).then((supported) => {
       if (!supported) {
         return;
@@ -168,7 +192,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     });
 
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);
-    dynamicLinks().getInitialLink().then(link => {
+    dynamicLinks().getInitialLink().then((link) => {
       if (link) {
         handleOpenURL(link);
       } else {
@@ -176,7 +200,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           .then((url) => {
             handleOpenURL({url});
           })
-          .catch(err => err);
+          .catch((err) => err);
       }
     });
 
@@ -188,9 +212,9 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   // Login
   useEffect(() => {
-    const subscribers = { authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
+    const subscribers = {authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
 
-    const onAuthStateChanged = async user => {
+    const onAuthStateChanged = async (user) => {
       console.log('AUTH STATE CHANGED: ', user?.uid, user?.email, user?.displayName);
       try {
         userStore.setIsLoading(true);
@@ -200,7 +224,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           await WalletManager.init(user.uid);
           await ArcService.init();
           const manager = await WalletManager.getInstance();
-          let appUser = await FirebaseService.getInstance().getUserById(
+          let appUser = await UserService.getInstance().getUserById(
             user.uid,
           );
           const isNewUser = !appUser;
@@ -247,7 +271,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         if (auth().currentUser === null) {
           return;
         }
-        const unsubscribe = db.collection('users').doc(uid).onSnapshot( async snapshot => {
+        const unsubscribe = db.collection('users').doc(uid).onSnapshot( async (snapshot) => {
           if (!snapshot.empty) {
             userStore.setSignedInUser(prepareUserObject(snapshot.data()));
           }
@@ -443,7 +467,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
           component={DiscussionPost} />
         <Stack.Screen
-          options={({ route }) => ({
+          options={({route}) => ({
             title: route.params.isFirstOpening ? false : 'Edit my profile',
           })}
           name="EditProfile"

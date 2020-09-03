@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   StatusBar,
   View,
+  Keyboard,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import {text, layout, colors} from '../../Theme';
@@ -33,6 +34,7 @@ const FundingProposal = ({
   // };
 
   const createProposal = async e => {
+    Keyboard.dismiss();
     if (fundingRequestFormStore.isFormValid()) {
       try {
         const formData = fundingRequestFormStore.getChangedFormFieldsJson();
