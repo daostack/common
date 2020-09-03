@@ -76,7 +76,6 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       setAllDaosGroup({title: '', data: []});
       return [];
     }
-    // const allCommons = snapshot.docs.filter((doc) => !userStore.isDaoMember(doc.data().members));
     let docs = snapshot.docs.map((doc, index) => ({
       ...{id: doc.id},
       ...doc.data(),
@@ -106,13 +105,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
 
   useEffect(() => {
     let unsubscribeAllDaos = null;
-    let unsubscribeMyDaos = null;
     const getDaos = async () => {
-      // if (userStore.userInfo) {
-      //   unsubscribeMyDaos = await DaoService.getInstance().subscribeToMyDaosList(userStore.userInfo.uid, userStore.userInfo.safeAddress, loadMyDaosList);
-      // } else {
-      //   setMyDaosGroup({title: '', data: []});
-      // }
       unsubscribeAllDaos = await DaoService.getInstance().subscribeToDaosList(loadDaosList);
     };
 
@@ -120,9 +113,6 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     return () => {
       if (unsubscribeAllDaos) {
         unsubscribeAllDaos();
-      }
-      if (unsubscribeMyDaos) {
-        unsubscribeMyDaos();
       }
     };
   }, [daoStore, bottomSheetStore, userStore.userInfo]);
