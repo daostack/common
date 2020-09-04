@@ -380,16 +380,24 @@ const CreateStep4 = props => {
               <CreateStep4Indicators
                 title="Min. Contribution"
                 number={numberFormatter(form[CreateCommonForm.MINIMUM])}
+                contribution
               />
             </View>
 
             <View style={{width: 120, marginHorizontal: 10}}>
               <CreateStep4Indicators
-                title="Period"
+                title="Safety period"
                 currencySymbol={false}
-                number={moment
+                number={
+                  moment
+                    .unix(form[CreateCommonForm.DEADLINE])
+                    .fromNow(true)
+                }
+                date={
+                  moment
                   .unix(form[CreateCommonForm.DEADLINE])
-                  .format('MMM DD, YYYY')}
+                  .format('MMM DD, YYYY')
+                }
               />
             </View>
           </View>
