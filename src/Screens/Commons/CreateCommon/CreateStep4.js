@@ -167,7 +167,7 @@ const CreateStep4 = props => {
     const options = {
       url: `https://app.common.io/common/${currCommonId}`,
       title: "Let's make it happen",
-      message: `Join in ${name} common`,
+      message: `${name} common`,
     };
     Share.open(options);
   };
