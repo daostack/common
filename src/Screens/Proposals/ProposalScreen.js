@@ -163,6 +163,7 @@ const ProposalScreen = ({navigation,
       const userInfo = auth().currentUser;
       const message = inputText;
       if (message && message.trim().length) {
+        inputRef.current.clear();
         db.collection('discussionMessage')
           .doc()
           .set({
@@ -174,9 +175,9 @@ const ProposalScreen = ({navigation,
             discussionId: proposalId,
           })
           .then(() => {
-            inputRef.current.clear();
             Keyboard.dismiss();
             setIsSending(false);
+            setInputText(null);
           })
           .catch((error) => {
             Toast.error(error);
