@@ -142,6 +142,11 @@ export default StyleSheet.create({
     marginRight: 40,
   },
 
+  // Margin Vertical
+  marginVerticalL: {
+    marginVertical: sizeL,
+  },
+
   // Padding Horizontal
   paddingHorizontalXL: {
     paddingLeft: 40,
