@@ -8,14 +8,9 @@ import {
   LoginSheetScreen,
   TransactionError,
   UnsavedChanges,
-<<<<<<< HEAD
-} from '~/Screens/BottomSheetScreens';
-import TransactionError from '~/Screens/BottomSheetScreens/TransactionError';
-=======
   SortProposals,
   BoostedInfo,
-} from '../Screens/BottomSheetScreens';
->>>>>>> dev
+} from '~/Screens/BottomSheetScreens';
 
 export const BOTTOM_SHEET_TEMPLATES = {
   BOOSTED_INFO: {
