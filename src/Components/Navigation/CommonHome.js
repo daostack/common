@@ -15,6 +15,7 @@ const CommonHome = ({userStore}) => {
     <Tab.Navigator
       // initialRouteName="My feed"
       initialRouteName="Explore"
+      lazy={false}
       screenOptions={({route}) => ({
         tabBarIcon: ({focused}) => {
           switch (route.name) {

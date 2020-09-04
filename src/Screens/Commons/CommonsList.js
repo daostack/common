@@ -94,11 +94,10 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
               `https://picsum.photos/id/${index * 10}/500/100.jpg`,
         },
       }));
-
       daoStore.setDaos(docs);
       cache.set('daoList', docs);
       setAllDaosGroup({
-        title: myDaosGroup?.data.length > 0 ? `Discover more Commons (${docs?.length})` : '',
+        title: '',
         data: docs,
       });
       splitDaoList(docs);
@@ -122,7 +121,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
       }
       daoStore.setDaos(docs);
       setAllDaosGroup({
-        title: myDaosGroup?.data.length > 0 ? `Discover more Commons (${docs?.length})` : '',
+        title: '',
         data: docs,
       });
       splitDaoList(docs);

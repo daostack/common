@@ -21,7 +21,7 @@ import AuthService from '../../Services/AuthService';
 import Toast from '../../Util/Toast';
 import CodePush from 'react-native-code-push';
 import Config from 'react-native-config';
-import { isProduction } from '../../Config';
+import {isProduction} from '../../Config';
 
 import {
   Placeholder,
@@ -36,9 +36,9 @@ const UserProfile = ({userStore, navigation, route}) => {
   const [codePushVersion, setCodePushVersion] = useState('');
   useEffect(() => {
     const getStatus = async () => {
-      const status = await CodePush.getUpdateMetadata();
-      console.log('getStatus -->', status);
-      setCodePushVersion(status.label.replace('v', ''));
+      CodePush.getUpdateMetadata().then((status) => {
+        setCodePushVersion(status.label.replace('v', ''));
+      });
     };
     getStatus();
   }, []);
@@ -54,12 +54,11 @@ const UserProfile = ({userStore, navigation, route}) => {
             onPress: () => console.log('Cancel Pressed'),
             style: 'cancel',
           },
-          { text: 'OK', onPress: async () => {
+          {text: 'OK', onPress: async () => {
             // That loading status will be changed to false in the onAuthStateChanged method in App.js
             userStore.setIsLoading(true);
             await AuthService.getInstance().signOut();
-          },
-          },
+          }},
         ],
       );
 
@@ -70,7 +69,7 @@ const UserProfile = ({userStore, navigation, route}) => {
     }
   };
 
-  const onUserSignedIn = isNewUser => {
+  const onUserSignedIn = (isNewUser) => {
     if (navigation && isNewUser) {
       const navigate = CommonActions.navigate({
         name: 'EditProfile',
@@ -82,29 +81,24 @@ const UserProfile = ({userStore, navigation, route}) => {
     }
   };
 
-  const onTestPagePress = event => {
+  const onTestPagePress = (event) => {
     navigation.navigate('NativeBridgeTests');
   };
 
-  const onHUDTestPress = event => {
+  const onHUDTestPress = (event) => {
     navigation.navigate('HUDTest');
   };
 
-  const renderUnsignedUserData = () => {
-    return <CreateAccount onSignedIn={onUserSignedIn} />;
-  };
+  const renderUnsignedUserData = () => <CreateAccount onSignedIn={onUserSignedIn} />;
 
-  const renderSignedInUserData = () => {
-    return (
-      <UserProfileData
-        navigation={navigation}
-        userId={route.params?.userId || userStore.userInfo.uid}
-      />
-    );
-  };
+  const renderSignedInUserData = () => (
+    <UserProfileData
+      navigation={navigation}
+      userId={route.params?.userId || userStore.userInfo.uid}
+    />
+  );
 
-  const renderScreen = () => {
-    return (
+  const renderScreen = () => (
       <>
         <StatusBar barStyle="dark-content" />
 
@@ -148,62 +142,59 @@ const UserProfile = ({userStore, navigation, route}) => {
           </ScrollView>
         </SafeAreaView>
       </>
-    );
-  };
+  );
 
-  const renderScreenLoader = () => {
-    return (
-      <ScrollView
-        style={{flex: 1}}
-        contentContainerStyle={{
-          paddingHorizontal: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Placeholder Animation={Fade}>
-          <PlaceholderMedia
-            size={100}
-            isRound={true}
-            style={{alignSelf: 'center', marginTop: 80, marginBottom: 20}}
-          />
-          <PlaceholderLine width={30} style={{alignSelf: 'center'}} />
-          <PlaceholderLine width={50} style={{alignSelf: 'center'}} />
-          <PlaceholderMedia
-            style={{
-              alignSelf: 'center',
-              marginTop: 10,
-              marginBottom: 20,
-              height: 100,
-              width: '100%',
-            }}
-          />
-          <PlaceholderLine width={30} />
-          <PlaceholderLine width={50} />
-          <PlaceholderLine width={80} />
-          <PlaceholderMedia
-            style={{
-              alignSelf: 'center',
-              marginTop: 10,
-              marginBottom: 20,
-              height: 150,
-              width: '100%',
-            }}
-          />
-          <PlaceholderLine width={50} />
-          <PlaceholderLine width={80} />
-          <PlaceholderMedia
-            style={{
-              alignSelf: 'center',
-              marginTop: 10,
-              marginBottom: 20,
-              height: 150,
-              width: '100%',
-            }}
-          />
-        </Placeholder>
-      </ScrollView>
-    );
-  };
+  const renderScreenLoader = () => (
+    <ScrollView
+      style={{flex: 1}}
+      contentContainerStyle={{
+        paddingHorizontal: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+      <Placeholder Animation={Fade}>
+        <PlaceholderMedia
+          size={100}
+          isRound={true}
+          style={{alignSelf: 'center', marginTop: 80, marginBottom: 20}}
+        />
+        <PlaceholderLine width={30} style={{alignSelf: 'center'}} />
+        <PlaceholderLine width={50} style={{alignSelf: 'center'}} />
+        <PlaceholderMedia
+          style={{
+            alignSelf: 'center',
+            marginTop: 10,
+            marginBottom: 20,
+            height: 100,
+            width: '100%',
+          }}
+        />
+        <PlaceholderLine width={30} />
+        <PlaceholderLine width={50} />
+        <PlaceholderLine width={80} />
+        <PlaceholderMedia
+          style={{
+            alignSelf: 'center',
+            marginTop: 10,
+            marginBottom: 20,
+            height: 150,
+            width: '100%',
+          }}
+        />
+        <PlaceholderLine width={50} />
+        <PlaceholderLine width={80} />
+        <PlaceholderMedia
+          style={{
+            alignSelf: 'center',
+            marginTop: 10,
+            marginBottom: 20,
+            height: 150,
+            width: '100%',
+          }}
+        />
+      </Placeholder>
+    </ScrollView>
+  );
   return userStore.isLoading ? renderScreenLoader() : renderScreen();
 };
 
