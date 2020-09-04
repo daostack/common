@@ -11,6 +11,7 @@ import {
   ipfsLink,
   PROPOSAL_TYPE,
 } from '../../Config';
+import gql from 'graphql-tag';
 
 export default class ArcService {
   static myInstance = null;
@@ -23,9 +24,41 @@ export default class ArcService {
         ipfsProvider: ipfsLink,
         web3Provider: manager.wallet,
       });
-      await this.arc.fetchContractInfos();
+
+      await this.fetchAllContrarcts(this.arc);
       return this;
     })();
+  }
+
+  async fetchAllContrarcts(arc ) {
+
+    let allContractInfos = [];
+    let contractInfos = null;
+    let skip = 0;
+
+    do {
+      const query = gql`
+      query AllContractInfos {
+        contractInfos(first: 1000 skip: ${skip * 1000}) {
+          id
+          name
+          version
+          address
+          alias
+        }
+      }
+    `;
+      const response = await arc.sendQuery(query);
+      contractInfos = response.data.contractInfos;
+      allContractInfos.push(...contractInfos);
+      skip++;
+    } while (contractInfos && contractInfos.length > 0);
+
+    const universalContracts = await arc.fetchUniversalContractInfos();
+    allContractInfos.push(...universalContracts);
+    this.arc.setContractInfos(allContractInfos);
+
+    return allContractInfos;
   }
 
   static init = async () => {
@@ -40,32 +73,24 @@ export default class ArcService {
   };
 
   // PROPOSALS
-  createRequestToJoin = async (daoId, data) => {
-    return createProposalRequestToJoin(this.arc, daoId, data);
-  };
+  createRequestToJoin = async (daoId, data) => createProposalRequestToJoin(this.arc, daoId, data);
 
-  createFundingProposal = async (userAddress, daoId, data) => {
-    return createFundingProposal(this.arc, userAddress, daoId, data);
-  };
+  createFundingProposal = async (userAddress, daoId, data) => createFundingProposal(this.arc, userAddress, daoId, data);
 
   // VOTING
-  voteForJoinAndQuitProposal = async (proposalId, data) => {
-    return voteForProposal(
-      this.arc,
-      proposalId,
-      data,
-      PROPOSAL_TYPE.JoinAndQuit,
-    );
-  };
+  voteForJoinAndQuitProposal = async (proposalId, data) => voteForProposal(
+    this.arc,
+    proposalId,
+    data,
+    PROPOSAL_TYPE.JoinAndQuit,
+  );
 
-  voteForFundingRequestProposal = async (proposalId, data) => {
-    return voteForProposal(
-      this.arc,
-      proposalId,
-      data,
-      PROPOSAL_TYPE.FundingRequest,
-    );
-  };
+  voteForFundingRequestProposal = async (proposalId, data) => voteForProposal(
+    this.arc,
+    proposalId,
+    data,
+    PROPOSAL_TYPE.FundingRequest,
+  );
 
   // COMMONS
   async createCommon(givenOpts = {}, navigation) {
