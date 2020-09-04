@@ -19,20 +19,20 @@ import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 
-const CreateStep3 = props => {
-  const [scrollY] = useState(new Animated.Value(0));
-  const [headerHeight, setHeaderHeight] = useState(0);
+const CreateStep3 = (props) => {
+  const [ scrollY ] = useState(new Animated.Value(0));
+  const [ headerHeight, setHeaderHeight ] = useState(0);
 
   // var ruleBody = [];
 
   useEffect(() => {
     const height = scrollY.interpolate({
-      inputRange: [0, 50],
-      outputRange: [0, 125],
+      inputRange: [ 0, 50 ],
+      outputRange: [ 0, 125 ],
       extrapolate: 'clamp',
     });
     setHeaderHeight(height);
-  }, [scrollY]);
+  }, [ scrollY ]);
 
   /*
   const handleRuleTitles = (x, text) => {
@@ -73,9 +73,9 @@ const CreateStep3 = props => {
         flex: 1,
         backgroundColor: 'white',
       }}>
-      <CreateStepNavigation navigation={props.navigation} title="Funding" />
+      <CreateStepNavigation navigation={props.navigation} title="Create a Common"/>
       <CreateStepDotHeader
-        title="Addtional Info"
+        title="Additional Info"
         currentIndex={3}
         navigation={props.navigation}
         headerHeight={headerHeight}
@@ -92,7 +92,7 @@ const CreateStep3 = props => {
         onScroll={Animated.event([
           { nativeEvent: { contentOffset: { y: scrollY } } },
         ])}>
-        <CreateStepHeader currentIndex={2} />
+        <CreateStepHeader currentIndex={2}/>
         <View
           style={{
             flex: 1,
@@ -216,7 +216,7 @@ export default inject(
   'fundingFormStore',
   'agendaFormStore',
   'reviewFormStore',
-  'daoStore',
+  'daoStore'
 )(observer(CreateStep3));
 
 //generalInfoFormStore

@@ -1,20 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import {
-  Dimensions,
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-  Platform,
-} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Dimensions, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
-import { text, layout, colors, sizeS, sizeL, font } from '~/Theme';
+import {colors, font, layout, sizeL, sizeS, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import { TabView } from 'react-native-tab-view';
-import { BOTTOM_SHEET_TEMPLATES } from '~/Stores/BottomSheetStore';
+import {TabView} from 'react-native-tab-view';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import CommonStageSummary from '~/Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
 import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
@@ -23,33 +14,32 @@ import { CommonActions } from '@react-navigation/native';
 import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '~/Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
-import { observer, inject } from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '~/Components/Commons/CommonHeader';
-import { numberFormatter } from '~/Util';
+import {calcIsFundingStage, numberFormatter} from '../../../Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '~/Services/ProposalService';
 import DaoService from '~/Services/DaoService';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
-import { calcIsFundingStage } from '~/Util';
-import Toast from '~/Util/Toast';
+import  Toast  from '~/Util/Toast';
 import {
   Placeholder,
   PlaceholderMedia,
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
-import { string, object, shape, func } from 'prop-types';
+import {object, shape} from 'prop-types';
 import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDate';
 import { BlurView } from '~/Components';
 
-let stickyHeighAddon = 36;
+let stickyHeightAddon = 36;
 
-const STICKY_HEADER_HEIGHT = Math.round(getStatusBarHeight()) + stickyHeighAddon;
+const STICKY_HEADER_HEIGHT = Math.round( getStatusBarHeight() ) + stickyHeightAddon;
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
 const CommonProfile = ({
@@ -69,9 +59,9 @@ const CommonProfile = ({
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    { key: 'discussions', title: 'Discussions', icon: 'discussion', iconSelected: 'discussion-selected' },
-    { key: 'proposals', title: 'Proposals', icon: 'proposal', iconSelected: 'proposal-selected' },
-    { key: 'history', title: 'History', icon: 'history', iconSelected: 'history-selected' },
+    {index: 0, key: 'discussions', title: 'Discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
+    {index: 1, key: 'proposals', title: 'Proposals', icon: 'proposal', iconSelected: 'proposal-selected'},
+    {index: 2, key: 'history', title: 'History', icon: 'history', iconSelected: 'history-selected'},
   ]);
 
   //const routeCommon = params.currCommon;
@@ -178,7 +168,7 @@ const CommonProfile = ({
   }, [pendingProposalsData]);
 
   const renderTabBar = (props) => (
-    <TabBarRenderer originRef={originTabBarRef} {...props} />
+    <TabBarRenderer originRef={originTabBarRef} jumpTo = {originTabBarRef.current?.props?.jumpTo} {...props} indexChange = {setIndex}/>
   );
 
   const Discussions = () => (
@@ -189,7 +179,7 @@ const CommonProfile = ({
   );
 
   const Proposals = () => (
-    <View style={{ ...styles.paleBackground, ...{ padding: sizeL } }}>
+    <View style={{...styles.paleBackground, padding: sizeL}}>
       <Text style={text.h1BlackTitle}>Proposals</Text>
 
       <ProposalsList
@@ -198,7 +188,14 @@ const CommonProfile = ({
         navigation={navigation}
         commonInfo={{ name: currCommon.name, id: currCommon.id, balance: currCommon.balance }}
       />
-      <ProposalActivationDate activationDate={currCommon.fundingGoalDeadline} />
+
+      {isMember && (
+        <ProposalActivationDate
+          activationDate={currCommon.fundingGoalDeadline}
+          bottomSheetStore={bottomSheetStore}
+        />
+      )}
+
     </View>
   );
 
@@ -336,7 +333,7 @@ const CommonProfile = ({
   const calcShouldSkipRules = () => {
     const rules = currCommon.metadata?.rules;
     if (rules?.length > 0) {
-      return rules.some((rule) => rule?.title && rule?.url) ? false : true;
+      return !rules.some((rule) => rule?.title && rule?.url);
     } else {
       return true;
     }
@@ -565,8 +562,8 @@ const CommonProfile = ({
             />
           </TouchableOpacity>
 
-          {showStickyTabBar && (<View style={{ position: 'absolute', top: STICKY_HEADER_HEIGHT, width: '100%', paddingBottom: 5, zIndex: 999 }}>
-            <TabBarRenderer navigationState={{ index: 0, routes: routes }} parentRef={originTabBarRef} />
+          {showStickyTabBar && (<View style={{position: 'absolute', top: STICKY_HEADER_HEIGHT, width: '100%', paddingBottom: 5, zIndex: 999}}>
+            <TabBarRenderer navigationState={{index, routes}} jumpTo = {originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange = {setIndex} />
           </View>)}
 
           <ParallaxScrollView
@@ -592,8 +589,8 @@ const CommonProfile = ({
               setDark(
                 e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT,
               );
-              upperRequestToJoinBtnRef?.current?.measure((fx, fy, width, height, px, py) => {
-                setShowStickyRequestToJoinBtn(py < (stickyHeighAddon));
+              upperRequestToJoinBtnRef?.current?.measure( (fx, fy, width, height, px, py) => {
+                setShowStickyRequestToJoinBtn(py < (stickyHeightAddon) );
               });
               stickyTabBarRef?.current?.measure((fx, fy, width, height, px, py) => {
                 const isVisible = py < (STICKY_HEADER_HEIGHT);

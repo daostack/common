@@ -5,6 +5,7 @@ import DiscussionMessage from '../Discussions/DiscussionMessage';
 import { observer, inject } from 'mobx-react';
 import moment from 'moment';
 import firestore from '@react-native-firebase/firestore';
+import { db } from '../../Firebase';
 
 const ProposalDiscussion = props => {
   const chatRef = useRef(null);
@@ -14,8 +15,7 @@ const ProposalDiscussion = props => {
 
   let listRef = useRef([]);
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('discussionMessage')
+    const unsubscribe = db.collection('discussionMessage')
       .where('discussionId', '==', proposalId)
       .orderBy('createTime', 'desc')
       // .startAt(0)

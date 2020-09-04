@@ -18,8 +18,8 @@ const CommonBox = ({ common, onPress, width = '100%', navigation, headerHeightLa
       });
       navigation.dispatch(navigate);
     }}
-    style={[styles.commonBox, { width }]}
-    onLayout={event => {
+    style={[styles.commonBox, {width}]}
+    onLayout={(event) => {
       if (headerHeightLayouted) {
         headerHeightLayouted(event.nativeEvent.layout.height);
       }
@@ -72,7 +72,7 @@ CommonBox.propTypes = {
     tokenTotalSupply: string,
   }).isRequired,
   onPress: func.isRequired,
-  width: number,
+  width: string,
   navigation: object.isRequired,
   headerHeightLayouted: func,
 };

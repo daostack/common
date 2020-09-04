@@ -1,17 +1,16 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { FlatList } from 'react-native';
 import DiscussionCard from './DiscussionCard';
-import firestore from '@react-native-firebase/firestore';
 import ViewTabNoData from '~/Components/ViewTabNoData';
 import { string, object } from 'prop-types';
+import { db } from '../../Firebase';
 
 const DiscussionList = ({ commonId, navigation }) => {
   const [list, setList] = useState([]);
 
   let listRef = useRef([]);
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('discussion')
+    const unsubscribe = db.collection('discussion')
       .where('commonId', '==', commonId)
       .orderBy('createTime', 'desc')
       .onSnapshot(

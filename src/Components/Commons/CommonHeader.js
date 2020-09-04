@@ -10,12 +10,18 @@ import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
 import {BlurView} from '~/Components';
+import {object, shape, string, bool, func} from 'prop-types';
 
-const CommonHeader = ({navigation, isMember, onHeaderMenuOpen, commonInfo, headerHeightLayouted, common}) => {
-
+const CommonHeader = ({
+  navigation,
+  isMember,
+  commonInfo: {logo, name, description, byline},
+  headerHeightLayouted,
+  common,
+}) => {
   const openAgendaScreen = (e) => {
     navigation.navigate('CommonAgenda', {
-      screenTitle: commonInfo.name,
+      screenTitle: name,
       common: common,
     });
   };
@@ -24,27 +30,22 @@ const CommonHeader = ({navigation, isMember, onHeaderMenuOpen, commonInfo, heade
     <SafeAreaView onLayout={ (event) => {
       headerHeightLayouted(event.nativeEvent.layout.height);
     }}
-    style={styles.headerContainer}
-    >
-
-      {commonInfo.logo ? (
+    style={styles.headerContainer}>
+      {logo && (
         <FastImage
           style={styles.logoImage}
-          source={{
-            uri: commonInfo.logo,
-          }}
-        />
-      ) : null}
+          source={{uri: logo}}/>
+      )}
       <Text style={styles.headerTitleWhite} numberOfLines={5}>
-        {commonInfo.name}
+        {name}
       </Text>
       <Text style={{...text.textFieldfocus, color: colors.white}} numberOfLines={5}>
-        {commonInfo.byline}
+        {byline}
       </Text>
       <Text style={styles.headerDescription} numberOfLines={4}>
-        {commonInfo.description}
+        {description}
       </Text>
-      {isMember && navigation ? (
+      {isMember && navigation && (
         <BlurView style={{paddingVertical: 10, paddingHorizontal: 15, borderRadius: 10}}>
           <TouchableOpacity onPress={openAgendaScreen}>
             <View style={{flexDirection: 'row'}}>
@@ -53,12 +54,22 @@ const CommonHeader = ({navigation, isMember, onHeaderMenuOpen, commonInfo, heade
             </View>
           </TouchableOpacity>
         </BlurView>
-      ) : null}
-
-
-
+      )}
     </SafeAreaView>
   );
+};
+
+CommonHeader.propTypes = {
+  navigation: object,
+  isMember: bool,
+  headerHeightLayouted: func,
+  commonInfo: shape({
+    logo: string,
+    name: string.isRequired,
+    description: string,
+    byline: string,
+  }),
+  common: object,
 };
 
 const styles = StyleSheet.create({

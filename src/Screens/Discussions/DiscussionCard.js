@@ -13,10 +13,10 @@ import { colors, sizeM, font } from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import UserService from '~/Services/UserService';
 import moment from 'moment';
-import firestore from '@react-native-firebase/firestore';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import NotificationService from '~/Services/NotificationService';
 import { BOTTOM_SHEET_TEMPLATES } from '~/Stores/BottomSheetStore';
+import { db } from '~/Firebase';
 
 const { width } = Dimensions.get('window');
 
@@ -64,12 +64,12 @@ const DiscussionCard = ({
   }, [data]);
 
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('discussionMessage')
+    const unsubscribe = db.collection('discussionMessage')
       .where('discussionId', '==', discussionId)
       .onSnapshot(snapshot => {
         setMsgCount(snapshot.docs.length);
       });
+
     return () => {
       unsubscribe();
     };

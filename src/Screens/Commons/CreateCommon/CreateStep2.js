@@ -26,7 +26,7 @@ import moment from 'moment';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 
-const CreateStep2 = props => {
+const CreateStep2 = (props) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [segmentedIndex, setSegmentedIndex] = useState(0);
@@ -217,6 +217,7 @@ const CreateStep2 = props => {
               name: CreateCommonForm.MINIMUM,
               formStore: props.fundingFormStore,
               validateRule: 'required|integer|min:5|max:1000',
+              customErrorMessage: 'The amount must be at least $5 and at most $1000.',
             }}
           />
           <View style={{ marginTop: 24 }}>
@@ -251,7 +252,7 @@ const CreateStep2 = props => {
               backdropOpacity={0.3}
               onBackdropPress={() => setShow(false)}
               style={styles.view}>
-              <View style={{ backgroundColor: 'white' }}>
+              <View style={{backgroundColor: 'white'}}>
                 <View
                   style={{
                     height: 50,
