@@ -5,30 +5,32 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {inject, observer} from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import React from 'react';
-import {text, layout, colors, font} from '~/Theme/index';
+import { text, layout, colors, font } from '~/Theme/index';
 
-const TransactionError = ({bottomSheetStore, ...props}) => (
-  <View style={styles.scrollView}>
-    <View style={styles.body}>
-      <Image
-        source={require('~/Assets/alert.png')}
-        style={styles.imgAlert}
-      />
-      <Text style={styles.title}>Something went wrong</Text>
+const TransactionError = ({ bottomSheetStore, ...props }) => {
+  return (
+    <View style={styles.scrollView}>
+      <View style={styles.body}>
+        <Image
+          source={require('~/Assets/alert.png')}
+          style={styles.imgAlert}
+        />
+        <Text style={styles.title}>Something went wrong</Text>
 
-      <View style={styles.textWithIconContainer}>
-        <Text style={styles.blackTextWithImage}>{props.errorMessage}</Text>
+        <View style={styles.textWithIconContainer}>
+          <Text style={styles.blackTextWithImage}>{props.errorMessage}</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.dismissButton}
+          onPress={() => bottomSheetStore.hideBottomSheet()}>
+          <Text style={text.buttonblue}>Dismiss</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={styles.dismissButton}
-        onPress={() => bottomSheetStore.hideBottomSheet()}>
-        <Text style={text.buttonblue}>Dismiss</Text>
-      </TouchableOpacity>
     </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   title: {

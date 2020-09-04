@@ -13,14 +13,14 @@ const fonts = [
 
 const letterSpacing = [0.4, 0.3, 0.2, 0.1, 0.4, 0.4, 0.4, 0.4];
 
-export const fontSize = (fontIndex) => ({
+export const fontSize = fontIndex => ({
   fontSize: fonts[fontIndex],
   letterSpacing: letterSpacing[fontIndex],
 });
 
 const lineHeights = [28, 28, 28];
 const lineHeightForm = 28;
-export const lineHeight = (lineHeightIndex) => ({
+export const lineHeight = lineHeightIndex => ({
   lineHeight: lineHeights[lineHeightIndex],
 });
 

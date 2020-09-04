@@ -1,4 +1,4 @@
-import {IPFSApiClient} from './ipfs-api';
+import { IPFSApiClient } from './ipfs-api';
 import Config from 'react-native-config';
 import axios from 'axios';
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
@@ -51,22 +51,26 @@ if (Config.ENV === 'production') {
 let isLocalPort = false;
 if (__DEV__) {
   axios.get('http://localhost:5001')
-    .catch((error) => {
+    .catch(error => {
       isLocalPort = error.response?.status === 404;
     });
 }
 
-const cloudFuncURL = () => isLocalPort ?  localFunctionURL : cloudFunctionURL;
+const cloudFuncURL = () => {
+  return isLocalPort ?  localFunctionURL : cloudFunctionURL;
+};
 
-const functionEndpoint = (endpoint) => `${cloudFuncURL()}/${endpoint}`;
+const functionEndpoint = endpoint => {
+  return `${cloudFuncURL()}/${endpoint}`;
+};
 
 
 export const ARC_VERSION = arcVersion;
 export const GRAPH_VERSION = graphVersion;
 export const IPFS_DATA_VERSION = ipfsDataVersion;
-export const mangoPayUrl = () => functionEndpoint('mangopay');
-export const graphqlUrl = () => functionEndpoint('graphql');
-export const relayerUrl = () => functionEndpoint('relayer');
+export const mangoPayUrl = () => { return functionEndpoint('mangopay'); };
+export const graphqlUrl = () => { return functionEndpoint('graphql'); };
+export const relayerUrl = () => { return functionEndpoint('relayer'); };
 export const graphHttpLink = `${graphUrl}/${graphVersion}`;
 export const graphwsLink = `${graphWS}/${graphVersion}`;
 export const ipfsLink = ipfsUrl;
@@ -95,7 +99,7 @@ export const PROPOSAL_TYPE = {
 // We will need this until https://github.com/daostack/arc.js/issues/468 is resolved
 export const IpfsClient = new IPFSApiClient(ipfsLink);
 
-export const ipfsUpload = async (data) =>
+export const ipfsUpload = async data => {
   // TODO: use arc.saveIPFSData({ name: formData.name}) once https://github.com/daostack/arc.js/issues/468 is resolved
-  IpfsClient.addAndPinString(JSON.stringify(data))
-;
+  return IpfsClient.addAndPinString(JSON.stringify(data));
+};

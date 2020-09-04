@@ -8,13 +8,13 @@ import {
   View,
   Keyboard,
 } from 'react-native';
-import {observer, inject} from 'mobx-react';
-import {text, layout, colors} from '~/Theme';
+import { observer, inject } from 'mobx-react';
+import { text, layout, colors } from '~/Theme';
 import FundingRequestForm from '~/Components/Forms/FundingRequestForm';
 import RequestStepActionButton from '../Commons/RequestStepActionButton';
-import {CommonActions} from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 import ArcService from '~/Services/ArcService';
-import {BN} from 'bn.js';
+import { BN } from 'bn.js';
 import Toast from '~/Util/Toast';
 import font from '~/Theme/font';
 
@@ -33,7 +33,7 @@ const FundingProposal = ({
   //   setShowRequestSentModal(false);
   // };
 
-  const createProposal = async (e) => {
+  const createProposal = async e => {
     Keyboard.dismiss();
     if (fundingRequestFormStore.isFormValid()) {
       try {
@@ -75,7 +75,7 @@ const FundingProposal = ({
     <>
       <StatusBar barStyle="dark-content" />
 
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
           style={{
             flex: 1,

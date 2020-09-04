@@ -66,9 +66,11 @@ class FormStore {
   };
 
   // Determine if the form action button has to be disabled
-  isFormActionEnabled = () => this.form.meta.formValidationMade ? this.form.meta.isValid : true;
+  isFormActionEnabled = () => {
+    return this.form.meta.formValidationMade ? this.form.meta.isValid : true;
+  };
 
-  fieldBlured = (name) => {
+  fieldBlured = name => {
     this.validateField(name);
   };
 
@@ -112,7 +114,9 @@ class FormStore {
   };
 
 
-  getChangedFormFieldsJson = () => this.getFormFieldsJson(true);
+  getChangedFormFieldsJson = () => {
+    return this.getFormFieldsJson(true);
+  };
 
   filterMultiFields = (name, fields) => {
     let changedFieldsJson = {};
@@ -146,11 +150,15 @@ class FormStore {
     }
 
     if (multiValues.length > 0) {
-      changedFieldsJson[name] = [...multiValues.keys()].map((x) => ({value: multiValues[x]}));
+      changedFieldsJson[name] = [...multiValues.keys()].map(x => {
+        return { value: multiValues[x]};
+      });
     }
 
     if (multiFieldTitles.length > 0) {
-      changedFieldsJson[name] = [...multiFieldTitles.keys()].map((x) => ({title: multiFieldTitles[x], url: multiFieldValues[x]}));
+      changedFieldsJson[name] = [...multiFieldTitles.keys()].map(x => {
+        return {title: multiFieldTitles[x], url: multiFieldValues[x]};
+      });
     }
 
     if (changedFieldsJson.length === 0) {
@@ -160,10 +168,12 @@ class FormStore {
     return changedFieldsJson;
   };
 
-  isFormChanged = () => Object.keys(this.getChangedFormFieldsJson()).length > 0;
+  isFormChanged = () => {
+    return Object.keys(this.getChangedFormFieldsJson()).length > 0;
+  };
 
   // Private functions
-  validateField = (field) => {
+  validateField = field => {
     var validation = this.getValidator();
     this.form.meta.isValid = validation.passes();
     this.form.fields[field].error = validation.errors.first(field);
@@ -196,7 +206,7 @@ class FormStore {
     };
   };
 
-  setError = (errMsg) => {
+  setError = errMsg => {
     this.form.meta.error = errMsg;
   };
 }

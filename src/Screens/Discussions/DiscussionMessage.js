@@ -1,12 +1,12 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
-import {colors, font} from '~/Theme';
+import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
+import { colors, font } from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-const DiscussionMessage = (props) => {
+const DiscussionMessage = props => {
   const data = props.data;
   let currentUserUid = null;
   if (auth().currentUser) {
@@ -18,7 +18,7 @@ const DiscussionMessage = (props) => {
       {currentUserUid === data.ownerId ? (
         <View style={styles.contentOwner}>
           <Text style={styles.text}>{data.text}</Text>
-          <View style={{position: 'relative', right: 0, bottom: 0}}>
+          <View style={{ position: 'relative', right: 0, bottom: 0 }}>
             <Text
               style={styles.date}
               numberOfLines={1}>
@@ -36,7 +36,7 @@ const DiscussionMessage = (props) => {
                   width: 40,
                   borderRadius: 20,
                 }}
-                source={data.ownerAvatar ? {uri: data.ownerAvatar} : null}
+                source={data.ownerAvatar ? { uri: data.ownerAvatar } : null}
               />
               <View
                 style={{
@@ -56,7 +56,7 @@ const DiscussionMessage = (props) => {
               </View>
             </View>
           </>
-      )}
+        )}
     </View>
   );
 };

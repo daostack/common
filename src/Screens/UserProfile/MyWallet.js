@@ -11,9 +11,10 @@ import {
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 
-import {layout, text, sizeS, font, sizeM} from '~/Theme';
+import { layout, text, sizeS, font, sizeM } from '~/Theme';
 
-const MyWallet = () => (
+const MyWallet = () => {
+  return (
     <>
       <StatusBar barStyle="dark-content" />
 
@@ -66,7 +67,8 @@ const MyWallet = () => (
         </ScrollView>
       </SafeAreaView>
     </>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   componentContainer: {

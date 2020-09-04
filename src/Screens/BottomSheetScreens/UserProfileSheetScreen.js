@@ -7,10 +7,11 @@ import {
 } from 'react-native';
 
 import React from 'react';
-import {text, colors} from '~/Theme';
+import { text, colors } from '~/Theme';
 import UserProfileData from '~/Components/UserProfileData';
 
-const UserProfileSheetScreen = ({navigation, userId}) => (
+const UserProfileSheetScreen = ({ navigation, userId }) => {
+  return (
     <>
       <StatusBar barStyle="dark-content" />
 
@@ -27,7 +28,8 @@ const UserProfileSheetScreen = ({navigation, userId}) => (
         </ScrollView>
       </SafeAreaView>
     </>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   sheetTextStyle: {

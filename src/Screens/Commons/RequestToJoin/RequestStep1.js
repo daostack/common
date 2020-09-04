@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   ScrollView,
@@ -10,24 +10,24 @@ import {
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 
 import RequestToJoinRule from '~/Components/Commons/RequestToJoinRule';
-import {observer, inject} from 'mobx-react';
-const {width, height} = Dimensions.get('window');
+import { observer, inject } from 'mobx-react';
+const { width, height } = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepDotHeader from './RequestStepDotHeader';
-import {colors} from '~/Theme';
+import { colors } from '~/Theme';
 import CreateStepNavigation from './RequestStepNavigation';
 import RequestStepActionButton from '../RequestStepActionButton';
-import {CommonActions} from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 import MembershipRequest from './MembershipRequest';
 
-const RequestStep1 = (props) => {
+const RequestStep1 = props => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   // const [ruleCount] = useState(1);
   const [pass, setPass] = useState(false);
   const commonRules = props.daoStore.dao.metadata?.rules;
 
-  const {name} = props.daoStore.dao;
+  const { name } = props.daoStore.dao;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -56,7 +56,7 @@ const RequestStep1 = (props) => {
 
   return (
     <>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView style={{ backgroundColor: colors.white }} />
       <SafeAreaView
         style={{
           flex: 1,
@@ -85,7 +85,7 @@ const RequestStep1 = (props) => {
           }
           scrollEventThrottle={16}
           onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
+            { nativeEvent: { contentOffset: { y: scrollY } } },
           ])}
           onScrollEndDrag={onScrollToBottom}>
           <MembershipRequest />

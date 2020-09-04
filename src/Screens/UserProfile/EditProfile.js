@@ -9,15 +9,15 @@ import {
   Text,
 } from 'react-native';
 import EditProfileForm from '~/Components/Forms/EditProfileForm';
-import {colors, text, layout} from '~/Theme';
-import {observer, inject} from 'mobx-react';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import { colors, text, layout } from '~/Theme';
+import { observer, inject } from 'mobx-react';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from '~/Assets/iconfont/Icon';
 import Loader from '~/Components/Loader';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import { BOTTOM_SHEET_TEMPLATES } from '~/Stores/BottomSheetStore';
 import Toast from '~/Util/Toast';
 import AuthService from '~/Services/AuthService';
-import {filterObjectByKeys} from '~/Util';
+import { filterObjectByKeys } from '~/Util';
 
 const EditProfile = ({
   userStore,
@@ -37,7 +37,7 @@ const EditProfile = ({
     ),
   });
 
-  const formSave = async (e) => {
+  const formSave = async e => {
 
     if (editProfileFormStore.isFormValid()) {
 
@@ -62,7 +62,7 @@ const EditProfile = ({
           err.response
             ? `\nCode: ${err.response.data.code}  \nMessage: ${err.response.data.message}`
             : ''
-        }`;
+          }`;
         editProfileFormStore.form.meta.isLoadingSubmit = false;
         throw err;
       }
@@ -71,12 +71,12 @@ const EditProfile = ({
     }
   };
 
-  const onFormSubmitStart = (updatedFields) => {
+  const onFormSubmitStart = updatedFields => {
     Toast.loading('Updating your profile...');
   };
 
-  const onFormSubmitEnd = (updatedFields) => {
-    userStore.setSignedInUser({...userStore.userInfo, ...updatedFields});
+  const onFormSubmitEnd = updatedFields => {
+    userStore.setSignedInUser({ ...userStore.userInfo, ...updatedFields });
     Toast.done('Your profile is updated');
     navigation.goBack();
   };
@@ -97,11 +97,13 @@ const EditProfile = ({
     bottomSheetStore.hideBottomSheet();
   };
 
-  const renderBody = () => (
-    <View style={styles.body}>
-      <EditProfileForm isFirstOpening={route.params.isFirstOpening} />
-    </View>
-  );
+  const renderBody = () => {
+    return (
+      <View style={styles.body}>
+        <EditProfileForm isFirstOpening={route.params.isFirstOpening} />
+      </View>
+    );
+  };
 
   return (
     <>
@@ -117,20 +119,20 @@ const EditProfile = ({
         <View style={styles.containerRow}>
           {route.params.isFirstOpening ? (
             <TouchableOpacity
-              style={{...styles.btns, ...layout.btnOutline, ...layout.marginRightS}}
+              style={{ ...styles.btns, ...layout.btnOutline, ...layout.marginRightS }}
               onPress={onFormClose}>
               <Text style={text.buttonblue}>Skip</Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity
-              style={{...styles.btns, ...layout.btnOutline, ...layout.marginRightS}}
-              onPress={onFormClose}>
-              <Text style={text.buttonblue}>Cancel</Text>
-            </TouchableOpacity>
-          )}
+              <TouchableOpacity
+                style={{ ...styles.btns, ...layout.btnOutline, ...layout.marginRightS }}
+                onPress={onFormClose}>
+                <Text style={text.buttonblue}>Cancel</Text>
+              </TouchableOpacity>
+            )}
 
           <TouchableOpacity
-            style={{...styles.btns, ...layout.btnPrimary, ...layout.marginLeftS}}
+            style={{ ...styles.btns, ...layout.btnPrimary, ...layout.marginLeftS }}
             onPress={formSave}>
             <Text style={text.buttoncenterwhite}>Save</Text>
           </TouchableOpacity>

@@ -16,7 +16,7 @@ export default class GoogleDriveService {
     GDrive.init();
   }
 
-  static init = async (accessToken) => {
+  static init = async accessToken => {
     GoogleDriveService.instance = new GoogleDriveService(accessToken);
   };
 
@@ -35,11 +35,11 @@ export default class GoogleDriveService {
     });
   };
 
-  deleteAppDataFileById = async (id) => {
+  deleteAppDataFileById = async id => {
     GDrive.files.delete(id);
   };
 
-  getFileById = async (id) => {
+  getFileById = async id => {
     const downloadFileResult = await GDrive.files.download(
       id,
       {toFile: downloadHeaderPath},

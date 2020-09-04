@@ -1,8 +1,8 @@
 import React from 'react';
-import {Text, StyleSheet} from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 
 import PropTypes from 'prop-types';
-import {colors, font} from '~/Theme';
+import { colors, font } from '~/Theme';
 
 const styles = StyleSheet.create({
   text: {
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const CreateStep4Indicators = ({currencySymbol = true, title, number}) => (
+const CreateStep4Indicators = ({ currencySymbol = true, title, number }) => (
   <>
     <Text style={styles.text}>{title}</Text>
     <Text style={styles.val}>

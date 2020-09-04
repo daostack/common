@@ -19,7 +19,7 @@ export default class NotificationService {
       // .then(() => {
       //   console.log('FCM token updated');
       // })
-      .catch((err) => console.log(err));
+      .catch(err => console.log(err));
   }
 
   async getToken() {
@@ -57,7 +57,7 @@ export default class NotificationService {
       .then(() => {
         console.log('updated');
       })
-      .catch((err) => console.log(err));
+      .catch(err => console.log(err));
   }
 
   static async follow(targetUid) {
@@ -79,7 +79,7 @@ export default class NotificationService {
         console.log('updated');
         // Toast.done('Follow success');
       })
-      .catch((err) => console.log(err));
+      .catch(err => console.log(err));
   }
 
   static async unfollow(targetUid) {
@@ -101,6 +101,6 @@ export default class NotificationService {
         console.log('updated');
         // Toast.done('Follow success');
       })
-      .catch((err) => console.log(err));
+      .catch(err => console.log(err));
   }
 }

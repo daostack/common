@@ -1,7 +1,7 @@
-import {IpfsClient} from '~/Config';
-import {graphqlUrl} from '~/Config';
+import { IpfsClient } from '~/Config';
+import { graphqlUrl } from '~/Config';
 import axios from 'axios';
-const {getForgeOrgData} = require('@daostack/common-factory');
+const { getForgeOrgData } = require('@daostack/common-factory');
 const DAOFactoryABI = require('@daostack/common-factory/abis/DAOFactory');
 
 const {
@@ -42,7 +42,7 @@ export const createCommon = async (
       fundingToken: COMMONTOKENADDRESS,
       VERSION: IPFS_DATA_VERSION, // just some alphanumberic marker  that is useful for understanding what our data is shaped like
     };
-    const opts = {...defaultOptions, ...givenOpts};
+    const opts = { ...defaultOptions, ...givenOpts };
 
     console.log('saving data on ipfs: ', opts);
     const ipfsHash = await IpfsClient.addAndPinString(JSON.stringify(opts));
