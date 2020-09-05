@@ -1,44 +1,39 @@
-import {Text, StyleSheet, SafeAreaView, TouchableOpacity, View} from 'react-native';
-
+import {Text, StyleSheet, SafeAreaView, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {text, layout, colors, font, sizeL} from '../../Theme';
 import ButtonSwiper from '../../Components/ButtonSwiper';
 import Loader from '../../Components/Loader';
+import {func, bool, shape} from 'prop-types';
 
-const ApprovalSheetScreen = ({onApprove, onClose, voteType, votingProcessState}) => {
+const ApprovalSheetScreen = ({onApprove, onClose, voteType,
+  votingProcessState: {inProgress, error}}) => {
+  const title = voteType ? 'Approve' : 'Reject';
   const voteColor =
-    votingProcessState.error || !voteType ? colors.error : colors.lightishGreen;
+    error || !voteType ? colors.against : colors.lightishGreen;
 
   return (
     <SafeAreaView style={styles.body}>
       <Text
         style={{
           ...styles.title,
-          ...{color: voteColor},
+          color: voteColor,
         }}>
-        {voteType ? 'Approve' : 'Reject'}
+        {error ? 'Something went wrong' : title}
       </Text>
 
-      {votingProcessState.error ? (
+      {error ? (
         <>
           <Text style={{...styles.voteDescription, ...{...font.fontSize(2)}}}>
-            We couldn’t submit your vote to approve this proposal
+            Please try again later
           </Text>
 
-          <View style={styles.containerRow}>
             <TouchableOpacity
-              style={{...layout.btnOutline, ...layout.marginRightS}}
+              style={styles.okButton}
               onPress={onClose}>
-              <Text style={text.buttonblue}>Cancel</Text>
+              <Text style={styles.buttonText}>OK</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={{...layout.btnPrimary, ...layout.marginLeftS}}
-              onPress={() => onApprove(voteType)}>
-              <Text style={text.buttoncenterwhite}>Try again</Text>
-            </TouchableOpacity>
-          </View>
         </>
-      ) : votingProcessState.inProgress ? (
+      ) : inProgress ? (
         <Loader color={voteColor} isBigger={true} />
       ) : (
         <>
@@ -56,10 +51,22 @@ const ApprovalSheetScreen = ({onApprove, onClose, voteType, votingProcessState})
   );
 };
 
+ApprovalSheetScreen.propTypes = {
+  onApprove: func,
+  onClose: func,
+  voteType: bool,
+  votingProcessState: shape({
+    inProgress: bool,
+    error: bool,
+  }),
+};
+
 const styles = StyleSheet.create({
   title: {
     ...text.h1Black,
     ...layout.paddingBottomS,
+    width: '100%',
+    ...font.fontSize(4),
   },
   voteDescription: {
     ...text.blackText,
@@ -72,11 +79,21 @@ const styles = StyleSheet.create({
     ...layout.content,
     ...layout.flexStart,
     alignItems: 'center',
+    width: '100%',
   },
-  containerRow: {
-    flexDirection: 'row',
-    alignSelf: 'stretch',
-    ...layout.marginTopL,
+  okButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 0,
+    ...layout.btnOutline,
+    ...layout.marginTopXXL,
+    height: 52,
+  },
+  buttonText:
+  {
+    color: colors.black,
+    alignSelf: 'center',
+    fontSize: 16,
   },
 });
 
