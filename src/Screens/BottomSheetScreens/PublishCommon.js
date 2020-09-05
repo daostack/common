@@ -34,8 +34,7 @@ PublishCommon.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  container:
-  {
+  container: {
     flex: 1,
     padding: 20,
   },
@@ -68,8 +67,7 @@ const styles = StyleSheet.create({
     width: '100%',
     textAlign: 'center',
   },
-  continueEditButtonTxt:
-  {
+  continueEditButtonTxt: {
     ...font.primary.semiBold,
     ...font.fontSize(3),
     textAlign: 'center',
