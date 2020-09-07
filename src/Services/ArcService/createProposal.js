@@ -97,7 +97,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
 
     console.log('fee ->', fee);
     const manager = await WalletManager.getInstance();
-    const proposalId = await manager.requestToJoin(transaction.contract, transaction.method, transaction.args, data.preAuthId);
+    const proposalId = await manager.requestToJoin(transaction.contract, transaction.method, transaction.args, data.preAuthId, daoId, data.funding);
     return proposalId;
   } catch (e) {
     console.log(e.data);

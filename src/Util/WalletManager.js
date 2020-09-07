@@ -230,7 +230,7 @@ export default class WalletManager {
     return response;
   }
 
-  requestToJoin = async (pluginContract, method, params, preAuthId) => {
+  requestToJoin = async (pluginContract, method, params, preAuthId, daoId, funding) => {
     try {
       const pluginAddress = pluginContract.address;
       const zeroValue = '0';
@@ -238,6 +238,7 @@ export default class WalletManager {
       const signature = await this.txHashSignature(this.safeAddress, pluginAddress, zeroValue, data);
       console.log('signature2 -->', signature);
       const idToken = await auth().currentUser.getIdToken();
+      const amount = ethers.utils.parseEther(funding.toString(10)).toString(10);
       const body =
       {
         idToken,
@@ -248,6 +249,8 @@ export default class WalletManager {
           signature: signature,
         },
         preAuthId,
+        daoId,
+        amount, // TODO: need to encode for security or fetch from other platform
       };
 
       console.log('RequestToJoin Body ->', body);
