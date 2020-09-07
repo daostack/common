@@ -1,7 +1,5 @@
 import {IPFSApiClient} from './ipfs-api';
 import Config from 'react-native-config';
-import {Cache} from 'react-native-cache';
-import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
@@ -86,15 +84,6 @@ export const firebaseWebClientId = clientId;
 export const isProduction = Config.ENV === 'production';
 export const defaultAllowance = 100000000000000000;
 export const MEMBER_REPUTATION = 1000; // how much rep a new members gets
-
-
-export const cache = new Cache({
-  namespace: 'common-daostack',
-  policy: {
-    maxEntries: 50000,
-  },
-  backend: AsyncStorage,
-});
 
 export const OVERRIDES = {
   // default settings for sending trasnsactions

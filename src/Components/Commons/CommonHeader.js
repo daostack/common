@@ -12,8 +12,6 @@ import Icon from '../../Assets/iconfont/Icon';
 import {BlurView} from '../../Components';
 import {object, shape, string, bool, func} from 'prop-types';
 
-
-
 const CommonHeader = ({
   navigation,
   isMember,

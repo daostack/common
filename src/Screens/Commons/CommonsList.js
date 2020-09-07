@@ -14,7 +14,7 @@ import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {font, colors} from '../../Theme';
 import {object} from 'prop-types';
-import {cache} from '../../Config';
+import Cache from '../../Util/Cache';
 
 import {
   Placeholder,
@@ -73,6 +73,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
         setIsSplited(true);
       }
     } catch (err) {
+      console.log(err);
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
       );
@@ -95,7 +96,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
         },
       }));
       daoStore.setDaos(docs);
-      cache.set('daoList', docs);
+      Cache.storeObject('AllDAOList', docs);
       setAllDaosGroup({
         title: '',
         data: docs,
@@ -103,6 +104,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
       splitDaoList(docs);
       setRefreshing(false);
     } catch (err) {
+      console.log(err);
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
       );
@@ -115,19 +117,21 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   }, []);
 
   useEffect(() => {
-    cache.get('daoList').then((docs) => {
-      if (docs.length === 0) {
+    DaoService.getInstance().subscribeToDaosList(loadDaosList);
+
+    Cache.getObject('AllDAOList').then((jsonValue) => {
+      if (jsonValue === null) {
         return;
       }
-      daoStore.setDaos(docs);
+      const docs = JSON.parse(jsonValue);
+      // daoStore.setDaos(docs);
       setAllDaosGroup({
-        title: '',
+        title: `Cache loading ${docs.length}`,
         data: docs,
       });
-      splitDaoList(docs);
+      // splitDaoList(docs);
     });
-    DaoService.getInstance().getDaoList(loadDaosList);
-  }, [ bottomSheetStore, userStore.userInfo]);
+  }, []);
 
   const onAddCommon = () => {
     if (userStore.userInfo) {
@@ -243,6 +247,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
             stickySectionHeadersEnabled={true}
             renderSectionHeader={({section: {title}}) => sectionHeader(title)}
             ListFooterComponent={listFooter}
+            initialNumToRender={ allDaosGroup.length }
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
