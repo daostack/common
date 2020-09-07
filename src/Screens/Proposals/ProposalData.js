@@ -18,6 +18,7 @@ import {useNavigation} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
 import {PROPOSAL_TYPE} from '../../Config';
 import {db} from '../../Firebase';
+import logger from '../../Services/Logger';
 
 const ProposalData = (props) => {
   const navigation = useNavigation();
@@ -43,7 +44,7 @@ const ProposalData = (props) => {
                       uri: currImage.value,
                     });
                   } catch (e) {
-                    console.log(e);
+                    logger.log(e);
                   }
                 }
               }),
@@ -53,7 +54,7 @@ const ProposalData = (props) => {
         }
 
       } catch (error) {
-        console.log('error: ', error);
+        logger.log('error: ', error);
       }
     };
 

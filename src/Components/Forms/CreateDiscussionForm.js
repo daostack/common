@@ -7,8 +7,8 @@ import Toast from '../../Util/Toast';
 import MultiFileField from '../FormFields/MultiFileField';
 import MultiImageField from '../FormFields/MultiImageField';
 import RequestStepActionButton from '../../Screens/Commons/RequestStepActionButton';
-
-import { db } from '../../Firebase';
+import {db} from '../../Firebase';
+import logger from '../../Services/Logger';
 
 class CreateDiscussionForm extends React.Component {
   static TITLE = 'title';
@@ -30,7 +30,7 @@ class CreateDiscussionForm extends React.Component {
       if (createDiscussionStore.isFormValid()) {
         Keyboard.dismiss();
         const changedFields = createDiscussionStore.getChangedFormFieldsJson();
-        console.log('createDiscussionStore', changedFields);
+        logger.log('createDiscussionStore', changedFields);
         Toast.loading('Creating new discussion ...');
         const images = changedFields[CreateDiscussionForm.IMAGES] || [];
         const files = changedFields[CreateDiscussionForm.FILES] || [];
@@ -55,11 +55,11 @@ class CreateDiscussionForm extends React.Component {
           })
           .catch((error) => {
             Toast.error(error);
-            console.log(error);
+            logger.log(error);
           });
       }
     } catch (err) {
-      console.log(err);
+      logger.log(err);
       throw err;
     }
   };

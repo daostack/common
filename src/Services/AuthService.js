@@ -20,6 +20,8 @@ import appleAuth, {
 } from '@invertase/react-native-apple-authentication';
 import IClouldService from './IClouldService';
 
+import logger from './Logger';
+
 export default class AuthService {
   static serviceInstance = null;
 
@@ -160,8 +162,8 @@ export default class AuthService {
       default:
       }
     } catch (err) {
-      console.log(err);
-      console.log('[AUTH] Invalid session. Please login again.');
+      logger.log(err);
+      logger.log('[AUTH] Invalid session. Please login again.');
       await this.signOut();
     }
   }
@@ -224,8 +226,8 @@ export default class AuthService {
         jsonContent = JSON.parse(fileContent);
       } catch (error) {
         // TBD: Do we need to handle that case anymore ?
-        console.log('ERROR IN PARSING JSON with content: ', fileContent);
-        console.log(error);
+        logger.log(`ERROR IN PARSING JSON with content: ${fileContent}`);
+        logger.log(error);
         throw error;
       }
 

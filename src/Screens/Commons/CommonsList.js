@@ -13,7 +13,6 @@ import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {font, colors} from '../../Theme';
 import {object} from 'prop-types';
-
 import {
   Placeholder,
   PlaceholderMedia,
@@ -22,6 +21,7 @@ import {
 } from 'rn-placeholder';
 import DaoService from '../../Services/DaoService';
 import ProposalService from '../../Services/ProposalService';
+import logger from '../../Services/Logger';
 
 const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
   const [myDaosGroup, setMyDaosGroup] = useState({title: '', data: []});
@@ -71,7 +71,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     }
 
     if (daoStore.isError) {
-      console.log('daostore error', daoStore.isError);
+      logger.log('daostore error', daoStore.isError);
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
       );
@@ -103,7 +103,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     splitDaoList(docs);
 
     if (daoStore.isError) {
-      console.log('daostore error', daoStore.isError);
+      logger.log('daostore error', daoStore.isError);
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
       );

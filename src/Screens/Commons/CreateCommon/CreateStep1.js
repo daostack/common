@@ -18,12 +18,11 @@ import NavigationBar from 'react-native-navbar';
 import Icon from '../../../Assets/iconfont/Icon';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import MultiLinkField from '../../../Components/FormFields/MultiLinkField';
-
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
-
 import RequestStepActionButton from '../RequestStepActionButton';
+import logger from '../../../Services/Logger';
 
-const CreateStep1 = props => {
+const CreateStep1 = (props) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
 
@@ -33,7 +32,7 @@ const CreateStep1 = props => {
       outputRange: [0, 125],
       extrapolate: 'clamp',
     });
-    console.log(height);
+    logger.log(height);
     // const height = scrollY.value > 100 ? 125 : 0;
     setHeaderHeight(height);
   }, [scrollY]);

@@ -14,6 +14,7 @@ import {CommonActions} from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
 import AsyncStorage from '@react-native-community/async-storage';
 import messaging from '@react-native-firebase/messaging';
+import logger from '../Services/Logger';
 
 const Onboarding = ({navigation}) => {
   const _onboardingClick = async () => {
@@ -32,7 +33,7 @@ const Onboarding = ({navigation}) => {
         }),
       );
     } catch (e) {
-      console.log(e);
+      logger.log(e);
     }
   };
   return (
