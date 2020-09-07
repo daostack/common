@@ -63,7 +63,7 @@ const RequestStep4 = ({navigation, ...props}) => {
 
         navigation.navigate({ name: 'FullScreenCreationLoader', params: { title: 'Creating your membership request' } });
 
-        // Skip mangopay for now
+        // Skip mangopay for now, as the service is not responding and we are not using mangopay anyhow
         // if (Number(data.funding) > 0) {
         //   const preAuthId = await preauthorizePayment(cardData, Number(data.funding), navigation);
         //   data = { ...data, preAuthId };
