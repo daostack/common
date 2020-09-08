@@ -688,7 +688,7 @@ class nativeBridgeTests extends React.Component {
         </ScrollView>
       </View>
     );
- }
+  }
 }
 
 const styles = StyleSheet.create({
@@ -696,14 +696,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
- },
+  },
   scrollView: {
     width,
     marginTop: 50,
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 100,
- },
+  },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -711,14 +711,14 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: 'grey',
     marginBottom: 5,
- },
+  },
   smallButton: {
     alignItems: 'center',
     justifyContent: 'center',
     width: 66,
     height: 40,
     backgroundColor: 'grey',
- },
+  },
 });
 
 export default inject(

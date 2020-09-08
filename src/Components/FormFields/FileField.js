@@ -7,6 +7,7 @@ import Toast from '../../Util/Toast';
 import Icon from '../../Assets/iconfont/Icon';
 import {text, layout, colors} from '../../Theme';
 import StorageService from '../../Services/StorageService';
+import logger from '../../Services/Logger';
 
 class FileField extends React.Component {
   fieldValidation = null;
@@ -28,7 +29,7 @@ class FileField extends React.Component {
     }
   }
 
-  onChangeValue = fileUrl => {
+  onChangeValue = (fileUrl) => {
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
       formStore.fieldChanged(name, fileUrl);
@@ -38,7 +39,7 @@ class FileField extends React.Component {
 
   onFieldDeleted = () => {
     if (this.props.validation) {
-      const { formStore, name} = this.props.validation;
+      const {formStore, name} = this.props.validation;
       formStore.removeFormField(name);
     }
     this.props.onFieldDeleted && this.props.onFieldDeleted();
@@ -50,7 +51,7 @@ class FileField extends React.Component {
         type: [DocumentPicker.types.allFiles],
       });
 
-      // console.log(
+      // logger.log(
       //   res.uri,
       //   res.type, // mime type
       //   res.name,
@@ -61,7 +62,7 @@ class FileField extends React.Component {
       const downloadUrl = await StorageService.getInstance().uploadFile(
         res.uri,
       );
-      console.log('downloadUrl', downloadUrl);
+      logger.log('downloadUrl', downloadUrl);
       Toast.done('Success');
       this.onChangeValue(downloadUrl);
     } catch (err) {
