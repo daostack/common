@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { FlatList } from 'react-native';
+import React, {useEffect, useState, useRef} from 'react';
+import {FlatList} from 'react-native';
 import DiscussionCard from './DiscussionCard';
 import ViewTabNoData from '~/Components/ViewTabNoData';
-import { string, object } from 'prop-types';
-import { db } from '../../Firebase';
+import {string, object} from 'prop-types';
+import {db} from '../../Firebase';
 
-const DiscussionList = ({ commonId, navigation }) => {
+const DiscussionList = ({commonId, navigation}) => {
   const [list, setList] = useState([]);
 
   let listRef = useRef([]);
@@ -14,25 +14,25 @@ const DiscussionList = ({ commonId, navigation }) => {
       .where('commonId', '==', commonId)
       .orderBy('createTime', 'desc')
       .onSnapshot(
-        snapshot => {
+        (snapshot) => {
           if (snapshot.empty) {
             setList([]);
           } else {
             if (snapshot.docChanges().length !== 0) {
-              const newList = snapshot.docChanges().map(({ doc }) => ({
+              const newList = snapshot.docChanges().map(({doc}) => ({
                 id: doc.id,
                 ...doc.data(),
               }));
               let createList = newList
-                .map(item => {
-                  let index = listRef.current.findIndex(v => v.id === item.id);
+                .map((item) => {
+                  let index = listRef.current.findIndex((v) => v.id === item.id);
                   if (index > -1) {
                     listRef.current[index] = item;
                   } else {
                     return item;
                   }
                 })
-                .filter(item => item);
+                .filter((item) => item);
               if (createList.length > 0) {
                 const allList = [...createList, ...listRef.current];
                 listRef.current = allList;
@@ -42,7 +42,7 @@ const DiscussionList = ({ commonId, navigation }) => {
           }
         },
         // TOOD: please do not silence any errors like this
-        error => console.error(error),
+        (error) => console.error(error),
       );
     return () => {
       unsubscribe();
@@ -54,7 +54,7 @@ const DiscussionList = ({ commonId, navigation }) => {
       {list.length > 0 ? (
         <FlatList
           data={list}
-          renderItem={({ item }) => (
+          renderItem={({item}) => (
             <DiscussionCard
               key={item.id}
               data={item}
@@ -65,11 +65,11 @@ const DiscussionList = ({ commonId, navigation }) => {
           extraData={listRef}
         />
       ) : (
-          <ViewTabNoData
-            title="No Discussions"
-            subtitle="This is where you can discuss and share your thoughts and ideas."
-          />
-        )}
+        <ViewTabNoData
+          title="No Discussions"
+          subtitle="This is where you can discuss and share your thoughts and ideas."
+        />
+      )}
     </>
   );
 };

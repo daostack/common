@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -11,11 +11,11 @@ import {
   Platform,
 } from 'react-native';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
-import { colors, font, sizeL, sizeS } from '~/Theme';
+import {colors, font, sizeL, sizeS} from '~/Theme';
 
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
-import { observer, inject } from 'mobx-react';
-const { width } = Dimensions.get('window');
+import {observer, inject} from 'mobx-react';
+const {width} = Dimensions.get('window');
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
@@ -93,30 +93,30 @@ const CreateStep2 = (props) => {
     const name = CreateCommonForm.DEADLINE;
     props.fundingFormStore.registerFormField(name, 'required');
     switch (index) {
-      case 0: {
-        props.fundingFormStore.fieldChanged(
-          name,
-          moment()
-            .add('7', 'days')
-            .unix(),
-        );
-        setShow(false);
-        break;
-      }
-      case 1: {
-        props.fundingFormStore.fieldChanged(
-          name,
-          moment()
-            .add('1', 'months')
-            .unix(),
-        );
-        setShow(false);
-        break;
-      }
-      case 2: {
-        setShow(true);
-        break;
-      }
+    case 0: {
+      props.fundingFormStore.fieldChanged(
+        name,
+        moment()
+          .add('7', 'days')
+          .unix(),
+      );
+      setShow(false);
+      break;
+    }
+    case 1: {
+      props.fundingFormStore.fieldChanged(
+        name,
+        moment()
+          .add('1', 'months')
+          .unix(),
+      );
+      setShow(false);
+      break;
+    }
+    case 2: {
+      setShow(true);
+      break;
+    }
     }
     setSegmentedIndex(index);
   };
@@ -178,7 +178,7 @@ const CreateStep2 = (props) => {
         }}
         scrollEventThrottle={16}
         onScroll={Animated.event([
-          { nativeEvent: { contentOffset: { y: scrollY } } },
+          {nativeEvent: {contentOffset: {y: scrollY}}},
         ])}>
         <CreateStepHeader currentIndex={1} />
 
@@ -203,10 +203,10 @@ const CreateStep2 = (props) => {
           <TextInputFieldWithIcon
             iconName="dollar"
             iconSize={12}
-            iconStyle={{ paddingRight: 5 }}
+            iconStyle={{paddingRight: 5}}
             iconEmptyColor={colors.grey3}
             iconFillColor={colors.grey}
-            viewStyle={{ alignSelf: 'stretch' }}
+            viewStyle={{alignSelf: 'stretch'}}
             label="Minimum one-time contribution (min. $5)"
             subLabel="Set the minimum amount that new members will have to contribute in order to join this Common."
             infoLabel="Required"
@@ -220,10 +220,10 @@ const CreateStep2 = (props) => {
               customErrorMessage: 'The amount must be at least $5 and at most $1000.',
             }}
           />
-          <View style={{ marginTop: 24 }}>
-            <View style={{ flexDirection: 'row' }}>
+          <View style={{marginTop: 24}}>
+            <View style={{flexDirection: 'row'}}>
               <Text style={styles.label}>Funds safety period</Text>
-              <Text style={[styles.infoLabel, { alignSelf: 'flex-end' }]}>
+              <Text style={[styles.infoLabel, {alignSelf: 'flex-end'}]}>
                 Required
               </Text>
             </View>
@@ -232,9 +232,9 @@ const CreateStep2 = (props) => {
             </Text>
 
             <SegmentedControlTab
-              tabsContainerStyle={{ marginTop: 16, marginBottom: 40, height: 44 }}
-              tabStyle={{ borderColor: colors.grey4 }}
-              activeTabStyle={{ backgroundColor: colors.mainBlue }}
+              tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 44}}
+              tabStyle={{borderColor: colors.grey4}}
+              activeTabStyle={{backgroundColor: colors.mainBlue}}
               values={[
                 '1 week',
                 '1 month',

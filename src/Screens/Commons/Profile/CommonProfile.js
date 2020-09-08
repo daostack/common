@@ -10,7 +10,7 @@ import CommonStageSummary from '~/Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
 import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
 import ProposalApprovalTag from '~/Components/Proposals/ProposalApprovalTag';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '~/Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
@@ -33,9 +33,9 @@ import {
 import {object, shape} from 'prop-types';
 import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
 import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDate';
-import { BlurView } from '~/Components';
+import {BlurView} from '~/Components';
 
 let stickyHeightAddon = 36;
 
@@ -46,7 +46,7 @@ const CommonProfile = ({
   navigation,
   bottomSheetStore,
   userStore,
-  route: { params },
+  route: {params},
 }) => {
   /* all of  params.commonId,
   params.showRequestSentModal,
@@ -139,7 +139,7 @@ const CommonProfile = ({
         commonId,
         userStore.userInfo?.safeAddress,
         (data) => {
-          setPendingProposalsData({ ...data });
+          setPendingProposalsData({...data});
         },
       );
     };
@@ -172,7 +172,7 @@ const CommonProfile = ({
   );
 
   const Discussions = () => (
-    <View style={{ ...styles.paleBackground, ...{ paddingVertical: sizeL } }}>
+    <View style={{...styles.paleBackground, ...{paddingVertical: sizeL}}}>
       <Text style={text.h1BlackTitle}>Discussions</Text>
       <DiscussionList navigation={navigation} commonId={currCommon.id} />
     </View>
@@ -186,7 +186,7 @@ const CommonProfile = ({
         onlyFundingRequests={true}
         isMember={isMember}
         navigation={navigation}
-        commonInfo={{ name: currCommon.name, id: currCommon.id, balance: currCommon.balance }}
+        commonInfo={{name: currCommon.name, id: currCommon.id, balance: currCommon.balance}}
       />
 
       {isMember && (
@@ -200,12 +200,12 @@ const CommonProfile = ({
   );
 
   const History = () => (
-    <View style={{ ...styles.paleBackground, ...{ padding: sizeL } }}>
+    <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
       <Text style={text.h1BlackTitle}>History</Text>
 
       <ProposalsList
         isMember={isMember}
-        commonInfo={{ name: currCommon.name, id: currCommon.id, balance: currCommon.balance }}
+        commonInfo={{name: currCommon.name, id: currCommon.id, balance: currCommon.balance}}
         navigation={navigation}
         onlyFundingRequests={true}
         isHistory={true}
@@ -215,14 +215,14 @@ const CommonProfile = ({
 
   const renderScene = (scene) => {
     switch (scene.route.key) {
-      case 'discussions':
-        return Discussions();
-      case 'proposals':
-        return Proposals();
-      case 'history':
-        return History();
-      default:
-        return null;
+    case 'discussions':
+      return Discussions();
+    case 'proposals':
+      return Proposals();
+    case 'history':
+      return History();
+    default:
+      return null;
     }
   };
 
@@ -243,7 +243,7 @@ const CommonProfile = ({
 
           <View style={layout.flexStart}>
             <Text style={text.h2Black}>About</Text>
-            <Text style={{ ...text.regularText, ...layout.marginTopS }}>
+            <Text style={{...text.regularText, ...layout.marginTopS}}>
               {currCommon.metadata.description}
             </Text>
           </View>
@@ -262,7 +262,7 @@ const CommonProfile = ({
 
   const renderMembersRow = () => (
     <View style={styles.membersContainerWrapper}>
-      <View style={{ ...styles.membersContainer, paddingTop: !isMember ? sizeL : sizeS, paddingBottom: isMember ? 0 : sizeL }}>
+      <View style={{...styles.membersContainer, paddingTop: !isMember ? sizeL : sizeS, paddingBottom: isMember ? 0 : sizeL}}>
         <TouchableOpacity
           onPress={openCommonMembers}
           style={layout.flexRow}>
@@ -274,7 +274,7 @@ const CommonProfile = ({
                 `Member${currCommon.memberCount !== 1 ? 's' : ''}`}
             </Text>
           </View>
-          <View style={{ ...layout.flexRow, ...layout.marginLeftS }}>
+          <View style={{...layout.flexRow, ...layout.marginLeftS}}>
             <Text style={text.h4BlackRegular}>
               {pendingProposalsData &&
                 pendingProposalsData.pendingProposalCount}{' '}
@@ -392,13 +392,13 @@ const CommonProfile = ({
         style={{
           ...layout.content,
           paddingVertical: 15,
-          ...{ borderBottomWidth: 1, borderBottomColor: colors.grey4 },
+          ...{borderBottomWidth: 1, borderBottomColor: colors.grey4},
         }}>
         <View
           style={{
             ...layout.content,
             ...layout.flexRow,
-            ...{ padding: 0 },
+            ...{padding: 0},
           }}>
           <Icon name="clcok" size={16} style={layout.marginRightXS} />
           <Text style={text.smallBoldGreyText}>Pending Approval</Text>
@@ -407,7 +407,7 @@ const CommonProfile = ({
           style={{
             ...layout.flexRow,
             ...layout.marginTopS,
-            ...{ width: '100%', justifyContent: 'space-between' },
+            ...{width: '100%', justifyContent: 'space-between'},
           }}>
           <View style={layout.flexRow}>
             <ProposalApprovalTag
@@ -453,13 +453,13 @@ const CommonProfile = ({
       }}>
       <Placeholder Animation={Fade}>
         <PlaceholderMedia
-          style={{ height: 200, width: '100%', marginBottom: 20 }}
+          style={{height: 200, width: '100%', marginBottom: 20}}
         />
         <PlaceholderMedia
-          style={{ height: 100, width: '100%', marginBottom: 20 }}
+          style={{height: 100, width: '100%', marginBottom: 20}}
         />
         <PlaceholderMedia
-          style={{ height: 100, width: '100%', marginBottom: 20 }}
+          style={{height: 100, width: '100%', marginBottom: 20}}
         />
       </Placeholder>
 
@@ -467,7 +467,7 @@ const CommonProfile = ({
         {[...Array(3).keys()].map((i) => (
           <View key={`common_loading_${i}`}>
             <PlaceholderMedia
-              style={{ height: 80 * i, width: '100%', marginBottom: 20 }}
+              style={{height: 80 * i, width: '100%', marginBottom: 20}}
             />
             <PlaceholderLine width={80} />
             <PlaceholderLine />
@@ -480,13 +480,13 @@ const CommonProfile = ({
 
   const fixedHeaderHeight = () => (
     <NavigationBar
-      statusBar={{ hidden: true }}
+      statusBar={{hidden: true}}
       containerStyle={styles.fixedSection}
       leftButton={
         <TouchableOpacity
-          style={{ justifyContent: 'center' }}
+          style={{justifyContent: 'center'}}
           onPress={() => navigation.pop()}>
-          <BlurView style={{ padding: 5, borderRadius: 15 }} isBlurring={dark}>
+          <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
             <Icon
               name="left-arrow"
               size={32}
@@ -497,11 +497,11 @@ const CommonProfile = ({
       }
       rightButton={
         <View
-          style={{ flexDirection: 'row', alignItems: 'center' }}>
+          style={{flexDirection: 'row', alignItems: 'center'}}>
           <TouchableOpacity
-            style={{ justifyContent: 'center', marginRight: 10 }}
+            style={{justifyContent: 'center', marginRight: 10}}
             onPress={shareCommon}>
-            <BlurView style={{ padding: 5, borderRadius: 15 }} isBlurring={dark}>
+            <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
               <Icon
                 name="share-32"
                 size={32}
@@ -540,11 +540,11 @@ const CommonProfile = ({
       </Text>
     </TouchableOpacity>);
 
-  const initialLayout = { width: Dimensions.get('window').width };
+  const initialLayout = {width: Dimensions.get('window').width};
   return (
-    <View style={{ flex: 1, backgroundColor: colors.white }}>
+    <View style={{flex: 1, backgroundColor: colors.white}}>
       {currCommon ? (
-        <View style={{ flex: 1, position: 'relative' }}>
+        <View style={{flex: 1, position: 'relative'}}>
 
           <TouchableOpacity
             style={{
@@ -558,7 +558,7 @@ const CommonProfile = ({
               name="left-arrow"
               size={32}
               color={colors.white}
-              style={{ marginLeft: 10 }}
+              style={{marginLeft: 10}}
             />
           </TouchableOpacity>
 
@@ -581,7 +581,7 @@ const CommonProfile = ({
                   height: headerHeight,
                   backgroundColor: colors.grey4,
                 }}>
-                <View style={{ backgroundColor: 'rgba(0,0,0,0.2)', flex: 1 }} />
+                <View style={{backgroundColor: 'rgba(0,0,0,0.2)', flex: 1}} />
               </FastImage>
             )}
             scrollEvent={(e) => {
@@ -627,7 +627,7 @@ const CommonProfile = ({
               pendingProposalsData.usersPendingProposal &&
               renderPendingApproval()}
 
-            <View style={{ paddingVertical: sizeS }}>
+            <View style={{paddingVertical: sizeS}}>
               <CommonStageSummary
                 isFundingStage={isFundingStage}
                 commonProgressInfo={{
@@ -682,7 +682,7 @@ const CommonProfile = ({
 
             <View ref={stickyTabBarRef} collapsable={false}>
               <TabView
-                navigationState={{ index, routes }}
+                navigationState={{index, routes}}
                 renderScene={renderScene}
                 onIndexChange={setIndex}
                 initialLayout={initialLayout}
@@ -709,20 +709,20 @@ const CommonProfile = ({
                   bottom={50}
                 />
               ) : (
-                  !isFundingStage && index === 1 && (
-                    <BottomRightButton
-                      iconName="create-proposal"
-                      onPress={() =>
-                        navigation.navigate('FundingProposal', {
-                          commonId: currCommon.id,
-                          common: currCommon,
-                          screenTitle: currCommon.name,
-                        })
-                      }
-                      bottom={50}
-                    />
-                  )
+                !isFundingStage && index === 1 && (
+                  <BottomRightButton
+                    iconName="create-proposal"
+                    onPress={() =>
+                      navigation.navigate('FundingProposal', {
+                        commonId: currCommon.id,
+                        common: currCommon,
+                        screenTitle: currCommon.name,
+                      })
+                    }
+                    bottom={50}
+                  />
                 )
+              )
             ) : (
                 <>
                   {showStickyRequestToJoinBtn && showReqToJoin && (
@@ -736,7 +736,7 @@ const CommonProfile = ({
                     backdropColor={colors.white}
                     backdropOpacity={1}
                     onBackdropPress={() => setShowRequestSentModal(false)}
-                    style={{ padding: 0 }}>
+                    style={{padding: 0}}>
                     <SentTemplate
                       title="Membership request sent"
                       description="The common members will vote on your membership request. If it's approved, you will become a member with equal voting rights."
@@ -747,7 +747,7 @@ const CommonProfile = ({
                           onPress={viewProposal}>
                           <Text style={text.buttoncenterwhite}>
                             View proposal
-                        </Text>
+                          </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                           style={styles.modalRequestSentBtnOutline}
@@ -758,12 +758,12 @@ const CommonProfile = ({
                     </SentTemplate>
                   </Modal>
                 </>
-              )}
+            )}
           </SafeAreaView>
         </View>
       ) : (
-          loadingPlaceholder()
-        )}
+        loadingPlaceholder()
+      )}
     </View>
   );
 };

@@ -9,13 +9,13 @@ import React from 'react';
 import FastImage from 'react-native-fast-image';
 import {object, bool, func, string, shape} from 'prop-types';
 import Icon from '~/Assets/iconfont/Icon';
-import { layout, colors, text, font } from '~/Theme';
+import {layout, colors, text, font} from '~/Theme';
 
 const CommonCover = ({
   navigation,
   isMember,
   onHeaderMenuOpen,
-  commonInfo: { cover, logo, name, description },
+  commonInfo: {cover, logo, name, description},
   common,
 }) => {
   const renderCoverInSafeArea = () => <SafeAreaView>{renderCover()}</SafeAreaView>;
@@ -46,7 +46,7 @@ const CommonCover = ({
             <View
               style={{
                 ...layout.content,
-                ...{ padding: 0 },
+                ...{padding: 0},
               }}>
               {logo && (
                 <FastImage

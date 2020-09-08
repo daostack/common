@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   SafeAreaView,
@@ -8,11 +8,11 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-import { CommonBox, BottomRightButton } from '~/Components';
-import { inject, observer } from 'mobx-react';
-import { BOTTOM_SHEET_TEMPLATES } from '~/Stores/BottomSheetStore';
-import { font, colors } from '~/Theme';
-import { object } from 'prop-types';
+import {CommonBox, BottomRightButton} from '~/Components';
+import {inject, observer} from 'mobx-react';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {font, colors} from '~/Theme';
+import {object} from 'prop-types';
 
 import {
   Placeholder,
@@ -80,7 +80,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
 
   const loadDaosList = (snapshot) => {
     if (snapshot?.empty || !snapshot) {
-      setAllDaosGroup({ title: '', data: [] });
+      setAllDaosGroup({title: '', data: []});
       return [];
     }
     let docs = snapshot.docs.map((doc, index) => ({
@@ -175,7 +175,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
         {[...Array(3).keys()].map((i) => (
           <View key={`common_loading_${i}`}>
             <PlaceholderMedia
-              style={{ height: 200, width: '100%', marginBottom: 20 }}
+              style={{height: 200, width: '100%', marginBottom: 20}}
             />
             <PlaceholderLine width={80} />
             <PlaceholderLine />
@@ -217,7 +217,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
           <SectionList
             sections={isSplited ? [myDaosGroup, pendingDaosGroup, featuredDaosGroup] : [allDaosGroup]}
             ListHeaderComponent={header}
-            contentContainerStyle={{ paddingHorizontal: 20 }}
+            contentContainerStyle={{paddingHorizontal: 20}}
             renderItem={(x) => (
               <CommonBox
                 common={x.item}
@@ -230,12 +230,12 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
             )}
             keyExtractor={(x) => x.id}
             stickySectionHeadersEnabled={true}
-            renderSectionHeader={({ section: { title } }) => sectionHeader(title)}
+            renderSectionHeader={({section: {title}}) => sectionHeader(title)}
             ListFooterComponent={listFooter}
           />
         ) : (
-            loadingPlaceholder()
-          )}
+          loadingPlaceholder()
+        )}
 
         <BottomRightButton onPress={onAddCommon} />
       </SafeAreaView>

@@ -1,12 +1,12 @@
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
-import { numberFormatter } from '~/Util';
-import { CommonActions } from '@react-navigation/native';
+import {numberFormatter} from '~/Util';
+import {CommonActions} from '@react-navigation/native';
 import CommonCover from './Commons/CommonCover';
 import CommonStageSummary from './Commons/CommonStageSummary';
-import { string, object, number, func, shape } from 'prop-types';
+import {string, object, number, func, shape} from 'prop-types';
 
-const CommonBox = ({ common, onPress, width = '100%', navigation, headerHeightLayouted }) => (
+const CommonBox = ({common, onPress, width = '100%', navigation, headerHeightLayouted}) => (
   <TouchableOpacity
     onPress={() => {
       onPress();

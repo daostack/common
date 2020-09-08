@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 
 import {
   SafeAreaView,
@@ -17,7 +17,7 @@ import {inject, observer} from 'mobx-react';
 import  ProposalService  from '~/Services/ProposalService';
 import CommonTabBar from '../CommonTabBar';
 
-const MyProposals = ({ route, navigation, userStore }) => {
+const MyProposals = ({route, navigation, userStore}) => {
   const [index, setIndex] = React.useState(0);
   const [stats, setStats] = React.useState({all: 0, active: 0, history: 0});
 
@@ -62,16 +62,16 @@ const MyProposals = ({ route, navigation, userStore }) => {
     </View>
   );
 
-  const initialLayout = { width: Dimensions.get('window').width };
+  const initialLayout = {width: Dimensions.get('window').width};
 
-  const renderScene = ({ route }) => {
+  const renderScene = ({route}) => {
     switch (route.key) {
-      case 'all':
-        return AllProposals();
-      case 'active':
-        return ActiveProposals();
-      case 'history':
-        return HistoryProposals();
+    case 'all':
+      return AllProposals();
+    case 'active':
+      return ActiveProposals();
+    case 'history':
+      return HistoryProposals();
     }
   };
 
@@ -94,7 +94,7 @@ const MyProposals = ({ route, navigation, userStore }) => {
           </View>
           <View style={styles.sectionTabView}>
             <TabView
-              navigationState={{ index, routes }}
+              navigationState={{index, routes}}
               renderScene={renderScene}
               onIndexChange={setIndex}
               initialLayout={initialLayout}
