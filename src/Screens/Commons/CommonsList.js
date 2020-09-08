@@ -22,6 +22,7 @@ import {
 } from 'rn-placeholder';
 import DaoService from '../../Services/DaoService';
 import ProposalService from '../../Services/ProposalService';
+import {DAO_REGISTERED} from '../../Firebase/Databasee';
 
 const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
   const [myDaosGroup, setMyDaosGroup] = useState({title: '', data: []});
@@ -61,7 +62,8 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       });
     }
 
-    const featuredList = daoList.filter((dao) => !pendingDao.includes(dao) || !myDao.includes(dao));
+
+    const featuredList = daoList.filter((dao) => (!pendingDao.includes(dao) || !myDao.includes(dao)) && dao.register === DAO_REGISTERED);
     if (myDao.length !== 0 || pendingDao.length !== 0 ) {
       setFeaturedDaosGroup({
         title: 'Featured',
