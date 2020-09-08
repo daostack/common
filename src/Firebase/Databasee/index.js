@@ -5,7 +5,3 @@ export const DB_COLLECTIONS = {
   daos: 'daos',
   discussionMessages: 'discussionMessage',
 };
-
-export const DAO_REGISTER_APPROVED = 'approved';
-
-

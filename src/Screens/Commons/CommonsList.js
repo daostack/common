@@ -12,6 +12,7 @@ import {CommonBox, BottomRightButton} from '../../Components';
 import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {font, colors} from '../../Theme';
+import {object} from 'prop-types';
 
 import {
   Placeholder,
@@ -20,10 +21,94 @@ import {
   Fade,
 } from 'rn-placeholder';
 import DaoService from '../../Services/DaoService';
-import { DAO_REGISTER_APPROVED } from '../../Firebase/Databasee';
+import ProposalService from '../../Services/ProposalService';
 
 const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
-  const [daoGroup, setDaoGroup] = useState();
+  const [myDaosGroup, setMyDaosGroup] = useState({title: '', data: []});
+  const [pendingDaosGroup, setPendingDaosGroup] = useState({title: '', data: []});
+  const [featuredDaosGroup, setFeaturedDaosGroup] = useState({title: '', data: []});
+  const [allDaosGroup, setAllDaosGroup] = useState(null);
+  const [isSplited, setIsSplited] = useState(false);
+
+  const getPendingDAOList = async () => {
+    if (userStore.userInfo === null ) {
+      return [];
+    }
+    const proposalList = await ProposalService.getInstance().getUserPendingProposals(userStore.userInfo.uid);
+    const daoList = proposalList.map((proposal) => proposal.data().dao);
+    return daoList;
+  };
+
+  const splitDaoList = async (daoList) => {
+    if (daoList.length === 0) {
+      setMyDaosGroup({title: '', data: []});
+      return [];
+    }
+    const myDao = daoList.filter((dao) => userStore.isDaoMember(dao.members));
+    if (myDao.length !== 0) {
+      setMyDaosGroup({
+        title: `My Commons (${myDao?.length})`,
+        data: myDao,
+      });
+    }
+
+    const pendingList = await getPendingDAOList();
+    const pendingDao = daoList.filter((dao) => pendingList.includes(dao.id));
+    if (pendingDao.length !== 0) {
+      setPendingDaosGroup({
+        title: `Pending (${pendingDao?.length})`,
+        data: pendingDao,
+      });
+    }
+
+    const featuredList = daoList.filter((dao) => !pendingDao.includes(dao) || !myDao.includes(dao));
+    if (myDao.length !== 0 || pendingDao.length !== 0 ) {
+      setFeaturedDaosGroup({
+        title: 'Featured',
+        data: featuredList,
+      });
+      setIsSplited(true);
+    }
+
+    if (daoStore.isError) {
+      console.log('daostore error', daoStore.isError);
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
+      );
+    }
+  };
+
+  const loadDaosList = (snapshot) => {
+    if (snapshot?.empty || !snapshot) {
+      setAllDaosGroup({title: '', data: []});
+      return [];
+    }
+    let docs = snapshot.docs.map((doc, index) => ({
+      ...{id: doc.id},
+      ...doc.data(),
+      ...{
+        coverPhoto:
+            doc.data().metadata?.image ||
+            `https://picsum.photos/id/${index * 10}/500/100.jpg`,
+      },
+    }));
+
+    daoStore.setDaos(docs);
+
+    setAllDaosGroup({
+      title: myDaosGroup?.data.length > 0 ? `Discover more Commons (${docs?.length})` : '',
+      data: docs,
+    });
+
+    splitDaoList(docs);
+
+    if (daoStore.isError) {
+      console.log('daostore error', daoStore.isError);
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
+      );
+    }
+  };
 
   const loadDaosList = (snapshot) => {
     if (snapshot?.empty || !snapshot) {
@@ -53,20 +138,20 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
   };
 
   useEffect(() => {
-    let unsubscribe = null;
+    let unsubscribeAllDaos = null;
     const getDaos = async () => {
-      unsubscribe = await DaoService.getInstance().subscribeToDaosList(loadDaosList);
+      unsubscribeAllDaos = await DaoService.getInstance().subscribeToDaosList(loadDaosList);
     };
 
     getDaos();
     return () => {
-      if (unsubscribe) {
-        unsubscribe();
+      if (unsubscribeAllDaos) {
+        unsubscribeAllDaos();
       }
     };
-  }, [daoStore, bottomSheetStore, userStore.isLoading]);
+  }, [daoStore, bottomSheetStore, userStore.userInfo]);
 
-  const setDao = dao => {
+  const setDao = (dao) => {
     daoStore.setDao(dao);
   };
 
@@ -83,144 +168,94 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     }
   };
 
-  const divideDao = daoList => {
-    if (!userStore.userInfo) {
-      setDaoGroup([{title: '', data: daoList}]);
-      return;
-    }
+  const header = () => (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+        paddingVertical: 15,
+      }}>
+      <Text style={styles.lengthCommons}>{`${(allDaosGroup?.data.length)} Commons`}</Text>
+    </View>
+  );
 
-    let myDaos = [];
-    let otherDaos = [];
-    for (let dao of daoList) {
-      const isMember = userStore.isDaoMember(dao.members);
-      if (isMember) {
-        myDaos.push(dao);
-      } else if (dao.register === DAO_REGISTER_APPROVED) {
-        otherDaos.push(dao);
-      }
-    }
+  const sectionHeader = (title) => title === '' ? null : (
+    <View style={styles.sectionHeaderContainer}>
+      <Text style={styles.header}>{title}</Text>
+    </View>
+  );
 
-    if (myDaos.length === 0) {
-      setDaoGroup([{title: '', data: daoList}]);
-      return;
-    }
+  const loadingPlaceholder = () => (
+    <ScrollView
+      contentContainerStyle={{
+        paddingHorizontal: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+      <Placeholder Animation={Fade}>
+        <PlaceholderLine width={30} />
+      </Placeholder>
 
-    daoStore.setDaos([...myDaos, ...otherDaos]);
-    setDaoGroup([
-      {
-        title: `My Commons (${myDaos.length})`,
-        data: myDaos,
-      },
-      {
-        title: `Discover more Commons (${otherDaos.length})`,
-        data: otherDaos,
-      },
-    ]);
-  };
+      <Placeholder Animation={Fade}>
+        {[...Array(3).keys()].map((i) => (
+          <View key={`common_loading_${i}`}>
+            <PlaceholderMedia
+              style={{height: 200, width: '100%', marginBottom: 20}}
+            />
+            <PlaceholderLine width={80} />
+            <PlaceholderLine />
+            <PlaceholderLine width={30} />
+          </View>
+        ))}
+      </Placeholder>
+    </ScrollView>
+  );
 
-  const header = () => {
-
-    let daosLength = 0;
-    daoGroup?.forEach(daoGroup => {
-      daosLength = daosLength + daoGroup.data.length;
-    });
-
-    return (
-      <View
+  const listFooter = () => (
+    <View style={styles.footerContainer}>
+      <Image
+        source={require('../../Assets/commonListFooter.png')}
         style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '100%',
-          paddingVertical: 15,
+          resizeMode: 'contain',
+          width: 84,
+          height: 84,
+        }}
+      />
+      <Text style={styles.createACommon}>Create a common</Text>
+      <Text
+        style={{
+          fontFamily: 'NunitoSans-Regular',
+          fontSize: 16,
+          textAlign: 'center',
+          marginVertical: 10,
         }}>
-        <Text style={styles.lengthCommons}>{daosLength} Commons</Text>
-      </View>
-    );
-  };
-
-  const sectionHeader = title => {
-    return title === '' ? null : (
-      <View style={styles.sectionHeaderContainer}>
-        <Text style={styles.header}>{title}</Text>
-      </View>
-    );
-  };
-
-  const loadingPlaceholder = () => {
-    return (
-      <ScrollView
-        contentContainerStyle={{
-          paddingHorizontal: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Placeholder Animation={Fade}>
-          <PlaceholderLine width={30} />
-        </Placeholder>
-
-        <Placeholder Animation={Fade}>
-          {[...Array(3).keys()].map(i => {
-            return (
-              <View key={`common_loading_${i}`}>
-                <PlaceholderMedia
-                  style={{height: 200, width: '100%', marginBottom: 20}}
-                />
-                <PlaceholderLine width={80} />
-                <PlaceholderLine />
-                <PlaceholderLine width={30} />
-              </View>
-            );
-          })}
-        </Placeholder>
-      </ScrollView>
-    );
-  };
-
-  const listFooter = () => {
-    return (
-      <View style={styles.footerContainer}>
-        <Image
-          source={require('../../Assets/commonListFooter.png')}
-          style={{
-            resizeMode: 'contain',
-            width: 84,
-            height: 84,
-          }}
-        />
-        <Text style={styles.createACommon}>Create a common</Text>
-        <Text
-          style={{
-            fontFamily: 'NunitoSans-Regular',
-            fontSize: 16,
-            textAlign: 'center',
-            marginVertical: 10,
-          }}>
           Anyone can create a Common, invite their friends, and work together to
           achieve common goals. Start now!
-        </Text>
-      </View>
-    );
-  };
+      </Text>
+    </View>
+  );
 
   return (
     <>
       <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
-        {daoGroup ? (
+        { allDaosGroup ? (
           <SectionList
-            sections={daoGroup}
+            sections={isSplited ? [myDaosGroup, pendingDaosGroup, featuredDaosGroup] : [allDaosGroup]}
             ListHeaderComponent={header}
             contentContainerStyle={{paddingHorizontal: 20}}
-            renderItem={x => (
+            renderItem={(x) => (
               <CommonBox
                 common={x.item}
                 width="100%"
+                key={x.item.id}
                 navigation={navigation}
                 // keyExtractor={x.item.id}
                 onPress={() => setDao(x.item)}
               />
             )}
-            keyExtractor={x => x.id}
+            keyExtractor={(x) => x.id}
             stickySectionHeadersEnabled={true}
             renderSectionHeader={({section: {title}}) => sectionHeader(title)}
             ListFooterComponent={listFooter}
@@ -233,6 +268,13 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       </SafeAreaView>
     </>
   );
+};
+
+CommonsList.propTypes = {
+  navigation: object.isRequired,
+  daoStore: object.isRequired,
+  bottomSheetStore: object.isRequired,
+  userStore: object.isRequired,
 };
 
 const styles = StyleSheet.create({

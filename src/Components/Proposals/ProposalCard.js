@@ -3,10 +3,11 @@ import {Text, StyleSheet, Platform, View, Animated, Dimensions} from 'react-nati
 import {text, layout, colors, font} from '../../Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
-import ProposalService, { PROPOSAL_TYPE } from '../../Services/ProposalService';
+import ProposalService, {PROPOSAL_TYPE} from '../../Services/ProposalService';
 import UserService from '../../Services/UserService';
+import DaoService from '../../Services/DaoService';
 import ProposalApprovalTag from './ProposalApprovalTag';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '../../Util/Toast';
 import moment from 'moment';
 const {width} = Dimensions.get('window');
@@ -15,7 +16,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
 
   useEffect(() => {
-    const getProposalInfo = async currProposalId => {
+    const getProposalInfo = async (currProposalId) => {
       try {
         let currProposalInfo = await ProposalService.getInstance().getProposalInfo(
           currProposalId,
@@ -61,7 +62,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
   }, [proposalId]);
 
   useEffect(() => {
-    const loadProposalInfo = async currProposalInfo => {
+    const loadProposalInfo = async (currProposalInfo) => {
       try {
         //RequestToJoin proposal
         let proposedMemberId = null;
@@ -79,13 +80,18 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
           funding = currProposalInfo.fundingRequest.amount;
         }
 
-        const currProposedUser = await UserService.getInstance().getUserById(
+        const userFromDb = await UserService.getInstance().getUserById(
           proposedMemberId,
         );
 
+        const currProposedUser = {
+          ...userFromDb,
+          daos: (await DaoService.getInstance().getUserDaos(userFromDb.uid, userFromDb.safeAddress)).docs?.map((dao) => dao.data()),
+        };
+
         const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(currProposalInfo.id);
 
-        const allProposalInfo = { ...currProposalInfo, ...{ funding: funding }, discussionsCount };
+        const allProposalInfo = {...currProposalInfo, ...{funding: funding}, discussionsCount};
 
         setProposalCardInfo({
           proposedUser: currProposedUser,
@@ -122,13 +128,13 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
 
         <View
           style={{
-            ...layout.content,
+            paddingTop: 0,
+            paddingHorizontal: 7,
             ...layout.flexStart,
-            ...layout.paddingBottomL,
-            ...{flexWrap: 'wrap'},
+            flexWrap: 'wrap',
           }}>
           {proposalCardInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && <Text
-            style={{ ...text.h3Black, ...{ textAlign: 'left', flexWrap: 'wrap' } }}>
+            style={{...text.h3Black, ...{textAlign: 'left', flexWrap: 'wrap', padding:10, fontSize: 16}}}>
             {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
           </Text>}
 
@@ -137,9 +143,9 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
             userInfo={proposalCardInfo.proposedUser}
             proposalInfo={proposalCardInfo.proposalInfo}
             isPending={false}
+            showMemberCreatedDate={true}
           />
-
-          <View style={{...layout.flexRow, ...layout.marginTopS}}>
+          <View style={{...layout.flexRow}}>
             <ProposalApprovalTag
               iconName="approved"
               value={proposalCardInfo.proposalInfo?.votesFor}
@@ -173,17 +179,21 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
 
 const styles = StyleSheet.create({
   proposalCardActionContainer: {
-    ...layout.content,
+    // ...layout.content,
     ...layout.marginTopL,
+    // ...layout.marginBottomL,
     paddingBottom: 0,
     borderTopWidth: 1,
     borderTopColor: colors.grey4,
+    alignContent: 'center',
+    alignItems: 'center',
     width: '100%',
   },
   proposalActionBtnText: {
     ...font.primary.regular,
-    ...font.fontSize(3),
+    fontSize: 16,
     color: colors.mainBlue,
+    marginVertical: 14,
   },
 
   proposalCard: {

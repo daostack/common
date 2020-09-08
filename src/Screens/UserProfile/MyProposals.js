@@ -11,61 +11,56 @@ import {
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {layout, colors, text, font,sizeS} from '../../Theme';
-import {TabView, SceneMap} from 'react-native-tab-view';
+import {TabView} from 'react-native-tab-view';
 import ProposalsList from '../../Screens/Proposals/ProposalsList';
-import { inject, observer } from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 import  ProposalService  from '../../Services/ProposalService';
 import CommonTabBar from '../CommonTabBar';
 
 const MyProposals = ({route, navigation, userStore}) => {
   const [index, setIndex] = React.useState(0);
-  const [stats, setStats] = React.useState({ all: 0, active: 0, history: 0 });
+  const [stats, setStats] = React.useState({all: 0, active: 0, history: 0});
 
   useEffect(() => {
     const getStats = async () => {
       const userProposalsStats = await ProposalService.getInstance().getUserProposalsCounts(userStore.userInfo.uid, route.params.onlyMembershipRequests, route.params.onlyFundingRequests);
-      setStats({ ...userProposalsStats });
+      setStats({...userProposalsStats});
     };
     getStats();
   }, [userStore.userInfo.uid]);
 
   const onScreenScroll = (event) => {
     navigation.setOptions({
-      title: event.nativeEvent.contentOffset.y > 75 ? 'My Proposals' : 'My Profile',
+      title: event.nativeEvent.contentOffset.y > 75 ?
+        route.params.onlyMembershipRequests
+          ? 'My membership requests'
+          : 'My Proposals'
+        : 'My Profile',
     });
   };
 
   const routes = [{key: 'all', title: `All (${stats.all})`},
-    { key: 'active', title: `Active (${stats.active})`},
-    { key: 'history', title: `History (${stats.history})`}];
+    {key: 'active', title: `Active (${stats.active})`},
+    {key: 'history', title: `History (${stats.history})`}];
 
-  const AllProposals = () => {
-    return SceneRenderer(0);
-  };
+  const AllProposals = () => SceneRenderer(0);
 
-  const ActiveProposals = () => {
-    return SceneRenderer(1);
-  };
+  const ActiveProposals = () => SceneRenderer(1);
 
-  const HistoryProposals = () => {
-    return SceneRenderer(2);
-  };
+  const HistoryProposals = () => SceneRenderer(2);
 
-  const SceneRenderer = sceneIndex => {
-    return (
-      <View style={{ flex: 1, marginTop: 40, paddingHorizontal: 20}}>
-        <ProposalsList
-          membershipRequests={route.params.onlyMembershipRequests}
-          onlyFundingRequests={route.params.onlyFundingRequests}
-          navigation={navigation}
-          safeAddress={userStore.userInfo.safeAddress}
-          showAll={sceneIndex === 0 ? true : false}
-          isHistory={sceneIndex === 2 ? true : false}
-        />
-      </View>
-    );
-
-  };
+  const SceneRenderer = (sceneIndex) => (
+    <View style={{flex: 1, marginTop: 40, paddingHorizontal: 20}}>
+      <ProposalsList
+        membershipRequests={route.params.onlyMembershipRequests}
+        onlyFundingRequests={route.params.onlyFundingRequests}
+        navigation={navigation}
+        safeAddress={userStore.userInfo.safeAddress}
+        showAll={sceneIndex === 0 ? true : false}
+        isHistory={sceneIndex === 2 ? true : false}
+      />
+    </View>
+  );
 
   const initialLayout = {width: Dimensions.get('window').width};
 

@@ -3,17 +3,15 @@ import {FlatList} from 'react-native';
 import DiscussionCard from './DiscussionCard';
 import firestore from '@react-native-firebase/firestore';
 import ViewTabNoData from '../../Components/ViewTabNoData';
+import {string, object} from 'prop-types';
+import { db } from '../../Firebase';
 
-const DiscussionList = props => {
-  const commonId = props.commonId;
+const DiscussionList = ({commonId, navigation}) => {
   const [list, setList] = useState([]);
-
-  console.log('commonId -->', commonId);
 
   let listRef = useRef([]);
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('discussion')
+    const unsubscribe = db.collection('discussion')
       .where('commonId', '==', commonId)
       .orderBy('createTime', 'desc')
       .onSnapshot(
@@ -41,7 +39,6 @@ const DiscussionList = props => {
                 listRef.current = allList;
               }
               setList(listRef.current);
-              console.log('DiscussionList', listRef.current);
             }
           }
         },
@@ -62,8 +59,8 @@ const DiscussionList = props => {
             <DiscussionCard
               key={item.id}
               data={item}
-              commonId={props.commonId}
-              navigation={props.navigation}
+              commonId={commonId}
+              navigation={navigation}
             />
           )}
           extraData={listRef}
@@ -71,11 +68,16 @@ const DiscussionList = props => {
       ) : (
         <ViewTabNoData
           title="No Discussions"
-          subtitle="Have things in common? This is the place to talk about them."
+          subtitle="This is where you can discuss and share your thoughts and ideas."
         />
       )}
     </>
   );
+};
+
+DiscussionList.propTypes = {
+  commonId: string.isRequired,
+  navigation: object.isRequired,
 };
 
 export default React.memo(DiscussionList);

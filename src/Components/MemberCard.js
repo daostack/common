@@ -1,15 +1,15 @@
 import {StyleSheet, View, Text} from 'react-native';
 import React from 'react';
-import {layout, colors, text, font,sizeXS} from '../Theme';
+import {layout, colors, text, font} from '../Theme';
 import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
 import {monthShortNames} from '../Util/DateUtil';
 import moment from 'moment';
 import {PROPOSAL_TYPE} from '../Config';
-import { LAUNCHED_STATES } from '../Services/ProposalService';
+import {LAUNCHED_STATES} from '../Services/ProposalService';
+import {string, array, bool, number, shape, object} from 'prop-types';
 
 const MemberCard = ({
-  // memberSince or commonsCount
   memberSince,
   commonsCount,
   showMemberCreatedDate,
@@ -26,11 +26,9 @@ const MemberCard = ({
       return (
         <View style={styles.rightContainer}>
           <View
-            style={{
-              ...layout.content,
-              ...{ padding: 0 },
-            }}>
+            style={{alignItems: 'flex-end'}}>
             <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
+            <Text style={{...text.runninglightGray, width: '100%'}}>{moment.unix(proposalInfo.createdAt).fromNow()}</Text>
 
             {/* Hide the time if the proposal is expired or new */}
             {(remainingSeconds > 0 && !LAUNCHED_STATES.includes(proposalInfo?.stageStr)) && (
@@ -38,7 +36,7 @@ const MemberCard = ({
               // if it is less show countdown till it
               remainingSeconds > 24 * 60 * 60
                 ? (
-                  <Text>{moment.unix(proposalInfo.closingAt).format('dddd, h:mm')}</Text>
+                  <Text style={{...text.runningblack, width: '100%'}}>{moment.unix(proposalInfo.closingAt).format('dddd, h:mm')}</Text>
                 ) : (
                   <CountDown
                     digitTxtStyle={text.smallGreyText}
@@ -63,7 +61,7 @@ const MemberCard = ({
         memberCreatedDateInfo = memberCreatedDate
           ? `${
             monthShortNames[memberCreatedDate.getMonth()]
-          } ${memberCreatedDate.getDay()} `
+          } ${memberCreatedDate.getDate()} `
           : '';
       } else {
         memberCreatedDateInfo = 'NOT app user';
@@ -72,10 +70,7 @@ const MemberCard = ({
       return (
         <View style={styles.rightContainer}>
           <Text
-            style={{
-              ...text.smallGreyText,
-              marginTop: 2,
-            }}>
+            style={{...text.smallGreyText,marginTop: 2}}>
             {memberCreatedDateInfo}
           </Text>
         </View>
@@ -85,15 +80,14 @@ const MemberCard = ({
   };
 
   return (
-    <View style={{ ...styles.cardContainer, ...styles.noBottomBorder }}>
+    <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <MemberImage userInfo={userInfo} />
-
-
       <View
         style={{
           ...layout.content,
           ...layout.flexStart,
-          ...{flex: 2, flexWrap: 'wrap'},
+          alignContent: 'flex-start',
+          flex: 1.9, flexWrap: 'wrap',
         }}>
         <Text
           style={styles.displayName}>
@@ -103,14 +97,13 @@ const MemberCard = ({
           style={{
             ...text.smallGreyText,
             marginTop: 2,
+            textAlign: 'left',
           }}>
-          {proposalInfo
-            ? moment.unix(proposalInfo.createdAt).fromNow()
-            : showMemberCreatedDate
-              ? `Member in ${userInfo?.daos?.length || 0} Common${
-                  userInfo?.daos?.length !== 1 ? 's' : ''
-              }`
-              : `Member since ${memberSince || 'unknown'}`}
+          {showMemberCreatedDate
+            ? `Member in ${userInfo?.daos?.length || 0} Common${
+                userInfo?.daos?.length !== 1 ? 's' : ''
+            }`
+            : `Member since ${memberSince || 'unknown'}`}
         </Text>
       </View>
       {renderRightContainer()}
@@ -118,10 +111,34 @@ const MemberCard = ({
   );
 };
 
+MemberCard.propTypes = {
+  memberSince: string,
+  commonsCount: number,
+  showMemberCreatedDate: bool,
+  userInfo: shape({
+    createdAt: object,
+    displayName: string,
+    daos: array,
+  }) ,
+  proposalInfo: shape({
+    type: string,
+    closingAt: number,
+    description: shape({
+      funding: number,
+    }) ,
+    fundingRequest: shape({
+      amount: number,
+
+    }),
+    stageStr: string,
+  }),
+};
+
 const styles = StyleSheet.create({
   cardContainer: {
     ...layout.content,
     ...layout.flexRow,
+    flex: 1,
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderColor: colors.grey4,
@@ -134,31 +151,12 @@ const styles = StyleSheet.create({
     ...font.primary.regular,
     ...font.fontSize(2),
     flexWrap: 'wrap',
+    fontWeight: '500',
+    fontSize: 16,
   },
   rightContainer: {
-    flex: 1,
-    padding: 0,
+    flex: 1.1,
     alignItems: 'flex-end',
-    alignContent: 'flex-end',
-    justifyContent: 'flex-end',
-  },
-  actionBtn: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignContent: 'center',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: colors.grey4,
-    marginHorizontal: sizeXS,
-  },
-  memberImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: colors.white,
   },
 });
 

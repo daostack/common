@@ -63,11 +63,12 @@ const RequestStep4 = ({navigation, ...props}) => {
 
         navigation.navigate({ name: 'FullScreenCreationLoader', params: { title: 'Creating your membership request' } });
 
-        if (Number(data.funding) > 0) {
-          const preAuthId = await preauthorizePayment(cardData, Number(data.funding), navigation);
-          data = { ...data, preAuthId };
-          console.log('PREAUTH ID', preAuthId);
-        }
+        // Skip mangopay for now, as the service is not responding and we are not using mangopay anyhow
+        // if (Number(data.funding) > 0) {
+        //   const preAuthId = await preauthorizePayment(cardData, Number(data.funding), navigation);
+        //   data = { ...data, preAuthId };
+        //   console.log('PREAUTH ID', preAuthId);
+        // }
 
         const proposalId = await ArcService.getInstance().createRequestToJoin(
           props.route.params.currDaoId,
@@ -137,7 +138,8 @@ const RequestStep4 = ({navigation, ...props}) => {
             <RequestStepHeaderTitle title="Payment" subtitle={subtitle} />
             <TextInputField
               label="Credit card number"
-              value={/* __DEV__ ? */ 4972485830400056}
+              value={/* __DEV__ ? */ 4970104100876299}
+              editable={false}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NUMBER,
                 formStore: props.paymentFormStore,
@@ -148,6 +150,7 @@ const RequestStep4 = ({navigation, ...props}) => {
             <TextInputField
               label="Name on card"
               value={/* __DEV__ ? */ 'Tester Tester'}
+              editable={false}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NAME,
                 formStore: props.paymentFormStore,
@@ -173,6 +176,7 @@ const RequestStep4 = ({navigation, ...props}) => {
                 label="Expiration date"
                 value={/* __DEV__ ?  */'10/20'}
                 placeholderText="MM/YY"
+                editable={false}
                 validation={{
                   name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
                   formStore: props.paymentFormStore,
@@ -189,6 +193,7 @@ const RequestStep4 = ({navigation, ...props}) => {
                 }}
                 label="CVV"
                 value={/* __DEV__ ? */ 123}
+                editable={false}
                 validation={{
                   name: RequestToJoinForm.FIELD_CVV,
                   formStore: props.paymentFormStore,

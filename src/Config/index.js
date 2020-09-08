@@ -1,6 +1,8 @@
-import { IPFSApiClient } from './ipfs-api';
+import {IPFSApiClient} from './ipfs-api';
 import Config from 'react-native-config';
+
 import axios from 'axios';
+
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
 // TODO: we should probably read this from the package..
 
@@ -23,10 +25,10 @@ if (Config.ENV === 'production') {
   graphVersion = 'v8_10_exp_xdai';
   localFunctionURL = 'http://localhost:5001/common-daostack/us-central1';
   cloudFunctionURL = 'https://us-central1-common-daostack.cloudfunctions.net';
-  graphUrl = 'https://api.thegraph.com/subgraphs-daostack/name/daostack';
-  graphWS = 'wss://api.thegraph.com/subgraphs-daostack/name/daostack';
+  graphUrl = 'https://api.thegraph.com/subgraphs/name/daostack';
+  graphWS = 'wss://api.thegraph.com/subgraphs/name/daostack';
   ipfsUrl = 'https://api.thegraph.com/ipfs-daostack/api/v0';
-  ipfsDataVersion = '000002';
+  ipfsDataVersion = '000003';
   networkId = 100;
   web3Provider = 'https://dai.poa.network';
   commonTokenAddress = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
@@ -36,10 +38,10 @@ if (Config.ENV === 'production') {
   graphVersion = 'v8_10_exp_kovan';
   localFunctionURL = 'http://localhost:5001/common-staging-50741/us-central1';
   cloudFunctionURL = 'https://us-central1-common-staging-50741.cloudfunctions.net';
-  graphUrl = 'https://api.thegraph.com/subgraphs-daostack/name/daostack';
-  graphWS = 'wss://api.thegraph.com/subgraphs-daostack/name/daostack';
+  graphUrl = 'https://api.thegraph.com/subgraphs/name/daostack';
+  graphWS = 'wss://api.thegraph.com/subgraphs/name/daostack';
   ipfsUrl = 'https://api.thegraph.com/ipfs-daostack/api/v0';
-  ipfsDataVersion = '000002';
+  ipfsDataVersion = '000003';
   networkId = 42;
   web3Provider = 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';
   commonTokenAddress = '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01';
@@ -48,29 +50,31 @@ if (Config.ENV === 'production') {
   throw Error(`Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`);
 }
 
-let isLocalPort = false;
-if (__DEV__) {
+if (Config.local === 'true' && __DEV__) {
+  console.warn('Using local firebase');
+
   axios.get('http://localhost:5001')
-    .catch(error => {
-      isLocalPort = error.response.status === 404;
+    .catch((error) => {
+      if (error.response?.status !== 404) {
+        console.error('Set to use local firebase, but the local firebase is not accessible');
+      }
     });
 }
 
-const cloudFuncURL = () => {
-  return isLocalPort ?  localFunctionURL : cloudFunctionURL;
-};
+const cloudFuncURL = () =>
+  (Config.local === 'true' && __DEV__)
+    ? localFunctionURL
+    : cloudFunctionURL;
 
-const functionEndpoint = endpoint => {
-  return `${cloudFuncURL()}/${endpoint}`;
-};
+const functionEndpoint = (endpoint) => `${cloudFuncURL()}/${endpoint}`;
 
 
 export const ARC_VERSION = arcVersion;
 export const GRAPH_VERSION = graphVersion;
 export const IPFS_DATA_VERSION = ipfsDataVersion;
-export const mangoPayUrl = () => { return functionEndpoint('mangopay'); };
-export const graphqlUrl = () => { return functionEndpoint('graphql'); };
-export const relayerUrl = () => { return functionEndpoint('relayer'); };
+export const mangoPayUrl = () => functionEndpoint('mangopay');
+export const graphqlUrl = () => functionEndpoint('graphql');
+export const relayerUrl = () => functionEndpoint('relayer');
 export const graphHttpLink = `${graphUrl}/${graphVersion}`;
 export const graphwsLink = `${graphWS}/${graphVersion}`;
 export const ipfsLink = ipfsUrl;
@@ -99,7 +103,7 @@ export const PROPOSAL_TYPE = {
 // We will need this until https://github.com/daostack/arc.js/issues/468 is resolved
 export const IpfsClient = new IPFSApiClient(ipfsLink);
 
-export const ipfsUpload = async data => {
+export const ipfsUpload = async (data) =>
   // TODO: use arc.saveIPFSData({ name: formData.name}) once https://github.com/daostack/arc.js/issues/468 is resolved
-  return IpfsClient.addAndPinString(JSON.stringify(data));
-};
+  IpfsClient.addAndPinString(JSON.stringify(data))
+;

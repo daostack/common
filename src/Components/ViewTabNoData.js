@@ -1,6 +1,6 @@
 import {StyleSheet, View, Text} from 'react-native';
 import React from 'react';
-import {layout, colors, font, sizeXL} from '../Theme';
+import {layout, colors, font} from '../Theme';
 
 const ViewTabNoData = ({title, subtitle}) => {
   return (
@@ -16,14 +16,15 @@ const styles = StyleSheet.create({
     ...layout.content,
     backgroundColor: 'transparent',
     height: 'auto',
-    paddingHorizontal: sizeXL,
+    // paddingHorizontal: sizeXL,
   },
   subtitle: {
     ...font.primary.regular,
-    ...font.fontSize(3),
+    fontSize: 16,
     textAlign: 'center',
     color: colors.black,
     ...layout.marginTopS,
+    ...layout.marginBottomXL,
   },
   title: {
     ...font.primary.bold,

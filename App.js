@@ -1,27 +1,19 @@
-/**
- * Sample React Native Screens
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
+import 'mobx-react-lite/batchingForReactNative';
 import React, {useState, useEffect, useRef} from 'react';
 import {
-  Image,
   StyleSheet,
   Platform,
   View,
   Linking,
   DeviceEventEmitter,
   Text,
+  I18nManager,
 } from 'react-native';
-
-import {NavigationContainer} from '@react-navigation/native';
+import NetInfo from '@react-native-community/netinfo';
+import {NavigationContainer, CommonActions} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
-
 import {
   CommonProfile,
   Onboarding,
@@ -54,13 +46,10 @@ import {
   Browser,
   FullScreenCreationLoader,
 } from './src/Screens';
-
 import UserService from './src/Services/UserService';
 import AuthService from './src/Services/AuthService';
-
 import CommonHome from './src/Components/Navigation/CommonHome';
-const Stack = createStackNavigator();
-import { filterObjectByKeys, prepareUserObject } from './src/Util';
+import {filterObjectByKeys, prepareUserObject} from './src/Util';
 import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
@@ -70,13 +59,16 @@ import KeyboardManager from 'react-native-keyboard-manager';
 import validUrl from 'valid-url';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import ToastView, {DURATION} from './src/Util/ToastView';
-import {CommonActions} from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DeepLinking from 'react-native-deep-linking';
 import ArcService from './src/Services/ArcService';
-import { BOTTOM_SHEET_TEMPLATES } from './src/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
+import Toast from './src/Util/Toast';
+import {func, bool, object, shape} from 'prop-types';
+const Stack = createStackNavigator();
+I18nManager.allowRTL(false);
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
@@ -93,14 +85,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     Text.defaultProps.maxFontSizeMultiplier = 1.1;
   }, []);
 
-  useEffect(() => {
-    return messaging().onTokenRefresh(token => {
-      NotificationService.saveTokenToDatabase(token);
-    });
-  }, []);
+  useEffect(() => messaging().onTokenRefresh((token) => {
+    NotificationService.saveTokenToDatabase(token);
+  }), []);
 
   useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
       console.log('Foreground Message Arrived', JSON.stringify(remoteMessage));
     });
     return unsubscribe;
@@ -123,8 +113,34 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     };
   }, []);
 
+  // NetInfo
+  useEffect(() => {
+    let checkConnection = null;
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      if (state.isInternetReachable === false) {
+        if (!checkConnection) {
+          checkConnection = setInterval(() => {
+            NetInfo.fetch().then((connectState) => {
+              if (connectState.isInternetReachable === false) {
+                Toast.error('Internet connection lost');
+              } else {
+                clearInterval(this);
+              }
+            });
+          }, 5000);
+        }
+      } else {
+        if (checkConnection) {
+          clearInterval(checkConnection);
+          checkConnection = null;
+        }
+      }
+    });
+    return () => { unsubscribe(); };
+  }, []);
+
   // Deep & Dynamic Link
-  const handleOpenURL = ({ url }) => {
+  const handleOpenURL = ({url}) => {
     Linking.canOpenURL(url).then((supported) => {
       if (!supported) {
         return;
@@ -168,7 +184,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     });
 
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);
-    dynamicLinks().getInitialLink().then(link => {
+    dynamicLinks().getInitialLink().then((link) => {
       if (link) {
         handleOpenURL(link);
       } else {
@@ -176,7 +192,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           .then((url) => {
             handleOpenURL({url});
           })
-          .catch(err => err);
+          .catch((err) => err);
       }
     });
 
@@ -188,9 +204,9 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   // Login
   useEffect(() => {
-    const subscribers = { authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
+    const subscribers = {authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
 
-    const onAuthStateChanged = async user => {
+    const onAuthStateChanged = async (user) => {
       console.log('AUTH STATE CHANGED: ', user?.uid, user?.email, user?.displayName);
       try {
         userStore.setIsLoading(true);
@@ -209,7 +225,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
             const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
             appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
-            await manager.createSmartContractWallet();
+            manager.createSmartContractWallet();
           } else {
             await manager.addressCheck(user.uid);
           }
@@ -247,14 +263,14 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         if (auth().currentUser === null) {
           return;
         }
-        const unsubscribe = db.collection('users').doc(uid).onSnapshot( async snapshot => {
+        const unsubscribe = db.collection('users').doc(uid).onSnapshot( async (snapshot) => {
           if (!snapshot.empty) {
             userStore.setSignedInUser(prepareUserObject(snapshot.data()));
           }
 
-          // WalletManager Inited before safeAddress created
-          // The safeAddress in wallet manager will be null
-          // We need to update it.
+          /* WalletManager Inited before safeAddress created
+          The safeAddress in wallet manager will be null
+          We need to update it. */
           const manager = await WalletManager.getInstance();
           if (manager.safeAddress == null) {
             manager.safeAddress = snapshot.data().safeAddress;
@@ -349,15 +365,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             headerBackImage: () => (
               <Icon name="left-arrow" color={colors.black} size={32} />
             ),
-            headerRight: () => (
-              <Image
-                source={require('./src/Assets/questionmark.png')}
-                style={{resizeMode: 'contain', width: 20, height: 20}}
-              />
-            ),
           })}
         />
-
         <Stack.Screen
           name="ProposalScreen"
           component={ProposalScreen}
@@ -443,9 +452,9 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
           component={DiscussionPost} />
         <Stack.Screen
-          options={{
-            title: 'Edit my profile',
-          }}
+          options={({route}) => ({
+            title: route.params.isFirstOpening ? false : 'Edit my profile',
+          })}
           name="EditProfile"
           component={EditProfile}
         />
@@ -496,15 +505,15 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
         />
         <Stack.Screen
-          options={{
-            title: 'New proposal',
+          options={({route}) => ({
+            title: route?.params.screenTitle,
             headerBackTitleVisible: false,
-          }}
+          })}
           name="FundingProposal"
           component={FundingProposal}
         />
       </Stack.Navigator>
-      {bottomSheetStore.isVisible ? <BottomSheetContainer /> : null}
+      {bottomSheetStore.isVisible && <BottomSheetContainer />}
       <ToastView
         ref={hudRef}
         style={{backgroundColor: 'transparent'}}
@@ -512,6 +521,18 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       />
     </NavigationContainer>
   );
+};
+
+App.propTypes = {
+  userStore: shape({
+    setIsLoading: func,
+    setSignedInUser: func,
+  }),
+  bottomSheetStore: shape({
+    isVisible: bool,
+    showBottomSheet: func,
+  }),
+  navigation: object,
 };
 
 const styles = StyleSheet.create({

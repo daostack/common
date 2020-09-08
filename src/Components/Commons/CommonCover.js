@@ -7,17 +7,20 @@ import {
 } from 'react-native';
 import React from 'react';
 import FastImage from 'react-native-fast-image';
-
+import {object, bool, func, string, shape} from 'prop-types';
 import Icon from '../../Assets/iconfont/Icon';
 import {layout, colors, text, font} from '../../Theme';
 
-const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
-  const renderCoverInSafeArea = () => {
-    return <SafeAreaView>{renderCover()}</SafeAreaView>;
-  };
+const CommonCover = ({
+  navigation,
+  isMember,
+  onHeaderMenuOpen,
+  commonInfo: {cover, logo, name, description},
+  common,
+}) => {
+  const renderCoverInSafeArea = () => <SafeAreaView>{renderCover()}</SafeAreaView>;
 
-  const renderCover = () => {
-    return (
+  const renderCover = () => (
       <>
         <View style={styles.headerContainerWrap}>
           <View
@@ -29,7 +32,7 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
                   ...styles.headerContainerCenterContent,
                 }
             }>
-            {navigation ? (
+            {navigation && (
               <TouchableOpacity onPress={navigation.goBack}>
                 <Icon
                   name="left-arrow"
@@ -38,24 +41,24 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
                   style={layout.marginTopXS}
                 />
               </TouchableOpacity>
-            ) : null}
+            )}
 
             <View
               style={{
                 ...layout.content,
                 ...{padding: 0},
               }}>
-              {commonInfo.logo ? (
+              {logo && (
                 <FastImage
                   style={styles.logoImage}
                   source={{
-                    uri: commonInfo.logo,
+                    uri: logo,
                   }}
                 />
-              ) : null}
-              <Text style={styles.headerTitleWhite}>{commonInfo.name}</Text>
+              )}
+              <Text style={styles.headerTitleWhite}>{name}</Text>
             </View>
-            {navigation ? (
+            {navigation && (
               <TouchableOpacity onPress={onHeaderMenuOpen}>
                 <Icon
                   name="menu-horizontal"
@@ -64,32 +67,31 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
                   style={layout.marginTopXS}
                 />
               </TouchableOpacity>
-            ) : null}
+            )}
           </View>
         </View>
 
         <View style={styles.headerContent}>
-          <Text style={styles.headerDescription} numberOfLines={2}>{commonInfo.description}</Text>
-          {isMember && navigation ? (
+          <Text style={styles.headerDescription} numberOfLines={2}>{description}</Text>
+          {isMember && navigation && (
             <TouchableOpacity onPress={openAgendaScreen}>
               <Text style={styles.headerViewAgenda}>View agenda</Text>
             </TouchableOpacity>
-          ) : null}
+          )}
         </View>
       </>
-    );
-  };
+  );
 
-  const openAgendaScreen = e => {
-    navigation.navigate('CommonAgenda');
+  const openAgendaScreen = (e) => {
+    navigation.navigate('CommonAgenda', {
+      common: common,
+    });
   };
 
   return (
     <>
       <FastImage
-        source={{
-          uri: commonInfo.cover,
-        }}
+        source={{uri: cover}}
         imageStyle={navigation ? {} : styles.backgoundRoundedTopEdges}
         style={styles.coverBackground}>
         <View style={styles.coverOverlay}>
@@ -98,6 +100,19 @@ const CommonCover = ({navigation, isMember, onHeaderMenuOpen, commonInfo}) => {
       </FastImage>
     </>
   );
+};
+
+CommonCover.propTypes = {
+  navigation: object,
+  isMember: bool,
+  onHeaderMenuOpen: func,
+  commonInfo: shape({
+    cover: string,
+    logo: string,
+    name: string,
+    description: string,
+  }),
+  common: object,
 };
 
 const styles = StyleSheet.create({

@@ -5,7 +5,7 @@ import {observer} from 'mobx-react';
 import DocumentPicker from 'react-native-document-picker';
 import Toast from '../../Util/Toast';
 import Icon from '../../Assets/iconfont/Icon';
-import {text, layout, colors, font} from '../../Theme';
+import {text, layout, colors} from '../../Theme';
 import StorageService from '../../Services/StorageService';
 
 class FileField extends React.Component {
@@ -19,11 +19,11 @@ class FileField extends React.Component {
     const {validation, value} = this.props;
 
     if (validation) {
-      const {name, formStore, validateRule, multiName} = validation;
+      const {name, formStore, validateRule, multiName, displayName, customErrorMessage} = validation;
       formStore.registerFormField(name, validateRule, value, multiName);
 
       this.fieldValidation = (
-        <ValidationMessage formStore={formStore} name={name} />
+        <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} />
       );
     }
   }
@@ -174,10 +174,11 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   addFileBtn: {
-    ...font.fontSize(2),
-    ...font.primary.semiBold,
+    ...text.h3Black,
     color: colors.mainBlue,
     textAlign: 'left',
+    ...layout.marginTopS,
+    fontSize: 16,
   },
 });
 

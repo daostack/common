@@ -9,7 +9,6 @@ import {
 
 import React from 'react';
 import {text, layout, colors} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
 
 const SortProposals = ({navigation, onContinueEditing}) => {
   const liveWithoutSave = e => {
