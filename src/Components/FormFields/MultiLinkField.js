@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from './TextInputField';
-import { text, layout, colors, sizeL } from '../../Theme';
+import {text, layout, colors, sizeL} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import {string, bool, object, number, shape} from 'prop-types';
 
@@ -19,13 +19,16 @@ const MultiLinkField = (props) => {
     maxLength,
   } = props;
   const onFieldDeleted = (currIndex, currTitleItemValidation, currItemValidation) => {
-
     if (currTitleItemValidation && currItemValidation) {
       currTitleItemValidation.formStore.removeFormField(currTitleItemValidation.name);
       currItemValidation.formStore.removeFormField(currItemValidation.name);
     }
     setCount(count - 1);
     setDeletedFields([ ...deletedFields, currIndex ]);
+  };
+
+  const revalidateAddBtn = () => {
+    setAddButton(canAddMoreLinks());
   };
 
   const onChangeText = (value, currTitleItemValidation) => {
@@ -69,7 +72,7 @@ const MultiLinkField = (props) => {
   };
 
   return (
-    <View style={{ paddingTop: sizeL }}>
+    <View style={{paddingTop: sizeL}}>
       {[ ...Array(count).keys() ].map((currIndex) => {
         const currItemValidation = {
           ...props.validation,
@@ -156,24 +159,24 @@ const styles = StyleSheet.create({
     height: 30,
     backgroundColor: `${colors.black}10`,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   removeBtn: {
     position: 'absolute',
     top: 0,
     bottom: 0,
     right: 0,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   containerRow: {
     flexDirection: 'row',
     alignSelf: 'stretch',
-    marginTop: 80
+    marginTop: 80,
   },
   emailContainer: {
     ...layout.content,
     ...layout.marginBottomXL,
-    marginTop: 0
+    marginTop: 0,
   },
   containerRow: {
     flexDirection: 'row',
@@ -189,8 +192,8 @@ const styles = StyleSheet.create({
     ...text.h3Black,
     color: colors.mainBlue,
     textAlign: 'left',
-    fontSize: 16
-  }
+    fontSize: 16,
+  },
 });
 
 export default MultiLinkField;
