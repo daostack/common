@@ -30,7 +30,7 @@ const MemberImage = ({userInfo, style, id}) => (
 
 MemberImage.propTypes = {
   userInfo: object,
-  style: object.isRequired,
+  style: object,
   id: number,
 };
 
