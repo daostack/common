@@ -100,15 +100,6 @@ const CommonProfile = ({
     }
   };
 
-  const loadCurrCommon = (snapshot) => {
-    if (snapshot.exists) {
-      setCurrCommon(snapshot.data());
-    } else {
-      Toast.error('This DAO cannot be found try again later');
-      navigation.pop();
-    }
-  };
-
   useEffect(() => {
     let unsubscribe = null;
     const loadDao = async (daoId) => {

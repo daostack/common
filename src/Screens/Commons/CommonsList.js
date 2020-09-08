@@ -110,33 +110,6 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     }
   };
 
-  const loadDaosList = (snapshot) => {
-    if (snapshot?.empty || !snapshot) {
-      setDaoGroup([{ title: '', data: [] }]);
-      return [];
-    }
-    let daosSnapshot = snapshot.docs.map((doc, index) => {
-      return {
-        ...{ id: doc.id },
-        ...doc.data(),
-        ...{
-          coverPhoto:
-              doc.data().metadata?.image ||
-              `https://picsum.photos/id/${index * 10}/500/100.jpg`,
-        },
-      };
-    });
-
-    divideDao(daosSnapshot);
-    if (daoStore.isError) {
-      console.log('daostore error', daoStore.isError);
-      bottomSheetStore.showBottomSheet(
-        BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
-      );
-    }
-
-  };
-
   useEffect(() => {
     let unsubscribeAllDaos = null;
     const getDaos = async () => {
