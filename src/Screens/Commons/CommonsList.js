@@ -64,11 +64,12 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
           data: pendingDao,
         });
       }
-      const featuredList = daoList.filter((dao) => !pendingDao.includes(dao) || !myDao.includes(dao));
+      const featuredList1 = daoList.filter((dao) => !pendingList.includes(dao.id));
+      const featuredList2 = featuredList1.filter((dao) => !userStore.isDaoMember(dao.members));
       if (myDao.length !== 0 || pendingDao.length !== 0 ) {
         setFeaturedDaosGroup({
-          title: 'Featured',
-          data: featuredList,
+          title: `Featured (${featuredList2.length})`,
+          data: featuredList2,
         });
         setIsSplited(true);
       }
@@ -96,7 +97,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
         },
       }));
       daoStore.setDaos(docs);
-      Cache.storeObject('AllDAOList', docs);
+      Cache.set('AllDAOList', docs);
       setAllDaosGroup({
         title: '',
         data: docs,
@@ -119,7 +120,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   useEffect(() => {
     DaoService.getInstance().subscribeToDaosList(loadDaosList);
 
-    Cache.getObject('AllDAOList').then((jsonValue) => {
+    Cache.getAsync('AllDAOList').then((jsonValue) => {
       if (jsonValue === null) {
         return;
       }

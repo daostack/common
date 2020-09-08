@@ -720,7 +720,7 @@ PODS:
     - Firebase/DynamicLinks (~> 6.28.1)
     - React
     - RNFBApp
-  - RNFBFirestore (7.5.1):
+  - RNFBFirestore (7.8.0):
     - Firebase/Firestore (~> 6.28.1)
     - React
     - RNFBApp
@@ -1091,7 +1091,7 @@ SPEC CHECKSUMS:
   RNFBAuth: 7d79649c1cdf3bdb6210c511daaad0fba92eb957
   RNFBCrashlytics: 7a40ab62502662b0cbbd51622249ba49a5626881
   RNFBDynamicLinks: 2dc378f2783823ede9964314504691f1569b6d97
-  RNFBFirestore: 520a7b0ef233bd7647be0a41913e08a421af96f5
+  RNFBFirestore: 34a1f2a28c7dae755b94597723544f488a206038
   RNFBMessaging: 22d0e924c67c5a97ea3f2b92fafe230eabed947e
   RNFBStorage: fc0021d8ff9978428c0ee5f2798bb6d5d78439a8
   RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
