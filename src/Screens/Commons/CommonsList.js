@@ -62,7 +62,6 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       });
     }
 
-
     const featuredList = daoList.filter((dao) => (!pendingDao.includes(dao) || !myDao.includes(dao)) && dao.register === DAO_REGISTERED);
     if (myDao.length !== 0 || pendingDao.length !== 0 ) {
       setFeaturedDaosGroup({
