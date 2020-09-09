@@ -129,13 +129,10 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
 
         <View
           style={{
-            // ...layout.content,
             paddingTop: 0,
-            // paddingBottom: 0,
-            paddingHorizontal: 16,
+            paddingHorizontal: 7,
             ...layout.flexStart,
-            // ...layout.paddingBottomL,
-            ...{flexWrap: 'wrap'},
+            flexWrap: 'wrap',
           }}>
           {proposalCardInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && <Text
             style={{...text.h3Black, ...{textAlign: 'left', flexWrap: 'wrap', padding:10, fontSize: 16}}}>
