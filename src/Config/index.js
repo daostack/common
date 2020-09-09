@@ -21,8 +21,8 @@ let ipfsDataVersion;
 
 
 if (Config.ENV === 'production') {
-  arcVersion = '0.1.2-rc.2';
-  graphVersion = 'v8_10_exp_xdai';
+  arcVersion = '0.1.2-rc.6';
+  graphVersion = 'v8_11_exp_xdai';
   localFunctionURL = 'http://localhost:5001/common-daostack/us-central1';
   cloudFunctionURL = 'https://us-central1-common-daostack.cloudfunctions.net';
   graphUrl = 'https://api.thegraph.com/subgraphs/name/daostack';
@@ -34,8 +34,8 @@ if (Config.ENV === 'production') {
   commonTokenAddress = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
   clientId = '854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com';
 } else if (Config.ENV === 'staging') {
-  arcVersion = '0.1.2-rc.2';
-  graphVersion = 'v8_10_exp_kovan';
+  arcVersion = '0.1.2-rc.6';
+  graphVersion = 'v8_11_exp_kovan';
   localFunctionURL = 'http://localhost:5001/common-staging-50741/us-central1';
   cloudFunctionURL = 'https://us-central1-common-staging-50741.cloudfunctions.net';
   graphUrl = 'https://api.thegraph.com/subgraphs/name/daostack';
@@ -96,7 +96,7 @@ export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 // Arc.js related string constants
 export const PROPOSAL_TYPE = {
-  JoinAndQuit: 'JoinAndQuit',
+  Join: 'Join',
   FundingRequest: 'FundingRequest',
 };
 
