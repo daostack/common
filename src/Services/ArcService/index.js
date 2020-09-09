@@ -21,7 +21,7 @@ export default class ArcService {
         graphqlHttpProvider: graphHttpLink,
         graphqlWsProvider: graphwsLink,
         ipfsProvider: ipfsLink,
-        web3Provider: manager.wallet,
+        web3Provider: manager.provider,
       });
       await this.arc.fetchContractInfos();
       return this;

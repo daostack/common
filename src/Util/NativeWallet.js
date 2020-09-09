@@ -9,7 +9,7 @@ const createWallet = async (uid) => {
   }
 };
 
-const getAddress = async (uid) => {
+const getAddress = async () => {
   try {
     const address = await NativeModules.WalletModule.getAddress();
     return address.toLowerCase();
@@ -20,8 +20,8 @@ const getAddress = async (uid) => {
 
 const signMessage = async (message) => {
   try {
-    const address = await NativeModules.WalletModule.signMessage(message);
-    return address.tolowerCase();
+    const signedData = await NativeModules.WalletModule.signMessage(message);
+    return signedData;
   } catch (e) {
     console.log(e);
   }

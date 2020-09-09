@@ -17,7 +17,7 @@
 RCT_EXTERN_METHOD(getAddress:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(getWallet:(NSString *)uid
+RCT_EXTERN_METHOD(createWallet:(NSString *)uid
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
