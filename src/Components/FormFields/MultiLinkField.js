@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
+
 import TextInputField from './TextInputField';
 import {text, layout, colors, sizeL} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
@@ -29,7 +30,7 @@ const MultiLinkField = (props) => {
   };
 
   const revalidateAddBtn = () => {
-    setAddButton(canAddMoreLinks());
+    setAddButton(canAddMore());
   };
 
   const onChangeText = (value, currTitleItemValidation) => {
@@ -89,8 +90,6 @@ const MultiLinkField = (props) => {
           topPosition: true,
           invisibleContainer: true,
         }; //{...validation};
-
-        const {formStore} = validation;
 
         return (
           <View key={`key_${props.validation.name}_${currIndex + 1}`}style={layout.marginBottomM}>
@@ -195,5 +194,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
+MultiLinkField.propTypes = {
+  link: PropTypes.bool,
+  rule: PropTypes.bool,
+};
 
 export default MultiLinkField;
