@@ -1,5 +1,4 @@
 export ApprovalSheetScreen from './ApprovalSheetScreen';
-export BoostedInfo from './BoostedInfo';
 export CommonOperationalStateNotif from './CommonOperationalStateNotif';
 export CommonProfileOptions from './CommonProfileOptions';
 export LoginSheetScreen from './LoginSheetScreen';

@@ -9,14 +9,9 @@ import {
   TransactionError,
   UnsavedChanges,
   SortProposals,
-  BoostedInfo,
 } from '../Screens/BottomSheetScreens';
 
 export const BOTTOM_SHEET_TEMPLATES = {
-  BOOSTED_INFO: {
-    topSnap: 600,
-    content: BoostedInfo,
-  },
   COMMON_OPERATIONAL_STATE_NOTIF: {
     topSnap: 440,
     content: CommonOperationalStateNotif,

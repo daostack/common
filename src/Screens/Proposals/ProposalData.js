@@ -87,41 +87,6 @@ const ProposalData = (props) => {
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [topMessage, setTopMessage] = useState([]);
 
-  // const _renderTruncatedFooter = handlePress => {
-  //   return (
-  //     <Text style={styles.readMoreBtn} onPress={handlePress}>
-  //       Show more
-  //     </Text>
-  //   );
-  // };
-
-  // const _renderRevealedFooter = handlePress => {
-  //   return (
-  //     <Text style={styles.readMoreBtn} onPress={handlePress}>
-  //       Show less
-  //     </Text>
-  //   );
-  // };
-
-  // const openBoostedInfo = () => {
-  //   props.bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BOOSTED_INFO);
-  // };
-
-  // const _handleTextReady = () => {
-  //   // ...
-  // };
-
-  // let progressBarWidthPercent = 0;
-
-  // if (proposalInfo) {
-  //   progressBarWidthPercent =
-  //     (proposalInfo.votesFor /
-  //       (proposalInfo.votesFor + proposalInfo.votesAgainst)) *
-  //     100;
-  // }
-
-  // const isBoosted = props.stage === 'Boosted';
-
   return proposalInfo ? (
     <>
       <View style={styles.container}>
