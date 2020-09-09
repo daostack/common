@@ -33,7 +33,7 @@ const MultiLinkField = (props) => {
     }
   };
 
-  const AddLinkBtn = ({ addMultiFieldBtnName, setCount }) => (
+  const AddLinkBtn = ({ setCount }) => (
     <TouchableOpacity>
       <Text style={styles.addLinkBtn} onPress={() => setCount()}>
         {addMultiFieldBtnName || 'Add Link'}
