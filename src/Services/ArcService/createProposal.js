@@ -64,8 +64,8 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       // we check the conditions from the contract
 
       // require(!fundings[proposer].candidate, "already a candidate");
-      const memberFund = await joinContract.fundings(proposer);
-      if (memberFund[0] === true) {
+      const memberFund = await joinContract.membersState(proposer);
+      if (memberFund === true) {
         // If this error is thrown from a user action, there is a ui bug:s it means that some action was enabled where it shoudl not
         throw Error(`Cannot create the proposal, because the proposer ${proposer} has already a pending membership request`);
       }
