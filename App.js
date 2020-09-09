@@ -1,28 +1,19 @@
-/**
- * Sample React Native Screens
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
 import 'mobx-react-lite/batchingForReactNative';
 import React, {useState, useEffect, useRef} from 'react';
 import {
-  Image,
   StyleSheet,
   Platform,
   View,
   Linking,
   DeviceEventEmitter,
   Text,
-  InteractionManager,
+  I18nManager,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer, CommonActions} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
-
 import {
   CommonProfile,
   Onboarding,
@@ -55,12 +46,9 @@ import {
   Browser,
   FullScreenCreationLoader,
 } from './src/Screens';
-
 import UserService from './src/Services/UserService';
 import AuthService from './src/Services/AuthService';
-
 import CommonHome from './src/Components/Navigation/CommonHome';
-const Stack = createStackNavigator();
 import {filterObjectByKeys, prepareUserObject} from './src/Util';
 import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
@@ -78,7 +66,10 @@ import DeepLinking from 'react-native-deep-linking';
 import ArcService from './src/Services/ArcService';
 import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
 import Toast from './src/Util/Toast';
-import Cache from './src/Util/Cache';
+import Cache, {CacheKey} from './src/Util/Cache';
+import {func, bool, object, shape} from 'prop-types';
+const Stack = createStackNavigator();
+I18nManager.allowRTL(false);
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
@@ -134,19 +125,16 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
               if (connectState.isInternetReachable === false) {
                 Toast.error('Internet connection lost');
               } else {
-                clearInterval(this);
+                clearInterval(checkConnection);
               }
             });
           }, 5000);
         }
       } else {
-        if (checkConnection) {
-          clearInterval(checkConnection);
-          checkConnection = null;
-        }
+        clearInterval(checkConnection);
       }
     });
-    return () => { unsubscribe(); };
+    return () => unsubscribe();
   }, []);
 
   // Deep & Dynamic Link
@@ -279,9 +267,9 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             userStore.setSignedInUser(prepareUserObject(snapshot.data()));
           }
 
-          // WalletManager Inited before safeAddress created
-          // The safeAddress in wallet manager will be null
-          // We need to update it.
+          /* WalletManager Inited before safeAddress created
+          The safeAddress in wallet manager will be null
+          We need to update it. */
           const manager = await WalletManager.getInstance();
           if (manager.safeAddress == null) {
             manager.safeAddress = snapshot.data().safeAddress;
@@ -376,15 +364,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             headerBackImage: () => (
               <Icon name="left-arrow" color={colors.black} size={32} />
             ),
-            // headerRight: () => (
-            //   <Image
-            //     source={require('./src/Assets/questionmark.png')}
-            //     style={{resizeMode: 'contain', width: 20, height: 20}}
-            //   />
-            // ),
           })}
         />
-
         <Stack.Screen
           name="ProposalScreen"
           component={ProposalScreen}
@@ -531,7 +512,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           component={FundingProposal}
         />
       </Stack.Navigator>
-      {bottomSheetStore.isVisible ? <BottomSheetContainer /> : null}
+      {bottomSheetStore.isVisible && <BottomSheetContainer />}
       <ToastView
         ref={hudRef}
         style={{backgroundColor: 'transparent'}}
@@ -539,6 +520,18 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       />
     </NavigationContainer>
   );
+};
+
+App.propTypes = {
+  userStore: shape({
+    setIsLoading: func,
+    setSignedInUser: func,
+  }),
+  bottomSheetStore: shape({
+    isVisible: bool,
+    showBottomSheet: func,
+  }),
+  navigation: object,
 };
 
 const styles = StyleSheet.create({

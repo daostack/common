@@ -3,7 +3,8 @@ import {Text, StyleSheet, Platform, View, Animated, Dimensions} from 'react-nati
 import {text, layout, colors, font} from '../../Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
-import ProposalService, {PROPOSAL_TYPE} from '../../Services/ProposalService';
+import ProposalService from '../../Services/ProposalService';
+import {PROPOSAL_TYPE} from '../../Config';
 import UserService from '../../Services/UserService';
 import DaoService from '../../Services/DaoService';
 import ProposalApprovalTag from './ProposalApprovalTag';
@@ -25,8 +26,8 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
         //RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
-        if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
-          proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+        if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
+          proposedMemberId = currProposalInfo.join.proposedMemberId;
           funding = currProposalInfo.description.funding;
         }
         //FundingRequest proposal
@@ -67,8 +68,8 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
         //RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
-        if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
-          proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+        if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
+          proposedMemberId = currProposalInfo.join.proposedMemberId;
           funding = currProposalInfo.description.funding;
         }
         //FundingRequest proposal
@@ -128,13 +129,10 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
 
         <View
           style={{
-            // ...layout.content,
             paddingTop: 0,
-            // paddingBottom: 0,
-            paddingHorizontal: 16,
+            paddingHorizontal: 7,
             ...layout.flexStart,
-            // ...layout.paddingBottomL,
-            ...{flexWrap: 'wrap'},
+            flexWrap: 'wrap',
           }}>
           {proposalCardInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && <Text
             style={{...text.h3Black, ...{textAlign: 'left', flexWrap: 'wrap', padding:10, fontSize: 16}}}>

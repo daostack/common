@@ -24,7 +24,7 @@ import ArcService from '../../Services/ArcService';
 import auth from '@react-native-firebase/auth';
 import {UserAvatar} from '../../Components';
 import {PROPOSAL_STAGES_ACTIVE} from '../../Services/ProposalService';
-import {PROPOSAL_TYPE} from '../../Services/ProposalService';
+import {PROPOSAL_TYPE} from '../../Config';
 import UserService from '../../Services/UserService';
 import DaoService from '../../Services/DaoService';
 import {observer, inject} from 'mobx-react';
@@ -75,8 +75,8 @@ const ProposalScreen = ({navigation,
       let proposedMemberId = null;
       let funding = null;
 
-      if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
-        proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+      if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
+        proposedMemberId = currProposalInfo.join.proposedMemberId;
         funding = currProposalInfo.description.funding;
       }
       //FundingRequest proposal
@@ -163,6 +163,7 @@ const ProposalScreen = ({navigation,
       const userInfo = auth().currentUser;
       const message = inputText;
       if (message && message.trim().length) {
+        inputRef.current.clear();
         db.collection('discussionMessage')
           .doc()
           .set({
@@ -174,9 +175,9 @@ const ProposalScreen = ({navigation,
             discussionId: proposalId,
           })
           .then(() => {
-            inputRef.current.clear();
             Keyboard.dismiss();
             setIsSending(false);
+            setInputText(null);
           })
           .catch((error) => {
             Toast.error(error);
@@ -256,8 +257,8 @@ const ProposalScreen = ({navigation,
 
       await timeout(3000);
 
-      if (proposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
-        await ArcService.getInstance().voteForJoinAndQuitProposal(
+      if (proposalInfo.type === PROPOSAL_TYPE.Join) {
+        await ArcService.getInstance().voteForJoinProposal(
           proposalId,
           voteData
         );

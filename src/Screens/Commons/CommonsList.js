@@ -14,7 +14,7 @@ import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {font, colors} from '../../Theme';
 import {object} from 'prop-types';
-import Cache from '../../Util/Cache';
+import Cache, {CacheKey} from '../../Util/Cache';
 
 import {
   Placeholder,
@@ -25,7 +25,6 @@ import {
 import DaoService from '../../Services/DaoService';
 import ProposalService from '../../Services/ProposalService';
 import {CommonActions} from '@react-navigation/native';
-import Toast from '../../Util/Toast';
 
 const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   const [myDaosGroup, setMyDaosGroup] = useState({title: '', data: []});
@@ -98,7 +97,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
         },
       }));
       daoStore.setDaos(docs);
-      Cache.set('AllDAOList', docs);
+      Cache.set(CacheKey.AllDaoCache, docs);
       setAllDaosGroup({
         title: '',
         data: docs,
@@ -119,7 +118,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   }, []);
 
   useEffect(() => {
-    Cache.getAsync('AllDAOList').then((jsonValue) => {
+    Cache.getAsync(CacheKey.AllDaoCache).then((jsonValue) => {
       if (jsonValue === null) {
         return;
       }
