@@ -27,7 +27,7 @@ import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ArcService from '../../../Services/ArcService';
 import Share from 'react-native-share';
-import { BlurView } from '../../../Components';
+import {BlurView} from '../../../Components';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
 import {
@@ -63,7 +63,7 @@ const stylesHeader = StyleSheet.create({
 });
 
 
-const CreateStep4 = props => {
+const CreateStep4 = (props) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
@@ -77,7 +77,7 @@ const CreateStep4 = props => {
 
   console.log(form);
   const [templateIndex, setTemplateIndex] = useState(1);
-  const getImageUrl = index =>
+  const getImageUrl = (index) =>
     `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
   const [imageURI, setImageURI] = useState(
     getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))),
@@ -103,7 +103,7 @@ const CreateStep4 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const changeIndex = number => {
+  const changeIndex = (number) => {
     let index = templateIndex + number;
     if (index <= 1) {
       index = 1;
@@ -129,13 +129,13 @@ const CreateStep4 = props => {
     props.navigation.dispatch(navigate);
   };
 
-  const pickImage = isAvatar => {
+  const pickImage = (isAvatar) => {
     const options = {
       title: (isAvatar && 'Select Avatar') || 'Select profile image',
       quality: 0.7,
       allowsEditing: isAvatar,
     };
-    ImagePicker.showImagePicker(options, response => {
+    ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -145,7 +145,7 @@ const CreateStep4 = props => {
         Toast.loading('Uploading...');
         StorageService.getInstance()
           .uploadImage(response.uri)
-          .then(url => {
+          .then((url) => {
             Toast.hide();
             Toast.success('Done');
             if (isAvatar) {
@@ -156,13 +156,13 @@ const CreateStep4 = props => {
               setImageURI(url);
             }
           })
-          .catch(error => Toast.error(error));
+          .catch((error) => Toast.error(error));
       }
     });
   };
 
-  const shareCommon = event => {
-    const { name } = props.generalInfoFormStore.getChangedFormFieldsJson();
+  const shareCommon = (event) => {
+    const {name} = props.generalInfoFormStore.getChangedFormFieldsJson();
     const currCommonId = newCommonAddress.toLowerCase();
     const options = {
       url: `https://app.common.io/common/${currCommonId}`,
@@ -395,8 +395,8 @@ const CreateStep4 = props => {
                 }
                 date={
                   moment
-                  .unix(form[CreateCommonForm.DEADLINE])
-                  .format('MMM DD, YYYY')
+                    .unix(form[CreateCommonForm.DEADLINE])
+                    .format('MMM DD, YYYY')
                 }
               />
             </View>
@@ -429,7 +429,7 @@ const CreateStep4 = props => {
 
             </View>
             {form[CreateCommonForm.LINKS]?.length ? (
-              form[CreateCommonForm.LINKS].map(x => (
+              form[CreateCommonForm.LINKS].map((x) => (
                 <View key={`key_${CreateCommonForm.LINKS}_${x}`}>
                   <Text
                     onPress={() => {

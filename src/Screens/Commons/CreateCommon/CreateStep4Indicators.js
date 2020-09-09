@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     ...font.fontSize(0),
 
     textAlign: 'center',
-  }
+  },
 });
 
 const CreateStep4Indicators = ({contribution, date, title, number}) => (
@@ -48,7 +48,7 @@ CreateStep4Indicators.propTypes = {
   title: PropTypes.string.isRequired,
   number: PropTypes.number.isRequired,
   date: PropTypes.string,
-  contribution: PropTypes.bool
+  contribution: PropTypes.bool,
 };
 
 export default CreateStep4Indicators;
