@@ -44,6 +44,9 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   };
 
   const splitDaoList = async (daoList) => {
+    if (userStore.userInfo.uid === null ) {
+      return;
+    }
     try {
       if (daoList.length === 0) {
         setMyDaosGroup({title: '', data: []});
@@ -114,7 +117,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     DaoService.getInstance().getDaoList(loadDaosList);
-  }, []);
+  }, [refreshing]);
 
   useEffect(() => {
     Cache.getAsync(CacheKey.AllDaoCache).then((jsonValue) => {

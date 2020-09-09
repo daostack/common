@@ -76,7 +76,6 @@ class UserStore {
 
       newUserObj.following = newUserInfo.following || [];
       newUserObj.follower = newUserInfo.follower || [];
-      // console.log('newUserObj', newUserObj);
 
       Cache.set(newUserInfo.uid, newUserObj);
       this.userInfo = newUserObj;
