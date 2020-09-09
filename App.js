@@ -124,19 +124,16 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
               if (connectState.isInternetReachable === false) {
                 Toast.error('Internet connection lost');
               } else {
-                clearInterval(this);
+                clearInterval(checkConnection);
               }
             });
           }, 5000);
         }
       } else {
-        if (checkConnection) {
-          clearInterval(checkConnection);
-          checkConnection = null;
-        }
+        clearInterval(checkConnection);
       }
     });
-    return () => { unsubscribe(); };
+    return () => unsubscribe();
   }, []);
 
   // Deep & Dynamic Link
