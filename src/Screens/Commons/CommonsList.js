@@ -64,12 +64,11 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
           data: pendingDao,
         });
       }
-      const featuredList1 = daoList.filter((dao) => !pendingList.includes(dao.id));
-      const featuredList2 = featuredList1.filter((dao) => !userStore.isDaoMember(dao.members));
+      const featuredList = daoList.filter((dao) => !pendingList.includes(dao.id) && !userStore.isDaoMember(dao.members));
       if (myDao.length !== 0 || pendingDao.length !== 0 ) {
         setFeaturedDaosGroup({
-          title: `Featured (${featuredList2.length})`,
-          data: featuredList2,
+          title: `Featured (${featuredList.length})`,
+          data: featuredList,
         });
         setIsSplited(true);
       }
