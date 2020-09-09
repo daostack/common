@@ -61,6 +61,7 @@ class nativeBridgeTests extends React.Component {
       CMNBalance: '',
       CMNTxHash: '',
       CMNAllowance: '',
+      signedMessages: '',
     };
 
     this.uid = auth().currentUser?.uid;
@@ -453,6 +454,13 @@ class nativeBridgeTests extends React.Component {
     });
   };
 
+  signedMessages = async () => {
+    const signedMessages = await NativeWallet.signMessage('0x123');
+    this.setState({
+      signedMessages: signedMessages,
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -469,8 +477,9 @@ class nativeBridgeTests extends React.Component {
             <Text>Get local Address and balance</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.getSomeFunds} style={styles.button}>
-            <Text>Get some funds!</Text>
+          <Text>Address: {this.state.signedMessages}</Text>
+          <TouchableOpacity onPress={this.signedMessages} style={styles.button}>
+            <Text>Sign Message</Text>
           </TouchableOpacity>
 
           <Text style={{ marginVertical: 10 }}>

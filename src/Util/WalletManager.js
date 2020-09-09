@@ -168,7 +168,9 @@ export default class WalletManager {
     try {
       const txHash = await this.createSafeTransactionHash(safeAddress, toAddress, value, data);
       // const byteTxHash = ethers.utils.arrayify(txHash);
+      console.log('txHash -->', txHash);
       const signedTx = await NativeWallet.signMessage(txHash);
+      console.log('signedTx -->', signedTx);
       // Add 4
       let finalSignature = signedTx.replace(/1b$/, '1f').replace(/1c$/, '20');
       return finalSignature;

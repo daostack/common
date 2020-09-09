@@ -211,9 +211,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         if (user) {
           const providerId = user.providerData[0].providerId;
           await AuthService.getInstance().loadMnemonic(user.uid, providerId);
-          await WalletManager.init(user.uid);
-          await ArcService.init();
-          const manager = await WalletManager.getInstance();
           let appUser = await Cache.get(user.uid);
           if (!appUser) {
             appUser = await UserService.getInstance().getUserById(
@@ -226,9 +223,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
             const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
             appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
-            manager.createSmartContractWallet();
-          } else {
-            manager.addressCheck(user.uid);
           }
 
           const allUserInfo = {
@@ -238,6 +232,18 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
           const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
           userStore.setSignedInUser(filteredUser);
+          userStore.setIsLoading(false);
+
+          await WalletManager.init(user.uid);
+          await ArcService.init();
+          const manager = await WalletManager.getInstance();
+
+          if (isNewUser) {
+            manager.createSmartContractWallet();
+          } else {
+            manager.addressCheck(user.uid);
+          }
+
           if (subscribers.userInfoChangeUnsubscribe) {
             subscribers.userInfoChangeUnsubscribe();
           }

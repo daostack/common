@@ -16,6 +16,8 @@ import wallet.core.jni.HDWallet;
 import wallet.core.jni.Hash;
 import wallet.core.jni.PrivateKey;
 import wallet.core.jni.PublicKey;
+import wallet.core.java.AnySigner;
+import wallet.core.jni.proto.Ethereum;
 
 public class WalletManager {
 
@@ -34,6 +36,7 @@ public class WalletManager {
 
 
     public WalletManager () {
+        System.loadLibrary("TrustWalletCore");
         store = new Store(MainApplication.getAppContext());
         if (!store.hasKey(keyString)) {
             key = store.generateSymmetricKey(keyString, null);
@@ -106,9 +109,7 @@ public class WalletManager {
     public String signMessage(String message) throws Exception {
         try{
             byte[] messageBytes = Numeric.hexStringToByteArray(message);
-            String mnemonic = retrieveMnemonic();
-            HDWallet newWallet = new HDWallet(mnemonic, "");
-            PrivateKey pk = newWallet.getKeyForCoin(CoinType.ETHEREUM);
+            PrivateKey pk = wallet.getKeyForCoin(CoinType.ETHEREUM);
             byte[] digest = Hash.keccak256(messageBytes);
             byte[] sigBytes = pk.sign(digest, Curve.SECP256K1);
             String result = Numeric.toHexString(sigBytes);
