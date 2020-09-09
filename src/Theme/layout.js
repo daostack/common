@@ -88,6 +88,9 @@ export default StyleSheet.create({
   marginTopXL: {
     marginTop: sizeXL,
   },
+  marginTopXXL: {
+    marginTop: sizeXXL,
+  },
 
   // Margin Bottom
   marginBottomXS: {
