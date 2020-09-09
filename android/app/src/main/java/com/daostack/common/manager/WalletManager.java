@@ -2,18 +2,27 @@ package com.daostack.common.manager;
 
 import com.daostack.common.MainApplication;
 import org.web3j.crypto.MnemonicUtils;
+import org.web3j.utils.Numeric;
+
 import java.security.SecureRandom;
 import com.orhanobut.hawk.Hawk;
 import com.yakivmospan.scytale.Crypto;
 import com.yakivmospan.scytale.Options;
 import com.yakivmospan.scytale.Store;
 import javax.crypto.SecretKey;
+import wallet.core.jni.CoinType;
+import wallet.core.jni.Curve;
+import wallet.core.jni.HDWallet;
+import wallet.core.jni.Hash;
+import wallet.core.jni.PrivateKey;
+import wallet.core.jni.PublicKey;
 
 public class WalletManager {
 
     private String keyString = "daostack";
     private Store store;
     private SecretKey key;
+    private HDWallet wallet;
 
     private static class Web3jManagerHolder {
         private final static WalletManager instance = new WalletManager();
@@ -30,6 +39,26 @@ public class WalletManager {
             key = store.generateSymmetricKey(keyString, null);
         } else {
             key = store.getSymmetricKey(keyString, null);
+        }
+    }
+
+    public String getAddress() throws Exception {
+        try {
+            String address = wallet.getAddressForCoin(CoinType.ETHEREUM);
+            return address;
+        } catch (Exception e) {
+            throw  e;
+        }
+    }
+
+    public String createWallet(String uid) throws Exception {
+        try {
+            String mnemonic = retrieveMnemonic(uid);
+            wallet = new HDWallet(mnemonic, "");
+            String address = wallet.getAddressForCoin(CoinType.ETHEREUM);
+            return address;
+        } catch (Exception e) {
+            throw  e;
         }
     }
 
@@ -60,7 +89,7 @@ public class WalletManager {
         }
     }
 
-    public String retrieveMnemonic(String uid ) throws Exception {
+    public String retrieveMnemonic(String uid) throws Exception {
         try {
             String encryptedData = Hawk.get(uid);
             if (encryptedData == null) {
@@ -70,6 +99,21 @@ public class WalletManager {
             String decryptedData = crypto.decrypt(encryptedData, key);
             return decryptedData;
         } catch (Exception e){
+            throw e;
+        }
+    }
+
+    public String signMessage(String message) throws Exception {
+        try{
+            byte[] messageBytes = Numeric.hexStringToByteArray(message);
+            String mnemonic = retrieveMnemonic();
+            HDWallet newWallet = new HDWallet(mnemonic, "");
+            PrivateKey pk = newWallet.getKeyForCoin(CoinType.ETHEREUM);
+            byte[] digest = Hash.keccak256(messageBytes);
+            byte[] sigBytes = pk.sign(digest, Curve.SECP256K1);
+            String result = Numeric.toHexString(sigBytes);
+            return result;
+        }catch (Exception e){
             throw e;
         }
     }

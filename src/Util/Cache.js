@@ -1,5 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage';
 
+export const CacheKey = {
+  AllDaoCache: 'AllDaoCache',
+  UserStore: 'UserStore',
+};
+
 export default class Cache {
 
   static set = async (key, value) => {

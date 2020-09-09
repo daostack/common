@@ -15,6 +15,7 @@ import {
   Linking,
   DeviceEventEmitter,
   Text,
+  InteractionManager,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer, CommonActions} from '@react-navigation/native';
@@ -77,6 +78,7 @@ import DeepLinking from 'react-native-deep-linking';
 import ArcService from './src/Services/ArcService';
 import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
 import Toast from './src/Util/Toast';
+import Cache from './src/Util/Cache';
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
@@ -221,12 +223,15 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         if (user) {
           const providerId = user.providerData[0].providerId;
           await AuthService.getInstance().loadMnemonic(user.uid, providerId);
-          WalletManager.init(user.uid);
-          ArcService.init();
+          await WalletManager.init(user.uid);
+          await ArcService.init();
           const manager = await WalletManager.getInstance();
-          let appUser = await UserService.getInstance().getUserById(
-            user.uid,
-          );
+          let appUser = await Cache.get(user.uid);
+          if (!appUser) {
+            appUser = await UserService.getInstance().getUserById(
+              user.uid,
+            );
+          }
           const isNewUser = !appUser;
 
           if (isNewUser) {
@@ -248,14 +253,13 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           if (subscribers.userInfoChangeUnsubscribe) {
             subscribers.userInfoChangeUnsubscribe();
           }
-          subscribers.userInfoChangeUnsubscribe = updateUser(user.uid);
+          subscribers.userInfoChangeUnsubscribe = await updateUser(user.uid);
         } else {
           if (subscribers.userInfoChangeUnsubscribe) {
             subscribers.userInfoChangeUnsubscribe();
           }
           userStore.setSignedInUser(null);
         }
-
         userStore.setIsLoading(false);
       } catch (error) {
         console.log(error);

@@ -7,7 +7,6 @@ import auth from '@react-native-firebase/auth';
 import ABI from './abi.json';
 import UserService from '../Services/UserService';
 
-
 ethers.Contract.prototype.sendToRelayer = async function (funcName, params, value = '0') {
   const data = this.interface.functions[funcName].encode(params);
   const manager = await WalletManager.getInstance();
@@ -44,16 +43,12 @@ export default class WalletManager {
   static myInstance = null;
   constructor(uid) {
     return (async () => {
-      this.mnemonic = await NativeWallet.retrieveMnemonic(uid);
+      this.address = await NativeWallet.createWallet(uid);
+      console.log('this.address ->', this.address);
       this.provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
-      this.wallet = ethers.Wallet.fromMnemonic(this.mnemonic).connect(
-        this.provider,
-      );
-      this.address = this.wallet.address.toLowerCase();
       // TODO: replace with userStore or user manager
-      const userData = await UserService.getInstance().getUserById(uid);
-      this.safeAddress = userData?.safeAddress;
-      console.log('safeAddress ->', this.safeAddress);
+      // const userData = await UserService.getInstance().getUserById(uid);
+      // this.safeAddress = userData?.safeAddress;
       this.isCreatingWallet = false;
       return this;
     })();
@@ -79,6 +74,8 @@ export default class WalletManager {
     // Check local address and database address is matched
     const userData = await UserService.getInstance().getUserById(uid);
     if (userData.ethereumAddress !== this.address && userData.ethereumAddress?.trim()) {
+      console.log('userData.ethereumAddress ->', userData.ethereumAddress);
+      console.log('this.address ->', this.address);
       Alert.alert('Hands up',
         'There is a fatal error - local address mismatched, please contact us to help',
         [{text: 'OK', onPress: () => console.log('Ok Pressed'), style: 'danger'}],
@@ -117,26 +114,26 @@ export default class WalletManager {
     return await contract[functionName]();
   };
 
-  signTransaction = async (to, value, data = '0x', chainId = web3NetworkId) => {
-    const transaction = {
-      to: to,
-      value: ethers.utils.parseEther(value),
-      data: data,
-      chainId: chainId,
-    };
-    return await this.wallet.sign(transaction);
-  };
+  // signTransaction = async (to, value, data = '0x', chainId = web3NetworkId) => {
+  //   const transaction = {
+  //     to: to,
+  //     value: ethers.utils.parseEther(value),
+  //     data: data,
+  //     chainId: chainId,
+  //   };
+  //   return await this.wallet.sign(transaction);
+  // };
 
-  sendTransaction = async (to, value, data = '0x', chainId = web3NetworkId) => {
-    const transaction = {
-      to: to,
-      value: ethers.utils.parseEther(value),
-      data: data,
-      chainId: chainId,
-      gasLimit: 21000,
-    };
-    return await this.wallet.sendTransaction(transaction);
-  };
+  // sendTransaction = async (to, value, data = '0x', chainId = web3NetworkId) => {
+  //   const transaction = {
+  //     to: to,
+  //     value: ethers.utils.parseEther(value),
+  //     data: data,
+  //     chainId: chainId,
+  //     gasLimit: 21000,
+  //   };
+  //   return await this.wallet.sendTransaction(transaction);
+  // };
 
   createSmartContractWallet = async () => {
     try {
@@ -174,7 +171,7 @@ export default class WalletManager {
     try {
       const txHash = await this.createSafeTransactionHash(safeAddress, toAddress, value, data);
       const byteTxHash = ethers.utils.arrayify(txHash);
-      const signedTx = await this.wallet.signMessage(byteTxHash);
+      const signedTx = await NativeWallet.signMessage(byteTxHash);
       // Add 4
       let finalSignature = signedTx.replace(/1b$/, '1f').replace(/1c$/, '20');
       return finalSignature;

@@ -229,6 +229,7 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.0'
     implementation "androidx.annotation:annotation:1.1.0"
     implementation 'com.yakivmospan:scytale:1.0.1'
+    implementation 'com.trustwallet:wallet-core:2.2.3'
 
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";

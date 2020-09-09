@@ -1,5 +1,7 @@
 import {observable, action, decorate} from 'mobx';
-import { isDaoMemberBySafeAddress } from '../Util';
+import {isDaoMemberBySafeAddress} from '../Util';
+import Cache from '../Util/Cache';
+import WalletManager from '../Util/WalletManager';
 
 export const userInfoFields = [
   'uid',
@@ -28,15 +30,13 @@ class UserStore {
     this.isLoading = false;
   }
 
-  isDaoMember = members => {
-    return this.userInfo ? isDaoMemberBySafeAddress(members, this.userInfo.safeAddress) : false;
-  };
+  isDaoMember = (members) => this.userInfo ? isDaoMemberBySafeAddress(members, this.userInfo.safeAddress) : false;
 
-  setIsLoading = loading => {
+  setIsLoading = (loading) => {
     this.isLoading = loading;
   };
 
-  setSignedInUser = newUserInfo => {
+  setSignedInUser = (newUserInfo) => {
     if (newUserInfo) {
       let newUserObj = {};
       if (newUserInfo.uid) {
@@ -71,12 +71,14 @@ class UserStore {
       }
       if (newUserInfo.safeAddress) {
         newUserObj.safeAddress = newUserInfo.safeAddress;
+        WalletManager.getInstance().safeAddress = newUserInfo.safeAddress;
       }
 
       newUserObj.following = newUserInfo.following || [];
       newUserObj.follower = newUserInfo.follower || [];
       // console.log('newUserObj', newUserObj);
 
+      Cache.set(newUserInfo.uid, newUserObj);
       this.userInfo = newUserObj;
     } else {
       this.userInfo = null;

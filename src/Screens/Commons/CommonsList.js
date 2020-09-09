@@ -25,6 +25,7 @@ import {
 import DaoService from '../../Services/DaoService';
 import ProposalService from '../../Services/ProposalService';
 import {CommonActions} from '@react-navigation/native';
+import Toast from '../../Util/Toast';
 
 const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   const [myDaosGroup, setMyDaosGroup] = useState({title: '', data: []});
@@ -118,21 +119,20 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   }, []);
 
   useEffect(() => {
-    DaoService.getInstance().subscribeToDaosList(loadDaosList);
-
     Cache.getAsync('AllDAOList').then((jsonValue) => {
       if (jsonValue === null) {
         return;
       }
       const docs = JSON.parse(jsonValue);
-      // daoStore.setDaos(docs);
+      daoStore.setDaos(docs);
       setAllDaosGroup({
-        title: `Cache loading ${docs.length}`,
+        title: '',
         data: docs,
       });
-      // splitDaoList(docs);
+      splitDaoList(docs);
     });
-  }, []);
+    DaoService.getInstance().subscribeToDaosList(loadDaosList);
+  }, [daoStore, bottomSheetStore, userStore.userInfo]);
 
   const onAddCommon = () => {
     if (userStore.userInfo) {

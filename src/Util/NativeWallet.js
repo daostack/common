@@ -1,5 +1,33 @@
 import {NativeModules} from 'react-native';
 
+const createWallet = async (uid) => {
+  try {
+    const address = await NativeModules.WalletModule.createWallet(uid);
+    return address.toLowerCase();
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const getAddress = async (uid) => {
+  try {
+    const address = await NativeModules.WalletModule.getAddress();
+    return address.toLowerCase();
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const signMessage = async (message) => {
+  try {
+    const address = await NativeModules.WalletModule.signMessage(message);
+    return address.tolowerCase();
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+
 const generateMnemonic = async () => {
   try {
     return await NativeModules.WalletModule.generateMnemonic();
@@ -8,7 +36,7 @@ const generateMnemonic = async () => {
   }
 };
 
-const generateAndStoreMnemonic = async uid => {
+const generateAndStoreMnemonic = async (uid) => {
   try {
     return await NativeModules.WalletModule.generateAndStoreMnemonic(uid);
   } catch (e) {
@@ -24,7 +52,7 @@ const storeMnemonic = async (uid, mnemonic) => {
   }
 };
 
-const retrieveMnemonic = async uid => {
+const retrieveMnemonic = async (uid) => {
   try {
     return await NativeModules.WalletModule.retrieveMnemonic(uid);
   } catch (e) {
@@ -37,4 +65,7 @@ export const NativeWallet = {
   generateAndStoreMnemonic,
   storeMnemonic,
   retrieveMnemonic,
+  createWallet,
+  getAddress,
+  signMessage,
 };

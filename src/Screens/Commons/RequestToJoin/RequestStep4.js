@@ -25,7 +25,7 @@ import {showErrorPopUp} from '../../../Util';
 const RequestStep4 = ({navigation, route:{params}, ...props}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const isFirstStepSkipped = props.route.params.skipFirstStep;
+  const isFirstStepSkipped = params.skipFirstStep;
 
   const name = params.currCommon.name;
 
@@ -48,7 +48,7 @@ const RequestStep4 = ({navigation, route:{params}, ...props}) => {
         };
 
         let data = {
-          title: `request to join ${props.route.params.currDaoId} by ${props.userStore.userInfo.ethereumAddress}`,
+          title: `request to join ${params.currDaoId} by ${props.userStore.userInfo.ethereumAddress}`,
           description: formData.about_me,
           links: formData.links,
           funding: formData.amount * 100,
@@ -70,7 +70,7 @@ const RequestStep4 = ({navigation, route:{params}, ...props}) => {
         }
 
         const proposalId = await ArcService.getInstance().createRequestToJoin(
-          props.route.params.currDaoId,
+          params.currDaoId,
           data,
         );
 

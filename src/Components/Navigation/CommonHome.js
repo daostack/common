@@ -11,6 +11,7 @@ const Tab = createBottomTabNavigator();
 import Icon from '../../Assets/iconfont/Icon';
 
 const CommonHome = ({userStore}) => {
+
   return (
     <Tab.Navigator
       // initialRouteName="My feed"
