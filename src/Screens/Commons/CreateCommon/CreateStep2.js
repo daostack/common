@@ -209,6 +209,7 @@ const CreateStep2 = (props) => {
             viewStyle={{alignSelf: 'stretch'}}
             label="Minimum one-time contribution (min. $5)"
             subLabel="Set the minimum amount that new members will have to contribute in order to join this Common."
+            value={'7'}
             infoLabel="Required"
             autoCapitalize="none"
             autoCorrect={false}

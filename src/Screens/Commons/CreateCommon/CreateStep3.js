@@ -105,7 +105,7 @@ const CreateStep3 = (props) => {
             subtitle="Define your course of action and rules of conduct."
           />
           <TextInputField
-            value={''}
+            value={'Commonify action'}
             viewStyle={{alignSelf: 'stretch'}}
             label="Course of action"
             infoLabel="Required"

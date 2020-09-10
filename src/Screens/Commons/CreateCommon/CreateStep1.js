@@ -109,7 +109,7 @@ const CreateStep1 = props => {
             }}
           />
           <TextInputField
-            value={''}
+            value={'Commonify'}
             viewStyle={{alignSelf: 'stretch'}}
             label="Common name"
             infoLabel="Required"
@@ -126,7 +126,7 @@ const CreateStep1 = props => {
             }}
           />
           <TextInputField
-            value={''}
+            value={'Commonify mission'}
             viewStyle={{alignSelf: 'stretch'}}
             label="Mission statement"
             infoLabel="Required"
@@ -145,7 +145,7 @@ const CreateStep1 = props => {
             }}
           />
           <TextInputField
-            value={''}
+            value={'Commonify about'}
             label="About"
             infoLabel="Required"
             numberOfLines={5}

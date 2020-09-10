@@ -30,6 +30,11 @@ export default class ArcService {
     })();
   }
 
+  async reloadAllContracts( waitForDaoId ) {
+    await this.fetchAllContrarcts(this.arc);
+
+  }
+
   async fetchAllContrarcts(arc ) {
 
     let allContractInfos = [];
