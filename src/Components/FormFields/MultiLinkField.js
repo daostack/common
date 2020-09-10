@@ -54,6 +54,14 @@ const MultiLinkField = (props) => {
       </Text>
     </TouchableOpacity>);
 
+  const RemoveLinkBtn = ({onFieldDeleted}) => (
+    <TouchableOpacity
+      style={styles.removeBtnContainer}
+      onPress={() => onFieldDeleted()}>
+      <Icon name="delete" size={16}/>
+    </TouchableOpacity>
+  );
+
   const canAddMore = () => {
     let canAdd = true;
     [ ...Array(count).keys() ].forEach((i) => {
@@ -124,7 +132,7 @@ const MultiLinkField = (props) => {
 
       {
         ((!maxCount || (count - deletedFields.length) < maxCount) && addButton || count === 0) && (
-          <AddLinkBtn />
+          <AddBtn />
         )
       }
     </View>
@@ -143,7 +151,7 @@ MultiLinkField.propTypes = {
   maxLength: number,
   label: string,
   title: string,
-  maxCount: number
+  maxCount: number,
 };
 
 const styles = StyleSheet.create({
@@ -161,16 +169,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     justifyContent: 'center',
-  },
-  containerRow: {
-    flexDirection: 'row',
-    alignSelf: 'stretch',
-    marginTop: 80,
-  },
-  emailContainer: {
-    ...layout.content,
-    ...layout.marginBottomXL,
-    marginTop: 0,
   },
   containerRow: {
     flexDirection: 'row',
