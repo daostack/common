@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#EBF9FC',
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: colors.mainBlue,

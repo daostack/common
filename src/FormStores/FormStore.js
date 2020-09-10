@@ -39,6 +39,11 @@ class FormStore {
     }
   }
 
+  updateFieldValidationRule(name, newRule) {
+    this.form.fields[name].rule = newRule;
+    this.validateField(name);
+  }
+
   removeFormField(name) {
     if (this.form.fields?.[name]) {
       delete this.form.fields[name];
@@ -57,6 +62,8 @@ class FormStore {
       }
       return false;
     }
+
+    // Filter multiple fields
     return true;
   };
 
@@ -151,9 +158,11 @@ class FormStore {
     }
 
     if (multiFieldTitles.length > 0) {
-      changedFieldsJson[name] = [...multiFieldTitles.keys()].map(x => {
+      const allMultiLinksFields = [...multiFieldTitles.keys()].map(x => {
         return {title: multiFieldTitles[x], url: multiFieldValues[x]};
       });
+      // Remove fields with empty values.
+      changedFieldsJson[name] = allMultiLinksFields.filter(item => item.title || item.url);
     }
 
     if (changedFieldsJson.length === 0) {

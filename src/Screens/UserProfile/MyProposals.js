@@ -11,61 +11,69 @@ import {
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {layout, colors, text, font,sizeS} from '../../Theme';
-import {TabView, SceneMap} from 'react-native-tab-view';
+import {TabView} from 'react-native-tab-view';
 import ProposalsList from '../../Screens/Proposals/ProposalsList';
-import { inject, observer } from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 import  ProposalService  from '../../Services/ProposalService';
 import CommonTabBar from '../CommonTabBar';
 
-const MyProposals = ({navigation, userStore}) => {
+const MyProposals = ({route, navigation, userStore}) => {
   const [index, setIndex] = React.useState(0);
-  const [stats, setStats] = React.useState({ all: 0, active: 0, history: 0 });
+  const [stats, setStats] = React.useState({all: 0, active: 0, history: 0});
 
   useEffect(() => {
     const getStats = async () => {
-      const userProposalsStats = await ProposalService.getInstance().getUserProposalsCounts(userStore.userInfo.uid);
-      setStats({ ...userProposalsStats });
+      const userProposalsStats = await ProposalService.getInstance().getUserProposalsCounts(userStore.userInfo.uid, route.params.onlyMembershipRequests, route.params.onlyFundingRequests);
+      setStats({...userProposalsStats});
     };
     getStats();
   }, [userStore.userInfo.uid]);
 
+  const onScreenScroll = (event) => {
+    navigation.setOptions({
+      title: event.nativeEvent.contentOffset.y > 75 ?
+        route.params.onlyMembershipRequests
+          ? 'My membership requests'
+          : 'My Proposals'
+        : 'My Profile',
+    });
+  };
+
   const routes = [{key: 'all', title: `All (${stats.all})`},
-    { key: 'active', title: `Active (${stats.active})`},
-    { key: 'history', title: `History (${stats.history})`}];
+    {key: 'active', title: `Active (${stats.active})`},
+    {key: 'history', title: `History (${stats.history})`}];
 
-  const AllProposals = () => {
-    return SceneRenderer(0);
-  };
+  const AllProposals = () => SceneRenderer(0);
 
-  const ActiveProposals = () => {
-    return SceneRenderer(1);
-  };
+  const ActiveProposals = () => SceneRenderer(1);
 
-  const HistoryProposals = () => {
-    return SceneRenderer(2);
-  };
+  const HistoryProposals = () => SceneRenderer(2);
 
-  const SceneRenderer = sceneIndex => {
-    return (
-      <View style={{ flex: 1, marginTop: 40, paddingHorizontal: 20}}>
-        <ProposalsList
-          navigation={navigation}
-          safeAddress={userStore.userInfo.safeAddress}
-          showAll={sceneIndex === 0 ? true : false}
-          isHistory={sceneIndex === 2 ? true : false}
-        />
-      </View>
-    );
-
-  };
+  const SceneRenderer = (sceneIndex) => (
+    <View style={{flex: 1, marginTop: 40, paddingHorizontal: 20}}>
+      <ProposalsList
+        membershipRequests={route.params.onlyMembershipRequests}
+        onlyFundingRequests={route.params.onlyFundingRequests}
+        navigation={navigation}
+        safeAddress={userStore.userInfo.safeAddress}
+        showAll={sceneIndex === 0 ? true : false}
+        isHistory={sceneIndex === 2 ? true : false}
+      />
+    </View>
+  );
 
   const initialLayout = {width: Dimensions.get('window').width};
 
-  const renderScene = SceneMap({
-    all: AllProposals,
-    active: ActiveProposals,
-    history: HistoryProposals,
-  });
+  const renderScene = ({route}) => {
+    switch (route.key) {
+    case 'all':
+      return AllProposals();
+    case 'active':
+      return ActiveProposals();
+    case 'history':
+      return HistoryProposals();
+    }
+  };
 
   return (
     <>
@@ -77,9 +85,12 @@ const MyProposals = ({navigation, userStore}) => {
           style={styles.scrollView}
           vertical={true}
           nestedScrollEnabled={true}
-          directionalLockEnabled={true}>
+          directionalLockEnabled={true}
+          onScroll={onScreenScroll}
+          scrollEventThrottle={16}
+        >
           <View style={styles.sectionContainer}>
-            <Text style={styles.title}>My proposals</Text>
+            <Text style={styles.title}>My {route.params.onlyMembershipRequests ? 'membership requests' : 'proposals'}</Text>
           </View>
           <View style={styles.sectionTabView}>
             <TabView
@@ -104,7 +115,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: Colors.white,
-    padding: 20,
   },
   title: {
     ...font.heading.bold,

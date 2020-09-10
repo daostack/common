@@ -1,18 +1,15 @@
-import {View, StyleSheet} from 'react-native';
-
 import React from 'react';
-import {text, layout, colors} from '../Theme';
+import { View, StyleSheet } from 'react-native';
+
 import SwipeButton from 'rn-swipe-button';
 
-const ButtonSwiper = ({onSwipeSuccess, title}) => {
-  const showToastMessage = msg => {
-    console.log('MSG -> ', msg);
-  };
+import { text, layout, colors } from '../Theme';
 
-  const thumbComponent = () => <View style={styles.swiperThumbIcon} />;
+const ButtonSwiper = ({ onSwipeSuccess, title }) => {
+  const thumbComponent = () => <View style={styles.swiperThumbIcon}/>;
 
   return (
-    <View style={{...layout.marginTopS, ...{height: 100}}}>
+    <View style={{ ...layout.marginTopS, ...{ height: 100 } }}>
       <SwipeButton
         width={340}
         height={60}
@@ -24,8 +21,6 @@ const ButtonSwiper = ({onSwipeSuccess, title}) => {
         thumbIconComponent={thumbComponent}
         railBackgroundColor={colors.grey4}
         railBorderColor={colors.grey4}
-        onSwipeStart={() => showToastMessage('Swipe started!')}
-        onSwipeFail={() => showToastMessage('Incomplete swipe!')}
         onSwipeSuccess={onSwipeSuccess}
       />
     </View>
@@ -46,6 +41,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 34,
     shadowOpacity: 1,
+    elevation: 4,
   },
 });
 

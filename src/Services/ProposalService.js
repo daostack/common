@@ -1,4 +1,5 @@
-import { DB_COLLECTIONS } from './FirebaseService';
+
+import {DB_COLLECTIONS} from '../Firebase/Databasee';
 import Toast from '../Util/Toast';
 import moment from 'moment';
 
@@ -13,6 +14,8 @@ export const PROPOSAL_STAGE = {
   QuietEndingPeriod: '5',
 };
 
+import {PROPOSAL_TYPE} from '../Config';
+
 export const PROPOSAL_STAGES_ACTIVE = [
   PROPOSAL_STAGE.Queued,
   PROPOSAL_STAGE.PreBoosted,
@@ -24,11 +27,6 @@ export const PROPOSAL_STAGES_HISTORY = [
   PROPOSAL_STAGE.ExpiredInQueue,
   PROPOSAL_STAGE.Executed,
 ];
-
-export const PROPOSAL_TYPE = {
-  JoinAndQuit: 'JoinAndQuit',
-  FundingRequest: 'FundingRequest',
-};
 
 export const LAUNCHED_STATES = [
   PROPOSAL_STAGE.Queued, PROPOSAL_STAGE.PreBoosted,
@@ -50,14 +48,23 @@ export default class ProposalService {
     return this.serviceInstance;
   };
 
-  async getUserProposalsCounts(uid) {
-    return db
+  async getUserProposalsCounts(uid, onlyMembershipRequests = false, onlyFundingProposals = false) {
+    let query = db
       .collection(DB_COLLECTIONS.proposals)
-      .where('proposerId', '==', uid)
-      .get()
-      .then(snapshots => {
+      .where('proposerId', '==', uid);
+
+    if (onlyFundingProposals) {
+      query = query.where('type', '==', PROPOSAL_TYPE.FundingRequest);
+    }
+
+    if (onlyMembershipRequests) {
+      query = query.where('type', '==', PROPOSAL_TYPE.Join);
+    }
+
+    return query.get()
+      .then((snapshots) => {
         if (!snapshots) {
-          return { all: 0, active: 0, history: 0 };
+          return {all: 0, active: 0, history: 0};
         } else {
           const stats = {
             all: snapshots.docs.length,
@@ -69,12 +76,26 @@ export default class ProposalService {
       });
   }
 
+  async getUserPendingProposals(uid) {
+    let query = db
+      .collection(DB_COLLECTIONS.proposals)
+      .where('proposerId', '==', uid)
+      .where('type', '==', PROPOSAL_TYPE.JoinAndQuit);
+    return query.get().then((snapshots) => {
+      if (!snapshots) {
+        return [];
+      } else {
+        return snapshots.docs.filter((s) => PROPOSAL_STAGES_ACTIVE.includes(s.data().stageStr));
+      }
+    });
+  }
+
   async getProposalInfo(proposalUid) {
     return db
       .collection(DB_COLLECTIONS.proposals)
       .doc(proposalUid)
       .get()
-      .then(snapshots => {
+      .then((snapshots) => {
         if (!snapshots) {
           return null;
         }
@@ -87,7 +108,7 @@ export default class ProposalService {
       .collection(DB_COLLECTIONS.discussionMessages)
       .where('discussionId', '==', proposalId )
       .get()
-      .then(snapshots => {
+      .then((snapshots) => {
         if (!snapshots) {
           return 0;
         }
@@ -96,27 +117,20 @@ export default class ProposalService {
   }
 
   async subscribeToPendingProposalsData(daoId, userSafeAddress, callback) {
-
     let proposals = db
       .collection(DB_COLLECTIONS.proposals)
       .where('dao', '==', daoId)
       .where('closingAt', '>', moment().unix())
-      .where('type', '==', 'JoinAndQuit')
-      .where('stageStr', 'in', [
-        PROPOSAL_STAGE.Queued,
-        PROPOSAL_STAGE.PreBoosted,
-        PROPOSAL_STAGE.Boosted,
-        PROPOSAL_STAGE.QuietEndingPeriod,
-      ])
+      .where('type', '==', PROPOSAL_TYPE.Join)
+      .where('stageStr', 'in', PROPOSAL_STAGES_ACTIVE)
       .orderBy('closingAt', 'desc');
 
-    return proposals.onSnapshot(snapshot  => {
+    return proposals.onSnapshot((snapshot) => {
       callback({
         pendingProposalCount: snapshot.docs.length,
-        usersPendingProposal:
-            snapshot.docs.find(doc => doc.data().proposer === userSafeAddress)?.data() || false,
+        usersPendingProposal: (userSafeAddress && snapshot.docs.find((doc) => doc.data().proposer === userSafeAddress)?.data()) || false,
       });
-    }, error => Toast.error(error));
+    }, (error) => Toast.error(error));
 
   }
 
@@ -126,9 +140,9 @@ export default class ProposalService {
       .collection(DB_COLLECTIONS.proposals)
       .where('id', '==', proposalId);
 
-    return proposals.onSnapshot(snapshot => {
+    return proposals.onSnapshot((snapshot) => {
       callback(snapshot.docChanges()[0].doc._data);
-    }, error => Toast.error(error));
+    }, (error) => Toast.error(error));
 
   }
 
@@ -141,7 +155,8 @@ export default class ProposalService {
     listChangeCallback,
     listRef,
     onlyRequestsToJoin,
-    onlyFundingRequests
+    onlyFundingRequests,
+    membershipRequests = false
   ) {
 
     let proposalCollection = db.collection(DB_COLLECTIONS.proposals);
@@ -158,11 +173,43 @@ export default class ProposalService {
     }
 
     if (safeAddress) {
-      proposalCollection = proposalCollection.where(
-        'proposer',
-        '==',
-        safeAddress.toString(),
-      );
+      if (safeAddress.isCreatingInProgress) {
+
+      } else {
+        proposalCollection = proposalCollection.where(
+          'proposer',
+          '==',
+          safeAddress.toString(),
+        );
+      }
+    }
+
+    if (membershipRequests) {
+      // // Start the query from the beginning because we want
+      // // all request for the user commons, not only those made by
+      // // the user itself
+      // proposalCollection = db.collection(DB_COLLECTIONS.proposals);
+      //
+      // // List of the ids of all daos that the user is part of
+      // let daos  = await db.collection(DB_COLLECTIONS.daos)
+      //   .get();
+      // let userDaos = [];
+      //
+      // daos.forEach(doc => {
+      //   if(doc.data().members.some(x => x.address == safeAddress)) {
+      //     userDaos.push(doc.data().id)
+      //   }
+      //
+      //   return doc;
+      // })
+      //
+      // proposalCollection = proposalCollection
+      //   // Only the join and quit proposals
+      //   .where('type', '==', PROPOSAL_TYPE.Join)
+      //   // Only those made to dao that the user is member of
+      //   .where('dao', 'in', userDaos);
+
+      proposalCollection = proposalCollection.where('type', '==', PROPOSAL_TYPE.Join);
     }
 
     if (!showAll) {
@@ -173,14 +220,14 @@ export default class ProposalService {
 
 
     return proposalCollection.onSnapshot(
-      snapshot => {
+      (snapshot) => {
         if (snapshot.empty) {
           listChangeCallback([]);
         } else {
           if (snapshot.docChanges().length !== 0) {
             const newList = snapshot.docChanges().map(({doc}) => {
               if (onlyRequestsToJoin) {
-                if (doc.data().type !== PROPOSAL_TYPE.JoinAndQuit) {
+                if (doc.data().type !== PROPOSAL_TYPE.Join) {
                   return false;
                 }
               }
@@ -191,15 +238,15 @@ export default class ProposalService {
             });
 
             let createList = newList
-              .map(item => {
-                let index = listRef.current.findIndex(v => v.id === item.id);
+              .map((item) => {
+                let index = listRef.current.findIndex((v) => v.id === item.id);
                 if (index > -1) {
                   listRef.current[index] = item;
                 } else {
                   return item;
                 }
               })
-              .filter(item => item);
+              .filter((item) => item);
             if (createList.length > 0) {
               const allList = [...createList, ...listRef.current];
               listRef.current = allList;
@@ -208,7 +255,7 @@ export default class ProposalService {
           }
         }
       },
-      error => console.error(error),
+      (error) => console.error(error),
     );
   }
 }

@@ -18,8 +18,7 @@ import Icon from '../../../Assets/iconfont/Icon';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
-import WalletManager from '../../../Util/WalletManager';
-import FirebaseService from '../../../Services/FirebaseService';
+import StorageService from '../../../Services/StorageService';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {numberFormatter, showErrorPopUp} from '../../../Util';
@@ -28,10 +27,8 @@ import Modal from 'react-native-modal';
 import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
 import ArcService from '../../../Services/ArcService';
 import Share from 'react-native-share';
-import { BlurView } from '../../../Components';
-
-
-const {width} = Dimensions.get('window');
+import {BlurView} from '../../../Components';
+import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
 import {
   colors,
@@ -43,6 +40,8 @@ import {
   sizeL,
   sizeLineHeight,
 } from '../../../Theme';
+
+const {width} = Dimensions.get('window');
 
 const stylesHeader = StyleSheet.create({
   generalInfoTitle: {
@@ -63,9 +62,8 @@ const stylesHeader = StyleSheet.create({
   },
 });
 
-import CreateStep4Indicators from './CreateStep4Indicators';
 
-const CreateStep4 = props => {
+const CreateStep4 = (props) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
@@ -79,7 +77,7 @@ const CreateStep4 = props => {
 
   console.log(form);
   const [templateIndex, setTemplateIndex] = useState(1);
-  const getImageUrl = index =>
+  const getImageUrl = (index) =>
     `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
   const [imageURI, setImageURI] = useState(
     getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))),
@@ -105,7 +103,7 @@ const CreateStep4 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const changeIndex = number => {
+  const changeIndex = (number) => {
     let index = templateIndex + number;
     if (index <= 1) {
       index = 1;
@@ -131,13 +129,13 @@ const CreateStep4 = props => {
     props.navigation.dispatch(navigate);
   };
 
-  const pickImage = isAvatar => {
+  const pickImage = (isAvatar) => {
     const options = {
       title: (isAvatar && 'Select Avatar') || 'Select profile image',
       quality: 0.7,
       allowsEditing: isAvatar,
     };
-    ImagePicker.showImagePicker(options, response => {
+    ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -145,9 +143,9 @@ const CreateStep4 = props => {
         console.log('ImagePicker Error: ', response.error);
       } else {
         Toast.loading('Uploading...');
-        FirebaseService.getInstance()
+        StorageService.getInstance()
           .uploadImage(response.uri)
-          .then(url => {
+          .then((url) => {
             Toast.hide();
             Toast.success('Done');
             if (isAvatar) {
@@ -158,18 +156,18 @@ const CreateStep4 = props => {
               setImageURI(url);
             }
           })
-          .catch(error => Toast.error(error));
+          .catch((error) => Toast.error(error));
       }
     });
   };
 
-  const shareCommon = event => {
-    const { name } = props.generalInfoFormStore.getChangedFormFieldsJson();
+  const shareCommon = (event) => {
+    const {name} = props.generalInfoFormStore.getChangedFormFieldsJson();
     const currCommonId = newCommonAddress.toLowerCase();
     const options = {
       url: `https://app.common.io/common/${currCommonId}`,
       title: "Let's make it happen",
-      message: `Join in ${name} common`,
+      message: `${name} common`,
     };
     Share.open(options);
   };
@@ -382,16 +380,24 @@ const CreateStep4 = props => {
               <CreateStep4Indicators
                 title="Min. Contribution"
                 number={numberFormatter(form[CreateCommonForm.MINIMUM])}
+                contribution
               />
             </View>
 
             <View style={{width: 120, marginHorizontal: 10}}>
               <CreateStep4Indicators
-                title="Period"
+                title="Safety period"
                 currencySymbol={false}
-                number={moment
-                  .unix(form[CreateCommonForm.DEADLINE])
-                  .format('MMM DD, YYYY')}
+                number={
+                  moment
+                    .unix(form[CreateCommonForm.DEADLINE])
+                    .fromNow(true)
+                }
+                date={
+                  moment
+                    .unix(form[CreateCommonForm.DEADLINE])
+                    .format('MMM DD, YYYY')
+                }
               />
             </View>
           </View>
@@ -420,14 +426,28 @@ const CreateStep4 = props => {
                   style={{textAlign: 'right', alignSelf: 'flex-end'}}
                 />
               </TouchableOpacity> */}
+
             </View>
             {form[CreateCommonForm.LINKS]?.length ? (
-              form[CreateCommonForm.LINKS].map(x => (
-                <Text
-                  key={`key_${CreateCommonForm.LINKS}_${x}`}
-                  style={styles.textContent}>
-                  {x.title}
-                </Text>
+              form[CreateCommonForm.LINKS].map((x) => (
+                <View key={`key_${CreateCommonForm.LINKS}_${x}`}>
+                  <Text
+                    onPress={() => {
+                      props.navigation.navigate('Browser', {
+                        url: x.url,
+                      });
+                    }}
+                    style={{
+                      display: 'flex',
+                      flexFlow: 'row',
+                      alignContent: 'center',
+                      ...styles.linkText,
+                      ...styles.textContent,
+                    }}
+                  >
+                    {x.title}
+                  </Text>
+                </View>
               ))
             ) : (
               <View />
@@ -566,23 +586,29 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   titleName: {
-    color: 'white',
-    opacity: 0.8,
+    color: colors.white,
     textAlign: 'center',
     alignSelf: 'center',
     textShadowColor: 'rgba(0, 0, 0, 0.2)',
     ...font.primary.bold,
-    ...font.fontSize(2),
+    ...font.fontSize(4),
     textShadowOffset: {
       width: 0,
       height: 2,
     },
     textShadowRadius: 4,
+    elevation: 2,
+  },
+  linkText: {
+    ...layout.marginTopS,
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.black,
+    textDecorationLine: 'underline',
   },
   byline: {
     width: '100%',
-    color: 'white',
-    opacity: 0.8,
+    color: colors.white,
     textAlign: 'center',
     alignSelf: 'center',
     ...font.primary.regular,

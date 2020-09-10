@@ -1,17 +1,8 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {
-  Dimensions,
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-  Platform,
-} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Dimensions, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
-import {text, layout, colors, sizeS, sizeL, font} from '../../../Theme';
+import {colors, font, layout, sizeL, sizeS, text} from '../../../Theme';
 import Icon from '../../../Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
 import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
@@ -23,17 +14,15 @@ import {CommonActions} from '@react-navigation/native';
 import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '../../../Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
-import {observer, inject} from 'mobx-react';
-// import HeaderImageScrollView from 'react-native-image-header-scroll-view';
+import {inject, observer} from 'mobx-react';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '../../../Components/Commons/CommonHeader';
-import {numberFormatter} from '../../../Util';
+import {calcIsFundingStage, numberFormatter} from '../../../Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '../../../Services/ProposalService';
+import DaoService from '../../../Services/DaoService';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
-import {calcIsFundingStage} from '../../../Util';
-import firestore from '@react-native-firebase/firestore';
 import  Toast  from '../../../Util/Toast';
 import {
   Placeholder,
@@ -41,33 +30,42 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import {object, shape} from 'prop-types';
 import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
 import ProposalActivationDate from '../../../Components/Proposals/ProposalActivationDate';
-import { BlurView } from '../../../Components';
+import {BlurView} from '../../../Components';
 
-let stickyHeighAddon = 0;
-if (Platform.OS === 'ios') {
-  stickyHeighAddon += 36;
-}
+let stickyHeightAddon = 36;
 
-const STICKY_HEADER_HEIGHT = Math.round( getStatusBarHeight() ) + stickyHeighAddon;
-const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 80;
+const STICKY_HEADER_HEIGHT = Math.round( getStatusBarHeight() ) + stickyHeightAddon;
+const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
-const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
+const CommonProfile = ({
+  navigation,
+  bottomSheetStore,
+  userStore,
+  route: {params},
+})=> {
+  /* all of  params.commonId,
+  params.showRequestSentModal,
+  params.createdProposalId
+  are undefined
+  is this sth we plan on having in future?
+   */
   const [isMember, setMemberState] = useState(false);
   const window = Dimensions.get('window');
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    {key: 'discussions', title: 'Discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
-    {key: 'proposals', title: 'Proposals', icon: 'proposal', iconSelected: 'proposal-selected'},
-    {key: 'history', title: 'History', icon: 'history', iconSelected: 'history-selected'},
+    {index: 0, key: 'discussions', title: 'Discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
+    {index: 1, key: 'proposals', title: 'Proposals', icon: 'proposal', iconSelected: 'proposal-selected'},
+    {index: 2, key: 'history', title: 'History', icon: 'history', iconSelected: 'history-selected'},
   ]);
 
-  const routeCommon = route.params.currCommon;
-  const [currCommon, setCurrCommon] = useState(routeCommon);
+  //const routeCommon = params.currCommon;
+  const [currCommon, setCurrCommon] = useState(params.currCommon);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
@@ -91,34 +89,36 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   //setHeaderHeight(height + 35);
 
-  const headerHeightLayouted = height => {
-    if (height - headerHeight > 3) {
-      // To avoid render multiple times
-      // console.log('height ->', height);
-      //setHeaderHeight(height + 35);
+  const headerHeightLayouted = (height) => height;
+
+  const loadCurrCommon = (snapshot) => {
+    if (snapshot.exists) {
+      setCurrCommon(snapshot.data());
+    } else {
+      Toast.error('This DAO cannot be found try again later');
+      navigation.pop();
     }
-    return height;
   };
 
   useEffect(() => {
-    if (route.params.commonId) {
-      const unsubscribe = firestore()
-        .collection('daos')
-        .doc(route.params.commonId)
-        .onSnapshot(snapshot => {
-          if (snapshot.exists) {
-            setCurrCommon(snapshot.data());
-          } else {
-            Toast.error('This DAO cannot be found try again later');
-            navigation.pop();
-          }
-        });
-      return unsubscribe;
+    let unsubscribe = null;
+    const loadDao = async (daoId) => {
+      unsubscribe = await DaoService.getInstance().subscribeToDaoById(daoId, loadCurrCommon);
+    };
+
+    if (params.commonId) {
+      loadDao(params.commonId);
     }
-  }, [route.params.commonId]);
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [params.commonId]);
 
   useEffect(() => {
-    setShowRequestSentModal(route.params.showRequestSentModal);
+    setShowRequestSentModal(params.showRequestSentModal);
     if (userStore.userInfo && userStore.isDaoMember(daoMembers)) {
       setMemberState(true);
       setHeaderHeight(DEFAULT_HEADER_HEIGHT + 36);
@@ -127,30 +127,30 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
       setHeaderHeight(DEFAULT_HEADER_HEIGHT);
     }
   }, [
-    route.params.showRequestSentModal,
+    params.showRequestSentModal,
     userStore.userInfo,
     daoMembers,
   ]);
 
   useEffect(() => {
-    if (userStore.userInfo) {
-      let unsubscribe = null;
-      let getPendingProposalsData = async () => {
-        unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
-          commonId,
-          userStore.userInfo.safeAddress,
-          data => {
-            setPendingProposalsData({...data});
-          },
-        );
-      };
-      getPendingProposalsData();
-      return () => {
-        if (unsubscribe) {
-          unsubscribe();
-        }
-      };
-    }
+    let unsubscribe = null;
+    let getPendingProposalsData = async () => {
+      unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
+        commonId,
+        userStore.userInfo?.safeAddress,
+        (data) => {
+          setPendingProposalsData({...data});
+        },
+      );
+    };
+
+    getPendingProposalsData();
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [commonId, isMember, userStore.userInfo]);
 
   useEffect(() => {
@@ -167,53 +167,53 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     }
   }, [pendingProposalsData]);
 
-  const renderTabBar = props => (
-    <TabBarRenderer originRef={originTabBarRef} {...props} />
+  const renderTabBar = (props) => (
+    <TabBarRenderer originRef={originTabBarRef} jumpTo = {originTabBarRef.current?.props?.jumpTo} {...props} indexChange = {setIndex}/>
   );
 
-  const Discussions = () => {
-    return (
-      <View style={{...styles.paleBackground, ...{paddingVertical: sizeL}}}>
-        <Text style={text.h1BlackTitle}>Discussions</Text>
+  const Discussions = () => (
+    <View style={{...styles.paleBackground, ...{paddingVertical: sizeL}}}>
+      <Text style={text.h1BlackTitle}>Discussions</Text>
+      <DiscussionList navigation={navigation} commonId={currCommon.id} />
+    </View>
+  );
 
-        <DiscussionList navigation={navigation} commonId={currCommon.id} />
-      </View>
-    );
-  };
+  const Proposals = () => (
+    <View style={{...styles.paleBackground, padding: sizeL, height: 3000}}>
+      <Text style={text.h1BlackTitle}>Proposals</Text>
 
-  const Proposals = () => {
-    return (
-      <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
-        <Text style={text.h1BlackTitle}>Proposals</Text>
+      <ProposalsList
+        onlyFundingRequests={true}
+        isMember={isMember}
+        navigation={navigation}
+        commonInfo={{name: currCommon.name, id: currCommon.id, balance: currCommon.balance}}
+      />
 
-        <ProposalsList
-          onlyFundingRequests={true}
-          isMember={isMember}
-          navigation={navigation}
-          commonInfo={{ name: currCommon.name, id: currCommon.id, balance: currCommon.balance }}
+      {isMember && (
+        <ProposalActivationDate
+          activationDate={currCommon.fundingGoalDeadline}
+          bottomSheetStore={bottomSheetStore}
         />
-        <ProposalActivationDate activationDate={currCommon.fundingGoalDeadline} />
-      </View>
-    );
-  };
+      )}
 
-  const History = () => {
-    return (
-      <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
-        <Text style={text.h1BlackTitle}>History</Text>
+    </View>
+  );
 
-        <ProposalsList
-          isMember={isMember}
-          commonInfo={{ name: currCommon.name, id: currCommon.id, balance: currCommon.balance }}
-          navigation={navigation}
-          onlyFundingRequests={true}
-          isHistory={true}
-        />
-      </View>
-    );
-  };
+  const History = () => (
+    <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
+      <Text style={text.h1BlackTitle}>History</Text>
 
-  const renderScene = scene => {
+      <ProposalsList
+        isMember={isMember}
+        commonInfo={{name: currCommon.name, id: currCommon.id, balance: currCommon.balance}}
+        navigation={navigation}
+        onlyFundingRequests={true}
+        isHistory={true}
+      />
+    </View>
+  );
+
+  const renderScene = (scene) => {
     switch (scene.route.key) {
     case 'discussions':
       return Discussions();
@@ -226,9 +226,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     }
   };
 
-  const openAgendaScreen = e => {
+  const openAgendaScreen = (e) => {
     navigation.navigate('CommonAgenda', {
       screenTitle: currCommon.name,
+      common: currCommon,
     });
   };
 
@@ -259,49 +260,47 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     }
   };
 
-  const renderMembersRow = () => {
-    return (
-      <View style={styles.membersContainerWrapper}>
-        <View style={{ ...styles.membersContainer, paddingTop: !isMember ? sizeL : sizeS, paddingBottom: isMember ? 0 : sizeL }}>
-          <TouchableOpacity
-            onPress={openCommonMembers}
-            style={layout.flexRow}>
-            <View style={layout.flexRow}>
-              <Text style={text.h4Black}>
-                {pendingProposalsData && // just to be showed at the same time
+  const renderMembersRow = () => (
+    <View style={styles.membersContainerWrapper}>
+      <View style={{...styles.membersContainer, paddingTop: !isMember ? sizeL : sizeS, paddingBottom: isMember ? 0 : sizeL}}>
+        <TouchableOpacity
+          onPress={openCommonMembers}
+          style={layout.flexRow}>
+          <View style={layout.flexRow}>
+            <Text style={text.h4Black}>
+              {pendingProposalsData &&// just to be showed at the same time
                     currCommon.memberCount +
                       ' ' +
                       `Member${currCommon.memberCount !== 1 ? 's' : ''}`}
-              </Text>
-            </View>
-            <View style={{...layout.flexRow, ...layout.marginLeftS}}>
-              <Text style={text.h4BlackRegular}>
-                {pendingProposalsData &&
+            </Text>
+          </View>
+          <View style={{...layout.flexRow, ...layout.marginLeftS}}>
+            <Text style={text.h4BlackRegular}>
+              {pendingProposalsData &&
                     pendingProposalsData.pendingProposalCount}{' '}
                   Pending
-              </Text>
-              <Icon name="right-arrow" />
-            </View>
-          </TouchableOpacity>
-          {isMember && <TouchableOpacity
-            onPress={openCommonMembers}
-            style={styles.membersAction}>
-            <View style={styles.membersRow}>
-              <CommonMembersList
-                horizontal={true}
-                navigation={navigation}
-                members={
-                  daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers
-                }
-              />
-            </View>
-          </TouchableOpacity>}
-        </View>
+            </Text>
+            <Icon name="right-arrow" />
+          </View>
+        </TouchableOpacity>
+        {isMember && <TouchableOpacity
+          onPress={openCommonMembers}
+          style={styles.membersAction}>
+          <View style={styles.membersRow}>
+            <CommonMembersList
+              horizontal={true}
+              navigation={navigation}
+              members={
+                daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers
+              }
+            />
+          </View>
+        </TouchableOpacity>}
       </View>
-    );
-  };
+    </View>
+  );
 
-  const openCommonMembers = e => {
+  const openCommonMembers = (e) => {
     navigation.navigate('CommonMembers', {
       members: daoMembers,
       commonId: currCommon.id,
@@ -309,16 +308,16 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     });
   };
 
-  const shareCommon = event => {
+  const shareCommon = (event) => {
     const options = {
       url: `https://app.common.io/common/${currCommon.id}`,
       title: "Let's make it happen",
-      message: `Join in ${currCommon.name} common`,
+      message: `${currCommon.name} common`,
     };
     Share.open(options);
   };
 
-  const openCommonOptions = event => {
+  const openCommonOptions = (event) => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
     );
@@ -334,13 +333,13 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   const calcShouldSkipRules = () => {
     const rules = currCommon.metadata?.rules;
     if (rules?.length > 0) {
-      return rules.some(rule => rule?.title && rule?.url) ? false : true;
+      return !rules.some((rule) => rule?.title && rule?.url);
     } else {
       return true;
     }
   };
 
-  const requestToJoin = event => {
+  const requestToJoin = (event) => {
     if (userStore.userInfo) {
       const shouldSkipRules = calcShouldSkipRules();
       const navigate = CommonActions.navigate({
@@ -360,10 +359,10 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
 
   const viewProposal = () => {
     navigation.navigate('ProposalScreen', {
-        proposalId: route.params.createdProposalId,
-        screenTitle: currCommon.name,
-        commonBalance: currCommon.balance,
-        isMember,
+      proposalId: params.createdProposalId,
+      screenTitle: currCommon.name,
+      commonBalance: currCommon.balance,
+      isMember,
     });
 
 
@@ -374,7 +373,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     setShowRequestSentModal(false);
   };
 
-  const openProposalScreen = event => {
+  const openProposalScreen = (event) => {
 
     navigation.navigate('ProposalScreen', {
       proposalId: pendingProposalsData.usersPendingProposal?.id,
@@ -401,7 +400,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             ...layout.flexRow,
             ...{padding: 0},
           }}>
-          <Icon name="clcok-16" size={16} style={layout.marginRightXS} />
+          <Icon name="clcok" size={16} style={layout.marginRightXS} />
           <Text style={text.smallBoldGreyText}>Pending Approval</Text>
         </View>
         <View
@@ -445,83 +444,72 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
     );
   };
 
-  const loadingPlaceholder = () => {
-    return (
-      <ScrollView
-        contentContainerStyle={{
-          padding: 20,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Placeholder Animation={Fade}>
-          <PlaceholderMedia
-            style={{height: 200, width: '100%', marginBottom: 20}}
-          />
-          <PlaceholderMedia
-            style={{height: 100, width: '100%', marginBottom: 20}}
-          />
-          <PlaceholderMedia
-            style={{height: 100, width: '100%', marginBottom: 20}}
-          />
-        </Placeholder>
+  const loadingPlaceholder = () => (
+    <ScrollView
+      contentContainerStyle={{
+        padding: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+      <Placeholder Animation={Fade}>
+        <PlaceholderMedia
+          style={{height: 200, width: '100%', marginBottom: 20}}
+        />
+        <PlaceholderMedia
+          style={{height: 100, width: '100%', marginBottom: 20}}
+        />
+        <PlaceholderMedia
+          style={{height: 100, width: '100%', marginBottom: 20}}
+        />
+      </Placeholder>
 
-        <Placeholder Animation={Fade}>
-          {[...Array(3).keys()].map(i => {
-            return (
-              <View key={`common_loading_${i}`}>
-                <PlaceholderMedia
-                  style={{height: 80 * i, width: '100%', marginBottom: 20}}
-                />
-                <PlaceholderLine width={80} />
-                <PlaceholderLine />
-                <PlaceholderLine width={30} />
-              </View>
-            );
-          })}
-        </Placeholder>
-      </ScrollView>
-    );
-  };
+      <Placeholder Animation={Fade}>
+        {[...Array(3).keys()].map((i) => (
+          <View key={`common_loading_${i}`}>
+            <PlaceholderMedia
+              style={{height: 80 * i, width: '100%', marginBottom: 20}}
+            />
+            <PlaceholderLine width={80} />
+            <PlaceholderLine />
+            <PlaceholderLine width={30} />
+          </View>
+        ))}
+      </Placeholder>
+    </ScrollView>
+  );
 
-  const fixedHeaderHeight = () => {
-    return (
-      <NavigationBar
-        statusBar={{hidden: true}}
-        containerStyle={styles.fixedSection}
-        leftButton={
+  const fixedHeaderHeight = () => (
+    <NavigationBar
+      statusBar={{hidden: true}}
+      containerStyle={styles.fixedSection}
+      leftButton={
+        <TouchableOpacity
+          style={{justifyContent: 'center'}}
+          onPress={() => navigation.pop()}>
+          <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
+            <Icon
+              name="left-arrow"
+              size={32}
+              color={dark ? 'black' : 'white'}
+            />
+          </BlurView>
+        </TouchableOpacity>
+      }
+      rightButton={
+        <View
+          style={{flexDirection:'row', alignItems:'center'}}>
           <TouchableOpacity
-            style={{justifyContent: 'center'}}
-            onPress={() => navigation.pop()}>
+            style={{justifyContent: 'center', marginRight: 10}}
+            onPress={shareCommon}>
             <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
               <Icon
-                name="left-arrow"
+                name="share-32"
                 size={32}
                 color={dark ? 'black' : 'white'}
               />
             </BlurView>
           </TouchableOpacity>
-        }
-        rightButton={
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'space-between',
-              marginHorizontal: 10,
-            }}>
-            <TouchableOpacity
-              style={{justifyContent: 'center', marginRight: 5}}
-              onPress={shareCommon}>
-              <BlurView
-                style={{padding: 8, borderRadius: 15}}
-                isBlurring={dark}>
-                <Icon
-                  name="share-32"
-                  size={25}
-                  color={dark ? 'black' : 'white'}
-                />
-              </BlurView>
-            </TouchableOpacity>
-            <TouchableOpacity
+          {/* <TouchableOpacity
               style={{justifyContent: 'center'}}
               onPress={shareCommon}>
               <BlurView
@@ -533,30 +521,26 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                   color={dark ? 'black' : 'white'}
                 />
               </BlurView>
-            </TouchableOpacity>
-          </View>
-        }
-      />
-    );
-  };
+            </TouchableOpacity> */}
+        </View>
+      }
+    />
+  );
 
-  const renderRequestToJoinBtn = () => {
-    return (
-      <TouchableOpacity
-        style={styles.headerButton}
-        onPress={requestToJoin}>
-        <Text
-          style={styles.requestToJoin}>
+  const renderRequestToJoinBtn = () => (
+    <TouchableOpacity
+      style={styles.headerButton}
+      onPress={requestToJoin}>
+      <Text
+        style={styles.requestToJoin}>
           Request to join
-        </Text>
-        <Text style={styles.contribution}>
+      </Text>
+      <Text style={styles.contribution}>
           ${currCommon.metadata.minFeeToJoin / 100} min. contribution
-        </Text>
-      </TouchableOpacity>);
-  };
+      </Text>
+    </TouchableOpacity>);
 
   const initialLayout = {width: Dimensions.get('window').width};
-
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       {currCommon ? (
@@ -579,7 +563,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
           </TouchableOpacity>
 
           {showStickyTabBar && (<View style={{position: 'absolute', top: STICKY_HEADER_HEIGHT, width: '100%', paddingBottom: 5, zIndex: 999}}>
-            <TabBarRenderer navigationState={{index: 0, routes: routes}} parentRef={originTabBarRef} />
+            <TabBarRenderer navigationState={{index, routes}} jumpTo = {originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange = {setIndex} />
           </View>)}
 
           <ParallaxScrollView
@@ -600,17 +584,17 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                 <View style={{backgroundColor: 'rgba(0,0,0,0.2)', flex: 1}} />
               </FastImage>
             )}
-            scrollEvent={e => {
+            scrollEvent={(e) => {
               //console.log("Scroll e -> ", e);
               setDark(
                 e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT,
               );
               upperRequestToJoinBtnRef?.current?.measure( (fx, fy, width, height, px, py) => {
-                setShowStickyRequestToJoinBtn(py < (stickyHeighAddon) );
+                setShowStickyRequestToJoinBtn(py < (stickyHeightAddon) );
               });
               stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
                 const isVisible = py < (STICKY_HEADER_HEIGHT);
-                if (isVisible != showStickyTabBar) {
+                if (isVisible !== showStickyTabBar) {
                   setShowStickyTabBar(isVisible);
                 }
               });
@@ -629,6 +613,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                   byline: currCommon.metadata?.byline,
                   cover: currCommon.coverPhoto,
                 }}
+                common={currCommon}
               />
             )}
             renderStickyHeader={() => (
@@ -670,7 +655,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                 {renderRequestToJoinBtn()}
               </View>
             )}
-            
+
             {renderAgendaForNonMembers()}
             {/**
         <TouchableOpacity
@@ -715,6 +700,7 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
             {isMember ? (
               index === 0 ? (
                 <BottomRightButton
+                  iconName="add-proposal-32"
                   onPress={() =>
                     navigation.navigate('New Post', {
                       commonId: currCommon.id,
@@ -723,11 +709,14 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
                   bottom={50}
                 />
               ) : (
-                !isFundingStage && (
+                !isFundingStage && index === 1 && (
                   <BottomRightButton
+                    iconName="create-proposal"
                     onPress={() =>
                       navigation.navigate('FundingProposal', {
                         commonId: currCommon.id,
+                        common: currCommon,
+                        screenTitle: currCommon.name,
                       })
                     }
                     bottom={50}
@@ -779,9 +768,24 @@ const CommonProfile = ({navigation, route, bottomSheetStore, userStore}) => {
   );
 };
 
+CommonProfile.propTypes = {
+  navigation: object.isRequired,
+  route: shape({
+    params: shape({
+      //commonId: string,
+      currCommon: object,
+      //showRequestSentModal: func,
+      //createdProposalId: func,
+
+    }),
+  }),
+  bottomSheetStore: object,
+  userStore: object,
+};
+
 const styles = StyleSheet.create({
   paleBackground: {
-    backgroundColor: colors.paleGrey,
+    backgroundColor: '#fcfcfc',
   },
   requestToJoin: {
     ...font.primary.bold,
@@ -911,26 +915,25 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 1,
+    elevation: 4,
   },
   stickySection: {
     height: STICKY_HEADER_HEIGHT,
-    width: '100%',
-    ...layout.content,
-    padding: 0,
     borderBottomWidth: 1,
+    backgroundColor: colors.white,
     borderBottomColor: colors.grey4,
   },
   stickySectionText: {
-    color: 'black',
+    paddingTop: Platform.OS === 'ios' ? 40 : 20,
     ...font.heading.bold,
     fontSize: 20,
-    marginTop: stickyHeighAddon,
+    color: colors.black,
     textAlign: 'center',
   },
   fixedSection: {
     width: '100%',
     position: 'absolute',
-    bottom: 0,
+    bottom: 10,
     left: 5,
     backgroundColor: 'transparent',
   },

@@ -20,7 +20,7 @@ const MultiFileField = props => {
   };
 
 
-  const { maxCount, validation, navigation } = props;
+  const { maxCount, navigation } = props;
 
   return (
     <View style={{paddingTop: sizeM}}>

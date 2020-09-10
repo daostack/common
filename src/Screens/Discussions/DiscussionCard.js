@@ -6,29 +6,35 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import {string, shape, object} from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
 import {colors, sizeM, font} from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
-import FirebaseService from '../../Services/FirebaseService';
+import UserService from '../../Services/UserService';
 import moment from 'moment';
 import firestore from '@react-native-firebase/firestore';
 import BottomSheetModal from '../../Components/BottomSheetModal';
 import NotificationService from '../../Services/NotificationService';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
+import { db } from '../../Firebase';
 
 const {width} = Dimensions.get('window');
 
-const DiscussionCard = props => {
-  const data = props.data;
+const DiscussionCard = ({
+  data,
+  commonId,
+  userStore: {userInfo},
+  navigation,
+  bottomSheetStore,
+}) => {
+  //when will data.owner be not undefined?
   const discussionId = data.id;
-  const commonId = props.commonId;
   const [user, setUser] = useState({});
   const [msgCount, setMsgCount] = useState(0);
   const [showMenu, setShowMenu] = useState(false);
   var isFollowing = false;
 
-  let userInfo = props.userStore.userInfo;
   if (userInfo) {
     isFollowing = userInfo.following.includes(data.owner);
   }
@@ -38,7 +44,7 @@ const DiscussionCard = props => {
   };
 
   const navigateToDiscussion = () => {
-    props.navigation.navigate('Discussions', {
+    navigation.navigate('Discussions', {
       data: data,
       discussionId: data.id,
       commonId: commonId,
@@ -47,11 +53,11 @@ const DiscussionCard = props => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userData = await FirebaseService.getInstance().getUserById(
+      const userData = await UserService.getInstance().getUserById(
         data.ownerId,
       );
       if (userData) {
-        console.log('userData', userData);
+        // console.log('userData', userData);
         setUser(userData);
       }
     };
@@ -59,12 +65,12 @@ const DiscussionCard = props => {
   }, [data]);
 
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('discussionMessage')
+    const unsubscribe = db.collection('discussionMessage')
       .where('discussionId', '==', discussionId)
       .onSnapshot(snapshot => {
         setMsgCount(snapshot.docs.length);
       });
+
     return () => {
       unsubscribe();
     };
@@ -73,11 +79,11 @@ const DiscussionCard = props => {
   const follow = () => {
     console.log('Follow user id', data.owner);
     NotificationService.follow(data.owner);
-    props.bottomSheetStore.hideBottomSheet();
+    bottomSheetStore.hideBottomSheet();
   };
 
   const showOptions = () => {
-    props.bottomSheetStore.showBottomSheet(
+    bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
       {onFollow: follow},
     );
@@ -204,6 +210,23 @@ const DiscussionCard = props => {
   );
 };
 
+DiscussionCard.propTypes = {
+  data: shape({
+    id: string.isRequired,
+    owner: string.isRequired,
+    ownerId: string.isRequired,
+    title: string.isRequired,
+    createTime: object.isRequired,
+    message: string.isRequired,
+  }),
+  commonId: string,
+  userStore: shape({
+    userInfo: object,
+  }).isRequired,
+  navigation: object.isRequired,
+  bottomSheetStore: object.isRequired,
+};
+
 const styles = StyleSheet.create({
   messageCountContainer: {
     flexDirection: 'row',
@@ -275,6 +298,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
+    elevation: 2,
   },
   primaryNameContainer: {
     flex: 1,

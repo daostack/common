@@ -6,6 +6,7 @@ import GraphqlSyncService from '../GraphqlSyncService';
 const {
   ARC_VERSION,
   IPFS_DATA_VERSION,
+  PROPOSAL_TYPE,
 } = require('../../Config');
 
 
@@ -61,8 +62,8 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
 
     const errorHandler = async (receipt) => {
       // lets first check some sanity things about the dao
-      const joinAndQuitPlugin = await dao.plugin({where: {name: 'JoinAndQuit'}});
-      const joinAndQuitPluginState = await joinAndQuitPlugin.fetchState();
+      const joinPlugin = await dao.plugin({where: {name: PROPOSAL_TYPE.Join}});
+      const joinPluginState = await joinPlugin.fetchState();
       const fundingRequestPlugin = await dao.plugin({where: {name: 'FundingRequest'}});
       const fundingRequestPluginState = await fundingRequestPlugin.fetchState();
       const activationTime = fundingRequestPluginState.pluginParams.voteParams.activationTime;
@@ -73,25 +74,26 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
       // TODO: The "FUNDED_BEFORE_DEADLINE" flag can (and should) be set on common creation, not on "first proposal creation"
       let fundingGoalReachedFlag = await daoContract.functions.db('FUNDED_BEFORE_DEADLINE');
       if (fundingGoalReachedFlag !== 'TRUE') {
-        const joinAndQuitPlugin = await dao.plugin({
-          where: {name: 'JoinAndQuit'},
+        const joinPlugin = await dao.plugin({
+          where: {name: PROPOSAL_TYPE.Join},
         });
         console.log(`fundingGoalReachedFlag is not TRUE (its value is "${fundingGoalReachedFlag}") - so we cannot create a proposal`);
 
-        const fundingGoal = Number(joinAndQuitPluginState.pluginParams.fundingGoal);
+        const fundingGoal = Number(joinPluginState.pluginParams.fundingGoal);
         console.log(`funding goal: ${fundingGoal}`);
         if (fundingGoal !== 0) {
           throw Error(`Invalidly configured DAO - funding goal is not 0, it is ${fundingGoal} instead`);
         }
 
+        // TODO: check fundingGoal < dao.balance ?
 
-        if (joinAndQuitPluginState.pluginParams.fundingGoalDeadline < new Date()) {
-          throw Error('Invalidly configured DAO - cannot create funding request (the fundingGoalDeadline of the joinAndQuit plugin is in the past, so we cannot set the fundingGoalReeched flag to true)');
+        if (joinPluginState.pluginParams.fundingGoalDeadline < new Date()) {
+          throw Error('Invalidly configured DAO - cannot create funding request (the fundingGoalDeadline of the join plugin is in the past, so we cannot set the fundingGoalReeched flag to true)');
         }
         console.log('We will try to reset the fundingGoalReachedFlag');
-        const joinAndQuitContract = await arc.getContract(joinAndQuitPlugin.coreState.address);
+        const joinContract = await arc.getContract(joinPlugin.coreState.address);
         const setFlagTx  = {
-          contract: joinAndQuitContract,
+          contract: joinContract,
           method: 'setFundingGoalReachedFlag',
           args: [],
         };
@@ -106,7 +108,6 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
         if (fundingGoalReachedFlag !== 'TRUE') {
           throw Error('funding goal is not reached yet - cannot create a funding request');
         }
-
       }
       // TODO: check if the user is a member
     };

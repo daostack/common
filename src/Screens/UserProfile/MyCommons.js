@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-
+import React from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -8,27 +7,18 @@ import {
   ScrollView,
   View,
   FlatList,
-  Dimensions,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import { inject, observer } from 'mobx-react';
 import CommonBox from '../../Components/CommonBox';
 import {layout, colors, text, font, sizeS} from '../../Theme';
-import {TabView, SceneMap} from 'react-native-tab-view';
-
-import CommonTabBar from '../CommonTabBar';
-
-const getTabName = (objectName, count) => {
-  return `${objectName} (${count ? count : 0})`;
-};
 
 const MyCommons = ({navigation, daoStore, userStore}) => {
-  const [index, setIndex] = useState(0);
-  const usersDaos = daoStore.daos.filter((dao) => userStore.isDaoMember(dao.members));
-  const routes = [
-    { key: 'all', title: getTabName('All', daoStore.daos.length) },
-    { key: 'members', title: getTabName('Members', usersDaos.length) },
-  ];
+  const onScreenScroll = (event) => {
+    navigation.setOptions({
+      title: event.nativeEvent.contentOffset.y > 75 ? 'My Commons' : 'My Profile',
+    });
+  };
 
   const setDao = dao => {
     daoStore.setDao(dao);
@@ -39,6 +29,7 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
       image={dao.coverPhoto}
       common={dao}
       key={i}
+      width="100%"
       navigation={navigation}
       onPress={() => setDao(dao)}
     />;
@@ -52,23 +43,9 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
     </View>
   );
 
-  const MyCommonsList = () => {
-    return (
-      <View style={{ flex: 1, padding: 20 }}>
-        <FlatList
-          data={usersDaos}
-          renderItem={({ item, i }) => renderCommonCard(item, i)}
-        />
-      </View>
-    );
+  const myDaos = daoList => {
+    return daoList.filter(dao => userStore.isDaoMember(dao.members));
   };
-
-  const initialLayout = {width: Dimensions.get('window').width};
-
-  const renderScene = SceneMap({
-    all: React.memo(() => AllCommonsList(daoStore.daos)),
-    members: React.memo(() => MyCommonsList(usersDaos)),
-  });
 
   return (
     <>
@@ -80,19 +57,15 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
           style={styles.scrollView}
           vertical={true}
           nestedScrollEnabled={true}
-          directionalLockEnabled={true}>
+          directionalLockEnabled={true}
+          onScroll={onScreenScroll}
+          scrollEventThrottle={16}
+        >
           <View style={styles.sectionContainer}>
             <Text style={styles.title}>My Commons</Text>
           </View>
           <View style={styles.sectionTabView}>
-            <TabView
-              navigationState={{index, routes}}
-              renderScene={renderScene}
-              onIndexChange={setIndex}
-              initialLayout={initialLayout}
-              renderTabBar={CommonTabBar}
-              style={{}}
-            />
+            {AllCommonsList(myDaos(daoStore.daos))}
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -108,7 +81,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: Colors.white,
-    padding: 20,
   },
   sectionTabView: {},
   sectionContainer: {

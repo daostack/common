@@ -2,33 +2,33 @@ import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import MemberCard from '../../../Components/MemberCard';
 import {layout, sizeS, colors} from '../../../Theme';
-import FirebaseService from '../../../Services/FirebaseService';
+import UserService from '../../../Services/UserService';
+import DaoService from '../../../Services/DaoService';
 import Loader from '../../../Components/Loader';
 import MemberImage from '../../../Components/Commons/MemberImage';
 import Toast from '../../../Util/Toast';
 import {observer, inject} from 'mobx-react';
-import { BOTTOM_SHEET_TEMPLATES } from '../../../Stores/BottomSheetStore';
 
 const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) => {
   const [membersInfo, setMembersInfo] = useState([]);
 
   const showUserProfile = uid => {
-    bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
-      {
-        navigation: navigation,
-        userId: uid,
-      }
-    );
+    navigation.navigate('Profile', {userId: uid});
   };
 
   useEffect(() => {
     setMembersInfo([]);
     const loadMemberUser = async userId => {
       try {
-        const currUserInfo = await FirebaseService.getInstance().getUserById(
+        let currUserInfo = await UserService.getInstance().getUserById(
           userId,
         );
+
+        currUserInfo = {
+          ...currUserInfo,
+          daos: (await DaoService.getInstance().getUserDaos(currUserInfo.uid, currUserInfo.safeAddress)).docs?.map(dao => dao.data()),
+        };
+
         setMembersInfo(prevMembers => [...prevMembers, currUserInfo]);
       } catch (e) {
         Toast.error(e.toString());
@@ -64,13 +64,13 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
             let itemStyle = styles.horizontalItem;
 
             if (i > 0) {
-              itemStyle={...itemStyle, ...{position: 'relative', left: i*-15}}
+              itemStyle = {...itemStyle, ...{position: 'relative', left: i * -15}};
             }
 
             return (
               <TouchableOpacity style={itemStyle} onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
                 <MemberImage
-                  key={i}
+                  id={i}
                   userInfo={member}
                   style={{marginLeft: i > 0 ? -15 : 0}}
                 />
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   horizontalItem: {
     paddingHorizontal: 0,
   },
-  
+
 });
 
 export default inject('bottomSheetStore')(observer(CommonMembersList));

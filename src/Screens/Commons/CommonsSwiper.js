@@ -1,100 +1,110 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {CommonBox} from '../../Components';
-import {db} from '../../Firebase';
 import {inject, observer} from 'mobx-react';
-
 import SwiperCard from '../../Components/SwiperCard';
-import {layout, text, font,sizeXXL, colors} from '../../Theme';
+import DaoService from '../../Services/DaoService';
+import {layout, text, font, colors} from '../../Theme';
 import {
   Placeholder,
   PlaceholderMedia,
   Fade,
 } from 'rn-placeholder';
-import Toast from '../../Util/Toast';
+import {isDaoMemberBySafeAddress} from '../../Util';
+import {string, object, number, func} from 'prop-types';
+
+const DEFAULT_HEADER_HEIGHT = 145;
 
 const CommonsSwiper = ({
   navigation,
   daoStore,
-  userStore,
+  safeAddress,
+  userId,
   onCountChange,
   showMax,
 }) => {
   const [myDaos, setMyDaos] = useState(myDaos);
+  const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
   let listRef = useRef([]);
 
-  useEffect(() => {
-    let unsubscribe;
-    const getMyDaos = async () => {
-      try {
-        unsubscribe = db.collection('daos').onSnapshot(snapshot => {
-          if (snapshot.empty) {
-            listChangeCallback([]);
-          } else {
-            if (snapshot.docChanges().length !== 0) {
-              const newList = snapshot.docChanges().map(({ doc}, index) => {
-                const isMember = userStore.isDaoMember(
-                  doc.data().members,
-                );
-
-                if (!isMember) {
-                  return false;
-                }
-                return {
-                  id: doc.id,
-                  ...doc.data(),
-                  ...{
-                    coverPhoto: doc.data().metadata?.image || `https://picsum.photos/id/${index *
-                      10}/500/100.jpg`,
-                  },
-                };
-              });
-
-              let createList = newList
-                .map(item => {
-                  let index = listRef.current.findIndex(v => v.id === item.id);
-                  if (index > -1) {
-                    listRef.current[index] = item;
-                  } else {
-                    return item;
-                  }
-                })
-                .filter(item => item);
-              if (createList.length > 0) {
-                const allList = [...createList, ...listRef.current];
-                listRef.current = allList;
-              }
-              listChangeCallback(listRef.current);
-            }
+  const loadMydaos = (snapshot) => {
+    if (snapshot.empty) {
+      listChangeCallback([]);
+    } else {
+      if (snapshot.docChanges().length !== 0) {
+        const newList = snapshot.docChanges().map(({doc}, index) => {
+          const isMember = isDaoMemberBySafeAddress(doc.data().members, safeAddress);
+          if (!isMember) {
+            return false;
           }
+          return {
+            id: doc.id,
+            ...doc.data(),
+            ...{
+              coverPhoto: doc.data().metadata?.image || `https://picsum.photos/id/${index *
+                10}/500/100.jpg`,
+            },
+          };
         });
-      } catch (error) {
-        Toast.error(error);
-        console.log('errror: ', error);
+
+        let createList = newList
+          .map((item) => {
+            let index = listRef.current.findIndex((v) => v.id === item.id);
+            if (index > -1) {
+              listRef.current[index] = item;
+            } else {
+              return item;
+            }
+          })
+          .filter((item) => item);
+        if (createList.length > 0) {
+          const allList = [...createList, ...listRef.current];
+          listRef.current = allList;
+        }
+        listChangeCallback(listRef.current);
+      }
+    }
+  };
+
+  useEffect(() => {
+    let unsubscribe = null;
+    const getMyDaos = async () => {
+      unsubscribe = await DaoService.getInstance().subscribeToMyDaosList(userId, safeAddress, loadMydaos);
+    };
+
+    getMyDaos();
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
       }
     };
-    getMyDaos();
-    return unsubscribe;
-  }, []);
+  }, [safeAddress]);
 
-  const setDao = dao => {
+  const setDao = (dao) => {
+    // TODO: Remove it
     daoStore.setDao(dao);
   };
 
-  const renderCommonCard = (item, index) => {
-    return (
-      index < showMax ? <CommonBox
+  const headerHeightLayouted = (height) => {
+    setHeaderHeight(height);
+  };
+
+  const renderCommonCard = (item, index) => (
+    (!showMax || (index < showMax))
+      ? <CommonBox
         key={item.id}
         common={item}
         navigation={navigation}
         onPress={() => setDao(item)}
-      /> : <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ ...styles.commonBox }}>
+        headerHeightLayouted={headerHeightLayouted}/>
+      : <TouchableOpacity
+        onPress={() => navigation.navigate('MyCommons')}
+        style={{...styles.commonBox, height: headerHeight}}>
         <Text style={text.buttonblue}>{`View all ${myDaos.length} Commons`}</Text>
       </TouchableOpacity>
-    );
-  };
+  );
 
-  const listChangeCallback = newList => {
+  const listChangeCallback = (newList) => {
     setMyDaos(newList);
     if (onCountChange) {
       onCountChange(newList.length);
@@ -116,6 +126,7 @@ const CommonsSwiper = ({
     ) : (
       <View style={styles.emptyObjectContainer}>
         <Image
+          style={{height: 120, width: 120}}
           source={require('../../../src/Assets/group.png')}
         />
         <Text style={{...text.h2Black, ...layout.marginTopS}}>No Commons</Text>
@@ -148,12 +159,21 @@ const CommonsSwiper = ({
   );
 };
 
+CommonsSwiper.propTypes = {
+  navigation: object,
+  daoStore: object,
+  safeAddress: string,
+  userId: string,
+  onCountChange: func,
+  showMax: number,
+};
+
 const styles = StyleSheet.create({
   emptyObjectContainer: {
     ...layout.content,
     borderRadius: 14,
     backgroundColor: colors.iceBlue,
-    paddingHorizontal: sizeXXL,
+    alignSelf: 'center',
   },
 
   textNoCommons: {
@@ -175,7 +195,7 @@ const styles = StyleSheet.create({
   },
   commonBox: {
     width: '100%',
-    height: 237,
+    // height: 137,
     marginBottom: 20,
     alignItems: 'center',
     justifyContent: 'center',
@@ -188,10 +208,10 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 8,
     shadowOpacity: 1,
+    elevation: 6,
   },
 });
 
 export default inject(
   'daoStore',
-  'userStore',
 )(observer(CommonsSwiper));

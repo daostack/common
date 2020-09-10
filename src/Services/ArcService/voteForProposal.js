@@ -1,5 +1,5 @@
 import WalletManager from '../../Util/WalletManager';
-import {JoinAndQuitProposal, FundingRequestProposal} from '@daostack/arc.js';
+import {JoinProposal, FundingRequestProposal} from '@daostack/arc.js';
 import { PROPOSAL_STAGES_HISTORY } from '../ProposalService';
 import { NULL_ADDRESS, PROPOSAL_TYPE } from '../../Config';
 import GraphqlSyncService from '../GraphqlSyncService';
@@ -22,14 +22,14 @@ export const voteForProposal = async (
   arc,
   proposalId,
   data,
-  proposalType = PROPOSAL_TYPE.JoinAndQuit,
+  proposalType = PROPOSAL_TYPE.Join,
 ) => {
   try {
     console.log('voteForProposal');
     let proposal;
 
-    if (proposalType === PROPOSAL_TYPE.JoinAndQuit) {
-      proposal = new JoinAndQuitProposal(arc, proposalId);
+    if (proposalType === PROPOSAL_TYPE.Join) {
+      proposal = new JoinProposal(arc, proposalId);
     } else {
       proposal = new FundingRequestProposal(arc, proposalId);
     }
@@ -71,7 +71,7 @@ export const voteForProposal = async (
 
     console.log('transactionHash -> ', receipt.transactionHash);
 
-    await GraphqlSyncService.getInstance().syncProposalById(proposalId);
+    await GraphqlSyncService.getInstance().syncProposalById(proposalId, receipt.blockNumber);
 
     // TODO: get the voteId from the transaction receipt and return it
 

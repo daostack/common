@@ -10,6 +10,7 @@ import {
 import TextInputField from '../../../Components/FormFields/TextInputField';
 import {colors, font} from '../../../Theme';
 import {observer, inject} from 'mobx-react';
+
 const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
@@ -19,20 +20,20 @@ import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 
-const CreateStep3 = props => {
-  const [scrollY] = useState(new Animated.Value(0));
-  const [headerHeight, setHeaderHeight] = useState(0);
+const CreateStep3 = (props) => {
+  const [ scrollY ] = useState(new Animated.Value(0));
+  const [ headerHeight, setHeaderHeight ] = useState(0);
 
   // var ruleBody = [];
 
   useEffect(() => {
     const height = scrollY.interpolate({
-      inputRange: [0, 50],
-      outputRange: [0, 125],
+      inputRange: [ 0, 50 ],
+      outputRange: [ 0, 125 ],
       extrapolate: 'clamp',
     });
     setHeaderHeight(height);
-  }, [scrollY]);
+  }, [ scrollY ]);
 
   /*
   const handleRuleTitles = (x, text) => {
@@ -73,9 +74,9 @@ const CreateStep3 = props => {
         flex: 1,
         backgroundColor: 'white',
       }}>
-      <CreateStepNavigation navigation={props.navigation} title="Funding" />
+      <CreateStepNavigation navigation={props.navigation} title="Create a Common"/>
       <CreateStepDotHeader
-        title="Agenda"
+        title="Additional Info"
         currentIndex={3}
         navigation={props.navigation}
         headerHeight={headerHeight}
@@ -92,7 +93,7 @@ const CreateStep3 = props => {
         onScroll={Animated.event([
           {nativeEvent: {contentOffset: {y: scrollY}}},
         ])}>
-        <CreateStepHeader currentIndex={2} />
+        <CreateStepHeader currentIndex={2}/>
         <View
           style={{
             flex: 1,
@@ -100,9 +101,8 @@ const CreateStep3 = props => {
             backgroundColor: 'white',
           }}>
           <CreateStepHeaderTitle
-            title="Agenda"
-            subtitle="Describe your cause so people will understand what you want to
-            achieve and how"
+            title="Addtional Info"
+            subtitle="Define your course of action and rules of conduct."
           />
           <TextInputField
             value={''}
@@ -118,6 +118,7 @@ const CreateStep3 = props => {
               name: CreateCommonForm.ACTION,
               formStore: props.agendaFormStore,
               validateRule: 'string|required',
+              displayName: 'course of action',
             }}
           />
           <Text
@@ -136,9 +137,8 @@ const CreateStep3 = props => {
               ...font.lineHeight(2),
               color: colors.grey3,
             }}>
-            Any restrictions members should know about (Advertising in common
-            discussion, accepted language, you do not talk about Fight Club
-            etc.)
+            Use rules to set the tone for your Common's discussions.
+            (No advertising and spam, accepted language, etc.)
           </Text>
 
           <MultiLinkField
@@ -217,7 +217,7 @@ export default inject(
   'fundingFormStore',
   'agendaFormStore',
   'reviewFormStore',
-  'daoStore',
+  'daoStore'
 )(observer(CreateStep3));
 
 //generalInfoFormStore
