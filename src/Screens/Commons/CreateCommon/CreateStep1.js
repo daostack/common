@@ -161,6 +161,7 @@ const CreateStep1 = (props) => {
             }}
           />
           <MultiLinkField
+            link
             allowsEditing={true}
             label="Links"
             title="Title"
