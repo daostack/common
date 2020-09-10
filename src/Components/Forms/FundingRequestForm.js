@@ -4,10 +4,10 @@ import TextInputField from '../FormFields/TextInputField';
 import MultiImageField from '../FormFields/MultiImageField';
 import MultiFileField from '../FormFields/MultiFileField';
 import MultiLinkField from '../FormFields/MultiLinkField';
-
 import {observer, inject} from 'mobx-react';
 import {layout, text, colors, font} from '../../Theme';
 import TextInputFieldWithIcon from '../../Components/FormFields/TextInputFieldWithIcon';
+import logger from '../../Services/Logger';
 
 class FundingRequestForm extends React.Component {
   static FIELD_TITLE = 'title';
@@ -23,7 +23,7 @@ class FundingRequestForm extends React.Component {
 
   formSkip() {}
 
-  formSave = async e => {
+  formSave = async (e) => {
     const {fundingRequestFormStore} = this.props;
     if (fundingRequestFormStore.isFormValid()) {
       if (this.props.onFormSubmit) {
@@ -32,7 +32,7 @@ class FundingRequestForm extends React.Component {
     }
   };
 
-  onFormClose = e => {
+  onFormClose = (e) => {
     const {onFormClose} = this.props;
     if (onFormClose) {
       onFormClose();
@@ -48,9 +48,9 @@ class FundingRequestForm extends React.Component {
       ...otherProps
     } = this.props;
 
-    console.log('common.balance ->', common.balance);
-    console.log('fundingRequestFormStore');
-    console.log(fundingRequestFormStore);
+    logger.log('common.balance ->', common.balance);
+    logger.log('fundingRequestFormStore');
+    logger.log(fundingRequestFormStore);
     return (
       <View
         {...otherProps}

@@ -2,8 +2,8 @@
 import {DB_COLLECTIONS} from '../Firebase/Databasee';
 import Toast from '../Util/Toast';
 import moment from 'moment';
-
 import {db} from '../Firebase';
+import logger from './Logger';
 
 export const PROPOSAL_STAGE = {
   ExpiredInQueue: '0',
@@ -255,7 +255,7 @@ export default class ProposalService {
           }
         }
       },
-      (error) => console.error(error),
+      (error) => logger.error(error),
     );
   }
 }

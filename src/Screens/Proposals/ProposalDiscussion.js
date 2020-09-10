@@ -4,10 +4,10 @@ import {text, colors, font} from '../../Theme';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
 import moment from 'moment';
-import firestore from '@react-native-firebase/firestore';
-import { db } from '../../Firebase';
+import {db} from '../../Firebase';
+import logger from '../../Services/Logger';
 
-const ProposalDiscussion = props => {
+const ProposalDiscussion = (props) => {
   const chatRef = useRef(null);
   const [msgGroup, setMsgDroup] = useState([]);
 
@@ -21,7 +21,7 @@ const ProposalDiscussion = props => {
       // .startAt(0)
       // .limit(25)
       .onSnapshot(
-        snapshot => {
+        (snapshot) => {
           if (snapshot.docChanges().length !== 0) {
             const newList = snapshot.docChanges().map(({doc}) => ({
               id: doc.id,
@@ -30,15 +30,15 @@ const ProposalDiscussion = props => {
             const msgList = [...newList, ...listRef.current];
             // _.union(listRef.current, newList);
             listRef.current = msgList;
-            console.log('newMessage', newList);
+            logger.log('newMessage', newList);
             const groupDate = msgList
-              .map(msg => ({
+              .map((msg) => ({
                 date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
                 data: msg,
               }))
               .reduce((acc, curr) => {
                 var key = curr.date;
-                let el = acc.find(x => x && x.date === key);
+                let el = acc.find((x) => x && x.date === key);
                 if (el) {
                   el.data.push(curr.data);
                 } else {
@@ -49,7 +49,7 @@ const ProposalDiscussion = props => {
                 }
                 return acc;
               }, []);
-            console.log('groupDate', groupDate);
+            logger.log('groupDate', groupDate);
             setMsgDroup(groupDate);
             chatRef.current.scrollToLocation({
               animated: true,
@@ -58,7 +58,7 @@ const ProposalDiscussion = props => {
             });
           }
         },
-        error => console.error(error),
+        (error) => logger.error(error),
       );
     return () => {
       unsubscribe();
@@ -73,13 +73,13 @@ const ProposalDiscussion = props => {
             sections={msgGroup}
             ref={chatRef}
             // ListFooterComponent={header}
-            renderItem={x => <DiscussionMessage data={x.item} />}
+            renderItem={(x) => <DiscussionMessage data={x.item} />}
             renderSectionFooter={({section: {date}}) => (
               <Text style={styles.timeHeader}>
                 {moment().isSame(date, 'day') ? 'Today' : date}
               </Text>
             )}
-            keyExtractor={x => x.id}
+            keyExtractor={(x) => x.id}
             stickySectionHeadersEnabled={true}
             inverted={true}
             contentContainerStyle={{paddingTop: 100}}

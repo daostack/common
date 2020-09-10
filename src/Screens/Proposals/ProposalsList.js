@@ -10,6 +10,7 @@ import SwiperCard from '../../Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import {PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '../../Services/ProposalService';
 import moment from 'moment';
+import logger from '../../Services/Logger';
 
 const {width, height} = Dimensions.get('window');
 
@@ -37,7 +38,7 @@ const ProposalsList = ({isMember, commonInfo, safeAddress, showAll, showMax, onl
         safeAddress,
         showAll,
         (newList) => {
-          console.log(newList, PROPOSAL_STAGE.Executed);
+          logger.log(newList, PROPOSAL_STAGE.Executed);
 
           const filteredList = isHistory
             ? newList.filter((proposal) => PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.stageStr) || moment().isAfter(moment.unix(proposal.closingAt)))

@@ -42,6 +42,7 @@ import {
   sizeL,
   sizeLineHeight,
 } from '../../../Theme';
+import logger from '../../../Services/Logger';
 
 const {width} = Dimensions.get('window');
 
@@ -63,7 +64,7 @@ const CreateStep4 = ({generalInfoFormStore,
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
 
-  console.log(form);
+  logger.log(form);
   const [templateIndex, setTemplateIndex] = useState(1);
   const getImageUrl = (index) =>
     `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
@@ -124,10 +125,10 @@ const CreateStep4 = ({generalInfoFormStore,
     };
     ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        logger.log('User cancelled image picker');
       } else if (response.error) {
         Toast.error(response.error);
-        console.log('ImagePicker Error: ', response.error);
+        logger.log('ImagePicker Error: ', response.error);
       } else {
         Toast.loading('Uploading...');
         StorageService.getInstance()
@@ -179,7 +180,7 @@ const CreateStep4 = ({generalInfoFormStore,
         fundingGoal: parseInt(formDataInit.funding, 10) * 100,
         fundingGoalDeadline,
       };
-      console.log('calling createCommon(...)');
+      logger.log('calling createCommon(...)');
 
       navigation.navigate({
         name: 'FullScreenCreationLoader',

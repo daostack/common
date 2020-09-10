@@ -11,6 +11,7 @@ import ProposalApprovalTag from './ProposalApprovalTag';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '../../Util/Toast';
 import moment from 'moment';
+import logger from '../../Services/Logger';
 const {width} = Dimensions.get('window');
 
 const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membershipRequest, isSwiper}) => {
@@ -52,7 +53,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
         });
 
       } catch (error) {
-        console.log('error: ', error);
+        logger.log('error: ', error);
         Toast.error(error?.toString());
       }
     };
@@ -99,7 +100,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
           proposalInfo: allProposalInfo,
         });
       } catch (error) {
-        console.log('error: ', error);
+        logger.log('error: ', error);
         Toast.error(error?.toString());
       }
     };

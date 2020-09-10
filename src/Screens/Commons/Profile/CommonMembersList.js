@@ -8,7 +8,8 @@ import Loader from '../../../Components/Loader';
 import MemberImage from '../../../Components/Commons/MemberImage';
 import Toast from '../../../Util/Toast';
 import {observer, inject} from 'mobx-react';
-import {bool, object, array} from 'prop-types';
+import logger from '../../../Services/Logger';
+import {object, array, bool} from 'prop-types';
 
 const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) => {
   const [membersInfo, setMembersInfo] = useState([]);
@@ -32,7 +33,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
         addMemberOnce(currUserInfo);
       } catch (e) {
         Toast.error(e.toString());
-        console.log(e);
+        logger.log(e);
       }
     };
 

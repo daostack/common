@@ -33,6 +33,7 @@ import moment from 'moment';
 import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
 import {db} from '../../Firebase';
 import {string, bool, object, shape} from 'prop-types';
+import logger from '../../Services/Logger';
 const screenWidth = Dimensions.get('window').width;
 
 const ProposalScreen = ({navigation,
@@ -110,13 +111,13 @@ const ProposalScreen = ({navigation,
         );
 
       } catch (error) {
-        console.log('error: ', error);
+        logger.log('error: ', error);
         Toast.error(error?.toString());
       }
     };
 
     if (proposalId) {
-      console.log(`proposalId --> ${proposalId}`);
+      logger.log(`proposalId --> ${proposalId}`);
       getProposalInfo(proposalId);
     }
 
@@ -273,7 +274,7 @@ const ProposalScreen = ({navigation,
 
     } catch (err) {
       setVotingProcessState({inProgress: false, error: true});
-      console.log(err);
+      logger.log(err);
       Toast.error(err.message);
     }
   };

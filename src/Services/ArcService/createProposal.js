@@ -2,6 +2,7 @@
 const {first} = require('rxjs/operators');
 import { ipfsUpload, IPFS_DATA_VERSION, PROPOSAL_TYPE } from '../../Config';
 import WalletManager from '../../Util/WalletManager';
+import logger from '../Logger';
 
 export const createProposalRequestToJoin = async (arc, daoId, data) => {
   // data must look like this
@@ -22,17 +23,17 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     try {
       joinPlugin = await dao.plugin({where: {name: PROPOSAL_TYPE.Join}});
     } catch (e) {
-      console.log(e);
-      console.log(daoId);
+      logger.log(e);
+      logger.log(daoId);
       const plugins = await dao
         .plugins()
         .pipe(first())
         .toPromise();
-      console.log(plugins.map(p => p.coreState.name));
+      logger.log(plugins.map((p) => p.coreState.name));
       throw e;
     }
 
-    console.log('joinPlugin', joinPlugin.id);
+    logger.log('joinPlugin', joinPlugin.id);
 
     let ipfsHash;
     if (!data.funding) {
@@ -40,11 +41,11 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     }
     const fee = Number(data.funding);
     data = {...data, VERSION: IPFS_DATA_VERSION};
-    console.log('saving ipfs data');
+    logger.log('saving ipfs data');
     // not working :-()
     // ipfsHash = await arc.saveIPFSData(data);
     ipfsHash = await ipfsUpload({description: JSON.stringify(data)});
-    console.log('ipfsHash', ipfsHash);
+    logger.log('ipfsHash', ipfsHash);
 
     const args = {
       descriptionHash: ipfsHash,
@@ -59,7 +60,7 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       const manager = await WalletManager.getInstance();
       const proposer =  manager.safeAddress;
 
-      console.log('proposer ->', proposer, manager.address);
+      logger.log('proposer ->', proposer, manager.address);
 
       // we check the conditions from the contract
 
@@ -89,18 +90,18 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     // TODO: we are runnning the error handler here to check conditions before sending the transaction ...
     // .. this is expensive, and once we have reduced such errors to the minimmum, we should to error handling only ...
     // .. when the transaction actually failed
-    console.log('checking precondition for transaction');
+    logger.log('checking precondition for transaction');
     await errorHandler();
-    console.log('preconditions are ok - creating the transaction');
+    logger.log('preconditions are ok - creating the transaction');
     const transaction = await joinPlugin.createProposalTransaction(args);
     // send the request to the cloudfunction relayer
 
-    console.log('fee ->', fee);
+    logger.log('fee ->', fee);
     const manager = await WalletManager.getInstance();
     const proposalId = await manager.requestToJoin(transaction.contract, transaction.method, transaction.args, data.preAuthId);
     return proposalId;
   } catch (e) {
-    console.log(e.data);
+    logger.log(e.data);
     throw e;
   }
 };

@@ -1,5 +1,6 @@
 import GDrive from 'react-native-google-drive-api-wrapper';
 import RNFS from 'react-native-fs';
+import logger from './Logger';
 // import AuthService from './AuthService';
 
 const mimeType = 'application/json';
@@ -16,7 +17,7 @@ export default class GoogleDriveService {
     GDrive.init();
   }
 
-  static init = async accessToken => {
+  static init = async (accessToken) => {
     GoogleDriveService.instance = new GoogleDriveService(accessToken);
   };
 
@@ -29,17 +30,17 @@ export default class GoogleDriveService {
 
   deleteAppDataFile = async () => {
     const response = await this.getAppData();
-    console.log('files -> ', response.files);
+    logger.log(`files -> ${response.files} `);
     response.files.forEach((file, index) => {
       GDrive.files.delete(file.id);
     });
   };
 
-  deleteAppDataFileById = async id => {
+  deleteAppDataFileById = async (id) => {
     GDrive.files.delete(id);
   };
 
-  getFileById = async id => {
+  getFileById = async (id) => {
     const downloadFileResult = await GDrive.files.download(
       id,
       {toFile: downloadHeaderPath},
