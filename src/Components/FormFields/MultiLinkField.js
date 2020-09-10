@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from './TextInputField';
-import {text, layout, colors, sizeL} from '../../Theme';
+import { text, layout, colors, sizeL } from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import {string, bool, object, number, shape} from 'prop-types';
 
@@ -31,7 +31,7 @@ const MultiLinkField = (props) => {
   const onChangeText = (value, currTitleItemValidation) => {
 
     if (value.length > 0) {
-      canAddMoreLinks();
+      canAddMore();
       validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule + '|required');
     } else {
       setAddButton(false);
@@ -40,29 +40,25 @@ const MultiLinkField = (props) => {
 
   };
 
-  const AddLinkBtn = ({}) => (
+  const AddBtn = ({}) => (
     <TouchableOpacity>
       <Text style={styles.addLinkBtn} onPress={() => {
         setCount(count + 1);
-        canAddMoreLinks();
+        canAddMore();
       }}>
-        {addMultiFieldBtnName || 'Add Link'}
+        {addMultiFieldBtnName ||
+          (props.link
+            ? 'Add Link'
+            : props.rule
+              ? 'Add rule'
+              : 'Add field')
+        }
       </Text>
-    </TouchableOpacity>
-  );
+    </TouchableOpacity>);
 
-  const RemoveLinkBtn = ({onFieldDeleted}) => (
-    <TouchableOpacity
-      style={styles.removeBtnContainer}
-      onPress={() => onFieldDeleted()}>
-      <Icon name="delete" size={16}/>
-    </TouchableOpacity>
-  );
-
-  const canAddMoreLinks = () => {
+  const canAddMore = () => {
     let canAdd = true;
     [ ...Array(count).keys() ].forEach((i) => {
-      console.log
       let {error, value} = validation?.formStore?.form?.fields[`${validation.name}_value_${i + 1}`];
       if (!value || typeof error === 'string') {
         canAdd = false;
@@ -73,7 +69,7 @@ const MultiLinkField = (props) => {
   };
 
   return (
-    <View style={{paddingTop: sizeL}}>
+    <View style={{ paddingTop: sizeL }}>
       {[ ...Array(count).keys() ].map((currIndex) => {
         const currItemValidation = {
           ...props.validation,
@@ -82,7 +78,6 @@ const MultiLinkField = (props) => {
           validateRule: validation.validateRule?.common || validation.validateRule,
           invisibleContainer: true,
         }; //{...validation};
-
 
         const currTitleItemValidation = {
           ...props.validation,
@@ -100,7 +95,7 @@ const MultiLinkField = (props) => {
             {props.title && (
               <TextInputField
                 label={props.label}
-                onChangeText={() => canAddMoreLinks()}
+                onChangeText={() => canAddMore()}
                 viewStyle={{marginTop: 0}}
                 placeholderText={props.title}
                 validation={currTitleItemValidation}
@@ -152,7 +147,6 @@ MultiLinkField.propTypes = {
   maxLength: number,
   label: string,
   title: string,
-  maxCount: number
 };
 
 const styles = StyleSheet.create({
@@ -162,14 +156,24 @@ const styles = StyleSheet.create({
     height: 30,
     backgroundColor: `${colors.black}10`,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   removeBtn: {
     position: 'absolute',
     top: 0,
     bottom: 0,
     right: 0,
-    justifyContent: 'center',
+    justifyContent: 'center'
+  },
+  containerRow: {
+    flexDirection: 'row',
+    alignSelf: 'stretch',
+    marginTop: 80
+  },
+  emailContainer: {
+    ...layout.content,
+    ...layout.marginBottomXL,
+    marginTop: 0
   },
   containerRow: {
     flexDirection: 'row',
@@ -185,8 +189,8 @@ const styles = StyleSheet.create({
     ...text.h3Black,
     color: colors.mainBlue,
     textAlign: 'left',
-    fontSize: 16,
-  },
+    fontSize: 16
+  }
 });
 
 export default MultiLinkField;
