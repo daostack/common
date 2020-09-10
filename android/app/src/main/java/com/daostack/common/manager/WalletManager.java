@@ -7,34 +7,18 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.MnemonicUtils;
 import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
-
-import com.facebook.common.util.Hex;
 import com.orhanobut.hawk.Hawk;
 import com.yakivmospan.scytale.Crypto;
 import com.yakivmospan.scytale.Options;
 import com.yakivmospan.scytale.Store;
 import javax.crypto.SecretKey;
-import wallet.core.jni.CoinType;
-import wallet.core.jni.Curve;
-import wallet.core.jni.HDWallet;
-import wallet.core.jni.Hash;
-import wallet.core.jni.PrivateKey;
-import wallet.core.jni.PublicKey;
-import wallet.core.java.AnySigner;
-import wallet.core.jni.proto.Ethereum;
-import org.web3j.crypto.MnemonicUtils;
 
 public class WalletManager {
 
     private String keyString = "daostack";
     private Store store;
     private SecretKey key;
-    private HDWallet wallet;
     private int HARDENED_BIT = 0x80000000;
 
     private String MESSAGE_PREFIX = "\u0019Ethereum Signed Message:\n";
@@ -77,9 +61,6 @@ public class WalletManager {
             final int[] path = {44 | HARDENED_BIT, 60 | HARDENED_BIT, 0 | HARDENED_BIT, 0, 0};
             Bip32ECKeyPair childKeypair = Bip32ECKeyPair.deriveKeyPair(masterKeypair, path);
             mCredentials = Credentials.create(childKeypair);
-
-            wallet = new HDWallet(mnemonic, "");
-
             return mCredentials.getAddress();
         } catch (Exception e) {
             throw  e;
@@ -125,22 +106,6 @@ public class WalletManager {
         } catch (Exception e){
             throw e;
         }
-    }
-
-
-
-     byte[] getEthereumMessagePrefix(int messageLength) {
-        return MESSAGE_PREFIX.concat(String.valueOf(messageLength)).getBytes();
-    }
-
-    byte[] getEthereumMessageHash(byte[] message) {
-        byte[] prefix = getEthereumMessagePrefix(message.length);
-
-        byte[] result = new byte[prefix.length + message.length];
-        System.arraycopy(prefix, 0, result, 0, prefix.length);
-        System.arraycopy(message, 0, result, prefix.length, message.length);
-
-        return org.web3j.crypto.Hash.sha3(result);
     }
 
     public String signMessage(String message) throws Exception {
