@@ -154,13 +154,10 @@ const ProposalScreen = ({navigation,
 
   const messageInput = () => {
     const sendMessageToDiscussion = async () => {
-
       if (isSending || !userInfo?.uid) {
         return;
       }
       setIsSending(true);
-
-      const userInfo = auth().currentUser;
       const message = inputText;
       if (message && message.trim().length) {
         inputRef.current.clear();
@@ -215,7 +212,7 @@ const ProposalScreen = ({navigation,
                 style={{paddingRight: 15, justifyContent: 'center'}}
                 onPress={sendMessageToDiscussion}>
                 <Icon
-                  name="edit"
+                  name="send-message"
                   size={20}
                   color={
                     inputText && inputText.trim()

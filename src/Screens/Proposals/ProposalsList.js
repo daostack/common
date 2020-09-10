@@ -65,10 +65,20 @@ const ProposalsList = ({isMember, commonInfo, safeAddress, showAll, showMax, onl
   }, [commonId, isHistory, userId, safeAddress]);
 
   const onReviewProposal = async ( proposalId, daoId ) => {
+
+    let currCommonName = commonName;
+    let currCommonBalance = commonInfo?.balance;
+
+    if (!commonInfo) {
+      const currCommonInfo = await DaoService.getInstance().getDaoById(daoId);
+      currCommonName = currCommonInfo.name;
+      currCommonBalance = currCommonInfo.balance;
+    }
+
     navigation.navigate('ProposalScreen', {
       proposalId: proposalId,
-      screenTitle: commonName || await DaoService.getInstance().getDaoNameById(daoId),
-      commonBalance: commonInfo?.balance,
+      screenTitle: currCommonName,
+      commonBalance: currCommonBalance,
       isMember,
     });
   };

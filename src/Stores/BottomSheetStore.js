@@ -9,6 +9,7 @@ import {
   TransactionError,
   UnsavedChanges,
   SortProposals,
+  PublishCommon,
 } from '../Screens/BottomSheetScreens';
 
 export const BOTTOM_SHEET_TEMPLATES = {
@@ -49,6 +50,10 @@ export const BOTTOM_SHEET_TEMPLATES = {
   SAFETY_PERIOD_ABOUT: {
     topSnap: 550,
     content: SafetyPeriodAbout,
+  },
+  PUBLISH_COMMON: {
+    topSnap: 500,
+    content: PublishCommon,
   },
 };
 

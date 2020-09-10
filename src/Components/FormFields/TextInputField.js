@@ -58,6 +58,7 @@ class TextInputField extends React.Component {
     this.setState({onFocus: false});
     formStore.fieldBlured(name);
     this.props.onBlur && this.props.onBlur(e);
+    this.props.onSubmit && this.props.onSubmit();
   };
 
   renderTextField = () => {
@@ -160,6 +161,7 @@ TextInputField.propTypes = {
   maxLength: number,
   viewStyle: object,
   forwardRef: object,
+  onSubmit: func,
 };
 
 const styles = StyleSheet.create({
@@ -195,14 +197,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingLeft: 10,
     paddingRight: 10,
-  },
-  toggleViewStyle:
-  {
-    position: 'absolute',
-    top: 28,
-    right: 12,
-    ...layout.content,
-    padding: 0,
   },
 });
 

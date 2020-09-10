@@ -120,6 +120,7 @@ const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params}}) 
             <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>Links</Text>
 
             <MultiLinkField
+              link
               allowsEditing={true}
               title="Title"
               validation={{
