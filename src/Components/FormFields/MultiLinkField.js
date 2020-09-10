@@ -27,10 +27,6 @@ const MultiLinkField = (props) => {
     setDeletedFields([ ...deletedFields, currIndex ]);
   };
 
-  const revalidateAddBtn = () => {
-    setAddButton(canAddMoreLinks());
-  };
-
   const onChangeText = (value, currTitleItemValidation) => {
 
     if (value.length > 0) {
@@ -150,6 +146,7 @@ MultiLinkField.propTypes = {
   maxLength: number,
   label: string,
   title: string,
+  maxCount: number
 };
 
 const styles = StyleSheet.create({
