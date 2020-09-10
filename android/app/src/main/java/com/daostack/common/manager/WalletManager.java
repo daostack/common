@@ -1,10 +1,19 @@
 package com.daostack.common.manager;
 
 import com.daostack.common.MainApplication;
+
+import org.web3j.crypto.Bip32ECKeyPair;
+import org.web3j.crypto.Credentials;
 import org.web3j.crypto.MnemonicUtils;
+import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+
+import com.facebook.common.util.Hex;
 import com.orhanobut.hawk.Hawk;
 import com.yakivmospan.scytale.Crypto;
 import com.yakivmospan.scytale.Options;
@@ -18,6 +27,7 @@ import wallet.core.jni.PrivateKey;
 import wallet.core.jni.PublicKey;
 import wallet.core.java.AnySigner;
 import wallet.core.jni.proto.Ethereum;
+import org.web3j.crypto.MnemonicUtils;
 
 public class WalletManager {
 
@@ -25,6 +35,11 @@ public class WalletManager {
     private Store store;
     private SecretKey key;
     private HDWallet wallet;
+    private int HARDENED_BIT = 0x80000000;
+
+    private String MESSAGE_PREFIX = "\u0019Ethereum Signed Message:\n";
+
+    private Credentials mCredentials;
 
     private static class Web3jManagerHolder {
         private final static WalletManager instance = new WalletManager();
@@ -47,7 +62,7 @@ public class WalletManager {
 
     public String getAddress() throws Exception {
         try {
-            String address = wallet.getAddressForCoin(CoinType.ETHEREUM);
+            String address = mCredentials.getAddress();
             return address;
         } catch (Exception e) {
             throw  e;
@@ -57,9 +72,15 @@ public class WalletManager {
     public String createWallet(String uid) throws Exception {
         try {
             String mnemonic = retrieveMnemonic(uid);
+            byte[] seed = MnemonicUtils.generateSeed(mnemonic, "");
+            Bip32ECKeyPair masterKeypair = Bip32ECKeyPair.generateKeyPair(seed);
+            final int[] path = {44 | HARDENED_BIT, 60 | HARDENED_BIT, 0 | HARDENED_BIT, 0, 0};
+            Bip32ECKeyPair childKeypair = Bip32ECKeyPair.deriveKeyPair(masterKeypair, path);
+            mCredentials = Credentials.create(childKeypair);
+
             wallet = new HDWallet(mnemonic, "");
-            String address = wallet.getAddressForCoin(CoinType.ETHEREUM);
-            return address;
+
+            return mCredentials.getAddress();
         } catch (Exception e) {
             throw  e;
         }
@@ -106,14 +127,31 @@ public class WalletManager {
         }
     }
 
+
+
+     byte[] getEthereumMessagePrefix(int messageLength) {
+        return MESSAGE_PREFIX.concat(String.valueOf(messageLength)).getBytes();
+    }
+
+    byte[] getEthereumMessageHash(byte[] message) {
+        byte[] prefix = getEthereumMessagePrefix(message.length);
+
+        byte[] result = new byte[prefix.length + message.length];
+        System.arraycopy(prefix, 0, result, 0, prefix.length);
+        System.arraycopy(message, 0, result, prefix.length, message.length);
+
+        return org.web3j.crypto.Hash.sha3(result);
+    }
+
     public String signMessage(String message) throws Exception {
         try{
-            byte[] messageBytes = Numeric.hexStringToByteArray(message);
-            PrivateKey pk = wallet.getKeyForCoin(CoinType.ETHEREUM);
-            byte[] digest = Hash.keccak256(messageBytes);
-            byte[] sigBytes = pk.sign(digest, Curve.SECP256K1);
-            String result = Numeric.toHexString(sigBytes);
-            return result;
+            String newMessage = message.replaceFirst("^0x", "");
+            byte[] hash = Numeric.hexStringToByteArray(newMessage);
+            Sign.SignatureData signature = Sign.signPrefixedMessage(hash, mCredentials.getEcKeyPair());
+            String r = Numeric.toHexString(signature.getR());
+            String s = Numeric.toHexString(signature.getS()).substring(2);
+            String v = Numeric.toHexString(signature.getV()).substring(2);
+            return new StringBuilder(r).append(s).append(v).toString();
         }catch (Exception e){
             throw e;
         }
