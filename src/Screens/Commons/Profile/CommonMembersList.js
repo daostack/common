@@ -9,6 +9,7 @@ import MemberImage from '../../../Components/Commons/MemberImage';
 import Toast from '../../../Util/Toast';
 import {observer, inject} from 'mobx-react';
 import logger from '../../../Services/Logger';
+import {object, array, bool} from 'prop-types';
 
 const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) => {
   const [membersInfo, setMembersInfo] = useState([]);
