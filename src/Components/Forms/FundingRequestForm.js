@@ -121,6 +121,7 @@ class FundingRequestForm extends React.Component {
         </Text>
 
         <MultiLinkField
+          link
           allowsEditing={true}
           title="Title"
           validation={{
