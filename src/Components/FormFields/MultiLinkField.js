@@ -18,9 +18,7 @@ const MultiLinkField = (props) => {
     addMultiFieldBtnName,
     maxLength,
   } = props;
-
   const onFieldDeleted = (currIndex, currTitleItemValidation, currItemValidation) => {
-    revalidateAddBtn();
 
     if (currTitleItemValidation && currItemValidation) {
       currTitleItemValidation.formStore.removeFormField(currTitleItemValidation.name);
@@ -30,60 +28,48 @@ const MultiLinkField = (props) => {
     setDeletedFields([ ...deletedFields, currIndex ]);
   };
 
-  const revalidateAddBtn = () => {
-    setAddButton(canAddMoreLinks());
-  };
-
   const onChangeText = (value, currTitleItemValidation) => {
+
     if (value.length > 0) {
+      canAddMoreLinks();
       validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule + '|required');
     } else {
+      setAddButton(false);
       validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule);
     }
 
   };
 
-  const AddLinkBtn = ({addMultiFieldBtnName, setCount}) => (
+  const AddLinkBtn = ({}) => (
     <TouchableOpacity>
       <Text style={styles.addLinkBtn} onPress={() => {
-        setCount();
-        revalidateAddBtn();
+        setCount(count + 1);
+        canAddMoreLinks();
       }}>
         {addMultiFieldBtnName || 'Add Link'}
       </Text>
     </TouchableOpacity>
   );
 
-  const RemoveLinkBtn = ({onDeletedField}) => (
+  const RemoveLinkBtn = ({onFieldDeleted}) => (
     <TouchableOpacity
       style={styles.removeBtnContainer}
-      onPress={() => onDeletedField()}>
+      onPress={() => onFieldDeleted()}>
       <Icon name="delete" size={16}/>
     </TouchableOpacity>
   );
 
   const canAddMoreLinks = () => {
     let canAdd = true;
-
     [ ...Array(count).keys() ].forEach((i) => {
-      if (
-        validation.formStore.form.fields[`${props.validation.name}_title_${i + 1}`]?.error ||
-        !validation.formStore.form.fields[`${props.validation.name}_title_${i + 1}`]?.value ||
-        validation.formStore.form.fields[`${props.validation.name}_title_${i + 1}`]?.value === ''
-      ) {
-        canAdd = false;
-      }
-
-      if (
-        validation.formStore.form.fields[`${props.validation.name}_value_${i + 1}`]?.error ||
-        !validation.formStore.form.fields[`${props.validation.name}_value_${i + 1}`]?.value ||
-        validation.formStore.form.fields[`${props.validation.name}_value_${i + 1}`]?.value === ''
-      ) {
+      console.log
+      let {error, value} = validation?.formStore?.form?.fields[`${validation.name}_value_${i + 1}`];
+      if (!value || typeof error === 'string') {
         canAdd = false;
       }
     });
 
-    return canAdd;
+    setAddButton(canAdd);
   };
 
   return (
@@ -110,42 +96,24 @@ const MultiLinkField = (props) => {
         const {formStore} = validation;
 
         return (
-          !deletedFields.includes(currIndex) && (
-            <View key={`key_${props.validation.name}_${currIndex + 1}`} style={layout.marginBottomM}>
-              {props.title && (
-                <TextInputField
-                  label={props.label}
-                  onChangeText={revalidateAddBtn}
-                  viewStyle={{marginTop: 0}}
-                  placeholderText={props.title}
-                  validation={currTitleItemValidation}
-                  maxLength={maxLength}
-                />
-              )}
-
+          <View key={`key_${props.validation.name}_${currIndex + 1}`}style={layout.marginBottomM}>
+            {props.title && (
               <TextInputField
-                value={''}
-                onChangeText={(value) => {
-                  onChangeText(value, currTitleItemValidation);
-                  revalidateAddBtn();
-                }}
-                viewStyle={{marginTop: -5}}
-                placeholderText={
-                  placeholderValueText
-                    ? placeholderValueText
-                    : 'https://'
-                }
-                autoCapitalize="none"
-                autoCorrect={false}
-                multiline={multiline}
-                validation={currItemValidation}
+                label={props.label}
+                onChangeText={() => canAddMoreLinks()}
+                viewStyle={{marginTop: 0}}
+                placeholderText={props.title}
+                validation={currTitleItemValidation}
+                maxLength={maxLength}
               />
             )}
 
             <TextInputField
               value={''}
-              onChangeText={(value) => onChangeText(value, currTitleItemValidation)}
-              viewStyle={{ marginTop: -5 }}
+              onChangeText={(value) => {
+                onChangeText(value, currTitleItemValidation);
+              }}
+              viewStyle={{marginTop: -5}}
               placeholderText={
                 placeholderValueText
                   ? placeholderValueText
@@ -157,15 +125,15 @@ const MultiLinkField = (props) => {
               validation={currItemValidation}
             />
             {count > currIndex  && <View style={styles.removeBtn}>
-              <RemoveLinkBtn onDeletedField={() => onFieldDeleted(currIndex, currTitleItemValidation, currItemValidation)} />
+              <RemoveLinkBtn onFieldDeleted={() => onFieldDeleted(currIndex, currTitleItemValidation, currItemValidation)} />
             </View>}
           </View>
         );
       })}
 
       {
-        ((!maxCount || (count - deletedFields.length) < maxCount) && addButton) && (
-          <AddLinkBtn setCount={() => setCount(count + 1)}/>
+        ((!maxCount || (count - deletedFields.length) < maxCount) && addButton || count === 0) && (
+          <AddLinkBtn />
         )
       }
     </View>
@@ -184,6 +152,7 @@ MultiLinkField.propTypes = {
   maxLength: number,
   label: string,
   title: string,
+  maxCount: number
 };
 
 const styles = StyleSheet.create({
