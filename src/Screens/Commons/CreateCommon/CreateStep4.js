@@ -190,9 +190,6 @@ const CreateStep4 = ({generalInfoFormStore,
         },
       });
 
-      console.log("DATA -> ", data);
-      console.log("navigation -> ", navigation);
-
       const commonAddress = await ArcService.getInstance().createCommon(
         data,
         navigation,
