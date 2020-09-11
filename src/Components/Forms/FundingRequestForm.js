@@ -5,9 +5,9 @@ import MultiImageField from '../FormFields/MultiImageField';
 import MultiFileField from '../FormFields/MultiFileField';
 import MultiLinkField from '../FormFields/MultiLinkField';
 import {observer, inject} from 'mobx-react';
-import {layout, text, colors, font} from '../../Theme';
-import TextInputFieldWithIcon from '../../Components/FormFields/TextInputFieldWithIcon';
-import logger from '../../Services/Logger';
+import {layout, text, colors, font} from '~/Theme';
+import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
+import logger from '~/Services/Logger';
 
 class FundingRequestForm extends React.Component {
   static FIELD_TITLE = 'title';

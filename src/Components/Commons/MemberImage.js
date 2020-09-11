@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {colors, font} from '../../Theme';
+import {colors, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
 import {number, object} from 'prop-types';
 

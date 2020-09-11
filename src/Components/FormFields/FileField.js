@@ -3,10 +3,10 @@ import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import DocumentPicker from 'react-native-document-picker';
-import Toast from '../../Util/Toast';
-import Icon from '../../Assets/iconfont/Icon';
-import {text, layout, colors} from '../../Theme';
-import StorageService from '../../Services/StorageService';
+import Toast from '~/Util/Toast';
+import Icon from '~/Assets/iconfont/Icon';
+import {text, layout, colors} from '~/Theme';
+import StorageService from '~/Services/StorageService';
 import logger from '../../Services/Logger';
 
 class FileField extends React.Component {
@@ -122,7 +122,7 @@ class FileField extends React.Component {
   };
 
   render() {
-    const { value, validation} = this.props;
+    const {value, validation} = this.props;
 
     const currValue = validation
       ? validation.formStore.form.fields[validation.name].value

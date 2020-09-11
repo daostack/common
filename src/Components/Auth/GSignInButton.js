@@ -1,12 +1,12 @@
 import {useState} from 'react';
 import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
-import {colors, text, layout} from '../../Theme';
+import {colors, text, layout} from '~/Theme';
 import React from 'react';
-import Icon from '../../Assets/iconfont/Icon';
+import Icon from '~/Assets/iconfont/Icon';
 import {statusCodes} from '@react-native-community/google-signin';
 import {observer, inject} from 'mobx-react';
-import AuthService from '../../Services/AuthService';
-import logger from '../../Services/Logger';
+import AuthService from '~/Services/AuthService';
+import logger from '~/Services/Logger';
 
 const GSignInButton = ({onSignIn, userStore}) => {
   const [signInError, setSignInError] = useState(null);

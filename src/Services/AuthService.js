@@ -1,12 +1,12 @@
 import {NativeModules, Platform} from 'react-native';
 import RNFS from 'react-native-fs';
 
-import {GOOGLE_SIGNIN_PERMISSIONS, AUTH_PROVIDER_ID} from '../Util';
-import WalletManager from '../Util/WalletManager';
-import {firebaseWebClientId} from '../Config';
+import {GOOGLE_SIGNIN_PERMISSIONS, AUTH_PROVIDER_ID} from '~/Util';
+import WalletManager from '~/Util/WalletManager';
+import {firebaseWebClientId} from '~/Config';
 
 // Firebase imports
-import {auth} from '../Firebase';
+import {auth} from '~/Firebase';
 import UserService from './UserService';
 
 // Google imports

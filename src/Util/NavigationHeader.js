@@ -1,17 +1,17 @@
 import React from 'react';
-import {Text, TouchableOpacity} from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import NavigationBar from 'react-native-navbar';
-import Icon from '../Assets/iconfont/Icon';
+import Icon from '~/Assets/iconfont/Icon';
 
 const NavigationHeader = props => {
   return (
     <NavigationBar
-      statusBar={{hidden: true}}
+      statusBar={{ hidden: true }}
       leftButton={
         <TouchableOpacity
-          style={{justifyContent: 'center', flexDirection: 'row'}}
+          style={{ justifyContent: 'center', flexDirection: 'row' }}
           onPress={() => props.navigation.pop()}>
-          <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
+          <Icon name="left-arrow" size={32} style={{ marginLeft: 10 }} />
         </TouchableOpacity>
       }
       title={<Text

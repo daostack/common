@@ -1,6 +1,6 @@
 import React, {useRef, useCallback} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import Toast from '../Util/Toast';
+import Toast from '~/Util/Toast';
 
 export default function HUDTest() {
   const timerRef = useRef();

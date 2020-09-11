@@ -8,10 +8,10 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-import {CommonBox, BottomRightButton} from '../../Components';
+import {CommonBox, BottomRightButton} from '~/Components';
 import {inject, observer} from 'mobx-react';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
-import {font, colors} from '../../Theme';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {font, colors} from '~/Theme';
 import {object} from 'prop-types';
 import {
   Placeholder,
@@ -19,9 +19,9 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
-import DaoService from '../../Services/DaoService';
-import ProposalService from '../../Services/ProposalService';
-import logger from '../../Services/Logger';
+import DaoService from '~/Services/DaoService';
+import ProposalService from '~/Services/ProposalService';
+import logger from '~/Services/Logger';
 
 const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
   const [myDaosGroup, setMyDaosGroup] = useState({title: '', data: []});
@@ -88,8 +88,8 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       ...doc.data(),
       ...{
         coverPhoto:
-            doc.data().metadata?.image ||
-            `https://picsum.photos/id/${index * 10}/500/100.jpg`,
+          doc.data().metadata?.image ||
+          `https://picsum.photos/id/${index * 10}/500/100.jpg`,
       },
     }));
 
@@ -189,7 +189,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
   const listFooter = () => (
     <View style={styles.footerContainer}>
       <Image
-        source={require('../../Assets/commonListFooter.png')}
+        source={require('~/Assets/commonListFooter.png')}
         style={{
           resizeMode: 'contain',
           width: 84,
@@ -204,8 +204,8 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
           textAlign: 'center',
           marginVertical: 10,
         }}>
-          Anyone can create a Common, invite their friends, and work together to
-          achieve common goals. Start now!
+        Anyone can create a Common, invite their friends, and work together to
+        achieve common goals. Start now!
       </Text>
     </View>
   );

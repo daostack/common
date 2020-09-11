@@ -1,14 +1,14 @@
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
-import {colors, text} from '../Theme';
-import Icon from '../Assets/iconfont/Icon';
+import {colors, text} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
 import FastImage from 'react-native-fast-image';
 import {string, object} from 'prop-types';
 
-const UserAvatar = ({image, iconName, displayName, imageStyle = {}}) =>
+const UserAvatar = ({ image, iconName, displayName, imageStyle = {} }) =>
   <View style={styles.imageFieldContainer}>
     <FastImage
-      style={{...styles.imageFieldStyle, ...imageStyle}}
+      style={{ ...styles.imageFieldStyle, ...imageStyle }}
       resizeMode="cover"
       source={{uri: image}}/>
 

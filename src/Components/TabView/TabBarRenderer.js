@@ -2,8 +2,8 @@ import {TabBar} from 'react-native-tab-view';
 import React from 'react';
 import {View, Platform} from 'react-native';
 import TabBarIndicator from './TabBarIndicator';
-import {layout, colors} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
+import {layout, colors} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
 import {func, object, shape, number, array} from 'prop-types';
 
 

@@ -8,16 +8,16 @@ import {
   View,
   Keyboard,
 } from 'react-native';
-import {observer, inject} from 'mobx-react';
-import {text, layout, colors} from '../../Theme';
-import FundingRequestForm from '../../Components/Forms/FundingRequestForm';
+import { observer, inject } from 'mobx-react';
+import { text, layout, colors } from '~/Theme';
+import FundingRequestForm from '~/Components/Forms/FundingRequestForm';
 import RequestStepActionButton from '../Commons/RequestStepActionButton';
 import { CommonActions } from '@react-navigation/native';
-import ArcService from '../../Services/ArcService';
+import ArcService from '~/Services/ArcService';
 import { BN } from 'bn.js';
-import Toast from '../../Util/Toast';
-import font from '../../Theme/font';
-import logger from '../../Services/Logger';
+import Toast from '~/Util/Toast';
+import font from '~/Theme/font';
+import logger from '~/Services/Logger';
 
 const FundingProposal = ({
   userStore,
@@ -76,7 +76,7 @@ const FundingProposal = ({
     <>
       <StatusBar barStyle="dark-content" />
 
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
           style={{
             flex: 1,
@@ -87,7 +87,7 @@ const FundingProposal = ({
           <Text style={styles.subtitle}>
             Get funding to promote the Common's agenda. If your proposal is accepted you will be responsible to follow it through.
           </Text>
-          <View style={styles.divider}/>
+          <View style={styles.divider} />
           <FundingRequestForm common={route.params.common} />
         </ScrollView>
         <RequestStepActionButton

@@ -8,10 +8,10 @@ import {
 } from 'react-native';
 
 import React from 'react';
-import {text, layout, colors} from '../../Theme';
+import {text, layout, colors} from '~/Theme';
 
 const CommonOperationalStateNotif = ({navigation, onCreateFundingProposal}) => {
-  const createFundingProposal = e => {
+  const createFundingProposal = (e) => {
     if (onCreateFundingProposal) {
       onCreateFundingProposal();
     }
@@ -27,7 +27,7 @@ const CommonOperationalStateNotif = ({navigation, onCreateFundingProposal}) => {
       <View style={styles.body}>
         <Image
           style={styles.image}
-          source={require('../../Assets/save.png')}
+          source={require('~/Assets/save.png')}
         />
         <Text style={{...text.h2Black, ...layout.marginTopXL}}>
           This common is now operational

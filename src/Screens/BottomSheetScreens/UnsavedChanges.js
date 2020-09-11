@@ -7,8 +7,8 @@ import {
   Image,
 } from 'react-native';
 import React from 'react';
-import {text, layout, colors,font} from '../../Theme';
-import logger from '../../Services/Logger';
+import {text, layout, colors, font} from '~/Theme';
+import logger from '~/Services/Logger';
 
 const UnsavedChanges = ({
   navigation,

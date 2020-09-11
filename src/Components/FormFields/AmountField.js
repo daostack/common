@@ -1,7 +1,7 @@
 import {StyleSheet, View} from 'react-native';
 import React, {useState, useRef} from 'react';
 
-import {layout, colors, text} from '../../Theme';
+import {layout, colors, text} from '~/Theme';
 import JoinAmount from '../Commons/JoinAmount';
 import TextInputFieldWithIcon from './TextInputFieldWithIcon';
 
@@ -30,7 +30,7 @@ const AmountField = ({
     }
   };
 
-  const onTogglePress = e => {
+  const onTogglePress = (e) => {
     setIsCustomSelected(false);
     onCustomClose();
   };

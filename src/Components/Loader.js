@@ -1,6 +1,6 @@
-import {StyleSheet, ActivityIndicator, View} from 'react-native';
+import { StyleSheet, ActivityIndicator, View } from 'react-native';
 import React from 'react';
-import {layout, colors, sizeXXL} from '../Theme';
+import { layout, colors, sizeXXL } from '~/Theme';
 
 const Loader = ({ color, isBigger }) => {
   let loaderStyle = isBigger ? {

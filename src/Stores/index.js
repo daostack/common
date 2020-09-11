@@ -1,20 +1,20 @@
-import EditProfileFormStore from '../FormStores/EditProfileFormStore';
-import FundingRequestFormStore from '../FormStores/FundingRequestFormStore';
-import CompleteAccountFormStore from '../FormStores/CompleteAccountFormStore';
-import CreateDiscussionStore from '../FormStores/CreateDiscussionStore';
+import EditProfileFormStore from '~/FormStores/EditProfileFormStore';
+import FundingRequestFormStore from '~/FormStores/FundingRequestFormStore';
+import CompleteAccountFormStore from '~/FormStores/CompleteAccountFormStore';
+import CreateDiscussionStore from '~/FormStores/CreateDiscussionStore';
 
 import {
   PaymentFormStore,
   PersonalContributionFormStore,
   IntroduceYourselfFormStore,
-} from '../FormStores/RequestToJoin';
+} from '~/FormStores/RequestToJoin';
 
 import {
   GeneralInfoFormStore,
   FundingFormStore,
   AgendaFormStore,
   ReviewFormStore,
-} from '../FormStores/CreateCommon';
+} from '~/FormStores/CreateCommon';
 
 import UserStore from './UserStore';
 import DaoStore from './DaoStore';

@@ -10,48 +10,40 @@ import {
   Dimensions,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {layout, font, colors, text, sizeS} from '../../../Theme';
+import {layout, font, colors, text, sizeS} from '~/Theme';
 import {TabView} from 'react-native-tab-view';
 import ProposalsList from '../../Proposals/ProposalsList';
 import CommonMembersList from './CommonMembersList';
 import CommonTabBar from '../../CommonTabBar';
 
-const getTabName = (objectName, count) => {
-  return `${objectName} (${count ? count : 0})`;
-};
+const getTabName = (objectName, count) => `${objectName} (${count ? count : 0})`;
 
-const Members = ({navigation, members}) => {
-  return (
-    <CommonMembersList navigation={navigation} members={members} />
-  );
-};
+const Members = ({navigation, members}) => (
+  <CommonMembersList navigation={navigation} members={members} />
+);
 
-const Pending = ({navigation, commonId, onProposalsCountChange}) => {
-  return (
-    <View style={layout.content}>
-      <ProposalsList
-        navigation={navigation}
-        commonInfo={{ id: commonId }}
-        onlyRequestsToJoin={true}
-        onCountChange={onProposalsCountChange}
-      />
-    </View>
-  );
-};
+const Pending = ({navigation, commonId, onProposalsCountChange}) => (
+  <View style={layout.content}>
+    <ProposalsList
+      navigation={navigation}
+      commonInfo={{id: commonId}}
+      onlyRequestsToJoin={true}
+      onCountChange={onProposalsCountChange}
+    />
+  </View>
+);
 
-const History = ({navigation, commonId, onProposalsCountChange}) => {
-  return (
-    <View style={layout.content}>
-      <ProposalsList
-        navigation={navigation}
-        commonInfo={{ id: commonId }}
-        onlyRequestsToJoin={true}
-        isHistory={true}
-        onCountChange={onProposalsCountChange}
-      />
-    </View>
-  );
-};
+const History = ({navigation, commonId, onProposalsCountChange}) => (
+  <View style={layout.content}>
+    <ProposalsList
+      navigation={navigation}
+      commonInfo={{id: commonId}}
+      onlyRequestsToJoin={true}
+      isHistory={true}
+      onCountChange={onProposalsCountChange}
+    />
+  </View>
+);
 
 const initialLayout = {width: Dimensions.get('window').width};
 
@@ -78,7 +70,7 @@ const CommonMembers = ({navigation, route}) => {
         <Pending
           navigation={navigation}
           commonId={commonId}
-          onProposalsCountChange={(count)=> setPendingCount(count)}
+          onProposalsCountChange={(count) => setPendingCount(count)}
         />
       );
     case 'history':
@@ -86,7 +78,7 @@ const CommonMembers = ({navigation, route}) => {
         <History
           navigation={navigation}
           commonId={commonId}
-          onProposalsCountChange={count => setHistoryCount(count)}
+          onProposalsCountChange={(count) => setHistoryCount(count)}
         />
       );
     default:

@@ -1,6 +1,6 @@
-import {db} from '../Firebase';
-import {prepareUserObject} from '../Util';
-import {DB_COLLECTIONS} from '../Firebase/Databasee';
+import {db} from '~/Firebase';
+import {prepareUserObject} from '~/Util';
+import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import logger from './Logger';
 
 export default class UserService {
@@ -40,7 +40,7 @@ export default class UserService {
           return null;
         }
         const doc = snapshots.docs[0];
-        return {id: doc.id, ...doc.data()};
+        return { id: doc.id, ...doc.data() };
 
       });
   }

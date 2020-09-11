@@ -1,6 +1,6 @@
 import {ethers} from 'ethers';
-import WalletManager from '../../Util/WalletManager';
-import {ipfsUpload} from '../../Config';
+import WalletManager from '~/Util/WalletManager';
+import {ipfsUpload} from '~/Config';
 import GraphqlSyncService from '../GraphqlSyncService';
 import logger from '../Logger';
 const {first} = require('rxjs/operators');
@@ -8,7 +8,7 @@ const {
   ARC_VERSION,
   IPFS_DATA_VERSION,
   PROPOSAL_TYPE,
-} = require('../../Config');
+} = require('~/Config');
 
 
 export const createFundingProposal = async (arc, userAddress, daoId, data) => {
@@ -26,7 +26,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     const dao = arc.dao(daoId);
 
     const plugins = await dao.plugins().first();
-    const abi = arc.getABI({abiName: 'FundingRequest', version: ARC_VERSION});
+    const abi = arc.getABI({ abiName: 'FundingRequest', version: ARC_VERSION });
     const interf = new ethers.utils.Interface(abi);
 
     logger.log(interf);
@@ -38,7 +38,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     let fundingRequestPlugin;
     try {
       fundingRequestPlugin = await dao.plugin({
-        where: {name: 'FundingRequest'},
+        where: { name: 'FundingRequest' },
       });
     } catch (e) {
       logger.log(e);

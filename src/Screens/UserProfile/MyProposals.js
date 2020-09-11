@@ -1,4 +1,4 @@
-import React,  {useEffect} from 'react';
+import React, {useEffect} from 'react';
 
 import {
   SafeAreaView,
@@ -10,11 +10,11 @@ import {
   Dimensions,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {layout, colors, text, font,sizeS} from '../../Theme';
+import {layout, colors, text, font,sizeS} from '~/Theme';
 import {TabView} from 'react-native-tab-view';
-import ProposalsList from '../../Screens/Proposals/ProposalsList';
+import ProposalsList from '~/Screens/Proposals/ProposalsList';
 import {inject, observer} from 'mobx-react';
-import  ProposalService  from '../../Services/ProposalService';
+import  ProposalService  from '~/Services/ProposalService';
 import CommonTabBar from '../CommonTabBar';
 
 const MyProposals = ({route, navigation, userStore}) => {

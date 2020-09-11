@@ -1,16 +1,16 @@
-import WalletManager from '../../Util/WalletManager';
-import {createCommon} from './createCommon';
-import {createProposalRequestToJoin} from './createProposal';
-import {createFundingProposal} from './createFundingProposal';
-import {voteForProposal} from './voteForProposal';
+import WalletManager from '~/Util/WalletManager';
+import { createCommon } from './createCommon';
+import { createProposalRequestToJoin } from './createProposal';
+import { createFundingProposal } from './createFundingProposal';
+import { voteForProposal } from './voteForProposal';
 
-import {Arc} from '@daostack/arc.js';
+import { Arc } from '@daostack/arc.js';
 import {
   graphHttpLink,
   graphwsLink,
   ipfsLink,
   PROPOSAL_TYPE,
-} from '../../Config';
+} from '~/Config';
 import gql from 'graphql-tag';
 
 export default class ArcService {

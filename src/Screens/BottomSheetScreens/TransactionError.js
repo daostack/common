@@ -5,16 +5,16 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {inject, observer} from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import React from 'react';
-import {text, layout, colors, font} from '../../Theme/index';
+import { text, layout, colors, font } from '~/Theme/index';
 
-const TransactionError = ({bottomSheetStore, ...props}) => {
+const TransactionError = ({ bottomSheetStore, ...props }) => {
   return (
     <View style={styles.scrollView}>
       <View style={styles.body}>
         <Image
-          source={require('../../Assets/alert.png')}
+          source={require('~/Assets/alert.png')}
           style={styles.imgAlert}
         />
         <Text style={styles.title}>Something went wrong</Text>

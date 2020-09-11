@@ -7,16 +7,16 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import {text, layout, colors, sizeM} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
+import {text, layout, colors, sizeM} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
 import ReadMore from 'react-native-read-more-text';
-import UserMessageCard from '../../Components/Discussion/UserMessageCard';
+import UserMessageCard from '~/Components/Discussion/UserMessageCard';
 import ImageView from 'react-native-image-viewing';
-import Loader from '../../Components/Loader';
+import Loader from '~/Components/Loader';
 import ImageSize from 'react-native-image-size';
 import {useNavigation} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
-import {PROPOSAL_TYPE} from '../../Config';
+import {PROPOSAL_TYPE} from '~/Config';
 import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
 
@@ -92,8 +92,8 @@ const ProposalData = (props) => {
     <>
       <View style={styles.container}>
 
-        <Text style={text.h1BlackTitle}>{ proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
-          'Proposal Pitch' : 'Intro' }</Text>
+        <Text style={text.h1BlackTitle}>{proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
+          'Proposal Pitch' : 'Intro'}</Text>
 
         <View style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
           <Text style={{...text.regularTextBig}}>{proposalInfo.description.description}</Text>

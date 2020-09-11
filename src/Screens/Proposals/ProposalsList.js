@@ -1,14 +1,14 @@
 import React, {useEffect, useState, useRef} from 'react';
 import PropTypes from 'prop-types';
 import {FlatList, StyleSheet, View, Text, Image, Dimensions, TouchableOpacity} from 'react-native';
-import ViewTabNoData from '../../Components/ViewTabNoData';
-import ProposalService, {PROPOSAL_STAGE} from '../../Services/ProposalService';
-import ProposalCard from '../../Components/Proposals/ProposalCard';
-import {layout, colors, font, text, sizeM} from '../../Theme';
-import DaoService from '../../Services/DaoService';
-import SwiperCard from '../../Components/SwiperCard';
+import ViewTabNoData from '~/Components/ViewTabNoData';
+import ProposalService, {PROPOSAL_STAGE} from '~/Services/ProposalService';
+import ProposalCard from '~/Components/Proposals/ProposalCard';
+import {layout, colors, font, text, sizeM} from '~/Theme';
+import DaoService from '~/Services/DaoService';
+import SwiperCard from '~/Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
-import {PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '../../Services/ProposalService';
+import {PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '~/Services/ProposalService';
 import moment from 'moment';
 import logger from '../../Services/Logger';
 
@@ -139,8 +139,8 @@ const ProposalsList = ({isMember, commonInfo, safeAddress, showAll, showMax, onl
           </Text>
           <Text
             style={styles.textNoProposals}>
-            Join a common and propose actions you think it should take to
-            achieve its goal
+              Join a common and propose actions you think it should take to
+              achieve its goal
           </Text>
         </View>
       )
@@ -159,35 +159,35 @@ const ProposalsList = ({isMember, commonInfo, safeAddress, showAll, showMax, onl
       </View>
     )
   ) : (
-    <>
-      {list && list.length > 0 ? (
-        <>
-          {!props.isHistory && <View style={styles.newMemberMsgContainer}>
-            <Text style={styles.newMemberMsg}>New members need to be approved to join the Common.</Text>
-          </View>}
-          <FlatList
-            data={list}
-            renderItem={({item}) => renderProposalCard(item)}
-            extraData={listRef}
+      <>
+        {list && list.length > 0 ? (
+          <>
+            {!props.isHistory && <View style={styles.newMemberMsgContainer}>
+              <Text style={styles.newMemberMsg}>New members need to be approved to join the Common.</Text>
+            </View>}
+            <FlatList
+              data={list}
+              renderItem={({item}) => renderProposalCard(item)}
+              extraData={listRef}
+            />
+          </>
+        ) : (
+          <ViewTabNoData
+            title={
+              isHistory
+                ? 'No Past activity'
+                : membershipRequests
+                  ? 'No requests yet'
+                  : 'No proposals'
+            }
+            subtitle={
+              isHistory
+                ? 'You will be able to see proposals that passed or were rejected here.'
+                : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
+            }
           />
-        </>
-      ) : (
-        <ViewTabNoData
-          title={
-            isHistory
-              ? 'No Past activity'
-              : membershipRequests
-                ? 'No requests yet'
-                : 'No proposals'
-          }
-          subtitle={
-            isHistory
-              ? 'You will be able to see proposals that passed or were rejected here.'
-              : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
-          }
-        />
-      )}
-    </>
+        )}
+      </>
   );
 };
 

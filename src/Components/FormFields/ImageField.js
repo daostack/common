@@ -3,12 +3,12 @@ import {Image, View, StyleSheet, TouchableOpacity, Text, Platform} from 'react-n
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import ImagePicker from 'react-native-image-picker';
-import Toast from '../../Util/Toast';
-import StorageService from '../../Services/StorageService';
-import Icon from '../../Assets/iconfont/Icon';
-import colors from '../../Theme/colors';
-import layout from '../../Theme/layout';
-import text from '../../Theme/text';
+import Toast from '~/Util/Toast';
+import StorageService from '~/Services/StorageService';
+import Icon from '~/Assets/iconfont/Icon';
+import colors from '~/Theme/colors';
+import layout from '~/Theme/layout';
+import text from '~/Theme/text';
 import {string, func, bool, shape, object, number} from 'prop-types';
 import logger from '../../Services/Logger';
 

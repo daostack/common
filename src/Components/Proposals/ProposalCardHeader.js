@@ -1,10 +1,10 @@
 import React from 'react';
 import {Text, StyleSheet, View} from 'react-native';
-import {text, layout, colors, sizeXS, sizeS, font} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
-import { LAUNCHED_STATES, COUNTDOWN_STATES, PROPOSAL_STAGE } from '../../Services/ProposalService';
+import {text, layout, colors, sizeXS, sizeS, font} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
+import {LAUNCHED_STATES, COUNTDOWN_STATES, PROPOSAL_STAGE} from '~/Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
-import {string, number, bool } from 'prop-types';
+import {string, number, bool} from 'prop-types';
 
 const TITLES = {
   APPROVED: 'Approved',
@@ -98,7 +98,7 @@ const renderCountDown = (closingAt) => {
 };
 
 
-const ProposalCardHeader = ({ stage, winningOutcome, hasPassedExpiryDate, closingAt, isScreenHeader = false }) => {
+const ProposalCardHeader = ({stage, winningOutcome, hasPassedExpiryDate, closingAt, isScreenHeader = false}) => {
 
   const headerStatus = calcStatus(stage, winningOutcome, hasPassedExpiryDate);
   return isScreenHeader
@@ -109,7 +109,7 @@ const ProposalCardHeader = ({ stage, winningOutcome, hasPassedExpiryDate, closin
     </View>
     : <View style={{...styles.proposalCardHeader, ...{backgroundColor: headerStatus.lightColor}}}>
       <Icon name={headerStatus.icon} color={headerStatus.darkColor} size={16} />
-      <Text style={{ ...text.orangeSmallBold, ...{marginHorizontal: 5, color: headerStatus.darkColor }}}>
+      <Text style={{...text.orangeSmallBold, ...{marginHorizontal: 5, color: headerStatus.darkColor}}}>
         {headerStatus.text}
       </Text>
     </View>;

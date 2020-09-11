@@ -2,7 +2,7 @@ import React from 'react';
 import {TextInput, View, Text, StyleSheet} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
-import {layout, colors, font} from '../../Theme';
+import {layout, colors, font} from '~/Theme';
 import {string, func, bool, number, object, oneOfType} from 'prop-types';
 
 const CharCount = ({currCount, maxLength}) => <Text style = {{color: currCount === maxLength ? colors.error : colors.grey3, paddingTop: 5}}>{currCount}/{maxLength}</Text>;

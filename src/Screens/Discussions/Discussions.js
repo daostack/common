@@ -15,17 +15,17 @@ import {
   Platform,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
-import Icon from '../../Assets/iconfont/Icon';
-import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '../../Theme';
+import Icon from '~/Assets/iconfont/Icon';
+import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '~/Theme';
 import DiscussionMessage from './DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
-import Toast from '../../Util/Toast.js';
-import UserService from '../../Services/UserService';
+import Toast from '~/Util/Toast.js';
+import UserService from '~/Services/UserService';
 import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
-import BottomSheetModal from '../../Components/BottomSheetModal';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
+import BottomSheetModal from '~/Components/BottomSheetModal';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import ImageView from 'react-native-image-viewing';
 import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
@@ -276,7 +276,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
                 {fileName(f.value)}
               </Text>
             </TouchableOpacity>
-          </View> )
+          </View>)
         )
         }
       </>
@@ -310,17 +310,17 @@ const Discussions = ({daoStore, userStore, ...props}) => {
               <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
             </TouchableOpacity>
           }
-          // rightButton={
-          //   <TouchableOpacity
-          //     style={{justifyContent: 'center'}}
-          //     onPress={openOptionsMenu}>
-          //     <Icon
-          //       name="menu-horizontal"
-          //       size={32}
-          //       style={{marginRight: 10}}
-          //     />
-          //   </TouchableOpacity>
-          // }
+        // rightButton={
+        //   <TouchableOpacity
+        //     style={{justifyContent: 'center'}}
+        //     onPress={openOptionsMenu}>
+        //     <Icon
+        //       name="menu-horizontal"
+        //       size={32}
+        //       style={{marginRight: 10}}
+        //     />
+        //   </TouchableOpacity>
+        // }
         />
         <View style={{overflow: 'hidden', paddingBottom: 5}}>
           <View
@@ -397,7 +397,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
   return (
     <SafeAreaView style={styles.safeView}>
       {header()}
-      { msgGroup.length > 0 ?
+      {msgGroup.length > 0 ?
         <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
           <SectionList
             sections={msgGroup}
@@ -498,7 +498,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
         imageIndex={imageGalleryIndex}
         visible={imageGalleryIndex > -1}
         onRequestClose={() => setImageGalleryIndex(-1)}
-        // FooterComponent={ImageGalleryFooter}
+      // FooterComponent={ImageGalleryFooter}
       />
     </SafeAreaView>
   );

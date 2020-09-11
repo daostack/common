@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import {
   SafeAreaView,
@@ -8,13 +8,14 @@ import {
   ScrollView,
   View,
 } from 'react-native';
-import Icon from '../../Assets/iconfont/Icon';
-import UserService from '../../Services/UserService';
-import {layout, colors, text, sizeS} from '../../Theme';
-import AccordionBtn from '../../Components/AccordionBtn';
-import logger from '../../Services/Logger';
 
-const UserProfileReadMode = ({navigation}) => {
+import Icon from '~/Assets/iconfont/Icon';
+import UserService from '~/Services/UserService';
+import {layout, colors, text, sizeS} from '~/Theme';
+import AccordionBtn from '~/Components/AccordionBtn';
+import logger from '~/Services/Logger';
+
+const UserProfileReadMode = ({ navigation }) => {
   const [users, setUsers] = useState(null);
   const [setUserId] = useState(null);
   const bottomSheetContainerRef = useRef();

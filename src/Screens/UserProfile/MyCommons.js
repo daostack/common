@@ -10,10 +10,10 @@ import {
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import { inject, observer } from 'mobx-react';
-import CommonBox from '../../Components/CommonBox';
-import {layout, colors, text, font, sizeS} from '../../Theme';
+import CommonBox from '~/Components/CommonBox';
+import { layout, colors, text, font, sizeS } from '~/Theme';
 
-const MyCommons = ({navigation, daoStore, userStore}) => {
+const MyCommons = ({ navigation, daoStore, userStore }) => {
   const onScreenScroll = (event) => {
     navigation.setOptions({
       title: event.nativeEvent.contentOffset.y > 75 ? 'My Commons' : 'My Profile',

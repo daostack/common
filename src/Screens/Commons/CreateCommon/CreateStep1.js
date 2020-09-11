@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   TouchableOpacity,
   View,
@@ -8,19 +8,19 @@ import {
   Animated,
 } from 'react-native';
 
-import TextInputField from '../../../Components/FormFields/TextInputField';
-import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
-import {colors} from '../../../Theme';
-import {observer, inject} from 'mobx-react';
-const {width} = Dimensions.get('window');
+import TextInputField from '~/Components/FormFields/TextInputField';
+import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
+import { colors } from '~/Theme';
+import { observer, inject } from 'mobx-react';
+const { width } = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import NavigationBar from 'react-native-navbar';
-import Icon from '../../../Assets/iconfont/Icon';
+import Icon from '~/Assets/iconfont/Icon';
 import CreateStepDotHeader from './CreateStepDotHeader';
-import MultiLinkField from '../../../Components/FormFields/MultiLinkField';
+import MultiLinkField from '~/Components/FormFields/MultiLinkField';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import RequestStepActionButton from '../RequestStepActionButton';
-import logger from '../../../Services/Logger';
+import logger from '~/Services/Logger';
 
 const CreateStep1 = (props) => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -50,19 +50,19 @@ const CreateStep1 = (props) => {
         backgroundColor: 'white',
       }}>
       <NavigationBar
-        statusBar={{hidden: true}}
-        style={{borderBottomWidth: 1, borderBottomColor: colors.grey4}}
+        statusBar={{ hidden: true }}
+        style={{ borderBottomWidth: 1, borderBottomColor: colors.grey4 }}
         title={{
           title: 'Create a common',
         }}
         rightButton={
           <TouchableOpacity
-            style={{justifyContent: 'center'}}
+            style={{ justifyContent: 'center' }}
             onPress={() => props.navigation.pop()}>
             <Icon
               name="close"
               size={18}
-              style={{marginRight: 20}}
+              style={{ marginRight: 20 }}
               color="black"
             />
           </TouchableOpacity>
@@ -84,7 +84,7 @@ const CreateStep1 = (props) => {
         }}
         scrollEventThrottle={16}
         onScroll={Animated.event([
-          {nativeEvent: {contentOffset: {y: scrollY}}},
+          { nativeEvent: { contentOffset: { y: scrollY } } },
         ])}>
         <CreateStepHeader currentIndex={0} />
         <View
@@ -109,7 +109,7 @@ const CreateStep1 = (props) => {
           />
           <TextInputField
             value={''}
-            viewStyle={{alignSelf: 'stretch'}}
+            viewStyle={{ alignSelf: 'stretch' }}
             label="Common name"
             infoLabel="Required"
             placeholderText=""
@@ -126,7 +126,7 @@ const CreateStep1 = (props) => {
           />
           <TextInputField
             value={''}
-            viewStyle={{alignSelf: 'stretch'}}
+            viewStyle={{ alignSelf: 'stretch' }}
             label="Mission statement"
             infoLabel="Required"
             numberOfLines={3}
@@ -169,7 +169,7 @@ const CreateStep1 = (props) => {
             validation={{
               name: CreateCommonForm.LINKS,
               formStore: props.generalInfoFormStore,
-              validateRule: {common: 'string|url', title: 'string'},
+              validateRule: { common: 'string|url', title: 'string' },
             }}
           />
         </View>

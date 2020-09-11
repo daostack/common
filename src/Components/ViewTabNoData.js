@@ -1,8 +1,8 @@
-import {StyleSheet, View, Text} from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import React from 'react';
-import {layout, colors, font} from '../Theme';
+import { layout, colors, font } from '~/Theme';
 
-const ViewTabNoData = ({title, subtitle}) => {
+const ViewTabNoData = ({ title, subtitle }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>

@@ -2,28 +2,28 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Dimensions, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
-import {colors, font, layout, sizeL, sizeS, text} from '../../../Theme';
-import Icon from '../../../Assets/iconfont/Icon';
+import {colors, font, layout, sizeL, sizeS, text} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
-import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
-import CommonStageSummary from '../../../Components/Commons/CommonStageSummary';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import CommonStageSummary from '~/Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
-import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
-import ProposalApprovalTag from '../../../Components/Proposals/ProposalApprovalTag';
+import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
+import ProposalApprovalTag from '~/Components/Proposals/ProposalApprovalTag';
 import {CommonActions} from '@react-navigation/native';
 import ProposalsList from '../../Proposals/ProposalsList';
-import BottomRightButton from '../../../Components/BottomRightButton';
+import BottomRightButton from '~/Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
 import {inject, observer} from 'mobx-react';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
-import CommonHeader from '../../../Components/Commons/CommonHeader';
+import CommonHeader from '~/Components/Commons/CommonHeader';
 import {calcIsFundingStage, numberFormatter} from '../../../Util';
 import CommonMembersList from './CommonMembersList';
-import ProposalService from '../../../Services/ProposalService';
-import DaoService from '../../../Services/DaoService';
+import ProposalService from '~/Services/ProposalService';
+import DaoService from '~/Services/DaoService';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
-import  Toast  from '../../../Util/Toast';
+import  Toast  from '~/Util/Toast';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -32,10 +32,10 @@ import {
 } from 'rn-placeholder';
 import {object, shape} from 'prop-types';
 import NavigationBar from 'react-native-navbar';
-import TabBarRenderer from '../../../Components/TabView/TabBarRenderer';
+import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
-import ProposalActivationDate from '../../../Components/Proposals/ProposalActivationDate';
-import {BlurView} from '../../../Components';
+import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDate';
+import {BlurView} from '~/Components';
 
 let stickyHeightAddon = 36;
 
@@ -47,7 +47,7 @@ const CommonProfile = ({
   bottomSheetStore,
   userStore,
   route: {params},
-})=> {
+}) => {
   /* all of  params.commonId,
   params.showRequestSentModal,
   params.createdProposalId
@@ -74,7 +74,7 @@ const CommonProfile = ({
   const showReqToJoin =
     !userStore.userInfo ||
     (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
-  const [ showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(false);
+  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(false);
   const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
 
   const [dark, setDark] = useState(false);
@@ -269,15 +269,15 @@ const CommonProfile = ({
           <View style={layout.flexRow}>
             <Text style={text.h4Black}>
               {pendingProposalsData &&// just to be showed at the same time
-                    currCommon.memberCount +
-                      ' ' +
-                      `Member${currCommon.memberCount !== 1 ? 's' : ''}`}
+                currCommon.memberCount +
+                ' ' +
+                `Member${currCommon.memberCount !== 1 ? 's' : ''}`}
             </Text>
           </View>
           <View style={{...layout.flexRow, ...layout.marginLeftS}}>
             <Text style={text.h4BlackRegular}>
               {pendingProposalsData &&
-                    pendingProposalsData.pendingProposalCount}{' '}
+                pendingProposalsData.pendingProposalCount}{' '}
                   Pending
             </Text>
             <Icon name="right-arrow" />
@@ -497,7 +497,7 @@ const CommonProfile = ({
       }
       rightButton={
         <View
-          style={{flexDirection:'row', alignItems:'center'}}>
+          style={{flexDirection: 'row', alignItems: 'center'}}>
           <TouchableOpacity
             style={{justifyContent: 'center', marginRight: 10}}
             onPress={shareCommon}>
@@ -533,10 +533,10 @@ const CommonProfile = ({
       onPress={requestToJoin}>
       <Text
         style={styles.requestToJoin}>
-          Request to join
+        Request to join
       </Text>
       <Text style={styles.contribution}>
-          ${currCommon.metadata.minFeeToJoin / 100} min. contribution
+        ${currCommon.metadata.minFeeToJoin / 100} min. contribution
       </Text>
     </TouchableOpacity>);
 
@@ -592,7 +592,7 @@ const CommonProfile = ({
               upperRequestToJoinBtnRef?.current?.measure( (fx, fy, width, height, px, py) => {
                 setShowStickyRequestToJoinBtn(py < (stickyHeightAddon) );
               });
-              stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
+              stickyTabBarRef?.current?.measure((fx, fy, width, height, px, py) => {
                 const isVisible = py < (STICKY_HEADER_HEIGHT);
                 if (isVisible !== showStickyTabBar) {
                   setShowStickyTabBar(isVisible);
@@ -724,40 +724,40 @@ const CommonProfile = ({
                 )
               )
             ) : (
-              <>
-                {showStickyRequestToJoinBtn && showReqToJoin && (
-                  <View style={styles.actionButtonContainer}>
-                    {renderRequestToJoinBtn()}
-                  </View>
-                )}
-                <Modal
-                  isVisible={showRequestSentModal}
-                  avoidKeyboard={true}
-                  backdropColor={colors.white}
-                  backdropOpacity={1}
-                  onBackdropPress={() => setShowRequestSentModal(false)}
-                  style={{padding: 0}}>
-                  <SentTemplate
-                    title="Membership request sent"
-                    description="The common members will vote on your membership request. If it's approved, you will become a member with equal voting rights."
-                    onClose={() => setShowRequestSentModal(false)}>
-                    <View>
-                      <TouchableOpacity
-                        style={styles.modalRequestSentBtnPrimary}
-                        onPress={viewProposal}>
-                        <Text style={text.buttoncenterwhite}>
-                          View proposal
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={styles.modalRequestSentBtnOutline}
-                        onPress={goToToCommon}>
-                        <Text style={styles.backButton}>Back to Common</Text>
-                      </TouchableOpacity>
+                <>
+                  {showStickyRequestToJoinBtn && showReqToJoin && (
+                    <View style={styles.actionButtonContainer}>
+                      {renderRequestToJoinBtn()}
                     </View>
-                  </SentTemplate>
-                </Modal>
-              </>
+                  )}
+                  <Modal
+                    isVisible={showRequestSentModal}
+                    avoidKeyboard={true}
+                    backdropColor={colors.white}
+                    backdropOpacity={1}
+                    onBackdropPress={() => setShowRequestSentModal(false)}
+                    style={{padding: 0}}>
+                    <SentTemplate
+                      title="Membership request sent"
+                      description="The common members will vote on your membership request. If it's approved, you will become a member with equal voting rights."
+                      onClose={() => setShowRequestSentModal(false)}>
+                      <View>
+                        <TouchableOpacity
+                          style={styles.modalRequestSentBtnPrimary}
+                          onPress={viewProposal}>
+                          <Text style={text.buttoncenterwhite}>
+                            View proposal
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={styles.modalRequestSentBtnOutline}
+                          onPress={goToToCommon}>
+                          <Text style={styles.backButton}>Back to Common</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </SentTemplate>
+                  </Modal>
+                </>
             )}
           </SafeAreaView>
         </View>

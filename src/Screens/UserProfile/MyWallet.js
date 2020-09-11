@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 
-import {layout, text, sizeS, font, sizeM} from '../../Theme';
+import { layout, text, sizeS, font, sizeM } from '~/Theme';
 
 const MyWallet = () => {
   return (
@@ -32,7 +32,7 @@ const MyWallet = () => {
           <View style={layout.content}>
             <Image
               style={styles.wallet}
-              source={require('../../Assets/wallet.png')}
+              source={require('~/Assets/wallet.png')}
             />
           </View>
 

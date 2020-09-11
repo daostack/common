@@ -3,10 +3,10 @@ import {observer, inject} from 'mobx-react';
 import React, {useRef, useEffect} from 'react';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {colors, text, layout} from '../Theme';
+import {colors, text, layout} from '~/Theme';
 import Animated from 'react-native-reanimated';
 
-const BottomSheetContainer = props => {
+const BottomSheetContainer = (props) => {
   let ref = useRef();
   let fall = new Animated.Value(0);
 

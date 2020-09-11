@@ -1,10 +1,10 @@
 import {useState} from 'react';
 import {Text, View, StyleSheet, SafeAreaView, Dimensions} from 'react-native';
-import {colors, font} from '../../Theme';
+import {colors, font} from '~/Theme';
 import React from 'react';
 import Pdf from 'react-native-pdf';
 import {useNavigation} from '@react-navigation/native';
-import logger from '../../Services/Logger';
+import logger from '~/Services/Logger';
 
 const PDFViewer = ({route}) => {
   const uri = route.params.uri;
