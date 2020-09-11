@@ -34,8 +34,6 @@ export default class ArcService {
 
   fetchAllContracts = async () => {
 
-    console.log('Fetching All contract infos...', this.arc);
-
     let allContractInfos = [];
     let contractInfos = null;
     let skip = 0;
