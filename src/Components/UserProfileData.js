@@ -1,7 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { layout, font, colors, text, sizeL, sizeXXL } from '~/Theme';
-import { observer, inject } from 'mobx-react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {layout, font,colors, text, sizeL, sizeXXL} from '~/Theme';
+import {observer, inject} from 'mobx-react';
 import ImageField from '~/Components/FormFields/ImageField';
 import CountBox from '~/Components/CountBox';
 import Loader from '~/Components/Loader';
@@ -9,11 +9,10 @@ import EditProfileForm from '~/Components/Forms/EditProfileForm';
 import UserService from '~/Services/UserService';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
 import CommonsSwiper from '~/Screens/Commons/CommonsSwiper';
-import { UserAvatar } from '~/Components';
-
-import { CommonActions } from '@react-navigation/native';
-
+import {UserAvatar} from '~/Components';
+import {CommonActions} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
+import logger from '~/Services/Logger';
 
 const UserProfileData = ({
   userId,
@@ -38,7 +37,7 @@ const UserProfileData = ({
           setIsEditMode(false);
         }
       } catch (error) {
-        console.log('error: ', error);
+        logger.log('error: ', error);
       }
     };
 
@@ -83,18 +82,18 @@ const UserProfileData = ({
     return <Loader />;
   }
 
-  const onProposalsCountChange = newCount => {
+  const onProposalsCountChange = (newCount) => {
     setProposalsCount(newCount);
   };
 
-  const onCommonsCountChange = newCount => {
+  const onCommonsCountChange = (newCount) => {
     setCommonsCount(newCount);
   };
 
   /**
    * @param newCount {number} - the new count of the requests
    */
-  const onRequestsCountChange = newCount => {
+  const onRequestsCountChange = (newCount) => {
     setRequestsCount(newCount);
   };
 
@@ -120,7 +119,7 @@ const UserProfileData = ({
           count={commonsCount}
           name="Commons"
           onPress={() => {
-            console.log('Commons CardBox clicked');
+            logger.log('Commons CardBox clicked');
           }}
         />
         <View style={styles.countBoxDivider} />
@@ -128,7 +127,7 @@ const UserProfileData = ({
           count={proposalsCount}
           name="Proposals"
           onPress={() => {
-            console.log('Proposals CardBox clicked');
+            logger.log('Proposals CardBox clicked');
           }}
         />
       </View>

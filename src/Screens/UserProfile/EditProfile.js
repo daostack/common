@@ -18,6 +18,7 @@ import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import Toast from '~/Util/Toast';
 import AuthService from '~/Services/AuthService';
 import {filterObjectByKeys} from '~/Util';
+import logger from '~/Services/Logger';
 
 const EditProfile = ({
   userStore,
@@ -57,7 +58,7 @@ const EditProfile = ({
       try {
         await AuthService.getInstance().updateUserData(authData, publicData);
       } catch (err) {
-        console.log('Error -> ', err);
+        logger.log('Error -> ', err);
         editProfileFormStore.form.meta.submitError = `${err.toString()}  \n ${
           err.response
             ? `\nCode: ${err.response.data.code}  \nMessage: ${err.response.data.message}`
@@ -76,7 +77,7 @@ const EditProfile = ({
   };
 
   const onFormSubmitEnd = (updatedFields) => {
-    userStore.setSignedInUser({...userStore.userInfo, ...updatedFields});
+    userStore.setSignedInUser({ ...userStore.userInfo, ...updatedFields });
     Toast.done('Your profile is updated');
     navigation.goBack();
   };
@@ -99,7 +100,7 @@ const EditProfile = ({
 
   const renderBody = () => (
     <View style={styles.body}>
-      <EditProfileForm isFirstOpening={route.params.isFirstOpening} />
+      <EditProfileForm isFirstOpening={route.params.isFirstOpening }/>
     </View>
   );
 

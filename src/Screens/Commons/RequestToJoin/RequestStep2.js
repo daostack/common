@@ -120,6 +120,7 @@ const RequestStep2 = props => {
             <Text style={{ ...text.h3Black, ...{ textAlign: 'left' } }}>Links</Text>
 
             <MultiLinkField
+              link
               allowsEditing={true}
               title="Title"
               validation={{

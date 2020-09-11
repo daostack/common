@@ -3,13 +3,15 @@ import {Text, StyleSheet, Platform, View, Animated, Dimensions} from 'react-nati
 import {text, layout, colors, font} from '~/Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
-import ProposalService, {PROPOSAL_TYPE} from '~/Services/ProposalService';
+import ProposalService from '~/Services/ProposalService';
+import {PROPOSAL_TYPE} from '~/Config';
 import UserService from '~/Services/UserService';
 import DaoService from '~/Services/DaoService';
 import ProposalApprovalTag from './ProposalApprovalTag';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '~/Util/Toast';
 import moment from 'moment';
+import logger from '../../Services/Logger';
 const {width} = Dimensions.get('window');
 
 const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membershipRequest, isSwiper}) => {
@@ -25,8 +27,8 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
         //RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
-        if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
-          proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+        if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
+          proposedMemberId = currProposalInfo.join.proposedMemberId;
           funding = currProposalInfo.description.funding;
         }
         //FundingRequest proposal
@@ -51,7 +53,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
         });
 
       } catch (error) {
-        console.log('error: ', error);
+        logger.log('error: ', error);
         Toast.error(error?.toString());
       }
     };
@@ -67,8 +69,8 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
         //RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
-        if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
-          proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+        if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
+          proposedMemberId = currProposalInfo.join.proposedMemberId;
           funding = currProposalInfo.description.funding;
         }
         //FundingRequest proposal
@@ -98,7 +100,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
           proposalInfo: allProposalInfo,
         });
       } catch (error) {
-        console.log('error: ', error);
+        logger.log('error: ', error);
         Toast.error(error?.toString());
       }
     };

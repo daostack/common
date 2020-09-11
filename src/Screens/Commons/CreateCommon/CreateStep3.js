@@ -100,7 +100,7 @@ const CreateStep3 = (props) => {
             backgroundColor: 'white',
           }}>
           <CreateStepHeaderTitle
-            title="Addtional Info"
+            title="Additional Info"
             subtitle="Define your course of action and rules of conduct."
           />
           <TextInputField
@@ -141,6 +141,7 @@ const CreateStep3 = (props) => {
           </Text>
 
           <MultiLinkField
+            rule
             allowsEditing={true}
             title="Rule title"
             placeholderValueText="Rule description"

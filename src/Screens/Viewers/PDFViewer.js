@@ -4,6 +4,7 @@ import {colors, font} from '~/Theme';
 import React from 'react';
 import Pdf from 'react-native-pdf';
 import {useNavigation} from '@react-navigation/native';
+import logger from '~/Services/Logger';
 
 const PDFViewer = ({route}) => {
   const uri = route.params.uri;
@@ -25,10 +26,10 @@ const PDFViewer = ({route}) => {
             setCurrPage(page);
           }}
           onError={(error) => {
-            console.log(error);
+            logger.log(error);
           }}
           onPressLink={(currUri) => {
-            console.log(`Link presse: ${currUri}`);
+            logger.log(`Link presse: ${currUri}`);
             navigation.navigate('Browser', {url: currUri});
           }}
           style={styles.pdf}

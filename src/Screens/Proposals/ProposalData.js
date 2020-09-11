@@ -18,6 +18,7 @@ import {useNavigation} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
 import {PROPOSAL_TYPE} from '~/Config';
 import {db} from '../../Firebase';
+import logger from '../../Services/Logger';
 
 const ProposalData = (props) => {
   const navigation = useNavigation();
@@ -43,7 +44,7 @@ const ProposalData = (props) => {
                       uri: currImage.value,
                     });
                   } catch (e) {
-                    console.log(e);
+                    logger.log(e);
                   }
                 }
               }),
@@ -53,7 +54,7 @@ const ProposalData = (props) => {
         }
 
       } catch (error) {
-        console.log('error: ', error);
+        logger.log('error: ', error);
       }
     };
 
@@ -86,41 +87,6 @@ const ProposalData = (props) => {
 
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [topMessage, setTopMessage] = useState([]);
-
-  // const _renderTruncatedFooter = handlePress => {
-  //   return (
-  //     <Text style={styles.readMoreBtn} onPress={handlePress}>
-  //       Show more
-  //     </Text>
-  //   );
-  // };
-
-  // const _renderRevealedFooter = handlePress => {
-  //   return (
-  //     <Text style={styles.readMoreBtn} onPress={handlePress}>
-  //       Show less
-  //     </Text>
-  //   );
-  // };
-
-  // const openBoostedInfo = () => {
-  //   props.bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BOOSTED_INFO);
-  // };
-
-  // const _handleTextReady = () => {
-  //   // ...
-  // };
-
-  // let progressBarWidthPercent = 0;
-
-  // if (proposalInfo) {
-  //   progressBarWidthPercent =
-  //     (proposalInfo.votesFor /
-  //       (proposalInfo.votesFor + proposalInfo.votesAgainst)) *
-  //     100;
-  // }
-
-  // const isBoosted = props.stage === 'Boosted';
 
   return proposalInfo ? (
     <>

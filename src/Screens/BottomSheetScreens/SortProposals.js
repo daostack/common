@@ -6,17 +6,17 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-
 import React from 'react';
-import { text, layout, colors } from '~/Theme';
+import {text, layout, colors} from '~/Theme';
+import logger from '~/Services/Logger';
 
-const SortProposals = ({ navigation, onContinueEditing }) => {
-  const liveWithoutSave = e => {
+const SortProposals = ({navigation, onContinueEditing}) => {
+  const liveWithoutSave = (e) => {
     navigation.goBack();
   };
 
-  const continueEditing = e => {
-    console.log('onContinueEditing -> ', onContinueEditing);
+  const continueEditing = (e) => {
+    logger.log('onContinueEditing -> ', onContinueEditing);
     if (onContinueEditing) {
       onContinueEditing();
     }

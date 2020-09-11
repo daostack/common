@@ -13,10 +13,6 @@ import {
 } from '~/Screens/BottomSheetScreens';
 
 export const BOTTOM_SHEET_TEMPLATES = {
-  BOOSTED_INFO: {
-    topSnap: 600,
-    content: BoostedInfo,
-  },
   COMMON_OPERATIONAL_STATE_NOTIF: {
     topSnap: 440,
     content: CommonOperationalStateNotif,
@@ -54,6 +50,10 @@ export const BOTTOM_SHEET_TEMPLATES = {
   SAFETY_PERIOD_ABOUT: {
     topSnap: 550,
     content: SafetyPeriodAbout,
+  },
+  PUBLISH_COMMON: {
+    topSnap: 500,
+    content: PublishCommon,
   },
 };
 

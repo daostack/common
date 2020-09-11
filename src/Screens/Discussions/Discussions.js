@@ -27,7 +27,8 @@ import auth from '@react-native-firebase/auth';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import ImageView from 'react-native-image-viewing';
-import { db } from '../../Firebase';
+import {db} from '../../Firebase';
+import logger from '../../Services/Logger';
 
 const {width} = Dimensions.get('window');
 
@@ -71,7 +72,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
     const unsubscribe = db.collection('discussion')
       .doc(discussionId)
       .onSnapshot((snapshot) => {
-        // console.log(snapshot.data());
+        // logger.log(snapshot.data());
         if (!snapshot.exists) {
           return;
         }
@@ -101,7 +102,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
             const msgList = [...newList, ...listRef.current];
             // _.union(listRef.current, newList);
             listRef.current = msgList;
-            console.log('newMessage', newList);
+            logger.log('newMessage', newList);
             const groupDate = msgList
               .map((msg) => ({
                 date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
@@ -120,11 +121,11 @@ const Discussions = ({daoStore, userStore, ...props}) => {
                 }
                 return acc;
               }, []);
-            console.log('groupDate', groupDate);
+            logger.log('groupDate', groupDate);
             setMsgDroup(groupDate);
           }
         },
-        (error) => console.error(error),
+        (error) => logger.error(error),
       );
     return unsubscribe;
   }, [commonId, data.id]);
@@ -178,7 +179,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
           : firestore.FieldValue.arrayUnion(uid),
       })
       .then(() => {
-        console.log('Follow State Change');
+        logger.log('Follow State Change');
         setShowMenu(false);
       });
   };

@@ -63,11 +63,12 @@ const RequestStep4 = ({ navigation, ...props }) => {
 
         navigation.navigate({ name: 'FullScreenCreationLoader', params: { title: 'Creating your membership request' } });
 
-        if (Number(data.funding) > 0) {
-          const preAuthId = await preauthorizePayment(cardData, Number(data.funding), navigation);
-          data = { ...data, preAuthId };
-          console.log('PREAUTH ID', preAuthId);
-        }
+        // Skip mangopay for now, as the service is not responding and we are not using mangopay anyhow
+        // if (Number(data.funding) > 0) {
+        //   const preAuthId = await preauthorizePayment(cardData, Number(data.funding), navigation);
+        //   data = { ...data, preAuthId };
+        //   console.log('PREAUTH ID', preAuthId);
+        // }
 
         const proposalId = await ArcService.getInstance().createRequestToJoin(
           props.route.params.currDaoId,

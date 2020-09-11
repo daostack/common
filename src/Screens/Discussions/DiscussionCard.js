@@ -17,6 +17,7 @@ import BottomSheetModal from '~/Components/BottomSheetModal';
 import NotificationService from '~/Services/NotificationService';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import {db} from '~/Firebase';
+import logger from '~/Services/Logger';
 
 const {width} = Dimensions.get('window');
 
@@ -56,7 +57,7 @@ const DiscussionCard = ({
         data.ownerId,
       );
       if (userData) {
-        // console.log('userData', userData);
+        // logger.log('userData', userData);
         setUser(userData);
       }
     };
@@ -76,7 +77,7 @@ const DiscussionCard = ({
   }, [discussionId]);
 
   const follow = () => {
-    console.log('Follow user id', data.owner);
+    logger.log('Follow user id', data.owner);
     NotificationService.follow(data.owner);
     bottomSheetStore.hideBottomSheet();
   };
@@ -180,7 +181,7 @@ const DiscussionCard = ({
           <Text style={styles.sheetTitle}>Options</Text>
           <TouchableOpacity
             onPress={() => {
-              console.log('Follow user id', data.owner);
+              logger.log('Follow user id', data.owner);
               if (isFollowing) {
                 NotificationService.unfollow(data.owner);
               } else {

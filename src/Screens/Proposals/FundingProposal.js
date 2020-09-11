@@ -17,6 +17,7 @@ import ArcService from '~/Services/ArcService';
 import { BN } from 'bn.js';
 import Toast from '~/Util/Toast';
 import font from '~/Theme/font';
+import logger from '~/Services/Logger';
 
 const FundingProposal = ({
   userStore,
@@ -33,7 +34,7 @@ const FundingProposal = ({
   //   setShowRequestSentModal(false);
   // };
 
-  const createProposal = async e => {
+  const createProposal = async (e) => {
     Keyboard.dismiss();
     if (fundingRequestFormStore.isFormValid()) {
       try {
@@ -66,7 +67,7 @@ const FundingProposal = ({
         });
         navigation.dispatch(navigate);
       } catch (error) {
-        console.log(error);
+        logger.log(error);
         Toast.error(error.toString());
       }
     }

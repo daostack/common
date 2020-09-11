@@ -30,6 +30,8 @@ import Share from 'react-native-share';
 import {BlurView} from '~/Components';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {object} from 'prop-types';
 import {
   colors,
   font,
@@ -40,42 +42,29 @@ import {
   sizeL,
   sizeLineHeight,
 } from '~/Theme';
+import logger from '~/Services/Logger';
 
 const {width} = Dimensions.get('window');
 
-const stylesHeader = StyleSheet.create({
-  generalInfoTitle: {
-    marginTop: sizeM,
-    ...font.primary.bold,
-    ...font.fontSize(4),
-    textAlign: 'center',
-  },
-  generalInfoSubtitle: {
-    marginHorizontal: 20,
-    marginTop: sizeS,
-    color: colors.slate,
-    marginBottom: sizeL,
-    textAlign: 'center',
-    lineHeight: sizeLineHeight,
-    ...font.primary.regular,
-    ...font.fontSize(2),
-  },
-});
-
-
-const CreateStep4 = (props) => {
+const CreateStep4 = ({generalInfoFormStore,
+  fundingFormStore,
+  agendaFormStore,
+  reviewFormStore,
+  navigation,
+  bottomSheetStore,
+  userStore: {userInfo: {safeAddress}}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
 
   const form = {
-    ...props.generalInfoFormStore.getChangedFormFieldsJson(),
-    ...props.fundingFormStore.getChangedFormFieldsJson(),
-    ...props.agendaFormStore.getChangedFormFieldsJson(),
-    ...props.reviewFormStore.getChangedFormFieldsJson(),
+    ...generalInfoFormStore.getChangedFormFieldsJson(),
+    ...fundingFormStore.getChangedFormFieldsJson(),
+    ...agendaFormStore.getChangedFormFieldsJson(),
+    ...reviewFormStore.getChangedFormFieldsJson(),
   };
 
-  console.log(form);
+  logger.log(form);
   const [templateIndex, setTemplateIndex] = useState(1);
   const getImageUrl = (index) =>
     `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
@@ -87,10 +76,9 @@ const CreateStep4 = (props) => {
 
   //set default value for Avatar and Image fields
   useEffect(() => {
-    props.reviewFormStore.registerFormField(CreateCommonForm.AVATAR);
-    props.reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
-
-    props.reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, imageURI);
+    reviewFormStore.registerFormField(CreateCommonForm.AVATAR);
+    reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
+    reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, imageURI);
   }, []);
 
   useEffect(() => {
@@ -114,7 +102,7 @@ const CreateStep4 = (props) => {
     }
     setTemplateIndex(index);
     const currImageUrl = getImageUrl(index);
-    props.reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, currImageUrl);
+    reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, currImageUrl);
     setImageURI(currImageUrl);
   };
 
@@ -125,8 +113,8 @@ const CreateStep4 = (props) => {
         commonId: newCommonAddress.toLowerCase(),
       },
     });
-    props.navigation.popToTop();
-    props.navigation.dispatch(navigate);
+    navigation.popToTop();
+    navigation.dispatch(navigate);
   };
 
   const pickImage = (isAvatar) => {
@@ -137,10 +125,10 @@ const CreateStep4 = (props) => {
     };
     ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        logger.log('User cancelled image picker');
       } else if (response.error) {
         Toast.error(response.error);
-        console.log('ImagePicker Error: ', response.error);
+        logger.log('ImagePicker Error: ', response.error);
       } else {
         Toast.loading('Uploading...');
         StorageService.getInstance()
@@ -150,9 +138,9 @@ const CreateStep4 = (props) => {
             Toast.success('Done');
             if (isAvatar) {
               //setAvatarURL(url);
-              props.reviewFormStore.fieldChanged(CreateCommonForm.AVATAR, url);
+              reviewFormStore.fieldChanged(CreateCommonForm.AVATAR, url);
             } else {
-              props.reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
+              reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
               setImageURI(url);
             }
           })
@@ -161,8 +149,17 @@ const CreateStep4 = (props) => {
     });
   };
 
+  const confirmModal = () => {
+    bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.PUBLISH_COMMON,
+      {
+        forgeCommon: forgeCommon,
+      }
+    );
+  };
+
   const shareCommon = (event) => {
-    const {name} = props.generalInfoFormStore.getChangedFormFieldsJson();
+    const {name} = generalInfoFormStore.getChangedFormFieldsJson();
     const currCommonId = newCommonAddress.toLowerCase();
     const options = {
       url: `https://app.common.io/common/${currCommonId}`,
@@ -173,21 +170,19 @@ const CreateStep4 = (props) => {
   };
   const forgeCommon = async () => {
     try {
-      const address = props.userStore.userInfo.safeAddress;
       const formDataInit = {...form};
-
       const fundingGoalDeadline = formDataInit[CreateCommonForm.DEADLINE];
 
       const data = {
         ...formDataInit,
-        founderAddresses: address,
+        founderAddresses: safeAddress,
         minFeeToJoin: parseInt(formDataInit.minimum, 10) * 100,
         fundingGoal: parseInt(formDataInit.funding, 10) * 100,
         fundingGoalDeadline,
       };
-      console.log('calling createCommon(...)');
+      logger.log('calling createCommon(...)');
 
-      props.navigation.navigate({
+      navigation.navigate({
         name: 'FullScreenCreationLoader',
         params: {
           title: 'Creating your Common',
@@ -197,7 +192,7 @@ const CreateStep4 = (props) => {
 
       const commonAddress = await ArcService.getInstance().createCommon(
         data,
-        props.navigation,
+        navigation,
       );
 
       if (commonAddress) {
@@ -206,12 +201,10 @@ const CreateStep4 = (props) => {
 
       return {commonAddress};
     } catch (e) {
-      props.navigation.pop();
-      showErrorPopUp(props.bottomSheetStore, e.message);
+      navigation.pop();
+      showErrorPopUp(bottomSheetStore, e.message);
     }
   };
-
-  // console.log('FORM -> ', form);
 
   return (
     <SafeAreaView
@@ -219,11 +212,11 @@ const CreateStep4 = (props) => {
         flex: 1,
         backgroundColor: 'white',
       }}>
-      <CreateStepNavigation navigation={props.navigation} title="Agenda" />
+      <CreateStepNavigation navigation={navigation} title="Agenda" />
       <CreateStepDotHeader
         title="Final touches and review"
         currentIndex={4}
-        navigation={props.navigation}
+        navigation={navigation}
         headerHeight={headerHeight}
       />
       <ScrollView
@@ -242,8 +235,6 @@ const CreateStep4 = (props) => {
         <View
           style={{
             flex: 1,
-            // alignItems: 'center',
-            // padding: 24,
             backgroundColor: 'white',
           }}>
           <Text style={stylesHeader.generalInfoTitle}>
@@ -380,16 +371,24 @@ const CreateStep4 = (props) => {
               <CreateStep4Indicators
                 title="Min. Contribution"
                 number={numberFormatter(form[CreateCommonForm.MINIMUM])}
+                contribution
               />
             </View>
 
             <View style={{width: 120, marginHorizontal: 10}}>
               <CreateStep4Indicators
-                title="Period"
+                title="Safety period"
                 currencySymbol={false}
-                number={moment
-                  .unix(form[CreateCommonForm.DEADLINE])
-                  .format('MMM DD, YYYY')}
+                number={
+                  moment
+                    .unix(form[CreateCommonForm.DEADLINE])
+                    .fromNow(true)
+                }
+                date={
+                  moment
+                    .unix(form[CreateCommonForm.DEADLINE])
+                    .format('MMM DD, YYYY')
+                }
               />
             </View>
           </View>
@@ -425,7 +424,7 @@ const CreateStep4 = (props) => {
                 <View key={`key_${CreateCommonForm.LINKS}_${x}`}>
                   <Text
                     onPress={() => {
-                      props.navigation.navigate('Browser', {
+                      navigation.navigate('Browser', {
                         url: x.url,
                       });
                     }}
@@ -471,8 +470,8 @@ const CreateStep4 = (props) => {
       </ScrollView>
       <RequestStepActionButton
         title="Publish Common"
-        pass={props.agendaFormStore.isFormActionEnabled()}
-        onPress={forgeCommon}
+        pass={agendaFormStore.isFormActionEnabled()}
+        onPress={() => confirmModal()}
       />
       <Modal
         isVisible={Boolean(newCommonAddress)}
@@ -484,7 +483,7 @@ const CreateStep4 = (props) => {
           isCommonCreation={true}
           title="Your journey starts now"
           description="Your Common is ready. Spread the word and invite others to join you. You can always share it later."
-          onClose={() => props.navigation.dispatch(StackActions.popToTop())}>
+          onClose={() => navigation.dispatch(StackActions.popToTop())}>
           <View style={styles.shareContainer}>
             <TouchableOpacity
               style={styles.modalRequestSentBtnPrimary}
@@ -499,54 +498,43 @@ const CreateStep4 = (props) => {
           </View>
         </SentTemplate>
       </Modal>
+
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  view: {
-    justifyContent: 'flex-end',
-    margin: 0,
+CreateStep4.propTypes = {
+  generalInfoFormStore: object,
+  fundingFormStore: object,
+  agendaFormStore: object,
+  reviewFormStore: object,
+  navigation: object,
+  bottomSheetStore: object,
+  userStore: object,
+};
+
+const stylesHeader = StyleSheet.create({
+  generalInfoTitle: {
+    marginTop: sizeM,
+    ...font.primary.bold,
+    ...font.fontSize(4),
+    textAlign: 'center',
   },
-  shareContainer: {
-    flexDirection: 'column',
-  },
-  container: {
-    backgroundColor: colors.white,
-    borderBottomColor: colors.gray,
-    borderBottomWidth: 1,
-    marginVertical: 10,
-    marginHorizontal: 10,
-    justifyContent: 'center',
-    borderRadius: 2,
-    height: 50,
-  },
-  placeholderText: {
-    color: colors.grey3,
-  },
-  text: {
-    width: '100%',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
+  generalInfoSubtitle: {
+    marginHorizontal: 20,
+    marginTop: sizeS,
+    color: colors.slate,
+    marginBottom: sizeL,
+    textAlign: 'center',
+    lineHeight: sizeLineHeight,
     ...font.primary.regular,
     ...font.fontSize(2),
-    color: colors.black,
   },
-  readMoreButton: {
-    ...font.primary.regular,
-    ...font.fontSize(1),
-    color: colors.grey3,
-  },
-  continueButton: {
-    width: '100%',
-    height: 48,
-    borderRadius: 32,
-    marginTop: 45,
-    flexDirection: 'row',
-    paddingHorizontal: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.mainBlue,
+});
+
+const styles = StyleSheet.create({
+  shareContainer: {
+    flexDirection: 'column',
   },
   sectionTitle: {
     flexDirection: 'row',

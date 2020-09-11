@@ -1,16 +1,17 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { colors, text } from '~/Theme';
+import {View, StyleSheet, Text} from 'react-native';
+import {colors, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import FastImage from 'react-native-fast-image';
+import {string, object} from 'prop-types';
 
 const UserAvatar = ({ image, iconName, displayName, imageStyle = {} }) =>
   <View style={styles.imageFieldContainer}>
     <FastImage
       style={{ ...styles.imageFieldStyle, ...imageStyle }}
       resizeMode="cover"
-      source={{ uri: image }}
-    />
+      source={{uri: image}}/>
+
     {iconName && <View style={styles.imageFielFollowIcon}>
       <Icon name={iconName} size={17} color={colors.white} />
     </View>}
@@ -19,6 +20,12 @@ const UserAvatar = ({ image, iconName, displayName, imageStyle = {} }) =>
 
   </View>;
 
+UserAvatar.propTypes = {
+  image: string,
+  iconName: string,
+  displayName: string,
+  imageStyle: object,
+};
 
 const styles = StyleSheet.create({
   imageFieldContainer: {
@@ -57,6 +64,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.mainBlue,
     borderWidth: 2,
     borderColor: colors.white,
+    elevation: 3,
   },
 });
 

@@ -78,11 +78,11 @@ export default class ArcService {
   createFundingProposal = async (userAddress, daoId, data) => createFundingProposal(this.arc, userAddress, daoId, data);
 
   // VOTING
-  voteForJoinAndQuitProposal = async (proposalId, data) => voteForProposal(
+  voteForJoinProposal = async (proposalId, data) => voteForProposal(
     this.arc,
     proposalId,
     data,
-    PROPOSAL_TYPE.JoinAndQuit,
+    PROPOSAL_TYPE.Join,
   );
 
   voteForFundingRequestProposal = async (proposalId, data) => voteForProposal(
