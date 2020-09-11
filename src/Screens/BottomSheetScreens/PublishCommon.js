@@ -5,28 +5,43 @@ import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {object, func} from 'prop-types';
 
-const PublishCommon = ({bottomSheetStore, forgeCommon}) => (
-  <View style = {styles.container}>
-    <View style = {styles.body} >
-      <Image
-        source={require('../../Assets/edit.png')}
-        style={styles.image}/>
-      <Text style={styles.textTitle}>Are you sure?</Text>
-      <Text style={styles.subtitle}>You will not be able to make changes to the Common info after it is published.</Text>
-      <TouchableOpacity
-        style={styles.dismissButton}
-        onPress={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.PUBLISH_COMMON)}>
-        <Text style={styles.continueEditButtonTxt}>Continue editing</Text>
-      </TouchableOpacity>
+const PublishCommon = ({bottomSheetStore, forgeCommon}) => {
+  const onPublish = () => {
+    forgeCommon();
 
-      <TouchableOpacity
-        style={styles.publishButton}
-        onPress={forgeCommon}>
-        <Text style={styles.publishButtonText}>Publish Common</Text>
-      </TouchableOpacity>
+    bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.PUBLISH_COMMON);
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.body}>
+        <Image
+          source={require('../../Assets/edit.png')}
+          style={styles.image}
+        />
+
+        <Text style={styles.textTitle}>Are you sure?</Text>
+        <Text style={styles.subtitle}>
+          You will not be able to make changes to the Common info after it is published.
+        </Text>
+
+        <TouchableOpacity
+          style={styles.dismissButton}
+          onPress={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.PUBLISH_COMMON)}
+        >
+          <Text style={styles.continueEditButtonTxt}>Continue editing</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.publishButton}
+          onPress={onPublish}
+        >
+          <Text style={styles.publishButtonText}>Publish Common</Text>
+        </TouchableOpacity>
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 PublishCommon.propTypes = {
   bottomSheetStore: object,
