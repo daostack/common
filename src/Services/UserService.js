@@ -1,6 +1,6 @@
-import { db } from '~/Firebase';
-import { prepareUserObject } from '~/Util';
-import { DB_COLLECTIONS } from '~/Firebase/Databasee';
+import {db} from '~/Firebase';
+import {prepareUserObject} from '~/Util';
+import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import logger from './Logger';
 
 export default class UserService {
@@ -54,15 +54,9 @@ export default class UserService {
         if (snapshots.empty) {
           return [];
         }
-<<<<<<< HEAD
-        return snapshots.docs.map(doc => {
-          return { ...{ id: doc.id }, ...doc.data() };
-        });
-=======
         return snapshots.docs.map((doc) => (
           {...{id: doc.id}, ...doc.data()}
         ));
->>>>>>> dev
       });
   }
   async addUser(googleId, newUser) {

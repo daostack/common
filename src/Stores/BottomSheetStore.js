@@ -9,7 +9,7 @@ import {
   TransactionError,
   UnsavedChanges,
   SortProposals,
-  BoostedInfo,
+  PublishCommon,
 } from '~/Screens/BottomSheetScreens';
 
 export const BOTTOM_SHEET_TEMPLATES = {

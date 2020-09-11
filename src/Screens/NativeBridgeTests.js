@@ -382,11 +382,7 @@ class nativeBridgeTests extends React.Component {
         proposalStatus: `Join Proposal with id ${proposalId} created!`,
       });
       const msg = `proposal created: ${proposalId}`;
-<<<<<<< HEAD
-      console.log(msg);
-=======
       logger.log(msg);
->>>>>>> dev
       this.setState({proposalState: msg});
     } catch (e) {
       showErrorPopUp(this.props.bottomSheetStore, JSON.stringify(e.data));
@@ -419,11 +415,7 @@ class nativeBridgeTests extends React.Component {
         proposalStatus: `Funding Request Proposal with id ${proposal.id} created!`,
       });
     } catch (e) {
-<<<<<<< HEAD
-      console.log(e);
-=======
       logger.log(e);
->>>>>>> dev
       this.setState({fundingProposalState: `${e}`});
     }
     logger.log(`proposal created: ${proposal.id}`);
