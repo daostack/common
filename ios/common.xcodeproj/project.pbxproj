@@ -46,8 +46,6 @@
 		15E907312417D1B9008A5750 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E9072F2417D1B9008A5750 /* Main.storyboard */; };
 		15E907332417D1BB008A5750 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15E907322417D1BB008A5750 /* Assets.xcassets */; };
 		15E907362417D1BB008A5750 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E907342417D1BB008A5750 /* LaunchScreen.storyboard */; };
-		15EEBD952506134E00030B18 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 15EEBD942506134E00030B18 /* main.jsbundle */; };
-		15EEBD962506134E00030B18 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 15EEBD942506134E00030B18 /* main.jsbundle */; };
 		1F88078D5AE44AD180187B06 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 30000652B0094E87A70CF813 /* Nunito-Regular.ttf */; };
 		633AADEFA12A4EEF840ED24D /* NotoSerif-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 267EC9C3E82F4ED9B159DC28 /* NotoSerif-SemiBold.ttf */; };
 		736A9726E429ECF26A555355 /* Pods_common_stg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9237886088EA31D00DEDB8D /* Pods_common_stg.framework */; };
@@ -130,7 +128,6 @@
 		15E907322417D1BB008A5750 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		15E907352417D1BB008A5750 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		15E907372417D1BB008A5750 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		15EEBD942506134E00030B18 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.jsbundle; path = ../main.jsbundle; sourceTree = "<group>"; };
 		1A380D74495F911BF60AD72C /* Pods-common.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common.debug.xcconfig"; path = "Target Support Files/Pods-common/Pods-common.debug.xcconfig"; sourceTree = "<group>"; };
 		267EC9C3E82F4ED9B159DC28 /* NotoSerif-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSerif-SemiBold.ttf"; path = "../src/Assets/fonts/NotoSerif/NotoSerif-SemiBold.ttf"; sourceTree = "<group>"; };
 		30000652B0094E87A70CF813 /* Nunito-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Nunito-Regular.ttf"; path = "../src/Assets/fonts/Nunito/Nunito-Regular.ttf"; sourceTree = "<group>"; };
@@ -225,7 +222,6 @@
 		15E9071D2417D1B9008A5750 = {
 			isa = PBXGroup;
 			children = (
-				15EEBD942506134E00030B18 /* main.jsbundle */,
 				15AD00A124AB2E0F004FDADE /* Config.xcconfig */,
 				151C20582499E503006170CC /* firebase */,
 				15E907282417D1B9008A5750 /* common */,
@@ -508,7 +504,6 @@
 				151C20402499E3F4006170CC /* Assets.xcassets in Resources */,
 				151C20412499E3F4006170CC /* Main.storyboard in Resources */,
 				15AD00A524AB2E0F004FDADE /* Config.xcconfig in Resources */,
-				15EEBD962506134E00030B18 /* main.jsbundle in Resources */,
 				151C20602499E503006170CC /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -536,7 +531,6 @@
 				88F102D71F0644038ECC212B /* NunitoSans-Regular.ttf in Resources */,
 				CF0B3799DD99422BA7B8AE3C /* NunitoSans-SemiBold.ttf in Resources */,
 				1F88078D5AE44AD180187B06 /* Nunito-Regular.ttf in Resources */,
-				15EEBD952506134E00030B18 /* main.jsbundle in Resources */,
 				633AADEFA12A4EEF840ED24D /* NotoSerif-SemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
