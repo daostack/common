@@ -1,8 +1,8 @@
-import {db} from '../Firebase';
+import { db } from '~/Firebase';
 import UserService from './UserService';
-import Toast from '../Util/Toast';
+import Toast from '~/Util/Toast';
 
-import {DB_COLLECTIONS} from '../Firebase/Databasee';
+import { DB_COLLECTIONS } from '~/Firebase/Databasee';
 
 export default class DaoService {
   static serviceInstance = null;

@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
 import ImageField from './ImageField';
-import {sizeL} from '../../Theme';
+import {sizeL} from '~/Theme';
 
-const MultiImageField = props => {
+const MultiImageField = (props) => {
   const [count, setCount] = useState(1);
   const [deletedFields, setDeletedFields] = useState([]);
 
@@ -23,7 +23,7 @@ const MultiImageField = props => {
 
   return (
     <View style={{paddingTop: sizeL}}>
-      {[...Array(count).keys()].map(currIndex => {
+      {[...Array(count).keys()].map((currIndex) => {
         const currItemValidation = {...props.validation};
         currItemValidation.name = `${currItemValidation.name}_multi_${currIndex}`;
         currItemValidation.multiName = props.validation.name;
@@ -31,7 +31,7 @@ const MultiImageField = props => {
         return (
           !deletedFields.includes(currIndex) && <ImageField
             key={`key_${currItemValidation.name}_${currIndex}`}
-            onChangeImage={url => onChangeImage(url, currIndex)}
+            onChangeImage={(url) => onChangeImage(url, currIndex)}
             allowsEditing={props.allowsEditing || false}
             onFieldDeleted={() => onFieldDeleted(currIndex)}
             title={'Add Image'}

@@ -1,14 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import moment from 'moment';
-import {inject, observer} from 'mobx-react';
 import {Text, StyleSheet, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-
-import Icon from '../../Assets/iconfont/Icon';
-import {text, layout, colors, font} from '../../Theme';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
+import Icon from '~/Assets/iconfont/Icon';
+import {text, layout, colors, font} from '~/Theme';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 
 
 const ProposalActivationDate = ({activationDate, bottomSheetStore}) => {

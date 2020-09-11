@@ -3,13 +3,14 @@ import {Image, View, StyleSheet, TouchableOpacity, Text, Platform} from 'react-n
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import ImagePicker from 'react-native-image-picker';
-import Toast from '../../Util/Toast';
-import StorageService from '../../Services/StorageService';
-import Icon from '../../Assets/iconfont/Icon';
-import colors from '../../Theme/colors';
-import layout from '../../Theme/layout';
-import text from '../../Theme/text';
+import Toast from '~/Util/Toast';
+import StorageService from '~/Services/StorageService';
+import Icon from '~/Assets/iconfont/Icon';
+import colors from '~/Theme/colors';
+import layout from '~/Theme/layout';
+import text from '~/Theme/text';
 import {string, func, bool, shape, object, number} from 'prop-types';
+import logger from '../../Services/Logger';
 
 class ImageField extends React.Component {
   fieldValidation = null;
@@ -58,10 +59,10 @@ class ImageField extends React.Component {
     };
     ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
-        // console.log('User cancelled image picker');
+        // logger.log('User cancelled image picker');
       } else if (response.error) {
         Toast.error(response.error);
-        console.log('ImagePicker Error: ', response.error);
+        logger.log('ImagePicker Error: ', response.error);
       } else {
         // const source = { uri: response.uri };
         Toast.loading('Uploading...');

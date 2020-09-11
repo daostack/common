@@ -1,8 +1,9 @@
-import WalletManager from '../../Util/WalletManager';
+import WalletManager from '~/Util/WalletManager';
 import {JoinProposal, FundingRequestProposal} from '@daostack/arc.js';
-import { PROPOSAL_STAGES_HISTORY } from '../ProposalService';
-import { NULL_ADDRESS, PROPOSAL_TYPE } from '../../Config';
+import {PROPOSAL_STAGES_HISTORY} from '../ProposalService';
+import {NULL_ADDRESS, PROPOSAL_TYPE} from '~/Config';
 import GraphqlSyncService from '../GraphqlSyncService';
+import logger from '../Logger';
 
 const createVoteTransaction = async (proposal, outcome) => {
   const amount = 0;
@@ -25,7 +26,7 @@ export const voteForProposal = async (
   proposalType = PROPOSAL_TYPE.Join,
 ) => {
   try {
-    console.log('voteForProposal');
+    logger.log('voteForProposal');
     let proposal;
 
     if (proposalType === PROPOSAL_TYPE.Join) {
@@ -59,17 +60,17 @@ export const voteForProposal = async (
     // .. we are runnning the error handler here to check conditions before sending the transaction ...
     // .. this is expensive, and once we have reduced such errors to the minimmum, we should to error handling only ...
     // .. when the transaction actually failed
-    console.log('checking preconditions for voting');
+    logger.log('checking preconditions for voting');
     await errorHandler();
-    console.log('creating the vote transaction');
+    logger.log('creating the vote transaction');
     const transaction = await createVoteTransaction(proposal, data.vote);
-    console.log('waiting for the transaction to be processed');
+    logger.log('waiting for the transaction to be processed');
     const receipt = await transaction.contract.sendToRelayerWithReceipt(
       transaction.method,
       transaction.args,
     );
 
-    console.log('transactionHash -> ', receipt.transactionHash);
+    logger.log('transactionHash -> ', receipt.transactionHash);
 
     await GraphqlSyncService.getInstance().syncProposalById(proposalId, receipt.blockNumber);
 
@@ -77,7 +78,7 @@ export const voteForProposal = async (
 
     return receipt;
   } catch (e) {
-    console.log(e);
+    logger.log(e);
     throw e;
   }
 };

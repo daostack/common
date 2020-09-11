@@ -8,22 +8,21 @@ import {
   Animated,
 } from 'react-native';
 
-import TextInputField from '../../../Components/FormFields/TextInputField';
-import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
-import {colors} from '../../../Theme';
+import TextInputField from '~/Components/FormFields/TextInputField';
+import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
+import {colors} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import NavigationBar from 'react-native-navbar';
-import Icon from '../../../Assets/iconfont/Icon';
+import Icon from '~/Assets/iconfont/Icon';
 import CreateStepDotHeader from './CreateStepDotHeader';
-import MultiLinkField from '../../../Components/FormFields/MultiLinkField';
-
+import MultiLinkField from '~/Components/FormFields/MultiLinkField';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
-
 import RequestStepActionButton from '../RequestStepActionButton';
+import logger from '~/Services/Logger';
 
-const CreateStep1 = props => {
+const CreateStep1 = (props) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
 
@@ -33,7 +32,7 @@ const CreateStep1 = props => {
       outputRange: [0, 125],
       extrapolate: 'clamp',
     });
-    console.log(height);
+    logger.log(height);
     // const height = scrollY.value > 100 ? 125 : 0;
     setHeaderHeight(height);
   }, [scrollY]);
@@ -109,7 +108,7 @@ const CreateStep1 = props => {
             }}
           />
           <TextInputField
-            value={'Commonify'}
+            value={''}
             viewStyle={{alignSelf: 'stretch'}}
             label="Common name"
             infoLabel="Required"
@@ -126,7 +125,7 @@ const CreateStep1 = props => {
             }}
           />
           <TextInputField
-            value={'Commonify mission'}
+            value={''}
             viewStyle={{alignSelf: 'stretch'}}
             label="Mission statement"
             infoLabel="Required"
@@ -145,7 +144,7 @@ const CreateStep1 = props => {
             }}
           />
           <TextInputField
-            value={'Commonify about'}
+            value={''}
             label="About"
             infoLabel="Required"
             numberOfLines={5}
@@ -162,6 +161,7 @@ const CreateStep1 = props => {
             }}
           />
           <MultiLinkField
+            link
             allowsEditing={true}
             label="Links"
             title="Title"

@@ -14,23 +14,23 @@ import {StackActions} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
 import ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
-import Icon from '../../../Assets/iconfont/Icon';
+import Icon from '~/Assets/iconfont/Icon';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
-import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
-import StorageService from '../../../Services/StorageService';
+import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
+import StorageService from '~/Services/StorageService';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
-import {numberFormatter, showErrorPopUp} from '../../../Util';
-import Toast from '../../../Util/Toast';
+import {numberFormatter, showErrorPopUp} from '~/Util';
+import Toast from '~/Util/Toast';
 import Modal from 'react-native-modal';
-import SentTemplate from '../../../Components/ModalTemplates/SentTemplate';
-import ArcService from '../../../Services/ArcService';
+import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
+import ArcService from '~/Services/ArcService';
 import Share from 'react-native-share';
-import {BlurView} from '../../../Components';
+import {BlurView} from '~/Components';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
-import {BOTTOM_SHEET_TEMPLATES} from '../../../Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import {object} from 'prop-types';
 import {
   colors,
@@ -41,7 +41,8 @@ import {
   sizeS,
   sizeL,
   sizeLineHeight,
-} from '../../../Theme';
+} from '~/Theme';
+import logger from '~/Services/Logger';
 
 const {width} = Dimensions.get('window');
 
@@ -63,7 +64,7 @@ const CreateStep4 = ({generalInfoFormStore,
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
 
-  console.log(form);
+  logger.log(form);
   const [templateIndex, setTemplateIndex] = useState(1);
   const getImageUrl = (index) =>
     `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
@@ -124,10 +125,10 @@ const CreateStep4 = ({generalInfoFormStore,
     };
     ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        logger.log('User cancelled image picker');
       } else if (response.error) {
         Toast.error(response.error);
-        console.log('ImagePicker Error: ', response.error);
+        logger.log('ImagePicker Error: ', response.error);
       } else {
         Toast.loading('Uploading...');
         StorageService.getInstance()
@@ -179,7 +180,7 @@ const CreateStep4 = ({generalInfoFormStore,
         fundingGoal: parseInt(formDataInit.funding, 10) * 100,
         fundingGoalDeadline,
       };
-      console.log('calling createCommon(...)');
+      logger.log('calling createCommon(...)');
 
       navigation.navigate({
         name: 'FullScreenCreationLoader',

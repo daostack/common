@@ -1,5 +1,5 @@
-import {observable, action, decorate} from 'mobx';
-import { isDaoMemberBySafeAddress } from '../Util';
+import { observable, action, decorate } from 'mobx';
+import { isDaoMemberBySafeAddress } from '~/Util';
 
 export const userInfoFields = [
   'uid',
