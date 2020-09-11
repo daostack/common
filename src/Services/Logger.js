@@ -8,15 +8,20 @@ class logger {
 
 	warn = (...warning) => __DEV__ && console.warn(this.inputToString(warning));
 
-  inputToString = (input) => (
-    input.length === 1
-      ? input[0]
-      : input.map((arg) => (
-        arg = typeof arg === 'object'
-          ? JSON.stringify(arg)
-          : arg
-      )).join(' ')
-  )
+  inputToString = (input) => {
+    try {
+      return input.length === 1
+        ? input[0]
+        : input.map((arg) => (
+          arg = typeof arg === 'object'
+            ? JSON.stringify(arg)
+            : arg
+        )).join(' ');
+    } catch (err) {
+      console.log('CATCH ERROR IN LOGGER');
+      return input;
+    }
+  }
 
 }
 
