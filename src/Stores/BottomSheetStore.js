@@ -10,7 +10,7 @@ import {
   UnsavedChanges,
   SortProposals,
   PublishCommon,
-} from '../Screens/BottomSheetScreens';
+} from '~/Screens/BottomSheetScreens';
 
 export const BOTTOM_SHEET_TEMPLATES = {
   COMMON_OPERATIONAL_STATE_NOTIF: {

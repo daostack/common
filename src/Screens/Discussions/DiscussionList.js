@@ -1,10 +1,10 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {FlatList} from 'react-native';
 import DiscussionCard from './DiscussionCard';
-import firestore from '@react-native-firebase/firestore';
-import ViewTabNoData from '../../Components/ViewTabNoData';
+import ViewTabNoData from '~/Components/ViewTabNoData';
 import {string, object} from 'prop-types';
-import { db } from '../../Firebase';
+import {db} from '~/Firebase';
+import logger from '~/Services/Logger';
 
 const DiscussionList = ({commonId, navigation}) => {
   const [list, setList] = useState([]);
@@ -43,7 +43,7 @@ const DiscussionList = ({commonId, navigation}) => {
           }
         },
         // TOOD: please do not silence any errors like this
-        (error) => console.error(error),
+        (error) => logger.error(error),
       );
     return () => {
       unsubscribe();

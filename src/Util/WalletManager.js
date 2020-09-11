@@ -1,23 +1,24 @@
 import {NativeWallet} from './NativeWallet';
 import {ethers, Contract} from 'ethers';
 import {Alert} from 'react-native';
-import {web3ProviderUrl, web3NetworkId, COMMONTOKENADDRESS, relayerUrl} from '../Config';
+import {web3ProviderUrl, web3NetworkId, COMMONTOKENADDRESS, relayerUrl} from '~/Config';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 import ABI from './abi.json';
-import UserService from '../Services/UserService';
+import UserService from '~/Services/UserService';
+import logger from '~/Services/Logger';
 
 ethers.Contract.prototype.sendToRelayer = async function (funcName, params, value = '0') {
   const data = this.interface.functions[funcName].encode(params);
   const manager = await WalletManager.getInstance();
   const response = await manager.execTransaction(manager.safeAddress, this.address, value, data);
-  console.log(response.data);
+  logger.log(response.data);
   return response.data?.txHash;
 };
 
 ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, params, value = '0') {
   const txHash = await this.sendToRelayer(funcName, params, value);
-  console.log('txHash ->', txHash);
+  logger.log('txHash ->', txHash);
   if (!txHash) {
     throw new Error('No transaction has found when sending transaction!', funcName, params, value);
   }
@@ -75,7 +76,7 @@ export default class WalletManager {
       console.log('this.address ->', this.address);
       Alert.alert('Hands up',
         'There is a fatal error - local address mismatched, please contact us to help',
-        [{text: 'OK', onPress: () => console.log('Ok Pressed'), style: 'danger'}],
+        [{text: 'OK', onPress: () => logger.log('Ok Pressed'), style: 'danger'}],
         {cancelable: false}
       );
       // If local address is mismatched, no need to create smart wallet
@@ -144,7 +145,7 @@ export default class WalletManager {
       );
       await this.provider.waitForTransaction(response.data.txHash);
       await WalletManager.init(currentUser.uid); // Re-init for safeAddress
-      console.log('Create SCW', response);
+      logger.log('Create SCW', response);
       this.isCreatingWallet = false;
       return response.data;
     } catch (e) {
@@ -160,7 +161,7 @@ export default class WalletManager {
       'create2Wallet',
       options,
     );
-    console.log('Create2 SCW', response);
+    logger.log('Create2 SCW', response);
     return response.data;
   };
 
@@ -195,7 +196,7 @@ export default class WalletManager {
       // };
       // const zeroAddress = `0x${'0'.repeat(40)}`;
       // const tx = await masterCopyContract.execTransaction(toAddress, 0, data, 0, 0, 0, 0, zeroAddress, zeroAddress, finalSignature, OVERRIDES);
-      // console.log('execTransaction', tx);
+      // logger.log('execTransaction', tx);
 
       const body = {idToken, to: toAddress, value: value, data, signature: finalSignature};
       const response = await axiosClient.post(
@@ -203,13 +204,13 @@ export default class WalletManager {
         // options,
         body
       );
-      console.log('execTransaction ->', response);
+      logger.log('execTransaction ->', response);
       return response;
     } catch (err) {
-      console.log(err);
+      logger.log(err);
       if (err.message?.match(/contract not deployed/) && err.message.search(safeAddress)) {
         const msg = `Trying to send a transaction using safeAddress ${safeAddress}, but got ${err}`;
-        console.log(msg);
+        logger.log(msg);
         throw Error(msg);
       }
       throw err;
@@ -232,7 +233,7 @@ export default class WalletManager {
       const zeroValue = '0';
       const data = pluginContract.interface.functions[method].encode(params);
       const signature = await this.txHashSignature(this.safeAddress, pluginAddress, zeroValue, data);
-      console.log('signature2 -->', signature);
+      logger.log('signature2 -->', signature);
       const idToken = await auth().currentUser.getIdToken();
       const body =
       {
@@ -246,18 +247,18 @@ export default class WalletManager {
         preAuthId,
       };
 
-      console.log('RequestToJoin Body ->', body);
+      logger.log('RequestToJoin Body ->', body);
       const response = await axiosClient.post(
         'requestToJoin',
         body
       );
       let msg;
       if (!response.data) {
-        // console.log('RequestToJoin response -->', response);
+        // logger.log('RequestToJoin response -->', response);
         msg = 'Response has no "data" property - thats not good at all :(';
         throw Error(msg);
       }
-      console.log('RequestToJoin response.data -->', response.status, response.data);
+      logger.log('RequestToJoin response.data -->', response.status, response.data);
       if (response.status !== 200) {
         msg = `${response.data.error}`;
         throw Error(msg);
@@ -269,10 +270,10 @@ export default class WalletManager {
         msg = 'No proposal Id was found in the response';
         throw Error(msg);
       }
-      console.log(`Created proposal with id ${response.data.proposalId}`);
+      logger.log(`Created proposal with id ${response.data.proposalId}`);
       return response.data.proposalId;
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       throw err;
     }
   }
@@ -282,7 +283,7 @@ export default class WalletManager {
     let allowance = await contract.allowance(this.safeAddress, pluginAddress);
     // TODO: please remove the next call to "formatEther", which will dive the balance by 10 ** 18 and make it unreadable
     const allowanceStr = ethers.utils.formatEther(allowance);
-    console.log('allowance ->', allowanceStr);
+    logger.log('allowance ->', allowanceStr);
     return allowanceStr;
   }
 
@@ -292,7 +293,7 @@ export default class WalletManager {
     const balance = await contract.balanceOf(address);
     // TODO: please remove the next call to "formatEther", which will dive the balance by 10 ** 18 and make it unreadable
     const balanceStr =  ethers.utils.formatEther(balance);
-    console.log('balance ->', balance);
+    logger.log('balance ->', balance);
     return balanceStr;
   }
 
@@ -320,7 +321,7 @@ export default class WalletManager {
       );
       return myTxHash;
     } catch (err) {
-      console.log(err);
+      logger.log(err);
       throw (err);
     }
   }
@@ -343,7 +344,7 @@ export default class WalletManager {
   // Safe Wallet Address Event
   getAddressFromEvent = async (hash) => {
     const receipt = await this.provider.waitForTransaction(hash);
-    console.log('receipt', receipt);
+    logger.log('receipt', receipt);
     let eventABI = [
       {
         type: 'event',
@@ -367,12 +368,9 @@ export default class WalletManager {
   getTransactionEvents = (interf, receipt) => {
     const txEvents = {};
     const abiEvents = Object.values(interf.events);
-    for (const log of receipt.logs)
-    {
-      for (const abiEvent of abiEvents)
-      {
-        if (abiEvent.topic === log.topics[0])
-        {
+    for (const log of receipt.logs) {
+      for (const abiEvent of abiEvents) {
+        if (abiEvent.topic === log.topics[0]) {
           txEvents[abiEvent.name] = abiEvent.decode(log.data, log.topics);
           break;
         }

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, StyleSheet, View} from 'react-native';
-import {text, layout, colors} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
+import {text, layout, colors} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
 
 const ProposalApprovalTag = ({iconName, value, isMarked}) => {
   // Default colors

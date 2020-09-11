@@ -1,6 +1,7 @@
 import {IPFSApiClient} from './ipfs-api';
 import Config from 'react-native-config';
 import axios from 'axios';
+import logger from '../Services/Logger';
 
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
 // TODO: we should probably read this from the package..
@@ -50,12 +51,12 @@ if (Config.ENV === 'production') {
 }
 
 if (Config.local === 'true' && __DEV__) {
-  console.warn('Using local firebase');
+  logger.warn('Using local firebase');
 
   axios.get('http://localhost:5001')
     .catch((error) => {
       if (error.response?.status !== 404) {
-        console.error('Set to use local firebase, but the local firebase is not accessible');
+        logger.error('Set to use local firebase, but the local firebase is not accessible');
       }
     });
 }

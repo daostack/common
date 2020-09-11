@@ -1,13 +1,14 @@
 import {useState} from 'react';
 import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
-import {colors, text, layout} from '../../Theme';
+import {colors, text, layout} from '~/Theme';
 import React from 'react';
-import Icon from '../../Assets/iconfont/Icon';
-import { observer, inject } from 'mobx-react';
-import { AppleAuthError } from '@invertase/react-native-apple-authentication';
-import AuthService from '../../Services/AuthService';
+import Icon from '~/Assets/iconfont/Icon';
+import {observer, inject} from 'mobx-react';
+import {AppleAuthError} from '@invertase/react-native-apple-authentication';
+import AuthService from '~/Services/AuthService';
+import logger from '~/Services/Logger';
 
-const AppleSignInButton = ({ onSignIn, userStore, customStyle}) => {
+const AppleSignInButton = ({onSignIn, userStore, customStyle}) => {
   const [signInError, setSignInError] = useState(null);
 
   const _signIn = async () => {
@@ -21,7 +22,7 @@ const AppleSignInButton = ({ onSignIn, userStore, customStyle}) => {
       setSignInError(null);
     } catch (error) {
       userStore.setIsLoading(false);
-      console.log(error);
+      logger.log(error);
       switch (error.code) {
       case AppleAuthError.CANCELED:
         setSignInError('Canceled');
@@ -44,16 +45,12 @@ const AppleSignInButton = ({ onSignIn, userStore, customStyle}) => {
     }
   };
 
-  const renderSignInButton = () => {
-    return (
-      <>
-        <TouchableOpacity style={{...layout.btnOutline, ...customStyle}} onPress={_signIn}>
-          <Icon style={{...layout.btnLeftIcon, ...{marginLeft: 5}}} name="apple-logo" size={22} />
-          <Text style={text.buttonblack}>Continue with Apple</Text>
-        </TouchableOpacity>
-      </>
-    );
-  };
+  const renderSignInButton = () => (
+    <TouchableOpacity style={{...layout.btnOutline, ...customStyle}} onPress={_signIn}>
+      <Icon style={{...layout.btnLeftIcon, ...{marginLeft: 5}}} name="apple-logo" size={22} />
+      <Text style={text.buttonblack}>Continue with Apple</Text>
+    </TouchableOpacity>
+  );
 
   const renderError = () => {
     if (signInError) {

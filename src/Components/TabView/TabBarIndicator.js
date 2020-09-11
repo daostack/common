@@ -1,18 +1,18 @@
 import * as React from 'react';
-import { StyleSheet, I18nManager, View } from 'react-native';
+import {StyleSheet, I18nManager, View} from 'react-native';
 import Animated, {
   Easing as OldEasing,
   // @ts-ignore
   EasingNode,
 } from 'react-native-reanimated';
-import {layout, colors, sizeS} from '../../Theme';
+import {layout, colors, sizeS} from '~/Theme';
 
 import memoize from './memoize';
 
 
 const Easing = EasingNode || OldEasing;
 
-const { multiply, Extrapolate } = Animated;
+const {multiply, Extrapolate} = Animated;
 
 // @ts-ignore
 const interpolate = Animated.interpolateNode || Animated.interpolate;
@@ -27,7 +27,7 @@ export default class TabBarIndicator extends React.Component {
   }
 
   fadeInIndicator = () => {
-    const { navigationState, layout, width, getTabWidth } = this.props;
+    const {navigationState, layout, width, getTabWidth} = this.props;
 
     if (
       !this.isIndicatorShown &&
@@ -92,7 +92,7 @@ export default class TabBarIndicator extends React.Component {
       style,
       layout,
     } = this.props;
-    const { routes } = navigationState;
+    const {routes} = navigationState;
 
     const translateX =
       routes.length > 1 ? this.getTranslateX(position, routes, getTabWidth) : 0;
@@ -110,12 +110,12 @@ export default class TabBarIndicator extends React.Component {
           styles.indicator,
           // If layout is not available, use `left` property for positioning the indicator
           // This avoids rendering delay until we are able to calculate translateX
-          { width: indicatorWidth },
+          {width: indicatorWidth},
 
           layout.width
-            ? { transform: [{ translateX }] }
-            : { left: `${(100 / routes.length) * navigationState.index}%` },
-          width === 'auto' ? { opacity: this.opacity } : null,
+            ? {transform: [{translateX}]}
+            : {left: `${(100 / routes.length) * navigationState.index}%`},
+          width === 'auto' ? {opacity: this.opacity} : null,
           style,
         ]}
       >

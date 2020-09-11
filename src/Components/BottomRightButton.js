@@ -1,21 +1,19 @@
 import {TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
-import colors from '../Theme/colors';
-import Icon from '../Assets/iconfont/Icon';
+import colors from '~/Theme/colors';
+import Icon from '~/Assets/iconfont/Icon';
 
-const BottomRightButton = props => {
-  return (
-    <TouchableOpacity
-      style={{...styles.button, bottom: props.bottom || 12}}
-      onPress={props.onPress}>
-      <Icon
-        name={ props.iconName ? props.iconName : 'add-24'}
-        color="white"
-        size={ props.iconSize ? props.iconSize : 28}
-      />
-    </TouchableOpacity>
-  );
-};
+const BottomRightButton = (props) => (
+  <TouchableOpacity
+    style={{...styles.button, bottom: props.bottom || 12}}
+    onPress={props.onPress}>
+    <Icon
+      name={props.iconName ? props.iconName : 'add-24'}
+      color="white"
+      size={props.iconSize ? props.iconSize : 28}
+    />
+  </TouchableOpacity>
+);
 
 const styles = StyleSheet.create({
   button: {

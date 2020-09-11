@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   ScrollView,
@@ -9,15 +9,15 @@ import {
 } from 'react-native';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 
-import RequestToJoinRule from '../../../Components/Commons/RequestToJoinRule';
-import {observer, inject} from 'mobx-react';
-const {width, height} = Dimensions.get('window');
+import RequestToJoinRule from '~/Components/Commons/RequestToJoinRule';
+import { observer, inject } from 'mobx-react';
+const { width, height } = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepDotHeader from './RequestStepDotHeader';
-import {colors} from '../../../Theme';
+import { colors } from '~/Theme';
 import CreateStepNavigation from './RequestStepNavigation';
 import RequestStepActionButton from '../RequestStepActionButton';
-import {CommonActions} from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 import MembershipRequest from './MembershipRequest';
 
 const RequestStep1 = ({navigation, route: {params}}) => {
@@ -56,7 +56,7 @@ const RequestStep1 = ({navigation, route: {params}}) => {
 
   return (
     <>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView style={{ backgroundColor: colors.white }} />
       <SafeAreaView
         style={{
           flex: 1,
@@ -85,7 +85,7 @@ const RequestStep1 = ({navigation, route: {params}}) => {
           }
           scrollEventThrottle={16}
           onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
+            { nativeEvent: { contentOffset: { y: scrollY } } },
           ])}
           onScrollEndDrag={onScrollToBottom}>
           <MembershipRequest />

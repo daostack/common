@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   View,
@@ -7,15 +7,14 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import TextInputField from '../../../Components/FormFields/TextInputField';
-import {colors, font} from '../../../Theme';
-import {observer, inject} from 'mobx-react';
-
-const {width} = Dimensions.get('window');
+import TextInputField from '~/Components/FormFields/TextInputField';
+import { colors, font } from '~/Theme';
+import { observer, inject } from 'mobx-react';
+const { width } = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
-import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
-import MultiLinkField from '../../../Components/FormFields/MultiLinkField';
+import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
+import MultiLinkField from '~/Components/FormFields/MultiLinkField';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
@@ -91,7 +90,7 @@ const CreateStep3 = (props) => {
         }}
         scrollEventThrottle={16}
         onScroll={Animated.event([
-          {nativeEvent: {contentOffset: {y: scrollY}}},
+          { nativeEvent: { contentOffset: { y: scrollY } } },
         ])}>
         <CreateStepHeader currentIndex={2}/>
         <View
@@ -106,7 +105,7 @@ const CreateStep3 = (props) => {
           />
           <TextInputField
             value={''}
-            viewStyle={{alignSelf: 'stretch'}}
+            viewStyle={{ alignSelf: 'stretch' }}
             label="Course of action"
             infoLabel="Required"
             numberOfLines={6}
@@ -151,7 +150,7 @@ const CreateStep3 = (props) => {
             validation={{
               name: CreateCommonForm.RULES,
               formStore: props.agendaFormStore,
-              validateRule: {common: 'string', title: 'string|max:80'},
+              validateRule: { common: 'string', title: 'string|max:80' },
             }}
           />
 

@@ -1,13 +1,13 @@
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import NavigationBar from 'react-native-navbar';
-import Icon from '../../../Assets/iconfont/Icon';
-import {text} from '../../../Theme';
+import Icon from '~/Assets/iconfont/Icon';
+import { text } from '~/Theme';
 
 const RequestStepNavigation = props => {
   return (
     <NavigationBar
-      statusBar={{hidden: true}}
+      statusBar={{ hidden: true }}
       style={{
         height: 48,
       }}
@@ -17,9 +17,9 @@ const RequestStepNavigation = props => {
       }}
       leftButton={
         <TouchableOpacity
-          style={{justifyContent: 'center'}}
+          style={{ justifyContent: 'center' }}
           onPress={() => props.navigation.pop()}>
-          <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
+          <Icon name="left-arrow" size={32} style={{ marginLeft: 10 }} />
         </TouchableOpacity>
       }
     />

@@ -2,7 +2,7 @@ import React from 'react';
 
 import {Text, StyleSheet} from 'react-native';
 import {observer} from 'mobx-react';
-import {colors, layout, font} from '../../Theme';
+import {colors, layout, font} from '~/Theme';
 
 const styles = StyleSheet.create({
   errorMessage: {

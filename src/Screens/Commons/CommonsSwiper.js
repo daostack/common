@@ -1,16 +1,15 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
-import {CommonBox} from '../../Components';
-import {inject, observer} from 'mobx-react';
-import SwiperCard from '../../Components/SwiperCard';
-import DaoService from '../../Services/DaoService';
-import {layout, text, font, colors} from '../../Theme';
+import {CommonBox} from '~/Components';
+import SwiperCard from '~/Components/SwiperCard';
+import DaoService from '~/Services/DaoService';
+import {layout, text, font, colors} from '~/Theme';
 import {
   Placeholder,
   PlaceholderMedia,
   Fade,
 } from 'rn-placeholder';
-import {isDaoMemberBySafeAddress} from '../../Util';
+import {isDaoMemberBySafeAddress} from '~/Util';
 import { CommonActions } from '@react-navigation/native';
 import {string, object, number, func} from 'prop-types';
 
@@ -138,7 +137,7 @@ const CommonsSwiper = ({
         <Text style={{...text.h2Black, ...layout.marginTopS}}>No Commons</Text>
         <Text
           style={styles.textNoCommons}>
-          Join your first common and start making an impact
+            Join your first common and start making an impact
         </Text>
         <View style={{flexDirection: 'row'}}>
           <TouchableOpacity

@@ -10,8 +10,8 @@ import {
   Animated,
   Platform,
 } from 'react-native';
-import TextInputFieldWithIcon from '../../../Components/FormFields/TextInputFieldWithIcon';
-import {colors, font, sizeL, sizeS} from '../../../Theme';
+import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
+import {colors, font, sizeL, sizeS} from '~/Theme';
 
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import {observer, inject} from 'mobx-react';
@@ -20,7 +20,7 @@ import SegmentedControlTab from 'react-native-segmented-control-tab';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
+import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import Modal from 'react-native-modal';
 import moment from 'moment';
 import CreateStepDotHeader from './CreateStepDotHeader';
@@ -228,7 +228,7 @@ const CreateStep2 = (props) => {
               </Text>
             </View>
             <Text style={styles.info2}>
-            Set a period in which members will not be able to create proposals and allocate the funds. This will allow more members to join and participate in the decision-making process.
+              Set a period in which members will not be able to create proposals and allocate the funds. This will allow more members to join and participate in the decision-making process.
             </Text>
 
             <SegmentedControlTab
@@ -284,7 +284,7 @@ const CreateStep2 = (props) => {
                 </View>
                 {DatePicker}
               </View>
-            </Modal> : show && (DatePicker) }
+            </Modal> : show && (DatePicker)}
           </View>
           {/* <TextInputFieldWithIcon
             iconName="dollar"

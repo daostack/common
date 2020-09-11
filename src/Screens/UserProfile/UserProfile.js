@@ -10,18 +10,18 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {layout, colors, text, sizeL, font} from '../../Theme';
+import {layout, colors, text, sizeL, font} from '~/Theme';
 import {observer, inject} from 'mobx-react';
-import AccordionBtn from '../../Components/AccordionBtn';
+import AccordionBtn from '~/Components/AccordionBtn';
 import CreateAccount from './CreateAccount';
 import VersionNumber from 'react-native-version-number';
 import {CommonActions} from '@react-navigation/native';
-import UserProfileData from '../../Components/UserProfileData';
-import AuthService from '../../Services/AuthService';
-import Toast from '../../Util/Toast';
+import UserProfileData from '~/Components/UserProfileData';
+import AuthService from '~/Services/AuthService';
+import Toast from '~/Util/Toast';
 import CodePush from 'react-native-code-push';
 import Config from 'react-native-config';
-import {isProduction} from '../../Config';
+import {isProduction} from '~/Config';
 
 import {
   Placeholder,
@@ -29,6 +29,7 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import logger from '../../Services/Logger';
 
 const UserProfile = ({userStore, navigation, route}) => {
   //const [editMode, setEditMode] = useState(false);
@@ -51,7 +52,7 @@ const UserProfile = ({userStore, navigation, route}) => {
         [
           {
             text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
+            onPress: () => logger.log('Cancel Pressed'),
             style: 'cancel',
           },
           {text: 'OK', onPress: async () => {
@@ -65,7 +66,7 @@ const UserProfile = ({userStore, navigation, route}) => {
     } catch (error) {
       userStore.setIsLoading(false);
       Toast.error(error?.toString());
-      console.log('SignOut Error -> ', error);
+      logger.log('SignOut Error -> ', error);
     }
   };
 

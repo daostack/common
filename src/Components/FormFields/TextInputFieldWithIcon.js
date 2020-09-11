@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
-import Icon from '../../Assets/iconfont/Icon';
-import {layout, colors, font, text, sizeS, sizeL } from '../../Theme';
+import Icon from '~/Assets/iconfont/Icon';
+import {layout, colors, font, text, sizeS, sizeL} from '~/Theme';
 
 class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
@@ -35,7 +35,7 @@ class TextInputFieldWithIcon extends React.Component {
     } = this.props;
     // Register form field for validation message component if name,formStore and validateRule props are provided
     if (validation) {
-      const {name, formStore, displayName, validateRule, invisibleContainer = true, customErrorMessage } = validation;
+      const {name, formStore, displayName, validateRule, invisibleContainer = true, customErrorMessage} = validation;
       formStore.registerFormField(name, validateRule, value);
       this.fieldValidation = (
         <ValidationMessage displayName={displayName} formStore={formStore} customErrorMessage={customErrorMessage} name={name} invisibleContainer={invisibleContainer}/>
@@ -82,7 +82,7 @@ class TextInputFieldWithIcon extends React.Component {
     }
   }
 
-  onChangeText = currText => {
+  onChangeText = (currText) => {
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
       formStore.fieldChanged(name, currText);
@@ -90,11 +90,11 @@ class TextInputFieldWithIcon extends React.Component {
     this.props.onChangeText && this.props.onChangeText(currText);
   };
 
-  onFocus = e => {
+  onFocus = (e) => {
     this.setState({onFocus: true});
   };
 
-  onBlur = e => {
+  onBlur = (e) => {
     this.setState({onFocus: false});
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
@@ -103,7 +103,7 @@ class TextInputFieldWithIcon extends React.Component {
     this.props.onBlur && this.props.onBlur(e);
   };
 
-  updateSize = width => {
+  updateSize = (width) => {
     this.setState({dynamicWidth: width});
   };
 
@@ -221,7 +221,7 @@ class TextInputFieldWithIcon extends React.Component {
     );
   }
 
-  renderPlaceholderForNotEditableField = editable => {
+  renderPlaceholderForNotEditableField = (editable) => {
     if (editable === false) {
       return <Text>{this.props.placeholderText || ''}</Text>;
     }

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   ScrollView,
@@ -6,17 +6,17 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import AmountField from '../../../Components/FormFields/AmountField';
-import {colors} from '../../../Theme';
-import {observer, inject} from 'mobx-react';
-const {width} = Dimensions.get('window');
+import AmountField from '~/Components/FormFields/AmountField';
+import { colors } from '~/Theme';
+import { observer, inject } from 'mobx-react';
+const { width } = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepNavigation from './RequestStepNavigation';
-import RequestToJoinForm from '../../../Components/Forms/RequestToJoinForm';
+import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
-import {CommonActions} from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 import MembershipRequest from './MembershipRequest';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 
@@ -83,7 +83,7 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
 
   return (
     <>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView style={{ backgroundColor: colors.white }} />
       <SafeAreaView
         style={{
           flex: 1,
@@ -110,7 +110,7 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
           }}
           scrollEventThrottle={16}
           onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
+            { nativeEvent: { contentOffset: { y: scrollY } } },
           ])}>
           <MembershipRequest />
 

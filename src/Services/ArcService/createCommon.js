@@ -1,7 +1,7 @@
-import {IpfsClient} from '../../Config';
-import {graphqlUrl} from '../../Config';
+import {IpfsClient, graphqlUrl} from '~/Config';
+import logger from '../Logger';
 import axios from 'axios';
-const { getForgeOrgData } = require('@daostack/common-factory');
+const {getForgeOrgData} = require('@daostack/common-factory');
 const DAOFactoryABI = require('@daostack/common-factory/abis/DAOFactory');
 
 const {
@@ -9,7 +9,7 @@ const {
   COMMONTOKENADDRESS,
   MEMBER_REPUTATION,
   IPFS_DATA_VERSION,
-} = require('../../Config');
+} = require('~/Config');
 
 // USAGE:
 // const commonAddress = await createCommon({
@@ -42,11 +42,11 @@ export const createCommon = async (
       fundingToken: COMMONTOKENADDRESS,
       VERSION: IPFS_DATA_VERSION, // just some alphanumberic marker  that is useful for understanding what our data is shaped like
     };
-    const opts = {...defaultOptions, ...givenOpts};
+    const opts = { ...defaultOptions, ...givenOpts };
 
-    console.log('saving data on ipfs: ', opts);
+    logger.log('saving data on ipfs: ', opts);
     const ipfsHash = await IpfsClient.addAndPinString(JSON.stringify(opts));
-    console.log('ipfsHash ->', ipfsHash);
+    logger.log('ipfsHash ->', ipfsHash);
 
     const daoFactoryInfo = arc.getContractInfoByName(
       'DAOFactoryInstance',
@@ -78,31 +78,31 @@ export const createCommon = async (
       deadline: opts.fundingGoalDeadline,
       metaData: ipfsHash,
     };
-    console.log('Calling DAOFactory.forgeOrg(...)', data);
+    logger.log('Calling DAOFactory.forgeOrg(...)', data);
 
     const [encodedForgeOrgParams, encodedSetSchemesParams] = getForgeOrgData(data);
 
-    console.log('waiting for forgeOrg transaction to be mined');
+    logger.log('waiting for forgeOrg transaction to be mined');
     const receipt = await daoFactoryContract.sendToRelayerWithReceipt(
       'forgeOrg',
       [encodedForgeOrgParams, encodedSetSchemesParams]
     );
 
-    // console.log('forgeOrg receipt ->', receipt);
-    console.log('forgeOrg transaction was mined..');
+    // logger.log('forgeOrg receipt ->', receipt);
+    logger.log('forgeOrg transaction was mined..');
 
     // Get the new avatar address of the thing that was just created..
     const newOrgEvent = receipt.events.NewOrg;
     const newOrgAddress = newOrgEvent._avatar;
 
-    console.log(`Created a Common at ${newOrgAddress} with name "${opts.name}"`);
+    logger.log(`Created a Common at ${newOrgAddress} with name "${opts.name}"`);
 
-    console.log('Updating database');
+    logger.log('Updating database');
     // we try to update the database, and we will retry four times, which should give us more than enough time
     // for the graph to index the data
     const endpoint = graphqlUrl();
     await axios.get(`${endpoint}/update-dao-by-id?daoId=${newOrgAddress}&retries=4`);
-    console.log('Common database has been updated');
+    logger.log('Common database has been updated');
 
     return newOrgAddress;
   } catch (e) {

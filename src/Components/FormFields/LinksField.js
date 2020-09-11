@@ -2,7 +2,7 @@ import React from 'react';
 import {TextInput, View, Text, StyleSheet} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
-import {colors, layout, font} from '../../Theme';
+import {colors, layout, font} from '~/Theme';
 
 class LinksField extends React.Component {
   fieldValidation;
@@ -33,7 +33,7 @@ class LinksField extends React.Component {
     }
   }
 
-  onChangeText = text => {
+  onChangeText = (text) => {
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
       formStore.fieldChanged(name, text);
@@ -41,11 +41,11 @@ class LinksField extends React.Component {
     this.props.onChangeText && this.props.onChangeText(text);
   };
 
-  onFocus = e => {
+  onFocus = (e) => {
     this.setState({onFocus: true});
   };
 
-  onBlur = e => {
+  onBlur = (e) => {
     this.setState({onFocus: false});
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
@@ -127,7 +127,7 @@ class LinksField extends React.Component {
     );
   }
 
-  renderPlaceholderForNotEditableField = editable => {
+  renderPlaceholderForNotEditableField = (editable) => {
     if (editable === false) {
       return <Text>{this.props.placeholderText || ''}</Text>;
     }

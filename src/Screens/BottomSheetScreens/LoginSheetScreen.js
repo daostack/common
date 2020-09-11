@@ -1,12 +1,12 @@
-import {Text, View, StyleSheet} from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 
 import React from 'react';
-import {colors, text, layout} from '../../Theme';
-import {inject, observer} from 'mobx-react';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
+import { colors, text, layout } from '~/Theme';
+import { inject, observer } from 'mobx-react';
+import { BOTTOM_SHEET_TEMPLATES } from '~/Stores/BottomSheetStore';
 import CreateAccount from '../UserProfile/CreateAccount';
 
-const LoginSheetScreen = ({bottomSheetStore, ...props}) => {
+const LoginSheetScreen = ({ bottomSheetStore, ...props }) => {
   return (
     <View style={styles.contentContainer}>
       <Text style={styles.sheetTitleStyle}>Be a part of Common</Text>
@@ -19,7 +19,7 @@ const LoginSheetScreen = ({bottomSheetStore, ...props}) => {
       </Text>
 
       <View style={layout.flexRow}>
-        <CreateAccount hidePlaceholder={true} onSignedIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)}/>
+        <CreateAccount hidePlaceholder={true} onSignedIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)} />
       </View>
 
       {/**

@@ -1,7 +1,7 @@
-import { db } from '../Firebase';
-import { prepareUserObject } from '../Util';
-
-import { DB_COLLECTIONS } from '../Firebase/Databasee';
+import {db} from '~/Firebase';
+import {prepareUserObject} from '~/Util';
+import {DB_COLLECTIONS} from '~/Firebase/Databasee';
+import logger from './Logger';
 
 export default class UserService {
   static serviceInstance = null;
@@ -18,8 +18,7 @@ export default class UserService {
       .collection(DB_COLLECTIONS.users)
       .doc(userId)
       .get()
-      .then(snapshots => {
-        // console.log('snapshots : ', snapshots);
+      .then((snapshots) => {
         if (!snapshots) {
           return null;
         }
@@ -30,59 +29,57 @@ export default class UserService {
 
   async getUserByAddress(address) {
 
-    console.log('GETTING USER WITH ADDRESS -> ', address);
+    logger.log('GETTING USER WITH ADDRESS -> ', address);
 
     return db
       .collection(DB_COLLECTIONS.users)
       .where('safeAddress', '==', address)
       .get()
-      .then(snapshots => {
+      .then((snapshots) => {
         if (!snapshots) {
           return null;
         }
         const doc = snapshots.docs[0];
-        return {id: doc.id, ...doc.data()};
+        return { id: doc.id, ...doc.data() };
 
       });
   }
 
   async getUsers() {
-    console.log('getUsers-> ');
+    logger.log('getUsers-> ');
     return db
       .collection(DB_COLLECTIONS.users)
       .get()
-      .then(snapshots => {
+      .then((snapshots) => {
         if (snapshots.empty) {
           return [];
         }
-        return snapshots.docs.map(doc => {
-          return {...{id: doc.id}, ...doc.data()};
-        });
+        return snapshots.docs.map((doc) => (
+          {...{id: doc.id}, ...doc.data()}
+        ));
       });
   }
   async addUser(googleId, newUser) {
-    console.log('addUser -> ', newUser);
+    logger.log('addUser -> ', newUser);
     try {
       return db
         .collection(DB_COLLECTIONS.users)
         .doc(googleId)
         .set(newUser)
-        .then(ref => {
-          return ref;
-        });
+        .then((ref) => ref);
     } catch (error) {
-      console.log('ERROR -> ', error);
+      logger.log('ERROR -> ', error);
     }
   }
 
   async editUser(userId, user) {
-    console.log('editUser -> ', user);
+    logger.log('editUser -> ', user);
     return db
       .collection(DB_COLLECTIONS.users)
       .doc(userId)
       .update(user)
-      .then(ref => {
-        //console.log('Edited document with ID: ', ref.id);
+      .then((ref) => {
+        //logger.log('Edited document with ID: ', ref.id);
       });
   }
 

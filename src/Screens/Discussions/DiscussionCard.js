@@ -9,14 +9,15 @@ import {
 import {string, shape, object} from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
-import {colors, sizeM, font} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
-import UserService from '../../Services/UserService';
+import {colors, sizeM, font} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
+import UserService from '~/Services/UserService';
 import moment from 'moment';
-import BottomSheetModal from '../../Components/BottomSheetModal';
-import NotificationService from '../../Services/NotificationService';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
-import { db } from '../../Firebase';
+import BottomSheetModal from '~/Components/BottomSheetModal';
+import NotificationService from '~/Services/NotificationService';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {db} from '~/Firebase';
+import logger from '~/Services/Logger';
 import { CommonActions } from '@react-navigation/native';
 
 const {width} = Dimensions.get('window');
@@ -61,7 +62,7 @@ const DiscussionCard = ({
         data.ownerId,
       );
       if (userData) {
-        // console.log('userData', userData);
+        // logger.log('userData', userData);
         setUser(userData);
       }
     };
@@ -71,7 +72,7 @@ const DiscussionCard = ({
   useEffect(() => {
     const unsubscribe = db.collection('discussionMessage')
       .where('discussionId', '==', discussionId)
-      .onSnapshot(snapshot => {
+      .onSnapshot((snapshot) => {
         setMsgCount(snapshot.docs.length);
       });
 
@@ -81,7 +82,7 @@ const DiscussionCard = ({
   }, [discussionId]);
 
   const follow = () => {
-    console.log('Follow user id', data.owner);
+    logger.log('Follow user id', data.owner);
     NotificationService.follow(data.owner);
     bottomSheetStore.hideBottomSheet();
   };
@@ -95,7 +96,7 @@ const DiscussionCard = ({
 
   return (
     <>
-      <TouchableOpacity onPress={() =>navigateToDiscussion()}      >
+      <TouchableOpacity onPress={() => navigateToDiscussion()}      >
         <View style={styles.container}>
           <TouchableOpacity onPress={showOptions}>
             <Icon name="menu" size={20} />
@@ -112,7 +113,7 @@ const DiscussionCard = ({
                 style={styles.displayNameContainer}
               >
                 <Text style={styles.displayName}>
-                  {user.displayName && user.displayName.substring(0,1)}
+                  {user.displayName && user.displayName.substring(0, 1)}
                 </Text>
               </View>
 
@@ -128,7 +129,7 @@ const DiscussionCard = ({
               </Text>
             </View>
           </View>
-          <Text style={styles.message}     numberOfLines={3}>
+          <Text style={styles.message} numberOfLines={3}>
             {data.message}
           </Text>
           <View
@@ -167,7 +168,7 @@ const DiscussionCard = ({
                 onPress={() => navigateToDiscussion()}>
                 <Text
                   style={styles.joinTheDiscussion}>
-                  Join the discussion
+                    Join the discussion
                 </Text>
                 <Icon name="right-arrow" size={20} color={colors.mainBlue} />
               </TouchableOpacity>
@@ -185,7 +186,7 @@ const DiscussionCard = ({
           <Text style={styles.sheetTitle}>Options</Text>
           <TouchableOpacity
             onPress={() => {
-              console.log('Follow user id', data.owner);
+              logger.log('Follow user id', data.owner);
               if (isFollowing) {
                 NotificationService.unfollow(data.owner);
               } else {

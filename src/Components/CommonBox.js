@@ -1,6 +1,6 @@
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {numberFormatter} from '../Util';
+import {numberFormatter} from '~/Util';
 import {CommonActions} from '@react-navigation/native';
 import CommonCover from './Commons/CommonCover';
 import CommonStageSummary from './Commons/CommonStageSummary';

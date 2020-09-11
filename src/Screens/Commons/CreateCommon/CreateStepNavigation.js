@@ -1,19 +1,19 @@
 import React from 'react';
-import {TouchableOpacity, StyleSheet} from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 import NavigationBar from 'react-native-navbar';
-import Icon from '../../../Assets/iconfont/Icon';
+import Icon from '~/Assets/iconfont/Icon';
 
 const styles = StyleSheet.create({
   button: {
     justifyContent: 'center',
   },
-  icon: {marginLeft: 20},
+  icon: { marginLeft: 20 },
 });
 
 const CreateStepNavigation = props => {
   return (
     <NavigationBar
-      statusBar={{hidden: true}}
+      statusBar={{ hidden: true }}
       title={{
         title: props.title,
       }}

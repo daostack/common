@@ -3,7 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import ImageField from '../FormFields/ImageField';
 import {observer, inject} from 'mobx-react';
-import {layout, text, font, colors} from '../../Theme';
+import {layout, text, font, colors} from '~/Theme';
 
 class EditProfileForm extends React.Component {
   static FIELD_FIRST_NAME = 'firstName';
