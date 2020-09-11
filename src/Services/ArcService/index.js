@@ -26,6 +26,7 @@ export default class ArcService {
       });
 
       await this.fetchAllContrarcts(this.arc);
+
       return this;
     })();
   }
@@ -36,6 +37,8 @@ export default class ArcService {
   }
 
   async fetchAllContrarcts(arc ) {
+
+    console.log("Fetching All contract infos...");
 
     let allContractInfos = [];
     let contractInfos = null;
@@ -62,6 +65,8 @@ export default class ArcService {
     const universalContracts = await arc.fetchUniversalContractInfos();
     allContractInfos.push(...universalContracts);
     this.arc.setContractInfos(allContractInfos);
+
+    console.log("All contract infos -> ", allContractInfos.length);
 
     return allContractInfos;
   }
