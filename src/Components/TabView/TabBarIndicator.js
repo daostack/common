@@ -6,14 +6,11 @@ import Animated, {
   EasingNode,
 } from 'react-native-reanimated';
 import {layout, colors, sizeS} from '~/Theme';
-
 import memoize from './memoize';
-
+import {string, func, number, object, oneOfType} from 'prop-types';
 
 const Easing = EasingNode || OldEasing;
-
 const {multiply, Extrapolate} = Animated;
-
 // @ts-ignore
 const interpolate = Animated.interpolateNode || Animated.interpolate;
 
@@ -124,6 +121,18 @@ export default class TabBarIndicator extends React.Component {
     );
   }
 }
+
+TabBarIndicator.propTypes = {
+  navigationState: object,
+  layout: object,
+  width: oneOfType([
+    string,
+    number,
+  ]),
+  getTabWidth: func,
+  position: string,
+  style: object,
+};
 
 const styles = StyleSheet.create({
   indicator: {

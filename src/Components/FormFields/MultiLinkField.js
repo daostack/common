@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from './TextInputField';
-import { text, layout, colors, sizeL } from '~/Theme';
+import {text, layout, colors, sizeL} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {string, bool, object, number, shape} from 'prop-types';
+import {string, bool, object, number, shape, oneOfType, func} from 'prop-types';
 
 const MultiLinkField = (props) => {
   const [ count, setCount ] = useState(1);
@@ -143,7 +143,10 @@ MultiLinkField.propTypes = {
   validation: shape({
     formStore: object,
     name: string,
-    validateRule: string,
+    validateRule: oneOfType([
+      string,
+      object,
+    ]),
   }),
   placeholderValueText: string,
   multiline: bool,
@@ -152,6 +155,9 @@ MultiLinkField.propTypes = {
   label: string,
   title: string,
   maxCount: number,
+  link: string,
+  rule: string,
+  onFieldDeleted: func,
 };
 
 const styles = StyleSheet.create({

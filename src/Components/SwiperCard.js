@@ -2,14 +2,10 @@ import React, {useState} from 'react';
 import {View, Dimensions} from 'react-native';
 import {layout} from '~/Theme';
 import SwiperFlatList from 'react-native-swiper-flatlist';
-
+import {func, object, number, array} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const SwiperCard = ({showMax, navigation, ...props}) => {
-  const renderNoDataCard = props.renderNoDataCard;
-  const cardRenderer = props.cardRenderer;
-  const extraData = props.extraData;
-  const data = props.data;
+const SwiperCard = ({showMax, navigation, renderNoDataCard, cardRenderer, extraData, data}) => {
 
   const [swiperCurrentIndex, setSwiperCurrentIndex] = useState({
     index: 0,
@@ -53,6 +49,15 @@ const SwiperCard = ({showMax, navigation, ...props}) => {
   ) : (
     renderNoDataCard()
   );
+};
+
+SwiperCard.propTypes = {
+  showMax: number,
+  navigation: object,
+  renderNoDataCard: func,
+  cardRenderer: func,
+  extraData: object,
+  data: array,
 };
 
 export default React.memo(SwiperCard);

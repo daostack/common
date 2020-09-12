@@ -37,6 +37,12 @@ AccordionBtn.propTypes = {
   lightStyle: bool,
 };
 
+BtnContent.propTypes = {
+  title: string.isRequired,
+  subtitle: string,
+  lightStyle: bool,
+};
+
 const styles = StyleSheet.create({
   accordionBtn: {
     ...layout.content,

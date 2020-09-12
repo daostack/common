@@ -1,6 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {Text, StyleSheet} from 'react-native';
+import {string, number, bool, oneOfType} from 'prop-types';
+
 
 import {colors, font} from '~/Theme';
 
@@ -45,10 +46,13 @@ const CreateStep4Indicators = ({contribution, date, title, number}) => (
 );
 
 CreateStep4Indicators.propTypes = {
-  title: PropTypes.string.isRequired,
-  number: PropTypes.number.isRequired,
-  date: PropTypes.string,
-  contribution: PropTypes.bool,
+  title: string.isRequired,
+  number: oneOfType([
+    number,
+    string,
+  ]).isRequired,
+  date: string,
+  contribution: bool,
 };
 
 export default CreateStep4Indicators;

@@ -3,6 +3,8 @@ import React from 'react';
 import moment from 'moment';
 import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
+import {string, object} from 'prop-types';
+
 
 const UserMessageCard = ({photoURL, name, message, time}) => (
   <View style={styles.messageCardContainer}>
@@ -16,6 +18,13 @@ const UserMessageCard = ({photoURL, name, message, time}) => (
     </View>
   </View>
 );
+
+UserMessageCard.propTypes = {
+  photoURL: string,
+  name: string,
+  message: string,
+  time: object,
+};
 
 const styles = StyleSheet.create({
   userImage: {
