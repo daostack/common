@@ -26,15 +26,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const CreateStep4Indicators = ({contribution, date, title, number}) => (
+const CreateStep4Indicators = ({contribution, date, title, num}) => (
   <>
     <Text style={styles.text}>{title}</Text>
     <Text style={styles.val}>
-      {contribution ? (
-        '$' + number
-      ) : (
-        number
-      )}
+      {contribution ? `$${num}` : num}
     </Text>
 
     {!contribution && (
@@ -47,7 +43,7 @@ const CreateStep4Indicators = ({contribution, date, title, number}) => (
 
 CreateStep4Indicators.propTypes = {
   title: string.isRequired,
-  number: oneOfType([
+  num: oneOfType([
     number,
     string,
   ]).isRequired,

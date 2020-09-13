@@ -36,7 +36,7 @@ const DiscussionCard = ({
   var isFollowing = false;
 
   if (userInfo) {
-    isFollowing = userInfo.following.includes(data.owner);
+    isFollowing = userInfo.following.includes(data.ownerId);
   }
 
   const hideMenu = () => {
@@ -77,8 +77,8 @@ const DiscussionCard = ({
   }, [discussionId]);
 
   const follow = () => {
-    logger.log('Follow user id', data.owner);
-    NotificationService.follow(data.owner);
+    logger.log('Follow user id', data.ownerId);
+    NotificationService.follow(data.ownerId);
     bottomSheetStore.hideBottomSheet();
   };
 
@@ -181,11 +181,11 @@ const DiscussionCard = ({
           <Text style={styles.sheetTitle}>Options</Text>
           <TouchableOpacity
             onPress={() => {
-              logger.log('Follow user id', data.owner);
+              logger.log('Follow user id', data.ownerId);
               if (isFollowing) {
-                NotificationService.unfollow(data.owner);
+                NotificationService.unfollow(data.ownerId);
               } else {
-                NotificationService.follow(data.owner);
+                NotificationService.follow(data.ownerId);
               }
               setShowMenu(false);
             }}>
@@ -213,7 +213,6 @@ const DiscussionCard = ({
 DiscussionCard.propTypes = {
   data: shape({
     id: string.isRequired,
-    owner: string.isRequired,
     ownerId: string.isRequired,
     title: string.isRequired,
     createTime: object.isRequired,

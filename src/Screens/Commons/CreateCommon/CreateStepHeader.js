@@ -1,34 +1,34 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import {View, StyleSheet, Dimensions} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
-import { colors } from '~/Theme';
-const { width } = Dimensions.get('window');
+import {colors} from '~/Theme';
 import * as Progress from 'react-native-progress';
+import {number} from 'prop-types';
+const {width} = Dimensions.get('window');
 
-const CreateStepHeader = props => {
-  const currentIndex = props.currentIndex;
+const CreateStepHeader = ({currentIndex}) => {
   const progressList = [0, 0.35, 0.7, 1.0];
 
-  const ovalStyle = index => {
-    if (props.currentIndex > index) {
+  const ovalStyle = (index) => {
+    if (currentIndex > index) {
       return styles.ovalDone;
     }
-    if (props.currentIndex === index) {
+    if (currentIndex === index) {
       return styles.oval;
     }
-    if (props.currentIndex < index) {
+    if (currentIndex < index) {
       return styles.oval2;
     }
   };
 
-  const iconColor = index => {
-    if (props.currentIndex > index) {
+  const iconColor = (index) => {
+    if (currentIndex > index) {
       return colors.mainBlue;
     }
-    if (props.currentIndex === index) {
+    if (currentIndex === index) {
       return colors.mainBlue;
     }
-    if (props.currentIndex < index) {
+    if (currentIndex < index) {
       return colors.paleblue;
     }
   };
@@ -57,7 +57,7 @@ const CreateStepHeader = props => {
       />
       {/* <TouchableOpacity onPress={() => setCurrentIndex(0)}> */}
       <View
-        style={currentIndex === 0 ? { ...styles.oval } : { ...styles.ovalDone }}>
+        style={currentIndex === 0 ? styles.oval : styles.ovalDone}>
         <Icon
           name={currentIndex === 0 ? 'dao-general-info-24' : 'check'}
           size={currentIndex > 0 ? 16 : 24}
@@ -95,6 +95,10 @@ const CreateStepHeader = props => {
   );
 };
 
+CreateStepHeader.propTypes = {
+  currentIndex: number,
+};
+
 const styles = StyleSheet.create({
   oval: {
     width: 48,
@@ -128,27 +132,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#EBF9FC',
-  },
-  iconBlue: {
-    tintColor: colors.mainBlue,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 24,
-    height: 24,
-  },
-  iconGrey: {
-    tintColor: 'grey',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 16,
-    height: 16,
-  },
-  iconDone: {
-    tintColor: colors.mainBlue,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 16,
-    height: 16,
   },
 });
 

@@ -55,8 +55,8 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     };
 
     const errorHandler = async () => {
-      const joinPlugin = await dao.plugin({where: {name: PROPOSAL_TYPE.Join}});
-      const joinContract  = await arc.getContract(joinPlugin.coreState.address);
+      const errorJoinPlugin = await dao.plugin({where: {name: PROPOSAL_TYPE.Join}});
+      const joinContract  = await arc.getContract(errorJoinPlugin.coreState.address);
       const manager = await WalletManager.getInstance();
       const proposer = manager.safeAddress;
 

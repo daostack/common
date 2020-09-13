@@ -5,6 +5,14 @@ import {text, layout, colors, sizeL} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {string, bool, object, number, shape, oneOfType, func} from 'prop-types';
 
+const RemoveLinkBtn = ({onFieldDeleted}) => (
+  <TouchableOpacity
+    style={styles.removeBtnContainer}
+    onPress={() => onFieldDeleted()}>
+    <Icon name="delete" size={16}/>
+  </TouchableOpacity>
+);
+
 const MultiLinkField = (props) => {
   const [ count, setCount ] = useState(1);
   const [ addButton, setAddButton ] = useState(false);
@@ -17,6 +25,8 @@ const MultiLinkField = (props) => {
     multiline,
     addMultiFieldBtnName,
     maxLength,
+    link = false,
+    rule = false,
   } = props;
 
   const onFieldDeleted = (currIndex, currTitleItemValidation, currItemValidation) => {
@@ -45,22 +55,14 @@ const MultiLinkField = (props) => {
         canAddMore();
       }}>
         {addMultiFieldBtnName ||
-          (props.link
+          (link
             ? 'Add Link'
-            : props.rule
+            : rule
               ? 'Add rule'
               : 'Add field')
         }
       </Text>
     </TouchableOpacity>);
-
-  const RemoveLinkBtn = ({onFieldDeleted}) => (
-    <TouchableOpacity
-      style={styles.removeBtnContainer}
-      onPress={() => onFieldDeleted()}>
-      <Icon name="delete" size={16}/>
-    </TouchableOpacity>
-  );
 
   const canAddMore = () => {
     let canAdd = true;
@@ -155,8 +157,12 @@ MultiLinkField.propTypes = {
   label: string,
   title: string,
   maxCount: number,
-  link: string,
-  rule: string,
+  link: bool,
+  rule: bool,
+  onFieldDeleted: func,
+};
+
+RemoveLinkBtn.propTypes = {
   onFieldDeleted: func,
 };
 

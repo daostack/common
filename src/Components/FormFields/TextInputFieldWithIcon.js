@@ -278,7 +278,7 @@ TextInputFieldWithIcon.propTypes = {
   placeholderText: string,
   label: string,
   infoLabel: string,
-  password: string,
+  password: bool,
   multiline: bool,
   numberOfLines: number,
   keyboardType: string,

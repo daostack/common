@@ -2,7 +2,7 @@ import React from 'react';
 import {Text, StyleSheet} from 'react-native';
 import {observer} from 'mobx-react';
 import {colors, layout, font} from '~/Theme';
-import {string, bool, array, shape} from 'prop-types';
+import {string, bool, object, shape} from 'prop-types';
 
 class ValidationMessage extends React.Component {
 
@@ -38,9 +38,9 @@ class ValidationMessage extends React.Component {
 
 ValidationMessage.propTypes = {
   formStore: shape({
-    form: {
-      fields: array,
-    },
+    form: shape({
+      fields: object,
+    }),
   }),
   name: string,
   displayName: string,

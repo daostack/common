@@ -80,7 +80,7 @@ const MemberCard = ({
   };
 
   return (
-    <View style={{ ...styles.cardContainer, ...styles.noBottomBorder }}>
+    <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <MemberImage userInfo={userInfo} />
       <View
         style={{

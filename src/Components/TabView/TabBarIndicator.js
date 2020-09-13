@@ -24,12 +24,12 @@ export default class TabBarIndicator extends React.Component {
   }
 
   fadeInIndicator = () => {
-    const {navigationState, layout, width, getTabWidth} = this.props;
+    const {navigationState, indicatorLayout, width, getTabWidth} = this.props;
 
     if (
       !this.isIndicatorShown &&
       width === 'auto' &&
-      layout.width &&
+      indicatorLayout.width &&
       // We should fade-in the indicator when we have widths for all the tab items
       navigationState.routes.every((_, i) => getTabWidth(i))
     ) {
@@ -87,10 +87,9 @@ export default class TabBarIndicator extends React.Component {
       getTabWidth,
       width,
       style,
-      layout,
+      indicatorLayout,
     } = this.props;
     const {routes} = navigationState;
-
     const translateX =
       routes.length > 1 ? this.getTranslateX(position, routes, getTabWidth) : 0;
 
@@ -109,7 +108,7 @@ export default class TabBarIndicator extends React.Component {
           // This avoids rendering delay until we are able to calculate translateX
           {width: indicatorWidth},
 
-          layout.width
+          indicatorLayout.width
             ? {transform: [{translateX}]}
             : {left: `${(100 / routes.length) * navigationState.index}%`},
           width === 'auto' ? {opacity: this.opacity} : null,
@@ -124,13 +123,13 @@ export default class TabBarIndicator extends React.Component {
 
 TabBarIndicator.propTypes = {
   navigationState: object,
-  layout: object,
+  indicatorLayout: object,
   width: oneOfType([
     string,
     number,
   ]),
   getTabWidth: func,
-  position: string,
+  position: object,
   style: object,
 };
 

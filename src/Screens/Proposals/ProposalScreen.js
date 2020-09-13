@@ -94,16 +94,16 @@ const ProposalScreen = ({navigation,
       setProposalInfo({...currProposalInfo, funding});
     };
 
-    const getProposalInfo = async (proposalId) => {
+    const getProposalInfo = async (currProposalId) => {
       try {
         const currProposalInfo = await ProposalService.getInstance().getProposalInfo(
-          proposalId
+          currProposalId
         );
         const currentDao = await DaoService.getInstance().getDaoById(currProposalInfo.dao);
-        const isMember = userInfo && isDaoMember(currentDao.members);
-        setIsMember(isMember);
+        const isCurrMember = userInfo && isDaoMember(currentDao.members);
+        setIsMember(isCurrMember);
         await loadProposalInfo(currProposalInfo);
-        unsubscribe = await ProposalService.getInstance().subscribeToProposalById(proposalId,
+        unsubscribe = await ProposalService.getInstance().subscribeToProposalById(currProposalId,
           async (updatedProposalInfo) => {
             await loadProposalInfo(updatedProposalInfo);
           }

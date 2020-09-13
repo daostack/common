@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {numberFormatter} from '~/Util';
-import moment from 'moment';
+// import moment from 'moment';
 /* import * as Progress from 'react-native-progress'; */
 import {layout, text, font} from '~/Theme';
 import {bool, shape, number, string} from 'prop-types';
@@ -10,9 +10,9 @@ const CommonStageSummary = ({
   isCommonCard,
   commonProgressInfo: {time, raised, members, currentBudget},
 }) => {
-  const deadlineMoment = moment.unix(time);
-  const deadlineHasPassed = moment().isAfter(deadlineMoment);
-  const isFundingStage = !deadlineHasPassed;
+  // const deadlineMoment = moment.unix(time);
+  // const deadlineHasPassed = moment().isAfter(deadlineMoment);
+  // const isFundingStage = !deadlineHasPassed;
   /* const renderFundingProgressBar = () => {
     return (
       <>

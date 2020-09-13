@@ -180,7 +180,7 @@ LinksField.propTypes = {
   multiline: bool,
   numberOfLines: number,
   keyboardType: string,
-  viewStyle: object
+  viewStyle: object,
 };
 
 const styles = StyleSheet.create({

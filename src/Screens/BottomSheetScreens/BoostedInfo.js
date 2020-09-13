@@ -2,8 +2,6 @@ import {Text, View, StyleSheet, ScrollView, Image} from 'react-native';
 import React from 'react';
 import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {object} from 'prop-types';
-
 
 const BoostedInfo = ({}) => (
   <ScrollView
