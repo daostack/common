@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 
 import {
   SafeAreaView,
@@ -15,7 +15,7 @@ import {layout, colors, text, sizeS} from '~/Theme';
 import AccordionBtn from '~/Components/AccordionBtn';
 import logger from '~/Services/Logger';
 
-const UserProfileReadMode = ({ navigation }) => {
+const UserProfileReadMode = ({navigation}) => {
   const [users, setUsers] = useState(null);
   const [setUserId] = useState(null);
   const bottomSheetContainerRef = useRef();

@@ -26,7 +26,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     const dao = arc.dao(daoId);
 
     const plugins = await dao.plugins().first();
-    const abi = arc.getABI({ abiName: 'FundingRequest', version: ARC_VERSION });
+    const abi = arc.getABI({abiName: 'FundingRequest', version: ARC_VERSION});
     const interf = new ethers.utils.Interface(abi);
 
     logger.log(interf);
@@ -38,7 +38,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     let fundingRequestPlugin;
     try {
       fundingRequestPlugin = await dao.plugin({
-        where: { name: 'FundingRequest' },
+        where: {name: 'FundingRequest'},
       });
     } catch (e) {
       logger.log(e);

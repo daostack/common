@@ -1,16 +1,16 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import {View, StyleSheet, Dimensions} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
-import { colors } from '~/Theme';
-const { width } = Dimensions.get('window');
+import {colors} from '~/Theme';
+const {width} = Dimensions.get('window');
 import * as Progress from 'react-native-progress';
 
-const RequestStepHeader = props => {
+const RequestStepHeader = (props) => {
   const deltaIndex = props.isFirstStepSkipped ? 1 : 0;
   const currentIndex = props.currentIndex - deltaIndex;
   const progressList = props.isFirstStepSkipped ? [0, 0.5, 1.0] : [0, 0.35, 0.7, 1.0];
 
-  const ovalStyle = index => {
+  const ovalStyle = (index) => {
     if (props.currentIndex > index) {
       return styles.ovalDone;
     }
@@ -22,7 +22,7 @@ const RequestStepHeader = props => {
     }
   };
 
-  const iconColor = index => {
+  const iconColor = (index) => {
     if (props.currentIndex > index) {
       return colors.mainBlue;
     }
@@ -58,7 +58,7 @@ const RequestStepHeader = props => {
       />
       {/* <TouchableOpacity onPress={() => setCurrentIndex(0)}> */}
       {!props.isFirstStepSkipped && <View
-        style={currentIndex === 0 ? { ...styles.oval } : { ...styles.ovalDone }}>
+        style={currentIndex === 0 ? {...styles.oval} : {...styles.ovalDone}}>
         <Icon
           name={currentIndex === 0 ? 'agenda-24' : 'check'}
           size={currentIndex > 0 ? 16 : 24}

@@ -34,20 +34,20 @@ const SortProposals = ({navigation, onContinueEditing}) => {
           style={styles.image}
           source={require('~/Assets/save.png')}
         />
-        <Text style={{ ...text.h3Black, ...layout.marginTopM }}>
+        <Text style={{...text.h3Black, ...layout.marginTopM}}>
           Unsaved Changes
         </Text>
         <Text
-          style={{ ...text.blackText, ...text.centered, ...layout.marginTopS }}>
+          style={{...text.blackText, ...text.centered, ...layout.marginTopS}}>
           You are about to leave this page without saving your changes
         </Text>
         <TouchableOpacity
-          style={{ ...layout.btnOutline, ...layout.marginTopXL }}
+          style={{...layout.btnOutline, ...layout.marginTopXL}}
           onPress={liveWithoutSave}>
           <Text style={text.buttonred}>Leave without saving</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={{ ...layout.btnOutline, ...layout.marginTopS }}
+          style={{...layout.btnOutline, ...layout.marginTopS}}
           onPress={continueEditing}>
           <Text style={text.buttonblue}>Continue editing</Text>
         </TouchableOpacity>

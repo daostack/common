@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   ScrollView,
@@ -7,20 +7,20 @@ import {
   Animated,
 } from 'react-native';
 import AmountField from '~/Components/FormFields/AmountField';
-import { colors } from '~/Theme';
-import { observer, inject } from 'mobx-react';
-const { width } = Dimensions.get('window');
+import {colors} from '~/Theme';
+import {observer, inject} from 'mobx-react';
+const {width} = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepNavigation from './RequestStepNavigation';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from './MembershipRequest';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 
-const RequestStep3 = props => {
+const RequestStep3 = (props) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   // const [ruleCount, setRuleCount] = useState(1);
@@ -29,7 +29,7 @@ const RequestStep3 = props => {
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
   const isFirstStepSkipped = props.route.params.skipFirstStep;
   // var ruleBody = [];
-  const { name } = props.daoStore.dao;
+  const {name} = props.daoStore.dao;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -40,11 +40,11 @@ const RequestStep3 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const onCustomClose = e => {
+  const onCustomClose = (e) => {
     setIsActionBtnHidden(true);
   };
 
-  const onCustomSelect = e => {
+  const onCustomSelect = (e) => {
     setIsActionBtnHidden(false);
     props.personalContributionFormStore.fieldChanged(
       RequestToJoinForm.FIELD_AMOUNT,
@@ -53,7 +53,7 @@ const RequestStep3 = props => {
     );
   };
 
-  const onAmountSelected = amount => {
+  const onAmountSelected = (amount) => {
     props.personalContributionFormStore.fieldChanged(
       RequestToJoinForm.FIELD_AMOUNT,
       amount,
@@ -82,7 +82,7 @@ const RequestStep3 = props => {
 
   return (
     <>
-      <SafeAreaView style={{ backgroundColor: colors.white }} />
+      <SafeAreaView style={{backgroundColor: colors.white}} />
       <SafeAreaView
         style={{
           flex: 1,
@@ -109,7 +109,7 @@ const RequestStep3 = props => {
           }}
           scrollEventThrottle={16}
           onScroll={Animated.event([
-            { nativeEvent: { contentOffset: { y: scrollY } } },
+            {nativeEvent: {contentOffset: {y: scrollY}}},
           ])}>
           <MembershipRequest />
 

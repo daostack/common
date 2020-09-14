@@ -40,7 +40,7 @@ export default class UserService {
           return null;
         }
         const doc = snapshots.docs[0];
-        return { id: doc.id, ...doc.data() };
+        return {id: doc.id, ...doc.data()};
 
       });
   }

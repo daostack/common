@@ -1,9 +1,9 @@
-import { StyleSheet, View, Text } from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import React from 'react';
 import {layout, colors, text, font} from '~/Theme';
 import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
-import { monthShortNames } from '~/Util/DateUtil';
+import {monthShortNames} from '~/Util/DateUtil';
 import moment from 'moment';
 import {PROPOSAL_TYPE} from '~/Config';
 import {LAUNCHED_STATES} from '~/Services/ProposalService';
@@ -80,7 +80,7 @@ const MemberCard = ({
   };
 
   return (
-    <View style={{ ...styles.cardContainer, ...styles.noBottomBorder }}>
+    <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <MemberImage userInfo={userInfo} />
       <View
         style={{

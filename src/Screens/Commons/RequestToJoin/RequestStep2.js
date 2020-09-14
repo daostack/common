@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
@@ -10,25 +10,25 @@ import {
 import TextInputField from '~/Components/FormFields/TextInputField';
 import MultiLinkField from '~/Components/FormFields/MultiLinkField';
 
-import { colors, text } from '~/Theme';
-import { observer, inject } from 'mobx-react';
-const { width } = Dimensions.get('window');
+import {colors, text} from '~/Theme';
+import {observer, inject} from 'mobx-react';
+const {width} = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepNavigation from './RequestStepNavigation';
 
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import MembershipRequest from './MembershipRequest';
 
-const RequestStep2 = props => {
+const RequestStep2 = (props) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const isFirstStepSkipped = props.route.params.skipFirstStep;
 
-  const { name } = props.daoStore.dao;
+  const {name} = props.daoStore.dao;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -54,7 +54,7 @@ const RequestStep2 = props => {
 
   return (
     <>
-      <SafeAreaView style={{ backgroundColor: colors.white }} />
+      <SafeAreaView style={{backgroundColor: colors.white}} />
       <SafeAreaView
         style={{
           flex: 1,
@@ -81,7 +81,7 @@ const RequestStep2 = props => {
           }}
           scrollEventThrottle={16}
           onScroll={Animated.event([
-            { nativeEvent: { contentOffset: { y: scrollY } } },
+            {nativeEvent: {contentOffset: {y: scrollY}}},
           ])}>
           <MembershipRequest />
 
@@ -117,7 +117,7 @@ const RequestStep2 = props => {
               }}
             />
 
-            <Text style={{ ...text.h3Black, ...{ textAlign: 'left' } }}>Links</Text>
+            <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>Links</Text>
 
             <MultiLinkField
               link

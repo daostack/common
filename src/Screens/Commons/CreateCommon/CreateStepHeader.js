@@ -1,15 +1,15 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import {View, StyleSheet, Dimensions} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
-import { colors } from '~/Theme';
-const { width } = Dimensions.get('window');
+import {colors} from '~/Theme';
+const {width} = Dimensions.get('window');
 import * as Progress from 'react-native-progress';
 
-const CreateStepHeader = props => {
+const CreateStepHeader = (props) => {
   const currentIndex = props.currentIndex;
   const progressList = [0, 0.35, 0.7, 1.0];
 
-  const ovalStyle = index => {
+  const ovalStyle = (index) => {
     if (props.currentIndex > index) {
       return styles.ovalDone;
     }
@@ -21,7 +21,7 @@ const CreateStepHeader = props => {
     }
   };
 
-  const iconColor = index => {
+  const iconColor = (index) => {
     if (props.currentIndex > index) {
       return colors.mainBlue;
     }
@@ -57,7 +57,7 @@ const CreateStepHeader = props => {
       />
       {/* <TouchableOpacity onPress={() => setCurrentIndex(0)}> */}
       <View
-        style={currentIndex === 0 ? { ...styles.oval } : { ...styles.ovalDone }}>
+        style={currentIndex === 0 ? {...styles.oval} : {...styles.ovalDone}}>
         <Icon
           name={currentIndex === 0 ? 'dao-general-info-24' : 'check'}
           size={currentIndex > 0 ? 16 : 24}

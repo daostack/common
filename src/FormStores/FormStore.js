@@ -153,15 +153,11 @@ class FormStore {
     }
 
     if (multiValues.length > 0) {
-      changedFieldsJson[name] = [...multiValues.keys()].map((x) => {
-        return { value: multiValues[x]};
-      });
+      changedFieldsJson[name] = [...multiValues.keys()].map((x) => ({value: multiValues[x]}));
     }
 
     if (multiFieldTitles.length > 0) {
-      const allMultiLinksFields = [...multiFieldTitles.keys()].map((x) => {
-        return {title: multiFieldTitles[x], url: multiFieldValues[x]};
-      });
+      const allMultiLinksFields = [...multiFieldTitles.keys()].map((x) => ({title: multiFieldTitles[x], url: multiFieldValues[x]}));
       // Remove fields with empty values.
       changedFieldsJson[name] = allMultiLinksFields.filter((item) => item.title || item.url);
     }

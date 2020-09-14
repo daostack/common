@@ -46,7 +46,7 @@ const UserProfileData = ({
     getUser();
   }, [userId, userStore.userInfo]);
 
-  const navigateToEditProfile = isFirstOpening => {
+  const navigateToEditProfile = (isFirstOpening) => {
     const navigate = CommonActions.navigate({
       name: 'EditProfile',
       params: {
@@ -140,14 +140,14 @@ const UserProfileData = ({
       </View>
 
       <View style={styles.contentContainerWithoutPadding}>
-        <View style={{ justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
+        <View style={{justifyContent: 'space-between', flexDirection: 'row', width: '100%'}}>
           <Text
             style={{
               ...text.againstTextBlack,
               ...layout.marginBottomL,
               ...layout.paddingHorizontalL,
             }}>{`Commons (${commonsCount})`}</Text>
-          {showMaxData && commonsCount > 0 && <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ flexDirection: 'row', ...layout.paddingHorizontalL }}>
+          {showMaxData && commonsCount > 0 && <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{flexDirection: 'row', ...layout.paddingHorizontalL}}>
             <Text
               style={{
                 ...text.h3Black,
@@ -167,7 +167,7 @@ const UserProfileData = ({
       </View>
 
       <View style={styles.contentContainerWithoutPadding}>
-        <View style={{ justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
+        <View style={{justifyContent: 'space-between', flexDirection: 'row', width: '100%'}}>
           <Text
             style={{
               ...text.againstTextBlack,
@@ -176,8 +176,8 @@ const UserProfileData = ({
             }}>{`Proposals (${proposalsCount})`}</Text>
           {showMaxData && proposalsCount > 0 && (
             <TouchableOpacity
-              onPress={() => navigation.navigate('MyProposals', { onlyFundingRequests: true })}
-              style={{ flexDirection: 'row', ...layout.paddingHorizontalL }}
+              onPress={() => navigation.navigate('MyProposals', {onlyFundingRequests: true})}
+              style={{flexDirection: 'row', ...layout.paddingHorizontalL}}
             >
               <Text
                 style={{
@@ -201,7 +201,7 @@ const UserProfileData = ({
       </View>
 
       <View style={styles.contentContainerWithoutPadding}>
-        <View style={{ justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
+        <View style={{justifyContent: 'space-between', flexDirection: 'row', width: '100%'}}>
           <Text
             style={{
               ...text.againstTextBlack,
@@ -214,7 +214,7 @@ const UserProfileData = ({
 
           {showMaxData && (requestsCount > 0) && (
             <TouchableOpacity
-              onPress={() => navigation.navigate('MyProposals', { onlyMembershipRequests: true })}
+              onPress={() => navigation.navigate('MyProposals', {onlyMembershipRequests: true})}
               style={{
                 flexDirection: 'row',
                 ...layout.paddingHorizontalL,

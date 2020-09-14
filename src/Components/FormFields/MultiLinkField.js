@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from './TextInputField';
-import { text, layout, colors, sizeL } from '~/Theme';
+import {text, layout, colors, sizeL} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {string, bool, object, number, shape} from 'prop-types';
 
