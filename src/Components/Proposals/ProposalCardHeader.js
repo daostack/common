@@ -119,9 +119,21 @@ const ProposalCardHeader = ({stage, winningOutcome, hasPassedExpiryDate, closing
         {headerStatus.text === TITLES.COUNTDOWN && renderCountDown(closingAt)}
       </View>
     ) : (
-      <View style={{...styles.proposalCardHeader, backgroundColor: headerStatus.lightColor}}>
+      <View
+        style={{
+          ...styles.proposalCardHeader,
+          backgroundColor: headerStatus.lightColor,
+        }}
+      >
         <Icon name={headerStatus.icon} color={headerStatus.darkColor} size={16}/>
-        <Text style={{...text.orangeSmallBold, ...{marginHorizontal: 5, color: headerStatus.darkColor}}}>
+
+        <Text
+          style={{
+            ...text.orangeSmallBold,
+            marginHorizontal: 5,
+            color: headerStatus.darkColor,
+          }}
+        >
           {headerStatus.text}
         </Text>
       </View>
