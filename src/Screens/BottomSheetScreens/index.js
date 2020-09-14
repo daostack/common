@@ -1,11 +1,10 @@
-export ApprovalSheetScreen from './ApprovalSheetScreen';
-export CommonOperationalStateNotif from './CommonOperationalStateNotif';
-export CommonProfileOptions from './CommonProfileOptions';
-export LoginSheetScreen from './LoginSheetScreen';
-export SortProposals from './SortProposals';
-export UnsavedChanges from './UnsavedChanges';
-export UserProfileSheetScreen from './UserProfileSheetScreen';
-export TransactionError from './TransactionError';
-export PublishCommon from './PublishCommon';
-
+export {default as ApprovalSheetScreen} from './ApprovalSheetScreen';
+export {default as CommonOperationalStateNotif} from './CommonOperationalStateNotif';
+export {default as CommonProfileOptions} from './CommonProfileOptions';
+export {default as LoginSheetScreen} from './LoginSheetScreen';
+export {default as SortProposals} from './SortProposals';
+export {default as UnsavedChanges} from './UnsavedChanges';
+export {default as UserProfileSheetScreen} from './UserProfileSheetScreen';
+export {default as TransactionError} from './TransactionError';
+export {default as PublishCommon} from './PublishCommon';
 export {default as SafetyPeriodAbout} from './SafetyPeriodAbout';

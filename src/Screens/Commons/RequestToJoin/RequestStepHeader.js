@@ -1,35 +1,36 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import {View, StyleSheet, Dimensions} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
-import { colors } from '~/Theme';
-const { width } = Dimensions.get('window');
+import {colors} from '~/Theme';
 import * as Progress from 'react-native-progress';
+import {number, bool} from 'prop-types';
+const {width} = Dimensions.get('window');
 
-const RequestStepHeader = props => {
-  const deltaIndex = props.isFirstStepSkipped ? 1 : 0;
-  const currentIndex = props.currentIndex - deltaIndex;
-  const progressList = props.isFirstStepSkipped ? [0, 0.5, 1.0] : [0, 0.35, 0.7, 1.0];
+const RequestStepHeader = ({isFirstStepSkipped, currentIndex}) => {
+  const deltaIndex = isFirstStepSkipped ? 1 : 0;
+  const progressList = isFirstStepSkipped ? [0, 0.5, 1.0] : [0, 0.35, 0.7, 1.0];
+  currentIndex = currentIndex - deltaIndex;
 
-  const ovalStyle = index => {
-    if (props.currentIndex > index) {
+  const ovalStyle = (index) => {
+    if (currentIndex > index) {
       return styles.ovalDone;
     }
-    if (props.currentIndex === index) {
+    if (currentIndex === index) {
       return styles.oval;
     }
-    if (props.currentIndex < index) {
+    if (currentIndex < index) {
       return styles.oval2;
     }
   };
 
-  const iconColor = index => {
-    if (props.currentIndex > index) {
+  const iconColor = (index) => {
+    if (currentIndex > index) {
       return colors.mainBlue;
     }
-    if (props.currentIndex === index) {
+    if (currentIndex === index) {
       return colors.mainBlue;
     }
-    if (props.currentIndex < index) {
+    if (currentIndex < index) {
       return colors.paleblue;
     }
   };
@@ -57,8 +58,8 @@ const RequestStepHeader = props => {
         }}
       />
       {/* <TouchableOpacity onPress={() => setCurrentIndex(0)}> */}
-      {!props.isFirstStepSkipped && <View
-        style={currentIndex === 0 ? { ...styles.oval } : { ...styles.ovalDone }}>
+      {!isFirstStepSkipped && <View
+        style={currentIndex === 0 ? {...styles.oval} : {...styles.ovalDone}}>
         <Icon
           name={currentIndex === 0 ? 'agenda-24' : 'check'}
           size={currentIndex > 0 ? 16 : 24}
@@ -96,6 +97,11 @@ const RequestStepHeader = props => {
   );
 };
 
+RequestStepHeader.propTypes = {
+  isFirstStepSkipped: bool,
+  currentIndex: number,
+};
+
 const styles = StyleSheet.create({
   oval: {
     width: 48,
@@ -129,25 +135,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.lighterBlue,
-  },
-  iconBlue: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 24,
-    height: 24,
-  },
-  iconGrey: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 16,
-    height: 16,
-  },
-  iconDone: {
-    tintColor: colors.mainBlue,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 16,
-    height: 16,
   },
 });
 

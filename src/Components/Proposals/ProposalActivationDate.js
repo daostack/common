@@ -15,7 +15,7 @@ const ProposalActivationDate = ({activationDate, bottomSheetStore}) => {
   const onAboutClick = () => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SAFETY_PERIOD_ABOUT,
-      { activationDate }
+      {activationDate}
     );
   };
 

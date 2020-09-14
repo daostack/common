@@ -3,6 +3,7 @@ import {TextInput, View, Text, StyleSheet} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import {colors, layout, font} from '~/Theme';
+import {string, shape, oneOfType, object, func, bool, number} from 'prop-types';
 
 class LinksField extends React.Component {
   fieldValidation;
@@ -156,6 +157,31 @@ class LinksField extends React.Component {
     }
   }
 }
+
+LinksField.propTypes = {
+  validation: shape({
+    name: string,
+    formStore: object,
+    validateRule: oneOfType([
+      string,
+      object,
+    ]),
+    displayName: string,
+    customErrorMessage: string,
+  }),
+  value: string,
+  fieldActionComponent: object,
+  onChangeText: func,
+  onBlur: func,
+  placeholderText: string,
+  label: string,
+  infoLabel: string,
+  password: string,
+  multiline: bool,
+  numberOfLines: number,
+  keyboardType: string,
+  viewStyle: object,
+};
 
 const styles = StyleSheet.create({
   textfield: {

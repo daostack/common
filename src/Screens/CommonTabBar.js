@@ -1,9 +1,9 @@
 import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
-
 import {layout, colors, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {TabBar} from 'react-native-tab-view';
+import {object} from 'prop-types';
 
 const CommonTabBar = (props) => (
   <TabBar
@@ -11,15 +11,15 @@ const CommonTabBar = (props) => (
     indicatorStyle={{
       backgroundColor: colors.mainBlue,
     }}
-    renderLabel={(props) => (
-      <View style={{...layout.content, ...layout.flexRow, ...{padding: 0, width: '100%'}}}>
-        { props.route.icon ? <Icon
-          name={props.route.icon}
+    renderLabel={({route, focused}) => (
+      <View style={{...layout.content, ...layout.flexRow, padding: 0, width: '100%'}}>
+        { route.icon ? <Icon
+          name={route.icon}
           size={30}
-          color={props.focused ? colors.mainBlue : colors.grey3}
+          color={focused ? colors.mainBlue : colors.grey3}
         /> : null }
-        <Text style={props.focused ? styles.textStyleActive : styles.textStyle}>
-          {props.route.title}
+        <Text style={focused ? styles.textStyleActive : styles.textStyle}>
+          {route.title}
         </Text>
       </View>
     )}
@@ -28,7 +28,9 @@ const CommonTabBar = (props) => (
   />
 );
 
-export default CommonTabBar;
+CommonTabBar.propTypes = {
+  props: object,
+};
 
 const styles = StyleSheet.create({
   commonStyles: {
@@ -49,3 +51,5 @@ const styles = StyleSheet.create({
     color: colors.mainBlue,
   },
 });
+
+export default CommonTabBar;

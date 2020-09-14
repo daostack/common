@@ -5,12 +5,12 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-
 import React from 'react';
 import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
+import {func, bool} from 'prop-types';
 
-const CommonProfileOptions = ({navigation, onFollow, isCommonProfile}) => (
+const CommonProfileOptions = ({onFollow, isCommonProfile}) => (
   <ScrollView
     contentInsetAdjustmentBehavior="automatic"
     style={styles.scrollView}
@@ -30,7 +30,7 @@ const CommonProfileOptions = ({navigation, onFollow, isCommonProfile}) => (
         />
         <Text style={text.buttonblack}>Unfollow</Text>
       </TouchableOpacity>
-      {isCommonProfile ? (
+      {isCommonProfile && (
           <>
             <TouchableOpacity style={styles.optionBtn}>
               <Icon
@@ -59,7 +59,7 @@ const CommonProfileOptions = ({navigation, onFollow, isCommonProfile}) => (
               <Text style={text.buttonblack}>Share</Text>
             </TouchableOpacity>
           </>
-      ) : null}
+      )}
 
       <TouchableOpacity style={styles.optionBtn}>
         <Icon
@@ -72,6 +72,11 @@ const CommonProfileOptions = ({navigation, onFollow, isCommonProfile}) => (
     </View>
   </ScrollView>
 );
+
+CommonProfileOptions.propTypes = {
+  onFollow: func,
+  isCommonProfile: bool,
+};
 
 const styles = StyleSheet.create({
   scrollView: {

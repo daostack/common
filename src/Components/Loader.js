@@ -1,10 +1,11 @@
-import { StyleSheet, ActivityIndicator, View } from 'react-native';
+import {StyleSheet, ActivityIndicator, View} from 'react-native';
 import React from 'react';
-import { layout, colors, sizeXXL } from '~/Theme';
+import {layout, colors, sizeXXL} from '~/Theme';
+import {string, bool} from 'prop-types';
 
-const Loader = ({ color, isBigger }) => {
+const Loader = ({color, isBigger}) => {
   let loaderStyle = isBigger ? {
-    ...styles.loader, ...{ transform: [{ scale: 1.6 }] },
+    ...styles.loader, ...{transform: [{scale: 1.6}]},
   } : styles.loader;
 
   return (
@@ -16,6 +17,11 @@ const Loader = ({ color, isBigger }) => {
       />
     </View>
   );
+};
+
+Loader.propTypes = {
+  color: string,
+  isBigger: bool,
 };
 
 const styles = StyleSheet.create({

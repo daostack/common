@@ -9,6 +9,7 @@ import {
 import React from 'react';
 import {text, layout, colors, font} from '~/Theme';
 import logger from '~/Services/Logger';
+import {object, func} from 'prop-types';
 
 const UnsavedChanges = ({
   navigation,
@@ -63,6 +64,13 @@ const UnsavedChanges = ({
     </ScrollView>
   );
 };
+
+UnsavedChanges.propTypes = {
+  navigation: object,
+  onContinueEditing: func,
+  onLeaveWithoutSaving: func,
+};
+
 
 const styles = StyleSheet.create({
   scrollView: {

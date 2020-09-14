@@ -1,9 +1,8 @@
 import React from 'react';
 import {Image, View, StyleSheet, Text, SafeAreaView} from 'react-native';
 import LayoutHeader from './LayoutHeader';
-
 import {font, sizeM, sizeLineHeight} from '~/Theme';
-import {func, string, bool} from 'prop-types';
+import {func, string, bool, object} from 'prop-types';
 
 const SentTemplate = ({
   children,
@@ -34,6 +33,7 @@ SentTemplate.propTypes = {
   description: string.isRequired,
   onClose: func.isRequired,
   isCommonCreation: bool,
+  children: object,
 };
 const styles = StyleSheet.create({
   image: {

@@ -1,7 +1,8 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
-
 import {layout, colors, text, font} from '~/Theme';
+import {func, bool, number} from 'prop-types';
+
 
 const JoinAmount = ({id, amount, isCustom, onPress, isSelected}) => {
 
@@ -18,6 +19,14 @@ const JoinAmount = ({id, amount, isCustom, onPress, isSelected}) => {
       }`}</Text>
     </TouchableOpacity>
   );
+};
+
+JoinAmount.propTypes = {
+  id: number.isRequired,
+  amount: number,
+  isCustom: bool,
+  onPress: func,
+  isSelected: bool,
 };
 
 const styles = StyleSheet.create({
