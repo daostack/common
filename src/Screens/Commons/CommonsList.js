@@ -34,8 +34,10 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     if (userStore.userInfo === null ) {
       return [];
     }
+
     const proposalList = await ProposalService.getInstance().getUserPendingProposals(userStore.userInfo.uid);
     const daoList = proposalList.map((proposal) => proposal.data().dao);
+
     return daoList;
   };
 
@@ -44,34 +46,41 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       setMyDaosGroup({title: '', data: []});
       return [];
     }
+
     const myDao = daoList.filter((dao) => userStore.isDaoMember(dao.members));
-    if (myDao.length !== 0) {
+
+    const pendingList = await getPendingDAOList();
+    const pendingDao = daoList.filter((dao) => pendingList.includes(dao.id));
+
+    const featuredList = daoList.filter((dao) =>
+      !pendingDao.includes(dao) &&
+      !myDao.includes(dao)
+    );
+
+    if (myDao.length > 0) {
       setMyDaosGroup({
         title: `My Commons (${myDao?.length})`,
         data: myDao,
       });
     }
 
-    const pendingList = await getPendingDAOList();
-    const pendingDao = daoList.filter((dao) => pendingList.includes(dao.id));
-    if (pendingDao.length !== 0) {
+    if (pendingDao.length > 0) {
       setPendingDaosGroup({
         title: `Pending (${pendingDao?.length})`,
         data: pendingDao,
       });
     }
 
-    const featuredList = daoList.filter((dao) => !pendingDao.includes(dao) && !myDao.includes(dao));
-    if (myDao.length !== 0 || pendingDao.length !== 0 ) {
+    if (featuredList.length > 0) {
       setFeaturedDaosGroup({
         title: 'Featured',
         data: featuredList,
       });
-      setIsSplited(true);
     }
 
     if (daoStore.isError) {
-      logger.log('daostore error', daoStore.isError);
+      logger.log('DaoStore Error', daoStore.isError);
+
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
       );
@@ -100,7 +109,10 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       data: docs,
     });
 
-    splitDaoList(docs);
+    splitDaoList(docs)
+      .then(() => {
+        setIsSplited(true);
+      });
 
     if (daoStore.isError) {
       logger.log('daostore error', daoStore.isError);
