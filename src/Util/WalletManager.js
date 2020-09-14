@@ -1,13 +1,12 @@
 import {NativeWallet} from './NativeWallet';
 import {ethers, Contract} from 'ethers';
 import {Alert} from 'react-native';
-import {web3ProviderUrl, web3NetworkId, COMMONTOKENADDRESS, relayerUrl} from '../Config';
+import {web3ProviderUrl, web3NetworkId, COMMONTOKENADDRESS, relayerUrl} from '~/Config';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 import ABI from './abi.json';
-import UserService from '../Services/UserService';
-import logger from '../Services/Logger';
-
+import UserService from '~/Services/UserService';
+import logger from '~/Services/Logger';
 
 ethers.Contract.prototype.sendToRelayer = async function (funcName, params, value = '0') {
   const data = this.interface.functions[funcName].encode(params);
@@ -372,12 +371,9 @@ export default class WalletManager {
   getTransactionEvents = (interf, receipt) => {
     const txEvents = {};
     const abiEvents = Object.values(interf.events);
-    for (const log of receipt.logs)
-    {
-      for (const abiEvent of abiEvents)
-      {
-        if (abiEvent.topic === log.topics[0])
-        {
+    for (const log of receipt.logs) {
+      for (const abiEvent of abiEvents) {
+        if (abiEvent.topic === log.topics[0]) {
           txEvents[abiEvent.name] = abiEvent.decode(log.data, log.topics);
           break;
         }

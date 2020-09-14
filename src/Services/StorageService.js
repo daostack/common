@@ -1,4 +1,4 @@
-import { storage } from '../Firebase';
+import {storage} from '~/Firebase';
 
 export default class StorageService {
   static serviceInstance = null;

@@ -1,7 +1,7 @@
-import WalletManager from '../../Util/WalletManager';
+import WalletManager from '~/Util/WalletManager';
 import {JoinProposal, FundingRequestProposal} from '@daostack/arc.js';
 import {PROPOSAL_STAGES_HISTORY} from '../ProposalService';
-import {NULL_ADDRESS, PROPOSAL_TYPE} from '../../Config';
+import {NULL_ADDRESS, PROPOSAL_TYPE} from '~/Config';
 import GraphqlSyncService from '../GraphqlSyncService';
 import logger from '../Logger';
 

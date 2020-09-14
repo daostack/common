@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   SafeAreaView,
   ScrollView,
@@ -8,11 +7,12 @@ import {
   View,
   Text,
 } from 'react-native';
-import EditProfileForm from '../../Components/Forms/EditProfileForm';
-import {colors, text, layout} from '../../Theme';
+import EditProfileForm from '~/Components/Forms/EditProfileForm';
+import {colors, text, layout} from '~/Theme';
+import {string, object, shape} from 'prop-types';
 
-const CompleteAccount = ({route, navigation}) => {
-  return (
+
+const CompleteAccount = ({route: {params}, navigation}) => (
     <>
       <StatusBar barStyle="dark-content" />
 
@@ -29,16 +29,27 @@ const CompleteAccount = ({route, navigation}) => {
             </View>
 
             <EditProfileForm
-              userId={route.params.userId}
-              name={route.params.name}
-              image={route.params.image}
-              email={route.params.email}
+              userId={params.userId}
+              name={params.name}
+              image={params.image}
+              email={params.email}
             />
           </View>
         </ScrollView>
       </SafeAreaView>
     </>
-  );
+);
+
+CompleteAccount.propTypes = {
+  navigation: object,
+  route: shape({
+    params: shape({
+      userId: string,
+      name: string,
+      image: string,
+      email: string,
+    }),
+  }),
 };
 
 const styles = StyleSheet.create({

@@ -3,11 +3,12 @@ import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import DocumentPicker from 'react-native-document-picker';
-import Toast from '../../Util/Toast';
-import Icon from '../../Assets/iconfont/Icon';
-import {text, layout, colors} from '../../Theme';
-import StorageService from '../../Services/StorageService';
+import Toast from '~/Util/Toast';
+import Icon from '~/Assets/iconfont/Icon';
+import {text, layout, colors} from '~/Theme';
+import StorageService from '~/Services/StorageService';
 import logger from '../../Services/Logger';
+import {string, func, object, shape, oneOfType} from 'prop-types';
 
 class FileField extends React.Component {
   fieldValidation = null;
@@ -122,7 +123,7 @@ class FileField extends React.Component {
   };
 
   render() {
-    const { value, validation} = this.props;
+    const {value, validation} = this.props;
 
     const currValue = validation
       ? validation.formStore.form.fields[validation.name].value
@@ -147,6 +148,24 @@ class FileField extends React.Component {
     );
   }
 }
+
+FileField.propTypes = {
+  validation: shape({
+    name: string,
+    formStore: object,
+    validateRule: oneOfType([
+      string,
+      object,
+    ]),
+    multiName: string,
+    displayName: string,
+    customErrorMessage: string,
+  }),
+  value: string,
+  onChangeFile: func,
+  navigation: object,
+  onFieldDeleted: func,
+};
 
 const styles = StyleSheet.create({
   container: {

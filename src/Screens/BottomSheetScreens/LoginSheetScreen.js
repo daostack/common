@@ -1,44 +1,49 @@
 import {Text, View, StyleSheet} from 'react-native';
-
 import React from 'react';
-import {colors, text, layout} from '../../Theme';
+import {colors, text, layout} from '~/Theme';
 import {inject, observer} from 'mobx-react';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import CreateAccount from '../UserProfile/CreateAccount';
+import {string, func, shape} from 'prop-types';
 
-const LoginSheetScreen = ({bottomSheetStore, ...props}) => {
-  return (
-    <View style={styles.contentContainer}>
-      <Text style={styles.sheetTitleStyle}>Be a part of Common</Text>
+const LoginSheetScreen = ({bottomSheetStore, message = null}) => (
+  <View style={styles.contentContainer}>
+    <Text style={styles.sheetTitleStyle}>Be a part of Common</Text>
+    <Text
+      style={{
+        ...styles.sheetTextStyle,
+        ...layout.marginBottomXL,
+      }}>
+      {message || 'Connect your account to join this Common'}
+    </Text>
+
+    <View style={layout.flexRow}>
+      <CreateAccount hidePlaceholder={true} onSignedIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)} />
+    </View>
+
+    {/**
+    <View style={layout.flexRow}>
+      <GSignInButton style={styles.googleSignInButton} onSignIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)} />
+    </View>
+
+    <View style={layout.paddingHorizontalXL}>
       <Text
         style={{
           ...styles.sheetTextStyle,
-          ...layout.marginBottomXL,
+          ...layout.marginTopL,
         }}>
-        {props.message ? props.message : 'Connect your account to join this Common'}
+        By clicking next you are accepting the Common app terms of use
       </Text>
-
-      <View style={layout.flexRow}>
-        <CreateAccount hidePlaceholder={true} onSignedIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)}/>
-      </View>
-
-      {/**
-      <View style={layout.flexRow}>
-        <GSignInButton style={styles.googleSignInButton} onSignIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)} />
-      </View>
-
-      <View style={layout.paddingHorizontalXL}>
-        <Text
-          style={{
-            ...styles.sheetTextStyle,
-            ...layout.marginTopL,
-          }}>
-          By clicking next you are accepting the Common app terms of use
-        </Text>
-      </View>
-      */}
     </View>
-  );
+    */}
+  </View>
+);
+
+LoginSheetScreen.propTypes = {
+  bottomSheetStore: shape({
+    hideBottomSheet: func,
+  }),
+  message: string,
 };
 
 const styles = StyleSheet.create({

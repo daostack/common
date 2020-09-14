@@ -5,9 +5,10 @@ import MultiImageField from '../FormFields/MultiImageField';
 import MultiFileField from '../FormFields/MultiFileField';
 import MultiLinkField from '../FormFields/MultiLinkField';
 import {observer, inject} from 'mobx-react';
-import {layout, text, colors, font} from '../../Theme';
-import TextInputFieldWithIcon from '../../Components/FormFields/TextInputFieldWithIcon';
-import logger from '../../Services/Logger';
+import {layout, text, colors, font} from '~/Theme';
+import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
+import logger from '~/Services/Logger';
+import {func, shape, object} from 'prop-types';
 
 class FundingRequestForm extends React.Component {
   static FIELD_TITLE = 'title';
@@ -16,12 +17,6 @@ class FundingRequestForm extends React.Component {
   static FIELD_LINKS = 'links';
   static FIELD_IMAGES = 'images';
   static FIELD_FILES = 'files';
-
-  state = {
-    linkCount: 1,
-  };
-
-  formSkip() {}
 
   formSave = async (e) => {
     const {fundingRequestFormStore} = this.props;
@@ -43,7 +38,6 @@ class FundingRequestForm extends React.Component {
     const {
       userStore,
       fundingRequestFormStore,
-      firstOpening,
       common,
       ...otherProps
     } = this.props;
@@ -182,5 +176,15 @@ class FundingRequestForm extends React.Component {
     );
   }
 }
+
+FundingRequestForm.propTypes = {
+  fundingRequestFormStore: shape({
+    isFormValid: func,
+  }),
+  common: object,
+  userStore: object,
+  onFormSubmit: func,
+  onFormClose: func,
+};
 
 export default inject('fundingRequestFormStore')(observer(FundingRequestForm));

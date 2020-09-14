@@ -2,7 +2,8 @@ import React from 'react';
 import {TextInput, View, Text, StyleSheet} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
-import {colors, layout, font} from '../../Theme';
+import {colors, layout, font} from '~/Theme';
+import {string, shape, oneOfType, object, func, bool, number} from 'prop-types';
 
 class LinksField extends React.Component {
   fieldValidation;
@@ -33,7 +34,7 @@ class LinksField extends React.Component {
     }
   }
 
-  onChangeText = text => {
+  onChangeText = (text) => {
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
       formStore.fieldChanged(name, text);
@@ -41,11 +42,11 @@ class LinksField extends React.Component {
     this.props.onChangeText && this.props.onChangeText(text);
   };
 
-  onFocus = e => {
+  onFocus = (e) => {
     this.setState({onFocus: true});
   };
 
-  onBlur = e => {
+  onBlur = (e) => {
     this.setState({onFocus: false});
     if (this.props.validation) {
       const {formStore, name} = this.props.validation;
@@ -127,7 +128,7 @@ class LinksField extends React.Component {
     );
   }
 
-  renderPlaceholderForNotEditableField = editable => {
+  renderPlaceholderForNotEditableField = (editable) => {
     if (editable === false) {
       return <Text>{this.props.placeholderText || ''}</Text>;
     }
@@ -156,6 +157,31 @@ class LinksField extends React.Component {
     }
   }
 }
+
+LinksField.propTypes = {
+  validation: shape({
+    name: string,
+    formStore: object,
+    validateRule: oneOfType([
+      string,
+      object,
+    ]),
+    displayName: string,
+    customErrorMessage: string,
+  }),
+  value: string,
+  fieldActionComponent: object,
+  onChangeText: func,
+  onBlur: func,
+  placeholderText: string,
+  label: string,
+  infoLabel: string,
+  password: string,
+  multiline: bool,
+  numberOfLines: number,
+  keyboardType: string,
+  viewStyle: object,
+};
 
 const styles = StyleSheet.create({
   textfield: {

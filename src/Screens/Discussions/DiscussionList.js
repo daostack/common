@@ -1,10 +1,10 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {FlatList} from 'react-native';
 import DiscussionCard from './DiscussionCard';
-import ViewTabNoData from '../../Components/ViewTabNoData';
+import ViewTabNoData from '~/Components/ViewTabNoData';
 import {string, object} from 'prop-types';
-import {db} from '../../Firebase';
-import logger from '../../Services/Logger';
+import {db} from '~/Firebase';
+import logger from '~/Services/Logger';
 
 const DiscussionList = ({commonId, navigation}) => {
   const [list, setList] = useState([]);

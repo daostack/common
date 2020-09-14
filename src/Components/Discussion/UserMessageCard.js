@@ -1,22 +1,29 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import moment from 'moment';
-import {layout, colors, text, font} from '../../Theme';
+import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
+import {string, object} from 'prop-types';
 
-const UserMessageCard = ({photoURL, name, message, time}) => {
-  return (
-    <View style={styles.messageCardContainer}>
-      <FastImage style={styles.userImage} source={photoURL ? {uri: photoURL} : null} />
-      <View style={styles.messageContainer}>
-        <Text style={styles.nameStyle}>{name}</Text>
-        <Text style={styles.messageStyle}>{message}</Text>
-        <Text style={styles.timeStyle}>
-          {moment(time.toDate()).format('hh:mm')}
-        </Text>
-      </View>
+
+const UserMessageCard = ({photoURL, name, message, time}) => (
+  <View style={styles.messageCardContainer}>
+    <FastImage style={styles.userImage} source={photoURL ? {uri: photoURL} : null} />
+    <View style={styles.messageContainer}>
+      <Text style={styles.nameStyle}>{name}</Text>
+      <Text style={styles.messageStyle}>{message}</Text>
+      <Text style={styles.timeStyle}>
+        {moment(time.toDate()).format('hh:mm')}
+      </Text>
     </View>
-  );
+  </View>
+);
+
+UserMessageCard.propTypes = {
+  photoURL: string,
+  name: string,
+  message: string,
+  time: object,
 };
 
 const styles = StyleSheet.create({

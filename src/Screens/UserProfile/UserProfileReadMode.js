@@ -1,5 +1,4 @@
 import React, {useState, useEffect, useRef} from 'react';
-
 import {
   SafeAreaView,
   StatusBar,
@@ -8,11 +7,12 @@ import {
   ScrollView,
   View,
 } from 'react-native';
-import Icon from '../../Assets/iconfont/Icon';
-import UserService from '../../Services/UserService';
-import {layout, colors, text, sizeS} from '../../Theme';
-import AccordionBtn from '../../Components/AccordionBtn';
-import logger from '../../Services/Logger';
+import Icon from '~/Assets/iconfont/Icon';
+import UserService from '~/Services/UserService';
+import {layout, colors, text, sizeS} from '~/Theme';
+import AccordionBtn from '~/Components/AccordionBtn';
+import logger from '~/Services/Logger';
+import {object} from 'prop-types';
 
 const UserProfileReadMode = ({navigation}) => {
   const [users, setUsers] = useState(null);
@@ -75,6 +75,10 @@ const UserProfileReadMode = ({navigation}) => {
       </SafeAreaView>
     </>
   );
+};
+
+UserProfileReadMode.propTypes = {
+  navigation: object,
 };
 
 const styles = StyleSheet.create({

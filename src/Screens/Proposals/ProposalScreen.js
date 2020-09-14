@@ -11,29 +11,28 @@ import {
   TextInput,
   Keyboard,
 } from 'react-native';
-import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
+import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
 import ProposalDiscussion from './ProposalDiscussion';
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
-import Toast from '../../Util/Toast';
-import BottomSheetModal from '../../Components/BottomSheetModal';
-import ProposalService from '../../Services/ProposalService';
-import ArcService from '../../Services/ArcService';
-import auth from '@react-native-firebase/auth';
-import {UserAvatar} from '../../Components';
-import {PROPOSAL_STAGES_ACTIVE} from '../../Services/ProposalService';
-import {PROPOSAL_TYPE} from '../../Config';
-import UserService from '../../Services/UserService';
-import DaoService from '../../Services/DaoService';
+import Toast from '~/Util/Toast';
+import BottomSheetModal from '~/Components/BottomSheetModal';
+import ProposalService from '~/Services/ProposalService';
+import ArcService from '~/Services/ArcService';
+import {UserAvatar} from '~/Components';
+import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
+import {PROPOSAL_TYPE} from '~/Config';
+import UserService from '~/Services/UserService';
+import DaoService from '~/Services/DaoService';
 import {observer, inject} from 'mobx-react';
-import TabBarRenderer from '../../Components/TabView/TabBarRenderer';
+import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import moment from 'moment';
-import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
-import {db} from '../../Firebase';
-import {string, bool, object, shape} from 'prop-types';
-import logger from '../../Services/Logger';
+import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
+import {db} from '~/Firebase';
+import {string, func, object, shape, oneOfType, number} from 'prop-types';
+import logger from '~/Services/Logger';
 const screenWidth = Dimensions.get('window').width;
 
 const ProposalScreen = ({navigation,
@@ -58,7 +57,7 @@ const ProposalScreen = ({navigation,
     !proposalInfo.votes.some((vote) => vote.voter === userInfo.safeAddress);
 
   // Sticky Tab Bar
-  const [ showStickyTabBar, setShowStickyTabBar ] = useState(false);
+  const [showStickyTabBar, setShowStickyTabBar] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
 
@@ -95,16 +94,16 @@ const ProposalScreen = ({navigation,
       setProposalInfo({...currProposalInfo, funding});
     };
 
-    const getProposalInfo = async (proposalId) => {
+    const getProposalInfo = async (currProposalId) => {
       try {
         const currProposalInfo = await ProposalService.getInstance().getProposalInfo(
-          proposalId
+          currProposalId
         );
         const currentDao = await DaoService.getInstance().getDaoById(currProposalInfo.dao);
-        const isMember = userInfo && isDaoMember(currentDao.members);
-        setIsMember(isMember);
+        const isCurrMember = userInfo && isDaoMember(currentDao.members);
+        setIsMember(isCurrMember);
         await loadProposalInfo(currProposalInfo);
-        unsubscribe = await ProposalService.getInstance().subscribeToProposalById(proposalId,
+        unsubscribe = await ProposalService.getInstance().subscribeToProposalById(currProposalId,
           async (updatedProposalInfo) => {
             await loadProposalInfo(updatedProposalInfo);
           }
@@ -133,22 +132,22 @@ const ProposalScreen = ({navigation,
     setIsApprovalBottomModalVisible,
   ] = useState(false);
 
-  const [ isVoteByYou, setIsVoteByYou ] = useState(false);
-  const [ voteType, setVoteType ] = useState(false);
-  const [ index, setIndex ] = useState(0);
-  const [ routes ] = useState([
+  const [isVoteByYou, setIsVoteByYou] = useState(false);
+  const [voteType, setVoteType] = useState(false);
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
     {key: 'info', icon: 'proposal', iconSelected: 'proposal-selected'},
     {key: 'discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
   ]);
 
-  const [ inputHeight, setInputHeight ] = useState(60);
-  const [ inputText, setInputText ] = useState(null);
+  const [inputHeight, setInputHeight] = useState(60);
+  const [inputText, setInputText] = useState(null);
 
   const inputRef = useRef();
 
   const renderTabBar = (currProps) => (
     <View style={{paddingBottom: 5}}>
-      <TabBarRenderer originRef={originTabBarRef} {...currProps}/>
+      <TabBarRenderer originRef={originTabBarRef} {...currProps} />
     </View>
   );
   const hasPassedExpiryDate = moment().isAfter(moment.unix(proposalInfo?.closingAt));
@@ -225,7 +224,7 @@ const ProposalScreen = ({navigation,
             <Text style={{...styles.joinCommonText}}>Only members can send messages</Text>
           )}
         </View>
-        <View style={{height: 30, backgroundColor: colors.white}}/>
+        <View style={{height: 30, backgroundColor: colors.white}} />
       </KeyboardAvoidingView>
     );
   };
@@ -342,7 +341,7 @@ const ProposalScreen = ({navigation,
 
   return (
     <>
-      <SafeAreaView style={{backgroundColor: colors.white}}/>
+      <SafeAreaView style={{backgroundColor: colors.white}} />
       <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
         {showStickyTabBar && (
           <View style={{position: 'absolute', top: 0, width: '100%', paddingBottom: 5, zIndex: 999}}>
@@ -529,12 +528,16 @@ ProposalScreen.propTypes = {
   navigation: object,
   userStore: shape({
     userInfo: object,
-    isDaoMember: bool,
+    isDaoMember: func,
   }),
   bottomSheetStore: object,
   route: shape({
     params: shape({
-      commonBalance: object,
+      commonBalance: oneOfType([
+        object,
+        number,
+        string,
+      ]),
       proposalId: string,
     }),
   }),

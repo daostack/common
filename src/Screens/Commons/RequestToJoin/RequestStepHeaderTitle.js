@@ -7,8 +7,20 @@ import {
   sizeM,
   sizeL,
   sizeS,
-} from '../../../Theme';
+} from '~/Theme';
 import {string} from 'prop-types';
+
+const RequestStepHeaderTitle = ({title, subtitle}) => (
+  <>
+    <Text style={styles.generalInfoTitle}>{title}</Text>
+    <Text style={styles.generalInfoSubtitle}>{subtitle}</Text>
+  </>
+);
+
+RequestStepHeaderTitle.propTypes = {
+  title: string.isRequired,
+  subtitle: string,
+};
 
 const styles = StyleSheet.create({
   generalInfoTitle: {
@@ -28,15 +40,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const RequestStepHeaderTitle = ({title, subtitle}) => (
-  <>
-    <Text style={styles.generalInfoTitle}>{title}</Text>
-    <Text style={styles.generalInfoSubtitle}>{subtitle}</Text>
-  </>
-);
-
-RequestStepHeaderTitle.propTypes = {
-  title: string.isRequired,
-  subtitle: string,
-};
 export default RequestStepHeaderTitle;

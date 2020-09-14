@@ -1,16 +1,14 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
-import {text, font, colors} from '../Theme';
+import {text, font, colors} from '~/Theme';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const CountBox = ({count, name, onPress}) => {
-  return (
-    <TouchableOpacity onPress={onPress} style={styles.countBox}>
-      <Text style={styles.btnText}>{name}</Text>
-      <Text style={text.h1Black}>{count}</Text>
-    </TouchableOpacity>
-  );
-};
+const CountBox = ({count, name, onPress}) => (
+  <TouchableOpacity onPress={onPress} style={styles.countBox}>
+    <Text style={styles.btnText}>{name}</Text>
+    <Text style={text.h1Black}>{count}</Text>
+  </TouchableOpacity>
+);
 
 CountBox.propTypes = {
   count: PropTypes.any.isRequired,

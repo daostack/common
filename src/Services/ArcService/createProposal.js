@@ -1,7 +1,7 @@
 // TODO: rename this file to °createProposalRequestToJoin.js°
 const {first} = require('rxjs/operators');
-import { ipfsUpload, IPFS_DATA_VERSION, PROPOSAL_TYPE } from '../../Config';
-import WalletManager from '../../Util/WalletManager';
+import {ipfsUpload, IPFS_DATA_VERSION, PROPOSAL_TYPE} from '~/Config';
+import WalletManager from '~/Util/WalletManager';
 import logger from '../Logger';
 
 export const createProposalRequestToJoin = async (arc, daoId, data) => {
@@ -55,10 +55,10 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
     };
 
     const errorHandler = async () => {
-      const joinPlugin = await dao.plugin({where: {name: PROPOSAL_TYPE.Join}});
-      const joinContract  = await arc.getContract(joinPlugin.coreState.address);
+      const errorJoinPlugin = await dao.plugin({where: {name: PROPOSAL_TYPE.Join}});
+      const joinContract  = await arc.getContract(errorJoinPlugin.coreState.address);
       const manager = await WalletManager.getInstance();
-      const proposer =  manager.safeAddress;
+      const proposer = manager.safeAddress;
 
       logger.log('proposer ->', proposer, manager.address);
 

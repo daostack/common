@@ -9,15 +9,15 @@ import {
 import {string, shape, object} from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
-import {colors, sizeM, font} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
-import UserService from '../../Services/UserService';
+import {colors, sizeM, font} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
+import UserService from '~/Services/UserService';
 import moment from 'moment';
-import BottomSheetModal from '../../Components/BottomSheetModal';
-import NotificationService from '../../Services/NotificationService';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
-import {db} from '../../Firebase';
-import logger from '../../Services/Logger';
+import BottomSheetModal from '~/Components/BottomSheetModal';
+import NotificationService from '~/Services/NotificationService';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {db} from '~/Firebase';
+import logger from '~/Services/Logger';
 
 const {width} = Dimensions.get('window');
 
@@ -36,7 +36,7 @@ const DiscussionCard = ({
   var isFollowing = false;
 
   if (userInfo) {
-    isFollowing = userInfo.following.includes(data.owner);
+    isFollowing = userInfo.following.includes(data.ownerId);
   }
 
   const hideMenu = () => {
@@ -77,8 +77,8 @@ const DiscussionCard = ({
   }, [discussionId]);
 
   const follow = () => {
-    logger.log('Follow user id', data.owner);
-    NotificationService.follow(data.owner);
+    logger.log('Follow user id', data.ownerId);
+    NotificationService.follow(data.ownerId);
     bottomSheetStore.hideBottomSheet();
   };
 
@@ -91,7 +91,7 @@ const DiscussionCard = ({
 
   return (
     <>
-      <TouchableOpacity onPress={() =>navigateToDiscussion()}      >
+      <TouchableOpacity onPress={() => navigateToDiscussion()}      >
         <View style={styles.container}>
           <TouchableOpacity onPress={showOptions}>
             <Icon name="menu" size={20} />
@@ -108,7 +108,7 @@ const DiscussionCard = ({
                 style={styles.displayNameContainer}
               >
                 <Text style={styles.displayName}>
-                  {user.displayName && user.displayName.substring(0,1)}
+                  {user.displayName && user.displayName.substring(0, 1)}
                 </Text>
               </View>
 
@@ -124,7 +124,7 @@ const DiscussionCard = ({
               </Text>
             </View>
           </View>
-          <Text style={styles.message}     numberOfLines={3}>
+          <Text style={styles.message} numberOfLines={3}>
             {data.message}
           </Text>
           <View
@@ -163,7 +163,7 @@ const DiscussionCard = ({
                 onPress={() => navigateToDiscussion()}>
                 <Text
                   style={styles.joinTheDiscussion}>
-                  Join the discussion
+                    Join the discussion
                 </Text>
                 <Icon name="right-arrow" size={20} color={colors.mainBlue} />
               </TouchableOpacity>
@@ -181,11 +181,11 @@ const DiscussionCard = ({
           <Text style={styles.sheetTitle}>Options</Text>
           <TouchableOpacity
             onPress={() => {
-              logger.log('Follow user id', data.owner);
+              logger.log('Follow user id', data.ownerId);
               if (isFollowing) {
-                NotificationService.unfollow(data.owner);
+                NotificationService.unfollow(data.ownerId);
               } else {
-                NotificationService.follow(data.owner);
+                NotificationService.follow(data.ownerId);
               }
               setShowMenu(false);
             }}>
@@ -213,7 +213,6 @@ const DiscussionCard = ({
 DiscussionCard.propTypes = {
   data: shape({
     id: string.isRequired,
-    owner: string.isRequired,
     ownerId: string.isRequired,
     title: string.isRequired,
     createTime: object.isRequired,

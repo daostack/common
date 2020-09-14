@@ -1,5 +1,5 @@
 import React from 'react';
-import {NativeWallet} from '../Util/NativeWallet';
+import {NativeWallet} from '~/Util/NativeWallet';
 import {
   Text,
   View,
@@ -8,12 +8,11 @@ import {
   Dimensions,
   StyleSheet,
 } from 'react-native';
-const {width} = Dimensions.get('window');
 import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
-import WalletManager from '../Util/WalletManager';
-import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
-import ArcService from '../Services/ArcService';
+import WalletManager from '~/Util/WalletManager';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import ArcService from '~/Services/ArcService';
 import {
   ARC_VERSION ,
   GRAPH_VERSION ,
@@ -21,13 +20,15 @@ import {
   web3ProviderUrl ,
   relayerUrl ,
   COMMONTOKENADDRESS ,
-} from '../Config';
-import Toast from '../Util/Toast';
-import {auth} from '../Firebase';
-import ABI from '../Util/abi.json';
+} from '~/Config';
+import Toast from '~/Util/Toast';
+import {auth} from '~/Firebase';
+import ABI from '~/Util/abi.json';
 import {ethers} from 'ethers';
-import {showErrorPopUp} from '../Util';
-import logger from '../Services/Logger';
+import {showErrorPopUp} from '~/Util';
+import logger from '~/Services/Logger';
+import {string, func, object, shape} from 'prop-types';
+const {width} = Dimensions.get('window');
 
 class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -690,6 +691,21 @@ class nativeBridgeTests extends React.Component {
     );
   }
 }
+
+nativeBridgeTests.propTypes = {
+  userStore: shape({
+    userInfo: shape({
+      safeAddress: string,
+    }),
+  }).isRequired,
+  navigation: object,
+  bottomSheetStore: shape({
+    showBottomSheet: func,
+  }),
+  daoStore: shape({
+    creationError: func,
+  }),
+};
 
 const styles = StyleSheet.create({
   container: {

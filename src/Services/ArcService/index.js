@@ -1,4 +1,4 @@
-import WalletManager from '../../Util/WalletManager';
+import WalletManager from '~/Util/WalletManager';
 import {createCommon} from './createCommon';
 import {createProposalRequestToJoin} from './createProposal';
 import {createFundingProposal} from './createFundingProposal';
@@ -10,8 +10,9 @@ import {
   graphwsLink,
   ipfsLink,
   PROPOSAL_TYPE,
-} from '../../Config';
+} from '~/Config';
 import gql from 'graphql-tag';
+const {ARC_VERSION} = require('~/Config');
 
 export default class ArcService {
   static myInstance = null;
@@ -25,12 +26,13 @@ export default class ArcService {
         web3Provider: manager.wallet,
       });
 
-      await this.fetchAllContrarcts(this.arc);
+      await this.fetchAllContracts();
+
       return this;
     })();
   }
 
-  async fetchAllContrarcts(arc ) {
+  fetchAllContracts = async () => {
 
     let allContractInfos = [];
     let contractInfos = null;
@@ -39,7 +41,7 @@ export default class ArcService {
     do {
       const query = gql`
       query AllContractInfos {
-        contractInfos(first: 1000 skip: ${skip * 1000}) {
+        contractInfos(first: 1000 skip: ${skip * 1000} where: { version: "${ARC_VERSION}" }) {
           id
           name
           version
@@ -48,13 +50,13 @@ export default class ArcService {
         }
       }
     `;
-      const response = await arc.sendQuery(query);
+      const response = await this.arc.sendQuery(query, {fetchPolicy: 'no-cache'});
       contractInfos = response.data.contractInfos;
       allContractInfos.push(...contractInfos);
       skip++;
     } while (contractInfos && contractInfos.length > 0);
 
-    const universalContracts = await arc.fetchUniversalContractInfos();
+    const universalContracts = await this.arc.fetchUniversalContractInfos();
     allContractInfos.push(...universalContracts);
     this.arc.setContractInfos(allContractInfos);
 

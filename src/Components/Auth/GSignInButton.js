@@ -1,12 +1,13 @@
 import {useState} from 'react';
 import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
-import {colors, text, layout} from '../../Theme';
+import {colors, text, layout} from '~/Theme';
 import React from 'react';
-import Icon from '../../Assets/iconfont/Icon';
+import Icon from '~/Assets/iconfont/Icon';
 import {statusCodes} from '@react-native-community/google-signin';
 import {observer, inject} from 'mobx-react';
-import AuthService from '../../Services/AuthService';
-import logger from '../../Services/Logger';
+import AuthService from '~/Services/AuthService';
+import logger from '~/Services/Logger';
+import {shape, func} from 'prop-types';
 
 const GSignInButton = ({onSignIn, userStore}) => {
   const [signInError, setSignInError] = useState(null);
@@ -65,6 +66,13 @@ const GSignInButton = ({onSignIn, userStore}) => {
       {renderSignInButton()}
     </View>
   );
+};
+
+GSignInButton.propTypes = {
+  onSignIn: func,
+  userStore: shape({
+    setIsLoading: func,
+  }),
 };
 
 const styles = StyleSheet.create({

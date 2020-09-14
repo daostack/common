@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   SafeAreaView,
   ScrollView,
@@ -8,17 +7,18 @@ import {
   View,
   Text,
 } from 'react-native';
-import EditProfileForm from '../../Components/Forms/EditProfileForm';
-import {colors, text, layout} from '../../Theme';
+import EditProfileForm from '~/Components/Forms/EditProfileForm';
+import {colors, text, layout} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import Icon from '../../Assets/iconfont/Icon';
-import Loader from '../../Components/Loader';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
-import Toast from '../../Util/Toast';
-import AuthService from '../../Services/AuthService';
-import {filterObjectByKeys} from '../../Util';
-import logger from '../../Services/Logger';
+import Icon from '~/Assets/iconfont/Icon';
+import Loader from '~/Components/Loader';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import Toast from '~/Util/Toast';
+import AuthService from '~/Services/AuthService';
+import {filterObjectByKeys} from '~/Util';
+import logger from '~/Services/Logger';
+import {bool, object, shape, func} from 'prop-types';
 
 const EditProfile = ({
   userStore,
@@ -77,7 +77,7 @@ const EditProfile = ({
   };
 
   const onFormSubmitEnd = (updatedFields) => {
-    userStore.setSignedInUser({ ...userStore.userInfo, ...updatedFields });
+    userStore.setSignedInUser({...userStore.userInfo, ...updatedFields});
     Toast.done('Your profile is updated');
     navigation.goBack();
   };
@@ -140,6 +140,29 @@ const EditProfile = ({
     </>
   );
 };
+
+EditProfile.propTypes = {
+  userStore: shape({
+    userInfo: object,
+    setSignedInUser: func,
+  }),
+  editProfileFormStore: shape({
+    isFormValid: func,
+    getChangedFormFieldsJson: func,
+    form: object,
+  }),
+  bottomSheetStore: shape({
+    showBottomSheet: func,
+    hideBottomSheet: func,
+  }),
+  route: shape({
+    params: shape({
+      isFirstOpening: bool,
+    }),
+  }),
+  navigation: object,
+};
+
 
 const styles = StyleSheet.create({
   btns: {
