@@ -34,33 +34,28 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     if (userStore.userInfo === null ) {
       return [];
     }
+
     const proposalList = await ProposalService.getInstance().getUserPendingProposals(userStore.userInfo.uid);
     const daoList = proposalList.map((proposal) => proposal.data().dao);
+
     return daoList;
   };
 
   const splitDaoList = async (daoList) => {
-    console.log('split', daoList)
     if (daoList.length === 0) {
       setMyDaosGroup({title: '', data: []});
       return [];
     }
 
     const myDao = daoList.filter((dao) => userStore.isDaoMember(dao.members));
-    console.log(myDao);
 
-    // const pendingList = await getPendingDAOList();
-    const pendingDao = daoList.filter((dao) => myDao.includes(dao.id));
-
+    const pendingList = await getPendingDAOList();
+    const pendingDao = daoList.filter((dao) => pendingList.includes(dao.id));
 
     const featuredList = daoList.filter((dao) =>
       !pendingDao.includes(dao) &&
       !myDao.includes(dao)
     );
-
-    console.log('my', myDao)
-    console.log('pend', pendingDao)
-    console.log('fet', featuredList);
 
     if (myDao.length > 0) {
       setMyDaosGroup({
@@ -84,7 +79,8 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
     }
 
     if (daoStore.isError) {
-      logger.log('daostore error', daoStore.isError);
+      logger.log('DaoStore Error', daoStore.isError);
+
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
       );
