@@ -1,14 +1,19 @@
-import { StyleSheet, View, Text } from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import React from 'react';
-import { layout, colors, font } from '~/Theme';
+import {layout, colors, font} from '~/Theme';
+import {string} from 'prop-types';
 
-const ViewTabNoData = ({ title, subtitle }) => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
-      {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
-    </View>
-  );
+
+const ViewTabNoData = ({title, subtitle}) => (
+  <View style={styles.container}>
+    <Text style={styles.title}>{title}</Text>
+    {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+  </View>
+);
+
+ViewTabNoData.propTypes = {
+  title: string,
+  subtitle: string,
 };
 
 const styles = StyleSheet.create({

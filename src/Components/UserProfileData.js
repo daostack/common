@@ -13,11 +13,12 @@ import {UserAvatar} from '~/Components';
 import {CommonActions} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
 import logger from '~/Services/Logger';
+import {string, object, shape} from 'prop-types';
 
 const UserProfileData = ({
   userId,
   navigation,
-  userStore,
+  userStore: {userInfo},
   editProfileFormStore,
 }) => {
   const [user, setUser] = useState(null);
@@ -29,8 +30,8 @@ const UserProfileData = ({
   useEffect(() => {
     const getUser = async () => {
       try {
-        if (userId === userStore.userInfo?.uid) {
-          setUser(userStore.userInfo);
+        if (userId === userInfo?.uid) {
+          setUser(userInfo);
           setIsEditMode(true);
         } else {
           setUser(await UserService.getInstance().getUserById(userId));
@@ -44,9 +45,9 @@ const UserProfileData = ({
     setUser(null);
     setIsEditMode(false);
     getUser();
-  }, [userId, userStore.userInfo]);
+  }, [userId, userInfo]);
 
-  const navigateToEditProfile = isFirstOpening => {
+  const navigateToEditProfile = (isFirstOpening) => {
     const navigate = CommonActions.navigate({
       name: 'EditProfile',
       params: {
@@ -57,8 +58,8 @@ const UserProfileData = ({
   };
 
   const renderUserProfilePicture = () => {
-    if (isEditMode) {
-      return (
+    isEditMode
+      ? (
         <ImageField
           isAvatar={true}
           value={user?.photoURL}
@@ -70,12 +71,8 @@ const UserProfileData = ({
             validateRule: 'string',
           }}
         />
-      );
-    } else {
-      return (
-        <UserAvatar image={user.photoURL} iconName={'follow'} />
-      );
-    }
+      )
+      : (<UserAvatar image={user.photoURL} iconName={'follow'} />);
   };
 
   if (!user) {
@@ -97,17 +94,17 @@ const UserProfileData = ({
     setRequestsCount(newCount);
   };
 
-  const showMaxData = user.uid === userStore.userInfo.uid ? 5 : null;
+  const showMaxData = user.uid === userInfo.uid ? 5 : null;
 
   return (
     <>
-      {isEditMode ? (
+      {isEditMode && (
         <View style={styles.screenNav}>
           <TouchableOpacity onPress={() => navigateToEditProfile(false)}>
             <Icon name="edit" size={26} />
           </TouchableOpacity>
         </View>
-      ) : null}
+      )}
       {renderUserProfilePicture()}
       <Text style={styles.name}>
         {user.displayName}
@@ -140,14 +137,14 @@ const UserProfileData = ({
       </View>
 
       <View style={styles.contentContainerWithoutPadding}>
-        <View style={{ justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
+        <View style={styles.viewStyle}>
           <Text
             style={{
               ...text.againstTextBlack,
               ...layout.marginBottomL,
               ...layout.paddingHorizontalL,
             }}>{`Commons (${commonsCount})`}</Text>
-          {showMaxData && commonsCount > 0 && <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{ flexDirection: 'row', ...layout.paddingHorizontalL }}>
+          {showMaxData && commonsCount > 0 && <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{flexDirection: 'row', ...layout.paddingHorizontalL}}>
             <Text
               style={{
                 ...text.h3Black,
@@ -167,7 +164,7 @@ const UserProfileData = ({
       </View>
 
       <View style={styles.contentContainerWithoutPadding}>
-        <View style={{ justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
+        <View style={styles.viewStyle}>
           <Text
             style={{
               ...text.againstTextBlack,
@@ -176,8 +173,8 @@ const UserProfileData = ({
             }}>{`Proposals (${proposalsCount})`}</Text>
           {showMaxData && proposalsCount > 0 && (
             <TouchableOpacity
-              onPress={() => navigation.navigate('MyProposals', { onlyFundingRequests: true })}
-              style={{ flexDirection: 'row', ...layout.paddingHorizontalL }}
+              onPress={() => navigation.navigate('MyProposals', {onlyFundingRequests: true})}
+              style={{flexDirection: 'row', ...layout.paddingHorizontalL}}
             >
               <Text
                 style={{
@@ -201,7 +198,7 @@ const UserProfileData = ({
       </View>
 
       <View style={styles.contentContainerWithoutPadding}>
-        <View style={{ justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
+        <View style={styles.viewStyle}>
           <Text
             style={{
               ...text.againstTextBlack,
@@ -214,7 +211,7 @@ const UserProfileData = ({
 
           {showMaxData && (requestsCount > 0) && (
             <TouchableOpacity
-              onPress={() => navigation.navigate('MyProposals', { onlyMembershipRequests: true })}
+              onPress={() => navigation.navigate('MyProposals', {onlyMembershipRequests: true})}
               style={{
                 flexDirection: 'row',
                 ...layout.paddingHorizontalL,
@@ -247,17 +244,18 @@ const UserProfileData = ({
   );
 };
 
+UserProfileData.propTypes = {
+  userId: string,
+  navigation: object,
+  userStore: shape({
+    userInfo: shape({
+      uid: string,
+    }),
+  }),
+  editProfileFormStore: object,
+};
+
 const styles = StyleSheet.create({
-  btn: {
-    ...layout.btnOutline,
-    flexDirection: 'row',
-    marginTop: 20,
-    borderRadius: 5,
-    backgroundColor: colors.white,
-    flexGrow: 0,
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-  },
   name: {
     ...font.heading.bold,
     ...font.fontSize(4),
@@ -312,42 +310,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: sizeXXL,
     backgroundColor: colors.lightBlue,
   },
-  body: {
-    paddingTop: 40,
-  },
-
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  googleSignInButton: {
-    alignSelf: 'stretch',
-    height: 56,
-    borderWidth: 1,
-    borderRadius: 28,
-    borderStyle: 'solid',
-    borderColor: '#eeeeee',
-
-    shadowOpacity: 0,
-    shadowColor: colors.white,
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
-    shadowRadius: 0,
-    elevation: 6,
-  },
-  wrapper: {
-    height: 240,
-  },
-  swiperContentWrapper: {
-    paddingHorizontal: 20,
-    flex: 1,
-  },
-  swiperContent: {
-    backgroundColor: '#efefef',
-    borderRadius: 14,
-    flex: 1,
+  viewStyle:
+  {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    width: '100%',
   },
 });
 

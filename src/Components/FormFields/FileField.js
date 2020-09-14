@@ -8,6 +8,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import {text, layout, colors} from '~/Theme';
 import StorageService from '~/Services/StorageService';
 import logger from '../../Services/Logger';
+import {string, func, object, shape, oneOfType} from 'prop-types';
 
 class FileField extends React.Component {
   fieldValidation = null;
@@ -147,6 +148,24 @@ class FileField extends React.Component {
     );
   }
 }
+
+FileField.propTypes = {
+  validation: shape({
+    name: string,
+    formStore: object,
+    validateRule: oneOfType([
+      string,
+      object,
+    ]),
+    multiName: string,
+    displayName: string,
+    customErrorMessage: string,
+  }),
+  value: string,
+  onChangeFile: func,
+  navigation: object,
+  onFieldDeleted: func,
+};
 
 const styles = StyleSheet.create({
   container: {

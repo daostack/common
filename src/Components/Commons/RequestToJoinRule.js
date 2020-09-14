@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-
+import {string, number} from 'prop-types';
 import {layout, text} from '~/Theme';
 
 const RequestToJoinRule = ({index, title, description}) => (
@@ -9,6 +9,12 @@ const RequestToJoinRule = ({index, title, description}) => (
     <Text style={styles.ruleDescription}>{description}</Text>
   </View>
 );
+
+RequestToJoinRule.propTypes = {
+  index: number.isRquired,
+  title: string.isRquired,
+  description: string.isRquired,
+};
 
 const styles = StyleSheet.create({
   container: {

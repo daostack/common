@@ -5,13 +5,12 @@ import {
   SafeAreaView,
   ScrollView,
 } from 'react-native';
-
 import React from 'react';
-import { text, colors } from '~/Theme';
+import {text, colors} from '~/Theme';
 import UserProfileData from '~/Components/UserProfileData';
+import {string, object} from 'prop-types';
 
-const UserProfileSheetScreen = ({ navigation, userId }) => {
-  return (
+const UserProfileSheetScreen = ({navigation, userId}) => (
     <>
       <StatusBar barStyle="dark-content" />
 
@@ -28,7 +27,11 @@ const UserProfileSheetScreen = ({ navigation, userId }) => {
         </ScrollView>
       </SafeAreaView>
     </>
-  );
+);
+
+UserProfileSheetScreen.propTypes = {
+  navigation: object,
+  userId: string,
 };
 
 const styles = StyleSheet.create({

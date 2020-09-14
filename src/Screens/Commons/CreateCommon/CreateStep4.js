@@ -370,7 +370,7 @@ const CreateStep4 = ({generalInfoFormStore,
             <View style={{width: 120, marginHorizontal: 10}}>
               <CreateStep4Indicators
                 title="Min. Contribution"
-                number={numberFormatter(form[CreateCommonForm.MINIMUM])}
+                num={numberFormatter(form[CreateCommonForm.MINIMUM])}
                 contribution
               />
             </View>
@@ -379,7 +379,7 @@ const CreateStep4 = ({generalInfoFormStore,
               <CreateStep4Indicators
                 title="Safety period"
                 currencySymbol={false}
-                number={
+                num={
                   moment
                     .unix(form[CreateCommonForm.DEADLINE])
                     .fromNow(true)

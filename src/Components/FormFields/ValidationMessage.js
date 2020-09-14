@@ -1,17 +1,9 @@
 import React from 'react';
-
 import {Text, StyleSheet} from 'react-native';
 import {observer} from 'mobx-react';
 import {colors, layout, font} from '~/Theme';
+import {string, bool, object, shape} from 'prop-types';
 
-const styles = StyleSheet.create({
-  errorMessage: {
-    color: colors.error,
-    ...layout.marginBottomS,
-    ...font.primary.regular,
-    ...font.fontSize(2),
-  },
-});
 class ValidationMessage extends React.Component {
 
   constructor(props) {
@@ -43,5 +35,26 @@ class ValidationMessage extends React.Component {
     ) : null;
   }
 }
+
+ValidationMessage.propTypes = {
+  formStore: shape({
+    form: shape({
+      fields: object,
+    }),
+  }),
+  name: string,
+  displayName: string,
+  customErrorMessage: string,
+  invisibleContainer: bool,
+};
+
+const styles = StyleSheet.create({
+  errorMessage: {
+    color: colors.error,
+    ...layout.marginBottomS,
+    ...font.primary.regular,
+    ...font.fontSize(2),
+  },
+});
 
 export default observer(ValidationMessage);

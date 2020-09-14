@@ -1,10 +1,9 @@
 import {Text, View, StyleSheet, ScrollView, Image} from 'react-native';
-
 import React from 'react';
 import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 
-const BoostedInfo = ({navigation, onContinueEditing}) => (
+const BoostedInfo = ({}) => (
   <ScrollView
     contentInsetAdjustmentBehavior="automatic"
     style={styles.scrollView}

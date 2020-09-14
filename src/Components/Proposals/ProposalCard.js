@@ -12,11 +12,11 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '~/Util/Toast';
 import moment from 'moment';
 import logger from '../../Services/Logger';
+import {string, func, bool, object} from 'prop-types';
 const {width} = Dimensions.get('window');
 
 const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membershipRequest, isSwiper}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
-
   useEffect(() => {
     const getProposalInfo = async (currProposalId) => {
       try {
@@ -177,6 +177,16 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
       </TouchableOpacity>
     </Animated.View>
   );
+};
+
+
+ProposalCard.propTypes = {
+  proposalId: string,
+  data: object,
+  onReviewProposal: func,
+  containerStyle: object,
+  membershipRequest: bool,
+  isSwiper: bool,
 };
 
 const styles = StyleSheet.create({

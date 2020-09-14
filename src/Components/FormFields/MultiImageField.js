@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {View} from 'react-native';
 import ImageField from './ImageField';
 import {sizeL} from '~/Theme';
+import {string, bool, shape, number} from 'prop-types';
 
 const MultiImageField = (props) => {
   const [count, setCount] = useState(1);
@@ -41,6 +42,14 @@ const MultiImageField = (props) => {
       })}
     </View>
   );
+};
+
+MultiImageField.propTypes = {
+  maxCount: number,
+  validation: shape({
+    name: string,
+  }),
+  allowsEditing: bool,
 };
 
 export default MultiImageField;
