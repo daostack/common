@@ -7,12 +7,13 @@ import auth from '@react-native-firebase/auth';
 
 import '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
+import logger from '../Services/Logger';
 
 
 const db = firestore();
 
 if (Config.local === 'true' && __DEV__) {
-  console.warn('Using local firestore');
+  logger.warn('Using local firestore');
 
   db.settings({
     host: 'localhost:8080',

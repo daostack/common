@@ -2,13 +2,14 @@ import React from 'react';
 import {View, ScrollView, Text, StyleSheet, Keyboard} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import {observer, inject} from 'mobx-react';
-import {colors, font, sizeM} from '../../Theme';
-import Toast from '../../Util/Toast';
+import {colors, font, sizeM} from '~/Theme';
+import Toast from '~/Util/Toast';
 import MultiFileField from '../FormFields/MultiFileField';
 import MultiImageField from '../FormFields/MultiImageField';
-import RequestStepActionButton from '../../Screens/Commons/RequestStepActionButton';
-
-import { db } from '../../Firebase';
+import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
+import {db} from '~Firebase';
+import logger from '~/Services/Logger';
+import {string, func, shape, object} from 'prop-types';
 
 class CreateDiscussionForm extends React.Component {
   static TITLE = 'title';
@@ -22,15 +23,13 @@ class CreateDiscussionForm extends React.Component {
     this.state = {};
   }
 
-  formSkip() {}
-
   formSave = async (e) => {
     try {
       const {createDiscussionStore, userStore} = this.props;
       if (createDiscussionStore.isFormValid()) {
         Keyboard.dismiss();
         const changedFields = createDiscussionStore.getChangedFormFieldsJson();
-        console.log('createDiscussionStore', changedFields);
+        logger.log('createDiscussionStore', changedFields);
         Toast.loading('Creating new discussion ...');
         const images = changedFields[CreateDiscussionForm.IMAGES] || [];
         const files = changedFields[CreateDiscussionForm.FILES] || [];
@@ -55,11 +54,11 @@ class CreateDiscussionForm extends React.Component {
           })
           .catch((error) => {
             Toast.error(error);
-            console.log(error);
+            logger.log(error);
           });
       }
     } catch (err) {
-      console.log(err);
+      logger.log(err);
       throw err;
     }
   };
@@ -75,7 +74,6 @@ class CreateDiscussionForm extends React.Component {
     const {
       userStore,
       createDiscussionStore,
-      firstOpening,
       ...otherProps
     } = this.props;
 
@@ -154,6 +152,19 @@ class CreateDiscussionForm extends React.Component {
     );
   }
 }
+
+CreateDiscussionForm.propTypes = {
+  createDiscussionStore: shape({
+    isFormValid: func,
+    getChangedFormFieldsJson: func,
+    form: object,
+  }),
+  userStore: object,
+  commonId: string,
+  onFormSubmit: func,
+  onFormClose: func,
+  navigation: object,
+};
 
 const styles = StyleSheet.create({
   container: {

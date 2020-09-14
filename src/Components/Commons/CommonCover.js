@@ -8,8 +8,8 @@ import {
 import React from 'react';
 import FastImage from 'react-native-fast-image';
 import {object, bool, func, string, shape} from 'prop-types';
-import Icon from '../../Assets/iconfont/Icon';
-import {layout, colors, text, font} from '../../Theme';
+import Icon from '~/Assets/iconfont/Icon';
+import {layout, colors, text, font} from '~/Theme';
 
 const CommonCover = ({
   navigation,

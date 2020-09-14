@@ -67,6 +67,7 @@ import ArcService from './src/Services/ArcService';
 import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
 import Toast from './src/Util/Toast';
 import {func, bool, object, shape} from 'prop-types';
+import logger from './src/Services/Logger';
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
 if (Platform.OS === 'ios') {
@@ -91,7 +92,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-      console.log('Foreground Message Arrived', JSON.stringify(remoteMessage));
+      logger.log(`Foreground Message Arrived ${JSON.stringify(remoteMessage)}`);
     });
     return unsubscribe;
   }, []);
@@ -143,7 +144,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         return;
       }
       if (!DeepLinking.evaluateUrl(url) && validUrl.isWebUri(url)) {
-        console.log('Routing Browser ->', url);
+        logger.log(`Routing Browser -> ${url}`);
         routing('Browser', {url: url});
       }
     });
@@ -204,7 +205,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     const subscribers = {authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
 
     const onAuthStateChanged = async (user) => {
-      console.log('AUTH STATE CHANGED: ', user?.uid, user?.email, user?.displayName);
+      logger.log('AUTH STATE CHANGED:', user?.uid, user?.email, user?.displayName);
       try {
         userStore.setIsLoading(true);
         if (user) {
@@ -248,7 +249,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
         userStore.setIsLoading(false);
       } catch (error) {
-        console.log(error);
+        logger.log(error);
         throw error;
       }
     };
@@ -276,7 +277,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         });
         return unsubscribe;
       } catch (error) {
-        console.log('errror: ', error);
+        logger.log(`errpr: ${JSON.stringify(error)} `);
       }
     };
 
@@ -289,7 +290,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         }
         setLoading(false);
       } catch (e) {
-        console.log(e);
+        logger.log(e);
       }
     };
 
@@ -354,7 +355,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           name="CommonExplanation"
           component={CommonExplanation}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerTitle: 'Create a Common',
             headerBackTitleVisible: false,
             headerLeftContainerStyle: {marginLeft: 20},
@@ -375,63 +376,63 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           name="RequestStep1"
           component={RequestStep1}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="RequestStep2"
           component={RequestStep2}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="RequestStep3"
           component={RequestStep3}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="RequestStep4"
           component={RequestStep4}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="CreateStep1"
           component={CreateStep1}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="CreateStep2"
           component={CreateStep2}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="CreateStep3"
           component={CreateStep3}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="CreateStep4"
           component={CreateStep4}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="Discussions"
           component={Discussions}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
@@ -439,12 +440,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           name="FullScreenCreationLoader"
           component={FullScreenCreationLoader}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen name="New Post"
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerBackTitleVisible: false,
           })}
           component={DiscussionPost} />

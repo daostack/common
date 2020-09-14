@@ -1,13 +1,14 @@
-const {first} = require('rxjs/operators');
 import {ethers} from 'ethers';
-import WalletManager from '../../Util/WalletManager';
-import { ipfsUpload } from '../../Config';
+import WalletManager from '~/Util/WalletManager';
+import {ipfsUpload} from '~/Config';
 import GraphqlSyncService from '../GraphqlSyncService';
+import logger from '../Logger';
+const {first} = require('rxjs/operators');
 const {
   ARC_VERSION,
   IPFS_DATA_VERSION,
   PROPOSAL_TYPE,
-} = require('../../Config');
+} = require('~/Config');
 
 
 export const createFundingProposal = async (arc, userAddress, daoId, data) => {
@@ -28,11 +29,11 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     const abi = arc.getABI({abiName: 'FundingRequest', version: ARC_VERSION});
     const interf = new ethers.utils.Interface(abi);
 
-    console.log(interf);
-    console.log(interf.events);
+    logger.log(interf);
+    logger.log(interf.events);
 
 
-    console.log('PLUGINS -> ', plugins);
+    logger.log('PLUGINS -> ', plugins);
 
     let fundingRequestPlugin;
     try {
@@ -40,17 +41,17 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
         where: {name: 'FundingRequest'},
       });
     } catch (e) {
-      console.log(e);
-      console.log(daoId);
-      const plugins = await dao
+      logger.log(e);
+      logger.log(daoId);
+      const catchPlugins = await dao
         .plugins()
         .pipe(first())
         .toPromise();
-      console.log(plugins.map(p => p.coreState.name));
+      logger.log(catchPlugins.map((p)=> p.coreState.name));
       throw e;
     }
 
-    console.log('fundingRequestPlugin', fundingRequestPlugin.id);
+    logger.log('fundingRequestPlugin', fundingRequestPlugin.id);
 
     let ipfsHash;
     const funding = data.funding;
@@ -64,8 +65,8 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
       // lets first check some sanity things about the dao
       const joinPlugin = await dao.plugin({where: {name: PROPOSAL_TYPE.Join}});
       const joinPluginState = await joinPlugin.fetchState();
-      const fundingRequestPlugin = await dao.plugin({where: {name: 'FundingRequest'}});
-      const fundingRequestPluginState = await fundingRequestPlugin.fetchState();
+      const errorFundingRequestPlugin = await dao.plugin({where: {name: 'FundingRequest'}});
+      const fundingRequestPluginState = await errorFundingRequestPlugin.fetchState();
       const activationTime = fundingRequestPluginState.pluginParams.voteParams.activationTime;
       if (activationTime > ((new Date()).getTime() / 1000)) {
         throw Error(`Canot create a funding request as the plugin is not actived yet (it activates on ${activationTime})`);
@@ -74,13 +75,13 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
       // TODO: The "FUNDED_BEFORE_DEADLINE" flag can (and should) be set on common creation, not on "first proposal creation"
       let fundingGoalReachedFlag = await daoContract.functions.db('FUNDED_BEFORE_DEADLINE');
       if (fundingGoalReachedFlag !== 'TRUE') {
-        const joinPlugin = await dao.plugin({
+        const errorJoinPlugin = await dao.plugin({
           where: {name: PROPOSAL_TYPE.Join},
         });
-        console.log(`fundingGoalReachedFlag is not TRUE (its value is "${fundingGoalReachedFlag}") - so we cannot create a proposal`);
+        logger.log(`fundingGoalReachedFlag is not TRUE (its value is "${fundingGoalReachedFlag}") - so we cannot create a proposal`);
 
         const fundingGoal = Number(joinPluginState.pluginParams.fundingGoal);
-        console.log(`funding goal: ${fundingGoal}`);
+        logger.log(`funding goal: ${fundingGoal}`);
         if (fundingGoal !== 0) {
           throw Error(`Invalidly configured DAO - funding goal is not 0, it is ${fundingGoal} instead`);
         }
@@ -90,8 +91,8 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
         if (joinPluginState.pluginParams.fundingGoalDeadline < new Date()) {
           throw Error('Invalidly configured DAO - cannot create funding request (the fundingGoalDeadline of the join plugin is in the past, so we cannot set the fundingGoalReeched flag to true)');
         }
-        console.log('We will try to reset the fundingGoalReachedFlag');
-        const joinContract = await arc.getContract(joinPlugin.coreState.address);
+        logger.log('We will try to reset the fundingGoalReachedFlag');
+        const joinContract = await arc.getContract(errorJoinPlugin.coreState.address);
         const setFlagTx  = {
           contract: joinContract,
           method: 'setFundingGoalReachedFlag',
@@ -101,10 +102,10 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
           setFlagTx.method,
           setFlagTx.args,
         );
-        console.log(setFlagTxReceipt);
-        console.log('setFlagTxReceipt.transactionHash ->', setFlagTxReceipt.transactionHash);
+        logger.log(setFlagTxReceipt);
+        logger.log('setFlagTxReceipt.transactionHash ->', setFlagTxReceipt.transactionHash);
         fundingGoalReachedFlag = await daoContract.db('FUNDED_BEFORE_DEADLINE');
-        console.log(`fundingGoalReachedFlag value is now ${fundingGoalReachedFlag}`);
+        logger.log(`fundingGoalReachedFlag value is now ${fundingGoalReachedFlag}`);
         if (fundingGoalReachedFlag !== 'TRUE') {
           throw Error('funding goal is not reached yet - cannot create a funding request');
         }
@@ -114,12 +115,12 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     // TODO: the error handler shoudl only be caleed if an actual error occurred, when https://daostack1.atlassian.net/browse/CM-402 is resolved
     await errorHandler();
 
-    console.log('saving ipfs data');
+    logger.log('saving ipfs data');
     // not working :-()
     // ipfsHash = await arc.saveIPFSData(data);
     data = {...data, VERSION: IPFS_DATA_VERSION};
     ipfsHash = await ipfsUpload({description: JSON.stringify(data)});
-    console.log('ipfsHash', ipfsHash);
+    logger.log('ipfsHash', ipfsHash);
 
     const args = {
       descriptionHash: ipfsHash,
@@ -130,10 +131,10 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     };
 
     // send the acdtual transaction
-    console.log('creating transaction');
+    logger.log('creating transaction');
     const transaction = await fundingRequestPlugin.createProposalTransaction(args);
 
-    console.log('Transaction -> ', transaction);
+    logger.log('Transaction -> ', transaction);
 
     // TODO: test not 0 value
     const receipt = await transaction.contract.sendToRelayerWithReceipt(
@@ -141,8 +142,8 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
       transaction.args,
     );
 
-    // console.log('RECEIPT -> ', receipt);
-    console.log(
+    // logger.log('RECEIPT -> ', receipt);
+    logger.log(
       `Transaction with ${receipt.transactionHash} was mined`,
     );
 
@@ -153,15 +154,15 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     if (!events.NewFundingProposal) {
       throw Error('Expected (but did not find a NewFundingProposal event: something went wrong');
     }
-    // console.log(events.NewFundingProposal);
+    // logger.log(events.NewFundingProposal);
 
     const proposalId = events.NewFundingProposal._proposalId;
 
     await GraphqlSyncService.getInstance().syncProposalById(proposalId);
     return proposalId;
   } catch (e) {
-    console.log(e);
-    console.log(e.response);
+    logger.log(e);
+    logger.log(e.response);
     throw e;
   }
 };

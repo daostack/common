@@ -1,9 +1,9 @@
 
-import {DB_COLLECTIONS} from '../Firebase/Databasee';
-import Toast from '../Util/Toast';
+import {DB_COLLECTIONS} from '~/Firebase/Databasee';
+import Toast from '~/Util/Toast';
 import moment from 'moment';
-
-import {db} from '../Firebase';
+import {db} from '~/Firebase';
+import logger from './Logger';
 
 export const PROPOSAL_STAGE = {
   ExpiredInQueue: '0',
@@ -39,7 +39,7 @@ export const COUNTDOWN_STATES = [
 export default class ProposalService {
   static serviceInstance = null;
 
-  constructor() {}
+  constructor() { }
 
   static getInstance = () => {
     if (ProposalService.serviceInstance == null) {
@@ -106,7 +106,7 @@ export default class ProposalService {
   async getProposalDiscussionsCount(proposalId) {
     return db
       .collection(DB_COLLECTIONS.discussionMessages)
-      .where('discussionId', '==', proposalId )
+      .where('discussionId', '==', proposalId)
       .get()
       .then((snapshots) => {
         if (!snapshots) {
@@ -255,7 +255,7 @@ export default class ProposalService {
           }
         }
       },
-      (error) => console.error(error),
+      (error) => logger.error(error),
     );
   }
 }

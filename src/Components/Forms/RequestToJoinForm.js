@@ -1,6 +1,8 @@
 import React from 'react';
 import {View} from 'react-native';
 import {observer, inject} from 'mobx-react';
+import logger from '../../Services/Logger';
+import {object} from 'prop-types';
 
 class RequestToJoinForm extends React.Component {
   static FIELD_IMAGE = 'image';
@@ -34,10 +36,13 @@ class RequestToJoinForm extends React.Component {
 
   render() {
     const {requestToJoinFormStore} = this.props;
-
-    console.log(requestToJoinFormStore);
+    logger.log(requestToJoinFormStore);
     return <View />;
   }
 }
+
+RequestToJoinForm.propTypes = {
+  requestToJoinFormStore: object,
+};
 
 export default inject('requestToJoinFormStore')(observer(RequestToJoinForm));

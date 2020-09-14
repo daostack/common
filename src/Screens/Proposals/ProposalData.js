@@ -7,22 +7,25 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import {text, layout, colors, sizeM} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
+import {text, layout, colors, sizeM} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
 import ReadMore from 'react-native-read-more-text';
-import UserMessageCard from '../../Components/Discussion/UserMessageCard';
+import UserMessageCard from '~/Components/Discussion/UserMessageCard';
 import ImageView from 'react-native-image-viewing';
-import Loader from '../../Components/Loader';
+import Loader from '~/Components/Loader';
 import ImageSize from 'react-native-image-size';
 import {useNavigation} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
-import {PROPOSAL_TYPE} from '../../Config';
+import {PROPOSAL_TYPE} from '~/Config';
 import {db} from '../../Firebase';
+import logger from '../../Services/Logger';
+import {string, func, shape, array, bool, oneOfType} from 'prop-types';
 
-const ProposalData = (props) => {
+const ProposalData = ({proposalId, proposalInfo, showMore}) => {
   const navigation = useNavigation();
-  const [proposalInfo, setProposalInfo] = useState(null);
-  const proposalId = props.proposalId;
+  const [proposalInfoState, setProposalInfo] = useState(null);
+  const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
+  const [topMessage, setTopMessage] = useState([]);
 
   useEffect(() => {
     // noinspection JSAnnotator
@@ -43,7 +46,7 @@ const ProposalData = (props) => {
                       uri: currImage.value,
                     });
                   } catch (e) {
-                    console.log(e);
+                    logger.log(e);
                   }
                 }
               }),
@@ -53,7 +56,7 @@ const ProposalData = (props) => {
         }
 
       } catch (error) {
-        console.log('error: ', error);
+        logger.log('error: ', error);
       }
     };
 
@@ -72,38 +75,35 @@ const ProposalData = (props) => {
         });
     };
 
-    loadProposalInfo(props.proposalInfo);
+    loadProposalInfo(proposalInfo);
     loadDiscussions();
-  }, [props.proposalInfo]);
+  }, [proposalInfo]);
 
-  const ImageGalleryFooter = ({imageIndex}) => (
+  const ImageGalleryFooter = ({}) => (
     <View style={styles.imageGalleryTextContainer}>
       <Text style={styles.imageGalleryText}>
-        {proposalInfo.images[imageIndex].title}
+        {proposalInfoState.images[imageGalleryIndex].title}
       </Text>
     </View>
   );
 
-  const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
-  const [topMessage, setTopMessage] = useState([]);
-
-  return proposalInfo ? (
+  return proposalInfoState ? (
     <>
       <View style={styles.container}>
 
-        <Text style={text.h1BlackTitle}>{ proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
-          'Proposal Pitch' : 'Intro' }</Text>
+        <Text style={text.h1BlackTitle}>{proposalInfoState.type === PROPOSAL_TYPE.FundingRequest ?
+          'Proposal Pitch' : 'Intro'}</Text>
 
         <View style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
-          <Text style={{...text.regularTextBig}}>{proposalInfo.description.description}</Text>
+          <Text style={{...text.regularTextBig}}>{proposalInfoState.description.description}</Text>
         </View>
 
 
 
         <View style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
 
-          {proposalInfo.description?.links?.length > 0 && (
-            proposalInfo.description?.links.map((l, index) => (
+          {proposalInfoState.description?.links?.length > 0 && (
+            proposalInfoState.description?.links.map((l, index) => (
               <View style={styles.adRow} key={index}>
                 <Icon name="link" color={colors.mainBlue} size={16} />
                 <TouchableOpacity
@@ -118,8 +118,8 @@ const ProposalData = (props) => {
             ))
           )}
 
-          {proposalInfo.description?.files?.length > 0 && (
-            proposalInfo.description?.files.map((f, index) => (
+          {proposalInfoState.description?.files?.length > 0 && (
+            proposalInfoState.description?.files.map((f, index) => (
               <View style={styles.adRow} key={index}>
                 <Icon name="file" color={colors.mainBlue} size={16} />
                 <TouchableOpacity
@@ -143,7 +143,7 @@ const ProposalData = (props) => {
           style={{marginBottom: 20}}>
           <View style={styles.imageGallery}>
             <View style={{width: 20}} />
-            {proposalInfo.images.map((currImage, currIndex) => (
+            {proposalInfoState.images.map((currImage, currIndex) => (
               <View
                 style={{width: currImage.widthRatio + 10}}
                 key={`proposalImg_${currIndex}`}>
@@ -198,7 +198,7 @@ const ProposalData = (props) => {
                 ))}
               </View>
               <View style={layout.contant}>
-                <TouchableOpacity onPress={() => props.showMore()}>
+                <TouchableOpacity onPress={() => showMore()}>
                   <Text style={styles.messageShowMoreBtn}>Show more</Text>
                 </TouchableOpacity>
               </View>
@@ -207,7 +207,7 @@ const ProposalData = (props) => {
         )}
       </View>
       <ImageView
-        images={proposalInfo.images}
+        images={proposalInfoState.images}
         imageIndex={imageGalleryIndex}
         visible={imageGalleryIndex > -1}
         onRequestClose={() => setImageGalleryIndex(-1)}
@@ -217,6 +217,22 @@ const ProposalData = (props) => {
   ) : (
     <Loader />
   );
+};
+
+ProposalData.propTypes = {
+  proposalId: string,
+  proposalInfo: oneOfType([
+    bool,
+    shape({
+      images: array,
+      type: string,
+      description: shape({
+        images: array,
+        description: string,
+      }),
+    }),
+  ]),
+  showMore: func,
 };
 
 const styles = StyleSheet.create({

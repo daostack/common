@@ -1,4 +1,4 @@
-import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 
 import moment from 'moment';
 
@@ -58,7 +58,7 @@ export const showErrorPopUp = (bottomSheetStore, message) => {
 };
 
 export const isDaoMemberBySafeAddress = (members, userSafeAddress) => {
-  if (!members){
+  if (!members) {
     return false;
   }
   return members.some(

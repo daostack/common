@@ -1,21 +1,22 @@
 import React, {useState, useEffect} from 'react';
 import {Text, StyleSheet, Platform, View, Animated, Dimensions} from 'react-native';
-import {text, layout, colors, font} from '../../Theme';
+import {text, layout, colors, font} from '~/Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
-import ProposalService from '../../Services/ProposalService';
-import {PROPOSAL_TYPE} from '../../Config';
-import UserService from '../../Services/UserService';
-import DaoService from '../../Services/DaoService';
+import ProposalService from '~/Services/ProposalService';
+import {PROPOSAL_TYPE} from '~/Config';
+import UserService from '~/Services/UserService';
+import DaoService from '~/Services/DaoService';
 import ProposalApprovalTag from './ProposalApprovalTag';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import Toast from '../../Util/Toast';
+import Toast from '~/Util/Toast';
 import moment from 'moment';
+import logger from '../../Services/Logger';
+import {string, func, bool, object} from 'prop-types';
 const {width} = Dimensions.get('window');
 
 const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membershipRequest, isSwiper}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
-
   useEffect(() => {
     const getProposalInfo = async (currProposalId) => {
       try {
@@ -52,7 +53,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
         });
 
       } catch (error) {
-        console.log('error: ', error);
+        logger.log('error: ', error);
         Toast.error(error?.toString());
       }
     };
@@ -99,7 +100,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
           proposalInfo: allProposalInfo,
         });
       } catch (error) {
-        console.log('error: ', error);
+        logger.log('error: ', error);
         Toast.error(error?.toString());
       }
     };
@@ -176,6 +177,16 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
       </TouchableOpacity>
     </Animated.View>
   );
+};
+
+
+ProposalCard.propTypes = {
+  proposalId: string,
+  data: object,
+  onReviewProposal: func,
+  containerStyle: object,
+  membershipRequest: bool,
+  isSwiper: bool,
 };
 
 const styles = StyleSheet.create({

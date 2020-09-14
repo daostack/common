@@ -1,24 +1,26 @@
 import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, StyleSheet} from 'react-native';
-import MemberCard from '../../../Components/MemberCard';
-import {layout, sizeS, colors} from '../../../Theme';
-import UserService from '../../../Services/UserService';
-import DaoService from '../../../Services/DaoService';
-import Loader from '../../../Components/Loader';
-import MemberImage from '../../../Components/Commons/MemberImage';
-import Toast from '../../../Util/Toast';
+import MemberCard from '~/Components/MemberCard';
+import {layout, sizeS, colors} from '~/Theme';
+import UserService from '~/Services/UserService';
+import DaoService from '~/Services/DaoService';
+import Loader from '~/Components/Loader';
+import MemberImage from '~/Components/Commons/MemberImage';
+import Toast from '~/Util/Toast';
 import {observer, inject} from 'mobx-react';
+import logger from '~/Services/Logger';
+import {object, array, bool} from 'prop-types';
 
 const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) => {
   const [membersInfo, setMembersInfo] = useState([]);
 
-  const showUserProfile = uid => {
+  const showUserProfile = (uid) => {
     navigation.navigate('Profile', {userId: uid});
   };
 
   useEffect(() => {
     setMembersInfo([]);
-    const loadMemberUser = async userId => {
+    const loadMemberUser = async (userId) => {
       try {
         let currUserInfo = await UserService.getInstance().getUserById(
           userId,
@@ -26,17 +28,16 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
 
         currUserInfo = {
           ...currUserInfo,
-          daos: (await DaoService.getInstance().getUserDaos(currUserInfo.uid, currUserInfo.safeAddress)).docs?.map(dao => dao.data()),
+          daos: (await DaoService.getInstance().getUserDaos(currUserInfo.uid, currUserInfo.safeAddress)).docs?.map((dao) => dao.data()),
         };
-
-        setMembersInfo(prevMembers => [...prevMembers, currUserInfo]);
+        addMemberOnce(currUserInfo);
       } catch (e) {
         Toast.error(e.toString());
-        console.log(e);
+        logger.log(e);
       }
     };
 
-    members.forEach(async daoMember => {
+    members.forEach(async (daoMember) => {
       let currUserInfo = null;
 
       if (daoMember.userId) {
@@ -44,60 +45,56 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
       } else {
         // TODO: Think about what data to put in the userInfo object in case there is no userId in the daoMember.
         currUserInfo = {displayName: daoMember.address};
-        setMembersInfo(prevMembers => [...prevMembers, currUserInfo]);
+        addMemberOnce(currUserInfo);
       }
     });
+
   }, [members]);
 
-  let containerStyle = {};
-
-  if (horizontal) {
-    containerStyle = {...layout.flexRow, ...{paddingLeft: (membersInfo.length - 1) * 15}};
-  }
+  const addMemberOnce = (currUserInfo) => {
+    setMembersInfo((prevMembers) => (
+      prevMembers.some((u)=> u.uid === currUserInfo.uid)
+        ? [...prevMembers]
+        : [...prevMembers, currUserInfo]
+    ));
+  };
 
   return (
-    <View style={containerStyle}>
+    <View style={horizontal && {...layout.flexRow, paddingLeft: (membersInfo.length - 1) * 15}}>
       {membersInfo ? (
-        membersInfo.map((member, i) => {
-          if (horizontal) {
-
-            let itemStyle = styles.horizontalItem;
-
-            if (i > 0) {
-              itemStyle = {...itemStyle, ...{position: 'relative', left: i * -15}};
-            }
-
-            return (
-              <TouchableOpacity style={itemStyle} onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
+        membersInfo.map((member, i) => (
+          horizontal
+            ? (
+              <TouchableOpacity style={{position: 'relative', left: i * -15}} onPress={() => showUserProfile(member.uid) } key={`touch_${i}`}>
                 <MemberImage
                   id={i}
                   userInfo={member}
                   style={{marginLeft: i > 0 ? -15 : 0}}
                 />
               </TouchableOpacity>
-            );
-          } else {
-            return (
+            )
+            : (
               <TouchableOpacity style={styles.item} onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
                 <MemberCard
                   key={i}
-                  //name={member.displayName}
-                  //approvePercent={member.approvalPercentage}
-                  //imageUrl={member.photoURL}
-                  //TODO: change pending status
-                  //isPending={sceneIndex === 1}
                   showMemberCreatedDate={true}
                   userInfo={member}
                 />
               </TouchableOpacity>
-            );
-          }
-        })
+            )
+        ))
       ) : (
         <Loader />
       )}
     </View>
   );
+};
+
+CommonMembersList.propTypes = {
+  navigation: object,
+  members: array,
+  horizontal: bool,
+  bottomSheetStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -106,10 +103,6 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.grey4,
     borderBottomWidth: 1,
   },
-  horizontalItem: {
-    paddingHorizontal: 0,
-  },
-
 });
 
 export default inject('bottomSheetStore')(observer(CommonMembersList));

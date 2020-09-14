@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import {object, shape, number, array, string} from 'prop-types';
-import {layout, text, font, colors} from '../../../Theme';
+import {layout, text, font, colors} from '~/Theme';
 
 const CommonAgenda = ({navigation,
   route: {
@@ -28,7 +28,7 @@ const CommonAgenda = ({navigation,
           <Text style={styles.agendaTitletext}>Agenda and Rules</Text>
           <View style={layout.content}>
             <Image
-              source={require('../../../Assets/Common/rules.png')}
+              source={require('~/Assets/Common/rules.png')}
               style={styles.image}
             />
           </View>

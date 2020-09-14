@@ -7,18 +7,18 @@ import {
   SafeAreaView,
   StatusBar,
 } from 'react-native';
-import {colors, layout, font} from '../Theme';
-import Loader from '../Components/Loader';
+import {colors, layout, font} from '~/Theme';
+import Loader from '~/Components/Loader';
+import {string, shape, object} from 'prop-types';
 
-const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}, navigation}) => {
-  return (
+const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}, navigation}) => (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.body}>
           <View style={{...styles.slide1, ...layout.content}}>
             <Image
-              source={require('../Assets/creating-a-common.png')}
+              source={require('~/Assets/creating-a-common.png')}
               style={styles.image}
             />
             <Text style={styles.creatingText}>{title}</Text>
@@ -30,7 +30,16 @@ const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}, 
         </View>
       </SafeAreaView>
     </>
-  );
+);
+
+FullScreenCreationLoader.propTypes = {
+  route: shape({
+    params: shape({
+      title: string,
+      message: string,
+    }),
+  }),
+  navigation: object,
 };
 
 const styles = StyleSheet.create({

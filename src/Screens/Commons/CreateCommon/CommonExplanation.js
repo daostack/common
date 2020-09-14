@@ -9,11 +9,11 @@ import {
   StatusBar,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {colors, font, sizeXXL, sizeLineHeight, layout} from '../../../Theme';
+import {colors, font, sizeXXL, sizeLineHeight, layout} from '~/Theme';
 import Swiper from 'react-native-swiper';
+import {object} from 'prop-types';
 
-const CommonExplanation = ({navigation}) => {
-  return (
+const CommonExplanation = ({navigation}) => (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeArea}>
@@ -30,7 +30,7 @@ const CommonExplanation = ({navigation}) => {
             paginationStyle={{bottom: 0}}>
             <View style={styles.slide1}>
               <Image
-                source={require('../../../Assets/CommonExplanation/common.png')}
+                source={require('~/Assets/CommonExplanation/common.png')}
                 style={styles.image}
               />
               <Text style={styles.text}>Create a Common</Text>
@@ -41,7 +41,7 @@ const CommonExplanation = ({navigation}) => {
             </View>
             <View style={styles.slide1}>
               <Image
-                source={require('../../../Assets/CommonExplanation/funds.png')}
+                source={require('~/Assets/CommonExplanation/funds.png')}
                 style={styles.image}
               />
               <Text style={styles.text}>Invite members and pool funds</Text>
@@ -52,7 +52,7 @@ const CommonExplanation = ({navigation}) => {
             </View>
             <View style={styles.slide1}>
               <Image
-                source={require('../../../Assets/CommonExplanation/decentralised.png')}
+                source={require('~/Assets/CommonExplanation/decentralised.png')}
                 style={styles.image}
               />
               <Text style={styles.text}>Work as a collective</Text>
@@ -63,7 +63,7 @@ const CommonExplanation = ({navigation}) => {
             </View>
             <View style={styles.slide1}>
               <Image
-                source={require('../../../Assets/CommonExplanation/crowd.png')}
+                source={require('~/Assets/CommonExplanation/crowd.png')}
                 style={styles.image}
               />
               <Text style={styles.text}>Harness the power of communities</Text>
@@ -85,7 +85,10 @@ const CommonExplanation = ({navigation}) => {
         </View>
       </SafeAreaView>
     </>
-  );
+);
+
+CommonExplanation.propTypes = {
+  navigation: object,
 };
 
 const styles = StyleSheet.create({

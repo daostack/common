@@ -6,30 +6,30 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import AmountField from '../../../Components/FormFields/AmountField';
-import {colors} from '../../../Theme';
+import AmountField from '~/Components/FormFields/AmountField';
+import {colors} from '~/Theme';
 import {observer, inject} from 'mobx-react';
-const {width} = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepNavigation from './RequestStepNavigation';
-import RequestToJoinForm from '../../../Components/Forms/RequestToJoinForm';
-
+import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from './MembershipRequest';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
+import {string, func, bool, object, shape, number} from 'prop-types';
+const {width} = Dimensions.get('window');
 
-const RequestStep3 = props => {
+const RequestStep3 = ({navigation, personalContributionFormStore,
+  route: {
+    params: {skipFirstStep, currDaoId},
+  },
+  daoStore: {
+    dao: {name, metadata},
+  }}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  // const [ruleCount, setRuleCount] = useState(1);
-  // const [ruleTitles, setRuleTitles] = useState([]);
-  // const [pass, setPass] = useState(true);
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
-  const isFirstStepSkipped = props.route.params.skipFirstStep;
-  // var ruleBody = [];
-  const { name } = props.daoStore.dao;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -40,21 +40,21 @@ const RequestStep3 = props => {
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const onCustomClose = e => {
+  const onCustomClose = (e) => {
     setIsActionBtnHidden(true);
   };
 
-  const onCustomSelect = e => {
+  const onCustomSelect = (e) => {
     setIsActionBtnHidden(false);
-    props.personalContributionFormStore.fieldChanged(
+    personalContributionFormStore.fieldChanged(
       RequestToJoinForm.FIELD_AMOUNT,
       '',
       false,
     );
   };
 
-  const onAmountSelected = amount => {
-    props.personalContributionFormStore.fieldChanged(
+  const onAmountSelected = (amount) => {
+    personalContributionFormStore.fieldChanged(
       RequestToJoinForm.FIELD_AMOUNT,
       amount,
     );
@@ -65,20 +65,20 @@ const RequestStep3 = props => {
     const navigate = CommonActions.navigate({
       name: 'RequestStep4',
       params: {
-        currDaoId: props.route.params.currDaoId,
-        skipFirstStep: isFirstStepSkipped,
+        currDaoId: currDaoId,
+        skipFirstStep: skipFirstStep,
       },
     });
-    props.navigation.dispatch(navigate);
+    navigation.dispatch(navigate);
   };
 
   const push = () => {
-    if (props.personalContributionFormStore.isFormValid()) {
+    if (personalContributionFormStore.isFormValid()) {
       navigateToRequestStep4();
     }
   };
 
-  const minContributionMessage = `Select the amount you would like to contribute ($${props.daoStore.dao.metadata.minFeeToJoin / 100} min.)`;
+  const minContributionMessage = `Select the amount you would like to contribute ($${metadata.minFeeToJoin / 100} min.)`;
 
   return (
     <>
@@ -89,14 +89,14 @@ const RequestStep3 = props => {
           backgroundColor: 'white',
         }}>
         <CreateStepNavigation
-          navigation={props.navigation}
+          navigation={navigation}
           title={name}
         />
         <CreateStepDotHeader
           title="Personal contribution"
           currentIndex={3}
-          isFirstStepSkipped={isFirstStepSkipped}
-          navigation={props.navigation}
+          isFirstStepSkipped={skipFirstStep}
+          navigation={navigation}
           headerHeight={headerHeight}
         />
         <ScrollView
@@ -114,7 +114,7 @@ const RequestStep3 = props => {
           <MembershipRequest />
 
           <CreateStepHeader
-            isFirstStepSkipped={isFirstStepSkipped}
+            isFirstStepSkipped={skipFirstStep}
             currentIndex={2}
           />
           <View
@@ -134,19 +134,19 @@ const RequestStep3 = props => {
             />
 
             <AmountField
-              navigation={props.navigation}
-              formStore={props.personalContributionFormStore}
+              navigation={navigation}
+              formStore={personalContributionFormStore}
               onCustomSelect={onCustomSelect}
               onCustomClose={onCustomClose}
               onAmountSelected={onAmountSelected}
-              minFeeToJoin={props.daoStore.dao.metadata.minFeeToJoin / 100}
+              minFeeToJoin={metadata.minFeeToJoin / 100}
             />
           </View>
         </ScrollView>
         <RequestStepActionButton
           title="Continue to payment"
           pass={
-            props.personalContributionFormStore.form.fields[
+            personalContributionFormStore.form.fields[
               RequestToJoinForm.FIELD_AMOUNT
             ]?.error
               ? false
@@ -158,6 +158,28 @@ const RequestStep3 = props => {
       </SafeAreaView>
     </>
   );
+};
+
+RequestStep3.propTypes = {
+  navigation: object,
+  personalContributionFormStore: shape({
+    fieldChanged: func,
+    isFormValid: func,
+  }),
+  route: shape({
+    params: shape({
+      skipFirstStep: bool,
+      currDaoId: string,
+    }),
+  }),
+  daoStore: shape({
+    dao: shape({
+      name: string,
+      metadata: shape({
+        minFeeToJoin: number,
+      }),
+    }),
+  }),
 };
 
 export default inject(
