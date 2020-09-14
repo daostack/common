@@ -372,10 +372,10 @@ const ProposalScreen = ({navigation,
     <>
       <SafeAreaView style={{backgroundColor: colors.white}}/>
       <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
-        {showStickyTabBar && (
-          <Animated.View style={[stickyTabBarStyle, slideUp]}>
-            <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef}/>
-          </Animated.View>)}
+
+        <Animated.View style={[stickyTabBarStyle, slideUp]}>
+          <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef}/>
+        </Animated.View>
 
         <ScrollView
           style={{
@@ -391,24 +391,20 @@ const ProposalScreen = ({navigation,
                 //stickyTopSheet();
 
                 if (isVisible) {
+                  setShowStickyTabBar(isVisible);
                   Animated.timing(stickyTabBarState.animation, {
                     toValue: 1,
                     duration: 200,
                     useNativeDriver: true,
-                  }).start(() => {
-                    setShowStickyTabBar(isVisible);
-                  });
+                  }).start();
 
                 } else {
-
+                  setShowStickyTabBar(isVisible);
                   Animated.timing(stickyTabBarState.animation, {
                     toValue: 0,
                     duration: 300,
                     useNativeDriver: true,
-                  }).start(() => {
-                    setShowStickyTabBar(isVisible);
-                  });
-
+                  }).start();
                 }
               }
             });
