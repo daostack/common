@@ -28,9 +28,7 @@ class UserStore {
     this.isLoading = false;
   }
 
-  isDaoMember = (members) => (
-    this.userInfo ? isDaoMemberBySafeAddress(members, this.userInfo.safeAddress) : false
-  )
+  isDaoMember = (members) => this.userInfo ? isDaoMemberBySafeAddress(members, this.userInfo.safeAddress) : false;
 
   setIsLoading = (loading) => {
     this.isLoading = loading;
