@@ -32,6 +32,10 @@ class UserStore {
     return this.userInfo ? isDaoMemberBySafeAddress(members, this.userInfo.safeAddress) : false;
   };
 
+  isProposer = (proposal) => {
+    return this.userInfo ? this.userInfo.safeAddress === proposal.proposer : false
+  }
+
   setIsLoading = loading => {
     this.isLoading = loading;
   };
