@@ -56,14 +56,14 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
 
     const errorHandler = async () => {
       const joinPlugin = await dao.plugin({where: {name: PROPOSAL_TYPE.Join}});
-      const joinContract  = await arc.getContract(joinPlugin.coreState.address);
+      const oldJoinContract  = await arc.getContract(joinPlugin.coreState.address);
+      const joinContract = await oldJoinContract.addProvider();
+
       const manager = await WalletManager.getInstance();
       const proposer = manager.safeAddress;
 
       logger.log('proposer ->', proposer, manager.address);
-
       // we check the conditions from the contract
-
       // require(!fundings[proposer].candidate, "already a candidate");
       const memberFund = await joinContract.membersState(proposer);
       if (memberFund === true) {
@@ -74,7 +74,9 @@ export const createProposalRequestToJoin = async (arc, daoId, data) => {
       // require(avatar.nativeReputation().balanceOf(proposer) == 0, "already a member");
       const daoState = await dao.fetchState();
       const reputation = await daoState.reputation.entity;
-      const reputationContract = await reputation.contract();
+      var oldReputationContract = await reputation.contract();
+      const reputationContract = await oldReputationContract.addProvider();
+
       const reputationBalanceOfProposer = await reputationContract.balanceOf(proposer);
       if (Number(reputationBalanceOfProposer) !== 0) {
         throw Error(`Request to join failed because you (${proposer}) are already a member of this DAO (${dao.id}) - rep: ${reputationBalanceOfProposer}`);
