@@ -5,13 +5,13 @@ import React from 'react';
 import Pdf from 'react-native-pdf';
 import {useNavigation} from '@react-navigation/native';
 import logger from '~/Services/Logger';
+import {string, bool, shape} from 'prop-types';
 
-const PDFViewer = ({route}) => {
-  const uri = route.params.uri;
+const PDFViewer = ({route: {params: uri, hideIndex = false}}) => {
   const [pages, setPages] = useState(0);
   const [currPage, setCurrPage] = useState(0);
-  const hideIndex = route.params.hideIndex || false;
   const navigation = useNavigation();
+
   return (
     <SafeAreaView flex={1}>
       <View style={styles.container}>
@@ -35,9 +35,7 @@ const PDFViewer = ({route}) => {
           style={styles.pdf}
         />
       </View>
-      {hideIndex ? (
-        <></>
-      ) : (
+      {hideIndex && (
         <View style={styles.index}>
           <Text style={styles.pager}>
             {currPage} of {pages}
@@ -46,6 +44,15 @@ const PDFViewer = ({route}) => {
       )}
     </SafeAreaView>
   );
+};
+
+PDFViewer.propTypes = {
+  route: shape({
+    params: shape({
+      uri: string,
+      hideIndex: bool,
+    }),
+  }),
 };
 
 const styles = StyleSheet.create({

@@ -9,22 +9,23 @@ import {
   FlatList,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import { inject, observer } from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 import CommonBox from '~/Components/CommonBox';
-import { layout, colors, text, font, sizeS } from '~/Theme';
+import {layout, colors, text, font, sizeS} from '~/Theme';
+import {object, shape, func, array} from 'prop-types';
 
-const MyCommons = ({ navigation, daoStore, userStore }) => {
+const MyCommons = ({navigation, daoStore, userStore}) => {
   const onScreenScroll = (event) => {
     navigation.setOptions({
       title: event.nativeEvent.contentOffset.y > 75 ? 'My Commons' : 'My Profile',
     });
   };
 
-  const setDao = dao => {
+  const setDao = (dao) => {
     daoStore.setDao(dao);
   };
 
-  const renderCommonCard = (dao, i) =>
+  const renderCommonCard = (dao, i) =>(
     <CommonBox
       image={dao.coverPhoto}
       common={dao}
@@ -32,20 +33,21 @@ const MyCommons = ({ navigation, daoStore, userStore }) => {
       width="100%"
       navigation={navigation}
       onPress={() => setDao(dao)}
-    />;
+    />
+  );
 
   const AllCommonsList = (daos) => (
-    <View style={{ flex: 1, padding: 20 }}>
+    <View style={{flex: 1, padding: 20}}>
       <FlatList
         data={daos}
-        renderItem={({ item, i }) => renderCommonCard(item, i, navigation)}
+        renderItem={({item, i}) => renderCommonCard(item, i, navigation)}
       />
     </View>
   );
 
-  const myDaos = daoList => {
-    return daoList.filter(dao => userStore.isDaoMember(dao.members));
-  };
+  const myDaos = (daoList) => (
+    daoList.filter((dao) => userStore.isDaoMember(dao.members))
+  );
 
   return (
     <>
@@ -71,6 +73,17 @@ const MyCommons = ({ navigation, daoStore, userStore }) => {
       </SafeAreaView>
     </>
   );
+};
+
+MyCommons.propTypes = {
+  navigation: object,
+  daoStore: shape({
+    setDao: func,
+    daos: array,
+  }),
+  userStore: shape({
+    isDaoMember: func,
+  }),
 };
 
 const styles = StyleSheet.create({

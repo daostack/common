@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {colors, layout, font} from '~/Theme';
 import Loader from '~/Components/Loader';
+import {string, shape, object} from 'prop-types';
 
 const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}, navigation}) => (
     <>
@@ -30,6 +31,16 @@ const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}, 
       </SafeAreaView>
     </>
 );
+
+FullScreenCreationLoader.propTypes = {
+  route: shape({
+    params: shape({
+      title: string,
+      message: string,
+    }),
+  }),
+  navigation: object,
+};
 
 const styles = StyleSheet.create({
   safeArea: {

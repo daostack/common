@@ -10,6 +10,7 @@ import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
 import {layout, colors, font, text, sizeS, sizeL} from '~/Theme';
+import {string, func, bool, shape, oneOfType, object, number} from 'prop-types';
 
 class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
@@ -254,6 +255,41 @@ class TextInputFieldWithIcon extends React.Component {
 // Set default props
 TextInputFieldWithIcon.defaultProps = {
   password: false,
+};
+
+TextInputFieldWithIcon.propTypes = {
+  validation: shape({
+    name: string,
+    formStore: object,
+    displayName: string,
+    validateRule: oneOfType([
+      string,
+      object,
+    ]),
+    invisibleContainer: bool,
+    customErrorMessage: string,
+  }),
+  value: string,
+  fieldActionComponent: object,
+  onTogglePress: func,
+  toggleName: string,
+  onChangeText: func,
+  onBlur: func,
+  placeholderText: string,
+  label: string,
+  infoLabel: string,
+  password: bool,
+  multiline: bool,
+  numberOfLines: number,
+  keyboardType: string,
+  iconName: string,
+  iconSize: number,
+  iconEmptyColor: string,
+  iconFillColor: string,
+  iconStyle: object,
+  subLabel: string,
+  forwardRef: object,
+  viewStyle: object,
 };
 
 const styles = StyleSheet.create({

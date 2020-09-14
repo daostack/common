@@ -68,7 +68,7 @@ CommonBox.propTypes = {
     numberOfQueuedProposals: number,
     fundingGoal: number,
     memberCount: number,
-    balance: number,
+    balance: string,
     tokenTotalSupply: string,
   }).isRequired,
   onPress: func.isRequired,

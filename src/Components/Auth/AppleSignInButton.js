@@ -7,6 +7,7 @@ import {observer, inject} from 'mobx-react';
 import {AppleAuthError} from '@invertase/react-native-apple-authentication';
 import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
+import {func, shape, object} from 'prop-types';
 
 const AppleSignInButton = ({onSignIn, userStore, customStyle}) => {
   const [signInError, setSignInError] = useState(null);
@@ -57,6 +58,7 @@ const AppleSignInButton = ({onSignIn, userStore, customStyle}) => {
       const errorText = `${signInError.toString()} ${
         signInError.code ? signInError.code : ''
       }`;
+
       return (
         <View style={styles.messageContainer}>
           <Text style={styles.errorMessage}>{errorText}</Text>
@@ -73,6 +75,15 @@ const AppleSignInButton = ({onSignIn, userStore, customStyle}) => {
     </View>
   );
 };
+
+AppleSignInButton.propTypes = {
+  onSignIn: func,
+  userStore: shape({
+    setIsLoading: func,
+  }).isRequired,
+  customStyle: object,
+};
+
 
 const styles = StyleSheet.create({
   container: {

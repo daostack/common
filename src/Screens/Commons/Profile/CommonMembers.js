@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-
 import {
   SafeAreaView,
   StatusBar,
@@ -15,7 +14,9 @@ import {TabView} from 'react-native-tab-view';
 import ProposalsList from '../../Proposals/ProposalsList';
 import CommonMembersList from './CommonMembersList';
 import CommonTabBar from '../../CommonTabBar';
+import {string, func, array, object, shape} from 'prop-types';
 
+const initialLayout = {width: Dimensions.get('window').width};
 const getTabName = (objectName, count) => `${objectName} (${count ? count : 0})`;
 
 const Members = ({navigation, members}) => (
@@ -45,15 +46,13 @@ const History = ({navigation, commonId, onProposalsCountChange}) => (
   </View>
 );
 
-const initialLayout = {width: Dimensions.get('window').width};
-
-const CommonMembers = ({navigation, route}) => {
+const CommonMembers = ({navigation,
+  route: {
+    params: {members, commonId},
+  }}) => {
   const [index, setIndex] = useState(0);
   const [pendingCount, setPendingCount] = useState(0);
   const [historyCount, setHistoryCount] = useState(0);
-  const members = route.params.members;
-  const commonId = route.params.commonId;
-
 
   const routes = [
     {key: 'members', title: getTabName('Members', members.length)},
@@ -115,6 +114,33 @@ const CommonMembers = ({navigation, route}) => {
       </SafeAreaView>
     </>
   );
+};
+
+Members.propTypes = {
+  navigation: object,
+  members: array,
+};
+
+Pending.propTypes = {
+  navigation: object,
+  commonId: string,
+  onProposalsCountChange: func,
+};
+
+History.propTypes = {
+  navigation: object,
+  commonId: string,
+  onProposalsCountChange: func,
+};
+
+CommonMembers.propTypes = {
+  navigation: object,
+  route: shape({
+    params: shape({
+      members: array,
+      commonId: string,
+    }),
+  }),
 };
 
 const styles = StyleSheet.create({

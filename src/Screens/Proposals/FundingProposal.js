@@ -8,22 +8,23 @@ import {
   View,
   Keyboard,
 } from 'react-native';
-import { observer, inject } from 'mobx-react';
-import { text, layout, colors } from '~/Theme';
+import {observer, inject} from 'mobx-react';
+import {text, layout, colors} from '~/Theme';
 import FundingRequestForm from '~/Components/Forms/FundingRequestForm';
 import RequestStepActionButton from '../Commons/RequestStepActionButton';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 import ArcService from '~/Services/ArcService';
-import { BN } from 'bn.js';
+import {BN} from 'bn.js';
 import Toast from '~/Util/Toast';
 import font from '~/Theme/font';
 import logger from '~/Services/Logger';
+import {string, object, shape, func} from 'prop-types';
 
 const FundingProposal = ({
   userStore,
   fundingRequestFormStore,
   navigation,
-  route,
+  route: {params: {commonId, common}} ,
 }) => {
   // TODO: can these lines be removed?
   // const viewProposal = () => {
@@ -52,7 +53,7 @@ const FundingProposal = ({
 
         const proposalId = await ArcService.getInstance().createFundingProposal(
           userStore.userInfo.safeAddress,
-          route.params.commonId,
+          commonId,
           data,
         );
         Toast.hide();
@@ -76,7 +77,7 @@ const FundingProposal = ({
     <>
       <StatusBar barStyle="dark-content" />
 
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{flex: 1}}>
         <ScrollView
           style={{
             flex: 1,
@@ -88,7 +89,7 @@ const FundingProposal = ({
             Get funding to promote the Common's agenda. If your proposal is accepted you will be responsible to follow it through.
           </Text>
           <View style={styles.divider} />
-          <FundingRequestForm common={route.params.common} />
+          <FundingRequestForm common={common} />
         </ScrollView>
         <RequestStepActionButton
           title="Create Proposal"
@@ -98,6 +99,26 @@ const FundingProposal = ({
       </SafeAreaView>
     </>
   );
+};
+
+FundingProposal.propTypes = {
+  userStore: shape({
+    userInfo: shape({
+      safeAddress: string,
+    }),
+  }),
+  fundingRequestFormStore: shape({
+    isFormValid: func,
+    getChangedFormFieldsJson: func,
+    form: object,
+  }),
+  navigation: object,
+  route: shape({
+    params: shape({
+      commonId: string,
+      common: object,
+    }),
+  }),
 };
 
 const styles = StyleSheet.create({

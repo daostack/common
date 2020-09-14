@@ -22,7 +22,7 @@ const TabBarRenderer = ({originRef, parentRef, navigationState, indexChange, ...
         getTabWidth={indicator.getTabWidth}
         width={indicator.width}
         style={indicator.style}
-        layout={indicator.layout}
+        indicatorLayout={indicator.layout}
       />
     )}
     renderLabel={({route, focused}) => {
