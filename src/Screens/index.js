@@ -1,41 +1,41 @@
 //Commons
-exportCommonsListfrom './Commons/CommonsList';
-exportCommonProfilefrom './Commons/Profile/CommonProfile';
-exportCreateStep1from './Commons/CreateCommon/CreateStep1';
-exportCreateStep2from './Commons/CreateCommon/CreateStep2';
-exportCreateStep3from './Commons/CreateCommon/CreateStep3';
-exportCreateStep4from './Commons/CreateCommon/CreateStep4';
-exportCommonExplanationfrom './Commons/CreateCommon/CommonExplanation';
-exportCommonAgendafrom './Commons/Profile/CommonAgenda';
-exportCommonMembersfrom './Commons/Profile/CommonMembers';
-exportRequestStep1from './Commons/RequestToJoin/RequestStep1';
-exportRequestStep2from './Commons/RequestToJoin/RequestStep2';
-exportRequestStep3from './Commons/RequestToJoin/RequestStep3';
-exportRequestStep4from './Commons/RequestToJoin/RequestStep4';
+export CommonsList from './Commons/CommonsList';
+export CommonProfile from './Commons/Profile/CommonProfile';
+export CreateStep1 from './Commons/CreateCommon/CreateStep1';
+export CreateStep2 from './Commons/CreateCommon/CreateStep2';
+export CreateStep3 from './Commons/CreateCommon/CreateStep3';
+export CreateStep4 from './Commons/CreateCommon/CreateStep4';
+export CommonExplanation from './Commons/CreateCommon/CommonExplanation';
+export CommonAgenda from './Commons/Profile/CommonAgenda';
+export CommonMembers from './Commons/Profile/CommonMembers';
+export RequestStep1 from './Commons/RequestToJoin/RequestStep1';
+export RequestStep2 from './Commons/RequestToJoin/RequestStep2';
+export RequestStep3 from './Commons/RequestToJoin/RequestStep3';
+export RequestStep4 from './Commons/RequestToJoin/RequestStep4';
 
 //User Profile
-exportCompleteAccountfrom './UserProfile/CompleteAccount';
-exportUserProfilefrom './UserProfile/UserProfile';
-exportCreateAccountfrom './UserProfile/CreateAccount';
-exportUserProfileReadModefrom './UserProfile/UserProfileReadMode';
-exportEditProfilefrom './UserProfile/EditProfile';
-exportMyWalletfrom './UserProfile/MyWallet';
-exportMyProposalsfrom './UserProfile/MyProposals';
-exportMyCommonsfrom './UserProfile/MyCommons';
+export CompleteAccount from './UserProfile/CompleteAccount';
+export UserProfile from './UserProfile/UserProfile';
+export CreateAccount from './UserProfile/CreateAccount';
+export UserProfileReadMode from './UserProfile/UserProfileReadMode';
+export EditProfile from './UserProfile/EditProfile';
+export MyWallet from './UserProfile/MyWallet';
+export MyProposals from './UserProfile/MyProposals';
+export MyCommons from './UserProfile/MyCommons';
 
 // Proposals
-exportDiscussionsfrom './Discussions/Discussions';
-exportDiscussionPostfrom './Discussions/DiscussionPost';
-exportFundingProposalfrom './Proposals/FundingProposal';
-exportProposalScreenfrom './Proposals/ProposalScreen';
+export Discussions from './Discussions/Discussions';
+export DiscussionPost from './Discussions/DiscussionPost';
+export FundingProposal from './Proposals/FundingProposal';
+export ProposalScreen from './Proposals/ProposalScreen';
 
 //Viewers
-exportPDFViewerfrom './Viewers/PDFViewer';
-exportBrowserfrom './Viewers/Browser';
+export PDFViewer from './Viewers/PDFViewer';
+export Browser from './Viewers/Browser';
 
 //root
-exportOnboardingfrom './Onboarding';
-exportNativeBridgeTestsfrom './NativeBridgeTests';
-exportHUDTestfrom './HUDTest';
-exportFullScreenCreationLoaderfrom './FullScreenCreationLoader';
+export Onboarding from './Onboarding';
+export NativeBridgeTests from './NativeBridgeTests';
+export HUDTest from './HUDTest';
+export FullScreenCreationLoader from './FullScreenCreationLoader';
 

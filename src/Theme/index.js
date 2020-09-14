@@ -1,7 +1,7 @@
-exportcolorsfrom './colors';
-exporttextfrom './text';
-exportlayoutfrom './layout';
-exportfontfrom './font';
+export colors from './colors';
+export text from './text';
+export layout from './layout';
+export font from './font';
 
 export {
   sizeXS,
