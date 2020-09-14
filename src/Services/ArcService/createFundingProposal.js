@@ -59,7 +59,8 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
       throw Error('"funding" argument must be given');
     }
 
-    const daoContract = await arc.getContract(dao.id);
+    const oldDaoContract = await arc.getContract(dao.id);
+    const daoContract = await oldDaoContract.addProvider();
 
     const errorHandler = async (receipt) => {
       // lets first check some sanity things about the dao
