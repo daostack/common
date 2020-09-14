@@ -541,11 +541,15 @@ const ProposalScreen = ({
         </ScrollView>
 
         {index === 0
-          ? renderVoting && showBottomVotingButtonsContainer
-          && <View style={styles.actionButtonContainer}>
-            {renderStickyBottomContent()}
-          </View>
-          : (<>{messageInput()}</>)}
+          ? (renderVoting && showBottomVotingButtonsContainer) && (
+            <View style={styles.actionButtonContainer}>
+              {renderStickyBottomContent()}
+            </View>
+          ) : (
+            <React.Fragment>
+              {messageInput()}
+            </React.Fragment>
+          )}
       </SafeAreaView>
 
       <BottomSheetModal
