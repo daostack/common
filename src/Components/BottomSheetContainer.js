@@ -1,4 +1,4 @@
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, BackHandler} from 'react-native';
 import {observer, inject} from 'mobx-react';
 import React, {useRef, useEffect} from 'react';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -12,6 +12,10 @@ const BottomSheetContainer = ({bottomSheetStore, withoutHeader}) => {
   let fall = new Animated.Value(0);
 
   useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      bottomSheetStore.hideBottomSheet();
+    });
+
     if (ref.current) {
       ref.current.snapTo(1);
     }
