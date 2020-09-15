@@ -101,7 +101,10 @@ const MultiLinkField = (props) => {
             {props.title && (
               <TextInputField
                 label={props.label}
-                onChangeText={() => canAddMore()}
+                onChangeText={(value) => {
+                  canAddMore();
+                  onChangeText(value, currItemValidation);
+                }}
                 viewStyle={{marginTop: 0}}
                 placeholderText={props.title}
                 validation={currTitleItemValidation}

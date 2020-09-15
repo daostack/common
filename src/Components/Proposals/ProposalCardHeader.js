@@ -35,7 +35,7 @@ const calcStatus = (stage, winningOutcome, hasPassedExpiryDate) => {
     }
     return status;
   }
-  if (hasPassedExpiryDate || stage === PROPOSAL_STAGE.ExpiredInQueue ) {
+  if (hasPassedExpiryDate || stage === PROPOSAL_STAGE.ExpiredInQueue) {
     status.text = TITLES.REJECTED;
     status.lightColor = colors.redLightish;
     status.darkColor = colors.error;
@@ -78,23 +78,25 @@ const renderCountDown = (closingAt) => {
     ? closingAt - Date.now() / 1000
     : null;
 
-  return <View style={styles.timerContainer}>
-    <View
-      style={{...styles.timer}}>
-      <CountDown
-        timeToShow={['H', 'M', 'S']}
-        digitTxtStyle={counterTextColor}
-        timeLabels={false}
-        showSeparator={true}
-        separatorStyle={counterTextColor}
-        digitStyle={{
-          height: 'auto',
-          width: 'auto',
-        }}
-        until={remainingSeconds}
-      />
+  return (
+    <View style={styles.timerContainer}>
+      <View
+        style={{...styles.timer}}>
+        <CountDown
+          timeToShow={[ 'D', 'H', 'M', 'S' ]}
+          digitTxtStyle={counterTextColor}
+          timeLabels={false}
+          showSeparator={true}
+          separatorStyle={counterTextColor}
+          digitStyle={{
+            height: 'auto',
+            width: 'auto',
+          }}
+          until={remainingSeconds}
+        />
+      </View>
     </View>
-  </View>;
+  );
 };
 
 
@@ -102,17 +104,40 @@ const ProposalCardHeader = ({stage, winningOutcome, hasPassedExpiryDate, closing
 
   const headerStatus = calcStatus(stage, winningOutcome, hasPassedExpiryDate);
   return isScreenHeader
-    ? <View style={{...styles.stateCard, ...{backgroundColor: headerStatus.darkColor, paddingHorizontal: 50}}}>
-      <Icon style={styles.stateIcon} name={headerStatus.icon} color={colors.white}/>
-      <Text style={styles.stateText}>{headerStatus.text}</Text>
-      {headerStatus.text === TITLES.COUNTDOWN && renderCountDown(closingAt)}
-    </View>
-    : <View style={{...styles.proposalCardHeader, ...{backgroundColor: headerStatus.lightColor}}}>
-      <Icon name={headerStatus.icon} color={headerStatus.darkColor} size={16} />
-      <Text style={{...text.orangeSmallBold, ...{marginHorizontal: 5, color: headerStatus.darkColor}}}>
-        {headerStatus.text}
-      </Text>
-    </View>;
+    ? (
+      <View style={{...styles.stateCard, ...{backgroundColor: headerStatus.darkColor, paddingHorizontal: 50}}}>
+        <Icon
+          style={styles.stateIcon}
+          name={headerStatus.icon}
+          color={colors.white}
+        />
+
+        <Text style={styles.stateText}>
+          {headerStatus.text}
+        </Text>
+
+        {headerStatus.text === TITLES.COUNTDOWN && renderCountDown(closingAt)}
+      </View>
+    ) : (
+      <View
+        style={{
+          ...styles.proposalCardHeader,
+          backgroundColor: headerStatus.lightColor,
+        }}
+      >
+        <Icon name={headerStatus.icon} color={headerStatus.darkColor} size={16}/>
+
+        <Text
+          style={{
+            ...text.orangeSmallBold,
+            marginHorizontal: 5,
+            color: headerStatus.darkColor,
+          }}
+        >
+          {headerStatus.text}
+        </Text>
+      </View>
+    );
 };
 
 ProposalCardHeader.propTypes = {

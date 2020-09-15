@@ -34,22 +34,30 @@ import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
 import {string, func, object, shape, oneOfType, number} from 'prop-types';
 import logger from '~/Services/Logger';
+
 const screenWidth = Dimensions.get('window').width;
 
-const ProposalScreen = ({navigation,
-  userStore: {userInfo, isDaoMember},
+const ProposalScreen = ({
+  navigation,
+  userStore: {
+    userInfo,
+    isDaoMember,
+    ...userStore
+  },
   bottomSheetStore,
   route: {
     params: {
       commonBalance,
       proposalId,
     },
-  }}) => {
+  },
+}) => {
   const [ votingProcessState, setVotingProcessState ] = useState({inProgress: false, error: false});
   const [ proposalInfo, setProposalInfo ] = useState(false);
   const [ proposedUser, setProposedUser ] = useState(false);
   const [ isSending, setIsSending ] = useState(false);
   const [ isMember, setIsMember ] = useState(false);
+  const [ isProposer, setIsProposer ] = useState(false);
   const [ showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer ] = useState(false);
   const renderVoting =
     proposalInfo &&
@@ -58,7 +66,7 @@ const ProposalScreen = ({navigation,
     !proposalInfo.votes.some((vote) => vote.voter === userInfo.safeAddress);
 
   // Sticky Tab Bar
-  const [showStickyTabBar, setShowStickyTabBar] = useState(false);
+  const [ showStickyTabBar, setShowStickyTabBar ] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
 
@@ -85,13 +93,13 @@ const ProposalScreen = ({navigation,
       //FundingRequest proposal
       else {
         const proposedMember = await UserService.getInstance().getUserByAddress(
-          currProposalInfo.fundingRequest.beneficiary,
+          currProposalInfo.fundingRequest.beneficiary
         );
         proposedMemberId = proposedMember.id;
         funding = currProposalInfo.fundingRequest.amount;
       }
       const currProposedUser = await UserService.getInstance().getUserById(
-        proposedMemberId,
+        proposedMemberId
       );
       setProposedUser(currProposedUser);
       setProposalInfo({...currProposalInfo, funding});
@@ -103,8 +111,10 @@ const ProposalScreen = ({navigation,
           currProposalId
         );
         const currentDao = await DaoService.getInstance().getDaoById(currProposalInfo.dao);
-        const isCurrMember = userInfo && isDaoMember(currentDao.members);
-        setIsMember(isCurrMember);
+
+        setIsMember(userInfo && isDaoMember(currentDao.members));
+        setIsProposer(userStore.isProposer(currProposalInfo));
+
         await loadProposalInfo(currProposalInfo);
         unsubscribe = await ProposalService.getInstance().subscribeToProposalById(currProposalId,
           async (updatedProposalInfo) => {
@@ -135,16 +145,16 @@ const ProposalScreen = ({navigation,
     setIsApprovalBottomModalVisible,
   ] = useState(false);
 
-  const [isVoteByYou, setIsVoteByYou] = useState(false);
-  const [voteType, setVoteType] = useState(false);
-  const [index, setIndex] = useState(0);
-  const [routes] = useState([
+  const [ isVoteByYou, setIsVoteByYou ] = useState(false);
+  const [ voteType, setVoteType ] = useState(false);
+  const [ index, setIndex ] = useState(0);
+  const [ routes ] = useState([
     {key: 'info', icon: 'proposal', iconSelected: 'proposal-selected'},
     {key: 'discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
   ]);
 
-  const [inputHeight, setInputHeight] = useState(60);
-  const [inputText, setInputText] = useState(null);
+  const [ inputHeight, setInputHeight ] = useState(60);
+  const [ inputText, setInputText ] = useState(null);
 
   const inputRef = useRef();
 
@@ -196,38 +206,61 @@ const ProposalScreen = ({navigation,
 
     return (
       <KeyboardAvoidingView
-        style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          flex: 1,
+          color: '#fbfdff',
+        }}
+      >
         <View style={viewStyle}>
-          {isMember ? (
+          {(isMember || isProposer) ? (
             <View style={styles.inputBorder}>
               <TextInput
                 ref={inputRef}
                 editable={true}
                 multiline={true}
-                onContentSizeChange={(e) =>
-                  setInputHeight(e.nativeEvent.contentSize.height)
-                }
-                style={{flex: 1, height: inputHeight, marginHorizontal: 10}}
                 fontSize={15}
                 onChangeText={(currText) => setInputText(currText)}
+                onContentSizeChange={(e) => {
+                  setInputHeight(e.nativeEvent.contentSize.height);
+                }}
+                style={{
+                  flex: 1,
+                  height: inputHeight,
+                  marginHorizontal: 10,
+                }}
               />
               <TouchableOpacity
-                style={{paddingRight: 15, justifyContent: 'center'}}
-                onPress={sendMessageToDiscussion}>
+                onPress={sendMessageToDiscussion}
+                style={{
+                  paddingRight: 15,
+                  justifyContent: 'center',
+                }}
+              >
                 <Icon
                   name="send-message"
                   size={20}
                   color={
                     inputText && inputText.trim()
                       ? colors.mainBlue
-                      : colors.grey3}/>
+                      : colors.grey3}
+                />
               </TouchableOpacity>
             </View>
           ) : (
-            <Text style={{...styles.joinCommonText}}>Only members can send messages</Text>
+            <Text style={{...styles.joinCommonText}}>
+              Only members or proposal creators can send messages
+            </Text>
           )}
         </View>
-        <View style={{height: 30, backgroundColor: colors.white}} />
+
+        <View
+          style={{
+            height: 30,
+            backgroundColor: colors.white,
+          }}
+        />
       </KeyboardAvoidingView>
     );
   };
@@ -358,10 +391,10 @@ const ProposalScreen = ({navigation,
 
   return (
     <>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView style={{backgroundColor: colors.white}}/>
       <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
         <Animated.View style={[stickyTabBarStyle, slideUp]}>
-          <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange = {setIndex}/>
+          <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} />
         </Animated.View>
         <ScrollView
           style={{
@@ -458,8 +491,8 @@ const ProposalScreen = ({navigation,
                   </Text>
                 </View>
                 {proposalInfo.type === PROPOSAL_TYPE.FundingRequest
-                  && <Text
-                    style={text.smallBlackText}>{`Available funds: ${commonBalance !== undefined ? '$' + commonBalance / 100 : ''}`}</Text>
+                && <Text
+                  style={text.smallBlackText}>{`Available funds: ${commonBalance !== undefined ? '$' + commonBalance / 100 : ''}`}</Text>
                 }
               </View>
 
@@ -534,11 +567,15 @@ const ProposalScreen = ({navigation,
         </ScrollView>
 
         {index === 0
-          ? renderVoting && showBottomVotingButtonsContainer
-          && <View style={styles.actionButtonContainer}>
-            {renderStickyBottomContent()}
-          </View>
-          : (<>{messageInput()}</>)}
+          ? (renderVoting && showBottomVotingButtonsContainer) && (
+            <View style={styles.actionButtonContainer}>
+              {renderStickyBottomContent()}
+            </View>
+          ) : (
+            <React.Fragment>
+              {messageInput()}
+            </React.Fragment>
+          )}
       </SafeAreaView>
 
       <BottomSheetModal
@@ -692,6 +729,8 @@ const styles = StyleSheet.create({
     color: colors.greySubtitle,
     marginTop: sizeS,
     marginBottom: sizeM,
+    width: Dimensions.get('window').width * 0.9,
+    textAlign: 'center',
   },
 });
 
