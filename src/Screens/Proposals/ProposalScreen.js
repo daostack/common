@@ -245,15 +245,6 @@ const ProposalScreen = ({navigation,
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  // const stickyTopSheet = () => {
-  //   bottomSheetStore.showBottomSheet(
-  //     TOP_SHEET_TEMPLATES.STICKY_TOP_SHEET_SCREEN,
-  //     {
-  //       navigation: navigation,
-  //     }
-  //   );
-  // };
-
   const viewUserProfile = () => {
     navigation.navigate('Profile', {userId: proposedUser.uid});
   };
@@ -351,7 +342,6 @@ const ProposalScreen = ({navigation,
 
   const votesCount = proposalInfo.votesFor + proposalInfo.votesAgainst;
 
-
   const slideUp = {
     transform: [
       {
@@ -366,17 +356,13 @@ const ProposalScreen = ({navigation,
 
   const stickyTabBarStyle = {position: 'absolute', top: -80, width: '100%', paddingBottom: 5, zIndex: 999};
 
-
-
   return (
     <>
       <SafeAreaView style={{backgroundColor: colors.white}} />
       <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
-
         <Animated.View style={[stickyTabBarStyle, slideUp]}>
           <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange = {setIndex}/>
         </Animated.View>
-
         <ScrollView
           style={{
             flex: 1,

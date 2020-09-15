@@ -181,7 +181,7 @@ const CommonProfile = ({
   );
 
   const Proposals = () => (
-    <View style={{...styles.paleBackground, padding: sizeL, height: 3000}}>
+    <View style={{...styles.paleBackground, padding: sizeL}}>
       <Text style={text.h1BlackTitle}>Proposals</Text>
 
       <ProposalsList
