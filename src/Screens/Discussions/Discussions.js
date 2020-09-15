@@ -279,14 +279,10 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
       </>
   );
 
-  const fileName = (url) => url
-    .substring(url.lastIndexOf('/') + 1, url.length)
-    .split('?')[0]
-    .split('_')
-    .slice(0, -1)
-    .join('_')
-    .replace('public_file%2F', '')
-    .concat('.pdf');
+  const fileName = (url) => {
+    url = url.split('_');
+    return url[url.length - 2];
+  };
 
   const header = () => (
       // <SafeAreaView flex={1}>
