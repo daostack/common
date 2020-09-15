@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {View} from 'react-native';
 import FileField from './FileField';
 import {sizeM} from '~/Theme';
+import {string, number, shape, object} from 'prop-types';
 
 const MultiFileField = (props) => {
   const [count, setCount] = useState(1);
@@ -43,6 +44,14 @@ const MultiFileField = (props) => {
       })}
     </View>
   );
+};
+
+MultiFileField.propTypes = {
+  maxCount: number,
+  navigation: object,
+  validation: shape({
+    name: string,
+  }),
 };
 
 export default MultiFileField;

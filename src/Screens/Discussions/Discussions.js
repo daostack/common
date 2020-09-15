@@ -29,25 +29,23 @@ import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import ImageView from 'react-native-image-viewing';
 import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
-
+import {func, object, shape, string} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const Discussions = ({userStore, daoStore, route:{params}, ...props}) => {
+const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
+  route: {params: {commonId, discussionId, data}}}) => {
+
   const [inputHeight, setInputHeight] = useState(65);
   const inputRef = useRef(null);
   const [user, setUser] = useState({});
   const [inputText, setInputText] = useState(null);
   const chatRef = useRef(null);
   const [isExpanded, setIsExpanded] = useState(false);
-  // const data = props.route.params.discussionId;
-  const commonId = params.commonId;
-  const discussionId = params.discussionId;
   const [msgGroup, setMsgDroup] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
-  // const [discussion, setDiscussion] = useState();
   const [followState, setFollowState] = useState(false);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
-  const [data, setData] = useState(params.data);
+  const [dataState, setData] = useState(data);
   const [isMember, setIsMember] = useState(false);
 
   const [isSending, setIsSending] = useState(false);
@@ -55,8 +53,8 @@ const Discussions = ({userStore, daoStore, route:{params}, ...props}) => {
 
   useEffect(() => {
     const currentDao = daoStore.daos.find((dao) => dao.id === commonId);
-    const isMember = userStore.userInfo && userStore.isDaoMember(currentDao.members);
-    setIsMember(isMember);
+    const isCurrMember = userStore.userInfo && userStore.isDaoMember(currentDao.members);
+    setIsMember(isCurrMember);
   }, []);
 
   const hideMenu = () => {
@@ -128,12 +126,12 @@ const Discussions = ({userStore, daoStore, route:{params}, ...props}) => {
         (error) => logger.error(error),
       );
     return unsubscribe;
-  }, [commonId, data.id]);
+  }, [commonId, dataState.id]);
 
   useEffect(() => {
     const fetchUser = async () => {
       const userData = await UserService.getInstance().getUserById(
-        data.ownerId,
+        dataState.ownerId,
       );
       setUser(userData);
     };
@@ -145,7 +143,7 @@ const Discussions = ({userStore, daoStore, route:{params}, ...props}) => {
     //   viewPosition: 0,
     // });
     fetchUser();
-  }, [data]);
+  }, [dataState]);
 
   // const openOptionsMenu = () => {
   //   if (!currentUser) {
@@ -158,7 +156,7 @@ const Discussions = ({userStore, daoStore, route:{params}, ...props}) => {
   // };
 
   const showLoginScreen = () => {
-    props.bottomSheetStore.showBottomSheet(
+    bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
     );
   };
@@ -191,8 +189,7 @@ const Discussions = ({userStore, daoStore, route:{params}, ...props}) => {
     }
     setIsSending(true);
 
-    const userStore = currentUser;
-    if (!userStore) {
+    if (!currentUser) {
       showLoginScreen();
       setIsSending(false);
       return;
@@ -207,9 +204,9 @@ const Discussions = ({userStore, daoStore, route:{params}, ...props}) => {
         .set({
           text: message,
           createTime: new Date(),
-          ownerId: userStore.uid,
-          ownerName: userStore.displayName,
-          ownerAvatar: userStore.photoURL,
+          ownerId: currentUser.uid,
+          ownerName: currentUser.displayName,
+          ownerAvatar: currentUser.photoURL,
           commonId: commonId,
           discussionId: discussionId,
         })
@@ -230,14 +227,14 @@ const Discussions = ({userStore, daoStore, route:{params}, ...props}) => {
 
   const headerImages = () => (
       <>
-        {data.images ?
+        {dataState.images ?
           <ScrollView
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             style={{marginBottom: 20}}>
             <View style={styles.imageGallery}>
               <View style={{width: 20}} />
-              {data.images.map((currImage, currIndex) => (
+              {dataState.images.map((currImage, currIndex) => (
                 <View
                   key={`proposalImg_${currIndex}`}>
                   <TouchableOpacity
@@ -263,12 +260,12 @@ const Discussions = ({userStore, daoStore, route:{params}, ...props}) => {
 
   const headerFiles = () => (
       <>
-        {data.files && (
-          data.files.map((f, index) => <View style={styles.adRow} key={`discussion_file_${index}`}>
+        {dataState.files && (
+          dataState.files.map((f, index) => <View style={styles.adRow} key={`discussion_file_${index}`}>
             <Icon name="file" color={colors.mainBlue} size={16} />
             <TouchableOpacity
               onPress={() =>
-                props.navigation.navigate('Browser', {
+                navigation.navigate('Browser', {
                   url: f.value,
                 })
               }>
@@ -300,13 +297,13 @@ const Discussions = ({userStore, daoStore, route:{params}, ...props}) => {
             height: 48,
           }}
           title={{
-            title: data.title,
+            title: dataState.title,
             style: text.h2Black,
           }}
           leftButton={
             <TouchableOpacity
               style={{justifyContent: 'center'}}
-              onPress={() => props.navigation.pop()}>
+              onPress={() => navigation.pop()}>
               <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
             </TouchableOpacity>
           }
@@ -345,7 +342,7 @@ const Discussions = ({userStore, daoStore, route:{params}, ...props}) => {
                     <Text style={styles.displayName}>{user.displayName}</Text>
                     {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
                     <Text style={styles.date}>
-                      {moment(data.createTime.toDate()).fromNow()}
+                      {moment(dataState.createTime.toDate()).fromNow()}
                     </Text>
                   </View>
                 </View>
@@ -353,7 +350,7 @@ const Discussions = ({userStore, daoStore, route:{params}, ...props}) => {
                 <View>
                   <Text
                     style={styles.message}>
-                    {data.message}
+                    {dataState.message}
                   </Text>
                 </View>
 
@@ -494,7 +491,7 @@ const Discussions = ({userStore, daoStore, route:{params}, ...props}) => {
       </BottomSheetModal>
 
       <ImageView
-        images={data.images ? data.images.map((x) => ({uri: x.value})) : []}
+        images={dataState.images ? dataState.images.map((x) => ({uri: x.value})) : []}
         imageIndex={imageGalleryIndex}
         visible={imageGalleryIndex > -1}
         onRequestClose={() => setImageGalleryIndex(-1)}
@@ -502,6 +499,27 @@ const Discussions = ({userStore, daoStore, route:{params}, ...props}) => {
       />
     </SafeAreaView>
   );
+};
+
+Discussions.propTypes = {
+  daoStore: shape({
+    dao: object,
+  }),
+  userStore: shape({
+    userInfo: object,
+    isDaoMember: func,
+  }),
+  bottomSheetStore: shape({
+    showBottomSheet: func,
+  }),
+  navigation: object,
+  route: shape({
+    params: shape({
+      commonId: string,
+      discussionId: string,
+      data: object,
+    }),
+  }),
 };
 
 const styles = StyleSheet.create({

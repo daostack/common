@@ -26,7 +26,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     const dao = arc.dao(daoId);
 
     const plugins = await dao.plugins().first();
-    const abi = arc.getABI({ abiName: 'FundingRequest', version: ARC_VERSION });
+    const abi = arc.getABI({abiName: 'FundingRequest', version: ARC_VERSION});
     const interf = new ethers.utils.Interface(abi);
 
     logger.log(interf);
@@ -38,16 +38,16 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
     let fundingRequestPlugin;
     try {
       fundingRequestPlugin = await dao.plugin({
-        where: { name: 'FundingRequest' },
+        where: {name: 'FundingRequest'},
       });
     } catch (e) {
       logger.log(e);
       logger.log(daoId);
-      const plugins = await dao
+      const catchPlugins = await dao
         .plugins()
         .pipe(first())
         .toPromise();
-      logger.log(plugins.map((p)=> p.coreState.name));
+      logger.log(catchPlugins.map((p)=> p.coreState.name));
       throw e;
     }
 
@@ -66,8 +66,8 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
       // lets first check some sanity things about the dao
       const joinPlugin = await dao.plugin({where: {name: PROPOSAL_TYPE.Join}});
       const joinPluginState = await joinPlugin.fetchState();
-      const fundingRequestPlugin = await dao.plugin({where: {name: 'FundingRequest'}});
-      const fundingRequestPluginState = await fundingRequestPlugin.fetchState();
+      const errorFundingRequestPlugin = await dao.plugin({where: {name: 'FundingRequest'}});
+      const fundingRequestPluginState = await errorFundingRequestPlugin.fetchState();
       const activationTime = fundingRequestPluginState.pluginParams.voteParams.activationTime;
       if (activationTime > ((new Date()).getTime() / 1000)) {
         throw Error(`Canot create a funding request as the plugin is not actived yet (it activates on ${activationTime})`);
@@ -76,7 +76,7 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
       // TODO: The "FUNDED_BEFORE_DEADLINE" flag can (and should) be set on common creation, not on "first proposal creation"
       let fundingGoalReachedFlag = await daoContract.functions.db('FUNDED_BEFORE_DEADLINE');
       if (fundingGoalReachedFlag !== 'TRUE') {
-        const joinPlugin = await dao.plugin({
+        const errorJoinPlugin = await dao.plugin({
           where: {name: PROPOSAL_TYPE.Join},
         });
         logger.log(`fundingGoalReachedFlag is not TRUE (its value is "${fundingGoalReachedFlag}") - so we cannot create a proposal`);
@@ -93,8 +93,12 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
           throw Error('Invalidly configured DAO - cannot create funding request (the fundingGoalDeadline of the join plugin is in the past, so we cannot set the fundingGoalReeched flag to true)');
         }
         logger.log('We will try to reset the fundingGoalReachedFlag');
+<<<<<<< HEAD
         const oldJoinContract = await arc.getContract(joinPlugin.coreState.address);
         const joinContract = await oldJoinContract.addProvider();
+=======
+        const joinContract = await arc.getContract(errorJoinPlugin.coreState.address);
+>>>>>>> 1892dfb30a69721ac0f62d03524ffc71efe099a2
         const setFlagTx  = {
           contract: joinContract,
           method: 'setFundingGoalReachedFlag',

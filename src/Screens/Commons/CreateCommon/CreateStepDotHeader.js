@@ -1,32 +1,42 @@
 import React from 'react';
-import { View, StyleSheet, Animated, Text, TouchableOpacity } from 'react-native';
+import {View, StyleSheet, Animated, Text, TouchableOpacity} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
-import { colors, font } from '~/Theme';
+import {colors, font} from '~/Theme';
+import {string, object, number, oneOfType, shape, array} from 'prop-types';
 
-const CreateStepDotHeader = props => {
-  const headerHeight = props.headerHeight;
-  const currentIndex = props.currentIndex;
-
-  return (
-    <Animated.View style={[styles.header, { height: headerHeight }]}>
-      <TouchableOpacity
-        style={styles.back}
-        onPress={() => props.navigation.pop()}>
-        <Icon name="left-arrow" size={32} style={{ marginLeft: 10 }} />
-      </TouchableOpacity>
-      <View style={styles.bar}>
-        <View style={styles.barContent}>
-          {[...Array(4).keys()].map(x => (
-            <View
-              key={x}
-              style={x === currentIndex - 1 ? styles.dot : styles.dot2}
-            />
-          ))}
-        </View>
-        <Text style={styles.title}>{props.title}</Text>
+const CreateStepDotHeader = ({headerHeight = 0, currentIndex, navigation, title}) => (
+  <Animated.View style={{...styles.header, height: headerHeight}}>
+    <TouchableOpacity
+      style={styles.back}
+      onPress={() => navigation.pop()}>
+      <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
+    </TouchableOpacity>
+    <View style={styles.bar}>
+      <View style={styles.barContent}>
+        {[...Array(4).keys()].map((x) => (
+          <View
+            key={x}
+            style={x === currentIndex - 1 ? styles.dot : styles.dot2}
+          />
+        ))}
       </View>
-    </Animated.View>
-  );
+      <Text style={styles.title}>{title}</Text>
+    </View>
+  </Animated.View>
+);
+
+CreateStepDotHeader.propTypes = {
+  headerHeight: oneOfType([
+    number,
+    shape({
+      inputRange: array,
+      outputRange: array,
+      extrapolate: string,
+    }),
+  ]),
+  currentIndex: number,
+  navigation: object,
+  title: string,
 };
 
 const styles = StyleSheet.create({

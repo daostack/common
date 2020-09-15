@@ -8,7 +8,6 @@ import {
   Dimensions,
   StyleSheet,
 } from 'react-native';
-const {width} = Dimensions.get('window');
 import {inject, observer} from 'mobx-react';
 import {BN} from 'bn.js';
 import WalletManager from '~/Util/WalletManager';
@@ -28,6 +27,8 @@ import ABI from '~/Util/abi.json';
 import {ethers} from 'ethers';
 import {showErrorPopUp} from '~/Util';
 import logger from '~/Services/Logger';
+import {string, func, object, shape} from 'prop-types';
+const {width} = Dimensions.get('window');
 
 class nativeBridgeTests extends React.Component {
   constructor(props) {
@@ -695,6 +696,21 @@ class nativeBridgeTests extends React.Component {
     );
   }
 }
+
+nativeBridgeTests.propTypes = {
+  userStore: shape({
+    userInfo: shape({
+      safeAddress: string,
+    }),
+  }).isRequired,
+  navigation: object,
+  bottomSheetStore: shape({
+    showBottomSheet: func,
+  }),
+  daoStore: shape({
+    creationError: func,
+  }),
+};
 
 const styles = StyleSheet.create({
   container: {

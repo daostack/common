@@ -9,11 +9,11 @@ import {
   StatusBar,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import { colors, font, sizeXXL, sizeLineHeight, layout } from '~/Theme';
+import {colors, font, sizeXXL, sizeLineHeight, layout} from '~/Theme';
 import Swiper from 'react-native-swiper';
+import {object} from 'prop-types';
 
-const CommonExplanation = ({ navigation }) => {
-  return (
+const CommonExplanation = ({navigation}) => (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeArea}>
@@ -27,7 +27,7 @@ const CommonExplanation = ({ navigation }) => {
             style={styles.wrapper}
             showsButtons={false}
             activeDotColor={colors.mainBlue}
-            paginationStyle={{ bottom: 0 }}>
+            paginationStyle={{bottom: 0}}>
             <View style={styles.slide1}>
               <Image
                 source={require('~/Assets/CommonExplanation/common.png')}
@@ -85,7 +85,10 @@ const CommonExplanation = ({ navigation }) => {
         </View>
       </SafeAreaView>
     </>
-  );
+);
+
+CommonExplanation.propTypes = {
+  navigation: object,
 };
 
 const styles = StyleSheet.create({

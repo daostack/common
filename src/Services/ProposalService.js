@@ -225,7 +225,7 @@ export default class ProposalService {
           listChangeCallback([]);
         } else {
           if (snapshot.docChanges().length !== 0) {
-            const newList = snapshot.docChanges().map(({ doc }) => {
+            const newList = snapshot.docChanges().map(({doc}) => {
               if (onlyRequestsToJoin) {
                 if (doc.data().type !== PROPOSAL_TYPE.Join) {
                   return false;

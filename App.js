@@ -363,7 +363,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           name="CommonExplanation"
           component={CommonExplanation}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerTitle: 'Create a Common',
             headerBackTitleVisible: false,
             headerLeftContainerStyle: {marginLeft: 20},
@@ -384,63 +384,63 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           name="RequestStep1"
           component={RequestStep1}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="RequestStep2"
           component={RequestStep2}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="RequestStep3"
           component={RequestStep3}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="RequestStep4"
           component={RequestStep4}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="CreateStep1"
           component={CreateStep1}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="CreateStep2"
           component={CreateStep2}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="CreateStep3"
           component={CreateStep3}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="CreateStep4"
           component={CreateStep4}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="Discussions"
           component={Discussions}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
@@ -448,12 +448,12 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           name="FullScreenCreationLoader"
           component={FullScreenCreationLoader}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen name="New Post"
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerBackTitleVisible: false,
           })}
           component={DiscussionPost} />

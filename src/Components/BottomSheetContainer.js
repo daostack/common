@@ -5,8 +5,9 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors, text, layout} from '~/Theme';
 import Animated from 'react-native-reanimated';
+import {number, func, shape, object, bool} from 'prop-types';
 
-const BottomSheetContainer = (props) => {
+const BottomSheetContainer = ({bottomSheetStore, withoutHeader}) => {
   let ref = useRef();
   let fall = new Animated.Value(0);
 
@@ -21,11 +22,11 @@ const BottomSheetContainer = (props) => {
   };
 
   const onClosed = () => {
-    props.bottomSheetStore.hideBottomSheet();
+    bottomSheetStore.hideBottomSheet();
   };
 
   const renderSheetHeader = () => {
-    if (props.withoutHeader) {
+    if (bottomSheetStore) {
       return null;
     }
     return (
@@ -41,14 +42,14 @@ const BottomSheetContainer = (props) => {
       ...styles.contentContainer,
       ...{
         padding: 0,
-        height: props.bottomSheetStore.topSnap + 100,
+        height: bottomSheetStore.topSnap + 100,
       },
     };
 
-    if (props.withoutHeader) {
+    if (withoutHeader) {
       contentStyle = {...contentStyle, ...styles.contentContainerShadow};
     }
-    return <View style={contentStyle}>{props.bottomSheetStore.template}</View>;
+    return <View style={contentStyle}>{bottomSheetStore.template}</View>;
   };
 
   const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
@@ -70,7 +71,7 @@ const BottomSheetContainer = (props) => {
 
       <BottomSheet
         ref={ref}
-        snapPoints={[0, props.bottomSheetStore.topSnap]}
+        snapPoints={[0, bottomSheetStore.topSnap]}
         renderContent={renderSheetContent}
         renderHeader={renderSheetHeader}
         enabledBottomInitialAnimation={true}
@@ -80,6 +81,15 @@ const BottomSheetContainer = (props) => {
       />
     </>
   );
+};
+
+BottomSheetContainer.propTypes = {
+  bottomSheetStore: shape({
+    hideBottomSheet: func,
+    topSnap: number,
+    template: object,
+  }),
+  withoutHeader: bool,
 };
 
 const styles = StyleSheet.create({

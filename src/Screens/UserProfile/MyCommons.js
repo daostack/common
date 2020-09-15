@@ -9,12 +9,13 @@ import {
   FlatList,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import { inject, observer } from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 import CommonBox from '~/Components/CommonBox';
 import { layout, colors, text, font, sizeS } from '~/Theme';
 import { CommonActions } from '@react-navigation/native';
+import {object, shape, func, array} from 'prop-types';
 
-const MyCommons = ({ navigation, daoStore, userStore }) => {
+const MyCommons = ({navigation, daoStore, userStore}) => {
   const onScreenScroll = (event) => {
     navigation.setOptions({
       title: event.nativeEvent.contentOffset.y > 75 ? 'My Commons' : 'My Profile',
@@ -31,7 +32,7 @@ const MyCommons = ({ navigation, daoStore, userStore }) => {
     navigation.dispatch(navigate);
   };
 
-  const renderCommonCard = (dao, i) =>
+  const renderCommonCard = (dao, i) =>(
     <CommonBox
       image={dao.coverPhoto}
       common={dao}
@@ -39,13 +40,14 @@ const MyCommons = ({ navigation, daoStore, userStore }) => {
       width="100%"
       navigation={navigation}
       onPress={() => navigateToCommon(dao)}
-    />;
+    />
+  );
 
   const AllCommonsList = (daos) => (
-    <View style={{ flex: 1, padding: 20 }}>
+    <View style={{flex: 1, padding: 20}}>
       <FlatList
         data={daos}
-        renderItem={({ item, i }) => renderCommonCard(item, i, navigation)}
+        renderItem={({item, i}) => renderCommonCard(item, i, navigation)}
       />
     </View>
   );
@@ -78,6 +80,17 @@ const MyCommons = ({ navigation, daoStore, userStore }) => {
       </SafeAreaView>
     </>
   );
+};
+
+MyCommons.propTypes = {
+  navigation: object,
+  daoStore: shape({
+    setDao: func,
+    daos: array,
+  }),
+  userStore: shape({
+    isDaoMember: func,
+  }),
 };
 
 const styles = StyleSheet.create({

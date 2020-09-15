@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   ScrollView,
@@ -7,29 +7,24 @@ import {
   Animated,
 } from 'react-native';
 import AmountField from '~/Components/FormFields/AmountField';
-import { colors } from '~/Theme';
-import { observer, inject } from 'mobx-react';
-const { width } = Dimensions.get('window');
+import {colors} from '~/Theme';
+import {observer, inject} from 'mobx-react';
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepNavigation from './RequestStepNavigation';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
-
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from './MembershipRequest';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
+import {string, func, bool, object, shape, number} from 'prop-types';
+const {width} = Dimensions.get('window');
 
-const RequestStep3 = ({navigation, personalContributionFormStore, route: {params}}) => {
+const RequestStep3 = ({navigation, personalContributionFormStore, route: {params: {skipFirstStep, currCommon, currDaoId} }}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  // const [ruleCount, setRuleCount] = useState(1);
-  // const [ruleTitles, setRuleTitles] = useState([]);
-  // const [pass, setPass] = useState(true);
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
-  const isFirstStepSkipped = params.skipFirstStep;
-  // var ruleBody = [];
-  const name = params.currCommon.name;
+  const metadata = currCommon.metadata;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -65,9 +60,9 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
     const navigate = CommonActions.navigate({
       name: 'RequestStep4',
       params: {
-        currDaoId: params.currDaoId,
-        currCommon: params.currCommon,
-        skipFirstStep: isFirstStepSkipped,
+        currDaoId: currDaoId,
+        currCommon: currCommon,
+        skipFirstStep: skipFirstStep,
       },
     });
     navigation.dispatch(navigate);
@@ -79,11 +74,11 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
     }
   };
 
-  const minContributionMessage = `Select the amount you would like to contribute ($${params.currCommon.metadata.minFeeToJoin / 100} min.)`;
+  const minContributionMessage = `Select the amount you would like to contribute ($${metadata.minFeeToJoin / 100} min.)`;
 
   return (
     <>
-      <SafeAreaView style={{ backgroundColor: colors.white }} />
+      <SafeAreaView style={{backgroundColor: colors.white}} />
       <SafeAreaView
         style={{
           flex: 1,
@@ -91,12 +86,12 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
         }}>
         <CreateStepNavigation
           navigation={navigation}
-          title={name}
+          title={currCommon.name}
         />
         <CreateStepDotHeader
           title="Personal contribution"
           currentIndex={3}
-          isFirstStepSkipped={isFirstStepSkipped}
+          skipFirstStep={skipFirstStep}
           navigation={navigation}
           headerHeight={headerHeight}
         />
@@ -110,12 +105,12 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
           }}
           scrollEventThrottle={16}
           onScroll={Animated.event([
-            { nativeEvent: { contentOffset: { y: scrollY } } },
+            {nativeEvent: {contentOffset: {y: scrollY}}},
           ])}>
           <MembershipRequest />
 
           <CreateStepHeader
-            isFirstStepSkipped={isFirstStepSkipped}
+            skipFirstStep={skipFirstStep}
             currentIndex={2}
           />
           <View
@@ -140,7 +135,7 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
               onCustomSelect={onCustomSelect}
               onCustomClose={onCustomClose}
               onAmountSelected={onAmountSelected}
-              minFeeToJoin={params.currCommon.metadata.minFeeToJoin / 100}
+              minFeeToJoin={metadata.minFeeToJoin / 100}
             />
           </View>
         </ScrollView>
@@ -159,6 +154,28 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
       </SafeAreaView>
     </>
   );
+};
+
+RequestStep3.propTypes = {
+  navigation: object,
+  personalContributionFormStore: shape({
+    fieldChanged: func,
+    isFormValid: func,
+  }),
+  route: shape({
+    params: shape({
+      skipFirstStep: bool,
+      currDaoId: string,
+    }),
+  }),
+  daoStore: shape({
+    dao: shape({
+      name: string,
+      metadata: shape({
+        minFeeToJoin: number,
+      }),
+    }),
+  }),
 };
 
 export default inject(

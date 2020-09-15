@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
@@ -9,25 +9,23 @@ import {
 } from 'react-native';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import MultiLinkField from '~/Components/FormFields/MultiLinkField';
-
-import { colors, text } from '~/Theme';
-import { observer, inject } from 'mobx-react';
-const { width } = Dimensions.get('window');
+import {colors, text} from '~/Theme';
+import {observer, inject} from 'mobx-react';
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepNavigation from './RequestStepNavigation';
-
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import MembershipRequest from './MembershipRequest';
+import {string, object, bool, shape} from 'prop-types';
+const {width} = Dimensions.get('window');
 
-const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params}}) => {
+const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params: {skipFirstStep, currCommon, currDaoId} }}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const isFirstStepSkipped = params.skipFirstStep;
-  const { name } = params.currCommon.name;
+  const { name } = currCommon.name;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -43,9 +41,9 @@ const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params}}) 
       const navigate = CommonActions.navigate({
         name: 'RequestStep3',
         params: {
-          currDaoId: params.currDaoId,
-          currCommon: params.currCommon,
-          skipFirstStep: isFirstStepSkipped,
+          currDaoId: currDaoId,
+          currCommon: currCommon,
+          skipFirstStep: skipFirstStep,
         },
       });
       navigation.dispatch(navigate);
@@ -54,7 +52,7 @@ const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params}}) 
 
   return (
     <>
-      <SafeAreaView style={{ backgroundColor: colors.white }} />
+      <SafeAreaView style={{backgroundColor: colors.white}} />
       <SafeAreaView
         style={{
           flex: 1,
@@ -67,7 +65,7 @@ const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params}}) 
         <CreateStepDotHeader
           title="Introduce Yourself"
           currentIndex={2}
-          isFirstStepSkipped={isFirstStepSkipped}
+          isFirstStepSkipped={skipFirstStep}
           navigation={navigation}
           headerHeight={headerHeight}
         />
@@ -81,12 +79,12 @@ const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params}}) 
           }}
           scrollEventThrottle={16}
           onScroll={Animated.event([
-            { nativeEvent: { contentOffset: { y: scrollY } } },
+            {nativeEvent: {contentOffset: {y: scrollY}}},
           ])}>
           <MembershipRequest />
 
           <CreateStepHeader
-            isFirstStepSkipped={isFirstStepSkipped}
+            isFirstStepSkipped={skipFirstStep}
             currentIndex={1}
           />
           <View
@@ -117,7 +115,7 @@ const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params}}) 
               }}
             />
 
-            <Text style={{ ...text.h3Black, ...{ textAlign: 'left' } }}>Links</Text>
+            <Text style={{...text.h3Black, textAlign: 'left'}}>Links</Text>
 
             <MultiLinkField
               link
@@ -139,6 +137,22 @@ const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params}}) 
       </SafeAreaView>
     </>
   );
+};
+
+RequestStep2.propTypes = {
+  navigation: object,
+  introduceYourselfFormStore: object,
+  route: shape({
+    params: shape({
+      skipFirstStep: bool,
+      currDaoId: string,
+    }),
+  }),
+  daoStore: shape({
+    dao: shape({
+      name: string,
+    }),
+  }),
 };
 
 export default inject(

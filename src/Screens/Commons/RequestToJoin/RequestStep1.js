@@ -8,10 +8,7 @@ import {
   Animated,
 } from 'react-native';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
-
 import RequestToJoinRule from '~/Components/Commons/RequestToJoinRule';
-import { observer, inject } from 'mobx-react';
-const { width, height } = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepDotHeader from './RequestStepDotHeader';
 import { colors } from '~/Theme';
@@ -19,22 +16,23 @@ import CreateStepNavigation from './RequestStepNavigation';
 import RequestStepActionButton from '../RequestStepActionButton';
 import { CommonActions } from '@react-navigation/native';
 import MembershipRequest from './MembershipRequest';
+import { string, array, object } from 'prop-types';
+const { width, height } = Dimensions.get('window');
 
-const RequestStep1 = ({navigation, route: {params}}) => {
+const RequestStep1 = ({ navigation,route: { params }} ) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [pass, setPass] = useState(false);
-  const commonRules = params.currCommon.metadata?.rules;
-
   const name = params.currCommon.name;
+  const commonRules = params.currCommon.metadata?.commonRules;
 
   useEffect(() => {
-    const height = scrollY.interpolate({
+    const newHeight = scrollY.interpolate({
       inputRange: [50, 50],
       outputRange: [0, 67],
       extrapolate: 'clamp',
     });
-    setHeaderHeight(height);
+    setHeaderHeight(newHeight);
   }, [scrollY]);
 
   const onScrollToBottom = () => {
@@ -117,6 +115,25 @@ const RequestStep1 = ({navigation, route: {params}}) => {
       </SafeAreaView>
     </>
   );
+};
+
+RequestStep1.propTypes = {
+  navigation: object,
+  route: {
+    params: {
+      currDaoId: string,
+    },
+  },
+  daoStore: {
+    dao: {
+      name: string,
+      metadata: {
+        rules: {
+          commonRules: array,
+        },
+      },
+    },
+  },
 };
 
 const styles = StyleSheet.create({

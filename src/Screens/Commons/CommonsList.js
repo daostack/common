@@ -38,8 +38,10 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
     if (userStore.userInfo === null ) {
       return [];
     }
+
     const proposalList = await ProposalService.getInstance().getUserPendingProposals(userStore.userInfo.uid);
     const daoList = proposalList.map((proposal) => proposal.data().dao);
+
     return daoList;
   };
 
@@ -73,7 +75,6 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
           title: `Featured (${featuredList.length})`,
           data: featuredList,
         });
-        setIsSplited(true);
       }
     } catch (err) {
       console.log(err);
@@ -104,7 +105,9 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
         title: '',
         data: docs,
       });
-      splitDaoList(docs);
+      splitDaoList(docs).then(() => {
+        setIsSplited(true);
+      });
       setRefreshing(false);
     } catch (err) {
       console.log(err);

@@ -15,6 +15,7 @@ import Swiper from 'react-native-swiper';
 import AsyncStorage from '@react-native-community/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import logger from '../Services/Logger';
+import {object} from 'prop-types';
 
 const Onboarding = ({navigation}) => {
   const _onboardingClick = async () => {
@@ -109,6 +110,10 @@ can take part in the shared effort.
       </SafeAreaView>
     </>
   );
+};
+
+Onboarding.propTypes = {
+  navigation: object,
 };
 
 const styles = StyleSheet.create({

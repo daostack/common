@@ -1,4 +1,5 @@
 import {IpfsClient, graphqlUrl} from '~/Config';
+import ArcService from '~/Services/ArcService';
 import logger from '../Logger';
 import axios from 'axios';
 const {getForgeOrgData} = require('@daostack/common-factory');
@@ -42,7 +43,7 @@ export const createCommon = async (
       fundingToken: COMMONTOKENADDRESS,
       VERSION: IPFS_DATA_VERSION, // just some alphanumberic marker  that is useful for understanding what our data is shaped like
     };
-    const opts = { ...defaultOptions, ...givenOpts };
+    const opts = {...defaultOptions, ...givenOpts};
 
     logger.log('saving data on ipfs: ', opts);
     const ipfsHash = await IpfsClient.addAndPinString(JSON.stringify(opts));
@@ -96,6 +97,9 @@ export const createCommon = async (
     const newOrgAddress = newOrgEvent._avatar;
 
     logger.log(`Created a Common at ${newOrgAddress} with name "${opts.name}"`);
+
+    // Reload all contract infos for Arc instance
+    await ArcService.getInstance().fetchAllContracts();
 
     logger.log('Updating database');
     // we try to update the database, and we will retry four times, which should give us more than enough time
