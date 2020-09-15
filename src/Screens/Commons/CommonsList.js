@@ -20,6 +20,7 @@ import {
   Fade,
 } from 'rn-placeholder';
 import DaoService from '~/Services/DaoService';
+import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import ProposalService from '~/Services/ProposalService';
 import logger from '~/Services/Logger';
 
@@ -54,7 +55,8 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
 
     const featuredList = daoList.filter((dao) =>
       !pendingDao.includes(dao) &&
-      !myDao.includes(dao)
+      !myDao.includes(dao) &&
+      dao.register === DAO_REGISTERED
     );
 
     if (myDao.length > 0) {
