@@ -93,12 +93,8 @@ export const createFundingProposal = async (arc, userAddress, daoId, data) => {
           throw Error('Invalidly configured DAO - cannot create funding request (the fundingGoalDeadline of the join plugin is in the past, so we cannot set the fundingGoalReeched flag to true)');
         }
         logger.log('We will try to reset the fundingGoalReachedFlag');
-<<<<<<< HEAD
         const oldJoinContract = await arc.getContract(joinPlugin.coreState.address);
         const joinContract = await oldJoinContract.addProvider();
-=======
-        const joinContract = await arc.getContract(errorJoinPlugin.coreState.address);
->>>>>>> 1892dfb30a69721ac0f62d03524ffc71efe099a2
         const setFlagTx  = {
           contract: joinContract,
           method: 'setFundingGoalReachedFlag',
