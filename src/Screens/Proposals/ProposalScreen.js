@@ -155,8 +155,8 @@ const ProposalScreen = ({
   const [ voteType, setVoteType ] = useState(false);
   const [ index, setIndex ] = useState(0);
   const [ routes ] = useState([
-    {key: 'info', icon: 'proposal', iconSelected: 'proposal-selected'},
-    {key: 'discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
+    {index: 0, key: 'info', icon: 'proposal', iconSelected: 'proposal-selected'},
+    {index: 1, key: 'discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
   ]);
 
   const [ inputText, setInputText ] = useState(null);
@@ -165,7 +165,7 @@ const ProposalScreen = ({
 
   const renderTabBar = (currProps) => (
     <View style={{paddingBottom: 5}}>
-      <TabBarRenderer originRef={originTabBarRef} jumpTo={originTabBarRef.current?.props?.jumpTo} indexChange={setIndex} {...currProps} />
+
     </View>
   );
   const hasPassedExpiryDate = moment().isAfter(moment.unix(proposalInfo?.closingAt));
@@ -395,7 +395,7 @@ const ProposalScreen = ({
       <SafeAreaView style={{backgroundColor: colors.white}}/>
       <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
         <Animated.View style={[stickyTabBarStyle, slideUp]}>
-          <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} />
+          <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange={setIndex} />
         </Animated.View>
 
         <ScrollView
