@@ -1,9 +1,9 @@
 
-import {DB_COLLECTIONS} from '../Firebase/Databasee';
-import Toast from '../Util/Toast';
+import {DB_COLLECTIONS} from '~/Firebase/Databasee';
+import Toast from '~/Util/Toast';
 import moment from 'moment';
-
-import {db} from '../Firebase';
+import {db} from '~/Firebase';
+import logger from './Logger';
 
 export const PROPOSAL_STAGE = {
   ExpiredInQueue: '0',
@@ -13,6 +13,8 @@ export const PROPOSAL_STAGE = {
   Boosted: '4',
   QuietEndingPeriod: '5',
 };
+
+import {PROPOSAL_TYPE} from '../Config';
 
 export const PROPOSAL_STAGES_ACTIVE = [
   PROPOSAL_STAGE.Queued,
@@ -26,11 +28,6 @@ export const PROPOSAL_STAGES_HISTORY = [
   PROPOSAL_STAGE.Executed,
 ];
 
-export const PROPOSAL_TYPE = {
-  JoinAndQuit: 'JoinAndQuit',
-  FundingRequest: 'FundingRequest',
-};
-
 export const LAUNCHED_STATES = [
   PROPOSAL_STAGE.Queued, PROPOSAL_STAGE.PreBoosted,
 ];
@@ -42,7 +39,7 @@ export const COUNTDOWN_STATES = [
 export default class ProposalService {
   static serviceInstance = null;
 
-  constructor() {}
+  constructor() { }
 
   static getInstance = () => {
     if (ProposalService.serviceInstance == null) {
@@ -61,7 +58,7 @@ export default class ProposalService {
     }
 
     if (onlyMembershipRequests) {
-      query = query.where('type', '==', PROPOSAL_TYPE.JoinAndQuit);
+      query = query.where('type', '==', PROPOSAL_TYPE.Join);
     }
 
     return query.get()
@@ -83,7 +80,8 @@ export default class ProposalService {
     let query = db
       .collection(DB_COLLECTIONS.proposals)
       .where('proposerId', '==', uid)
-      .where('type', '==', PROPOSAL_TYPE.JoinAndQuit);
+      .where('type', '==', PROPOSAL_TYPE.Join);
+
     return query.get().then((snapshots) => {
       if (!snapshots) {
         return [];
@@ -109,7 +107,7 @@ export default class ProposalService {
   async getProposalDiscussionsCount(proposalId) {
     return db
       .collection(DB_COLLECTIONS.discussionMessages)
-      .where('discussionId', '==', proposalId )
+      .where('discussionId', '==', proposalId)
       .get()
       .then((snapshots) => {
         if (!snapshots) {
@@ -124,7 +122,7 @@ export default class ProposalService {
       .collection(DB_COLLECTIONS.proposals)
       .where('dao', '==', daoId)
       .where('closingAt', '>', moment().unix())
-      .where('type', '==', 'JoinAndQuit')
+      .where('type', '==', PROPOSAL_TYPE.Join)
       .where('stageStr', 'in', PROPOSAL_STAGES_ACTIVE)
       .orderBy('closingAt', 'desc');
 
@@ -208,11 +206,11 @@ export default class ProposalService {
       //
       // proposalCollection = proposalCollection
       //   // Only the join and quit proposals
-      //   .where('type', '==', PROPOSAL_TYPE.JoinAndQuit)
+      //   .where('type', '==', PROPOSAL_TYPE.Join)
       //   // Only those made to dao that the user is member of
       //   .where('dao', 'in', userDaos);
 
-      proposalCollection = proposalCollection.where('type', '==', PROPOSAL_TYPE.JoinAndQuit);
+      proposalCollection = proposalCollection.where('type', '==', PROPOSAL_TYPE.Join);
     }
 
     if (!showAll) {
@@ -230,7 +228,7 @@ export default class ProposalService {
           if (snapshot.docChanges().length !== 0) {
             const newList = snapshot.docChanges().map(({doc}) => {
               if (onlyRequestsToJoin) {
-                if (doc.data().type !== PROPOSAL_TYPE.JoinAndQuit) {
+                if (doc.data().type !== PROPOSAL_TYPE.Join) {
                   return false;
                 }
               }
@@ -258,7 +256,7 @@ export default class ProposalService {
           }
         }
       },
-      (error) => console.error(error),
+      (error) => logger.error(error),
     );
   }
 }

@@ -6,13 +6,11 @@ import {
   SafeAreaView,
 } from 'react-native';
 import React from 'react';
-import {layout, colors, text, font} from '../../Theme';
+import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
-import Icon from '../../Assets/iconfont/Icon';
-import {BlurView} from '../../Components';
+import Icon from '~/Assets/iconfont/Icon';
+import {BlurView} from '~/Components';
 import {object, shape, string, bool, func} from 'prop-types';
-
-
 
 const CommonHeader = ({
   navigation,

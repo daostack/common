@@ -1,19 +1,16 @@
 import * as React from 'react';
-import { StyleSheet, I18nManager, View } from 'react-native';
+import {StyleSheet, I18nManager, View} from 'react-native';
 import Animated, {
   Easing as OldEasing,
   // @ts-ignore
   EasingNode,
 } from 'react-native-reanimated';
-import {layout, colors, sizeS} from '../../Theme';
-
+import {layout, colors, sizeS} from '~/Theme';
 import memoize from './memoize';
-
+import {string, func, number, object, oneOfType} from 'prop-types';
 
 const Easing = EasingNode || OldEasing;
-
-const { multiply, Extrapolate } = Animated;
-
+const {multiply, Extrapolate} = Animated;
 // @ts-ignore
 const interpolate = Animated.interpolateNode || Animated.interpolate;
 
@@ -27,12 +24,12 @@ export default class TabBarIndicator extends React.Component {
   }
 
   fadeInIndicator = () => {
-    const { navigationState, layout, width, getTabWidth } = this.props;
+    const {navigationState, indicatorLayout, width, getTabWidth} = this.props;
 
     if (
       !this.isIndicatorShown &&
       width === 'auto' &&
-      layout.width &&
+      indicatorLayout.width &&
       // We should fade-in the indicator when we have widths for all the tab items
       navigationState.routes.every((_, i) => getTabWidth(i))
     ) {
@@ -90,10 +87,9 @@ export default class TabBarIndicator extends React.Component {
       getTabWidth,
       width,
       style,
-      layout,
+      indicatorLayout,
     } = this.props;
-    const { routes } = navigationState;
-
+    const {routes} = navigationState;
     const translateX =
       routes.length > 1 ? this.getTranslateX(position, routes, getTabWidth) : 0;
 
@@ -110,12 +106,12 @@ export default class TabBarIndicator extends React.Component {
           styles.indicator,
           // If layout is not available, use `left` property for positioning the indicator
           // This avoids rendering delay until we are able to calculate translateX
-          { width: indicatorWidth },
+          {width: indicatorWidth},
 
-          layout.width
-            ? { transform: [{ translateX }] }
-            : { left: `${(100 / routes.length) * navigationState.index}%` },
-          width === 'auto' ? { opacity: this.opacity } : null,
+          indicatorLayout.width
+            ? {transform: [{translateX}]}
+            : {left: `${(100 / routes.length) * navigationState.index}%`},
+          width === 'auto' ? {opacity: this.opacity} : null,
           style,
         ]}
       >
@@ -124,6 +120,18 @@ export default class TabBarIndicator extends React.Component {
     );
   }
 }
+
+TabBarIndicator.propTypes = {
+  navigationState: object,
+  indicatorLayout: object,
+  width: oneOfType([
+    string,
+    number,
+  ]),
+  getTabWidth: func,
+  position: object,
+  style: object,
+};
 
 const styles = StyleSheet.create({
   indicator: {

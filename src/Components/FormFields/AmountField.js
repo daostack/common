@@ -1,11 +1,10 @@
 import {StyleSheet, View} from 'react-native';
 import React, {useState, useRef} from 'react';
-
-import {layout, colors, text} from '../../Theme';
+import {layout, colors, text} from '~/Theme';
 import JoinAmount from '../Commons/JoinAmount';
 import TextInputFieldWithIcon from './TextInputFieldWithIcon';
-
 import RequestToJoinForm from '../Forms/RequestToJoinForm';
+import {number, func, object} from 'prop-types';
 
 const AmountField = ({
   formStore,
@@ -30,7 +29,7 @@ const AmountField = ({
     }
   };
 
-  const onTogglePress = e => {
+  const onTogglePress = (e) => {
     setIsCustomSelected(false);
     onCustomClose();
   };
@@ -71,6 +70,14 @@ const AmountField = ({
       />
     </View>
   );
+};
+
+AmountField.propTypes = {
+  formStore: object,
+  onCustomSelect: func,
+  onCustomClose: func,
+  onAmountSelected: func,
+  minFeeToJoin: number,
 };
 
 const styles = StyleSheet.create({

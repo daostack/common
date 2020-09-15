@@ -1,26 +1,34 @@
 import React from 'react';
 import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
-import {layout, colors, font} from '../../Theme';
+import {layout, colors, font} from '~/Theme';
+import {string, func, bool} from 'prop-types';
 
-const RequestStepActionButton = props => {
+const RequestStepActionButton = ({hidden, pass, onPress, title}) => {
   let actionBtnStyle = styles.actionBtnContainer;
 
-  if (props.hidden) {
-    actionBtnStyle = {...actionBtnStyle, ...{display: 'none'}};
+  if (hidden) {
+    actionBtnStyle = {...actionBtnStyle, display: 'none'};
   }
 
   return (
     <View style={actionBtnStyle}>
       <TouchableOpacity
-        style={[
-          styles.continueButton,
-          {backgroundColor: props.pass ? colors.mainBlue : colors.grey3},
-        ]}
-        onPress={props.onPress}>
-        <Text style={styles.continueButtonText}>{props.title}</Text>
+        style={{
+          ...styles.continueButton,
+          backgroundColor: pass ? colors.mainBlue : colors.grey3,
+        }}
+        onPress={onPress}>
+        <Text style={styles.continueButtonText}>{title}</Text>
       </TouchableOpacity>
     </View>
   );
+};
+
+RequestStepActionButton.propTypes = {
+  hidden: bool,
+  pass: bool,
+  onPress: func,
+  title: string,
 };
 
 const styles = StyleSheet.create({

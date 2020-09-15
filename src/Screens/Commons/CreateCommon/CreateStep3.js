@@ -7,20 +7,20 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import TextInputField from '../../../Components/FormFields/TextInputField';
-import {colors, font} from '../../../Theme';
+import TextInputField from '~/Components/FormFields/TextInputField';
+import {colors, font} from '~/Theme';
 import {observer, inject} from 'mobx-react';
-
-const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
-import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
-import MultiLinkField from '../../../Components/FormFields/MultiLinkField';
+import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
+import MultiLinkField from '~/Components/FormFields/MultiLinkField';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
+import {object, func, shape} from 'prop-types';
+const {width} = Dimensions.get('window');
 
-const CreateStep3 = (props) => {
+const CreateStep3 = ({agendaFormStore, navigation}) => {
   const [ scrollY ] = useState(new Animated.Value(0));
   const [ headerHeight, setHeaderHeight ] = useState(0);
 
@@ -63,8 +63,8 @@ const CreateStep3 = (props) => {
   */
 
   const push = () => {
-    if (props.agendaFormStore.isFormValid()) {
-      props.navigation.navigate('CreateStep4');
+    if (agendaFormStore.isFormValid()) {
+      navigation.navigate('CreateStep4');
     }
   };
 
@@ -74,11 +74,11 @@ const CreateStep3 = (props) => {
         flex: 1,
         backgroundColor: 'white',
       }}>
-      <CreateStepNavigation navigation={props.navigation} title="Create a Common"/>
+      <CreateStepNavigation navigation={navigation} title="Create a Common"/>
       <CreateStepDotHeader
         title="Additional Info"
         currentIndex={3}
-        navigation={props.navigation}
+        navigation={navigation}
         headerHeight={headerHeight}
       />
       <ScrollView
@@ -101,7 +101,7 @@ const CreateStep3 = (props) => {
             backgroundColor: 'white',
           }}>
           <CreateStepHeaderTitle
-            title="Addtional Info"
+            title="Additional Info"
             subtitle="Define your course of action and rules of conduct."
           />
           <TextInputField
@@ -116,7 +116,7 @@ const CreateStep3 = (props) => {
             autoCorrect={false}
             validation={{
               name: CreateCommonForm.ACTION,
-              formStore: props.agendaFormStore,
+              formStore: agendaFormStore,
               validateRule: 'string|required',
               displayName: 'course of action',
             }}
@@ -142,6 +142,7 @@ const CreateStep3 = (props) => {
           </Text>
 
           <MultiLinkField
+            rule
             allowsEditing={true}
             title="Rule title"
             placeholderValueText="Rule description"
@@ -149,7 +150,7 @@ const CreateStep3 = (props) => {
             addMultiFieldBtnName="Add Rule"
             validation={{
               name: CreateCommonForm.RULES,
-              formStore: props.agendaFormStore,
+              formStore: agendaFormStore,
               validateRule: {common: 'string', title: 'string|max:80'},
             }}
           />
@@ -205,11 +206,19 @@ const CreateStep3 = (props) => {
       </ScrollView>
       <RequestStepActionButton
         title="Continue to Review"
-        pass={props.agendaFormStore.isFormActionEnabled()}
+        pass={agendaFormStore.isFormActionEnabled()}
         onPress={push}
       />
     </SafeAreaView>
   );
+};
+
+CreateStep3.propTypes = {
+  agendaFormStore: shape({
+    isFormValid: func,
+    isFormActionEnabled: func,
+  }),
+  navigation: object,
 };
 
 export default inject(

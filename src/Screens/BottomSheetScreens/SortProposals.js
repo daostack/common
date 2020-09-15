@@ -6,17 +6,18 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-
 import React from 'react';
-import {text, layout, colors} from '../../Theme';
+import {text, layout, colors} from '~/Theme';
+import logger from '~/Services/Logger';
+import {object, func} from 'prop-types';
 
 const SortProposals = ({navigation, onContinueEditing}) => {
-  const liveWithoutSave = e => {
+  const liveWithoutSave = (e) => {
     navigation.goBack();
   };
 
-  const continueEditing = e => {
-    console.log('onContinueEditing -> ', onContinueEditing);
+  const continueEditing = (e) => {
+    logger.log('onContinueEditing -> ', onContinueEditing);
     if (onContinueEditing) {
       onContinueEditing();
     }
@@ -32,7 +33,7 @@ const SortProposals = ({navigation, onContinueEditing}) => {
       <View style={styles.body}>
         <Image
           style={styles.image}
-          source={require('../../Assets/save.png')}
+          source={require('~/Assets/save.png')}
         />
         <Text style={{...text.h3Black, ...layout.marginTopM}}>
           Unsaved Changes
@@ -54,6 +55,11 @@ const SortProposals = ({navigation, onContinueEditing}) => {
       </View>
     </ScrollView>
   );
+};
+
+SortProposals.propTypes = {
+  navigation: object,
+  onContinueEditing: func,
 };
 
 const styles = StyleSheet.create({

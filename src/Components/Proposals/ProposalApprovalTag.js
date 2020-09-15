@@ -1,7 +1,8 @@
 import React from 'react';
 import {Text, StyleSheet, View} from 'react-native';
-import {text, layout, colors} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
+import {text, layout, colors} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
+import {string, bool, number} from 'prop-types';
 
 const ProposalApprovalTag = ({iconName, value, isMarked}) => {
   // Default colors
@@ -30,6 +31,13 @@ const ProposalApprovalTag = ({iconName, value, isMarked}) => {
     </View>
   );
 };
+
+ProposalApprovalTag.propTypes = {
+  iconName: string,
+  value: number,
+  isMarked: bool,
+};
+
 
 const styles = StyleSheet.create({
   title: {

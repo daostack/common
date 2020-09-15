@@ -11,44 +11,52 @@ import {
   TextInput,
   Keyboard,
 } from 'react-native';
-import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
+import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
 import ProposalDiscussion from './ProposalDiscussion';
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
-import Toast from '../../Util/Toast';
-import BottomSheetModal from '../../Components/BottomSheetModal';
-import ProposalService from '../../Services/ProposalService';
-import ArcService from '../../Services/ArcService';
-import auth from '@react-native-firebase/auth';
-import {UserAvatar} from '../../Components';
-import {PROPOSAL_STAGES_ACTIVE} from '../../Services/ProposalService';
-import {PROPOSAL_TYPE} from '../../Services/ProposalService';
-import UserService from '../../Services/UserService';
-import DaoService from '../../Services/DaoService';
+import Toast from '~/Util/Toast';
+import BottomSheetModal from '~/Components/BottomSheetModal';
+import ProposalService from '~/Services/ProposalService';
+import ArcService from '~/Services/ArcService';
+import {UserAvatar} from '~/Components';
+import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
+import {PROPOSAL_TYPE} from '~/Config';
+import UserService from '~/Services/UserService';
+import DaoService from '~/Services/DaoService';
 import {observer, inject} from 'mobx-react';
-import TabBarRenderer from '../../Components/TabView/TabBarRenderer';
+import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import moment from 'moment';
-import ProposalCardHeader from '../../Components/Proposals/ProposalCardHeader';
-import {db} from '../../Firebase';
-import {string, bool, object, shape} from 'prop-types';
+import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
+import {db} from '~/Firebase';
+import {string, func, object, shape, oneOfType, number} from 'prop-types';
+import logger from '~/Services/Logger';
+
 const screenWidth = Dimensions.get('window').width;
 
-const ProposalScreen = ({navigation,
-  userStore: {userInfo, isDaoMember},
+const ProposalScreen = ({
+  navigation,
+  userStore: {
+    userInfo,
+    isDaoMember,
+    ...userStore
+  },
   bottomSheetStore,
   route: {
     params: {
       commonBalance,
       proposalId,
     },
-  }}) => {
+  },
+}) => {
   const [ votingProcessState, setVotingProcessState ] = useState({inProgress: false, error: false});
   const [ proposalInfo, setProposalInfo ] = useState(false);
   const [ proposedUser, setProposedUser ] = useState(false);
   const [ isSending, setIsSending ] = useState(false);
   const [ isMember, setIsMember ] = useState(false);
+  const [ isProposer, setIsProposer ] = useState(false);
   const [ showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer ] = useState(false);
   const renderVoting =
     proposalInfo &&
@@ -75,48 +83,50 @@ const ProposalScreen = ({navigation,
       let proposedMemberId = null;
       let funding = null;
 
-      if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
-        proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+      if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
+        proposedMemberId = currProposalInfo.join.proposedMemberId;
         funding = currProposalInfo.description.funding;
       }
       //FundingRequest proposal
       else {
         const proposedMember = await UserService.getInstance().getUserByAddress(
-          currProposalInfo.fundingRequest.beneficiary,
+          currProposalInfo.fundingRequest.beneficiary
         );
         proposedMemberId = proposedMember.id;
         funding = currProposalInfo.fundingRequest.amount;
       }
       const currProposedUser = await UserService.getInstance().getUserById(
-        proposedMemberId,
+        proposedMemberId
       );
       setProposedUser(currProposedUser);
       setProposalInfo({...currProposalInfo, funding});
     };
 
-    const getProposalInfo = async (proposalId) => {
+    const getProposalInfo = async (currProposalId) => {
       try {
         const currProposalInfo = await ProposalService.getInstance().getProposalInfo(
-          proposalId
+          currProposalId
         );
         const currentDao = await DaoService.getInstance().getDaoById(currProposalInfo.dao);
-        const isMember = userInfo && isDaoMember(currentDao.members);
-        setIsMember(isMember);
+
+        setIsMember(userInfo && isDaoMember(currentDao.members));
+        setIsProposer(userStore.isProposer(currProposalInfo));
+
         await loadProposalInfo(currProposalInfo);
-        unsubscribe = await ProposalService.getInstance().subscribeToProposalById(proposalId,
+        unsubscribe = await ProposalService.getInstance().subscribeToProposalById(currProposalId,
           async (updatedProposalInfo) => {
             await loadProposalInfo(updatedProposalInfo);
           }
         );
 
       } catch (error) {
-        console.log('error: ', error);
+        logger.log('error: ', error);
         Toast.error(error?.toString());
       }
     };
 
     if (proposalId) {
-      console.log(`proposalId --> ${proposalId}`);
+      logger.log(`proposalId --> ${proposalId}`);
       getProposalInfo(proposalId);
     }
 
@@ -147,20 +157,17 @@ const ProposalScreen = ({navigation,
 
   const renderTabBar = (currProps) => (
     <View style={{paddingBottom: 5}}>
-      <TabBarRenderer originRef={originTabBarRef} {...currProps}/>
+      <TabBarRenderer originRef={originTabBarRef} {...currProps} />
     </View>
   );
   const hasPassedExpiryDate = moment().isAfter(moment.unix(proposalInfo?.closingAt));
 
   const messageInput = () => {
     const sendMessageToDiscussion = async () => {
-
       if (isSending || !userInfo?.uid) {
         return;
       }
       setIsSending(true);
-
-      const userInfo = auth().currentUser;
       const message = inputText;
       if (message && message.trim().length) {
         inputRef.current.clear();
@@ -196,38 +203,61 @@ const ProposalScreen = ({navigation,
 
     return (
       <KeyboardAvoidingView
-        style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          flex: 1,
+          color: '#fbfdff',
+        }}
+      >
         <View style={viewStyle}>
-          {isMember ? (
+          {(isMember || isProposer) ? (
             <View style={styles.inputBorder}>
               <TextInput
                 ref={inputRef}
                 editable={true}
                 multiline={true}
-                onContentSizeChange={(e) =>
-                  setInputHeight(e.nativeEvent.contentSize.height)
-                }
-                style={{flex: 1, height: inputHeight, marginHorizontal: 10}}
                 fontSize={15}
                 onChangeText={(currText) => setInputText(currText)}
+                onContentSizeChange={(e) => {
+                  setInputHeight(e.nativeEvent.contentSize.height);
+                }}
+                style={{
+                  flex: 1,
+                  height: inputHeight,
+                  marginHorizontal: 10,
+                }}
               />
               <TouchableOpacity
-                style={{paddingRight: 15, justifyContent: 'center'}}
-                onPress={sendMessageToDiscussion}>
+                onPress={sendMessageToDiscussion}
+                style={{
+                  paddingRight: 15,
+                  justifyContent: 'center',
+                }}
+              >
                 <Icon
-                  name="edit"
+                  name="send-message"
                   size={20}
                   color={
                     inputText && inputText.trim()
                       ? colors.mainBlue
-                      : colors.grey3}/>
+                      : colors.grey3}
+                />
               </TouchableOpacity>
             </View>
           ) : (
-            <Text style={{...styles.joinCommonText}}>Only members can send messages</Text>
+            <Text style={{...styles.joinCommonText}}>
+              Only members or proposal creators can send messages
+            </Text>
           )}
         </View>
-        <View style={{height: 30, backgroundColor: colors.white}}/>
+
+        <View
+          style={{
+            height: 30,
+            backgroundColor: colors.white,
+          }}
+        />
       </KeyboardAvoidingView>
     );
   };
@@ -257,8 +287,8 @@ const ProposalScreen = ({navigation,
 
       await timeout(3000);
 
-      if (proposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
-        await ArcService.getInstance().voteForJoinAndQuitProposal(
+      if (proposalInfo.type === PROPOSAL_TYPE.Join) {
+        await ArcService.getInstance().voteForJoinProposal(
           proposalId,
           voteData
         );
@@ -276,7 +306,7 @@ const ProposalScreen = ({navigation,
 
     } catch (err) {
       setVotingProcessState({inProgress: false, error: true});
-      console.log(err);
+      logger.log(err);
       Toast.error(err.message);
     }
   };
@@ -348,7 +378,8 @@ const ProposalScreen = ({navigation,
       <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
         {showStickyTabBar && (
           <View style={{position: 'absolute', top: 0, width: '100%', paddingBottom: 5, zIndex: 999}}>
-            <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef}/>
+            <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo}
+              parentRef={originTabBarRef}/>
           </View>)}
         <ScrollView
           style={{
@@ -430,8 +461,8 @@ const ProposalScreen = ({navigation,
                   </Text>
                 </View>
                 {proposalInfo.type === PROPOSAL_TYPE.FundingRequest
-                  && <Text
-                    style={text.smallBlackText}>{`Available funds: ${commonBalance !== undefined ? '$' + commonBalance / 100 : ''}`}</Text>
+                && <Text
+                  style={text.smallBlackText}>{`Available funds: ${commonBalance !== undefined ? '$' + commonBalance / 100 : ''}`}</Text>
                 }
               </View>
 
@@ -506,11 +537,15 @@ const ProposalScreen = ({navigation,
         </ScrollView>
 
         {index === 0
-          ? renderVoting && showBottomVotingButtonsContainer
-          && <View style={styles.actionButtonContainer}>
-            {renderStickyBottomContent()}
-          </View>
-          : (<>{messageInput()}</>)}
+          ? (renderVoting && showBottomVotingButtonsContainer) && (
+            <View style={styles.actionButtonContainer}>
+              {renderStickyBottomContent()}
+            </View>
+          ) : (
+            <React.Fragment>
+              {messageInput()}
+            </React.Fragment>
+          )}
       </SafeAreaView>
 
       <BottomSheetModal
@@ -531,12 +566,16 @@ ProposalScreen.propTypes = {
   navigation: object,
   userStore: shape({
     userInfo: object,
-    isDaoMember: bool,
+    isDaoMember: func,
   }),
   bottomSheetStore: object,
   route: shape({
     params: shape({
-      commonBalance: object,
+      commonBalance: oneOfType([
+        object,
+        number,
+        string,
+      ]),
       proposalId: string,
     }),
   }),
@@ -660,6 +699,8 @@ const styles = StyleSheet.create({
     color: colors.greySubtitle,
     marginTop: sizeS,
     marginBottom: sizeM,
+    width: Dimensions.get('window').width * 0.9,
+    textAlign: 'center',
   },
 });
 

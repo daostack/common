@@ -1,15 +1,14 @@
 import React from 'react';
 import {View, StyleSheet, Animated, Text, TouchableOpacity} from 'react-native';
-import Icon from '../../../Assets/iconfont/Icon';
-import {colors, text, layout} from '../../../Theme';
+import Icon from '~/Assets/iconfont/Icon';
+import {colors, text, layout} from '~/Theme';
+import {string, bool, object, number, array, shape, oneOfType} from 'prop-types';
 
-const RequestStepDotHeader = props => {
-  const headerHeight = props.headerHeight;
-  const currentIndex = !props.isFirstStepSkipped ? props.currentIndex - 1 : props.currentIndex;
-  const totalDots =  props.isFirstStepSkipped ? 3 : 4;
+const RequestStepDotHeader = ({headerHeight = 0, isFirstStepSkipped, currentIndex, navigation, title}) => {
+  const totalDots = isFirstStepSkipped ? 3 : 4;
+  currentIndex = !isFirstStepSkipped ? currentIndex - 1 : currentIndex;
   return (
     <Animated.View style={[styles.header, {height: headerHeight}]}>
-
       <View style={{overflow: 'hidden'}}>
         <TouchableOpacity
           style={{
@@ -19,11 +18,11 @@ const RequestStepDotHeader = props => {
             padding: 0,
             zIndex: 9999,
           }}
-          onPress={() => props.navigation.pop()}>
+          onPress={() => navigation.pop()}>
           <Icon name="left-arrow" size={32} style={{margin: 10}} />
         </TouchableOpacity>
         <View style={styles.bar}>
-          <Text style={styles.title}>{props.title}
+          <Text style={styles.title}>{title}
           </Text>
           <View
             style={{
@@ -31,7 +30,7 @@ const RequestStepDotHeader = props => {
               flexDirection: 'row',
               justifyContent: 'space-between',
             }}>
-            {[...Array(totalDots).keys()].map(x => (
+            {[...Array(totalDots).keys()].map((x) => (
               <View
                 key={x}
                 style={x < currentIndex ? styles.dot : styles.dot2}
@@ -43,6 +42,21 @@ const RequestStepDotHeader = props => {
       </View>
     </Animated.View>
   );
+};
+
+RequestStepDotHeader.propTypes = {
+  headerHeight: oneOfType([
+    number,
+    shape({
+      inputRange: array,
+      outputRange: array,
+      extrapolate: string,
+    }),
+  ]),
+  isFirstStepSkipped: bool,
+  currentIndex: number,
+  navigation: object,
+  title: string,
 };
 
 const styles = StyleSheet.create({

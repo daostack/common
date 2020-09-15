@@ -1,13 +1,18 @@
 import React from 'react';
 import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
-import {colors, font} from '../../Theme';
+import {colors, font} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
-
+import {shape, string, object} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const DiscussionMessage = props => {
-  const data = props.data;
+const DiscussionMessage = ({data: {
+  ownerId,
+  text,
+  createTime,
+  ownerAvatar,
+  ownerName,
+}}) => {
   let currentUserUid = null;
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
@@ -15,50 +20,60 @@ const DiscussionMessage = props => {
 
   return (
     <View style={styles.container}>
-      {currentUserUid === data.ownerId ? (
+      {currentUserUid === ownerId ? (
         <View style={styles.contentOwner}>
-          <Text style={styles.text}>{data.text}</Text>
+          <Text style={styles.text}>{text}</Text>
           <View style={{position: 'relative', right: 0, bottom: 0}}>
             <Text
               style={styles.date}
               numberOfLines={1}>
-              {moment(data.createTime.toDate()).format('hh:mm')}
+              {moment(createTime.toDate()).format('hh:mm')}
             </Text>
           </View>
         </View>
       ) : (
-        <>
-          <View style={styles.contentMember}>
-            <Image
-              style={{
-                backgroundColor: colors.grey3,
-                height: 40,
-                width: 40,
-                borderRadius: 20,
-              }}
-              source={data.ownerAvatar ? {uri: data.ownerAvatar} : null}
-            />
-            <View
-              style={{
-                ...styles.contentOwner,
-                marginLeft: 10,
-                maxWidth: width - 90,
-                backgroundColor: colors.paleLilacTwo,
+          <>
+            <View style={styles.contentMember}>
+              <Image
+                style={{
+                  backgroundColor: colors.grey3,
+                  height: 40,
+                  width: 40,
+                  borderRadius: 20,
+                }}
+                source={ownerAvatar ? {uri: ownerAvatar} : null}
+              />
+              <View
+                style={{
+                  ...styles.contentOwner,
+                  marginLeft: 10,
+                  maxWidth: width - 90,
+                  backgroundColor: colors.paleLilacTwo,
 
-              }}>
-              <Text style={styles.ownerName}>{data.ownerName}</Text>
-              <Text style={styles.text}>{data.text}</Text>
+                }}>
+                <Text style={styles.ownerName}>{ownerName}</Text>
+                <Text style={styles.text}>{text}</Text>
 
-              <Text style={styles.date}>
-                {moment(data.createTime.toDate()).format('hh:mm')}
-              </Text>
+                <Text style={styles.date}>
+                  {moment(createTime.toDate()).format('hh:mm')}
+                </Text>
 
+              </View>
             </View>
-          </View>
-        </>
+          </>
       )}
     </View>
   );
+};
+
+DiscussionMessage.propTypes = {
+  data: shape({
+    ownerId: string,
+    text: string,
+    createTime: object,
+    ownerAvatar: string,
+    ownerName: string,
+  }),
 };
 
 const styles = StyleSheet.create({

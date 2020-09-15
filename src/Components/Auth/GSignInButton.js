@@ -1,14 +1,15 @@
 import {useState} from 'react';
 import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
-import {colors, text, layout} from '../../Theme';
+import {colors, text, layout} from '~/Theme';
 import React from 'react';
-import Icon from '../../Assets/iconfont/Icon';
-import { statusCodes } from '@react-native-community/google-signin';
-import { observer, inject } from 'mobx-react';
+import Icon from '~/Assets/iconfont/Icon';
+import {statusCodes} from '@react-native-community/google-signin';
+import {observer, inject} from 'mobx-react';
+import AuthService from '~/Services/AuthService';
+import logger from '~/Services/Logger';
+import {shape, func} from 'prop-types';
 
-import AuthService from '../../Services/AuthService';
-
-const GSignInButton = ({ onSignIn, userStore}) => {
+const GSignInButton = ({onSignIn, userStore}) => {
   const [signInError, setSignInError] = useState(null);
 
   const _signIn = async () => {
@@ -27,7 +28,7 @@ const GSignInButton = ({ onSignIn, userStore}) => {
         setSignInError('Canceled');
         break;
       case statusCodes.IN_PROGRESS:
-        console.log('SignIn in progress');
+        logger.log('SignIn in progress');
         break;
       case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
         setSignInError('play services not available or outdated');
@@ -38,16 +39,12 @@ const GSignInButton = ({ onSignIn, userStore}) => {
     }
   };
 
-  const renderSignInButton = () => {
-    return (
-      <>
-        <TouchableOpacity style={layout.btnOutline} onPress={_signIn}>
-          <Icon style={layout.btnLeftIcon} name="google" size={32} />
-          <Text style={text.buttonblack}>Continue with Google</Text>
-        </TouchableOpacity>
-      </>
-    );
-  };
+  const renderSignInButton = () => (
+    <TouchableOpacity style={layout.btnOutline} onPress={_signIn}>
+      <Icon style={layout.btnLeftIcon} name="google" size={32} />
+      <Text style={text.buttonblack}>Continue with Google</Text>
+    </TouchableOpacity>
+  );
 
   const renderError = () => {
     if (signInError) {
@@ -69,6 +66,13 @@ const GSignInButton = ({ onSignIn, userStore}) => {
       {renderSignInButton()}
     </View>
   );
+};
+
+GSignInButton.propTypes = {
+  onSignIn: func,
+  userStore: shape({
+    setIsLoading: func,
+  }),
 };
 
 const styles = StyleSheet.create({

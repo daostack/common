@@ -2,7 +2,7 @@ import React from 'react';
 import {TextInput, View, Text, StyleSheet} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
-import {layout, colors, font} from '../../Theme';
+import {layout, colors, font} from '~/Theme';
 import {string, func, bool, number, object, oneOfType} from 'prop-types';
 
 const CharCount = ({currCount, maxLength}) => <Text style = {{color: currCount === maxLength ? colors.error : colors.grey3, paddingTop: 5}}>{currCount}/{maxLength}</Text>;
@@ -58,6 +58,7 @@ class TextInputField extends React.Component {
     this.setState({onFocus: false});
     formStore.fieldBlured(name);
     this.props.onBlur && this.props.onBlur(e);
+    this.props.onSubmit && this.props.onSubmit();
   };
 
   renderTextField = () => {
@@ -160,6 +161,7 @@ TextInputField.propTypes = {
   maxLength: number,
   viewStyle: object,
   forwardRef: object,
+  onSubmit: func,
 };
 
 const styles = StyleSheet.create({
@@ -195,14 +197,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingLeft: 10,
     paddingRight: 10,
-  },
-  toggleViewStyle:
-  {
-    position: 'absolute',
-    top: 28,
-    right: 12,
-    ...layout.content,
-    padding: 0,
   },
 });
 

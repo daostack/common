@@ -4,10 +4,11 @@ import TextInputField from '../FormFields/TextInputField';
 import MultiImageField from '../FormFields/MultiImageField';
 import MultiFileField from '../FormFields/MultiFileField';
 import MultiLinkField from '../FormFields/MultiLinkField';
-
 import {observer, inject} from 'mobx-react';
-import {layout, text, colors, font} from '../../Theme';
-import TextInputFieldWithIcon from '../../Components/FormFields/TextInputFieldWithIcon';
+import {layout, text, colors, font} from '~/Theme';
+import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
+import logger from '~/Services/Logger';
+import {func, shape, object} from 'prop-types';
 
 class FundingRequestForm extends React.Component {
   static FIELD_TITLE = 'title';
@@ -17,13 +18,7 @@ class FundingRequestForm extends React.Component {
   static FIELD_IMAGES = 'images';
   static FIELD_FILES = 'files';
 
-  state = {
-    linkCount: 1,
-  };
-
-  formSkip() {}
-
-  formSave = async e => {
+  formSave = async (e) => {
     const {fundingRequestFormStore} = this.props;
     if (fundingRequestFormStore.isFormValid()) {
       if (this.props.onFormSubmit) {
@@ -32,7 +27,7 @@ class FundingRequestForm extends React.Component {
     }
   };
 
-  onFormClose = e => {
+  onFormClose = (e) => {
     const {onFormClose} = this.props;
     if (onFormClose) {
       onFormClose();
@@ -43,14 +38,13 @@ class FundingRequestForm extends React.Component {
     const {
       userStore,
       fundingRequestFormStore,
-      firstOpening,
       common,
       ...otherProps
     } = this.props;
 
-    console.log('common.balance ->', common.balance);
-    console.log('fundingRequestFormStore');
-    console.log(fundingRequestFormStore);
+    logger.log('common.balance ->', common.balance);
+    logger.log('fundingRequestFormStore');
+    logger.log(fundingRequestFormStore);
     return (
       <View
         {...otherProps}
@@ -121,6 +115,7 @@ class FundingRequestForm extends React.Component {
         </Text>
 
         <MultiLinkField
+          link
           allowsEditing={true}
           title="Title"
           validation={{
@@ -181,5 +176,15 @@ class FundingRequestForm extends React.Component {
     );
   }
 }
+
+FundingRequestForm.propTypes = {
+  fundingRequestFormStore: shape({
+    isFormValid: func,
+  }),
+  common: object,
+  userStore: object,
+  onFormSubmit: func,
+  onFormClose: func,
+};
 
 export default inject('fundingRequestFormStore')(observer(FundingRequestForm));
