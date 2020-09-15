@@ -6,6 +6,7 @@
     "android:production": "ENVFILE=./env/env.prod react-native run-android --variant=ProdDebug",
     "android:staging": "yarn useCloud && ENVFILE=./env/env.stg react-native run-android --variant StagingDebug --appIdSuffix \"staging\"",
     "android:localStaging": "yarn useLocal && ENVFILE=./env/env.stg react-native run-android --variant StagingDebug --appIdSuffix \"staging\"",
+    "ios:alex": "yarn ios:staging --device \"Alexander’s iPhone\"",
     "ios:production": "react-native run-ios --scheme \"common\"",
     "ios:staging": "yarn useCloud && react-native run-ios --scheme \"common-stg\"",
     "ios:localStaging": "yarn useLocal && react-native run-ios --scheme \"common-stg\"",

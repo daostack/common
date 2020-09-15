@@ -121,11 +121,11 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
     <Animated.View style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
-          isBoosted={true}
+          isBoosted
           showDate={membershipRequest}
           stage={proposalCardInfo.proposalInfo?.stageStr}
+          closingAt={proposalCardInfo.proposalInfo?.closingAt}
           winningOutcome={proposalCardInfo.proposalInfo?.winningOutcome}
-          hasPassedExpiryDate={moment().isAfter(moment.unix(proposalCardInfo.proposalInfo?.closingAt))}
         />
 
         <View

@@ -160,7 +160,6 @@ const ProposalScreen = ({
       <TabBarRenderer originRef={originTabBarRef} {...currProps} />
     </View>
   );
-  const hasPassedExpiryDate = moment().isAfter(moment.unix(proposalInfo?.closingAt));
 
   const messageInput = () => {
     const sendMessageToDiscussion = async () => {
@@ -338,14 +337,14 @@ const ProposalScreen = ({
   };
 
   const renderVotingButtons = (reference) => (
-    (moment().isBefore(moment.unix(proposalInfo?.closingAt)) || !proposalInfo?.closingAt)
-    && (
+    (moment().isBefore(moment.unix(proposalInfo?.closingAt)) || !proposalInfo?.closingAt) && (
       <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
         <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>Whats your vote?</Text>
         <View style={layout.flexRow}>
           <TouchableOpacity
             onPress={(e) => openApprovalSheet(true)}
-            style={{...styles.actionBtnStyle, ...layout.marginRightS}}>
+            style={{...styles.actionBtnStyle, ...layout.marginRightS}}
+          >
             <Icon name="approved-24" color={colors.lightishGreen} size={24}/>
           </TouchableOpacity>
 
@@ -373,14 +372,16 @@ const ProposalScreen = ({
   const votesCount = proposalInfo.votesFor + proposalInfo.votesAgainst;
 
   return (
-    <>
+    <React.Fragment>
       <SafeAreaView style={{backgroundColor: colors.white}}/>
       <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
         {showStickyTabBar && (
           <View style={{position: 'absolute', top: 0, width: '100%', paddingBottom: 5, zIndex: 999}}>
             <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo}
               parentRef={originTabBarRef}/>
-          </View>)}
+          </View>
+        )}
+
         <ScrollView
           style={{
             flex: 1,
@@ -409,29 +410,35 @@ const ProposalScreen = ({
                     isBoosted={true}
                     stage={proposalInfo?.stageStr}
                     winningOutcome={proposalInfo?.winningOutcome}
-                    hasPassedExpiryDate={hasPassedExpiryDate}
-                    closingAt={proposalInfo.closingAt}/>
+                    closingAt={proposalInfo.closingAt}
+                  />
+
                   <UserAvatar
                     image={proposedUser?.photoURL}
                     displayName={proposedUser?.displayName}
-                    imageStyle={{width: 46, height: 46}}/>
+                    imageStyle={{width: 46, height: 46}}
+                  />
+
                   <Text style={{...text.h2Black, ...layout.marginBottomL, ...layout.marginTopXS}}>
                     {proposalInfo?.description?.title || 'Unknown title'}
                   </Text>
                 </View>
               ) : (
-                <>
+                <React.Fragment>
                   <ProposalCardHeader
                     isScreenHeader={true}
                     isBoosted={true}
                     stage={proposalInfo?.stageStr}
                     winningOutcome={proposalInfo?.winningOutcome}
-                    hasPassedExpiryDate={hasPassedExpiryDate}
-                    closingAt={proposalInfo.closingAt}/>
+                    closingAt={proposalInfo.closingAt}
+                  />
+
                   <UserAvatar
                     image={proposedUser?.photoURL}
                     imageStyle={{width: 64, height: 64}}
-                    iconName={'clcok'}/>
+                    iconName={'clcok'}
+                  />
+
                   <View style={{...layout.content, ...layout.marginTopS}}>
                     <Text style={text.h2Black}>
                       {proposedUser ? proposedUser.displayName : 'unknown user'}
@@ -443,9 +450,8 @@ const ProposalScreen = ({
                         <Icon name="right-arrow" size={20}/>
                       </TouchableOpacity>)
                     }
-
                   </View>
-                </>
+                </React.Fragment>
               )}
 
               <View style={styles.contributionCard}>
@@ -558,7 +564,7 @@ const ProposalScreen = ({
           votingProcessState={votingProcessState}
         />
       </BottomSheetModal>
-    </>
+    </React.Fragment>
   );
 };
 
