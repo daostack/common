@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Dimensions, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Dimensions, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Animated} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
 import {colors, font, layout, sizeL, sizeS, text} from '~/Theme';
@@ -86,6 +86,8 @@ const CommonProfile = ({
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
+  const [stickyTabBarState, setStickyTabBarState] = useState({animation: new Animated.Value(0)});
+  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(false);
 
   //setHeaderHeight(height + 35);
 
@@ -168,7 +170,7 @@ const CommonProfile = ({
   }, [pendingProposalsData]);
 
   const renderTabBar = (props) => (
-    <TabBarRenderer originRef={originTabBarRef} jumpTo = {originTabBarRef.current?.props?.jumpTo} {...props} indexChange = {setIndex}/>
+    <TabBarRenderer originRef={originTabBarRef} jumpTo={originTabBarRef.current?.props?.jumpTo} indexChange={setIndex} {...props}/>
   );
 
   const Discussions = () => (
@@ -481,7 +483,7 @@ const CommonProfile = ({
   const fixedHeaderHeight = () => (
     <NavigationBar
       statusBar={{hidden: true}}
-      containerStyle={styles.fixedSection}
+      containerStyle={{...styles.fixedSection, ... {bottom: (showStickyTabBar || isHeaderClosingInProgress) ? 90 : 10}}}
       leftButton={
         <TouchableOpacity
           style={{justifyContent: 'center'}}
@@ -541,6 +543,21 @@ const CommonProfile = ({
     </TouchableOpacity>);
 
   const initialLayout = {width: Dimensions.get('window').width};
+
+  const slideUp = {
+    transform: [
+      {
+        translateY: stickyTabBarState.animation.interpolate({
+          inputRange: [0.01, 1],
+          outputRange: [0, 80],
+          extrapolate: 'clamp',
+        }),
+      },
+    ],
+  };
+
+  const stickyTabBarStyle = {position: 'absolute', top: 0, width: '100%', paddingBottom: 5, zIndex: 1};
+
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       {currCommon ? (
@@ -562,14 +579,11 @@ const CommonProfile = ({
             />
           </TouchableOpacity>
 
-          {showStickyTabBar && (<View style={{position: 'absolute', top: STICKY_HEADER_HEIGHT, width: '100%', paddingBottom: 5, zIndex: 999}}>
-            <TabBarRenderer navigationState={{index, routes}} jumpTo = {originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange = {setIndex} />
-          </View>)}
-
           <ParallaxScrollView
+            contentContainerStyle={{position: 'relative', zIndex: 99}}
             backgroundColor="white"
             showsVerticalScrollIndicator={false}
-            stickyHeaderHeight={STICKY_HEADER_HEIGHT}
+            stickyHeaderHeight={(showStickyTabBar || isHeaderClosingInProgress) ? STICKY_HEADER_HEIGHT + 80 : STICKY_HEADER_HEIGHT}
             parallaxHeaderHeight={headerHeight}
             renderBackground={() => (
               <FastImage
@@ -585,7 +599,6 @@ const CommonProfile = ({
               </FastImage>
             )}
             scrollEvent={(e) => {
-              //console.log("Scroll e -> ", e);
               setDark(
                 e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT,
               );
@@ -593,9 +606,29 @@ const CommonProfile = ({
                 setShowStickyRequestToJoinBtn(py < (stickyHeightAddon) );
               });
               stickyTabBarRef?.current?.measure((fx, fy, width, height, px, py) => {
-                const isVisible = py < (STICKY_HEADER_HEIGHT);
+                const isVisible = py < STICKY_HEADER_HEIGHT - 80;
                 if (isVisible !== showStickyTabBar) {
-                  setShowStickyTabBar(isVisible);
+                  if (isVisible) {
+                    setShowStickyTabBar(isVisible);
+                    Animated.timing(stickyTabBarState.animation).stop();
+                    Animated.timing(stickyTabBarState.animation, {
+                      toValue: 1,
+                      duration: 200,
+                      useNativeDriver: true,
+                    }).start();
+
+                  } else if (!isHeaderClosingInProgress) {
+                    setIsHeaderClosingInProgress(true);
+                    setShowStickyTabBar(isVisible);
+                    Animated.timing(stickyTabBarState.animation).stop();
+                    Animated.timing(stickyTabBarState.animation, {
+                      toValue: 0,
+                      duration: 300,
+                      useNativeDriver: true,
+                    }).start(({finished}) => {
+                      setIsHeaderClosingInProgress(!finished);
+                    });
+                  }
                 }
               });
 
@@ -617,9 +650,14 @@ const CommonProfile = ({
               />
             )}
             renderStickyHeader={() => (
-              <View key="sticky-header" style={styles.stickySection}>
-                <Text style={styles.stickySectionText}>{currCommon.name}</Text>
-              </View>
+              <>
+                <Animated.View style={[stickyTabBarStyle, slideUp]}>
+                  <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange={setIndex} />
+                </Animated.View>
+                <View key="sticky-header" style={styles.stickySection}>
+                  <Text style={styles.stickySectionText}>{currCommon.name}</Text>
+                </View>
+              </>
             )}
             renderFixedHeader={fixedHeaderHeight}>
             {!isMember &&
@@ -658,27 +696,27 @@ const CommonProfile = ({
 
             {renderAgendaForNonMembers()}
             {/**
-        <TouchableOpacity
-          style={{
-            ...styles.headerButton,
-            ...{
-              justifyContent: 'center',
-              marginBottom: 20,
-              marginHorizontal: 100,
-            },
-          }}
-          onPress={openProposalScreen}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: 'white',
-              fontWeight: '700',
-            }}>
-            Open Proposal
-          </Text>
-        </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  ...styles.headerButton,
+                  ...{
+                    justifyContent: 'center',
+                    marginBottom: 20,
+                    marginHorizontal: 100,
+                  },
+                }}
+                onPress={openProposalScreen}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: 'white',
+                    fontWeight: '700',
+                  }}>
+                  Open Proposal
+                </Text>
+              </TouchableOpacity>
 
-      */}
+            */}
 
             <View ref={stickyTabBarRef} collapsable={false}>
               <TabView
@@ -922,6 +960,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     backgroundColor: colors.white,
     borderBottomColor: colors.grey4,
+    zIndex: 99,
   },
   stickySectionText: {
     paddingTop: Platform.OS === 'ios' ? 40 : 20,

@@ -150,7 +150,7 @@ const ProposalScreen = ({navigation,
 
   const renderTabBar = (currProps) => (
     <View style={{paddingBottom: 5}}>
-      <TabBarRenderer originRef={originTabBarRef} {...currProps} />
+      <TabBarRenderer originRef={originTabBarRef} jumpTo={originTabBarRef.current?.props?.jumpTo} indexChange={setIndex} {...currProps} />
     </View>
   );
   const hasPassedExpiryDate = moment().isAfter(moment.unix(proposalInfo?.closingAt));
@@ -374,7 +374,7 @@ const ProposalScreen = ({navigation,
       <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
 
         <Animated.View style={[stickyTabBarStyle, slideUp]}>
-          <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef}/>
+          <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange = {setIndex}/>
         </Animated.View>
 
         <ScrollView
@@ -388,8 +388,6 @@ const ProposalScreen = ({navigation,
             stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
               const isVisible = py < 0;
               if (isVisible !== showStickyTabBar) {
-                //stickyTopSheet();
-
                 if (isVisible) {
                   setShowStickyTabBar(isVisible);
                   Animated.timing(stickyTabBarState.animation, {
