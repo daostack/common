@@ -72,6 +72,8 @@ const ProposalScreen = ({
   // Top voting buttons ref
   const topVotingButtonsRef = useRef(null);
 
+  const scrollViewRef = useRef(null);
+
   // Values for vote param required from the blockchain
   const VOTE_APPROVE = 1;
   const VOTE_REJECT = 2;
@@ -154,6 +156,7 @@ const ProposalScreen = ({
   const [ inputText, setInputText ] = useState(null);
 
   const inputRef = useRef();
+  const messageContainerRef = useRef();
 
   const renderTabBar = (currProps) => (
     <View style={{paddingBottom: 5}}>
@@ -171,6 +174,7 @@ const ProposalScreen = ({
       const message = inputText;
       if (message && message.trim().length) {
         inputRef.current.clear();
+
         db.collection('discussionMessage')
           .doc()
           .set({
@@ -183,6 +187,7 @@ const ProposalScreen = ({
           })
           .then(() => {
             Keyboard.dismiss();
+
             setIsSending(false);
             setInputText(null);
           })
@@ -372,20 +377,38 @@ const ProposalScreen = ({
 
   const votesCount = proposalInfo.votesFor + proposalInfo.votesAgainst;
 
+  const onSetIndex = (item) => {
+    setIndex(item);
+  };
+
   return (
-    <>
-      <SafeAreaView style={{backgroundColor: colors.white}}/>
-      <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
+    <React.Fragment>
+      <SafeAreaView
+        style={{
+          backgroundColor: colors.white
+        }}
+      />
+
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: colors.white
+        }}
+      >
+
         {showStickyTabBar && (
           <View style={{position: 'absolute', top: 0, width: '100%', paddingBottom: 5, zIndex: 999}}>
             <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo}
               parentRef={originTabBarRef}/>
-          </View>)}
+          </View>
+        )}
+
         <ScrollView
           style={{
             flex: 1,
             backgroundColor: colors.white,
           }}
+          ref={scrollViewRef}
           scrollEventThrottle={16}
           onScroll={(e) => {
             //e.nativeEvent.contentOffset.y
@@ -399,7 +422,8 @@ const ProposalScreen = ({
             topVotingButtonsRef?.current?.measure((fx, fy, width, height, px, py) => {
               setShowBottomVotingButtonsContainer(py < 0);
             });
-          }}>
+          }}
+        >
           {proposalInfo && (
             <View style={{...headerContainerStyle}}>
               {proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
@@ -410,42 +434,53 @@ const ProposalScreen = ({
                     stage={proposalInfo?.stageStr}
                     winningOutcome={proposalInfo?.winningOutcome}
                     hasPassedExpiryDate={hasPassedExpiryDate}
-                    closingAt={proposalInfo.closingAt}/>
+                    closingAt={proposalInfo.closingAt}
+                  />
+
                   <UserAvatar
                     image={proposedUser?.photoURL}
                     displayName={proposedUser?.displayName}
-                    imageStyle={{width: 46, height: 46}}/>
+                    imageStyle={{width: 46, height: 46}}
+                  />
+
                   <Text style={{...text.h2Black, ...layout.marginBottomL, ...layout.marginTopXS}}>
                     {proposalInfo?.description?.title || 'Unknown title'}
                   </Text>
                 </View>
               ) : (
-                <>
+                <React.Fragment>
                   <ProposalCardHeader
                     isScreenHeader={true}
                     isBoosted={true}
                     stage={proposalInfo?.stageStr}
                     winningOutcome={proposalInfo?.winningOutcome}
                     hasPassedExpiryDate={hasPassedExpiryDate}
-                    closingAt={proposalInfo.closingAt}/>
+                    closingAt={proposalInfo.closingAt}
+                  />
+
                   <UserAvatar
                     image={proposedUser?.photoURL}
                     imageStyle={{width: 64, height: 64}}
-                    iconName={'clcok'}/>
+                    iconName={'clcok'}
+                  />
+
                   <View style={{...layout.content, ...layout.marginTopS}}>
                     <Text style={text.h2Black}>
-                      {proposedUser ? proposedUser.displayName : 'unknown user'}
+                      {proposedUser
+                        ? proposedUser.displayName
+                        : 'unknown user'
+                      }
                     </Text>
 
                     {proposedUser && (
                       <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}} onPress={viewUserProfile}>
                         <Text style={text.smallBlackText}>View Profile</Text>
                         <Icon name="right-arrow" size={20}/>
-                      </TouchableOpacity>)
-                    }
+                      </TouchableOpacity>
+                    )}
 
                   </View>
-                </>
+                </React.Fragment>
               )}
 
               <View style={styles.contributionCard}>
@@ -518,34 +553,41 @@ const ProposalScreen = ({
             <TabView
               navigationState={{index, routes}}
               renderScene={() => null}
-              onIndexChange={setIndex}
+              onIndexChange={onSetIndex}
               initialLayout={initialLayout}
               renderTabBar={renderTabBar}
-              style={{backgroundColor: colors.paleGrey}}/>
+              style={{backgroundColor: colors.paleGrey}}
+
+            />
+
             {index === 0 && (
               <ProposalData
                 proposalId={proposalId}
                 proposalInfo={proposalInfo}
-                showMore={() => setIndex(1)}/>
+                showMore={() => onSetIndex(1)}
+              />
             )}
+
             {index === 1 && (
               <ProposalDiscussion
                 proposalId={proposalId}
-                inputRef={inputRef}/>
+                inputRef={inputRef}
+                scrollViewRef={scrollViewRef}
+              />
             )}
           </View>
         </ScrollView>
 
-        {index === 0
-          ? (renderVoting && showBottomVotingButtonsContainer) && (
-            <View style={styles.actionButtonContainer}>
-              {renderStickyBottomContent()}
-            </View>
-          ) : (
-            <React.Fragment>
-              {messageInput()}
-            </React.Fragment>
-          )}
+        {index === 0 ? renderVoting
+            && showBottomVotingButtonsContainer && (
+          <View style={styles.actionButtonContainer}>
+            {renderStickyBottomContent()}
+          </View>
+        ) : (
+          <React.Fragment>
+            {messageInput()}
+          </React.Fragment>
+        )}
       </SafeAreaView>
 
       <BottomSheetModal
@@ -558,7 +600,7 @@ const ProposalScreen = ({
           votingProcessState={votingProcessState}
         />
       </BottomSheetModal>
-    </>
+    </React.Fragment>
   );
 };
 
