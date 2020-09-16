@@ -508,13 +508,6 @@ class nativeBridgeTests extends React.Component {
             <Text>Vote for proposal</Text>
           </TouchableOpacity>
 
-          <Text>mnemonicsAndStore: {this.state.mnemonicsAndStore}</Text>
-          <TouchableOpacity
-            onPress={this.generateAndStoreMnemonic}
-            style={styles.button}>
-            <Text>Generate And Store Mnemonic</Text>
-          </TouchableOpacity>
-
           <Text style={{marginVertical: 10}}>
             --------------- Native Bridge -----------------
           </Text>

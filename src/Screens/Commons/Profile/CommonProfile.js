@@ -36,6 +36,7 @@ import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDate';
 import {BlurView} from '~/Components';
+import Logger from '../../../Services/Logger';
 
 let stickyHeightAddon = 36;
 
@@ -65,6 +66,7 @@ const CommonProfile = ({
   ]);
 
   //const routeCommon = params.currCommon;
+  Logger.log('Common id ->', params.currCommon?.id);
   const [currCommon, setCurrCommon] = useState(params.currCommon);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
