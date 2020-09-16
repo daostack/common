@@ -29,7 +29,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
   const [pendingDaosGroup, setPendingDaosGroup] = useState({title: '', data: []});
   const [featuredDaosGroup, setFeaturedDaosGroup] = useState({title: '', data: []});
   const [allDaosGroup, setAllDaosGroup] = useState(null);
-  const [isSplited, setIsSplited] = useState(false);
+  const [isSplit, setIsSplit] = useState(false);
 
   const getPendingDAOList = async () => {
     if (userStore.userInfo === null ) {
@@ -113,7 +113,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
 
     splitDaoList(docs)
       .then(() => {
-        setIsSplited(true);
+        setIsSplit(true);
       });
 
     if (daoStore.isError) {
@@ -164,7 +164,15 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
         width: '100%',
         paddingVertical: 15,
       }}>
-      <Text style={styles.lengthCommons}>{`${(allDaosGroup?.data.length)} Commons`}</Text>
+      <Text style={styles.lengthCommons}>{`${
+        isSplit ? (
+          myDaosGroup.data?.length +
+          pendingDaosGroup.data?.length +
+          featuredDaosGroup.data?.length
+        ) : (
+          allDaosGroup?.data.length
+        )
+      } Commons`}</Text>
     </View>
   );
 
@@ -229,7 +237,7 @@ const CommonsList = ({navigation, daoStore, bottomSheetStore, userStore}) => {
       <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
         { allDaosGroup ? (
           <SectionList
-            sections={isSplited ? [myDaosGroup, pendingDaosGroup, featuredDaosGroup] : [allDaosGroup]}
+            sections={isSplit ? [myDaosGroup, pendingDaosGroup, featuredDaosGroup] : [allDaosGroup]}
             ListHeaderComponent={header}
             contentContainerStyle={{paddingHorizontal: 20}}
             renderItem={(x) => (

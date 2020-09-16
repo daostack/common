@@ -91,22 +91,30 @@ const CommonsSwiper = ({
 
   const renderCommonCard = (item, index) => (
     (!showMax || (index < showMax))
-      ? <CommonBox
-        key={item.id}
-        common={item}
-        navigation={navigation}
-        onPress={() => setDao(item)}
-        headerHeightLayouted={headerHeightLayouted}/>
-      : <TouchableOpacity
-        onPress={() => navigation.navigate('MyCommons')}
-        style={{...styles.commonBox, height: headerHeight}}>
-        <Text style={text.buttonblue}>{`View all ${myDaos.length} Commons`}</Text>
-      </TouchableOpacity>
+      ? (
+        <CommonBox
+          key={item.id}
+          common={item}
+          navigation={navigation}
+          onPress={() => setDao(item)}
+          headerHeightLayouted={headerHeightLayouted}
+        />
+      ) : (
+        <TouchableOpacity
+          onPress={() => navigation.navigate('MyCommons')}
+          style={{...styles.commonBox, height: headerHeight}}
+        >
+          <Text style={text.buttonblue}>
+            {`View all ${myDaos.length} Commons`}
+          </Text>
+        </TouchableOpacity>
+      )
   );
 
   const listChangeCallback = (newList) => {
     setMyDaos(newList);
-    if (onCountChange) {
+
+    if (onCountChange && typeof onCountChange === 'function') {
       onCountChange(newList.length);
     }
   };
