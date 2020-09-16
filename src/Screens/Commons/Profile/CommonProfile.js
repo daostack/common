@@ -23,7 +23,7 @@ import ProposalService from '~/Services/ProposalService';
 import DaoService from '~/Services/DaoService';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
-import  Toast  from '~/Util/Toast';
+import Toast from '~/Util/Toast';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -40,7 +40,7 @@ import Logger from '../../../Services/Logger';
 
 let stickyHeightAddon = 36;
 
-const STICKY_HEADER_HEIGHT = Math.round( getStatusBarHeight() ) + stickyHeightAddon;
+const STICKY_HEADER_HEIGHT = Math.round(getStatusBarHeight()) + stickyHeightAddon;
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
 const CommonProfile = ({
@@ -55,11 +55,11 @@ const CommonProfile = ({
   are undefined
   is this sth we plan on having in future?
    */
-  const [isMember, setMemberState] = useState(false);
+  const [ isMember, setMemberState ] = useState(false);
   const window = Dimensions.get('window');
 
-  const [index, setIndex] = useState(0);
-  const [routes] = useState([
+  const [ index, setIndex ] = useState(0);
+  const [ routes ] = useState([
     {index: 0, key: 'discussions', title: 'Discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
     {index: 1, key: 'proposals', title: 'Proposals', icon: 'proposal', iconSelected: 'proposal-selected'},
     {index: 2, key: 'history', title: 'History', icon: 'history', iconSelected: 'history-selected'},
@@ -67,25 +67,25 @@ const CommonProfile = ({
 
   //const routeCommon = params.currCommon;
   Logger.log('Common id ->', params.currCommon?.id);
-  const [currCommon, setCurrCommon] = useState(params.currCommon);
-  const [showRequestSentModal, setShowRequestSentModal] = useState(false);
-  const [pendingProposalsData, setPendingProposalsData] = useState(null);
-  const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
+  const [ currCommon, setCurrCommon ] = useState(params.currCommon);
+  const [ showRequestSentModal, setShowRequestSentModal ] = useState(false);
+  const [ pendingProposalsData, setPendingProposalsData ] = useState(null);
+  const [ userPendingPropDiscCount, setUserPendingPropDiscCount ] = useState(0);
   const commonId = currCommon?.id;
   const daoMembers = currCommon?.members;
   const showReqToJoin =
     !userStore.userInfo ||
     (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
-  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(false);
+  const [ showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn ] = useState(false);
   const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
 
-  const [dark, setDark] = useState(false);
-  const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
+  const [ dark, setDark ] = useState(false);
+  const [ headerHeight, setHeaderHeight ] = useState(DEFAULT_HEADER_HEIGHT);
 
   const upperRequestToJoinBtnRef = useRef(null);
 
   // Sticky Tab Bar
-  const [showStickyTabBar, setShowStickyTabBar] = useState(false);
+  const [ showStickyTabBar, setShowStickyTabBar ] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
 
@@ -117,7 +117,7 @@ const CommonProfile = ({
         unsubscribe();
       }
     };
-  }, [params.commonId]);
+  }, [ params.commonId ]);
 
   useEffect(() => {
     setShowRequestSentModal(params.showRequestSentModal);
@@ -142,7 +142,7 @@ const CommonProfile = ({
         userStore.userInfo?.safeAddress,
         (data) => {
           setPendingProposalsData({...data});
-        },
+        }
       );
     };
 
@@ -153,13 +153,13 @@ const CommonProfile = ({
         unsubscribe();
       }
     };
-  }, [commonId, isMember, userStore.userInfo]);
+  }, [ commonId, isMember, userStore.userInfo ]);
 
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
       const getPendingProposalsDiscussionCount = async () => {
         const count = await ProposalService.getInstance().getProposalDiscussionsCount(
-          pendingProposalsData.usersPendingProposal.id,
+          pendingProposalsData.usersPendingProposal.id
         );
         if (userPendingPropDiscCount !== count) {
           setUserPendingPropDiscCount(count);
@@ -167,16 +167,17 @@ const CommonProfile = ({
       };
       getPendingProposalsDiscussionCount();
     }
-  }, [pendingProposalsData]);
+  }, [ pendingProposalsData ]);
 
   const renderTabBar = (props) => (
-    <TabBarRenderer originRef={originTabBarRef} jumpTo = {originTabBarRef.current?.props?.jumpTo} {...props} indexChange = {setIndex}/>
+    <TabBarRenderer originRef={originTabBarRef} jumpTo={originTabBarRef.current?.props?.jumpTo} {...props}
+      indexChange={setIndex}/>
   );
 
   const Discussions = () => (
     <View style={{...styles.paleBackground, ...{paddingVertical: sizeL}}}>
       <Text style={text.h1BlackTitle}>Discussions</Text>
-      <DiscussionList navigation={navigation} commonId={currCommon.id} />
+      <DiscussionList navigation={navigation} commonId={currCommon.id}/>
     </View>
   );
 
@@ -253,7 +254,7 @@ const CommonProfile = ({
           <TouchableOpacity onPress={openAgendaScreen} style={layout.marginTopS}>
             <View style={styles.viewAgendaBtn}>
               <Text style={styles.viewFullAgenda}>View full agenda</Text>
-              <Icon style={styles.icon} name="right-arrow" color={colors.mainBlue} />
+              <Icon style={styles.icon} name="right-arrow" color={colors.mainBlue}/>
             </View>
           </TouchableOpacity>
 
@@ -264,25 +265,29 @@ const CommonProfile = ({
 
   const renderMembersRow = () => (
     <View style={styles.membersContainerWrapper}>
-      <View style={{...styles.membersContainer, paddingTop: !isMember ? sizeL : sizeS, paddingBottom: isMember ? 0 : sizeL}}>
+      <View style={{
+        ...styles.membersContainer,
+        paddingTop: !isMember ? sizeL : sizeS,
+        paddingBottom: isMember ? 0 : sizeL,
+      }}>
         <TouchableOpacity
           onPress={openCommonMembers}
           style={layout.flexRow}>
           <View style={layout.flexRow}>
             <Text style={text.h4Black}>
               {pendingProposalsData &&// just to be showed at the same time
-                currCommon.memberCount +
-                ' ' +
-                `Member${currCommon.memberCount !== 1 ? 's' : ''}`}
+              currCommon.memberCount +
+              ' ' +
+              `Member${currCommon.memberCount !== 1 ? 's' : ''}`}
             </Text>
           </View>
           <View style={{...layout.flexRow, ...layout.marginLeftS}}>
             <Text style={text.h4BlackRegular}>
               {pendingProposalsData &&
-                pendingProposalsData.pendingProposalCount}{' '}
-                  Pending
+              pendingProposalsData.pendingProposalCount}{' '}
+              Pending
             </Text>
-            <Icon name="right-arrow" />
+            <Icon name="right-arrow"/>
           </View>
         </TouchableOpacity>
         {isMember && <TouchableOpacity
@@ -313,7 +318,7 @@ const CommonProfile = ({
   const shareCommon = (event) => {
     const options = {
       url: `https://app.common.io/common/${currCommon.id}`,
-      title: "Let's make it happen",
+      title: 'Let\'s make it happen',
       message: `${currCommon.name} common`,
     };
     Share.open(options);
@@ -321,7 +326,7 @@ const CommonProfile = ({
 
   const openCommonOptions = (event) => {
     bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS
     );
   };
 
@@ -354,7 +359,7 @@ const CommonProfile = ({
       navigation.dispatch(navigate);
     } else {
       bottomSheetStore.showBottomSheet(
-        BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
+        BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN
       );
     }
   };
@@ -375,8 +380,7 @@ const CommonProfile = ({
     setShowRequestSentModal(false);
   };
 
-  const openProposalScreen = (event) => {
-
+  const openProposalScreen = () => {
     navigation.navigate('ProposalScreen', {
       proposalId: pendingProposalsData.usersPendingProposal?.id,
       screenTitle: currCommon.name,
@@ -402,7 +406,7 @@ const CommonProfile = ({
             ...layout.flexRow,
             ...{padding: 0},
           }}>
-          <Icon name="clcok" size={16} style={layout.marginRightXS} />
+          <Icon name="clcok" size={16} style={layout.marginRightXS}/>
           <Text style={text.smallBoldGreyText}>Pending Approval</Text>
         </View>
         <View
@@ -466,14 +470,14 @@ const CommonProfile = ({
       </Placeholder>
 
       <Placeholder Animation={Fade}>
-        {[...Array(3).keys()].map((i) => (
+        {[ ...Array(3).keys() ].map((i) => (
           <View key={`common_loading_${i}`}>
             <PlaceholderMedia
               style={{height: 80 * i, width: '100%', marginBottom: 20}}
             />
-            <PlaceholderLine width={80} />
-            <PlaceholderLine />
-            <PlaceholderLine width={30} />
+            <PlaceholderLine width={80}/>
+            <PlaceholderLine/>
+            <PlaceholderLine width={30}/>
           </View>
         ))}
       </Placeholder>
@@ -564,8 +568,10 @@ const CommonProfile = ({
             />
           </TouchableOpacity>
 
-          {showStickyTabBar && (<View style={{position: 'absolute', top: STICKY_HEADER_HEIGHT, width: '100%', paddingBottom: 5, zIndex: 999}}>
-            <TabBarRenderer navigationState={{index, routes}} jumpTo = {originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange = {setIndex} />
+          {showStickyTabBar && (<View
+            style={{position: 'absolute', top: STICKY_HEADER_HEIGHT, width: '100%', paddingBottom: 5, zIndex: 999}}>
+            <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo}
+              parentRef={originTabBarRef} indexChange={setIndex}/>
           </View>)}
 
           <ParallaxScrollView
@@ -583,16 +589,16 @@ const CommonProfile = ({
                   height: headerHeight,
                   backgroundColor: colors.grey4,
                 }}>
-                <View style={{backgroundColor: 'rgba(0,0,0,0.2)', flex: 1}} />
+                <View style={{backgroundColor: 'rgba(0,0,0,0.2)', flex: 1}}/>
               </FastImage>
             )}
             scrollEvent={(e) => {
               //console.log("Scroll e -> ", e);
               setDark(
-                e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT,
+                e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT
               );
-              upperRequestToJoinBtnRef?.current?.measure( (fx, fy, width, height, px, py) => {
-                setShowStickyRequestToJoinBtn(py < (stickyHeightAddon) );
+              upperRequestToJoinBtnRef?.current?.measure((fx, fy, width, height, px, py) => {
+                setShowStickyRequestToJoinBtn(py < (stickyHeightAddon));
               });
               stickyTabBarRef?.current?.measure((fx, fy, width, height, px, py) => {
                 const isVisible = py < (STICKY_HEADER_HEIGHT);
@@ -625,9 +631,9 @@ const CommonProfile = ({
             )}
             renderFixedHeader={fixedHeaderHeight}>
             {!isMember &&
-              pendingProposalsData &&
-              pendingProposalsData.usersPendingProposal &&
-              renderPendingApproval()}
+            pendingProposalsData &&
+            pendingProposalsData.usersPendingProposal &&
+            renderPendingApproval()}
 
             <View style={{paddingVertical: sizeS}}>
               <CommonStageSummary
@@ -644,7 +650,7 @@ const CommonProfile = ({
                   raised: currCommon.balance,
                   currentBudget: numberFormatter(
                     // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
-                    currCommon.tokenTotalSupply,
+                    currCommon.tokenTotalSupply
                   ),
                 }}
               />
@@ -660,8 +666,8 @@ const CommonProfile = ({
 
             {renderAgendaForNonMembers()}
             {/**
-        <TouchableOpacity
-          style={{
+             <TouchableOpacity
+             style={{
             ...styles.headerButton,
             ...{
               justifyContent: 'center',
@@ -669,18 +675,18 @@ const CommonProfile = ({
               marginHorizontal: 100,
             },
           }}
-          onPress={openProposalScreen}>
-          <Text
-            style={{
+             onPress={openProposalScreen}>
+             <Text
+             style={{
               fontSize: 16,
               color: 'white',
               fontWeight: '700',
             }}>
-            Open Proposal
-          </Text>
-        </TouchableOpacity>
+             Open Proposal
+             </Text>
+             </TouchableOpacity>
 
-      */}
+             */}
 
             <View ref={stickyTabBarRef} collapsable={false}>
               <TabView
@@ -726,40 +732,40 @@ const CommonProfile = ({
                 )
               )
             ) : (
-                <>
-                  {showStickyRequestToJoinBtn && showReqToJoin && (
-                    <View style={styles.actionButtonContainer}>
-                      {renderRequestToJoinBtn()}
+              <>
+                {showStickyRequestToJoinBtn && showReqToJoin && (
+                  <View style={styles.actionButtonContainer}>
+                    {renderRequestToJoinBtn()}
+                  </View>
+                )}
+                <Modal
+                  isVisible={showRequestSentModal}
+                  avoidKeyboard={true}
+                  backdropColor={colors.white}
+                  backdropOpacity={1}
+                  onBackdropPress={() => setShowRequestSentModal(false)}
+                  style={{padding: 0}}>
+                  <SentTemplate
+                    title="Membership request sent"
+                    description="The common members will vote on your membership request. If it's approved, you will become a member with equal voting rights."
+                    onClose={() => setShowRequestSentModal(false)}>
+                    <View>
+                      <TouchableOpacity
+                        style={styles.modalRequestSentBtnPrimary}
+                        onPress={viewProposal}>
+                        <Text style={text.buttoncenterwhite}>
+                          View proposal
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.modalRequestSentBtnOutline}
+                        onPress={goToToCommon}>
+                        <Text style={styles.backButton}>Back to Common</Text>
+                      </TouchableOpacity>
                     </View>
-                  )}
-                  <Modal
-                    isVisible={showRequestSentModal}
-                    avoidKeyboard={true}
-                    backdropColor={colors.white}
-                    backdropOpacity={1}
-                    onBackdropPress={() => setShowRequestSentModal(false)}
-                    style={{padding: 0}}>
-                    <SentTemplate
-                      title="Membership request sent"
-                      description="The common members will vote on your membership request. If it's approved, you will become a member with equal voting rights."
-                      onClose={() => setShowRequestSentModal(false)}>
-                      <View>
-                        <TouchableOpacity
-                          style={styles.modalRequestSentBtnPrimary}
-                          onPress={viewProposal}>
-                          <Text style={text.buttoncenterwhite}>
-                            View proposal
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={styles.modalRequestSentBtnOutline}
-                          onPress={goToToCommon}>
-                          <Text style={styles.backButton}>Back to Common</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </SentTemplate>
-                  </Modal>
-                </>
+                  </SentTemplate>
+                </Modal>
+              </>
             )}
           </SafeAreaView>
         </View>
@@ -948,5 +954,5 @@ const styles = StyleSheet.create({
 export default inject(
   'bottomSheetStore',
   'daoStore',
-  'userStore',
+  'userStore'
 )(observer(CommonProfile));
