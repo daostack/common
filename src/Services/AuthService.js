@@ -32,7 +32,7 @@ export default class AuthService {
 
   constructor() {
     GoogleSignin.configure({
-      scopes: [GOOGLE_SIGNIN_PERMISSIONS.DRIVE_RW],
+      scopes: [GOOGLE_SIGNIN_PERMISSIONS.APP_DATA_RW],
       webClientId: firebaseWebClientId,
     });
   }

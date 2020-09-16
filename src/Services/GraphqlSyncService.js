@@ -28,7 +28,7 @@ export default class GraphqlSyncService {
     logger.log(`update proposal ${proposalId}`);
     const options = {params: {proposalId, retries: 4, blockNumber}};
     await this.axiosClient.get('update-proposal-by-id', options);
-    logger.log('Proposal updated:');
+    logger.log('Proposal updated successfully');
   }
 
 }

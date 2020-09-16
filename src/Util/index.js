@@ -4,6 +4,7 @@ import moment from 'moment';
 
 export const GOOGLE_SIGNIN_PERMISSIONS = {
   DRIVE_RW: 'https://www.googleapis.com/auth/drive',
+  APP_DATA_RW: 'https://www.googleapis.com/auth/drive.appdata',
 };
 
 export const AUTH_PROVIDER_ID = {
