@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   sideContainer: {
-    ...layout.marginRightXS
+    ...layout.marginRightXS,
   },
   ruleTitle: {
     ...text.h4Black,
