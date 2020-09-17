@@ -34,7 +34,7 @@ export const createCommon = async (givenOpts, navigation) => {
     const body2 = {encodedData, signedData, toAddress, idToken};
     const response2 = await axios.post(`${endpoint}/createCommon`, body2);
     console.log('createCommon -->', response2);
-    return response2;
+    return response2.data.daoId;
   } catch (e) {
     // navigation.pop();
     throw e;
