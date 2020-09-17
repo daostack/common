@@ -111,18 +111,15 @@ const RequestStep1 = ({navigation, route, daoStore}) => {
 
             <View style={styles.content}/>
 
-            { daoStore.dao.metadata?.rules.length > 0 &&
-              daoStore.dao.metadata.rules.map((rule, index) => {
-                console.log('rule', rule);
-                return (
-                  <RequestToJoinRule
-                    index={index + 1}
-                    title={rule.title}
-                    description={rule.description}
-                    url={rule.url}
-                  />
-                );
-              })}
+            {daoStore.dao.metadata?.rules.length > 0 &&
+              daoStore.dao.metadata.rules.map((rule, index) => (
+                <RequestToJoinRule
+                  index={index + 1}
+                  title={rule.title}
+                  description={rule.description}
+                  url={rule.url}
+                />
+              ))}
           </View>
         </ScrollView>
         <RequestStepActionButton title="Continue" pass={pass} onPress={push} />
