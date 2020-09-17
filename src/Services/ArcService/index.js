@@ -23,7 +23,7 @@ export default class ArcService {
         graphqlHttpProvider: graphHttpLink,
         graphqlWsProvider: graphwsLink,
         ipfsProvider: ipfsLink,
-        web3Provider: manager.wallet,
+        web3Provider: manager.provider,
       });
 
       await this.fetchAllContracts();
@@ -75,9 +75,9 @@ export default class ArcService {
   };
 
   // PROPOSALS
-  createRequestToJoin = async (daoId, data) => createProposalRequestToJoin(this.arc, daoId, data);
+  createRequestToJoin = async (daoId, data) => createProposalRequestToJoin(daoId, data);
 
-  createFundingProposal = async (userAddress, daoId, data) => createFundingProposal(this.arc, userAddress, daoId, data);
+  createFundingProposal = async (userAddress, daoId, data) => createFundingProposal(userAddress, daoId, data);
 
   // VOTING
   voteForJoinProposal = async (proposalId, data) => voteForProposal(
@@ -96,6 +96,6 @@ export default class ArcService {
 
   // COMMONS
   async createCommon(givenOpts = {}, navigation) {
-    return createCommon(this.arc, givenOpts, navigation);
+    return createCommon(givenOpts, navigation);
   }
 }

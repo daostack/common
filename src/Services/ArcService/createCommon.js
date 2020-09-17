@@ -1,16 +1,8 @@
-import {IpfsClient, graphqlUrl} from '~/Config';
-import ArcService from '~/Services/ArcService';
+import {createUrl} from '~/Config';
 import logger from '../Logger';
 import axios from 'axios';
-const {getForgeOrgData} = require('@daostack/common-factory');
-const DAOFactoryABI = require('@daostack/common-factory/abis/DAOFactory');
-
-const {
-  ARC_VERSION,
-  COMMONTOKENADDRESS,
-  MEMBER_REPUTATION,
-  IPFS_DATA_VERSION,
-} = require('~/Config');
+import WalletManager from '../../Util/WalletManager';
+import auth from '@react-native-firebase/auth';
 
 // USAGE:
 // const commonAddress = await createCommon({
@@ -29,86 +21,20 @@ const {
 //       links: formData.links,
 /// });
 
-export const createCommon = async (
-  arc,
-  givenOpts = {},
-  navigation
-) => {
+export const createCommon = async (givenOpts, navigation) => {
   // need these keys:
   try {
-    const defaultOptions = {
-      tokenDist: [0],
-      repDist: [MEMBER_REPUTATION],
-      memberReputation: MEMBER_REPUTATION,
-      fundingToken: COMMONTOKENADDRESS,
-      VERSION: IPFS_DATA_VERSION, // just some alphanumberic marker  that is useful for understanding what our data is shaped like
-    };
-    const opts = {...defaultOptions, ...givenOpts};
-
-    logger.log('saving data on ipfs: ', opts);
-    const ipfsHash = await IpfsClient.addAndPinString(JSON.stringify(opts));
-    logger.log('ipfsHash ->', ipfsHash);
-
-    const daoFactoryInfo = arc.getContractInfoByName(
-      'DAOFactoryInstance',
-      ARC_VERSION,
-    );
-
-    const daoFactoryContract = await arc.getContract(
-      daoFactoryInfo.address,
-      DAOFactoryABI,
-    );
-
-    const votingMachineInfo = arc.getContractInfoByName(
-      'GenesisProtocol',
-      ARC_VERSION,
-    );
-
-    const data = {
-      DAOFactoryInstance: daoFactoryInfo.address,
-      orgName: opts.name,
-      founderAddresses: [opts.founderAddresses],
-      repDist: opts.repDist,
-      votingMachine: votingMachineInfo.address,
-      fundingToken: opts.fundingToken,
-      minFeeToJoin: 0, // Make the min fee to 0, simplify request to join logic
-      memberReputation: opts.memberReputation,
-      // we set the OFFICIAL funding goal to 0 - in the frontend we show the fundingGaol from ipfs data
-      // goal: parseInt(opts.fundingGoal, 10),
-      goal: 0,
-      deadline: opts.fundingGoalDeadline,
-      metaData: ipfsHash,
-    };
-    logger.log('Calling DAOFactory.forgeOrg(...)', data);
-
-    const [encodedForgeOrgParams, encodedSetSchemesParams] = getForgeOrgData(data);
-
-    logger.log('waiting for forgeOrg transaction to be mined');
-    const receipt = await daoFactoryContract.sendToRelayerWithReceipt(
-      'forgeOrg',
-      [encodedForgeOrgParams, encodedSetSchemesParams]
-    );
-
-    // logger.log('forgeOrg receipt ->', receipt);
-    logger.log('forgeOrg transaction was mined..');
-
-    // Get the new avatar address of the thing that was just created..
-    const newOrgEvent = receipt.events.NewOrg;
-    const newOrgAddress = newOrgEvent._avatar;
-
-    logger.log(`Created a Common at ${newOrgAddress} with name "${opts.name}"`);
-
-    // Reload all contract infos for Arc instance
-    await ArcService.getInstance().fetchAllContracts();
-
-    logger.log('Updating database');
-    // we try to update the database, and we will retry four times, which should give us more than enough time
-    // for the graph to index the data
-    const endpoint = graphqlUrl();
-    await axios.get(`${endpoint}/update-dao-by-id?daoId=${newOrgAddress}&retries=4`);
-    logger.log('Common database has been updated');
-
-    return newOrgAddress;
+    const idToken = await auth().currentUser.getIdToken();
+    const body1 = {idToken, givenOpts};
+    const endpoint = createUrl();
+    logger.log('createCommon ->', body1, endpoint);
+    const {data: {encodedData, toAddress, safeTxHash}} = await axios.post(`${endpoint}/preCommonCreation`, body1);
+    const manager = await WalletManager.getInstance();
+    const signedData = await manager.signSafeTx(safeTxHash);
+    const body2 = {encodedData, signedData, toAddress, idToken};
+    const response2 = await axios.post(`${endpoint}/createCommon`, body2);
+    console.log('createCommon -->', response2);
+    return response2;
   } catch (e) {
     // navigation.pop();
     throw e;

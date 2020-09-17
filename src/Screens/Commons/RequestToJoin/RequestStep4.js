@@ -96,7 +96,7 @@ const RequestStep4 = ({navigation,
         navigation.dispatch(navigate);
       } catch (e) {
         navigation.pop();
-        showErrorPopUp(bottomSheetStore, e?.response?.data?.error ? e.response.data.error : e.message);
+        showErrorPopUp(bottomSheetStore, e?.response?.data?.error?.error ? e.response.data.error.error : e.message);
       }
     }
   };

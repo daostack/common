@@ -107,6 +107,20 @@ export default class WalletManager {
     return this.safeAddress;
   }
 
+  signRelayerTx = async (toAddress, value, data) => {
+    const finalSignature = await this.txHashSignature(this.safeAddress, toAddress, value, data);
+    return finalSignature;
+  }
+
+  signSafeTx = async (txHash) => {
+    const byteTxHash = ethers.utils.arrayify(txHash);
+    const signedTx = await this.wallet.signMessage(byteTxHash);
+    // Add 4
+    let finalSignature = signedTx.replace(/1b$/, '1f').replace(/1c$/, '20');
+    logger.log('finalSignature -->', finalSignature);
+    return finalSignature;
+  }
+
   getBalance = async (address = this.address) => this.provider.getBalance(address).then((balance) => {
     let balanceString = ethers.utils.formatEther(balance);
     return balanceString;
@@ -173,10 +187,12 @@ export default class WalletManager {
   txHashSignature = async (safeAddress, toAddress, value = 0, data = '0x') => {
     try {
       const txHash = await this.createSafeTransactionHash(safeAddress, toAddress, value, data);
+      logger.log('createSafeTransactionHash -->', txHash);
       const byteTxHash = ethers.utils.arrayify(txHash);
       const signedTx = await this.wallet.signMessage(byteTxHash);
       // Add 4
       let finalSignature = signedTx.replace(/1b$/, '1f').replace(/1c$/, '20');
+      logger.log('finalSignature -->', finalSignature);
       return finalSignature;
     } catch (err) {
       throw err;
