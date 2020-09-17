@@ -20,16 +20,12 @@ import MembershipRequest from './MembershipRequest';
 import {string, array, object} from 'prop-types';
 const {width, height} = Dimensions.get('window');
 
-const RequestStep1 = ({navigation, route,
-  daoStore: {
-    dao: {name,
-      metadata: {
-        rules: {commonRules},
-      }},
-  }}) => {
+const RequestStep1 = ({navigation, route, daoStore}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [pass, setPass] = useState(false);
+
+  const {name} = daoStore.dao;
 
   useEffect(() => {
     const newHeight = scrollY.interpolate({
@@ -76,7 +72,16 @@ const RequestStep1 = ({navigation, route,
         />
         <ScrollView
           showsVerticalScrollIndicator={false}
+          onScrollEndDrag={onScrollToBottom}
+          scrollEventThrottle={16}
           width={width}
+          onScroll={Animated.event([
+            {
+              nativeEvent: {
+                contentOffset: {y: scrollY},
+              },
+            },
+          ])}
           contentContainerStyle={{
             alignItems: 'center',
             justifyContent: 'center',
@@ -85,34 +90,39 @@ const RequestStep1 = ({navigation, route,
           onContentSizeChange={(_width, contentHeight) =>
             contentHeight < (height - 150) && setPass(true)
           }
-          scrollEventThrottle={16}
-          onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
-          ])}
-          onScrollEndDrag={onScrollToBottom}>
+        >
           <MembershipRequest />
+
           <CreateStepHeader
             currentIndex={0}
             isFirstStepSkipped={false}
           />
+
           <View
             style={{
               flex: 1,
               // alignItems: 'center',
               backgroundColor: 'white',
             }}>
-            <RequestStepHeaderTitle title="Accept Common Rules" subtitle="If the Common approves your request you will become a member with equal voting rights." />
-            <View
-              style={styles.content}
+            <RequestStepHeaderTitle
+              title="Accept Common Rules"
+              subtitle="If the Common approves your request you will become a member with equal voting rights."
             />
-            {Boolean(commonRules?.length) &&
-              commonRules.map((rule, index) => (
-                <RequestToJoinRule
-                  index={index + 1}
-                  title={rule.title}
-                  description={rule.description}
-                />
-              ))}
+
+            <View style={styles.content}/>
+
+            { daoStore.dao.metadata?.rules.length > 0 &&
+              daoStore.dao.metadata.rules.map((rule, index) => {
+                console.log('rule', rule);
+                return (
+                  <RequestToJoinRule
+                    index={index + 1}
+                    title={rule.title}
+                    description={rule.description}
+                    url={rule.url}
+                  />
+                );
+              })}
           </View>
         </ScrollView>
         <RequestStepActionButton title="Continue" pass={pass} onPress={push} />
