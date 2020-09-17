@@ -150,7 +150,6 @@ const ProposalScreen = ({
     {key: 'discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
   ]);
 
-  const [ inputHeight, setInputHeight ] = useState(60);
   const [ inputText, setInputText ] = useState(null);
 
   const inputRef = useRef();
@@ -216,15 +215,11 @@ const ProposalScreen = ({
               <TextInput
                 ref={inputRef}
                 editable={true}
-                multiline={true}
                 fontSize={15}
                 onChangeText={(currText) => setInputText(currText)}
-                onContentSizeChange={(e) => {
-                  setInputHeight(e.nativeEvent.contentSize.height);
-                }}
                 style={{
                   flex: 1,
-                  height: inputHeight,
+                  height: 18,
                   marginHorizontal: 10,
                 }}
               />
