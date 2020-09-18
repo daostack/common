@@ -91,7 +91,7 @@ export default class AuthService {
       signedInUser = await auth().signInWithCredential(googleCredential);
     } catch (error) {
       await this.clearGoogleSignInCache();
-      await this.signOut();
+      await this.googleSignOut();
       throw error;
     }
     return signedInUser;
@@ -102,16 +102,21 @@ export default class AuthService {
     await GoogleSignin.clearCachedAccessToken(accessToken);
   }
 
+  async googleSignOut() {
+    if (Platform.OS === 'android') {
+      await GoogleSignin.revokeAccess();
+    }
+    await GoogleSignin.signOut();
+  }
+
   async signOut() {
     try {
-      if (Platform.OS === 'android') {
-        await GoogleSignin.revokeAccess();
-      }
-      await GoogleSignin.signOut();
+      await this.googleSignOut();
       await auth().signOut();
     } catch (error) {
       const {accessToken} = await GoogleSignin.getTokens();
       await GoogleSignin.clearCachedAccessToken(accessToken);
+      return error;
     }
   }
 
