@@ -71,7 +71,7 @@ const ProposalScreen = ({
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
 
-  const [stickyTabBarState, setStickyTabBarState] = useState({animation: new Animated.Value(0)});
+  const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
 
   // Top voting buttons ref
   const topVotingButtonsRef = useRef(null);

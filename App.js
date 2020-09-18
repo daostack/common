@@ -12,7 +12,7 @@ import {
 import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer, CommonActions} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {colors, text} from './src/Theme';
+import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
   CommonProfile,
@@ -66,7 +66,7 @@ import DeepLinking from 'react-native-deep-linking';
 import ArcService from './src/Services/ArcService';
 import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
 import Toast from './src/Util/Toast';
-import Cache, {CacheKey} from './src/Util/Cache';
+import Cache from './src/Util/Cache';
 import {func, bool, object, shape} from 'prop-types';
 import logger from './src/Services/Logger';
 import {fontSize} from './src/Theme/font';

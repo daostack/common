@@ -88,7 +88,7 @@ const CommonProfile = ({
   const [ showStickyTabBar, setShowStickyTabBar ] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
-  const [stickyTabBarState, setStickyTabBarState] = useState({animation: new Animated.Value(0)});
+  const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
   const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(false);
 
   //setHeaderHeight(height + 35);
@@ -172,9 +172,9 @@ const CommonProfile = ({
   }, [ pendingProposalsData ]);
 
   const renderTabBar = (props) => (
-    <TabBarRenderer 
-      originRef={originTabBarRef} 
-      jumpTo={originTabBarRef.current?.props?.jumpTo} 
+    <TabBarRenderer
+      originRef={originTabBarRef}
+      jumpTo={originTabBarRef.current?.props?.jumpTo}
       indexChange={setIndex} {...props}
     />
   );
