@@ -66,6 +66,7 @@ import DeepLinking from 'react-native-deep-linking';
 import ArcService from './src/Services/ArcService';
 import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
 import Toast from './src/Util/Toast';
+import Cache, {CacheKey} from './src/Util/Cache';
 import {func, bool, object, shape} from 'prop-types';
 import logger from './src/Services/Logger';
 const Stack = createStackNavigator();
@@ -211,21 +212,18 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         if (user) {
           const providerId = user.providerData[0].providerId;
           await AuthService.getInstance().loadMnemonic(user.uid, providerId);
-          await WalletManager.init(user.uid);
-          await ArcService.init();
-          const manager = await WalletManager.getInstance();
-          let appUser = await UserService.getInstance().getUserById(
-            user.uid,
-          );
+          let appUser = await Cache.get(user.uid);
+          if (!appUser) {
+            appUser = await UserService.getInstance().getUserById(
+              user.uid,
+            );
+          }
           const isNewUser = !appUser;
 
           if (isNewUser) {
             const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
             const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
             appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
-            manager.createSmartContractWallet();
-          } else {
-            await manager.addressCheck(user.uid);
           }
 
           const allUserInfo = {
@@ -235,8 +233,19 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
           const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
           userStore.setSignedInUser(filteredUser);
-          if (subscribers.userInfoChangeUnsubscribe) {
+          userStore.setIsLoading(false);
 
+          await WalletManager.init(user.uid);
+          await ArcService.init();
+          const manager = await WalletManager.getInstance();
+
+          if (isNewUser) {
+            manager.createSmartContractWallet();
+          } else {
+            manager.addressCheck(user.uid);
+          }
+
+          if (subscribers.userInfoChangeUnsubscribe) {
             subscribers.userInfoChangeUnsubscribe();
           }
           subscribers.userInfoChangeUnsubscribe = await updateUser(user.uid);
@@ -246,7 +255,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           }
           userStore.setSignedInUser(null);
         }
-
         userStore.setIsLoading(false);
       } catch (error) {
         logger.log(error);

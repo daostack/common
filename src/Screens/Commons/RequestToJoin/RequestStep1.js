@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   ScrollView,
@@ -9,27 +9,22 @@ import {
 } from 'react-native';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import RequestToJoinRule from '~/Components/Commons/RequestToJoinRule';
-import {observer, inject} from 'mobx-react';
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepDotHeader from './RequestStepDotHeader';
-import {colors} from '~/Theme';
+import { colors } from '~/Theme';
 import CreateStepNavigation from './RequestStepNavigation';
 import RequestStepActionButton from '../RequestStepActionButton';
-import {CommonActions} from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 import MembershipRequest from './MembershipRequest';
-import {string, array, object} from 'prop-types';
-const {width, height} = Dimensions.get('window');
+import { string, array, object } from 'prop-types';
+const { width, height } = Dimensions.get('window');
 
-const RequestStep1 = ({navigation, route,
-  daoStore: {
-    dao: {name,
-      metadata: {
-        rules: {commonRules},
-      }},
-  }}) => {
+const RequestStep1 = ({ navigation,route: { params }} ) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [pass, setPass] = useState(false);
+  const name = params.currCommon.name;
+  const commonRules = params.currCommon.metadata?.commonRules;
 
   useEffect(() => {
     const newHeight = scrollY.interpolate({
@@ -49,7 +44,8 @@ const RequestStep1 = ({navigation, route,
       const navigate = CommonActions.navigate({
         name: 'RequestStep2',
         params: {
-          currDaoId: route.params.currDaoId,
+          currDaoId: params.currDaoId,
+          currCommon: params.currCommon,
         },
       });
       navigation.dispatch(navigate);
@@ -58,7 +54,7 @@ const RequestStep1 = ({navigation, route,
 
   return (
     <>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView style={{ backgroundColor: colors.white }} />
       <SafeAreaView
         style={{
           flex: 1,
@@ -87,7 +83,7 @@ const RequestStep1 = ({navigation, route,
           }
           scrollEventThrottle={16}
           onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
+            { nativeEvent: { contentOffset: { y: scrollY } } },
           ])}
           onScrollEndDrag={onScrollToBottom}>
           <MembershipRequest />
@@ -148,4 +144,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('daoStore')(observer(RequestStep1));
+export default RequestStep1;
