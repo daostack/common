@@ -21,22 +21,20 @@ import auth from '@react-native-firebase/auth';
 //       links: formData.links,
 /// });
 
-export const createCommon = async (givenOpts, navigation) => {
-  // need these keys:
+export const createCommon = async (data, navigation) => {
   try {
     const idToken = await auth().currentUser.getIdToken();
-    const body1 = {idToken, givenOpts};
+    const body1 = {idToken, data};
     const endpoint = createUrl();
     logger.log('createCommon ->', body1, endpoint);
-    const {data: {encodedData, toAddress, safeTxHash}} = await axios.post(`${endpoint}/preCommonCreation`, body1);
+    const {data: {encodedData, toAddress, safeTxHash}} = await axios.post(`${endpoint}/createCommonTransaction`, body1);
     const manager = await WalletManager.getInstance();
     const signedData = await manager.signSafeTx(safeTxHash);
     const body2 = {encodedData, signedData, toAddress, idToken};
     const response2 = await axios.post(`${endpoint}/createCommon`, body2);
-    console.log('createCommon -->', response2);
+    logger.log('createCommon -->', response2);
     return response2.data.daoId;
   } catch (e) {
-    // navigation.pop();
     throw e;
   }
 };

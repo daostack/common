@@ -1,7 +1,7 @@
 // TODO: rename this file to °createProposalRequestToJoin.js°
 import WalletManager from '~/Util/WalletManager';
 import logger from '../Logger';
-import {createUrl } from '~/Config';
+import {createUrl, relayerUrl } from '~/Config';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 
@@ -10,7 +10,7 @@ export const createProposalRequestToJoin = async (daoId, data) => {
     const idToken = await auth().currentUser.getIdToken();
     const body1 = {idToken, daoId, data};
     const endpoint = createUrl();
-    const {data: {encodedData, safeTxHash, toAddress}} = await axios.post(`${endpoint}/preCreateRequestToJoin`, body1);
+    const {data: {encodedData, safeTxHash, toAddress}} = await axios.post(`${endpoint}/createRequestToJoinTransaction`, body1);
     const manager = await WalletManager.getInstance();
     const signature = await manager.signSafeTx(safeTxHash);
 
@@ -27,7 +27,7 @@ export const createProposalRequestToJoin = async (daoId, data) => {
     };
 
     const response = await axios.post(
-      `${createUrl()}/createRequestToJoin`,
+      `${relayerUrl()}/requestToJoin`,
       body2
     );
     let msg;
@@ -52,7 +52,7 @@ export const createProposalRequestToJoin = async (daoId, data) => {
 
     return response.data.proposalId;
   } catch (e) {
-    logger.log(e.message, e?.response?.data?.error?.error);
+    logger.log(e);
     throw e;
   }
 };
