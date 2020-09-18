@@ -164,7 +164,6 @@ const ProposalScreen = ({
   const [ inputText, setInputText ] = useState(null);
 
   const inputRef = useRef();
-  const messageContainerRef = useRef();
 
   const renderTabBar = (currProps) => (
     <View style={{paddingBottom: 5}}>
@@ -568,7 +567,7 @@ const ProposalScreen = ({
             <TabView
               navigationState={{index, routes}}
               renderScene={() => null}
-              onIndexChange={onSetIndex}
+              onIndexChange={setIndex}
               initialLayout={initialLayout}
               renderTabBar={renderTabBar}
               style={{backgroundColor: colors.paleGrey}}
@@ -579,7 +578,7 @@ const ProposalScreen = ({
               <ProposalData
                 proposalId={proposalId}
                 proposalInfo={proposalInfo}
-                showMore={() => onSetIndex(1)}
+                showMore={() => setIndex(1)}
               />
             )}
 

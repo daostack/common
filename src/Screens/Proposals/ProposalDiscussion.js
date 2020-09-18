@@ -19,7 +19,7 @@ const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
       scrollViewRef.current.scrollToEnd({
         animated: true,
       });
-    }, 150)
+    }, 150);
   };
 
   let listRef = useRef([]);
