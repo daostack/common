@@ -9,21 +9,32 @@ const NavigationHeader = ({title, navigation}) => (
     statusBar={{hidden: true}}
     leftButton={
       <TouchableOpacity
-        style={{justifyContent: 'center', flexDirection: 'row'}}
-        onPress={() => navigation.pop()}>
-        <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
+        onPress={() => navigation.pop()}
+        style={{
+          justifyContent: 'center',
+          flexDirection: 'row',
+        }}
+      >
+        <Icon
+          size={32}
+          name="left-arrow"
+          style={{marginLeft: 10}}
+        />
       </TouchableOpacity>
     }
-    title={<Text
-      style={{
-        fontWeight: 'bold',
-        alignSelf: 'center',
-        fontSize: 16,
-        top: -6,
-        marginLeft: 3,
-      }}>
-      {title}
-    </Text>}
+    title={(
+      <Text
+        style={{
+          fontWeight: 'bold',
+          alignSelf: 'center',
+          fontSize: 16,
+          top: -6,
+          marginLeft: 3,
+        }}
+      >
+        {title}
+      </Text>
+    )}
   />
 );
 

@@ -66,9 +66,10 @@ import DeepLinking from 'react-native-deep-linking';
 import ArcService from './src/Services/ArcService';
 import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
 import Toast from './src/Util/Toast';
-import Cache, {CacheKey} from './src/Util/Cache';
+import Cache from './src/Util/Cache';
 import {func, bool, object, shape} from 'prop-types';
 import logger from './src/Services/Logger';
+import {fontSize} from './src/Theme/font';
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
 if (Platform.OS === 'ios') {
@@ -324,7 +325,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           headerStyle: styles.headerStyle,
           headerTintColor: colors.black,
           headerBackImage: () => <Icon name="left-arrow" size={32} />,
-        }}>
+        }}
+      >
         {!onboarded && (
           <Stack.Screen
             name="Onboarding"
@@ -377,8 +379,32 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           name="ProposalScreen"
           component={ProposalScreen}
           options={({route}) => ({
-            title: route?.params.screenTitle,
             headerBackTitleVisible: false,
+            headerTitle: () => (
+              <View style={{alignItems: 'center'}}>
+                <Text
+                  style={{
+                    ...fontSize(
+                      navigation?.route.params.subtitle
+                        ? 4
+                        : 3
+                    ),
+                  }}
+                >
+                  {
+                    (route?.params.title?.length > 20)
+                      ? ((route?.params.title.substring(0, 17)) + '...')
+                      : route?.params.title
+                  }
+                </Text>
+
+                {route?.params.subtitle && (
+                  <Text style={{opacity: 0.4, ...fontSize(1)}}>
+                    {route.params.subtitle}
+                  </Text>
+                )}
+              </View>
+            ),
           })}
         />
         <Stack.Screen

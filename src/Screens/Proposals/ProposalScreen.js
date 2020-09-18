@@ -65,12 +65,13 @@ const ProposalScreen = ({
     isMember &&
     !proposalInfo.votes.some((vote) => vote.voter === userInfo.safeAddress);
 
+
   // Sticky Tab Bar
   const [ showStickyTabBar, setShowStickyTabBar ] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
 
-  const [stickyTabBarState, setStickyTabBarState] = useState({animation: new Animated.Value(0)});
+  const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
 
   // Top voting buttons ref
   const topVotingButtonsRef = useRef(null);
@@ -103,6 +104,11 @@ const ProposalScreen = ({
       );
       setProposedUser(currProposedUser);
       setProposalInfo({...currProposalInfo, funding});
+
+      navigation.setParams({
+        title: currProposedUser.displayName,
+        subtitle: currProposalInfo.type === 'Join' && 'Request To Join',
+      });
     };
 
     const getProposalInfo = async (currProposalId) => {
@@ -390,6 +396,7 @@ const ProposalScreen = ({
         <Animated.View style={[stickyTabBarStyle, slideUp]}>
           <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} />
         </Animated.View>
+
         <ScrollView
           style={{
             flex: 1,
@@ -423,7 +430,8 @@ const ProposalScreen = ({
             topVotingButtonsRef?.current?.measure((fx, fy, width, height, px, py) => {
               setShowBottomVotingButtonsContainer(py < 0);
             });
-          }}>
+          }}
+        >
           {proposalInfo && (
             <View style={{...headerContainerStyle}}>
               {proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
@@ -433,6 +441,7 @@ const ProposalScreen = ({
                     isBoosted={true}
                     stage={proposalInfo?.stageStr}
                     winningOutcome={proposalInfo?.winningOutcome}
+                    hasPassedExpiryDate={hasPassedExpiryDate}
                     closingAt={proposalInfo.closingAt}
                   />
 
