@@ -10,7 +10,6 @@ import logger from '~/Services/Logger';
 import {shape, func} from 'prop-types';
 
 const GSignInButton = ({onSignIn, userStore}) => {
-  const [signInError, setSignInError] = useState(null);
 
   const _signIn = async () => {
     try {
@@ -20,21 +19,21 @@ const GSignInButton = ({onSignIn, userStore}) => {
       if (onSignIn) {
         onSignIn(userInfo);
       }
-      setSignInError(null);
+      userStore.setSignInError(null);
     } catch (error) {
       userStore.setIsLoading(false);
       switch (error.code) {
       case statusCodes.SIGN_IN_CANCELLED:
-        setSignInError('Canceled');
+        userStore.setSignInError('Canceled');
         break;
       case statusCodes.IN_PROGRESS:
         logger.log('SignIn in progress');
         break;
       case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-        setSignInError('play services not available or outdated');
+        userStore.setSignInError('play services not available or outdated');
         break;
       default:
-        setSignInError(error);
+        userStore.setSignInError(error);
       }
     }
   };
@@ -47,9 +46,9 @@ const GSignInButton = ({onSignIn, userStore}) => {
   );
 
   const renderError = () => {
-    if (signInError) {
-      const errorText = `${signInError.toString()} ${
-        signInError.code ? signInError.code : ''
+    if (userStore.signInError) {
+      const errorText = `${userStore.signInError.toString()} ${
+        userStore.signInError.code ? userStore.signInError.code : ''
       }`;
       return (
         <View style={styles.messageContainer}>

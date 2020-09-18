@@ -64,6 +64,7 @@ const UserProfile = ({userStore, navigation, route}) => {
       );
 
     } catch (error) {
+      await AuthService.getInstance().clearGoogleSignInCache();
       userStore.setIsLoading(false);
       Toast.error(error?.toString());
       logger.log('SignOut Error -> ', error);
