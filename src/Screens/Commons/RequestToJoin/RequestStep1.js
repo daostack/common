@@ -90,17 +90,8 @@ const RequestStep1 = ({navigation, route, daoStore}) => {
             padding: 24,
           }}
           onContentSizeChange={(_width, contentHeight) => {
-            contentHeight < (height - 150) && setPass(true)
+            contentHeight < (height - 150) && setPass(true);
           }}
-          scrollEventThrottle={16}
-          onScroll={() => {
-            Animated.event([{
-              nativeEvent: {
-                contentOffset: {y: scrollY}
-              }
-            }])
-          }}
-          onScrollEndDrag={onScrollToBottom}
         >
           <MembershipRequest />
 
@@ -135,7 +126,7 @@ const RequestStep1 = ({navigation, route, daoStore}) => {
         </ScrollView>
         <RequestStepActionButton title="Continue" pass={pass} onPress={push} />
       </SafeAreaView>
-    </>
+    </ React.Fragment>
   );
 };
 
