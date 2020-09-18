@@ -29,6 +29,7 @@ const ProposalsList = ({isMember,
 
   const commonId = commonInfo?.id;
   const commonName = commonInfo?.name;
+
   const [list, setList] = useState(null);
 
   let listRef = useRef([]);
@@ -83,8 +84,8 @@ const ProposalsList = ({isMember,
     }
 
     navigation.navigate('ProposalScreen', {
+      title: currCommonName,
       proposalId: proposalId,
-      screenTitle: currCommonName,
       commonBalance: currCommonBalance,
       isMember,
     });
