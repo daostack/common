@@ -631,5 +631,4 @@ export default inject(
   'agendaFormStore',
   'reviewFormStore',
   'userStore',
-  'daoStore',
 )(observer(CreateStep4));

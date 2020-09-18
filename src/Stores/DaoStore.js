@@ -46,10 +46,6 @@ class DaoStore {
     }
     this.daos = daoArray;
   };
-
-  setDao = (dao) => {
-    this.dao = dao;
-  };
 }
 
 decorate(DaoStore, {

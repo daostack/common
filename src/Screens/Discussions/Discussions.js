@@ -279,14 +279,10 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
       </>
   );
 
-  const fileName = (url) => url
-    .substring(url.lastIndexOf('/') + 1, url.length)
-    .split('?')[0]
-    .split('_')
-    .slice(0, -1)
-    .join('_')
-    .replace('public_file%2F', '')
-    .concat('.pdf');
+  const fileName = (url) => {
+    url = url.split('_');
+    return url[url.length - 2];
+  };
 
   const header = () => (
       // <SafeAreaView flex={1}>
@@ -428,35 +424,45 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
       }
 
       <KeyboardAvoidingView
-        behavior={'height'}
-        style={{position: 'absolute', height: 90, bottom: 0, flex: 1, color: '#fbfdff'}}>
-        <View style={styles.input}>
-          {isMember ? (<>
-            <TextInput
-              ref={inputRef}
-              editable={true}
-              multiline={true}
-              placeholder="What do you think?"
-              onContentSizeChange={(e) =>
-                setInputHeight(e.nativeEvent.contentSize.height)
-              }
-              style={{...styles.textInput, height: inputHeight}}
-              fontSize={16}
-              onChangeText={(currText) => setInputText(currText)}
-            />
-            <TouchableOpacity
-              style={{paddingRight: 15, justifyContent: 'center'}}
-              onPress={sendMessageToDiscussion}>
-              <Icon
-                name="send-message"
-                style={styles.sendMessageIcon}
-                size={32}
-                color={
-                  inputText && inputText.trim() ? colors.mainBlue : colors.grey3
-                }
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          flex: 1,
+          color: '#fbfdff',
+        }}
+      >
+        <View style={styles.inputContainer}>
+          {isMember ? (
+            <View style={styles.input}>
+              <TextInput
+                ref={inputRef}
+                editable={true}
+                fontSize={15}
+                placeholder="What do you think?"
+                onChangeText={(currText) => setInputText(currText)}
+                style={{
+                  flex: 1,
+                  height: 18,
+                  marginHorizontal: 10,
+                }}
               />
-            </TouchableOpacity>
-          </>
+              <TouchableOpacity
+                onPress={sendMessageToDiscussion}
+                style={{
+                  paddingRight: 15,
+                  justifyContent: 'center',
+                }}
+              >
+                <Icon
+                  name="send-message"
+                  size={20}
+                  color={
+                    inputText && inputText.trim()
+                      ? colors.mainBlue
+                      : colors.grey3}
+                />
+              </TouchableOpacity>
+            </View>
           ) : (
             <Text style={{...styles.joinCommonText}}>
               {'Only members can send messages'}
@@ -579,10 +585,18 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: colors.mainBlue,
   },
+  inputContainer: {
+    flex: 1,
+    height: 100,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    backgroundColor: '#fbfdff',
+  },
   input: {
     // backgroundColor: colors.white,
     backgroundColor: '#fbfdff',
-    flex: 1,
     borderTopColor: colors.grey4,
     borderTopWidth: 1,
     height: 65,
@@ -599,7 +613,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 15,
-    paddingVertical: 15,
   },
   textInput: {
     flex: 1,
