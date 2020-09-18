@@ -57,23 +57,21 @@ const UserProfileData = ({
     navigation.dispatch(navigate);
   };
 
-  const renderUserProfilePicture = () => {
-    isEditMode
-      ? (
-        <ImageField
-          isAvatar={true}
-          value={user?.photoURL}
-          placeholderUrl={user?.photoURL}
-          disableEdit={true}
-          validation={{
-            name: EditProfileForm.FIELD_PROFILE_IMAGE,
-            formStore: editProfileFormStore,
-            validateRule: 'string',
-          }}
-        />
-      )
-      : (<UserAvatar image={user.photoURL} iconName={'follow'} />);
-  };
+  const renderUserProfilePicture = () => !isEditMode ? (
+    <UserAvatar image={user.photoURL} iconName={'follow'}/>
+  ) : (
+    <ImageField
+      isAvatar={true}
+      value={user?.photoURL}
+      placeholderUrl={user?.photoURL}
+      disableEdit={true}
+      validation={{
+        name: EditProfileForm.FIELD_PROFILE_IMAGE,
+        formStore: editProfileFormStore,
+        validateRule: 'string',
+      }}
+    />
+  );
 
   if (!user) {
     return <Loader />;
@@ -97,7 +95,7 @@ const UserProfileData = ({
   const showMaxData = user.uid === userInfo.uid ? 5 : null;
 
   return (
-    <>
+    <React.Fragment>
       {isEditMode && (
         <View style={styles.screenNav}>
           <TouchableOpacity onPress={() => navigateToEditProfile(false)}>
@@ -240,7 +238,7 @@ const UserProfileData = ({
           onCountChange={onRequestsCountChange}
         />
       </View>
-    </>
+    </React.Fragment>
   );
 };
 

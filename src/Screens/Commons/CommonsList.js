@@ -23,8 +23,9 @@ import {
   Fade,
 } from 'rn-placeholder';
 import DaoService from '~/Services/DaoService';
+import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import ProposalService from '~/Services/ProposalService';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 
 const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   const [myDaosGroup, setMyDaosGroup] = useState({title: '', data: []});
@@ -46,34 +47,34 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   };
 
   const splitDaoList = async (daoList) => {
-    if (userStore.userInfo.uid === null ) {
-      return;
-    }
     try {
       if (daoList.length === 0) {
         setMyDaosGroup({title: '', data: []});
         return [];
       }
+
       const myDao = daoList.filter((dao) => userStore.isDaoMember(dao.members));
-      if (myDao.length !== 0) {
+
+      const pendingList = await getPendingDAOList();
+      const pendingDao = daoList.filter((dao) => pendingList.includes(dao.id));
+
+      const featuredList = daoList.filter((dao) =>
+        !pendingDao.includes(dao) &&
+      !myDao.includes(dao) &&
+      dao.register === DAO_REGISTERED
+      );
+
+      if (myDao.length > 0) {
         setMyDaosGroup({
           title: `My Commons (${myDao?.length})`,
           data: myDao,
         });
       }
-      const pendingList = await getPendingDAOList();
-      const pendingDao = daoList.filter((dao) => pendingList.includes(dao.id));
-      if (pendingDao.length !== 0) {
+
+      if (pendingDao.length > 0) {
         setPendingDaosGroup({
           title: `Pending (${pendingDao?.length})`,
           data: pendingDao,
-        });
-      }
-      const featuredList = daoList.filter((dao) => !pendingList.includes(dao.id) && !userStore.isDaoMember(dao.members));
-      if (myDao.length !== 0 || pendingDao.length !== 0 ) {
-        setFeaturedDaosGroup({
-          title: `Featured (${featuredList.length})`,
-          data: featuredList,
         });
       }
     } catch (err) {
