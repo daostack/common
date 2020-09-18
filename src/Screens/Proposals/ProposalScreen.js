@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Keyboard,
+  Animated,
 } from 'react-native';
 import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
@@ -68,6 +69,8 @@ const ProposalScreen = ({
   const [ showStickyTabBar, setShowStickyTabBar ] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
+
+  const [stickyTabBarState, setStickyTabBarState] = useState({animation: new Animated.Value(0)});
 
   // Top voting buttons ref
   const topVotingButtonsRef = useRef(null);
@@ -157,7 +160,7 @@ const ProposalScreen = ({
 
   const renderTabBar = (currProps) => (
     <View style={{paddingBottom: 5}}>
-      <TabBarRenderer originRef={originTabBarRef} {...currProps} />
+      <TabBarRenderer originRef={originTabBarRef} jumpTo={originTabBarRef.current?.props?.jumpTo} indexChange={setIndex} {...currProps} />
     </View>
   );
   const hasPassedExpiryDate = moment().isAfter(moment.unix(proposalInfo?.closingAt));
@@ -372,15 +375,27 @@ const ProposalScreen = ({
 
   const votesCount = proposalInfo.votesFor + proposalInfo.votesAgainst;
 
+  const slideUp = {
+    transform: [
+      {
+        translateY: stickyTabBarState.animation.interpolate({
+          inputRange: [0.01, 1],
+          outputRange: [0, 80],
+          extrapolate: 'clamp',
+        }),
+      },
+    ],
+  };
+
+  const stickyTabBarStyle = {position: 'absolute', top: -80, width: '100%', paddingBottom: 5, zIndex: 999};
+
   return (
     <>
       <SafeAreaView style={{backgroundColor: colors.white}}/>
       <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
-        {showStickyTabBar && (
-          <View style={{position: 'absolute', top: 0, width: '100%', paddingBottom: 5, zIndex: 999}}>
-            <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo}
-              parentRef={originTabBarRef}/>
-          </View>)}
+        <Animated.View style={[stickyTabBarStyle, slideUp]}>
+          <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} />
+        </Animated.View>
         <ScrollView
           style={{
             flex: 1,
@@ -389,10 +404,25 @@ const ProposalScreen = ({
           scrollEventThrottle={16}
           onScroll={(e) => {
             //e.nativeEvent.contentOffset.y
-            stickyTabBarRef?.current?.measure((fx, fy, width, height, px, py) => {
-              const isVisible = py < 76;
+            stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
+              const isVisible = py < 0;
               if (isVisible !== showStickyTabBar) {
-                setShowStickyTabBar(isVisible);
+                if (isVisible) {
+                  setShowStickyTabBar(isVisible);
+                  Animated.timing(stickyTabBarState.animation, {
+                    toValue: 1,
+                    duration: 200,
+                    useNativeDriver: true,
+                  }).start();
+
+                } else {
+                  setShowStickyTabBar(isVisible);
+                  Animated.timing(stickyTabBarState.animation, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: true,
+                  }).start();
+                }
               }
             });
 
