@@ -46,13 +46,12 @@ const History = ({navigation, commonId, onProposalsCountChange}) => (
   </View>
 );
 
-const CommonMembers = ({navigation,
-  route: {
-    params: {members, commonId},
-  }}) => {
+const CommonMembers = ({navigation, route: router}) => {
   const [index, setIndex] = useState(0);
   const [pendingCount, setPendingCount] = useState(0);
   const [historyCount, setHistoryCount] = useState(0);
+
+  const {members, commonId} = router.params;
 
   const routes = [
     {key: 'members', title: getTabName('Members', members.length)},

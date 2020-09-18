@@ -63,6 +63,7 @@ class nativeBridgeTests extends React.Component {
       CMNBalance: '',
       CMNTxHash: '',
       CMNAllowance: '',
+      signedMessages: '',
     };
 
     this.uid = auth().currentUser?.uid;
@@ -352,10 +353,6 @@ class nativeBridgeTests extends React.Component {
     }
   };
 
-  error = () => {
-    this.props.daoStore.creationError('Error' + '2');
-  };
-
   createRequestToJoin = async () => {
     logger.log('creating proposal -- please wait');
     const daoId = '0x65b9355b8ab2e224693ca25bc9fa16f4a220edb9'; // 0 min join fee
@@ -459,6 +456,13 @@ class nativeBridgeTests extends React.Component {
     });
   };
 
+  signedMessages = async () => {
+    const signedMessages = await NativeWallet.signMessage('0x123');
+    this.setState({
+      signedMessages: signedMessages,
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -475,8 +479,9 @@ class nativeBridgeTests extends React.Component {
             <Text>Get local Address and balance</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.getSomeFunds} style={styles.button}>
-            <Text>Get some funds!</Text>
+          <Text>Address: {this.state.signedMessages}</Text>
+          <TouchableOpacity onPress={this.signedMessages} style={styles.button}>
+            <Text>Sign Message</Text>
           </TouchableOpacity>
 
           <Text style={{marginVertical: 10}}>
@@ -506,13 +511,6 @@ class nativeBridgeTests extends React.Component {
             onPress={this.voteForJoinProposal}
             style={styles.button}>
             <Text>Vote for proposal</Text>
-          </TouchableOpacity>
-
-          <Text>mnemonicsAndStore: {this.state.mnemonicsAndStore}</Text>
-          <TouchableOpacity
-            onPress={this.generateAndStoreMnemonic}
-            style={styles.button}>
-            <Text>Generate And Store Mnemonic</Text>
           </TouchableOpacity>
 
           <Text style={{marginVertical: 10}}>
@@ -738,7 +736,6 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
-  'daoStore',
   'userStore',
   'bottomSheetStore',
 )(observer(nativeBridgeTests));

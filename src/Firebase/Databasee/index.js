@@ -6,4 +6,4 @@ export const DB_COLLECTIONS = {
   discussionMessages: 'discussionMessage',
 };
 
-
+export const DAO_REGISTERED = 'registered';

@@ -37,9 +37,9 @@ const UserProfile = ({userStore, navigation, route}) => {
   const [codePushVersion, setCodePushVersion] = useState('');
   useEffect(() => {
     const getStatus = async () => {
-      const status = await CodePush.getUpdateMetadata();
-      logger.log('getStatus -->', status);
-      setCodePushVersion(status.label.replace('v', ''));
+      CodePush.getUpdateMetadata().then((status) => {
+        setCodePushVersion(status.label.replace('v', ''));
+      });
     };
     getStatus();
   }, []);
@@ -64,6 +64,7 @@ const UserProfile = ({userStore, navigation, route}) => {
       );
 
     } catch (error) {
+      await AuthService.getInstance().clearGoogleSignInCache();
       userStore.setIsLoading(false);
       Toast.error(error?.toString());
       logger.log('SignOut Error -> ', error);
@@ -100,49 +101,50 @@ const UserProfile = ({userStore, navigation, route}) => {
   );
 
   const renderScreen = () => (
-      <>
-        <StatusBar barStyle="dark-content" />
+    <React.Fragment>
+      <StatusBar barStyle="dark-content" />
 
-        <SafeAreaView style={styles.safeArea}>
-          <ScrollView
-            contentInsetAdjustmentBehavior="automatic"
-            vertical={true}
-            nestedScrollEnabled={true}
-            directionalLockEnabled={true}>
-            <View style={styles.body}>
-              {userStore.userInfo
-                ? renderSignedInUserData()
-                : renderUnsignedUserData()}
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          vertical={true}
+          nestedScrollEnabled={true}
+          directionalLockEnabled={true}
+        >
+          <View style={styles.body}>
+            {userStore.userInfo
+              ? renderSignedInUserData()
+              : renderUnsignedUserData()}
 
-              <View style={layout.marginTopL}>
-                {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
-                <AccordionBtn onPress={() => Linking.openURL('https://common.io/tos')} title="Terms of use" />
-                <AccordionBtn onPress={() => Linking.openURL('https://common.io/privacy')} title="Privacy Policy" />
-                <AccordionBtn onPress={() => Linking.openURL('https://common.io/help')} title="Help" />
-                <AccordionBtn onPress={() => Linking.openURL('mailto:hi@common.io')} title="Contact us" />
-                {userStore.userInfo ? (
-                  <AccordionBtn
-                    lightStyle={true}
-                    title="Log out"
-                    onPress={_signOut}
-                  />
-                ) : null}
-              </View>
-              {Config.ENV !== 'production' && <View
-                style={{
-                  ...layout.content,
-                  paddingHorizontal: 0,
-                  backgroundColor: colors.grey4,
-                }}>
-                <Text style={text.h4Black}>Temporary menu</Text>
-                <AccordionBtn title="Test Page" onPress={onTestPagePress} />
-                <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
-              </View>}
-              <Text style={styles.version}>Common{isProduction ? '' : '-stg'} v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : '' })</Text>
+            <View style={layout.marginTopL}>
+              {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
+              <AccordionBtn onPress={() => Linking.openURL('https://common.io/tos')} title="Terms of use" />
+              <AccordionBtn onPress={() => Linking.openURL('https://common.io/privacy')} title="Privacy Policy" />
+              <AccordionBtn onPress={() => Linking.openURL('https://common.io/help')} title="Help" />
+              <AccordionBtn onPress={() => Linking.openURL('mailto:hi@common.io')} title="Contact us" />
+              {userStore.userInfo ? (
+                <AccordionBtn
+                  lightStyle={true}
+                  title="Log out"
+                  onPress={_signOut}
+                />
+              ) : null}
             </View>
-          </ScrollView>
-        </SafeAreaView>
-      </>
+            {Config.ENV !== 'production' && <View
+              style={{
+                ...layout.content,
+                paddingHorizontal: 0,
+                backgroundColor: colors.grey4,
+              }}>
+              <Text style={text.h4Black}>Temporary menu</Text>
+              <AccordionBtn title="Test Page" onPress={onTestPagePress} />
+              <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
+            </View>}
+            <Text style={styles.version}>Common{isProduction ? '' : '-stg'} v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : '' })</Text>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </React.Fragment>
   );
 
   const renderScreenLoader = () => (
