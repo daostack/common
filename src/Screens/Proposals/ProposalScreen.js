@@ -441,7 +441,6 @@ const ProposalScreen = ({
                     isBoosted={true}
                     stage={proposalInfo?.stageStr}
                     winningOutcome={proposalInfo?.winningOutcome}
-                    hasPassedExpiryDate={hasPassedExpiryDate}
                     closingAt={proposalInfo.closingAt}
                   />
 
