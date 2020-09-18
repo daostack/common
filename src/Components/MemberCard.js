@@ -22,13 +22,19 @@ const MemberCard = ({
         proposalInfo.type === PROPOSAL_TYPE.Join
           ? proposalInfo.description.funding / 100
           : proposalInfo.fundingRequest.amount / 100;
+
       const remainingSeconds = proposalInfo.closingAt - moment().unix();
+
       return (
         <View style={styles.rightContainer}>
-          <View
-            style={{alignItems: 'flex-end'}}>
-            <Text style={text.h2Black}>{`$${proposalValue}`}</Text>
-            <Text style={{...text.runninglightGray, width: '100%'}}>{moment.unix(proposalInfo.createdAt).fromNow()}</Text>
+          <View style={{alignItems: 'flex-end'}}>
+            <Text style={text.h2Black}>
+              {`$${proposalValue}`}
+            </Text>
+
+            <Text style={{...text.runninglightGray, width: '100%'}}>
+              {moment.unix(proposalInfo.createdAt).fromNow()}
+            </Text>
 
             {/* Hide the time if the proposal is expired or new */}
             {(remainingSeconds > 0 && !LAUNCHED_STATES.includes(proposalInfo?.stageStr)) && (
@@ -130,7 +136,10 @@ MemberCard.propTypes = {
       ]),
     }) ,
     fundingRequest: shape({
-      amount: number,
+      amount: oneOfType([
+        number,
+        string,
+      ]),
     }),
     stageStr: string,
   }),
