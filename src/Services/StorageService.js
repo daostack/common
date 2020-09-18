@@ -1,4 +1,6 @@
 import {storage} from '~/Firebase';
+import {Platform} from 'react-native';
+import RNFetchBlob from 'rn-fetch-blob';
 
 export default class StorageService {
   static serviceInstance = null;
@@ -20,18 +22,26 @@ export default class StorageService {
     return await ref.getDownloadURL();
   }
 
-  async uploadFile(fileUri) {
-    const name = fileUri
-      .substring(fileUri.lastIndexOf('/') + 1, fileUri.length)
-      .split('.')
-      .slice(0, -1)
-      .join('.');
-    const ext = fileUri.split('.').pop();
-    const timeStamp = new Date().getTime();
-    const filename = `${name}_${timeStamp}.${ext}`;
-    const path = `public_file/${filename}`;
+  async getPathForFirebaseStorage (uri, name) {
+    if (Platform.OS === 'ios') {
+      return uri;
+    }
+
+    const dirs = RNFetchBlob.fs.dirs;
+    const destPath = `${dirs.DocumentDir}/_${name}_`;
+    await RNFetchBlob.fs.writeFile(destPath, uri);
+    const fileUri = await RNFetchBlob.fs.stat(destPath);
+    return `file://${fileUri.path}`;
+  }
+
+  async uploadFile(fileUri, name) {
+    const path = Platform.OS === 'ios'
+      ? `public_file/_${name}_`
+      : await this.getPathForFirebaseStorage(fileUri, name);
+
     const ref = storage.ref(path);
-    await ref.putFile(fileUri);
+    const putFilePath = Platform.OS === 'ios' ? fileUri : path;
+    await ref.putFile(putFilePath);
     return await ref.getDownloadURL();
   }
 }

@@ -62,6 +62,7 @@ class FileField extends React.Component {
       Toast.loading('Uploading...');
       const downloadUrl = await StorageService.getInstance().uploadFile(
         res.uri,
+        res.name
       );
       logger.log('downloadUrl', downloadUrl);
       Toast.done('Success');
@@ -82,20 +83,8 @@ class FileField extends React.Component {
       ? validation.formStore.form.fields[validation.name].value
       : value;
 
-
-    const fileName = currValue
-      .substring(currValue.lastIndexOf('/') + 1, currValue.length)
-      .split('?')[0]
-      .split('_')
-      .slice(0, -1)
-      .join('_')
-      .replace('public_file%2F', '');
-
-    const ext = currValue
-      .substring(currValue.lastIndexOf('/') + 1, currValue.length)
-      .split('?')[0]
-      .split('.')
-      .pop();
+    let fileName = currValue.split('_');
+    fileName = fileName[fileName.length - 2];
 
     if (currValue) {
       return (
@@ -107,7 +96,7 @@ class FileField extends React.Component {
                 url: currValue,
               });
             }}>
-            <Text style={styles.adsText}>{`${fileName}.${ext}`}</Text>
+            <Text style={styles.adsText}>{fileName}</Text>
           </TouchableOpacity>
         </View>
       );
