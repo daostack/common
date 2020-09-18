@@ -89,13 +89,17 @@ const RequestStep1 = ({navigation, route, daoStore}) => {
             justifyContent: 'center',
             padding: 24,
           }}
-          onContentSizeChange={(_width, contentHeight) =>
+          onContentSizeChange={(_width, contentHeight) => {
             contentHeight < (height - 150) && setPass(true)
-          }
+          }}
           scrollEventThrottle={16}
-          onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
-          ])}
+          onScroll={() => {
+            Animated.event([{
+              nativeEvent: {
+                contentOffset: {y: scrollY}
+              }
+            }])
+          }}
           onScrollEndDrag={onScrollToBottom}
         >
           <MembershipRequest />
