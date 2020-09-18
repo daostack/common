@@ -77,8 +77,14 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
           data: pendingDao,
         });
       }
+
+      if (featuredList.length > 0) {
+        setFeaturedDaosGroup({
+          title: 'Featured',
+          data: featuredList,
+        });
+      }
     } catch (err) {
-      console.log(err);
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
       );
@@ -111,7 +117,6 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
       });
       setRefreshing(false);
     } catch (err) {
-      console.log(err);
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
       );
