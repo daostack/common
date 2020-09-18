@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import RequestToJoinRule from '~/Components/Commons/RequestToJoinRule';
-import {observer, inject} from 'mobx-react';
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepDotHeader from './RequestStepDotHeader';
 import {colors} from '~/Theme';
@@ -25,7 +24,7 @@ const RequestStep1 = ({navigation, route, daoStore}) => {
   const [headerHeight, setHeaderHeight] = useState(0);
   const [pass, setPass] = useState(false);
 
-  const {name} = daoStore.dao;
+  const name = route.params.currCommon.name;
 
   useEffect(() => {
     const newHeight = scrollY.interpolate({
@@ -45,7 +44,8 @@ const RequestStep1 = ({navigation, route, daoStore}) => {
       const navigate = CommonActions.navigate({
         name: 'RequestStep2',
         params: {
-          currDaoId: route.params.currDaoId,
+          currDaoId: params.currDaoId,
+          currCommon: params.currCommon,
         },
       });
       navigation.dispatch(navigate);
@@ -90,6 +90,11 @@ const RequestStep1 = ({navigation, route, daoStore}) => {
           onContentSizeChange={(_width, contentHeight) =>
             contentHeight < (height - 150) && setPass(true)
           }
+          scrollEventThrottle={16}
+          onScroll={Animated.event([
+            {nativeEvent: {contentOffset: {y: scrollY}}},
+          ])}
+          onScrollEndDrag={onScrollToBottom}
         >
           <MembershipRequest />
 
@@ -155,4 +160,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('daoStore')(observer(RequestStep1));
+export default RequestStep1;

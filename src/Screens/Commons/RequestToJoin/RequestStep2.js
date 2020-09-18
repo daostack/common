@@ -22,15 +22,10 @@ import MembershipRequest from './MembershipRequest';
 import {string, object, bool, shape} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const RequestStep2 = ({navigation, introduceYourselfFormStore,
-  route: {
-    params: {skipFirstStep, currDaoId},
-  },
-  daoStore: {
-    dao: {name},
-  }}) => {
+const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params: {skipFirstStep, currCommon, currDaoId} }}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
+  const { name } = currCommon.name;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -47,6 +42,7 @@ const RequestStep2 = ({navigation, introduceYourselfFormStore,
         name: 'RequestStep3',
         params: {
           currDaoId: currDaoId,
+          currCommon: currCommon,
           skipFirstStep: skipFirstStep,
         },
       });
@@ -162,5 +158,4 @@ RequestStep2.propTypes = {
 export default inject(
   'userStore',
   'introduceYourselfFormStore',
-  'daoStore'
 )(observer(RequestStep2));

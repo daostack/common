@@ -27,6 +27,26 @@ public class WalletModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void getAddress(Promise promise) {
+        try {
+            String address = WalletManager.getInstance().getAddress();
+            promise.resolve(address);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+    }
+
+    @ReactMethod
+    public void createWallet(String uid, Promise promise) {
+        try {
+            String address = WalletManager.getInstance().createWallet(uid);
+            promise.resolve(address);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+    }
+
+    @ReactMethod
     public void generateMnemonic(Promise promise) {
         try {
             String mnemonic = WalletManager.getInstance().generateMnemonic("",false);
@@ -63,6 +83,16 @@ public class WalletModule extends ReactContextBaseJavaModule {
         try {
             String mnemonic = WalletManager.getInstance().retrieveMnemonic(uid);
             promise.resolve(mnemonic);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+    }
+
+    @ReactMethod
+    public void signMessage(String message, Promise promise) {
+        try {
+            String signedData = WalletManager.getInstance().signMessage(message);
+            promise.resolve(signedData);
         } catch (Exception e) {
             promise.reject(e);
         }
