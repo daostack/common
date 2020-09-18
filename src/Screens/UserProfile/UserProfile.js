@@ -37,9 +37,9 @@ const UserProfile = ({userStore, navigation, route}) => {
   const [codePushVersion, setCodePushVersion] = useState('');
   useEffect(() => {
     const getStatus = async () => {
-      const status = await CodePush.getUpdateMetadata();
-      logger.log('getStatus -->', status);
-      setCodePushVersion(status.label.replace('v', ''));
+      CodePush.getUpdateMetadata().then((status) => {
+        setCodePushVersion(status.label.replace('v', ''));
+      });
     };
     getStatus();
   }, []);

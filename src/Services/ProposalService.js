@@ -81,7 +81,6 @@ export default class ProposalService {
       .collection(DB_COLLECTIONS.proposals)
       .where('proposerId', '==', uid)
       .where('type', '==', PROPOSAL_TYPE.Join);
-
     return query.get().then((snapshots) => {
       if (!snapshots) {
         return [];

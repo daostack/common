@@ -1,7 +1,6 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {CommonBox} from '~/Components';
-import {inject, observer} from 'mobx-react';
 import SwiperCard from '~/Components/SwiperCard';
 import DaoService from '~/Services/DaoService';
 import {layout, text, font, colors} from '~/Theme';
@@ -11,13 +10,13 @@ import {
   Fade,
 } from 'rn-placeholder';
 import {isDaoMemberBySafeAddress} from '~/Util';
+import { CommonActions } from '@react-navigation/native';
 import {string, object, number, func} from 'prop-types';
 
 const DEFAULT_HEADER_HEIGHT = 145;
 
 const CommonsSwiper = ({
   navigation,
-  daoStore,
   safeAddress,
   userId,
   onCountChange,
@@ -80,13 +79,19 @@ const CommonsSwiper = ({
     };
   }, [safeAddress]);
 
-  const setDao = (dao) => {
-    // TODO: Remove it
-    daoStore.setDao(dao);
-  };
 
   const headerHeightLayouted = (height) => {
     setHeaderHeight(height);
+  };
+
+  const navigateToCommon = (common) => {
+    const navigate = CommonActions.navigate({
+      name: 'CommonProfile',
+      params: {
+        currCommon: common,
+      },
+    });
+    navigation.dispatch(navigate);
   };
 
   const renderCommonCard = (item, index) => (
@@ -95,7 +100,7 @@ const CommonsSwiper = ({
         key={item.id}
         common={item}
         navigation={navigation}
-        onPress={() => setDao(item)}
+        onPress={() => navigateToCommon(item)}
         headerHeightLayouted={headerHeightLayouted}/>
       : <TouchableOpacity
         onPress={() => navigation.navigate('MyCommons')}
@@ -161,7 +166,6 @@ const CommonsSwiper = ({
 
 CommonsSwiper.propTypes = {
   navigation: object,
-  daoStore: object,
   safeAddress: string,
   userId: string,
   onCountChange: func,
@@ -212,6 +216,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'daoStore',
-)(observer(CommonsSwiper));
+export default CommonsSwiper;

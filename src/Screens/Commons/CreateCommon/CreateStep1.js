@@ -196,7 +196,6 @@ export default inject(
   'fundingFormStore',
   'agendaFormStore',
   'reviewFormStore',
-  'daoStore',
 )(observer(CreateStep1));
 
 //generalInfoFormStore
