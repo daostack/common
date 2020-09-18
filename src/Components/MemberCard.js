@@ -136,10 +136,7 @@ MemberCard.propTypes = {
       ]),
     }) ,
     fundingRequest: shape({
-      amount: oneOfType([
-        number,
-        string,
-      ]),
+      amount: string,
     }),
     stageStr: string,
   }),
