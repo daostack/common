@@ -10,7 +10,6 @@ import DaoService from '~/Services/DaoService';
 import ProposalApprovalTag from './ProposalApprovalTag';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '~/Util/Toast';
-import moment from 'moment';
 import logger from '../../Services/Logger';
 import {string, func, bool, object} from 'prop-types';
 const {width} = Dimensions.get('window');
