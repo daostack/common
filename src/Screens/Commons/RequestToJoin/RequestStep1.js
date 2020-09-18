@@ -24,7 +24,9 @@ const RequestStep1 = ({navigation, route, daoStore}) => {
   const [headerHeight, setHeaderHeight] = useState(0);
   const [pass, setPass] = useState(false);
 
-  const name = route.params.currCommon.name;
+  const {params} = route;
+
+  const name = params.currCommon.name;
 
   useEffect(() => {
     const newHeight = scrollY.interpolate({
@@ -53,7 +55,7 @@ const RequestStep1 = ({navigation, route, daoStore}) => {
   };
 
   return (
-    <>
+    <React.Fragment>
       <SafeAreaView style={{backgroundColor: colors.white}} />
       <SafeAreaView
         style={{
