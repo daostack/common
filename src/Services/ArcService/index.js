@@ -77,7 +77,7 @@ export default class ArcService {
   // PROPOSALS
   createRequestToJoin = async (daoId, data) => createProposalRequestToJoin(daoId, data);
 
-  createFundingProposal = async (userAddress, daoId, data) => createFundingProposal(userAddress, daoId, data);
+  createFundingProposal = async (daoId, data) => createFundingProposal(daoId, data);
 
   // VOTING
   voteForJoinProposal = async (proposalId, data) => voteForProposal(

@@ -52,9 +52,8 @@ const FundingProposal = ({
         Toast.loading('Creating funding proposal...');
 
         const proposalId = await ArcService.getInstance().createFundingProposal(
-          userStore.userInfo.safeAddress,
           commonId,
-          data,
+          data
         );
         Toast.hide();
         Toast.done(`Funding Proposal with id ${proposalId} created!`);
