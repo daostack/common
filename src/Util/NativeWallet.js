@@ -6,7 +6,7 @@ const createWallet = async (uid) => {
     const address = await NativeModules.WalletModule.createWallet(uid);
     return address.toLowerCase();
   } catch (e) {
-    console.log(e);
+    logger.log(e);
   }
 };
 
@@ -15,7 +15,7 @@ const getAddress = async () => {
     const address = await NativeModules.WalletModule.getAddress();
     return address.toLowerCase();
   } catch (e) {
-    console.log(e);
+    logger.log(e);
   }
 };
 
@@ -24,7 +24,7 @@ const signMessage = async (message) => {
     const signedData = await NativeModules.WalletModule.signMessage(message);
     return signedData;
   } catch (e) {
-    console.log(e);
+    logger.log(e);
   }
 };
 

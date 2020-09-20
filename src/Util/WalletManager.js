@@ -50,7 +50,7 @@ export default class WalletManager {
   constructor(uid) {
     return (async () => {
       this.address = await NativeWallet.createWallet(uid);
-      console.log('this.address ->', this.address);
+      logger.log('this.address ->', this.address);
       this.provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
       this.isCreatingWallet = false;
       return this;
@@ -77,8 +77,8 @@ export default class WalletManager {
     // Check local address and database address is matched
     const userData = await UserService.getInstance().getUserById(uid);
     if (userData.ethereumAddress !== this.address && userData.ethereumAddress?.trim()) {
-      console.log('userData.ethereumAddress ->', userData.ethereumAddress);
-      console.log('this.address ->', this.address);
+      logger.log('userData.ethereumAddress ->', userData.ethereumAddress);
+      logger.log('this.address ->', this.address);
       Alert.alert('Hands up',
         'There is a fatal error - local address mismatched, please contact us to help',
         [{text: 'OK', onPress: () => logger.log('Ok Pressed'), style: 'danger'}],

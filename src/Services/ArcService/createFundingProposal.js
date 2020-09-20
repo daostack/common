@@ -22,7 +22,7 @@ export const createFundingProposal = async (daoId, data) => {
     const body1 = {idToken, daoId, data};
     const endpoint = createUrl();
     const {data: {fundingRequestTx, setFlagTx}} = await axios.post(`${endpoint}/createFundingProposalTransaction`, body1);
-    console.log('data ->', fundingRequestTx, setFlagTx);
+    logger.log('data ->', fundingRequestTx, setFlagTx);
     const manager = await WalletManager.getInstance();
     const fundingSignedData = await manager.signSafeTx(fundingRequestTx.safeTxHash);
 
@@ -39,7 +39,7 @@ export const createFundingProposal = async (daoId, data) => {
     };
 
     const { data: { proposalId } } = await axios.post(`${endpoint}/createFundingProposal`, body2);
-    console.log('proposalId ->', proposalId);
+    logger.log('proposalId ->', proposalId);
     return proposalId;
     
   } catch (e) {
