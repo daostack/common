@@ -75,6 +75,7 @@ export const IPFS_DATA_VERSION = ipfsDataVersion;
 export const mangoPayUrl = () => functionEndpoint('mangopay');
 export const graphqlUrl = () => functionEndpoint('graphql');
 export const relayerUrl = () => functionEndpoint('relayer');
+export const createUrl = () => functionEndpoint('create');
 export const graphHttpLink = `${graphUrl}/${graphVersion}`;
 export const graphwsLink = `${graphWS}/${graphVersion}`;
 export const ipfsLink = ipfsUrl;

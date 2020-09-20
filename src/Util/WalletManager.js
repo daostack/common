@@ -113,8 +113,9 @@ export default class WalletManager {
   }
 
   signSafeTx = async (txHash) => {
-    const byteTxHash = ethers.utils.arrayify(txHash);
-    const signedTx = await this.wallet.signMessage(byteTxHash);
+    // const byteTxHash = ethers.utils.arrayify(txHash);
+    // const signedTx = await this.wallet.signMessage(byteTxHash);
+    const signedTx = await NativeWallet.signMessage(txHash);
     // Add 4
     let finalSignature = signedTx.replace(/1b$/, '1f').replace(/1c$/, '20');
     logger.log('finalSignature -->', finalSignature);

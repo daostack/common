@@ -1,7 +1,5 @@
-import {ethers} from 'ethers';
 import WalletManager from '~/Util/WalletManager';
-import {ipfsUpload, createUrl} from '~/Config';
-import GraphqlSyncService from '../GraphqlSyncService';
+import {createUrl} from '~/Config';
 import logger from '../Logger';
 import auth from '@react-native-firebase/auth';
 import axios from 'axios';
