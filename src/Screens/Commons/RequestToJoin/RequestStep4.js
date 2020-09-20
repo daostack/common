@@ -25,10 +25,7 @@ const {width} = Dimensions.get('window');
 
 const RequestStep4 = ({navigation,
   route: {
-    params: {skipFirstStep, currDaoId},
-  },
-  daoStore: {
-    dao: {name},
+    params: {skipFirstStep, currCommon, currDaoId},
   },
   userStore: {userInfo},
   paymentFormStore,
@@ -113,7 +110,7 @@ const RequestStep4 = ({navigation,
         }}>
         <CreateStepNavigation
           navigation={navigation}
-          title={name}
+          title={currCommon.name}
         />
         <CreateStepDotHeader
           title="Payment"
@@ -269,5 +266,4 @@ export default inject(
   'personalContributionFormStore',
   'paymentFormStore',
   'userStore',
-  'daoStore'
 )(observer(RequestStep4));

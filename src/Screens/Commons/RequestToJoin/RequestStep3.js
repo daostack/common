@@ -20,16 +20,11 @@ import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import {string, func, bool, object, shape, number} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const RequestStep3 = ({navigation, personalContributionFormStore,
-  route: {
-    params: {skipFirstStep, currDaoId},
-  },
-  daoStore: {
-    dao: {name, metadata},
-  }}) => {
+const RequestStep3 = ({navigation, personalContributionFormStore, route: {params: {skipFirstStep, currCommon, currDaoId} }}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
+  const metadata = currCommon.metadata;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -66,6 +61,7 @@ const RequestStep3 = ({navigation, personalContributionFormStore,
       name: 'RequestStep4',
       params: {
         currDaoId: currDaoId,
+        currCommon: currCommon,
         skipFirstStep: skipFirstStep,
       },
     });
@@ -90,12 +86,12 @@ const RequestStep3 = ({navigation, personalContributionFormStore,
         }}>
         <CreateStepNavigation
           navigation={navigation}
-          title={name}
+          title={currCommon.name}
         />
         <CreateStepDotHeader
           title="Personal contribution"
           currentIndex={3}
-          isFirstStepSkipped={skipFirstStep}
+          skipFirstStep={skipFirstStep}
           navigation={navigation}
           headerHeight={headerHeight}
         />
@@ -114,7 +110,7 @@ const RequestStep3 = ({navigation, personalContributionFormStore,
           <MembershipRequest />
 
           <CreateStepHeader
-            isFirstStepSkipped={skipFirstStep}
+            skipFirstStep={skipFirstStep}
             currentIndex={2}
           />
           <View
@@ -184,5 +180,4 @@ RequestStep3.propTypes = {
 
 export default inject(
   'personalContributionFormStore',
-  'daoStore',
 )(observer(RequestStep3));
