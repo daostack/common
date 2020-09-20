@@ -212,7 +212,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           const providerId = user.providerData[0].providerId;
           await AuthService.getInstance().loadMnemonic(user.uid, providerId);
           await WalletManager.init(user.uid);
-          await ArcService.init();
           const manager = await WalletManager.getInstance();
           let appUser = await UserService.getInstance().getUserById(
             user.uid,
