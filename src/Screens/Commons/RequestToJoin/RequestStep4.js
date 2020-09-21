@@ -17,7 +17,8 @@ import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '~/Services/ArcService';
-// import {preauthorizePayment} from '~/Services/MangopayService';
+import {createCard, ping} from '~/Services/CirclePayService';
+import {preauthorizePayment} from '~/Services/MangopayService';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
@@ -61,12 +62,30 @@ const RequestStep4 = ({navigation,
           preAuthId: false,
         };
 
-        /*const cardData = {
-          cardNumber: formData.card_number,
-          cvv: formData.cvv,
-          expDate: formData.expiration_date.replace('/', ''),
-        };*/
+        const cardData = {
+          encryptedData: 'TODO: pgp this ->',  //JSON.stringify({number: formData.card_number, cvv: formData.cvv}),
+          idempotencyKey: '123e4567-e89b-12d3-a456-426614174000',
+          billingDetails: {
+            name: 'Customer 0002',
+            city: 'Test City',
+            country: 'United States',
+            line1: 'Test',
+            postalCode: '11111',
+            district: 'MA',
+          },
+          expMonth: formData.expiration_date.split('/')[0],
+          expYear: formData.expiration_date.split('/')[1],
+          metadata: {
+            email: 'moore@daostack.io',
+            sessionId: '1234shouldBeHashed',
+            ipAddress: '127.0.0.1',
+          },
+        };
 
+        const cardCreate = await createCard(cardData, (+data.funding), navigation);
+        //console.log('cardCreate', cardCreate);
+
+      /*
         navigation.navigate({name: 'FullScreenCreationLoader', params: {title: 'Creating your membership request', refreshFeed}});
 
         // Skip mangopay for now, as the service is not responding and we are not using mangopay anyhow
@@ -95,9 +114,9 @@ const RequestStep4 = ({navigation,
           refreshFeed();
         }
 
-        navigation.dispatch(navigate);
+        navigation.dispatch(navigate);*/
       } catch (e) {
-        navigation.pop();
+        ////navigation.pop();
         showErrorPopUp(bottomSheetStore, e?.response?.data?.error?.error ? e.response.data.error.error : e.message);
       }
     }
@@ -149,8 +168,8 @@ const RequestStep4 = ({navigation,
             <RequestStepHeaderTitle title="Payment" subtitle={subtitle} />
             <TextInputField
               label="Credit card number"
-              value={/* __DEV__ ? */ 4970104100876299}
-              editable={false}
+              value={/* __DEV__ ? */ 4007410000000006}
+              editable={true}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NUMBER,
                 formStore: paymentFormStore,
@@ -161,7 +180,7 @@ const RequestStep4 = ({navigation,
             <TextInputField
               label="Name on card"
               value={/* __DEV__ ? */ 'Tester Tester'}
-              editable={false}
+              editable={true}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NAME,
                 formStore: paymentFormStore,
@@ -185,9 +204,9 @@ const RequestStep4 = ({navigation,
                   width: '45%',
                 }}
                 label="Expiration date"
-                value={/* __DEV__ ?  */'10/20'}
+                value={/* __DEV__ ?  */'01/25'}
                 placeholderText="MM/YY"
-                editable={false}
+                editable={true}
                 validation={{
                   name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
                   formStore: paymentFormStore,
@@ -204,7 +223,7 @@ const RequestStep4 = ({navigation,
                 }}
                 label="CVV"
                 value={/* __DEV__ ? */ 123}
-                editable={false}
+                editable={true}
                 validation={{
                   name: RequestToJoinForm.FIELD_CVV,
                   formStore: paymentFormStore,
