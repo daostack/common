@@ -16,17 +16,19 @@ import CreateStepNavigation from './RequestStepNavigation';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from './MembershipRequest';
-import {string, array, object} from 'prop-types';
+import {string, object, bool, shape} from 'prop-types';
 const {width, height} = Dimensions.get('window');
 
-const RequestStep1 = ({navigation, route, daoStore}) => {
+const RequestStep1 = ({navigation,
+  route: {
+    params: {
+      currCommon,
+      currDaoId,
+    },
+  }}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [pass, setPass] = useState(false);
-
-  const {params} = route;
-
-  const name = params.currCommon.name;
 
   useEffect(() => {
     const newHeight = scrollY.interpolate({
@@ -46,8 +48,8 @@ const RequestStep1 = ({navigation, route, daoStore}) => {
       const navigate = CommonActions.navigate({
         name: 'RequestStep2',
         params: {
-          currDaoId: params.currDaoId,
-          currCommon: params.currCommon,
+          currDaoId: currDaoId,
+          currCommon: currCommon,
         },
       });
       navigation.dispatch(navigate);
@@ -64,7 +66,7 @@ const RequestStep1 = ({navigation, route, daoStore}) => {
         }}>
         <CreateStepNavigation
           navigation={navigation}
-          title={name}
+          title={currCommon.name}
         />
         <CreateStepDotHeader
           title="Approve Common Rules"
@@ -113,8 +115,8 @@ const RequestStep1 = ({navigation, route, daoStore}) => {
 
             <View style={styles.content}/>
 
-            {daoStore.dao.metadata?.rules.length > 0 &&
-              daoStore.dao.metadata.rules.map((rule, index) => (
+            {currCommon.metadata?.rules?.length > 0 &&
+              currCommon.metadata.rules.map((rule, index) => (
                 <RequestToJoinRule
                   index={index + 1}
                   title={rule.title}
@@ -126,27 +128,19 @@ const RequestStep1 = ({navigation, route, daoStore}) => {
         </ScrollView>
         <RequestStepActionButton title="Continue" pass={pass} onPress={push} />
       </SafeAreaView>
-    </ React.Fragment>
+    </React.Fragment>
   );
 };
 
 RequestStep1.propTypes = {
   navigation: object,
-  route: {
-    params: {
+  route: shape({
+    params: shape({
+      currCommon: object,
       currDaoId: string,
-    },
-  },
-  daoStore: {
-    dao: {
-      name: string,
-      metadata: {
-        rules: {
-          commonRules: array,
-        },
-      },
-    },
-  },
+      skipFirstStep: bool,
+    }),
+  }),
 };
 
 const styles = StyleSheet.create({
