@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   ScrollView,
@@ -11,20 +11,22 @@ import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import RequestToJoinRule from '~/Components/Commons/RequestToJoinRule';
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepDotHeader from './RequestStepDotHeader';
-import { colors } from '~/Theme';
+import {colors} from '~/Theme';
 import CreateStepNavigation from './RequestStepNavigation';
 import RequestStepActionButton from '../RequestStepActionButton';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from './MembershipRequest';
-import { string, array, object } from 'prop-types';
-const { width, height } = Dimensions.get('window');
+import {string, array, object} from 'prop-types';
+const {width, height} = Dimensions.get('window');
 
-const RequestStep1 = ({ navigation,route: { params }} ) => {
+const RequestStep1 = ({navigation, route, daoStore}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [pass, setPass] = useState(false);
+
+  const {params} = route;
+
   const name = params.currCommon.name;
-  const commonRules = params.currCommon.metadata?.commonRules;
 
   useEffect(() => {
     const newHeight = scrollY.interpolate({
@@ -53,8 +55,8 @@ const RequestStep1 = ({ navigation,route: { params }} ) => {
   };
 
   return (
-    <>
-      <SafeAreaView style={{ backgroundColor: colors.white }} />
+    <React.Fragment>
+      <SafeAreaView style={{backgroundColor: colors.white}} />
       <SafeAreaView
         style={{
           flex: 1,
@@ -72,48 +74,59 @@ const RequestStep1 = ({ navigation,route: { params }} ) => {
         />
         <ScrollView
           showsVerticalScrollIndicator={false}
+          onScrollEndDrag={onScrollToBottom}
+          scrollEventThrottle={16}
           width={width}
+          onScroll={Animated.event([
+            {
+              nativeEvent: {
+                contentOffset: {y: scrollY},
+              },
+            },
+          ])}
           contentContainerStyle={{
             alignItems: 'center',
             justifyContent: 'center',
             padding: 24,
           }}
-          onContentSizeChange={(_width, contentHeight) =>
-            contentHeight < (height - 150) && setPass(true)
-          }
-          scrollEventThrottle={16}
-          onScroll={Animated.event([
-            { nativeEvent: { contentOffset: { y: scrollY } } },
-          ])}
-          onScrollEndDrag={onScrollToBottom}>
+          onContentSizeChange={(_width, contentHeight) => {
+            contentHeight < (height - 150) && setPass(true);
+          }}
+        >
           <MembershipRequest />
+
           <CreateStepHeader
             currentIndex={0}
             isFirstStepSkipped={false}
           />
+
           <View
             style={{
               flex: 1,
               // alignItems: 'center',
               backgroundColor: 'white',
             }}>
-            <RequestStepHeaderTitle title="Accept Common Rules" subtitle="If the Common approves your request you will become a member with equal voting rights." />
-            <View
-              style={styles.content}
+            <RequestStepHeaderTitle
+              title="Accept Common Rules"
+              subtitle="If the Common approves your request you will become a member with equal voting rights."
             />
-            {Boolean(commonRules?.length) &&
-              commonRules.map((rule, index) => (
+
+            <View style={styles.content}/>
+
+            {daoStore.dao.metadata?.rules.length > 0 &&
+              daoStore.dao.metadata.rules.map((rule, index) => (
                 <RequestToJoinRule
                   index={index + 1}
                   title={rule.title}
                   description={rule.description}
+                  url={rule.url}
                 />
               ))}
           </View>
         </ScrollView>
         <RequestStepActionButton title="Continue" pass={pass} onPress={push} />
       </SafeAreaView>
-    </>
+    </ React.Fragment>
   );
 };
 

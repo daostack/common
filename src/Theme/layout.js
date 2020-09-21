@@ -43,6 +43,7 @@ const messageContainerTriangle = {
   borderTopColor: colors.mainBlue,
 };
 
+export const sizeXXS = 2.5;
 export const sizeXS = 5;
 export const sizeS = 10;
 export const sizeM = 15;
@@ -73,6 +74,9 @@ export default StyleSheet.create({
   },
 
   // Margin TOP
+  marginTopXXS: {
+    marginTop: sizeXXS,
+  },
   marginTopXS: {
     marginTop: sizeXS,
   },
