@@ -14,9 +14,6 @@ import WalletManager from '~/Util/WalletManager';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import ArcService from '~/Services/ArcService';
 import {
-  ARC_VERSION ,
-  GRAPH_VERSION ,
-  graphHttpLink ,
   web3ProviderUrl ,
   relayerUrl ,
   COMMONTOKENADDRESS ,
@@ -657,19 +654,6 @@ class nativeBridgeTests extends React.Component {
             <Text>Get Common Token Allowance</Text>
           </TouchableOpacity>
 
-
-          <Text style={{marginBottom: 10}}>
-            ARC_VERSION: {ARC_VERSION}
-          </Text>
-          <Text style={{marginBottom: 10}}>
-            GRAPH_VERSION: {GRAPH_VERSION}
-          </Text>
-          <Text style={{marginBottom: 10}}>
-            graphHttpLink: {graphHttpLink}
-          </Text>
-          <Text style={{marginBottom: 10}}>
-            ARC_VERSION: {ARC_VERSION}
-          </Text>
           <Text style={{marginBottom: 10}}>
             relayerUrl: {relayerUrl()}
           </Text>
