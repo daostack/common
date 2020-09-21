@@ -76,7 +76,7 @@ const RequestStep4 = ({navigation,
         //   console.log('PREAUTH ID', preAuthId);
         // }
 
-        const proposalId = await ArcService.getInstance().createRequestToJoin(
+        const proposalId = await ArcService.createRequestToJoin(
           currDaoId,
           data,
         );
@@ -93,7 +93,7 @@ const RequestStep4 = ({navigation,
         navigation.dispatch(navigate);
       } catch (e) {
         navigation.pop();
-        showErrorPopUp(bottomSheetStore, e?.response?.data?.error ? e.response.data.error : e.message);
+        showErrorPopUp(bottomSheetStore, e?.response?.data?.error?.error ? e.response.data.error.error : e.message);
       }
     }
   };

@@ -1,7 +1,7 @@
 import {NativeWallet} from './NativeWallet';
 import {ethers, Contract} from 'ethers';
 import {Alert} from 'react-native';
-import {web3ProviderUrl, web3NetworkId, COMMONTOKENADDRESS, relayerUrl} from '~/Config';
+import {web3ProviderUrl, COMMONTOKENADDRESS, relayerUrl} from '~/Config';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 import ABI from './abi.json';
@@ -50,7 +50,7 @@ export default class WalletManager {
   constructor(uid) {
     return (async () => {
       this.address = await NativeWallet.createWallet(uid);
-      console.log('this.address ->', this.address);
+      logger.log('this.address ->', this.address);
       this.provider = new ethers.providers.JsonRpcProvider(web3ProviderUrl);
       this.isCreatingWallet = false;
       return this;
@@ -77,8 +77,8 @@ export default class WalletManager {
     // Check local address and database address is matched
     const userData = await UserService.getInstance().getUserById(uid);
     if (userData.ethereumAddress !== this.address && userData.ethereumAddress?.trim()) {
-      console.log('userData.ethereumAddress ->', userData.ethereumAddress);
-      console.log('this.address ->', this.address);
+      logger.log('userData.ethereumAddress ->', userData.ethereumAddress);
+      logger.log('this.address ->', this.address);
       Alert.alert('Hands up',
         'There is a fatal error - local address mismatched, please contact us to help',
         [{text: 'OK', onPress: () => logger.log('Ok Pressed'), style: 'danger'}],
@@ -105,6 +105,21 @@ export default class WalletManager {
 
   getSafeAddress() {
     return this.safeAddress;
+  }
+
+  signRelayerTx = async (toAddress, value, data) => {
+    const finalSignature = await this.txHashSignature(this.safeAddress, toAddress, value, data);
+    return finalSignature;
+  }
+
+  signSafeTx = async (txHash) => {
+    // const byteTxHash = ethers.utils.arrayify(txHash);
+    // const signedTx = await this.wallet.signMessage(byteTxHash);
+    const signedTx = await NativeWallet.signMessage(txHash);
+    // Add 4
+    let finalSignature = signedTx.replace(/1b$/, '1f').replace(/1c$/, '20');
+    logger.log('finalSignature -->', finalSignature);
+    return finalSignature;
   }
 
   getBalance = async (address = this.address) => this.provider.getBalance(address).then((balance) => {
@@ -174,11 +189,10 @@ export default class WalletManager {
     try {
       const txHash = await this.createSafeTransactionHash(safeAddress, toAddress, value, data);
       // const byteTxHash = ethers.utils.arrayify(txHash);
-      console.log('txHash -->', txHash);
       const signedTx = await NativeWallet.signMessage(txHash);
-      console.log('signedTx -->', signedTx);
       // Add 4
       let finalSignature = signedTx.replace(/1b$/, '1f').replace(/1c$/, '20');
+      logger.log('finalSignature -->', finalSignature);
       return finalSignature;
     } catch (err) {
       throw err;
