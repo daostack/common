@@ -35,7 +35,6 @@ const {width} = Dimensions.get('window');
 const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
   route: {params: {commonId, discussionId, data}}}) => {
 
-  const [inputHeight, setInputHeight] = useState(65);
   const inputRef = useRef(null);
   const [user, setUser] = useState({});
   const [inputText, setInputText] = useState(null);

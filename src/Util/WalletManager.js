@@ -1,7 +1,7 @@
 import {NativeWallet} from './NativeWallet';
 import {ethers, Contract} from 'ethers';
 import {Alert} from 'react-native';
-import {web3ProviderUrl, web3NetworkId, COMMONTOKENADDRESS, relayerUrl} from '~/Config';
+import {web3ProviderUrl, COMMONTOKENADDRESS, relayerUrl} from '~/Config';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 import ABI from './abi.json';
