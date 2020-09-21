@@ -27,19 +27,19 @@ export const createFundingProposal = async (daoId, data) => {
     let signedFlagTx = null;
     if (setFlagTx) {
       const flagSignedData = await manager.signSafeTx(setFlagTx.safeTxHash);
-      signedFlagTx = { ...setFlagTx, signedData: flagSignedData }
+      signedFlagTx = {...setFlagTx, signedData: flagSignedData};
     }
     const body2 = {
       idToken,
       daoId,
-      fundingRequestTx: { ...fundingRequestTx, signedData: fundingSignedData }, 
+      fundingRequestTx: {...fundingRequestTx, signedData: fundingSignedData},
       setFlagTx: signedFlagTx,
     };
 
-    const { data: { proposalId } } = await axios.post(`${endpoint}/createFundingProposal`, body2);
+    const {data: {proposalId}} = await axios.post(`${endpoint}/createFundingProposal`, body2);
     logger.log('proposalId ->', proposalId);
     return proposalId;
-    
+
   } catch (e) {
     logger.log(e);
     logger.log(e.response);

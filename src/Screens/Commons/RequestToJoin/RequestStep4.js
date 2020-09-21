@@ -76,7 +76,7 @@ const RequestStep4 = ({navigation,
         //   console.log('PREAUTH ID', preAuthId);
         // }
 
-        const proposalId = await ArcService.getInstance().createRequestToJoin(
+        const proposalId = await ArcService.createRequestToJoin(
           currDaoId,
           data,
         );

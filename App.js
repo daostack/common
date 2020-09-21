@@ -63,7 +63,6 @@ import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DeepLinking from 'react-native-deep-linking';
-import ArcService from './src/Services/ArcService';
 import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
 import Toast from './src/Util/Toast';
 import Cache from './src/Util/Cache';
@@ -237,7 +236,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           userStore.setIsLoading(false);
 
           await WalletManager.init(user.uid);
-          ArcService.init();
           const manager = await WalletManager.getInstance();
 
           if (isNewUser) {

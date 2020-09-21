@@ -18,7 +18,7 @@ export const voteForProposal = async (
     const manager = await WalletManager.getInstance();
     const signedData = await manager.signSafeTx(safeTxHash);
     const body2 = {idToken, encodedData, signedData, toAddress, proposalId};
-    const { data: { receipt } } = await axios.post(`${endpoint}/votePropoal`, body2);
+    const {data: {receipt}} = await axios.post(`${endpoint}/votePropoal`, body2);
     console.log('receipt ->', receipt);
     return receipt;
   } catch (e) {

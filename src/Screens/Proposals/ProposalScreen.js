@@ -292,12 +292,12 @@ const ProposalScreen = ({
       await timeout(3000);
 
       if (proposalInfo.type === PROPOSAL_TYPE.Join) {
-        await ArcService.getInstance().voteForJoinProposal(
+        await ArcService.voteForJoinProposal(
           proposalId,
           voteData
         );
       } else {
-        await ArcService.getInstance().voteForFundingRequestProposal(
+        await ArcService.voteForFundingRequestProposal(
           proposalId,
           voteData
         );

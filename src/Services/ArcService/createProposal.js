@@ -1,7 +1,7 @@
 // TODO: rename this file to °createProposalRequestToJoin.js°
 import WalletManager from '~/Util/WalletManager';
 import logger from '../Logger';
-import {createUrl, relayerUrl } from '~/Config';
+import {createUrl, relayerUrl} from '~/Config';
 import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 
