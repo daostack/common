@@ -106,7 +106,9 @@ const ProposalScreen = ({
       setProposalInfo({...currProposalInfo, funding});
 
       navigation.setParams({
-        title: currProposedUser.displayName,
+        ...(currProposalInfo.type === 'Join' && {
+          title: currProposedUser.displayName,
+        }),
         subtitle: currProposalInfo.type === 'Join' && 'Request To Join',
       });
     };
