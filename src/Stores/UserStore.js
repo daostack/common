@@ -23,11 +23,16 @@ export const userInfoFields = [
 class UserStore {
   userInfo;
   isLoading;
+  signInError;
   myCommons;
   myProposals;
   constructor() {
     this.userInfo = null;
     this.isLoading = false;
+  }
+
+  setSignInError = (error) => {
+    this.signInError = error;
   }
 
   isDaoMember = (members) => (
@@ -96,6 +101,7 @@ decorate(UserStore, {
   address: observable,
   setSignedInUser: action,
   userInfo: observable,
+  setSignInError: observable,
   isLoading: observable,
   myCommons: observable,
   myProposals: observable,

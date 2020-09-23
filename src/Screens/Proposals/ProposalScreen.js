@@ -76,6 +76,8 @@ const ProposalScreen = ({
   // Top voting buttons ref
   const topVotingButtonsRef = useRef(null);
 
+  const scrollViewRef = useRef(null);
+
   // Values for vote param required from the blockchain
   const VOTE_APPROVE = 1;
   const VOTE_REJECT = 2;
@@ -157,8 +159,8 @@ const ProposalScreen = ({
   const [ voteType, setVoteType ] = useState(false);
   const [ index, setIndex ] = useState(0);
   const [ routes ] = useState([
-    {key: 'info', icon: 'proposal', iconSelected: 'proposal-selected'},
-    {key: 'discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
+    {index: 0, key: 'info', icon: 'proposal', iconSelected: 'proposal-selected'},
+    {index: 1, key: 'discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
   ]);
 
   const [ inputText, setInputText ] = useState(null);
@@ -166,9 +168,7 @@ const ProposalScreen = ({
   const inputRef = useRef();
 
   const renderTabBar = (currProps) => (
-    <View style={{paddingBottom: 5}}>
-      <TabBarRenderer originRef={originTabBarRef} jumpTo={originTabBarRef.current?.props?.jumpTo} indexChange={setIndex} {...currProps} />
-    </View>
+    <View style={{paddingBottom: 5}} />
   );
   const hasPassedExpiryDate = moment().isAfter(moment.unix(proposalInfo?.closingAt));
 
@@ -181,6 +181,7 @@ const ProposalScreen = ({
       const message = inputText;
       if (message && message.trim().length) {
         inputRef.current.clear();
+
         db.collection('discussionMessage')
           .doc()
           .set({
@@ -193,6 +194,7 @@ const ProposalScreen = ({
           })
           .then(() => {
             Keyboard.dismiss();
+
             setIsSending(false);
             setInputText(null);
           })
@@ -294,12 +296,12 @@ const ProposalScreen = ({
       await timeout(3000);
 
       if (proposalInfo.type === PROPOSAL_TYPE.Join) {
-        await ArcService.getInstance().voteForJoinProposal(
+        await ArcService.voteForJoinProposal(
           proposalId,
           voteData
         );
       } else {
-        await ArcService.getInstance().voteForFundingRequestProposal(
+        await ArcService.voteForFundingRequestProposal(
           proposalId,
           voteData
         );
@@ -347,7 +349,7 @@ const ProposalScreen = ({
     (moment().isBefore(moment.unix(proposalInfo?.closingAt)) || !proposalInfo?.closingAt)
     && (
       <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
-        <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>Whats your vote?</Text>
+        <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>What's your vote?</Text>
         <View style={layout.flexRow}>
           <TouchableOpacity
             onPress={(e) => openApprovalSheet(true)}
@@ -373,10 +375,13 @@ const ProposalScreen = ({
     ...proposalInfo.type === PROPOSAL_TYPE.FundingRequest && {...layout.flexStart},
   };
 
-  const progressBarWidthPercent = proposalInfo
-    ? (proposalInfo.votesFor / (proposalInfo.votesFor + proposalInfo.votesAgainst) * 100) : 0;
+  const [votesFor, votesAgainst] = [+proposalInfo?.votesFor, +proposalInfo?.votesAgainst];
 
-  const votesCount = proposalInfo.votesFor + proposalInfo.votesAgainst;
+  const progressBarWidthPercent = proposalInfo
+    ? (votesFor / (votesFor + votesAgainst) * 100) : 0;
+
+
+  const votesCount = votesFor + votesAgainst;
 
   const slideUp = {
     transform: [
@@ -397,7 +402,7 @@ const ProposalScreen = ({
       <SafeAreaView style={{backgroundColor: colors.white}}/>
       <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
         <Animated.View style={[stickyTabBarStyle, slideUp]}>
-          <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} />
+          <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange={setIndex} />
         </Animated.View>
 
         <ScrollView
@@ -405,6 +410,7 @@ const ProposalScreen = ({
             flex: 1,
             backgroundColor: colors.white,
           }}
+          ref={scrollViewRef}
           scrollEventThrottle={16}
           onScroll={(e) => {
             //e.nativeEvent.contentOffset.y
@@ -447,41 +453,51 @@ const ProposalScreen = ({
                     hasPassedExpiryDate={hasPassedExpiryDate}
                     closingAt={proposalInfo.closingAt}
                   />
+
                   <UserAvatar
                     image={proposedUser?.photoURL}
                     displayName={proposedUser?.displayName}
-                    imageStyle={{width: 46, height: 46}}/>
+                    imageStyle={{width: 46, height: 46}}
+                  />
+
                   <Text style={{...text.h2Black, ...layout.marginBottomL, ...layout.marginTopXS}}>
                     {proposalInfo?.description?.title || 'Unknown title'}
                   </Text>
                 </View>
               ) : (
-                <>
+                <React.Fragment>
                   <ProposalCardHeader
                     isScreenHeader={true}
                     isBoosted={true}
                     stage={proposalInfo?.stageStr}
                     winningOutcome={proposalInfo?.winningOutcome}
                     hasPassedExpiryDate={hasPassedExpiryDate}
-                    closingAt={proposalInfo.closingAt}/>
+                    closingAt={proposalInfo.closingAt}
+                  />
+
                   <UserAvatar
                     image={proposedUser?.photoURL}
                     imageStyle={{width: 64, height: 64}}
-                    iconName={'clcok'}/>
+                    iconName={'clcok'}
+                  />
+
                   <View style={{...layout.content, ...layout.marginTopS}}>
                     <Text style={text.h2Black}>
-                      {proposedUser ? proposedUser.displayName : 'unknown user'}
+                      {proposedUser
+                        ? proposedUser.displayName
+                        : 'unknown user'
+                      }
                     </Text>
 
                     {proposedUser && (
                       <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}} onPress={viewUserProfile}>
                         <Text style={text.smallBlackText}>View Profile</Text>
                         <Icon name="right-arrow" size={20}/>
-                      </TouchableOpacity>)
-                    }
+                      </TouchableOpacity>
+                    )}
 
                   </View>
-                </>
+                </React.Fragment>
               )}
 
               <View style={styles.contributionCard}>
@@ -513,7 +529,7 @@ const ProposalScreen = ({
                       size={25}
                       style={layout.marginRightXS}/>
                     <Text style={text.lightishGreenText}>
-                      {proposalInfo.votesFor}
+                      {votesFor}
                     </Text>
                   </View>
 
@@ -524,7 +540,7 @@ const ProposalScreen = ({
                   <View
                     style={{...layout.content, ...layout.flexRow, padding: 0}}>
                     <Text style={text.againstText}>
-                      {proposalInfo.votesAgainst}
+                      {votesAgainst}
                     </Text>
                     <Icon
                       name="user-rejected"
@@ -557,31 +573,38 @@ const ProposalScreen = ({
               onIndexChange={setIndex}
               initialLayout={initialLayout}
               renderTabBar={renderTabBar}
-              style={{backgroundColor: colors.paleGrey}}/>
+              style={{backgroundColor: colors.paleGrey}}
+
+            />
+
             {index === 0 && (
               <ProposalData
                 proposalId={proposalId}
                 proposalInfo={proposalInfo}
-                showMore={() => setIndex(1)}/>
+                showMore={() => setIndex(1)}
+              />
             )}
+
             {index === 1 && (
               <ProposalDiscussion
                 proposalId={proposalId}
-                inputRef={inputRef}/>
+                inputRef={inputRef}
+                scrollViewRef={scrollViewRef}
+              />
             )}
           </View>
         </ScrollView>
 
-        {index === 0
-          ? (renderVoting && showBottomVotingButtonsContainer) && (
-            <View style={styles.actionButtonContainer}>
-              {renderStickyBottomContent()}
-            </View>
-          ) : (
-            <React.Fragment>
-              {messageInput()}
-            </React.Fragment>
-          )}
+        {index === 0 ? renderVoting
+            && showBottomVotingButtonsContainer && (
+          <View style={styles.actionButtonContainer}>
+            {renderStickyBottomContent()}
+          </View>
+        ) : (
+          <React.Fragment>
+            {messageInput()}
+          </React.Fragment>
+        )}
       </SafeAreaView>
 
       <BottomSheetModal

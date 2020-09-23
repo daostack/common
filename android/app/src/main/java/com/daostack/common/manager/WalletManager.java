@@ -35,7 +35,6 @@ public class WalletManager {
 
 
     public WalletManager () {
-        System.loadLibrary("TrustWalletCore");
         store = new Store(MainApplication.getAppContext());
         if (!store.hasKey(keyString)) {
             key = store.generateSymmetricKey(keyString, null);

@@ -86,15 +86,38 @@ export default class AuthService {
       idToken,
       accessToken,
     );
-    return await auth().signInWithCredential(googleCredential);
+    let signedInUser = null;
+    try {
+      signedInUser = await auth().signInWithCredential(googleCredential);
+    } catch (error) {
+      await this.clearGoogleSignInCache();
+      await this.googleSignOut();
+      throw error;
+    }
+    return signedInUser;
   }
 
-  async signOut() {
+  async clearGoogleSignInCache() {
+    const {accessToken} = await GoogleSignin.getTokens();
+    await GoogleSignin.clearCachedAccessToken(accessToken);
+  }
+
+  async googleSignOut() {
     if (Platform.OS === 'android') {
       await GoogleSignin.revokeAccess();
     }
     await GoogleSignin.signOut();
-    await auth().signOut();
+  }
+
+  async signOut() {
+    try {
+      await this.googleSignOut();
+      await auth().signOut();
+    } catch (error) {
+      const {accessToken} = await GoogleSignin.getTokens();
+      await GoogleSignin.clearCachedAccessToken(accessToken);
+      return error;
+    }
   }
 
   async getCurrentLoggedUser(providerId) {
