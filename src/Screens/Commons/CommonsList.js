@@ -277,6 +277,7 @@ CommonsList.propTypes = {
   navigation: object.isRequired,
   bottomSheetStore: object.isRequired,
   userStore: object.isRequired,
+  daoStore: object.isRequired,
 };
 
 const styles = StyleSheet.create({

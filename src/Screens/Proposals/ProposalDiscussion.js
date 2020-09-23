@@ -6,11 +6,21 @@ import {observer, inject} from 'mobx-react';
 import moment from 'moment';
 import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
-import {string} from 'prop-types';
+import PropTypes, {string} from 'prop-types';
 
-const ProposalDiscussion = ({proposalId}) => {
+const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
   const chatRef = useRef(null);
-  const [msgGroup, setMsgDroup] = useState([]);
+  const [msgGroups, setMsgGroups] = useState([]);
+
+  const setMsgGroup = (msgGroup) => {
+    setMsgGroups(msgGroup);
+
+    setTimeout(() => {
+      scrollViewRef.current.scrollToEnd({
+        animated: true,
+      });
+    }, 150);
+  };
 
   let listRef = useRef([]);
   useEffect(() => {
@@ -49,11 +59,16 @@ const ProposalDiscussion = ({proposalId}) => {
                 return acc;
               }, []);
             logger.log('groupDate', groupDate);
-            setMsgDroup(groupDate);
+            setMsgGroup(groupDate);
+
+            scrollViewRef.current.scrollToEnd({
+              animated: true,
+            });
+
             chatRef.current.scrollToLocation({
               animated: true,
-              itemIndex: 0,
-              sectionIndex: 0,
+              itemIndex:  7,
+              sectionIndex: groupDate.length - 1,
             });
           }
         },
@@ -66,31 +81,53 @@ const ProposalDiscussion = ({proposalId}) => {
 
   return (
     <View style={{flex: 1, backgroundColor: colors.paleGrey}}>
-      <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 120}}>
-        {msgGroup.length > 0 ?
+      <ScrollView
+        style={{flex: 1}}
+        // contentContainerStyle={{paddingBottom: 120}}
+      >
+        {msgGroups.length > 0 ? (
           <SectionList
-            sections={msgGroup}
+            inverted
             ref={chatRef}
-            // ListFooterComponent={header}
-            renderItem={(x) => <DiscussionMessage data={x.item} />}
+            sections={msgGroups}
+            keyExtractor={(x) => x.id}
+            stickySectionHeadersEnabled={true}
+            contentContainerStyle={{
+              paddingTop: 100,
+            }}
+
+            renderItem={(x) => (
+              <DiscussionMessage data={x.item} />
+            )}
+
+            onScrollToIndexFailed={() => {
+              console.log('not cool');
+            }}
+
             renderSectionFooter={({section: {date}}) => (
               <Text style={styles.timeHeader}>
                 {moment().isSame(date, 'day') ? 'Today' : date}
               </Text>
             )}
-            keyExtractor={(x) => x.id}
-            stickySectionHeadersEnabled={true}
-            inverted={true}
-            contentContainerStyle={{paddingTop: 100}}
-          // initialScrollIndex={2}
           />
-          :
+        ) : (
           <View style={styles.emptyContainer}>
-            <Image source={require('~/Assets/empty-discussion.png')} style={{width: 240, height: 240}} />
-            <Text style={styles.emptyTitle}> No comments yet</Text>
-            <Text style={styles.emptyBody}>Have any thoughts? Share them with other members by adding the first comment.</Text>
+            <Image
+              source={require('~/Assets/empty-discussion.png')}
+              style={{
+                width: 240,
+                height: 240,
+              }}
+            />
+
+            <Text style={styles.emptyTitle}>
+              No comments yet
+            </Text>
+            <Text style={styles.emptyBody}>
+              Have any thoughts? Share them with other members by adding the first comment.
+            </Text>
           </View>
-        }
+        )}
       </ScrollView>
     </View>
   );
@@ -99,6 +136,7 @@ const ProposalDiscussion = ({proposalId}) => {
 
 ProposalDiscussion.propTypes = {
   proposalId: string,
+  scrollViewRef: PropTypes.any,
 };
 
 const styles = StyleSheet.create({

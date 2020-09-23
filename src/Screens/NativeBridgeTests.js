@@ -14,9 +14,6 @@ import WalletManager from '~/Util/WalletManager';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import ArcService from '~/Services/ArcService';
 import {
-  ARC_VERSION ,
-  GRAPH_VERSION ,
-  graphHttpLink ,
   web3ProviderUrl ,
   relayerUrl ,
   COMMONTOKENADDRESS ,
@@ -316,7 +313,7 @@ class nativeBridgeTests extends React.Component {
     try {
       const manager = await WalletManager.getInstance();
       const daoId = '0x59b1c80f882c38abd52a90c9b30edafa55f7e421';
-      const address = await ArcService.getInstance().getJoinPluginAddress(daoId);
+      const address = await ArcService.getJoinPluginAddress(daoId);
       const balance = await manager.getAllowance(address);
       this.setState({CMNAllowance: balance});
     } catch (e) {
@@ -332,9 +329,9 @@ class nativeBridgeTests extends React.Component {
       }
 
       const manager = await WalletManager.getInstance();
-      const commonAddress = await ArcService.getInstance().createCommon(
+      const commonAddress = await ArcService.createCommon(
         {
-          name: 'Test dao 666',
+          name: 'Test dao 888',
           founderAddresses: manager.safeAddress,
           minFeeToJoin: 0,
           fundingGoal: 10000,
@@ -372,7 +369,7 @@ class nativeBridgeTests extends React.Component {
           funding: 0,
         },
       };
-      proposalId = await ArcService.getInstance().createRequestToJoin(
+      proposalId = await ArcService.createRequestToJoin(
         daoId,
         data
       );
@@ -404,7 +401,7 @@ class nativeBridgeTests extends React.Component {
         links: [], // {title: "title", url: "url"}
         funding: new BN(3),
       };
-      proposal = await ArcService.getInstance().createFundingProposal(
+      proposal = await ArcService.createFundingProposal(
         this.props.userStore.userInfo.safeAddress,
         daoId,
         data,
@@ -430,7 +427,7 @@ class nativeBridgeTests extends React.Component {
       const data = {
         vote: 1,
       };
-      const vote = await ArcService.getInstance().voteForJoinProposal(
+      const vote = await ArcService.voteForJoinProposal(
         proposalId,
         data,
       );
@@ -657,19 +654,6 @@ class nativeBridgeTests extends React.Component {
             <Text>Get Common Token Allowance</Text>
           </TouchableOpacity>
 
-
-          <Text style={{marginBottom: 10}}>
-            ARC_VERSION: {ARC_VERSION}
-          </Text>
-          <Text style={{marginBottom: 10}}>
-            GRAPH_VERSION: {GRAPH_VERSION}
-          </Text>
-          <Text style={{marginBottom: 10}}>
-            graphHttpLink: {graphHttpLink}
-          </Text>
-          <Text style={{marginBottom: 10}}>
-            ARC_VERSION: {ARC_VERSION}
-          </Text>
           <Text style={{marginBottom: 10}}>
             relayerUrl: {relayerUrl()}
           </Text>
