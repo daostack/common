@@ -490,14 +490,9 @@ const ProposalScreen = ({
                       <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}} onPress={viewUserProfile}>
                         <Text style={text.smallBlackText}>View Profile</Text>
                         <Icon name="right-arrow" size={20}/>
-<<<<<<< HEAD
-                      </TouchableOpacity>)
-                    }
-=======
                       </TouchableOpacity>
                     )}
 
->>>>>>> dev
                   </View>
                 </React.Fragment>
               )}
