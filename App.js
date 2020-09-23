@@ -252,6 +252,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           if (subscribers.userInfoChangeUnsubscribe) {
             subscribers.userInfoChangeUnsubscribe();
           }
+
           userStore.setSignedInUser(null);
         }
         userStore.setIsLoading(false);

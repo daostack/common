@@ -35,6 +35,8 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   const [isSplited, setIsSplited] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
 
+  const {userInfo} = userStore;
+
   const getPendingDAOList = async () => {
     if (userStore.userInfo === null ) {
       return [];
@@ -47,47 +49,56 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   };
 
   const splitDaoList = async (daoList) => {
-    try {
-      if (daoList.length === 0) {
-        setMyDaosGroup({title: '', data: []});
-        return [];
+    if (userInfo) {
+      try {
+        if (daoList.length === 0) {
+          setMyDaosGroup({title: '', data: []});
+          return [];
+        }
+
+        const myDao = daoList.filter((dao) => userStore.isDaoMember(dao.members));
+
+        const pendingList = await getPendingDAOList();
+        const pendingDao = daoList.filter((dao) => pendingList.includes(dao.id));
+
+        const featuredList = daoList.filter((dao) =>
+          !pendingDao.includes(dao) &&
+          !myDao.includes(dao) &&
+          dao.register === DAO_REGISTERED
+        );
+
+        if (myDao.length > 0) {
+          setMyDaosGroup({
+            title: `My Commons (${myDao?.length})`,
+            data: myDao,
+          });
+        }
+
+        if (pendingDao.length > 0) {
+          setPendingDaosGroup({
+            title: `Pending (${pendingDao?.length})`,
+            data: pendingDao,
+          });
+        }
+
+        if (featuredList.length > 0) {
+          setFeaturedDaosGroup({
+            title: 'Featured',
+            data: featuredList,
+          });
+        }
+      } catch (err) {
+        bottomSheetStore.showBottomSheet(
+          BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
+        );
       }
-
-      const myDao = daoList.filter((dao) => userStore.isDaoMember(dao.members));
-
-      const pendingList = await getPendingDAOList();
-      const pendingDao = daoList.filter((dao) => pendingList.includes(dao.id));
-
-      const featuredList = daoList.filter((dao) =>
-        !pendingDao.includes(dao) &&
-      !myDao.includes(dao) &&
-      dao.register === DAO_REGISTERED
-      );
-
-      if (myDao.length > 0) {
-        setMyDaosGroup({
-          title: `My Commons (${myDao?.length})`,
-          data: myDao,
-        });
-      }
-
-      if (pendingDao.length > 0) {
-        setPendingDaosGroup({
-          title: `Pending (${pendingDao?.length})`,
-          data: pendingDao,
-        });
-      }
-
-      if (featuredList.length > 0) {
-        setFeaturedDaosGroup({
-          title: 'Featured',
-          data: featuredList,
-        });
-      }
-    } catch (err) {
-      bottomSheetStore.showBottomSheet(
-        BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
-      );
+    } else {
+      setFeaturedDaosGroup({
+        title: 'Featured',
+        data: daoList.filter((dao) =>
+          dao.register === DAO_REGISTERED
+        ),
+      });
     }
   };
 
@@ -142,7 +153,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
       splitDaoList(docs);
     });
     DaoService.getInstance().subscribeToDaosList(loadDaosList);
-  }, [daoStore, bottomSheetStore, userStore.userInfo]);
+  }, [daoStore, bottomSheetStore, userInfo]);
 
   const onAddCommon = () => {
     if (userStore.userInfo) {
@@ -241,7 +252,11 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
       <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
         { allDaosGroup ? (
           <SectionList
-            sections={isSplited ? [myDaosGroup, pendingDaosGroup, featuredDaosGroup] : [allDaosGroup]}
+            sections={isSplited
+              ? userInfo
+                ? [myDaosGroup, pendingDaosGroup, featuredDaosGroup]
+                : [featuredDaosGroup]
+              : [allDaosGroup]}
             ListHeaderComponent={header}
             contentContainerStyle={{paddingHorizontal: 20}}
             renderItem={(x) => (
