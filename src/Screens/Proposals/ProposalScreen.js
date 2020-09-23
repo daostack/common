@@ -349,7 +349,7 @@ const ProposalScreen = ({
     (moment().isBefore(moment.unix(proposalInfo?.closingAt)) || !proposalInfo?.closingAt)
     && (
       <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
-        <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>Whats your vote?</Text>
+        <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>What's your vote?</Text>
         <View style={layout.flexRow}>
           <TouchableOpacity
             onPress={(e) => openApprovalSheet(true)}
@@ -375,10 +375,13 @@ const ProposalScreen = ({
     ...proposalInfo.type === PROPOSAL_TYPE.FundingRequest && {...layout.flexStart},
   };
 
-  const progressBarWidthPercent = proposalInfo
-    ? (proposalInfo.votesFor / (proposalInfo.votesFor + proposalInfo.votesAgainst) * 100) : 0;
+  const [votesFor, votesAgainst] = [+proposalInfo?.votesFor, +proposalInfo?.votesAgainst];
 
-  const votesCount = proposalInfo.votesFor + proposalInfo.votesAgainst;
+  const progressBarWidthPercent = proposalInfo
+    ? (votesFor / (votesFor + votesAgainst) * 100) : 0;
+
+
+  const votesCount = votesFor + votesAgainst;
 
   const slideUp = {
     transform: [
@@ -526,7 +529,7 @@ const ProposalScreen = ({
                       size={25}
                       style={layout.marginRightXS}/>
                     <Text style={text.lightishGreenText}>
-                      {proposalInfo.votesFor}
+                      {votesFor}
                     </Text>
                   </View>
 
@@ -537,7 +540,7 @@ const ProposalScreen = ({
                   <View
                     style={{...layout.content, ...layout.flexRow, padding: 0}}>
                     <Text style={text.againstText}>
-                      {proposalInfo.votesAgainst}
+                      {votesAgainst}
                     </Text>
                     <Icon
                       name="user-rejected"
