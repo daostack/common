@@ -140,6 +140,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   }, [refreshing]);
 
   useEffect(() => {
+    /*
     Cache.getAsync(CacheKey.AllDaoCache).then((jsonValue) => {
       if (jsonValue === null) {
         return;
@@ -152,6 +153,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
       });
       splitDaoList(docs);
     });
+    */
     DaoService.getInstance().subscribeToDaosList(loadDaosList);
   }, [daoStore, bottomSheetStore, userInfo]);
 
