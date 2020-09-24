@@ -169,7 +169,9 @@ const ProposalScreen = ({
   const messageContainerRef = useRef();
 
   const renderTabBar = (currProps) => (
-    <View style={{paddingBottom: 5}} />
+    <View style={{paddingBottom: 5}}>
+      <TabBarRenderer originRef={originTabBarRef} jumpTo={originTabBarRef.current?.props?.jumpTo} indexChange={setIndex} {...currProps} />
+    </View>
   );
 
   const messageInput = () => {
