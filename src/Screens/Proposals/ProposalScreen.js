@@ -170,7 +170,6 @@ const ProposalScreen = ({
 
     </View>
   );
-  const hasPassedExpiryDate = moment().isAfter(moment.unix(proposalInfo?.closingAt));
 
   const messageInput = () => {
     const sendMessageToDiscussion = async () => {
@@ -346,14 +345,14 @@ const ProposalScreen = ({
   };
 
   const renderVotingButtons = (reference) => (
-    (moment().isBefore(moment.unix(proposalInfo?.closingAt)) || !proposalInfo?.closingAt)
-    && (
+    (moment().isBefore(moment.unix(proposalInfo?.closingAt)) || !proposalInfo?.closingAt) && (
       <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
         <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>What's your vote?</Text>
         <View style={layout.flexRow}>
           <TouchableOpacity
             onPress={(e) => openApprovalSheet(true)}
-            style={{...styles.actionBtnStyle, ...layout.marginRightS}}>
+            style={{...styles.actionBtnStyle, ...layout.marginRightS}}
+          >
             <Icon name="approved-24" color={colors.lightishGreen} size={24}/>
           </TouchableOpacity>
 
@@ -450,7 +449,6 @@ const ProposalScreen = ({
                     isBoosted={true}
                     stage={proposalInfo?.stageStr}
                     winningOutcome={proposalInfo?.winningOutcome}
-                    hasPassedExpiryDate={hasPassedExpiryDate}
                     closingAt={proposalInfo.closingAt}
                   />
 
@@ -471,7 +469,6 @@ const ProposalScreen = ({
                     isBoosted={true}
                     stage={proposalInfo?.stageStr}
                     winningOutcome={proposalInfo?.winningOutcome}
-                    hasPassedExpiryDate={hasPassedExpiryDate}
                     closingAt={proposalInfo.closingAt}
                   />
 
