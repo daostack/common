@@ -23,7 +23,7 @@ const AppleSignInButton = ({onSignIn, userStore, customStyle}) => {
       setSignInError(null);
     } catch (error) {
       userStore.setIsLoading(false);
-      logger.log(error);
+      logger.log('Error in AppligSigninButton._signin', error);
       switch (error.code) {
       case AppleAuthError.CANCELED:
         setSignInError('Canceled');

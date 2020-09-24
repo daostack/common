@@ -56,7 +56,8 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
         }
 
       } catch (error) {
-        logger.log('error: ', error);
+        // TODO: Handle this error somehow (or leave a comment why it does not need to be handled)
+        logger.log('error while loading proposal info: ', error);
       }
     };
 

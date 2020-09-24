@@ -33,7 +33,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
         addMemberOnce(currUserInfo);
       } catch (e) {
         Toast.error(e.toString());
-        logger.log(e);
+        logger.log('Error in setMembersInfo', e);
       }
     };
 

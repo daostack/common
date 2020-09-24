@@ -340,7 +340,7 @@ export default class WalletManager {
       );
       return myTxHash;
     } catch (err) {
-      logger.log(err);
+      logger.log('Error in createSafeTransactionHash', err);
       throw (err);
     }
   }

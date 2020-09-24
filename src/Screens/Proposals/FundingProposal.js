@@ -67,7 +67,7 @@ const FundingProposal = ({
         });
         navigation.dispatch(navigate);
       } catch (error) {
-        logger.log(error);
+        logger.log('Errror in FundingProposal.createProposal', error);
         Toast.error(error.toString());
       }
     }

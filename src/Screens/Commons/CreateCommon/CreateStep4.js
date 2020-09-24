@@ -64,7 +64,6 @@ const CreateStep4 = ({generalInfoFormStore,
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
 
-  logger.log(form);
   const [templateIndex, setTemplateIndex] = useState(1);
   const getImageUrl = (index) =>
     `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;

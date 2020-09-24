@@ -32,8 +32,6 @@ const CreateStep1 = ({generalInfoFormStore, navigation}) => {
       outputRange: [0, 125],
       extrapolate: 'clamp',
     });
-    logger.log(height);
-    // const height = scrollY.value > 100 ? 125 : 0;
     setHeaderHeight(height);
   }, [scrollY]);
 

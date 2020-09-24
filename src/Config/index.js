@@ -13,14 +13,14 @@ let web3Provider;
 let commonTokenAddress;
 
 if (Config.ENV === 'production') {
-  localFunctionURL = 'http://localhost:5001/common-daostack/us-central1';
+  localFunctionURL = 'http://localhost:5000/common-daostack/us-central1';
   cloudFunctionURL = 'https://us-central1-common-daostack.cloudfunctions.net';
   networkId = 100;
   web3Provider = 'https://dai.poa.network';
   commonTokenAddress = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
   clientId = '854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com';
 } else if (Config.ENV === 'staging') {
-  localFunctionURL = 'http://localhost:5001/common-staging-50741/us-central1';
+  localFunctionURL = 'http://localhost:5000/common-staging-50741/us-central1';
   cloudFunctionURL = 'https://us-central1-common-staging-50741.cloudfunctions.net';
   networkId = 42;
   web3Provider = 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';

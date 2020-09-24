@@ -257,7 +257,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         }
         userStore.setIsLoading(false);
       } catch (error) {
-        logger.log(error);
+        logger.log('Error in onAuthStateChanged', error);
         throw error;
       }
     };
@@ -285,7 +285,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         });
         return unsubscribe;
       } catch (error) {
-        logger.log(`errpr: ${JSON.stringify(error)} `);
+        logger.log(`Error in updateUser: ${JSON.stringify(error)} `);
       }
     };
 
@@ -298,7 +298,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         }
         setLoading(false);
       } catch (e) {
-        logger.log(e);
+        logger.log('Error in checkOnboardingStatus:', e);
       }
     };
 

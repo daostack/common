@@ -59,7 +59,6 @@ class ImageField extends React.Component {
     };
     ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
-        // logger.log('User cancelled image picker');
       } else if (response.error) {
         Toast.error(response.error);
         logger.log('ImagePicker Error: ', response.error);

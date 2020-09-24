@@ -52,13 +52,6 @@ class FileField extends React.Component {
         type: [DocumentPicker.types.allFiles],
       });
 
-      // logger.log(
-      //   res.uri,
-      //   res.type, // mime type
-      //   res.name,
-      //   res.size,
-      // );
-
       Toast.loading('Uploading...');
       const downloadUrl = await StorageService.getInstance().uploadFile(
         res.uri,
