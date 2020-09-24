@@ -178,8 +178,11 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
         justifyContent: 'space-between',
         width: '100%',
         paddingVertical: 15,
-      }}>
-      <Text style={styles.lengthCommons}>{`${(allDaosGroup?.data.length)} Commons`}</Text>
+      }}
+    >
+      <Text style={styles.lengthCommons}>
+        Explore Commons
+      </Text>
     </View>
   );
 
