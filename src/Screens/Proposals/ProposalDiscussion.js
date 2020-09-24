@@ -58,17 +58,13 @@ const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
                 }
                 return acc;
               }, []);
-            logger.log('groupDate', groupDate);
+
             setMsgGroup(groupDate);
 
-            scrollViewRef.current.scrollToEnd({
-              animated: true,
-            });
 
             chatRef.current.scrollToLocation({
               animated: true,
-              itemIndex:  7,
-              sectionIndex: groupDate.length - 1,
+              itemIndex: msgList.length + groupDate.length
             });
           }
         },

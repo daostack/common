@@ -122,7 +122,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
 
             chatRef.current.scrollToLocation({
               animated: true,
-              itemIndex:  (msgGroup.map((x) => x.data)).length + msgGroup.length
+              itemIndex: msgList.length + groupDate.length
             });
           }
         },
