@@ -180,7 +180,6 @@ const CreateStep4 = ({generalInfoFormStore,
         fundingGoal: parseInt(formDataInit.funding, 10) * 100,
         fundingGoalDeadline,
       };
-      logger.log('calling createCommon(...)');
 
       navigation.navigate({
         name: 'FullScreenCreationLoader',

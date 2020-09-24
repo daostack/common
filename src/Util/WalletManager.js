@@ -29,10 +29,10 @@ ethers.Contract.prototype.sendToRelayerWithReceipt = async function (funcName, p
   return receipt;
 };
 
-ethers.Contract.prototype.addProvider = async function() {
-  const manager = await WalletManager.getInstance();
-  return new Contract(this.address, this.interface.abi, manager.provider);
-};
+// ethers.Contract.prototype.addProvider = async function() {
+//   const manager = await WalletManager.getInstance();
+//   return new Contract(this.address, this.interface.abi, manager.provider);
+// };
 
 const axiosClient = axios.create({
   baseURL: relayerUrl(),
