@@ -108,7 +108,9 @@ const ProposalScreen = ({
       setProposalInfo({...currProposalInfo, funding});
 
       navigation.setParams({
-        title: currProposedUser.displayName,
+        ...(currProposalInfo.type === 'Join' && {
+          title: currProposedUser.displayName,
+        }),
         subtitle: currProposalInfo.type === 'Join' && 'Request To Join',
       });
     };
@@ -166,9 +168,7 @@ const ProposalScreen = ({
   const inputRef = useRef();
 
   const renderTabBar = (currProps) => (
-    <View style={{paddingBottom: 5}}>
-
-    </View>
+    <View style={{paddingBottom: 5}} />
   );
 
   const messageInput = () => {
