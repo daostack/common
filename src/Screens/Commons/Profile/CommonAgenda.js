@@ -40,12 +40,17 @@ const CommonAgenda = ({navigation,
             </Text>
           </View>
 
-          {metadata.courseOfAction && <View style={styles.sectionContainer}>
-            <Text style={text.h3Black}>Course of action</Text>
-            <Text style={styles.description}>
-              {metadata.courseOfAction}
-            </Text>
-          </View>}
+          {(metadata.action || metadata.courseOfAction) && (
+            <View style={styles.sectionContainer}>
+              <Text style={text.h3Black}>
+                Course of action
+              </Text>
+
+              <Text style={styles.description}>
+                {metadata.action || metadata.courseOfAction}
+              </Text>
+            </View>
+          )}
           {metadata.links?.length > 0 && (
             <View style={styles.sectionContainer}>
               <Text style={text.h3Black}>Links</Text>

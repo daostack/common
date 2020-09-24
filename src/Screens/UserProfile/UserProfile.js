@@ -31,20 +31,20 @@ import {
 } from 'rn-placeholder';
 import logger from '../../Services/Logger';
 
-const UserProfile = ({userStore, navigation, route}) => {
+const UserProfile = ({userStore, daoStore, navigation, route}) => {
   //const [editMode, setEditMode] = useState(false);
 
   const [codePushVersion, setCodePushVersion] = useState('');
   useEffect(() => {
     const getStatus = async () => {
-      const status = await CodePush.getUpdateMetadata();
-      logger.log('getStatus -->', status);
-      setCodePushVersion(status.label.replace('v', ''));
+      CodePush.getUpdateMetadata().then((status) => {
+        setCodePushVersion(status.label.replace('v', ''));
+      });
     };
     getStatus();
   }, []);
 
-  const _signOut = async () => {
+  const _logout = async () => {
     try {
       Alert.alert(
         'Oops',
@@ -55,15 +55,22 @@ const UserProfile = ({userStore, navigation, route}) => {
             onPress: () => logger.log('Cancel Pressed'),
             style: 'cancel',
           },
-          {text: 'OK', onPress: async () => {
+          {
+            text: 'OK',
+            onPress: async () => {
             // That loading status will be changed to false in the onAuthStateChanged method in App.js
-            userStore.setIsLoading(true);
-            await AuthService.getInstance().signOut();
-          }},
+              userStore.setIsLoading(true);
+
+              await AuthService
+                .getInstance()
+                .signOut();
+            },
+          },
         ],
       );
 
     } catch (error) {
+      await AuthService.getInstance().clearGoogleSignInCache();
       userStore.setIsLoading(false);
       Toast.error(error?.toString());
       logger.log('SignOut Error -> ', error);
@@ -125,7 +132,7 @@ const UserProfile = ({userStore, navigation, route}) => {
                 <AccordionBtn
                   lightStyle={true}
                   title="Log out"
-                  onPress={_signOut}
+                  onPress={_logout}
                 />
               ) : null}
             </View>
@@ -278,4 +285,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(UserProfile));
+export default inject(
+  'userStore',
+  'daoStore'
+)(observer(UserProfile));

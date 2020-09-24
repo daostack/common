@@ -1,5 +1,7 @@
 import {observable, action, decorate} from 'mobx';
 import {isDaoMemberBySafeAddress} from '~/Util';
+import Cache from '../Util/Cache';
+import WalletManager from '../Util/WalletManager';
 
 export const userInfoFields = [
   'uid',
@@ -21,11 +23,16 @@ export const userInfoFields = [
 class UserStore {
   userInfo;
   isLoading;
+  signInError;
   myCommons;
   myProposals;
   constructor() {
     this.userInfo = null;
     this.isLoading = false;
+  }
+
+  setSignInError = (error) => {
+    this.signInError = error;
   }
 
   isDaoMember = (members) => (
@@ -76,12 +83,13 @@ class UserStore {
       }
       if (newUserInfo.safeAddress) {
         newUserObj.safeAddress = newUserInfo.safeAddress;
+        WalletManager.getInstance().safeAddress = newUserInfo.safeAddress;
       }
 
       newUserObj.following = newUserInfo.following || [];
       newUserObj.follower = newUserInfo.follower || [];
-      // console.log('newUserObj', newUserObj);
 
+      Cache.set(newUserInfo.uid, newUserObj);
       this.userInfo = newUserObj;
     } else {
       this.userInfo = null;
@@ -93,6 +101,7 @@ decorate(UserStore, {
   address: observable,
   setSignedInUser: action,
   userInfo: observable,
+  setSignInError: observable,
   isLoading: observable,
   myCommons: observable,
   myProposals: observable,

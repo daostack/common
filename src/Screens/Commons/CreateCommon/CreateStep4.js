@@ -190,7 +190,7 @@ const CreateStep4 = ({generalInfoFormStore,
         },
       });
 
-      const commonAddress = await ArcService.getInstance().createCommon(
+      const commonAddress = await ArcService.createCommon(
         data,
         navigation,
       );
@@ -631,5 +631,4 @@ export default inject(
   'agendaFormStore',
   'reviewFormStore',
   'userStore',
-  'daoStore',
 )(observer(CreateStep4));

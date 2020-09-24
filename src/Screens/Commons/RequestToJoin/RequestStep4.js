@@ -25,10 +25,7 @@ const {width} = Dimensions.get('window');
 
 const RequestStep4 = ({navigation,
   route: {
-    params: {skipFirstStep, currDaoId},
-  },
-  daoStore: {
-    dao: {name},
+    params: {skipFirstStep, currCommon, currDaoId},
   },
   userStore: {userInfo},
   paymentFormStore,
@@ -79,7 +76,7 @@ const RequestStep4 = ({navigation,
         //   console.log('PREAUTH ID', preAuthId);
         // }
 
-        const proposalId = await ArcService.getInstance().createRequestToJoin(
+        const proposalId = await ArcService.createRequestToJoin(
           currDaoId,
           data,
         );
@@ -96,7 +93,7 @@ const RequestStep4 = ({navigation,
         navigation.dispatch(navigate);
       } catch (e) {
         navigation.pop();
-        showErrorPopUp(bottomSheetStore, e?.response?.data?.error ? e.response.data.error : e.message);
+        showErrorPopUp(bottomSheetStore, e?.response?.data?.error?.error ? e.response.data.error.error : e.message);
       }
     }
   };
@@ -113,7 +110,7 @@ const RequestStep4 = ({navigation,
         }}>
         <CreateStepNavigation
           navigation={navigation}
-          title={name}
+          title={currCommon.name}
         />
         <CreateStepDotHeader
           title="Payment"
@@ -269,5 +266,4 @@ export default inject(
   'personalContributionFormStore',
   'paymentFormStore',
   'userStore',
-  'daoStore'
 )(observer(RequestStep4));

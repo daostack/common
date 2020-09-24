@@ -5,6 +5,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import {LAUNCHED_STATES, COUNTDOWN_STATES, PROPOSAL_STAGE} from '~/Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
 import {string, number, bool} from 'prop-types';
+import moment from 'moment';
 
 const TITLES = {
   APPROVED: 'Approved',
@@ -100,7 +101,10 @@ const renderCountDown = (closingAt) => {
 };
 
 
-const ProposalCardHeader = ({stage, winningOutcome, hasPassedExpiryDate, closingAt, isScreenHeader = false}) => {
+const ProposalCardHeader = ({stage, winningOutcome, closingAt, isScreenHeader = false}) => {
+  const hasPassedExpiryDate = closingAt
+    ? moment().isAfter(moment.unix(closingAt))
+    : false;
 
   const headerStatus = calcStatus(stage, winningOutcome, hasPassedExpiryDate);
   return isScreenHeader

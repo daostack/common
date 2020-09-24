@@ -7,7 +7,9 @@ import {
 import {colors, font, sizeL} from '~/Theme';
 
 const MembershipRequest = () => (
-  <View style={styles.container}><Text style={styles.content}>Membership Request</Text></View>
+  <View style={styles.container}>
+    <Text style={styles.content}>Membership Request</Text>
+  </View>
 );
 
 

@@ -24,11 +24,8 @@
     "codepush:android:release:production": "code-push release-react DAOstack/common-android android -m -d Production"
   },
   "dependencies": {
-    "@apollo/react-hooks": "^3.1.3",
-    "@daostack/arc.js": "2.0.0-experimental.53",
-    "@daostack/common-factory": "1.3.8",
     "@invertase/react-native-apple-authentication": "^1.1.2",
-    "@react-native-community/async-storage": "^1.8.1",
+    "@react-native-community/async-storage": "^1.12.0",
     "@react-native-community/blur": "^3.6.0",
     "@react-native-community/datetimepicker": "^2.3.2",
     "@react-native-community/google-signin": "^4.0.0",
@@ -39,7 +36,7 @@
     "@react-native-firebase/auth": "^8.3.1",
     "@react-native-firebase/crashlytics": "^8.3.0",
     "@react-native-firebase/dynamic-links": "^7.4.1",
-    "@react-native-firebase/firestore": "^7.5.1",
+    "@react-native-firebase/firestore": "^7.8.0",
     "@react-native-firebase/messaging": "^7.6.1",
     "@react-native-firebase/storage": "^7.3.1",
     "@react-navigation/bottom-tabs": "^5.1.1",

@@ -10,7 +10,6 @@ import DaoService from '~/Services/DaoService';
 import ProposalApprovalTag from './ProposalApprovalTag';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '~/Util/Toast';
-import moment from 'moment';
 import logger from '../../Services/Logger';
 import {string, func, bool, object} from 'prop-types';
 const {width} = Dimensions.get('window');
@@ -121,11 +120,11 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
     <Animated.View style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
-          isBoosted={true}
+          isBoosted
           showDate={membershipRequest}
           stage={proposalCardInfo.proposalInfo?.stageStr}
+          closingAt={proposalCardInfo.proposalInfo?.closingAt}
           winningOutcome={proposalCardInfo.proposalInfo?.winningOutcome}
-          hasPassedExpiryDate={moment().isAfter(moment.unix(proposalCardInfo.proposalInfo?.closingAt))}
         />
 
         <View

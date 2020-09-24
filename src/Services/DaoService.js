@@ -97,14 +97,8 @@ export default class DaoService {
   //   });
   // }
 
-  // async getDaos() {
-  //   return db.collection(DB_COLLECTIONS.daos).onSnapshot(snapshot => {
-  //     if (snapshot.empty) {
-  //       return [];
-  //     }
-  //     return snapshot.docs.map(doc => {
-  //       return {...{id: doc.id}, ...doc.data()};
-  //     });
-  //   });
-  // }
+  async getDaoList(callback) {
+    const snapshot = await db.collection(DB_COLLECTIONS.daos).get();
+    callback(snapshot);
+  }
 }
