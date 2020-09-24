@@ -40,7 +40,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
   const [inputText, setInputText] = useState(null);
   const chatRef = useRef(null);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [msgGroup, setMsgDroup] = useState([]);
+  const [msgGroup, setMsgGroup] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
   const [followState, setFollowState] = useState(false);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
@@ -118,14 +118,31 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
                 }
                 return acc;
               }, []);
-            logger.log('groupDate', groupDate);
-            setMsgDroup(groupDate);
+            setMsgGroup(groupDate);
+
+            chatRef.current.scrollToLocation({
+              animated: true,
+              itemIndex:  (msgGroup.map((x) => x.data)).length + msgGroup.length
+            });
           }
         },
         (error) => logger.error(error),
       );
+
     return unsubscribe;
   }, [commonId, dataState.id]);
+  //
+  // useEffect(() => {
+  //   if(msgGroup.length > 0) {
+  //     setTimeout(() => {
+  //       chatRef.current.scrollToLocation({
+  //         animated: true,
+  //         itemIndex:  (msgGroup.map(x => x.data)).length + msgGroup.length + 1,
+  //         sectionIndex: 0,
+  //       });
+  //     }, 1500)
+  //   }
+  // }, [msgGroup]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -135,12 +152,6 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
       setUser(userData);
     };
 
-    // chatRef.scrollToLocation({
-    //   animated: true,
-    //   sectionIndex: 0,
-    //   itemIndex: 0,
-    //   viewPosition: 0,
-    // });
     fetchUser();
   }, [dataState]);
 
@@ -390,30 +401,32 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
     <SafeAreaView style={styles.safeView}>
       {header()}
       {msgGroup.length > 0 ?
-        <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
+        <View style={{flex: 1, paddingBottom: 30}}>
           <SectionList
-            sections={msgGroup}
+            inverted
             ref={chatRef}
-            // ListFooterComponent={header}
-            renderItem={(x) => <DiscussionMessage data={x.item} />}
+            sections={msgGroup}
+            keyExtractor={(x) => x.id}
+            stickySectionHeadersEnabled={true}
+            contentContainerStyle={{
+              paddingTop: 100,
+            }}
+
+            renderItem={(x) => (
+              <DiscussionMessage data={x.item} />
+            )}
+
+            onScrollToIndexFailed={(info) => {
+              console.log('not cool', info);
+            }}
+
             renderSectionFooter={({section: {date}}) => (
               <Text style={styles.timeHeader}>
                 {moment().isSame(date, 'day') ? 'Today' : date}
               </Text>
             )}
-            keyExtractor={(x) => x.id}
-            stickySectionHeadersEnabled={true}
-            inverted={true}
-            contentContainerStyle={{paddingTop: 10}}
-            // initialScrollIndex={1}
-            onScrollToIndexFailed={(info) => {
-              const wait = new Promise((resolve) => setTimeout(resolve, 500));
-              wait.then(() => {
-                chatRef.current?.scrollToIndex({index: info.index, animated: true});
-              });
-            }}
           />
-        </ScrollView>
+        </View>
         :
         <View style={styles.emptyContainer}>
           <Image source={require('../../Assets/empty-discussion.png')} style={{width: 240, height: 240}} />
