@@ -166,7 +166,6 @@ const ProposalScreen = ({
   const [ inputText, setInputText ] = useState(null);
 
   const inputRef = useRef();
-  const messageContainerRef = useRef();
 
   const renderTabBar = (currProps) => (
     <View style={{paddingBottom: 5}}>
@@ -385,19 +384,19 @@ const ProposalScreen = ({
 
   const votesCount = votesFor + votesAgainst;
 
-  const slideUp = {
-    transform: [
-      {
-        translateY: stickyTabBarState.animation.interpolate({
-          inputRange: [0.01, 1],
-          outputRange: [0, 80],
-          extrapolate: 'clamp',
-        }),
-      },
-    ],
-  };
+  // const slideUp = {
+  //   transform: [
+  //     {
+  //       translateY: stickyTabBarState.animation.interpolate({
+  //         inputRange: [0.01, 1],
+  //         outputRange: [0, 80],
+  //         extrapolate: 'clamp',
+  //       }),
+  //     },
+  //   ],
+  // };
 
-  const stickyTabBarStyle = {position: 'absolute', top: -80, width: '100%', paddingBottom: 5, zIndex: 999};
+  // const stickyTabBarStyle = {position: 'absolute', top: -80, width: '100%', paddingBottom: 5, zIndex: 999};
 
   const onSetIndex = (item) => {
     setIndex(item);
@@ -407,14 +406,14 @@ const ProposalScreen = ({
     <React.Fragment>
       <SafeAreaView
         style={{
-          backgroundColor: colors.white
+          backgroundColor: colors.white,
         }}
       />
 
       <SafeAreaView
         style={{
           flex: 1,
-          backgroundColor: colors.white
+          backgroundColor: colors.white,
         }}
       >
 

@@ -408,7 +408,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
             onScrollToIndexFailed={(info) => {
               chatRef.current.scrollToLocation({
                 animated: true,
-                itemIndex: info.index - 1
+                itemIndex: info.index - 1,
               });
             }}
 
