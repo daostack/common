@@ -103,9 +103,6 @@ export default class AuthService {
   }
 
   async googleSignOut() {
-    if (Platform.OS === 'android') {
-      await GoogleSignin.revokeAccess();
-    }
     await GoogleSignin.signOut();
   }
 

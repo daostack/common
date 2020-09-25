@@ -1,5 +1,5 @@
-import { observable, action, decorate } from 'mobx';
-import { isDaoMemberBySafeAddress } from '~/Util';
+import {observable, action, decorate} from 'mobx';
+import {isDaoMemberBySafeAddress} from '~/Util';
 import Cache from '../Util/Cache';
 import WalletManager from '../Util/WalletManager';
 
@@ -22,6 +22,8 @@ export const userInfoFields = [
 
 class UserStore {
   userInfo;
+  signedInUser;
+  loginInProgress;
   isLoading;
   signInError;
   myCommons;
@@ -29,6 +31,7 @@ class UserStore {
   constructor() {
     this.userInfo = null;
     this.isLoading = false;
+    this.loginInProgress = [];
   }
 
   setSignInError = (error) => {
@@ -48,7 +51,23 @@ class UserStore {
     this.isLoading = loading;
   };
 
+  addLoginInProgress = (uid) => {
+    this.loginInProgress.push(uid);
+  }
+
+  removeLoginInProgress = (uid) => {
+    this.loginInProgress = this.loginInProgress.filter((item) => item !== uid);
+  }
+
+  isLoginInProgressExists = (uid) => this.loginInProgress.filter((item) => item === uid).length > 0;
+
   setSignedInUser = (newUserInfo) => {
+    let isUserChanged = false;
+
+    if (newUserInfo?.uid !== this.userInfo?.uid) {
+      isUserChanged = true;
+    }
+
     if (newUserInfo) {
       let newUserObj = {};
       if (newUserInfo.uid) {
@@ -89,10 +108,17 @@ class UserStore {
       newUserObj.following = newUserInfo.following || [];
       newUserObj.follower = newUserInfo.follower || [];
 
-      Cache.set(newUserInfo.uid, newUserObj);
       this.userInfo = newUserObj;
     } else {
       this.userInfo = null;
+    }
+
+    if (this.userInfo) {
+      Cache.set(this.userInfo.uid, this.userInfo);
+    }
+
+    if (isUserChanged) {
+      this.signedInUser = newUserInfo?.uid;
     }
   };
 }
@@ -100,7 +126,9 @@ class UserStore {
 decorate(UserStore, {
   address: observable,
   setSignedInUser: action,
+  setIsLoading: action,
   userInfo: observable,
+  signedInUser: observable,
   setSignInError: observable,
   isLoading: observable,
   myCommons: observable,
