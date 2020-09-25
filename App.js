@@ -206,60 +206,68 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     const subscribers = {authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
 
     const onAuthStateChanged = async (user) => {
-      logger.log('AUTH STATE CHANGED:', user?.uid, user?.email, user?.displayName);
+      logger.log('AUTH STATE CHANGED:', user?.uid, user?.email, user?.displayName, user);
       try {
-        userStore.setIsLoading(true);
-        if (user) {
-          const providerId = user.providerData[0].providerId;
-          await AuthService.getInstance().loadMnemonic(user.uid, providerId);
-          let appUser = await Cache.get(user.uid);
-          if (!appUser) {
-            appUser = await UserService.getInstance().getUserById(
-              user.uid,
-            );
-          }
-          const isNewUser = !appUser;
+        // onAuthStateChanged method is called on many events, not only when the logged in user is changed.
+        // In order to prevent unwanted rerendering we need to make some checks.
+        if (!userStore.isLoginInProgressExists(user?.uid) || userStore.userInfo.uid !== user.uid) {
+          if (user) {
+            userStore.setIsLoading(true);
+            userStore.addLoginInProgress(user?.uid);
+            const providerId = user.providerData[0].providerId;
+            await AuthService.getInstance().loadMnemonic(user.uid, providerId);
 
-          if (isNewUser) {
-            const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
-            const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
-            appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
-          }
+            let appUser = await Cache.get(user.uid);
+            if (!appUser) {
+              appUser = await UserService.getInstance().getUserById(
+                user.uid,
+              );
+            }
+            const isNewUser = !appUser;
 
-          const allUserInfo = {
-            ...user._user,
-            ...appUser,
-          };
+            if (isNewUser) {
+              const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
+              const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
+              appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
+            }
 
-          const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
-          userStore.setSignedInUser(filteredUser);
-          userStore.setIsLoading(false);
+            const allUserInfo = {
+              ...user._user,
+              ...appUser,
+            };
 
-          await WalletManager.init(user.uid);
-          const manager = await WalletManager.getInstance();
+            const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
+            userStore.setSignedInUser(filteredUser);
+            userStore.removeLoginInProgress(filteredUser.uid);
+            userStore.setIsLoading(false);
 
-          if (isNewUser) {
-            manager.createSmartContractWallet();
+            await WalletManager.init(user.uid);
+            const manager = await WalletManager.getInstance();
+
+            if (isNewUser) {
+              manager.createSmartContractWallet();
+            } else {
+              manager.addressCheck(user.uid);
+            }
+
+            if (subscribers.userInfoChangeUnsubscribe) {
+              subscribers.userInfoChangeUnsubscribe();
+            }
+            subscribers.userInfoChangeUnsubscribe = await updateUser(user.uid);
+            userStore.setIsLoading(false);
           } else {
-            manager.addressCheck(user.uid);
+            if (subscribers.userInfoChangeUnsubscribe) {
+              subscribers.userInfoChangeUnsubscribe();
+            }
+            userStore.setSignedInUser(null);
+            userStore.setIsLoading(false);
           }
-
-          if (subscribers.userInfoChangeUnsubscribe) {
-            subscribers.userInfoChangeUnsubscribe();
-          }
-          subscribers.userInfoChangeUnsubscribe = await updateUser(user.uid);
-        } else {
-          if (subscribers.userInfoChangeUnsubscribe) {
-            subscribers.userInfoChangeUnsubscribe();
-          }
-
-          userStore.setSignedInUser(null);
         }
-        userStore.setIsLoading(false);
       } catch (error) {
         logger.log(error);
         throw error;
       }
+
     };
 
     subscribers.authChangeUnsubscribe = auth().onAuthStateChanged(onAuthStateChanged);
