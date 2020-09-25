@@ -120,9 +120,10 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
               }, []);
             setMsgGroup(groupDate);
 
+
             chatRef.current.scrollToLocation({
               animated: true,
-              itemIndex: msgList.length + groupDate.length
+              itemIndex: msgList.length + groupDate.length + 1,
             });
           }
         },
@@ -131,18 +132,6 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
 
     return unsubscribe;
   }, [commonId, dataState.id]);
-  //
-  // useEffect(() => {
-  //   if(msgGroup.length > 0) {
-  //     setTimeout(() => {
-  //       chatRef.current.scrollToLocation({
-  //         animated: true,
-  //         itemIndex:  (msgGroup.map(x => x.data)).length + msgGroup.length + 1,
-  //         sectionIndex: 0,
-  //       });
-  //     }, 1500)
-  //   }
-  // }, [msgGroup]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -417,7 +406,10 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
             )}
 
             onScrollToIndexFailed={(info) => {
-              console.log('not cool', info);
+              chatRef.current.scrollToLocation({
+                animated: true,
+                itemIndex: info.index - 1
+              });
             }}
 
             renderSectionFooter={({section: {date}}) => (
