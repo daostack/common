@@ -459,6 +459,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
                 style={{
                   flex: 1,
                   height: 18,
+                  padding: 0,
                   marginHorizontal: 10,
                 }}
               />
