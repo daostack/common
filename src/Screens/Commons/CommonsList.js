@@ -137,7 +137,6 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
 
 
   useEffect(() => {
-    console.log('userStore.signedInUser -> ', userStore.signedInUser);
     Cache.getAsync(CacheKey.AllDaoCache).then((jsonValue) => {
 
       if (jsonValue === null) {
@@ -154,7 +153,6 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
         setIsSplited(true);
       });
     });
-
     DaoService.getInstance().subscribeToDaosList(loadDaosList);
   }, [userStore.signedInUser]);
 
