@@ -56,6 +56,15 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
       let pendingDao = [];
       let myDao = [];
       if (userStore.signedInUser) {
+        // we keep in the cache already filtered daos
+        if (isFromCache) {
+          setAllDaosGroup({
+            title: '',
+            data: daoList,
+          });
+          daoStore.setDaos(daoList);
+        }
+
         myDao = daoList.filter((dao) => userStore.isDaoMember(dao.members));
 
         const pendingList = await getPendingDAOList();
@@ -137,6 +146,13 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
 
 
   useEffect(() => {
+    setIsSplited(false);
+    daoStore.setDaos(null);
+    setAllDaosGroup(null);
+    setMyDaosGroup({title: '', data: []});
+    setPendingDaosGroup({title: '', data: []});
+    setFeaturedDaosGroup({title: '', data: []});
+
     Cache.getAsync(CacheKey.AllDaoCache).then((jsonValue) => {
 
       if (jsonValue === null) {
@@ -145,11 +161,6 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
       const docs = JSON.parse(jsonValue);
 
       filterAndSplitDaoList(docs, true).then((filteredDaos) => {
-        daoStore.setDaos(filteredDaos);
-        setAllDaosGroup({
-          title: '',
-          data: filteredDaos,
-        });
         setIsSplited(true);
       });
     });

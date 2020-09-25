@@ -62,11 +62,7 @@ class UserStore {
   isLoginInProgressExists = (uid) => this.loginInProgress.filter((item) => item === uid).length > 0;
 
   setSignedInUser = (newUserInfo) => {
-    let isUserChanged = false;
-
-    if (newUserInfo?.uid !== this.userInfo?.uid) {
-      isUserChanged = true;
-    }
+    const isUserChanged = newUserInfo?.uid !== this.userInfo?.uid;
 
     if (newUserInfo) {
       let newUserObj = {};
@@ -108,13 +104,10 @@ class UserStore {
       newUserObj.following = newUserInfo.following || [];
       newUserObj.follower = newUserInfo.follower || [];
 
+      Cache.set(newUserInfo.uid, newUserObj);
       this.userInfo = newUserObj;
     } else {
       this.userInfo = null;
-    }
-
-    if (this.userInfo) {
-      Cache.set(this.userInfo.uid, this.userInfo);
     }
 
     if (isUserChanged) {
