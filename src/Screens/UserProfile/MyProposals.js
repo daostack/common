@@ -42,11 +42,15 @@ const MyProposals = ({navigation, userStore,
     });
   };
 
-  const routes = [{key: 'all', title: `All (${stats.all})`},
-    {key: 'active', title: `Active (${stats.active})`},
-    {key: 'history', title: `History (${stats.history})`}];
-
-  const AllProposals = () => SceneRenderer(0);
+  const routes = [
+    {
+      key: 'active',
+      title: `Active (${stats.active})`,
+    }, {
+      key: 'history',
+      title: `History (${stats.history})`,
+    },
+  ];
 
   const ActiveProposals = () => SceneRenderer(1);
 
@@ -55,12 +59,11 @@ const MyProposals = ({navigation, userStore,
   const SceneRenderer = (sceneIndex) => (
     <View style={{flex: 1, marginTop: 40, paddingHorizontal: 20}}>
       <ProposalsList
+        safeAddress={userStore.userInfo.safeAddress}
         membershipRequests={onlyMembershipRequests}
         onlyFundingRequests={onlyFundingRequests}
+        isHistory={sceneIndex === 2}
         navigation={navigation}
-        safeAddress={userStore.userInfo.safeAddress}
-        showAll={sceneIndex === 0 ? true : false}
-        isHistory={sceneIndex === 2 ? true : false}
       />
     </View>
   );
@@ -69,8 +72,6 @@ const MyProposals = ({navigation, userStore,
 
   const renderScene = ({route}) => {
     switch (route.key) {
-    case 'all':
-      return AllProposals();
     case 'active':
       return ActiveProposals();
     case 'history':
