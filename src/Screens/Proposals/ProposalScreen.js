@@ -168,7 +168,9 @@ const ProposalScreen = ({
   const inputRef = useRef();
 
   const renderTabBar = (currProps) => (
-    <View style={{paddingBottom: 5}} />
+    <View style={{paddingBottom: 5}}>
+      <TabBarRenderer originRef={originTabBarRef} jumpTo={originTabBarRef.current?.props?.jumpTo} indexChange={setIndex} {...currProps} />
+    </View>
   );
 
   const messageInput = () => {
@@ -382,27 +384,45 @@ const ProposalScreen = ({
 
   const votesCount = votesFor + votesAgainst;
 
-  const slideUp = {
-    transform: [
-      {
-        translateY: stickyTabBarState.animation.interpolate({
-          inputRange: [0.01, 1],
-          outputRange: [0, 80],
-          extrapolate: 'clamp',
-        }),
-      },
-    ],
-  };
+  // const slideUp = {
+  //   transform: [
+  //     {
+  //       translateY: stickyTabBarState.animation.interpolate({
+  //         inputRange: [0.01, 1],
+  //         outputRange: [0, 80],
+  //         extrapolate: 'clamp',
+  //       }),
+  //     },
+  //   ],
+  // };
 
-  const stickyTabBarStyle = {position: 'absolute', top: -80, width: '100%', paddingBottom: 5, zIndex: 999};
+  // const stickyTabBarStyle = {position: 'absolute', top: -80, width: '100%', paddingBottom: 5, zIndex: 999};
+
+  const onSetIndex = (item) => {
+    setIndex(item);
+  };
 
   return (
     <React.Fragment>
-      <SafeAreaView style={{backgroundColor: colors.white}}/>
-      <SafeAreaView style={{flex: 1, backgroundColor: colors.white}}>
-        <Animated.View style={[stickyTabBarStyle, slideUp]}>
-          <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange={setIndex} />
-        </Animated.View>
+      <SafeAreaView
+        style={{
+          backgroundColor: colors.white,
+        }}
+      />
+
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: colors.white,
+        }}
+      >
+
+        {showStickyTabBar && (
+          <View style={{position: 'absolute', top: 0, width: '100%', paddingBottom: 5, zIndex: 999}}>
+            <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo}
+              parentRef={originTabBarRef}/>
+          </View>
+        )}
 
         <ScrollView
           style={{
@@ -567,7 +587,7 @@ const ProposalScreen = ({
             <TabView
               navigationState={{index, routes}}
               renderScene={() => null}
-              onIndexChange={setIndex}
+              onIndexChange={onSetIndex}
               initialLayout={initialLayout}
               renderTabBar={renderTabBar}
               style={{backgroundColor: colors.paleGrey}}
@@ -578,7 +598,7 @@ const ProposalScreen = ({
               <ProposalData
                 proposalId={proposalId}
                 proposalInfo={proposalInfo}
-                showMore={() => setIndex(1)}
+                showMore={() => onSetIndex(1)}
               />
             )}
 

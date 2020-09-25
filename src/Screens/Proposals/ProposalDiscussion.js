@@ -58,17 +58,13 @@ const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
                 }
                 return acc;
               }, []);
-            logger.log('groupDate', groupDate);
+
             setMsgGroup(groupDate);
 
-            scrollViewRef.current.scrollToEnd({
-              animated: true,
-            });
 
             chatRef.current.scrollToLocation({
               animated: true,
-              itemIndex:  7,
-              sectionIndex: groupDate.length - 1,
+              itemIndex: msgList.length + groupDate.length - 1,
             });
           }
         },
@@ -81,10 +77,7 @@ const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
 
   return (
     <View style={{flex: 1, backgroundColor: colors.paleGrey}}>
-      <ScrollView
-        style={{flex: 1}}
-        // contentContainerStyle={{paddingBottom: 120}}
-      >
+      <ScrollView style={{flex: 1}}>
         {msgGroups.length > 0 ? (
           <SectionList
             inverted
@@ -100,8 +93,8 @@ const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
               <DiscussionMessage data={x.item} />
             )}
 
-            onScrollToIndexFailed={() => {
-              console.log('not cool');
+            onScrollToIndexFailed={(info) => {
+              logger.error('Something bad happened: ', info);
             }}
 
             renderSectionFooter={({section: {date}}) => (
