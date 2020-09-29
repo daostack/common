@@ -159,7 +159,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
             />
             <ProposalApprovalTag
               iconName="discussion"
-              value={proposalCardInfo.proposalInfo?.discussionsCount}
+              value={proposalCardInfo.proposalInfo?.discussionsCount.toString()}
               isMarked={false}
             />
           </View>
