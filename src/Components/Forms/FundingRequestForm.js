@@ -43,8 +43,6 @@ class FundingRequestForm extends React.Component {
     } = this.props;
 
     logger.log('common.balance ->', common.balance);
-    logger.log('fundingRequestFormStore');
-    logger.log(fundingRequestFormStore);
     return (
       <View
         {...otherProps}
