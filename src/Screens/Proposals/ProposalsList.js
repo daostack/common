@@ -46,8 +46,7 @@ const ProposalsList = ({isMember,
         safeAddress,
         loadShowAll,
         (newList) => {
-          logger.log(newList, PROPOSAL_STAGE.Executed);
-
+          // logger.log(newList, PROPOSAL_STAGE.Executed);
           const history =  newList.filter((proposal) => PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.stageStr) || moment().isAfter(moment.unix(proposal.closingAt)));
           const active = newList.filter((proposal) => PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.stageStr) && !moment().isAfter(moment.unix(proposal.closingAt)));
 
