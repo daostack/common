@@ -55,9 +55,6 @@ export default class NotificationService {
       .update({
         transactionHistory: firestore.FieldValue.arrayUnion(txHash),
       })
-      .then(() => {
-        logger.log('updated');
-      })
       .catch((err) => logger.log(err));
   }
 
