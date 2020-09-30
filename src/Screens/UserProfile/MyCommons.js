@@ -11,8 +11,8 @@ import {
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {inject, observer} from 'mobx-react';
 import CommonBox from '~/Components/CommonBox';
-import { layout, colors, text, font, sizeS } from '~/Theme';
-import { CommonActions } from '@react-navigation/native';
+import {layout, colors, text, font, sizeS} from '~/Theme';
+import {CommonActions} from '@react-navigation/native';
 import {object, shape, func, array} from 'prop-types';
 
 const MyCommons = ({navigation, daoStore, userStore}) => {
@@ -52,9 +52,7 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
     </View>
   );
 
-  const myDaos = (daoList) => {
-    return daoList.filter((dao) => userStore.isDaoMember(dao.members));
-  };
+  const myDaos = (daoList) => daoList.filter((dao) => userStore.isDaoMember(dao.members));
 
   return (
     <>

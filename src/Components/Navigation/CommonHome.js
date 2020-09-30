@@ -10,58 +10,55 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
 import Icon from '~/Assets/iconfont/Icon';
 
-const CommonHome = ({userStore}) => {
-  return (
-    <Tab.Navigator
-      // initialRouteName="My feed"
-      initialRouteName="Explore"
-      lazy={false}
-      screenOptions={({route}) => ({
-        tabBarIcon: ({focused}) => {
-          switch (route.name) {
-          case 'Explore': {
-            if (focused) {
-              return (
-                <Icon name="commons-selected" size={30} />
-              );
-            }
-            return (
-              <Icon name="commons" size={30} />
-            );
-          }
-          default: {
-            if (focused) {
-              return (
-                <Icon name="account-selected" size={30} />
-              );
-            }
-            return (
-              <Icon name="account" size={30} />
-            );
-          }
-          }
-        }})}
-      tabBarOptions={{
-        activeTintColor: colors.mainBlue,
-        showLabel: false,
-        style: {
-          elevation: 5,
-          shadowColor: '#333',
-          shadowOffset: { height: 5 },
-          shadowOpacity: 0.75,
-          shadowRadius: 5,
-          height: Platform.OS === 'ios' ? 100 : 60,
-        },
-      }}
-    >
-      {/*{userStore.userInfo && (*/}
-      {/*<Tab.Screen name="My feed" component={NativeBridgeTests} />*/}
-      {/*)}*/}
-      <Tab.Screen name="Explore" component={CommonsList} />
-      <Tab.Screen name="Profile" component={UserProfile} />
-    </Tab.Navigator>
-  );
-};
+const CommonHome = ({userStore}) => (
+  <Tab.Navigator
+    // initialRouteName="My feed"
+    initialRouteName="Explore"
+    lazy={false}
+    screenOptions={({route}) => ({tabBarIcon: ({focused}) => {
+      switch (route.name) {
+      case 'Explore': {
+        if (focused) {
+          return (
+            <Icon name="commons-selected" size={30} />
+          );
+        }
+        return (
+          <Icon name="commons" size={30} />
+        );
+      }
+      default: {
+        if (focused) {
+          return (
+            <Icon name="account-selected" size={30} />
+          );
+        }
+        return (
+          <Icon name="account" size={30} />
+        );
+      }
+      }
+    }})}
+    tabBarOptions={{
+      activeTintColor: colors.mainBlue,
+      showLabel: false,
+      style: {
+        elevation: 5,
+        shadowColor: '#333',
+        shadowOffset: {height: 5},
+        shadowOpacity: 0.75,
+        shadowRadius: 5,
+        height: Platform.OS === 'ios' ? 100 : 60,
+      },
+    }}
+  >
+    {/*{userStore.userInfo && (*/}
+    {/*<Tab.Screen name="My feed" component={NativeBridgeTests} />*/}
+    {/*)}*/}
+    <Tab.Screen name="Explore" component={CommonsList} />
+    <Tab.Screen name="Profile" component={UserProfile} />
+  </Tab.Navigator>
+);
 
 CommonHome.propTypes = {
   userStore: object.isRequired ,

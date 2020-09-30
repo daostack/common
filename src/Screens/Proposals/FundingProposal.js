@@ -14,7 +14,6 @@ import FundingRequestForm from '~/Components/Forms/FundingRequestForm';
 import RequestStepActionButton from '../Commons/RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '~/Services/ArcService';
-import {BN} from 'bn.js';
 import Toast from '~/Util/Toast';
 import font from '~/Theme/font';
 import logger from '~/Services/Logger';

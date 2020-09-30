@@ -10,7 +10,7 @@ import {
   Fade,
 } from 'rn-placeholder';
 import {isDaoMemberBySafeAddress} from '~/Util';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 import {string, object, number, func} from 'prop-types';
 
 const DEFAULT_HEADER_HEIGHT = 145;
