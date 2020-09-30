@@ -54,7 +54,7 @@ const RequestStep4 = ({navigation,
           ...paymentFormStore.getFormFieldsJson(),
         };
 
-        let data = {
+        const data = {
           title: `request to join ${currDaoId} by ${userInfo.ethereumAddress}`,
           description: formData.about_me,
           links: formData.links,
@@ -62,31 +62,31 @@ const RequestStep4 = ({navigation,
           preAuthId: false,
         };
 
+        // move this configuration to CirclePayService
         const cardData = {
-          encryptedData: 'TODO: pgp this ->',  //JSON.stringify({number: formData.card_number, cvv: formData.cvv}),
-          idempotencyKey: '123e4567-e89b-12d3-a456-426614174000',
+          encryptedData: {
+            number: `${formData.card_number}`,
+            cvv: `${formData.cvv}`,
+          },
+          idempotencyKey: '123e4567-e89b-12d3-a456-426614174000', // fake key
           billingDetails: {
             name: 'Customer 0002',
             city: 'Test City',
-            country: 'United States',
+            country: 'US',
             line1: 'Test',
             postalCode: '11111',
             district: 'MA',
           },
-          expMonth: formData.expiration_date.split('/')[0],
-          expYear: formData.expiration_date.split('/')[1],
+          expMonth: +formData.expiration_date.split('/')[0],
+          expYear: +(`20${formData.expiration_date.split('/')[1]}`),
           metadata: {
-            email: 'moore@daostack.io',
+            email: 'customer-0002@circle.com',
             sessionId: '1234shouldBeHashed',
             ipAddress: '127.0.0.1',
           },
         };
 
-        const cardCreate = await createCard(cardData, (+data.funding), navigation);
-        //console.log('cardCreate', cardCreate);
-
-      /*
-        navigation.navigate({name: 'FullScreenCreationLoader', params: {title: 'Creating your membership request', refreshFeed}});
+        /*const cardCreate = */ await createCard(cardData, (+data.funding), navigation);
 
         // Skip mangopay for now, as the service is not responding and we are not using mangopay anyhow
         // if (Number(data.funding) > 0) {
@@ -94,6 +94,8 @@ const RequestStep4 = ({navigation,
         //   data = { ...data, preAuthId };
         //   console.log('PREAUTH ID', preAuthId);
         // }
+
+        navigation.navigate({name: 'FullScreenCreationLoader', params: {title: 'Creating your membership request'}});
 
         const proposalId = await ArcService.createRequestToJoin(
           currDaoId,
@@ -114,7 +116,7 @@ const RequestStep4 = ({navigation,
           refreshFeed();
         }
 
-        navigation.dispatch(navigate);*/
+        navigation.dispatch(navigate);
       } catch (e) {
         ////navigation.pop();
         showErrorPopUp(bottomSheetStore, e?.response?.data?.error?.error ? e.response.data.error.error : e.message);
