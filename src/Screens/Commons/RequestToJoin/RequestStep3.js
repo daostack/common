@@ -20,7 +20,7 @@ import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import {string, func, bool, object, shape, number} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const RequestStep3 = ({navigation, personalContributionFormStore, route: {params: {skipFirstStep, currCommon, currDaoId} }}) => {
+const RequestStep3 = ({navigation, personalContributionFormStore, route: {params: {skipFirstStep, currCommon, currDaoId}}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
