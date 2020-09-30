@@ -20,6 +20,7 @@ export const createFundingProposal = async (daoId, data) => {
     const body1 = { idToken, daoId, data };
     const endpoint = createUrl();
     const { data: { fundingRequestTx, setFlagTx } } = await axios.post(`${endpoint}/createFundingProposalTransaction`, body1);
+
     logger.log('data ->', fundingRequestTx, setFlagTx);
     const manager = await WalletManager.getInstance();
     const fundingSignedData = await manager.signSafeTx(fundingRequestTx.safeTxHash);
