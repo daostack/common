@@ -1,7 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
 import {observer, inject} from 'mobx-react';
-import logger from '../../Services/Logger';
 import {object} from 'prop-types';
 
 class RequestToJoinForm extends React.Component {

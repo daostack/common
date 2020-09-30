@@ -1,7 +1,6 @@
 import {observable, action, decorate} from 'mobx';
 import Validator from 'validatorjs';
 import en from 'validatorjs/src/lang/en';
-import logger from '../Services/Logger';
 
 class FormStore {
   form;
