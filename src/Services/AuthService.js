@@ -1,4 +1,4 @@
-import {NativeModules, Platform} from 'react-native';
+import {NativeModules} from 'react-native';
 import RNFS from 'react-native-fs';
 
 import {GOOGLE_SIGNIN_PERMISSIONS, AUTH_PROVIDER_ID} from '~/Util';
@@ -103,9 +103,6 @@ export default class AuthService {
   }
 
   async googleSignOut() {
-    if (Platform.OS === 'android') {
-      await GoogleSignin.revokeAccess();
-    }
     await GoogleSignin.signOut();
   }
 

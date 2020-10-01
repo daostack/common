@@ -18,7 +18,7 @@ import NotificationService from '~/Services/NotificationService';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import {db} from '~/Firebase';
 import logger from '~/Services/Logger';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 
 const {width} = Dimensions.get('window');
 

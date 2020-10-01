@@ -14,7 +14,6 @@ import FundingRequestForm from '~/Components/Forms/FundingRequestForm';
 import RequestStepActionButton from '../Commons/RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '~/Services/ArcService';
-import {BN} from 'bn.js';
 import Toast from '~/Util/Toast';
 import font from '~/Theme/font';
 import logger from '~/Services/Logger';
@@ -43,7 +42,7 @@ const FundingProposal = ({
         const data = {
           title: formData[FundingRequestForm.FIELD_TITLE],
           description: formData[FundingRequestForm.FIELD_DESCRIPTION],
-          funding: new BN(formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,),
+          funding: formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,
           links: formData[FundingRequestForm.FIELD_LINKS],
           images: formData[FundingRequestForm.FIELD_IMAGES],
           files: formData[FundingRequestForm.FIELD_FILES],

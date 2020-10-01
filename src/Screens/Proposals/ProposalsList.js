@@ -25,7 +25,8 @@ const ProposalsList = ({isMember,
   isSwiper,
   navigation,
   onCountChange,
-  onlyRequestsToJoin}) => {
+  onlyRequestsToJoin,
+  includeHistoryInCount}) => {
 
   const commonId = commonInfo?.id;
   const commonName = commonInfo?.name;
@@ -47,13 +48,20 @@ const ProposalsList = ({isMember,
         (newList) => {
           logger.log(newList, PROPOSAL_STAGE.Executed);
 
+          const history =  newList.filter((proposal) => PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.stageStr) || moment().isAfter(moment.unix(proposal.closingAt)));
+          const active = newList.filter((proposal) => PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.stageStr) && !moment().isAfter(moment.unix(proposal.closingAt)));
+
           const filteredList = loadIsHistory
-            ? newList.filter((proposal) => PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.stageStr) || moment().isAfter(moment.unix(proposal.closingAt)))
-            : newList.filter((proposal) => PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.stageStr) && !moment().isAfter(moment.unix(proposal.closingAt)));
+            ? history
+            : active;
 
           setList(filteredList);
           if (onCountChange) {
-            onCountChange(filteredList.length);
+            if (includeHistoryInCount) {
+              onCountChange(history.length + active.length);
+            } else {
+              onCountChange(filteredList.length);
+            }
           }
         },
         listRef,
@@ -140,8 +148,8 @@ const ProposalsList = ({isMember,
           />
           <Text style={{...text.h2Black, ...layout.marginTopS}}>
             {membershipRequests
-              ? 'No Requests'
-              : 'No Proposals'
+              ? 'No Active Requests'
+              : 'No Active Proposals'
             }
           </Text>
           <Text
@@ -199,6 +207,7 @@ const ProposalsList = ({isMember,
 };
 
 ProposalsList.propTypes = {
+  includeHistoryInCount: bool,
   isMember: bool,
   commonInfo: shape({
     id: string,

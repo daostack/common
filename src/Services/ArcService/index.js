@@ -27,7 +27,5 @@ export default class ArcService {
   );
 
   // COMMONS
-  static createCommon = async (givenOpts = {}, navigation) => {
-    return createCommon(givenOpts, navigation);
-  }
+  static createCommon = async (givenOpts = {}, navigation) => createCommon(givenOpts, navigation)
 }

@@ -1,5 +1,5 @@
-import { observable, action, decorate } from 'mobx';
-import { isDaoMemberBySafeAddress } from '~/Util';
+import {observable, action, decorate} from 'mobx';
+import {isDaoMemberBySafeAddress} from '~/Util';
 import Cache from '../Util/Cache';
 import WalletManager from '../Util/WalletManager';
 
@@ -22,6 +22,8 @@ export const userInfoFields = [
 
 class UserStore {
   userInfo;
+  signedInUser;
+  loginInProgress;
   isLoading;
   signInError;
   myCommons;
@@ -29,6 +31,7 @@ class UserStore {
   constructor() {
     this.userInfo = null;
     this.isLoading = false;
+    this.loginInProgress = [];
   }
 
   setSignInError = (error) => {
@@ -48,7 +51,19 @@ class UserStore {
     this.isLoading = loading;
   };
 
+  addLoginInProgress = (uid) => {
+    this.loginInProgress.push(uid);
+  }
+
+  removeLoginInProgress = (uid) => {
+    this.loginInProgress = this.loginInProgress.filter((item) => item !== uid);
+  }
+
+  isLoginInProgressExists = (uid) => this.loginInProgress.filter((item) => item === uid).length > 0;
+
   setSignedInUser = (newUserInfo) => {
+    const isUserChanged = newUserInfo?.uid !== this.userInfo?.uid;
+
     if (newUserInfo) {
       let newUserObj = {};
       if (newUserInfo.uid) {
@@ -94,13 +109,19 @@ class UserStore {
     } else {
       this.userInfo = null;
     }
+
+    if (isUserChanged) {
+      this.signedInUser = newUserInfo?.uid;
+    }
   };
 }
 
 decorate(UserStore, {
   address: observable,
   setSignedInUser: action,
+  setIsLoading: action,
   userInfo: observable,
+  signedInUser: observable,
   setSignInError: observable,
   isLoading: observable,
   myCommons: observable,

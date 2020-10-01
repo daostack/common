@@ -46,6 +46,7 @@ class DaoStore {
     }
     this.daos = daoArray;
   };
+
 }
 
 decorate(DaoStore, {
