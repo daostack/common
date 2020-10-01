@@ -17,8 +17,8 @@ import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '~/Services/ArcService';
-import {createCard, ping} from '~/Services/CirclePayService';
-import {preauthorizePayment} from '~/Services/MangopayService';
+import {createCard} from '~/Services/CirclePayService';
+// import {preauthorizePayment} from '~/Services/MangopayService';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
@@ -63,12 +63,12 @@ const RequestStep4 = ({navigation,
         };
 
         // move this configuration to CirclePayService
+        const encryptedData = {
+          number: `${formData.card_number}`,
+          cvv: `${formData.cvv}`,
+        };
         const cardData = {
-          encryptedData: {
-            number: `${formData.card_number}`,
-            cvv: `${formData.cvv}`,
-          },
-          idempotencyKey: '123e4567-e89b-12d3-a456-426614174000', // fake key
+          idempotencyKey: '123e4567-e89b-12d3-a456-426614174000', // use commonId for generating this? // consider uuid-by-string
           billingDetails: {
             name: 'Customer 0002',
             city: 'Test City',
@@ -81,12 +81,11 @@ const RequestStep4 = ({navigation,
           expYear: +(`20${formData.expiration_date.split('/')[1]}`),
           metadata: {
             email: 'customer-0002@circle.com',
-            sessionId: '1234shouldBeHashed',
-            ipAddress: '127.0.0.1',
+            sessionId: '593cd536e4790c7c14224b6a7e61224a1e524124cb7b69fea1', // 50 first chars of hashed email, what field and hashing do we want to use?
           },
         };
 
-        /*const cardCreate = */ await createCard(cardData, (+data.funding), navigation);
+        await createCard(cardData, encryptedData);
 
         // Skip mangopay for now, as the service is not responding and we are not using mangopay anyhow
         // if (Number(data.funding) > 0) {
@@ -118,7 +117,7 @@ const RequestStep4 = ({navigation,
 
         navigation.dispatch(navigate);
       } catch (e) {
-        ////navigation.pop();
+        navigation.pop();
         showErrorPopUp(bottomSheetStore, e?.response?.data?.error?.error ? e.response.data.error.error : e.message);
       }
     }
