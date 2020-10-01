@@ -21,7 +21,7 @@ import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import StorageService from '~/Services/StorageService';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
-import {numberFormatter, showErrorPopUp} from '~/Util';
+import {numberFormatter, showErrorPopUp, getErrorObject} from '~/Util';
 import Toast from '~/Util/Toast';
 import Modal from 'react-native-modal';
 import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
@@ -168,6 +168,7 @@ const CreateStep4 = ({generalInfoFormStore,
     };
     Share.open(options);
   };
+
   const forgeCommon = async () => {
     try {
       const formDataInit = {...form};
@@ -190,6 +191,8 @@ const CreateStep4 = ({generalInfoFormStore,
         },
       });
 
+      console.log(JSON.stringify(data));
+
       const commonAddress = await ArcService.createCommon(
         data,
         navigation,
@@ -202,7 +205,8 @@ const CreateStep4 = ({generalInfoFormStore,
       return {commonAddress};
     } catch (e) {
       navigation.pop();
-      showErrorPopUp(bottomSheetStore, e.message);
+
+      showErrorPopUp(bottomSheetStore, e);
     }
   };
 
