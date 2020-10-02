@@ -120,6 +120,7 @@ const ProposalScreen = ({
         const currProposalInfo = await ProposalService.getInstance().getProposalInfo(
           currProposalId
         );
+        logger.log('currProposalInfo -->', currProposalInfo);
         const currentDao = await DaoService.getInstance().getDaoById(currProposalInfo.dao);
 
         setIsMember(userInfo && isDaoMember(currentDao.members));

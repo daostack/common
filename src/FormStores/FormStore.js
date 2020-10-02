@@ -1,7 +1,6 @@
 import {observable, action, decorate} from 'mobx';
 import Validator from 'validatorjs';
 import en from 'validatorjs/src/lang/en';
-import logger from '../Services/Logger';
 
 class FormStore {
   form;
@@ -56,7 +55,6 @@ class FormStore {
     this.form.meta.formValidationMade = true;
     var validation = this.getValidator();
     this.form.meta.isValid = validation.passes();
-    logger.log(this.form.meta.isValid, validation.errors.errors);
     if (!this.form.meta.isValid) {
       for (const key in validation.errors.errors) {
         this.form.fields[key].error = validation.errors.first(key);
