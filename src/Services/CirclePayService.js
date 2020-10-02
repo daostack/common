@@ -27,11 +27,11 @@ const getEncryptedData = async (dataToEncrypt) => {
   ));
 };
 
-export const createCard = async (cardData, dataToEncrypt) => {
+export const createCard = async (cardData, dataToEncrypt, proposalId) => {
   try {
     const idToken = await auth().currentUser.getIdToken();
     const {encryptedData, keyId} = await getEncryptedData(dataToEncrypt);
-    await axiosClient.post('create-card',{idToken, ...cardData, keyId, encryptedData});
+    await axiosClient.post('create-card',{idToken, ...cardData, keyId, encryptedData, proposalId});
   } catch (e) {
     console.log('error', e);
     throw e;

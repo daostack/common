@@ -85,8 +85,6 @@ const RequestStep4 = ({navigation,
           },
         };
 
-        await createCard(cardData, encryptedData);
-
         // Skip mangopay for now, as the service is not responding and we are not using mangopay anyhow
         // if (Number(data.funding) > 0) {
         //   const preAuthId = await preauthorizePayment(cardData, Number(data.funding), navigation);
@@ -100,6 +98,8 @@ const RequestStep4 = ({navigation,
           currDaoId,
           data,
         );
+
+        await createCard(cardData, encryptedData, proposalId);
 
         navigation.pop();
 
