@@ -38,6 +38,15 @@ export const createCard = async (cardData, dataToEncrypt, proposalId) => {
   }
 };
 
+export const createFundingProposal = async (proposalId) => {
+  try {
+    const idToken = await auth().currentUser.getIdToken();
+    await axiosClient.post('create-funding-proposal', {idToken, proposalId});
+  } catch (e) {
+    throw e;
+  }
+};
+
 export const ping = async () => {
   axios.get('https://api-sandbox.circle.com/ping').then(async (resp) => {
   }).catch(async (e) => {
