@@ -90,10 +90,10 @@ export default class ProposalService {
     });
   }
 
-  async getProposalInfo(proposalUid) {
+  async getProposalInfo(proposalId) {
     return db
       .collection(DB_COLLECTIONS.proposals)
-      .doc(proposalUid)
+      .doc(proposalId)
       .get()
       .then((snapshots) => {
         if (!snapshots) {

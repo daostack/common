@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {FlatList, StyleSheet, View, Text, Image, Dimensions, TouchableOpacity} from 'react-native';
 import ViewTabNoData from '~/Components/ViewTabNoData';
-import ProposalService, {PROPOSAL_STAGE} from '~/Services/ProposalService';
+import ProposalService from '~/Services/ProposalService';
 import ProposalCard from '~/Components/Proposals/ProposalCard';
 import {layout, colors, font, text, sizeM} from '~/Theme';
 import DaoService from '~/Services/DaoService';
@@ -9,7 +9,6 @@ import SwiperCard from '~/Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import {PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '~/Services/ProposalService';
 import moment from 'moment';
-import logger from '../../Services/Logger';
 import {string, bool, object, number, shape, func} from 'prop-types';
 const {width, height} = Dimensions.get('window');
 
@@ -46,8 +45,7 @@ const ProposalsList = ({isMember,
         safeAddress,
         loadShowAll,
         (newList) => {
-          logger.log(newList, PROPOSAL_STAGE.Executed);
-
+          // logger.log(newList, PROPOSAL_STAGE.Executed);
           const history =  newList.filter((proposal) => PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.stageStr) || moment().isAfter(moment.unix(proposal.closingAt)));
           const active = newList.filter((proposal) => PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.stageStr) && !moment().isAfter(moment.unix(proposal.closingAt)));
 
