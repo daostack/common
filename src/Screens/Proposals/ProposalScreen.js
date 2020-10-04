@@ -107,8 +107,6 @@ const ProposalScreen = ({
       setProposedUser(currProposedUser);
       setProposalInfo({...currProposalInfo, funding});
 
-      console.log(currProposalDao);
-
       navigation.setParams({
         ...(currProposalInfo.type === 'Join' && {
           title: 'Request to join',
