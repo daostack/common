@@ -258,8 +258,6 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   );
 
   const refreshFeed = () => {
-    console.log('hello');
-
     filterCommons();
   };
 
