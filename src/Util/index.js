@@ -78,6 +78,12 @@ export const getErrorObject = (axiosError) => {
     );
   } catch (e) {
     logger.error('Something went wrong trying to parse the error object', e);
+
+    return {
+      userMessage: 'Something bad happened',
+      errorId: 'Cannot retrieve the ID if the error',
+      statusCode: 500,
+    };
   }
 };
 

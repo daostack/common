@@ -8,7 +8,7 @@ import {
 import {inject, observer} from 'mobx-react';
 import React from 'react';
 import {text, layout, colors, font} from '~/Theme/index';
-import {string, func, shape} from 'prop-types';
+import {string, number, func, shape} from 'prop-types';
 import Icon from '../../Assets/iconfont/Icon';
 
 const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
@@ -71,6 +71,11 @@ TransactionError.propTypes = {
     hideBottomSheet: func,
   }),
   errorMessage: string,
+  errorObj: shape({
+    errorId: string,
+    name: string,
+    statusCode: number,
+  }),
 };
 
 const styles = StyleSheet.create({
