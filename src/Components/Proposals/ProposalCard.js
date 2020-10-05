@@ -121,6 +121,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
           isBoosted
+          proposal={proposalCardInfo?.proposalInfo}
           showDate={membershipRequest}
           stage={proposalCardInfo.proposalInfo?.stageStr}
           closingAt={proposalCardInfo.proposalInfo?.closingAt}
