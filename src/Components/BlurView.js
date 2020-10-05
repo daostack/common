@@ -1,5 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
+import {object, bool} from 'prop-types';
 
 const BlurView = ({children, style, isBlurring}) => (
   <View
@@ -10,6 +11,12 @@ const BlurView = ({children, style, isBlurring}) => (
     {children}
   </View>
 );
+
+BlurView.propTypes = {
+  children: object,
+  style: object,
+  isBlurring: bool,
+};
 
 
 export default BlurView;

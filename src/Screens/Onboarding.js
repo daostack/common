@@ -9,11 +9,13 @@ import {
   View,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {colors, font, sizeXXL, sizeLineHeight, layout} from '../Theme';
+import {colors, font, sizeXXL, sizeLineHeight, layout} from '~/Theme';
 import {CommonActions} from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
 import AsyncStorage from '@react-native-community/async-storage';
 import messaging from '@react-native-firebase/messaging';
+import logger from '../Services/Logger';
+import {object} from 'prop-types';
 
 const Onboarding = ({navigation}) => {
   const _onboardingClick = async () => {
@@ -32,7 +34,7 @@ const Onboarding = ({navigation}) => {
         }),
       );
     } catch (e) {
-      console.log(e);
+      logger.log(e);
     }
   };
   return (
@@ -42,7 +44,7 @@ const Onboarding = ({navigation}) => {
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
             <Image
-              source={require('../Assets/appLogo.png')}
+              source={require('~/Assets/appLogo.png')}
               style={styles.logo}
             />
           </View>
@@ -54,7 +56,7 @@ const Onboarding = ({navigation}) => {
             paginationStyle={{bottom: 0}}>
             <View style={styles.slide1}>
               <Image
-                source={require('../Assets/creating-a-common.png')}
+                source={require('~/Assets/creating-a-common.png')}
                 style={styles.image}
               />
               <Text style={styles.text}>Join a Common or launch a new one</Text>
@@ -64,7 +66,7 @@ const Onboarding = ({navigation}) => {
             </View>
             <View style={styles.slide1}>
               <Image
-                source={require('../Assets/volunteering.png')}
+                source={require('~/Assets/volunteering.png')}
                 style={styles.image}
               />
               <Text style={styles.text}>Vote and make funding decisions together</Text>
@@ -75,7 +77,7 @@ can take part in the shared effort.
             </View>
             <View style={styles.slide1}>
               <Image
-                source={require('../Assets/transparent.png')}
+                source={require('~/Assets/transparent.png')}
                 style={styles.image}
               />
               <Text style={styles.text}>Operate in complete transparency</Text>
@@ -85,7 +87,7 @@ can take part in the shared effort.
             </View>
             <View style={styles.slide1}>
               <Image
-                source={require('../Assets/CommonExplanation/crowd.png')}
+                source={require('~/Assets/CommonExplanation/crowd.png')}
                 style={styles.image}
               />
               <Text style={styles.text}>Harness the power of communities</Text>
@@ -108,6 +110,10 @@ can take part in the shared effort.
       </SafeAreaView>
     </>
   );
+};
+
+Onboarding.propTypes = {
+  navigation: object,
 };
 
 const styles = StyleSheet.create({

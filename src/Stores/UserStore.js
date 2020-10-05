@@ -1,5 +1,7 @@
 import {observable, action, decorate} from 'mobx';
-import { isDaoMemberBySafeAddress } from '../Util';
+import {isDaoMemberBySafeAddress} from '~/Util';
+import Cache from '../Util/Cache';
+import WalletManager from '../Util/WalletManager';
 
 export const userInfoFields = [
   'uid',
@@ -20,23 +22,48 @@ export const userInfoFields = [
 
 class UserStore {
   userInfo;
+  signedInUser;
+  loginInProgress;
   isLoading;
+  signInError;
   myCommons;
   myProposals;
   constructor() {
     this.userInfo = null;
     this.isLoading = false;
+    this.loginInProgress = [];
   }
 
-  isDaoMember = members => {
-    return isDaoMemberBySafeAddress(members, this.userInfo.safeAddress);
-  };
+  setSignInError = (error) => {
+    this.signInError = error;
+  }
 
-  setIsLoading = loading => {
+  isDaoMember = (members) => (
+    this.userInfo ? isDaoMemberBySafeAddress(members, this.userInfo.safeAddress) : false
+  )
+
+  isProposer = (proposal) =>
+    this.userInfo
+      ? this.userInfo.safeAddress === proposal.proposer
+      : false;
+
+  setIsLoading = (loading) => {
     this.isLoading = loading;
   };
 
-  setSignedInUser = newUserInfo => {
+  addLoginInProgress = (uid) => {
+    this.loginInProgress.push(uid);
+  }
+
+  removeLoginInProgress = (uid) => {
+    this.loginInProgress = this.loginInProgress.filter((item) => item !== uid);
+  }
+
+  isLoginInProgressExists = (uid) => this.loginInProgress.filter((item) => item === uid).length > 0;
+
+  setSignedInUser = (newUserInfo) => {
+    const isUserChanged = newUserInfo?.uid !== this.userInfo?.uid;
+
     if (newUserInfo) {
       let newUserObj = {};
       if (newUserInfo.uid) {
@@ -71,15 +98,20 @@ class UserStore {
       }
       if (newUserInfo.safeAddress) {
         newUserObj.safeAddress = newUserInfo.safeAddress;
+        WalletManager.getInstance().safeAddress = newUserInfo.safeAddress;
       }
 
       newUserObj.following = newUserInfo.following || [];
       newUserObj.follower = newUserInfo.follower || [];
-      // console.log('newUserObj', newUserObj);
 
+      Cache.set(newUserInfo.uid, newUserObj);
       this.userInfo = newUserObj;
     } else {
       this.userInfo = null;
+    }
+
+    if (isUserChanged) {
+      this.signedInUser = newUserInfo?.uid;
     }
   };
 }
@@ -87,7 +119,10 @@ class UserStore {
 decorate(UserStore, {
   address: observable,
   setSignedInUser: action,
+  setIsLoading: action,
   userInfo: observable,
+  signedInUser: observable,
+  setSignInError: observable,
   isLoading: observable,
   myCommons: observable,
   myProposals: observable,

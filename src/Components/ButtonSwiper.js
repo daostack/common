@@ -1,8 +1,8 @@
-import {View, StyleSheet} from 'react-native';
-
 import React from 'react';
-import {text, layout, colors} from '../Theme';
+import {View, StyleSheet} from 'react-native';
 import SwipeButton from 'rn-swipe-button';
+import {text, layout, colors} from '~/Theme';
+import {string, func} from 'prop-types';
 
 const ButtonSwiper = ({onSwipeSuccess, title}) => {
   const thumbComponent = () => <View style={styles.swiperThumbIcon} />;
@@ -24,6 +24,11 @@ const ButtonSwiper = ({onSwipeSuccess, title}) => {
       />
     </View>
   );
+};
+
+ButtonSwiper.propTypes = {
+  onSwipeSuccess: func,
+  title: string,
 };
 
 const styles = StyleSheet.create({

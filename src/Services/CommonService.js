@@ -1,6 +1,4 @@
-// import {DB_COLLECTIONS} from './FirebaseService';
-// import {db} from '../Firebase';
-
+import logger from './Logger';
 export default class CommonService {
   static serviceInstance = null;
 
@@ -14,7 +12,7 @@ export default class CommonService {
   };
 
   async getCommonInfo(commonUid) {
-    console.log('commonUid -> ', commonUid);
+    logger.log(`commonUid -> ${commonUid}`);
     /*
     return db
       .collection(DB_COLLECTIONS.daos)

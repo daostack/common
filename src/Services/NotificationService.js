@@ -1,7 +1,9 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
-import Toast from '../Util/Toast';
+import Toast from '~/Util/Toast';
+import {db} from '~/Firebase';
+import logger from './Logger';
 
 export default class NotificationService {
   static async saveTokenToDatabase() {
@@ -10,16 +12,15 @@ export default class NotificationService {
     }
     const userId = auth().currentUser.uid;
     const token = await messaging().getToken();
-    await firestore()
-      .collection('users')
+    await db.collection('users')
       .doc(userId)
       .update({
         tokens: firestore.FieldValue.arrayUnion(token),
       })
       // .then(() => {
-      //   console.log('FCM token updated');
+      //   logger.log('FCM token updated');
       // })
-      .catch(err => console.log(err));
+      .catch((err) => logger.log(err));
   }
 
   async getToken() {
@@ -39,7 +40,7 @@ export default class NotificationService {
     // PROVISIONAL = 2,
 
     if (settings) {
-      console.log('Permission settings:', settings);
+      logger.log('Permission settings:', settings);
     }
   }
 
@@ -48,16 +49,13 @@ export default class NotificationService {
       return;
     }
     const userId = auth().currentUser.uid;
-    firestore()
-      .collection('users')
+
+    db.collection('users')
       .doc(userId)
       .update({
         transactionHistory: firestore.FieldValue.arrayUnion(txHash),
       })
-      .then(() => {
-        console.log('updated');
-      })
-      .catch(err => console.log(err));
+      .catch((err) => logger.log(err));
   }
 
   static async follow(targetUid) {
@@ -68,18 +66,18 @@ export default class NotificationService {
     if (targetUid === userId) {
       Toast.error('Can not follow yourself');
     }
-    console.log('Follow', userId, targetUid);
-    firestore()
-      .collection('users')
+    logger.log('Follow', userId, targetUid);
+
+    db.collection('users')
       .doc(userId)
       .update({
         following: firestore.FieldValue.arrayUnion(targetUid),
       })
       .then(() => {
-        console.log('updated');
+        logger.log('updated');
         // Toast.done('Follow success');
       })
-      .catch(err => console.log(err));
+      .catch((err) => logger.log(err));
   }
 
   static async unfollow(targetUid) {
@@ -90,17 +88,17 @@ export default class NotificationService {
     if (targetUid === userId) {
       Toast.error('Can not follow yourself');
     }
-    console.log('Unfollow', userId, targetUid);
-    firestore()
-      .collection('users')
+    logger.log('Unfollow', userId, targetUid);
+
+    db.collection('users')
       .doc(userId)
       .update({
         following: firestore.FieldValue.arrayRemove(targetUid),
       })
       .then(() => {
-        console.log('updated');
+        logger.log('updated');
         // Toast.done('Follow success');
       })
-      .catch(err => console.log(err));
+      .catch((err) => logger.log(err));
   }
 }

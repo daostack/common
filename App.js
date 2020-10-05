@@ -1,27 +1,19 @@
-/**
- * Sample React Native Screens
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
 import 'mobx-react-lite/batchingForReactNative';
 import React, {useState, useEffect, useRef} from 'react';
 import {
-  Image,
   StyleSheet,
   Platform,
   View,
   Linking,
   DeviceEventEmitter,
   Text,
+  I18nManager,
 } from 'react-native';
-
-import {NavigationContainer} from '@react-navigation/native';
+import NetInfo from '@react-native-community/netinfo';
+import {NavigationContainer, CommonActions} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
-
 import {
   CommonProfile,
   Onboarding,
@@ -54,13 +46,10 @@ import {
   Browser,
   FullScreenCreationLoader,
 } from './src/Screens';
-
-import FirebaseService from './src/Services/FirebaseService';
+import UserService from './src/Services/UserService';
 import AuthService from './src/Services/AuthService';
-
 import CommonHome from './src/Components/Navigation/CommonHome';
-const Stack = createStackNavigator();
-import { filterObjectByKeys, prepareUserObject } from './src/Util';
+import {filterObjectByKeys, prepareUserObject} from './src/Util';
 import WalletManager from './src/Util/WalletManager';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
@@ -70,13 +59,18 @@ import KeyboardManager from 'react-native-keyboard-manager';
 import validUrl from 'valid-url';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import ToastView, {DURATION} from './src/Util/ToastView';
-import {CommonActions} from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DeepLinking from 'react-native-deep-linking';
-import ArcService from './src/Services/ArcService';
-import { BOTTOM_SHEET_TEMPLATES } from './src/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
+import Toast from './src/Util/Toast';
+import Cache from './src/Util/Cache';
+import {func, bool, object, shape} from 'prop-types';
+import logger from './src/Services/Logger';
+import {fontSize} from './src/Theme/font';
+const Stack = createStackNavigator();
+I18nManager.allowRTL(false);
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
@@ -93,15 +87,13 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     Text.defaultProps.maxFontSizeMultiplier = 1.1;
   }, []);
 
-  useEffect(() => {
-    return messaging().onTokenRefresh(token => {
-      NotificationService.saveTokenToDatabase(token);
-    });
-  }, []);
+  useEffect(() => messaging().onTokenRefresh((token) => {
+    NotificationService.saveTokenToDatabase(token);
+  }), []);
 
   useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log('Foreground Message Arrived', JSON.stringify(remoteMessage));
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      logger.log(`Foreground Message Arrived ${JSON.stringify(remoteMessage)}`);
     });
     return unsubscribe;
   }, []);
@@ -123,14 +115,37 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     };
   }, []);
 
+  // NetInfo
+  useEffect(() => {
+    let checkConnection = null;
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      if (state.isInternetReachable === false) {
+        if (!checkConnection) {
+          checkConnection = setInterval(() => {
+            NetInfo.fetch().then((connectState) => {
+              if (connectState.isInternetReachable === false) {
+                Toast.error('Internet connection lost');
+              } else {
+                clearInterval(checkConnection);
+              }
+            });
+          }, 5000);
+        }
+      } else {
+        clearInterval(checkConnection);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
   // Deep & Dynamic Link
-  const handleOpenURL = ({ url }) => {
+  const handleOpenURL = ({url}) => {
     Linking.canOpenURL(url).then((supported) => {
       if (!supported) {
         return;
       }
       if (!DeepLinking.evaluateUrl(url) && validUrl.isWebUri(url)) {
-        console.log('Routing Browser ->', url);
+        logger.log(`Routing Browser -> ${url}`);
         routing('Browser', {url: url});
       }
     });
@@ -168,7 +183,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     });
 
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);
-    dynamicLinks().getInitialLink().then(link => {
+    dynamicLinks().getInitialLink().then((link) => {
       if (link) {
         handleOpenURL(link);
       } else {
@@ -176,7 +191,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           .then((url) => {
             handleOpenURL({url});
           })
-          .catch(err => err);
+          .catch((err) => err);
       }
     });
 
@@ -188,56 +203,71 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   // Login
   useEffect(() => {
-    const subscribers = { authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
+    const subscribers = {authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
 
-    const onAuthStateChanged = async user => {
-      console.log('AUTH STATE CHANGED: ', user?.uid, user?.email, user?.displayName);
+    const onAuthStateChanged = async (user) => {
+      logger.log('AUTH STATE CHANGED:', user?.uid, user?.email, user?.displayName, user);
       try {
-        userStore.setIsLoading(true);
-        if (user) {
-          const providerId = user.providerData[0].providerId;
-          await AuthService.getInstance().loadMnemonic(user.uid, providerId);
-          await WalletManager.init(user.uid);
-          await ArcService.init();
-          const manager = await WalletManager.getInstance();
-          let appUser = await FirebaseService.getInstance().getUserById(
-            user.uid,
-          );
-          const isNewUser = !appUser;
+        // onAuthStateChanged method is called on many events, not only when the logged in user is changed.
+        // In order to prevent unwanted rerendering we need to make some checks.
+        if (!userStore.isLoginInProgressExists(user?.uid) || userStore.userInfo.uid !== user.uid) {
+          if (user) {
+            userStore.setIsLoading(true);
+            userStore.addLoginInProgress(user?.uid);
+            const providerId = user.providerData[0].providerId;
+            await AuthService.getInstance().loadMnemonic(user.uid, providerId);
 
-          if (isNewUser) {
-            const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
-            const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
-            appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
-            manager.createSmartContractWallet();
+            let appUser = await Cache.get(user.uid);
+            if (!appUser) {
+              appUser = await UserService.getInstance().getUserById(
+                user.uid,
+              );
+            }
+            const isNewUser = !appUser;
+
+            if (isNewUser) {
+              const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
+              const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
+              appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
+            }
+
+            const allUserInfo = {
+              ...user._user,
+              ...appUser,
+            };
+
+            const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
+            userStore.setSignedInUser(filteredUser);
+            userStore.removeLoginInProgress(filteredUser.uid);
+            userStore.setIsLoading(false);
+
+            await WalletManager.init(user.uid);
+            const manager = await WalletManager.getInstance();
+
+            if (isNewUser) {
+              manager.createSmartContractWallet();
+            } else {
+              manager.addressCheck(user.uid);
+            }
+
+            if (subscribers.userInfoChangeUnsubscribe) {
+              subscribers.userInfoChangeUnsubscribe();
+            }
+            subscribers.userInfoChangeUnsubscribe = await updateUser(user.uid);
+            userStore.setIsLoading(false);
           } else {
-            await manager.addressCheck(user.uid);
+            if (subscribers.userInfoChangeUnsubscribe) {
+              subscribers.userInfoChangeUnsubscribe();
+            }
+            userStore.setSignedInUser(null);
+            userStore.setIsLoading(false);
           }
-
-          const allUserInfo = {
-            ...user._user,
-            ...appUser,
-          };
-
-          const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
-          userStore.setSignedInUser(filteredUser);
-          if (subscribers.userInfoChangeUnsubscribe) {
-
-            subscribers.userInfoChangeUnsubscribe();
-          }
-          subscribers.userInfoChangeUnsubscribe = await updateUser(user.uid);
-        } else {
-          if (subscribers.userInfoChangeUnsubscribe) {
-            subscribers.userInfoChangeUnsubscribe();
-          }
-          userStore.setSignedInUser(null);
         }
-
-        userStore.setIsLoading(false);
       } catch (error) {
-        console.log(error);
+        logger.log(error);
         throw error;
       }
+
     };
 
     subscribers.authChangeUnsubscribe = auth().onAuthStateChanged(onAuthStateChanged);
@@ -247,14 +277,14 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         if (auth().currentUser === null) {
           return;
         }
-        const unsubscribe = db.collection('users').doc(uid).onSnapshot( async snapshot => {
+        const unsubscribe = db.collection('users').doc(uid).onSnapshot( async (snapshot) => {
           if (!snapshot.empty) {
             userStore.setSignedInUser(prepareUserObject(snapshot.data()));
           }
 
-          // WalletManager Inited before safeAddress created
-          // The safeAddress in wallet manager will be null
-          // We need to update it.
+          /* WalletManager Inited before safeAddress created
+          The safeAddress in wallet manager will be null
+          We need to update it. */
           const manager = await WalletManager.getInstance();
           if (manager.safeAddress == null) {
             manager.safeAddress = snapshot.data().safeAddress;
@@ -263,7 +293,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         });
         return unsubscribe;
       } catch (error) {
-        console.log('errror: ', error);
+        logger.log(`errpr: ${JSON.stringify(error)} `);
       }
     };
 
@@ -276,7 +306,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         }
         setLoading(false);
       } catch (e) {
-        console.log(e);
+        logger.log(e);
       }
     };
 
@@ -302,7 +332,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           headerStyle: styles.headerStyle,
           headerTintColor: colors.black,
           headerBackImage: () => <Icon name="left-arrow" size={32} />,
-        }}>
+        }}
+      >
         {!onboarded && (
           <Stack.Screen
             name="Onboarding"
@@ -341,7 +372,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           name="CommonExplanation"
           component={CommonExplanation}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerTitle: 'Create a Common',
             headerBackTitleVisible: false,
             headerLeftContainerStyle: {marginLeft: 20},
@@ -349,83 +380,100 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             headerBackImage: () => (
               <Icon name="left-arrow" color={colors.black} size={32} />
             ),
-            // headerRight: () => (
-            //   <Image
-            //     source={require('./src/Assets/questionmark.png')}
-            //     style={{resizeMode: 'contain', width: 20, height: 20}}
-            //   />
-            // ),
           })}
         />
-
         <Stack.Screen
           name="ProposalScreen"
           component={ProposalScreen}
           options={({route}) => ({
-            title: route?.params.screenTitle,
             headerBackTitleVisible: false,
+            headerTitle: () => (
+              <View style={{alignItems: 'center'}}>
+                <Text
+                  style={{
+                    ...fontSize(
+                      navigation?.route.params.subtitle
+                        ? 4
+                        : 3
+                    ),
+                  }}
+                >
+                  {
+                    (route?.params.title?.length > 20)
+                      ? ((route?.params.title.substring(0, 17)) + '...')
+                      : route?.params.title
+                  }
+                </Text>
+
+                {route?.params.subtitle && (
+                  <Text style={{opacity: 0.4, ...fontSize(1)}}>
+                    {route.params.subtitle}
+                  </Text>
+                )}
+              </View>
+            ),
           })}
         />
         <Stack.Screen
           name="RequestStep1"
           component={RequestStep1}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="RequestStep2"
           component={RequestStep2}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="RequestStep3"
           component={RequestStep3}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="RequestStep4"
           component={RequestStep4}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="CreateStep1"
           component={CreateStep1}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="CreateStep2"
           component={CreateStep2}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="CreateStep3"
           component={CreateStep3}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="CreateStep4"
           component={CreateStep4}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="Discussions"
           component={Discussions}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
@@ -433,17 +481,17 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           name="FullScreenCreationLoader"
           component={FullScreenCreationLoader}
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen name="New Post"
-          options={({navigation, route}) => ({
+          options={({nav, route}) => ({
             headerBackTitleVisible: false,
           })}
           component={DiscussionPost} />
         <Stack.Screen
-          options={({ route }) => ({
+          options={({route}) => ({
             title: route.params.isFirstOpening ? false : 'Edit my profile',
           })}
           name="EditProfile"
@@ -504,7 +552,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           component={FundingProposal}
         />
       </Stack.Navigator>
-      {bottomSheetStore.isVisible ? <BottomSheetContainer /> : null}
+      {bottomSheetStore.isVisible && <BottomSheetContainer />}
       <ToastView
         ref={hudRef}
         style={{backgroundColor: 'transparent'}}
@@ -512,6 +560,18 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       />
     </NavigationContainer>
   );
+};
+
+App.propTypes = {
+  userStore: shape({
+    setIsLoading: func,
+    setSignedInUser: func,
+  }),
+  bottomSheetStore: shape({
+    isVisible: bool,
+    showBottomSheet: func,
+  }),
+  navigation: object,
 };
 
 const styles = StyleSheet.create({

@@ -6,22 +6,24 @@ import {
   SafeAreaView,
   StatusBar,
   View,
+  Keyboard,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
-import {text, layout, colors} from '../../Theme';
-import FundingRequestForm from '../../Components/Forms/FundingRequestForm';
+import {text, layout, colors} from '~/Theme';
+import FundingRequestForm from '~/Components/Forms/FundingRequestForm';
 import RequestStepActionButton from '../Commons/RequestStepActionButton';
-import { CommonActions } from '@react-navigation/native';
-import ArcService from '../../Services/ArcService';
-import { BN } from 'bn.js';
-import Toast from '../../Util/Toast';
-import font from '../../Theme/font';
+import {CommonActions} from '@react-navigation/native';
+import ArcService from '~/Services/ArcService';
+import Toast from '~/Util/Toast';
+import font from '~/Theme/font';
+import logger from '~/Services/Logger';
+import {string, object, shape, func} from 'prop-types';
 
 const FundingProposal = ({
   userStore,
   fundingRequestFormStore,
   navigation,
-  route,
+  route: {params: {commonId, common}} ,
 }) => {
   // TODO: can these lines be removed?
   // const viewProposal = () => {
@@ -32,14 +34,15 @@ const FundingProposal = ({
   //   setShowRequestSentModal(false);
   // };
 
-  const createProposal = async e => {
+  const createProposal = async (e) => {
+    Keyboard.dismiss();
     if (fundingRequestFormStore.isFormValid()) {
       try {
         const formData = fundingRequestFormStore.getChangedFormFieldsJson();
         const data = {
           title: formData[FundingRequestForm.FIELD_TITLE],
           description: formData[FundingRequestForm.FIELD_DESCRIPTION],
-          funding: new BN(formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,),
+          funding: formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,
           links: formData[FundingRequestForm.FIELD_LINKS],
           images: formData[FundingRequestForm.FIELD_IMAGES],
           files: formData[FundingRequestForm.FIELD_FILES],
@@ -47,10 +50,9 @@ const FundingProposal = ({
 
         Toast.loading('Creating funding proposal...');
 
-        const proposalId = await ArcService.getInstance().createFundingProposal(
-          userStore.userInfo.safeAddress,
-          route.params.commonId,
-          data,
+        const proposalId = await ArcService.createFundingProposal(
+          commonId,
+          data
         );
         Toast.hide();
         Toast.done(`Funding Proposal with id ${proposalId} created!`);
@@ -64,7 +66,7 @@ const FundingProposal = ({
         });
         navigation.dispatch(navigate);
       } catch (error) {
-        console.log(error);
+        logger.log(error);
         Toast.error(error.toString());
       }
     }
@@ -84,8 +86,8 @@ const FundingProposal = ({
           <Text style={styles.subtitle}>
             Get funding to promote the Common's agenda. If your proposal is accepted you will be responsible to follow it through.
           </Text>
-          <View style={styles.divider}/>
-          <FundingRequestForm common={route.params.common} />
+          <View style={styles.divider} />
+          <FundingRequestForm common={common} />
         </ScrollView>
         <RequestStepActionButton
           title="Create Proposal"
@@ -95,6 +97,26 @@ const FundingProposal = ({
       </SafeAreaView>
     </>
   );
+};
+
+FundingProposal.propTypes = {
+  userStore: shape({
+    userInfo: shape({
+      safeAddress: string,
+    }),
+  }),
+  fundingRequestFormStore: shape({
+    isFormValid: func,
+    getChangedFormFieldsJson: func,
+    form: object,
+  }),
+  navigation: object,
+  route: shape({
+    params: shape({
+      commonId: string,
+      common: object,
+    }),
+  }),
 };
 
 const styles = StyleSheet.create({

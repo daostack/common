@@ -7,27 +7,33 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import TextInputField from '../../../Components/FormFields/TextInputField';
-import {colors, layout, text} from '../../../Theme';
+import TextInputField from '~/Components/FormFields/TextInputField';
+import {colors, layout, text} from '~/Theme';
 import {observer, inject} from 'mobx-react';
-const {width} = Dimensions.get('window');
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepNavigation from './RequestStepNavigation';
-import RequestToJoinForm from '../../../Components/Forms/RequestToJoinForm';
+import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
-import ArcService from '../../../Services/ArcService';
-import { preauthorizePayment } from '../../../Services/MangopayService';
+import ArcService from '~/Services/ArcService';
+// import {preauthorizePayment} from '~/Services/MangopayService';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
-import {showErrorPopUp} from '../../../Util';
+import {showErrorPopUp} from '~/Util';
+import {string, func, bool, object, shape} from 'prop-types';
+const {width} = Dimensions.get('window');
 
-const RequestStep4 = ({navigation, ...props}) => {
+const RequestStep4 = ({navigation,
+  route: {
+    params: {skipFirstStep, currCommon, currDaoId},
+  },
+  userStore: {userInfo},
+  paymentFormStore,
+  introduceYourselfFormStore,
+  personalContributionFormStore,
+  bottomSheetStore}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const isFirstStepSkipped = props.route.params.skipFirstStep;
-
-  const { name } = props.daoStore.dao;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -39,38 +45,39 @@ const RequestStep4 = ({navigation, ...props}) => {
   }, [scrollY]);
 
   const push = async () => {
-    if (props.paymentFormStore.isFormValid()) {
+    if (paymentFormStore.isFormValid()) {
       try {
         const formData = {
-          ...props.introduceYourselfFormStore.getFormFieldsJson(),
-          ...props.personalContributionFormStore.getFormFieldsJson(),
-          ...props.paymentFormStore.getFormFieldsJson(),
+          ...introduceYourselfFormStore.getFormFieldsJson(),
+          ...personalContributionFormStore.getFormFieldsJson(),
+          ...paymentFormStore.getFormFieldsJson(),
         };
 
         let data = {
-          title: `request to join ${props.route.params.currDaoId} by ${props.userStore.userInfo.ethereumAddress}`,
+          title: `request to join ${currDaoId} by ${userInfo.ethereumAddress}`,
           description: formData.about_me,
           links: formData.links,
           funding: formData.amount * 100,
           preAuthId: false,
         };
 
-        const cardData = {
+        /*const cardData = {
           cardNumber: formData.card_number,
           cvv: formData.cvv,
           expDate: formData.expiration_date.replace('/', ''),
-        };
+        };*/
 
-        navigation.navigate({ name: 'FullScreenCreationLoader', params: { title: 'Creating your membership request' } });
+        navigation.navigate({name: 'FullScreenCreationLoader', params: {title: 'Creating your membership request'}});
 
-        if (Number(data.funding) > 0) {
-          const preAuthId = await preauthorizePayment(cardData, Number(data.funding), navigation);
-          data = { ...data, preAuthId };
-          console.log('PREAUTH ID', preAuthId);
-        }
+        // Skip mangopay for now, as the service is not responding and we are not using mangopay anyhow
+        // if (Number(data.funding) > 0) {
+        //   const preAuthId = await preauthorizePayment(cardData, Number(data.funding), navigation);
+        //   data = { ...data, preAuthId };
+        //   console.log('PREAUTH ID', preAuthId);
+        // }
 
-        const proposalId = await ArcService.getInstance().createRequestToJoin(
-          props.route.params.currDaoId,
+        const proposalId = await ArcService.createRequestToJoin(
+          currDaoId,
           data,
         );
 
@@ -86,12 +93,12 @@ const RequestStep4 = ({navigation, ...props}) => {
         navigation.dispatch(navigate);
       } catch (e) {
         navigation.pop();
-        showErrorPopUp(props.bottomSheetStore, e?.response?.data?.error ? e.response.data.error : e.message);
+        showErrorPopUp(bottomSheetStore, e?.response?.data?.error?.error ? e.response.data.error.error : e.message);
       }
     }
   };
 
-  const subtitle =  `You are contributing $${props.personalContributionFormStore.form.fields.amount?.value} to this common`;
+  const subtitle = `You are contributing $${personalContributionFormStore.form.fields.amount?.value} to this common`;
 
   return (
     <>
@@ -103,12 +110,12 @@ const RequestStep4 = ({navigation, ...props}) => {
         }}>
         <CreateStepNavigation
           navigation={navigation}
-          title={name}
+          title={currCommon.name}
         />
         <CreateStepDotHeader
           title="Payment"
           currentIndex={4}
-          isFirstStepSkipped={isFirstStepSkipped}
+          isFirstStepSkipped={skipFirstStep}
           navigation={navigation}
           headerHeight={headerHeight}
         />
@@ -125,7 +132,7 @@ const RequestStep4 = ({navigation, ...props}) => {
             {nativeEvent: {contentOffset: {y: scrollY}}},
           ])}>
           <CreateStepHeader
-            isFirstStepSkipped={isFirstStepSkipped}
+            isFirstStepSkipped={skipFirstStep}
             currentIndex={3}
           />
           <View
@@ -141,7 +148,7 @@ const RequestStep4 = ({navigation, ...props}) => {
               editable={false}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NUMBER,
-                formStore: props.paymentFormStore,
+                formStore: paymentFormStore,
                 validateRule: 'required|numeric',
               }}
             />
@@ -152,7 +159,7 @@ const RequestStep4 = ({navigation, ...props}) => {
               editable={false}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NAME,
-                formStore: props.paymentFormStore,
+                formStore: paymentFormStore,
                 validateRule: 'required|string',
               }}
             />
@@ -178,7 +185,7 @@ const RequestStep4 = ({navigation, ...props}) => {
                 editable={false}
                 validation={{
                   name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
-                  formStore: props.paymentFormStore,
+                  formStore: paymentFormStore,
                   validateRule: [
                     'required',
                     'string',
@@ -195,7 +202,7 @@ const RequestStep4 = ({navigation, ...props}) => {
                 editable={false}
                 validation={{
                   name: RequestToJoinForm.FIELD_CVV,
-                  formStore: props.paymentFormStore,
+                  formStore: paymentFormStore,
                   validateRule: 'required|numeric|digits_between:3,4',
                 }}
               />
@@ -203,8 +210,7 @@ const RequestStep4 = ({navigation, ...props}) => {
 
             <Text
               style={{
-                ...text.blackText,
-                ...{color: colors.grey2, textAlign: 'center'},
+                ...text.blackText,color: colors.grey2, textAlign: 'center',
               }}>
               Your money will be refunded if the common does not approve your
               request or meet the funding goal
@@ -213,12 +219,45 @@ const RequestStep4 = ({navigation, ...props}) => {
         </ScrollView>
         <RequestStepActionButton
           title="Pay Now"
-          pass={props.paymentFormStore.isFormActionEnabled()}
+          pass={paymentFormStore.isFormActionEnabled()}
           onPress={push}
         />
       </SafeAreaView>
     </>
   );
+};
+
+RequestStep4.propTypes = {
+  navigation: object,
+  route: shape({
+    params: shape({
+      skipFirstStep: bool,
+      currDaoId: string,
+    }),
+  }),
+  daoStore: shape({
+    dao: shape({
+      name: string,
+    }),
+  }),
+  userStore: shape({
+    userInfo: shape({
+      ethereumAddress: string,
+    }),
+  }),
+  paymentFormStore: shape({
+    isFormValid: func,
+    getFormFieldsJson: func,
+    isFormActionEnabled: func,
+  }),
+  introduceYourselfFormStore: shape({
+    getFormFieldsJson: func,
+  }),
+  personalContributionFormStore: shape({
+    getFormFieldsJson: func,
+    form: object,
+  }),
+  bottomSheetStore: object,
 };
 
 export default inject(
@@ -227,5 +266,4 @@ export default inject(
   'personalContributionFormStore',
   'paymentFormStore',
   'userStore',
-  'daoStore'
 )(observer(RequestStep4));

@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   SafeAreaView,
   StatusBar,
@@ -10,13 +9,13 @@ import {
   Image,
 } from 'react-native';
 import moment from 'moment';
+import {object, shape, number, array, string} from 'prop-types';
+import {layout, text, font, colors} from '~/Theme';
 
-import {layout, text, font, colors} from '../../../Theme';
-import {inject, observer} from 'mobx-react';
-
-const CommonAgenda = ({daoStore, navigation}) => {
-
-  return (
+const CommonAgenda = ({navigation,
+  route: {
+    params: {common: {metadata, fundingGoalDeadline}},
+  }}) => (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeArea}>
@@ -29,7 +28,7 @@ const CommonAgenda = ({daoStore, navigation}) => {
           <Text style={styles.agendaTitletext}>Agenda and Rules</Text>
           <View style={layout.content}>
             <Image
-              source={require('../../../Assets/Common/rules.png')}
+              source={require('~/Assets/Common/rules.png')}
               style={styles.image}
             />
           </View>
@@ -37,34 +36,37 @@ const CommonAgenda = ({daoStore, navigation}) => {
           <View style={styles.sectionContainer}>
             <Text style={text.h2Black}>About</Text>
             <Text style={styles.description}>
-              {daoStore.dao.metadata.description}
+              {metadata.description}
             </Text>
           </View>
 
-          {daoStore.dao.metadata.courseOfAction && <View style={styles.sectionContainer}>
-            <Text style={text.h3Black}>Course of action</Text>
-            <Text style={styles.description}>
-              {daoStore.dao.metadata.courseOfAction}
-            </Text>
-          </View>}
-          {daoStore.dao.metadata.links?.length > 0 && (
+          {(metadata.action || metadata.courseOfAction) && (
+            <View style={styles.sectionContainer}>
+              <Text style={text.h3Black}>
+                Course of action
+              </Text>
+
+              <Text style={styles.description}>
+                {metadata.action || metadata.courseOfAction}
+              </Text>
+            </View>
+          )}
+          {metadata.links?.length > 0 && (
             <View style={styles.sectionContainer}>
               <Text style={text.h3Black}>Links</Text>
-              {daoStore.dao.metadata.links.map((link, i) => {
-                return (
-                  <View key={i}>
-                    <Text
-                      style={styles.linkText}
-                      onPress={() =>
-                        navigation.navigate('Browser', {
-                          url: link.url,
-                        })
-                      }>
-                      {link.url}
-                    </Text>
-                  </View>
-                );
-              })}
+              {metadata.links.map((link, i) => (
+                <View key={i}>
+                  <Text
+                    style={styles.linkText}
+                    onPress={() =>
+                      navigation.navigate('Browser', {
+                        url: link.url,
+                      })
+                    }>
+                    {link.url}
+                  </Text>
+                </View>
+              ))}
             </View>
           )}
 
@@ -72,38 +74,52 @@ const CommonAgenda = ({daoStore, navigation}) => {
             <Text style={text.h3Black}>Campaign period deadline</Text>
             <Text style={styles.description}>
               {moment
-                .unix(daoStore.dao.fundingGoalDeadline)
+                .unix(fundingGoalDeadline)
                 .format('MMM DD, YYYY')}
             </Text>
           </View>
 
-          {daoStore.dao.metadata.rules?.length > 0 && (
+          {metadata.rules?.length > 0 && (
             <>
             <View style={styles.sectionDividerContent}>
               <View style={styles.sectionDivider} />
             </View>
             <View style={styles.sectionContainer}>
               <Text style={text.h2Black}>Rules of conduct</Text>
-              {daoStore.dao.metadata.rules.map((rule, i) => {
-                return (
-                  <View key={i}>
-                    <Text style={styles.ruleTitle}>
-                      {rule.title}
-                    </Text>
-                    <Text
-                      style={styles.ruleDescription}>
-                      {rule.url}
-                    </Text>
-                  </View>
-                );
-              })}
+              {metadata.rules.map((rule, i) => (
+                <View key={i}>
+                  <Text style={styles.ruleTitle}>
+                    {rule.title}
+                  </Text>
+                  <Text
+                    style={styles.ruleDescription}>
+                    {rule.url}
+                  </Text>
+                </View>
+              ))}
             </View>
             </>
           )}
         </ScrollView>
       </SafeAreaView>
     </>
-  );
+);
+
+CommonAgenda.propTypes = {
+  navigation: object,
+  route: shape({
+    params: shape({
+      common: shape({
+        metadata: shape({
+          description: string.isRequired,
+          courseOfAction: string,
+          links: array,
+          rules: array,
+        }),
+        fundingGoalDeadline: number,
+      }).isRequired,
+    }),
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -165,4 +181,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('daoStore')(observer(CommonAgenda));
+export default CommonAgenda;

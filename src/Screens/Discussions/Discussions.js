@@ -15,64 +15,62 @@ import {
   Platform,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
-import Icon from '../../Assets/iconfont/Icon';
-import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '../../Theme';
+import Icon from '~/Assets/iconfont/Icon';
+import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '~/Theme';
 import DiscussionMessage from './DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
-import Toast from '../../Util/Toast.js';
-import FirebaseService from '../../Services/FirebaseService';
+import Toast from '~/Util/Toast.js';
+import UserService from '~/Services/UserService';
 import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
-import BottomSheetModal from '../../Components/BottomSheetModal';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
+import BottomSheetModal from '~/Components/BottomSheetModal';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import ImageView from 'react-native-image-viewing';
-// import _ from 'lodash';
-
+import {db} from '../../Firebase';
+import logger from '../../Services/Logger';
+import {func, object, shape, string} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const Discussions = ({daoStore, userStore, ...props}) => {
-  const [inputHeight, setInputHeight] = useState(65);
-  const inputRef = useRef(null);
-  const [user, setUser] = useState({});
-  const [inputText, setInputText] = useState(null);
-  const chatRef = useRef(null);
-  const [isExpanded, setIsExpanded] = useState(false);
-  // const data = props.route.params.discussionId;
-  const commonId = props.route.params.commonId;
-  const discussionId = props.route.params.discussionId;
-  const [msgGroup, setMsgDroup] = useState([]);
-  const [showMenu, setShowMenu] = useState(false);
-  // const [discussion, setDiscussion] = useState();
-  const [followState, setFollowState] = useState(false);
-  const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
-  const [data, setData] = useState(props.route.params.data);
-  const [isMember, setIsMember] = useState(false);
+const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
+  route: {params: {commonId, discussionId, data}}}) => {
 
-  console.log('commonId', commonId);
+  const scrollRef = useRef(null);
+  const inputRef = useRef(null);
+  const chatRef = useRef(null);
+  let listRef = useRef([]);
+
+  const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
+  const [followState, setFollowState] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [inputText, setInputText] = useState(null);
+  const [msgGroup, setMsgGroup] = useState([]);
+  const [showMenu, setShowMenu] = useState(false);
+  const [isMember, setIsMember] = useState(false);
+  const [dataState, setData] = useState(data);
+  const [user, setUser] = useState({});
+
   const currentUser = auth().currentUser;
 
   useEffect(() => {
     const currentDao = daoStore.daos.find((dao) => dao.id === commonId);
-    const isMember = userStore.userInfo && userStore.isDaoMember(currentDao.members);
-    setIsMember(isMember);
+    const isCurrMember = userStore.userInfo && userStore.isDaoMember(currentDao.members);
+    setIsMember(isCurrMember);
   }, []);
 
   const hideMenu = () => {
     setShowMenu(false);
   };
 
-  let listRef = useRef([]);
   useEffect(() => {
     let uid = null;
     if (currentUser) {
       uid = currentUser.uid;
     }
-    const unsubscribe = firestore()
-      .collection('discussion')
+    const unsubscribe = db.collection('discussion')
       .doc(discussionId)
-      .onSnapshot(snapshot => {
-        // console.log(snapshot.data());
+      .onSnapshot((snapshot) => {
         if (!snapshot.exists) {
           return;
         }
@@ -87,14 +85,13 @@ const Discussions = ({daoStore, userStore, ...props}) => {
   }, [commonId, discussionId, currentUser]);
 
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('discussionMessage')
+    const unsubscribe = db.collection('discussionMessage')
       .where('discussionId', '==', discussionId)
       .orderBy('createTime', 'desc')
       // .startAt(0)
       // .limit(25)
       .onSnapshot(
-        snapshot => {
+        (snapshot) => {
           if (snapshot.docChanges().length !== 0) {
             const newList = snapshot.docChanges().map(({doc}) => ({
               id: doc.id,
@@ -103,15 +100,15 @@ const Discussions = ({daoStore, userStore, ...props}) => {
             const msgList = [...newList, ...listRef.current];
             // _.union(listRef.current, newList);
             listRef.current = msgList;
-            console.log('newMessage', newList);
+            logger.log('newMessage', newList);
             const groupDate = msgList
-              .map(msg => ({
+              .map((msg) => ({
                 date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
                 data: msg,
               }))
               .reduce((acc, curr) => {
                 var key = curr.date;
-                let el = acc.find(x => x && x.date === key);
+                let el = acc.find((x) => x && x.date === key);
                 if (el) {
                   el.data.push(curr.data);
                 } else {
@@ -122,29 +119,25 @@ const Discussions = ({daoStore, userStore, ...props}) => {
                 }
                 return acc;
               }, []);
-            console.log('groupDate', groupDate);
-            setMsgDroup(groupDate);
-            chatRef.current.scrollToLocation({
-              animated: true,
-              itemIndex: 0,
-              sectionIndex: 0,
-            });
+            setMsgGroup(groupDate);
           }
         },
-        error => console.error(error),
+        (error) => logger.error(error),
       );
+
     return unsubscribe;
-  }, [commonId, data.id]);
+  }, [commonId, dataState.id]);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userData = await FirebaseService.getInstance().getUserById(
-        data.ownerId,
+      const userData = await UserService.getInstance().getUserById(
+        dataState.ownerId,
       );
       setUser(userData);
     };
+
     fetchUser();
-  }, [data]);
+  }, [dataState]);
 
   // const openOptionsMenu = () => {
   //   if (!currentUser) {
@@ -157,7 +150,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
   // };
 
   const showLoginScreen = () => {
-    props.bottomSheetStore.showBottomSheet(
+    bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
     );
   };
@@ -169,8 +162,8 @@ const Discussions = ({daoStore, userStore, ...props}) => {
     } else {
       showLoginScreen();
     }
-    firestore()
-      .collection('discussion')
+
+    db.collection('discussion')
       .doc(discussionId)
       .update({
         follower: followState
@@ -178,91 +171,109 @@ const Discussions = ({daoStore, userStore, ...props}) => {
           : firestore.FieldValue.arrayUnion(uid),
       })
       .then(() => {
-        console.log('Follow State Change');
+        logger.log('Follow State Change');
         setShowMenu(false);
       });
   };
 
-  const sendMessageToDiscussion = async () => {
-    const userStore = currentUser;
-    if (!userStore) {
-      showLoginScreen();
+  const handleLayoutLoaded = ({nativeEvent}) => {
+    try {
+      // Once the list is loaded, measure it and scroll the user to the end of it
+      scrollRef.current.scrollTo({
+        y: nativeEvent.layout.height,
+        animated: true,
+      });
+    } catch (error) {
+      logger.error('HandleLayoutLoaded error: ', error);
     }
-    // props.userStore;
-    inputRef.current.clear();
-    console.log('userStore', commonId, data.id, userStore);
+  };
+
+  const sendMessageToDiscussion = async () => {
+
+    if (isSending) {
+      return;
+    }
+    setIsSending(true);
+
+    if (!currentUser) {
+      showLoginScreen();
+      setIsSending(false);
+      return;
+    }
+
     const message = inputText;
     if (message && message.trim().length) {
-      console.log('message', message);
-      firestore()
-        .collection('discussionMessage')
+      inputRef.current.clear();
+
+      db.collection('discussionMessage')
         .doc()
         .set({
           text: message,
           createTime: new Date(),
-          ownerId: userStore.uid,
-          ownerName: userStore.displayName,
-          ownerAvatar: userStore.photoURL,
+          ownerId: currentUser.uid,
+          ownerName: currentUser.displayName,
+          ownerAvatar: currentUser.photoURL,
           commonId: commonId,
           discussionId: discussionId,
         })
         .then(() => {
           Keyboard.dismiss();
+
+          setInputText('');
         })
-        .catch(error => {
+        .catch((error) => {
           Toast.error(error);
+        })
+        .finally(() => {
+          setIsSending(false);
         });
     } else {
       Toast.error('Empty Message');
+      setIsSending(false);
     }
   };
 
-  const headerImages = () => {
-    return (
+  const headerImages = () => (
       <>
-        {data.images ?
+        {dataState.images ?
           <ScrollView
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             style={{marginBottom: 20}}>
             <View style={styles.imageGallery}>
               <View style={{width: 20}} />
-              {data.images.map((currImage, currIndex) => {
-                return (
-                  <View
-                    key={`proposalImg_${currIndex}`}>
-                    <TouchableOpacity
-                      onPress={() => setImageGalleryIndex(currIndex)}>
-                      <Image
-                        key={currIndex}
-                        style={{
-                          ...styles.galleryImage,
-                          ...{width: width * 0.8 },
-                        }}
-                        resizeMode="cover"
-                        source={{uri: currImage.value}}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                );
-              })}
+              {dataState.images.map((currImage, currIndex) => (
+                <View
+                  key={`proposalImg_${currIndex}`}>
+                  <TouchableOpacity
+                    onPress={() => setImageGalleryIndex(currIndex)}>
+                    <Image
+                      key={currIndex}
+                      style={{
+                        ...styles.galleryImage,
+                        ...{width: width * 0.8},
+                      }}
+                      resizeMode="cover"
+                      source={{uri: currImage.value}}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ))}
               <View style={{width: 20}} />
             </View>
           </ScrollView>
           : null}
       </>
-    );
-  };
+  );
 
-  const headerFiles = () => {
-    return (
+  const headerFiles = () => (
       <>
-        {data.files && (
-          data.files.map((f, index) => <View style={styles.adRow} key={`discussion_file_${index}`}>
+        {dataState.files && (
+          dataState.files.map((f, index) => <View style={styles.adRow} key={`discussion_file_${index}`}>
             <Icon name="file" color={colors.mainBlue} size={16} />
             <TouchableOpacity
               onPress={() =>
-                props.navigation.navigate('Browser', {
+                navigation.navigate('Browser', {
                   url: f.value,
                 })
               }>
@@ -270,26 +281,18 @@ const Discussions = ({daoStore, userStore, ...props}) => {
                 {fileName(f.value)}
               </Text>
             </TouchableOpacity>
-          </View> )
+          </View>)
         )
         }
       </>
-    );
+  );
+
+  const fileName = (url) => {
+    url = url.split('_');
+    return url[url.length - 2];
   };
 
-  const fileName = url => {
-    return url
-      .substring(url.lastIndexOf('/') + 1, url.length)
-      .split('?')[0]
-      .split('_')
-      .slice(0, -1)
-      .join('_')
-      .replace('public_file%2F', '')
-      .concat('.pdf');
-  };
-
-  const header = () => {
-    return (
+  const header = () => (
       // <SafeAreaView flex={1}>
       <>
         <NavigationBar
@@ -298,29 +301,29 @@ const Discussions = ({daoStore, userStore, ...props}) => {
             height: 48,
           }}
           title={{
-            title: data.title,
+            title: dataState.title,
             style: text.h2Black,
           }}
           leftButton={
             <TouchableOpacity
               style={{justifyContent: 'center'}}
-              onPress={() => props.navigation.pop()}>
+              onPress={() => navigation.pop()}>
               <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
             </TouchableOpacity>
           }
-          // rightButton={
-          //   <TouchableOpacity
-          //     style={{justifyContent: 'center'}}
-          //     onPress={openOptionsMenu}>
-          //     <Icon
-          //       name="menu-horizontal"
-          //       size={32}
-          //       style={{marginRight: 10}}
-          //     />
-          //   </TouchableOpacity>
-          // }
+        // rightButton={
+        //   <TouchableOpacity
+        //     style={{justifyContent: 'center'}}
+        //     onPress={openOptionsMenu}>
+        //     <Icon
+        //       name="menu-horizontal"
+        //       size={32}
+        //       style={{marginRight: 10}}
+        //     />
+        //   </TouchableOpacity>
+        // }
         />
-        <View style={{ overflow: 'hidden', paddingBottom: 5 }}>
+        <View style={{overflow: 'hidden', paddingBottom: 5}}>
           <View
             style={styles.headerContainer}>
             {isExpanded ? (
@@ -343,7 +346,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
                     <Text style={styles.displayName}>{user.displayName}</Text>
                     {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
                     <Text style={styles.date}>
-                      {moment(data.createTime.toDate()).fromNow()}
+                      {moment(dataState.createTime.toDate()).fromNow()}
                     </Text>
                   </View>
                 </View>
@@ -351,7 +354,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
                 <View>
                   <Text
                     style={styles.message}>
-                    {data.message}
+                    {dataState.message}
                   </Text>
                 </View>
 
@@ -363,7 +366,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
                   onPress={() => {
                     setIsExpanded(!isExpanded);
                   }}>
-                  <Image style={{ height: 10, width: 60 }} source={require('../../Assets/collapse.png')} />
+                  <Image style={{height: 10, width: 60}} source={require('../../Assets/collapse.png')} />
                 </TouchableOpacity>
               </View>
             ) : (
@@ -373,7 +376,7 @@ const Discussions = ({daoStore, userStore, ...props}) => {
                 onPress={() => {
                   setIsExpanded(!isExpanded);
                 }}>
-                <Image style={{ height: 10, width: 60  }} source={require('../../Assets/expand.png')} />
+                <Image style={{height: 10, width: 60}} source={require('../../Assets/expand.png')} />
               </TouchableOpacity>
             </>
             )}
@@ -390,69 +393,92 @@ const Discussions = ({daoStore, userStore, ...props}) => {
         </View>
         {/* </SafeAreaView> */}
       </>
-    );
-  };
+  );
 
   return (
     <SafeAreaView style={styles.safeView}>
       {header()}
-      { msgGroup.length > 0 ?
-        <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: 60}}>
+      <ScrollView style={{flex: 1, paddingBottom: 30}} ref={scrollRef}>
+        {msgGroup.length > 0 ? (
           <SectionList
-            sections={msgGroup}
+            inverted
             ref={chatRef}
-            // ListFooterComponent={header}
-            renderItem={x => <DiscussionMessage data={x.item} />}
+            sections={msgGroup}
+            keyExtractor={(x) => x.id}
+            stickySectionHeadersEnabled={true}
+            contentContainerStyle={{
+              paddingTop: 100,
+            }}
+
+            renderItem={(x) => (
+              <DiscussionMessage data={x.item} />
+            )}
+
             renderSectionFooter={({section: {date}}) => (
               <Text style={styles.timeHeader}>
                 {moment().isSame(date, 'day') ? 'Today' : date}
               </Text>
             )}
-            keyExtractor={x => x.id}
-            stickySectionHeadersEnabled={true}
-            inverted={true}
-            contentContainerStyle={{paddingTop: 10}}
-            // initialScrollIndex={2}
+
+            onLayout={handleLayoutLoaded}
           />
-        </ScrollView>
-        :
-        <View style={styles.emptyContainer}>
-          <Image source={require('../../Assets/empty-discussion.png')} style={{ width: 240, height: 240 }} />
-          <Text style={styles.emptyTitle}> No comments yet</Text>
-          <Text style={styles.emptyBody}>Have any thoughts? Share them with other members by adding the first comment.</Text>
-        </View>
-      }
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Image
+              source={require('../../Assets/empty-discussion.png')}
+              style={{width: 240, height: 240}}
+            />
+
+
+            <Text style={styles.emptyTitle}> No comments yet</Text>
+            <Text style={styles.emptyBody}>Have any thoughts? Share them with other members by adding the first comment.</Text>
+          </View>
+        )}
+
+      </ScrollView>
+
 
       <KeyboardAvoidingView
-        behavior={'height'}
-        style={{position: 'absolute', bottom: 0, flex: 1, color: '#fbfdff'}}>
-        <View style={styles.input}>
-          {isMember ? (<>
-            <TextInput
-              ref={inputRef}
-              editable={true}
-              multiline={true}
-              placeholder="What do you think?"
-              onContentSizeChange={e =>
-                setInputHeight(e.nativeEvent.contentSize.height)
-              }
-              style={{...styles.textInput, height: inputHeight}}
-              fontSize={16}
-              onChangeText={currText => setInputText(currText)}
-            />
-            <TouchableOpacity
-              style={{paddingRight: 15, justifyContent: 'center'}}
-              onPress={sendMessageToDiscussion}>
-              <Icon
-                name="send-message"
-                style={styles.sendMessageIcon}
-                size={32}
-                color={
-                  inputText && inputText.trim() ? colors.mainBlue : colors.grey3
-                }
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          flex: 1,
+          color: '#fbfdff',
+        }}
+      >
+        <View style={styles.inputContainer}>
+          {isMember ? (
+            <View style={styles.input}>
+              <TextInput
+                ref={inputRef}
+                editable={true}
+                fontSize={15}
+                placeholder="What do you think?"
+                onChangeText={(currText) => setInputText(currText)}
+                style={{
+                  flex: 1,
+                  height: 18,
+                  padding: 0,
+                  marginHorizontal: 10,
+                }}
               />
-            </TouchableOpacity>
-          </>
+              <TouchableOpacity
+                onPress={sendMessageToDiscussion}
+                style={{
+                  paddingRight: 15,
+                  justifyContent: 'center',
+                }}
+              >
+                <Icon
+                  name="send-message"
+                  size={20}
+                  color={
+                    inputText && inputText.trim()
+                      ? colors.mainBlue
+                      : colors.grey3}
+                />
+              </TouchableOpacity>
+            </View>
           ) : (
             <Text style={{...styles.joinCommonText}}>
               {'Only members can send messages'}
@@ -487,14 +513,35 @@ const Discussions = ({daoStore, userStore, ...props}) => {
       </BottomSheetModal>
 
       <ImageView
-        images={data.images ? data.images.map(x => ({uri: x.value})) : []}
+        images={dataState.images ? dataState.images.map((x) => ({uri: x.value})) : []}
         imageIndex={imageGalleryIndex}
         visible={imageGalleryIndex > -1}
         onRequestClose={() => setImageGalleryIndex(-1)}
-        // FooterComponent={ImageGalleryFooter}
+      // FooterComponent={ImageGalleryFooter}
       />
     </SafeAreaView>
   );
+};
+
+Discussions.propTypes = {
+  daoStore: shape({
+    dao: object,
+  }),
+  userStore: shape({
+    userInfo: object,
+    isDaoMember: func,
+  }),
+  bottomSheetStore: shape({
+    showBottomSheet: func,
+  }),
+  navigation: object,
+  route: shape({
+    params: shape({
+      commonId: string,
+      discussionId: string,
+      data: object,
+    }),
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -554,10 +601,18 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: colors.mainBlue,
   },
+  inputContainer: {
+    flex: 1,
+    height: 100,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    backgroundColor: '#fbfdff',
+  },
   input: {
     // backgroundColor: colors.white,
     backgroundColor: '#fbfdff',
-    flex: 1,
     borderTopColor: colors.grey4,
     borderTopWidth: 1,
     height: 65,
@@ -574,7 +629,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 15,
-    paddingVertical: 15,
   },
   textInput: {
     flex: 1,
@@ -670,7 +724,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOpacity: 0.8,
     elevation: 5,
-  }
+  },
 });
 
 export default inject('userStore', 'bottomSheetStore', 'daoStore')(observer(Discussions));

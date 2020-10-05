@@ -1,8 +1,9 @@
 import React from 'react';
 import {Text, StyleSheet} from 'react-native';
+import {string, number, bool, oneOfType} from 'prop-types';
 
-import PropTypes from 'prop-types';
-import {colors, font} from '../../../Theme';
+
+import {colors, font} from '~/Theme';
 
 const styles = StyleSheet.create({
   text: {
@@ -17,18 +18,37 @@ const styles = StyleSheet.create({
     ...font.fontSize(3),
     textAlign: 'center',
   },
+  date: {
+    ...font.primary.regular,
+    ...font.fontSize(0),
+
+    textAlign: 'center',
+  },
 });
 
-const CreateStep4Indicators = ({currencySymbol = true, title, number}) => (
+const CreateStep4Indicators = ({contribution, date, title, num}) => (
   <>
     <Text style={styles.text}>{title}</Text>
     <Text style={styles.val}>
-      {currencySymbol && '$'}
-      {number}
+      {contribution ? `$${num}` : num}
     </Text>
+
+    {!contribution && (
+      <Text style={styles.date}>
+        {date}
+      </Text>
+    )}
   </>
 );
+
 CreateStep4Indicators.propTypes = {
-  title: PropTypes.string,
+  title: string.isRequired,
+  num: oneOfType([
+    number,
+    string,
+  ]).isRequired,
+  date: string,
+  contribution: bool,
 };
+
 export default CreateStep4Indicators;

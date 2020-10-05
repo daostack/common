@@ -55,22 +55,23 @@ class FormStore {
     this.form.meta.formValidationMade = true;
     var validation = this.getValidator();
     this.form.meta.isValid = validation.passes();
-    console.log(this.form.meta.isValid, validation.errors.errors);
     if (!this.form.meta.isValid) {
       for (const key in validation.errors.errors) {
         this.form.fields[key].error = validation.errors.first(key);
       }
       return false;
     }
+
+    // Filter multiple fields
     return true;
   };
 
   // Determine if the form action button has to be disabled
-  isFormActionEnabled = () => {
-    return this.form.meta.formValidationMade ? this.form.meta.isValid : true;
-  };
+  isFormActionEnabled = () => (
+    this.form.meta.formValidationMade ? this.form.meta.isValid : true
+  );
 
-  fieldBlured = name => {
+  fieldBlured = (name) => {
     this.validateField(name);
   };
 
@@ -114,9 +115,9 @@ class FormStore {
   };
 
 
-  getChangedFormFieldsJson = () => {
-    return this.getFormFieldsJson(true);
-  };
+  getChangedFormFieldsJson = () => (
+    this.getFormFieldsJson(true)
+  );
 
   filterMultiFields = (name, fields) => {
     let changedFieldsJson = {};
@@ -150,15 +151,15 @@ class FormStore {
     }
 
     if (multiValues.length > 0) {
-      changedFieldsJson[name] = [...multiValues.keys()].map(x => {
-        return { value: multiValues[x]};
-      });
+      changedFieldsJson[name] = [...multiValues.keys()].map((x) => ({value: multiValues[x]}) );
     }
 
     if (multiFieldTitles.length > 0) {
-      changedFieldsJson[name] = [...multiFieldTitles.keys()].map(x => {
-        return {title: multiFieldTitles[x], url: multiFieldValues[x]};
-      });
+      const allMultiLinksFields = [...multiFieldTitles.keys()].map((x) => (
+        {title: multiFieldTitles[x], url: multiFieldValues[x]}
+      ));
+      // Remove fields with empty values.
+      changedFieldsJson[name] = allMultiLinksFields.filter((item) => item.title || item.url);
     }
 
     if (changedFieldsJson.length === 0) {
@@ -168,12 +169,12 @@ class FormStore {
     return changedFieldsJson;
   };
 
-  isFormChanged = () => {
-    return Object.keys(this.getChangedFormFieldsJson()).length > 0;
-  };
+  isFormChanged = () => (
+    Object.keys(this.getChangedFormFieldsJson()).length > 0
+  );
 
   // Private functions
-  validateField = field => {
+  validateField = (field) => {
     var validation = this.getValidator();
     this.form.meta.isValid = validation.passes();
     this.form.fields[field].error = validation.errors.first(field);
@@ -206,7 +207,7 @@ class FormStore {
     };
   };
 
-  setError = errMsg => {
+  setError = (errMsg) => {
     this.form.meta.error = errMsg;
   };
 }

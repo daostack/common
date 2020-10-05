@@ -1,9 +1,11 @@
 import React from 'react';
 import {Text, StyleSheet, View} from 'react-native';
-import {text, layout, colors, sizeXS, sizeS, font} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
-import { LAUNCHED_STATES, COUNTDOWN_STATES, PROPOSAL_STAGE } from '../../Services/ProposalService';
+import {text, layout, colors, sizeXS, sizeS, font} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
+import {LAUNCHED_STATES, COUNTDOWN_STATES, PROPOSAL_STAGE} from '~/Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
+import {string, number, bool} from 'prop-types';
+import moment from 'moment';
 
 const TITLES = {
   APPROVED: 'Approved',
@@ -34,7 +36,7 @@ const calcStatus = (stage, winningOutcome, hasPassedExpiryDate) => {
     }
     return status;
   }
-  if (hasPassedExpiryDate || stage === PROPOSAL_STAGE.ExpiredInQueue ) {
+  if (hasPassedExpiryDate || stage === PROPOSAL_STAGE.ExpiredInQueue) {
     status.text = TITLES.REJECTED;
     status.lightColor = colors.redLightish;
     status.darkColor = colors.error;
@@ -56,7 +58,7 @@ const calcStatus = (stage, winningOutcome, hasPassedExpiryDate) => {
     return status;
   }
 
-  return 'test';
+  return 'test'; // this causes Icon name prop to be undefined -> violating proptypes definition
 };
 
 const renderCountDown = (closingAt) => {
@@ -77,46 +79,77 @@ const renderCountDown = (closingAt) => {
     ? closingAt - Date.now() / 1000
     : null;
 
-  return <View style={styles.timerContainer}>
-    <View
-      style={{...styles.timer}}>
-      <CountDown
-        timeToShow={['H', 'M', 'S']}
-        digitTxtStyle={counterTextColor}
-        timeLabels={false}
-        showSeparator={true}
-        separatorStyle={counterTextColor}
-        digitStyle={{
-          height: 'auto',
-          width: 'auto',
-        }}
-        until={remainingSeconds}
-      />
+  return (
+    <View style={styles.timerContainer}>
+      <View
+        style={{...styles.timer}}>
+        <CountDown
+          timeToShow={[ 'D', 'H', 'M', 'S' ]}
+          digitTxtStyle={counterTextColor}
+          timeLabels={false}
+          showSeparator={true}
+          separatorStyle={counterTextColor}
+          digitStyle={{
+            height: 'auto',
+            width: 'auto',
+          }}
+          until={remainingSeconds}
+        />
+      </View>
     </View>
-  </View>;
+  );
 };
 
 
-const ProposalCardHeader = ({ stage, winningOutcome, hasPassedExpiryDate, closingAt, isScreenHeader = false }) => {
+const ProposalCardHeader = ({stage, winningOutcome, closingAt, isScreenHeader = false}) => {
+  const hasPassedExpiryDate = closingAt
+    ? moment().isAfter(moment.unix(closingAt))
+    : false;
 
   const headerStatus = calcStatus(stage, winningOutcome, hasPassedExpiryDate);
-
   return isScreenHeader
     ? (
       <View style={{...styles.stateCard, ...{backgroundColor: headerStatus.darkColor, paddingHorizontal: 50}}}>
-        <Icon style={styles.stateIcon} name={headerStatus.icon} color={colors.white}/>
-        <Text style={styles.stateText}>{headerStatus.text}</Text>
+        <Icon
+          style={styles.stateIcon}
+          name={headerStatus.icon}
+          color={colors.white}
+        />
+
+        <Text style={styles.stateText}>
+          {headerStatus.text}
+        </Text>
+
         {headerStatus.text === TITLES.COUNTDOWN && renderCountDown(closingAt)}
       </View>
-    )
-    : (
-      <View style={{...styles.proposalCardHeader, ...{backgroundColor: headerStatus.lightColor}}}>
-        <Icon name={headerStatus.icon} color={headerStatus.darkColor} size={16} />
-        <Text style={{ ...text.orangeSmallBold, ...{ marginHorizontal: 5 }, color: headerStatus.darkColor }}>
+    ) : (
+      <View
+        style={{
+          ...styles.proposalCardHeader,
+          backgroundColor: headerStatus.lightColor,
+        }}
+      >
+        <Icon name={headerStatus.icon} color={headerStatus.darkColor} size={16}/>
+
+        <Text
+          style={{
+            ...text.orangeSmallBold,
+            marginHorizontal: 5,
+            color: headerStatus.darkColor,
+          }}
+        >
           {headerStatus.text}
         </Text>
       </View>
     );
+};
+
+ProposalCardHeader.propTypes = {
+  stage: string,
+  winningOutcome: number,
+  hasPassedExpiryDate: bool,
+  closingAt: number,
+  isScreenHeader: bool,
 };
 
 const styles = StyleSheet.create({

@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   SafeAreaView,
   ScrollView,
@@ -8,16 +7,18 @@ import {
   View,
   Text,
 } from 'react-native';
-import EditProfileForm from '../../Components/Forms/EditProfileForm';
-import {colors, text, layout} from '../../Theme';
+import EditProfileForm from '~/Components/Forms/EditProfileForm';
+import {colors, text, layout} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import Icon from '../../Assets/iconfont/Icon';
-import Loader from '../../Components/Loader';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
-import Toast from '../../Util/Toast';
-import AuthService from '../../Services/AuthService';
-import { filterObjectByKeys } from '../../Util';
+import Icon from '~/Assets/iconfont/Icon';
+import Loader from '~/Components/Loader';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import Toast from '~/Util/Toast';
+import AuthService from '~/Services/AuthService';
+import {filterObjectByKeys} from '~/Util';
+import logger from '~/Services/Logger';
+import {bool, object, shape, func} from 'prop-types';
 
 const EditProfile = ({
   userStore,
@@ -37,7 +38,7 @@ const EditProfile = ({
     ),
   });
 
-  const formSave = async e => {
+  const formSave = async (e) => {
 
     if (editProfileFormStore.isFormValid()) {
 
@@ -57,7 +58,7 @@ const EditProfile = ({
       try {
         await AuthService.getInstance().updateUserData(authData, publicData);
       } catch (err) {
-        console.log('Error -> ', err);
+        logger.log('Error -> ', err);
         editProfileFormStore.form.meta.submitError = `${err.toString()}  \n ${
           err.response
             ? `\nCode: ${err.response.data.code}  \nMessage: ${err.response.data.message}`
@@ -71,12 +72,12 @@ const EditProfile = ({
     }
   };
 
-  const onFormSubmitStart = updatedFields => {
+  const onFormSubmitStart = (updatedFields) => {
     Toast.loading('Updating your profile...');
   };
 
-  const onFormSubmitEnd = updatedFields => {
-    userStore.setSignedInUser({ ...userStore.userInfo, ...updatedFields });
+  const onFormSubmitEnd = (updatedFields) => {
+    userStore.setSignedInUser({...userStore.userInfo, ...updatedFields});
     Toast.done('Your profile is updated');
     navigation.goBack();
   };
@@ -97,13 +98,11 @@ const EditProfile = ({
     bottomSheetStore.hideBottomSheet();
   };
 
-  const renderBody = () => {
-    return (
-      <View style={styles.body}>
-        <EditProfileForm isFirstOpening={route.params.isFirstOpening }/>
-      </View>
-    );
-  };
+  const renderBody = () => (
+    <View style={styles.body}>
+      <EditProfileForm isFirstOpening={route.params.isFirstOpening }/>
+    </View>
+  );
 
   return (
     <>
@@ -119,20 +118,20 @@ const EditProfile = ({
         <View style={styles.containerRow}>
           {route.params.isFirstOpening ? (
             <TouchableOpacity
-              style={{ ...styles.btns, ...layout.btnOutline, ...layout.marginRightS }}
+              style={{...styles.btns, ...layout.btnOutline, ...layout.marginRightS}}
               onPress={onFormClose}>
               <Text style={text.buttonblue}>Skip</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
-              style={{ ...styles.btns, ...layout.btnOutline, ...layout.marginRightS }}
+              style={{...styles.btns, ...layout.btnOutline, ...layout.marginRightS}}
               onPress={onFormClose}>
               <Text style={text.buttonblue}>Cancel</Text>
             </TouchableOpacity>
           )}
 
           <TouchableOpacity
-            style={{ ...styles.btns, ...layout.btnPrimary, ...layout.marginLeftS }}
+            style={{...styles.btns, ...layout.btnPrimary, ...layout.marginLeftS}}
             onPress={formSave}>
             <Text style={text.buttoncenterwhite}>Save</Text>
           </TouchableOpacity>
@@ -141,6 +140,29 @@ const EditProfile = ({
     </>
   );
 };
+
+EditProfile.propTypes = {
+  userStore: shape({
+    userInfo: object,
+    setSignedInUser: func,
+  }),
+  editProfileFormStore: shape({
+    isFormValid: func,
+    getChangedFormFieldsJson: func,
+    form: object,
+  }),
+  bottomSheetStore: shape({
+    showBottomSheet: func,
+    hideBottomSheet: func,
+  }),
+  route: shape({
+    params: shape({
+      isFirstOpening: bool,
+    }),
+  }),
+  navigation: object,
+};
+
 
 const styles = StyleSheet.create({
   btns: {

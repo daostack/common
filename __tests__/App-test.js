@@ -8,11 +8,12 @@ import App from '../App';
 
 // Note: test renderer must be required after react-native.
 import renderer from 'react-test-renderer';
-import FirebaseService from '../src/Services/FirebaseService';
+import UserService from '../src/Services/UserService';
+import logger from '~/Services/Logger';
 
 it('getUser should return user', async () => {
   const user = async () => {
-    console.log('users: ', await FirebaseService.getUser());
+    logger.log('users: ', await UserService.getUser());
   };
 
 

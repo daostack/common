@@ -1,21 +1,23 @@
 import React, {useState, useEffect} from 'react';
 import {Text, StyleSheet, Platform, View, Animated, Dimensions} from 'react-native';
-import {text, layout, colors, font} from '../../Theme';
+import {text, layout, colors, font} from '~/Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
-import ProposalService, { PROPOSAL_TYPE } from '../../Services/ProposalService';
-import FirebaseService from '../../Services/FirebaseService';
+import ProposalService from '~/Services/ProposalService';
+import {PROPOSAL_TYPE} from '~/Config';
+import UserService from '~/Services/UserService';
+import DaoService from '~/Services/DaoService';
 import ProposalApprovalTag from './ProposalApprovalTag';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import Toast from '../../Util/Toast';
-import moment from 'moment';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import Toast from '~/Util/Toast';
+import logger from '../../Services/Logger';
+import {string, func, bool, object} from 'prop-types';
 const {width} = Dimensions.get('window');
 
 const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membershipRequest, isSwiper}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
-
   useEffect(() => {
-    const getProposalInfo = async currProposalId => {
+    const getProposalInfo = async (currProposalId) => {
       try {
         let currProposalInfo = await ProposalService.getInstance().getProposalInfo(
           currProposalId,
@@ -24,14 +26,14 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
         //RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
-        if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
-          proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+        if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
+          proposedMemberId = currProposalInfo.join.proposedMemberId;
           funding = currProposalInfo.description.funding;
         }
         //FundingRequest proposal
         else {
 
-          const proposedMember = await FirebaseService.getInstance().getUserByAddress(
+          const proposedMember = await UserService.getInstance().getUserByAddress(
             currProposalInfo.fundingRequest.beneficiary,
           );
           proposedMemberId = proposedMember.id;
@@ -40,7 +42,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
 
         const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(currProposalId);
 
-        const currProposedUser = await FirebaseService.getInstance().getUserById(
+        const currProposedUser = await UserService.getInstance().getUserById(
           proposedMemberId,
         );
 
@@ -50,7 +52,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
         });
 
       } catch (error) {
-        console.log('error: ', error);
+        logger.log('error: ', error);
         Toast.error(error?.toString());
       }
     };
@@ -61,38 +63,43 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
   }, [proposalId]);
 
   useEffect(() => {
-    const loadProposalInfo = async currProposalInfo => {
+    const loadProposalInfo = async (currProposalInfo) => {
       try {
         //RequestToJoin proposal
         let proposedMemberId = null;
         let funding = null;
-        if (currProposalInfo.type === PROPOSAL_TYPE.JoinAndQuit) {
-          proposedMemberId = currProposalInfo.joinAndQuit.proposedMemberId;
+        if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
+          proposedMemberId = currProposalInfo.join.proposedMemberId;
           funding = currProposalInfo.description.funding;
         }
         //FundingRequest proposal
         else {
-          const proposedMember = await FirebaseService.getInstance().getUserByAddress(
+          const proposedMember = await UserService.getInstance().getUserByAddress(
             currProposalInfo.fundingRequest.beneficiary,
           );
           proposedMemberId = proposedMember.id;
           funding = currProposalInfo.fundingRequest.amount;
         }
 
-        const currProposedUser = await FirebaseService.getInstance().getUserById(
+        const userFromDb = await UserService.getInstance().getUserById(
           proposedMemberId,
         );
 
+        const currProposedUser = {
+          ...userFromDb,
+          daos: (await DaoService.getInstance().getUserDaos(userFromDb.uid, userFromDb.safeAddress)).docs?.map((dao) => dao.data()),
+        };
+
         const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(currProposalInfo.id);
 
-        const allProposalInfo = { ...currProposalInfo, ...{ funding: funding }, discussionsCount };
+        const allProposalInfo = {...currProposalInfo, ...{funding: funding}, discussionsCount};
 
         setProposalCardInfo({
           proposedUser: currProposedUser,
           proposalInfo: allProposalInfo,
         });
       } catch (error) {
-        console.log('error: ', error);
+        logger.log('error: ', error);
         Toast.error(error?.toString());
       }
     };
@@ -113,25 +120,22 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
     <Animated.View style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
-          isBoosted={true}
+          isBoosted
           showDate={membershipRequest}
           stage={proposalCardInfo.proposalInfo?.stageStr}
+          closingAt={proposalCardInfo.proposalInfo?.closingAt}
           winningOutcome={proposalCardInfo.proposalInfo?.winningOutcome}
-          hasPassedExpiryDate={moment().isAfter(moment.unix(proposalCardInfo.proposalInfo?.closingAt))}
         />
 
         <View
           style={{
-            // ...layout.content,
             paddingTop: 0,
-            // paddingBottom: 0,
-            paddingHorizontal: 16,
+            paddingHorizontal: 7,
             ...layout.flexStart,
-            // ...layout.paddingBottomL,
-            ...{flexWrap: 'wrap'},
+            flexWrap: 'wrap',
           }}>
           {proposalCardInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && <Text
-            style={{ ...text.h3Black, ...{ textAlign: 'left', flexWrap: 'wrap', padding:10, fontSize: 16 } }}>
+            style={{...text.h3Black, ...{textAlign: 'left', flexWrap: 'wrap', padding:10, fontSize: 16}}}>
             {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
           </Text>}
 
@@ -142,7 +146,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
             isPending={false}
             showMemberCreatedDate={true}
           />
-          <View style={{...layout.flexRow }}>
+          <View style={{...layout.flexRow}}>
             <ProposalApprovalTag
               iconName="approved"
               value={proposalCardInfo.proposalInfo?.votesFor}
@@ -155,7 +159,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
             />
             <ProposalApprovalTag
               iconName="discussion"
-              value={proposalCardInfo.proposalInfo?.discussionsCount}
+              value={proposalCardInfo.proposalInfo?.discussionsCount.toString()}
               isMarked={false}
             />
           </View>
@@ -172,6 +176,16 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
       </TouchableOpacity>
     </Animated.View>
   );
+};
+
+
+ProposalCard.propTypes = {
+  proposalId: string,
+  data: object,
+  onReviewProposal: func,
+  containerStyle: object,
+  membershipRequest: bool,
+  isSwiper: bool,
 };
 
 const styles = StyleSheet.create({

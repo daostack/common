@@ -1,5 +1,4 @@
 import React, {useState, useEffect, useRef} from 'react';
-
 import {
   SafeAreaView,
   StatusBar,
@@ -8,12 +7,12 @@ import {
   ScrollView,
   View,
 } from 'react-native';
-
-import Icon from '../../Assets/iconfont/Icon';
-import FirebaseService from '../../Services/FirebaseService';
-
-import {layout, colors, text, sizeS} from '../../Theme';
-import AccordionBtn from '../../Components/AccordionBtn';
+import Icon from '~/Assets/iconfont/Icon';
+import UserService from '~/Services/UserService';
+import {layout, colors, text, sizeS} from '~/Theme';
+import AccordionBtn from '~/Components/AccordionBtn';
+import logger from '~/Services/Logger';
+import {object} from 'prop-types';
 
 const UserProfileReadMode = ({navigation}) => {
   const [users, setUsers] = useState(null);
@@ -24,10 +23,10 @@ const UserProfileReadMode = ({navigation}) => {
     const getUsers = async () => {
       if (!users) {
         try {
-          const appUsers = await FirebaseService.getInstance().getUsers();
+          const appUsers = await UserService.getInstance().getUsers();
           setUsers(appUsers);
         } catch (error) {
-          console.log('error: ', error);
+          logger.log('error: ', error);
         }
       }
     };
@@ -35,7 +34,7 @@ const UserProfileReadMode = ({navigation}) => {
     getUsers();
   }, [users]);
 
-  const onUserSelected = selectedUserId => {
+  const onUserSelected = (selectedUserId) => {
     setUserId(selectedUserId);
     bottomSheetContainerRef.current.snapTo(1);
   };
@@ -56,17 +55,16 @@ const UserProfileReadMode = ({navigation}) => {
           </View>
 
           <View style={layout.content}>
-            {users?.map((user, i) => {
-              return (
-                <AccordionBtn
-                  key={i}
-                  navigation={navigation}
-                  title={user.name}
-                  subtitle={user.email}
-                  onPress={() => onUserSelected(user.id)}
-                />
-              );
-            })}
+            {users?.map((user, i) => (
+              <AccordionBtn
+                key={i}
+                navigation={navigation}
+                title={user.name}
+                subtitle={user.email}
+                onPress={() => onUserSelected(user.id)}
+              />
+            )
+            )}
           </View>
         </ScrollView>
         {/**
@@ -77,6 +75,10 @@ const UserProfileReadMode = ({navigation}) => {
       </SafeAreaView>
     </>
   );
+};
+
+UserProfileReadMode.propTypes = {
+  navigation: object,
 };
 
 const styles = StyleSheet.create({

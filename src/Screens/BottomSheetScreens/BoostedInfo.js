@@ -1,51 +1,48 @@
 import {Text, View, StyleSheet, ScrollView, Image} from 'react-native';
-
 import React from 'react';
-import {text, layout, colors} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
+import {text, layout, colors} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
 
-const BoostedInfo = ({navigation, onContinueEditing}) => {
-  return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      style={styles.scrollView}
-      vertical={true}
-      nestedScrollEnabled={true}
-      directionalLockEnabled={true}>
-      <View style={styles.body}>
-        <Image
-          source={require('../../Assets/boostedImage.png')}
-          style={{alignSelf: 'center'}}
-        />
+const BoostedInfo = ({}) => (
+  <ScrollView
+    contentInsetAdjustmentBehavior="automatic"
+    style={styles.scrollView}
+    vertical={true}
+    nestedScrollEnabled={true}
+    directionalLockEnabled={true}>
+    <View style={styles.body}>
+      <Image
+        source={require('~/Assets/boostedImage.png')}
+        style={{alignSelf: 'center'}}
+      />
 
-        <Text style={styles.title}>What`s a boosted proposal?</Text>
+      <Text style={styles.title}>What`s a boosted proposal?</Text>
 
-        <View style={styles.textWithIconContainer}>
-          <Icon name="agenda" size={26} color={colors.grey6} />
-          <Text style={styles.blackTextWithImage}>
+      <View style={styles.textWithIconContainer}>
+        <Icon name="agenda" size={26} color={colors.grey6} />
+        <Text style={styles.blackTextWithImage}>
             Probable alignment with Common agenda.
-          </Text>
-        </View>
-        <View style={styles.textWithIconContainer}>
-          <Icon name="group" size={26} color={colors.grey6} />
-          <Text style={styles.blackTextWithImage}>
-            Any majority can make a decision
-          </Text>
-        </View>
-        <View style={styles.textWithIconContainer}>
-          <Icon name="common" size={26} />
-          <Text style={styles.blackTextWithImage}>Shortened voting time</Text>
-        </View>
-
-        <Text style={styles.title2}>How is this determined?</Text>
-        <Text style={text.blackText}>
-          An algorithm recognizes proposals which align with the Common’s agenda
-          and boosts them.{' '}
         </Text>
       </View>
-    </ScrollView>
-  );
-};
+      <View style={styles.textWithIconContainer}>
+        <Icon name="group" size={26} color={colors.grey6} />
+        <Text style={styles.blackTextWithImage}>
+            Any majority can make a decision
+        </Text>
+      </View>
+      <View style={styles.textWithIconContainer}>
+        <Icon name="common" size={26} />
+        <Text style={styles.blackTextWithImage}>Shortened voting time</Text>
+      </View>
+
+      <Text style={styles.title2}>How is this determined?</Text>
+      <Text style={text.blackText}>
+          An algorithm recognizes proposals which align with the Common’s agenda
+          and boosts them.{' '}
+      </Text>
+    </View>
+  </ScrollView>
+);
 
 const styles = StyleSheet.create({
   title: {

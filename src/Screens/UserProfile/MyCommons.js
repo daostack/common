@@ -9,9 +9,11 @@ import {
   FlatList,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import { inject, observer } from 'mobx-react';
-import CommonBox from '../../Components/CommonBox';
-import {layout, colors, text, font, sizeS} from '../../Theme';
+import {inject, observer} from 'mobx-react';
+import CommonBox from '~/Components/CommonBox';
+import {layout, colors, text, font, sizeS} from '~/Theme';
+import {CommonActions} from '@react-navigation/native';
+import {object, shape, func, array} from 'prop-types';
 
 const MyCommons = ({navigation, daoStore, userStore}) => {
   const onScreenScroll = (event) => {
@@ -20,28 +22,37 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
     });
   };
 
-  const setDao = dao => {
-    daoStore.setDao(dao);
+  const navigateToCommon = (common) => {
+    const navigate = CommonActions.navigate({
+      name: 'CommonProfile',
+      params: {
+        currCommon: common,
+      },
+    });
+    navigation.dispatch(navigate);
   };
 
-  const renderCommonCard = (dao, i) =>
+  const renderCommonCard = (dao, i) =>(
     <CommonBox
       image={dao.coverPhoto}
       common={dao}
       key={i}
       width="100%"
       navigation={navigation}
-      onPress={() => setDao(dao)}
-    />;
+      onPress={() => navigateToCommon(dao)}
+    />
+  );
 
   const AllCommonsList = (daos) => (
-    <View style={{ flex: 1, padding: 20 }}>
+    <View style={{flex: 1, padding: 20}}>
       <FlatList
         data={daos}
-        renderItem={({ item, i }) => renderCommonCard(item, i, navigation)}
+        renderItem={({item, i}) => renderCommonCard(item, i, navigation)}
       />
     </View>
   );
+
+  const myDaos = (daoList) => daoList.filter((dao) => userStore.isDaoMember(dao.members));
 
   return (
     <>
@@ -61,12 +72,23 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
             <Text style={styles.title}>My Commons</Text>
           </View>
           <View style={styles.sectionTabView}>
-            {AllCommonsList(daoStore.daos)}
+            {AllCommonsList(myDaos(daoStore.daos))}
           </View>
         </ScrollView>
       </SafeAreaView>
     </>
   );
+};
+
+MyCommons.propTypes = {
+  navigation: object,
+  daoStore: shape({
+    setDao: func,
+    daos: array,
+  }),
+  userStore: shape({
+    isDaoMember: func,
+  }),
 };
 
 const styles = StyleSheet.create({

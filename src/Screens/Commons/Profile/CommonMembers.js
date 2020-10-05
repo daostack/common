@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-
 import {
   SafeAreaView,
   StatusBar,
@@ -10,58 +9,49 @@ import {
   Dimensions,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {layout, font, colors, text, sizeS} from '../../../Theme';
+import {layout, font, colors, text, sizeS} from '~/Theme';
 import {TabView} from 'react-native-tab-view';
 import ProposalsList from '../../Proposals/ProposalsList';
 import CommonMembersList from './CommonMembersList';
 import CommonTabBar from '../../CommonTabBar';
-
-const getTabName = (objectName, count) => {
-  return `${objectName} (${count ? count : 0})`;
-};
-
-const Members = ({navigation, members}) => {
-  return (
-    <CommonMembersList navigation={navigation} members={members} />
-  );
-};
-
-const Pending = ({navigation, commonId, onProposalsCountChange}) => {
-  return (
-    <View style={layout.content}>
-      <ProposalsList
-        navigation={navigation}
-        commonInfo={{ id: commonId }}
-        onlyRequestsToJoin={true}
-        onCountChange={onProposalsCountChange}
-      />
-    </View>
-  );
-};
-
-const History = ({navigation, commonId, onProposalsCountChange}) => {
-  return (
-    <View style={layout.content}>
-      <ProposalsList
-        navigation={navigation}
-        commonInfo={{ id: commonId }}
-        onlyRequestsToJoin={true}
-        isHistory={true}
-        onCountChange={onProposalsCountChange}
-      />
-    </View>
-  );
-};
+import {string, func, array, object, shape} from 'prop-types';
 
 const initialLayout = {width: Dimensions.get('window').width};
+const getTabName = (objectName, count) => `${objectName} (${count ? count : 0})`;
 
-const CommonMembers = ({navigation, route}) => {
+const Members = ({navigation, members}) => (
+  <CommonMembersList navigation={navigation} members={members} />
+);
+
+const Pending = ({navigation, commonId, onProposalsCountChange}) => (
+  <View style={layout.content}>
+    <ProposalsList
+      navigation={navigation}
+      commonInfo={{id: commonId}}
+      onlyRequestsToJoin={true}
+      onCountChange={onProposalsCountChange}
+    />
+  </View>
+);
+
+const History = ({navigation, commonId, onProposalsCountChange}) => (
+  <View style={layout.content}>
+    <ProposalsList
+      navigation={navigation}
+      commonInfo={{id: commonId}}
+      onlyRequestsToJoin={true}
+      isHistory={true}
+      onCountChange={onProposalsCountChange}
+    />
+  </View>
+);
+
+const CommonMembers = ({navigation, route: router}) => {
   const [index, setIndex] = useState(0);
   const [pendingCount, setPendingCount] = useState(0);
   const [historyCount, setHistoryCount] = useState(0);
-  const members = route.params.members;
-  const commonId = route.params.commonId;
 
+  const {members, commonId} = router.params;
 
   const routes = [
     {key: 'members', title: getTabName('Members', members.length)},
@@ -78,7 +68,7 @@ const CommonMembers = ({navigation, route}) => {
         <Pending
           navigation={navigation}
           commonId={commonId}
-          onProposalsCountChange={(count)=> setPendingCount(count)}
+          onProposalsCountChange={(count) => setPendingCount(count)}
         />
       );
     case 'history':
@@ -86,7 +76,7 @@ const CommonMembers = ({navigation, route}) => {
         <History
           navigation={navigation}
           commonId={commonId}
-          onProposalsCountChange={count => setHistoryCount(count)}
+          onProposalsCountChange={(count) => setHistoryCount(count)}
         />
       );
     default:
@@ -123,6 +113,33 @@ const CommonMembers = ({navigation, route}) => {
       </SafeAreaView>
     </>
   );
+};
+
+Members.propTypes = {
+  navigation: object,
+  members: array,
+};
+
+Pending.propTypes = {
+  navigation: object,
+  commonId: string,
+  onProposalsCountChange: func,
+};
+
+History.propTypes = {
+  navigation: object,
+  commonId: string,
+  onProposalsCountChange: func,
+};
+
+CommonMembers.propTypes = {
+  navigation: object,
+  route: shape({
+    params: shape({
+      members: array,
+      commonId: string,
+    }),
+  }),
 };
 
 const styles = StyleSheet.create({

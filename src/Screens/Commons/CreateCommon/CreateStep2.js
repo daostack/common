@@ -10,23 +10,23 @@ import {
   Animated,
   Platform,
 } from 'react-native';
-import TextInputFieldWithIcon from '../../../Components/FormFields/TextInputFieldWithIcon';
-import {colors, font, sizeL, sizeS} from '../../../Theme';
-
+import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
+import {colors, font, sizeL, sizeS} from '~/Theme';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import {observer, inject} from 'mobx-react';
-const {width} = Dimensions.get('window');
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
+import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import Modal from 'react-native-modal';
 import moment from 'moment';
 import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
+import {object, func, shape} from 'prop-types';
+const {width} = Dimensions.get('window');
 
-const CreateStep2 = props => {
+const CreateStep2 = ({fundingFormStore, navigation}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [segmentedIndex, setSegmentedIndex] = useState(0);
@@ -50,17 +50,17 @@ const CreateStep2 = props => {
 
   const onContributionTabChange = (index) => {
     const name = CreateCommonForm.CONTRIBUTION;
-    props.fundingFormStore.registerFormField(name, 'required');
+    fundingFormStore.registerFormField(name, 'required');
     switch (index) {
     case 0: {
-      props.fundingFormStore.fieldChanged(
+      fundingFormStore.fieldChanged(
         name,
         'one-time'
       );
       break;
     }
     case 1: {
-      props.fundingFormStore.fieldChanged(
+      fundingFormStore.fieldChanged(
         name,
         'monthly'
       );
@@ -106,7 +106,7 @@ const CreateStep2 = props => {
   }, [segmentedIndex, pickDate, props.fundingFormStore]); */
 
   const onDatePickerChange = (event, date) => {
-    props.fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, moment(date || {}).unix());
+    fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, moment(date || {}).unix());
     if (Platform.OS === 'android') {
       setShow(false);
     }
@@ -115,10 +115,10 @@ const CreateStep2 = props => {
 
   const onTabChange = (index) => {
     const name = CreateCommonForm.DEADLINE;
-    props.fundingFormStore.registerFormField(name, 'required');
+    fundingFormStore.registerFormField(name, 'required');
     switch (index) {
     case 0: {
-      props.fundingFormStore.fieldChanged(
+      fundingFormStore.fieldChanged(
         name,
         moment()
           .add('7', 'days')
@@ -128,7 +128,7 @@ const CreateStep2 = props => {
       break;
     }
     case 1: {
-      props.fundingFormStore.fieldChanged(
+      fundingFormStore.fieldChanged(
         name,
         moment()
           .add('1', 'months')
@@ -150,7 +150,7 @@ const CreateStep2 = props => {
     if (pickDate) {
       setShow(false);
     } else {
-      props.fundingFormStore.fieldChanged(
+      fundingFormStore.fieldChanged(
         CreateCommonForm.DEADLINE,
         moment({}).unix(),
       );
@@ -160,8 +160,8 @@ const CreateStep2 = props => {
   };
 
   const push = () => {
-    if (props.fundingFormStore.isFormValid()) {
-      props.navigation.navigate('CreateStep3');
+    if (fundingFormStore.isFormValid()) {
+      navigation.navigate('CreateStep3');
     }
   };
 
@@ -183,13 +183,13 @@ const CreateStep2 = props => {
         backgroundColor: 'white',
       }}>
       <CreateStepNavigation
-        navigation={props.navigation}
+        navigation={navigation}
         title="General info"
       />
       <CreateStepDotHeader
         title="Funding"
         currentIndex={2}
-        navigation={props.navigation}
+        navigation={navigation}
         headerHeight={headerHeight}
       />
       <ScrollView
@@ -250,8 +250,9 @@ const CreateStep2 = props => {
             keyboardType="numeric"
             validation={{
               name: CreateCommonForm.MINIMUM,
-              formStore: props.fundingFormStore,
+              formStore: fundingFormStore,
               validateRule: 'required|integer|min:5|max:1000',
+              customErrorMessage: 'The amount must be at least $5 and at most $1000.',
             }}
           />
           <View style={{marginTop: 24}}>
@@ -279,15 +280,23 @@ const CreateStep2 = props => {
               selectedIndex={segmentedIndex}
               onTabPress={onTabChange}
             />
-            {Platform.OS === 'ios' ? (
-              <Modal
-                visible={show}
-                transparent={true}
-                avoidKeyboard={true}
-                backdropOpacity={0.3}
-                onBackdropPress={() => setShow(false)}
-                style={styles.view}>
-                <View style={{backgroundColor: 'white'}}>
+            {Platform.OS === 'ios' ? <Modal
+              visible={show}
+              transparent={true}
+              avoidKeyboard={true}
+              backdropOpacity={0.3}
+              onBackdropPress={() => setShow(false)}
+              style={styles.view}>
+              <View style={{backgroundColor: 'white'}}>
+                <View
+                  style={{
+                    height: 50,
+                    backgroundColor: colors.grey4,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-end',
+                    position: 'relative',
+                  }}>
                   {/* <Text
                     style={{
                       color: colors.slate,
@@ -308,10 +317,9 @@ const CreateStep2 = props => {
                     </Text>
                   </TouchableOpacity>
                 </View>
-              </Modal>
-            ) : (
-              show && DatePicker
-            )}
+                {DatePicker}
+              </View>
+            </Modal> : show && (DatePicker)}
           </View>
           {/* <TextInputFieldWithIcon
             iconName="dollar"
@@ -340,11 +348,21 @@ const CreateStep2 = props => {
       </ScrollView>
       <RequestStepActionButton
         title="Continue to Agenda"
-        pass={props.fundingFormStore.isFormActionEnabled()}
+        pass={fundingFormStore.isFormActionEnabled()}
         onPress={push}
       />
     </SafeAreaView>
   );
+};
+
+CreateStep2.propTypes = {
+  fundingFormStore: shape({
+    fieldChanged: func,
+    registerFormField: func,
+    isFormValid: func,
+    isFormActionEnabled: func,
+  }),
+  navigation: object,
 };
 
 const styles = StyleSheet.create({
@@ -426,10 +444,4 @@ export default inject(
   'fundingFormStore',
   'agendaFormStore',
   'reviewFormStore',
-  'daoStore',
 )(observer(CreateStep2));
-
-//generalInfoFormStore
-//fundingFormStore
-//agendaFormStore
-//reviewFormStore

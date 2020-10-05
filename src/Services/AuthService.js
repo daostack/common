@@ -1,13 +1,13 @@
-import {NativeModules, Platform} from 'react-native';
+import {NativeModules} from 'react-native';
 import RNFS from 'react-native-fs';
 
-import {GOOGLE_SIGNIN_PERMISSIONS, AUTH_PROVIDER_ID} from '../Util';
-import WalletManager from '../Util/WalletManager';
-import {firebaseWebClientId} from '../Config';
+import {GOOGLE_SIGNIN_PERMISSIONS, AUTH_PROVIDER_ID} from '~/Util';
+import WalletManager from '~/Util/WalletManager';
+import {firebaseWebClientId} from '~/Config';
 
 // Firebase imports
-import {auth} from '../Firebase';
-import FirebaseService from './FirebaseService';
+import {auth} from '~/Firebase';
+import UserService from './UserService';
 
 // Google imports
 import {GoogleSignin} from '@react-native-community/google-signin';
@@ -19,6 +19,8 @@ import appleAuth, {
   AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication';
 import IClouldService from './IClouldService';
+
+import logger from './Logger';
 
 export default class AuthService {
   static serviceInstance = null;
@@ -84,15 +86,35 @@ export default class AuthService {
       idToken,
       accessToken,
     );
-    return await auth().signInWithCredential(googleCredential);
+    let signedInUser = null;
+    try {
+      signedInUser = await auth().signInWithCredential(googleCredential);
+    } catch (error) {
+      await this.clearGoogleSignInCache();
+      await this.googleSignOut();
+      throw error;
+    }
+    return signedInUser;
+  }
+
+  async clearGoogleSignInCache() {
+    const {accessToken} = await GoogleSignin.getTokens();
+    await GoogleSignin.clearCachedAccessToken(accessToken);
+  }
+
+  async googleSignOut() {
+    await GoogleSignin.signOut();
   }
 
   async signOut() {
-    if (Platform.OS === 'android') {
-      await GoogleSignin.revokeAccess();
+    try {
+      await this.googleSignOut();
+      await auth().signOut();
+    } catch (error) {
+      const {accessToken} = await GoogleSignin.getTokens();
+      await GoogleSignin.clearCachedAccessToken(accessToken);
+      return error;
     }
-    await GoogleSignin.signOut();
-    await auth().signOut();
   }
 
   async getCurrentLoggedUser(providerId) {
@@ -111,7 +133,7 @@ export default class AuthService {
     const currentUser = await auth().currentUser;
     currentUser.updateProfile(userData);
 
-    return await FirebaseService.getInstance().editUser(currentUser.uid, {
+    return await UserService.getInstance().editUser(currentUser.uid, {
       ...publicData,
       ...userData,
     });
@@ -138,7 +160,7 @@ export default class AuthService {
       },
     };
 
-    await FirebaseService.getInstance().addUser(user.uid, userPublicData);
+    await UserService.getInstance().addUser(user.uid, userPublicData);
     return userPublicData;
   }
 
@@ -160,8 +182,8 @@ export default class AuthService {
       default:
       }
     } catch (err) {
-      console.log(err);
-      console.log('[AUTH] Invalid session. Please login again.');
+      logger.log(err);
+      logger.log('[AUTH] Invalid session. Please login again.');
       await this.signOut();
     }
   }
@@ -224,8 +246,8 @@ export default class AuthService {
         jsonContent = JSON.parse(fileContent);
       } catch (error) {
         // TBD: Do we need to handle that case anymore ?
-        console.log('ERROR IN PARSING JSON with content: ', fileContent);
-        console.log(error);
+        logger.log(`ERROR IN PARSING JSON with content: ${fileContent}`);
+        logger.log(error);
         throw error;
       }
 

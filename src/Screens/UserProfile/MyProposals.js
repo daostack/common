@@ -1,4 +1,4 @@
-import React,  {useEffect} from 'react';
+import React, {useEffect} from 'react';
 
 import {
   SafeAreaView,
@@ -10,69 +10,68 @@ import {
   Dimensions,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {layout, colors, text, font,sizeS} from '../../Theme';
+import {layout, colors, text, font,sizeS} from '~/Theme';
 import {TabView} from 'react-native-tab-view';
-import ProposalsList from '../../Screens/Proposals/ProposalsList';
-import { inject, observer } from 'mobx-react';
-import  ProposalService  from '../../Services/ProposalService';
+import ProposalsList from '~/Screens/Proposals/ProposalsList';
+import {inject, observer} from 'mobx-react';
+import  ProposalService  from '~/Services/ProposalService';
 import CommonTabBar from '../CommonTabBar';
+import {bool, object, shape} from 'prop-types';
 
-const MyProposals = ({route, navigation, userStore}) => {
+const MyProposals = ({navigation, userStore,
+  route: {params: {onlyMembershipRequests, onlyFundingRequests}}}) => {
+
   const [index, setIndex] = React.useState(0);
-  const [stats, setStats] = React.useState({ all: 0, active: 0, history: 0 });
+  const [stats, setStats] = React.useState({all: 0, active: 0, history: 0});
 
   useEffect(() => {
     const getStats = async () => {
-      const userProposalsStats = await ProposalService.getInstance().getUserProposalsCounts(userStore.userInfo.uid, route.params.onlyMembershipRequests, route.params.onlyFundingRequests);
-      setStats({ ...userProposalsStats });
+      const userProposalsStats = await ProposalService.getInstance().getUserProposalsCounts(userStore.userInfo.uid, onlyMembershipRequests, onlyFundingRequests);
+      setStats({...userProposalsStats});
     };
     getStats();
   }, [userStore.userInfo.uid]);
 
   const onScreenScroll = (event) => {
     navigation.setOptions({
-      title: event.nativeEvent.contentOffset.y > 75 ? 'My Proposals' : 'My Profile',
+      title: event.nativeEvent.contentOffset.y > 75 ?
+        onlyMembershipRequests
+          ? 'My membership requests'
+          : 'My Proposals'
+        : 'My Profile',
     });
   };
 
-  const routes = [{key: 'all', title: `All (${stats.all})`},
-    { key: 'active', title: `Active (${stats.active})`},
-    { key: 'history', title: `History (${stats.history})`}];
+  const routes = [
+    {
+      key: 'active',
+      title: `Active (${stats.active})`,
+    }, {
+      key: 'history',
+      title: `History (${stats.history})`,
+    },
+  ];
 
-  const AllProposals = () => {
-    return SceneRenderer(0);
-  };
+  const ActiveProposals = () => SceneRenderer(1);
 
-  const ActiveProposals = () => {
-    return SceneRenderer(1);
-  };
+  const HistoryProposals = () => SceneRenderer(2);
 
-  const HistoryProposals = () => {
-    return SceneRenderer(2);
-  };
-
-  const SceneRenderer = sceneIndex => {
-    return (
-      <View style={{ flex: 1, marginTop: 40, paddingHorizontal: 20}}>
-        <ProposalsList
-          membershipRequests={route.params.onlyMembershipRequests}
-          onlyFundingRequests={route.params.onlyFundingRequests}
-          navigation={navigation}
-          safeAddress={userStore.userInfo.safeAddress}
-          showAll={sceneIndex === 0 ? true : false}
-          isHistory={sceneIndex === 2 ? true : false}
-        />
-      </View>
-    );
-
-  };
+  const SceneRenderer = (sceneIndex) => (
+    <View style={{flex: 1, marginTop: 40, paddingHorizontal: 20}}>
+      <ProposalsList
+        safeAddress={userStore.userInfo.safeAddress}
+        membershipRequests={onlyMembershipRequests}
+        onlyFundingRequests={onlyFundingRequests}
+        isHistory={sceneIndex === 2}
+        navigation={navigation}
+      />
+    </View>
+  );
 
   const initialLayout = {width: Dimensions.get('window').width};
 
   const renderScene = ({route}) => {
     switch (route.key) {
-    case 'all':
-      return AllProposals();
     case 'active':
       return ActiveProposals();
     case 'history':
@@ -95,7 +94,7 @@ const MyProposals = ({route, navigation, userStore}) => {
           scrollEventThrottle={16}
         >
           <View style={styles.sectionContainer}>
-            <Text style={styles.title}>My {route.params.onlyMembershipRequests ? 'membership requests' : 'proposals'}</Text>
+            <Text style={styles.title}>My {onlyMembershipRequests ? 'membership requests' : 'proposals'}</Text>
           </View>
           <View style={styles.sectionTabView}>
             <TabView
@@ -111,6 +110,18 @@ const MyProposals = ({route, navigation, userStore}) => {
     </>
   );
 };
+
+MyProposals.propTypes = {
+  route: shape({
+    params: shape({
+      onlyMembershipRequests: bool,
+      onlyFundingRequests: bool,
+    }),
+  }),
+  navigation: object,
+  userStore: object,
+};
+
 
 const styles = StyleSheet.create({
   scrollView: {

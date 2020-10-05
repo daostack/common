@@ -6,24 +6,25 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-
 import React from 'react';
-import {text, layout, colors,font} from '../../Theme';
+import {text, layout, colors, font} from '~/Theme';
+import logger from '~/Services/Logger';
+import {object, func} from 'prop-types';
 
 const UnsavedChanges = ({
   navigation,
   onContinueEditing,
   onLeaveWithoutSaving,
 }) => {
-  const liveWithoutSave = e => {
+  const liveWithoutSave = (e) => {
     navigation.goBack();
     if (onLeaveWithoutSaving) {
       onLeaveWithoutSaving();
     }
   };
 
-  const continueEditing = e => {
-    console.log('onContinueEditing -> ', onContinueEditing);
+  const continueEditing = (e) => {
+    logger.log('onContinueEditing -> ', onContinueEditing);
     if (onContinueEditing) {
       onContinueEditing();
     }
@@ -63,6 +64,13 @@ const UnsavedChanges = ({
     </ScrollView>
   );
 };
+
+UnsavedChanges.propTypes = {
+  navigation: object,
+  onContinueEditing: func,
+  onLeaveWithoutSaving: func,
+};
+
 
 const styles = StyleSheet.create({
   scrollView: {

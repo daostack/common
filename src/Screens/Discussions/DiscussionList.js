@@ -1,21 +1,21 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {FlatList} from 'react-native';
 import DiscussionCard from './DiscussionCard';
-import firestore from '@react-native-firebase/firestore';
-import ViewTabNoData from '../../Components/ViewTabNoData';
+import ViewTabNoData from '~/Components/ViewTabNoData';
+import {string, object} from 'prop-types';
+import {db} from '~/Firebase';
+import logger from '~/Services/Logger';
 
-const DiscussionList = props => {
-  const commonId = props.commonId;
+const DiscussionList = ({commonId, navigation}) => {
   const [list, setList] = useState([]);
 
   let listRef = useRef([]);
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('discussion')
+    const unsubscribe = db.collection('discussion')
       .where('commonId', '==', commonId)
       .orderBy('createTime', 'desc')
       .onSnapshot(
-        snapshot => {
+        (snapshot) => {
           if (snapshot.empty) {
             setList([]);
           } else {
@@ -25,15 +25,15 @@ const DiscussionList = props => {
                 ...doc.data(),
               }));
               let createList = newList
-                .map(item => {
-                  let index = listRef.current.findIndex(v => v.id === item.id);
+                .map((item) => {
+                  let index = listRef.current.findIndex((v) => v.id === item.id);
                   if (index > -1) {
                     listRef.current[index] = item;
                   } else {
                     return item;
                   }
                 })
-                .filter(item => item);
+                .filter((item) => item);
               if (createList.length > 0) {
                 const allList = [...createList, ...listRef.current];
                 listRef.current = allList;
@@ -43,7 +43,7 @@ const DiscussionList = props => {
           }
         },
         // TOOD: please do not silence any errors like this
-        error => console.error(error),
+        (error) => logger.error(error),
       );
     return () => {
       unsubscribe();
@@ -59,8 +59,8 @@ const DiscussionList = props => {
             <DiscussionCard
               key={item.id}
               data={item}
-              commonId={props.commonId}
-              navigation={props.navigation}
+              commonId={commonId}
+              navigation={navigation}
             />
           )}
           extraData={listRef}
@@ -73,6 +73,11 @@ const DiscussionList = props => {
       )}
     </>
   );
+};
+
+DiscussionList.propTypes = {
+  commonId: string.isRequired,
+  navigation: object.isRequired,
 };
 
 export default React.memo(DiscussionList);

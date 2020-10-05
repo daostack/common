@@ -6,31 +6,38 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import {string, shape, object} from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
-import {colors, sizeM, font} from '../../Theme';
-import Icon from '../../Assets/iconfont/Icon';
-import FirebaseService from '../../Services/FirebaseService';
+import {colors, sizeM, font} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
+import UserService from '~/Services/UserService';
 import moment from 'moment';
-import firestore from '@react-native-firebase/firestore';
-import BottomSheetModal from '../../Components/BottomSheetModal';
-import NotificationService from '../../Services/NotificationService';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
+import BottomSheetModal from '~/Components/BottomSheetModal';
+import NotificationService from '~/Services/NotificationService';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {db} from '~/Firebase';
+import logger from '~/Services/Logger';
+import {CommonActions} from '@react-navigation/native';
 
 const {width} = Dimensions.get('window');
 
-const DiscussionCard = props => {
-  const data = props.data;
+const DiscussionCard = ({
+  data,
+  commonId,
+  userStore: {userInfo},
+  navigation,
+  bottomSheetStore,
+}) => {
+  //when will data.owner be not undefined?
   const discussionId = data.id;
-  const commonId = props.commonId;
   const [user, setUser] = useState({});
   const [msgCount, setMsgCount] = useState(0);
   const [showMenu, setShowMenu] = useState(false);
   var isFollowing = false;
 
-  let userInfo = props.userStore.userInfo;
   if (userInfo) {
-    isFollowing = userInfo.following.includes(data.owner);
+    isFollowing = userInfo.following.includes(data.ownerId);
   }
 
   const hideMenu = () => {
@@ -38,20 +45,24 @@ const DiscussionCard = props => {
   };
 
   const navigateToDiscussion = () => {
-    props.navigation.navigate('Discussions', {
-      data: data,
-      discussionId: data.id,
-      commonId: commonId,
+    const navigate = CommonActions.navigate({
+      name: 'Discussions',
+      params: {
+        data: data,
+        discussionId: data.id,
+        commonId: commonId,
+      },
     });
+    navigation.dispatch(navigate);
   };
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userData = await FirebaseService.getInstance().getUserById(
+      const userData = await UserService.getInstance().getUserById(
         data.ownerId,
       );
       if (userData) {
-        console.log('userData', userData);
+        // logger.log('userData', userData);
         setUser(userData);
       }
     };
@@ -59,25 +70,25 @@ const DiscussionCard = props => {
   }, [data]);
 
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('discussionMessage')
+    const unsubscribe = db.collection('discussionMessage')
       .where('discussionId', '==', discussionId)
-      .onSnapshot(snapshot => {
+      .onSnapshot((snapshot) => {
         setMsgCount(snapshot.docs.length);
       });
+
     return () => {
       unsubscribe();
     };
   }, [discussionId]);
 
   const follow = () => {
-    console.log('Follow user id', data.owner);
-    NotificationService.follow(data.owner);
-    props.bottomSheetStore.hideBottomSheet();
+    logger.log('Follow user id', data.ownerId);
+    NotificationService.follow(data.ownerId);
+    bottomSheetStore.hideBottomSheet();
   };
 
   const showOptions = () => {
-    props.bottomSheetStore.showBottomSheet(
+    bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
       {onFollow: follow},
     );
@@ -85,7 +96,7 @@ const DiscussionCard = props => {
 
   return (
     <>
-      <TouchableOpacity onPress={() =>navigateToDiscussion()}      >
+      <TouchableOpacity onPress={() => navigateToDiscussion()}      >
         <View style={styles.container}>
           <TouchableOpacity onPress={showOptions}>
             <Icon name="menu" size={20} />
@@ -102,7 +113,7 @@ const DiscussionCard = props => {
                 style={styles.displayNameContainer}
               >
                 <Text style={styles.displayName}>
-                  {user.displayName && user.displayName.substring(0,1)}
+                  {user.displayName && user.displayName.substring(0, 1)}
                 </Text>
               </View>
 
@@ -118,7 +129,7 @@ const DiscussionCard = props => {
               </Text>
             </View>
           </View>
-          <Text style={styles.message}     numberOfLines={3}>
+          <Text style={styles.message} numberOfLines={3}>
             {data.message}
           </Text>
           <View
@@ -157,7 +168,7 @@ const DiscussionCard = props => {
                 onPress={() => navigateToDiscussion()}>
                 <Text
                   style={styles.joinTheDiscussion}>
-                  Join the discussion
+                    Join the discussion
                 </Text>
                 <Icon name="right-arrow" size={20} color={colors.mainBlue} />
               </TouchableOpacity>
@@ -175,11 +186,11 @@ const DiscussionCard = props => {
           <Text style={styles.sheetTitle}>Options</Text>
           <TouchableOpacity
             onPress={() => {
-              console.log('Follow user id', data.owner);
+              logger.log('Follow user id', data.ownerId);
               if (isFollowing) {
-                NotificationService.unfollow(data.owner);
+                NotificationService.unfollow(data.ownerId);
               } else {
-                NotificationService.follow(data.owner);
+                NotificationService.follow(data.ownerId);
               }
               setShowMenu(false);
             }}>
@@ -202,6 +213,22 @@ const DiscussionCard = props => {
       </BottomSheetModal>
     </>
   );
+};
+
+DiscussionCard.propTypes = {
+  data: shape({
+    id: string.isRequired,
+    ownerId: string.isRequired,
+    title: string.isRequired,
+    createTime: object.isRequired,
+    message: string.isRequired,
+  }),
+  commonId: string,
+  userStore: shape({
+    userInfo: object,
+  }).isRequired,
+  navigation: object.isRequired,
+  bottomSheetStore: object.isRequired,
 };
 
 const styles = StyleSheet.create({

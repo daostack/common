@@ -7,16 +7,16 @@ import {
   Dimensions,
   ActivityIndicator,
 } from 'react-native';
-import {colors, font} from '../Theme';
-import Icon from '../Assets/iconfont/Icon';
+import {colors, font} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
 
 const {width, height} = Dimensions.get('window');
 
-const showHud = v => {
+const showHud = (v) => {
   DeviceEventEmitter.emit('HUD', v);
 };
 
-const showLoading = v => {
+const showLoading = (v) => {
   DeviceEventEmitter.emit('HUD', v, true);
 };
 export default class Toast {
@@ -36,7 +36,7 @@ export default class Toast {
   static info(text) {
     showHud(
       <View
-        style={{...styles.container, ...{backgroundColor: colors.mainBlue}}}>
+        style={{...styles.container, backgroundColor: colors.mainBlue}}>
         <Icon name="check" size={20} color={colors.white} />
         <Text style={styles.text}>{text}</Text>
       </View>,
@@ -45,7 +45,7 @@ export default class Toast {
   static done(text) {
     showHud(
       <View
-        style={{...styles.container, ...{backgroundColor: colors.mainBlue}}}>
+        style={{...styles.container, backgroundColor: colors.mainBlue}}>
         <Icon name="check" size={20} color={colors.white} />
         <Text style={styles.text}>{text}</Text>
       </View>,
@@ -54,10 +54,7 @@ export default class Toast {
   static success(text) {
     showHud(
       <View
-        style={{
-          ...styles.container,
-          ...{backgroundColor: colors.mainBlue},
-        }}>
+        style={{...styles.container, backgroundColor: colors.mainBlue}}>
         <Icon name="check" size={20} color={colors.white} />
         <Text style={styles.text}>{text}</Text>
       </View>,
@@ -65,7 +62,7 @@ export default class Toast {
   }
   static error(text) {
     showHud(
-      <View style={{...styles.container, ...{backgroundColor: colors.error}}}>
+      <View style={{...styles.container, backgroundColor: colors.error}}>
         <Icon name="close" size={10} color={colors.white} />
         <Text style={styles.text}>{text}</Text>
       </View>,
@@ -75,7 +72,7 @@ export default class Toast {
   static loading(text) {
     showLoading(
       <View
-        style={{...styles.container, ...{backgroundColor: colors.mainBlue}}}>
+        style={{...styles.container, backgroundColor: colors.mainBlue}}>
         <ActivityIndicator size="small" color={colors.white} />
         <Text style={styles.text}>{text}</Text>
       </View>

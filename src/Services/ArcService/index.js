@@ -1,74 +1,31 @@
-import WalletManager from '../../Util/WalletManager';
 import {createCommon} from './createCommon';
 import {createProposalRequestToJoin} from './createProposal';
 import {createFundingProposal} from './createFundingProposal';
 import {voteForProposal} from './voteForProposal';
-
-import {Arc} from '@daostack/arc.js';
 import {
-  graphHttpLink,
-  graphwsLink,
-  ipfsLink,
   PROPOSAL_TYPE,
-} from '../../Config';
+} from '~/Config';
 
 export default class ArcService {
-  static myInstance = null;
-  constructor() {
-    return (async () => {
-      const manager = await WalletManager.getInstance();
-      this.arc = new Arc({
-        graphqlHttpProvider: graphHttpLink,
-        graphqlWsProvider: graphwsLink,
-        ipfsProvider: ipfsLink,
-        web3Provider: manager.wallet,
-      });
-      await this.arc.fetchContractInfos();
-      return this;
-    })();
-  }
-
-  static init = async () => {
-    ArcService.myInstance = await new ArcService();
-  };
-
-  static getInstance = () => {
-    if (ArcService.myInstance == null) {
-      throw new Error('ArcService is not initialized');
-    }
-    return ArcService.myInstance;
-  };
 
   // PROPOSALS
-  createRequestToJoin = async (daoId, data) => {
-    return createProposalRequestToJoin(this.arc, daoId, data);
-  };
+  static createRequestToJoin = async (daoId, data) => createProposalRequestToJoin(daoId, data);
 
-  createFundingProposal = async (userAddress, daoId, data) => {
-    return createFundingProposal(this.arc, userAddress, daoId, data);
-  };
+  static createFundingProposal = async (daoId, data) => createFundingProposal(daoId, data);
 
   // VOTING
-  voteForJoinAndQuitProposal = async (proposalId, data) => {
-    return voteForProposal(
-      this.arc,
-      proposalId,
-      data,
-      PROPOSAL_TYPE.JoinAndQuit,
-    );
-  };
+  static voteForJoinProposal = async (proposalId, data) => voteForProposal(
+    proposalId,
+    data,
+    PROPOSAL_TYPE.Join,
+  );
 
-  voteForFundingRequestProposal = async (proposalId, data) => {
-    return voteForProposal(
-      this.arc,
-      proposalId,
-      data,
-      PROPOSAL_TYPE.FundingRequest,
-    );
-  };
+  static voteForFundingRequestProposal = async (proposalId, data) => voteForProposal(
+    proposalId,
+    data,
+    PROPOSAL_TYPE.FundingRequest,
+  );
 
   // COMMONS
-  async createCommon(givenOpts = {}, navigation) {
-    return createCommon(this.arc, givenOpts, navigation);
-  }
+  static createCommon = async (givenOpts = {}, navigation) => createCommon(givenOpts, navigation)
 }

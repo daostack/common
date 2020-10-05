@@ -7,23 +7,22 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-
-import TextInputField from '../../../Components/FormFields/TextInputField';
-import CreateCommonForm from '../../../Components/Forms/CreateCommonForm';
-import {colors} from '../../../Theme';
+import TextInputField from '~/Components/FormFields/TextInputField';
+import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
+import {colors} from '~/Theme';
 import {observer, inject} from 'mobx-react';
-const {width} = Dimensions.get('window');
 import CreateStepHeader from './CreateStepHeader';
 import NavigationBar from 'react-native-navbar';
-import Icon from '../../../Assets/iconfont/Icon';
+import Icon from '~/Assets/iconfont/Icon';
 import CreateStepDotHeader from './CreateStepDotHeader';
-import MultiLinkField from '../../../Components/FormFields/MultiLinkField';
-
+import MultiLinkField from '~/Components/FormFields/MultiLinkField';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
-
 import RequestStepActionButton from '../RequestStepActionButton';
+import logger from '~/Services/Logger';
+import {shape, func, object} from 'prop-types';
+const {width} = Dimensions.get('window');
 
-const CreateStep1 = props => {
+const CreateStep1 = ({generalInfoFormStore, navigation}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
 
@@ -33,14 +32,14 @@ const CreateStep1 = props => {
       outputRange: [0, 125],
       extrapolate: 'clamp',
     });
-    console.log(height);
+    logger.log(height);
     // const height = scrollY.value > 100 ? 125 : 0;
     setHeaderHeight(height);
   }, [scrollY]);
 
   const push = () => {
-    if (props.generalInfoFormStore.isFormValid()) {
-      props.navigation.navigate('CreateStep2');
+    if (generalInfoFormStore.isFormValid()) {
+      navigation.navigate('CreateStep2');
     }
   };
 
@@ -59,7 +58,7 @@ const CreateStep1 = props => {
         rightButton={
           <TouchableOpacity
             style={{justifyContent: 'center'}}
-            onPress={() => props.navigation.pop()}>
+            onPress={() => navigation.pop()}>
             <Icon
               name="close"
               size={18}
@@ -72,7 +71,7 @@ const CreateStep1 = props => {
       <CreateStepDotHeader
         title="General Info"
         currentIndex={1}
-        navigation={props.navigation}
+        navigation={navigation}
         headerHeight={headerHeight}
       />
       <ScrollView
@@ -91,6 +90,7 @@ const CreateStep1 = props => {
         <View
           style={{
             flex: 1,
+            width: '100%',
             // alignItems: 'center',
             backgroundColor: 'white',
           }}>
@@ -116,10 +116,11 @@ const CreateStep1 = props => {
             autoCapitalize="none"
             returnKeyType="next"
             autoCorrect={false}
+            maxLength={24}
             validation={{
               name: CreateCommonForm.NAME,
-              formStore: props.generalInfoFormStore,
-              validateRule: 'required|max:24',
+              formStore: generalInfoFormStore,
+              validateRule: 'required',
               displayName: 'common name',
             }}
           />
@@ -134,10 +135,11 @@ const CreateStep1 = props => {
             placeholderText="What is the ultimate goal of the Common?"
             autoCapitalize="none"
             autoCorrect={false}
+            maxLength={40}
             validation={{
               name: CreateCommonForm.BYLINE,
-              formStore: props.generalInfoFormStore,
-              validateRule: 'required|min:10|max:40',
+              formStore: generalInfoFormStore,
+              validateRule: 'required|min:10',
               displayName: 'mission statement',
             }}
           />
@@ -153,30 +155,40 @@ const CreateStep1 = props => {
             autoCorrect={false}
             validation={{
               name: CreateCommonForm.DESCRIPTION,
-              formStore: props.generalInfoFormStore,
+              formStore: generalInfoFormStore,
               validateRule: 'required|string',
               displayName: 'about',
             }}
           />
           <MultiLinkField
+            link
             allowsEditing={true}
             label="Links"
             title="Title"
+            maxLength={30}
             validation={{
               name: CreateCommonForm.LINKS,
-              formStore: props.generalInfoFormStore,
-              validateRule: {common: 'string|url', title: 'string|max:30'},
+              formStore: generalInfoFormStore,
+              validateRule: {common: 'string|url', title: 'string'},
             }}
           />
         </View>
       </ScrollView>
       <RequestStepActionButton
         title="Continue to Funding"
-        pass={props.generalInfoFormStore.isFormActionEnabled()}
+        pass={generalInfoFormStore.isFormActionEnabled()}
         onPress={push}
       />
     </SafeAreaView>
   );
+};
+
+CreateStep1.propTypes = {
+  generalInfoFormStore: shape({
+    isFormValid: func,
+    isFormActionEnabled: func,
+  }).isRequired,
+  navigation: object,
 };
 
 export default inject(
@@ -184,7 +196,6 @@ export default inject(
   'fundingFormStore',
   'agendaFormStore',
   'reviewFormStore',
-  'daoStore',
 )(observer(CreateStep1));
 
 //generalInfoFormStore

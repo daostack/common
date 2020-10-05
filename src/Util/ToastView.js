@@ -6,16 +6,17 @@ import {
   Dimensions,
   Text,
   ViewPropTypes as RNViewPropTypes,
+  BackHandler,
 } from 'react-native';
 
-import PropTypes from 'prop-types';
+import {number, oneOf} from 'prop-types';
 const ViewPropTypes = RNViewPropTypes || View.propTypes;
 export const DURATION = {
   LENGTH_SHORT: 500,
   FOREVER: 0,
 };
 
-const {height, width} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 export default class ToastView extends Component {
 
@@ -28,9 +29,10 @@ export default class ToastView extends Component {
     };
   }
 
-  show(text, duration, callback) {
+  show = (text, duration, callback) => {
     this.duration = typeof duration === 'number' ? duration : DURATION.LENGTH_SHORT;
     this.callback = callback;
+    BackHandler.addEventListener('hardwareBackPress', this.androidBackListener);
     this.setState({
       isShow: true,
       text: text,
@@ -49,7 +51,7 @@ export default class ToastView extends Component {
     });
   }
 
-  close( duration ) {
+  close = (duration) => {
     let delay = typeof duration === 'undefined' ? this.duration : duration;
 
     if (delay === DURATION.FOREVER) {delay = this.props.defaultCloseDelay || 250;}
@@ -72,41 +74,39 @@ export default class ToastView extends Component {
         if (typeof this.callback === 'function') {
           this.callback();
         }
+        BackHandler.removeEventListener('hardwareBackPress', this.androidBackListener);
       });
     }, delay);
   }
+
+  androidBackListener = () => true;
 
   componentWillUnmount() {
     this.animation && this.animation.stop();
     this.timer && clearTimeout(this.timer);
   }
 
-  render() {
-    let pos;
+  getPosition = () => {
     switch (this.props.position) {
     case 'top':
-      pos = this.props.positionValue;
-      break;
+      return this.props.positionValue;
     case 'center':
-      pos = height / 2;
-      break;
+      return height / 2;
     case 'bottom':
-      pos = height - this.props.positionValue;
-      break;
+      return height - this.props.positionValue;
     }
+  }
 
-    const view = this.state.isShow ?
-      <View
+  render() {
+    return (this.state.isShow
+      && <View
         style={styles.container}
-        pointerEvents= { this.duration === DURATION.FOREVER ? 'auto' : 'none'}
-      >
+        pointerEvents= {this.duration === DURATION.FOREVER ? 'auto' : 'none'}>
         <Animated.View
-          style={[styles.content, { opacity: this.state.opacityValue }, this.props.style, { top: pos }]}
-        >
+          style={[styles.content, {opacity: this.state.opacityValue}, this.props.style, {top: this.getPosition()}]}>
           {React.isValidElement(this.state.text) ? this.state.text : <Text style={this.props.textStyle}>{this.state.text}</Text>}
         </Animated.View>
-      </View> : null;
-    return view;
+      </View>);
   }
 }
 
@@ -134,16 +134,17 @@ const styles = StyleSheet.create({
 
 ToastView.propTypes = {
   style: ViewPropTypes.style,
-  position: PropTypes.oneOf([
+  position: oneOf([
     'top',
     'center',
     'bottom',
   ]),
   textStyle: Text.propTypes.style,
-  positionValue:PropTypes.number,
-  fadeInDuration:PropTypes.number,
-  fadeOutDuration:PropTypes.number,
-  opacity:PropTypes.number,
+  positionValue: number,
+  fadeInDuration: number,
+  fadeOutDuration: number,
+  opacity: number,
+  defaultCloseDelay: number,
 };
 
 ToastView.defaultProps = {

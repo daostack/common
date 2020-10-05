@@ -8,34 +8,35 @@ import {
   Animated,
 } from 'react-native';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
-
-import RequestToJoinRule from '../../../Components/Commons/RequestToJoinRule';
-import {observer, inject} from 'mobx-react';
-const {width, height} = Dimensions.get('window');
+import RequestToJoinRule from '~/Components/Commons/RequestToJoinRule';
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepDotHeader from './RequestStepDotHeader';
-import {colors} from '../../../Theme';
+import {colors} from '~/Theme';
 import CreateStepNavigation from './RequestStepNavigation';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from './MembershipRequest';
+import {string, object, bool, shape} from 'prop-types';
+const {width, height} = Dimensions.get('window');
 
-const RequestStep1 = props => {
+const RequestStep1 = ({navigation,
+  route: {
+    params: {
+      currCommon,
+      currDaoId,
+    },
+  }}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  // const [ruleCount] = useState(1);
   const [pass, setPass] = useState(false);
-  const commonRules = props.daoStore.dao.metadata?.rules;
-
-  const { name } = props.daoStore.dao;
 
   useEffect(() => {
-    const height = scrollY.interpolate({
+    const newHeight = scrollY.interpolate({
       inputRange: [50, 50],
       outputRange: [0, 67],
       extrapolate: 'clamp',
     });
-    setHeaderHeight(height);
+    setHeaderHeight(newHeight);
   }, [scrollY]);
 
   const onScrollToBottom = () => {
@@ -47,15 +48,16 @@ const RequestStep1 = props => {
       const navigate = CommonActions.navigate({
         name: 'RequestStep2',
         params: {
-          currDaoId: props.route.params.currDaoId,
+          currDaoId: currDaoId,
+          currCommon: currCommon,
         },
       });
-      props.navigation.dispatch(navigate);
+      navigation.dispatch(navigate);
     }
   };
 
   return (
-    <>
+    <React.Fragment>
       <SafeAreaView style={{backgroundColor: colors.white}} />
       <SafeAreaView
         style={{
@@ -63,60 +65,82 @@ const RequestStep1 = props => {
           backgroundColor: 'white',
         }}>
         <CreateStepNavigation
-          navigation={props.navigation}
-          title={name}
+          navigation={navigation}
+          title={currCommon.name}
         />
         <CreateStepDotHeader
           title="Approve Common Rules"
           currentIndex={1}
-          navigation={props.navigation}
+          navigation={navigation}
           headerHeight={headerHeight}
         />
         <ScrollView
           showsVerticalScrollIndicator={false}
+          onScrollEndDrag={onScrollToBottom}
+          scrollEventThrottle={16}
           width={width}
+          onScroll={Animated.event([
+            {
+              nativeEvent: {
+                contentOffset: {y: scrollY},
+              },
+            },
+          ])}
           contentContainerStyle={{
             alignItems: 'center',
             justifyContent: 'center',
             padding: 24,
           }}
-          onContentSizeChange={(_width, contentHeight) =>
-            contentHeight < (height - 150) && setPass(true)
-          }
-          scrollEventThrottle={16}
-          onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
-          ])}
-          onScrollEndDrag={onScrollToBottom}>
+          onContentSizeChange={(_width, contentHeight) => {
+            contentHeight < (height - 150) && setPass(true);
+          }}
+        >
           <MembershipRequest />
+
           <CreateStepHeader
             currentIndex={0}
             isFirstStepSkipped={false}
           />
+
           <View
             style={{
               flex: 1,
               // alignItems: 'center',
               backgroundColor: 'white',
             }}>
-            <RequestStepHeaderTitle title="Accept Common Rules" subtitle="If the Common approves your request you will become a member with equal voting rights." />
-            <View
-              style={styles.content}
+            <RequestStepHeaderTitle
+              title="Accept Common Rules"
+              subtitle="If the Common approves your request you will become a member with equal voting rights."
             />
-            {Boolean(commonRules?.length) &&
-              commonRules.map((rule, index) => (
+
+            <View style={styles.content}/>
+
+            {currCommon.metadata?.rules?.length > 0 &&
+              currCommon.metadata.rules.map((rule, index) => (
                 <RequestToJoinRule
                   index={index + 1}
                   title={rule.title}
                   description={rule.description}
+                  url={rule.url}
                 />
               ))}
           </View>
         </ScrollView>
         <RequestStepActionButton title="Continue" pass={pass} onPress={push} />
       </SafeAreaView>
-    </>
+    </React.Fragment>
   );
+};
+
+RequestStep1.propTypes = {
+  navigation: object,
+  route: shape({
+    params: shape({
+      currCommon: object,
+      currDaoId: string,
+      skipFirstStep: bool,
+    }),
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -127,4 +151,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('daoStore')(observer(RequestStep1));
+export default RequestStep1;

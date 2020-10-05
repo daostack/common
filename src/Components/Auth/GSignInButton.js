@@ -1,15 +1,14 @@
-import {useState} from 'react';
 import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
-import {colors, text, layout} from '../../Theme';
+import {colors, text, layout} from '~/Theme';
 import React from 'react';
-import Icon from '../../Assets/iconfont/Icon';
-import { statusCodes } from '@react-native-community/google-signin';
-import { observer, inject } from 'mobx-react';
+import Icon from '~/Assets/iconfont/Icon';
+import {statusCodes} from '@react-native-community/google-signin';
+import {observer, inject} from 'mobx-react';
+import AuthService from '~/Services/AuthService';
+import logger from '~/Services/Logger';
+import {shape, func} from 'prop-types';
 
-import AuthService from '../../Services/AuthService';
-
-const GSignInButton = ({ onSignIn, userStore}) => {
-  const [signInError, setSignInError] = useState(null);
+const GSignInButton = ({onSignIn, userStore}) => {
 
   const _signIn = async () => {
     try {
@@ -19,40 +18,36 @@ const GSignInButton = ({ onSignIn, userStore}) => {
       if (onSignIn) {
         onSignIn(userInfo);
       }
-      setSignInError(null);
+      userStore.setSignInError(null);
     } catch (error) {
       userStore.setIsLoading(false);
       switch (error.code) {
       case statusCodes.SIGN_IN_CANCELLED:
-        setSignInError('Canceled');
+        userStore.setSignInError('Canceled');
         break;
       case statusCodes.IN_PROGRESS:
-        console.log('SignIn in progress');
+        logger.log('SignIn in progress');
         break;
       case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-        setSignInError('play services not available or outdated');
+        userStore.setSignInError('play services not available or outdated');
         break;
       default:
-        setSignInError(error);
+        userStore.setSignInError(error);
       }
     }
   };
 
-  const renderSignInButton = () => {
-    return (
-      <>
-        <TouchableOpacity style={layout.btnOutline} onPress={_signIn}>
-          <Icon style={layout.btnLeftIcon} name="google" size={32} />
-          <Text style={text.buttonblack}>Continue with Google</Text>
-        </TouchableOpacity>
-      </>
-    );
-  };
+  const renderSignInButton = () => (
+    <TouchableOpacity style={layout.btnOutline} onPress={_signIn}>
+      <Icon style={layout.btnLeftIcon} name="google" size={32} />
+      <Text style={text.buttonblack}>Continue with Google</Text>
+    </TouchableOpacity>
+  );
 
   const renderError = () => {
-    if (signInError) {
-      const errorText = `${signInError.toString()} ${
-        signInError.code ? signInError.code : ''
+    if (userStore.signInError) {
+      const errorText = `${userStore.signInError.toString()} ${
+        userStore.signInError.code ? userStore.signInError.code : ''
       }`;
       return (
         <View style={styles.messageContainer}>
@@ -69,6 +64,13 @@ const GSignInButton = ({ onSignIn, userStore}) => {
       {renderSignInButton()}
     </View>
   );
+};
+
+GSignInButton.propTypes = {
+  onSignIn: func,
+  userStore: shape({
+    setIsLoading: func,
+  }),
 };
 
 const styles = StyleSheet.create({
