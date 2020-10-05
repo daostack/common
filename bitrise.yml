@@ -143,6 +143,7 @@ workflows:
         inputs:
         - service_account_json_key_path: $BITRISEIO_github_actions_play_store_key_json_URL
         - user_fraction: ''
+        - track: beta
         - package_name: com.daostack.common
     - set-xcode-build-number@1:
         inputs:
