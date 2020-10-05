@@ -86,24 +86,23 @@ const ProposalScreen = ({
     let unsubscribe = null;
 
     const loadProposalInfo = async (currProposalInfo) => {
-      let proposedMemberId = null;
+      let currProposedUser = null;
       let funding = null;
 
       if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
-        proposedMemberId = currProposalInfo.join.proposedMemberId;
         funding = currProposalInfo.description.funding;
+        currProposedUser = await UserService.getInstance().getUserById(
+          currProposalInfo.join.proposedMemberId
+        );
       }
       //FundingRequest proposal
       else {
-        const proposedMember = await UserService.getInstance().getUserByAddress(
+        currProposedUser = await UserService.getInstance().getUserByAddress(
           currProposalInfo.fundingRequest.beneficiary
         );
-        proposedMemberId = proposedMember.id;
         funding = currProposalInfo.fundingRequest.amount;
       }
-      const currProposedUser = await UserService.getInstance().getUserById(
-        proposedMemberId
-      );
+
       setProposedUser(currProposedUser);
       setProposalInfo({...currProposalInfo, funding});
 
@@ -121,14 +120,14 @@ const ProposalScreen = ({
           currProposalId
         );
         logger.log('currProposalInfo -->', currProposalInfo);
-        const currentDao = await DaoService.getInstance().getDaoById(currProposalInfo.dao);
-
-        setIsMember(userInfo && isDaoMember(currentDao.members));
-        setIsProposer(userStore.isProposer(currProposalInfo));
 
         await loadProposalInfo(currProposalInfo);
+
         unsubscribe = await ProposalService.getInstance().subscribeToProposalById(currProposalId,
           async (updatedProposalInfo) => {
+            const currentDao = await DaoService.getInstance().getDaoById(updatedProposalInfo.dao);
+            setIsMember(userInfo && isDaoMember(currentDao.members));
+            setIsProposer(userStore.isProposer(currProposalInfo));
             await loadProposalInfo(updatedProposalInfo);
           }
         );
@@ -168,7 +167,7 @@ const ProposalScreen = ({
 
   const inputRef = useRef();
 
-  const renderTabBar = (currProps) => (
+  const renderTabBar = (currProps) => proposalInfo && (
     <View style={{paddingBottom: 5}}>
       <TabBarRenderer originRef={originTabBarRef} jumpTo={originTabBarRef.current?.props?.jumpTo} indexChange={setIndex} {...currProps} />
     </View>
