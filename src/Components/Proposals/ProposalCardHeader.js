@@ -29,7 +29,7 @@ const calcStatus = (stage, winningOutcome, hasPassedExpiryDate) => {
       status.darkColor = colors.lightishGreen;
       status.icon = 'approved';
     } else {
-      status.title = TITLES.REJECTED;
+      status.text = TITLES.REJECTED;
       status.lightColor = colors.redLightish;
       status.darkColor = colors.error;
       status.icon = 'declined';
