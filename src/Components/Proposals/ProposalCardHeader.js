@@ -22,27 +22,21 @@ const calcStatus = (stage, winningOutcome, hasPassedExpiryDate) => {
     icon: '',
   };
 
-  if (stage === PROPOSAL_STAGE.Executed) {
+  if (stage === PROPOSAL_STAGE.Executed || hasPassedExpiryDate || stage === PROPOSAL_STAGE.ExpiredInQueue) {
     if (winningOutcome === 1) {
       status.text = TITLES.APPROVED;
       status.lightColor = colors.lightGreen;
       status.darkColor = colors.lightishGreen;
       status.icon = 'approved';
     } else {
-      status.title = TITLES.REJECTED;
+      status.text = TITLES.REJECTED;
       status.lightColor = colors.redLightish;
       status.darkColor = colors.error;
       status.icon = 'declined';
     }
     return status;
   }
-  if (hasPassedExpiryDate || stage === PROPOSAL_STAGE.ExpiredInQueue) {
-    status.text = TITLES.REJECTED;
-    status.lightColor = colors.redLightish;
-    status.darkColor = colors.error;
-    status.icon = 'declined';
-    return status;
-  }
+
   if (LAUNCHED_STATES.includes(stage)) {
     status.text = TITLES.NEW;
     status.lightColor = colors.lightBlue;
@@ -107,6 +101,8 @@ const ProposalCardHeader = ({stage, winningOutcome, closingAt, isScreenHeader = 
     : false;
 
   const headerStatus = calcStatus(stage, winningOutcome, hasPassedExpiryDate);
+
+
   return isScreenHeader
     ? (
       <View style={{...styles.stateCard, ...{backgroundColor: headerStatus.darkColor, paddingHorizontal: 50}}}>
