@@ -30,7 +30,7 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
-import {object, shape} from 'prop-types';
+import {object, shape, func} from 'prop-types';
 import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
@@ -57,6 +57,8 @@ const CommonProfile = ({
    */
   const [ isMember, setMemberState ] = useState(false);
   const window = Dimensions.get('window');
+
+  const {refreshFeed} = params;
 
   const [ index, setIndex ] = useState(0);
   const [ routes ] = useState([
@@ -360,6 +362,7 @@ const CommonProfile = ({
           currCommon: currCommon,
           currDaoId: currCommon.id,
           skipFirstStep: shouldSkipRules,
+          refreshFeed,
         },
       });
       navigation.dispatch(navigate);
@@ -822,6 +825,7 @@ CommonProfile.propTypes = {
     params: shape({
       //commonId: string,
       currCommon: object,
+      refreshFeed: func,
       //showRequestSentModal: func,
       //createdProposalId: func,
 

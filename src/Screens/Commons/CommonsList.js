@@ -252,13 +252,19 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
     </View>
   );
 
+  const refreshFeed = () => {
+    onRefresh();
+  };
+
   const navigateToCommon = (common) => {
     const navigate = CommonActions.navigate({
       name: 'CommonProfile',
       params: {
         currCommon: common,
+        refreshFeed,
       },
     });
+
     navigation.dispatch(navigate);
   };
 
