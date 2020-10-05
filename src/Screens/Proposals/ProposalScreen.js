@@ -85,7 +85,7 @@ const ProposalScreen = ({
   useEffect(() => {
     let unsubscribe = null;
 
-    const loadProposalInfo = async (currProposalInfo) => {
+    const loadProposalInfo = async (currProposalInfo, currProposalDao) => {
       let proposedMemberId = null;
       let funding = null;
 
@@ -109,9 +109,9 @@ const ProposalScreen = ({
 
       navigation.setParams({
         ...(currProposalInfo.type === 'Join' && {
-          title: currProposedUser.displayName,
+          title: 'Request to join',
+          subtitle: currProposalDao?.metadata?.name,
         }),
-        subtitle: currProposalInfo.type === 'Join' && 'Request To Join',
       });
     };
 
@@ -126,10 +126,10 @@ const ProposalScreen = ({
         setIsMember(userInfo && isDaoMember(currentDao.members));
         setIsProposer(userStore.isProposer(currProposalInfo));
 
-        await loadProposalInfo(currProposalInfo);
+        await loadProposalInfo(currProposalInfo, currentDao);
         unsubscribe = await ProposalService.getInstance().subscribeToProposalById(currProposalId,
           async (updatedProposalInfo) => {
-            await loadProposalInfo(updatedProposalInfo);
+            await loadProposalInfo(updatedProposalInfo, currentDao);
           }
         );
 
