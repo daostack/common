@@ -40,6 +40,11 @@ const CommonStageSummary = ({
     );
   }; */
 
+  const formatNumber = (num) => Math.abs(num) > 999
+    ? Math.sign(num) * ((Math.abs(num) / 1000).toFixed(1)) + 'K'
+    : Math.sign(num) * Math.abs(num);
+
+
   const commonNumberBox = (numberComponent, title) => (
     <View
       style={{
@@ -57,15 +62,19 @@ const CommonStageSummary = ({
       <View style={styles.commonNumbers}>
         {commonNumberBox(
           <Text style={styles.headerTitle}>
-                ${numberFormatter(raised / 100)}
+            {/*{(new Intl.NumberFormat('he-IL', {style: 'currency', currency: 'USD'}).format(raised))}*/}
+            ${formatNumber(raised / 100)}
           </Text>,
           isCommonCard ? 'Raised' : 'Available funds',
         )}
         {commonNumberBox(
           <Text style={styles.headerTitle}>
-            {isCommonCard
-              ? members
-              : '$' + numberFormatter(raised / 100)}
+            {
+              isCommonCard
+                ? members
+                // : (new Intl.NumberFormat('he-IL', {style: 'currency', currency: 'USD'}).format(raised))
+                : '$' + formatNumber(raised / 100)
+            }
           </Text>,
           isCommonCard ? 'Members' : 'Raised',
         )}
