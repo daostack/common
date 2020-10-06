@@ -160,11 +160,7 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
             />
             <ProposalApprovalTag
               iconName="discussion"
-<<<<<<< Updated upstream
-              value={proposalCardInfo.proposalInfo?.discussionsCount.toString()}
-=======
               value={Number(proposalCardInfo.proposalInfo?.discussionsCount || 0)}
->>>>>>> Stashed changes
               isMarked={false}
             />
           </View>
