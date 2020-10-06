@@ -3,8 +3,7 @@ import React from 'react';
 import {layout, colors, text, font} from '~/Theme';
 import {func, bool, number} from 'prop-types';
 
-
-const JoinAmount = ({ id, amount, isCustom, onPress, isSelected, isMonthly}) => {
+const JoinAmount = ({id, amount, isCustom, onPress, isSelected, isMonthly}) => {
 
   const onAmountPress = (e) => {
     onPress(isCustom, amount, id);
@@ -27,6 +26,7 @@ JoinAmount.propTypes = {
   isCustom: bool,
   onPress: func,
   isSelected: bool,
+  isMonthly: bool,
 };
 
 const styles = StyleSheet.create({

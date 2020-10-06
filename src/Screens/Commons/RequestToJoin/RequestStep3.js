@@ -79,7 +79,7 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
   const contributeMessage = 'Select the amount you would like to contribute';
   const calcMinFeeToJoin = metadata.minFeeToJoin / 100;
   const minContributionMessage = isMonthly ? `${contributeMessage} ($${calcMinFeeToJoin} /mo)` : `${contributeMessage} ($${calcMinFeeToJoin} min.)`;
-  
+
   return (
     <>
       <SafeAreaView style={{backgroundColor: colors.white}} />

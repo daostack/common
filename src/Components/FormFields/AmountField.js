@@ -4,7 +4,7 @@ import {layout, colors, text} from '~/Theme';
 import JoinAmount from '../Commons/JoinAmount';
 import TextInputFieldWithIcon from './TextInputFieldWithIcon';
 import RequestToJoinForm from '../Forms/RequestToJoinForm';
-import {number, func, object} from 'prop-types';
+import {number, func, object, bool} from 'prop-types';
 
 const AmountField = ({
   formStore,
@@ -80,6 +80,7 @@ AmountField.propTypes = {
   onCustomClose: func,
   onAmountSelected: func,
   minFeeToJoin: number,
+  isMonthly: bool,
 };
 
 const styles = StyleSheet.create({
