@@ -44,7 +44,7 @@ const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params: {s
           currDaoId: currDaoId,
           currCommon: currCommon,
           skipFirstStep: skipFirstStep,
-          refreshFeed
+          refreshFeed,
         },
       });
       navigation.dispatch(navigate);
