@@ -424,17 +424,17 @@ const CommonProfile = ({
           <View style={layout.flexRow}>
             <ProposalApprovalTag
               iconName="approved"
-              value={pendingProposalsData.usersPendingProposal.votesFor}
+              value={Number(pendingProposalsData.usersPendingProposal.votesFor || 0)}
               isMarked={true}
             />
             <ProposalApprovalTag
               iconName="declined"
-              value={pendingProposalsData.usersPendingProposal.votesAgainst}
+              value={Number(pendingProposalsData.usersPendingProposal.votesAgainst || 0)}
               isMarked={false}
             />
             <ProposalApprovalTag
               iconName="discussion"
-              value={userPendingPropDiscCount}
+              value={Number(userPendingPropDiscCount || 0)}
               isMarked={false}
             />
           </View>

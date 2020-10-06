@@ -150,17 +150,17 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
           <View style={{...layout.flexRow}}>
             <ProposalApprovalTag
               iconName="approved"
-              value={proposalCardInfo.proposalInfo?.votesFor}
+              value={Number(proposalCardInfo.proposalInfo?.votesFor || 0)}
               isMarked={true}
             />
             <ProposalApprovalTag
               iconName="declined"
-              value={proposalCardInfo.proposalInfo?.votesAgainst}
+              value={Number(proposalCardInfo.proposalInfo?.votesAgainst || 0)}
               isMarked={false}
             />
             <ProposalApprovalTag
               iconName="discussion"
-              value={proposalCardInfo.proposalInfo?.discussionsCount.toString()}
+              value={Number(proposalCardInfo.proposalInfo?.discussionsCount || 0)}
               isMarked={false}
             />
           </View>
