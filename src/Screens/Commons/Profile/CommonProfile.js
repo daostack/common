@@ -389,6 +389,9 @@ const CommonProfile = ({
   const openProposalScreen = () => {
     navigation.navigate('ProposalScreen', {
       proposalId: pendingProposalsData.usersPendingProposal?.id,
+      proposalCardInfo: {
+        proposalInfo: pendingProposalsData.usersPendingProposal,
+      },
       screenTitle: currCommon.name,
       commonBalance: currCommon.balance,
       isMember,

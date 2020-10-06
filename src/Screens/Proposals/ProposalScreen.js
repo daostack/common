@@ -34,6 +34,12 @@ import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
 import {string, func, object, shape, oneOfType, number} from 'prop-types';
 import logger from '~/Services/Logger';
+import {
+  Placeholder,
+  PlaceholderMedia,
+  PlaceholderLine,
+  Fade,
+} from 'rn-placeholder';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -49,21 +55,21 @@ const ProposalScreen = ({
     params: {
       commonBalance,
       proposalId,
+      proposalCardInfo,
     },
   },
 }) => {
   const [ votingProcessState, setVotingProcessState ] = useState({inProgress: false, error: false});
-  const [ proposalInfo, setProposalInfo ] = useState(false);
-  const [ proposedUser, setProposedUser ] = useState(false);
+  const [ proposalScreenInfo, setProposalScreenInfo ] = useState(proposalCardInfo);
   const [ isSending, setIsSending ] = useState(false);
   const [ isMember, setIsMember ] = useState(false);
   const [ isProposer, setIsProposer ] = useState(false);
   const [ showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer ] = useState(false);
   const renderVoting =
-    proposalInfo &&
-    PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr) &&
+    proposalScreenInfo?.proposalInfo &&
+    PROPOSAL_STAGES_ACTIVE.includes(proposalScreenInfo?.proposalInfo?.stageStr) &&
     isMember &&
-    !proposalInfo.votes.some((vote) => vote.voter === userInfo.safeAddress);
+    !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voter === userInfo.safeAddress);
 
 
   // Sticky Tab Bar
@@ -103,8 +109,12 @@ const ProposalScreen = ({
         funding = currProposalInfo.fundingRequest.amount;
       }
 
-      setProposedUser(currProposedUser);
-      setProposalInfo({...currProposalInfo, funding});
+      setProposalScreenInfo(
+        {
+          proposalInfo: {...currProposalInfo, funding},
+          proposedUser: currProposedUser,
+        }
+      );
 
       navigation.setParams({
         ...(currProposalInfo.type === 'Join' && {
@@ -148,7 +158,7 @@ const ProposalScreen = ({
         unsubscribe();
       }
     };
-  }, [ proposalId ]);
+  }, [proposalId]);
 
   const [
     isApprovalBottomModalVisible,
@@ -167,7 +177,7 @@ const ProposalScreen = ({
 
   const inputRef = useRef();
 
-  const renderTabBar = (currProps) => proposalInfo && (
+  const renderTabBar = (currProps) => proposalScreenInfo?.proposalInfo && (
     <View style={{paddingBottom: 5}}>
       <TabBarRenderer originRef={originTabBarRef} jumpTo={originTabBarRef.current?.props?.jumpTo} indexChange={setIndex} {...currProps} />
     </View>
@@ -191,7 +201,7 @@ const ProposalScreen = ({
             ownerId: userInfo.uid,
             ownerName: userInfo.displayName,
             ownerAvatar: userInfo.photoURL,
-            discussionId: proposalId,
+            discussionId: proposalId || proposalScreenInfo?.proposalInfo.id,
           })
           .then(() => {
             Keyboard.dismiss();
@@ -285,7 +295,7 @@ const ProposalScreen = ({
   }
 
   const viewUserProfile = () => {
-    navigation.navigate('Profile', {userId: proposedUser.uid});
+    navigation.navigate('Profile', {userId: proposalScreenInfo?.proposedUser.uid});
   };
 
   const onVote = async (isApproved) => {
@@ -296,14 +306,14 @@ const ProposalScreen = ({
 
       await timeout(3000);
 
-      if (proposalInfo.type === PROPOSAL_TYPE.Join) {
+      if (proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join) {
         await ArcService.voteForJoinProposal(
-          proposalId,
+          proposalId || proposalScreenInfo?.proposalInfo.id,
           voteData
         );
       } else {
         await ArcService.voteForFundingRequestProposal(
-          proposalId,
+          proposalId || proposalScreenInfo?.proposalInfo.id,
           voteData
         );
       }
@@ -347,7 +357,7 @@ const ProposalScreen = ({
   };
 
   const renderVotingButtons = (reference) => (
-    (moment().isBefore(moment.unix(proposalInfo?.closingAt)) || !proposalInfo?.closingAt) && (
+    (moment().isBefore(moment.unix(proposalScreenInfo?.proposalInfo?.closingAt)) || !proposalScreenInfo?.proposalInfo?.closingAt) && (
       <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
         <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>What's your vote?</Text>
         <View style={layout.flexRow}>
@@ -373,12 +383,12 @@ const ProposalScreen = ({
   const headerContainerStyle = {
     ...layout.content,
     ...{paddingBottom: 0},
-    ...proposalInfo.type === PROPOSAL_TYPE.FundingRequest && {...layout.flexStart},
+    ...proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest && {...layout.flexStart},
   };
 
-  const [votesFor, votesAgainst] = [+proposalInfo?.votesFor, +proposalInfo?.votesAgainst];
+  const [votesFor, votesAgainst] = [+proposalScreenInfo?.proposalInfo?.votesFor, +proposalScreenInfo?.proposalInfo?.votesAgainst];
 
-  const progressBarWidthPercent = proposalInfo
+  const progressBarWidthPercent = proposalScreenInfo?.proposalInfo
     ? (votesFor / (votesFor + votesAgainst) * 100) : 0;
 
 
@@ -460,26 +470,28 @@ const ProposalScreen = ({
             });
           }}
         >
-          {proposalInfo && (
+          {proposalScreenInfo?.proposalInfo && (
             <View style={{...headerContainerStyle}}>
-              {proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
+              {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
                 <View style={{...layout.content, width: '100%', padding: 0}}>
                   <ProposalCardHeader
                     isScreenHeader={true}
                     isBoosted={true}
-                    stage={proposalInfo?.stageStr}
-                    winningOutcome={proposalInfo?.winningOutcome}
-                    closingAt={proposalInfo.closingAt}
+                    stage={proposalScreenInfo?.proposalInfo?.stageStr}
+                    winningOutcome={proposalScreenInfo?.proposalInfo?.winningOutcome}
+                    closingAt={proposalScreenInfo?.proposalInfo.closingAt}
                   />
+                  {proposalScreenInfo?.proposedUser && (
 
-                  <UserAvatar
-                    image={proposedUser?.photoURL}
-                    displayName={proposedUser?.displayName}
-                    imageStyle={{width: 46, height: 46}}
-                  />
+                    <UserAvatar
+                      image={proposalScreenInfo?.proposedUser?.photoURL}
+                      displayName={proposalScreenInfo?.proposedUser?.displayName}
+                      imageStyle={{width: 46, height: 46}}
+                    />
 
+                  )}
                   <Text style={{...text.h2Black, ...layout.marginBottomL, ...layout.marginTopXS}}>
-                    {proposalInfo?.description?.title || 'Unknown title'}
+                    {proposalScreenInfo?.proposalInfo?.description?.title || 'Unknown title'}
                   </Text>
                 </View>
               ) : (
@@ -487,33 +499,46 @@ const ProposalScreen = ({
                   <ProposalCardHeader
                     isScreenHeader={true}
                     isBoosted={true}
-                    stage={proposalInfo?.stageStr}
-                    winningOutcome={proposalInfo?.winningOutcome}
-                    closingAt={proposalInfo.closingAt}
+                    stage={proposalScreenInfo?.proposalInfo?.stageStr}
+                    winningOutcome={proposalScreenInfo?.proposalInfo?.winningOutcome}
+                    closingAt={proposalScreenInfo?.proposalInfo.closingAt}
                   />
 
-                  <UserAvatar
-                    image={proposedUser?.photoURL}
-                    imageStyle={{width: 64, height: 64}}
-                    iconName={'clcok'}
-                  />
+                  {proposalScreenInfo?.proposedUser ? (
+                      <>
+                        <UserAvatar
+                          image={proposalScreenInfo?.proposedUser?.photoURL}
+                          imageStyle={{width: 64, height: 64}}
+                          iconName={'clcok'}
+                        />
 
-                  <View style={{...layout.content, ...layout.marginTopS}}>
-                    <Text style={text.h2Black}>
-                      {proposedUser
-                        ? proposedUser.displayName
-                        : 'unknown user'
-                      }
-                    </Text>
+                      <View style={{...layout.content, ...layout.marginTopS}}>
+                        <Text style={text.h2Black}>
+                          {proposalScreenInfo?.proposedUser
+                            ? proposalScreenInfo?.proposedUser.displayName
+                            : 'unknown user'
+                          }
+                        </Text>
 
-                    {proposedUser && (
-                      <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}} onPress={viewUserProfile}>
-                        <Text style={text.smallBlackText}>View Profile</Text>
-                        <Icon name="right-arrow" size={20}/>
-                      </TouchableOpacity>
-                    )}
 
-                  </View>
+                        <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}} onPress={viewUserProfile}>
+                          <Text style={text.smallBlackText}>View Profile</Text>
+                          <Icon name="right-arrow" size={20}/>
+                        </TouchableOpacity>
+
+                      </View>
+                      </>
+                  ) :
+                    (<Placeholder Animation={Fade}>
+                      <PlaceholderMedia
+                        size={60}
+                        isRound={true}
+                        style={{alignSelf: 'center', marginBottom: 40}}
+                      />
+                      <PlaceholderLine width={50} style={{alignSelf: 'center'}} />
+                      <PlaceholderLine width={30} style={{alignSelf: 'center', marginBottom: 28}} />
+                    </Placeholder>)
+                  }
                 </React.Fragment>
               )}
 
@@ -521,15 +546,15 @@ const ProposalScreen = ({
 
                 <View style={styles.requestedAmountContainer}>
                   <Text style={{...text.smallBlackText, ...layout.marginRightS}}>
-                    {proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
+                    {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
                       'Requested amount' : 'Contribution'}
                   </Text>
-                  <Text style={text.h2Black}>{`$${proposalInfo.type === PROPOSAL_TYPE.FundingRequest
-                    ? proposalInfo.fundingRequest.amount / 100
-                    : proposalInfo.description.funding / 100}`}
+                  <Text style={text.h2Black}>{`$${proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+                    ? proposalScreenInfo?.proposalInfo.fundingRequest.amount / 100
+                    : proposalScreenInfo?.proposalInfo.description.funding / 100}`}
                   </Text>
                 </View>
-                {proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+                {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
                 && <Text
                   style={text.smallBlackText}>{`Available funds: ${commonBalance !== undefined ? '$' + commonBalance / 100 : ''}`}</Text>
                 }
@@ -596,15 +621,15 @@ const ProposalScreen = ({
 
             {index === 0 && (
               <ProposalData
-                proposalId={proposalId}
-                proposalInfo={proposalInfo}
+                proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
+                proposalInfo={proposalScreenInfo?.proposalInfo}
                 showMore={() => onSetIndex(1)}
               />
             )}
 
             {index === 1 && (
               <ProposalDiscussion
-                proposalId={proposalId}
+                proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
                 inputRef={inputRef}
                 scrollViewRef={scrollViewRef}
               />

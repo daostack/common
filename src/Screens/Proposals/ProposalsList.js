@@ -78,24 +78,25 @@ const ProposalsList = ({isMember,
     };
   }, [commonId, isHistory, userId, safeAddress]);
 
-  const onReviewProposal = async ( proposalId, daoId ) => {
+  // const onReviewProposal = async ( proposalData, daoId ) => {
 
-    let currCommonName = commonName;
-    let currCommonBalance = commonInfo?.balance;
+  //   let currCommonName = commonName;
+  //   let currCommonBalance = commonInfo?.balance;
 
-    if (!commonInfo) {
-      const currCommonInfo = await DaoService.getInstance().getDaoById(daoId);
-      currCommonName = currCommonInfo.name;
-      currCommonBalance = currCommonInfo.balance;
-    }
+  //   if (!commonInfo) {
+  //     const currCommonInfo = await DaoService.getInstance().getDaoById(daoId);
+  //     currCommonName = currCommonInfo.name;
+  //     currCommonBalance = currCommonInfo.balance;
+  //   }
 
-    navigation.navigate('ProposalScreen', {
-      title: currCommonName,
-      proposalId: proposalId,
-      commonBalance: currCommonBalance,
-      isMember,
-    });
-  };
+  //   navigation.navigate('ProposalScreen', {
+  //     title: currCommonName,
+  //     //proposalId: proposalData,
+  //     proposalInfo: proposalData,
+  //     commonBalance: currCommonBalance,
+  //     isMember,
+  //   });
+  // };
 
   const renderProposalCard = (item, index) => (
     isSwiper ? (
@@ -105,7 +106,9 @@ const ProposalsList = ({isMember,
           data={item}
           isSwiper={true}
           membershipRequest={membershipRequests}
-          onReviewProposal={(e) => onReviewProposal(item.id, item.dao)}
+          isMember={isMember}
+          commonInfo={commonInfo}
+          navigation={navigation}
         />
       ) : (
         <TouchableOpacity
@@ -123,7 +126,9 @@ const ProposalsList = ({isMember,
       data={item}
       isSwiper={false}
       membershipRequest={membershipRequests}
-      onReviewProposal={(e) => onReviewProposal(item.id, item.dao)}
+      isMember={isMember}
+      commonInfo={commonInfo}
+      navigation={navigation}
     />);
 
 

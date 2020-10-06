@@ -14,9 +14,10 @@ import logger from '../../Services/Logger';
 import {string, func, bool, object} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membershipRequest, isSwiper}) => {
+const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipRequest, isSwiper, isMember, commonInfo}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
   useEffect(() => {
+
     const getProposalInfo = async (currProposalId) => {
       try {
         let currProposalInfo = await ProposalService.getInstance().getProposalInfo(
@@ -66,28 +67,25 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
     const loadProposalInfo = async (currProposalInfo) => {
       try {
         //RequestToJoin proposal
-        let proposedMemberId = null;
+        let proposedMemberUser = null;
         let funding = null;
         if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
-          proposedMemberId = currProposalInfo.join.proposedMemberId;
+          proposedMemberUser = await UserService.getInstance().getUserById(
+            currProposalInfo.join.proposedMemberId
+          );
           funding = currProposalInfo.description.funding;
         }
         //FundingRequest proposal
         else {
-          const proposedMember = await UserService.getInstance().getUserByAddress(
+          proposedMemberUser = await UserService.getInstance().getUserByAddress(
             currProposalInfo.fundingRequest.beneficiary,
           );
-          proposedMemberId = proposedMember.id;
           funding = currProposalInfo.fundingRequest.amount;
         }
 
-        const userFromDb = await UserService.getInstance().getUserById(
-          proposedMemberId,
-        );
-
         const currProposedUser = {
-          ...userFromDb,
-          daos: (await DaoService.getInstance().getUserDaos(userFromDb.uid, userFromDb.safeAddress)).docs?.map((dao) => dao.data()),
+          ...proposedMemberUser,
+          daos: (await DaoService.getInstance().getUserDaos(proposedMemberUser.uid, proposedMemberUser.safeAddress)).docs?.map((dao) => dao.data()),
         };
 
         const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(currProposalInfo.id);
@@ -114,6 +112,23 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
       return '100%';
     }
     return width - 40;
+  };
+
+  const onReviewProposal = async () => {
+
+    let currCommonInfo = commonInfo;
+
+    if (!currCommonInfo) {
+      currCommonInfo = await DaoService.getInstance().getDaoById(proposalCardInfo.proposalInfo.dao);
+    }
+
+    navigation.navigate('ProposalScreen', {
+      title: commonInfo?.name,
+      proposalId: proposalCardInfo.proposalInfo.id,
+      proposalCardInfo,
+      commonBalance: commonInfo?.balance,
+      isMember,
+    });
   };
 
   return (
@@ -183,10 +198,12 @@ const ProposalCard = ({proposalId, data, onReviewProposal, containerStyle, membe
 ProposalCard.propTypes = {
   proposalId: string,
   data: object,
-  onReviewProposal: func,
+  navigation: object,
   containerStyle: object,
   membershipRequest: bool,
   isSwiper: bool,
+  isMember: bool,
+  commonInfo: object,
 };
 
 const styles = StyleSheet.create({
