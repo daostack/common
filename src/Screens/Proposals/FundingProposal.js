@@ -18,7 +18,6 @@ import Toast from '~/Util/Toast';
 import font from '~/Theme/font';
 import logger from '~/Services/Logger';
 import {string, object, shape, func} from 'prop-types';
-import {createFundingProposal} from '~/Services/CirclePayService';
 
 const FundingProposal = ({
   userStore,
@@ -57,7 +56,6 @@ const FundingProposal = ({
         );
         Toast.hide();
         Toast.done(`Funding Proposal with id ${proposalId} created!`);
-        await createFundingProposal(proposalId);
 
         const navigate = CommonActions.navigate({
           name: 'CommonProfile',

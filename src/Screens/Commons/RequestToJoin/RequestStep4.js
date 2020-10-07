@@ -68,7 +68,6 @@ const RequestStep4 = ({navigation,
           cvv: `${formData.cvv}`,
         };
         const cardData = {
-          idempotencyKey: '123e4567-e89b-12d3-a456-426614174000', // use commonId for generating this? // consider uuid-by-string
           billingDetails: {
             name: 'Customer 0002',
             city: 'Test City',
@@ -81,7 +80,6 @@ const RequestStep4 = ({navigation,
           expYear: +(`20${formData.expiration_date.split('/')[1]}`),
           metadata: {
             email: 'customer-0002@circle.com',
-            sessionId: '593cd536e4790c7c14224b6a7e61224a1e524124cb7b69fea1', // 50 first chars of hashed email, what field and hashing do we want to use?
           },
         };
 
