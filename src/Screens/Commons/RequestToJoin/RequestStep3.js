@@ -21,7 +21,7 @@ import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import {string, func, bool, object, shape, number} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const RequestStep3 = ({navigation, personalContributionFormStore, route: {params: {skipFirstStep, currCommon, currDaoId}}}) => {
+const RequestStep3 = ({navigation, personalContributionFormStore, route: {params: {skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
@@ -65,6 +65,7 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
         currDaoId: currDaoId,
         currCommon: currCommon,
         skipFirstStep: skipFirstStep,
+        refreshFeed,
       },
     });
     navigation.dispatch(navigate);
@@ -157,11 +158,9 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
         <RequestStepActionButton
           title="Continue to payment"
           pass={
-            personalContributionFormStore.form.fields[
+            !personalContributionFormStore.form.fields[
               RequestToJoinForm.FIELD_AMOUNT
             ]?.error
-              ? false
-              : true
           }
           onPress={push}
           hidden={isActionBtnHidden}
@@ -181,6 +180,7 @@ RequestStep3.propTypes = {
     params: shape({
       skipFirstStep: bool,
       currDaoId: string,
+      refreshFeed: func,
     }),
   }),
   daoStore: shape({

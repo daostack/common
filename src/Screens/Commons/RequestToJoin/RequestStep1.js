@@ -16,7 +16,7 @@ import CreateStepNavigation from './RequestStepNavigation';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from './MembershipRequest';
-import {string, object, bool, shape} from 'prop-types';
+import {string, object, bool, shape, func} from 'prop-types';
 const {width, height} = Dimensions.get('window');
 
 const RequestStep1 = ({navigation,
@@ -24,6 +24,7 @@ const RequestStep1 = ({navigation,
     params: {
       currCommon,
       currDaoId,
+      refreshFeed,
     },
   }}) => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -50,6 +51,7 @@ const RequestStep1 = ({navigation,
         params: {
           currDaoId: currDaoId,
           currCommon: currCommon,
+          refreshFeed,
         },
       });
       navigation.dispatch(navigate);
@@ -139,6 +141,7 @@ RequestStep1.propTypes = {
       currCommon: object,
       currDaoId: string,
       skipFirstStep: bool,
+      refreshFeed: func,
     }),
   }),
 };
