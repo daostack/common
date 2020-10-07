@@ -275,26 +275,31 @@ const CommonProfile = ({
         paddingTop: !isMember ? sizeL : sizeS,
         paddingBottom: isMember ? 0 : sizeL,
       }}>
-        <TouchableOpacity
-          onPress={openCommonMembers}
-          style={layout.flexRow}>
-          <View style={layout.flexRow}>
-            <Text style={text.h4Black}>
-              {pendingProposalsData &&// just to be showed at the same time
-              currCommon.memberCount +
-              ' ' +
-              `Member${currCommon.memberCount !== 1 ? 's' : ''}`}
-            </Text>
-          </View>
-          <View style={{...layout.flexRow, ...layout.marginLeftS}}>
-            <Text style={text.h4BlackRegular}>
-              {pendingProposalsData &&
-              pendingProposalsData.pendingProposalCount}{' '}
-              Pending
-            </Text>
-            <Icon name="right-arrow"/>
-          </View>
-        </TouchableOpacity>
+        {
+          pendingProposalsData ?
+            (
+              <TouchableOpacity
+                onPress={openCommonMembers}
+                style={layout.flexRow}>
+                <View style={layout.flexRow}>
+                  <Text style={text.h4Black}>
+                    {`${currCommon.memberCount} Member${currCommon.memberCount !== 1 ? 's' : ''}`}
+                  </Text>
+                </View>
+                <View style={{...layout.flexRow, ...layout.marginLeftS}}>
+                  <Text style={text.h4BlackRegular}>
+                    {`${pendingProposalsData.pendingProposalCount}  Pending`}
+                  </Text>
+                  <Icon name="right-arrow" />
+                </View>
+              </TouchableOpacity>
+            )
+            : (
+              <Placeholder Animation={Fade}>
+                <PlaceholderLine width={50} height={9} style={{alignSelf: 'center'}} />
+              </Placeholder>
+            )
+        }
         {isMember && <TouchableOpacity
           onPress={openCommonMembers}
           style={styles.membersAction}>

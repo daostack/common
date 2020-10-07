@@ -11,7 +11,7 @@ import ProposalApprovalTag from './ProposalApprovalTag';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
-import {string, func, bool, object} from 'prop-types';
+import {string, bool, object} from 'prop-types';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -90,24 +90,14 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
           funding = currProposalInfo.fundingRequest.amount;
         }
 
-        const currProposedUser = {
-          ...proposedMemberUser,
-          daos: (await DaoService.getInstance().getUserDaos(proposedMemberUser.uid, proposedMemberUser.safeAddress)).docs?.map((dao) => dao.data()),
-        };
-
         const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(currProposalInfo.id);
 
         const allProposalInfo = {...currProposalInfo, ...{funding: funding}, discussionsCount};
 
-
-
-        setTimeout(() => {
-          setProposalCardInfo({
-            proposedUser: currProposedUser,
-            proposalInfo: allProposalInfo,
-          });
-
-        }, 3000);
+        setProposalCardInfo({
+          proposedUser: proposedMemberUser,
+          proposalInfo: allProposalInfo,
+        });
 
       } catch (error) {
         logger.log('error: ', error);
@@ -173,7 +163,6 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
             userInfo={proposalCardInfo.proposedUser}
             proposalInfo={proposalCardInfo.proposalInfo}
             isPending={false}
-            showMemberCreatedDate={true}
           />
           <View style={{...layout.flexRow}}>
             <ProposalApprovalTag

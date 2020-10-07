@@ -1,5 +1,5 @@
 import {StyleSheet, View, Text} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {layout, colors, text, font} from '~/Theme';
 import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
@@ -8,14 +8,30 @@ import moment from 'moment';
 import {PROPOSAL_TYPE} from '~/Config';
 import {LAUNCHED_STATES} from '~/Services/ProposalService';
 import {string, array, bool, number, shape, object, oneOfType} from 'prop-types';
+import DaoService from '~/Services/DaoService';
+import {
+  Placeholder,
+  PlaceholderLine,
+  Fade,
+} from 'rn-placeholder';
 
 const MemberCard = ({
   memberSince,
-  commonsCount,
-  showMemberCreatedDate,
   userInfo,
   proposalInfo,
 }) => {
+
+  const [commonsCount, setCommonsCount] = useState(null);
+
+  useEffect(() => {
+    const loadCommonsCount = (async () => {
+      const userDaosCount = (await DaoService.getInstance().getUserDaos(userInfo.uid, userInfo.safeAddress)).docs.length;
+      console.log('userDaosCount -> ', userDaosCount);
+      setCommonsCount(userDaosCount);
+    });
+    loadCommonsCount();
+  }, []);
+
   const renderRightContainer = () => {
     if (proposalInfo) {
       const proposalValue =
@@ -60,7 +76,7 @@ const MemberCard = ({
           </View>
         </View>
       );
-    } else if (showMemberCreatedDate) {
+    } else {
       let memberCreatedDateInfo = null;
       if (userInfo?.createdAt) {
         const memberCreatedDate = new Date(userInfo.createdAt.seconds * 1000);
@@ -82,7 +98,6 @@ const MemberCard = ({
         </View>
       );
     }
-    return null;
   };
 
   return (
@@ -99,18 +114,23 @@ const MemberCard = ({
           style={styles.displayName}>
           {userInfo?.displayName || 'Unknown user'}
         </Text>
-        <Text
-          style={{
-            ...text.smallGreyText,
-            marginTop: 2,
-            textAlign: 'left',
-          }}>
-          {showMemberCreatedDate
-            ? `Member in ${userInfo?.daos?.length || 0} Common${
-                userInfo?.daos?.length !== 1 ? 's' : ''
-            }`
-            : `Member since ${memberSince || 'unknown'}`}
-        </Text>
+
+        {
+          commonsCount ?
+            <Text
+              style={{
+                ...text.smallGreyText,
+                marginTop: 2,
+                textAlign: 'left',
+              }}>
+              {`Member in ${commonsCount || 0} Common${commonsCount !== 1 ? 's' : ''}`}
+            </Text>
+            :
+            <Placeholder Animation={Fade}>
+              <PlaceholderLine width={80} height={8} style={{marginTop: 4}} />
+            </Placeholder>
+        }
+
       </View>
       {renderRightContainer()}
     </View>
@@ -120,7 +140,6 @@ const MemberCard = ({
 MemberCard.propTypes = {
   memberSince: string,
   commonsCount: number,
-  showMemberCreatedDate: bool,
   userInfo: shape({
     createdAt: object,
     displayName: string,

@@ -4,7 +4,6 @@ import ViewTabNoData from '~/Components/ViewTabNoData';
 import ProposalService from '~/Services/ProposalService';
 import ProposalCard from '~/Components/Proposals/ProposalCard';
 import {layout, colors, font, text, sizeM} from '~/Theme';
-import DaoService from '~/Services/DaoService';
 import SwiperCard from '~/Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import {PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '~/Services/ProposalService';
@@ -28,7 +27,6 @@ const ProposalsList = ({isMember,
   includeHistoryInCount}) => {
 
   const commonId = commonInfo?.id;
-  const commonName = commonInfo?.name;
 
   const [list, setList] = useState(null);
 

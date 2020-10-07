@@ -3,12 +3,8 @@ import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import MemberCard from '~/Components/MemberCard';
 import {layout, sizeS, colors} from '~/Theme';
 import UserService from '~/Services/UserService';
-import DaoService from '~/Services/DaoService';
-import Loader from '~/Components/Loader';
 import MemberImage from '~/Components/Commons/MemberImage';
-import Toast from '~/Util/Toast';
 import {observer, inject} from 'mobx-react';
-import logger from '~/Services/Logger';
 import {object, array, bool} from 'prop-types';
 
 import {
@@ -30,48 +26,13 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
     const loadMemberUsers = async () => {
       const allUserInfos = await UserService.getInstance().getUsersByIds(members.map((member) => member.userId));
       setMembersInfo(allUserInfos);
-
-      // try {
-      //   let currUserInfo = await UserService.getInstance().getUserById(
-      //     userId,
-      //   );
-
-      //   currUserInfo = {
-      //     ...currUserInfo,
-      //     daos: (await DaoService.getInstance().getUserDaos(currUserInfo.uid, currUserInfo.safeAddress)).docs?.map((dao) => dao.data()),
-      //   };
-      //   addMemberOnce(currUserInfo);
-      // } catch (e) {
-      //   Toast.error(e.toString());
-      //   logger.log(e);
-      // }
     };
 
     if (members) {
       loadMemberUsers();
     }
 
-    // members.forEach(async (daoMember) => {
-    //   let currUserInfo = null;
-
-    //   if (daoMember.userId) {
-    //     currUserInfo = loadMemberUser(daoMember.userId);
-    //   } else {
-    //     // TODO: Think about what data to put in the userInfo object in case there is no userId in the daoMember.
-    //     currUserInfo = {displayName: daoMember.address};
-    //     addMemberOnce(currUserInfo);
-    //   }
-    // });
-
   }, [members]);
-
-  // const addMemberOnce = (currUserInfo) => {
-  //   setMembersInfo((prevMembers) => (
-  //     prevMembers.some((u)=> u.uid === currUserInfo.uid)
-  //       ? [...prevMembers]
-  //       : [...prevMembers, currUserInfo]
-  //   ));
-  // };
 
   return (
     <View style={horizontal && {...layout.flexRow, paddingLeft: (members.length - 1) * 15}}>
@@ -91,7 +52,6 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
               <TouchableOpacity style={styles.item} onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
                 <MemberCard
                   key={i}
-                  showMemberCreatedDate={true}
                   userInfo={member}
                 />
               </TouchableOpacity>
