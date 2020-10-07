@@ -1,8 +1,5 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {numberFormatter} from '~/Util';
-// import moment from 'moment';
-/* import * as Progress from 'react-native-progress'; */
 import {layout, text, font} from '~/Theme';
 import {bool, shape, number, string} from 'prop-types';
 
