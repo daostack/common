@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {
   View,
+  Text,
   ScrollView,
   Dimensions,
   SafeAreaView,
   Animated,
 } from 'react-native';
 import AmountField from '~/Components/FormFields/AmountField';
-import {colors} from '~/Theme';
+import {colors, text} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import CreateStepHeader from './RequestStepHeader';
 import CreateStepNavigation from './RequestStepNavigation';
@@ -25,6 +26,7 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
   const [headerHeight, setHeaderHeight] = useState(0);
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
   const metadata = currCommon.metadata;
+  const isMonthly = metadata.contribution === 'monthly';
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -74,7 +76,9 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
     }
   };
 
-  const minContributionMessage = `Select the amount you would like to contribute ($${metadata.minFeeToJoin / 100} min.)`;
+  const contributeMessage = 'Select the amount you would like to contribute';
+  const calcMinFeeToJoin = metadata.minFeeToJoin / 100;
+  const minContributionMessage = isMonthly ? `${contributeMessage} ($${calcMinFeeToJoin} /mo)` : `${contributeMessage} ($${calcMinFeeToJoin} min.)`;
 
   return (
     <>
@@ -119,7 +123,11 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
               // padding: 24,
               backgroundColor: 'white',
             }}>
-            <RequestStepHeaderTitle title="Personal contribution" subtitle={minContributionMessage} />
+            {
+              isMonthly
+                ? <RequestStepHeaderTitle title="Monthly contribution" subtitle={minContributionMessage} />
+                : <RequestStepHeaderTitle title="Personal contribution" subtitle={minContributionMessage} />
+            }
 
             <View
               style={{
@@ -130,6 +138,7 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
             />
 
             <AmountField
+              isMonthly={isMonthly}
               navigation={navigation}
               formStore={personalContributionFormStore}
               onCustomSelect={onCustomSelect}
@@ -137,6 +146,12 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
               onAmountSelected={onAmountSelected}
               minFeeToJoin={metadata.minFeeToJoin / 100}
             />
+            <Text style={{
+              ...text.regularText,
+              textAlign: 'center',
+              color: colors.slate,
+            }}>
+              You can cancel the recurring payment at any time</Text>
           </View>
         </ScrollView>
         <RequestStepActionButton

@@ -3,8 +3,7 @@ import React from 'react';
 import {layout, colors, text, font} from '~/Theme';
 import {func, bool, number} from 'prop-types';
 
-
-const JoinAmount = ({id, amount, isCustom, onPress, isSelected}) => {
+const JoinAmount = ({id, amount, isCustom, onPress, isSelected, isMonthly}) => {
 
   const onAmountPress = (e) => {
     onPress(isCustom, amount, id);
@@ -15,7 +14,7 @@ const JoinAmount = ({id, amount, isCustom, onPress, isSelected}) => {
       style={isSelected ? styles.containerSelected : styles.container}
       onPress={onAmountPress}>
       <Text style={isSelected ? styles.amountSelected : styles.amount}>{`${
-        isCustom ? 'Other' : `$${amount}`
+        isCustom ? 'Other' : `$${amount}${isMonthly ? '/mo' : ''}`
       }`}</Text>
     </TouchableOpacity>
   );
@@ -27,6 +26,7 @@ JoinAmount.propTypes = {
   isCustom: bool,
   onPress: func,
   isSelected: bool,
+  isMonthly: bool,
 };
 
 const styles = StyleSheet.create({
