@@ -25,17 +25,28 @@ const UserProfileData = ({
   const [proposalsCount, setProposalsCount] = useState(0);
   const [requestsCount, setRequestsCount] = useState(0);
   const [commonsCount, setCommonsCount] = useState(0);
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
       try {
         if (userId === userInfo?.uid) {
           setUser(userInfo);
-          setIsEditMode(true);
+          setIsOwnProfile(true);
         } else {
-          setUser(await UserService.getInstance().getUserById(userId));
-          setIsEditMode(false);
+          const usr = await UserService.getInstance().getUserById(userId);
+
+          setUser(usr);
+          setIsOwnProfile(false);
+
+          console.log(usr);
+
+          navigation.setOptions({
+            // title: (usr.displayName?.length > 20)
+            //   ? ((usr.displayName.substring(0, 17)) + '...')
+            //   : usr.displayName,
+            title: usr.displayName?.match(/.{1,25}(\s|$)/g)[0],
+          });
         }
       } catch (error) {
         logger.log('error: ', error);
@@ -43,7 +54,8 @@ const UserProfileData = ({
     };
 
     setUser(null);
-    setIsEditMode(false);
+    setIsOwnProfile(false);
+
     getUser();
   }, [userId, userInfo]);
 
@@ -57,7 +69,7 @@ const UserProfileData = ({
     navigation.dispatch(navigate);
   };
 
-  const renderUserProfilePicture = () => !isEditMode ? (
+  const renderUserProfilePicture = () => !isOwnProfile ? (
     <UserAvatar image={user.photoURL} iconName={'follow'}/>
   ) : (
     <ImageField
@@ -96,7 +108,7 @@ const UserProfileData = ({
 
   return (
     <React.Fragment>
-      {isEditMode && (
+      {isOwnProfile && (
         <View style={styles.screenNav}>
           <TouchableOpacity onPress={() => navigateToEditProfile(false)}>
             <Icon name="edit" size={26} />
