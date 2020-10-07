@@ -17,7 +17,7 @@ import DiscussionList from '../../Discussions/DiscussionList';
 import {inject, observer} from 'mobx-react';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '~/Components/Commons/CommonHeader';
-import {calcIsFundingStage, numberFormatter} from '../../../Util';
+import {calcIsFundingStage} from '../../../Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '~/Services/ProposalService';
 import DaoService from '~/Services/DaoService';
@@ -691,10 +691,7 @@ const CommonProfile = ({
                   members: currCommon.memberCount,
                   // TODO: get this value. Is it even tracked in the contract? need to check.
                   raised: currCommon.balance,
-                  currentBudget: numberFormatter(
-                    // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
-                    currCommon.tokenTotalSupply
-                  ),
+                  currentBudget: currCommon.tokenTotalSupply,
                 }}
               />
             </View>
