@@ -12,6 +12,13 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
 import {string, func, bool, object} from 'prop-types';
+import {
+  Placeholder,
+  PlaceholderMedia,
+  PlaceholderLine,
+  Fade,
+} from 'rn-placeholder';
+
 const {width} = Dimensions.get('window');
 
 const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipRequest, isSwiper, isMember, commonInfo}) => {
@@ -92,10 +99,16 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
 
         const allProposalInfo = {...currProposalInfo, ...{funding: funding}, discussionsCount};
 
-        setProposalCardInfo({
-          proposedUser: currProposedUser,
-          proposalInfo: allProposalInfo,
-        });
+
+
+        setTimeout(() => {
+          setProposalCardInfo({
+            proposedUser: currProposedUser,
+            proposalInfo: allProposalInfo,
+          });
+
+        }, 3000);
+
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());
@@ -131,7 +144,7 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
     });
   };
 
-  return (
+  return proposalCardInfo ? (
     <Animated.View style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
@@ -190,6 +203,27 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
           </View>
         </View>
       </TouchableOpacity>
+    </Animated.View>
+  ) : (
+    <Animated.View style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
+      <Placeholder Animation={Fade}>
+        <PlaceholderLine width={40} style={{alignSelf: 'center', marginTop: 20}}/>
+        <View style={{...layout.flexRow, justifyContent: 'space-between', paddingVertical: 10}}>
+          <View style={{padding: 10}}>
+            <PlaceholderMedia
+              size={50}
+              isRound={true}
+              style={{borderWidth: 2, borderColor: colors.white}}
+            />
+          </View>
+          <View style={{padding: 10, paddingVertical: 15, width: '100%'}}>
+            <PlaceholderLine width={50} />
+            <PlaceholderLine width={30} />
+          </View>
+        </View>
+        <PlaceholderLine width={30} style={{alignSelf: 'center', marginTop: 10, marginBottom: 20}} />
+      </Placeholder>
+
     </Animated.View>
   );
 };

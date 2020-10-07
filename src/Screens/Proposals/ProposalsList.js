@@ -78,26 +78,6 @@ const ProposalsList = ({isMember,
     };
   }, [commonId, isHistory, userId, safeAddress]);
 
-  // const onReviewProposal = async ( proposalData, daoId ) => {
-
-  //   let currCommonName = commonName;
-  //   let currCommonBalance = commonInfo?.balance;
-
-  //   if (!commonInfo) {
-  //     const currCommonInfo = await DaoService.getInstance().getDaoById(daoId);
-  //     currCommonName = currCommonInfo.name;
-  //     currCommonBalance = currCommonInfo.balance;
-  //   }
-
-  //   navigation.navigate('ProposalScreen', {
-  //     title: currCommonName,
-  //     //proposalId: proposalData,
-  //     proposalInfo: proposalData,
-  //     commonBalance: currCommonBalance,
-  //     isMember,
-  //   });
-  // };
-
   const renderProposalCard = (item, index) => (
     isSwiper ? (
       !showMax || (index < showMax) ? (
