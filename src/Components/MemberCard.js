@@ -7,7 +7,7 @@ import {monthShortNames} from '~/Util/DateUtil';
 import moment from 'moment';
 import {PROPOSAL_TYPE} from '~/Config';
 import {LAUNCHED_STATES} from '~/Services/ProposalService';
-import {string, array, bool, number, shape, object, oneOfType} from 'prop-types';
+import {string, array, number, shape, object, oneOfType} from 'prop-types';
 import DaoService from '~/Services/DaoService';
 import {
   Placeholder,
