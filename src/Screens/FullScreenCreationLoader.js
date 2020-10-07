@@ -12,17 +12,10 @@ import Loader from '~/Components/Loader';
 import {string, shape} from 'prop-types';
 
 import quotes from '../Util/quotes.json';
+import {useQuote} from '../Util/hooks/useQuote';
 
 const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}}) => {
-  const [quote, setQuote] = React.useState(quotes[0]);
-
-  React.useEffect(() => {
-    setTimeout(() => {
-      const index = quotes.findIndex((item) =>  JSON.stringify(item) === JSON.stringify(quote));
-
-      setQuote(quotes[index === quotes.length - 1 ? 0 : index + 1]);
-    }, 10000);
-  }, [quote]);
+  const quote = useQuote();
 
   return (
     <React.Fragment>
