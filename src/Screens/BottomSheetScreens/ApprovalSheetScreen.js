@@ -1,10 +1,11 @@
-import {Text, StyleSheet, SafeAreaView, TouchableOpacity} from 'react-native';
+import {Text, StyleSheet, SafeAreaView, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {text, layout, colors, font, sizeL} from '~/Theme';
 import ButtonSwiper from '~/Components/ButtonSwiper';
 import Loader from '~/Components/Loader';
 import {func, bool, shape} from 'prop-types';
 import quotes from '../../Util/quotes.json';
+import {useQuote} from '../../Util/hooks/useQuote';
 
 const ApprovalSheetScreen = ({
   onApprove,
@@ -15,19 +16,10 @@ const ApprovalSheetScreen = ({
     error,
   },
 }) => {
+  const quote = useQuote();
   const title = voteType ? 'Approve' : 'Reject';
   const voteColor =
     error || !voteType ? colors.against : colors.lightishGreen;
-
-  const [quote, setQuote] = React.useState(quotes[0]);
-
-  React.useEffect(() => {
-    setTimeout(() => {
-      const index = quotes.findIndex((item) =>  JSON.stringify(item) === JSON.stringify(quote));
-
-      setQuote(quotes[index === quotes.length - 1 ? 0 : index + 1]);
-    }, 10000);
-  }, [quote]);
 
   return (
     <SafeAreaView style={styles.body}>
@@ -54,7 +46,12 @@ const ApprovalSheetScreen = ({
         </React.Fragment>
       ) : inProgress ? (
         <React.Fragment>
-          <Text>This might take up to 2 minutes</Text>
+          <Text style={styles.greyText}>This might take up to 2 minutes</Text>
+
+          <View style={styles.quotesContainer}>
+            <Text style={styles.quote}>{quote.quote}</Text>
+            <Text style={styles.quoteAuthor}>{quote.author}</Text>
+          </View>
         </React.Fragment>
       ) : (
         <React.Fragment>
@@ -89,6 +86,31 @@ const styles = StyleSheet.create({
     width: '100%',
     ...font.fontSize(4),
   },
+
+  quotesContainer: {
+    ...layout.marginTopL,
+  },
+
+  quote: {
+    ...font.heading.bold,
+    ...font.fontSize(3),
+    color: colors.black,
+    textAlign: 'center',
+  },
+
+  quoteAuthor: {
+    ...font.primary.regular,
+    ...font.fontSize(3),
+    color: colors.greyText,
+    textAlign: 'center',
+  },
+
+  greyText: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.greyText,
+  },
+
   voteDescription: {
     ...text.blackText,
     ...font.fontSize(0),
