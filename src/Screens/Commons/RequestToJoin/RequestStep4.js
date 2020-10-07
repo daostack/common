@@ -76,21 +76,23 @@ const RequestStep4 = ({navigation,
         //   console.log('PREAUTH ID', preAuthId);
         // }
 
-        const proposalId = await ArcService.createRequestToJoin(
-          currDaoId,
-          data,
-        );
+        // @notice This bellow should not be committed. If it is please hit me up
 
-        navigation.pop();
-
-        const navigate = CommonActions.navigate({
-          name: 'CommonProfile',
-          params: {
-            showRequestSentModal: true,
-            createdProposalId: proposalId,
-          },
-        });
-        navigation.dispatch(navigate);
+        // const proposalId = await ArcService.createRequestToJoin(
+        //   currDaoId,
+        //   data,
+        // );
+        //
+        // navigation.pop();
+        //
+        // const navigate = CommonActions.navigate({
+        //   name: 'CommonProfile',
+        //   params: {
+        //     showRequestSentModal: true,
+        //     createdProposalId: proposalId,
+        //   },
+        // });
+        // navigation.dispatch(navigate);
       } catch (e) {
         navigation.pop();
         showErrorPopUp(bottomSheetStore, e?.response?.data?.error?.error ? e.response.data.error.error : e.message);
