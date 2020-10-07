@@ -59,11 +59,11 @@ const ProposalScreen = ({
   const [ isMember, setIsMember ] = useState(false);
   const [ isProposer, setIsProposer ] = useState(false);
   const [ showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer ] = useState(false);
-  const renderVoting = true;
-    // proposalInfo &&
-    // PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr) &&
-    // isMember &&
-    // !proposalInfo.votes.some((vote) => vote.voter === userInfo.safeAddress);
+  const renderVoting =
+    proposalInfo &&
+    PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.stageStr) &&
+    isMember &&
+    !proposalInfo.votes.some((vote) => vote.voter === userInfo.safeAddress);
 
 
   // Sticky Tab Bar
@@ -297,25 +297,18 @@ const ProposalScreen = ({
 
       await timeout(3000);
 
-        // onApprove(voteType);
-        console.log('doinf something');
 
-        setTimeout(() => {
-          console.log('done');
-        }, 10000)
-
-
-      // if (proposalInfo.type === PROPOSAL_TYPE.Join) {
-      //   await ArcService.voteForJoinProposal(
-      //     proposalId,
-      //     voteData
-      //   );
-      // } else {
-      //   await ArcService.voteForFundingRequestProposal(
-      //     proposalId,
-      //     voteData
-      //   );
-      // }
+      if (proposalInfo.type === PROPOSAL_TYPE.Join) {
+        await ArcService.voteForJoinProposal(
+          proposalId,
+          voteData
+        );
+      } else {
+        await ArcService.voteForFundingRequestProposal(
+          proposalId,
+          voteData
+        );
+      }
 
       setVotingProcessState({inProgress: false, error: false});
       closeApprovalSheet();

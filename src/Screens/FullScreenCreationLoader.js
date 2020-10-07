@@ -11,7 +11,6 @@ import {colors, layout, font} from '~/Theme';
 import Loader from '~/Components/Loader';
 import {string, shape} from 'prop-types';
 
-import quotes from '../Util/quotes.json';
 import {useQuote} from '../Util/hooks/useQuote';
 
 const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}}) => {

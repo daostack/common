@@ -2,9 +2,7 @@ import {Text, StyleSheet, SafeAreaView, TouchableOpacity, View} from 'react-nati
 import React from 'react';
 import {text, layout, colors, font, sizeL} from '~/Theme';
 import ButtonSwiper from '~/Components/ButtonSwiper';
-import Loader from '~/Components/Loader';
 import {func, bool, shape} from 'prop-types';
-import quotes from '../../Util/quotes.json';
 import {useQuote} from '../../Util/hooks/useQuote';
 
 const ApprovalSheetScreen = ({
