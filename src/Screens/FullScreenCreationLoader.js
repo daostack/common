@@ -11,20 +11,7 @@ import {colors, layout, font} from '~/Theme';
 import Loader from '~/Components/Loader';
 import {string, shape} from 'prop-types';
 
-const quotes = [
-  {
-    quote: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed porta diamdit. ',
-    author: 'Meeeeee',
-  },
-  {
-    quote: 'Etiam ac porta arcu, eget aliquet libero. Ut dapibus aliquam tincidunt. ',
-    author: 'Me again',
-  },
-  {
-    quote: 'Sed convallis imperdiet urna sit amet aliquam. Quisque et finibus ipsum.',
-    author: 'Me, duuuh',
-  },
-];
+import quotes from '../Util/quotes.json';
 
 const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}}) => {
   const [quote, setQuote] = React.useState(quotes[0]);
@@ -82,6 +69,7 @@ const styles = StyleSheet.create({
   title: {
     ...font.primary.semiBold,
     ...font.fontSize(2),
+    ...layout.marginTopXL,
     color: colors.black,
   },
 
@@ -92,7 +80,7 @@ const styles = StyleSheet.create({
   },
 
   quotesContainer: {
-    ...layout.marginTopM,
+    ...layout.marginTopL,
   },
 
   quote: {
