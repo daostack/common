@@ -26,6 +26,7 @@ import DaoService from '~/Services/DaoService';
 import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import ProposalService from '~/Services/ProposalService';
 import {CommonActions} from '@react-navigation/native';
+import {DB_DOC} from '~/Stores/UserStore';
 
 const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   const [myDaosGroup, setMyDaosGroup] = useState({title: '', data: []});
@@ -144,6 +145,18 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
     DaoService.getInstance().getDaoList(loadDaosList);
   }, [refreshing]);
 
+  useEffect(() => {
+    console.log('LAST UPDATED REF HOOK');
+    if (userStore.lastUpdatedDocRef && !userStore.lastUpdatedDocRef[DB_DOC.DAO]?.executed) {
+      console.log('START userStore.lastUpdatedDocRef[DB_DOC.DAO] -> ', userStore.lastUpdatedDocRef[DB_DOC.DAO]);
+
+      setRefreshing(true);
+      DaoService.getInstance().getDaoList(loadDaosList);
+      userStore.lastUpdatedDocRef[DB_DOC.DAO].executed = true;
+
+      console.log('AFTER userStore.lastUpdatedDocRef[DB_DOC.DAO] -> ', userStore.lastUpdatedDocRef[DB_DOC.DAO]);
+    }
+  }, [userStore.lastUpdatedDocRef]);
 
   useEffect(() => {
     setIsSplited(false);
@@ -164,7 +177,20 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
         setIsSplited(true);
       });
     });
-    DaoService.getInstance().subscribeToDaosList(loadDaosList);
+
+    let unsubscribe = null;
+    const subscribeToDaos = async () => {
+      unsubscribe = await DaoService.getInstance().subscribeToDaosList(loadDaosList);
+    };
+
+    subscribeToDaos();
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+
   }, [userStore.signedInUser]);
 
   const onAddCommon = () => {

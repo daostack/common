@@ -20,6 +20,12 @@ export const userInfoFields = [
   'safeAddress',
 ];
 
+export const DB_DOC = {
+  DAO: 'dao',
+  USER: 'user',
+  PROPOSAL: 'proposal',
+};
+
 class UserStore {
   userInfo;
   signedInUser;
@@ -28,10 +34,17 @@ class UserStore {
   signInError;
   myCommons;
   myProposals;
+  lastUpdatedDocRef;
+
   constructor() {
     this.userInfo = null;
     this.isLoading = false;
     this.loginInProgress = [];
+    this.lastUpdatedDocRef = null;
+  }
+
+  setLastUpdatedDocRef = (refInfo) => {
+    this.lastUpdatedDocRef = refInfo;
   }
 
   setSignInError = (error) => {
@@ -126,6 +139,8 @@ decorate(UserStore, {
   isLoading: observable,
   myCommons: observable,
   myProposals: observable,
+  lastUpdatedRefference: observable,
+  setLastUpdatedRefference: action,
 });
 
 export default UserStore;

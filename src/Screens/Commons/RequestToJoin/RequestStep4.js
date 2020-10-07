@@ -21,13 +21,14 @@ import ArcService from '~/Services/ArcService';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
+import {DB_DOC} from '~/Stores/UserStore';
 const {width} = Dimensions.get('window');
 
 const RequestStep4 = ({navigation,
   route: {
     params: {skipFirstStep, currCommon, currDaoId},
   },
-  userStore: {userInfo},
+  userStore: {userInfo, setLastUpdatedDocRef},
   paymentFormStore,
   introduceYourselfFormStore,
   personalContributionFormStore,
@@ -82,6 +83,12 @@ const RequestStep4 = ({navigation,
         );
 
         navigation.pop();
+
+        setLastUpdatedDocRef({
+          [DB_DOC.DAO]: {
+            [DB_DOC.PROPOSAL]: proposalId,
+          },
+        });
 
         const navigate = CommonActions.navigate({
           name: 'CommonProfile',
