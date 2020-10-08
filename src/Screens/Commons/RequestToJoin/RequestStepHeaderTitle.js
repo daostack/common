@@ -13,7 +13,10 @@ import {string} from 'prop-types';
 const RequestStepHeaderTitle = ({title, subtitle}) => (
   <>
     <Text style={styles.generalInfoTitle}>{title}</Text>
-    <Text style={styles.generalInfoSubtitle}>{subtitle}</Text>
+
+    {typeof subtitle === 'function' ? subtitle(styles.generalInfoSubtitle) : (
+      <Text style={styles.generalInfoSubtitle}>{subtitle}</Text>
+    )}
   </>
 );
 

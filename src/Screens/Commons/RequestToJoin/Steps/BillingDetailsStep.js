@@ -13,14 +13,17 @@ import RequestStepActionButton from '../../RequestStepActionButton';
 import * as BillingDetailsConstants from '../../../../Components/Forms/BillingDetailsForm';
 import TextInputField from '../../../../Components/FormFields/TextInputField';
 import {CountrySelectField} from '../../../../Components/FormFields/CountrySelectField';
+import {font} from '../../../../Theme';
+import MembershipRequest from '../MembershipRequest';
 
 const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, personalContributionFormStore}) => {
   const {skipFirstStep, currCommon, currDaoId, refreshFeed} = route.params;
   const {width} = Dimensions.get('window');
 
-
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
+
+  const isMonthly = currCommon.metadata.contribution === 'monthly';
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -46,10 +49,22 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
     }
   };
 
-  const subtitle = `You are contributing $${personalContributionFormStore.form.fields.amount?.value} to this common`;
+
+  const subtitle = (style) => (
+    <Text style={style}>
+      You are contributing ${personalContributionFormStore.form.fields.amount?.value}
+
+      <Text style={{...font.primary.bold}}>
+        {' '}({isMonthly ? 'monthly' : 'one time'}){' '}
+      </Text>
+
+      to this common
+    </Text>
+  );
 
   return (
     <React.Fragment>
+      <SafeAreaView style={{backgroundColor: 'white'}} />
       <SafeAreaView
         style={{
           backgroundColor: 'white',
@@ -75,25 +90,31 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
           contentContainerStyle={{
             alignItems: 'center',
             justifyContent: 'center',
-            // padding: 24,
+            padding: 24,
           }}
           scrollEventThrottle={16}
-          onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
-          ])}
+          onScroll={
+            Animated.event([ {
+              nativeEvent: {
+                contentOffset: {y: scrollY},
+              },
+            }])
+          }
         >
+          <MembershipRequest />
 
           <CreateStepHeader
             isFirstStepSkipped={skipFirstStep}
             currentIndex={3}
           />
+
           <View
             style={{
               flex: 1,
               width: width * 0.8,
               backgroundColor: 'white',
             }}>
-            <RequestStepHeaderTitle title="Payment" subtitle={subtitle} />
+            <RequestStepHeaderTitle title="Billing Details" subtitle={subtitle} />
 
             <TextInputField
               editable

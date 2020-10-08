@@ -64,7 +64,7 @@ const ContributionStep = ({navigation, personalContributionFormStore, route: {pa
       params: {
         currDaoId: currDaoId,
         currCommon: currCommon,
-        skipFirstStep: skipFirstStep,
+        skipFirstStep,
         refreshFeed,
       },
     });
@@ -96,7 +96,7 @@ const ContributionStep = ({navigation, personalContributionFormStore, route: {pa
         <CreateStepDotHeader
           title="Personal contribution"
           currentIndex={3}
-          skipFirstStep={skipFirstStep}
+          isFirstStepSkipped={skipFirstStep}
           navigation={navigation}
           headerHeight={headerHeight}
         />
@@ -115,7 +115,7 @@ const ContributionStep = ({navigation, personalContributionFormStore, route: {pa
           <MembershipRequest />
 
           <CreateStepHeader
-            skipFirstStep={skipFirstStep}
+            isFirstStepSkipped={skipFirstStep}
             currentIndex={2}
           />
           <View

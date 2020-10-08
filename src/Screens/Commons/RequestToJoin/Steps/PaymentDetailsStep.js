@@ -5,7 +5,7 @@ import {
   ScrollView,
   Dimensions,
   SafeAreaView,
-  Animated,
+  Animated, Image,
 } from 'react-native';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import {colors, layout, text} from '~/Theme';
@@ -21,17 +21,28 @@ import ArcService from '~/Services/ArcService';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
+import {font} from '../../../../Theme';
+import MembershipRequest from '../MembershipRequest';
 const {width} = Dimensions.get('window');
 
-const PaymentDetailsStep = ({navigation,
+const PaymentDetailsStep = ({
+  navigation,
   route: {
-    params: {skipFirstStep, currCommon, currDaoId, refreshFeed},
+    params: {
+      skipFirstStep,
+      currCommon,
+      currDaoId,
+      refreshFeed,
+    },
   },
   userStore: {userInfo},
   paymentFormStore,
   introduceYourselfFormStore,
   personalContributionFormStore,
-  bottomSheetStore}) => {
+  bottomSheetStore,
+}) => {
+  const isMonthly = currCommon.metadata.contribution === 'monthly';
+
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
 
@@ -103,10 +114,20 @@ const PaymentDetailsStep = ({navigation,
     }
   };
 
-  const subtitle = `You are contributing $${personalContributionFormStore.form.fields.amount?.value} to this common`;
+  const subtitle = (style) => (
+    <Text style={style}>
+      You are contributing ${personalContributionFormStore.form.fields.amount?.value}
+
+      <Text style={{...font.primary.bold}}>
+        {' '}({isMonthly ? 'monthly' : 'one time'}){' '}
+      </Text>
+
+      to this common
+    </Text>
+  );
 
   return (
-    <>
+    <React.Fragment>
       <SafeAreaView style={{backgroundColor: colors.white}} />
       <SafeAreaView
         style={{
@@ -117,6 +138,7 @@ const PaymentDetailsStep = ({navigation,
           navigation={navigation}
           title={currCommon.name}
         />
+
         <CreateStepDotHeader
           title="Payment"
           currentIndex={5}
@@ -124,6 +146,7 @@ const PaymentDetailsStep = ({navigation,
           navigation={navigation}
           headerHeight={headerHeight}
         />
+
         <ScrollView
           showsVerticalScrollIndicator={false}
           width={width}
@@ -135,11 +158,15 @@ const PaymentDetailsStep = ({navigation,
           scrollEventThrottle={16}
           onScroll={Animated.event([
             {nativeEvent: {contentOffset: {y: scrollY}}},
-          ])}>
+          ])}
+        >
+          <MembershipRequest />
+
           <CreateStepHeader
             isFirstStepSkipped={skipFirstStep}
             currentIndex={4}
           />
+
           <View
             style={{
               flex: 1,
@@ -213,12 +240,37 @@ const PaymentDetailsStep = ({navigation,
               />
             </View>
 
+            <View style={styles.circleContainer}>
+              <Text
+                style={{
+                  ...text.regularText,
+                  color: colors.grey2,
+                  marginBottom: -25,
+                }}
+              >
+                Powered by
+              </Text>
+
+              <Image
+                resizeMode="contain"
+                source={require('../../../../Assets/circle.png')}
+                style={{
+                  width: width * 0.3,
+                }}
+              />
+            </View>
+
             <Text
               style={{
-                ...text.blackText,color: colors.grey2, textAlign: 'center',
-              }}>
-              Your money will be refunded if the common does not approve your
-              request or meet the funding goal
+                ...text.regularText,
+                color: colors.grey2,
+                textAlign: 'center',
+              }}
+            >
+              If your membership request will not be accepted, you will not
+              be charged. Your card will be saved for the monthly contribution
+              of ${personalContributionFormStore.form.fields.amount?.value},
+              you can cancel at any time.
             </Text>
           </View>
         </ScrollView>
@@ -228,8 +280,16 @@ const PaymentDetailsStep = ({navigation,
           onPress={push}
         />
       </SafeAreaView>
-    </>
+    </React.Fragment>
   );
+};
+
+const styles = {
+  circleContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: 20,
+  },
 };
 
 PaymentDetailsStep.propTypes = {
