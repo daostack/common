@@ -100,48 +100,10 @@ const UserProfile = ({userStore, daoStore, navigation, route}) => {
   const renderUnsignedUserData = () => <CreateAccount onSignedIn={onUserSignedIn} />;
 
   const renderSignedInUserData = () => (
-    <>
-      <UserProfileData
-        navigation={navigation}
-        userId={route.params?.userId || userStore.userInfo.uid}
-      />
-
-      {
-        (!route.params?.userId || route.params.userId === userStore.userInfo.uid) ?
-          <>
-            <View style={layout.marginTopL}>
-              {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
-              <AccordionBtn onPress={() => Linking.openURL('https://common.io/tos')} title="Terms of use" />
-              <AccordionBtn onPress={() => Linking.openURL('https://common.io/privacy')} title="Privacy Policy" />
-              <AccordionBtn onPress={() => Linking.openURL('https://common.io/help')} title="Help" />
-              <AccordionBtn onPress={() => Linking.openURL('mailto:hi@common.io')} title="Contact us" />
-              {userStore.userInfo ? (
-                <AccordionBtn
-                  lightStyle={true}
-                  title="Log out"
-                  onPress={_logout}
-                />
-              ) : null}
-            </View>
-              {
-                Config.ENV !== 'production' && <View
-                  style={{
-                    ...layout.content,
-                    paddingHorizontal: 0,
-                    backgroundColor: colors.grey4,
-                  }}>
-                  <Text style={text.h4Black}>Temporary menu</Text>
-                  <AccordionBtn title="Test Page" onPress={onTestPagePress} />
-                  <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
-                </View>
-
-              }
-              <Text style={styles.version}>Common{isProduction ? '' : '-stg'} v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : ''})</Text>
-            </>
-          :
-          null
-      }
-    </>
+    <UserProfileData
+      navigation={navigation}
+      userId={route.params?.userId || userStore.userInfo.uid}
+    />
   );
 
   const renderScreen = () => (
@@ -160,6 +122,40 @@ const UserProfile = ({userStore, daoStore, navigation, route}) => {
               ? renderSignedInUserData()
               : renderUnsignedUserData()}
           </View>
+          {
+            (!route.params?.userId || route.params.userId === userStore.userInfo?.uid) ?
+              <>
+                <View style={layout.marginTopL}>
+                  {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
+                  <AccordionBtn onPress={() => Linking.openURL('https://common.io/tos')} title="Terms of use" />
+                  <AccordionBtn onPress={() => Linking.openURL('https://common.io/privacy')} title="Privacy Policy" />
+                  <AccordionBtn onPress={() => Linking.openURL('https://common.io/help')} title="Help" />
+                  <AccordionBtn onPress={() => Linking.openURL('mailto:hi@common.io')} title="Contact us" />
+                  {userStore.userInfo ? (
+                    <AccordionBtn
+                      lightStyle={true}
+                      title="Log out"
+                      onPress={_logout}
+                    />
+                  ) : null}
+                </View>
+                  {
+                    Config.ENV !== 'production' && <View
+                      style={{
+                        ...layout.content,
+                        paddingHorizontal: 0,
+                        backgroundColor: colors.grey4,
+                      }}>
+                      <Text style={text.h4Black}>Temporary menu</Text>
+                      <AccordionBtn title="Test Page" onPress={onTestPagePress} />
+                      <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
+                    </View>
+
+                  }
+                  <Text style={styles.version}>Common{isProduction ? '' : '-stg'} v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : ''})</Text>
+                </>
+              : null
+          }
         </ScrollView>
       </SafeAreaView>
     </React.Fragment>
