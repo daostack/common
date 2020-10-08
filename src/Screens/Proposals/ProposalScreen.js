@@ -1,5 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
 import {
+  LayoutAnimation,
   Dimensions,
   Text,
   View,
@@ -73,7 +74,7 @@ const ProposalScreen = ({
 
 
   // Sticky Tab Bar
-  const [ showStickyTabBar, setShowStickyTabBar ] = useState(false);
+  const [showStickyTabBar, setShowStickyTabBar] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
 
@@ -167,7 +168,7 @@ const ProposalScreen = ({
 
   const [ isVoteByYou, setIsVoteByYou ] = useState(false);
   const [ voteType, setVoteType ] = useState(false);
-  const [ index, setIndex ] = useState(0);
+  const [ index, setIndex ] = useState(1);
   const [ routes ] = useState([
     {index: 0, key: 'info', icon: 'proposal', iconSelected: 'proposal-selected'},
     {index: 1, key: 'discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
@@ -380,6 +381,13 @@ const ProposalScreen = ({
 
   const initialLayout = {width: screenWidth};
 
+
+  let headerContainerAddonStyle = {width: '100%'};
+  LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  if (index === 1) {
+    headerContainerAddonStyle = {...headerContainerAddonStyle, ...{height: 0}};
+  }
+
   const headerContainerStyle = {
     ...layout.content,
     ...{paddingBottom: 0},
@@ -412,6 +420,25 @@ const ProposalScreen = ({
     setIndex(item);
   };
 
+  const renderScene = ({route}) => {
+    switch (route.key) {
+    case 'info':
+      return <ProposalData
+        proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
+        proposalInfo={proposalScreenInfo?.proposalInfo}
+        showMore={() => onSetIndex(1)}
+      />;
+    case 'discussions':
+      return <ProposalDiscussion
+        proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
+        inputRef={inputRef}
+        scrollViewRef={scrollViewRef}
+      />;
+    default:
+      return null;
+    }
+  };
+
   return (
     <React.Fragment>
       <SafeAreaView
@@ -434,10 +461,10 @@ const ProposalScreen = ({
           </View>
         )}
 
-        <ScrollView
+        {/* <ScrollView
           style={{
             flex: 1,
-            backgroundColor: colors.white,
+            backgroundColor: colors.grey2,
           }}
           ref={scrollViewRef}
           scrollEventThrottle={16}
@@ -469,8 +496,9 @@ const ProposalScreen = ({
               setShowBottomVotingButtonsContainer(py < 0);
             });
           }}
-        >
-          {proposalScreenInfo?.proposalInfo && (
+        > */}
+        {proposalScreenInfo?.proposalInfo && (
+          <View style={headerContainerAddonStyle}>
             <View style={{...headerContainerStyle}}>
               {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
                 <View style={{...layout.content, width: '100%', padding: 0}}>
@@ -604,38 +632,38 @@ const ProposalScreen = ({
               <View style={{...layout.flexRow, justifyContent: 'space-between', width: '100%'}}>
                 {renderVoting && renderVotingButtons(topVotingButtonsRef)}
               </View>
-
             </View>
+          </View>
+        )}
+
+        <View ref={stickyTabBarRef} style={{flex: 1}}>
+          <TabView
+            navigationState={{index, routes}}
+            renderScene={renderScene}
+            onIndexChange={onSetIndex}
+            initialLayout={initialLayout}
+            renderTabBar={renderTabBar}
+            style={{backgroundColor: colors.paleGrey}}
+
+          />
+
+          {/* {index === 0 && (
+            <ProposalData
+              proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
+              proposalInfo={proposalScreenInfo?.proposalInfo}
+              showMore={() => onSetIndex(1)}
+            />
           )}
 
-          <View ref={stickyTabBarRef}>
-            <TabView
-              navigationState={{index, routes}}
-              renderScene={() => null}
-              onIndexChange={onSetIndex}
-              initialLayout={initialLayout}
-              renderTabBar={renderTabBar}
-              style={{backgroundColor: colors.paleGrey}}
-
+          {index === 1 && (
+            <ProposalDiscussion
+              proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
+              inputRef={inputRef}
+              scrollViewRef={scrollViewRef}
             />
-
-            {index === 0 && (
-              <ProposalData
-                proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
-                proposalInfo={proposalScreenInfo?.proposalInfo}
-                showMore={() => onSetIndex(1)}
-              />
-            )}
-
-            {index === 1 && (
-              <ProposalDiscussion
-                proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
-                inputRef={inputRef}
-                scrollViewRef={scrollViewRef}
-              />
-            )}
-          </View>
-        </ScrollView>
+          )} */}
+        </View>
+        {/* </ScrollView> */}
 
         {index === 0 ? renderVoting
             && showBottomVotingButtonsContainer && (

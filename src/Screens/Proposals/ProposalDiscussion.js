@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {Text, StyleSheet, SectionList, View, ScrollView, Image} from 'react-native';
-import {text, colors, font} from '~/Theme';
+import {layout, text, colors, font} from '~/Theme';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
 import moment from 'moment';
@@ -76,52 +76,52 @@ const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
   }, [proposalId]);
 
   return (
-    <View style={{flex: 1, backgroundColor: colors.paleGrey}}>
-      <ScrollView style={{flex: 1}}>
-        {msgGroups.length > 0 ? (
-          <SectionList
-            inverted
-            ref={chatRef}
-            sections={msgGroups}
-            keyExtractor={(x) => x.id}
-            stickySectionHeadersEnabled={true}
-            contentContainerStyle={{
-              paddingTop: 100,
+    <View style={{flex: 1, backgroundColor: colors.paleGrey, ...layout.content}}>
+      {/* <ScrollView style={{flex: 1}}> */}
+      {msgGroups.length > 0 ? (
+        <SectionList
+          inverted
+          ref={chatRef}
+          sections={msgGroups}
+          keyExtractor={(x) => x.id}
+          stickySectionHeadersEnabled={true}
+          contentContainerStyle={{
+            paddingTop: 100,
+          }}
+
+          renderItem={(x) => (
+            <DiscussionMessage data={x.item} />
+          )}
+
+          onScrollToIndexFailed={(info) => {
+            logger.error('Something bad happened: ', info);
+          }}
+
+          renderSectionFooter={({section: {date}}) => (
+            <Text style={styles.timeHeader}>
+              {moment().isSame(date, 'day') ? 'Today' : date}
+            </Text>
+          )}
+        />
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Image
+            source={require('~/Assets/empty-discussion.png')}
+            style={{
+              width: 240,
+              height: 240,
             }}
-
-            renderItem={(x) => (
-              <DiscussionMessage data={x.item} />
-            )}
-
-            onScrollToIndexFailed={(info) => {
-              logger.error('Something bad happened: ', info);
-            }}
-
-            renderSectionFooter={({section: {date}}) => (
-              <Text style={styles.timeHeader}>
-                {moment().isSame(date, 'day') ? 'Today' : date}
-              </Text>
-            )}
           />
-        ) : (
-          <View style={styles.emptyContainer}>
-            <Image
-              source={require('~/Assets/empty-discussion.png')}
-              style={{
-                width: 240,
-                height: 240,
-              }}
-            />
 
-            <Text style={styles.emptyTitle}>
+          <Text style={styles.emptyTitle}>
               No comments yet
-            </Text>
-            <Text style={styles.emptyBody}>
+          </Text>
+          <Text style={styles.emptyBody}>
               Have any thoughts? Share them with other members by adding the first comment.
-            </Text>
-          </View>
-        )}
-      </ScrollView>
+          </Text>
+        </View>
+      )}
+      {/* </ScrollView> */}
     </View>
   );
   // <Text style={styles.title}>Proposal Discussion</Text>;
@@ -144,8 +144,8 @@ const styles = StyleSheet.create({
     ...font.primary.regular,
   },
   emptyContainer: {
-    flex: 0.8,
-    paddingHorizontal: 30,
+    // flex: 0.8,
+    // paddingHorizontal: 30,
     alignItems: 'center',
     justifyContent: 'center',
   },
