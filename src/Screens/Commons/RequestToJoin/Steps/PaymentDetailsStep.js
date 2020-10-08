@@ -10,20 +10,20 @@ import {
 import TextInputField from '~/Components/FormFields/TextInputField';
 import {colors, layout, text} from '~/Theme';
 import {observer, inject} from 'mobx-react';
-import CreateStepHeader from './RequestStepHeader';
-import CreateStepNavigation from './RequestStepNavigation';
+import CreateStepHeader from '../RequestStepHeader';
+import CreateStepNavigation from '../RequestStepNavigation';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
-import CreateStepDotHeader from './RequestStepDotHeader';
-import RequestStepActionButton from '../RequestStepActionButton';
+import CreateStepDotHeader from '../RequestStepDotHeader';
+import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '~/Services/ArcService';
 // import {preauthorizePayment} from '~/Services/MangopayService';
-import RequestStepHeaderTitle from './RequestStepHeaderTitle';
+import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const RequestStep4 = ({navigation,
+const PaymentDetailsStep = ({navigation,
   route: {
     params: {skipFirstStep, currCommon, currDaoId, refreshFeed},
   },
@@ -119,7 +119,7 @@ const RequestStep4 = ({navigation,
         />
         <CreateStepDotHeader
           title="Payment"
-          currentIndex={4}
+          currentIndex={5}
           isFirstStepSkipped={skipFirstStep}
           navigation={navigation}
           headerHeight={headerHeight}
@@ -138,7 +138,7 @@ const RequestStep4 = ({navigation,
           ])}>
           <CreateStepHeader
             isFirstStepSkipped={skipFirstStep}
-            currentIndex={3}
+            currentIndex={4}
           />
           <View
             style={{
@@ -232,7 +232,7 @@ const RequestStep4 = ({navigation,
   );
 };
 
-RequestStep4.propTypes = {
+PaymentDetailsStep.propTypes = {
   navigation: object,
   route: shape({
     params: shape({
@@ -272,4 +272,4 @@ export default inject(
   'personalContributionFormStore',
   'paymentFormStore',
   'userStore',
-)(observer(RequestStep4));
+)(observer(PaymentDetailsStep));

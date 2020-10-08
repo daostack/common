@@ -34,10 +34,11 @@ import {
   CreateStep2,
   CreateStep3,
   CreateStep4,
-  RequestStep1,
-  RequestStep2,
-  RequestStep3,
-  RequestStep4,
+  RulesStep,
+  IntroductionStep,
+  ContributionStep,
+  BillingDetailsStep,
+  PaymentDetailsStep,
   FundingProposal,
   Discussions,
   DiscussionPost,
@@ -418,29 +419,36 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
         />
         <Stack.Screen
-          name="RequestStep1"
-          component={RequestStep1}
+          name="RulesStep"
+          component={RulesStep}
           options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
-          name="RequestStep2"
-          component={RequestStep2}
+          name="IntroductionStep"
+          component={IntroductionStep}
           options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
-          name="RequestStep3"
-          component={RequestStep3}
+          name="ContributionStep"
+          component={ContributionStep}
           options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
-          name="RequestStep4"
-          component={RequestStep4}
+          name="BillingDetailsStep"
+          component={BillingDetailsStep}
+          options={({nav, route}) => ({
+            headerShown: false,
+          })}
+        />
+        <Stack.Screen
+          name="PaymentDetailsStep"
+          component={PaymentDetailsStep}
           options={({nav, route}) => ({
             headerShown: false,
           })}

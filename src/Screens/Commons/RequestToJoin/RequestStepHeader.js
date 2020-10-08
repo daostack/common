@@ -58,13 +58,15 @@ const RequestStepHeader = ({isFirstStepSkipped, currentIndex}) => {
         }}
       />
       {/* <TouchableOpacity onPress={() => setCurrentIndex(0)}> */}
-      {!isFirstStepSkipped && <View
-        style={currentIndex === 0 ? {...styles.oval} : {...styles.ovalDone}}>
-        <Icon
-          name={currentIndex === 0 ? 'agenda-24' : 'check'}
-          size={currentIndex > 0 ? 16 : 24}
-        />
-      </View>}
+      {!isFirstStepSkipped && (
+        <View
+          style={currentIndex === 0 ? {...styles.oval} : {...styles.ovalDone}}>
+          <Icon
+            name={currentIndex === 0 ? 'agenda-24' : 'check'}
+            size={currentIndex > 0 ? 16 : 24}
+          />
+        </View>
+      )}
       {/* </TouchableOpacity> */}
       {/* <TouchableOpacity onPress={() => setCurrentIndex(1)}> */}
       <View style={ovalStyle(1)}>
@@ -78,7 +80,7 @@ const RequestStepHeader = ({isFirstStepSkipped, currentIndex}) => {
       {/* <TouchableOpacity onPress={() => setCurrentIndex(2)}> */}
       <View style={ovalStyle(2)}>
         <Icon
-          name={currentIndex < (3 - deltaIndex) ? 'contribution-24' : 'check'}
+          name={currentIndex < (3 - deltaIndex) ? 'wallet-24' : 'check'}
           size={currentIndex === (2 - deltaIndex) ? 24 : 16}
           color={iconColor(2)}
         />
@@ -87,12 +89,20 @@ const RequestStepHeader = ({isFirstStepSkipped, currentIndex}) => {
       <TouchableOpacity onPress={() => setCurrentIndex(3)}> */}
       <View style={ovalStyle(3)}>
         <Icon
-          name={currentIndex < (4 - deltaIndex) ? 'wallet-24' : 'check'}
+          name={currentIndex < (4 - deltaIndex) ? 'warning' : 'check'}
           size={currentIndex === (3 - deltaIndex) ? 24 : 16}
           color={iconColor(3)}
         />
       </View>
       {/* </TouchableOpacity> */}
+
+      <View style={ovalStyle(4)}>
+        <Icon
+          name={currentIndex < (5 - deltaIndex) ? 'contribution-24' : 'check'}
+          size={currentIndex === (4 - deltaIndex) ? 24 : 16}
+          color={iconColor(4)}
+        />
+      </View>
     </View>
   );
 };

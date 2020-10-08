@@ -7,6 +7,7 @@ import {
   PaymentFormStore,
   PersonalContributionFormStore,
   IntroduceYourselfFormStore,
+  BillingDetailsFormStore,
 } from '~/FormStores/RequestToJoin';
 
 import {
@@ -31,6 +32,7 @@ export default {
   paymentFormStore: new PaymentFormStore(),
   personalContributionFormStore: new PersonalContributionFormStore(),
   introduceYourselfFormStore: new IntroduceYourselfFormStore(),
+  billingDetailsFormStore: new BillingDetailsFormStore(),
 
   // Create Common Form Stores
   generalInfoFormStore: new GeneralInfoFormStore(),
