@@ -1,31 +1,32 @@
 import React from 'react';
-import {View} from 'react-native';
-import {bool, func, number, object, oneOfType, shape, string} from 'prop-types';
+import { View } from 'react-native';
+import { bool, func, number, object, oneOfType, shape, string } from 'prop-types';
 
 import RNPickerSelect from 'react-native-picker-select';
+import * as RNLocalize from 'react-native-localize';
 
-import {colors} from '../../Theme';
+import { colors } from '../../Theme';
 import Icon from '../../Assets/iconfont/Icon';
 import TextInputFieldWithIcon from './TextInputFieldWithIcon';
 import { Label } from './TextInputField';
 
 
-export const CountrySelectField = ({...props}) => {
+export const CountrySelectField = ({ defaultCountry, ...props }) => {
   const selectRef = React.useRef();
-  const [selectedCountry, setSelectedCountry] = React.useState('IL');
+  const [selectedCountry, setSelectedCountry] = React.useState(defaultCountry ||RNLocalize.getCountry());
 
   const onCountryChange = (value, index) => {
     setSelectedCountry(value);
   };
 
   const renderIcon = () => (
-    <Icon name="down-arrow" />
+    <Icon name="down-arrow"/>
   );
 
   return (
-    <View style={styles.container} >
+    <View style={styles.container}>
       {(props.label || props.infoLabel) && (
-        <Label label={props.label} infoLabel={props.infoLabel} />
+        <Label label={props.label} infoLabel={props.infoLabel}/>
       )}
 
       <RNPickerSelect
@@ -37,7 +38,7 @@ export const CountrySelectField = ({...props}) => {
         Icon={renderIcon}
       />
 
-      <View style={{display: 'none'}}>
+      <View style={{ display: 'none' }}>
         <TextInputFieldWithIcon
           editable={false}
           key={selectedCountry}
@@ -52,13 +53,13 @@ export const CountrySelectField = ({...props}) => {
 
 const styles = {
   container: {
-    position: 'relative',
+    position: 'relative'
   },
 
   iconContainer: {
     display: 'flex',
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
 
   select: {
@@ -70,7 +71,7 @@ const styles = {
       borderColor: colors.grey4,
       borderRadius: 4,
       color: 'black',
-      paddingRight: 30, // to ensure the text is never behind the icon
+      paddingRight: 30 // to ensure the text is never behind the icon
     },
     inputAndroid: {
       fontSize: 16,
@@ -80,13 +81,13 @@ const styles = {
       borderColor: colors.grey4,
       borderRadius: 8,
       color: 'black',
-      paddingRight: 30, // to ensure the text is never behind the icon
+      paddingRight: 30 // to ensure the text is never behind the icon
     },
     iconContainer: {
       top: 15,
-      right: 12,
-    },
-  },
+      right: 12
+    }
+  }
 };
 
 CountrySelectField.propTypes = {
@@ -96,10 +97,10 @@ CountrySelectField.propTypes = {
     displayName: string,
     validateRule: oneOfType([
       string,
-      object,
+      object
     ]),
     invisibleContainer: bool,
-    customErrorMessage: string,
+    customErrorMessage: string
   }),
   value: string,
   fieldActionComponent: object,
@@ -122,1039 +123,1040 @@ CountrySelectField.propTypes = {
   subLabel: string,
   forwardRef: object,
   viewStyle: object,
+  defaultCountry: string
 };
 
 export const countryList = [
   {
     value: 'AC',
-    label: 'Ascension Island 🇦🇨',
+    label: 'Ascension Island 🇦🇨'
   },
   {
     value: 'AD',
-    label: 'Andorra 🇦🇩',
+    label: 'Andorra 🇦🇩'
   },
   {
     value: 'AE',
-    label: 'United Arab Emirates 🇦🇪',
+    label: 'United Arab Emirates 🇦🇪'
   },
   {
     value: 'AF',
-    label: 'Afghanistan 🇦🇫',
+    label: 'Afghanistan 🇦🇫'
   },
   {
     value: 'AG',
-    label: 'Antigua & Barbuda 🇦🇬',
+    label: 'Antigua & Barbuda 🇦🇬'
   },
   {
     value: 'AI',
-    label: 'Anguilla 🇦🇮',
+    label: 'Anguilla 🇦🇮'
   },
   {
     value: 'AL',
-    label: 'Albania 🇦🇱',
+    label: 'Albania 🇦🇱'
   },
   {
     value: 'AM',
-    label: 'Armenia 🇦🇲',
+    label: 'Armenia 🇦🇲'
   },
   {
     value: 'AO',
-    label: 'Angola 🇦🇴',
+    label: 'Angola 🇦🇴'
   },
   {
     value: 'AQ',
-    label: 'Antarctica 🇦🇶',
+    label: 'Antarctica 🇦🇶'
   },
   {
     value: 'AR',
-    label: 'Argentina 🇦🇷',
+    label: 'Argentina 🇦🇷'
   },
   {
     value: 'AS',
-    label: 'American Samoa 🇦🇸',
+    label: 'American Samoa 🇦🇸'
   },
   {
     value: 'AT',
-    label: 'Austria 🇦🇹',
+    label: 'Austria 🇦🇹'
   },
   {
     value: 'AU',
-    label: 'Australia 🇦🇺',
+    label: 'Australia 🇦🇺'
   },
   {
     value: 'AW',
-    label: 'Aruba 🇦🇼',
+    label: 'Aruba 🇦🇼'
   },
   {
     value: 'AX',
-    label: 'Åland Islands 🇦🇽',
+    label: 'Åland Islands 🇦🇽'
   },
   {
     value: 'AZ',
-    label: 'Azerbaijan 🇦🇿',
+    label: 'Azerbaijan 🇦🇿'
   },
   {
     value: 'BA',
-    label: 'Bosnia & Herzegovina 🇧🇦',
+    label: 'Bosnia & Herzegovina 🇧🇦'
   },
   {
     value: 'BB',
-    label: 'Barbados 🇧🇧',
+    label: 'Barbados 🇧🇧'
   },
   {
     value: 'BD',
-    label: 'Bangladesh 🇧🇩',
+    label: 'Bangladesh 🇧🇩'
   },
   {
     value: 'BE',
-    label: 'Belgium 🇧🇪',
+    label: 'Belgium 🇧🇪'
   },
   {
     value: 'BF',
-    label: 'Burkina Faso 🇧🇫',
+    label: 'Burkina Faso 🇧🇫'
   },
   {
     value: 'BG',
-    label: 'Bulgaria 🇧🇬',
+    label: 'Bulgaria 🇧🇬'
   },
   {
     value: 'BH',
-    label: 'Bahrain 🇧🇭',
+    label: 'Bahrain 🇧🇭'
   },
   {
     value: 'BI',
-    label: 'Burundi 🇧🇮',
+    label: 'Burundi 🇧🇮'
   },
   {
     value: 'BJ',
-    label: 'Benin 🇧🇯',
+    label: 'Benin 🇧🇯'
   },
   {
     value: 'BL',
-    label: 'St. Barthélemy 🇧🇱',
+    label: 'St. Barthélemy 🇧🇱'
   },
   {
     value: 'BM',
-    label: 'Bermuda 🇧🇲',
+    label: 'Bermuda 🇧🇲'
   },
   {
     value: 'BN',
-    label: 'Brunei 🇧🇳',
+    label: 'Brunei 🇧🇳'
   },
   {
     value: 'BO',
-    label: 'Bolivia 🇧🇴',
+    label: 'Bolivia 🇧🇴'
   },
   {
     value: 'BQ',
-    label: 'Caribbean Netherlands 🇧🇶',
+    label: 'Caribbean Netherlands 🇧🇶'
   },
   {
     value: 'BR',
-    label: 'Brazil 🇧🇷',
+    label: 'Brazil 🇧🇷'
   },
   {
     value: 'BS',
-    label: 'Bahamas 🇧🇸',
+    label: 'Bahamas 🇧🇸'
   },
   {
     value: 'BT',
-    label: 'Bhutan 🇧🇹',
+    label: 'Bhutan 🇧🇹'
   },
   {
     value: 'BV',
-    label: 'Bouvet Island 🇧🇻',
+    label: 'Bouvet Island 🇧🇻'
   },
   {
     value: 'BW',
-    label: 'Botswana 🇧🇼',
+    label: 'Botswana 🇧🇼'
   },
   {
     value: 'BY',
-    label: 'Belarus 🇧🇾',
+    label: 'Belarus 🇧🇾'
   },
   {
     value: 'BZ',
-    label: 'Belize 🇧🇿',
+    label: 'Belize 🇧🇿'
   },
   {
     value: 'CA',
-    label: 'Canada 🇨🇦',
+    label: 'Canada 🇨🇦'
   },
   {
     value: 'CC',
-    label: 'Cocos (Keeling) Islands 🇨🇨',
+    label: 'Cocos (Keeling) Islands 🇨🇨'
   },
   {
     value: 'CD',
-    label: 'Congo - Kinshasa 🇨🇩',
+    label: 'Congo - Kinshasa 🇨🇩'
   },
   {
     value: 'CF',
-    label: 'Central African Republic 🇨🇫',
+    label: 'Central African Republic 🇨🇫'
   },
   {
     value: 'CG',
-    label: 'Congo - Brazzaville 🇨🇬',
+    label: 'Congo - Brazzaville 🇨🇬'
   },
   {
     value: 'CH',
-    label: 'Switzerland 🇨🇭',
+    label: 'Switzerland 🇨🇭'
   },
   {
     value: 'CI',
-    label: 'Côte d’Ivoire 🇨🇮',
+    label: 'Côte d’Ivoire 🇨🇮'
   },
   {
     value: 'CK',
-    label: 'Cook Islands 🇨🇰',
+    label: 'Cook Islands 🇨🇰'
   },
   {
     value: 'CL',
-    label: 'Chile 🇨🇱',
+    label: 'Chile 🇨🇱'
   },
   {
     value: 'CM',
-    label: 'Cameroon 🇨🇲',
+    label: 'Cameroon 🇨🇲'
   },
   {
     value: 'CN',
-    label: 'China 🇨🇳',
+    label: 'China 🇨🇳'
   },
   {
     value: 'CO',
-    label: 'Colombia 🇨🇴',
+    label: 'Colombia 🇨🇴'
   },
   {
     value: 'CP',
-    label: 'Clipperton Island 🇨🇵',
+    label: 'Clipperton Island 🇨🇵'
   },
   {
     value: 'CR',
-    label: 'Costa Rica 🇨🇷',
+    label: 'Costa Rica 🇨🇷'
   },
   {
     value: 'CU',
-    label: 'Cuba 🇨🇺',
+    label: 'Cuba 🇨🇺'
   },
   {
     value: 'CV',
-    label: 'Cape Verde 🇨🇻',
+    label: 'Cape Verde 🇨🇻'
   },
   {
     value: 'CW',
-    label: 'Curaçao 🇨🇼',
+    label: 'Curaçao 🇨🇼'
   },
   {
     value: 'CX',
-    label: 'Christmas Island 🇨🇽',
+    label: 'Christmas Island 🇨🇽'
   },
   {
     value: 'CY',
-    label: 'Cyprus 🇨🇾',
+    label: 'Cyprus 🇨🇾'
   },
   {
     value: 'CZ',
-    label: 'Czechia 🇨🇿',
+    label: 'Czechia 🇨🇿'
   },
   {
     value: 'DE',
-    label: 'Germany 🇩🇪',
+    label: 'Germany 🇩🇪'
   },
   {
     value: 'DG',
-    label: 'Diego Garcia 🇩🇬',
+    label: 'Diego Garcia 🇩🇬'
   },
   {
     value: 'DJ',
-    label: 'Djibouti 🇩🇯',
+    label: 'Djibouti 🇩🇯'
   },
   {
     value: 'DK',
-    label: 'Denmark 🇩🇰',
+    label: 'Denmark 🇩🇰'
   },
   {
     value: 'DM',
-    label: 'Dominica 🇩🇲',
+    label: 'Dominica 🇩🇲'
   },
   {
     value: 'DO',
-    label: 'Dominican Republic 🇩🇴',
+    label: 'Dominican Republic 🇩🇴'
   },
   {
     value: 'DZ',
-    label: 'Algeria 🇩🇿',
+    label: 'Algeria 🇩🇿'
   },
   {
     value: 'EA',
-    label: 'Ceuta & Melilla 🇪🇦',
+    label: 'Ceuta & Melilla 🇪🇦'
   },
   {
     value: 'EC',
-    label: 'Ecuador 🇪🇨',
+    label: 'Ecuador 🇪🇨'
   },
   {
     value: 'EE',
-    label: 'Estonia 🇪🇪',
+    label: 'Estonia 🇪🇪'
   },
   {
     value: 'EG',
-    label: 'Egypt 🇪🇬',
+    label: 'Egypt 🇪🇬'
   },
   {
     value: 'EH',
-    label: 'Western Sahara 🇪🇭',
+    label: 'Western Sahara 🇪🇭'
   },
   {
     value: 'ER',
-    label: 'Eritrea 🇪🇷',
+    label: 'Eritrea 🇪🇷'
   },
   {
     value: 'ES',
-    label: 'Spain 🇪🇸',
+    label: 'Spain 🇪🇸'
   },
   {
     value: 'ET',
-    label: 'Ethiopia 🇪🇹',
+    label: 'Ethiopia 🇪🇹'
   },
   {
     value: 'EU',
-    label: 'European Union 🇪🇺',
+    label: 'European Union 🇪🇺'
   },
   {
     value: 'FI',
-    label: 'Finland 🇫🇮',
+    label: 'Finland 🇫🇮'
   },
   {
     value: 'FJ',
-    label: 'Fiji 🇫🇯',
+    label: 'Fiji 🇫🇯'
   },
   {
     value: 'FK',
-    label: 'Falkland Islands 🇫🇰',
+    label: 'Falkland Islands 🇫🇰'
   },
   {
     value: 'FM',
-    label: 'Micronesia 🇫🇲',
+    label: 'Micronesia 🇫🇲'
   },
   {
     value: 'FO',
-    label: 'Faroe Islands 🇫🇴',
+    label: 'Faroe Islands 🇫🇴'
   },
   {
     value: 'FR',
-    label: 'France 🇫🇷',
+    label: 'France 🇫🇷'
   },
   {
     value: 'GA',
-    label: 'Gabon 🇬🇦',
+    label: 'Gabon 🇬🇦'
   },
   {
     value: 'GB',
-    label: 'United Kingdom 🇬🇧',
+    label: 'United Kingdom 🇬🇧'
   },
   {
     value: 'GD',
-    label: 'Grenada 🇬🇩',
+    label: 'Grenada 🇬🇩'
   },
   {
     value: 'GE',
-    label: 'Georgia 🇬🇪',
+    label: 'Georgia 🇬🇪'
   },
   {
     value: 'GF',
-    label: 'French Guiana 🇬🇫',
+    label: 'French Guiana 🇬🇫'
   },
   {
     value: 'GG',
-    label: 'Guernsey 🇬🇬',
+    label: 'Guernsey 🇬🇬'
   },
   {
     value: 'GH',
-    label: 'Ghana 🇬🇭',
+    label: 'Ghana 🇬🇭'
   },
   {
     value: 'GI',
-    label: 'Gibraltar 🇬🇮',
+    label: 'Gibraltar 🇬🇮'
   },
   {
     value: 'GL',
-    label: 'Greenland 🇬🇱',
+    label: 'Greenland 🇬🇱'
   },
   {
     value: 'GM',
-    label: 'Gambia 🇬🇲',
+    label: 'Gambia 🇬🇲'
   },
   {
     value: 'GN',
-    label: 'Guinea 🇬🇳',
+    label: 'Guinea 🇬🇳'
   },
   {
     value: 'GP',
-    label: 'Guadeloupe 🇬🇵',
+    label: 'Guadeloupe 🇬🇵'
   },
   {
     value: 'GQ',
-    label: 'Equatorial Guinea 🇬🇶',
+    label: 'Equatorial Guinea 🇬🇶'
   },
   {
     value: 'GR',
-    label: 'Greece 🇬🇷',
+    label: 'Greece 🇬🇷'
   },
   {
     value: 'GS',
-    label: 'South Georgia & South Sandwich Islands 🇬🇸',
+    label: 'South Georgia & South Sandwich Islands 🇬🇸'
   },
   {
     value: 'GT',
-    label: 'Guatemala 🇬🇹',
+    label: 'Guatemala 🇬🇹'
   },
   {
     value: 'GU',
-    label: 'Guam 🇬🇺',
+    label: 'Guam 🇬🇺'
   },
   {
     value: 'GW',
-    label: 'Guinea-Bissau 🇬🇼',
+    label: 'Guinea-Bissau 🇬🇼'
   },
   {
     value: 'GY',
-    label: 'Guyana 🇬🇾',
+    label: 'Guyana 🇬🇾'
   },
   {
     value: 'HK',
-    label: 'Hong Kong SAR China 🇭🇰',
+    label: 'Hong Kong SAR China 🇭🇰'
   },
   {
     value: 'HM',
-    label: 'Heard & McDonald Islands 🇭🇲',
+    label: 'Heard & McDonald Islands 🇭🇲'
   },
   {
     value: 'HN',
-    label: 'Honduras 🇭🇳',
+    label: 'Honduras 🇭🇳'
   },
   {
     value: 'HR',
-    label: 'Croatia 🇭🇷',
+    label: 'Croatia 🇭🇷'
   },
   {
     value: 'HT',
-    label: 'Haiti 🇭🇹',
+    label: 'Haiti 🇭🇹'
   },
   {
     value: 'HU',
-    label: 'Hungary 🇭🇺',
+    label: 'Hungary 🇭🇺'
   },
   {
     value: 'IC',
-    label: 'Canary Islands 🇮🇨',
+    label: 'Canary Islands 🇮🇨'
   },
   {
     value: 'ID',
-    label: 'Indonesia 🇮🇩',
+    label: 'Indonesia 🇮🇩'
   },
   {
     value: 'IE',
-    label: 'Ireland 🇮🇪',
+    label: 'Ireland 🇮🇪'
   },
   {
     value: 'IL',
-    label: 'Israel 🇮🇱',
+    label: 'Israel 🇮🇱'
   },
   {
     value: 'IM',
-    label: 'Isle of Man 🇮🇲',
+    label: 'Isle of Man 🇮🇲'
   },
   {
     value: 'IN',
-    label: 'India 🇮🇳',
+    label: 'India 🇮🇳'
   },
   {
     value: 'IO',
-    label: 'British Indian Ocean Territory 🇮🇴',
+    label: 'British Indian Ocean Territory 🇮🇴'
   },
   {
     value: 'IQ',
-    label: 'Iraq 🇮🇶',
+    label: 'Iraq 🇮🇶'
   },
   {
     value: 'IR',
-    label: 'Iran 🇮🇷',
+    label: 'Iran 🇮🇷'
   },
   {
     value: 'IS',
-    label: 'Iceland 🇮🇸',
+    label: 'Iceland 🇮🇸'
   },
   {
     value: 'IT',
-    label: 'Italy 🇮🇹',
+    label: 'Italy 🇮🇹'
   },
   {
     value: 'JE',
-    label: 'Jersey 🇯🇪',
+    label: 'Jersey 🇯🇪'
   },
   {
     value: 'JM',
-    label: 'Jamaica 🇯🇲',
+    label: 'Jamaica 🇯🇲'
   },
   {
     value: 'JO',
-    label: 'Jordan 🇯🇴',
+    label: 'Jordan 🇯🇴'
   },
   {
     value: 'JP',
-    label: 'Japan 🇯🇵',
+    label: 'Japan 🇯🇵'
   },
   {
     value: 'KE',
-    label: 'Kenya 🇰🇪',
+    label: 'Kenya 🇰🇪'
   },
   {
     value: 'KG',
-    label: 'Kyrgyzstan 🇰🇬',
+    label: 'Kyrgyzstan 🇰🇬'
   },
   {
     value: 'KH',
-    label: 'Cambodia 🇰🇭',
+    label: 'Cambodia 🇰🇭'
   },
   {
     value: 'KI',
-    label: 'Kiribati 🇰🇮',
+    label: 'Kiribati 🇰🇮'
   },
   {
     value: 'KM',
-    label: 'Comoros 🇰🇲',
+    label: 'Comoros 🇰🇲'
   },
   {
     value: 'KN',
-    label: 'St. Kitts & Nevis 🇰🇳',
+    label: 'St. Kitts & Nevis 🇰🇳'
   },
   {
     value: 'KP',
-    label: 'North Korea 🇰🇵',
+    label: 'North Korea 🇰🇵'
   },
   {
     value: 'KR',
-    label: 'South Korea 🇰🇷',
+    label: 'South Korea 🇰🇷'
   },
   {
     value: 'KW',
-    label: 'Kuwait 🇰🇼',
+    label: 'Kuwait 🇰🇼'
   },
   {
     value: 'KY',
-    label: 'Cayman Islands 🇰🇾',
+    label: 'Cayman Islands 🇰🇾'
   },
   {
     value: 'KZ',
-    label: 'Kazakhstan 🇰🇿',
+    label: 'Kazakhstan 🇰🇿'
   },
   {
     value: 'LA',
-    label: 'Laos 🇱🇦',
+    label: 'Laos 🇱🇦'
   },
   {
     value: 'LB',
-    label: 'Lebanon 🇱🇧',
+    label: 'Lebanon 🇱🇧'
   },
   {
     value: 'LC',
-    label: 'St. Lucia 🇱🇨',
+    label: 'St. Lucia 🇱🇨'
   },
   {
     value: 'LI',
-    label: 'Liechtenstein 🇱🇮',
+    label: 'Liechtenstein 🇱🇮'
   },
   {
     value: 'LK',
-    label: 'Sri Lanka 🇱🇰',
+    label: 'Sri Lanka 🇱🇰'
   },
   {
     value: 'LR',
-    label: 'Liberia 🇱🇷',
+    label: 'Liberia 🇱🇷'
   },
   {
     value: 'LS',
-    label: 'Lesotho 🇱🇸',
+    label: 'Lesotho 🇱🇸'
   },
   {
     value: 'LT',
-    label: 'Lithuania 🇱🇹',
+    label: 'Lithuania 🇱🇹'
   },
   {
     value: 'LU',
-    label: 'Luxembourg 🇱🇺',
+    label: 'Luxembourg 🇱🇺'
   },
   {
     value: 'LV',
-    label: 'Latvia 🇱🇻',
+    label: 'Latvia 🇱🇻'
   },
   {
     value: 'LY',
-    label: 'Libya 🇱🇾',
+    label: 'Libya 🇱🇾'
   },
   {
     value: 'MA',
-    label: 'Morocco 🇲🇦',
+    label: 'Morocco 🇲🇦'
   },
   {
     value: 'MC',
-    label: 'Monaco 🇲🇨',
+    label: 'Monaco 🇲🇨'
   },
   {
     value: 'MD',
-    label: 'Moldova 🇲🇩',
+    label: 'Moldova 🇲🇩'
   },
   {
     value: 'ME',
-    label: 'Montenegro 🇲🇪',
+    label: 'Montenegro 🇲🇪'
   },
   {
     value: 'MF',
-    label: 'St. Martin 🇲🇫',
+    label: 'St. Martin 🇲🇫'
   },
   {
     value: 'MG',
-    label: 'Madagascar 🇲🇬',
+    label: 'Madagascar 🇲🇬'
   },
   {
     value: 'MH',
-    label: 'Marshall Islands 🇲🇭',
+    label: 'Marshall Islands 🇲🇭'
   },
   {
     value: 'MK',
-    label: 'Macedonia 🇲🇰',
+    label: 'Macedonia 🇲🇰'
   },
   {
     value: 'ML',
-    label: 'Mali 🇲🇱',
+    label: 'Mali 🇲🇱'
   },
   {
     value: 'MM',
-    label: 'Myanmar (Burma) 🇲🇲',
+    label: 'Myanmar (Burma) 🇲🇲'
   },
   {
     value: 'MN',
-    label: 'Mongolia 🇲🇳',
+    label: 'Mongolia 🇲🇳'
   },
   {
     value: 'MO',
-    label: 'Macau SAR China 🇲🇴',
+    label: 'Macau SAR China 🇲🇴'
   },
   {
     value: 'MP',
-    label: 'Northern Mariana Islands 🇲🇵',
+    label: 'Northern Mariana Islands 🇲🇵'
   },
   {
     value: 'MQ',
-    label: 'Martinique 🇲🇶',
+    label: 'Martinique 🇲🇶'
   },
   {
     value: 'MR',
-    label: 'Mauritania 🇲🇷',
+    label: 'Mauritania 🇲🇷'
   },
   {
     value: 'MS',
-    label: 'Montserrat 🇲🇸',
+    label: 'Montserrat 🇲🇸'
   },
   {
     value: 'MT',
-    label: 'Malta 🇲🇹',
+    label: 'Malta 🇲🇹'
   },
   {
     value: 'MU',
-    label: 'Mauritius 🇲🇺',
+    label: 'Mauritius 🇲🇺'
   },
   {
     value: 'MV',
-    label: 'Maldives 🇲🇻',
+    label: 'Maldives 🇲🇻'
   },
   {
     value: 'MW',
-    label: 'Malawi 🇲🇼',
+    label: 'Malawi 🇲🇼'
   },
   {
     value: 'MX',
-    label: 'Mexico 🇲🇽',
+    label: 'Mexico 🇲🇽'
   },
   {
     value: 'MY',
-    label: 'Malaysia 🇲🇾',
+    label: 'Malaysia 🇲🇾'
   },
   {
     value: 'MZ',
-    label: 'Mozambique 🇲🇿',
+    label: 'Mozambique 🇲🇿'
   },
   {
     value: 'NA',
-    label: 'Namibia 🇳🇦',
+    label: 'Namibia 🇳🇦'
   },
   {
     value: 'NC',
-    label: 'New Caledonia 🇳🇨',
+    label: 'New Caledonia 🇳🇨'
   },
   {
     value: 'NE',
-    label: 'Niger 🇳🇪',
+    label: 'Niger 🇳🇪'
   },
   {
     value: 'NF',
-    label: 'Norfolk Island 🇳🇫',
+    label: 'Norfolk Island 🇳🇫'
   },
   {
     value: 'NG',
-    label: 'Nigeria 🇳🇬',
+    label: 'Nigeria 🇳🇬'
   },
   {
     value: 'NI',
-    label: 'Nicaragua 🇳🇮',
+    label: 'Nicaragua 🇳🇮'
   },
   {
     value: 'NL',
-    label: 'Netherlands 🇳🇱',
+    label: 'Netherlands 🇳🇱'
   },
   {
     value: 'NO',
-    label: 'Norway 🇳🇴',
+    label: 'Norway 🇳🇴'
   },
   {
     value: 'NP',
-    label: 'Nepal 🇳🇵',
+    label: 'Nepal 🇳🇵'
   },
   {
     value: 'NR',
-    label: 'Nauru 🇳🇷',
+    label: 'Nauru 🇳🇷'
   },
   {
     value: 'NU',
-    label: 'Niue 🇳🇺',
+    label: 'Niue 🇳🇺'
   },
   {
     value: 'NZ',
-    label: 'New Zealand 🇳🇿',
+    label: 'New Zealand 🇳🇿'
   },
   {
     value: 'OM',
-    label: 'Oman 🇴🇲',
+    label: 'Oman 🇴🇲'
   },
   {
     value: 'PA',
-    label: 'Panama 🇵🇦',
+    label: 'Panama 🇵🇦'
   },
   {
     value: 'PE',
-    label: 'Peru 🇵🇪',
+    label: 'Peru 🇵🇪'
   },
   {
     value: 'PF',
-    label: 'French Polynesia 🇵🇫',
+    label: 'French Polynesia 🇵🇫'
   },
   {
     value: 'PG',
-    label: 'Papua New Guinea 🇵🇬',
+    label: 'Papua New Guinea 🇵🇬'
   },
   {
     value: 'PH',
-    label: 'Philippines 🇵🇭',
+    label: 'Philippines 🇵🇭'
   },
   {
     value: 'PK',
-    label: 'Pakistan 🇵🇰',
+    label: 'Pakistan 🇵🇰'
   },
   {
     value: 'PL',
-    label: 'Poland 🇵🇱',
+    label: 'Poland 🇵🇱'
   },
   {
     value: 'PM',
-    label: 'St. Pierre & Miquelon 🇵🇲',
+    label: 'St. Pierre & Miquelon 🇵🇲'
   },
   {
     value: 'PN',
-    label: 'Pitcairn Islands 🇵🇳',
+    label: 'Pitcairn Islands 🇵🇳'
   },
   {
     value: 'PR',
-    label: 'Puerto Rico 🇵🇷',
+    label: 'Puerto Rico 🇵🇷'
   },
   {
     value: 'PS',
-    label: 'Palestinian Territories 🇵🇸',
+    label: 'Palestinian Territories 🇵🇸'
   },
   {
     value: 'PT',
-    label: 'Portugal 🇵🇹',
+    label: 'Portugal 🇵🇹'
   },
   {
     value: 'PW',
-    label: 'Palau 🇵🇼',
+    label: 'Palau 🇵🇼'
   },
   {
     value: 'PY',
-    label: 'Paraguay 🇵🇾',
+    label: 'Paraguay 🇵🇾'
   },
   {
     value: 'QA',
-    label: 'Qatar 🇶🇦',
+    label: 'Qatar 🇶🇦'
   },
   {
     value: 'RE',
-    label: 'Réunion 🇷🇪',
+    label: 'Réunion 🇷🇪'
   },
   {
     value: 'RO',
-    label: 'Romania 🇷🇴',
+    label: 'Romania 🇷🇴'
   },
   {
     value: 'RS',
-    label: 'Serbia 🇷🇸',
+    label: 'Serbia 🇷🇸'
   },
   {
     value: 'RU',
-    label: 'Russia 🇷🇺',
+    label: 'Russia 🇷🇺'
   },
   {
     value: 'RW',
-    label: 'Rwanda 🇷🇼',
+    label: 'Rwanda 🇷🇼'
   },
   {
     value: 'SA',
-    label: 'Saudi Arabia 🇸🇦',
+    label: 'Saudi Arabia 🇸🇦'
   },
   {
     value: 'SB',
-    label: 'Solomon Islands 🇸🇧',
+    label: 'Solomon Islands 🇸🇧'
   },
   {
     value: 'SC',
-    label: 'Seychelles 🇸🇨',
+    label: 'Seychelles 🇸🇨'
   },
   {
     value: 'SD',
-    label: 'Sudan 🇸🇩',
+    label: 'Sudan 🇸🇩'
   },
   {
     value: 'SE',
-    label: 'Sweden 🇸🇪',
+    label: 'Sweden 🇸🇪'
   },
   {
     value: 'SG',
-    label: 'Singapore 🇸🇬',
+    label: 'Singapore 🇸🇬'
   },
   {
     value: 'SH',
-    label: 'St. Helena 🇸🇭',
+    label: 'St. Helena 🇸🇭'
   },
   {
     value: 'SI',
-    label: 'Slovenia 🇸🇮',
+    label: 'Slovenia 🇸🇮'
   },
   {
     value: 'SJ',
-    label: 'Svalbard & Jan Mayen 🇸🇯',
+    label: 'Svalbard & Jan Mayen 🇸🇯'
   },
   {
     value: 'SK',
-    label: 'Slovakia 🇸🇰',
+    label: 'Slovakia 🇸🇰'
   },
   {
     value: 'SL',
-    label: 'Sierra Leone 🇸🇱',
+    label: 'Sierra Leone 🇸🇱'
   },
   {
     value: 'SM',
-    label: 'San Marino 🇸🇲',
+    label: 'San Marino 🇸🇲'
   },
   {
     value: 'SN',
-    label: 'Senegal 🇸🇳',
+    label: 'Senegal 🇸🇳'
   },
   {
     value: 'SO',
-    label: 'Somalia 🇸🇴',
+    label: 'Somalia 🇸🇴'
   },
   {
     value: 'SR',
-    label: 'Suriname 🇸🇷',
+    label: 'Suriname 🇸🇷'
   },
   {
     value: 'SS',
-    label: 'South Sudan 🇸🇸',
+    label: 'South Sudan 🇸🇸'
   },
   {
     value: 'ST',
-    label: 'São Tomé & Príncipe 🇸🇹',
+    label: 'São Tomé & Príncipe 🇸🇹'
   },
   {
     value: 'SV',
-    label: 'El Salvador 🇸🇻',
+    label: 'El Salvador 🇸🇻'
   },
   {
     value: 'SX',
-    label: 'Sint Maarten 🇸🇽',
+    label: 'Sint Maarten 🇸🇽'
   },
   {
     value: 'SY',
-    label: 'Syria 🇸🇾',
+    label: 'Syria 🇸🇾'
   },
   {
     value: 'SZ',
-    label: 'Swaziland 🇸🇿',
+    label: 'Swaziland 🇸🇿'
   },
   {
     value: 'TA',
-    label: 'Tristan da Cunha 🇹🇦',
+    label: 'Tristan da Cunha 🇹🇦'
   },
   {
     value: 'TC',
-    label: 'Turks & Caicos Islands 🇹🇨',
+    label: 'Turks & Caicos Islands 🇹🇨'
   },
   {
     value: 'TD',
-    label: 'Chad 🇹🇩',
+    label: 'Chad 🇹🇩'
   },
   {
     value: 'TF',
-    label: 'French Southern Territories 🇹🇫',
+    label: 'French Southern Territories 🇹🇫'
   },
   {
     value: 'TG',
-    label: 'Togo 🇹🇬',
+    label: 'Togo 🇹🇬'
   },
   {
     value: 'TH',
-    label: 'Thailand 🇹🇭',
+    label: 'Thailand 🇹🇭'
   },
   {
     value: 'TJ',
-    label: 'Tajikistan 🇹🇯',
+    label: 'Tajikistan 🇹🇯'
   },
   {
     value: 'TK',
-    label: 'Tokelau 🇹🇰',
+    label: 'Tokelau 🇹🇰'
   },
   {
     value: 'TL',
-    label: 'Timor-Leste 🇹🇱',
+    label: 'Timor-Leste 🇹🇱'
   },
   {
     value: 'TM',
-    label: 'Turkmenistan 🇹🇲',
+    label: 'Turkmenistan 🇹🇲'
   },
   {
     value: 'TN',
-    label: 'Tunisia 🇹🇳',
+    label: 'Tunisia 🇹🇳'
   },
   {
     value: 'TO',
-    label: 'Tonga 🇹🇴',
+    label: 'Tonga 🇹🇴'
   },
   {
     value: 'TR',
-    label: 'Turvalue 🇹🇷',
+    label: 'Turvalue 🇹🇷'
   },
   {
     value: 'TT',
-    label: 'Trinidad & Tobago 🇹🇹',
+    label: 'Trinidad & Tobago 🇹🇹'
   },
   {
     value: 'TV',
-    label: 'Tuvalu 🇹🇻',
+    label: 'Tuvalu 🇹🇻'
   },
   {
     value: 'TW',
-    label: 'Taiwan 🇹🇼',
+    label: 'Taiwan 🇹🇼'
   },
   {
     value: 'TZ',
-    label: 'Tanzania 🇹🇿',
+    label: 'Tanzania 🇹🇿'
   },
   {
     value: 'UA',
-    label: 'Ukraine 🇺🇦',
+    label: 'Ukraine 🇺🇦'
   },
   {
     value: 'UG',
-    label: 'Uganda 🇺🇬',
+    label: 'Uganda 🇺🇬'
   },
   {
     value: 'UM',
-    label: 'U.S. Outlying Islands 🇺🇲',
+    label: 'U.S. Outlying Islands 🇺🇲'
   },
   {
     value: 'UN',
-    label: 'United Nations 🇺🇳',
+    label: 'United Nations 🇺🇳'
   },
   {
     value: 'US',
-    label: 'United States 🇺🇸',
+    label: 'United States 🇺🇸'
   },
   {
     value: 'UY',
-    label: 'Uruguay 🇺🇾',
+    label: 'Uruguay 🇺🇾'
   },
   {
     value: 'UZ',
-    label: 'Uzbekistan 🇺🇿',
+    label: 'Uzbekistan 🇺🇿'
   },
   {
     value: 'VA',
-    label: 'Vatican City 🇻🇦',
+    label: 'Vatican City 🇻🇦'
   },
   {
     value: 'VC',
-    label: 'St. Vincent & Grenadines 🇻🇨',
+    label: 'St. Vincent & Grenadines 🇻🇨'
   },
   {
     value: 'VE',
-    label: 'Venezuela 🇻🇪',
+    label: 'Venezuela 🇻🇪'
   },
   {
     value: 'VG',
-    label: 'British Virgin Islands 🇻🇬',
+    label: 'British Virgin Islands 🇻🇬'
   },
   {
     value: 'VI',
-    label: 'U.S. Virgin Islands 🇻🇮',
+    label: 'U.S. Virgin Islands 🇻🇮'
   },
   {
     value: 'VN',
-    label: 'Vietnam 🇻🇳',
+    label: 'Vietnam 🇻🇳'
   },
   {
     value: 'VU',
-    label: 'Vanuatu 🇻🇺',
+    label: 'Vanuatu 🇻🇺'
   },
   {
     value: 'WF',
-    label: 'Wallis & Futuna 🇼🇫',
+    label: 'Wallis & Futuna 🇼🇫'
   },
   {
     value: 'WS',
-    label: 'Samoa 🇼🇸',
+    label: 'Samoa 🇼🇸'
   },
   {
     value: 'XK',
-    label: 'Kosovo 🇽🇰',
+    label: 'Kosovo 🇽🇰'
   },
   {
     value: 'YE',
-    label: 'Yemen 🇾🇪',
+    label: 'Yemen 🇾🇪'
   },
   {
     value: 'YT',
-    label: 'Mayotte 🇾🇹',
+    label: 'Mayotte 🇾🇹'
   },
   {
     value: 'ZA',
-    label: 'South Africa 🇿🇦',
+    label: 'South Africa 🇿🇦'
   },
   {
     value: 'ZM',
-    label: 'Zambia 🇿🇲',
+    label: 'Zambia 🇿🇲'
   },
   {
     value: 'ZW',
-    label: 'Zimbabwe 🇿🇼',
-  },
+    label: 'Zimbabwe 🇿🇼'
+  }
 ];
