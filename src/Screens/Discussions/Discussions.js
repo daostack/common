@@ -71,7 +71,6 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
     const unsubscribe = db.collection('discussion')
       .doc(discussionId)
       .onSnapshot((snapshot) => {
-        // logger.log(snapshot.data());
         if (!snapshot.exists) {
           return;
         }

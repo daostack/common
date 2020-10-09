@@ -23,7 +23,7 @@ import {string, func, shape, array, bool, oneOfType} from 'prop-types';
 
 const ProposalData = ({proposalId, proposalInfo, showMore}) => {
   const navigation = useNavigation();
-  const [proposalInfoState, setProposalInfo] = useState(null);
+  const [proposalInfoState, setProposalInfo] = useState(proposalInfo);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [topMessage, setTopMessage] = useState([]);
 
@@ -31,38 +31,33 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
     // noinspection JSAnnotator
     const loadProposalInfo = async (currProposalInfo) => {
       // noinspection JSAnnotator
-      try {
-        if (currProposalInfo) {
-          let tempImages = [];
-          if (currProposalInfo.description.images?.length) {
-            await Promise.all(
-              currProposalInfo.description.images.map(async (currImage) => {
-                if (currImage.value) {
-                  try {
-                    const {width, height} = await ImageSize.getSize(currImage.value);
-                    tempImages.push({
-                      title: currImage.title,
-                      widthRatio: (width / height) * 220,
-                      uri: currImage.value,
-                    });
-                  } catch (e) {
-                    logger.log(e);
-                  }
+      if (currProposalInfo) {
+        let tempImages = [];
+        if (currProposalInfo.description.images?.length) {
+          await Promise.all(
+            currProposalInfo.description.images.map(async (currImage) => {
+              if (currImage.value) {
+                try {
+                  const {width, height} = await ImageSize.getSize(currImage.value);
+                  tempImages.push({
+                    title: currImage.title,
+                    widthRatio: (width / height) * 220,
+                    uri: currImage.value,
+                  });
+                } catch (e) {
+                  logger.log(e);
                 }
-              }),
-            );
-          }
-          setProposalInfo({...currProposalInfo, ...{images: tempImages}});
+              }
+            }),
+          );
         }
-
-      } catch (error) {
-        logger.log('error: ', error);
+        setProposalInfo({...currProposalInfo, ...{images: tempImages}});
       }
     };
 
     const loadDiscussions = () => {
       db.collection('discussionMessage')
-        .where('discussionId', '==', proposalId)
+        .where('discussionId', '==', proposalInfo?.id || proposalId)
         .orderBy('createTime', 'desc')
         .limit(4)
         .get()
@@ -143,7 +138,7 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
           style={{marginBottom: 20}}>
           <View style={styles.imageGallery}>
             <View style={{width: 20}} />
-            {proposalInfoState.images.map((currImage, currIndex) => (
+            {proposalInfoState.images?.map((currImage, currIndex) => (
               <View
                 style={{width: currImage.widthRatio + 10}}
                 key={`proposalImg_${currIndex}`}>

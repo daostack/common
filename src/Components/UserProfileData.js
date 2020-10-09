@@ -4,7 +4,6 @@ import {layout, font,colors, text, sizeL, sizeXXL} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import ImageField from '~/Components/FormFields/ImageField';
 import CountBox from '~/Components/CountBox';
-import Loader from '~/Components/Loader';
 import EditProfileForm from '~/Components/Forms/EditProfileForm';
 import UserService from '~/Services/UserService';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
@@ -14,6 +13,12 @@ import {CommonActions} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
 import logger from '~/Services/Logger';
 import {string, object, shape} from 'prop-types';
+import {
+  Placeholder,
+  PlaceholderMedia,
+  PlaceholderLine,
+  Fade,
+} from 'rn-placeholder';
 
 const UserProfileData = ({
   userId,
@@ -74,7 +79,47 @@ const UserProfileData = ({
   );
 
   if (!user) {
-    return <Loader />;
+    return <Placeholder Animation={Fade}>
+      <PlaceholderMedia
+        size={100}
+        isRound={true}
+        style={{alignSelf: 'center', marginBottom: 10}}
+      />
+      <PlaceholderLine width={30} style={{alignSelf: 'center'}} />
+      <PlaceholderLine width={50} style={{alignSelf: 'center'}} />
+      <PlaceholderMedia
+        style={{
+          alignSelf: 'center',
+          marginTop: 50,
+          marginBottom: 50,
+          height: 100,
+          width: '100%',
+        }}
+      />
+      <PlaceholderLine width={30} style={{marginBottom: 15}}/>
+      <PlaceholderLine width={50} style={{marginBottom: 15}} />
+      <PlaceholderLine width={80} style={{marginBottom: 15}} />
+      <PlaceholderLine width={60} style={{marginBottom: 15, marginTop: 50}} />
+      <PlaceholderMedia
+        style={{
+          alignSelf: 'center',
+          marginTop: 10,
+          marginBottom: 50,
+          height: 150,
+          width: '100%',
+        }}
+      />
+      <PlaceholderLine width={60} style={{marginBottom: 15, marginTop: 50}} />
+      <PlaceholderMedia
+        style={{
+          alignSelf: 'center',
+          marginTop: 10,
+          marginBottom: 50,
+          height: 150,
+          width: '100%',
+        }}
+      />
+    </Placeholder>;
   }
 
   const onProposalsCountChange = (newCount) => {

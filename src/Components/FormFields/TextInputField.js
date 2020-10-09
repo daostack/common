@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
     margin: 0,
     ...font.primary.regular,
     ...font.fontSize(2),
+    textAlignVertical: 'top',
   },
   label: {
     ...font.primary.regular,

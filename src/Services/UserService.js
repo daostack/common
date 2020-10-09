@@ -26,6 +26,18 @@ export default class UserService {
       });
   }
 
+  async getUsersByIds(userIdsArr) {
+    return db
+      .collection(DB_COLLECTIONS.users)
+      .where('uid', 'in', userIdsArr)
+      .get()
+      .then((snapshots) => {
+        if (!snapshots) {
+          return null;
+        }
+        return snapshots.docs.map((doc) => prepareUserObject(doc.data()));
+      });
+  }
 
   async getUserByAddress(address) {
 

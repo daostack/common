@@ -18,8 +18,6 @@ class ValidationMessage extends React.Component {
       validationMessage = validationMessage.replace(this.props.name, this.props.displayName);
     }
 
-    // console.log('this.props.customErrorMessage ->', this.props.customErrorMessage);
-
     if (this.props.customErrorMessage && validationMessage) {
       validationMessage = this.props.customErrorMessage;
     }

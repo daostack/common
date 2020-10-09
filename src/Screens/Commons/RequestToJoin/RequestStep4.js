@@ -25,7 +25,7 @@ const {width} = Dimensions.get('window');
 
 const RequestStep4 = ({navigation,
   route: {
-    params: {skipFirstStep, currCommon, currDaoId},
+    params: {skipFirstStep, currCommon, currDaoId, refreshFeed},
   },
   userStore: {userInfo},
   paymentFormStore,
@@ -67,7 +67,7 @@ const RequestStep4 = ({navigation,
           expDate: formData.expiration_date.replace('/', ''),
         };*/
 
-        navigation.navigate({name: 'FullScreenCreationLoader', params: {title: 'Creating your membership request'}});
+        navigation.navigate({name: 'FullScreenCreationLoader', params: {title: 'Creating your membership request', refreshFeed}});
 
         // Skip mangopay for now, as the service is not responding and we are not using mangopay anyhow
         // if (Number(data.funding) > 0) {
@@ -90,6 +90,11 @@ const RequestStep4 = ({navigation,
             createdProposalId: proposalId,
           },
         });
+
+        if (typeof refreshFeed === 'function') {
+          refreshFeed();
+        }
+
         navigation.dispatch(navigate);
       } catch (e) {
         navigation.pop();
@@ -234,6 +239,7 @@ RequestStep4.propTypes = {
     params: shape({
       skipFirstStep: bool,
       currDaoId: string,
+      refreshFeed: func,
     }),
   }),
   daoStore: shape({

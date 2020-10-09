@@ -1,15 +1,13 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {FlatList, StyleSheet, View, Text, Image, Dimensions, TouchableOpacity} from 'react-native';
 import ViewTabNoData from '~/Components/ViewTabNoData';
-import ProposalService, {PROPOSAL_STAGE} from '~/Services/ProposalService';
+import ProposalService from '~/Services/ProposalService';
 import ProposalCard from '~/Components/Proposals/ProposalCard';
 import {layout, colors, font, text, sizeM} from '~/Theme';
-import DaoService from '~/Services/DaoService';
 import SwiperCard from '~/Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import {PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '~/Services/ProposalService';
 import moment from 'moment';
-import logger from '../../Services/Logger';
 import {string, bool, object, number, shape, func} from 'prop-types';
 const {width, height} = Dimensions.get('window');
 
@@ -29,7 +27,6 @@ const ProposalsList = ({isMember,
   includeHistoryInCount}) => {
 
   const commonId = commonInfo?.id;
-  const commonName = commonInfo?.name;
 
   const [list, setList] = useState(null);
 
@@ -46,8 +43,7 @@ const ProposalsList = ({isMember,
         safeAddress,
         loadShowAll,
         (newList) => {
-          logger.log(newList, PROPOSAL_STAGE.Executed);
-
+          // logger.log(newList, PROPOSAL_STAGE.Executed);
           const history =  newList.filter((proposal) => PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.stageStr) || moment().isAfter(moment.unix(proposal.closingAt)));
           const active = newList.filter((proposal) => PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.stageStr) && !moment().isAfter(moment.unix(proposal.closingAt)));
 
@@ -80,25 +76,6 @@ const ProposalsList = ({isMember,
     };
   }, [commonId, isHistory, userId, safeAddress]);
 
-  const onReviewProposal = async ( proposalId, daoId ) => {
-
-    let currCommonName = commonName;
-    let currCommonBalance = commonInfo?.balance;
-
-    if (!commonInfo) {
-      const currCommonInfo = await DaoService.getInstance().getDaoById(daoId);
-      currCommonName = currCommonInfo.name;
-      currCommonBalance = currCommonInfo.balance;
-    }
-
-    navigation.navigate('ProposalScreen', {
-      title: currCommonName,
-      proposalId: proposalId,
-      commonBalance: currCommonBalance,
-      isMember,
-    });
-  };
-
   const renderProposalCard = (item, index) => (
     isSwiper ? (
       !showMax || (index < showMax) ? (
@@ -107,7 +84,9 @@ const ProposalsList = ({isMember,
           data={item}
           isSwiper={true}
           membershipRequest={membershipRequests}
-          onReviewProposal={(e) => onReviewProposal(item.id, item.dao)}
+          isMember={isMember}
+          commonInfo={commonInfo}
+          navigation={navigation}
         />
       ) : (
         <TouchableOpacity
@@ -125,7 +104,9 @@ const ProposalsList = ({isMember,
       data={item}
       isSwiper={false}
       membershipRequest={membershipRequests}
-      onReviewProposal={(e) => onReviewProposal(item.id, item.dao)}
+      isMember={isMember}
+      commonInfo={commonInfo}
+      navigation={navigation}
     />);
 
 

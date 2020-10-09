@@ -69,6 +69,7 @@ import Cache from './src/Util/Cache';
 import {func, bool, object, shape} from 'prop-types';
 import logger from './src/Services/Logger';
 import {fontSize} from './src/Theme/font';
+
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
 if (Platform.OS === 'ios') {
@@ -235,6 +236,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
               ...user._user,
               ...appUser,
             };
+
+            NotificationService.saveTokenToDatabase();
 
             const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
             userStore.setSignedInUser(filteredUser);
