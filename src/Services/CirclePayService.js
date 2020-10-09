@@ -2,7 +2,7 @@ import axios from 'axios';
 import {circlePayUrl} from '~/Config';
 import auth from '@react-native-firebase/auth';
 var base64 = require('base-64');
-const openpgp = require('openpgp');
+import * as openpgp from 'react-native-fast-openpgp';
 
 const axiosClient = axios.create({
   baseURL: circlePayUrl(),

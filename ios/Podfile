@@ -49,6 +49,8 @@ target 'common' do
   use_native_modules!
   reactnative
   native
+  pod 'react-native-fast-openpgp', :path => '../node_modules/react-native-fast-openpgp'
+
 end
 
 target 'common-stg' do
