@@ -62,6 +62,7 @@ const ProposalScreen = ({
 }) => {
   const [ votingProcessState, setVotingProcessState ] = useState({inProgress: false, error: false});
   const [ proposalScreenInfo, setProposalScreenInfo ] = useState(proposalCardInfo);
+  const [ isHeaderHidden, setIsHeaderHidden ] = useState(false);
   const [ isSending, setIsSending ] = useState(false);
   const [ isMember, setIsMember ] = useState(false);
   const [ isProposer, setIsProposer ] = useState(false);
@@ -88,6 +89,13 @@ const ProposalScreen = ({
   // Values for vote param required from the blockchain
   const VOTE_APPROVE = 1;
   const VOTE_REJECT = 2;
+  let currTabViewScroll = 0;
+
+  useEffect(() => {
+    console.log('QWEQEWQEQEEQWEQE');
+
+
+  }, []);
 
   useEffect(() => {
     let unsubscribe = null;
@@ -101,6 +109,11 @@ const ProposalScreen = ({
         currProposedUser = await UserService.getInstance().getUserById(
           currProposalInfo.join.proposedMemberId
         );
+
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        navigation.setParams({
+          subtitle: currProposalDao?.metadata?.name,
+        });
       }
       //FundingRequest proposal
       else {
@@ -108,37 +121,43 @@ const ProposalScreen = ({
           currProposalInfo.fundingRequest.beneficiary
         );
         funding = currProposalInfo.fundingRequest.amount;
+
+        navigation.setParams({
+          title: currProposalDao?.metadata?.name,
+        });
       }
 
       setProposalScreenInfo(
         {
           proposalInfo: {...currProposalInfo, funding},
           proposedUser: currProposedUser,
+          proposalDao: currProposalDao,
         }
       );
 
-      navigation.setParams({
-        ...(currProposalInfo.type === 'Join' && {
-          title: 'Request to join',
-          subtitle: currProposalDao?.metadata?.name,
-        }),
-      });
+
     };
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        const currProposalInfo = await ProposalService.getInstance().getProposalInfo(
-          currProposalId
-        );
-        logger.log('currProposalInfo -->', currProposalInfo);
+        // const currProposalInfo = await ProposalService.getInstance().getProposalInfo(
+        //   currProposalId
+        // );
+        // logger.log('currProposalInfo -->', currProposalInfo);
 
-        await loadProposalInfo(currProposalInfo);
+        // await loadProposalInfo(currProposalInfo);
 
         unsubscribe = await ProposalService.getInstance().subscribeToProposalById(currProposalId,
           async (updatedProposalInfo) => {
+            if (updatedProposalInfo.type === PROPOSAL_TYPE.Join) {
+              navigation.setParams({
+                title: 'Request to join',
+              });
+            }
+
             const currentDao = await DaoService.getInstance().getDaoById(updatedProposalInfo.dao);
             setIsMember(userInfo && isDaoMember(currentDao.members));
-            setIsProposer(userStore.isProposer(currProposalInfo));
+            setIsProposer(userStore.isProposer(updatedProposalInfo));
             await loadProposalInfo(updatedProposalInfo, currentDao);
           }
         );
@@ -161,6 +180,7 @@ const ProposalScreen = ({
     };
   }, [proposalId]);
 
+
   const [
     isApprovalBottomModalVisible,
     setIsApprovalBottomModalVisible,
@@ -168,7 +188,7 @@ const ProposalScreen = ({
 
   const [ isVoteByYou, setIsVoteByYou ] = useState(false);
   const [ voteType, setVoteType ] = useState(false);
-  const [ index, setIndex ] = useState(1);
+  const [ index, setIndex ] = useState(0);
   const [ routes ] = useState([
     {index: 0, key: 'info', icon: 'proposal', iconSelected: 'proposal-selected'},
     {index: 1, key: 'discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
@@ -357,36 +377,38 @@ const ProposalScreen = ({
     }
   };
 
-  const renderVotingButtons = (reference) => (
-    (moment().isBefore(moment.unix(proposalScreenInfo?.proposalInfo?.closingAt)) || !proposalScreenInfo?.proposalInfo?.closingAt) && (
-      <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
-        <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>What's your vote?</Text>
-        <View style={layout.flexRow}>
-          <TouchableOpacity
-            onPress={(e) => openApprovalSheet(true)}
-            style={{...styles.actionBtnStyle, ...layout.marginRightS}}
-          >
-            <Icon name="approved-24" color={colors.lightishGreen} size={24}/>
-          </TouchableOpacity>
+  const renderVotingButtons = (reference) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    return (
+      (moment().isBefore(moment.unix(proposalScreenInfo?.proposalInfo?.closingAt)) || !proposalScreenInfo?.proposalInfo?.closingAt) && (
+        <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
+          <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>What's your vote?</Text>
+          <View style={layout.flexRow}>
+            <TouchableOpacity
+              onPress={(e) => openApprovalSheet(true)}
+              style={{...styles.actionBtnStyle, ...layout.marginRightS}}
+            >
+              <Icon name="approved-24" color={colors.lightishGreen} size={24} />
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={(e) => openApprovalSheet(false)}
-            style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
-            <Icon name="reject-24" color={colors.against} size={24}/>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={(e) => openApprovalSheet(false)}
+              style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
+              <Icon name="reject-24" color={colors.against} size={24} />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    ));
+      ));
+  };
 
 
   const initialLayout = {width: screenWidth};
 
 
-  let headerContainerAddonStyle = {width: '100%'};
-  LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-  if (index === 1) {
-    headerContainerAddonStyle = {...headerContainerAddonStyle, ...{height: 0}};
-  }
+  // let headerContainerAddonStyle = {};
+  // if (index === 1) {
+  //   headerContainerAddonStyle = {...headerContainerAddonStyle, ...{height: 0}};
+  // }
 
   const headerContainerStyle = {
     ...layout.content,
@@ -417,7 +439,38 @@ const ProposalScreen = ({
   // const stickyTabBarStyle = {position: 'absolute', top: -80, width: '100%', paddingBottom: 5, zIndex: 999};
 
   const onSetIndex = (item) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setIsHeaderHidden(item === 1);
     setIndex(item);
+  };
+
+  const onTabViewScroll = (e) => {
+
+    const currScrollY = e.nativeEvent.contentOffset.y;
+    console.log('onTabViewScroll', currScrollY, currTabViewScroll);
+    // if (!isHeaderHidden && currScrollY > currTabViewScroll) {
+    //   setIsHeaderHidden(true);
+    // }
+
+    //if (isHeaderHidden) {
+
+    if (currScrollY > currTabViewScroll) {
+      if (!isHeaderHidden) {
+        console.log('HIDE');
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setIsHeaderHidden(true);
+      }
+    } else if (currScrollY <= 0) {
+      if (isHeaderHidden) {
+        console.log('SHOW');
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setIsHeaderHidden(false);
+      }
+    }
+    //}
+
+
+    currTabViewScroll = currScrollY;
   };
 
   const renderScene = ({route}) => {
@@ -427,12 +480,14 @@ const ProposalScreen = ({
         proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
         proposalInfo={proposalScreenInfo?.proposalInfo}
         showMore={() => onSetIndex(1)}
+        onTabViewScroll={onTabViewScroll}
       />;
     case 'discussions':
       return <ProposalDiscussion
         proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
         inputRef={inputRef}
         scrollViewRef={scrollViewRef}
+        onTabViewScroll={onTabViewScroll}
       />;
     default:
       return null;
@@ -498,8 +553,8 @@ const ProposalScreen = ({
           }}
         > */}
         {proposalScreenInfo?.proposalInfo && (
-          <View style={headerContainerAddonStyle}>
-            <View style={{...headerContainerStyle}}>
+          <View style={isHeaderHidden ? {height: 1, marginTop: -1} : {}}>
+            <View style={headerContainerStyle}>
               {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
                 <View style={{...layout.content, width: '100%', padding: 0}}>
                   <ProposalCardHeader
