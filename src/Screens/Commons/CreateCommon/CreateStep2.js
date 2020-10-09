@@ -30,6 +30,7 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [segmentedIndex, setSegmentedIndex] = useState(0);
+  const [contributionIndex, setContributionIndex] = useState(0);
   const [pickDate, setPickDate] = useState(null);
   const [show, setShow] = useState(false);
 
@@ -44,7 +45,30 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
 
   useEffect(() => {
     onTabChange(0); // pre-select 1 week at first render
+    onContributionTabChange(0); // pre-select
   }, []);
+
+  const onContributionTabChange = (index) => {
+    const name = CreateCommonForm.CONTRIBUTION;
+    fundingFormStore.registerFormField(name, 'required');
+    switch (index) {
+    case 0: {
+      fundingFormStore.fieldChanged(
+        name,
+        'one-time'
+      );
+      break;
+    }
+    case 1: {
+      fundingFormStore.fieldChanged(
+        name,
+        'monthly'
+      );
+      break;
+    }
+    }
+    setContributionIndex(index);
+  };
 
   /* useEffect(() => {
     const name = CreateCommonForm.DEADLINE;
@@ -199,6 +223,17 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
               height: 1,
               marginBottom: 40,
             }}
+          />
+          <Text style={styles.label}>{'Contribution'}</Text>
+          <SegmentedControlTab
+            tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 44}}
+            tabStyle={{borderColor: colors.grey4}}
+            activeTabStyle={{backgroundColor: colors.mainBlue}}
+            values={['One-time', 'Monthly']}
+            tabTextStyle={styles.tabTextStyle}
+            borderRadius={8}
+            selectedIndex={contributionIndex}
+            onTabPress={onContributionTabChange}
           />
           <TextInputFieldWithIcon
             iconName="dollar"
@@ -410,8 +445,3 @@ export default inject(
   'agendaFormStore',
   'reviewFormStore',
 )(observer(CreateStep2));
-
-//generalInfoFormStore
-//fundingFormStore
-//agendaFormStore
-//reviewFormStore

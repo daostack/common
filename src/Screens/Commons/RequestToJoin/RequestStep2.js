@@ -19,10 +19,10 @@ import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import MembershipRequest from './MembershipRequest';
-import {string, object, bool, shape} from 'prop-types';
+import {string, object, bool, shape, func} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params: {skipFirstStep, currCommon, currDaoId}}}) => {
+const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params: {skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const {name} = currCommon.name;
@@ -44,6 +44,7 @@ const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params: {s
           currDaoId: currDaoId,
           currCommon: currCommon,
           skipFirstStep: skipFirstStep,
+          refreshFeed,
         },
       });
       navigation.dispatch(navigate);
@@ -146,6 +147,7 @@ RequestStep2.propTypes = {
     params: shape({
       skipFirstStep: bool,
       currDaoId: string,
+      refreshFeed: func,
     }),
   }),
   daoStore: shape({

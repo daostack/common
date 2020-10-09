@@ -17,7 +17,7 @@ import DiscussionList from '../../Discussions/DiscussionList';
 import {inject, observer} from 'mobx-react';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '~/Components/Commons/CommonHeader';
-import {calcIsFundingStage, numberFormatter} from '../../../Util';
+import {calcIsFundingStage} from '../../../Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '~/Services/ProposalService';
 import DaoService from '~/Services/DaoService';
@@ -30,7 +30,7 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
-import {object, shape} from 'prop-types';
+import {object, shape, func} from 'prop-types';
 import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
@@ -57,6 +57,8 @@ const CommonProfile = ({
    */
   const [ isMember, setMemberState ] = useState(false);
   const window = Dimensions.get('window');
+
+  const {refreshFeed} = params;
 
   const [ index, setIndex ] = useState(0);
   const [ routes ] = useState([
@@ -275,26 +277,31 @@ const CommonProfile = ({
         paddingTop: !isMember ? sizeL : sizeS,
         paddingBottom: isMember ? 0 : sizeL,
       }}>
-        <TouchableOpacity
-          onPress={openCommonMembers}
-          style={layout.flexRow}>
-          <View style={layout.flexRow}>
-            <Text style={text.h4Black}>
-              {pendingProposalsData &&// just to be showed at the same time
-              currCommon.memberCount +
-              ' ' +
-              `Member${currCommon.memberCount !== 1 ? 's' : ''}`}
-            </Text>
-          </View>
-          <View style={{...layout.flexRow, ...layout.marginLeftS}}>
-            <Text style={text.h4BlackRegular}>
-              {pendingProposalsData &&
-              pendingProposalsData.pendingProposalCount}{' '}
-              Pending
-            </Text>
-            <Icon name="right-arrow"/>
-          </View>
-        </TouchableOpacity>
+        {
+          pendingProposalsData ?
+            (
+              <TouchableOpacity
+                onPress={openCommonMembers}
+                style={layout.flexRow}>
+                <View style={layout.flexRow}>
+                  <Text style={text.h4Black}>
+                    {`${currCommon.memberCount} Member${currCommon.memberCount !== 1 ? 's' : ''}`}
+                  </Text>
+                </View>
+                <View style={{...layout.flexRow, ...layout.marginLeftS}}>
+                  <Text style={text.h4BlackRegular}>
+                    {`${pendingProposalsData.pendingProposalCount}  Pending`}
+                  </Text>
+                  <Icon name="right-arrow" />
+                </View>
+              </TouchableOpacity>
+            )
+            : (
+              <Placeholder Animation={Fade}>
+                <PlaceholderLine width={50} height={9} style={{alignSelf: 'center'}} />
+              </Placeholder>
+            )
+        }
         {isMember && <TouchableOpacity
           onPress={openCommonMembers}
           style={styles.membersAction}>
@@ -360,6 +367,7 @@ const CommonProfile = ({
           currCommon: currCommon,
           currDaoId: currCommon.id,
           skipFirstStep: shouldSkipRules,
+          refreshFeed,
         },
       });
       navigation.dispatch(navigate);
@@ -389,6 +397,9 @@ const CommonProfile = ({
   const openProposalScreen = () => {
     navigation.navigate('ProposalScreen', {
       proposalId: pendingProposalsData.usersPendingProposal?.id,
+      proposalCardInfo: {
+        proposalInfo: pendingProposalsData.usersPendingProposal,
+      },
       screenTitle: currCommon.name,
       commonBalance: currCommon.balance,
       isMember,
@@ -688,10 +699,7 @@ const CommonProfile = ({
                   members: currCommon.memberCount,
                   // TODO: get this value. Is it even tracked in the contract? need to check.
                   raised: currCommon.balance,
-                  currentBudget: numberFormatter(
-                    // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
-                    currCommon.tokenTotalSupply
-                  ),
+                  currentBudget: currCommon.tokenTotalSupply,
                 }}
               />
             </View>
@@ -822,6 +830,7 @@ CommonProfile.propTypes = {
     params: shape({
       //commonId: string,
       currCommon: object,
+      refreshFeed: func,
       //showRequestSentModal: func,
       //createdProposalId: func,
 

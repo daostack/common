@@ -144,8 +144,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
     DaoService.getInstance().getDaoList(loadDaosList);
   }, [refreshing]);
 
-
-  useEffect(() => {
+  const filterCommons = () => {
     setIsSplited(false);
     daoStore.setDaos(null);
     setAllDaosGroup(null);
@@ -164,7 +163,13 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
         setIsSplited(true);
       });
     });
+
     DaoService.getInstance().subscribeToDaosList(loadDaosList);
+  };
+
+
+  useEffect(() => {
+    filterCommons();
   }, [userStore.signedInUser]);
 
   const onAddCommon = () => {
@@ -252,13 +257,19 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
     </View>
   );
 
+  const refreshFeed = () => {
+    filterCommons();
+  };
+
   const navigateToCommon = (common) => {
     const navigate = CommonActions.navigate({
       name: 'CommonProfile',
       params: {
         currCommon: common,
+        refreshFeed,
       },
     });
+
     navigation.dispatch(navigate);
   };
 
