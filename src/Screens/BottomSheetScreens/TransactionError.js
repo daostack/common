@@ -21,7 +21,7 @@ const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
   return (
     <View style={styles.scrollView}>
       <View style={styles.body}>
-        {(!showMore && errorObj) && (
+        {(errorObj) && (
           <TouchableOpacity
             style={styles.icon}
             onPress={toggleShowMore}
@@ -44,8 +44,9 @@ const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
         {showMore ? (
           <View>
             <Text>Error ID: {errorObj.errorId}</Text>
-            <Text>Error Name: {errorObj.name}</Text>
-            <Text>Error Status: {errorObj.statusCode}</Text>
+            <Text>Error Status: {errorObj.errorCode}</Text>
+            <Text>Error Name: {errorObj.errorName}</Text>
+            <Text>Full error text: {errorObj.error}</Text>
           </View>
         ) : (
           <View style={styles.textWithIconContainer}>

@@ -59,8 +59,10 @@ export const showErrorPopUp = (bottomSheetStore, arg) => {
   if (arg instanceof Error) {
     const errorObj = getErrorObject(arg);
 
+    console.log(errorObj);
+
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {
-      errorMessage: errorObj.userMessage,
+      errorMessage: errorObj.errorMessage,
       errorId: errorObj.errorId,
       errorObj,
     });
@@ -73,16 +75,14 @@ export const showErrorPopUp = (bottomSheetStore, arg) => {
 
 export const getErrorObject = (axiosError) => {
   try {
-    return JSON.parse(
-      axiosError.response.data.error.errorObject
-    );
+    return axiosError.response.data;
   } catch (e) {
     logger.error('Something went wrong trying to parse the error object', e);
 
     return {
-      userMessage: 'Something bad happened',
+      errorMessage: 'Something bad happened',
       errorId: 'Cannot retrieve the ID if the error',
-      statusCode: 500,
+      errorCode: 500,
     };
   }
 };
