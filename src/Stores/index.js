@@ -7,7 +7,6 @@ import {
   PaymentFormStore,
   PersonalContributionFormStore,
   IntroduceYourselfFormStore,
-  BillingDetailsFormStore,
 } from '~/FormStores/RequestToJoin';
 
 import {
@@ -20,6 +19,8 @@ import {
 import UserStore from './UserStore';
 import DaoStore from './DaoStore';
 import BottomSheetStore from './BottomSheetStore';
+
+import {BillingDetailsFormStore} from '../FormStores/RequestToJoin';
 
 export default {
   completeAccountFormStore: new CompleteAccountFormStore(),

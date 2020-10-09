@@ -17,8 +17,6 @@ const RequestStepHeader = ({isFirstStepSkipped, currentIndex}) => {
       return styles.oval;
     }
 
-    console.log(currentIndex, index)
-
     if (currentIndex > index) {
       return styles.ovalDone;
     }

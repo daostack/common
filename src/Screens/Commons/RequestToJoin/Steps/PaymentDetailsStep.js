@@ -39,6 +39,7 @@ const PaymentDetailsStep = ({
   paymentFormStore,
   introduceYourselfFormStore,
   personalContributionFormStore,
+  billingDetailsFormStore,
   bottomSheetStore,
 }) => {
   const isMonthly = currCommon.metadata.contribution === 'monthly';
@@ -78,35 +79,67 @@ const PaymentDetailsStep = ({
           expDate: formData.expiration_date.replace('/', ''),
         };*/
 
-        navigation.navigate({name: 'FullScreenCreationLoader', params: {title: 'Creating your membership request', refreshFeed}});
+        // export interface ICardData {
+        //     billingDetails: {
+        //       name: string,
+        //         city: string,
+        //         country: string,
+        //         line1: string,
+        //         postalCode: string,
+        //         district: string,
+        //     },
+        //     expMonth: number,
+        //       expYear: number,
+        //       metadata: {
+        //       email: string,
+        //         ipAddress: string,
+        //         sessionId: string,
+        //     },
+        //     keyId: string,
+        //       encryptedData: string,
+        //       proposalId: string,
+        //       idempotencyKey: string,
+        //   }
+        const billingDetails = billingDetailsFormStore.getFormFieldsJson();
 
-        // Skip mangopay for now, as the service is not responding and we are not using mangopay anyhow
-        // if (Number(data.funding) > 0) {
-        //   const preAuthId = await preauthorizePayment(cardData, Number(data.funding), navigation);
-        //   data = { ...data, preAuthId };
-        //   console.log('PREAUTH ID', preAuthId);
-        // }
+        console.log(billingDetails, billingDetailsFormStore.getFormFieldsJson(), paymentFormStore.getFormFieldsJson());
 
-        const proposalId = await ArcService.createRequestToJoin(
-          currDaoId,
-          data,
-        );
-
-        navigation.pop();
-
-        const navigate = CommonActions.navigate({
-          name: 'CommonProfile',
-          params: {
-            showRequestSentModal: true,
-            createdProposalId: proposalId,
+        const cardData = {
+          billingDetails: {
+            name: billingDetails.FullName,
+            city: billingDetails.City,
+            country: billingDetails.Country,
+            line1: billingDetails.Address,
+            postalCode: billingDetails.PostalCode,
+            district: billingDetails.District
           },
-        });
+        };
 
-        if (typeof refreshFeed === 'function') {
-          refreshFeed();
-        }
+        // @notice If I committed this commented please hit me up
+        // navigation.navigate({name: 'FullScreenCreationLoader', params: {title: 'Creating your membership request', refreshFeed}});
 
-        navigation.dispatch(navigate);
+
+        // @notice If I committed this commented please hit me up
+        // const proposalId = await ArcService.createRequestToJoin(
+        //   currDaoId,
+        //   data,
+        // );
+        //
+        // navigation.pop();
+        //
+        // const navigate = CommonActions.navigate({
+        //   name: 'CommonProfile',
+        //   params: {
+        //     showRequestSentModal: true,
+        //     createdProposalId: proposalId,
+        //   },
+        // });
+        //
+        // if (typeof refreshFeed === 'function') {
+        //   refreshFeed();
+        // }
+        //
+        // navigation.dispatch(navigate);
       } catch (e) {
         navigation.pop();
         showErrorPopUp(bottomSheetStore, e?.response?.data?.error?.error ? e.response.data.error.error : e.message);
@@ -323,6 +356,10 @@ PaymentDetailsStep.propTypes = {
     getFormFieldsJson: func,
     form: object,
   }),
+  billingDetailsFormStore: shape({
+    getFormFieldsJson: func,
+    form: object,
+  }),
   bottomSheetStore: object,
 };
 
@@ -330,6 +367,7 @@ export default inject(
   'bottomSheetStore',
   'introduceYourselfFormStore',
   'personalContributionFormStore',
+  'billingDetailsFormStore',
   'paymentFormStore',
   'userStore',
 )(observer(PaymentDetailsStep));
