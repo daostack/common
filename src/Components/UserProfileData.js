@@ -29,27 +29,21 @@ const UserProfileData = ({
 
   useEffect(() => {
     const getUser = async () => {
-      try {
-        if (userId === userInfo?.uid) {
-          setUser(userInfo);
-          setIsOwnProfile(true);
-        } else {
-          const usr = await UserService.getInstance().getUserById(userId);
+      if (userId === userInfo?.uid) {
+        setUser(userInfo);
+        setIsOwnProfile(true);
+      } else {
+        const usr = await UserService.getInstance().getUserById(userId);
 
-          setUser(usr);
-          setIsOwnProfile(false);
+        setUser(usr);
+        setIsOwnProfile(false);
 
-          console.log(usr);
-
-          navigation.setOptions({
-            // title: (usr.displayName?.length > 20)
-            //   ? ((usr.displayName.substring(0, 17)) + '...')
-            //   : usr.displayName,
-            title: usr.displayName?.match(/.{1,25}(\s|$)/g)[0],
-          });
-        }
-      } catch (error) {
-        logger.log('error: ', error);
+        navigation.setOptions({
+          // The regex bellow is used to separate names and
+          // make them less at most 25 character, but with cutting
+          // the name only at whitespaces
+          title: usr.displayName?.match(/.{1,25}(\s|$)/g)[0],
+        });
       }
     };
 
