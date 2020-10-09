@@ -343,11 +343,7 @@ PaymentDetailsStep.propTypes = {
     getFormFieldsJson: func,
     form: object,
   }),
-<<<<<<< Updated upstream
   billingDetailsFormStore: shape({
-=======
-  billingDetailsFromStore: shape({
->>>>>>> Stashed changes
     getFormFieldsJson: func,
     form: object,
   }),
@@ -358,11 +354,7 @@ export default inject(
   'bottomSheetStore',
   'introduceYourselfFormStore',
   'personalContributionFormStore',
-<<<<<<< Updated upstream
   'billingDetailsFormStore',
-=======
-  'billingDetailsFromStore',
->>>>>>> Stashed changes
   'paymentFormStore',
   'userStore',
 )(observer(PaymentDetailsStep));
