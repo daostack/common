@@ -15,7 +15,6 @@ import TextInputField from '../../../../Components/FormFields/TextInputField';
 import {CountrySelectField} from '../../../../Components/FormFields/CountrySelectField';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
-import {getCountryCodeFromLabel} from '../../../../Util/countries';
 
 const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, personalContributionFormStore}) => {
   const {skipFirstStep, currCommon, currDaoId, refreshFeed} = route.params;
@@ -138,7 +137,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
                 validateRule: 'required|string',
               }}
             />
-
+            
             <CountrySelectField
               label="Country"
               onChange={(x) => {
