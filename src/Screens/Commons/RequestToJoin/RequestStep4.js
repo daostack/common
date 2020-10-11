@@ -62,34 +62,6 @@ const RequestStep4 = ({navigation,
           preAuthId: false,
         };
 
-        // move this configuration to CirclePayService
-        const encryptedData = {
-          number: `${formData.card_number}`,
-          cvv: `${formData.cvv}`,
-        };
-        const cardData = {
-          billingDetails: {
-            name: 'Customer 0002',
-            city: 'Test City',
-            country: 'US',
-            line1: 'Test',
-            postalCode: '11111',
-            district: 'MA',
-          },
-          expMonth: +formData.expiration_date.split('/')[0],
-          expYear: +(`20${formData.expiration_date.split('/')[1]}`),
-          metadata: {
-            email: 'customer-0002@circle.com',
-          },
-        };
-
-        // Skip mangopay for now, as the service is not responding and we are not using mangopay anyhow
-        // if (Number(data.funding) > 0) {
-        //   const preAuthId = await preauthorizePayment(cardData, Number(data.funding), navigation);
-        //   data = { ...data, preAuthId };
-        //   console.log('PREAUTH ID', preAuthId);
-        // }
-
         navigation.navigate({name: 'FullScreenCreationLoader', params: {title: 'Creating your membership request'}});
 
         const proposalId = await ArcService.createRequestToJoin(
@@ -97,8 +69,7 @@ const RequestStep4 = ({navigation,
           data,
         );
 
-        await createCard(cardData, encryptedData, proposalId);
-
+        await createCard(formData, proposalId);
         navigation.pop();
 
         const navigate = CommonActions.navigate({
