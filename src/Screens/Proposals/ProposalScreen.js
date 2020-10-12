@@ -92,12 +92,6 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    console.log('QWEQEWQEQEEQWEQE');
-
-
-  }, []);
-
-  useEffect(() => {
     let unsubscribe = null;
 
     const loadProposalInfo = async (currProposalInfo, currProposalDao) => {
@@ -170,7 +164,6 @@ const ProposalScreen = ({
       }
     };
   }, [proposalId]);
-
 
   const [
     isApprovalBottomModalVisible,
@@ -394,14 +387,7 @@ const ProposalScreen = ({
       ));
   };
 
-
   const initialLayout = {width: screenWidth};
-
-
-  // let headerContainerAddonStyle = {};
-  // if (index === 1) {
-  //   headerContainerAddonStyle = {...headerContainerAddonStyle, ...{height: 0}};
-  // }
 
   const headerContainerStyle = {
     ...layout.content,
@@ -418,7 +404,6 @@ const ProposalScreen = ({
   const votesCount = votesFor + votesAgainst;
 
   const onSetIndex = (item) => {
-    console.log('onSetIndex -> ', onSetIndex);
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setIsHeaderHidden(item === 1);
     setIndex(item);
@@ -430,13 +415,11 @@ const ProposalScreen = ({
 
     if (currScrollY > currTabViewScroll) {
       if (!isHeaderHidden) {
-        console.log('onTabViewScroll HIDE');
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setIsHeaderHidden(true);
       }
     } else if (currScrollY < 1) {
       if (isHeaderHidden) {
-        console.log('onTabViewScroll SHOW');
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setIsHeaderHidden(false);
       }
@@ -473,15 +456,14 @@ const ProposalScreen = ({
           scrollEventThrottle={16}
           nestedScrollEnabled={true}
           onScroll={(e) => {
-
             onTabViewScroll(e);
 
-
-            //e.nativeEvent.contentOffset.y
             stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
               const isVisible = py < 0;
+
               if (isVisible !== showStickyTabBar) {
                 if (isVisible) {
+                  console.log('SET STICKY BAR TO BE VISIBLE');
                   setShowStickyTabBar(isVisible);
                   Animated.timing(stickyTabBarState.animation, {
                     toValue: 1,
@@ -490,6 +472,7 @@ const ProposalScreen = ({
                   }).start();
 
                 } else {
+                  console.log('SET STICKY BAR TO BE NOT VISIBLE');
                   setShowStickyTabBar(isVisible);
                   Animated.timing(stickyTabBarState.animation, {
                     toValue: 0,
@@ -644,7 +627,7 @@ const ProposalScreen = ({
             </View>
           )}
 
-          <View ref={stickyTabBarRef} style={{flex: 1}}>
+          <View ref={stickyTabBarRef} collapsable={false} >
             <TabView
               navigationState={{index, routes}}
               renderScene={() => null}
