@@ -252,10 +252,12 @@ const ProposalScreen = ({
                 ref={inputRef}
                 editable={true}
                 fontSize={15}
+                placeholder="What do you think?"
                 onChangeText={(currText) => setInputText(currText)}
                 style={{
                   flex: 1,
                   height: 18,
+                  padding: 0,
                   marginHorizontal: 10,
                 }}
               />
@@ -799,9 +801,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderColor: colors.grey4,
     justifyContent: 'center',
-    // borderwidth: 1,
     borderBottomWidth: 1,
-    // height: 60,
     width: screenWidth,
     flexDirection: 'row',
     shadowColor: 'rgba(0, 0, 0, 0.2)',
@@ -814,7 +814,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 15,
-    elevation: 4,
+
+    borderTopWidth: 1,
+    borderTopColor: colors.grey2,
   },
   inputBorder: {
     flex: 1,
