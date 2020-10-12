@@ -134,19 +134,10 @@ const ProposalScreen = ({
           proposalDao: currProposalDao,
         }
       );
-
-
     };
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        // const currProposalInfo = await ProposalService.getInstance().getProposalInfo(
-        //   currProposalId
-        // );
-        // logger.log('currProposalInfo -->', currProposalInfo);
-
-        // await loadProposalInfo(currProposalInfo);
-
         unsubscribe = await ProposalService.getInstance().subscribeToProposalById(currProposalId,
           async (updatedProposalInfo) => {
             if (updatedProposalInfo.type === PROPOSAL_TYPE.Join) {
@@ -447,52 +438,44 @@ const ProposalScreen = ({
   const onTabViewScroll = (e) => {
 
     const currScrollY = e.nativeEvent.contentOffset.y;
-    console.log('onTabViewScroll', currScrollY, currTabViewScroll);
-    // if (!isHeaderHidden && currScrollY > currTabViewScroll) {
-    //   setIsHeaderHidden(true);
-    // }
-
-    //if (isHeaderHidden) {
 
     if (currScrollY > currTabViewScroll) {
       if (!isHeaderHidden) {
-        console.log('HIDE');
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setIsHeaderHidden(true);
       }
-    } else if (currScrollY <= 0) {
+    } else if (currScrollY < 0) {
       if (isHeaderHidden) {
-        console.log('SHOW');
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setIsHeaderHidden(false);
       }
     }
-    //}
-
-
-    currTabViewScroll = currScrollY;
   };
 
-  const renderScene = ({route}) => {
-    switch (route.key) {
-    case 'info':
-      return <ProposalData
-        proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
-        proposalInfo={proposalScreenInfo?.proposalInfo}
-        showMore={() => onSetIndex(1)}
-        onTabViewScroll={onTabViewScroll}
-      />;
-    case 'discussions':
-      return <ProposalDiscussion
-        proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
-        inputRef={inputRef}
-        scrollViewRef={scrollViewRef}
-        onTabViewScroll={onTabViewScroll}
-      />;
-    default:
-      return null;
-    }
-  };
+
+  //   currTabViewScroll = currScrollY;
+  // };
+
+  // const renderScene = ({route}) => {
+  //   switch (route.key) {
+  //   case 'info':
+  //     return <ProposalData
+  //       proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
+  //       proposalInfo={proposalScreenInfo?.proposalInfo}
+  //       showMore={() => onSetIndex(1)}
+  //       onTabViewScroll={onTabViewScroll}
+  //     />;
+  //   case 'discussions':
+  //     return <ProposalDiscussion
+  //       proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
+  //       inputRef={inputRef}
+  //       scrollViewRef={scrollViewRef}
+  //       onTabViewScroll={onTabViewScroll}
+  //     />;
+  //   default:
+  //     return null;
+  //   }
+  // };
 
   return (
     <React.Fragment>
@@ -516,14 +499,17 @@ const ProposalScreen = ({
           </View>
         )}
 
-        {/* <ScrollView
+        <ScrollView
           style={{
             flex: 1,
-            backgroundColor: colors.grey2,
           }}
           ref={scrollViewRef}
           scrollEventThrottle={16}
           onScroll={(e) => {
+
+            onTabViewScroll(e);
+
+
             //e.nativeEvent.contentOffset.y
             stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
               const isVisible = py < 0;
@@ -551,43 +537,43 @@ const ProposalScreen = ({
               setShowBottomVotingButtonsContainer(py < 0);
             });
           }}
-        > */}
-        {proposalScreenInfo?.proposalInfo && (
-          <View style={isHeaderHidden ? {height: 1, marginTop: -1} : {}}>
-            <View style={headerContainerStyle}>
-              {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
-                <View style={{...layout.content, width: '100%', padding: 0}}>
-                  <ProposalCardHeader
-                    isScreenHeader={true}
-                    isBoosted={true}
-                    stage={proposalScreenInfo?.proposalInfo?.stageStr}
-                    winningOutcome={proposalScreenInfo?.proposalInfo?.winningOutcome}
-                    closingAt={proposalScreenInfo?.proposalInfo.closingAt}
-                  />
-                  {proposalScreenInfo?.proposedUser && (
+        >
+          {proposalScreenInfo?.proposalInfo && (
+            <View style={isHeaderHidden ? {height: 1, marginTop: -1} : {}}>
+              <View style={headerContainerStyle}>
+                {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
+                  <View style={{...layout.content, width: '100%', padding: 0}}>
+                    <ProposalCardHeader
+                      isScreenHeader={true}
+                      isBoosted={true}
+                      stage={proposalScreenInfo?.proposalInfo?.stageStr}
+                      winningOutcome={proposalScreenInfo?.proposalInfo?.winningOutcome}
+                      closingAt={proposalScreenInfo?.proposalInfo.closingAt}
+                    />
+                    {proposalScreenInfo?.proposedUser && (
 
-                    <UserAvatar
-                      image={proposalScreenInfo?.proposedUser?.photoURL}
-                      displayName={proposalScreenInfo?.proposedUser?.displayName}
-                      imageStyle={{width: 46, height: 46}}
+                      <UserAvatar
+                        image={proposalScreenInfo?.proposedUser?.photoURL}
+                        displayName={proposalScreenInfo?.proposedUser?.displayName}
+                        imageStyle={{width: 46, height: 46}}
+                      />
+
+                    )}
+                    <Text style={{...text.h2Black, ...layout.marginBottomL, ...layout.marginTopXS}}>
+                      {proposalScreenInfo?.proposalInfo?.description?.title || 'Unknown title'}
+                    </Text>
+                  </View>
+                ) : (
+                  <React.Fragment>
+                    <ProposalCardHeader
+                      isScreenHeader={true}
+                      isBoosted={true}
+                      stage={proposalScreenInfo?.proposalInfo?.stageStr}
+                      winningOutcome={proposalScreenInfo?.proposalInfo?.winningOutcome}
+                      closingAt={proposalScreenInfo?.proposalInfo.closingAt}
                     />
 
-                  )}
-                  <Text style={{...text.h2Black, ...layout.marginBottomL, ...layout.marginTopXS}}>
-                    {proposalScreenInfo?.proposalInfo?.description?.title || 'Unknown title'}
-                  </Text>
-                </View>
-              ) : (
-                <React.Fragment>
-                  <ProposalCardHeader
-                    isScreenHeader={true}
-                    isBoosted={true}
-                    stage={proposalScreenInfo?.proposalInfo?.stageStr}
-                    winningOutcome={proposalScreenInfo?.proposalInfo?.winningOutcome}
-                    closingAt={proposalScreenInfo?.proposalInfo.closingAt}
-                  />
-
-                  {proposalScreenInfo?.proposedUser ? (
+                    {proposalScreenInfo?.proposedUser ? (
                       <>
                         <UserAvatar
                           image={proposalScreenInfo?.proposedUser?.photoURL}
@@ -611,114 +597,114 @@ const ProposalScreen = ({
 
                       </View>
                       </>
-                  ) :
-                    (<Placeholder Animation={Fade}>
-                      <PlaceholderMedia
-                        size={60}
-                        isRound={true}
-                        style={{alignSelf: 'center', marginBottom: 40}}
-                      />
-                      <PlaceholderLine width={50} style={{alignSelf: 'center'}} />
-                      <PlaceholderLine width={30} style={{alignSelf: 'center', marginBottom: 28}} />
-                    </Placeholder>)
-                  }
-                </React.Fragment>
-              )}
+                    ) :
+                      (<Placeholder Animation={Fade}>
+                        <PlaceholderMedia
+                          size={60}
+                          isRound={true}
+                          style={{alignSelf: 'center', marginBottom: 40}}
+                        />
+                        <PlaceholderLine width={50} style={{alignSelf: 'center'}} />
+                        <PlaceholderLine width={30} style={{alignSelf: 'center', marginBottom: 28}} />
+                      </Placeholder>)
+                    }
+                  </React.Fragment>
+                )}
 
-              <View style={styles.contributionCard}>
+                <View style={styles.contributionCard}>
 
-                <View style={styles.requestedAmountContainer}>
-                  <Text style={{...text.smallBlackText, ...layout.marginRightS}}>
-                    {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
-                      'Requested amount' : 'Contribution'}
-                  </Text>
-                  <Text style={text.h2Black}>{`$${proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
-                    ? proposalScreenInfo?.proposalInfo.fundingRequest.amount / 100
-                    : proposalScreenInfo?.proposalInfo.description.funding / 100}`}
-                  </Text>
-                </View>
-                {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+                  <View style={styles.requestedAmountContainer}>
+                    <Text style={{...text.smallBlackText, ...layout.marginRightS}}>
+                      {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
+                        'Requested amount' : 'Contribution'}
+                    </Text>
+                    <Text style={text.h2Black}>{`$${proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+                      ? proposalScreenInfo?.proposalInfo.fundingRequest.amount / 100
+                      : proposalScreenInfo?.proposalInfo.description.funding / 100}`}
+                    </Text>
+                  </View>
+                  {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
                 && <Text
                   style={text.smallBlackText}>{`Available funds: ${commonBalance !== undefined ? '$' + commonBalance / 100 : ''}`}</Text>
-                }
-              </View>
+                  }
+                </View>
 
-              <View style={{...layout.content, width: '100%', paddingHorizontal: 0}}>
+                <View style={{...layout.content, width: '100%', paddingHorizontal: 0}}>
 
-                <View style={styles.proposalProgressInfo}>
-                  <View
-                    style={{...layout.content, ...layout.flexRow, padding: 0}}>
-                    <Icon
-                      name="user-approved"
-                      color={colors.lightishGreen}
-                      size={25}
-                      style={layout.marginRightXS}/>
-                    <Text style={text.lightishGreenText}>
-                      {votesFor}
+                  <View style={styles.proposalProgressInfo}>
+                    <View
+                      style={{...layout.content, ...layout.flexRow, padding: 0}}>
+                      <Icon
+                        name="user-approved"
+                        color={colors.lightishGreen}
+                        size={25}
+                        style={layout.marginRightXS}/>
+                      <Text style={text.lightishGreenText}>
+                        {votesFor}
+                      </Text>
+                    </View>
+
+                    <Text style={text.smallBlackText}>
+                      {votesCount === 0 ? 'No votes yet' : `${votesCount} ${votesCount > 1 ? 'votes' : 'vote'}`}
                     </Text>
+
+                    <View
+                      style={{...layout.content, ...layout.flexRow, padding: 0}}>
+                      <Text style={text.againstText}>
+                        {votesAgainst}
+                      </Text>
+                      <Icon
+                        name="user-rejected"
+                        color={colors.against}
+                        size={25}
+                        style={layout.marginLeftXS}/>
+                    </View>
                   </View>
-
-                  <Text style={text.smallBlackText}>
-                    {votesCount === 0 ? 'No votes yet' : `${votesCount} ${votesCount > 1 ? 'votes' : 'vote'}`}
-                  </Text>
-
-                  <View
-                    style={{...layout.content, ...layout.flexRow, padding: 0}}>
-                    <Text style={text.againstText}>
-                      {votesAgainst}
-                    </Text>
-                    <Icon
-                      name="user-rejected"
-                      color={colors.against}
-                      size={25}
-                      style={layout.marginLeftXS}/>
+                  <View style={{
+                    ...styles.proposalProgressBar,
+                    ...{backgroundColor: isNaN(progressBarWidthPercent) ? colors.grey4 : colors.against},
+                  }}>
+                    <View
+                      style={{...styles.proposalInnerProgressBar, width: `${progressBarWidthPercent}%`}}
+                    />
                   </View>
                 </View>
-                <View style={{
-                  ...styles.proposalProgressBar,
-                  ...{backgroundColor: isNaN(progressBarWidthPercent) ? colors.grey4 : colors.against},
-                }}>
-                  <View
-                    style={{...styles.proposalInnerProgressBar, width: `${progressBarWidthPercent}%`}}
-                  />
-                </View>
-              </View>
 
-              <View style={{...layout.flexRow, justifyContent: 'space-between', width: '100%'}}>
-                {renderVoting && renderVotingButtons(topVotingButtonsRef)}
+                <View style={{...layout.flexRow, justifyContent: 'space-between', width: '100%'}}>
+                  {renderVoting && renderVotingButtons(topVotingButtonsRef)}
+                </View>
               </View>
             </View>
-          </View>
-        )}
-
-        <View ref={stickyTabBarRef} style={{flex: 1}}>
-          <TabView
-            navigationState={{index, routes}}
-            renderScene={renderScene}
-            onIndexChange={onSetIndex}
-            initialLayout={initialLayout}
-            renderTabBar={renderTabBar}
-            style={{backgroundColor: colors.paleGrey}}
-
-          />
-
-          {/* {index === 0 && (
-            <ProposalData
-              proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
-              proposalInfo={proposalScreenInfo?.proposalInfo}
-              showMore={() => onSetIndex(1)}
-            />
           )}
 
-          {index === 1 && (
-            <ProposalDiscussion
-              proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
-              inputRef={inputRef}
-              scrollViewRef={scrollViewRef}
+          <View ref={stickyTabBarRef} style={{flex: 1}}>
+            <TabView
+              navigationState={{index, routes}}
+              renderScene={() => null}
+              onIndexChange={onSetIndex}
+              initialLayout={initialLayout}
+              renderTabBar={renderTabBar}
+              style={{backgroundColor: colors.paleGrey}}
+
             />
-          )} */}
-        </View>
-        {/* </ScrollView> */}
+
+            {index === 0 && (
+              <ProposalData
+                proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
+                proposalInfo={proposalScreenInfo?.proposalInfo}
+                showMore={() => onSetIndex(1)}
+              />
+            )}
+
+            {index === 1 && (
+              <ProposalDiscussion
+                proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
+                inputRef={inputRef}
+                scrollViewRef={scrollViewRef}
+              />
+            )}
+          </View>
+        </ScrollView>
 
         {index === 0 ? renderVoting
             && showBottomVotingButtonsContainer && (
