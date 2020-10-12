@@ -20,6 +20,7 @@ const calcStatus = (stage, winningOutcome, hasPassedExpiryDate) => {
     lightColor: '',
     darkColor: '',
     icon: '',
+    opacity: 1,
   };
 
   if (stage === PROPOSAL_STAGE.Executed || hasPassedExpiryDate || stage === PROPOSAL_STAGE.ExpiredInQueue) {
@@ -46,9 +47,10 @@ const calcStatus = (stage, winningOutcome, hasPassedExpiryDate) => {
   }
   if (COUNTDOWN_STATES.includes(stage)) {
     status.text = TITLES.COUNTDOWN;
-    status.lightColor = colors.lightishOrange;
-    status.darkColor = colors.orange;
+    status.lightColor = colors.butterscotch;
+    status.darkColor = colors.mango;
     status.icon = 'clcok';
+    status.opacity = 0.2;
     return status;
   }
 
@@ -105,7 +107,12 @@ const ProposalCardHeader = ({stage, winningOutcome, closingAt, isScreenHeader = 
 
   return isScreenHeader
     ? (
-      <View style={{...styles.stateCard, ...{backgroundColor: headerStatus.darkColor, paddingHorizontal: 50}}}>
+      <View style={{...styles.stateCard, ...{
+        backgroundColor: headerStatus.darkColor,
+        opacity: headerStatus.opacity,
+        paddingHorizontal: 50,
+      }}}
+      >
         <Icon
           style={styles.stateIcon}
           name={headerStatus.icon}
