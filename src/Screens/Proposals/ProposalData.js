@@ -21,7 +21,7 @@ import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
 import {string, func, shape, array, bool, oneOfType} from 'prop-types';
 
-const ProposalData = ({proposalId, proposalInfo, showMore, onTabViewScroll}) => {
+const ProposalData = ({proposalId, proposalInfo, showMore}) => {
   const navigation = useNavigation();
   const [proposalInfoState, setProposalInfo] = useState(proposalInfo);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
@@ -83,10 +83,7 @@ const ProposalData = ({proposalId, proposalInfo, showMore, onTabViewScroll}) => 
   );
 
   return proposalInfoState ? (
-    <ScrollView
-      scrollEventThrottle={16}
-      onScrollBeginDrag={onTabViewScroll}
-    >
+    <>
       <View style={styles.container}>
 
         <Text style={text.h1BlackTitle}>{proposalInfoState.type === PROPOSAL_TYPE.FundingRequest ?
@@ -187,6 +184,7 @@ const ProposalData = ({proposalId, proposalInfo, showMore, onTabViewScroll}) => 
               <View style={{...layout.content, ...layout.flexStart}}>
                 {topMessage.map((currMessage, currIndex) => (
                   <UserMessageCard
+                    key={currIndex}
                     photoURL={currMessage.ownerAvatar}
                     name={currMessage.ownerName}
                     message={currMessage.text}
@@ -211,7 +209,7 @@ const ProposalData = ({proposalId, proposalInfo, showMore, onTabViewScroll}) => 
         onRequestClose={() => setImageGalleryIndex(-1)}
         FooterComponent={ImageGalleryFooter}
       />
-    </ScrollView>
+    </>
   ) : (
     <Loader />
   );

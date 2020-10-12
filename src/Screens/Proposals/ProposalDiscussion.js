@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {Text, StyleSheet, SectionList, View, ScrollView, Image} from 'react-native';
+import {Text, StyleSheet, SectionList, View, Image} from 'react-native';
 import {layout, text, colors, font} from '~/Theme';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
@@ -8,7 +8,7 @@ import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
 import PropTypes, {string, func} from 'prop-types';
 
-const ProposalDiscussion = ({proposalId, scrollViewRef, onTabViewScroll, onScrollRefresh}) => {
+const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
   const chatRef = useRef(null);
   const [msgGroups, setMsgGroups] = useState([]);
 
@@ -77,11 +77,6 @@ const ProposalDiscussion = ({proposalId, scrollViewRef, onTabViewScroll, onScrol
 
   return (
     <View style={{flex: 1, backgroundColor: colors.paleGrey, ...layout.content}}>
-      {/* <ScrollView
-        style={{flex: 1}}
-        scrollEventThrottle={16}
-        onScroll={onTabViewScroll}
-      > */}
       {msgGroups.length > 0 ? (
         <SectionList
           inverted
@@ -126,10 +121,8 @@ const ProposalDiscussion = ({proposalId, scrollViewRef, onTabViewScroll, onScrol
         </View>
       )
       }
-      {/* </ScrollView> */}
     </View>
   );
-  // <Text style={styles.title}>Proposal Discussion</Text>;
 };
 
 ProposalDiscussion.propTypes = {
@@ -151,8 +144,6 @@ const styles = StyleSheet.create({
     ...font.primary.regular,
   },
   emptyContainer: {
-    // flex: 0.8,
-    // paddingHorizontal: 30,
     alignItems: 'center',
     justifyContent: 'center',
   },

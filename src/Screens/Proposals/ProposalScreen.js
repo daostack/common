@@ -418,6 +418,7 @@ const ProposalScreen = ({
   const votesCount = votesFor + votesAgainst;
 
   const onSetIndex = (item) => {
+    console.log('onSetIndex -> ', onSetIndex);
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setIsHeaderHidden(item === 1);
     setIndex(item);
@@ -429,11 +430,13 @@ const ProposalScreen = ({
 
     if (currScrollY > currTabViewScroll) {
       if (!isHeaderHidden) {
+        console.log('onTabViewScroll HIDE');
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setIsHeaderHidden(true);
       }
     } else if (currScrollY < 1) {
       if (isHeaderHidden) {
+        console.log('onTabViewScroll SHOW');
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setIsHeaderHidden(false);
       }
@@ -468,6 +471,7 @@ const ProposalScreen = ({
           }}
           ref={scrollViewRef}
           scrollEventThrottle={16}
+          nestedScrollEnabled={true}
           onScroll={(e) => {
 
             onTabViewScroll(e);
