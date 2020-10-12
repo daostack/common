@@ -69,7 +69,7 @@ const RequestStep4 = ({navigation,
           data,
         );
 
-        await createCard(formData, proposalId);
+        await createCard({...formData, email: userInfo.email}, proposalId);
         navigation.pop();
 
         const navigate = CommonActions.navigate({
