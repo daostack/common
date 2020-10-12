@@ -430,7 +430,7 @@ const ProposalScreen = ({
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setIsHeaderHidden(true);
       }
-    } else if (currScrollY < 0) {
+    } else if (currScrollY < 1) {
       if (isHeaderHidden) {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setIsHeaderHidden(false);
@@ -500,7 +500,7 @@ const ProposalScreen = ({
           }}
         >
           {proposalScreenInfo?.proposalInfo && (
-            <View style={isHeaderHidden ? {height: 1, marginTop: -1} : {}}>
+            <View style={isHeaderHidden ? {height: 1, marginTop: -1, overflow: 'hidden'} : {}}>
               <View style={headerContainerStyle}>
                 {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
                   <View style={{...layout.content, width: '100%', padding: 0}}>
