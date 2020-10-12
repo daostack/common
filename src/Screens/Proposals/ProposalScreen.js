@@ -415,20 +415,6 @@ const ProposalScreen = ({
 
   const votesCount = votesFor + votesAgainst;
 
-  // const slideUp = {
-  //   transform: [
-  //     {
-  //       translateY: stickyTabBarState.animation.interpolate({
-  //         inputRange: [0.01, 1],
-  //         outputRange: [0, 80],
-  //         extrapolate: 'clamp',
-  //       }),
-  //     },
-  //   ],
-  // };
-
-  // const stickyTabBarStyle = {position: 'absolute', top: -80, width: '100%', paddingBottom: 5, zIndex: 999};
-
   const onSetIndex = (item) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setIsHeaderHidden(item === 1);
@@ -451,31 +437,6 @@ const ProposalScreen = ({
       }
     }
   };
-
-
-  //   currTabViewScroll = currScrollY;
-  // };
-
-  // const renderScene = ({route}) => {
-  //   switch (route.key) {
-  //   case 'info':
-  //     return <ProposalData
-  //       proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
-  //       proposalInfo={proposalScreenInfo?.proposalInfo}
-  //       showMore={() => onSetIndex(1)}
-  //       onTabViewScroll={onTabViewScroll}
-  //     />;
-  //   case 'discussions':
-  //     return <ProposalDiscussion
-  //       proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
-  //       inputRef={inputRef}
-  //       scrollViewRef={scrollViewRef}
-  //       onTabViewScroll={onTabViewScroll}
-  //     />;
-  //   default:
-  //     return null;
-  //   }
-  // };
 
   return (
     <React.Fragment>
