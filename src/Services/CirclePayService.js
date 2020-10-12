@@ -2,7 +2,7 @@ import axios from 'axios';
 import {circlePayUrl} from '~/Config';
 import auth from '@react-native-firebase/auth';
 var base64 = require('base-64');
-import * as openpgp from 'react-native-fast-openpgp';
+import OpenPGP from 'react-native-fast-openpgp';
 
 const axiosClient = axios.create({
   baseURL: circlePayUrl(),
@@ -13,17 +13,9 @@ const getEncryptedData = async (dataToEncrypt) => {
   const {data} = await axiosClient.get('encryption');
   const {keyId, publicKey} = data.data;
   let decodedPublicKey = base64.decode(publicKey);
-
-  //this causes an unprocessable entity for encrypted data:
-  //'message', 'key', and 'encrypt' are undefined here, maybe only on staging & dev?
-  const options = {
-    message: openpgp.message.fromText(JSON.stringify(dataToEncrypt)),
-    publicKeys: (await openpgp.key.readArmored(decodedPublicKey)).keys,
-  };
-
-  return openpgp.encrypt(options).then((ciphertext) => (
+  return OpenPGP.encrypt(JSON.stringify(dataToEncrypt), decodedPublicKey).then((ciphertext) => (
     {
-      encryptedData: base64.encode(ciphertext.data),
+      encryptedData: base64.encode(ciphertext),
       keyId: keyId,
     }
   ));
