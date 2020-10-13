@@ -70,15 +70,6 @@ const CommonAgenda = ({navigation,
             </View>
           )}
 
-          <View style={styles.sectionContainer}>
-            <Text style={text.h3Black}>Campaign period deadline</Text>
-            <Text style={styles.description}>
-              {moment
-                .unix(fundingGoalDeadline)
-                .format('MMM DD, YYYY')}
-            </Text>
-          </View>
-
           {metadata.rules?.length > 0 && (
             <>
             <View style={styles.sectionDividerContent}>
