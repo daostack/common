@@ -17,6 +17,7 @@ import CreateStepDotHeader from './RequestStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '~/Services/ArcService';
+import {createCard} from '~/Services/CirclePayService';
 // import {preauthorizePayment} from '~/Services/MangopayService';
 import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import {showErrorPopUp} from '~/Util';
@@ -53,7 +54,7 @@ const RequestStep4 = ({navigation,
           ...paymentFormStore.getFormFieldsJson(),
         };
 
-        let data = {
+        const data = {
           title: `request to join ${currDaoId} by ${userInfo.ethereumAddress}`,
           description: formData.about_me,
           links: formData.links,
@@ -61,20 +62,9 @@ const RequestStep4 = ({navigation,
           preAuthId: false,
         };
 
-        /*const cardData = {
-          cardNumber: formData.card_number,
-          cvv: formData.cvv,
-          expDate: formData.expiration_date.replace('/', ''),
-        };*/
+        navigation.navigate({name: 'FullScreenCreationLoader', params: {title: 'Creating your membership request'}});
 
-        navigation.navigate({name: 'FullScreenCreationLoader', params: {title: 'Creating your membership request', refreshFeed}});
-
-        // Skip mangopay for now, as the service is not responding and we are not using mangopay anyhow
-        // if (Number(data.funding) > 0) {
-        //   const preAuthId = await preauthorizePayment(cardData, Number(data.funding), navigation);
-        //   data = { ...data, preAuthId };
-        //   console.log('PREAUTH ID', preAuthId);
-        // }
+        await createCard({...formData, email: userInfo.email}, proposalId);
 
         const proposalId = await ArcService.createRequestToJoin(
           currDaoId,
@@ -149,8 +139,8 @@ const RequestStep4 = ({navigation,
             <RequestStepHeaderTitle title="Payment" subtitle={subtitle} />
             <TextInputField
               label="Credit card number"
-              value={/* __DEV__ ? */ 4970104100876299}
-              editable={false}
+              value={/* __DEV__ ? */ 4007410000000006}
+              editable={true}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NUMBER,
                 formStore: paymentFormStore,
@@ -161,7 +151,7 @@ const RequestStep4 = ({navigation,
             <TextInputField
               label="Name on card"
               value={/* __DEV__ ? */ 'Tester Tester'}
-              editable={false}
+              editable={true}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NAME,
                 formStore: paymentFormStore,
@@ -185,9 +175,9 @@ const RequestStep4 = ({navigation,
                   width: '45%',
                 }}
                 label="Expiration date"
-                value={/* __DEV__ ?  */'10/20'}
+                value={/* __DEV__ ?  */'01/25'}
                 placeholderText="MM/YY"
-                editable={false}
+                editable={true}
                 validation={{
                   name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
                   formStore: paymentFormStore,
@@ -204,7 +194,7 @@ const RequestStep4 = ({navigation,
                 }}
                 label="CVV"
                 value={/* __DEV__ ? */ 123}
-                editable={false}
+                editable={true}
                 validation={{
                   name: RequestToJoinForm.FIELD_CVV,
                   formStore: paymentFormStore,
