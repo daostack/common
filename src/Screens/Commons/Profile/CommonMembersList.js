@@ -70,7 +70,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
         ))
       ) : horizontal ? (
         members.map((memberUserId, i) => (
-          <View style={{position: 'relative', left: i * -15}} onPress={() => showUserProfile(member.uid)} key={`touch_${i}`}>
+          <View style={{position: 'relative', left: i * -15}}>
             <PlaceholderMedia
               size={50}
               isRound={true}
