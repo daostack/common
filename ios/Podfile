@@ -34,6 +34,7 @@ def reactnative
   pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+  pod 'react-native-fast-openpgp', :path => '../node_modules/react-native-fast-openpgp'
 end
 
 # -------------------------------------------------- #
@@ -49,8 +50,6 @@ target 'common' do
   use_native_modules!
   reactnative
   native
-  pod 'react-native-fast-openpgp', :path => '../node_modules/react-native-fast-openpgp'
-
 end
 
 target 'common-stg' do

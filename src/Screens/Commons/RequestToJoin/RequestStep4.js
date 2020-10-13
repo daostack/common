@@ -64,7 +64,7 @@ const RequestStep4 = ({navigation,
 
         navigation.navigate({name: 'FullScreenCreationLoader', params: {title: 'Creating your membership request'}});
 
-        await createCard(formData, proposalId);
+        await createCard({...formData, email: userInfo.email}, proposalId);
 
         const proposalId = await ArcService.createRequestToJoin(
           currDaoId,

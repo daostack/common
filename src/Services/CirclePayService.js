@@ -23,7 +23,7 @@ const getEncryptedData = async (dataToEncrypt) => {
 
 const cardData = (formData) => ({
   billingDetails: {
-    name: 'Customer 0002',
+    name: formData.card_name,
     city: 'Test City',
     country: 'US',
     line1: 'Test',
@@ -33,7 +33,7 @@ const cardData = (formData) => ({
   expMonth: +formData.expiration_date.split('/')[0],
   expYear: +(`20${formData.expiration_date.split('/')[1]}`),
   metadata: {
-    email: 'customer-0002@circle.com',
+    email: formData.email,
   },
 });
 
