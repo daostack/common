@@ -1149,6 +1149,10 @@
 			baseConfigurationReference = D4D22CAAAEFF3F9967CD0146 /* Pods-common.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ARCHS = (
+					armv7,
+					arm64,
+				);
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = common/common.entitlements;
@@ -1156,6 +1160,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
+				"EXCLUDED_ARCHS[sdk=*]" = i386;
 				GCC_DYNAMIC_NO_PIC = YES;
 				INFOPLIST_FILE = common/Support/Info.plist;
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
