@@ -9,6 +9,8 @@ trigger_map:
   workflow: codepush-staging
 - push_branch: '*'
   workflow: primary
+- push_branch: jelle-plays
+  workflow: play
 - pull_request_source_branch: '*'
   workflow: primary
 workflows:
@@ -173,6 +175,10 @@ workflows:
     - deploy-to-bitrise-io@1: {}
     before_run:
     - setup
+  play:
+    steps:
+    - xcode-build-for-simulator@0: {}
+
   primary:
     steps:
     - android-build@0:
