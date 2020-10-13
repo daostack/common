@@ -9,6 +9,10 @@ class FormStore {
   constructor() {
     // Hack for React Native - it's necessary to set a default language
     Validator.setMessages('en', en);
+    this.clearFormStoreState();
+  }
+
+  clearFormStoreState = () => {
     this.form = {
       fields: {},
       meta: {
@@ -27,9 +31,10 @@ class FormStore {
   }
 
   // Public functions
-  registerFormField(name, validateRule, initialValue = '', multiName = null) {
+  registerFormField(name, validateRule, initialValue, multiName = null) {
+    const fieldValue = initialValue ? initialValue : this.form.fields[name] ? this.form.fields[name].value : '';
     this.form.fields[name] = {
-      value: initialValue,
+      value: fieldValue,
       error: false,
       rule: validateRule,
       changed: false,

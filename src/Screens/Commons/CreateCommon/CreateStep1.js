@@ -197,8 +197,3 @@ export default inject(
   'agendaFormStore',
   'reviewFormStore',
 )(observer(CreateStep1));
-
-//generalInfoFormStore
-//fundingFormStore
-//agendaFormStore
-//reviewFormStore
