@@ -8,7 +8,6 @@ import {
   View,
   Image,
 } from 'react-native';
-import moment from 'moment';
 import {object, shape, number, array, string} from 'prop-types';
 import {layout, text, font, colors} from '~/Theme';
 
