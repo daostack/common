@@ -184,6 +184,7 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
               <View style={{...layout.content, ...layout.flexStart}}>
                 {topMessage.map((currMessage, currIndex) => (
                   <UserMessageCard
+                    key={currIndex}
                     photoURL={currMessage.ownerAvatar}
                     name={currMessage.ownerName}
                     message={currMessage.text}
@@ -229,6 +230,7 @@ ProposalData.propTypes = {
     }),
   ]),
   showMore: func,
+  onTabViewScroll: func,
 };
 
 const styles = StyleSheet.create({
