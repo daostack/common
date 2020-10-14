@@ -173,7 +173,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
                 validation={{
                   name: BillingDetailsConstants.District,
                   formStore: billingDetailsFormStore,
-                  validateRule: 'required|string',
+                  validateRule: 'required|string|min:2',
                   displayName: 'district',
                 }}
               />
