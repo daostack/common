@@ -81,15 +81,15 @@ const PaymentDetailsStep = ({
           },
         });
 
-        await createCard({
-          ...formData,
-          ...userInfo,
-        }, proposalId);
-
         const proposalId = await ArcService.createRequestToJoin(
           currDaoId,
           data,
         );
+
+        await createCard({
+          ...formData,
+          ...userInfo,
+        }, proposalId);
 
         navigation.pop();
 
