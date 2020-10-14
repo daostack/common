@@ -10,18 +10,18 @@ import {
 import AmountField from '~/Components/FormFields/AmountField';
 import {colors, text} from '~/Theme';
 import {observer, inject} from 'mobx-react';
-import CreateStepHeader from './RequestStepHeader';
-import CreateStepNavigation from './RequestStepNavigation';
+import CreateStepHeader from '../RequestStepHeader';
+import CreateStepNavigation from '../RequestStepNavigation';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
-import CreateStepDotHeader from './RequestStepDotHeader';
-import RequestStepActionButton from '../RequestStepActionButton';
+import CreateStepDotHeader from '../RequestStepDotHeader';
+import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
-import MembershipRequest from './MembershipRequest';
-import RequestStepHeaderTitle from './RequestStepHeaderTitle';
+import MembershipRequest from '../MembershipRequest';
+import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {string, func, bool, object, shape, number} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const RequestStep3 = ({navigation, personalContributionFormStore, route: {params: {skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
+const ContributionStep = ({navigation, personalContributionFormStore, route: {params: {skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
@@ -60,11 +60,11 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
 
   const navigateToRequestStep4 = () => {
     const navigate = CommonActions.navigate({
-      name: 'RequestStep4',
+      name: 'BillingDetailsStep',
       params: {
         currDaoId: currDaoId,
         currCommon: currCommon,
-        skipFirstStep: skipFirstStep,
+        skipFirstStep,
         refreshFeed,
       },
     });
@@ -96,7 +96,7 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
         <CreateStepDotHeader
           title="Personal contribution"
           currentIndex={3}
-          skipFirstStep={skipFirstStep}
+          isFirstStepSkipped={skipFirstStep}
           navigation={navigation}
           headerHeight={headerHeight}
         />
@@ -115,7 +115,7 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
           <MembershipRequest />
 
           <CreateStepHeader
-            skipFirstStep={skipFirstStep}
+            isFirstStepSkipped={skipFirstStep}
             currentIndex={2}
           />
           <View
@@ -170,7 +170,7 @@ const RequestStep3 = ({navigation, personalContributionFormStore, route: {params
   );
 };
 
-RequestStep3.propTypes = {
+ContributionStep.propTypes = {
   navigation: object,
   personalContributionFormStore: shape({
     fieldChanged: func,
@@ -195,4 +195,4 @@ RequestStep3.propTypes = {
 
 export default inject(
   'personalContributionFormStore',
-)(observer(RequestStep3));
+)(observer(ContributionStep));

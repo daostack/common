@@ -8,10 +8,11 @@ export {default as CreateStep4} from './Commons/CreateCommon/CreateStep4';
 export {default as CommonExplanation} from './Commons/CreateCommon/CommonExplanation';
 export {default as CommonAgenda} from './Commons/Profile/CommonAgenda';
 export {default as CommonMembers} from './Commons/Profile/CommonMembers';
-export {default as RequestStep1} from './Commons/RequestToJoin/RequestStep1';
-export {default as RequestStep2} from './Commons/RequestToJoin/RequestStep2';
-export {default as RequestStep3} from './Commons/RequestToJoin/RequestStep3';
-export {default as RequestStep4} from './Commons/RequestToJoin/RequestStep4';
+export {default as RulesStep} from './Commons/RequestToJoin/Steps/RulesStep';
+export {default as IntroductionStep} from './Commons/RequestToJoin/Steps/IntroductionStep';
+export {default as ContributionStep} from './Commons/RequestToJoin/Steps/ContributionStep';
+export {default as BillingDetailsStep} from './Commons/RequestToJoin/Steps/BillingDetailsStep';
+export {default as PaymentDetailsStep} from './Commons/RequestToJoin/Steps/PaymentDetailsStep';
 
 //User Profile
 export {default as CompleteAccount} from './UserProfile/CompleteAccount';

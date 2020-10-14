@@ -7,19 +7,19 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import RequestStepHeaderTitle from './RequestStepHeaderTitle';
+import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import RequestToJoinRule from '~/Components/Commons/RequestToJoinRule';
-import CreateStepHeader from './RequestStepHeader';
-import CreateStepDotHeader from './RequestStepDotHeader';
+import CreateStepHeader from '../RequestStepHeader';
+import CreateStepDotHeader from '../RequestStepDotHeader';
 import {colors} from '~/Theme';
-import CreateStepNavigation from './RequestStepNavigation';
-import RequestStepActionButton from '../RequestStepActionButton';
+import CreateStepNavigation from '../RequestStepNavigation';
+import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
-import MembershipRequest from './MembershipRequest';
+import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';
 const {width, height} = Dimensions.get('window');
 
-const RequestStep1 = ({navigation,
+const RulesStep = ({navigation,
   route: {
     params: {
       currCommon,
@@ -47,7 +47,7 @@ const RequestStep1 = ({navigation,
   const push = () => {
     if (pass) {
       const navigate = CommonActions.navigate({
-        name: 'RequestStep2',
+        name: 'IntroductionStep',
         params: {
           currDaoId: currDaoId,
           currCommon: currCommon,
@@ -134,7 +134,7 @@ const RequestStep1 = ({navigation,
   );
 };
 
-RequestStep1.propTypes = {
+RulesStep.propTypes = {
   navigation: object,
   route: shape({
     params: shape({
@@ -154,4 +154,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RequestStep1;
+export default RulesStep;

@@ -26,7 +26,11 @@ export default class UserService {
       });
   }
 
-  async getUsersByIds(userIdsArr) {
+  async getUsersByUpTo10Ids(userIdsArr) {
+    if (userIdsArr?.length > 10) {
+      throw Error('Firestore in operator supports max 10 length array. Please call that method on batches');
+    }
+
     return db
       .collection(DB_COLLECTIONS.users)
       .where('uid', 'in', userIdsArr)

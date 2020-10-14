@@ -188,6 +188,7 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
                     name={currMessage.ownerName}
                     message={currMessage.text}
                     time={currMessage.createTime}
+                    key={currIndex}
                   />
                   // <DiscussionMessage data={currMessage} />
                 ))}
