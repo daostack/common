@@ -81,10 +81,15 @@ const PaymentDetailsStep = ({
           },
         });
 
+        // @todo Create the card here
+
+        // Create the proposal
         const proposalId = await ArcService.createRequestToJoin(
           currDaoId,
           data,
         );
+
+        // If the proposal creation was successful update the card with the proposal ID
 
         await createCard({
           ...formData,
