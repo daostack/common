@@ -168,6 +168,8 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
               <TextInputField
                 editable
                 label="District"
+                maxLength={2}
+                autoCapitalize="characters"
                 validation={{
                   name: BillingDetailsConstants.District,
                   formStore: billingDetailsFormStore,
@@ -180,6 +182,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
             <TextInputField
               editable
               label="Postal Code"
+              keyboardType={'number-pad'}
               validation={{
                 name: BillingDetailsConstants.PostalCode,
                 formStore: billingDetailsFormStore,

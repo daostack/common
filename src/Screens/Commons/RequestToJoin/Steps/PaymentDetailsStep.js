@@ -64,6 +64,7 @@ const PaymentDetailsStep = ({
           ...introduceYourselfFormStore.getFormFieldsJson(),
           ...personalContributionFormStore.getFormFieldsJson(),
           ...paymentFormStore.getFormFieldsJson(),
+          ...billingDetailsFormStore.getFormFieldsJson(),
         };
 
         const data = {

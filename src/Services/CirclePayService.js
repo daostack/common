@@ -24,11 +24,11 @@ const getEncryptedData = async (dataToEncrypt) => {
 const cardData = (formData) => ({
   billingDetails: {
     name: formData.card_name,
-    city: 'Test City',
-    country: 'US',
-    line1: 'Test',
-    postalCode: '11111',
-    district: 'MA',
+    city: formData.City,
+    country: 'US', //formData.Country,  //Country portion of the address. Formatted as a two-letter country code specified in ISO 3166-1 alpha-2.
+    line1: 'line1', //formData.Address,
+    postalCode: '11111', //formData.PostalCode,
+    district: 'MA', //formData.District, //optional //format: 'MA', State / County / Province / Region portion of the address. If the country is US or Canada district is required and should use the two-letter code for the subdivision.
   },
   expMonth: +formData.expiration_date.split('/')[0],
   expYear: +(`20${formData.expiration_date.split('/')[1]}`),
