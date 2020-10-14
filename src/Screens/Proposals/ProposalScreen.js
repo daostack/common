@@ -653,7 +653,8 @@ const ProposalScreen = ({
 
       <BottomSheetModal
         isVisible={isApprovalBottomModalVisible}
-        onClose={closeApprovalSheet}>
+        onClose={closeApprovalSheet}
+      >
         <ApprovalSheetScreen
           voteType={voteType}
           onApprove={onVote}
