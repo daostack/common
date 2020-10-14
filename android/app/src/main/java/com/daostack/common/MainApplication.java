@@ -8,6 +8,7 @@ import com.daostack.common.BuildConfig;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import dev.jerson.RNFastOpenPGPPackage;
+import dev.jerson.RNFastOpenPGPPackage;
 import com.orhanobut.hawk.Hawk;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;

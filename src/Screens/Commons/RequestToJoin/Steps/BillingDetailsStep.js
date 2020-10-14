@@ -125,6 +125,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
                 name: BillingDetailsConstants.FullName,
                 formStore: billingDetailsFormStore,
                 validateRule: 'required|string',
+                displayName: 'full name',
               }}
             />
 
@@ -135,6 +136,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
                 name: BillingDetailsConstants.City,
                 formStore: billingDetailsFormStore,
                 validateRule: 'required|string',
+                displayName: 'city',
               }}
             />
             
@@ -147,6 +149,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
                 name: BillingDetailsConstants.Country,
                 formStore: billingDetailsFormStore,
                 validateRule: 'required|string',
+                displayName: 'country',
               }}
             />
 
@@ -157,6 +160,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
                 name: BillingDetailsConstants.Address,
                 formStore: billingDetailsFormStore,
                 validateRule: 'required|string',
+                displayName: 'address',
               }}
             />
 
@@ -168,6 +172,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
                   name: BillingDetailsConstants.District,
                   formStore: billingDetailsFormStore,
                   validateRule: 'required|string',
+                  displayName: 'district',
                 }}
               />
             )}
@@ -179,6 +184,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
                 name: BillingDetailsConstants.PostalCode,
                 formStore: billingDetailsFormStore,
                 validateRule: 'required|string',
+                displayName: 'postal code',
               }}
             />
           </View>
