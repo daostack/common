@@ -168,6 +168,7 @@ const CreateStep4 = ({generalInfoFormStore,
     };
     Share.open(options);
   };
+
   const forgeCommon = async () => {
     try {
       const formDataInit = {...form};
@@ -190,6 +191,8 @@ const CreateStep4 = ({generalInfoFormStore,
         },
       });
 
+      console.log(JSON.stringify(data));
+
       const commonAddress = await ArcService.createCommon(
         data,
         navigation,
@@ -202,7 +205,8 @@ const CreateStep4 = ({generalInfoFormStore,
       return {commonAddress};
     } catch (e) {
       navigation.pop();
-      showErrorPopUp(bottomSheetStore, e.message);
+
+      showErrorPopUp(bottomSheetStore, e);
     }
   };
 
