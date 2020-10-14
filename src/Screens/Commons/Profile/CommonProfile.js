@@ -362,7 +362,7 @@ const CommonProfile = ({
     if (userStore.userInfo) {
       const shouldSkipRules = calcShouldSkipRules();
       const navigate = CommonActions.navigate({
-        name: shouldSkipRules ? 'RequestStep2' : 'RequestStep1',
+        name: shouldSkipRules ? 'IntroductionStep' : 'RulesStep',
         params: {
           currCommon: currCommon,
           currDaoId: currCommon.id,

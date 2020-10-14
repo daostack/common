@@ -34,6 +34,7 @@ class TextInputFieldWithIcon extends React.Component {
       onTogglePress,
       toggleName,
     } = this.props;
+
     // Register form field for validation message component if name,formStore and validateRule props are provided
     if (validation) {
       const {name, formStore, displayName, validateRule, invisibleContainer = true, customErrorMessage} = validation;
@@ -125,6 +126,7 @@ class TextInputFieldWithIcon extends React.Component {
       iconEmptyColor,
       iconFillColor,
       iconStyle,
+      iconEndName,
 
       // Validation management properties
       validation,
@@ -217,6 +219,22 @@ class TextInputFieldWithIcon extends React.Component {
             }
           />
           {this.toggleValueBtn}
+
+          {iconEndName && (
+            <View style={iconStyle}>
+              <Icon
+                name={iconEndName}
+                size={iconSize}
+                color={
+                  validation.formStore.form.fields[
+                    validation.name
+                  ].value.toString() === ''
+                    ? iconEmptyColor
+                    : iconFillColor
+                }
+              />
+            </View>
+          )}
         </View>
       </View>
     );
@@ -283,6 +301,7 @@ TextInputFieldWithIcon.propTypes = {
   numberOfLines: number,
   keyboardType: string,
   iconName: string,
+  iconEndName: string,
   iconSize: number,
   iconEmptyColor: string,
   iconFillColor: string,

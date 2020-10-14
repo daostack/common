@@ -11,18 +11,18 @@ import TextInputField from '~/Components/FormFields/TextInputField';
 import MultiLinkField from '~/Components/FormFields/MultiLinkField';
 import {colors, text} from '~/Theme';
 import {observer, inject} from 'mobx-react';
-import CreateStepHeader from './RequestStepHeader';
-import CreateStepNavigation from './RequestStepNavigation';
+import CreateStepHeader from '../RequestStepHeader';
+import CreateStepNavigation from '../RequestStepNavigation';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
-import CreateStepDotHeader from './RequestStepDotHeader';
-import RequestStepActionButton from '../RequestStepActionButton';
+import CreateStepDotHeader from '../RequestStepDotHeader';
+import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
-import RequestStepHeaderTitle from './RequestStepHeaderTitle';
-import MembershipRequest from './MembershipRequest';
+import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
+import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params: {skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
+const IntroductionStep = ({navigation, introduceYourselfFormStore, route:{params: {skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const {name} = currCommon.name;
@@ -39,7 +39,7 @@ const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params: {s
   const push = () => {
     if (introduceYourselfFormStore.isFormValid()) {
       const navigate = CommonActions.navigate({
-        name: 'RequestStep3',
+        name: 'ContributionStep',
         params: {
           currDaoId: currDaoId,
           currCommon: currCommon,
@@ -140,7 +140,7 @@ const RequestStep2 = ({navigation, introduceYourselfFormStore, route:{params: {s
   );
 };
 
-RequestStep2.propTypes = {
+IntroductionStep.propTypes = {
   navigation: object,
   introduceYourselfFormStore: object,
   route: shape({
@@ -160,4 +160,4 @@ RequestStep2.propTypes = {
 export default inject(
   'userStore',
   'introduceYourselfFormStore',
-)(observer(RequestStep2));
+)(observer(IntroductionStep));
