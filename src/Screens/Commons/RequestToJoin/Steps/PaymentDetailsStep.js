@@ -17,6 +17,7 @@ import CreateStepDotHeader from '../RequestStepDotHeader';
 import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '~/Services/ArcService';
+import {createCard} from '~/Services/CirclePayService';
 // import {preauthorizePayment} from '~/Services/MangopayService';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {showErrorPopUp} from '~/Util';
@@ -73,44 +74,22 @@ const PaymentDetailsStep = ({
           preAuthId: false,
         };
 
-        const billingDetails = billingDetailsFormStore.getFormFieldsJson();
-
-        // @todo Move this configuration to CirclePayService
-        const encryptedData = {
-          number: `${formData.card_number}`,
-          cvv: `${formData.cvv}`,
-        };
-
-        const cardData = {
-          billingDetails: {
-            name: billingDetails.FullName,
-            city: billingDetails.City,
-            country: billingDetails.Country,
-            line1: billingDetails.Address,
-            postalCode: billingDetails.PostalCode,
-            district: billingDetails.District
-          },
-          expMonth: +formData.expiration_date.split('/')[0],
-          expYear: +(`20${formData.expiration_date.split('/')[1]}`),
-          metadata: {
-            email: 'customer-0002@circle.com',
-          },
-        };
-
         navigation.navigate({
           name: 'FullScreenCreationLoader',
           params: {
-            title: 'Creating your membership request'
-          }
+            title: 'Creating your membership request',
+          },
         });
+
+        await createCard({
+          ...formData,
+          ...userInfo,
+        }, proposalId);
 
         const proposalId = await ArcService.createRequestToJoin(
           currDaoId,
           data,
         );
-
-        // @todo Uncomment and import that method once Moore merges her PR into dev
-        // await createCard(cardData, encryptedData, proposalId);
 
         navigation.pop();
 
@@ -196,8 +175,8 @@ const PaymentDetailsStep = ({
             <RequestStepHeaderTitle title="Payment" subtitle={subtitle} />
             <TextInputField
               label="Credit card number"
-              value={/* __DEV__ ? */ 4970104100876299}
-              editable={false}
+              value={/* __DEV__ ? */ 4007410000000006}
+              editable={true}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NUMBER,
                 formStore: paymentFormStore,
@@ -208,7 +187,7 @@ const PaymentDetailsStep = ({
             <TextInputField
               label="Name on card"
               value={/* __DEV__ ? */ 'Tester Tester'}
-              editable={false}
+              editable={true}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NAME,
                 formStore: paymentFormStore,
@@ -232,9 +211,9 @@ const PaymentDetailsStep = ({
                   width: '45%',
                 }}
                 label="Expiration date"
-                value={/* __DEV__ ?  */'10/20'}
+                value={/* __DEV__ ?  */'01/25'}
                 placeholderText="MM/YY"
-                editable={false}
+                editable={true}
                 validation={{
                   name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
                   formStore: paymentFormStore,
@@ -251,7 +230,7 @@ const PaymentDetailsStep = ({
                 }}
                 label="CVV"
                 value={/* __DEV__ ? */ 123}
-                editable={false}
+                editable={true}
                 validation={{
                   name: RequestToJoinForm.FIELD_CVV,
                   formStore: paymentFormStore,
