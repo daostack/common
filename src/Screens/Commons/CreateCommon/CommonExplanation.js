@@ -76,7 +76,7 @@ const CommonExplanation = ({navigation, generalInfoFormStore, fundingFormStore, 
             </View>
           </Swiper>
 
-          <View style={styles.buttonConatiner}>
+          <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.button}
               onPress={() => {
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     ...layout.marginTopL,
     marginBottom: 34,
   },
-  buttonConatiner: {
+  buttonContainer: {
     ...layout.marginBottomL,
     ...layout.marginTopL,
   },

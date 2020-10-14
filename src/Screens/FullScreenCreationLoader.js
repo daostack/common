@@ -9,11 +9,16 @@ import {
 } from 'react-native';
 import {colors, layout, font} from '~/Theme';
 import Loader from '~/Components/Loader';
-import {string, shape, object} from 'prop-types';
+import {string, shape} from 'prop-types';
 
-const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}, navigation}) => (
-    <>
-      <StatusBar barStyle="dark-content" />
+import {useQuote} from '../Util/hooks/useQuote';
+
+const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}}) => {
+  const quote = useQuote();
+
+  return (
+    <React.Fragment>
+      <StatusBar barStyle="dark-content"/>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.body}>
           <View style={{...styles.slide1, ...layout.content}}>
@@ -21,16 +26,27 @@ const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}, 
               source={require('~/Assets/creating-a-common.png')}
               style={styles.image}
             />
-            <Text style={styles.creatingText}>{title}</Text>
-            <Text style={styles.waitText}>
-              {message}
-            </Text>
+
             <Loader />
+
+            <Text style={styles.title}>
+              {title}
+            </Text>
+
+            <Text style={styles.subtitle}>
+              {message || 'This may take up to 2 minutes'}
+            </Text>
+
+            <View style={styles.quotesContainer}>
+              <Text style={styles.quote}>{quote.quote}</Text>
+              <Text style={styles.quoteAuthor}>{quote.author}</Text>
+            </View>
           </View>
         </View>
       </SafeAreaView>
-    </>
-);
+    </React.Fragment>
+  );
+};
 
 FullScreenCreationLoader.propTypes = {
   route: shape({
@@ -39,10 +55,41 @@ FullScreenCreationLoader.propTypes = {
       message: string,
     }),
   }),
-  navigation: object,
 };
 
 const styles = StyleSheet.create({
+  title: {
+    ...font.primary.semiBold,
+    ...font.fontSize(2),
+    ...layout.marginTopXL,
+    color: colors.black,
+  },
+
+  subtitle: {
+    ...font.primary.regular,
+    ...font.fontSize(1),
+    color: colors.greyText,
+  },
+
+  quotesContainer: {
+    ...layout.marginTopL,
+  },
+
+  quote: {
+    ...font.heading.bold,
+    ...font.fontSize(3),
+    color: colors.black,
+    textAlign: 'center',
+  },
+
+  quoteAuthor: {
+    ...font.primary.regular,
+    ...font.fontSize(3),
+    color: colors.greyText,
+    textAlign: 'center',
+  },
+
+
   safeArea: {
     flex: 1,
     backgroundColor: colors.white,

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Dimensions, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Animated} from 'react-native';
+import {LayoutAnimation, Dimensions, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Animated} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
 import {colors, font, layout, sizeL, sizeS, text} from '~/Theme';
@@ -362,7 +362,7 @@ const CommonProfile = ({
     if (userStore.userInfo) {
       const shouldSkipRules = calcShouldSkipRules();
       const navigate = CommonActions.navigate({
-        name: shouldSkipRules ? 'RequestStep2' : 'RequestStep1',
+        name: shouldSkipRules ? 'IntroductionStep' : 'RulesStep',
         params: {
           currCommon: currCommon,
           currDaoId: currCommon.id,
@@ -409,6 +409,7 @@ const CommonProfile = ({
   const renderPendingApproval = () => {
     const remainingSeconds =
       pendingProposalsData.usersPendingProposal.closingAt - moment().unix();
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     return (
       <TouchableOpacity
         onPress={openProposalScreen}
@@ -550,18 +551,21 @@ const CommonProfile = ({
     />
   );
 
-  const renderRequestToJoinBtn = () => (
-    <TouchableOpacity
-      style={styles.headerButton}
-      onPress={requestToJoin}>
-      <Text
-        style={styles.requestToJoin}>
-        Request to join
-      </Text>
-      <Text style={styles.contribution}>
-        ${currCommon.metadata.minFeeToJoin / 100} min. contribution
-      </Text>
-    </TouchableOpacity>);
+  const renderRequestToJoinBtn = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    return (
+      <TouchableOpacity
+        style={styles.headerButton}
+        onPress={requestToJoin}>
+        <Text
+          style={styles.requestToJoin}>
+          Request to join
+        </Text>
+        <Text style={styles.contribution}>
+          ${currCommon.metadata.minFeeToJoin / 100} min. contribution
+        </Text>
+      </TouchableOpacity>);
+  };
 
   const initialLayout = {width: Dimensions.get('window').width};
 

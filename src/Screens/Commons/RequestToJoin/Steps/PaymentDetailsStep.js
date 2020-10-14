@@ -5,33 +5,46 @@ import {
   ScrollView,
   Dimensions,
   SafeAreaView,
-  Animated,
+  Animated, Image,
 } from 'react-native';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import {colors, layout, text} from '~/Theme';
 import {observer, inject} from 'mobx-react';
-import CreateStepHeader from './RequestStepHeader';
-import CreateStepNavigation from './RequestStepNavigation';
+import CreateStepHeader from '../RequestStepHeader';
+import CreateStepNavigation from '../RequestStepNavigation';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
-import CreateStepDotHeader from './RequestStepDotHeader';
-import RequestStepActionButton from '../RequestStepActionButton';
+import CreateStepDotHeader from '../RequestStepDotHeader';
+import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '~/Services/ArcService';
+import {createCard} from '~/Services/CirclePayService';
 // import {preauthorizePayment} from '~/Services/MangopayService';
-import RequestStepHeaderTitle from './RequestStepHeaderTitle';
+import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
+import {font} from '../../../../Theme';
+import MembershipRequest from '../MembershipRequest';
 const {width} = Dimensions.get('window');
 
-const RequestStep4 = ({navigation,
+const PaymentDetailsStep = ({
+  navigation,
   route: {
-    params: {skipFirstStep, currCommon, currDaoId, refreshFeed},
+    params: {
+      skipFirstStep,
+      currCommon,
+      currDaoId,
+      refreshFeed,
+    },
   },
   userStore: {userInfo},
   paymentFormStore,
   introduceYourselfFormStore,
   personalContributionFormStore,
-  bottomSheetStore}) => {
+  billingDetailsFormStore,
+  bottomSheetStore,
+}) => {
+  const isMonthly = currCommon.metadata.contribution === 'monthly';
+
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
 
@@ -53,7 +66,7 @@ const RequestStep4 = ({navigation,
           ...paymentFormStore.getFormFieldsJson(),
         };
 
-        let data = {
+        const data = {
           title: `request to join ${currDaoId} by ${userInfo.ethereumAddress}`,
           description: formData.about_me,
           links: formData.links,
@@ -61,25 +74,24 @@ const RequestStep4 = ({navigation,
           preAuthId: false,
         };
 
-        /*const cardData = {
-          cardNumber: formData.card_number,
-          cvv: formData.cvv,
-          expDate: formData.expiration_date.replace('/', ''),
-        };*/
+        navigation.navigate({
+          name: 'FullScreenCreationLoader',
+          params: {
+            title: 'Creating your membership request',
+          },
+        });
 
-        navigation.navigate({name: 'FullScreenCreationLoader', params: {title: 'Creating your membership request', refreshFeed}});
-
-        // Skip mangopay for now, as the service is not responding and we are not using mangopay anyhow
-        // if (Number(data.funding) > 0) {
-        //   const preAuthId = await preauthorizePayment(cardData, Number(data.funding), navigation);
-        //   data = { ...data, preAuthId };
-        //   console.log('PREAUTH ID', preAuthId);
-        // }
-
+        // Create the proposal
         const proposalId = await ArcService.createRequestToJoin(
           currDaoId,
           data,
         );
+
+        // Create the card
+        await createCard({
+          ...formData,
+          ...userInfo,
+        }, proposalId);
 
         navigation.pop();
 
@@ -98,15 +110,26 @@ const RequestStep4 = ({navigation,
         navigation.dispatch(navigate);
       } catch (e) {
         navigation.pop();
-        showErrorPopUp(bottomSheetStore, e?.response?.data?.error?.error ? e.response.data.error.error : e.message);
+
+        showErrorPopUp(bottomSheetStore, e);
       }
     }
   };
 
-  const subtitle = `You are contributing $${personalContributionFormStore.form.fields.amount?.value} to this common`;
+  const subtitle = (style) => (
+    <Text style={style}>
+      You are contributing ${personalContributionFormStore.form.fields.amount?.value}
+
+      <Text style={{...font.primary.bold}}>
+        {' '}({isMonthly ? 'monthly' : 'one time'}){' '}
+      </Text>
+
+      to this common
+    </Text>
+  );
 
   return (
-    <>
+    <React.Fragment>
       <SafeAreaView style={{backgroundColor: colors.white}} />
       <SafeAreaView
         style={{
@@ -117,13 +140,15 @@ const RequestStep4 = ({navigation,
           navigation={navigation}
           title={currCommon.name}
         />
+
         <CreateStepDotHeader
           title="Payment"
-          currentIndex={4}
+          currentIndex={5}
           isFirstStepSkipped={skipFirstStep}
           navigation={navigation}
           headerHeight={headerHeight}
         />
+
         <ScrollView
           showsVerticalScrollIndicator={false}
           width={width}
@@ -135,11 +160,15 @@ const RequestStep4 = ({navigation,
           scrollEventThrottle={16}
           onScroll={Animated.event([
             {nativeEvent: {contentOffset: {y: scrollY}}},
-          ])}>
+          ])}
+        >
+          <MembershipRequest />
+
           <CreateStepHeader
             isFirstStepSkipped={skipFirstStep}
-            currentIndex={3}
+            currentIndex={4}
           />
+
           <View
             style={{
               flex: 1,
@@ -149,8 +178,8 @@ const RequestStep4 = ({navigation,
             <RequestStepHeaderTitle title="Payment" subtitle={subtitle} />
             <TextInputField
               label="Credit card number"
-              value={/* __DEV__ ? */ 4970104100876299}
-              editable={false}
+              value={/* __DEV__ ? */ 4007410000000006}
+              editable={true}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NUMBER,
                 formStore: paymentFormStore,
@@ -161,7 +190,7 @@ const RequestStep4 = ({navigation,
             <TextInputField
               label="Name on card"
               value={/* __DEV__ ? */ 'Tester Tester'}
-              editable={false}
+              editable={true}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NAME,
                 formStore: paymentFormStore,
@@ -185,9 +214,9 @@ const RequestStep4 = ({navigation,
                   width: '45%',
                 }}
                 label="Expiration date"
-                value={/* __DEV__ ?  */'10/20'}
+                value={/* __DEV__ ?  */'01/25'}
                 placeholderText="MM/YY"
-                editable={false}
+                editable={true}
                 validation={{
                   name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
                   formStore: paymentFormStore,
@@ -204,7 +233,7 @@ const RequestStep4 = ({navigation,
                 }}
                 label="CVV"
                 value={/* __DEV__ ? */ 123}
-                editable={false}
+                editable={true}
                 validation={{
                   name: RequestToJoinForm.FIELD_CVV,
                   formStore: paymentFormStore,
@@ -213,12 +242,37 @@ const RequestStep4 = ({navigation,
               />
             </View>
 
+            <View style={styles.circleContainer}>
+              <Text
+                style={{
+                  ...text.regularText,
+                  color: colors.grey2,
+                  marginBottom: -25,
+                }}
+              >
+                Powered by
+              </Text>
+
+              <Image
+                resizeMode="contain"
+                source={require('../../../../Assets/circle.png')}
+                style={{
+                  width: width * 0.3,
+                }}
+              />
+            </View>
+
             <Text
               style={{
-                ...text.blackText,color: colors.grey2, textAlign: 'center',
-              }}>
-              Your money will be refunded if the common does not approve your
-              request or meet the funding goal
+                ...text.regularText,
+                color: colors.grey2,
+                textAlign: 'center',
+              }}
+            >
+              If your membership request will not be accepted, you will not
+              be charged. Your card will be saved for the monthly contribution
+              of ${personalContributionFormStore.form.fields.amount?.value},
+              you can cancel at any time.
             </Text>
           </View>
         </ScrollView>
@@ -228,11 +282,19 @@ const RequestStep4 = ({navigation,
           onPress={push}
         />
       </SafeAreaView>
-    </>
+    </React.Fragment>
   );
 };
 
-RequestStep4.propTypes = {
+const styles = {
+  circleContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+};
+
+PaymentDetailsStep.propTypes = {
   navigation: object,
   route: shape({
     params: shape({
@@ -263,6 +325,10 @@ RequestStep4.propTypes = {
     getFormFieldsJson: func,
     form: object,
   }),
+  billingDetailsFormStore: shape({
+    getFormFieldsJson: func,
+    form: object,
+  }),
   bottomSheetStore: object,
 };
 
@@ -270,6 +336,7 @@ export default inject(
   'bottomSheetStore',
   'introduceYourselfFormStore',
   'personalContributionFormStore',
+  'billingDetailsFormStore',
   'paymentFormStore',
   'userStore',
-)(observer(RequestStep4));
+)(observer(PaymentDetailsStep));

@@ -28,6 +28,7 @@ export const createCommon = async (data, navigation) => {
     const endpoint = createUrl();
 
     logger.log('createCommon ->', body1, endpoint);
+    console.log(`${endpoint}/createCommonTransaction`);
 
     const {encodedData, toAddress, safeTxHash} = (await axios.post(`${endpoint}/createCommonTransaction`, body1)).data;
 

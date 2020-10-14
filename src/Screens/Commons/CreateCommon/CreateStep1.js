@@ -127,7 +127,7 @@ const CreateStep1 = ({generalInfoFormStore, navigation}) => {
           <TextInputField
             value={''}
             viewStyle={{alignSelf: 'stretch'}}
-            label="Mission statement"
+            label="Short description"
             infoLabel="Required"
             numberOfLines={3}
             // returnKeyType="next"
@@ -140,7 +140,7 @@ const CreateStep1 = ({generalInfoFormStore, navigation}) => {
               name: CreateCommonForm.BYLINE,
               formStore: generalInfoFormStore,
               validateRule: 'required|min:10',
-              displayName: 'mission statement',
+              displayName: 'short description',
             }}
           />
           <TextInputField
