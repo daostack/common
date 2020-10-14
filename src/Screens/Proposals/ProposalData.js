@@ -172,35 +172,6 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
           </View>
         </ScrollView>
 
-        {topMessage.length === 0 ? null : (
-          <View style={styles.proposalCard}>
-            <View style={layout.content}>
-              <View style={{...styles.proposalColumnSubtitle}}>
-                <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
-                  Recent comments
-                </Text>
-              </View>
-
-              <View style={{...layout.content, ...layout.flexStart}}>
-                {topMessage.map((currMessage, currIndex) => (
-                  <UserMessageCard
-                    photoURL={currMessage.ownerAvatar}
-                    name={currMessage.ownerName}
-                    message={currMessage.text}
-                    time={currMessage.createTime}
-                    key={currIndex}
-                  />
-                  // <DiscussionMessage data={currMessage} />
-                ))}
-              </View>
-              <View style={layout.contant}>
-                <TouchableOpacity onPress={() => showMore()}>
-                  <Text style={styles.messageShowMoreBtn}>Show more</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        )}
       </View>
       <ImageView
         images={proposalInfoState.images}
