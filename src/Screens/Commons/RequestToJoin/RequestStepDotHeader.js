@@ -5,8 +5,14 @@ import {colors, text, layout} from '~/Theme';
 import {string, bool, object, number, array, shape, oneOfType} from 'prop-types';
 
 const RequestStepDotHeader = ({headerHeight = 0, isFirstStepSkipped, currentIndex, navigation, title}) => {
-  const totalDots = isFirstStepSkipped ? 3 : 4;
-  currentIndex = !isFirstStepSkipped ? currentIndex - 1 : currentIndex;
+  const totalDots = isFirstStepSkipped
+    ? 4
+    : 5;
+
+  currentIndex = isFirstStepSkipped
+    ? currentIndex - 1
+    : currentIndex;
+
   return (
     <Animated.View style={[styles.header, {height: headerHeight}]}>
       <View style={{overflow: 'hidden'}}>
@@ -18,7 +24,8 @@ const RequestStepDotHeader = ({headerHeight = 0, isFirstStepSkipped, currentInde
             padding: 0,
             zIndex: 9999,
           }}
-          onPress={() => navigation.pop()}>
+          onPress={() => navigation.pop()}
+        >
           <Icon name="left-arrow" size={32} style={{margin: 10}} />
         </TouchableOpacity>
         <View style={styles.bar}>

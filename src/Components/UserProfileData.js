@@ -30,25 +30,31 @@ const UserProfileData = ({
   const [proposalsCount, setProposalsCount] = useState(0);
   const [requestsCount, setRequestsCount] = useState(0);
   const [commonsCount, setCommonsCount] = useState(0);
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
-      try {
-        if (userId === userInfo?.uid) {
-          setUser(userInfo);
-          setIsEditMode(true);
-        } else {
-          setUser(await UserService.getInstance().getUserById(userId));
-          setIsEditMode(false);
-        }
-      } catch (error) {
-        logger.log('error: ', error);
+      if (userId === userInfo?.uid) {
+        setUser(userInfo);
+        setIsOwnProfile(true);
+      } else {
+        const usr = await UserService.getInstance().getUserById(userId);
+
+        setUser(usr);
+        setIsOwnProfile(false);
+
+        navigation.setOptions({
+          // The regex bellow is used to separate names and
+          // make them less at most 25 character, but with cutting
+          // the name only at whitespaces
+          title: usr.displayName?.match(/.{1,25}(\s|$)/g)[0],
+        });
       }
     };
 
     setUser(null);
-    setIsEditMode(false);
+    setIsOwnProfile(false);
+
     getUser();
   }, [userId, userInfo]);
 
@@ -62,7 +68,7 @@ const UserProfileData = ({
     navigation.dispatch(navigate);
   };
 
-  const renderUserProfilePicture = () => !isEditMode ? (
+  const renderUserProfilePicture = () => !isOwnProfile ? (
     <UserAvatar image={user.photoURL} iconName={'follow'}/>
   ) : (
     <ImageField
@@ -141,7 +147,7 @@ const UserProfileData = ({
 
   return (
     <React.Fragment>
-      {isEditMode && (
+      {isOwnProfile && (
         <View style={styles.screenNav}>
           <TouchableOpacity onPress={() => navigateToEditProfile(false)}>
             <Icon name="edit" size={26} />

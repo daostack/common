@@ -8,6 +8,7 @@ import {
   DeviceEventEmitter,
   Text,
   I18nManager,
+  UIManager,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer, CommonActions} from '@react-navigation/native';
@@ -34,10 +35,11 @@ import {
   CreateStep2,
   CreateStep3,
   CreateStep4,
-  RequestStep1,
-  RequestStep2,
-  RequestStep3,
-  RequestStep4,
+  RulesStep,
+  IntroductionStep,
+  ContributionStep,
+  BillingDetailsStep,
+  PaymentDetailsStep,
   FundingProposal,
   Discussions,
   DiscussionPost,
@@ -75,6 +77,12 @@ I18nManager.allowRTL(false);
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
+}
+
+if (Platform.OS === 'android') {
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
 }
 
 const App = ({userStore, bottomSheetStore, navigation}) => {
@@ -211,7 +219,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       try {
         // onAuthStateChanged method is called on many events, not only when the logged in user is changed.
         // In order to prevent unwanted rerendering we need to make some checks.
-        if (!userStore.isLoginInProgressExists(user?.uid) || userStore.userInfo.uid !== user.uid) {
+        if (!userStore.isLoginInProgressExists(user?.uid) || userStore.userInfo?.uid !== user?.uid) {
           if (user) {
             userStore.setIsLoading(true);
             userStore.addLoginInProgress(user?.uid);
@@ -418,29 +426,36 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
         />
         <Stack.Screen
-          name="RequestStep1"
-          component={RequestStep1}
+          name="RulesStep"
+          component={RulesStep}
           options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
-          name="RequestStep2"
-          component={RequestStep2}
+          name="IntroductionStep"
+          component={IntroductionStep}
           options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
-          name="RequestStep3"
-          component={RequestStep3}
+          name="ContributionStep"
+          component={ContributionStep}
           options={({nav, route}) => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
-          name="RequestStep4"
-          component={RequestStep4}
+          name="BillingDetailsStep"
+          component={BillingDetailsStep}
+          options={({nav, route}) => ({
+            headerShown: false,
+          })}
+        />
+        <Stack.Screen
+          name="PaymentDetailsStep"
+          component={PaymentDetailsStep}
           options={({nav, route}) => ({
             headerShown: false,
           })}

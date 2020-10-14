@@ -72,6 +72,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
         members.map((memberUserId, i) => (
           <View style={{position: 'relative', left: i * -15}}>
             <PlaceholderMedia
+              key={i}
               size={50}
               isRound={true}
               style={{width: 50,
@@ -86,7 +87,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
         <Placeholder Animation={Fade}>
           {
             members.map((memberUserId, i) => (
-              <View style={{...layout.flexRow, justifyContent: 'space-between', paddingVertical: 10}}>
+              <View style={{...layout.flexRow, justifyContent: 'space-between', paddingVertical: 10}} key={i}>
                 <View style={{padding: 10}}>
                   <PlaceholderMedia
                     size={50}
