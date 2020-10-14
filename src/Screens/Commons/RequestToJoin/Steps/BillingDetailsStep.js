@@ -139,11 +139,11 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
                 displayName: 'city',
               }}
             />
-            
+
             <CountrySelectField
               label="Country"
               onChange={(x) => {
-                setCountry(x)
+                setCountry(x);
               }}
               validation={{
                 name: BillingDetailsConstants.Country,
