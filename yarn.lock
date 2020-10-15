@@ -7070,11 +7070,6 @@ react-native-keyboard-manager@^4.0.13-16:
   resolved "https://registry.yarnpkg.com/react-native-keyboard-manager/-/react-native-keyboard-manager-4.0.13-16.tgz#dafed6613c8c028e59c771e61a8ff965bcf55c60"
   integrity sha512-GIt+n/rXWlqbRj/7nR92N40mLF53C8Ao1YL2kYMJWpoS/GSsZgw74z3fCoEgxbKGETW6UBFBeBl8HckgYOQYlA==
 
-react-native-localize@^1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/react-native-localize/-/react-native-localize-1.4.2.tgz#92fc7bb76fa0381c7297b7fa66ee3af0a9bc165e"
-  integrity sha512-LAUFsgcVHHJkU6AYjEDi9e6fJfahrep4IBXPNREKzG9uvHhjXno0Lv8TKNRMzrx6wGntpM/1bxs5pSTstpKllg==
-
 react-native-modal@^11.5.6:
   version "11.5.6"
   resolved "https://registry.yarnpkg.com/react-native-modal/-/react-native-modal-11.5.6.tgz#bb25a78c35a5e24f45de060e5f64284397d38a87"

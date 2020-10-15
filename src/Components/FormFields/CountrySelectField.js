@@ -3,7 +3,6 @@ import {View} from 'react-native';
 import {bool, func, number, object, oneOfType, shape, string} from 'prop-types';
 
 import RNPickerSelect from 'react-native-picker-select';
-import * as RNLocalize from 'react-native-localize';
 
 import Icon from '../../Assets/iconfont/Icon';
 import TextInputFieldWithIcon from './TextInputFieldWithIcon';
@@ -15,7 +14,7 @@ import {Label} from './TextInputField';
 
 export const CountrySelectField = ({defaultCountry, onChange, ...props}) => {
   const selectRef = React.useRef();
-  const [selectedCountry, setSelectedCountry] = React.useState(defaultCountry || RNLocalize.getCountry());
+  const [selectedCountry, setSelectedCountry] = React.useState(defaultCountry || 'IL');
 
   React.useEffect(() => {
     if (typeof onChange === 'function') {
