@@ -24,6 +24,8 @@ import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
+import {testCard} from '~/Config';
+import moment from 'moment';
 const {width} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
@@ -47,6 +49,7 @@ const PaymentDetailsStep = ({
 
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
+  const [isValidCC, setIsValidCC] = useState(true);
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -117,6 +120,23 @@ const PaymentDetailsStep = ({
     }
   };
 
+  // luhn algorithm for cc validation;
+  const validateCreditCard = (ccNumber) => {
+    let [firstCalc, secondCalc, toggle] = [0,0,false];
+    for (let i = ccNumber.length - 1; i >= 0; i--) {
+      if (toggle) {
+        let num = +ccNumber[i] * 2;
+        firstCalc += num < 10 ? num : parseInt((num % 10) + (num / 10), 10);
+      }
+      else {
+        secondCalc += +ccNumber[i];
+      }
+      toggle = !toggle;
+    }
+    firstCalc += secondCalc;
+    setIsValidCC(firstCalc % 10 === 0);
+  };
+
   const subtitle = (style) => (
     <Text style={style}>
       You are contributing ${personalContributionFormStore.form.fields.amount?.value}
@@ -179,18 +199,24 @@ const PaymentDetailsStep = ({
             <RequestStepHeaderTitle title="Payment" subtitle={subtitle} />
             <TextInputField
               label="Credit card number"
-              value={/* __DEV__ ? */ 4007410000000006}
+              value={testCard ? 4007410000000006 : ''}
               editable={true}
+              keyboardType={'number-pad'}
+              onChangeText={validateCreditCard}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NUMBER,
                 formStore: paymentFormStore,
-                validateRule: 'required|numeric',
+                validateRule: [
+                  'required',
+                  'numeric',
+                  'regex:/^4([0-9]{12}|[0-9]{15})$|^5[1-5][0-9]{14}$/',
+                ],
               }}
             />
 
             <TextInputField
               label="Name on card"
-              value={/* __DEV__ ? */ 'Tester Tester'}
+              value={testCard ? 'Tester Tester' : ''}
               editable={true}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NAME,
@@ -215,9 +241,10 @@ const PaymentDetailsStep = ({
                   width: '45%',
                 }}
                 label="Expiration date"
-                value={/* __DEV__ ?  */'01/25'}
+                value={testCard ? moment().format('MM/YY') : ''}
                 placeholderText="MM/YY"
                 editable={true}
+                keyboardType={'numeric'}
                 validation={{
                   name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
                   formStore: paymentFormStore,
@@ -233,7 +260,7 @@ const PaymentDetailsStep = ({
                   width: '45%',
                 }}
                 label="CVV"
-                value={/* __DEV__ ? */ 123}
+                value={testCard ? 123 : ''}
                 editable={true}
                 validation={{
                   name: RequestToJoinForm.FIELD_CVV,

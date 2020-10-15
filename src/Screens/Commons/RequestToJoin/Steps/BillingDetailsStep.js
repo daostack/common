@@ -15,6 +15,7 @@ import TextInputField from '../../../../Components/FormFields/TextInputField';
 import {CountrySelectField} from '../../../../Components/FormFields/CountrySelectField';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
+import {testCard} from '~/Config';
 
 const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, personalContributionFormStore}) => {
   const {skipFirstStep, currCommon, currDaoId, refreshFeed} = route.params;
@@ -121,6 +122,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
             <TextInputField
               editable
               label="Full name"
+              value={testCard ? 'Thor Odinson' : ''}
               validation={{
                 name: BillingDetailsConstants.FullName,
                 formStore: billingDetailsFormStore,
@@ -132,6 +134,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
             <TextInputField
               editable
               label="City"
+              value={testCard ? 'Metropolis' : ''}
               validation={{
                 name: BillingDetailsConstants.City,
                 formStore: billingDetailsFormStore,
@@ -156,6 +159,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
             <TextInputField
               editable
               label="Address"
+              value={testCard ? '221B Baker Street' : ''}
               validation={{
                 name: BillingDetailsConstants.Address,
                 formStore: billingDetailsFormStore,
@@ -170,6 +174,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
                 label="District"
                 maxLength={2}
                 autoCapitalize="characters"
+                value={testCard ? 'TX' : ''}
                 validation={{
                   name: BillingDetailsConstants.District,
                   formStore: billingDetailsFormStore,
@@ -182,7 +187,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
             <TextInputField
               editable
               label="Postal Code"
-              keyboardType={'number-pad'}
+              value={testCard ? '31415PI' : ''}
               validation={{
                 name: BillingDetailsConstants.PostalCode,
                 formStore: billingDetailsFormStore,
