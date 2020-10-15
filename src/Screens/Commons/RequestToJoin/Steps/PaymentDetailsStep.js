@@ -91,11 +91,10 @@ const PaymentDetailsStep = ({
         console.log('here 2');
 
         // Create the proposal
-        const proposalId = 'test-propo-id';
-        // const proposalId = await ArcService.createRequestToJoin(
-        //   currDaoId,
-        //   data,
-        // );
+        const proposalId = await ArcService.createRequestToJoin(
+          currDaoId,
+          data,
+        );
 
         // Assign card
         console.log('here3');
