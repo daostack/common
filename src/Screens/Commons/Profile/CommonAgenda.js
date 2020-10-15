@@ -8,7 +8,6 @@ import {
   View,
   Image,
 } from 'react-native';
-import moment from 'moment';
 import {object, shape, number, array, string} from 'prop-types';
 import {layout, text, font, colors} from '~/Theme';
 
@@ -69,15 +68,6 @@ const CommonAgenda = ({navigation,
               ))}
             </View>
           )}
-
-          <View style={styles.sectionContainer}>
-            <Text style={text.h3Black}>Campaign period deadline</Text>
-            <Text style={styles.description}>
-              {moment
-                .unix(fundingGoalDeadline)
-                .format('MMM DD, YYYY')}
-            </Text>
-          </View>
 
           {metadata.rules?.length > 0 && (
             <>
