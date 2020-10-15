@@ -24,6 +24,7 @@ export const createProposalRequestToJoin = async (daoId, data) => {
         signature: signature,
       },
       preAuthId: data.preAuthId,
+      cardId: data.card,
     };
 
     const response = await axios.post(

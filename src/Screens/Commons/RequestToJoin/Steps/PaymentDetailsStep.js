@@ -80,28 +80,22 @@ const PaymentDetailsStep = ({
           },
         });
 
-        console.log('here');
-
         // Create the card
         const {cardId} = await createCard({
           ...formData,
           ...userInfo,
         });
 
-        console.log('here 2');
-
         // Create the proposal
         const proposalId = await ArcService.createRequestToJoin(
-          currDaoId,
-          data,
+          currDaoId, {
+            ...data,
+            cardId,
+          },
         );
 
-        // Assign card
-        console.log('here3');
-
+        // // Assign card
         await assignCard(cardId, proposalId);
-
-        console.log('here4');
 
         navigation.pop();
 

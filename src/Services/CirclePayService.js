@@ -57,13 +57,3 @@ export const createCard = async (formData) => {
     ...cardData(formData),
   })).data;
 };
-
-export const assignCard = async (cardId, proposalId) => {
-  const idToken = await auth().currentUser.getIdToken();
-
-  return await axiosClient.post(endpoints.assign, {
-    proposalId,
-    idToken,
-    cardId,
-  });
-};
