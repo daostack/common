@@ -31,16 +31,20 @@ class FormStore {
   }
 
   // Public functions
-  registerFormField(name, validateRule, initialValue = '', multiName = null) {
-    this.form.fields[name] = {
+  registerFormField(name, validateRule, initialValue = '', isMultiField = false) {
+
+    let currValue = {
       value: initialValue,
       error: false,
       rule: validateRule,
       changed: false,
     };
-    if (multiName && this.multiFieldNames.indexOf(multiName) === -1) {
-      this.multiFieldNames.push(multiName);
+
+    if (isMultiField) {
+      currValue = [...this.form.fields[name], currValue];
     }
+
+    this.form.fields[name] = currValue;
   }
 
   updateFieldValidationRule(name, newRule) {
@@ -107,14 +111,14 @@ class FormStore {
       }
     }
 
-    // Filter multiple fields
-    for (const key in this.multiFieldNames) {
-      const currMultiName = this.multiFieldNames[key];
-      changedFieldsJson = this.filterMultiFields(
-        currMultiName,
-        changedFieldsJson,
-      );
-    }
+    // // Filter multiple fields
+    // for (const key in this.multiFieldNames) {
+    //   const currMultiName = this.multiFieldNames[key];
+    //   changedFieldsJson = this.filterMultiFields(
+    //     currMultiName,
+    //     changedFieldsJson,
+    //   );
+    // }
 
     return changedFieldsJson;
   };
