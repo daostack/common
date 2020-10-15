@@ -105,7 +105,7 @@ const CreateStep3 = ({agendaFormStore, navigation}) => {
             subtitle="Define your course of action and rules of conduct."
           />
           <TextInputField
-            value={''}
+            value={agendaFormStore.form.fields[CreateCommonForm.ACTION]?.value}
             viewStyle={{alignSelf: 'stretch'}}
             label="Course of action"
             infoLabel="Required"

@@ -108,7 +108,7 @@ const CreateStep1 = ({generalInfoFormStore, navigation}) => {
             }}
           />
           <TextInputField
-            value={''}
+            value={generalInfoFormStore.form.fields[CreateCommonForm.NAME]?.value}
             viewStyle={{alignSelf: 'stretch'}}
             label="Common name"
             infoLabel="Required"
@@ -125,7 +125,7 @@ const CreateStep1 = ({generalInfoFormStore, navigation}) => {
             }}
           />
           <TextInputField
-            value={''}
+            value={generalInfoFormStore.form.fields[CreateCommonForm.BYLINE]?.value}
             viewStyle={{alignSelf: 'stretch'}}
             label="Short description"
             infoLabel="Required"
@@ -144,7 +144,7 @@ const CreateStep1 = ({generalInfoFormStore, navigation}) => {
             }}
           />
           <TextInputField
-            value={''}
+            value={generalInfoFormStore.form.fields[CreateCommonForm.DESCRIPTION]?.value}
             label="About"
             infoLabel="Required"
             numberOfLines={5}
@@ -166,6 +166,7 @@ const CreateStep1 = ({generalInfoFormStore, navigation}) => {
             label="Links"
             title="Title"
             maxLength={30}
+            value={generalInfoFormStore.form.fields[CreateCommonForm.LINKS]?.value}
             validation={{
               name: CreateCommonForm.LINKS,
               formStore: generalInfoFormStore,

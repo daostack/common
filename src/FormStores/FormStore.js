@@ -31,10 +31,9 @@ class FormStore {
   }
 
   // Public functions
-  registerFormField(name, validateRule, initialValue, multiName = null) {
-    const fieldValue = initialValue ? initialValue : this.form.fields[name] ? this.form.fields[name].value : '';
+  registerFormField(name, validateRule, initialValue = '', multiName = null) {
     this.form.fields[name] = {
-      value: fieldValue,
+      value: initialValue,
       error: false,
       rule: validateRule,
       changed: false,
@@ -97,13 +96,14 @@ class FormStore {
 
     for (const key in this.form.fields) {
       const formField = this.form.fields[key];
+      const currValue = typeof (formField.value) === 'object' ? formField.value.value : formField.value;
       if (onlyChangedFields) {
         if (formField.changed) {
-          changedFieldsJson[key] = formField.value;
+          changedFieldsJson[key] = currValue;
           // formField.value.length > 0 ? changedFieldsJson[key] = formField.value : null;
         }
       } else {
-        changedFieldsJson[key] = formField.value;
+        changedFieldsJson[key] = currValue;
       }
     }
 
@@ -202,7 +202,7 @@ class FormStore {
 
     for (const key in this.form.fields) {
       const formField = this.form.fields[key];
-      fieldsData[key] = formField.value;
+      fieldsData[key] = typeof (formField.value) === 'object' ? formField.value.value : formField.value;
       fieldsRule[key] = formField.rule;
     }
 
