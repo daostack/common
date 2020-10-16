@@ -1,9 +1,10 @@
-import {Text, StyleSheet, SafeAreaView, TouchableOpacity, View} from 'react-native';
+import {Text, StyleSheet, SafeAreaView, TouchableOpacity, View, Dimensions} from 'react-native';
 import React from 'react';
 import {text, layout, colors, font, sizeL} from '~/Theme';
 import ButtonSwiper from '~/Components/ButtonSwiper';
 import {func, bool, shape} from 'prop-types';
 import {useQuote} from '../../Util/hooks/useQuote';
+import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
 
 const ApprovalSheetScreen = ({
   onApprove,
@@ -21,6 +22,21 @@ const ApprovalSheetScreen = ({
 
   return (
     <SafeAreaView style={styles.body}>
+
+      {inProgress && (
+        <Placeholder Animation={Fade}>
+          <PlaceholderLine
+            width={Dimensions.get('window').width}
+            height={9}
+            color={'#6ee569'}
+            style={{
+              alignSelf: 'center',
+              marginTop: -22,
+            }} />
+        </Placeholder>
+      )}
+
+
       <Text
         style={{
           ...styles.title,
@@ -54,8 +70,8 @@ const ApprovalSheetScreen = ({
       ) : (
         <React.Fragment>
           <Text style={styles.voteDescription}>
-            Are you sure? You will not be able to change your vote after you
-            confirm it. Duuh
+            Are you sure? You will not be able
+            to change your vote after you confirm it.
           </Text>
           <ButtonSwiper
             title="Swipe to confirm your vote"
@@ -119,6 +135,7 @@ const styles = StyleSheet.create({
     height: 200,
     ...layout.content,
     ...layout.flexStart,
+    paddingTop: 0,
     alignItems: 'center',
     width: '100%',
   },
