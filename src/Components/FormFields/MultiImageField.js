@@ -6,7 +6,7 @@ import {string, bool, shape, number} from 'prop-types';
 
 const MultiImageField = (props) => {
   const [count, setCount] = useState(1);
-  const [deletedFields, setDeletedFields] = useState([]);
+
 
   useEffect(() => {
     const currFormField = props.validation.formStore.getFormField(props.validation.name);
@@ -16,15 +16,15 @@ const MultiImageField = (props) => {
   }, []);
 
   const onChangeImage = (url, index) => {
-    if (index === (count - deletedFields.length) - 1) {
-      if (!maxCount || (count - deletedFields.length) < maxCount) {
+    if (index === count - 1) {
+      if (!maxCount || count < maxCount) {
         setCount(count + 1);
       }
     }
   };
 
   const onFieldDeleted = (currIndex) => {
-    setDeletedFields([...deletedFields, currIndex]);
+    //setDeletedFields([...deletedFields, currIndex]);
   };
 
   const {maxCount} = props;
@@ -37,12 +37,13 @@ const MultiImageField = (props) => {
         currItemValidation.multiName = props.validation.name;
 
         return (
-          !deletedFields.includes(currIndex) && <ImageField
+          <ImageField
             key={`key_${currItemValidation.name}_${currIndex}`}
             onChangeImage={(url) => onChangeImage(url, currIndex)}
             allowsEditing={props.allowsEditing || false}
             onFieldDeleted={() => onFieldDeleted(currIndex)}
             title={'Add Image'}
+            value={currItemValidation.formStore.getFormField(currItemValidation.name, currItemValidation.multiName)?.value}
             validation={currItemValidation}
           />
         );

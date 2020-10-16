@@ -152,7 +152,7 @@ class ImageField extends React.Component {
           }>
           <View>
             {this.renderImage(isAvatar, validation, value)}
-            {!disableEdit && (isAvatar || currValue) &&
+            {!disableEdit && (isAvatar || currValue?.length > 0 ) &&
               <TouchableOpacity
                 style={isAvatar ? styles.formImageFielAddIconAvatar : styles.formImageFielAddIcon}
                 onPress={() => { isAvatar ? this.pickImage() : this.onFieldDeleted();} }>
@@ -237,11 +237,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: colors.paleGrey,
     alignSelf: 'stretch',
+    marginBottom: 20,
   },
   imageFieldPlaceholderView: {
     ...layout.content,
     backgroundColor: colors.paleGrey,
     borderRadius: 20,
+    marginBottom: 20,
   },
 
   formImageFielAddIcon: {
