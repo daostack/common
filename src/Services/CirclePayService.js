@@ -1,8 +1,9 @@
 import axios from 'axios';
 import {circlePayUrl} from '~/Config';
 import auth from '@react-native-firebase/auth';
-var base64 = require('base-64');
 import OpenPGP from 'react-native-fast-openpgp';
+
+var base64 = require('base-64');
 
 const axiosClient = axios.create({
   baseURL: circlePayUrl(),
@@ -52,14 +53,10 @@ export const createCardPayload = async (formData) => {
     cvv: `${formData.cvv}`,
   });
 
-  const data =  {
+  return {
     keyId,
     idToken,
     encryptedData,
     ...cardData(formData),
   };
-
-  console.log('data', data);
-
-  return data;
 };
