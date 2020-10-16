@@ -32,8 +32,8 @@ class FileField extends React.Component {
 
   onChangeValue = (fileUrl) => {
     if (this.props.validation) {
-      const {formStore, name} = this.props.validation;
-      formStore.fieldChanged(name, fileUrl);
+      const {formStore, name, multiName} = this.props.validation;
+      formStore.fieldChanged(name, fileUrl, false, multiName);
     }
     this.props.onChangeFile && this.props.onChangeFile(fileUrl);
   };

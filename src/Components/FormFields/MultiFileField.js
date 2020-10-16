@@ -27,7 +27,7 @@ const MultiFileField = (props) => {
     <View style={{paddingTop: sizeM}}>
       {[...Array(count).keys()].map((currIndex) => {
         const currItemValidation = {...props.validation};
-        currItemValidation.name = `${currItemValidation.name}_multi_${currIndex}`;
+        currItemValidation.name = `${currIndex}`;
         currItemValidation.multiName = props.validation.name;
 
         return (

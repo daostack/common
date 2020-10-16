@@ -182,7 +182,7 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
         scrollEventThrottle={16}
         onScroll={Animated.event([
           {nativeEvent: {contentOffset: {y: scrollY}}},
-        ])}>
+        ], {useNativeDriver: true})}>
         <CreateStepHeader currentIndex={1} />
 
         <View
@@ -215,7 +215,7 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
             onTabPress={onContributionTabChange}
           />
           <TextInputFieldWithIcon
-            value={fundingFormStore.form.fields[CreateCommonForm.MINIMUM]?.value}
+            value={fundingFormStore.getFormField(CreateCommonForm.MINIMUM)?.value}
             iconName="dollar"
             iconSize={12}
             iconStyle={{paddingRight: 5}}

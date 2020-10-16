@@ -39,8 +39,8 @@ class ImageField extends React.Component {
   }
 
   onChangeValue = (url) => {
-    const {formStore, name} = this.props.validation;
-    formStore.fieldChanged(name, url);
+    const {formStore, name, multiName} = this.props.validation;
+    formStore.fieldChanged(name, url, false, multiName);
     this.props.onChangeImage && this.props.onChangeImage(url);
   };
 

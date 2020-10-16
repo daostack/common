@@ -38,6 +38,7 @@ const CreateStep1 = ({generalInfoFormStore, navigation}) => {
   }, [scrollY]);
 
   const push = () => {
+    console.log('generalInfoFormStore -> ', generalInfoFormStore.form.fields);
     if (generalInfoFormStore.isFormValid()) {
       navigation.navigate('CreateStep2');
     }
@@ -166,7 +167,7 @@ const CreateStep1 = ({generalInfoFormStore, navigation}) => {
             label="Links"
             title="Title"
             maxLength={30}
-            value={generalInfoFormStore.form.fields[CreateCommonForm.LINKS]?.value}
+            value={generalInfoFormStore.getFormField(CreateCommonForm.LINKS)?.value}
             validation={{
               name: CreateCommonForm.LINKS,
               formStore: generalInfoFormStore,

@@ -26,12 +26,32 @@ class FormStore {
     this.multiFieldNames = [];
   }
 
+  getFormField = (name, multiName) => {
+    if (multiName) {
+      const multiIndexInfo = name.split('_');
+
+      const currMultiIndex = multiIndexInfo[0];
+      const currMultiValueField = multiIndexInfo[1];
+      if (currMultiValueField) {
+        //console.log(currMultiIndex, currMultiValueField , this.form.fields[multiName][currMultiIndex]);
+        if (this.form.fields[multiName]) {
+          return this.form.fields[multiName][currMultiIndex][currMultiValueField];
+        }
+        return null;
+      } else {
+        return this.form.fields[multiName][currMultiIndex];
+      }
+    } else {
+      return this.form.fields[name];
+    }
+  }
+
   registerValidationRule(ruleName, callback, validationMessage) {
     Validator.register(ruleName, callback, validationMessage);
   }
 
   // Public functions
-  registerFormField(name, validateRule, initialValue = '', isMultiField = false) {
+  registerFormField(name, validateRule, initialValue = '', multiName = null) {
 
     let currValue = {
       value: initialValue,
@@ -40,16 +60,38 @@ class FormStore {
       changed: false,
     };
 
-    if (isMultiField) {
-      currValue = [...this.form.fields[name], currValue];
+    let currName = name;
+
+    if (multiName) {
+      const multiIndexInfo = name.split('_');
+
+      const currMultiIndex = multiIndexInfo[0];
+      const currMultiValueField = multiIndexInfo[1];
+
+
+      if (currMultiValueField) {
+        let currMultiValue = this.form.fields[multiName] ? this.form.fields[multiName] : {};
+        if (!currMultiValue[currMultiIndex]) {
+          currMultiValue[currMultiIndex] = {};
+        }
+        currMultiValue[currMultiIndex][currMultiValueField] = currValue;
+        currValue = currMultiValue;
+        //let currMultiValue = this.form.fields[multiName][currMultiIndex] ? this.form.fields[multiName][currMultiIndex] : {};
+        // currMultiValue[currMultiValueField] = currValue;
+        // currValue = currMultiValue;
+      } else {
+        currValue = this.form.fields[multiName] ? [...this.form.fields[multiName], currValue] : [currValue];
+      }
+
+      currName = multiName;
     }
 
-    this.form.fields[name] = currValue;
+    this.form.fields[currName] = currValue;
   }
 
-  updateFieldValidationRule(name, newRule) {
-    this.form.fields[name].rule = newRule;
-    this.validateField(name);
+  updateFieldValidationRule(name, multiName, newRule) {
+    this.getFormField(name, multiName).rule = newRule;
+    this.validateField(name, multiName);
   }
 
   removeFormField(name) {
@@ -60,15 +102,18 @@ class FormStore {
 
   // Check if form is valid and display error for each form field if it's necessary
   isFormValid = () => {
-    this.form.meta.formValidationMade = true;
-    var validation = this.getValidator();
-    this.form.meta.isValid = validation.passes();
-    if (!this.form.meta.isValid) {
-      for (const key in validation.errors.errors) {
-        this.form.fields[key].error = validation.errors.first(key);
-      }
-      return false;
-    }
+    console.log('isFormValid -> ');
+
+    // this.form.meta.formValidationMade = true;
+    // var validation = this.getValidator();
+    // console.log('validation -> ', validation);
+    // this.form.meta.isValid = validation.passes();
+    // if (!this.form.meta.isValid) {
+    //   for (const key in validation.errors.errors) {
+    //     this.form.fields[key].error = validation.errors.first(key);
+    //   }
+    //   return false;
+    // }
 
     // Filter multiple fields
     return true;
@@ -79,20 +124,21 @@ class FormStore {
     this.form.meta.formValidationMade ? this.form.meta.isValid : true
   );
 
-  fieldBlured = (name) => {
-    this.validateField(name);
+  fieldBlured = (name, multiName) => {
+    this.validateField(name, multiName);
   };
 
-  fieldChanged = (name, value, triggerValidation = false) => {
-    this.form.fields[name].value = value;
+  fieldChanged = (name, value, triggerValidation = false, multiName = null) => {
+    this.getFormField(name, multiName).value = value;
+
     if (
       triggerValidation ||
-      this.form.fields[name].error ||
-      !this.form.fields[name].value
+      this.getFormField(name, multiName).error ||
+      !this.getFormField(name, multiName).value
     ) {
-      this.validateField(name);
+      this.validateField(name, multiName);
     }
-    this.form.fields[name].changed = true;
+    this.getFormField(name, multiName).changed = true;
   };
 
   getFormFieldsJson = (onlyChangedFields = false) => {
@@ -183,38 +229,66 @@ class FormStore {
   );
 
   // Private functions
-  validateField = (field) => {
-    var validation = this.getValidator(field);
+  validateField = (name, multiName) => {
+    var validation = this.getValidator(name, multiName);
     this.form.meta.isValid = validation.passes();
-    this.form.fields[field].error = validation.errors.first(field);
-    if (this.form.fields[field].error) {
+    this.getFormField(name, multiName).error = validation.errors.first(name);
+    if (this.getFormField(name, multiName).error) {
       this.form.meta.formValidationMade = true;
     }
   };
 
-  getValidator = () => {
-    let validatorParams = this.getValidatorParams();
+  getValidator = (name, multiName) => {
+    let validatorParams = this.getValidatorParams(name, multiName);
     return new Validator(
       validatorParams.fieldsData,
       validatorParams.fieldsRule,
     );
   };
 
-  getValidatorParams = (fieldName) => {
+  getValidatorParams = (fieldName, multiField) => {
+
+    console.log('getValidatorParams');
+
     let fieldsData = {};
     let fieldsRule = {};
 
+    //console.log(`this.getFormField("${fieldName}", "${multiField}") -> `, this.getFormField(fieldName, multiField));
+
     if (fieldName) {
-      const formField = this.form.fields[fieldName];
+      const formField = this.getFormField(fieldName, multiField);
       fieldsData[fieldName] = typeof (formField.value) === 'object' ? formField.value.value : formField.value;
       fieldsRule[fieldName] = formField.rule;
     } else {
       for (const key in this.form.fields) {
         const formField = this.form.fields[key];
-        fieldsData[key] = typeof (formField.value) === 'object' ? formField.value.value : formField.value;
-        fieldsRule[key] = formField.rule;
+        console.log('Curr formField -> ', formField);
+        //Multi field
+        if (Array.isArray(formField)) {
+          formField.forEach((currMultiFormField, multiIndex) => {
+            // MultiLink
+            if (Array.isArray(currMultiFormField)) {
+              formField.forEach((currMultiMultiFormField, multiMultiIndex) => {
+                const multiKey = `${key}_${multiIndex}_${multiMultiIndex}`;
+                fieldsData[multiKey] = typeof (currMultiMultiFormField.value) === 'object' ? currMultiMultiFormField.value.value : currMultiMultiFormField.value;
+                fieldsRule[multiKey] = currMultiMultiFormField.rule;
+              });
+            } else { //MultiFiles & MultiImages
+              const multiKey = `${key}_${multiIndex}`;
+              fieldsData[multiKey] = typeof (currMultiFormField.value) === 'object' ? currMultiFormField.value.value : currMultiFormField.value;
+              fieldsRule[multiKey] = currMultiFormField.rule;
+            }
+          });
+        } else {
+          fieldsData[key] = typeof (formField.value) === 'object' ? formField.value.value : formField.value;
+          fieldsRule[key] = formField.rule;
+        }
       }
     }
+
+    console.log('getValidatorParams');
+    console.log(fieldsData);
+    console.log(fieldsRule);
 
     return {
       fieldsData: fieldsData,

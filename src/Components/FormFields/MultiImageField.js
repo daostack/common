@@ -26,7 +26,7 @@ const MultiImageField = (props) => {
     <View style={{paddingTop: sizeL}}>
       {[...Array(count).keys()].map((currIndex) => {
         const currItemValidation = {...props.validation};
-        currItemValidation.name = `${currItemValidation.name}_multi_${currIndex}`;
+        currItemValidation.name = `${currIndex}`;
         currItemValidation.multiName = props.validation.name;
 
         return (
