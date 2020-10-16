@@ -29,17 +29,22 @@ class FormStore {
   getFormField = (name, multiName) => {
     if (multiName) {
       const multiIndexInfo = name.split('_');
-
       const currMultiIndex = multiIndexInfo[0];
       const currMultiValueField = multiIndexInfo[1];
+
       if (currMultiValueField) {
-        //console.log(currMultiIndex, currMultiValueField , this.form.fields[multiName][currMultiIndex]);
         if (this.form.fields[multiName]) {
-          return this.form.fields[multiName][currMultiIndex][currMultiValueField];
+          if (this.form.fields[multiName][currMultiIndex]) {
+            return this.form.fields[multiName][currMultiIndex][currMultiValueField];
+          }
+          return null;
         }
         return null;
       } else {
-        return this.form.fields[multiName][currMultiIndex];
+        if (this.form.fields[multiName]) {
+          return this.form.fields[multiName][currMultiIndex];
+        }
+        return null;
       }
     } else {
       return this.form.fields[name];
@@ -52,7 +57,6 @@ class FormStore {
 
   // Public functions
   registerFormField(name, validateRule, initialValue = '', multiName = null) {
-
     let currValue = {
       value: initialValue,
       error: false,
@@ -64,10 +68,8 @@ class FormStore {
 
     if (multiName) {
       const multiIndexInfo = name.split('_');
-
       const currMultiIndex = multiIndexInfo[0];
       const currMultiValueField = multiIndexInfo[1];
-
 
       if (currMultiValueField) {
         let currMultiValue = this.form.fields[multiName] ? this.form.fields[multiName] : {};
@@ -76,11 +78,14 @@ class FormStore {
         }
         currMultiValue[currMultiIndex][currMultiValueField] = currValue;
         currValue = currMultiValue;
-        //let currMultiValue = this.form.fields[multiName][currMultiIndex] ? this.form.fields[multiName][currMultiIndex] : {};
-        // currMultiValue[currMultiValueField] = currValue;
-        // currValue = currMultiValue;
       } else {
-        currValue = this.form.fields[multiName] ? [...this.form.fields[multiName], currValue] : [currValue];
+
+        if (!this.form.fields[multiName]) {
+          this.form.fields[multiName] = [];
+        }
+        this.form.fields[multiName][name] = currValue;
+        currValue = this.form.fields[multiName];
+
       }
 
       currName = multiName;

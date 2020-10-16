@@ -34,7 +34,7 @@ class ImageField extends React.Component {
     formStore.registerFormField(name, validateRule, value, multiName);
 
     this.fieldValidation = (
-      <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} invisibleContainer={true}/>
+      <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} multiName={multiName} invisibleContainer={true}/>
     );
   }
 
@@ -85,7 +85,7 @@ class ImageField extends React.Component {
       ? styles.formImageFieldStyle
       : styles.formImageFueldGeneralStyle;
 
-    const currValue = validation.formStore.form.fields[validation.name].value || value;
+    const currValue = validation.formStore.getFormField(validation.name, validation.multiName)?.value || value;
 
     if (currValue) {
       return (
@@ -140,7 +140,7 @@ class ImageField extends React.Component {
 
   render() {
     const {isAvatar, value, validation, disableEdit} = this.props;
-    const currValue = validation.formStore.form.fields[validation.name].value || value;
+    const currValue = validation.formStore.getFormField(validation.name, validation.multiName)?.value || value;
 
     return (
       <View style={{justifyContent: 'center', alignItems: 'center'}}>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from './TextInputField';
 import {text, layout, colors, sizeL} from '~/Theme';
@@ -25,15 +25,16 @@ const MultiLinkField = (props) => {
     rule = false,
   } = props;
 
-  const currFormField = validation.formStore.getFormField(validation.name);
-  let initialCount = 1;
-  if (currFormField) {
-    initialCount = Object.keys(currFormField)?.length;
-  }
-
-  const [count, setCount] = useState(initialCount);
+  const [count, setCount] = useState(1);
   const [ addButton, setAddButton ] = useState(false);
-  const [ deletedFields, setDeletedFields ] = useState([]);
+  const [deletedFields, setDeletedFields] = useState([]);
+
+  useEffect(() => {
+    const currFormField = validation.formStore.getFormField(validation.name);
+    if (currFormField) {
+      setCount(Object.keys(currFormField)?.length);
+    }
+  }, []);
 
   const onFieldDeleted = (currIndex, currTitleItemValidation, currItemValidation) => {
     if (currTitleItemValidation && currItemValidation) {
@@ -143,7 +144,7 @@ const MultiLinkField = (props) => {
       })}
 
       {
-        ((!maxCount || (count - deletedFields.length) < maxCount) && addButton || count === 0) && (
+        ((!maxCount || count  < maxCount) && addButton || count === 0) && (
           <AddBtn />
         )
       }

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View} from 'react-native';
 import ImageField from './ImageField';
 import {sizeL} from '~/Theme';
@@ -7,6 +7,13 @@ import {string, bool, shape, number} from 'prop-types';
 const MultiImageField = (props) => {
   const [count, setCount] = useState(1);
   const [deletedFields, setDeletedFields] = useState([]);
+
+  useEffect(() => {
+    const currFormField = props.validation.formStore.getFormField(props.validation.name);
+    if (currFormField) {
+      setCount(currFormField?.length);
+    }
+  }, []);
 
   const onChangeImage = (url, index) => {
     if (index === (count - deletedFields.length) - 1) {

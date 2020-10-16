@@ -25,7 +25,7 @@ class FileField extends React.Component {
       formStore.registerFormField(name, validateRule, value, multiName);
 
       this.fieldValidation = (
-        <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} />
+        <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} multiName={multiName}/>
       );
     }
   }
@@ -80,13 +80,13 @@ class FileField extends React.Component {
     const {validation, navigation, value} = this.props;
 
     const currValue = validation
-      ? validation.formStore.form.fields[validation.name].value
+      ? validation.formStore.getFormField(validation.name, validation.multiName)?.value
       : value;
 
-    let fileName = currValue.split('_');
-    fileName = fileName[fileName.length - 2];
-
     if (currValue) {
+      let fileName = currValue.split('_');
+      fileName = fileName[fileName.length - 2];
+
       return (
         <View style={styles.adRow}>
           <Icon name="file" color={colors.mainBlue} size={20} />
@@ -115,7 +115,7 @@ class FileField extends React.Component {
     const {value, validation} = this.props;
 
     const currValue = validation
-      ? validation.formStore.form.fields[validation.name].value
+      ? validation.formStore.getFormField(validation.name, validation.multiName)?.value
       : value;
 
     return (
