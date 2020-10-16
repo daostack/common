@@ -13,7 +13,6 @@ export const createProposalRequestToJoin = async (daoId, data) => {
   const {cardData, ...rest} = data;
 
   const createEndpoint = createUrl();
-  const circleEndpoint = circlePayUrl();
 
   if (!cardData) {
     throw new Error('Trying to create proposal without a card!');

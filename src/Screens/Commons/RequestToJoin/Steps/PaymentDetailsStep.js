@@ -17,13 +17,12 @@ import CreateStepDotHeader from '../RequestStepDotHeader';
 import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '~/Services/ArcService';
-import {createCard,assignCard} from '~/Services/CirclePayService';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
-import auth from '@react-native-firebase/auth';
+
 const {width} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
