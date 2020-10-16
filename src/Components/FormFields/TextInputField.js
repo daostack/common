@@ -7,11 +7,12 @@ import {string, func, bool, number, object, oneOfType} from 'prop-types';
 
 const CharCount = ({currCount, maxLength}) => <Text style = {{color: currCount === maxLength ? colors.error : colors.grey3, paddingTop: 5}}>{currCount}/{maxLength}</Text>;
 
-const Label = ({label, infoLabel}) => (
+export const Label = ({label, infoLabel}) => (
   <View style={{flexDirection: 'row', marginBottom: 8}}>
     <Text style={styles.label}>{label}</Text>
     <Text style={styles.infoLabel}>{infoLabel}</Text>
-  </View>);
+  </View>
+);
 
 class TextInputField extends React.Component {
 

@@ -20,6 +20,8 @@ import UserStore from './UserStore';
 import DaoStore from './DaoStore';
 import BottomSheetStore from './BottomSheetStore';
 
+import {BillingDetailsFormStore} from '../FormStores/RequestToJoin';
+
 export default {
   completeAccountFormStore: new CompleteAccountFormStore(),
 
@@ -31,6 +33,7 @@ export default {
   paymentFormStore: new PaymentFormStore(),
   personalContributionFormStore: new PersonalContributionFormStore(),
   introduceYourselfFormStore: new IntroduceYourselfFormStore(),
+  billingDetailsFormStore: new BillingDetailsFormStore(),
 
   // Create Common Form Stores
   generalInfoFormStore: new GeneralInfoFormStore(),

@@ -62,7 +62,6 @@ TabBarRenderer.propTypes = {
     index: number,
     routes: array,
   }),
-  jumpTo: func.isRequired,
   indexChange: func,
   otherProps: object,
 };

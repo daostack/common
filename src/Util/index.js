@@ -1,4 +1,5 @@
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import logger from '~/Services/Logger';
 
 import moment from 'moment';
 
@@ -52,10 +53,38 @@ export const calcIsFundingStage = (deadline) => {
 };
 
 
-export const showErrorPopUp = (bottomSheetStore, message) => {
-  /* this function requires the bottomSheetStore as a variable as you can't
-  access the mobx store outside of a react component */
-  bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {errorMessage: message});
+// This function requires the bottomSheetStore as a variable as you can't
+// access the mobx store outside of a react component
+export const showErrorPopUp = (bottomSheetStore, arg) => {
+  if (arg instanceof Error) {
+    const errorObj = getErrorObject(arg);
+
+    console.log(errorObj);
+
+    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {
+      errorMessage: errorObj.errorMessage,
+      errorId: errorObj.errorId,
+      errorObj,
+    });
+  } else {
+    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {
+      errorMessage: arg,
+    });
+  }
+};
+
+export const getErrorObject = (axiosError) => {
+  try {
+    return axiosError.response.data;
+  } catch (e) {
+    logger.error('Something went wrong trying to parse the error object', e);
+
+    return {
+      errorMessage: 'Something bad happened',
+      errorId: 'Cannot retrieve the ID if the error',
+      errorCode: 500,
+    };
+  }
 };
 
 export const isDaoMemberBySafeAddress = (members, userSafeAddress) => {

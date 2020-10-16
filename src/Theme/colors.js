@@ -34,4 +34,6 @@ export default {
   lightBlue: '#dcd8f3',
   countdown: '#F45184',
   formPlaceholderColor: '#92a2b5',
+  butterscotch: '#ffc23d22',
+  mango: '#ffba36',
 };

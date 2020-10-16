@@ -8,34 +8,75 @@ import {
 import {inject, observer} from 'mobx-react';
 import React from 'react';
 import {text, layout, colors, font} from '~/Theme/index';
-import {string, func, shape} from 'prop-types';
+import {string, number, func, shape} from 'prop-types';
+import Icon from '../../Assets/iconfont/Icon';
 
-const TransactionError = ({bottomSheetStore, errorMessage}) => (
-  <View style={styles.scrollView}>
-    <View style={styles.body}>
-      <Image
-        source={require('~/Assets/alert.png')}
-        style={styles.imgAlert}
-      />
-      <Text style={styles.title}>Something went wrong</Text>
+const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
+  const [showMore, setShowMore] = React.useState(false);
 
-      <View style={styles.textWithIconContainer}>
-        <Text style={styles.blackTextWithImage}>{errorMessage}</Text>
+  const toggleShowMore = () => {
+    setShowMore(!showMore);
+  };
+
+  return (
+    <View style={styles.scrollView}>
+      <View style={styles.body}>
+        {(errorObj) && (
+          <TouchableOpacity
+            style={styles.icon}
+            onPress={toggleShowMore}
+          >
+            <Icon name="explanation1" />
+          </TouchableOpacity>
+        )}
+
+        <View style={styles.spacer}/>
+
+        <Image
+          source={require('~/Assets/alert.png')}
+          style={styles.imgAlert}
+        />
+
+        <Text style={styles.title}>
+          Something went wrong
+        </Text>
+
+        {showMore ? (
+          <View>
+            <Text>Error ID: {errorObj.errorId}</Text>
+            <Text>Error Status: {errorObj.errorCode}</Text>
+            <Text>Error Name: {errorObj.errorName}</Text>
+            <Text>Full error text: {errorObj.error}</Text>
+          </View>
+        ) : (
+          <View style={styles.textWithIconContainer}>
+            <Text style={styles.blackTextWithImage}>{errorMessage}</Text>
+          </View>
+        )}
+
+        <View style={styles.spacer}/>
+
+        <TouchableOpacity
+          style={styles.dismissButton}
+          onPress={bottomSheetStore.hideBottomSheet}
+        >
+          <Text style={text.buttonblue}>Dismiss</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={styles.dismissButton}
-        onPress={() => bottomSheetStore.hideBottomSheet()}>
-        <Text style={text.buttonblue}>Dismiss</Text>
-      </TouchableOpacity>
     </View>
-  </View>
-);
+  );
+};
 
 TransactionError.propTypes = {
   bottomSheetStore: shape({
     hideBottomSheet: func,
   }),
   errorMessage: string,
+  errorObj: shape({
+    errorId: string,
+    name: string,
+    statusCode: number,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -44,12 +85,17 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
 
+  spacer: {
+    flex: 1,
+  },
+
   dismissButton: {
     ...layout.btnOutline,
     flexGrow: 0,
     width: '100%',
     alignSelf: 'stretch',
   },
+
   imgAlert: {
     height: '50%',
     aspectRatio: 1,
@@ -86,12 +132,19 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'relative',
   },
 
   safeArea: {
     flex: 1,
     backgroundColor: colors.white,
     padding: 20,
+  },
+
+  icon: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
   },
 });
 
