@@ -110,7 +110,6 @@ const ProposalCardHeader = ({stage, winningOutcome, closingAt, isScreenHeader = 
     ? (
       <View style={{...styles.stateCard, ...{
         backgroundColor: headerStatus.darkColor,
-        opacity: headerStatus.opacity,
         paddingHorizontal: 50,
       }}}
       >
