@@ -22,6 +22,7 @@ import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
+import { createCardPayload } from '../../../../Services/CirclePayService';
 
 const {width} = Dimensions.get('window');
 
@@ -84,10 +85,10 @@ const PaymentDetailsStep = ({
         const proposalId = await ArcService.createRequestToJoin(
           currDaoId, {
             ...data,
-            cardData: {
+            cardData: await createCardPayload({
               ...formData,
               ...userInfo,
-            },
+            }),
           },
         );
 

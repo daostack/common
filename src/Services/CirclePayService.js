@@ -42,7 +42,9 @@ const cardData = (formData) => ({
   },
 });
 
-export const createCard = async (formData) => {
+export const createCard = async (formData) => (await axiosClient.post(endpoints.create, createCardPayload(formData))).data;
+
+export const createCardPayload = async (formData) => {
   const idToken = await auth().currentUser.getIdToken();
 
   const {encryptedData, keyId} = await getEncryptedData({
@@ -50,10 +52,14 @@ export const createCard = async (formData) => {
     cvv: `${formData.cvv}`,
   });
 
-  return (await axiosClient.post(endpoints.create, {
+  const data =  {
     keyId,
     idToken,
     encryptedData,
     ...cardData(formData),
-  })).data;
+  };
+
+  console.log('data', data);
+
+  return data;
 };

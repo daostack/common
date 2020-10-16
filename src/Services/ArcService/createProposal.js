@@ -20,7 +20,7 @@ export const createProposalRequestToJoin = async (daoId, data) => {
   const createTransactionBody = {
     idToken,
     daoId,
-    rest,
+    data: rest,
   };
 
 
