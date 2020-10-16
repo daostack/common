@@ -6,7 +6,6 @@ import axios from 'axios';
 import auth from '@react-native-firebase/auth';
 
 export const createProposalRequestToJoin = async (daoId, data) => {
-<<<<<<< Updated upstream
   try {
     const idToken = await auth().currentUser.getIdToken();
     const body1 = {idToken, daoId, data};
@@ -55,50 +54,5 @@ export const createProposalRequestToJoin = async (daoId, data) => {
   } catch (e) {
     logger.log(e);
     throw e;
-=======
-  const idToken = await auth().currentUser.getIdToken();
-
-  const {cardData, ...rest} = data;
-
-  const createEndpoint = createUrl();
-
-  if (!cardData) {
-    throw new Error('Trying to create proposal without a card!');
-  }
-
-  const createTransactionBody = {
-    idToken,
-    daoId,
-    data: rest,
-  };
-
-
-  // --- Create the transaction
-  const {encodedData, safeTxHash, toAddress} = (await axios.post(`${createEndpoint}/createRequestToJoinTransaction`, createTransactionBody)).data;
-
-
-  // --- Sign the data
-  const manager = await WalletManager.getInstance();
-  const signature = await manager.signSafeTx(safeTxHash);
-
-
-  const createProposalBody = {
-    idToken,
-    createProposalTx: {
-      to: toAddress,
-      value: '0',
-      data: encodedData,
-      signature: signature,
-    },
-    cardData,
-  };
-
-  const response = await axios.post(
-    `${relayerUrl()}/requestToJoin`,
-    createProposalBody
-  );
-  if (!response.data) {
-    throw new Error('Response has no "data" property - thats not good at all :(');
->>>>>>> Stashed changes
   }
 };
