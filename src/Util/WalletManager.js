@@ -118,7 +118,7 @@ export default class WalletManager {
     const signedTx = await NativeWallet.signMessage(txHash);
     // Add 4
     let finalSignature = signedTx.replace(/1b$/, '1f').replace(/1c$/, '20');
-    logger.log('finalSignature -->', finalSignature);
+    // logger.log('finalSignature -->', finalSignature);
     return finalSignature;
   }
 
@@ -192,7 +192,7 @@ export default class WalletManager {
       const signedTx = await NativeWallet.signMessage(txHash);
       // Add 4
       let finalSignature = signedTx.replace(/1b$/, '1f').replace(/1c$/, '20');
-      logger.log('finalSignature -->', finalSignature);
+      // logger.log('finalSignature -->', finalSignature);
       return finalSignature;
     } catch (err) {
       throw err;

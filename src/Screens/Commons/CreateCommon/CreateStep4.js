@@ -107,10 +107,15 @@ const CreateStep4 = ({generalInfoFormStore,
   };
 
   const goToCommon = () => {
+    const commonId = newCommonAddress.toLowerCase();
+    if (!commonId) {
+      Toast.error('Cannot open CommonProfile, because newCommonAddress is not defined');
+      return;
+    }
     const navigate = CommonActions.navigate({
       name: 'CommonProfile',
       params: {
-        commonId: newCommonAddress.toLowerCase(),
+        commonId,
       },
     });
     navigation.popToTop();
@@ -181,7 +186,6 @@ const CreateStep4 = ({generalInfoFormStore,
         fundingGoal: parseInt(formDataInit.funding, 10) * 100,
         fundingGoalDeadline,
       };
-      logger.log('calling createCommon(...)');
 
       navigation.navigate({
         name: 'FullScreenCreationLoader',
@@ -190,8 +194,6 @@ const CreateStep4 = ({generalInfoFormStore,
           message: 'This might take a couple of minutes.',
         },
       });
-
-      console.log(JSON.stringify(data));
 
       const commonAddress = await ArcService.createCommon(
         data,

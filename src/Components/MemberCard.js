@@ -1,14 +1,14 @@
 import {StyleSheet, View, Text} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {layout, colors, text, font} from '~/Theme';
+import {layout, colors, text, font} from '../Theme';
 import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
-import {monthShortNames} from '~/Util/DateUtil';
+import {monthShortNames} from '../Util/DateUtil';
 import moment from 'moment';
-import {LAUNCHED_STATES} from '~/Services/ProposalService';
+import {LAUNCHED_STATES} from '../Services/ProposalService';
 import {string, array, number, shape, object, oneOfType} from 'prop-types';
-import DaoService from '~/Services/DaoService';
-import logger from '~/Services/Logger';
+import DaoService from '../Services/DaoService';
+import logger from '../Services/Logger';
 import {
   Placeholder,
   PlaceholderLine,
