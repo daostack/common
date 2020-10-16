@@ -5,7 +5,6 @@ import WalletManager from '~/Util/WalletManager';
 import {createUrl, relayerUrl} from '~/Config';
 
 import logger from '../Logger';
-import {circlePayUrl} from '../../Config';
 
 export const createProposalRequestToJoin = async (daoId, data) => {
   const idToken = await auth().currentUser.getIdToken();
