@@ -23,6 +23,7 @@ import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
+import auth from '@react-native-firebase/auth';
 const {width} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
@@ -80,22 +81,16 @@ const PaymentDetailsStep = ({
           },
         });
 
-        // Create the card
-        const {cardId} = await createCard({
-          ...formData,
-          ...userInfo,
-        });
-
         // Create the proposal
         const proposalId = await ArcService.createRequestToJoin(
           currDaoId, {
             ...data,
-            cardId,
+            cardData: {
+              ...formData,
+              ...userInfo,
+            },
           },
         );
-
-        // // Assign card
-        await assignCard(cardId, proposalId);
 
         navigation.pop();
 
