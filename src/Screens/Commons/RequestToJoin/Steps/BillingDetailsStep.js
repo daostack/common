@@ -123,6 +123,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
               editable
               label="Full name"
               value={testCard ? 'Thor Odinson' : ''}
+              autoCapitalize="words"
               validation={{
                 name: BillingDetailsConstants.FullName,
                 formStore: billingDetailsFormStore,
@@ -135,6 +136,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
               editable
               label="City"
               value={testCard ? 'Metropolis' : ''}
+              autoCapitalize="words"
               validation={{
                 name: BillingDetailsConstants.City,
                 formStore: billingDetailsFormStore,
@@ -160,6 +162,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
               editable
               label="Address"
               value={testCard ? '221B Baker Street' : ''}
+              autoCapitalize="words"
               validation={{
                 name: BillingDetailsConstants.Address,
                 formStore: billingDetailsFormStore,

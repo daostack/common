@@ -217,6 +217,7 @@ const PaymentDetailsStep = ({
               label="Name on card"
               value={testCard ? 'Tester Tester' : ''}
               editable={true}
+              autoCapitalize="words"
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NAME,
                 formStore: paymentFormStore,
