@@ -49,7 +49,6 @@ const PaymentDetailsStep = ({
 
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [isValidCC, setIsValidCC] = useState(true);
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -134,7 +133,7 @@ const PaymentDetailsStep = ({
       toggle = !toggle;
     }
     firstCalc += secondCalc;
-    setIsValidCC(firstCalc % 10 === 0);
+    return firstCalc % 10 === 0;
   };
 
   const subtitle = (style) => (
