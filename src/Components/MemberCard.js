@@ -40,7 +40,7 @@ const MemberCard = ({
         <View style={styles.rightContainer}>
           <View style={{alignItems: 'flex-end'}}>
             <Text style={text.h2Black}>
-              {`$${proposalInfo.funding}`}
+              {`$${proposalInfo.funding / 100}`}
             </Text>
 
             <Text style={{...text.runninglightGray, width: '100%'}}>
