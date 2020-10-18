@@ -69,18 +69,20 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
             )
         ))
       ) : horizontal ? (
-        <View style={{...layout.flexRow, paddingRight: 15}}>
-          {
-            members.map((memberUserId, i) => (
-              <PlaceholderMedia
-                size={50}
-                isRound={true}
-                style={{marginLeft: i > 0 ? -15 : 0, borderWidth: 2, borderColor: colors.white}}
-                key={i}
-              />
-            ))
-          }
-        </View>
+        members.map((memberUserId, i) => (
+          <View style={{position: 'relative', left: i * -15}}>
+            <PlaceholderMedia
+              key={i}
+              size={50}
+              isRound={true}
+              style={{width: 50,
+                height: 50,
+                borderRadius: 25,
+                borderWidth: 2,
+                borderColor: colors.white}}
+            />
+          </View>
+        ))
       ) :
         <Placeholder Animation={Fade}>
           {

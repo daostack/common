@@ -74,7 +74,8 @@ const CommonProfile = ({
   const [ pendingProposalsData, setPendingProposalsData ] = useState(null);
   const [ userPendingPropDiscCount, setUserPendingPropDiscCount ] = useState(0);
   const commonId = currCommon?.id;
-  const daoMembers = currCommon?.members;
+  const daoMembers = currCommon?.members || [];
+  const [daoMemberAvatars] = useState(daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers);
   const showReqToJoin =
     !userStore.userInfo ||
     (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
@@ -309,9 +310,7 @@ const CommonProfile = ({
             <CommonMembersList
               horizontal={true}
               navigation={navigation}
-              members={
-                daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers
-              }
+              members={daoMemberAvatars}
             />
           </View>
         </TouchableOpacity>}
