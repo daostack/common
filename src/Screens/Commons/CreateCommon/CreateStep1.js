@@ -38,7 +38,6 @@ const CreateStep1 = ({generalInfoFormStore, navigation}) => {
   }, [scrollY]);
 
   const push = () => {
-    console.log('generalInfoFormStore -> ', generalInfoFormStore.form.fields);
     if (generalInfoFormStore.isFormValid()) {
       navigation.navigate('CreateStep2');
     }
