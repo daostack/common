@@ -79,11 +79,11 @@ if (Platform.OS === 'ios') {
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
 }
 
-if (Platform.OS === 'android') {
-  if (UIManager.setLayoutAnimationEnabledExperimental) {
-    UIManager.setLayoutAnimationEnabledExperimental(true);
-  }
-}
+// if (Platform.OS === 'android') {
+//   if (UIManager.setLayoutAnimationEnabledExperimental) {
+//     UIManager.setLayoutAnimationEnabledExperimental(true);
+//   }
+// }
 
 const App = ({userStore, bottomSheetStore, navigation}) => {
   const [onboarded, setOnboarded] = useState(false);

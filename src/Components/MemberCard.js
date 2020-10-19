@@ -5,10 +5,10 @@ import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
 import {monthShortNames} from '~/Util/DateUtil';
 import moment from 'moment';
-import {PROPOSAL_TYPE} from '~/Config';
 import {LAUNCHED_STATES} from '~/Services/ProposalService';
 import {string, array, number, shape, object, oneOfType} from 'prop-types';
 import DaoService from '~/Services/DaoService';
+import logger from '~/Services/Logger';
 import {
   Placeholder,
   PlaceholderLine,
@@ -16,9 +16,9 @@ import {
 } from 'rn-placeholder';
 
 const MemberCard = ({
-  memberSince,
+  memberSince = null,
   userInfo,
-  proposalInfo,
+  proposalInfo = null,
 }) => {
 
   const [commonsCount, setCommonsCount] = useState(null);
@@ -26,7 +26,7 @@ const MemberCard = ({
   useEffect(() => {
     const loadCommonsCount = (async () => {
       const userDaosCount = (await DaoService.getInstance().getUserDaos(userInfo.uid, userInfo.safeAddress)).docs.length;
-      console.log('userDaosCount -> ', userDaosCount);
+      logger.log('userDaosCount -> ', userDaosCount);
       setCommonsCount(userDaosCount);
     });
     loadCommonsCount();
@@ -34,18 +34,13 @@ const MemberCard = ({
 
   const renderRightContainer = () => {
     if (proposalInfo) {
-      const proposalValue =
-        proposalInfo.type === PROPOSAL_TYPE.Join
-          ? proposalInfo.description.funding / 100
-          : proposalInfo.fundingRequest.amount / 100;
-
       const remainingSeconds = proposalInfo.closingAt - moment().unix();
 
       return (
         <View style={styles.rightContainer}>
           <View style={{alignItems: 'flex-end'}}>
             <Text style={text.h2Black}>
-              {`$${proposalValue}`}
+              {`$${proposalInfo.funding}`}
             </Text>
 
             <Text style={{...text.runninglightGray, width: '100%'}}>
