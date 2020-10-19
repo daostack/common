@@ -457,7 +457,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
                 onChangeText={(currText) => setInputText(currText)}
                 style={{
                   flex: 1,
-                  height: 18,
+                  height: 22,
                   padding: 0,
                   marginHorizontal: 10,
                 }}

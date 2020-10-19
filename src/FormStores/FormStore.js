@@ -175,7 +175,7 @@ class FormStore {
 
   // Private functions
   validateField = (field) => {
-    var validation = this.getValidator();
+    var validation = this.getValidator(field);
     this.form.meta.isValid = validation.passes();
     this.form.fields[field].error = validation.errors.first(field);
     if (this.form.fields[field].error) {
@@ -191,14 +191,20 @@ class FormStore {
     );
   };
 
-  getValidatorParams = () => {
+  getValidatorParams = (fieldName) => {
     let fieldsData = {};
     let fieldsRule = {};
 
-    for (const key in this.form.fields) {
-      const formField = this.form.fields[key];
-      fieldsData[key] = formField.value;
-      fieldsRule[key] = formField.rule;
+    if (fieldName) {
+      const formField = this.form.fields[fieldName];
+      fieldsData[fieldName] = formField.value;
+      fieldsRule[fieldName] = formField.rule;
+    } else {
+      for (const key in this.form.fields) {
+        const formField = this.form.fields[key];
+        fieldsData[key] = formField.value;
+        fieldsRule[key] = formField.rule;
+      }
     }
 
     return {
