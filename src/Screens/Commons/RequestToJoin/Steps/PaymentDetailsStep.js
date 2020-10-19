@@ -17,15 +17,15 @@ import CreateStepDotHeader from '../RequestStepDotHeader';
 import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '~/Services/ArcService';
-import {createCard} from '~/Services/CirclePayService';
-// import {preauthorizePayment} from '~/Services/MangopayService';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
+import {createCardPayload} from '../../../../Services/CirclePayService';
 import {testCard} from '~/Config';
 import moment from 'moment';
+
 const {width} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
@@ -86,15 +86,14 @@ const PaymentDetailsStep = ({
 
         // Create the proposal
         const proposalId = await ArcService.createRequestToJoin(
-          currDaoId,
-          data,
+          currDaoId, {
+            ...data,
+            cardData: await createCardPayload({
+              ...formData,
+              ...userInfo,
+            }),
+          },
         );
-
-        // Create the card
-        await createCard({
-          ...formData,
-          ...userInfo,
-        }, proposalId);
 
         navigation.pop();
 
