@@ -404,8 +404,8 @@ const ProposalScreen = ({
   const votesCount = votesFor + votesAgainst;
 
   const onSetIndex = (item) => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setIsHeaderHidden(item === 1);
+    //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    //setIsHeaderHidden(item === 1);
     setIndex(item);
   };
 
@@ -456,14 +456,13 @@ const ProposalScreen = ({
           scrollEventThrottle={16}
           nestedScrollEnabled={true}
           onScroll={(e) => {
-            onTabViewScroll(e);
+            //onTabViewScroll(e);
 
             stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
               const isVisible = py < 0;
 
               if (isVisible !== showStickyTabBar) {
                 if (isVisible) {
-                  console.log('SET STICKY BAR TO BE VISIBLE');
                   setShowStickyTabBar(isVisible);
                   Animated.timing(stickyTabBarState.animation, {
                     toValue: 1,
@@ -472,7 +471,6 @@ const ProposalScreen = ({
                   }).start();
 
                 } else {
-                  console.log('SET STICKY BAR TO BE NOT VISIBLE');
                   setShowStickyTabBar(isVisible);
                   Animated.timing(stickyTabBarState.animation, {
                     toValue: 0,
