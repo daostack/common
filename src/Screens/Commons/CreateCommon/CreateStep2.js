@@ -182,7 +182,7 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
         scrollEventThrottle={16}
         onScroll={Animated.event([
           {nativeEvent: {contentOffset: {y: scrollY}}},
-        ], {useNativeDriver: true})}>
+        ])}>
         <CreateStepHeader currentIndex={1} />
 
         <View

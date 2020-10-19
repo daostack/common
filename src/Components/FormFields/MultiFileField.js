@@ -10,7 +10,7 @@ const MultiFileField = (props) => {
   useEffect(() => {
     const currFormField = props.validation.formStore.getFormField(props.validation.name);
     if (currFormField) {
-      setCount(currFormField?.length);
+      setCount(Object.keys(currFormField)?.length);
     }
   }, []);
 
@@ -21,9 +21,11 @@ const MultiFileField = (props) => {
   };
 
   const onFieldDeleted = (currIndex) => {
-    //setDeletedFields([...deletedFields, currIndex]);
+    setCount(count - 1);
+    if (props.validation) {
+      props.validation.formStore.removeFormField(`${currIndex}`, props.validation.name);
+    }
   };
-
 
   const {maxCount, navigation} = props;
 

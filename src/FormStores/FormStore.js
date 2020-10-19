@@ -99,29 +99,41 @@ class FormStore {
     this.validateField(name, multiName);
   }
 
-  removeFormField(name) {
-    if (this.form.fields?.[name]) {
+  removeFormField(name, multiName) {
+    if (multiName) {
+      const multiIndexInfo = name.split('_');
+      const currMultiIndex = multiIndexInfo[0];
+
+      if (this.form.fields[multiName][currMultiIndex]) {
+        let currFormField = this.form.fields[multiName];
+        delete currFormField[currMultiIndex];
+
+        const newFormFieldObj = {};
+        let newIndex = 0;
+
+        Object.keys(currFormField).forEach((currKey) => {
+          newFormFieldObj[newIndex] = currFormField[currKey];
+          newIndex++;
+        });
+        this.form.fields[multiName] = newFormFieldObj;
+      }
+
+    } else {
       delete this.form.fields[name];
     }
   }
 
   // Check if form is valid and display error for each form field if it's necessary
   isFormValid = () => {
-    console.log('isFormValid -> ');
-
-    // this.form.meta.formValidationMade = true;
-    // var validation = this.getValidator();
-    // console.log('validation -> ', validation);
-    // this.form.meta.isValid = validation.passes();
-    // if (!this.form.meta.isValid) {
-    //   for (const key in validation.errors.errors) {
-    //     this.form.fields[key].error = validation.errors.first(key);
-    //   }
-    //   return false;
-    // }
-
-    // Filter multiple fields
-    return true;
+    this.form.meta.formValidationMade = true;
+    var validation = this.getValidator();
+    this.form.meta.isValid = validation.passes();
+    if (!this.form.meta.isValid) {
+      for (const key in validation.errors.errors) {
+        this.form.fields[key].error = validation.errors.first(key);
+      }
+      return false;
+    }
   };
 
   // Determine if the form action button has to be disabled
@@ -253,12 +265,8 @@ class FormStore {
 
   getValidatorParams = (fieldName, multiField) => {
 
-    console.log('getValidatorParams');
-
     let fieldsData = {};
     let fieldsRule = {};
-
-    //console.log(`this.getFormField("${fieldName}", "${multiField}") -> `, this.getFormField(fieldName, multiField));
 
     if (fieldName) {
       const formField = this.getFormField(fieldName, multiField);
@@ -267,7 +275,6 @@ class FormStore {
     } else {
       for (const key in this.form.fields) {
         const formField = this.form.fields[key];
-        console.log('Curr formField -> ', formField);
         //Multi field
         if (Array.isArray(formField)) {
           formField.forEach((currMultiFormField, multiIndex) => {
@@ -290,10 +297,6 @@ class FormStore {
         }
       }
     }
-
-    console.log('getValidatorParams');
-    console.log(fieldsData);
-    console.log(fieldsRule);
 
     return {
       fieldsData: fieldsData,
