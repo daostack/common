@@ -17,7 +17,7 @@ import DiscussionList from '../../Discussions/DiscussionList';
 import {inject, observer} from 'mobx-react';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '~/Components/Commons/CommonHeader';
-import {calcIsFundingStage} from '../../../Util';
+import {calcIsFundingStage, LAYOUT_ANIMATION_CONFIG} from '~/Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '~/Services/ProposalService';
 import DaoService from '~/Services/DaoService';
@@ -36,7 +36,7 @@ import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDate';
 import {BlurView} from '~/Components';
-import Logger from '../../../Services/Logger';
+import Logger from '~/Services/Logger';
 
 let stickyHeightAddon = 36;
 
@@ -408,7 +408,7 @@ const CommonProfile = ({
   const renderPendingApproval = () => {
     const remainingSeconds =
       pendingProposalsData.usersPendingProposal.closingAt - moment().unix();
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
       <TouchableOpacity
         onPress={openProposalScreen}
@@ -551,7 +551,7 @@ const CommonProfile = ({
   );
 
   const renderRequestToJoinBtn = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
       <TouchableOpacity
         style={styles.headerButton}
@@ -580,7 +580,7 @@ const CommonProfile = ({
     ],
   };
 
-  const stickyTabBarStyle = {position: 'absolute', top: 0, width: '100%', paddingBottom: 5, zIndex: 1};
+  const stickyTabBarStyle = {position: 'absolute', top: Platform.OS === 'android' ? -20 : 0, width: '100%', paddingBottom: 5, zIndex: 1};
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>

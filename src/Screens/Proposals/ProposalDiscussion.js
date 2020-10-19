@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
   emptyContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    paddingBottom: 80,
   },
   emptyTitle: {
     ...font.fontSize(3),

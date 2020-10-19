@@ -35,6 +35,7 @@ import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
 import {string, func, object, shape, oneOfType, number} from 'prop-types';
 import logger from '~/Services/Logger';
+import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -62,7 +63,9 @@ const ProposalScreen = ({
 }) => {
   const [ votingProcessState, setVotingProcessState ] = useState({inProgress: false, error: false});
   const [ proposalScreenInfo, setProposalScreenInfo ] = useState(proposalCardInfo);
-  const [ isHeaderHidden, setIsHeaderHidden ] = useState(false);
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
+  const [hederStateInProcess, setHederStateInProcess] = useState(false);
+  const [disabledScroll ,setDisabledScroll] = useState(false);
   const [ isSending, setIsSending ] = useState(false);
   const [ isMember, setIsMember ] = useState(false);
   const [ isProposer, setIsProposer ] = useState(false);
@@ -104,7 +107,7 @@ const ProposalScreen = ({
           currProposalInfo.join.proposedMemberId
         );
 
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
         navigation.setParams({
           subtitle: currProposalDao?.metadata?.name,
         });
@@ -364,7 +367,7 @@ const ProposalScreen = ({
   };
 
   const renderVotingButtons = (reference) => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
       (moment().isBefore(moment.unix(proposalScreenInfo?.proposalInfo?.closingAt)) || !proposalScreenInfo?.proposalInfo?.closingAt) && (
         <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
@@ -404,27 +407,45 @@ const ProposalScreen = ({
   const votesCount = votesFor + votesAgainst;
 
   const onSetIndex = (item) => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     setIsHeaderHidden(item === 1);
     setIndex(item);
   };
 
   const onTabViewScroll = (e) => {
 
-    const currScrollY = e.nativeEvent.contentOffset.y;
-
-    if (currScrollY > currTabViewScroll) {
-      if (!isHeaderHidden) {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        setIsHeaderHidden(true);
-      }
-    } else if (currScrollY < 1) {
-      if (isHeaderHidden) {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        setIsHeaderHidden(false);
+    if (!hederStateInProcess) {
+      const currScrollY = e.nativeEvent.contentOffset.y;
+      console.log('currScrollY -> ', currScrollY);
+      if (currScrollY > currTabViewScroll) {
+        if (!isHeaderHidden) {
+          setHederStateInProcess(true);
+          LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG, () => { setHederStateInProcess(false); });
+          setIsHeaderHidden(true);
+        }
+      } else if (currScrollY < 40) {
+        if (isHeaderHidden) {
+          setHederStateInProcess(true);
+          LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG, () => { setHederStateInProcess(false); });
+          setIsHeaderHidden(false);
+        }
       }
     }
   };
+
+  const slideUp = {
+    transform: [
+      {
+        translateY: stickyTabBarState.animation.interpolate({
+          inputRange: [0.01, 1],
+          outputRange: [0, 80],
+          extrapolate: 'clamp',
+        }),
+      },
+    ],
+  };
+
+  const stickyTabBarStyle = {position: 'absolute', top: -80, width: '100%', paddingBottom: 5, zIndex: 999};
 
   return (
     <React.Fragment>
@@ -442,21 +463,30 @@ const ProposalScreen = ({
       >
 
         {showStickyTabBar && (
-          <View style={{position: 'absolute', top: 0, width: '100%', paddingBottom: 5, zIndex: 999}}>
+          <Animated.View style={[stickyTabBarStyle, slideUp]}>
             <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo}
-              parentRef={originTabBarRef}/>
-          </View>
+              parentRef={originTabBarRef} />
+          </Animated.View>
         )}
 
         <ScrollView
           style={{
-            flex: 1,
+
+            backgroundColor: colors.mainBlue,
           }}
           ref={scrollViewRef}
           scrollEventThrottle={16}
           nestedScrollEnabled={true}
+          contentContainerStyle={{flexGrow: 1}}
+          onContentSizeChange={(contentWidth, contentHeight) => {
+            console.log('onContentSizeChange -> ', contentHeight, contentHeight < Dimensions.get('window').height);
+            setDisabledScroll(contentHeight < Dimensions.get('window').height);
+          }}
           onScroll={(e) => {
-            onTabViewScroll(e);
+
+            if (disabledScroll) {
+              onTabViewScroll(e);
+            }
 
             stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
               const isVisible = py < 0;
@@ -473,12 +503,15 @@ const ProposalScreen = ({
 
                 } else {
                   console.log('SET STICKY BAR TO BE NOT VISIBLE');
-                  setShowStickyTabBar(isVisible);
+
                   Animated.timing(stickyTabBarState.animation, {
                     toValue: 0,
                     duration: 300,
                     useNativeDriver: true,
-                  }).start();
+                  }).start(
+                    () => {
+                      setShowStickyTabBar(isVisible);
+                    });
                 }
               }
             });
