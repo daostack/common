@@ -30,11 +30,11 @@ const getEncryptedData = async (dataToEncrypt) => {
 const cardData = (formData) => ({
   billingDetails: {
     name: formData.card_name,
-    city: 'Test City',
-    country: 'US',
-    line1: 'Test',
-    postalCode: '11111',
-    district: 'MA',
+    city: formData.City,
+    country: formData.Country,
+    line1: formData.Address,
+    postalCode: formData.PostalCode,
+    district: formData.District,
   },
   expMonth: +formData.expiration_date.split('/')[0],
   expYear: +(`20${formData.expiration_date.split('/')[1]}`),

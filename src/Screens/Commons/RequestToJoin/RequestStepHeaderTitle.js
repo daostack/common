@@ -8,7 +8,7 @@ import {
   sizeL,
   sizeS,
 } from '~/Theme';
-import {string} from 'prop-types';
+import {string, oneOfType, func} from 'prop-types';
 
 const RequestStepHeaderTitle = ({title, subtitle}) => (
   <>
@@ -22,7 +22,10 @@ const RequestStepHeaderTitle = ({title, subtitle}) => (
 
 RequestStepHeaderTitle.propTypes = {
   title: string.isRequired,
-  subtitle: string,
+  subtitle: oneOfType([
+    string,
+    func,
+  ]),
 };
 
 const styles = StyleSheet.create({
