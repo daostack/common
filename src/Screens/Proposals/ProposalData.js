@@ -10,14 +10,12 @@ import {
 import {text, layout, colors, sizeM} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import ReadMore from 'react-native-read-more-text';
-import UserMessageCard from '~/Components/Discussion/UserMessageCard';
 import ImageView from 'react-native-image-viewing';
 import Loader from '~/Components/Loader';
 import ImageSize from 'react-native-image-size';
 import {useNavigation} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
 import {PROPOSAL_TYPE} from '~/Config';
-import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
 import {string, func, shape, array, bool, oneOfType} from 'prop-types';
 
@@ -25,7 +23,6 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
   const navigation = useNavigation();
   const [proposalInfoState, setProposalInfo] = useState(proposalInfo);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
-  const [topMessage, setTopMessage] = useState([]);
 
   useEffect(() => {
     // noinspection JSAnnotator
@@ -55,23 +52,7 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
       }
     };
 
-    const loadDiscussions = () => {
-      db.collection('discussionMessage')
-        .where('discussionId', '==', proposalInfo?.id || proposalId)
-        .orderBy('createTime', 'desc')
-        .limit(4)
-        .get()
-        .then((snapshot) => {
-          const list = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setTopMessage(list);
-        });
-    };
-
     loadProposalInfo(proposalInfo);
-    loadDiscussions();
   }, [proposalInfo]);
 
   const ImageGalleryFooter = ({}) => (
