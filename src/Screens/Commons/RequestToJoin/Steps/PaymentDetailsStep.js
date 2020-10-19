@@ -119,22 +119,6 @@ const PaymentDetailsStep = ({
     }
   };
 
-  // luhn algorithm for cc validation;
-  const validateCreditCard = (ccNumber) => {
-    let [firstCalc, secondCalc, toggle] = [0,0,false];
-    for (let i = ccNumber.length - 1; i >= 0; i--) {
-      if (toggle) {
-        let num = +ccNumber[i] * 2;
-        firstCalc += num < 10 ? num : parseInt((num % 10) + (num / 10), 10);
-      }
-      else {
-        secondCalc += +ccNumber[i];
-      }
-      toggle = !toggle;
-    }
-    firstCalc += secondCalc;
-    return firstCalc % 10 === 0;
-  };
 
   const subtitle = (style) => (
     <Text style={style}>
@@ -201,14 +185,13 @@ const PaymentDetailsStep = ({
               value={testCard ? 4007410000000006 : ''}
               editable={true}
               keyboardType={'number-pad'}
-              onChangeText={validateCreditCard}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NUMBER,
                 formStore: paymentFormStore,
                 validateRule: [
                   'required',
                   'numeric',
-                  'regex:/^4([0-9]{12}|[0-9]{15})$|^5[1-5][0-9]{14}$/',
+                  'regex:/^4[0-9]{12}(?:[0-9]{3})?$|^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/',
                 ],
               }}
             />
@@ -244,7 +227,6 @@ const PaymentDetailsStep = ({
                 value={testCard ? moment().format('MM/YY') : ''}
                 placeholderText="MM/YY"
                 editable={true}
-                keyboardType={'numeric'}
                 validation={{
                   name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
                   formStore: paymentFormStore,
