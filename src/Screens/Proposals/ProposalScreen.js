@@ -44,6 +44,7 @@ import {
 } from 'rn-placeholder';
 
 const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
 
 const ProposalScreen = ({
   navigation,
@@ -414,23 +415,23 @@ const ProposalScreen = ({
 
   const onTabViewScroll = (e) => {
 
-    if (!hederStateInProcess) {
-      const currScrollY = e.nativeEvent.contentOffset.y;
-      console.log('currScrollY -> ', currScrollY);
-      if (currScrollY > currTabViewScroll) {
-        if (!isHeaderHidden) {
-          setHederStateInProcess(true);
-          LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG, () => { setHederStateInProcess(false); });
-          setIsHeaderHidden(true);
-        }
-      } else if (currScrollY < 40) {
-        if (isHeaderHidden) {
-          setHederStateInProcess(true);
-          LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG, () => { setHederStateInProcess(false); });
-          setIsHeaderHidden(false);
-        }
+    //if (!hederStateInProcess) {
+    const currScrollY = e.nativeEvent.contentOffset.y;
+    console.log('currScrollY -> ', currScrollY);
+    if (currScrollY > currTabViewScroll) {
+      if (!isHeaderHidden) {
+        setHederStateInProcess(true);
+        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG, () => { setHederStateInProcess(false); });
+        setIsHeaderHidden(true);
+      }
+    } else if (currScrollY < 1) {
+      if (isHeaderHidden) {
+        setHederStateInProcess(true);
+        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG, () => { setHederStateInProcess(false); });
+        setIsHeaderHidden(false);
       }
     }
+    //}
   };
 
   const slideUp = {
@@ -445,7 +446,7 @@ const ProposalScreen = ({
     ],
   };
 
-  const stickyTabBarStyle = {position: 'absolute', top: -80, width: '100%', paddingBottom: 5, zIndex: 999};
+  const stickyTabBarStyle = {position: 'absolute', top: -80, width: '100%', paddingBottom: 5, zIndex: 1};
 
   return (
     <React.Fragment>
@@ -470,23 +471,13 @@ const ProposalScreen = ({
         )}
 
         <ScrollView
-          style={{
-
-            backgroundColor: colors.mainBlue,
-          }}
+          style={{}}
           ref={scrollViewRef}
           scrollEventThrottle={16}
           nestedScrollEnabled={true}
-          contentContainerStyle={{flexGrow: 1}}
-          onContentSizeChange={(contentWidth, contentHeight) => {
-            console.log('onContentSizeChange -> ', contentHeight, contentHeight < Dimensions.get('window').height);
-            setDisabledScroll(contentHeight < Dimensions.get('window').height);
-          }}
+          contentContainerStyle={{}}
           onScroll={(e) => {
-
-            if (disabledScroll) {
-              onTabViewScroll(e);
-            }
+            onTabViewScroll(e);
 
             stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
               const isVisible = py < 0;
@@ -660,7 +651,7 @@ const ProposalScreen = ({
             </View>
           )}
 
-          <View ref={stickyTabBarRef} collapsable={false} >
+          <View ref={stickyTabBarRef} collapsable={false} style={{minHeight: screenHeight}}>
             <TabView
               navigationState={{index, routes}}
               renderScene={() => null}
