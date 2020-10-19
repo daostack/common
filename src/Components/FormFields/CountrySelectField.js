@@ -50,7 +50,7 @@ export const CountrySelectField = ({defaultCountry, onChange, ...props}) => {
         <TextInputFieldWithIcon
           editable={false}
           key={selectedCountry}
-          value={countryList[countryList.findIndex((x) => x.value === selectedCountry)].label}
+          value={countryList[countryList.findIndex((x) => x.value === selectedCountry)].value}
           iconEndName="down-arrow"
           {...props}
         />
