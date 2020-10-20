@@ -415,23 +415,22 @@ const ProposalScreen = ({
 
   const onTabViewScroll = (e) => {
 
-    //if (!hederStateInProcess) {
-    const currScrollY = e.nativeEvent.contentOffset.y;
-    console.log('currScrollY -> ', currScrollY);
-    if (currScrollY > currTabViewScroll) {
-      if (!isHeaderHidden) {
-        setHederStateInProcess(true);
-        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG, () => { setHederStateInProcess(false); });
-        setIsHeaderHidden(true);
-      }
-    } else if (currScrollY < 1) {
-      if (isHeaderHidden) {
-        setHederStateInProcess(true);
-        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG, () => { setHederStateInProcess(false); });
-        setIsHeaderHidden(false);
+    if (!hederStateInProcess) {
+      const currScrollY = e.nativeEvent.contentOffset.y;
+      if (currScrollY > currTabViewScroll) {
+        if (!isHeaderHidden) {
+          setHederStateInProcess(true);
+          LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG, () => { setHederStateInProcess(false); });
+          setIsHeaderHidden(true);
+        }
+      } else if (currScrollY < 1) {
+        if (isHeaderHidden) {
+          setHederStateInProcess(true);
+          LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG, () => { setHederStateInProcess(false); });
+          setIsHeaderHidden(false);
+        }
       }
     }
-    //}
   };
 
   const slideUp = {
@@ -484,7 +483,6 @@ const ProposalScreen = ({
 
               if (isVisible !== showStickyTabBar) {
                 if (isVisible) {
-                  console.log('SET STICKY BAR TO BE VISIBLE');
                   setShowStickyTabBar(isVisible);
                   Animated.timing(stickyTabBarState.animation, {
                     toValue: 1,
@@ -493,8 +491,6 @@ const ProposalScreen = ({
                   }).start();
 
                 } else {
-                  console.log('SET STICKY BAR TO BE NOT VISIBLE');
-
                   Animated.timing(stickyTabBarState.animation, {
                     toValue: 0,
                     duration: 300,
