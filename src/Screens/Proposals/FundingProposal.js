@@ -73,6 +73,7 @@ const FundingProposal = ({
         });
         navigation.dispatch(navigate);
       } catch (error) {
+        navigation.pop();
         logger.log(error);
         Toast.error(error.toString());
       }
