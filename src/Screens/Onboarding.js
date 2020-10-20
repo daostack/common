@@ -44,7 +44,7 @@ const Onboarding = ({navigation}) => {
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
             <Image
-              source={require('~/Assets/appLogo.png')}
+              source={require('~/Assets/newLogoMobile.png')}
               style={styles.logo}
             />
           </View>
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     ...layout.paddingVerticalM,
   },
   logo: {
-    height: 26,
+    height: 40,
     resizeMode: 'contain',
   },
   sectionTitle: {
