@@ -10,14 +10,12 @@ import {
 import {text, layout, colors, sizeM} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import ReadMore from 'react-native-read-more-text';
-import UserMessageCard from '~/Components/Discussion/UserMessageCard';
 import ImageView from 'react-native-image-viewing';
 import Loader from '~/Components/Loader';
 import ImageSize from 'react-native-image-size';
 import {useNavigation} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
 import {PROPOSAL_TYPE} from '~/Config';
-import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
 import {string, func, shape, array, bool, oneOfType} from 'prop-types';
 
@@ -25,7 +23,6 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
   const navigation = useNavigation();
   const [proposalInfoState, setProposalInfo] = useState(proposalInfo);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
-  const [topMessage, setTopMessage] = useState([]);
 
   useEffect(() => {
     // noinspection JSAnnotator
@@ -55,23 +52,7 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
       }
     };
 
-    const loadDiscussions = () => {
-      db.collection('discussionMessage')
-        .where('discussionId', '==', proposalInfo?.id || proposalId)
-        .orderBy('createTime', 'desc')
-        .limit(4)
-        .get()
-        .then((snapshot) => {
-          const list = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setTopMessage(list);
-        });
-    };
-
     loadProposalInfo(proposalInfo);
-    loadDiscussions();
   }, [proposalInfo]);
 
   const ImageGalleryFooter = ({}) => (
@@ -172,35 +153,6 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
           </View>
         </ScrollView>
 
-        {topMessage.length === 0 ? null : (
-          <View style={styles.proposalCard}>
-            <View style={layout.content}>
-              <View style={{...styles.proposalColumnSubtitle}}>
-                <Text style={{...text.smallGreyText, ...layout.marginBottomS}}>
-                  Recent comments
-                </Text>
-              </View>
-
-              <View style={{...layout.content, ...layout.flexStart}}>
-                {topMessage.map((currMessage, currIndex) => (
-                  <UserMessageCard
-                    key={currIndex}
-                    photoURL={currMessage.ownerAvatar}
-                    name={currMessage.ownerName}
-                    message={currMessage.text}
-                    time={currMessage.createTime}
-                  />
-                  // <DiscussionMessage data={currMessage} />
-                ))}
-              </View>
-              <View style={layout.contant}>
-                <TouchableOpacity onPress={() => showMore()}>
-                  <Text style={styles.messageShowMoreBtn}>Show more</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        )}
       </View>
       <ImageView
         images={proposalInfoState.images}
