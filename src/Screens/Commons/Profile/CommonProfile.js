@@ -783,27 +783,31 @@ const CommonProfile = ({
                 )
               )
             ) : (
-              <>
+              <React.Fragment>
                 {showStickyRequestToJoinBtn && showReqToJoin && (
                   <View style={styles.actionButtonContainer}>
                     {renderRequestToJoinBtn()}
                   </View>
                 )}
+
                 <Modal
                   isVisible={showRequestSentModal}
                   avoidKeyboard={true}
                   backdropColor={colors.white}
                   backdropOpacity={1}
                   onBackdropPress={() => setShowRequestSentModal(false)}
-                  style={{padding: 0}}>
+                  style={{padding: 0}}
+                >
                   <SentTemplate
                     title="Membership request sent"
                     description="The common members will vote on your membership request. If it's approved, you will become a member with equal voting rights."
-                    onClose={() => setShowRequestSentModal(false)}>
+                    onClose={() => setShowRequestSentModal(false)}
+                  >
                     <View>
                       <TouchableOpacity
                         style={styles.modalRequestSentBtnPrimary}
-                        onPress={viewProposal}>
+                        onPress={viewProposal}
+                      >
                         <Text style={text.buttoncenterwhite}>
                           View proposal
                         </Text>
@@ -816,7 +820,7 @@ const CommonProfile = ({
                     </View>
                   </SentTemplate>
                 </Modal>
-              </>
+              </React.Fragment>
             )}
           </SafeAreaView>
         </View>

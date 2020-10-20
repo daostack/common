@@ -139,9 +139,10 @@ const ProposalScreen = ({
                 title: 'Request to join',
               });
             }
-
+            
             const currentDao = await DaoService.getInstance().getDaoById(updatedProposalInfo.dao);
-            setIsMember(userInfo && isDaoMember(currentDao.members));
+
+            setIsMember(userInfo && isDaoMember(currentDao?.members || []));
             setIsProposer(userStore.isProposer(updatedProposalInfo));
             await loadProposalInfo(updatedProposalInfo, currentDao);
           }
