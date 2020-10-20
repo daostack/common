@@ -59,8 +59,6 @@ export const showErrorPopUp = (bottomSheetStore, arg) => {
   if (arg instanceof Error) {
     const errorObj = getErrorObject(arg);
 
-    console.log(errorObj);
-
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {
       errorMessage: errorObj.errorMessage,
       errorId: errorObj.errorId,
