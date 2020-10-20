@@ -50,13 +50,7 @@ export default class AuthService {
 
   // Apple Auth flow
   async signInApple() {
-    const appleAuthRequestResponse = await appleAuth.performRequest({
-      requestedOperation: AppleAuthRequestOperation.LOGIN,
-      requestedScopes: [
-        AppleAuthRequestScope.EMAIL,
-        AppleAuthRequestScope.FULL_NAME,
-      ],
-    });
+    const appleAuthRequestResponse = await this._applePerformRequest();
 
     // Ensure Apple returned a user identityToken
     if (!appleAuthRequestResponse.identityToken) {
@@ -119,9 +113,13 @@ export default class AuthService {
 
   async getCurrentLoggedUser(providerId) {
     switch (providerId) {
-    case AUTH_PROVIDER_ID.APPLE:
-      throw new Error('TODO: Implementat getting current logged in user in Apple ');
-      //TODO: return userInfo object which contains the users display name;
+    case AUTH_PROVIDER_ID.APPLE: {
+      const {fullName} = await this._applePerformRequest();
+      return {user: {
+        givenName: fullName.givenName,
+        familyName: fullName.familyName,
+      }};
+    }
     case AUTH_PROVIDER_ID.GOOGLE:
       return await GoogleSignin.getCurrentUser();
     default:
@@ -276,5 +274,15 @@ export default class AuthService {
       JSON.stringify(this.initialAppDataContent),
     );
     return this.initialAppDataContent.mnemonic;
+  }
+
+  async _applePerformRequest() {
+    return await appleAuth.performRequest({
+      requestedOperation: AppleAuthRequestOperation.LOGIN,
+      requestedScopes: [
+        AppleAuthRequestScope.EMAIL,
+        AppleAuthRequestScope.FULL_NAME,
+      ],
+    });
   }
 }
