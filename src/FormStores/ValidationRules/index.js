@@ -4,6 +4,6 @@ export const VALIDATION_RULES = {
 
 export const firstLastNameValidate = {
   ruleName: VALIDATION_RULES.FIRST_LAST_NAME,
-  validateFunc: (value, requirement, attribute) => value.match('/^(0[1-9]|1[0-2])/?([0-9]{2})$/'),
+  validateFunc: (value, requirement, attribute) => (new RegExp(/(\w.+\s).+/)).test(value),
   errorMessage: 'The :attribute should consist of first and last name separated with space.',
 };
