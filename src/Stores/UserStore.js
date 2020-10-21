@@ -98,7 +98,6 @@ class UserStore {
       }
       if (newUserInfo.safeAddress) {
         newUserObj.safeAddress = newUserInfo.safeAddress;
-        WalletManager.getInstance().safeAddress = newUserInfo.safeAddress;
       }
 
       newUserObj.following = newUserInfo.following || [];
