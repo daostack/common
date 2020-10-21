@@ -16,6 +16,8 @@
     "icon": "rm -rf ./src/Assets/iconfont && npx iconfont-rn && rm -rf ./src/Assets/iconfont/*.ts",
     "useLocal": "sed -i '' -e '/local/d' env/env.stg && echo 'local=true' >> env/env.stg",
     "useCloud": "sed -i '' -e '/local/d' env/env.stg && echo 'local=false' >> env/env.stg",
+    "useTestCard": "sed -i '' -e '/testCard/d' env/env.stg env/env.prod && echo 'testCard=true' | tee -a env/env.stg env/env.prod",
+    "useRealCard": "sed -i '' -e '/testCard/d' env/env.stg env/env.prod && echo 'testCard=false' | tee -a env/env.stg env/env.prod",
     "codepush:ios:info": "code-push deployment ls DAOstack/common-iOS -k",
     "codepush:android:info": "code-push deployment ls DAOstack/common-android -k",
     "codepush:ios:release": "code-push release-react DAOstack/common-iOS ios -m",

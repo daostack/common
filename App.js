@@ -8,7 +8,6 @@ import {
   DeviceEventEmitter,
   Text,
   I18nManager,
-  UIManager,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer, CommonActions} from '@react-navigation/native';
@@ -438,35 +437,35 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           name="RulesStep"
           component={RulesStep}
-          options={({nav, route}) => ({
+          options={() => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="IntroductionStep"
           component={IntroductionStep}
-          options={({nav, route}) => ({
+          options={() => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="ContributionStep"
           component={ContributionStep}
-          options={({nav, route}) => ({
+          options={() => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="BillingDetailsStep"
           component={BillingDetailsStep}
-          options={({nav, route}) => ({
+          options={() => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="PaymentDetailsStep"
           component={PaymentDetailsStep}
-          options={({nav, route}) => ({
+          options={() => ({
             headerShown: false,
           })}
         />

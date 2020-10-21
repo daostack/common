@@ -94,7 +94,7 @@ const RequestStepHeader = ({isFirstStepSkipped, currentIndex}) => {
       <TouchableOpacity onPress={() => setCurrentIndex(3)}> */}
       <View style={ovalStyle(3 - deltaIndex)}>
         <Icon
-          name={currentIndex < (4 - deltaIndex) ? 'billingDeitals16Copy' : 'check'}
+          name={currentIndex < (4 - deltaIndex) ? 'billing-details-24-copy-4' : 'check'}
           size={currentIndex === (3 - deltaIndex) ? 24 : 16}
           color={iconColor(3 - deltaIndex)}
         />

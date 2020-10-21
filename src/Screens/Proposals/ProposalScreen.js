@@ -145,7 +145,8 @@ const ProposalScreen = ({
             }
 
             const currentDao = await DaoService.getInstance().getDaoById(updatedProposalInfo.dao);
-            setIsMember(userInfo && isDaoMember(currentDao.members));
+
+            setIsMember(userInfo && isDaoMember(currentDao?.members || []));
             setIsProposer(userStore.isProposer(updatedProposalInfo));
             await loadProposalInfo(updatedProposalInfo, currentDao);
           }
@@ -476,7 +477,7 @@ const ProposalScreen = ({
           nestedScrollEnabled={true}
           contentContainerStyle={{}}
           onScroll={(e) => {
-            onTabViewScroll(e);
+            //onTabViewScroll(e);
 
             stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
               const isVisible = py < 0;
