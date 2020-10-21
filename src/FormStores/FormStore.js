@@ -22,8 +22,8 @@ class FormStore {
     this.multiFieldNames = [];
   }
 
-  registerValidationRule(validationRule) {
-    Validator.register(validationRule.ruleName, validationRule.validateFunc, validationRule.errorMessage);
+  registerValidationRule(ruleName, callback, validationMessage) {
+    Validator.register(ruleName, callback, validationMessage);
   }
 
   // Public functions
