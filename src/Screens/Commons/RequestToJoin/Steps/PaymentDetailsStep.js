@@ -25,7 +25,6 @@ import MembershipRequest from '../MembershipRequest';
 import {createCardPayload} from '../../../../Services/CirclePayService';
 import {testCard} from '~/Config';
 import moment from 'moment';
-import {VALIDATION_RULES} from '~/FormStores/ValidationRules';
 
 const {width} = Dimensions.get('window');
 
@@ -204,10 +203,7 @@ const PaymentDetailsStep = ({
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NAME,
                 formStore: paymentFormStore,
-                validateRule: [
-                  'required',
-                  VALIDATION_RULES.FIRST_LAST_NAME,
-                ],
+                validateRule: 'required|string',
               }}
             />
 
