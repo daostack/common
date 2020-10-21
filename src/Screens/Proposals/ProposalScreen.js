@@ -66,7 +66,6 @@ const ProposalScreen = ({
   const [ proposalScreenInfo, setProposalScreenInfo ] = useState(proposalCardInfo);
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
   const [hederStateInProcess, setHederStateInProcess] = useState(false);
-  const [disabledScroll ,setDisabledScroll] = useState(false);
   const [ isSending, setIsSending ] = useState(false);
   const [ isMember, setIsMember ] = useState(false);
   const [ isProposer, setIsProposer ] = useState(false);
@@ -477,7 +476,7 @@ const ProposalScreen = ({
           nestedScrollEnabled={true}
           contentContainerStyle={{}}
           onScroll={(e) => {
-            //onTabViewScroll(e);
+            onTabViewScroll(e);
 
             stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
               const isVisible = py < 0;

@@ -8,6 +8,7 @@ import {
   DeviceEventEmitter,
   Text,
   I18nManager,
+  UIManager,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer, CommonActions} from '@react-navigation/native';
@@ -256,7 +257,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             // Please consider a refactoring on that flow.
             await WalletManager.init(user.uid);
             const manager = await WalletManager.getInstance();
-            
+
             if (isNewUser) {
               manager.createSmartContractWallet();
             } else {
