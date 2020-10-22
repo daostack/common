@@ -799,6 +799,7 @@ const CommonProfile = ({
                   style={{padding: 0}}
                 >
                   <SentTemplate
+                    hideLogo
                     title="Membership request sent"
                     description="The common members will vote on your membership request. If it's approved, you will become a member with equal voting rights."
                     onClose={() => setShowRequestSentModal(false)}
@@ -809,13 +810,17 @@ const CommonProfile = ({
                         onPress={viewProposal}
                       >
                         <Text style={text.buttoncenterwhite}>
-                          View proposal
+                          View request
                         </Text>
                       </TouchableOpacity>
+
                       <TouchableOpacity
                         style={styles.modalRequestSentBtnOutline}
-                        onPress={goToToCommon}>
-                        <Text style={styles.backButton}>Back to Common</Text>
+                        onPress={goToToCommon}
+                      >
+                        <Text style={styles.backButton}>
+                          Back to Common
+                        </Text>
                       </TouchableOpacity>
                     </View>
                   </SentTemplate>

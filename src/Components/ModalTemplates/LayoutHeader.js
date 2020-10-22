@@ -3,12 +3,16 @@ import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 
 import Icon from '~/Assets/iconfont/Icon';
 import {colors} from '~/Theme';
-import {func} from 'prop-types';
+import { bool, func } from 'prop-types';
 
-const LayoutHeader = ({onClose}) => (
+const LayoutHeader = ({onClose, hideLogo}) => (
   <View style={styles.headerSafeArea}>
     <View style={styles.spacer} />
-    <Image style={styles.logo} source={require('~/Assets/appLogo.png')} />
+
+    {!hideLogo && (
+      <Image style={styles.logo} source={require('~/Assets/appLogo.png')} />
+    )}
+
     <TouchableOpacity style={styles.closeBtn}>
       <Icon name="close" color={colors.black} size={20} onPress={onClose} />
     </TouchableOpacity>
@@ -17,6 +21,7 @@ const LayoutHeader = ({onClose}) => (
 
 LayoutHeader.propTypes = {
   onClose: func.isRequired,
+  hideLogo: bool
 };
 const styles = StyleSheet.create({
   spacer: {

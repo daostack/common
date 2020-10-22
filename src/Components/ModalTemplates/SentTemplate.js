@@ -10,9 +10,10 @@ const SentTemplate = ({
   description,
   onClose,
   isCommonCreation,
+  hideLogo,
 }) => (
   <SafeAreaView style={styles.areaView}>
-    <LayoutHeader onClose={onClose} />
+    <LayoutHeader onClose={onClose} hideLogo={hideLogo} />
     <Image
       style={styles.image}
       source={
@@ -34,6 +35,7 @@ SentTemplate.propTypes = {
   onClose: func.isRequired,
   isCommonCreation: bool,
   children: object,
+  hideLogo: bool,
 };
 const styles = StyleSheet.create({
   image: {
