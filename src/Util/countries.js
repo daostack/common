@@ -1,6 +1,7 @@
 // payin & payout 89 countries
-// payin 120 counries
-// payout 3 countries
+// only payin 120 counries
+// only payout & wire 3 countries
+// all countries 214
 export const countryList = [
   {
     value: 'AD',
