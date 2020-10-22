@@ -1,0 +1,224 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import {Text, StyleSheet, View, Image, Dimensions, TouchableOpacity, ActivityIndicator} from 'react-native';
+
+import moment from 'moment';
+import {inject, observer} from 'mobx-react';
+
+import {colors, font, layout, text} from '../../Theme';
+
+const width = Dimensions.get('window').width;
+
+const styles = StyleSheet.create({
+  body: {
+    flex: 1,
+    alignItems: 'center',
+  },
+
+  image: {
+    height: '25%',
+    aspectRatio: 1,
+  },
+
+  title: {
+    ...font.primary.bold,
+    ...font.fontSize(4),
+    marginVertical: 5,
+  },
+
+  subTitle: {
+    ...text.regularText,
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+    maxWidth:  width * 0.8,
+  },
+
+  bold: {
+    ...font.primary.bold,
+  },
+
+  button: {
+    ...layout.btnOutline,
+    width: width * 0.9,
+    textAlign: 'center',
+    marginVertical: 8,
+    maxHeight: 48,
+    alignSelf: 'center',
+  },
+
+  stayText: {
+    color: colors.black,
+  },
+
+  cancelText: {
+    color: colors.error,
+  },
+
+  slider: {
+    width,
+    height: 60,
+    marginTop: -20,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+  },
+
+  lever: {
+    borderColor: colors.grey4,
+    borderWidth: 2.5,
+    width: width * 0.2,
+    borderRadius: 10,
+  },
+  loader: {
+    marginVertical: 30,
+  },
+});
+
+const statuses = {
+  initial: 'initial',
+  loading: 'loading',
+  canceled: 'canceled',
+  errored: 'errored',
+};
+
+const ApprovalSheetScreen = ({
+  dueDate,
+  commonName,
+  initialStatus,
+  onCancelConfirm,
+  bottomSheetStore,
+}) => {
+  const [status, setStatus] = React.useState(initialStatus);
+
+  const onClose = () => {
+    bottomSheetStore.hideBottomSheet();
+  };
+
+  const onCancel = async () => {
+    setStatus(statuses.loading);
+
+    const res = await onCancelConfirm();
+
+    console.log('heres');
+
+    if (res) {
+      setStatus(statuses.canceled);
+    } else {
+      setStatus(statuses.errored);
+    }
+  };
+
+  return (
+    <View style={styles.body}>
+      <View style={styles.slider}>
+        <View style={styles.lever} />
+      </View>
+
+      {status === statuses.initial && (
+        <React.Fragment>
+          <Image
+            source={require('../../Assets/cardDeclined.png')}
+            style={styles.image}
+          />
+
+          <Text style={styles.title}>
+            Cancel payment
+          </Text>
+
+          <Text style={styles.subTitle}>
+            If you cancel, you will leave{' '}
+            <Text style={styles.bold}>{commonName}{' '}</Text>
+            {moment(dueDate).toNow()}{' '}({moment(dueDate).format('DD MMMM YYYY')})
+          </Text>
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={onClose}
+          >
+            <Text style={styles.stayText}>
+              Stay a member
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={onCancel}
+          >
+            <Text style={styles.cancelText}>
+              Cancel anyway
+            </Text>
+          </TouchableOpacity>
+        </React.Fragment>
+      )}
+
+      {status === statuses.loading && (
+        <React.Fragment>
+          <ActivityIndicator
+            size="large"
+            color={colors.mainBlue}
+            style={styles.loader}
+          />
+
+          <Text style={styles.title}>
+            Canceling...
+          </Text>
+        </React.Fragment>
+      )}
+
+      {status === statuses.canceled && (
+        <React.Fragment>
+          <Image
+            source={require('../../Assets/paymentCancelled.png')}
+            style={styles.image}
+          />
+
+          <Text style={styles.title}>
+              Recurring payment canceled
+          </Text>
+
+          <Text style={styles.subTitle}>
+            You will leave{' '}
+            <Text style={styles.bold}>{commonName}{' '}</Text>
+            {moment(dueDate).toNow()}{' '}({moment(dueDate).format('DD MMMM YYYY')})
+          </Text>
+
+
+          <TouchableOpacity
+            style={{
+              ...styles.button,
+              justifySelf: 'flex-end',
+            }}
+            onPress={onClose}
+          >
+            <Text style={styles.stayText}>
+              OK
+            </Text>
+          </TouchableOpacity>
+        </React.Fragment>
+      )}
+    </View>
+  );
+};
+
+ApprovalSheetScreen.propTypes = {
+  onCancelConfirm: PropTypes.func.isRequired,
+  commonName: PropTypes.string.isRequired,
+  dueDate: PropTypes.instanceOf(Date).isRequired,
+  initialStatus: PropTypes.oneOf([
+    ...Object.values(statuses),
+  ]),
+
+  bottomSheetStore: PropTypes.shape({
+    hideBottomSheet: PropTypes.func,
+  }),
+};
+
+ApprovalSheetScreen.defaultProps = {
+  initialStatus: statuses.initial,
+};
+
+export default inject('bottomSheetStore')(observer(ApprovalSheetScreen));
+

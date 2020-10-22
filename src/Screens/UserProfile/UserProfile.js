@@ -132,11 +132,20 @@ const UserProfile = ({userStore, daoStore, navigation, route}) => {
                   <AccordionBtn onPress={() => Linking.openURL('https://common.io/help')} title="Help" />
                   <AccordionBtn onPress={() => Linking.openURL('mailto:hi@common.io')} title="Contact us" />
                   {userStore.userInfo ? (
-                    <AccordionBtn
-                      lightStyle={true}
-                      title="Log out"
-                      onPress={_logout}
-                    />
+                    <React.Fragment>
+                      <AccordionBtn
+                        title="Monthly Contributions"
+                        onPress={() => {
+                          navigation.navigate('MonthlyContributionsList');
+                        }}
+                      />
+
+                      <AccordionBtn
+                        lightStyle={true}
+                        title="Log out"
+                        onPress={_logout}
+                      />
+                    </React.Fragment>
                   ) : null}
                 </View>
                   {
