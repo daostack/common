@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Dimensions, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ScrollView, Text, View, StyleSheet} from 'react-native';
 
 import moment from 'moment';
 import {inject, observer} from 'mobx-react';
+import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
 
 import {ContributionListItem} from '../../Components';
 import {colors} from '../../Theme';
 import {db} from '../../Firebase';
-import {Fade, Placeholder, PlaceholderLine, PlaceholderMedia} from 'rn-placeholder';
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -121,6 +121,7 @@ MonthlyContributionsList.propTypes = {
   userStore: PropTypes.shape({
     userInfo: PropTypes.shape({
       uid: PropTypes.string,
+      safeAddress: PropTypes.string,
     }),
   }),
 };
