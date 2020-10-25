@@ -72,7 +72,7 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
         members.map((memberUserId, i) => (
           <View style={{position: 'relative', left: i * -15}}>
             <PlaceholderMedia
-              key={i}
+              key={`${memberUserId.userId}`}
               size={50}
               isRound={true}
               style={{width: 50,

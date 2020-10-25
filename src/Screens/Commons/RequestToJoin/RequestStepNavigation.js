@@ -5,7 +5,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import {text} from '~/Theme';
 import {string, object} from 'prop-types';
 
-const RequestStepNavigation = ({navigation, title}) => (
+const RequestStepNavigation = ({navigation, title = ''}) => (
   <NavigationBar
     statusBar={{hidden: true}}
     style={{
