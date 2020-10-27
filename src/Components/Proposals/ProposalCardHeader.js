@@ -14,7 +14,7 @@ const TITLES = {
   COUNTDOWN: 'Countdown',
 };
 
-const calcStatus = (stage, winningOutcome, hasPassedExpiryDate) => {
+const calcStatus = (stage, winningOutcome, hasPassedExpiryDate, isScreenHeader) => {
   let status = {
     text: '',
     lightColor: '',
@@ -47,7 +47,7 @@ const calcStatus = (stage, winningOutcome, hasPassedExpiryDate) => {
   }
   if (COUNTDOWN_STATES.includes(stage)) {
     status.text = TITLES.COUNTDOWN;
-    status.lightColor = colors.butterscotch;
+    status.lightColor = isScreenHeader ? colors.mango : colors.butterscotch;
     status.darkColor = colors.mango;
     status.icon = 'clcok';
     status.opacity = 0.2;
@@ -102,14 +102,14 @@ const ProposalCardHeader = ({stage, winningOutcome, closingAt, isScreenHeader = 
     ? moment().isAfter(moment.unix(closingAt))
     : false;
 
-  const headerStatus = calcStatus(stage, winningOutcome, hasPassedExpiryDate);
+  const headerStatus = calcStatus(stage, winningOutcome, hasPassedExpiryDate, isScreenHeader);
+
 
 
   return isScreenHeader
     ? (
       <View style={{...styles.stateCard, ...{
         backgroundColor: headerStatus.darkColor,
-        opacity: headerStatus.opacity,
         paddingHorizontal: 50,
       }}}
       >

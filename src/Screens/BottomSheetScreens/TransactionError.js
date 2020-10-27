@@ -8,7 +8,7 @@ import {
 import {inject, observer} from 'mobx-react';
 import React from 'react';
 import {text, layout, colors, font} from '~/Theme/index';
-import {string, number, func, shape} from 'prop-types';
+import PropTypes from 'prop-types';
 import Icon from '../../Assets/iconfont/Icon';
 
 const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
@@ -21,7 +21,7 @@ const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
   return (
     <View style={styles.scrollView}>
       <View style={styles.body}>
-        {(errorObj) && (
+        {(errorObj && typeof errorObj === 'object') && (
           <TouchableOpacity
             style={styles.icon}
             onPress={toggleShowMore}
@@ -41,7 +41,14 @@ const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
           Something went wrong
         </Text>
 
-        {showMore ? (
+        {(typeof errorObj === 'string') && (
+          <Text style={styles.blackTextWithImage}>
+            {errorObj}
+          </Text>
+        )}
+
+
+        {typeof errorObj === 'object' && ((showMore) ? (
           <View>
             <Text>Error ID: {errorObj.errorId}</Text>
             <Text>Error Status: {errorObj.errorCode}</Text>
@@ -52,7 +59,7 @@ const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
           <View style={styles.textWithIconContainer}>
             <Text style={styles.blackTextWithImage}>{errorMessage}</Text>
           </View>
-        )}
+        ))}
 
         <View style={styles.spacer}/>
 
@@ -68,15 +75,18 @@ const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
 };
 
 TransactionError.propTypes = {
-  bottomSheetStore: shape({
-    hideBottomSheet: func,
+  bottomSheetStore: PropTypes.shape({
+    hideBottomSheet: PropTypes.func,
   }),
-  errorMessage: string,
-  errorObj: shape({
-    errorId: string,
-    name: string,
-    statusCode: number,
-  }),
+  errorMessage: PropTypes.string,
+  errorObj: PropTypes.oneOfType([
+    PropTypes.shape({
+      errorId: PropTypes.string,
+      name: PropTypes.string,
+      statusCode: PropTypes.number,
+    }),
+    PropTypes.any,
+  ]),
 };
 
 const styles = StyleSheet.create({

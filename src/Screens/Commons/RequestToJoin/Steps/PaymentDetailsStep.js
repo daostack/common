@@ -17,13 +17,15 @@ import CreateStepDotHeader from '../RequestStepDotHeader';
 import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import ArcService from '~/Services/ArcService';
-import {createCard} from '~/Services/CirclePayService';
-// import {preauthorizePayment} from '~/Services/MangopayService';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
+import {createCardPayload} from '../../../../Services/CirclePayService';
+import {testCard} from '~/Config';
+import moment from 'moment';
+
 const {width} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
@@ -64,6 +66,7 @@ const PaymentDetailsStep = ({
           ...introduceYourselfFormStore.getFormFieldsJson(),
           ...personalContributionFormStore.getFormFieldsJson(),
           ...paymentFormStore.getFormFieldsJson(),
+          ...billingDetailsFormStore.getFormFieldsJson(),
         };
 
         const data = {
@@ -83,15 +86,14 @@ const PaymentDetailsStep = ({
 
         // Create the proposal
         const proposalId = await ArcService.createRequestToJoin(
-          currDaoId,
-          data,
+          currDaoId, {
+            ...data,
+            cardData: await createCardPayload({
+              ...formData,
+              ...userInfo,
+            }),
+          },
         );
-
-        // Create the card
-        await createCard({
-          ...formData,
-          ...userInfo,
-        }, proposalId);
 
         navigation.pop();
 
@@ -115,6 +117,7 @@ const PaymentDetailsStep = ({
       }
     }
   };
+
 
   const subtitle = (style) => (
     <Text style={style}>
@@ -178,19 +181,25 @@ const PaymentDetailsStep = ({
             <RequestStepHeaderTitle title="Payment" subtitle={subtitle} />
             <TextInputField
               label="Credit card number"
-              value={/* __DEV__ ? */ 4007410000000006}
+              value={testCard ? 4007410000000006 : ''}
               editable={true}
+              keyboardType={'number-pad'}
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NUMBER,
                 formStore: paymentFormStore,
-                validateRule: 'required|numeric',
+                validateRule: [
+                  'required',
+                  'numeric',
+                  'regex:/^4[0-9]{12}(?:[0-9]{3})?$|^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/',
+                ],
               }}
             />
 
             <TextInputField
               label="Name on card"
-              value={/* __DEV__ ? */ 'Tester Tester'}
+              value={testCard ? 'Tester Tester' : ''}
               editable={true}
+              autoCapitalize="words"
               validation={{
                 name: RequestToJoinForm.FIELD_CARD_NAME,
                 formStore: paymentFormStore,
@@ -214,7 +223,7 @@ const PaymentDetailsStep = ({
                   width: '45%',
                 }}
                 label="Expiration date"
-                value={/* __DEV__ ?  */'01/25'}
+                value={testCard ? moment().format('MM/YY') : ''}
                 placeholderText="MM/YY"
                 editable={true}
                 validation={{
@@ -232,7 +241,7 @@ const PaymentDetailsStep = ({
                   width: '45%',
                 }}
                 label="CVV"
-                value={/* __DEV__ ? */ 123}
+                value={testCard ? 123 : ''}
                 editable={true}
                 validation={{
                   name: RequestToJoinForm.FIELD_CVV,

@@ -48,13 +48,20 @@ const FundingProposal = ({
           files: formData[FundingRequestForm.FIELD_FILES],
         };
 
-        Toast.loading('Creating funding proposal...');
+        navigation.navigate({
+          name: 'FullScreenCreationLoader',
+          params: {
+            title: 'Creating your proposal',
+          },
+        });
 
         const proposalId = await ArcService.createFundingProposal(
           commonId,
           data
         );
-        Toast.hide();
+
+        navigation.pop();
+
         Toast.done(`Funding Proposal with id ${proposalId} created!`);
 
         const navigate = CommonActions.navigate({
@@ -66,6 +73,7 @@ const FundingProposal = ({
         });
         navigation.dispatch(navigate);
       } catch (error) {
+        navigation.pop();
         logger.log(error);
         Toast.error(error.toString());
       }
@@ -91,7 +99,7 @@ const FundingProposal = ({
         </ScrollView>
         <RequestStepActionButton
           title="Create Proposal"
-          pass={fundingRequestFormStore.form.meta.isValid}
+          pass={fundingRequestFormStore.isFormActionEnabled()}
           onPress={createProposal}
         />
       </SafeAreaView>

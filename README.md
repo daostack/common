@@ -35,6 +35,7 @@ The `GoogleService-Info.plist` is to be placed in the `ios/firebase/${ENV_FOLDER
 2. `cd common` and run `yarn`
 3. `cd ios` and run `pod install`
 4. To run the application go back to the root of the project and run `yarn ios:staging` for iOS or `yarn android:staging` for Android
+5. To use test credit card details, run `yarn useTestCard`, to use your own credit card details, cancel test card by running `yarn useRealCard`.
 
 If the project doesn't run there may be a few reasons.
 

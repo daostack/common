@@ -1,13 +1,19 @@
 import axios from 'axios';
 import {circlePayUrl} from '~/Config';
 import auth from '@react-native-firebase/auth';
-var base64 = require('base-64');
 import OpenPGP from 'react-native-fast-openpgp';
+
+var base64 = require('base-64');
 
 const axiosClient = axios.create({
   baseURL: circlePayUrl(),
   timeout: 1000000,
 });
+
+const endpoints = {
+  assign: '/assign-card',
+  create: '/create-card',
+};
 
 const getEncryptedData = async (dataToEncrypt) => {
   const {data} = await axiosClient.get('encryption');
@@ -24,11 +30,11 @@ const getEncryptedData = async (dataToEncrypt) => {
 const cardData = (formData) => ({
   billingDetails: {
     name: formData.card_name,
-    city: 'Test City',
-    country: 'US',
-    line1: 'Test',
-    postalCode: '11111',
-    district: 'MA',
+    city: formData.City,
+    country: formData.Country,
+    line1: formData.Address,
+    postalCode: formData.PostalCode,
+    district: formData.District,
   },
   expMonth: +formData.expiration_date.split('/')[0],
   expYear: +(`20${formData.expiration_date.split('/')[1]}`),
@@ -37,13 +43,20 @@ const cardData = (formData) => ({
   },
 });
 
-export const createCard = async (formData, proposalId) => {
-  try {
-    const idToken = await auth().currentUser.getIdToken();
-    const {encryptedData, keyId} = await getEncryptedData({number: `${formData.card_number}`, cvv: `${formData.cvv}`});
-    await axiosClient.post('create-card',{idToken, ...cardData(formData), keyId, encryptedData, proposalId});
-  } catch (e) {
-    console.log('error', e);
-    throw e;
-  }
+export const createCard = async (formData) => (await axiosClient.post(endpoints.create, createCardPayload(formData))).data;
+
+export const createCardPayload = async (formData) => {
+  const idToken = await auth().currentUser.getIdToken();
+
+  const {encryptedData, keyId} = await getEncryptedData({
+    number: `${formData.card_number}`,
+    cvv: `${formData.cvv}`,
+  });
+
+  return {
+    keyId,
+    idToken,
+    encryptedData,
+    ...cardData(formData),
+  };
 };

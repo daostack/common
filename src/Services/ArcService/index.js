@@ -9,7 +9,7 @@ import {
 export default class ArcService {
 
   // PROPOSALS
-  static createRequestToJoin = async (daoId, data) => createProposalRequestToJoin(daoId, data);
+  static createRequestToJoin = async (daoId, data) => await createProposalRequestToJoin(daoId, data);
 
   static createFundingProposal = async (daoId, data) => createFundingProposal(daoId, data);
 
