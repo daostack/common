@@ -42,7 +42,7 @@ export const CountrySelectField = ({defaultCountry, onChange, ...props}) => {
         style={styles.select}
         onValueChange={onCountryChange}
         value={selectedCountry}
-        items={countryList}
+        items={countryList.filter((country) => country.payin)}
         Icon={renderIcon}
       />
 

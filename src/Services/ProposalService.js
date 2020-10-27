@@ -80,7 +80,11 @@ export default class ProposalService {
     let query = db
       .collection(DB_COLLECTIONS.proposals)
       .where('proposerId', '==', uid)
-      .where('type', '==', PROPOSAL_TYPE.Join);
+      .where('type', '==', PROPOSAL_TYPE.Join)
+      .where('closingAt', '>', moment().unix())
+      .where('stageStr', 'in', PROPOSAL_STAGES_ACTIVE);
+
+
     return query.get().then((snapshots) => {
       if (!snapshots) {
         return [];

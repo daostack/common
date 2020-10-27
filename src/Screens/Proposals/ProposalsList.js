@@ -157,16 +157,11 @@ const ProposalsList = ({isMember,
   ) : (
       <>
         {list && list.length > 0 ? (
-          <>
-            {!isHistory && <View style={styles.newMemberMsgContainer}>
-              <Text style={styles.newMemberMsg}>New members need to be approved to join the Common.</Text>
-            </View>}
-            <FlatList
-              data={list}
-              renderItem={({item}) => renderProposalCard(item)}
-              extraData={listRef}
-            />
-          </>
+          <FlatList
+            data={list}
+            renderItem={({item}) => renderProposalCard(item)}
+            extraData={listRef}
+          />
         ) : (
           <ViewTabNoData
             title={

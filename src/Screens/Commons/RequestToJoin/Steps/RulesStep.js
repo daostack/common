@@ -120,6 +120,7 @@ const RulesStep = ({navigation,
             {currCommon.metadata?.rules?.length > 0 &&
               currCommon.metadata.rules.map((rule, index) => (
                 <RequestToJoinRule
+                  key={index}
                   index={index + 1}
                   title={rule.title}
                   description={rule.description}
