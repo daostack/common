@@ -8,6 +8,7 @@ import {
   DeviceEventEmitter,
   Text,
   I18nManager,
+  UIManager,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer, CommonActions} from '@react-navigation/native';
@@ -78,11 +79,11 @@ if (Platform.OS === 'ios') {
   KeyboardManager.setToolbarPreviousNextButtonEnable(true);
 }
 
-// if (Platform.OS === 'android') {
-//   if (UIManager.setLayoutAnimationEnabledExperimental) {
-//     UIManager.setLayoutAnimationEnabledExperimental(true);
-//   }
-// }
+if (Platform.OS === 'android') {
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+}
 
 const App = ({userStore, bottomSheetStore, navigation}) => {
   const [onboarded, setOnboarded] = useState(false);
