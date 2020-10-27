@@ -3,7 +3,7 @@ import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 
 import Icon from '~/Assets/iconfont/Icon';
 import {colors} from '~/Theme';
-import { bool, func } from 'prop-types';
+import {bool, func} from 'prop-types';
 
 const LayoutHeader = ({onClose, hideLogo}) => (
   <View style={styles.headerSafeArea}>
@@ -21,7 +21,7 @@ const LayoutHeader = ({onClose, hideLogo}) => (
 
 LayoutHeader.propTypes = {
   onClose: func.isRequired,
-  hideLogo: bool
+  hideLogo: bool,
 };
 const styles = StyleSheet.create({
   spacer: {
