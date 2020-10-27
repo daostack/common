@@ -146,7 +146,7 @@ const PaymentDetailsStep = ({
         />
 
         <CreateStepDotHeader
-          title="Payment"
+          title="Payment Details"
           currentIndex={5}
           isFirstStepSkipped={skipFirstStep}
           navigation={navigation}
@@ -179,7 +179,7 @@ const PaymentDetailsStep = ({
               // padding: 24,
               backgroundColor: 'white',
             }}>
-            <RequestStepHeaderTitle title="Payment" subtitle={subtitle} />
+            <RequestStepHeaderTitle title="Payment Details" subtitle={subtitle} />
             <TextInputField
               label="Credit card number"
               value={testCard ? 4007410000000006 : ''}
