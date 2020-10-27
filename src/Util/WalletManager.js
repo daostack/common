@@ -80,7 +80,7 @@ export default class WalletManager {
       logger.log('userData.ethereumAddress ->', userData.ethereumAddress);
       logger.log('this.address ->', this.address);
       Alert.alert('Hands up',
-        'There is a fatal error - local address mismatched, please contact us to help',
+        `There is a fatal error - Wallet address ${this.address} does not match the user address ${userData.ethereumAddress}, stored in the DB. Please contact us to help.`,
         [{text: 'OK', onPress: () => logger.log('Ok Pressed'), style: 'danger'}],
         {cancelable: false}
       );
