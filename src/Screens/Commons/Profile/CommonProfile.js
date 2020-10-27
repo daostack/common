@@ -147,15 +147,15 @@ const CommonProfile = ({
         (data) => {
           setPendingProposalsData({...data});
 
-          if(!isMember) {
-            if(
+          if (!isMember) {
+            if (
               data &&
               data.usersPendingProposal
             ) {
               setShowPending(true);
             }
 
-            if(data && !data.usersPendingProposal) {
+            if (data && !data.usersPendingProposal) {
               setShowRequestToJoin(true);
             }
           }
