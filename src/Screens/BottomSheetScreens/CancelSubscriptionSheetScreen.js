@@ -100,13 +100,11 @@ const ApprovalSheetScreen = ({
   const onCancel = async () => {
     setStatus(statuses.loading);
 
-    const res = await onCancelConfirm();
+    try {
+      await onCancelConfirm();
 
-    console.log('heres');
-
-    if (res) {
       setStatus(statuses.canceled);
-    } else {
+    } catch (e) {
       setStatus(statuses.errored);
     }
   };
@@ -198,6 +196,10 @@ const ApprovalSheetScreen = ({
             </Text>
           </TouchableOpacity>
         </React.Fragment>
+      )}
+
+      {status === statuses.errored && (
+          <Text>Something bad happened!</Text>
       )}
     </View>
   );

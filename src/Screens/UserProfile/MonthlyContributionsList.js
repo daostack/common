@@ -29,40 +29,47 @@ const MonthlyContributionsList = ({userStore}) => {
 
   React.useEffect(() => {
     const effect = async () => {
-      const commons = await db
-        .collection('daos')
-        .where('members', 'array-contains', {
-          address: userStore.userInfo.safeAddress,
-          userId: userStore.userInfo.uid,
-        })
-        .get();
+    //   const commons = await db
+    //     .collection('daos')
+    //     .where('members', 'array-contains', {
+    //       address: userStore.userInfo.safeAddress,
+    //       userId: userStore.userInfo.uid,
+    //     })
+    //     .get();
+    //
+    //   const mountlySubs = [];
+    //
+    //   for (let commonDoc of commons.docs) {
+    //     const common = commonDoc.data();
+    //
+    //     if (common.metadata?.contribution === 'monthly') {
+    //       const proposal = await db
+    //         .collection('proposals')
+    //         .where('dao', '==', common.id)
+    //         .where('type', '==', 'Join')
+    //         .where('proposerId', '==', userStore.userInfo.uid)
+    //         .where('winningOutcome', '==', 1)
+    //         .get();
+    //
+    //       // Sometimes if the user created the common
+    //       // there will be no proposal for that
+    //       if (proposal.docs[0]) {
+    //         mountlySubs.push({
+    //           proposal: proposal.docs[0].data(),
+    //           common,
+    //         });
+    //       }
+    //     }
+    //   }
+      const userSubscriptions = [];
 
-      const mountlySubs = [];
-
-      for (let commonDoc of commons.docs) {
-        const common = commonDoc.data();
-
-        if (common.metadata?.contribution === 'monthly') {
-          const proposal = await db
-            .collection('proposals')
-            .where('dao', '==', common.id)
-            .where('type', '==', 'Join')
-            .where('proposerId', '==', userStore.userInfo.uid)
-            .where('winningOutcome', '==', 1)
-            .get();
-
-          // Sometimes if the user created the common
-          // there will be no proposal for that
-          if (proposal.docs[0]) {
-            mountlySubs.push({
-              proposal: proposal.docs[0].data(),
-              common,
-            });
-          }
-        }
-      }
-
-      setSubs(mountlySubs);
+      await db
+        .collection('subscriptions')
+        .where('userId', '==', userStore.userInfo.uid)
+        .onSnapshot((snapshot) => {
+          setSubs(snapshot.docs.map(doc => doc.data()));
+          console.log(snapshot.docs.map(doc => doc.data()))
+        });
     };
 
 
@@ -92,21 +99,15 @@ const MonthlyContributionsList = ({userStore}) => {
         </React.Fragment>
       )}
 
-      {(subs !== null && !subs.length) && (
+      {(subs?.length === 0) && (
         <Text>No subs</Text>
       )}
 
       {(!!subs?.length) && (
         <React.Fragment>
-          {subs.map((data, index) => (
+          {subs.map((subscription, index) => (
             <View style={styles.item} key={index}>
-              <ContributionListItem
-                active
-                amount={data.proposal.description.funding / 100}
-                dueDate={moment(data.proposal.executedAt).toDate()}
-                proposalId={data.proposal.id}
-                commonName={data.common.metadata.name}
-              />
+              <ContributionListItem subscription={subscription}/>
             </View>
           ))}
         </React.Fragment>

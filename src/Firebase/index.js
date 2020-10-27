@@ -16,7 +16,7 @@ if (Config.local === 'true' && __DEV__) {
   logger.warn('Using local firestore');
 
   db.settings({
-    host: 'localhost:8080',
+    host: 'alexanders-macbook-pro.local:8080',
     ssl: false,
   });
 }

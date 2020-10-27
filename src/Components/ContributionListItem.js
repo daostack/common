@@ -2,30 +2,35 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
+import auth from '@react-native-firebase/auth';
+import axios from 'axios';
+
 import Icon from '../Assets/iconfont/Icon';
 import {colors, font, text} from '../Theme';
 import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
+import {subscriptionsUrl} from '../Config';
 
-const ContributionListItem = ({commonName, dueDate, active, amount, proposalId, bottomSheetStore}) => {
+
+const ContributionListItem = ({subscription, bottomSheetStore}) => {
+  const isCanceled = subscription.status === 'CanceledByPayment' ||
+      subscription.status === 'CanceledByUser';
 
   const onCancelConfirm = async () => {
-    try {
-      console.log(`@todo Cancel monthly subscription for proposal ${proposalId}`);
+    console.log(subscription);
 
-      await new Promise((x) => setTimeout(x, 3000));
-
-      return true;
-    } catch (e) {
-      return false;
-    }
+    await axios.post(`${subscriptionsUrl()}/cancel?subscriptionId=${subscription.id}`, {}, {
+      headers: {
+        Authorization: await auth().currentUser.getIdToken(),
+      },
+    });
   };
 
   const onCancelClick = () => {
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.CANCEL_SUBSCRIPTION, {
       onCancelConfirm,
-      commonName,
-      dueDate,
+      commonName: subscription.metadata?.common?.name,
+      dueDate: subscription.dueDate.toDate(),
     });
   };
 
@@ -33,27 +38,48 @@ const ContributionListItem = ({commonName, dueDate, active, amount, proposalId, 
     <View style={styles.container}>
       <View>
         <Text style={styles.title}>
-          {commonName}
+          {subscription.metadata?.common?.name}
         </Text>
 
-        <Text style={styles.dueText}>
-            Next payment: {dueDate.toDateString()}
-        </Text>
+        {isCanceled
+          ? subscription.dueDate.toDate() < new Date()
+            ? (
+              <Text style={styles.dueText}>
+                Your subscription is canceled!
+              </Text>
+            ) : (
+              <Text style={styles.dueText}>
+                Your subscription is canceled and you will be removed from the common on {subscription.dueDate.toDate()}
+              </Text>
+            )
+          : (
+            <Text style={styles.dueText}>
+              Payment Due: {subscription.dueDate.toDate().toDateString()}
+            </Text>
+          )
+        }
 
-        <Text style={styles[active ? 'active' : 'inactives']}>
-          {active ? 'Active' : 'Inactive'}
+        <Text style={styles[subscription.status === 'Active' ? 'active' : 'inactive']}>
+          {subscription.status === 'Active'
+            ? 'Active'
+            : isCanceled
+              ? 'Canceled'
+              : 'Attention Needed! Payment Failed!'
+          }
         </Text>
       </View>
 
-      <TouchableOpacity style={styles.rightContainer} onPress={onCancelClick}>
-        <Icon
-          name="delete"
-          size={16}
-          style={styles.icon}
-        />
+      {!isCanceled && (
+        <TouchableOpacity style={styles.rightContainer} onPress={onCancelClick}>
+          <Icon
+            name="delete"
+            size={16}
+            style={styles.icon}
+          />
 
-        <Text>${amount}/mo</Text>
-      </TouchableOpacity>
+          <Text>${subscription.amount}/mo</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -64,6 +90,28 @@ ContributionListItem.propTypes = {
   amount: PropTypes.number.isRequired,
   active: PropTypes.bool.isRequired,
   proposalId: PropTypes.string,
+
+  subscriptionId: PropTypes.string.isRequired,
+
+  subscription: PropTypes.shape({
+    metadata: PropTypes.shape({
+      common: PropTypes.shape({
+        name: PropTypes.string,
+        id: PropTypes.string,
+      }),
+    }),
+
+    id: PropTypes.string,
+    dueDate: PropTypes.any,
+    amount: PropTypes.number,
+
+    status: PropTypes.oneOf([
+      'Active',
+      'CanceledByUser',
+      'CanceledByPaymentFailure',
+      'PaymentFailed',
+    ]),
+  }),
 
   bottomSheetStore: PropTypes.shape({
     showBottomSheet: PropTypes.func,
