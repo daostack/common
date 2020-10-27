@@ -83,7 +83,7 @@ class FundingRequestForm extends React.Component {
             name: FundingRequestForm.FIELD_AMOUNT_REQUESTED,
             formStore: this.props.fundingRequestFormStore,
             validateRule: `required|numeric|max:${common.balance / 100}|min:0`,
-            customErrorMessage: `The amount requested cannot be greater than the Common balance, which is $${common.balance / 100} or bellow $0`,
+            customErrorMessage: `The amount requested cannot be greater than the Common balance, which is $${common.balance / 100} or below $0`,
           }}
         />
 
