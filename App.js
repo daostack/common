@@ -8,6 +8,7 @@ import {
   DeviceEventEmitter,
   Text,
   I18nManager,
+  UIManager,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer, CommonActions} from '@react-navigation/native';
