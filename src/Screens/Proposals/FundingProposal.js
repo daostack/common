@@ -99,7 +99,7 @@ const FundingProposal = ({
         </ScrollView>
         <RequestStepActionButton
           title="Create Proposal"
-          pass={fundingRequestFormStore.form.meta.isValid}
+          pass={fundingRequestFormStore.isFormActionEnabled()}
           onPress={createProposal}
         />
       </SafeAreaView>

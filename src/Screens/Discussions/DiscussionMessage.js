@@ -4,6 +4,7 @@ import {colors, font} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object} from 'prop-types';
+import Hyperlink from 'react-native-hyperlink';
 const {width} = Dimensions.get('window');
 
 const DiscussionMessage = ({data: {
@@ -22,7 +23,9 @@ const DiscussionMessage = ({data: {
     <View style={styles.container}>
       {currentUserUid === ownerId ? (
         <View style={styles.contentOwner}>
-          <Text style={styles.text}>{text}</Text>
+          <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
+            <Text style={styles.text}>{text}</Text>
+          </Hyperlink>
           <View style={{position: 'relative', right: 0, bottom: 0}}>
             <Text
               style={styles.date}
@@ -52,7 +55,9 @@ const DiscussionMessage = ({data: {
 
                 }}>
                 <Text style={styles.ownerName}>{ownerName}</Text>
-                <Text style={styles.text}>{text}</Text>
+                <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
+                  <Text style={styles.text}>{text}</Text>
+                </Hyperlink>
 
                 <Text style={styles.date}>
                   {moment(createTime.toDate()).format('hh:mm')}
@@ -77,6 +82,10 @@ DiscussionMessage.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  hyperLinkStyle: {
+    textDecorationLine: 'underline',
+    color: colors.mainBlue,
+  },
   ownerName: {
     ...font.primary.bold,
     ...font.fontSize(2),

@@ -183,8 +183,8 @@ class FormStore {
     }
   };
 
-  getValidator = () => {
-    let validatorParams = this.getValidatorParams();
+  getValidator = (field) => {
+    let validatorParams = this.getValidatorParams(field);
     return new Validator(
       validatorParams.fieldsData,
       validatorParams.fieldsRule,

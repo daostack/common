@@ -414,7 +414,6 @@ const ProposalScreen = ({
   };
 
   const onTabViewScroll = (e) => {
-
     if (!hederStateInProcess) {
       const currScrollY = e.nativeEvent.contentOffset.y;
       if (currScrollY > currTabViewScroll) {
