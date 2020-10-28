@@ -47,9 +47,9 @@ const AppleSignInButton = ({onSignIn, userStore, customStyle}) => {
   };
 
   const renderSignInButton = () => (
-    <TouchableOpacity style={{...layout.btnOutline, ...customStyle}} onPress={_signIn}>
-      <Icon style={{...layout.btnLeftIcon, ...{marginLeft: 5}}} name="apple-logo" size={22} />
-      <Text style={text.buttonblack}>Continue with Apple</Text>
+    <TouchableOpacity style={{...styles.buttonOutline, ...customStyle}} onPress={_signIn}>
+      <Icon style={{marginRight: 5, marginBottom: 5}} name="apple-logo" size={22} />
+      <Text style={{...text.buttonblack, fontWeight: '600', width: '100%'}}>Continue with Apple</Text>
     </TouchableOpacity>
   );
 
@@ -96,6 +96,12 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     color: colors.error,
+  },
+  buttonOutline: {
+    ...layout.btnOutline,
+    borderWidth: 1.5,
+    borderColor: colors.iconBlack,
+    justifyContent: 'flex-end',
   },
 });
 

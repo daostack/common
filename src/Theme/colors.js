@@ -36,4 +36,5 @@ export default {
   formPlaceholderColor: '#92a2b5',
   butterscotch: '#ffc23d22',
   mango: '#ffba36',
+  iconBlack: '#002654',
 };

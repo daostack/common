@@ -38,9 +38,9 @@ const GSignInButton = ({onSignIn, userStore}) => {
   };
 
   const renderSignInButton = () => (
-    <TouchableOpacity style={layout.btnOutline} onPress={_signIn}>
-      <Icon style={layout.btnLeftIcon} name="google" size={32} />
-      <Text style={text.buttonblack}>Continue with Google</Text>
+    <TouchableOpacity style={styles.buttonOutline} onPress={_signIn}>
+      <Icon name="google" size={32} />
+      <Text style={{...text.buttonblack, fontWeight: '600', width: '100%'}}>Continue with Google</Text>
     </TouchableOpacity>
   );
 
@@ -84,6 +84,12 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     color: colors.error,
+  },
+  buttonOutline: {
+    ...layout.btnOutline,
+    borderWidth: 1.5,
+    borderColor: colors.iconBlack,
+    justifyContent: 'flex-end',
   },
 });
 
