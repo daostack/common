@@ -1,6 +1,6 @@
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import logger from '~/Services/Logger';
-
+import {LayoutAnimation} from 'react-native';
 import moment from 'moment';
 
 export const GOOGLE_SIGNIN_PERMISSIONS = {
@@ -11,6 +11,19 @@ export const GOOGLE_SIGNIN_PERMISSIONS = {
 export const AUTH_PROVIDER_ID = {
   APPLE: 'apple.com',
   GOOGLE: 'google.com',
+};
+
+export const LAYOUT_ANIMATION_CONFIG = {
+  duration: 300,
+  create:
+  {
+    type: LayoutAnimation.Types.easeInEaseOut,
+    property: LayoutAnimation.Properties.scaleXY,
+  },
+  update:
+  {
+    type: LayoutAnimation.Types.easeInEaseOut,
+  },
 };
 
 export const numberFormatter = (num) => {
@@ -58,8 +71,6 @@ export const calcIsFundingStage = (deadline) => {
 export const showErrorPopUp = (bottomSheetStore, arg) => {
   if (arg instanceof Error) {
     const errorObj = getErrorObject(arg);
-
-    console.log(errorObj);
 
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {
       errorMessage: errorObj.errorMessage,

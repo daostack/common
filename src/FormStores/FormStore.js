@@ -51,8 +51,8 @@ class FormStore {
     }
   }
 
-  registerValidationRule(ruleName, callback, validationMessage) {
-    Validator.register(ruleName, callback, validationMessage);
+  registerValidationRule(validationRule) {
+    Validator.register(validationRule.ruleName, validationRule.validateFunc, validationRule.errorMessage);
   }
 
   // Public functions

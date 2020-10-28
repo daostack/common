@@ -3,6 +3,7 @@ import {View} from 'react-native';
 import {bool, func, number, object, oneOfType, shape, string} from 'prop-types';
 
 import RNPickerSelect from 'react-native-picker-select';
+import * as RNLocalize from 'react-native-localize';
 
 import Icon from '../../Assets/iconfont/Icon';
 import TextInputFieldWithIcon from './TextInputFieldWithIcon';
@@ -14,7 +15,7 @@ import {Label} from './TextInputField';
 
 export const CountrySelectField = ({defaultCountry, onChange, ...props}) => {
   const selectRef = React.useRef();
-  const [selectedCountry, setSelectedCountry] = React.useState(defaultCountry || 'IL');
+  const [selectedCountry, setSelectedCountry] = React.useState(defaultCountry || RNLocalize.getCountry());
 
   React.useEffect(() => {
     if (typeof onChange === 'function') {
@@ -41,7 +42,7 @@ export const CountrySelectField = ({defaultCountry, onChange, ...props}) => {
         style={styles.select}
         onValueChange={onCountryChange}
         value={selectedCountry}
-        items={countryList}
+        items={countryList.filter((country) => country.payin)}
         Icon={renderIcon}
       />
 
@@ -49,7 +50,7 @@ export const CountrySelectField = ({defaultCountry, onChange, ...props}) => {
         <TextInputFieldWithIcon
           editable={false}
           key={selectedCountry}
-          value={countryList[countryList.findIndex((x) => x.value === selectedCountry)].label}
+          value={countryList[countryList.findIndex((x) => x.value === selectedCountry)].value}
           iconEndName="down-arrow"
           {...props}
         />

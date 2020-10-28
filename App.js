@@ -219,7 +219,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       try {
         // onAuthStateChanged method is called on many events, not only when the logged in user is changed.
         // In order to prevent unwanted rerendering we need to make some checks.
-        if (!userStore.isLoginInProgressExists(user?.uid) || userStore.userInfo?.uid !== user?.uid) {
+        if (!userStore.isLoginInProgressExists(user?.uid) && userStore.userInfo?.uid !== user?.uid) {
           if (user) {
             userStore.setIsLoading(true);
             userStore.addLoginInProgress(user?.uid);
@@ -252,6 +252,9 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             userStore.removeLoginInProgress(filteredUser.uid);
             userStore.setIsLoading(false);
 
+            // Create a wallet instance for the logged in user
+            // NOTE: The walletManager has init and getInstance methods, which both create a WalletManager instance in some cases.
+            // Please consider a refactoring on that flow.
             await WalletManager.init(user.uid);
             const manager = await WalletManager.getInstance();
 
@@ -283,12 +286,19 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
     subscribers.authChangeUnsubscribe = auth().onAuthStateChanged(onAuthStateChanged);
 
+    // The safeAddress of the user is created on the clouldfunctions and after that the user record in the firestore DB is updated with the actual safeAddres.
+    // In order to keep the safeAddress information synced with our App, we need to do the follwing 2 things:
+    // 1) Keep the userStore synced with the latest update for safeAddress
+    // 2) Make sure the WalletManager has the safeAddress for newly created users
+    // TBD:
+    // 1) Can we call that method only if the user don't have safeAddres in the walletManager or userStore ???
+    // 1) Can we unsubscribe for changes once the safeAddress is updated ???
     const updateUser = async (uid) => {
       try {
         if (auth().currentUser === null) {
           return;
         }
-        const unsubscribe = db.collection('users').doc(uid).onSnapshot( async (snapshot) => {
+        const unsubscribe = db.collection('users').doc(uid).onSnapshot(async (snapshot) => {
           if (!snapshot.empty) {
             userStore.setSignedInUser(prepareUserObject(snapshot.data()));
           }
@@ -428,35 +438,35 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         <Stack.Screen
           name="RulesStep"
           component={RulesStep}
-          options={({nav, route}) => ({
+          options={() => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="IntroductionStep"
           component={IntroductionStep}
-          options={({nav, route}) => ({
+          options={() => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="ContributionStep"
           component={ContributionStep}
-          options={({nav, route}) => ({
+          options={() => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="BillingDetailsStep"
           component={BillingDetailsStep}
-          options={({nav, route}) => ({
+          options={() => ({
             headerShown: false,
           })}
         />
         <Stack.Screen
           name="PaymentDetailsStep"
           component={PaymentDetailsStep}
-          options={({nav, route}) => ({
+          options={() => ({
             headerShown: false,
           })}
         />

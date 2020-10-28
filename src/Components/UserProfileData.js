@@ -44,7 +44,7 @@ const UserProfileData = ({
         setIsOwnProfile(false);
 
         navigation.setOptions({
-          // The regex bellow is used to separate names and
+          // The regex below is used to separate names and
           // make them less at most 25 character, but with cutting
           // the name only at whitespaces
           title: usr.displayName?.match(/.{1,25}(\s|$)/g)[0],

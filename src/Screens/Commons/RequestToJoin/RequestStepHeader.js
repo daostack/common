@@ -85,7 +85,7 @@ const RequestStepHeader = ({isFirstStepSkipped, currentIndex}) => {
       {/* <TouchableOpacity onPress={() => setCurrentIndex(2)}> */}
       <View style={ovalStyle(2 - deltaIndex)}>
         <Icon
-          name={currentIndex < (3 - deltaIndex) ? 'wallet-24' : 'check'}
+          name={currentIndex < (3 - deltaIndex) ? 'contribution-24' : 'check'}
           size={currentIndex === (2 - deltaIndex) ? 24 : 16}
           color={iconColor(2 - deltaIndex)}
         />
@@ -94,7 +94,7 @@ const RequestStepHeader = ({isFirstStepSkipped, currentIndex}) => {
       <TouchableOpacity onPress={() => setCurrentIndex(3)}> */}
       <View style={ovalStyle(3 - deltaIndex)}>
         <Icon
-          name={currentIndex < (4 - deltaIndex) ? 'billingDeitals16Copy' : 'check'}
+          name={currentIndex < (4 - deltaIndex) ? 'billing-details-24-copy-4' : 'check'}
           size={currentIndex === (3 - deltaIndex) ? 24 : 16}
           color={iconColor(3 - deltaIndex)}
         />
@@ -103,7 +103,7 @@ const RequestStepHeader = ({isFirstStepSkipped, currentIndex}) => {
 
       <View style={ovalStyle(4 - deltaIndex)}>
         <Icon
-          name={currentIndex < (5 - deltaIndex) ? 'contribution-24' : 'check'}
+          name={currentIndex < (5 - deltaIndex) ? 'wallet-24' : 'check'}
           size={currentIndex === (4 - deltaIndex) ? 24 : 16}
           color={iconColor(4 - deltaIndex)}
         />

@@ -1,7 +1,6 @@
 import {observable, action, decorate} from 'mobx';
 import {isDaoMemberBySafeAddress} from '~/Util';
 import Cache from '../Util/Cache';
-import WalletManager from '../Util/WalletManager';
 
 export const userInfoFields = [
   'uid',
@@ -98,7 +97,6 @@ class UserStore {
       }
       if (newUserInfo.safeAddress) {
         newUserObj.safeAddress = newUserInfo.safeAddress;
-        WalletManager.getInstance().safeAddress = newUserInfo.safeAddress;
       }
 
       newUserObj.following = newUserInfo.following || [];
