@@ -107,6 +107,46 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     return unsubscribe;
   }, []);
 
+  // notification navigation
+  useEffect(() => {
+    // Assume a message-notification contains a "type" property in the data payload of the screen to open
+    messaging().onNotificationOpenedApp((remoteMessage) => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage,
+      );
+    });
+
+    // Check whether an initial notification is available
+    messaging()
+      .getInitialNotification()
+      .then((remoteMessage) => {
+        //console.log('tkt getInitialNotification', remoteMessage.data.path)
+        const path = remoteMessage.data.path.split('/');
+        console.log('tkt path', path);
+        const navigate = CommonActions.navigate({
+          name: path[0],
+          params: {
+            data: null,
+            discussionId: path[1],
+            commonId: path[2],
+          },
+        });
+        navigation.dispatch(navigate);
+        /*if (remoteMessage) {
+          navigation.navigate({
+            name: remoteMessage.data.path.screen,
+            params: {
+              discussionId: remoteMessage.data.path.discussionId,
+              commonId: remoteMessage.data.path.commonId,
+            },
+          });
+          //setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
+        }*/
+        //setLoading(false);
+      });
+  }, []);
+
   // HUD
   useEffect(() => {
     const showLisenter = DeviceEventEmitter.addListener(
@@ -149,15 +189,17 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   // Deep & Dynamic Link
   const handleOpenURL = ({url}) => {
-    Linking.canOpenURL(url).then((supported) => {
-      if (!supported) {
-        return;
-      }
-      if (!DeepLinking.evaluateUrl(url) && validUrl.isWebUri(url)) {
-        logger.log(`Routing Browser -> ${url}`);
-        routing('Browser', {url: url});
-      }
-    });
+    console.log('tkt url', url)
+    if (url ) {
+      Linking.canOpenURL(url).then((supported) => {
+        if (!supported) {
+          return;
+        }
+        if (!DeepLinking.evaluateUrl(url) && validUrl.isWebUri(url)) {
+          logger.log(`Routing Browser -> ${url}`);
+          routing('Browser', {url: url});
+        }
+      });}
   };
 
   const routing = (screenName, params) => {
@@ -169,10 +211,11 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
   };
 
   useEffect(() => {
-
+    console.log('tkt useEffect')
     DeepLinking.addScheme('common://');
     DeepLinking.addScheme('com.daostack.common://');
     DeepLinking.addScheme('https://app.common.io');
+    //console.log('tkt DeepLinking', DeepLinking)
 
     Linking.addEventListener('url', handleOpenURL);
 
@@ -181,26 +224,35 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     });
 
     DeepLinking.addRoute('/proposal/:id', (response) => {
+      console.log('response', response)
       routing('ProposalScreen', {proposalId: response.id});
     });
 
     DeepLinking.addRoute('/user/:id', (response) => {
+      console.log('add route messages', response)
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
         {userId: response.id}
       );
     });
 
+    DeepLinking.addRoute('/discussion/:id', (response) => {
+      console.log('add route messages', response)
+      routing('Discussions', {discussionId: response.id});
+    });
+
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);
     dynamicLinks().getInitialLink().then((link) => {
       if (link) {
+        console.log('tkt from here', link)
         handleOpenURL(link);
       } else {
         Linking.getInitialURL()
           .then((url) => {
+            console.log('tkt from there', url)
             handleOpenURL({url});
           })
-          .catch((err) => err);
+          .catch((err) => { console.log('tkt err', err); return err});
       }
     });
 
