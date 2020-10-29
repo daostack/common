@@ -25,7 +25,7 @@ const FundingProposal = ({
 }) => {
 
   const fundingRequestFormStore = new FundingRequestFormStore();
-  
+
   const createProposal = async (e) => {
     Keyboard.dismiss();
     if (fundingRequestFormStore.isFormValid()) {

@@ -26,7 +26,7 @@ export default {
 
   createDiscussionStore: new CreateDiscussionStore(),
   editProfileFormStore: new EditProfileFormStore(),
-  
+
   // Request To Join Form Stores
   paymentFormStore: new PaymentFormStore(),
   personalContributionFormStore: new PersonalContributionFormStore(),

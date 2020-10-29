@@ -1,4 +1,4 @@
-import { observable, action, decorate } from 'mobx';
+import {observable, action, decorate} from 'mobx';
 import Validator from 'validatorjs';
 import en from 'validatorjs/src/lang/en';
 
@@ -250,12 +250,12 @@ class FormStore {
     }
 
     if (multiValues.length > 0) {
-      changedFieldsJson[name] = [...multiValues.keys()].map((x) => ({ value: multiValues[x] }));
+      changedFieldsJson[name] = [...multiValues.keys()].map((x) => ({value: multiValues[x]}));
     }
 
     if (multiFieldTitles.length > 0) {
       const allMultiLinksFields = [...multiFieldTitles.keys()].map((x) => (
-        { title: multiFieldTitles[x], url: multiFieldValues[x] }
+        {title: multiFieldTitles[x], url: multiFieldValues[x]}
       ));
       // Remove fields with empty values.
       changedFieldsJson[name] = allMultiLinksFields.filter((item) => item.title || item.url);
