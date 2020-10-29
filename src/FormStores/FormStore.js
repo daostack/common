@@ -9,6 +9,10 @@ class FormStore {
   constructor() {
     // Hack for React Native - it's necessary to set a default language
     Validator.setMessages('en', en);
+    this.clearFormStoreState();
+  }
+
+  clearFormStoreState = () => {
     this.form = {
       fields: {},
       meta: {
@@ -22,30 +26,99 @@ class FormStore {
     this.multiFieldNames = [];
   }
 
+  getFormField = (name, multiName) => {
+    if (multiName) {
+      const multiIndexInfo = name.split('_');
+      const currMultiIndex = multiIndexInfo[0];
+      const currMultiValueField = multiIndexInfo[1];
+
+      if (currMultiValueField) {
+        if (this.form.fields[multiName]) {
+          if (this.form.fields[multiName][currMultiIndex]) {
+            return this.form.fields[multiName][currMultiIndex][currMultiValueField];
+          }
+          return null;
+        }
+        return null;
+      } else {
+        if (this.form.fields[multiName]) {
+          return this.form.fields[multiName][currMultiIndex];
+        }
+        return null;
+      }
+    } else {
+      return this.form.fields[name];
+    }
+  }
+
   registerValidationRule(validationRule) {
     Validator.register(validationRule.ruleName, validationRule.validateFunc, validationRule.errorMessage);
   }
 
   // Public functions
   registerFormField(name, validateRule, initialValue = '', multiName = null) {
-    this.form.fields[name] = {
+    let currValue = {
       value: initialValue,
       error: false,
       rule: validateRule,
       changed: false,
     };
-    if (multiName && this.multiFieldNames.indexOf(multiName) === -1) {
-      this.multiFieldNames.push(multiName);
+
+    let currName = name;
+
+    if (multiName) {
+      const multiIndexInfo = name.split('_');
+      const currMultiIndex = multiIndexInfo[0];
+      const currMultiValueField = multiIndexInfo[1];
+
+      if (currMultiValueField) {
+        let currMultiValue = this.form.fields[multiName] ? this.form.fields[multiName] : [];
+        if (!currMultiValue[currMultiIndex]) {
+          currMultiValue[currMultiIndex] = {};
+        }
+        currMultiValue[currMultiIndex][currMultiValueField] = currValue;
+        currValue = currMultiValue;
+      } else {
+
+        if (!this.form.fields[multiName]) {
+          this.form.fields[multiName] = [];
+        }
+        this.form.fields[multiName][name] = currValue;
+        currValue = this.form.fields[multiName];
+
+      }
+
+      currName = multiName;
     }
+
+    this.form.fields[currName] = currValue;
   }
 
-  updateFieldValidationRule(name, newRule) {
-    this.form.fields[name].rule = newRule;
-    this.validateField(name);
+  updateFieldValidationRule(name, multiName, newRule) {
+    this.getFormField(name, multiName).rule = newRule;
+    this.validateField(name, multiName);
   }
 
-  removeFormField(name) {
-    if (this.form.fields?.[name]) {
+  removeFormField(name, multiName) {
+    if (multiName) {
+      const multiIndexInfo = name.split('_');
+      const currMultiIndex = multiIndexInfo[0];
+
+      if (this.form.fields[multiName][currMultiIndex]) {
+        let currFormField = this.form.fields[multiName];
+        delete currFormField[currMultiIndex];
+
+        const newFormFieldObj = {};
+        let newIndex = 0;
+
+        Object.keys(currFormField).forEach((currKey) => {
+          newFormFieldObj[newIndex] = currFormField[currKey];
+          newIndex++;
+        });
+        this.form.fields[multiName] = newFormFieldObj;
+      }
+
+    } else {
       delete this.form.fields[name];
     }
   }
@@ -59,11 +132,8 @@ class FormStore {
       for (const key in validation.errors.errors) {
         this.form.fields[key].error = validation.errors.first(key);
       }
-      return false;
     }
-
-    // Filter multiple fields
-    return true;
+    return this.form.meta.isValid;
   };
 
   // Determine if the form action button has to be disabled
@@ -71,20 +141,21 @@ class FormStore {
     this.form.meta.formValidationMade ? this.form.meta.isValid : true
   );
 
-  fieldBlured = (name) => {
-    this.validateField(name);
+  fieldBlured = (name, multiName) => {
+    this.validateField(name, multiName);
   };
 
-  fieldChanged = (name, value, triggerValidation = false) => {
-    this.form.fields[name].value = value;
+  fieldChanged = (name, value, triggerValidation = false, multiName = null) => {
+    this.getFormField(name, multiName).value = value;
+
     if (
       triggerValidation ||
-      this.form.fields[name].error ||
-      !this.form.fields[name].value
+      this.getFormField(name, multiName).error ||
+      !this.getFormField(name, multiName).value
     ) {
-      this.validateField(name);
+      this.validateField(name, multiName);
     }
-    this.form.fields[name].changed = true;
+    this.getFormField(name, multiName).changed = true;
   };
 
   getFormFieldsJson = (onlyChangedFields = false) => {
@@ -92,23 +163,51 @@ class FormStore {
 
     for (const key in this.form.fields) {
       const formField = this.form.fields[key];
-      if (onlyChangedFields) {
-        if (formField.changed) {
-          changedFieldsJson[key] = formField.value;
-          // formField.value.length > 0 ? changedFieldsJson[key] = formField.value : null;
-        }
-      } else {
-        changedFieldsJson[key] = formField.value;
-      }
-    }
+      let currValue = null;
 
-    // Filter multiple fields
-    for (const key in this.multiFieldNames) {
-      const currMultiName = this.multiFieldNames[key];
-      changedFieldsJson = this.filterMultiFields(
-        currMultiName,
-        changedFieldsJson,
-      );
+      if (Array.isArray(formField)) {
+        currValue = [];
+        formField.forEach((currMultiFormField, multiIndex) => {
+          const multiFieldValue = {};
+          const nextIndex = currValue.length;
+          // Multi Links
+          if (typeof (currMultiFormField.value) === 'object') {
+            Object.keys(currMultiFormField).forEach((currKey) => {
+              if (onlyChangedFields) {
+                if (currMultiFormField[currKey].changed) {
+                  multiFieldValue[currKey] = currMultiFormField[currKey].value;
+                }
+              } else {
+                multiFieldValue[currKey] = currMultiFormField[currKey].value;
+              }
+            });
+          } else { // MultiFiles & MultiImages
+            if (onlyChangedFields) {
+              if (currMultiFormField.changed) {
+                multiFieldValue.value = currMultiFormField.value;
+              }
+            } else {
+              multiFieldValue.value = currMultiFormField.value;
+            }
+          }
+          if (Object.keys(multiFieldValue).length > 0) {
+            currValue[nextIndex] = multiFieldValue;
+          }
+        });
+      } else { // Single Field
+        if (onlyChangedFields) {
+          if (formField.changed) {
+            currValue = formField.value;
+            // formField.value.length > 0 ? changedFieldsJson[key] = formField.value : null;
+          }
+        } else {
+          currValue = formField.value;
+        }
+      }
+
+      if (currValue && currValue.length > 0) {
+        changedFieldsJson[key] = currValue;
+      }
     }
 
     return changedFieldsJson;
@@ -151,7 +250,7 @@ class FormStore {
     }
 
     if (multiValues.length > 0) {
-      changedFieldsJson[name] = [...multiValues.keys()].map((x) => ({value: multiValues[x]}) );
+      changedFieldsJson[name] = [...multiValues.keys()].map((x) => ({value: multiValues[x]}));
     }
 
     if (multiFieldTitles.length > 0) {
@@ -174,36 +273,55 @@ class FormStore {
   );
 
   // Private functions
-  validateField = (field) => {
-    var validation = this.getValidator(field);
+  validateField = (name, multiName) => {
+    var validation = this.getValidator(name, multiName);
     this.form.meta.isValid = validation.passes();
-    this.form.fields[field].error = validation.errors.first(field);
-    if (this.form.fields[field].error) {
+    this.getFormField(name, multiName).error = validation.errors.first(name);
+    if (this.getFormField(name, multiName).error) {
       this.form.meta.formValidationMade = true;
     }
   };
 
-  getValidator = (field) => {
-    let validatorParams = this.getValidatorParams(field);
+  getValidator = (name, multiName) => {
+    let validatorParams = this.getValidatorParams(name, multiName);
     return new Validator(
       validatorParams.fieldsData,
       validatorParams.fieldsRule,
     );
   };
 
-  getValidatorParams = (fieldName) => {
+  getValidatorParams = (fieldName, multiField) => {
+
     let fieldsData = {};
     let fieldsRule = {};
 
     if (fieldName) {
-      const formField = this.form.fields[fieldName];
-      fieldsData[fieldName] = formField.value;
+      const formField = this.getFormField(fieldName, multiField);
+      fieldsData[fieldName] = typeof (formField.value) === 'object' ? formField.value.value : formField.value;
       fieldsRule[fieldName] = formField.rule;
     } else {
       for (const key in this.form.fields) {
         const formField = this.form.fields[key];
-        fieldsData[key] = formField.value;
-        fieldsRule[key] = formField.rule;
+        //Multi field
+        if (Array.isArray(formField)) {
+          formField.forEach((currMultiFormField, multiIndex) => {
+            // MultiLink
+            if (typeof (currMultiFormField.value) === 'object') {
+              Object.keys(currMultiFormField).forEach((currKey) => {
+                const multiKey = `${key}_${multiIndex}_${currKey}`;
+                fieldsData[multiKey] = currMultiFormField[currKey].value;
+                fieldsRule[multiKey] = currMultiFormField[currKey].rule;
+              });
+            } else { //MultiFiles & MultiImages
+              const multiKey = `${key}_${multiIndex}`;
+              fieldsData[multiKey] = currMultiFormField.value;
+              fieldsRule[multiKey] = currMultiFormField.rule;
+            }
+          });
+        } else {
+          fieldsData[key] = typeof (formField.value) === 'object' ? formField.value.value : formField.value;
+          fieldsRule[key] = formField.rule;
+        }
       }
     }
 

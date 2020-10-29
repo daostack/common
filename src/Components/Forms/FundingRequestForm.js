@@ -4,7 +4,6 @@ import TextInputField from '../FormFields/TextInputField';
 import MultiImageField from '../FormFields/MultiImageField';
 import MultiFileField from '../FormFields/MultiFileField';
 import MultiLinkField from '../FormFields/MultiLinkField';
-import {observer, inject} from 'mobx-react';
 import {layout, text, colors, font} from '~/Theme';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import logger from '~/Services/Logger';
@@ -36,7 +35,6 @@ class FundingRequestForm extends React.Component {
 
   render() {
     const {
-      userStore,
       fundingRequestFormStore,
       common,
       ...otherProps
@@ -180,9 +178,8 @@ FundingRequestForm.propTypes = {
     isFormValid: func,
   }),
   common: object,
-  userStore: object,
   onFormSubmit: func,
   onFormClose: func,
 };
 
-export default inject('fundingRequestFormStore')(observer(FundingRequestForm));
+export default FundingRequestForm;
