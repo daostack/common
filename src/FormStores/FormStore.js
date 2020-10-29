@@ -1,4 +1,4 @@
-import {observable, action, decorate} from 'mobx';
+import { observable, action, decorate } from 'mobx';
 import Validator from 'validatorjs';
 import en from 'validatorjs/src/lang/en';
 
@@ -72,7 +72,7 @@ class FormStore {
       const currMultiValueField = multiIndexInfo[1];
 
       if (currMultiValueField) {
-        let currMultiValue = this.form.fields[multiName] ? this.form.fields[multiName] : {};
+        let currMultiValue = this.form.fields[multiName] ? this.form.fields[multiName] : [];
         if (!currMultiValue[currMultiIndex]) {
           currMultiValue[currMultiIndex] = {};
         }
@@ -132,8 +132,8 @@ class FormStore {
       for (const key in validation.errors.errors) {
         this.form.fields[key].error = validation.errors.first(key);
       }
-      return false;
     }
+    return this.form.meta.isValid;
   };
 
   // Determine if the form action button has to be disabled
@@ -163,25 +163,52 @@ class FormStore {
 
     for (const key in this.form.fields) {
       const formField = this.form.fields[key];
-      const currValue = typeof (formField.value) === 'object' ? formField.value.value : formField.value;
-      if (onlyChangedFields) {
-        if (formField.changed) {
-          changedFieldsJson[key] = currValue;
-          // formField.value.length > 0 ? changedFieldsJson[key] = formField.value : null;
+      let currValue = null;
+
+      if (Array.isArray(formField)) {
+        currValue = [];
+        formField.forEach((currMultiFormField, multiIndex) => {
+          const multiFieldValue = {};
+          const nextIndex = currValue.length;
+          // Multi Links
+          if (typeof (currMultiFormField.value) === 'object') {
+            Object.keys(currMultiFormField).forEach((currKey) => {
+              if (onlyChangedFields) {
+                if (currMultiFormField[currKey].changed) {
+                  multiFieldValue[currKey] = currMultiFormField[currKey].value;
+                }
+              } else {
+                multiFieldValue[currKey] = currMultiFormField[currKey].value;
+              }
+            });
+          } else { // MultiFiles & MultiImages
+            if (onlyChangedFields) {
+              if (currMultiFormField.changed) {
+                multiFieldValue.value = currMultiFormField.value;
+              }
+            } else {
+              multiFieldValue.value = currMultiFormField.value;
+            }
+          }
+          if (Object.keys(multiFieldValue).length > 0) {
+            currValue[nextIndex] = multiFieldValue;
+          }
+        });
+      } else { // Single Field
+        if (onlyChangedFields) {
+          if (formField.changed) {
+            currValue = formField.value;
+            // formField.value.length > 0 ? changedFieldsJson[key] = formField.value : null;
+          }
+        } else {
+          currValue = formField.value;
         }
-      } else {
+      }
+
+      if (currValue && currValue.length > 0) {
         changedFieldsJson[key] = currValue;
       }
     }
-
-    // // Filter multiple fields
-    // for (const key in this.multiFieldNames) {
-    //   const currMultiName = this.multiFieldNames[key];
-    //   changedFieldsJson = this.filterMultiFields(
-    //     currMultiName,
-    //     changedFieldsJson,
-    //   );
-    // }
 
     return changedFieldsJson;
   };
@@ -223,12 +250,12 @@ class FormStore {
     }
 
     if (multiValues.length > 0) {
-      changedFieldsJson[name] = [...multiValues.keys()].map((x) => ({value: multiValues[x]}) );
+      changedFieldsJson[name] = [...multiValues.keys()].map((x) => ({ value: multiValues[x] }));
     }
 
     if (multiFieldTitles.length > 0) {
       const allMultiLinksFields = [...multiFieldTitles.keys()].map((x) => (
-        {title: multiFieldTitles[x], url: multiFieldValues[x]}
+        { title: multiFieldTitles[x], url: multiFieldValues[x] }
       ));
       // Remove fields with empty values.
       changedFieldsJson[name] = allMultiLinksFields.filter((item) => item.title || item.url);
@@ -279,15 +306,15 @@ class FormStore {
         if (Array.isArray(formField)) {
           formField.forEach((currMultiFormField, multiIndex) => {
             // MultiLink
-            if (Array.isArray(currMultiFormField)) {
-              formField.forEach((currMultiMultiFormField, multiMultiIndex) => {
-                const multiKey = `${key}_${multiIndex}_${multiMultiIndex}`;
-                fieldsData[multiKey] = typeof (currMultiMultiFormField.value) === 'object' ? currMultiMultiFormField.value.value : currMultiMultiFormField.value;
-                fieldsRule[multiKey] = currMultiMultiFormField.rule;
+            if (typeof (currMultiFormField.value) === 'object') {
+              Object.keys(currMultiFormField).forEach((currKey) => {
+                const multiKey = `${key}_${multiIndex}_${currKey}`;
+                fieldsData[multiKey] = currMultiFormField[currKey].value;
+                fieldsRule[multiKey] = currMultiFormField[currKey].rule;
               });
             } else { //MultiFiles & MultiImages
               const multiKey = `${key}_${multiIndex}`;
-              fieldsData[multiKey] = typeof (currMultiFormField.value) === 'object' ? currMultiFormField.value.value : currMultiFormField.value;
+              fieldsData[multiKey] = currMultiFormField.value;
               fieldsRule[multiKey] = currMultiFormField.rule;
             }
           });
