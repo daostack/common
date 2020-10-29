@@ -41,23 +41,24 @@ class TextInputField extends React.Component {
         customErrorMessage={customErrorMessage}
         formStore={formStore}
         name={name}
+        multiName={multiName}
         invisibleContainer={invisibleContainer} />
     );
   }
 
   onChangeText = (text) => {
-    const {formStore, name} = this.props.validation;
+    const {formStore, name, multiName} = this.props.validation;
     this.setState({charsLeft: text.length});
-    formStore.fieldChanged(name, text);
+    formStore.fieldChanged(name, text, false, multiName);
     this.props.onChangeText && this.props.onChangeText(text);
   };
 
   onFocus = (e) => {this.setState({onFocus: true});};
 
   onBlur = (e) => {
-    const {formStore, name} = this.props.validation;
+    const {formStore, name, multiName} = this.props.validation;
     this.setState({onFocus: false});
-    formStore.fieldBlured(name);
+    formStore.fieldBlured(name, multiName);
     this.props.onBlur && this.props.onBlur(e);
     this.props.onSubmit && this.props.onSubmit();
   };
@@ -77,11 +78,11 @@ class TextInputField extends React.Component {
       ...otherProps
     } = this.props;
 
-    const {formStore, name} = validation;
+    const {formStore, name, multiName} = validation;
     let styleTextfield = styles.textfieldContainer;
     let defaultMultilineProps = {minHeight: 48};
 
-    styleTextfield = formStore.form.fields[name].error
+    styleTextfield = formStore.getFormField(name, multiName).error
       ? {...styles.textfieldContainer, ...{borderColor: colors.error}}
       : {...styles.textfieldContainer, ...{borderColor: this.state.onFocus ? colors.mainBlue : colors.grey4}};
 
@@ -116,8 +117,7 @@ class TextInputField extends React.Component {
             secureTextEntry={this.state.showPassword}
             value={
               validation
-                ? validation.formStore.form.fields[
-                  validation.name].value.toString()
+                ? validation.formStore.getFormField(validation.name, validation.multiName).value.toString()
                 : value}/>
           {maxLength && <CharCount currCount={this.state.charsLeft} maxLength={maxLength} />}
         </View>

@@ -86,8 +86,8 @@ class TextInputFieldWithIcon extends React.Component {
 
   onChangeText = (currText) => {
     if (this.props.validation) {
-      const {formStore, name} = this.props.validation;
-      formStore.fieldChanged(name, currText);
+      const {formStore, name, multiName} = this.props.validation;
+      formStore.fieldChanged(name, currText, false, multiName);
     }
     this.props.onChangeText && this.props.onChangeText(currText);
   };
@@ -99,8 +99,8 @@ class TextInputFieldWithIcon extends React.Component {
   onBlur = (e) => {
     this.setState({onFocus: false});
     if (this.props.validation) {
-      const {formStore, name} = this.props.validation;
-      formStore.fieldBlured(name);
+      const {formStore, name, multiName} = this.props.validation;
+      formStore.fieldBlured(name, multiName);
     }
     this.props.onBlur && this.props.onBlur(e);
   };

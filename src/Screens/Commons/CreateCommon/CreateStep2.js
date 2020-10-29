@@ -26,12 +26,19 @@ import RequestStepActionButton from '../RequestStepActionButton';
 import {object, func, shape} from 'prop-types';
 const {width} = Dimensions.get('window');
 
+const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
+const SAFETY_PERIOD_TAB_VALUES = [moment().add('7', 'days').unix(), moment().add('1', 'months').unix()];
+
 const CreateStep2 = ({fundingFormStore, navigation}) => {
+
+  const initialContributionIndex = fundingFormStore.form.fields[CreateCommonForm.CONTRIBUTION]?.value ? CONTRIBUTION_TAB_VALUES.indexOf(fundingFormStore.form.fields[CreateCommonForm.CONTRIBUTION]?.value) : 0;
+  const initialSegmentedIndex = fundingFormStore.form.fields[CreateCommonForm.DEADLINE]?.value ? fundingFormStore.form.fields[CreateCommonForm.DEADLINE]?.value.index : 0;
+
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [segmentedIndex, setSegmentedIndex] = useState(0);
-  const [contributionIndex, setContributionIndex] = useState(0);
-  const [pickDate, setPickDate] = useState(null);
+  const [segmentedIndex, setSegmentedIndex] = useState(initialSegmentedIndex);
+  const [contributionIndex, setContributionIndex] = useState(initialContributionIndex);
+  const [pickDate, setPickDate] = useState(initialSegmentedIndex === 2 ? fundingFormStore.form.fields[CreateCommonForm.DEADLINE]?.value.value : null);
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -44,29 +51,18 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
   }, [scrollY]);
 
   useEffect(() => {
-    onTabChange(0); // pre-select 1 week at first render
-    onContributionTabChange(0); // pre-select
+    onTabChange(initialSegmentedIndex, true); // pre-select 1 week at first render
+    onContributionTabChange(initialContributionIndex); // pre-select
   }, []);
 
   const onContributionTabChange = (index) => {
     const name = CreateCommonForm.CONTRIBUTION;
     fundingFormStore.registerFormField(name, 'required');
-    switch (index) {
-    case 0: {
-      fundingFormStore.fieldChanged(
-        name,
-        'one-time'
-      );
-      break;
-    }
-    case 1: {
-      fundingFormStore.fieldChanged(
-        name,
-        'monthly'
-      );
-      break;
-    }
-    }
+
+    fundingFormStore.fieldChanged(
+      name,
+      CONTRIBUTION_TAB_VALUES[index]
+    );
     setContributionIndex(index);
   };
 
@@ -106,42 +102,25 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
   }, [segmentedIndex, pickDate, props.fundingFormStore]); */
 
   const onDatePickerChange = (event, date) => {
-    fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, moment(date || {}).unix());
+    const currDate = moment(date || {}).unix();
+    fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {value: (currDate), index: 2});
     if (Platform.OS === 'android') {
       setShow(false);
     }
-    setPickDate(date);
+    setPickDate(currDate);
   };
 
-  const onTabChange = (index) => {
+  const onTabChange = (index, isInitialCall) => {
     const name = CreateCommonForm.DEADLINE;
     fundingFormStore.registerFormField(name, 'required');
-    switch (index) {
-    case 0: {
-      fundingFormStore.fieldChanged(
-        name,
-        moment()
-          .add('7', 'days')
-          .unix(),
-      );
-      setShow(false);
-      break;
-    }
-    case 1: {
-      fundingFormStore.fieldChanged(
-        name,
-        moment()
-          .add('1', 'months')
-          .unix(),
-      );
-      setShow(false);
-      break;
-    }
-    case 2: {
+
+    if (index === 2 && !isInitialCall) {
       setShow(true);
-      break;
+    } else {
+      fundingFormStore.fieldChanged(name, {value: SAFETY_PERIOD_TAB_VALUES[index], index});
+      setShow(false);
     }
-    }
+
     setSegmentedIndex(index);
   };
 
@@ -152,7 +131,7 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
     } else {
       fundingFormStore.fieldChanged(
         CreateCommonForm.DEADLINE,
-        moment({}).unix(),
+        {value: moment({}).unix(), index: 2}
       );
       setPickDate(moment().toDate());
       setShow(false);
@@ -236,6 +215,7 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
             onTabPress={onContributionTabChange}
           />
           <TextInputFieldWithIcon
+            value={fundingFormStore.getFormField(CreateCommonForm.MINIMUM)?.value}
             iconName="dollar"
             iconSize={12}
             iconStyle={{paddingRight: 5}}

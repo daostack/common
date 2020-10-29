@@ -34,13 +34,13 @@ class ImageField extends React.Component {
     formStore.registerFormField(name, validateRule, value, multiName);
 
     this.fieldValidation = (
-      <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} invisibleContainer={true}/>
+      <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} multiName={multiName} invisibleContainer={true}/>
     );
   }
 
   onChangeValue = (url) => {
-    const {formStore, name} = this.props.validation;
-    formStore.fieldChanged(name, url);
+    const {formStore, name, multiName} = this.props.validation;
+    formStore.fieldChanged(name, url, false, multiName);
     this.props.onChangeImage && this.props.onChangeImage(url);
   };
 
@@ -85,7 +85,7 @@ class ImageField extends React.Component {
       ? styles.formImageFieldStyle
       : styles.formImageFueldGeneralStyle;
 
-    const currValue = validation.formStore.form.fields[validation.name].value || value;
+    const currValue = validation.formStore.getFormField(validation.name, validation.multiName)?.value || value;
 
     if (currValue) {
       return (
@@ -140,7 +140,7 @@ class ImageField extends React.Component {
 
   render() {
     const {isAvatar, value, validation, disableEdit} = this.props;
-    const currValue = validation.formStore.form.fields[validation.name].value || value;
+    const currValue = validation.formStore.getFormField(validation.name, validation.multiName)?.value || value;
 
     return (
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -152,7 +152,7 @@ class ImageField extends React.Component {
           }>
           <View>
             {this.renderImage(isAvatar, validation, value)}
-            {!disableEdit && (isAvatar || currValue) &&
+            {!disableEdit && (isAvatar || currValue?.length > 0 ) &&
               <TouchableOpacity
                 style={isAvatar ? styles.formImageFielAddIconAvatar : styles.formImageFielAddIcon}
                 onPress={() => { isAvatar ? this.pickImage() : this.onFieldDeleted();} }>
@@ -237,11 +237,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: colors.paleGrey,
     alignSelf: 'stretch',
+    marginBottom: 20,
   },
   imageFieldPlaceholderView: {
     ...layout.content,
     backgroundColor: colors.paleGrey,
     borderRadius: 20,
+    marginBottom: 20,
   },
 
   formImageFielAddIcon: {

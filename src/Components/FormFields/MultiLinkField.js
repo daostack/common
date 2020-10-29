@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from './TextInputField';
 import {text, layout, colors, sizeL} from '~/Theme';
@@ -14,10 +14,6 @@ const RemoveLinkBtn = ({onFieldDeleted}) => (
 );
 
 const MultiLinkField = (props) => {
-  const [ count, setCount ] = useState(1);
-  const [ addButton, setAddButton ] = useState(false);
-  const [ deletedFields, setDeletedFields ] = useState([]);
-
   const {
     maxCount,
     validation,
@@ -29,22 +25,30 @@ const MultiLinkField = (props) => {
     rule = false,
   } = props;
 
-  const onFieldDeleted = (currIndex, currTitleItemValidation, currItemValidation) => {
-    if (currTitleItemValidation && currItemValidation) {
-      currTitleItemValidation.formStore.removeFormField(currTitleItemValidation.name);
-      currItemValidation.formStore.removeFormField(currItemValidation.name);
+  const [count, setCount] = useState(1);
+  const [ addButton, setAddButton ] = useState(false);
+
+  useEffect(() => {
+    const currFormField = validation.formStore.getFormField(validation.name);
+    if (currFormField) {
+      setCount(Object.keys(currFormField)?.length);
     }
+  }, []);
+
+  const onFieldDeleted = (currIndex) => {
     setCount(count - 1);
-    setDeletedFields([ ...deletedFields, currIndex ]);
+    if (props.validation) {
+      props.validation.formStore.removeFormField(`${currIndex}`, props.validation.name);
+    }
   };
 
   const onChangeText = (value, currTitleItemValidation) => {
     if (value.length > 0) {
       canAddMore();
-      validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule + '|required');
+      validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.multiName, currTitleItemValidation.validateRule + '|required');
     } else {
       setAddButton(false);
-      validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.validateRule);
+      validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.multiName, currTitleItemValidation.validateRule);
     }
   };
 
@@ -66,8 +70,8 @@ const MultiLinkField = (props) => {
 
   const canAddMore = () => {
     let canAdd = true;
-    [ ...Array(count).keys() ].forEach((i) => {
-      let {error, value} = validation?.formStore?.form?.fields[`${validation.name}_value_${i + 1}`];
+    [...Array(count).keys()].forEach((i) => {
+      let {error, value} = validation?.formStore?.getFormField(`${i}_value`, validation.name);
       if (!value || typeof error === 'string') {
         canAdd = false;
       }
@@ -78,10 +82,10 @@ const MultiLinkField = (props) => {
 
   return (
     <View style={{paddingTop: sizeL}}>
-      {[ ...Array(count).keys() ].map((currIndex) => {
+      {[...Array(count).keys() ].map((currIndex) => {
         const currItemValidation = {
           ...props.validation,
-          name: `${props.validation.name}_value_${currIndex + 1}`,
+          name: `${currIndex}_value`,
           multiName: props.validation.name,
           validateRule: validation.validateRule?.common || validation.validateRule,
           invisibleContainer: true,
@@ -89,7 +93,7 @@ const MultiLinkField = (props) => {
 
         const currTitleItemValidation = {
           ...props.validation,
-          name: `${props.validation.name}_title_${currIndex + 1}`,
+          name: `${currIndex}_title`,
           multiName: props.validation.name,
           validateRule: validation.validateRule?.title || 'string',
           topPosition: true,
@@ -97,9 +101,10 @@ const MultiLinkField = (props) => {
         }; //{...validation};
 
         return (
-          <View key={`key_${props.validation.name}_${currIndex + 1}`}style={layout.marginBottomM}>
+          <View key={`key_${props.validation.name}_${currIndex}`}style={layout.marginBottomM}>
             {props.title && (
               <TextInputField
+                value={currTitleItemValidation.formStore.getFormField(currTitleItemValidation.name, currTitleItemValidation.multiName)?.value}
                 label={props.label}
                 onChangeText={(value) => {
                   canAddMore();
@@ -113,7 +118,7 @@ const MultiLinkField = (props) => {
             )}
 
             <TextInputField
-              value={''}
+              value={currItemValidation.formStore.getFormField(currItemValidation.name, currItemValidation.multiName)?.value}
               onChangeText={(value) => {
                 onChangeText(value, currTitleItemValidation);
               }}
@@ -129,14 +134,14 @@ const MultiLinkField = (props) => {
               validation={currItemValidation}
             />
             {count > currIndex  && <View style={styles.removeBtn}>
-              <RemoveLinkBtn onFieldDeleted={() => onFieldDeleted(currIndex, currTitleItemValidation, currItemValidation)} />
+              <RemoveLinkBtn onFieldDeleted={() => onFieldDeleted(currIndex)} />
             </View>}
           </View>
         );
       })}
 
       {
-        ((!maxCount || (count - deletedFields.length) < maxCount) && addButton || count === 0) && (
+        ((!maxCount || count  < maxCount) && addButton || count === 0) && (
           <AddBtn />
         )
       }
