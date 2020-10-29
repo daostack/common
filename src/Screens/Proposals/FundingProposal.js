@@ -8,7 +8,6 @@ import {
   View,
   Keyboard,
 } from 'react-native';
-import {observer, inject} from 'mobx-react';
 import {text, layout, colors} from '~/Theme';
 import FundingRequestForm from '~/Components/Forms/FundingRequestForm';
 import RequestStepActionButton from '../Commons/RequestStepActionButton';
@@ -18,22 +17,15 @@ import Toast from '~/Util/Toast';
 import font from '~/Theme/font';
 import logger from '~/Services/Logger';
 import {string, object, shape, func} from 'prop-types';
+import FundingRequestFormStore from '~/FormStores/FundingRequestFormStore';
 
 const FundingProposal = ({
-  userStore,
-  fundingRequestFormStore,
   navigation,
   route: {params: {commonId, common}} ,
 }) => {
-  // TODO: can these lines be removed?
-  // const viewProposal = () => {
-  //   //navigation.navigate('RequestStep1');
-  // };
 
-  // const goToToCommon = () => {
-  //   setShowRequestSentModal(false);
-  // };
-
+  const fundingRequestFormStore = new FundingRequestFormStore();
+  
   const createProposal = async (e) => {
     Keyboard.dismiss();
     if (fundingRequestFormStore.isFormValid()) {
@@ -95,7 +87,7 @@ const FundingProposal = ({
             Get funding to promote the Common's agenda. If your proposal is accepted you will be responsible to follow it through.
           </Text>
           <View style={styles.divider} />
-          <FundingRequestForm common={common} />
+          <FundingRequestForm common={common} fundingRequestFormStore={fundingRequestFormStore}/>
         </ScrollView>
         <RequestStepActionButton
           title="Create Proposal"
@@ -150,7 +142,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'userStore',
-  'fundingRequestFormStore',
-)(observer(FundingProposal));
+export default FundingProposal;

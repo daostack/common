@@ -1,5 +1,4 @@
 import EditProfileFormStore from '~/FormStores/EditProfileFormStore';
-import FundingRequestFormStore from '~/FormStores/FundingRequestFormStore';
 import CompleteAccountFormStore from '~/FormStores/CompleteAccountFormStore';
 import CreateDiscussionStore from '~/FormStores/CreateDiscussionStore';
 
@@ -27,8 +26,7 @@ export default {
 
   createDiscussionStore: new CreateDiscussionStore(),
   editProfileFormStore: new EditProfileFormStore(),
-  fundingRequestFormStore: new FundingRequestFormStore(),
-
+  
   // Request To Join Form Stores
   paymentFormStore: new PaymentFormStore(),
   personalContributionFormStore: new PersonalContributionFormStore(),
