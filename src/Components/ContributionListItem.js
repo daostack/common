@@ -19,10 +19,8 @@ const ContributionListItem = ({subscription, bottomSheetStore}) => {
   const onCancelConfirm = async () => {
     console.log(subscription);
 
-    await axios.post(`${subscriptionsUrl()}/cancel?subscriptionId=${subscription.id}`, {}, {
-      headers: {
-        Authorization: await auth().currentUser.getIdToken(),
-      },
+    await axios.post(`${subscriptionsUrl()}/cancel?subscriptionId=${subscription.id}`, {
+      idToken: await auth().currentUser.getIdToken(),
     });
   };
 
