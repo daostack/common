@@ -38,7 +38,9 @@ const UserProfile = ({userStore, daoStore, navigation, route}) => {
   useEffect(() => {
     const getStatus = async () => {
       CodePush.getUpdateMetadata().then((status) => {
-        setCodePushVersion(status.label.replace('v', ''));
+        if (status) {
+          setCodePushVersion(status.label.replace('v', ''));
+        }
       });
     };
     getStatus();

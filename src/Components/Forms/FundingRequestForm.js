@@ -4,7 +4,6 @@ import TextInputField from '../FormFields/TextInputField';
 import MultiImageField from '../FormFields/MultiImageField';
 import MultiFileField from '../FormFields/MultiFileField';
 import MultiLinkField from '../FormFields/MultiLinkField';
-import {observer, inject} from 'mobx-react';
 import {layout, text, colors, font} from '~/Theme';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import logger from '~/Services/Logger';
@@ -36,7 +35,6 @@ class FundingRequestForm extends React.Component {
 
   render() {
     const {
-      userStore,
       fundingRequestFormStore,
       common,
       ...otherProps
@@ -82,8 +80,8 @@ class FundingRequestForm extends React.Component {
           validation={{
             name: FundingRequestForm.FIELD_AMOUNT_REQUESTED,
             formStore: this.props.fundingRequestFormStore,
-            validateRule: `required|numeric|max:${common.balance / 100}`,
-            customErrorMessage: `The amount requested cannot be greater than the Common balance, which is $ ${common.balance / 100}`,
+            validateRule: `required|numeric|max:${common.balance / 100}|min:0`,
+            customErrorMessage: `The amount requested cannot be greater than the Common balance, which is $${common.balance / 100} or below $0`,
           }}
         />
 
@@ -180,9 +178,8 @@ FundingRequestForm.propTypes = {
     isFormValid: func,
   }),
   common: object,
-  userStore: object,
   onFormSubmit: func,
   onFormClose: func,
 };
 
-export default inject('fundingRequestFormStore')(observer(FundingRequestForm));
+export default FundingRequestForm;

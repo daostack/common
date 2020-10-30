@@ -60,7 +60,6 @@ export default StyleSheet.create({
   buttonblack: {
     ...font.primary.regular,
     ...font.fontSize(3),
-    lineHeight: 20,
     letterSpacing: 0,
     textAlign: 'center',
     color: colors.black,

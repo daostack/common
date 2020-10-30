@@ -17,7 +17,7 @@ import DiscussionList from '../../Discussions/DiscussionList';
 import {inject, observer} from 'mobx-react';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '~/Components/Commons/CommonHeader';
-import {calcIsFundingStage} from '../../../Util';
+import {calcIsFundingStage, LAYOUT_ANIMATION_CONFIG} from '~/Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '~/Services/ProposalService';
 import DaoService from '~/Services/DaoService';
@@ -36,7 +36,7 @@ import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDate';
 import {BlurView} from '~/Components';
-import Logger from '../../../Services/Logger';
+import Logger from '~/Services/Logger';
 
 let stickyHeightAddon = 36;
 
@@ -71,14 +71,13 @@ const CommonProfile = ({
   Logger.log('Common id ->', params.currCommon?.id);
   const [ currCommon, setCurrCommon ] = useState(params.currCommon);
   const [ showRequestSentModal, setShowRequestSentModal ] = useState(false);
+  const [showReqToJoin, setShowRequestToJoin] = React.useState(false);
+  const [showPending, setShowPending] = React.useState(false);
   const [ pendingProposalsData, setPendingProposalsData ] = useState(null);
   const [ userPendingPropDiscCount, setUserPendingPropDiscCount ] = useState(0);
   const commonId = currCommon?.id;
   const daoMembers = currCommon?.members || [];
   const [daoMemberAvatars] = useState(daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers);
-  const showReqToJoin =
-    !userStore.userInfo ||
-    (pendingProposalsData && !pendingProposalsData.usersPendingProposal);
   const [ showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn ] = useState(false);
   const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
 
@@ -147,6 +146,19 @@ const CommonProfile = ({
         userStore.userInfo?.safeAddress,
         (data) => {
           setPendingProposalsData({...data});
+
+          if (!isMember) {
+            if (
+              data &&
+              data.usersPendingProposal
+            ) {
+              setShowPending(true);
+            }
+
+            if (data && !data.usersPendingProposal) {
+              setShowRequestToJoin(true);
+            }
+          }
         }
       );
     };
@@ -408,7 +420,7 @@ const CommonProfile = ({
   const renderPendingApproval = () => {
     const remainingSeconds =
       pendingProposalsData.usersPendingProposal.closingAt - moment().unix();
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
       <TouchableOpacity
         onPress={openProposalScreen}
@@ -551,7 +563,7 @@ const CommonProfile = ({
   );
 
   const renderRequestToJoinBtn = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
       <TouchableOpacity
         style={styles.headerButton}
@@ -580,7 +592,7 @@ const CommonProfile = ({
     ],
   };
 
-  const stickyTabBarStyle = {position: 'absolute', top: 0, width: '100%', paddingBottom: 5, zIndex: 1};
+  const stickyTabBarStyle = {position: 'absolute', top: Platform.OS === 'android' ? -20 : 0, width: '100%', paddingBottom: 5, zIndex: 1};
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
@@ -588,13 +600,14 @@ const CommonProfile = ({
         <View style={{flex: 1, position: 'relative'}}>
 
           <TouchableOpacity
+            onPress={() => navigation.pop()}
             style={{
               justifyContent: 'center',
               position: 'absolute',
               top: 0,
               left: 0,
             }}
-            onPress={() => navigation.pop()}>
+          >
             <Icon
               name="left-arrow"
               size={32}
@@ -683,11 +696,13 @@ const CommonProfile = ({
                 </View>
               </>
             )}
-            renderFixedHeader={fixedHeaderHeight}>
-            {!isMember &&
-            pendingProposalsData &&
-            pendingProposalsData.usersPendingProposal &&
-            renderPendingApproval()}
+            renderFixedHeader={fixedHeaderHeight}
+          >
+            {(showPending) && (
+              <React.Fragment>
+                {renderPendingApproval()}
+              </React.Fragment>
+            )}
 
             <View style={{paddingVertical: sizeS}}>
               <CommonStageSummary
@@ -716,28 +731,6 @@ const CommonProfile = ({
             )}
 
             {renderAgendaForNonMembers()}
-            {/**
-             <TouchableOpacity
-             style={{
-            ...styles.headerButton,
-            ...{
-              justifyContent: 'center',
-              marginBottom: 20,
-              marginHorizontal: 100,
-            },
-          }}
-             onPress={openProposalScreen}>
-             <Text
-             style={{
-              fontSize: 16,
-              color: 'white',
-              fontWeight: '700',
-            }}>
-             Open Proposal
-             </Text>
-             </TouchableOpacity>
-
-             */}
 
             <View ref={stickyTabBarRef} collapsable={false}>
               <TabView
@@ -784,7 +777,7 @@ const CommonProfile = ({
               )
             ) : (
               <React.Fragment>
-                {showStickyRequestToJoinBtn && showReqToJoin && (
+                {(showStickyRequestToJoinBtn && showReqToJoin) && (
                   <View style={styles.actionButtonContainer}>
                     {renderRequestToJoinBtn()}
                   </View>
@@ -799,6 +792,7 @@ const CommonProfile = ({
                   style={{padding: 0}}
                 >
                   <SentTemplate
+                    hideLogo
                     title="Membership request sent"
                     description="The common members will vote on your membership request. If it's approved, you will become a member with equal voting rights."
                     onClose={() => setShowRequestSentModal(false)}
@@ -809,13 +803,17 @@ const CommonProfile = ({
                         onPress={viewProposal}
                       >
                         <Text style={text.buttoncenterwhite}>
-                          View proposal
+                          View request
                         </Text>
                       </TouchableOpacity>
+
                       <TouchableOpacity
                         style={styles.modalRequestSentBtnOutline}
-                        onPress={goToToCommon}>
-                        <Text style={styles.backButton}>Back to Common</Text>
+                        onPress={goToToCommon}
+                      >
+                        <Text style={styles.backButton}>
+                          Back to Common
+                        </Text>
                       </TouchableOpacity>
                     </View>
                   </SentTemplate>
