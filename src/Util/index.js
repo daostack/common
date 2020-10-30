@@ -18,7 +18,7 @@ export const LAYOUT_ANIMATION_CONFIG = {
   create:
   {
     type: LayoutAnimation.Types.easeInEaseOut,
-    property: LayoutAnimation.Properties.scaleXY,
+    property: LayoutAnimation.Properties.scaleY,
   },
   update:
   {

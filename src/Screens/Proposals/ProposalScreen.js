@@ -64,8 +64,7 @@ const ProposalScreen = ({
 }) => {
   const [ votingProcessState, setVotingProcessState ] = useState({inProgress: false, error: false});
   const [ proposalScreenInfo, setProposalScreenInfo ] = useState(proposalCardInfo);
-  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
-  const [hederStateInProcess, setHederStateInProcess] = useState(false);
+  const [ isHeaderHidden, setIsHeaderHidden ] = useState(false);
   const [ isSending, setIsSending ] = useState(false);
   const [ isMember, setIsMember ] = useState(false);
   const [ isProposer, setIsProposer ] = useState(false);
@@ -409,25 +408,34 @@ const ProposalScreen = ({
 
   const onSetIndex = (item) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
-    setIsHeaderHidden(item === 1);
+    const isDiscussionTab = item === 1;
+    setIsHeaderHidden(isDiscussionTab);
+
+    if (!isDiscussionTab && showStickyTabBar) {
+      Animated.timing(stickyTabBarState.animation, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(
+        () => {
+          setShowStickyTabBar(false);
+        });
+    }
+
     setIndex(item);
   };
 
   const onTabViewScroll = (e) => {
-    if (!hederStateInProcess) {
-      const currScrollY = e.nativeEvent.contentOffset.y;
-      if (currScrollY > currTabViewScroll) {
-        if (!isHeaderHidden) {
-          setHederStateInProcess(true);
-          LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG, () => { setHederStateInProcess(false); });
-          setIsHeaderHidden(true);
-        }
-      } else if (currScrollY < 1) {
-        if (isHeaderHidden) {
-          setHederStateInProcess(true);
-          LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG, () => { setHederStateInProcess(false); });
-          setIsHeaderHidden(false);
-        }
+    const currScrollY = e.nativeEvent.contentOffset.y;
+    if (currScrollY > currTabViewScroll) {
+      if (!isHeaderHidden) {
+        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
+        setIsHeaderHidden(true);
+      }
+    } else if (currScrollY < 1) {
+      if (isHeaderHidden) {
+        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
+        setIsHeaderHidden(false);
       }
     }
   };
