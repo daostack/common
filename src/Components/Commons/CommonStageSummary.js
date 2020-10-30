@@ -100,7 +100,7 @@ CommonStageSummary.propTypes = {
     members: number,
     raised: string,
     currentBudget: number,
-    balance: number,
+    balance: string,
   }),
 };
 
