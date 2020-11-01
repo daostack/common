@@ -73,6 +73,7 @@ import logger from './src/Services/Logger';
 import {fontSize} from './src/Theme/font';
 import ProposalService from './src/Services/ProposalService';
 import CommonService from './src/Services/CommonService';
+import DiscussionService from './src/Services/DiscussionService';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -112,22 +113,17 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   const notificationNavigation = async (screenName, commonId, objectId = null) => {
     const currCommon = await CommonService.getInstance().getCommonInfo(commonId);
-    /*const commonRef = await db.collection('daos').doc(commonId);
-    const currCommon = await commonRef.get().then((doc) => doc.data());*/
-    // discussions -> nav to discussion
-    // APPROVED_REQUEST_TO_JOIN -> nav to common profile
-    // COMMON_WHITELISTED -> nav to common profile
-    // REJECTED_REQUEST_TO_JOIN -> nav to common profile
-    // APPROVED_PROPOSAL -> nav to proposal screen
-    // CREATION_PROPOSAL -> nav to proposal screen
+    // whitelist;approve/reject requestToJoin
     if (screenName === 'CommonProfile') {
       routing(screenName, {currCommon});
     }
+    // new discussionMessage
     else if (screenName === 'Discussions') {
-      // get discussion by id  
+      const discussion = await DiscussionService.getInstance().getDiscussionInfo(objectId);
+      routing(screenName, {data: discussion, discussionId: objectId, commonId});
     }
+    // create/approve proposal
     else {
-      //objectId = '0x01e53025460894c3b20270d46e2bac2a980fec57c5c976f992da9bcf97bf8e05';
       const proposal = await ProposalService.getInstance().getProposalInfo(objectId);
       routing(screenName, {proposalId: proposal.id, screenTitle: currCommon.name, commonBalance: currCommon.balance});
     }
