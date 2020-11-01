@@ -8,12 +8,13 @@ import {
   SafeAreaView,
   StatusBar,
 } from 'react-native';
+import {observer, inject} from 'mobx-react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors, font, sizeXXL, sizeLineHeight, layout} from '~/Theme';
 import Swiper from 'react-native-swiper';
 import {object} from 'prop-types';
 
-const CommonExplanation = ({navigation}) => (
+const CommonExplanation = ({navigation, generalInfoFormStore, fundingFormStore, agendaFormStore, reviewFormStore}) => (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeArea}>
@@ -78,7 +79,13 @@ const CommonExplanation = ({navigation}) => (
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => navigation.navigate('CreateStep1')}>
+              onPress={() => {
+                generalInfoFormStore.clearFormStoreState();
+                fundingFormStore.clearFormStoreState();
+                agendaFormStore.clearFormStoreState();
+                reviewFormStore.clearFormStoreState();
+                navigation.navigate('CreateStep1');
+              }}>
               <Text style={styles.buttonText}>Get started</Text>
             </TouchableOpacity>
           </View>
@@ -89,6 +96,10 @@ const CommonExplanation = ({navigation}) => (
 
 CommonExplanation.propTypes = {
   navigation: object,
+  generalInfoFormStore: object,
+  fundingFormStore: object,
+  agendaFormStore: object,
+  reviewFormStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -153,4 +164,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommonExplanation;
+export default inject(
+  'generalInfoFormStore',
+  'fundingFormStore',
+  'agendaFormStore',
+  'reviewFormStore',
+)(observer(CommonExplanation));

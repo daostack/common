@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View} from 'react-native';
 import FileField from './FileField';
 import {sizeM} from '~/Theme';
@@ -6,20 +6,26 @@ import {string, number, shape, object} from 'prop-types';
 
 const MultiFileField = (props) => {
   const [count, setCount] = useState(1);
-  const [deletedFields, setDeletedFields] = useState([]);
+
+  useEffect(() => {
+    const currFormField = props.validation.formStore.getFormField(props.validation.name);
+    if (currFormField) {
+      setCount(Object.keys(currFormField)?.length);
+    }
+  }, []);
 
   const onChangeFile = (fileName, index) => {
-    if (index === (count - deletedFields.length) - 1) {
-      if (!maxCount || (count - deletedFields.length) < maxCount) {
-        setCount(count + 1);
-      }
+    if (!maxCount || count < maxCount) {
+      setCount(count + 1);
     }
   };
 
   const onFieldDeleted = (currIndex) => {
-    setDeletedFields([...deletedFields, currIndex]);
+    setCount(count - 1);
+    if (props.validation) {
+      props.validation.formStore.removeFormField(`${currIndex}`, props.validation.name);
+    }
   };
-
 
   const {maxCount, navigation} = props;
 
@@ -27,16 +33,17 @@ const MultiFileField = (props) => {
     <View style={{paddingTop: sizeM}}>
       {[...Array(count).keys()].map((currIndex) => {
         const currItemValidation = {...props.validation};
-        currItemValidation.name = `${currItemValidation.name}_multi_${currIndex}`;
+        currItemValidation.name = `${currIndex}`;
         currItemValidation.multiName = props.validation.name;
 
         return (
-          !deletedFields.includes(currIndex) && <FileField
+          <FileField
             key={`key_${currItemValidation.name}_${currIndex}`}
             onChangeFile={(fileName) => onChangeFile(fileName, currIndex)}
             onFieldDeleted={() => onFieldDeleted(currIndex)}
             allowsEditing={true}
             title={'Add File'}
+            value = { currItemValidation.formStore.getFormField(currItemValidation.name, currItemValidation.multiName)?.value}
             validation={currItemValidation}
             navigation={navigation}
           />
