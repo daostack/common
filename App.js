@@ -71,6 +71,8 @@ import Cache from './src/Util/Cache';
 import {func, bool, object, shape} from 'prop-types';
 import logger from './src/Services/Logger';
 import {fontSize} from './src/Theme/font';
+import ProposalService from './src/Services/ProposalService';
+import CommonService from './src/Services/CommonService';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -107,6 +109,29 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     return unsubscribe;
   }, []);
 
+  const notificationNavigation = async (screenName, objectId, commonId) => {
+    const currCommon = await CommonService.getInstance().getCommonInfo(commonId);
+    /*const commonRef = await db.collection('daos').doc(commonId);
+    const currCommon = await commonRef.get().then((doc) => doc.data());*/
+    // discussions -> nav to discussion
+    // APPROVED_REQUEST_TO_JOIN -> nav to common profile
+    // COMMON_WHITELISTED -> nav to common profile
+    // REJECTED_REQUEST_TO_JOIN -> nav to common profile
+    // APPROVED_PROPOSAL -> nav to proposal screen
+    // CREATION_PROPOSAL -> nav to proposal screen
+    if (screenName === 'CommonProfile') {
+      routing(screenName, {currCommon});
+    }
+    else if (screenName === 'Discussions') {
+      // get discussion by id  
+    }
+    else {
+      //objectId = '0x01e53025460894c3b20270d46e2bac2a980fec57c5c976f992da9bcf97bf8e05';
+      const proposal = await ProposalService.getInstance().getProposalInfo(objectId);
+      routing(screenName, {proposalId: proposal.id, screenTitle: currCommon.name, commonBalance: currCommon.balance});
+    }
+  };
+
   // notification navigation
   useEffect(() => {
     // Assume a message-notification contains a "type" property in the data payload of the screen to open
@@ -121,29 +146,11 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     messaging()
       .getInitialNotification()
       .then((remoteMessage) => {
-        //console.log('tkt getInitialNotification', remoteMessage.data.path)
-        const path = remoteMessage.data.path.split('/');
-        console.log('tkt path', path);
-        const navigate = CommonActions.navigate({
-          name: path[0],
-          params: {
-            data: null,
-            discussionId: path[1],
-            commonId: path[2],
-          },
-        });
-        navigation.dispatch(navigate);
-        /*if (remoteMessage) {
-          navigation.navigate({
-            name: remoteMessage.data.path.screen,
-            params: {
-              discussionId: remoteMessage.data.path.discussionId,
-              commonId: remoteMessage.data.path.commonId,
-            },
-          });
-          //setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
-        }*/
-        //setLoading(false);
+        console.log('remoteMessage', remoteMessage)
+        if (remoteMessage) {
+          const [screenName, objectId, commonId] = remoteMessage.data.path.split('/');
+          notificationNavigation(screenName, objectId, commonId);
+        }
       });
   }, []);
 
@@ -189,7 +196,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   // Deep & Dynamic Link
   const handleOpenURL = ({url}) => {
-    console.log('tkt url', url)
     if (url ) {
       Linking.canOpenURL(url).then((supported) => {
         if (!supported) {
@@ -211,7 +217,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
   };
 
   useEffect(() => {
-    console.log('tkt useEffect')
     DeepLinking.addScheme('common://');
     DeepLinking.addScheme('com.daostack.common://');
     DeepLinking.addScheme('https://app.common.io');
@@ -224,12 +229,10 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     });
 
     DeepLinking.addRoute('/proposal/:id', (response) => {
-      console.log('response', response)
       routing('ProposalScreen', {proposalId: response.id});
     });
 
     DeepLinking.addRoute('/user/:id', (response) => {
-      console.log('add route messages', response)
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
         {userId: response.id}
@@ -237,22 +240,19 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     });
 
     DeepLinking.addRoute('/discussion/:id', (response) => {
-      console.log('add route messages', response)
       routing('Discussions', {discussionId: response.id});
     });
 
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);
     dynamicLinks().getInitialLink().then((link) => {
       if (link) {
-        console.log('tkt from here', link)
         handleOpenURL(link);
       } else {
         Linking.getInitialURL()
           .then((url) => {
-            console.log('tkt from there', url)
             handleOpenURL({url});
           })
-          .catch((err) => { console.log('tkt err', err); return err});
+          .catch((err) => err);
       }
     });
 
