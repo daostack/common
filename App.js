@@ -90,6 +90,7 @@ if (Platform.OS === 'android') {
 const App = ({userStore, bottomSheetStore, navigation}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
+  //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
   const hudRef = useRef();
   const navigationRef = useRef();
 
@@ -109,7 +110,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     return unsubscribe;
   }, []);
 
-  const notificationNavigation = async (screenName, objectId, commonId) => {
+  const notificationNavigation = async (screenName, commonId, objectId = null) => {
     const currCommon = await CommonService.getInstance().getCommonInfo(commonId);
     /*const commonRef = await db.collection('daos').doc(commonId);
     const currCommon = await commonRef.get().then((doc) => doc.data());*/
@@ -146,10 +147,10 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     messaging()
       .getInitialNotification()
       .then((remoteMessage) => {
-        console.log('remoteMessage', remoteMessage)
+        console.log('remoteMessage', remoteMessage);
         if (remoteMessage) {
-          const [screenName, objectId, commonId] = remoteMessage.data.path.split('/');
-          notificationNavigation(screenName, objectId, commonId);
+          const [screenName, commonId, objectId] = remoteMessage.data.path.split('/');
+          notificationNavigation(screenName, commonId, objectId);
         }
       });
   }, []);
