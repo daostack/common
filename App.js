@@ -143,7 +143,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     messaging()
       .getInitialNotification()
       .then((remoteMessage) => {
-        console.log('remoteMessage', remoteMessage);
         if (remoteMessage) {
           const [screenName, commonId, objectId] = remoteMessage.data.path.split('/');
           notificationNavigation(screenName, commonId, objectId);
