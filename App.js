@@ -197,8 +197,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         handleOpenURL(link);
       } else {
         Linking.getInitialURL()
-          .then((url) => {
-            handleOpenURL({url});
+          .then((url) => {   
+            url && handleOpenURL(url);
           })
           .catch((err) => err);
       }
