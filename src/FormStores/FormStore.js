@@ -205,8 +205,24 @@ class FormStore {
         }
       }
 
-      if (currValue && currValue.length > 0) {
-        changedFieldsJson[key] = currValue;
+      if (currValue) {
+        let nonZeroLength = false;
+        // Multiple field
+        if (Array.isArray(currValue)) {
+          nonZeroLength = currValue.length > 0;
+        }
+        // Single field with object value (ex: dropdown field -> {value: 'val', index: 0})
+        else if (typeof (currValue) === 'object') {
+          nonZeroLength = Object.keys(currValue).length > 0;
+        }
+        // Single field with single value
+        else {
+          nonZeroLength = currValue.length > 0;
+        }
+
+        if (nonZeroLength) {
+          changedFieldsJson[key] = typeof (currValue) === 'object' ? currValue.value : currValue;
+        }
       }
     }
 
