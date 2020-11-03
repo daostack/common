@@ -19,27 +19,14 @@ import {CommonActions} from '@react-navigation/native';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';
-import {
-  IntroduceYourselfFormStore,
-  PersonalContributionFormStore,
-  BillingDetailsFormStore,
-  PaymentFormStore,
-} from '~/FormStores/RequestToJoin';
 
 const {width} = Dimensions.get('window');
 
-const IntroductionStep = ({navigation, route:{params: {skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
+const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const {name} = currCommon.name;
-  const introduceYourselfFormStore = new IntroduceYourselfFormStore();
-
-  console.log("introduceYourselfFormStore -> ", introduceYourselfFormStore);
-
-  const paymentFormStore = new PaymentFormStore();
-  const personalContributionFormStore = new PersonalContributionFormStore();
-  const billingDetailsFormStore = new BillingDetailsFormStore();
-
+  const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
   useEffect(() => {
     const height = scrollY.interpolate({
       inputRange: [50, 50],
@@ -54,12 +41,7 @@ const IntroductionStep = ({navigation, route:{params: {skipFirstStep, currCommon
       const navigate = CommonActions.navigate({
         name: 'ContributionStep',
         params: {
-          formStores: {
-            paymentFormStore,
-            introduceYourselfFormStore,
-            personalContributionFormStore,
-            billingDetailsFormStore,
-          },
+          formStores,
           currDaoId: currDaoId,
           currCommon: currCommon,
           skipFirstStep: skipFirstStep,
@@ -138,7 +120,7 @@ const IntroductionStep = ({navigation, route:{params: {skipFirstStep, currCommon
 
             <Text style={{...text.h3Black, textAlign: 'left'}}>Links</Text>
 
-            {/* <MultiLinkField
+            <MultiLinkField
               link
               value={introduceYourselfFormStore.getFormField(RequestToJoinForm.FIELD_LINKS)?.value}
               allowsEditing={true}
@@ -148,7 +130,7 @@ const IntroductionStep = ({navigation, route:{params: {skipFirstStep, currCommon
                 formStore: introduceYourselfFormStore,
                 validateRule: 'string|url',
               }}
-            /> */}
+            />
           </View>
         </ScrollView>
         <RequestStepActionButton

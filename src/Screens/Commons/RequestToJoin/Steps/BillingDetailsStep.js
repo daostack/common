@@ -44,6 +44,7 @@ const BillingDetailsStep = ({navigation, route}) => {
       navigation.dispatch(CommonActions.navigate({
         name: 'PaymentDetailsStep',
         params: {
+          formStores,
           currDaoId: currDaoId,
           currCommon: currCommon,
           skipFirstStep: skipFirstStep,
