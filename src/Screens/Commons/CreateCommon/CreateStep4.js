@@ -425,11 +425,11 @@ const CreateStep4 = ({generalInfoFormStore,
             </View>
             {form[CreateCommonForm.LINKS]?.length ? (
               form[CreateCommonForm.LINKS].map((x) => (
-                <View key={`key_${CreateCommonForm.LINKS}_${x}`}>
+                <View key={`key_${CreateCommonForm.LINKS}_${x.title}`}>
                   <Text
                     onPress={() => {
                       navigation.navigate('Browser', {
-                        url: x.url,
+                        url: x.value,
                       });
                     }}
                     style={{
@@ -464,7 +464,7 @@ const CreateStep4 = ({generalInfoFormStore,
                 <View style={[styles.sectionTitle, {marginTop: 10}]}>
                   <Text style={styles.textSubtitle}>{rule.title}</Text>
                 </View>
-                <Text style={styles.textContent}>{rule.url}</Text>
+                <Text style={styles.textContent}>{rule.value}</Text>
               </View>
             ))
           ) : (
