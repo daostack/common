@@ -70,11 +70,7 @@ const ProposalScreen = ({
   const [ isMember, setIsMember ] = useState(false);
   const [ isProposer, setIsProposer ] = useState(false);
   const [ showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer ] = useState(false);
-  const renderVoting =
-    proposalScreenInfo?.proposalInfo &&
-    PROPOSAL_STAGES_ACTIVE.includes(proposalScreenInfo?.proposalInfo?.stageStr) &&
-    isMember &&
-    !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voter === userInfo.safeAddress);
+  const [renderVoting, setRenderVoting] = useState(false);
 
 
   // Sticky Tab Bar
@@ -93,6 +89,14 @@ const ProposalScreen = ({
   const VOTE_APPROVE = 1;
   const VOTE_REJECT = 2;
   let currTabViewScroll = 0;
+
+  useEffect(() => {
+    const showVoting = proposalScreenInfo?.proposalInfo &&
+    PROPOSAL_STAGES_ACTIVE.includes(proposalScreenInfo?.proposalInfo?.stageStr) &&
+    isMember &&
+    !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voter === userInfo.safeAddress);
+    setRenderVoting(showVoting);
+  },[isMember]);
 
   useEffect(() => {
     let unsubscribe = null;
@@ -333,6 +337,7 @@ const ProposalScreen = ({
       closeApprovalSheet();
       Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
       setIsVoteByYou({isApproved: isApproved});
+      setRenderVoting(false);
 
     } catch (err) {
       setVotingProcessState({inProgress: false, error: true});
