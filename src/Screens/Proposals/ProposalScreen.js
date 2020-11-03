@@ -166,7 +166,7 @@ const ProposalScreen = ({
         unsubscribe();
       }
     };
-  }, [proposalId]);
+  }, [proposalId, votingProcessState]);
 
   const [
     isApprovalBottomModalVisible,
@@ -310,7 +310,10 @@ const ProposalScreen = ({
   };
 
   const onVote = async (isApproved) => {
-    setVotingProcessState({inProgress: true, error: false});
+    setVotingProcessState({
+      inProgress: true,
+      error: false,
+    });
 
     try {
       const voteData = {vote: isApproved ? VOTE_APPROVE : VOTE_REJECT};
