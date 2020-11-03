@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, SafeAreaView, ScrollView, Animated, Dimensions} from 'react-native';
 import {bool, func, object, shape, string} from 'prop-types';
 
-import {inject, observer} from 'mobx-react';
 import {CommonActions} from '@react-navigation/native';
 import CreateStepNavigation from '../RequestStepNavigation';
 import CreateStepDotHeader from '../RequestStepDotHeader';
@@ -17,8 +16,10 @@ import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
 import {testCard} from '~/Config';
 
-const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, personalContributionFormStore}) => {
-  const {skipFirstStep, currCommon, currDaoId, refreshFeed} = route.params;
+const BillingDetailsStep = ({navigation, route}) => {
+  const {skipFirstStep, currCommon, currDaoId, refreshFeed, formStores} = route.params;
+  const billingDetailsFormStore = formStores.billingDetailsFormStore;
+  const personalContributionFormStore = formStores.personalContributionFormStore;
   const {width} = Dimensions.get('window');
 
   const [scrollY] = useState(new Animated.Value(0));
@@ -55,7 +56,7 @@ const BillingDetailsStep = ({navigation, route, billingDetailsFormStore, persona
 
   const subtitle = (style) => (
     <Text style={style}>
-      You are contributing ${personalContributionFormStore.form.fields.amount?.value}
+      You are contributing ${personalContributionFormStore.form.fields.amount?.value?.value}
 
       <Text style={{...font.primary.bold}}>
         {' '}({isMonthly ? 'monthly' : 'one time'}){' '}
@@ -230,7 +231,4 @@ BillingDetailsStep.propTypes = {
   }),
 };
 
-export default inject(
-  'billingDetailsFormStore',
-  'personalContributionFormStore',
-)(observer(BillingDetailsStep));
+export default BillingDetailsStep;

@@ -10,7 +10,6 @@ import {
 import TextInputField from '~/Components/FormFields/TextInputField';
 import MultiLinkField from '~/Components/FormFields/MultiLinkField';
 import {colors, text} from '~/Theme';
-import {observer, inject} from 'mobx-react';
 import CreateStepHeader from '../RequestStepHeader';
 import CreateStepNavigation from '../RequestStepNavigation';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
@@ -20,12 +19,26 @@ import {CommonActions} from '@react-navigation/native';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';
+import {
+  IntroduceYourselfFormStore,
+  PersonalContributionFormStore,
+  BillingDetailsFormStore,
+  PaymentFormStore,
+} from '~/FormStores/RequestToJoin';
+
 const {width} = Dimensions.get('window');
 
-const IntroductionStep = ({navigation, introduceYourselfFormStore, route:{params: {skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
+const IntroductionStep = ({navigation, route:{params: {skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const {name} = currCommon.name;
+  const introduceYourselfFormStore = new IntroduceYourselfFormStore();
+
+  console.log("introduceYourselfFormStore -> ", introduceYourselfFormStore);
+
+  const paymentFormStore = new PaymentFormStore();
+  const personalContributionFormStore = new PersonalContributionFormStore();
+  const billingDetailsFormStore = new BillingDetailsFormStore();
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -41,6 +54,12 @@ const IntroductionStep = ({navigation, introduceYourselfFormStore, route:{params
       const navigate = CommonActions.navigate({
         name: 'ContributionStep',
         params: {
+          formStores: {
+            paymentFormStore,
+            introduceYourselfFormStore,
+            personalContributionFormStore,
+            billingDetailsFormStore,
+          },
           currDaoId: currDaoId,
           currCommon: currCommon,
           skipFirstStep: skipFirstStep,
@@ -80,7 +99,8 @@ const IntroductionStep = ({navigation, introduceYourselfFormStore, route:{params
           }}
           scrollEventThrottle={16}
           onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
+            { nativeEvent: { contentOffset: { y: scrollY } } }, 
+            { useNativeDriver: true }
           ])}>
           <MembershipRequest />
 
@@ -118,8 +138,9 @@ const IntroductionStep = ({navigation, introduceYourselfFormStore, route:{params
 
             <Text style={{...text.h3Black, textAlign: 'left'}}>Links</Text>
 
-            <MultiLinkField
+            {/* <MultiLinkField
               link
+              value={introduceYourselfFormStore.getFormField(RequestToJoinForm.FIELD_LINKS)?.value}
               allowsEditing={true}
               title="Title"
               validation={{
@@ -127,7 +148,7 @@ const IntroductionStep = ({navigation, introduceYourselfFormStore, route:{params
                 formStore: introduceYourselfFormStore,
                 validateRule: 'string|url',
               }}
-            />
+            /> */}
           </View>
         </ScrollView>
         <RequestStepActionButton
@@ -142,7 +163,6 @@ const IntroductionStep = ({navigation, introduceYourselfFormStore, route:{params
 
 IntroductionStep.propTypes = {
   navigation: object,
-  introduceYourselfFormStore: object,
   route: shape({
     params: shape({
       skipFirstStep: bool,
@@ -157,7 +177,4 @@ IntroductionStep.propTypes = {
   }),
 };
 
-export default inject(
-  'userStore',
-  'introduceYourselfFormStore',
-)(observer(IntroductionStep));
+export default IntroductionStep;
