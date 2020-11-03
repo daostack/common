@@ -429,7 +429,7 @@ const CreateStep4 = ({generalInfoFormStore,
                   <Text
                     onPress={() => {
                       navigation.navigate('Browser', {
-                        url: x.url,
+                        url: x.value || x.url, // NOTE: value of multiple fields was stored in url prop before
                       });
                     }}
                     style={{
@@ -464,7 +464,7 @@ const CreateStep4 = ({generalInfoFormStore,
                 <View style={[styles.sectionTitle, {marginTop: 10}]}>
                   <Text style={styles.textSubtitle}>{rule.title}</Text>
                 </View>
-                <Text style={styles.textContent}>{rule.url}</Text>
+                <Text style={styles.textContent}>{rule.value}</Text>
               </View>
             ))
           ) : (
