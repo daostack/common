@@ -64,7 +64,7 @@ const ProposalScreen = ({
   const [votingProcessState, setVotingProcessState] = useState({inProgress: false, error: false});
   const [proposalScreenInfo, setProposalScreenInfo] = useState(proposalCardInfo);
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
-  const [hederStateInProcess, setHederStateInProcess] = useState(false);
+  const [headerStateInProcess, setHeaderStateInProcess] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [isMember, setIsMember] = useState(false);
   const [isProposer, setIsProposer] = useState(false);
@@ -414,21 +414,21 @@ const ProposalScreen = ({
   };
 
   const onTabViewScroll = (e) => {
-    if (!hederStateInProcess) {
+    if (!headerStateInProcess) {
       const currScrollY = e.nativeEvent.contentOffset.y;
       if (currScrollY > currTabViewScroll) {
         if (!isHeaderHidden) {
-          setHederStateInProcess(true);
+          setHeaderStateInProcess(true);
           LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG, () => {
-            setHederStateInProcess(false);
+            setHeaderStateInProcess(false);
           });
           setIsHeaderHidden(true);
         }
       } else if (currScrollY < 1) {
         if (isHeaderHidden) {
-          setHederStateInProcess(true);
+          setHeaderStateInProcess(true);
           LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG, () => {
-            setHederStateInProcess(false);
+            setHeaderStateInProcess(false);
           });
           setIsHeaderHidden(false);
         }
