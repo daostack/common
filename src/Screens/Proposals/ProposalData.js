@@ -85,7 +85,7 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
                 <TouchableOpacity
                   onPress={() =>
                     navigation.navigate('Browser', {
-                      url: l.url,
+                      url: l.value || l.url, // NOTE: value of multiple fields was stored in url prop before
                     })
                   }>
                   <Text style={styles.adsText}>{l.title}</Text>
