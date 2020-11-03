@@ -425,11 +425,11 @@ const CreateStep4 = ({generalInfoFormStore,
             </View>
             {form[CreateCommonForm.LINKS]?.length ? (
               form[CreateCommonForm.LINKS].map((x) => (
-                <View key={`key_${CreateCommonForm.LINKS}_${x}`}>
+                <View key={`key_${CreateCommonForm.LINKS}_${x.title}`}>
                   <Text
                     onPress={() => {
                       navigation.navigate('Browser', {
-                        url: x.value || x.url, // NOTE: value of multiple fields was stored in url prop before
+                        url: x.value,
                       });
                     }}
                     style={{
