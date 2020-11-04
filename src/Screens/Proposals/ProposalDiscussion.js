@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {Text, StyleSheet, SectionList, View, Image} from 'react-native';
+import {Text, StyleSheet, SectionList, View, Image, Dimensions} from 'react-native';
 import {layout, text, colors, font} from '~/Theme';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
@@ -86,10 +86,11 @@ const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
           stickySectionHeadersEnabled={true}
           contentContainerStyle={{
             paddingTop: 100,
+            width: Dimensions.get("screen").width * 0.9
           }}
 
           renderItem={(x) => (
-            <DiscussionMessage data={x.item} />
+            <DiscussionMessage data={x.item} showCurrentUserAvatar />
           )}
 
           onScrollToIndexFailed={(info) => {
@@ -119,8 +120,7 @@ const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
               Have any thoughts? Share them with other members by adding the first comment.
           </Text>
         </View>
-      )
-      }
+      )}
     </View>
   );
 };
