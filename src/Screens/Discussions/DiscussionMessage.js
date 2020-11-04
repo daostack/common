@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
 import {colors, font} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
+import Icon from '../../Assets/iconfont/Icon';
 
 const {width} = Dimensions.get('window');
 
@@ -16,12 +17,23 @@ const DiscussionMessage = ({
     ownerAvatar,
     ownerName,
   },
+  outcome,
   showCurrentUserAvatar,
 }) => {
   let currentUserUid = null;
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
   }
+
+  const [outcomeState, setOutcomeState] = React.useState();
+
+  useEffect(() => {
+    if (typeof outcome === 'object') {
+      outcome.then((out) => setOutcomeState(out));
+
+      console.log(typeof outcomeState);
+    }
+  }, [outcome]);
 
   return (
     <View style={styles.container}>
@@ -57,15 +69,32 @@ const DiscussionMessage = ({
       ) : (
         <>
           <View style={styles.contentMember}>
-            <Image
-              style={{
-                backgroundColor: colors.grey3,
-                height: 40,
-                width: 40,
-                borderRadius: 20,
-              }}
-              source={ownerAvatar ? {uri: ownerAvatar} : null}
-            />
+            <View>
+              <Image
+                style={{
+                  backgroundColor: colors.grey3,
+                  height: 40,
+                  width: 40,
+                  borderRadius: 20,
+                }}
+                source={ownerAvatar ? {uri: ownerAvatar} : null}
+              />
+
+              {outcome !== undefined && (
+                <Icon
+                  style={{
+                    marginLeft: 25,
+                    marginTop: -15,
+                  }}
+                  size={22}
+                  name={
+                    outcomeState
+                      ? 'approved-24'
+                      : 'reject-24'
+                  }
+                />
+              )}
+            </View>
             <View
               style={{
                 ...styles.contentOwner,

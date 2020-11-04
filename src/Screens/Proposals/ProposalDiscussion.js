@@ -7,8 +7,9 @@ import moment from 'moment';
 import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
 import PropTypes, {string, func} from 'prop-types';
+import UserService from '../../Services/UserService';
 
-const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
+const ProposalDiscussion = ({proposal, proposalId, scrollViewRef}) => {
   const chatRef = useRef(null);
   const [msgGroups, setMsgGroups] = useState([]);
 
@@ -68,12 +69,20 @@ const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
             });
           }
         },
-        (error) => logger.error(error),
+        (error) => logger.error(error)
       );
     return () => {
       unsubscribe();
     };
   }, [proposalId]);
+
+  const getOutcomeForMessage = async (proposal, message) => {
+    const user = await UserService.getInstance().getUserById(message.ownerId);
+
+    // console.log(proposal, message, !!proposal?.votes.find((y) => y.voter === user.safeAddress).outcome);
+
+    return proposal?.votes.find((y) => y.voter === user.safeAddress).outcome === 1;
+  };
 
   return (
     <View style={{flex: 1, backgroundColor: colors.paleGrey, ...layout.content}}>
@@ -86,11 +95,15 @@ const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
           stickySectionHeadersEnabled={true}
           contentContainerStyle={{
             paddingTop: 100,
-            width: Dimensions.get("screen").width * 0.9
+            width: Dimensions.get('screen').width * 0.9,
           }}
 
           renderItem={(x) => (
-            <DiscussionMessage data={x.item} showCurrentUserAvatar />
+            <DiscussionMessage
+              data={x.item}
+              showCurrentUserAvatar
+              outcome={getOutcomeForMessage(proposal, x.item)}
+            />
           )}
 
           onScrollToIndexFailed={(info) => {
@@ -114,10 +127,10 @@ const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
           />
 
           <Text style={styles.emptyTitle}>
-              No comments yet
+            No comments yet
           </Text>
           <Text style={styles.emptyBody}>
-              Have any thoughts? Share them with other members by adding the first comment.
+            Have any thoughts? Share them with other members by adding the first comment.
           </Text>
         </View>
       )}
