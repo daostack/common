@@ -363,7 +363,8 @@ const CommonProfile = ({
   const calcShouldSkipRules = () => {
     const rules = currCommon.metadata?.rules;
     if (rules?.length > 0) {
-      return !rules.some((rule) => rule?.title && rule?.url);
+      // NOTE: value of multiple fields was stored in url prop before
+      return !rules.some((rule) => rule?.title && (rule?.value || rule.url));
     } else {
       return true;
     }
