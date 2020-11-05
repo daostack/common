@@ -32,9 +32,15 @@ import logger from '../../Services/Logger';
 import {func, object, shape, string} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
-  route: {params: {commonId, discussionId, data}}}) => {
-
+const Discussions = ({
+  daoStore,
+  userStore,
+  bottomSheetStore,
+  navigation,
+  route: {
+    params: {commonId, discussionId, data},
+  },
+}) => {
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
   const chatRef = useRef(null);
@@ -50,12 +56,14 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
   const [isMember, setIsMember] = useState(false);
   const [dataState, setData] = useState(data);
   const [user, setUser] = useState({});
+  const [inputHeight, setInputHeight] = useState(false);
 
   const currentUser = auth().currentUser;
 
   useEffect(() => {
     const currentDao = daoStore.daos.find((dao) => dao.id === commonId);
-    const isCurrMember = userStore.userInfo && userStore.isDaoMember(currentDao.members);
+    const isCurrMember =
+      userStore.userInfo && userStore.isDaoMember(currentDao.members);
     setIsMember(isCurrMember);
   }, []);
 
@@ -68,7 +76,8 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
     if (currentUser) {
       uid = currentUser.uid;
     }
-    const unsubscribe = db.collection('discussion')
+    const unsubscribe = db
+      .collection('discussion')
       .doc(discussionId)
       .onSnapshot((snapshot) => {
         if (!snapshot.exists) {
@@ -85,7 +94,8 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
   }, [commonId, discussionId, currentUser]);
 
   useEffect(() => {
-    const unsubscribe = db.collection('discussionMessage')
+    const unsubscribe = db
+      .collection('discussionMessage')
       .where('discussionId', '==', discussionId)
       .orderBy('createTime', 'desc')
       // .startAt(0)
@@ -150,9 +160,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
   // };
 
   const showLoginScreen = () => {
-    bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
-    );
+    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN);
   };
 
   const followDiscussion = async () => {
@@ -189,7 +197,6 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
   };
 
   const sendMessageToDiscussion = async () => {
-
     if (isSending) {
       return;
     }
@@ -234,42 +241,42 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
   };
 
   const headerImages = () => (
-      <>
-        {dataState.images ?
-          <ScrollView
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            style={{marginBottom: 20}}>
-            <View style={styles.imageGallery}>
-              <View style={{width: 20}} />
-              {dataState.images.map((currImage, currIndex) => (
-                <View
-                  key={`proposalImg_${currIndex}`}>
-                  <TouchableOpacity
-                    onPress={() => setImageGalleryIndex(currIndex)}>
-                    <Image
-                      key={currIndex}
-                      style={{
-                        ...styles.galleryImage,
-                        ...{width: width * 0.8},
-                      }}
-                      resizeMode="cover"
-                      source={{uri: currImage.value}}
-                    />
-                  </TouchableOpacity>
-                </View>
-              ))}
-              <View style={{width: 20}} />
-            </View>
-          </ScrollView>
-          : null}
-      </>
+    <>
+      {dataState.images ? (
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={{marginBottom: 20}}>
+          <View style={styles.imageGallery}>
+            <View style={{width: 20}} />
+            {dataState.images.map((currImage, currIndex) => (
+              <View key={`proposalImg_${currIndex}`}>
+                <TouchableOpacity
+                  onPress={() => setImageGalleryIndex(currIndex)}>
+                  <Image
+                    key={currIndex}
+                    style={{
+                      ...styles.galleryImage,
+                      ...{width: width * 0.8},
+                    }}
+                    resizeMode="cover"
+                    source={{uri: currImage.value}}
+                  />
+                </TouchableOpacity>
+              </View>
+            ))}
+            <View style={{width: 20}} />
+          </View>
+        </ScrollView>
+      ) : null}
+    </>
   );
 
   const headerFiles = () => (
-      <>
-        {dataState.files && (
-          dataState.files.map((f, index) => <View style={styles.adRow} key={`discussion_file_${index}`}>
+    <>
+      {dataState.files &&
+        dataState.files.map((f, index) => (
+          <View style={styles.adRow} key={`discussion_file_${index}`}>
             <Icon name="file" color={colors.mainBlue} size={16} />
             <TouchableOpacity
               onPress={() =>
@@ -277,14 +284,11 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
                   url: f.value,
                 })
               }>
-              <Text style={styles.adsText}>
-                {fileName(f.value)}
-              </Text>
+              <Text style={styles.adsText}>{fileName(f.value)}</Text>
             </TouchableOpacity>
-          </View>)
-        )
-        }
-      </>
+          </View>
+        ))}
+    </>
   );
 
   const fileName = (url) => {
@@ -293,24 +297,24 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
   };
 
   const header = () => (
-      // <SafeAreaView flex={1}>
-      <>
-        <NavigationBar
-          statusBar={{hidden: true}}
-          style={{
-            height: 48,
-          }}
-          title={{
-            title: dataState.title,
-            style: text.h2Black,
-          }}
-          leftButton={
-            <TouchableOpacity
-              style={{justifyContent: 'center'}}
-              onPress={() => navigation.pop()}>
-              <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
-            </TouchableOpacity>
-          }
+    // <SafeAreaView flex={1}>
+    <>
+      <NavigationBar
+        statusBar={{hidden: true}}
+        style={{
+          height: 48,
+        }}
+        title={{
+          title: dataState.title,
+          style: text.h2Black,
+        }}
+        leftButton={
+          <TouchableOpacity
+            style={{justifyContent: 'center'}}
+            onPress={() => navigation.pop()}>
+            <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
+          </TouchableOpacity>
+        }
         // rightButton={
         //   <TouchableOpacity
         //     style={{justifyContent: 'center'}}
@@ -322,65 +326,68 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
         //     />
         //   </TouchableOpacity>
         // }
-        />
-        <View style={{overflow: 'hidden', paddingBottom: 5}}>
-          <View
-            style={styles.headerContainer}>
-            {isExpanded ? (
-              <View style={{
+      />
+      <View style={{overflow: 'hidden', paddingBottom: 5}}>
+        <View style={styles.headerContainer}>
+          {isExpanded ? (
+            <View
+              style={{
                 paddingTop: 20,
                 paddingHorizontal: 20,
               }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    paddingVertical: 10,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Image
-                    style={styles.avatar}
-                    source={user.photoURL ? {uri: user.photoURL} : null}
-                  />
-                  <View style={{flex: 1, paddingHorizontal: 10}}>
-                    <Text style={styles.displayName}>{user.displayName}</Text>
-                    {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-                    <Text style={styles.date}>
-                      {moment(dataState.createTime.toDate()).fromNow()}
-                    </Text>
-                  </View>
-                </View>
-
-                <View>
-                  <Text
-                    style={styles.message}>
-                    {dataState.message}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  paddingVertical: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  style={styles.avatar}
+                  source={user.photoURL ? {uri: user.photoURL} : null}
+                />
+                <View style={{flex: 1, paddingHorizontal: 10}}>
+                  <Text style={styles.displayName}>{user.displayName}</Text>
+                  {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
+                  <Text style={styles.date}>
+                    {moment(dataState.createTime.toDate()).fromNow()}
                   </Text>
                 </View>
-
-                {headerImages()}
-                {headerFiles()}
-
-                <TouchableOpacity
-                  style={{alignItems: 'center', paddingVertical: 10}}
-                  onPress={() => {
-                    setIsExpanded(!isExpanded);
-                  }}>
-                  <Image style={{height: 10, width: 60}} source={require('../../Assets/collapse.png')} />
-                </TouchableOpacity>
               </View>
-            ) : (
+
+              <View>
+                <Text style={styles.message}>{dataState.message}</Text>
+              </View>
+
+              {headerImages()}
+              {headerFiles()}
+
+              <TouchableOpacity
+                style={{alignItems: 'center', paddingVertical: 10}}
+                onPress={() => {
+                  setIsExpanded(!isExpanded);
+                }}>
+                <Image
+                  style={{height: 10, width: 60}}
+                  source={require('../../Assets/collapse.png')}
+                />
+              </TouchableOpacity>
+            </View>
+          ) : (
             <>
               <TouchableOpacity
                 style={{alignItems: 'center', paddingVertical: 10}}
                 onPress={() => {
                   setIsExpanded(!isExpanded);
                 }}>
-                <Image style={{height: 10, width: 60}} source={require('../../Assets/expand.png')} />
+                <Image
+                  style={{height: 10, width: 60}}
+                  source={require('../../Assets/expand.png')}
+                />
               </TouchableOpacity>
             </>
-            )}
-            {/* <View
+          )}
+          {/* <View
             style={{
               height: 4,
               marginTop: 10,
@@ -389,11 +396,13 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
               backgroundColor: colors.grey4,
             }}
           /> */}
-          </View>
         </View>
-        {/* </SafeAreaView> */}
-      </>
+      </View>
+      {/* </SafeAreaView> */}
+    </>
   );
+
+  console.log(inputHeight);
 
   return (
     <SafeAreaView style={styles.safeView}>
@@ -409,17 +418,12 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
             contentContainerStyle={{
               paddingTop: 100,
             }}
-
-            renderItem={(x) => (
-              <DiscussionMessage data={x.item} />
-            )}
-
+            renderItem={(x) => <DiscussionMessage data={x.item} />}
             renderSectionFooter={({section: {date}}) => (
               <Text style={styles.timeHeader}>
                 {moment().isSame(date, 'day') ? 'Today' : date}
               </Text>
             )}
-
             onLayout={handleLayoutLoaded}
           />
         ) : (
@@ -429,14 +433,14 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
               style={{width: 240, height: 240}}
             />
 
-
             <Text style={styles.emptyTitle}> No comments yet</Text>
-            <Text style={styles.emptyBody}>Have any thoughts? Share them with other members by adding the first comment.</Text>
+            <Text style={styles.emptyBody}>
+              Have any thoughts? Share them with other members by adding the
+              first comment.
+            </Text>
           </View>
         )}
-
       </ScrollView>
-
 
       <KeyboardAvoidingView
         style={{
@@ -444,22 +448,26 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
           bottom: 0,
           flex: 1,
           color: '#fbfdff',
-        }}
-      >
+        }}>
         <View style={styles.inputContainer}>
           {isMember ? (
-            <View style={styles.input}>
+            <View style={[styles.input, {height: Math.max(35, inputHeight)}]}>
               <TextInput
                 ref={inputRef}
                 editable={true}
                 fontSize={15}
+                multiline
                 placeholder="What do you think?"
                 onChangeText={(currText) => setInputText(currText)}
+                onContentSizeChange={(event) => {
+                  setInputHeight(event.nativeEvent.contentSize.height);
+                }}
                 style={{
                   flex: 1,
-                  height: 22,
-                  padding: 0,
+                  maxHeight: 110,
+                  paddingVertical: 10,
                   marginHorizontal: 10,
+                  height: Math.max(35, inputHeight),
                 }}
               />
               <TouchableOpacity
@@ -467,15 +475,15 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
                 style={{
                   paddingRight: 15,
                   justifyContent: 'center',
-                }}
-              >
+                }}>
                 <Icon
                   name="send-message"
                   size={20}
                   color={
                     inputText && inputText.trim()
                       ? colors.mainBlue
-                      : colors.grey3}
+                      : colors.grey3
+                  }
                 />
               </TouchableOpacity>
             </View>
@@ -513,11 +521,13 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
       </BottomSheetModal>
 
       <ImageView
-        images={dataState.images ? dataState.images.map((x) => ({uri: x.value})) : []}
+        images={
+          dataState.images ? dataState.images.map((x) => ({uri: x.value})) : []
+        }
         imageIndex={imageGalleryIndex}
         visible={imageGalleryIndex > -1}
         onRequestClose={() => setImageGalleryIndex(-1)}
-      // FooterComponent={ImageGalleryFooter}
+        // FooterComponent={ImageGalleryFooter}
       />
     </SafeAreaView>
   );
@@ -615,7 +625,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fbfdff',
     borderTopColor: colors.grey4,
     borderTopWidth: 1,
-    height: 65,
+    minHeight: 65,
+    maxHeight: 110,
     width: width,
     flexDirection: 'row',
     shadowColor: 'rgba(0, 0, 0, 0.2)',
@@ -727,4 +738,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'bottomSheetStore', 'daoStore')(observer(Discussions));
+export default inject(
+  'userStore',
+  'bottomSheetStore',
+  'daoStore',
+)(observer(Discussions));
