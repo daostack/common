@@ -32,15 +32,9 @@ import logger from '../../Services/Logger';
 import {func, object, shape, string} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const Discussions = ({
-  daoStore,
-  userStore,
-  bottomSheetStore,
-  navigation,
-  route: {
-    params: {commonId, discussionId, data},
-  },
-}) => {
+const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
+  route: {params: {commonId, discussionId, data}}}) => {
+
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
   const chatRef = useRef(null);
@@ -62,8 +56,7 @@ const Discussions = ({
 
   useEffect(() => {
     const currentDao = daoStore.daos.find((dao) => dao.id === commonId);
-    const isCurrMember =
-      userStore.userInfo && userStore.isDaoMember(currentDao.members);
+    const isCurrMember = userStore.userInfo && userStore.isDaoMember(currentDao.members);
     setIsMember(isCurrMember);
   }, []);
 
@@ -76,8 +69,7 @@ const Discussions = ({
     if (currentUser) {
       uid = currentUser.uid;
     }
-    const unsubscribe = db
-      .collection('discussion')
+    const unsubscribe = db.collection('discussion')
       .doc(discussionId)
       .onSnapshot((snapshot) => {
         if (!snapshot.exists) {
@@ -241,42 +233,41 @@ const Discussions = ({
   };
 
   const headerImages = () => (
-    <>
-      {dataState.images ? (
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={{marginBottom: 20}}>
-          <View style={styles.imageGallery}>
-            <View style={{width: 20}} />
-            {dataState.images.map((currImage, currIndex) => (
-              <View key={`proposalImg_${currIndex}`}>
-                <TouchableOpacity
-                  onPress={() => setImageGalleryIndex(currIndex)}>
-                  <Image
-                    key={currIndex}
-                    style={{
-                      ...styles.galleryImage,
-                      ...{width: width * 0.8},
-                    }}
-                    resizeMode="cover"
-                    source={{uri: currImage.value}}
-                  />
-                </TouchableOpacity>
-              </View>
-            ))}
-            <View style={{width: 20}} />
-          </View>
-        </ScrollView>
-      ) : null}
-    </>
+      <>
+        {dataState.images ? (
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            style={{marginBottom: 20}}>
+            <View style={styles.imageGallery}>
+              <View style={{width: 20}} />
+              {dataState.images.map((currImage, currIndex) => (
+                <View key={`proposalImg_${currIndex}`}>
+                  <TouchableOpacity
+                    onPress={() => setImageGalleryIndex(currIndex)}>
+                    <Image
+                      key={currIndex}
+                      style={{
+                        ...styles.galleryImage,
+                        ...{width: width * 0.8},
+                      }}
+                      resizeMode="cover"
+                      source={{uri: currImage.value}}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ))}
+              <View style={{width: 20}} />
+            </View>
+          </ScrollView>
+        ) : null}
+      </>
   );
 
   const headerFiles = () => (
-    <>
-      {dataState.files &&
-        dataState.files.map((f, index) => (
-          <View style={styles.adRow} key={`discussion_file_${index}`}>
+      <>
+        {dataState.files &&
+          dataState.files.map((f, index) => (<View style={styles.adRow} key={`discussion_file_${index}`}>
             <Icon name="file" color={colors.mainBlue} size={16} />
             <TouchableOpacity
               onPress={() =>
@@ -286,9 +277,10 @@ const Discussions = ({
               }>
               <Text style={styles.adsText}>{fileName(f.value)}</Text>
             </TouchableOpacity>
-          </View>
-        ))}
-    </>
+          </View>)
+        )
+        }
+      </>
   );
 
   const fileName = (url) => {
@@ -297,24 +289,24 @@ const Discussions = ({
   };
 
   const header = () => (
-    // <SafeAreaView flex={1}>
-    <>
-      <NavigationBar
-        statusBar={{hidden: true}}
-        style={{
-          height: 48,
-        }}
-        title={{
-          title: dataState.title,
-          style: text.h2Black,
-        }}
-        leftButton={
-          <TouchableOpacity
-            style={{justifyContent: 'center'}}
-            onPress={() => navigation.pop()}>
-            <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
-          </TouchableOpacity>
-        }
+      // <SafeAreaView flex={1}>
+      <>
+        <NavigationBar
+          statusBar={{hidden: true}}
+          style={{
+            height: 48,
+          }}
+          title={{
+            title: dataState.title,
+            style: text.h2Black,
+          }}
+          leftButton={
+            <TouchableOpacity
+              style={{justifyContent: 'center'}}
+              onPress={() => navigation.pop()}>
+              <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
+            </TouchableOpacity>
+          }
         // rightButton={
         //   <TouchableOpacity
         //     style={{justifyContent: 'center'}}
