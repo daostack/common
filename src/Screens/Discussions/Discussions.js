@@ -242,7 +242,8 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
             <View style={styles.imageGallery}>
               <View style={{width: 20}} />
               {dataState.images.map((currImage, currIndex) => (
-                <View key={`proposalImg_${currIndex}`}>
+                <View
+                  key={`proposalImg_${currIndex}`}>
                   <TouchableOpacity
                     onPress={() => setImageGalleryIndex(currIndex)}>
                     <Image
@@ -324,17 +325,17 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
         <View style={{overflow: 'hidden', paddingBottom: 5}}>
           <View style={styles.headerContainer}>
             {isExpanded ? (
-              <View
-                style={{
-                  paddingTop: 20,
-                  paddingHorizontal: 20,
-                }}>
-                <View style={{
-                  flexDirection: 'row',
-                  paddingVertical: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
+              <View style={{
+                paddingTop: 20,
+                paddingHorizontal: 20,
+              }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    paddingVertical: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
                   <Image
                     style={styles.avatar}
                     source={user.photoURL ? {uri: user.photoURL} : null}
@@ -349,7 +350,10 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
                 </View>
 
                 <View>
-                  <Text style={styles.message}>{dataState.message}</Text>
+                  <Text
+                    style={styles.message}>
+                    {dataState.message}
+                  </Text>
                 </View>
 
                 {headerImages()}
@@ -360,10 +364,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
                   onPress={() => {
                     setIsExpanded(!isExpanded);
                   }}>
-                  <Image
-                    style={{height: 10, width: 60}}
-                    source={require('../../Assets/collapse.png')}
-                  />
+                  <Image style={{height: 10, width: 60}} source={require('../../Assets/collapse.png')} />
                 </TouchableOpacity>
               </View>
             ) : (
@@ -373,10 +374,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
                 onPress={() => {
                   setIsExpanded(!isExpanded);
                 }}>
-                <Image
-                  style={{height: 10, width: 60}}
-                  source={require('../../Assets/expand.png')}
-                />
+                <Image style={{height: 10, width: 60}} source={require('../../Assets/expand.png')} />
               </TouchableOpacity>
             </>
             )}
@@ -391,11 +389,9 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
           /> */}
           </View>
         </View>
-      {/* </SafeAreaView> */}
-    </>
+        {/* </SafeAreaView> */}
+      </>
   );
-
-  console.log(inputHeight);
 
   return (
     <SafeAreaView style={styles.safeView}>
@@ -436,7 +432,9 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
             <Text style={styles.emptyBody}>Have any thoughts? Share them with other members by adding the first comment.</Text>
           </View>
         )}
+
       </ScrollView>
+
 
       <KeyboardAvoidingView
         style={{
