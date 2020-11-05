@@ -234,7 +234,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
 
   const headerImages = () => (
       <>
-        {dataState.images ? 
+        {dataState.images ?
           <ScrollView
             horizontal={true}
             showsHorizontalScrollIndicator={false}
@@ -260,7 +260,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
               <View style={{width: 20}} />
             </View>
           </ScrollView>
-        : null}
+          : null}
       </>
   );
 
@@ -324,49 +324,49 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
         <View style={{overflow: 'hidden', paddingBottom: 5}}>
           <View style={styles.headerContainer}>
             {isExpanded ? (
-            <View
-              style={{
-                paddingTop: 20,
-                paddingHorizontal: 20,
-              }}>
-              <View style={{
+              <View
+                style={{
+                  paddingTop: 20,
+                  paddingHorizontal: 20,
+                }}>
+                <View style={{
                   flexDirection: 'row',
                   paddingVertical: 10,
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                <Image
-                  style={styles.avatar}
-                  source={user.photoURL ? {uri: user.photoURL} : null}
-                />
-                <View style={{flex: 1, paddingHorizontal: 10}}>
-                  <Text style={styles.displayName}>{user.displayName}</Text>
-                  {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-                  <Text style={styles.date}>
-                    {moment(dataState.createTime.toDate()).fromNow()}
-                  </Text>
+                  <Image
+                    style={styles.avatar}
+                    source={user.photoURL ? {uri: user.photoURL} : null}
+                  />
+                  <View style={{flex: 1, paddingHorizontal: 10}}>
+                    <Text style={styles.displayName}>{user.displayName}</Text>
+                    {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
+                    <Text style={styles.date}>
+                      {moment(dataState.createTime.toDate()).fromNow()}
+                    </Text>
+                  </View>
                 </View>
+
+                <View>
+                  <Text style={styles.message}>{dataState.message}</Text>
+                </View>
+
+                {headerImages()}
+                {headerFiles()}
+
+                <TouchableOpacity
+                  style={{alignItems: 'center', paddingVertical: 10}}
+                  onPress={() => {
+                    setIsExpanded(!isExpanded);
+                  }}>
+                  <Image
+                    style={{height: 10, width: 60}}
+                    source={require('../../Assets/collapse.png')}
+                  />
+                </TouchableOpacity>
               </View>
-
-              <View>
-                <Text style={styles.message}>{dataState.message}</Text>
-              </View>
-
-              {headerImages()}
-              {headerFiles()}
-
-              <TouchableOpacity
-                style={{alignItems: 'center', paddingVertical: 10}}
-                onPress={() => {
-                  setIsExpanded(!isExpanded);
-                }}>
-                <Image
-                  style={{height: 10, width: 60}}
-                  source={require('../../Assets/collapse.png')}
-                />
-              </TouchableOpacity>
-            </View>
-          ) : (
+            ) : (
             <>
               <TouchableOpacity
                 style={{alignItems: 'center', paddingVertical: 10}}
@@ -379,8 +379,8 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
                 />
               </TouchableOpacity>
             </>
-          )}
-          {/* <View
+            )}
+            {/* <View
             style={{
               height: 4,
               marginTop: 10,
@@ -389,8 +389,8 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
               backgroundColor: colors.grey4,
             }}
           /> */}
+          </View>
         </View>
-      </View>
       {/* </SafeAreaView> */}
     </>
   );
