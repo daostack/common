@@ -6,7 +6,7 @@ import {observer, inject} from 'mobx-react';
 import moment from 'moment';
 import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
-import PropTypes, {string, func} from 'prop-types';
+import PropTypes, {string, number, func, shape, arrayOf} from 'prop-types';
 import UserService from '../../Services/UserService';
 
 const ProposalDiscussion = ({proposal, proposalId, scrollViewRef}) => {
@@ -76,12 +76,10 @@ const ProposalDiscussion = ({proposal, proposalId, scrollViewRef}) => {
     };
   }, [proposalId]);
 
-  const getOutcomeForMessage = async (proposal, message) => {
+  const getOutcomeForMessage = async (proposalObj, message) => {
     const user = await UserService.getInstance().getUserById(message.ownerId);
 
-    // console.log(proposal, message, !!proposal?.votes.find((y) => y.voter === user.safeAddress).outcome);
-
-    return proposal?.votes.find((y) => y.voter === user.safeAddress).outcome === 1;
+    return proposalObj?.votes.find((y) => y.voter === user.safeAddress).outcome === 1;
   };
 
   return (
@@ -139,6 +137,12 @@ const ProposalDiscussion = ({proposal, proposalId, scrollViewRef}) => {
 };
 
 ProposalDiscussion.propTypes = {
+  proposal: shape({
+    votes: arrayOf(shape({
+      voter: string,
+      outcome: number,
+    })),
+  }),
   proposalId: string,
   scrollViewRef: PropTypes.any,
   onFirstScrollDown: func,

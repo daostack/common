@@ -3,7 +3,7 @@ import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
 import {colors, font} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
-import {shape, string, object, bool} from 'prop-types';
+import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import Icon from '../../Assets/iconfont/Icon';
 
@@ -127,6 +127,10 @@ DiscussionMessage.propTypes = {
     createTime: object,
     ownerAvatar: string,
     ownerName: string,
+  }),
+  outcome: shape({
+    then: func.isRequired,
+    catch: func.isRequired,
   }),
   showCurrentUserAvatar: bool,
 };
