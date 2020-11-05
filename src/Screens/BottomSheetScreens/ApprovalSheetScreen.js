@@ -4,8 +4,6 @@ import {text, layout, colors, font, sizeL} from '~/Theme';
 import ButtonSwiper from '~/Components/ButtonSwiper';
 import {func, bool, shape} from 'prop-types';
 import {useQuote} from '../../Util/hooks/useQuote';
-import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
-
 import {Bar} from 'react-native-progress';
 
 
