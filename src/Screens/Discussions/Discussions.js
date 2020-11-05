@@ -151,7 +151,9 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
   // };
 
   const showLoginScreen = () => {
-    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN);
+    bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
+    );
   };
 
   const followDiscussion = async () => {
@@ -323,7 +325,8 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
         // }
         />
         <View style={{overflow: 'hidden', paddingBottom: 5}}>
-          <View style={styles.headerContainer}>
+          <View
+            style={styles.headerContainer}>
             {isExpanded ? (
               <View style={{
                 paddingTop: 20,
