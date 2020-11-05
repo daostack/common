@@ -69,9 +69,8 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
 
         <Text style={text.h1BlackTitle}>{proposalInfoState.type === PROPOSAL_TYPE.FundingRequest ?
           'Proposal Pitch' : 'Intro'}</Text>
-
-        <View style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
-          <Text style={{...text.regularTextBig}}>{proposalInfoState.description.description}</Text>
+        <View style={{...layout.content, ...layout.flexStart, width: '100%'}}>
+          <Text style={{...text.regularTextBig, ...text.writingDirection(proposalInfoState.description.description)}}>{proposalInfoState.description.description}</Text>
         </View>
 
 
