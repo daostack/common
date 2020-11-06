@@ -593,7 +593,7 @@ const CommonProfile = ({
           Request to join
         </Text>
         <Text style={styles.contribution}>
-          ${currCommon.metadata.minFeeToJoin / 100} min. contribution
+          ${currCommon.metadata.minFeeToJoin / 100}{currCommon.metadata.contribution === 'monthly' && '/mo'} min. contribution
         </Text>
       </TouchableOpacity>);
   };

@@ -41,7 +41,6 @@ export const createProposalRequestToJoin = async (daoId, data) => {
       data: encodedData,
       signature: signature,
     },
-    // @todo Ask about the preAuthId (Jelle if I forgot to ask on the call now I'm asking you :D)
     // preAuthId: data.preAuthId,
     // cardId: data.card,
     cardData,
