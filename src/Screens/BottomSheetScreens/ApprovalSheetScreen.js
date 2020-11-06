@@ -4,7 +4,8 @@ import {text, layout, colors, font, sizeL} from '~/Theme';
 import ButtonSwiper from '~/Components/ButtonSwiper';
 import {func, bool, shape} from 'prop-types';
 import {useQuote} from '../../Util/hooks/useQuote';
-import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
+import {Bar} from 'react-native-progress';
+
 
 const ApprovalSheetScreen = ({
   onApprove,
@@ -22,18 +23,18 @@ const ApprovalSheetScreen = ({
 
   return (
     <SafeAreaView style={styles.body}>
-
       {inProgress && (
-        <Placeholder Animation={Fade}>
-          <PlaceholderLine
-            width={Dimensions.get('window').width}
-            height={9}
-            color={'#6ee569'}
-            style={{
-              alignSelf: 'center',
-              marginTop: -22,
-            }} />
-        </Placeholder>
+        <Bar
+          indeterminate
+          width={Dimensions.get('window').width + 20}
+          borderWidth={0}
+          unfilledColor={voteType ? '#6ee56944' : '#ff603e44'}
+          color={voteType ? '#6ee569' : '#ff603e'}
+          style={{
+            alignSelf: 'center',
+            marginTop: -22,
+          }}
+        />
       )}
 
 
@@ -99,6 +100,7 @@ const styles = StyleSheet.create({
     ...layout.paddingBottomS,
     width: '100%',
     ...font.fontSize(4),
+    marginTop: 15,
   },
 
   quotesContainer: {
