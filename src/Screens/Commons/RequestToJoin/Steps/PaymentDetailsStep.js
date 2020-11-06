@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import {colors, layout, text} from '~/Theme';
-import {inject} from 'mobx-react';
+import {observer, inject} from 'mobx-react';
 import CreateStepHeader from '../RequestStepHeader';
 import CreateStepNavigation from '../RequestStepNavigation';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
@@ -33,7 +33,6 @@ const PaymentDetailsStep = ({
   navigation,
   route: {
     params: {
-      formStores,
       skipFirstStep,
       currCommon,
       currDaoId,
@@ -41,14 +40,13 @@ const PaymentDetailsStep = ({
     },
   },
   userStore: {userInfo},
+  paymentFormStore,
+  introduceYourselfFormStore,
+  personalContributionFormStore,
+  billingDetailsFormStore,
   bottomSheetStore,
 }) => {
   const isMonthly = currCommon.metadata.contribution === 'monthly';
-
-  const paymentFormStore = formStores.paymentFormStore;
-  const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
-  const personalContributionFormStore = formStores.personalContributionFormStore;
-  const billingDetailsFormStore = formStores.billingDetailsFormStore;
 
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -124,7 +122,7 @@ const PaymentDetailsStep = ({
 
   const subtitle = (style) => (
     <Text style={style}>
-      You are contributing ${personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)?.value?.value}
+      You are contributing ${personalContributionFormStore.form.fields.amount?.value}
 
       <Text style={{...font.primary.bold}}>
         {' '}({isMonthly ? 'monthly' : 'one time'}){' '}
@@ -286,7 +284,7 @@ const PaymentDetailsStep = ({
             >
               If your membership request will not be accepted, you will not
               be charged. Your card will be saved for the monthly contribution
-              of ${personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)?.value?.value},
+              of ${personalContributionFormStore.form.fields.amount?.value},
               you can cancel at any time.
             </Text>
           </View>
@@ -349,5 +347,9 @@ PaymentDetailsStep.propTypes = {
 
 export default inject(
   'bottomSheetStore',
+  'introduceYourselfFormStore',
+  'personalContributionFormStore',
+  'billingDetailsFormStore',
+  'paymentFormStore',
   'userStore',
-)(PaymentDetailsStep);
+)(observer(PaymentDetailsStep));
