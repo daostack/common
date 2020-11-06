@@ -50,6 +50,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
   const [isMember, setIsMember] = useState(false);
   const [dataState, setData] = useState(data);
   const [user, setUser] = useState({});
+  const [inputHeight, setInputHeight] = useState(false);
 
   const currentUser = auth().currentUser;
 
@@ -448,18 +449,23 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
       >
         <View style={styles.inputContainer}>
           {isMember ? (
-            <View style={styles.input}>
+            <View style={[styles.input, {height: Math.max(35, inputHeight)}]}>
               <TextInput
                 ref={inputRef}
                 editable={true}
                 fontSize={15}
+                multiline
                 placeholder="What do you think?"
                 onChangeText={(currText) => setInputText(currText)}
+                onContentSizeChange={(event) => {
+                  setInputHeight(event.nativeEvent.contentSize.height);
+                }}
                 style={{
                   flex: 1,
-                  height: 22,
-                  padding: 0,
+                  maxHeight: 110,
+                  paddingVertical: 10,
                   marginHorizontal: 10,
+                  height: Math.max(35, inputHeight),
                 }}
               />
               <TouchableOpacity
@@ -615,7 +621,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fbfdff',
     borderTopColor: colors.grey4,
     borderTopWidth: 1,
-    height: 65,
+    minHeight: 65,
+    maxHeight: 110,
     width: width,
     flexDirection: 'row',
     shadowColor: 'rgba(0, 0, 0, 0.2)',
