@@ -108,7 +108,7 @@ const CreateStep1 = ({generalInfoFormStore, navigation}) => {
             }}
           />
           <TextInputField
-            value={generalInfoFormStore.getFormField(CreateCommonForm.NAME)?.value}
+            value={generalInfoFormStore.form.fields[CreateCommonForm.NAME]?.value}
             viewStyle={{alignSelf: 'stretch'}}
             label="Common name"
             infoLabel="Required"
@@ -125,7 +125,7 @@ const CreateStep1 = ({generalInfoFormStore, navigation}) => {
             }}
           />
           <TextInputField
-            value={generalInfoFormStore.getFormField(CreateCommonForm.BYLINE)?.value}
+            value={generalInfoFormStore.form.fields[CreateCommonForm.BYLINE]?.value}
             viewStyle={{alignSelf: 'stretch'}}
             label="Tagline"
             infoLabel="Required"
