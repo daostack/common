@@ -4,6 +4,7 @@ export const DB_COLLECTIONS = {
   proposals: 'proposals',
   daos: 'daos',
   discussionMessages: 'discussionMessage',
+  discussions: 'discussion',
 };
 
 export const DAO_REGISTERED = 'registered';

@@ -59,10 +59,11 @@ const CommonAgenda = ({navigation,
                     style={styles.linkText}
                     onPress={() =>
                       navigation.navigate('Browser', {
-                        url: link.url,
+                        url: link.value || link.url,
                       })
                     }>
-                    {link.url}
+                    {/* NOTE: value of multiple fields was stored in url prop before */}
+                    {link.value || link.url}
                   </Text>
                 </View>
               ))}
@@ -83,7 +84,7 @@ const CommonAgenda = ({navigation,
                   </Text>
                   <Text
                     style={styles.ruleDescription}>
-                    {rule.url}
+                    {rule.value || rule.url}
                   </Text>
                 </View>
               ))}

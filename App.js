@@ -71,6 +71,9 @@ import Cache from './src/Util/Cache';
 import {func, bool, object, shape} from 'prop-types';
 import logger from './src/Services/Logger';
 import {fontSize} from './src/Theme/font';
+import ProposalService from './src/Services/ProposalService';
+import CommonService from './src/Services/CommonService';
+import DiscussionService from './src/Services/DiscussionService';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -88,6 +91,7 @@ if (Platform.OS === 'android') {
 const App = ({userStore, bottomSheetStore, navigation}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
+  //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
   const hudRef = useRef();
   const navigationRef = useRef();
 
@@ -105,6 +109,45 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       logger.log(`Foreground Message Arrived ${JSON.stringify(remoteMessage)}`);
     });
     return unsubscribe;
+  }, []);
+
+  const notificationNavigation = async (screenName, commonId, objectId = null) => {
+    const currCommon = await CommonService.getInstance().getCommonInfo(commonId);
+    // whitelist;approve/reject requestToJoin
+    if (screenName === 'CommonProfile') {
+      routing(screenName, {currCommon});
+    }
+    // new discussionMessage
+    else if (screenName === 'Discussions') {
+      const discussion = await DiscussionService.getInstance().getDiscussionInfo(objectId);
+      routing(screenName, {data: discussion, discussionId: objectId, commonId});
+    }
+    // create/approve proposal
+    else {
+      const proposal = await ProposalService.getInstance().getProposalInfo(objectId);
+      routing(screenName, {proposalId: proposal.id, screenTitle: currCommon.name, commonBalance: currCommon.balance});
+    }
+  };
+
+  // notification navigation
+  useEffect(() => {
+    // Assume a message-notification contains a "type" property in the data payload of the screen to open
+    messaging().onNotificationOpenedApp((remoteMessage) => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage,
+      );
+    });
+
+    // Check whether an initial notification is available
+    messaging()
+      .getInitialNotification()
+      .then((remoteMessage) => {
+        if (remoteMessage) {
+          const [screenName, commonId, objectId] = remoteMessage.data.path.split('/');
+          notificationNavigation(screenName, commonId, objectId);
+        }
+      });
   }, []);
 
   // HUD
@@ -149,15 +192,16 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   // Deep & Dynamic Link
   const handleOpenURL = ({url}) => {
-    Linking.canOpenURL(url).then((supported) => {
-      if (!supported) {
-        return;
-      }
-      if (!DeepLinking.evaluateUrl(url) && validUrl.isWebUri(url)) {
-        logger.log(`Routing Browser -> ${url}`);
-        routing('Browser', {url: url});
-      }
-    });
+    if (url ) {
+      Linking.canOpenURL(url).then((supported) => {
+        if (!supported) {
+          return;
+        }
+        if (!DeepLinking.evaluateUrl(url) && validUrl.isWebUri(url)) {
+          logger.log(`Routing Browser -> ${url}`);
+          routing('Browser', {url: url});
+        }
+      });}
   };
 
   const routing = (screenName, params) => {
@@ -169,10 +213,10 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
   };
 
   useEffect(() => {
-
     DeepLinking.addScheme('common://');
     DeepLinking.addScheme('com.daostack.common://');
     DeepLinking.addScheme('https://app.common.io');
+    //console.log('tkt DeepLinking', DeepLinking)
 
     Linking.addEventListener('url', handleOpenURL);
 
@@ -189,6 +233,10 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
         {userId: response.id}
       );
+    });
+
+    DeepLinking.addRoute('/discussion/:id', (response) => {
+      routing('Discussions', {discussionId: response.id});
     });
 
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);

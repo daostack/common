@@ -5,7 +5,7 @@ import {bool, shape, number, string} from 'prop-types';
 
 const CommonStageSummary = ({
   isCommonCard,
-  commonProgressInfo: {time, raised, members, currentBudget},
+  commonProgressInfo: {time, raised, balance, members, currentBudget},
 }) => {
   // const deadlineMoment = moment.unix(time);
   // const deadlineHasPassed = moment().isAfter(deadlineMoment);
@@ -59,8 +59,7 @@ const CommonStageSummary = ({
       <View style={styles.commonNumbers}>
         {commonNumberBox(
           <Text style={styles.headerTitle}>
-            {/*{(new Intl.NumberFormat('he-IL', {style: 'currency', currency: 'USD'}).format(raised))}*/}
-            ${formatNumber(raised / 100)}
+            ${formatNumber(isCommonCard ? raised : balance / 100)}
           </Text>,
           isCommonCard ? 'Raised' : 'Available funds',
         )}
@@ -69,7 +68,6 @@ const CommonStageSummary = ({
             {
               isCommonCard
                 ? members
-                // : (new Intl.NumberFormat('he-IL', {style: 'currency', currency: 'USD'}).format(raised))
                 : '$' + formatNumber(raised / 100)
             }
           </Text>,
@@ -102,6 +100,7 @@ CommonStageSummary.propTypes = {
     members: number,
     raised: string,
     currentBudget: number,
+    balance: string,
   }),
 };
 
