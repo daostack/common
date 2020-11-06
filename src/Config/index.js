@@ -58,7 +58,12 @@ export const web3NetworkId = networkId;
 export const COMMONTOKENADDRESS = commonTokenAddress;
 export const firebaseWebClientId = clientId;
 export const isProduction = Config.ENV === 'production';
-export const testCard = Config.testCard === 'true';
+
+// JUST HARDCODING THIS TO BE TRUE FOR A QUICK FIX; SORRY
+// export const testCard = Config.testCard === 'true';
+
+export const testCard = true;
+
 
 export const OVERRIDES = {
   // default settings for sending trasnsactions
