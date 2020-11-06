@@ -71,11 +71,11 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Common want to access camera</string>
+  <string>This app uses the camera to take photos</string>
 	<key>NSFileProviderPresenceUsageDescription</key>
-	<string>Common  want to access file</string>
+	<string>This app lets you upload selected files</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Common want to access album</string>
+	<string>This app lets you upload selected photos from your photo library</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>NunitoSans-Bold.ttf</string>
