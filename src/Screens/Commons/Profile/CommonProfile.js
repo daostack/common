@@ -687,7 +687,7 @@ const CommonProfile = ({
               />
             )}
             renderStickyHeader={() => (
-              <View style={{ height: '100%'}}>
+              <View style={{height: '100%'}}>
                 <Animated.View style={[stickyTabBarStyle, slideUp]}>
                   <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange={setIndex} />
                 </Animated.View>
