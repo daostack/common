@@ -182,7 +182,7 @@ const PaymentDetailsStep = ({
             <RequestStepHeaderTitle title="Payment Details" subtitle={subtitle} />
             <TextInputField
               label="Credit card number"
-              value={testCard ? 4007410000000006 : ''}
+              value={testCard ? '4007410000000006' : ''}
               editable={true}
               keyboardType={'number-pad'}
               validation={{
@@ -245,7 +245,7 @@ const PaymentDetailsStep = ({
                   width: '45%',
                 }}
                 label="CVV"
-                value={testCard ? 123 : ''}
+                value={testCard ? '123' : ''}
                 editable={true}
                 validation={{
                   name: RequestToJoinForm.FIELD_CVV,

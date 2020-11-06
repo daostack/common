@@ -124,7 +124,7 @@ const RulesStep = ({navigation,
                   index={index + 1}
                   title={rule.title}
                   description={rule.description}
-                  url={rule.url}
+                  url={rule.value || rule.url} // NOTE: value of multiple fields was stored in url prop before
                 />
               ))}
           </View>

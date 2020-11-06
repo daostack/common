@@ -37,6 +37,11 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [segmentedIndex, setSegmentedIndex] = useState(initialSegmentedIndex);
+
+  /**
+   * contributionIndex === 0 => One-Time
+   * contributionIndex === 1 => Monthly
+   */
   const [contributionIndex, setContributionIndex] = useState(initialContributionIndex);
   const [pickDate, setPickDate] = useState(initialSegmentedIndex === 2 ? fundingFormStore.form.fields[CreateCommonForm.DEADLINE]?.value.value : null);
   const [show, setShow] = useState(false);
@@ -222,7 +227,9 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
             iconEmptyColor={colors.grey3}
             iconFillColor={colors.grey}
             viewStyle={{alignSelf: 'stretch'}}
-            label="Minimum one-time contribution (min. $5)"
+            label={(
+              <React.Fragment>Minimum <Text style={styles.boldText}>{contributionIndex === 1 ? 'monthly' : 'one-time'}</Text> contribution (min. $5)</React.Fragment>
+            )}
             subLabel="Set the minimum amount that new members will have to contribute in order to join this Common."
             infoLabel="Required"
             autoCapitalize="none"
@@ -416,6 +423,9 @@ const styles = StyleSheet.create({
     color: colors.paleblue,
     textAlign: 'right',
     flex: 1,
+  },
+  boldText: {
+    ...font.primary.bold,
   },
 });
 

@@ -205,8 +205,29 @@ class FormStore {
         }
       }
 
-      if (currValue && currValue.length > 0) {
-        changedFieldsJson[key] = currValue;
+      let currFieldValue = null;
+
+      if (currValue) {
+        let nonZeroLength = false;
+        // Multiple field
+        if (Array.isArray(currValue)) {
+          nonZeroLength = currValue.length > 0;
+          currFieldValue = currValue;
+        }
+        // Single field with object value (ex: dropdown field -> {value: 'val', index: 0})
+        else if (typeof (currValue) === 'object') {
+          nonZeroLength = Object.keys(currValue).length > 0;
+          currFieldValue = currValue.value;
+        }
+        // Single field with single value
+        else {
+          nonZeroLength = currValue.length > 0;
+          currFieldValue = currValue;
+        }
+
+        if (nonZeroLength) {
+          changedFieldsJson[key] = currFieldValue;
+        }
       }
     }
 
@@ -258,7 +279,7 @@ class FormStore {
         {title: multiFieldTitles[x], url: multiFieldValues[x]}
       ));
       // Remove fields with empty values.
-      changedFieldsJson[name] = allMultiLinksFields.filter((item) => item.title || item.url);
+      changedFieldsJson[name] = allMultiLinksFields.filter((item) => item.title || item.value);
     }
 
     if (changedFieldsJson.length === 0) {
