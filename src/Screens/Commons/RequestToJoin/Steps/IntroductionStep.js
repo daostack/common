@@ -10,7 +10,6 @@ import {
 import TextInputField from '~/Components/FormFields/TextInputField';
 import MultiLinkField from '~/Components/FormFields/MultiLinkField';
 import {colors, text} from '~/Theme';
-import {observer, inject} from 'mobx-react';
 import CreateStepHeader from '../RequestStepHeader';
 import CreateStepNavigation from '../RequestStepNavigation';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
@@ -20,13 +19,14 @@ import {CommonActions} from '@react-navigation/native';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';
+
 const {width} = Dimensions.get('window');
 
-const IntroductionStep = ({navigation, introduceYourselfFormStore, route:{params: {skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
+const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const {name} = currCommon.name;
-
+  const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
   useEffect(() => {
     const height = scrollY.interpolate({
       inputRange: [50, 50],
@@ -41,6 +41,7 @@ const IntroductionStep = ({navigation, introduceYourselfFormStore, route:{params
       const navigate = CommonActions.navigate({
         name: 'ContributionStep',
         params: {
+          formStores,
           currDaoId: currDaoId,
           currCommon: currCommon,
           skipFirstStep: skipFirstStep,
@@ -81,6 +82,7 @@ const IntroductionStep = ({navigation, introduceYourselfFormStore, route:{params
           scrollEventThrottle={16}
           onScroll={Animated.event([
             {nativeEvent: {contentOffset: {y: scrollY}}},
+            {useNativeDriver: true},
           ])}>
           <MembershipRequest />
 
@@ -120,6 +122,7 @@ const IntroductionStep = ({navigation, introduceYourselfFormStore, route:{params
 
             <MultiLinkField
               link
+              value={introduceYourselfFormStore.getFormField(RequestToJoinForm.FIELD_LINKS)?.value}
               allowsEditing={true}
               title="Title"
               validation={{
@@ -142,7 +145,6 @@ const IntroductionStep = ({navigation, introduceYourselfFormStore, route:{params
 
 IntroductionStep.propTypes = {
   navigation: object,
-  introduceYourselfFormStore: object,
   route: shape({
     params: shape({
       skipFirstStep: bool,
@@ -157,7 +159,4 @@ IntroductionStep.propTypes = {
   }),
 };
 
-export default inject(
-  'userStore',
-  'introduceYourselfFormStore',
-)(observer(IntroductionStep));
+export default IntroductionStep;
