@@ -38,7 +38,7 @@ const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}})
             </Text>
 
             <View style={styles.quotesContainer}>
-              <Text style={styles.quote}>{quote.quote}</Text>
+              <Text style={styles.quote}>"{quote.quote}"</Text>
               <Text style={styles.quoteAuthor}>{quote.author}</Text>
             </View>
           </View>

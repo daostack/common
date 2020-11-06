@@ -64,7 +64,7 @@ const ApprovalSheetScreen = ({
           <Text style={styles.greyText}>This might take up to 2 minutes</Text>
 
           <View style={styles.quotesContainer}>
-            <Text style={styles.quote}>{quote.quote}</Text>
+            <Text style={styles.quote}>"{quote.quote}"</Text>
             <Text style={styles.quoteAuthor}>{quote.author}</Text>
           </View>
         </React.Fragment>
