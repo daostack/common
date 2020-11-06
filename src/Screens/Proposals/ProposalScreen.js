@@ -677,6 +677,7 @@ const ProposalScreen = ({
             {index === 1 && (
               <ProposalDiscussion
                 proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
+                proposal={proposalScreenInfo?.proposalInfo}
                 inputRef={inputRef}
                 scrollViewRef={scrollViewRef}
               />

@@ -1,42 +1,75 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
 import {colors, font} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
-import {shape, string, object} from 'prop-types';
+import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
+import Icon from '../../Assets/iconfont/Icon';
+
 const {width} = Dimensions.get('window');
 
-const DiscussionMessage = ({data: {
-  ownerId,
-  text,
-  createTime,
-  ownerAvatar,
-  ownerName,
-}}) => {
+const DiscussionMessage = ({
+  data: {
+    ownerId,
+    text,
+    createTime,
+    ownerAvatar,
+    ownerName,
+  },
+  outcome,
+  showCurrentUserAvatar,
+}) => {
   let currentUserUid = null;
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
   }
 
+  const [outcomeState, setOutcomeState] = React.useState();
+
+  useEffect(() => {
+    if (typeof outcome === 'object') {
+      outcome.then((out) => setOutcomeState(out));
+
+      console.log(typeof outcomeState);
+    }
+  }, [outcome]);
+
   return (
     <View style={styles.container}>
       {currentUserUid === ownerId ? (
-        <View style={styles.contentOwner}>
-          <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
-            <Text style={styles.text}>{text}</Text>
-          </Hyperlink>
-          <View style={{position: 'relative', right: 0, bottom: 0}}>
-            <Text
-              style={styles.date}
-              numberOfLines={1}>
-              {moment(createTime.toDate()).format('hh:mm')}
-            </Text>
+        <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
+          {showCurrentUserAvatar && (
+            <Image
+              style={{
+                backgroundColor: colors.grey3,
+                height: 40,
+                width: 40,
+                borderRadius: 20,
+                justify: 'flex-end',
+                marginLeft: 10,
+              }}
+              source={ownerAvatar ? {uri: ownerAvatar} : null}
+            />
+          )}
+
+          <View style={styles.contentOwner}>
+            <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
+              <Text style={styles.text}>{text}</Text>
+            </Hyperlink>
+            <View style={{position: 'relative', right: 0, bottom: 0}}>
+              <Text
+                style={styles.date}
+                numberOfLines={1}>
+                {moment(createTime.toDate()).format('hh:mm')}
+              </Text>
+            </View>
           </View>
         </View>
       ) : (
-          <>
-            <View style={styles.contentMember}>
+        <>
+          <View style={styles.contentMember}>
+            <View>
               <Image
                 style={{
                   backgroundColor: colors.grey3,
@@ -46,26 +79,42 @@ const DiscussionMessage = ({data: {
                 }}
                 source={ownerAvatar ? {uri: ownerAvatar} : null}
               />
-              <View
-                style={{
-                  ...styles.contentOwner,
-                  marginLeft: 10,
-                  maxWidth: width - 90,
-                  backgroundColor: colors.paleLilacTwo,
 
-                }}>
-                <Text style={styles.ownerName}>{ownerName}</Text>
-                <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
-                  <Text style={styles.text}>{text}</Text>
-                </Hyperlink>
-
-                <Text style={styles.date}>
-                  {moment(createTime.toDate()).format('hh:mm')}
-                </Text>
-
-              </View>
+              {outcome !== undefined && (
+                <Icon
+                  style={{
+                    marginLeft: 25,
+                    marginTop: -15,
+                  }}
+                  size={22}
+                  name={
+                    outcomeState
+                      ? 'approved-24'
+                      : 'reject-24'
+                  }
+                />
+              )}
             </View>
-          </>
+            <View
+              style={{
+                ...styles.contentOwner,
+                marginLeft: 10,
+                maxWidth: width - 90,
+                backgroundColor: colors.paleLilacTwo,
+
+              }}>
+              <Text style={styles.ownerName}>{ownerName}</Text>
+              <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
+                <Text style={styles.text}>{text}</Text>
+              </Hyperlink>
+
+              <Text style={styles.date}>
+                {moment(createTime.toDate()).format('hh:mm')}
+              </Text>
+
+            </View>
+          </View>
+        </>
       )}
     </View>
   );
@@ -79,6 +128,11 @@ DiscussionMessage.propTypes = {
     ownerAvatar: string,
     ownerName: string,
   }),
+  outcome: shape({
+    then: func.isRequired,
+    catch: func.isRequired,
+  }),
+  showCurrentUserAvatar: bool,
 };
 
 const styles = StyleSheet.create({
@@ -93,7 +147,7 @@ const styles = StyleSheet.create({
   container: {
     // backgroundColor: colors.grey4,
     borderRadius: 8,
-    marginHorizontal: 10,
+    // marginHorizontal: 10,
     marginVertical: 3,
     padding: 10,
     flex: 1,
