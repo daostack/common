@@ -354,7 +354,8 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
 
                 <View>
                   <Text
-                    style={styles.message}>
+                    style={{...styles.message,
+                      ...text.writingDirection(dataState.message)}}>
                     {dataState.message}
                   </Text>
                 </View>

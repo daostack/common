@@ -34,7 +34,8 @@ const CommonAgenda = ({navigation,
 
           <View style={styles.sectionContainer}>
             <Text style={text.h2Black}>About</Text>
-            <Text style={styles.description}>
+            <Text style={{...styles.description, width: '100%',
+              ...text.writingDirection(metadata.description)}}>
               {metadata.description}
             </Text>
           </View>
@@ -45,7 +46,8 @@ const CommonAgenda = ({navigation,
                 Course of action
               </Text>
 
-              <Text style={styles.description}>
+              <Text style={{...styles.description, width: '100%',
+                ...text.writingDirection(metadata.action || metadata.courseOfAction)}}>
                 {metadata.action || metadata.courseOfAction}
               </Text>
             </View>
@@ -78,12 +80,14 @@ const CommonAgenda = ({navigation,
             <View style={styles.sectionContainer}>
               <Text style={text.h2Black}>Rules of conduct</Text>
               {metadata.rules.map((rule, i) => (
-                <View key={i}>
-                  <Text style={styles.ruleTitle}>
+                <View key={i} style={{width: '100%'}} >
+                  <Text style={{...styles.ruleTitle,
+                    ...text.writingDirection(rule.title)}}>
                     {rule.title}
                   </Text>
                   <Text
-                    style={styles.ruleDescription}>
+                    style={{...styles.ruleDescription,
+                      ...text.writingDirection(rule.value || rule.url)}}>
                     {rule.value || rule.url}
                   </Text>
                 </View>

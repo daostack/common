@@ -1,5 +1,7 @@
 class logger {
 
+	off = () => __DEV__ = true;
+
   log = (...message) => __DEV__ && console.log(...message);
 
   error = (...error) => __DEV__ && console.error(...error);
