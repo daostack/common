@@ -16,7 +16,6 @@ import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import CreateStepDotHeader from '../RequestStepDotHeader';
 import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
-import ArcService from '~/Services/ArcService';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
@@ -85,18 +84,21 @@ const PaymentDetailsStep = ({
           },
         });
 
-        // Create the proposal
-        const proposalId = await ArcService.createRequestToJoin(
-          currDaoId, {
-            ...data,
-            cardData: await createCardPayload({
-              ...formData,
-              ...userInfo,
-            }),
-          },
-        );
 
-        navigation.pop();
+        const proposalId = null;
+        // TODO: NoBlockchain - createRequestToJoin
+        // Create the proposal
+        // const proposalId = await createRequestToJoin(
+        //   currDaoId, {
+        //     ...data,
+        //     cardData: await createCardPayload({
+        //       ...formData,
+        //       ...userInfo,
+        //     }),
+        //   },
+        // );
+
+        // navigation.pop();
 
         const navigate = CommonActions.navigate({
           name: 'CommonProfile',

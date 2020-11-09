@@ -25,7 +25,6 @@ import {numberFormatter, showErrorPopUp} from '~/Util';
 import Toast from '~/Util/Toast';
 import Modal from 'react-native-modal';
 import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
-import ArcService from '~/Services/ArcService';
 import Share from 'react-native-share';
 import {BlurView} from '~/Components';
 import CreateStep4Indicators from './CreateStep4Indicators';
@@ -193,10 +192,12 @@ const CreateStep4 = ({generalInfoFormStore,
 
       console.log(JSON.stringify(data));
 
-      const commonAddress = await ArcService.createCommon(
-        data,
-        navigation,
-      );
+      const commonAddress = null;
+      // TODO: NoBlockchain - createCommon
+      // const commonAddress = await createCommon(
+      //   data,
+      //   navigation,
+      // );
 
       if (commonAddress) {
         setNewCommonAddress(commonAddress);

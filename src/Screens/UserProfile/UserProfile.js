@@ -91,10 +91,6 @@ const UserProfile = ({userStore, daoStore, navigation, route}) => {
     }
   };
 
-  const onTestPagePress = (event) => {
-    navigation.navigate('NativeBridgeTests');
-  };
-
   const onHUDTestPress = (event) => {
     navigation.navigate('HUDTest');
   };
@@ -149,7 +145,6 @@ const UserProfile = ({userStore, daoStore, navigation, route}) => {
                         backgroundColor: colors.grey4,
                       }}>
                       <Text style={text.h4Black}>Temporary menu</Text>
-                      <AccordionBtn title="Test Page" onPress={onTestPagePress} />
                       <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
                     </View>
 

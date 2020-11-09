@@ -22,7 +22,6 @@ import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import ProposalService from '~/Services/ProposalService';
-import ArcService from '~/Services/ArcService';
 import {UserAvatar} from '~/Components';
 import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
@@ -320,15 +319,17 @@ const ProposalScreen = ({
       await timeout(3000);
 
       if (proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join) {
-        await ArcService.voteForJoinProposal(
-          proposalId || proposalScreenInfo?.proposalInfo.id,
-          voteData
-        );
+        // TODO: NoBlockchain - voteForJoinProposal
+        // await voteForJoinProposal(
+        //   proposalId || proposalScreenInfo?.proposalInfo.id,
+        //   voteData
+        // );
       } else {
-        await ArcService.voteForFundingRequestProposal(
-          proposalId || proposalScreenInfo?.proposalInfo.id,
-          voteData
-        );
+        // TODO: NoBlockchain - voteForFundingRequestProposal
+        // await voteForFundingRequestProposal(
+        //   proposalId || proposalScreenInfo?.proposalInfo.id,
+        //   voteData
+        // );
       }
 
       setVotingProcessState({inProgress: false, error: false});
