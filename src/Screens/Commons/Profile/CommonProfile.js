@@ -688,14 +688,14 @@ const CommonProfile = ({
               />
             )}
             renderStickyHeader={() => (
-              <>
+              <View style={{height: '100%'}}>
                 <Animated.View style={[stickyTabBarStyle, slideUp]}>
                   <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange={setIndex} />
                 </Animated.View>
                 <View key="sticky-header" style={styles.stickySection}>
                   <Text style={styles.stickySectionText}>{currCommon.name}</Text>
                 </View>
-              </>
+              </View>
             )}
             renderFixedHeader={fixedHeaderHeight}
           >
