@@ -1,11 +1,12 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
+import {StyleSheet, Text, View, Image, Dimensions, Platform} from 'react-native';
 import {colors, font} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import Icon from '../../Assets/iconfont/Icon';
+import {TextInput} from 'react-native-gesture-handler';
 
 const {width} = Dimensions.get('window');
 
@@ -55,7 +56,16 @@ const DiscussionMessage = ({
 
           <View style={styles.contentOwner}>
             <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
-              <Text style={styles.text}>{text}</Text>
+              {Platform.OS === 'ios' ? (
+                <TextInput
+                  style={styles.text}
+                  value={text}
+                  editable={false}
+                  multiline
+                />
+              ) : (
+                <Text style={styles.text} selectable>{text}</Text>
+              )}
             </Hyperlink>
             <View style={{position: 'relative', right: 0, bottom: 0}}>
               <Text
@@ -105,7 +115,16 @@ const DiscussionMessage = ({
               }}>
               <Text style={styles.ownerName}>{ownerName}</Text>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
-                <Text style={styles.text}>{text}</Text>
+                {Platform.OS === 'ios' ? (
+                  <TextInput
+                    style={styles.text}
+                    value={text}
+                    editable={false}
+                    multiline
+                  />
+                ) : (
+                  <Text style={styles.text} selectable>{text}</Text>
+                )}
               </Hyperlink>
 
               <Text style={styles.date}>
