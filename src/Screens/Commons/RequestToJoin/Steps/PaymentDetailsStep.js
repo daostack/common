@@ -98,7 +98,7 @@ const PaymentDetailsStep = ({
         //   },
         // );
 
-        // navigation.pop();
+        navigation.pop();
 
         const navigate = CommonActions.navigate({
           name: 'CommonProfile',
