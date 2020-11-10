@@ -257,6 +257,7 @@ const PaymentDetailsStep = ({
                 }}
                 label="CVV"
                 value={testCard ? '123' : ''}
+                keyboardType={'number-pad'}
                 editable={true}
                 validation={{
                   name: RequestToJoinForm.FIELD_CVV,
