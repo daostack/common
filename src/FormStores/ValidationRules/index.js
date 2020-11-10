@@ -1,7 +1,10 @@
+import moment from 'moment';
+
 export const VALIDATION_RULES = {
   FIRST_LAST_NAME: 'first_last_name',
   IS_VALID_CREDIT_CARD: 'is_valid_credit_card',
   CREDIT_CARD_PROVIDER: 'credit_card_provider',
+  CARD_EXP_DATE: 'card_exp_date',
 };
 
 export const firstLastNameValidate = {
@@ -36,4 +39,10 @@ export const validateCCNumber = {
   ruleName: VALIDATION_RULES.IS_VALID_CREDIT_CARD,
   validateFunc: (value, requirement, attribute) => luhnAlgo(value),
   errorMessage: 'Card number is invalid.',
+};
+
+export const futureDate = {
+  ruleName: VALIDATION_RULES.CARD_EXP_DATE,
+  validateFunc: (value, requirement, attribute) => !moment(value).isBefore(moment().format('MM/YY')) ,
+  errorMessage: 'Expiration date has passed.',
 };
