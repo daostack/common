@@ -555,30 +555,30 @@ const ProposalScreen = ({
                     />
 
                     {proposalScreenInfo?.proposedUser ? (
-                        <>
-                          <UserAvatar
-                            image={proposalScreenInfo?.proposedUser?.photoURL}
-                            imageStyle={{width: 64, height: 64}}
-                            iconName={'clcok'}
-                          />
+                      <>
+                        <UserAvatar
+                          image={proposalScreenInfo?.proposedUser?.photoURL}
+                          imageStyle={{width: 64, height: 64}}
+                          iconName={'clcok'}
+                        />
 
-                          <View style={{...layout.content, ...layout.marginTopS}}>
-                            <Text style={text.h2Black}>
-                              {proposalScreenInfo?.proposedUser
-                                ? proposalScreenInfo?.proposedUser.displayName
-                                : 'unknown user'
-                              }
-                            </Text>
+                        <View style={{...layout.content, ...layout.marginTopS}}>
+                          <Text style={text.h2Black}>
+                            {proposalScreenInfo?.proposedUser
+                              ? proposalScreenInfo?.proposedUser.displayName
+                              : 'unknown user'
+                            }
+                          </Text>
 
 
-                            <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}}
-                              onPress={viewUserProfile}>
-                              <Text style={text.smallBlackText}>View Profile</Text>
-                              <Icon name="right-arrow" size={20}/>
-                            </TouchableOpacity>
+                          <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}}
+                            onPress={viewUserProfile}>
+                            <Text style={text.smallBlackText}>View Profile</Text>
+                            <Icon name="right-arrow" size={20}/>
+                          </TouchableOpacity>
 
-                          </View>
-                        </>
+                        </View>
+                      </>
                     ) :
                       (<Placeholder Animation={Fade}>
                         <PlaceholderMedia

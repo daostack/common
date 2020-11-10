@@ -15,83 +15,83 @@ import Swiper from 'react-native-swiper';
 import {object} from 'prop-types';
 
 const CommonExplanation = ({navigation, generalInfoFormStore, fundingFormStore, agendaFormStore, reviewFormStore}) => (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.body}>
-          {/* <View style={styles.sectionContainer}>
+  <>
+    <StatusBar barStyle="dark-content" />
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.body}>
+        {/* <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>Common!</Text>
           </View> */}
 
-          <Swiper
-            loadMinimal={true}
-            style={styles.wrapper}
-            showsButtons={false}
-            activeDotColor={colors.mainBlue}
-            paginationStyle={{bottom: 0}}>
-            <View style={styles.slide1}>
-              <Image
-                source={require('~/Assets/CommonExplanation/common.png')}
-                style={styles.image}
-              />
-              <Text style={styles.text}>Create a Common</Text>
-              <Text style={styles.subtitle}>
+        <Swiper
+          loadMinimal={true}
+          style={styles.wrapper}
+          showsButtons={false}
+          activeDotColor={colors.mainBlue}
+          paginationStyle={{bottom: 0}}>
+          <View style={styles.slide1}>
+            <Image
+              source={require('~/Assets/CommonExplanation/common.png')}
+              style={styles.image}
+            />
+            <Text style={styles.text}>Create a Common</Text>
+            <Text style={styles.subtitle}>
                 Collaborate on shared agendas by pooling funds and collectively
                 making decisions.
-              </Text>
-            </View>
-            <View style={styles.slide1}>
-              <Image
-                source={require('~/Assets/CommonExplanation/funds.png')}
-                style={styles.image}
-              />
-              <Text style={styles.text}>Invite members and pool funds</Text>
-              <Text style={styles.subtitle}>
+            </Text>
+          </View>
+          <View style={styles.slide1}>
+            <Image
+              source={require('~/Assets/CommonExplanation/funds.png')}
+              style={styles.image}
+            />
+            <Text style={styles.text}>Invite members and pool funds</Text>
+            <Text style={styles.subtitle}>
                 Invite others to join your Common. Easily pool funds from all
                 members and work together to advance your cause.
-              </Text>
-            </View>
-            <View style={styles.slide1}>
-              <Image
-                source={require('~/Assets/CommonExplanation/decentralised.png')}
-                style={styles.image}
-              />
-              <Text style={styles.text}>Work as a collective</Text>
-              <Text style={styles.subtitle}>
+            </Text>
+          </View>
+          <View style={styles.slide1}>
+            <Image
+              source={require('~/Assets/CommonExplanation/decentralised.png')}
+              style={styles.image}
+            />
+            <Text style={styles.text}>Work as a collective</Text>
+            <Text style={styles.subtitle}>
                 All members get an equal vote and can take part in the shared
                 effort.
-              </Text>
-            </View>
-            <View style={styles.slide1}>
-              <Image
-                source={require('~/Assets/CommonExplanation/crowd.png')}
-                style={styles.image}
-              />
-              <Text style={styles.text}>Harness the power of communities</Text>
-              <Text style={styles.subtitle}>
+            </Text>
+          </View>
+          <View style={styles.slide1}>
+            <Image
+              source={require('~/Assets/CommonExplanation/crowd.png')}
+              style={styles.image}
+            />
+            <Text style={styles.text}>Harness the power of communities</Text>
+            <Text style={styles.subtitle}>
                 There's no limit to what we can achieve when working together.
                 By getting everyone involved, more people will actively promote
                 the cause.
-              </Text>
-            </View>
-          </Swiper>
-
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                generalInfoFormStore.clearFormStoreState();
-                fundingFormStore.clearFormStoreState();
-                agendaFormStore.clearFormStoreState();
-                reviewFormStore.clearFormStoreState();
-                navigation.navigate('CreateStep1');
-              }}>
-              <Text style={styles.buttonText}>Get started</Text>
-            </TouchableOpacity>
+            </Text>
           </View>
+        </Swiper>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              generalInfoFormStore.clearFormStoreState();
+              fundingFormStore.clearFormStoreState();
+              agendaFormStore.clearFormStoreState();
+              reviewFormStore.clearFormStoreState();
+              navigation.navigate('CreateStep1');
+            }}>
+            <Text style={styles.buttonText}>Get started</Text>
+          </TouchableOpacity>
         </View>
-      </SafeAreaView>
-    </>
+      </View>
+    </SafeAreaView>
+  </>
 );
 
 CommonExplanation.propTypes = {

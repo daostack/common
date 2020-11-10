@@ -13,31 +13,31 @@ import {string, object, shape} from 'prop-types';
 
 
 const CompleteAccount = ({route: {params}, navigation}) => (
-    <>
-      <StatusBar barStyle="dark-content" />
+  <>
+    <StatusBar barStyle="dark-content" />
 
-      <SafeAreaView style={styles.container}>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <View style={styles.body}>
-            <View style={layout.marginBottomXL}>
-              <Text style={text.h1Black}>Complete your account</Text>
-              <Text style={styles.subtitle}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={styles.scrollView}>
+        <View style={styles.body}>
+          <View style={layout.marginBottomXL}>
+            <Text style={text.h1Black}>Complete your account</Text>
+            <Text style={styles.subtitle}>
                 Help the community get to know you better
-              </Text>
-            </View>
-
-            <EditProfileForm
-              userId={params.userId}
-              name={params.name}
-              image={params.image}
-              email={params.email}
-            />
+            </Text>
           </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+
+          <EditProfileForm
+            userId={params.userId}
+            name={params.name}
+            image={params.image}
+            email={params.email}
+          />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  </>
 );
 
 CompleteAccount.propTypes = {

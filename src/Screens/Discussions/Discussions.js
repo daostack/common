@@ -235,57 +235,57 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
   };
 
   const headerImages = () => (
-      <>
-        {dataState.images ?
-          <ScrollView
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            style={{marginBottom: 20}}>
-            <View style={styles.imageGallery}>
-              <View style={{width: 20}} />
-              {dataState.images.map((currImage, currIndex) => (
-                <View
-                  key={`proposalImg_${currIndex}`}>
-                  <TouchableOpacity
-                    onPress={() => setImageGalleryIndex(currIndex)}>
-                    <Image
-                      key={currIndex}
-                      style={{
-                        ...styles.galleryImage,
-                        ...{width: width * 0.8},
-                      }}
-                      resizeMode="cover"
-                      source={{uri: currImage.value}}
-                    />
-                  </TouchableOpacity>
-                </View>
-              ))}
-              <View style={{width: 20}} />
-            </View>
-          </ScrollView>
-          : null}
-      </>
+    <>
+      {dataState.images ?
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={{marginBottom: 20}}>
+          <View style={styles.imageGallery}>
+            <View style={{width: 20}} />
+            {dataState.images.map((currImage, currIndex) => (
+              <View
+                key={`proposalImg_${currIndex}`}>
+                <TouchableOpacity
+                  onPress={() => setImageGalleryIndex(currIndex)}>
+                  <Image
+                    key={currIndex}
+                    style={{
+                      ...styles.galleryImage,
+                      ...{width: width * 0.8},
+                    }}
+                    resizeMode="cover"
+                    source={{uri: currImage.value}}
+                  />
+                </TouchableOpacity>
+              </View>
+            ))}
+            <View style={{width: 20}} />
+          </View>
+        </ScrollView>
+        : null}
+    </>
   );
 
   const headerFiles = () => (
-      <>
-        {dataState.files && (
-          dataState.files.map((f, index) => <View style={styles.adRow} key={`discussion_file_${index}`}>
-            <Icon name="file" color={colors.mainBlue} size={16} />
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('Browser', {
-                  url: f.value,
-                })
-              }>
-              <Text style={styles.adsText}>
-                {fileName(f.value)}
-              </Text>
-            </TouchableOpacity>
-          </View>)
-        )
-        }
-      </>
+    <>
+      {dataState.files && (
+        dataState.files.map((f, index) => <View style={styles.adRow} key={`discussion_file_${index}`}>
+          <Icon name="file" color={colors.mainBlue} size={16} />
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('Browser', {
+                url: f.value,
+              })
+            }>
+            <Text style={styles.adsText}>
+              {fileName(f.value)}
+            </Text>
+          </TouchableOpacity>
+        </View>)
+      )
+      }
+    </>
   );
 
   const fileName = (url) => {
@@ -294,24 +294,24 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
   };
 
   const header = () => (
-      // <SafeAreaView flex={1}>
-      <>
-        <NavigationBar
-          statusBar={{hidden: true}}
-          style={{
-            height: 48,
-          }}
-          title={{
-            title: dataState.title,
-            style: text.h2Black,
-          }}
-          leftButton={
-            <TouchableOpacity
-              style={{justifyContent: 'center'}}
-              onPress={() => navigation.pop()}>
-              <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
-            </TouchableOpacity>
-          }
+    // <SafeAreaView flex={1}>
+    <>
+      <NavigationBar
+        statusBar={{hidden: true}}
+        style={{
+          height: 48,
+        }}
+        title={{
+          title: dataState.title,
+          style: text.h2Black,
+        }}
+        leftButton={
+          <TouchableOpacity
+            style={{justifyContent: 'center'}}
+            onPress={() => navigation.pop()}>
+            <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
+          </TouchableOpacity>
+        }
         // rightButton={
         //   <TouchableOpacity
         //     style={{justifyContent: 'center'}}
@@ -323,54 +323,54 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
         //     />
         //   </TouchableOpacity>
         // }
-        />
-        <View style={{overflow: 'hidden', paddingBottom: 5}}>
-          <View
-            style={styles.headerContainer}>
-            {isExpanded ? (
-              <View style={{
-                paddingTop: 20,
-                paddingHorizontal: 20,
-              }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    paddingVertical: 10,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Image
-                    style={styles.avatar}
-                    source={user.photoURL ? {uri: user.photoURL} : null}
-                  />
-                  <View style={{flex: 1, paddingHorizontal: 10}}>
-                    <Text style={styles.displayName}>{user.displayName}</Text>
-                    {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-                    <Text style={styles.date}>
-                      {moment(dataState.createTime.toDate()).fromNow()}
-                    </Text>
-                  </View>
-                </View>
-
-                <View>
-                  <Text
-                    style={styles.message}>
-                    {dataState.message}
+      />
+      <View style={{overflow: 'hidden', paddingBottom: 5}}>
+        <View
+          style={styles.headerContainer}>
+          {isExpanded ? (
+            <View style={{
+              paddingTop: 20,
+              paddingHorizontal: 20,
+            }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  paddingVertical: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  style={styles.avatar}
+                  source={user.photoURL ? {uri: user.photoURL} : null}
+                />
+                <View style={{flex: 1, paddingHorizontal: 10}}>
+                  <Text style={styles.displayName}>{user.displayName}</Text>
+                  {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
+                  <Text style={styles.date}>
+                    {moment(dataState.createTime.toDate()).fromNow()}
                   </Text>
                 </View>
-
-                {headerImages()}
-                {headerFiles()}
-
-                <TouchableOpacity
-                  style={{alignItems: 'center', paddingVertical: 10}}
-                  onPress={() => {
-                    setIsExpanded(!isExpanded);
-                  }}>
-                  <Image style={{height: 10, width: 60}} source={require('../../Assets/collapse.png')} />
-                </TouchableOpacity>
               </View>
-            ) : (
+
+              <View>
+                <Text
+                  style={styles.message}>
+                  {dataState.message}
+                </Text>
+              </View>
+
+              {headerImages()}
+              {headerFiles()}
+
+              <TouchableOpacity
+                style={{alignItems: 'center', paddingVertical: 10}}
+                onPress={() => {
+                  setIsExpanded(!isExpanded);
+                }}>
+                <Image style={{height: 10, width: 60}} source={require('../../Assets/collapse.png')} />
+              </TouchableOpacity>
+            </View>
+          ) : (
             <>
               <TouchableOpacity
                 style={{alignItems: 'center', paddingVertical: 10}}
@@ -380,8 +380,8 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
                 <Image style={{height: 10, width: 60}} source={require('../../Assets/expand.png')} />
               </TouchableOpacity>
             </>
-            )}
-            {/* <View
+          )}
+          {/* <View
             style={{
               height: 4,
               marginTop: 10,
@@ -390,10 +390,10 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
               backgroundColor: colors.grey4,
             }}
           /> */}
-          </View>
         </View>
-        {/* </SafeAreaView> */}
-      </>
+      </View>
+      {/* </SafeAreaView> */}
+    </>
   );
 
   return (

@@ -155,30 +155,30 @@ const ProposalsList = ({isMember,
       </View>
     )
   ) : (
-      <>
-        {list && list.length > 0 ? (
-          <FlatList
-            data={list}
-            renderItem={({item}) => renderProposalCard(item)}
-            extraData={listRef}
-          />
-        ) : (
-          <ViewTabNoData
-            title={
-              isHistory
-                ? 'No Past activity'
-                : membershipRequests
-                  ? 'No requests yet'
-                  : 'No proposals'
-            }
-            subtitle={
-              isHistory
-                ? 'You will be able to see proposals that passed or were rejected here.'
-                : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
-            }
-          />
-        )}
-      </>
+    <>
+      {list && list.length > 0 ? (
+        <FlatList
+          data={list}
+          renderItem={({item}) => renderProposalCard(item)}
+          extraData={listRef}
+        />
+      ) : (
+        <ViewTabNoData
+          title={
+            isHistory
+              ? 'No Past activity'
+              : membershipRequests
+                ? 'No requests yet'
+                : 'No proposals'
+          }
+          subtitle={
+            isHistory
+              ? 'You will be able to see proposals that passed or were rejected here.'
+              : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
+          }
+        />
+      )}
+    </>
   );
 };
 
