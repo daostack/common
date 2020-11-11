@@ -67,6 +67,7 @@ const ProposalScreen = ({
   const [isSending, setIsSending] = useState(false);
   const [isMember, setIsMember] = useState(false);
   const [isProposer, setIsProposer] = useState(false);
+  const [inputHeight, setInputHeight] = useState(false);
   const [showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer] = useState(false);
   const renderVoting =
     proposalScreenInfo?.proposalInfo &&
@@ -248,13 +249,18 @@ const ProposalScreen = ({
                 ref={inputRef}
                 editable={true}
                 fontSize={15}
+                multiline
                 placeholder="What do you think?"
                 onChangeText={(currText) => setInputText(currText)}
+                onContentSizeChange={(event) => {
+                  setInputHeight(event.nativeEvent.contentSize.height);
+                }}
                 style={{
                   flex: 1,
-                  height: 22,
                   padding: 0,
                   marginHorizontal: 10,
+                  maxHeight: 110,
+                  height: Math.max(35, inputHeight + 10),
                 }}
               />
               <TouchableOpacity

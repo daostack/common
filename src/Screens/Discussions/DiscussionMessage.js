@@ -1,12 +1,11 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, Text, View, Image, Dimensions, Platform} from 'react-native';
+import {StyleSheet, Text, View, Image, Dimensions, Platform, TextInput} from 'react-native';
 import {colors, font} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import Icon from '../../Assets/iconfont/Icon';
-import {TextInput} from 'react-native-gesture-handler';
 
 const {width} = Dimensions.get('window');
 
