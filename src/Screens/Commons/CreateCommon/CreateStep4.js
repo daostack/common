@@ -30,7 +30,8 @@ import {BlurView} from '~/Components';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
-import {object} from 'prop-types';
+import { object } from 'prop-types';
+import DaoService from '~/Services/DaoService';
 import {
   colors,
   font,
@@ -192,12 +193,26 @@ const CreateStep4 = ({generalInfoFormStore,
 
       console.log(JSON.stringify(data));
 
-      const commonAddress = null;
+      // const commonAddress = null;
       // TODO: NoBlockchain - createCommon
       // const commonAddress = await createCommon(
       //   data,
       //   navigation,
       // );
+
+      const formData = {
+        name: data.name,
+        image: data.image,
+        action: data.action,
+        byline: data.byline,
+        description: data.description,
+        contributionType: data.contributionType,
+        contributionAmount: data.contributionAmount,
+      };
+
+      const commonAddress = await DaoService.getInstance().createCommon(formData);
+
+      console.log("CREATE COMMON RESPONSE -> ", commonAddress);
 
       if (commonAddress) {
         setNewCommonAddress(commonAddress);

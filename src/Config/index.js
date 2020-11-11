@@ -52,6 +52,10 @@ export const mangoPayUrl = () => functionEndpoint('mangopay');
 export const graphqlUrl = () => functionEndpoint('graphql');
 export const relayerUrl = () => functionEndpoint('relayer');
 export const createUrl = () => functionEndpoint('create');
+
+// No Blockchain urls
+export const commonsUrl = () => functionEndpoint('commons');
+
 export const circlePayUrl = () => functionEndpoint('circlepay');
 export const web3ProviderUrl = web3Provider;
 export const web3NetworkId = networkId;

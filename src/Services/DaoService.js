@@ -1,11 +1,24 @@
 import {db} from '~/Firebase';
 import UserService from './UserService';
 import Toast from '~/Util/Toast';
+import axios from 'axios';
+import {commonsUrl} from '~/Config';
 
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 
 export default class DaoService {
   static serviceInstance = null;
+
+  constructor() {
+    this.axiosClient = axios.create({
+      baseURL: commonsUrl(),
+      timeout: 1000000,
+    });
+
+    this.endpoints = {
+      create: '/create',
+    };
+  }
 
   static getInstance = () => {
     if (DaoService.serviceInstance == null) {
@@ -101,4 +114,22 @@ export default class DaoService {
     const snapshot = await db.collection(DB_COLLECTIONS.daos).get();
     callback(snapshot);
   }
+
+
+  async createCommon(formData) {
+    try {
+      return await this.axiosClient.post(this.endpoints.create,
+        {
+          headers: {
+            'Authorization': `token test`,
+          }, 
+          data: formData
+        }
+      );
+    } catch (err) {
+      console.log("CREATE COMMON ERROR -> ", err);
+      throw err;
+    }
+  }
+
 }
