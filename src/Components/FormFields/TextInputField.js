@@ -169,7 +169,7 @@ TextInputField.propTypes = {
   viewStyle: object,
   forwardRef: object,
   onSubmit: func,
-  format: func
+  format: func,
 };
 
 const styles = StyleSheet.create({
