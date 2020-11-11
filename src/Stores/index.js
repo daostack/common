@@ -1,25 +1,16 @@
-import EditProfileFormStore from '~/FormStores/EditProfileFormStore';
-import CompleteAccountFormStore from '~/FormStores/CompleteAccountFormStore';
-import CreateDiscussionStore from '~/FormStores/CreateDiscussionStore';
+import EditProfileFormStore from '~/FormStores/EditProfileFormStore'
+import CompleteAccountFormStore from '~/FormStores/CompleteAccountFormStore'
+import CreateDiscussionStore from '~/FormStores/CreateDiscussionStore'
 
-import {
-  PaymentFormStore,
-  PersonalContributionFormStore,
-  IntroduceYourselfFormStore,
-} from '~/FormStores/RequestToJoin';
+import { PaymentFormStore, PersonalContributionFormStore, IntroduceYourselfFormStore } from '~/FormStores/RequestToJoin'
 
-import {
-  GeneralInfoFormStore,
-  FundingFormStore,
-  AgendaFormStore,
-  ReviewFormStore,
-} from '~/FormStores/CreateCommon';
+import { GeneralInfoFormStore, FundingFormStore, AgendaFormStore, ReviewFormStore } from '~/FormStores/CreateCommon'
 
-import UserStore from './UserStore';
-import DaoStore from './DaoStore';
-import BottomSheetStore from './BottomSheetStore';
+import UserStore from './UserStore'
+import DaoStore from './DaoStore'
+import BottomSheetStore from './BottomSheetStore'
 
-import {BillingDetailsFormStore} from '../FormStores/RequestToJoin';
+import { BillingDetailsFormStore } from '../FormStores/RequestToJoin'
 
 export default {
   completeAccountFormStore: new CompleteAccountFormStore(),
@@ -41,5 +32,5 @@ export default {
 
   userStore: new UserStore(),
   daoStore: new DaoStore(),
-  bottomSheetStore: new BottomSheetStore(),
-};
+  bottomSheetStore: new BottomSheetStore()
+}

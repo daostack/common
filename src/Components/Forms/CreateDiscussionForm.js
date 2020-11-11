@@ -4,6 +4,7 @@ import TextInputField from '../FormFields/TextInputField';
 import {observer, inject} from 'mobx-react';
 import {colors, font, sizeM} from '~/Theme';
 import Toast from '~/Util/Toast';
+import CreateDiscussionStore from '~/FormStores/CreateDiscussionStore';
 import MultiFileField from '../FormFields/MultiFileField';
 import MultiImageField from '../FormFields/MultiImageField';
 import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
@@ -11,45 +12,47 @@ import {db} from '~Firebase';
 import logger from '~/Services/Logger';
 import {string, func, shape, object} from 'prop-types';
 
-class CreateDiscussionForm extends React.Component {
-  static TITLE = 'title';
-  static MESSAGE = 'message';
-  static LINKS = 'links';
-  static IMAGES = 'images';
-  static FILES = 'files';
+const CreateDiscussionForm = ({
+  userStore,
+  navigation,
+  onFormSubmit,
+  commonId,
+  ...otherProps
+}) => {
 
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+  const createDiscussionStore = new CreateDiscussionStore();
+  const TITLE = 'title';
+  const MESSAGE = 'message';
+  const IMAGES = 'images';
+  const FILES = 'files';
 
-  formSave = async (e) => {
+  const formSave = async (e) => {
     try {
-      const {createDiscussionStore, userStore} = this.props;
+      //const {createDiscussionStore, userStore} = this.props;
       if (createDiscussionStore.isFormValid()) {
         Keyboard.dismiss();
         const changedFields = createDiscussionStore.getChangedFormFieldsJson();
         logger.log('createDiscussionStore', changedFields);
         Toast.loading('Creating new discussion ...');
-        const images = changedFields[CreateDiscussionForm.IMAGES] || [];
-        const files = changedFields[CreateDiscussionForm.FILES] || [];
+        const images = changedFields[IMAGES] || [];
+        const files = changedFields[FILES] || [];
         db
           .collection('discussion')
           .doc()
           .set({
-            title: changedFields[CreateDiscussionForm.TITLE],
-            message: changedFields[CreateDiscussionForm.MESSAGE],
+            title: changedFields[TITLE],
+            message: changedFields[MESSAGE],
             images: images.filter((image) => image.value !== ''),
             files: files.filter((file) => file.value !== ''),
             createTime: new Date(),
             ownerId: userStore.userInfo.uid,
-            commonId: this.props.commonId,
+            commonId: commonId,
             follower: [],
           })
           .then(() => {
             Toast.success('Done');
-            if (this.props.onFormSubmit) {
-              this.props.onFormSubmit(changedFields);
+            if (onFormSubmit) {
+              onFormSubmit(changedFields);
             }
           })
           .catch((error) => {
@@ -63,95 +66,85 @@ class CreateDiscussionForm extends React.Component {
     }
   };
 
-  onFormClose = (e) => {
-    const {onFormClose} = this.props;
-    if (onFormClose) {
-      onFormClose();
-    }
-  };
+  // const onFormClose = (e) => {
+  //   if (onFormClose) {
+  //     onFormClose();
+  //   }
+  // };
 
-  render() {
-    const {
-      userStore,
-      createDiscussionStore,
-      ...otherProps
-    } = this.props;
+  return (
+    <>
+      <ScrollView style={{flex: 1}} contentContainerStyle={{padding: 24}}>
+        <View
+          {...otherProps}
+          style={styles.container}>
+          <TextInputField
+            value={''}
+            viewStyle={{alignSelf: 'stretch'}}
+            label="Title"
+            infoLabel="Required"
+            autoCapitalize="sentences"
+            autoCorrect={false}
+            validation={{
+              name: TITLE,
+              formStore: createDiscussionStore,
+              validateRule: 'required',
+            }}
+          />
 
-    return (
-      <>
-
-        <ScrollView style={{flex: 1}} contentContainerStyle={{padding: 24}}>
-          <View
-            {...otherProps}
-            style={styles.container}>
-            <TextInputField
-              value={''}
-              viewStyle={{alignSelf: 'stretch'}}
-              label="Title"
-              infoLabel="Required"
-              autoCapitalize="sentences"
-              autoCorrect={false}
+          <TextInputField
+            label="Message"
+            placeholderText="What do you want to say?"
+            infoLabel="Required"
+            multiline={true}
+            numberOfLines={5}
+            value={''}
+            validation={{
+              name: MESSAGE,
+              formStore: createDiscussionStore,
+              validateRule: 'required',
+            }}
+          />
+          <View style={styles.filesContainer}>
+            <Text style={styles.title}>Files</Text>
+            <Text style={styles.subtitle}>
+              Anything you want to attach to this proposal?
+            </Text>
+            <MultiFileField
+              navigation={navigation}
+              allowsEditing={true}
+              title={'Add file'}
               validation={{
-                name: CreateDiscussionForm.TITLE,
-                formStore: this.props.createDiscussionStore,
-                validateRule: 'required',
+                name: FILES,
+                formStore: createDiscussionStore,
+                validateRule: 'string',
               }}
             />
-
-            <TextInputField
-              label="Message"
-              placeholderText="What do you want to say?"
-              infoLabel="Required"
-              multiline={true}
-              numberOfLines={5}
-              value={''}
-              validation={{
-                name: CreateDiscussionForm.MESSAGE,
-                formStore: this.props.createDiscussionStore,
-                validateRule: 'required',
-              }}
-            />
-            <View style={styles.filesContainer}>
-              <Text style={styles.title}>Files</Text>
-              <Text style={styles.subtitle}>
-                Anything you want to attach to this proposal?
-              </Text>
-              <MultiFileField
-                navigation={this.props.navigation}
-                allowsEditing={true}
-                title={'Add file'}
-                validation={{
-                  name: CreateDiscussionForm.FILES,
-                  formStore: this.props.createDiscussionStore,
-                  validateRule: 'string',
-                }}
-              />
-            </View>
-            <View style={styles.filesContainer}>
-              <Text style={styles.title}>Images</Text>
-              <Text style={styles.subtitle}>An image is worth a 1,000 words</Text>
-              <MultiImageField
-                allowsEditing={false}
-                title={'Add Image'}
-                validation={{
-                  name: CreateDiscussionForm.IMAGES,
-                  formStore: this.props.createDiscussionStore,
-                  validateRule: 'string',
-                }}
-              />
-            </View>
           </View>
+          <View style={styles.filesContainer}>
+            <Text style={styles.title}>Images</Text>
+            <Text style={styles.subtitle}>An image is worth a 1,000 words</Text>
+            <MultiImageField
+              allowsEditing={false}
+              title={'Add Image'}
+              validation={{
+                name: IMAGES,
+                formStore: createDiscussionStore,
+                validateRule: 'string',
+              }}
+            />
+          </View>
+        </View>
 
-        </ScrollView>
-        <RequestStepActionButton
-          title="Publish post"
-          pass={this.props.createDiscussionStore.form.meta.isValid}
-          onPress={this.formSave}
-        />
-      </>
-    );
-  }
-}
+      </ScrollView>
+      <RequestStepActionButton
+        title="Publish post"
+        pass={createDiscussionStore.form.meta.isValid}
+        onPress={formSave}
+      />
+    </>
+  );
+};
 
 CreateDiscussionForm.propTypes = {
   createDiscussionStore: shape({
@@ -189,6 +182,5 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
-  'createDiscussionStore',
   'userStore',
 )(observer(CreateDiscussionForm));
