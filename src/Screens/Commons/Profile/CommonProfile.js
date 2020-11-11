@@ -148,15 +148,13 @@ const CommonProfile = ({
           setPendingProposalsData({...data});
 
           if (!isMember) {
-            if (
-              data &&
-              data.usersPendingProposal
-            ) {
-              setShowPending(true);
-            }
-
-            if (data && !data.usersPendingProposal) {
-              setShowRequestToJoin(true);
+            if (data) {
+              if (data.usersPendingProposal) {
+                setShowPending(true);
+                setShowRequestToJoin(false);
+              } else {
+                setShowRequestToJoin(true);
+              }
             }
           }
         }
