@@ -266,7 +266,9 @@ const CommonProfile = ({
 
           <View style={layout.flexStart}>
             <Text style={text.h2Black}>About</Text>
-            <Text style={{...text.regularText, ...layout.marginTopS}}>
+            <Text style={{...text.regularText,
+              ...layout.marginTopS,
+              ...text.writingDirection(currCommon.metadata.description)}}>
               {currCommon.metadata.description}
             </Text>
           </View>

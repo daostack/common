@@ -9,7 +9,7 @@ import {
 import {string, shape, object} from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
-import {colors, sizeM, font} from '~/Theme';
+import {colors, sizeM, font, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import UserService from '~/Services/UserService';
 import moment from 'moment';
@@ -101,7 +101,8 @@ const DiscussionCard = ({
           <TouchableOpacity onPress={showOptions}>
             <Icon name="menu" size={20} />
           </TouchableOpacity>
-          <Text style={styles.title} numberOfLines={2}>
+          <Text style={{...styles.title,
+            ...text.writingDirection(data.title)}} numberOfLines={2}>
             {data.title}
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -129,7 +130,8 @@ const DiscussionCard = ({
               </Text>
             </View>
           </View>
-          <Text style={styles.message} numberOfLines={3}>
+          <Text style={{...styles.message,
+            ...text.writingDirection(data.message)}} numberOfLines={3}>
             {data.message}
           </Text>
           <View
