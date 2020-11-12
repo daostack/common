@@ -450,7 +450,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
       >
         <View style={styles.inputContainer}>
           {isMember ? (
-            <View style={[styles.input, {height: Math.max(35, inputHeight)}]}>
+            <View style={[styles.input, {height: Math.max(35, inputHeight + 20)}]}>
               <TextInput
                 ref={inputRef}
                 editable={true}
@@ -466,7 +466,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
                   maxHeight: 110,
                   paddingVertical: 10,
                   marginHorizontal: 10,
-                  height: Math.max(35, inputHeight),
+                  height: Math.max(35, inputHeight + 10),
                 }}
               />
               <TouchableOpacity
