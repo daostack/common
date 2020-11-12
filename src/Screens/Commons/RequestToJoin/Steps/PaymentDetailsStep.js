@@ -52,6 +52,7 @@ const PaymentDetailsStep = ({
 
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
+  const [expDateFormat, setExpDateFormat] = useState('');
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -121,6 +122,12 @@ const PaymentDetailsStep = ({
     }
   };
 
+  const formatDate = (date) => {
+    date = date.replace('/', '');
+    return date.length > 2
+      ? `${date.substring(0,2)}/${date.substring(2,4)}`
+      : date;
+  };
 
   const subtitle = (style) => (
     <Text style={style}>
@@ -193,7 +200,8 @@ const PaymentDetailsStep = ({
                 validateRule: [
                   'required',
                   'numeric',
-                  'regex:/^4[0-9]{12}(?:[0-9]{3})?$|^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/',
+                  VALIDATION_RULES.IS_VALID_CREDIT_CARD,
+                  VALIDATION_RULES.CREDIT_CARD_PROVIDER,
                 ],
               }}
             />
@@ -229,16 +237,19 @@ const PaymentDetailsStep = ({
                   width: '45%',
                 }}
                 label="Expiration date"
-                value={testCard ? moment().format('MM/YY') : ''}
+                value={!testCard ? moment().format('MM/YY') : expDateFormat}
                 placeholderText="MM/YY"
                 editable={true}
+                onChangeText={(date) => setExpDateFormat(date)}
+                format={(date) => formatDate(date)}
+                keyboardType={'number-pad'}
                 validation={{
                   name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
                   formStore: paymentFormStore,
                   validateRule: [
                     'required',
                     'string',
-                    'regex:/^(0[1-9]|1[0-2])/?([0-9]{2})$/',
+                    VALIDATION_RULES.CARD_EXP_DATE,
                   ],
                 }}
               />
@@ -248,6 +259,7 @@ const PaymentDetailsStep = ({
                 }}
                 label="CVV"
                 value={testCard ? '123' : ''}
+                keyboardType={'number-pad'}
                 editable={true}
                 validation={{
                   name: RequestToJoinForm.FIELD_CVV,
