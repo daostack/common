@@ -38,6 +38,13 @@ import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDat
 import {BlurView} from '~/Components';
 import Logger from '~/Services/Logger';
 
+import {
+  IntroduceYourselfFormStore,
+  PersonalContributionFormStore,
+  BillingDetailsFormStore,
+  PaymentFormStore,
+} from '~/FormStores/RequestToJoin';
+
 let stickyHeightAddon = 36;
 
 const STICKY_HEADER_HEIGHT = Math.round(getStatusBarHeight()) + stickyHeightAddon;
@@ -373,9 +380,21 @@ const CommonProfile = ({
   const requestToJoin = (event) => {
     if (userStore.userInfo) {
       const shouldSkipRules = calcShouldSkipRules();
+
+      const introduceYourselfFormStore = new IntroduceYourselfFormStore();
+      const paymentFormStore = new PaymentFormStore();
+      const personalContributionFormStore = new PersonalContributionFormStore();
+      const billingDetailsFormStore = new BillingDetailsFormStore();
+
       const navigate = CommonActions.navigate({
         name: shouldSkipRules ? 'IntroductionStep' : 'RulesStep',
         params: {
+          formStores: {
+            paymentFormStore,
+            introduceYourselfFormStore,
+            personalContributionFormStore,
+            billingDetailsFormStore,
+          },
           currCommon: currCommon,
           currDaoId: currCommon.id,
           skipFirstStep: shouldSkipRules,

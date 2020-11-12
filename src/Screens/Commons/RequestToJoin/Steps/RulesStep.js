@@ -22,6 +22,7 @@ const {width, height} = Dimensions.get('window');
 const RulesStep = ({navigation,
   route: {
     params: {
+      formStores,
       currCommon,
       currDaoId,
       refreshFeed,
@@ -49,6 +50,7 @@ const RulesStep = ({navigation,
       const navigate = CommonActions.navigate({
         name: 'IntroductionStep',
         params: {
+          formStores,
           currDaoId: currDaoId,
           currCommon: currCommon,
           refreshFeed,
