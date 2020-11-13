@@ -7,6 +7,7 @@ import {layout, colors, font, text, sizeM} from '~/Theme';
 import SwiperCard from '~/Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import {PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '~/Services/ProposalService';
+import moment from 'moment';
 import {string, bool, object, number, shape, func} from 'prop-types';
 const {width, height} = Dimensions.get('window');
 
@@ -64,6 +65,7 @@ const ProposalsList = ({isMember,
         loadOnlyFundingRequests,
         loadMembershipRequests
       );
+    };
 
     loadProposalInfo(commonId, userId, isHistory, showAll, onlyFundingRequests, membershipRequests);
 
