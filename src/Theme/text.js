@@ -27,11 +27,12 @@ const isRTL = (text) => {
   const ltrChars    = 'A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02B8\u0300-\u0590\u0800-\u1FFF' + '\u2C00-\uFB1C\uFDFE-\uFE6F\uFEFD-\uFFFF',
     rtlChars    = '\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC',
     rtlDirCheck = new RegExp('^[^' + ltrChars + ']*[' + rtlChars + ']');
-  return text && rtlDirCheck.test(text) ? 'rtl' : 'ltr';
+  return text && rtlDirCheck.test(text);
 };
 
 export default StyleSheet.create({
-  writingDirection: (text) => ({writingDirection: isRTL(text)}),
+  writingDirection: (text) => ({writingDirection: isRTL(text) ? 'rtl' : 'ltr'}),
+  textAlign: (text) => ({textAlign: isRTL(text) ? 'right' : 'left'}),
   h1Black: style.h1Black,
   h1BlackTitle: {
     lineHeight: 29,

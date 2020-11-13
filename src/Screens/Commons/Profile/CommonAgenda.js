@@ -41,11 +41,41 @@ const CommonAgenda = ({navigation,
 
         {(metadata.action || metadata.courseOfAction) && (
           <View style={styles.sectionContainer}>
+            <Text style={text.h2Black}>About</Text>
+            <Text style={{...styles.description, width: '100%',
+              ...text.writingDirection(metadata.description)}}>
+              {metadata.description}
+            </Text>
+          </View>
+        )}
+        {metadata.links?.length > 0 && (
+          <View style={styles.sectionContainer}>
+            <Text style={text.h3Black}>Links</Text>
+            {metadata.links.map((link, i) => (
+              <View key={i}>
+                <Text
+                  style={styles.linkText}
+                  onPress={() =>
+                    navigation.navigate('Browser', {
+                      url: link.value || link.url,
+                    })
+                  }>
+                  {/* NOTE: value of multiple fields was stored in url prop before */}
+                  {link.value || link.url}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {(metadata.action || metadata.courseOfAction) && (
+          <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>
-                Course of action
+              Course of action
             </Text>
 
-            <Text style={styles.description}>
+            <Text style={{...styles.description, width: '100%',
+              ...text.writingDirection(metadata.action || metadata.courseOfAction)}}>
               {metadata.action || metadata.courseOfAction}
             </Text>
           </View>
@@ -78,12 +108,14 @@ const CommonAgenda = ({navigation,
             <View style={styles.sectionContainer}>
               <Text style={text.h2Black}>Rules of conduct</Text>
               {metadata.rules.map((rule, i) => (
-                <View key={i}>
-                  <Text style={styles.ruleTitle}>
+                <View key={i} style={{width: '100%'}} >
+                  <Text style={{...styles.ruleTitle,
+                    ...text.writingDirection(rule.title)}}>
                     {rule.title}
                   </Text>
                   <Text
-                    style={styles.ruleDescription}>
+                    style={{...styles.ruleDescription,
+                      ...text.writingDirection(rule.value || rule.url)}}>
                     {rule.value || rule.url}
                   </Text>
                 </View>

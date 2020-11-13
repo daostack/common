@@ -66,6 +66,7 @@ const ProposalScreen = ({
   const [isSending, setIsSending] = useState(false);
   const [isMember, setIsMember] = useState(false);
   const [isProposer, setIsProposer] = useState(false);
+  const [inputHeight, setInputHeight] = useState(false);
   const [showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer] = useState(false);
   const renderVoting =
     proposalScreenInfo?.proposalInfo &&
@@ -247,13 +248,18 @@ const ProposalScreen = ({
                 ref={inputRef}
                 editable={true}
                 fontSize={15}
+                multiline
                 placeholder="What do you think?"
                 onChangeText={(currText) => setInputText(currText)}
+                onContentSizeChange={(event) => {
+                  setInputHeight(event.nativeEvent.contentSize.height);
+                }}
                 style={{
                   flex: 1,
-                  height: 22,
                   padding: 0,
                   marginHorizontal: 10,
+                  maxHeight: 110,
+                  height: Math.max(35, inputHeight + 10),
                 }}
               />
               <TouchableOpacity
@@ -670,33 +676,35 @@ const ProposalScreen = ({
             </View>
           )}
 
-          <View ref={stickyTabBarRef} collapsable={false} style={{minHeight: screenHeight}}>
+          <View ref={stickyTabBarRef} collapsable={false} style={{flex: 1, minHeight: screenHeight, backgroundColor: colors.paleGrey}}>
             <TabView
               navigationState={{index, routes}}
               renderScene={() => null}
               onIndexChange={onSetIndex}
               initialLayout={initialLayout}
               renderTabBar={renderTabBar}
-              style={{backgroundColor: colors.paleGrey}}
-
+              style={{backgroundColor: colors.paleGrey, flex: 0}}
+              sceneContainerStyle={{height: 0}}
             />
 
-            {index === 0 && (
-              <ProposalData
-                proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
-                proposalInfo={proposalScreenInfo?.proposalInfo}
-                showMore={() => onSetIndex(1)}
-              />
-            )}
+            <View style={{paddingTop: showStickyTabBar ? 100 : 0, flex: 1}}>
+              {index === 0 && (
+                <ProposalData
+                  proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
+                  proposalInfo={proposalScreenInfo?.proposalInfo}
+                  showMore={() => onSetIndex(1)}
+                />
+              )}
 
-            {index === 1 && (
-              <ProposalDiscussion
-                proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
-                proposal={proposalScreenInfo?.proposalInfo}
-                inputRef={inputRef}
-                scrollViewRef={scrollViewRef}
-              />
-            )}
+              {index === 1 && (
+                <ProposalDiscussion
+                  proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
+                  proposal={proposalScreenInfo?.proposalInfo}
+                  inputRef={inputRef}
+                  scrollViewRef={scrollViewRef}
+                />
+              )}
+            </View>
           </View>
         </ScrollView>
 

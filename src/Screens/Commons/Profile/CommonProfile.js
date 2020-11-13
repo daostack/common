@@ -38,6 +38,13 @@ import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDat
 import {BlurView} from '~/Components';
 import Logger from '~/Services/Logger';
 
+import {
+  IntroduceYourselfFormStore,
+  PersonalContributionFormStore,
+  BillingDetailsFormStore,
+  PaymentFormStore,
+} from '~/FormStores/RequestToJoin';
+
 let stickyHeightAddon = 36;
 
 const STICKY_HEADER_HEIGHT = Math.round(getStatusBarHeight()) + stickyHeightAddon;
@@ -148,15 +155,13 @@ const CommonProfile = ({
           setPendingProposalsData({...data});
 
           if (!isMember) {
-            if (
-              data &&
-              data.usersPendingProposal
-            ) {
-              setShowPending(true);
-            }
-
-            if (data && !data.usersPendingProposal) {
-              setShowRequestToJoin(true);
+            if (data) {
+              if (data.usersPendingProposal) {
+                setShowPending(true);
+                setShowRequestToJoin(false);
+              } else {
+                setShowRequestToJoin(true);
+              }
             }
           }
         }
@@ -271,7 +276,9 @@ const CommonProfile = ({
 
           <View style={layout.flexStart}>
             <Text style={text.h2Black}>About</Text>
-            <Text style={{...text.regularText, ...layout.marginTopS}}>
+            <Text style={{...text.regularText,
+              ...layout.marginTopS,
+              ...text.writingDirection(currCommon.metadata.description)}}>
               {currCommon.metadata.description}
             </Text>
           </View>
@@ -378,9 +385,21 @@ const CommonProfile = ({
   const requestToJoin = (event) => {
     if (userStore.userInfo) {
       const shouldSkipRules = calcShouldSkipRules();
+
+      const introduceYourselfFormStore = new IntroduceYourselfFormStore();
+      const paymentFormStore = new PaymentFormStore();
+      const personalContributionFormStore = new PersonalContributionFormStore();
+      const billingDetailsFormStore = new BillingDetailsFormStore();
+
       const navigate = CommonActions.navigate({
         name: shouldSkipRules ? 'IntroductionStep' : 'RulesStep',
         params: {
+          formStores: {
+            paymentFormStore,
+            introduceYourselfFormStore,
+            personalContributionFormStore,
+            billingDetailsFormStore,
+          },
           currCommon: currCommon,
           currDaoId: currCommon.id,
           skipFirstStep: shouldSkipRules,
@@ -693,14 +712,14 @@ const CommonProfile = ({
               />
             )}
             renderStickyHeader={() => (
-              <>
+              <View style={{height: '100%'}}>
                 <Animated.View style={[stickyTabBarStyle, slideUp]}>
                   <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange={setIndex} />
                 </Animated.View>
                 <View key="sticky-header" style={styles.stickySection}>
                   <Text style={styles.stickySectionText}>{currCommon.name}</Text>
                 </View>
-              </>
+              </View>
             )}
             renderFixedHeader={fixedHeaderHeight}
           >
