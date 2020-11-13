@@ -1,5 +1,5 @@
 import {observable, action, decorate} from 'mobx';
-import {isDaoMemberBySafeAddress} from '~/Util';
+import {isDaoMemberByUserId} from '~/Util';
 import Cache from '../Util/Cache';
 
 export const userInfoFields = [
@@ -38,7 +38,7 @@ class UserStore {
   }
 
   isDaoMember = (members) => (
-    this.userInfo ? isDaoMemberBySafeAddress(members, this.userInfo.uid) : false
+    this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false
   )
 
   isProposer = (proposal) =>

@@ -9,7 +9,7 @@ import {
   PlaceholderMedia,
   Fade,
 } from 'rn-placeholder';
-import {isDaoMemberBySafeAddress} from '~/Util';
+import {isDaoMemberByUserId} from '~/Util';
 import {CommonActions} from '@react-navigation/native';
 import {string, object, number, func} from 'prop-types';
 
@@ -17,7 +17,7 @@ const DEFAULT_HEADER_HEIGHT = 145;
 
 const CommonsSwiper = ({
   navigation,
-  safeAddress,
+  safeAddress, // TODO: No Blockchain: remove that param
   userId,
   onCountChange,
   showMax,
@@ -32,7 +32,7 @@ const CommonsSwiper = ({
     } else {
       if (snapshot.docChanges().length !== 0) {
         const newList = snapshot.docChanges().map(({doc}, index) => {
-          const isMember = isDaoMemberBySafeAddress(doc.data().members, safeAddress);
+          const isMember = isDaoMemberByUserId(doc.data().members, userId);
           if (!isMember) {
             return false;
           }

@@ -88,6 +88,7 @@ export const getErrorObject = (axiosError) => {
     return axiosError.response.data;
   } catch (e) {
     logger.error('Something went wrong trying to parse the error object', e);
+    logger.error("Error object: ", axiosError);
 
     return {
       errorMessage: 'Something bad happened',

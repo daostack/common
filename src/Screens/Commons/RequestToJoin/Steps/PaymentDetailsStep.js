@@ -75,11 +75,14 @@ const PaymentDetailsStep = ({
 
         const data = {
           description: formData.about_me,
-          links: formData.links,
           funding: 7 * 100,
           preAuthId: false,
           commonId: currDaoId,
         };
+
+        if (formData.links) {
+          data.links = formData.links;
+        }
 
         navigation.navigate({
           name: 'FullScreenCreationLoader',
@@ -93,7 +96,7 @@ const PaymentDetailsStep = ({
             ...formData,
             ...userInfo,
           }),
-          cardId: 'qwerty', // hardcoded required id of the card
+          cardId: '1b8e238f-1158-4b39-8747-c61cbc968dfc', // hardcoded required id of the card
         };
 
         const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin({
