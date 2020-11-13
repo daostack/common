@@ -95,7 +95,8 @@ const PaymentDetailsStep = ({
           cardData: await createCardPayload({
             ...formData,
             ...userInfo,
-          })
+          }),
+          cardId: '1b8e238f-1158-4b39-8747-c61cbc968dfc', // hardcoded required id of the card
         };
 
         const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin({
