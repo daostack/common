@@ -173,12 +173,18 @@ class FormStore {
           // Multi Links
           if (typeof (currMultiFormField.value) === 'object') {
             Object.keys(currMultiFormField).forEach((currKey) => {
-              if (onlyChangedFields) {
-                if (currMultiFormField[currKey].changed) {
+              // Skip Multi Rules & Links fields with empty string values.
+              // That's happening because for those component we render the Input fields even if they are not used. That leads to register their values in the store.
+              // For MultiFiles & Images components that's not in this way, because we don't have a default value for initial rendering.
+              // TODO: In order to not keep these empty strings as values we need a change in the UI. Probably we can make it in the same way as the Multi Files & Images.
+              if (currMultiFormField[currKey].value && currMultiFormField[currKey].value.length > 0) {
+                if (onlyChangedFields) {
+                  if (currMultiFormField[currKey].changed) {
+                    multiFieldValue[currKey] = currMultiFormField[currKey].value;
+                  }
+                } else {
                   multiFieldValue[currKey] = currMultiFormField[currKey].value;
                 }
-              } else {
-                multiFieldValue[currKey] = currMultiFormField[currKey].value;
               }
             });
           } else { // MultiFiles & MultiImages

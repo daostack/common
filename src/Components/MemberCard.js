@@ -25,7 +25,7 @@ const MemberCard = ({
 
   useEffect(() => {
     const loadCommonsCount = (async () => {
-      const userDaosCount = (await DaoService.getInstance().getUserDaos(userInfo.uid, userInfo.safeAddress)).docs.length;
+      const userDaosCount = (await DaoService.getInstance().getUserDaos(userInfo.uid)).docs.length;
       logger.log('userDaosCount -> ', userDaosCount);
       setCommonsCount(userDaosCount);
     });
@@ -33,8 +33,10 @@ const MemberCard = ({
   }, []);
 
   const renderRightContainer = () => {
+
     if (proposalInfo) {
-      const remainingSeconds = proposalInfo.closingAt - moment().unix();
+      //TODO: NoBlockchain: Now to handle remaingin seconds ?
+      const remainingSeconds = 9999;//proposalInfo.closingAt - moment().unix();
 
       return (
         <View style={styles.rightContainer}>
@@ -44,11 +46,11 @@ const MemberCard = ({
             </Text>
 
             <Text style={{...text.runninglightGray, width: '100%'}}>
-              {moment.unix(proposalInfo.createdAt).fromNow()}
+              {moment.unix(proposalInfo.createdAt.seconds).fromNow()}
             </Text>
 
             {/* Hide the time if the proposal is expired or new */}
-            {(remainingSeconds > 0 && !LAUNCHED_STATES.includes(proposalInfo?.stageStr)) && (
+            {(remainingSeconds > 0 && !LAUNCHED_STATES.includes(proposalInfo?.state)) && (
               // If the remaining time is more than 1 day show the date,
               // if it is less show countdown till it
               remainingSeconds > 24 * 60 * 60
@@ -152,7 +154,7 @@ MemberCard.propTypes = {
     fundingRequest: shape({
       amount: string,
     }),
-    stageStr: string,
+    state: string,
   }),
 };
 

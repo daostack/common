@@ -15,23 +15,31 @@ const CommonAgenda = ({navigation,
   route: {
     params: {common: {metadata, fundingGoalDeadline}},
   }}) => (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}
-          vertical={true}
-          nestedScrollEnabled={true}
-          directionalLockEnabled={true}>
-          <Text style={styles.agendaTitletext}>Agenda and Rules</Text>
-          <View style={layout.content}>
-            <Image
-              source={require('~/Assets/Common/rules.png')}
-              style={styles.image}
-            />
-          </View>
+  <>
+    <StatusBar barStyle="dark-content" />
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={styles.scrollView}
+        vertical={true}
+        nestedScrollEnabled={true}
+        directionalLockEnabled={true}>
+        <Text style={styles.agendaTitletext}>Agenda and Rules</Text>
+        <View style={layout.content}>
+          <Image
+            source={require('~/Assets/Common/rules.png')}
+            style={styles.image}
+          />
+        </View>
 
+        <View style={styles.sectionContainer}>
+          <Text style={text.h2Black}>About</Text>
+          <Text style={styles.description}>
+            {metadata.description}
+          </Text>
+        </View>
+
+        {(metadata.action || metadata.courseOfAction) && (
           <View style={styles.sectionContainer}>
             <Text style={text.h2Black}>About</Text>
             <Text style={{...styles.description, width: '100%',
@@ -39,41 +47,61 @@ const CommonAgenda = ({navigation,
               {metadata.description}
             </Text>
           </View>
+        )}
+        {metadata.links?.length > 0 && (
+          <View style={styles.sectionContainer}>
+            <Text style={text.h3Black}>Links</Text>
+            {metadata.links.map((link, i) => (
+              <View key={i}>
+                <Text
+                  style={styles.linkText}
+                  onPress={() =>
+                    navigation.navigate('Browser', {
+                      url: link.value || link.url,
+                    })
+                  }>
+                  {/* NOTE: value of multiple fields was stored in url prop before */}
+                  {link.value || link.url}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
 
-          {(metadata.action || metadata.courseOfAction) && (
-            <View style={styles.sectionContainer}>
-              <Text style={text.h3Black}>
-                Course of action
-              </Text>
+        {(metadata.action || metadata.courseOfAction) && (
+          <View style={styles.sectionContainer}>
+            <Text style={text.h3Black}>
+              Course of action
+            </Text>
 
-              <Text style={{...styles.description, width: '100%',
-                ...text.writingDirection(metadata.action || metadata.courseOfAction)}}>
-                {metadata.action || metadata.courseOfAction}
-              </Text>
-            </View>
-          )}
-          {metadata.links?.length > 0 && (
-            <View style={styles.sectionContainer}>
-              <Text style={text.h3Black}>Links</Text>
-              {metadata.links.map((link, i) => (
-                <View key={i}>
-                  <Text
-                    style={styles.linkText}
-                    onPress={() =>
-                      navigation.navigate('Browser', {
-                        url: link.value || link.url,
-                      })
-                    }>
-                    {/* NOTE: value of multiple fields was stored in url prop before */}
-                    {link.value || link.url}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          )}
+            <Text style={{...styles.description, width: '100%',
+              ...text.writingDirection(metadata.action || metadata.courseOfAction)}}>
+              {metadata.action || metadata.courseOfAction}
+            </Text>
+          </View>
+        )}
+        {metadata.links?.length > 0 && (
+          <View style={styles.sectionContainer}>
+            <Text style={text.h3Black}>Links</Text>
+            {metadata.links.map((link, i) => (
+              <View key={i}>
+                <Text
+                  style={styles.linkText}
+                  onPress={() =>
+                    navigation.navigate('Browser', {
+                      url: link.value || link.url,
+                    })
+                  }>
+                  {/* NOTE: value of multiple fields was stored in url prop before */}
+                  {link.value || link.url}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
 
-          {metadata.rules?.length > 0 && (
-            <>
+        {metadata.rules?.length > 0 && (
+          <>
             <View style={styles.sectionDividerContent}>
               <View style={styles.sectionDivider} />
             </View>
@@ -93,11 +121,11 @@ const CommonAgenda = ({navigation,
                 </View>
               ))}
             </View>
-            </>
-          )}
-        </ScrollView>
-      </SafeAreaView>
-    </>
+          </>
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  </>
 );
 
 CommonAgenda.propTypes = {

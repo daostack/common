@@ -34,7 +34,7 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
 
   const renderCommonCard = (dao, i) =>(
     <CommonBox
-      image={dao.coverPhoto}
+      image={dao.image}
       common={dao}
       key={i}
       width="100%"

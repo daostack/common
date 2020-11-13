@@ -21,65 +21,65 @@ const CommonCover = ({
   const renderCoverInSafeArea = () => <SafeAreaView>{renderCover()}</SafeAreaView>;
 
   const renderCover = () => (
-      <>
-        <View style={styles.headerContainerWrap}>
+    <>
+      <View style={styles.headerContainerWrap}>
+        <View
+          style={
+            navigation
+              ? styles.headerContainer
+              : {
+                ...styles.headerContainer,
+                ...styles.headerContainerCenterContent,
+              }
+          }>
+          {navigation && (
+            <TouchableOpacity onPress={navigation.goBack}>
+              <Icon
+                name="left-arrow"
+                size={30}
+                color={colors.white}
+                style={layout.marginTopXS}
+              />
+            </TouchableOpacity>
+          )}
+
           <View
-            style={
-              navigation
-                ? styles.headerContainer
-                : {
-                  ...styles.headerContainer,
-                  ...styles.headerContainerCenterContent,
-                }
-            }>
-            {navigation && (
-              <TouchableOpacity onPress={navigation.goBack}>
-                <Icon
-                  name="left-arrow"
-                  size={30}
-                  color={colors.white}
-                  style={layout.marginTopXS}
-                />
-              </TouchableOpacity>
+            style={{
+              ...layout.content,
+              ...{padding: 0},
+            }}>
+            {logo && (
+              <FastImage
+                style={styles.logoImage}
+                source={{
+                  uri: logo,
+                }}
+              />
             )}
-
-            <View
-              style={{
-                ...layout.content,
-                ...{padding: 0},
-              }}>
-              {logo && (
-                <FastImage
-                  style={styles.logoImage}
-                  source={{
-                    uri: logo,
-                  }}
-                />
-              )}
-              <Text style={styles.headerTitleWhite}>{name}</Text>
-            </View>
-            {navigation && (
-              <TouchableOpacity onPress={onHeaderMenuOpen}>
-                <Icon
-                  name="menu-horizontal"
-                  size={30}
-                  color={colors.white}
-                  style={layout.marginTopXS}
-                />
-              </TouchableOpacity>
-            )}
+            <Text style={styles.headerTitleWhite}>{name}</Text>
           </View>
-        </View>
-
-        <View style={styles.headerContent}>
-          <Text style={styles.headerDescription} numberOfLines={2}>{description}</Text>
-          {isMember && navigation && (
-            <TouchableOpacity onPress={openAgendaScreen}>
-              <Text style={styles.headerViewAgenda}>View agenda</Text>
+          {navigation && (
+            <TouchableOpacity onPress={onHeaderMenuOpen}>
+              <Icon
+                name="menu-horizontal"
+                size={30}
+                color={colors.white}
+                style={layout.marginTopXS}
+              />
             </TouchableOpacity>
           )}
         </View>
-      </>
+      </View>
+
+      <View style={styles.headerContent}>
+        <Text style={styles.headerDescription} numberOfLines={2}>{description}</Text>
+        {isMember && navigation && (
+          <TouchableOpacity onPress={openAgendaScreen}>
+            <Text style={styles.headerViewAgenda}>View agenda</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    </>
   );
 
   const openAgendaScreen = (e) => {

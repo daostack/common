@@ -11,22 +11,22 @@ import UserProfileData from '~/Components/UserProfileData';
 import {string, object} from 'prop-types';
 
 const UserProfileSheetScreen = ({navigation, userId}) => (
-    <>
-      <StatusBar barStyle="dark-content" />
+  <>
+    <StatusBar barStyle="dark-content" />
 
-      <SafeAreaView style={styles.safeArea} >
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}
-          vertical={true}
-          nestedScrollEnabled={true}
-          directionalLockEnabled={true}>
-          <View style={styles.body}>
-            <UserProfileData navigation={navigation} userId={userId} />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+    <SafeAreaView style={styles.safeArea} >
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={styles.scrollView}
+        vertical={true}
+        nestedScrollEnabled={true}
+        directionalLockEnabled={true}>
+        <View style={styles.body}>
+          <UserProfileData navigation={navigation} userId={userId} />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  </>
 );
 
 UserProfileSheetScreen.propTypes = {

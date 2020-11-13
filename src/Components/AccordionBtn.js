@@ -7,14 +7,14 @@ import {string, func, bool} from 'prop-types';
 
 const BtnContent = ({lightStyle, title, subtitle}) => (
   <>
-  <View>
-    <Text style={lightStyle
-      ? {...styles.btnText, ...styles.btnTextLight}
-      : {...styles.btnText}}>{title}
-    </Text>
-    {subtitle && <Text style={styles.btnSubtitleText}>{subtitle}</Text>}
-  </View>
-  {!lightStyle && <Icon name="right-arrow" />}
+    <View>
+      <Text style={lightStyle
+        ? {...styles.btnText, ...styles.btnTextLight}
+        : {...styles.btnText}}>{title}
+      </Text>
+      {subtitle && <Text style={styles.btnSubtitleText}>{subtitle}</Text>}
+    </View>
+    {!lightStyle && <Icon name="right-arrow" />}
   </>
 );
 

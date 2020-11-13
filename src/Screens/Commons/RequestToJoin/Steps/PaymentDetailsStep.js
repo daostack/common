@@ -16,13 +16,13 @@ import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import CreateStepDotHeader from '../RequestStepDotHeader';
 import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
-import ArcService from '~/Services/ArcService';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
 import {createCardPayload} from '../../../../Services/CirclePayService';
+import ProposalService from '~/Services/ProposalService';
 import {testCard} from '~/Config';
 import moment from 'moment';
 import {VALIDATION_RULES} from '~/FormStores/ValidationRules';
@@ -74,12 +74,15 @@ const PaymentDetailsStep = ({
         };
 
         const data = {
-          title: `request to join ${currDaoId} by ${userInfo.ethereumAddress}`,
           description: formData.about_me,
-          links: formData.links,
-          funding: formData.amount * 100,
+          funding: 7 * 100,
           preAuthId: false,
+          commonId: currDaoId,
         };
+
+        if (formData.links) {
+          data.links = formData.links;
+        }
 
         navigation.navigate({
           name: 'FullScreenCreationLoader',
@@ -88,35 +91,42 @@ const PaymentDetailsStep = ({
           },
         });
 
-        // Create the proposal
-        const proposalId = await ArcService.createRequestToJoin(
-          currDaoId, {
-            ...data,
-            cardData: await createCardPayload({
-              ...formData,
-              ...userInfo,
-            }),
-          },
-        );
+        const cardData = {
+          cardData: await createCardPayload({
+            ...formData,
+            ...userInfo,
+          }),
+          cardId: '1b8e238f-1158-4b39-8747-c61cbc968dfc', // hardcoded required id of the card
+        };
 
-        navigation.pop();
-
-        const navigate = CommonActions.navigate({
-          name: 'CommonProfile',
-          params: {
-            showRequestSentModal: true,
-            createdProposalId: proposalId,
-          },
+        const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin({
+          ...data,
+          ...cardData,
         });
 
-        if (typeof refreshFeed === 'function') {
-          refreshFeed();
-        }
+        if (createRequestToJoinResponse.status === 200) {
+          const proposalId = createRequestToJoinResponse.data.id;
 
-        navigation.dispatch(navigate);
+          navigation.pop();
+          const navigate = CommonActions.navigate({
+            name: 'CommonProfile',
+            params: {
+              showRequestSentModal: true,
+              createdProposalId: proposalId,
+            },
+          });
+
+          if (typeof refreshFeed === 'function') {
+            refreshFeed();
+          }
+
+          navigation.dispatch(navigate);
+        } else {
+          navigation.pop();
+          showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
+        }
       } catch (e) {
         navigation.pop();
-
         showErrorPopUp(bottomSheetStore, e);
       }
     }

@@ -41,7 +41,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
     }
 
     const proposalList = await ProposalService.getInstance().getUserPendingProposals(userStore.userInfo.uid);
-    const daoList = proposalList.map((proposal) => proposal.data().dao);
+    const daoList = proposalList.map((proposal) => proposal.data().commonId);
 
     return daoList;
   };
@@ -116,7 +116,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
         ...{id: doc.id},
         ...doc.data(),
         ...{
-          coverPhoto:
+          image:
               doc.data().metadata?.image ||
               `https://picsum.photos/id/${index * 10}/500/100.jpg`,
         },

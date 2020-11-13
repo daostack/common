@@ -1,8 +1,4 @@
-import {NativeModules} from 'react-native';
-import RNFS from 'react-native-fs';
-
-import {GOOGLE_SIGNIN_PERMISSIONS, AUTH_PROVIDER_ID} from '~/Util';
-import WalletManager from '~/Util/WalletManager';
+import {AUTH_PROVIDER_ID} from '~/Util';
 import {firebaseWebClientId} from '~/Config';
 
 // Firebase imports
@@ -11,28 +7,18 @@ import UserService from './UserService';
 
 // Google imports
 import {GoogleSignin} from '@react-native-community/google-signin';
-import GoogleDriveService from './GoogleDriveService';
 
 // Apple imports
 import appleAuth, {
   AppleAuthRequestScope,
   AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication';
-import IClouldService from './IClouldService';
-
-import logger from './Logger';
 
 export default class AuthService {
   static serviceInstance = null;
 
-  initialAppDataContent = {
-    mnemonic: null,
-    version: '0.1',
-  };
-
   constructor() {
     GoogleSignin.configure({
-      scopes: [GOOGLE_SIGNIN_PERMISSIONS.APP_DATA_RW],
       webClientId: firebaseWebClientId,
     });
   }
@@ -74,8 +60,6 @@ export default class AuthService {
     await GoogleSignin.signIn();
 
     const {idToken, accessToken} = await GoogleSignin.getTokens();
-    GoogleDriveService.init(accessToken);
-
     const googleCredential = auth.GoogleAuthProvider.credential(
       idToken,
       accessToken,
@@ -137,143 +121,24 @@ export default class AuthService {
     });
   }
 
-  async createUserAndWallet(user) {
-    const manager = await WalletManager.getInstance(user.uid);
+  async createUser(user) {
     const userPhotoUrl = user.photoURL
       ? user.photoURL
       : `https://eu.ui-avatars.com/api/?background=7786ff&color=fff&name=${
         user.displayName ? user.displayName : user.email
       }&rounded=true`;
     const userPublicData = {
-      ethereumAddress: manager.getAddress(),
-      // store the google user info in the firestore DB
-      ...{
-        createdAt: new Date(user.metadata.creationTime),
-        displayName: user.displayName,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        photoURL: userPhotoUrl,
-        uid: user.uid,
-      },
+      createdAt: new Date(user.metadata.creationTime),
+      displayName: user.displayName,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      photoURL: userPhotoUrl,
+      uid: user.uid,
     };
 
     await UserService.getInstance().addUser(user.uid, userPublicData);
     return userPublicData;
-  }
-
-  async loadMnemonic(uid, providerId) {
-    try {
-      const mnemonicFromStore = await NativeModules.WalletModule.retrieveMnemonic(
-        uid,
-      );
-
-      if (mnemonicFromStore) {
-        return mnemonicFromStore;
-      }
-
-      switch (providerId) {
-      case AUTH_PROVIDER_ID.APPLE:
-        return await this._loadMnemonicFromiCloud(uid);
-      case AUTH_PROVIDER_ID.GOOGLE:
-        return await this._loadMnemonicFromGoogleDrive(uid);
-      default:
-      }
-    } catch (err) {
-      logger.log(err);
-      logger.log('[AUTH] Invalid session. Please login again.');
-      await this.signOut();
-    }
-  }
-
-  // Private functions
-
-  async _loadMnemonicFromGoogleDrive(uid) {
-    await GoogleSignin.signInSilently();
-    const {accessToken} = await GoogleSignin.getTokens();
-    GoogleDriveService.init(accessToken);
-
-    // 2. Read mnemonic From the Google Drive app data
-    let appData = await GoogleDriveService.getInstance().getAppData();
-
-    if (appData.files && appData.files.length > 0) {
-      const appDataFileId = appData.files[0].id;
-      const fileContent = await GoogleDriveService.getInstance().getFileById(
-        appDataFileId,
-      );
-
-      let jsonContent;
-      try {
-        jsonContent = JSON.parse(fileContent);
-      } catch (error) {
-        // TBD: Do we need to handle that case anymore ?
-        /*
-        FIX FOR USESRS WITH BROKEN APP DATA FILES
-        TBD: Discuss on removing that logic or replace with better one.
-        */
-
-        // The file content is not a valid json
-        // In that case we are deleting the file
-
-        await GoogleDriveService.getInstance().deleteAppDataFileById(
-          appDataFileId,
-        );
-        // And then generate and store new mnemonic for the user
-        return this._generateAndStoreMnemonicGCloud(uid);
-      }
-      await NativeModules.WalletModule.storeMnemonic(uid, jsonContent.mnemonic);
-      return jsonContent.mnemonic;
-    }
-
-    // 3. Generate mnemonic and store in Google Drive app data
-    return this._generateAndStoreMnemonicGCloud(uid);
-  }
-
-  // APPLE
-  async _loadMnemonicFromiCloud(uid) {
-    // 2. Read mnemonic From the iClould app data
-    let appData = await IClouldService.getInstance().getAppData();
-
-    if (appData && appData.files && appData.files.length > 0) {
-      const appDataLocalPath = appData.files[0].path;
-
-      const fileContent = await RNFS.readFile(appDataLocalPath, 'utf8');
-
-      let jsonContent;
-      try {
-        jsonContent = JSON.parse(fileContent);
-      } catch (error) {
-        // TBD: Do we need to handle that case anymore ?
-        logger.log(`ERROR IN PARSING JSON with content: ${fileContent}`);
-        logger.log(error);
-        throw error;
-      }
-
-      await NativeModules.WalletModule.storeMnemonic(uid, jsonContent.mnemonic);
-      return jsonContent.mnemonic;
-    }
-    // 3. Generate mnemonic and store in Google Drive app data
-    return this._generateAndStoreMnemonicICloud(uid);
-  }
-
-  async _generateAndStoreMnemonicGCloud(uid) {
-    this.initialAppDataContent.mnemonic = await NativeModules.WalletModule.generateAndStoreMnemonic(
-      uid,
-    );
-    await GoogleDriveService.getInstance().setAppData(
-      JSON.stringify(this.initialAppDataContent),
-    );
-    return this.initialAppDataContent.mnemonic;
-  }
-
-  async _generateAndStoreMnemonicICloud(uid) {
-    this.initialAppDataContent.mnemonic = await NativeModules.WalletModule.generateAndStoreMnemonic(
-      uid,
-    );
-    await IClouldService.getInstance().setAppData(
-      JSON.stringify(this.initialAppDataContent),
-    );
-    return this.initialAppDataContent.mnemonic;
   }
 
   async _applePerformRequest() {
