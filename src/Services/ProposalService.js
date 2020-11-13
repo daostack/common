@@ -282,13 +282,15 @@ export default class ProposalService {
   }
 
   async createRequestToJoin(formData) {
+    const token = await auth().currentUser.getIdToken(true);
+    console.log("createRequestToJoin -> ", token);
     try {
       return await this.axiosClient.post(
         this.endpoints.createJoin,
         formData,
         {
           headers: {
-            Authorization: await auth().currentUser.getIdToken(true),
+            Authorization: token,
           },
         }
       );

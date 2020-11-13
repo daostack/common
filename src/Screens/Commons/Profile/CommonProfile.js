@@ -303,7 +303,7 @@ const CommonProfile = ({
                 style={layout.flexRow}>
                 <View style={layout.flexRow}>
                   <Text style={text.h4Black}>
-                    {`${currCommon.memberCount} Member${currCommon.memberCount !== 1 ? 's' : ''}`}
+                    {`${currCommon.members.length} Member${currCommon.members.length !== 1 ? 's' : ''}`}
                   </Text>
                 </View>
                 <View style={{...layout.flexRow, ...layout.marginLeftS}}>
@@ -631,7 +631,7 @@ const CommonProfile = ({
             renderBackground={() => (
               <FastImage
                 source={{
-                  uri: currCommon.coverPhoto || currCommon?.metadata?.image,
+                  uri: currCommon.image,
                 }}
                 style={{
                   width: window.width,
@@ -687,7 +687,7 @@ const CommonProfile = ({
                   name: currCommon.name,
                   description: currCommon.description,
                   byline: currCommon.metadata?.byline,
-                  cover: currCommon.coverPhoto,
+                  cover: currCommon.image,
                 }}
                 common={currCommon}
               />
@@ -720,7 +720,7 @@ const CommonProfile = ({
                     currCommon.numberOfPreBoostedProposals +
                     currCommon.numberOfQueuedProposals,
                   /* goal: currCommon.fundingGoal, */
-                  members: currCommon.memberCount,
+                  members: currCommon.members.length,
                   // TODO: get this value. Is it even tracked in the contract? need to check.
                   balance: currCommon.balance,
                   raised: currCommon.metadata.totalRaised || currCommon.balance,

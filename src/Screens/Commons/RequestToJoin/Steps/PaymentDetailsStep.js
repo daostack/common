@@ -70,8 +70,6 @@ const PaymentDetailsStep = ({
           ...billingDetailsFormStore.getFormFieldsJson(),
         };
 
-        console.log("formData -> ", formData);
-
         const data = {
           description: formData.about_me,
           links: formData.links,
@@ -87,34 +85,20 @@ const PaymentDetailsStep = ({
           },
         });
 
-        // const proposalId = null;
-        // TODO: NoBlockchain - createRequestToJoin
-        // Create the proposal
-        // const proposalId = await createRequestToJoin(
-        //   currDaoId, {
-        //     ...data,
-        //     cardData: await createCardPayload({
-        //       ...formData,
-        //       ...userInfo,
-        //     }),
-        //   },
-        // );
+        const cardData = await createCardPayload({
+          ...formData,
+          ...userInfo,
+        });
 
         const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin({
           ...data,
-          cardData: await createCardPayload({
-            ...formData,
-            ...userInfo,
-          }),
+          ...cardData,
         });
 
         if (createRequestToJoinResponse.status === 200) {
-          console.log("createRequestToJoinResponse -> ", createRequestToJoinResponse);
-
           const proposalId = createRequestToJoinResponse.data.id;
 
           navigation.pop();
-
           const navigate = CommonActions.navigate({
             name: 'CommonProfile',
             params: {
@@ -134,7 +118,6 @@ const PaymentDetailsStep = ({
         }
       } catch (e) {
         navigation.pop();
-
         showErrorPopUp(bottomSheetStore, e);
       }
     }

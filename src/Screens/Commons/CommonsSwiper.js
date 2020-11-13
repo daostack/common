@@ -40,7 +40,7 @@ const CommonsSwiper = ({
             id: doc.id,
             ...doc.data(),
             ...{
-              coverPhoto: doc.data().metadata?.image || `https://picsum.photos/id/${index *
+              image: doc.data().metadata?.image || `https://picsum.photos/id/${index *
                 10}/500/100.jpg`,
             },
           };
