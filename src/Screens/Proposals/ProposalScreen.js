@@ -409,9 +409,8 @@ const ProposalScreen = ({
     ...proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest && {...layout.flexStart},
   };
 
-  // TODO: NoBlockchain: Make better logic for that
-  const votesFor = proposalScreenInfo?.proposalInfo?.votes.filter((vote) => vote.voteOutcome === 'approved').length;
-  const votesAgainst = proposalScreenInfo?.proposalInfo?.votes.filter((vote) => vote.voteOutcome === 'rejected').length;
+  const votesFor = proposalScreenInfo?.proposalInfo?.votesFor;
+  const votesAgainst = proposalScreenInfo?.proposalInfo?.votesAgainst;
 
   const progressBarWidthPercent = proposalScreenInfo?.proposalInfo
     ? (votesFor / (votesFor + votesAgainst) * 100) : 0;
