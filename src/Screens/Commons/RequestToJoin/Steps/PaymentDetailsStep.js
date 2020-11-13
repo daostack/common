@@ -85,10 +85,13 @@ const PaymentDetailsStep = ({
           },
         });
 
-        const cardData = await createCardPayload({
-          ...formData,
-          ...userInfo,
-        });
+        const cardData = {
+          cardData: await createCardPayload({
+            ...formData,
+            ...userInfo,
+          }),
+          cardId: 'qwerty', // hardcoded required id of the card
+        };
 
         const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin({
           ...data,

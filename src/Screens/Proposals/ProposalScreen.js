@@ -99,7 +99,7 @@ const ProposalScreen = ({
       let funding = null;
 
       if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
-        funding = currProposalInfo.description.funding;
+        funding = currProposalInfo.join.funding;
         currProposedUser = await UserService.getInstance().getUserById(
           currProposalInfo.proposerId
         );
@@ -609,7 +609,7 @@ const ProposalScreen = ({
                     <Text style={text.h2Black}>
                       {`$${proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
                         ? proposalScreenInfo?.proposalInfo.fundingRequest.amount / 100
-                        : proposalScreenInfo?.proposalInfo.description.funding / 100}`}
+                        : proposalScreenInfo?.proposalInfo.join.funding / 100}`}
 
                       {
                         proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join &&

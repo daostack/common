@@ -35,7 +35,7 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
         let proposedMemberId = currProposalInfo.proposerId;
         let funding = null;
         if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
-          funding = currProposalInfo.description.funding;
+          funding = currProposalInfo.join.funding;
         }
         //FundingRequest proposal
         else {
@@ -75,7 +75,7 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
           proposedMemberUser = await UserService.getInstance().getUserById(
             currProposalInfo.proposerId
           );
-          funding = currProposalInfo.description.funding;
+          funding = currProposalInfo.join.funding;
         }
         //FundingRequest proposal
         else {
