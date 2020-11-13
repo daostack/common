@@ -5,41 +5,51 @@ import moment from 'moment';
 import {db} from '~/Firebase';
 import logger from './Logger';
 
+import axios from 'axios';
+import {proposalsUrl} from '~/Config';
+import {auth} from '~/Firebase';
+import {getErrorObject} from '~/Util';
+
 export const PROPOSAL_STAGE = {
-  ExpiredInQueue: '0',
-  Executed: '1',
-  Queued: '2',
-  PreBoosted: '3',
-  Boosted: '4',
-  QuietEndingPeriod: '5',
+  countdown: 'countdown',
+  passed: 'passed',
+  failed: 'failed',
 };
 
 import {PROPOSAL_TYPE} from '../Config';
 
 export const PROPOSAL_STAGES_ACTIVE = [
-  PROPOSAL_STAGE.Queued,
-  PROPOSAL_STAGE.PreBoosted,
-  PROPOSAL_STAGE.Boosted,
-  PROPOSAL_STAGE.QuietEndingPeriod,
+  PROPOSAL_STAGE.countdown,
 ];
 
 export const PROPOSAL_STAGES_HISTORY = [
-  PROPOSAL_STAGE.ExpiredInQueue,
-  PROPOSAL_STAGE.Executed,
+  PROPOSAL_STAGE.passed,
+  PROPOSAL_STAGE.failed,
 ];
 
 export const LAUNCHED_STATES = [
-  PROPOSAL_STAGE.Queued, PROPOSAL_STAGE.PreBoosted,
+  PROPOSAL_STAGE.passed,
 ];
 
 export const COUNTDOWN_STATES = [
-  PROPOSAL_STAGE.Boosted, PROPOSAL_STAGE.QuietEndingPeriod,
+  PROPOSAL_STAGE.failed,
 ];
 
 export default class ProposalService {
   static serviceInstance = null;
 
-  constructor() { }
+  constructor() {
+    this.axiosClient = axios.create({
+      baseURL: proposalsUrl(),
+      timeout: 1000000,
+    });
+
+    this.endpoints = {
+      createJoin: '/create/join',
+      createFunding: '/create/funding',
+      createVote: '/create/vote',
+    };
+  }
 
   static getInstance = () => {
     if (ProposalService.serviceInstance == null) {
@@ -68,8 +78,8 @@ export default class ProposalService {
         } else {
           const stats = {
             all: snapshots.docs.length,
-            active: snapshots.docs.filter((s) => PROPOSAL_STAGES_ACTIVE.includes(s.data().stageStr)).length,
-            history: snapshots.docs.filter((s) => PROPOSAL_STAGES_HISTORY.includes(s.data().stageStr)).length,
+            active: snapshots.docs.filter((s) => PROPOSAL_STAGES_ACTIVE.includes(s.data().state)).length,
+            history: snapshots.docs.filter((s) => PROPOSAL_STAGES_HISTORY.includes(s.data().state)).length,
           };
           return stats;
         }
@@ -81,15 +91,14 @@ export default class ProposalService {
       .collection(DB_COLLECTIONS.proposals)
       .where('proposerId', '==', uid)
       .where('type', '==', PROPOSAL_TYPE.Join)
-      .where('closingAt', '>', moment().unix())
-      .where('stageStr', 'in', PROPOSAL_STAGES_ACTIVE);
+      .where('state', 'in', PROPOSAL_STAGES_ACTIVE);
 
 
     return query.get().then((snapshots) => {
       if (!snapshots) {
         return [];
       } else {
-        return snapshots.docs.filter((s) => PROPOSAL_STAGES_ACTIVE.includes(s.data().stageStr));
+        return snapshots.docs.filter((s) => PROPOSAL_STAGES_ACTIVE.includes(s.data().state));
       }
     });
   }
@@ -120,19 +129,17 @@ export default class ProposalService {
       });
   }
 
-  async subscribeToPendingProposalsData(daoId, userSafeAddress, callback) {
+  async subscribeToPendingProposalsData(daoId, userInfoUid, callback) {
     let proposals = db
       .collection(DB_COLLECTIONS.proposals)
-      .where('dao', '==', daoId)
-      .where('closingAt', '>', moment().unix())
+      .where('commonId', '==', daoId)
       .where('type', '==', PROPOSAL_TYPE.Join)
-      .where('stageStr', 'in', PROPOSAL_STAGES_ACTIVE)
-      .orderBy('closingAt', 'desc');
+      .where('state', 'in', PROPOSAL_STAGES_ACTIVE);
 
     return proposals.onSnapshot((snapshot) => {
       callback({
         pendingProposalCount: snapshot.docs.length,
-        usersPendingProposal: (userSafeAddress && snapshot.docs.find((doc) => doc.data().proposer === userSafeAddress)?.data()) || false,
+        usersPendingProposal: (userInfoUid && snapshot.docs.find((doc) => doc.data().proposerId === userInfoUid)?.data()) || false,
       });
     }, (error) => Toast.error(error));
 
@@ -154,7 +161,7 @@ export default class ProposalService {
     commonId,
     userId,
     stages,
-    safeAddress,
+    safeAddress, //TODO: NoBlockchain: remove that param;
     showAll,
     listChangeCallback,
     listRef,
@@ -163,10 +170,14 @@ export default class ProposalService {
     membershipRequests = false
   ) {
 
+    console.log('commonId -> ', commonId);
+    console.log('userId -> ', userId);
+    console.log('onlyFundingRequests -> ', onlyFundingRequests);
+
     let proposalCollection = db.collection(DB_COLLECTIONS.proposals);
 
     if (commonId) {
-      proposalCollection = proposalCollection.where('dao', '==', commonId);
+      proposalCollection = proposalCollection.where('commonId', '==', commonId);
     }
     if (userId) {
       proposalCollection = proposalCollection.where('proposerId', '==', userId);
@@ -174,18 +185,6 @@ export default class ProposalService {
 
     if (onlyFundingRequests) {
       proposalCollection = proposalCollection.where('type', '==', PROPOSAL_TYPE.FundingRequest);
-    }
-
-    if (safeAddress) {
-      if (safeAddress.isCreatingInProgress) {
-
-      } else {
-        proposalCollection = proposalCollection.where(
-          'proposer',
-          '==',
-          safeAddress.toString(),
-        );
-      }
     }
 
     if (membershipRequests) {
@@ -217,15 +216,15 @@ export default class ProposalService {
     }
 
     if (!showAll) {
-      proposalCollection = proposalCollection.where('stageStr', 'in', stages);
+      proposalCollection = proposalCollection.where('state', 'in', stages);
     }
 
-    proposalCollection = proposalCollection.orderBy('closingAt', 'desc');
-
+    //proposalCollection = proposalCollection.orderBy('closingAt', 'desc');
 
     return proposalCollection.onSnapshot(
       (snapshot) => {
-        if (snapshot.empty) {
+        console.log('snapshot -> ', snapshot);
+        if (!snapshot || snapshot.empty) {
           listChangeCallback([]);
         } else {
           if (snapshot.docChanges().length !== 0) {
@@ -255,11 +254,64 @@ export default class ProposalService {
               const allList = [...createList, ...listRef.current];
               listRef.current = allList;
             }
+            console.log('listRef.current -> ', listRef.current);
             listChangeCallback(listRef.current);
           }
         }
       },
       (error) => logger.error(error),
     );
+  }
+
+  //TODO: NoBlockchain: Move that logic in separate file ?
+  async createFundingProposal(formData) {
+    try {
+      return await this.axiosClient.post(
+        this.endpoints.createFunding,
+        formData,
+        {
+          headers: {
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
+        }
+      );
+    } catch (err) {
+      console.log('CREATE FUNDING PROPOSAL ERROR -> ', getErrorObject(err));
+      throw err;
+    }
+  }
+
+  async createRequestToJoin(formData) {
+    try {
+      return await this.axiosClient.post(
+        this.endpoints.createJoin,
+        formData,
+        {
+          headers: {
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
+        }
+      );
+    } catch (err) {
+      console.log('CREATE REQUEST TO JOIN ERROR -> ', getErrorObject(err));
+      throw err;
+    }
+  }
+
+  async createVote(formData) {
+    try {
+      return await this.axiosClient.post(
+        this.endpoints.createVote,
+        formData,
+        {
+          headers: {
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
+        }
+      );
+    } catch (err) {
+      console.log('CREATE VOTE ERROR -> ', err);
+      throw err;
+    }
   }
 }

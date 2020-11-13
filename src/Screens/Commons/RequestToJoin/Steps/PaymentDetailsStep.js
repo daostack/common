@@ -22,6 +22,7 @@ import {string, func, bool, object, shape} from 'prop-types';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
 import {createCardPayload} from '../../../../Services/CirclePayService';
+import ProposalService from '~/Services/ProposalService';
 import {testCard} from '~/Config';
 import moment from 'moment';
 import {VALIDATION_RULES} from '~/FormStores/ValidationRules';
@@ -69,12 +70,14 @@ const PaymentDetailsStep = ({
           ...billingDetailsFormStore.getFormFieldsJson(),
         };
 
+        console.log("formData -> ", formData);
+
         const data = {
-          title: `request to join ${currDaoId} by ${userInfo.ethereumAddress}`,
           description: formData.about_me,
           links: formData.links,
-          funding: formData.amount * 100,
+          funding: 7 * 100,
           preAuthId: false,
+          commonId: currDaoId,
         };
 
         navigation.navigate({
@@ -84,8 +87,7 @@ const PaymentDetailsStep = ({
           },
         });
 
-
-        const proposalId = null;
+        // const proposalId = null;
         // TODO: NoBlockchain - createRequestToJoin
         // Create the proposal
         // const proposalId = await createRequestToJoin(
@@ -98,21 +100,38 @@ const PaymentDetailsStep = ({
         //   },
         // );
 
-        navigation.pop();
-
-        const navigate = CommonActions.navigate({
-          name: 'CommonProfile',
-          params: {
-            showRequestSentModal: true,
-            createdProposalId: proposalId,
-          },
+        const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin({
+          ...data,
+          cardData: await createCardPayload({
+            ...formData,
+            ...userInfo,
+          }),
         });
 
-        if (typeof refreshFeed === 'function') {
-          refreshFeed();
-        }
+        if (createRequestToJoinResponse.status === 200) {
+          console.log("createRequestToJoinResponse -> ", createRequestToJoinResponse);
 
-        navigation.dispatch(navigate);
+          const proposalId = createRequestToJoinResponse.data.id;
+
+          navigation.pop();
+
+          const navigate = CommonActions.navigate({
+            name: 'CommonProfile',
+            params: {
+              showRequestSentModal: true,
+              createdProposalId: proposalId,
+            },
+          });
+
+          if (typeof refreshFeed === 'function') {
+            refreshFeed();
+          }
+
+          navigation.dispatch(navigate);
+        } else {
+          navigation.pop();
+          showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
+        }
       } catch (e) {
         navigation.pop();
 

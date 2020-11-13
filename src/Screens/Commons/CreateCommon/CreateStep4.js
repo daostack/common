@@ -52,7 +52,7 @@ const CreateStep4 = ({generalInfoFormStore,
   reviewFormStore,
   navigation,
   bottomSheetStore,
-  userStore: {userInfo: {safeAddress}}}) => {
+  userStore: {userInfo: {uid}}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
@@ -174,10 +174,14 @@ const CreateStep4 = ({generalInfoFormStore,
       const formDataInit = {...form};
       const fundingGoalDeadline = formDataInit[CreateCommonForm.DEADLINE];
 
+      const contributionAmount = parseInt(formDataInit.minimum, 10) * 100;
+
       const data = {
         ...formDataInit,
-        founderAddresses: safeAddress,
-        minFeeToJoin: parseInt(formDataInit.minimum, 10) * 100,
+        founderId: uid,
+        minFeeToJoin: contributionAmount,
+        contributionAmount,
+        contributionType: formDataInit.contrbution,
         fundingGoal: parseInt(formDataInit.funding, 10) * 100,
         fundingGoalDeadline,
       };
@@ -191,37 +195,19 @@ const CreateStep4 = ({generalInfoFormStore,
         },
       });
 
-      console.log(JSON.stringify(data));
+      const createCommonResponse = await DaoService.getInstance().createCommon(data);
 
-      // const commonAddress = null;
-      // TODO: NoBlockchain - createCommon
-      // const commonAddress = await createCommon(
-      //   data,
-      //   navigation,
-      // );
-
-      const formData = {
-        name: data.name,
-        image: data.image,
-        action: data.action,
-        byline: data.byline,
-        description: data.description,
-        contributionType: data.contributionType,
-        contributionAmount: data.contributionAmount,
-      };
-
-      const commonAddress = await DaoService.getInstance().createCommon(formData);
-
-      console.log("CREATE COMMON RESPONSE -> ", commonAddress);
-
-      if (commonAddress) {
-        setNewCommonAddress(commonAddress);
+      if (createCommonResponse.status === 200) {
+        setNewCommonAddress(createCommonResponse.data.id);
+      } else {
+        //navigation.pop();
+        showErrorPopUp(bottomSheetStore, createCommonResponse);
       }
 
-      return {commonAddress};
+      return {commonAddress: createCommonResponse.data.id};
     } catch (e) {
-      navigation.pop();
-
+      //navigation.pop();
+      console.log("error -> ", e);
       showErrorPopUp(bottomSheetStore, e);
     }
   };

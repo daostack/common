@@ -79,7 +79,7 @@ const CommonProfile = ({
   const daoMembers = currCommon?.members || [];
   const [daoMemberAvatars] = useState(daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers);
   const [ showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn ] = useState(false);
-  const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
+  const isFundingStage = false;//calcIsFundingStage(currCommon?.fundingGoalDeadline);
 
   const [ dark, setDark ] = useState(false);
   const [ headerHeight, setHeaderHeight ] = useState(DEFAULT_HEADER_HEIGHT);
@@ -143,7 +143,7 @@ const CommonProfile = ({
     let getPendingProposalsData = async () => {
       unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
         commonId,
-        userStore.userInfo?.safeAddress,
+        userStore.userInfo?.uid,
         (data) => {
           setPendingProposalsData({...data});
 
@@ -201,26 +201,31 @@ const CommonProfile = ({
     </View>
   );
 
-  const Proposals = () => (
-    <View style={{...styles.paleBackground, padding: sizeL}}>
-      <Text style={text.h1BlackTitle}>Proposals</Text>
+  const Proposals = () => {
 
-      <ProposalsList
-        onlyFundingRequests={true}
-        isMember={isMember}
-        navigation={navigation}
-        commonInfo={{name: currCommon.name, id: currCommon.id, balance: currCommon.balance}}
-      />
+    console.log("currCommon ", currCommon);
 
-      {isMember && (
-        <ProposalActivationDate
-          activationDate={currCommon.fundingGoalDeadline}
-          bottomSheetStore={bottomSheetStore}
+    return (
+      <View style={{ ...styles.paleBackground, padding: sizeL }}>
+        <Text style={text.h1BlackTitle}>Proposals</Text>
+
+        <ProposalsList
+          onlyFundingRequests={true}
+          isMember={isMember}
+          navigation={navigation}
+          commonInfo={{ name: currCommon.name, id: currCommon.id, balance: currCommon.balance }}
         />
-      )}
 
-    </View>
-  );
+        {isMember && (
+          <ProposalActivationDate
+            activationDate={currCommon.fundingGoalDeadline}
+            bottomSheetStore={bottomSheetStore}
+          />
+        )}
+
+      </View>
+    )
+  };
 
   const History = () => (
     <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
@@ -419,8 +424,8 @@ const CommonProfile = ({
   };
 
   const renderPendingApproval = () => {
-    const remainingSeconds =
-      pendingProposalsData.usersPendingProposal.closingAt - moment().unix();
+    // TODO: NoBlockchain: How to handle remaining seconds?
+    const remainingSeconds = 999; //pendingProposalsData.usersPendingProposal.closingAt - moment().unix();
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
       <TouchableOpacity

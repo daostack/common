@@ -18,6 +18,8 @@ import logger from '~/Services/Logger';
 import {string, object, shape, func} from 'prop-types';
 import FundingRequestFormStore from '~/FormStores/FundingRequestFormStore';
 
+import ProposalService from '~/Services/ProposalService';
+
 const FundingProposal = ({
   navigation,
   route: {params: {commonId, common}} ,
@@ -33,10 +35,11 @@ const FundingProposal = ({
         const data = {
           title: formData[FundingRequestForm.FIELD_TITLE],
           description: formData[FundingRequestForm.FIELD_DESCRIPTION],
-          funding: formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,
+          amount: formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,
           links: formData[FundingRequestForm.FIELD_LINKS],
           images: formData[FundingRequestForm.FIELD_IMAGES],
           files: formData[FundingRequestForm.FIELD_FILES],
+          commonId,
         };
 
         navigation.navigate({
@@ -46,25 +49,29 @@ const FundingProposal = ({
           },
         });
 
-        const proposalId = null;
-        // TODO: NoBlockchain - createFundingProposal
-        // const proposalId = await createFundingProposal(
-        //   commonId,
-        //   data
-        // );
+        const createFundingProposalResponse = await ProposalService.getInstance().createFundingProposal(data);
+        console.log("createFundingProposalResponse 1 -> ", createFundingProposalResponse);
+        console.log("createFundingProposalResponse 2 -> ", createFundingProposalResponse.errors);
 
-        navigation.pop();
+        if (createFundingProposalResponse.status === 200) {
+          const proposalId = createFundingProposalResponse.data.id;
 
-        Toast.done(`Funding Proposal with id ${proposalId} created!`);
+          navigation.pop();
+          Toast.done(`Funding Proposal with id ${proposalId} created!`);
 
-        const navigate = CommonActions.navigate({
-          name: 'CommonProfile',
-          params: {
-            showRequestSentModal: true,
-            createdProposalId: proposalId,
-          },
-        });
-        navigation.dispatch(navigate);
+          const navigate = CommonActions.navigate({
+            name: 'CommonProfile',
+            params: {
+              showRequestSentModal: true,
+              createdProposalId: proposalId,
+            },
+          });
+          navigation.dispatch(navigate);
+        } else {
+          navigation.pop();
+          logger.log(createFundingProposalResponse);
+          Toast.error(createFundingProposalResponse.toString());
+        }
       } catch (error) {
         navigation.pop();
         logger.log(error);

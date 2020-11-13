@@ -36,35 +36,44 @@ const ProposalsList = ({isMember,
     const loadProposalInfo = async (loadCommonId, loadUserId, loadIsHistory, loadShowAll, loadOnlyFundingRequests, loadMembershipRequests) => {
       let proposalStages = [...PROPOSAL_STAGES_HISTORY, ...PROPOSAL_STAGES_ACTIVE];
 
-      unsubscribe = await ProposalService.getInstance().subscribeToProposalList(
-        loadCommonId,
-        loadUserId,
-        proposalStages,
-        safeAddress,
-        loadShowAll,
-        (newList) => {
-          // logger.log(newList, PROPOSAL_STAGE.Executed);
-          const history =  newList.filter((proposal) => PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.stageStr) || moment().isAfter(moment.unix(proposal.closingAt)));
-          const active = newList.filter((proposal) => PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.stageStr) && !moment().isAfter(moment.unix(proposal.closingAt)));
+      try {
+        unsubscribe = await ProposalService.getInstance().subscribeToProposalList(
+          loadCommonId,
+          loadUserId,
+          proposalStages,
+          safeAddress,
+          loadShowAll,
+          (newList) => {
+            console.log("newList -> ", newList);
+            // logger.log(newList, PROPOSAL_STAGE.Executed);
+            const history = newList.filter((proposal) => PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state));
+            const active = newList.filter((proposal) => PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.state));
 
-          const filteredList = loadIsHistory
-            ? history
-            : active;
+            console.log("history -> ", history);
+            console.log("active -> ", active);
 
-          setList(filteredList);
-          if (onCountChange) {
-            if (includeHistoryInCount) {
-              onCountChange(history.length + active.length);
-            } else {
-              onCountChange(filteredList.length);
+            const filteredList = loadIsHistory
+              ? history
+              : active;
+
+            setList(filteredList);
+            if (onCountChange) {
+              if (includeHistoryInCount) {
+                onCountChange(history.length + active.length);
+              } else {
+                onCountChange(filteredList.length);
+              }
             }
-          }
-        },
-        listRef,
-        onlyRequestsToJoin,
-        loadOnlyFundingRequests,
-        loadMembershipRequests
-      );
+          },
+          listRef,
+          onlyRequestsToJoin,
+          loadOnlyFundingRequests,
+          loadMembershipRequests
+        );
+      } catch (err) {
+        console.log("ERRRRRROR proposal subscribe -> ", err);
+        throw err;
+      }
     };
 
     loadProposalInfo(commonId, userId, isHistory, showAll, onlyFundingRequests, membershipRequests);

@@ -38,12 +38,12 @@ class UserStore {
   }
 
   isDaoMember = (members) => (
-    this.userInfo ? isDaoMemberBySafeAddress(members, this.userInfo.safeAddress) : false
+    this.userInfo ? isDaoMemberBySafeAddress(members, this.userInfo.uid) : false
   )
 
   isProposer = (proposal) =>
     this.userInfo
-      ? this.userInfo.safeAddress === proposal.proposer
+      ? this.userInfo.uid === proposal.proposerId
       : false;
 
   setIsLoading = (loading) => {

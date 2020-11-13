@@ -69,7 +69,7 @@ const ProposalScreen = ({
   const [showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer] = useState(false);
   const renderVoting =
     proposalScreenInfo?.proposalInfo &&
-    PROPOSAL_STAGES_ACTIVE.includes(proposalScreenInfo?.proposalInfo?.stageStr) &&
+    PROPOSAL_STAGES_ACTIVE.includes(proposalScreenInfo?.proposalInfo?.state) &&
     isMember &&
     !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voter === userInfo.safeAddress);
 
@@ -87,8 +87,8 @@ const ProposalScreen = ({
   const scrollViewRef = useRef(null);
 
   // Values for vote param required from the blockchain
-  const VOTE_APPROVE = 1;
-  const VOTE_REJECT = 2;
+  const VOTE_APPROVE = 'approved';
+  const VOTE_REJECT = 'rejected';
   let currTabViewScroll = 0;
 
   useEffect(() => {
@@ -101,7 +101,7 @@ const ProposalScreen = ({
       if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
         funding = currProposalInfo.description.funding;
         currProposedUser = await UserService.getInstance().getUserById(
-          currProposalInfo.join.proposedMemberId
+          currProposalInfo.proposerId
         );
 
         LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
@@ -111,8 +111,8 @@ const ProposalScreen = ({
       }
       //FundingRequest proposal
       else {
-        currProposedUser = await UserService.getInstance().getUserByAddress(
-          currProposalInfo.fundingRequest.beneficiary
+        currProposedUser = await UserService.getInstance().getUserById(
+          currProposalInfo.proposerId
         );
         funding = currProposalInfo.fundingRequest.amount;
 
@@ -140,7 +140,7 @@ const ProposalScreen = ({
               });
             }
 
-            const currentDao = await DaoService.getInstance().getDaoById(updatedProposalInfo.dao);
+            const currentDao = await DaoService.getInstance().getDaoById(updatedProposalInfo.commonId);
 
             setIsMember(userInfo && isDaoMember(currentDao?.members || []));
             setIsProposer(userStore.isProposer(updatedProposalInfo));
@@ -314,23 +314,30 @@ const ProposalScreen = ({
     });
 
     try {
-      const voteData = {vote: isApproved ? VOTE_APPROVE : VOTE_REJECT};
+      const voteData = {
+        outcome: isApproved ? VOTE_APPROVE : VOTE_REJECT,
+        proposalId: proposalId || proposalScreenInfo?.proposalInfo.id,
+      };
 
-      await timeout(3000);
+      // await timeout(3000);
 
-      if (proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join) {
-        // TODO: NoBlockchain - voteForJoinProposal
-        // await voteForJoinProposal(
-        //   proposalId || proposalScreenInfo?.proposalInfo.id,
-        //   voteData
-        // );
-      } else {
-        // TODO: NoBlockchain - voteForFundingRequestProposal
-        // await voteForFundingRequestProposal(
-        //   proposalId || proposalScreenInfo?.proposalInfo.id,
-        //   voteData
-        // );
-      }
+      // if (proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join) {
+      //   // TODO: NoBlockchain - voteForJoinProposal
+      //   // await voteForJoinProposal(
+      //   //   proposalId || proposalScreenInfo?.proposalInfo.id,
+      //   //   voteData
+      //   // );
+      // } else {
+      //   // TODO: NoBlockchain - voteForFundingRequestProposal
+      //   // await voteForFundingRequestProposal(
+      //   //   proposalId || proposalScreenInfo?.proposalInfo.id,
+      //   //   voteData
+      //   // );
+      // }
+
+      const createVoteResponse = await ProposalService.getInstance().createVote(voteData);
+
+      console.log("createVoteResponse -> ", createVoteResponse);
 
       setVotingProcessState({inProgress: false, error: false});
       closeApprovalSheet();
@@ -373,7 +380,7 @@ const ProposalScreen = ({
   const renderVotingButtons = (reference) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
-      (moment().isBefore(moment.unix(proposalScreenInfo?.proposalInfo?.closingAt)) || !proposalScreenInfo?.proposalInfo?.closingAt) && (
+      (PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposalScreenInfo?.proposalInfo?.state)) && (
         <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
           <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>What's your vote?</Text>
           <View style={layout.flexRow}>
@@ -402,7 +409,9 @@ const ProposalScreen = ({
     ...proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest && {...layout.flexStart},
   };
 
-  const [votesFor, votesAgainst] = [+proposalScreenInfo?.proposalInfo?.votesFor, +proposalScreenInfo?.proposalInfo?.votesAgainst];
+  // TODO: NoBlockchain: Make better logic for that
+  const votesFor = proposalScreenInfo?.proposalInfo?.votes.filter((vote) => vote.voteOutcome === 'approved').length;
+  const votesAgainst = proposalScreenInfo?.proposalInfo?.votes.filter((vote) => vote.voteOutcome === 'rejected').length;
 
   const progressBarWidthPercent = proposalScreenInfo?.proposalInfo
     ? (votesFor / (votesFor + votesAgainst) * 100) : 0;
@@ -527,9 +536,8 @@ const ProposalScreen = ({
                     <ProposalCardHeader
                       isScreenHeader={true}
                       isBoosted={true}
-                      stage={proposalScreenInfo?.proposalInfo?.stageStr}
+                      stage={proposalScreenInfo?.proposalInfo?.state}
                       winningOutcome={proposalScreenInfo?.proposalInfo?.winningOutcome}
-                      closingAt={proposalScreenInfo?.proposalInfo.closingAt}
                     />
                     {proposalScreenInfo?.proposedUser && (
 
@@ -549,9 +557,8 @@ const ProposalScreen = ({
                     <ProposalCardHeader
                       isScreenHeader={true}
                       isBoosted={true}
-                      stage={proposalScreenInfo?.proposalInfo?.stageStr}
+                      stage={proposalScreenInfo?.proposalInfo?.state}
                       winningOutcome={proposalScreenInfo?.proposalInfo?.winningOutcome}
-                      closingAt={proposalScreenInfo?.proposalInfo.closingAt}
                     />
 
                     {proposalScreenInfo?.proposedUser ? (

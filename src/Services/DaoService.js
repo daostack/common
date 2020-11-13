@@ -5,6 +5,7 @@ import axios from 'axios';
 import {commonsUrl} from '~/Config';
 
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
+import {auth} from '~/Firebase';
 
 export default class DaoService {
   static serviceInstance = null;
@@ -43,17 +44,10 @@ export default class DaoService {
     return dao.metadata.name;
   }
 
-  async getUserDaos(userId, safeAddress) {
-    let safeAddressVar = safeAddress;
-    if (!safeAddressVar) {
-      const user = await UserService.getInstance().getUserById(userId);
-      safeAddressVar = user.safeAddress;
-    }
-
+  async getUserDaos(userId) {
     return db
       .collection(DB_COLLECTIONS.daos)
       .where('members', 'array-contains', {
-        address: safeAddressVar,
         userId,
       })
       .get();
@@ -115,15 +109,16 @@ export default class DaoService {
     callback(snapshot);
   }
 
-
+  //TODO: NoBlockchain: Move that logic in separate file ?
   async createCommon(formData) {
     try {
-      return await this.axiosClient.post(this.endpoints.create,
+      return await this.axiosClient.post(
+        this.endpoints.create,
+        formData,
         {
           headers: {
-            'Authorization': `token test`,
-          }, 
-          data: formData
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
         }
       );
     } catch (err) {

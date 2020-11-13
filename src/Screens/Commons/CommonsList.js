@@ -41,7 +41,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
     }
 
     const proposalList = await ProposalService.getInstance().getUserPendingProposals(userStore.userInfo.uid);
-    const daoList = proposalList.map((proposal) => proposal.data().dao);
+    const daoList = proposalList.map((proposal) => proposal.data().commonId);
 
     return daoList;
   };
@@ -152,17 +152,17 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
     setPendingDaosGroup({title: '', data: []});
     setFeaturedDaosGroup({title: '', data: []});
 
-    Cache.getAsync(CacheKey.AllDaoCache).then((jsonValue) => {
+    // Cache.getAsync(CacheKey.AllDaoCache).then((jsonValue) => {
 
-      if (jsonValue === null) {
-        return;
-      }
-      const docs = JSON.parse(jsonValue);
+    //   if (jsonValue === null) {
+    //     return;
+    //   }
+    //   const docs = JSON.parse(jsonValue);
 
-      filterAndSplitDaoList(docs, true).then((filteredDaos) => {
-        setIsSplited(true);
-      });
-    });
+    //   filterAndSplitDaoList(docs, true).then((filteredDaos) => {
+    //     setIsSplited(true);
+    //   });
+    // });
 
     DaoService.getInstance().subscribeToDaosList(loadDaosList);
   };
