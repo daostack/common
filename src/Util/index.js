@@ -98,7 +98,7 @@ export const getErrorObject = (axiosError) => {
   }
 };
 
-export const isDaoMemberBySafeAddress = (members, userUID) => {
+export const isDaoMemberByUserId = (members, userUID) => {
   if (!members) {
     return false;
   }

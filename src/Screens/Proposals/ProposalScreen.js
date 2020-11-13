@@ -320,14 +320,17 @@ const ProposalScreen = ({
         proposalId: proposalId || proposalScreenInfo?.proposalInfo.id,
       };
 
-
       const createVoteResponse = await ProposalService.getInstance().createVote(voteData);
-
-      setVotingProcessState({inProgress: false, error: false});
-      closeApprovalSheet();
-      Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
-      setIsVoteByYou({isApproved: isApproved});
-
+      if (createVoteResponse.state === 200) {
+        setVotingProcessState({inProgress: false, error: false});
+        closeApprovalSheet();
+        Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
+        setIsVoteByYou({isApproved: isApproved});
+      } else {
+        setVotingProcessState({inProgress: false, error: true});
+        logger.log(createVoteResponse.status);
+        Toast.error(`Status code ${createVoteResponse.status}`);
+      }
     } catch (err) {
       setVotingProcessState({inProgress: false, error: true});
       logger.log(err);
