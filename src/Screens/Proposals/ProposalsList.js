@@ -7,7 +7,6 @@ import {layout, colors, font, text, sizeM} from '~/Theme';
 import SwiperCard from '~/Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import {PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '~/Services/ProposalService';
-import moment from 'moment';
 import {string, bool, object, number, shape, func} from 'prop-types';
 const {width, height} = Dimensions.get('window');
 
@@ -36,45 +35,35 @@ const ProposalsList = ({isMember,
     const loadProposalInfo = async (loadCommonId, loadUserId, loadIsHistory, loadShowAll, loadOnlyFundingRequests, loadMembershipRequests) => {
       let proposalStages = [...PROPOSAL_STAGES_HISTORY, ...PROPOSAL_STAGES_ACTIVE];
 
-      try {
-        unsubscribe = await ProposalService.getInstance().subscribeToProposalList(
-          loadCommonId,
-          loadUserId,
-          proposalStages,
-          safeAddress,
-          loadShowAll,
-          (newList) => {
-            console.log("newList -> ", newList);
-            // logger.log(newList, PROPOSAL_STAGE.Executed);
-            const history = newList.filter((proposal) => PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state));
-            const active = newList.filter((proposal) => PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.state));
+      unsubscribe = await ProposalService.getInstance().subscribeToProposalList(
+        loadCommonId,
+        loadUserId,
+        proposalStages,
+        safeAddress,
+        loadShowAll,
+        (newList) => {
+          // logger.log(newList, PROPOSAL_STAGE.Executed);
+          const history = newList.filter((proposal) => PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state));
+          const active = newList.filter((proposal) => PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.state));
 
-            console.log("history -> ", history);
-            console.log("active -> ", active);
+          const filteredList = loadIsHistory
+            ? history
+            : active;
 
-            const filteredList = loadIsHistory
-              ? history
-              : active;
-
-            setList(filteredList);
-            if (onCountChange) {
-              if (includeHistoryInCount) {
-                onCountChange(history.length + active.length);
-              } else {
-                onCountChange(filteredList.length);
-              }
+          setList(filteredList);
+          if (onCountChange) {
+            if (includeHistoryInCount) {
+              onCountChange(history.length + active.length);
+            } else {
+              onCountChange(filteredList.length);
             }
-          },
-          listRef,
-          onlyRequestsToJoin,
-          loadOnlyFundingRequests,
-          loadMembershipRequests
-        );
-      } catch (err) {
-        console.log("ERRRRRROR proposal subscribe -> ", err);
-        throw err;
-      }
-    };
+          }
+        },
+        listRef,
+        onlyRequestsToJoin,
+        loadOnlyFundingRequests,
+        loadMembershipRequests
+      );
 
     loadProposalInfo(commonId, userId, isHistory, showAll, onlyFundingRequests, membershipRequests);
 

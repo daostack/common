@@ -30,7 +30,7 @@ import {BlurView} from '~/Components';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
-import { object } from 'prop-types';
+import {object} from 'prop-types';
 import DaoService from '~/Services/DaoService';
 import {
   colors,
@@ -207,7 +207,7 @@ const CreateStep4 = ({generalInfoFormStore,
       return {commonAddress: createCommonResponse.data.id};
     } catch (e) {
       //navigation.pop();
-      console.log("error -> ", e);
+      console.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
     }
   };

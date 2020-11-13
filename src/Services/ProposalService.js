@@ -1,7 +1,6 @@
 
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import Toast from '~/Util/Toast';
-import moment from 'moment';
 import {db} from '~/Firebase';
 import logger from './Logger';
 
@@ -282,15 +281,13 @@ export default class ProposalService {
   }
 
   async createRequestToJoin(formData) {
-    const token = await auth().currentUser.getIdToken(true);
-    console.log("createRequestToJoin -> ", token);
     try {
       return await this.axiosClient.post(
         this.endpoints.createJoin,
         formData,
         {
           headers: {
-            Authorization: token,
+            Authorization: await auth().currentUser.getIdToken(true),
           },
         }
       );

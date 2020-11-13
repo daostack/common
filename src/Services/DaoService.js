@@ -1,5 +1,4 @@
 import {db} from '~/Firebase';
-import UserService from './UserService';
 import Toast from '~/Util/Toast';
 import axios from 'axios';
 import {commonsUrl} from '~/Config';
@@ -122,7 +121,7 @@ export default class DaoService {
         }
       );
     } catch (err) {
-      console.log("CREATE COMMON ERROR -> ", err);
+      console.log('CREATE COMMON ERROR -> ', err);
       throw err;
     }
   }

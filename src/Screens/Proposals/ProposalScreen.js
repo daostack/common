@@ -29,7 +29,6 @@ import UserService from '~/Services/UserService';
 import DaoService from '~/Services/DaoService';
 import {observer, inject} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
-import moment from 'moment';
 import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
 import {string, func, object, shape, oneOfType, number} from 'prop-types';
@@ -305,10 +304,6 @@ const ProposalScreen = ({
     setIsApprovalBottomModalVisible(false);
   };
 
-  async function timeout(ms) { //pass a time in milliseconds to this function
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
   const viewUserProfile = () => {
     navigation.navigate('Profile', {userId: proposalScreenInfo?.proposedUser.uid});
   };
@@ -325,25 +320,8 @@ const ProposalScreen = ({
         proposalId: proposalId || proposalScreenInfo?.proposalInfo.id,
       };
 
-      // await timeout(3000);
-
-      // if (proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join) {
-      //   // TODO: NoBlockchain - voteForJoinProposal
-      //   // await voteForJoinProposal(
-      //   //   proposalId || proposalScreenInfo?.proposalInfo.id,
-      //   //   voteData
-      //   // );
-      // } else {
-      //   // TODO: NoBlockchain - voteForFundingRequestProposal
-      //   // await voteForFundingRequestProposal(
-      //   //   proposalId || proposalScreenInfo?.proposalInfo.id,
-      //   //   voteData
-      //   // );
-      // }
 
       const createVoteResponse = await ProposalService.getInstance().createVote(voteData);
-
-      console.log("createVoteResponse -> ", createVoteResponse);
 
       setVotingProcessState({inProgress: false, error: false});
       closeApprovalSheet();

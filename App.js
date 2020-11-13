@@ -50,11 +50,11 @@ import {
 import UserService from './src/Services/UserService';
 import AuthService from './src/Services/AuthService';
 import CommonHome from './src/Components/Navigation/CommonHome';
-import {filterObjectByKeys, prepareUserObject} from './src/Util';
+import {filterObjectByKeys} from './src/Util';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
-import {auth, db} from './src/Firebase';
+import {auth} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
 import validUrl from 'valid-url';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
