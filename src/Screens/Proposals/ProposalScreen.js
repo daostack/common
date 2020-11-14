@@ -321,7 +321,7 @@ const ProposalScreen = ({
       };
 
       const createVoteResponse = await ProposalService.getInstance().createVote(voteData);
-      if (createVoteResponse.state === 200) {
+      if (createVoteResponse.status === 200) {
         setVotingProcessState({inProgress: false, error: false});
         closeApprovalSheet();
         Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');

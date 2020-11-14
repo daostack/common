@@ -222,7 +222,6 @@ export default class ProposalService {
 
     return proposalCollection.onSnapshot(
       (snapshot) => {
-        console.log('snapshot -> ', snapshot);
         if (!snapshot || snapshot.empty) {
           listChangeCallback([]);
         } else {
@@ -253,7 +252,6 @@ export default class ProposalService {
               const allList = [...createList, ...listRef.current];
               listRef.current = allList;
             }
-            console.log('listRef.current -> ', listRef.current);
             listChangeCallback(listRef.current);
           }
         }
@@ -309,7 +307,7 @@ export default class ProposalService {
         }
       );
     } catch (err) {
-      console.log('CREATE VOTE ERROR -> ', err);
+      console.log('CREATE VOTE ERROR -> ', getErrorObject(err));
       throw err;
     }
   }
