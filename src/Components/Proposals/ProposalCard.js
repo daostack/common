@@ -137,7 +137,7 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
           proposal={proposalCardInfo?.proposalInfo}
           showDate={membershipRequest}
           stage={proposalCardInfo.proposalInfo?.state}
-          closingAt={proposalCardInfo.proposalInfo?.closingAt}
+          closingAt={proposalCardInfo.proposalInfo?.createdAt + (proposalCardInfo.proposalInfo?.countdownPeriod * 1000)}
           winningOutcome={proposalCardInfo.proposalInfo?.winningOutcome}
         />
 

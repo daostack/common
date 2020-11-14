@@ -36,7 +36,8 @@ const MemberCard = ({
 
     if (proposalInfo) {
       //TODO: NoBlockchain: Now to handle remaingin seconds ?
-      const remainingSeconds = 9999;//proposalInfo.closingAt - moment().unix();
+      const closingAt = proposalInfo?.createdAt + (proposalInfo?.countdownPeriod * 1000);
+      const remainingSeconds = closingAt - moment().unix();
 
       return (
         <View style={styles.rightContainer}>
@@ -55,7 +56,7 @@ const MemberCard = ({
               // if it is less show countdown till it
               remainingSeconds > 24 * 60 * 60
                 ? (
-                  <Text style={{...text.runningblack, width: '100%'}}>{moment.unix(proposalInfo.closingAt).format('dddd, h:mm')}</Text>
+                  <Text style={{...text.runningblack, width: '100%'}}>{moment.unix(closingAt).format('dddd, h:mm')}</Text>
                 ) : (
                   <CountDown
                     digitTxtStyle={text.smallGreyText}
