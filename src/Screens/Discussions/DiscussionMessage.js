@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   text: {
+    flexShrink: 1,
     marginVertical: 2,
     lineHeight: 24,
     color: colors.black,
@@ -188,7 +189,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     alignSelf: 'flex-end',
-    // flex: 1,
+    flexShrink: 1,
     shadowColor: 'rgba(0, 0, 0, 0.2)',
     shadowOffset: {
       width: 0,
