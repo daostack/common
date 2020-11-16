@@ -25,7 +25,6 @@ import {
   CompleteAccount,
   EditProfile,
   UserProfileReadMode,
-  NativeBridgeTests,
   MyProposals,
   MyCommons,
   CommonAgenda,
@@ -51,12 +50,11 @@ import {
 import UserService from './src/Services/UserService';
 import AuthService from './src/Services/AuthService';
 import CommonHome from './src/Components/Navigation/CommonHome';
-import {filterObjectByKeys, prepareUserObject} from './src/Util';
-import WalletManager from './src/Util/WalletManager';
+import {filterObjectByKeys} from './src/Util';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
-import {auth, db} from './src/Firebase';
+import {auth} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
 import validUrl from 'valid-url';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
@@ -260,8 +258,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   // Login
   useEffect(() => {
-    const subscribers = {authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
-
     const onAuthStateChanged = async (user) => {
       logger.log('AUTH STATE CHANGED:', user?.uid, user?.email, user?.displayName, user);
       try {
@@ -272,8 +268,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             userStore.setIsLoading(true);
             userStore.addLoginInProgress(user?.uid);
             const providerId = user.providerData[0].providerId;
-            await AuthService.getInstance().loadMnemonic(user.uid, providerId);
-
             let appUser = await Cache.get(user.uid);
             if (!appUser) {
               appUser = await UserService.getInstance().getUserById(
@@ -285,7 +279,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             if (isNewUser) {
               const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
               const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
-              appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
+              appUser = await AuthService.getInstance().createUser(userInfo);
             }
 
             const allUserInfo = {
@@ -300,27 +294,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             userStore.removeLoginInProgress(filteredUser.uid);
             userStore.setIsLoading(false);
 
-            // Create a wallet instance for the logged in user
-            // NOTE: The walletManager has init and getInstance methods, which both create a WalletManager instance in some cases.
-            // Please consider a refactoring on that flow.
-            await WalletManager.init(user.uid);
-            const manager = await WalletManager.getInstance();
-
-            if (isNewUser) {
-              manager.createSmartContractWallet();
-            } else {
-              manager.addressCheck(user.uid);
-            }
-
-            if (subscribers.userInfoChangeUnsubscribe) {
-              subscribers.userInfoChangeUnsubscribe();
-            }
-            subscribers.userInfoChangeUnsubscribe = await updateUser(user.uid);
             userStore.setIsLoading(false);
           } else {
-            if (subscribers.userInfoChangeUnsubscribe) {
-              subscribers.userInfoChangeUnsubscribe();
-            }
             userStore.setSignedInUser(null);
             userStore.setIsLoading(false);
           }
@@ -332,39 +307,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
     };
 
-    subscribers.authChangeUnsubscribe = auth().onAuthStateChanged(onAuthStateChanged);
-
-    // The safeAddress of the user is created on the clouldfunctions and after that the user record in the firestore DB is updated with the actual safeAddres.
-    // In order to keep the safeAddress information synced with our App, we need to do the follwing 2 things:
-    // 1) Keep the userStore synced with the latest update for safeAddress
-    // 2) Make sure the WalletManager has the safeAddress for newly created users
-    // TBD:
-    // 1) Can we call that method only if the user don't have safeAddres in the walletManager or userStore ???
-    // 1) Can we unsubscribe for changes once the safeAddress is updated ???
-    const updateUser = async (uid) => {
-      try {
-        if (auth().currentUser === null) {
-          return;
-        }
-        const unsubscribe = db.collection('users').doc(uid).onSnapshot(async (snapshot) => {
-          if (!snapshot.empty) {
-            userStore.setSignedInUser(prepareUserObject(snapshot.data()));
-          }
-
-          /* WalletManager Inited before safeAddress created
-          The safeAddress in wallet manager will be null
-          We need to update it. */
-          const manager = await WalletManager.getInstance();
-          if (manager.safeAddress == null) {
-            manager.safeAddress = snapshot.data().safeAddress;
-          }
-
-        });
-        return unsubscribe;
-      } catch (error) {
-        logger.log(`errpr: ${JSON.stringify(error)} `);
-      }
-    };
+    const authChangeUnsubscribe = auth().onAuthStateChanged(onAuthStateChanged);
 
     const checkOnboardingStatus = async () => {
       try {
@@ -379,15 +322,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       }
     };
 
-    const unsubscribeAll = () => {
-      subscribers.authChangeUnsubscribe();
-      if (subscribers.userInfoChangeUnsubscribe) {
-        subscribers.userInfoChangeUnsubscribe();
-      }
-    };
-
     checkOnboardingStatus();
-    return unsubscribeAll;
+    return authChangeUnsubscribe;
   }, []);
 
   if (loading) {
@@ -582,13 +518,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           }}
           name="MyWallet"
           component={MyWallet}
-        />
-        <Stack.Screen
-          options={{
-            title: 'NativeBridgeTests',
-          }}
-          name="NativeBridgeTests"
-          component={NativeBridgeTests}
         />
         <Stack.Screen name="HUDTest" component={HUDTest} />
         <Stack.Screen

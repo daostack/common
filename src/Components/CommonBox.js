@@ -4,7 +4,7 @@ import {numberFormatter} from '~/Util';
 import {CommonActions} from '@react-navigation/native';
 import CommonCover from './Commons/CommonCover';
 import CommonStageSummary from './Commons/CommonStageSummary';
-import {string, object, number, func, shape} from 'prop-types';
+import {string, object, number, func, shape, array} from 'prop-types';
 
 const CommonBox = ({common, onPress, width = '100%', navigation, headerHeightLayouted}) => (
   <TouchableOpacity
@@ -27,7 +27,7 @@ const CommonBox = ({common, onPress, width = '100%', navigation, headerHeightLay
     <CommonCover
       isMember={false}
       commonInfo={{
-        cover: common.coverPhoto,
+        cover: common.image,
         logo: common.logo,
         name: common.name,
         description: common.metadata?.byline,
@@ -44,7 +44,7 @@ const CommonBox = ({common, onPress, width = '100%', navigation, headerHeightLay
           common.numberOfPreBoostedProposals +
           common.numberOfQueuedProposals,
         goal: common.fundingGoal,
-        members: common.memberCount * 1,
+        members: common.members.length * 1,
         // TODO: get this value. Is it even tracked in the contract? need to check.
         raised: common.metadata?.totalRaised || common.balance,
         currentBudget: numberFormatter(
@@ -58,7 +58,7 @@ const CommonBox = ({common, onPress, width = '100%', navigation, headerHeightLay
 
 CommonBox.propTypes = {
   common: shape({
-    coverPhoto: string,
+    image: string,
     logo: string,
     name: string,
     metadata: object,
@@ -67,8 +67,8 @@ CommonBox.propTypes = {
     numberOfPreBoostedProposals: number,
     numberOfQueuedProposals: number,
     fundingGoal: number,
-    memberCount: number,
-    balance: string,
+    members: array,
+    balance: number,
     tokenTotalSupply: string,
   }).isRequired,
   onPress: func.isRequired,

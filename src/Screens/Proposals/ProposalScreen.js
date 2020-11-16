@@ -22,7 +22,6 @@ import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import ProposalService from '~/Services/ProposalService';
-import ArcService from '~/Services/ArcService';
 import {UserAvatar} from '~/Components';
 import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
@@ -30,7 +29,6 @@ import UserService from '~/Services/UserService';
 import DaoService from '~/Services/DaoService';
 import {observer, inject} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
-import moment from 'moment';
 import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
 import {string, func, object, shape, oneOfType, number} from 'prop-types';
@@ -67,10 +65,11 @@ const ProposalScreen = ({
   const [isSending, setIsSending] = useState(false);
   const [isMember, setIsMember] = useState(false);
   const [isProposer, setIsProposer] = useState(false);
+  const [inputHeight, setInputHeight] = useState(false);
   const [showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer] = useState(false);
   const renderVoting =
     proposalScreenInfo?.proposalInfo &&
-    PROPOSAL_STAGES_ACTIVE.includes(proposalScreenInfo?.proposalInfo?.stageStr) &&
+    PROPOSAL_STAGES_ACTIVE.includes(proposalScreenInfo?.proposalInfo?.state) &&
     isMember &&
     !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voter === userInfo.safeAddress);
 
@@ -88,8 +87,8 @@ const ProposalScreen = ({
   const scrollViewRef = useRef(null);
 
   // Values for vote param required from the blockchain
-  const VOTE_APPROVE = 1;
-  const VOTE_REJECT = 2;
+  const VOTE_APPROVE = 'approved';
+  const VOTE_REJECT = 'rejected';
   let currTabViewScroll = 0;
 
   useEffect(() => {
@@ -100,9 +99,9 @@ const ProposalScreen = ({
       let funding = null;
 
       if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
-        funding = currProposalInfo.description.funding;
+        funding = currProposalInfo.join.funding;
         currProposedUser = await UserService.getInstance().getUserById(
-          currProposalInfo.join.proposedMemberId
+          currProposalInfo.proposerId
         );
 
         LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
@@ -112,8 +111,8 @@ const ProposalScreen = ({
       }
       //FundingRequest proposal
       else {
-        currProposedUser = await UserService.getInstance().getUserByAddress(
-          currProposalInfo.fundingRequest.beneficiary
+        currProposedUser = await UserService.getInstance().getUserById(
+          currProposalInfo.proposerId
         );
         funding = currProposalInfo.fundingRequest.amount;
 
@@ -141,7 +140,7 @@ const ProposalScreen = ({
               });
             }
 
-            const currentDao = await DaoService.getInstance().getDaoById(updatedProposalInfo.dao);
+            const currentDao = await DaoService.getInstance().getDaoById(updatedProposalInfo.commonId);
 
             setIsMember(userInfo && isDaoMember(currentDao?.members || []));
             setIsProposer(userStore.isProposer(updatedProposalInfo));
@@ -248,13 +247,18 @@ const ProposalScreen = ({
                 ref={inputRef}
                 editable={true}
                 fontSize={15}
+                multiline
                 placeholder="What do you think?"
                 onChangeText={(currText) => setInputText(currText)}
+                onContentSizeChange={(event) => {
+                  setInputHeight(event.nativeEvent.contentSize.height);
+                }}
                 style={{
                   flex: 1,
-                  height: 22,
                   padding: 0,
                   marginHorizontal: 10,
+                  maxHeight: 110,
+                  height: Math.max(35, inputHeight + 10),
                 }}
               />
               <TouchableOpacity
@@ -300,10 +304,6 @@ const ProposalScreen = ({
     setIsApprovalBottomModalVisible(false);
   };
 
-  async function timeout(ms) { //pass a time in milliseconds to this function
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
   const viewUserProfile = () => {
     navigation.navigate('Profile', {userId: proposalScreenInfo?.proposedUser.uid});
   };
@@ -315,27 +315,22 @@ const ProposalScreen = ({
     });
 
     try {
-      const voteData = {vote: isApproved ? VOTE_APPROVE : VOTE_REJECT};
+      const voteData = {
+        outcome: isApproved ? VOTE_APPROVE : VOTE_REJECT,
+        proposalId: proposalId || proposalScreenInfo?.proposalInfo.id,
+      };
 
-      await timeout(3000);
-
-      if (proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join) {
-        await ArcService.voteForJoinProposal(
-          proposalId || proposalScreenInfo?.proposalInfo.id,
-          voteData
-        );
+      const createVoteResponse = await ProposalService.getInstance().createVote(voteData);
+      if (createVoteResponse.status === 200) {
+        setVotingProcessState({inProgress: false, error: false});
+        closeApprovalSheet();
+        Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
+        setIsVoteByYou({isApproved: isApproved});
       } else {
-        await ArcService.voteForFundingRequestProposal(
-          proposalId || proposalScreenInfo?.proposalInfo.id,
-          voteData
-        );
+        setVotingProcessState({inProgress: false, error: true});
+        logger.log(createVoteResponse.status);
+        Toast.error(`Status code ${createVoteResponse.status}`);
       }
-
-      setVotingProcessState({inProgress: false, error: false});
-      closeApprovalSheet();
-      Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
-      setIsVoteByYou({isApproved: isApproved});
-
     } catch (err) {
       setVotingProcessState({inProgress: false, error: true});
       logger.log(err);
@@ -372,7 +367,7 @@ const ProposalScreen = ({
   const renderVotingButtons = (reference) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
-      (moment().isBefore(moment.unix(proposalScreenInfo?.proposalInfo?.closingAt)) || !proposalScreenInfo?.proposalInfo?.closingAt) && (
+      (PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposalScreenInfo?.proposalInfo?.state)) && (
         <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
           <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>What's your vote?</Text>
           <View style={layout.flexRow}>
@@ -401,7 +396,8 @@ const ProposalScreen = ({
     ...proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest && {...layout.flexStart},
   };
 
-  const [votesFor, votesAgainst] = [+proposalScreenInfo?.proposalInfo?.votesFor, +proposalScreenInfo?.proposalInfo?.votesAgainst];
+  const votesFor = proposalScreenInfo?.proposalInfo?.votesFor;
+  const votesAgainst = proposalScreenInfo?.proposalInfo?.votesAgainst;
 
   const progressBarWidthPercent = proposalScreenInfo?.proposalInfo
     ? (votesFor / (votesFor + votesAgainst) * 100) : 0;
@@ -526,9 +522,8 @@ const ProposalScreen = ({
                     <ProposalCardHeader
                       isScreenHeader={true}
                       isBoosted={true}
-                      stage={proposalScreenInfo?.proposalInfo?.stageStr}
+                      stage={proposalScreenInfo?.proposalInfo?.state}
                       winningOutcome={proposalScreenInfo?.proposalInfo?.winningOutcome}
-                      closingAt={proposalScreenInfo?.proposalInfo.closingAt}
                     />
                     {proposalScreenInfo?.proposedUser && (
 
@@ -548,36 +543,35 @@ const ProposalScreen = ({
                     <ProposalCardHeader
                       isScreenHeader={true}
                       isBoosted={true}
-                      stage={proposalScreenInfo?.proposalInfo?.stageStr}
+                      stage={proposalScreenInfo?.proposalInfo?.state}
                       winningOutcome={proposalScreenInfo?.proposalInfo?.winningOutcome}
-                      closingAt={proposalScreenInfo?.proposalInfo.closingAt}
                     />
 
                     {proposalScreenInfo?.proposedUser ? (
-                        <>
-                          <UserAvatar
-                            image={proposalScreenInfo?.proposedUser?.photoURL}
-                            imageStyle={{width: 64, height: 64}}
-                            iconName={'clcok'}
-                          />
+                      <>
+                        <UserAvatar
+                          image={proposalScreenInfo?.proposedUser?.photoURL}
+                          imageStyle={{width: 64, height: 64}}
+                          iconName={'clcok'}
+                        />
 
-                          <View style={{...layout.content, ...layout.marginTopS}}>
-                            <Text style={text.h2Black}>
-                              {proposalScreenInfo?.proposedUser
-                                ? proposalScreenInfo?.proposedUser.displayName
-                                : 'unknown user'
-                              }
-                            </Text>
+                        <View style={{...layout.content, ...layout.marginTopS}}>
+                          <Text style={text.h2Black}>
+                            {proposalScreenInfo?.proposedUser
+                              ? proposalScreenInfo?.proposedUser.displayName
+                              : 'unknown user'
+                            }
+                          </Text>
 
 
-                            <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}}
-                              onPress={viewUserProfile}>
-                              <Text style={text.smallBlackText}>View Profile</Text>
-                              <Icon name="right-arrow" size={20}/>
-                            </TouchableOpacity>
+                          <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}}
+                            onPress={viewUserProfile}>
+                            <Text style={text.smallBlackText}>View Profile</Text>
+                            <Icon name="right-arrow" size={20}/>
+                          </TouchableOpacity>
 
-                          </View>
-                        </>
+                        </View>
+                      </>
                     ) :
                       (<Placeholder Animation={Fade}>
                         <PlaceholderMedia
@@ -602,7 +596,7 @@ const ProposalScreen = ({
                     <Text style={text.h2Black}>
                       {`$${proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
                         ? proposalScreenInfo?.proposalInfo.fundingRequest.amount / 100
-                        : proposalScreenInfo?.proposalInfo.description.funding / 100}`}
+                        : proposalScreenInfo?.proposalInfo.join.funding / 100}`}
 
                       {
                         proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join &&
