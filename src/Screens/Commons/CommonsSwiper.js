@@ -165,7 +165,6 @@ const CommonsSwiper = ({
 
 CommonsSwiper.propTypes = {
   navigation: object,
-  safeAddress: string,
   userId: string,
   onCountChange: func,
   showMax: number,

@@ -193,7 +193,7 @@ export default class ProposalService {
       // let userDaos = [];
       //
       // daos.forEach(doc => {
-      //   if(doc.data().members.some(x => x.address == safeAddress)) {
+      //   if(doc.data().members.some(x => x.userId == userId)) {
       //     userDaos.push(doc.data().id)
       //   }
       //

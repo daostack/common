@@ -105,16 +105,6 @@ const FundingProposal = ({
 };
 
 FundingProposal.propTypes = {
-  userStore: shape({
-    userInfo: shape({
-      safeAddress: string,
-    }),
-  }),
-  fundingRequestFormStore: shape({
-    isFormValid: func,
-    getChangedFormFieldsJson: func,
-    form: object,
-  }),
   navigation: object,
   route: shape({
     params: shape({

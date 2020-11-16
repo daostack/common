@@ -186,7 +186,6 @@ ProposalsList.propTypes = {
     id: string,
     name: string,
   }),
-  safeAddress: string,
   showAll: bool,
   showMax: number,
   onlyFundingRequests: bool,
