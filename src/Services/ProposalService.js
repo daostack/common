@@ -160,7 +160,6 @@ export default class ProposalService {
     commonId,
     userId,
     stages,
-    safeAddress, //TODO: NoBlockchain: remove that param;
     showAll,
     listChangeCallback,
     listRef,
@@ -168,10 +167,6 @@ export default class ProposalService {
     onlyFundingRequests,
     membershipRequests = false
   ) {
-
-    console.log('commonId -> ', commonId);
-    console.log('userId -> ', userId);
-    console.log('onlyFundingRequests -> ', onlyFundingRequests);
 
     let proposalCollection = db.collection(DB_COLLECTIONS.proposals);
 
@@ -218,7 +213,7 @@ export default class ProposalService {
       proposalCollection = proposalCollection.where('state', 'in', stages);
     }
 
-    //proposalCollection = proposalCollection.orderBy('closingAt', 'desc');
+    proposalCollection = proposalCollection.orderBy('createdAt', 'desc');
 
     return proposalCollection.onSnapshot(
       (snapshot) => {

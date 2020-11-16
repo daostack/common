@@ -52,11 +52,10 @@ export default class DaoService {
       .get();
   }
 
-  async subscribeToMyDaosList(userId, safeAddress, callback) {
+  async subscribeToMyDaosList(userId, callback) {
     let daos = db
       .collection(DB_COLLECTIONS.daos)
       .where('members', 'array-contains', {
-        address: safeAddress,
         userId,
       });
 

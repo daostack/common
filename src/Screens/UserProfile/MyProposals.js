@@ -59,7 +59,7 @@ const MyProposals = ({navigation, userStore,
   const SceneRenderer = (sceneIndex) => (
     <View style={{flex: 1, marginTop: 40, paddingHorizontal: 20}}>
       <ProposalsList
-        safeAddress={userStore.userInfo.safeAddress}
+        userId={userStore.userInfo.uid}
         membershipRequests={onlyMembershipRequests}
         onlyFundingRequests={onlyFundingRequests}
         isHistory={sceneIndex === 2}

@@ -17,7 +17,6 @@ const DEFAULT_HEADER_HEIGHT = 145;
 
 const CommonsSwiper = ({
   navigation,
-  safeAddress, // TODO: No Blockchain: remove that param
   userId,
   onCountChange,
   showMax,
@@ -68,7 +67,7 @@ const CommonsSwiper = ({
   useEffect(() => {
     let unsubscribe = null;
     const getMyDaos = async () => {
-      unsubscribe = await DaoService.getInstance().subscribeToMyDaosList(userId, safeAddress, loadMydaos);
+      unsubscribe = await DaoService.getInstance().subscribeToMyDaosList(userId, loadMydaos);
     };
 
     getMyDaos();
@@ -77,7 +76,7 @@ const CommonsSwiper = ({
         unsubscribe();
       }
     };
-  }, [safeAddress]);
+  }, [userId]);
 
 
   const headerHeightLayouted = (height) => {

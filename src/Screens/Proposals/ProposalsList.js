@@ -12,7 +12,6 @@ const {width, height} = Dimensions.get('window');
 
 const ProposalsList = ({isMember,
   commonInfo,
-  safeAddress,
   showAll,
   showMax,
   onlyFundingRequests,
@@ -39,7 +38,6 @@ const ProposalsList = ({isMember,
         loadCommonId,
         loadUserId,
         proposalStages,
-        safeAddress,
         loadShowAll,
         (newList) => {
           // logger.log(newList, PROPOSAL_STAGE.Executed);
@@ -73,7 +71,7 @@ const ProposalsList = ({isMember,
         unsubscribe();
       }
     };
-  }, [commonId, isHistory, userId, safeAddress]);
+  }, [commonId, isHistory, userId]);
 
   const renderProposalCard = (item, index) => (
     isSwiper ? (
