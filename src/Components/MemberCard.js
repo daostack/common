@@ -35,8 +35,7 @@ const MemberCard = ({
   const renderRightContainer = () => {
 
     if (proposalInfo) {
-      //TODO: NoBlockchain: Now to handle remaingin seconds ?
-      const closingAt = proposalInfo?.createdAt + (proposalInfo?.countdownPeriod * 1000);
+      const closingAt = proposalInfo?.createdAt.seconds + proposalInfo?.countdownPeriod;
       const remainingSeconds = closingAt - moment().unix();
 
       return (
@@ -153,7 +152,7 @@ MemberCard.propTypes = {
       ]),
     }) ,
     fundingRequest: shape({
-      amount: string,
+      amount: number,
     }),
     state: string,
   }),

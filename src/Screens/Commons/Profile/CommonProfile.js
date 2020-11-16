@@ -36,6 +36,7 @@ import {getStatusBarHeight} from 'react-native-status-bar-height';
 import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDate';
 import {BlurView} from '~/Components';
 import Logger from '~/Services/Logger';
+import moment from 'moment';
 
 import {
   IntroduceYourselfFormStore,
@@ -437,8 +438,8 @@ const CommonProfile = ({
   };
 
   const renderPendingApproval = () => {
-    // TODO: NoBlockchain: How to handle remaining seconds?
-    const remainingSeconds = pendingProposalsData.usersPendingProposal.createdAt + (pendingProposalsData.usersPendingProposal.countdownPeriod * 1000);
+    const remainingSeconds = pendingProposalsData.usersPendingProposal.createdAt.seconds + pendingProposalsData.usersPendingProposal.countdownPeriod - moment().unix();
+
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
       <TouchableOpacity
