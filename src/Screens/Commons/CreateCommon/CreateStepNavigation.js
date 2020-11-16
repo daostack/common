@@ -17,6 +17,18 @@ const CreateStepNavigation = ({title, navigation}) => (
         <Icon name="left-arrow" size={28} style={styles.icon} color="black" />
       </TouchableOpacity>
     }
+    rightButton={
+      <TouchableOpacity
+        style={{justifyContent: 'center'}}
+        onPress={() => navigation.popToTop()}>
+        <Icon
+          name="close"
+          size={18}
+          style={{marginRight: 20}}
+          color="black"
+        />
+      </TouchableOpacity>
+    }
   />
 );
 
