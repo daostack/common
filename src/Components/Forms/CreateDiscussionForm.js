@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, ScrollView, Text, StyleSheet, Keyboard} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
-import {observer, inject} from 'mobx-react';
+import {inject} from 'mobx-react';
 import {colors, font, sizeM} from '~/Theme';
 import Toast from '~/Util/Toast';
 import CreateDiscussionStore from '~/FormStores/CreateDiscussionStore';
@@ -183,4 +183,4 @@ const styles = StyleSheet.create({
 
 export default inject(
   'userStore',
-)(observer(CreateDiscussionForm));
+)(CreateDiscussionForm);
