@@ -247,7 +247,7 @@ const PaymentDetailsStep = ({
                   width: '45%',
                 }}
                 label="Expiration date"
-                value={!testCard ? moment().format('MM/YY') : expDateFormat}
+                value={testCard ? moment().format('MM/YY') : expDateFormat}
                 placeholderText="MM/YY"
                 editable={true}
                 onChangeText={(date) => setExpDateFormat(date)}
