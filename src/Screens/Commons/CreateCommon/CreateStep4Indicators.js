@@ -26,11 +26,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const CreateStep4Indicators = ({contribution, date, title, num}) => (
+const CreateStep4Indicators = ({contribution, date, title, value}) => (
   <>
     <Text style={styles.text}>{title}</Text>
+    {console.log(`num ${value} title ${title} contribution ${contribution} `)}
     <Text style={styles.val}>
-      {contribution ? `$${num}` : num}
+      {contribution ? `$${value}` : value}
     </Text>
 
     {!contribution && (
