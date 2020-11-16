@@ -303,7 +303,9 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
         }}
         title={{
           title: dataState.title,
-          style: text.h2Black,
+          style: [text.h2Black, {paddingLeft:50, paddingRight:20}],
+          ellipsizeMode: 'tail',
+          numberOfLines: 1,
         }}
         leftButton={
           <TouchableOpacity
