@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, StyleSheet} from 'react-native';
-import {string, number, bool, oneOfType} from 'prop-types';
+import {string, bool} from 'prop-types';
 
 
 import {colors, font} from '~/Theme';
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
 const CreateStep4Indicators = ({contribution, date, title, value}) => (
   <>
     <Text style={styles.text}>{title}</Text>
-    {console.log(`num ${value} title ${title} contribution ${contribution} `)}
+
     <Text style={styles.val}>
       {contribution ? `$${value}` : value}
     </Text>
@@ -44,10 +44,7 @@ const CreateStep4Indicators = ({contribution, date, title, value}) => (
 
 CreateStep4Indicators.propTypes = {
   title: string.isRequired,
-  num: oneOfType([
-    number,
-    string,
-  ]).isRequired,
+  value: string.isRequired,
   date: string,
   contribution: bool,
 };
