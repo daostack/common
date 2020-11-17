@@ -43,24 +43,6 @@ export default class UserService {
       });
   }
 
-  async getUserByAddress(address) {
-
-    logger.log('GETTING USER WITH ADDRESS -> ', address);
-
-    return db
-      .collection(DB_COLLECTIONS.users)
-      .where('safeAddress', '==', address)
-      .get()
-      .then((snapshots) => {
-        if (!snapshots) {
-          return null;
-        }
-        const doc = snapshots.docs[0];
-        return {id: doc.id, ...doc.data()};
-
-      });
-  }
-
   async getUsers() {
     logger.log('getUsers-> ');
     return db

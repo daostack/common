@@ -1,11 +1,11 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {layout, text, font} from '~/Theme';
-import {bool, shape, number, string} from 'prop-types';
+import {bool, shape, number} from 'prop-types';
 
 const CommonStageSummary = ({
   isCommonCard,
-  commonProgressInfo: {time, raised, balance, members, currentBudget},
+  commonProgressInfo: {time, raised, balance, members},
 }) => {
   // const deadlineMoment = moment.unix(time);
   // const deadlineHasPassed = moment().isAfter(deadlineMoment);
@@ -59,7 +59,7 @@ const CommonStageSummary = ({
       <View style={styles.commonNumbers}>
         {commonNumberBox(
           <Text style={styles.headerTitle}>
-            ${formatNumber(isCommonCard ? raised : balance / 100)}
+            ${formatNumber(isCommonCard ? raised / 100 : balance / 100)}
           </Text>,
           isCommonCard ? 'Raised' : 'Available funds',
         )}
@@ -99,7 +99,6 @@ CommonStageSummary.propTypes = {
     goal: number,
     members: number,
     raised: number,
-    currentBudget: number,
     balance: number,
   }),
 };

@@ -21,7 +21,7 @@ import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
-import {createCardPayload} from '../../../../Services/CirclePayService';
+import {createCard} from '../../../../Services/CirclePayService';
 import ProposalService from '~/Services/ProposalService';
 import {testCard} from '~/Config';
 import moment from 'moment';
@@ -91,17 +91,14 @@ const PaymentDetailsStep = ({
           },
         });
 
-        const cardData = {
-          cardData: await createCardPayload({
-            ...formData,
-            ...userInfo,
-          }),
-          cardId: '1b8e238f-1158-4b39-8747-c61cbc968dfc', // hardcoded required id of the card
-        };
+        const createdCard = await createCard({
+          ...formData,
+          ...userInfo,
+        });
 
         const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin({
           ...data,
-          ...cardData,
+          cardId: createdCard.cardId,
         });
 
         if (createRequestToJoinResponse.status === 200) {

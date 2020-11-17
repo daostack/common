@@ -71,7 +71,7 @@ const ProposalScreen = ({
     proposalScreenInfo?.proposalInfo &&
     PROPOSAL_STAGES_ACTIVE.includes(proposalScreenInfo?.proposalInfo?.state) &&
     isMember &&
-    !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voter === userInfo.safeAddress);
+    !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid);
 
 
   // Sticky Tab Bar
