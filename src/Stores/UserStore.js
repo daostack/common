@@ -71,9 +71,6 @@ class UserStore {
       if (newUserInfo.email) {
         newUserObj.email = newUserInfo.email;
       }
-      if (newUserInfo.displayName) {
-        newUserObj.displayName = newUserInfo.displayName;
-      }
       if (newUserInfo.firstName) {
         newUserObj.firstName = newUserInfo.firstName;
       }
@@ -101,6 +98,7 @@ class UserStore {
 
       newUserObj.following = newUserInfo.following || [];
       newUserObj.follower = newUserInfo.follower || [];
+      newUserObj.displayName = `${newUserInfo.firstName} ${newUserInfo.lastName}`;
 
       Cache.set(newUserInfo.uid, newUserObj);
       this.userInfo = newUserObj;
