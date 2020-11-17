@@ -181,7 +181,7 @@ const CreateStep4 = ({generalInfoFormStore,
         founderId: uid,
         minFeeToJoin: contributionAmount,
         contributionAmount,
-        contributionType: formDataInit.contrbution,
+        contributionType: formDataInit.contribution,
         fundingGoal: parseInt(formDataInit.funding, 10) * 100,
         fundingGoalDeadline,
       };
