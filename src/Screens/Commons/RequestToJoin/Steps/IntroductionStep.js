@@ -37,7 +37,7 @@ const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep
   }, [scrollY]);
 
   const push = () => {
-    if (introduceYourselfFormStore.isFormValid()) {
+    // if (introduceYourselfFormStore.isFormValid()) {
       const navigate = CommonActions.navigate({
         name: 'ContributionStep',
         params: {
@@ -49,7 +49,7 @@ const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep
         },
       });
       navigation.dispatch(navigate);
-    }
+    // }
   };
 
   return (

@@ -59,7 +59,7 @@ const CommonStageSummary = ({
       <View style={styles.commonNumbers}>
         {commonNumberBox(
           <Text style={styles.headerTitle}>
-            ${formatNumber(isCommonCard ? raised : balance / 100)}
+            ${formatNumber(isCommonCard ? raised / 100 : balance / 100)}
           </Text>,
           isCommonCard ? 'Raised' : 'Available funds',
         )}
