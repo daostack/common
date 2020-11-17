@@ -6,8 +6,7 @@ import {observer, inject} from 'mobx-react';
 import {string, object, shape, func } from 'prop-types';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 
-const CreateStepNavigation = ({title, 
-  bottomSheetStore, navigation}) => (
+const CreateStepNavigation = ({title, bottomSheetStore, navigation}) => (
   <NavigationBar
     statusBar={{hidden: true}}
     title={{
@@ -23,16 +22,16 @@ const CreateStepNavigation = ({title,
     rightButton={
       <TouchableOpacity
         style={{justifyContent: 'center'}}
-          onPress={() => {
-            bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
-              navigation: navigation,
-              onContinueEditing: () => bottomSheetStore.hideBottomSheet(),
-              onLeaveWithoutSaving: () => {
-                bottomSheetStore.hideBottomSheet()
-                navigation.popToTop()
-              },
-            });
-          }}>
+        onPress={() => {
+          bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
+            navigation: navigation,
+            onContinueEditing: () => bottomSheetStore.hideBottomSheet(),
+            onLeaveWithoutSaving: () => {
+              bottomSheetStore.hideBottomSheet();
+              navigation.popToTop();
+            },
+          });
+        }}>
         <Icon
           name="close"
           size={18}
