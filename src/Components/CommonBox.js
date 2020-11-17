@@ -1,6 +1,5 @@
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {numberFormatter} from '~/Util';
 import {CommonActions} from '@react-navigation/native';
 import CommonCover from './Commons/CommonCover';
 import CommonStageSummary from './Commons/CommonStageSummary';
@@ -47,7 +46,7 @@ const CommonBox = ({common, onPress, width = '100%', navigation, headerHeightLay
         members: common.members.length * 1,
         // TODO: get this value. Is it even tracked in the contract? need to check.
         raised: common.raised,
-        currentBudget: common.balance
+        currentBudget: common.balance,
       }}
     />
   </TouchableOpacity>

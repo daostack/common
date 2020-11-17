@@ -21,7 +21,7 @@ import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
-import {createCard, createCardPayload} from '../../../../Services/CirclePayService';
+import {createCard} from '../../../../Services/CirclePayService';
 import ProposalService from '~/Services/ProposalService';
 import {testCard} from '~/Config';
 import moment from 'moment';

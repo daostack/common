@@ -96,7 +96,6 @@ const CommonAgenda = ({
           </View>
         )}
 
-        {console.log(common)}
         {common.links?.length > 0 && (
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Links</Text>
