@@ -3,7 +3,7 @@ import {TouchableOpacity, StyleSheet} from 'react-native';
 import NavigationBar from 'react-native-navbar';
 import Icon from '~/Assets/iconfont/Icon';
 import {observer, inject} from 'mobx-react';
-import {string, object, shape, func } from 'prop-types';
+import {string, object, shape, func} from 'prop-types';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 
 const CreateStepNavigation = ({title, bottomSheetStore, navigation}) => (
