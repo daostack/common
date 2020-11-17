@@ -15,7 +15,7 @@ import {CommonActions} from '@react-navigation/native';
 import Toast from '~/Util/Toast';
 import font from '~/Theme/font';
 import logger from '~/Services/Logger';
-import {string, object, shape, func} from 'prop-types';
+import {string, object, shape} from 'prop-types';
 import FundingRequestFormStore from '~/FormStores/FundingRequestFormStore';
 
 import ProposalService from '~/Services/ProposalService';
@@ -105,16 +105,6 @@ const FundingProposal = ({
 };
 
 FundingProposal.propTypes = {
-  userStore: shape({
-    userInfo: shape({
-      safeAddress: string,
-    }),
-  }),
-  fundingRequestFormStore: shape({
-    isFormValid: func,
-    getChangedFormFieldsJson: func,
-    form: object,
-  }),
   navigation: object,
   route: shape({
     params: shape({

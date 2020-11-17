@@ -79,7 +79,7 @@ const ProposalDiscussion = ({proposal, proposalId, scrollViewRef}) => {
   const getOutcomeForMessage = async (proposalObj, message) => {
     const user = await UserService.getInstance().getUserById(message.ownerId);
 
-    return proposalObj?.votes.find((y) => y.voter === user.safeAddress).outcome === 1;
+    return proposalObj?.votes.find((y) => y.voterId === user.uid).outcome === 1;
   };
 
   return (
