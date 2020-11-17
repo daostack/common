@@ -11,12 +11,20 @@ import {
 import {object, shape, number, array, string} from 'prop-types';
 import {layout, text, font, colors} from '~/Theme';
 
-const CommonAgenda = ({navigation,
+const CommonAgenda = ({
+  // This destructuring is bloody awful
+  navigation,
   route: {
-    params: {common: {metadata, fundingGoalDeadline}},
-  }}) => (
+    params: {
+      common: {
+        metadata,
+        ...common
+      },
+    },
+  },
+}) => (
   <>
-    <StatusBar barStyle="dark-content" />
+    <StatusBar barStyle="dark-content"/>
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
@@ -42,8 +50,10 @@ const CommonAgenda = ({navigation,
         {(metadata.action || metadata.courseOfAction) && (
           <View style={styles.sectionContainer}>
             <Text style={text.h2Black}>About</Text>
-            <Text style={{...styles.description, width: '100%',
-              ...text.writingDirection(metadata.description)}}>
+            <Text style={{
+              ...styles.description, width: '100%',
+              ...text.writingDirection(metadata.description),
+            }}>
               {metadata.description}
             </Text>
           </View>
@@ -68,22 +78,29 @@ const CommonAgenda = ({navigation,
           </View>
         )}
 
-        {(metadata.action || metadata.courseOfAction) && (
+        {(metadata.action) && (
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>
               Course of action
             </Text>
 
-            <Text style={{...styles.description, width: '100%',
-              ...text.writingDirection(metadata.action || metadata.courseOfAction)}}>
-              {metadata.action || metadata.courseOfAction}
+            <Text
+              style={{
+                ...styles.description,
+                ...text.writingDirection(metadata.action),
+                width: '100%',
+              }}
+            >
+              {metadata.action}
             </Text>
           </View>
         )}
-        {metadata.links?.length > 0 && (
+
+        {console.log(common)}
+        {common.links?.length > 0 && (
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Links</Text>
-            {metadata.links.map((link, i) => (
+            {common.links.map((link, i) => (
               <View key={i}>
                 <Text
                   style={styles.linkText}
@@ -100,28 +117,34 @@ const CommonAgenda = ({navigation,
           </View>
         )}
 
-        {metadata.rules?.length > 0 && (
-          <>
+        {common.rules?.length > 0 && (
+          <React.Fragment>
             <View style={styles.sectionDividerContent}>
-              <View style={styles.sectionDivider} />
+              <View style={styles.sectionDivider}/>
             </View>
+
             <View style={styles.sectionContainer}>
               <Text style={text.h2Black}>Rules of conduct</Text>
-              {metadata.rules.map((rule, i) => (
-                <View key={i} style={{width: '100%'}} >
-                  <Text style={{...styles.ruleTitle,
-                    ...text.writingDirection(rule.title)}}>
+
+              {common.rules.map((rule, i) => (
+                <View key={i} style={{width: '100%'}}>
+                  <Text style={{
+                    ...styles.ruleTitle,
+                    ...text.writingDirection(rule.title),
+                  }}>
                     {rule.title}
                   </Text>
                   <Text
-                    style={{...styles.ruleDescription,
-                      ...text.writingDirection(rule.value || rule.url)}}>
+                    style={{
+                      ...styles.ruleDescription,
+                      ...text.writingDirection(rule.value || rule.url),
+                    }}>
                     {rule.value || rule.url}
                   </Text>
                 </View>
               ))}
             </View>
-          </>
+          </React.Fragment>
         )}
       </ScrollView>
     </SafeAreaView>
