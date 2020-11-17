@@ -5,7 +5,7 @@ import {bool, shape, number, string} from 'prop-types';
 
 const CommonStageSummary = ({
   isCommonCard,
-  commonProgressInfo: {time, raised, balance, members, currentBudget},
+  commonProgressInfo: {time, raised, balance, members},
 }) => {
   // const deadlineMoment = moment.unix(time);
   // const deadlineHasPassed = moment().isAfter(deadlineMoment);
@@ -99,7 +99,6 @@ CommonStageSummary.propTypes = {
     goal: number,
     members: number,
     raised: string,
-    currentBudget: number,
     balance: number,
   }),
 };

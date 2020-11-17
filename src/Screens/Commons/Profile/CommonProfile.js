@@ -736,7 +736,6 @@ const CommonProfile = ({
                   members: currCommon.members.length,
                   balance: currCommon.balance,
                   raised: currCommon.raised,
-                  currentBudget: currCommon.balance,
                 }}
               />
             </View>
