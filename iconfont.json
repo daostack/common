@@ -1,6 +1,6 @@
 {
   "symbol_url": "//at.alicdn.com/t/font_1704341_pigddc1wf3q.js",
-  "use_typescript": false,
+  "use_typescript": true,
   "save_dir": "./src/Assets/iconfont",
   "trim_icon_prefix": "icon",
   "default_icon_size": 18,
