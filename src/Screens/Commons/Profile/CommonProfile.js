@@ -735,10 +735,8 @@ const CommonProfile = ({
                     currCommon.numberOfQueuedProposals,
                   /* goal: currCommon.fundingGoal, */
                   members: currCommon.members.length,
-                  // TODO: get this value. Is it even tracked in the contract? need to check.
                   balance: currCommon.balance,
-                  raised: currCommon.metadata.totalRaised || currCommon.balance,
-                  currentBudget: currCommon.tokenTotalSupply,
+                  raised: currCommon.raised,
                 }}
               />
             </View>

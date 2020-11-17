@@ -1,6 +1,5 @@
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {numberFormatter} from '~/Util';
 import {CommonActions} from '@react-navigation/native';
 import CommonCover from './Commons/CommonCover';
 import CommonStageSummary from './Commons/CommonStageSummary';
@@ -46,11 +45,8 @@ const CommonBox = ({common, onPress, width = '100%', navigation, headerHeightLay
         goal: common.fundingGoal,
         members: common.members.length * 1,
         // TODO: get this value. Is it even tracked in the contract? need to check.
-        raised: common.metadata?.totalRaised || common.balance,
-        currentBudget: numberFormatter(
-          // TODO: get the actual balance of the DAO: https://daostack1.atlassian.net/browse/CM-331
-          common.tokenTotalSupply,
-        ),
+        raised: common.raised,
+        currentBudget: common.balance,
       }}
     />
   </TouchableOpacity>
