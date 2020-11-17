@@ -98,7 +98,7 @@ CommonStageSummary.propTypes = {
     activeProposals: number,
     goal: number,
     members: number,
-    raised: string,
+    raised: number,
     currentBudget: number,
     balance: number,
   }),
