@@ -1,6 +1,8 @@
 module.exports = {
   root: true,
   extends: ['@react-native-community/eslint-config'],
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint'],
   rules: {
     'react-native/no-inline-styles': 'off',
     'no-shadow': 1,
@@ -8,7 +10,7 @@ module.exports = {
     'prettier/prettier': 0,
     'indent': ['error', 2],
     'no-trailing-spaces': 1,
-    'react/jsx-filename-extension': [1, { 'extensions': ['.js', '.jsx', '.tsx'] }],
+    'react/jsx-filename-extension': [1, {'extensions': ['.js', '.jsx', '.tsx']}],
     'object-curly-spacing': 1,
     'object-curly-newline': 1,
     'arrow-parens': 1,
