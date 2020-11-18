@@ -45,6 +45,10 @@ import {
 import logger from '~/Services/Logger';
 
 const {width} = Dimensions.get('window');
+const CONTRIBUTION = {
+  'monthly': '/mo',
+  'one-time': '',
+};
 
 const CreateStep4 = ({generalInfoFormStore,
   fundingFormStore,
@@ -212,6 +216,10 @@ const CreateStep4 = ({generalInfoFormStore,
     }
   };
 
+  const displayString = () => `${
+    numberFormatter(form[CreateCommonForm.MINIMUM])}${
+    CONTRIBUTION[form.contribution]}`;
+
   return (
     <SafeAreaView
       style={{
@@ -376,9 +384,7 @@ const CreateStep4 = ({generalInfoFormStore,
             <View style={{width: 120, marginHorizontal: 10}}>
               <CreateStep4Indicators
                 title="Min. Contribution"
-                value={`${
-                  numberFormatter(form[CreateCommonForm.MINIMUM])}${
-                  form.contribution === 'monthly' ? '/mo' : ''}`}
+                value={displayString()}
                 contribution
               />
             </View>
