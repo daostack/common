@@ -22,7 +22,7 @@ import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import ProposalService from '~/Services/ProposalService';
-import {UserAvatar} from '~/Components';
+import {UserAvatar, BottomRightButton} from '~/Components';
 import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
 import UserService from '~/Services/UserService';
@@ -34,6 +34,7 @@ import {db} from '~/Firebase';
 import {string, func, object, shape, oneOfType, number} from 'prop-types';
 import logger from '~/Services/Logger';
 import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -46,6 +47,7 @@ const screenHeight = Dimensions.get('window').height;
 
 const ProposalScreen = ({
   navigation,
+  bottomSheetStore,
   userStore: {
     userInfo,
     isDaoMember,
@@ -67,6 +69,7 @@ const ProposalScreen = ({
   const [isProposer, setIsProposer] = useState(false);
   const [inputHeight, setInputHeight] = useState(false);
   const [showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer] = useState(false);
+  const [showPaymentStatus, setShowPaymentStatus] = useState(false);
   const renderVoting =
     proposalScreenInfo?.proposalInfo &&
     PROPOSAL_STAGES_ACTIVE.includes(proposalScreenInfo?.proposalInfo?.state) &&
@@ -121,6 +124,9 @@ const ProposalScreen = ({
         });
       }
 
+      if (currProposalInfo.state === 'passed') {
+        setShowPaymentStatus(true);
+      }
       setProposalScreenInfo(
         {
           proposalInfo: {...currProposalInfo, funding},
@@ -362,6 +368,13 @@ const ProposalScreen = ({
         </View>
       );
     }
+  };
+
+  const paymentStatusModal = () => {
+    console.log('called', BOTTOM_SHEET_TEMPLATES.PAYMENT_FAILED)
+    /*bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.PAYMENT_FAILED
+    )*/
   };
 
   const renderVotingButtons = (reference) => {
@@ -699,6 +712,8 @@ const ProposalScreen = ({
             {messageInput()}
           </React.Fragment>
         )}
+
+        {showPaymentStatus && paymentStatusModal()}
       </SafeAreaView>
 
       <BottomSheetModal
@@ -859,5 +874,6 @@ const styles = StyleSheet.create({
 
 
 export default inject(
-  'userStore'
+  'userStore',
+  'bottomSheetStore'
 )(observer(ProposalScreen));
