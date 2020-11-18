@@ -59,6 +59,8 @@ Please enter command `npx jetify` in terminal. [StackOverflow](https://stackover
 
 [Code Push](./doc/codepush.md)
 
+[Converting JS files to TypeScript](./doc/react-js-to-ts.md)
+
 ### Useful Download links
 
 ##### Android Studio

@@ -5,6 +5,10 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   rules: {
     'react-native/no-inline-styles': 'off',
+    'padding-line-between-statements': [
+      'warn',
+      {'blankLine': 'always', 'prev': ['function', 'block', 'class', 'expression', 'const'], 'next': 'export'},
+    ],
     'no-shadow': 1,
     'react-hooks/exhaustive-deps': 0,
     'prettier/prettier': 0,

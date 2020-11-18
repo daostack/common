@@ -1,7 +1,6 @@
 import {observable, action, decorate} from 'mobx';
 import {isDaoMemberByUserId} from '~/Util';
 import Cache from '../Util/Cache';
-
 export const userInfoFields = [
   'uid',
   'displayName',
@@ -17,53 +16,44 @@ export const userInfoFields = [
   'following',
   'follower',
 ];
-
+type SignInErrorWithCode = any
+type UserInfo = any
 class UserStore {
-  userInfo;
-  signedInUser;
-  loginInProgress;
-  isLoading;
-  signInError;
-  myCommons;
-  myProposals;
+  userInfo: UserInfo;
+  signedInUser: any;
+  loginInProgress: any;
+  isLoading: boolean;
+  signInError: SignInErrorWithCode;
+  myCommons: any;
+  myProposals: any;
+  address: any;
   constructor() {
     this.userInfo = null;
     this.isLoading = false;
     this.loginInProgress = [];
   }
-
-  setSignInError = (error) => {
+  setSignInError = (error: SignInErrorWithCode) => {
     this.signInError = error;
-  }
-
-  isDaoMember = (members) => (
-    this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false
-  )
-
-  isProposer = (proposal) =>
-    this.userInfo
-      ? this.userInfo.uid === proposal.proposerId
-      : false;
-
-  setIsLoading = (loading) => {
+  };
+  isDaoMember = (members: UserInfo[]) =>
+    this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false;
+  isProposer = (proposal: any) =>
+    this.userInfo ? this.userInfo.uid === proposal.proposerId : false;
+  setIsLoading = (loading: boolean) => {
     this.isLoading = loading;
   };
-
-  addLoginInProgress = (uid) => {
+  addLoginInProgress = (uid: any) => {
     this.loginInProgress.push(uid);
-  }
-
-  removeLoginInProgress = (uid) => {
-    this.loginInProgress = this.loginInProgress.filter((item) => item !== uid);
-  }
-
-  isLoginInProgressExists = (uid) => this.loginInProgress.filter((item) => item === uid).length > 0;
-
-  setSignedInUser = (newUserInfo) => {
-    const isUserChanged = newUserInfo?.uid !== this.userInfo?.uid;
-
+  };
+  removeLoginInProgress = (uid: any) => {
+    this.loginInProgress = this.loginInProgress.filter((item: any) => item !== uid);
+  };
+  isLoginInProgressExists = (uid: any) =>
+    this.loginInProgress.filter((item: any) => item === uid).length > 0;
+  setSignedInUser = (newUserInfo: any) => {
+    const isUserChanged = newUserInfo.uid !== this.userInfo.uid;
     if (newUserInfo) {
-      let newUserObj = {};
+      let newUserObj = {} as any;
       if (newUserInfo.uid) {
         newUserObj.uid = newUserInfo.uid;
       }
@@ -91,7 +81,6 @@ class UserStore {
       if (newUserInfo.byLine) {
         newUserObj.byLine = newUserInfo.byLine;
       }
-
       newUserObj.following = newUserInfo.following || [];
       newUserObj.follower = newUserInfo.follower || [];
       newUserObj.displayName = `${newUserInfo.firstName || ''} ${newUserInfo.lastName || ''}`;
@@ -101,13 +90,11 @@ class UserStore {
     } else {
       this.userInfo = null;
     }
-
     if (isUserChanged) {
-      this.signedInUser = newUserInfo?.uid;
+      this.signedInUser = newUserInfo.uid;
     }
   };
 }
-
 decorate(UserStore, {
   address: observable,
   setSignedInUser: action,

@@ -6,10 +6,16 @@ import {statusCodes} from '@react-native-community/google-signin';
 import {observer, inject} from 'mobx-react';
 import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
-import {shape, func} from 'prop-types';
+import UserStore from '~/Stores/UserStore';
 
-const GSignInButton = ({onSignIn, userStore}) => {
-
+type GSignInButtonProps = {
+  onSignIn?: any,
+  userStore: UserStore
+};
+const GSignInButton: React.FC<GSignInButtonProps> = ({
+  onSignIn,
+  userStore,
+}: GSignInButtonProps) => {
   const _signIn = async () => {
     try {
       // That loading status will be changed to false in the onAuthStateChanged method in App.js
@@ -36,14 +42,14 @@ const GSignInButton = ({onSignIn, userStore}) => {
       }
     }
   };
-
   const renderSignInButton = () => (
     <TouchableOpacity style={styles.buttonOutline} onPress={_signIn}>
       <Icon name="google" size={32} />
-      <Text style={{...text.buttonblack, fontWeight: '600', width: '100%'}}>Continue with Google</Text>
+      <Text style={{...text.buttonblack, fontWeight: '600', width: '100%'}}>
+        Continue with Google
+      </Text>
     </TouchableOpacity>
   );
-
   const renderError = () => {
     if (userStore.signInError) {
       const errorText = `${userStore.signInError.toString()} ${
@@ -57,7 +63,6 @@ const GSignInButton = ({onSignIn, userStore}) => {
       );
     }
   };
-
   return (
     <View style={styles.container}>
       {renderError()}
@@ -65,14 +70,6 @@ const GSignInButton = ({onSignIn, userStore}) => {
     </View>
   );
 };
-
-GSignInButton.propTypes = {
-  onSignIn: func,
-  userStore: shape({
-    setIsLoading: func,
-  }),
-};
-
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',

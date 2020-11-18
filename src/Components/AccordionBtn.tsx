@@ -1,48 +1,56 @@
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import {text, font,layout, colors} from 'common/src/Theme';
+import {StyleSheet, View, Text, TouchableOpacity, ViewStyle, GestureResponderEvent} from 'react-native';
+import {text, font, layout, colors} from '../Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import React from 'react';
-import {string, func, bool} from 'prop-types';
-
-
-const BtnContent = ({lightStyle, title, subtitle}) => (
+type BtnContentProps = {
+  title: string,
+  subtitle?: string,
+  lightStyle?: ViewStyle
+};
+const BtnContent: React.FC<BtnContentProps> = ({
+  lightStyle,
+  title,
+  subtitle,
+}: BtnContentProps) => (
   <>
     <View>
-      <Text style={lightStyle
-        ? {...styles.btnText, ...styles.btnTextLight}
-        : {...styles.btnText}}>{title}
+      <Text
+        style={
+          lightStyle
+            ? {...styles.btnText, ...styles.btnTextLight}
+            : {...styles.btnText}
+        }
+      >
+        {title}
       </Text>
       {subtitle && <Text style={styles.btnSubtitleText}>{subtitle}</Text>}
     </View>
     {!lightStyle && <Icon name="right-arrow" />}
   </>
 );
-
-const AccordionBtn = ({title, subtitle, onPress, lightStyle}) => (
+type AccordionBtnProps = {
+  title: string,
+  subtitle?: string,
+  onPress: (event: GestureResponderEvent) => void,
+  lightStyle?: ViewStyle
+};
+const AccordionBtn: React.FC<AccordionBtnProps> = ({
+  title,
+  subtitle,
+  onPress,
+  lightStyle,
+}: AccordionBtnProps) => (
   <TouchableOpacity
     onPress={onPress}
     style={
       lightStyle
         ? {...styles.accordionBtn, ...styles.accordionBtnLight}
         : styles.accordionBtn
-    }>
+    }
+  >
     <BtnContent {...{lightStyle, title, subtitle}} />
   </TouchableOpacity>
 );
-
-AccordionBtn.propTypes = {
-  title: string.isRequired,
-  subtitle: string,
-  onPress: func.isRequired,
-  lightStyle: bool,
-};
-
-BtnContent.propTypes = {
-  title: string.isRequired,
-  subtitle: string,
-  lightStyle: bool,
-};
-
 const styles = StyleSheet.create({
   accordionBtn: {
     ...layout.content,
@@ -54,7 +62,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     height: 60,
     paddingVertical: 0,
-
   },
   accordionBtnLight: {
     borderBottomWidth: 0,
