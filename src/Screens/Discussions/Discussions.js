@@ -217,10 +217,16 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
           commonId: commonId,
           discussionId: discussionId,
         })
-        .then(() => {
+        .then(async () => {
           Keyboard.dismiss();
-
           setInputText('');
+
+          db.collection('discussion')
+            .doc(discussionId)
+            .update({
+              lastMessage: new Date(),
+            })
+            .catch((err) => logger.log(err));
         })
         .catch((error) => {
           Toast.error(error);
