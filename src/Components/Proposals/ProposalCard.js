@@ -149,8 +149,7 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
             flexWrap: 'wrap',
           }}>
           {proposalCardInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && <Text
-            style={{...text.h3Black, width: '100%', flexWrap: 'wrap', padding: 10, fontSize: 16,
-              ...text.textAlign(proposalCardInfo.proposalInfo?.description?.title)}}>
+            style={{...text.h3Black, width: '100%', flexWrap: 'wrap', padding: 10, fontSize: 16}}>
             {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
           </Text>}
 
