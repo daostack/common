@@ -124,7 +124,9 @@ const ProposalScreen = ({
         });
       }
 
+      // but if more than 1 member, it will be in countdown, so this condition is not right
       if (currProposalInfo.state === 'passed') {
+        // get payment here
         setShowPaymentStatus(true);
       }
       setProposalScreenInfo(
@@ -371,10 +373,13 @@ const ProposalScreen = ({
   };
 
   const paymentStatusModal = () => {
-    console.log('called', BOTTOM_SHEET_TEMPLATES.PAYMENT_FAILED)
-    /*bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.PAYMENT_FAILED
-    )*/
+    /*const payment = await db.collection('payments')
+      .where('proposalId', '==', proposalId)
+      .get();
+    console.log('tkt damn data', payment.data())*/
+    bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.PAYMENT_FAILED,
+    );
   };
 
   const renderVotingButtons = (reference) => {

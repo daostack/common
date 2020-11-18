@@ -58,7 +58,7 @@ export const BOTTOM_SHEET_TEMPLATES = {
   },
   PAYMENT_FAILED: {
     topSnap: 500,
-    content: PublishCommon,
+    content: PaymentFailed,
   },
 };
 

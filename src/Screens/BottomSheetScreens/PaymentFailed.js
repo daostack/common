@@ -9,13 +9,13 @@ const PaymentFailed = ({bottomSheetStore}) => (
   <View style={styles.container}>
     <View style={styles.body}>
       <Image
-        source={require('../../Assets/edit.png')}
+        source={require('../../Assets/closed.png')}
         style={styles.image}
       />
 
-      <Text style={styles.textTitle}>Are you sure?</Text>
-      <Text style={styles.subtitle}>
-        You will not be able to make changes to the Common info after it is published.
+      <Text style={styles.textTitle}>Payment Failed</Text>
+      <Text style={styles.subtitle}>{`This request was approved by the Common members. However, we weren't able to collect the contribution, and the request was cancelled.\n
+              [First name] was not added as a member. If this is your request, you may try to join again.`}
       </Text>
 
       <TouchableOpacity
