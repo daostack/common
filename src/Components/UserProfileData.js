@@ -205,7 +205,6 @@ const UserProfileData = ({
 
         <CommonsSwiper
           navigation={navigation}
-          safeAddress={user.safeAddress}
           userId={user.uid}
           onCountChange={onCommonsCountChange}
           showMax={showMaxData}
@@ -238,7 +237,7 @@ const UserProfileData = ({
         <ProposalsList
           onlyFundingRequests
           navigation={navigation}
-          safeAddress={user.safeAddress}
+          userId={user.uid}
           showAll={true}
           isSwiper={true}
           showMax={showMaxData}
@@ -282,7 +281,7 @@ const UserProfileData = ({
         <ProposalsList
           membershipRequests
           navigation={navigation}
-          safeAddress={user.safeAddress}
+          userId={user.uid}
           showAll={true}
           isSwiper={true}
           showMax={showMaxData}

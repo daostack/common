@@ -74,7 +74,7 @@ const ProposalScreen = ({
     proposalScreenInfo?.proposalInfo &&
     PROPOSAL_STAGES_ACTIVE.includes(proposalScreenInfo?.proposalInfo?.state) &&
     isMember &&
-    !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voter === userInfo.safeAddress);
+    !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid);
 
 
   // Sticky Tab Bar
@@ -604,17 +604,16 @@ const ProposalScreen = ({
                   <View style={styles.requestedAmountContainer}>
                     <Text style={{...text.smallBlackText, ...layout.marginRightS}}>
                       {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
-                        'Requested amount' : 'Contribution'}
+                        'Requested amount' : 'Contribution:'}
                     </Text>
                     <Text style={text.h2Black}>
                       {`$${proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
                         ? proposalScreenInfo?.proposalInfo.fundingRequest.amount / 100
                         : proposalScreenInfo?.proposalInfo.join.funding / 100}`}
-
-                      {
-                        proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join &&
-                        proposalScreenInfo?.proposalDao?.metadata?.contribution === 'monthly' && '/mo'}
                     </Text>
+                    <Text style={{...text.smallBlackText, ...layout.marginRightS}}>{
+                        proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join &&
+                        proposalScreenInfo?.proposalDao?.metadata?.contributionType === 'monthly' && ' per month'}</Text>
                   </View>
                   {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
                   && <Text

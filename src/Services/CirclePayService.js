@@ -16,7 +16,7 @@ const endpoints = {
 };
 
 const getEncryptedData = async (token, dataToEncrypt) => {
-  const {data} = await axiosClient.get('encryption',{
+  const {data} = await axiosClient.get('encryption', {
     headers: {
       Authorization: token,
     },
@@ -47,7 +47,11 @@ const cardData = (formData) => ({
   },
 });
 
-export const createCard = async (formData) => (await axiosClient.post(endpoints.create, createCardPayload(formData))).data;
+export const createCard = async (formData) => (await axiosClient.post(endpoints.create, await createCardPayload(formData), {
+  headers: {
+    Authorization: await auth().currentUser.getIdToken(true),
+  },
+})).data;
 
 export const createCardPayload = async (formData) => {
   const idToken = await auth().currentUser.getIdToken(true);
