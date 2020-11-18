@@ -7,11 +7,19 @@ import {observer, inject} from 'mobx-react';
 import {AppleAuthError} from '@invertase/react-native-apple-authentication';
 import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
-import {func, shape, object} from 'prop-types';
+import UserStore from '~/Stores/UserStore';
+type AppleSignInButtonProps = {
+  onSignIn?: any,
+  userStore: UserStore,
+  customStyle?: any
+};
 
-const AppleSignInButton = ({onSignIn, userStore, customStyle}) => {
-  const [signInError, setSignInError] = useState(null);
-
+const AppleSignInButton: React.FC<AppleSignInButtonProps> = ({
+  onSignIn,
+  userStore,
+  customStyle,
+}: AppleSignInButtonProps) => {
+  const [signInError, setSignInError] = useState <any>(null);
   const _signIn = async () => {
     try {
       // That loading status will be changed to false in the onAuthStateChanged method in App.js
@@ -45,20 +53,26 @@ const AppleSignInButton = ({onSignIn, userStore, customStyle}) => {
       }
     }
   };
-
   const renderSignInButton = () => (
-    <TouchableOpacity style={{...styles.buttonOutline, ...customStyle}} onPress={_signIn}>
-      <Icon style={{marginRight: 5, marginBottom: 5}} name="apple-logo" size={22} />
-      <Text style={{...text.buttonblack, fontWeight: '600', width: '100%'}}>Continue with Apple</Text>
+    <TouchableOpacity
+      style={{...styles.buttonOutline, ...customStyle}}
+      onPress={_signIn}
+    >
+      <Icon
+        style={{marginRight: 5, marginBottom: 5}}
+        name="apple-logo"
+        size={22}
+      />
+      <Text style={{...text.buttonblack, fontWeight: '600', width: '100%'}}>
+        Continue with Apple
+      </Text>
     </TouchableOpacity>
   );
-
   const renderError = () => {
     if (signInError) {
       const errorText = `${signInError.toString()} ${
         signInError.code ? signInError.code : ''
       }`;
-
       return (
         <View style={styles.messageContainer}>
           <Text style={styles.errorMessage}>{errorText}</Text>
@@ -67,7 +81,6 @@ const AppleSignInButton = ({onSignIn, userStore, customStyle}) => {
       );
     }
   };
-
   return (
     <View style={styles.container}>
       {renderError()}
@@ -75,16 +88,6 @@ const AppleSignInButton = ({onSignIn, userStore, customStyle}) => {
     </View>
   );
 };
-
-AppleSignInButton.propTypes = {
-  onSignIn: func,
-  userStore: shape({
-    setIsLoading: func,
-  }).isRequired,
-  customStyle: object,
-};
-
-
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',

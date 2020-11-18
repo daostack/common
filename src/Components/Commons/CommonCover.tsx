@@ -4,22 +4,34 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
+  StyleProp,
 } from 'react-native';
 import React from 'react';
-import FastImage from 'react-native-fast-image';
-import {object, bool, func, string, shape} from 'prop-types';
+import FastImage, {ImageStyle} from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
 import {layout, colors, text, font} from '~/Theme';
-
-const CommonCover = ({
+type CommonCoverProps = {
+  navigation?: any,
+  isMember?: any,
+  onHeaderMenuOpen?: any,
+  commonInfo: {
+    cover?: any,
+    logo?: any,
+    name?: any,
+    description?: any
+  },
+  common?: any
+};
+const CommonCover: React.FC<CommonCoverProps> = ({
   navigation,
   isMember,
   onHeaderMenuOpen,
   commonInfo: {cover, logo, name, description},
   common,
-}) => {
-  const renderCoverInSafeArea = () => <SafeAreaView>{renderCover()}</SafeAreaView>;
-
+}: CommonCoverProps) => {
+  const renderCoverInSafeArea = () => (
+    <SafeAreaView>{renderCover()}</SafeAreaView>
+  );
   const renderCover = () => (
     <>
       <View style={styles.headerContainerWrap}>
@@ -31,7 +43,8 @@ const CommonCover = ({
                 ...styles.headerContainer,
                 ...styles.headerContainerCenterContent,
               }
-          }>
+          }
+        >
           {navigation && (
             <TouchableOpacity onPress={navigation.goBack}>
               <Icon
@@ -47,10 +60,11 @@ const CommonCover = ({
             style={{
               ...layout.content,
               ...{padding: 0},
-            }}>
+            }}
+          >
             {logo && (
               <FastImage
-                style={styles.logoImage}
+                style={styles.logoImage as StyleProp<ImageStyle>}
                 source={{
                   uri: logo,
                 }}
@@ -72,7 +86,9 @@ const CommonCover = ({
       </View>
 
       <View style={styles.headerContent}>
-        <Text style={styles.headerDescription} numberOfLines={2}>{description}</Text>
+        <Text style={styles.headerDescription} numberOfLines={2}>
+          {description}
+        </Text>
         {isMember && navigation && (
           <TouchableOpacity onPress={openAgendaScreen}>
             <Text style={styles.headerViewAgenda}>View agenda</Text>
@@ -81,19 +97,17 @@ const CommonCover = ({
       </View>
     </>
   );
-
-  const openAgendaScreen = (e) => {
+  const openAgendaScreen = () => {
     navigation.navigate('CommonAgenda', {
       common: common,
     });
   };
-
   return (
     <>
       <FastImage
         source={{uri: cover}}
-        imageStyle={navigation ? {} : styles.backgoundRoundedTopEdges}
-        style={styles.coverBackground}>
+        style={styles.coverBackground}
+      >
         <View style={styles.coverOverlay}>
           {navigation ? renderCoverInSafeArea() : renderCover()}
         </View>
@@ -101,20 +115,6 @@ const CommonCover = ({
     </>
   );
 };
-
-CommonCover.propTypes = {
-  navigation: object,
-  isMember: bool,
-  onHeaderMenuOpen: func,
-  commonInfo: shape({
-    cover: string,
-    logo: string,
-    name: string,
-    description: string,
-  }),
-  common: object,
-};
-
 const styles = StyleSheet.create({
   coverBackground: {
     borderTopLeftRadius: 28,
@@ -132,7 +132,6 @@ const styles = StyleSheet.create({
   },
   headerContainerWrap: {
     ...layout.flexRow,
-
     width: '100%',
   },
   headerContainer: {
@@ -150,14 +149,12 @@ const styles = StyleSheet.create({
   },
   logoImage: {
     ...layout.marginBottomM,
-
     width: 40,
     height: 40,
     borderRadius: 20,
     borderWidth: 2,
     borderColor: colors.white,
   },
-
   headerTitleWhite: {
     ...font.fontSize(4),
     ...font.heading.bold,
@@ -178,7 +175,6 @@ const styles = StyleSheet.create({
   },
   headerViewAgenda: {
     ...text.smallGreyText,
-
     color: colors.grey4,
     marginTop: 30,
   },

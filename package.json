@@ -13,7 +13,7 @@
     "test": "jest",
     "lint": "eslint App.js src/ __tests__",
     "postinstall": "yarn icon",
-    "icon": "rm -rf ./src/Assets/iconfont && npx iconfont-rn && rm -rf ./src/Assets/iconfont/*.ts",
+    "icon": "rm -rf ./src/Assets/iconfont && npx iconfont-rn",
     "useLocal": "sed -i '' -e '/local/d' env/env.stg && echo 'local=true' >> env/env.stg",
     "useCloud": "sed -i '' -e '/local/d' env/env.stg && echo 'local=false' >> env/env.stg",
     "useTestCard": "sed -i '' -e '/testCard/d' env/env.stg env/env.prod && echo 'testCard=true' | tee -a env/env.stg env/env.prod",

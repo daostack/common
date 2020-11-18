@@ -1,10 +1,14 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, ViewStyle} from 'react-native';
 import React from 'react';
 import {colors, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
 import {number, object} from 'prop-types';
-
-const MemberImage = ({userInfo, style, id}) => (
+type MemberImageProps = {
+  userInfo: any,
+  style?: ViewStyle,
+  id?: any,
+};
+const MemberImage = ({userInfo, style, id}: MemberImageProps) => (
   userInfo?.photoURL ?
     <FastImage
       key={id}
