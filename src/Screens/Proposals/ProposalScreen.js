@@ -591,17 +591,16 @@ const ProposalScreen = ({
                   <View style={styles.requestedAmountContainer}>
                     <Text style={{...text.smallBlackText, ...layout.marginRightS}}>
                       {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
-                        'Requested amount' : 'Contribution'}
+                        'Requested amount' : 'Contribution:'}
                     </Text>
                     <Text style={text.h2Black}>
                       {`$${proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
                         ? proposalScreenInfo?.proposalInfo.fundingRequest.amount / 100
                         : proposalScreenInfo?.proposalInfo.join.funding / 100}`}
-
-                      {
-                        proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join &&
-                        proposalScreenInfo?.proposalDao?.metadata?.contribution === 'monthly' && '/mo'}
                     </Text>
+                    <Text style={{...text.smallBlackText, ...layout.marginRightS}}>{
+                        proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join &&
+                        proposalScreenInfo?.proposalDao?.metadata?.contributionType === 'monthly' && ' per month'}</Text>
                   </View>
                   {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
                   && <Text
