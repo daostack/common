@@ -266,7 +266,7 @@ const CommonProfile = ({
       return (
         <View style={styles.agendaBox}>
           <Text style={styles.agendaDescription}>
-            {currCommon.metadata.courseOfAction}
+            {currCommon.metadata.action}
           </Text>
 
           <View style={layout.flexStart}>
