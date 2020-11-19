@@ -601,8 +601,6 @@ PODS:
   - React-jsinspector (0.63.2)
   - react-native-blur (0.8.0):
     - React
-  - react-native-cloud-fs (1.0.0):
-    - React
   - react-native-config (1.2.1):
     - React
   - react-native-document-picker (3.5.3):
@@ -790,7 +788,6 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
-  - react-native-cloud-fs (from `../node_modules/react-native-cloud-fs`)
   - react-native-config (from `../node_modules/react-native-config`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-fast-openpgp (from `../node_modules/react-native-fast-openpgp`)
@@ -917,8 +914,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
-  react-native-cloud-fs:
-    :path: "../node_modules/react-native-cloud-fs"
   react-native-config:
     :path: "../node_modules/react-native-config"
   react-native-document-picker:
@@ -1072,7 +1067,6 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 8ca588cc921e70590820ce72b8789b02c67cce38
   React-jsinspector: b14e62ebe7a66e9231e9581279909f2fc3db6606
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
-  react-native-cloud-fs: 61da77476a51e59af2845093badc0c9eeb2edc56
   react-native-config: ae9ef3bdbf539f2d14ebaf4ebeba508f766e066a
   react-native-document-picker: 825552b827012282baf4b7cbf119d3b37a280c90
   react-native-fast-openpgp: 143b3dde8e6f520e5cb0b12fa54550d06e85406e
@@ -1125,6 +1119,6 @@ SPEC CHECKSUMS:
   web3swift: 0f097eafe1d08f478694b882581b85a01afb6633
   Yoga: 7740b94929bbacbddda59bf115b5317e9a161598
 
-PODFILE CHECKSUM: 7877785491e81f8291680217a1f3672be75c820f
+PODFILE CHECKSUM: 23bee0852569e87a2b6ce6be81025f7ac396fb6b
 
 COCOAPODS: 1.10.0

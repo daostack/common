@@ -1,11 +1,24 @@
 import {db} from '~/Firebase';
-import UserService from './UserService';
 import Toast from '~/Util/Toast';
+import axios from 'axios';
+import {commonsUrl} from '~/Config';
 
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
+import {auth} from '~/Firebase';
 
 export default class DaoService {
   static serviceInstance = null;
+
+  constructor() {
+    this.axiosClient = axios.create({
+      baseURL: commonsUrl(),
+      timeout: 1000000,
+    });
+
+    this.endpoints = {
+      create: '/create',
+    };
+  }
 
   static getInstance = () => {
     if (DaoService.serviceInstance == null) {
@@ -30,27 +43,19 @@ export default class DaoService {
     return dao.metadata.name;
   }
 
-  async getUserDaos(userId, safeAddress) {
-    let safeAddressVar = safeAddress;
-    if (!safeAddressVar) {
-      const user = await UserService.getInstance().getUserById(userId);
-      safeAddressVar = user.safeAddress;
-    }
-
+  async getUserDaos(userId) {
     return db
       .collection(DB_COLLECTIONS.daos)
       .where('members', 'array-contains', {
-        address: safeAddressVar,
         userId,
       })
       .get();
   }
 
-  async subscribeToMyDaosList(userId, safeAddress, callback) {
+  async subscribeToMyDaosList(userId, callback) {
     let daos = db
       .collection(DB_COLLECTIONS.daos)
       .where('members', 'array-contains', {
-        address: safeAddress,
         userId,
       });
 
@@ -101,4 +106,23 @@ export default class DaoService {
     const snapshot = await db.collection(DB_COLLECTIONS.daos).get();
     callback(snapshot);
   }
+
+  //TODO: NoBlockchain: Move that logic in separate file ?
+  async createCommon(formData) {
+    try {
+      return await this.axiosClient.post(
+        this.endpoints.create,
+        formData,
+        {
+          headers: {
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
+        }
+      );
+    } catch (err) {
+      console.log('CREATE COMMON ERROR -> ', err);
+      throw err;
+    }
+  }
+
 }

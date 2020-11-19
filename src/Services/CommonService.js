@@ -1,4 +1,7 @@
 import logger from './Logger';
+import {DB_COLLECTIONS} from '~/Firebase/Databasee';
+import {db} from '~/Firebase';
+
 export default class CommonService {
   static serviceInstance = null;
 
@@ -13,17 +16,15 @@ export default class CommonService {
 
   async getCommonInfo(commonUid) {
     logger.log(`commonUid -> ${commonUid}`);
-    /*
     return db
       .collection(DB_COLLECTIONS.daos)
       .doc(commonUid)
       .get()
-      .then(snapshots => {
+      .then((snapshots) => {
         if (!snapshots) {
           return null;
         }
         return snapshots.data();
       });
-      */
   }
 }

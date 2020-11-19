@@ -12,12 +12,13 @@ import {text, layout, colors} from '~/Theme';
 import FundingRequestForm from '~/Components/Forms/FundingRequestForm';
 import RequestStepActionButton from '../Commons/RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
-import ArcService from '~/Services/ArcService';
 import Toast from '~/Util/Toast';
 import font from '~/Theme/font';
 import logger from '~/Services/Logger';
-import {string, object, shape, func} from 'prop-types';
+import {string, object, shape} from 'prop-types';
 import FundingRequestFormStore from '~/FormStores/FundingRequestFormStore';
+
+import ProposalService from '~/Services/ProposalService';
 
 const FundingProposal = ({
   navigation,
@@ -34,10 +35,11 @@ const FundingProposal = ({
         const data = {
           title: formData[FundingRequestForm.FIELD_TITLE],
           description: formData[FundingRequestForm.FIELD_DESCRIPTION],
-          funding: formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,
+          amount: formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,
           links: formData[FundingRequestForm.FIELD_LINKS],
           images: formData[FundingRequestForm.FIELD_IMAGES],
           files: formData[FundingRequestForm.FIELD_FILES],
+          commonId,
         };
 
         navigation.navigate({
@@ -47,23 +49,26 @@ const FundingProposal = ({
           },
         });
 
-        const proposalId = await ArcService.createFundingProposal(
-          commonId,
-          data
-        );
+        const createFundingProposalResponse = await ProposalService.getInstance().createFundingProposal(data);
+        if (createFundingProposalResponse.status === 200) {
+          const proposalId = createFundingProposalResponse.data.id;
 
-        navigation.pop();
+          navigation.pop();
+          Toast.done(`Funding Proposal with id ${proposalId} created!`);
 
-        Toast.done(`Funding Proposal with id ${proposalId} created!`);
-
-        const navigate = CommonActions.navigate({
-          name: 'CommonProfile',
-          params: {
-            showRequestSentModal: true,
-            createdProposalId: proposalId,
-          },
-        });
-        navigation.dispatch(navigate);
+          const navigate = CommonActions.navigate({
+            name: 'CommonProfile',
+            params: {
+              showRequestSentModal: true,
+              createdProposalId: proposalId,
+            },
+          });
+          navigation.dispatch(navigate);
+        } else {
+          navigation.pop();
+          logger.log(createFundingProposalResponse);
+          Toast.error(createFundingProposalResponse.toString());
+        }
       } catch (error) {
         navigation.pop();
         logger.log(error);
@@ -100,16 +105,6 @@ const FundingProposal = ({
 };
 
 FundingProposal.propTypes = {
-  userStore: shape({
-    userInfo: shape({
-      safeAddress: string,
-    }),
-  }),
-  fundingRequestFormStore: shape({
-    isFormValid: func,
-    getChangedFormFieldsJson: func,
-    form: object,
-  }),
   navigation: object,
   route: shape({
     params: shape({

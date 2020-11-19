@@ -9,20 +9,20 @@ import {
 } from 'react-native';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import {colors, layout, text} from '~/Theme';
-import {observer, inject} from 'mobx-react';
+import {inject} from 'mobx-react';
 import CreateStepHeader from '../RequestStepHeader';
 import CreateStepNavigation from '../RequestStepNavigation';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import CreateStepDotHeader from '../RequestStepDotHeader';
 import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
-import ArcService from '~/Services/ArcService';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
-import {createCardPayload} from '../../../../Services/CirclePayService';
+import {createCard} from '../../../../Services/CirclePayService';
+import ProposalService from '~/Services/ProposalService';
 import {testCard} from '~/Config';
 import moment from 'moment';
 import {VALIDATION_RULES} from '~/FormStores/ValidationRules';
@@ -33,6 +33,7 @@ const PaymentDetailsStep = ({
   navigation,
   route: {
     params: {
+      formStores,
       skipFirstStep,
       currCommon,
       currDaoId,
@@ -40,16 +41,18 @@ const PaymentDetailsStep = ({
     },
   },
   userStore: {userInfo},
-  paymentFormStore,
-  introduceYourselfFormStore,
-  personalContributionFormStore,
-  billingDetailsFormStore,
   bottomSheetStore,
 }) => {
   const isMonthly = currCommon.metadata.contribution === 'monthly';
 
+  const paymentFormStore = formStores.paymentFormStore;
+  const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
+  const personalContributionFormStore = formStores.personalContributionFormStore;
+  const billingDetailsFormStore = formStores.billingDetailsFormStore;
+
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
+  const [expDateFormat, setExpDateFormat] = useState('');
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -71,12 +74,15 @@ const PaymentDetailsStep = ({
         };
 
         const data = {
-          title: `request to join ${currDaoId} by ${userInfo.ethereumAddress}`,
           description: formData.about_me,
-          links: formData.links,
           funding: formData.amount * 100,
           preAuthId: false,
+          commonId: currDaoId,
         };
+
+        if (formData.links) {
+          data.links = formData.links;
+        }
 
         navigation.navigate({
           name: 'FullScreenCreationLoader',
@@ -85,44 +91,54 @@ const PaymentDetailsStep = ({
           },
         });
 
-        // Create the proposal
-        const proposalId = await ArcService.createRequestToJoin(
-          currDaoId, {
-            ...data,
-            cardData: await createCardPayload({
-              ...formData,
-              ...userInfo,
-            }),
-          },
-        );
-
-        navigation.pop();
-
-        const navigate = CommonActions.navigate({
-          name: 'CommonProfile',
-          params: {
-            showRequestSentModal: true,
-            createdProposalId: proposalId,
-          },
+        const createdCard = await createCard({
+          ...formData,
+          ...userInfo,
         });
 
-        if (typeof refreshFeed === 'function') {
-          refreshFeed();
-        }
+        const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin({
+          ...data,
+          cardId: createdCard.cardId,
+        });
 
-        navigation.dispatch(navigate);
+        if (createRequestToJoinResponse.status === 200) {
+          const proposalId = createRequestToJoinResponse.data.id;
+
+          navigation.pop();
+          const navigate = CommonActions.navigate({
+            name: 'CommonProfile',
+            params: {
+              showRequestSentModal: true,
+              createdProposalId: proposalId,
+            },
+          });
+
+          if (typeof refreshFeed === 'function') {
+            refreshFeed();
+          }
+
+          navigation.dispatch(navigate);
+        } else {
+          navigation.pop();
+          showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
+        }
       } catch (e) {
         navigation.pop();
-
         showErrorPopUp(bottomSheetStore, e);
       }
     }
   };
 
+  const formatDate = (date) => {
+    date = date.replace('/', '');
+    return date.length > 2
+      ? `${date.substring(0,2)}/${date.substring(2,4)}`
+      : date;
+  };
 
   const subtitle = (style) => (
     <Text style={style}>
-      You are contributing ${personalContributionFormStore.form.fields.amount?.value}
+      You are contributing ${personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)?.value?.value}
 
       <Text style={{...font.primary.bold}}>
         {' '}({isMonthly ? 'monthly' : 'one time'}){' '}
@@ -182,7 +198,7 @@ const PaymentDetailsStep = ({
             <RequestStepHeaderTitle title="Payment Details" subtitle={subtitle} />
             <TextInputField
               label="Credit card number"
-              value={testCard ? 4007410000000006 : ''}
+              value={testCard ? '4007410000000006' : ''}
               editable={true}
               keyboardType={'number-pad'}
               validation={{
@@ -191,7 +207,8 @@ const PaymentDetailsStep = ({
                 validateRule: [
                   'required',
                   'numeric',
-                  'regex:/^4[0-9]{12}(?:[0-9]{3})?$|^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/',
+                  VALIDATION_RULES.IS_VALID_CREDIT_CARD,
+                  VALIDATION_RULES.CREDIT_CARD_PROVIDER,
                 ],
               }}
             />
@@ -227,16 +244,19 @@ const PaymentDetailsStep = ({
                   width: '45%',
                 }}
                 label="Expiration date"
-                value={testCard ? moment().format('MM/YY') : ''}
+                value={testCard ? moment().format('MM/YY') : expDateFormat}
                 placeholderText="MM/YY"
                 editable={true}
+                onChangeText={(date) => setExpDateFormat(date)}
+                format={(date) => formatDate(date)}
+                keyboardType={'number-pad'}
                 validation={{
                   name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
                   formStore: paymentFormStore,
                   validateRule: [
                     'required',
                     'string',
-                    'regex:/^(0[1-9]|1[0-2])/?([0-9]{2})$/',
+                    VALIDATION_RULES.CARD_EXP_DATE,
                   ],
                 }}
               />
@@ -245,7 +265,8 @@ const PaymentDetailsStep = ({
                   width: '45%',
                 }}
                 label="CVV"
-                value={testCard ? 123 : ''}
+                value={testCard ? '123' : ''}
+                keyboardType={'number-pad'}
                 editable={true}
                 validation={{
                   name: RequestToJoinForm.FIELD_CVV,
@@ -284,7 +305,7 @@ const PaymentDetailsStep = ({
             >
               If your membership request will not be accepted, you will not
               be charged. Your card will be saved for the monthly contribution
-              of ${personalContributionFormStore.form.fields.amount?.value},
+              of ${personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)?.value?.value},
               you can cancel at any time.
             </Text>
           </View>
@@ -347,9 +368,5 @@ PaymentDetailsStep.propTypes = {
 
 export default inject(
   'bottomSheetStore',
-  'introduceYourselfFormStore',
-  'personalContributionFormStore',
-  'billingDetailsFormStore',
-  'paymentFormStore',
   'userStore',
-)(observer(PaymentDetailsStep));
+)(PaymentDetailsStep);

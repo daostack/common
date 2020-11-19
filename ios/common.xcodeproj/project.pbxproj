@@ -54,6 +54,8 @@
 		BCAAB2F57FB2D1883DF8DD68 /* Pods_common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDBC858FCC7ADE69882AE33A /* Pods_common.framework */; };
 		CDD5E5B60C08404981150417 /* NunitoSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8D6FB52253054110853F2376 /* NunitoSans-Light.ttf */; };
 		CF0B3799DD99422BA7B8AE3C /* NunitoSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0EBB067512D6426FB6FE57F2 /* NunitoSans-SemiBold.ttf */; };
+		FA1D60EB25505249003AE81D /* common-dev-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 151C20172499CA52006170CC /* common-dev-Info.plist */; };
+		FA1D60F12550524E003AE81D /* common-dev-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 151C20172499CA52006170CC /* common-dev-Info.plist */; };
 		FCD9335756174A92AE4AC3F6 /* NunitoSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F2C9B59F8FFB49DFA4FF15CA /* NunitoSans-Italic.ttf */; };
 /* End PBXBuildFile section */
 
@@ -102,9 +104,9 @@
 /* Begin PBXFileReference section */
 		0EBB067512D6426FB6FE57F2 /* NunitoSans-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-SemiBold.ttf"; path = "../src/Assets/fonts/NunitoSans/NunitoSans-SemiBold.ttf"; sourceTree = "<group>"; };
 		1505B3D8243B76E300679F9C /* common.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = common.entitlements; sourceTree = "<group>"; };
-		151C20172499CA52006170CC /* common-dev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "common-dev-Info.plist"; path = "/Users/lmcmz/temp/common/ios/common-dev-Info.plist"; sourceTree = "<absolute>"; };
+		151C20172499CA52006170CC /* common-dev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "common-dev-Info.plist"; sourceTree = SOURCE_ROOT; };
 		151C20202499CEA3006170CC /* common-dev-notification-service-ext.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "common-dev-notification-service-ext.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
-		151C20212499CEA3006170CC /* common-notification-service-ext copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "common-notification-service-ext copy-Info.plist"; path = "/Users/lmcmz/temp/common/ios/common-notification-service-ext copy-Info.plist"; sourceTree = "<absolute>"; };
+		151C20212499CEA3006170CC /* common-notification-service-ext copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "common-notification-service-ext copy-Info.plist"; sourceTree = SOURCE_ROOT; };
 		151C20522499E3F4006170CC /* common-stg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "common-stg.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		151C205C2499E503006170CC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		151C20612499E99B006170CC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -486,6 +488,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				15AD00A424AB2E0F004FDADE /* Config.xcconfig in Resources */,
+				FA1D60F12550524E003AE81D /* common-dev-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -493,6 +496,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA1D60EB25505249003AE81D /* common-dev-Info.plist in Resources */,
 				155E056E24DD58AA000BE6A4 /* NotoSerif-SemiBold.ttf in Resources */,
 				153D23F924B5BE9A007E8F37 /* NunitoSans-Bold.ttf in Resources */,
 				153D23FA24B5BE9A007E8F37 /* NunitoSans-Italic.ttf in Resources */,
@@ -900,7 +904,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
 				INFOPLIST_FILE = "common-dev-Info.plist";
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
 				INFOPLIST_PREFIX_HEADER = "${BUILD_DIR}/GeneratedInfoPlistDotEnv.h";
@@ -931,7 +935,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
 				INFOPLIST_FILE = "common-dev-Info.plist";
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
 				INFOPLIST_PREFIX_HEADER = "${BUILD_DIR}/GeneratedInfoPlistDotEnv.h";

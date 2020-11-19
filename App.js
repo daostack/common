@@ -25,7 +25,6 @@ import {
   CompleteAccount,
   EditProfile,
   UserProfileReadMode,
-  NativeBridgeTests,
   MyProposals,
   MyCommons,
   CommonAgenda,
@@ -52,12 +51,11 @@ import {
 import UserService from './src/Services/UserService';
 import AuthService from './src/Services/AuthService';
 import CommonHome from './src/Components/Navigation/CommonHome';
-import {filterObjectByKeys, prepareUserObject} from './src/Util';
-import WalletManager from './src/Util/WalletManager';
+import {filterObjectByKeys} from './src/Util';
 import {userInfoFields} from './src/Stores/UserStore';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
-import {auth, db} from './src/Firebase';
+import {auth} from './src/Firebase';
 import KeyboardManager from 'react-native-keyboard-manager';
 import validUrl from 'valid-url';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
@@ -72,6 +70,9 @@ import Cache from './src/Util/Cache';
 import {func, bool, object, shape} from 'prop-types';
 import logger from './src/Services/Logger';
 import {fontSize} from './src/Theme/font';
+import ProposalService from './src/Services/ProposalService';
+import CommonService from './src/Services/CommonService';
+import DiscussionService from './src/Services/DiscussionService';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -89,6 +90,7 @@ if (Platform.OS === 'android') {
 const App = ({userStore, bottomSheetStore, navigation}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
+  //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
   const hudRef = useRef();
   const navigationRef = useRef();
 
@@ -106,6 +108,45 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       logger.log(`Foreground Message Arrived ${JSON.stringify(remoteMessage)}`);
     });
     return unsubscribe;
+  }, []);
+
+  const notificationNavigation = async (screenName, commonId, objectId = null) => {
+    const currCommon = await CommonService.getInstance().getCommonInfo(commonId);
+    // whitelist;approve/reject requestToJoin
+    if (screenName === 'CommonProfile') {
+      routing(screenName, {currCommon});
+    }
+    // new discussionMessage
+    else if (screenName === 'Discussions') {
+      const discussion = await DiscussionService.getInstance().getDiscussionInfo(objectId);
+      routing(screenName, {data: discussion, discussionId: objectId, commonId});
+    }
+    // create/approve proposal
+    else {
+      const proposal = await ProposalService.getInstance().getProposalInfo(objectId);
+      routing(screenName, {proposalId: proposal.id, screenTitle: currCommon.name, commonBalance: currCommon.balance});
+    }
+  };
+
+  // notification navigation
+  useEffect(() => {
+    // Assume a message-notification contains a "type" property in the data payload of the screen to open
+    messaging().onNotificationOpenedApp((remoteMessage) => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage,
+      );
+    });
+
+    // Check whether an initial notification is available
+    messaging()
+      .getInitialNotification()
+      .then((remoteMessage) => {
+        if (remoteMessage) {
+          const [screenName, commonId, objectId] = remoteMessage.data.path.split('/');
+          notificationNavigation(screenName, commonId, objectId);
+        }
+      });
   }, []);
 
   // HUD
@@ -150,15 +191,16 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   // Deep & Dynamic Link
   const handleOpenURL = ({url}) => {
-    Linking.canOpenURL(url).then((supported) => {
-      if (!supported) {
-        return;
-      }
-      if (!DeepLinking.evaluateUrl(url) && validUrl.isWebUri(url)) {
-        logger.log(`Routing Browser -> ${url}`);
-        routing('Browser', {url: url});
-      }
-    });
+    if (url ) {
+      Linking.canOpenURL(url).then((supported) => {
+        if (!supported) {
+          return;
+        }
+        if (!DeepLinking.evaluateUrl(url) && validUrl.isWebUri(url)) {
+          logger.log(`Routing Browser -> ${url}`);
+          routing('Browser', {url: url});
+        }
+      });}
   };
 
   const routing = (screenName, params) => {
@@ -170,10 +212,10 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
   };
 
   useEffect(() => {
-
     DeepLinking.addScheme('common://');
     DeepLinking.addScheme('com.daostack.common://');
     DeepLinking.addScheme('https://app.common.io');
+    //console.log('tkt DeepLinking', DeepLinking)
 
     Linking.addEventListener('url', handleOpenURL);
 
@@ -190,6 +232,10 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
         {userId: response.id}
       );
+    });
+
+    DeepLinking.addRoute('/discussion/:id', (response) => {
+      routing('Discussions', {discussionId: response.id});
     });
 
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);
@@ -213,8 +259,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   // Login
   useEffect(() => {
-    const subscribers = {authChangeUnsubscribe: null , userInfoChangeUnsubscribe: null};
-
     const onAuthStateChanged = async (user) => {
       logger.log('AUTH STATE CHANGED:', user?.uid, user?.email, user?.displayName, user);
       try {
@@ -225,8 +269,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             userStore.setIsLoading(true);
             userStore.addLoginInProgress(user?.uid);
             const providerId = user.providerData[0].providerId;
-            await AuthService.getInstance().loadMnemonic(user.uid, providerId);
-
             let appUser = await Cache.get(user.uid);
             if (!appUser) {
               appUser = await UserService.getInstance().getUserById(
@@ -238,7 +280,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             if (isNewUser) {
               const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
               const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
-              appUser = await AuthService.getInstance().createUserAndWallet(userInfo);
+              appUser = await AuthService.getInstance().createUser(userInfo);
             }
 
             const allUserInfo = {
@@ -253,27 +295,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             userStore.removeLoginInProgress(filteredUser.uid);
             userStore.setIsLoading(false);
 
-            // Create a wallet instance for the logged in user
-            // NOTE: The walletManager has init and getInstance methods, which both create a WalletManager instance in some cases.
-            // Please consider a refactoring on that flow.
-            await WalletManager.init(user.uid);
-            const manager = await WalletManager.getInstance();
-
-            if (isNewUser) {
-              manager.createSmartContractWallet();
-            } else {
-              manager.addressCheck(user.uid);
-            }
-
-            if (subscribers.userInfoChangeUnsubscribe) {
-              subscribers.userInfoChangeUnsubscribe();
-            }
-            subscribers.userInfoChangeUnsubscribe = await updateUser(user.uid);
             userStore.setIsLoading(false);
           } else {
-            if (subscribers.userInfoChangeUnsubscribe) {
-              subscribers.userInfoChangeUnsubscribe();
-            }
             userStore.setSignedInUser(null);
             userStore.setIsLoading(false);
           }
@@ -285,39 +308,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
     };
 
-    subscribers.authChangeUnsubscribe = auth().onAuthStateChanged(onAuthStateChanged);
-
-    // The safeAddress of the user is created on the clouldfunctions and after that the user record in the firestore DB is updated with the actual safeAddres.
-    // In order to keep the safeAddress information synced with our App, we need to do the follwing 2 things:
-    // 1) Keep the userStore synced with the latest update for safeAddress
-    // 2) Make sure the WalletManager has the safeAddress for newly created users
-    // TBD:
-    // 1) Can we call that method only if the user don't have safeAddres in the walletManager or userStore ???
-    // 1) Can we unsubscribe for changes once the safeAddress is updated ???
-    const updateUser = async (uid) => {
-      try {
-        if (auth().currentUser === null) {
-          return;
-        }
-        const unsubscribe = db.collection('users').doc(uid).onSnapshot(async (snapshot) => {
-          if (!snapshot.empty) {
-            userStore.setSignedInUser(prepareUserObject(snapshot.data()));
-          }
-
-          /* WalletManager Inited before safeAddress created
-          The safeAddress in wallet manager will be null
-          We need to update it. */
-          const manager = await WalletManager.getInstance();
-          if (manager.safeAddress == null) {
-            manager.safeAddress = snapshot.data().safeAddress;
-          }
-
-        });
-        return unsubscribe;
-      } catch (error) {
-        logger.log(`errpr: ${JSON.stringify(error)} `);
-      }
-    };
+    const authChangeUnsubscribe = auth().onAuthStateChanged(onAuthStateChanged);
 
     const checkOnboardingStatus = async () => {
       try {
@@ -332,15 +323,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       }
     };
 
-    const unsubscribeAll = () => {
-      subscribers.authChangeUnsubscribe();
-      if (subscribers.userInfoChangeUnsubscribe) {
-        subscribers.userInfoChangeUnsubscribe();
-      }
-    };
-
     checkOnboardingStatus();
-    return unsubscribeAll;
+    return authChangeUnsubscribe;
   }, []);
 
   if (loading) {
@@ -535,13 +519,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           }}
           name="MyWallet"
           component={MyWallet}
-        />
-        <Stack.Screen
-          options={{
-            title: 'NativeBridgeTests',
-          }}
-          name="NativeBridgeTests"
-          component={NativeBridgeTests}
         />
         <Stack.Screen name="HUDTest" component={HUDTest} />
         <Stack.Screen

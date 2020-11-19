@@ -32,19 +32,13 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
         );
 
         //RequestToJoin proposal
-        let proposedMemberId = null;
+        let proposedMemberId = currProposalInfo.proposerId;
         let funding = null;
         if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
-          proposedMemberId = currProposalInfo.join.proposedMemberId;
-          funding = currProposalInfo.description.funding;
+          funding = currProposalInfo.join.funding;
         }
         //FundingRequest proposal
         else {
-
-          const proposedMember = await UserService.getInstance().getUserByAddress(
-            currProposalInfo.fundingRequest.beneficiary,
-          );
-          proposedMemberId = proposedMember.id;
           funding = currProposalInfo.fundingRequest.amount;
         }
 
@@ -76,16 +70,17 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
         //RequestToJoin proposal
         let proposedMemberUser = null;
         let funding = null;
+        // TODO: NoBlockchain -> proposerId is used both with join and funding request -> refactor bellow lines
         if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
           proposedMemberUser = await UserService.getInstance().getUserById(
-            currProposalInfo.join.proposedMemberId
+            currProposalInfo.proposerId
           );
-          funding = currProposalInfo.description.funding;
+          funding = currProposalInfo.join.funding;
         }
         //FundingRequest proposal
         else {
-          proposedMemberUser = await UserService.getInstance().getUserByAddress(
-            currProposalInfo.fundingRequest.beneficiary,
+          proposedMemberUser = await UserService.getInstance().getUserById(
+            currProposalInfo.proposerId,
           );
           funding = currProposalInfo.fundingRequest.amount;
         }
@@ -122,7 +117,7 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
     let currCommonInfo = commonInfo;
 
     if (!currCommonInfo) {
-      currCommonInfo = await DaoService.getInstance().getDaoById(proposalCardInfo.proposalInfo.dao);
+      currCommonInfo = await DaoService.getInstance().getDaoById(proposalCardInfo.proposalInfo.commonId);
     }
 
     navigation.navigate('ProposalScreen', {
@@ -141,8 +136,8 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
           isBoosted
           proposal={proposalCardInfo?.proposalInfo}
           showDate={membershipRequest}
-          stage={proposalCardInfo.proposalInfo?.stageStr}
-          closingAt={proposalCardInfo.proposalInfo?.closingAt}
+          stage={proposalCardInfo.proposalInfo?.state}
+          closingAt={proposalCardInfo.proposalInfo?.createdAt.seconds + proposalCardInfo.proposalInfo?.countdownPeriod}
           winningOutcome={proposalCardInfo.proposalInfo?.winningOutcome}
         />
 
@@ -154,7 +149,8 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
             flexWrap: 'wrap',
           }}>
           {proposalCardInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && <Text
-            style={{...text.h3Black, ...{textAlign: 'left', flexWrap: 'wrap', padding:10, fontSize: 16}}}>
+            style={{...text.h3Black, width: '100%', flexWrap: 'wrap', padding: 10, fontSize: 16,
+              ...text.textAlign(proposalCardInfo.proposalInfo?.description?.title)}}>
             {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
           </Text>}
 

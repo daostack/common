@@ -18,6 +18,7 @@ if (Config.local === 'true' && __DEV__) {
   db.settings({
     host: 'alexanders-macbook-pro.local:8080',
     ssl: false,
+    persistence: false, // Disabled offline mode for local environment
   });
 }
 

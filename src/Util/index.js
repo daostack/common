@@ -18,7 +18,7 @@ export const LAYOUT_ANIMATION_CONFIG = {
   create:
   {
     type: LayoutAnimation.Types.easeInEaseOut,
-    property: LayoutAnimation.Properties.scaleXY,
+    property: LayoutAnimation.Properties.scaleY,
   },
   update:
   {
@@ -65,7 +65,6 @@ export const calcIsFundingStage = (deadline) => {
   return !moment().isAfter(deadlineMoment);
 };
 
-
 // This function requires the bottomSheetStore as a variable as you can't
 // access the mobx store outside of a react component
 export const showErrorPopUp = (bottomSheetStore, arg) => {
@@ -89,6 +88,7 @@ export const getErrorObject = (axiosError) => {
     return axiosError.response.data;
   } catch (e) {
     logger.error('Something went wrong trying to parse the error object', e);
+    logger.error('Error object: ', axiosError);
 
     return {
       errorMessage: 'Something bad happened',
@@ -98,12 +98,12 @@ export const getErrorObject = (axiosError) => {
   }
 };
 
-export const isDaoMemberBySafeAddress = (members, userSafeAddress) => {
+export const isDaoMemberByUserId = (members, userUID) => {
   if (!members) {
     return false;
   }
   return members.some(
     (member) =>
-      member.address === userSafeAddress?.toLowerCase()
+      member.userId === userUID
   );
 };

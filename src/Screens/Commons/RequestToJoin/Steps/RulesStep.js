@@ -22,6 +22,7 @@ const {width, height} = Dimensions.get('window');
 const RulesStep = ({navigation,
   route: {
     params: {
+      formStores,
       currCommon,
       currDaoId,
       refreshFeed,
@@ -49,6 +50,7 @@ const RulesStep = ({navigation,
       const navigate = CommonActions.navigate({
         name: 'IntroductionStep',
         params: {
+          formStores,
           currDaoId: currDaoId,
           currCommon: currCommon,
           refreshFeed,
@@ -124,7 +126,7 @@ const RulesStep = ({navigation,
                   index={index + 1}
                   title={rule.title}
                   description={rule.description}
-                  url={rule.url}
+                  url={rule.value || rule.url} // NOTE: value of multiple fields was stored in url prop before
                 />
               ))}
           </View>

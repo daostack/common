@@ -25,13 +25,13 @@ import {numberFormatter, showErrorPopUp} from '~/Util';
 import Toast from '~/Util/Toast';
 import Modal from 'react-native-modal';
 import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
-import ArcService from '~/Services/ArcService';
 import Share from 'react-native-share';
 import {BlurView} from '~/Components';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import {object} from 'prop-types';
+import DaoService from '~/Services/DaoService';
 import {
   colors,
   font,
@@ -52,7 +52,7 @@ const CreateStep4 = ({generalInfoFormStore,
   reviewFormStore,
   navigation,
   bottomSheetStore,
-  userStore: {userInfo: {safeAddress}}}) => {
+  userStore: {userInfo: {uid}}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
@@ -174,10 +174,14 @@ const CreateStep4 = ({generalInfoFormStore,
       const formDataInit = {...form};
       const fundingGoalDeadline = formDataInit[CreateCommonForm.DEADLINE];
 
+      const contributionAmount = parseInt(formDataInit.minimum, 10) * 100;
+
       const data = {
         ...formDataInit,
-        founderAddresses: safeAddress,
-        minFeeToJoin: parseInt(formDataInit.minimum, 10) * 100,
+        founderId: uid,
+        minFeeToJoin: contributionAmount,
+        contributionAmount,
+        contributionType: formDataInit.contribution,
         fundingGoal: parseInt(formDataInit.funding, 10) * 100,
         fundingGoalDeadline,
       };
@@ -191,21 +195,19 @@ const CreateStep4 = ({generalInfoFormStore,
         },
       });
 
-      console.log(JSON.stringify(data));
+      const createCommonResponse = await DaoService.getInstance().createCommon(data);
 
-      const commonAddress = await ArcService.createCommon(
-        data,
-        navigation,
-      );
-
-      if (commonAddress) {
-        setNewCommonAddress(commonAddress);
+      if (createCommonResponse.status === 200) {
+        setNewCommonAddress(createCommonResponse.data.id);
+      } else {
+        //navigation.pop();
+        showErrorPopUp(bottomSheetStore, createCommonResponse);
       }
 
-      return {commonAddress};
+      return {commonAddress: createCommonResponse.data.id};
     } catch (e) {
-      navigation.pop();
-
+      //navigation.pop();
+      console.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
     }
   };
@@ -425,11 +427,11 @@ const CreateStep4 = ({generalInfoFormStore,
             </View>
             {form[CreateCommonForm.LINKS]?.length ? (
               form[CreateCommonForm.LINKS].map((x) => (
-                <View key={`key_${CreateCommonForm.LINKS}_${x}`}>
+                <View key={`key_${CreateCommonForm.LINKS}_${x.title}`}>
                   <Text
                     onPress={() => {
                       navigation.navigate('Browser', {
-                        url: x.url,
+                        url: x.value,
                       });
                     }}
                     style={{
@@ -464,7 +466,7 @@ const CreateStep4 = ({generalInfoFormStore,
                 <View style={[styles.sectionTitle, {marginTop: 10}]}>
                   <Text style={styles.textSubtitle}>{rule.title}</Text>
                 </View>
-                <Text style={styles.textContent}>{rule.url}</Text>
+                <Text style={styles.textContent}>{rule.value}</Text>
               </View>
             ))
           ) : (

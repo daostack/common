@@ -97,6 +97,15 @@ class TextInputField extends React.Component {
       };
     }
 
+    const getValue = () => {
+      if (validation) {
+        return this.props.format
+          ? this.props.format(value)
+          : validation.formStore.getFormField(validation.name, validation.multiName).value.toString();
+      }
+      return value;
+    };
+
     return (
       <View style={{alignSelf: 'stretch', paddingBottom: 5}}>
         {(label || infoLabel) && <Label {...{label, infoLabel}} />}
@@ -115,10 +124,7 @@ class TextInputField extends React.Component {
             onFocus={this.onFocus}
             onBlur={this.onBlur}
             secureTextEntry={this.state.showPassword}
-            value={
-              validation
-                ? validation.formStore.getFormField(validation.name, validation.multiName).value.toString()
-                : value}/>
+            value={getValue()}/>
           {maxLength && <CharCount currCount={this.state.charsLeft} maxLength={maxLength} />}
         </View>
       </View>
@@ -163,6 +169,7 @@ TextInputField.propTypes = {
   viewStyle: object,
   forwardRef: object,
   onSubmit: func,
+  format: func,
 };
 
 const styles = StyleSheet.create({

@@ -173,12 +173,18 @@ class FormStore {
           // Multi Links
           if (typeof (currMultiFormField.value) === 'object') {
             Object.keys(currMultiFormField).forEach((currKey) => {
-              if (onlyChangedFields) {
-                if (currMultiFormField[currKey].changed) {
+              // Skip Multi Rules & Links fields with empty string values.
+              // That's happening because for those component we render the Input fields even if they are not used. That leads to register their values in the store.
+              // For MultiFiles & Images components that's not in this way, because we don't have a default value for initial rendering.
+              // TODO: In order to not keep these empty strings as values we need a change in the UI. Probably we can make it in the same way as the Multi Files & Images.
+              if (currMultiFormField[currKey].value && currMultiFormField[currKey].value.length > 0) {
+                if (onlyChangedFields) {
+                  if (currMultiFormField[currKey].changed) {
+                    multiFieldValue[currKey] = currMultiFormField[currKey].value;
+                  }
+                } else {
                   multiFieldValue[currKey] = currMultiFormField[currKey].value;
                 }
-              } else {
-                multiFieldValue[currKey] = currMultiFormField[currKey].value;
               }
             });
           } else { // MultiFiles & MultiImages
@@ -205,8 +211,29 @@ class FormStore {
         }
       }
 
-      if (currValue && currValue.length > 0) {
-        changedFieldsJson[key] = currValue;
+      let currFieldValue = null;
+
+      if (currValue) {
+        let nonZeroLength = false;
+        // Multiple field
+        if (Array.isArray(currValue)) {
+          nonZeroLength = currValue.length > 0;
+          currFieldValue = currValue;
+        }
+        // Single field with object value (ex: dropdown field -> {value: 'val', index: 0})
+        else if (typeof (currValue) === 'object') {
+          nonZeroLength = Object.keys(currValue).length > 0;
+          currFieldValue = currValue.value;
+        }
+        // Single field with single value
+        else {
+          nonZeroLength = currValue.length > 0;
+          currFieldValue = currValue;
+        }
+
+        if (nonZeroLength) {
+          changedFieldsJson[key] = currFieldValue;
+        }
       }
     }
 
@@ -258,7 +285,7 @@ class FormStore {
         {title: multiFieldTitles[x], url: multiFieldValues[x]}
       ));
       // Remove fields with empty values.
-      changedFieldsJson[name] = allMultiLinksFields.filter((item) => item.title || item.url);
+      changedFieldsJson[name] = allMultiLinksFields.filter((item) => item.title || item.value);
     }
 
     if (changedFieldsJson.length === 0) {
@@ -275,7 +302,13 @@ class FormStore {
   // Private functions
   validateField = (name, multiName) => {
     var validation = this.getValidator(name, multiName);
-    this.form.meta.isValid = validation.passes();
+    const isCurrFieldValid = validation.passes();
+    if (isCurrFieldValid) {
+      // validate the rest of the fields in case of valid current field.
+      this.form.meta.isValid = this.getValidator().passes();
+    } else {
+      this.form.meta.isValid = false;
+    }
     this.getFormField(name, multiName).error = validation.errors.first(name);
     if (this.getFormField(name, multiName).error) {
       this.form.meta.formValidationMade = true;

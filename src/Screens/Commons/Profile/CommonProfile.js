@@ -22,7 +22,6 @@ import CommonMembersList from './CommonMembersList';
 import ProposalService from '~/Services/ProposalService';
 import DaoService from '~/Services/DaoService';
 import CountDown from 'react-native-countdown-component';
-import moment from 'moment';
 import Toast from '~/Util/Toast';
 import {
   Placeholder,
@@ -37,6 +36,14 @@ import {getStatusBarHeight} from 'react-native-status-bar-height';
 import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDate';
 import {BlurView} from '~/Components';
 import Logger from '~/Services/Logger';
+import moment from 'moment';
+
+import {
+  IntroduceYourselfFormStore,
+  PersonalContributionFormStore,
+  BillingDetailsFormStore,
+  PaymentFormStore,
+} from '~/FormStores/RequestToJoin';
 
 let stickyHeightAddon = 36;
 
@@ -143,20 +150,18 @@ const CommonProfile = ({
     let getPendingProposalsData = async () => {
       unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
         commonId,
-        userStore.userInfo?.safeAddress,
+        userStore.userInfo?.uid,
         (data) => {
           setPendingProposalsData({...data});
 
           if (!isMember) {
-            if (
-              data &&
-              data.usersPendingProposal
-            ) {
-              setShowPending(true);
-            }
-
-            if (data && !data.usersPendingProposal) {
-              setShowRequestToJoin(true);
+            if (data) {
+              if (data.usersPendingProposal) {
+                setShowPending(true);
+                setShowRequestToJoin(false);
+              } else {
+                setShowRequestToJoin(true);
+              }
             }
           }
         }
@@ -266,7 +271,9 @@ const CommonProfile = ({
 
           <View style={layout.flexStart}>
             <Text style={text.h2Black}>About</Text>
-            <Text style={{...text.regularText, ...layout.marginTopS}}>
+            <Text style={{...text.regularText,
+              ...layout.marginTopS,
+              ...text.writingDirection(currCommon.metadata.description)}}>
               {currCommon.metadata.description}
             </Text>
           </View>
@@ -298,7 +305,7 @@ const CommonProfile = ({
                 style={layout.flexRow}>
                 <View style={layout.flexRow}>
                   <Text style={text.h4Black}>
-                    {`${currCommon.memberCount} Member${currCommon.memberCount !== 1 ? 's' : ''}`}
+                    {`${currCommon.members.length} Member${currCommon.members.length !== 1 ? 's' : ''}`}
                   </Text>
                 </View>
                 <View style={{...layout.flexRow, ...layout.marginLeftS}}>
@@ -363,7 +370,8 @@ const CommonProfile = ({
   const calcShouldSkipRules = () => {
     const rules = currCommon.metadata?.rules;
     if (rules?.length > 0) {
-      return !rules.some((rule) => rule?.title && rule?.url);
+      // NOTE: value of multiple fields was stored in url prop before
+      return !rules.some((rule) => rule?.title && (rule?.value || rule.url));
     } else {
       return true;
     }
@@ -372,9 +380,21 @@ const CommonProfile = ({
   const requestToJoin = (event) => {
     if (userStore.userInfo) {
       const shouldSkipRules = calcShouldSkipRules();
+
+      const introduceYourselfFormStore = new IntroduceYourselfFormStore();
+      const paymentFormStore = new PaymentFormStore();
+      const personalContributionFormStore = new PersonalContributionFormStore();
+      const billingDetailsFormStore = new BillingDetailsFormStore();
+
       const navigate = CommonActions.navigate({
         name: shouldSkipRules ? 'IntroductionStep' : 'RulesStep',
         params: {
+          formStores: {
+            paymentFormStore,
+            introduceYourselfFormStore,
+            personalContributionFormStore,
+            billingDetailsFormStore,
+          },
           currCommon: currCommon,
           currDaoId: currCommon.id,
           skipFirstStep: shouldSkipRules,
@@ -418,8 +438,8 @@ const CommonProfile = ({
   };
 
   const renderPendingApproval = () => {
-    const remainingSeconds =
-      pendingProposalsData.usersPendingProposal.closingAt - moment().unix();
+    const remainingSeconds = pendingProposalsData.usersPendingProposal.createdAt.seconds + pendingProposalsData.usersPendingProposal.countdownPeriod - moment().unix();
+
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
       <TouchableOpacity
@@ -573,7 +593,7 @@ const CommonProfile = ({
           Request to join
         </Text>
         <Text style={styles.contribution}>
-          ${currCommon.metadata.minFeeToJoin / 100} min. contribution
+          ${currCommon.metadata.minFeeToJoin / 100}{currCommon.metadata.contribution === 'monthly' && '/mo'} min. contribution
         </Text>
       </TouchableOpacity>);
   };
@@ -625,7 +645,7 @@ const CommonProfile = ({
             renderBackground={() => (
               <FastImage
                 source={{
-                  uri: currCommon.coverPhoto || currCommon?.metadata?.image,
+                  uri: currCommon.image,
                 }}
                 style={{
                   width: window.width,
@@ -681,20 +701,20 @@ const CommonProfile = ({
                   name: currCommon.name,
                   description: currCommon.description,
                   byline: currCommon.metadata?.byline,
-                  cover: currCommon.coverPhoto,
+                  cover: currCommon.image,
                 }}
                 common={currCommon}
               />
             )}
             renderStickyHeader={() => (
-              <>
+              <View style={{height: '100%'}}>
                 <Animated.View style={[stickyTabBarStyle, slideUp]}>
                   <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange={setIndex} />
                 </Animated.View>
                 <View key="sticky-header" style={styles.stickySection}>
                   <Text style={styles.stickySectionText}>{currCommon.name}</Text>
                 </View>
-              </>
+              </View>
             )}
             renderFixedHeader={fixedHeaderHeight}
           >
@@ -714,10 +734,9 @@ const CommonProfile = ({
                     currCommon.numberOfPreBoostedProposals +
                     currCommon.numberOfQueuedProposals,
                   /* goal: currCommon.fundingGoal, */
-                  members: currCommon.memberCount,
-                  // TODO: get this value. Is it even tracked in the contract? need to check.
-                  raised: currCommon.balance,
-                  currentBudget: currCommon.tokenTotalSupply,
+                  members: currCommon.members.length,
+                  balance: currCommon.balance,
+                  raised: currCommon.raised,
                 }}
               />
             </View>

@@ -1,14 +1,15 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {Text, StyleSheet, SectionList, View, Image} from 'react-native';
+import {Text, StyleSheet, SectionList, View, Image, Dimensions} from 'react-native';
 import {layout, text, colors, font} from '~/Theme';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
 import moment from 'moment';
 import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
-import PropTypes, {string, func} from 'prop-types';
+import PropTypes, {string, number, func, shape, arrayOf} from 'prop-types';
+import UserService from '../../Services/UserService';
 
-const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
+const ProposalDiscussion = ({proposal, proposalId, scrollViewRef}) => {
   const chatRef = useRef(null);
   const [msgGroups, setMsgGroups] = useState([]);
 
@@ -68,12 +69,18 @@ const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
             });
           }
         },
-        (error) => logger.error(error),
+        (error) => logger.error(error)
       );
     return () => {
       unsubscribe();
     };
   }, [proposalId]);
+
+  const getOutcomeForMessage = async (proposalObj, message) => {
+    const user = await UserService.getInstance().getUserById(message.ownerId);
+
+    return proposalObj?.votes.find((y) => y.voterId === user.uid).outcome === 1;
+  };
 
   return (
     <View style={{flex: 1, backgroundColor: colors.paleGrey, ...layout.content}}>
@@ -86,10 +93,15 @@ const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
           stickySectionHeadersEnabled={true}
           contentContainerStyle={{
             paddingTop: 100,
+            width: Dimensions.get('screen').width * 0.9,
           }}
 
           renderItem={(x) => (
-            <DiscussionMessage data={x.item} />
+            <DiscussionMessage
+              data={x.item}
+              showCurrentUserAvatar
+              outcome={getOutcomeForMessage(proposal, x.item)}
+            />
           )}
 
           onScrollToIndexFailed={(info) => {
@@ -113,19 +125,24 @@ const ProposalDiscussion = ({proposalId, scrollViewRef}) => {
           />
 
           <Text style={styles.emptyTitle}>
-              No comments yet
+            No comments yet
           </Text>
           <Text style={styles.emptyBody}>
-              Have any thoughts? Share them with other members by adding the first comment.
+            Have any thoughts? Share them with other members by adding the first comment.
           </Text>
         </View>
-      )
-      }
+      )}
     </View>
   );
 };
 
 ProposalDiscussion.propTypes = {
+  proposal: shape({
+    votes: arrayOf(shape({
+      voter: string,
+      outcome: number,
+    })),
+  }),
   proposalId: string,
   scrollViewRef: PropTypes.any,
   onFirstScrollDown: func,

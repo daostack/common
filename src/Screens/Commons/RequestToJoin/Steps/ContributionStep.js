@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import AmountField from '~/Components/FormFields/AmountField';
 import {colors, text} from '~/Theme';
-import {observer, inject} from 'mobx-react';
 import CreateStepHeader from '../RequestStepHeader';
 import CreateStepNavigation from '../RequestStepNavigation';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
@@ -21,12 +20,13 @@ import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {string, func, bool, object, shape, number} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const ContributionStep = ({navigation, personalContributionFormStore, route: {params: {skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
+const ContributionStep = ({navigation, route: {params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
   const metadata = currCommon.metadata;
   const isMonthly = metadata.contribution === 'monthly';
+  const personalContributionFormStore = formStores.personalContributionFormStore;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -45,15 +45,15 @@ const ContributionStep = ({navigation, personalContributionFormStore, route: {pa
     setIsActionBtnHidden(false);
     personalContributionFormStore.fieldChanged(
       RequestToJoinForm.FIELD_AMOUNT,
-      '',
+      {},
       false,
     );
   };
 
-  const onAmountSelected = (amount) => {
+  const onAmountSelected = (amount, index) => {
     personalContributionFormStore.fieldChanged(
       RequestToJoinForm.FIELD_AMOUNT,
-      amount,
+      {value: amount, index},
     );
     navigateToRequestStep4();
   };
@@ -62,6 +62,7 @@ const ContributionStep = ({navigation, personalContributionFormStore, route: {pa
     const navigate = CommonActions.navigate({
       name: 'BillingDetailsStep',
       params: {
+        formStores,
         currDaoId: currDaoId,
         currCommon: currCommon,
         skipFirstStep,
@@ -193,6 +194,4 @@ ContributionStep.propTypes = {
   }),
 };
 
-export default inject(
-  'personalContributionFormStore',
-)(observer(ContributionStep));
+export default ContributionStep;

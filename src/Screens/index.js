@@ -37,7 +37,6 @@ export {default as Browser} from './Viewers/Browser';
 
 //root
 export {default as Onboarding} from './Onboarding';
-export {default as NativeBridgeTests} from './NativeBridgeTests';
 export {default as HUDTest} from './HUDTest';
 export {default as FullScreenCreationLoader} from './FullScreenCreationLoader';
 

@@ -7,13 +7,11 @@ import {layout, colors, font, text, sizeM} from '~/Theme';
 import SwiperCard from '~/Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import {PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '~/Services/ProposalService';
-import moment from 'moment';
 import {string, bool, object, number, shape, func} from 'prop-types';
 const {width, height} = Dimensions.get('window');
 
 const ProposalsList = ({isMember,
   commonInfo,
-  safeAddress,
   showAll,
   showMax,
   onlyFundingRequests,
@@ -40,12 +38,11 @@ const ProposalsList = ({isMember,
         loadCommonId,
         loadUserId,
         proposalStages,
-        safeAddress,
         loadShowAll,
         (newList) => {
           // logger.log(newList, PROPOSAL_STAGE.Executed);
-          const history =  newList.filter((proposal) => PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.stageStr) || moment().isAfter(moment.unix(proposal.closingAt)));
-          const active = newList.filter((proposal) => PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.stageStr) && !moment().isAfter(moment.unix(proposal.closingAt)));
+          const history = newList.filter((proposal) => PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state));
+          const active = newList.filter((proposal) => PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.state));
 
           const filteredList = loadIsHistory
             ? history
@@ -74,7 +71,7 @@ const ProposalsList = ({isMember,
         unsubscribe();
       }
     };
-  }, [commonId, isHistory, userId, safeAddress]);
+  }, [commonId, isHistory, userId]);
 
   const renderProposalCard = (item, index) => (
     isSwiper ? (
@@ -83,7 +80,7 @@ const ProposalsList = ({isMember,
           key={item.id}
           data={item}
           isSwiper={true}
-          membershipRequest={membershipRequests}
+          membershipRequest={onlyRequestsToJoin || membershipRequests}
           isMember={isMember}
           commonInfo={commonInfo}
           navigation={navigation}
@@ -103,7 +100,7 @@ const ProposalsList = ({isMember,
       key={item.id}
       data={item}
       isSwiper={false}
-      membershipRequest={membershipRequests}
+      membershipRequest={onlyRequestsToJoin || membershipRequests}
       isMember={isMember}
       commonInfo={commonInfo}
       navigation={navigation}
@@ -155,30 +152,30 @@ const ProposalsList = ({isMember,
       </View>
     )
   ) : (
-      <>
-        {list && list.length > 0 ? (
-          <FlatList
-            data={list}
-            renderItem={({item}) => renderProposalCard(item)}
-            extraData={listRef}
-          />
-        ) : (
-          <ViewTabNoData
-            title={
-              isHistory
-                ? 'No Past activity'
-                : membershipRequests
-                  ? 'No requests yet'
-                  : 'No proposals'
-            }
-            subtitle={
-              isHistory
-                ? 'You will be able to see proposals that passed or were rejected here.'
-                : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
-            }
-          />
-        )}
-      </>
+    <>
+      {list && list.length > 0 ? (
+        <FlatList
+          data={list}
+          renderItem={({item}) => renderProposalCard(item)}
+          extraData={listRef}
+        />
+      ) : (
+        <ViewTabNoData
+          title={
+            isHistory
+              ? 'No Past activity'
+              : membershipRequests
+                ? 'No requests yet'
+                : 'No proposals'
+          }
+          subtitle={
+            isHistory
+              ? 'You will be able to see proposals that passed or were rejected here.'
+              : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
+          }
+        />
+      )}
+    </>
   );
 };
 
@@ -189,7 +186,6 @@ ProposalsList.propTypes = {
     id: string,
     name: string,
   }),
-  safeAddress: string,
   showAll: bool,
   showMax: number,
   onlyFundingRequests: bool,

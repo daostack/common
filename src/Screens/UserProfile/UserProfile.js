@@ -91,10 +91,6 @@ const UserProfile = ({userStore, daoStore, navigation, route}) => {
     }
   };
 
-  const onTestPagePress = (event) => {
-    navigation.navigate('NativeBridgeTests');
-  };
-
   const onHUDTestPress = (event) => {
     navigation.navigate('HUDTest');
   };
@@ -150,21 +146,20 @@ const UserProfile = ({userStore, daoStore, navigation, route}) => {
                     </React.Fragment>
                   ) : null}
                 </View>
-                  {
-                    Config.ENV !== 'production' && <View
-                      style={{
-                        ...layout.content,
-                        paddingHorizontal: 0,
-                        backgroundColor: colors.grey4,
-                      }}>
-                      <Text style={text.h4Black}>Temporary menu</Text>
-                      <AccordionBtn title="Test Page" onPress={onTestPagePress} />
-                      <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
-                    </View>
+                {
+                  Config.ENV !== 'production' && <View
+                    style={{
+                      ...layout.content,
+                      paddingHorizontal: 0,
+                      backgroundColor: colors.grey4,
+                    }}>
+                    <Text style={text.h4Black}>Temporary menu</Text>
+                    <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
+                  </View>
 
-                  }
-                  <Text style={styles.version}>Common{isProduction ? '' : '-stg'} v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : ''})</Text>
-                </>
+                }
+                <Text style={styles.version}>Common{isProduction ? '' : '-stg'} v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : ''})</Text>
+              </>
               : null
           }
         </ScrollView>

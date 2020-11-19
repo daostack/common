@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {circlePayUrl} from '~/Config';
-import auth from '@react-native-firebase/auth';
+import {auth} from '~/Firebase';
 import OpenPGP from 'react-native-fast-openpgp';
 
 var base64 = require('base-64');
@@ -15,8 +15,12 @@ const endpoints = {
   create: '/create-card',
 };
 
-const getEncryptedData = async (dataToEncrypt) => {
-  const {data} = await axiosClient.get('encryption');
+const getEncryptedData = async (token, dataToEncrypt) => {
+  const {data} = await axiosClient.get('encryption', {
+    headers: {
+      Authorization: token,
+    },
+  });
   const {keyId, publicKey} = data.data;
   let decodedPublicKey = base64.decode(publicKey);
   return OpenPGP.encrypt(JSON.stringify(dataToEncrypt), decodedPublicKey).then((ciphertext) => (
@@ -43,15 +47,20 @@ const cardData = (formData) => ({
   },
 });
 
-export const createCard = async (formData) => (await axiosClient.post(endpoints.create, createCardPayload(formData))).data;
+export const createCard = async (formData) => (await axiosClient.post(endpoints.create, await createCardPayload(formData), {
+  headers: {
+    Authorization: await auth().currentUser.getIdToken(true),
+  },
+})).data;
 
 export const createCardPayload = async (formData) => {
-  const idToken = await auth().currentUser.getIdToken();
+  const idToken = await auth().currentUser.getIdToken(true);
 
-  const {encryptedData, keyId} = await getEncryptedData({
-    number: `${formData.card_number}`,
-    cvv: `${formData.cvv}`,
-  });
+  const {encryptedData, keyId} = await getEncryptedData(idToken,
+    {
+      number: `${formData.card_number}`,
+      cvv: `${formData.cvv}`,
+    });
 
   return {
     keyId,

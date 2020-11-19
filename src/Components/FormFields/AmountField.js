@@ -14,8 +14,9 @@ const AmountField = ({
   minFeeToJoin,
   isMonthly,
 }) => {
+  const currFieldValue = formStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)?.value;
   const [isCustomSelected, setIsCustomSelected] = useState(0);
-  const [selectedAmountId, setSelectedAmountId] = useState(-1);
+  const [selectedAmountId, setSelectedAmountId] = useState(currFieldValue ? currFieldValue.index : -1);
   const textInputRef = useRef();
 
   const onAmountPress = (isCustom, amount, id) => {
@@ -26,7 +27,7 @@ const AmountField = ({
       onCustomSelect();
     } else {
       setSelectedAmountId(id);
-      onAmountSelected(amount);
+      onAmountSelected(amount, id);
     }
   };
 
@@ -64,10 +65,11 @@ const AmountField = ({
         keyboardType="numeric"
         onTogglePress={onTogglePress}
         toggleName="Other"
+        value={currFieldValue?.value}
         validation={{
           name: RequestToJoinForm.FIELD_AMOUNT,
           formStore: formStore,
-          validateRule: `required|integer|min:${minFeeToJoin}`,
+          validateRule: `required|numeric|min:${minFeeToJoin.toString()}`,
         }}
       />
     </View>

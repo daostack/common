@@ -22,7 +22,6 @@ import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import ProposalService from '~/Services/ProposalService';
-import ArcService from '~/Services/ArcService';
 import {UserAvatar} from '~/Components';
 import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
@@ -30,7 +29,6 @@ import UserService from '~/Services/UserService';
 import DaoService from '~/Services/DaoService';
 import {observer, inject} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
-import moment from 'moment';
 import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
 import {string, func, object, shape, oneOfType, number} from 'prop-types';
@@ -53,7 +51,6 @@ const ProposalScreen = ({
     isDaoMember,
     ...userStore
   },
-  bottomSheetStore,
   route: {
     params: {
       commonBalance,
@@ -62,19 +59,19 @@ const ProposalScreen = ({
     },
   },
 }) => {
-  const [ votingProcessState, setVotingProcessState ] = useState({inProgress: false, error: false});
-  const [ proposalScreenInfo, setProposalScreenInfo ] = useState(proposalCardInfo);
+  const [votingProcessState, setVotingProcessState] = useState({inProgress: false, error: false});
+  const [proposalScreenInfo, setProposalScreenInfo] = useState(proposalCardInfo);
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
-  const [hederStateInProcess, setHederStateInProcess] = useState(false);
-  const [ isSending, setIsSending ] = useState(false);
-  const [ isMember, setIsMember ] = useState(false);
-  const [ isProposer, setIsProposer ] = useState(false);
-  const [ showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer ] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [isMember, setIsMember] = useState(false);
+  const [isProposer, setIsProposer] = useState(false);
+  const [inputHeight, setInputHeight] = useState(false);
+  const [showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer] = useState(false);
   const renderVoting =
     proposalScreenInfo?.proposalInfo &&
-    PROPOSAL_STAGES_ACTIVE.includes(proposalScreenInfo?.proposalInfo?.stageStr) &&
+    PROPOSAL_STAGES_ACTIVE.includes(proposalScreenInfo?.proposalInfo?.state) &&
     isMember &&
-    !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voter === userInfo.safeAddress);
+    !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid);
 
 
   // Sticky Tab Bar
@@ -90,8 +87,8 @@ const ProposalScreen = ({
   const scrollViewRef = useRef(null);
 
   // Values for vote param required from the blockchain
-  const VOTE_APPROVE = 1;
-  const VOTE_REJECT = 2;
+  const VOTE_APPROVE = 'approved';
+  const VOTE_REJECT = 'rejected';
   let currTabViewScroll = 0;
 
   useEffect(() => {
@@ -102,9 +99,9 @@ const ProposalScreen = ({
       let funding = null;
 
       if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
-        funding = currProposalInfo.description.funding;
+        funding = currProposalInfo.join.funding;
         currProposedUser = await UserService.getInstance().getUserById(
-          currProposalInfo.join.proposedMemberId
+          currProposalInfo.proposerId
         );
 
         LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
@@ -114,8 +111,8 @@ const ProposalScreen = ({
       }
       //FundingRequest proposal
       else {
-        currProposedUser = await UserService.getInstance().getUserByAddress(
-          currProposalInfo.fundingRequest.beneficiary
+        currProposedUser = await UserService.getInstance().getUserById(
+          currProposalInfo.proposerId
         );
         funding = currProposalInfo.fundingRequest.amount;
 
@@ -143,7 +140,7 @@ const ProposalScreen = ({
               });
             }
 
-            const currentDao = await DaoService.getInstance().getDaoById(updatedProposalInfo.dao);
+            const currentDao = await DaoService.getInstance().getDaoById(updatedProposalInfo.commonId);
 
             setIsMember(userInfo && isDaoMember(currentDao?.members || []));
             setIsProposer(userStore.isProposer(updatedProposalInfo));
@@ -167,28 +164,29 @@ const ProposalScreen = ({
         unsubscribe();
       }
     };
-  }, [proposalId]);
+  }, [proposalId, votingProcessState]);
 
   const [
     isApprovalBottomModalVisible,
     setIsApprovalBottomModalVisible,
   ] = useState(false);
 
-  const [ isVoteByYou, setIsVoteByYou ] = useState(false);
-  const [ voteType, setVoteType ] = useState(false);
-  const [ index, setIndex ] = useState(0);
-  const [ routes ] = useState([
+  const [isVoteByYou, setIsVoteByYou] = useState(false);
+  const [voteType, setVoteType] = useState(false);
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
     {index: 0, key: 'info', icon: 'proposal', iconSelected: 'proposal-selected'},
     {index: 1, key: 'discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
   ]);
 
-  const [ inputText, setInputText ] = useState(null);
+  const [inputText, setInputText] = useState(null);
 
   const inputRef = useRef();
 
   const renderTabBar = (currProps) => proposalScreenInfo?.proposalInfo && (
     <View style={{paddingBottom: 5}}>
-      <TabBarRenderer originRef={originTabBarRef} jumpTo={originTabBarRef.current?.props?.jumpTo} indexChange={setIndex} {...currProps} />
+      <TabBarRenderer originRef={originTabBarRef} jumpTo={originTabBarRef.current?.props?.jumpTo}
+        indexChange={setIndex} {...currProps} />
     </View>
   );
 
@@ -249,13 +247,18 @@ const ProposalScreen = ({
                 ref={inputRef}
                 editable={true}
                 fontSize={15}
+                multiline
                 placeholder="What do you think?"
                 onChangeText={(currText) => setInputText(currText)}
+                onContentSizeChange={(event) => {
+                  setInputHeight(event.nativeEvent.contentSize.height);
+                }}
                 style={{
                   flex: 1,
-                  height: 22,
                   padding: 0,
                   marginHorizontal: 10,
+                  maxHeight: 110,
+                  height: Math.max(35, inputHeight + 10),
                 }}
               />
               <TouchableOpacity
@@ -301,39 +304,33 @@ const ProposalScreen = ({
     setIsApprovalBottomModalVisible(false);
   };
 
-  async function timeout(ms) { //pass a time in milliseconds to this function
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
   const viewUserProfile = () => {
     navigation.navigate('Profile', {userId: proposalScreenInfo?.proposedUser.uid});
   };
 
   const onVote = async (isApproved) => {
-    setVotingProcessState({inProgress: true, error: false});
+    setVotingProcessState({
+      inProgress: true,
+      error: false,
+    });
 
     try {
-      const voteData = {vote: isApproved ? VOTE_APPROVE : VOTE_REJECT};
+      const voteData = {
+        outcome: isApproved ? VOTE_APPROVE : VOTE_REJECT,
+        proposalId: proposalId || proposalScreenInfo?.proposalInfo.id,
+      };
 
-      await timeout(3000);
-
-      if (proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join) {
-        await ArcService.voteForJoinProposal(
-          proposalId || proposalScreenInfo?.proposalInfo.id,
-          voteData
-        );
+      const createVoteResponse = await ProposalService.getInstance().createVote(voteData);
+      if (createVoteResponse.status === 200) {
+        setVotingProcessState({inProgress: false, error: false});
+        closeApprovalSheet();
+        Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
+        setIsVoteByYou({isApproved: isApproved});
       } else {
-        await ArcService.voteForFundingRequestProposal(
-          proposalId || proposalScreenInfo?.proposalInfo.id,
-          voteData
-        );
+        setVotingProcessState({inProgress: false, error: true});
+        logger.log(createVoteResponse.status);
+        Toast.error(`Status code ${createVoteResponse.status}`);
       }
-
-      setVotingProcessState({inProgress: false, error: false});
-      closeApprovalSheet();
-      Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
-      setIsVoteByYou({isApproved: isApproved});
-
     } catch (err) {
       setVotingProcessState({inProgress: false, error: true});
       logger.log(err);
@@ -370,7 +367,7 @@ const ProposalScreen = ({
   const renderVotingButtons = (reference) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
-      (moment().isBefore(moment.unix(proposalScreenInfo?.proposalInfo?.closingAt)) || !proposalScreenInfo?.proposalInfo?.closingAt) && (
+      (PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposalScreenInfo?.proposalInfo?.state)) && (
         <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
           <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>What's your vote?</Text>
           <View style={layout.flexRow}>
@@ -378,13 +375,13 @@ const ProposalScreen = ({
               onPress={(e) => openApprovalSheet(true)}
               style={{...styles.actionBtnStyle, ...layout.marginRightS}}
             >
-              <Icon name="approved-24" color={colors.lightishGreen} size={24} />
+              <Icon name="approved-24" color={colors.lightishGreen} size={24}/>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={(e) => openApprovalSheet(false)}
               style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
-              <Icon name="reject-24" color={colors.against} size={24} />
+              <Icon name="reject-24" color={colors.against} size={24}/>
             </TouchableOpacity>
           </View>
         </View>
@@ -399,7 +396,8 @@ const ProposalScreen = ({
     ...proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest && {...layout.flexStart},
   };
 
-  const [votesFor, votesAgainst] = [+proposalScreenInfo?.proposalInfo?.votesFor, +proposalScreenInfo?.proposalInfo?.votesAgainst];
+  const votesFor = proposalScreenInfo?.proposalInfo?.votesFor;
+  const votesAgainst = proposalScreenInfo?.proposalInfo?.votesAgainst;
 
   const progressBarWidthPercent = proposalScreenInfo?.proposalInfo
     ? (votesFor / (votesFor + votesAgainst) * 100) : 0;
@@ -409,25 +407,34 @@ const ProposalScreen = ({
 
   const onSetIndex = (item) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
-    setIsHeaderHidden(item === 1);
+    const isDiscussionTab = item === 1;
+    setIsHeaderHidden(isDiscussionTab);
+
+    if (!isDiscussionTab && showStickyTabBar) {
+      Animated.timing(stickyTabBarState.animation, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(
+        () => {
+          setShowStickyTabBar(false);
+        });
+    }
+
     setIndex(item);
   };
 
   const onTabViewScroll = (e) => {
-    if (!hederStateInProcess) {
-      const currScrollY = e.nativeEvent.contentOffset.y;
-      if (currScrollY > currTabViewScroll) {
-        if (!isHeaderHidden) {
-          setHederStateInProcess(true);
-          LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG, () => { setHederStateInProcess(false); });
-          setIsHeaderHidden(true);
-        }
-      } else if (currScrollY < 1) {
-        if (isHeaderHidden) {
-          setHederStateInProcess(true);
-          LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG, () => { setHederStateInProcess(false); });
-          setIsHeaderHidden(false);
-        }
+    const currScrollY = e.nativeEvent.contentOffset.y;
+    if (currScrollY > currTabViewScroll) {
+      if (!isHeaderHidden) {
+        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
+        setIsHeaderHidden(true);
+      }
+    } else if (currScrollY < 1) {
+      if (isHeaderHidden) {
+        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
+        setIsHeaderHidden(false);
       }
     }
   };
@@ -464,7 +471,7 @@ const ProposalScreen = ({
         {showStickyTabBar && (
           <Animated.View style={[stickyTabBarStyle, slideUp]}>
             <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo}
-              parentRef={originTabBarRef} />
+              parentRef={originTabBarRef}/>
           </Animated.View>
         )}
 
@@ -477,7 +484,7 @@ const ProposalScreen = ({
           onScroll={(e) => {
             onTabViewScroll(e);
 
-            stickyTabBarRef?.current?.measure( (fx, fy, width, height, px, py) => {
+            stickyTabBarRef?.current?.measure((fx, fy, width, height, px, py) => {
               const isVisible = py < 0;
 
               if (isVisible !== showStickyTabBar) {
@@ -515,9 +522,8 @@ const ProposalScreen = ({
                     <ProposalCardHeader
                       isScreenHeader={true}
                       isBoosted={true}
-                      stage={proposalScreenInfo?.proposalInfo?.stageStr}
+                      stage={proposalScreenInfo?.proposalInfo?.state}
                       winningOutcome={proposalScreenInfo?.proposalInfo?.winningOutcome}
-                      closingAt={proposalScreenInfo?.proposalInfo.closingAt}
                     />
                     {proposalScreenInfo?.proposedUser && (
 
@@ -537,9 +543,8 @@ const ProposalScreen = ({
                     <ProposalCardHeader
                       isScreenHeader={true}
                       isBoosted={true}
-                      stage={proposalScreenInfo?.proposalInfo?.stageStr}
+                      stage={proposalScreenInfo?.proposalInfo?.state}
                       winningOutcome={proposalScreenInfo?.proposalInfo?.winningOutcome}
-                      closingAt={proposalScreenInfo?.proposalInfo.closingAt}
                     />
 
                     {proposalScreenInfo?.proposedUser ? (
@@ -550,21 +555,22 @@ const ProposalScreen = ({
                           iconName={'clcok'}
                         />
 
-                      <View style={{...layout.content, ...layout.marginTopS}}>
-                        <Text style={text.h2Black}>
-                          {proposalScreenInfo?.proposedUser
-                            ? proposalScreenInfo?.proposedUser.displayName
-                            : 'unknown user'
-                          }
-                        </Text>
+                        <View style={{...layout.content, ...layout.marginTopS}}>
+                          <Text style={text.h2Black}>
+                            {proposalScreenInfo?.proposedUser
+                              ? proposalScreenInfo?.proposedUser.displayName
+                              : 'unknown user'
+                            }
+                          </Text>
 
 
-                        <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}} onPress={viewUserProfile}>
-                          <Text style={text.smallBlackText}>View Profile</Text>
-                          <Icon name="right-arrow" size={20}/>
-                        </TouchableOpacity>
+                          <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}}
+                            onPress={viewUserProfile}>
+                            <Text style={text.smallBlackText}>View Profile</Text>
+                            <Icon name="right-arrow" size={20}/>
+                          </TouchableOpacity>
 
-                      </View>
+                        </View>
                       </>
                     ) :
                       (<Placeholder Animation={Fade}>
@@ -573,8 +579,8 @@ const ProposalScreen = ({
                           isRound={true}
                           style={{alignSelf: 'center', marginBottom: 40}}
                         />
-                        <PlaceholderLine width={50} style={{alignSelf: 'center'}} />
-                        <PlaceholderLine width={30} style={{alignSelf: 'center', marginBottom: 28}} />
+                        <PlaceholderLine width={50} style={{alignSelf: 'center'}}/>
+                        <PlaceholderLine width={30} style={{alignSelf: 'center', marginBottom: 28}}/>
                       </Placeholder>)
                     }
                   </React.Fragment>
@@ -585,16 +591,20 @@ const ProposalScreen = ({
                   <View style={styles.requestedAmountContainer}>
                     <Text style={{...text.smallBlackText, ...layout.marginRightS}}>
                       {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
-                        'Requested amount' : 'Contribution'}
+                        'Requested amount' : 'Contribution:'}
                     </Text>
-                    <Text style={text.h2Black}>{`$${proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
-                      ? proposalScreenInfo?.proposalInfo.fundingRequest.amount / 100
-                      : proposalScreenInfo?.proposalInfo.description.funding / 100}`}
+                    <Text style={text.h2Black}>
+                      {`$${proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+                        ? proposalScreenInfo?.proposalInfo.fundingRequest.amount / 100
+                        : proposalScreenInfo?.proposalInfo.join.funding / 100}`}
                     </Text>
+                    <Text style={{...text.smallBlackText, ...layout.marginRightS}}>{
+                        proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join &&
+                        proposalScreenInfo?.proposalDao?.metadata?.contributionType === 'monthly' && ' per month'}</Text>
                   </View>
                   {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
-                && <Text
-                  style={text.smallBlackText}>{`Available funds: ${commonBalance !== undefined ? '$' + commonBalance / 100 : ''}`}</Text>
+                  && <Text
+                    style={text.smallBlackText}>{`Available funds: ${commonBalance !== undefined ? '$' + commonBalance / 100 : ''}`}</Text>
                   }
                 </View>
 
@@ -646,37 +656,40 @@ const ProposalScreen = ({
             </View>
           )}
 
-          <View ref={stickyTabBarRef} collapsable={false} style={{minHeight: screenHeight}}>
+          <View ref={stickyTabBarRef} collapsable={false} style={{flex: 1, minHeight: screenHeight, backgroundColor: colors.paleGrey}}>
             <TabView
               navigationState={{index, routes}}
               renderScene={() => null}
               onIndexChange={onSetIndex}
               initialLayout={initialLayout}
               renderTabBar={renderTabBar}
-              style={{backgroundColor: colors.paleGrey}}
-
+              style={{backgroundColor: colors.paleGrey, flex: 0}}
+              sceneContainerStyle={{height: 0}}
             />
 
-            {index === 0 && (
-              <ProposalData
-                proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
-                proposalInfo={proposalScreenInfo?.proposalInfo}
-                showMore={() => onSetIndex(1)}
-              />
-            )}
+            <View style={{paddingTop: showStickyTabBar ? 100 : 0, flex: 1}}>
+              {index === 0 && (
+                <ProposalData
+                  proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
+                  proposalInfo={proposalScreenInfo?.proposalInfo}
+                  showMore={() => onSetIndex(1)}
+                />
+              )}
 
-            {index === 1 && (
-              <ProposalDiscussion
-                proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
-                inputRef={inputRef}
-                scrollViewRef={scrollViewRef}
-              />
-            )}
+              {index === 1 && (
+                <ProposalDiscussion
+                  proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
+                  proposal={proposalScreenInfo?.proposalInfo}
+                  inputRef={inputRef}
+                  scrollViewRef={scrollViewRef}
+                />
+              )}
+            </View>
           </View>
         </ScrollView>
 
         {index === 0 ? renderVoting
-            && showBottomVotingButtonsContainer && (
+          && showBottomVotingButtonsContainer && (
           <View style={styles.actionButtonContainer}>
             {renderStickyBottomContent()}
           </View>
@@ -708,7 +721,6 @@ ProposalScreen.propTypes = {
     userInfo: object,
     isDaoMember: func,
   }),
-  bottomSheetStore: object,
   route: shape({
     params: shape({
       commonBalance: oneOfType([
@@ -846,6 +858,5 @@ const styles = StyleSheet.create({
 
 
 export default inject(
-  'userStore',
-  'bottomSheetStore'
+  'userStore'
 )(observer(ProposalScreen));

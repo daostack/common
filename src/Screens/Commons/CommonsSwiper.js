@@ -9,7 +9,7 @@ import {
   PlaceholderMedia,
   Fade,
 } from 'rn-placeholder';
-import {isDaoMemberBySafeAddress} from '~/Util';
+import {isDaoMemberByUserId} from '~/Util';
 import {CommonActions} from '@react-navigation/native';
 import {string, object, number, func} from 'prop-types';
 
@@ -17,7 +17,6 @@ const DEFAULT_HEADER_HEIGHT = 145;
 
 const CommonsSwiper = ({
   navigation,
-  safeAddress,
   userId,
   onCountChange,
   showMax,
@@ -32,7 +31,7 @@ const CommonsSwiper = ({
     } else {
       if (snapshot.docChanges().length !== 0) {
         const newList = snapshot.docChanges().map(({doc}, index) => {
-          const isMember = isDaoMemberBySafeAddress(doc.data().members, safeAddress);
+          const isMember = isDaoMemberByUserId(doc.data().members, userId);
           if (!isMember) {
             return false;
           }
@@ -40,7 +39,7 @@ const CommonsSwiper = ({
             id: doc.id,
             ...doc.data(),
             ...{
-              coverPhoto: doc.data().metadata?.image || `https://picsum.photos/id/${index *
+              image: doc.data().metadata?.image || `https://picsum.photos/id/${index *
                 10}/500/100.jpg`,
             },
           };
@@ -68,7 +67,7 @@ const CommonsSwiper = ({
   useEffect(() => {
     let unsubscribe = null;
     const getMyDaos = async () => {
-      unsubscribe = await DaoService.getInstance().subscribeToMyDaosList(userId, safeAddress, loadMydaos);
+      unsubscribe = await DaoService.getInstance().subscribeToMyDaosList(userId, loadMydaos);
     };
 
     getMyDaos();
@@ -77,7 +76,7 @@ const CommonsSwiper = ({
         unsubscribe();
       }
     };
-  }, [safeAddress]);
+  }, [userId]);
 
 
   const headerHeightLayouted = (height) => {
@@ -166,7 +165,6 @@ const CommonsSwiper = ({
 
 CommonsSwiper.propTypes = {
   navigation: object,
-  safeAddress: string,
   userId: string,
   onCountChange: func,
   showMax: number,

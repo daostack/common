@@ -53,13 +53,21 @@ export const graphqlUrl = () => functionEndpoint('graphql');
 export const relayerUrl = () => functionEndpoint('relayer');
 export const createUrl = () => functionEndpoint('create');
 export const subscriptionsUrl = () => functionEndpoint('subscriptions');
+
+// No Blockchain urls
+export const commonsUrl = () => functionEndpoint('commons');
+export const proposalsUrl = () => functionEndpoint('proposals');
+export const votesUrl = () => functionEndpoint('votes');
+
 export const circlePayUrl = () => functionEndpoint('circlepay');
 export const web3ProviderUrl = web3Provider;
 export const web3NetworkId = networkId;
 export const COMMONTOKENADDRESS = commonTokenAddress;
 export const firebaseWebClientId = clientId;
 export const isProduction = Config.ENV === 'production';
-export const testCard = Config.testCard === 'true';
+
+// JUST HARDCODING THIS TO BE TRUE FOR A QUICK FIX; SORRY
+export const testCard = false; //Config.testCard === 'true';
 
 export const OVERRIDES = {
   // default settings for sending trasnsactions
@@ -71,6 +79,6 @@ export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 // Arc.js related string constants
 export const PROPOSAL_TYPE = {
-  Join: 'Join',
-  FundingRequest: 'FundingRequest',
+  Join: 'join',
+  FundingRequest: 'fundingRequest',
 };

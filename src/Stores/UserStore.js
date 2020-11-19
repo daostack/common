@@ -1,5 +1,5 @@
 import {observable, action, decorate} from 'mobx';
-import {isDaoMemberBySafeAddress} from '~/Util';
+import {isDaoMemberByUserId} from '~/Util';
 import Cache from '../Util/Cache';
 
 export const userInfoFields = [
@@ -16,7 +16,6 @@ export const userInfoFields = [
   'createdAt',
   'following',
   'follower',
-  'safeAddress',
 ];
 
 class UserStore {
@@ -38,12 +37,12 @@ class UserStore {
   }
 
   isDaoMember = (members) => (
-    this.userInfo ? isDaoMemberBySafeAddress(members, this.userInfo.safeAddress) : false
+    this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false
   )
 
   isProposer = (proposal) =>
     this.userInfo
-      ? this.userInfo.safeAddress === proposal.proposer
+      ? this.userInfo.uid === proposal.proposerId
       : false;
 
   setIsLoading = (loading) => {
@@ -71,9 +70,6 @@ class UserStore {
       if (newUserInfo.email) {
         newUserObj.email = newUserInfo.email;
       }
-      if (newUserInfo.displayName) {
-        newUserObj.displayName = newUserInfo.displayName;
-      }
       if (newUserInfo.firstName) {
         newUserObj.firstName = newUserInfo.firstName;
       }
@@ -95,12 +91,10 @@ class UserStore {
       if (newUserInfo.byLine) {
         newUserObj.byLine = newUserInfo.byLine;
       }
-      if (newUserInfo.safeAddress) {
-        newUserObj.safeAddress = newUserInfo.safeAddress;
-      }
 
       newUserObj.following = newUserInfo.following || [];
       newUserObj.follower = newUserInfo.follower || [];
+      newUserObj.displayName = `${newUserInfo.firstName} ${newUserInfo.lastName}`;
 
       Cache.set(newUserInfo.uid, newUserObj);
       this.userInfo = newUserObj;
