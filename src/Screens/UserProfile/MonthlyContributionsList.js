@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {ScrollView, Text, View, StyleSheet} from 'react-native';
 
-import moment from 'moment';
 import {inject, observer} from 'mobx-react';
 import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
 
@@ -29,53 +28,13 @@ const MonthlyContributionsList = ({userStore}) => {
 
   React.useEffect(() => {
     const effect = async () => {
-    //   const commons = await db
-    //     .collection('daos')
-    //     .where('members', 'array-contains', {
-    //       address: userStore.userInfo.safeAddress,
-    //       userId: userStore.userInfo.uid,
-    //     })
-    //     .get();
-    //
-    //   const mountlySubs = [];
-    //
-    //   for (let commonDoc of commons.docs) {
-    //     const common = commonDoc.data();
-    //
-    //     if (common.metadata?.contribution === 'monthly') {
-    //       const proposal = await db
-    //         .collection('proposals')
-    //         .where('dao', '==', common.id)
-    //         .where('type', '==', 'Join')
-    //         .where('proposerId', '==', userStore.userInfo.uid)
-    //         .where('winningOutcome', '==', 1)
-    //         .get();
-    //
-    //       // Sometimes if the user created the common
-    //       // there will be no proposal for that
-    //       if (proposal.docs[0]) {
-    //         mountlySubs.push({
-    //           proposal: proposal.docs[0].data(),
-    //           common,
-    //         });
-    //       }
-    //     }
-    //   }
-      const userSubscriptions = [];
-
-      console.log(userStore.userInfo.uid);
-
       await db
         .collection('subscriptions')
         .where('userId', '==', userStore.userInfo.uid)
         .onSnapshot((snapshot) => {
-          console.log(snapshot);
-
           setSubs(snapshot.docs.map((doc) => doc.data()));
         });
     };
-
-
 
     effect();
   }, []);

@@ -199,7 +199,7 @@ const ApprovalSheetScreen = ({
       )}
 
       {status === statuses.errored && (
-          <Text>Something bad happened!</Text>
+        <Text>Something bad happened!</Text>
       )}
     </View>
   );
