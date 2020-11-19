@@ -30,6 +30,7 @@ import ImageView from 'react-native-image-viewing';
 import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
 import {func, object, shape, string} from 'prop-types';
+import DiscussionService from '../../Services/DiscussionService';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
@@ -221,12 +222,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
           Keyboard.dismiss();
           setInputText('');
 
-          db.collection('discussion')
-            .doc(discussionId)
-            .update({
-              lastMessage: new Date(),
-            })
-            .catch((err) => logger.log(err));
+          await DiscussionService.getInstance().updateDiscussionLastMessage(discussionId);
         })
         .catch((error) => {
           Toast.error(error);
