@@ -1,5 +1,6 @@
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {db} from '~/Firebase';
+import logger from './Logger';
 
 export default class DiscussionService {
 	static serviceInstance = null;
@@ -20,4 +21,12 @@ export default class DiscussionService {
       .then((snapshot) => !snapshot ? null : snapshot.data());
   }
 
+  async updateDiscussionLastMessage(discussionId) {
+    return db.collection('discussion')
+      .doc(discussionId)
+      .update({
+        lastMessage: new Date(),
+      })
+      .catch((err) => logger.log(err));
+  }
 }

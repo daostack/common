@@ -45,6 +45,7 @@ const CreateDiscussionForm = ({
             images: images.filter((image) => image.value !== ''),
             files: files.filter((file) => file.value !== ''),
             createTime: new Date(),
+            lastMessage: new Date(),
             ownerId: userStore.userInfo.uid,
             commonId: commonId,
             follower: [],
