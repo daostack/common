@@ -122,6 +122,7 @@ export default class AuthService {
   }
 
   async createUser(user) {
+    const splittedDisplayName = user?.displayName.split(' ') || [user?.email.split('@')[0]];
     const userPhotoUrl = user.photoURL
       ? user.photoURL
       : `https://eu.ui-avatars.com/api/?background=7786ff&color=fff&name=${
@@ -129,9 +130,8 @@ export default class AuthService {
       }&rounded=true`;
     const userPublicData = {
       createdAt: new Date(user.metadata.creationTime),
-      displayName: user.displayName,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      firstName: user.firstName || splittedDisplayName?.length >= 1 ? splittedDisplayName[0] : '',
+      lastName: user.lastName || splittedDisplayName?.length >= 2 ? splittedDisplayName[1] : '',
       email: user.email,
       photoURL: userPhotoUrl,
       uid: user.uid,
