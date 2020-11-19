@@ -112,16 +112,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
         setAllDaosGroup({title: '', data: []});
         return [];
       }
-      let docs = snapshot.docs.map((doc, index) => ({
-        ...{id: doc.id},
-        ...doc.data(),
-        ...{
-          image:
-              doc.data().metadata?.image ||
-              `https://picsum.photos/id/${index * 10}/500/100.jpg`,
-        },
-      }));
-
+      let docs = snapshot.docs.map((doc) => doc.data());
       filterAndSplitDaoList(docs).then((filteredDaos) => {
         daoStore.setDaos(filteredDaos);
         setAllDaosGroup({

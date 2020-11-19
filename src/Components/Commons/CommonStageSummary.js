@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {layout, text, font} from '~/Theme';
-import {bool, shape, number, string} from 'prop-types';
+import {bool, shape, number} from 'prop-types';
 
 const CommonStageSummary = ({
   isCommonCard,
@@ -98,7 +98,7 @@ CommonStageSummary.propTypes = {
     activeProposals: number,
     goal: number,
     members: number,
-    raised: string,
+    raised: number,
     balance: number,
   }),
 };
