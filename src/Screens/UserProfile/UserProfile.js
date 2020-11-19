@@ -129,7 +129,7 @@ const UserProfile = ({userStore, daoStore, navigation, route}) => {
                   <AccordionBtn onPress={() => Linking.openURL('https://common.io/privacy')} title="Privacy Policy" />
                   <AccordionBtn onPress={() => Linking.openURL('https://common.io/help')} title="Help" />
                   <AccordionBtn onPress={() => Linking.openURL('mailto:hi@common.io')} title="Contact us" />
-                  {userStore.userInfo ? (
+                  {userStore.userInfo && (
                     <React.Fragment>
                       <AccordionBtn
                         title="Monthly Contributions"
@@ -144,7 +144,7 @@ const UserProfile = ({userStore, daoStore, navigation, route}) => {
                         onPress={_logout}
                       />
                     </React.Fragment>
-                  ) : null}
+                  )}
                 </View>
                 {
                   Config.ENV !== 'production' && <View

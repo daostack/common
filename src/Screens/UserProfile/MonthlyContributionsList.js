@@ -63,12 +63,15 @@ const MonthlyContributionsList = ({userStore}) => {
     //   }
       const userSubscriptions = [];
 
+      console.log(userStore.userInfo.uid);
+
       await db
         .collection('subscriptions')
         .where('userId', '==', userStore.userInfo.uid)
         .onSnapshot((snapshot) => {
-          setSubs(snapshot.docs.map(doc => doc.data()));
-          console.log(snapshot.docs.map(doc => doc.data()))
+          console.log(snapshot);
+
+          setSubs(snapshot.docs.map((doc) => doc.data()));
         });
     };
 

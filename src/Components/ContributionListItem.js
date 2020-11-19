@@ -19,8 +19,10 @@ const ContributionListItem = ({subscription, bottomSheetStore}) => {
   const onCancelConfirm = async () => {
     console.log(subscription);
 
-    await axios.post(`${subscriptionsUrl()}/cancel?subscriptionId=${subscription.id}`, {
-      idToken: await auth().currentUser.getIdToken(),
+    await axios.post(`${subscriptionsUrl()}/cancel?subscriptionId=${subscription.id}`, null, {
+      headers: {
+        Authorization: await auth().currentUser.getIdToken(),
+      },
     });
   };
 
@@ -75,7 +77,12 @@ const ContributionListItem = ({subscription, bottomSheetStore}) => {
             style={styles.icon}
           />
 
-          <Text>${subscription.amount}/mo</Text>
+          <Text>
+            {(subscription.amount / 100).toLocaleString('en-US', {
+              style:'currency',
+              currency:'USD',
+            })}/mo
+          </Text>
         </TouchableOpacity>
       )}
     </View>
