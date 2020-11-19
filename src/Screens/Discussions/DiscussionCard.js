@@ -101,8 +101,7 @@ const DiscussionCard = ({
           <TouchableOpacity onPress={showOptions}>
             <Icon name="menu" size={20} />
           </TouchableOpacity>
-          <Text style={{...styles.title,
-            ...text.writingDirection(data.title)}} numberOfLines={2}>
+          <Text style={{...styles.title}} numberOfLines={2}>
             {data.title}
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
