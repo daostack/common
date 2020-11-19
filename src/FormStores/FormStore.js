@@ -99,23 +99,20 @@ class FormStore {
     this.validateField(name, multiName);
   }
 
-  removeFormField(name, multiName) {
-    if (multiName) {
-      const multiIndexInfo = name.split('_');
-      const currMultiIndex = multiIndexInfo[0];
+  removeFormField(name, multiIndex) {
+    if (multiIndex) {
+      if (this.form.fields[name] && this.form.fields[name][multiIndex]) {
+        let currFormField = this.form.fields[name];
+        delete currFormField[multiIndex];
 
-      if (this.form.fields[multiName][currMultiIndex]) {
-        let currFormField = this.form.fields[multiName];
-        delete currFormField[currMultiIndex];
-
-        const newFormFieldObj = {};
+        const newFormFieldObj = [];
         let newIndex = 0;
 
         Object.keys(currFormField).forEach((currKey) => {
           newFormFieldObj[newIndex] = currFormField[currKey];
           newIndex++;
         });
-        this.form.fields[multiName] = newFormFieldObj;
+        this.form.fields[name] = newFormFieldObj;
       }
 
     } else {

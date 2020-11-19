@@ -25,7 +25,7 @@ const MultiImageField = (props) => {
   const onFieldDeleted = (currIndex) => {
     setCount(count - 1);
     if (props.validation) {
-      props.validation.formStore.removeFormField(`${currIndex}`, props.validation.name);
+      props.validation.formStore.removeFormField(props.validation.name, currIndex);
     }
   };
 
