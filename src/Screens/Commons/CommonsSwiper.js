@@ -35,14 +35,7 @@ const CommonsSwiper = ({
           if (!isMember) {
             return false;
           }
-          return {
-            id: doc.id,
-            ...doc.data(),
-            ...{
-              image: doc.data().metadata?.image || `https://picsum.photos/id/${index *
-                10}/500/100.jpg`,
-            },
-          };
+          return doc.data();
         });
 
         let createList = newList
