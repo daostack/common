@@ -65,6 +65,8 @@ export const calcIsFundingStage = (deadline) => {
   return !moment().isAfter(deadlineMoment);
 };
 
+export const removeLinebreaks = (str) => str.replace(/[\r\n]+/gm, ' ');
+
 // This function requires the bottomSheetStore as a variable as you can't
 // access the mobx store outside of a react component
 export const showErrorPopUp = (bottomSheetStore, arg) => {
