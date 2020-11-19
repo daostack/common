@@ -45,6 +45,10 @@ import {
 import logger from '~/Services/Logger';
 
 const {width} = Dimensions.get('window');
+const CONTRIBUTION = {
+  'monthly': '/mo',
+  'one-time': '',
+};
 
 const CreateStep4 = ({generalInfoFormStore,
   fundingFormStore,
@@ -212,6 +216,10 @@ const CreateStep4 = ({generalInfoFormStore,
     }
   };
 
+  const displayString = () => `${
+    numberFormatter(form[CreateCommonForm.MINIMUM])}${
+    CONTRIBUTION[form.contribution]}`;
+
   return (
     <SafeAreaView
       style={{
@@ -247,7 +255,7 @@ const CreateStep4 = ({generalInfoFormStore,
             Final touches and review
           </Text>
           <Text style={stylesHeader.generalInfoSubtitle}>
-            You will not be able to make changes to the common info after it is
+            You will not be able to make changes to the Common info after it is
             published
           </Text>
           <View
@@ -376,7 +384,7 @@ const CreateStep4 = ({generalInfoFormStore,
             <View style={{width: 120, marginHorizontal: 10}}>
               <CreateStep4Indicators
                 title="Min. Contribution"
-                num={numberFormatter(form[CreateCommonForm.MINIMUM])}
+                value={displayString()}
                 contribution
               />
             </View>
@@ -385,7 +393,7 @@ const CreateStep4 = ({generalInfoFormStore,
               <CreateStep4Indicators
                 title="Safety period"
                 currencySymbol={false}
-                num={
+                value={
                   moment
                     .unix(form[CreateCommonForm.DEADLINE])
                     .fromNow(true)
