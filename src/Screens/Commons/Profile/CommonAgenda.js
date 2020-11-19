@@ -42,22 +42,14 @@ const CommonAgenda = ({
 
         <View style={styles.sectionContainer}>
           <Text style={text.h2Black}>About</Text>
-          <Text style={styles.description}>
+          <Text style={{
+            ...styles.description, width: '100%',
+            ...text.writingDirection(metadata.description),
+          }}>
             {metadata.description}
           </Text>
         </View>
 
-        {(metadata.action || metadata.courseOfAction) && (
-          <View style={styles.sectionContainer}>
-            <Text style={text.h2Black}>About</Text>
-            <Text style={{
-              ...styles.description, width: '100%',
-              ...text.writingDirection(metadata.description),
-            }}>
-              {metadata.description}
-            </Text>
-          </View>
-        )}
         {metadata.links?.length > 0 && (
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Links</Text>
@@ -157,7 +149,7 @@ CommonAgenda.propTypes = {
       common: shape({
         metadata: shape({
           description: string.isRequired,
-          courseOfAction: string,
+          action: string,
           links: array,
           rules: array,
         }),
