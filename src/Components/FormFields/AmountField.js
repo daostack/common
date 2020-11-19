@@ -65,7 +65,7 @@ const AmountField = ({
         keyboardType="numeric"
         onTogglePress={onTogglePress}
         toggleName="Other"
-        value={currFieldValue}
+        value={currFieldValue?.value}
         validation={{
           name: RequestToJoinForm.FIELD_AMOUNT,
           formStore: formStore,
