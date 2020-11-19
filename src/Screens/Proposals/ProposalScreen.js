@@ -22,7 +22,7 @@ import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import ProposalService from '~/Services/ProposalService';
-import {UserAvatar, BottomRightButton} from '~/Components';
+import {UserAvatar} from '~/Components';
 import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
 import UserService from '~/Services/UserService';
@@ -58,6 +58,7 @@ const ProposalScreen = ({
       commonBalance,
       proposalId,
       proposalCardInfo,
+      paymentState,
     },
   },
 }) => {
@@ -70,11 +71,12 @@ const ProposalScreen = ({
   const [inputHeight, setInputHeight] = useState(false);
   const [showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer] = useState(false);
   const [showPaymentStatus, setShowPaymentStatus] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState(paymentState);
   const renderVoting =
     proposalScreenInfo?.proposalInfo &&
     PROPOSAL_STAGES_ACTIVE.includes(proposalScreenInfo?.proposalInfo?.state) &&
     isMember &&
-    !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid);
+    !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid) && paymentStatus !== 'failed';
 
 
   // Sticky Tab Bar
@@ -124,11 +126,6 @@ const ProposalScreen = ({
         });
       }
 
-      // but if more than 1 member, it will be in countdown, so this condition is not right
-      if (currProposalInfo.state === 'passed') {
-        // get payment here
-        setShowPaymentStatus(true);
-      }
       setProposalScreenInfo(
         {
           proposalInfo: {...currProposalInfo, funding},
@@ -165,6 +162,7 @@ const ProposalScreen = ({
     if (proposalId) {
       logger.log(`proposalId --> ${proposalId}`);
       getProposalInfo(proposalId);
+      getPaymentStatus();
     }
 
     return () => {
@@ -372,15 +370,28 @@ const ProposalScreen = ({
     }
   };
 
-  const paymentStatusModal = () => {
-    /*const payment = await db.collection('payments')
+  const getPaymentStatus = () => {
+    db.collection('payments')
       .where('proposalId', '==', proposalId)
-      .get();
-    console.log('tkt damn data', payment.data())*/
-    bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.PAYMENT_FAILED,
-    );
+      .onSnapshot((snapshot) => {
+        if (snapshot.docChanges().length !== 0) {
+          const paymentData = (snapshot.docChanges()[0].doc).data();
+          setPaymentStatus(paymentData.status);
+          if (paymentData.status === 'failed') {
+            setShowPaymentStatus(true);
+          }
+        }
+      },
+      (error) => logger.error(error));
   };
+
+  const paymentStatusModal = () => bottomSheetStore.showBottomSheet(
+    BOTTOM_SHEET_TEMPLATES.PAYMENT_FAILED,
+    {
+      proposerName: proposalScreenInfo?.proposedUser?.displayName,
+    }
+
+  );
 
   const renderVotingButtons = (reference) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
@@ -540,8 +551,9 @@ const ProposalScreen = ({
                     <ProposalCardHeader
                       isScreenHeader={true}
                       isBoosted={true}
-                      stage={proposalScreenInfo?.proposalInfo?.state}
-                      winningOutcome={proposalScreenInfo?.proposalInfo?.winningOutcome}
+                      state={proposalScreenInfo?.proposalInfo?.state}
+                      paymentStatus={paymentStatus}
+                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalCardInfo.proposalInfo?.countdownPeriod}
                     />
                     {proposalScreenInfo?.proposedUser && (
 
@@ -561,8 +573,9 @@ const ProposalScreen = ({
                     <ProposalCardHeader
                       isScreenHeader={true}
                       isBoosted={true}
-                      stage={proposalScreenInfo?.proposalInfo?.state}
-                      winningOutcome={proposalScreenInfo?.proposalInfo?.winningOutcome}
+                      state={proposalScreenInfo?.proposalInfo?.state}
+                      paymentStatus={paymentStatus}
+                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalCardInfo.proposalInfo?.countdownPeriod}
                     />
 
                     {proposalScreenInfo?.proposedUser ? (
@@ -718,6 +731,7 @@ const ProposalScreen = ({
         )}
 
         {showPaymentStatus && paymentStatusModal()}
+
       </SafeAreaView>
 
       <BottomSheetModal
@@ -737,6 +751,7 @@ const ProposalScreen = ({
 
 ProposalScreen.propTypes = {
   navigation: object,
+  bottomSheetStore: object,
   userStore: shape({
     userInfo: object,
     isDaoMember: func,
