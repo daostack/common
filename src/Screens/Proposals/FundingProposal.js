@@ -14,15 +14,16 @@ import RequestStepActionButton from '../Commons/RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import Toast from '~/Util/Toast';
 import font from '~/Theme/font';
-import logger from '~/Services/Logger';
 import {string, object, shape} from 'prop-types';
 import FundingRequestFormStore from '~/FormStores/FundingRequestFormStore';
-
+import {showErrorPopUp} from '~/Util';
+import {inject} from 'mobx-react';
 import ProposalService from '~/Services/ProposalService';
 
 const FundingProposal = ({
   navigation,
   route: {params: {commonId, common}} ,
+  bottomSheetStore,
 }) => {
 
   const fundingRequestFormStore = new FundingRequestFormStore();
@@ -66,13 +67,11 @@ const FundingProposal = ({
           navigation.dispatch(navigate);
         } else {
           navigation.pop();
-          logger.log(createFundingProposalResponse);
-          Toast.error(createFundingProposalResponse.toString());
+          showErrorPopUp(bottomSheetStore, createFundingProposalResponse);
         }
       } catch (error) {
         navigation.pop();
-        logger.log(error);
-        Toast.error(error.toString());
+        showErrorPopUp(bottomSheetStore, error);
       }
     }
   };
@@ -112,6 +111,7 @@ FundingProposal.propTypes = {
       common: object,
     }),
   }),
+  bottomSheetStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -137,4 +137,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FundingProposal;
+export default inject(
+  'bottomSheetStore',
+)(FundingProposal);
