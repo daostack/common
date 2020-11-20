@@ -447,8 +447,6 @@ const ProposalScreen = ({
 
   const stickyTabBarStyle = {position: 'absolute', top: -80, width: '100%', paddingBottom: 5, zIndex: 1};
 
-  console.log("proposalScreenInfo?.proposalInfo -> ", proposalScreenInfo?.proposalInfo);
-
   return (
     <React.Fragment>
       <SafeAreaView
@@ -598,7 +596,7 @@ const ProposalScreen = ({
                   </View>
                   {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
                   && <Text
-                    style={text.smallBlackText}>{`Available funds: ${commonBalance !== undefined ? '$' + commonBalance / 100 : ''}`}</Text>
+                    style={text.smallBlackText}>{`Available funds: $${(commonBalance || proposalScreenInfo?.proposalDao?.balance || 0 ) / 100}`}</Text>
                   }
                 </View>
 
