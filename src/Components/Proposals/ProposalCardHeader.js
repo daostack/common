@@ -2,10 +2,9 @@ import React from 'react';
 import {Text, StyleSheet, View} from 'react-native';
 import {text, layout, colors, sizeXS, sizeS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {LAUNCHED_STATES, COUNTDOWN_STATES, PROPOSAL_STAGE} from '~/Services/ProposalService';
+import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
 import {string, number, bool} from 'prop-types';
-import moment from 'moment';
 
 const TITLES = {
   APPROVED: 'Approved',
@@ -16,46 +15,39 @@ const TITLES = {
 
 const calcStatus = (stage, winningOutcome, hasPassedExpiryDate, isScreenHeader) => {
   let status = {
-    text: '',
-    lightColor: '',
-    darkColor: '',
-    icon: '',
     opacity: 1,
   };
 
-  if (stage === PROPOSAL_STAGE.Executed || hasPassedExpiryDate || stage === PROPOSAL_STAGE.ExpiredInQueue) {
-    if (winningOutcome === 1) {
-      status.text = TITLES.APPROVED;
-      status.lightColor = colors.lightGreen;
-      status.darkColor = colors.lightishGreen;
-      status.icon = 'approved';
-    } else {
-      status.text = TITLES.REJECTED;
-      status.lightColor = colors.redLightish;
-      status.darkColor = colors.error;
-      status.icon = 'declined';
-    }
+  switch (stage) {
+  case PROPOSAL_STAGE.passed:
+    status.text = TITLES.APPROVED;
+    status.lightColor = colors.lightGreen;
+    status.darkColor = colors.lightishGreen;
+    status.icon = 'approved';
     return status;
-  }
-
-  if (LAUNCHED_STATES.includes(stage)) {
-    status.text = TITLES.NEW;
-    status.lightColor = colors.lightBlue;
-    status.darkColor = colors.blue;
-    status.icon = 'boosted';
+  case PROPOSAL_STAGE.failed:
+    status.text = TITLES.REJECTED;
+    status.lightColor = colors.redLightish;
+    status.darkColor = colors.error;
+    status.icon = 'declined';
     return status;
-  }
-  if (COUNTDOWN_STATES.includes(stage)) {
+  case PROPOSAL_STAGE.countdown:
     status.text = TITLES.COUNTDOWN;
     status.lightColor = isScreenHeader ? colors.mango : colors.butterscotch;
     status.darkColor = colors.mango;
     status.icon = 'clcok';
     status.opacity = 0.2;
     return status;
+  default:
+    status.text = `Unknown state ${stage}`;
+    status.lightColor = colors.mainBlue;
+    status.darkColor = colors.mango;
+    status.icon = 'declined';
+    return status;
   }
 
-  return 'test'; // this causes Icon name prop to be undefined -> violating proptypes definition
 };
+
 
 const renderCountDown = (closingAt) => {
   /*
@@ -97,14 +89,8 @@ const renderCountDown = (closingAt) => {
 };
 
 
-const ProposalCardHeader = ({stage, winningOutcome, closingAt, isScreenHeader = false}) => {
-  const hasPassedExpiryDate = closingAt
-    ? moment().isAfter(moment.unix(closingAt))
-    : false;
-
-  const headerStatus = calcStatus(stage, winningOutcome, hasPassedExpiryDate, isScreenHeader);
-
-
+const ProposalCardHeader = ({stage, closingAt, isScreenHeader = false}) => {
+  const headerStatus = calcStatus(stage, isScreenHeader);
 
   return isScreenHeader
     ? (
@@ -149,8 +135,6 @@ const ProposalCardHeader = ({stage, winningOutcome, closingAt, isScreenHeader = 
 
 ProposalCardHeader.propTypes = {
   stage: string,
-  winningOutcome: number,
-  hasPassedExpiryDate: bool,
   closingAt: number,
   isScreenHeader: bool,
 };
