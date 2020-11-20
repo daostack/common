@@ -305,7 +305,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
         }}
         title={{
           title: dataState.title,
-          style: [text.h2Black, {paddingLeft:50, paddingRight:20}],
+          style: [text.h2Black, {paddingLeft: 50, paddingRight: 20}],
           ellipsizeMode: 'tail',
           numberOfLines: 1,
         }}
@@ -316,17 +316,17 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
             <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
           </TouchableOpacity>
         }
-        // rightButton={
-        //   <TouchableOpacity
-        //     style={{justifyContent: 'center'}}
-        //     onPress={openOptionsMenu}>
-        //     <Icon
-        //       name="menu-horizontal"
-        //       size={32}
-        //       style={{marginRight: 10}}
-        //     />
-        //   </TouchableOpacity>
-        // }
+      // rightButton={
+      //   <TouchableOpacity
+      //     style={{justifyContent: 'center'}}
+      //     onPress={openOptionsMenu}>
+      //     <Icon
+      //       name="menu-horizontal"
+      //       size={32}
+      //       style={{marginRight: 10}}
+      //     />
+      //   </TouchableOpacity>
+      // }
       />
       <View style={{overflow: 'hidden', paddingBottom: 5}}>
         <View
@@ -335,7 +335,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
             <View style={{
               paddingTop: 20,
               paddingHorizontal: 20,
-              maxHeight: "94%"
+              maxHeight: '94%',
             }}>
               <ScrollView>
                 <View
@@ -379,15 +379,15 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
               </TouchableOpacity>
             </View>
           ) : (
-            <>
-              <TouchableOpacity
-                style={{alignItems: 'center', paddingVertical: 10}}
-                onPress={() => {
-                  setIsExpanded(!isExpanded);
-                }}>
-                <Image style={{height: 10, width: 60}} source={require('../../Assets/expand.png')} />
-              </TouchableOpacity>
-            </>
+              <>
+                <TouchableOpacity
+                  style={{alignItems: 'center', paddingVertical: 10}}
+                  onPress={() => {
+                    setIsExpanded(!isExpanded);
+                  }}>
+                  <Image style={{height: 10, width: 60}} source={require('../../Assets/expand.png')} />
+                </TouchableOpacity>
+              </>
           )}
           {/* <View
             style={{
