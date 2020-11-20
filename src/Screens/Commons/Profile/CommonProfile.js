@@ -265,10 +265,6 @@ const CommonProfile = ({
     if (!isMember) {
       return (
         <View style={styles.agendaBox}>
-          <Text style={styles.agendaDescription}>
-            {currCommon.metadata.action}
-          </Text>
-
           <View style={layout.flexStart}>
             <Text style={text.h2Black}>About</Text>
             <Text style={{...text.regularText,
@@ -957,7 +953,7 @@ const styles = StyleSheet.create({
   },
   agendaBox: {
     padding: 20,
-    paddingTop: 0,
+    paddingTop: 20,
   },
   agendaDescription: {
     marginBottom: 9,
