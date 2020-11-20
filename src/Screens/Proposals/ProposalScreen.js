@@ -95,29 +95,23 @@ const ProposalScreen = ({
     let unsubscribe = null;
 
     const loadProposalInfo = async (currProposalInfo, currProposalDao) => {
-      let currProposedUser = null;
+      const currProposedUser = await UserService.getInstance().getUserById(
+        currProposalInfo.proposerId
+      );
       let funding = null;
 
       if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
         funding = currProposalInfo.join.funding;
-        currProposedUser = await UserService.getInstance().getUserById(
-          currProposalInfo.proposerId
-        );
-
         LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
         navigation.setParams({
-          subtitle: currProposalDao?.metadata?.name,
+          subtitle: currProposalDao?.name,
         });
       }
       //FundingRequest proposal
       else {
-        currProposedUser = await UserService.getInstance().getUserById(
-          currProposalInfo.proposerId
-        );
         funding = currProposalInfo.fundingRequest.amount;
-
         navigation.setParams({
-          title: currProposalDao?.metadata?.name,
+          title: currProposalDao?.name,
         });
       }
 
@@ -453,6 +447,8 @@ const ProposalScreen = ({
 
   const stickyTabBarStyle = {position: 'absolute', top: -80, width: '100%', paddingBottom: 5, zIndex: 1};
 
+  console.log("proposalScreenInfo?.proposalInfo -> ", proposalScreenInfo?.proposalInfo);
+
   return (
     <React.Fragment>
       <SafeAreaView
@@ -521,9 +517,8 @@ const ProposalScreen = ({
                   <View style={{...layout.content, width: '100%', padding: 0}}>
                     <ProposalCardHeader
                       isScreenHeader={true}
-                      isBoosted={true}
                       stage={proposalScreenInfo?.proposalInfo?.state}
-                      winningOutcome={proposalScreenInfo?.proposalInfo?.winningOutcome}
+                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalScreenInfo.proposalInfo?.countdownPeriod}
                     />
                     {proposalScreenInfo?.proposedUser && (
 
@@ -542,9 +537,8 @@ const ProposalScreen = ({
                   <React.Fragment>
                     <ProposalCardHeader
                       isScreenHeader={true}
-                      isBoosted={true}
                       stage={proposalScreenInfo?.proposalInfo?.state}
-                      winningOutcome={proposalScreenInfo?.proposalInfo?.winningOutcome}
+                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalScreenInfo.proposalInfo?.countdownPeriod}
                     />
 
                     {proposalScreenInfo?.proposedUser ? (

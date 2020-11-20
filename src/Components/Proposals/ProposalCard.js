@@ -133,12 +133,8 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
     <Animated.View style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
-          isBoosted
-          proposal={proposalCardInfo?.proposalInfo}
-          showDate={membershipRequest}
           stage={proposalCardInfo.proposalInfo?.state}
           closingAt={proposalCardInfo.proposalInfo?.createdAt.seconds + proposalCardInfo.proposalInfo?.countdownPeriod}
-          winningOutcome={proposalCardInfo.proposalInfo?.winningOutcome}
         />
 
         <View
