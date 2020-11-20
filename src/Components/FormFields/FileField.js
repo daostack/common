@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     ...text.h3Black,
     ...layout.marginLeftXS,
     textDecorationLine: 'underline',
-    maxWidth: '90%'
+    maxWidth: '90%',
   },
   adRow: {
     ...layout.flexRow,

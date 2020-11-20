@@ -379,15 +379,15 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
               </TouchableOpacity>
             </View>
           ) : (
-              <>
-                <TouchableOpacity
-                  style={{alignItems: 'center', paddingVertical: 10}}
-                  onPress={() => {
-                    setIsExpanded(!isExpanded);
-                  }}>
-                  <Image style={{height: 10, width: 60}} source={require('../../Assets/expand.png')} />
-                </TouchableOpacity>
-              </>
+            <>
+              <TouchableOpacity
+                style={{alignItems: 'center', paddingVertical: 10}}
+                onPress={() => {
+                  setIsExpanded(!isExpanded);
+                }}>
+                <Image style={{height: 10, width: 60}} source={require('../../Assets/expand.png')} />
+              </TouchableOpacity>
+            </>
           )}
           {/* <View
             style={{
