@@ -2,10 +2,9 @@ import React from 'react';
 import {Text, StyleSheet, View} from 'react-native';
 import {text, layout, colors, sizeXS, sizeS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {LAUNCHED_STATES, COUNTDOWN_STATES, PROPOSAL_STAGE} from '~/Services/ProposalService';
+import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
 import {string, number, bool} from 'prop-types';
-import moment from 'moment';
 
 const TITLES = {
   APPROVED: 'Approved',
