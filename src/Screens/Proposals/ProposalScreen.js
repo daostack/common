@@ -34,6 +34,7 @@ import {db} from '~/Firebase';
 import {string, func, object, shape, oneOfType, number} from 'prop-types';
 import logger from '~/Services/Logger';
 import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
+import DiscussionService from '~/Services/DiscussionService';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -148,9 +149,31 @@ const ProposalScreen = ({
       }
     };
 
+    const getDiscussion = async (proposalId) => {
+      db.collection('discussion')
+        .doc(proposalId)
+        .set({
+          title: `${proposalScreenInfo?.proposalInfo.description.title} chat`,
+          message: proposalScreenInfo?.proposalInfo.description.description,
+          images: [],
+          files: [],
+          createTime: new Date(),
+          lastMessage: new Date(),
+          ownerId: proposalScreenInfo?.proposalInfo.proposerId,
+          commonId: proposalScreenInfo?.proposalInfo.commonId,
+          follower: [],
+        },{
+          merge: true,
+        })
+        .catch((error) => {
+          logger.log(error);
+        });
+    };
+
     if (proposalId) {
       logger.log(`proposalId --> ${proposalId}`);
       getProposalInfo(proposalId);
+      getDiscussion(proposalId);
     }
 
     return () => {
@@ -203,8 +226,11 @@ const ProposalScreen = ({
             ownerName: userInfo.displayName,
             ownerAvatar: userInfo.photoURL,
             discussionId: proposalId || proposalScreenInfo?.proposalInfo.id,
+            commonId: proposalScreenInfo?.proposalDao?.id,
+          },{
+            merge: true,
           })
-          .then(() => {
+          .then(async () => {
             Keyboard.dismiss();
 
             setIsSending(false);
