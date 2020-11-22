@@ -34,7 +34,6 @@ import {db} from '~/Firebase';
 import {string, func, object, shape, oneOfType, number} from 'prop-types';
 import logger from '~/Services/Logger';
 import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
-import DiscussionService from '~/Services/DiscussionService';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -149,9 +148,9 @@ const ProposalScreen = ({
       }
     };
 
-    const getDiscussion = async (proposalId) => {
+    const getDiscussion = async (discussionId) => {
       db.collection('discussion')
-        .doc(proposalId)
+        .doc(discussionId)
         .set({
           title: `${proposalScreenInfo?.proposalInfo.description.title} chat`,
           message: proposalScreenInfo?.proposalInfo.description.description,
