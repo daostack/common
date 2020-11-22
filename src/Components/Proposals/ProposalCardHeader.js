@@ -26,7 +26,6 @@ const calcStatus = (state, isScreenHeader, paymentStatus) => {
     status.icon = 'declined';
     return status;
   }
-
   if (state === PROPOSAL_STAGE.passed) {
     status.text = TITLES.APPROVED;
     status.lightColor = colors.lightGreen;
@@ -44,9 +43,7 @@ const calcStatus = (state, isScreenHeader, paymentStatus) => {
     status.darkColor = colors.mango;
     status.icon = 'clcok';
     status.opacity = 0.2;
-
   }
-
   return status;
 };
 
