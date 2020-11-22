@@ -43,11 +43,6 @@ const ContributionStep = ({navigation, route: {params: {formStores, skipFirstSte
 
   const onCustomSelect = (e) => {
     setIsActionBtnHidden(false);
-    personalContributionFormStore.fieldChanged(
-      RequestToJoinForm.FIELD_AMOUNT,
-      {},
-      false,
-    );
   };
 
   const onAmountSelected = (amount, index) => {

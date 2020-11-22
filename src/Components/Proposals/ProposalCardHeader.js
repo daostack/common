@@ -16,10 +16,6 @@ const TITLES = {
 
 const calcStatus = (state, isScreenHeader, paymentStatus) => {
   let status = {
-    text: '',
-    lightColor: '',
-    darkColor: '',
-    icon: '',
     opacity: 1,
   };
 
@@ -48,9 +44,12 @@ const calcStatus = (state, isScreenHeader, paymentStatus) => {
     status.darkColor = colors.mango;
     status.icon = 'clcok';
     status.opacity = 0.2;
+
   }
+
   return status;
 };
+
 
 const renderCountDown = (closingAt) => {
   /*

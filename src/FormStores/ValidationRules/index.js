@@ -41,8 +41,13 @@ export const validateCCNumber = {
   errorMessage: 'Card number is invalid.',
 };
 
+const fixDate = (date) => {
+  const [month, year] = date.split('/');
+  return `${month}/01/${year}`;
+};
+
 export const futureDate = {
   ruleName: VALIDATION_RULES.CARD_EXP_DATE,
-  validateFunc: (value, requirement, attribute) => !moment(value).isBefore(moment().format('MM/YY')) ,
+  validateFunc: (value, requirement, attribute) => !moment(fixDate(value)).isBefore(moment().format('YY/MM')),
   errorMessage: 'Expiration date has passed.',
 };

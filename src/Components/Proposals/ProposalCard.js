@@ -148,9 +148,6 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
     <Animated.View style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
-          isBoosted
-          proposal={proposalCardInfo?.proposalInfo}
-          showDate={membershipRequest}
           state={proposalCardInfo.proposalInfo?.state}
           paymentStatus={paymentState}
           closingAt={proposalCardInfo.proposalInfo?.createdAt.seconds + proposalCardInfo.proposalInfo?.countdownPeriod}
@@ -164,8 +161,7 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
             flexWrap: 'wrap',
           }}>
           {proposalCardInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && <Text
-            style={{...text.h3Black, width: '100%', flexWrap: 'wrap', padding: 10, fontSize: 16,
-              ...text.textAlign(proposalCardInfo.proposalInfo?.description?.title)}}>
+            style={{...text.h3Black, width: '100%', flexWrap: 'wrap', padding: 10, fontSize: 16}}>
             {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
           </Text>}
 
