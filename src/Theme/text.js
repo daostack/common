@@ -32,7 +32,7 @@ const isRTL = (text) => {
 
 export default StyleSheet.create({
   writingDirection: (text) => ({writingDirection: isRTL(text) ? 'rtl' : 'ltr'}),
-  // textAlign: (text) => ({textAlign: isRTL(text) ? 'right' : 'left'}),
+  textAlign: (text) => ({textAlign: isRTL(text) ? 'right' : 'left'}),
   h1Black: style.h1Black,
   h1BlackTitle: {
     lineHeight: 29,

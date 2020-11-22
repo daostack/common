@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, Text, View, Image, Dimensions, Platform, TextInput} from 'react-native';
-import {colors, font} from '~/Theme';
+import {colors, font, text as textjs} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool, func} from 'prop-types';
@@ -61,9 +61,10 @@ const DiscussionMessage = ({
                   value={text}
                   editable={false}
                   multiline
+                  {...textjs.textAlign(text)}
                 />
               ) : (
-                <Text style={styles.text} selectable>{text}</Text>
+                <Text style={{...styles.text, ...textjs.writingDirection(text)}} selectable>{text}</Text>
               )}
             </Hyperlink>
             <View style={{position: 'relative', right: 0, bottom: 0}}>

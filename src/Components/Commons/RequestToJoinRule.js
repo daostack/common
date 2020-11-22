@@ -11,10 +11,10 @@ const RequestToJoinRule = ({index, title, description, url}) => (
       </Text>
     </View>
 
-    <View>
-      <Text style={styles.ruleTitle}>{title}</Text>
-      <Text style={styles.ruleDescription}>{description}</Text>
-      <Text style={styles.ruleDescription}>{url}</Text>
+    <View >
+      <Text style={{...styles.ruleTitle, ...text.textAlign(title)}}>{title}</Text>
+      <Text style={{...styles.ruleDescription, ...text.textAlign(description)}}>{description}</Text>
+      <Text style={{...styles.ruleDescription, ...text.textAlign(url)}}>{url}</Text>
     </View>
   </View>
 );
