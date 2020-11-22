@@ -32,7 +32,7 @@ const calcStatus = (state, isScreenHeader, paymentStatus) => {
     status.darkColor = colors.lightishGreen;
     status.icon = 'approved';
   }
-  if (state === PROPOSAL_STAGE.failed){
+  else if (state === PROPOSAL_STAGE.failed) {
     status.text = TITLES.REJECTED;
     status.lightColor = colors.redLightish;
     status.darkColor = colors.error;
