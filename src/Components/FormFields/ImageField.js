@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {Image, View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import ValidationMessage from './ValidationMessage';
-import {observer} from 'mobx-react';
 import ImagePicker from 'react-native-image-picker';
 import Toast from '~/Util/Toast';
 import StorageService from '~/Services/StorageService';
