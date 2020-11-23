@@ -409,14 +409,14 @@ const CreateStep4 = ({generalInfoFormStore,
           <View style={styles.sectionTitle}>
             <Text style={styles.textTitle}>About</Text>
           </View>
-          <Text style={styles.textContent}>
+          <Text style={{...styles.textContent, ...text.writingDirection(form[CreateCommonForm.DESCRIPTION])}}>
             {form[CreateCommonForm.DESCRIPTION]}
           </Text>
           <>
             <View style={styles.sectionTitle}>
               <Text style={styles.textSubtitle}>Course of action</Text>
             </View>
-            <Text style={styles.textContent}>
+            <Text style={{...styles.textContent, ...text.writingDirection(form[CreateCommonForm.ACTION])}}>
               {form[CreateCommonForm.ACTION]}
             </Text>
           </>
