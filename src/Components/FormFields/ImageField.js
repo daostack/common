@@ -45,9 +45,12 @@ class ImageField extends React.Component {
   };
 
   onFieldDeleted = () => {
-    const {formStore, name} = this.props.validation;
-    formStore.removeFormField(name);
-    this.props.onFieldDeleted && this.props.onFieldDeleted();
+    if (this.props.onFieldDeleted) {
+      this.props.onFieldDeleted();
+    } else {
+      const {formStore, name} = this.props.validation;
+      formStore.removeFormField(name);
+    }
   }
 
   pickImage = () => {
@@ -277,4 +280,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(ImageField);
+export default ImageField;

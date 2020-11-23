@@ -100,21 +100,17 @@ class FormStore {
   }
 
   removeFormField(name, multiIndex) {
-    if (multiIndex) {
+    // check also the zero because it's casted to false boolean
+    if (multiIndex === 0 || multiIndex) {
       if (this.form.fields[name] && this.form.fields[name][multiIndex]) {
-        let currFormField = this.form.fields[name];
-        delete currFormField[multiIndex];
-
         const newFormFieldObj = [];
-        let newIndex = 0;
-
-        Object.keys(currFormField).forEach((currKey) => {
-          newFormFieldObj[newIndex] = currFormField[currKey];
-          newIndex++;
+        this.getFormField(name).forEach((currKey, currIndex) => {
+          if (multiIndex !== currIndex) {
+            newFormFieldObj.push(currKey);
+          }
         });
         this.form.fields[name] = newFormFieldObj;
       }
-
     } else {
       delete this.form.fields[name];
     }

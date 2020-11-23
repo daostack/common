@@ -39,11 +39,14 @@ class FileField extends React.Component {
   };
 
   onFieldDeleted = () => {
-    if (this.props.validation) {
-      const {formStore, name} = this.props.validation;
-      formStore.removeFormField(name);
+    if (this.props.onFieldDeleted) {
+      this.props.onFieldDeleted();
+    } else {
+      if (this.props.validation) {
+        const {formStore, name} = this.props.validation;
+        formStore.removeFormField(name);
+      }
     }
-    this.props.onFieldDeleted && this.props.onFieldDeleted();
   }
 
   pickFile = async () => {
@@ -192,4 +195,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(FileField);
+export default FileField;
