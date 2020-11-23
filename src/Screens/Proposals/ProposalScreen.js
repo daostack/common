@@ -34,6 +34,7 @@ import {db} from '~/Firebase';
 import {string, func, object, shape, oneOfType, number} from 'prop-types';
 import logger from '~/Services/Logger';
 import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -46,6 +47,7 @@ const screenHeight = Dimensions.get('window').height;
 
 const ProposalScreen = ({
   navigation,
+  bottomSheetStore,
   userStore: {
     userInfo,
     isDaoMember,
@@ -56,6 +58,7 @@ const ProposalScreen = ({
       commonBalance,
       proposalId,
       proposalCardInfo,
+      paymentState,
     },
   },
 }) => {
@@ -67,11 +70,13 @@ const ProposalScreen = ({
   const [isProposer, setIsProposer] = useState(false);
   const [inputHeight, setInputHeight] = useState(false);
   const [showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer] = useState(false);
+  const [showPaymentStatus, setShowPaymentStatus] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState(paymentState);
   const renderVoting =
     proposalScreenInfo?.proposalInfo &&
     PROPOSAL_STAGES_ACTIVE.includes(proposalScreenInfo?.proposalInfo?.state) &&
     isMember &&
-    !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid);
+    !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid) && paymentStatus !== 'failed';
 
 
   // Sticky Tab Bar
@@ -151,6 +156,7 @@ const ProposalScreen = ({
     if (proposalId) {
       logger.log(`proposalId --> ${proposalId}`);
       getProposalInfo(proposalId);
+      getPaymentStatus();
     }
 
     return () => {
@@ -358,6 +364,29 @@ const ProposalScreen = ({
     }
   };
 
+  const getPaymentStatus = () => {
+    db.collection('payments')
+      .where('proposalId', '==', proposalId)
+      .onSnapshot((snapshot) => {
+        if (snapshot.docChanges().length !== 0) {
+          const paymentData = (snapshot.docChanges()[0].doc).data();
+          setPaymentStatus(paymentData.status);
+          if (paymentData.status === 'failed') {
+            setShowPaymentStatus(true);
+          }
+        }
+      },
+      (error) => logger.error(error));
+  };
+
+  const paymentStatusModal = () => bottomSheetStore.showBottomSheet(
+    BOTTOM_SHEET_TEMPLATES.PAYMENT_FAILED,
+    {
+      proposerName: proposalScreenInfo?.proposedUser?.displayName,
+    }
+
+  );
+
   const renderVotingButtons = (reference) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
@@ -515,8 +544,9 @@ const ProposalScreen = ({
                   <View style={{...layout.content, width: '100%', padding: 0}}>
                     <ProposalCardHeader
                       isScreenHeader={true}
-                      stage={proposalScreenInfo?.proposalInfo?.state}
-                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalScreenInfo.proposalInfo?.countdownPeriod}
+                      state={proposalScreenInfo?.proposalInfo?.state}
+                      paymentStatus={paymentStatus}
+                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalCardInfo.proposalInfo?.countdownPeriod}
                     />
                     {proposalScreenInfo?.proposedUser && (
 
@@ -535,8 +565,9 @@ const ProposalScreen = ({
                   <React.Fragment>
                     <ProposalCardHeader
                       isScreenHeader={true}
-                      stage={proposalScreenInfo?.proposalInfo?.state}
-                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalScreenInfo.proposalInfo?.countdownPeriod}
+                      state={proposalScreenInfo?.proposalInfo?.state}
+                      paymentStatus={paymentStatus}
+                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalCardInfo.proposalInfo?.countdownPeriod}
                     />
 
                     {proposalScreenInfo?.proposedUser ? (
@@ -690,6 +721,9 @@ const ProposalScreen = ({
             {messageInput()}
           </React.Fragment>
         )}
+
+        {showPaymentStatus && paymentStatusModal()}
+
       </SafeAreaView>
 
       <BottomSheetModal
@@ -709,6 +743,7 @@ const ProposalScreen = ({
 
 ProposalScreen.propTypes = {
   navigation: object,
+  bottomSheetStore: object,
   userStore: shape({
     userInfo: object,
     isDaoMember: func,
@@ -850,5 +885,6 @@ const styles = StyleSheet.create({
 
 
 export default inject(
-  'userStore'
+  'userStore',
+  'bottomSheetStore'
 )(observer(ProposalScreen));

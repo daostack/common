@@ -11,41 +11,40 @@ const TITLES = {
   REJECTED: 'Rejected',
   NEW: 'New',
   COUNTDOWN: 'Countdown',
+  PAYMENT_FAILED: 'Payment Failed',
 };
 
-const calcStatus = (stage, winningOutcome, hasPassedExpiryDate, isScreenHeader) => {
+const calcStatus = (state, isScreenHeader, paymentStatus) => {
   let status = {
     opacity: 1,
   };
 
-  switch (stage) {
-  case PROPOSAL_STAGE.passed:
-    status.text = TITLES.APPROVED;
-    status.lightColor = colors.lightGreen;
-    status.darkColor = colors.lightishGreen;
-    status.icon = 'approved';
-    return status;
-  case PROPOSAL_STAGE.failed:
-    status.text = TITLES.REJECTED;
+  if (paymentStatus === 'failed') {
+    status.text = TITLES.PAYMENT_FAILED;
     status.lightColor = colors.redLightish;
     status.darkColor = colors.error;
     status.icon = 'declined';
     return status;
-  case PROPOSAL_STAGE.countdown:
+  }
+  if (state === PROPOSAL_STAGE.passed) {
+    status.text = TITLES.APPROVED;
+    status.lightColor = colors.lightGreen;
+    status.darkColor = colors.lightishGreen;
+    status.icon = 'approved';
+  }
+  else if (state === PROPOSAL_STAGE.failed) {
+    status.text = TITLES.REJECTED;
+    status.lightColor = colors.redLightish;
+    status.darkColor = colors.error;
+    status.icon = 'declined';
+  } else {
     status.text = TITLES.COUNTDOWN;
     status.lightColor = isScreenHeader ? colors.mango : colors.butterscotch;
     status.darkColor = colors.mango;
     status.icon = 'clcok';
     status.opacity = 0.2;
-    return status;
-  default:
-    status.text = `Unknown state ${stage}`;
-    status.lightColor = colors.mainBlue;
-    status.darkColor = colors.mango;
-    status.icon = 'declined';
-    return status;
   }
-
+  return status;
 };
 
 
@@ -89,8 +88,8 @@ const renderCountDown = (closingAt) => {
 };
 
 
-const ProposalCardHeader = ({stage, closingAt, isScreenHeader = false}) => {
-  const headerStatus = calcStatus(stage, isScreenHeader);
+const ProposalCardHeader = ({state, closingAt, isScreenHeader = false, paymentStatus}) => {
+  const headerStatus = calcStatus(state, isScreenHeader, paymentStatus);
 
   return isScreenHeader
     ? (
@@ -134,9 +133,10 @@ const ProposalCardHeader = ({stage, closingAt, isScreenHeader = false}) => {
 };
 
 ProposalCardHeader.propTypes = {
-  stage: string,
+  state: string,
   closingAt: number,
   isScreenHeader: bool,
+  paymentStatus: string,
 };
 
 const styles = StyleSheet.create({
