@@ -91,6 +91,7 @@ const BillingDetailsStep = ({navigation, route}) => {
 
         <ScrollView
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
           width={width}
           contentContainerStyle={{
             alignItems: 'center',
