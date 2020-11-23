@@ -121,9 +121,10 @@ const DiscussionMessage = ({
                     value={text}
                     editable={false}
                     multiline
+                    {...textjs.textAlign(text)}
                   />
                 ) : (
-                  <Text style={styles.text} selectable>{text}</Text>
+                  <Text style={{...styles.text, ...textjs.writingDirection(text)}} selectable>{text}</Text>
                 )}
               </Hyperlink>
 

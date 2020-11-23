@@ -167,9 +167,11 @@ const styles = StyleSheet.create({
     ...text.greyText,
     fontWeight: '600',
     color: colors.grey4,
+    textAlign: 'center',
   },
   headerContent: {
     alignItems: 'center',
+    alignContent: 'center',
     justifyContent: 'center',
     paddingHorizontal: 32,
     paddingBottom: 5,

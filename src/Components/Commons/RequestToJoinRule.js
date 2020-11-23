@@ -5,14 +5,8 @@ import {layout, text} from '~/Theme';
 
 const RequestToJoinRule = ({index, title, description, url}) => (
   <View style={styles.container}>
-    <View style={styles.sideContainer}>
-      <Text style={styles.ruleTitle}>
-        {index}.
-      </Text>
-    </View>
-
-    <View >
-      <Text style={{...styles.ruleTitle, ...text.textAlign(title)}}>{title}</Text>
+    <View style ={{width: '100%'}} >
+      <Text style={{...styles.ruleTitle, ...text.textAlign(title)}}>{index}. {title}</Text>
       <Text style={{...styles.ruleDescription, ...text.textAlign(description)}}>{description}</Text>
       <Text style={{...styles.ruleDescription, ...text.textAlign(url)}}>{url}</Text>
     </View>
@@ -36,10 +30,10 @@ const styles = StyleSheet.create({
   },
   sideContainer: {
     ...layout.marginRightXS,
+    backgroundColor: 'pink',
   },
   ruleTitle: {
     ...text.h4Black,
-    textAlign: 'left',
   },
   ruleDescription: {
     ...text.blackText,
