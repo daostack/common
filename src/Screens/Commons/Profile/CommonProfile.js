@@ -716,7 +716,7 @@ const CommonProfile = ({
           >
             {(showPending) && (
               <React.Fragment>
-                {renderPendingApproval()}
+                {pendingProposalsData?.usersPendingProposal && renderPendingApproval()}
               </React.Fragment>
             )}
 

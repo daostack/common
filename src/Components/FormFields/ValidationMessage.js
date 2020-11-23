@@ -11,7 +11,7 @@ class ValidationMessage extends React.Component {
   }
 
   render() {
-    let validationMessage = this.props.formStore.getFormField(this.props.name, this.props.multiName).error;
+    let validationMessage = this.props.formStore.getFormField(this.props.name, this.props.multiName)?.error;
     let messageStyle = styles.errorMessage;
 
     if (this.props.displayName && validationMessage) {
