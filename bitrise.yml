@@ -935,6 +935,7 @@ workflows:
         - team_id: 66CXPKJ7ZA
         - generate_profiles: 'yes'
         - distribution_type: app-store
+        - verbose_log: 'yes'
     - xcode-archive@2:
         inputs:
         - project_path: $BITRISE_PROJECT_PATH
