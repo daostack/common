@@ -29,10 +29,6 @@
 		153D23FD24B5BE9A007E8F37 /* NunitoSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0EBB067512D6426FB6FE57F2 /* NunitoSans-SemiBold.ttf */; };
 		153D23FE24B5BE9A007E8F37 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 30000652B0094E87A70CF813 /* Nunito-Regular.ttf */; };
 		155E056E24DD58AA000BE6A4 /* NotoSerif-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 267EC9C3E82F4ED9B159DC28 /* NotoSerif-SemiBold.ttf */; };
-		15AD00A224AB2E0F004FDADE /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 15AD00A124AB2E0F004FDADE /* Config.xcconfig */; };
-		15AD00A324AB2E0F004FDADE /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 15AD00A124AB2E0F004FDADE /* Config.xcconfig */; };
-		15AD00A424AB2E0F004FDADE /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 15AD00A124AB2E0F004FDADE /* Config.xcconfig */; };
-		15AD00A524AB2E0F004FDADE /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 15AD00A124AB2E0F004FDADE /* Config.xcconfig */; };
 		15CD0320246E87AD00EDADE2 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15CD031F246E87AD00EDADE2 /* NotificationService.swift */; };
 		15CD0324246E87AD00EDADE2 /* common-notification-service-ext.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 15CD031D246E87AD00EDADE2 /* common-notification-service-ext.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		15E1ED02241A26D600651ACD /* WalletManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E1ED01241A26D600651ACD /* WalletManager.swift */; };
@@ -54,7 +50,6 @@
 		BCAAB2F57FB2D1883DF8DD68 /* Pods_common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDBC858FCC7ADE69882AE33A /* Pods_common.framework */; };
 		CDD5E5B60C08404981150417 /* NunitoSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8D6FB52253054110853F2376 /* NunitoSans-Light.ttf */; };
 		CF0B3799DD99422BA7B8AE3C /* NunitoSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0EBB067512D6426FB6FE57F2 /* NunitoSans-SemiBold.ttf */; };
-		FA1D60EB25505249003AE81D /* common-dev-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 151C20172499CA52006170CC /* common-dev-Info.plist */; };
 		FA1D60F12550524E003AE81D /* common-dev-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 151C20172499CA52006170CC /* common-dev-Info.plist */; };
 		FCD9335756174A92AE4AC3F6 /* NunitoSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F2C9B59F8FFB49DFA4FF15CA /* NunitoSans-Italic.ttf */; };
 /* End PBXBuildFile section */
@@ -448,7 +443,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1130;
-				LastUpgradeCheck = 1130;
+				LastUpgradeCheck = 1210;
 				ORGANIZATIONNAME = DAOstack;
 				TargetAttributes = {
 					15CD031C246E87AD00EDADE2 = {
@@ -487,7 +482,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				15AD00A424AB2E0F004FDADE /* Config.xcconfig in Resources */,
 				FA1D60F12550524E003AE81D /* common-dev-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -496,7 +490,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA1D60EB25505249003AE81D /* common-dev-Info.plist in Resources */,
 				155E056E24DD58AA000BE6A4 /* NotoSerif-SemiBold.ttf in Resources */,
 				153D23F924B5BE9A007E8F37 /* NunitoSans-Bold.ttf in Resources */,
 				153D23FA24B5BE9A007E8F37 /* NunitoSans-Italic.ttf in Resources */,
@@ -507,7 +500,6 @@
 				151C203F2499E3F4006170CC /* LaunchScreen.storyboard in Resources */,
 				151C20402499E3F4006170CC /* Assets.xcassets in Resources */,
 				151C20412499E3F4006170CC /* Main.storyboard in Resources */,
-				15AD00A524AB2E0F004FDADE /* Config.xcconfig in Resources */,
 				151C20602499E503006170CC /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -516,7 +508,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				15AD00A324AB2E0F004FDADE /* Config.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -527,7 +518,6 @@
 				15E907362417D1BB008A5750 /* LaunchScreen.storyboard in Resources */,
 				15E907332417D1BB008A5750 /* Assets.xcassets in Resources */,
 				15E907312417D1B9008A5750 /* Main.storyboard in Resources */,
-				15AD00A224AB2E0F004FDADE /* Config.xcconfig in Resources */,
 				151C20622499E99B006170CC /* GoogleService-Info.plist in Resources */,
 				9932C9CC0B2948FE94025468 /* NunitoSans-Bold.ttf in Resources */,
 				FCD9335756174A92AE4AC3F6 /* NunitoSans-Italic.ttf in Resources */,
@@ -1004,6 +994,7 @@
 			baseConfigurationReference = 15AD00A124AB2E0F004FDADE /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1026,6 +1017,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1065,6 +1057,7 @@
 			baseConfigurationReference = 15AD00A124AB2E0F004FDADE /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1087,6 +1080,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
