@@ -153,7 +153,7 @@ workflows:
         inputs:
         - plist_path: $BITRISE_PROJECT_PATH/../common-notification-service-ext/Info.plist
         - build_short_version_string: $APP_VERSION
-    - ios-auto-provision@1:
+    - ios-auto-provision-appstoreconnect@0.1:
         inputs:
         - distribution_type: app-store
         - generate_profiles: 'yes'
@@ -525,7 +525,7 @@ workflows:
             $BITRISE_PROJECT_PATH/../common-notification-service-ext
             copy-Info.plist
         - build_short_version_string: $APP_VERSION
-    - ios-auto-provision@1:
+    - ios-auto-provision-appstoreconnect@0.1:
         inputs:
         - team_id: 66CXPKJ7ZA
         - generate_profiles: 'yes'
@@ -930,7 +930,7 @@ workflows:
             $BITRISE_PROJECT_PATH/../common-notification-service-ext
             copy-Info.plist
         - build_short_version_string: $APP_VERSION
-    - ios-auto-provision@1:
+    - ios-auto-provision-appstoreconnect@0.1:
         inputs:
         - team_id: 66CXPKJ7ZA
         - generate_profiles: 'yes'
