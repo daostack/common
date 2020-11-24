@@ -335,7 +335,7 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
       </ScrollView>
       <RequestStepActionButton
         title="Continue to Additional Info"
-        pass={fundingFormStore.isFormActionEnabled()}
+        formStore={fundingFormStore}
         onPress={push}
       />
     </SafeAreaView>

@@ -206,7 +206,7 @@ const CreateStep3 = ({agendaFormStore, navigation}) => {
       </ScrollView>
       <RequestStepActionButton
         title="Continue to Review"
-        pass={agendaFormStore.isFormActionEnabled()}
+        formStore={agendaFormStore}
         onPress={push}
       />
     </SafeAreaView>

@@ -5,6 +5,7 @@ export const VALIDATION_RULES = {
   IS_VALID_CREDIT_CARD: 'is_valid_credit_card',
   CREDIT_CARD_PROVIDER: 'credit_card_provider',
   CARD_EXP_DATE: 'card_exp_date',
+  VALID_DATE_FORMAT: 'valid_date_format',
 };
 
 export const firstLastNameValidate = {
@@ -42,8 +43,24 @@ export const validateCCNumber = {
 };
 
 const fixDate = (date) => {
-  const [month, year] = date.split('/');
+  const [month, year] = date.replace(/\s+/g, '').split('/');
   return `${month}/01/${year}`;
+};
+
+export const validDateFormat = {
+  ruleName: VALIDATION_RULES.VALID_DATE_FORMAT,
+  validateFunc: (value, requirement, attribute) => {
+    const dateArr = value.replace(/\s+/g, '').split('/');
+    if (dateArr.length !== 2) {
+      return false;
+    }
+    const [month, year] = dateArr;
+    if (month.length !== 2 || year.length !== 2) {
+      return false;
+    }
+    return !isNaN(month) && !isNaN(year);
+  },
+  errorMessage: 'The date format should be "MM / YY".',
 };
 
 export const futureDate = {

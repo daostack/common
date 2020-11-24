@@ -206,7 +206,7 @@ const BillingDetailsStep = ({navigation, route}) => {
 
         <RequestStepActionButton
           title="Continue to payment"
-          pass={billingDetailsFormStore.isFormActionEnabled()}
+          formStore={billingDetailsFormStore}
           onPress={navigateToPaymentDetailsStep}
         />
       </SafeAreaView>
