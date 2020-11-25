@@ -109,7 +109,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     return unsubscribe;
   }, []);
 
-  const notificationNavigation = async (screenName, commonId, objectId = null) => {
+  const notificationNavigation = async (screenName, commonId, objectId = null, tabIndex) => {
     const currCommon = await CommonService.getInstance().getCommonInfo(commonId);
     // whitelist;approve/reject requestToJoin
     if (screenName === 'CommonProfile') {
@@ -123,7 +123,13 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     // create/approve proposal
     else {
       const proposal = await ProposalService.getInstance().getProposalInfo(objectId);
-      routing(screenName, {proposalId: proposal.id, screenTitle: currCommon.name, commonBalance: currCommon.balance});
+      routing(screenName, {
+        proposalId: proposal.id,
+        screenTitle: currCommon.name,
+        commonBalance: currCommon.balance,
+        proposalCardInfo: proposal,
+        tabIndex,
+      });
     }
   };
 
@@ -142,8 +148,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       .getInitialNotification()
       .then((remoteMessage) => {
         if (remoteMessage) {
-          const [screenName, commonId, objectId] = remoteMessage.data.path.split('/');
-          notificationNavigation(screenName, commonId, objectId);
+          const [screenName, commonId, objectId, tabIndex = 0] = remoteMessage.data.path.split('/');
+          notificationNavigation(screenName, commonId, objectId, +tabIndex);
         }
       });
   }, []);

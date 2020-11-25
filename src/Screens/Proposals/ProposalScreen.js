@@ -59,6 +59,7 @@ const ProposalScreen = ({
       proposalId,
       proposalCardInfo,
       paymentState,
+      tabIndex = 0,
     },
   },
 }) => {
@@ -103,6 +104,7 @@ const ProposalScreen = ({
       const currProposedUser = await UserService.getInstance().getUserById(
         currProposalInfo.proposerId
       );
+
       let funding = null;
 
       if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
@@ -173,7 +175,7 @@ const ProposalScreen = ({
 
   const [isVoteByYou, setIsVoteByYou] = useState(false);
   const [voteType, setVoteType] = useState(false);
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(tabIndex);
   const [routes] = useState([
     {index: 0, key: 'info', icon: 'proposal', iconSelected: 'proposal-selected'},
     {index: 1, key: 'discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
@@ -416,7 +418,7 @@ const ProposalScreen = ({
   const headerContainerStyle = {
     ...layout.content,
     ...{paddingBottom: 0},
-    ...proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest && {...layout.flexStart},
+    ...proposalScreenInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && {...layout.flexStart},
   };
 
   const votesFor = proposalScreenInfo?.proposalInfo?.votesFor;
@@ -540,7 +542,7 @@ const ProposalScreen = ({
           {proposalScreenInfo?.proposalInfo && (
             <View style={isHeaderHidden ? {height: 1, marginTop: -1, overflow: 'hidden'} : {}}>
               <View style={headerContainerStyle}>
-                {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest ? (
+                {proposalScreenInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest ? (
                   <View style={{...layout.content, width: '100%', padding: 0}}>
                     <ProposalCardHeader
                       isScreenHeader={true}
