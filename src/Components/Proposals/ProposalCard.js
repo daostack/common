@@ -161,7 +161,7 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
             flexWrap: 'wrap',
           }}>
           {proposalCardInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && <Text
-            style={{...text.h3Black, width: '100%', flexWrap: 'wrap', padding: 10, fontSize: 16}}>
+            style={styles.title}>
             {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
           </Text>}
 
@@ -274,6 +274,14 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     shadowOpacity: 0.5,
     elevation: 4,
+  },
+  title: {
+    ...text.h3Black,
+    textAlign: 'left',
+    width: '100%',
+    flexWrap: 'wrap',
+    padding: 10,
+    fontSize: 16,
   },
 });
 
