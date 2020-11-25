@@ -43,14 +43,14 @@ export const validateCCNumber = {
 };
 
 const fixDate = (date) => {
-  const [month, year] = date.replace(/\s+/g, '').split('/');
+  const [month, year] = date.split('/');
   return `${month}/01/${year}`;
 };
 
 export const validDateFormat = {
   ruleName: VALIDATION_RULES.VALID_DATE_FORMAT,
   validateFunc: (value, requirement, attribute) => {
-    const dateArr = value.replace(/\s+/g, '').split('/');
+    const dateArr = value.split('/');
     if (dateArr.length !== 2) {
       return false;
     }

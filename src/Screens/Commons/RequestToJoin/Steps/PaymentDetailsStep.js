@@ -129,21 +129,25 @@ const PaymentDetailsStep = ({
   };
 
   const formatDate = (date) => {
-    const MAX_LENGHT = 7; // format: "MM / YY"
-
+    /*const MAX_LENGHT = 5; // format: "MM/YY"
     if (date.length > MAX_LENGHT) {
       return date.substring(0,MAX_LENGHT);
     }
 
     if (date.length === 2) {
-      return `${date} / `;
+      return `${date}/`;
     }
 
-    if (date.length > 2 && date.length < 5) {
+    if (date.length > 0 && date.length < 2) {
       return date.substring(0,1);
     }
 
-    return date;
+    return date;*/
+
+    date = date.replace('/', '');
+    return date.length > 2
+      ? `${date.substring(0,2)}/${date.substring(2,4)}`
+      : date;
   };
 
   const subtitle = (style) => (
