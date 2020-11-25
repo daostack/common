@@ -60,7 +60,7 @@ export const validDateFormat = {
     }
     return !isNaN(month) && !isNaN(year);
   },
-  errorMessage: 'The date format should be "MM / YY".',
+  errorMessage: 'The date format should be "MM/YY".',
 };
 
 export const futureDate = {
