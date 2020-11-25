@@ -43,7 +43,7 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
    * contributionIndex === 1 => Monthly
    */
   const [contributionIndex, setContributionIndex] = useState(initialContributionIndex);
-  const [pickDate, setPickDate] = useState(initialSegmentedIndex === 2 ? fundingFormStore.form.fields[CreateCommonForm.DEADLINE]?.value.value : null);
+  const [pickDate, setPickDate] = useState(initialSegmentedIndex === 2 ? moment.unix(fundingFormStore.form.fields[CreateCommonForm.DEADLINE]?.value?.value).toDate() : null);
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -56,76 +56,37 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
   }, [scrollY]);
 
   useEffect(() => {
+    fundingFormStore.registerFormField(CreateCommonForm.DEADLINE, 'required', fundingFormStore.form.fields[CreateCommonForm.DEADLINE]?.value);
+    fundingFormStore.registerFormField(CreateCommonForm.CONTRIBUTION, 'required', fundingFormStore.form.fields[CreateCommonForm.CONTRIBUTION]?.value);
     onTabChange(initialSegmentedIndex, true); // pre-select 1 week at first render
     onContributionTabChange(initialContributionIndex); // pre-select
   }, []);
 
   const onContributionTabChange = (index) => {
-    const name = CreateCommonForm.CONTRIBUTION;
-    fundingFormStore.registerFormField(name, 'required');
-
     fundingFormStore.fieldChanged(
-      name,
+      CreateCommonForm.CONTRIBUTION,
       CONTRIBUTION_TAB_VALUES[index]
     );
     setContributionIndex(index);
   };
 
-  /* useEffect(() => {
-    const name = CreateCommonForm.DEADLINE;
-    props.fundingFormStore.registerFormField(name, 'required');
-    switch (segmentedIndex) {
-    case 0: {
-      props.fundingFormStore.fieldChanged(
-        name,
-        moment()
-          .add('7', 'days')
-          .unix(),
-      );
-      setShow(false);
-      break;
-    }
-    case 1: {
-      props.fundingFormStore.fieldChanged(
-        name,
-        moment()
-          .add('1', 'months')
-          .unix(),
-      );
-      setShow(false);
-      break;
-    }
-    case 2: {
-      props.fundingFormStore.fieldChanged(
-        name,
-        moment(pickDate || {}).unix(),
-      );
-      setShow(true);
-      break;
-    }
-    }
-  }, [segmentedIndex, pickDate, props.fundingFormStore]); */
-
   const onDatePickerChange = (event, date) => {
-    const currDate = moment(date || {}).unix();
+    const momentObj = moment(date || {});
+    const currDate = momentObj.unix();
     fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {value: (currDate), index: 2});
     if (Platform.OS === 'android') {
       setShow(false);
     }
-    setPickDate(currDate);
+    setPickDate(momentObj.toDate());
   };
 
   const onTabChange = (index, isInitialCall) => {
-    const name = CreateCommonForm.DEADLINE;
-    fundingFormStore.registerFormField(name, 'required');
-
-    if (index === 2 && !isInitialCall) {
-      setShow(true);
+    if (index === 2) {
+      !isInitialCall && setShow(true);
     } else {
-      fundingFormStore.fieldChanged(name, {value: SAFETY_PERIOD_TAB_VALUES[index], index});
+      fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {value: SAFETY_PERIOD_TAB_VALUES[index], index});
       setShow(false);
     }
-
     setSegmentedIndex(index);
   };
 
