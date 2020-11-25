@@ -27,7 +27,7 @@ const BillingDetailsStep = ({navigation, route}) => {
 
   const [country, setCountry] = useState(country);
 
-  const isMonthly = currCommon.metadata.contribution === 'monthly';
+  const isMonthly = currCommon.metadata.contributionType === 'monthly';
 
   useEffect(() => {
     const height = scrollY.interpolate({

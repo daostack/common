@@ -43,7 +43,7 @@ const PaymentDetailsStep = ({
   userStore: {userInfo},
   bottomSheetStore,
 }) => {
-  const isMonthly = currCommon.metadata.contribution === 'monthly';
+  const isMonthly = currCommon.metadata.contributionType === 'monthly';
 
   const paymentFormStore = formStores.paymentFormStore;
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
