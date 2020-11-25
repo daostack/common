@@ -420,7 +420,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
             }}
 
             renderItem={(x) => (
-              <DiscussionMessage data={x.item} />
+              <DiscussionMessage data={x.item} showCurrentUserAvatar/>
             )}
 
             renderSectionFooter={({section: {date}}) => (
@@ -457,7 +457,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
       >
         <View style={styles.inputContainer}>
           {isMember ? (
-            <View style={[styles.input, {height: Math.max(35, inputHeight + 20)}]}>
+            <View style={[styles.input, {height: Math.max(35, inputHeight + 30)}]}>
               <TextInput
                 ref={inputRef}
                 editable={true}
@@ -470,10 +470,10 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
                 }}
                 style={{
                   flex: 1,
-                  maxHeight: 110,
+                  maxHeight: 140,
                   paddingVertical: 10,
                   marginHorizontal: 10,
-                  height: Math.max(35, inputHeight + 10),
+                  height: Math.max(35, inputHeight + 20),
                 }}
               />
               <TouchableOpacity
@@ -630,7 +630,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.grey4,
     borderTopWidth: 1,
     minHeight: 65,
-    maxHeight: 110,
+    maxHeight: 140,
     width: width,
     flexDirection: 'row',
     shadowColor: 'rgba(0, 0, 0, 0.2)',
