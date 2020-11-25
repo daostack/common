@@ -31,8 +31,11 @@ const SAFETY_PERIOD_TAB_VALUES = [moment().add('7', 'days').unix(), moment().add
 
 const CreateStep2 = ({fundingFormStore, navigation}) => {
 
-  const initialContributionIndex = fundingFormStore.form.fields[CreateCommonForm.CONTRIBUTION]?.value ? CONTRIBUTION_TAB_VALUES.indexOf(fundingFormStore.form.fields[CreateCommonForm.CONTRIBUTION]?.value) : 0;
-  const initialSegmentedIndex = fundingFormStore.form.fields[CreateCommonForm.DEADLINE]?.value ? fundingFormStore.form.fields[CreateCommonForm.DEADLINE]?.value.index : 0;
+  const getContributionValue = () => fundingFormStore.getFormField(CreateCommonForm.CONTRIBUTION)?.value;
+  const getDeadlineValue = () => fundingFormStore.getFormField(CreateCommonForm.DEADLINE)?.value;
+
+  const initialContributionIndex = getContributionValue() ? CONTRIBUTION_TAB_VALUES.indexOf(getContributionValue()) : 0;
+  const initialSegmentedIndex = getDeadlineValue() ? getDeadlineValue().index : 0;
 
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -43,7 +46,8 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
    * contributionIndex === 1 => Monthly
    */
   const [contributionIndex, setContributionIndex] = useState(initialContributionIndex);
-  const [pickDate, setPickDate] = useState(initialSegmentedIndex === 2 ? moment.unix(fundingFormStore.form.fields[CreateCommonForm.DEADLINE]?.value?.value).toDate() : null);
+
+  const [pickDate, setPickDate] = useState(initialSegmentedIndex === 2 && getDeadlineValue()?.value ? moment.unix(getDeadlineValue()?.value).toDate() : null);
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -56,8 +60,8 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
   }, [scrollY]);
 
   useEffect(() => {
-    fundingFormStore.registerFormField(CreateCommonForm.DEADLINE, 'required', fundingFormStore.form.fields[CreateCommonForm.DEADLINE]?.value);
-    fundingFormStore.registerFormField(CreateCommonForm.CONTRIBUTION, 'required', fundingFormStore.form.fields[CreateCommonForm.CONTRIBUTION]?.value);
+    fundingFormStore.registerFormField(CreateCommonForm.DEADLINE, 'required', getDeadlineValue());
+    fundingFormStore.registerFormField(CreateCommonForm.CONTRIBUTION, 'required', getContributionValue());
     onTabChange(initialSegmentedIndex, true); // pre-select 1 week at first render
     onContributionTabChange(initialContributionIndex); // pre-select
   }, []);
