@@ -1,21 +1,24 @@
 import React from 'react';
 import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
 import {layout, colors, font} from '~/Theme';
-import {string, func, bool} from 'prop-types';
+import {string, func, bool, object} from 'prop-types';
+import {observer} from 'mobx-react';
 
-const RequestStepActionButton = ({hidden, pass, onPress, title}) => {
+const RequestStepActionButton = ({hidden, pass, formStore, onPress, title}) => {
   let actionBtnStyle = styles.actionBtnContainer;
 
   if (hidden) {
     actionBtnStyle = {...actionBtnStyle, display: 'none'};
   }
 
+  const isButtonEnabled = () => formStore ? formStore.isFormActionEnabled() : pass;
+
   return (
     <View style={actionBtnStyle}>
       <TouchableOpacity
         style={{
           ...styles.continueButton,
-          backgroundColor: pass ? colors.mainBlue : colors.grey3,
+          backgroundColor: isButtonEnabled() ? colors.mainBlue : colors.grey3,
         }}
         onPress={onPress}>
         <Text style={styles.continueButtonText}>{title}</Text>
@@ -29,6 +32,7 @@ RequestStepActionButton.propTypes = {
   pass: bool,
   onPress: func,
   title: string,
+  formStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -61,4 +65,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RequestStepActionButton;
+export default observer(RequestStepActionButton);

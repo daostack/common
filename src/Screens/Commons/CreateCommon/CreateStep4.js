@@ -484,7 +484,7 @@ const CreateStep4 = ({generalInfoFormStore,
       </ScrollView>
       <RequestStepActionButton
         title="Publish Common"
-        pass={agendaFormStore.isFormActionEnabled()}
+        formStore={agendaFormStore}
         onPress={() => confirmModal()}
       />
       <Modal

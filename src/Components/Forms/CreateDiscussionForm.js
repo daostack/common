@@ -140,7 +140,7 @@ const CreateDiscussionForm = ({
       </ScrollView>
       <RequestStepActionButton
         title="Publish post"
-        pass={createDiscussionStore.form.meta.isValid}
+        formStore={createDiscussionStore}
         onPress={formSave}
       />
     </>

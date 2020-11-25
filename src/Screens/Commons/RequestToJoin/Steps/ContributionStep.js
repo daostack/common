@@ -153,11 +153,7 @@ const ContributionStep = ({navigation, route: {params: {formStores, skipFirstSte
         </ScrollView>
         <RequestStepActionButton
           title="Continue to payment"
-          pass={
-            !personalContributionFormStore.form.fields[
-              RequestToJoinForm.FIELD_AMOUNT
-            ]?.error
-          }
+          formStore={personalContributionFormStore}
           onPress={push}
           hidden={isActionBtnHidden}
         />
