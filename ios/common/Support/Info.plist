@@ -21,6 +21,10 @@
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
+    <key>NSCameraUsageDescription</key>
+    <string>The app allows you to take photos and add them to discussions and proposals, add or change the profile picture, and more.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>The app allows you to take photos and add them to discussions and proposals, add or change the profile picture, and more.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

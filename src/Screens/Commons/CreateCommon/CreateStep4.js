@@ -9,6 +9,8 @@ import {
   Dimensions,
   SafeAreaView,
   Animated,
+  Linking,
+  Alert,
 } from 'react-native';
 import {StackActions} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
@@ -32,6 +34,7 @@ import {CommonActions} from '@react-navigation/native';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import {object} from 'prop-types';
 import DaoService from '~/Services/DaoService';
+import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {
   colors,
   font,
@@ -60,6 +63,7 @@ const CreateStep4 = ({generalInfoFormStore,
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
+  const [permission, setPermission] = useState(RESULTS.DENIED);
 
   const form = {
     ...generalInfoFormStore.getChangedFormFieldsJson(),
@@ -83,6 +87,7 @@ const CreateStep4 = ({generalInfoFormStore,
     reviewFormStore.registerFormField(CreateCommonForm.AVATAR);
     reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
     reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, imageURI);
+    checkPermission();
   }, []);
 
   useEffect(() => {
@@ -121,17 +126,48 @@ const CreateStep4 = ({generalInfoFormStore,
     navigation.dispatch(navigate);
   };
 
-  const pickImage = (isAvatar) => {
+  const handlePermission = async () => (
+    request(PERMISSIONS.IOS.CAMERA).then((resp) => {
+      // perhaps make this a bottom message(like the login from CommonList screen)?
+      Alert.alert('Permission required',
+        'To access camera you need to allow pemissions in settings',
+        [
+          {
+            text: 'OK',
+            onPress: () => Linking.openURL('app-settings:'),
+          },
+          {
+            text: 'Cancel',
+          },
+          {
+            cancelable: false,
+          },
+        ]);
+    })
+  );
+
+  const checkPermission = async () => (
+    check(PERMISSIONS.IOS.CAMERA).then((resp) => {
+      setPermission(resp);
+    })
+  );
+
+  const pickImage = async (isAvatar) => {
     const options = {
       title: (isAvatar && 'Select Avatar') || 'Select profile image',
       quality: 0.7,
       allowsEditing: isAvatar,
     };
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.showImagePicker(options, async (response) => {
       if (response.didCancel) {
         logger.log('User cancelled image picker');
       } else if (response.error) {
-        Toast.error(response.error);
+        if (permission !== RESULTS.DENIED) {
+          await handlePermission();
+        } else {
+          setPermission(RESULTS.BLOCKED);
+        }
+        //Toast.error(response.error);
         logger.log('ImagePicker Error: ', response.error);
       } else {
         Toast.loading('Uploading...');
