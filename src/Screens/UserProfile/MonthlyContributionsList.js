@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {ScrollView, Text, View, StyleSheet} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {inject, observer} from 'mobx-react';
 import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
@@ -50,10 +50,10 @@ const MonthlyContributionsList = ({userStore}) => {
           {[1, 1, 1, 1].map((i, index) => (
             <View style={styles.item} key={index}>
               <Placeholder Animation={Fade}>
-                <PlaceholderLine width={20} />
-                <PlaceholderLine width={60} />
-                <PlaceholderLine width={65} />
-                <PlaceholderLine width={10} />
+                <PlaceholderLine width={20}/>
+                <PlaceholderLine width={60}/>
+                <PlaceholderLine width={65}/>
+                <PlaceholderLine width={10}/>
               </Placeholder>
             </View>
           ))}
@@ -90,6 +90,6 @@ MonthlyContributionsList.propTypes = {
 };
 
 export default inject(
-  'userStore',
+  'userStore'
 )(observer(MonthlyContributionsList));
 
