@@ -548,7 +548,7 @@ const ProposalScreen = ({
                       isScreenHeader={true}
                       state={proposalScreenInfo?.proposalInfo?.state}
                       paymentStatus={paymentStatus}
-                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalCardInfo.proposalInfo?.countdownPeriod}
+                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalScreenInfo.proposalInfo?.countdownPeriod}
                     />
                     {proposalScreenInfo?.proposedUser && (
 
@@ -569,7 +569,7 @@ const ProposalScreen = ({
                       isScreenHeader={true}
                       state={proposalScreenInfo?.proposalInfo?.state}
                       paymentStatus={paymentStatus}
-                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalCardInfo.proposalInfo?.countdownPeriod}
+                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalScreenInfo.proposalInfo?.countdownPeriod}
                     />
 
                     {proposalScreenInfo?.proposedUser ? (
