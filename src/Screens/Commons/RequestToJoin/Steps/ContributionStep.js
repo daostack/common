@@ -25,7 +25,7 @@ const ContributionStep = ({navigation, route: {params: {formStores, skipFirstSte
   const [headerHeight, setHeaderHeight] = useState(0);
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
   const metadata = currCommon.metadata;
-  const isMonthly = metadata.contribution === 'monthly';
+  const isMonthly = metadata.contributionType === 'monthly';
   const personalContributionFormStore = formStores.personalContributionFormStore;
 
   useEffect(() => {
@@ -43,11 +43,6 @@ const ContributionStep = ({navigation, route: {params: {formStores, skipFirstSte
 
   const onCustomSelect = (e) => {
     setIsActionBtnHidden(false);
-    personalContributionFormStore.fieldChanged(
-      RequestToJoinForm.FIELD_AMOUNT,
-      {},
-      false,
-    );
   };
 
   const onAmountSelected = (amount, index) => {
@@ -158,11 +153,7 @@ const ContributionStep = ({navigation, route: {params: {formStores, skipFirstSte
         </ScrollView>
         <RequestStepActionButton
           title="Continue to payment"
-          pass={
-            !personalContributionFormStore.form.fields[
-              RequestToJoinForm.FIELD_AMOUNT
-            ]?.error
-          }
+          formStore={personalContributionFormStore}
           onPress={push}
           hidden={isActionBtnHidden}
         />

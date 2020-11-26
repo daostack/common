@@ -45,6 +45,7 @@ const CreateDiscussionForm = ({
             images: images.filter((image) => image.value !== ''),
             files: files.filter((file) => file.value !== ''),
             createTime: new Date(),
+            lastMessage: new Date(),
             ownerId: userStore.userInfo.uid,
             commonId: commonId,
             follower: [],
@@ -139,7 +140,7 @@ const CreateDiscussionForm = ({
       </ScrollView>
       <RequestStepActionButton
         title="Publish post"
-        pass={createDiscussionStore.form.meta.isValid}
+        formStore={createDiscussionStore}
         onPress={formSave}
       />
     </>

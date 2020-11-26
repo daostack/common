@@ -39,7 +39,7 @@ const CommonHeader = ({
       <Text style={styles.headerTitleWhite} numberOfLines={5}>
         {name}
       </Text>
-      <Text style={{...text.textFieldfocus, color: colors.white}} numberOfLines={5}>
+      <Text style={{...text.textFieldfocus, color: colors.white, textAlign: 'center'}} numberOfLines={5}>
         {byline}
       </Text>
       <Text style={styles.headerDescription} numberOfLines={4}>

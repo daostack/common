@@ -1,5 +1,5 @@
 import FormStore from '../FormStore';
-import {firstLastNameValidate, validateCCNumber, validateCCProvider, futureDate} from '~/FormStores/ValidationRules';
+import {firstLastNameValidate, validateCCNumber, validDateFormat, validateCCProvider, futureDate} from '~/FormStores/ValidationRules';
 
 export class PaymentFormStore extends FormStore {
   constructor() {
@@ -8,6 +8,7 @@ export class PaymentFormStore extends FormStore {
     this.registerValidationRule(validateCCNumber);
     this.registerValidationRule(validateCCProvider);
     this.registerValidationRule(futureDate);
+    this.registerValidationRule(validDateFormat);
   }
 }
 export class PersonalContributionFormStore extends FormStore {}

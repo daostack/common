@@ -134,7 +134,7 @@ const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep
         </ScrollView>
         <RequestStepActionButton
           title="Continue"
-          pass={introduceYourselfFormStore.isFormActionEnabled()}
+          formStore={introduceYourselfFormStore}
           onPress={push}
         />
       </SafeAreaView>

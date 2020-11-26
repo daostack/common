@@ -265,10 +265,6 @@ const CommonProfile = ({
     if (!isMember) {
       return (
         <View style={styles.agendaBox}>
-          <Text style={styles.agendaDescription}>
-            {currCommon.metadata.courseOfAction}
-          </Text>
-
           <View style={layout.flexStart}>
             <Text style={text.h2Black}>About</Text>
             <Text style={{...text.regularText,
@@ -368,7 +364,7 @@ const CommonProfile = ({
   */
 
   const calcShouldSkipRules = () => {
-    const rules = currCommon.metadata?.rules;
+    const rules = currCommon?.rules;
     if (rules?.length > 0) {
       // NOTE: value of multiple fields was stored in url prop before
       return !rules.some((rule) => rule?.title && (rule?.value || rule.url));
@@ -593,7 +589,7 @@ const CommonProfile = ({
           Request to join
         </Text>
         <Text style={styles.contribution}>
-          ${currCommon.metadata.minFeeToJoin / 100}{currCommon.metadata.contribution === 'monthly' && '/mo'} min. contribution
+          ${currCommon.metadata.minFeeToJoin / 100}{currCommon.metadata.contributionType === 'monthly' && '/mo'} min. contribution
         </Text>
       </TouchableOpacity>);
   };
@@ -720,7 +716,7 @@ const CommonProfile = ({
           >
             {(showPending) && (
               <React.Fragment>
-                {renderPendingApproval()}
+                {pendingProposalsData?.usersPendingProposal && renderPendingApproval()}
               </React.Fragment>
             )}
 
@@ -957,7 +953,7 @@ const styles = StyleSheet.create({
   },
   agendaBox: {
     padding: 20,
-    paddingTop: 0,
+    paddingTop: 20,
   },
   agendaDescription: {
     marginBottom: 9,

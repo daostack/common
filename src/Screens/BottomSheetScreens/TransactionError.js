@@ -10,12 +10,21 @@ import React from 'react';
 import {text, layout, colors, font} from '~/Theme/index';
 import PropTypes from 'prop-types';
 import Icon from '../../Assets/iconfont/Icon';
+import {removeLinebreaks} from '~/Util';
+
+const VALIDATION_ERROR = 'ValidationError';
 
 const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
   const [showMore, setShowMore] = React.useState(false);
 
   const toggleShowMore = () => {
     setShowMore(!showMore);
+    const changeHeight = 60 + (errorObj?.data?.detailedErrors?.length * 30) || 0;
+    if (showMore) {
+      bottomSheetStore.decreseTopSnap(changeHeight);
+    } else {
+      bottomSheetStore.increseTopSnap(changeHeight);
+    }
   };
 
   return (
@@ -30,7 +39,7 @@ const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
           </TouchableOpacity>
         )}
 
-        <View style={styles.spacer}/>
+        <View style={styles.spacer} />
 
         <Image
           source={require('~/Assets/alert.png')}
@@ -49,11 +58,29 @@ const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
 
 
         {typeof errorObj === 'object' && ((showMore) ? (
-          <View>
+          <View style={layout.marginTopM}>
             <Text>Error ID: {errorObj.errorId}</Text>
             <Text>Error Status: {errorObj.errorCode}</Text>
             <Text>Error Name: {errorObj.errorName}</Text>
-            <Text>Full error text: {errorObj.error}</Text>
+            {
+              errorObj.errorCode === VALIDATION_ERROR ?
+                <View style={layout.marginTopM}>
+                  {
+                    errorObj.data.detailedErrors.map(((currError, index) => (<View key={`validation_key_${index}`}>
+                      <Text>
+                        <Text style={{fontWeight: 'bold'}}>{ index + 1}.</Text>{' '}
+                        Field{' '}
+                        <Text style={{fontWeight: 'bold'}}>{currError.field}</Text>{' '}
+                        with value{' '}
+                        <Text style={{fontWeight: 'bold'}}>{currError.value || 'null'}</Text>{' '}
+                        is invalid!
+                      </Text>
+                      <Text style={{fontSize: 11, color: colors.error}}>{removeLinebreaks(currError.message)}</Text>
+                    </View>)))
+                  }
+                </View> :
+                <Text>Full error text: {errorObj.error}</Text>
+            }
           </View>
         ) : (
           <View style={styles.textWithIconContainer}>
@@ -61,7 +88,7 @@ const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
           </View>
         ))}
 
-        <View style={styles.spacer}/>
+        <View style={styles.spacer} />
 
         <TouchableOpacity
           style={styles.dismissButton}
@@ -77,6 +104,8 @@ const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
 TransactionError.propTypes = {
   bottomSheetStore: PropTypes.shape({
     hideBottomSheet: PropTypes.func,
+    increseTopSnap: PropTypes.func,
+    decreseTopSnap: PropTypes.func,
   }),
   errorMessage: PropTypes.string,
   errorObj: PropTypes.oneOfType([
@@ -108,6 +137,7 @@ const styles = StyleSheet.create({
 
   imgAlert: {
     height: '50%',
+    maxHeight: 220,
     aspectRatio: 1,
   },
   title2: {

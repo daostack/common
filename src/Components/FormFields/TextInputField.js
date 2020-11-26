@@ -47,10 +47,11 @@ class TextInputField extends React.Component {
   }
 
   onChangeText = (text) => {
+    const currText = this.props.format ? this.props.format(text) : text;
     const {formStore, name, multiName} = this.props.validation;
-    this.setState({charsLeft: text.length});
-    formStore.fieldChanged(name, text, false, multiName);
-    this.props.onChangeText && this.props.onChangeText(text);
+    this.setState({charsLeft: currText.length});
+    formStore.fieldChanged(name, currText, false, multiName);
+    this.props.onChangeText && this.props.onChangeText(currText);
   };
 
   onFocus = (e) => {this.setState({onFocus: true});};
@@ -97,14 +98,7 @@ class TextInputField extends React.Component {
       };
     }
 
-    const getValue = () => {
-      if (validation) {
-        return this.props.format
-          ? this.props.format(value)
-          : validation.formStore.getFormField(validation.name, validation.multiName).value.toString();
-      }
-      return value;
-    };
+    const getValue = () => validation ? validation.formStore.getFormField(validation.name, validation.multiName).value.toString() : value;
 
     return (
       <View style={{alignSelf: 'stretch', paddingBottom: 5}}>

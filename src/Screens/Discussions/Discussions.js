@@ -30,6 +30,7 @@ import ImageView from 'react-native-image-viewing';
 import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
 import {func, object, shape, string} from 'prop-types';
+import DiscussionService from '../../Services/DiscussionService';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
@@ -217,10 +218,11 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
           commonId: commonId,
           discussionId: discussionId,
         })
-        .then(() => {
+        .then(async () => {
           Keyboard.dismiss();
-
           setInputText('');
+
+          await DiscussionService.getInstance().updateDiscussionLastMessage(discussionId);
         })
         .catch((error) => {
           Toast.error(error);
@@ -303,7 +305,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
         }}
         title={{
           title: dataState.title,
-          style: [text.h2Black, {paddingLeft:50, paddingRight:20}],
+          style: [text.h2Black, {paddingLeft: 50, paddingRight: 20}],
           ellipsizeMode: 'tail',
           numberOfLines: 1,
         }}
@@ -314,17 +316,17 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
             <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
           </TouchableOpacity>
         }
-        // rightButton={
-        //   <TouchableOpacity
-        //     style={{justifyContent: 'center'}}
-        //     onPress={openOptionsMenu}>
-        //     <Icon
-        //       name="menu-horizontal"
-        //       size={32}
-        //       style={{marginRight: 10}}
-        //     />
-        //   </TouchableOpacity>
-        // }
+      // rightButton={
+      //   <TouchableOpacity
+      //     style={{justifyContent: 'center'}}
+      //     onPress={openOptionsMenu}>
+      //     <Icon
+      //       name="menu-horizontal"
+      //       size={32}
+      //       style={{marginRight: 10}}
+      //     />
+      //   </TouchableOpacity>
+      // }
       />
       <View style={{overflow: 'hidden', paddingBottom: 5}}>
         <View
@@ -333,36 +335,40 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
             <View style={{
               paddingTop: 20,
               paddingHorizontal: 20,
+              maxHeight: '94%',
             }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  paddingVertical: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Image
-                  style={styles.avatar}
-                  source={user.photoURL ? {uri: user.photoURL} : null}
-                />
-                <View style={{flex: 1, paddingHorizontal: 10}}>
-                  <Text style={styles.displayName}>{user.displayName}</Text>
-                  {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-                  <Text style={styles.date}>
-                    {moment(dataState.createTime.toDate()).fromNow()}
+              <ScrollView>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    paddingVertical: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Image
+                    style={styles.avatar}
+                    source={user.photoURL ? {uri: user.photoURL} : null}
+                  />
+                  <View style={{flex: 1, paddingHorizontal: 10}}>
+                    <Text style={styles.displayName}>{user.displayName}</Text>
+                    {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
+                    <Text style={styles.date}>
+                      {moment(dataState.createTime.toDate()).fromNow()}
+                    </Text>
+                  </View>
+                </View>
+
+                <View>
+                  <Text
+                    style={styles.message}>
+                    {dataState.message}
                   </Text>
                 </View>
-              </View>
 
-              <View>
-                <Text
-                  style={styles.message}>
-                  {dataState.message}
-                </Text>
-              </View>
+                {headerImages()}
+                {headerFiles()}
+              </ScrollView>
 
-              {headerImages()}
-              {headerFiles()}
 
               <TouchableOpacity
                 style={{alignItems: 'center', paddingVertical: 10}}
@@ -414,7 +420,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
             }}
 
             renderItem={(x) => (
-              <DiscussionMessage data={x.item} />
+              <DiscussionMessage data={x.item} showCurrentUserAvatar/>
             )}
 
             renderSectionFooter={({section: {date}}) => (
@@ -451,7 +457,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
       >
         <View style={styles.inputContainer}>
           {isMember ? (
-            <View style={[styles.input, {height: Math.max(35, inputHeight + 20)}]}>
+            <View style={[styles.input, {height: Math.max(35, inputHeight + 30)}]}>
               <TextInput
                 ref={inputRef}
                 editable={true}
@@ -464,10 +470,10 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
                 }}
                 style={{
                   flex: 1,
-                  maxHeight: 110,
+                  maxHeight: 140,
                   paddingVertical: 10,
                   marginHorizontal: 10,
-                  height: Math.max(35, inputHeight + 10),
+                  height: Math.max(35, inputHeight + 20),
                 }}
               />
               <TouchableOpacity
@@ -624,7 +630,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.grey4,
     borderTopWidth: 1,
     minHeight: 65,
-    maxHeight: 110,
+    maxHeight: 140,
     width: width,
     flexDirection: 'row',
     shadowColor: 'rgba(0, 0, 0, 0.2)',

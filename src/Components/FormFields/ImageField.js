@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {Image, View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import ValidationMessage from './ValidationMessage';
-import {observer} from 'mobx-react';
 import ImagePicker from 'react-native-image-picker';
 import Toast from '~/Util/Toast';
 import StorageService from '~/Services/StorageService';
@@ -45,9 +44,12 @@ class ImageField extends React.Component {
   };
 
   onFieldDeleted = () => {
-    const {formStore, name} = this.props.validation;
-    formStore.removeFormField(name);
-    this.props.onFieldDeleted && this.props.onFieldDeleted();
+    if (this.props.onFieldDeleted) {
+      this.props.onFieldDeleted();
+    } else {
+      const {formStore, name} = this.props.validation;
+      formStore.removeFormField(name);
+    }
   }
 
   pickImage = () => {
@@ -277,4 +279,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(ImageField);
+export default ImageField;

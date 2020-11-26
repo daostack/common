@@ -12,6 +12,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
 import {string, bool, object} from 'prop-types';
+import {db} from '~/Firebase';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -23,6 +24,7 @@ const {width} = Dimensions.get('window');
 
 const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipRequest, isSwiper, isMember, commonInfo}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
+  const [paymentState, setPaymentState] = useState('pending');
   useEffect(() => {
 
     const getProposalInfo = async (currProposalId) => {
@@ -61,8 +63,20 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
 
     if (proposalId) {
       getProposalInfo(proposalId);
+      getPaymentStatus();
     }
   }, [proposalId]);
+
+  const getPaymentStatus = () => {
+    db.collection('payments')
+      .where('proposalId', '==', proposalId)
+      .onSnapshot((snapshot) => {
+        if (snapshot.docChanges().length !== 0) {
+          const paymentData = (snapshot.docChanges()[0].doc).data();
+          setPaymentState(paymentData.status);
+        }
+      },(error) => logger.error(error));
+  };
 
   useEffect(() => {
     const loadProposalInfo = async (currProposalInfo) => {
@@ -126,6 +140,7 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
       proposalCardInfo,
       commonBalance: commonInfo?.balance,
       isMember,
+      paymentState,
     });
   };
 
@@ -133,12 +148,9 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
     <Animated.View style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
-          isBoosted
-          proposal={proposalCardInfo?.proposalInfo}
-          showDate={membershipRequest}
-          stage={proposalCardInfo.proposalInfo?.state}
+          state={proposalCardInfo.proposalInfo?.state}
+          paymentStatus={paymentState}
           closingAt={proposalCardInfo.proposalInfo?.createdAt.seconds + proposalCardInfo.proposalInfo?.countdownPeriod}
-          winningOutcome={proposalCardInfo.proposalInfo?.winningOutcome}
         />
 
         <View
@@ -149,8 +161,7 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
             flexWrap: 'wrap',
           }}>
           {proposalCardInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && <Text
-            style={{...text.h3Black, width: '100%', flexWrap: 'wrap', padding: 10, fontSize: 16,
-              ...text.textAlign(proposalCardInfo.proposalInfo?.description?.title)}}>
+            style={styles.title}>
             {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
           </Text>}
 
@@ -263,6 +274,14 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     shadowOpacity: 0.5,
     elevation: 4,
+  },
+  title: {
+    ...text.h3Black,
+    textAlign: 'left',
+    width: '100%',
+    flexWrap: 'wrap',
+    padding: 10,
+    fontSize: 16,
   },
 });
 

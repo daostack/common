@@ -43,7 +43,7 @@ const PaymentDetailsStep = ({
   userStore: {userInfo},
   bottomSheetStore,
 }) => {
-  const isMonthly = currCommon.metadata.contribution === 'monthly';
+  const isMonthly = currCommon.metadata.contributionType === 'monthly';
 
   const paymentFormStore = formStores.paymentFormStore;
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
@@ -52,7 +52,6 @@ const PaymentDetailsStep = ({
 
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [expDateFormat, setExpDateFormat] = useState('');
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -130,6 +129,21 @@ const PaymentDetailsStep = ({
   };
 
   const formatDate = (date) => {
+    /*const MAX_LENGHT = 5; // format: "MM/YY"
+    if (date.length > MAX_LENGHT) {
+      return date.substring(0,MAX_LENGHT);
+    }
+
+    if (date.length === 2) {
+      return `${date}/`;
+    }
+
+    if (date.length > 0 && date.length < 2) {
+      return date.substring(0,1);
+    }
+
+    return date;*/
+
     date = date.replace('/', '');
     return date.length > 2
       ? `${date.substring(0,2)}/${date.substring(2,4)}`
@@ -244,10 +258,9 @@ const PaymentDetailsStep = ({
                   width: '45%',
                 }}
                 label="Expiration date"
-                value={testCard ? moment().format('MM/YY') : expDateFormat}
-                placeholderText="MM/YY"
+                value={testCard ? moment().format('MM/YY') : ''}
+                placeholderText="MM / YY"
                 editable={true}
-                onChangeText={(date) => setExpDateFormat(date)}
                 format={(date) => formatDate(date)}
                 keyboardType={'number-pad'}
                 validation={{
@@ -255,7 +268,7 @@ const PaymentDetailsStep = ({
                   formStore: paymentFormStore,
                   validateRule: [
                     'required',
-                    'string',
+                    VALIDATION_RULES.VALID_DATE_FORMAT,
                     VALIDATION_RULES.CARD_EXP_DATE,
                   ],
                 }}
@@ -312,7 +325,7 @@ const PaymentDetailsStep = ({
         </ScrollView>
         <RequestStepActionButton
           title="Pay Now"
-          pass={paymentFormStore.isFormActionEnabled()}
+          formStore={paymentFormStore}
           onPress={push}
         />
       </SafeAreaView>

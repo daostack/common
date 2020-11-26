@@ -13,31 +13,21 @@ const DiscussionList = ({commonId, navigation}) => {
   useEffect(() => {
     const unsubscribe = db.collection('discussion')
       .where('commonId', '==', commonId)
-      .orderBy('createTime', 'desc')
+      .orderBy('lastMessage', 'desc')
       .onSnapshot(
         (snapshot) => {
           if (snapshot.empty) {
             setList([]);
           } else {
             if (snapshot.docChanges().length !== 0) {
-              const newList = snapshot.docChanges().map(({doc}) => ({
-                id: doc.id,
-                ...doc.data(),
-              }));
-              let createList = newList
-                .map((item) => {
-                  let index = listRef.current.findIndex((v) => v.id === item.id);
-                  if (index > -1) {
-                    listRef.current[index] = item;
-                  } else {
-                    return item;
-                  }
-                })
-                .filter((item) => item);
-              if (createList.length > 0) {
-                const allList = [...createList, ...listRef.current];
-                listRef.current = allList;
-              }
+              let newList = [];
+              snapshot.forEach((doc) => {
+                newList.push({
+                  id: doc.id,
+                  ...doc.data(),
+                });}
+              );
+              listRef.current = newList;
               setList(listRef.current);
             }
           }

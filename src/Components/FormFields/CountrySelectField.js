@@ -1,11 +1,10 @@
 import React from 'react';
 import {View} from 'react-native';
-import {bool, func, number, object, oneOfType, shape, string} from 'prop-types';
+import {bool, func, object, oneOfType, shape, string} from 'prop-types';
 
-import RNPickerSelect from 'react-native-picker-select';
+import SearchableDropdown from 'react-native-searchable-dropdown';
 import * as RNLocalize from 'react-native-localize';
 
-import Icon from '../../Assets/iconfont/Icon';
 import TextInputFieldWithIcon from './TextInputFieldWithIcon';
 
 import {countryList} from '../../Util/countries';
@@ -13,23 +12,19 @@ import {colors} from '../../Theme';
 import {Label} from './TextInputField';
 
 
-export const CountrySelectField = ({defaultCountry, onChange, ...props}) => {
-  const selectRef = React.useRef();
-  const [selectedCountry, setSelectedCountry] = React.useState(defaultCountry || RNLocalize.getCountry());
+export const CountrySelectField = ({onChange, ...props}) => {
+  const [countryIndex, setCountryIndex] = React.useState(0);
+  const [selectedCountries, setSelectedCountries] = React.useState([countryList[0]]);
 
   React.useEffect(() => {
-    if (typeof onChange === 'function') {
-      onChange(selectedCountry);
-    }
-  }, [selectedCountry]);
+    getCountryIndex(RNLocalize.getCountry());
+  }, []);
 
-  const onCountryChange = (value, index) => {
-    setSelectedCountry(value);
+  const getCountryIndex = (country) => {
+    const index = countryList.findIndex((countryObj) => countryObj.value === country);
+    onChange && onChange(country);
+    setCountryIndex(index || 0);
   };
-
-  const renderIcon = () => (
-    <Icon name="down-arrow"/>
-  );
 
   return (
     <View style={styles.container}>
@@ -37,20 +32,34 @@ export const CountrySelectField = ({defaultCountry, onChange, ...props}) => {
         <Label label={props.label} infoLabel={props.infoLabel}/>
       )}
 
-      <RNPickerSelect
-        ref={selectRef}
-        style={styles.select}
-        onValueChange={onCountryChange}
-        value={selectedCountry}
-        items={countryList.filter((country) => country.payin)}
-        Icon={renderIcon}
+      <SearchableDropdown
+        onItemSelect={(item) => {
+          const items = [item, ...selectedCountries];
+          getCountryIndex(item.value);
+          setSelectedCountries(items);
+        }}
+        itemStyle={styles.itemStyle}
+        itemTextStyle={{color: 'black'}}
+        itemsContainerStyle={styles.itemsContainerStyle}
+        items= {countryList.filter((country) => country.payin)}
+        defaultIndex={countryIndex}
+        resetValue={false}
+        textInputProps={
+          {
+            placeholder: countryList[countryIndex].name,
+            placeholderTextColor: 'black',
+            underlineColorAndroid: 'transparent',
+            style: styles.textInput,
+          }
+        }
+        listProps={{nestedScrollEnabled: true}}
       />
 
       <View style={{display: 'none'}}>
         <TextInputFieldWithIcon
           editable={false}
-          key={selectedCountry}
-          value={countryList[countryList.findIndex((x) => x.value === selectedCountry)].value}
+          key={countryIndex}
+          value={countryList[countryIndex].value}
           iconEndName="down-arrow"
           {...props}
         />
@@ -70,31 +79,26 @@ const styles = {
     justifyContent: 'center',
   },
 
-  select: {
-    inputIOS: {
-      fontSize: 16,
-      paddingVertical: 14,
-      paddingHorizontal: 10,
-      borderWidth: 1,
-      borderColor: colors.grey4,
-      borderRadius: 4,
-      color: 'black',
-      paddingRight: 30, // to ensure the text is never behind the icon
-    },
-    inputAndroid: {
-      fontSize: 16,
-      paddingHorizontal: 14,
-      paddingVertical: 8,
-      borderWidth: 0.5,
-      borderColor: colors.grey4,
-      borderRadius: 8,
-      color: 'black',
-      paddingRight: 30, // to ensure the text is never behind the icon
-    },
-    iconContainer: {
-      top: 15,
-      right: 12,
-    },
+  itemStyle: {
+    padding: 15,
+    marginTop: 2,
+    backgroundColor: 'white',
+    borderColor: colors.grey4,
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  itemsContainerStyle: {
+    maxHeight: 200,
+    borderColor: colors.grey4,
+    borderWidth: 1,
+    borderRadius: 4,
+  },
+
+  textInput: {
+    padding: 15,
+    borderWidth: 1,
+    borderColor: colors.grey4,
+    borderRadius: 4,
   },
 };
 
@@ -112,25 +116,6 @@ CountrySelectField.propTypes = {
     customErrorMessage: string,
   }),
   value: string,
-  fieldActionComponent: object,
-  onTogglePress: func,
-  toggleName: string,
-  onChangeText: func,
-  onBlur: func,
-  placeholderText: string,
   label: string,
   infoLabel: string,
-  password: bool,
-  multiline: bool,
-  numberOfLines: number,
-  keyboardType: string,
-  iconName: string,
-  iconSize: number,
-  iconEmptyColor: string,
-  iconFillColor: string,
-  iconStyle: object,
-  subLabel: string,
-  forwardRef: object,
-  viewStyle: object,
-  defaultCountry: string,
 };

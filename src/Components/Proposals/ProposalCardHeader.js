@@ -2,60 +2,51 @@ import React from 'react';
 import {Text, StyleSheet, View} from 'react-native';
 import {text, layout, colors, sizeXS, sizeS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {LAUNCHED_STATES, COUNTDOWN_STATES, PROPOSAL_STAGE} from '~/Services/ProposalService';
+import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
 import {string, number, bool} from 'prop-types';
-import moment from 'moment';
 
 const TITLES = {
   APPROVED: 'Approved',
   REJECTED: 'Rejected',
   NEW: 'New',
   COUNTDOWN: 'Countdown',
+  PAYMENT_FAILED: 'Payment Failed',
 };
 
-const calcStatus = (stage, winningOutcome, hasPassedExpiryDate, isScreenHeader) => {
+const calcStatus = (state, isScreenHeader, paymentStatus) => {
   let status = {
-    text: '',
-    lightColor: '',
-    darkColor: '',
-    icon: '',
     opacity: 1,
   };
 
-  if (stage === PROPOSAL_STAGE.Executed || hasPassedExpiryDate || stage === PROPOSAL_STAGE.ExpiredInQueue) {
-    if (winningOutcome === 1) {
-      status.text = TITLES.APPROVED;
-      status.lightColor = colors.lightGreen;
-      status.darkColor = colors.lightishGreen;
-      status.icon = 'approved';
-    } else {
-      status.text = TITLES.REJECTED;
-      status.lightColor = colors.redLightish;
-      status.darkColor = colors.error;
-      status.icon = 'declined';
-    }
+  if (paymentStatus === 'failed') {
+    status.text = TITLES.PAYMENT_FAILED;
+    status.lightColor = colors.redLightish;
+    status.darkColor = colors.error;
+    status.icon = 'declined';
     return status;
   }
-
-  if (LAUNCHED_STATES.includes(stage)) {
-    status.text = TITLES.NEW;
-    status.lightColor = colors.lightBlue;
-    status.darkColor = colors.blue;
-    status.icon = 'boosted';
-    return status;
+  if (state === PROPOSAL_STAGE.passed) {
+    status.text = TITLES.APPROVED;
+    status.lightColor = colors.lightGreen;
+    status.darkColor = colors.lightishGreen;
+    status.icon = 'approved';
   }
-  if (COUNTDOWN_STATES.includes(stage)) {
+  else if (state === PROPOSAL_STAGE.failed) {
+    status.text = TITLES.REJECTED;
+    status.lightColor = colors.redLightish;
+    status.darkColor = colors.error;
+    status.icon = 'declined';
+  } else {
     status.text = TITLES.COUNTDOWN;
     status.lightColor = isScreenHeader ? colors.mango : colors.butterscotch;
     status.darkColor = colors.mango;
     status.icon = 'clcok';
     status.opacity = 0.2;
-    return status;
   }
-
-  return 'test'; // this causes Icon name prop to be undefined -> violating proptypes definition
+  return status;
 };
+
 
 const renderCountDown = (closingAt) => {
   /*
@@ -97,14 +88,8 @@ const renderCountDown = (closingAt) => {
 };
 
 
-const ProposalCardHeader = ({stage, winningOutcome, closingAt, isScreenHeader = false}) => {
-  const hasPassedExpiryDate = closingAt
-    ? moment().isAfter(moment.unix(closingAt))
-    : false;
-
-  const headerStatus = calcStatus(stage, winningOutcome, hasPassedExpiryDate, isScreenHeader);
-
-
+const ProposalCardHeader = ({state, closingAt, isScreenHeader = false, paymentStatus}) => {
+  const headerStatus = calcStatus(state, isScreenHeader, paymentStatus);
 
   return isScreenHeader
     ? (
@@ -148,11 +133,10 @@ const ProposalCardHeader = ({stage, winningOutcome, closingAt, isScreenHeader = 
 };
 
 ProposalCardHeader.propTypes = {
-  stage: string,
-  winningOutcome: number,
-  hasPassedExpiryDate: bool,
+  state: string,
   closingAt: number,
   isScreenHeader: bool,
+  paymentStatus: string,
 };
 
 const styles = StyleSheet.create({

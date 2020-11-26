@@ -11,6 +11,7 @@ import {
   SortProposals,
   PublishCommon,
   CancelSubscription,
+  PaymentFailed,
 } from '~/Screens/BottomSheetScreens';
 
 export const BOTTOM_SHEET_TEMPLATES = {
@@ -60,6 +61,10 @@ export const BOTTOM_SHEET_TEMPLATES = {
     topSnap: 450,
     content: CancelSubscription,
   },
+  PAYMENT_FAILED: {
+    topSnap: 500,
+    content: PaymentFailed,
+  },
 };
 
 class BottomSheetStore {
@@ -88,10 +93,20 @@ class BottomSheetStore {
     this.topSnap = 0;
     this.template = null;
   };
+
+  increseTopSnap = (increseVal) => {
+    this.topSnap = this.topSnap + increseVal;
+  };
+
+  decreseTopSnap = (decreseVal) => {
+    this.topSnap = this.topSnap - decreseVal;
+  };
 }
 
 decorate(BottomSheetStore, {
   showBottomSheet: action,
+  increseTopSnap: action,
+  decreseTopSnap: action,
   topSnap: observable,
   template: observable,
   isVisible: observable,

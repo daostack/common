@@ -27,7 +27,7 @@ const BillingDetailsStep = ({navigation, route}) => {
 
   const [country, setCountry] = useState(country);
 
-  const isMonthly = currCommon.metadata.contribution === 'monthly';
+  const isMonthly = currCommon.metadata.contributionType === 'monthly';
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -91,6 +91,7 @@ const BillingDetailsStep = ({navigation, route}) => {
 
         <ScrollView
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
           width={width}
           contentContainerStyle={{
             alignItems: 'center',
@@ -205,7 +206,7 @@ const BillingDetailsStep = ({navigation, route}) => {
 
         <RequestStepActionButton
           title="Continue to payment"
-          pass={billingDetailsFormStore.isFormActionEnabled()}
+          formStore={billingDetailsFormStore}
           onPress={navigateToPaymentDetailsStep}
         />
       </SafeAreaView>

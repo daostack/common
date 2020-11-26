@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import ValidationMessage from './ValidationMessage';
-import {observer} from 'mobx-react';
 import DocumentPicker from 'react-native-document-picker';
 import Toast from '~/Util/Toast';
 import Icon from '~/Assets/iconfont/Icon';
@@ -39,11 +38,14 @@ class FileField extends React.Component {
   };
 
   onFieldDeleted = () => {
-    if (this.props.validation) {
-      const {formStore, name} = this.props.validation;
-      formStore.removeFormField(name);
+    if (this.props.onFieldDeleted) {
+      this.props.onFieldDeleted();
+    } else {
+      if (this.props.validation) {
+        const {formStore, name} = this.props.validation;
+        formStore.removeFormField(name);
+      }
     }
-    this.props.onFieldDeleted && this.props.onFieldDeleted();
   }
 
   pickFile = async () => {
@@ -170,6 +172,7 @@ const styles = StyleSheet.create({
     ...text.h3Black,
     ...layout.marginLeftXS,
     textDecorationLine: 'underline',
+    maxWidth: '90%',
   },
   adRow: {
     ...layout.flexRow,
@@ -191,4 +194,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(FileField);
+export default FileField;

@@ -99,25 +99,18 @@ class FormStore {
     this.validateField(name, multiName);
   }
 
-  removeFormField(name, multiName) {
-    if (multiName) {
-      const multiIndexInfo = name.split('_');
-      const currMultiIndex = multiIndexInfo[0];
-
-      if (this.form.fields[multiName][currMultiIndex]) {
-        let currFormField = this.form.fields[multiName];
-        delete currFormField[currMultiIndex];
-
-        const newFormFieldObj = {};
-        let newIndex = 0;
-
-        Object.keys(currFormField).forEach((currKey) => {
-          newFormFieldObj[newIndex] = currFormField[currKey];
-          newIndex++;
+  removeFormField(name, multiIndex) {
+    // check also the zero because it's casted to false boolean
+    if (multiIndex === 0 || multiIndex) {
+      if (this.form.fields[name] && this.form.fields[name][multiIndex]) {
+        const newFormFieldObj = [];
+        this.getFormField(name).forEach((currKey, currIndex) => {
+          if (multiIndex !== currIndex) {
+            newFormFieldObj.push(currKey);
+          }
         });
-        this.form.fields[multiName] = newFormFieldObj;
+        this.form.fields[name] = newFormFieldObj;
       }
-
     } else {
       delete this.form.fields[name];
     }
@@ -137,9 +130,7 @@ class FormStore {
   };
 
   // Determine if the form action button has to be disabled
-  isFormActionEnabled = () => (
-    this.form.meta.formValidationMade ? this.form.meta.isValid : true
-  );
+  isFormActionEnabled = () => this.form.meta.formValidationMade ? this.form.meta.isValid : true;
 
   fieldBlured = (name, multiName) => {
     this.validateField(name, multiName);
@@ -245,56 +236,6 @@ class FormStore {
     this.getFormFieldsJson(true)
   );
 
-  filterMultiFields = (name, fields) => {
-    let changedFieldsJson = {};
-
-    // MultiLink
-    let multiFieldTitles = [];
-    let multiFieldValues = [];
-
-    // MultiFile and MultiImage
-    let multiValues = [];
-
-    for (const key in fields) {
-      const formFieldValue = fields[key];
-
-      if (key.startsWith(`${name}_title`)) {
-        multiFieldTitles = multiFieldTitles.concat(formFieldValue);
-        continue;
-      }
-
-      if (key.startsWith(`${name}_value`)) {
-        multiFieldValues = multiFieldValues.concat(formFieldValue);
-        continue;
-      }
-
-      if (key.startsWith(`${name}_multi`)) {
-        multiValues = multiValues.concat(formFieldValue);
-        continue;
-      }
-
-      changedFieldsJson[key] = formFieldValue;
-    }
-
-    if (multiValues.length > 0) {
-      changedFieldsJson[name] = [...multiValues.keys()].map((x) => ({value: multiValues[x]}));
-    }
-
-    if (multiFieldTitles.length > 0) {
-      const allMultiLinksFields = [...multiFieldTitles.keys()].map((x) => (
-        {title: multiFieldTitles[x], url: multiFieldValues[x]}
-      ));
-      // Remove fields with empty values.
-      changedFieldsJson[name] = allMultiLinksFields.filter((item) => item.title || item.value);
-    }
-
-    if (changedFieldsJson.length === 0) {
-      changedFieldsJson[name] = [];
-    }
-
-    return changedFieldsJson;
-  };
-
   isFormChanged = () => (
     Object.keys(this.getChangedFormFieldsJson()).length > 0
   );
@@ -370,6 +311,7 @@ class FormStore {
 }
 
 decorate(FormStore, {
+  isFormValid: action,
   setError: action,
   fieldChanged: action,
   fieldBlured: action,

@@ -5,6 +5,7 @@ export const VALIDATION_RULES = {
   IS_VALID_CREDIT_CARD: 'is_valid_credit_card',
   CREDIT_CARD_PROVIDER: 'credit_card_provider',
   CARD_EXP_DATE: 'card_exp_date',
+  VALID_DATE_FORMAT: 'valid_date_format',
 };
 
 export const firstLastNameValidate = {
@@ -41,8 +42,29 @@ export const validateCCNumber = {
   errorMessage: 'Card number is invalid.',
 };
 
+const fixDate = (date) => {
+  const [month, year] = date.split('/');
+  return `${month}/01/${year}`;
+};
+
+export const validDateFormat = {
+  ruleName: VALIDATION_RULES.VALID_DATE_FORMAT,
+  validateFunc: (value, requirement, attribute) => {
+    const dateArr = value.split('/');
+    if (dateArr.length !== 2) {
+      return false;
+    }
+    const [month, year] = dateArr;
+    if (month.length !== 2 || year.length !== 2) {
+      return false;
+    }
+    return !isNaN(month) && !isNaN(year);
+  },
+  errorMessage: 'The date format should be "MM / YY".',
+};
+
 export const futureDate = {
   ruleName: VALIDATION_RULES.CARD_EXP_DATE,
-  validateFunc: (value, requirement, attribute) => !moment(value).isBefore(moment().format('MM/YY')) ,
+  validateFunc: (value, requirement, attribute) => !moment(fixDate(value)).isBefore(moment().format('YY/MM')),
   errorMessage: 'Expiration date has passed.',
 };

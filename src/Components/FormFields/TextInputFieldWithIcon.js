@@ -137,7 +137,7 @@ class TextInputFieldWithIcon extends React.Component {
     let styleTextfield = styles.textfield;
 
     const {formStore, name} = this.props.validation;
-    if (formStore.form.fields[name].error) {
+    if (formStore.getFormField(name).error) {
       styleTextfield = {...styles.textfield, ...styles.textfieldError};
     }
     if (this.state?.onFocus) {
@@ -174,6 +174,14 @@ class TextInputFieldWithIcon extends React.Component {
       };
     }
 
+    const getValue = () => {
+      if (validation) {
+        const currValue = validation.formStore.getFormField(validation.name, validation.multiName)?.value;
+        return typeof (currValue) === 'object' ? currValue.value?.toString() : currValue?.toString();
+      }
+      return value;
+    };
+
     return (
       <View style={{alignSelf: 'stretch'}}>
         <View style={{flexDirection: 'row'}}>
@@ -187,9 +195,7 @@ class TextInputFieldWithIcon extends React.Component {
               name={iconName}
               size={iconSize}
               color={
-                validation.formStore.form.fields[
-                  validation.name
-                ].value.toString() === ''
+                getValue() === ''
                   ? iconEmptyColor
                   : iconFillColor
               }
@@ -210,13 +216,7 @@ class TextInputFieldWithIcon extends React.Component {
             /* onContentSizeChange={e =>
               this.updateSize(e.nativeEvent.contentSize.width)
             } */
-            value={
-              validation
-                ? validation.formStore.form.fields[
-                  validation.name
-                ].value.toString()
-                : value
-            }
+            value={getValue()}
           />
           {this.toggleValueBtn}
 
@@ -226,9 +226,7 @@ class TextInputFieldWithIcon extends React.Component {
                 name={iconEndName}
                 size={iconSize}
                 color={
-                  validation.formStore.form.fields[
-                    validation.name
-                  ].value.toString() === ''
+                  getValue() === ''
                     ? iconEmptyColor
                     : iconFillColor
                 }
