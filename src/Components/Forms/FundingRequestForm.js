@@ -72,8 +72,10 @@ class FundingRequestForm extends React.Component {
           iconEmptyColor={colors.grey3}
           iconFillColor={colors.grey}
           viewStyle={{alignSelf: 'stretch'}}
-          label="Amount requested"
+          label="Funding amount requested"
+          placeholderText="0"
           infoLabel="Required"
+          infoMessage={`Leave as $0 if no funds are requested. Common balance:$${common.balance / 100}`}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="numeric"
