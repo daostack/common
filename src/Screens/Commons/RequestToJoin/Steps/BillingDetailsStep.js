@@ -15,8 +15,9 @@ import {CountrySelectField} from '../../../../Components/FormFields/CountrySelec
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
 import {testCard} from '~/Config';
+import {inject} from 'mobx-react';
 
-const BillingDetailsStep = ({navigation, route}) => {
+const BillingDetailsStep = ({navigation, route, userStore}) => {
   const {skipFirstStep, currCommon, currDaoId, refreshFeed, formStores} = route.params;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
   const personalContributionFormStore = formStores.personalContributionFormStore;
@@ -125,13 +126,12 @@ const BillingDetailsStep = ({navigation, route}) => {
             <TextInputField
               editable
               label="Full name"
-              value={testCard ? 'Thor Odinson' : ''}
+              value={testCard ? 'Thor Odinson' : userStore.userInfo.displayName}
               autoCapitalize="words"
               validation={{
                 name: BillingDetailsConstants.FullName,
                 formStore: billingDetailsFormStore,
                 validateRule: 'required|string',
-                displayName: 'full name',
               }}
             />
 
@@ -216,6 +216,7 @@ const BillingDetailsStep = ({navigation, route}) => {
 
 BillingDetailsStep.propTypes = {
   navigation: object,
+  userStore: object,
   route: shape({
     params: shape({
       skipFirstStep: bool,
@@ -233,4 +234,4 @@ BillingDetailsStep.propTypes = {
   }),
 };
 
-export default BillingDetailsStep;
+export default inject('userStore')(BillingDetailsStep);
