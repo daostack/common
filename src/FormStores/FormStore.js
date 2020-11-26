@@ -311,6 +311,7 @@ class FormStore {
 }
 
 decorate(FormStore, {
+  registerFormField: action,
   isFormValid: action,
   setError: action,
   fieldChanged: action,

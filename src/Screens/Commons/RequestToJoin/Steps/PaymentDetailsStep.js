@@ -229,7 +229,7 @@ const PaymentDetailsStep = ({
 
             <TextInputField
               label="Name on card"
-              value={testCard ? 'Tester Tester' : ''}
+              value={testCard ? 'Tester Tester' : userInfo.displayName}
               editable={true}
               autoCapitalize="words"
               validation={{
