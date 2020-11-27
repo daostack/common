@@ -114,6 +114,7 @@ class TextInputFieldWithIcon extends React.Component {
       placeholderText,
       label,
       infoLabel,
+      infoMessage,
       value,
       password,
       multiline,
@@ -245,7 +246,7 @@ class TextInputFieldWithIcon extends React.Component {
   };
 
   render() {
-    const {viewStyle} = this.props;
+    const {viewStyle, infoMessage} = this.props;
 
     if (this.placeFieldActionComponent) {
       return (
@@ -255,6 +256,8 @@ class TextInputFieldWithIcon extends React.Component {
             <View>{this.placeFieldActionComponent}</View>
           </View>
           {this.fieldValidation}
+          {infoMessage && (
+            <Text style={styles.infoMessage}>{infoMessage}</Text>)}
         </View>
       );
     } else {
@@ -262,6 +265,8 @@ class TextInputFieldWithIcon extends React.Component {
         <View style={{...viewStyle}}>
           {this.renderTextField()}
           {this.fieldValidation}
+          {infoMessage && (
+            <Text style={styles.infoMessage}>{infoMessage}</Text>)}
         </View>
       );
     }
@@ -294,6 +299,7 @@ TextInputFieldWithIcon.propTypes = {
   placeholderText: string,
   label: string,
   infoLabel: string,
+  infoMessage: string,
   password: bool,
   multiline: bool,
   numberOfLines: number,
@@ -352,6 +358,14 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     color: colors.paleblue,
     textAlign: 'right',
+    flex: 1,
+  },
+  infoMessage: {
+    ...font.primary.italic,
+    ...font.fontSize(2),
+    marginTop: 3,
+    letterSpacing: 0,
+    color: colors.greySubtitle,
     flex: 1,
   },
 });
