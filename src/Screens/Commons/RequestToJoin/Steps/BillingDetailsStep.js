@@ -132,6 +132,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
                 name: BillingDetailsConstants.FullName,
                 formStore: billingDetailsFormStore,
                 validateRule: 'required|string',
+                displayName: 'full name',
               }}
             />
 
