@@ -42,9 +42,24 @@ export const validateCCNumber = {
   errorMessage: 'Card number is invalid.',
 };
 
-const fixDate = (date) => {
-  const [month, year] = date.split('/');
-  return `${month}/01/${year}`;
+const isExpired = (date) => {
+  let [month, year] = date.split('/');
+  const [thisMonth, thisYear] = moment().format('MM/YYYY').split('/');
+  if (!year) {
+    return false;
+  }
+  if (year.length === 2) {
+    year = `20${year}`;
+
+    if (year < thisYear && year.length === 4) {
+      return false;
+    }
+    if (year === thisYear) {
+      return month >= thisMonth;
+    }
+    return true;
+  }
+  return false;
 };
 
 export const validDateFormat = {
@@ -60,11 +75,11 @@ export const validDateFormat = {
     }
     return !isNaN(month) && !isNaN(year);
   },
-  errorMessage: 'The date format should be "MM / YY".',
+  errorMessage: 'The date format should be "MM/YY".',
 };
 
 export const futureDate = {
   ruleName: VALIDATION_RULES.CARD_EXP_DATE,
-  validateFunc: (value, requirement, attribute) => !moment(fixDate(value)).isBefore(moment().format('YY/MM')),
+  validateFunc: (value, requirement, attribute) => isExpired(value), //!moment(fixDate(value)).isBefore(moment().format('YY/MM')),
   errorMessage: 'Expiration date has passed.',
 };
