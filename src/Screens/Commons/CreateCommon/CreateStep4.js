@@ -11,6 +11,7 @@ import {
   Animated,
   Linking,
   Alert,
+  Platform,
 } from 'react-native';
 import {StackActions} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
@@ -34,7 +35,7 @@ import {CommonActions} from '@react-navigation/native';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import {object} from 'prop-types';
 import DaoService from '~/Services/DaoService';
-import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import {request, PERMISSIONS} from 'react-native-permissions';
 import {
   colors,
   font,
@@ -63,7 +64,6 @@ const CreateStep4 = ({generalInfoFormStore,
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
-  const [permission, setPermission] = useState(RESULTS.DENIED);
 
   const form = {
     ...generalInfoFormStore.getChangedFormFieldsJson(),
@@ -87,7 +87,6 @@ const CreateStep4 = ({generalInfoFormStore,
     reviewFormStore.registerFormField(CreateCommonForm.AVATAR);
     reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
     reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, imageURI);
-    checkPermission();
   }, []);
 
   useEffect(() => {
@@ -133,22 +132,15 @@ const CreateStep4 = ({generalInfoFormStore,
         'To access camera you need to allow pemissions in settings',
         [
           {
-            text: 'OK',
-            onPress: () => Linking.openURL('app-settings:'),
+            text: 'Settings',
+            onPress: () => Linking.openSettings(),
           },
           {
             text: 'Cancel',
           },
-          {
-            cancelable: false,
-          },
-        ]);
-    })
-  );
-
-  const checkPermission = async () => (
-    check(PERMISSIONS.IOS.CAMERA).then((resp) => {
-      setPermission(resp);
+        ],
+        {cancelable: false}
+      );
     })
   );
 
@@ -162,12 +154,9 @@ const CreateStep4 = ({generalInfoFormStore,
       if (response.didCancel) {
         logger.log('User cancelled image picker');
       } else if (response.error) {
-        if (permission !== RESULTS.DENIED) {
-          await handlePermission();
-        } else {
-          setPermission(RESULTS.BLOCKED);
-        }
-        //Toast.error(response.error);
+        // only for ios because android handles this
+        Platform.OS === 'ios' && await handlePermission();
+        Toast.error(response.error);
         logger.log('ImagePicker Error: ', response.error);
       } else {
         Toast.loading('Uploading...');
