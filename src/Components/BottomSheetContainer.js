@@ -1,33 +1,46 @@
-import {View, StyleSheet, TouchableOpacity, BackHandler} from 'react-native';
+import {View, StyleSheet, Pressable, BackHandler} from 'react-native';
 import {observer, inject} from 'mobx-react';
 import React, {useRef, useEffect} from 'react';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors, text, layout} from '~/Theme';
-import Animated from 'react-native-reanimated';
+import Animated, {Easing} from 'react-native-reanimated';
 import {number, func, shape, object, bool} from 'prop-types';
 
 const BottomSheetContainer = ({bottomSheetStore, withoutHeader}) => {
   let ref = useRef();
   let fall = new Animated.Value(0);
+  const state = {
+    backgroundOpacity: new Animated.Value(0.3),
+  };
 
   useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', () => {
-      bottomSheetStore.hideBottomSheet();
-    });
-
+    const backAction = () => bottomSheetStore.hideBottomSheet();
+    BackHandler.addEventListener('hardwareBackPress', backAction);
     if (ref.current) {
       ref.current.snapTo(1);
     }
+
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', backAction);
   }, []);
 
   const closeBottomSheet = () => {
+    Animated.timing(state.backgroundOpacity, {
+      duration: 150,
+      toValue: 0,
+      easing: Easing.in(Easing.linear),
+    }).start();
     ref.current.snapTo(0);
   };
 
   const onClosed = () => {
     bottomSheetStore.hideBottomSheet();
   };
+
+  const animatedStyles = ({
+    opacity: state.backgroundOpacity,
+  });
 
   const renderSheetHeader = () => {
     if (bottomSheetStore) {
@@ -56,20 +69,13 @@ const BottomSheetContainer = ({bottomSheetStore, withoutHeader}) => {
     return <View style={contentStyle}>{bottomSheetStore.template}</View>;
   };
 
-  const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
+  const AnimatedTouchable = Animated.createAnimatedComponent(Pressable);
+
 
   return (
     <>
       <AnimatedTouchable
-        style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          flex: 1,
-          backgroundColor: '#000000',
-          alignItems: 'center',
-          opacity: Animated.sub(0.3, Animated.multiply(fall, 0.3)),
-        }}
+        style={[styles.backgroundView, animatedStyles]}
         onPress={closeBottomSheet}
       />
 
@@ -156,6 +162,14 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 2,
     backgroundColor: colors.paleblue,
+  },
+  backgroundView: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    flex: 1,
+    backgroundColor: '#000000',
+    alignItems: 'center',
   },
 });
 
