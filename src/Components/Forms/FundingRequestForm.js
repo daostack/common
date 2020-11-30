@@ -45,7 +45,7 @@ class FundingRequestForm extends React.Component {
     const balance = formatNumber(common.balance / 100);
     const balanceString = `${balance}${common.balance !== 0 ? ' or below $0' : ''}`;
 
-       return (
+    return (
       <View
         {...otherProps}
         style={{
