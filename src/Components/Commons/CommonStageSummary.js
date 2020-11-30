@@ -2,6 +2,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {layout, text, font} from '~/Theme';
 import {bool, shape, number} from 'prop-types';
+import {formatNumber} from '~/Util';
 
 const CommonStageSummary = ({
   isCommonCard,
@@ -36,11 +37,6 @@ const CommonStageSummary = ({
       </>
     );
   }; */
-
-  const formatNumber = (num) => Math.abs(num) > 999
-    ? Math.sign(num) * ((Math.abs(num) / 1000).toFixed(1)) + 'K'
-    : Math.sign(num) * Math.abs(num);
-
 
   const commonNumberBox = (numberComponent, title) => (
     <View

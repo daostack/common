@@ -8,6 +8,7 @@ import {layout, text, colors, font} from '~/Theme';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import logger from '~/Services/Logger';
 import {func, shape, object} from 'prop-types';
+import {formatNumber} from '~/Util';
 
 class FundingRequestForm extends React.Component {
   static FIELD_TITLE = 'title';
@@ -33,13 +34,6 @@ class FundingRequestForm extends React.Component {
     }
   };
 
-  fixBalance = (commonBalance) => {
-    const balance = commonBalance / 100;
-    return Math.abs(balance) > 999
-      ? Math.sign(balance) * ((Math.abs(balance) / 1000).toFixed(1)) + 'K'
-      : Math.sign(balance) * Math.abs(balance);
-  }
-
   render() {
     const {
       fundingRequestFormStore,
@@ -48,7 +42,7 @@ class FundingRequestForm extends React.Component {
     } = this.props;
 
     logger.log('common.balance ->', common.balance);
-    const balance = this.fixBalance(common.balance);
+    const balance = formatNumber(common.balance / 100);
 
     return (
       <View
