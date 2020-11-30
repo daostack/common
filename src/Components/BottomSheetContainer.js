@@ -12,13 +12,14 @@ const BottomSheetContainer = ({bottomSheetStore, withoutHeader}) => {
   let fall = new Animated.Value(0);
 
   useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', () => {
-      bottomSheetStore.hideBottomSheet();
-    });
-
+    const backAction = () => bottomSheetStore.hideBottomSheet()
+    BackHandler.addEventListener('hardwareBackPress', backAction);
     if (ref.current) {
       ref.current.snapTo(1);
     }
+
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction)
   }, []);
 
   const closeBottomSheet = () => {
