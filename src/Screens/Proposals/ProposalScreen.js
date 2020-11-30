@@ -476,6 +476,13 @@ const ProposalScreen = ({
     ],
   };
 
+  const availableFunds = () => {
+    const availableFunds = (commonBalance || proposalScreenInfo?.proposalDao?.balance || 0 ) / 100;
+    return Math.abs(availableFunds) > 999
+      ? Math.sign(availableFunds) * ((Math.abs(availableFunds) / 1000).toFixed(1)) + 'K'
+      : Math.sign(availableFunds) * Math.abs(availableFunds);
+  };
+
   const stickyTabBarStyle = {position: 'absolute', top: -80, width: '100%', paddingBottom: 5, zIndex: 1};
 
   return (
@@ -629,7 +636,7 @@ const ProposalScreen = ({
                   </View>
                   {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest && proposalScreenInfo?.proposalInfo.fundingRequest.amount > 0
                   && <Text
-                    style={text.smallBlackText}>{`Available funds: $${(commonBalance || proposalScreenInfo?.proposalDao?.balance || 0 ) / 100}`}</Text>
+                    style={text.smallBlackText}>{`Available funds: $${availableFunds()}`}</Text>
                   }
                 </View>
 
