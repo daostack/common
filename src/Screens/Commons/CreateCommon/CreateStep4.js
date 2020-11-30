@@ -35,7 +35,7 @@ import {CommonActions} from '@react-navigation/native';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import {object} from 'prop-types';
 import DaoService from '~/Services/DaoService';
-import {request, PERMISSIONS} from 'react-native-permissions';
+import {handlePermission} from '~Util/Permissions';
 import {
   colors,
   font,
@@ -124,25 +124,6 @@ const CreateStep4 = ({generalInfoFormStore,
     navigation.popToTop();
     navigation.dispatch(navigate);
   };
-
-  const handlePermission = async () => (
-    request(PERMISSIONS.IOS.CAMERA).then((resp) => {
-      // perhaps make this a bottom message(like the login from CommonList screen)?
-      Alert.alert('Permission required',
-        'To access camera you need to allow pemissions in settings',
-        [
-          {
-            text: 'Settings',
-            onPress: () => Linking.openSettings(),
-          },
-          {
-            text: 'Cancel',
-          },
-        ],
-        {cancelable: false}
-      );
-    })
-  );
 
   const pickImage = async (isAvatar) => {
     const options = {

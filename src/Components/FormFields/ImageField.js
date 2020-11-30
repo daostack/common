@@ -10,7 +10,7 @@ import layout from '~/Theme/layout';
 import text from '~/Theme/text';
 import {string, func, bool, shape, object, number} from 'prop-types';
 import logger from '../../Services/Logger';
-import {request, PERMISSIONS} from 'react-native-permissions';
+import {handlePermission} from '~Util/Permissions';
 
 class ImageField extends React.Component {
   fieldValidation = null;
@@ -53,25 +53,6 @@ class ImageField extends React.Component {
     }
   }
 
-  handlePermission = async () => (
-    request(PERMISSIONS.IOS.CAMERA).then((resp) => {
-      // perhaps make this a bottom message(like the login from CommonList screen)?
-      Alert.alert('Permission required',
-        'To access camera you need to allow pemissions in settings',
-        [
-          {
-            text: 'Settings',
-            onPress: () => Linking.openSettings(),
-          },
-          {
-            text: 'Cancel',
-          },
-        ],
-        {cancelable: false}
-      );
-    })
-  );
-
   pickImage = () => {
     const {title, quality, allowsEditing} = this.props;
     const options = {
@@ -84,7 +65,7 @@ class ImageField extends React.Component {
         logger.log('User cancelled image picker');
       } else if (response.error) {
         // only for ios because android handles this
-        Platform.OS === 'ios' && await this.handlePermission();
+        Platform.OS === 'ios' && await handlePermission();
         Toast.error(response.error);
         logger.log('ImagePicker Error: ', response.error);
       } else {
