@@ -20,7 +20,7 @@ import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import RequestStepActionButton from '../RequestStepActionButton';
 import logger from '~/Services/Logger';
 import {shape, func, object} from 'prop-types';
- import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 const {width} = Dimensions.get('window');
 
 const CreateStep1 = ({generalInfoFormStore, bottomSheetStore, navigation}) => {
@@ -53,7 +53,7 @@ const CreateStep1 = ({generalInfoFormStore, bottomSheetStore, navigation}) => {
         navigation.popToTop();
       },
     });
-  }
+  };
 
   return (
     <SafeAreaView
@@ -203,9 +203,9 @@ CreateStep1.propTypes = {
   }).isRequired,
   navigation: object,
   bottomSheetStore: shape({
-     showBottomSheet: func,
-     hideBottomSheet: func,
-   }),
+    showBottomSheet: func,
+    hideBottomSheet: func,
+  }),
 };
 
 export default inject(
