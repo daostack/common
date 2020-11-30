@@ -476,7 +476,7 @@ const ProposalScreen = ({
     ],
   };
 
-  const availableFunds = () => {
+  const getAvailableFunds = () => {
     const availableFunds = (commonBalance || proposalScreenInfo?.proposalDao?.balance || 0 ) / 100;
     return Math.abs(availableFunds) > 999
       ? Math.sign(availableFunds) * ((Math.abs(availableFunds) / 1000).toFixed(1)) + 'K'
@@ -636,7 +636,7 @@ const ProposalScreen = ({
                   </View>
                   {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest && proposalScreenInfo?.proposalInfo.fundingRequest.amount > 0
                   && <Text
-                    style={text.smallBlackText}>{`Available funds: $${availableFunds()}`}</Text>
+                    style={text.smallBlackText}>{`Available funds: $${getAvailableFunds()}`}</Text>
                   }
                 </View>
 
