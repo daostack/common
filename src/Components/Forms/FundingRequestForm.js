@@ -40,7 +40,8 @@ class FundingRequestForm extends React.Component {
       ...otherProps
     } = this.props;
 
-    logger.log('common.balance ->', common.balance);
+    const balanceString = `${common.balance / 100}${common.balance !== 0 ? ' or below $0' : ''}`;
+    logger.log('common.balance ->', balanceString);
     return (
       <View
         {...otherProps}
@@ -83,7 +84,7 @@ class FundingRequestForm extends React.Component {
             name: FundingRequestForm.FIELD_AMOUNT_REQUESTED,
             formStore: this.props.fundingRequestFormStore,
             validateRule: `required|numeric|max:${common.balance / 100}|min:0`,
-            customErrorMessage: `The amount requested cannot be greater than the Common balance, which is $${common.balance / 100} or below $0`,
+            customErrorMessage: `The amount requested cannot be greater than the Common balance, which is $${balanceString}`,
           }}
         />
 
