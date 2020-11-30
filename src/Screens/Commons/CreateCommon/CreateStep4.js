@@ -9,8 +9,6 @@ import {
   Dimensions,
   SafeAreaView,
   Animated,
-  Linking,
-  Alert,
   Platform,
 } from 'react-native';
 import {StackActions} from '@react-navigation/native';

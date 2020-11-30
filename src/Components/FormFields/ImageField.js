@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Image, View, StyleSheet, TouchableOpacity, Text, Platform, Alert, Linking} from 'react-native';
+import {Image, View, StyleSheet, TouchableOpacity, Text, Platform} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import ImagePicker from 'react-native-image-picker';
 import Toast from '~/Util/Toast';
