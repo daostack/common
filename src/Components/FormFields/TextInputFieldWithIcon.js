@@ -351,6 +351,7 @@ const styles = StyleSheet.create({
     ...font.fontSize(2),
     color: colors.slate,
     alignSelf: 'flex-start',
+    flex: 1,
   },
   infoLabel: {
     ...font.primary.italic,
@@ -358,7 +359,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     color: colors.paleblue,
     textAlign: 'right',
-    flex: 1,
   },
   infoMessage: {
     ...font.primary.italic,
