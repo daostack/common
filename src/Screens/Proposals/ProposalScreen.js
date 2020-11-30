@@ -548,7 +548,7 @@ const ProposalScreen = ({
                       isScreenHeader={true}
                       state={proposalScreenInfo?.proposalInfo?.state}
                       paymentStatus={paymentStatus}
-                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalCardInfo.proposalInfo?.countdownPeriod}
+                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalScreenInfo.proposalInfo?.countdownPeriod}
                     />
                     {proposalScreenInfo?.proposedUser && (
 
@@ -569,7 +569,7 @@ const ProposalScreen = ({
                       isScreenHeader={true}
                       state={proposalScreenInfo?.proposalInfo?.state}
                       paymentStatus={paymentStatus}
-                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalCardInfo.proposalInfo?.countdownPeriod}
+                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalScreenInfo.proposalInfo?.countdownPeriod}
                     />
 
                     {proposalScreenInfo?.proposedUser ? (
@@ -616,18 +616,18 @@ const ProposalScreen = ({
                   <View style={styles.requestedAmountContainer}>
                     <Text style={{...text.smallBlackText, ...layout.marginRightS}}>
                       {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
-                        'Requested amount' : 'Contribution:'}
+                        (proposalScreenInfo?.proposalInfo.fundingRequest.amount > 0 ? 'Requested amount' : 'No funding requested') : 'Contribution:'}
                     </Text>
                     <Text style={text.h2Black}>
-                      {`$${proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
-                        ? proposalScreenInfo?.proposalInfo.fundingRequest.amount / 100
-                        : proposalScreenInfo?.proposalInfo.join.funding / 100}`}
+                      {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+                        ? (proposalScreenInfo?.proposalInfo.fundingRequest.amount > 0 ? `$${proposalScreenInfo?.proposalInfo.fundingRequest.amount / 100}` : '')
+                        : `$${proposalScreenInfo?.proposalInfo.join.funding / 100}`}
                     </Text>
                     <Text style={{...text.smallBlackText, ...layout.marginRightS}}>{
                         proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join &&
                         proposalScreenInfo?.proposalDao?.metadata?.contributionType === 'monthly' && ' per month'}</Text>
                   </View>
-                  {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+                  {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest && proposalScreenInfo?.proposalInfo.fundingRequest.amount > 0
                   && <Text
                     style={text.smallBlackText}>{`Available funds: $${(commonBalance || proposalScreenInfo?.proposalDao?.balance || 0 ) / 100}`}</Text>
                   }

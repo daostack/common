@@ -173,6 +173,9 @@ workflows:
     - deploy-to-bitrise-io@1: {}
     before_run:
     - setup
+    meta:
+      bitrise.io:
+        stack: osx-xcode-12.2.x
   primary:
     steps:
     - android-build@0:
@@ -181,11 +184,12 @@ workflows:
         - variant: ProductionRelease
         - arguments: ''
         - project_location: $BITRISE_SOURCE_DIR/android
-    # This step fails consistenly on an obscure error having to do with react-native-fast-openpgp, need to fix!
-    # - xcode-build-for-simulator@0: {}
     - deploy-to-bitrise-io@1: {}
     before_run:
     - setup
+    meta:
+      bitrise.io:
+        stack: osx-xcode-12.2.x
   setup:
     steps:
     - activate-ssh-key@4:
@@ -210,6 +214,9 @@ workflows:
         - install_cocoapods_version: 1.9.3
         - verbose: 'false'
         - podfile_path: $source_root_path/ios/Podfile
+    meta:
+      bitrise.io:
+        stack: osx-xcode-12.2.x
   codepush:
     steps:
     - script@1:
@@ -320,6 +327,9 @@ workflows:
         - tag_message: Auto codepush
     before_run:
     - setup
+    meta:
+      bitrise.io:
+        stack: osx-xcode-12.2.x
   codepush-test:
     steps:
     - activate-ssh-key@4:
@@ -383,6 +393,9 @@ workflows:
         - tag_message: Auto codepush
         - tag: >-
             Android-CP-$CODEPUSH_TARGET_VERSION_PRODUCTION.$ANDROID_CODEPUSH_LABEL-build-$BITRISE_BUILD_NUMBER
+    meta:
+      bitrise.io:
+        stack: osx-xcode-12.2.x
   deploy-staging:
     description: >
       ## Configure Android part of the deploy workflow
@@ -589,6 +602,9 @@ workflows:
     - opts:
         is_expand: false
       BITRISE_SCHEME: common-stg
+    meta:
+      bitrise.io:
+        stack: osx-xcode-12.2.x
   setup-staging:
     steps:
     - activate-ssh-key@4:
@@ -653,6 +669,9 @@ workflows:
         - install_cocoapods_version: 1.9.3
         - verbose: 'false'
         - podfile_path: $source_root_path/ios/Podfile
+    meta:
+      bitrise.io:
+        stack: osx-xcode-12.2.x
   codepush-staging:
     steps:
     - script@1:
@@ -808,6 +827,9 @@ workflows:
     - opts:
         is_expand: false
       BITRISE_SCHEME: common-stg
+    meta:
+      bitrise.io:
+        stack: osx-xcode-12.2.x
   deploy-staging-iOS:
     description: >
       ## Configure Android part of the deploy workflow
@@ -994,6 +1016,9 @@ workflows:
     - opts:
         is_expand: false
       BITRISE_SCHEME: common-stg
+    meta:
+      bitrise.io:
+        stack: osx-xcode-12.2.x
 app:
   envs:
   - opts:

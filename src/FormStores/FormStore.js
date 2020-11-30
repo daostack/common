@@ -4,7 +4,7 @@ import en from 'validatorjs/src/lang/en';
 
 class FormStore {
   form;
-  multiFieldNames;
+  multiFieldsByValidatorKey;
 
   constructor() {
     // Hack for React Native - it's necessary to set a default language
@@ -23,7 +23,7 @@ class FormStore {
         isLoadingSubmit: false,
       },
     };
-    this.multiFieldNames = [];
+    this.multiFieldsByValidatorKey = {};
   }
 
   getFormField = (name, multiName) => {
@@ -79,16 +79,20 @@ class FormStore {
         currMultiValue[currMultiIndex][currMultiValueField] = currValue;
         currValue = currMultiValue;
       } else {
-
         if (!this.form.fields[multiName]) {
           this.form.fields[multiName] = [];
         }
         this.form.fields[multiName][name] = currValue;
         currValue = this.form.fields[multiName];
-
       }
-
       currName = multiName;
+
+      //store MultiName and Name per multi field validator key
+      const multiFieldValidatorKey = `${multiName}_${name}`;
+      this.multiFieldsByValidatorKey[multiFieldValidatorKey] = {
+        name,
+        multiName,
+      };
     }
 
     this.form.fields[currName] = currValue;
@@ -123,7 +127,15 @@ class FormStore {
     this.form.meta.isValid = validation.passes();
     if (!this.form.meta.isValid) {
       for (const key in validation.errors.errors) {
-        this.form.fields[key].error = validation.errors.first(key);
+        // Single field
+        if (this.form.fields[key]) {
+          this.form.fields[key].error = validation.errors.first(key);
+        }
+        // Multiple Field
+        else {
+          const multiNameInfo = this.multiFieldsByValidatorKey[key];
+          this.getFormField(multiNameInfo.name, multiNameInfo.multiName).error = validation.errors.first(key);
+        }
       }
     }
     return this.form.meta.isValid;

@@ -41,9 +41,11 @@ const MemberCard = ({
       return (
         <View style={styles.rightContainer}>
           <View style={{alignItems: 'flex-end'}}>
-            <Text style={text.h2Black}>
-              {`$${proposalInfo.funding / 100}`}
-            </Text>
+            {proposalInfo.funding > 0 &&
+              <Text style={text.h2Black}>
+                {`$${proposalInfo.funding / 100}`}
+              </Text>
+            }
 
             <Text style={{...text.runninglightGray, width: '100%'}}>
               {moment.unix(proposalInfo.createdAt.seconds).fromNow()}
