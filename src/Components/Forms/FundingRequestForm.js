@@ -8,6 +8,7 @@ import {layout, text, colors, font} from '~/Theme';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import logger from '~/Services/Logger';
 import {func, shape, object} from 'prop-types';
+import {formatNumber} from '~/Util';
 
 class FundingRequestForm extends React.Component {
   static FIELD_TITLE = 'title';
@@ -40,8 +41,10 @@ class FundingRequestForm extends React.Component {
       ...otherProps
     } = this.props;
 
-    const balanceString = `${common.balance / 100}${common.balance !== 0 ? ' or below $0' : ''}`;
-    logger.log('common.balance ->', balanceString);
+    logger.log('common.balance ->', common.balance);
+    const balance = formatNumber(common.balance / 100);
+    const balanceString = `${balance}${common.balance !== 0 ? ' or below $0' : ''}`;
+
     return (
       <View
         {...otherProps}
@@ -76,7 +79,7 @@ class FundingRequestForm extends React.Component {
           label="Funding amount requested"
           placeholderText="0"
           infoLabel="Required"
-          infoMessage={`Leave as $0 if no funds are requested. Common balance:$${common.balance / 100}`}
+          infoMessage={`Leave as $0 if no funds are requested. Common balance:$${balance}`}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="numeric"
