@@ -73,7 +73,7 @@ const PaymentDetailsStep = ({
         };
 
         const data = {
-          description: formData.about_me,
+          description: formData.intro,
           funding: formData.amount * 100,
           preAuthId: false,
           commonId: currDaoId,
