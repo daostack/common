@@ -55,6 +55,7 @@ class FundingRequestForm extends React.Component {
           placeholderText="Briefly describe your proposal"
           autoCapitalize="none"
           multiline={true}
+          maxLength={60}
           numberOfLines={2}
           autoCorrect={false}
           infoLabel="Required"
@@ -75,7 +76,7 @@ class FundingRequestForm extends React.Component {
           label="Funding amount requested"
           placeholderText="0"
           infoLabel="Required"
-          infoMessage={`Leave as $0 if no funds are requested. Common balance:$${common.balance / 100}`}
+          infoMessage={`Leave as $0 if no funds are requested. Common balance: $${common.balance / 100}`}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="numeric"
@@ -116,6 +117,7 @@ class FundingRequestForm extends React.Component {
           link
           allowsEditing={true}
           title="Title"
+          maxLength={30}
           validation={{
             name: FundingRequestForm.FIELD_LINKS,
             formStore: fundingRequestFormStore,

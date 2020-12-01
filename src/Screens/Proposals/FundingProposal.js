@@ -88,7 +88,7 @@ const FundingProposal = ({
           contentContainerStyle={layout.content}>
           <Text style={styles.title}>New proposal</Text>
           <Text style={styles.subtitle}>
-            Get funding to promote the Common's agenda. If your proposal is accepted you will be responsible to follow it through.
+            {'Proposals allow you to make decisions as a group.\nIf you choose to request funding and the proposal is accepted, you will be responsible to follow it through.'}
           </Text>
           <View style={styles.divider} />
           <FundingRequestForm common={common} fundingRequestFormStore={fundingRequestFormStore}/>

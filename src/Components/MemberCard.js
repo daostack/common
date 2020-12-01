@@ -47,10 +47,6 @@ const MemberCard = ({
               </Text>
             }
 
-            <Text style={{...text.runninglightGray, width: '100%'}}>
-              {moment.unix(proposalInfo.createdAt.seconds).fromNow()}
-            </Text>
-
             {/* Hide the time if the proposal is expired or new */}
             {(remainingSeconds > 0 && !LAUNCHED_STATES.includes(proposalInfo?.state)) && (
               // If the remaining time is more than 1 day show the date,
@@ -113,23 +109,11 @@ const MemberCard = ({
           style={styles.displayName}>
           {userInfo?.displayName || 'Unknown user'}
         </Text>
-
-        {
-          commonsCount ?
-            <Text
-              style={{
-                ...text.smallGreyText,
-                marginTop: 2,
-                textAlign: 'left',
-              }}>
-              {`Member in ${commonsCount || 0} Common${commonsCount !== 1 ? 's' : ''}`}
-            </Text>
-            :
-            <Placeholder Animation={Fade}>
-              <PlaceholderLine width={80} height={8} style={{marginTop: 4}} />
-            </Placeholder>
+        {proposalInfo &&
+          <Text style={{...text.runninglightGray, width: '100%'}}>
+            {moment.unix(proposalInfo.createdAt.seconds).fromNow()}
+          </Text>
         }
-
       </View>
       {renderRightContainer()}
     </View>
