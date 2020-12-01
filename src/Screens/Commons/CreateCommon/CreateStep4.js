@@ -9,6 +9,7 @@ import {
   Dimensions,
   SafeAreaView,
   Animated,
+  Platform,
 } from 'react-native';
 import {StackActions} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
@@ -32,6 +33,7 @@ import {CommonActions} from '@react-navigation/native';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import {object} from 'prop-types';
 import DaoService from '~/Services/DaoService';
+import {handlePermission} from '~Util/Permissions';
 import {
   colors,
   font,
@@ -121,16 +123,18 @@ const CreateStep4 = ({generalInfoFormStore,
     navigation.dispatch(navigate);
   };
 
-  const pickImage = (isAvatar) => {
+  const pickImage = async (isAvatar) => {
     const options = {
       title: (isAvatar && 'Select Avatar') || 'Select profile image',
       quality: 0.7,
       allowsEditing: isAvatar,
     };
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.showImagePicker(options, async (response) => {
       if (response.didCancel) {
         logger.log('User cancelled image picker');
       } else if (response.error) {
+        // only for ios because android handles this
+        Platform.OS === 'ios' && await handlePermission();
         Toast.error(response.error);
         logger.log('ImagePicker Error: ', response.error);
       } else {

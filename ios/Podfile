@@ -2,6 +2,17 @@ platform :ios, '10.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 
+# pre-install for permissions
+pre_install do |installer|
+  installer.pod_targets.each do |pod|
+    if pod.name.eql?('RNPermissions') || pod.name.start_with?('Permission-')
+      def pod.build_type;
+        Pod::BuildType.static_library
+      end
+    end
+  end
+end
+
 $RNFirebaseAsStaticFramework = true
 # -------------------------------------------------- #
 def reactnative
@@ -36,6 +47,8 @@ def reactnative
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
   pod 'react-native-fast-openpgp', :path => '../node_modules/react-native-fast-openpgp'
   pod 'RNFS', :path => '../node_modules/react-native-fs'
+  pod 'Permission-PhotoLibrary', :path => '../node_modules/react-native-permissions/ios/PhotoLibrary.podspec'
+  pod 'Permission-Camera', :path => '../node_modules/react-native-permissions/ios/Camera.podspec'
 end
 
 # -------------------------------------------------- #
