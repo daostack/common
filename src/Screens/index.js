@@ -15,6 +15,7 @@ export {default as BillingDetailsStep} from './Commons/RequestToJoin/Steps/Billi
 export {default as PaymentDetailsStep} from './Commons/RequestToJoin/Steps/PaymentDetailsStep';
 
 //User Profile
+export {default as MonthlyContributionsList} from './UserProfile/MonthlyContributionsList';
 export {default as CompleteAccount} from './UserProfile/CompleteAccount';
 export {default as UserProfile} from './UserProfile/UserProfile';
 export {default as CreateAccount} from './UserProfile/CreateAccount';

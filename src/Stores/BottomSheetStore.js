@@ -10,6 +10,7 @@ import {
   UnsavedChanges,
   SortProposals,
   PublishCommon,
+  CancelSubscription,
   PaymentFailed,
 } from '~/Screens/BottomSheetScreens';
 
@@ -55,6 +56,10 @@ export const BOTTOM_SHEET_TEMPLATES = {
   PUBLISH_COMMON: {
     topSnap: 500,
     content: PublishCommon,
+  },
+  CANCEL_SUBSCRIPTION: {
+    topSnap: 450,
+    content: CancelSubscription,
   },
   PAYMENT_FAILED: {
     topSnap: 500,
