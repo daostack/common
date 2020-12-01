@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, Image, ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {inject, observer} from 'mobx-react';
 import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
 
 import {ContributionListItem} from '../../Components';
-import {colors} from '../../Theme';
+import {colors, text} from '../../Theme';
 import {db} from '../../Firebase';
+import {fontSize} from '../../Theme/font';
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -20,6 +21,22 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.grey4,
   },
+
+  container: {
+    alignItems: 'center',
+  },
+
+  title: {
+    ...text.h2Black,
+  },
+
+  subtitle: {
+    ...fontSize(2),
+    fontWeight: 'normal',
+    textAlign: 'center',
+    maxWidth: Dimensions.get('window').width * 0.7,
+    marginTop: 10,
+  },
 });
 
 
@@ -27,16 +44,14 @@ const MonthlyContributionsList = ({userStore}) => {
   const [subs, setSubs] = React.useState(null);
 
   React.useEffect(() => {
-    const effect = async () => {
+    (async () => {
       await db
         .collection('subscriptions')
         .where('userId', '==', userStore.userInfo.uid)
         .onSnapshot((snapshot) => {
           setSubs(snapshot.docs.map((doc) => doc.data()));
         });
-    };
-
-    effect();
+    })();
   }, []);
 
 
@@ -62,7 +77,17 @@ const MonthlyContributionsList = ({userStore}) => {
       )}
 
       {(subs?.length === 0) && (
-        <Text>No subs</Text>
+        <View style={styles.container}>
+          <Image source={require('../../Assets/Subscriptions/funds.png')} />
+
+          <Text style={styles.title}>
+            No Monthly Contributions
+          </Text>
+
+          <Text style={styles.subtitle}>
+            You don't have any active monthly contributions yet.
+          </Text>
+        </View>
       )}
 
       {(!!subs?.length) && (
