@@ -24,7 +24,8 @@ class TextInputFieldWithIcon extends React.Component {
 
     this.state = {
       onFocus: false,
-      dynamicWidth: 30,
+      dynamicWidth: 50,
+      prevTextLength: 0,
     };
 
     const {
@@ -90,6 +91,12 @@ class TextInputFieldWithIcon extends React.Component {
       formStore.fieldChanged(name, currText, false, multiName);
     }
     this.props.onChangeText && this.props.onChangeText(currText);
+    // only update size when text length is increasing
+    if (this.state.prevTextLength < currText.length && currText.length > 3) {
+      this.updateSize(10);
+    } else {
+      this.setState({prevTextLength: currText.length});
+    }
   };
 
   onFocus = (e) => {
@@ -105,8 +112,13 @@ class TextInputFieldWithIcon extends React.Component {
     this.props.onBlur && this.props.onBlur(e);
   };
 
-  updateSize = (width) => {
-    this.setState({dynamicWidth: width});
+  updateSize = (value) => {
+    const width = this.state.dynamicWidth + value;
+    const newLength = this.state.prevTextLength + (value > 0 ? 1 : -1);
+    this.setState({
+      dynamicWidth: width > 50 ? width : 50, // don't decrease width below the initial 50 width
+      prevTextLength: newLength,
+    });
   };
 
   renderTextField() {
@@ -153,7 +165,7 @@ class TextInputFieldWithIcon extends React.Component {
         ...{height: 100, position: 'relative'},
       };
       fieldStyle = {
-        width: 20 + this.state.dynamicWidth,
+        width: this.state.dynamicWidth,
       };
     } else {
       fieldStyle = {flex: 1};
@@ -214,9 +226,11 @@ class TextInputFieldWithIcon extends React.Component {
             onFocus={this.onFocus}
             onBlur={this.onBlur}
             secureTextEntry={this.state.showPassword}
-            /* onContentSizeChange={e =>
-              this.updateSize(e.nativeEvent.contentSize.width)
-            } */
+            onKeyPress={({nativeEvent}) => {
+              if (nativeEvent.key === 'Backspace') {
+                this.updateSize(-10);
+              }
+            }}
             value={getValue()}
           />
           {this.toggleValueBtn}
