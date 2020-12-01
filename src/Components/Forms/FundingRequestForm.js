@@ -80,7 +80,7 @@ class FundingRequestForm extends React.Component {
           label="Funding amount requested"
           placeholderText="0"
           infoLabel="Required"
-          infoMessage={`Leave as $0 if no funds are requested. Common balance: $${common.balance / 100}`}
+          infoMessage={`Leave as $0 if no funds are requested. Common balance: $${balance}`}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="numeric"
