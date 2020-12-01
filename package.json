@@ -79,6 +79,7 @@
     "react-native-navbar": "^2.1.0",
     "react-native-parallax-scroll-view": "^0.21.3",
     "react-native-pdf": "^6.1.2",
+    "react-native-permissions": "2.0.2",
     "react-native-progress": "^4.1.2",
     "react-native-read-more-text": "^1.1.2",
     "react-native-reanimated": "^1.7.0",

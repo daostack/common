@@ -8,6 +8,7 @@ import {layout, text, colors, font} from '~/Theme';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import logger from '~/Services/Logger';
 import {func, shape, object} from 'prop-types';
+import {formatNumber} from '~/Util';
 
 class FundingRequestForm extends React.Component {
   static FIELD_TITLE = 'title';
@@ -41,6 +42,9 @@ class FundingRequestForm extends React.Component {
     } = this.props;
 
     logger.log('common.balance ->', common.balance);
+    const balance = formatNumber(common.balance / 100);
+    const balanceString = `${balance}${common.balance !== 0 ? ' or below $0' : ''}`;
+
     return (
       <View
         {...otherProps}
@@ -84,7 +88,7 @@ class FundingRequestForm extends React.Component {
             name: FundingRequestForm.FIELD_AMOUNT_REQUESTED,
             formStore: this.props.fundingRequestFormStore,
             validateRule: `required|numeric|max:${common.balance / 100}|min:0`,
-            customErrorMessage: `The amount requested cannot be greater than the Common balance, which is $${common.balance / 100} or below $0`,
+            customErrorMessage: `The amount requested cannot be greater than the Common balance, which is $${balanceString}`,
           }}
         />
 
