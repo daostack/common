@@ -111,7 +111,7 @@ const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep
               multiline={true}
               numberOfLines={6}
               validation={{
-                name: RequestToJoinForm.FIELD_ABOUT_ME,
+                name: RequestToJoinForm.FIELD_INTRO,
                 formStore: introduceYourselfFormStore,
                 validateRule: 'required|string',
               }}

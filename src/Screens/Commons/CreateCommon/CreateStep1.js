@@ -20,9 +20,10 @@ import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import RequestStepActionButton from '../RequestStepActionButton';
 import logger from '~/Services/Logger';
 import {shape, func, object} from 'prop-types';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 const {width} = Dimensions.get('window');
 
-const CreateStep1 = ({generalInfoFormStore, navigation}) => {
+const CreateStep1 = ({generalInfoFormStore, bottomSheetStore, navigation}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
 
@@ -43,6 +44,17 @@ const CreateStep1 = ({generalInfoFormStore, navigation}) => {
     }
   };
 
+  const closeDialog = () => {
+    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
+      navigation: navigation,
+      onContinueEditing: () => bottomSheetStore.hideBottomSheet(),
+      onLeaveWithoutSaving: () => {
+        bottomSheetStore.hideBottomSheet();
+        navigation.popToTop();
+      },
+    });
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -58,7 +70,7 @@ const CreateStep1 = ({generalInfoFormStore, navigation}) => {
         rightButton={
           <TouchableOpacity
             style={{justifyContent: 'center'}}
-            onPress={() => navigation.pop()}>
+            onPress={closeDialog}>
             <Icon
               name="close"
               size={18}
@@ -190,6 +202,10 @@ CreateStep1.propTypes = {
     isFormActionEnabled: func,
   }).isRequired,
   navigation: object,
+  bottomSheetStore: shape({
+    showBottomSheet: func,
+    hideBottomSheet: func,
+  }),
 };
 
 export default inject(
@@ -197,4 +213,5 @@ export default inject(
   'fundingFormStore',
   'agendaFormStore',
   'reviewFormStore',
+  'bottomSheetStore',
 )(observer(CreateStep1));

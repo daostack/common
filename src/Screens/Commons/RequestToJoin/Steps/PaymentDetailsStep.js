@@ -73,7 +73,7 @@ const PaymentDetailsStep = ({
         };
 
         const data = {
-          description: formData.about_me,
+          description: formData.intro,
           funding: formData.amount * 100,
           preAuthId: false,
           commonId: currDaoId,
@@ -212,7 +212,7 @@ const PaymentDetailsStep = ({
             <RequestStepHeaderTitle title="Payment Details" subtitle={subtitle} />
             <TextInputField
               label="Credit card number"
-              value={testCard ? '4007410000000006' : ''}
+              value={testCard ? '4007410000000006' : paymentFormStore.getFormField(RequestToJoinForm.FIELD_CARD_NUMBER)?.value}
               editable={true}
               keyboardType={'number-pad'}
               validation={{
@@ -229,7 +229,7 @@ const PaymentDetailsStep = ({
 
             <TextInputField
               label="Name on card"
-              value={testCard ? 'Tester Tester' : ''}
+              value={testCard ? 'Tester Tester' : paymentFormStore.getFormField(RequestToJoinForm.FIELD_CARD_NAME)?.value || userInfo.displayName}
               editable={true}
               autoCapitalize="words"
               validation={{
@@ -258,7 +258,7 @@ const PaymentDetailsStep = ({
                   width: '45%',
                 }}
                 label="Expiration date"
-                value={testCard ? moment().format('MM/YY') : ''}
+                value={testCard ? moment().format('MM/YY') : paymentFormStore.getFormField(RequestToJoinForm.FIELD_EXPIRATION_DATE)?.value}
                 placeholderText="MM / YY"
                 editable={true}
                 format={(date) => formatDate(date)}

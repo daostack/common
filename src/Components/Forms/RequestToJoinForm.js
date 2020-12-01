@@ -5,7 +5,7 @@ import {object} from 'prop-types';
 
 class RequestToJoinForm extends React.Component {
   static FIELD_IMAGE = 'image';
-  static FIELD_ABOUT_ME = 'about_me';
+  static FIELD_INTRO = 'intro';
   static FIELD_LINKS = 'links';
   static FIELD_AMOUNT = 'amount';
 

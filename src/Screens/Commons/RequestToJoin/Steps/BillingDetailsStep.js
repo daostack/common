@@ -15,8 +15,9 @@ import {CountrySelectField} from '../../../../Components/FormFields/CountrySelec
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
 import {testCard} from '~/Config';
+import {inject} from 'mobx-react';
 
-const BillingDetailsStep = ({navigation, route}) => {
+const BillingDetailsStep = ({navigation, route, userStore}) => {
   const {skipFirstStep, currCommon, currDaoId, refreshFeed, formStores} = route.params;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
   const personalContributionFormStore = formStores.personalContributionFormStore;
@@ -125,7 +126,7 @@ const BillingDetailsStep = ({navigation, route}) => {
             <TextInputField
               editable
               label="Full name"
-              value={testCard ? 'Thor Odinson' : ''}
+              value={testCard ? 'Thor Odinson' : billingDetailsFormStore.getFormField(BillingDetailsConstants.City)?.value || userStore.userInfo.displayName}
               autoCapitalize="words"
               validation={{
                 name: BillingDetailsConstants.FullName,
@@ -138,7 +139,7 @@ const BillingDetailsStep = ({navigation, route}) => {
             <TextInputField
               editable
               label="City"
-              value={testCard ? 'Metropolis' : ''}
+              value={testCard ? 'Metropolis' : billingDetailsFormStore.getFormField(BillingDetailsConstants.City)?.value}
               autoCapitalize="words"
               validation={{
                 name: BillingDetailsConstants.City,
@@ -164,7 +165,7 @@ const BillingDetailsStep = ({navigation, route}) => {
             <TextInputField
               editable
               label="Address"
-              value={testCard ? '221B Baker Street' : ''}
+              value={testCard ? '221B Baker Street' : billingDetailsFormStore.getFormField(BillingDetailsConstants.Address)?.value}
               autoCapitalize="words"
               validation={{
                 name: BillingDetailsConstants.Address,
@@ -180,7 +181,7 @@ const BillingDetailsStep = ({navigation, route}) => {
                 label="District"
                 maxLength={2}
                 autoCapitalize="characters"
-                value={testCard ? 'TX' : ''}
+                value={testCard ? 'TX' : billingDetailsFormStore.getFormField(BillingDetailsConstants.District)?.value}
                 validation={{
                   name: BillingDetailsConstants.District,
                   formStore: billingDetailsFormStore,
@@ -193,7 +194,7 @@ const BillingDetailsStep = ({navigation, route}) => {
             <TextInputField
               editable
               label="Postal Code"
-              value={testCard ? '31415PI' : ''}
+              value={testCard ? '31415PI' : billingDetailsFormStore.getFormField(BillingDetailsConstants.PostalCode)?.value}
               validation={{
                 name: BillingDetailsConstants.PostalCode,
                 formStore: billingDetailsFormStore,
@@ -216,6 +217,7 @@ const BillingDetailsStep = ({navigation, route}) => {
 
 BillingDetailsStep.propTypes = {
   navigation: object,
+  userStore: object,
   route: shape({
     params: shape({
       skipFirstStep: bool,
@@ -233,4 +235,4 @@ BillingDetailsStep.propTypes = {
   }),
 };
 
-export default BillingDetailsStep;
+export default inject('userStore')(BillingDetailsStep);
