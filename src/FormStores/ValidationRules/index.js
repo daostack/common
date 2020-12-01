@@ -55,9 +55,9 @@ const isExpired = (date) => {
       return false;
     }
     if (year === thisYear) {
-      return month >= thisMonth;
+      return month >= thisMonth && (month > 0 && month <= 12);
     }
-    return true;
+    return month > 0 && month <= 12;
   }
   return false;
 };
@@ -80,6 +80,6 @@ export const validDateFormat = {
 
 export const futureDate = {
   ruleName: VALIDATION_RULES.CARD_EXP_DATE,
-  validateFunc: (value, requirement, attribute) => isExpired(value), //!moment(fixDate(value)).isBefore(moment().format('YY/MM')),
-  errorMessage: 'Expiration date has passed.',
+  validateFunc: (value, requirement, attribute) => isExpired(value),
+  errorMessage: 'Invalid expiration date.',
 };
