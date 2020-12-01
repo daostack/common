@@ -115,6 +115,16 @@ export default class ProposalService {
       });
   }
 
+  async subscribeToProposalDiscussionsCount(proposalId, callback) {
+    let proposalDiscusstionMessages = db
+      .collection(DB_COLLECTIONS.discussionMessages)
+      .where('discussionId', '==', proposalId);
+
+    return proposalDiscusstionMessages.onSnapshot((snapshot) => {
+      callback(snapshot.docs.length);
+    }, (error) => Toast.error(error));
+  }
+
   async getProposalDiscussionsCount(proposalId) {
     return db
       .collection(DB_COLLECTIONS.discussionMessages)

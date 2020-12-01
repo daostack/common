@@ -24,8 +24,15 @@ const {width} = Dimensions.get('window');
 
 const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipRequest, isSwiper, isMember, commonInfo}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
+  const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
+  const [proposalVotes, setProposalVotes] = useState({
+    votesFor: 0,
+    votesAgainst: 0,
+  });
   const [paymentState, setPaymentState] = useState('pending');
   useEffect(() => {
+
+    let unsubscribeProposalDiscussionsCount = null;
 
     const getProposalInfo = async (currProposalId) => {
       try {
@@ -44,15 +51,22 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
           funding = currProposalInfo.fundingRequest.amount;
         }
 
-        const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(currProposalId);
-
         const currProposedUser = await UserService.getInstance().getUserById(
           proposedMemberId,
         );
 
         setProposalCardInfo({
           proposedUser: currProposedUser,
-          proposalInfo: {...currProposalInfo, ...{funding: funding}, discussionsCount},
+          proposalInfo: {...currProposalInfo, ...{funding: funding}},
+        });
+
+        unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(currProposalId, (discussionsCount) => {
+          console.log("discussionsCount 1 -> ", discussionsCount);
+          console.log("proposalCardInfo 1 -> ", proposalCardInfo);
+          setProposalCardInfo({
+            proposedUser: proposalCardInfo.currProposedUser,
+            proposalInfo: {...proposalCardInfo.proposalInfo, discussionsCount},
+          });
         });
 
       } catch (error) {
@@ -65,6 +79,12 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
       getProposalInfo(proposalId);
       getPaymentStatus();
     }
+
+    return () => {
+      if (unsubscribeProposalDiscussionsCount) {
+        unsubscribeProposalDiscussionsCount();
+      }
+    };
   }, [proposalId]);
 
   const getPaymentStatus = () => {
@@ -79,33 +99,34 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
   };
 
   useEffect(() => {
+    let unsubscribeProposalDiscussionsCount = null;
     const loadProposalInfo = async (currProposalInfo) => {
       try {
         //RequestToJoin proposal
-        let proposedMemberUser = null;
+        let proposedMemberUser = await UserService.getInstance().getUserById(
+          currProposalInfo.proposerId
+        );
         let funding = null;
-        // TODO: NoBlockchain -> proposerId is used both with join and funding request -> refactor bellow lines
+
         if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
-          proposedMemberUser = await UserService.getInstance().getUserById(
-            currProposalInfo.proposerId
-          );
           funding = currProposalInfo.join.funding;
         }
         //FundingRequest proposal
         else {
-          proposedMemberUser = await UserService.getInstance().getUserById(
-            currProposalInfo.proposerId,
-          );
           funding = currProposalInfo.fundingRequest.amount;
         }
 
-        const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(currProposalInfo.id);
-
-        const allProposalInfo = {...currProposalInfo, ...{funding: funding}, discussionsCount};
+        const allProposalInfo = {...currProposalInfo, ...{funding: funding}};
 
         setProposalCardInfo({
           proposedUser: proposedMemberUser,
           proposalInfo: allProposalInfo,
+        });
+
+        unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(currProposalInfo.id, (discussionsCount) => {
+          console.log("discussionsCount 2 -> ", discussionsCount);
+          console.log("proposalCardInfo 2 -> ", proposalCardInfo);
+          setProposalDiscussionCount(discussionsCount);
         });
 
       } catch (error) {
@@ -117,6 +138,12 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
     if (data) {
       loadProposalInfo(data);
     }
+
+    return () => {
+      if (unsubscribeProposalDiscussionsCount) {
+        unsubscribeProposalDiscussionsCount();
+      }
+    };
   }, [data]);
 
   const cardWidth = () => {
@@ -174,17 +201,17 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
           <View style={{...layout.flexRow}}>
             <ProposalApprovalTag
               iconName="approved"
-              value={Number(proposalCardInfo.proposalInfo?.votesFor || 0)}
+              value={Number(proposalVotes.votesFor)}
               isMarked={true}
             />
             <ProposalApprovalTag
               iconName="declined"
-              value={Number(proposalCardInfo.proposalInfo?.votesAgainst || 0)}
+              value={Number(proposalVotes.votesAgainst)}
               isMarked={false}
             />
             <ProposalApprovalTag
               iconName="discussion"
-              value={Number(proposalCardInfo.proposalInfo?.discussionsCount || 0)}
+              value={Number(proposalDiscussionCount)}
               isMarked={false}
             />
           </View>
