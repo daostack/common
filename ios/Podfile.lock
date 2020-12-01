@@ -599,28 +599,20 @@ PODS:
     - React-cxxreact (= 0.63.2)
     - React-jsi (= 0.63.2)
   - React-jsinspector (0.63.2)
-  - react-native-blur (0.8.0):
-    - React
   - react-native-config (1.2.1):
     - React
-  - react-native-document-picker (3.5.3):
+  - react-native-document-picker (4.1.0):
+    - React-Core
+  - react-native-fast-openpgp (1.6.0):
     - React
-  - react-native-fast-openpgp (1.5.3):
-    - React
-  - react-native-image-picker (2.3.1):
-    - React
-  - react-native-image-resizer (1.2.3):
-    - React
-  - react-native-netinfo (5.9.6):
-    - React
-  - react-native-pdf (6.2.0):
-    - React
-  - react-native-safe-area-context (0.7.3):
-    - React
-  - react-native-version-number (0.3.6):
-    - React
-  - react-native-webview (9.4.0):
-    - React
+  - react-native-image-picker (2.3.4):
+    - React-Core
+  - react-native-netinfo (5.9.9):
+    - React-Core
+  - react-native-pdf (6.2.2):
+    - React-Core
+  - react-native-webview (11.0.0):
+    - React-Core
   - React-RCTActionSheet (0.63.2):
     - React-Core/RCTActionSheetHeaders (= 0.63.2)
   - React-RCTAnimation (0.63.2):
@@ -681,7 +673,7 @@ PODS:
     - React-Core (= 0.63.2)
     - React-cxxreact (= 0.63.2)
     - React-jsi (= 0.63.2)
-  - ReactNativeKeyboardManager (4.0.13-16):
+  - ReactNativeKeyboardManager (4.0.13-17):
     - IQKeyboardManager (= 4.0.13)
     - React
     - React-RCTText
@@ -695,12 +687,12 @@ PODS:
     - React
   - RNCPicker (1.8.0):
     - React-Core
-  - RNDateTimePicker (2.5.0):
-    - React
-  - RNFastImage (8.1.5):
-    - React
-    - SDWebImage (~> 5.0)
-    - SDWebImageWebPCoder (~> 0.4.1)
+  - RNDateTimePicker (3.0.6):
+    - React-Core
+  - RNFastImage (8.3.4):
+    - React-Core
+    - SDWebImage (~> 5.8)
+    - SDWebImageWebPCoder (~> 0.6.1)
   - RNFBAnalytics (7.6.8):
     - Firebase/Analytics (~> 6.34.0)
     - React-Core
@@ -733,8 +725,6 @@ PODS:
     - Firebase/Storage (~> 6.34.0)
     - React-Core
     - RNFBApp
-  - RNFS (2.16.6):
-    - React
   - RNGestureHandler (1.6.1):
     - React
   - RNGoogleSignin (4.0.3):
@@ -744,18 +734,16 @@ PODS:
     - React-Core
   - RNReanimated (1.9.0):
     - React
-  - RNScreens (2.9.0):
-    - React
-  - RNShare (3.6.0):
-    - React
-  - RNSVG (12.1.0):
-    - React
+  - RNScreens (2.15.0):
+    - React-Core
+  - RNShare (4.1.0):
+    - React-Core
   - SDWebImage (5.9.4):
     - SDWebImage/Core (= 5.9.4)
   - SDWebImage/Core (5.9.4)
-  - SDWebImageWebPCoder (0.4.1):
+  - SDWebImageWebPCoder (0.6.1):
     - libwebp (~> 1.0)
-    - SDWebImage/Core (~> 5.5)
+    - SDWebImage/Core (~> 5.7)
   - secp256k1.c (0.1.2)
   - SSZipArchive (2.2.3)
   - Starscream (3.1.1)
@@ -787,16 +775,12 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
-  - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-config (from `../node_modules/react-native-config`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-fast-openpgp (from `../node_modules/react-native-fast-openpgp`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
-  - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-pdf (from `../node_modules/react-native-pdf`)
-  - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
-  - react-native-version-number (from `../node_modules/react-native-version-number`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -824,14 +808,12 @@ DEPENDENCIES:
   - "RNFBFirestore (from `../node_modules/@react-native-firebase/firestore`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - "RNFBStorage (from `../node_modules/@react-native-firebase/storage`)"
-  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - "RNGoogleSignin (from `../node_modules/@react-native-community/google-signin`)"
   - RNLocalize (from `../node_modules/react-native-localize`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNShare (from `../node_modules/react-native-share`)
-  - RNSVG (from `../node_modules/react-native-svg`)
   - web3swift (from `https://github.com/matter-labs/web3swift`, branch `master`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -912,8 +894,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
-  react-native-blur:
-    :path: "../node_modules/@react-native-community/blur"
   react-native-config:
     :path: "../node_modules/react-native-config"
   react-native-document-picker:
@@ -922,16 +902,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fast-openpgp"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
-  react-native-image-resizer:
-    :path: "../node_modules/react-native-image-resizer"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-pdf:
     :path: "../node_modules/react-native-pdf"
-  react-native-safe-area-context:
-    :path: "../node_modules/react-native-safe-area-context"
-  react-native-version-number:
-    :path: "../node_modules/react-native-version-number"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-RCTActionSheet:
@@ -986,8 +960,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/messaging"
   RNFBStorage:
     :path: "../node_modules/@react-native-firebase/storage"
-  RNFS:
-    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNGoogleSignin:
@@ -1000,8 +972,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNShare:
     :path: "../node_modules/react-native-share"
-  RNSVG:
-    :path: "../node_modules/react-native-svg"
   web3swift:
     :branch: master
     :git: https://github.com/matter-labs/web3swift
@@ -1010,7 +980,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   web3swift:
-    :commit: 84c92500e7c350f56025c8006977d2806bd6ce69
+    :commit: a4e4985c9ef97892ba56d78e9249f2485b262d1b
     :git: https://github.com/matter-labs/web3swift
 
 SPEC CHECKSUMS:
@@ -1066,17 +1036,13 @@ SPEC CHECKSUMS:
   React-jsi: 54245e1d5f4b690dec614a73a3795964eeef13a8
   React-jsiexecutor: 8ca588cc921e70590820ce72b8789b02c67cce38
   React-jsinspector: b14e62ebe7a66e9231e9581279909f2fc3db6606
-  react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-config: ae9ef3bdbf539f2d14ebaf4ebeba508f766e066a
-  react-native-document-picker: 825552b827012282baf4b7cbf119d3b37a280c90
-  react-native-fast-openpgp: 143b3dde8e6f520e5cb0b12fa54550d06e85406e
-  react-native-image-picker: 6a850c41f57f0848d918c2a77aedd7aa272ffa30
-  react-native-image-resizer: 2f1577efa3bc762597681f530c8e8d05ce0ceeb3
-  react-native-netinfo: 38a1e0b3e89b48e4b5833ed475d8df5f049f6f90
-  react-native-pdf: 909cd849e6a806731b2135263189fea39494b55e
-  react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
-  react-native-version-number: b415bbec6a13f2df62bf978e85bc0d699462f37f
-  react-native-webview: cf5527893252b3b036eea024a1da6996f7344c74
+  react-native-document-picker: d870e0a41510b241d5b764e7a2b5ccf129af7967
+  react-native-fast-openpgp: 25dfb949628aa8cc9f504d3002f6545ffc7c3bb4
+  react-native-image-picker: c6d75c4ab2cf46f9289f341242b219cb3c1180d3
+  react-native-netinfo: 0212ce8604e88edf686f1481b925b17a42a52449
+  react-native-pdf: 4b5a9e4465a6a3b399e91dc4838eb44ddf716d1f
+  react-native-webview: 6b7950628616679d81bdd75747e50cf6de9b5a5f
   React-RCTActionSheet: 910163b6b09685a35c4ebbc52b66d1bfbbe39fc5
   React-RCTAnimation: 9a883bbe1e9d2e158d4fb53765ed64c8dc2200c6
   React-RCTBlob: 39cf0ece1927996c4466510e25d2105f67010e13
@@ -1087,14 +1053,14 @@ SPEC CHECKSUMS:
   React-RCTText: 1b6773e776e4b33f90468c20fe3b16ca3e224bb8
   React-RCTVibration: 4d2e726957f4087449739b595f107c0d4b6c2d2d
   ReactCommon: a0a1edbebcac5e91338371b72ffc66aa822792ce
-  ReactNativeKeyboardManager: 6c42da02c08b7eb16440f9fdc1c78f776a11cdca
+  ReactNativeKeyboardManager: d0e285b82ef60a861d71834d8e996fbc09607a67
   rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
   RNAppleAuthentication: 473b2c076f1a48a537610580a168c1fb6d0a90c6
   RNCAsyncStorage: 2a692bcb9b69b76a2f1a95f33db057129700af64
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNCPicker: a724b3aa22b182697c190a8fd7b060b66119e136
-  RNDateTimePicker: a8000390e7a4fe23d9f36492ded9282640721c82
-  RNFastImage: 35ae972d6727c84ee3f5c6897e07f84d0a3445e9
+  RNDateTimePicker: 120f8d08b19dd50c0308d30a07c1982e4618e9ad
+  RNFastImage: d4870d58f5936111c56218dbd7fcfc18e65b58ff
   RNFBAnalytics: 0c9ed42509d543f795fcd283d82eae3c18abcd12
   RNFBApp: d15c1413e06ec435c3357726cf236b7bb8b67e0a
   RNFBAuth: 9753af571063cd4367f71b9ff6af6828119a6c69
@@ -1103,22 +1069,20 @@ SPEC CHECKSUMS:
   RNFBFirestore: c820dfae0f549bff3fae54b816a0b7c4400bd1db
   RNFBMessaging: ce593f8b4866b72180c353e1d46e3e081e171420
   RNFBStorage: f12bad36261d7c0e40727b64c7a0d4c14c27be97
-  RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
   RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
   RNGoogleSignin: ccf71ee4b6cfd324fd788a41e457e2043838c0d9
   RNLocalize: 452d4118e338dee1e5ca3fac4d5a11a4ab26a46a
   RNReanimated: b5ccb50650ba06f6e749c7c329a1bc3ae0c88b43
-  RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
-  RNShare: 953e60d1a179b214ae50b22a1b1f2e50ec549e6d
-  RNSVG: ce9d996113475209013317e48b05c21ee988d42e
+  RNScreens: 2ad555d4d9fa10b91bb765ca07fe9b29d59573f0
+  RNShare: 106a76243ac90f43ddb9028dcb78ade406b8adff
   SDWebImage: b69257f4ab14e9b6a2ef53e910fdf914d8f757c1
-  SDWebImageWebPCoder: 36f8f47bd9879a8aea6044765c1351120fd8e3a8
+  SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
   secp256k1.c: db47b726585d80f027423682eb369729e61b3b20
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
   web3swift: 0f097eafe1d08f478694b882581b85a01afb6633
   Yoga: 7740b94929bbacbddda59bf115b5317e9a161598
 
-PODFILE CHECKSUM: 23bee0852569e87a2b6ce6be81025f7ac396fb6b
+PODFILE CHECKSUM: 7877785491e81f8291680217a1f3672be75c820f
 
 COCOAPODS: 1.10.0

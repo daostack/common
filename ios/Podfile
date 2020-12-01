@@ -35,7 +35,6 @@ def reactnative
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
   pod 'react-native-fast-openpgp', :path => '../node_modules/react-native-fast-openpgp'
-  pod 'RNFS', :path => '../node_modules/react-native-fs'
 end
 
 # -------------------------------------------------- #
