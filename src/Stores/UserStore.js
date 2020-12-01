@@ -94,7 +94,7 @@ class UserStore {
 
       newUserObj.following = newUserInfo.following || [];
       newUserObj.follower = newUserInfo.follower || [];
-      newUserObj.displayName = `${newUserInfo.firstName} ${newUserInfo.lastName}`;
+      newUserObj.displayName = `${newUserInfo.firstName || ''} ${newUserInfo.lastName || ''}`;
 
       Cache.set(newUserInfo.uid, newUserObj);
       this.userInfo = newUserObj;
