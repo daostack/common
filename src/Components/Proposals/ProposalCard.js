@@ -25,48 +25,40 @@ const {width} = Dimensions.get('window');
 const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipRequest, isSwiper, isMember, commonInfo}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
-  const [proposalVotes, setProposalVotes] = useState({
-    votesFor: 0,
-    votesAgainst: 0,
-  });
   const [paymentState, setPaymentState] = useState('pending');
   useEffect(() => {
 
     let unsubscribeProposalDiscussionsCount = null;
+    let unsubscribeProposalInfo = null;
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        let currProposalInfo = await ProposalService.getInstance().getProposalInfo(
-          currProposalId,
+        unsubscribeProposalInfo = await ProposalService.getInstance().subscribeToProposalById(currProposalId,
+          async (currProposalInfo) => {
+            //RequestToJoin proposal
+            let proposedMemberId = currProposalInfo.proposerId;
+            let funding = null;
+            if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
+              funding = currProposalInfo.join.funding;
+            }
+            //FundingRequest proposal
+            else {
+              funding = currProposalInfo.fundingRequest.amount;
+            }
+
+            const currProposedUser = await UserService.getInstance().getUserById(
+              proposedMemberId,
+            );
+
+            setProposalCardInfo({
+              proposedUser: currProposedUser,
+              proposalInfo: {...currProposalInfo, ...{funding: funding}},
+            });
+          }
         );
-
-        //RequestToJoin proposal
-        let proposedMemberId = currProposalInfo.proposerId;
-        let funding = null;
-        if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
-          funding = currProposalInfo.join.funding;
-        }
-        //FundingRequest proposal
-        else {
-          funding = currProposalInfo.fundingRequest.amount;
-        }
-
-        const currProposedUser = await UserService.getInstance().getUserById(
-          proposedMemberId,
-        );
-
-        setProposalCardInfo({
-          proposedUser: currProposedUser,
-          proposalInfo: {...currProposalInfo, ...{funding: funding}},
-        });
 
         unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(currProposalId, (discussionsCount) => {
-          console.log("discussionsCount 1 -> ", discussionsCount);
-          console.log("proposalCardInfo 1 -> ", proposalCardInfo);
-          setProposalCardInfo({
-            proposedUser: proposalCardInfo.currProposedUser,
-            proposalInfo: {...proposalCardInfo.proposalInfo, discussionsCount},
-          });
+          setProposalDiscussionCount(discussionsCount);
         });
 
       } catch (error) {
@@ -81,9 +73,8 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
     }
 
     return () => {
-      if (unsubscribeProposalDiscussionsCount) {
-        unsubscribeProposalDiscussionsCount();
-      }
+      unsubscribeProposalDiscussionsCount && unsubscribeProposalDiscussionsCount();
+      unsubscribeProposalInfo && unsubscribeProposalInfo();
     };
   }, [proposalId]);
 
@@ -100,32 +91,36 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
+    let unsubscribeProposalInfo = null;
+
     const loadProposalInfo = async (currProposalInfo) => {
       try {
-        //RequestToJoin proposal
-        let proposedMemberUser = await UserService.getInstance().getUserById(
-          currProposalInfo.proposerId
+        unsubscribeProposalInfo = await ProposalService.getInstance().subscribeToProposalById(currProposalInfo.id,
+          async (updatedProposalInfo) => {
+            //RequestToJoin proposal
+            let proposedMemberUser = await UserService.getInstance().getUserById(
+              updatedProposalInfo.proposerId
+            );
+            let funding = null;
+
+            if (updatedProposalInfo.type === PROPOSAL_TYPE.Join) {
+              funding = updatedProposalInfo.join.funding;
+            }
+            //FundingRequest proposal
+            else {
+              funding = updatedProposalInfo.fundingRequest.amount;
+            }
+
+            const allProposalInfo = {...updatedProposalInfo, ...{funding: funding}};
+
+            setProposalCardInfo({
+              proposedUser: proposedMemberUser,
+              proposalInfo: allProposalInfo,
+            });
+          }
         );
-        let funding = null;
-
-        if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
-          funding = currProposalInfo.join.funding;
-        }
-        //FundingRequest proposal
-        else {
-          funding = currProposalInfo.fundingRequest.amount;
-        }
-
-        const allProposalInfo = {...currProposalInfo, ...{funding: funding}};
-
-        setProposalCardInfo({
-          proposedUser: proposedMemberUser,
-          proposalInfo: allProposalInfo,
-        });
 
         unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(currProposalInfo.id, (discussionsCount) => {
-          console.log("discussionsCount 2 -> ", discussionsCount);
-          console.log("proposalCardInfo 2 -> ", proposalCardInfo);
           setProposalDiscussionCount(discussionsCount);
         });
 
@@ -140,9 +135,8 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
     }
 
     return () => {
-      if (unsubscribeProposalDiscussionsCount) {
-        unsubscribeProposalDiscussionsCount();
-      }
+      unsubscribeProposalDiscussionsCount && unsubscribeProposalDiscussionsCount();
+      unsubscribeProposalInfo && unsubscribeProposalInfo();
     };
   }, [data]);
 
@@ -201,12 +195,12 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
           <View style={{...layout.flexRow}}>
             <ProposalApprovalTag
               iconName="approved"
-              value={Number(proposalVotes.votesFor)}
+              value={Number(proposalCardInfo?.proposalInfo.votesFor || 0)}
               isMarked={true}
             />
             <ProposalApprovalTag
               iconName="declined"
-              value={Number(proposalVotes.votesAgainst)}
+              value={Number(proposalCardInfo?.proposalInfo.votesAgainst || 0)}
               isMarked={false}
             />
             <ProposalApprovalTag
