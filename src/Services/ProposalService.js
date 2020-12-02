@@ -116,7 +116,7 @@ export default class ProposalService {
   }
 
   async subscribeToProposalDiscussionsCount(proposalId, callback) {
-    let proposalDiscusstionMessages = db
+    const proposalDiscusstionMessages = db
       .collection(DB_COLLECTIONS.discussionMessages)
       .where('discussionId', '==', proposalId);
 

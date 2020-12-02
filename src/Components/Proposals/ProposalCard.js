@@ -36,7 +36,6 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
         unsubscribeProposalInfo = await ProposalService.getInstance().subscribeToProposalById(currProposalId,
           async (currProposalInfo) => {
             //RequestToJoin proposal
-            let proposedMemberId = currProposalInfo.proposerId;
             let funding = null;
             if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
               funding = currProposalInfo.join.funding;
@@ -45,14 +44,10 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
             else {
               funding = currProposalInfo.fundingRequest.amount;
             }
-
-            const currProposedUser = await UserService.getInstance().getUserById(
-              proposedMemberId,
-            );
-
+            const currProposedUser = await UserService.getInstance().getUserById(currProposalInfo.proposerId);
             setProposalCardInfo({
               proposedUser: currProposedUser,
-              proposalInfo: {...currProposalInfo, ...{funding: funding}},
+              proposalInfo: {...currProposalInfo, funding},
             });
           }
         );
@@ -98,11 +93,10 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
         unsubscribeProposalInfo = await ProposalService.getInstance().subscribeToProposalById(currProposalInfo.id,
           async (updatedProposalInfo) => {
             //RequestToJoin proposal
-            let proposedMemberUser = await UserService.getInstance().getUserById(
+            const proposedMemberUser = await UserService.getInstance().getUserById(
               updatedProposalInfo.proposerId
             );
             let funding = null;
-
             if (updatedProposalInfo.type === PROPOSAL_TYPE.Join) {
               funding = updatedProposalInfo.join.funding;
             }
@@ -110,9 +104,7 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
             else {
               funding = updatedProposalInfo.fundingRequest.amount;
             }
-
-            const allProposalInfo = {...updatedProposalInfo, ...{funding: funding}};
-
+            const allProposalInfo = {...updatedProposalInfo, funding};
             setProposalCardInfo({
               proposedUser: proposedMemberUser,
               proposalInfo: allProposalInfo,
@@ -195,12 +187,12 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
           <View style={{...layout.flexRow}}>
             <ProposalApprovalTag
               iconName="approved"
-              value={Number(proposalCardInfo?.proposalInfo.votesFor || 0)}
+              value={proposalCardInfo?.proposalInfo.votesFor || 0}
               isMarked={true}
             />
             <ProposalApprovalTag
               iconName="declined"
-              value={Number(proposalCardInfo?.proposalInfo.votesAgainst || 0)}
+              value={proposalCardInfo?.proposalInfo.votesAgainst || 0}
               isMarked={false}
             />
             <ProposalApprovalTag
