@@ -516,7 +516,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           component={EditProfile}
         />
         <Stack.Screen name="PDFViwer" component={PDFViewer} />
-        <Stack.Screen name="Browser" component={Browser} />
+        <Stack.Screen name="Browser" options={({nav, route}) => ({headerBackTitle: 'Back'}) } component={Browser} />
         <Stack.Screen
           options={{
             title: 'My Profile',
