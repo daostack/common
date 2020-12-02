@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Image, View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {Image, View, StyleSheet, TouchableOpacity, Text, Platform} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import ImagePicker from 'react-native-image-picker';
 import Toast from '~/Util/Toast';
@@ -10,6 +10,7 @@ import layout from '~/Theme/layout';
 import text from '~/Theme/text';
 import {string, func, bool, shape, object, number} from 'prop-types';
 import logger from '../../Services/Logger';
+import {handlePermission} from '~Util/Permissions';
 
 class ImageField extends React.Component {
   fieldValidation = null;
@@ -59,10 +60,12 @@ class ImageField extends React.Component {
       quality: quality || 0.7,
       allowsEditing: allowsEditing || false,
     };
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.showImagePicker(options, async (response) => {
       if (response.didCancel) {
-        // logger.log('User cancelled image picker');
+        logger.log('User cancelled image picker');
       } else if (response.error) {
+        // only for ios because android handles this
+        Platform.OS === 'ios' && await handlePermission();
         Toast.error(response.error);
         logger.log('ImagePicker Error: ', response.error);
       } else {
