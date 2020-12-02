@@ -197,7 +197,7 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
             />
             <ProposalApprovalTag
               iconName="discussion"
-              value={Number(proposalDiscussionCount)}
+              value={proposalDiscussionCount}
               isMarked={false}
             />
           </View>
