@@ -6,3 +6,4 @@ export {default as GSignInButton} from './Auth/GSignInButton';
 export {default as UserAvatar} from './UserAvatar.js';
 export {default as BlurView} from './BlurView.js';
 export {default as ContributionListItem} from './ContributionListItem';
+export {default as MonthlyContributionStatus} from './MonthlyContributionStatus';

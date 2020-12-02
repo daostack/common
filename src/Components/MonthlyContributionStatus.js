@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Text} from 'react-native';
-import {colors} from '../../Theme';
+import {colors} from '../Theme';
 
 const styles = {
   green: {

@@ -1,16 +1,11 @@
 import React from 'react';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
-import auth from '@react-native-firebase/auth';
-import axios from 'axios';
 import {colors, font, text} from '../Theme';
-import {inject, observer} from 'mobx-react';
-import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
-import {subscriptionsUrl} from '../Config';
 import Icon from '../Assets/iconfont/Icon';
-import MonthlyContributionStatus from '../Screens/UserProfile/MonthlyContributionStatus';
-import moment from 'moment';
+import MonthlyContributionStatus from './MonthlyContributionStatus';
 
 
 const ContributionListItem = ({subscription, navigation}) => {

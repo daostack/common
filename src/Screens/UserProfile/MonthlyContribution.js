@@ -5,7 +5,9 @@ import {Dimensions, Text, TouchableOpacity, View} from 'react-native';
 import axios from 'axios';
 import moment from 'moment';
 import auth from '@react-native-firebase/auth';
+
 import {inject, observer} from 'mobx-react';
+import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
 
 
 import {db} from '../../Firebase';
@@ -14,8 +16,7 @@ import {subscriptionsUrl} from '../../Config';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 
 import layout from '../../Theme/layout';
-import MonthlyContributionStatus from './MonthlyContributionStatus';
-import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
+import MonthlyContributionStatus from '../../Components';
 
 const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
   const [subscription, setSubscription] = React.useState(null);
