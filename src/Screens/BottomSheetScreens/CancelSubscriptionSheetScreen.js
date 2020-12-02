@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     maxHeight: 48,
     alignSelf: 'center',
+    color: colors.black,
   },
 
   stayText: {

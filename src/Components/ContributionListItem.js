@@ -4,99 +4,84 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import auth from '@react-native-firebase/auth';
 import axios from 'axios';
-
-import Icon from '../Assets/iconfont/Icon';
 import {colors, font, text} from '../Theme';
 import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '../Stores/BottomSheetStore';
 import {subscriptionsUrl} from '../Config';
+import Icon from '../Assets/iconfont/Icon';
+import MonthlyContributionStatus from '../Screens/UserProfile/MonthlyContributionStatus';
+import moment from 'moment';
 
 
-const ContributionListItem = ({subscription, bottomSheetStore}) => {
+const ContributionListItem = ({subscription, navigation}) => {
   const isCanceled = subscription.status === 'CanceledByPayment' ||
-      subscription.status === 'CanceledByUser';
+    subscription.status === 'CanceledByUser';
 
-  const onCancelConfirm = async () => {
-    console.log(subscription);
-
-    await axios.post(`${subscriptionsUrl()}/cancel?subscriptionId=${subscription.id}`, null, {
-      headers: {
-        Authorization: await auth().currentUser.getIdToken(),
-      },
-    });
-  };
-
-  const onCancelClick = () => {
-    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.CANCEL_SUBSCRIPTION, {
-      onCancelConfirm,
-      commonName: subscription.metadata?.common?.name,
-      dueDate: subscription.dueDate.toDate(),
+  const onClick = () => {
+    navigation.navigate('MonthlyContribution', {
+      subscription,
     });
   };
 
   return (
-    <View style={styles.container}>
-      <View>
-        <Text style={styles.title}>
-          {subscription.metadata?.common?.name}
-        </Text>
+    <TouchableOpacity onPress={onClick}>
+      <View style={styles.container}>
+        <View>
+          <Text style={styles.title}>
+            {subscription.metadata?.common?.name}
+          </Text>
 
-        {isCanceled
-          ? subscription.dueDate.toDate() < new Date()
-            ? (
-              <Text style={styles.dueText}>
-                Your subscription is canceled!
-              </Text>
-            ) : (
-              <Text style={styles.dueText}>
-                Your subscription is canceled and you will be removed from the common on {subscription.dueDate.toDate()}
+          {isCanceled
+            ? subscription.dueDate.toDate() < new Date()
+              ? (
+                <Text style={styles.bottomText}>
+                  Canceled by user
+                </Text>
+              ) : (
+                <Text style={styles.bottomText}>
+                  Cancels at
+                </Text>
+              )
+            : (
+              <Text style={styles.bottomText}>
+                Payment Due: {moment(subscription.dueDate.toDate()).format('D MMMM YYYY')}
               </Text>
             )
-          : (
-            <Text style={styles.dueText}>
-              Payment Due: {subscription.dueDate.toDate().toDateString()}
-            </Text>
-          )
-        }
-
-        <Text style={styles[subscription.status === 'Active' ? 'active' : 'inactive']}>
-          {subscription.status === 'Active'
-            ? 'Active'
-            : isCanceled
-              ? 'Canceled'
-              : 'Attention Needed! Payment Failed!'
           }
-        </Text>
+        </View>
+
+        <View style={styles.statusContainer}>
+          <View style={styles.statusTextContainer}>
+            <MonthlyContributionStatus
+              status={subscription.status}
+              dueDate={subscription.dueDate.toDate()}
+            />
+
+            {isCanceled ? (
+              <Text style={styles.bottomText}>
+                {moment(subscription.dueDate.toDate()).format('D MMMM YYYY')}
+              </Text>
+            ) : (
+              <Text style={styles.bottomText}>
+                {(subscription.amount / 100).toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                })}/mo
+              </Text>
+            )}
+          </View>
+
+          <View>
+            <Icon name="right-arrow" />
+          </View>
+        </View>
       </View>
-
-      {!isCanceled && (
-        <TouchableOpacity style={styles.rightContainer} onPress={onCancelClick}>
-          <Icon
-            name="delete"
-            size={16}
-            style={styles.icon}
-          />
-
-          <Text>
-            {(subscription.amount / 100).toLocaleString('en-US', {
-              style:'currency',
-              currency:'USD',
-            })}/mo
-          </Text>
-        </TouchableOpacity>
-      )}
-    </View>
+    </TouchableOpacity>
   );
 };
 
 ContributionListItem.propTypes = {
-  commonName: PropTypes.string.isRequired,
-  dueDate: PropTypes.instanceOf(Date).isRequired,
-  amount: PropTypes.number.isRequired,
-  active: PropTypes.bool.isRequired,
-  proposalId: PropTypes.string,
-
-  subscriptionId: PropTypes.string.isRequired,
+  navigation: PropTypes.object,
 
   subscription: PropTypes.shape({
     metadata: PropTypes.shape({
@@ -132,18 +117,26 @@ const styles = StyleSheet.create({
     alignContent: 'flex-start',
   },
 
-  rightContainer: {
+  statusContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  statusTextContainer: {
     alignItems: 'flex-end',
+    justifyContent: 'center',
+    marginRight: 10,
   },
 
   title: {
-    ...text.bold,
-    ...font.fontSize(2),
+    ...font.fontSize(3),
+    fontWeight: '600',
   },
 
-  dueText: {
+  bottomText: {
     ...font.fontSize(1),
-    marginVertical: 10,
+    marginTop: 20,
   },
 
   icon: {
@@ -159,5 +152,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(observer(ContributionListItem));
+export default ContributionListItem;
 

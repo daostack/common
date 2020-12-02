@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
 });
 
 
-const MonthlyContributionsList = ({userStore}) => {
+const MonthlyContributionsList = ({userStore, navigation}) => {
   const [subs, setSubs] = React.useState(null);
 
   React.useEffect(() => {
@@ -94,7 +94,10 @@ const MonthlyContributionsList = ({userStore}) => {
         <React.Fragment>
           {subs.map((subscription, index) => (
             <View style={styles.item} key={index}>
-              <ContributionListItem subscription={subscription}/>
+              <ContributionListItem
+                subscription={subscription}
+                navigation={navigation}
+              />
             </View>
           ))}
         </React.Fragment>
