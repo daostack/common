@@ -109,27 +109,30 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     return unsubscribe;
   }, []);
 
-  const notificationNavigation = async (screenName, commonId, objectId = null, tabIndex) => {
-    const currCommon = await CommonService.getInstance().getCommonInfo(commonId);
-    // whitelist;approve/reject requestToJoin
-    if (screenName === 'CommonProfile') {
-      routing(screenName, {currCommon});
-    }
-    // new discussionMessage
-    else if (screenName === 'Discussions') {
-      const discussion = await DiscussionService.getInstance().getDiscussionInfo(objectId);
-      routing(screenName, {data: discussion, discussionId: objectId, commonId});
-    }
-    // create/approve proposal
-    else {
-      const proposal = await ProposalService.getInstance().getProposalInfo(objectId);
-      routing(screenName, {
-        proposalId: proposal.id,
-        screenTitle: currCommon.name,
-        commonBalance: currCommon.balance,
-        proposalCardInfo: proposal,
-        tabIndex,
-      });
+  const notificationNavigation = async (remoteMessage) => { //(screenName, commonId, objectId = null, tabIndex) => {
+    if (remoteMessage) {
+      const [screenName, commonId, objectId, tabIndex = 0] = remoteMessage.data.path.split('/');
+      const currCommon = await CommonService.getInstance().getCommonInfo(commonId);
+      // whitelist;approve/reject requestToJoin
+      if (screenName === 'CommonProfile') {
+        routing(screenName, {currCommon});
+      }
+      // new discussionMessage
+      else if (screenName === 'Discussions') {
+        const discussion = await DiscussionService.getInstance().getDiscussionInfo(objectId);
+        routing(screenName, {data: discussion, discussionId: objectId, commonId});
+      }
+      // create/approve proposal
+      else {
+        const proposal = await ProposalService.getInstance().getProposalInfo(objectId);
+        routing(screenName, {
+          proposalId: proposal.id,
+          screenTitle: currCommon.name,
+          commonBalance: currCommon.balance,
+          proposalCardInfo: proposal,
+          tabIndex,
+        });
+      }
     }
   };
 
@@ -141,16 +144,14 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         'Notification caused app to open from background state:',
         remoteMessage,
       );
+      notificationNavigation(remoteMessage);
     });
 
     // Check whether an initial notification is available
     messaging()
       .getInitialNotification()
       .then((remoteMessage) => {
-        if (remoteMessage) {
-          const [screenName, commonId, objectId, tabIndex = 0] = remoteMessage.data.path.split('/');
-          notificationNavigation(screenName, commonId, objectId, +tabIndex);
-        }
+        notificationNavigation(remoteMessage);
       });
   }, []);
 
