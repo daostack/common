@@ -5,7 +5,8 @@ import {layout, sizeS, colors} from '~/Theme';
 import UserService from '~/Services/UserService';
 import MemberImage from '~/Components/Commons/MemberImage';
 import {observer, inject} from 'mobx-react';
-import {object, array, bool} from 'prop-types';
+import {object, array, bool, string, number} from 'prop-types';
+import DaoService from '~/Services/DaoService';
 
 import {
   Placeholder,
@@ -14,36 +15,57 @@ import {
   Fade,
 } from 'rn-placeholder';
 
-const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) => {
+const CommonMembersList = ({navigation, members, commonId, limit, horizontal, bottomSheetStore}) => {
+
   const [membersInfo, setMembersInfo] = useState(null);
 
   const showUserProfile = (uid) => {
     navigation.navigate('Profile', {userId: uid});
   };
 
+  const limitCommonMembers = (commonMembers) => commonMembers?.length > limit ? commonMembers.slice(0, limit) : commonMembers || [];
+
+  const getAllCommonMembers = async (commonMembers) => {
+    const size = 10;
+    let allUserInfos = [];
+
+    const currCommonMembers = limit ? limitCommonMembers(commonMembers) : commonMembers;
+
+    await Promise.all(Array.from({length: Math.ceil(currCommonMembers.length / size)}, async (v, i) => {
+      const currArrChunk = currCommonMembers.slice(i * size, i * size + size);
+      const currChunkUserIds = currArrChunk.map((member) => member.userId);
+      const currChunkUserInfos = await UserService.getInstance().getUsersByUpTo10Ids(currChunkUserIds);
+      allUserInfos = allUserInfos.concat(currChunkUserInfos);
+    }));
+    return allUserInfos;
+  };
+
   useEffect(() => {
-    setMembersInfo(null);
-    const loadMemberUsers = async () => {
-
-      const size = 10;
-      let allUserInfos = [];
-
-      await Promise.all(Array.from({length: Math.ceil(members.length / size)},  async (v, i) => {
-        const currArrChunk = members.slice(i * size, i * size + size);
-        const currChunkUserIds = currArrChunk.map((member) => member.userId);
-        const currChunkUserInfos = await UserService.getInstance().getUsersByUpTo10Ids(currChunkUserIds);
-        console.log('currChunkUserInfos -> ', currChunkUserInfos);
-        allUserInfos = allUserInfos.concat(currChunkUserInfos);
-      }));
-
-      setMembersInfo(allUserInfos);
+    const loadCommonMembers = async (currCommonMembers) => {
+      setMembersInfo(await getAllCommonMembers(currCommonMembers));
     };
-
     if (members) {
-      loadMemberUsers();
+      loadCommonMembers(members);
+    }
+  }, []);
+
+  useEffect(() => {
+    let unsubscribeCommon = null;
+    const subscribeToCommon = async (currCommonId) => {
+      unsubscribeCommon = await DaoService.getInstance().subscribeToDaoById(currCommonId, async (snapshot) => {
+        const updatedCommon = snapshot.data();
+        setMembersInfo(await getAllCommonMembers(updatedCommon.members));
+      });
+    };
+    if (commonId) {
+      subscribeToCommon(commonId);
     }
 
-  }, [members]);
+    return () => {
+      unsubscribeCommon && unsubscribeCommon();
+    };
+
+  }, [commonId]);
 
   return (
     <View style={horizontal && {...layout.flexRow, paddingLeft: (members.length - 1) * 15}}>
@@ -111,6 +133,8 @@ const CommonMembersList = ({navigation, members, horizontal, bottomSheetStore}) 
 CommonMembersList.propTypes = {
   navigation: object,
   members: array,
+  commonId: string,
+  limit: number,
   horizontal: bool,
   bottomSheetStore: object,
 };
