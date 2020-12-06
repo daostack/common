@@ -51,7 +51,7 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>This app uses the camera to take photos</string>
+	<string>This app lets you upload selected photos from your photo library</string>
 	<key>NSFileProviderPresenceUsageDescription</key>
 	<string>This app lets you upload selected files</string>
 	<key>NSPhotoLibraryUsageDescription</key>
