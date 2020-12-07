@@ -15,7 +15,6 @@ export class PaymentFormStore extends FormStore {
 export class BillingDetailsFormStore extends FormStore {
   constructor() {
     super();
-    console.log('billingDetailsRules', billingDetailsRules.validPassport)
     this.registerValidationRule(billingDetailsRules.validPassport);
   }
 }

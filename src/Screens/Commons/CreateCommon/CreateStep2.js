@@ -27,6 +27,7 @@ import {object, func, shape} from 'prop-types';
 const {width} = Dimensions.get('window');
 
 const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
+const MAX_CONTRIBUTION = ['3000', '500'];
 const SAFETY_PERIOD_TAB_VALUES = [moment().add('7', 'days').unix(), moment().add('1', 'months').unix()];
 
 const CreateStep2 = ({fundingFormStore, navigation}) => {
@@ -178,13 +179,14 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
             tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 44}}
             tabStyle={{borderColor: colors.grey4}}
             activeTabStyle={{backgroundColor: colors.mainBlue}}
-            values={['One-time', 'Monthly']}
+            values={CONTRIBUTION_TAB_VALUES}
             tabTextStyle={styles.tabTextStyle}
             borderRadius={8}
             selectedIndex={contributionIndex}
             onTabPress={onContributionTabChange}
           />
           <TextInputFieldWithIcon
+            key={contributionIndex}
             value={fundingFormStore.getFormField(CreateCommonForm.MINIMUM)?.value}
             iconName="dollar"
             iconSize={12}
@@ -193,7 +195,7 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
             iconFillColor={colors.grey}
             viewStyle={{alignSelf: 'stretch'}}
             label={(
-              <React.Fragment>Minimum <Text style={styles.boldText}>{contributionIndex === 1 ? 'monthly' : 'one-time'}</Text> contribution (min. $5)</React.Fragment>
+              <React.Fragment>Minimum <Text style={styles.boldText}>{CONTRIBUTION_TAB_VALUES[contributionIndex]}</Text> contribution (min. $5)</React.Fragment>
             )}
             subLabel="Set the minimum amount that new members will have to contribute in order to join this Common."
             infoLabel="Required"
@@ -203,8 +205,14 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
             validation={{
               name: CreateCommonForm.MINIMUM,
               formStore: fundingFormStore,
-              validateRule: 'required|integer|min:5|max:1000',
-              customErrorMessage: 'The amount must be at least $5 and at most $1000.',
+              validateRule: [
+                'required',
+                'integer',
+                'min:5',
+                `max:${MAX_CONTRIBUTION[contributionIndex]}`,
+              ],
+              customErrorMessage:
+              `The amount must be at least $5 and at most $${parseFloat(MAX_CONTRIBUTION[contributionIndex]).toLocaleString('en')}.`,
             }}
           />
           <View style={{marginTop: 24}}>
