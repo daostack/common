@@ -75,9 +75,7 @@
 	<key>NSFileProviderPresenceUsageDescription</key>
 	<string>This app lets you upload selected files</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>But yes we can drop it.
-
-The app allows you to take photos and add them to discussions and proposals, and add or change profile pictures and cover photos.</string>
+	<string>The app allows you to take photos and add them to discussions and proposals, and add or change profile pictures and cover photos.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>NunitoSans-Bold.ttf</string>
