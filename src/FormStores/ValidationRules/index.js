@@ -73,13 +73,13 @@ export const validDateFormat = {
     if (month.length !== 2 || year.length !== 2) {
       return false;
     }
-    return !isNaN(month) && !isNaN(year);
+    return !isNaN(month) && !isNaN(year) && (month > 0 && month <= 12);
   },
-  errorMessage: 'The date format should be "MM/YY".',
+  errorMessage: 'Invalid expiration date.',
 };
 
 export const futureDate = {
   ruleName: VALIDATION_RULES.CARD_EXP_DATE,
-  validateFunc: (value, requirement, attribute) => isExpired(value), //!moment(fixDate(value)).isBefore(moment().format('YY/MM')),
+  validateFunc: (value, requirement, attribute) => isExpired(value),
   errorMessage: 'Expiration date has passed.',
 };
