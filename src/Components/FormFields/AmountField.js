@@ -69,7 +69,8 @@ const AmountField = ({
         validation={{
           name: RequestToJoinForm.FIELD_AMOUNT,
           formStore: formStore,
-          validateRule: `required|numeric|min:${minFeeToJoin.toString()}`,
+          validateRule: `required|numeric|min:${minFeeToJoin.toString()}|max:2500`,
+          customErrorMessage: `The amount must be at least $${minFeeToJoin.toString()} and at most $2500.`,
         }}
       />
     </View>
