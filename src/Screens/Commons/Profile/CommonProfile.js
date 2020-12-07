@@ -120,7 +120,7 @@ const CommonProfile = ({
     return () => {
       unsubscribeCommon && unsubscribeCommon();
     };
-  }, []);
+  }, [params.commonId, currCommon.id]);
 
   useEffect(() => {
     setShowRequestSentModal(params.showRequestSentModal);
