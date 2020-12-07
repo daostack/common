@@ -18,14 +18,14 @@ if (Config.ENV === 'production') {
   networkId = 100;
   web3Provider = 'https://dai.poa.network';
   commonTokenAddress = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
-  clientId = '854172758045-cgj72k292a2gm2iovv166j13l8el67ni.apps.googleusercontent.com';
+  clientId = '854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com';
 } else if (Config.ENV === 'staging') {
   localFunctionURL = 'http://localhost:5003/common-staging-50741/us-central1';
   cloudFunctionURL = 'https://us-central1-common-staging-50741.cloudfunctions.net';
   networkId = 42;
   web3Provider = 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';
   commonTokenAddress = '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01';
-  clientId = '78965953367-7a3nt6m8cbml8pn54rlhujq1gccm3hr9.apps.googleusercontent.com';
+  clientId = '78965953367-gp6r7vuvceqj4k8gngrqkng98thgqmo8.apps.googleusercontent.com';
 } else {
   throw Error(`Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`);
 }
