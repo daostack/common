@@ -120,7 +120,7 @@ const CommonProfile = ({
     return () => {
       unsubscribeCommon && unsubscribeCommon();
     };
-  }, []);
+  }, [params.commonId, currCommon.id]);
 
   useEffect(() => {
     setShowRequestSentModal(params.showRequestSentModal);
@@ -182,6 +182,12 @@ const CommonProfile = ({
       getPendingProposalsDiscussionCount();
     }
   }, [pendingProposalsData]);
+
+  useEffect(() => {
+    if (currCommon.id !== params.currCommon.id) {
+      setCurrCommon(params.currCommon);
+    }
+  }, [params.currCommon]);
 
   const renderTabBar = (props) => (
     <TabBarRenderer
