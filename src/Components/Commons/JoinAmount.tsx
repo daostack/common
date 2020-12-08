@@ -1,6 +1,8 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {layout, colors, text, font} from '~/Theme';
+import {func, bool, number} from 'prop-types';
+
 type JoinAmountProps = {
   id: any,
   amount?: any,
@@ -16,7 +18,7 @@ const JoinAmount: React.FC<JoinAmountProps> = ({
   onPress,
   isSelected,
   isMonthly,
-}: JoinAmountProps) => {
+}) => {
   const onAmountPress = () => {
     onPress(isCustom, amount, id);
   };
@@ -31,6 +33,17 @@ const JoinAmount: React.FC<JoinAmountProps> = ({
     </TouchableOpacity>
   );
 };
+
+JoinAmount.propTypes = {
+  id: number.isRequired,
+  amount: number,
+  isCustom: bool,
+  onPress: func,
+  isSelected: bool,
+  isMonthly: bool,
+};
+
+
 const styles = StyleSheet.create({
   container: {
     ...layout.content,
