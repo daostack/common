@@ -11,6 +11,7 @@ import {
   Animated,
   Platform,
 } from 'react-native';
+import {inject} from 'mobx-react';
 import {StackActions} from '@react-navigation/native';
 import ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
