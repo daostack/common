@@ -25,7 +25,7 @@ import {createCard} from '../../../../Services/CirclePayService';
 import ProposalService from '~/Services/ProposalService';
 import {testCard} from '~/Config';
 import moment from 'moment';
-import {VALIDATION_RULES} from '~/FormStores/ValidationRules';
+import {VALIDATION_RULES} from '~/FormStores/ValidationRules/paymentDetailsRules';
 
 const {width} = Dimensions.get('window');
 

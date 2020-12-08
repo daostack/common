@@ -187,10 +187,18 @@ class TextInputFieldWithIcon extends React.Component {
       };
     }
 
+    const handleNumbers = (currValue) => (
+      currValue ? parseFloat(currValue).toLocaleString('en') : currValue
+    );
+
     const getValue = () => {
       if (validation) {
-        const currValue = validation.formStore.getFormField(validation.name, validation.multiName)?.value;
-        return typeof (currValue) === 'object' ? currValue.value?.toString() : currValue?.toString();
+        let currValue = validation.formStore.getFormField(validation.name, validation.multiName)?.value;
+        currValue = (currValue) === 'object' ? currValue.value.toString() : currValue.toString();
+
+        currValue = currValue.replace(',', '');
+        // if number, fix it to price format x,xxx (for currValue > 999)
+        return (+currValue) ? handleNumbers(currValue) : currValue;
       }
       return value;
     };

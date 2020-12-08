@@ -678,12 +678,6 @@ export const countryList = [
     payout: false,
   },
   { // only payin
-    value: 'LB',
-    name: 'Lebanon 🇱🇧',
-    payin: true,
-    payout: false,
-  },
-  { // only payin
     value: 'LC',
     name: 'St. Lucia 🇱🇨',
     payin: true,

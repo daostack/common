@@ -16,6 +16,7 @@ import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
 import {testCard} from '~/Config';
 import {inject} from 'mobx-react';
+import {VALIDATION_RULES} from '~/FormStores/ValidationRules/billingDetailsRules';
 
 const BillingDetailsStep = ({navigation, route, userStore}) => {
   const {skipFirstStep, currCommon, currDaoId, refreshFeed, formStores} = route.params;
@@ -125,7 +126,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
 
             <TextInputField
               editable
-              label="Full name"
+              label="Full Name"
               value={testCard ? 'Thor Odinson' : billingDetailsFormStore.getFormField(BillingDetailsConstants.City)?.value || userStore.userInfo.displayName}
               autoCapitalize="words"
               validation={{
@@ -175,7 +176,8 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
               }}
             />
 
-            {country === 'US' && (
+            {(country === 'US'
+                || country === 'CA') && (
               <TextInputField
                 editable
                 label="District"
@@ -185,8 +187,29 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
                 validation={{
                   name: BillingDetailsConstants.District,
                   formStore: billingDetailsFormStore,
-                  validateRule: 'required_if:Country,US|min:2',
+                  validateRule: 'required_if:Country,US,CA|min:2',
                   displayName: 'district',
+                }}
+              />
+            )}
+
+
+            {country === 'IL' && (
+              <TextInputField
+                editable
+                label="National ID/Passport Number"
+                maxLength={9}
+                autoCapitalize="characters"
+                value={testCard ? '012345678' : billingDetailsFormStore.getFormField(BillingDetailsConstants.ID)?.value}
+                validation={{
+                  name: BillingDetailsConstants.ID,
+                  formStore: billingDetailsFormStore,
+                  validateRule: [
+                    'required_if:Country,IL',
+                    'min:9',
+                    'max:9',
+                    VALIDATION_RULES.VALID_ID_PASSPORT,
+                  ],
                 }}
               />
             )}
