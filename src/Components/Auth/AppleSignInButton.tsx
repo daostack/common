@@ -7,18 +7,21 @@ import {observer, inject} from 'mobx-react';
 import {AppleAuthError} from '@invertase/react-native-apple-authentication';
 import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
-import UserStore from '~/Stores/UserStore';
-type AppleSignInButtonProps = {
-  onSignIn?: any,
-  userStore: UserStore,
-  customStyle?: any
+import {func, shape, object, InferProps} from 'prop-types';
+
+const props = {
+  onSignIn: func,
+  userStore: shape({
+    setIsLoading: func,
+  }).isRequired,
+  customStyle: object,
 };
 
-const AppleSignInButton: React.FC<AppleSignInButtonProps> = ({
+const AppleSignInButton: React.FC<InferProps<typeof props>> = ({
   onSignIn,
   userStore,
   customStyle,
-}: AppleSignInButtonProps) => {
+}) => {
   const [signInError, setSignInError] = useState <any>(null);
   const _signIn = async () => {
     try {
@@ -88,6 +91,9 @@ const AppleSignInButton: React.FC<AppleSignInButtonProps> = ({
     </View>
   );
 };
+
+AppleSignInButton.propTypes = props;
+
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',

@@ -2,16 +2,18 @@ import {StyleSheet, View, Text, TouchableOpacity, ViewStyle, GestureResponderEve
 import {text, font, layout, colors} from '../Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import React from 'react';
-type BtnContentProps = {
-  title: string,
-  subtitle?: string,
-  lightStyle?: ViewStyle
+import {string, func, bool, InferProps} from 'prop-types';
+
+const btnContentProps = {
+  title: string.isRequired,
+  subtitle: string,
+  lightStyle: bool,
 };
-const BtnContent: React.FC<BtnContentProps> = ({
+const BtnContent: React.FC<InferProps<typeof btnContentProps>> = ({
   lightStyle,
   title,
   subtitle,
-}: BtnContentProps) => (
+}) => (
   <>
     <View>
       <Text
@@ -28,18 +30,19 @@ const BtnContent: React.FC<BtnContentProps> = ({
     {!lightStyle && <Icon name="right-arrow" />}
   </>
 );
-type AccordionBtnProps = {
-  title: string,
-  subtitle?: string,
-  onPress: (event: GestureResponderEvent) => void,
-  lightStyle?: ViewStyle
+
+const accordionBtnProps = {
+  title: string.isRequired,
+  subtitle: string,
+  onPress: func.isRequired,
+  lightStyle: bool,
 };
-const AccordionBtn: React.FC<AccordionBtnProps> = ({
+const AccordionBtn: React.FC<InferProps<typeof accordionBtnProps>> = ({
   title,
   subtitle,
   onPress,
   lightStyle,
-}: AccordionBtnProps) => (
+}) => (
   <TouchableOpacity
     onPress={onPress}
     style={
@@ -51,6 +54,12 @@ const AccordionBtn: React.FC<AccordionBtnProps> = ({
     <BtnContent {...{lightStyle, title, subtitle}} />
   </TouchableOpacity>
 );
+
+AccordionBtn.propTypes = accordionBtnProps;
+
+BtnContent.propTypes = btnContentProps;
+
+
 const styles = StyleSheet.create({
   accordionBtn: {
     ...layout.content,
