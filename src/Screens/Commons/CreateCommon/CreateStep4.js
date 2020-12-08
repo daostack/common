@@ -31,7 +31,7 @@ import {BlurView} from '~/Components';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
-import {object} from 'prop-types';
+import {object, shape} from 'prop-types';
 import DaoService from '~/Services/DaoService';
 import {handlePermission} from '~Util/Permissions';
 import {
@@ -52,16 +52,19 @@ const CONTRIBUTION = {
   'one-time': '',
 };
 
-const CreateStep4 = ({generalInfoFormStore,
-  fundingFormStore,
-  agendaFormStore,
-  reviewFormStore,
+const CreateStep4 = ({
+  route: {params: {formStores}},
   navigation,
   bottomSheetStore,
   userStore: {userInfo: {uid}}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
+
+  const generalInfoFormStore = formStores.generalInfoFormStore;
+  const fundingFormStore = formStores.fundingFormStore;
+  const agendaFormStore = formStores.agendaFormStore;
+  const reviewFormStore = formStores.reviewFormStore;
 
   const form = {
     ...generalInfoFormStore.getChangedFormFieldsJson(),
@@ -70,7 +73,6 @@ const CreateStep4 = ({generalInfoFormStore,
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
 
-  logger.log(form);
   const [templateIndex, setTemplateIndex] = useState(1);
   const getImageUrl = (index) =>
     `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
@@ -220,9 +222,7 @@ const CreateStep4 = ({generalInfoFormStore,
     }
   };
 
-  const displayString = () => `${
-    numberFormatter(form[CreateCommonForm.MINIMUM])}${
-    CONTRIBUTION[form.contribution]}`;
+  const displayString = () => `${numberFormatter(form[CreateCommonForm.MINIMUM])}${CONTRIBUTION[form.contribution]}`;
 
   return (
     <SafeAreaView
@@ -522,13 +522,19 @@ const CreateStep4 = ({generalInfoFormStore,
 };
 
 CreateStep4.propTypes = {
-  generalInfoFormStore: object,
-  fundingFormStore: object,
-  agendaFormStore: object,
-  reviewFormStore: object,
   navigation: object,
   bottomSheetStore: object,
   userStore: object,
+  route: shape({
+    params: shape({
+      formStores: shape({
+        generalInfoFormStore: object.isRequired,
+        fundingFormStore: object.isRequired,
+        agendaFormStore: object.isRequired,
+        reviewFormStore: object.isRequired,
+      }).isRequired,
+    }),
+  }),
 };
 
 const stylesHeader = StyleSheet.create({
@@ -644,9 +650,5 @@ const styles = StyleSheet.create({
 
 export default inject(
   'bottomSheetStore',
-  'generalInfoFormStore',
-  'fundingFormStore',
-  'agendaFormStore',
-  'reviewFormStore',
   'userStore',
-)(observer(CreateStep4));
+)(CreateStep4);

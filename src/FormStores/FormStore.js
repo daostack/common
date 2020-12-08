@@ -76,13 +76,20 @@ class FormStore {
         if (!currMultiValue[currMultiIndex]) {
           currMultiValue[currMultiIndex] = {};
         }
-        currMultiValue[currMultiIndex][currMultiValueField] = currValue;
+        // Set default value only if there is no registered field
+        if (!currMultiValue[currMultiIndex][currMultiValueField]) {
+          currMultiValue[currMultiIndex][currMultiValueField] = currValue;
+        }
+
         currValue = currMultiValue;
       } else {
         if (!this.form.fields[multiName]) {
           this.form.fields[multiName] = [];
         }
-        this.form.fields[multiName][name] = currValue;
+        // Set default value only if there is no registered field
+        if (!this.form.fields[multiName][name]) {
+          this.form.fields[multiName][name] = currValue;
+        }
         currValue = this.form.fields[multiName];
       }
       currName = multiName;
@@ -93,6 +100,11 @@ class FormStore {
         name,
         multiName,
       };
+    } else {
+      // Set default value only if there is no registered field
+      if (this.form.fields[currName]) {
+        currValue = this.form.fields[currName];
+      }
     }
 
     this.form.fields[currName] = currValue;

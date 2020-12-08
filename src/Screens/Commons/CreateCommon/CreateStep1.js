@@ -10,7 +10,7 @@ import {
 import TextInputField from '~/Components/FormFields/TextInputField';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import {colors} from '~/Theme';
-import {observer, inject} from 'mobx-react';
+import {inject} from 'mobx-react';
 import CreateStepHeader from './CreateStepHeader';
 import NavigationBar from 'react-native-navbar';
 import Icon from '~/Assets/iconfont/Icon';
@@ -23,9 +23,10 @@ import {shape, func, object} from 'prop-types';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 const {width} = Dimensions.get('window');
 
-const CreateStep1 = ({generalInfoFormStore, bottomSheetStore, navigation}) => {
+const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
+  const generalInfoFormStore = formStores.generalInfoFormStore;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -40,7 +41,7 @@ const CreateStep1 = ({generalInfoFormStore, bottomSheetStore, navigation}) => {
 
   const push = () => {
     if (generalInfoFormStore.isFormValid()) {
-      navigation.navigate('CreateStep2');
+      navigation.navigate('CreateStep2', {formStores});
     }
   };
 
@@ -197,21 +198,23 @@ const CreateStep1 = ({generalInfoFormStore, bottomSheetStore, navigation}) => {
 };
 
 CreateStep1.propTypes = {
-  generalInfoFormStore: shape({
-    isFormValid: func,
-    isFormActionEnabled: func,
-  }).isRequired,
   navigation: object,
   bottomSheetStore: shape({
     showBottomSheet: func,
     hideBottomSheet: func,
   }),
+  route: shape({
+    params: shape({
+      formStores: shape({
+        generalInfoFormStore: shape({
+          isFormValid: func,
+          isFormActionEnabled: func,
+        }).isRequired,
+      }).isRequired,
+    }),
+  }),
 };
 
 export default inject(
-  'generalInfoFormStore',
-  'fundingFormStore',
-  'agendaFormStore',
-  'reviewFormStore',
   'bottomSheetStore',
-)(observer(CreateStep1));
+)(CreateStep1);
