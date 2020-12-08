@@ -1,21 +1,25 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {layout, text, font} from '~/Theme';
-type CommonStageSummaryProps = {
-  isCommonCard?: any,
-  commonProgressInfo: {
-    time?: any,
-    activeProposals?: any,
-    goal?: any,
-    members?: any,
-    raised?: any,
-    balance?: any
-  }
+import {InferProps} from 'prop-types';
+import {bool, shape, number} from 'prop-types';
+
+const props  = {
+  isCommonCard: bool,
+  commonProgressInfo: shape({
+    time: number,
+    activeProposals: number,
+    goal: number,
+    members: number,
+    raised: number,
+    balance: number,
+  }),
 };
-const CommonStageSummary: React.FC<CommonStageSummaryProps> = ({
+
+const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
   isCommonCard,
   commonProgressInfo: {raised, balance, members},
-}: CommonStageSummaryProps) => {
+}) => {
   // const deadlineMoment = moment.unix(time);
   // const deadlineHasPassed = moment().isAfter(deadlineMoment);
   // const isFundingStage = !deadlineHasPassed;
@@ -80,6 +84,9 @@ const CommonStageSummary: React.FC<CommonStageSummaryProps> = ({
     </View>
   );
 };
+
+CommonStageSummary.propTypes = props;
+
 const styles = StyleSheet.create({
   raisedContainer: {
     ...layout.flexRow,

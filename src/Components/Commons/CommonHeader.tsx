@@ -11,25 +11,28 @@ import {layout, colors, text, font} from '~/Theme';
 import FastImage, {ImageStyle} from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
 import {BlurView} from '~/Components';
-type CommonHeaderProps = {
-  navigation?: any,
-  isMember?: any,
-  headerHeightLayouted?: any,
-  commonInfo: {
-    logo?: any,
-    name: any,
-    description?: any,
-    byline?: any
-  },
-  common?: any
+import {object, shape, string, bool, func, InferProps} from 'prop-types';
+
+const props = {
+  navigation: object,
+  isMember: bool,
+  headerHeightLayouted: func,
+  commonInfo: shape({
+    logo: string,
+    name: string.isRequired,
+    description: string,
+    byline: string,
+  }),
+  common: object,
 };
-const CommonHeader: React.FC<CommonHeaderProps> = ({
+
+const CommonHeader: React.FC<InferProps<typeof props>> = ({
   navigation,
   isMember,
   commonInfo: {logo, name, description, byline},
   headerHeightLayouted,
   common,
-}: CommonHeaderProps) => {
+}) => {
   const openAgendaScreen = () => {
     navigation.navigate('CommonAgenda', {
       screenTitle: name,
@@ -72,6 +75,9 @@ const CommonHeader: React.FC<CommonHeaderProps> = ({
     </SafeAreaView>
   );
 };
+
+CommonHeader.propTypes = props;
+
 const styles = StyleSheet.create({
   coverBackground: {
     borderTopLeftRadius: 28,

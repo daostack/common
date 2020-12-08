@@ -6,16 +6,18 @@ import {statusCodes} from '@react-native-community/google-signin';
 import {observer, inject} from 'mobx-react';
 import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
-import UserStore from '~/Stores/UserStore';
+import {shape, func, InferProps} from 'prop-types';
 
-type GSignInButtonProps = {
-  onSignIn?: any,
-  userStore: UserStore
+const props = {
+  onSignIn: func,
+  userStore: shape({
+    setIsLoading: func,
+  }),
 };
-const GSignInButton: React.FC<GSignInButtonProps> = ({
+const GSignInButton: React.FC<InferProps<typeof props>> = ({
   onSignIn,
   userStore,
-}: GSignInButtonProps) => {
+}) => {
   const _signIn = async () => {
     try {
       // That loading status will be changed to false in the onAuthStateChanged method in App.js
@@ -70,6 +72,9 @@ const GSignInButton: React.FC<GSignInButtonProps> = ({
     </View>
   );
 };
+
+GSignInButton.propTypes = props;
+
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',

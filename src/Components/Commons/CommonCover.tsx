@@ -10,25 +10,28 @@ import React from 'react';
 import FastImage, {ImageStyle} from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
 import {layout, colors, text, font} from '~/Theme';
-type CommonCoverProps = {
-  navigation?: any,
-  isMember?: any,
-  onHeaderMenuOpen?: any,
-  commonInfo: {
-    cover?: any,
-    logo?: any,
-    name?: any,
-    description?: any
-  },
-  common?: any
+import {object, bool, func, string, shape, InferProps} from 'prop-types';
+
+const props = {
+  navigation: object,
+  isMember: bool,
+  onHeaderMenuOpen: func,
+  commonInfo: shape({
+    cover: string,
+    logo: string,
+    name: string,
+    description: string,
+  }),
+  common: object,
 };
-const CommonCover: React.FC<CommonCoverProps> = ({
+
+const CommonCover: React.FC<InferProps<typeof props>> = ({
   navigation,
   isMember,
   onHeaderMenuOpen,
   commonInfo: {cover, logo, name, description},
   common,
-}: CommonCoverProps) => {
+}) => {
   const renderCoverInSafeArea = () => (
     <SafeAreaView>{renderCover()}</SafeAreaView>
   );
@@ -115,6 +118,9 @@ const CommonCover: React.FC<CommonCoverProps> = ({
     </>
   );
 };
+
+CommonCover.propTypes = props;
+
 const styles = StyleSheet.create({
   coverBackground: {
     borderTopLeftRadius: 28,
