@@ -92,6 +92,7 @@ const CreateStep3 = ({agendaFormStore, navigation}) => {
         scrollEventThrottle={16}
         onScroll={Animated.event([
           {nativeEvent: {contentOffset: {y: scrollY}}},
+          {useNativeDriver: false},
         ])}>
         <CreateStepHeader currentIndex={2}/>
         <View

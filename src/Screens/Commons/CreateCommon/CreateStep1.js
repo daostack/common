@@ -97,6 +97,7 @@ const CreateStep1 = ({generalInfoFormStore, bottomSheetStore, navigation}) => {
         scrollEventThrottle={16}
         onScroll={Animated.event([
           {nativeEvent: {contentOffset: {y: scrollY}}},
+          {useNativeDriver: false},
         ])}>
         <CreateStepHeader currentIndex={0} />
         <View

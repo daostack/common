@@ -82,6 +82,7 @@ const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep
           scrollEventThrottle={16}
           onScroll={Animated.event([
             {nativeEvent: {contentOffset: {y: scrollY}}},
+            {useNativeDriver: false},
           ])}>
           <MembershipRequest />
 

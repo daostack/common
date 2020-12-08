@@ -107,6 +107,7 @@ const ContributionStep = ({navigation, route: {params: {formStores, skipFirstSte
           scrollEventThrottle={16}
           onScroll={Animated.event([
             {nativeEvent: {contentOffset: {y: scrollY}}},
+            {useNativeDriver: false},
           ])}>
           <MembershipRequest />
 

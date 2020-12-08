@@ -248,6 +248,7 @@ const CreateStep4 = ({generalInfoFormStore,
         scrollEventThrottle={16}
         onScroll={Animated.event([
           {nativeEvent: {contentOffset: {y: scrollY}}},
+          {useNativeDriver: false},
         ])}>
         <CreateStepHeader currentIndex={3} />
         <View
