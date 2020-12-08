@@ -12,7 +12,6 @@ import {
   Platform,
 } from 'react-native';
 import {StackActions} from '@react-navigation/native';
-import {observer, inject} from 'mobx-react';
 import ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
 import Icon from '~/Assets/iconfont/Icon';
@@ -52,8 +51,7 @@ const CONTRIBUTION = {
   'one-time': '',
 };
 
-const CreateStep4 = ({
-  route: {params: {formStores}},
+const CreateStep4 = ({route: {params: {formStores}},
   navigation,
   bottomSheetStore,
   userStore: {userInfo: {uid}}}) => {
