@@ -16,7 +16,7 @@ import {subscriptionsUrl} from '../../Config';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 
 import layout from '../../Theme/layout';
-import MonthlyContributionStatus from '../../Components';
+import {MonthlyContributionStatus} from '../../Components';
 
 const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
   const [subscription, setSubscription] = React.useState(null);
@@ -81,9 +81,10 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
 
       <View style={styles.row}>
         <Text>
-          {(subscription?.status === 'CanceledByUser' && subscription?.dueDate.toDate() > new Date()) && 'Cancels on'}
-          {(subscription?.status === 'CanceledByUser' && subscription?.dueDate.toDate() < new Date()) || subscription?.status === 'CanceledByPaymentFailure' && 'Last payment on'}
-          {['Active', 'Payment failed'].some((status) => status === subscription?.status) && 'Next payment'}
+          {(subscription?.status === 'CanceledByUser' && subscription?.dueDate.toDate() > new Date())
+            ? 'Cancels on'
+            : 'Next payment'
+          }
         </Text>
 
 
