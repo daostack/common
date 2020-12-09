@@ -2,7 +2,6 @@ import {Text, View, StyleSheet} from 'react-native';
 import React from 'react';
 import {colors, text, layout} from '~/Theme';
 import {inject, observer} from 'mobx-react';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
 import CreateAccount from '../UserProfile/CreateAccount';
 import {string, func, shape} from 'prop-types';
 
@@ -18,24 +17,8 @@ const LoginSheetScreen = ({bottomSheetStore, message = null}) => (
     </Text>
 
     <View style={layout.flexRow}>
-      <CreateAccount hidePlaceholder={true} onSignedIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)} />
+      <CreateAccount hidePlaceholder={true} onSignedIn={() => bottomSheetStore.hideBottomSheet()} />
     </View>
-
-    {/**
-    <View style={layout.flexRow}>
-      <GSignInButton style={styles.googleSignInButton} onSignIn={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN)} />
-    </View>
-
-    <View style={layout.paddingHorizontalXL}>
-      <Text
-        style={{
-          ...styles.sheetTextStyle,
-          ...layout.marginTopL,
-        }}>
-        By clicking next you are accepting the Common app terms of use
-      </Text>
-    </View>
-    */}
   </View>
 );
 

@@ -1,17 +1,7 @@
-import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import logger from '~/Services/Logger';
 import {LayoutAnimation} from 'react-native';
 import moment from 'moment';
-
-export const GOOGLE_SIGNIN_PERMISSIONS = {
-  DRIVE_RW: 'https://www.googleapis.com/auth/drive',
-  APP_DATA_RW: 'https://www.googleapis.com/auth/drive.appdata',
-};
-
-export const AUTH_PROVIDER_ID = {
-  APPLE: 'apple.com',
-  GOOGLE: 'google.com',
-};
 
 export const LAYOUT_ANIMATION_CONFIG = {
   duration: 300,
@@ -39,18 +29,6 @@ export const numberFormatter = (num) => {
         : Math.floor(denom);
 };
 
-export function prepareUserObject(user) {
-  if (!user) {
-    return null;
-  }
-
-  let displayName = user.firstName ? user.firstName : null;
-  if (user.lastName) {
-    displayName = (displayName ? `${displayName} ` : '') + user.lastName;
-  }
-  return {...user, ... {displayName}};
-}
-
 export function filterObjectByKeys(currObj, allowedKeys) {
   return Object.keys(currObj)
     .filter((key) => allowedKeys.includes(key))
@@ -64,8 +42,6 @@ export const calcIsFundingStage = (deadline) => {
   const deadlineMoment = moment.unix(deadline);
   return !moment().isAfter(deadlineMoment);
 };
-
-export const removeLinebreaks = (str) => str.replace(/[\r\n]+/gm, ' ');
 
 // This function requires the bottomSheetStore as a variable as you can't
 // access the mobx store outside of a react component

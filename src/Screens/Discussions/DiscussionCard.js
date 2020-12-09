@@ -15,7 +15,7 @@ import UserService from '~/Services/UserService';
 import moment from 'moment';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import NotificationService from '~/Services/NotificationService';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {db} from '~/Firebase';
 import logger from '~/Services/Logger';
 import {CommonActions} from '@react-navigation/native';

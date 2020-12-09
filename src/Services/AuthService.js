@@ -1,4 +1,3 @@
-import {AUTH_PROVIDER_ID} from '~/Util';
 import {firebaseWebClientId} from '~/Config';
 
 // Firebase imports
@@ -13,6 +12,11 @@ import appleAuth, {
   AppleAuthRequestScope,
   AppleAuthRequestOperation,
 } from '@invertase/react-native-apple-authentication';
+
+export const AUTH_PROVIDER_ID = {
+  APPLE: 'apple.com',
+  GOOGLE: 'google.com',
+};
 
 export default class AuthService {
   static serviceInstance = null;

@@ -30,7 +30,7 @@ import Share from 'react-native-share';
 import {BlurView} from '~/Components';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {object} from 'prop-types';
 import DaoService from '~/Services/DaoService';
 import {handlePermission} from '~Util/Permissions';
