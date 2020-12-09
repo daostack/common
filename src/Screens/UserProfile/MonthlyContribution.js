@@ -11,11 +11,11 @@ import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import layout from '../../Theme/layout';
 import {MonthlyContributionStatus} from '../../Components';
 import {
-  Active,
-  CanceledByPayment,
-  CanceledByUser,
+  ACTIVE,
+  CANCELED_BY_PAYMENT,
+  CANCELED_BY_USER,
   cancelSubscription, getSubscription,
-  PaymentFailed,
+  PAYMENT_FAILED,
 } from '../../Services/SubscriptionService';
 import {formatCurrency, formatDate} from '../../Util';
 
@@ -127,7 +127,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
         )}
       </View>
 
-      {subscription && subscription.status === CanceledByPayment && (
+      {subscription && subscription.status === CANCELED_BY_PAYMENT && (
         <View style={styles.descriptionContainer}>
           <Text style={styles.descriptionText}>
             We couldn't charge your credit card and collect your monthly
@@ -139,7 +139,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
 
       {subscription && (
         <React.Fragment>
-          {[Active, PaymentFailed].some((status) => status === subscription.status) && (
+          {[ACTIVE, PAYMENT_FAILED].some((status) => status === subscription.status) && (
             <TouchableOpacity
               style={styles.button}
               onPress={onCancelClick}
@@ -150,7 +150,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
             </TouchableOpacity>
           )}
 
-          {[CanceledByPayment, CanceledByUser].some((status) => status === subscription.status) && subscription.dueDate.toDate() < new Date() && (
+          {[CANCELED_BY_PAYMENT, CANCELED_BY_USER].some((status) => status === subscription.status) && subscription.dueDate.toDate() < new Date() && (
             <TouchableOpacity
               style={styles.button}
               onPress={onJoinClick}

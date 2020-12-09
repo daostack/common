@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Text} from 'react-native';
 import {colors} from '../Theme';
-import {Active} from '../Services/SubscriptionService';
+import {ACTIVE, CANCELED_BY_USER} from '../Services/SubscriptionService';
 
 const styles = {
   green: {
@@ -19,14 +19,14 @@ const styles = {
 };
 
 const MonthlyContributionStatus = ({status, dueDate}) => (
-  <Text style={styles[(status === Active || dueDate > new Date()) ? 'green' :
-    status === 'CanceledByUser'
+  <Text style={styles[(status === ACTIVE || dueDate > new Date()) ? 'green' :
+    status === CANCELED_BY_USER
       ? 'gray'
       : 'red']}
   >
-    {(status === Active || dueDate > new Date())
-      ? Active
-      : (status === 'CanceledByUser')
+    {(status === ACTIVE || dueDate > new Date())
+      ? 'Active'
+      : (status === CANCELED_BY_USER)
         ? 'Canceled'
         : 'Payment Failed'
     }

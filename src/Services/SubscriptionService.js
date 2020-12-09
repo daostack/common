@@ -4,10 +4,10 @@ import auth from '@react-native-firebase/auth';
 import {subscriptionsUrl} from '../Config';
 import {db} from '../Firebase';
 
-export const CanceledByPayment = 'CanceledByPayment';
-export const CanceledByUser = 'CanceledByUser';
-export const PaymentFailed = 'PaymentFailed';
-export const Active = 'Active';
+export const CANCELED_BY_PAYMENT = 'CanceledByPayment';
+export const CANCELED_BY_USER = 'CanceledByUser';
+export const PAYMENT_FAILED = 'PaymentFailed';
+export const ACTIVE = 'Active';
 
 export const cancelSubscription = async (subscriptionId) => {
   await axios.post(`${subscriptionsUrl()}/cancel?subscriptionId=${subscriptionId}`, null, {

@@ -6,11 +6,11 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors, font} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 import MonthlyContributionStatus from './MonthlyContributionStatus';
-import {CanceledByPayment, CanceledByUser} from '../Services/SubscriptionService';
+import {CANCELED_BY_PAYMENT, CANCELED_BY_USER} from '../Services/SubscriptionService';
 
 const ContributionListItem = ({subscription, navigation}) => {
-  const isCanceled = subscription.status === CanceledByPayment ||
-    subscription.status === CanceledByUser;
+  const isCanceled = subscription.status === CANCELED_BY_PAYMENT ||
+    subscription.status === CANCELED_BY_USER;
 
   const onClick = () => {
     navigation.navigate('MonthlyContribution', {
