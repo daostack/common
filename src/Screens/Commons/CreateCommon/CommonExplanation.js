@@ -8,13 +8,18 @@ import {
   SafeAreaView,
   StatusBar,
 } from 'react-native';
-import {observer, inject} from 'mobx-react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors, font, sizeXXL, sizeLineHeight, layout} from '~/Theme';
 import Swiper from 'react-native-swiper';
 import {object} from 'prop-types';
+import {
+  GeneralInfoFormStore,
+  FundingFormStore,
+  AgendaFormStore,
+  ReviewFormStore,
+} from '~/FormStores/CreateCommon';
 
-const CommonExplanation = ({navigation, generalInfoFormStore, fundingFormStore, agendaFormStore, reviewFormStore}) => (
+const CommonExplanation = ({navigation}) => (
   <>
     <StatusBar barStyle="dark-content" />
     <SafeAreaView style={styles.safeArea}>
@@ -80,11 +85,14 @@ const CommonExplanation = ({navigation, generalInfoFormStore, fundingFormStore, 
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              generalInfoFormStore.clearFormStoreState();
-              fundingFormStore.clearFormStoreState();
-              agendaFormStore.clearFormStoreState();
-              reviewFormStore.clearFormStoreState();
-              navigation.navigate('CreateStep1');
+              navigation.navigate('CreateStep1', {
+                formStores: {
+                  generalInfoFormStore: new GeneralInfoFormStore(),
+                  fundingFormStore: new FundingFormStore(),
+                  agendaFormStore: new AgendaFormStore(),
+                  reviewFormStore: new ReviewFormStore(),
+                },
+              });
             }}>
             <Text style={styles.buttonText}>Get started</Text>
           </TouchableOpacity>
@@ -96,10 +104,6 @@ const CommonExplanation = ({navigation, generalInfoFormStore, fundingFormStore, 
 
 CommonExplanation.propTypes = {
   navigation: object,
-  generalInfoFormStore: object,
-  fundingFormStore: object,
-  agendaFormStore: object,
-  reviewFormStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -164,9 +168,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'generalInfoFormStore',
-  'fundingFormStore',
-  'agendaFormStore',
-  'reviewFormStore',
-)(observer(CommonExplanation));
+export default CommonExplanation;

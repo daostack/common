@@ -149,6 +149,7 @@ IntroductionStep.propTypes = {
       skipFirstStep: bool,
       currDaoId: string,
       refreshFeed: func,
+      formStores: object,
     }),
   }),
   daoStore: shape({
