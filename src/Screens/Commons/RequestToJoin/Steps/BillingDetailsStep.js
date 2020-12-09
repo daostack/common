@@ -107,8 +107,8 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
                 contentOffset: {y: scrollY},
               },
             },
-            {useNativeDriver: false},
-            ])
+            ],
+            {useNativeDriver: false})
           }
         >
           <MembershipRequest />
