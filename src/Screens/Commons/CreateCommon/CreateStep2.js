@@ -153,8 +153,8 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
         scrollEventThrottle={16}
         onScroll={Animated.event([
           {nativeEvent: {contentOffset: {y: scrollY}}},
-          {useNativeDriver: false},
-        ])}>
+        ],
+        {useNativeDriver: false})}>
         <CreateStepHeader currentIndex={1} />
 
         <View

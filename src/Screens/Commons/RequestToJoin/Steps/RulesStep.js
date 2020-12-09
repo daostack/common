@@ -89,10 +89,9 @@ const RulesStep = ({navigation,
                 contentOffset: {y: scrollY},
               },
             },
-            {
-              useNativeDriver: false,
-            },
-          ])}
+          ],
+          {useNativeDriver: false})
+          }
           contentContainerStyle={{
             alignItems: 'center',
             justifyContent: 'center',
