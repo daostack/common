@@ -34,7 +34,7 @@ import {db} from '~/Firebase';
 import {string, func, object, shape, oneOfType, number} from 'prop-types';
 import logger from '~/Services/Logger';
 import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {
   Placeholder,
   PlaceholderMedia,

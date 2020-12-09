@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {CommonBox, BottomRightButton} from '~/Components';
 import {inject, observer} from 'mobx-react';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {font, colors} from '~/Theme';
 import {object} from 'prop-types';
 import Cache, {CacheKey} from '../../Util/Cache';

@@ -20,7 +20,7 @@ import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import RequestStepActionButton from '../RequestStepActionButton';
 import logger from '~/Services/Logger';
 import {shape, func, object} from 'prop-types';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 const {width} = Dimensions.get('window');
 
 const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}}}) => {

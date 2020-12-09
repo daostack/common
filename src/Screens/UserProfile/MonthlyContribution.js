@@ -6,7 +6,7 @@ import {inject, observer} from 'mobx-react';
 import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
 
 import {colors} from '../../Theme';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 
 import layout from '../../Theme/layout';
 import {MonthlyContributionStatus} from '../../Components';

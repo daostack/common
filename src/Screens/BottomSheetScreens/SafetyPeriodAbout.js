@@ -6,11 +6,10 @@ import moment from 'moment';
 import {inject, observer} from 'mobx-react';
 
 import {text, layout, font} from '../../Theme';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 
 const SafetyPeriodAbout = ({bottomSheetStore, activationDate}) => {
   const onClose = () => {
-    bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.SAFETY_PERIOD_ABOUT);
+    bottomSheetStore.hideBottomSheet();
   };
 
   return (

@@ -2,14 +2,12 @@ import React from 'react';
 import {View, Image, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {text, layout, font, colors} from '../../Theme';
 import {inject, observer} from 'mobx-react';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {object, func} from 'prop-types';
 
 const PublishCommon = ({bottomSheetStore, forgeCommon}) => {
   const onPublish = () => {
     forgeCommon();
-
-    bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.PUBLISH_COMMON);
+    bottomSheetStore.hideBottomSheet();
   };
 
   return (
@@ -27,7 +25,7 @@ const PublishCommon = ({bottomSheetStore, forgeCommon}) => {
 
         <TouchableOpacity
           style={styles.dismissButton}
-          onPress={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.PUBLISH_COMMON)}
+          onPress={() => bottomSheetStore.hideBottomSheet()}
         >
           <Text style={styles.continueEditButtonTxt}>Continue editing</Text>
         </TouchableOpacity>

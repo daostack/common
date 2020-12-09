@@ -10,7 +10,6 @@ import React from 'react';
 import {text, layout, colors, font} from '~/Theme/index';
 import PropTypes from 'prop-types';
 import Icon from '../../Assets/iconfont/Icon';
-import {removeLinebreaks} from '~/Util';
 
 const VALIDATION_ERROR = 'ValidationError';
 
@@ -26,6 +25,8 @@ const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
       bottomSheetStore.increseTopSnap(changeHeight);
     }
   };
+
+  const removeLinebreaks = (str) => str.replace(/[\r\n]+/gm, ' ');
 
   return (
     <View style={styles.scrollView}>

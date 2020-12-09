@@ -5,7 +5,7 @@ import {Text, StyleSheet, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '~/Assets/iconfont/Icon';
 import {text, layout, colors, font} from '~/Theme';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 
 
 const ProposalActivationDate = ({activationDate, bottomSheetStore}) => {

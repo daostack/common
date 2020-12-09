@@ -1,12 +1,63 @@
-export {default as ApprovalSheetScreen} from './ApprovalSheetScreen';
-export {default as CommonOperationalStateNotif} from './CommonOperationalStateNotif';
-export {default as CommonProfileOptions} from './CommonProfileOptions';
-export {default as LoginSheetScreen} from './LoginSheetScreen';
-export {default as SortProposals} from './SortProposals';
-export {default as UnsavedChanges} from './UnsavedChanges';
-export {default as UserProfileSheetScreen} from './UserProfileSheetScreen';
-export {default as TransactionError} from './TransactionError';
-export {default as PublishCommon} from './PublishCommon';
-export {default as SafetyPeriodAbout} from './SafetyPeriodAbout';
-export {default as CancelSubscription} from './CancelSubscriptionSheetScreen';
-export {default as PaymentFailed} from './PaymentFailed';
+import {default as CommonOperationalStateNotif} from './CommonOperationalStateNotif';
+import {default as CommonProfileOptions} from './CommonProfileOptions';
+import {default as LoginSheetScreen} from './LoginSheetScreen';
+import {default as SortProposals} from './SortProposals';
+import {default as UnsavedChanges} from './UnsavedChanges';
+import {default as TransactionError} from './TransactionError';
+import {default as PublishCommon} from './PublishCommon';
+import {default as SafetyPeriodAbout} from './SafetyPeriodAbout';
+import {default as PaymentFailed} from './PaymentFailed';
+import {default as CancelSubscription} from './CancelSubscriptionSheetScreen';
+
+export const BOTTOM_SHEET_TEMPLATES = {
+  COMMON_OPERATIONAL_STATE_NOTIF: {
+    topSnap: 440,
+    content: CommonOperationalStateNotif,
+  },
+  SCREEN_OPTIONS: {
+    topSnap: 280,
+    content: CommonProfileOptions,
+    props: {
+      isCommonProfile: false,
+    },
+  },
+  SCREEN_COMMON_PROFILE_OPTIONS: {
+    topSnap: 480,
+    content: CommonProfileOptions,
+    props: {
+      isCommonProfile: true,
+    },
+  },
+  LOGIN_SHEET_SCREEN: {
+    topSnap: 400,
+    content: LoginSheetScreen,
+  },
+  TRANSACTION_ERROR: {
+    topSnap: 480,
+    content: TransactionError,
+  },
+  SORT_PROPOSALS: {
+    topSnap: 500,
+    content: SortProposals,
+  },
+  UNSAVED_CHANGES: {
+    topSnap: 500,
+    content: UnsavedChanges,
+  },
+  SAFETY_PERIOD_ABOUT: {
+    topSnap: 550,
+    content: SafetyPeriodAbout,
+  },
+  PUBLISH_COMMON: {
+    topSnap: 500,
+    content: PublishCommon,
+  },
+  PAYMENT_FAILED: {
+    topSnap: 500,
+    content: PaymentFailed,
+  },
+  CANCEL_SUBSCRIPTION: {
+    topSnap: 450,
+    content: CancelSubscription,
+  },
+};

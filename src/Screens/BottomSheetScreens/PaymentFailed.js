@@ -2,7 +2,6 @@ import React from 'react';
 import {View, Image, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {text, layout, font, colors} from '../../Theme';
 import {inject, observer} from 'mobx-react';
-import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 import {object, string} from 'prop-types';
 
 const PaymentFailed = ({bottomSheetStore, proposerName}) => (
@@ -20,7 +19,7 @@ const PaymentFailed = ({bottomSheetStore, proposerName}) => (
 
       <TouchableOpacity
         style={styles.dismissButton}
-        onPress={() => bottomSheetStore.hideBottomSheet(BOTTOM_SHEET_TEMPLATES.PAYMENT_FAILED)}
+        onPress={() => bottomSheetStore.hideBottomSheet()}
       >
         <Text style={styles.continueEditButtonTxt}>OK</Text>
       </TouchableOpacity>
