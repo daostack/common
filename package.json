@@ -64,7 +64,7 @@
     "react-native-deep-linking": "^2.2.0",
     "react-native-document-picker": "4.1.0",
     "react-native-fast-image": "^8.3.4",
-    "react-native-fast-openpgp": "^1.6.0",
+    "react-native-fast-openpgp": "^1.6.3",
     "react-native-gesture-handler": "^1.6.0",
     "react-native-hyperlink": "^0.0.19",
     "react-native-image-picker": "^2.3.4",
