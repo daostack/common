@@ -3,20 +3,26 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
-import {colors, font, text} from '../Theme';
+import {colors, font} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 import MonthlyContributionStatus from './MonthlyContributionStatus';
-
+import {CanceledByPayment, CanceledByUser} from '../Services/SubscriptionService';
 
 const ContributionListItem = ({subscription, navigation}) => {
-  const isCanceled = subscription.status === 'CanceledByPayment' ||
-    subscription.status === 'CanceledByUser';
+  const isCanceled = subscription.status === CanceledByPayment ||
+    subscription.status === CanceledByUser;
 
   const onClick = () => {
     navigation.navigate('MonthlyContribution', {
       subscription,
     });
   };
+
+  const dueDate = moment(subscription.dueDate.toDate()).format('D MMMM YYYY');
+  const paymentAmount = (subscription.amount / 100).toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
 
   return (
     <TouchableOpacity onPress={onClick}>
@@ -26,23 +32,19 @@ const ContributionListItem = ({subscription, navigation}) => {
             {subscription.metadata?.common?.name}
           </Text>
 
-          {isCanceled
-            ? subscription.dueDate.toDate() < new Date()
-              ? (
-                <Text style={styles.bottomText}>
-                  Canceled by user
-                </Text>
-              ) : (
-                <Text style={styles.bottomText}>
-                  Cancels at
-                </Text>
+          <Text style={styles.bottomText}>
+            {isCanceled
+              ? subscription.dueDate.toDate() < new Date()
+                ? (
+                  'Canceled by user'
+                ) : (
+                  'Cancels at'
+                )
+              : (
+                `Payment Due: ${dueDate}`
               )
-            : (
-              <Text style={styles.bottomText}>
-                Payment Due: {moment(subscription.dueDate.toDate()).format('D MMMM YYYY')}
-              </Text>
-            )
-          }
+            }
+          </Text>
         </View>
 
         <View style={styles.statusContainer}>
@@ -52,22 +54,17 @@ const ContributionListItem = ({subscription, navigation}) => {
               dueDate={subscription.dueDate.toDate()}
             />
 
-            {isCanceled ? (
-              <Text style={styles.bottomText}>
-                {moment(subscription.dueDate.toDate()).format('D MMMM YYYY')}
-              </Text>
-            ) : (
-              <Text style={styles.bottomText}>
-                {(subscription.amount / 100).toLocaleString('en-US', {
-                  style: 'currency',
-                  currency: 'USD',
-                })}/mo
-              </Text>
-            )}
+            <Text style={styles.bottomText}>
+              {isCanceled ? (
+                {dueDate}
+              ) : (
+                `${paymentAmount}/mo`
+              )}
+            </Text>
           </View>
 
           <View>
-            <Icon name="right-arrow" />
+            <Icon name="right-arrow"/>
           </View>
         </View>
       </View>

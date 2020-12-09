@@ -7,8 +7,8 @@ import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
 
 import {ContributionListItem} from '../../Components';
 import {colors, text} from '../../Theme';
-import {db} from '../../Firebase';
 import {fontSize} from '../../Theme/font';
+import {getUserSubscriptions} from '../../Services/SubscriptionService';
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -45,12 +45,9 @@ const MonthlyContributionsList = ({userStore, navigation}) => {
 
   React.useEffect(() => {
     (async () => {
-      await db
-        .collection('subscriptions')
-        .where('userId', '==', userStore.userInfo.uid)
-        .onSnapshot((snapshot) => {
-          setSubs(snapshot.docs.map((doc) => doc.data()));
-        });
+      await getUserSubscriptions(userStore.userInfo.uid, (snap) => {
+        setSubs(snap.docs.map((doc) => doc.data()));
+      });
     })();
   }, []);
 
@@ -78,7 +75,7 @@ const MonthlyContributionsList = ({userStore, navigation}) => {
 
       {(subs?.length === 0) && (
         <View style={styles.container}>
-          <Image source={require('../../Assets/Subscriptions/funds.png')} />
+          <Image source={require('../../Assets/Subscriptions/funds.png')}/>
 
           <Text style={styles.title}>
             No Monthly Contributions

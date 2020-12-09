@@ -2,36 +2,29 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Dimensions, Text, TouchableOpacity, View} from 'react-native';
 
-import axios from 'axios';
-import moment from 'moment';
-import auth from '@react-native-firebase/auth';
-
 import {inject, observer} from 'mobx-react';
 import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
 
-
-import {db} from '../../Firebase';
 import {colors} from '../../Theme';
-import {subscriptionsUrl} from '../../Config';
 import {BOTTOM_SHEET_TEMPLATES} from '../../Stores/BottomSheetStore';
 
 import layout from '../../Theme/layout';
 import {MonthlyContributionStatus} from '../../Components';
+import {
+  Active,
+  CanceledByPayment,
+  CanceledByUser,
+  cancelSubscription, getSubscription,
+  PaymentFailed,
+} from '../../Services/SubscriptionService';
+import {formatCurrency, formatDate} from '../../Util';
 
 const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
   const [subscription, setSubscription] = React.useState(null);
 
-  const onCancelConfirm = async () => {
-    await axios.post(`${subscriptionsUrl()}/cancel?subscriptionId=${subscription.id}`, null, {
-      headers: {
-        Authorization: await auth().currentUser.getIdToken(),
-      },
-    });
-  };
-
   const onCancelClick = () => {
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.CANCEL_SUBSCRIPTION, {
-      onCancelConfirm,
+      onCancelConfirm: cancelSubscription,
       commonName: subscription.metadata?.common?.name,
       dueDate: subscription.dueDate.toDate(),
     });
@@ -54,12 +47,9 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
 
   React.useEffect(() => {
     (async () => {
-      await db
-        .collection('subscriptions')
-        .doc(route.params?.subscription?.id)
-        .onSnapshot((snapshot) => {
-          setSubscription(snapshot.data());
-        });
+      await getSubscription(route.params?.subscription?.id, (snap) => {
+        setSubscription(snap.data());
+      });
     })();
   }, [route.params?.subscription?.id]);
 
@@ -92,7 +82,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
           <Text>
             {subscription.dueDate.toDate() < new Date()
               ? 'In the following days'
-              : moment(subscription.dueDate.toDate()).format('DD MMM, YYYY')}
+              : formatDate(subscription.dueDate.toDate())}
           </Text>
         ) : (
           <View style={{width: 100}}>
@@ -109,7 +99,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
 
         {subscription ? (
           <Text>
-            {subscription.amount.toLocaleString('en-US', {style: 'currency', currency: 'USD'})}
+            {formatCurrency(subscription.amount)}
           </Text>
         ) : (
           <View style={{width: 100}}>
@@ -126,7 +116,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
 
         {subscription ? (
           <Text>
-            {moment(subscription.createdAt.toDate()).format('DD MMM, YYYY')}
+            {formatDate(subscription.createdAt.toDate())}
           </Text>
         ) : (
           <View style={{width: 100}}>
@@ -137,7 +127,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
         )}
       </View>
 
-      {subscription && subscription.status === 'CanceledByPaymentFailure' && (
+      {subscription && subscription.status === CanceledByPayment && (
         <View style={styles.descriptionContainer}>
           <Text style={styles.descriptionText}>
             We couldn't charge your credit card and collect your monthly
@@ -149,7 +139,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
 
       {subscription && (
         <React.Fragment>
-          {['Active', 'PaymentFailed'].some((status) => status === subscription.status) && (
+          {[Active, PaymentFailed].some((status) => status === subscription.status) && (
             <TouchableOpacity
               style={styles.button}
               onPress={onCancelClick}
@@ -160,7 +150,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
             </TouchableOpacity>
           )}
 
-          {['CanceledByUser', 'CanceledByPaymentFailure'].some((status) => status === subscription.status) && subscription.dueDate.toDate() < new Date() && (
+          {[CanceledByPayment, CanceledByUser].some((status) => status === subscription.status) && subscription.dueDate.toDate() < new Date() && (
             <TouchableOpacity
               style={styles.button}
               onPress={onJoinClick}

@@ -85,7 +85,7 @@ const statuses = {
   errored: 'errored',
 };
 
-const ApprovalSheetScreen = ({
+const CancelSubscriptionSheetScreen = ({
   dueDate,
   commonName,
   initialStatus,
@@ -110,6 +110,16 @@ const ApprovalSheetScreen = ({
     }
   };
 
+  const LeaveText = (
+    <Text style={styles.subTitle}>
+      {status === statuses.canceled
+        ? 'You will leave'
+        : 'If you cancel, you will leave'}{' '}
+      <Text style={styles.bold}>{commonName}{' '}</Text>
+      {moment(dueDate).toNow()}{' '}({moment(dueDate).format('DD MMMM YYYY')})
+    </Text>
+  );
+
   return (
     <View style={styles.body}>
       <View style={styles.slider}>
@@ -127,11 +137,7 @@ const ApprovalSheetScreen = ({
             Cancel payment
           </Text>
 
-          <Text style={styles.subTitle}>
-            If you cancel, you will leave{' '}
-            <Text style={styles.bold}>{commonName}{' '}</Text>
-            {moment(dueDate).toNow()}{' '}({moment(dueDate).format('DD MMMM YYYY')})
-          </Text>
+          <LeaveText />
 
           <TouchableOpacity
             style={styles.button}
@@ -178,12 +184,7 @@ const ApprovalSheetScreen = ({
               Recurring payment canceled
           </Text>
 
-          <Text style={styles.subTitle}>
-            You will leave{' '}
-            <Text style={styles.bold}>{commonName}{' '}</Text>
-            {moment(dueDate).toNow()}{' '}({moment(dueDate).format('DD MMMM YYYY')})
-          </Text>
-
+          <LeaveText />
 
           <TouchableOpacity
             style={{
@@ -206,7 +207,7 @@ const ApprovalSheetScreen = ({
   );
 };
 
-ApprovalSheetScreen.propTypes = {
+CancelSubscriptionSheetScreen.propTypes = {
   onCancelConfirm: PropTypes.func.isRequired,
   commonName: PropTypes.string.isRequired,
   dueDate: PropTypes.instanceOf(Date).isRequired,
@@ -219,9 +220,9 @@ ApprovalSheetScreen.propTypes = {
   }),
 };
 
-ApprovalSheetScreen.defaultProps = {
+CancelSubscriptionSheetScreen.defaultProps = {
   initialStatus: statuses.initial,
 };
 
-export default inject('bottomSheetStore')(observer(ApprovalSheetScreen));
+export default inject('bottomSheetStore')(observer(CancelSubscriptionSheetScreen));
 

@@ -47,7 +47,7 @@ import {
   Browser,
   FullScreenCreationLoader,
   MonthlyContributionsList,
-  MonthlyContribution
+  MonthlyContribution,
 } from './src/Screens';
 import UserService from './src/Services/UserService';
 import AuthService from './src/Services/AuthService';
