@@ -13,7 +13,6 @@ import {
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import {colors, font, sizeL, sizeS} from '~/Theme';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
-import {observer, inject} from 'mobx-react';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
@@ -30,8 +29,9 @@ const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
 const MAX_CONTRIBUTION = ['3000', '500'];
 const SAFETY_PERIOD_TAB_VALUES = [moment().add('7', 'days').unix(), moment().add('1', 'months').unix()];
 
-const CreateStep2 = ({fundingFormStore, navigation}) => {
+const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
 
+  const fundingFormStore = formStores.fundingFormStore;
   const getContributionValue = () => fundingFormStore.getFormField(CreateCommonForm.CONTRIBUTION)?.value;
   const getDeadlineValue = () => fundingFormStore.getFormField(CreateCommonForm.DEADLINE)?.value;
 
@@ -111,7 +111,7 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
 
   const push = () => {
     if (fundingFormStore.isFormValid()) {
-      navigation.navigate('CreateStep3');
+      navigation.navigate('CreateStep3', {formStores});
     }
   };
 
@@ -317,11 +317,17 @@ const CreateStep2 = ({fundingFormStore, navigation}) => {
 };
 
 CreateStep2.propTypes = {
-  fundingFormStore: shape({
-    fieldChanged: func,
-    registerFormField: func,
-    isFormValid: func,
-    isFormActionEnabled: func,
+  route: shape({
+    params: shape({
+      formStores: shape({
+        fundingFormStore: shape({
+          fieldChanged: func,
+          registerFormField: func,
+          isFormValid: func,
+          isFormActionEnabled: func,
+        }).isRequired,
+      }).isRequired,
+    }),
   }),
   navigation: object,
 };
@@ -403,9 +409,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'generalInfoFormStore',
-  'fundingFormStore',
-  'agendaFormStore',
-  'reviewFormStore',
-)(observer(CreateStep2));
+export default CreateStep2;
