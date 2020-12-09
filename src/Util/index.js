@@ -91,3 +91,6 @@ export const formatNumber = (num) => (
     ? Math.sign(num) * ((Math.abs(num) / 1000).toFixed(1)) + 'K'
     : Math.sign(num) * Math.abs(num)
 );
+
+export const formatCurrency = (amount) => amount.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
+export const formatDate = (date) => moment(date).format('DD MMM, YYYY');

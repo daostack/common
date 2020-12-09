@@ -46,6 +46,8 @@ import {
   PDFViewer,
   Browser,
   FullScreenCreationLoader,
+  MonthlyContributionsList,
+  MonthlyContribution,
 } from './src/Screens';
 import UserService from './src/Services/UserService';
 import AuthService from './src/Services/AuthService';
@@ -563,6 +565,24 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           name="FundingProposal"
           component={FundingProposal}
         />
+
+        <Stack.Screen
+          options={{
+            title: 'Monthly Contributions',
+            headerBackTitleVisible: false,
+          }}
+          name="MonthlyContributionsList"
+          component={MonthlyContributionsList}
+        />
+
+        <Stack.Screen
+          options={{
+            headerBackTitleVisible: false,
+          }}
+          name="MonthlyContribution"
+          component={MonthlyContribution}
+        />
+
       </Stack.Navigator>
       {bottomSheetStore.isVisible && <BottomSheetContainer />}
       <ToastView

@@ -7,6 +7,7 @@ import {default as TransactionError} from './TransactionError';
 import {default as PublishCommon} from './PublishCommon';
 import {default as SafetyPeriodAbout} from './SafetyPeriodAbout';
 import {default as PaymentFailed} from './PaymentFailed';
+import {default as CancelSubscription} from './CancelSubscriptionSheetScreen';
 
 export const BOTTOM_SHEET_TEMPLATES = {
   COMMON_OPERATIONAL_STATE_NOTIF: {
@@ -54,5 +55,9 @@ export const BOTTOM_SHEET_TEMPLATES = {
   PAYMENT_FAILED: {
     topSnap: 500,
     content: PaymentFailed,
+  },
+  CANCEL_SUBSCRIPTION: {
+    topSnap: 450,
+    content: CancelSubscription,
   },
 };
