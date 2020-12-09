@@ -71,7 +71,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
 
       <View style={styles.row}>
         <Text>
-          {(subscription?.status === 'CanceledByUser' && subscription?.dueDate.toDate() > new Date())
+          {(subscription?.status === CANCELED_BY_USER && subscription?.dueDate.toDate() > new Date())
             ? 'Cancels on'
             : 'Next payment'
           }
@@ -226,10 +226,10 @@ MonthlyContribution.propTypes = {
         amount: PropTypes.number,
 
         status: PropTypes.oneOf([
-          'Active',
-          'CanceledByUser',
-          'CanceledByPaymentFailure',
-          'PaymentFailed',
+          ACTIVE,
+          PAYMENT_FAILED,
+          CANCELED_BY_USER,
+          CANCELED_BY_PAYMENT,
         ]),
       }),
     }),
