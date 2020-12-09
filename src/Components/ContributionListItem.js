@@ -6,7 +6,7 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors, font} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 import MonthlyContributionStatus from './MonthlyContributionStatus';
-import {CANCELED_BY_PAYMENT, CANCELED_BY_USER} from '../Services/SubscriptionService';
+import {ACTIVE, CANCELED_BY_PAYMENT, CANCELED_BY_USER, PAYMENT_FAILED} from '../Services/SubscriptionService';
 
 const ContributionListItem = ({subscription, navigation}) => {
   const isCanceled = subscription.status === CANCELED_BY_PAYMENT ||
@@ -88,10 +88,10 @@ ContributionListItem.propTypes = {
     amount: PropTypes.number,
 
     status: PropTypes.oneOf([
-      'Active',
-      'CanceledByUser',
-      'CanceledByPaymentFailure',
-      'PaymentFailed',
+      ACTIVE,
+      PAYMENT_FAILED,
+      CANCELED_BY_USER,
+      CANCELED_BY_PAYMENT,
     ]),
   }),
 
