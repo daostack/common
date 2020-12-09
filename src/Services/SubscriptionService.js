@@ -4,7 +4,7 @@ import auth from '@react-native-firebase/auth';
 import {subscriptionsUrl} from '../Config';
 import {db} from '../Firebase';
 
-export const CANCELED_BY_PAYMENT = 'CanceledByPayment';
+export const CANCELED_BY_PAYMENT = 'CanceledByPaymentFailure';
 export const CANCELED_BY_USER = 'CanceledByUser';
 export const PAYMENT_FAILED = 'PaymentFailed';
 export const ACTIVE = 'Active';
