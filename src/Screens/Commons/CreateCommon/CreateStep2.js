@@ -8,7 +8,6 @@ import {
   Dimensions,
   SafeAreaView,
   Animated,
-  Platform,
 } from 'react-native';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import {colors, font, sizeL, sizeS} from '~/Theme';
@@ -16,7 +15,7 @@ import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePicker from 'react-native-date-picker';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import Modal from 'react-native-modal';
 import moment from 'moment';
@@ -75,13 +74,10 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
     setContributionIndex(index);
   };
 
-  const onDatePickerChange = (event, date) => {
+  const onDatePickerChange = (date) => {
     const momentObj = moment(date || {});
     const currDate = momentObj.unix();
     fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {value: (currDate), index: 2});
-    if (Platform.OS === 'android') {
-      setShow(false);
-    }
     setPickDate(momentObj.toDate());
   };
 
@@ -95,7 +91,6 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
     setSegmentedIndex(index);
   };
 
-  // iOS only
   const onDone = () => {
     if (pickDate) {
       setShow(false);
@@ -115,16 +110,38 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
     }
   };
 
-  const DatePicker = <DateTimePicker
-    testID="dateTimePicker"
-    timeZoneOffsetInMinutes={0}
-    value={pickDate ? pickDate : new Date()}
-    minimumDate={new Date()}
-    maximumDate={moment().add('100', 'days').toDate()}
-    is24Hour={true}
-    display="default"
-    onChange={onDatePickerChange}
-  />;
+  const DatePickerModal = (
+    <Modal
+      visible={show}
+      transparent={true}
+      avoidKeyboard={true}
+      backdropOpacity={0.3}
+      onBackdropPress={() => setShow(false)}
+      style={styles.view}>
+      <View style={{backgroundColor: 'white', alignItems: 'center'}}>
+        <View
+          style={styles.modalView}>
+          <TouchableOpacity onPress={onDone}>
+            <Text
+              style={styles.done}>
+              Done
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <DatePicker
+          testID="dateTimePicker"
+          timeZoneOffsetInMinutes={0}
+          date={pickDate ? pickDate : new Date()}
+          minimumDate={new Date()}
+          maximumDate={moment().add('100', 'days').toDate()}
+          is24Hour={true}
+          mode={'date'}
+          onDateChange={onDatePickerChange}
+          androidVariant="iosClone"
+        />
+      </View>
+    </Modal>
+  );
 
   return (
     <SafeAreaView
@@ -160,8 +177,6 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
         <View
           style={{
             flex: 1,
-            // alignItems: 'center',
-            // padding: 24,
             backgroundColor: 'white',
           }}>
           <CreateStepHeaderTitle
@@ -241,46 +256,7 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
               selectedIndex={segmentedIndex}
               onTabPress={onTabChange}
             />
-            {Platform.OS === 'ios' ? <Modal
-              visible={show}
-              transparent={true}
-              avoidKeyboard={true}
-              backdropOpacity={0.3}
-              onBackdropPress={() => setShow(false)}
-              style={styles.view}>
-              <View style={{backgroundColor: 'white'}}>
-                <View
-                  style={{
-                    height: 50,
-                    backgroundColor: colors.grey4,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'flex-end',
-                    position: 'relative',
-                  }}>
-                  {/* <Text
-                    style={{
-                      color: colors.slate,
-                      fontSize: 14,
-                      textAlign: 'center',
-                      position: 'absolute',
-                      left: 0,
-                      right: 0,
-                      marginLeft: 'auto',
-                      marginRight: 'auto',
-                    }}>
-                    {'Min. 1 week'}
-                  </Text> */}
-                  <TouchableOpacity onPress={onDone}>
-                    <Text
-                      style={styles.done}>
-                      Done
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                {DatePicker}
-              </View>
-            </Modal> : show && (DatePicker)}
+            {DatePickerModal}
           </View>
           {/* <TextInputFieldWithIcon
             iconName="dollar"
@@ -337,16 +313,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     margin: 0,
   },
-  container: {
-    backgroundColor: colors.white,
-    borderBottomColor: colors.gray,
-    borderBottomWidth: 1,
-    marginVertical: 10,
-    marginHorizontal: 10,
-    justifyContent: 'center',
-    borderRadius: 2,
-    height: 50,
-  },
   tabTextStyle: {
     ...font.primary.regular,
     ...font.fontSize(2),
@@ -358,6 +324,7 @@ const styles = StyleSheet.create({
     ...font.fontSize(3),
     paddingRight: 20,
     textAlign: 'center',
+    alignSelf: 'flex-end',
   },
   info2: {
     marginVertical: sizeS,
@@ -366,31 +333,10 @@ const styles = StyleSheet.create({
     color: colors.greySubtitle,
     ...font.fontSize(1),
   },
-  placeholderText: {
-    color: colors.grey3,
-  },
-  text: {
-    width: '100%',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    fontSize: 15,
-    color: colors.black,
-  },
   readMoreButton: {
     ...font.primary.regular,
     ...font.fontSize(2),
     color: colors.grey3,
-  },
-  continueButton: {
-    width: '100%',
-    height: 48,
-    borderRadius: 32,
-    marginTop: 45,
-    flexDirection: 'row',
-    paddingHorizontal: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.mainBlue,
   },
   label: {
     ...font.primary.primary,
@@ -406,6 +352,15 @@ const styles = StyleSheet.create({
   },
   boldText: {
     ...font.primary.bold,
+  },
+  modalView: {
+    height: 50,
+    backgroundColor: colors.grey4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    position: 'relative',
+    width: '100%',
   },
 });
 
