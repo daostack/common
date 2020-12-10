@@ -319,7 +319,7 @@ TextInputFieldWithIcon.propTypes = {
   onChangeText: func,
   onBlur: func,
   placeholderText: string,
-  label: string,
+  label: string || React.Fragment,
   infoLabel: string,
   infoMessage: string,
   password: bool,

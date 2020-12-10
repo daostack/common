@@ -75,17 +75,10 @@ const CreateStep4 = ({route: {params: {formStores}},
   const [templateIndex, setTemplateIndex] = useState(1);
   const getImageUrl = (index) =>
     `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
-  const [imageURI, setImageURI] = useState(
-    getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))),
-  );
-  /* [avatarURL, setAvatarURL] = useState(null);
-  */
-
-  //set default value for Avatar and Image fields
+  
+  //set default value for Image field
   useEffect(() => {
-    reviewFormStore.registerFormField(CreateCommonForm.AVATAR);
-    reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
-    reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, imageURI);
+    reviewFormStore.registerFormField(CreateCommonForm.IMAGE, getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))));
   }, []);
 
   useEffect(() => {
@@ -110,7 +103,6 @@ const CreateStep4 = ({route: {params: {formStores}},
     setTemplateIndex(index);
     const currImageUrl = getImageUrl(index);
     reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, currImageUrl);
-    setImageURI(currImageUrl);
   };
 
   const goToCommon = () => {
@@ -124,11 +116,11 @@ const CreateStep4 = ({route: {params: {formStores}},
     navigation.dispatch(navigate);
   };
 
-  const pickImage = async (isAvatar) => {
+  const pickImage = async () => {
     const options = {
-      title: (isAvatar && 'Select Avatar') || 'Select profile image',
+      title: 'Select profile image',
       quality: 0.7,
-      allowsEditing: isAvatar,
+      allowsEditing: false,
     };
     ImagePicker.showImagePicker(options, async (response) => {
       if (response.didCancel) {
@@ -145,13 +137,7 @@ const CreateStep4 = ({route: {params: {formStores}},
           .then((url) => {
             Toast.hide();
             Toast.success('Done');
-            if (isAvatar) {
-              //setAvatarURL(url);
-              reviewFormStore.fieldChanged(CreateCommonForm.AVATAR, url);
-            } else {
-              reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
-              setImageURI(url);
-            }
+            reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
           })
           .catch((error) => Toast.error(error));
       }
@@ -276,7 +262,7 @@ const CreateStep4 = ({route: {params: {formStores}},
                 backgroundColor: colors.grey4,
               }}
               source={{
-                uri: imageURI,
+                uri: reviewFormStore.getFormField(CreateCommonForm.IMAGE)?.value,
               }}
               resizeMode="cover"
             />
@@ -324,57 +310,6 @@ const CreateStep4 = ({route: {params: {formStores}},
               </TouchableOpacity>
             </View>
           </View>
-
-          {/* {avatarURL === null ? (
-            <View
-              style={{
-                flexDirection: 'row',
-                marginHorizontal: 10,
-                marginVertical: 15,
-              }}>
-              <Text
-                style={{
-                  ...font.primary.regular,
-                  ...font.fontSize(2),
-                  marginLeft: 10,
-                  color: colors.grey,
-                  flex: 1,
-                  alignSelf: 'flex-start',
-                }}>
-                Have an avatar for your Common?
-              </Text>
-              <TouchableOpacity onPress={() => pickImage(true)}>
-                <Text style={styles.uploadLogo}>Upload logo</Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View style={{marginBottom: 30}}>
-              <Text style={{color: colors.slate, fontSize: 14, margin: 24}}>
-                Avatar
-              </Text>
-              <View style={{width: 70, alignSelf: 'center'}}>
-                <Image
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: 58,
-                    width: 58,
-                    borderRadius: 29,
-                    backgroundColor: colors.grey4,
-                    borderColor: colors.grey4,
-                    borderWidth: 0.5,
-                  }}
-                  resizeMode="cover"
-                  source={{uri: avatarURL}}
-                />
-                <TouchableOpacity
-                  style={styles.formImageFielAddIcon}
-                  onPress={() => setAvatarURL(null)}>
-                  <Icon name="delete" size={15} color="white" />
-                </TouchableOpacity>
-              </View>
-            </View>
-          )} */}
           <View
             style={{height: 1, width: width, backgroundColor: colors.grey4}}
           />
