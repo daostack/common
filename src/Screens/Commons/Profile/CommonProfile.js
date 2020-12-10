@@ -980,8 +980,8 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 32,
     flexDirection: 'row',
-    paddingHorizontal: 18,
-    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: colors.mainBlue,
 
