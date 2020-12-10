@@ -7,8 +7,8 @@ import {
   View,
   Linking,
   Alert,
-  DeviceInfo,
 } from 'react-native';
+import {getVersion, getBuildNumber} from 'react-native-device-info';
 import React, {useEffect, useState} from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {layout, colors, text, sizeL, font} from '~/Theme';
@@ -149,7 +149,7 @@ const UserProfile = ({userStore, daoStore, navigation, route}) => {
                   </View>
 
                 }
-                <Text style={styles.version}>Common{isProduction ? '' : '-stg'} v{DeviceInfo.getVersion()} ({DeviceInfo.getBuildNumber()}{codePushVersion ? `-${codePushVersion}` : ''})</Text>
+                <Text style={styles.version}>Common{isProduction ? '' : '-stg'} v{getVersion()} ({getBuildNumber()}{codePushVersion ? `-${codePushVersion}` : ''})</Text>
               </>
               : null
           }
