@@ -10,7 +10,7 @@ import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
 import {layout, colors, font, text, sizeS, sizeL} from '~/Theme';
-import {string, func, bool, shape, oneOfType, object, number} from 'prop-types';
+import {string, func, bool, shape, oneOfType, object, number, node} from 'prop-types';
 
 class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
@@ -319,7 +319,10 @@ TextInputFieldWithIcon.propTypes = {
   onChangeText: func,
   onBlur: func,
   placeholderText: string,
-  label: string || React.Fragment,
+  label: oneOfType([
+    string,
+    node,
+  ]),
   infoLabel: string,
   infoMessage: string,
   password: bool,
