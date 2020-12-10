@@ -194,7 +194,7 @@ class TextInputFieldWithIcon extends React.Component {
     const getValue = () => {
       if (validation) {
         let currValue = validation.formStore.getFormField(validation.name, validation.multiName)?.value;
-        currValue = (currValue) === 'object' ? currValue.value.toString() : currValue.toString();
+        currValue = typeof (currValue) === 'object' ? currValue.value?.toString() : currValue?.toString();
 
         currValue = currValue.replace(',', '');
         // if number, fix it to price format x,xxx (for currValue > 999)
