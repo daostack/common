@@ -187,9 +187,15 @@ class TextInputFieldWithIcon extends React.Component {
       };
     }
 
-    const handleNumbers = (currValue) => (
-      currValue ? parseFloat(currValue).toLocaleString('en') : currValue
-    );
+    const handleNumbers = (currValue) => {
+      let dec = '';
+      if (currValue.includes('.')) {
+        [currValue, dec] = currValue.split('.');
+        dec = `.${dec}`;
+      }
+      currValue = `${parseFloat(currValue).toLocaleString('en-US')}${dec}`;
+      return currValue;
+    };
 
     const getValue = () => {
       if (validation) {
