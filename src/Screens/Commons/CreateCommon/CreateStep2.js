@@ -203,6 +203,7 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
             autoCapitalize="none"
             autoCorrect={false}
             keyboardType="numeric"
+            maxLength={5}
             validation={{
               name: CreateCommonForm.MINIMUM,
               formStore: fundingFormStore,

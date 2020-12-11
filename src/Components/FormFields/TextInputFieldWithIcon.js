@@ -10,7 +10,7 @@ import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
 import {layout, colors, font, text, sizeS, sizeL} from '~/Theme';
-import {string, func, bool, shape, oneOfType, object, number} from 'prop-types';
+import {string, func, bool, shape, oneOfType, object, number, node} from 'prop-types';
 
 class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
@@ -187,9 +187,15 @@ class TextInputFieldWithIcon extends React.Component {
       };
     }
 
-    const handleNumbers = (currValue) => (
-      currValue ? parseFloat(currValue).toLocaleString('en') : currValue
-    );
+    const handleNumbers = (currValue) => {
+      let dec = '';
+      if (currValue.includes('.')) {
+        [currValue, dec] = currValue.split('.');
+        dec = `.${dec}`;
+      }
+      currValue = `${parseFloat(currValue).toLocaleString('en-US')}${dec}`;
+      return currValue;
+    };
 
     const getValue = () => {
       if (validation) {
@@ -319,7 +325,10 @@ TextInputFieldWithIcon.propTypes = {
   onChangeText: func,
   onBlur: func,
   placeholderText: string,
-  label: string,
+  label: oneOfType([
+    string,
+    node,
+  ]),
   infoLabel: string,
   infoMessage: string,
   password: bool,

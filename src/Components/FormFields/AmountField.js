@@ -66,6 +66,7 @@ const AmountField = ({
         onTogglePress={onTogglePress}
         toggleName="Other"
         value={{value: currFieldValue?.value || '', index: -1}}
+        maxLength={5}
         validation={{
           name: RequestToJoinForm.FIELD_AMOUNT,
           formStore: formStore,
