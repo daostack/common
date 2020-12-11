@@ -97,7 +97,7 @@ const PaymentDetailsStep = ({
 
         const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin({
           ...data,
-          cardId: createdCard.cardId,
+          cardId: createdCard.id,
         });
 
         if (createRequestToJoinResponse.status === 200) {
@@ -146,7 +146,7 @@ const PaymentDetailsStep = ({
 
     date = date.replace('/', '');
     return date.length > 2
-      ? `${date.substring(0,2)}/${date.substring(2,4)}`
+      ? `${date.substring(0, 2)}/${date.substring(2, 4)}`
       : date;
   };
 
@@ -164,7 +164,7 @@ const PaymentDetailsStep = ({
 
   return (
     <React.Fragment>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView style={{backgroundColor: colors.white}}/>
       <SafeAreaView
         style={{
           flex: 1,
@@ -196,7 +196,7 @@ const PaymentDetailsStep = ({
             {nativeEvent: {contentOffset: {y: scrollY}}},
           ],
           {useNativeDriver: false})}>
-          <MembershipRequest />
+          <MembershipRequest/>
 
           <CreateStepHeader
             isFirstStepSkipped={skipFirstStep}
@@ -209,7 +209,7 @@ const PaymentDetailsStep = ({
               // padding: 24,
               backgroundColor: 'white',
             }}>
-            <RequestStepHeaderTitle title="Payment Details" subtitle={subtitle} />
+            <RequestStepHeaderTitle title="Payment Details" subtitle={subtitle}/>
             <TextInputField
               label="Credit card number"
               value={testCard ? '4007410000000006' : paymentFormStore.getFormField(RequestToJoinForm.FIELD_CARD_NUMBER)?.value}
@@ -381,5 +381,5 @@ PaymentDetailsStep.propTypes = {
 
 export default inject(
   'bottomSheetStore',
-  'userStore',
+  'userStore'
 )(PaymentDetailsStep);
