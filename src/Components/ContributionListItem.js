@@ -7,7 +7,7 @@ import {colors, font} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 import MonthlyContributionStatus from './MonthlyContributionStatus';
 import {ACTIVE, CANCELED_BY_PAYMENT, CANCELED_BY_USER, PAYMENT_FAILED} from '../Services/SubscriptionService';
-import {formatCurrency, formatDate} from '~/Util';
+import {formatCurrency} from '~/Util';
 
 const ContributionListItem = ({subscription, navigation}) => {
   const isCanceled = subscription.status === CANCELED_BY_PAYMENT ||
