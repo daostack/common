@@ -90,20 +90,6 @@ const DiscussionMessage = ({
                 source={ownerAvatar ? {uri: ownerAvatar} : null}
               />
 
-              {outcome !== undefined && (
-                <Icon
-                  style={{
-                    marginLeft: 25,
-                    marginTop: -15,
-                  }}
-                  size={22}
-                  name={
-                    outcomeState
-                      ? 'approved-24'
-                      : 'reject-24'
-                  }
-                />
-              )}
             </View>
             <View
               style={{
