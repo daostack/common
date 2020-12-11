@@ -5,7 +5,6 @@ import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
-import Icon from '../../Assets/iconfont/Icon';
 
 const {width} = Dimensions.get('window');
 
