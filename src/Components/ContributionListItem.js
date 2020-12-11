@@ -54,7 +54,7 @@ const ContributionListItem = ({subscription, navigation}) => {
 
             <Text style={styles.bottomText}>
               {isCanceled ? (
-                w(subscription.dueDate.toDate())
+                formatDate(subscription.dueDate.toDate())
               ) : (
                 `${paymentAmount}/mo`
               )}
