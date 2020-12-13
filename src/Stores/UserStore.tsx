@@ -51,7 +51,7 @@ class UserStore {
   isLoginInProgressExists = (uid: any) =>
     this.loginInProgress.filter((item: any) => item === uid).length > 0;
   setSignedInUser = (newUserInfo: any) => {
-    const isUserChanged = newUserInfo.uid !== this.userInfo?.uid;
+    const isUserChanged = newUserInfo?.uid !== this.userInfo?.uid;
     if (newUserInfo) {
       let newUserObj = {} as any;
       if (newUserInfo.uid) {
@@ -91,7 +91,7 @@ class UserStore {
       this.userInfo = null;
     }
     if (isUserChanged) {
-      this.signedInUser = newUserInfo.uid;
+      this.signedInUser = newUserInfo?.uid;
     }
   };
 }
