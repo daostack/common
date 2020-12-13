@@ -184,9 +184,7 @@ const CommonProfile = ({
   }, [pendingProposalsData]);
 
   useEffect(() => {
-    if (currCommon.id !== params.currCommon.id) {
-      setCurrCommon(params.currCommon);
-    }
+    setCurrCommon(params.currCommon);
   }, [params.currCommon]);
 
   const renderTabBar = (props) => (
