@@ -60,6 +60,10 @@ const CreateStep4 = ({route: {params: {formStores}},
   const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
 
+  const getImageUrl = (index) =>
+    `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
+  const [imageURI, setImageURI] = useState(getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))));
+
   const generalInfoFormStore = formStores.generalInfoFormStore;
   const fundingFormStore = formStores.fundingFormStore;
   const agendaFormStore = formStores.agendaFormStore;
@@ -73,12 +77,11 @@ const CreateStep4 = ({route: {params: {formStores}},
   };
 
   const [templateIndex, setTemplateIndex] = useState(1);
-  const getImageUrl = (index) =>
-    `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
 
   //set default value for Image field
   useEffect(() => {
-    reviewFormStore.registerFormField(CreateCommonForm.IMAGE, getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))));
+    reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
+    reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, imageURI);
   }, []);
 
   useEffect(() => {
@@ -103,6 +106,7 @@ const CreateStep4 = ({route: {params: {formStores}},
     setTemplateIndex(index);
     const currImageUrl = getImageUrl(index);
     reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, currImageUrl);
+    setImageURI(currImageUrl);
   };
 
   const goToCommon = () => {
@@ -138,6 +142,7 @@ const CreateStep4 = ({route: {params: {formStores}},
             Toast.hide();
             Toast.success('Done');
             reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
+            setImageURI(url);
           })
           .catch((error) => Toast.error(error));
       }
@@ -262,7 +267,7 @@ const CreateStep4 = ({route: {params: {formStores}},
                 backgroundColor: colors.grey4,
               }}
               source={{
-                uri: reviewFormStore.getFormField(CreateCommonForm.IMAGE)?.value,
+                uri: imageURI,
               }}
               resizeMode="cover"
             />
