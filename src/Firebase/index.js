@@ -19,7 +19,6 @@ if (Config.local === 'true' && __DEV__) {
     host: 'localhost:8080',
     ssl: false,
     persistence: false, // Disabled offline mode for local environment
-    cacheSizeBytes: null,
   });
 }
 
