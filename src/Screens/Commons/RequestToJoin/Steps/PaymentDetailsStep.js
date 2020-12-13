@@ -90,14 +90,27 @@ const PaymentDetailsStep = ({
           },
         });
 
-        const createdCard = await createCard({
+        const createdCardResponse = await createCard({
           ...formData,
           ...userInfo,
         });
+        console.log(createdCardResponse)
+        console.log(createdCardResponse.status)
+        console.log(createdCardResponse.data)
+        if (createdCardResponse.status !== 200) {
+          navigation.pop();
+          showErrorPopUp(bottomSheetStore, createdCardResponse);
+        }
+
+        const cardId = createdCardResponse.data.circleCardId
+        if (!cardId) {
+          navigation.pop();
+          showErrorPopUp(bottomSheetStore, createdCardResponse);
+        }
 
         const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin({
           ...data,
-          cardId: createdCard.cardId,
+          cardId,
         });
 
         if (createRequestToJoinResponse.status === 200) {

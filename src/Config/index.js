@@ -32,11 +32,14 @@ if (Config.ENV === 'production') {
 
 if (Config.local === 'true' && __DEV__) {
   logger.warn('Using local firebase');
-
-  axios.get('http://localhost:5003')
+  const localUrl = 'http://localhost:5003';
+  axios.get(localUrl)
     .catch((error) => {
+      throw error;
+      console.log(error);
+      console.log(error.response);
       if (error.response?.status !== 404) {
-        logger.error('Set to use local firebase, but the local firebase is not accessible');
+        logger.error(`Set to use local firebase, but the local firebase is not accessible on ${localUrl}`);
       }
     });
 }
