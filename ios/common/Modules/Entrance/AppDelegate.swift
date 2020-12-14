@@ -49,7 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let jsCodeLocation = sourceURL()
         bridge = RCTBridge(bundleURL: jsCodeLocation, moduleProvider: nil, launchOptions: nil)
-         
+        
         let rootView = RCTRootView(bridge: bridge!, moduleName: "common", initialProperties: launchOptions)
         
         let rootViewController = UIViewController()
