@@ -1,7 +1,18 @@
 import {db} from '~/Firebase';
-import {prepareUserObject} from '~/Util';
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import logger from './Logger';
+
+const prepareUserObject = (user) => {
+  if (!user) {
+    return null;
+  }
+
+  let displayName = user.firstName ? user.firstName : null;
+  if (user.lastName) {
+    displayName = (displayName ? `${displayName} ` : '') + user.lastName;
+  }
+  return {...user, ... {displayName}};
+};
 
 export default class UserService {
   static serviceInstance = null;

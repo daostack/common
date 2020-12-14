@@ -24,35 +24,36 @@ const {width} = Dimensions.get('window');
 
 const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipRequest, isSwiper, isMember, commonInfo}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
+  const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
   const [paymentState, setPaymentState] = useState('pending');
   useEffect(() => {
 
+    let unsubscribeProposalDiscussionsCount = null;
+    let unsubscribeProposalInfo = null;
+
     const getProposalInfo = async (currProposalId) => {
       try {
-        let currProposalInfo = await ProposalService.getInstance().getProposalInfo(
-          currProposalId,
+        unsubscribeProposalInfo = await ProposalService.getInstance().subscribeToProposalById(currProposalId,
+          async (currProposalInfo) => {
+            //RequestToJoin proposal
+            let funding = null;
+            if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
+              funding = currProposalInfo.join.funding;
+            }
+            //FundingRequest proposal
+            else {
+              funding = currProposalInfo.fundingRequest.amount;
+            }
+            const currProposedUser = await UserService.getInstance().getUserById(currProposalInfo.proposerId);
+            setProposalCardInfo({
+              proposedUser: currProposedUser,
+              proposalInfo: {...currProposalInfo, funding},
+            });
+          }
         );
 
-        //RequestToJoin proposal
-        let proposedMemberId = currProposalInfo.proposerId;
-        let funding = null;
-        if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
-          funding = currProposalInfo.join.funding;
-        }
-        //FundingRequest proposal
-        else {
-          funding = currProposalInfo.fundingRequest.amount;
-        }
-
-        const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(currProposalId);
-
-        const currProposedUser = await UserService.getInstance().getUserById(
-          proposedMemberId,
-        );
-
-        setProposalCardInfo({
-          proposedUser: currProposedUser,
-          proposalInfo: {...currProposalInfo, ...{funding: funding}, discussionsCount},
+        unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(currProposalId, (discussionsCount) => {
+          setProposalDiscussionCount(discussionsCount);
         });
 
       } catch (error) {
@@ -65,6 +66,11 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
       getProposalInfo(proposalId);
       getPaymentStatus();
     }
+
+    return () => {
+      unsubscribeProposalDiscussionsCount && unsubscribeProposalDiscussionsCount();
+      unsubscribeProposalInfo && unsubscribeProposalInfo();
+    };
   }, [proposalId]);
 
   const getPaymentStatus = () => {
@@ -79,33 +85,35 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
   };
 
   useEffect(() => {
+    let unsubscribeProposalDiscussionsCount = null;
+    let unsubscribeProposalInfo = null;
+
     const loadProposalInfo = async (currProposalInfo) => {
       try {
-        //RequestToJoin proposal
-        let proposedMemberUser = null;
-        let funding = null;
-        // TODO: NoBlockchain -> proposerId is used both with join and funding request -> refactor bellow lines
-        if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
-          proposedMemberUser = await UserService.getInstance().getUserById(
-            currProposalInfo.proposerId
-          );
-          funding = currProposalInfo.join.funding;
-        }
-        //FundingRequest proposal
-        else {
-          proposedMemberUser = await UserService.getInstance().getUserById(
-            currProposalInfo.proposerId,
-          );
-          funding = currProposalInfo.fundingRequest.amount;
-        }
+        unsubscribeProposalInfo = await ProposalService.getInstance().subscribeToProposalById(currProposalInfo.id,
+          async (updatedProposalInfo) => {
+            //RequestToJoin proposal
+            const proposedMemberUser = await UserService.getInstance().getUserById(
+              updatedProposalInfo.proposerId
+            );
+            let funding = null;
+            if (updatedProposalInfo.type === PROPOSAL_TYPE.Join) {
+              funding = updatedProposalInfo.join.funding;
+            }
+            //FundingRequest proposal
+            else {
+              funding = updatedProposalInfo.fundingRequest.amount;
+            }
+            const allProposalInfo = {...updatedProposalInfo, funding};
+            setProposalCardInfo({
+              proposedUser: proposedMemberUser,
+              proposalInfo: allProposalInfo,
+            });
+          }
+        );
 
-        const discussionsCount = await ProposalService.getInstance().getProposalDiscussionsCount(currProposalInfo.id);
-
-        const allProposalInfo = {...currProposalInfo, ...{funding: funding}, discussionsCount};
-
-        setProposalCardInfo({
-          proposedUser: proposedMemberUser,
-          proposalInfo: allProposalInfo,
+        unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(currProposalInfo.id, (discussionsCount) => {
+          setProposalDiscussionCount(discussionsCount);
         });
 
       } catch (error) {
@@ -117,6 +125,11 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
     if (data) {
       loadProposalInfo(data);
     }
+
+    return () => {
+      unsubscribeProposalDiscussionsCount && unsubscribeProposalDiscussionsCount();
+      unsubscribeProposalInfo && unsubscribeProposalInfo();
+    };
   }, [data]);
 
   const cardWidth = () => {
@@ -174,17 +187,17 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
           <View style={{...layout.flexRow}}>
             <ProposalApprovalTag
               iconName="approved"
-              value={Number(proposalCardInfo.proposalInfo?.votesFor || 0)}
+              value={proposalCardInfo?.proposalInfo.votesFor || 0}
               isMarked={true}
             />
             <ProposalApprovalTag
               iconName="declined"
-              value={Number(proposalCardInfo.proposalInfo?.votesAgainst || 0)}
+              value={proposalCardInfo?.proposalInfo.votesAgainst || 0}
               isMarked={false}
             />
             <ProposalApprovalTag
               iconName="discussion"
-              value={Number(proposalCardInfo.proposalInfo?.discussionsCount || 0)}
+              value={proposalDiscussionCount}
               isMarked={false}
             />
           </View>

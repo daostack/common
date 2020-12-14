@@ -1,12 +1,10 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, TextStyle} from 'react-native';
 import colors from './colors';
 import font from './font';
 import layout from './layout';
-
 const appFontFamily = {
   fontFamily: 'NunitoSans-Regular',
 };
-
 const style = {
   h1Black: {
     ...font.primary.bold,
@@ -22,15 +20,21 @@ const style = {
     color: colors.black,
   },
 };
-
 const isRTL = (text) => {
-  const ltrChars    = 'A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02B8\u0300-\u0590\u0800-\u1FFF' + '\u2C00-\uFB1C\uFDFE-\uFE6F\uFEFD-\uFFFF',
-    rtlChars    = '\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC',
+  const ltrChars =
+      'A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02B8\u0300-\u0590\u0800-\u1FFF' +
+      '\u2C00-\uFB1C\uFDFE-\uFE6F\uFEFD-\uFFFF',
+    rtlChars = '\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC',
     rtlDirCheck = new RegExp('^[^' + ltrChars + ']*[' + rtlChars + ']');
   return text && rtlDirCheck.test(text);
 };
 
-export default StyleSheet.create({
+type Style = {
+  [key: string]: TextStyle;
+} & {writingDirection: (text: string) => TextStyle;
+  textAlign: (text: string) => TextStyle}
+
+export default StyleSheet.create<Style>({
   writingDirection: (text) => ({writingDirection: isRTL(text) ? 'rtl' : 'ltr'}),
   textAlign: (text) => ({textAlign: isRTL(text) ? 'right' : 'left'}),
   h1Black: style.h1Black,
@@ -232,7 +236,6 @@ export default StyleSheet.create({
     lineHeight: 16,
     color: colors.slate,
   },
-
   greyText: {
     ...font.primary.regular,
     ...font.fontSize(2),
@@ -246,7 +249,6 @@ export default StyleSheet.create({
     textAlign: 'center',
     color: colors.grey3,
   },
-
   smallBoldGreyText: {
     ...font.primary.bold,
     ...font.fontSize(1),
@@ -254,7 +256,6 @@ export default StyleSheet.create({
     textAlign: 'center',
     color: colors.grey3,
   },
-
   orangeSmallBold: {
     ...appFontFamily,
     fontSize: 12,
@@ -264,7 +265,6 @@ export default StyleSheet.create({
     textAlign: 'center',
     color: colors.orange,
   },
-
   blackText: {
     ...font.primary.bold,
     ...font.fontSize(2),
@@ -286,7 +286,6 @@ export default StyleSheet.create({
     letterSpacing: 0,
     color: colors.black,
   },
-
   lightishGreenText: {
     ...font.primary.bold,
     ...font.fontSize(3),
@@ -294,7 +293,6 @@ export default StyleSheet.create({
     letterSpacing: 0,
     color: colors.lightishGreen,
   },
-
   againstText: {
     ...font.primary.bold,
     ...font.fontSize(3),
@@ -302,7 +300,6 @@ export default StyleSheet.create({
     letterSpacing: 0,
     color: colors.against,
   },
-
   againstTextBlack: {
     ...appFontFamily,
     fontSize: 18,
@@ -312,19 +309,15 @@ export default StyleSheet.create({
     letterSpacing: 0,
     color: colors.black,
   },
-
   // Custom text styles
   centered: {
     textAlign: 'center',
   },
-
   bold: {
     fontWeight: 'bold',
   },
-
   // Font Colors
-
   fontColorGreySteel: {
     color: colors.greySteel,
   },
-});
+} as Style);

@@ -25,7 +25,7 @@ import {createCard} from '../../../../Services/CirclePayService';
 import ProposalService from '~/Services/ProposalService';
 import {testCard} from '~/Config';
 import moment from 'moment';
-import {VALIDATION_RULES} from '~/FormStores/ValidationRules';
+import {VALIDATION_RULES} from '~/FormStores/ValidationRules/paymentDetailsRules';
 
 const {width} = Dimensions.get('window');
 
@@ -97,7 +97,7 @@ const PaymentDetailsStep = ({
 
         const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin({
           ...data,
-          cardId: createdCard.cardId,
+          cardId: createdCard.id,
         });
 
         if (createRequestToJoinResponse.status === 200) {
@@ -194,8 +194,8 @@ const PaymentDetailsStep = ({
           scrollEventThrottle={16}
           onScroll={Animated.event([
             {nativeEvent: {contentOffset: {y: scrollY}}},
-          ])}
-        >
+          ],
+          {useNativeDriver: false})}>
           <MembershipRequest />
 
           <CreateStepHeader

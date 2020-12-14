@@ -72,7 +72,9 @@ GoogleService-Info.plist
 google-services.json
 
 # IconFont
-/src/Assets/iconfont
+/src/Assets/iconfont/*
+!/src/Assets/iconfont/helper.tsx
+
 /.env
 .env.stg
 tmp.xcconfig

@@ -4,7 +4,7 @@ import NavigationBar from 'react-native-navbar';
 import Icon from '~/Assets/iconfont/Icon';
 import {observer, inject} from 'mobx-react';
 import {string, object, shape, func} from 'prop-types';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 
 const CreateStepNavigation = ({title, bottomSheetStore, navigation}) => (
   <NavigationBar

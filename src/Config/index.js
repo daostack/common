@@ -52,6 +52,7 @@ export const mangoPayUrl = () => functionEndpoint('mangopay');
 export const graphqlUrl = () => functionEndpoint('graphql');
 export const relayerUrl = () => functionEndpoint('relayer');
 export const createUrl = () => functionEndpoint('create');
+export const subscriptionsUrl = () => functionEndpoint('subscriptions');
 
 // No Blockchain urls
 export const commonsUrl = () => functionEndpoint('commons');

@@ -1,9 +1,20 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {string, number} from 'prop-types';
 import {layout, text} from '~/Theme';
+import {string, number, InferProps} from 'prop-types';
 
-const RequestToJoinRule = ({index, title, description, url}) => (
+const props = {
+  index: number.isRequired,
+  title: string.isRequired,
+  description: string,
+  url: string,
+};
+const RequestToJoinRule: React.FC<InferProps<typeof props>> = ({
+  index,
+  title,
+  description,
+  url,
+}) => (
   <View style={styles.container}>
     <View style ={{width: '100%'}} >
       <Text style={{...styles.ruleTitle, ...text.textAlign(title)}}>{index}. {title}</Text>
@@ -13,12 +24,7 @@ const RequestToJoinRule = ({index, title, description, url}) => (
   </View>
 );
 
-RequestToJoinRule.propTypes = {
-  index: number.isRequired,
-  title: string.isRequired,
-  description: string,
-  url: string,
-};
+RequestToJoinRule.propTypes = props;
 
 const styles = StyleSheet.create({
   container: {

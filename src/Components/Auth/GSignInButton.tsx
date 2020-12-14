@@ -1,64 +1,62 @@
-import {useState} from 'react';
 import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import {colors, text, layout} from '~/Theme';
 import React from 'react';
 import Icon from '~/Assets/iconfont/Icon';
+import {statusCodes} from '@react-native-community/google-signin';
 import {observer, inject} from 'mobx-react';
-import {AppleAuthError} from '@invertase/react-native-apple-authentication';
 import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
-import {func, shape, object} from 'prop-types';
+import {shape, func, InferProps} from 'prop-types';
 
-const AppleSignInButton = ({onSignIn, userStore, customStyle}) => {
-  const [signInError, setSignInError] = useState(null);
-
+const props = {
+  onSignIn: func,
+  userStore: shape({
+    setIsLoading: func,
+  }),
+};
+const GSignInButton: React.FC<InferProps<typeof props>> = ({
+  onSignIn,
+  userStore,
+}) => {
   const _signIn = async () => {
     try {
       // That loading status will be changed to false in the onAuthStateChanged method in App.js
       userStore.setIsLoading(true);
-      const userInfo = await AuthService.getInstance().signInApple();
+      const userInfo = await AuthService.getInstance().signIn();
       if (onSignIn) {
         onSignIn(userInfo);
       }
-      setSignInError(null);
+      userStore.setSignInError(null);
     } catch (error) {
       userStore.setIsLoading(false);
-      logger.log(error);
       switch (error.code) {
-      case AppleAuthError.CANCELED:
-        setSignInError('Canceled');
+      case statusCodes.SIGN_IN_CANCELLED:
+        userStore.setSignInError('Canceled');
         break;
-      case AppleAuthError.FAILED:
-        setSignInError('Failed');
+      case statusCodes.IN_PROGRESS:
+        logger.log('SignIn in progress');
         break;
-      case AppleAuthError.INVALID_RESPONSE:
-        setSignInError('Invalid response');
-        break;
-      case AppleAuthError.NOT_HANDLED:
-        setSignInError('Not handled');
-        break;
-      case AppleAuthError.UNKNOWN:
-        setSignInError('Unknown error');
+      case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+        userStore.setSignInError('play services not available or outdated');
         break;
       default:
-        setSignInError(error);
+        userStore.setSignInError(error);
       }
     }
   };
-
   const renderSignInButton = () => (
-    <TouchableOpacity style={{...styles.buttonOutline, ...customStyle}} onPress={_signIn}>
-      <Icon style={{marginRight: 5, marginBottom: 5}} name="apple-logo" size={22} />
-      <Text style={{...text.buttonblack, fontWeight: '600', width: '100%'}}>Continue with Apple</Text>
+    <TouchableOpacity style={styles.buttonOutline} onPress={_signIn}>
+      <Icon name="google" size={32} />
+      <Text style={{...text.buttonblack, fontWeight: '600', width: '100%'}}>
+        Continue with Google
+      </Text>
     </TouchableOpacity>
   );
-
   const renderError = () => {
-    if (signInError) {
-      const errorText = `${signInError.toString()} ${
-        signInError.code ? signInError.code : ''
+    if (userStore.signInError) {
+      const errorText = `${userStore.signInError.toString()} ${
+        userStore.signInError.code ? userStore.signInError.code : ''
       }`;
-
       return (
         <View style={styles.messageContainer}>
           <Text style={styles.errorMessage}>{errorText}</Text>
@@ -67,7 +65,6 @@ const AppleSignInButton = ({onSignIn, userStore, customStyle}) => {
       );
     }
   };
-
   return (
     <View style={styles.container}>
       {renderError()}
@@ -76,14 +73,7 @@ const AppleSignInButton = ({onSignIn, userStore, customStyle}) => {
   );
 };
 
-AppleSignInButton.propTypes = {
-  onSignIn: func,
-  userStore: shape({
-    setIsLoading: func,
-  }).isRequired,
-  customStyle: object,
-};
-
+GSignInButton.propTypes = props;
 
 const styles = StyleSheet.create({
   container: {
@@ -105,4 +95,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(AppleSignInButton));
+export default inject('userStore')(observer(GSignInButton));

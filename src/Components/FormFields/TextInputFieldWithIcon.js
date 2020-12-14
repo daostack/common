@@ -10,7 +10,7 @@ import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
 import {layout, colors, font, text, sizeS, sizeL} from '~/Theme';
-import {string, func, bool, shape, oneOfType, object, number} from 'prop-types';
+import {string, func, bool, shape, oneOfType, object, number, node} from 'prop-types';
 
 class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
@@ -24,7 +24,8 @@ class TextInputFieldWithIcon extends React.Component {
 
     this.state = {
       onFocus: false,
-      dynamicWidth: 30,
+      dynamicWidth: 50,
+      prevTextLength: 0,
     };
 
     const {
@@ -90,6 +91,12 @@ class TextInputFieldWithIcon extends React.Component {
       formStore.fieldChanged(name, currText, false, multiName);
     }
     this.props.onChangeText && this.props.onChangeText(currText);
+    // only update size when text length is increasing
+    if (this.state.prevTextLength < currText.length && currText.length > 3) {
+      this.updateSize(10);
+    } else {
+      this.setState({prevTextLength: currText.length});
+    }
   };
 
   onFocus = (e) => {
@@ -105,8 +112,13 @@ class TextInputFieldWithIcon extends React.Component {
     this.props.onBlur && this.props.onBlur(e);
   };
 
-  updateSize = (width) => {
-    this.setState({dynamicWidth: width});
+  updateSize = (value) => {
+    const width = this.state.dynamicWidth + value;
+    const newLength = this.state.prevTextLength + (value > 0 ? 1 : -1);
+    this.setState({
+      dynamicWidth: width > 50 ? width : 50, // don't decrease width below the initial 50 width
+      prevTextLength: newLength,
+    });
   };
 
   renderTextField() {
@@ -153,7 +165,7 @@ class TextInputFieldWithIcon extends React.Component {
         ...{height: 100, position: 'relative'},
       };
       fieldStyle = {
-        width: 20 + this.state.dynamicWidth,
+        width: this.state.dynamicWidth,
       };
     } else {
       fieldStyle = {flex: 1};
@@ -175,10 +187,24 @@ class TextInputFieldWithIcon extends React.Component {
       };
     }
 
+    const handleNumbers = (currValue) => {
+      let dec = '';
+      if (currValue.includes('.')) {
+        [currValue, dec] = currValue.split('.');
+        dec = `.${dec}`;
+      }
+      currValue = `${parseFloat(currValue).toLocaleString('en-US')}${dec}`;
+      return currValue;
+    };
+
     const getValue = () => {
       if (validation) {
-        const currValue = validation.formStore.getFormField(validation.name, validation.multiName)?.value;
-        return typeof (currValue) === 'object' ? currValue.value?.toString() : currValue?.toString();
+        let currValue = validation.formStore.getFormField(validation.name, validation.multiName)?.value;
+        currValue = typeof (currValue) === 'object' ? currValue.value?.toString() : currValue?.toString();
+
+        currValue = currValue.replace(',', '');
+        // if number, fix it to price format x,xxx (for currValue > 999)
+        return (+currValue) ? handleNumbers(currValue) : currValue;
       }
       return value;
     };
@@ -214,9 +240,11 @@ class TextInputFieldWithIcon extends React.Component {
             onFocus={this.onFocus}
             onBlur={this.onBlur}
             secureTextEntry={this.state.showPassword}
-            /* onContentSizeChange={e =>
-              this.updateSize(e.nativeEvent.contentSize.width)
-            } */
+            onKeyPress={({nativeEvent}) => {
+              if (nativeEvent.key === 'Backspace') {
+                this.updateSize(-10);
+              }
+            }}
             value={getValue()}
           />
           {this.toggleValueBtn}
@@ -297,7 +325,10 @@ TextInputFieldWithIcon.propTypes = {
   onChangeText: func,
   onBlur: func,
   placeholderText: string,
-  label: string,
+  label: oneOfType([
+    string,
+    node,
+  ]),
   infoLabel: string,
   infoMessage: string,
   password: bool,

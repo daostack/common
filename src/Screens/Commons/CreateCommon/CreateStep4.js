@@ -9,9 +9,10 @@ import {
   Dimensions,
   SafeAreaView,
   Animated,
+  Platform,
 } from 'react-native';
+import {inject} from 'mobx-react';
 import {StackActions} from '@react-navigation/native';
-import {observer, inject} from 'mobx-react';
 import ImagePicker from 'react-native-image-picker';
 import moment from 'moment';
 import Icon from '~/Assets/iconfont/Icon';
@@ -29,9 +30,10 @@ import Share from 'react-native-share';
 import {BlurView} from '~/Components';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
-import {object} from 'prop-types';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import {object, shape} from 'prop-types';
 import DaoService from '~/Services/DaoService';
+import {handlePermission} from '~Util/Permissions';
 import {
   colors,
   font,
@@ -50,16 +52,22 @@ const CONTRIBUTION = {
   'one-time': '',
 };
 
-const CreateStep4 = ({generalInfoFormStore,
-  fundingFormStore,
-  agendaFormStore,
-  reviewFormStore,
+const CreateStep4 = ({route: {params: {formStores}},
   navigation,
   bottomSheetStore,
   userStore: {userInfo: {uid}}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
+
+  const getImageUrl = (index) =>
+    `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
+  const [imageURI, setImageURI] = useState(getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))));
+
+  const generalInfoFormStore = formStores.generalInfoFormStore;
+  const fundingFormStore = formStores.fundingFormStore;
+  const agendaFormStore = formStores.agendaFormStore;
+  const reviewFormStore = formStores.reviewFormStore;
 
   const form = {
     ...generalInfoFormStore.getChangedFormFieldsJson(),
@@ -68,19 +76,10 @@ const CreateStep4 = ({generalInfoFormStore,
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
 
-  logger.log(form);
   const [templateIndex, setTemplateIndex] = useState(1);
-  const getImageUrl = (index) =>
-    `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
-  const [imageURI, setImageURI] = useState(
-    getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))),
-  );
-  /* [avatarURL, setAvatarURL] = useState(null);
-  */
 
-  //set default value for Avatar and Image fields
+  //set default value for Image field
   useEffect(() => {
-    reviewFormStore.registerFormField(CreateCommonForm.AVATAR);
     reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
     reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, imageURI);
   }, []);
@@ -121,16 +120,18 @@ const CreateStep4 = ({generalInfoFormStore,
     navigation.dispatch(navigate);
   };
 
-  const pickImage = (isAvatar) => {
+  const pickImage = async () => {
     const options = {
-      title: (isAvatar && 'Select Avatar') || 'Select profile image',
+      title: 'Select profile image',
       quality: 0.7,
-      allowsEditing: isAvatar,
+      allowsEditing: false,
     };
-    ImagePicker.showImagePicker(options, (response) => {
+    ImagePicker.showImagePicker(options, async (response) => {
       if (response.didCancel) {
         logger.log('User cancelled image picker');
       } else if (response.error) {
+        // only for ios because android handles this
+        Platform.OS === 'ios' && await handlePermission();
         Toast.error(response.error);
         logger.log('ImagePicker Error: ', response.error);
       } else {
@@ -140,13 +141,8 @@ const CreateStep4 = ({generalInfoFormStore,
           .then((url) => {
             Toast.hide();
             Toast.success('Done');
-            if (isAvatar) {
-              //setAvatarURL(url);
-              reviewFormStore.fieldChanged(CreateCommonForm.AVATAR, url);
-            } else {
-              reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
-              setImageURI(url);
-            }
+            reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
+            setImageURI(url);
           })
           .catch((error) => Toast.error(error));
       }
@@ -216,9 +212,7 @@ const CreateStep4 = ({generalInfoFormStore,
     }
   };
 
-  const displayString = () => `${
-    numberFormatter(form[CreateCommonForm.MINIMUM])}${
-    CONTRIBUTION[form.contribution]}`;
+  const displayString = () => `${numberFormatter(form[CreateCommonForm.MINIMUM])}${CONTRIBUTION[form.contribution]}`;
 
   return (
     <SafeAreaView
@@ -244,7 +238,8 @@ const CreateStep4 = ({generalInfoFormStore,
         scrollEventThrottle={16}
         onScroll={Animated.event([
           {nativeEvent: {contentOffset: {y: scrollY}}},
-        ])}>
+        ],
+        {useNativeDriver: false})}>
         <CreateStepHeader currentIndex={3} />
         <View
           style={{
@@ -320,57 +315,6 @@ const CreateStep4 = ({generalInfoFormStore,
               </TouchableOpacity>
             </View>
           </View>
-
-          {/* {avatarURL === null ? (
-            <View
-              style={{
-                flexDirection: 'row',
-                marginHorizontal: 10,
-                marginVertical: 15,
-              }}>
-              <Text
-                style={{
-                  ...font.primary.regular,
-                  ...font.fontSize(2),
-                  marginLeft: 10,
-                  color: colors.grey,
-                  flex: 1,
-                  alignSelf: 'flex-start',
-                }}>
-                Have an avatar for your Common?
-              </Text>
-              <TouchableOpacity onPress={() => pickImage(true)}>
-                <Text style={styles.uploadLogo}>Upload logo</Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View style={{marginBottom: 30}}>
-              <Text style={{color: colors.slate, fontSize: 14, margin: 24}}>
-                Avatar
-              </Text>
-              <View style={{width: 70, alignSelf: 'center'}}>
-                <Image
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: 58,
-                    width: 58,
-                    borderRadius: 29,
-                    backgroundColor: colors.grey4,
-                    borderColor: colors.grey4,
-                    borderWidth: 0.5,
-                  }}
-                  resizeMode="cover"
-                  source={{uri: avatarURL}}
-                />
-                <TouchableOpacity
-                  style={styles.formImageFielAddIcon}
-                  onPress={() => setAvatarURL(null)}>
-                  <Icon name="delete" size={15} color="white" />
-                </TouchableOpacity>
-              </View>
-            </View>
-          )} */}
           <View
             style={{height: 1, width: width, backgroundColor: colors.grey4}}
           />
@@ -518,13 +462,19 @@ const CreateStep4 = ({generalInfoFormStore,
 };
 
 CreateStep4.propTypes = {
-  generalInfoFormStore: object,
-  fundingFormStore: object,
-  agendaFormStore: object,
-  reviewFormStore: object,
   navigation: object,
   bottomSheetStore: object,
   userStore: object,
+  route: shape({
+    params: shape({
+      formStores: shape({
+        generalInfoFormStore: object.isRequired,
+        fundingFormStore: object.isRequired,
+        agendaFormStore: object.isRequired,
+        reviewFormStore: object.isRequired,
+      }).isRequired,
+    }),
+  }),
 };
 
 const stylesHeader = StyleSheet.create({
@@ -640,9 +590,5 @@ const styles = StyleSheet.create({
 
 export default inject(
   'bottomSheetStore',
-  'generalInfoFormStore',
-  'fundingFormStore',
-  'agendaFormStore',
-  'reviewFormStore',
   'userStore',
-)(observer(CreateStep4));
+)(CreateStep4);

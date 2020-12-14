@@ -25,7 +25,7 @@ import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
 import BottomSheetModal from '~/Components/BottomSheetModal';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import ImageView from 'react-native-image-viewing';
 import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
@@ -457,7 +457,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
       >
         <View style={styles.inputContainer}>
           {isMember ? (
-            <View style={[styles.input, {height: Math.max(35, inputHeight + 30)}]}>
+            <View style={[styles.input, {height: Math.max(35, inputHeight + 50)}]}>
               <TextInput
                 ref={inputRef}
                 editable={true}
@@ -470,10 +470,10 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
                 }}
                 style={{
                   flex: 1,
-                  maxHeight: 140,
+                  maxHeight: 120,
                   paddingVertical: 10,
                   marginHorizontal: 10,
-                  height: Math.max(35, inputHeight + 20),
+                  height: Math.max(35, inputHeight + 32),
                 }}
               />
               <TouchableOpacity

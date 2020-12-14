@@ -5,7 +5,6 @@ import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
-import Icon from '../../Assets/iconfont/Icon';
 
 const {width} = Dimensions.get('window');
 
@@ -90,20 +89,6 @@ const DiscussionMessage = ({
                 source={ownerAvatar ? {uri: ownerAvatar} : null}
               />
 
-              {outcome !== undefined && (
-                <Icon
-                  style={{
-                    marginLeft: 25,
-                    marginTop: -15,
-                  }}
-                  size={22}
-                  name={
-                    outcomeState
-                      ? 'approved-24'
-                      : 'reject-24'
-                  }
-                />
-              )}
             </View>
             <View
               style={{

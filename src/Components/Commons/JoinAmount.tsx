@@ -1,26 +1,9 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {layout, colors, text, font} from '~/Theme';
-import {func, bool, number} from 'prop-types';
+import {func, bool, number, InferProps} from 'prop-types';
 
-const JoinAmount = ({id, amount, isCustom, onPress, isSelected, isMonthly}) => {
-
-  const onAmountPress = (e) => {
-    onPress(isCustom, amount, id);
-  };
-
-  return (
-    <TouchableOpacity
-      style={isSelected ? styles.containerSelected : styles.container}
-      onPress={onAmountPress}>
-      <Text style={isSelected ? styles.amountSelected : styles.amount}>{`${
-        isCustom ? 'Other' : `$${amount}${isMonthly ? '/mo' : ''}`
-      }`}</Text>
-    </TouchableOpacity>
-  );
-};
-
-JoinAmount.propTypes = {
+const props = {
   id: number.isRequired,
   amount: number,
   isCustom: bool,
@@ -28,6 +11,31 @@ JoinAmount.propTypes = {
   isSelected: bool,
   isMonthly: bool,
 };
+const JoinAmount: React.FC<InferProps<typeof props>> = ({
+  id,
+  amount,
+  isCustom,
+  onPress,
+  isSelected,
+  isMonthly,
+}) => {
+  const onAmountPress = () => {
+    onPress(isCustom, amount, id);
+  };
+  return (
+    <TouchableOpacity
+      style={isSelected ? styles.containerSelected : styles.container}
+      onPress={onAmountPress}
+    >
+      <Text style={isSelected ? styles.amountSelected : styles.amount}>{`${
+        isCustom ? 'Other' : `$${amount}${isMonthly ? '/mo' : ''}`
+      }`}</Text>
+    </TouchableOpacity>
+  );
+};
+
+JoinAmount.propTypes = props;
+
 
 const styles = StyleSheet.create({
   container: {

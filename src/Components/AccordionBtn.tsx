@@ -1,16 +1,29 @@
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import {text, font,layout, colors} from 'common/src/Theme';
+import {text, font, layout, colors} from '../Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import React from 'react';
-import {string, func, bool} from 'prop-types';
+import {string, func, bool, InferProps} from 'prop-types';
 
-
-const BtnContent = ({lightStyle, title, subtitle}) => (
+const btnContentProps = {
+  title: string.isRequired,
+  subtitle: string,
+  lightStyle: bool,
+};
+const BtnContent: React.FC<InferProps<typeof btnContentProps>> = ({
+  lightStyle,
+  title,
+  subtitle,
+}) => (
   <>
     <View>
-      <Text style={lightStyle
-        ? {...styles.btnText, ...styles.btnTextLight}
-        : {...styles.btnText}}>{title}
+      <Text
+        style={
+          lightStyle
+            ? {...styles.btnText, ...styles.btnTextLight}
+            : {...styles.btnText}
+        }
+      >
+        {title}
       </Text>
       {subtitle && <Text style={styles.btnSubtitleText}>{subtitle}</Text>}
     </View>
@@ -18,30 +31,34 @@ const BtnContent = ({lightStyle, title, subtitle}) => (
   </>
 );
 
-const AccordionBtn = ({title, subtitle, onPress, lightStyle}) => (
+const accordionBtnProps = {
+  title: string.isRequired,
+  subtitle: string,
+  onPress: func.isRequired,
+  lightStyle: bool,
+};
+const AccordionBtn: React.FC<InferProps<typeof accordionBtnProps>> = ({
+  title,
+  subtitle,
+  onPress,
+  lightStyle,
+}) => (
   <TouchableOpacity
     onPress={onPress}
     style={
       lightStyle
         ? {...styles.accordionBtn, ...styles.accordionBtnLight}
         : styles.accordionBtn
-    }>
+    }
+  >
     <BtnContent {...{lightStyle, title, subtitle}} />
   </TouchableOpacity>
 );
 
-AccordionBtn.propTypes = {
-  title: string.isRequired,
-  subtitle: string,
-  onPress: func.isRequired,
-  lightStyle: bool,
-};
+AccordionBtn.propTypes = accordionBtnProps;
 
-BtnContent.propTypes = {
-  title: string.isRequired,
-  subtitle: string,
-  lightStyle: bool,
-};
+BtnContent.propTypes = btnContentProps;
+
 
 const styles = StyleSheet.create({
   accordionBtn: {
@@ -54,7 +71,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     height: 60,
     paddingVertical: 0,
-
   },
   accordionBtnLight: {
     borderBottomWidth: 0,

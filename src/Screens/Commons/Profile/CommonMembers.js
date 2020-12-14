@@ -19,8 +19,8 @@ import {string, func, array, object, shape} from 'prop-types';
 const initialLayout = {width: Dimensions.get('window').width};
 const getTabName = (objectName, count) => `${objectName} (${count ? count : 0})`;
 
-const Members = ({navigation, members}) => (
-  <CommonMembersList navigation={navigation} members={members} />
+const Members = ({navigation, members, commonId}) => (
+  <CommonMembersList navigation={navigation} members={members} commonId={commonId}/>
 );
 
 const Pending = ({navigation, commonId, onProposalsCountChange}) => (
@@ -62,7 +62,7 @@ const CommonMembers = ({navigation, route: router}) => {
   const renderScene = ({route}) => {
     switch (route.key) {
     case 'members':
-      return <Members navigation={navigation} members={members} />;
+      return <Members navigation={navigation} members={members} commonId={commonId}/>;
     case 'pending':
       return (
         <Pending
@@ -118,6 +118,7 @@ const CommonMembers = ({navigation, route: router}) => {
 Members.propTypes = {
   navigation: object,
   members: array,
+  commonId: string,
 };
 
 Pending.propTypes = {

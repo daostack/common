@@ -43,7 +43,6 @@ class FundingRequestForm extends React.Component {
 
     logger.log('common.balance ->', common.balance);
     const balance = formatNumber(common.balance / 100);
-    const balanceString = `${balance}${common.balance !== 0 ? ' or below $0' : ''}`;
 
     return (
       <View
@@ -59,6 +58,7 @@ class FundingRequestForm extends React.Component {
           placeholderText="Briefly describe your proposal"
           autoCapitalize="none"
           multiline={true}
+          maxLength={60}
           numberOfLines={2}
           autoCorrect={false}
           infoLabel="Required"
@@ -79,7 +79,7 @@ class FundingRequestForm extends React.Component {
           label="Funding amount requested"
           placeholderText="0"
           infoLabel="Required"
-          infoMessage={`Leave as $0 if no funds are requested. Common balance:$${balance}`}
+          infoMessage={`Leave as $0 if no funds are requested. Common balance: $${balance}`}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="numeric"
@@ -87,7 +87,7 @@ class FundingRequestForm extends React.Component {
             name: FundingRequestForm.FIELD_AMOUNT_REQUESTED,
             formStore: this.props.fundingRequestFormStore,
             validateRule: `required|numeric|max:${common.balance / 100}|min:0`,
-            customErrorMessage: `The amount requested cannot be greater than the Common balance, which is $${balanceString}`,
+            customErrorMessage: 'The amount requested cannot be greater than the Common balance.',
           }}
         />
 
@@ -120,6 +120,7 @@ class FundingRequestForm extends React.Component {
           link
           allowsEditing={true}
           title="Title"
+          maxLength={30}
           validation={{
             name: FundingRequestForm.FIELD_LINKS,
             formStore: fundingRequestFormStore,

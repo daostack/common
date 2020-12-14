@@ -65,11 +65,13 @@ const AmountField = ({
         keyboardType="numeric"
         onTogglePress={onTogglePress}
         toggleName="Other"
-        value={currFieldValue?.value}
+        value={{value: currFieldValue?.value || '', index: -1}}
+        maxLength={5}
         validation={{
           name: RequestToJoinForm.FIELD_AMOUNT,
           formStore: formStore,
-          validateRule: `required|numeric|min:${minFeeToJoin.toString()}`,
+          validateRule: `required|numeric|min:${minFeeToJoin.toString()}|max:2500`,
+          customErrorMessage: `The amount must be at least $${minFeeToJoin.toString()} and at most $2500.`,
         }}
       />
     </View>

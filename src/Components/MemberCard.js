@@ -1,5 +1,5 @@
 import {StyleSheet, View, Text} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {layout, colors, text, font} from '~/Theme';
 import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
@@ -7,30 +7,11 @@ import {monthShortNames} from '~/Util/DateUtil';
 import moment from 'moment';
 import {LAUNCHED_STATES} from '~/Services/ProposalService';
 import {string, array, number, shape, object, oneOfType} from 'prop-types';
-import DaoService from '~/Services/DaoService';
-import logger from '~/Services/Logger';
-import {
-  Placeholder,
-  PlaceholderLine,
-  Fade,
-} from 'rn-placeholder';
 
 const MemberCard = ({
-  memberSince = null,
   userInfo,
   proposalInfo = null,
 }) => {
-
-  const [commonsCount, setCommonsCount] = useState(null);
-
-  useEffect(() => {
-    const loadCommonsCount = (async () => {
-      const userDaosCount = (await DaoService.getInstance().getUserDaos(userInfo.uid)).docs.length;
-      logger.log('userDaosCount -> ', userDaosCount);
-      setCommonsCount(userDaosCount);
-    });
-    loadCommonsCount();
-  }, []);
 
   const renderRightContainer = () => {
 
@@ -46,10 +27,6 @@ const MemberCard = ({
                 {`$${proposalInfo.funding / 100}`}
               </Text>
             }
-
-            <Text style={{...text.runninglightGray, width: '100%'}}>
-              {moment.unix(proposalInfo.createdAt.seconds).fromNow()}
-            </Text>
 
             {/* Hide the time if the proposal is expired or new */}
             {(remainingSeconds > 0 && !LAUNCHED_STATES.includes(proposalInfo?.state)) && (
@@ -113,23 +90,11 @@ const MemberCard = ({
           style={styles.displayName}>
           {userInfo?.displayName || 'Unknown user'}
         </Text>
-
-        {
-          commonsCount ?
-            <Text
-              style={{
-                ...text.smallGreyText,
-                marginTop: 2,
-                textAlign: 'left',
-              }}>
-              {`Member in ${commonsCount || 0} Common${commonsCount !== 1 ? 's' : ''}`}
-            </Text>
-            :
-            <Placeholder Animation={Fade}>
-              <PlaceholderLine width={80} height={8} style={{marginTop: 4}} />
-            </Placeholder>
+        {proposalInfo &&
+          <Text style={{...text.runninglightGray, width: '100%'}}>
+            {moment.unix(proposalInfo.createdAt.seconds).fromNow()}
+          </Text>
         }
-
       </View>
       {renderRightContainer()}
     </View>

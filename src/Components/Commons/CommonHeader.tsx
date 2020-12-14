@@ -4,38 +4,49 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
+  StyleProp,
 } from 'react-native';
 import React from 'react';
 import {layout, colors, text, font} from '~/Theme';
-import FastImage from 'react-native-fast-image';
+import FastImage, {ImageStyle} from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
 import {BlurView} from '~/Components';
-import {object, shape, string, bool, func} from 'prop-types';
+import {object, shape, string, bool, func, InferProps} from 'prop-types';
 
-const CommonHeader = ({
+const props = {
+  navigation: object,
+  isMember: bool,
+  headerHeightLayouted: func,
+  commonInfo: shape({
+    logo: string,
+    name: string.isRequired,
+    description: string,
+    byline: string,
+  }),
+  common: object,
+};
+
+const CommonHeader: React.FC<InferProps<typeof props>> = ({
   navigation,
   isMember,
   commonInfo: {logo, name, description, byline},
   headerHeightLayouted,
   common,
 }) => {
-  const openAgendaScreen = (e) => {
+  const openAgendaScreen = () => {
     navigation.navigate('CommonAgenda', {
       screenTitle: name,
       common: common,
     });
   };
-
   return (
-    <SafeAreaView onLayout={ (event) => {
-      headerHeightLayouted(event.nativeEvent.layout.height);
-    }}
-    style={styles.headerContainer}>
-      {logo && (
-        <FastImage
-          style={styles.logoImage}
-          source={{uri: logo}}/>
-      )}
+    <SafeAreaView
+      onLayout={(event) => {
+        headerHeightLayouted(event.nativeEvent.layout.height);
+      }}
+      style={styles.headerContainer}
+    >
+      {logo && <FastImage style={styles.logoImage as StyleProp<ImageStyle>} source={{uri: logo}} />}
       <Text style={styles.headerTitleWhite} numberOfLines={5}>
         {name}
       </Text>
@@ -46,7 +57,13 @@ const CommonHeader = ({
         {description}
       </Text>
       {isMember && navigation && (
-        <BlurView style={{paddingVertical: 10, paddingHorizontal: 15, borderRadius: 10}}>
+        <BlurView
+          style={{
+            paddingVertical: 10,
+            paddingHorizontal: 15,
+            borderRadius: 10,
+          }}
+        >
           <TouchableOpacity onPress={openAgendaScreen}>
             <View style={{flexDirection: 'row'}}>
               <Text style={styles.headerViewAgenda}>View agenda</Text>
@@ -59,18 +76,7 @@ const CommonHeader = ({
   );
 };
 
-CommonHeader.propTypes = {
-  navigation: object,
-  isMember: bool,
-  headerHeightLayouted: func,
-  commonInfo: shape({
-    logo: string,
-    name: string.isRequired,
-    description: string,
-    byline: string,
-  }),
-  common: object,
-};
+CommonHeader.propTypes = props;
 
 const styles = StyleSheet.create({
   coverBackground: {
@@ -118,7 +124,6 @@ const styles = StyleSheet.create({
     ...font.heading.bold,
     color: colors.white,
     textAlign: 'center',
-    // width: '30%',
   },
   headerDescription: {
     ...text.greyText,

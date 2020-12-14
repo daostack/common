@@ -5,7 +5,7 @@ import Share from 'react-native-share';
 import {colors, font, layout, sizeL, sizeS, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import CommonStageSummary from '~/Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
 import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
@@ -83,8 +83,6 @@ const CommonProfile = ({
   const [ pendingProposalsData, setPendingProposalsData ] = useState(null);
   const [ userPendingPropDiscCount, setUserPendingPropDiscCount ] = useState(0);
   const commonId = currCommon?.id;
-  const daoMembers = currCommon?.members || [];
-  const [daoMemberAvatars] = useState(daoMembers.length > 5 ? daoMembers.slice(0, 5) : daoMembers);
   const [ showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn ] = useState(false);
   const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
 
@@ -104,35 +102,29 @@ const CommonProfile = ({
 
   const headerHeightLayouted = (height) => height;
 
-  const loadCurrCommon = (snapshot) => {
-    if (snapshot.exists) {
-      setCurrCommon(snapshot.data());
-    } else {
-      Toast.error('This DAO cannot be found try again later');
-      navigation.pop();
-    }
-  };
-
   useEffect(() => {
-    let unsubscribe = null;
-    const loadDao = async (daoId) => {
-      unsubscribe = await DaoService.getInstance().subscribeToDaoById(daoId, loadCurrCommon);
-    };
-
-    if (params.commonId) {
-      loadDao(params.commonId);
-    }
-
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
+    const loadCurrCommon = (snapshot) => {
+      if (snapshot.exists) {
+        setCurrCommon(snapshot.data());
+      } else {
+        Toast.error('This DAO cannot be found try again later');
+        navigation.pop();
       }
     };
-  }, [ params.commonId ]);
+    let unsubscribeCommon = null;
+    const subscribeToCommon = async (currCommonId) => {
+      unsubscribeCommon = await DaoService.getInstance().subscribeToDaoById(currCommonId, loadCurrCommon);
+    };
+    // Subscribe to a common.
+    subscribeToCommon(params.commonId || currCommon.id);
+    return () => {
+      unsubscribeCommon && unsubscribeCommon();
+    };
+  }, [params.commonId, currCommon?.id]);
 
   useEffect(() => {
     setShowRequestSentModal(params.showRequestSentModal);
-    if (userStore.userInfo && userStore.isDaoMember(daoMembers)) {
+    if (userStore.userInfo && userStore.isDaoMember(currCommon?.members)) {
       setMemberState(true);
       setHeaderHeight(DEFAULT_HEADER_HEIGHT + 36);
     } else {
@@ -142,7 +134,7 @@ const CommonProfile = ({
   }, [
     params.showRequestSentModal,
     userStore.userInfo,
-    daoMembers,
+    currCommon?.members,
   ]);
 
   useEffect(() => {
@@ -189,7 +181,11 @@ const CommonProfile = ({
       };
       getPendingProposalsDiscussionCount();
     }
-  }, [ pendingProposalsData ]);
+  }, [pendingProposalsData]);
+
+  useEffect(() => {
+    setCurrCommon(params.currCommon);
+  }, [params.currCommon]);
 
   const renderTabBar = (props) => (
     <TabBarRenderer
@@ -325,7 +321,9 @@ const CommonProfile = ({
             <CommonMembersList
               horizontal={true}
               navigation={navigation}
-              members={daoMemberAvatars}
+              commonId={currCommon.id}
+              members={currCommon.members}
+              limit={5}
             />
           </View>
         </TouchableOpacity>}
@@ -335,7 +333,7 @@ const CommonProfile = ({
 
   const openCommonMembers = (e) => {
     navigation.navigate('CommonMembers', {
-      members: daoMembers,
+      members: currCommon?.members,
       commonId: currCommon.id,
       screenTitle: currCommon.name,
     });
@@ -980,8 +978,8 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 32,
     flexDirection: 'row',
-    paddingHorizontal: 18,
-    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: colors.mainBlue,
 

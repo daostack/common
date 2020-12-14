@@ -57,6 +57,7 @@ const MultiLinkField = (props) => {
       <Text style={styles.addLinkBtn} onPress={() => {
         setCount(count + 1);
         canAddMore();
+        setAddButton(false);
       }}>
         {addMultiFieldBtnName ||
           (link

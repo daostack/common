@@ -83,7 +83,7 @@ class TextInputField extends React.Component {
     let styleTextfield = styles.textfieldContainer;
     let defaultMultilineProps = {minHeight: 48};
 
-    styleTextfield = formStore.getFormField(name, multiName).error
+    styleTextfield = formStore.getFormField(name, multiName)?.error
       ? {...styles.textfieldContainer, ...{borderColor: colors.error}}
       : {...styles.textfieldContainer, ...{borderColor: this.state.onFocus ? colors.mainBlue : colors.grey4}};
 

@@ -9,7 +9,6 @@ class CreateCommonForm {
   static MINIMUM = 'minimum';
   static ACTION = 'action';
   static RULES = 'rules';
-  static AVATAR = 'avatar';
   static IMAGE = 'image';
 }
 

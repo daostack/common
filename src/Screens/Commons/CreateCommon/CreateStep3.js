@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import {colors, font} from '~/Theme';
-import {observer, inject} from 'mobx-react';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
@@ -20,10 +19,10 @@ import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import {object, func, shape} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const CreateStep3 = ({agendaFormStore, navigation}) => {
+const CreateStep3 = ({navigation, route: {params:{formStores}}}) => {
   const [ scrollY ] = useState(new Animated.Value(0));
   const [ headerHeight, setHeaderHeight ] = useState(0);
-
+  const agendaFormStore = formStores.agendaFormStore;
   // var ruleBody = [];
 
   useEffect(() => {
@@ -64,7 +63,7 @@ const CreateStep3 = ({agendaFormStore, navigation}) => {
 
   const push = () => {
     if (agendaFormStore.isFormValid()) {
-      navigation.navigate('CreateStep4');
+      navigation.navigate('CreateStep4', {formStores});
     }
   };
 
@@ -92,7 +91,8 @@ const CreateStep3 = ({agendaFormStore, navigation}) => {
         scrollEventThrottle={16}
         onScroll={Animated.event([
           {nativeEvent: {contentOffset: {y: scrollY}}},
-        ])}>
+        ],
+        {useNativeDriver: false})}>
         <CreateStepHeader currentIndex={2}/>
         <View
           style={{
@@ -214,21 +214,17 @@ const CreateStep3 = ({agendaFormStore, navigation}) => {
 };
 
 CreateStep3.propTypes = {
-  agendaFormStore: shape({
-    isFormValid: func,
-    isFormActionEnabled: func,
-  }),
   navigation: object,
+  route: shape({
+    params: shape({
+      formStores: shape({
+        agendaFormStore: shape({
+          isFormValid: func,
+          isFormActionEnabled: func,
+        }).isRequired,
+      }).isRequired,
+    }),
+  }),
 };
 
-export default inject(
-  'generalInfoFormStore',
-  'fundingFormStore',
-  'agendaFormStore',
-  'reviewFormStore',
-)(observer(CreateStep3));
-
-//generalInfoFormStore
-//fundingFormStore
-//agendaFormStore
-//reviewFormStore
+export default CreateStep3;

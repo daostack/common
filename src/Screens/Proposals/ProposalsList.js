@@ -76,6 +76,7 @@ const ProposalsList = ({isMember,
     isSwiper ? (
       !showMax || (index < showMax) ? (
         <ProposalCard
+          proposalId={item.id}
           key={item.id}
           data={item}
           isSwiper={true}
@@ -96,6 +97,7 @@ const ProposalsList = ({isMember,
       )
 
     ) : <ProposalCard
+      proposalId={item.id}
       key={item.id}
       data={item}
       isSwiper={false}
