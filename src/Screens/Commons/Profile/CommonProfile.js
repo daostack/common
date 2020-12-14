@@ -149,9 +149,12 @@ const CommonProfile = ({
           if (!isMember) {
             if (data) {
               if (data.usersPendingProposal) {
+                //LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
                 setShowPending(true);
+                //LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
                 setShowRequestToJoin(false);
               } else {
+                //LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
                 setShowRequestToJoin(true);
               }
             }
@@ -436,7 +439,6 @@ const CommonProfile = ({
   const renderPendingApproval = () => {
     const remainingSeconds = pendingProposalsData.usersPendingProposal.createdAt.seconds + pendingProposalsData.usersPendingProposal.countdownPeriod - moment().unix();
 
-    LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
       <TouchableOpacity
         onPress={openProposalScreen}
@@ -579,7 +581,6 @@ const CommonProfile = ({
   );
 
   const renderRequestToJoinBtn = () => {
-    LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
       <TouchableOpacity
         style={styles.headerButton}
