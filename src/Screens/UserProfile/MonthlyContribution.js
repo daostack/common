@@ -102,7 +102,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
 
         {subscription ? (
           <Text>
-            {formatCurrency(subscription.amount)}
+            {formatCurrency(subscription.amount)}/mo
           </Text>
         ) : (
           <View style={{width: 100}}>
