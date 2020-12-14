@@ -607,6 +607,8 @@ PODS:
     - React
   - react-native-config (1.2.1):
     - React
+  - react-native-date-picker (3.2.5):
+    - React-Core
   - react-native-document-picker (3.5.3):
     - React
   - react-native-fast-openpgp (1.5.3):
@@ -699,8 +701,6 @@ PODS:
     - React
   - RNCPicker (1.8.0):
     - React-Core
-  - RNDateTimePicker (2.5.0):
-    - React
   - RNFastImage (8.1.5):
     - React
     - SDWebImage (~> 5.0)
@@ -797,6 +797,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-config (from `../node_modules/react-native-config`)
+  - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-fast-openpgp (from `../node_modules/react-native-fast-openpgp`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
@@ -822,7 +823,6 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - "RNCPicker (from `../node_modules/@react-native-community/picker`)"
-  - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - "RNFBAnalytics (from `../node_modules/@react-native-firebase/analytics`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
@@ -929,6 +929,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/blur"
   react-native-config:
     :path: "../node_modules/react-native-config"
+  react-native-date-picker:
+    :path: "../node_modules/react-native-date-picker"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
   react-native-fast-openpgp:
@@ -979,8 +981,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/masked-view"
   RNCPicker:
     :path: "../node_modules/@react-native-community/picker"
-  RNDateTimePicker:
-    :path: "../node_modules/@react-native-community/datetimepicker"
   RNFastImage:
     :path: "../node_modules/react-native-fast-image"
   RNFBAnalytics:
@@ -1085,6 +1085,7 @@ SPEC CHECKSUMS:
   React-jsinspector: b14e62ebe7a66e9231e9581279909f2fc3db6606
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-config: ae9ef3bdbf539f2d14ebaf4ebeba508f766e066a
+  react-native-date-picker: 7b03feaea96db983f1de449e9d6d1dea4fa61010
   react-native-document-picker: 825552b827012282baf4b7cbf119d3b37a280c90
   react-native-fast-openpgp: 143b3dde8e6f520e5cb0b12fa54550d06e85406e
   react-native-image-picker: 6a850c41f57f0848d918c2a77aedd7aa272ffa30
@@ -1110,7 +1111,6 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: 2a692bcb9b69b76a2f1a95f33db057129700af64
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNCPicker: a724b3aa22b182697c190a8fd7b060b66119e136
-  RNDateTimePicker: a8000390e7a4fe23d9f36492ded9282640721c82
   RNFastImage: 35ae972d6727c84ee3f5c6897e07f84d0a3445e9
   RNFBAnalytics: 0c9ed42509d543f795fcd283d82eae3c18abcd12
   RNFBApp: d15c1413e06ec435c3357726cf236b7bb8b67e0a
@@ -1137,6 +1137,6 @@ SPEC CHECKSUMS:
   web3swift: 0f097eafe1d08f478694b882581b85a01afb6633
   Yoga: 7740b94929bbacbddda59bf115b5317e9a161598
 
-PODFILE CHECKSUM: 33b6cd9861108d1f22c545253b6fcf7b3df57092
+PODFILE CHECKSUM: da886963d5e2327ff6ffc6bb2af4eab9d908b6a1
 
 COCOAPODS: 1.10.0
