@@ -104,7 +104,7 @@ const CommonProfile = ({
 
   const animateNextStateRender = () => {
     Platform.OS === 'ios' && LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
-  }
+  };
 
   useEffect(() => {
     const loadCurrCommon = (snapshot) => {
@@ -583,20 +583,19 @@ const CommonProfile = ({
     />
   );
 
-  const renderRequestToJoinBtn = () => {
-    return (
-      <TouchableOpacity
-        style={styles.headerButton}
-        onPress={requestToJoin}>
-        <Text
-          style={styles.requestToJoin}>
-          Request to join
-        </Text>
-        <Text style={styles.contribution}>
-          ${currCommon.metadata.minFeeToJoin / 100}{currCommon.metadata.contributionType === 'monthly' && '/mo'} min. contribution
-        </Text>
-      </TouchableOpacity>);
-  };
+  const renderRequestToJoinBtn = () => (
+    <TouchableOpacity
+      style={styles.headerButton}
+      onPress={requestToJoin}>
+      <Text
+        style={styles.requestToJoin}>
+        Request to join
+      </Text>
+      <Text style={styles.contribution}>
+        ${currCommon.metadata.minFeeToJoin / 100}{currCommon.metadata.contributionType === 'monthly' && '/mo'} min. contribution
+      </Text>
+    </TouchableOpacity>
+  );
 
   const initialLayout = {width: Dimensions.get('window').width};
 
