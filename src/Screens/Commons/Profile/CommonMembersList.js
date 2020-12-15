@@ -54,7 +54,7 @@ const CommonMembersList = ({navigation, members, commonId, limit, horizontal, bo
     const subscribeToCommon = async (currCommonId) => {
       unsubscribeCommon = await DaoService.getInstance().subscribeToDaoById(currCommonId, async (snapshot) => {
         const updatedCommon = snapshot.data();
-        setMembersInfo(await getAllCommonMembers(updatedCommon.members));
+        setMembersInfo(await getAllCommonMembers(updatedCommon?.members));
       });
     };
     if (commonId) {

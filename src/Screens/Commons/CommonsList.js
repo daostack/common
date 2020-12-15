@@ -65,7 +65,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
           daoStore.setDaos(daoList);
         }
 
-        myDao = daoList.filter((dao) => userStore.isDaoMember(dao.members));
+        myDao = daoList.filter((dao) => userStore.isDaoMember(dao?.members));
 
         const pendingList = await getPendingDAOList();
         pendingDao = daoList.filter((dao) => pendingList.includes(dao.id));
