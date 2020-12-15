@@ -18,10 +18,15 @@ const DiscussionMessage = ({
   },
   outcome,
   showCurrentUserAvatar,
+  data,
 }) => {
   let currentUserUid = null;
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
+  }
+
+  if (ownerId === '2H4c4Ul4cHfZSIl15AVC8AUacot1') {
+    console.log("2H4c4Ul4cHfZSIl15AVC8AUacot1 data ", data);
   }
 
   const [outcomeState, setOutcomeState] = React.useState();
@@ -36,6 +41,8 @@ const DiscussionMessage = ({
 
   return (
     <View style={styles.container}>
+      <Text>{ownerId}</Text>
+      <Text>{ownerAvatar}</Text>
       {currentUserUid === ownerId ? (
         <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
           {showCurrentUserAvatar && (
