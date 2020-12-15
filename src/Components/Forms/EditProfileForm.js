@@ -135,6 +135,5 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
-  'editProfileFormStore',
   'userStore',
-)(observer(EditProfileForm));
+)(EditProfileForm);

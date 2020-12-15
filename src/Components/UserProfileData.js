@@ -4,7 +4,6 @@ import {layout, font,colors, text, sizeL, sizeXXL} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import ImageField from '~/Components/FormFields/ImageField';
 import CountBox from '~/Components/CountBox';
-import EditProfileForm from '~/Components/Forms/EditProfileForm';
 import UserService from '~/Services/UserService';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
 import CommonsSwiper from '~/Screens/Commons/CommonsSwiper';
@@ -13,6 +12,7 @@ import {CommonActions} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
 import logger from '~/Services/Logger';
 import {string, object, shape} from 'prop-types';
+
 import {
   Placeholder,
   PlaceholderMedia,
@@ -24,14 +24,13 @@ const UserProfileData = ({
   userId,
   navigation,
   userStore: {userInfo},
-  editProfileFormStore,
 }) => {
   const [user, setUser] = useState(null);
   const [proposalsCount, setProposalsCount] = useState(0);
   const [requestsCount, setRequestsCount] = useState(0);
   const [commonsCount, setCommonsCount] = useState(0);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
-
+  
   useEffect(() => {
     const getUser = async () => {
       if (userId === userInfo?.uid) {
@@ -76,11 +75,6 @@ const UserProfileData = ({
       value={user?.photoURL}
       placeholderUrl={user?.photoURL}
       disableEdit={true}
-      validation={{
-        name: EditProfileForm.FIELD_PROFILE_IMAGE,
-        formStore: editProfileFormStore,
-        validateRule: 'string',
-      }}
     />
   );
 
@@ -300,7 +294,6 @@ UserProfileData.propTypes = {
       uid: string,
     }),
   }),
-  editProfileFormStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -367,6 +360,5 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
-  'editProfileFormStore',
   'userStore',
 )(observer(UserProfileData));

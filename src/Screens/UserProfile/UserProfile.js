@@ -31,7 +31,7 @@ import {
 } from 'rn-placeholder';
 import logger from '../../Services/Logger';
 
-const UserProfile = ({userStore, daoStore, navigation, route}) => {
+const UserProfile = ({userStore, navigation, route}) => {
   //const [editMode, setEditMode] = useState(false);
 
   const [codePushVersion, setCodePushVersion] = useState('');
@@ -301,5 +301,4 @@ const styles = StyleSheet.create({
 
 export default inject(
   'userStore',
-  'daoStore'
 )(observer(UserProfile));
