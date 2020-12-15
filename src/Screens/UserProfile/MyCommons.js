@@ -52,7 +52,7 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
     </View>
   );
 
-  const myDaos = (daoList) => daoList.filter((dao) => userStore.isDaoMember(dao.members));
+  const myDaos = (daoList) => daoList.filter((dao) => userStore.isDaoMember(dao?.members));
 
   return (
     <>

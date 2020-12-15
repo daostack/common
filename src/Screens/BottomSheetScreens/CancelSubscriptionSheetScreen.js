@@ -110,7 +110,7 @@ const CancelSubscriptionSheetScreen = ({
     }
   };
 
-  const LeaveText = (
+  const LeaveText = () => (
     <Text style={styles.subTitle}>
       {status === statuses.canceled
         ? 'You will leave'

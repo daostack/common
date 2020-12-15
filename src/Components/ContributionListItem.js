@@ -7,6 +7,7 @@ import {colors, font} from '../Theme';
 import Icon from '../Assets/iconfont/Icon';
 import MonthlyContributionStatus from './MonthlyContributionStatus';
 import {ACTIVE, CANCELED_BY_PAYMENT, CANCELED_BY_USER, PAYMENT_FAILED} from '../Services/SubscriptionService';
+import {formatCurrency, formatDate} from '~/Util';
 
 const ContributionListItem = ({subscription, navigation}) => {
   const isCanceled = subscription.status === CANCELED_BY_PAYMENT ||
@@ -19,10 +20,7 @@ const ContributionListItem = ({subscription, navigation}) => {
   };
 
   const dueDate = moment(subscription.dueDate.toDate()).format('D MMMM YYYY');
-  const paymentAmount = (subscription.amount / 100).toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  });
+  const paymentAmount = formatCurrency(subscription.amount);
 
   return (
     <TouchableOpacity onPress={onClick}>
@@ -56,7 +54,7 @@ const ContributionListItem = ({subscription, navigation}) => {
 
             <Text style={styles.bottomText}>
               {isCanceled ? (
-                {dueDate}
+                formatDate(subscription.dueDate.toDate())
               ) : (
                 `${paymentAmount}/mo`
               )}

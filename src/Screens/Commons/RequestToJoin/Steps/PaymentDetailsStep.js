@@ -97,7 +97,7 @@ const PaymentDetailsStep = ({
 
         const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin({
           ...data,
-          cardId: createdCard.cardId,
+          cardId: createdCard.id,
         });
 
         if (createRequestToJoinResponse.status === 200) {

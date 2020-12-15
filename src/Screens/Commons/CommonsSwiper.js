@@ -31,7 +31,7 @@ const CommonsSwiper = ({
     } else {
       if (snapshot.docChanges().length !== 0) {
         const newList = snapshot.docChanges().map(({doc}, index) => {
-          const isMember = isDaoMemberByUserId(doc.data().members, userId);
+          const isMember = isDaoMemberByUserId(doc.data()?.members, userId);
           if (!isMember) {
             return false;
           }

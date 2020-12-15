@@ -187,9 +187,7 @@ const CommonProfile = ({
   }, [pendingProposalsData]);
 
   useEffect(() => {
-    if (currCommon.id !== params.currCommon.id) {
-      setCurrCommon(params.currCommon);
-    }
+    setCurrCommon(params.currCommon);
   }, [params.currCommon]);
 
   const renderTabBar = (props) => (
@@ -302,7 +300,7 @@ const CommonProfile = ({
                 style={layout.flexRow}>
                 <View style={layout.flexRow}>
                   <Text style={text.h4Black}>
-                    {`${currCommon.members.length} Member${currCommon.members.length !== 1 ? 's' : ''}`}
+                    {`${currCommon?.members?.length} Member${currCommon?.members?.length !== 1 ? 's' : ''}`}
                   </Text>
                 </View>
                 <View style={{...layout.flexRow, ...layout.marginLeftS}}>
@@ -327,7 +325,7 @@ const CommonProfile = ({
               horizontal={true}
               navigation={navigation}
               commonId={currCommon.id}
-              members={currCommon.members}
+              members={currCommon?.members}
               limit={5}
             />
           </View>
@@ -731,7 +729,7 @@ const CommonProfile = ({
                     currCommon.numberOfPreBoostedProposals +
                     currCommon.numberOfQueuedProposals,
                   /* goal: currCommon.fundingGoal, */
-                  members: currCommon.members.length,
+                  members: currCommon?.members?.length,
                   balance: currCommon.balance,
                   raised: currCommon.raised,
                 }}

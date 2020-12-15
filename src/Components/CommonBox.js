@@ -43,7 +43,7 @@ const CommonBox = ({common, onPress, width = '100%', navigation, headerHeightLay
           common.numberOfPreBoostedProposals +
           common.numberOfQueuedProposals,
         goal: common.fundingGoal,
-        members: common.members.length * 1,
+        members: common?.members?.length,
         // TODO: get this value. Is it even tracked in the contract? need to check.
         raised: common.raised,
         currentBudget: common.balance,

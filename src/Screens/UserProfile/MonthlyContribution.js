@@ -14,9 +14,10 @@ import {
   ACTIVE,
   CANCELED_BY_PAYMENT,
   CANCELED_BY_USER,
-  cancelSubscription, getSubscription,
+  cancelSubscription,
+  getSubscription,
   PAYMENT_FAILED,
-} from '../../Services/SubscriptionService';
+} from '~/Services/SubscriptionService';
 import {formatCurrency, formatDate} from '../../Util';
 
 const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
@@ -24,7 +25,9 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
 
   const onCancelClick = () => {
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.CANCEL_SUBSCRIPTION, {
-      onCancelConfirm: cancelSubscription,
+      onCancelConfirm: async () => {
+        await cancelSubscription(subscription.id);
+      },
       commonName: subscription.metadata?.common?.name,
       dueDate: subscription.dueDate.toDate(),
     });
@@ -99,7 +102,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
 
         {subscription ? (
           <Text>
-            {formatCurrency(subscription.amount)}
+            {formatCurrency(subscription.amount)}/mo
           </Text>
         ) : (
           <View style={{width: 100}}>
