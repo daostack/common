@@ -585,16 +585,16 @@ const CommonProfile = ({
 
   const renderRequestToJoinBtn = () => {
     return (
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={requestToJoin}>
-          <Text
-            style={styles.requestToJoin}>
-            Request to join
-          </Text>
-          <Text style={styles.contribution}>
-            ${currCommon.metadata.minFeeToJoin / 100}{currCommon.metadata.contributionType === 'monthly' && '/mo'} min. contribution
-          </Text>
+      <TouchableOpacity
+        style={styles.headerButton}
+        onPress={requestToJoin}>
+        <Text
+          style={styles.requestToJoin}>
+          Request to join
+        </Text>
+        <Text style={styles.contribution}>
+          ${currCommon.metadata.minFeeToJoin / 100}{currCommon.metadata.contributionType === 'monthly' && '/mo'} min. contribution
+        </Text>
       </TouchableOpacity>);
   };
 
