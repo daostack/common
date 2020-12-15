@@ -102,6 +102,10 @@ const CommonProfile = ({
 
   const headerHeightLayouted = (height) => height;
 
+  const animateNextStateRender = () => {
+    Platform.OS === 'ios' && LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
+  }
+
   useEffect(() => {
     const loadCurrCommon = (snapshot) => {
       if (snapshot.exists) {
@@ -149,12 +153,13 @@ const CommonProfile = ({
           if (!isMember) {
             if (data) {
               if (data.usersPendingProposal) {
-                //LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
+                animateNextStateRender();
                 setShowPending(true);
-                //LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
+
+                animateNextStateRender();
                 setShowRequestToJoin(false);
               } else {
-                //LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
+                animateNextStateRender();
                 setShowRequestToJoin(true);
               }
             }
@@ -580,16 +585,16 @@ const CommonProfile = ({
 
   const renderRequestToJoinBtn = () => {
     return (
-      <TouchableOpacity
-        style={styles.headerButton}
-        onPress={requestToJoin}>
-        <Text
-          style={styles.requestToJoin}>
-          Request to join
-        </Text>
-        <Text style={styles.contribution}>
-          ${currCommon.metadata.minFeeToJoin / 100}{currCommon.metadata.contributionType === 'monthly' && '/mo'} min. contribution
-        </Text>
+        <TouchableOpacity
+          style={styles.headerButton}
+          onPress={requestToJoin}>
+          <Text
+            style={styles.requestToJoin}>
+            Request to join
+          </Text>
+          <Text style={styles.contribution}>
+            ${currCommon.metadata.minFeeToJoin / 100}{currCommon.metadata.contributionType === 'monthly' && '/mo'} min. contribution
+          </Text>
       </TouchableOpacity>);
   };
 
