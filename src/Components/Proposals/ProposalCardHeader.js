@@ -12,6 +12,7 @@ const TITLES = {
   NEW: 'New',
   COUNTDOWN: 'Countdown',
   PAYMENT_FAILED: 'Payment Failed',
+  PAYMENT_PENDING: 'Pending Payment',
 };
 
 const calcStatus = (state, isScreenHeader, paymentStatus) => {
@@ -19,20 +20,31 @@ const calcStatus = (state, isScreenHeader, paymentStatus) => {
     opacity: 1,
   };
 
-  if (paymentStatus === 'failed') {
-    status.text = TITLES.PAYMENT_FAILED;
-    status.lightColor = colors.redLightish;
-    status.darkColor = colors.error;
-    status.icon = 'declined';
-    return status;
-  }
   if (state === PROPOSAL_STAGE.passed) {
-    status.text = TITLES.APPROVED;
-    status.lightColor = colors.lightGreen;
-    status.darkColor = colors.lightishGreen;
-    status.icon = 'approved';
-  }
-  else if (state === PROPOSAL_STAGE.failed) {
+    if (paymentStatus === 'confirmed') {
+      status.text = TITLES.APPROVED;
+      status.lightColor = colors.lightGreen;
+      status.darkColor = colors.lightishGreen;
+      status.icon = 'approved';
+    } else if (paymentStatus === 'notAttempted' || paymentStatus === 'pending') {
+      status.text = TITLES.PAYMENT_PENDING;
+      status.lightColor = colors.lightGreen;
+      status.darkColor = colors.lightishGreen;
+      status.icon = 'explanation1';
+    } else if (paymentStatus === 'failed') {
+      status.text = TITLES.PAYMENT_FAILED;
+      status.lightColor = colors.redLightish;
+      status.darkColor = colors.error;
+      status.icon = 'declined';
+    } else {
+      // Here will land all proposals without payment statuses, that are approved
+
+      status.text = TITLES.APPROVED;
+      status.lightColor = colors.lightGreen;
+      status.darkColor = colors.lightishGreen;
+      status.icon = 'approved';
+    }
+  } else if (state === PROPOSAL_STAGE.failed) {
     status.text = TITLES.REJECTED;
     status.lightColor = colors.redLightish;
     status.darkColor = colors.error;

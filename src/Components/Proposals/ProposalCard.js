@@ -162,7 +162,7 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
           state={proposalCardInfo.proposalInfo?.state}
-          paymentStatus={paymentState}
+          paymentStatus={proposalCardInfo.proposalInfo?.paymentState}
           closingAt={proposalCardInfo.proposalInfo?.createdAt.seconds + proposalCardInfo.proposalInfo?.countdownPeriod}
         />
 
