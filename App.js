@@ -141,7 +141,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   // notification navigation
   useEffect(() => {
-    console.log('use effect========================');
     // Assume a message-notification contains a "type" property in the data payload of the screen to open
     messaging().onNotificationOpenedApp((remoteMessage) => {
       console.log(
