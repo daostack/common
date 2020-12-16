@@ -110,7 +110,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     return unsubscribe;
   }, []);
 
-  const notificationNavigation = async (remoteMessage) => { //(screenName, commonId, objectId = null, tabIndex) => {
+  const notificationNavigation = async (remoteMessage) => {
+    logger.log('remoteMessage -> ', remoteMessage);
     if (remoteMessage) {
       const [screenName, commonId, objectId, tabIndex = 0] = remoteMessage.data.path.split('/');
       const currCommon = await CommonService.getInstance().getCommonInfo(commonId);
@@ -131,7 +132,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           screenTitle: currCommon.name,
           commonBalance: currCommon.balance,
           proposalCardInfo: proposal,
-          tabIndex,
+          tabIndex: +tabIndex,
         });
       }
     }
@@ -145,6 +146,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         'Notification caused app to open from background state:',
         remoteMessage,
       );
+      console.log('onNotificationOpenedApp remoteMessage', remoteMessage);
       notificationNavigation(remoteMessage);
     });
 
@@ -152,6 +154,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     messaging()
       .getInitialNotification()
       .then((remoteMessage) => {
+        console.log('getInitialNotification remoteMessage', remoteMessage);
         notificationNavigation(remoteMessage);
       });
   }, []);
