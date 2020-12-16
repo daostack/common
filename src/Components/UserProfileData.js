@@ -30,7 +30,7 @@ const UserProfileData = ({
   const [requestsCount, setRequestsCount] = useState(0);
   const [commonsCount, setCommonsCount] = useState(0);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
-  
+
   useEffect(() => {
     const getUser = async () => {
       if (userId === userInfo?.uid) {
