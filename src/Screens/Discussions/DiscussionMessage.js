@@ -5,6 +5,7 @@ import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
+import UserService from '~/Services/UserService';
 
 const {width} = Dimensions.get('window');
 
@@ -13,8 +14,6 @@ const DiscussionMessage = ({
     ownerId,
     text,
     createTime,
-    ownerAvatar,
-    ownerName,
   },
   outcome,
   showCurrentUserAvatar,
@@ -25,6 +24,21 @@ const DiscussionMessage = ({
   }
 
   const [outcomeState, setOutcomeState] = React.useState();
+  const [onwerInfo, setOwnerInfo] = React.useState(null);
+
+  useEffect(() => {
+    let unsubscribeOwnerId = null;
+    const loadOwnerInfo = (userInfo) => {
+      setOwnerInfo(userInfo);
+    };
+    const subscribeToOwner = async (currOwnerId) => {
+      unsubscribeOwnerId = await UserService.getInstance().subscribeToUserById(currOwnerId, loadOwnerInfo);
+    };
+    subscribeToOwner(ownerId);
+    return () => {
+      unsubscribeOwnerId && unsubscribeOwnerId();
+    };
+  }, [ownerId]);
 
   useEffect(() => {
     if (typeof outcome === 'object') {
@@ -48,7 +62,7 @@ const DiscussionMessage = ({
                 justify: 'flex-end',
                 marginLeft: 10,
               }}
-              source={ownerAvatar ? {uri: ownerAvatar} : null}
+              source={onwerInfo && {uri: onwerInfo.photoURL}}
             />
           )}
 
@@ -86,7 +100,7 @@ const DiscussionMessage = ({
                   width: 40,
                   borderRadius: 20,
                 }}
-                source={ownerAvatar ? {uri: ownerAvatar} : null}
+                source={onwerInfo && {uri: onwerInfo.photoURL}}
               />
 
             </View>
@@ -98,7 +112,7 @@ const DiscussionMessage = ({
                 backgroundColor: colors.paleLilacTwo,
 
               }}>
-              <Text style={styles.ownerName}>{ownerName}</Text>
+              <Text style={styles.ownerName}>{onwerInfo?.displayName}</Text>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
                 {Platform.OS === 'ios' ? (
                   <TextInput
@@ -130,8 +144,6 @@ DiscussionMessage.propTypes = {
     ownerId: string,
     text: string,
     createTime: object,
-    ownerAvatar: string,
-    ownerName: string,
   }),
   outcome: shape({
     then: func.isRequired,
