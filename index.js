@@ -23,7 +23,7 @@ const MobX = () => {
 const AppBundle = CodePush({
   checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
   installMode: CodePush.InstallMode.ON_NEXT_SUSPEND,
-  minimumBackgroundDuration: 15
+  minimumBackgroundDuration: 15,
 })(MobX);
 
 AppRegistry.registerComponent(appName, () => AppBundle);
