@@ -108,7 +108,7 @@ const DiscussionMessage = ({
                 backgroundColor: colors.paleLilacTwo,
 
               }}>
-                <Text style={styles.ownerName}>{onwerInfo?.displayName}</Text>
+              <Text style={styles.ownerName}>{onwerInfo?.displayName}</Text>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
                 {Platform.OS === 'ios' ? (
                   <TextInput
