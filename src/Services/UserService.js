@@ -1,6 +1,7 @@
 import {db} from '~/Firebase';
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import logger from './Logger';
+import Toast from '~/Util/Toast';
 
 const prepareUserObject = (user) => {
   if (!user) {
@@ -35,6 +36,27 @@ export default class UserService {
         }
         return prepareUserObject(snapshots.data());
       });
+  }
+
+  async subscribeToUserById(userId, callback) {
+    let daos = db
+      .collection(DB_COLLECTIONS.users)
+      .doc(userId);
+
+    return daos.onSnapshot((snapshot) => {
+      let userInfo = null;
+
+      if (snapshot.exists) {
+        const currOwnerInfo = snapshot.data();
+        userInfo = {
+          ...currOwnerInfo,
+          displayName: `${currOwnerInfo.firstName || ''} ${currOwnerInfo.lastName || ''}`,
+        };
+      }
+
+      callback(userInfo);
+    }, (error) => Toast.error(error));
+
   }
 
   async getUsersByUpTo10Ids(userIdsArr) {

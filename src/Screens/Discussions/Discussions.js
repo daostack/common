@@ -94,7 +94,6 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
       // .limit(25)
       .onSnapshot(
         (snapshot) => {
-          console.log("Snapshot discussions messages", snapshot);
           if (snapshot.docs.length !== 0) {
             const newList = snapshot.docs.map((doc) => ({
               id: doc.id,
@@ -214,8 +213,6 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
           text: message,
           createTime: new Date(),
           ownerId: currentUser.uid,
-          ownerName: currentUser.displayName,
-          ownerAvatar: currentUser.photoURL,
           commonId: commonId,
           discussionId: discussionId,
         })
