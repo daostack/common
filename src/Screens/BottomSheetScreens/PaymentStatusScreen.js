@@ -3,6 +3,7 @@ import {View, Image, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {text, layout, font, colors} from '../../Theme';
 import {inject, observer} from 'mobx-react';
 import {object, string} from 'prop-types';
+import {PROPOSAL_PAYMENT_STATE} from '~/Util/constants';
 
 const PaymentFailed = ({bottomSheetStore, proposerName, paymentState}) => (
   <View style={styles.container}>
@@ -12,17 +13,24 @@ const PaymentFailed = ({bottomSheetStore, proposerName, paymentState}) => (
         style={styles.image}
       />
 
-      <Text style={styles.textTitle}>{paymentState === 'failed' ? 'Payment Failed' : 'Payment Pending'}</Text>
+      <Text style={styles.textTitle}>
+        {paymentState === PROPOSAL_PAYMENT_STATE.FAILED
+          ? 'Payment Failed'
+          : 'Payment Pending'
+        }
+      </Text>
 
 
-      {paymentState === 'failed' ? (
+      {paymentState === PROPOSAL_PAYMENT_STATE.FAILED ? (
         <Text style={styles.subtitle}>
-          This request was approved by the Common members. However, we weren't able to collect the contribution, and the request was cancelled.{' '}
+          This request was approved by the Common members. However, we weren't able to collect the contribution, and the
+          request was cancelled.{' '}
           {proposerName} was not added as a member. If this is your request, you may try to join again.
         </Text>
       ) : (
         <Text style={styles.subtitle}>
-          This request was approved by the Common members. However, the contribution is still pending and {proposerName} was not added as a member yet.
+          This request was approved by the Common members. However, the contribution is still pending
+          and {proposerName} was not added as a member yet.
         </Text>
       )}
 

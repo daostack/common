@@ -41,6 +41,7 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import {PROPOSAL_PAYMENT_STATE} from '~/Util/constants';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -115,9 +116,9 @@ const ProposalScreen = ({
         });
 
         setShowPaymentStatus(
-          currProposalInfo.paymentState === 'pending' ||
-          currProposalInfo.paymentState === 'notAttempted' ||
-          currProposalInfo.paymentState === 'failed'
+          currProposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.PENDING ||
+          currProposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.NOT_ATTEMPTED ||
+          currProposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.FAILED
         );
 
       }
