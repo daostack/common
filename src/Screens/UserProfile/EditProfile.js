@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import EditProfileForm from '~/Components/Forms/EditProfileForm';
 import {colors, text, layout} from '~/Theme';
-import {observer, inject} from 'mobx-react';
+import {inject} from 'mobx-react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '~/Assets/iconfont/Icon';
 import Loader from '~/Components/Loader';
@@ -18,7 +18,7 @@ import Toast from '~/Util/Toast';
 import AuthService from '~/Services/AuthService';
 import {filterObjectByKeys} from '~/Util';
 import logger from '~/Services/Logger';
-import { bool, object, shape, func } from 'prop-types';
+import {bool, object, shape, func} from 'prop-types';
 import EditProfileFormStore from '~/FormStores/EditProfileFormStore';
 
 const EditProfile = ({

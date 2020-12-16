@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import ImageField from '../FormFields/ImageField';
-import {observer, inject} from 'mobx-react';
+import {inject} from 'mobx-react';
 import {layout, text, font, colors} from '~/Theme';
 import {string, shape, bool, object} from 'prop-types';
 

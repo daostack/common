@@ -23,14 +23,14 @@ class ImageField extends React.Component {
     super(props);
 
     if (this.props.validation) {
-      const { validation: {
+      const {validation: { 
         name,
         formStore,
         validateRule,
         multiName,
         displayName,
         customErrorMessage,
-      }, value } = this.props;
+      }, value} = this.props;
 
       formStore.registerFormField(name, validateRule, value, multiName);
 

@@ -1,9 +1,4 @@
-import React from 'react';
-import {View} from 'react-native';
-import {observer, inject} from 'mobx-react';
-import {object} from 'prop-types';
-
-class RequestToJoinForm extends React.Component {
+class RequestToJoinForm {
   static FIELD_IMAGE = 'image';
   static FIELD_INTRO = 'intro';
   static FIELD_LINKS = 'links';
@@ -13,23 +8,6 @@ class RequestToJoinForm extends React.Component {
   static FIELD_CARD_NUMBER = 'card_number';
   static FIELD_EXPIRATION_DATE = 'expiration_date';
   static FIELD_CVV = 'cvv';
-
-  formSkip() {}
-
-  formSave = () => {
-    const {requestToJoinFormStore} = this.props;
-    if (requestToJoinFormStore.isFormValid()) {
-      
-    }
-  };
-
-  render() {
-    return <View />;
-  }
 }
 
-RequestToJoinForm.propTypes = {
-  requestToJoinFormStore: object,
-};
-
-export default inject('requestToJoinFormStore')(observer(RequestToJoinForm));
+export default RequestToJoinForm;
