@@ -84,7 +84,7 @@ const DiscussionMessage = ({
               <Text
                 style={styles.date}
                 numberOfLines={1}>
-                {moment(createTime.toDate()).format('hh:mm')}
+                {moment(createTime.toDate()).format('HH:mm')}
               </Text>
             </View>
           </View>
@@ -128,7 +128,7 @@ const DiscussionMessage = ({
               </Hyperlink>
 
               <Text style={styles.date}>
-                {moment(createTime.toDate()).format('hh:mm')}
+                {moment(createTime.toDate()).format('HH:mm')}
               </Text>
 
             </View>
