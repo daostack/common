@@ -27,13 +27,17 @@ const DiscussionMessage = ({
   const [onwerInfo, setOwnerInfo] = React.useState(null);
 
   useEffect(() => {
+    let unsubscribeOwnerId = null;
     const loadOwnerInfo = (userInfo) => {
       setOwnerInfo(userInfo);
     };
-    const subscribeToOwner = async (ownerId) => {
-      unsubscribeCommon = await UserService.getInstance().subscribeToUserById(ownerId, loadOwnerInfo);
+    const subscribeToOwner = async (currOwnerId) => {
+      unsubscribeOwnerId = await UserService.getInstance().subscribeToUserById(currOwnerId, loadOwnerInfo);
     };
-    subscribeToOwner(ownerId)
+    subscribeToOwner(ownerId);
+    return () => {
+      unsubscribeOwnerId && unsubscribeOwnerId();
+    };
   }, [ownerId]);
 
   useEffect(() => {
@@ -58,7 +62,7 @@ const DiscussionMessage = ({
                 justify: 'flex-end',
                 marginLeft: 10,
               }}
-              source={onwerInfo && { uri: onwerInfo.photoURL}}
+              source={onwerInfo && {uri: onwerInfo.photoURL}}
             />
           )}
 
@@ -96,7 +100,7 @@ const DiscussionMessage = ({
                   width: 40,
                   borderRadius: 20,
                 }}
-                source={onwerInfo && { uri: onwerInfo.photoURL }}
+                source={onwerInfo && {uri: onwerInfo.photoURL}}
               />
 
             </View>
