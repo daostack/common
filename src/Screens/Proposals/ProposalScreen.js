@@ -41,6 +41,7 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import {PROPOSAL_PAYMENT_STATE} from '~/Util/constants';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -72,12 +73,12 @@ const ProposalScreen = ({
   const [inputHeight, setInputHeight] = useState(false);
   const [showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer] = useState(false);
   const [showPaymentStatus, setShowPaymentStatus] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState(paymentState);
+
   const renderVoting =
     proposalScreenInfo?.proposalInfo &&
     PROPOSAL_STAGES_ACTIVE.includes(proposalScreenInfo?.proposalInfo?.state) &&
     isMember &&
-    !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid) && paymentStatus !== 'failed';
+    !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid);
 
 
   // Sticky Tab Bar
@@ -113,6 +114,13 @@ const ProposalScreen = ({
         navigation.setParams({
           subtitle: currProposalDao?.name,
         });
+
+        setShowPaymentStatus(
+          currProposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.PENDING ||
+          currProposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.NOT_ATTEMPTED ||
+          currProposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.FAILED
+        );
+
       }
       //FundingRequest proposal
       else {
@@ -158,7 +166,6 @@ const ProposalScreen = ({
     if (proposalId) {
       logger.log(`proposalId --> ${proposalId}`);
       getProposalInfo(proposalId);
-      getPaymentStatus();
     }
 
     return () => {
@@ -282,7 +289,7 @@ const ProposalScreen = ({
             </View>
           ) : (
             <Text style={{...styles.joinCommonText}}>
-              Only members or proposal creators can send messages
+                Only members or proposal creators can send messages
             </Text>
           )}
         </View>
@@ -366,27 +373,12 @@ const ProposalScreen = ({
     }
   };
 
-  const getPaymentStatus = () => {
-    db.collection('payments')
-      .where('proposalId', '==', proposalId)
-      .onSnapshot((snapshot) => {
-        if (snapshot.docChanges().length !== 0) {
-          const paymentData = (snapshot.docChanges()[0].doc).data();
-          setPaymentStatus(paymentData.status);
-          if (paymentData.status === 'failed') {
-            setShowPaymentStatus(true);
-          }
-        }
-      },
-      (error) => logger.error(error));
-  };
-
   const paymentStatusModal = () => bottomSheetStore.showBottomSheet(
-    BOTTOM_SHEET_TEMPLATES.PAYMENT_FAILED,
+    BOTTOM_SHEET_TEMPLATES.PAYMENT_STATUS,
     {
       proposerName: proposalScreenInfo?.proposedUser?.displayName,
+      paymentState: proposalScreenInfo?.proposalInfo?.paymentState,
     }
-
   );
 
   const renderVotingButtons = (reference) => {
@@ -400,13 +392,13 @@ const ProposalScreen = ({
               onPress={(e) => openApprovalSheet(true)}
               style={{...styles.actionBtnStyle, ...layout.marginRightS}}
             >
-              <Icon name="approved-24" color={colors.lightishGreen} size={24}/>
+              <Icon name="approved-24" color={colors.lightishGreen} size={24} />
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={(e) => openApprovalSheet(false)}
               style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
-              <Icon name="reject-24" color={colors.against} size={24}/>
+              <Icon name="reject-24" color={colors.against} size={24} />
             </TouchableOpacity>
           </View>
         </View>
@@ -477,7 +469,7 @@ const ProposalScreen = ({
   };
 
   const getAvailableFunds = () => {
-    const availableFunds = (commonBalance || proposalScreenInfo?.proposalDao?.balance || 0 ) / 100;
+    const availableFunds = (commonBalance || proposalScreenInfo?.proposalDao?.balance || 0) / 100;
     return Math.abs(availableFunds) > 999
       ? Math.sign(availableFunds) * ((Math.abs(availableFunds) / 1000).toFixed(1)) + 'K'
       : Math.sign(availableFunds) * Math.abs(availableFunds);
@@ -503,7 +495,7 @@ const ProposalScreen = ({
         {showStickyTabBar && (
           <Animated.View style={[stickyTabBarStyle, slideUp]}>
             <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo}
-              parentRef={originTabBarRef}/>
+              parentRef={originTabBarRef} />
           </Animated.View>
         )}
 
@@ -551,20 +543,25 @@ const ProposalScreen = ({
               <View style={headerContainerStyle}>
                 {proposalScreenInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest ? (
                   <View style={{...layout.content, width: '100%', padding: 0}}>
-                    <ProposalCardHeader
-                      isScreenHeader={true}
-                      state={proposalScreenInfo?.proposalInfo?.state}
-                      paymentStatus={paymentStatus}
-                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalScreenInfo.proposalInfo?.countdownPeriod}
-                    />
+                    <TouchableOpacity onPress={() => {
+                      if (showPaymentStatus) {
+                        paymentStatusModal();
+                      }
+                    }}
+                    >
+                      <ProposalCardHeader
+                        isScreenHeader={true}
+                        state={proposalScreenInfo?.proposalInfo?.state}
+                        paymentStatus={proposalScreenInfo?.proposalInfo?.paymentState}
+                        closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalScreenInfo.proposalInfo?.countdownPeriod}
+                      />
+                    </TouchableOpacity>
                     {proposalScreenInfo?.proposedUser && (
-
                       <UserAvatar
                         image={proposalScreenInfo?.proposedUser?.photoURL}
                         displayName={proposalScreenInfo?.proposedUser?.displayName}
                         imageStyle={{width: 46, height: 46}}
                       />
-
                     )}
                     <Text style={{...text.h2Black, ...layout.marginBottomL, ...layout.marginTopXS}}>
                       {proposalScreenInfo?.proposalInfo?.description?.title || 'Unknown title'}
@@ -572,12 +569,19 @@ const ProposalScreen = ({
                   </View>
                 ) : (
                   <React.Fragment>
-                    <ProposalCardHeader
-                      isScreenHeader={true}
-                      state={proposalScreenInfo?.proposalInfo?.state}
-                      paymentStatus={paymentStatus}
-                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalScreenInfo.proposalInfo?.countdownPeriod}
-                    />
+                    <TouchableOpacity onPress={() => {
+                      if (showPaymentStatus) {
+                        paymentStatusModal();
+                      }
+                    }}
+                    >
+                      <ProposalCardHeader
+                        isScreenHeader={true}
+                        state={proposalScreenInfo?.proposalInfo?.state}
+                        paymentStatus={proposalScreenInfo?.proposalInfo?.paymentState}
+                        closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalScreenInfo.proposalInfo?.countdownPeriod}
+                      />
+                    </TouchableOpacity>
 
                     {proposalScreenInfo?.proposedUser ? (
                       <>
@@ -599,7 +603,7 @@ const ProposalScreen = ({
                           <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}}
                             onPress={viewUserProfile}>
                             <Text style={text.smallBlackText}>View Profile</Text>
-                            <Icon name="right-arrow" size={20}/>
+                            <Icon name="right-arrow" size={20} />
                           </TouchableOpacity>
 
                         </View>
@@ -611,8 +615,8 @@ const ProposalScreen = ({
                           isRound={true}
                           style={{alignSelf: 'center', marginBottom: 40}}
                         />
-                        <PlaceholderLine width={50} style={{alignSelf: 'center'}}/>
-                        <PlaceholderLine width={30} style={{alignSelf: 'center', marginBottom: 28}}/>
+                        <PlaceholderLine width={50} style={{alignSelf: 'center'}} />
+                        <PlaceholderLine width={30} style={{alignSelf: 'center', marginBottom: 28}} />
                       </Placeholder>)
                     }
                   </React.Fragment>
@@ -631,12 +635,12 @@ const ProposalScreen = ({
                         : `$${proposalScreenInfo?.proposalInfo.join.funding / 100}`}
                     </Text>
                     <Text style={{...text.smallBlackText, ...layout.marginRightS}}>{
-                        proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join &&
-                        proposalScreenInfo?.proposalDao?.metadata?.contributionType === 'monthly' && ' per month'}</Text>
+                      proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join &&
+                      proposalScreenInfo?.proposalDao?.metadata?.contributionType === 'monthly' && ' per month'}</Text>
                   </View>
                   {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest && proposalScreenInfo?.proposalInfo.fundingRequest.amount > 0
-                  && <Text
-                    style={text.smallBlackText}>{`Available funds: $${getAvailableFunds()}`}</Text>
+                    && <Text
+                      style={text.smallBlackText}>{`Available funds: $${getAvailableFunds()}`}</Text>
                   }
                 </View>
 
@@ -649,7 +653,7 @@ const ProposalScreen = ({
                         name="user-approved"
                         color={colors.lightishGreen}
                         size={25}
-                        style={layout.marginRightXS}/>
+                        style={layout.marginRightXS} />
                       <Text style={text.lightishGreenText}>
                         {votesFor}
                       </Text>
@@ -668,7 +672,7 @@ const ProposalScreen = ({
                         name="user-rejected"
                         color={colors.against}
                         size={25}
-                        style={layout.marginLeftXS}/>
+                        style={layout.marginLeftXS} />
                     </View>
                   </View>
                   <View style={{
@@ -730,8 +734,6 @@ const ProposalScreen = ({
             {messageInput()}
           </React.Fragment>
         )}
-
-        {showPaymentStatus && paymentStatusModal()}
 
       </SafeAreaView>
 
