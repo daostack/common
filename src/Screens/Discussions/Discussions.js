@@ -95,7 +95,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
       .onSnapshot(
         (snapshot) => {
           if (snapshot.docChanges().length !== 0) {
-            const newList = snapshot.docChanges().map((doc) => ({
+            const newList = snapshot.docChanges().map(({doc}) => ({
               id: doc.id,
               ...doc.data(),
             }));
