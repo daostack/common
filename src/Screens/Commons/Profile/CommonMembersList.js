@@ -67,8 +67,10 @@ const CommonMembersList = ({navigation, members, commonId, limit, horizontal, bo
 
   }, [commonId]);
 
+  const limitedMembers = limit ? limitCommonMembers(members) : members;
+
   return (
-    <View style={horizontal && {...layout.flexRow, paddingLeft: (members.length - 1) * 15}}>
+    <View style={horizontal && {...layout.flexRow, paddingLeft: (limitedMembers.length - 1) * 15}}>
       {membersInfo ? (
         membersInfo.map((member, i) => (
           horizontal
@@ -91,7 +93,7 @@ const CommonMembersList = ({navigation, members, commonId, limit, horizontal, bo
             )
         ))
       ) : horizontal ? (
-        members.map((memberUserId, i) => (
+        limitedMembers.map((memberUserId, i) => (
           <View style={{position: 'relative', left: i * -15}}
             key={`${memberUserId.userId}-${i}`}>
             <PlaceholderMedia
@@ -108,7 +110,7 @@ const CommonMembersList = ({navigation, members, commonId, limit, horizontal, bo
       ) :
         <Placeholder Animation={Fade}>
           {
-            members.map((memberUserId, i) => (
+            limitedMembers.map((memberUserId, i) => (
               <View style={{...layout.flexRow, justifyContent: 'space-between', paddingVertical: 10}} key={i}>
                 <View style={{padding: 10}}>
                   <PlaceholderMedia
