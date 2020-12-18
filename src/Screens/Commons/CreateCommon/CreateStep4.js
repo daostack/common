@@ -9,7 +9,7 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import {inject} from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 import {StackActions} from '@react-navigation/native';
 
 import moment from 'moment';
@@ -454,4 +454,4 @@ const styles = StyleSheet.create({
 export default inject(
   'bottomSheetStore',
   'userStore',
-)(CreateStep4);
+)(observer(CreateStep4));
