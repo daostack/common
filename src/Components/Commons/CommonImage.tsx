@@ -67,7 +67,6 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(({
             Toast.success('Done');
             console.log('url -> ', url);
             reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
-            //setImageURI(url);
           })
           .catch((error) => Toast.error(error));
       }
@@ -86,7 +85,6 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(({
     setTemplateIndex(index);
     const currImageUrl = getImageUrl(index);
     reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, currImageUrl);
-    //setImageURI(currImageUrl);
   };
 
   return (
