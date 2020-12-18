@@ -17,12 +17,16 @@ import StorageService from '~/Services/StorageService';
 import Toast from '~/Util/Toast';
 import {handlePermission} from '~/Util/Permissions';
 import logger from '~/Services/Logger';
-import {number, string, object, InferProps} from 'prop-types';
+import {number, string, shape, func, InferProps} from 'prop-types';
 
 
 const props = {
   width: number,
-  reviewFormStore: object.isRequired,
+  reviewFormStore: shape({
+    registerFormField: func.isRequired,
+    fieldChanged: func.isRequired,
+    getFormField: func.isRequired,
+  }),
   commonName: string,
   commonByLine: string,
 };
