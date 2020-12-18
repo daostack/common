@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Image,
   Text,
   TouchableOpacity,
   View,
@@ -9,31 +8,29 @@ import {
   Dimensions,
   SafeAreaView,
   Animated,
-  Platform,
 } from 'react-native';
 import {inject} from 'mobx-react';
 import {StackActions} from '@react-navigation/native';
-import ImagePicker from 'react-native-image-picker';
+
 import moment from 'moment';
-import Icon from '~/Assets/iconfont/Icon';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
-import StorageService from '~/Services/StorageService';
+
 import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {numberFormatter, showErrorPopUp} from '~/Util';
-import Toast from '~/Util/Toast';
+
 import Modal from 'react-native-modal';
 import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
 import Share from 'react-native-share';
-import {BlurView} from '~/Components';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {object, shape} from 'prop-types';
 import DaoService from '~/Services/DaoService';
-import {handlePermission} from '~Util/Permissions';
+import CommonImage from '~/Components/Commons/CommonImage';
+
 import {
   colors,
   font,
@@ -60,10 +57,6 @@ const CreateStep4 = ({route: {params: {formStores}},
   const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
 
-  const getImageUrl = (index) =>
-    `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
-  const [imageURI, setImageURI] = useState(getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))));
-
   const generalInfoFormStore = formStores.generalInfoFormStore;
   const fundingFormStore = formStores.fundingFormStore;
   const agendaFormStore = formStores.agendaFormStore;
@@ -76,14 +69,6 @@ const CreateStep4 = ({route: {params: {formStores}},
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
 
-  const [templateIndex, setTemplateIndex] = useState(1);
-
-  //set default value for Image field
-  useEffect(() => {
-    reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
-    reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, imageURI);
-  }, []);
-
   useEffect(() => {
     const height = scrollY.interpolate({
       inputRange: [0, 50],
@@ -94,21 +79,6 @@ const CreateStep4 = ({route: {params: {formStores}},
     setHeaderHeight(height);
   }, [scrollY]);
 
-  const changeIndex = (number) => {
-    let index = templateIndex + number;
-    if (index <= 1) {
-      index = 1;
-    }
-
-    if (index >= 8) {
-      index = 8;
-    }
-    setTemplateIndex(index);
-    const currImageUrl = getImageUrl(index);
-    reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, currImageUrl);
-    setImageURI(currImageUrl);
-  };
-
   const goToCommon = () => {
     const navigate = CommonActions.navigate({
       name: 'CommonProfile',
@@ -118,35 +88,6 @@ const CreateStep4 = ({route: {params: {formStores}},
     });
     navigation.popToTop();
     navigation.dispatch(navigate);
-  };
-
-  const pickImage = async () => {
-    const options = {
-      title: 'Select profile image',
-      quality: 0.7,
-      allowsEditing: false,
-    };
-    ImagePicker.showImagePicker(options, async (response) => {
-      if (response.didCancel) {
-        logger.log('User cancelled image picker');
-      } else if (response.error) {
-        // only for ios because android handles this
-        Platform.OS === 'ios' && await handlePermission();
-        Toast.error(response.error);
-        logger.log('ImagePicker Error: ', response.error);
-      } else {
-        Toast.loading('Uploading...');
-        StorageService.getInstance()
-          .uploadImage(response.uri)
-          .then((url) => {
-            Toast.hide();
-            Toast.success('Done');
-            reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
-            setImageURI(url);
-          })
-          .catch((error) => Toast.error(error));
-      }
-    });
   };
 
   const confirmModal = () => {
@@ -253,68 +194,12 @@ const CreateStep4 = ({route: {params: {formStores}},
             You will not be able to make changes to the Common info after it is
             published
           </Text>
-          <View
-            style={{
-              height: 225,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Image
-              style={{
-                position: 'absolute',
-                height: 225,
-                width: width,
-                backgroundColor: colors.grey4,
-              }}
-              source={{
-                uri: imageURI,
-              }}
-              resizeMode="cover"
-            />
-            <TouchableOpacity
-              style={{
-                position: 'absolute',
-                top: 15,
-                right: 15,
-                padding: 10,
-                color: 'white',
-              }}
-              onPress={() => pickImage(false)}>
-              <BlurView style={{padding: 12, borderRadius: 14}}>
-                <Icon name={'addpicture'} color="white" size={20} />
-              </BlurView>
-            </TouchableOpacity>
-            <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity
-                style={{
-                  padding: 10,
-                  opacity: templateIndex === 1 ? 0.5 : 1,
-                  justifyContent: 'center',
-                  alignContent: 'center',
-                }}
-                onPress={() => changeIndex(-1)}>
-                <Icon name="left-arrow" color="white" size={35} />
-              </TouchableOpacity>
-              <View width={width - 100}>
-                <Text style={styles.titleName}>
-                  {form[CreateCommonForm.NAME]}
-                </Text>
-                <Text style={styles.byline}>
-                  {form[CreateCommonForm.BYLINE]}
-                </Text>
-              </View>
-              <TouchableOpacity
-                style={{
-                  padding: 10,
-                  opacity: templateIndex === 8 ? 0.5 : 1,
-                  justifyContent: 'center',
-                  alignContent: 'center',
-                }}
-                onPress={() => changeIndex(1)}>
-                <Icon name="right-arrow" color="white" size={35} />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <CommonImage
+            width={width}
+            reviewFormStore={reviewFormStore}
+            commonName={form[CreateCommonForm.NAME]}
+            commonByLine={form[CreateCommonForm.BYLINE]}
+          />
           <View
             style={{height: 1, width: width, backgroundColor: colors.grey4}}
           />
@@ -529,34 +414,12 @@ const styles = StyleSheet.create({
     ...font.fontSize(2),
     marginRight: 10,
   },
-  titleName: {
-    color: colors.white,
-    textAlign: 'center',
-    alignSelf: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    ...font.primary.bold,
-    ...font.fontSize(4),
-    textShadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    textShadowRadius: 4,
-    elevation: 2,
-  },
   linkText: {
     ...layout.marginTopS,
     ...font.primary.regular,
     ...font.fontSize(2),
     color: colors.black,
     textDecorationLine: 'underline',
-  },
-  byline: {
-    width: '100%',
-    color: colors.white,
-    textAlign: 'center',
-    alignSelf: 'center',
-    ...font.primary.regular,
-    ...font.fontSize(2),
   },
   formImageFielAddIcon: {
     justifyContent: 'center',
