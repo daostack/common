@@ -60,9 +60,8 @@ const CreateStep4 = ({route: {params: {formStores}},
   const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
 
-  const getImageUrl = (index) =>
-    `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
-  const [imageURI, setImageURI] = useState(getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))));
+  const getImageUrl = (index) => `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
+  //const [imageURI, setImageURI] = useState(getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))));
 
   const generalInfoFormStore = formStores.generalInfoFormStore;
   const fundingFormStore = formStores.fundingFormStore;
@@ -80,8 +79,13 @@ const CreateStep4 = ({route: {params: {formStores}},
 
   //set default value for Image field
   useEffect(() => {
-    reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
-    reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, imageURI);
+    const imageValue = getImageUrl(1 + Math.floor(Math.random() * Math.floor(7)));
+    console.log("imageValue -> ", imageValue);
+    reviewFormStore.registerFormField(CreateCommonForm.IMAGE, null, imageValue);
+    // reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
+    // reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, imageURI);
+    console.log("reviewFormStore -> ", reviewFormStore);
+    console.log("reviewFormStore.getFormField(CreateCommonForm.IMAGE)?.value -> ", reviewFormStore.getFormField(CreateCommonForm.IMAGE)?.value);
   }, []);
 
   useEffect(() => {
@@ -106,7 +110,7 @@ const CreateStep4 = ({route: {params: {formStores}},
     setTemplateIndex(index);
     const currImageUrl = getImageUrl(index);
     reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, currImageUrl);
-    setImageURI(currImageUrl);
+    //setImageURI(currImageUrl);
   };
 
   const goToCommon = () => {
@@ -141,8 +145,8 @@ const CreateStep4 = ({route: {params: {formStores}},
           .then((url) => {
             Toast.hide();
             Toast.success('Done');
-            reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
-            setImageURI(url);
+            reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, null, url);
+            //setImageURI(url);
           })
           .catch((error) => Toast.error(error));
       }
@@ -267,7 +271,7 @@ const CreateStep4 = ({route: {params: {formStores}},
                 backgroundColor: colors.grey4,
               }}
               source={{
-                uri: imageURI,
+                uri: reviewFormStore.getFormField(CreateCommonForm.IMAGE)?.value,
               }}
               resizeMode="cover"
             />
