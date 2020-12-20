@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import EditProfileForm from '~/Components/Forms/EditProfileForm';
 import {colors, text, layout} from '~/Theme';
-import {observer, inject} from 'mobx-react';
+import {inject} from 'mobx-react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '~/Assets/iconfont/Icon';
 import Loader from '~/Components/Loader';
@@ -19,10 +19,10 @@ import AuthService from '~/Services/AuthService';
 import {filterObjectByKeys} from '~/Util';
 import logger from '~/Services/Logger';
 import {bool, object, shape, func} from 'prop-types';
+import EditProfileFormStore from '~/FormStores/EditProfileFormStore';
 
 const EditProfile = ({
   userStore,
-  editProfileFormStore,
   bottomSheetStore,
   route,
   navigation,
@@ -37,6 +37,8 @@ const EditProfile = ({
       </TouchableOpacity>
     ),
   });
+
+  const editProfileFormStore = new EditProfileFormStore();
 
   const formSave = async (e) => {
 
@@ -100,7 +102,7 @@ const EditProfile = ({
 
   const renderBody = () => (
     <View style={styles.body}>
-      <EditProfileForm isFirstOpening={route.params.isFirstOpening }/>
+      <EditProfileForm isFirstOpening={route.params.isFirstOpening} editProfileFormStore={editProfileFormStore}/>
     </View>
   );
 
@@ -146,11 +148,6 @@ EditProfile.propTypes = {
     userInfo: object,
     setSignedInUser: func,
   }),
-  editProfileFormStore: shape({
-    isFormValid: func,
-    getChangedFormFieldsJson: func,
-    form: object,
-  }),
   bottomSheetStore: shape({
     showBottomSheet: func,
     hideBottomSheet: func,
@@ -194,6 +191,5 @@ const styles = StyleSheet.create({
 
 export default inject(
   'userStore',
-  'editProfileFormStore',
   'bottomSheetStore',
-)(observer(EditProfile));
+)(EditProfile);

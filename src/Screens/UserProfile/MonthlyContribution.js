@@ -102,7 +102,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
 
         {subscription ? (
           <Text>
-            {formatCurrency(subscription.amount)}/mo
+            {formatCurrency(subscription.amount)}
           </Text>
         ) : (
           <View style={{width: 100}}>
@@ -148,7 +148,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
               onPress={onCancelClick}
             >
               <Text style={styles.stayText}>
-                Cancel payment
+                Cancel monthly payment
               </Text>
             </TouchableOpacity>
           )}

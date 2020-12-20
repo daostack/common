@@ -213,8 +213,6 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
           text: message,
           createTime: new Date(),
           ownerId: currentUser.uid,
-          ownerName: currentUser.displayName,
-          ownerAvatar: currentUser.photoURL,
           commonId: commonId,
           discussionId: discussionId,
         })

@@ -22,20 +22,29 @@ class ImageField extends React.Component {
   constructor(props) {
     super(props);
 
-    const {validation: {
-      name,
-      formStore,
-      validateRule,
-      multiName,
-      displayName,
-      customErrorMessage,
-    }, value} = this.props;
+    if (this.props.validation) {
+      const {validation: {
+        name,
+        formStore,
+        validateRule,
+        multiName,
+        displayName,
+        customErrorMessage,
+      }, value} = this.props;
 
-    formStore.registerFormField(name, validateRule, value, multiName);
+      formStore.registerFormField(name, validateRule, value, multiName);
 
-    this.fieldValidation = (
-      <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} multiName={multiName} invisibleContainer={true}/>
-    );
+      this.fieldValidation = (
+        <ValidationMessage
+          displayName={displayName}
+          customErrorMessage={customErrorMessage}
+          formStore={formStore}
+          name={name}
+          multiName={multiName}
+          invisibleContainer={true}
+        />
+      );
+    }
   }
 
   onChangeValue = (url) => {
@@ -90,7 +99,7 @@ class ImageField extends React.Component {
       ? styles.formImageFieldStyle
       : styles.formImageFueldGeneralStyle;
 
-    const currValue = validation.formStore.getFormField(validation.name, validation.multiName)?.value || value;
+    const currValue = validation?.formStore.getFormField(validation.name, validation.multiName)?.value || value;
 
     if (currValue) {
       return (
@@ -145,7 +154,7 @@ class ImageField extends React.Component {
 
   render() {
     const {isAvatar, value, validation, disableEdit} = this.props;
-    const currValue = validation.formStore.getFormField(validation.name, validation.multiName)?.value || value;
+    const currValue = validation?.formStore.getFormField(validation.name, validation.multiName)?.value || value;
 
     return (
       <View style={{justifyContent: 'center', alignItems: 'center'}}>

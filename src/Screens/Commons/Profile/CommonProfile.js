@@ -102,6 +102,10 @@ const CommonProfile = ({
 
   const headerHeightLayouted = (height) => height;
 
+  const animateNextStateRender = () => {
+    Platform.OS === 'ios' && LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
+  };
+
   useEffect(() => {
     const loadCurrCommon = (snapshot) => {
       if (snapshot.exists) {
@@ -149,9 +153,13 @@ const CommonProfile = ({
           if (!isMember) {
             if (data) {
               if (data.usersPendingProposal) {
+                animateNextStateRender();
                 setShowPending(true);
+
+                animateNextStateRender();
                 setShowRequestToJoin(false);
               } else {
+                animateNextStateRender();
                 setShowRequestToJoin(true);
               }
             }
@@ -434,7 +442,6 @@ const CommonProfile = ({
   const renderPendingApproval = () => {
     const remainingSeconds = pendingProposalsData.usersPendingProposal.createdAt.seconds + pendingProposalsData.usersPendingProposal.countdownPeriod - moment().unix();
 
-    LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
       <TouchableOpacity
         onPress={openProposalScreen}
@@ -576,21 +583,19 @@ const CommonProfile = ({
     />
   );
 
-  const renderRequestToJoinBtn = () => {
-    LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
-    return (
-      <TouchableOpacity
-        style={styles.headerButton}
-        onPress={requestToJoin}>
-        <Text
-          style={styles.requestToJoin}>
-          Request to join
-        </Text>
-        <Text style={styles.contribution}>
-          ${currCommon.metadata.minFeeToJoin / 100}{currCommon.metadata.contributionType === 'monthly' && '/mo'} min. contribution
-        </Text>
-      </TouchableOpacity>);
-  };
+  const renderRequestToJoinBtn = () => (
+    <TouchableOpacity
+      style={styles.headerButton}
+      onPress={requestToJoin}>
+      <Text
+        style={styles.requestToJoin}>
+        Request to join
+      </Text>
+      <Text style={styles.contribution}>
+        ${currCommon.metadata.minFeeToJoin / 100}{currCommon.metadata.contributionType === 'monthly' && '/mo'} min. contribution
+      </Text>
+    </TouchableOpacity>
+  );
 
   const initialLayout = {width: Dimensions.get('window').width};
 
