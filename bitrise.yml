@@ -562,7 +562,7 @@ workflows:
     envs:
     - opts:
         is_expand: false
-      APP_VERSION: '1.9.1'
+      APP_VERSION: '1.9.2'
     - opts:
         is_expand: false
       ENV: staging
@@ -976,7 +976,7 @@ workflows:
     envs:
     - opts:
         is_expand: false
-      APP_VERSION: '1.9.1'
+      APP_VERSION: '1.9.2'
     - opts:
         is_expand: false
       ENV: staging
@@ -1041,7 +1041,7 @@ app:
     BITRISE_EXPORT_METHOD: development
   - opts:
       is_expand: false
-    APP_VERSION: '1.9.1'
+    APP_VERSION: '1.9.2'
   - opts:
       is_expand: false
     ENV: production
@@ -1080,10 +1080,10 @@ app:
     firebaseWebClientId: 854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com
   - opts:
       is_expand: false
-    CODEPUSH_TARGET_VERSION_PRODUCTION: '1.9.1'
+    CODEPUSH_TARGET_VERSION_PRODUCTION: '1.9.2'
   - opts:
       is_expand: false
-    CODEPUSH_TARGET_VERSION_STAGING: '1.9.1'
+    CODEPUSH_TARGET_VERSION_STAGING: '1.9.2'
   - opts:
       is_expand: false
     APPCENTER_APP_ID_ANDROID: DAOstack/common-android
