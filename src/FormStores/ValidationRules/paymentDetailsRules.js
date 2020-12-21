@@ -1,17 +1,10 @@
 import moment from 'moment';
 
 export const VALIDATION_RULES = {
-  FIRST_LAST_NAME: 'first_last_name',
   IS_VALID_CREDIT_CARD: 'is_valid_credit_card',
   CREDIT_CARD_PROVIDER: 'credit_card_provider',
   CARD_EXP_DATE: 'card_exp_date',
   VALID_DATE_FORMAT: 'valid_date_format',
-};
-
-export const firstLastNameValidate = {
-  ruleName: VALIDATION_RULES.FIRST_LAST_NAME,
-  validateFunc: (value, requirement, attribute) => (new RegExp(/\s/)).test(value),
-  errorMessage: 'The :attribute should consist of first and last name separated with space.',
 };
 
 export const validateCCProvider = {
