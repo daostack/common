@@ -13,7 +13,7 @@ export {default as IntroductionStep} from './Commons/RequestToJoin/Steps/Introdu
 export {default as ContributionStep} from './Commons/RequestToJoin/Steps/ContributionStep';
 export {default as BillingDetailsStep} from './Commons/RequestToJoin/Steps/BillingDetailsStep';
 export {default as PaymentDetailsStep} from './Commons/RequestToJoin/Steps/PaymentDetailsStep';
-export {default as UseOfFunds} from './Commons/CreateCommon/UseOfFunds';
+
 //User Profile
 export {default as MonthlyContributionsList} from './UserProfile/MonthlyContributionsList';
 export {default as MonthlyContribution} from './UserProfile/MonthlyContribution';
