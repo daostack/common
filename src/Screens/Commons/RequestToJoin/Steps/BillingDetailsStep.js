@@ -191,7 +191,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
                 validation={{
                   name: BillingDetailsConstants.District,
                   formStore: billingDetailsFormStore,
-                  validateRule: 'required_if:Country,US,CA|min:2',
+                  validateRule: 'required|min:2',
                   displayName: 'district',
                 }}
               />
@@ -209,7 +209,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
                   name: BillingDetailsConstants.ID,
                   formStore: billingDetailsFormStore,
                   validateRule: [
-                    'required_if:Country,IL',
+                    'required',
                     'min:9',
                     'max:9',
                     VALIDATION_RULES.VALID_ID_PASSPORT,

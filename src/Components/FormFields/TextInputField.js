@@ -5,7 +5,7 @@ import {observer} from 'mobx-react';
 import {layout, colors, font} from '~/Theme';
 import {string, func, bool, number, object, oneOfType} from 'prop-types';
 
-const CharCount = ({currCount, maxLength}) => <Text style = {{color: currCount === maxLength ? colors.error : colors.grey3, paddingTop: 5}}>{currCount}/{maxLength}</Text>;
+const CharCount = ({currCount, maxLength}) => <Text style = {{color: currCount === maxLength ? colors.greyText : colors.grey3, paddingTop: 5}}>{currCount}/{maxLength}</Text>;
 
 export const Label = ({label, infoLabel}) => (
   <View style={{flexDirection: 'row', marginBottom: 8}}>
@@ -27,6 +27,13 @@ class TextInputField extends React.Component {
     };
 
     this.validate(this.props);
+  }
+
+  componentWillUnmount = () => {
+    if (this.props.validation) {
+      const {formStore, name, multiName} = this.props.validation;
+      formStore.removeFormField(name, multiName);
+    }
   }
 
   validate = ({validation, value}) => {

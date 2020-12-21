@@ -130,14 +130,16 @@ class FormStore {
     } else {
       delete this.form.fields[name];
     }
+    // Call isFormValid in case the form validation state is changed due to removing of the field.
+    this.isFormValid(true);
   }
 
   // Check if form is valid and display error for each form field if it's necessary
-  isFormValid = () => {
+  isFormValid = (onlyValidate = false) => {
     this.form.meta.formValidationMade = true;
     var validation = this.getValidator();
     this.form.meta.isValid = validation.passes();
-    if (!this.form.meta.isValid) {
+    if (!onlyValidate && !this.form.meta.isValid) {
       for (const key in validation.errors.errors) {
         // Single field
         if (this.form.fields[key]) {
