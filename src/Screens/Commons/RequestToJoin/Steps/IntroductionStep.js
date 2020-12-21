@@ -125,6 +125,7 @@ const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep
               value={introduceYourselfFormStore.getFormField(RequestToJoinForm.FIELD_LINKS)?.value}
               allowsEditing={true}
               title="Title"
+              maxLength={30}
               validation={{
                 name: RequestToJoinForm.FIELD_LINKS,
                 formStore: introduceYourselfFormStore,
