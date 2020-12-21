@@ -11,6 +11,7 @@ import text from '~/Theme/text';
 import {string, func, bool, shape, object, number} from 'prop-types';
 import logger from '../../Services/Logger';
 import {handlePermission} from '~Util/Permissions';
+import {observer} from 'mobx-react';
 
 class ImageField extends React.Component {
   fieldValidation = null;
@@ -291,4 +292,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ImageField;
+export default observer(ImageField);
