@@ -8,6 +8,7 @@ import SwiperCard from '~/Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import {PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '~/Services/ProposalService';
 import {string, bool, object, number, shape, func} from 'prop-types';
+import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 const {width, height} = Dimensions.get('window');
 
 const ProposalsList = ({isMember,
@@ -40,8 +41,13 @@ const ProposalsList = ({isMember,
         proposalStages,
         loadShowAll,
         (newList) => {
-          const history = newList.filter((proposal) => PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state));
-          const active = newList.filter((proposal) => PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.state));
+          const history = newList.filter((proposal) =>
+            PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state) &&
+            !ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState));
+
+          const active = newList.filter((proposal) =>
+            PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.state) ||
+            ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState));
 
           const filteredList = loadIsHistory
             ? history
