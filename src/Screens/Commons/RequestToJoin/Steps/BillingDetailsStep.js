@@ -128,13 +128,15 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
 
             <TextInputField
               editable
-              label="Full Name"
+              label="Name on Card"
               value={testCard ? 'Thor Odinson' : billingDetailsFormStore.getFormField(BillingDetailsConstants.City)?.value || userStore.userInfo.displayName}
               autoCapitalize="words"
               validation={{
-                name: BillingDetailsConstants.FullName,
+                name: BillingDetailsConstants.CardName,
                 formStore: billingDetailsFormStore,
-                validateRule: 'required|string',
+                validateRule: [
+                  'required',
+                  VALIDATION_RULES.FIRST_LAST_NAME],
                 displayName: 'full name',
               }}
             />

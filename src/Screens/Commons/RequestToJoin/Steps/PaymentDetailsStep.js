@@ -129,21 +129,6 @@ const PaymentDetailsStep = ({
   };
 
   const formatDate = (date) => {
-    /*const MAX_LENGHT = 5; // format: "MM/YY"
-    if (date.length > MAX_LENGHT) {
-      return date.substring(0,MAX_LENGHT);
-    }
-
-    if (date.length === 2) {
-      return `${date}/`;
-    }
-
-    if (date.length > 0 && date.length < 2) {
-      return date.substring(0,1);
-    }
-
-    return date;*/
-
     date = date.replace('/', '');
     return date.length > 2
       ? `${date.substring(0,2)}/${date.substring(2,4)}`
@@ -223,21 +208,6 @@ const PaymentDetailsStep = ({
                   'numeric',
                   VALIDATION_RULES.IS_VALID_CREDIT_CARD,
                   VALIDATION_RULES.CREDIT_CARD_PROVIDER,
-                ],
-              }}
-            />
-
-            <TextInputField
-              label="Name on card"
-              value={testCard ? 'Tester Tester' : paymentFormStore.getFormField(RequestToJoinForm.FIELD_CARD_NAME)?.value || userInfo.displayName}
-              editable={true}
-              autoCapitalize="words"
-              validation={{
-                name: RequestToJoinForm.FIELD_CARD_NAME,
-                formStore: paymentFormStore,
-                validateRule: [
-                  'required',
-                  VALIDATION_RULES.FIRST_LAST_NAME,
                 ],
               }}
             />

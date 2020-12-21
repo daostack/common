@@ -33,7 +33,7 @@ const getEncryptedData = async (token, dataToEncrypt) => {
 
 const cardData = (formData) => ({
   billingDetails: {
-    name: formData.card_name,
+    name: formData.CardName,
     city: formData.City,
     country: formData.Country,
     line1: formData.Address,
