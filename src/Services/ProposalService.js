@@ -1,4 +1,3 @@
-
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import Toast from '~/Util/Toast';
 import {db} from '~/Firebase';
@@ -16,6 +15,7 @@ export const PROPOSAL_STAGE = {
 };
 
 import {PROPOSAL_TYPE} from '../Config';
+import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 
 export const PROPOSAL_STAGES_ACTIVE = [
   PROPOSAL_STAGE.countdown,
@@ -143,12 +143,29 @@ export default class ProposalService {
       .collection(DB_COLLECTIONS.proposals)
       .where('commonId', '==', daoId)
       .where('type', '==', PROPOSAL_TYPE.Join)
-      .where('state', 'in', PROPOSAL_STAGES_ACTIVE);
+      .where('state', 'in', [
+        ...PROPOSAL_STAGES_ACTIVE,
+        PROPOSAL_STAGE.passed,
+      ]);
+
+    // We can add the payment state to the statement above, but not all proposals have it, so that will
+    // exclude them
 
     return proposals.onSnapshot((snapshot) => {
+      const pendingProposals = snapshot.docs.filter((x) =>
+        // If the proposal is in any stage, but with pending payment
+        ACTIVE_PAYMENT_STATES.some((y) => y === x.data().paymentState) || (
+        // Or if it does not have payment state and is in active stage
+          x.data().paymentState === undefined &&
+          x.data().state !== PROPOSAL_STAGE.passed
+        ));
+
+      console.log(pendingProposals);
+
       callback({
-        pendingProposalCount: snapshot.docs.length,
-        usersPendingProposal: (userInfoUid && snapshot.docs.find((doc) => doc.data().proposerId === userInfoUid)?.data()) || false,
+        pendingProposalCount: pendingProposals.length,
+        usersPendingProposal: (userInfoUid && pendingProposals
+          .find((doc) => doc.data().proposerId === userInfoUid))?.data() || false,
       });
     }, (error) => Toast.error(error));
 
@@ -261,7 +278,7 @@ export default class ProposalService {
           }
         }
       },
-      (error) => logger.error(error),
+      (error) => logger.error(error)
     );
   }
 
