@@ -90,14 +90,22 @@ export default class ProposalService {
       .collection(DB_COLLECTIONS.proposals)
       .where('proposerId', '==', uid)
       .where('type', '==', PROPOSAL_TYPE.Join)
-      .where('state', 'in', PROPOSAL_STAGES_ACTIVE);
+      .where('state', 'in', [
+        ...PROPOSAL_STAGES_ACTIVE,
+        PROPOSAL_STAGE.passed,
+      ]);
 
 
     return query.get().then((snapshots) => {
       if (!snapshots) {
         return [];
       } else {
-        return snapshots.docs.filter((s) => PROPOSAL_STAGES_ACTIVE.includes(s.data().state));
+        return snapshots.docs.filter((s) => {
+          const doc = s.data();
+
+          return PROPOSAL_STAGES_ACTIVE.some((x) => x === doc.state) ||
+            (ACTIVE_PAYMENT_STATES.includes(doc.paymentState));
+        });
       }
     });
   }
@@ -155,7 +163,7 @@ export default class ProposalService {
       const pendingProposals = snapshot.docs.filter((x) =>
         // If the proposal is in any stage, but with pending payment
         ACTIVE_PAYMENT_STATES.some((y) => y === x.data().paymentState) || (
-        // Or if it does not have payment state and is in active stage
+          // Or if it does not have payment state and is in active stage
           x.data().paymentState === undefined &&
           x.data().state !== PROPOSAL_STAGE.passed
         ));
