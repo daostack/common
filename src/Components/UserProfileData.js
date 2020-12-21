@@ -152,8 +152,9 @@ const UserProfileData = ({
       <Text style={styles.name}>
         {user.displayName}
       </Text>
-      <Text style={text.ashleyjquimbacom2}>{user.email}</Text>
-
+      {isOwnProfile && (
+        <Text style={text.ashleyjquimbacom2}>{user.email}</Text>)
+      }
       <View style={styles.countBoxContainer}>
         <CountBox
           count={commonsCount}
