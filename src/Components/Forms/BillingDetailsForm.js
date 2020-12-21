@@ -1,4 +1,4 @@
-export const FullName = 'FullName';
+export const CardName = 'CardName';
 export const City = 'City';
 export const Country = 'Country';
 export const Address = 'Address';
