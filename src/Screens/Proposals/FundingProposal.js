@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   ScrollView,
@@ -7,6 +7,7 @@ import {
   StatusBar,
   View,
   Keyboard,
+  Modal,
 } from 'react-native';
 import {text, layout, colors} from '~/Theme';
 import FundingRequestForm from '~/Components/Forms/FundingRequestForm';
@@ -19,6 +20,8 @@ import FundingRequestFormStore from '~/FormStores/FundingRequestFormStore';
 import {showErrorPopUp} from '~/Util';
 import {inject} from 'mobx-react';
 import ProposalService from '~/Services/ProposalService';
+import UseOfFunds from '../Commons/CreateCommon/UseOfFunds';
+import {BlurView} from '@react-native-community/blur';
 
 const FundingProposal = ({
   navigation,
@@ -27,8 +30,10 @@ const FundingProposal = ({
 }) => {
 
   const fundingRequestFormStore = new FundingRequestFormStore();
+  const [useOfFundsVisible, setUseOfFundsVisible] = useState(false);
 
   const createProposal = async (e) => {
+    setUseOfFundsVisible(false);
     Keyboard.dismiss();
     if (fundingRequestFormStore.isFormValid()) {
       try {
@@ -78,7 +83,9 @@ const FundingProposal = ({
   return (
     <>
       <StatusBar barStyle="dark-content" />
-
+      <Modal animationType="slide" transparent={true} visible={useOfFundsVisible}>
+        <UseOfFunds onPressAgree={createProposal} />
+      </Modal>
       <SafeAreaView style={{flex: 1}}>
         <ScrollView
           style={{
@@ -96,9 +103,20 @@ const FundingProposal = ({
         <RequestStepActionButton
           title="Create Proposal"
           formStore={fundingRequestFormStore}
-          onPress={createProposal}
+          onPress={() => {
+            Keyboard.dismiss();
+            setUseOfFundsVisible(true);
+          }}
         />
       </SafeAreaView>
+      {useOfFundsVisible &&
+      <BlurView
+        style={styles.blurView}
+        blurType="dark"
+        blurAmount={1}
+        reducedTransparencyFallbackColor={colors.black}
+      />
+      }
     </>
   );
 };
@@ -115,6 +133,7 @@ FundingProposal.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  blurView: {position: 'absolute', ...StyleSheet.absoluteFill},
   title: {
     ...text.h2Black,
     ...layout.marginTopM,

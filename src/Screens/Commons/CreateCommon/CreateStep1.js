@@ -23,15 +23,15 @@ import RequestStepActionButton from '../RequestStepActionButton';
 import logger from '~/Services/Logger';
 import {shape, func, object} from 'prop-types';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import UseOfFunds from './UseOfFunds';
 import {BlurView} from '@react-native-community/blur';
+import UseAcknowledgment from './UseAcknowledgment';
 const {width} = Dimensions.get('window');
 
 const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}}}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const generalInfoFormStore = formStores.generalInfoFormStore;
-  const [useOfFundsVisible, setUseOfFundsVisible] = useState(true);
+  const [useAcknowledgmentVisible, setUseAcknowledgmentVisible] = useState(false);
   useEffect(() => {
     const height = scrollY.interpolate({
       inputRange: [0, 50],
@@ -44,6 +44,7 @@ const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}
   }, [scrollY]);
 
   const push = () => {
+    setUseAcknowledgmentVisible(false);
     if (generalInfoFormStore.isFormValid()) {
       navigation.navigate('CreateStep2', {formStores});
     }
@@ -62,8 +63,8 @@ const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}
 
   return (
     <>
-      <Modal animationType="slide" transparent={true} visible={useOfFundsVisible}>
-        <UseOfFunds onPressAgree={() => setUseOfFundsVisible(false)} />
+      <Modal animationType="slide" transparent={true} visible={useAcknowledgmentVisible}>
+        <UseAcknowledgment onPressAgree={push} />
       </Modal>
       <SafeAreaView
         style={{
@@ -200,10 +201,10 @@ const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}
         <RequestStepActionButton
           title="Continue to Funding"
           formStore={generalInfoFormStore}
-          onPress={push}
+          onPress={() => setUseAcknowledgmentVisible(true)}
         />
       </SafeAreaView>
-      {useOfFundsVisible &&
+      {useAcknowledgmentVisible &&
       <BlurView
         style={styles.blurView}
         blurType="dark"
