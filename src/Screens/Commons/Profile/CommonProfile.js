@@ -46,15 +46,8 @@ import {
 } from '~/FormStores/RequestToJoin';
 
 let stickyHeightAddon = Platform.OS === 'ios' ? 46 : 56;
-
-const STICKY_HEADER_HEIGHT = Platform.OS === 'ios'
-  ? Math.round(getStatusBarHeight()) + stickyHeightAddon
-  : stickyHeightAddon;
-
+const STICKY_HEADER_HEIGHT = Math.round(getStatusBarHeight(true)) + stickyHeightAddon;
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
-
-console.log("getStatusBarHeight -> ", getStatusBarHeight());
-console.log("stickyHeightAddon -> ", STICKY_HEADER_HEIGHT);
 
 const CommonProfile = ({
   navigation,
@@ -543,7 +536,7 @@ const CommonProfile = ({
   const fixedHeaderHeight = () => (
     <NavigationBar
       statusBar={{hidden: true}}
-      containerStyle={{...styles.fixedSection, ... {bottom: (showStickyTabBar || isHeaderClosingInProgress) ? 90 : 3}}}
+      containerStyle={{...styles.fixedSection, ... {bottom: (showStickyTabBar || isHeaderClosingInProgress) ? 87 : 7}}}
       leftButton={
         <TouchableOpacity
           style={{justifyContent: 'center'}}
