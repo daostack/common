@@ -3,7 +3,7 @@ import {colors, font} from '~/Theme';
 
 export default StyleSheet.create({
   root:  {
-    paddingTop: 100,
+    paddingTop: 65,
     height: '100%',
   },
   view: {
@@ -11,6 +11,18 @@ export default StyleSheet.create({
     backgroundColor: 'white',
     borderTopLeftRadius: 27,
     borderTopRightRadius: 27,
+  },
+  questionMark: {
+    marginBottom: 2,
+  },
+  causesText: {
+    color: colors.mainBlue,
+    ...font.primary.bold,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  underlined: {
+    textDecorationLine: 'underline',
   },
   plug: {
     backgroundColor: colors.paleblue,
@@ -23,7 +35,7 @@ export default StyleSheet.create({
   content: {
     marginHorizontal: 24,
   },
-  piggyBank: {
+  acknowledgment: {
     height: 116,
     width: 116,
     alignSelf: 'center',
@@ -37,6 +49,13 @@ export default StyleSheet.create({
     textAlign: 'center',
     paddingBottom: 8,
   },
+  agreeText: {
+    color: colors.black,
+    ...font.primary.bold,
+    fontSize: 16,
+    lineHeight: 20,
+    marginTop: 3,
+  },
   subtitle: {
     color: colors.black,
     ...font.primary.bold,
@@ -49,6 +68,23 @@ export default StyleSheet.create({
     ...font.primary.regular,
     fontSize: 14,
     lineHeight: 20,
+  },
+  smallText: {
+    color: colors.black,
+    ...font.primary.regular,
+    fontSize: 12,
+    lineHeight: 16,
+    marginBottom: 26,
+  },
+  terms: {
+    marginBottom: 26,
+  },
+  underlinedText: {
+    color: colors.black,
+    ...font.primary.bold,
+    fontSize: 12,
+    lineHeight: 16,
+    textDecorationLine: 'underline',
   },
   centerText: {textAlign: 'center'},
   line: {
@@ -69,23 +105,27 @@ export default StyleSheet.create({
     marginRight: 8,
   },
   highlighted: {
+    color: colors.black,
     backgroundColor: colors.iceBlue,
     paddingVertical: 12,
     paddingHorizontal: 19,
     borderRadius: 14,
     overflow: 'hidden',
-    marginTop: 28,
     marginBottom: 24,
   },
   button: {
-    color: colors.white,
+    color: colors.slate,
     ...font.primary.regular,
     fontSize: 16,
     padding: 14,
     textAlign: 'center',
     borderRadius: 25,
     overflow: 'hidden',
-    backgroundColor: colors.mainBlue,
+    backgroundColor: colors.paleblue,
     marginBottom: 40,
+  },
+  buttonSelected: {
+    color: 'white',
+    backgroundColor: colors.mainBlue,
   },
 });

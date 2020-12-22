@@ -1,9 +1,9 @@
 import React from 'react';
-import {Text, View, ScrollView, Pressable} from 'react-native';
+import {Text, View, ScrollView, Pressable, Image} from 'react-native';
 import {func, InferProps} from 'prop-types';
 import styles from './styles';
 import data from './data';
-import {CheckMark, PiggyBank} from '~/Assets';
+import Icon from '~/Assets/iconfont/Icon';
 
 const props = {
   onPressAgree: func,
@@ -13,14 +13,14 @@ const UseOfFunds: React.FC<InferProps<typeof props>> = ({onPressAgree}) => (
     <View style={styles.view}>
       <View style={styles.plug} />
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.piggyBank}><PiggyBank /></View>
+        <Image style={styles.piggyBank} source={require('~/Assets/CommonExplanation/funds.png')} width={116} height={116} />
         <Text style={styles.title}>{data.useOfFundsTitle}</Text>
         <Text style={[styles.text, styles.centerText]}>{data.useOfFundsText}</Text>
         <View style={styles.line} />
         <Text style={styles.subtitle}>{data.onlyUseFundsTo}</Text>
         {[data.payProperyBusinesses, data.contributeToNonProfits].map((text, index) =>
           <View key={index} style={styles.item}>
-            <View style={styles.checkMark}><CheckMark /></View>
+            <View style={styles.checkMark}><Icon name="checkMark" size={24} /></View>
             <Text style={[styles.text, styles.flex]}>{text}</Text>
           </View>
         )}
