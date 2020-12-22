@@ -45,10 +45,16 @@ import {
   PaymentFormStore,
 } from '~/FormStores/RequestToJoin';
 
-let stickyHeightAddon = 36;
+let stickyHeightAddon = Platform.OS === 'ios' ? 46 : 56;
 
-const STICKY_HEADER_HEIGHT = Math.round(getStatusBarHeight()) + stickyHeightAddon;
+const STICKY_HEADER_HEIGHT = Platform.OS === 'ios'
+  ? Math.round(getStatusBarHeight()) + stickyHeightAddon
+  : stickyHeightAddon;
+
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
+
+console.log("getStatusBarHeight -> ", getStatusBarHeight());
+console.log("stickyHeightAddon -> ", STICKY_HEADER_HEIGHT);
 
 const CommonProfile = ({
   navigation,
@@ -130,7 +136,7 @@ const CommonProfile = ({
     setShowRequestSentModal(params.showRequestSentModal);
     if (userStore.userInfo && userStore.isDaoMember(currCommon?.members)) {
       setMemberState(true);
-      setHeaderHeight(DEFAULT_HEADER_HEIGHT + 36);
+      setHeaderHeight(DEFAULT_HEADER_HEIGHT + stickyHeightAddon);
     } else {
       setMemberState(false);
       setHeaderHeight(DEFAULT_HEADER_HEIGHT);
@@ -537,7 +543,7 @@ const CommonProfile = ({
   const fixedHeaderHeight = () => (
     <NavigationBar
       statusBar={{hidden: true}}
-      containerStyle={{...styles.fixedSection, ... {bottom: (showStickyTabBar || isHeaderClosingInProgress) ? 90 : 10}}}
+      containerStyle={{...styles.fixedSection, ... {bottom: (showStickyTabBar || isHeaderClosingInProgress) ? 90 : 3}}}
       leftButton={
         <TouchableOpacity
           style={{justifyContent: 'center'}}
@@ -706,7 +712,7 @@ const CommonProfile = ({
               />
             )}
             renderStickyHeader={() => (
-              <View style={{height: '100%'}}>
+              <View style={{}}>
                 <Animated.View style={[stickyTabBarStyle, slideUp]}>
                   <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange={setIndex} />
                 </Animated.View>
@@ -998,9 +1004,12 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   stickySection: {
+    paddingBottom: 10,
+    justifyContent: 'flex-end',
     height: STICKY_HEADER_HEIGHT,
     borderBottomWidth: 1,
-    backgroundColor: colors.white,
+    // backgroundColor: colors.white,
+    backgroundColor: colors.mainBlue,
     borderBottomColor: colors.grey4,
     zIndex: 99,
   },
