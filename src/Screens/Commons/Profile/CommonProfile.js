@@ -45,7 +45,7 @@ import {
   PaymentFormStore,
 } from '~/FormStores/RequestToJoin';
 
-let stickyHeightAddon = Platform.OS === 'ios' ? 46 : 56;
+let stickyHeightAddon = Platform.OS === 'ios' ? 50 : 56;
 const STICKY_HEADER_HEIGHT = Math.round(getStatusBarHeight(true)) + stickyHeightAddon;
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
@@ -536,7 +536,7 @@ const CommonProfile = ({
   const fixedHeaderHeight = () => (
     <NavigationBar
       statusBar={{hidden: true}}
-      containerStyle={{...styles.fixedSection, ... {bottom: (showStickyTabBar || isHeaderClosingInProgress) ? 87 : 7}}}
+      containerStyle={{...styles.fixedSection, ... {bottom: (showStickyTabBar || isHeaderClosingInProgress) ? 85 : 5}}}
       leftButton={
         <TouchableOpacity
           style={{justifyContent: 'center'}}
@@ -610,7 +610,7 @@ const CommonProfile = ({
     ],
   };
 
-  const stickyTabBarStyle = {position: 'absolute', top: Platform.OS === 'android' ? -20 : 0, width: '100%', paddingBottom: 5, zIndex: 1};
+  const stickyTabBarStyle = {position: 'absolute', top: Platform.OS === 'android' ? -25 : 0, width: '100%', paddingBottom: 5, zIndex: 1};
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
@@ -705,7 +705,7 @@ const CommonProfile = ({
               />
             )}
             renderStickyHeader={() => (
-              <View style={{}}>
+              <View style={{height: '100%'}}>
                 <Animated.View style={[stickyTabBarStyle, slideUp]}>
                   <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo} parentRef={originTabBarRef} indexChange={setIndex} />
                 </Animated.View>
@@ -1001,8 +1001,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     height: STICKY_HEADER_HEIGHT,
     borderBottomWidth: 1,
-    // backgroundColor: colors.white,
-    backgroundColor: colors.mainBlue,
+    backgroundColor: colors.white,
     borderBottomColor: colors.grey4,
     zIndex: 99,
   },
