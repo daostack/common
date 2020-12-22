@@ -97,12 +97,14 @@ const UserProfile = ({userStore, navigation, route}) => {
 
   const renderUnsignedUserData = () => <CreateAccount onSignedIn={onUserSignedIn} />;
 
-  const renderSignedInUserData = () => (
+  const renderUserProfileData = (currUserId) => (
     <UserProfileData
       navigation={navigation}
-      userId={route.params?.userId || userStore.userInfo.uid}
+      userId={currUserId}
     />
   );
+
+  const currUserId = route.params?.userId || userStore.userInfo?.uid;
 
   const renderScreen = () => (
     <React.Fragment>
@@ -116,8 +118,8 @@ const UserProfile = ({userStore, navigation, route}) => {
           directionalLockEnabled={true}
         >
           <View style={styles.body}>
-            {userStore.userInfo
-              ? renderSignedInUserData()
+            {currUserId
+              ? renderUserProfileData(currUserId)
               : renderUnsignedUserData()}
           </View>
           {
