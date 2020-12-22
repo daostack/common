@@ -24,7 +24,7 @@ import logger from '~/Services/Logger';
 import {shape, func, object} from 'prop-types';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {BlurView} from '@react-native-community/blur';
-import UseAcknowledgment from './UseAcknowledgment';
+import UseAcknowledgment from '../../../Components/Proposals/UseAcknowledgment';
 const {width} = Dimensions.get('window');
 
 const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}}}) => {

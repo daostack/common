@@ -20,7 +20,7 @@ import FundingRequestFormStore from '~/FormStores/FundingRequestFormStore';
 import {showErrorPopUp} from '~/Util';
 import {inject} from 'mobx-react';
 import ProposalService from '~/Services/ProposalService';
-import UseOfFunds from '../Commons/CreateCommon/UseOfFunds';
+import UseOfFunds from '../../Components/Commons/UseOfFunds';
 import {BlurView} from '@react-native-community/blur';
 
 const FundingProposal = ({
