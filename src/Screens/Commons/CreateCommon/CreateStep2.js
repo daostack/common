@@ -50,7 +50,7 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
   const [pickDate, setPickDate] = useState(initialSegmentedIndex === 2 && getDeadlineValue()?.value ? moment.unix(getDeadlineValue()?.value).toDate() : null);
   const [show, setShow] = useState(false);
 
-  const minimumFieldRules = `required|integer|min:5|max:${MAX_CONTRIBUTION[contributionIndex]}`;
+  const minimumFieldRules = (currContribIndex) => `required|integer|min:5|max:${MAX_CONTRIBUTION[currContribIndex]}`;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -65,17 +65,16 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
     fundingFormStore.registerFormField(CreateCommonForm.DEADLINE, 'required', getDeadlineValue());
     fundingFormStore.registerFormField(CreateCommonForm.CONTRIBUTION, 'required', getContributionValue());
     onTabChange(initialSegmentedIndex, true); // pre-select 1 week at first render
-    onContributionTabChange(initialContributionIndex); // pre-select
+    onContributionTabChange(initialContributionIndex, true); // pre-select
   }, []);
 
-  const onContributionTabChange = (index) => {
+  const onContributionTabChange = (index, isInitialSelect = false) => {
     fundingFormStore.fieldChanged(
       CreateCommonForm.CONTRIBUTION,
       CONTRIBUTION_TAB_VALUES[index]
     );
     setContributionIndex(index);
-    console.log("minimumFieldRules ", minimumFieldRules);
-    fundingFormStore.updateFieldValidationRule(CreateCommonForm.MINIMUM, null, minimumFieldRules);
+    fundingFormStore.updateFieldValidationRule(CreateCommonForm.MINIMUM, null, minimumFieldRules(index), !isInitialSelect);
   };
 
   const onDatePickerChange = (date) => {
@@ -226,7 +225,7 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
             validation={{
               name: CreateCommonForm.MINIMUM,
               formStore: fundingFormStore,
-              validateRule: minimumFieldRules,
+              validateRule: minimumFieldRules(contributionIndex),
               customErrorMessage:
               `The amount must be at least $5 and at most $${parseFloat(MAX_CONTRIBUTION[contributionIndex]).toLocaleString('en')}.`,
             }}

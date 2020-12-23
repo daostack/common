@@ -62,6 +62,7 @@ class FormStore {
       error: false,
       rule: validateRule,
       changed: false,
+      bluredAtLeastOnce: false,
     };
 
     let currName = name;
@@ -110,9 +111,9 @@ class FormStore {
     this.form.fields[currName] = currValue;
   }
 
-  updateFieldValidationRule(name, multiName, newRule) {
+  updateFieldValidationRule(name, multiName, newRule, triggerValidation = false) {
     this.getFormField(name, multiName).rule = newRule;
-    this.validateField(name, multiName);
+    triggerValidation && this.validateField(name, multiName);
   }
 
   removeFormField(name, multiIndex) {
@@ -159,17 +160,13 @@ class FormStore {
   isFormActionEnabled = () => this.form.meta.formValidationMade ? this.form.meta.isValid : true;
 
   fieldBlured = (name, multiName) => {
+    this.getFormField(name, multiName).bluredAtLeastOnce = true;
     this.validateField(name, multiName);
   };
 
   fieldChanged = (name, value, triggerValidation = false, multiName = null) => {
     this.getFormField(name, multiName).value = value;
-
-    if (
-      triggerValidation ||
-      this.getFormField(name, multiName).error ||
-      !this.getFormField(name, multiName).value
-    ) {
+    if (this.getFormField(name, multiName).bluredAtLeastOnce) {
       this.validateField(name, multiName);
     }
     this.getFormField(name, multiName).changed = true;
@@ -269,16 +266,13 @@ class FormStore {
   // Private functions
   validateField = (name, multiName) => {
     var validation = this.getValidator(name, multiName);
-    console.log("validation -> ", validation);
     const isCurrFieldValid = validation.passes();
-    console.log("isCurrFieldValid -> ", validation);
     if (isCurrFieldValid) {
       // validate the rest of the fields in case of valid current field.
       this.form.meta.isValid = this.getValidator().passes();
     } else {
       this.form.meta.isValid = false;
     }
-    console.log("validation -> ", validation);
     this.getFormField(name, multiName).error = validation.errors.first(name);
     if (this.getFormField(name, multiName).error) {
       this.form.meta.formValidationMade = true;
