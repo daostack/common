@@ -62,6 +62,7 @@ class FormStore {
       error: false,
       rule: validateRule,
       changed: false,
+      bluredAtLeastOnce: false,
     };
 
     let currName = name;
@@ -110,9 +111,9 @@ class FormStore {
     this.form.fields[currName] = currValue;
   }
 
-  updateFieldValidationRule(name, multiName, newRule) {
+  updateFieldValidationRule(name, multiName, newRule, triggerValidation = false) {
     this.getFormField(name, multiName).rule = newRule;
-    this.validateField(name, multiName);
+    triggerValidation && this.validateField(name, multiName);
   }
 
   removeFormField(name, multiIndex) {
@@ -159,17 +160,13 @@ class FormStore {
   isFormActionEnabled = () => this.form.meta.formValidationMade ? this.form.meta.isValid : true;
 
   fieldBlured = (name, multiName) => {
+    this.getFormField(name, multiName).bluredAtLeastOnce = true;
     this.validateField(name, multiName);
   };
 
   fieldChanged = (name, value, triggerValidation = false, multiName = null) => {
     this.getFormField(name, multiName).value = value;
-
-    if (
-      triggerValidation ||
-      this.getFormField(name, multiName).error ||
-      !this.getFormField(name, multiName).value
-    ) {
+    if (this.getFormField(name, multiName).bluredAtLeastOnce) {
       this.validateField(name, multiName);
     }
     this.getFormField(name, multiName).changed = true;

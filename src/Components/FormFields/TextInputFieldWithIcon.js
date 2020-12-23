@@ -86,16 +86,17 @@ class TextInputFieldWithIcon extends React.Component {
   }
 
   onChangeText = (currText) => {
+    const unformattedText = this.unFormatNumber(currText);
     if (this.props.validation) {
       const {formStore, name, multiName} = this.props.validation;
-      formStore.fieldChanged(name, currText, false, multiName);
+      formStore.fieldChanged(name, unformattedText, false, multiName);
     }
-    this.props.onChangeText && this.props.onChangeText(currText);
+    this.props.onChangeText && this.props.onChangeText(unformattedText);
     // only update size when text length is increasing
-    if (this.state.prevTextLength < currText.length && currText.length > 3) {
+    if (this.state.prevTextLength < unformattedText.length && unformattedText.length > 3) {
       this.updateSize(10);
     } else {
-      this.setState({prevTextLength: currText.length});
+      this.setState({prevTextLength: unformattedText.length});
     }
   };
 
@@ -120,6 +121,10 @@ class TextInputFieldWithIcon extends React.Component {
       prevTextLength: newLength,
     });
   };
+
+  unFormatNumber = (currValue) => currValue.replace(',', '');
+
+  formatNumber = (currValue) => new Intl.NumberFormat('en-US').format(currValue);
 
   renderTextField() {
     const {
@@ -187,16 +192,6 @@ class TextInputFieldWithIcon extends React.Component {
       };
     }
 
-    const handleNumbers = (currValue) => {
-      let dec = '';
-      if (currValue.includes('.')) {
-        [currValue, dec] = currValue.split('.');
-        dec = `.${dec}`;
-      }
-      currValue = `${parseFloat(currValue).toLocaleString('en-US')}${dec}`;
-      return currValue;
-    };
-
     const getValue = () => {
       if (validation) {
         let currValue = validation.formStore.getFormField(validation.name, validation.multiName)?.value;
@@ -204,7 +199,7 @@ class TextInputFieldWithIcon extends React.Component {
 
         currValue = currValue.replace(',', '');
         // if number, fix it to price format x,xxx (for currValue > 999)
-        return (+currValue) ? handleNumbers(currValue) : currValue;
+        return (+currValue) ? this.formatNumber(currValue) : currValue;
       }
       return value;
     };
