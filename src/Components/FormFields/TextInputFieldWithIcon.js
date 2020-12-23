@@ -124,7 +124,23 @@ class TextInputFieldWithIcon extends React.Component {
 
   unFormatNumber = (currValue) => currValue.replace(',', '');
 
-  formatNumber = (currValue) => new Intl.NumberFormat('en-US').format(currValue);
+  formatNumber = (currValue) => {
+
+    /* The next line is making the whole formatting right, but it's not working for Android.
+     * In order to make it work on Android we have to change android/build.gradle and add  `def jscFlavor = 'org.webkit:android-jsc-intl:+'`
+     * Let's do it on the next build requred changes. (More info: https://github.com/lingui/js-lingui/issues/442)
+    */
+
+    // new Intl.NumberFormat('en-US').format(currValue);
+
+    let dec = '';
+    if (currValue.includes('.')) {
+      [currValue, dec] = currValue.split('.');
+      dec = `.${dec}`;
+    }
+    currValue = `${parseFloat(currValue).toLocaleString('en-US')}${dec}`;
+    return currValue;
+  }
 
   renderTextField() {
     const {
