@@ -8,7 +8,7 @@ export default StyleSheet.create({
   },
   view: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: colors.white,
     borderTopLeftRadius: 27,
     borderTopRightRadius: 27,
   },
@@ -125,7 +125,7 @@ export default StyleSheet.create({
     marginBottom: 40,
   },
   buttonSelected: {
-    color: 'white',
+    color: colors.white,
     backgroundColor: colors.mainBlue,
   },
 });
