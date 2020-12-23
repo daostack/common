@@ -269,13 +269,16 @@ class FormStore {
   // Private functions
   validateField = (name, multiName) => {
     var validation = this.getValidator(name, multiName);
+    console.log("validation -> ", validation);
     const isCurrFieldValid = validation.passes();
+    console.log("isCurrFieldValid -> ", validation);
     if (isCurrFieldValid) {
       // validate the rest of the fields in case of valid current field.
       this.form.meta.isValid = this.getValidator().passes();
     } else {
       this.form.meta.isValid = false;
     }
+    console.log("validation -> ", validation);
     this.getFormField(name, multiName).error = validation.errors.first(name);
     if (this.getFormField(name, multiName).error) {
       this.form.meta.formValidationMade = true;

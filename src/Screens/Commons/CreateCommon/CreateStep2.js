@@ -50,6 +50,8 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
   const [pickDate, setPickDate] = useState(initialSegmentedIndex === 2 && getDeadlineValue()?.value ? moment.unix(getDeadlineValue()?.value).toDate() : null);
   const [show, setShow] = useState(false);
 
+  const minimumFieldRules = `required|integer|min:5|max:${MAX_CONTRIBUTION[contributionIndex]}`;
+
   useEffect(() => {
     const height = scrollY.interpolate({
       inputRange: [0, 50],
@@ -72,6 +74,8 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
       CONTRIBUTION_TAB_VALUES[index]
     );
     setContributionIndex(index);
+    console.log("minimumFieldRules ", minimumFieldRules);
+    fundingFormStore.updateFieldValidationRule(CreateCommonForm.MINIMUM, null, minimumFieldRules);
   };
 
   const onDatePickerChange = (date) => {
@@ -222,12 +226,7 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
             validation={{
               name: CreateCommonForm.MINIMUM,
               formStore: fundingFormStore,
-              validateRule: [
-                'required',
-                'integer',
-                'min:5',
-                `max:${MAX_CONTRIBUTION[contributionIndex]}`,
-              ],
+              validateRule: minimumFieldRules,
               customErrorMessage:
               `The amount must be at least $5 and at most $${parseFloat(MAX_CONTRIBUTION[contributionIndex]).toLocaleString('en')}.`,
             }}
