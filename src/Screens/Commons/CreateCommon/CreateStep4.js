@@ -243,14 +243,6 @@ const CreateStep4 = ({route: {params: {formStores}},
           </Text>
           <>
             <View style={styles.sectionTitle}>
-              <Text style={styles.textSubtitle}>Course of action</Text>
-            </View>
-            <Text style={{...styles.textContent, ...text.writingDirection(form[CreateCommonForm.ACTION])}}>
-              {form[CreateCommonForm.ACTION]}
-            </Text>
-          </>
-          <>
-            <View style={styles.sectionTitle}>
               <Text style={styles.textSubtitle}>Links</Text>
               {/* <TouchableOpacity
                 style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
