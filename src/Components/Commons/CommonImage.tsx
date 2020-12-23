@@ -42,7 +42,8 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(({
 
   //set default value for Image field
   useEffect(() => {
-    reviewFormStore.registerFormField(CreateCommonForm.IMAGE, null, getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))));
+    reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
+    reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))));
   }, []);
 
   const getImageUrl = (index: number) =>
