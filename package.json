@@ -136,6 +136,7 @@
     "typescript": "^4.0.2"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "setupFilesAfterEnv": ["@testing-library/jest-native/extend-expect"]
   }
 }
