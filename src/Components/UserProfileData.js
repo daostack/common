@@ -86,7 +86,7 @@ const UserProfileData = ({
         style={{alignSelf: 'center', marginBottom: 10}}
       />
       <PlaceholderLine width={30} style={{alignSelf: 'center'}} />
-      <PlaceholderLine width={50} style={{alignSelf: 'center'}} />
+      {isOwnProfile && <PlaceholderLine width={50} style={{alignSelf: 'center'}} />}
       <PlaceholderMedia
         style={{
           alignSelf: 'center',
@@ -137,7 +137,7 @@ const UserProfileData = ({
     setRequestsCount(newCount);
   };
 
-  const showMaxData = user.uid === userInfo.uid ? 5 : null;
+  const showMaxData = user.uid === userInfo?.uid ? 5 : null;
 
   return (
     <React.Fragment>

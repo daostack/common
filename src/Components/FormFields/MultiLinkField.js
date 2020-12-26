@@ -45,10 +45,10 @@ const MultiLinkField = (props) => {
   const onChangeText = (value, currTitleItemValidation) => {
     if (value.length > 0) {
       canAddMore();
-      validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.multiName, currTitleItemValidation.validateRule + '|required');
+      validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.multiName, currTitleItemValidation.validateRule + '|required', true);
     } else {
       setAddButton(false);
-      validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.multiName, currTitleItemValidation.validateRule);
+      validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.multiName, currTitleItemValidation.validateRule, true);
     }
   };
 

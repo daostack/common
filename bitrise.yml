@@ -1080,10 +1080,10 @@ app:
     firebaseWebClientId: 854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com
   - opts:
       is_expand: false
-    CODEPUSH_TARGET_VERSION_PRODUCTION: '1.9.2'
+    CODEPUSH_TARGET_VERSION_PRODUCTION: '1.9.x'
   - opts:
       is_expand: false
-    CODEPUSH_TARGET_VERSION_STAGING: '1.9.2'
+    CODEPUSH_TARGET_VERSION_STAGING: '1.9.x'
   - opts:
       is_expand: false
     APPCENTER_APP_ID_ANDROID: DAOstack/common-android

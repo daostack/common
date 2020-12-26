@@ -45,9 +45,8 @@ import {
   PaymentFormStore,
 } from '~/FormStores/RequestToJoin';
 
-let stickyHeightAddon = 36;
-
-const STICKY_HEADER_HEIGHT = Math.round(getStatusBarHeight()) + stickyHeightAddon;
+let stickyHeightAddon = Platform.OS === 'ios' ? 50 : 56;
+const STICKY_HEADER_HEIGHT = Math.round(getStatusBarHeight(true)) + stickyHeightAddon;
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
 const CommonProfile = ({
@@ -130,7 +129,7 @@ const CommonProfile = ({
     setShowRequestSentModal(params.showRequestSentModal);
     if (userStore.userInfo && userStore.isDaoMember(currCommon?.members)) {
       setMemberState(true);
-      setHeaderHeight(DEFAULT_HEADER_HEIGHT + 36);
+      setHeaderHeight(DEFAULT_HEADER_HEIGHT + stickyHeightAddon);
     } else {
       setMemberState(false);
       setHeaderHeight(DEFAULT_HEADER_HEIGHT);
@@ -537,7 +536,7 @@ const CommonProfile = ({
   const fixedHeaderHeight = () => (
     <NavigationBar
       statusBar={{hidden: true}}
-      containerStyle={{...styles.fixedSection, ... {bottom: (showStickyTabBar || isHeaderClosingInProgress) ? 90 : 10}}}
+      containerStyle={{...styles.fixedSection, ... {bottom: (showStickyTabBar || isHeaderClosingInProgress) ? 85 : 5}}}
       leftButton={
         <TouchableOpacity
           style={{justifyContent: 'center'}}
@@ -611,7 +610,7 @@ const CommonProfile = ({
     ],
   };
 
-  const stickyTabBarStyle = {position: 'absolute', top: Platform.OS === 'android' ? -20 : 0, width: '100%', paddingBottom: 5, zIndex: 1};
+  const stickyTabBarStyle = {position: 'absolute', top: Platform.OS === 'android' ? -25 : 0, width: '100%', paddingBottom: 5, zIndex: 1};
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
@@ -998,6 +997,8 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   stickySection: {
+    paddingBottom: 10,
+    justifyContent: 'flex-end',
     height: STICKY_HEADER_HEIGHT,
     borderBottomWidth: 1,
     backgroundColor: colors.white,
