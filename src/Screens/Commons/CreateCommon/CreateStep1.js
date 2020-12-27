@@ -201,7 +201,11 @@ const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}
         <RequestStepActionButton
           title="Continue to Funding"
           formStore={generalInfoFormStore}
-          onPress={() => setUseAcknowledgmentVisible(true)}
+          onPress={() => {
+            if (generalInfoFormStore.isFormValid()) {
+              setUseAcknowledgmentVisible(true);
+            }
+          }}
         />
       </SafeAreaView>
       {useAcknowledgmentVisible &&

@@ -33,6 +33,7 @@ const FundingProposal = ({
   const [useOfFundsVisible, setUseOfFundsVisible] = useState(false);
 
   const createProposal = async (e) => {
+    navigation.setOptions({headerShown: true});
     setUseOfFundsVisible(false);
     Keyboard.dismiss();
     if (fundingRequestFormStore.isFormValid()) {
@@ -104,8 +105,11 @@ const FundingProposal = ({
           title="Create Proposal"
           formStore={fundingRequestFormStore}
           onPress={() => {
-            Keyboard.dismiss();
-            setUseOfFundsVisible(true);
+            if (fundingRequestFormStore.isFormValid()) {
+              navigation.setOptions({headerShown: false});
+              Keyboard.dismiss();
+              setUseOfFundsVisible(true);
+            }
           }}
         />
       </SafeAreaView>
