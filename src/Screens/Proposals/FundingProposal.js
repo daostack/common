@@ -29,7 +29,7 @@ const FundingProposal = ({
   bottomSheetStore,
 }) => {
 
-  const fundingRequestFormStore = new FundingRequestFormStore();
+  const [fundingRequestFormStore] = useState(new FundingRequestFormStore());
   const [useOfFundsVisible, setUseOfFundsVisible] = useState(false);
 
   const createProposal = async (e) => {
