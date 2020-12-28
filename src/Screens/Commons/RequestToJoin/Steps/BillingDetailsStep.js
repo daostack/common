@@ -59,7 +59,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
 
   const subtitle = (style) => (
     <Text style={style}>
-      You are contributing ${personalContributionFormStore.form.fields.amount?.value?.value}
+      You are contributing ${personalContributionFormStore.getFormFieldsJson().amount}
 
       <Text style={{...font.primary.bold}}>
         {' '}({isMonthly ? 'monthly' : 'one time'}){' '}

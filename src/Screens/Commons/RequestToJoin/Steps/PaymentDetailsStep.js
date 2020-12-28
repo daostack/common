@@ -137,7 +137,7 @@ const PaymentDetailsStep = ({
 
   const subtitle = (style) => (
     <Text style={style}>
-      You are contributing ${personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)?.value?.value}
+      You are contributing ${personalContributionFormStore.getFormFieldsJson().amount}
 
       <Text style={{...font.primary.bold}}>
         {' '}({isMonthly ? 'monthly' : 'one time'}){' '}
