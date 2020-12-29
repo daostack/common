@@ -9,6 +9,11 @@ export const formatNumber = (currValue: string | number) => {
     */
 
   // new Intl.NumberFormat('en-US').format(currValue);
+
+  if (!currValue) {
+    return '';
+  }
+
   let dec = '';
 
   if (currValue?.toString().includes('.')) {
