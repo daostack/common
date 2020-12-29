@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import TextInputField from '~/Components/FormFields/TextInputField';
 import {colors, font} from '~/Theme';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
