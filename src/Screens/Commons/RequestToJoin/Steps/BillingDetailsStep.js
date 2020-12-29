@@ -17,6 +17,8 @@ import MembershipRequest from '../MembershipRequest';
 import {testCard} from '~/Config';
 import {inject} from 'mobx-react';
 import {VALIDATION_RULES} from '~/FormStores/ValidationRules/billingDetailsRules';
+import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
+import {formatNumber} from '~/Util/FormatUtil';
 
 const BillingDetailsStep = ({navigation, route, userStore}) => {
   const {skipFirstStep, currCommon, currDaoId, refreshFeed, formStores} = route.params;
@@ -56,10 +58,9 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
     }
   };
 
-
   const subtitle = (style) => (
     <Text style={style}>
-      You are contributing ${personalContributionFormStore.getFormFieldsJson().amount}
+      You are contributing ${formatNumber(personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)?.value?.value)}
 
       <Text style={{...font.primary.bold}}>
         {' '}({isMonthly ? 'monthly' : 'one time'}){' '}

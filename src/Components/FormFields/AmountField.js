@@ -36,6 +36,10 @@ const AmountField = ({
     onCustomClose();
   };
 
+  const onCustomAmountChange = (amount) => {
+    formStore.fieldChanged(RequestToJoinForm.FIELD_AMOUNT, {value: amount, index: -1});
+  };
+
   return (
     <View>
       <View style={isCustomSelected ? styles.hidden : {}}>
@@ -64,6 +68,7 @@ const AmountField = ({
         autoCorrect={false}
         keyboardType="numeric"
         onTogglePress={onTogglePress}
+        onChangeText={onCustomAmountChange}
         toggleName="Other"
         value={{value: currFieldValue?.value || '', index: -1}}
         maxLength={5}

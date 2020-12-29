@@ -11,6 +11,7 @@ import {observer} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
 import {layout, colors, font, text, sizeS, sizeL} from '~/Theme';
 import {string, func, bool, shape, oneOfType, object, number, node} from 'prop-types';
+import {formatNumber, unFormatNumber} from '~/Util/FormatUtil';
 
 class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
@@ -86,7 +87,7 @@ class TextInputFieldWithIcon extends React.Component {
   }
 
   onChangeText = (currText) => {
-    const unformattedText = this.unFormatNumber(currText);
+    const unformattedText = unFormatNumber(currText);
     if (this.props.validation) {
       const {formStore, name, multiName} = this.props.validation;
       formStore.fieldChanged(name, unformattedText, false, multiName);
@@ -121,26 +122,6 @@ class TextInputFieldWithIcon extends React.Component {
       prevTextLength: newLength,
     });
   };
-
-  unFormatNumber = (currValue) => currValue.replace(',', '');
-
-  formatNumber = (currValue) => {
-
-    /* The next line is making the whole formatting right, but it's not working for Android.
-     * In order to make it work on Android we have to change android/build.gradle and add  `def jscFlavor = 'org.webkit:android-jsc-intl:+'`
-     * Let's do it on the next build requred changes. (More info: https://github.com/lingui/js-lingui/issues/442)
-    */
-
-    // new Intl.NumberFormat('en-US').format(currValue);
-
-    let dec = '';
-    if (currValue.includes('.')) {
-      [currValue, dec] = currValue.split('.');
-      dec = `.${dec}`;
-    }
-    currValue = `${parseFloat(currValue).toLocaleString('en-US')}${dec}`;
-    return currValue;
-  }
 
   renderTextField() {
     const {
@@ -215,7 +196,7 @@ class TextInputFieldWithIcon extends React.Component {
 
         currValue = currValue.replace(',', '');
         // if number, fix it to price format x,xxx (for currValue > 999)
-        return (+currValue) ? this.formatNumber(currValue) : currValue;
+        return (+currValue) ? formatNumber(currValue) : currValue;
       }
       return value;
     };
@@ -329,7 +310,10 @@ TextInputFieldWithIcon.propTypes = {
     invisibleContainer: bool,
     customErrorMessage: string,
   }),
-  value: string,
+  value: oneOfType([
+    string,
+    object,
+  ]),
   fieldActionComponent: object,
   onTogglePress: func,
   toggleName: string,
