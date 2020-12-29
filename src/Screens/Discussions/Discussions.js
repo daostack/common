@@ -57,7 +57,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
 
   useEffect(() => {
     const currentDao = daoStore.daos.find((dao) => dao.id === commonId);
-    const isCurrMember = userStore.userInfo && userStore.isDaoMember(currentDao.members);
+    const isCurrMember = userStore.userInfo && userStore.isDaoMember(currentDao?.members);
     setIsMember(isCurrMember);
   }, []);
 
