@@ -26,6 +26,7 @@ import ProposalService from '~/Services/ProposalService';
 import {testCard} from '~/Config';
 import moment from 'moment';
 import {VALIDATION_RULES} from '~/FormStores/ValidationRules/paymentDetailsRules';
+import {formatNumber} from '~/Util/FormatUtil';
 
 const {width} = Dimensions.get('window');
 
@@ -137,7 +138,7 @@ const PaymentDetailsStep = ({
 
   const subtitle = (style) => (
     <Text style={style}>
-      You are contributing ${personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)?.value?.value}
+      You are contributing ${formatNumber(personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)?.value?.value)}
 
       <Text style={{...font.primary.bold}}>
         {' '}({isMonthly ? 'monthly' : 'one time'}){' '}
