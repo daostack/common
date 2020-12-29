@@ -45,7 +45,7 @@ import {
   PaymentFormStore,
 } from '~/FormStores/RequestToJoin';
 
-let stickyHeightAddon = Platform.OS === 'ios' ? 50 : 56;
+let stickyHeightAddon = 56;
 const STICKY_HEADER_HEIGHT = Math.round(getStatusBarHeight(true)) + stickyHeightAddon;
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
