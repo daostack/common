@@ -97,10 +97,11 @@ const UserProfile = ({userStore, navigation, route}) => {
 
   const renderUnsignedUserData = () => <CreateAccount onSignedIn={onUserSignedIn} />;
 
-  const renderUserProfileData = (currUserId) => (
+  const renderUserProfileData = (currUserId, userInfo) => (
     <UserProfileData
       navigation={navigation}
       userId={currUserId}
+      currUserInfo={userInfo}
     />
   );
 
@@ -119,7 +120,7 @@ const UserProfile = ({userStore, navigation, route}) => {
         >
           <View style={styles.body}>
             {currUserId
-              ? renderUserProfileData(currUserId)
+              ? renderUserProfileData(currUserId, route.params?.userInfo)
               : renderUnsignedUserData()}
           </View>
           {
