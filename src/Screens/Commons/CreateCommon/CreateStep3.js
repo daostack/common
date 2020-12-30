@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import TextInputField from '~/Components/FormFields/TextInputField';
 import {colors, font} from '~/Theme';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
@@ -101,25 +100,8 @@ const CreateStep3 = ({navigation, route: {params:{formStores}}}) => {
             backgroundColor: 'white',
           }}>
           <CreateStepHeaderTitle
-            title="Additional Info"
-            subtitle="Define your course of action and rules of conduct."
-          />
-          <TextInputField
-            value={agendaFormStore.form.fields[CreateCommonForm.ACTION]?.value}
-            viewStyle={{alignSelf: 'stretch'}}
-            label="Course of action"
-            infoLabel="Required"
-            numberOfLines={6}
-            multiline={true}
-            placeholderText="How do you plan to promote your agenda? Anything you want to avoid? Keep it simple and relatively broad - your plans can always change as you go."
-            autoCapitalize="none"
-            autoCorrect={false}
-            validation={{
-              name: CreateCommonForm.ACTION,
-              formStore: agendaFormStore,
-              validateRule: 'string|required',
-              displayName: 'course of action',
-            }}
+            title="Rules"
+            subtitle="Add rules of conduct. New members must agree to the rules before joining the Common."
           />
           <Text
             style={{
