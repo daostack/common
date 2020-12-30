@@ -52,7 +52,7 @@ jobs:
         run: yarn
 
       - name: Test
-        uses: yarn test
+        run: yarn test
         
       - name: Lint
         uses: bradennapier/eslint-plus-action@v3.4.2
