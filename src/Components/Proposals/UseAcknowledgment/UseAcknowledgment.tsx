@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Text, View, ScrollView, Pressable} from 'react-native';
+import {Text, View, ScrollView, Pressable, Linking} from 'react-native';
 import {func, InferProps} from 'prop-types';
 import styles from './styles';
 import data from './data';
@@ -39,10 +39,12 @@ const UseAcknowledgment: React.FC<InferProps<typeof props>> = ({onPressAgree}) =
             </View>
           </Pressable>
           {causesExpanded && <Text style={styles.highlighted}>{data.causesText}</Text>}
-          <Text style={styles.terms}>
-            <Text style={styles.smallText}>{data.termsOfUseRefer}</Text>
-            <Text style={styles.underlinedText}>{data.termsOfUse}</Text>
-          </Text>
+          <Pressable onPress={() => Linking.openURL(data.termsOfUseUrl)}>
+            <Text style={styles.terms}>
+              <Text style={styles.smallText}>{data.termsOfUseRefer}</Text>
+              <Text style={styles.underlinedText}>{data.termsOfUse}</Text>
+            </Text>
+          </Pressable>
           <Pressable onPress={() => setAgreedWithStatement(!agreedWithStatement)}>
             <View style={styles.item}>
               <View style={styles.checkMark}><Icon name={agreedWithStatement ?  'checkIconSelected' : 'checkIcon'} size={24} /></View>
