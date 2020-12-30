@@ -39,9 +39,9 @@ class TextInputField extends React.Component {
   validate = ({validation, value}) => {
     const {name, formStore, validateRule,
       multiName, invisibleContainer = true,
-      displayName, customErrorMessage} = validation;
+      displayName, customErrorMessage, immediateValidation} = validation;
 
-    formStore.registerFormField(name, validateRule, value, multiName);
+    formStore.registerFormField(name, validateRule, value, multiName, immediateValidation);
     this.fieldValidation = (
       <ValidationMessage
         displayName={displayName}
