@@ -20,12 +20,22 @@ const UseAcknowledgment: React.FC<InferProps<typeof props>> = ({onPressAgree}) =
           <Text style={styles.title}>{data.useAcknowledgmentTitle}</Text>
           <Text style={[styles.text, styles.centerText]}>{data.useAcknowledgmentText}</Text>
           <View style={styles.line} />
-          {[data.notViolation, data.npnProfitCauses, data.financialObligations].map((text, index) =>
-            <View key={index} style={styles.item}>
-              <View style={styles.checkMark}><Icon name="checkMark" size={24} /></View>
-              <Text style={[styles.text, styles.flex]}>{text}</Text>
-            </View>
-          )}
+          <View style={styles.item}>
+            <View style={styles.checkMark}><Icon name="checkMark" size={24} /></View>
+            <Text style={[styles.text, styles.flex]}>{data.notViolation}</Text>
+          </View>
+          <View style={styles.item}>
+            <View style={styles.checkMark}><Icon name="checkMark" size={24} /></View>
+            <Text style={[styles.text, styles.flex]}>
+              <Text>{data.raisingFunds}</Text>
+              <Text style={[styles.text, styles.flex, styles.primaryBold]}>{data.npnProfitCauses}</Text>
+              <Text>{data.notForCommercial}</Text>
+            </Text>
+          </View>
+          <View style={styles.item}>
+            <View style={styles.checkMark}><Icon name="checkMark" size={24} /></View>
+            <Text style={[styles.text, styles.flex]}>{data.financialObligations}</Text>
+          </View>
           <Pressable onPress={() => setCausesExpanded(!causesExpanded)}>
             <View style={styles.item}>
               <View style={styles.checkMark}><Icon name="checkMark" size={24} /></View>
