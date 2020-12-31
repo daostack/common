@@ -11,12 +11,12 @@ import {
 } from 'react-native';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
-import {colors} from '~/Theme';
+import {colors, layout} from '~/Theme';
 import {inject} from 'mobx-react';
 import CreateStepHeader from './CreateStepHeader';
 import NavigationBar from 'react-native-navbar';
 import Icon from '~/Assets/iconfont/Icon';
-import CreateStepDotHeader from './CreateStepDotHeader';
+import CreateStepDotHeader from '../../../Components/Layouts/CreateStepDotHeader';
 import MultiLinkField from '~/Components/FormFields/MultiLinkField';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import RequestStepActionButton from '../RequestStepActionButton';
@@ -34,8 +34,8 @@ const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}
   const [useAcknowledgmentVisible, setUseAcknowledgmentVisible] = useState(false);
   useEffect(() => {
     const height = scrollY.interpolate({
-      inputRange: [0, 50],
-      outputRange: [0, 125],
+      inputRange: [125, 185],
+      outputRange: [0, 56],
       extrapolate: 'clamp',
     });
     logger.log(height);
@@ -66,10 +66,11 @@ const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}
       <Modal animationType="slide" transparent={true} visible={useAcknowledgmentVisible}>
         <UseAcknowledgment onPressAgree={push} />
       </Modal>
+      <SafeAreaView style={layout.backgroundWhite}/>
       <SafeAreaView
         style={{
           flex: 1,
-          backgroundColor: 'white',
+          backgroundColor: colors.white,
         }}>
         <NavigationBar
           statusBar={{hidden: true}}

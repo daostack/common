@@ -5,7 +5,7 @@ import {colors, font} from '~/Theme';
 import {string, object, number, oneOfType, shape, array} from 'prop-types';
 
 const CreateStepDotHeader = ({headerHeight = 0, currentIndex, navigation, title}) => (
-  <Animated.View style={{...styles.header, height: headerHeight}}>
+  <Animated.View style={{...styles.header, height: headerHeight, borderBottomWidth: headerHeight > 1 ? 1 : 0}}>
     <TouchableOpacity
       style={styles.back}
       onPress={() => navigation.pop()}>
@@ -41,14 +41,15 @@ CreateStepDotHeader.propTypes = {
 
 const styles = StyleSheet.create({
   bar: {
-    marginTop: 28,
-    height: 32,
+    //marginTop: 28,
+    // height: 32,
     alignItems: 'center',
     justifyContent: 'center',
     // bottomborder: 'solid',
+    backgroundColor: colors.white,
   },
   barContent: {
-    marginTop: 80,
+    marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -62,11 +63,10 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'white',
     overflow: 'hidden',
     zIndex: 999,
-    borderBottomWidth: 1,
     borderBottomColor: colors.grey4,
+    backgroundColor: colors.grey4,
   },
   dot: {
     height: 10,
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     color: colors.black,
     ...font.primary.bold,
     ...font.fontSize(3),
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
 });
 
