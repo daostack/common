@@ -11,7 +11,7 @@ import {observer} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
 import {BlurView} from '~/Components';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
-import {colors, font, text} from '~/Theme';
+import {colors, font} from '~/Theme';
 import ImagePicker from 'react-native-image-picker';
 import StorageService from '~/Services/StorageService';
 import Toast from '~/Util/Toast';
