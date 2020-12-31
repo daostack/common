@@ -33,6 +33,7 @@ const MultiLinkField = (props) => {
     if (currFormField) {
       setCount(Object.keys(currFormField)?.length);
     }
+    canAddMore();
   }, []);
 
   const onFieldDeleted = (currIndex) => {
@@ -44,19 +45,17 @@ const MultiLinkField = (props) => {
 
   const onChangeText = (value, currTitleItemValidation) => {
     if (value.length > 0) {
-      canAddMore();
       validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.multiName, currTitleItemValidation.validateRule + '|required', true);
     } else {
-      setAddButton(false);
       validation.formStore.updateFieldValidationRule(currTitleItemValidation.name, currTitleItemValidation.multiName, currTitleItemValidation.validateRule, true);
     }
+    canAddMore();
   };
 
   const AddBtn = ({}) => (
     <TouchableOpacity>
       <Text style={styles.addLinkBtn} onPress={() => {
         setCount(count + 1);
-        canAddMore();
         setAddButton(false);
       }}>
         {addMultiFieldBtnName ||
@@ -90,6 +89,7 @@ const MultiLinkField = (props) => {
           multiName: props.validation.name,
           validateRule: validation.validateRule?.common || validation.validateRule,
           invisibleContainer: true,
+          immediateValidation: true,
         }; //{...validation};
 
         const currTitleItemValidation = {
@@ -99,6 +99,7 @@ const MultiLinkField = (props) => {
           validateRule: validation.validateRule?.title || 'string',
           topPosition: true,
           invisibleContainer: true,
+          immediateValidation: true,
         }; //{...validation};
 
         return (
@@ -108,7 +109,6 @@ const MultiLinkField = (props) => {
                 value={currTitleItemValidation.formStore.getFormField(currTitleItemValidation.name, currTitleItemValidation.multiName)?.value}
                 label={props.label}
                 onChangeText={(value) => {
-                  canAddMore();
                   onChangeText(value, currItemValidation);
                 }}
                 viewStyle={{marginTop: 0}}

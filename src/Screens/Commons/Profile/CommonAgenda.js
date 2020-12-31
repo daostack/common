@@ -70,24 +70,6 @@ const CommonAgenda = ({
           </View>
         )}
 
-        {(metadata.action) && (
-          <View style={styles.sectionContainer}>
-            <Text style={text.h3Black}>
-              Course of action
-            </Text>
-
-            <Text
-              style={{
-                ...styles.description,
-                ...text.writingDirection(metadata.action),
-                width: '100%',
-              }}
-            >
-              {metadata.action}
-            </Text>
-          </View>
-        )}
-
         {common.links?.length > 0 && (
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Links</Text>
