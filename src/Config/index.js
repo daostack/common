@@ -67,7 +67,7 @@ export const firebaseWebClientId = clientId;
 export const isProduction = Config.ENV === 'production';
 
 // JUST HARDCODING THIS TO BE TRUE FOR A QUICK FIX; SORRY
-export const testCard = false; //Config.testCard === 'true';
+export const testCard = true; //Config.testCard === 'true';
 
 export const OVERRIDES = {
   // default settings for sending trasnsactions
