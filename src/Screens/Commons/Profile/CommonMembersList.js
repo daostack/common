@@ -41,15 +41,6 @@ const CommonMembersList = ({navigation, members, commonId, limit, horizontal, bo
   };
 
   useEffect(() => {
-    const loadCommonMembers = async (currCommonMembers) => {
-      setMembersInfo(await getAllCommonMembers(currCommonMembers));
-    };
-    if (members) {
-      loadCommonMembers(members);
-    }
-  }, []);
-
-  useEffect(() => {
     let unsubscribeCommon = null;
     const subscribeToCommon = async (currCommonId) => {
       unsubscribeCommon = await DaoService.getInstance().subscribeToDaoById(currCommonId, async (snapshot) => {
