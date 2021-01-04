@@ -1,10 +1,9 @@
-import {forwardRef} from 'react';
 import {View, StyleSheet} from 'react-native';
 import React from 'react';
 import Modal from 'react-native-modal';
 import {func, bool, object} from 'prop-types';
 
-const BottomSheetModal = forwardRef(({style, children, isVisible, onClose}) => {
+const BottomSheetModal = ({style, children, isVisible, onClose}) => {
   const renderSheetContent = () => (
     <View style={[styles.content, style]}>{children}</View>
   );
@@ -24,7 +23,7 @@ const BottomSheetModal = forwardRef(({style, children, isVisible, onClose}) => {
       {renderSheetContent()}
     </Modal>
   );
-});
+};
 
 BottomSheetModal.propTypes = {
   style: object,
