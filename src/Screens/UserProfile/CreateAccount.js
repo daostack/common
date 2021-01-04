@@ -39,12 +39,12 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
         </View>
       )}
 
-      {isIos && isLoginWithAppleEnabled ? (
+      {isIos && isLoginWithAppleEnabled && (
         <AppleSignInButton
           customStyle={layout.marginBottomM}
           onSignIn={onSignIn}
         />
-      ) : null}
+      ) }
 
       <GSignInButton style={styles.googleSignInButton} onSignIn={onSignIn} />
 
