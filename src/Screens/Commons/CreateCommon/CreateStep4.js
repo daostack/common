@@ -45,14 +45,20 @@ import logger from '~/Services/Logger';
 
 const {width} = Dimensions.get('window');
 const CONTRIBUTION = {
-  'monthly': '/mo',
+  monthly: '/mo',
   'one-time': '',
 };
 
-const CreateStep4 = ({route: {params: {formStores}},
+const CreateStep4 = ({
+  route: {
+    params: {formStores},
+  },
   navigation,
   bottomSheetStore,
-  userStore: {userInfo: {uid}}}) => {
+  userStore: {
+    userInfo: {uid},
+  },
+}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
@@ -91,12 +97,9 @@ const CreateStep4 = ({route: {params: {formStores}},
   };
 
   const confirmModal = () => {
-    bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.PUBLISH_COMMON,
-      {
-        forgeCommon: forgeCommon,
-      }
-    );
+    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.PUBLISH_COMMON, {
+      forgeCommon: forgeCommon,
+    });
   };
 
   const shareCommon = (event) => {
@@ -136,7 +139,9 @@ const CreateStep4 = ({route: {params: {formStores}},
         },
       });
 
-      const createCommonResponse = await DaoService.getInstance().createCommon(data);
+      const createCommonResponse = await DaoService.getInstance().createCommon(
+        data,
+      );
 
       if (createCommonResponse.status === 200) {
         setNewCommonAddress(createCommonResponse.data.id);
@@ -153,7 +158,10 @@ const CreateStep4 = ({route: {params: {formStores}},
     }
   };
 
-  const displayString = () => `${numberFormatter(form[CreateCommonForm.MINIMUM])}${CONTRIBUTION[form.contribution]}`;
+  const displayString = () =>
+    `${numberFormatter(form[CreateCommonForm.MINIMUM])}${
+      CONTRIBUTION[form.contribution]
+    }`;
 
   return (
     <SafeAreaView
@@ -177,10 +185,10 @@ const CreateStep4 = ({route: {params: {formStores}},
           padding: 24,
         }}
         scrollEventThrottle={16}
-        onScroll={Animated.event([
-          {nativeEvent: {contentOffset: {y: scrollY}}},
-        ],
-        {useNativeDriver: false})}>
+        onScroll={Animated.event(
+          [{nativeEvent: {contentOffset: {y: scrollY}}}],
+          {useNativeDriver: false},
+        )}>
         <CreateStepHeader currentIndex={3} />
         <View
           style={{
@@ -222,23 +230,23 @@ const CreateStep4 = ({route: {params: {formStores}},
               <CreateStep4Indicators
                 title="Safety period"
                 currencySymbol={false}
-                value={
-                  moment
-                    .unix(form[CreateCommonForm.DEADLINE])
-                    .fromNow(true)
-                }
-                date={
-                  moment
-                    .unix(form[CreateCommonForm.DEADLINE])
-                    .format('MMM DD, YYYY')
-                }
+                value={moment
+                  .unix(form[CreateCommonForm.DEADLINE])
+                  .fromNow(true)}
+                date={moment
+                  .unix(form[CreateCommonForm.DEADLINE])
+                  .format('MMM DD, YYYY')}
               />
             </View>
           </View>
           <View style={styles.sectionTitle}>
             <Text style={styles.textTitle}>About</Text>
           </View>
-          <Text style={{...styles.textContent, ...text.writingDirection(form[CreateCommonForm.DESCRIPTION])}}>
+          <Text
+            style={{
+              ...styles.textContent,
+              ...text.writingDirection(form[CreateCommonForm.DESCRIPTION]),
+            }}>
             {form[CreateCommonForm.DESCRIPTION]}
           </Text>
           <>
@@ -252,7 +260,6 @@ const CreateStep4 = ({route: {params: {formStores}},
                   style={{textAlign: 'right', alignSelf: 'flex-end'}}
                 />
               </TouchableOpacity> */}
-
             </View>
             {form[CreateCommonForm.LINKS]?.length ? (
               form[CreateCommonForm.LINKS].map((x) => (
@@ -269,8 +276,7 @@ const CreateStep4 = ({route: {params: {formStores}},
                       alignContent: 'center',
                       ...styles.linkText,
                       ...styles.textContent,
-                    }}
-                  >
+                    }}>
                     {x.title}
                   </Text>
                 </View>
@@ -333,7 +339,6 @@ const CreateStep4 = ({route: {params: {formStores}},
           </View>
         </SentTemplate>
       </Modal>
-
     </SafeAreaView>
   );
 };
@@ -443,7 +448,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'bottomSheetStore',
-  'userStore',
-)(observer(CreateStep4));
+export default inject('bottomSheetStore', 'userStore')(observer(CreateStep4));
