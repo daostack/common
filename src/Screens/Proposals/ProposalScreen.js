@@ -330,20 +330,22 @@ const ProposalScreen = ({
       };
 
       const createVoteResponse = await ProposalService.getInstance().createVote(voteData);
+
       if (createVoteResponse.status === 200) {
+
+
         setVotingProcessState({inProgress: false, error: false});
         closeApprovalSheet();
         Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
         setIsVoteByYou({isApproved: isApproved});
       } else {
-        setVotingProcessState({inProgress: false, error: true});
-        logger.log(createVoteResponse.status);
-        Toast.error(`Status code ${createVoteResponse.status}`);
+        setVotingProcessState({inProgress: false, error: createVoteResponse});
+
       }
     } catch (err) {
-      setVotingProcessState({inProgress: false, error: true});
-      logger.log(err);
-      Toast.error(err.message);
+      setVotingProcessState({inProgress: false, error: err});
+
+
     }
   };
 
@@ -891,6 +893,17 @@ const styles = StyleSheet.create({
     marginBottom: sizeM,
     width: Dimensions.get('window').width * 0.9,
     textAlign: 'center',
+  },
+
+  button: {
+    width: Dimensions.get('window').width * 0.9,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderRadius: 25,
+    borderColor: colors.grey4,
+    marginVertical: 30,
   },
 });
 
