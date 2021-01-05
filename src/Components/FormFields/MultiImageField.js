@@ -8,7 +8,9 @@ const MultiImageField = (props) => {
   const [count, setCount] = useState(1);
 
   useEffect(() => {
-    const currFormField = props.validation.formStore.getFormField(props.validation.name);
+    const currFormField = props.validation.formStore.getFormField(
+      props.validation.name,
+    );
     if (currFormField) {
       setCount(Object.keys(currFormField)?.length);
     }
@@ -25,7 +27,10 @@ const MultiImageField = (props) => {
   const onFieldDeleted = (currIndex) => {
     setCount(count - 1);
     if (props.validation) {
-      props.validation.formStore.removeFormField(props.validation.name, currIndex);
+      props.validation.formStore.removeFormField(
+        props.validation.name,
+        currIndex,
+      );
     }
   };
 
@@ -45,7 +50,12 @@ const MultiImageField = (props) => {
             allowsEditing={props.allowsEditing || false}
             onFieldDeleted={() => onFieldDeleted(currIndex)}
             title={'Add Image'}
-            value={currItemValidation.formStore.getFormField(currItemValidation.name, currItemValidation.multiName)?.value}
+            value={
+              currItemValidation.formStore.getFormField(
+                currItemValidation.name,
+                currItemValidation.multiName,
+              )?.value
+            }
             validation={currItemValidation}
           />
         );

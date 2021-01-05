@@ -35,7 +35,9 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
             currProposalInfo.description.images.map(async (currImage) => {
               if (currImage.value) {
                 try {
-                  const {width, height} = await ImageSize.getSize(currImage.value);
+                  const {width, height} = await ImageSize.getSize(
+                    currImage.value,
+                  );
                   tempImages.push({
                     title: currImage.title,
                     widthRatio: (width / height) * 220,
@@ -66,18 +68,26 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
   return proposalInfoState ? (
     <>
       <View style={styles.container}>
-
-        <Text style={text.h1BlackTitle}>{proposalInfoState.type === PROPOSAL_TYPE.FundingRequest ?
-          'Proposal Pitch' : 'Intro'}</Text>
+        <Text style={text.h1BlackTitle}>
+          {proposalInfoState.type === PROPOSAL_TYPE.FundingRequest
+            ? 'Proposal Pitch'
+            : 'Intro'}
+        </Text>
         <View style={{...layout.content, ...layout.flexStart, width: '100%'}}>
-          <Text style={{...text.regularTextBig, ...text.writingDirection(proposalInfoState.description.description)}}>{proposalInfoState.description.description}</Text>
+          <Text
+            style={{
+              ...text.regularTextBig,
+              ...text.writingDirection(
+                proposalInfoState.description.description,
+              ),
+            }}>
+            {proposalInfoState.description.description}
+          </Text>
         </View>
 
-
-
-        <View style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
-
-          {proposalInfoState.description?.links?.length > 0 && (
+        <View
+          style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
+          {proposalInfoState.description?.links?.length > 0 &&
             proposalInfoState.description?.links.map((l, index) => (
               <View style={styles.adRow} key={index}>
                 <Icon name="link" color={colors.mainBlue} size={16} />
@@ -90,10 +100,9 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
                   <Text style={styles.adsText}>{l.title}</Text>
                 </TouchableOpacity>
               </View>
-            ))
-          )}
+            ))}
 
-          {proposalInfoState.description?.files?.length > 0 && (
+          {proposalInfoState.description?.files?.length > 0 &&
             proposalInfoState.description?.files.map((f, index) => (
               <View style={styles.adRow} key={index}>
                 <Icon name="file" color={colors.mainBlue} size={16} />
@@ -103,13 +112,10 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
                       url: f.value,
                     })
                   }>
-                  <Text style={styles.adsText}>
-                    {`File ${index + 1}`}
-                  </Text>
+                  <Text style={styles.adsText}>{`File ${index + 1}`}</Text>
                 </TouchableOpacity>
               </View>
-            ))
-          )}
+            ))}
         </View>
 
         <ScrollView
@@ -151,7 +157,6 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
             <View style={{width: 20}} />
           </View>
         </ScrollView>
-
       </View>
       <ImageView
         images={proposalInfoState.images}

@@ -21,12 +21,7 @@ import logger from '~/Services/Logger';
 import {bool, object, shape, func} from 'prop-types';
 import EditProfileFormStore from '~/FormStores/EditProfileFormStore';
 
-const EditProfile = ({
-  userStore,
-  bottomSheetStore,
-  route,
-  navigation,
-}) => {
+const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
   navigation.setOptions({
     headerLeft: () => (
       <TouchableOpacity
@@ -41,9 +36,7 @@ const EditProfile = ({
   const editProfileFormStore = new EditProfileFormStore();
 
   const formSave = async (e) => {
-
     if (editProfileFormStore.isFormValid()) {
-
       onFormSubmitStart();
 
       const changedFields = editProfileFormStore.getChangedFormFieldsJson();
@@ -102,7 +95,10 @@ const EditProfile = ({
 
   const renderBody = () => (
     <View style={styles.body}>
-      <EditProfileForm isFirstOpening={route.params.isFirstOpening} editProfileFormStore={editProfileFormStore}/>
+      <EditProfileForm
+        isFirstOpening={route.params.isFirstOpening}
+        editProfileFormStore={editProfileFormStore}
+      />
     </View>
   );
 
@@ -120,20 +116,32 @@ const EditProfile = ({
         <View style={styles.containerRow}>
           {route.params.isFirstOpening ? (
             <TouchableOpacity
-              style={{...styles.btns, ...layout.btnOutline, ...layout.marginRightS}}
+              style={{
+                ...styles.btns,
+                ...layout.btnOutline,
+                ...layout.marginRightS,
+              }}
               onPress={onFormClose}>
               <Text style={text.buttonblue}>Skip</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
-              style={{...styles.btns, ...layout.btnOutline, ...layout.marginRightS}}
+              style={{
+                ...styles.btns,
+                ...layout.btnOutline,
+                ...layout.marginRightS,
+              }}
               onPress={onFormClose}>
               <Text style={text.buttonblue}>Cancel</Text>
             </TouchableOpacity>
           )}
 
           <TouchableOpacity
-            style={{...styles.btns, ...layout.btnPrimary, ...layout.marginLeftS}}
+            style={{
+              ...styles.btns,
+              ...layout.btnPrimary,
+              ...layout.marginLeftS,
+            }}
             onPress={formSave}>
             <Text style={text.buttoncenterwhite}>Save</Text>
           </TouchableOpacity>
@@ -159,7 +167,6 @@ EditProfile.propTypes = {
   }),
   navigation: object,
 };
-
 
 const styles = StyleSheet.create({
   btns: {
@@ -189,7 +196,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'userStore',
-  'bottomSheetStore',
-)(EditProfile);
+export default inject('userStore', 'bottomSheetStore')(EditProfile);

@@ -25,7 +25,6 @@ const RequestStepNavigation = ({navigation, title = ''}) => (
   />
 );
 
-
 RequestStepNavigation.propTypes = {
   navigation: object,
   title: string,

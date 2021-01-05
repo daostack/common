@@ -9,18 +9,20 @@ export const VALIDATION_RULES = {
 
 export const validateCCProvider = {
   ruleName: VALIDATION_RULES.CREDIT_CARD_PROVIDER,
-  validateFunc: (value, requirement, attribute) => (new RegExp(/^4[0-9]{12}(?:[0-9]{3})?$|^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/)).test(value),
+  validateFunc: (value, requirement, attribute) =>
+    new RegExp(
+      /^4[0-9]{12}(?:[0-9]{3})?$|^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/,
+    ).test(value),
   errorMessage: 'We only accept Visa or MasterCard at the moment.',
 };
 
 const luhnAlgo = (ccNumber) => {
-  let [firstCalc, secondCalc, toggle] = [0,0,false];
+  let [firstCalc, secondCalc, toggle] = [0, 0, false];
   for (let i = ccNumber.length - 1; i >= 0; i--) {
     if (toggle) {
       let num = +ccNumber[i] * 2;
-      firstCalc += num < 10 ? num : parseInt((num % 10) + (num / 10), 10);
-    }
-    else {
+      firstCalc += num < 10 ? num : parseInt((num % 10) + num / 10, 10);
+    } else {
       secondCalc += +ccNumber[i];
     }
     toggle = !toggle;
@@ -66,7 +68,7 @@ export const validDateFormat = {
     if (month.length !== 2 || year.length !== 2) {
       return false;
     }
-    return !isNaN(month) && !isNaN(year) && (month > 0 && month <= 12);
+    return !isNaN(month) && !isNaN(year) && month > 0 && month <= 12;
   },
   errorMessage: 'Invalid expiration date.',
 };

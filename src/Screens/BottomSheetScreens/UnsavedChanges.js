@@ -43,21 +43,14 @@ const UnsavedChanges = ({
           source={require('../../../src/Assets/save.png')}
         />
 
-        <Text style={styles.title}>
-          Unsaved changes
-        </Text>
-        <Text
-          style={styles.message}>
+        <Text style={styles.title}>Unsaved changes</Text>
+        <Text style={styles.message}>
           You are about to leave this page without saving your changes
         </Text>
-        <TouchableOpacity
-          style={styles.leave}
-          onPress={liveWithoutSave}>
+        <TouchableOpacity style={styles.leave} onPress={liveWithoutSave}>
           <Text style={text.buttonred}>Leave without saving</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.continue}
-          onPress={continueEditing}>
+        <TouchableOpacity style={styles.continue} onPress={continueEditing}>
           <Text style={text.buttonblack}>Continue editing</Text>
         </TouchableOpacity>
       </View>
@@ -70,7 +63,6 @@ UnsavedChanges.propTypes = {
   onContinueEditing: func,
   onLeaveWithoutSaving: func,
 };
-
 
 const styles = StyleSheet.create({
   scrollView: {

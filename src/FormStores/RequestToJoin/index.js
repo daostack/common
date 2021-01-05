@@ -1,5 +1,8 @@
 import FormStore from '../FormStore';
-import {paymentDetailsRules, billingDetailsRules} from '~/FormStores/ValidationRules';
+import {
+  paymentDetailsRules,
+  billingDetailsRules,
+} from '~/FormStores/ValidationRules';
 
 export class PaymentFormStore extends FormStore {
   constructor() {

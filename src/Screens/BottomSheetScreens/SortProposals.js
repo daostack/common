@@ -31,10 +31,7 @@ const SortProposals = ({navigation, onContinueEditing}) => {
       nestedScrollEnabled={true}
       directionalLockEnabled={true}>
       <View style={styles.body}>
-        <Image
-          style={styles.image}
-          source={require('~/Assets/save.png')}
-        />
+        <Image style={styles.image} source={require('~/Assets/save.png')} />
         <Text style={{...text.h3Black, ...layout.marginTopM}}>
           Unsaved Changes
         </Text>

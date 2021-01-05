@@ -4,9 +4,12 @@ import {layout, colors, sizeXXL} from '~/Theme';
 import {string, bool} from 'prop-types';
 
 const Loader = ({color, isBigger}) => {
-  let loaderStyle = isBigger ? {
-    ...styles.loader, ...{transform: [{scale: 1.6}]},
-  } : styles.loader;
+  let loaderStyle = isBigger
+    ? {
+        ...styles.loader,
+        ...{transform: [{scale: 1.6}]},
+      }
+    : styles.loader;
 
   return (
     <View styl={styles.loaderContainer}>

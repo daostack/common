@@ -13,12 +13,16 @@ import {string, shape} from 'prop-types';
 
 import {useQuote} from '../Util/hooks/useQuote';
 
-const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}}) => {
+const FullScreenCreationLoader = ({
+  route: {
+    params: {title = '', message = ''},
+  },
+}) => {
   const quote = useQuote();
 
   return (
     <React.Fragment>
-      <StatusBar barStyle="dark-content"/>
+      <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.body}>
           <View style={{...styles.slide1, ...layout.content}}>
@@ -29,9 +33,7 @@ const FullScreenCreationLoader = ({route: {params: {title = '', message = ''}}})
 
             <Loader />
 
-            <Text style={styles.title}>
-              {title}
-            </Text>
+            <Text style={styles.title}>{title}</Text>
 
             <Text style={styles.subtitle}>
               {message || 'This may take up to 2 minutes'}
@@ -88,7 +90,6 @@ const styles = StyleSheet.create({
     color: colors.greyText,
     textAlign: 'center',
   },
-
 
   safeArea: {
     flex: 1,

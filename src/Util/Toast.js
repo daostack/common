@@ -35,8 +35,7 @@ export default class Toast {
   }
   static info(text) {
     showHud(
-      <View
-        style={{...styles.container, backgroundColor: colors.mainBlue}}>
+      <View style={{...styles.container, backgroundColor: colors.mainBlue}}>
         <Icon name="check" size={20} color={colors.white} />
         <Text style={styles.text}>{text}</Text>
       </View>,
@@ -44,8 +43,7 @@ export default class Toast {
   }
   static done(text) {
     showHud(
-      <View
-        style={{...styles.container, backgroundColor: colors.mainBlue}}>
+      <View style={{...styles.container, backgroundColor: colors.mainBlue}}>
         <Icon name="check" size={20} color={colors.white} />
         <Text style={styles.text}>{text}</Text>
       </View>,
@@ -53,8 +51,7 @@ export default class Toast {
   }
   static success(text) {
     showHud(
-      <View
-        style={{...styles.container, backgroundColor: colors.mainBlue}}>
+      <View style={{...styles.container, backgroundColor: colors.mainBlue}}>
         <Icon name="check" size={20} color={colors.white} />
         <Text style={styles.text}>{text}</Text>
       </View>,
@@ -71,11 +68,10 @@ export default class Toast {
 
   static loading(text) {
     showLoading(
-      <View
-        style={{...styles.container, backgroundColor: colors.mainBlue}}>
+      <View style={{...styles.container, backgroundColor: colors.mainBlue}}>
         <ActivityIndicator size="small" color={colors.white} />
         <Text style={styles.text}>{text}</Text>
-      </View>
+      </View>,
     );
   }
 

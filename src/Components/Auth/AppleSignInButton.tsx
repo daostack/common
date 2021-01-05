@@ -22,7 +22,7 @@ const AppleSignInButton: React.FC<InferProps<typeof props>> = ({
   userStore,
   customStyle,
 }) => {
-  const [signInError, setSignInError] = useState <any>(null);
+  const [signInError, setSignInError] = useState<any>(null);
   const _signIn = async () => {
     try {
       // That loading status will be changed to false in the onAuthStateChanged method in App.js
@@ -36,31 +36,30 @@ const AppleSignInButton: React.FC<InferProps<typeof props>> = ({
       userStore.setIsLoading(false);
       logger.log(error);
       switch (error.code) {
-      case AppleAuthError.CANCELED:
-        setSignInError('Canceled');
-        break;
-      case AppleAuthError.FAILED:
-        setSignInError('Failed');
-        break;
-      case AppleAuthError.INVALID_RESPONSE:
-        setSignInError('Invalid response');
-        break;
-      case AppleAuthError.NOT_HANDLED:
-        setSignInError('Not handled');
-        break;
-      case AppleAuthError.UNKNOWN:
-        setSignInError('Unknown error');
-        break;
-      default:
-        setSignInError(error);
+        case AppleAuthError.CANCELED:
+          setSignInError('Canceled');
+          break;
+        case AppleAuthError.FAILED:
+          setSignInError('Failed');
+          break;
+        case AppleAuthError.INVALID_RESPONSE:
+          setSignInError('Invalid response');
+          break;
+        case AppleAuthError.NOT_HANDLED:
+          setSignInError('Not handled');
+          break;
+        case AppleAuthError.UNKNOWN:
+          setSignInError('Unknown error');
+          break;
+        default:
+          setSignInError(error);
       }
     }
   };
   const renderSignInButton = () => (
     <TouchableOpacity
       style={{...styles.buttonOutline, ...customStyle}}
-      onPress={_signIn}
-    >
+      onPress={_signIn}>
       <Icon
         style={{marginRight: 5, marginBottom: 5}}
         name="apple-logo"

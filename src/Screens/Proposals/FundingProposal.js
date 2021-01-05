@@ -25,10 +25,11 @@ import {BlurView} from '@react-native-community/blur';
 
 const FundingProposal = ({
   navigation,
-  route: {params: {commonId, common}} ,
+  route: {
+    params: {commonId, common},
+  },
   bottomSheetStore,
 }) => {
-
   const [fundingRequestFormStore] = useState(new FundingRequestFormStore());
   const [useOfFundsVisible, setUseOfFundsVisible] = useState(false);
 
@@ -56,7 +57,9 @@ const FundingProposal = ({
           },
         });
 
-        const createFundingProposalResponse = await ProposalService.getInstance().createFundingProposal(data);
+        const createFundingProposalResponse = await ProposalService.getInstance().createFundingProposal(
+          data,
+        );
         if (createFundingProposalResponse.status === 200) {
           const proposalId = createFundingProposalResponse.data.id;
 
@@ -84,7 +87,10 @@ const FundingProposal = ({
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <Modal animationType="slide" transparent={true} visible={useOfFundsVisible}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={useOfFundsVisible}>
         <UseOfFunds onPressAgree={createProposal} />
       </Modal>
       <SafeAreaView style={{flex: 1}}>
@@ -96,10 +102,15 @@ const FundingProposal = ({
           contentContainerStyle={layout.content}>
           <Text style={styles.title}>New proposal</Text>
           <Text style={styles.subtitle}>
-            {'Proposals allow you to make decisions as a group.\nIf you choose to request funding and the proposal is accepted, you will be responsible to follow it through.'}
+            {
+              'Proposals allow you to make decisions as a group.\nIf you choose to request funding and the proposal is accepted, you will be responsible to follow it through.'
+            }
           </Text>
           <View style={styles.divider} />
-          <FundingRequestForm common={common} fundingRequestFormStore={fundingRequestFormStore}/>
+          <FundingRequestForm
+            common={common}
+            fundingRequestFormStore={fundingRequestFormStore}
+          />
         </ScrollView>
         <RequestStepActionButton
           title="Create Proposal"
@@ -113,14 +124,14 @@ const FundingProposal = ({
           }}
         />
       </SafeAreaView>
-      {useOfFundsVisible &&
-      <BlurView
-        style={styles.blurView}
-        blurType="dark"
-        blurAmount={1}
-        reducedTransparencyFallbackColor={colors.black}
-      />
-      }
+      {useOfFundsVisible && (
+        <BlurView
+          style={styles.blurView}
+          blurType="dark"
+          blurAmount={1}
+          reducedTransparencyFallbackColor={colors.black}
+        />
+      )}
     </>
   );
 };
@@ -160,6 +171,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'bottomSheetStore',
-)(FundingProposal);
+export default inject('bottomSheetStore')(FundingProposal);

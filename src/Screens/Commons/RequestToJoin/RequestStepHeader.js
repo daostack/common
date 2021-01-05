@@ -8,7 +8,9 @@ const {width} = Dimensions.get('window');
 
 const RequestStepHeader = ({isFirstStepSkipped, currentIndex}) => {
   const deltaIndex = isFirstStepSkipped ? 1 : 0;
-  const progressList = isFirstStepSkipped ?  [0, 0.35, 0.7, 1.0] : [0, 0.27, 0.54, 0.76, 1.0];
+  const progressList = isFirstStepSkipped
+    ? [0, 0.35, 0.7, 1.0]
+    : [0, 0.27, 0.54, 0.76, 1.0];
 
   currentIndex = currentIndex - deltaIndex;
 
@@ -47,8 +49,7 @@ const RequestStepHeader = ({isFirstStepSkipped, currentIndex}) => {
         width: '100%',
         marginBottom: 24,
         paddingHorizontal: 30,
-      }}
-    >
+      }}>
       <Progress.Bar
         progress={progressList[currentIndex]} // 0 0.35 0.7 1.0
         width={width - 108}
@@ -76,8 +77,8 @@ const RequestStepHeader = ({isFirstStepSkipped, currentIndex}) => {
       {/* <TouchableOpacity onPress={() => setCurrentIndex(1)}> */}
       <View style={ovalStyle(1 - deltaIndex)}>
         <Icon
-          name={currentIndex < (2 - deltaIndex) ? 'account-selected' : 'check'}
-          size={currentIndex === (1 - deltaIndex) ? 24 : 16}
+          name={currentIndex < 2 - deltaIndex ? 'account-selected' : 'check'}
+          size={currentIndex === 1 - deltaIndex ? 24 : 16}
           color={iconColor(1 - deltaIndex)}
         />
       </View>
@@ -85,8 +86,8 @@ const RequestStepHeader = ({isFirstStepSkipped, currentIndex}) => {
       {/* <TouchableOpacity onPress={() => setCurrentIndex(2)}> */}
       <View style={ovalStyle(2 - deltaIndex)}>
         <Icon
-          name={currentIndex < (3 - deltaIndex) ? 'contribution-24' : 'check'}
-          size={currentIndex === (2 - deltaIndex) ? 24 : 16}
+          name={currentIndex < 3 - deltaIndex ? 'contribution-24' : 'check'}
+          size={currentIndex === 2 - deltaIndex ? 24 : 16}
           color={iconColor(2 - deltaIndex)}
         />
       </View>
@@ -94,8 +95,12 @@ const RequestStepHeader = ({isFirstStepSkipped, currentIndex}) => {
       <TouchableOpacity onPress={() => setCurrentIndex(3)}> */}
       <View style={ovalStyle(3 - deltaIndex)}>
         <Icon
-          name={currentIndex < (4 - deltaIndex) ? 'billing-details-24-copy-4' : 'check'}
-          size={currentIndex === (3 - deltaIndex) ? 24 : 16}
+          name={
+            currentIndex < 4 - deltaIndex
+              ? 'billing-details-24-copy-4'
+              : 'check'
+          }
+          size={currentIndex === 3 - deltaIndex ? 24 : 16}
           color={iconColor(3 - deltaIndex)}
         />
       </View>
@@ -103,8 +108,8 @@ const RequestStepHeader = ({isFirstStepSkipped, currentIndex}) => {
 
       <View style={ovalStyle(4 - deltaIndex)}>
         <Icon
-          name={currentIndex < (5 - deltaIndex) ? 'wallet-24' : 'check'}
-          size={currentIndex === (4 - deltaIndex) ? 24 : 16}
+          name={currentIndex < 5 - deltaIndex ? 'wallet-24' : 'check'}
+          size={currentIndex === 4 - deltaIndex ? 24 : 16}
           color={iconColor(4 - deltaIndex)}
         />
       </View>

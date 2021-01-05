@@ -28,7 +28,6 @@ const signMessage = async (message) => {
   }
 };
 
-
 const generateMnemonic = async () => {
   try {
     return await NativeModules.WalletModule.generateMnemonic();

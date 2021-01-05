@@ -19,9 +19,9 @@ const ProposalApprovalTag = ({iconName, value, isMarked}) => {
 
   let containerStyle = isMarked
     ? {
-      ...styles.container,
-      ...{borderColor: mainColor, backgroundColor: markColor},
-    }
+        ...styles.container,
+        ...{borderColor: mainColor, backgroundColor: markColor},
+      }
     : styles.container;
 
   return (
@@ -37,7 +37,6 @@ ProposalApprovalTag.propTypes = {
   value: number,
   isMarked: bool,
 };
-
 
 const styles = StyleSheet.create({
   title: {
