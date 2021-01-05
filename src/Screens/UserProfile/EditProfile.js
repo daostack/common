@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -33,7 +33,7 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
     ),
   });
 
-  const editProfileFormStore = new EditProfileFormStore();
+  const [editProfileFormStore] = useState(new EditProfileFormStore());
 
   const formSave = async (e) => {
     if (editProfileFormStore.isFormValid()) {
