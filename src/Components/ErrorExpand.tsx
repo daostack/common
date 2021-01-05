@@ -1,4 +1,12 @@
-import {Dimensions, LayoutChangeEvent, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
+import {
+  Dimensions,
+  LayoutChangeEvent,
+  LayoutRectangle,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import React from 'react';
 import {colors} from '~/Theme';
 import {AxiosError} from 'axios';
@@ -15,9 +23,14 @@ interface IFormattedError {
 const propTypes = {
   error: PropTypes.instanceOf(Error),
   bottomSheetStore: PropTypes.any,
+  onLayout: PropTypes.func,
 };
 
-export const ErrorExpand: React.FC<PropTypes.InferProps<typeof propTypes>> = ({bottomSheetStore, ...props}) => {
+interface IPropOverrides {
+  onLayout?: (layout: LayoutRectangle, change: number) => void
+}
+
+export const ErrorExpand: React.FC<PropTypes.InferProps<typeof propTypes> & IPropOverrides> = ({bottomSheetStore, ...props}) => {
   const [formattedError, setFormattedError] = React.useState<IFormattedError | null>(null);
   const [containerHeight, setContainerHeight] = React.useState<number>(0);
   const [showDetails, setShowDetails] = React.useState<boolean>(false);
@@ -35,6 +48,13 @@ export const ErrorExpand: React.FC<PropTypes.InferProps<typeof propTypes>> = ({b
         ? bottomSheetStore.increseTopSnap(layout.height - containerHeight)
         : bottomSheetStore.decreseTopSnap(containerHeight - layout.height);
     }
+
+    if (typeof props.onLayout === 'function') {
+      showDetails
+        ? props.onLayout(layout, layout.height - containerHeight)
+        : props.onLayout(layout, (containerHeight - layout.height) * -1);
+    }
+
 
     setContainerHeight(layout.height);
   };

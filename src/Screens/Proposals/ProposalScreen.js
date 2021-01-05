@@ -64,15 +64,15 @@ const ProposalScreen = ({
     },
   },
 }) => {
-  const [votingProcessState, setVotingProcessState] = useState({inProgress: false, error: false});
-  const [proposalScreenInfo, setProposalScreenInfo] = useState(proposalCardInfo);
-  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
-  const [isSending, setIsSending] = useState(false);
-  const [isMember, setIsMember] = useState(false);
-  const [isProposer, setIsProposer] = useState(false);
-  const [inputHeight, setInputHeight] = useState(false);
-  const [showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer] = useState(false);
-  const [showPaymentStatus, setShowPaymentStatus] = useState(false);
+  const [ votingProcessState, setVotingProcessState ] = useState({inProgress: false, error: false});
+  const [ proposalScreenInfo, setProposalScreenInfo ] = useState(proposalCardInfo);
+  const [ isHeaderHidden, setIsHeaderHidden ] = useState(false);
+  const [ isSending, setIsSending ] = useState(false);
+  const [ isMember, setIsMember ] = useState(false);
+  const [ isProposer, setIsProposer ] = useState(false);
+  const [ inputHeight, setInputHeight ] = useState(false);
+  const [ showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer ] = useState(false);
+  const [ showPaymentStatus, setShowPaymentStatus ] = useState(false);
 
   const renderVoting =
     proposalScreenInfo?.proposalInfo &&
@@ -82,11 +82,11 @@ const ProposalScreen = ({
 
 
   // Sticky Tab Bar
-  const [showStickyTabBar, setShowStickyTabBar] = useState(false);
+  const [ showStickyTabBar, setShowStickyTabBar ] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
 
-  const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
+  const [ stickyTabBarState ] = useState({animation: new Animated.Value(0)});
 
   // Top voting buttons ref
   const topVotingButtonsRef = useRef(null);
@@ -173,22 +173,22 @@ const ProposalScreen = ({
         unsubscribe();
       }
     };
-  }, [proposalId, votingProcessState]);
+  }, [ proposalId, votingProcessState ]);
 
   const [
     isApprovalBottomModalVisible,
     setIsApprovalBottomModalVisible,
   ] = useState(false);
 
-  const [isVoteByYou, setIsVoteByYou] = useState(false);
-  const [voteType, setVoteType] = useState(false);
-  const [index, setIndex] = useState(tabIndex);
-  const [routes] = useState([
+  const [ isVoteByYou, setIsVoteByYou ] = useState(false);
+  const [ voteType, setVoteType ] = useState(false);
+  const [ index, setIndex ] = useState(tabIndex);
+  const [ routes ] = useState([
     {index: 0, key: 'info', icon: 'proposal', iconSelected: 'proposal-selected'},
     {index: 1, key: 'discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
   ]);
 
-  const [inputText, setInputText] = useState(null);
+  const [ inputText, setInputText ] = useState(null);
 
   const inputRef = useRef();
 
@@ -289,7 +289,7 @@ const ProposalScreen = ({
             </View>
           ) : (
             <Text style={{...styles.joinCommonText}}>
-                Only members or proposal creators can send messages
+              Only members or proposal creators can send messages
             </Text>
           )}
         </View>
@@ -341,9 +341,10 @@ const ProposalScreen = ({
         Toast.error(`Status code ${createVoteResponse.status}`);
       }
     } catch (err) {
-      setVotingProcessState({inProgress: false, error: true});
-      logger.log(err);
-      Toast.error(err.message);
+      setVotingProcessState({
+        inProgress: false,
+        error: err,
+      });
     }
   };
 
@@ -392,13 +393,13 @@ const ProposalScreen = ({
               onPress={(e) => openApprovalSheet(true)}
               style={{...styles.actionBtnStyle, ...layout.marginRightS}}
             >
-              <Icon name="approved-24" color={colors.lightishGreen} size={24} />
+              <Icon name="approved-24" color={colors.lightishGreen} size={24}/>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={(e) => openApprovalSheet(false)}
               style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
-              <Icon name="reject-24" color={colors.against} size={24} />
+              <Icon name="reject-24" color={colors.against} size={24}/>
             </TouchableOpacity>
           </View>
         </View>
@@ -460,8 +461,8 @@ const ProposalScreen = ({
     transform: [
       {
         translateY: stickyTabBarState.animation.interpolate({
-          inputRange: [0.01, 1],
-          outputRange: [0, 80],
+          inputRange: [ 0.01, 1 ],
+          outputRange: [ 0, 80 ],
           extrapolate: 'clamp',
         }),
       },
@@ -493,9 +494,9 @@ const ProposalScreen = ({
       >
 
         {showStickyTabBar && (
-          <Animated.View style={[stickyTabBarStyle, slideUp]}>
+          <Animated.View style={[ stickyTabBarStyle, slideUp ]}>
             <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo}
-              parentRef={originTabBarRef} />
+              parentRef={originTabBarRef}/>
           </Animated.View>
         )}
 
@@ -603,7 +604,7 @@ const ProposalScreen = ({
                           <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}}
                             onPress={viewUserProfile}>
                             <Text style={text.smallBlackText}>View Profile</Text>
-                            <Icon name="right-arrow" size={20} />
+                            <Icon name="right-arrow" size={20}/>
                           </TouchableOpacity>
 
                         </View>
@@ -615,8 +616,8 @@ const ProposalScreen = ({
                           isRound={true}
                           style={{alignSelf: 'center', marginBottom: 40}}
                         />
-                        <PlaceholderLine width={50} style={{alignSelf: 'center'}} />
-                        <PlaceholderLine width={30} style={{alignSelf: 'center', marginBottom: 28}} />
+                        <PlaceholderLine width={50} style={{alignSelf: 'center'}}/>
+                        <PlaceholderLine width={30} style={{alignSelf: 'center', marginBottom: 28}}/>
                       </Placeholder>)
                     }
                   </React.Fragment>
@@ -639,8 +640,8 @@ const ProposalScreen = ({
                       proposalScreenInfo?.proposalDao?.metadata?.contributionType === 'monthly' && ' per month'}</Text>
                   </View>
                   {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest && proposalScreenInfo?.proposalInfo.fundingRequest.amount > 0
-                    && <Text
-                      style={text.smallBlackText}>{`Available funds: $${getAvailableFunds()}`}</Text>
+                  && <Text
+                    style={text.smallBlackText}>{`Available funds: $${getAvailableFunds()}`}</Text>
                   }
                 </View>
 
@@ -653,7 +654,7 @@ const ProposalScreen = ({
                         name="user-approved"
                         color={colors.lightishGreen}
                         size={25}
-                        style={layout.marginRightXS} />
+                        style={layout.marginRightXS}/>
                       <Text style={text.lightishGreenText}>
                         {votesFor}
                       </Text>
@@ -672,7 +673,7 @@ const ProposalScreen = ({
                         name="user-rejected"
                         color={colors.against}
                         size={25}
-                        style={layout.marginLeftXS} />
+                        style={layout.marginLeftXS}/>
                     </View>
                   </View>
                   <View style={{
@@ -692,7 +693,8 @@ const ProposalScreen = ({
             </View>
           )}
 
-          <View ref={stickyTabBarRef} collapsable={false} style={{flex: 1, minHeight: screenHeight, backgroundColor: colors.paleGrey}}>
+          <View ref={stickyTabBarRef} collapsable={false}
+            style={{flex: 1, minHeight: screenHeight, backgroundColor: colors.paleGrey}}>
             <TabView
               navigationState={{index, routes}}
               renderScene={() => null}

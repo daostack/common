@@ -5,6 +5,7 @@ import ButtonSwiper from '~/Components/ButtonSwiper';
 import PropTypes from 'prop-types';
 import {useQuote} from '~/Util/hooks/useQuote';
 import {Bar} from 'react-native-progress';
+import {ErrorExpand} from '~/Components';
 
 const propTypes = {
   onApprove: PropTypes.func,
@@ -27,8 +28,13 @@ const ApprovalSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> = ({
   const voteColor =
     votingProcessState?.error || !voteType ? colors.against : colors.lightishGreen;
 
+  const [height, setHeight] = React.useState<number>(200);
+
   return (
-    <SafeAreaView style={styles.body}>
+    <SafeAreaView style={{
+      ...styles.body,
+      height,
+    }}>
       {votingProcessState?.inProgress && (
         <Bar
           indeterminate
@@ -59,11 +65,20 @@ const ApprovalSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> = ({
           </Text>
 
           <TouchableOpacity
-            style={styles.okButton}
+            style={styles.button}
             onPress={onClose as any}
           >
             <Text style={styles.buttonText}>OK</Text>
           </TouchableOpacity>
+
+          {typeof votingProcessState?.error !== 'boolean' && (
+            <ErrorExpand
+              error={(votingProcessState?.error as any)}
+              onLayout={(_: any, change: number) => {
+                setHeight(height + change);
+              }}
+            />
+          )}
         </React.Fragment>
       ) : votingProcessState?.inProgress ? (
         <React.Fragment>
@@ -84,7 +99,7 @@ const ApprovalSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> = ({
             title="Swipe to confirm your vote"
             onSwipeSuccess={() => {
               typeof onApprove === 'function'
-                && onApprove(voteType);
+              && onApprove(voteType);
             }}
           />
         </React.Fragment>
@@ -142,20 +157,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-  okButton: {
-    justifyContent: 'center',
+  button: {
+    width: Dimensions.get('window').width * 0.9,
+    height: 50,
     alignItems: 'center',
-    padding: 0,
-    ...layout.btnOutline,
-    ...layout.marginTopXXL,
-    height: 52,
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderRadius: 25,
+    borderColor: colors.grey4,
+    marginVertical: 25,
   },
-  buttonText:
-    {
-      color: colors.black,
-      alignSelf: 'center',
-      fontSize: 16,
-    },
+
 });
 
 export default ApprovalSheetScreen;
