@@ -1,13 +1,6 @@
 import React from 'react';
 import {Text, StyleSheet} from 'react-native';
-import {
-  colors,
-  font,
-  sizeLineHeight,
-  sizeM,
-  sizeL,
-  sizeS,
-} from '~/Theme';
+import {colors, font, sizeLineHeight, sizeM, sizeL, sizeS} from '~/Theme';
 import {string} from 'prop-types';
 
 const CreateStepHeaderTitle = ({title, subtitle}) => (
