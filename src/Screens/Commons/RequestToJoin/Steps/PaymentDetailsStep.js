@@ -92,15 +92,14 @@ const PaymentDetailsStep = ({
           },
         });
 
-        // const createdCard = await createCard({
-        //   ...formData,
-        //   ...userInfo,
-        // });
+        const createdCard = await createCard({
+          ...formData,
+          ...userInfo,
+        });
 
         const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin({
           ...data,
-          // cardId: createdCard.id,
-          cardId: '',
+          cardId: createdCard.id,
         });
 
         if (createRequestToJoinResponse.status === 200) {
@@ -125,6 +124,8 @@ const PaymentDetailsStep = ({
           showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
         }
       } catch (e) {
+        navigation.pop();
+
         bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
           subTitle: 'We couldn\'t create your proposal',
           error: e,
