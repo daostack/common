@@ -2,14 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Dimensions, Image, LayoutChangeEvent, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 
-import {colors, font} from '~/Theme';
+import {colors, font, text} from '~/Theme';
 import {inject, observer} from 'mobx-react';
 import {AxiosError} from 'axios';
+import {err} from 'react-native-svg/lib/typescript/xml';
 
 const propTypes = {
   title: PropTypes.string,
   subTitle: PropTypes.string,
   buttonText: PropTypes.string,
+
+  titleRed: PropTypes.bool,
 
   error: PropTypes.instanceOf(Error),
 
@@ -19,9 +22,10 @@ const propTypes = {
 };
 
 interface IFormattedError {
-  errorId: string,
-  errorName: string,
-  errorStatus: string
+  errorId: string;
+  errorName: string;
+  errorCode: string;
+  errorMessage: string;
 }
 
 const BackendErrorSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> = ({bottomSheetStore, ...props}) => {
@@ -34,10 +38,13 @@ const BackendErrorSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> 
       if ((props.error as any).isAxiosError) {
         const errorData = (props.error as AxiosError).response?.data;
 
+        console.log(errorData);
+
         setFormattedError({
           errorId: errorData?.errorId,
-          errorName: errorData?.errorMessage,
-          errorStatus: errorData?.errorStatus,
+          errorName: errorData?.errorName,
+          errorCode: errorData?.errorCode,
+          errorMessage: errorData?.error,
         });
       }
     }
@@ -75,7 +82,7 @@ const BackendErrorSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> 
       </View>
 
       <View style={styles.textContainer}>
-        <Text style={styles.title}>{props.title || 'Something went wrong'}</Text>
+        <Text style={[styles.title, (props.titleRed && styles.titleRed)]}>{props.title || 'Something went wrong'}</Text>
 
 
         {props.subTitle && (
@@ -98,9 +105,21 @@ const BackendErrorSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> 
 
           {showDetails && (
             <View>
-              <Text>Error ID: {formattedError.errorId}</Text>
-              <Text>Error Name: {formattedError.errorName}</Text>
-              <Text>Error Status: {formattedError.errorStatus}</Text>
+              {formattedError.errorId && (
+                <Text style={styles.errorInfoText}>Error ID: {formattedError.errorId}</Text>
+              )}
+
+              {formattedError.errorName && (
+                <Text style={styles.errorInfoText}>Error Name: {formattedError.errorName}</Text>
+              )}
+
+              {formattedError.errorCode && (
+                <Text style={styles.errorInfoText}>Error Code: {formattedError.errorCode}</Text>
+              )}
+
+              {formattedError.errorMessage && (
+                <Text style={styles.errorInfoText}>Error Message: {formattedError.errorMessage}</Text>
+              )}
             </View>
           )}
         </View>
@@ -126,8 +145,6 @@ const styles = StyleSheet.create({
 
     alignItems: 'center',
   },
-
-  containerExpanded: {},
 
   lever: {
     height: 5,
@@ -175,6 +192,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
+  titleRed: {
+    color: colors.error,
+  },
+
   subtitle: {
     ...font.primary.regular,
     ...font.fontSize(2),
@@ -189,6 +210,10 @@ const styles = StyleSheet.create({
     color: colors.grey6,
     textAlign: 'center',
     marginBottom: 10,
+  },
+
+  errorInfoText: {
+    marginVertical: 3,
   },
 });
 

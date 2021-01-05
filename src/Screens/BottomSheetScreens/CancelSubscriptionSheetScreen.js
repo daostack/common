@@ -6,6 +6,7 @@ import moment from 'moment';
 import {inject, observer} from 'mobx-react';
 
 import {colors, font, layout, text} from '../../Theme';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens/index';
 
 const width = Dimensions.get('window').width;
 
@@ -106,7 +107,12 @@ const CancelSubscriptionSheetScreen = ({
 
       setStatus(statuses.canceled);
     } catch (e) {
-      setStatus(statuses.errored);
+      bottomSheetStore.hideBottomSheet();
+      bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
+        subTitle: 'Try again later',
+        titleRed: true,
+        error: e,
+      });
     }
   };
 
@@ -217,6 +223,7 @@ CancelSubscriptionSheetScreen.propTypes = {
 
   bottomSheetStore: PropTypes.shape({
     hideBottomSheet: PropTypes.func,
+    showBottomSheet: PropTypes.func,
   }),
 };
 
