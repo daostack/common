@@ -43,7 +43,12 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(({
   //set default value for Image field
   useEffect(() => {
     reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
-    reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, getImageUrl(1 + Math.floor(Math.random() * Math.floor(7))));
+    let currCommonImage = reviewFormStore.getFormField(CreateCommonForm.IMAGE)?.value;
+    // Set random image as default in case no value provided
+    if (!currCommonImage) {
+      currCommonImage = getImageUrl(1 + Math.floor(Math.random() * Math.floor(7)));
+    }
+    reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, currCommonImage);
   }, []);
 
   const getImageUrl = (index: number) =>
@@ -112,15 +117,10 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(({
         resizeMode="cover"
       />
       <TouchableOpacity
-        style={{
-          position: 'absolute',
-          top: 15,
-          right: 15,
-          padding: 10,
-          color: 'white',
-        }}
+        style={styles.pickImageButton}
         onPress={() => pickImage()}>
-        <BlurView style={{padding: 12, borderRadius: 14}}>
+        <Text style={styles.pickImageText}>Select or upload cover image</Text>
+        <BlurView style={styles.pickImageIcon}>
           <Icon name={'addpicture'} color="white" size={20} />
         </BlurView>
       </TouchableOpacity>
@@ -182,6 +182,28 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     ...font.primary.regular,
     ...font.fontSize(2),
+  },
+  pickImageButton: {
+    position: 'absolute',
+    top: 15,
+    left: 0,
+    right: 0,
+    padding: 10,
+    color: colors.white,
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+  },
+  pickImageText: {
+    color: colors.white,
+    ...font.primary.regular,
+    ...font.fontSize(2),
+  },
+  pickImageIcon: {
+    position: 'absolute',
+    right: 15,
+    padding: 12,
+    borderRadius: 14,
   },
 });
 

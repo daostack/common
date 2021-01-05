@@ -56,13 +56,13 @@ class FormStore {
   }
 
   // Public functions
-  registerFormField(name, validateRule, initialValue = '', multiName = null) {
+  registerFormField(name, validateRule, initialValue = '', multiName = null, immediateValidation = false) {
     let currValue = {
       value: initialValue,
       error: false,
       rule: validateRule,
       changed: false,
-      bluredAtLeastOnce: false,
+      bluredAtLeastOnce: immediateValidation,
     };
 
     let currName = name;

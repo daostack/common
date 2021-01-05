@@ -19,8 +19,8 @@ const CommonMembersList = ({navigation, members, commonId, limit, horizontal, bo
 
   const [membersInfo, setMembersInfo] = useState(null);
 
-  const showUserProfile = (uid) => {
-    navigation.navigate('Profile', {userId: uid});
+  const showUserProfile = (userInfo) => {
+    navigation.navigate('Profile', {userId: userInfo.uid, userInfo});
   };
 
   const limitCommonMembers = (commonMembers) => commonMembers?.length > limit ? commonMembers.slice(0, limit) : commonMembers || [];
@@ -75,7 +75,7 @@ const CommonMembersList = ({navigation, members, commonId, limit, horizontal, bo
         membersInfo.map((member, i) => (
           horizontal
             ? (
-              <TouchableOpacity style={{position: 'relative', left: i * -15}} onPress={() => showUserProfile(member.uid) } key={`touch_${i}`}>
+              <TouchableOpacity style={{position: 'relative', left: i * -15}} onPress={() => showUserProfile(member) } key={`touch_${i}`}>
                 <MemberImage
                   id={i}
                   userInfo={member}
@@ -84,7 +84,7 @@ const CommonMembersList = ({navigation, members, commonId, limit, horizontal, bo
               </TouchableOpacity>
             )
             : (
-              <TouchableOpacity style={styles.item} onPress={ () => showUserProfile(member.uid) } key={`touch_${i}`}>
+              <TouchableOpacity style={styles.item} onPress={ () => showUserProfile(member) } key={`touch_${i}`}>
                 <MemberCard
                   key={i}
                   userInfo={member}

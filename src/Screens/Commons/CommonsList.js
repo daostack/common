@@ -35,18 +35,25 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   const [isSplited, setIsSplited] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
 
-  const getPendingDAOList = async () => {
-    if (userStore.userInfo === null ) {
-      return [];
+  const setAllCommons = (daoList, pendingDao, myDao, isFromCache, callback) => {
+
+    const featuredList = daoList.filter((dao) =>
+      !pendingDao.includes(dao) &&
+      !myDao.includes(dao) &&
+      (isFromCache || dao.register === DAO_REGISTERED)
+    );
+
+    if (featuredList.length > 0) {
+      setFeaturedDaosGroup({
+        title: 'Featured',
+        data: featuredList,
+      });
     }
 
-    const proposalList = await ProposalService.getInstance().getUserPendingProposals(userStore.userInfo.uid);
-    const daoList = proposalList.map((proposal) => proposal.data().commonId);
-
-    return daoList;
+    callback([...myDao, ...pendingDao, ...featuredList]);
   };
 
-  const filterAndSplitDaoList = async (daoList, isFromCache = false) => {
+  const filterAndSplitDaoList = async (daoList, isFromCache = false, callback) => {
     try {
       if (daoList.length === 0) {
         setMyDaosGroup({title: '', data: []});
@@ -67,37 +74,27 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
 
         myDao = daoList.filter((dao) => userStore.isDaoMember(dao?.members));
 
-        const pendingList = await getPendingDAOList();
-        pendingDao = daoList.filter((dao) => pendingList.includes(dao.id));
+        ProposalService.getInstance().subscribeToUserPendingProposals(userStore.userInfo.uid, (userPendingProposals) => {
+          const pendingList = userPendingProposals.map((proposal) => proposal.data().commonId);
+          pendingDao = daoList.filter((dao) => pendingList.includes(dao.id));
 
-        if (myDao.length > 0) {
-          setMyDaosGroup({
-            title: `My Commons (${myDao?.length})`,
-            data: myDao,
-          });
-        }
+          if (myDao.length > 0) {
+            setMyDaosGroup({
+              title: `My Commons (${myDao?.length})`,
+              data: myDao,
+            });
+          }
 
-        if (pendingDao.length > 0) {
-          setPendingDaosGroup({
-            title: `Pending (${pendingDao?.length})`,
-            data: pendingDao,
-          });
-        }
-      }
-      const featuredList = daoList.filter((dao) =>
-        !pendingDao.includes(dao) &&
-        !myDao.includes(dao) &&
-        (isFromCache || dao.register === DAO_REGISTERED)
-      );
-
-      if (featuredList.length > 0) {
-        setFeaturedDaosGroup({
-          title: 'Featured',
-          data: featuredList,
+          if (pendingDao.length > 0) {
+            setPendingDaosGroup({
+              title: `Pending (${pendingDao?.length})`,
+              data: pendingDao,
+            });
+          }
+          setAllCommons(daoList, pendingDao, myDao, isFromCache, callback);
         });
       }
-
-      return [...myDao, ...pendingDao, ...featuredList];
+      setAllCommons(daoList, pendingDao, myDao, isFromCache, callback);
     } catch (err) {
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
@@ -113,7 +110,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
         return [];
       }
       let docs = snapshot.docs.map((doc) => doc.data());
-      filterAndSplitDaoList(docs).then((filteredDaos) => {
+      filterAndSplitDaoList(docs, false, (filteredDaos) => {
         daoStore.setDaos(filteredDaos);
         setAllDaosGroup({
           title: '',
@@ -150,7 +147,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
       }
       const docs = JSON.parse(jsonValue);
 
-      filterAndSplitDaoList(docs, true).then((filteredDaos) => {
+      filterAndSplitDaoList(docs, true, (filteredDaos) => {
         setIsSplited(true);
       });
     });

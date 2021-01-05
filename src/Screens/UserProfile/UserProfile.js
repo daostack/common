@@ -8,13 +8,13 @@ import {
   Linking,
   Alert,
 } from 'react-native';
+import {getVersion, getBuildNumber} from 'react-native-device-info';
 import React, {useEffect, useState} from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {layout, colors, text, sizeL, font} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import AccordionBtn from '~/Components/AccordionBtn';
 import CreateAccount from './CreateAccount';
-import VersionNumber from 'react-native-version-number';
 import {CommonActions} from '@react-navigation/native';
 import UserProfileData from '~/Components/UserProfileData';
 import AuthService from '~/Services/AuthService';
@@ -97,10 +97,11 @@ const UserProfile = ({userStore, navigation, route}) => {
 
   const renderUnsignedUserData = () => <CreateAccount onSignedIn={onUserSignedIn} />;
 
-  const renderUserProfileData = (currUserId) => (
+  const renderUserProfileData = (currUserId, userInfo) => (
     <UserProfileData
       navigation={navigation}
       userId={currUserId}
+      currUserInfo={userInfo}
     />
   );
 
@@ -119,7 +120,7 @@ const UserProfile = ({userStore, navigation, route}) => {
         >
           <View style={styles.body}>
             {currUserId
-              ? renderUserProfileData(currUserId)
+              ? renderUserProfileData(currUserId, route.params?.userInfo)
               : renderUnsignedUserData()}
           </View>
           {
@@ -160,7 +161,7 @@ const UserProfile = ({userStore, navigation, route}) => {
                   </View>
 
                 }
-                <Text style={styles.version}>Common{isProduction ? '' : '-stg'} v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : ''})</Text>
+                <Text style={styles.version}>Common{isProduction ? '' : '-stg'} v{getVersion()} ({getBuildNumber()}{codePushVersion ? `-${codePushVersion}` : ''})</Text>
               </>
               : null
           }

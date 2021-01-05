@@ -12,7 +12,6 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
 import {string, bool, object} from 'prop-types';
-import {db} from '~/Firebase';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -25,7 +24,7 @@ const {width} = Dimensions.get('window');
 const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipRequest, isSwiper, isMember, commonInfo}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
-  const [paymentState, setPaymentState] = useState('pending');
+
   useEffect(() => {
 
     let unsubscribeProposalDiscussionsCount = null;
@@ -64,7 +63,6 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
 
     if (proposalId) {
       getProposalInfo(proposalId);
-      getPaymentStatus();
     }
 
     return () => {
@@ -72,17 +70,6 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
       unsubscribeProposalInfo && unsubscribeProposalInfo();
     };
   }, [proposalId]);
-
-  const getPaymentStatus = () => {
-    db.collection('payments')
-      .where('proposalId', '==', proposalId)
-      .onSnapshot((snapshot) => {
-        if (snapshot.docChanges().length !== 0) {
-          const paymentData = (snapshot.docChanges()[0].doc).data();
-          setPaymentState(paymentData.status);
-        }
-      },(error) => logger.error(error));
-  };
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
@@ -153,7 +140,7 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
       proposalCardInfo,
       commonBalance: commonInfo?.balance,
       isMember,
-      paymentState,
+      paymentState: proposalCardInfo.proposalInfo?.paymentState,
     });
   };
 

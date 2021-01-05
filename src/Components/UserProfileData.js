@@ -22,10 +22,11 @@ import {
 
 const UserProfileData = ({
   userId,
+  currUserInfo,
   navigation,
   userStore: {userInfo},
 }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(currUserInfo);
   const [proposalsCount, setProposalsCount] = useState(0);
   const [requestsCount, setRequestsCount] = useState(0);
   const [commonsCount, setCommonsCount] = useState(0);
@@ -37,25 +38,27 @@ const UserProfileData = ({
         setUser(userInfo);
         setIsOwnProfile(true);
       } else {
-        const usr = await UserService.getInstance().getUserById(userId);
+        if (!user) {
+          const usr = await UserService.getInstance().getUserById(userId);
+          setUser(usr);
+        }
 
-        setUser(usr);
         setIsOwnProfile(false);
 
         navigation.setOptions({
           // The regex below is used to separate names and
           // make them less at most 25 character, but with cutting
           // the name only at whitespaces
-          title: usr.displayName?.match(/.{1,25}(\s|$)/g)[0],
+          title: user.displayName?.match(/.{1,25}(\s|$)/g)[0],
         });
       }
     };
 
-    setUser(null);
+    setUser(currUserInfo);
     setIsOwnProfile(false);
 
     getUser();
-  }, [userId, userInfo]);
+  }, [userId, currUserInfo, userInfo]);
 
   const navigateToEditProfile = (isFirstOpening) => {
     const navigate = CommonActions.navigate({
@@ -289,6 +292,7 @@ const UserProfileData = ({
 
 UserProfileData.propTypes = {
   userId: string,
+  currUserInfo: object,
   navigation: object,
   userStore: shape({
     userInfo: shape({
