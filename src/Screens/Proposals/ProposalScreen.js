@@ -307,27 +307,10 @@ const ProposalScreen = ({
   const openApprovalSheet = (isApproval) => {
     setVoteType(isApproval);
     setIsApprovalBottomModalVisible(true);
-
-    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.APPROVAL_SHEET_SCREEN, {
-      voteType,
-      onVote,
-      onClose: closeApprovalSheet,
-      votingProcessState: votingProcessState,
-    });
-
-
-    // <ApprovalSheetScreen
-    //   voteType={voteType}
-    //   onApprove={onVote}
-    //   onClose={closeApprovalSheet}
-    //   votingProcessState={votingProcessState}
-    // />
   };
 
   const closeApprovalSheet = (e) => {
     setIsApprovalBottomModalVisible(false);
-
-    bottomSheetStore.hideBottomSheet();
   };
 
   const viewUserProfile = () => {
@@ -759,7 +742,14 @@ const ProposalScreen = ({
       <BottomSheetModal
         isVisible={isApprovalBottomModalVisible}
         onClose={closeApprovalSheet}
-      />
+      >
+        <ApprovalSheetScreen
+          voteType={voteType}
+          onApprove={onVote}
+          onClose={closeApprovalSheet}
+          votingProcessState={votingProcessState}
+        />
+      </BottomSheetModal>
     </React.Fragment>
   );
 };

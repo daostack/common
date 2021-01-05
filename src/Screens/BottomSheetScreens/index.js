@@ -68,7 +68,7 @@ export const BOTTOM_SHEET_TEMPLATES = {
   },
 
   APPROVAL_SHEET_SCREEN: {
-    topSnap: 200,
+    topSnap: 300,
     content: ApprovalSheetScreen,
   },
 };
