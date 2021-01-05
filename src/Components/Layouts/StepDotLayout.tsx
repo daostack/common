@@ -5,16 +5,15 @@ import {
   Dimensions,
   SafeAreaView,
   Animated,
-  StyleSheet,
-  Modal,
 } from 'react-native';
+import {inject} from 'mobx-react';
 import {object, bool, number, func, string, shape, InferProps} from 'prop-types';
 import {colors, layout} from '~/Theme';
 import CreateStepHeader from './CreateStepHeader';
 import NavigationBar from 'react-native-navbar';
 import Icon from '~/Assets/iconfont/Icon';
-import CreateStepDotHeader from '../../../Components/Layouts/CreateStepDotHeader';
-import RequestStepActionButton from '../RequestStepActionButton';
+import CreateStepDotHeader from './CreateStepDotHeader';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 // import UseAcknowledgment from '../../../Components/Proposals/UseAcknowledgment';
 const {width} = Dimensions.get('window');
 
@@ -24,19 +23,29 @@ const props = {
   stepDotHeaderTitle: string,
   navTitle: string,
   currentIndex: number,
-  renderBody: func,
+  prependedArea: object,
+  appendedArea: object,
+  requestStepActionButton: object,
+  children: object,
+  bottomSheetStore: shape({
+    showBottomSheet: func,
+    hideBottomSheet: func,
+  }),
 };
 
 const StepDotLayout: React.FC<InferProps<typeof props>> = ({
-  closeDialog,
   navigation,
   stepDotHeaderTitle,
   navTitle,
   currentIndex,
-  renderBody,
+  requestStepActionButton,
+  prependedArea,
+  appendedArea,
+  children,
+  bottomSheetStore,
 }) => {
 
-  const [headerHeight, setHeaderHeight] = useState(0);
+  const [headerHeight, setHeaderHeight] = useState(new Animated.Value(0));
   const [scrollY] = useState(new Animated.Value(0));
 
   useEffect(() => {
@@ -50,12 +59,20 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
     setHeaderHeight(height);
   }, [scrollY]);
 
+  const closeDialog = () => {
+    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
+      navigation: navigation,
+      onContinueEditing: () => bottomSheetStore.hideBottomSheet(),
+      onLeaveWithoutSaving: () => {
+        bottomSheetStore.hideBottomSheet();
+        navigation.popToTop();
+      },
+    });
+  };
+
   return (
     <>
-      {/* TODO: add userAcnowledge
-        <Modal animationType="slide" transparent={true} visible={useAcknowledgmentVisible}>
-        <UseAcknowledgment onPressAgree={push} />
-        </Modal> */}
+      {prependedArea}
       <SafeAreaView style={layout.backgroundWhite} />
       <SafeAreaView
         style={{
@@ -102,30 +119,18 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
             {nativeEvent: {contentOffset: {y: scrollY}}},
           ],
           {useNativeDriver: false})}>
-          <CreateStepHeader currentIndex={0} />
-          {renderBody()}
+          <CreateStepHeader currentIndex={Number(currentIndex) - 1} />
+          {children}
         </ScrollView>
-        {/* TODO: add parameter for rendering requeust step button
-        <RequestStepActionButton
-        title="Continue to Funding"
-        formStore={generalInfoFormStore}
-        onPress={() => {
-          if (generalInfoFormStore.isFormValid()) {
-            setUseAcknowledgmentVisible(true);
-          }
-        }}
-      /> */}
+        {requestStepActionButton}
       </SafeAreaView>
-      {/* Blur View from createStep 1 */}
+      {appendedArea}
     </>
   );
 };
 
-
 StepDotLayout.propTypes = props;
 
-const styles = StyleSheet.create({
-  blurView: {position: 'absolute', ...StyleSheet.absoluteFill},
-});
-
-export default StepDotLayout;
+export default inject(
+  'bottomSheetStore',
+)(StepDotLayout);

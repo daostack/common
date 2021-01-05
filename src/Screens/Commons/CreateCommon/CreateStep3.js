@@ -1,37 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
   Text,
   View,
-  ScrollView,
-  Dimensions,
-  SafeAreaView,
-  Animated,
 } from 'react-native';
 import {colors, font} from '~/Theme';
-import CreateStepHeader from './CreateStepHeader';
-import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import MultiLinkField from '~/Components/FormFields/MultiLinkField';
-import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import {object, func, shape} from 'prop-types';
-const {width} = Dimensions.get('window');
+import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 
 const CreateStep3 = ({navigation, route: {params:{formStores}}}) => {
-  const [ scrollY ] = useState(new Animated.Value(0));
-  const [ headerHeight, setHeaderHeight ] = useState(0);
   const agendaFormStore = formStores.agendaFormStore;
   // var ruleBody = [];
-
-  useEffect(() => {
-    const height = scrollY.interpolate({
-      inputRange: [ 0, 50 ],
-      outputRange: [ 0, 125 ],
-      extrapolate: 'clamp',
-    });
-    setHeaderHeight(height);
-  }, [ scrollY ]);
 
   /*
   const handleRuleTitles = (x, text) => {
@@ -67,77 +49,64 @@ const CreateStep3 = ({navigation, route: {params:{formStores}}}) => {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: 'white',
-      }}>
-      <CreateStepNavigation navigation={navigation} title="Create a Common"/>
-      <CreateStepDotHeader
-        title="Additional Info"
-        currentIndex={3}
-        navigation={navigation}
-        headerHeight={headerHeight}
-      />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        width={width}
-        contentContainerStyle={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 24,
-        }}
-        scrollEventThrottle={16}
-        onScroll={Animated.event([
-          {nativeEvent: {contentOffset: {y: scrollY}}},
-        ],
-        {useNativeDriver: false})}>
-        <CreateStepHeader currentIndex={2}/>
-        <View
+    <StepDotLayout
+      navigation={navigation}
+      stepDotHeaderTitle="Additional Info"
+      navTitle="Additional Info"
+      currentIndex={3}
+      requestStepActionButton={
+        <RequestStepActionButton
+          title="Continue to Review"
+          formStore={agendaFormStore}
+          onPress={push}
+        />
+      }
+    >
+      <View
+        style={{
+          flex: 1,
+          // padding: 24,
+          backgroundColor: 'white',
+        }}>
+        <CreateStepHeaderTitle
+          title="Rules"
+          subtitle="Add rules of conduct. New members must agree to the rules before joining the Common."
+        />
+        <Text
           style={{
-            flex: 1,
-            // padding: 24,
-            backgroundColor: 'white',
+            marginTop: 24,
+            ...font.primary.bold,
+            ...font.fontSize(3),
+            ...font.lineHeight(2),
           }}>
-          <CreateStepHeaderTitle
-            title="Rules"
-            subtitle="Add rules of conduct. New members must agree to the rules before joining the Common."
-          />
-          <Text
-            style={{
-              marginTop: 24,
-              ...font.primary.bold,
-              ...font.fontSize(3),
-              ...font.lineHeight(2),
-            }}>
-            Rules of conduct
-          </Text>
-          <Text
-            style={{
-              ...font.primary.regular,
-              ...font.fontSize(2),
-              ...font.lineHeight(2),
-              color: colors.grey3,
-            }}>
-            Use rules to set the tone for your Common's discussions.
-            (No advertising and spam, accepted language, etc.)
-          </Text>
+          Rules of conduct
+        </Text>
+        <Text
+          style={{
+            ...font.primary.regular,
+            ...font.fontSize(2),
+            ...font.lineHeight(2),
+            color: colors.grey3,
+          }}>
+          Use rules to set the tone for your Common's discussions.
+          (No advertising and spam, accepted language, etc.)
+        </Text>
 
-          <MultiLinkField
-            rule
-            allowsEditing={true}
-            title="Rule title"
-            placeholderValueText="Rule description"
-            multiline={true}
-            addMultiFieldBtnName="Add Rule"
-            validation={{
-              name: CreateCommonForm.RULES,
-              formStore: agendaFormStore,
-              validateRule: {common: 'string', title: 'string|max:80'},
-            }}
-          />
+        <MultiLinkField
+          rule
+          allowsEditing={true}
+          title="Rule title"
+          placeholderValueText="Rule description"
+          multiline={true}
+          addMultiFieldBtnName="Add Rule"
+          validation={{
+            name: CreateCommonForm.RULES,
+            formStore: agendaFormStore,
+            validateRule: {common: 'string', title: 'string|max:80'},
+          }}
+        />
 
-          {/*
+        {/*
           {[...Array(ruleCount).keys()].map(x => (
             <View key={x}>
               <TextInput
@@ -184,14 +153,8 @@ const CreateStep3 = ({navigation, route: {params:{formStores}}}) => {
             </Text>
           </TouchableOpacity>
           */}
-        </View>
-      </ScrollView>
-      <RequestStepActionButton
-        title="Continue to Review"
-        formStore={agendaFormStore}
-        onPress={push}
-      />
-    </SafeAreaView>
+      </View>
+    </StepDotLayout>
   );
 };
 

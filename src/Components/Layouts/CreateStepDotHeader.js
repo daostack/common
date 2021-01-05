@@ -18,7 +18,8 @@ const CreateStepDotHeader = ({headerHeight = 0, currentIndex, navigation, title}
             key={x}
             style={x === currentIndex - 1 ? styles.dot : styles.dot2}
           />
-        ))}
+        )
+        )}
       </View>
       <Text style={styles.title}>{title}</Text>
     </View>
