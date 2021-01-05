@@ -69,6 +69,9 @@ export default StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
   },
+  primaryBold: {
+    ...font.primary.bold,
+  },
   smallText: {
     color: colors.black,
     ...font.primary.regular,
