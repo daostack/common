@@ -31,8 +31,6 @@ export const ErrorExpand: React.FC<PropTypes.InferProps<typeof propTypes>> = ({b
     const layout = e.nativeEvent.layout;
 
     if (typeof bottomSheetStore === 'object') {
-      console.log(bottomSheetStore.increseTopSnap);
-
       showDetails
         ? bottomSheetStore.increseTopSnap(layout.height - containerHeight)
         : bottomSheetStore.decreseTopSnap(containerHeight - layout.height);
