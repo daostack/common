@@ -2,28 +2,34 @@ import {Text, StyleSheet, SafeAreaView, TouchableOpacity, View, Dimensions} from
 import React from 'react';
 import {text, layout, colors, font, sizeL} from '~/Theme';
 import ButtonSwiper from '~/Components/ButtonSwiper';
-import {func, bool, shape} from 'prop-types';
-import {useQuote} from '../../Util/hooks/useQuote';
+import PropTypes from 'prop-types';
+import {useQuote} from '~/Util/hooks/useQuote';
 import {Bar} from 'react-native-progress';
 
+const propTypes = {
+  onApprove: PropTypes.func,
+  onClose: PropTypes.func,
+  voteType: PropTypes.bool,
+  votingProcessState: PropTypes.shape({
+    inProgress: PropTypes.bool,
+    error: PropTypes.bool,
+  }),
+};
 
-const ApprovalSheetScreen = ({
+const ApprovalSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> = ({
   onApprove,
   onClose,
   voteType,
-  votingProcessState: {
-    inProgress,
-    error,
-  },
+  votingProcessState,
 }) => {
   const quote = useQuote();
   const title = voteType ? 'Approve' : 'Reject';
   const voteColor =
-    error || !voteType ? colors.against : colors.lightishGreen;
+    votingProcessState?.error || !voteType ? colors.against : colors.lightishGreen;
 
   return (
     <SafeAreaView style={styles.body}>
-      {inProgress && (
+      {votingProcessState?.inProgress && (
         <Bar
           indeterminate
           width={Dimensions.get('window').width + 20}
@@ -43,10 +49,10 @@ const ApprovalSheetScreen = ({
           ...styles.title,
           color: voteColor,
         }}>
-        {error ? 'Something went wrong' : title}
+        {votingProcessState?.error ? 'Something went wrong' : title}
       </Text>
 
-      {error ? (
+      {votingProcessState?.error ? (
         <React.Fragment>
           <Text style={{...styles.voteDescription, ...{...font.fontSize(2)}}}>
             Please try again later
@@ -54,12 +60,12 @@ const ApprovalSheetScreen = ({
 
           <TouchableOpacity
             style={styles.okButton}
-            onPress={onClose}
+            onPress={onClose as any}
           >
             <Text style={styles.buttonText}>OK</Text>
           </TouchableOpacity>
         </React.Fragment>
-      ) : inProgress ? (
+      ) : votingProcessState?.inProgress ? (
         <React.Fragment>
           <Text style={styles.greyText}>This might take up to 2 minutes</Text>
 
@@ -76,7 +82,10 @@ const ApprovalSheetScreen = ({
           </Text>
           <ButtonSwiper
             title="Swipe to confirm your vote"
-            onSwipeSuccess={() => onApprove(voteType)}
+            onSwipeSuccess={() => {
+              typeof onApprove === 'function'
+                && onApprove(voteType);
+            }}
           />
         </React.Fragment>
       )}
@@ -84,15 +93,7 @@ const ApprovalSheetScreen = ({
   );
 };
 
-ApprovalSheetScreen.propTypes = {
-  onApprove: func,
-  onClose: func,
-  voteType: bool,
-  votingProcessState: shape({
-    inProgress: bool,
-    error: bool,
-  }),
-};
+ApprovalSheetScreen.propTypes = propTypes;
 
 const styles = StyleSheet.create({
   title: {
@@ -150,11 +151,11 @@ const styles = StyleSheet.create({
     height: 52,
   },
   buttonText:
-  {
-    color: colors.black,
-    alignSelf: 'center',
-    fontSize: 16,
-  },
+    {
+      color: colors.black,
+      alignSelf: 'center',
+      fontSize: 16,
+    },
 });
 
 export default ApprovalSheetScreen;
