@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Dimensions, Image, LayoutChangeEvent, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
+import {Dimensions, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
-import {colors, font, text} from '~/Theme';
+import {colors, font} from '~/Theme';
 import {inject, observer} from 'mobx-react';
 import {ErrorExpand} from '~/Components';
 

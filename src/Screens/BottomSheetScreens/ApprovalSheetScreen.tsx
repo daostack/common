@@ -68,7 +68,7 @@ const ApprovalSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> = ({
             style={styles.button}
             onPress={onClose as any}
           >
-            <Text style={styles.buttonText}>OK</Text>
+            <Text>OK</Text>
           </TouchableOpacity>
 
           {typeof votingProcessState?.error !== 'boolean' && (
