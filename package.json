@@ -20,10 +20,10 @@
     "useRealCard": "sed -i '' -e '/testCard/d' env/env.stg env/env.prod && echo 'testCard=false' | tee -a env/env.stg env/env.prod",
     "codepush:ios:info": "code-push deployment ls DAOstack/common-iOS -k",
     "codepush:android:info": "code-push deployment ls DAOstack/common-android -k",
-    "codepush:ios:release": "code-push release-react DAOstack/common-iOS ios -m",
-    "codepush:android:release": "code-push release-react DAOstack/common-android android -m",
-    "codepush:ios:release:production": "code-push release-react DAOstack/common-iOS ios -m -d Production",
-    "codepush:android:release:production": "code-push release-react DAOstack/common-android android -m -d Production"
+    "codepush:ios:release": "code-push release-react DAOstack/common-iOS ios -m -t \"^`node -pe 'JSON.parse(process.argv[1]).version' \"$(cat package.json)\"`\"",
+    "codepush:android:release": "code-push release-react DAOstack/common-android android -m -t \"^`node -pe 'JSON.parse(process.argv[1]).version' \"$(cat package.json)\"`\"",
+    "codepush:ios:release:production": "code-push release-react DAOstack/common-iOS ios -m -d Production -t \"^`node -pe 'JSON.parse(process.argv[1]).version' \"$(cat package.json)\"`\"",
+    "codepush:android:release:production": "code-push release-react DAOstack/common-android android -m -d Production -t \"^`node -pe 'JSON.parse(process.argv[1]).version' \"$(cat package.json)\"`\""
   },
   "dependencies": {
     "@invertase/react-native-apple-authentication": "^1.1.2",
