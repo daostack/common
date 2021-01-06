@@ -33,7 +33,7 @@ import {func, object, shape, string} from 'prop-types';
 import DiscussionService from '../../Services/DiscussionService';
 const {width} = Dimensions.get('window');
 
-const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
+const Discussions = ({userListStore, daoStore, userStore, bottomSheetStore, navigation,
   route: {params: {commonId, discussionId, data}}}) => {
 
   const scrollRef = useRef(null);
@@ -132,7 +132,7 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userData = await UserService.getInstance().getUserById(
+      const userData = await userListStore.getUserById(
         dataState.ownerId,
       );
       setUser(userData);
@@ -536,6 +536,9 @@ const Discussions = ({daoStore, userStore, bottomSheetStore, navigation,
 };
 
 Discussions.propTypes = {
+  userListStore: shape({
+    getUserById: func,
+  }),
   daoStore: shape({
     dao: object,
   }),
@@ -740,4 +743,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'bottomSheetStore', 'daoStore')(observer(Discussions));
+export default inject('userStore', 'userListStore', 'bottomSheetStore', 'daoStore')(observer(Discussions));

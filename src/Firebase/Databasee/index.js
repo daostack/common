@@ -8,3 +8,4 @@ export const DB_COLLECTIONS = {
 };
 
 export const DAO_REGISTERED = 'registered';
+

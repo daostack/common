@@ -11,7 +11,7 @@ import {UserAvatar} from '~/Components';
 import {CommonActions} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
 import logger from '~/Services/Logger';
-import {string, object, shape} from 'prop-types';
+import {string, object, shape, func} from 'prop-types';
 
 import {
   Placeholder,
@@ -25,6 +25,7 @@ const UserProfileData = ({
   currUserInfo,
   navigation,
   userStore: {userInfo},
+  userListStore,
 }) => {
   const [user, setUser] = useState(currUserInfo);
   const [proposalsCount, setProposalsCount] = useState(0);
@@ -39,7 +40,7 @@ const UserProfileData = ({
         setIsOwnProfile(true);
       } else {
         if (!user) {
-          const usr = await UserService.getInstance().getUserById(userId);
+          const usr = userListStore.getUserById(userId);
           setUser(usr);
         }
 
@@ -299,6 +300,9 @@ UserProfileData.propTypes = {
       uid: string,
     }),
   }),
+  userListStore: shape({
+    getUserById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -366,4 +370,5 @@ const styles = StyleSheet.create({
 
 export default inject(
   'userStore',
+  'userListStore',
 )(observer(UserProfileData));

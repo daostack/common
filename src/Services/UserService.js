@@ -1,5 +1,6 @@
 import {db} from '~/Firebase';
-import {DB_COLLECTIONS} from '~/Firebase/Databasee';
+import { DB_COLLECTIONS } from '~/Firebase/Databasee';
+import { UserCollection } from '~/Firebase/Databasee/Collections/UsersCollection';
 import logger from './Logger';
 import Toast from '~/Util/Toast';
 
@@ -112,6 +113,19 @@ export default class UserService {
       .then((ref) => {
         //logger.log('Edited document with ID: ', ref.id);
       });
+  }
+
+  // New data management methods:
+  async subscribeToUsers(callback) {
+    return UserCollection.onSnapshot((snapshot) => {
+      let userList = [];
+
+      if (!snapshot?.empty || !snapshot) {
+        userList = snapshot.docs.map((doc) => doc.data());
+      }
+
+      callback(userList);
+    }, (error) => Toast.error(error));
   }
 
 }

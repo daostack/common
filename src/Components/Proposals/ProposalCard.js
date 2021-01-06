@@ -11,17 +11,18 @@ import ProposalApprovalTag from './ProposalApprovalTag';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
-import {string, bool, object} from 'prop-types';
+import {string, bool, object, shape, func} from 'prop-types';
 import {
   Placeholder,
   PlaceholderMedia,
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import {observer, inject} from 'mobx-react';
 
 const {width} = Dimensions.get('window');
 
-const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipRequest, isSwiper, isMember, commonInfo}) => {
+const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipRequest, isSwiper, isMember, commonInfo, userListStore}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
 
@@ -43,7 +44,7 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
             else {
               funding = currProposalInfo.fundingRequest.amount;
             }
-            const currProposedUser = await UserService.getInstance().getUserById(currProposalInfo.proposerId);
+            const currProposedUser = userListStore.getUserById(currProposalInfo.proposerId);
             setProposalCardInfo({
               proposedUser: currProposedUser,
               proposalInfo: {...currProposalInfo, funding},
@@ -80,9 +81,7 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
         unsubscribeProposalInfo = await ProposalService.getInstance().subscribeToProposalById(currProposalInfo.id,
           async (updatedProposalInfo) => {
             //RequestToJoin proposal
-            const proposedMemberUser = await UserService.getInstance().getUserById(
-              updatedProposalInfo.proposerId
-            );
+            const proposedMemberUser = userListStore.getUserById(updatedProposalInfo.proposerId);
             let funding = null;
             if (updatedProposalInfo.type === PROPOSAL_TYPE.Join) {
               funding = updatedProposalInfo.join.funding;
@@ -234,6 +233,9 @@ ProposalCard.propTypes = {
   isSwiper: bool,
   isMember: bool,
   commonInfo: object,
+  userListStore: shape({
+    getUserById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -285,4 +287,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProposalCard;
+export default inject(
+  'userListStore',
+)(observer(ProposalCard));

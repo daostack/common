@@ -6,12 +6,11 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import {string, shape, object} from 'prop-types';
+import {string, shape, object, func} from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
 import {colors, sizeM, font, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import UserService from '~/Services/UserService';
 import moment from 'moment';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import NotificationService from '~/Services/NotificationService';
@@ -28,6 +27,7 @@ const DiscussionCard = ({
   userStore: {userInfo},
   navigation,
   bottomSheetStore,
+  userListStore,
 }) => {
   //when will data.owner be not undefined?
   const discussionId = data.id;
@@ -58,7 +58,7 @@ const DiscussionCard = ({
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userData = await UserService.getInstance().getUserById(
+      const userData = userListStore.getUserById(
         data.ownerId,
       );
       if (userData) {
@@ -230,6 +230,9 @@ DiscussionCard.propTypes = {
   }).isRequired,
   navigation: object.isRequired,
   bottomSheetStore: object.isRequired,
+  userListStore: shape({
+    getUserById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -359,4 +362,5 @@ const styles = StyleSheet.create({
 export default inject(
   'userStore',
   'bottomSheetStore',
+  'userListStore',
 )(observer(DiscussionCard));

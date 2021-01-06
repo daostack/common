@@ -7,9 +7,8 @@ import moment from 'moment';
 import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
 import PropTypes, {string, number, func, shape, arrayOf} from 'prop-types';
-import UserService from '../../Services/UserService';
 
-const ProposalDiscussion = ({proposal, proposalId, scrollViewRef}) => {
+const ProposalDiscussion = ({userListStore, proposal, proposalId, scrollViewRef}) => {
   const chatRef = useRef(null);
   const [msgGroups, setMsgGroups] = useState([]);
 
@@ -77,7 +76,7 @@ const ProposalDiscussion = ({proposal, proposalId, scrollViewRef}) => {
   }, [proposalId]);
 
   const getOutcomeForMessage = async (proposalObj, message) => {
-    const user = await UserService.getInstance().getUserById(message.ownerId);
+    const user = userListStore.getUserById(message.ownerId);
 
     return proposalObj?.votes.find((y) => y.voterId === user.uid).outcome === 1;
   };
@@ -147,6 +146,9 @@ ProposalDiscussion.propTypes = {
   scrollViewRef: PropTypes.any,
   onFirstScrollDown: func,
   onScrollRefresh: func,
+  userListStore: shape({
+    getUserById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -177,4 +179,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(ProposalDiscussion));
+export default inject('userStore', 'userListStore')(observer(ProposalDiscussion));

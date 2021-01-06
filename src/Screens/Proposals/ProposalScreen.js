@@ -49,6 +49,7 @@ const screenHeight = Dimensions.get('window').height;
 const ProposalScreen = ({
   navigation,
   bottomSheetStore,
+  userListStore,
   userStore: {
     userInfo,
     isDaoMember,
@@ -102,7 +103,7 @@ const ProposalScreen = ({
     let unsubscribe = null;
 
     const loadProposalInfo = async (currProposalInfo, currProposalDao) => {
-      const currProposedUser = await UserService.getInstance().getUserById(
+      const currProposedUser = userListStore.getUserById(
         currProposalInfo.proposerId
       );
 
@@ -759,6 +760,9 @@ ProposalScreen.propTypes = {
     userInfo: object,
     isDaoMember: func,
   }),
+  userListStore: shape({
+    getUserById: func,
+  }),
   route: shape({
     params: shape({
       commonBalance: oneOfType([
@@ -897,5 +901,6 @@ const styles = StyleSheet.create({
 
 export default inject(
   'userStore',
+  'userListStore',
   'bottomSheetStore'
 )(observer(ProposalScreen));
