@@ -19,6 +19,7 @@ const showHud = (v) => {
 const showLoading = (v) => {
   DeviceEventEmitter.emit('HUD', v, true);
 };
+
 export default class Toast {
   static text(text) {
     showHud(

@@ -20,6 +20,7 @@ import {
 } from '~/Services/ProposalService';
 import {string, bool, object, number, shape, func} from 'prop-types';
 import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
+import {observer, inject} from 'mobx-react';
 const {width, height} = Dimensions.get('window');
 
 const ProposalsList = ({
@@ -36,6 +37,7 @@ const ProposalsList = ({
   onCountChange,
   onlyRequestsToJoin,
   includeHistoryInCount,
+  userStore: {userInfo},
 }) => {
   const commonId = commonInfo?.id;
 
@@ -107,7 +109,7 @@ const ProposalsList = ({
         unsubscribe();
       }
     };
-  }, [commonId, isHistory, userId]);
+  }, [commonId, isHistory, userId, userInfo]);
 
   const renderProposalCard = (item, index) =>
     isSwiper ? (
@@ -236,6 +238,11 @@ ProposalsList.propTypes = {
   navigation: object,
   onCountChange: func,
   onlyRequestsToJoin: bool,
+  userStore: shape({
+    userInfo: shape({
+      uid: string,
+    }),
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -294,4 +301,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(ProposalsList);
+export default inject('userStore')(observer(ProposalsList));
