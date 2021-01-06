@@ -145,6 +145,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
             <TextInputField
               editable
               label="City"
+              textContentType="addressCity"
               value={testCard ? 'Metropolis' : billingDetailsFormStore.getFormField(BillingDetailsConstants.City)?.value}
               autoCapitalize="words"
               validation={{
@@ -171,6 +172,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
             <TextInputField
               editable
               label="Address"
+              textContentType="streetAddressLine1"
               value={testCard ? '221B Baker Street' : billingDetailsFormStore.getFormField(BillingDetailsConstants.Address)?.value}
               autoCapitalize="words"
               validation={{
@@ -222,6 +224,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
             <TextInputField
               editable
               label="Postal Code"
+              textContentType="postalCode"
               value={testCard ? '31415PI' : billingDetailsFormStore.getFormField(BillingDetailsConstants.PostalCode)?.value}
               validation={{
                 name: BillingDetailsConstants.PostalCode,

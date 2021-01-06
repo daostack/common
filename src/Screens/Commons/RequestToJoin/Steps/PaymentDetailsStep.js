@@ -198,6 +198,7 @@ const PaymentDetailsStep = ({
             <RequestStepHeaderTitle title="Payment Details" subtitle={subtitle} />
             <TextInputField
               label="Credit card number"
+              textContentType="creditCardNumber"
               value={testCard ? '4007410000000006' : paymentFormStore.getFormField(RequestToJoinForm.FIELD_CARD_NUMBER)?.value}
               editable={true}
               keyboardType={'number-pad'}

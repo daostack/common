@@ -146,6 +146,7 @@ class TextInputFieldWithIcon extends React.Component {
       // Validation management properties
       validation,
       subLabel,
+      textContentType,
       ...otherProps
     } = this.props;
 
@@ -225,6 +226,7 @@ class TextInputFieldWithIcon extends React.Component {
             {...defaultMultilineProps}
             {...otherProps}
             multiline={multiline}
+            textContentType={textContentType}
             style={fieldStyle}
             placeholder={placeholderText}
             onChangeText={this.onChangeText}
@@ -299,6 +301,7 @@ TextInputFieldWithIcon.defaultProps = {
 };
 
 TextInputFieldWithIcon.propTypes = {
+  textContentType: string,
   validation: shape({
     name: string,
     formStore: object,

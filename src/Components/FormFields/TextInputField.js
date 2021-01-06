@@ -83,6 +83,7 @@ class TextInputField extends React.Component {
       keyboardType,
       validation,
       maxLength,
+      textContentType,
       ...otherProps
     } = this.props;
 
@@ -115,6 +116,7 @@ class TextInputField extends React.Component {
             ref={this.props.forwardRef}
             {...defaultMultilineProps}
             {...otherProps}
+            textContentType={textContentType}
             maxLength={maxLength}
             multiline={multiline}
             style={styles.textfield}
@@ -155,6 +157,7 @@ Label.propTypes = {
 };
 
 TextInputField.propTypes = {
+  textContentType: string,
   validation: object.isRequired,
   value: oneOfType([string, number]),
   onChangeText: func,

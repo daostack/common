@@ -57,6 +57,7 @@ export const CountrySelectField = ({onChange, ...props}) => {
 
       <View style={{display: 'none'}}>
         <TextInputFieldWithIcon
+          textContentType="countryName"
           editable={false}
           key={countryIndex}
           value={countryList[countryIndex].value}
