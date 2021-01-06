@@ -1,5 +1,13 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, Text, View, Image, Dimensions, Platform, TextInput} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Dimensions,
+  Platform,
+  TextInput,
+} from 'react-native';
 import {colors, font, text as textjs} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
@@ -10,11 +18,7 @@ import UserService from '~/Services/UserService';
 const {width} = Dimensions.get('window');
 
 const DiscussionMessage = ({
-  data: {
-    ownerId,
-    text,
-    createTime,
-  },
+  data: {ownerId, text, createTime},
   outcome,
   showCurrentUserAvatar,
 }) => {
@@ -32,7 +36,10 @@ const DiscussionMessage = ({
       setOwnerInfo(userInfo);
     };
     const subscribeToOwner = async (currOwnerId) => {
-      unsubscribeOwnerId = await UserService.getInstance().subscribeToUserById(currOwnerId, loadOwnerInfo);
+      unsubscribeOwnerId = await UserService.getInstance().subscribeToUserById(
+        currOwnerId,
+        loadOwnerInfo,
+      );
     };
     subscribeToOwner(ownerId);
     return () => {
@@ -77,13 +84,15 @@ const DiscussionMessage = ({
                   {...textjs.textAlign(text)}
                 />
               ) : (
-                <Text style={{...styles.text, ...textjs.writingDirection(text)}} selectable>{text}</Text>
+                <Text
+                  style={{...styles.text, ...textjs.writingDirection(text)}}
+                  selectable>
+                  {text}
+                </Text>
               )}
             </Hyperlink>
             <View style={{position: 'relative', right: 0, bottom: 0}}>
-              <Text
-                style={styles.date}
-                numberOfLines={1}>
+              <Text style={styles.date} numberOfLines={1}>
                 {moment(createTime.toDate()).format('HH:mm')}
               </Text>
             </View>
@@ -102,7 +111,6 @@ const DiscussionMessage = ({
                 }}
                 source={onwerInfo && {uri: onwerInfo.photoURL}}
               />
-
             </View>
             <View
               style={{
@@ -110,7 +118,6 @@ const DiscussionMessage = ({
                 marginLeft: 10,
                 maxWidth: width - 90,
                 backgroundColor: colors.paleLilacTwo,
-
               }}>
               <Text style={styles.ownerName}>{onwerInfo?.displayName}</Text>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
@@ -123,14 +130,17 @@ const DiscussionMessage = ({
                     {...textjs.textAlign(text)}
                   />
                 ) : (
-                  <Text style={{...styles.text, ...textjs.writingDirection(text)}} selectable>{text}</Text>
+                  <Text
+                    style={{...styles.text, ...textjs.writingDirection(text)}}
+                    selectable>
+                    {text}
+                  </Text>
                 )}
               </Hyperlink>
 
               <Text style={styles.date}>
                 {moment(createTime.toDate()).format('HH:mm')}
               </Text>
-
             </View>
           </View>
         </>

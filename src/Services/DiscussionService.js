@@ -3,9 +3,9 @@ import {db} from '~/Firebase';
 import logger from './Logger';
 
 export default class DiscussionService {
-	static serviceInstance = null;
+  static serviceInstance = null;
 
-	constructor() {}
+  constructor() {}
 
   static getInstance = () => {
     if (DiscussionService.serviceInstance == null) {
@@ -15,14 +15,16 @@ export default class DiscussionService {
   };
 
   async getDiscussionInfo(discussionId) {
-    return db.collection(DB_COLLECTIONS.discussions)
+    return db
+      .collection(DB_COLLECTIONS.discussions)
       .doc(discussionId)
       .get()
-      .then((snapshot) => !snapshot ? null : snapshot.data());
+      .then((snapshot) => (!snapshot ? null : snapshot.data()));
   }
 
   async updateDiscussionLastMessage(discussionId) {
-    return db.collection('discussion')
+    return db
+      .collection('discussion')
       .doc(discussionId)
       .update({
         lastMessage: new Date(),

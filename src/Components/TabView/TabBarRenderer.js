@@ -6,8 +6,13 @@ import {layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {func, object, shape, number, array} from 'prop-types';
 
-
-const TabBarRenderer = ({originRef, parentRef, navigationState, indexChange, ...props}) => (
+const TabBarRenderer = ({
+  originRef,
+  parentRef,
+  navigationState,
+  indexChange,
+  ...props
+}) => (
   <TabBar
     ref={originRef}
     {...props}
@@ -18,7 +23,9 @@ const TabBarRenderer = ({originRef, parentRef, navigationState, indexChange, ...
     renderIndicator={(indicator) => (
       <TabBarIndicator
         position={parentRef?.current?.props.position || indicator.position}
-        navigationState={parentRef?.current?.props.navigationState || indicator.navigationState}
+        navigationState={
+          parentRef?.current?.props.navigationState || indicator.navigationState
+        }
         getTabWidth={indicator.getTabWidth}
         width={indicator.width}
         style={indicator.style}
@@ -26,31 +33,35 @@ const TabBarRenderer = ({originRef, parentRef, navigationState, indexChange, ...
       />
     )}
     renderLabel={({route, focused}) => {
-      const isFocused = parentRef ? (navigationState.index === route.index) : focused;
-      return <View style={{...layout.content, padding: 0}}>
-        <Icon
-          name={route.iconSelected && isFocused ? route.iconSelected : route.icon}
-          size={30}
-          color={isFocused ? colors.mainBlue : colors.grey3}
-        />
-      </View>;
+      const isFocused = parentRef
+        ? navigationState.index === route.index
+        : focused;
+      return (
+        <View style={{...layout.content, padding: 0}}>
+          <Icon
+            name={
+              route.iconSelected && isFocused ? route.iconSelected : route.icon
+            }
+            size={30}
+            color={isFocused ? colors.mainBlue : colors.grey3}
+          />
+        </View>
+      );
     }}
-    style={
-      {
-        backgroundColor: colors.white,
-        borderBottomLeftRadius: 28,
-        borderBottomRightRadius: 28,
-        elevation: 2,
-        shadowColor: 'black',
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-        shadowOffset: {
-          height: 3,
-          width: 0,
-        },
-        zIndex: 1,
-      }
-    }
+    style={{
+      backgroundColor: colors.white,
+      borderBottomLeftRadius: 28,
+      borderBottomRightRadius: 28,
+      elevation: 2,
+      shadowColor: 'black',
+      shadowOpacity: 0.1,
+      shadowRadius: 3,
+      shadowOffset: {
+        height: 3,
+        width: 0,
+      },
+      zIndex: 1,
+    }}
     tabStyle={{height: 76}}
   />
 );

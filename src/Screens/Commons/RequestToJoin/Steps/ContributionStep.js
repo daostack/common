@@ -20,13 +20,19 @@ import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {string, func, bool, object, shape, number} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const ContributionStep = ({navigation, route: {params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
+const ContributionStep = ({
+  navigation,
+  route: {
+    params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed},
+  },
+}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
   const metadata = currCommon.metadata;
   const isMonthly = metadata.contributionType === 'monthly';
-  const personalContributionFormStore = formStores.personalContributionFormStore;
+  const personalContributionFormStore =
+    formStores.personalContributionFormStore;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -46,10 +52,10 @@ const ContributionStep = ({navigation, route: {params: {formStores, skipFirstSte
   };
 
   const onAmountSelected = (amount, index) => {
-    personalContributionFormStore.fieldChanged(
-      RequestToJoinForm.FIELD_AMOUNT,
-      {value: amount, index},
-    );
+    personalContributionFormStore.fieldChanged(RequestToJoinForm.FIELD_AMOUNT, {
+      value: amount,
+      index,
+    });
     navigateToRequestStep4();
   };
 
@@ -75,7 +81,9 @@ const ContributionStep = ({navigation, route: {params: {formStores, skipFirstSte
 
   const contributeMessage = 'Select the amount you would like to contribute';
   const calcMinFeeToJoin = metadata.minFeeToJoin / 100;
-  const minContributionMessage = isMonthly ? `${contributeMessage} each month ($${calcMinFeeToJoin}/mo min.)` : `${contributeMessage} ($${calcMinFeeToJoin} min.)`;
+  const minContributionMessage = isMonthly
+    ? `${contributeMessage} each month ($${calcMinFeeToJoin}/mo min.)`
+    : `${contributeMessage} ($${calcMinFeeToJoin} min.)`;
 
   return (
     <>
@@ -85,10 +93,7 @@ const ContributionStep = ({navigation, route: {params: {formStores, skipFirstSte
           flex: 1,
           backgroundColor: 'white',
         }}>
-        <CreateStepNavigation
-          navigation={navigation}
-          title={currCommon.name}
-        />
+        <CreateStepNavigation navigation={navigation} title={currCommon.name} />
         <CreateStepDotHeader
           title="Personal contribution"
           currentIndex={3}
@@ -105,10 +110,10 @@ const ContributionStep = ({navigation, route: {params: {formStores, skipFirstSte
             padding: 24,
           }}
           scrollEventThrottle={16}
-          onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
-          ],
-          {useNativeDriver: false})}>
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {y: scrollY}}}],
+            {useNativeDriver: false},
+          )}>
           <MembershipRequest />
 
           <CreateStepHeader
@@ -121,11 +126,17 @@ const ContributionStep = ({navigation, route: {params: {formStores, skipFirstSte
               // padding: 24,
               backgroundColor: 'white',
             }}>
-            {
-              isMonthly
-                ? <RequestStepHeaderTitle title="Monthly contribution" subtitle={minContributionMessage} />
-                : <RequestStepHeaderTitle title="Personal contribution" subtitle={minContributionMessage} />
-            }
+            {isMonthly ? (
+              <RequestStepHeaderTitle
+                title="Monthly contribution"
+                subtitle={minContributionMessage}
+              />
+            ) : (
+              <RequestStepHeaderTitle
+                title="Personal contribution"
+                subtitle={minContributionMessage}
+              />
+            )}
 
             <View
               style={{
@@ -144,12 +155,14 @@ const ContributionStep = ({navigation, route: {params: {formStores, skipFirstSte
               onAmountSelected={onAmountSelected}
               minFeeToJoin={metadata.minFeeToJoin / 100}
             />
-            <Text style={{
-              ...text.regularText,
-              textAlign: 'center',
-              color: colors.slate,
-            }}>
-              You can cancel the recurring payment at any time</Text>
+            <Text
+              style={{
+                ...text.regularText,
+                textAlign: 'center',
+                color: colors.slate,
+              }}>
+              You can cancel the recurring payment at any time
+            </Text>
           </View>
         </ScrollView>
         <RequestStepActionButton

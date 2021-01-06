@@ -2,7 +2,6 @@ import {graphqlUrl} from '~/Config';
 import axios from 'axios';
 import logger from './Logger';
 
-
 export default class GraphqlSyncService {
   static serviceInstance = null;
 
@@ -30,5 +29,4 @@ export default class GraphqlSyncService {
     await this.axiosClient.get('update-proposal-by-id', options);
     logger.log('Proposal updated successfully');
   }
-
 }

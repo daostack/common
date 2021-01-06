@@ -21,13 +21,13 @@ const BoostedInfo = ({}) => (
       <View style={styles.textWithIconContainer}>
         <Icon name="agenda" size={26} color={colors.grey6} />
         <Text style={styles.blackTextWithImage}>
-            Probable alignment with Common agenda.
+          Probable alignment with Common agenda.
         </Text>
       </View>
       <View style={styles.textWithIconContainer}>
         <Icon name="group" size={26} color={colors.grey6} />
         <Text style={styles.blackTextWithImage}>
-            Any majority can make a decision
+          Any majority can make a decision
         </Text>
       </View>
       <View style={styles.textWithIconContainer}>
@@ -37,8 +37,8 @@ const BoostedInfo = ({}) => (
 
       <Text style={styles.title2}>How is this determined?</Text>
       <Text style={text.blackText}>
-          An algorithm recognizes proposals which align with the Common’s agenda
-          and boosts them.{' '}
+        An algorithm recognizes proposals which align with the Common’s agenda
+        and boosts them.{' '}
       </Text>
     </View>
   </ScrollView>

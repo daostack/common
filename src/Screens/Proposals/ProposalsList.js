@@ -1,18 +1,30 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {FlatList, StyleSheet, View, Text, Image, Dimensions, TouchableOpacity} from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 import ViewTabNoData from '~/Components/ViewTabNoData';
 import ProposalService from '~/Services/ProposalService';
 import ProposalCard from '~/Components/Proposals/ProposalCard';
 import {layout, colors, font, text, sizeM} from '~/Theme';
 import SwiperCard from '~/Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
-import {PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGES_HISTORY} from '~/Services/ProposalService';
+import {
+  PROPOSAL_STAGES_ACTIVE,
+  PROPOSAL_STAGES_HISTORY,
+} from '~/Services/ProposalService';
 import {string, bool, object, number, shape, func} from 'prop-types';
 import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 import {observer, inject} from 'mobx-react';
 const {width, height} = Dimensions.get('window');
 
-const ProposalsList = ({isMember,
+const ProposalsList = ({
+  isMember,
   commonInfo,
   showAll,
   showMax,
@@ -25,8 +37,8 @@ const ProposalsList = ({isMember,
   onCountChange,
   onlyRequestsToJoin,
   includeHistoryInCount,
-  userStore: {userInfo}}) => {
-
+  userStore: {userInfo},
+}) => {
   const commonId = commonInfo?.id;
 
   const [list, setList] = useState(null);
@@ -34,8 +46,18 @@ const ProposalsList = ({isMember,
   let listRef = useRef([]);
   let unsubscribe = null;
   useEffect(() => {
-    const loadProposalInfo = async (loadCommonId, loadUserId, loadIsHistory, loadShowAll, loadOnlyFundingRequests, loadMembershipRequests) => {
-      let proposalStages = [...PROPOSAL_STAGES_HISTORY, ...PROPOSAL_STAGES_ACTIVE];
+    const loadProposalInfo = async (
+      loadCommonId,
+      loadUserId,
+      loadIsHistory,
+      loadShowAll,
+      loadOnlyFundingRequests,
+      loadMembershipRequests,
+    ) => {
+      let proposalStages = [
+        ...PROPOSAL_STAGES_HISTORY,
+        ...PROPOSAL_STAGES_ACTIVE,
+      ];
 
       unsubscribe = await ProposalService.getInstance().subscribeToProposalList(
         loadCommonId,
@@ -43,17 +65,19 @@ const ProposalsList = ({isMember,
         proposalStages,
         loadShowAll,
         (newList) => {
-          const history = newList.filter((proposal) =>
-            PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state) &&
-            !ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState));
+          const history = newList.filter(
+            (proposal) =>
+              PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state) &&
+              !ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState),
+          );
 
-          const active = newList.filter((proposal) =>
-            PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.state) ||
-            ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState));
+          const active = newList.filter(
+            (proposal) =>
+              PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.state) ||
+              ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState),
+          );
 
-          const filteredList = loadIsHistory
-            ? history
-            : active;
+          const filteredList = loadIsHistory ? history : active;
 
           setList(filteredList);
           if (onCountChange) {
@@ -67,11 +91,18 @@ const ProposalsList = ({isMember,
         listRef,
         onlyRequestsToJoin,
         loadOnlyFundingRequests,
-        loadMembershipRequests
+        loadMembershipRequests,
       );
     };
 
-    loadProposalInfo(commonId, userId, isHistory, showAll, onlyFundingRequests, membershipRequests);
+    loadProposalInfo(
+      commonId,
+      userId,
+      isHistory,
+      showAll,
+      onlyFundingRequests,
+      membershipRequests,
+    );
 
     return () => {
       if (unsubscribe) {
@@ -80,9 +111,9 @@ const ProposalsList = ({isMember,
     };
   }, [commonId, isHistory, userId, userInfo]);
 
-  const renderProposalCard = (item, index) => (
+  const renderProposalCard = (item, index) =>
     isSwiper ? (
-      !showMax || (index < showMax) ? (
+      !showMax || index < showMax ? (
         <ProposalCard
           proposalId={item.id}
           key={item.id}
@@ -95,26 +126,32 @@ const ProposalsList = ({isMember,
         />
       ) : (
         <TouchableOpacity
-          onPress={() => navigation.navigate('MyProposals', {onlyFundingRequests: onlyFundingRequests, onlyMembershipRequests: membershipRequests})}
-          style={{...styles.commonBox}}
-        >
+          onPress={() =>
+            navigation.navigate('MyProposals', {
+              onlyFundingRequests: onlyFundingRequests,
+              onlyMembershipRequests: membershipRequests,
+            })
+          }
+          style={{...styles.commonBox}}>
           <Text style={text.buttonblue}>
-            {`View all ${list.length} ${membershipRequests ? 'Requests' : 'Proposals'}`}
+            {`View all ${list.length} ${
+              membershipRequests ? 'Requests' : 'Proposals'
+            }`}
           </Text>
         </TouchableOpacity>
       )
-
-    ) : <ProposalCard
-      proposalId={item.id}
-      key={item.id}
-      data={item}
-      isSwiper={false}
-      membershipRequest={onlyRequestsToJoin || membershipRequests}
-      isMember={isMember}
-      commonInfo={commonInfo}
-      navigation={navigation}
-    />);
-
+    ) : (
+      <ProposalCard
+        proposalId={item.id}
+        key={item.id}
+        data={item}
+        isSwiper={false}
+        membershipRequest={onlyRequestsToJoin || membershipRequests}
+        isMember={isMember}
+        commonInfo={commonInfo}
+        navigation={navigation}
+      />
+    );
 
   return isSwiper ? (
     list ? (
@@ -134,15 +171,11 @@ const ProposalsList = ({isMember,
             source={require('../../../src/Assets/pencil.png')}
           />
           <Text style={{...text.h2Black, ...layout.marginTopS}}>
-            {membershipRequests
-              ? 'No Active Requests'
-              : 'No Active Proposals'
-            }
+            {membershipRequests ? 'No Active Requests' : 'No Active Proposals'}
           </Text>
-          <Text
-            style={styles.textNoProposals}>
-              Join a common and propose actions you think it should take to
-              achieve its goal
+          <Text style={styles.textNoProposals}>
+            Join a common and propose actions you think it should take to
+            achieve its goal
           </Text>
         </View>
       )
@@ -174,8 +207,8 @@ const ProposalsList = ({isMember,
             isHistory
               ? 'No Past activity'
               : membershipRequests
-                ? 'No requests yet'
-                : 'No proposals'
+              ? 'No requests yet'
+              : 'No proposals'
           }
           subtitle={
             isHistory
@@ -268,6 +301,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'userStore',
-)(observer(ProposalsList));
+export default inject('userStore')(observer(ProposalsList));
