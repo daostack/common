@@ -411,6 +411,10 @@ const CommonProfile = ({
   const openCommonOptions = (event) => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      {
+        hasPermission:
+          userStore?.userInfo?.uid === currCommon?.metadata.founderId,
+      },
     );
   };
 
@@ -625,19 +629,18 @@ const CommonProfile = ({
               />
             </BlurView>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-              style={{justifyContent: 'center'}}
-              onPress={shareCommon}>
-              <BlurView
-                style={{padding: 5, borderRadius: 15}}
-                isBlurring={dark}>
-                <Icon
-                  name="menu-horizontal"
-                  size={32}
-                  color={dark ? 'black' : 'white'}
-                />
-              </BlurView>
-            </TouchableOpacity> */}
+          <TouchableOpacity
+            style={{justifyContent: 'center'}}
+            onPress={openCommonOptions}>
+            <BlurView
+              style={{
+                padding: 5,
+                borderRadius: 15,
+              }}
+              isBlurring={dark}>
+              <Icon name="menu1" size={32} color={dark ? 'black' : 'white'} />
+            </BlurView>
+          </TouchableOpacity>
         </View>
       }
     />

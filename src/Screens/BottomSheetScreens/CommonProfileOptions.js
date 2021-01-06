@@ -8,9 +8,14 @@ import {
 import React from 'react';
 import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {func, bool} from 'prop-types';
+import {bool} from 'prop-types';
 
-const CommonProfileOptions = ({onFollow, isCommonProfile}) => (
+const CommonProfileOptions = ({
+  hasPermission,
+  /*onFollow,
+  isCommonProfile
+  */
+}) => (
   <ScrollView
     contentInsetAdjustmentBehavior="automatic"
     style={styles.scrollView}
@@ -22,15 +27,37 @@ const CommonProfileOptions = ({onFollow, isCommonProfile}) => (
         Options
       </Text>
 
-      <TouchableOpacity style={styles.optionBtn} onPress={onFollow}>
+      {hasPermission && (
+        <>
+          <TouchableOpacity style={styles.optionBtn} onPress={() => {}}>
+            <Icon
+              name="dao-general-info-24"
+              style={layout.marginRightS}
+              color={colors.black}
+            />
+            <Text style={text.buttonblack}>Edit info and cover photo</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.optionBtn} onPress={() => {}}>
+            <Icon
+              name="agenda-24"
+              style={layout.marginRightS}
+              color={colors.black}
+            />
+            <Text style={text.buttonblack}>Edit rules</Text>
+          </TouchableOpacity>
+        </>
+      )}
+
+      {/*@askTai do we need to keep these options for common profile?*/}
+      {/*<TouchableOpacity style={styles.optionBtn} onPress={onFollow}>
         <Icon
           name="following"
           style={layout.marginRightS}
           color={colors.black}
         />
         <Text style={text.buttonblack}>Unfollow</Text>
-      </TouchableOpacity>
-      {isCommonProfile && (
+      </TouchableOpacity>*/}
+      {/*isCommonProfile && (
         <>
           <TouchableOpacity style={styles.optionBtn}>
             <Icon
@@ -59,19 +86,20 @@ const CommonProfileOptions = ({onFollow, isCommonProfile}) => (
             <Text style={text.buttonblack}>Share</Text>
           </TouchableOpacity>
         </>
-      )}
+      )*/}
 
-      <TouchableOpacity style={styles.optionBtn}>
+      {/*<TouchableOpacity style={styles.optionBtn}>
         <Icon name="report" style={layout.marginRightS} color={colors.error} />
         <Text style={text.buttonred}>Report</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>*/}
     </View>
   </ScrollView>
 );
 
 CommonProfileOptions.propTypes = {
-  onFollow: func,
-  isCommonProfile: bool,
+  //onFollow: func,
+  //isCommonProfile: bool,
+  hasPermission: bool,
 };
 
 const styles = StyleSheet.create({
@@ -103,7 +131,7 @@ const styles = StyleSheet.create({
     ...layout.flexStart,
     borderBottomWidth: 1,
     borderColor: colors.grey4,
-    width: 330,
+    width: 390,
   },
 });
 
