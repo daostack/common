@@ -13,9 +13,7 @@ const CreateStepNavigation = ({title, bottomSheetStore, navigation}) => (
       title: title,
     }}
     leftButton={
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.pop()}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.pop()}>
         <Icon name="left-arrow" size={28} style={styles.icon} color="black" />
       </TouchableOpacity>
     }
@@ -23,21 +21,19 @@ const CreateStepNavigation = ({title, bottomSheetStore, navigation}) => (
       <TouchableOpacity
         style={{justifyContent: 'center'}}
         onPress={() => {
-          bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
-            navigation: navigation,
-            onContinueEditing: () => bottomSheetStore.hideBottomSheet(),
-            onLeaveWithoutSaving: () => {
-              bottomSheetStore.hideBottomSheet();
-              navigation.popToTop();
+          bottomSheetStore.showBottomSheet(
+            BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES,
+            {
+              navigation: navigation,
+              onContinueEditing: () => bottomSheetStore.hideBottomSheet(),
+              onLeaveWithoutSaving: () => {
+                bottomSheetStore.hideBottomSheet();
+                navigation.popToTop();
+              },
             },
-          });
+          );
         }}>
-        <Icon
-          name="close"
-          size={18}
-          style={{marginRight: 20}}
-          color="black"
-        />
+        <Icon name="close" size={18} style={{marginRight: 20}} color="black" />
       </TouchableOpacity>
     }
   />
@@ -59,6 +55,4 @@ const styles = StyleSheet.create({
   icon: {marginLeft: 20},
 });
 
-export default inject(
-  'bottomSheetStore',
-)(observer(CreateStepNavigation));
+export default inject('bottomSheetStore')(observer(CreateStepNavigation));

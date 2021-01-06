@@ -85,7 +85,7 @@ export default class ProposalService {
       });
   }
 
-  async getUserPendingProposals(uid) {
+  async subscribeToUserPendingProposals(uid, callback) {
     let query = db
       .collection(DB_COLLECTIONS.proposals)
       .where('proposerId', '==', uid)
@@ -96,18 +96,19 @@ export default class ProposalService {
       ]);
 
 
-    return query.get().then((snapshots) => {
-      if (!snapshots) {
-        return [];
-      } else {
-        return snapshots.docs.filter((s) => {
-          const doc = s.data();
+    return query.onSnapshot(
+      (snapshots) => {
+        if (!snapshots) {
+          callback([]);
+        } else {
+          callback(snapshots.docs.filter((s) => {
+            const doc = s.data();
 
-          return PROPOSAL_STAGES_ACTIVE.some((x) => x === doc.state) ||
-            (ACTIVE_PAYMENT_STATES.includes(doc.paymentState));
-        });
-      }
-    });
+            return PROPOSAL_STAGES_ACTIVE.some((x) => x === doc.state) ||
+                  (ACTIVE_PAYMENT_STATES.includes(doc.paymentState));
+          }));
+        }
+      });
   }
 
   async getProposalInfo(proposalId) {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, ScrollView, Text, StyleSheet, Keyboard} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import {inject} from 'mobx-react';
@@ -20,7 +20,7 @@ const CreateDiscussionForm = ({
   ...otherProps
 }) => {
 
-  const createDiscussionStore = new CreateDiscussionStore();
+  const [createDiscussionStore] = useState(new CreateDiscussionStore());
   const TITLE = 'title';
   const MESSAGE = 'message';
   const IMAGES = 'images';
