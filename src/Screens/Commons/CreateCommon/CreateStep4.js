@@ -128,6 +128,35 @@ const CreateStep4 = ({route: {params: {formStores}},
       };
       logger.log('calling createCommon(...)');
 
+      console.log(data);
+
+      // {
+      // "byline": "уиуиуеиуеи",
+      // "contribution": "one-time",
+      // "contributionAmount": 500,
+      // "contributionType": "one-time",
+      // "deadline": 1610522929,
+      // "description": "еуиуеиуеиуи",
+      // "founderId": "H5ZkcKBX5eXXNyBiPaph8EHCiax2",
+      // "fundingGoal": NaN,
+      // "fundingGoalDeadline": 1610522929,
+      // "image": "https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_03.png?alt=media",
+      // "minFeeToJoin": 500,
+      // "minimum": "5", "name": "иуиууеиу", "rules": [{"title": "Rewrw", "value": "rewwerwer"}, {"title": "Rwrwerw", "value": "rwerewr"}]}
+
+
+      const formattedData = {
+        name: data.name,
+        image: data.image,
+        rules: data.rules,
+        links: data.links,
+        byline: 'data.byline',
+        description: data.description,
+        contributionType: data.contributionType,
+        contributionAmount: data.contributionAmount,
+        fundingGoalDeadline: data.fundingGoalDeadline,
+      };
+
       navigation.navigate({
         name: 'FullScreenCreationLoader',
         params: {
@@ -136,7 +165,7 @@ const CreateStep4 = ({route: {params: {formStores}},
         },
       });
 
-      const createCommonResponse = await DaoService.getInstance().createCommon(data);
+      const createCommonResponse = await DaoService.getInstance().createCommon(formattedData);
 
       if (createCommonResponse.status === 200) {
         setNewCommonAddress(createCommonResponse.data.id);
@@ -150,6 +179,8 @@ const CreateStep4 = ({route: {params: {formStores}},
       //navigation.pop();
       console.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
+
+      navigation.pop();
     }
   };
 
