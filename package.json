@@ -18,7 +18,7 @@
     "useCloud": "sed -i '' -e '/local/d' env/env.stg && echo 'local=false' >> env/env.stg",
     "useTestCard": "sed -i '' -e '/testCard/d' env/env.stg env/env.prod && echo 'testCard=true' | tee -a env/env.stg env/env.prod",
     "useRealCard": "sed -i '' -e '/testCard/d' env/env.stg env/env.prod && echo 'testCard=false' | tee -a env/env.stg env/env.prod",
-    "codepush:ios:info": "code-push deployment ls DAOstack/common-iOS -k -t \"^`node -pe 'JSON.parse(process.argv[1]).version' \"$(cat package.json)\"`\"",
+    "codepush:ios:info": "code-push deployment ls DAOstack/common-iOS -k",
     "codepush:android:info": "code-push deployment ls DAOstack/common-android -k",
     "codepush:ios:release": "code-push release-react DAOstack/common-iOS ios -m",
     "codepush:android:release": "code-push release-react DAOstack/common-android android -m",
