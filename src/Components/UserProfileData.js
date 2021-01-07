@@ -23,7 +23,7 @@ const UserProfileData = ({
   userId,
   currUserInfo,
   navigation,
-  userStore: {userInfo},
+  authStore: {userInfo},
   userListStore,
 }) => {
   // const [user, setUser] = useState(currUserInfo);
@@ -280,7 +280,7 @@ UserProfileData.propTypes = {
   userId: string,
   currUserInfo: object,
   navigation: object,
-  userStore: shape({
+  authStore: shape({
     userInfo: shape({
       uid: string,
     }),
@@ -351,4 +351,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'userListStore')(observer(UserProfileData));
+export default inject('authStore', 'userListStore')(observer(UserProfileData));

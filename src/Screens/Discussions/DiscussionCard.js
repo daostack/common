@@ -166,7 +166,7 @@ DiscussionCard.propTypes = {
     message: string.isRequired,
   }),
   commonId: string,
-  userStore: shape({
+  authStore: shape({
     userInfo: object,
   }).isRequired,
   navigation: object.isRequired,

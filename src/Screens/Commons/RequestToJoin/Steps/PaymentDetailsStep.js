@@ -36,7 +36,7 @@ const PaymentDetailsStep = ({
   route: {
     params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed},
   },
-  userStore: {userInfo},
+  authStore: {userInfo},
   bottomSheetStore,
 }) => {
   const isMonthly = currCommon.metadata.contributionType === 'monthly';
@@ -342,7 +342,7 @@ PaymentDetailsStep.propTypes = {
       name: string,
     }),
   }),
-  userStore: shape({
+  authStore: shape({
     userInfo: shape({
       ethereumAddress: string,
     }),
@@ -366,4 +366,4 @@ PaymentDetailsStep.propTypes = {
   bottomSheetStore: object,
 };
 
-export default inject('bottomSheetStore', 'userStore')(PaymentDetailsStep);
+export default inject('bottomSheetStore', 'authStore')(PaymentDetailsStep);

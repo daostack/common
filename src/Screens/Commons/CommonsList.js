@@ -27,7 +27,7 @@ import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import ProposalService from '~/Services/ProposalService';
 import {CommonActions} from '@react-navigation/native';
 
-const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
+const CommonsList = ({navigation, bottomSheetStore, authStore, daoStore}) => {
   const [myDaosGroup, setMyDaosGroup] = useState({title: '', data: []});
   const [pendingDaosGroup, setPendingDaosGroup] = useState({
     title: '',
@@ -72,7 +72,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
 
       let pendingDao = [];
       let myDao = [];
-      if (userStore.signedInUser) {
+      if (authStore.signedInUser) {
         // we keep in the cache already filtered daos
         if (isFromCache) {
           setAllDaosGroup({
@@ -82,10 +82,10 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
           daoStore.setDaos(daoList);
         }
 
-        myDao = daoList.filter((dao) => userStore.isDaoMember(dao?.members));
+        myDao = daoList.filter((dao) => authStore.isDaoMember(dao?.members));
 
         ProposalService.getInstance().subscribeToUserPendingProposals(
-          userStore.userInfo.uid,
+          authStore.userInfo.uid,
           (userPendingProposals) => {
             const pendingList = userPendingProposals.map(
               (proposal) => proposal.data().commonId,
@@ -170,10 +170,10 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
 
   useEffect(() => {
     filterCommons();
-  }, [userStore.signedInUser]);
+  }, [authStore.signedInUser]);
 
   const onAddCommon = () => {
-    if (userStore.signedInUser) {
+    if (authStore.signedInUser) {
       navigation.navigate('CommonExplanation');
     } else {
       bottomSheetStore.showBottomSheet(
@@ -278,7 +278,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
           <SectionList
             sections={
               isSplited
-                ? userStore.signedInUser
+                ? authStore.signedInUser
                   ? [myDaosGroup, pendingDaosGroup, featuredDaosGroup]
                   : [featuredDaosGroup]
                 : [allDaosGroup]
@@ -317,7 +317,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
 CommonsList.propTypes = {
   navigation: object.isRequired,
   bottomSheetStore: object.isRequired,
-  userStore: object.isRequired,
+  authStore: object.isRequired,
   daoStore: object.isRequired,
 };
 
@@ -354,6 +354,6 @@ const styles = StyleSheet.create({
 
 export default inject(
   'bottomSheetStore',
-  'userStore',
+  'authStore',
   'daoStore',
 )(observer(CommonsList));

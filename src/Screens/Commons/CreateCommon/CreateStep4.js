@@ -55,7 +55,7 @@ const CreateStep4 = ({
   },
   navigation,
   bottomSheetStore,
-  userStore: {
+  authStore: {
     userInfo: {uid},
   },
 }) => {
@@ -346,7 +346,7 @@ const CreateStep4 = ({
 CreateStep4.propTypes = {
   navigation: object,
   bottomSheetStore: object,
-  userStore: object,
+  authStore: object,
   route: shape({
     params: shape({
       formStores: shape({
@@ -448,4 +448,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore', 'userStore')(observer(CreateStep4));
+export default inject('bottomSheetStore', 'authStore')(observer(CreateStep4));

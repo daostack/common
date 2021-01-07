@@ -35,7 +35,7 @@ const {width} = Dimensions.get('window');
 const Discussions = ({
   userListStore,
   daoStore,
-  userStore,
+  authStore,
   bottomSheetStore,
   navigation,
   route: {
@@ -64,7 +64,7 @@ const Discussions = ({
   useEffect(() => {
     const currentDao = daoStore.daos.find((dao) => dao.id === commonId);
     const isCurrMember =
-      userStore.userInfo && userStore.isDaoMember(currentDao?.members);
+      authStore.userInfo && authStore.isDaoMember(currentDao?.members);
     setIsMember(isCurrMember);
   }, []);
 
@@ -546,7 +546,7 @@ Discussions.propTypes = {
   daoStore: shape({
     dao: object,
   }),
-  userStore: shape({
+  authStore: shape({
     userInfo: object,
     isDaoMember: func,
   }),
@@ -749,7 +749,7 @@ const styles = StyleSheet.create({
 
 export default inject(
   'userListStore',
-  'userStore',
+  'authStore',
   'bottomSheetStore',
   'daoStore',
 )(observer(Discussions));

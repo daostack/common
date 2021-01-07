@@ -21,7 +21,7 @@ import logger from '~/Services/Logger';
 import {bool, object, shape, func} from 'prop-types';
 import EditProfileFormStore from '~/FormStores/EditProfileFormStore';
 
-const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
+const EditProfile = ({authStore, bottomSheetStore, route, navigation}) => {
   navigation.setOptions({
     headerLeft: () => (
       <TouchableOpacity
@@ -72,7 +72,7 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
   };
 
   const onFormSubmitEnd = (updatedFields) => {
-    userStore.setSignedInUser({...userStore.userInfo, ...updatedFields});
+    authStore.setSignedInUser({...authStore.userInfo, ...updatedFields});
     Toast.done('Your profile is updated');
     navigation.goBack();
   };
@@ -110,7 +110,7 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
-          {userStore.userInfo ? renderBody() : <Loader />}
+          {authStore.userInfo ? renderBody() : <Loader />}
         </ScrollView>
 
         <View style={styles.containerRow}>
@@ -152,7 +152,7 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
 };
 
 EditProfile.propTypes = {
-  userStore: shape({
+  authStore: shape({
     userInfo: object,
     setSignedInUser: func,
   }),
@@ -196,4 +196,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'bottomSheetStore')(EditProfile);
+export default inject('authStore', 'bottomSheetStore')(EditProfile);

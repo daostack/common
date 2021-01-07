@@ -27,7 +27,7 @@ import {VALIDATION_RULES} from '~/FormStores/ValidationRules/billingDetailsRules
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import {formatNumber} from '~/Util/FormatUtil';
 
-const BillingDetailsStep = ({navigation, route, userStore}) => {
+const BillingDetailsStep = ({navigation, route, authStore}) => {
   const {
     skipFirstStep,
     currCommon,
@@ -154,7 +154,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
                   ? 'Thor Odinson'
                   : billingDetailsFormStore.getFormField(
                       BillingDetailsConstants.City,
-                    )?.value || userStore.userInfo.displayName
+                    )?.value || authStore.userInfo.displayName
               }
               autoCapitalize="words"
               validation={{
@@ -296,7 +296,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
 
 BillingDetailsStep.propTypes = {
   navigation: object,
-  userStore: object,
+  authStore: object,
   route: shape({
     params: shape({
       skipFirstStep: bool,
@@ -314,4 +314,4 @@ BillingDetailsStep.propTypes = {
   }),
 };
 
-export default inject('userStore')(BillingDetailsStep);
+export default inject('authStore')(BillingDetailsStep);

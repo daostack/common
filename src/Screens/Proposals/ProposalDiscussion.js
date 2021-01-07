@@ -15,7 +15,12 @@ import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
 import PropTypes, {string, number, func, shape, arrayOf} from 'prop-types';
 
-const ProposalDiscussion = ({userListStore, proposal, proposalId, scrollViewRef}) => {
+const ProposalDiscussion = ({
+  userListStore,
+  proposal,
+  proposalId,
+  scrollViewRef,
+}) => {
   const chatRef = useRef(null);
   const [msgGroups, setMsgGroups] = useState([]);
 
@@ -185,4 +190,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'userListStore')(observer(ProposalDiscussion));
+export default inject(
+  'authStore',
+  'userListStore',
+)(observer(ProposalDiscussion));

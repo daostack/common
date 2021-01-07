@@ -83,7 +83,7 @@ if (Platform.OS === 'android') {
   }
 }
 
-const App = ({userStore, bottomSheetStore, navigation}) => {
+const App = ({authStore, bottomSheetStore, navigation}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
   //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
@@ -326,7 +326,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           name="CommonHome"
           component={CommonHome}
           options={{headerShown: false}}
-          userStore={userStore}
+          authStore={authStore}
         />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
         <Stack.Screen
@@ -559,7 +559,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 };
 
 App.propTypes = {
-  userStore: shape({
+  authStore: shape({
     setIsLoading: func,
     setSignedInUser: func,
   }),
@@ -581,4 +581,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'bottomSheetStore')(observer(App));
+export default inject('authStore', 'bottomSheetStore')(observer(App));

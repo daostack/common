@@ -49,7 +49,7 @@ const ProposalScreen = ({
   navigation,
   bottomSheetStore,
   userListStore,
-  userStore: {userInfo, isDaoMember, ...userStore},
+  authStore: {userInfo, isDaoMember, ...authStore},
   route: {
     params: {
       commonBalance,
@@ -158,7 +158,7 @@ const ProposalScreen = ({
             );
 
             setIsMember(userInfo && isDaoMember(currentDao?.members || []));
-            setIsProposer(userStore.isProposer(updatedProposalInfo));
+            setIsProposer(authStore.isProposer(updatedProposalInfo));
             await loadProposalInfo(updatedProposalInfo, currentDao);
           },
         );
@@ -882,7 +882,7 @@ const ProposalScreen = ({
 ProposalScreen.propTypes = {
   navigation: object,
   bottomSheetStore: object,
-  userStore: shape({
+  authStore: shape({
     userInfo: object,
     isDaoMember: func,
   }),
@@ -1021,7 +1021,7 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
-  'userStore',
+  'authStore',
   'userListStore',
   'bottomSheetStore',
 )(observer(ProposalScreen));

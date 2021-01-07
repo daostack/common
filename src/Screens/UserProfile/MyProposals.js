@@ -20,7 +20,7 @@ import {bool, object, shape} from 'prop-types';
 
 const MyProposals = ({
   navigation,
-  userStore,
+  authStore,
   route: {
     params: {onlyMembershipRequests, onlyFundingRequests},
   },
@@ -31,14 +31,14 @@ const MyProposals = ({
   useEffect(() => {
     const getStats = async () => {
       const userProposalsStats = await ProposalService.getInstance().getUserProposalsCounts(
-        userStore.userInfo.uid,
+        authStore.userInfo.uid,
         onlyMembershipRequests,
         onlyFundingRequests,
       );
       setStats({...userProposalsStats});
     };
     getStats();
-  }, [userStore.userInfo.uid]);
+  }, [authStore.userInfo.uid]);
 
   const onScreenScroll = (event) => {
     navigation.setOptions({
@@ -69,7 +69,7 @@ const MyProposals = ({
   const SceneRenderer = (sceneIndex) => (
     <View style={{flex: 1, marginTop: 40, paddingHorizontal: 20}}>
       <ProposalsList
-        userId={userStore.userInfo.uid}
+        userId={authStore.userInfo.uid}
         membershipRequests={onlyMembershipRequests}
         onlyFundingRequests={onlyFundingRequests}
         isHistory={sceneIndex === 2}
@@ -130,7 +130,7 @@ MyProposals.propTypes = {
     }),
   }),
   navigation: object,
-  userStore: object,
+  authStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -164,4 +164,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(MyProposals));
+export default inject('authStore')(observer(MyProposals));
