@@ -287,78 +287,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   // Login
   useEffect(() => {
-<<<<<<< HEAD
-    
-=======
-    const onAuthStateChanged = async (user) => {
-      logger.log(
-        'AUTH STATE CHANGED:',
-        user?.uid,
-        user?.email,
-        user?.displayName,
-        user,
-      );
-      try {
-        // onAuthStateChanged method is called on many events, not only when the logged in user is changed.
-        // In order to prevent unwanted rerendering we need to make some checks.
-        if (
-          !userStore.isLoginInProgressExists(user?.uid) &&
-          userStore.userInfo?.uid !== user?.uid
-        ) {
-          if (user) {
-            userStore.setIsLoading(true);
-            userStore.addLoginInProgress(user?.uid);
-            const providerId = user.providerData[0].providerId;
-            let appUser = await Cache.get(user.uid);
-            if (!appUser) {
-              appUser = await UserService.getInstance().getUserById(user.uid);
-            }
-            const isNewUser = !appUser;
-
-            if (isNewUser) {
-              const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(
-                providerId,
-              );
-              const userInfo = {
-                ...user._user,
-                ...{
-                  firstName: providerUserInfo.user.givenName,
-                  lastName: providerUserInfo.user.familyName,
-                },
-              };
-              appUser = await AuthService.getInstance().createUser(userInfo);
-            }
-
-            const allUserInfo = {
-              ...user._user,
-              ...appUser,
-            };
-
-            NotificationService.saveTokenToDatabase();
-
-            const filteredUser = filterObjectByKeys(
-              allUserInfo,
-              userInfoFields,
-            );
-            userStore.setSignedInUser(filteredUser);
-            userStore.removeLoginInProgress(filteredUser.uid);
-            userStore.setIsLoading(false);
-
-            userStore.setIsLoading(false);
-          } else {
-            userStore.setSignedInUser(null);
-            userStore.setIsLoading(false);
-          }
-        }
-      } catch (error) {
-        logger.log(error);
-        throw error;
-      }
-    };
-
-    const authChangeUnsubscribe = auth().onAuthStateChanged(onAuthStateChanged);
->>>>>>> dev
-
     const checkOnboardingStatus = async () => {
       try {
         //await AuthService.getInstance().signOut();
@@ -373,7 +301,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     };
 
     checkOnboardingStatus();
-    
   }, []);
 
   if (loading) {
