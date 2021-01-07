@@ -19,7 +19,8 @@ export const userInfoFields = [
 ];
 type SignInErrorWithCode = any;
 type UserInfo = any;
-class UserStore {
+
+class AuthStore {
   userInfo: UserInfo;
   signedInUser: any;
   loginInProgress: any;
@@ -136,7 +137,7 @@ class UserStore {
     }
   };
 }
-decorate(UserStore, {
+decorate(AuthStore, {
   address: observable,
   setSignedInUser: action,
   setIsLoading: action,
@@ -148,4 +149,4 @@ decorate(UserStore, {
   myProposals: observable,
 });
 
-export default UserStore;
+export default AuthStore;

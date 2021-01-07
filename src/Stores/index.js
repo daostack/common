@@ -1,4 +1,4 @@
-import UserStore from './UserStore';
+import UserStore from './AuthStore';
 import DaoStore from './DaoStore';
 import BottomSheetStore from './BottomSheetStore';
 import {UserListStore} from './DbStores/UserListStore';
