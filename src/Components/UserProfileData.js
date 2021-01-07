@@ -1,10 +1,9 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {layout, font,colors, text, sizeL, sizeXXL} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import ImageField from '~/Components/FormFields/ImageField';
 import CountBox from '~/Components/CountBox';
-import UserService from '~/Services/UserService';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
 import CommonsSwiper from '~/Screens/Commons/CommonsSwiper';
 import {UserAvatar} from '~/Components';
@@ -27,39 +26,16 @@ const UserProfileData = ({
   userStore: {userInfo},
   userListStore,
 }) => {
-  const [user, setUser] = useState(currUserInfo);
+  // const [user, setUser] = useState(currUserInfo);
+  const user = userListStore.getUserById(userId || currUserInfo.uid);
+  const isOwnProfile = userId === userInfo?.uid;
+  navigation.setOptions({
+    title: user.displayNameFormatted,
+  });
+
   const [proposalsCount, setProposalsCount] = useState(0);
   const [requestsCount, setRequestsCount] = useState(0);
   const [commonsCount, setCommonsCount] = useState(0);
-  const [isOwnProfile, setIsOwnProfile] = useState(false);
-
-  useEffect(() => {
-    const getUser = async () => {
-      if (userId === userInfo?.uid) {
-        setUser(userInfo);
-        setIsOwnProfile(true);
-      } else {
-        if (!user) {
-          const usr = userListStore.getUserById(userId);
-          setUser(usr);
-        }
-
-        setIsOwnProfile(false);
-
-        navigation.setOptions({
-          // The regex below is used to separate names and
-          // make them less at most 25 character, but with cutting
-          // the name only at whitespaces
-          title: user.displayName?.match(/.{1,25}(\s|$)/g)[0],
-        });
-      }
-    };
-
-    setUser(currUserInfo);
-    setIsOwnProfile(false);
-
-    getUser();
-  }, [userId, currUserInfo, userInfo]);
 
   const navigateToEditProfile = (isFirstOpening) => {
     const navigate = CommonActions.navigate({

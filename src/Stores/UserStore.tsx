@@ -1,21 +1,24 @@
 import {observable, action, decorate} from 'mobx';
 import {isDaoMemberByUserId} from '~/Util';
 import Cache from '../Util/Cache';
+import logger from '~/Services/Logger';
+import AuthService from '~/Services/AuthService';
+import UserService from '~/Services/UserService';
+import NotificationService from '~/Services/NotificationService';
+import {auth} from '~/Firebase';
+import { UserListStore } from './DbStores/UserListStore';
+import {filterObjectByKeys} from '~/Util';
+
 export const userInfoFields = [
   'uid',
-  'displayName',
   'firstName',
   'lastName',
   'email',
   'photoURL',
-  'ethereumAddress',
-  'intro',
-  'byLine',
-  'preferences',
+  'updatedAt',
   'createdAt',
-  'following',
-  'follower',
 ];
+
 type SignInErrorWithCode = any
 type UserInfo = any
 class UserStore {
@@ -27,11 +30,68 @@ class UserStore {
   myCommons: any;
   myProposals: any;
   address: any;
-  constructor() {
+
+  userListStore: UserListStore;
+
+  constructor(userListStore: UserListStore) {
     this.userInfo = null;
     this.isLoading = false;
     this.loginInProgress = [];
+    this.userListStore = userListStore;
+
+    auth().onAuthStateChanged(this.onAuthStateChanged);
   }
+
+  onAuthStateChanged = async (user) => {
+    logger.log('AUTH STATE CHANGED:', user?.uid, user?.email, user?.displayName, user);
+    try {
+      // onAuthStateChanged method is called on many events, not only when the logged in user is changed.
+      // In order to prevent unwanted rerendering we need to make some checks.
+      if (!this.isLoginInProgressExists(user?.uid) && this.userInfo?.uid !== user?.uid) {
+        if (user) {
+          this.setIsLoading(true);
+          this.addLoginInProgress(user?.uid);
+          const providerId = user.providerData[0].providerId;
+          let appUser = this.userListStore.getUserById(user.uid);// await Cache.get(user.uid);
+
+          if (!appUser) {
+            appUser = await UserService.getInstance().getUserById(
+              user.uid,
+            );
+          }
+          const isNewUser = !appUser;
+
+          if (isNewUser) {
+            const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
+            const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
+            appUser = await AuthService.getInstance().createUser(userInfo);
+          }
+
+          const allUserInfo = {
+            ...user._user,
+            ...appUser,
+          };
+
+          NotificationService.saveTokenToDatabase();
+
+          const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
+          this.setSignedInUser(filteredUser);
+          this.removeLoginInProgress(filteredUser.uid);
+          this.setIsLoading(false);
+
+          this.setIsLoading(false);
+        } else {
+          this.setSignedInUser(null);
+          this.setIsLoading(false);
+        }
+      }
+    } catch (error) {
+      logger.log(error);
+      throw error;
+    }
+
+  };
+
   setSignInError = (error: SignInErrorWithCode) => {
     this.signInError = error;
   };
@@ -53,40 +113,7 @@ class UserStore {
   setSignedInUser = (newUserInfo: any) => {
     const isUserChanged = newUserInfo?.uid !== this.userInfo?.uid;
     if (newUserInfo) {
-      let newUserObj = {} as any;
-      if (newUserInfo.uid) {
-        newUserObj.uid = newUserInfo.uid;
-      }
-      if (newUserInfo.email) {
-        newUserObj.email = newUserInfo.email;
-      }
-      if (newUserInfo.firstName) {
-        newUserObj.firstName = newUserInfo.firstName;
-      }
-      if (newUserInfo.lastName) {
-        newUserObj.lastName = newUserInfo.lastName;
-      }
-      if (newUserInfo.photoURL) {
-        newUserObj.photoURL = newUserInfo.photoURL;
-      }
-      if (newUserInfo.intro) {
-        newUserObj.intro = newUserInfo.intro;
-      }
-      if (newUserInfo.ethereumAddress) {
-        newUserObj.ethereumAddress = newUserInfo.ethereumAddress;
-      }
-      if (newUserInfo.preferences) {
-        newUserObj.preferences = newUserInfo.preferences;
-      }
-      if (newUserInfo.byLine) {
-        newUserObj.byLine = newUserInfo.byLine;
-      }
-      newUserObj.following = newUserInfo.following || [];
-      newUserObj.follower = newUserInfo.follower || [];
-      newUserObj.displayName = `${newUserInfo.firstName || ''} ${newUserInfo.lastName || ''}`;
-
-      Cache.set(newUserInfo.uid, newUserObj);
-      this.userInfo = newUserObj;
+      this.userInfo = this.userListStore.getUserById(newUserInfo?.uid);
     } else {
       this.userInfo = null;
     }

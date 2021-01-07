@@ -48,14 +48,11 @@ import {
   MonthlyContributionsList,
   MonthlyContribution,
 } from './src/Screens';
-import UserService from './src/Services/UserService';
-import AuthService from './src/Services/AuthService';
 import CommonHome from './src/Components/Navigation/CommonHome';
-import {filterObjectByKeys} from './src/Util';
-import {userInfoFields} from './src/Stores/UserStore';
+
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
-import {auth} from './src/Firebase';
+
 import KeyboardManager from 'react-native-keyboard-manager';
 import validUrl from 'valid-url';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
@@ -66,7 +63,6 @@ import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DeepLinking from 'react-native-deep-linking';
 import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
 import Toast from './src/Util/Toast';
-import Cache from './src/Util/Cache';
 import {func, bool, object, shape} from 'prop-types';
 import logger from './src/Services/Logger';
 import {fontSize} from './src/Theme/font';
@@ -269,56 +265,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   // Login
   useEffect(() => {
-    const onAuthStateChanged = async (user) => {
-      logger.log('AUTH STATE CHANGED:', user?.uid, user?.email, user?.displayName, user);
-      try {
-        // onAuthStateChanged method is called on many events, not only when the logged in user is changed.
-        // In order to prevent unwanted rerendering we need to make some checks.
-        if (!userStore.isLoginInProgressExists(user?.uid) && userStore.userInfo?.uid !== user?.uid) {
-          if (user) {
-            userStore.setIsLoading(true);
-            userStore.addLoginInProgress(user?.uid);
-            const providerId = user.providerData[0].providerId;
-            let appUser = await Cache.get(user.uid);
-            if (!appUser) {
-              appUser = await UserService.getInstance().getUserById(
-                user.uid,
-              );
-            }
-            const isNewUser = !appUser;
-
-            if (isNewUser) {
-              const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
-              const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
-              appUser = await AuthService.getInstance().createUser(userInfo);
-            }
-
-            const allUserInfo = {
-              ...user._user,
-              ...appUser,
-            };
-
-            NotificationService.saveTokenToDatabase();
-
-            const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
-            userStore.setSignedInUser(filteredUser);
-            userStore.removeLoginInProgress(filteredUser.uid);
-            userStore.setIsLoading(false);
-
-            userStore.setIsLoading(false);
-          } else {
-            userStore.setSignedInUser(null);
-            userStore.setIsLoading(false);
-          }
-        }
-      } catch (error) {
-        logger.log(error);
-        throw error;
-      }
-
-    };
-
-    const authChangeUnsubscribe = auth().onAuthStateChanged(onAuthStateChanged);
+    
 
     const checkOnboardingStatus = async () => {
       try {
@@ -334,7 +281,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     };
 
     checkOnboardingStatus();
-    return authChangeUnsubscribe;
+    
   }, []);
 
   if (loading) {

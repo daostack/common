@@ -120,6 +120,7 @@ export default class UserService {
     return UserCollection.onSnapshot((snapshot) => {
       let userList = [];
 
+      // TODO: Make better handling of changes with docChanges()
       if (!snapshot?.empty || !snapshot) {
         userList = snapshot.docs.map((doc) => doc.data());
       }

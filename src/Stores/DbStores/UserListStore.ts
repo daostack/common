@@ -1,36 +1,42 @@
-import {observable, action, computed, decorate} from 'mobx';
+import {observable, action, computed, decorate, set, get, ObservableMap} from 'mobx';
 import UserService from '~/Services/UserService';
+//import {IUserEntity} from '~/Firebase/Databasee/EntityTypes';
+import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
+import { UserModelStore } from './UserModelStore';
 
 export class UserListStore {
-    //TODO: typing: userList: Array<IUserEntity> = []
-    userList: Array<any> = []
-    isLoading: boolean = true
+  //TODO: typing: userList: Array<IUserEntity> = []
+  userList: ObservableMap<string, IUserEntity>;
+  isLoading: boolean;
 
-    constructor() {
-      this.loadUsers();
-    }
+  constructor() {
+    this.userList = observable.map({
+      test: {uid: 'test'} as IUserEntity,
+    });
+    this.isLoading = true;
+    this.loadUsers();
+  }
 
-    // Fetches all Users from the firestore.
-    loadUsers() {
-      this.isLoading = true;
-      UserService.getInstance().subscribeToUsers(this.updateUserList);
-    }
+  // Fetches all Users from the firestore.
+  loadUsers = () => {
+    this.isLoading = true;
+    UserService.getInstance().subscribeToUsers(this.updateUserList);
+  }
 
-    updateUserList(updatedUserList: any) {
-      this.userList = updatedUserList;
-      // TODO: improve the update to be only for changed users, or it's properties
-      // updatedUserList.forEach((updatedUser: any) => this.updateUser(updatedUser));
-      this.isLoading = false;
-    }
+  updateUserList = (updatedUserList: Array<IUserEntity>) => {
+    updatedUserList.forEach((userEntity: IUserEntity) => {
+      set(this.userList, userEntity.uid, UserModelStore(userEntity));
+    });
+    this.isLoading = false;
+  }
 
-    getUserById(uid: any) {
-      return this.userList.find((currUser) => currUser.uid === uid);
-    }
+  getUserById = (uid: string): IUserEntity | undefined => get(this.userList, uid);
 }
 
 decorate(UserListStore, {
-  userList: observable,
+  //userList: observable,
   isLoading: observable,
-  getUserById: computed,
+  getUserById: observable,
+  //getUserById: computed,
   updateUserList: action,
 });
