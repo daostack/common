@@ -13,27 +13,21 @@ const PublishCommon = ({bottomSheetStore, forgeCommon}) => {
   return (
     <View style={styles.container}>
       <View style={styles.body}>
-        <Image
-          source={require('../../Assets/edit.png')}
-          style={styles.image}
-        />
+        <Image source={require('../../Assets/edit.png')} style={styles.image} />
 
         <Text style={styles.textTitle}>Are you sure?</Text>
         <Text style={styles.subtitle}>
-          You will not be able to make changes to the Common info after it is published.
+          You will not be able to make changes to the Common info after it is
+          published.
         </Text>
 
         <TouchableOpacity
           style={styles.dismissButton}
-          onPress={() => bottomSheetStore.hideBottomSheet()}
-        >
+          onPress={() => bottomSheetStore.hideBottomSheet()}>
           <Text style={styles.continueEditButtonTxt}>Continue editing</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.publishButton}
-          onPress={onPublish}
-        >
+        <TouchableOpacity style={styles.publishButton} onPress={onPublish}>
           <Text style={styles.publishButtonText}>Publish Common</Text>
         </TouchableOpacity>
       </View>
@@ -67,7 +61,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 20,
-
   },
   image: {
     height: '25%',

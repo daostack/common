@@ -63,8 +63,7 @@ const UserProfileReadMode = ({navigation}) => {
                 subtitle={user.email}
                 onPress={() => onUserSelected(user.id)}
               />
-            )
-            )}
+            ))}
           </View>
         </ScrollView>
         {/**

@@ -3,7 +3,6 @@ import React from 'react';
 import {layout, colors, font} from '~/Theme';
 import {string} from 'prop-types';
 
-
 const ViewTabNoData = ({title, subtitle}) => (
   <View style={styles.container}>
     <Text style={styles.title}>{title}</Text>

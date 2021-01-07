@@ -1,6 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Text, StyleSheet, View, Image, Dimensions, TouchableOpacity, ActivityIndicator} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 
 import moment from 'moment';
 import {inject, observer} from 'mobx-react';
@@ -32,7 +40,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 20,
-    maxWidth:  width * 0.8,
+    maxWidth: width * 0.8,
   },
 
   bold: {
@@ -121,8 +129,8 @@ const CancelSubscriptionSheetScreen = ({
       {status === statuses.canceled
         ? 'You will leave'
         : 'If you cancel, you will leave'}{' '}
-      <Text style={styles.bold}>{commonName}{' '}</Text>
-      {moment(dueDate).toNow()}{' '}({moment(dueDate).format('DD MMMM YYYY')})
+      <Text style={styles.bold}>{commonName} </Text>
+      {moment(dueDate).toNow()} ({moment(dueDate).format('DD MMMM YYYY')})
     </Text>
   );
 
@@ -139,28 +147,16 @@ const CancelSubscriptionSheetScreen = ({
             style={styles.image}
           />
 
-          <Text style={styles.title}>
-            Cancel payment
-          </Text>
+          <Text style={styles.title}>Cancel payment</Text>
 
           <LeaveText />
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={onClose}
-          >
-            <Text style={styles.stayText}>
-              Stay a member
-            </Text>
+          <TouchableOpacity style={styles.button} onPress={onClose}>
+            <Text style={styles.stayText}>Stay a member</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={onCancel}
-          >
-            <Text style={styles.cancelText}>
-              Cancel anyway
-            </Text>
+          <TouchableOpacity style={styles.button} onPress={onCancel}>
+            <Text style={styles.cancelText}>Cancel anyway</Text>
           </TouchableOpacity>
         </React.Fragment>
       )}
@@ -173,9 +169,7 @@ const CancelSubscriptionSheetScreen = ({
             style={styles.loader}
           />
 
-          <Text style={styles.title}>
-            Canceling...
-          </Text>
+          <Text style={styles.title}>Canceling...</Text>
         </React.Fragment>
       )}
 
@@ -186,9 +180,7 @@ const CancelSubscriptionSheetScreen = ({
             style={styles.image}
           />
 
-          <Text style={styles.title}>
-              Recurring payment canceled
-          </Text>
+          <Text style={styles.title}>Recurring payment canceled</Text>
 
           <LeaveText />
 
@@ -197,18 +189,13 @@ const CancelSubscriptionSheetScreen = ({
               ...styles.button,
               justifySelf: 'flex-end',
             }}
-            onPress={onClose}
-          >
-            <Text style={styles.stayText}>
-              OK
-            </Text>
+            onPress={onClose}>
+            <Text style={styles.stayText}>OK</Text>
           </TouchableOpacity>
         </React.Fragment>
       )}
 
-      {status === statuses.errored && (
-        <Text>Something bad happened!</Text>
-      )}
+      {status === statuses.errored && <Text>Something bad happened!</Text>}
     </View>
   );
 };
@@ -217,9 +204,7 @@ CancelSubscriptionSheetScreen.propTypes = {
   onCancelConfirm: PropTypes.func.isRequired,
   commonName: PropTypes.string.isRequired,
   dueDate: PropTypes.instanceOf(Date).isRequired,
-  initialStatus: PropTypes.oneOf([
-    ...Object.values(statuses),
-  ]),
+  initialStatus: PropTypes.oneOf([...Object.values(statuses)]),
 
   bottomSheetStore: PropTypes.shape({
     hideBottomSheet: PropTypes.func,
@@ -231,5 +216,6 @@ CancelSubscriptionSheetScreen.defaultProps = {
   initialStatus: statuses.initial,
 };
 
-export default inject('bottomSheetStore')(observer(CancelSubscriptionSheetScreen));
-
+export default inject('bottomSheetStore')(
+  observer(CancelSubscriptionSheetScreen),
+);

@@ -4,8 +4,12 @@ import {colors} from '~/Theme';
 import CreateDiscussionForm from '~/Components/Forms/CreateDiscussionForm';
 import {string, object, shape} from 'prop-types';
 
-const DiscussionPost = ({navigation,
-  route: {params: {commonId}}}) => (
+const DiscussionPost = ({
+  navigation,
+  route: {
+    params: {commonId},
+  },
+}) => (
   <SafeAreaView style={styles.container}>
     <CreateDiscussionForm
       commonId={commonId}

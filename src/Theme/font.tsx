@@ -7,8 +7,7 @@ export const fontSize = (fontIndex: number) => ({
   fontSize: fonts[fontIndex],
   letterSpacing: letterSpacing[fontIndex],
 });
-const lineHeights = [28
-  , 28, 28];
+const lineHeights = [28, 28, 28];
 const lineHeightForm = 28;
 
 export const lineHeight = (lineHeightIndex: number) => ({

@@ -27,11 +27,19 @@ import {BlurView} from '@react-native-community/blur';
 import UseAcknowledgment from '../../../Components/Proposals/UseAcknowledgment';
 const {width} = Dimensions.get('window');
 
-const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}}}) => {
+const CreateStep1 = ({
+  bottomSheetStore,
+  navigation,
+  route: {
+    params: {formStores},
+  },
+}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const generalInfoFormStore = formStores.generalInfoFormStore;
-  const [useAcknowledgmentVisible, setUseAcknowledgmentVisible] = useState(false);
+  const [useAcknowledgmentVisible, setUseAcknowledgmentVisible] = useState(
+    false,
+  );
   useEffect(() => {
     const height = scrollY.interpolate({
       inputRange: [0, 50],
@@ -63,7 +71,10 @@ const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}
 
   return (
     <>
-      <Modal animationType="slide" transparent={true} visible={useAcknowledgmentVisible}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={useAcknowledgmentVisible}>
         <UseAcknowledgment onPressAgree={push} />
       </Modal>
       <SafeAreaView
@@ -105,10 +116,10 @@ const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}
             padding: 24,
           }}
           scrollEventThrottle={16}
-          onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
-          ],
-          {useNativeDriver: false})}>
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {y: scrollY}}}],
+            {useNativeDriver: false},
+          )}>
           <CreateStepHeader currentIndex={0} />
           <View
             style={{
@@ -131,7 +142,9 @@ const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}
               }}
             />
             <TextInputField
-              value={generalInfoFormStore.getFormField(CreateCommonForm.NAME)?.value}
+              value={
+                generalInfoFormStore.getFormField(CreateCommonForm.NAME)?.value
+              }
               viewStyle={{alignSelf: 'stretch'}}
               label="Common name"
               infoLabel="Required"
@@ -148,7 +161,10 @@ const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}
               }}
             />
             <TextInputField
-              value={generalInfoFormStore.getFormField(CreateCommonForm.BYLINE)?.value}
+              value={
+                generalInfoFormStore.getFormField(CreateCommonForm.BYLINE)
+                  ?.value
+              }
               viewStyle={{alignSelf: 'stretch'}}
               label="Tagline"
               infoLabel="Required"
@@ -167,7 +183,10 @@ const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}
               }}
             />
             <TextInputField
-              value={generalInfoFormStore.form.fields[CreateCommonForm.DESCRIPTION]?.value}
+              value={
+                generalInfoFormStore.form.fields[CreateCommonForm.DESCRIPTION]
+                  ?.value
+              }
               label="About"
               infoLabel="Required"
               numberOfLines={5}
@@ -189,7 +208,9 @@ const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}
               label="Links"
               title="Title"
               maxLength={30}
-              value={generalInfoFormStore.getFormField(CreateCommonForm.LINKS)?.value}
+              value={
+                generalInfoFormStore.getFormField(CreateCommonForm.LINKS)?.value
+              }
               validation={{
                 name: CreateCommonForm.LINKS,
                 formStore: generalInfoFormStore,
@@ -208,14 +229,14 @@ const CreateStep1 = ({bottomSheetStore, navigation, route: {params: {formStores}
           }}
         />
       </SafeAreaView>
-      {useAcknowledgmentVisible &&
-      <BlurView
-        style={styles.blurView}
-        blurType="dark"
-        blurAmount={1}
-        reducedTransparencyFallbackColor={colors.black}
-      />
-      }
+      {useAcknowledgmentVisible && (
+        <BlurView
+          style={styles.blurView}
+          blurType="dark"
+          blurAmount={1}
+          reducedTransparencyFallbackColor={colors.black}
+        />
+      )}
     </>
   );
 };
@@ -242,6 +263,4 @@ const styles = StyleSheet.create({
   blurView: {position: 'absolute', ...StyleSheet.absoluteFill},
 });
 
-export default inject(
-  'bottomSheetStore',
-)(CreateStep1);
+export default inject('bottomSheetStore')(CreateStep1);

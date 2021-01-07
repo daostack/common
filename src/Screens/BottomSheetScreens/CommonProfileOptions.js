@@ -19,7 +19,7 @@ const CommonProfileOptions = ({onFollow, isCommonProfile}) => (
     directionalLockEnabled={true}>
     <View style={styles.body}>
       <Text style={{...text.h2Black, alignSelf: 'center', marginBottom: 30}}>
-          Options
+        Options
       </Text>
 
       <TouchableOpacity style={styles.optionBtn} onPress={onFollow}>
@@ -62,11 +62,7 @@ const CommonProfileOptions = ({onFollow, isCommonProfile}) => (
       )}
 
       <TouchableOpacity style={styles.optionBtn}>
-        <Icon
-          name="report"
-          style={layout.marginRightS}
-          color={colors.error}
-        />
+        <Icon name="report" style={layout.marginRightS} color={colors.error} />
         <Text style={text.buttonred}>Report</Text>
       </TouchableOpacity>
     </View>

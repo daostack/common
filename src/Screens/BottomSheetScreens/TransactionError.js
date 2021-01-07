@@ -1,10 +1,4 @@
-import {
-  Text,
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {inject, observer} from 'mobx-react';
 import React from 'react';
 import {text, layout, colors, font} from '~/Theme/index';
@@ -18,7 +12,7 @@ const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
 
   const toggleShowMore = () => {
     setShowMore(!showMore);
-    const changeHeight = 60 + (errorObj?.data?.detailedErrors?.length * 30) || 0;
+    const changeHeight = 60 + errorObj?.data?.detailedErrors?.length * 30 || 0;
     if (showMore) {
       bottomSheetStore.decreseTopSnap(changeHeight);
     } else {
@@ -31,70 +25,65 @@ const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
   return (
     <View style={styles.scrollView}>
       <View style={styles.body}>
-        {(errorObj && typeof errorObj === 'object') && (
-          <TouchableOpacity
-            style={styles.icon}
-            onPress={toggleShowMore}
-          >
+        {errorObj && typeof errorObj === 'object' && (
+          <TouchableOpacity style={styles.icon} onPress={toggleShowMore}>
             <Icon name="explanation1" />
           </TouchableOpacity>
         )}
 
         <View style={styles.spacer} />
 
-        <Image
-          source={require('~/Assets/alert.png')}
-          style={styles.imgAlert}
-        />
+        <Image source={require('~/Assets/alert.png')} style={styles.imgAlert} />
 
-        <Text style={styles.title}>
-          Something went wrong
-        </Text>
+        <Text style={styles.title}>Something went wrong</Text>
 
-        {(typeof errorObj === 'string') && (
-          <Text style={styles.blackTextWithImage}>
-            {errorObj}
-          </Text>
+        {typeof errorObj === 'string' && (
+          <Text style={styles.blackTextWithImage}>{errorObj}</Text>
         )}
 
-
-        {typeof errorObj === 'object' && ((showMore) ? (
-          <View style={layout.marginTopM}>
-            <Text>Error ID: {errorObj.errorId}</Text>
-            <Text>Error Status: {errorObj.errorCode}</Text>
-            <Text>Error Name: {errorObj.errorName}</Text>
-            {
-              errorObj.errorCode === VALIDATION_ERROR ?
+        {typeof errorObj === 'object' &&
+          (showMore ? (
+            <View style={layout.marginTopM}>
+              <Text>Error ID: {errorObj.errorId}</Text>
+              <Text>Error Status: {errorObj.errorCode}</Text>
+              <Text>Error Name: {errorObj.errorName}</Text>
+              {errorObj.errorCode === VALIDATION_ERROR ? (
                 <View style={layout.marginTopM}>
-                  {
-                    errorObj.data.detailedErrors.map(((currError, index) => (<View key={`validation_key_${index}`}>
+                  {errorObj.data.detailedErrors.map((currError, index) => (
+                    <View key={`validation_key_${index}`}>
                       <Text>
-                        <Text style={{fontWeight: 'bold'}}>{ index + 1}.</Text>{' '}
+                        <Text style={{fontWeight: 'bold'}}>{index + 1}.</Text>{' '}
                         Field{' '}
-                        <Text style={{fontWeight: 'bold'}}>{currError.field}</Text>{' '}
+                        <Text style={{fontWeight: 'bold'}}>
+                          {currError.field}
+                        </Text>{' '}
                         with value{' '}
-                        <Text style={{fontWeight: 'bold'}}>{currError.value || 'null'}</Text>{' '}
+                        <Text style={{fontWeight: 'bold'}}>
+                          {currError.value || 'null'}
+                        </Text>{' '}
                         is invalid!
                       </Text>
-                      <Text style={{fontSize: 11, color: colors.error}}>{removeLinebreaks(currError.message)}</Text>
-                    </View>)))
-                  }
-                </View> :
+                      <Text style={{fontSize: 11, color: colors.error}}>
+                        {removeLinebreaks(currError.message)}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              ) : (
                 <Text>Full error text: {errorObj.error}</Text>
-            }
-          </View>
-        ) : (
-          <View style={styles.textWithIconContainer}>
-            <Text style={styles.blackTextWithImage}>{errorMessage}</Text>
-          </View>
-        ))}
+              )}
+            </View>
+          ) : (
+            <View style={styles.textWithIconContainer}>
+              <Text style={styles.blackTextWithImage}>{errorMessage}</Text>
+            </View>
+          ))}
 
         <View style={styles.spacer} />
 
         <TouchableOpacity
           style={styles.dismissButton}
-          onPress={bottomSheetStore.hideBottomSheet}
-        >
+          onPress={bottomSheetStore.hideBottomSheet}>
           <Text style={text.buttonblue}>Dismiss</Text>
         </TouchableOpacity>
       </View>

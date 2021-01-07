@@ -38,9 +38,9 @@ const BottomSheetContainer = ({bottomSheetStore, withoutHeader}) => {
     bottomSheetStore.hideBottomSheet();
   };
 
-  const animatedStyles = ({
+  const animatedStyles = {
     opacity: state.backgroundOpacity,
-  });
+  };
 
   const renderSheetHeader = () => {
     if (bottomSheetStore) {
@@ -70,7 +70,6 @@ const BottomSheetContainer = ({bottomSheetStore, withoutHeader}) => {
   };
 
   const AnimatedTouchable = Animated.createAnimatedComponent(Pressable);
-
 
   return (
     <>

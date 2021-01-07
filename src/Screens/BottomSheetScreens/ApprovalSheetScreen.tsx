@@ -1,4 +1,11 @@
-import {Text, StyleSheet, SafeAreaView, TouchableOpacity, View, Dimensions} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  View,
+  Dimensions,
+} from 'react-native';
 import React from 'react';
 import {text, layout, colors, font, sizeL} from '~/Theme';
 import ButtonSwiper from '~/Components/ButtonSwiper';
@@ -49,7 +56,6 @@ const ApprovalSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> = ({
         />
       )}
 
-
       <Text
         style={{
           ...styles.title,
@@ -92,8 +98,8 @@ const ApprovalSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> = ({
       ) : (
         <React.Fragment>
           <Text style={styles.voteDescription}>
-            Are you sure? You will not be able
-            to change your vote after you confirm it.
+            Are you sure? You will not be able to change your vote after you
+            confirm it.
           </Text>
           <ButtonSwiper
             title="Swipe to confirm your vote"
