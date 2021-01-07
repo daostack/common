@@ -76,7 +76,6 @@ const PaymentDetailsStep = ({
         const data = {
           description: formData.intro,
           funding: formData.amount * 100,
-          preAuthId: false,
           commonId: currDaoId,
         };
 
@@ -91,67 +90,15 @@ const PaymentDetailsStep = ({
           },
         });
 
-        //
-        //   billingDetails: billingDetailsValidationSchema
-        //     .required(),
-        //
-        //   keyId: yup
-        //     .string()
-        //     .required(),
-        //
-        //   sessionId: yup
-        //     .string()
-        //     .required(),
-        //
-        //   ipAddress: yup
-        //     .string()
-        //     .required(),
-        //
-        //   encryptedData: yup
-        //     .string()
-        //     .required(),
-        //
-        //   expMonth: yup
-        //     .number()
-        //     .min(1)
-        //     .max(12)
-        //     .required(),
-        //
-        //   expYear: yup
-        //     .number()
-        //     .min(new Date().getFullYear())
-        //     .max(new Date().getFullYear() + 50)
-        //     .required()
-
-        //{
-        // "Address": "221B Baker Street",
-        // "CardName": "Thor Odinson",
-        // "City": "Metropolis",
-        // "Country": "AD",
-        // "District": "TX",
-        // "PostalCode": "31415PI",
-        // "amount": 120,
-        // "card_number": "4007410000000006",
-        // "cvv": "123",
-        // "displayName":
-        // "Alexander Ivanov",
-        // "email": "alexander2001ivanov@gmail.com",
-        // "ethereumAddress": "0x4646433f8a4ef00877acaa9a9dd7674985b037c2",
-        // "expiration_date": "01/21",
-        // "firstName": "Alexander", "follower": [], "following": [], "intro": "dfsfdsfs", "lastName": "Ivanov", "photoURL": "https://lh3.googleusercontent.com/a-/AOh14GgaBxrLDOb-f5M1KCWmV6u39I_8hZQr3FGzSwEMLZc=s96-c", "uid": "H5ZkcKBX5eXXNyBiPaph8EHCiax2"}
-
-        console.log({
-          billingDetails: {
-
-          },
-        });
-
         const createdCard = await createCard({
           ...formData,
           ...userInfo,
         });
 
-        const createRequestToJoinResponse = {};
+        const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin({
+          ...data,
+          cardId: createdCard.id,
+        });
 
         if (createRequestToJoinResponse.status === 200) {
           const proposalId = createRequestToJoinResponse.data.id;
