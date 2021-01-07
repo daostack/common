@@ -28,24 +28,31 @@ const props = {
   }),
   commonName: string,
   commonByLine: string,
+  currImage: string,
 };
 
 const CommonImage: React.FC<InferProps<typeof props>> = observer(
-  ({width, reviewFormStore, commonName, commonByLine}) => {
+  ({width, reviewFormStore, commonName, commonByLine, currImage = null}) => {
     const [templateIndex, setTemplateIndex] = useState(1);
 
     //set default value for Image field
     useEffect(() => {
-      reviewFormStore.registerFormField(CreateCommonForm.IMAGE);
-      let currCommonImage = reviewFormStore.getFormField(CreateCommonForm.IMAGE)
-        ?.value;
+      reviewFormStore.registerFormField(
+        CreateCommonForm.IMAGE,
+        'required',
+        currImage,
+      );
+      let currCommonImage = reviewFormStore?.getFormField(
+        CreateCommonForm.IMAGE,
+      )?.value;
       // Set random image as default in case no value provided
       if (!currCommonImage) {
-        currCommonImage = getImageUrl(
-          1 + Math.floor(Math.random() * Math.floor(7)),
-        );
+        currCommonImage =
+          currImage ||
+          getImageUrl(1 + Math.floor(Math.random() * Math.floor(7)));
       }
-      reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, currCommonImage);
+      !currImage &&
+        reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, currCommonImage);
     }, []);
 
     const getImageUrl = (index: number) =>

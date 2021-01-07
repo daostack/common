@@ -8,98 +8,61 @@ import {
 import React from 'react';
 import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {bool} from 'prop-types';
+import {inject, observer} from 'mobx-react';
+import {bool, object, func} from 'prop-types';
 
 const CommonProfileOptions = ({
   hasPermission,
-  /*onFollow,
-  isCommonProfile
-  */
-}) => (
-  <ScrollView
-    contentInsetAdjustmentBehavior="automatic"
-    style={styles.scrollView}
-    vertical={true}
-    nestedScrollEnabled={true}
-    directionalLockEnabled={true}>
-    <View style={styles.body}>
-      <Text style={{...text.h2Black, alignSelf: 'center', marginBottom: 30}}>
-        Options
-      </Text>
+  onEditInfo,
+  bottomSheetStore,
+}) => {
+  const onEdit = () => {
+    bottomSheetStore.hideBottomSheet();
+    onEditInfo();
+  };
 
-      {hasPermission && (
-        <>
-          <TouchableOpacity style={styles.optionBtn} onPress={() => {}}>
-            <Icon
-              name="dao-general-info-24"
-              style={layout.marginRightS}
-              color={colors.black}
-            />
-            <Text style={text.buttonblack}>Edit info and cover photo</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.optionBtn} onPress={() => {}}>
-            <Icon
-              name="agenda-24"
-              style={layout.marginRightS}
-              color={colors.black}
-            />
-            <Text style={text.buttonblack}>Edit rules</Text>
-          </TouchableOpacity>
-        </>
-      )}
-
-      {/*@askTai do we need to keep these options for common profile?*/}
-      {/*<TouchableOpacity style={styles.optionBtn} onPress={onFollow}>
-        <Icon
-          name="following"
-          style={layout.marginRightS}
-          color={colors.black}
-        />
-        <Text style={text.buttonblack}>Unfollow</Text>
-      </TouchableOpacity>*/}
-      {/*isCommonProfile && (
-        <>
-          <TouchableOpacity style={styles.optionBtn}>
-            <Icon
-              name="donate-16"
-              style={layout.marginRightS}
-              color={colors.black}
-            />
-            <Text style={text.buttonblack}>Contribute</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.optionBtn}>
-            <Icon
-              name="agenda"
-              style={layout.marginRightS}
-              color={colors.black}
-            />
-            <Text style={text.buttonblack}>View agenda</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.optionBtn}>
-            <Icon
-              name="share-32"
-              style={layout.marginRightS}
-              color={colors.black}
-            />
-            <Text style={text.buttonblack}>Share</Text>
-          </TouchableOpacity>
-        </>
-      )*/}
-
-      {/*<TouchableOpacity style={styles.optionBtn}>
-        <Icon name="report" style={layout.marginRightS} color={colors.error} />
-        <Text style={text.buttonred}>Report</Text>
-      </TouchableOpacity>*/}
-    </View>
-  </ScrollView>
-);
+  return (
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      style={styles.scrollView}
+      vertical={true}
+      nestedScrollEnabled={true}
+      directionalLockEnabled={true}>
+      <View style={styles.body}>
+        <Text style={{...text.h2Black, alignSelf: 'center', marginBottom: 30}}>
+          Options
+        </Text>
+        {hasPermission && (
+          <>
+            <TouchableOpacity style={styles.optionBtn} onPress={() => onEdit()}>
+              <Icon
+                name="dao-general-info-24"
+                style={layout.marginRightS}
+                color={colors.black}
+              />
+              <Text style={text.buttonblack}>Edit info and cover photo</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.optionBtn} onPress={() => {}}>
+              <Icon
+                name="agenda-24"
+                style={layout.marginRightS}
+                color={colors.black}
+              />
+              <Text style={text.buttonblack}>Edit rules</Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
+    </ScrollView>
+  );
+};
 
 CommonProfileOptions.propTypes = {
   //onFollow: func,
   //isCommonProfile: bool,
   hasPermission: bool,
+  bottomSheetStore: object,
+  onEditInfo: func,
 };
 
 const styles = StyleSheet.create({
@@ -135,4 +98,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommonProfileOptions;
+export default inject('bottomSheetStore')(observer(CommonProfileOptions));

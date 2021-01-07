@@ -414,9 +414,31 @@ const CommonProfile = ({
       {
         hasPermission:
           userStore?.userInfo?.uid === currCommon?.metadata.founderId,
+        onEditInfo: navigateToEdit,
       },
     );
   };
+
+  const navigateToEdit = () => {
+    navigation.navigate('EditInfo', {
+      currCommon: currCommon,
+      /*formStores: {
+        generalInfoFormStore: new GeneralInfoFormStore(),
+        fundingFormStore: new FundingFormStore(),
+        agendaFormStore: new AgendaFormStore(),
+        reviewFormStore: new ReviewFormStore(),
+      },*/
+    });
+  };
+  /*
+  const navigate = CommonActions.navigate({
+      name: 'EditInfo',
+      params: {
+        isFirstOpening: true,
+      },
+    });
+    navigation.dispatch(navigate);
+   */
 
   /*
   const openNotif = event => {
@@ -630,7 +652,7 @@ const CommonProfile = ({
             </BlurView>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{justifyContent: 'center'}}
+            style={{justifyContent: 'center', marginRight: 10}}
             onPress={openCommonOptions}>
             <BlurView
               style={{
