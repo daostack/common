@@ -42,9 +42,6 @@ const cardData = (formData) => ({
   },
   expMonth: +formData.expiration_date.split('/')[0],
   expYear: +(`20${formData.expiration_date.split('/')[1]}`),
-  metadata: {
-    email: formData.email,
-  },
 });
 
 export const createCard = async (formData) => (await axiosClient.post(endpoints.create, await createCardPayload(formData), {
@@ -64,7 +61,6 @@ export const createCardPayload = async (formData) => {
 
   return {
     keyId,
-    idToken,
     encryptedData,
     ...cardData(formData),
   };

@@ -51,17 +51,17 @@ const PaymentDetailsStep = ({
   const personalContributionFormStore = formStores.personalContributionFormStore;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
 
-  const [scrollY] = useState(new Animated.Value(0));
-  const [headerHeight, setHeaderHeight] = useState(0);
+  const [ scrollY ] = useState(new Animated.Value(0));
+  const [ headerHeight, setHeaderHeight ] = useState(0);
 
   useEffect(() => {
     const height = scrollY.interpolate({
-      inputRange: [50, 50],
-      outputRange: [0, 67],
+      inputRange: [ 50, 50 ],
+      outputRange: [ 0, 67 ],
       extrapolate: 'clamp',
     });
     setHeaderHeight(height);
-  }, [scrollY]);
+  }, [ scrollY ]);
 
   const push = async () => {
     if (paymentFormStore.isFormValid()) {
@@ -91,15 +91,67 @@ const PaymentDetailsStep = ({
           },
         });
 
+        //
+        //   billingDetails: billingDetailsValidationSchema
+        //     .required(),
+        //
+        //   keyId: yup
+        //     .string()
+        //     .required(),
+        //
+        //   sessionId: yup
+        //     .string()
+        //     .required(),
+        //
+        //   ipAddress: yup
+        //     .string()
+        //     .required(),
+        //
+        //   encryptedData: yup
+        //     .string()
+        //     .required(),
+        //
+        //   expMonth: yup
+        //     .number()
+        //     .min(1)
+        //     .max(12)
+        //     .required(),
+        //
+        //   expYear: yup
+        //     .number()
+        //     .min(new Date().getFullYear())
+        //     .max(new Date().getFullYear() + 50)
+        //     .required()
+
+        //{
+        // "Address": "221B Baker Street",
+        // "CardName": "Thor Odinson",
+        // "City": "Metropolis",
+        // "Country": "AD",
+        // "District": "TX",
+        // "PostalCode": "31415PI",
+        // "amount": 120,
+        // "card_number": "4007410000000006",
+        // "cvv": "123",
+        // "displayName":
+        // "Alexander Ivanov",
+        // "email": "alexander2001ivanov@gmail.com",
+        // "ethereumAddress": "0x4646433f8a4ef00877acaa9a9dd7674985b037c2",
+        // "expiration_date": "01/21",
+        // "firstName": "Alexander", "follower": [], "following": [], "intro": "dfsfdsfs", "lastName": "Ivanov", "photoURL": "https://lh3.googleusercontent.com/a-/AOh14GgaBxrLDOb-f5M1KCWmV6u39I_8hZQr3FGzSwEMLZc=s96-c", "uid": "H5ZkcKBX5eXXNyBiPaph8EHCiax2"}
+
+        console.log({
+          billingDetails: {
+
+          },
+        });
+
         const createdCard = await createCard({
           ...formData,
           ...userInfo,
         });
 
-        const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin({
-          ...data,
-          cardId: createdCard.id,
-        });
+        const createRequestToJoinResponse = {};
 
         if (createRequestToJoinResponse.status === 200) {
           const proposalId = createRequestToJoinResponse.data.id;
@@ -132,13 +184,14 @@ const PaymentDetailsStep = ({
   const formatDate = (date) => {
     date = date.replace('/', '');
     return date.length > 2
-      ? `${date.substring(0,2)}/${date.substring(2,4)}`
+      ? `${date.substring(0, 2)}/${date.substring(2, 4)}`
       : date;
   };
 
   const subtitle = (style) => (
     <Text style={style}>
-      You are contributing ${formatNumber(personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)?.value?.value)}
+      You are contributing
+      ${formatNumber(personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)?.value?.value)}
 
       <Text style={{...font.primary.bold}}>
         {' '}({isMonthly ? 'monthly' : 'one time'}){' '}
@@ -150,7 +203,7 @@ const PaymentDetailsStep = ({
 
   return (
     <React.Fragment>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView style={{backgroundColor: colors.white}}/>
       <SafeAreaView
         style={{
           flex: 1,
@@ -182,7 +235,7 @@ const PaymentDetailsStep = ({
             {nativeEvent: {contentOffset: {y: scrollY}}},
           ],
           {useNativeDriver: false})}>
-          <MembershipRequest />
+          <MembershipRequest/>
 
           <CreateStepHeader
             isFirstStepSkipped={skipFirstStep}
@@ -195,7 +248,7 @@ const PaymentDetailsStep = ({
               // padding: 24,
               backgroundColor: 'white',
             }}>
-            <RequestStepHeaderTitle title="Payment Details" subtitle={subtitle} />
+            <RequestStepHeaderTitle title="Payment Details" subtitle={subtitle}/>
             <TextInputField
               label="Credit card number"
               value={testCard ? '4007410000000006' : paymentFormStore.getFormField(RequestToJoinForm.FIELD_CARD_NUMBER)?.value}
@@ -352,5 +405,5 @@ PaymentDetailsStep.propTypes = {
 
 export default inject(
   'bottomSheetStore',
-  'userStore',
+  'userStore'
 )(PaymentDetailsStep);
