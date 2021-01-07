@@ -5,7 +5,15 @@ import {observer} from 'mobx-react';
 import {layout, colors, font} from '~/Theme';
 import {string, func, bool, number, object, oneOfType} from 'prop-types';
 
-const CharCount = ({currCount, maxLength}) => <Text style = {{color: currCount === maxLength ? colors.greyText : colors.grey3, paddingTop: 5}}>{currCount}/{maxLength}</Text>;
+const CharCount = ({currCount, maxLength}) => (
+  <Text
+    style={{
+      color: currCount === maxLength ? colors.greyText : colors.grey3,
+      paddingTop: 5,
+    }}>
+    {currCount}/{maxLength}
+  </Text>
+);
 
 export const Label = ({label, infoLabel}) => (
   <View style={{flexDirection: 'row', marginBottom: 8}}>
@@ -15,7 +23,6 @@ export const Label = ({label, infoLabel}) => (
 );
 
 class TextInputField extends React.Component {
-
   fieldValidation;
 
   constructor(props) {
@@ -34,14 +41,27 @@ class TextInputField extends React.Component {
       const {formStore, name, multiName} = this.props.validation;
       formStore.removeFormField(name, multiName);
     }
-  }
+  };
 
   validate = ({validation, value}) => {
-    const {name, formStore, validateRule,
-      multiName, invisibleContainer = true,
-      displayName, customErrorMessage, immediateValidation} = validation;
+    const {
+      name,
+      formStore,
+      validateRule,
+      multiName,
+      invisibleContainer = true,
+      displayName,
+      customErrorMessage,
+      immediateValidation,
+    } = validation;
 
-    formStore.registerFormField(name, validateRule, value, multiName, immediateValidation);
+    formStore.registerFormField(
+      name,
+      validateRule,
+      value,
+      multiName,
+      immediateValidation,
+    );
     this.fieldValidation = (
       <ValidationMessage
         displayName={displayName}
@@ -49,9 +69,10 @@ class TextInputField extends React.Component {
         formStore={formStore}
         name={name}
         multiName={multiName}
-        invisibleContainer={invisibleContainer} />
+        invisibleContainer={invisibleContainer}
+      />
     );
-  }
+  };
 
   onChangeText = (text) => {
     const currText = this.props.format ? this.props.format(text) : text;
@@ -61,7 +82,9 @@ class TextInputField extends React.Component {
     this.props.onChangeText && this.props.onChangeText(currText);
   };
 
-  onFocus = (e) => {this.setState({onFocus: true});};
+  onFocus = (e) => {
+    this.setState({onFocus: true});
+  };
 
   onBlur = (e) => {
     const {formStore, name, multiName} = this.props.validation;
@@ -92,7 +115,10 @@ class TextInputField extends React.Component {
 
     styleTextfield = formStore.getFormField(name, multiName).error
       ? {...styles.textfieldContainer, ...{borderColor: colors.error}}
-      : {...styles.textfieldContainer, ...{borderColor: this.state.onFocus ? colors.mainBlue : colors.grey4}};
+      : {
+          ...styles.textfieldContainer,
+          ...{borderColor: this.state.onFocus ? colors.mainBlue : colors.grey4},
+        };
 
     if (multiline) {
       const rowsNumber = numberOfLines || 4;
@@ -105,12 +131,17 @@ class TextInputField extends React.Component {
       };
     }
 
-    const getValue = () => validation ? validation.formStore.getFormField(validation.name, validation.multiName).value.toString() : value;
+    const getValue = () =>
+      validation
+        ? validation.formStore
+            .getFormField(validation.name, validation.multiName)
+            .value.toString()
+        : value;
 
     return (
       <View style={{alignSelf: 'stretch', paddingBottom: 5}}>
         {(label || infoLabel) && <Label {...{label, infoLabel}} />}
-        <View style = {styleTextfield} >
+        <View style={styleTextfield}>
           <TextInput
             ref={this.props.forwardRef}
             {...defaultMultilineProps}
@@ -125,12 +156,15 @@ class TextInputField extends React.Component {
             onFocus={this.onFocus}
             onBlur={this.onBlur}
             secureTextEntry={this.state.showPassword}
-            value={getValue()}/>
-          {maxLength && <CharCount currCount={this.state.charsLeft} maxLength={maxLength} />}
+            value={getValue()}
+          />
+          {maxLength && (
+            <CharCount currCount={this.state.charsLeft} maxLength={maxLength} />
+          )}
         </View>
       </View>
     );
-  }
+  };
 
   render() {
     const {viewStyle, validation} = this.props;
@@ -200,8 +234,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     flex: 1,
   },
-  textfieldContainer:
-  {
+  textfieldContainer: {
     borderWidth: 1,
     borderRadius: 3,
     flexDirection: 'row',

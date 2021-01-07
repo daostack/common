@@ -30,17 +30,17 @@ const GSignInButton: React.FC<InferProps<typeof props>> = ({
     } catch (error) {
       userStore.setIsLoading(false);
       switch (error.code) {
-      case statusCodes.SIGN_IN_CANCELLED:
-        userStore.setSignInError('Canceled');
-        break;
-      case statusCodes.IN_PROGRESS:
-        logger.log('SignIn in progress');
-        break;
-      case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-        userStore.setSignInError('play services not available or outdated');
-        break;
-      default:
-        userStore.setSignInError(error);
+        case statusCodes.SIGN_IN_CANCELLED:
+          userStore.setSignInError('Canceled');
+          break;
+        case statusCodes.IN_PROGRESS:
+          logger.log('SignIn in progress');
+          break;
+        case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+          userStore.setSignInError('play services not available or outdated');
+          break;
+        default:
+          userStore.setSignInError(error);
       }
     }
   };

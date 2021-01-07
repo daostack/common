@@ -1,6 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Dimensions, Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import {inject, observer} from 'mobx-react';
 import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
@@ -39,7 +46,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
 const MonthlyContributionsList = ({userStore, navigation}) => {
   const [subs, setSubs] = React.useState(null);
 
@@ -51,35 +57,30 @@ const MonthlyContributionsList = ({userStore, navigation}) => {
     })();
   }, []);
 
-
   return (
     <ScrollView
       style={styles.scrollView}
-      contentContainerStyle={styles.content}
-    >
-      {(subs === null) && (
+      contentContainerStyle={styles.content}>
+      {subs === null && (
         <React.Fragment>
           {[1, 1, 1, 1].map((i, index) => (
             <View style={styles.item} key={index}>
               <Placeholder Animation={Fade}>
-                <PlaceholderLine width={20}/>
-                <PlaceholderLine width={60}/>
-                <PlaceholderLine width={65}/>
-                <PlaceholderLine width={10}/>
+                <PlaceholderLine width={20} />
+                <PlaceholderLine width={60} />
+                <PlaceholderLine width={65} />
+                <PlaceholderLine width={10} />
               </Placeholder>
             </View>
           ))}
-
         </React.Fragment>
       )}
 
-      {(subs?.length === 0) && (
+      {subs?.length === 0 && (
         <View style={styles.container}>
-          <Image source={require('../../Assets/Subscriptions/funds.png')}/>
+          <Image source={require('../../Assets/Subscriptions/funds.png')} />
 
-          <Text style={styles.title}>
-            No Monthly Contributions
-          </Text>
+          <Text style={styles.title}>No Monthly Contributions</Text>
 
           <Text style={styles.subtitle}>
             You don't have any active monthly contributions yet.
@@ -87,7 +88,7 @@ const MonthlyContributionsList = ({userStore, navigation}) => {
         </View>
       )}
 
-      {(!!subs?.length) && (
+      {!!subs?.length && (
         <React.Fragment>
           {subs.map((subscription, index) => (
             <View style={styles.item} key={index}>
@@ -114,7 +115,4 @@ MonthlyContributionsList.propTypes = {
   }),
 };
 
-export default inject(
-  'userStore'
-)(observer(MonthlyContributionsList));
-
+export default inject('userStore')(observer(MonthlyContributionsList));

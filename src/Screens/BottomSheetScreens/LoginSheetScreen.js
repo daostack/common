@@ -17,7 +17,10 @@ const LoginSheetScreen = ({bottomSheetStore, message = null}) => (
     </Text>
 
     <View style={layout.flexRow}>
-      <CreateAccount hidePlaceholder={true} onSignedIn={() => bottomSheetStore.hideBottomSheet()} />
+      <CreateAccount
+        hidePlaceholder={true}
+        onSignedIn={() => bottomSheetStore.hideBottomSheet()}
+      />
     </View>
   </View>
 );
@@ -69,5 +72,3 @@ const styles = StyleSheet.create({
 });
 
 export default inject('bottomSheetStore')(observer(LoginSheetScreen));
-
-

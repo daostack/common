@@ -4,23 +4,14 @@ import {CommonBox} from '~/Components';
 import SwiperCard from '~/Components/SwiperCard';
 import DaoService from '~/Services/DaoService';
 import {layout, text, font, colors} from '~/Theme';
-import {
-  Placeholder,
-  PlaceholderMedia,
-  Fade,
-} from 'rn-placeholder';
+import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import {isDaoMemberByUserId} from '~/Util';
 import {CommonActions} from '@react-navigation/native';
 import {string, object, number, func} from 'prop-types';
 
 const DEFAULT_HEADER_HEIGHT = 145;
 
-const CommonsSwiper = ({
-  navigation,
-  userId,
-  onCountChange,
-  showMax,
-}) => {
+const CommonsSwiper = ({navigation, userId, onCountChange, showMax}) => {
   const [myDaos, setMyDaos] = useState(myDaos);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
   let listRef = useRef([]);
@@ -60,7 +51,10 @@ const CommonsSwiper = ({
   useEffect(() => {
     let unsubscribe = null;
     const getMyDaos = async () => {
-      unsubscribe = await DaoService.getInstance().subscribeToMyDaosList(userId, loadMydaos);
+      unsubscribe = await DaoService.getInstance().subscribeToMyDaosList(
+        userId,
+        loadMydaos,
+      );
     };
 
     getMyDaos();
@@ -70,7 +64,6 @@ const CommonsSwiper = ({
       }
     };
   }, [userId]);
-
 
   const headerHeightLayouted = (height) => {
     setHeaderHeight(height);
@@ -86,20 +79,23 @@ const CommonsSwiper = ({
     navigation.dispatch(navigate);
   };
 
-  const renderCommonCard = (item, index) => (
-    (!showMax || (index < showMax))
-      ? <CommonBox
+  const renderCommonCard = (item, index) =>
+    !showMax || index < showMax ? (
+      <CommonBox
         key={item.id}
         common={item}
         navigation={navigation}
         onPress={() => navigateToCommon(item)}
-        headerHeightLayouted={headerHeightLayouted}/>
-      : <TouchableOpacity
+        headerHeightLayouted={headerHeightLayouted}
+      />
+    ) : (
+      <TouchableOpacity
         onPress={() => navigation.navigate('MyCommons')}
         style={{...styles.commonBox, height: headerHeight}}>
-        <Text style={text.buttonblue}>{`View all ${myDaos.length} Commons`}</Text>
+        <Text
+          style={text.buttonblue}>{`View all ${myDaos.length} Commons`}</Text>
       </TouchableOpacity>
-  );
+    );
 
   const listChangeCallback = (newList) => {
     setMyDaos(newList);
@@ -127,9 +123,8 @@ const CommonsSwiper = ({
           source={require('../../../src/Assets/group.png')}
         />
         <Text style={{...text.h2Black, ...layout.marginTopS}}>No Commons</Text>
-        <Text
-          style={styles.textNoCommons}>
-            Join your first common and start making an impact
+        <Text style={styles.textNoCommons}>
+          Join your first common and start making an impact
         </Text>
         <View style={{flexDirection: 'row'}}>
           <TouchableOpacity

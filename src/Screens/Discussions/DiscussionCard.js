@@ -70,7 +70,8 @@ const DiscussionCard = ({
   }, [data]);
 
   useEffect(() => {
-    const unsubscribe = db.collection('discussionMessage')
+    const unsubscribe = db
+      .collection('discussionMessage')
       .where('discussionId', '==', discussionId)
       .onSnapshot((snapshot) => {
         setMsgCount(snapshot.docs.length);
@@ -88,15 +89,14 @@ const DiscussionCard = ({
   };
 
   const showOptions = () => {
-    bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
-      {onFollow: follow},
-    );
+    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS, {
+      onFollow: follow,
+    });
   };
 
   return (
     <>
-      <TouchableOpacity onPress={() => navigateToDiscussion()}      >
+      <TouchableOpacity onPress={() => navigateToDiscussion()}>
         <View style={styles.container}>
           <TouchableOpacity onPress={showOptions}>
             <Icon name="menu" size={20} />
@@ -105,32 +105,26 @@ const DiscussionCard = ({
             {data.title}
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            {
-              user.photoURL ? <FastImage
-                style={styles.image}
-                source={{uri: user.photoURL}}
-              /> : <View
-                style={styles.displayNameContainer}
-              >
+            {user.photoURL ? (
+              <FastImage style={styles.image} source={{uri: user.photoURL}} />
+            ) : (
+              <View style={styles.displayNameContainer}>
                 <Text style={styles.displayName}>
                   {user.displayName && user.displayName.substring(0, 1)}
                 </Text>
               </View>
-
-            }
+            )}
             <View style={styles.primaryNameContainer}>
-              <Text
-                style={styles.primaryName}>
-                {user.displayName}
-              </Text>
+              <Text style={styles.primaryName}>{user.displayName}</Text>
               {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
               <Text style={styles.date}>
                 {moment(data.createTime.toDate()).fromNow()}
               </Text>
             </View>
           </View>
-          <Text style={{...styles.message,
-            ...text.writingDirection(data.message)}} numberOfLines={3}>
+          <Text
+            style={{...styles.message, ...text.writingDirection(data.message)}}
+            numberOfLines={3}>
             {data.message}
           </Text>
           <View
@@ -148,8 +142,7 @@ const DiscussionCard = ({
               <TouchableOpacity
                 style={{justifyContent: 'center', alignSelf: 'center'}}
                 onPress={() => navigateToDiscussion()}>
-                <Text
-                  style={styles.startTheDiscussion}>
+                <Text style={styles.startTheDiscussion}>
                   Start the discussion
                 </Text>
               </TouchableOpacity>
@@ -158,18 +151,14 @@ const DiscussionCard = ({
             <View style={styles.messageCountContainer}>
               <View style={styles.messageCountContainer}>
                 <Icon name="discussion" size={20} />
-                <Text
-                  style={styles.msgCount}>
-                  {msgCount}
-                </Text>
+                <Text style={styles.msgCount}>{msgCount}</Text>
               </View>
               {/* <TouchableOpacity onPress={() => navigateToDiscussion()}> */}
               <TouchableOpacity
                 style={styles.navigateToDiscussion}
                 onPress={() => navigateToDiscussion()}>
-                <Text
-                  style={styles.joinTheDiscussion}>
-                    Join the discussion
+                <Text style={styles.joinTheDiscussion}>
+                  Join the discussion
                 </Text>
                 <Icon name="right-arrow" size={20} color={colors.mainBlue} />
               </TouchableOpacity>

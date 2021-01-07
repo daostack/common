@@ -12,7 +12,8 @@ export default class NotificationService {
     }
     const userId = auth().currentUser.uid;
     const token = await messaging().getToken();
-    await db.collection('users')
+    await db
+      .collection('users')
       .doc(userId)
       .update({
         tokens: firestore.FieldValue.arrayUnion(token),

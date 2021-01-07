@@ -19,15 +19,12 @@ import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';
 const {width, height} = Dimensions.get('window');
 
-const RulesStep = ({navigation,
+const RulesStep = ({
+  navigation,
   route: {
-    params: {
-      formStores,
-      currCommon,
-      currDaoId,
-      refreshFeed,
-    },
-  }}) => {
+    params: {formStores, currCommon, currDaoId, refreshFeed},
+  },
+}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const [pass, setPass] = useState(false);
@@ -68,10 +65,7 @@ const RulesStep = ({navigation,
           flex: 1,
           backgroundColor: 'white',
         }}>
-        <CreateStepNavigation
-          navigation={navigation}
-          title={currCommon.name}
-        />
+        <CreateStepNavigation navigation={navigation} title={currCommon.name} />
         <CreateStepDotHeader
           title="Approve Common Rules"
           currentIndex={1}
@@ -83,30 +77,27 @@ const RulesStep = ({navigation,
           onScrollEndDrag={onScrollToBottom}
           scrollEventThrottle={16}
           width={width}
-          onScroll={Animated.event([
-            {
-              nativeEvent: {
-                contentOffset: {y: scrollY},
+          onScroll={Animated.event(
+            [
+              {
+                nativeEvent: {
+                  contentOffset: {y: scrollY},
+                },
               },
-            },
-          ],
-          {useNativeDriver: false})
-          }
+            ],
+            {useNativeDriver: false},
+          )}
           contentContainerStyle={{
             alignItems: 'center',
             justifyContent: 'center',
             padding: 24,
           }}
           onContentSizeChange={(_width, contentHeight) => {
-            contentHeight < (height - 150) && setPass(true);
-          }}
-        >
+            contentHeight < height - 150 && setPass(true);
+          }}>
           <MembershipRequest />
 
-          <CreateStepHeader
-            currentIndex={0}
-            isFirstStepSkipped={false}
-          />
+          <CreateStepHeader currentIndex={0} isFirstStepSkipped={false} />
 
           <View
             style={{
@@ -119,7 +110,7 @@ const RulesStep = ({navigation,
               subtitle="If the Common approves your request you will become a member with equal voting rights."
             />
 
-            <View style={styles.content}/>
+            <View style={styles.content} />
 
             {currCommon?.rules?.length > 0 &&
               currCommon.rules.map((rule, index) => (

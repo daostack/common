@@ -11,17 +11,20 @@ import {countryList} from '../../Util/countries';
 import {colors} from '../../Theme';
 import {Label} from './TextInputField';
 
-
 export const CountrySelectField = ({onChange, ...props}) => {
   const [countryIndex, setCountryIndex] = React.useState(0);
-  const [selectedCountries, setSelectedCountries] = React.useState([countryList[0]]);
+  const [selectedCountries, setSelectedCountries] = React.useState([
+    countryList[0],
+  ]);
 
   React.useEffect(() => {
     getCountryIndex(RNLocalize.getCountry());
   }, []);
 
   const getCountryIndex = (country) => {
-    const index = countryList.findIndex((countryObj) => countryObj.value === country);
+    const index = countryList.findIndex(
+      (countryObj) => countryObj.value === country,
+    );
     onChange && onChange(country);
     setCountryIndex(index || 0);
   };
@@ -29,7 +32,7 @@ export const CountrySelectField = ({onChange, ...props}) => {
   return (
     <View style={styles.container}>
       {(props.label || props.infoLabel) && (
-        <Label label={props.label} infoLabel={props.infoLabel}/>
+        <Label label={props.label} infoLabel={props.infoLabel} />
       )}
 
       <SearchableDropdown
@@ -41,17 +44,15 @@ export const CountrySelectField = ({onChange, ...props}) => {
         itemStyle={styles.itemStyle}
         itemTextStyle={{color: 'black'}}
         itemsContainerStyle={styles.itemsContainerStyle}
-        items= {countryList.filter((country) => country.payin)}
+        items={countryList.filter((country) => country.payin)}
         defaultIndex={countryIndex}
         resetValue={false}
-        textInputProps={
-          {
-            placeholder: countryList[countryIndex].name,
-            placeholderTextColor: 'black',
-            underlineColorAndroid: 'transparent',
-            style: styles.textInput,
-          }
-        }
+        textInputProps={{
+          placeholder: countryList[countryIndex].name,
+          placeholderTextColor: 'black',
+          underlineColorAndroid: 'transparent',
+          style: styles.textInput,
+        }}
         listProps={{nestedScrollEnabled: true}}
       />
 
@@ -108,10 +109,7 @@ CountrySelectField.propTypes = {
     name: string,
     formStore: object,
     displayName: string,
-    validateRule: oneOfType([
-      string,
-      object,
-    ]),
+    validateRule: oneOfType([string, object]),
     invisibleContainer: bool,
     customErrorMessage: string,
   }),

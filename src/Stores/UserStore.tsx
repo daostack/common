@@ -1,12 +1,11 @@
 import {observable, action, decorate} from 'mobx';
 import {isDaoMemberByUserId} from '~/Util';
-import Cache from '../Util/Cache';
 import logger from '~/Services/Logger';
 import AuthService from '~/Services/AuthService';
 import UserService from '~/Services/UserService';
 import NotificationService from '~/Services/NotificationService';
 import {auth} from '~/Firebase';
-import { UserListStore } from './DbStores/UserListStore';
+import {UserListStore} from './DbStores/UserListStore';
 import {filterObjectByKeys} from '~/Util';
 
 export const userInfoFields = [
@@ -18,9 +17,8 @@ export const userInfoFields = [
   'updatedAt',
   'createdAt',
 ];
-
-type SignInErrorWithCode = any
-type UserInfo = any
+type SignInErrorWithCode = any;
+type UserInfo = any;
 class UserStore {
   userInfo: UserInfo;
   signedInUser: any;
@@ -43,27 +41,42 @@ class UserStore {
   }
 
   onAuthStateChanged = async (user) => {
-    logger.log('AUTH STATE CHANGED:', user?.uid, user?.email, user?.displayName, user);
+    logger.log(
+      'AUTH STATE CHANGED:',
+      user?.uid,
+      user?.email,
+      user?.displayName,
+      user,
+    );
     try {
       // onAuthStateChanged method is called on many events, not only when the logged in user is changed.
       // In order to prevent unwanted rerendering we need to make some checks.
-      if (!this.isLoginInProgressExists(user?.uid) && this.userInfo?.uid !== user?.uid) {
+      if (
+        !this.isLoginInProgressExists(user?.uid) &&
+        this.userInfo?.uid !== user?.uid
+      ) {
         if (user) {
           this.setIsLoading(true);
           this.addLoginInProgress(user?.uid);
           const providerId = user.providerData[0].providerId;
-          let appUser = this.userListStore.getUserById(user.uid);// await Cache.get(user.uid);
+          let appUser = this.userListStore.getUserById(user.uid); // await Cache.get(user.uid);
 
           if (!appUser) {
-            appUser = await UserService.getInstance().getUserById(
-              user.uid,
-            );
+            appUser = await UserService.getInstance().getUserById(user.uid);
           }
           const isNewUser = !appUser;
 
           if (isNewUser) {
-            const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
-            const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
+            const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(
+              providerId,
+            );
+            const userInfo = {
+              ...user._user,
+              ...{
+                firstName: providerUserInfo.user.givenName,
+                lastName: providerUserInfo.user.familyName,
+              },
+            };
             appUser = await AuthService.getInstance().createUser(userInfo);
           }
 
@@ -89,7 +102,6 @@ class UserStore {
       logger.log(error);
       throw error;
     }
-
   };
 
   setSignInError = (error: SignInErrorWithCode) => {
@@ -106,7 +118,9 @@ class UserStore {
     this.loginInProgress.push(uid);
   };
   removeLoginInProgress = (uid: any) => {
-    this.loginInProgress = this.loginInProgress.filter((item: any) => item !== uid);
+    this.loginInProgress = this.loginInProgress.filter(
+      (item: any) => item !== uid,
+    );
   };
   isLoginInProgressExists = (uid: any) =>
     this.loginInProgress.filter((item: any) => item === uid).length > 0;

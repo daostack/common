@@ -22,7 +22,7 @@ export default class StorageService {
     return await ref.getDownloadURL();
   }
 
-  async getPathForFirebaseStorage (uri, name) {
+  async getPathForFirebaseStorage(uri, name) {
     if (Platform.OS === 'ios') {
       return uri;
     }
@@ -35,9 +35,10 @@ export default class StorageService {
   }
 
   async uploadFile(fileUri, name) {
-    const path = Platform.OS === 'ios'
-      ? `public_file/_${name}_`
-      : await this.getPathForFirebaseStorage(fileUri, name);
+    const path =
+      Platform.OS === 'ios'
+        ? `public_file/_${name}_`
+        : await this.getPathForFirebaseStorage(fileUri, name);
 
     const ref = storage.ref(path);
     const putFilePath = Platform.OS === 'ios' ? fileUri : path;

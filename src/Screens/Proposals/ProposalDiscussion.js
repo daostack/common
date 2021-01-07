@@ -1,5 +1,12 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {Text, StyleSheet, SectionList, View, Image, Dimensions} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  SectionList,
+  View,
+  Image,
+  Dimensions,
+} from 'react-native';
 import {layout, text, colors, font} from '~/Theme';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
@@ -24,7 +31,8 @@ const ProposalDiscussion = ({userListStore, proposal, proposalId, scrollViewRef}
 
   let listRef = useRef([]);
   useEffect(() => {
-    const unsubscribe = db.collection('discussionMessage')
+    const unsubscribe = db
+      .collection('discussionMessage')
       .where('discussionId', '==', proposalId)
       .orderBy('createTime', 'desc')
       // .startAt(0)
@@ -61,14 +69,13 @@ const ProposalDiscussion = ({userListStore, proposal, proposalId, scrollViewRef}
 
             setMsgGroup(groupDate);
 
-
             chatRef.current.scrollToLocation({
               animated: true,
               itemIndex: msgList.length + groupDate.length - 1,
             });
           }
         },
-        (error) => logger.error(error)
+        (error) => logger.error(error),
       );
     return () => {
       unsubscribe();
@@ -82,7 +89,8 @@ const ProposalDiscussion = ({userListStore, proposal, proposalId, scrollViewRef}
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: colors.paleGrey, ...layout.content}}>
+    <View
+      style={{flex: 1, backgroundColor: colors.paleGrey, ...layout.content}}>
       {msgGroups.length > 0 ? (
         <SectionList
           inverted
@@ -94,7 +102,6 @@ const ProposalDiscussion = ({userListStore, proposal, proposalId, scrollViewRef}
             paddingTop: 100,
             width: Dimensions.get('screen').width * 0.9,
           }}
-
           renderItem={(x) => (
             <DiscussionMessage
               data={x.item}
@@ -102,11 +109,9 @@ const ProposalDiscussion = ({userListStore, proposal, proposalId, scrollViewRef}
               outcome={getOutcomeForMessage(proposal, x.item)}
             />
           )}
-
           onScrollToIndexFailed={(info) => {
             logger.error('Something bad happened: ', info);
           }}
-
           renderSectionFooter={({section: {date}}) => (
             <Text style={styles.timeHeader}>
               {moment().isSame(date, 'day') ? 'Today' : date}
@@ -123,11 +128,10 @@ const ProposalDiscussion = ({userListStore, proposal, proposalId, scrollViewRef}
             }}
           />
 
-          <Text style={styles.emptyTitle}>
-            No comments yet
-          </Text>
+          <Text style={styles.emptyTitle}>No comments yet</Text>
           <Text style={styles.emptyBody}>
-            Have any thoughts? Share them with other members by adding the first comment.
+            Have any thoughts? Share them with other members by adding the first
+            comment.
           </Text>
         </View>
       )}
@@ -137,10 +141,12 @@ const ProposalDiscussion = ({userListStore, proposal, proposalId, scrollViewRef}
 
 ProposalDiscussion.propTypes = {
   proposal: shape({
-    votes: arrayOf(shape({
-      voter: string,
-      outcome: number,
-    })),
+    votes: arrayOf(
+      shape({
+        voter: string,
+        outcome: number,
+      }),
+    ),
   }),
   proposalId: string,
   scrollViewRef: PropTypes.any,
