@@ -2,7 +2,6 @@ import React from 'react';
 import {Text, StyleSheet} from 'react-native';
 import {string, bool} from 'prop-types';
 
-
 import {colors, font} from '~/Theme';
 
 const styles = StyleSheet.create({
@@ -30,15 +29,9 @@ const CreateStep4Indicators = ({contribution, date, title, value}) => (
   <>
     <Text style={styles.text}>{title}</Text>
 
-    <Text style={styles.val}>
-      {contribution ? `$${value}` : value}
-    </Text>
+    <Text style={styles.val}>{contribution ? `$${value}` : value}</Text>
 
-    {!contribution && (
-      <Text style={styles.date}>
-        {date}
-      </Text>
-    )}
+    {!contribution && <Text style={styles.date}>{date}</Text>}
   </>
 );
 

@@ -5,10 +5,12 @@ import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
 import {string, object} from 'prop-types';
 
-
 const UserMessageCard = ({photoURL, name, message, time}) => (
   <View style={styles.messageCardContainer}>
-    <FastImage style={styles.userImage} source={photoURL ? {uri: photoURL} : null} />
+    <FastImage
+      style={styles.userImage}
+      source={photoURL ? {uri: photoURL} : null}
+    />
     <View style={styles.messageContainer}>
       <Text style={styles.nameStyle}>{name}</Text>
       <Text style={styles.messageStyle}>{message}</Text>

@@ -11,7 +11,8 @@ const DiscussionList = ({commonId, navigation}) => {
 
   let listRef = useRef([]);
   useEffect(() => {
-    const unsubscribe = db.collection('discussion')
+    const unsubscribe = db
+      .collection('discussion')
       .where('commonId', '==', commonId)
       .orderBy('lastMessage', 'desc')
       .onSnapshot(
@@ -25,8 +26,8 @@ const DiscussionList = ({commonId, navigation}) => {
                 newList.push({
                   id: doc.id,
                   ...doc.data(),
-                });}
-              );
+                });
+              });
               listRef.current = newList;
               setList(listRef.current);
             }

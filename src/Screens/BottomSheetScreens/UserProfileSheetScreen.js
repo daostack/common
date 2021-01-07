@@ -14,7 +14,7 @@ const UserProfileSheetScreen = ({navigation, userId}) => (
   <>
     <StatusBar barStyle="dark-content" />
 
-    <SafeAreaView style={styles.safeArea} >
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={styles.scrollView}

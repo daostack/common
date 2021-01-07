@@ -31,8 +31,10 @@ const isRTL = (text) => {
 
 type Style = {
   [key: string]: TextStyle;
-} & {writingDirection: (text: string) => TextStyle;
-  textAlign: (text: string) => TextStyle}
+} & {
+  writingDirection: (text: string) => TextStyle;
+  textAlign: (text: string) => TextStyle;
+};
 
 export default StyleSheet.create<Style>({
   writingDirection: (text) => ({writingDirection: isRTL(text) ? 'rtl' : 'ltr'}),

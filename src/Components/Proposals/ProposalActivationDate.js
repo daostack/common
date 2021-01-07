@@ -7,7 +7,6 @@ import Icon from '~/Assets/iconfont/Icon';
 import {text, layout, colors, font} from '~/Theme';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 
-
 const ProposalActivationDate = ({activationDate, bottomSheetStore}) => {
   const deadlineMoment = moment.unix(activationDate);
   const deadlineHasPassed = moment().isAfter(deadlineMoment);
@@ -15,7 +14,7 @@ const ProposalActivationDate = ({activationDate, bottomSheetStore}) => {
   const onAboutClick = () => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SAFETY_PERIOD_ABOUT,
-      {activationDate}
+      {activationDate},
     );
   };
 
@@ -23,15 +22,14 @@ const ProposalActivationDate = ({activationDate, bottomSheetStore}) => {
     <View style={styles.container}>
       {/* <Text style={styles.title}>Safety period</Text> */}
       <Text>
-        <Text style={styles.subtitle}>You will be able to create proposals </Text>
-        <Text style={[ styles.subtitle, {fontWeight: 'bold'} ]}>
+        <Text style={styles.subtitle}>
+          You will be able to create proposals{' '}
+        </Text>
+        <Text style={[styles.subtitle, {fontWeight: 'bold'}]}>
           {!deadlineHasPassed ? deadlineMoment.fromNow() : ''}
         </Text>
       </Text>
-      <TouchableOpacity
-        style={styles.explanationBtn}
-        onPress={onAboutClick}
-      >
+      <TouchableOpacity style={styles.explanationBtn} onPress={onAboutClick}>
         <Icon
           name="explanation1"
           color={colors.mainBlue}

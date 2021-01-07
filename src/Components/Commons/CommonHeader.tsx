@@ -44,13 +44,23 @@ const CommonHeader: React.FC<InferProps<typeof props>> = ({
       onLayout={(event) => {
         headerHeightLayouted(event.nativeEvent.layout.height);
       }}
-      style={styles.headerContainer}
-    >
-      {logo && <FastImage style={styles.logoImage as StyleProp<ImageStyle>} source={{uri: logo}} />}
+      style={styles.headerContainer}>
+      {logo && (
+        <FastImage
+          style={styles.logoImage as StyleProp<ImageStyle>}
+          source={{uri: logo}}
+        />
+      )}
       <Text style={styles.headerTitleWhite} numberOfLines={5}>
         {name}
       </Text>
-      <Text style={{...text.textFieldfocus, color: colors.white, textAlign: 'center'}} numberOfLines={5}>
+      <Text
+        style={{
+          ...text.textFieldfocus,
+          color: colors.white,
+          textAlign: 'center',
+        }}
+        numberOfLines={5}>
         {byline}
       </Text>
       <Text style={styles.headerDescription} numberOfLines={4}>
@@ -62,8 +72,7 @@ const CommonHeader: React.FC<InferProps<typeof props>> = ({
             paddingVertical: 10,
             paddingHorizontal: 15,
             borderRadius: 10,
-          }}
-        >
+          }}>
           <TouchableOpacity onPress={openAgendaScreen}>
             <View style={{flexDirection: 'row'}}>
               <Text style={styles.headerViewAgenda}>View agenda</Text>

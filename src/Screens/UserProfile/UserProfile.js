@@ -8,13 +8,13 @@ import {
   Linking,
   Alert,
 } from 'react-native';
+import {getVersion, getBuildNumber} from 'react-native-device-info';
 import React, {useEffect, useState} from 'react';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {layout, colors, text, sizeL, font} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import AccordionBtn from '~/Components/AccordionBtn';
 import CreateAccount from './CreateAccount';
-import VersionNumber from 'react-native-version-number';
 import {CommonActions} from '@react-navigation/native';
 import UserProfileData from '~/Components/UserProfileData';
 import AuthService from '~/Services/AuthService';
@@ -48,29 +48,22 @@ const UserProfile = ({userStore, navigation, route}) => {
 
   const _logout = async () => {
     try {
-      Alert.alert(
-        'Oops',
-        'Do you want to sign out?',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => logger.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {
-            text: 'OK',
-            onPress: async () => {
+      Alert.alert('Oops', 'Do you want to sign out?', [
+        {
+          text: 'Cancel',
+          onPress: () => logger.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: async () => {
             // That loading status will be changed to false in the onAuthStateChanged method in App.js
-              userStore.setIsLoading(true);
+            userStore.setIsLoading(true);
 
-              await AuthService
-                .getInstance()
-                .signOut();
-            },
+            await AuthService.getInstance().signOut();
           },
-        ],
-      );
-
+        },
+      ]);
     } catch (error) {
       await AuthService.getInstance().clearGoogleSignInCache();
       userStore.setIsLoading(false);
@@ -95,7 +88,9 @@ const UserProfile = ({userStore, navigation, route}) => {
     navigation.navigate('HUDTest');
   };
 
-  const renderUnsignedUserData = () => <CreateAccount onSignedIn={onUserSignedIn} />;
+  const renderUnsignedUserData = () => (
+    <CreateAccount onSignedIn={onUserSignedIn} />
+  );
 
   const renderUserProfileData = (currUserId, userInfo) => (
     <UserProfileData
@@ -116,55 +111,68 @@ const UserProfile = ({userStore, navigation, route}) => {
           contentInsetAdjustmentBehavior="automatic"
           vertical={true}
           nestedScrollEnabled={true}
-          directionalLockEnabled={true}
-        >
+          directionalLockEnabled={true}>
           <View style={styles.body}>
             {currUserId
               ? renderUserProfileData(currUserId, route.params?.userInfo)
               : renderUnsignedUserData()}
           </View>
-          {
-            (!route.params?.userId || route.params.userId === userStore.userInfo?.uid) ?
-              <>
-                <View style={layout.marginTopL}>
-                  {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
-                  <AccordionBtn onPress={() => Linking.openURL('https://common.io/tos')} title="Terms of use" />
-                  <AccordionBtn onPress={() => Linking.openURL('https://common.io/privacy')} title="Privacy Policy" />
-                  <AccordionBtn onPress={() => Linking.openURL('https://common.io/help')} title="Help" />
-                  <AccordionBtn onPress={() => Linking.openURL('mailto:hi@common.io')} title="Contact us" />
-                  {userStore.userInfo && (
-                    <React.Fragment>
-                      <AccordionBtn
-                        title="Monthly Contributions"
-                        onPress={() => {
-                          navigation.navigate('MonthlyContributionsList');
-                        }}
-                      />
+          {!route.params?.userId ||
+          route.params.userId === userStore.userInfo?.uid ? (
+            <>
+              <View style={layout.marginTopL}>
+                {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
+                <AccordionBtn
+                  onPress={() => Linking.openURL('https://common.io/tos')}
+                  title="Terms of use"
+                />
+                <AccordionBtn
+                  onPress={() => Linking.openURL('https://common.io/privacy')}
+                  title="Privacy Policy"
+                />
+                <AccordionBtn
+                  onPress={() => Linking.openURL('https://common.io/help')}
+                  title="Help"
+                />
+                <AccordionBtn
+                  onPress={() => Linking.openURL('mailto:hi@common.io')}
+                  title="Contact us"
+                />
+                {userStore.userInfo && (
+                  <React.Fragment>
+                    <AccordionBtn
+                      title="Monthly Contributions"
+                      onPress={() => {
+                        navigation.navigate('MonthlyContributionsList');
+                      }}
+                    />
 
-                      <AccordionBtn
-                        lightStyle={true}
-                        title="Log out"
-                        onPress={_logout}
-                      />
-                    </React.Fragment>
-                  )}
+                    <AccordionBtn
+                      lightStyle={true}
+                      title="Log out"
+                      onPress={_logout}
+                    />
+                  </React.Fragment>
+                )}
+              </View>
+              {Config.ENV !== 'production' && (
+                <View
+                  style={{
+                    ...layout.content,
+                    paddingHorizontal: 0,
+                    backgroundColor: colors.grey4,
+                  }}>
+                  <Text style={text.h4Black}>Temporary menu</Text>
+                  <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
                 </View>
-                {
-                  Config.ENV !== 'production' && <View
-                    style={{
-                      ...layout.content,
-                      paddingHorizontal: 0,
-                      backgroundColor: colors.grey4,
-                    }}>
-                    <Text style={text.h4Black}>Temporary menu</Text>
-                    <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
-                  </View>
-
-                }
-                <Text style={styles.version}>Common{isProduction ? '' : '-stg'} v{VersionNumber.appVersion} ({VersionNumber.buildVersion}{codePushVersion ? `-${codePushVersion}` : ''})</Text>
-              </>
-              : null
-          }
+              )}
+              <Text style={styles.version}>
+                Common{isProduction ? '' : '-stg'} v{getVersion()} (
+                {getBuildNumber()}
+                {codePushVersion ? `-${codePushVersion}` : ''})
+              </Text>
+            </>
+          ) : null}
         </ScrollView>
       </SafeAreaView>
     </React.Fragment>
@@ -302,6 +310,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'userStore',
-)(observer(UserProfile));
+export default inject('userStore')(observer(UserProfile));

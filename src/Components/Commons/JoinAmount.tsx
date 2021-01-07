@@ -25,8 +25,7 @@ const JoinAmount: React.FC<InferProps<typeof props>> = ({
   return (
     <TouchableOpacity
       style={isSelected ? styles.containerSelected : styles.container}
-      onPress={onAmountPress}
-    >
+      onPress={onAmountPress}>
       <Text style={isSelected ? styles.amountSelected : styles.amount}>{`${
         isCustom ? 'Other' : `$${amount}${isMonthly ? '/mo' : ''}`
       }`}</Text>
@@ -35,7 +34,6 @@ const JoinAmount: React.FC<InferProps<typeof props>> = ({
 };
 
 JoinAmount.propTypes = props;
-
 
 const styles = StyleSheet.create({
   container: {

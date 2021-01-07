@@ -20,11 +20,24 @@ class FileField extends React.Component {
     const {validation, value} = this.props;
 
     if (validation) {
-      const {name, formStore, validateRule, multiName, displayName, customErrorMessage} = validation;
+      const {
+        name,
+        formStore,
+        validateRule,
+        multiName,
+        displayName,
+        customErrorMessage,
+      } = validation;
       formStore.registerFormField(name, validateRule, value, multiName);
 
       this.fieldValidation = (
-        <ValidationMessage displayName={displayName} customErrorMessage={customErrorMessage} formStore={formStore} name={name} multiName={multiName}/>
+        <ValidationMessage
+          displayName={displayName}
+          customErrorMessage={customErrorMessage}
+          formStore={formStore}
+          name={name}
+          multiName={multiName}
+        />
       );
     }
   }
@@ -46,7 +59,7 @@ class FileField extends React.Component {
         formStore.removeFormField(name);
       }
     }
-  }
+  };
 
   pickFile = async () => {
     try {
@@ -64,7 +77,7 @@ class FileField extends React.Component {
       Toast.loading('Uploading...');
       const downloadUrl = await StorageService.getInstance().uploadFile(
         res.uri,
-        res.name
+        res.name,
       );
       logger.log('downloadUrl', downloadUrl);
       Toast.done('Success');
@@ -82,7 +95,8 @@ class FileField extends React.Component {
     const {validation, navigation, value} = this.props;
 
     const currValue = validation
-      ? validation.formStore.getFormField(validation.name, validation.multiName)?.value
+      ? validation.formStore.getFormField(validation.name, validation.multiName)
+          ?.value
       : value;
 
     if (currValue) {
@@ -105,9 +119,7 @@ class FileField extends React.Component {
     } else {
       return (
         <TouchableOpacity onPress={this.pickFile}>
-          <Text style={styles.addFileBtn} >
-            Add File
-          </Text>
+          <Text style={styles.addFileBtn}>Add File</Text>
         </TouchableOpacity>
       );
     }
@@ -117,18 +129,17 @@ class FileField extends React.Component {
     const {value, validation} = this.props;
 
     const currValue = validation
-      ? validation.formStore.getFormField(validation.name, validation.multiName)?.value
+      ? validation.formStore.getFormField(validation.name, validation.multiName)
+          ?.value
       : value;
 
     return (
       <View style={styles.container}>
-        <View
-          style={styles.formFieldContainerGenral}>
+        <View style={styles.formFieldContainerGenral}>
           <View style={styles.fileContainer}>
             {this.renderFile()}
             {currValue ? (
-              <TouchableOpacity
-                onPress={() => this.onFieldDeleted()}>
+              <TouchableOpacity onPress={() => this.onFieldDeleted()}>
                 <Icon name="delete" size={16} />
               </TouchableOpacity>
             ) : null}
@@ -144,10 +155,7 @@ FileField.propTypes = {
   validation: shape({
     name: string,
     formStore: object,
-    validateRule: oneOfType([
-      string,
-      object,
-    ]),
+    validateRule: oneOfType([string, object]),
     multiName: string,
     displayName: string,
     customErrorMessage: string,
