@@ -131,23 +131,6 @@ const CreateStep4 = ({
       };
       logger.log('calling createCommon(...)');
 
-      console.log(data);
-
-      // {
-      // "byline": "уиуиуеиуеи",
-      // "contribution": "one-time",
-      // "contributionAmount": 500,
-      // "contributionType": "one-time",
-      // "deadline": 1610522929,
-      // "description": "еуиуеиуеиуи",
-      // "founderId": "H5ZkcKBX5eXXNyBiPaph8EHCiax2",
-      // "fundingGoal": NaN,
-      // "fundingGoalDeadline": 1610522929,
-      // "image": "https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_03.png?alt=media",
-      // "minFeeToJoin": 500,
-      // "minimum": "5", "name": "иуиууеиу", "rules": [{"title": "Rewrw", "value": "rewwerwer"}, {"title": "Rwrwerw", "value": "rwerewr"}]}
-
-
       const formattedData = {
         name: data.name,
         image: data.image,

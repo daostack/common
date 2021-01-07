@@ -27,8 +27,6 @@ import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import ProposalService from '~/Services/ProposalService';
 import {CommonActions} from '@react-navigation/native';
 
-import {auth} from '~/Firebase';
-
 const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   const [myDaosGroup, setMyDaosGroup] = useState({title: '', data: []});
   const [pendingDaosGroup, setPendingDaosGroup] = useState({
@@ -71,8 +69,6 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
         setMyDaosGroup({title: '', data: []});
         return [];
       }
-
-      console.log(await auth().currentUser.getIdToken(true))
 
       let pendingDao = [];
       let myDao = [];
