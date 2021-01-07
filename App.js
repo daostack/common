@@ -49,10 +49,8 @@ import {
   MonthlyContribution,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
-
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
-
 import KeyboardManager from 'react-native-keyboard-manager';
 import validUrl from 'valid-url';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';

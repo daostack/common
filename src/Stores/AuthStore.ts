@@ -2,7 +2,6 @@ import {observable, action, decorate} from 'mobx';
 import {isDaoMemberByUserId} from '~/Util';
 import logger from '~/Services/Logger';
 import AuthService from '~/Services/AuthService';
-import UserService from '~/Services/UserService';
 import NotificationService from '~/Services/NotificationService';
 import {auth} from '~/Firebase';
 import {UserListStore} from './DbStores/UserListStore';
@@ -60,10 +59,12 @@ class AuthStore {
           this.setIsLoading(true);
           this.addLoginInProgress(user?.uid);
           const providerId = user.providerData[0].providerId;
-          let appUser = this.userListStore.getUserById(user.uid); // await Cache.get(user.uid);
+
+          // TODO: discuss cache using and apply it for users
+          let appUser = null; // await Cache.get(user.uid);
 
           if (!appUser) {
-            appUser = await UserService.getInstance().getUserById(user.uid);
+            appUser = this.userListStore.getUserById(user.uid);
           }
           const isNewUser = !appUser;
 
