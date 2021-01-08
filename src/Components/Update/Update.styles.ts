@@ -1,10 +1,10 @@
-import {Dimensions} from 'react-native';
-import {colors, font, layout} from '~/Theme';
+import {Dimensions, StyleSheet} from 'react-native';
+import {colors, font} from '~/Theme';
 
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 
-export const styles = {
+export const styles = StyleSheet.create({
   container: {
     minHeight: height,
     alignItems: 'center',
@@ -20,12 +20,13 @@ export const styles = {
     height: '40%',
     alignSelf: 'center',
     aspectRatio: 1,
+    marginBottom: 'auto',
   },
 
   header: {
     ...font.fontSize(6),
     ...font.heading.bold,
-    marginVertical: height * 0.035,
+    marginBottom: 20,
   },
 
   description: {
@@ -41,7 +42,8 @@ export const styles = {
     borderRadius: 100000,
     backgroundColor: colors.mainBlue,
     width: width * 0.9,
-    marginTop: 30,
+    marginTop: 'auto',
+    marginBottom: 20,
   },
 
   buttonText: {
@@ -50,4 +52,4 @@ export const styles = {
     ...font.primary.regular,
     paddingVertical: 10,
   },
-};
+});

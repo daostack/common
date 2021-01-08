@@ -2,12 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Image, Linking, Platform, SafeAreaView, Text, TouchableOpacity} from 'react-native';
 
+import pkg from '../../../package.json';
+
 import axios from 'axios';
 import compareVersions from 'compare-versions';
-import VersionNumber from 'react-native-version-number';
 
 import {appId, metadataUrl} from '~/Config';
 import {styles} from '~/Components/Update/Update.styles';
+import Config from 'react-native-config';
 
 const updatePropTypes = {
   children: PropTypes.func.isRequired,
@@ -25,8 +27,8 @@ export const Update: React.FC<PropTypes.InferProps<typeof updatePropTypes>> = ({
       try {
         const {data: metadataResponse} = await axios.get(`${metadataUrl()}/app`);
 
-        const hasNewerVersion = compareVersions.compare(VersionNumber.appVersion, metadataResponse.currentVersion, '<');
-        const requiresNewerVersion = compareVersions.compare(VersionNumber.appVersion, metadataResponse.oldestSupportedVersion, '<=');
+        const hasNewerVersion = compareVersions.compare(pkg.version, metadataResponse.currentVersion, '<');
+        const requiresNewerVersion = compareVersions.compare(pkg.version, metadataResponse.oldestSupportedVersion, '<');
 
         setVersions({
           hasNewerVersion,
@@ -63,7 +65,9 @@ export const Update: React.FC<PropTypes.InferProps<typeof updatePropTypes>> = ({
           style={styles.button}
           onPress={() => {
             if (Platform.OS === 'ios') {
-              Linking.openURL(`itms-apps://itunes.apple.com/us/app/apple-store/${appId}`);
+              Config.ENV === 'staging'
+                ? Linking.openURL(`https://beta.itunes.apple.com/v1/app/${appId}`)
+                : Linking.openURL(`itms-apps://itunes.apple.com/us/app/apple-store/${appId}`);
             } else if (Platform.OS === 'android') {
               Linking.openURL(`market://details?id=${appId}`);
             }
