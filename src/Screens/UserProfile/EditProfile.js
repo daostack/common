@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import EditProfileForm from '~/Components/Forms/EditProfileForm';
 import {colors, text, layout} from '~/Theme';
-import {observer, inject} from 'mobx-react';
+import {inject} from 'mobx-react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '~/Assets/iconfont/Icon';
 import Loader from '~/Components/Loader';
@@ -19,14 +19,9 @@ import AuthService from '~/Services/AuthService';
 import {filterObjectByKeys} from '~/Util';
 import logger from '~/Services/Logger';
 import {bool, object, shape, func} from 'prop-types';
+import EditProfileFormStore from '~/FormStores/EditProfileFormStore';
 
-const EditProfile = ({
-  userStore,
-  editProfileFormStore,
-  bottomSheetStore,
-  route,
-  navigation,
-}) => {
+const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
   navigation.setOptions({
     headerLeft: () => (
       <TouchableOpacity
@@ -38,10 +33,10 @@ const EditProfile = ({
     ),
   });
 
+  const [editProfileFormStore] = useState(new EditProfileFormStore());
+
   const formSave = async (e) => {
-
     if (editProfileFormStore.isFormValid()) {
-
       onFormSubmitStart();
 
       const changedFields = editProfileFormStore.getChangedFormFieldsJson();
@@ -100,7 +95,10 @@ const EditProfile = ({
 
   const renderBody = () => (
     <View style={styles.body}>
-      <EditProfileForm isFirstOpening={route.params.isFirstOpening }/>
+      <EditProfileForm
+        isFirstOpening={route.params.isFirstOpening}
+        editProfileFormStore={editProfileFormStore}
+      />
     </View>
   );
 
@@ -118,20 +116,32 @@ const EditProfile = ({
         <View style={styles.containerRow}>
           {route.params.isFirstOpening ? (
             <TouchableOpacity
-              style={{...styles.btns, ...layout.btnOutline, ...layout.marginRightS}}
+              style={{
+                ...styles.btns,
+                ...layout.btnOutline,
+                ...layout.marginRightS,
+              }}
               onPress={onFormClose}>
               <Text style={text.buttonblue}>Skip</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
-              style={{...styles.btns, ...layout.btnOutline, ...layout.marginRightS}}
+              style={{
+                ...styles.btns,
+                ...layout.btnOutline,
+                ...layout.marginRightS,
+              }}
               onPress={onFormClose}>
               <Text style={text.buttonblue}>Cancel</Text>
             </TouchableOpacity>
           )}
 
           <TouchableOpacity
-            style={{...styles.btns, ...layout.btnPrimary, ...layout.marginLeftS}}
+            style={{
+              ...styles.btns,
+              ...layout.btnPrimary,
+              ...layout.marginLeftS,
+            }}
             onPress={formSave}>
             <Text style={text.buttoncenterwhite}>Save</Text>
           </TouchableOpacity>
@@ -146,11 +156,6 @@ EditProfile.propTypes = {
     userInfo: object,
     setSignedInUser: func,
   }),
-  editProfileFormStore: shape({
-    isFormValid: func,
-    getChangedFormFieldsJson: func,
-    form: object,
-  }),
   bottomSheetStore: shape({
     showBottomSheet: func,
     hideBottomSheet: func,
@@ -162,7 +167,6 @@ EditProfile.propTypes = {
   }),
   navigation: object,
 };
-
 
 const styles = StyleSheet.create({
   btns: {
@@ -192,8 +196,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'userStore',
-  'editProfileFormStore',
-  'bottomSheetStore',
-)(observer(EditProfile));
+export default inject('userStore', 'bottomSheetStore')(EditProfile);

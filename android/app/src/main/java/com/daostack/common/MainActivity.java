@@ -6,6 +6,7 @@ import android.os.PersistableBundle;
 import com.facebook.react.ReactActivity;
 
 import androidx.annotation.Nullable;
+import android.content.Intent;
 
 public class MainActivity extends ReactActivity {
 
@@ -22,5 +23,11 @@ public class MainActivity extends ReactActivity {
   public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
     super.onCreate(savedInstanceState, persistentState);
 
+  }
+
+  @Override
+  public void onNewIntent(Intent intent) {
+      setIntent(intent);
+      super.onNewIntent(intent);
   }
 }

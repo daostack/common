@@ -14,20 +14,26 @@ import {
   ACTIVE,
   CANCELED_BY_PAYMENT,
   CANCELED_BY_USER,
-  cancelSubscription, getSubscription,
+  cancelSubscription,
+  getSubscription,
   PAYMENT_FAILED,
-} from '../../Services/SubscriptionService';
+} from '~/Services/SubscriptionService';
 import {formatCurrency, formatDate} from '../../Util';
 
 const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
   const [subscription, setSubscription] = React.useState(null);
 
   const onCancelClick = () => {
-    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.CANCEL_SUBSCRIPTION, {
-      onCancelConfirm: cancelSubscription,
-      commonName: subscription.metadata?.common?.name,
-      dueDate: subscription.dueDate.toDate(),
-    });
+    bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.CANCEL_SUBSCRIPTION,
+      {
+        onCancelConfirm: async () => {
+          await cancelSubscription(subscription.id);
+        },
+        commonName: subscription.metadata?.common?.name,
+        dueDate: subscription.dueDate.toDate(),
+      },
+    );
   };
 
   const onJoinClick = () => {
@@ -59,11 +65,11 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
         <Text>Status</Text>
 
         {subscription ? (
-          <MonthlyContributionStatus status={subscription.status}/>
+          <MonthlyContributionStatus status={subscription.status} />
         ) : (
           <View style={{width: 100}}>
             <Placeholder Animation={Fade}>
-              <PlaceholderLine width={100}/>
+              <PlaceholderLine width={100} />
             </Placeholder>
           </View>
         )}
@@ -71,12 +77,11 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
 
       <View style={styles.row}>
         <Text>
-          {(subscription?.status === CANCELED_BY_USER && subscription?.dueDate.toDate() > new Date())
+          {subscription?.status === CANCELED_BY_USER &&
+          subscription?.dueDate.toDate() > new Date()
             ? 'Cancels on'
-            : 'Next payment'
-          }
+            : 'Next payment'}
         </Text>
-
 
         {subscription ? (
           <Text>
@@ -87,7 +92,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
         ) : (
           <View style={{width: 100}}>
             <Placeholder Animation={Fade}>
-              <PlaceholderLine width={100}/>
+              <PlaceholderLine width={100} />
             </Placeholder>
           </View>
         )}
@@ -96,15 +101,12 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
       <View style={styles.row}>
         <Text>Amount</Text>
 
-
         {subscription ? (
-          <Text>
-            {formatCurrency(subscription.amount)}
-          </Text>
+          <Text>{formatCurrency(subscription.amount)}</Text>
         ) : (
           <View style={{width: 100}}>
             <Placeholder Animation={Fade}>
-              <PlaceholderLine width={100}/>
+              <PlaceholderLine width={100} />
             </Placeholder>
           </View>
         )}
@@ -113,15 +115,12 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
       <View style={styles.row}>
         <Text>Subscribed since</Text>
 
-
         {subscription ? (
-          <Text>
-            {formatDate(subscription.createdAt.toDate())}
-          </Text>
+          <Text>{formatDate(subscription.createdAt.toDate())}</Text>
         ) : (
           <View style={{width: 100}}>
             <Placeholder Animation={Fade}>
-              <PlaceholderLine width={100}/>
+              <PlaceholderLine width={100} />
             </Placeholder>
           </View>
         )}
@@ -131,39 +130,33 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
         <View style={styles.descriptionContainer}>
           <Text style={styles.descriptionText}>
             We couldn't charge your credit card and collect your monthly
-            contribution. You are no longer a member of the Common,
-            but you can always request to join again!
+            contribution. You are no longer a member of the Common, but you can
+            always request to join again!
           </Text>
         </View>
       )}
 
       {subscription && (
         <React.Fragment>
-          {[ACTIVE, PAYMENT_FAILED].some((status) => status === subscription.status) && (
-            <TouchableOpacity
-              style={styles.button}
-              onPress={onCancelClick}
-            >
-              <Text style={styles.stayText}>
-                Cancel payment
-              </Text>
+          {[ACTIVE, PAYMENT_FAILED].some(
+            (status) => status === subscription.status,
+          ) && (
+            <TouchableOpacity style={styles.button} onPress={onCancelClick}>
+              <Text style={styles.stayText}>Cancel monthly payment</Text>
             </TouchableOpacity>
           )}
 
-          {[CANCELED_BY_PAYMENT, CANCELED_BY_USER].some((status) => status === subscription.status) && subscription.dueDate.toDate() < new Date() && (
-            <TouchableOpacity
-              style={styles.button}
-              onPress={onJoinClick}
-            >
-              <Text style={styles.stayText}>
-                Request to join again
-              </Text>
-            </TouchableOpacity>
-          )}
+          {[CANCELED_BY_PAYMENT, CANCELED_BY_USER].some(
+            (status) => status === subscription.status,
+          ) &&
+            subscription.dueDate.toDate() < new Date() && (
+              <TouchableOpacity style={styles.button} onPress={onJoinClick}>
+                <Text style={styles.stayText}>Request to join again</Text>
+              </TouchableOpacity>
+            )}
         </React.Fragment>
       )}
     </View>
-
   );
 };
 

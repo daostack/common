@@ -9,8 +9,7 @@ const BottomSheetModal = forwardRef(({style, children, isVisible, onClose}) => {
     <View style={[styles.content, style]}>{children}</View>
   );
 
-  const onSwipeComplete = () => {
-  };
+  const onSwipeComplete = () => {};
 
   return (
     <Modal

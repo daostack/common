@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, ScrollView, Text, StyleSheet, Keyboard} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import {inject} from 'mobx-react';
@@ -19,8 +19,7 @@ const CreateDiscussionForm = ({
   commonId,
   ...otherProps
 }) => {
-
-  const createDiscussionStore = new CreateDiscussionStore();
+  const [createDiscussionStore] = useState(new CreateDiscussionStore());
   const TITLE = 'title';
   const MESSAGE = 'message';
   const IMAGES = 'images';
@@ -36,8 +35,7 @@ const CreateDiscussionForm = ({
         Toast.loading('Creating new discussion ...');
         const images = changedFields[IMAGES] || [];
         const files = changedFields[FILES] || [];
-        db
-          .collection('discussion')
+        db.collection('discussion')
           .doc()
           .set({
             title: changedFields[TITLE],
@@ -76,9 +74,7 @@ const CreateDiscussionForm = ({
   return (
     <>
       <ScrollView style={{flex: 1}} contentContainerStyle={{padding: 24}}>
-        <View
-          {...otherProps}
-          style={styles.container}>
+        <View {...otherProps} style={styles.container}>
           <TextInputField
             value={''}
             viewStyle={{alignSelf: 'stretch'}}
@@ -136,7 +132,6 @@ const CreateDiscussionForm = ({
             />
           </View>
         </View>
-
       </ScrollView>
       <RequestStepActionButton
         title="Publish post"
@@ -182,6 +177,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'userStore',
-)(CreateDiscussionForm);
+export default inject('userStore')(CreateDiscussionForm);

@@ -1,0 +1,10 @@
+export const PROPOSAL_PAYMENT_STATE = {
+  FAILED: 'failed',
+  PENDING: 'pending',
+  NOT_ATTEMPTED: 'notAttempted',
+};
+
+export const ACTIVE_PAYMENT_STATES = [
+  PROPOSAL_PAYMENT_STATE.NOT_ATTEMPTED,
+  PROPOSAL_PAYMENT_STATE.PENDING,
+];

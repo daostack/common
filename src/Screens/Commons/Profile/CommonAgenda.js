@@ -16,15 +16,12 @@ const CommonAgenda = ({
   navigation,
   route: {
     params: {
-      common: {
-        metadata,
-        ...common
-      },
+      common: {metadata, ...common},
     },
   },
 }) => (
   <>
-    <StatusBar barStyle="dark-content"/>
+    <StatusBar barStyle="dark-content" />
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
@@ -42,10 +39,12 @@ const CommonAgenda = ({
 
         <View style={styles.sectionContainer}>
           <Text style={text.h2Black}>About</Text>
-          <Text style={{
-            ...styles.description, width: '100%',
-            ...text.writingDirection(metadata.description),
-          }}>
+          <Text
+            style={{
+              ...styles.description,
+              width: '100%',
+              ...text.writingDirection(metadata.description),
+            }}>
             {metadata.description}
           </Text>
         </View>
@@ -67,24 +66,6 @@ const CommonAgenda = ({
                 </Text>
               </View>
             ))}
-          </View>
-        )}
-
-        {(metadata.action) && (
-          <View style={styles.sectionContainer}>
-            <Text style={text.h3Black}>
-              Course of action
-            </Text>
-
-            <Text
-              style={{
-                ...styles.description,
-                ...text.writingDirection(metadata.action),
-                width: '100%',
-              }}
-            >
-              {metadata.action}
-            </Text>
           </View>
         )}
 
@@ -111,7 +92,7 @@ const CommonAgenda = ({
         {common.rules?.length > 0 && (
           <React.Fragment>
             <View style={styles.sectionDividerContent}>
-              <View style={styles.sectionDivider}/>
+              <View style={styles.sectionDivider} />
             </View>
 
             <View style={styles.sectionContainer}>
@@ -119,10 +100,11 @@ const CommonAgenda = ({
 
               {common.rules.map((rule, i) => (
                 <View key={i} style={{width: '100%'}}>
-                  <Text style={{
-                    ...styles.ruleTitle,
-                    ...text.writingDirection(rule.title),
-                  }}>
+                  <Text
+                    style={{
+                      ...styles.ruleTitle,
+                      ...text.writingDirection(rule.title),
+                    }}>
                     {rule.title}
                   </Text>
                   <Text

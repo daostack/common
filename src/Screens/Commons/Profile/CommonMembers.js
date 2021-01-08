@@ -17,10 +17,15 @@ import CommonTabBar from '../../CommonTabBar';
 import {string, func, array, object, shape} from 'prop-types';
 
 const initialLayout = {width: Dimensions.get('window').width};
-const getTabName = (objectName, count) => `${objectName} (${count ? count : 0})`;
+const getTabName = (objectName, count) =>
+  `${objectName} (${count ? count : 0})`;
 
 const Members = ({navigation, members, commonId}) => (
-  <CommonMembersList navigation={navigation} members={members} commonId={commonId}/>
+  <CommonMembersList
+    navigation={navigation}
+    members={members}
+    commonId={commonId}
+  />
 );
 
 const Pending = ({navigation, commonId, onProposalsCountChange}) => (
@@ -61,29 +66,34 @@ const CommonMembers = ({navigation, route: router}) => {
 
   const renderScene = ({route}) => {
     switch (route.key) {
-    case 'members':
-      return <Members navigation={navigation} members={members} commonId={commonId}/>;
-    case 'pending':
-      return (
-        <Pending
-          navigation={navigation}
-          commonId={commonId}
-          onProposalsCountChange={(count) => setPendingCount(count)}
-        />
-      );
-    case 'history':
-      return (
-        <History
-          navigation={navigation}
-          commonId={commonId}
-          onProposalsCountChange={(count) => setHistoryCount(count)}
-        />
-      );
-    default:
-      return null;
+      case 'members':
+        return (
+          <Members
+            navigation={navigation}
+            members={members}
+            commonId={commonId}
+          />
+        );
+      case 'pending':
+        return (
+          <Pending
+            navigation={navigation}
+            commonId={commonId}
+            onProposalsCountChange={(count) => setPendingCount(count)}
+          />
+        );
+      case 'history':
+        return (
+          <History
+            navigation={navigation}
+            commonId={commonId}
+            onProposalsCountChange={(count) => setHistoryCount(count)}
+          />
+        );
+      default:
+        return null;
     }
   };
-
 
   return (
     <>

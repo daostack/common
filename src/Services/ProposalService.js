@@ -1,4 +1,3 @@
-
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import Toast from '~/Util/Toast';
 import {db} from '~/Firebase';
@@ -16,23 +15,18 @@ export const PROPOSAL_STAGE = {
 };
 
 import {PROPOSAL_TYPE} from '../Config';
+import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 
-export const PROPOSAL_STAGES_ACTIVE = [
-  PROPOSAL_STAGE.countdown,
-];
+export const PROPOSAL_STAGES_ACTIVE = [PROPOSAL_STAGE.countdown];
 
 export const PROPOSAL_STAGES_HISTORY = [
   PROPOSAL_STAGE.passed,
   PROPOSAL_STAGE.failed,
 ];
 
-export const LAUNCHED_STATES = [
-  PROPOSAL_STAGE.passed,
-];
+export const LAUNCHED_STATES = [PROPOSAL_STAGE.passed];
 
-export const COUNTDOWN_STATES = [
-  PROPOSAL_STAGE.failed,
-];
+export const COUNTDOWN_STATES = [PROPOSAL_STAGE.failed];
 
 export default class ProposalService {
   static serviceInstance = null;
@@ -57,7 +51,11 @@ export default class ProposalService {
     return this.serviceInstance;
   };
 
-  async getUserProposalsCounts(uid, onlyMembershipRequests = false, onlyFundingProposals = false) {
+  async getUserProposalsCounts(
+    uid,
+    onlyMembershipRequests = false,
+    onlyFundingProposals = false,
+  ) {
     let query = db
       .collection(DB_COLLECTIONS.proposals)
       .where('proposerId', '==', uid);
@@ -70,34 +68,45 @@ export default class ProposalService {
       query = query.where('type', '==', PROPOSAL_TYPE.Join);
     }
 
-    return query.get()
-      .then((snapshots) => {
-        if (!snapshots) {
-          return {all: 0, active: 0, history: 0};
-        } else {
-          const stats = {
-            all: snapshots.docs.length,
-            active: snapshots.docs.filter((s) => PROPOSAL_STAGES_ACTIVE.includes(s.data().state)).length,
-            history: snapshots.docs.filter((s) => PROPOSAL_STAGES_HISTORY.includes(s.data().state)).length,
-          };
-          return stats;
-        }
-      });
+    return query.get().then((snapshots) => {
+      if (!snapshots) {
+        return {all: 0, active: 0, history: 0};
+      } else {
+        const stats = {
+          all: snapshots.docs.length,
+          active: snapshots.docs.filter((s) =>
+            PROPOSAL_STAGES_ACTIVE.includes(s.data().state),
+          ).length,
+          history: snapshots.docs.filter((s) =>
+            PROPOSAL_STAGES_HISTORY.includes(s.data().state),
+          ).length,
+        };
+        return stats;
+      }
+    });
   }
 
-  async getUserPendingProposals(uid) {
+  async subscribeToUserPendingProposals(uid, callback) {
     let query = db
       .collection(DB_COLLECTIONS.proposals)
       .where('proposerId', '==', uid)
       .where('type', '==', PROPOSAL_TYPE.Join)
-      .where('state', 'in', PROPOSAL_STAGES_ACTIVE);
+      .where('state', 'in', [...PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGE.passed]);
 
-
-    return query.get().then((snapshots) => {
+    return query.onSnapshot((snapshots) => {
       if (!snapshots) {
-        return [];
+        callback([]);
       } else {
-        return snapshots.docs.filter((s) => PROPOSAL_STAGES_ACTIVE.includes(s.data().state));
+        callback(
+          snapshots.docs.filter((s) => {
+            const doc = s.data();
+
+            return (
+              PROPOSAL_STAGES_ACTIVE.some((x) => x === doc.state) ||
+              ACTIVE_PAYMENT_STATES.includes(doc.paymentState)
+            );
+          }),
+        );
       }
     });
   }
@@ -120,9 +129,12 @@ export default class ProposalService {
       .collection(DB_COLLECTIONS.discussionMessages)
       .where('discussionId', '==', proposalId);
 
-    return proposalDiscusstionMessages.onSnapshot((snapshot) => {
-      callback(snapshot.docs.length);
-    }, (error) => Toast.error(error));
+    return proposalDiscusstionMessages.onSnapshot(
+      (snapshot) => {
+        callback(snapshot.docs.length);
+      },
+      (error) => Toast.error(error),
+    );
   }
 
   async getProposalDiscussionsCount(proposalId) {
@@ -143,27 +155,50 @@ export default class ProposalService {
       .collection(DB_COLLECTIONS.proposals)
       .where('commonId', '==', daoId)
       .where('type', '==', PROPOSAL_TYPE.Join)
-      .where('state', 'in', PROPOSAL_STAGES_ACTIVE);
+      .where('state', 'in', [...PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGE.passed]);
 
-    return proposals.onSnapshot((snapshot) => {
-      callback({
-        pendingProposalCount: snapshot.docs.length,
-        usersPendingProposal: (userInfoUid && snapshot.docs.find((doc) => doc.data().proposerId === userInfoUid)?.data()) || false,
-      });
-    }, (error) => Toast.error(error));
+    // We can add the payment state to the statement above, but not all proposals have it, so that will
+    // exclude them
 
+    return proposals.onSnapshot(
+      (snapshot) => {
+        const pendingProposals = snapshot.docs.filter(
+          (x) =>
+            // If the proposal is in any stage, but with pending payment
+            ACTIVE_PAYMENT_STATES.some((y) => y === x.data().paymentState) ||
+            // Or if it does not have payment state and is in active stage
+            (x.data().paymentState === undefined &&
+              x.data().state !== PROPOSAL_STAGE.passed),
+        );
+
+        console.log(pendingProposals);
+
+        callback({
+          pendingProposalCount: pendingProposals.length,
+          usersPendingProposal:
+            (
+              userInfoUid &&
+              pendingProposals.find(
+                (doc) => doc.data().proposerId === userInfoUid,
+              )
+            )?.data() || false,
+        });
+      },
+      (error) => Toast.error(error),
+    );
   }
 
   async subscribeToProposalById(proposalId, callback) {
-
     let proposals = db
       .collection(DB_COLLECTIONS.proposals)
       .where('id', '==', proposalId);
 
-    return proposals.onSnapshot((snapshot) => {
-      callback(snapshot.docChanges()[0].doc._data);
-    }, (error) => Toast.error(error));
-
+    return proposals.onSnapshot(
+      (snapshot) => {
+        callback(snapshot.docChanges()[0].doc._data);
+      },
+      (error) => Toast.error(error),
+    );
   }
 
   async subscribeToProposalList(
@@ -175,9 +210,8 @@ export default class ProposalService {
     listRef,
     onlyRequestsToJoin,
     onlyFundingRequests,
-    membershipRequests = false
+    membershipRequests = false,
   ) {
-
     let proposalCollection = db.collection(DB_COLLECTIONS.proposals);
 
     if (commonId) {
@@ -188,7 +222,11 @@ export default class ProposalService {
     }
 
     if (onlyFundingRequests) {
-      proposalCollection = proposalCollection.where('type', '==', PROPOSAL_TYPE.FundingRequest);
+      proposalCollection = proposalCollection.where(
+        'type',
+        '==',
+        PROPOSAL_TYPE.FundingRequest,
+      );
     }
 
     if (membershipRequests) {
@@ -216,7 +254,11 @@ export default class ProposalService {
       //   // Only those made to dao that the user is member of
       //   .where('dao', 'in', userDaos);
 
-      proposalCollection = proposalCollection.where('type', '==', PROPOSAL_TYPE.Join);
+      proposalCollection = proposalCollection.where(
+        'type',
+        '==',
+        PROPOSAL_TYPE.Join,
+      );
     }
 
     if (!showAll) {
@@ -275,7 +317,7 @@ export default class ProposalService {
           headers: {
             Authorization: await auth().currentUser.getIdToken(true),
           },
-        }
+        },
       );
     } catch (err) {
       console.log('CREATE FUNDING PROPOSAL ERROR -> ', getErrorObject(err));
@@ -285,15 +327,11 @@ export default class ProposalService {
 
   async createRequestToJoin(formData) {
     try {
-      return await this.axiosClient.post(
-        this.endpoints.createJoin,
-        formData,
-        {
-          headers: {
-            Authorization: await auth().currentUser.getIdToken(true),
-          },
-        }
-      );
+      return await this.axiosClient.post(this.endpoints.createJoin, formData, {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
+        },
+      });
     } catch (err) {
       console.log('CREATE REQUEST TO JOIN ERROR -> ', getErrorObject(err));
       throw err;
@@ -302,15 +340,11 @@ export default class ProposalService {
 
   async createVote(formData) {
     try {
-      return await this.axiosClient.post(
-        this.endpoints.createVote,
-        formData,
-        {
-          headers: {
-            Authorization: await auth().currentUser.getIdToken(true),
-          },
-        }
-      );
+      return await this.axiosClient.post(this.endpoints.createVote, formData, {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
+        },
+      });
     } catch (err) {
       console.log('CREATE VOTE ERROR -> ', getErrorObject(err));
       throw err;

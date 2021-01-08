@@ -10,23 +10,31 @@ import {
   Dimensions,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {layout, colors, text, font,sizeS} from '~/Theme';
+import {layout, colors, text, font, sizeS} from '~/Theme';
 import {TabView} from 'react-native-tab-view';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
 import {inject, observer} from 'mobx-react';
-import  ProposalService  from '~/Services/ProposalService';
+import ProposalService from '~/Services/ProposalService';
 import CommonTabBar from '../CommonTabBar';
 import {bool, object, shape} from 'prop-types';
 
-const MyProposals = ({navigation, userStore,
-  route: {params: {onlyMembershipRequests, onlyFundingRequests}}}) => {
-
+const MyProposals = ({
+  navigation,
+  userStore,
+  route: {
+    params: {onlyMembershipRequests, onlyFundingRequests},
+  },
+}) => {
   const [index, setIndex] = React.useState(0);
   const [stats, setStats] = React.useState({all: 0, active: 0, history: 0});
 
   useEffect(() => {
     const getStats = async () => {
-      const userProposalsStats = await ProposalService.getInstance().getUserProposalsCounts(userStore.userInfo.uid, onlyMembershipRequests, onlyFundingRequests);
+      const userProposalsStats = await ProposalService.getInstance().getUserProposalsCounts(
+        userStore.userInfo.uid,
+        onlyMembershipRequests,
+        onlyFundingRequests,
+      );
       setStats({...userProposalsStats});
     };
     getStats();
@@ -34,11 +42,12 @@ const MyProposals = ({navigation, userStore,
 
   const onScreenScroll = (event) => {
     navigation.setOptions({
-      title: event.nativeEvent.contentOffset.y > 75 ?
-        onlyMembershipRequests
-          ? 'My membership requests'
-          : 'My Proposals'
-        : 'My Profile',
+      title:
+        event.nativeEvent.contentOffset.y > 75
+          ? onlyMembershipRequests
+            ? 'My membership requests'
+            : 'My Proposals'
+          : 'My Profile',
     });
   };
 
@@ -46,7 +55,8 @@ const MyProposals = ({navigation, userStore,
     {
       key: 'active',
       title: `Active (${stats.active})`,
-    }, {
+    },
+    {
       key: 'history',
       title: `History (${stats.history})`,
     },
@@ -72,10 +82,10 @@ const MyProposals = ({navigation, userStore,
 
   const renderScene = ({route}) => {
     switch (route.key) {
-    case 'active':
-      return ActiveProposals();
-    case 'history':
-      return HistoryProposals();
+      case 'active':
+        return ActiveProposals();
+      case 'history':
+        return HistoryProposals();
     }
   };
 
@@ -91,10 +101,11 @@ const MyProposals = ({navigation, userStore,
           nestedScrollEnabled={true}
           directionalLockEnabled={true}
           onScroll={onScreenScroll}
-          scrollEventThrottle={16}
-        >
+          scrollEventThrottle={16}>
           <View style={styles.sectionContainer}>
-            <Text style={styles.title}>My {onlyMembershipRequests ? 'membership requests' : 'proposals'}</Text>
+            <Text style={styles.title}>
+              My {onlyMembershipRequests ? 'membership requests' : 'proposals'}
+            </Text>
           </View>
           <View style={styles.sectionTabView}>
             <TabView
@@ -121,7 +132,6 @@ MyProposals.propTypes = {
   navigation: object,
   userStore: object,
 };
-
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -154,6 +164,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'userStore',
-)(observer(MyProposals));
+export default inject('userStore')(observer(MyProposals));

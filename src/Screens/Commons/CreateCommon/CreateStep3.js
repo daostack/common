@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
-import TextInputField from '~/Components/FormFields/TextInputField';
 import {colors, font} from '~/Theme';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
@@ -19,20 +18,25 @@ import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import {object, func, shape} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const CreateStep3 = ({navigation, route: {params:{formStores}}}) => {
-  const [ scrollY ] = useState(new Animated.Value(0));
-  const [ headerHeight, setHeaderHeight ] = useState(0);
+const CreateStep3 = ({
+  navigation,
+  route: {
+    params: {formStores},
+  },
+}) => {
+  const [scrollY] = useState(new Animated.Value(0));
+  const [headerHeight, setHeaderHeight] = useState(0);
   const agendaFormStore = formStores.agendaFormStore;
   // var ruleBody = [];
 
   useEffect(() => {
     const height = scrollY.interpolate({
-      inputRange: [ 0, 50 ],
-      outputRange: [ 0, 125 ],
+      inputRange: [0, 50],
+      outputRange: [0, 125],
       extrapolate: 'clamp',
     });
     setHeaderHeight(height);
-  }, [ scrollY ]);
+  }, [scrollY]);
 
   /*
   const handleRuleTitles = (x, text) => {
@@ -73,7 +77,7 @@ const CreateStep3 = ({navigation, route: {params:{formStores}}}) => {
         flex: 1,
         backgroundColor: 'white',
       }}>
-      <CreateStepNavigation navigation={navigation} title="Create a Common"/>
+      <CreateStepNavigation navigation={navigation} title="Create a Common" />
       <CreateStepDotHeader
         title="Additional Info"
         currentIndex={3}
@@ -89,11 +93,11 @@ const CreateStep3 = ({navigation, route: {params:{formStores}}}) => {
           padding: 24,
         }}
         scrollEventThrottle={16}
-        onScroll={Animated.event([
-          {nativeEvent: {contentOffset: {y: scrollY}}},
-        ],
-        {useNativeDriver: false})}>
-        <CreateStepHeader currentIndex={2}/>
+        onScroll={Animated.event(
+          [{nativeEvent: {contentOffset: {y: scrollY}}}],
+          {useNativeDriver: false},
+        )}>
+        <CreateStepHeader currentIndex={2} />
         <View
           style={{
             flex: 1,
@@ -101,25 +105,8 @@ const CreateStep3 = ({navigation, route: {params:{formStores}}}) => {
             backgroundColor: 'white',
           }}>
           <CreateStepHeaderTitle
-            title="Additional Info"
-            subtitle="Define your course of action and rules of conduct."
-          />
-          <TextInputField
-            value={agendaFormStore.form.fields[CreateCommonForm.ACTION]?.value}
-            viewStyle={{alignSelf: 'stretch'}}
-            label="Course of action"
-            infoLabel="Required"
-            numberOfLines={6}
-            multiline={true}
-            placeholderText="How do you plan to promote your agenda? Anything you want to avoid? Keep it simple and relatively broad - your plans can always change as you go."
-            autoCapitalize="none"
-            autoCorrect={false}
-            validation={{
-              name: CreateCommonForm.ACTION,
-              formStore: agendaFormStore,
-              validateRule: 'string|required',
-              displayName: 'course of action',
-            }}
+            title="Rules"
+            subtitle="Add rules of conduct. New members must agree to the rules before joining the Common."
           />
           <Text
             style={{
@@ -137,8 +124,8 @@ const CreateStep3 = ({navigation, route: {params:{formStores}}}) => {
               ...font.lineHeight(2),
               color: colors.grey3,
             }}>
-            Use rules to set the tone for your Common's discussions.
-            (No advertising and spam, accepted language, etc.)
+            Use rules to set the tone for your Common's discussions. (No
+            advertising and spam, accepted language, etc.)
           </Text>
 
           <MultiLinkField

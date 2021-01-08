@@ -5,7 +5,13 @@ import CommonCover from './Commons/CommonCover';
 import CommonStageSummary from './Commons/CommonStageSummary';
 import {string, object, number, func, shape, array} from 'prop-types';
 
-const CommonBox = ({common, onPress, width = '100%', navigation, headerHeightLayouted}) => (
+const CommonBox = ({
+  common,
+  onPress,
+  width = '100%',
+  navigation,
+  headerHeightLayouted,
+}) => (
   <TouchableOpacity
     onPress={() => {
       onPress();
@@ -43,7 +49,7 @@ const CommonBox = ({common, onPress, width = '100%', navigation, headerHeightLay
           common.numberOfPreBoostedProposals +
           common.numberOfQueuedProposals,
         goal: common.fundingGoal,
-        members: common.members.length * 1,
+        members: common?.members?.length,
         // TODO: get this value. Is it even tracked in the contract? need to check.
         raised: common.raised,
         currentBudget: common.balance,

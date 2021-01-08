@@ -1,10 +1,12 @@
 import FormStore from '../FormStore';
-import {paymentDetailsRules, billingDetailsRules} from '~/FormStores/ValidationRules';
+import {
+  paymentDetailsRules,
+  billingDetailsRules,
+} from '~/FormStores/ValidationRules';
 
 export class PaymentFormStore extends FormStore {
   constructor() {
     super();
-    this.registerValidationRule(paymentDetailsRules.firstLastNameValidate);
     this.registerValidationRule(paymentDetailsRules.validateCCNumber);
     this.registerValidationRule(paymentDetailsRules.validateCCProvider);
     this.registerValidationRule(paymentDetailsRules.futureDate);
@@ -16,6 +18,7 @@ export class BillingDetailsFormStore extends FormStore {
   constructor() {
     super();
     this.registerValidationRule(billingDetailsRules.validPassport);
+    this.registerValidationRule(billingDetailsRules.firstLastNameValidate);
   }
 }
 

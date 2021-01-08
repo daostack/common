@@ -22,7 +22,12 @@ import {string, object, bool, shape, func} from 'prop-types';
 
 const {width} = Dimensions.get('window');
 
-const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
+const IntroductionStep = ({
+  navigation,
+  route: {
+    params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed},
+  },
+}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
   const {name} = currCommon.name;
@@ -60,10 +65,7 @@ const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep
           flex: 1,
           backgroundColor: 'white',
         }}>
-        <CreateStepNavigation
-          navigation={navigation}
-          title={name}
-        />
+        <CreateStepNavigation navigation={navigation} title={name} />
         <CreateStepDotHeader
           title="Introduce Yourself"
           currentIndex={2}
@@ -80,10 +82,10 @@ const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep
             padding: 24,
           }}
           scrollEventThrottle={16}
-          onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
-          ],
-          {useNativeDriver: false})}>
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {y: scrollY}}}],
+            {useNativeDriver: false},
+          )}>
           <MembershipRequest />
 
           <CreateStepHeader
@@ -97,7 +99,10 @@ const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep
               // padding: 24,
               backgroundColor: 'white',
             }}>
-            <RequestStepHeaderTitle title="Introduce Yourself" subtitle="Let the Common members learn more about you and how you relate to the cause." />
+            <RequestStepHeaderTitle
+              title="Introduce Yourself"
+              subtitle="Let the Common members learn more about you and how you relate to the cause."
+            />
             <View
               style={{
                 backgroundColor: colors.grey4,
@@ -122,9 +127,14 @@ const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep
 
             <MultiLinkField
               link
-              value={introduceYourselfFormStore.getFormField(RequestToJoinForm.FIELD_LINKS)?.value}
+              value={
+                introduceYourselfFormStore.getFormField(
+                  RequestToJoinForm.FIELD_LINKS,
+                )?.value
+              }
               allowsEditing={true}
               title="Title"
+              maxLength={30}
               validation={{
                 name: RequestToJoinForm.FIELD_LINKS,
                 formStore: introduceYourselfFormStore,

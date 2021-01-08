@@ -10,11 +10,15 @@ export const PAYMENT_FAILED = 'PaymentFailed';
 export const ACTIVE = 'Active';
 
 export const cancelSubscription = async (subscriptionId) => {
-  await axios.post(`${subscriptionsUrl()}/cancel?subscriptionId=${subscriptionId}`, null, {
-    headers: {
-      Authorization: await auth().currentUser.getIdToken(),
+  await axios.post(
+    `${subscriptionsUrl()}/cancel?subscriptionId=${subscriptionId}`,
+    null,
+    {
+      headers: {
+        Authorization: await auth().currentUser.getIdToken(),
+      },
     },
-  });
+  );
 };
 
 export const getUserSubscriptions = async (userId, onSnapshot) => {

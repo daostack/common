@@ -21,8 +21,7 @@ const BtnContent: React.FC<InferProps<typeof btnContentProps>> = ({
           lightStyle
             ? {...styles.btnText, ...styles.btnTextLight}
             : {...styles.btnText}
-        }
-      >
+        }>
         {title}
       </Text>
       {subtitle && <Text style={styles.btnSubtitleText}>{subtitle}</Text>}
@@ -49,8 +48,7 @@ const AccordionBtn: React.FC<InferProps<typeof accordionBtnProps>> = ({
       lightStyle
         ? {...styles.accordionBtn, ...styles.accordionBtnLight}
         : styles.accordionBtn
-    }
-  >
+    }>
     <BtnContent {...{lightStyle, title, subtitle}} />
   </TouchableOpacity>
 );
@@ -58,7 +56,6 @@ const AccordionBtn: React.FC<InferProps<typeof accordionBtnProps>> = ({
 AccordionBtn.propTypes = accordionBtnProps;
 
 BtnContent.propTypes = btnContentProps;
-
 
 const styles = StyleSheet.create({
   accordionBtn: {

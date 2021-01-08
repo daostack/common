@@ -16,8 +16,8 @@ export const userInfoFields = [
   'following',
   'follower',
 ];
-type SignInErrorWithCode = any
-type UserInfo = any
+type SignInErrorWithCode = any;
+type UserInfo = any;
 class UserStore {
   userInfo: UserInfo;
   signedInUser: any;
@@ -46,12 +46,14 @@ class UserStore {
     this.loginInProgress.push(uid);
   };
   removeLoginInProgress = (uid: any) => {
-    this.loginInProgress = this.loginInProgress.filter((item: any) => item !== uid);
+    this.loginInProgress = this.loginInProgress.filter(
+      (item: any) => item !== uid,
+    );
   };
   isLoginInProgressExists = (uid: any) =>
     this.loginInProgress.filter((item: any) => item === uid).length > 0;
   setSignedInUser = (newUserInfo: any) => {
-    const isUserChanged = newUserInfo.uid !== this.userInfo?.uid;
+    const isUserChanged = newUserInfo?.uid !== this.userInfo?.uid;
     if (newUserInfo) {
       let newUserObj = {} as any;
       if (newUserInfo.uid) {
@@ -83,7 +85,9 @@ class UserStore {
       }
       newUserObj.following = newUserInfo.following || [];
       newUserObj.follower = newUserInfo.follower || [];
-      newUserObj.displayName = `${newUserInfo.firstName || ''} ${newUserInfo.lastName || ''}`;
+      newUserObj.displayName = `${newUserInfo.firstName || ''} ${
+        newUserInfo.lastName || ''
+      }`;
 
       Cache.set(newUserInfo.uid, newUserObj);
       this.userInfo = newUserObj;
@@ -91,7 +95,7 @@ class UserStore {
       this.userInfo = null;
     }
     if (isUserChanged) {
-      this.signedInUser = newUserInfo.uid;
+      this.signedInUser = newUserInfo?.uid;
     }
   };
 }

@@ -9,29 +9,30 @@ const props = {
   style: object,
   id: number,
 };
-const MemberImage: React.FC<InferProps<typeof props>> =
-  ({userInfo, style, id}) => (
-    userInfo?.photoURL ?
-      <FastImage
-        key={id}
-        style={styles.memberImage}
-        source={{
-          uri: userInfo?.photoURL,
-        }}
-      />
-      :
-      <View
-        style={{
-          ...styles.memberImage,
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#6e7d82',
-          ...style,
-        }}>
-        <Text style={styles.memberImageDisplayName}>
-          {userInfo?.displayName}
-        </Text>
-      </View>
+const MemberImage: React.FC<InferProps<typeof props>> = ({
+  userInfo,
+  style,
+  id,
+}) =>
+  userInfo?.photoURL ? (
+    <FastImage
+      key={id}
+      style={styles.memberImage}
+      source={{
+        uri: userInfo?.photoURL,
+      }}
+    />
+  ) : (
+    <View
+      style={{
+        ...styles.memberImage,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#6e7d82',
+        ...style,
+      }}>
+      <Text style={styles.memberImageDisplayName}>{userInfo?.displayName}</Text>
+    </View>
   );
 
 MemberImage.propTypes = props;

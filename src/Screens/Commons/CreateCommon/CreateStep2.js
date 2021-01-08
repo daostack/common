@@ -8,7 +8,6 @@ import {
   Dimensions,
   SafeAreaView,
   Animated,
-  Platform,
 } from 'react-native';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import {colors, font, sizeL, sizeS} from '~/Theme';
@@ -16,7 +15,7 @@ import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import CreateStepHeader from './CreateStepHeader';
 import CreateStepNavigation from './CreateStepNavigation';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePicker from 'react-native-date-picker';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import Modal from 'react-native-modal';
 import moment from 'moment';
@@ -27,16 +26,29 @@ const {width} = Dimensions.get('window');
 
 const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
 const MAX_CONTRIBUTION = ['3000', '500'];
-const SAFETY_PERIOD_TAB_VALUES = [moment().add('7', 'days').unix(), moment().add('1', 'months').unix()];
+const SAFETY_PERIOD_TAB_VALUES = [
+  moment().add('7', 'days').unix(),
+  moment().add('1', 'months').unix(),
+];
 
-const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
-
+const CreateStep2 = ({
+  navigation,
+  route: {
+    params: {formStores},
+  },
+}) => {
   const fundingFormStore = formStores.fundingFormStore;
-  const getContributionValue = () => fundingFormStore.getFormField(CreateCommonForm.CONTRIBUTION)?.value;
-  const getDeadlineValue = () => fundingFormStore.getFormField(CreateCommonForm.DEADLINE)?.value;
+  const getContributionValue = () =>
+    fundingFormStore.getFormField(CreateCommonForm.CONTRIBUTION)?.value;
+  const getDeadlineValue = () =>
+    fundingFormStore.getFormField(CreateCommonForm.DEADLINE)?.value;
 
-  const initialContributionIndex = getContributionValue() ? CONTRIBUTION_TAB_VALUES.indexOf(getContributionValue()) : 0;
-  const initialSegmentedIndex = getDeadlineValue() ? getDeadlineValue().index : 0;
+  const initialContributionIndex = getContributionValue()
+    ? CONTRIBUTION_TAB_VALUES.indexOf(getContributionValue())
+    : 0;
+  const initialSegmentedIndex = getDeadlineValue()
+    ? getDeadlineValue().index
+    : 0;
 
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -46,10 +58,19 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
    * contributionIndex === 0 => One-Time
    * contributionIndex === 1 => Monthly
    */
-  const [contributionIndex, setContributionIndex] = useState(initialContributionIndex);
+  const [contributionIndex, setContributionIndex] = useState(
+    initialContributionIndex,
+  );
 
-  const [pickDate, setPickDate] = useState(initialSegmentedIndex === 2 && getDeadlineValue()?.value ? moment.unix(getDeadlineValue()?.value).toDate() : null);
+  const [pickDate, setPickDate] = useState(
+    initialSegmentedIndex === 2 && getDeadlineValue()?.value
+      ? moment.unix(getDeadlineValue()?.value).toDate()
+      : null,
+  );
   const [show, setShow] = useState(false);
+
+  const minimumFieldRules = (currContribIndex) =>
+    `required|integer|min:5|max:${MAX_CONTRIBUTION[currContribIndex]}`;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -61,27 +82,41 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
   }, [scrollY]);
 
   useEffect(() => {
-    fundingFormStore.registerFormField(CreateCommonForm.DEADLINE, 'required', getDeadlineValue());
-    fundingFormStore.registerFormField(CreateCommonForm.CONTRIBUTION, 'required', getContributionValue());
+    fundingFormStore.registerFormField(
+      CreateCommonForm.DEADLINE,
+      'required',
+      getDeadlineValue(),
+    );
+    fundingFormStore.registerFormField(
+      CreateCommonForm.CONTRIBUTION,
+      'required',
+      getContributionValue(),
+    );
     onTabChange(initialSegmentedIndex, true); // pre-select 1 week at first render
-    onContributionTabChange(initialContributionIndex); // pre-select
+    onContributionTabChange(initialContributionIndex, true); // pre-select
   }, []);
 
-  const onContributionTabChange = (index) => {
+  const onContributionTabChange = (index, isInitialSelect = false) => {
     fundingFormStore.fieldChanged(
       CreateCommonForm.CONTRIBUTION,
-      CONTRIBUTION_TAB_VALUES[index]
+      CONTRIBUTION_TAB_VALUES[index],
     );
     setContributionIndex(index);
+    fundingFormStore.updateFieldValidationRule(
+      CreateCommonForm.MINIMUM,
+      null,
+      minimumFieldRules(index),
+      !isInitialSelect,
+    );
   };
 
-  const onDatePickerChange = (event, date) => {
+  const onDatePickerChange = (date) => {
     const momentObj = moment(date || {});
     const currDate = momentObj.unix();
-    fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {value: (currDate), index: 2});
-    if (Platform.OS === 'android') {
-      setShow(false);
-    }
+    fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {
+      value: currDate,
+      index: 2,
+    });
     setPickDate(momentObj.toDate());
   };
 
@@ -89,21 +124,23 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
     if (index === 2) {
       !isInitialCall && setShow(true);
     } else {
-      fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {value: SAFETY_PERIOD_TAB_VALUES[index], index});
+      fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {
+        value: SAFETY_PERIOD_TAB_VALUES[index],
+        index,
+      });
       setShow(false);
     }
     setSegmentedIndex(index);
   };
 
-  // iOS only
   const onDone = () => {
     if (pickDate) {
       setShow(false);
     } else {
-      fundingFormStore.fieldChanged(
-        CreateCommonForm.DEADLINE,
-        {value: moment({}).unix(), index: 2}
-      );
+      fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {
+        value: moment({}).unix(),
+        index: 2,
+      });
       setPickDate(moment().toDate());
       setShow(false);
     }
@@ -115,16 +152,34 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
     }
   };
 
-  const DatePicker = <DateTimePicker
-    testID="dateTimePicker"
-    timeZoneOffsetInMinutes={0}
-    value={pickDate ? pickDate : new Date()}
-    minimumDate={new Date()}
-    maximumDate={moment().add('100', 'days').toDate()}
-    is24Hour={true}
-    display="default"
-    onChange={onDatePickerChange}
-  />;
+  const DatePickerModal = (
+    <Modal
+      visible={show}
+      transparent={true}
+      avoidKeyboard={true}
+      backdropOpacity={0.3}
+      onBackdropPress={() => setShow(false)}
+      style={styles.view}>
+      <View style={{backgroundColor: 'white', alignItems: 'center'}}>
+        <View style={styles.modalView}>
+          <TouchableOpacity onPress={onDone}>
+            <Text style={styles.done}>Done</Text>
+          </TouchableOpacity>
+        </View>
+        <DatePicker
+          testID="dateTimePicker"
+          timeZoneOffsetInMinutes={0}
+          date={pickDate ? pickDate : new Date()}
+          minimumDate={new Date()}
+          maximumDate={moment().add('100', 'days').toDate()}
+          is24Hour={true}
+          mode={'date'}
+          onDateChange={onDatePickerChange}
+          androidVariant="iosClone"
+        />
+      </View>
+    </Modal>
+  );
 
   return (
     <SafeAreaView
@@ -132,10 +187,7 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
         flex: 1,
         backgroundColor: 'white',
       }}>
-      <CreateStepNavigation
-        navigation={navigation}
-        title="General info"
-      />
+      <CreateStepNavigation navigation={navigation} title="General info" />
       <CreateStepDotHeader
         title="Funding"
         currentIndex={2}
@@ -151,17 +203,15 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
           padding: 24,
         }}
         scrollEventThrottle={16}
-        onScroll={Animated.event([
-          {nativeEvent: {contentOffset: {y: scrollY}}},
-        ],
-        {useNativeDriver: false})}>
+        onScroll={Animated.event(
+          [{nativeEvent: {contentOffset: {y: scrollY}}}],
+          {useNativeDriver: false},
+        )}>
         <CreateStepHeader currentIndex={1} />
 
         <View
           style={{
             flex: 1,
-            // alignItems: 'center',
-            // padding: 24,
             backgroundColor: 'white',
           }}>
           <CreateStepHeaderTitle
@@ -188,16 +238,24 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
           />
           <TextInputFieldWithIcon
             key={contributionIndex}
-            value={fundingFormStore.getFormField(CreateCommonForm.MINIMUM)?.value}
+            value={
+              fundingFormStore.getFormField(CreateCommonForm.MINIMUM)?.value
+            }
             iconName="dollar"
             iconSize={12}
             iconStyle={{paddingRight: 5}}
             iconEmptyColor={colors.grey3}
             iconFillColor={colors.grey}
             viewStyle={{alignSelf: 'stretch'}}
-            label={(
-              <React.Fragment>Minimum <Text style={styles.boldText}>{CONTRIBUTION_TAB_VALUES[contributionIndex]}</Text> contribution (min. $5)</React.Fragment>
-            )}
+            label={
+              <React.Fragment>
+                Minimum{' '}
+                <Text style={styles.boldText}>
+                  {CONTRIBUTION_TAB_VALUES[contributionIndex]}
+                </Text>{' '}
+                contribution (min. $5)
+              </React.Fragment>
+            }
             subLabel="Set the minimum amount that new members will have to contribute in order to join this Common."
             infoLabel="Required"
             autoCapitalize="none"
@@ -207,14 +265,10 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
             validation={{
               name: CreateCommonForm.MINIMUM,
               formStore: fundingFormStore,
-              validateRule: [
-                'required',
-                'integer',
-                'min:5',
-                `max:${MAX_CONTRIBUTION[contributionIndex]}`,
-              ],
-              customErrorMessage:
-              `The amount must be at least $5 and at most $${parseFloat(MAX_CONTRIBUTION[contributionIndex]).toLocaleString('en')}.`,
+              validateRule: minimumFieldRules(contributionIndex),
+              customErrorMessage: `The amount must be at least $5 and at most $${parseFloat(
+                MAX_CONTRIBUTION[contributionIndex],
+              ).toLocaleString('en')}.`,
             }}
           />
           <View style={{marginTop: 24}}>
@@ -225,7 +279,9 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
               </Text>
             </View>
             <Text style={styles.info2}>
-              Set a period in which members will not be able to create proposals and allocate the funds. This will allow more members to join and participate in the decision-making process.
+              Set a period in which members will not be able to create proposals
+              and allocate the funds. This will allow more members to join and
+              participate in the decision-making process.
             </Text>
 
             <SegmentedControlTab
@@ -242,46 +298,7 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
               selectedIndex={segmentedIndex}
               onTabPress={onTabChange}
             />
-            {Platform.OS === 'ios' ? <Modal
-              visible={show}
-              transparent={true}
-              avoidKeyboard={true}
-              backdropOpacity={0.3}
-              onBackdropPress={() => setShow(false)}
-              style={styles.view}>
-              <View style={{backgroundColor: 'white'}}>
-                <View
-                  style={{
-                    height: 50,
-                    backgroundColor: colors.grey4,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'flex-end',
-                    position: 'relative',
-                  }}>
-                  {/* <Text
-                    style={{
-                      color: colors.slate,
-                      fontSize: 14,
-                      textAlign: 'center',
-                      position: 'absolute',
-                      left: 0,
-                      right: 0,
-                      marginLeft: 'auto',
-                      marginRight: 'auto',
-                    }}>
-                    {'Min. 1 week'}
-                  </Text> */}
-                  <TouchableOpacity onPress={onDone}>
-                    <Text
-                      style={styles.done}>
-                      Done
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                {DatePicker}
-              </View>
-            </Modal> : show && (DatePicker)}
+            {DatePickerModal}
           </View>
           {/* <TextInputFieldWithIcon
             iconName="dollar"
@@ -338,16 +355,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     margin: 0,
   },
-  container: {
-    backgroundColor: colors.white,
-    borderBottomColor: colors.gray,
-    borderBottomWidth: 1,
-    marginVertical: 10,
-    marginHorizontal: 10,
-    justifyContent: 'center',
-    borderRadius: 2,
-    height: 50,
-  },
   tabTextStyle: {
     ...font.primary.regular,
     ...font.fontSize(2),
@@ -359,6 +366,7 @@ const styles = StyleSheet.create({
     ...font.fontSize(3),
     paddingRight: 20,
     textAlign: 'center',
+    alignSelf: 'flex-end',
   },
   info2: {
     marginVertical: sizeS,
@@ -367,31 +375,10 @@ const styles = StyleSheet.create({
     color: colors.greySubtitle,
     ...font.fontSize(1),
   },
-  placeholderText: {
-    color: colors.grey3,
-  },
-  text: {
-    width: '100%',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    fontSize: 15,
-    color: colors.black,
-  },
   readMoreButton: {
     ...font.primary.regular,
     ...font.fontSize(2),
     color: colors.grey3,
-  },
-  continueButton: {
-    width: '100%',
-    height: 48,
-    borderRadius: 32,
-    marginTop: 45,
-    flexDirection: 'row',
-    paddingHorizontal: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.mainBlue,
   },
   label: {
     ...font.primary.primary,
@@ -407,6 +394,15 @@ const styles = StyleSheet.create({
   },
   boldText: {
     ...font.primary.bold,
+  },
+  modalView: {
+    height: 50,
+    backgroundColor: colors.grey4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    position: 'relative',
+    width: '100%',
   },
 });
 

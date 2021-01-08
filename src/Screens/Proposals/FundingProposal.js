@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   ScrollView,
@@ -7,6 +7,7 @@ import {
   StatusBar,
   View,
   Keyboard,
+  Modal,
 } from 'react-native';
 import {text, layout, colors} from '~/Theme';
 import FundingRequestForm from '~/Components/Forms/FundingRequestForm';
@@ -19,16 +20,22 @@ import FundingRequestFormStore from '~/FormStores/FundingRequestFormStore';
 import {showErrorPopUp} from '~/Util';
 import {inject} from 'mobx-react';
 import ProposalService from '~/Services/ProposalService';
+import UseOfFunds from '../../Components/Commons/UseOfFunds';
+import {BlurView} from '@react-native-community/blur';
 
 const FundingProposal = ({
   navigation,
-  route: {params: {commonId, common}} ,
+  route: {
+    params: {commonId, common},
+  },
   bottomSheetStore,
 }) => {
-
-  const fundingRequestFormStore = new FundingRequestFormStore();
+  const [fundingRequestFormStore] = useState(new FundingRequestFormStore());
+  const [useOfFundsVisible, setUseOfFundsVisible] = useState(false);
 
   const createProposal = async (e) => {
+    navigation.setOptions({headerShown: true});
+    setUseOfFundsVisible(false);
     Keyboard.dismiss();
     if (fundingRequestFormStore.isFormValid()) {
       try {
@@ -50,7 +57,9 @@ const FundingProposal = ({
           },
         });
 
-        const createFundingProposalResponse = await ProposalService.getInstance().createFundingProposal(data);
+        const createFundingProposalResponse = await ProposalService.getInstance().createFundingProposal(
+          data,
+        );
         if (createFundingProposalResponse.status === 200) {
           const proposalId = createFundingProposalResponse.data.id;
 
@@ -78,7 +87,12 @@ const FundingProposal = ({
   return (
     <>
       <StatusBar barStyle="dark-content" />
-
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={useOfFundsVisible}>
+        <UseOfFunds onPressAgree={createProposal} />
+      </Modal>
       <SafeAreaView style={{flex: 1}}>
         <ScrollView
           style={{
@@ -88,17 +102,36 @@ const FundingProposal = ({
           contentContainerStyle={layout.content}>
           <Text style={styles.title}>New proposal</Text>
           <Text style={styles.subtitle}>
-            {'Proposals allow you to make decisions as a group.\nIf you choose to request funding and the proposal is accepted, you will be responsible to follow it through.'}
+            {
+              'Proposals allow you to make decisions as a group.\nIf you choose to request funding and the proposal is accepted, you will be responsible to follow it through.'
+            }
           </Text>
           <View style={styles.divider} />
-          <FundingRequestForm common={common} fundingRequestFormStore={fundingRequestFormStore}/>
+          <FundingRequestForm
+            common={common}
+            fundingRequestFormStore={fundingRequestFormStore}
+          />
         </ScrollView>
         <RequestStepActionButton
           title="Create Proposal"
           formStore={fundingRequestFormStore}
-          onPress={createProposal}
+          onPress={() => {
+            if (fundingRequestFormStore.isFormValid()) {
+              navigation.setOptions({headerShown: false});
+              Keyboard.dismiss();
+              setUseOfFundsVisible(true);
+            }
+          }}
         />
       </SafeAreaView>
+      {useOfFundsVisible && (
+        <BlurView
+          style={styles.blurView}
+          blurType="dark"
+          blurAmount={1}
+          reducedTransparencyFallbackColor={colors.black}
+        />
+      )}
     </>
   );
 };
@@ -115,6 +148,7 @@ FundingProposal.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  blurView: {position: 'absolute', ...StyleSheet.absoluteFill},
   title: {
     ...text.h2Black,
     ...layout.marginTopM,
@@ -137,6 +171,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'bottomSheetStore',
-)(FundingProposal);
+export default inject('bottomSheetStore')(FundingProposal);

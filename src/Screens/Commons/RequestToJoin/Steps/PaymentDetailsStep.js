@@ -5,7 +5,8 @@ import {
   ScrollView,
   Dimensions,
   SafeAreaView,
-  Animated, Image,
+  Animated,
+  Image,
 } from 'react-native';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import {colors, layout, text} from '~/Theme';
@@ -26,19 +27,14 @@ import ProposalService from '~/Services/ProposalService';
 import {testCard} from '~/Config';
 import moment from 'moment';
 import {VALIDATION_RULES} from '~/FormStores/ValidationRules/paymentDetailsRules';
+import {formatNumber} from '~/Util/FormatUtil';
 
 const {width} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
   navigation,
   route: {
-    params: {
-      formStores,
-      skipFirstStep,
-      currCommon,
-      currDaoId,
-      refreshFeed,
-    },
+    params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed},
   },
   userStore: {userInfo},
   bottomSheetStore,
@@ -47,7 +43,8 @@ const PaymentDetailsStep = ({
 
   const paymentFormStore = formStores.paymentFormStore;
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
-  const personalContributionFormStore = formStores.personalContributionFormStore;
+  const personalContributionFormStore =
+    formStores.personalContributionFormStore;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
 
   const [scrollY] = useState(new Animated.Value(0));
@@ -95,10 +92,12 @@ const PaymentDetailsStep = ({
           ...userInfo,
         });
 
-        const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin({
-          ...data,
-          cardId: createdCard.cardId,
-        });
+        const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin(
+          {
+            ...data,
+            cardId: createdCard.id,
+          },
+        );
 
         if (createRequestToJoinResponse.status === 200) {
           const proposalId = createRequestToJoinResponse.data.id;
@@ -129,35 +128,24 @@ const PaymentDetailsStep = ({
   };
 
   const formatDate = (date) => {
-    /*const MAX_LENGHT = 5; // format: "MM/YY"
-    if (date.length > MAX_LENGHT) {
-      return date.substring(0,MAX_LENGHT);
-    }
-
-    if (date.length === 2) {
-      return `${date}/`;
-    }
-
-    if (date.length > 0 && date.length < 2) {
-      return date.substring(0,1);
-    }
-
-    return date;*/
-
     date = date.replace('/', '');
     return date.length > 2
-      ? `${date.substring(0,2)}/${date.substring(2,4)}`
+      ? `${date.substring(0, 2)}/${date.substring(2, 4)}`
       : date;
   };
 
   const subtitle = (style) => (
     <Text style={style}>
-      You are contributing ${personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)?.value?.value}
-
+      You are contributing $
+      {formatNumber(
+        personalContributionFormStore.getFormField(
+          RequestToJoinForm.FIELD_AMOUNT,
+        )?.value?.value,
+      )}
       <Text style={{...font.primary.bold}}>
-        {' '}({isMonthly ? 'monthly' : 'one time'}){' '}
+        {' '}
+        ({isMonthly ? 'monthly' : 'one time'}){' '}
       </Text>
-
       to this common
     </Text>
   );
@@ -170,10 +158,7 @@ const PaymentDetailsStep = ({
           flex: 1,
           backgroundColor: 'white',
         }}>
-        <CreateStepNavigation
-          navigation={navigation}
-          title={currCommon.name}
-        />
+        <CreateStepNavigation navigation={navigation} title={currCommon.name} />
 
         <CreateStepDotHeader
           title="Payment Details"
@@ -192,10 +177,10 @@ const PaymentDetailsStep = ({
             padding: 24,
           }}
           scrollEventThrottle={16}
-          onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
-          ],
-          {useNativeDriver: false})}>
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {y: scrollY}}}],
+            {useNativeDriver: false},
+          )}>
           <MembershipRequest />
 
           <CreateStepHeader
@@ -209,10 +194,19 @@ const PaymentDetailsStep = ({
               // padding: 24,
               backgroundColor: 'white',
             }}>
-            <RequestStepHeaderTitle title="Payment Details" subtitle={subtitle} />
+            <RequestStepHeaderTitle
+              title="Payment Details"
+              subtitle={subtitle}
+            />
             <TextInputField
               label="Credit card number"
-              value={testCard ? '4007410000000006' : paymentFormStore.getFormField(RequestToJoinForm.FIELD_CARD_NUMBER)?.value}
+              value={
+                testCard
+                  ? '4007410000000006'
+                  : paymentFormStore.getFormField(
+                      RequestToJoinForm.FIELD_CARD_NUMBER,
+                    )?.value
+              }
               editable={true}
               keyboardType={'number-pad'}
               validation={{
@@ -223,21 +217,6 @@ const PaymentDetailsStep = ({
                   'numeric',
                   VALIDATION_RULES.IS_VALID_CREDIT_CARD,
                   VALIDATION_RULES.CREDIT_CARD_PROVIDER,
-                ],
-              }}
-            />
-
-            <TextInputField
-              label="Name on card"
-              value={testCard ? 'Tester Tester' : paymentFormStore.getFormField(RequestToJoinForm.FIELD_CARD_NAME)?.value || userInfo.displayName}
-              editable={true}
-              autoCapitalize="words"
-              validation={{
-                name: RequestToJoinForm.FIELD_CARD_NAME,
-                formStore: paymentFormStore,
-                validateRule: [
-                  'required',
-                  VALIDATION_RULES.FIRST_LAST_NAME,
                 ],
               }}
             />
@@ -258,7 +237,13 @@ const PaymentDetailsStep = ({
                   width: '45%',
                 }}
                 label="Expiration date"
-                value={testCard ? moment().format('MM/YY') : paymentFormStore.getFormField(RequestToJoinForm.FIELD_EXPIRATION_DATE)?.value}
+                value={
+                  testCard
+                    ? moment().format('MM/YY')
+                    : paymentFormStore.getFormField(
+                        RequestToJoinForm.FIELD_EXPIRATION_DATE,
+                      )?.value
+                }
                 placeholderText="MM / YY"
                 editable={true}
                 format={(date) => formatDate(date)}
@@ -295,8 +280,7 @@ const PaymentDetailsStep = ({
                   ...text.regularText,
                   color: colors.grey2,
                   marginBottom: -25,
-                }}
-              >
+                }}>
                 Powered by
               </Text>
 
@@ -314,12 +298,15 @@ const PaymentDetailsStep = ({
                 ...text.regularText,
                 color: colors.grey2,
                 textAlign: 'center',
-              }}
-            >
-              If your membership request will not be accepted, you will not
-              be charged. Your card will be saved for the monthly contribution
-              of ${personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)?.value?.value},
-              you can cancel at any time.
+              }}>
+              If your membership request will not be accepted, you will not be
+              charged. Your card will be saved for the monthly contribution of $
+              {
+                personalContributionFormStore.getFormField(
+                  RequestToJoinForm.FIELD_AMOUNT,
+                )?.value?.value
+              }
+              , you can cancel at any time.
             </Text>
           </View>
         </ScrollView>
@@ -379,7 +366,4 @@ PaymentDetailsStep.propTypes = {
   bottomSheetStore: object,
 };
 
-export default inject(
-  'bottomSheetStore',
-  'userStore',
-)(PaymentDetailsStep);
+export default inject('bottomSheetStore', 'userStore')(PaymentDetailsStep);

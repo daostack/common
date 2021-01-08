@@ -41,6 +41,7 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import {PROPOSAL_PAYMENT_STATE} from '~/Util/constants';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -48,11 +49,7 @@ const screenHeight = Dimensions.get('window').height;
 const ProposalScreen = ({
   navigation,
   bottomSheetStore,
-  userStore: {
-    userInfo,
-    isDaoMember,
-    ...userStore
-  },
+  userStore: {userInfo, isDaoMember, ...userStore},
   route: {
     params: {
       commonBalance,
@@ -63,22 +60,31 @@ const ProposalScreen = ({
     },
   },
 }) => {
-  const [votingProcessState, setVotingProcessState] = useState({inProgress: false, error: false});
-  const [proposalScreenInfo, setProposalScreenInfo] = useState(proposalCardInfo);
+  const [votingProcessState, setVotingProcessState] = useState({
+    inProgress: false,
+    error: false,
+  });
+  const [proposalScreenInfo, setProposalScreenInfo] = useState(
+    proposalCardInfo,
+  );
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [isMember, setIsMember] = useState(false);
   const [isProposer, setIsProposer] = useState(false);
   const [inputHeight, setInputHeight] = useState(false);
-  const [showBottomVotingButtonsContainer, setShowBottomVotingButtonsContainer] = useState(false);
+  const [
+    showBottomVotingButtonsContainer,
+    setShowBottomVotingButtonsContainer,
+  ] = useState(false);
   const [showPaymentStatus, setShowPaymentStatus] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState(paymentState);
+
   const renderVoting =
     proposalScreenInfo?.proposalInfo &&
     PROPOSAL_STAGES_ACTIVE.includes(proposalScreenInfo?.proposalInfo?.state) &&
     isMember &&
-    !proposalScreenInfo?.proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid) && paymentStatus !== 'failed';
-
+    !proposalScreenInfo?.proposalInfo.votes.some(
+      (vote) => vote.voterId === userInfo.uid,
+    );
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -102,7 +108,7 @@ const ProposalScreen = ({
 
     const loadProposalInfo = async (currProposalInfo, currProposalDao) => {
       const currProposedUser = await UserService.getInstance().getUserById(
-        currProposalInfo.proposerId
+        currProposalInfo.proposerId,
       );
 
       let funding = null;
@@ -113,6 +119,13 @@ const ProposalScreen = ({
         navigation.setParams({
           subtitle: currProposalDao?.name,
         });
+
+        setShowPaymentStatus(
+          currProposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.PENDING ||
+            currProposalInfo.paymentState ===
+              PROPOSAL_PAYMENT_STATE.NOT_ATTEMPTED ||
+            currProposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.FAILED,
+        );
       }
       //FundingRequest proposal
       else {
@@ -122,18 +135,17 @@ const ProposalScreen = ({
         });
       }
 
-      setProposalScreenInfo(
-        {
-          proposalInfo: {...currProposalInfo, funding},
-          proposedUser: currProposedUser,
-          proposalDao: currProposalDao,
-        }
-      );
+      setProposalScreenInfo({
+        proposalInfo: {...currProposalInfo, funding},
+        proposedUser: currProposedUser,
+        proposalDao: currProposalDao,
+      });
     };
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        unsubscribe = await ProposalService.getInstance().subscribeToProposalById(currProposalId,
+        unsubscribe = await ProposalService.getInstance().subscribeToProposalById(
+          currProposalId,
           async (updatedProposalInfo) => {
             if (updatedProposalInfo.type === PROPOSAL_TYPE.Join) {
               navigation.setParams({
@@ -141,14 +153,15 @@ const ProposalScreen = ({
               });
             }
 
-            const currentDao = await DaoService.getInstance().getDaoById(updatedProposalInfo.commonId);
+            const currentDao = await DaoService.getInstance().getDaoById(
+              updatedProposalInfo.commonId,
+            );
 
             setIsMember(userInfo && isDaoMember(currentDao?.members || []));
             setIsProposer(userStore.isProposer(updatedProposalInfo));
             await loadProposalInfo(updatedProposalInfo, currentDao);
-          }
+          },
         );
-
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());
@@ -158,7 +171,6 @@ const ProposalScreen = ({
     if (proposalId) {
       logger.log(`proposalId --> ${proposalId}`);
       getProposalInfo(proposalId);
-      getPaymentStatus();
     }
 
     return () => {
@@ -177,20 +189,35 @@ const ProposalScreen = ({
   const [voteType, setVoteType] = useState(false);
   const [index, setIndex] = useState(tabIndex);
   const [routes] = useState([
-    {index: 0, key: 'info', icon: 'proposal', iconSelected: 'proposal-selected'},
-    {index: 1, key: 'discussions', icon: 'discussion', iconSelected: 'discussion-selected'},
+    {
+      index: 0,
+      key: 'info',
+      icon: 'proposal',
+      iconSelected: 'proposal-selected',
+    },
+    {
+      index: 1,
+      key: 'discussions',
+      icon: 'discussion',
+      iconSelected: 'discussion-selected',
+    },
   ]);
 
   const [inputText, setInputText] = useState(null);
 
   const inputRef = useRef();
 
-  const renderTabBar = (currProps) => proposalScreenInfo?.proposalInfo && (
-    <View style={{paddingBottom: 5}}>
-      <TabBarRenderer originRef={originTabBarRef} jumpTo={originTabBarRef.current?.props?.jumpTo}
-        indexChange={setIndex} {...currProps} />
-    </View>
-  );
+  const renderTabBar = (currProps) =>
+    proposalScreenInfo?.proposalInfo && (
+      <View style={{paddingBottom: 5}}>
+        <TabBarRenderer
+          originRef={originTabBarRef}
+          jumpTo={originTabBarRef.current?.props?.jumpTo}
+          indexChange={setIndex}
+          {...currProps}
+        />
+      </View>
+    );
 
   const messageInput = () => {
     const sendMessageToDiscussion = async () => {
@@ -240,10 +267,9 @@ const ProposalScreen = ({
           bottom: 0,
           flex: 1,
           color: '#fbfdff',
-        }}
-      >
+        }}>
         <View style={viewStyle}>
-          {(isMember || isProposer) ? (
+          {isMember || isProposer ? (
             <View style={styles.inputBorder}>
               <TextInput
                 ref={inputRef}
@@ -268,15 +294,15 @@ const ProposalScreen = ({
                 style={{
                   paddingRight: 15,
                   justifyContent: 'center',
-                }}
-              >
+                }}>
                 <Icon
                   name="send-message"
                   size={20}
                   color={
                     inputText && inputText.trim()
                       ? colors.mainBlue
-                      : colors.grey3}
+                      : colors.grey3
+                  }
                 />
               </TouchableOpacity>
             </View>
@@ -307,7 +333,9 @@ const ProposalScreen = ({
   };
 
   const viewUserProfile = () => {
-    navigation.navigate('Profile', {userId: proposalScreenInfo?.proposedUser.uid});
+    navigation.navigate('Profile', {
+      userId: proposalScreenInfo?.proposedUser.uid,
+    });
   };
 
   const onVote = async (isApproved) => {
@@ -322,7 +350,9 @@ const ProposalScreen = ({
         proposalId: proposalId || proposalScreenInfo?.proposalInfo.id,
       };
 
-      const createVoteResponse = await ProposalService.getInstance().createVote(voteData);
+      const createVoteResponse = await ProposalService.getInstance().createVote(
+        voteData,
+      );
       if (createVoteResponse.status === 200) {
         setVotingProcessState({inProgress: false, error: false});
         closeApprovalSheet();
@@ -366,51 +396,45 @@ const ProposalScreen = ({
     }
   };
 
-  const getPaymentStatus = () => {
-    db.collection('payments')
-      .where('proposalId', '==', proposalId)
-      .onSnapshot((snapshot) => {
-        if (snapshot.docChanges().length !== 0) {
-          const paymentData = (snapshot.docChanges()[0].doc).data();
-          setPaymentStatus(paymentData.status);
-          if (paymentData.status === 'failed') {
-            setShowPaymentStatus(true);
-          }
-        }
-      },
-      (error) => logger.error(error));
-  };
-
-  const paymentStatusModal = () => bottomSheetStore.showBottomSheet(
-    BOTTOM_SHEET_TEMPLATES.PAYMENT_FAILED,
-    {
+  const paymentStatusModal = () =>
+    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.PAYMENT_STATUS, {
       proposerName: proposalScreenInfo?.proposedUser?.displayName,
-    }
-
-  );
+      paymentState: proposalScreenInfo?.proposalInfo?.paymentState,
+    });
 
   const renderVotingButtons = (reference) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
-      (PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposalScreenInfo?.proposalInfo?.state)) && (
-        <View ref={reference} style={{...layout.content, padding: 0, width: '100%'}}>
-          <Text style={reference ? styles.topSheetVotingText : styles.bottomSheetVotingText}>What's your vote?</Text>
+      PROPOSAL_STAGES_ACTIVE.some(
+        (stg) => stg === proposalScreenInfo?.proposalInfo?.state,
+      ) && (
+        <View
+          ref={reference}
+          style={{...layout.content, padding: 0, width: '100%'}}>
+          <Text
+            style={
+              reference
+                ? styles.topSheetVotingText
+                : styles.bottomSheetVotingText
+            }>
+            What's your vote?
+          </Text>
           <View style={layout.flexRow}>
             <TouchableOpacity
               onPress={(e) => openApprovalSheet(true)}
-              style={{...styles.actionBtnStyle, ...layout.marginRightS}}
-            >
-              <Icon name="approved-24" color={colors.lightishGreen} size={24}/>
+              style={{...styles.actionBtnStyle, ...layout.marginRightS}}>
+              <Icon name="approved-24" color={colors.lightishGreen} size={24} />
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={(e) => openApprovalSheet(false)}
               style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
-              <Icon name="reject-24" color={colors.against} size={24}/>
+              <Icon name="reject-24" color={colors.against} size={24} />
             </TouchableOpacity>
           </View>
         </View>
-      ));
+      )
+    );
   };
 
   const initialLayout = {width: screenWidth};
@@ -418,15 +442,16 @@ const ProposalScreen = ({
   const headerContainerStyle = {
     ...layout.content,
     ...{paddingBottom: 0},
-    ...proposalScreenInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && {...layout.flexStart},
+    ...(proposalScreenInfo?.proposalInfo?.type ===
+      PROPOSAL_TYPE.FundingRequest && {...layout.flexStart}),
   };
 
   const votesFor = proposalScreenInfo?.proposalInfo?.votesFor;
   const votesAgainst = proposalScreenInfo?.proposalInfo?.votesAgainst;
 
   const progressBarWidthPercent = proposalScreenInfo?.proposalInfo
-    ? (votesFor / (votesFor + votesAgainst) * 100) : 0;
-
+    ? (votesFor / (votesFor + votesAgainst)) * 100
+    : 0;
 
   const votesCount = votesFor + votesAgainst;
 
@@ -440,10 +465,9 @@ const ProposalScreen = ({
         toValue: 0,
         duration: 300,
         useNativeDriver: true,
-      }).start(
-        () => {
-          setShowStickyTabBar(false);
-        });
+      }).start(() => {
+        setShowStickyTabBar(false);
+      });
     }
 
     setIndex(item);
@@ -477,13 +501,22 @@ const ProposalScreen = ({
   };
 
   const getAvailableFunds = () => {
-    const availableFunds = (commonBalance || proposalScreenInfo?.proposalDao?.balance || 0 ) / 100;
+    const availableFunds =
+      (commonBalance || proposalScreenInfo?.proposalDao?.balance || 0) / 100;
     return Math.abs(availableFunds) > 999
-      ? Math.sign(availableFunds) * ((Math.abs(availableFunds) / 1000).toFixed(1)) + 'K'
+      ? Math.sign(availableFunds) *
+          (Math.abs(availableFunds) / 1000).toFixed(1) +
+          'K'
       : Math.sign(availableFunds) * Math.abs(availableFunds);
   };
 
-  const stickyTabBarStyle = {position: 'absolute', top: -80, width: '100%', paddingBottom: 5, zIndex: 1};
+  const stickyTabBarStyle = {
+    position: 'absolute',
+    top: -80,
+    width: '100%',
+    paddingBottom: 5,
+    zIndex: 1,
+  };
 
   return (
     <React.Fragment>
@@ -497,13 +530,14 @@ const ProposalScreen = ({
         style={{
           flex: 1,
           backgroundColor: colors.white,
-        }}
-      >
-
+        }}>
         {showStickyTabBar && (
           <Animated.View style={[stickyTabBarStyle, slideUp]}>
-            <TabBarRenderer navigationState={{index, routes}} jumpTo={originTabBarRef.current?.props?.jumpTo}
-              parentRef={originTabBarRef}/>
+            <TabBarRenderer
+              navigationState={{index, routes}}
+              jumpTo={originTabBarRef.current?.props?.jumpTo}
+              parentRef={originTabBarRef}
+            />
           </Animated.View>
         )}
 
@@ -516,68 +550,105 @@ const ProposalScreen = ({
           onScroll={(e) => {
             onTabViewScroll(e);
 
-            stickyTabBarRef?.current?.measure((fx, fy, width, height, px, py) => {
-              const isVisible = py < 0;
+            stickyTabBarRef?.current?.measure(
+              (fx, fy, width, height, px, py) => {
+                const isVisible = py < 0;
 
-              if (isVisible !== showStickyTabBar) {
-                if (isVisible) {
-                  setShowStickyTabBar(isVisible);
-                  Animated.timing(stickyTabBarState.animation, {
-                    toValue: 1,
-                    duration: 200,
-                    useNativeDriver: true,
-                  }).start();
-
-                } else {
-                  Animated.timing(stickyTabBarState.animation, {
-                    toValue: 0,
-                    duration: 300,
-                    useNativeDriver: true,
-                  }).start(
-                    () => {
+                if (isVisible !== showStickyTabBar) {
+                  if (isVisible) {
+                    setShowStickyTabBar(isVisible);
+                    Animated.timing(stickyTabBarState.animation, {
+                      toValue: 1,
+                      duration: 200,
+                      useNativeDriver: true,
+                    }).start();
+                  } else {
+                    Animated.timing(stickyTabBarState.animation, {
+                      toValue: 0,
+                      duration: 300,
+                      useNativeDriver: true,
+                    }).start(() => {
                       setShowStickyTabBar(isVisible);
                     });
+                  }
                 }
-              }
-            });
+              },
+            );
 
-            topVotingButtonsRef?.current?.measure((fx, fy, width, height, px, py) => {
-              setShowBottomVotingButtonsContainer(py < 0);
-            });
-          }}
-        >
+            topVotingButtonsRef?.current?.measure(
+              (fx, fy, width, height, px, py) => {
+                setShowBottomVotingButtonsContainer(py < 0);
+              },
+            );
+          }}>
           {proposalScreenInfo?.proposalInfo && (
-            <View style={isHeaderHidden ? {height: 1, marginTop: -1, overflow: 'hidden'} : {}}>
+            <View
+              style={
+                isHeaderHidden
+                  ? {height: 1, marginTop: -1, overflow: 'hidden'}
+                  : {}
+              }>
               <View style={headerContainerStyle}>
-                {proposalScreenInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest ? (
+                {proposalScreenInfo?.proposalInfo?.type ===
+                PROPOSAL_TYPE.FundingRequest ? (
                   <View style={{...layout.content, width: '100%', padding: 0}}>
-                    <ProposalCardHeader
-                      isScreenHeader={true}
-                      state={proposalScreenInfo?.proposalInfo?.state}
-                      paymentStatus={paymentStatus}
-                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalScreenInfo.proposalInfo?.countdownPeriod}
-                    />
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (showPaymentStatus) {
+                          paymentStatusModal();
+                        }
+                      }}>
+                      <ProposalCardHeader
+                        isScreenHeader={true}
+                        state={proposalScreenInfo?.proposalInfo?.state}
+                        paymentStatus={
+                          proposalScreenInfo?.proposalInfo?.paymentState
+                        }
+                        closingAt={
+                          proposalScreenInfo.proposalInfo?.createdAt.seconds +
+                          proposalScreenInfo.proposalInfo?.countdownPeriod
+                        }
+                      />
+                    </TouchableOpacity>
                     {proposalScreenInfo?.proposedUser && (
-
                       <UserAvatar
                         image={proposalScreenInfo?.proposedUser?.photoURL}
-                        displayName={proposalScreenInfo?.proposedUser?.displayName}
+                        displayName={
+                          proposalScreenInfo?.proposedUser?.displayName
+                        }
                         imageStyle={{width: 46, height: 46}}
                       />
-
                     )}
-                    <Text style={{...text.h2Black, ...layout.marginBottomL, ...layout.marginTopXS}}>
-                      {proposalScreenInfo?.proposalInfo?.description?.title || 'Unknown title'}
+                    <Text
+                      style={{
+                        ...text.h2Black,
+                        ...layout.marginBottomL,
+                        ...layout.marginTopXS,
+                      }}>
+                      {proposalScreenInfo?.proposalInfo?.description?.title ||
+                        'Unknown title'}
                     </Text>
                   </View>
                 ) : (
                   <React.Fragment>
-                    <ProposalCardHeader
-                      isScreenHeader={true}
-                      state={proposalScreenInfo?.proposalInfo?.state}
-                      paymentStatus={paymentStatus}
-                      closingAt={proposalScreenInfo.proposalInfo?.createdAt.seconds + proposalScreenInfo.proposalInfo?.countdownPeriod}
-                    />
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (showPaymentStatus) {
+                          paymentStatusModal();
+                        }
+                      }}>
+                      <ProposalCardHeader
+                        isScreenHeader={true}
+                        state={proposalScreenInfo?.proposalInfo?.state}
+                        paymentStatus={
+                          proposalScreenInfo?.proposalInfo?.paymentState
+                        }
+                        closingAt={
+                          proposalScreenInfo.proposalInfo?.createdAt.seconds +
+                          proposalScreenInfo.proposalInfo?.countdownPeriod
+                        }
+                      />
+                    </TouchableOpacity>
 
                     {proposalScreenInfo?.proposedUser ? (
                       <>
@@ -591,104 +662,166 @@ const ProposalScreen = ({
                           <Text style={text.h2Black}>
                             {proposalScreenInfo?.proposedUser
                               ? proposalScreenInfo?.proposedUser.displayName
-                              : 'unknown user'
-                            }
+                              : 'unknown user'}
                           </Text>
 
-
-                          <TouchableOpacity style={{...layout.flexRow, ...layout.marginTopXS}}
+                          <TouchableOpacity
+                            style={{...layout.flexRow, ...layout.marginTopXS}}
                             onPress={viewUserProfile}>
-                            <Text style={text.smallBlackText}>View Profile</Text>
-                            <Icon name="right-arrow" size={20}/>
+                            <Text style={text.smallBlackText}>
+                              View Profile
+                            </Text>
+                            <Icon name="right-arrow" size={20} />
                           </TouchableOpacity>
-
                         </View>
                       </>
-                    ) :
-                      (<Placeholder Animation={Fade}>
+                    ) : (
+                      <Placeholder Animation={Fade}>
                         <PlaceholderMedia
                           size={60}
                           isRound={true}
                           style={{alignSelf: 'center', marginBottom: 40}}
                         />
-                        <PlaceholderLine width={50} style={{alignSelf: 'center'}}/>
-                        <PlaceholderLine width={30} style={{alignSelf: 'center', marginBottom: 28}}/>
-                      </Placeholder>)
-                    }
+                        <PlaceholderLine
+                          width={50}
+                          style={{alignSelf: 'center'}}
+                        />
+                        <PlaceholderLine
+                          width={30}
+                          style={{alignSelf: 'center', marginBottom: 28}}
+                        />
+                      </Placeholder>
+                    )}
                   </React.Fragment>
                 )}
 
                 <View style={styles.contributionCard}>
-
                   <View style={styles.requestedAmountContainer}>
-                    <Text style={{...text.smallBlackText, ...layout.marginRightS}}>
-                      {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest ?
-                        (proposalScreenInfo?.proposalInfo.fundingRequest.amount > 0 ? 'Requested amount' : 'No funding requested') : 'Contribution:'}
+                    <Text
+                      style={{...text.smallBlackText, ...layout.marginRightS}}>
+                      {proposalScreenInfo?.proposalInfo.type ===
+                      PROPOSAL_TYPE.FundingRequest
+                        ? proposalScreenInfo?.proposalInfo.fundingRequest
+                            .amount > 0
+                          ? 'Requested amount'
+                          : 'No funding requested'
+                        : 'Contribution:'}
                     </Text>
                     <Text style={text.h2Black}>
-                      {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
-                        ? (proposalScreenInfo?.proposalInfo.fundingRequest.amount > 0 ? `$${proposalScreenInfo?.proposalInfo.fundingRequest.amount / 100}` : '')
-                        : `$${proposalScreenInfo?.proposalInfo.join.funding / 100}`}
+                      {proposalScreenInfo?.proposalInfo.type ===
+                      PROPOSAL_TYPE.FundingRequest
+                        ? proposalScreenInfo?.proposalInfo.fundingRequest
+                            .amount > 0
+                          ? `$${
+                              proposalScreenInfo?.proposalInfo.fundingRequest
+                                .amount / 100
+                            }`
+                          : ''
+                        : `$${
+                            proposalScreenInfo?.proposalInfo.join.funding / 100
+                          }`}
                     </Text>
-                    <Text style={{...text.smallBlackText, ...layout.marginRightS}}>{
-                        proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.Join &&
-                        proposalScreenInfo?.proposalDao?.metadata?.contributionType === 'monthly' && ' per month'}</Text>
+                    <Text
+                      style={{...text.smallBlackText, ...layout.marginRightS}}>
+                      {proposalScreenInfo?.proposalInfo.type ===
+                        PROPOSAL_TYPE.Join &&
+                        proposalScreenInfo?.proposalDao?.metadata
+                          ?.contributionType === 'monthly' &&
+                        ' per month'}
+                    </Text>
                   </View>
-                  {proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest && proposalScreenInfo?.proposalInfo.fundingRequest.amount > 0
-                  && <Text
-                    style={text.smallBlackText}>{`Available funds: $${getAvailableFunds()}`}</Text>
-                  }
+                  {proposalScreenInfo?.proposalInfo.type ===
+                    PROPOSAL_TYPE.FundingRequest &&
+                    proposalScreenInfo?.proposalInfo.fundingRequest.amount >
+                      0 && (
+                      <Text
+                        style={
+                          text.smallBlackText
+                        }>{`Available funds: $${getAvailableFunds()}`}</Text>
+                    )}
                 </View>
 
-                <View style={{...layout.content, width: '100%', paddingHorizontal: 0}}>
-
+                <View
+                  style={{
+                    ...layout.content,
+                    width: '100%',
+                    paddingHorizontal: 0,
+                  }}>
                   <View style={styles.proposalProgressInfo}>
                     <View
-                      style={{...layout.content, ...layout.flexRow, padding: 0}}>
+                      style={{
+                        ...layout.content,
+                        ...layout.flexRow,
+                        padding: 0,
+                      }}>
                       <Icon
                         name="user-approved"
                         color={colors.lightishGreen}
                         size={25}
-                        style={layout.marginRightXS}/>
-                      <Text style={text.lightishGreenText}>
-                        {votesFor}
-                      </Text>
+                        style={layout.marginRightXS}
+                      />
+                      <Text style={text.lightishGreenText}>{votesFor}</Text>
                     </View>
 
                     <Text style={text.smallBlackText}>
-                      {votesCount === 0 ? 'No votes yet' : `${votesCount} ${votesCount > 1 ? 'votes' : 'vote'}`}
+                      {votesCount === 0
+                        ? 'No votes yet'
+                        : `${votesCount} ${votesCount > 1 ? 'votes' : 'vote'}`}
                     </Text>
 
                     <View
-                      style={{...layout.content, ...layout.flexRow, padding: 0}}>
-                      <Text style={text.againstText}>
-                        {votesAgainst}
-                      </Text>
+                      style={{
+                        ...layout.content,
+                        ...layout.flexRow,
+                        padding: 0,
+                      }}>
+                      <Text style={text.againstText}>{votesAgainst}</Text>
                       <Icon
                         name="user-rejected"
                         color={colors.against}
                         size={25}
-                        style={layout.marginLeftXS}/>
+                        style={layout.marginLeftXS}
+                      />
                     </View>
                   </View>
-                  <View style={{
-                    ...styles.proposalProgressBar,
-                    ...{backgroundColor: isNaN(progressBarWidthPercent) ? colors.grey4 : colors.against},
-                  }}>
+                  <View
+                    style={{
+                      ...styles.proposalProgressBar,
+                      ...{
+                        backgroundColor: isNaN(progressBarWidthPercent)
+                          ? colors.grey4
+                          : colors.against,
+                      },
+                    }}>
                     <View
-                      style={{...styles.proposalInnerProgressBar, width: `${progressBarWidthPercent}%`}}
+                      style={{
+                        ...styles.proposalInnerProgressBar,
+                        width: `${progressBarWidthPercent}%`,
+                      }}
                     />
                   </View>
                 </View>
 
-                <View style={{...layout.flexRow, justifyContent: 'space-between', width: '100%'}}>
+                <View
+                  style={{
+                    ...layout.flexRow,
+                    justifyContent: 'space-between',
+                    width: '100%',
+                  }}>
                   {renderVoting && renderVotingButtons(topVotingButtonsRef)}
                 </View>
               </View>
             </View>
           )}
 
-          <View ref={stickyTabBarRef} collapsable={false} style={{flex: 1, minHeight: screenHeight, backgroundColor: colors.paleGrey}}>
+          <View
+            ref={stickyTabBarRef}
+            collapsable={false}
+            style={{
+              flex: 1,
+              minHeight: screenHeight,
+              backgroundColor: colors.paleGrey,
+            }}>
             <TabView
               navigationState={{index, routes}}
               renderScene={() => null}
@@ -720,25 +853,21 @@ const ProposalScreen = ({
           </View>
         </ScrollView>
 
-        {index === 0 ? renderVoting
-          && showBottomVotingButtonsContainer && (
-          <View style={styles.actionButtonContainer}>
-            {renderStickyBottomContent()}
-          </View>
+        {index === 0 ? (
+          renderVoting &&
+          showBottomVotingButtonsContainer && (
+            <View style={styles.actionButtonContainer}>
+              {renderStickyBottomContent()}
+            </View>
+          )
         ) : (
-          <React.Fragment>
-            {messageInput()}
-          </React.Fragment>
+          <React.Fragment>{messageInput()}</React.Fragment>
         )}
-
-        {showPaymentStatus && paymentStatusModal()}
-
       </SafeAreaView>
 
       <BottomSheetModal
         isVisible={isApprovalBottomModalVisible}
-        onClose={closeApprovalSheet}
-      >
+        onClose={closeApprovalSheet}>
         <ApprovalSheetScreen
           voteType={voteType}
           onApprove={onVote}
@@ -759,11 +888,7 @@ ProposalScreen.propTypes = {
   }),
   route: shape({
     params: shape({
-      commonBalance: oneOfType([
-        object,
-        number,
-        string,
-      ]),
+      commonBalance: oneOfType([object, number, string]),
       proposalId: string,
     }),
   }),
@@ -892,8 +1017,7 @@ const styles = StyleSheet.create({
   },
 });
 
-
 export default inject(
   'userStore',
-  'bottomSheetStore'
+  'bottomSheetStore',
 )(observer(ProposalScreen));

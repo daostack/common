@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import {colors, font, sizeL} from '~/Theme';
 
 const MembershipRequest = () => (
@@ -11,7 +7,6 @@ const MembershipRequest = () => (
     <Text style={styles.content}>Membership Request</Text>
   </View>
 );
-
 
 const styles = StyleSheet.create({
   container: {

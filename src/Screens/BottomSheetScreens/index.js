@@ -6,7 +6,7 @@ import {default as UnsavedChanges} from './UnsavedChanges';
 import {default as TransactionError} from './TransactionError';
 import {default as PublishCommon} from './PublishCommon';
 import {default as SafetyPeriodAbout} from './SafetyPeriodAbout';
-import {default as PaymentFailed} from './PaymentFailed';
+import {default as PaymentStatusScreen} from './PaymentStatusScreen';
 import {default as CancelSubscription} from './CancelSubscriptionSheetScreen';
 
 export const BOTTOM_SHEET_TEMPLATES = {
@@ -52,9 +52,9 @@ export const BOTTOM_SHEET_TEMPLATES = {
     topSnap: 500,
     content: PublishCommon,
   },
-  PAYMENT_FAILED: {
+  PAYMENT_STATUS: {
     topSnap: 500,
-    content: PaymentFailed,
+    content: PaymentStatusScreen,
   },
   CANCEL_SUBSCRIPTION: {
     topSnap: 450,

@@ -22,7 +22,6 @@ import {
   HUDTest,
   MyWallet,
   CreateAccount,
-  CompleteAccount,
   EditProfile,
   UserProfileReadMode,
   MyProposals,
@@ -100,9 +99,13 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     Text.defaultProps.maxFontSizeMultiplier = 1.1;
   }, []);
 
-  useEffect(() => messaging().onTokenRefresh((token) => {
-    NotificationService.saveTokenToDatabase(token);
-  }), []);
+  useEffect(
+    () =>
+      messaging().onTokenRefresh((token) => {
+        NotificationService.saveTokenToDatabase(token);
+      }),
+    [],
+  );
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
@@ -111,28 +114,44 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     return unsubscribe;
   }, []);
 
-  const notificationNavigation = async (remoteMessage) => { //(screenName, commonId, objectId = null, tabIndex) => {
+  const notificationNavigation = async (remoteMessage) => {
+    logger.log('remoteMessage -> ', remoteMessage);
     if (remoteMessage) {
-      const [screenName, commonId, objectId, tabIndex = 0] = remoteMessage.data.path.split('/');
-      const currCommon = await CommonService.getInstance().getCommonInfo(commonId);
+      const [
+        screenName,
+        commonId,
+        objectId,
+        tabIndex = 0,
+      ] = remoteMessage.data.path.split('/');
+      const currCommon = await CommonService.getInstance().getCommonInfo(
+        commonId,
+      );
       // whitelist;approve/reject requestToJoin
       if (screenName === 'CommonProfile') {
         routing(screenName, {currCommon});
       }
       // new discussionMessage
       else if (screenName === 'Discussions') {
-        const discussion = await DiscussionService.getInstance().getDiscussionInfo(objectId);
-        routing(screenName, {data: discussion, discussionId: objectId, commonId});
+        const discussion = await DiscussionService.getInstance().getDiscussionInfo(
+          objectId,
+        );
+        routing(screenName, {
+          data: discussion,
+          discussionId: objectId,
+          commonId,
+        });
       }
       // create/approve proposal
       else {
-        const proposal = await ProposalService.getInstance().getProposalInfo(objectId);
+        const proposal = await ProposalService.getInstance().getProposalInfo(
+          objectId,
+        );
         routing(screenName, {
           proposalId: proposal.id,
           screenTitle: currCommon.name,
           commonBalance: currCommon.balance,
           proposalCardInfo: proposal,
-          tabIndex,
+          tabIndex: +tabIndex,
         });
       }
     }
@@ -146,6 +165,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         'Notification caused app to open from background state:',
         remoteMessage,
       );
+      console.log('onNotificationOpenedApp remoteMessage', remoteMessage);
       notificationNavigation(remoteMessage);
     });
 
@@ -153,6 +173,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     messaging()
       .getInitialNotification()
       .then((remoteMessage) => {
+        console.log('getInitialNotification remoteMessage', remoteMessage);
         notificationNavigation(remoteMessage);
       });
   }, []);
@@ -199,7 +220,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
   // Deep & Dynamic Link
   const handleOpenURL = ({url}) => {
-    if (url ) {
+    if (url) {
       Linking.canOpenURL(url).then((supported) => {
         if (!supported) {
           return;
@@ -208,7 +229,8 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           logger.log(`Routing Browser -> ${url}`);
           routing('Browser', {url: url});
         }
-      });}
+      });
+    }
   };
 
   const routing = (screenName, params) => {
@@ -238,7 +260,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     DeepLinking.addRoute('/user/:id', (response) => {
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
-        {userId: response.id}
+        {userId: response.id},
       );
     });
 
@@ -247,47 +269,64 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
     });
 
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);
-    dynamicLinks().getInitialLink().then((link) => {
-      if (link) {
-        handleOpenURL(link);
-      } else {
-        Linking.getInitialURL()
-          .then((url) => {
-            handleOpenURL({url});
-          })
-          .catch((err) => err);
-      }
-    });
+    dynamicLinks()
+      .getInitialLink()
+      .then((link) => {
+        if (link) {
+          handleOpenURL(link);
+        } else {
+          Linking.getInitialURL()
+            .then((url) => {
+              handleOpenURL({url});
+            })
+            .catch((err) => err);
+        }
+      });
 
-    return (() => {
+    return () => {
       Linking.removeEventListener('url', handleOpenURL);
       foregroundLink();
-    });
+    };
   }, []);
 
   // Login
   useEffect(() => {
     const onAuthStateChanged = async (user) => {
-      logger.log('AUTH STATE CHANGED:', user?.uid, user?.email, user?.displayName, user);
+      logger.log(
+        'AUTH STATE CHANGED:',
+        user?.uid,
+        user?.email,
+        user?.displayName,
+        user,
+      );
       try {
         // onAuthStateChanged method is called on many events, not only when the logged in user is changed.
         // In order to prevent unwanted rerendering we need to make some checks.
-        if (!userStore.isLoginInProgressExists(user?.uid) && userStore.userInfo?.uid !== user?.uid) {
+        if (
+          !userStore.isLoginInProgressExists(user?.uid) &&
+          userStore.userInfo?.uid !== user?.uid
+        ) {
           if (user) {
             userStore.setIsLoading(true);
             userStore.addLoginInProgress(user?.uid);
             const providerId = user.providerData[0].providerId;
             let appUser = await Cache.get(user.uid);
             if (!appUser) {
-              appUser = await UserService.getInstance().getUserById(
-                user.uid,
-              );
+              appUser = await UserService.getInstance().getUserById(user.uid);
             }
             const isNewUser = !appUser;
 
             if (isNewUser) {
-              const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(providerId);
-              const userInfo = {...user._user, ...{firstName: providerUserInfo.user.givenName, lastName: providerUserInfo.user.familyName}};
+              const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(
+                providerId,
+              );
+              const userInfo = {
+                ...user._user,
+                ...{
+                  firstName: providerUserInfo.user.givenName,
+                  lastName: providerUserInfo.user.familyName,
+                },
+              };
               appUser = await AuthService.getInstance().createUser(userInfo);
             }
 
@@ -298,7 +337,10 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
 
             NotificationService.saveTokenToDatabase();
 
-            const filteredUser = filterObjectByKeys(allUserInfo, userInfoFields);
+            const filteredUser = filterObjectByKeys(
+              allUserInfo,
+              userInfoFields,
+            );
             userStore.setSignedInUser(filteredUser);
             userStore.removeLoginInProgress(filteredUser.uid);
             userStore.setIsLoading(false);
@@ -313,7 +355,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
         logger.log(error);
         throw error;
       }
-
     };
 
     const authChangeUnsubscribe = auth().onAuthStateChanged(onAuthStateChanged);
@@ -346,8 +387,7 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           headerStyle: styles.headerStyle,
           headerTintColor: colors.black,
           headerBackImage: () => <Icon name="left-arrow" size={32} />,
-        }}
-      >
+        }}>
         {!onboarded && (
           <Stack.Screen
             name="Onboarding"
@@ -362,7 +402,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           userStore={userStore}
         />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
-        <Stack.Screen name="CompleteAccount" component={CompleteAccount} />
         <Stack.Screen
           name="CommonProfile"
           component={CommonProfile}
@@ -375,14 +414,14 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             title: route.params.screenTitle,
             headerBackTitleVisible: false,
           })}
-
         />
         <Stack.Screen
           name="Profile"
           component={UserProfile}
           options={({route}) => ({
             headerBackTitleVisible: false,
-          })}/>
+          })}
+        />
         <Stack.Screen
           name="CommonExplanation"
           component={CommonExplanation}
@@ -405,18 +444,11 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
               <View style={{alignItems: 'center'}}>
                 <Text
                   style={{
-                    ...fontSize(
-                      navigation?.route.params.subtitle
-                        ? 4
-                        : 3
-                    ),
-                  }}
-                >
-                  {
-                    (route?.params.title?.length > 20)
-                      ? ((route?.params.title.substring(0, 17)) + '...')
-                      : route?.params.title
-                  }
+                    ...fontSize(navigation?.route.params.subtitle ? 4 : 3),
+                  }}>
+                  {route?.params.title?.length > 20
+                    ? route?.params.title.substring(0, 17) + '...'
+                    : route?.params.title}
                 </Text>
 
                 {route?.params.subtitle && (
@@ -506,11 +538,13 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
             headerShown: false,
           })}
         />
-        <Stack.Screen name="New Post"
+        <Stack.Screen
+          name="New Post"
           options={({nav, route}) => ({
             headerBackTitleVisible: false,
           })}
-          component={DiscussionPost} />
+          component={DiscussionPost}
+        />
         <Stack.Screen
           options={({route}) => ({
             title: route.params.isFirstOpening ? false : 'Edit my profile',
@@ -519,7 +553,11 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           component={EditProfile}
         />
         <Stack.Screen name="PDFViwer" component={PDFViewer} />
-        <Stack.Screen name="Browser" options={({nav, route}) => ({headerBackTitle: 'Back'}) } component={Browser} />
+        <Stack.Screen
+          name="Browser"
+          options={({nav, route}) => ({headerBackTitle: 'Back'})}
+          component={Browser}
+        />
         <Stack.Screen
           options={{
             title: 'My Profile',
@@ -582,7 +620,6 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           name="MonthlyContribution"
           component={MonthlyContribution}
         />
-
       </Stack.Navigator>
       {bottomSheetStore.isVisible && <BottomSheetContainer />}
       <ToastView
