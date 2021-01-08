@@ -47,17 +47,17 @@ const PaymentDetailsStep = ({
     formStores.personalContributionFormStore;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
 
-  const [scrollY] = useState(new Animated.Value(0));
-  const [headerHeight, setHeaderHeight] = useState(0);
+  const [ scrollY ] = useState(new Animated.Value(0));
+  const [ headerHeight, setHeaderHeight ] = useState(0);
 
   useEffect(() => {
     const height = scrollY.interpolate({
-      inputRange: [50, 50],
-      outputRange: [0, 67],
+      inputRange: [ 50, 50 ],
+      outputRange: [ 0, 67 ],
       extrapolate: 'clamp',
     });
     setHeaderHeight(height);
-  }, [scrollY]);
+  }, [ scrollY ]);
 
   const push = async () => {
     if (paymentFormStore.isFormValid()) {
@@ -72,7 +72,6 @@ const PaymentDetailsStep = ({
         const data = {
           description: formData.intro,
           funding: formData.amount * 100,
-          preAuthId: false,
           commonId: currDaoId,
         };
 
@@ -152,7 +151,7 @@ const PaymentDetailsStep = ({
 
   return (
     <React.Fragment>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView style={{backgroundColor: colors.white}}/>
       <SafeAreaView
         style={{
           flex: 1,

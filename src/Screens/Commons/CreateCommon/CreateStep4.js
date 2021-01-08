@@ -131,6 +131,18 @@ const CreateStep4 = ({
       };
       logger.log('calling createCommon(...)');
 
+      const formattedData = {
+        name: data.name,
+        image: data.image,
+        rules: data.rules,
+        links: data.links,
+        byline: data.byline,
+        description: data.description,
+        contributionType: data.contributionType,
+        contributionAmount: data.contributionAmount,
+        fundingGoalDeadline: data.fundingGoalDeadline,
+      };
+
       navigation.navigate({
         name: 'FullScreenCreationLoader',
         params: {
@@ -139,9 +151,7 @@ const CreateStep4 = ({
         },
       });
 
-      const createCommonResponse = await DaoService.getInstance().createCommon(
-        data,
-      );
+      const createCommonResponse = await DaoService.getInstance().createCommon(formattedData);
 
       if (createCommonResponse.status === 200) {
         setNewCommonAddress(createCommonResponse.data.id);
@@ -155,6 +165,8 @@ const CreateStep4 = ({
       //navigation.pop();
       console.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
+
+      navigation.pop();
     }
   };
 
