@@ -136,7 +136,7 @@ const CreateStep4 = ({
         image: data.image,
         rules: data.rules,
         links: data.links,
-        byline: 'data.byline',
+        byline: data.byline,
         description: data.description,
         contributionType: data.contributionType,
         contributionAmount: data.contributionAmount,
