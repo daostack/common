@@ -19,17 +19,21 @@ const styles = {
 };
 
 const MonthlyContributionStatus = ({status, dueDate}) => (
-  <Text style={styles[(status === ACTIVE || dueDate > new Date()) ? 'green' :
-    status === CANCELED_BY_USER
-      ? 'gray'
-      : 'red']}
-  >
-    {(status === ACTIVE || dueDate > new Date())
+  <Text
+    style={
+      styles[
+        status === ACTIVE || dueDate > new Date()
+          ? 'green'
+          : status === CANCELED_BY_USER
+          ? 'gray'
+          : 'red'
+      ]
+    }>
+    {status === ACTIVE || dueDate > new Date()
       ? 'Active'
-      : (status === CANCELED_BY_USER)
-        ? 'Canceled'
-        : 'Payment Failed'
-    }
+      : status === CANCELED_BY_USER
+      ? 'Canceled'
+      : 'Payment Failed'}
   </Text>
 );
 

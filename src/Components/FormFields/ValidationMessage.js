@@ -5,17 +5,22 @@ import {colors, layout, font} from '~/Theme';
 import {string, bool, object, shape} from 'prop-types';
 
 class ValidationMessage extends React.Component {
-
   constructor(props) {
     super(props);
   }
 
   render() {
-    let validationMessage = this.props.formStore.getFormField(this.props.name, this.props.multiName)?.error;
+    let validationMessage = this.props.formStore.getFormField(
+      this.props.name,
+      this.props.multiName,
+    )?.error;
     let messageStyle = styles.errorMessage;
 
     if (this.props.displayName && validationMessage) {
-      validationMessage = validationMessage.replace(this.props.name, this.props.displayName);
+      validationMessage = validationMessage.replace(
+        this.props.name,
+        this.props.displayName,
+      );
     }
 
     if (this.props.customErrorMessage && validationMessage) {
@@ -23,13 +28,14 @@ class ValidationMessage extends React.Component {
     }
 
     if (!this.props.invisibleContainer) {
-      messageStyle = {...styles.errorMessage, ...{minHeight: font.lineHeightForm}};
+      messageStyle = {
+        ...styles.errorMessage,
+        ...{minHeight: font.lineHeightForm},
+      };
     }
 
     return validationMessage || !this.props.invisibleContainer ? (
-      <Text style={messageStyle}>
-        { validationMessage || ''}
-      </Text>
+      <Text style={messageStyle}>{validationMessage || ''}</Text>
     ) : null;
   }
 }

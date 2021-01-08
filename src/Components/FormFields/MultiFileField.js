@@ -8,7 +8,9 @@ const MultiFileField = (props) => {
   const [count, setCount] = useState(1);
 
   useEffect(() => {
-    const currFormField = props.validation.formStore.getFormField(props.validation.name);
+    const currFormField = props.validation.formStore.getFormField(
+      props.validation.name,
+    );
     if (currFormField) {
       setCount(Object.keys(currFormField)?.length);
     }
@@ -23,7 +25,10 @@ const MultiFileField = (props) => {
   const onFieldDeleted = (currIndex) => {
     setCount(count - 1);
     if (props.validation) {
-      props.validation.formStore.removeFormField(props.validation.name, currIndex);
+      props.validation.formStore.removeFormField(
+        props.validation.name,
+        currIndex,
+      );
     }
   };
 
@@ -43,7 +48,12 @@ const MultiFileField = (props) => {
             onFieldDeleted={() => onFieldDeleted(currIndex)}
             allowsEditing={true}
             title={'Add File'}
-            value = { currItemValidation.formStore.getFormField(currItemValidation.name, currItemValidation.multiName)?.value}
+            value={
+              currItemValidation.formStore.getFormField(
+                currItemValidation.name,
+                currItemValidation.multiName,
+              )?.value
+            }
             validation={currItemValidation}
             navigation={navigation}
           />

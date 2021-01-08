@@ -12,7 +12,7 @@ const prepareUserObject = (user) => {
   if (user.lastName) {
     displayName = (displayName ? `${displayName} ` : '') + user.lastName;
   }
-  return {...user, ... {displayName}};
+  return {...user, ...{displayName}};
 };
 
 export default class UserService {
@@ -39,29 +39,33 @@ export default class UserService {
   }
 
   async subscribeToUserById(userId, callback) {
-    let daos = db
-      .collection(DB_COLLECTIONS.users)
-      .doc(userId);
+    let daos = db.collection(DB_COLLECTIONS.users).doc(userId);
 
-    return daos.onSnapshot((snapshot) => {
-      let userInfo = null;
+    return daos.onSnapshot(
+      (snapshot) => {
+        let userInfo = null;
 
-      if (snapshot.exists) {
-        const currOwnerInfo = snapshot.data();
-        userInfo = {
-          ...currOwnerInfo,
-          displayName: `${currOwnerInfo.firstName || ''} ${currOwnerInfo.lastName || ''}`,
-        };
-      }
+        if (snapshot.exists) {
+          const currOwnerInfo = snapshot.data();
+          userInfo = {
+            ...currOwnerInfo,
+            displayName: `${currOwnerInfo.firstName || ''} ${
+              currOwnerInfo.lastName || ''
+            }`,
+          };
+        }
 
-      callback(userInfo);
-    }, (error) => Toast.error(error));
-
+        callback(userInfo);
+      },
+      (error) => Toast.error(error),
+    );
   }
 
   async getUsersByUpTo10Ids(userIdsArr) {
     if (userIdsArr?.length > 10) {
-      throw Error('Firestore in operator supports max 10 length array. Please call that method on batches');
+      throw Error(
+        'Firestore in operator supports max 10 length array. Please call that method on batches',
+      );
     }
 
     return db
@@ -85,9 +89,7 @@ export default class UserService {
         if (snapshots.empty) {
           return [];
         }
-        return snapshots.docs.map((doc) => (
-          {...{id: doc.id}, ...doc.data()}
-        ));
+        return snapshots.docs.map((doc) => ({...{id: doc.id}, ...doc.data()}));
       });
   }
   async addUser(googleId, newUser) {
@@ -113,5 +115,4 @@ export default class UserService {
         //logger.log('Edited document with ID: ', ref.id);
       });
   }
-
 }

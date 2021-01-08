@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {Text, StyleSheet, Platform, View, Animated, Dimensions} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  Platform,
+  View,
+  Animated,
+  Dimensions,
+} from 'react-native';
 import {text, layout, colors, font} from '~/Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
@@ -21,18 +28,27 @@ import {
 
 const {width} = Dimensions.get('window');
 
-const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipRequest, isSwiper, isMember, commonInfo}) => {
+const ProposalCard = ({
+  proposalId,
+  data,
+  navigation,
+  containerStyle,
+  membershipRequest,
+  isSwiper,
+  isMember,
+  commonInfo,
+}) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
 
   useEffect(() => {
-
     let unsubscribeProposalDiscussionsCount = null;
     let unsubscribeProposalInfo = null;
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        unsubscribeProposalInfo = await ProposalService.getInstance().subscribeToProposalById(currProposalId,
+        unsubscribeProposalInfo = await ProposalService.getInstance().subscribeToProposalById(
+          currProposalId,
           async (currProposalInfo) => {
             //RequestToJoin proposal
             let funding = null;
@@ -43,18 +59,22 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
             else {
               funding = currProposalInfo.fundingRequest.amount;
             }
-            const currProposedUser = await UserService.getInstance().getUserById(currProposalInfo.proposerId);
+            const currProposedUser = await UserService.getInstance().getUserById(
+              currProposalInfo.proposerId,
+            );
             setProposalCardInfo({
               proposedUser: currProposedUser,
               proposalInfo: {...currProposalInfo, funding},
             });
-          }
+          },
         );
 
-        unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(currProposalId, (discussionsCount) => {
-          setProposalDiscussionCount(discussionsCount);
-        });
-
+        unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
+          currProposalId,
+          (discussionsCount) => {
+            setProposalDiscussionCount(discussionsCount);
+          },
+        );
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());
@@ -66,7 +86,8 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
     }
 
     return () => {
-      unsubscribeProposalDiscussionsCount && unsubscribeProposalDiscussionsCount();
+      unsubscribeProposalDiscussionsCount &&
+        unsubscribeProposalDiscussionsCount();
       unsubscribeProposalInfo && unsubscribeProposalInfo();
     };
   }, [proposalId]);
@@ -77,11 +98,12 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
 
     const loadProposalInfo = async (currProposalInfo) => {
       try {
-        unsubscribeProposalInfo = await ProposalService.getInstance().subscribeToProposalById(currProposalInfo.id,
+        unsubscribeProposalInfo = await ProposalService.getInstance().subscribeToProposalById(
+          currProposalInfo.id,
           async (updatedProposalInfo) => {
             //RequestToJoin proposal
             const proposedMemberUser = await UserService.getInstance().getUserById(
-              updatedProposalInfo.proposerId
+              updatedProposalInfo.proposerId,
             );
             let funding = null;
             if (updatedProposalInfo.type === PROPOSAL_TYPE.Join) {
@@ -96,13 +118,15 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
               proposedUser: proposedMemberUser,
               proposalInfo: allProposalInfo,
             });
-          }
+          },
         );
 
-        unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(currProposalInfo.id, (discussionsCount) => {
-          setProposalDiscussionCount(discussionsCount);
-        });
-
+        unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
+          currProposalInfo.id,
+          (discussionsCount) => {
+            setProposalDiscussionCount(discussionsCount);
+          },
+        );
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());
@@ -114,7 +138,8 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
     }
 
     return () => {
-      unsubscribeProposalDiscussionsCount && unsubscribeProposalDiscussionsCount();
+      unsubscribeProposalDiscussionsCount &&
+        unsubscribeProposalDiscussionsCount();
       unsubscribeProposalInfo && unsubscribeProposalInfo();
     };
   }, [data]);
@@ -127,11 +152,12 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
   };
 
   const onReviewProposal = async () => {
-
     let currCommonInfo = commonInfo;
 
     if (!currCommonInfo) {
-      currCommonInfo = await DaoService.getInstance().getDaoById(proposalCardInfo.proposalInfo.commonId);
+      currCommonInfo = await DaoService.getInstance().getDaoById(
+        proposalCardInfo.proposalInfo.commonId,
+      );
     }
 
     navigation.navigate('ProposalScreen', {
@@ -145,12 +171,16 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
   };
 
   return proposalCardInfo ? (
-    <Animated.View style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
+    <Animated.View
+      style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
           state={proposalCardInfo.proposalInfo?.state}
           paymentStatus={proposalCardInfo.proposalInfo?.paymentState}
-          closingAt={proposalCardInfo.proposalInfo?.createdAt.seconds + proposalCardInfo.proposalInfo?.countdownPeriod}
+          closingAt={
+            proposalCardInfo.proposalInfo?.createdAt.seconds +
+            proposalCardInfo.proposalInfo?.countdownPeriod
+          }
         />
 
         <View
@@ -160,10 +190,13 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
             ...layout.flexStart,
             flexWrap: 'wrap',
           }}>
-          {proposalCardInfo?.proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && <Text
-            style={styles.title}>
-            {proposalCardInfo.proposalInfo?.description?.title || 'Unknown title'}
-          </Text>}
+          {proposalCardInfo?.proposalInfo?.type ===
+            PROPOSAL_TYPE.FundingRequest && (
+            <Text style={styles.title}>
+              {proposalCardInfo.proposalInfo?.description?.title ||
+                'Unknown title'}
+            </Text>
+          )}
 
           <MemberCard
             showDate={membershipRequest}
@@ -191,20 +224,26 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
 
           <View style={styles.proposalCardActionContainer}>
             <Text style={styles.proposalActionBtnText}>
-              {membershipRequest
-                ? 'View request'
-                : 'View proposal'
-              }
+              {membershipRequest ? 'View request' : 'View proposal'}
             </Text>
           </View>
         </View>
       </TouchableOpacity>
     </Animated.View>
   ) : (
-    <Animated.View style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
+    <Animated.View
+      style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
       <Placeholder Animation={Fade}>
-        <PlaceholderLine width={40} style={{alignSelf: 'center', marginTop: 20}}/>
-        <View style={{...layout.flexRow, justifyContent: 'space-between', paddingVertical: 10}}>
+        <PlaceholderLine
+          width={40}
+          style={{alignSelf: 'center', marginTop: 20}}
+        />
+        <View
+          style={{
+            ...layout.flexRow,
+            justifyContent: 'space-between',
+            paddingVertical: 10,
+          }}>
           <View style={{padding: 10}}>
             <PlaceholderMedia
               size={50}
@@ -217,13 +256,14 @@ const ProposalCard = ({proposalId, data, navigation, containerStyle, membershipR
             <PlaceholderLine width={30} />
           </View>
         </View>
-        <PlaceholderLine width={30} style={{alignSelf: 'center', marginTop: 10, marginBottom: 20}} />
+        <PlaceholderLine
+          width={30}
+          style={{alignSelf: 'center', marginTop: 10, marginBottom: 20}}
+        />
       </Placeholder>
-
     </Animated.View>
   );
 };
-
 
 ProposalCard.propTypes = {
   proposalId: string,

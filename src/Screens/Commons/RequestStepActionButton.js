@@ -11,7 +11,8 @@ const RequestStepActionButton = ({hidden, pass, formStore, onPress, title}) => {
     actionBtnStyle = {...actionBtnStyle, display: 'none'};
   }
 
-  const isButtonEnabled = () => formStore ? formStore.isFormActionEnabled() : pass;
+  const isButtonEnabled = () =>
+    formStore ? formStore.isFormActionEnabled() : pass;
 
   return (
     <View style={actionBtnStyle}>

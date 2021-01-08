@@ -43,11 +43,10 @@ const CommonCover: React.FC<InferProps<typeof props>> = ({
             navigation
               ? styles.headerContainer
               : {
-                ...styles.headerContainer,
-                ...styles.headerContainerCenterContent,
-              }
-          }
-        >
+                  ...styles.headerContainer,
+                  ...styles.headerContainerCenterContent,
+                }
+          }>
           {navigation && (
             <TouchableOpacity onPress={navigation.goBack}>
               <Icon
@@ -63,8 +62,7 @@ const CommonCover: React.FC<InferProps<typeof props>> = ({
             style={{
               ...layout.content,
               ...{padding: 0},
-            }}
-          >
+            }}>
             {logo && (
               <FastImage
                 style={styles.logoImage as StyleProp<ImageStyle>}
@@ -107,10 +105,7 @@ const CommonCover: React.FC<InferProps<typeof props>> = ({
   };
   return (
     <>
-      <FastImage
-        source={{uri: cover}}
-        style={styles.coverBackground}
-      >
+      <FastImage source={{uri: cover}} style={styles.coverBackground}>
         <View style={styles.coverOverlay}>
           {navigation ? renderCoverInSafeArea() : renderCover()}
         </View>

@@ -4,7 +4,7 @@ import {layout, text, font} from '~/Theme';
 import {InferProps} from 'prop-types';
 import {bool, shape, number} from 'prop-types';
 
-const props  = {
+const props = {
   isCommonCard: bool,
   commonProgressInfo: shape({
     time: number,
@@ -59,8 +59,7 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
         justifyContent: 'center',
         alignContent: 'center',
         alignItems: 'center',
-      }}
-    >
+      }}>
       <Text style={styles.headerSmallText}>{title}</Text>
       <View style={styles.raisedContainer}>{numberComponent}</View>
     </View>
@@ -72,13 +71,13 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
           <Text style={styles.headerTitle}>
             ${formatNumber(isCommonCard ? raised / 100 : balance / 100)}
           </Text>,
-          isCommonCard ? 'Raised' : 'Available funds'
+          isCommonCard ? 'Raised' : 'Available funds',
         )}
         {commonNumberBox(
           <Text style={styles.headerTitle}>
             {isCommonCard ? members : '$' + formatNumber(raised / 100)}
           </Text>,
-          isCommonCard ? 'Members' : 'Raised'
+          isCommonCard ? 'Members' : 'Raised',
         )}
       </View>
     </View>

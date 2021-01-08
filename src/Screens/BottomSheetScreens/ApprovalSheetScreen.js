@@ -1,4 +1,11 @@
-import {Text, StyleSheet, SafeAreaView, TouchableOpacity, View, Dimensions} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  View,
+  Dimensions,
+} from 'react-native';
 import React from 'react';
 import {text, layout, colors, font, sizeL} from '~/Theme';
 import ButtonSwiper from '~/Components/ButtonSwiper';
@@ -6,20 +13,15 @@ import {func, bool, shape} from 'prop-types';
 import {useQuote} from '../../Util/hooks/useQuote';
 import {Bar} from 'react-native-progress';
 
-
 const ApprovalSheetScreen = ({
   onApprove,
   onClose,
   voteType,
-  votingProcessState: {
-    inProgress,
-    error,
-  },
+  votingProcessState: {inProgress, error},
 }) => {
   const quote = useQuote();
   const title = voteType ? 'Approve' : 'Reject';
-  const voteColor =
-    error || !voteType ? colors.against : colors.lightishGreen;
+  const voteColor = error || !voteType ? colors.against : colors.lightishGreen;
 
   return (
     <SafeAreaView style={styles.body}>
@@ -37,7 +39,6 @@ const ApprovalSheetScreen = ({
         />
       )}
 
-
       <Text
         style={{
           ...styles.title,
@@ -52,10 +53,7 @@ const ApprovalSheetScreen = ({
             Please try again later
           </Text>
 
-          <TouchableOpacity
-            style={styles.okButton}
-            onPress={onClose}
-          >
+          <TouchableOpacity style={styles.okButton} onPress={onClose}>
             <Text style={styles.buttonText}>OK</Text>
           </TouchableOpacity>
         </React.Fragment>
@@ -71,8 +69,8 @@ const ApprovalSheetScreen = ({
       ) : (
         <React.Fragment>
           <Text style={styles.voteDescription}>
-            Are you sure? You will not be able
-            to change your vote after you confirm it.
+            Are you sure? You will not be able to change your vote after you
+            confirm it.
           </Text>
           <ButtonSwiper
             title="Swipe to confirm your vote"
@@ -149,8 +147,7 @@ const styles = StyleSheet.create({
     ...layout.marginTopXXL,
     height: 52,
   },
-  buttonText:
-  {
+  buttonText: {
     color: colors.black,
     alignSelf: 'center',
     fontSize: 16,

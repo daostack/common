@@ -13,16 +13,11 @@ const NavigationHeader = ({title, navigation}) => (
         style={{
           justifyContent: 'center',
           flexDirection: 'row',
-        }}
-      >
-        <Icon
-          size={32}
-          name="left-arrow"
-          style={{marginLeft: 10}}
-        />
+        }}>
+        <Icon size={32} name="left-arrow" style={{marginLeft: 10}} />
       </TouchableOpacity>
     }
-    title={(
+    title={
       <Text
         style={{
           fontWeight: 'bold',
@@ -30,11 +25,10 @@ const NavigationHeader = ({title, navigation}) => (
           fontSize: 16,
           top: -6,
           marginLeft: 3,
-        }}
-      >
+        }}>
         {title}
       </Text>
-    )}
+    }
   />
 );
 

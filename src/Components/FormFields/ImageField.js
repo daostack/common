@@ -1,5 +1,12 @@
 import * as React from 'react';
-import {Image, View, StyleSheet, TouchableOpacity, Text, Platform} from 'react-native';
+import {
+  Image,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  Platform,
+} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import ImagePicker from 'react-native-image-picker';
 import Toast from '~/Util/Toast';
@@ -24,14 +31,17 @@ class ImageField extends React.Component {
     super(props);
 
     if (this.props.validation) {
-      const {validation: {
-        name,
-        formStore,
-        validateRule,
-        multiName,
-        displayName,
-        customErrorMessage,
-      }, value} = this.props;
+      const {
+        validation: {
+          name,
+          formStore,
+          validateRule,
+          multiName,
+          displayName,
+          customErrorMessage,
+        },
+        value,
+      } = this.props;
 
       formStore.registerFormField(name, validateRule, value, multiName);
 
@@ -61,7 +71,7 @@ class ImageField extends React.Component {
       const {formStore, name} = this.props.validation;
       formStore.removeFormField(name);
     }
-  }
+  };
 
   pickImage = () => {
     const {title, quality, allowsEditing} = this.props;
@@ -75,7 +85,7 @@ class ImageField extends React.Component {
         logger.log('User cancelled image picker');
       } else if (response.error) {
         // only for ios because android handles this
-        Platform.OS === 'ios' && await handlePermission();
+        Platform.OS === 'ios' && (await handlePermission());
         Toast.error(response.error);
         logger.log('ImagePicker Error: ', response.error);
       } else {
@@ -100,7 +110,9 @@ class ImageField extends React.Component {
       ? styles.formImageFieldStyle
       : styles.formImageFueldGeneralStyle;
 
-    const currValue = validation?.formStore.getFormField(validation.name, validation.multiName)?.value || value;
+    const currValue =
+      validation?.formStore.getFormField(validation.name, validation.multiName)
+        ?.value || value;
 
     if (currValue) {
       return (
@@ -112,18 +124,22 @@ class ImageField extends React.Component {
           }}
         />
       );
-    }
-    else if (isAvatar){
+    } else if (isAvatar) {
       return (
         <View style={styles.imageStyle}>
           <Icon name="account-place-holder" size={100} />
         </View>
       );
-    }
-    else {
+    } else {
       return (
         <View style={styles.imageFieldPlaceholderView}>
-          <View style={{borderColor: colors.grey3, borderWidth: 2, borderRadius: 5, padding: 15}}>
+          <View
+            style={{
+              borderColor: colors.grey3,
+              borderWidth: 2,
+              borderRadius: 5,
+              padding: 15,
+            }}>
             <Icon name="addpicture" size={18} />
           </View>
           <Text
@@ -144,7 +160,7 @@ class ImageField extends React.Component {
             Get more attention to your proposal
           </Text>
           <View styles={layout.flexRow}>
-            <TouchableOpacity style={styles.btn} onPress={this.pickImage} >
+            <TouchableOpacity style={styles.btn} onPress={this.pickImage}>
               <Text style={[text.buttonblue, {fontSize: 16}]}>Add Image</Text>
             </TouchableOpacity>
           </View>
@@ -155,7 +171,9 @@ class ImageField extends React.Component {
 
   render() {
     const {isAvatar, value, validation, disableEdit} = this.props;
-    const currValue = validation?.formStore.getFormField(validation.name, validation.multiName)?.value || value;
+    const currValue =
+      validation?.formStore.getFormField(validation.name, validation.multiName)
+        ?.value || value;
 
     return (
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -167,12 +185,23 @@ class ImageField extends React.Component {
           }>
           <View>
             {this.renderImage(isAvatar, validation, value)}
-            {!disableEdit && (isAvatar || currValue?.length > 0 ) &&
+            {!disableEdit && (isAvatar || currValue?.length > 0) && (
               <TouchableOpacity
-                style={isAvatar ? styles.formImageFielAddIconAvatar : styles.formImageFielAddIcon}
-                onPress={() => { isAvatar ? this.pickImage() : this.onFieldDeleted();} }>
-                <Icon name={ isAvatar ? 'addpicture' : 'delete' } size={16} color={colors.white} />
-              </TouchableOpacity>}
+                style={
+                  isAvatar
+                    ? styles.formImageFielAddIconAvatar
+                    : styles.formImageFielAddIcon
+                }
+                onPress={() => {
+                  isAvatar ? this.pickImage() : this.onFieldDeleted();
+                }}>
+                <Icon
+                  name={isAvatar ? 'addpicture' : 'delete'}
+                  size={16}
+                  color={colors.white}
+                />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
         {this.fieldValidation}
