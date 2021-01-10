@@ -53,7 +53,8 @@ class DaoStore {
       const updateResponse = await DaoService.getInstance().editDao(
         updateCommonInfo,
       );
-      //Cache.set(updateCommonInfo.commonId, updateCommonInfo.common); //this is throwing error about it being a json
+      console.log('updateCommonInfo', updateCommonInfo);
+      Cache.set(updateCommonInfo.common.id, updateCommonInfo.common);
       return updateResponse;
     } catch (err) {
       throw err;
