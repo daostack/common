@@ -1,4 +1,6 @@
 import {observable, action, decorate} from 'mobx';
+import DaoService from '../Services/DaoService';
+import Cache from '../Util/Cache';
 
 export const daoInfoFields = [
   'uid',
@@ -45,6 +47,11 @@ class DaoStore {
       this.daos = null;
     }
     this.daos = daoArray;
+  };
+  setDaoInfo = async (newDaoInfo) => {
+    console.log('newInfo', newDaoInfo);
+    await DaoService.getInstance().editDao(newDaoInfo.id, newDaoInfo);
+    Cache.set(newDaoInfo.id, newDaoInfo);
   };
 }
 

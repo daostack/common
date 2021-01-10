@@ -2,6 +2,7 @@ import {db} from '~/Firebase';
 import Toast from '~/Util/Toast';
 import axios from 'axios';
 import {commonsUrl} from '~/Config';
+import logger from './Logger';
 
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {auth} from '~/Firebase';
@@ -120,4 +121,9 @@ export default class DaoService {
       throw err;
     }
   }
+
+  editDao = async (daoId, dao) => {
+    logger.log('editDao -> ', dao);
+    return db.collection(DB_COLLECTIONS.daos).doc(daoId).update(dao);
+  };
 }

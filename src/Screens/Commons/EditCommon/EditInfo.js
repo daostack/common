@@ -15,15 +15,21 @@ import Icon from '~/Assets/iconfont/Icon';
 import Loader from '~/Components/Loader';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import Toast from '~/Util/Toast';
-import {filterObjectByKeys} from '~/Util';
 import {bool, object, shape, func} from 'prop-types';
 import {EditCommonInfoFormStore} from '~/FormStores/EditCommonInfoFormStore';
 import CommonImage from '~/Components/Commons/CommonImage';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import * as EditCommonInfoConstants from '~/Components/Forms/EditCommonInfoForm';
+import _ from 'lodash';
 const {width} = Dimensions.get('window');
 
-const EditInfo = ({userStore, bottomSheetStore, route, navigation}) => {
+const EditInfo = ({
+  userStore,
+  daoStore,
+  bottomSheetStore,
+  route,
+  navigation,
+}) => {
   navigation.setOptions({
     headerLeft: () => (
       <TouchableOpacity
@@ -45,34 +51,25 @@ const EditInfo = ({userStore, bottomSheetStore, route, navigation}) => {
 
   const {currCommon} = route.params;
   const [editCommonInfoFormStore] = useState(new EditCommonInfoFormStore());
-  const formSave = async (e) => {
-    if (editCommonInfoFormStore.isFormValid()) {
-      onFormSubmitStart();
+  const [valid, setValid] = useState(false);
 
-      const changedFields = editCommonInfoFormStore.getChangedFormFieldsJson();
-      /*let newInfo = filterObjectByKeys(changedFields, [
-        EditCommonInfoConstants.NAME,
-        EditCommonInfoConstants.BYLINE,
-        EditCommonInfoConstants.DESCRIPTION,
-        EditCommonInfoConstants.IMAGE,
-      ]);
-      console.log('newData', newInfo)*/
-      //onFormSubmitEnd(changedFields);
+  const formSave = async (e) => {
+    if (valid) {
+      Toast.loading('Updating your Common...');
+      const changedFields = getChanges();
+      console.log('newInfo', changedFields);
+      onFormSubmitEnd({...currCommon, ...changedFields});
     }
   };
 
-  const onFormSubmitStart = (updatedFields) => {
-    Toast.loading('Updating your profile...');
-  };
-
   const onFormSubmitEnd = (updatedFields) => {
-    ///////// userStore.setSignedInUser({...userStore.userInfo, ...updatedFields});
-    Toast.done('Your profile is updated');
+    daoStore.setDaoInfo(updatedFields);
+    Toast.done('Your Common is updated');
     navigation.goBack();
   };
 
   const onFormClose = () => {
-    if (editCommonInfoFormStore.isFormChanged()) {
+    if (!_.isEmpty(getChanges())) {
       bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
         navigation: navigation,
         onContinueEditing: closeBottomSheet,
@@ -85,6 +82,20 @@ const EditInfo = ({userStore, bottomSheetStore, route, navigation}) => {
 
   const closeBottomSheet = () => {
     bottomSheetStore.hideBottomSheet();
+  };
+
+  const isValid = () =>
+    setValid(!_.isEmpty(getChanges()) && editCommonInfoFormStore.isFormValid());
+
+  // get the actual changes; not just fields that were changed and then changed back to prev value
+  const getChanges = () => {
+    const changedFields = editCommonInfoFormStore.getChangedFormFieldsJson();
+    return Object.keys(changedFields)
+      .filter((key) => currCommon[key] !== changedFields[key])
+      .reduce((obj, key) => {
+        obj[key] = changedFields[key];
+        return obj;
+      }, {});
   };
 
   const textInputAttributes = [
@@ -155,12 +166,14 @@ const EditInfo = ({userStore, bottomSheetStore, route, navigation}) => {
                 currImage={currCommon.image}
               />
 
-              {textInputAttributes.map((attributes) => (
+              {textInputAttributes.map((attributes, i) => (
                 <TextInputField
+                  key={i}
                   viewStyle={{alignSelf: 'stretch'}}
                   infoLabel="Required"
                   placeholderText=""
                   returnKeyType="next"
+                  onChangeText={() => isValid()}
                   autoCorrect={false}
                   {...attributes}
                 />
@@ -171,9 +184,23 @@ const EditInfo = ({userStore, bottomSheetStore, route, navigation}) => {
           )}
         </ScrollView>
 
-        <TouchableOpacity style={styles.btn} onPress={formSave}>
-          <Text style={styles.buttonText}>Save</Text>
-        </TouchableOpacity>
+        <View style={{marginBottom: 20}}>
+          <TouchableOpacity
+            style={{
+              ...styles.btn,
+              backgroundColor: valid ? colors.mainBlue : colors.paleblue,
+            }}
+            disabled={!valid}
+            onPress={formSave}>
+            <Text
+              style={{
+                ...styles.buttonText,
+                color: valid ? colors.white : colors.greyText,
+              }}>
+              Save
+            </Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     </>
   );
@@ -188,6 +215,9 @@ EditInfo.propTypes = {
     showBottomSheet: func,
     hideBottomSheet: func,
   }),
+  daoStore: shape({
+    setDaoInfo: func,
+  }),
   route: shape({
     params: shape({
       isFirstOpening: bool,
@@ -199,7 +229,6 @@ EditInfo.propTypes = {
 const styles = StyleSheet.create({
   btn: {
     ...layout.btnPrimary,
-    backgroundColor: colors.paleblue,
     width: '85%',
     alignSelf: 'center',
   },
@@ -229,4 +258,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'bottomSheetStore')(EditInfo);
+export default inject('userStore', 'daoStore', 'bottomSheetStore')(EditInfo);

@@ -29,9 +29,7 @@ const CommonProfileOptions = ({
       nestedScrollEnabled={true}
       directionalLockEnabled={true}>
       <View style={styles.body}>
-        <Text style={{...text.h2Black, alignSelf: 'center', marginBottom: 30}}>
-          Options
-        </Text>
+        <Text style={styles.text}>Options</Text>
         {hasPermission && (
           <>
             <TouchableOpacity style={styles.optionBtn} onPress={() => onEdit()}>
@@ -58,8 +56,6 @@ const CommonProfileOptions = ({
 };
 
 CommonProfileOptions.propTypes = {
-  //onFollow: func,
-  //isCommonProfile: bool,
   hasPermission: bool,
   bottomSheetStore: object,
   onEditInfo: func,
@@ -74,11 +70,10 @@ const styles = StyleSheet.create({
     ...text.centered,
   },
   body: {
-    alignSelf: 'stretch',
-    ...layout.content,
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
+    paddingVertical: 20,
   },
 
   safeArea: {
@@ -94,7 +89,12 @@ const styles = StyleSheet.create({
     ...layout.flexStart,
     borderBottomWidth: 1,
     borderColor: colors.grey4,
-    width: 390,
+    width: 350,
+  },
+  text: {
+    ...text.h2Black,
+    alignSelf: 'center',
+    marginBottom: 30,
   },
 });
 
