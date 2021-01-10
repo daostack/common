@@ -48,10 +48,16 @@ class DaoStore {
     }
     this.daos = daoArray;
   };
-  setDaoInfo = async (newDaoInfo) => {
-    console.log('newInfo', newDaoInfo);
-    await DaoService.getInstance().editDao(newDaoInfo.id, newDaoInfo);
-    Cache.set(newDaoInfo.id, newDaoInfo);
+  updateDaoInfo = async (updateCommonInfo, currCommon) => {
+    try {
+      const updateResponse = await DaoService.getInstance().editDao(
+        updateCommonInfo,
+      );
+      //Cache.set(updateCommonInfo.commonId, updateCommonInfo.common); //this is throwing error about it being a json
+      return updateResponse;
+    } catch (err) {
+      throw err;
+    }
   };
 }
 

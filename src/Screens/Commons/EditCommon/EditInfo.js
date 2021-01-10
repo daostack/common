@@ -22,6 +22,10 @@ import TextInputField from '~/Components/FormFields/TextInputField';
 import * as EditCommonInfoConstants from '~/Components/Forms/EditCommonInfoForm';
 import _ from 'lodash';
 const {width} = Dimensions.get('window');
+const metadataKeys = [
+  EditCommonInfoConstants.BYLINE,
+  EditCommonInfoConstants.DESCRIPTION,
+];
 
 const EditInfo = ({
   userStore,
@@ -52,19 +56,38 @@ const EditInfo = ({
   const {currCommon} = route.params;
   const [editCommonInfoFormStore] = useState(new EditCommonInfoFormStore());
   const [valid, setValid] = useState(false);
+  const updatedCommon = currCommon;
 
   const formSave = async (e) => {
     if (valid) {
       Toast.loading('Updating your Common...');
       const changedFields = getChanges();
-      console.log('newInfo', changedFields);
-      onFormSubmitEnd({...currCommon, ...changedFields});
+      mergeChanges(changedFields);
+      onFormSubmitEnd({
+        common: updatedCommon,
+        userId: userStore.userInfo.uid, // maybe just use founderId in backend?
+        commonChanges: changedFields, // this should be saved in db
+      });
     }
   };
 
-  const onFormSubmitEnd = (updatedFields) => {
-    daoStore.setDaoInfo(updatedFields);
-    Toast.done('Your Common is updated');
+  const mergeChanges = (changedFields) => {
+    Object.entries(changedFields).forEach(([key, value]) => {
+      if (key === 'metadata') {
+        updatedCommon.metadata = {...updatedCommon.metadata, ...value};
+      } else {
+        updatedCommon[key] = value;
+      }
+    });
+  };
+
+  const onFormSubmitEnd = async (updatedFields) => {
+    try {
+      await daoStore.updateDaoInfo(updatedFields, currCommon);
+      Toast.done('Your Common is updated');
+    } catch (err) {
+      Toast.error('Could not update your Common');
+    }
     navigation.goBack();
   };
 
@@ -93,7 +116,11 @@ const EditInfo = ({
     return Object.keys(changedFields)
       .filter((key) => currCommon[key] !== changedFields[key])
       .reduce((obj, key) => {
-        obj[key] = changedFields[key];
+        if (metadataKeys.includes(key)) {
+          obj.metadata = {...obj.metadata, ...{[key]: changedFields[key]}};
+        } else {
+          obj[key] = changedFields[key];
+        }
         return obj;
       }, {});
   };

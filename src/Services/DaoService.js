@@ -18,6 +18,7 @@ export default class DaoService {
 
     this.endpoints = {
       create: '/create',
+      update: '/update',
     };
   }
 
@@ -122,8 +123,21 @@ export default class DaoService {
     }
   }
 
-  editDao = async (daoId, dao) => {
-    logger.log('editDao -> ', dao);
-    return db.collection(DB_COLLECTIONS.daos).doc(daoId).update(dao);
+  editDao = async (updateCommonInfo) => {
+    logger.log('editDao new info -> ', updateCommonInfo);
+    try {
+      return await this.axiosClient.post(
+        this.endpoints.update,
+        updateCommonInfo,
+        {
+          headers: {
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
+        },
+      );
+    } catch (err) {
+      console.log('UPDATE COMMON ERROR -> ', err);
+      throw err;
+    }
   };
 }
