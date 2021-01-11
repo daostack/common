@@ -27,15 +27,17 @@ const MultiLinkField = (props) => {
 
   const [count, setCount] = useState(1);
   const [addButton, setAddButton] = useState(false);
-  let currRules = [];
+  let currRules = props?.currRules || [];
 
   useEffect(() => {
     const currFormField = validation.formStore.getFormField(validation.name);
     if (currFormField) {
       setCount(
-        currRules ? currRules.length : Object.keys(currFormField)?.length,
+        props?.currRules
+          ? props?.currRules.length
+          : Object.keys(currFormField)?.length,
       );
-      currRules = rule ? props?.currRules || currFormField : [];
+      currRules = rule ? currRules || currFormField : [];
     }
 
     canAddMore();
@@ -67,6 +69,7 @@ const MultiLinkField = (props) => {
         true,
       );
     }
+    props.onChangeText && props.onChangeText();
     canAddMore();
   };
 
@@ -120,7 +123,7 @@ const MultiLinkField = (props) => {
           topPosition: true,
           invisibleContainer: true,
           immediateValidation: true,
-        }; //{...validation};
+        };
 
         return (
           <View
@@ -202,6 +205,7 @@ MultiLinkField.propTypes = {
     title: string,
     value: string,
   }),
+  onChangeText: func
 };
 
 RemoveLinkBtn.propTypes = {

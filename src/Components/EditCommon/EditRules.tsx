@@ -1,12 +1,12 @@
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import {colors, text, layout, font, sizeL, sizeLineHeight} from '~/Theme';
-import {object, shape, array, InferProps} from 'prop-types';
+import {func, object, shape, array, InferProps} from 'prop-types';
 import MultiLinkField from '~/Components/FormFields/MultiLinkField';
 import {RULES} from '~/Components/Forms/EditCommonForm';
 
 const EditRules: React.FC<InferProps<typeof EditRules.propTypes>> = ({
-  //isValidChange,
+  isValidChange,
   common,
   editCommonFormStore,
 }) => (
@@ -32,6 +32,7 @@ const EditRules: React.FC<InferProps<typeof EditRules.propTypes>> = ({
       placeholderValueText="Rule description"
       multiline={true}
       addMultiFieldBtnName="Add Rule"
+      onChangeText={() => isValidChange()}
       currRules={common.rules}
       validation={{
         name: RULES,
@@ -47,6 +48,7 @@ EditRules.propTypes = {
     rules: array,
   }),
   editCommonFormStore: object,
+  isValidChange: func,
 };
 
 const styles = StyleSheet.create({

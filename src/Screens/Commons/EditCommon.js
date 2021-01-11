@@ -60,7 +60,7 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
     if (valid) {
       Toast.loading('Updating your Common...');
       const changedFields = getChanges();
-      mergeChanges(changedFields); // not good, changes currCommon as well
+      mergeChanges(changedFields); // not good, changes currCommon as well cuz of shallow copy
       onFormSubmitEnd(currCommon);
     }
   };
@@ -68,8 +68,14 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
   const mergeChanges = (changedFields) => {
     Object.entries(changedFields).forEach(([key, value]) => {
       if (key === 'metadata') {
-        currCommon.metadata = {...currCommon.metadata, ...value};
-      } else {
+        currCommon[key] = {...currCommon[key], ...value};
+      }
+      /// mmmm should think of a better way
+      /*if (typeof value === 'object') {
+        currCommon[key] = Array.isArray(value)
+          ? [...currCommon[key], ...value]
+          : {...currCommon[key], ...value}
+      }*/else {
         currCommon[key] = value;
       }
     });
@@ -102,6 +108,7 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
   };
 
   // get the actual changes; not just fields that were changed and then changed back to prev value
+  // should be done with mobx reaction
   const getChanges = () => {
     const changedFields = editCommonFormStore.getChangedFormFieldsJson();
     return Object.keys(changedFields)
@@ -109,9 +116,12 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
       .reduce((obj, key) => {
         if (metadataKeys.includes(key)) {
           obj.metadata = {...obj.metadata, ...{[key]: changedFields[key]}};
+        } else if (key === 'rules') {
+          obj.rules = [...changedFields[key]];
         } else {
           obj[key] = changedFields[key];
         }
+        console.log('obj', obj)
         return obj;
       }, {});
   };
@@ -132,7 +142,7 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
             title === 'Edit Info' ? (
               <EditInfo
                 isValidChange={() => isValidChange()}
-                formSave={() => console.log('form save')}
+                formSave={() => formSave()}
                 common={currCommon}
                 editCommonFormStore={editCommonFormStore}
               />
