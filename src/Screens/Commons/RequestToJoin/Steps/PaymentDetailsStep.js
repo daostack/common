@@ -28,6 +28,7 @@ import {testCard} from '~/Config';
 import moment from 'moment';
 import {VALIDATION_RULES} from '~/FormStores/ValidationRules/paymentDetailsRules';
 import {formatNumber} from '~/Util/FormatUtil';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 
 const {width} = Dimensions.get('window');
 
@@ -121,7 +122,11 @@ const PaymentDetailsStep = ({
         }
       } catch (e) {
         navigation.pop();
-        showErrorPopUp(bottomSheetStore, e);
+
+        bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
+          subTitle: 'We couldn\'t create your proposal',
+          error: e,
+        });
       }
     }
   };
