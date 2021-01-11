@@ -32,7 +32,7 @@ const EditRules: React.FC<InferProps<typeof EditRules.propTypes>> = ({
       placeholderValueText="Rule description"
       multiline={true}
       addMultiFieldBtnName="Add Rule"
-      currFormField={common.rules}
+      currRules={common.rules}
       validation={{
         name: RULES,
         formStore: editCommonFormStore,
