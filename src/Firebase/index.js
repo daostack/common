@@ -10,7 +10,6 @@ import firestore from '@react-native-firebase/firestore';
 import logger from '../Services/Logger';
 
 const db = firestore();
-const appFirebase = firebase;
 
 if (Config.local === 'true' && __DEV__) {
   logger.warn('Using local firestore');
@@ -25,7 +24,7 @@ if (Config.local === 'true' && __DEV__) {
 module.exports = {
   messaging: messaging(),
   storage: storage(),
-  firebase: appFirebase,
+  firebase,
   utils,
   auth,
   db,
