@@ -1,6 +1,9 @@
-import {firebase} from '~/Firebase';
+import {IBaseEntity} from './IBaseEntity';
 
-export interface IUserEntity {
+export interface IUserEntity extends IBaseEntity {
+  // TODO: remove "uid" from the users collection and use "id";
+  // The users collection is the only one that has & use "uid" insted of "id" for representing the unique id.
+  // However in the IBaseEntity there is "id" both in mobile app and clouldfunctions.
   uid: string;
 
   email: string;
@@ -9,17 +12,4 @@ export interface IUserEntity {
   firstName: string;
   lastName: string;
   displayName: string;
-  id: string;
-
-  /**
-   * The time that the entity
-   * was created
-   */
-  createdAt: firebase.firestore.Timestamp;
-
-  /**
-   * The last time that the entity
-   * was modified
-   */
-  updatedAt: firebase.firestore.Timestamp;
 }

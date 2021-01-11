@@ -1,13 +1,14 @@
 import {observable, decorate, action} from 'mobx';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 
-export class UserModelStore {
+export class UserModelStore implements IUserEntity {
   // Fields
-  uid: string | null = null;
-  email: string | null = null;
-  photoURL: string | null = null;
-  firstName: string | null = null;
-  lastName: string | null = null;
+  uid: string = '';
+  id: string = '';
+  email: string = '';
+  photoURL: string = '';
+  firstName: string = '';
+  lastName: string = '';
   createdAt: Date | null = null;
   updatedAt: Date | null = null;
 
