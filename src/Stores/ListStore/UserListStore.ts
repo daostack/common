@@ -31,7 +31,7 @@ export class UserListStore extends ListStore<IUserEntity> {
   // Private function
   _updateUserList = (updatedUserList: Array<IUserEntity>) => {
     updatedUserList.forEach((userEntity: IUserEntity) => {
-      super.setData(userEntity.uid, UserModelStore(userEntity));
+      super.setData(userEntity.uid, new UserModelStore(userEntity));
     });
     this.isLoading = false;
   };

@@ -1,70 +1,63 @@
-import {observable, action} from 'mobx';
-import CommonService from '~/Services/CommonService';
-import {createCommonStore} from '../ListStore/CommonListStore';
-import {createProposalStore} from '../ListStore/ProposalListStore';
+import {observable, decorate, action} from 'mobx';
+import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 
-export const UserModelStore = (userInfo) =>
-  observable.object(
-    {
-      // Fields
-      uid: userInfo.uid,
-      email: userInfo.email,
-      photoURL: userInfo.photoURL,
-      firstName: userInfo.firstName,
-      lastName: userInfo.lastName,
-      createdAt: userInfo.createdAt,
-      updatedAt: userInfo.updatedAt,
+export class UserModelStore {
+  // Fields
+  uid: string | null = null;
+  email: string | null = null;
+  photoURL: string | null = null;
+  firstName: string | null = null;
+  lastName: string | null = null;
+  createdAt: Date | null = null;
+  updatedAt: Date | null = null;
 
-      // myCommons: createCommonStore(),
-      // myPendingCommons: createCommonStore(),
-      // myProposals: createProposalStore(),
-      // myMembershipRequests: createProposalStore(),
+  constructor(newUserInfo: IUserEntity) {
+    this.setUser(newUserInfo);
+  }
 
-      // Computed fields:
-      get displayName() {
-        return `${this.firstName || ''} ${this.lastName || ''}`;
-      },
-      get displayNameFormatted() {
-        // The regex below is used to separate names and
-        // make them less at most 25 character, but with cutting
-        // the name only at whitespaces
-        return this.displayName?.match(/.{1,25}(\s|$)/g)[0];
-      },
+  // Computed fields:
+  get displayName() {
+    return `${this.firstName || ''} ${this.lastName || ''}`;
+  }
 
-      // Actions
-      setUser(newUserInfo) {
-        if (newUserInfo) {
-          if (newUserInfo.uid) {
-            this.uid = newUserInfo.uid;
-          }
-          if (newUserInfo.email) {
-            this.email = newUserInfo.email;
-          }
-          if (newUserInfo.firstName) {
-            this.firstName = newUserInfo.firstName;
-          }
-          if (newUserInfo.lastName) {
-            this.lastName = newUserInfo.lastName;
-          }
-          if (newUserInfo.photoURL) {
-            this.photoURL = newUserInfo.photoURL;
-          }
-        }
-      },
+  get displayNameFormatted() {
+    // The regex below is used to separate names and
+    // make them less at most 25 character, but with cutting
+    // the name only at whitespaces
+    return this.displayName?.match(/.{1,25}(\s|$)/g)[0];
+  }
 
-      // loadMyCommons() {
-      //   if (this.uid) {
-      //     //CommonService.loadMyCommonsList(this.uid);
-      //   }
-      // },
+  setUser(newUserInfo: IUserEntity) {
+    if (newUserInfo) {
+      if (newUserInfo.uid) {
+        this.uid = newUserInfo.uid;
+      }
+      if (newUserInfo.email) {
+        this.email = newUserInfo.email;
+      }
+      if (newUserInfo.firstName) {
+        this.firstName = newUserInfo.firstName;
+      }
+      if (newUserInfo.lastName) {
+        this.lastName = newUserInfo.lastName;
+      }
+      if (newUserInfo.photoURL) {
+        this.photoURL = newUserInfo.photoURL;
+      }
+    }
+  }
+}
 
-      // loadMyPendingCommonsAndProposals() {
-      //   if (this.uid) {
-      //     //CommonService.loadMyCommonsList(this.uid);
-      //   }
-      // },
-    },
-    {
-      setUser: action,
-    },
-  );
+decorate(UserModelStore, {
+  //observables
+  uid: observable,
+  email: observable,
+  photoURL: observable,
+  firstName: observable,
+  lastName: observable,
+  createdAt: observable,
+  updatedAt: observable,
+
+  //actions
+  setUser: action,
+});
