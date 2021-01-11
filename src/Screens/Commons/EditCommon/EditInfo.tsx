@@ -15,7 +15,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import Loader from '~/Components/Loader';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import Toast from '~/Util/Toast';
-import {bool, object, shape, func} from 'prop-types';
+import {bool, object, shape, func, InferProps} from 'prop-types';
 import {EditCommonInfoFormStore} from '~/FormStores/EditCommonInfoFormStore';
 import CommonImage from '~/Components/Commons/CommonImage';
 import TextInputField from '~/Components/FormFields/TextInputField';
@@ -27,7 +27,7 @@ const metadataKeys = [
   EditCommonInfoConstants.DESCRIPTION,
 ];
 
-const EditInfo = ({
+const EditInfo: React.FC<InferProps<typeof EditInfo.propTypes>> = ({
   userStore,
   daoStore,
   bottomSheetStore,
@@ -58,11 +58,12 @@ const EditInfo = ({
   const [valid, setValid] = useState(false);
   const updatedCommon = currCommon;
 
-  const formSave = async (e) => {
+  const formSave = async () => {
     if (valid) {
       Toast.loading('Updating your Common...');
       const changedFields = getChanges();
-      mergeChanges(changedFields);
+
+      mergeChanges(changedFields); // not good, changes currCommon as well
       onFormSubmitEnd({
         common: updatedCommon,
         userId: userStore.userInfo.uid, // maybe just use founderId in backend?
