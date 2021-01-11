@@ -1,6 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {ActivityIndicator, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import moment from 'moment';
 import {inject, observer} from 'mobx-react';
@@ -103,12 +111,12 @@ const statuses = {
 };
 
 const CancelSubscriptionSheetScreen = ({
-                                         dueDate,
-                                         commonName,
-                                         initialStatus,
-                                         onCancelConfirm,
-                                         uiStore,
-                                       }) => {
+ dueDate,
+ commonName,
+ initialStatus,
+ onCancelConfirm,
+ uiStore,
+}) => {
   const [ status, setStatus ] = React.useState(initialStatus);
 
   const onClose = () => {
