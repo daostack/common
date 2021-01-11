@@ -1,6 +1,7 @@
 import logger from './Logger';
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {db} from '~/Firebase';
+import Toast from '~/Util/Toast';
 
 export default class CommonService {
   static serviceInstance = null;
@@ -14,17 +15,18 @@ export default class CommonService {
     return this.serviceInstance;
   };
 
-  async getCommonInfo(commonUid) {
-    logger.log(`commonUid -> ${commonUid}`);
-    return db
+  async loadMyCommonsList(userId, callback) {
+    let daos = db
       .collection(DB_COLLECTIONS.daos)
-      .doc(commonUid)
-      .get()
-      .then((snapshots) => {
-        if (!snapshots) {
-          return null;
-        }
-        return snapshots.data();
+      .where('members', 'array-contains', {
+        userId,
       });
+
+    return daos.onSnapshot(
+      (snapshot) => {
+        callback(snapshot);
+      },
+      (error) => Toast.error(error),
+    );
   }
 }

@@ -23,11 +23,11 @@ const UserProfileData = ({
   userId,
   currUserInfo,
   navigation,
-  authStore: {userInfo},
-  userListStore,
+  userStore: {userInfo},
+  userStore,
 }) => {
   // const [user, setUser] = useState(currUserInfo);
-  const user = userListStore.getUserById(userId || currUserInfo.uid);
+  const user = userStore.getUserById(userId || currUserInfo.uid);
   const isOwnProfile = userId === userInfo?.uid;
   navigation.setOptions({
     title: user.displayNameFormatted,
@@ -280,12 +280,12 @@ UserProfileData.propTypes = {
   userId: string,
   currUserInfo: object,
   navigation: object,
-  authStore: shape({
+  userStore: shape({
     userInfo: shape({
       uid: string,
     }),
   }),
-  userListStore: shape({
+  userStore: shape({
     getUserById: func,
   }),
 };
@@ -351,4 +351,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('authStore', 'userListStore')(observer(UserProfileData));
+export default inject('userStore', 'userStore')(observer(UserProfileData));

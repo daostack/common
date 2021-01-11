@@ -37,7 +37,7 @@ const ProposalCard = ({
   isSwiper,
   isMember,
   commonInfo,
-  userListStore,
+  userStore,
 }) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
@@ -60,7 +60,7 @@ const ProposalCard = ({
             else {
               funding = currProposalInfo.fundingRequest.amount;
             }
-            const currProposedUser = userListStore.getUserById(
+            const currProposedUser = userStore.getUserById(
               currProposalInfo.proposerId,
             );
             setProposalCardInfo({
@@ -103,7 +103,7 @@ const ProposalCard = ({
           currProposalInfo.id,
           async (updatedProposalInfo) => {
             //RequestToJoin proposal
-            const proposedMemberUser = userListStore.getUserById(
+            const proposedMemberUser = userStore.getUserById(
               updatedProposalInfo.proposerId,
             );
             let funding = null;
@@ -275,7 +275,7 @@ ProposalCard.propTypes = {
   isSwiper: bool,
   isMember: bool,
   commonInfo: object,
-  userListStore: shape({
+  userStore: shape({
     getUserById: func,
   }),
 };
@@ -329,4 +329,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userListStore')(observer(ProposalCard));
+export default inject('userStore')(observer(ProposalCard));

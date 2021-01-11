@@ -1,4 +1,7 @@
 import {observable, action} from 'mobx';
+import CommonService from '~/Services/CommonService';
+import {createCommonStore} from '../ListStore/CommonListStore';
+import {createProposalStore} from '../ListStore/ProposalListStore';
 
 export const UserModelStore = (userInfo) =>
   observable.object(
@@ -11,6 +14,11 @@ export const UserModelStore = (userInfo) =>
       lastName: userInfo.lastName,
       createdAt: userInfo.createdAt,
       updatedAt: userInfo.updatedAt,
+
+      // myCommons: createCommonStore(),
+      // myPendingCommons: createCommonStore(),
+      // myProposals: createProposalStore(),
+      // myMembershipRequests: createProposalStore(),
 
       // Computed fields:
       get displayName() {
@@ -43,6 +51,18 @@ export const UserModelStore = (userInfo) =>
           }
         }
       },
+
+      // loadMyCommons() {
+      //   if (this.uid) {
+      //     //CommonService.loadMyCommonsList(this.uid);
+      //   }
+      // },
+
+      // loadMyPendingCommonsAndProposals() {
+      //   if (this.uid) {
+      //     //CommonService.loadMyCommonsList(this.uid);
+      //   }
+      // },
     },
     {
       setUser: action,

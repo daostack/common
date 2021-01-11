@@ -15,7 +15,7 @@ import {layout, colors, text, font, sizeS} from '~/Theme';
 import {CommonActions} from '@react-navigation/native';
 import {object, shape, func, array} from 'prop-types';
 
-const MyCommons = ({navigation, daoStore, authStore}) => {
+const MyCommons = ({navigation, daoStore, userStore}) => {
   const onScreenScroll = (event) => {
     navigation.setOptions({
       title:
@@ -54,7 +54,7 @@ const MyCommons = ({navigation, daoStore, authStore}) => {
   );
 
   const myDaos = (daoList) =>
-    daoList.filter((dao) => authStore.isDaoMember(dao?.members));
+    daoList.filter((dao) => userStore.isDaoMember(dao?.members));
 
   return (
     <>
@@ -87,7 +87,7 @@ MyCommons.propTypes = {
     setDao: func,
     daos: array,
   }),
-  authStore: shape({
+  userStore: shape({
     isDaoMember: func,
   }),
 };
@@ -122,4 +122,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('daoStore', 'authStore')(observer(MyCommons));
+export default inject('daoStore', 'userStore')(observer(MyCommons));

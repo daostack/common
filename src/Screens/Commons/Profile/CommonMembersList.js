@@ -14,8 +14,10 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import {UserStore} from '~/Stores/ListStore/UserListStore';
 
 const CommonMembersList = ({
+  userStore,
   navigation,
   members,
   commonId,
@@ -41,6 +43,8 @@ const CommonMembersList = ({
     const currCommonMembers = limit
       ? limitCommonMembers(commonMembers)
       : commonMembers;
+
+    //return userStore.getUsersByIds(currCommonMembers);
 
     await Promise.all(
       Array.from(
@@ -176,6 +180,7 @@ CommonMembersList.propTypes = {
   limit: number,
   horizontal: bool,
   bottomSheetStore: object,
+  userStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -186,4 +191,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(observer(CommonMembersList));
+export default inject(
+  'bottomSheetStore',
+  'userStore',
+)(observer(CommonMembersList));

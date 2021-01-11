@@ -64,7 +64,7 @@ const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 const CommonProfile = ({
   navigation,
   bottomSheetStore,
-  authStore,
+  userStore,
   route: {params},
 }) => {
   /* all of  params.commonId,
@@ -165,21 +165,21 @@ const CommonProfile = ({
 
   useEffect(() => {
     setShowRequestSentModal(params.showRequestSentModal);
-    if (authStore.userInfo && authStore.isDaoMember(currCommon?.members)) {
+    if (userStore.userInfo && userStore.isDaoMember(currCommon?.members)) {
       setMemberState(true);
       setHeaderHeight(DEFAULT_HEADER_HEIGHT + stickyHeightAddon);
     } else {
       setMemberState(false);
       setHeaderHeight(DEFAULT_HEADER_HEIGHT);
     }
-  }, [params.showRequestSentModal, authStore.userInfo, currCommon?.members]);
+  }, [params.showRequestSentModal, userStore.userInfo, currCommon?.members]);
 
   useEffect(() => {
     let unsubscribe = null;
     let getPendingProposalsData = async () => {
       unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
         commonId,
-        authStore.userInfo?.uid,
+        userStore.userInfo?.uid,
         (data) => {
           setPendingProposalsData({...data});
 
@@ -208,7 +208,7 @@ const CommonProfile = ({
         unsubscribe();
       }
     };
-  }, [commonId, isMember, authStore.userInfo]);
+  }, [commonId, isMember, userStore.userInfo]);
 
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
@@ -432,7 +432,7 @@ const CommonProfile = ({
   };
 
   const requestToJoin = (event) => {
-    if (authStore.userInfo) {
+    if (userStore.userInfo) {
       const shouldSkipRules = calcShouldSkipRules();
 
       const introduceYourselfFormStore = new IntroduceYourselfFormStore();
@@ -925,7 +925,7 @@ CommonProfile.propTypes = {
     }),
   }),
   bottomSheetStore: object,
-  authStore: object,
+  userStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -1091,4 +1091,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore', 'authStore')(observer(CommonProfile));
+export default inject('bottomSheetStore', 'userStore')(observer(CommonProfile));

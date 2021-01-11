@@ -16,7 +16,7 @@ import logger from '../../Services/Logger';
 import PropTypes, {string, number, func, shape, arrayOf} from 'prop-types';
 
 const ProposalDiscussion = ({
-  userListStore,
+  userStore,
   proposal,
   proposalId,
   scrollViewRef,
@@ -88,7 +88,7 @@ const ProposalDiscussion = ({
   }, [proposalId]);
 
   const getOutcomeForMessage = async (proposalObj, message) => {
-    const user = userListStore.getUserById(message.ownerId);
+    const user = userStore.getUserById(message.ownerId);
 
     return proposalObj?.votes.find((y) => y.voterId === user.uid).outcome === 1;
   };
@@ -157,7 +157,7 @@ ProposalDiscussion.propTypes = {
   scrollViewRef: PropTypes.any,
   onFirstScrollDown: func,
   onScrollRefresh: func,
-  userListStore: shape({
+  userStore: shape({
     getUserById: func,
   }),
 };
@@ -190,7 +190,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'authStore',
-  'userListStore',
-)(observer(ProposalDiscussion));
+export default inject('userStore', 'userStore')(observer(ProposalDiscussion));

@@ -13,7 +13,7 @@ import logger from '~/Services/Logger';
 import {string, func, shape, object} from 'prop-types';
 
 const CreateDiscussionForm = ({
-  authStore,
+  userStore,
   navigation,
   onFormSubmit,
   commonId,
@@ -27,7 +27,7 @@ const CreateDiscussionForm = ({
 
   const formSave = async (e) => {
     try {
-      //const {createDiscussionStore, authStore} = this.props;
+      //const {createDiscussionStore, userStore} = this.props;
       if (createDiscussionStore.isFormValid()) {
         Keyboard.dismiss();
         const changedFields = createDiscussionStore.getChangedFormFieldsJson();
@@ -44,7 +44,7 @@ const CreateDiscussionForm = ({
             files: files.filter((file) => file.value !== ''),
             createTime: new Date(),
             lastMessage: new Date(),
-            ownerId: authStore.userInfo.uid,
+            ownerId: userStore.userInfo.uid,
             commonId: commonId,
             follower: [],
           })
@@ -148,7 +148,7 @@ CreateDiscussionForm.propTypes = {
     getChangedFormFieldsJson: func,
     form: object,
   }),
-  authStore: object,
+  userStore: object,
   commonId: string,
   onFormSubmit: func,
   onFormClose: func,
@@ -177,4 +177,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('authStore')(CreateDiscussionForm);
+export default inject('userStore')(CreateDiscussionForm);

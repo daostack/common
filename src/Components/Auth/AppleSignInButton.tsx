@@ -11,7 +11,7 @@ import {func, shape, object, InferProps} from 'prop-types';
 
 const props = {
   onSignIn: func,
-  authStore: shape({
+  userStore: shape({
     setIsLoading: func,
   }).isRequired,
   customStyle: object,
@@ -19,21 +19,21 @@ const props = {
 
 const AppleSignInButton: React.FC<InferProps<typeof props>> = ({
   onSignIn,
-  authStore,
+  userStore,
   customStyle,
 }) => {
   const [signInError, setSignInError] = useState<any>(null);
   const _signIn = async () => {
     try {
       // That loading status will be changed to false in the onAuthStateChanged method in App.js
-      authStore.setIsLoading(true);
+      userStore.setIsLoading(true);
       const userInfo = await AuthService.getInstance().signInApple();
       if (onSignIn) {
         onSignIn(userInfo);
       }
       setSignInError(null);
     } catch (error) {
-      authStore.setIsLoading(false);
+      userStore.setIsLoading(false);
       logger.log(error);
       switch (error.code) {
         case AppleAuthError.CANCELED:
@@ -113,4 +113,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('authStore')(observer(AppleSignInButton));
+export default inject('userStore')(observer(AppleSignInButton));

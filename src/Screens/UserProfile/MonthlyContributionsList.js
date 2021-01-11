@@ -46,12 +46,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const MonthlyContributionsList = ({authStore, navigation}) => {
+const MonthlyContributionsList = ({userStore, navigation}) => {
   const [subs, setSubs] = React.useState(null);
 
   React.useEffect(() => {
     (async () => {
-      await getUserSubscriptions(authStore.userInfo.uid, (snap) => {
+      await getUserSubscriptions(userStore.userInfo.uid, (snap) => {
         setSubs(snap.docs.map((doc) => doc.data()));
       });
     })();
@@ -107,7 +107,7 @@ const MonthlyContributionsList = ({authStore, navigation}) => {
 MonthlyContributionsList.propTypes = {
   navigation: PropTypes.object,
 
-  authStore: PropTypes.shape({
+  userStore: PropTypes.shape({
     userInfo: PropTypes.shape({
       uid: PropTypes.string,
       safeAddress: PropTypes.string,
@@ -115,4 +115,4 @@ MonthlyContributionsList.propTypes = {
   }),
 };
 
-export default inject('authStore')(observer(MonthlyContributionsList));
+export default inject('userStore')(observer(MonthlyContributionsList));

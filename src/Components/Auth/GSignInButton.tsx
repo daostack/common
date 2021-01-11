@@ -10,37 +10,38 @@ import {shape, func, InferProps} from 'prop-types';
 
 const props = {
   onSignIn: func,
-  authStore: shape({
+  userStore: shape({
     setIsLoading: func,
+    setSignInError: func,
   }),
 };
 const GSignInButton: React.FC<InferProps<typeof props>> = ({
   onSignIn,
-  authStore,
+  userStore,
 }) => {
   const _signIn = async () => {
     try {
       // That loading status will be changed to false in the onAuthStateChanged method in App.js
-      authStore.setIsLoading(true);
+      userStore.setIsLoading(true);
       const userInfo = await AuthService.getInstance().signIn();
       if (onSignIn) {
         onSignIn(userInfo);
       }
-      authStore.setSignInError(null);
+      userStore.setSignInError(null);
     } catch (error) {
-      authStore.setIsLoading(false);
+      userStore.setIsLoading(false);
       switch (error.code) {
         case statusCodes.SIGN_IN_CANCELLED:
-          authStore.setSignInError('Canceled');
+          userStore.setSignInError('Canceled');
           break;
         case statusCodes.IN_PROGRESS:
           logger.log('SignIn in progress');
           break;
         case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-          authStore.setSignInError('play services not available or outdated');
+          userStore.setSignInError('play services not available or outdated');
           break;
         default:
-          authStore.setSignInError(error);
+          userStore.setSignInError(error);
       }
     }
   };
@@ -53,9 +54,9 @@ const GSignInButton: React.FC<InferProps<typeof props>> = ({
     </TouchableOpacity>
   );
   const renderError = () => {
-    if (authStore.signInError) {
-      const errorText = `${authStore.signInError.toString()} ${
-        authStore.signInError.code ? authStore.signInError.code : ''
+    if (userStore.signInError) {
+      const errorText = `${userStore.signInError.toString()} ${
+        userStore.signInError.code ? userStore.signInError.code : ''
       }`;
       return (
         <View style={styles.messageContainer}>
@@ -95,4 +96,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('authStore')(observer(GSignInButton));
+export default inject('userStore')(observer(GSignInButton));

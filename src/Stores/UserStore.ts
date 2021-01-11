@@ -2,10 +2,12 @@ import {observable, action, decorate} from 'mobx';
 import {isDaoMemberByUserId} from '~/Util';
 import logger from '~/Services/Logger';
 import AuthService from '~/Services/AuthService';
+import UserService from '~/Services/UserService';
 import NotificationService from '~/Services/NotificationService';
 import {auth} from '~/Firebase';
-import {UserListStore} from './DbStores/UserListStore';
+import {UserStore} from './ListStore/UserListStore';
 import {filterObjectByKeys} from '~/Util';
+import {UserModel} from '~/Stores/ModelStore/UserModelStore';
 
 export const userInfoFields = [
   'uid',
@@ -19,8 +21,8 @@ export const userInfoFields = [
 type SignInErrorWithCode = any;
 type UserInfo = any;
 
-class AuthStore {
-  userInfo: UserInfo;
+class UserStore {
+  userInfo: UserModel;
   signedInUser: any;
   loginInProgress: any;
   isLoading: boolean;
@@ -29,13 +31,13 @@ class AuthStore {
   myProposals: any;
   address: any;
 
-  userListStore: UserListStore;
+  userStore: UserStore;
 
-  constructor(userListStore: UserListStore) {
+  constructor(userStore: UserStore) {
     this.userInfo = null;
     this.isLoading = false;
     this.loginInProgress = [];
-    this.userListStore = userListStore;
+    this.userStore = userStore;
 
     auth().onAuthStateChanged(this.onAuthStateChanged);
   }
@@ -64,7 +66,7 @@ class AuthStore {
           let appUser = null; // await Cache.get(user.uid);
 
           if (!appUser) {
-            appUser = this.userListStore.getUserById(user.uid);
+            appUser = this.userStore.getUserById(user.uid);
           }
           const isNewUser = !appUser;
 
@@ -129,16 +131,23 @@ class AuthStore {
   setSignedInUser = (newUserInfo: any) => {
     const isUserChanged = newUserInfo?.uid !== this.userInfo?.uid;
     if (newUserInfo) {
-      this.userInfo = this.userListStore.getUserById(newUserInfo?.uid);
+      UserService.getInstance().subscribeToUser(
+        newUserInfo?.uid,
+        (updatedUser: UserModel) => {
+          this.userInfo = updatedUser;
+        },
+      );
     } else {
       this.userInfo = null;
     }
     if (isUserChanged) {
       this.signedInUser = newUserInfo?.uid;
     }
+
+    Cache.set(newUserInfo.uid, newUserObj);
   };
 }
-decorate(AuthStore, {
+decorate(UserStore, {
   address: observable,
   setSignedInUser: action,
   setIsLoading: action,
@@ -150,4 +159,4 @@ decorate(AuthStore, {
   myProposals: observable,
 });
 
-export default AuthStore;
+export default UserStore;

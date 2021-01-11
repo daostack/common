@@ -1,13 +1,13 @@
-import AuthStore from './AuthStore';
+import UserStore from './UserStore';
 import DaoStore from './DaoStore';
 import BottomSheetStore from './BottomSheetStore';
-import {UserListStore} from './DbStores/UserListStore';
+import {UserStore} from './ListStore/UserListStore';
 
-const userListStore = new UserListStore();
+const userStore = new UserStore();
 
 export default {
-  userListStore,
-  authStore: new AuthStore(userListStore),
+  userStore,
+  userStore: new UserStore(userStore),
   daoStore: new DaoStore(),
   bottomSheetStore: new BottomSheetStore(),
 };

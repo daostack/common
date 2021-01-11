@@ -25,7 +25,7 @@ const DiscussionCard = ({
   commonId,
   navigation,
   bottomSheetStore,
-  userListStore,
+  userStore,
 }) => {
   //when will data.owner be not undefined?
   const discussionId = data.id;
@@ -46,7 +46,7 @@ const DiscussionCard = ({
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userData = userListStore.getUserById(data.ownerId);
+      const userData = userStore.getUserById(data.ownerId);
       if (userData) {
         // logger.log('userData', userData);
         setUser(userData);
@@ -166,12 +166,12 @@ DiscussionCard.propTypes = {
     message: string.isRequired,
   }),
   commonId: string,
-  authStore: shape({
+  userStore: shape({
     userInfo: object,
   }).isRequired,
   navigation: object.isRequired,
   bottomSheetStore: object.isRequired,
-  userListStore: shape({
+  userStore: shape({
     getUserById: func,
   }),
 };
@@ -302,5 +302,5 @@ const styles = StyleSheet.create({
 
 export default inject(
   'bottomSheetStore',
-  'userListStore',
+  'userStore',
 )(observer(DiscussionCard));

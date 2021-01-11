@@ -9,7 +9,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
 import Icon from '~/Assets/iconfont/Icon';
 
-const CommonHome = ({authStore}) => (
+const CommonHome = ({userStore}) => (
   <Tab.Navigator
     // initialRouteName="My feed"
     initialRouteName="Explore"
@@ -50,7 +50,7 @@ const CommonHome = ({authStore}) => (
 );
 
 CommonHome.propTypes = {
-  authStore: object.isRequired,
+  userStore: object.isRequired,
 };
 
-export default inject('authStore')(observer(CommonHome));
+export default inject('userStore')(observer(CommonHome));

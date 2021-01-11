@@ -33,9 +33,9 @@ import DiscussionService from '../../Services/DiscussionService';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
-  userListStore,
+  userStore,
   daoStore,
-  authStore,
+  userStore,
   bottomSheetStore,
   navigation,
   route: {
@@ -64,7 +64,7 @@ const Discussions = ({
   useEffect(() => {
     const currentDao = daoStore.daos.find((dao) => dao.id === commonId);
     const isCurrMember =
-      authStore.userInfo && authStore.isDaoMember(currentDao?.members);
+      userStore.userInfo && userStore.isDaoMember(currentDao?.members);
     setIsMember(isCurrMember);
   }, []);
 
@@ -141,7 +141,7 @@ const Discussions = ({
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userData = await userListStore.getUserById(dataState.ownerId);
+      const userData = await userStore.getUserById(dataState.ownerId);
       setUser(userData);
     };
 
@@ -540,13 +540,13 @@ const Discussions = ({
 };
 
 Discussions.propTypes = {
-  userListStore: shape({
+  userStore: shape({
     getUserById: func,
   }),
   daoStore: shape({
     dao: object,
   }),
-  authStore: shape({
+  userStore: shape({
     userInfo: object,
     isDaoMember: func,
   }),
@@ -748,8 +748,8 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
-  'userListStore',
-  'authStore',
+  'userStore',
+  'userStore',
   'bottomSheetStore',
   'daoStore',
 )(observer(Discussions));

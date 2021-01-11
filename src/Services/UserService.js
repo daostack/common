@@ -116,24 +116,4 @@ export default class UserService {
         //logger.log('Edited document with ID: ', ref.id);
       });
   }
-
-  // ======================================================================
-  // New data management methods:
-  // ======================================================================
-
-  async subscribeToUsers(callback) {
-    return UserCollection.onSnapshot(
-      (snapshot) => {
-        let userList = [];
-
-        // TODO: Make better handling of changes with docChanges()
-        if (!snapshot?.empty || !snapshot) {
-          userList = snapshot.docs.map((doc) => doc.data());
-        }
-
-        callback(userList);
-      },
-      (error) => Toast.error(error),
-    );
-  }
 }

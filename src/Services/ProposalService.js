@@ -124,6 +124,12 @@ export default class ProposalService {
       });
   }
 
+  @observable getProposalMessages() {
+    this.store.rootStore.proposalMessages.getProposalMessagesCount(
+      this.proposalId,
+    );
+  }
+
   async subscribeToProposalDiscussionsCount(proposalId, callback) {
     const proposalDiscusstionMessages = db
       .collection(DB_COLLECTIONS.discussionMessages)

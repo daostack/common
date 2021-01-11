@@ -37,7 +37,7 @@ const ProposalsList = ({
   onCountChange,
   onlyRequestsToJoin,
   includeHistoryInCount,
-  authStore: {userInfo},
+  userStore: {userInfo},
 }) => {
   const commonId = commonInfo?.id;
 
@@ -238,7 +238,7 @@ ProposalsList.propTypes = {
   navigation: object,
   onCountChange: func,
   onlyRequestsToJoin: bool,
-  authStore: shape({
+  userStore: shape({
     userInfo: shape({
       uid: string,
     }),
@@ -301,4 +301,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('authStore')(observer(ProposalsList));
+export default inject('userStore')(observer(ProposalsList));
