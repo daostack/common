@@ -414,31 +414,18 @@ const CommonProfile = ({
       {
         hasPermission:
           userStore?.userInfo?.uid === currCommon?.metadata.founderId,
-        onEditInfo: navigateToEdit,
+        editInfo: () => navigateTo('Edit info and cover photo'),
+        editRules: () => navigateTo('Edit Rules'),
       },
     );
   };
 
-  const navigateToEdit = () => {
-    navigation.navigate('EditInfo', {
+  const navigateTo = (screenTitle) => {
+    navigation.navigate('EditCommon', {
       currCommon: currCommon,
-      /*formStores: {
-        generalInfoFormStore: new GeneralInfoFormStore(),
-        fundingFormStore: new FundingFormStore(),
-        agendaFormStore: new AgendaFormStore(),
-        reviewFormStore: new ReviewFormStore(),
-      },*/
+      title: screenTitle,
     });
   };
-  /*
-  const navigate = CommonActions.navigate({
-      name: 'EditInfo',
-      params: {
-        isFirstOpening: true,
-      },
-    });
-    navigation.dispatch(navigate);
-   */
 
   /*
   const openNotif = event => {

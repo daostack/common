@@ -31,7 +31,11 @@ const MultiLinkField = (props) => {
   useEffect(() => {
     const currFormField = validation.formStore.getFormField(validation.name);
     if (currFormField) {
-      setCount(Object.keys(currFormField)?.length);
+      setCount(
+        props.currFormField
+          ? props.currFormField.length
+          : Object.keys(currFormField)?.length,
+      );
     }
     canAddMore();
   }, []);
@@ -127,7 +131,7 @@ const MultiLinkField = (props) => {
                   currTitleItemValidation.formStore.getFormField(
                     currTitleItemValidation.name,
                     currTitleItemValidation.multiName,
-                  )?.value
+                  )?.value || props?.currFormField[currIndex].title
                 }
                 label={props.label}
                 onChangeText={(value) => {
@@ -145,7 +149,7 @@ const MultiLinkField = (props) => {
                 currItemValidation.formStore.getFormField(
                   currItemValidation.name,
                   currItemValidation.multiName,
-                )?.value
+                )?.value || props?.currFormField[currIndex].value
               }
               onChangeText={(value) => {
                 onChangeText(value, currTitleItemValidation);
@@ -193,6 +197,10 @@ MultiLinkField.propTypes = {
   link: bool,
   rule: bool,
   onFieldDeleted: func,
+  currFormField: shape({
+    title: string,
+    value: string,
+  }),
 };
 
 RemoveLinkBtn.propTypes = {

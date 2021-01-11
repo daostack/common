@@ -13,12 +13,13 @@ import {bool, object, func} from 'prop-types';
 
 const CommonProfileOptions = ({
   hasPermission,
-  onEditInfo,
+  editInfo,
+  editRules,
   bottomSheetStore,
 }) => {
-  const onEdit = () => {
+  const onEdit = (type) => {
     bottomSheetStore.hideBottomSheet();
-    onEditInfo();
+    type === 'info' ? editInfo() : editRules();
   };
 
   return (
@@ -32,7 +33,9 @@ const CommonProfileOptions = ({
         <Text style={styles.text}>Options</Text>
         {hasPermission && (
           <>
-            <TouchableOpacity style={styles.optionBtn} onPress={() => onEdit()}>
+            <TouchableOpacity
+              style={styles.optionBtn}
+              onPress={() => onEdit('info')}>
               <Icon
                 name="dao-general-info-24"
                 style={layout.marginRightS}
@@ -40,7 +43,9 @@ const CommonProfileOptions = ({
               />
               <Text style={text.buttonblack}>Edit info and cover photo</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.optionBtn} onPress={() => {}}>
+            <TouchableOpacity
+              style={styles.optionBtn}
+              onPress={() => onEdit('rules')}>
               <Icon
                 name="agenda-24"
                 style={layout.marginRightS}
@@ -58,7 +63,8 @@ const CommonProfileOptions = ({
 CommonProfileOptions.propTypes = {
   hasPermission: bool,
   bottomSheetStore: object,
-  onEditInfo: func,
+  editInfo: func,
+  editRules: func,
 };
 
 const styles = StyleSheet.create({

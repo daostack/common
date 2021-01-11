@@ -48,13 +48,12 @@ class DaoStore {
     }
     this.daos = daoArray;
   };
-  updateDaoInfo = async (updateCommonInfo, currCommon) => {
+  updateDaoInfo = async (updateCommonInfo) => {
     try {
       const updateResponse = await DaoService.getInstance().editDao(
         updateCommonInfo,
       );
-      console.log('updateCommonInfo', updateCommonInfo);
-      Cache.set(updateCommonInfo.common.id, updateCommonInfo.common);
+      Cache.set(updateCommonInfo.id, updateCommonInfo);
       return updateResponse;
     } catch (err) {
       throw err;

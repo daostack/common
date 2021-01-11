@@ -47,7 +47,7 @@ import {
   FullScreenCreationLoader,
   MonthlyContributionsList,
   MonthlyContribution,
-  EditInfo,
+  EditCommon,
 } from './src/Screens';
 import UserService from './src/Services/UserService';
 import AuthService from './src/Services/AuthService';
@@ -424,10 +424,9 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
           })}
         />
         <Stack.Screen
-          name="EditInfo"
-          component={EditInfo}
+          name="EditCommon"
+          component={EditCommon}
           options={{
-            title: 'Edit info and cover photo',
             headerShown: true,
           }}
         />
