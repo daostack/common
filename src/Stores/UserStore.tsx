@@ -63,8 +63,6 @@ class UserStore {
 
           const loggedUser: UserModel = await this._processUser(user);
 
-          console.log('loggedUser', loggedUser);
-
           this.setSignedInUser(loggedUser);
           this.removeLoginInProgress(loggedUser.uid);
           this.setIsLoading(false);

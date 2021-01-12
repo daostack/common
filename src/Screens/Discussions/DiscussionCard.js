@@ -13,7 +13,6 @@ import {colors, sizeM, font, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import UserService from '~/Services/UserService';
 import moment from 'moment';
-import BottomSheetModal from '~/Components/BottomSheetModal';
 import NotificationService from '~/Services/NotificationService';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {db} from '~/Firebase';
@@ -22,27 +21,11 @@ import {CommonActions} from '@react-navigation/native';
 
 const {width} = Dimensions.get('window');
 
-const DiscussionCard = ({
-  data,
-  commonId,
-  userStore: {userInfo},
-  navigation,
-  bottomSheetStore,
-}) => {
+const DiscussionCard = ({data, commonId, navigation, bottomSheetStore}) => {
   //when will data.owner be not undefined?
   const discussionId = data.id;
   const [user, setUser] = useState({});
   const [msgCount, setMsgCount] = useState(0);
-  // const [showMenu, setShowMenu] = useState(false);
-  // var isFollowing = false;
-
-  // if (userInfo) {
-  //   isFollowing = userInfo.following.includes(data.ownerId);
-  // }
-
-  // const hideMenu = () => {
-  //   setShowMenu(false);
-  // };
 
   const navigateToDiscussion = () => {
     const navigate = CommonActions.navigate({
@@ -167,40 +150,6 @@ const DiscussionCard = ({
           )}
         </View>
       </TouchableOpacity>
-
-      {/* <BottomSheetModal
-        isVisible={showMenu}
-        onClose={hideMenu}
-        style={styles.modalStyle}>
-        <View style={styles.bottomSheet}>
-          <Text style={styles.sheetTitle}>Options</Text>
-          <TouchableOpacity
-            onPress={() => {
-              logger.log('Follow user id', data.ownerId);
-              if (isFollowing) {
-                NotificationService.unfollow(data.ownerId);
-              } else {
-                NotificationService.follow(data.ownerId);
-              }
-              setShowMenu(false);
-            }}>
-            <View style={styles.sheetButton}>
-              <Icon name="following" color={colors.black} />
-              <View style={{flex: 1}}>
-                <Text style={[styles.sheetText, {color: colors.black}]}>
-                  {isFollowing ? 'UnFollow' : 'Follow'}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.sheetButton}>
-              <Icon name="report" color={colors.against} />
-              <Text style={styles.sheetText}>Report</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </BottomSheetModal> */}
     </>
   );
 };
@@ -214,9 +163,6 @@ DiscussionCard.propTypes = {
     message: string.isRequired,
   }),
   commonId: string,
-  userStore: shape({
-    userInfo: object,
-  }).isRequired,
   navigation: object.isRequired,
   bottomSheetStore: object.isRequired,
 };
@@ -345,7 +291,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'userStore',
-  'bottomSheetStore',
-)(observer(DiscussionCard));
+export default inject('bottomSheetStore')(observer(DiscussionCard));
