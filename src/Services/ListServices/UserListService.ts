@@ -1,11 +1,14 @@
 import {UserCollection} from '~/Firebase/Databasee/Collections/UsersCollection';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 
-export type callbackFn = (user: IUserEntity | null) => void;
+export type userListLoadCallbackFn = (
+  updatedUserList: Array<IUserEntity>,
+) => void;
+export type userLoadCallbackFn = (updatedUserList: IUserEntity | null) => void;
 
 export const subscribeToCommonlUsers = (
   commonId: string,
-  callback: callbackFn,
+  callback: userListLoadCallbackFn,
 ) =>
   UserCollection.where('').onSnapshot((snapshot: any) => {
     let userList = [];
@@ -18,7 +21,7 @@ export const subscribeToCommonlUsers = (
     callback(userList);
   });
 
-export const subscribeToAllUsers = (callback: callbackFn) =>
+export const subscribeToAllUsers = (callback: userListLoadCallbackFn) =>
   UserCollection.onSnapshot((snapshot: any) => {
     let userList = [];
 
@@ -30,19 +33,25 @@ export const subscribeToAllUsers = (callback: callbackFn) =>
     callback(userList);
   });
 
-export const subscribeToUser = (uid: string, callback: callbackFn) =>
+export const subscribeToUser = (uid: string, callback: userLoadCallbackFn) =>
   UserCollection.doc(uid).onSnapshot((snapshot: any) => {
     let user: IUserEntity | null = null;
 
     // TODO: Make better handling of changes with docChanges()
     if (!snapshot?.empty || !snapshot) {
-      if (snapshot.docs.length !== 1) {
-        throw new Error(
-          'There are more than one documents with the provided uid!',
-        );
-      }
-      user = snapshot.docs[0].data() as IUserEntity;
+      user = snapshot.data() as IUserEntity;
     }
 
     callback(user);
   });
+
+export const getUserById = async (userId: string): Promise<IUserEntity> => {
+  if (!userId) {
+    throw new Error(
+      'Method getUserById has a required param userId, but it was not provided',
+    );
+  }
+  const user = await UserCollection.doc(userId).get();
+  console.log('USER -> ', user);
+  return user.data() as IUserEntity;
+};

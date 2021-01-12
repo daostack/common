@@ -11,7 +11,7 @@ import {UserAvatar} from '~/Components';
 import {CommonActions} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
 import logger from '~/Services/Logger';
-import {string, object, shape} from 'prop-types';
+import {string, object, shape, func} from 'prop-types';
 
 import {
   Placeholder,
@@ -25,40 +25,21 @@ const UserProfileData = ({
   currUserInfo,
   navigation,
   userStore: {userInfo},
+  userListStore,
 }) => {
-  const [user, setUser] = useState(currUserInfo);
+  const providedUserId = userId || currUserInfo.uid;
+  const isOwnProfile = providedUserId === userInfo?.uid;
+  const user = isOwnProfile
+    ? userInfo
+    : userListStore.getUserById(providedUserId);
+
+  navigation.setOptions({
+    title: user.displayNameFormatted,
+  });
+
   const [proposalsCount, setProposalsCount] = useState(0);
   const [requestsCount, setRequestsCount] = useState(0);
   const [commonsCount, setCommonsCount] = useState(0);
-  const [isOwnProfile, setIsOwnProfile] = useState(false);
-
-  useEffect(() => {
-    const getUser = async () => {
-      if (userId === userInfo?.uid) {
-        setUser(userInfo);
-        setIsOwnProfile(true);
-      } else {
-        if (!user) {
-          const usr = await UserService.getInstance().getUserById(userId);
-          setUser(usr);
-        }
-
-        setIsOwnProfile(false);
-
-        navigation.setOptions({
-          // The regex below is used to separate names and
-          // make them less at most 25 character, but with cutting
-          // the name only at whitespaces
-          title: user.displayName?.match(/.{1,25}(\s|$)/g)[0],
-        });
-      }
-    };
-
-    setUser(currUserInfo);
-    setIsOwnProfile(false);
-
-    getUser();
-  }, [userId, currUserInfo, userInfo]);
 
   const navigateToEditProfile = (isFirstOpening) => {
     const navigate = CommonActions.navigate({
@@ -308,6 +289,9 @@ UserProfileData.propTypes = {
       uid: string,
     }),
   }),
+  userListStore: shape({
+    getUserById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -371,4 +355,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(UserProfileData));
+export default inject('userStore', 'userListStore')(observer(UserProfileData));

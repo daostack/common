@@ -1,4 +1,4 @@
-import {observable, decorate, action} from 'mobx';
+import {observable, decorate, action, computed} from 'mobx';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 
 export class UserModelStore implements IUserEntity {
@@ -17,11 +17,11 @@ export class UserModelStore implements IUserEntity {
   }
 
   // Computed fields:
-  get displayName() {
+  get displayName(): string {
     return `${this.firstName || ''} ${this.lastName || ''}`;
   }
 
-  get displayNameFormatted() {
+  get displayNameFormatted(): string {
     // The regex below is used to separate names and
     // make them less at most 25 character, but with cutting
     // the name only at whitespaces
@@ -58,6 +58,10 @@ decorate(UserModelStore, {
   lastName: observable,
   createdAt: observable,
   updatedAt: observable,
+
+  //computed
+  displayName: computed,
+  displayNameFormatted: computed,
 
   //actions
   setUser: action,
