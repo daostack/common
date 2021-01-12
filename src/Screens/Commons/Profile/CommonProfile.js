@@ -65,6 +65,7 @@ const CommonProfile = ({
   navigation,
   bottomSheetStore,
   userStore,
+  userListStore,
   route: {params},
 }) => {
   /* all of  params.commonId,
@@ -150,16 +151,20 @@ const CommonProfile = ({
       }
     };
     let unsubscribeCommon = null;
+    let unsubscribeCommonUsers = null;
     const subscribeToCommon = async (currCommonId) => {
       unsubscribeCommon = await DaoService.getInstance().subscribeToDaoById(
         currCommonId,
         loadCurrCommon,
       );
+
+      unsubscribeCommonUsers = await userListStore.loadAllUsers();
     };
     // Subscribe to a common.
     subscribeToCommon(params.commonId || currCommon.id);
     return () => {
       unsubscribeCommon && unsubscribeCommon();
+      unsubscribeCommonUsers && unsubscribeCommonUsers();
     };
   }, [params.commonId, currCommon?.id]);
 
@@ -926,6 +931,9 @@ CommonProfile.propTypes = {
   }),
   bottomSheetStore: object,
   userStore: object,
+  userListStore: shape({
+    loadAllUsers: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -1091,4 +1099,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore', 'userStore')(observer(CommonProfile));
+export default inject(
+  'bottomSheetStore',
+  'userStore',
+  'userListStore',
+)(observer(CommonProfile));

@@ -33,16 +33,16 @@ const DiscussionCard = ({
   const discussionId = data.id;
   const [user, setUser] = useState({});
   const [msgCount, setMsgCount] = useState(0);
-  const [showMenu, setShowMenu] = useState(false);
-  var isFollowing = false;
+  // const [showMenu, setShowMenu] = useState(false);
+  // var isFollowing = false;
 
-  if (userInfo) {
-    isFollowing = userInfo.following.includes(data.ownerId);
-  }
+  // if (userInfo) {
+  //   isFollowing = userInfo.following.includes(data.ownerId);
+  // }
 
-  const hideMenu = () => {
-    setShowMenu(false);
-  };
+  // const hideMenu = () => {
+  //   setShowMenu(false);
+  // };
 
   const navigateToDiscussion = () => {
     const navigate = CommonActions.navigate({
@@ -168,7 +168,7 @@ const DiscussionCard = ({
         </View>
       </TouchableOpacity>
 
-      <BottomSheetModal
+      {/* <BottomSheetModal
         isVisible={showMenu}
         onClose={hideMenu}
         style={styles.modalStyle}>
@@ -200,7 +200,7 @@ const DiscussionCard = ({
             </View>
           </TouchableOpacity>
         </View>
-      </BottomSheetModal>
+      </BottomSheetModal> */}
     </>
   );
 };
