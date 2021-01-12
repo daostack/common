@@ -4,7 +4,7 @@ import {UserModel} from '../Models/UserModel';
 import ListStore from './ListStore';
 import {
   subscribeToAllUsers,
-  subscribeToCommonlUsers,
+  subscribeToCommonUsers,
 } from '~/Services/ListServices/UserListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 export default class UserListStore extends ListStore<IUserEntity> {
@@ -21,9 +21,9 @@ export default class UserListStore extends ListStore<IUserEntity> {
   fetchAllUsers = (): FirestoreUnsubscribeFn =>
     subscribeToAllUsers(this._updateUserList);
 
-  // NOTE: the subscribeToCommonlUsers method is not implemented yet. That's only an example of arch of the DomainStore
+  // NOTE: the subscribeToCommonUsers method is not implemented yet. That's only an example of arch of the DomainStore
   fetchCommonUsers = (commonId: string) =>
-    subscribeToCommonlUsers(commonId, this._updateUserList);
+    subscribeToCommonUsers(commonId, this._updateUserList);
 
   // Private function
   _updateUserList = (updatedUserList: Array<IUserEntity>) => {
