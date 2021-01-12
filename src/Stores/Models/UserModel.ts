@@ -1,7 +1,7 @@
 import {observable, decorate, action, computed} from 'mobx';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 
-export class UserModelStore implements IUserEntity {
+export class UserModel implements IUserEntity {
   // Fields
   uid: string = '';
   id: string = '';
@@ -49,7 +49,7 @@ export class UserModelStore implements IUserEntity {
   }
 }
 
-decorate(UserModelStore, {
+decorate(UserModel, {
   //observables
   uid: observable,
   email: observable,
