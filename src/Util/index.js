@@ -87,11 +87,17 @@ export const formatNumber = (num) =>
     : Math.sign(num) * Math.abs(num);
 
 export const formatCurrency = (amount) => {
-  const formattedAmount = (amount / 100).toLocaleString('en-US', {style: 'currency', currency: 'USD'});
+  const formattedAmount = (amount / 100)
+    .toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    })
+    // If the amount is whole number don't show the centes
+    .split('.00')[0];
 
   return formattedAmount.indexOf('$') === -1
     ? `$${formattedAmount}`
     : formattedAmount;
 };
 
-export const formatDate = (date) => moment(date).format('DD MMM, YYYY');
+export const formatDate = (date) => moment(date).format('DD MMMM YYYY');

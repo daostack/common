@@ -14,8 +14,8 @@ import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
 
 import {ContributionListItem} from '../../Components';
 import {colors, text} from '../../Theme';
-import {fontSize} from '../../Theme/font';
-import {getUserSubscriptions} from '../../Services/SubscriptionService';
+import {fontSize} from '~/Theme/font';
+import {getUserSubscriptions} from '~/Services/SubscriptionService';
 
 const styles = StyleSheet.create({
   scrollView: {
