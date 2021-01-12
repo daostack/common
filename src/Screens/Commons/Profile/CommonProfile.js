@@ -157,7 +157,7 @@ const CommonProfile = ({
         currCommonId,
         loadCurrCommon,
       );
-
+      // in the best scenario here we need to load only common users, not all.
       unsubscribeCommonUsers = await userListStore.loadAllUsers();
     };
     // Subscribe to a common.
