@@ -13,7 +13,7 @@ export const subscribeToCommonlUsers = (
   UserCollection.where('').onSnapshot((snapshot: any) => {
     let userList = [];
 
-    // TODO: Make better handling of changes with docChanges()
+    // TODO: Implement that method when we have commons property in the user document.
     if (!snapshot?.empty || !snapshot) {
       userList = snapshot.docs.map((doc: any) => doc.data() as IUserEntity);
     }

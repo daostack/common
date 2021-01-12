@@ -8,53 +8,34 @@ import {
   ObservableMap,
   computed,
 } from 'mobx';
-
-export type FirestoreUnsubscribeFn = () => void;
-
 export default class ListStore<IEntity> {
-  unsubscribeDataChanges: FirestoreUnsubscribeFn | null;
-  dataList: ObservableMap<string, IEntity>;
-  isLoading: boolean;
+  data: ObservableMap<string, IEntity>;
 
   constructor() {
-    this.dataList = observable.map({});
-    this.isLoading = false;
-    this.unsubscribeDataChanges = null;
+    this.data = observable.map({});
   }
 
   // Computed
   get isEmpty(): boolean {
-    return keys(this.dataList).length > 0;
-  }
-
-  //Actions
-  clearListStore() {
-    this.unsubscribeDataChanges && this.unsubscribeDataChanges();
-    this.dataList = observable.map({});
+    return keys(this.data).length > 0;
   }
 
   setData(id: string, modelStore: IEntity) {
-    set(this.dataList, id, modelStore);
-  }
-
-  subscribeToDataChanges(unsubscribeFunc: FirestoreUnsubscribeFn) {
-    this.clearListStore();
-    this.unsubscribeDataChanges = unsubscribeFunc;
+    set(this.data, id, modelStore);
   }
 
   //Functions
   getDataById(id: string): IEntity | undefined {
-    return get(this.dataList, id);
+    return get(this.data, id);
   }
 }
 
 decorate(ListStore, {
-  isLoading: observable,
-  dataList: observable,
-
+  // Observables
+  data: observable,
+  // Computed
   isEmpty: computed,
 
-  clearListStore: action,
+  // Actions
   setData: action,
-  subscribeToDataChanges: action,
 });

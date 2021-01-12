@@ -157,8 +157,9 @@ const CommonProfile = ({
         currCommonId,
         loadCurrCommon,
       );
-      // in the best scenario here we need to load only common users, not all.
-      unsubscribeCommonUsers = await userListStore.loadAllUsers();
+      // NOTE: In the best scenario here we need to load only common users, not all of them.
+      // There is defined but not implemented method for that inside userListStore. To be implemented...
+      unsubscribeCommonUsers = await userListStore.fetchAllUsers();
     };
     // Subscribe to a common.
     subscribeToCommon(params.commonId || currCommon.id);
@@ -932,7 +933,7 @@ CommonProfile.propTypes = {
   bottomSheetStore: object,
   userStore: object,
   userListStore: shape({
-    loadAllUsers: func,
+    fetchAllUsers: func,
   }),
 };
 
