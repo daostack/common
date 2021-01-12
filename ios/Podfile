@@ -63,6 +63,8 @@ target 'common' do
   use_native_modules!
   reactnative
   native
+  pod 'react-native-version-check', :path => '../node_modules/react-native-version-check'
+
 end
 
 target 'common-stg' do
