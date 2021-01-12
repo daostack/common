@@ -25,6 +25,8 @@ const metadataKeys = [
   EditCommonConstants.DESCRIPTION,
 ];
 
+var newRules = {};
+
 const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
   userStore,
   daoStore,
@@ -55,28 +57,26 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
   const {currCommon, title} = route.params;
   const [editCommonFormStore] = useState(new EditCommonFormStore());
   const [valid, setValid] = useState(false);
+  const isRule = title === 'Edit Rules';
 
   const formSave = async () => {
     if (valid) {
       Toast.loading('Updating your Common...');
-      const changedFields = getChanges();
+      const changedFields =
+        title === 'Edit Rules' ? {rules: [...newRules]} : getChanges();
       mergeChanges(changedFields); // not good, changes currCommon as well cuz of shallow copy
       onFormSubmitEnd(currCommon);
     }
   };
 
   const mergeChanges = (changedFields) => {
-    Object.entries(changedFields).forEach(([key, value]) => {
-      if (key === 'metadata') {
-        currCommon[key] = {...currCommon[key], ...value};
-      }
-      /// mmmm should think of a better way
-      /*if (typeof value === 'object') {
-        currCommon[key] = Array.isArray(value)
-          ? [...currCommon[key], ...value]
-          : {...currCommon[key], ...value}
-      }*/else {
-        currCommon[key] = value;
+    Object.keys(changedFields).forEach((key) => {
+      if (typeof changedFields[key] === 'object') {
+        currCommon[key] = Array.isArray(changedFields[key])
+          ? changedFields[key]
+          : {...currCommon[key], ...changedFields[key]};
+      } else {
+        currCommon[key] = changedFields[key];
       }
     });
   };
@@ -116,18 +116,35 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
       .reduce((obj, key) => {
         if (metadataKeys.includes(key)) {
           obj.metadata = {...obj.metadata, ...{[key]: changedFields[key]}};
-        } else if (key === 'rules') {
-          obj.rules = [...changedFields[key]];
         } else {
           obj[key] = changedFields[key];
         }
-        console.log('obj', obj)
         return obj;
       }, {});
   };
 
-  const isValidChange = () => {
-    setValid(!_.isEmpty(getChanges()) && editCommonFormStore.isFormValid());
+  /**
+   * This function is handling matching the rule we changes
+   * with the correct index of that rule in the common.rules array
+   * @param  index      - the index of the rule in common.rules array
+   * @return newRules   - an object with the new rules
+   */
+  const getRuleChanges = (index) => {
+    const ruleChanges = editCommonFormStore.getChangedFormFieldsJson();
+    if (ruleChanges?.rules?.length === currCommon?.rules?.length) {
+      newRules = ruleChanges.rules;
+    } else {
+      newRules[index] = {...newRules[index], ...ruleChanges.rules[0]};
+    }
+    return newRules;
+  };
+
+  const isValidChange = (ruleIndex = null) => {
+    ruleIndex && getRuleChanges(ruleIndex);
+    /*const changesObject =
+      title === 'Edit Rules' ? getRuleChanges(ruleData) : getChanges();*/
+    //setValid(!_.isEmpty(changesObject) && editCommonFormStore.isFormValid());
+    setValid(editCommonFormStore.getChangedFormFieldsJson());
   };
 
   return (
@@ -139,16 +156,16 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
           {userStore.userInfo ? (
-            title === 'Edit Info' ? (
-              <EditInfo
-                isValidChange={() => isValidChange()}
-                formSave={() => formSave()}
+            isRule ? (
+              <EditRules
+                isValidChange={(change) => isValidChange(change)}
                 common={currCommon}
                 editCommonFormStore={editCommonFormStore}
               />
             ) : (
-              <EditRules
+              <EditInfo
                 isValidChange={() => isValidChange()}
+                formSave={() => formSave()}
                 common={currCommon}
                 editCommonFormStore={editCommonFormStore}
               />

@@ -34,7 +34,7 @@ const MultiLinkField = (props) => {
     if (currFormField) {
       setCount(
         props?.currRules
-          ? props?.currRules.length
+          ? Object.keys(props?.currRules)?.length
           : Object.keys(currFormField)?.length,
       );
       currRules = rule ? currRules || currFormField : [];
@@ -69,7 +69,8 @@ const MultiLinkField = (props) => {
         true,
       );
     }
-    props.onChangeText && props.onChangeText();
+    const index = currTitleItemValidation.name[0];
+    props.onChangeText && props.onChangeText(index);
     canAddMore();
   };
 
@@ -139,7 +140,7 @@ const MultiLinkField = (props) => {
                 }
                 label={props.label}
                 onChangeText={(value) => {
-                  onChangeText(value, currItemValidation);
+                  onChangeText(value, currTitleItemValidation);
                 }}
                 viewStyle={{marginTop: 0}}
                 placeholderText={props.title}
@@ -156,7 +157,7 @@ const MultiLinkField = (props) => {
                 )?.value || currRules[currIndex]?.value
               }
               onChangeText={(value) => {
-                onChangeText(value, currTitleItemValidation);
+                onChangeText(value, currItemValidation);
               }}
               viewStyle={{marginTop: -5}}
               placeholderText={
