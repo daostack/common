@@ -48,7 +48,6 @@ class UserStore {
       user?.uid,
       user?.email,
       user?.displayName,
-      user,
     );
     try {
       // onAuthStateChanged method is called on many events, not only when the logged in user is changed.
@@ -57,29 +56,25 @@ class UserStore {
         !this.isLoginInProgressExists(user?.uid) &&
         this.userInfo?.uid !== user?.uid
       ) {
-        try {
-          if (user) {
-            this.setIsLoading(true);
-            this.addLoginInProgress(user?.uid);
+        if (user) {
+          this.setIsLoading(true);
+          this.addLoginInProgress(user?.uid);
 
-            const loggedUser: IUserEntity = await this._processUser(user);
+          const loggedUser: IUserEntity = await this._processUser(user);
 
-            this.setSignedInUser(loggedUser);
-            this.removeLoginInProgress(loggedUser.uid);
-            this.setIsLoading(false);
+          this.setSignedInUser(loggedUser);
+          this.removeLoginInProgress(loggedUser.uid);
+          this.setIsLoading(false);
 
-            subscribeToUser(
-              loggedUser?.uid,
-              (updatedUser: IUserEntity | null) => {
-                this.setSignedInUser(updatedUser);
-              },
-            );
-          } else {
-            this.setSignedInUser(null);
-            this.setIsLoading(false);
-          }
-        } catch (err) {
-          console.log('ERRRRRR -> ', err);
+          subscribeToUser(
+            loggedUser?.uid,
+            (updatedUser: IUserEntity | null) => {
+              this.setSignedInUser(updatedUser);
+            },
+          );
+        } else {
+          this.setSignedInUser(null);
+          this.setIsLoading(false);
         }
       }
     } catch (error) {
