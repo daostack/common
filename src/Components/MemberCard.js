@@ -21,6 +21,7 @@ const MemberCard = ({userInfo, proposalInfo = null}) => {
             {proposalInfo.funding > 0 && (
               <Text style={text.h2Black}>
                 {`$${proposalInfo.funding / 100}`}
+                {proposalInfo.join?.fundingType === 'monthly' && '/mo'}
               </Text>
             )}
 
