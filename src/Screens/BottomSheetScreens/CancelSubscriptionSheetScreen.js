@@ -110,12 +110,12 @@ const statuses = {
 };
 
 const CancelSubscriptionSheetScreen = ({
-                                         dueDate,
-                                         commonName,
-                                         initialStatus,
-                                         onCancelConfirm,
-                                         bottomSheetStore,
-                                       }) => {
+  dueDate,
+  commonName,
+  initialStatus,
+  onCancelConfirm,
+  bottomSheetStore,
+}) => {
   const [ status, setStatus ] = React.useState(initialStatus);
 
   const onClose = () => {
