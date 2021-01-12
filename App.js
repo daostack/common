@@ -80,7 +80,7 @@ if (Platform.OS === 'android') {
   }
 }
 
-const App = ({userStore, bottomSheetStore, navigation}) => {
+const App = ({userStore, userListStore, bottomSheetStore, navigation}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
   //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
@@ -105,6 +105,13 @@ const App = ({userStore, bottomSheetStore, navigation}) => {
       logger.log(`Foreground Message Arrived ${JSON.stringify(remoteMessage)}`);
     });
     return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const unsubscribeCommonUsers = userListStore.subscribeToAllUsers();
+    return () => {
+      unsubscribeCommonUsers && unsubscribeCommonUsers();
+    };
   }, []);
 
   const notificationNavigation = async (remoteMessage) => {
@@ -560,6 +567,9 @@ App.propTypes = {
     setIsLoading: func,
     setSignedInUser: func,
   }),
+  userListStore: shape({
+    subscribeToAllUsers: func,
+  }),
   bottomSheetStore: shape({
     isVisible: bool,
     showBottomSheet: func,
@@ -578,4 +588,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'bottomSheetStore')(observer(App));
+export default inject(
+  'userStore',
+  'bottomSheetStore',
+  'userListStore',
+)(observer(App));

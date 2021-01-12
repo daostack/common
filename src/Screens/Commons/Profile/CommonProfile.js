@@ -65,7 +65,6 @@ const CommonProfile = ({
   navigation,
   bottomSheetStore,
   userStore,
-  userListStore,
   route: {params},
 }) => {
   /* all of  params.commonId,
@@ -151,21 +150,16 @@ const CommonProfile = ({
       }
     };
     let unsubscribeCommon = null;
-    let unsubscribeCommonUsers = null;
     const subscribeToCommon = async (currCommonId) => {
       unsubscribeCommon = await DaoService.getInstance().subscribeToDaoById(
         currCommonId,
         loadCurrCommon,
       );
-      // NOTE: In the best scenario here we need to load only common users, not all of them.
-      // There is defined but not implemented method for that inside userListStore. To be implemented...
-      unsubscribeCommonUsers = await userListStore.fetchAllUsers();
     };
     // Subscribe to a common.
     subscribeToCommon(params.commonId || currCommon.id);
     return () => {
       unsubscribeCommon && unsubscribeCommon();
-      unsubscribeCommonUsers && unsubscribeCommonUsers();
     };
   }, [params.commonId, currCommon?.id]);
 
@@ -932,9 +926,6 @@ CommonProfile.propTypes = {
   }),
   bottomSheetStore: object,
   userStore: object,
-  userListStore: shape({
-    fetchAllUsers: func,
-  }),
 };
 
 const styles = StyleSheet.create({
@@ -1100,8 +1091,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'bottomSheetStore',
-  'userStore',
-  'userListStore',
-)(observer(CommonProfile));
+export default inject('bottomSheetStore', 'userStore')(observer(CommonProfile));

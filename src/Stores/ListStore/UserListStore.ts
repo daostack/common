@@ -1,29 +1,38 @@
-import {decorate, computed, ObservableMap} from 'mobx';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {UserModel} from '../Models/UserModel';
 import ListStore from './ListStore';
-import {
-  subscribeToAllUsers,
-  subscribeToCommonUsers,
-} from '~/Services/ListServices/UserListService';
+import {subscribeToAllUsers} from '~/Services/ListServices/UserListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
-export default class UserListStore extends ListStore<IUserEntity> {
-  // Fields
-  get users(): ObservableMap<string, IUserEntity> {
-    return super.data;
+import UserStore from '../UserStore';
+export default class UserListStore extends ListStore<UserModel> {
+  authStore: UserStore;
+
+  constructor(authStore: UserStore) {
+    super();
+    this.authStore = authStore;
   }
 
-  // Data List consuming methods
+  // Data consuming methods
   getUserById = (uid: string): IUserEntity | undefined =>
     super.getDataById(uid);
 
-  // Functions
-  fetchAllUsers = (): FirestoreUnsubscribeFn =>
-    subscribeToAllUsers(this._updateUserList);
+  getCommonUsersByMembersArray = (members: Array<string>): Array<UserModel> => {
+    const dataByIds: Array<UserModel> = [];
+    members.forEach((id) => {
+      const currData = this.getDataById(id);
+      if (currData) {
+        currData && dataByIds.push(currData);
+      } else {
+        this.authStore.userInfo?.uid === id &&
+          dataByIds.push(this.authStore.userInfo);
+      }
+    });
+    return dataByIds;
+  };
 
-  // NOTE: the subscribeToCommonUsers method is not implemented yet. That's only an example of arch of the DomainStore
-  fetchCommonUsers = (commonId: string) =>
-    subscribeToCommonUsers(commonId, this._updateUserList);
+  //Actions
+  subscribeToAllUsers = (): FirestoreUnsubscribeFn =>
+    subscribeToAllUsers(this._updateUserList);
 
   // Private function
   _updateUserList = (updatedUserList: Array<IUserEntity>) => {
@@ -32,7 +41,3 @@ export default class UserListStore extends ListStore<IUserEntity> {
     });
   };
 }
-
-decorate(UserListStore, {
-  users: computed,
-});

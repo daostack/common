@@ -26,7 +26,7 @@ type SignInErrorWithCode = any;
 type UserInfo = any;
 
 class UserStore {
-  userInfo: IUserEntity | null;
+  userInfo: UserModel | null;
   signedInUser: any;
   loginInProgress: any;
   isLoading: boolean;
