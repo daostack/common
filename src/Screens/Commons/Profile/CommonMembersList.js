@@ -54,7 +54,9 @@ const CommonMembersList = ({
           const currChunkUserInfos = await UserService.getInstance().getUsersByUpTo10Ids(
             currChunkUserIds,
           );
-          allUserInfos = allUserInfos.concat(currChunkUserInfos);
+          allUserInfos = allUserInfos
+          .concat(currChunkUserInfos)
+          .map((userInfo, index) => ({joinedAt: members[index].joinedAt, ...userInfo}));
         },
       ),
     );
