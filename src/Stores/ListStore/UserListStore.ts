@@ -6,8 +6,7 @@ import {
   subscribeToAllUsers,
   subscribeToCommonlUsers,
 } from '~/Services/ListServices/UserListService';
-
-export type FirestoreUnsubscribeFn = () => void;
+import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 export default class UserListStore extends ListStore<IUserEntity> {
   // Fields
   get users(): ObservableMap<string, IUserEntity> {

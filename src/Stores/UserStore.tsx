@@ -11,6 +11,7 @@ import {
   subscribeToUser,
 } from '~/Services/ListServices/UserListService';
 import {UserModel} from './Models/UserModel';
+import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 
 export const userInfoFields = [
   'uid',
@@ -34,10 +35,13 @@ class UserStore {
   myProposals: any;
   address: any;
 
+  unsubscribeFromUser: FirestoreUnsubscribeFn | null;
+
   constructor() {
     this.userInfo = null;
     this.isLoading = false;
     this.loginInProgress = [];
+    this.unsubscribeFromUser = null;
 
     auth().onAuthStateChanged(this.onAuthStateChanged);
   }
@@ -67,7 +71,8 @@ class UserStore {
           this.removeLoginInProgress(loggedUser.uid);
           this.setIsLoading(false);
 
-          subscribeToUser(
+          this.unsubscribeFromUser && this.unsubscribeFromUser();
+          this.unsubscribeFromUser = subscribeToUser(
             loggedUser?.uid,
             (updatedUser: IUserEntity | null) => {
               updatedUser && this.setSignedInUser(new UserModel(updatedUser));

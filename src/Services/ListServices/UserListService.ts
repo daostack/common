@@ -6,7 +6,7 @@ export type userListLoadCallbackFn = (
 ) => void;
 export type userLoadCallbackFn = (updatedUserList: IUserEntity | null) => void;
 
-export const subscribeToCommonlUsers = (
+export const subscribeToCommonUsers = (
   commonId: string,
   callback: userListLoadCallbackFn,
 ) =>
