@@ -7,7 +7,7 @@ import {
   subscribeToCommonlUsers,
 } from '~/Services/ListServices/UserListService';
 
-export class UserListStore extends ListStore<IUserEntity> {
+export default class UserListStore extends ListStore<IUserEntity> {
   // Fields
   get getUserList(): ObservableMap<string, IUserEntity> {
     return super.dataList;
@@ -39,5 +39,4 @@ export class UserListStore extends ListStore<IUserEntity> {
 
 decorate(UserListStore, {
   getUserList: computed,
-  getUserById: observable,
 });

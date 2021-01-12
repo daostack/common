@@ -10,6 +10,7 @@ import {
   getUserById,
   subscribeToUser,
 } from '~/Services/ListServices/UserListService';
+import {UserModelStore} from './ModelStore/UserModelStore';
 
 export const userInfoFields = [
   'uid',
@@ -60,7 +61,9 @@ class UserStore {
           this.setIsLoading(true);
           this.addLoginInProgress(user?.uid);
 
-          const loggedUser: IUserEntity = await this._processUser(user);
+          const loggedUser: UserModelStore = await this._processUser(user);
+
+          console.log('loggedUser', loggedUser);
 
           this.setSignedInUser(loggedUser);
           this.removeLoginInProgress(loggedUser.uid);
@@ -69,7 +72,8 @@ class UserStore {
           subscribeToUser(
             loggedUser?.uid,
             (updatedUser: IUserEntity | null) => {
-              this.setSignedInUser(updatedUser);
+              updatedUser &&
+                this.setSignedInUser(new UserModelStore(updatedUser));
             },
           );
         } else {
@@ -115,7 +119,7 @@ class UserStore {
   };
 
   // Private functions
-  async _processUser(user: any): Promise<IUserEntity> {
+  async _processUser(user: any): Promise<UserModelStore> {
     const providerId = user.providerData[0].providerId;
 
     // TODO: Use mobx-persist instead of local storage cache.
@@ -154,7 +158,7 @@ class UserStore {
       userInfoFields,
     ) as IUserEntity;
 
-    return filteredUser;
+    return new UserModelStore(filteredUser);
   }
 }
 decorate(UserStore, {

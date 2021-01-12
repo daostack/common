@@ -53,7 +53,6 @@ decorate(ListStore, {
   dataList: observable,
 
   isEmpty: computed,
-  getDataById: computed,
 
   clearListStore: action,
   setData: action,
