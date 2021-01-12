@@ -35,7 +35,9 @@ const CommonMembersList = ({navigation, members, commonId, limit, horizontal, bo
       const currArrChunk = currCommonMembers.slice(i * size, i * size + size);
       const currChunkUserIds = currArrChunk.map((member) => member.userId);
       const currChunkUserInfos = await UserService.getInstance().getUsersByUpTo10Ids(currChunkUserIds);
-      allUserInfos = allUserInfos.concat(currChunkUserInfos);
+      allUserInfos = allUserInfos
+        .concat(currChunkUserInfos)
+        .map((userInfo, index) => ({joinedAt: members[index].joinedAt, ...userInfo}));
     }));
     return allUserInfos;
   };
