@@ -65,7 +65,10 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
         <Text>Status</Text>
 
         {subscription ? (
-          <MonthlyContributionStatus status={subscription.status} />
+          <MonthlyContributionStatus
+            status={subscription.status}
+            dueDate={subscription.dueDate.toDate()}
+          />
         ) : (
           <View style={{width: 100}}>
             <Placeholder Animation={Fade}>
@@ -77,17 +80,22 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
 
       <View style={styles.row}>
         <Text>
-          {subscription?.status === CANCELED_BY_USER &&
-          subscription?.dueDate.toDate() > new Date()
+          {subscription?.status === CANCELED_BY_USER && subscription?.dueDate.toDate() > new Date()
             ? 'Cancels on'
-            : 'Next payment'}
+            : subscription?.status === ACTIVE
+              ? 'Next payment'
+              : 'Last Payment'}
         </Text>
 
         {subscription ? (
           <Text>
-            {subscription.dueDate.toDate() < new Date()
-              ? 'In the following days'
-              : formatDate(subscription.dueDate.toDate())}
+            {((subscription.status === CANCELED_BY_USER && subscription?.dueDate.toDate() < new Date()) || subscription.status === CANCELED_BY_PAYMENT) ? (
+              formatDate(subscription.lastChargedAt.toDate())
+            ) : (
+              subscription.dueDate.toDate() < new Date()
+                ? 'In the following days'
+                : formatDate(subscription.dueDate.toDate())
+            )}
           </Text>
         ) : (
           <View style={{width: 100}}>
@@ -113,7 +121,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
       </View>
 
       <View style={styles.row}>
-        <Text>Subscribed since</Text>
+        <Text>Subscribed at</Text>
 
         {subscription ? (
           <Text>{formatDate(subscription.createdAt.toDate())}</Text>
@@ -148,8 +156,10 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
 
           {[CANCELED_BY_PAYMENT, CANCELED_BY_USER].some(
             (status) => status === subscription.status,
-          ) &&
-            subscription.dueDate.toDate() < new Date() && (
+          )
+            && subscription.dueDate.toDate() < new Date()
+            && subscription.revoked
+            && (
               <TouchableOpacity style={styles.button} onPress={onJoinClick}>
                 <Text style={styles.stayText}>Request to join again</Text>
               </TouchableOpacity>

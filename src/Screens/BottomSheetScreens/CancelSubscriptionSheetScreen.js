@@ -24,8 +24,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
+  content: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    height: 350,
+    justifyContent: 'space-between',
+  },
+
+  container: {
+    alignItems: 'center',
+  },
+
   image: {
-    height: '25%',
+    height: 150,
     aspectRatio: 1,
   },
 
@@ -85,6 +96,10 @@ const styles = StyleSheet.create({
   loader: {
     marginVertical: 30,
   },
+
+  spacer: {
+    flex: 1,
+  },
 });
 
 const statuses = {
@@ -101,7 +116,7 @@ const CancelSubscriptionSheetScreen = ({
   onCancelConfirm,
   bottomSheetStore,
 }) => {
-  const [status, setStatus] = React.useState(initialStatus);
+  const [ status, setStatus ] = React.useState(initialStatus);
 
   const onClose = () => {
     bottomSheetStore.hideBottomSheet();
@@ -130,72 +145,82 @@ const CancelSubscriptionSheetScreen = ({
         ? 'You will leave'
         : 'If you cancel, you will leave'}{' '}
       <Text style={styles.bold}>{commonName} </Text>
-      {moment(dueDate).toNow()} ({moment(dueDate).format('DD MMMM YYYY')})
+      {dueDate > new Date() && ' in '}
+      {moment(dueDate).toNow(true, 'd')}
+      {dueDate < new Date() && ' ago'}{'  '}
+      ({moment(dueDate).format('DD.MM.YY')})
     </Text>
   );
 
   return (
     <View style={styles.body}>
       <View style={styles.slider}>
-        <View style={styles.lever} />
+        <View style={styles.lever}/>
       </View>
 
-      {status === statuses.initial && (
-        <React.Fragment>
-          <Image
-            source={require('../../Assets/cardDeclined.png')}
-            style={styles.image}
-          />
+      <View style={styles.content}>
+        {status === statuses.initial && (
+          <React.Fragment>
+            <View style={styles.container}>
+              <Image
+                source={require('../../Assets/cardDeclined.png')}
+                style={styles.image}
+              />
 
-          <Text style={styles.title}>Cancel payment</Text>
+              <Text style={styles.title}>Cancel payment</Text>
 
-          <LeaveText />
+              <LeaveText/>
+            </View>
 
-          <TouchableOpacity style={styles.button} onPress={onClose}>
-            <Text style={styles.stayText}>Stay a member</Text>
-          </TouchableOpacity>
+            <View style={styles.container}>
+              <TouchableOpacity style={styles.button} onPress={onClose}>
+                <Text style={styles.stayText}>Stay a member</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={onCancel}>
-            <Text style={styles.cancelText}>Cancel anyway</Text>
-          </TouchableOpacity>
-        </React.Fragment>
-      )}
+              <TouchableOpacity style={styles.button} onPress={onCancel}>
+                <Text style={styles.cancelText}>Cancel anyway</Text>
+              </TouchableOpacity>
+            </View>
+          </React.Fragment>
+        )}
 
-      {status === statuses.loading && (
-        <React.Fragment>
-          <ActivityIndicator
-            size="large"
-            color={colors.mainBlue}
-            style={styles.loader}
-          />
+        {status === statuses.loading && (
+          <View style={styles.container}>
+            <ActivityIndicator
+              size="large"
+              color={colors.mainBlue}
+              style={styles.loader}
+            />
 
-          <Text style={styles.title}>Canceling...</Text>
-        </React.Fragment>
-      )}
+            <Text style={styles.title}>Canceling...</Text>
+          </View>
+        )}
 
-      {status === statuses.canceled && (
-        <React.Fragment>
-          <Image
-            source={require('../../Assets/paymentCancelled.png')}
-            style={styles.image}
-          />
+        {status === statuses.canceled && (
+          <React.Fragment>
+            <Image
+              source={require('../../Assets/paymentCancelled.png')}
+              style={styles.image}
+            />
 
-          <Text style={styles.title}>Recurring payment canceled</Text>
+            <Text style={styles.title}>Recurring payment canceled</Text>
 
-          <LeaveText />
+            <LeaveText/>
 
-          <TouchableOpacity
-            style={{
-              ...styles.button,
-              justifySelf: 'flex-end',
-            }}
-            onPress={onClose}>
-            <Text style={styles.stayText}>OK</Text>
-          </TouchableOpacity>
-        </React.Fragment>
-      )}
+            <TouchableOpacity
+              style={{
+                ...styles.button,
+                justifySelf: 'flex-end',
+                marginTop: 'auto',
+              }}
+              onPress={onClose}>
+              <Text style={styles.stayText}>OK</Text>
+            </TouchableOpacity>
+          </React.Fragment>
+        )}
 
-      {status === statuses.errored && <Text>Something bad happened!</Text>}
+        {status === statuses.errored && <Text>Something bad happened!</Text>}
+      </View>
     </View>
   );
 };
@@ -204,7 +229,7 @@ CancelSubscriptionSheetScreen.propTypes = {
   onCancelConfirm: PropTypes.func.isRequired,
   commonName: PropTypes.string.isRequired,
   dueDate: PropTypes.instanceOf(Date).isRequired,
-  initialStatus: PropTypes.oneOf([...Object.values(statuses)]),
+  initialStatus: PropTypes.oneOf([ ...Object.values(statuses) ]),
 
   bottomSheetStore: PropTypes.shape({
     hideBottomSheet: PropTypes.func,
@@ -217,5 +242,5 @@ CancelSubscriptionSheetScreen.defaultProps = {
 };
 
 export default inject('bottomSheetStore')(
-  observer(CancelSubscriptionSheetScreen),
+  observer(CancelSubscriptionSheetScreen)
 );
