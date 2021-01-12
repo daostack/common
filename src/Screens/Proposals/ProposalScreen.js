@@ -87,11 +87,11 @@ const ProposalScreen = ({
     );
 
   // Sticky Tab Bar
-  const [showStickyTabBar, setShowStickyTabBar] = useState(false);
+  const [ showStickyTabBar, setShowStickyTabBar ] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
 
-  const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
+  const [ stickyTabBarState ] = useState({animation: new Animated.Value(0)});
 
   // Top voting buttons ref
   const topVotingButtonsRef = useRef(null);
@@ -178,7 +178,7 @@ const ProposalScreen = ({
         unsubscribe();
       }
     };
-  }, [proposalId, votingProcessState]);
+  }, [ proposalId, votingProcessState ]);
 
   const [
     isApprovalBottomModalVisible,
@@ -203,7 +203,7 @@ const ProposalScreen = ({
     },
   ]);
 
-  const [inputText, setInputText] = useState(null);
+  const [ inputText, setInputText ] = useState(null);
 
   const inputRef = useRef();
 
@@ -364,9 +364,10 @@ const ProposalScreen = ({
         Toast.error(`Status code ${createVoteResponse.status}`);
       }
     } catch (err) {
-      setVotingProcessState({inProgress: false, error: true});
-      logger.log(err);
-      Toast.error(err.message);
+      setVotingProcessState({
+        inProgress: false,
+        error: err,
+      });
     }
   };
 
@@ -429,7 +430,7 @@ const ProposalScreen = ({
             <TouchableOpacity
               onPress={(e) => openApprovalSheet(false)}
               style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
-              <Icon name="reject-24" color={colors.against} size={24} />
+              <Icon name="reject-24" color={colors.against} size={24}/>
             </TouchableOpacity>
           </View>
         </View>
@@ -492,8 +493,8 @@ const ProposalScreen = ({
     transform: [
       {
         translateY: stickyTabBarState.animation.interpolate({
-          inputRange: [0.01, 1],
-          outputRange: [0, 80],
+          inputRange: [ 0.01, 1 ],
+          outputRange: [ 0, 80 ],
           extrapolate: 'clamp',
         }),
       },

@@ -41,10 +41,7 @@ const cardData = (formData) => ({
     district: formData.District,
   },
   expMonth: +formData.expiration_date.split('/')[0],
-  expYear: +`20${formData.expiration_date.split('/')[1]}`,
-  metadata: {
-    email: formData.email,
-  },
+  expYear: +(`20${formData.expiration_date.split('/')[1]}`),
 });
 
 export const createCard = async (formData) =>
@@ -70,7 +67,6 @@ export const createCardPayload = async (formData) => {
 
   return {
     keyId,
-    idToken,
     encryptedData,
     ...cardData(formData),
   };

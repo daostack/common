@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import {AppRegistry} from 'react-native';
+import {AppRegistry, LogBox} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
 import stores from './src/Stores';
@@ -11,7 +11,7 @@ import {Provider} from 'mobx-react';
 import CodePush from 'react-native-code-push';
 import {Update} from '~/Components/Update/Update';
 
-console.disableYellowBox = true;
+LogBox.ignoreAllLogs(true);
 
 const MobX = () => (
   <Update>

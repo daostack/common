@@ -35,12 +35,17 @@ class BottomSheetStore {
   decreseTopSnap = (decreseVal) => {
     this.topSnap = this.topSnap - decreseVal;
   };
+
+  setSnap = (snap) => {
+    this.topSnap = snap;
+  };
 }
 
 decorate(BottomSheetStore, {
   showBottomSheet: action,
   increseTopSnap: action,
   decreseTopSnap: action,
+  setSnap: action,
   topSnap: observable,
   template: observable,
   isVisible: observable,

@@ -9,23 +9,40 @@ import {
 import React from 'react';
 import {text, layout, colors, font, sizeL} from '~/Theme';
 import ButtonSwiper from '~/Components/ButtonSwiper';
-import {func, bool, shape} from 'prop-types';
-import {useQuote} from '../../Util/hooks/useQuote';
+import PropTypes from 'prop-types';
+import {useQuote} from '~/Util/hooks/useQuote';
 import {Bar} from 'react-native-progress';
+import {ErrorExpand} from '~/Components';
 
-const ApprovalSheetScreen = ({
+const propTypes = {
+  onApprove: PropTypes.func,
+  onClose: PropTypes.func,
+  voteType: PropTypes.bool,
+  votingProcessState: PropTypes.shape({
+    inProgress: PropTypes.bool,
+    error: PropTypes.bool,
+  }),
+};
+
+const ApprovalSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> = ({
   onApprove,
   onClose,
   voteType,
-  votingProcessState: {inProgress, error},
+  votingProcessState,
 }) => {
   const quote = useQuote();
   const title = voteType ? 'Approve' : 'Reject';
-  const voteColor = error || !voteType ? colors.against : colors.lightishGreen;
+  const voteColor =
+    votingProcessState?.error || !voteType ? colors.against : colors.lightishGreen;
+
+  const [height, setHeight] = React.useState<number>(200);
 
   return (
-    <SafeAreaView style={styles.body}>
-      {inProgress && (
+    <SafeAreaView style={{
+      ...styles.body,
+      height,
+    }}>
+      {votingProcessState?.inProgress && (
         <Bar
           indeterminate
           width={Dimensions.get('window').width + 20}
@@ -44,20 +61,32 @@ const ApprovalSheetScreen = ({
           ...styles.title,
           color: voteColor,
         }}>
-        {error ? 'Something went wrong' : title}
+        {votingProcessState?.error ? 'Something went wrong' : title}
       </Text>
 
-      {error ? (
+      {votingProcessState?.error ? (
         <React.Fragment>
           <Text style={{...styles.voteDescription, ...{...font.fontSize(2)}}}>
             Please try again later
           </Text>
 
-          <TouchableOpacity style={styles.okButton} onPress={onClose}>
-            <Text style={styles.buttonText}>OK</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={onClose as any}
+          >
+            <Text>OK</Text>
           </TouchableOpacity>
+
+          {typeof votingProcessState?.error !== 'boolean' && (
+            <ErrorExpand
+              error={(votingProcessState?.error as any)}
+              onLayout={(_: any, change: number) => {
+                setHeight(height + change);
+              }}
+            />
+          )}
         </React.Fragment>
-      ) : inProgress ? (
+      ) : votingProcessState?.inProgress ? (
         <React.Fragment>
           <Text style={styles.greyText}>This might take up to 2 minutes</Text>
 
@@ -74,7 +103,10 @@ const ApprovalSheetScreen = ({
           </Text>
           <ButtonSwiper
             title="Swipe to confirm your vote"
-            onSwipeSuccess={() => onApprove(voteType)}
+            onSwipeSuccess={() => {
+              typeof onApprove === 'function'
+              && onApprove(voteType);
+            }}
           />
         </React.Fragment>
       )}
@@ -82,15 +114,7 @@ const ApprovalSheetScreen = ({
   );
 };
 
-ApprovalSheetScreen.propTypes = {
-  onApprove: func,
-  onClose: func,
-  voteType: bool,
-  votingProcessState: shape({
-    inProgress: bool,
-    error: bool,
-  }),
-};
+ApprovalSheetScreen.propTypes = propTypes;
 
 const styles = StyleSheet.create({
   title: {
@@ -139,19 +163,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-  okButton: {
-    justifyContent: 'center',
+  button: {
+    width: Dimensions.get('window').width * 0.9,
+    height: 50,
     alignItems: 'center',
-    padding: 0,
-    ...layout.btnOutline,
-    ...layout.marginTopXXL,
-    height: 52,
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderRadius: 25,
+    borderColor: colors.grey4,
+    marginVertical: 25,
   },
-  buttonText: {
-    color: colors.black,
-    alignSelf: 'center',
-    fontSize: 16,
-  },
+
 });
 
 export default ApprovalSheetScreen;
