@@ -2,10 +2,9 @@ import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import MemberCard from '~/Components/MemberCard';
 import {layout, sizeS, colors} from '~/Theme';
-import UserService from '~/Services/UserService';
 import MemberImage from '~/Components/Commons/MemberImage';
 import {observer, inject} from 'mobx-react';
-import {object, array, bool, string, number} from 'prop-types';
+import {object, array, bool, string, number, shape, func} from 'prop-types';
 import DaoService from '~/Services/DaoService';
 
 import {
@@ -22,6 +21,7 @@ const CommonMembersList = ({
   limit,
   horizontal,
   bottomSheetStore,
+  userListStore,
 }) => {
   const [membersInfo, setMembersInfo] = useState(null);
 
@@ -34,32 +34,38 @@ const CommonMembersList = ({
       ? commonMembers.slice(0, limit)
       : commonMembers || [];
 
-  const getAllCommonMembers = async (commonMembers) => {
-    const size = 10;
-    let allUserInfos = [];
-
-    const currCommonMembers = limit
-      ? limitCommonMembers(commonMembers)
-      : commonMembers;
-
-    await Promise.all(
-      Array.from(
-        {length: Math.ceil(currCommonMembers.length / size)},
-        async (v, i) => {
-          const currArrChunk = currCommonMembers.slice(
-            i * size,
-            i * size + size,
-          );
-          const currChunkUserIds = currArrChunk.map((member) => member.userId);
-          const currChunkUserInfos = await UserService.getInstance().getUsersByUpTo10Ids(
-            currChunkUserIds,
-          );
-          allUserInfos = allUserInfos.concat(currChunkUserInfos);
-        },
-      ),
+  const getAllCommonMembers = (commonMembers) =>
+    userListStore.getCommonUsersByMembersArray(
+      commonMembers.map((member) => member.userId),
     );
-    return allUserInfos;
-  };
+
+  // That's the old way of fatching commong members.
+  // Let's keep it here as refference untill find better way of fetching it from DB at once.
+  //
+  // const size = 10;
+  // let allUserInfos = [];
+
+  // const currCommonMembers = limit
+  //   ? limitCommonMembers(commonMembers)
+  //   : commonMembers;
+
+  // await Promise.all(
+  //   Array.from(
+  //     {length: Math.ceil(currCommonMembers.length / size)},
+  //     async (v, i) => {
+  //       const currArrChunk = currCommonMembers.slice(
+  //         i * size,
+  //         i * size + size,
+  //       );
+  //       const currChunkUserIds = currArrChunk.map((member) => member.userId);
+  //       const currChunkUserInfos = await UserService.getInstance().getUsersByUpTo10Ids(
+  //         currChunkUserIds,
+  //       );
+  //       allUserInfos = allUserInfos.concat(currChunkUserInfos);
+  //     },
+  //   ),
+  // );
+  // return allUserInfos;
 
   useEffect(() => {
     let unsubscribeCommon = null;
@@ -68,7 +74,7 @@ const CommonMembersList = ({
         currCommonId,
         async (snapshot) => {
           const updatedCommon = snapshot.data();
-          setMembersInfo(await getAllCommonMembers(updatedCommon?.members));
+          setMembersInfo(getAllCommonMembers(updatedCommon?.members));
         },
       );
     };
@@ -167,6 +173,9 @@ CommonMembersList.propTypes = {
   limit: number,
   horizontal: bool,
   bottomSheetStore: object,
+  userListStore: shape({
+    getCommonUsersByMembersArray: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -177,4 +186,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(observer(CommonMembersList));
+export default inject(
+  'bottomSheetStore',
+  'userListStore',
+)(observer(CommonMembersList));
