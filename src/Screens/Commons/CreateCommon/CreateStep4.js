@@ -312,7 +312,7 @@ const CreateStep4 = ({
       <RequestStepActionButton
         title="Publish Common"
         formStore={agendaFormStore}
-        onPress={() => confirmModal()}
+        onPress={() => forgeCommon()}
       />
       <Modal
         isVisible={Boolean(newCommonAddress)}

@@ -11,7 +11,7 @@ import {UserAvatar} from '~/Components';
 import {CommonActions} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
 import logger from '~/Services/Logger';
-import {string, object, shape} from 'prop-types';
+import {string, object, shape, array} from 'prop-types';
 
 import {
   Placeholder,
@@ -25,6 +25,7 @@ const UserProfileData = ({
   currUserInfo,
   navigation,
   userStore: {userInfo},
+  daoStore,
 }) => {
   const [user, setUser] = useState(currUserInfo);
   const [proposalsCount, setProposalsCount] = useState(0);
@@ -58,7 +59,7 @@ const UserProfileData = ({
     setIsOwnProfile(false);
 
     getUser();
-  }, [userId, currUserInfo, userInfo]);
+  }, [userId, currUserInfo, userInfo, daoStore.daos]);
 
   const navigateToEditProfile = (isFirstOpening) => {
     const navigate = CommonActions.navigate({
@@ -308,6 +309,9 @@ UserProfileData.propTypes = {
       uid: string,
     }),
   }),
+  daoStore: shape({
+    daos: array,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -371,4 +375,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(UserProfileData));
+export default inject('userStore', 'daoStore')(observer(UserProfileData));

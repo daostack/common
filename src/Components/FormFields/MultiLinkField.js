@@ -54,7 +54,7 @@ const MultiLinkField = (props) => {
     props.onChangeText && props.onChangeText(currIndex);
   };
 
-  const onChangeText = (value, currTitleItemValidation) => {
+  const onChangeText = (value, currTitleItemValidation, index) => {
     if (value.length > 0) {
       validation.formStore.updateFieldValidationRule(
         currTitleItemValidation.name,
@@ -70,7 +70,6 @@ const MultiLinkField = (props) => {
         true,
       );
     }
-    const index = currTitleItemValidation.name[0];
     props.onChangeText && props.onChangeText(index);
     canAddMore();
   };
@@ -141,7 +140,7 @@ const MultiLinkField = (props) => {
                 }
                 label={props.label}
                 onChangeText={(value) => {
-                  onChangeText(value, currTitleItemValidation);
+                  onChangeText(value, currItemValidation, currIndex);
                 }}
                 viewStyle={{marginTop: 0}}
                 placeholderText={props.title}
@@ -158,7 +157,7 @@ const MultiLinkField = (props) => {
                 )?.value || currRules[currIndex]?.value
               }
               onChangeText={(value) => {
-                onChangeText(value, currItemValidation);
+                onChangeText(value, currTitleItemValidation, currIndex);
               }}
               viewStyle={{marginTop: -5}}
               placeholderText={
