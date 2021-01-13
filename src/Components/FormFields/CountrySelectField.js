@@ -2,53 +2,62 @@ import React from 'react';
 import {View} from 'react-native';
 import {bool, func, object, oneOfType, shape, string} from 'prop-types';
 
-import SearchableDropdown from 'react-native-searchable-dropdown';
 import * as RNLocalize from 'react-native-localize';
+import SearchableDropdown from 'react-native-searchable-dropdown';
+
+
+import {countryList} from '~/Util/countries';
+import {colors} from '../../Theme';
 
 import TextInputFieldWithIcon from './TextInputFieldWithIcon';
-
-import {countryList} from '../../Util/countries';
-import {colors} from '../../Theme';
 import {Label} from './TextInputField';
 
-export const CountrySelectField = ({onChange, ...props}) => {
-  const [countryIndex, setCountryIndex] = React.useState(0);
-  const [selectedCountries, setSelectedCountries] = React.useState([
-    countryList[0],
-  ]);
+const getCountryIndex = (countryArr, country) => countryArr.findIndex(
+  (countryObj) => countryObj.value === country
+);
 
+export const CountrySelectField = ({onChange, ...props}) => {
+  const countries = countryList.filter((country) => country.payin);
+
+  const [ selectedCountryIndex, setSelectedCountryIndex ] = React.useState(getCountryIndex(countries, RNLocalize.getCountry()));
+  const [ selectedCountry, setSelectedCountry ] = React.useState(countries[selectedCountryIndex].value);
+
+  // Call the callback with the initial country value
   React.useEffect(() => {
-    getCountryIndex(RNLocalize.getCountry());
+    typeof onChange === 'function'
+      && onChange(selectedCountry);
   }, []);
 
-  const getCountryIndex = (country) => {
-    const index = countryList.findIndex(
-      (countryObj) => countryObj.value === country,
-    );
-    onChange && onChange(country);
-    setCountryIndex(index || 0);
+  const onCountrySelected = (country) => {
+    setSelectedCountry(country.value);
+    setSelectedCountryIndex(getCountryIndex(countries, country.value));
+
+    if (props.validation) {
+      const {formStore, name} = props.validation;
+
+      formStore.fieldChanged(name, country.value, false);
+    }
+
+    typeof onChange === 'function'
+      && onChange(country.value);
   };
 
   return (
     <View style={styles.container}>
       {(props.label || props.infoLabel) && (
-        <Label label={props.label} infoLabel={props.infoLabel} />
+        <Label label={props.label} infoLabel={props.infoLabel}/>
       )}
 
       <SearchableDropdown
-        onItemSelect={(item) => {
-          const items = [item, ...selectedCountries];
-          getCountryIndex(item.value);
-          setSelectedCountries(items);
-        }}
+        onItemSelect={onCountrySelected}
         itemStyle={styles.itemStyle}
         itemTextStyle={{color: 'black'}}
         itemsContainerStyle={styles.itemsContainerStyle}
-        items={countryList.filter((country) => country.payin)}
-        defaultIndex={countryIndex}
+        items={countries}
+        defaultIndex={selectedCountryIndex}
         resetValue={false}
         textInputProps={{
-          placeholder: countryList[countryIndex].name,
+          placeholder: countries[selectedCountryIndex].name,
           placeholderTextColor: 'black',
           underlineColorAndroid: 'transparent',
           style: styles.textInput,
@@ -59,8 +68,7 @@ export const CountrySelectField = ({onChange, ...props}) => {
       <View style={{display: 'none'}}>
         <TextInputFieldWithIcon
           editable={false}
-          key={countryIndex}
-          value={countryList[countryIndex].value}
+          value={selectedCountry}
           iconEndName="down-arrow"
           {...props}
         />
@@ -109,7 +117,7 @@ CountrySelectField.propTypes = {
     name: string,
     formStore: object,
     displayName: string,
-    validateRule: oneOfType([string, object]),
+    validateRule: oneOfType([ string, object ]),
     invisibleContainer: bool,
     customErrorMessage: string,
   }),
