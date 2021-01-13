@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import {colors, font} from '../Theme';
+
 import Icon from '../Assets/iconfont/Icon';
 import MonthlyContributionStatus from './MonthlyContributionStatus';
 import {
@@ -11,7 +12,7 @@ import {
   CANCELED_BY_PAYMENT,
   CANCELED_BY_USER,
   PAYMENT_FAILED,
-} from '../Services/SubscriptionService';
+} from '~/Services/SubscriptionService';
 import {formatCurrency, formatDate} from '~/Util';
 
 const ContributionListItem = ({subscription, navigation}) => {
@@ -38,7 +39,7 @@ const ContributionListItem = ({subscription, navigation}) => {
 
           <Text style={styles.bottomText}>
             {isCanceled
-              ? subscription.dueDate.toDate() < new Date()
+              ? (subscription.dueDate.toDate() < new Date())
                 ? 'Canceled by user'
                 : 'Cancels at'
               : `Payment Due: ${dueDate}`}

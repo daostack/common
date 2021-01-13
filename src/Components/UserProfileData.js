@@ -1,17 +1,16 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {layout, font, colors, text, sizeL, sizeXXL} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import ImageField from '~/Components/FormFields/ImageField';
 import CountBox from '~/Components/CountBox';
-import UserService from '~/Services/UserService';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
 import CommonsSwiper from '~/Screens/Commons/CommonsSwiper';
-import {UserAvatar} from '~/Components';
+import {UserAvatar} from '~/Components/index';
 import {CommonActions} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
 import logger from '~/Services/Logger';
-import {string, object, shape, array} from 'prop-types';
+import {string, object, shape, array, func} from 'prop-types';
 
 import {
   Placeholder,
@@ -26,39 +25,23 @@ const UserProfileData = ({
   navigation,
   userStore: {userInfo},
   daoStore,
+  userListStore,
 }) => {
-  const [user, setUser] = useState(currUserInfo);
+  const providedUserId = userId || currUserInfo.uid;
+  const isOwnProfile = providedUserId === userInfo?.uid;
+  const user = isOwnProfile
+    ? userInfo
+    : userListStore.getUserById(providedUserId);
+
+  navigation.setOptions({
+    title: user.displayNameFormatted,
+  });
+
   const [proposalsCount, setProposalsCount] = useState(0);
   const [requestsCount, setRequestsCount] = useState(0);
   const [commonsCount, setCommonsCount] = useState(0);
-  const [isOwnProfile, setIsOwnProfile] = useState(false);
 
   useEffect(() => {
-    const getUser = async () => {
-      if (userId === userInfo?.uid) {
-        setUser(userInfo);
-        setIsOwnProfile(true);
-      } else {
-        if (!user) {
-          const usr = await UserService.getInstance().getUserById(userId);
-          setUser(usr);
-        }
-
-        setIsOwnProfile(false);
-
-        navigation.setOptions({
-          // The regex below is used to separate names and
-          // make them less at most 25 character, but with cutting
-          // the name only at whitespaces
-          title: user.displayName?.match(/.{1,25}(\s|$)/g)[0],
-        });
-      }
-    };
-
-    setUser(currUserInfo);
-    setIsOwnProfile(false);
-
-    getUser();
   }, [userId, currUserInfo, userInfo, daoStore.daos]);
 
   const navigateToEditProfile = (isFirstOpening) => {
@@ -312,6 +295,9 @@ UserProfileData.propTypes = {
   daoStore: shape({
     daos: array,
   }),
+  userListStore: shape({
+    getUserById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -375,4 +361,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'daoStore')(observer(UserProfileData));
+export default inject('userStore', 'daoStore', 'userListStore')(observer(UserProfileData));
