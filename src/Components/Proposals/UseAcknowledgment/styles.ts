@@ -2,8 +2,11 @@ import {StyleSheet} from 'react-native';
 import {colors, font} from '~/Theme';
 
 export default StyleSheet.create({
+  background: {
+    width: '100%',
+    height: 65,
+  },
   root:  {
-    paddingTop: 65,
     height: '100%',
   },
   view: {
