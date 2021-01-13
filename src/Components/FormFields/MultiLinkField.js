@@ -51,6 +51,7 @@ const MultiLinkField = (props) => {
         currIndex,
       );
     }
+    props.onChangeText && props.onChangeText(currIndex);
   };
 
   const onChangeText = (value, currTitleItemValidation) => {

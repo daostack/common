@@ -130,6 +130,10 @@ const CommonProfile = ({
   const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(
     false,
   );
+  // right now, has permission is about user being the owner, this may change in the future
+  const [hasPermission, setHasPermission] = useState(
+    userStore?.userInfo?.uid === currCommon?.metadata.founderId,
+  );
 
   //setHeaderHeight(height + 35);
 
@@ -156,6 +160,9 @@ const CommonProfile = ({
         loadCurrCommon,
       );
     };
+    setHasPermission(
+      userStore?.userInfo?.uid === currCommon?.metadata.founderId,
+    );
     // Subscribe to a common.
     subscribeToCommon(params.commonId || currCommon.id);
     return () => {
@@ -412,8 +419,6 @@ const CommonProfile = ({
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
-        hasPermission:
-          userStore?.userInfo?.uid === currCommon?.metadata.founderId,
         editInfo: () => navigateTo('Edit info and cover photo'),
         editRules: () => navigateTo('Edit Rules'),
       },
@@ -638,18 +643,20 @@ const CommonProfile = ({
               />
             </BlurView>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={{justifyContent: 'center', marginRight: 10}}
-            onPress={openCommonOptions}>
-            <BlurView
-              style={{
-                padding: 5,
-                borderRadius: 15,
-              }}
-              isBlurring={dark}>
-              <Icon name="menu1" size={32} color={dark ? 'black' : 'white'} />
-            </BlurView>
-          </TouchableOpacity>
+          {hasPermission && (
+            <TouchableOpacity
+              style={{justifyContent: 'center', marginRight: 10}}
+              onPress={openCommonOptions}>
+              <BlurView
+                style={{
+                  padding: 5,
+                  borderRadius: 15,
+                }}
+                isBlurring={dark}>
+                <Icon name="menu1" size={32} color={dark ? 'black' : 'white'} />
+              </BlurView>
+            </TouchableOpacity>
+          )}
         </View>
       }
     />

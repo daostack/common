@@ -69,6 +69,7 @@ const EditInfo: React.FC<InferProps<typeof EditInfo.propTypes>> = ({
         commonName={common.name}
         commonByLine={common?.metadata.byline}
         currImage={common.image}
+        onImageChanged={() => isValidChange()}
       />
 
       {textInputAttributes.map((attributes, i) => (

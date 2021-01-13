@@ -9,14 +9,9 @@ import React from 'react';
 import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {inject, observer} from 'mobx-react';
-import {bool, object, func} from 'prop-types';
+import {object, func} from 'prop-types';
 
-const CommonProfileOptions = ({
-  hasPermission,
-  editInfo,
-  editRules,
-  bottomSheetStore,
-}) => {
+const CommonProfileOptions = ({editInfo, editRules, bottomSheetStore}) => {
   const onEdit = (type) => {
     bottomSheetStore.hideBottomSheet();
     type === 'info' ? editInfo() : editRules();
@@ -31,37 +26,32 @@ const CommonProfileOptions = ({
       directionalLockEnabled={true}>
       <View style={styles.body}>
         <Text style={styles.text}>Options</Text>
-        {hasPermission && (
-          <>
-            <TouchableOpacity
-              style={styles.optionBtn}
-              onPress={() => onEdit('info')}>
-              <Icon
-                name="dao-general-info-24"
-                style={layout.marginRightS}
-                color={colors.black}
-              />
-              <Text style={text.buttonblack}>Edit info and cover photo</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionBtn}
-              onPress={() => onEdit('rules')}>
-              <Icon
-                name="agenda-24"
-                style={layout.marginRightS}
-                color={colors.black}
-              />
-              <Text style={text.buttonblack}>Edit rules</Text>
-            </TouchableOpacity>
-          </>
-        )}
+        <TouchableOpacity
+          style={styles.optionBtn}
+          onPress={() => onEdit('info')}>
+          <Icon
+            name="dao-general-info-24"
+            style={layout.marginRightS}
+            color={colors.black}
+          />
+          <Text style={text.buttonblack}>Edit info and cover photo</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.optionBtn}
+          onPress={() => onEdit('rules')}>
+          <Icon
+            name="agenda-24"
+            style={layout.marginRightS}
+            color={colors.black}
+          />
+          <Text style={text.buttonblack}>Edit rules</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
 };
 
 CommonProfileOptions.propTypes = {
-  hasPermission: bool,
   bottomSheetStore: object,
   editInfo: func,
   editRules: func,

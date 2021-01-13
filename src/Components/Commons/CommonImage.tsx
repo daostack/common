@@ -32,7 +32,14 @@ const props = {
 };
 
 const CommonImage: React.FC<InferProps<typeof props>> = observer(
-  ({width, reviewFormStore, commonName, commonByLine, currImage = null}) => {
+  ({
+    width,
+    reviewFormStore,
+    commonName,
+    commonByLine,
+    currImage = null,
+    onImageChanged = null,
+  }) => {
     const [templateIndex, setTemplateIndex] = useState(1);
 
     //set default value for Image field
@@ -81,6 +88,7 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(
               Toast.success('Done');
               console.log('url -> ', url);
               reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
+              onImageChanged && onImageChanged();
             })
             .catch((error) => Toast.error(error));
         }

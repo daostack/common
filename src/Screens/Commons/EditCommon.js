@@ -25,8 +25,6 @@ const metadataKeys = [
   EditCommonConstants.DESCRIPTION,
 ];
 
-var newRules = {};
-
 const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
   userStore,
   daoStore,
@@ -58,13 +56,14 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
   const [editCommonFormStore] = useState(new EditCommonFormStore());
   const [valid, setValid] = useState(false);
   const isRule = title === 'Edit Rules';
+  let [newRules, setNewRules] = useState(currCommon?.rules || []);
 
   const formSave = async () => {
     if (valid) {
       Toast.loading('Updating your Common...');
       const changedFields =
         title === 'Edit Rules' ? {rules: [...newRules]} : getChanges();
-      mergeChanges(changedFields); // not good, changes currCommon as well cuz of shallow copy
+      mergeChanges(changedFields); // shallow copy though
       onFormSubmitEnd(currCommon);
     }
   };
@@ -92,7 +91,7 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
   };
 
   const onFormClose = () => {
-    if (!_.isEmpty(getChanges())) {
+    if (editCommonFormStore.isFormChanged() || newRules.length !== 0) {
       bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
         navigation: navigation,
         onContinueEditing: closeBottomSheet,
@@ -129,18 +128,22 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
    * @param  index      - the index of the rule in common.rules array
    * @return newRules   - an object with the new rules
    */
-  const getRuleChanges = (index) => {
+  const getRuleChanges = (index = 0) => {
     const ruleChanges = editCommonFormStore.getChangedFormFieldsJson();
     if (ruleChanges?.rules?.length === currCommon?.rules?.length) {
-      newRules = ruleChanges.rules;
+      setNewRules(ruleChanges?.rules);
     } else {
-      newRules[index] = {...newRules[index], ...ruleChanges.rules[0]};
+      if (_.isEmpty(ruleChanges)) {
+        newRules.splice(index, 1);
+      } else {
+        newRules[index] = ruleChanges?.rules[0];
+      }
+      setNewRules(newRules);
     }
-    return newRules;
   };
 
   const isValidChange = (ruleIndex = null) => {
-    ruleIndex && getRuleChanges(ruleIndex);
+    isRule && getRuleChanges(ruleIndex);
     /*const changesObject =
       title === 'Edit Rules' ? getRuleChanges(ruleData) : getChanges();*/
     //setValid(!_.isEmpty(changesObject) && editCommonFormStore.isFormValid());
