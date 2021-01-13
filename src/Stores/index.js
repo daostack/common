@@ -1,11 +1,16 @@
-import UserStore from './UserStore';
-import UserListStore from './ListStore/UserListStore';
 import DaoStore from './DaoStore';
+import RootStore from './RootStore';
 import BottomSheetStore from './BottomSheetStore';
 
+const rootStore = new RootStore();
+
 export default {
-  userStore: new UserStore(),
-  userListStore: new UserListStore(),
-  daoStore: new DaoStore(),
+  rootStore,
+  userStore: rootStore.authStore,
+  userListStore: rootStore.userListStore,
+
+  //TODO: move in UIStore and add ref to rootStore.
   bottomSheetStore: new BottomSheetStore(),
+  //TODO: rework DaoStore as UserListStore.
+  daoStore: new DaoStore(),
 };

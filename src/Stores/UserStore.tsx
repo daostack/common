@@ -12,6 +12,7 @@ import {
 } from '~/Services/ListServices/UserListService';
 import {UserModel} from './Models/UserModel';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+import RootStore from './RootStore';
 
 export const userInfoFields = [
   'uid',
@@ -34,10 +35,12 @@ class UserStore {
   myCommons: any;
   myProposals: any;
   address: any;
+  rootStore: RootStore;
 
   unsubscribeFromUser: FirestoreUnsubscribeFn | null;
 
-  constructor() {
+  constructor(rootStore: RootStore) {
+    this.rootStore = rootStore;
     this.userInfo = null;
     this.isLoading = false;
     this.loginInProgress = [];

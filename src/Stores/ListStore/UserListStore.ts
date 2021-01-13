@@ -3,13 +3,13 @@ import {UserModel} from '../Models/UserModel';
 import ListStore from './ListStore';
 import {subscribeToAllUsers} from '~/Services/ListServices/UserListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
-import UserStore from '../UserStore';
+import RootStore from '../RootStore';
 export default class UserListStore extends ListStore<UserModel> {
-  authStore: UserStore;
+  rootStore: RootStore;
 
-  constructor(authStore: UserStore) {
+  constructor(rootStore: RootStore) {
     super();
-    this.authStore = authStore;
+    this.rootStore = rootStore;
   }
 
   // Data consuming methods
@@ -23,8 +23,8 @@ export default class UserListStore extends ListStore<UserModel> {
       if (currData) {
         currData && dataByIds.push(currData);
       } else {
-        this.authStore.userInfo?.uid === id &&
-          dataByIds.push(this.authStore.userInfo);
+        this.rootStore.authStore.userInfo?.uid === id &&
+          dataByIds.push(this.rootStore.authStore.userInfo);
       }
     });
     return dataByIds;
