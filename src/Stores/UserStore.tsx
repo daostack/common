@@ -4,7 +4,6 @@ import logger from '~/Services/Logger';
 import AuthService from '~/Services/AuthService';
 import NotificationService from '~/Services/NotificationService';
 import {auth} from '~/Firebase';
-import {filterObjectByKeys} from '~/Util';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {
   getUserById,
@@ -14,15 +13,6 @@ import {UserModel} from './Models/UserModel';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from './RootStore';
 
-export const userInfoFields = [
-  'uid',
-  'firstName',
-  'lastName',
-  'email',
-  'photoURL',
-  'updatedAt',
-  'createdAt',
-];
 type SignInErrorWithCode = any;
 type UserInfo = any;
 
@@ -155,15 +145,10 @@ class UserStore {
 
     NotificationService.saveTokenToDatabase();
 
-    const filteredUser: IUserEntity = filterObjectByKeys(
-      {
-        ...user._user,
-        ...appUser,
-      },
-      userInfoFields,
-    ) as IUserEntity;
-
-    return new UserModel(filteredUser);
+    return new UserModel({
+      ...user._user,
+      ...appUser,
+    } as IUserEntity);
   }
 }
 decorate(UserStore, {

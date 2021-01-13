@@ -1,6 +1,16 @@
 import {observable, decorate, action, computed} from 'mobx';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
+import {filterObjectByKeys} from '~/Util';
 
+export const userInfoFields = [
+  'uid',
+  'firstName',
+  'lastName',
+  'email',
+  'photoURL',
+  'updatedAt',
+  'createdAt',
+];
 export class UserModel implements IUserEntity {
   // Fields
   uid: string = '';
@@ -13,7 +23,15 @@ export class UserModel implements IUserEntity {
   updatedAt: Date | null = null;
 
   constructor(newUserInfo: IUserEntity) {
-    this.setUser(newUserInfo);
+    // Filter the provided newUserInfo values in order to be sure there are no extra data.
+    // Currently there are users with displayName prop in the DB,
+    // but here the displayName is computed field which can't be assigned a value to.
+    const filteredUser: IUserEntity = filterObjectByKeys(
+      newUserInfo,
+      userInfoFields,
+    ) as IUserEntity;
+
+    this.setUser(filteredUser);
   }
 
   // Computed fields:
@@ -29,23 +47,9 @@ export class UserModel implements IUserEntity {
   }
 
   setUser(newUserInfo: IUserEntity) {
-    if (newUserInfo) {
-      if (newUserInfo.uid) {
-        this.uid = newUserInfo.uid;
-      }
-      if (newUserInfo.email) {
-        this.email = newUserInfo.email;
-      }
-      if (newUserInfo.firstName) {
-        this.firstName = newUserInfo.firstName;
-      }
-      if (newUserInfo.lastName) {
-        this.lastName = newUserInfo.lastName;
-      }
-      if (newUserInfo.photoURL) {
-        this.photoURL = newUserInfo.photoURL;
-      }
-    }
+    Object.keys(newUserInfo).forEach((key) => {
+      this[key] = newUserInfo[key];
+    });
   }
 }
 

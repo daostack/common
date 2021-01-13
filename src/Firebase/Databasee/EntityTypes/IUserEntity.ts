@@ -11,5 +11,4 @@ export interface IUserEntity extends IBaseEntity {
 
   firstName: string;
   lastName: string;
-  displayName: string;
 }
