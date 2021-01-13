@@ -11,7 +11,7 @@ import {Provider} from 'mobx-react';
 import CodePush from 'react-native-code-push';
 import {Update} from '~/Components/Update/Update';
 
-// LogBox.ignoreAllLogs(true);
+LogBox.ignoreAllLogs(true);
 
 const MobX = () => (
   <Update>

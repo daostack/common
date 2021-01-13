@@ -7,10 +7,6 @@ import pkg from '../../../package.json';
 import axios from 'axios';
 import compareVersions from 'compare-versions';
 
-import VersionCheck from 'react-native-version-check';
-import {getVersionInfo} from 'react-native-version-check/src/versionInfo';
-
-
 import {appId, metadataUrl} from '~/Config';
 import {styles} from '~/Components/Update/Update.styles';
 import Config from 'react-native-config';
@@ -29,33 +25,6 @@ export const Update: React.FC<PropTypes.InferProps<typeof updatePropTypes>> = ({
   React.useEffect(() => {
     (async () => {
       try {
-        await VersionCheck.getLatestVersion({
-          provider: async () => {
-            const country = await getVersionInfo().getCountry();
-            const countryCode = country ? `${country}/` : '';
-
-            return fetch(
-              `https://itunes.apple.com/${countryCode}lookup?bundleId=${
-                getVersionInfo().getPackageName().split('.staging')[0]
-              }`
-            )
-              .then((res) => res.json())
-              .then((json) => {
-
-                if (json.resultCount) {
-                  const version = json.results[0].version;
-                  const trackId = json.results[0].trackId;
-
-                  const storeUrl = `itms-apps://apps.apple.com/${countryCode}app/id${trackId}`;
-                  return Promise.resolve({
-                    version,
-                    storeUrl,
-                  });
-                }
-              });
-          },
-        });
-
         const {data: metadataResponse} = await axios.get(`${metadataUrl()}/app`);
 
         const hasNewerVersion = compareVersions.compare(pkg.version, metadataResponse.currentVersion, '<');

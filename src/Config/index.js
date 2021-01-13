@@ -13,8 +13,8 @@ let clientId;
 let web3Provider;
 let commonTokenAddress;
 
-let androidAppIdInternal;
-let iosAppIdInternal;
+let androidAppId;
+let iosAppId;
 
 if (Config.ENV === 'production') {
   localFunctionURL = 'http://localhost:5003/common-daostack/us-central1';
@@ -25,8 +25,8 @@ if (Config.ENV === 'production') {
   clientId =
     '854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com';
 
-  androidAppIdInternal = 'com.daostack.common';
-  iosAppIdInternal = 'id1512785740';
+  androidAppId = 'com.daostack.common';
+  iosAppId = 'id1512785740';
 } else if (Config.ENV === 'staging') {
   localFunctionURL = 'http://localhost:5003/common-staging-50741/us-central1';
   cloudFunctionURL =
@@ -37,8 +37,8 @@ if (Config.ENV === 'production') {
   clientId =
     '78965953367-gp6r7vuvceqj4k8gngrqkng98thgqmo8.apps.googleusercontent.com';
 
-  androidAppIdInternal = 'com.daostack.common.staging';
-  iosAppIdInternal = '1527060751';
+  androidAppId = 'com.daostack.common.staging';
+  iosAppId = '1527060751';
 } else {
   throw Error(
     `Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`
@@ -85,11 +85,8 @@ export const isProduction = Config.ENV === 'production';
 export const testCard = __DEV__ && false; //Config.testCard === 'true';
 
 export const appId = Platform.OS === 'android'
-  ? androidAppIdInternal
-  : iosAppIdInternal;
-
-export const iosAppId = iosAppIdInternal;
-export const androidAppId = androidAppIdInternal;
+  ? androidAppId
+  : iosAppId;
 
 
 // Arc.js related string constants
