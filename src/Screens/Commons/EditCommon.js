@@ -17,7 +17,6 @@ import Toast from '~/Util/Toast';
 import {bool, object, shape, func, InferProps} from 'prop-types';
 import {EditCommonFormStore} from '~/FormStores/EditCommonFormStore';
 import * as EditCommonConstants from '~/Components/Forms/EditCommonForm';
-import _ from 'lodash';
 import EditInfo from '~/Components/EditCommon/EditInfo';
 import EditRules from '~/Components/EditCommon/EditRules';
 const metadataKeys = [
@@ -135,8 +134,9 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
     } else {
       const rule = {title: '', value: ''};
       Object.keys(rules).map((key) => {
-        rule.title = rules[+key]?.title || newRules[index]?.title;
-        rule.value = rules[+key]?.value || newRules[index]?.value;
+        const i = index < key ? index : +key;
+        rule.title = rules[i]?.title || newRules[index]?.title;
+        rule.value = rules[i]?.value || newRules[index]?.value;
         newRules[index] = rule;
       });
     }
