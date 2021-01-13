@@ -34,6 +34,8 @@ export const Update: React.FC<PropTypes.InferProps<typeof updatePropTypes>> = ({
           hasNewerVersion,
           requiresNewerVersion,
         });
+      }  catch (e) {
+        console.warn('An error occurred while trying to retrieve the latest app version', e);
       } finally {
         setLoading(false);
       }
