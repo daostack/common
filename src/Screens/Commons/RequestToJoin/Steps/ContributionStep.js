@@ -77,8 +77,6 @@ const ContributionStep = ({
       if (formData.links) {
         data.links = formData.links;
       }
-      console.log('DATA', data);
-      console.log('AMOUNT', amount);
 
       navigation.navigate({
         name: 'FullScreenCreationLoader',
@@ -154,8 +152,6 @@ const ContributionStep = ({
         if (formData.links) {
           data.links = formData.links;
         }
-        console.log('DATA', data);
-        console.log('AMOUNT', formData.amount);
 
         navigation.navigate({
           name: 'FullScreenCreationLoader',
@@ -163,9 +159,9 @@ const ContributionStep = ({
             title: 'Creating your membership request',
           },
         });
-      }
 
-      //navigateToRequestStep4();
+        createRequest(data);
+      }
     }
   };
 
