@@ -20,7 +20,6 @@ import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '~/Theme';
 import DiscussionMessage from './DiscussionMessage';
 import firestore from '@react-native-firebase/firestore';
 import Toast from '~/Util/Toast.js';
-import UserService from '~/Services/UserService';
 import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
@@ -37,6 +36,7 @@ const Discussions = ({
   daoStore,
   userStore,
   bottomSheetStore,
+  userListStore,
   navigation,
   route: {
     params: {commonId, discussionId, data},
@@ -56,10 +56,10 @@ const Discussions = ({
   const [showMenu, setShowMenu] = useState(false);
   const [isMember, setIsMember] = useState(false);
   const [dataState, setData] = useState(data);
-  const [user, setUser] = useState({});
   const [inputHeight, setInputHeight] = useState(false);
 
   const currentUser = auth().currentUser;
+  const user = userListStore.getUserById(dataState.ownerId);
 
   useEffect(() => {
     const currentDao = daoStore.daos.find((dao) => dao.id === commonId);
@@ -138,17 +138,6 @@ const Discussions = ({
 
     return unsubscribe;
   }, [commonId, dataState.id]);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const userData = await UserService.getInstance().getUserById(
-        dataState.ownerId,
-      );
-      setUser(userData);
-    };
-
-    fetchUser();
-  }, [dataState]);
 
   // const openOptionsMenu = () => {
   //   if (!currentUser) {
@@ -560,6 +549,9 @@ Discussions.propTypes = {
       data: object,
     }),
   }),
+  userListStore: shape({
+    getUserById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -750,4 +742,5 @@ export default inject(
   'userStore',
   'bottomSheetStore',
   'daoStore',
+  'userListStore',
 )(observer(Discussions));

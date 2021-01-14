@@ -19,7 +19,6 @@ export {default as MonthlyContributionsList} from './UserProfile/MonthlyContribu
 export {default as MonthlyContribution} from './UserProfile/MonthlyContribution';
 export {default as UserProfile} from './UserProfile/UserProfile';
 export {default as CreateAccount} from './UserProfile/CreateAccount';
-export {default as UserProfileReadMode} from './UserProfile/UserProfileReadMode';
 export {default as EditProfile} from './UserProfile/EditProfile';
 export {default as MyWallet} from './UserProfile/MyWallet';
 export {default as MyProposals} from './UserProfile/MyProposals';

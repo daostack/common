@@ -59,6 +59,7 @@ const ProposalScreen = ({
       tabIndex = 0,
     },
   },
+  userListStore,
 }) => {
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
@@ -87,11 +88,11 @@ const ProposalScreen = ({
     );
 
   // Sticky Tab Bar
-  const [ showStickyTabBar, setShowStickyTabBar ] = useState(false);
+  const [showStickyTabBar, setShowStickyTabBar] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
 
-  const [ stickyTabBarState ] = useState({animation: new Animated.Value(0)});
+  const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
 
   // Top voting buttons ref
   const topVotingButtonsRef = useRef(null);
@@ -107,7 +108,7 @@ const ProposalScreen = ({
     let unsubscribe = null;
 
     const loadProposalInfo = async (currProposalInfo, currProposalDao) => {
-      const currProposedUser = await UserService.getInstance().getUserById(
+      const currProposedUser = userListStore.getUserById(
         currProposalInfo.proposerId,
       );
 
@@ -178,7 +179,7 @@ const ProposalScreen = ({
         unsubscribe();
       }
     };
-  }, [ proposalId, votingProcessState ]);
+  }, [proposalId, votingProcessState]);
 
   const [
     isApprovalBottomModalVisible,
@@ -203,7 +204,7 @@ const ProposalScreen = ({
     },
   ]);
 
-  const [ inputText, setInputText ] = useState(null);
+  const [inputText, setInputText] = useState(null);
 
   const inputRef = useRef();
 
@@ -430,7 +431,7 @@ const ProposalScreen = ({
             <TouchableOpacity
               onPress={(e) => openApprovalSheet(false)}
               style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
-              <Icon name="reject-24" color={colors.against} size={24}/>
+              <Icon name="reject-24" color={colors.against} size={24} />
             </TouchableOpacity>
           </View>
         </View>
@@ -493,8 +494,8 @@ const ProposalScreen = ({
     transform: [
       {
         translateY: stickyTabBarState.animation.interpolate({
-          inputRange: [ 0.01, 1 ],
-          outputRange: [ 0, 80 ],
+          inputRange: [0.01, 1],
+          outputRange: [0, 80],
           extrapolate: 'clamp',
         }),
       },
@@ -893,6 +894,9 @@ ProposalScreen.propTypes = {
       proposalId: string,
     }),
   }),
+  userListStore: shape({
+    getUserById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -1020,5 +1024,6 @@ const styles = StyleSheet.create({
 
 export default inject(
   'userStore',
+  'userListStore',
   'bottomSheetStore',
 )(observer(ProposalScreen));
