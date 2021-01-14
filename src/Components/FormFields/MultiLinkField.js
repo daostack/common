@@ -206,7 +206,7 @@ MultiLinkField.propTypes = {
     title: string,
     value: string,
   }),
-  onChangeText: func
+  onChangeText: func,
 };
 
 RemoveLinkBtn.propTypes = {

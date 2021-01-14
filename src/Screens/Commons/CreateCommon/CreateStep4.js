@@ -36,9 +36,7 @@ import {
   text,
   layout,
   sizeM,
-  sizeS,
   sizeL,
-  sizeLineHeight,
 } from '~/Theme';
 import logger from '~/Services/Logger';
 
