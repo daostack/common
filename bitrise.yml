@@ -988,7 +988,7 @@ workflows:
     envs:
     - opts:
         is_expand: false
-      APP_VERSION: '1.9.55
+      APP_VERSION: '1.9.5'
     - opts:
         is_expand: false
       ENV: staging
