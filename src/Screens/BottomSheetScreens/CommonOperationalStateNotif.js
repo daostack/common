@@ -25,10 +25,7 @@ const CommonOperationalStateNotif = ({onCreateFundingProposal}) => {
       nestedScrollEnabled={true}
       directionalLockEnabled={true}>
       <View style={styles.body}>
-        <Image
-          style={styles.image}
-          source={require('~/Assets/save.png')}
-        />
+        <Image style={styles.image} source={require('~/Assets/save.png')} />
         <Text style={{...text.h2Black, ...layout.marginTopXL}}>
           This common is now operational
         </Text>

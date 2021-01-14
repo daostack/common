@@ -41,8 +41,8 @@ const CommonExplanation = ({navigation}) => (
             />
             <Text style={styles.text}>Create a Common</Text>
             <Text style={styles.subtitle}>
-                Collaborate on shared agendas by pooling funds and collectively
-                making decisions.
+              Collaborate on shared agendas by pooling funds and collectively
+              making decisions.
             </Text>
           </View>
           <View style={styles.slide1}>
@@ -52,8 +52,8 @@ const CommonExplanation = ({navigation}) => (
             />
             <Text style={styles.text}>Invite members and pool funds</Text>
             <Text style={styles.subtitle}>
-                Invite others to join your Common. Easily pool funds from all
-                members and work together to advance your cause.
+              Invite others to join your Common. Easily pool funds from all
+              members and work together to advance your cause.
             </Text>
           </View>
           <View style={styles.slide1}>
@@ -63,8 +63,8 @@ const CommonExplanation = ({navigation}) => (
             />
             <Text style={styles.text}>Work as a collective</Text>
             <Text style={styles.subtitle}>
-                All members get an equal vote and can take part in the shared
-                effort.
+              All members get an equal vote and can take part in the shared
+              effort.
             </Text>
           </View>
           <View style={styles.slide1}>
@@ -74,9 +74,9 @@ const CommonExplanation = ({navigation}) => (
             />
             <Text style={styles.text}>Harness the power of communities</Text>
             <Text style={styles.subtitle}>
-                There's no limit to what we can achieve when working together.
-                By getting everyone involved, more people will actively promote
-                the cause.
+              There's no limit to what we can achieve when working together. By
+              getting everyone involved, more people will actively promote the
+              cause.
             </Text>
           </View>
         </Swiper>

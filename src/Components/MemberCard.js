@@ -8,47 +8,44 @@ import moment from 'moment';
 import {LAUNCHED_STATES} from '~/Services/ProposalService';
 import {string, array, number, shape, object, oneOfType} from 'prop-types';
 
-const MemberCard = ({
-  userInfo,
-  proposalInfo = null,
-}) => {
-
+const MemberCard = ({userInfo, proposalInfo = null}) => {
   const renderRightContainer = () => {
-
     if (proposalInfo) {
-      const closingAt = proposalInfo?.createdAt.seconds + proposalInfo?.countdownPeriod;
+      const closingAt =
+        proposalInfo?.createdAt.seconds + proposalInfo?.countdownPeriod;
       const remainingSeconds = closingAt - moment().unix();
 
       return (
         <View style={styles.rightContainer}>
           <View style={{alignItems: 'flex-end'}}>
-            {proposalInfo.funding > 0 &&
+            {proposalInfo.funding > 0 && (
               <Text style={text.h2Black}>
                 {`$${proposalInfo.funding / 100}`}
               </Text>
-            }
+            )}
 
             {/* Hide the time if the proposal is expired or new */}
-            {(remainingSeconds > 0 && !LAUNCHED_STATES.includes(proposalInfo?.state)) && (
+            {remainingSeconds > 0 &&
+              !LAUNCHED_STATES.includes(proposalInfo?.state) &&
               // If the remaining time is more than 1 day show the date,
               // if it is less show countdown till it
-              remainingSeconds > 24 * 60 * 60
-                ? (
-                  <Text style={{...text.runningblack, width: '100%'}}>{moment.unix(closingAt).format('dddd, h:mm')}</Text>
-                ) : (
-                  <CountDown
-                    digitTxtStyle={text.smallGreyText}
-                    separatorStyle={text.smallGreyText}
-                    timeLabels={false}
-                    showSeparator={true}
-                    digitStyle={{
-                      height: 'auto',
-                      width: 'auto',
-                    }}
-                    until={remainingSeconds}
-                  />
-                )
-            )}
+              (remainingSeconds > 24 * 60 * 60 ? (
+                <Text style={{...text.runningblack, width: '100%'}}>
+                  {moment.unix(closingAt).format('dddd, h:mm')}
+                </Text>
+              ) : (
+                <CountDown
+                  digitTxtStyle={text.smallGreyText}
+                  separatorStyle={text.smallGreyText}
+                  timeLabels={false}
+                  showSeparator={true}
+                  digitStyle={{
+                    height: 'auto',
+                    width: 'auto',
+                  }}
+                  until={remainingSeconds}
+                />
+              ))}
           </View>
         </View>
       );
@@ -58,8 +55,8 @@ const MemberCard = ({
         const memberCreatedDate = new Date(userInfo.createdAt.seconds * 1000);
         memberCreatedDateInfo = memberCreatedDate
           ? `${
-            monthShortNames[memberCreatedDate.getMonth()]
-          } ${memberCreatedDate.getDate()} `
+              monthShortNames[memberCreatedDate.getMonth()]
+            } ${memberCreatedDate.getDate()} `
           : '';
       } else {
         memberCreatedDateInfo = 'NOT app user';
@@ -67,8 +64,7 @@ const MemberCard = ({
 
       return (
         <View style={styles.rightContainer}>
-          <Text
-            style={{...text.smallGreyText,marginTop: 2}}>
+          <Text style={{...text.smallGreyText, marginTop: 2}}>
             {memberCreatedDateInfo}
           </Text>
         </View>
@@ -84,17 +80,17 @@ const MemberCard = ({
           ...layout.content,
           ...layout.flexStart,
           alignContent: 'flex-start',
-          flex: 1.9, flexWrap: 'wrap',
+          flex: 1.9,
+          flexWrap: 'wrap',
         }}>
-        <Text
-          style={styles.displayName}>
+        <Text style={styles.displayName}>
           {userInfo?.displayName || 'Unknown user'}
         </Text>
-        {proposalInfo &&
+        {proposalInfo && (
           <Text style={{...text.runninglightGray, width: '100%'}}>
             {moment.unix(proposalInfo.createdAt.seconds).fromNow()}
           </Text>
-        }
+        )}
       </View>
       {renderRightContainer()}
     </View>
@@ -108,16 +104,13 @@ MemberCard.propTypes = {
     createdAt: object,
     displayName: string,
     daos: array,
-  }) ,
+  }),
   proposalInfo: shape({
     type: string,
     closingAt: number,
     description: shape({
-      funding: oneOfType([
-        number,
-        string,
-      ]),
-    }) ,
+      funding: oneOfType([number, string]),
+    }),
     fundingRequest: shape({
       amount: number,
     }),

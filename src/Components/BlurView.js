@@ -18,5 +18,4 @@ BlurView.propTypes = {
   isBlurring: bool,
 };
 
-
 export default BlurView;

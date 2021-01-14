@@ -26,16 +26,29 @@ const {width} = Dimensions.get('window');
 
 const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
 const MAX_CONTRIBUTION = ['3000', '500'];
-const SAFETY_PERIOD_TAB_VALUES = [moment().add('7', 'days').unix(), moment().add('1', 'months').unix()];
+const SAFETY_PERIOD_TAB_VALUES = [
+  moment().add('7', 'days').unix(),
+  moment().add('1', 'months').unix(),
+];
 
-const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
-
+const CreateStep2 = ({
+  navigation,
+  route: {
+    params: {formStores},
+  },
+}) => {
   const fundingFormStore = formStores.fundingFormStore;
-  const getContributionValue = () => fundingFormStore.getFormField(CreateCommonForm.CONTRIBUTION)?.value;
-  const getDeadlineValue = () => fundingFormStore.getFormField(CreateCommonForm.DEADLINE)?.value;
+  const getContributionValue = () =>
+    fundingFormStore.getFormField(CreateCommonForm.CONTRIBUTION)?.value;
+  const getDeadlineValue = () =>
+    fundingFormStore.getFormField(CreateCommonForm.DEADLINE)?.value;
 
-  const initialContributionIndex = getContributionValue() ? CONTRIBUTION_TAB_VALUES.indexOf(getContributionValue()) : 0;
-  const initialSegmentedIndex = getDeadlineValue() ? getDeadlineValue().index : 0;
+  const initialContributionIndex = getContributionValue()
+    ? CONTRIBUTION_TAB_VALUES.indexOf(getContributionValue())
+    : 0;
+  const initialSegmentedIndex = getDeadlineValue()
+    ? getDeadlineValue().index
+    : 0;
 
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -45,12 +58,19 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
    * contributionIndex === 0 => One-Time
    * contributionIndex === 1 => Monthly
    */
-  const [contributionIndex, setContributionIndex] = useState(initialContributionIndex);
+  const [contributionIndex, setContributionIndex] = useState(
+    initialContributionIndex,
+  );
 
-  const [pickDate, setPickDate] = useState(initialSegmentedIndex === 2 && getDeadlineValue()?.value ? moment.unix(getDeadlineValue()?.value).toDate() : null);
+  const [pickDate, setPickDate] = useState(
+    initialSegmentedIndex === 2 && getDeadlineValue()?.value
+      ? moment.unix(getDeadlineValue()?.value).toDate()
+      : null,
+  );
   const [show, setShow] = useState(false);
 
-  const minimumFieldRules = (currContribIndex) => `required|integer|min:5|max:${MAX_CONTRIBUTION[currContribIndex]}`;
+  const minimumFieldRules = (currContribIndex) =>
+    `required|integer|min:5|max:${MAX_CONTRIBUTION[currContribIndex]}`;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -62,8 +82,16 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
   }, [scrollY]);
 
   useEffect(() => {
-    fundingFormStore.registerFormField(CreateCommonForm.DEADLINE, 'required', getDeadlineValue());
-    fundingFormStore.registerFormField(CreateCommonForm.CONTRIBUTION, 'required', getContributionValue());
+    fundingFormStore.registerFormField(
+      CreateCommonForm.DEADLINE,
+      'required',
+      getDeadlineValue(),
+    );
+    fundingFormStore.registerFormField(
+      CreateCommonForm.CONTRIBUTION,
+      'required',
+      getContributionValue(),
+    );
     onTabChange(initialSegmentedIndex, true); // pre-select 1 week at first render
     onContributionTabChange(initialContributionIndex, true); // pre-select
   }, []);
@@ -71,16 +99,24 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
   const onContributionTabChange = (index, isInitialSelect = false) => {
     fundingFormStore.fieldChanged(
       CreateCommonForm.CONTRIBUTION,
-      CONTRIBUTION_TAB_VALUES[index]
+      CONTRIBUTION_TAB_VALUES[index],
     );
     setContributionIndex(index);
-    fundingFormStore.updateFieldValidationRule(CreateCommonForm.MINIMUM, null, minimumFieldRules(index), !isInitialSelect);
+    fundingFormStore.updateFieldValidationRule(
+      CreateCommonForm.MINIMUM,
+      null,
+      minimumFieldRules(index),
+      !isInitialSelect,
+    );
   };
 
   const onDatePickerChange = (date) => {
     const momentObj = moment(date || {});
     const currDate = momentObj.unix();
-    fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {value: (currDate), index: 2});
+    fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {
+      value: currDate,
+      index: 2,
+    });
     setPickDate(momentObj.toDate());
   };
 
@@ -88,7 +124,10 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
     if (index === 2) {
       !isInitialCall && setShow(true);
     } else {
-      fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {value: SAFETY_PERIOD_TAB_VALUES[index], index});
+      fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {
+        value: SAFETY_PERIOD_TAB_VALUES[index],
+        index,
+      });
       setShow(false);
     }
     setSegmentedIndex(index);
@@ -98,10 +137,10 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
     if (pickDate) {
       setShow(false);
     } else {
-      fundingFormStore.fieldChanged(
-        CreateCommonForm.DEADLINE,
-        {value: moment({}).unix(), index: 2}
-      );
+      fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {
+        value: moment({}).unix(),
+        index: 2,
+      });
       setPickDate(moment().toDate());
       setShow(false);
     }
@@ -122,13 +161,9 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
       onBackdropPress={() => setShow(false)}
       style={styles.view}>
       <View style={{backgroundColor: 'white', alignItems: 'center'}}>
-        <View
-          style={styles.modalView}>
+        <View style={styles.modalView}>
           <TouchableOpacity onPress={onDone}>
-            <Text
-              style={styles.done}>
-              Done
-            </Text>
+            <Text style={styles.done}>Done</Text>
           </TouchableOpacity>
         </View>
         <DatePicker
@@ -152,10 +187,7 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
         flex: 1,
         backgroundColor: 'white',
       }}>
-      <CreateStepNavigation
-        navigation={navigation}
-        title="General info"
-      />
+      <CreateStepNavigation navigation={navigation} title="General info" />
       <CreateStepDotHeader
         title="Funding"
         currentIndex={2}
@@ -171,10 +203,10 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
           padding: 24,
         }}
         scrollEventThrottle={16}
-        onScroll={Animated.event([
-          {nativeEvent: {contentOffset: {y: scrollY}}},
-        ],
-        {useNativeDriver: false})}>
+        onScroll={Animated.event(
+          [{nativeEvent: {contentOffset: {y: scrollY}}}],
+          {useNativeDriver: false},
+        )}>
         <CreateStepHeader currentIndex={1} />
 
         <View
@@ -206,16 +238,24 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
           />
           <TextInputFieldWithIcon
             key={contributionIndex}
-            value={fundingFormStore.getFormField(CreateCommonForm.MINIMUM)?.value}
+            value={
+              fundingFormStore.getFormField(CreateCommonForm.MINIMUM)?.value
+            }
             iconName="dollar"
             iconSize={12}
             iconStyle={{paddingRight: 5}}
             iconEmptyColor={colors.grey3}
             iconFillColor={colors.grey}
             viewStyle={{alignSelf: 'stretch'}}
-            label={(
-              <React.Fragment>Minimum <Text style={styles.boldText}>{CONTRIBUTION_TAB_VALUES[contributionIndex]}</Text> contribution (min. $5)</React.Fragment>
-            )}
+            label={
+              <React.Fragment>
+                Minimum{' '}
+                <Text style={styles.boldText}>
+                  {CONTRIBUTION_TAB_VALUES[contributionIndex]}
+                </Text>{' '}
+                contribution (min. $5)
+              </React.Fragment>
+            }
             subLabel="Set the minimum amount that new members will have to contribute in order to join this Common."
             infoLabel="Required"
             autoCapitalize="none"
@@ -226,8 +266,9 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
               name: CreateCommonForm.MINIMUM,
               formStore: fundingFormStore,
               validateRule: minimumFieldRules(contributionIndex),
-              customErrorMessage:
-              `The amount must be at least $5 and at most $${parseFloat(MAX_CONTRIBUTION[contributionIndex]).toLocaleString('en')}.`,
+              customErrorMessage: `The amount must be at least $5 and at most $${parseFloat(
+                MAX_CONTRIBUTION[contributionIndex],
+              ).toLocaleString('en')}.`,
             }}
           />
           <View style={{marginTop: 24}}>
@@ -238,7 +279,9 @@ const CreateStep2 = ({navigation, route: {params: {formStores}}}) => {
               </Text>
             </View>
             <Text style={styles.info2}>
-              Set a period in which members will not be able to create proposals and allocate the funds. This will allow more members to join and participate in the decision-making process.
+              Set a period in which members will not be able to create proposals
+              and allocate the funds. This will allow more members to join and
+              participate in the decision-making process.
             </Text>
 
             <SegmentedControlTab

@@ -56,8 +56,7 @@ const CreateStepHeader = ({currentIndex}) => {
         }}
       />
       {/* <TouchableOpacity onPress={() => setCurrentIndex(0)}> */}
-      <View
-        style={currentIndex === 0 ? styles.oval : styles.ovalDone}>
+      <View style={currentIndex === 0 ? styles.oval : styles.ovalDone}>
         <Icon
           name={currentIndex === 0 ? 'dao-general-info-24' : 'check'}
           size={currentIndex > 0 ? 16 : 24}

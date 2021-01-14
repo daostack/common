@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, SafeAreaView, ScrollView, Animated, Dimensions} from 'react-native';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  Animated,
+  Dimensions,
+} from 'react-native';
 import {bool, func, object, shape, string} from 'prop-types';
 
 import {CommonActions} from '@react-navigation/native';
@@ -17,11 +24,20 @@ import MembershipRequest from '../MembershipRequest';
 import {testCard} from '~/Config';
 import {inject} from 'mobx-react';
 import {VALIDATION_RULES} from '~/FormStores/ValidationRules/billingDetailsRules';
+import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
+import {formatNumber} from '~/Util/FormatUtil';
 
 const BillingDetailsStep = ({navigation, route, userStore}) => {
-  const {skipFirstStep, currCommon, currDaoId, refreshFeed, formStores} = route.params;
+  const {
+    skipFirstStep,
+    currCommon,
+    currDaoId,
+    refreshFeed,
+    formStores,
+  } = route.params;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
-  const personalContributionFormStore = formStores.personalContributionFormStore;
+  const personalContributionFormStore =
+    formStores.personalContributionFormStore;
   const {width} = Dimensions.get('window');
 
   const [scrollY] = useState(new Animated.Value(0));
@@ -43,28 +59,33 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
 
   const navigateToPaymentDetailsStep = () => {
     if (billingDetailsFormStore.isFormValid()) {
-      navigation.dispatch(CommonActions.navigate({
-        name: 'PaymentDetailsStep',
-        params: {
-          formStores,
-          currDaoId: currDaoId,
-          currCommon: currCommon,
-          skipFirstStep: skipFirstStep,
-          refreshFeed,
-        },
-      }));
+      navigation.dispatch(
+        CommonActions.navigate({
+          name: 'PaymentDetailsStep',
+          params: {
+            formStores,
+            currDaoId: currDaoId,
+            currCommon: currCommon,
+            skipFirstStep: skipFirstStep,
+            refreshFeed,
+          },
+        }),
+      );
     }
   };
 
-
   const subtitle = (style) => (
     <Text style={style}>
-      You are contributing ${personalContributionFormStore.form.fields.amount?.value?.value}
-
+      You are contributing $
+      {formatNumber(
+        personalContributionFormStore.getFormField(
+          RequestToJoinForm.FIELD_AMOUNT,
+        )?.value?.value,
+      )}
       <Text style={{...font.primary.bold}}>
-        {' '}({isMonthly ? 'monthly' : 'one time'}){' '}
+        {' '}
+        ({isMonthly ? 'monthly' : 'one time'}){' '}
       </Text>
-
       to this common
     </Text>
   );
@@ -76,12 +97,8 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
         style={{
           backgroundColor: 'white',
           flex: 1,
-        }}
-      >
-        <CreateStepNavigation
-          navigation={navigation}
-          title={currCommon.name}
-        />
+        }}>
+        <CreateStepNavigation navigation={navigation} title={currCommon.name} />
 
         <CreateStepDotHeader
           title="Billing Details"
@@ -101,16 +118,16 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
             padding: 24,
           }}
           scrollEventThrottle={16}
-          onScroll={
-            Animated.event([ {
-              nativeEvent: {
-                contentOffset: {y: scrollY},
+          onScroll={Animated.event(
+            [
+              {
+                nativeEvent: {
+                  contentOffset: {y: scrollY},
+                },
               },
-            },
             ],
-            {useNativeDriver: false})
-          }
-        >
+            {useNativeDriver: false},
+          )}>
           <MembershipRequest />
 
           <CreateStepHeader
@@ -124,19 +141,26 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
               width: width * 0.8,
               backgroundColor: 'white',
             }}>
-            <RequestStepHeaderTitle title="Billing Details" subtitle={subtitle} />
+            <RequestStepHeaderTitle
+              title="Billing Details"
+              subtitle={subtitle}
+            />
 
             <TextInputField
               editable
               label="Name on Card"
-              value={testCard ? 'Thor Odinson' : billingDetailsFormStore.getFormField(BillingDetailsConstants.City)?.value || userStore.userInfo.displayName}
+              value={
+                testCard
+                  ? 'Thor Odinson'
+                  : billingDetailsFormStore.getFormField(
+                      BillingDetailsConstants.City,
+                    )?.value || userStore.userInfo.displayName
+              }
               autoCapitalize="words"
               validation={{
                 name: BillingDetailsConstants.CardName,
                 formStore: billingDetailsFormStore,
-                validateRule: [
-                  'required',
-                  VALIDATION_RULES.FIRST_LAST_NAME],
+                validateRule: ['required', VALIDATION_RULES.FIRST_LAST_NAME],
                 displayName: 'full name',
               }}
             />
@@ -144,7 +168,13 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
             <TextInputField
               editable
               label="City"
-              value={testCard ? 'Metropolis' : billingDetailsFormStore.getFormField(BillingDetailsConstants.City)?.value}
+              value={
+                testCard
+                  ? 'Metropolis'
+                  : billingDetailsFormStore.getFormField(
+                      BillingDetailsConstants.City,
+                    )?.value
+              }
               autoCapitalize="words"
               validation={{
                 name: BillingDetailsConstants.City,
@@ -170,7 +200,13 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
             <TextInputField
               editable
               label="Address"
-              value={testCard ? '221B Baker Street' : billingDetailsFormStore.getFormField(BillingDetailsConstants.Address)?.value}
+              value={
+                testCard
+                  ? '221B Baker Street'
+                  : billingDetailsFormStore.getFormField(
+                      BillingDetailsConstants.Address,
+                    )?.value
+              }
               autoCapitalize="words"
               validation={{
                 name: BillingDetailsConstants.Address,
@@ -180,14 +216,19 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
               }}
             />
 
-            {(country === 'US'
-                || country === 'CA') && (
+            {(country === 'US' || country === 'CA') && (
               <TextInputField
                 editable
                 label="District"
                 maxLength={2}
                 autoCapitalize="characters"
-                value={testCard ? 'TX' : billingDetailsFormStore.getFormField(BillingDetailsConstants.District)?.value}
+                value={
+                  testCard
+                    ? 'TX'
+                    : billingDetailsFormStore.getFormField(
+                        BillingDetailsConstants.District,
+                      )?.value
+                }
                 validation={{
                   name: BillingDetailsConstants.District,
                   formStore: billingDetailsFormStore,
@@ -197,14 +238,19 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
               />
             )}
 
-
             {country === 'IL' && (
               <TextInputField
                 editable
                 label="National ID/Passport Number"
                 maxLength={9}
                 autoCapitalize="characters"
-                value={testCard ? '012345678' : billingDetailsFormStore.getFormField(BillingDetailsConstants.ID)?.value}
+                value={
+                  testCard
+                    ? '012345678'
+                    : billingDetailsFormStore.getFormField(
+                        BillingDetailsConstants.ID,
+                      )?.value
+                }
                 validation={{
                   name: BillingDetailsConstants.ID,
                   formStore: billingDetailsFormStore,
@@ -221,7 +267,13 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
             <TextInputField
               editable
               label="Postal Code"
-              value={testCard ? '31415PI' : billingDetailsFormStore.getFormField(BillingDetailsConstants.PostalCode)?.value}
+              value={
+                testCard
+                  ? '31415PI'
+                  : billingDetailsFormStore.getFormField(
+                      BillingDetailsConstants.PostalCode,
+                    )?.value
+              }
               validation={{
                 name: BillingDetailsConstants.PostalCode,
                 formStore: billingDetailsFormStore,

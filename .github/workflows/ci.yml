@@ -32,7 +32,7 @@ jobs:
   #        path: android/app/build/outputs/apk/release/
 
 
-  eslint:
+  lintAndTest:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout files
@@ -51,6 +51,9 @@ jobs:
       - name: Install dependencies
         run: yarn
 
+      - name: Test
+        run: yarn test
+        
       - name: Lint
         uses: bradennapier/eslint-plus-action@v3.4.2
         with:
