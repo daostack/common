@@ -13,6 +13,8 @@ const EditRules: React.FC<InferProps<typeof EditRules.propTypes>> = ({
   <View style={styles.body}>
     <Text style={styles.subtitle}>Define your rules of conduct</Text>
 
+    <View style={styles.divider} />
+
     <Text style={styles.title}>Rules of conduct</Text>
     <Text
       style={{
@@ -69,6 +71,11 @@ const styles = StyleSheet.create({
     ...font.primary.bold,
     ...font.fontSize(3),
     ...font.lineHeight(2),
+  },
+  divider: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderColor: colors.grey4,
   },
 });
 
