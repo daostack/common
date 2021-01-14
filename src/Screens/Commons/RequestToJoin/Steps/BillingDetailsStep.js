@@ -74,14 +74,14 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
     }
   };
 
+  const contributionAmount = formatNumber(
+    personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)
+      ?.value?.value,
+  );
+
   const subtitle = (style) => (
     <Text style={style}>
-      You are contributing $
-      {formatNumber(
-        personalContributionFormStore.getFormField(
-          RequestToJoinForm.FIELD_AMOUNT,
-        )?.value?.value,
-      )}
+      You are contributing ${contributionAmount ? contributionAmount : 0}
       <Text style={{...font.primary.bold}}>
         {' '}
         ({isMonthly ? 'monthly' : 'one time'}){' '}
