@@ -48,10 +48,35 @@ export const subscribeToUser = (uid: string, callback: userLoadCallbackFn) =>
 export const getUserById = async (userId: string): Promise<IUserEntity> => {
   if (!userId) {
     throw new Error(
-      'Method getUserById has a required param userId, but it was not provided',
+      'User Id (userId) is required parameter, but it was not provided',
     );
   }
   const user = await UserCollection.doc(userId).get();
-  console.log('USER -> ', user);
   return user.data() as IUserEntity;
+};
+
+export const addUser = async (
+  authId: string,
+  newUser: IUserEntity,
+): Promise<void> => {
+  if (!authId) {
+    throw new Error(
+      'Authenticator Id (authId) is required parameter, but was not provided.',
+    );
+  }
+
+  return await UserCollection.doc(authId).set(newUser);
+};
+
+export const editUser = async (
+  userId: string,
+  user: IUserEntity,
+): Promise<void> => {
+  if (!userId) {
+    throw new Error(
+      'User Id (userId) is required parameter, but was not provided.',
+    );
+  }
+
+  return await UserCollection.doc(userId).update(user);
 };

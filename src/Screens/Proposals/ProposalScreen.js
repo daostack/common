@@ -25,7 +25,6 @@ import ProposalService from '~/Services/ProposalService';
 import {UserAvatar} from '~/Components';
 import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
-import UserService from '~/Services/UserService';
 import DaoService from '~/Services/DaoService';
 import {observer, inject} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
