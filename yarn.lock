@@ -7107,10 +7107,10 @@ react-native-fast-image@^8.3.4:
   resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-8.3.4.tgz#79edca177e30311b19d59ff335625bcbe22650d7"
   integrity sha512-LpzAdjUphihUpVEBn5fEv5AILe55rHav0YiZroPZ1rumKDhAl4u2cG01ku2Pb7l8sayjTsNu7FuURAlXUUDsow==
 
-react-native-fast-openpgp@^1.6.3:
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/react-native-fast-openpgp/-/react-native-fast-openpgp-1.6.3.tgz#6f78429c35e8142b5c26b71e6a2d6be6c7e978a7"
-  integrity sha512-P9EZoITPM1UgKCgmdKKq/gguQGIZidpeCQM4sVgpcBw7rwGfNDgze9TQDoA3PeY0Tz1gJXhyn+OTSfzCUdQbfw==
+react-native-fast-openpgp@1.5.3:
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/react-native-fast-openpgp/-/react-native-fast-openpgp-1.5.3.tgz#100d5931d910bb5824d490c5ae6ccba1bc1245de"
+  integrity sha512-3pLoKlc2ThB+NWgUmfvPH0FNcIr9wxlk4ugp6bhtryqTJFL0ZKzuz96gRyWnEXp+5HOKdxlTb/BDY52NrMrxqg==
   dependencies:
     extract-zip "^2.0.1"
 
