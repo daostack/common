@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import {observer, inject} from 'mobx-react';
 import {
   Text,
   StyleSheet,
@@ -12,13 +13,12 @@ import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
 import ProposalService from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
-import UserService from '~/Services/UserService';
 import DaoService from '~/Services/DaoService';
 import ProposalApprovalTag from './ProposalApprovalTag';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
-import {string, bool, object} from 'prop-types';
+import {string, bool, object, shape, func} from 'prop-types';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -37,6 +37,7 @@ const ProposalCard = ({
   isSwiper,
   isMember,
   commonInfo,
+  userListStore,
 }) => {
   const [proposalCardInfo, setProposalCardInfo] = useState(false);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
@@ -59,7 +60,7 @@ const ProposalCard = ({
             else {
               funding = currProposalInfo.fundingRequest.amount;
             }
-            const currProposedUser = await UserService.getInstance().getUserById(
+            const currProposedUser = userListStore.getUserById(
               currProposalInfo.proposerId,
             );
             setProposalCardInfo({
@@ -102,7 +103,7 @@ const ProposalCard = ({
           currProposalInfo.id,
           async (updatedProposalInfo) => {
             //RequestToJoin proposal
-            const proposedMemberUser = await UserService.getInstance().getUserById(
+            const proposedMemberUser = await userListStore.getUserById(
               updatedProposalInfo.proposerId,
             );
             let funding = null;
@@ -274,6 +275,9 @@ ProposalCard.propTypes = {
   isSwiper: bool,
   isMember: bool,
   commonInfo: object,
+  userListStore: shape({
+    getUserById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -325,4 +329,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProposalCard;
+export default inject('userListStore')(observer(ProposalCard));

@@ -22,7 +22,6 @@ import {
   MyWallet,
   CreateAccount,
   EditProfile,
-  UserProfileReadMode,
   MyProposals,
   MyCommons,
   CommonAgenda,
@@ -498,10 +497,6 @@ const App = ({userStore, userListStore, bottomSheetStore, navigation}) => {
           component={MyWallet}
         />
         <Stack.Screen name="HUDTest" component={HUDTest} />
-        <Stack.Screen
-          name="UserProfileReadMode"
-          component={UserProfileReadMode}
-        />
         <Stack.Screen
           options={{
             title: 'My Profile',
