@@ -20,8 +20,6 @@ export default class UserListStore extends ListStore<UserModel> {
   getCommonUsersByMembersArray = (
     members: Array<ICommonMember>,
   ): Array<UserModel> => {
-    //commonMembers.map((member) => member.userId);
-
     const dataByIds: Array<UserModel> = [];
     members.forEach((commonMember: ICommonMember) => {
       const user = this.getDataById(commonMember.userId);
