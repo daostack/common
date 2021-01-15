@@ -17,8 +17,8 @@ import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import RequestStepActionButton from '../../RequestStepActionButton';
 
 import * as BillingDetailsConstants from '../../../../Components/Forms/BillingDetailsForm';
-import TextInputField from '../../../../Components/FormFields/TextInputField';
-import {CountrySelectField} from '../../../../Components/FormFields/CountrySelectField';
+import TextInputField from '~/Components/FormFields/TextInputField';
+import {CountrySelectField} from '~/Components/FormFields/CountrySelectField';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
 import {testCard} from '~/Config';
@@ -57,6 +57,10 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
     setHeaderHeight(height);
   }, [scrollY]);
 
+  const onSelectedCountryChange = (selectedCountry) => {
+    setCountry(selectedCountry);
+  };
+
   const navigateToPaymentDetailsStep = () => {
     if (billingDetailsFormStore.isFormValid()) {
       navigation.dispatch(
@@ -74,14 +78,14 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
     }
   };
 
+  const contributionAmount = formatNumber(
+    personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)
+      ?.value?.value,
+  );
+
   const subtitle = (style) => (
     <Text style={style}>
-      You are contributing $
-      {formatNumber(
-        personalContributionFormStore.getFormField(
-          RequestToJoinForm.FIELD_AMOUNT,
-        )?.value?.value,
-      )}
+      You are contributing ${contributionAmount ? contributionAmount : 0}
       <Text style={{...font.primary.bold}}>
         {' '}
         ({isMonthly ? 'monthly' : 'one time'}){' '}
@@ -186,9 +190,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
 
             <CountrySelectField
               label="Country"
-              onChange={(x) => {
-                setCountry(x);
-              }}
+              onChange={onSelectedCountryChange}
               validation={{
                 name: BillingDetailsConstants.Country,
                 formStore: billingDetailsFormStore,

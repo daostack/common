@@ -87,6 +87,7 @@ const PaymentDetailsStep = ({
           },
         });
 
+
         const createdCard = await createCard({
           ...formData,
           ...userInfo,
