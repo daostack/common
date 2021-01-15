@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import EditProfileForm from '~/Components/Forms/EditProfileForm';
 import {colors, text, layout} from '~/Theme';
-import {inject} from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '~/Assets/iconfont/Icon';
 import Loader from '~/Components/Loader';
@@ -92,13 +92,17 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
     bottomSheetStore.hideBottomSheet();
   };
 
-  const renderBody = () => (
-    <View style={styles.body}>
-      <EditProfileForm
-        isFirstOpening={route.params.isFirstOpening}
-        editProfileFormStore={editProfileFormStore}
-      />
-    </View>
+  const EditForm = observer(() =>
+    userStore.userInfo ? (
+      <View style={styles.body}>
+        <EditProfileForm
+          isFirstOpening={route.params.isFirstOpening}
+          editProfileFormStore={editProfileFormStore}
+        />
+      </View>
+    ) : (
+      <Loader />
+    ),
   );
 
   return (
@@ -109,7 +113,7 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
-          {userStore.userInfo ? renderBody() : <Loader />}
+          <EditForm />
         </ScrollView>
 
         <View style={styles.containerRow}>
