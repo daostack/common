@@ -55,20 +55,28 @@ export const getUserById = async (userId: string): Promise<IUserEntity> => {
   return user.data() as IUserEntity;
 };
 
+// TODO: Move addUser and updateUser function in the clould functions project.
 export const addUser = async (
-  authId: string,
+  userId: string,
   newUser: IUserEntity,
 ): Promise<void> => {
-  if (!authId) {
+  if (!userId) {
     throw new Error(
-      'Authenticator Id (authId) is required parameter, but was not provided.',
+      'User Id (userId) is required parameter, but was not provided.',
     );
   }
 
-  return await UserCollection.doc(authId).set(newUser);
+  const userSnapshot = await UserCollection.doc(userId).get();
+  if (userSnapshot.exists) {
+    throw new Error(
+      `User with id ${userId} already exists in users collection.`,
+    );
+  }
+
+  return await UserCollection.doc(userId).set(newUser);
 };
 
-export const editUser = async (
+export const updateUser = async (
   userId: string,
   user: IUserEntity,
 ): Promise<void> => {
