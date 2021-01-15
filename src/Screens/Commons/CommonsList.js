@@ -27,16 +27,24 @@ import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import ProposalService from '~/Services/ProposalService';
 import {CommonActions} from '@react-navigation/native';
 
-const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
-  const [myDaosGroup, setMyDaosGroup] = useState({title: '', data: []});
+const CommonsList = ({
+  navigation,
+  bottomSheetStore,
+  userStore,
+  commonListStore,
+  daoStore,
+}) => {
+  //title: `My Commons (${commonListStore.myCommons.length})`,
+  const myDaosGroup = {title: 'my commons', data: commonListStore.myCommons};
   const [pendingDaosGroup, setPendingDaosGroup] = useState({
     title: '',
     data: [],
   });
-  const [featuredDaosGroup, setFeaturedDaosGroup] = useState({
-    title: '',
-    data: [],
-  });
+  const featuredDaosGroup = {
+    title: 'Featured',
+    data: commonListStore.featuredCommons,
+  };
+
   const [allDaosGroup, setAllDaosGroup] = useState(null);
   const [isSplited, setIsSplited] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
@@ -50,10 +58,10 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
     );
 
     if (featuredList.length > 0) {
-      setFeaturedDaosGroup({
-        title: 'Featured',
-        data: featuredList,
-      });
+      // setFeaturedDaosGroup({
+      //   title: 'Featured',
+      //   data: featuredList,
+      // });
     }
 
     callback([...myDao, ...pendingDao, ...featuredList]);
@@ -66,7 +74,7 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
   ) => {
     try {
       if (daoList.length === 0) {
-        setMyDaosGroup({title: '', data: []});
+        //setMyDaosGroup({title: '', data: []});
         return [];
       }
 
@@ -93,10 +101,10 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
             pendingDao = daoList.filter((dao) => pendingList.includes(dao.id));
 
             if (myDao.length > 0) {
-              setMyDaosGroup({
-                title: `My Commons (${myDao?.length})`,
-                data: myDao,
-              });
+              // setMyDaosGroup({
+              //   title: `My Commons (${myDao?.length})`,
+              //   data: myDao,
+              // });
             }
 
             if (pendingDao.length > 0) {
@@ -150,9 +158,9 @@ const CommonsList = ({navigation, bottomSheetStore, userStore, daoStore}) => {
     setIsSplited(false);
     daoStore.setDaos(null);
     setAllDaosGroup(null);
-    setMyDaosGroup({title: '', data: []});
+    // setMyDaosGroup({title: '', data: []});
     setPendingDaosGroup({title: '', data: []});
-    setFeaturedDaosGroup({title: '', data: []});
+    // setFeaturedDaosGroup({title: '', data: []});
 
     Cache.getAsync(CacheKey.AllDaoCache).then((jsonValue) => {
       if (jsonValue === null) {
@@ -319,6 +327,7 @@ CommonsList.propTypes = {
   bottomSheetStore: object.isRequired,
   userStore: object.isRequired,
   daoStore: object.isRequired,
+  commonListStore: object.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -355,5 +364,6 @@ const styles = StyleSheet.create({
 export default inject(
   'bottomSheetStore',
   'userStore',
+  'commonListStore',
   'daoStore',
 )(observer(CommonsList));

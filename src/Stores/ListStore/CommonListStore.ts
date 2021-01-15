@@ -1,18 +1,26 @@
 import {decorate, computed} from 'mobx';
 import ListStore from './ListStore';
-import {subscribeToAllUsers} from '~/Services/ListServices/UserListService';
+import {subscribeToAllCommons} from '~/Services/ListServices/CommonListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {CommonModel} from '../Models/CommonModel';
 import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {DAO_REGISTERED} from '~/Firebase/Databasee';
 
 export default class CommonListStore extends ListStore<CommonModel> {
   rootStore: RootStore;
 
+  constructor(rootStore: RootStore) {
+    super();
+    this.rootStore = rootStore;
+  }
+
   // Computed fields
   get myCommons() {
-    // TODO: filter data
-    return super.data;
+    //console.log('MY COMMONS -> ', super.getDataArray);
+    return super.getDataArray?.filter((common: CommonModel) =>
+      this.rootStore.authStore.isDaoMember(common?.members),
+    );
   }
 
   get pendingCommons() {
@@ -21,13 +29,11 @@ export default class CommonListStore extends ListStore<CommonModel> {
   }
 
   get featuredCommons() {
-    // TODO: filter data
-    return super.data;
-  }
-
-  constructor(rootStore: RootStore) {
-    super();
-    this.rootStore = rootStore;
+    // return super.data;
+    return super.getDataArray?.filter(
+      (common: CommonModel) =>
+        !this.myCommons.includes(common) && common.register === DAO_REGISTERED,
+    );
   }
 
   // Data consuming methods
@@ -36,7 +42,7 @@ export default class CommonListStore extends ListStore<CommonModel> {
 
   //Actions
   subscribeToAllCommons = (): FirestoreUnsubscribeFn =>
-    subscribeToAllUsers(this._updateCommonList);
+    subscribeToAllCommons(this._updateCommonList);
 
   // Private function
   _updateCommonList = (updatedUserList: Array<ICommonEntity>) => {

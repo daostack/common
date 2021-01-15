@@ -7,6 +7,7 @@ import {
   get,
   ObservableMap,
   computed,
+  values,
 } from 'mobx';
 export default class ListStore<IEntity> {
   data: ObservableMap<string, IEntity>;
@@ -18,6 +19,10 @@ export default class ListStore<IEntity> {
   // Computed
   get isEmpty(): boolean {
     return keys(this.data).length > 0;
+  }
+
+  get getDataArray(): readonly IEntity[] {
+    return values(this.data);
   }
 
   setData(id: string, modelStore: IEntity) {
@@ -35,6 +40,7 @@ decorate(ListStore, {
   data: observable,
   // Computed
   isEmpty: computed,
+  getDataArray: computed,
 
   // Actions
   setData: action,

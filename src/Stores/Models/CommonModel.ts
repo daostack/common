@@ -12,13 +12,16 @@ import {filterObjectByKeys} from '~/Util';
 import {BaseModel} from './BaseModel';
 
 export const commonInfoFields = [
-  'uid',
-  'firstName',
-  'lastName',
-  'email',
-  'photoURL',
-  'updatedAt',
-  'createdAt',
+  'name',
+  'image',
+  'balance',
+  'raised',
+  'fundingGoalDeadline',
+  'members',
+  'rules',
+  'links',
+  'metadata',
+  'register',
 ];
 
 export class CommonModel extends BaseModel<ICommonEntity> {
@@ -74,9 +77,9 @@ decorate(CommonModel, {
   balance: observable,
   raised: observable,
   fundingGoalDeadline: observable,
-  members: observable.array,
-  rules: observable.array,
-  links: observable.array,
+  members: observable,
+  rules: observable,
+  links: observable,
   metadata: observable,
   register: observable,
 

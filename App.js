@@ -80,7 +80,13 @@ if (Platform.OS === 'android') {
   }
 }
 
-const App = ({userStore, userListStore, bottomSheetStore, navigation}) => {
+const App = ({
+  userStore,
+  userListStore,
+  commonListStore,
+  bottomSheetStore,
+  navigation,
+}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
   //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
@@ -108,9 +114,11 @@ const App = ({userStore, userListStore, bottomSheetStore, navigation}) => {
   }, []);
 
   useEffect(() => {
-    const unsubscribeCommonUsers = userListStore.subscribeToAllUsers();
+    const unsubscribeUsers = userListStore.subscribeToAllUsers();
+    const unsubscribeCommons = commonListStore.subscribeToAllCommons();
     return () => {
-      unsubscribeCommonUsers && unsubscribeCommonUsers();
+      unsubscribeUsers && unsubscribeUsers();
+      unsubscribeCommons && unsubscribeCommons();
     };
   }, []);
 
@@ -570,6 +578,9 @@ App.propTypes = {
   userListStore: shape({
     subscribeToAllUsers: func,
   }),
+  commonListStore: shape({
+    subscribeToAllCommons: func,
+  }),
   bottomSheetStore: shape({
     isVisible: bool,
     showBottomSheet: func,
@@ -592,4 +603,5 @@ export default inject(
   'userStore',
   'bottomSheetStore',
   'userListStore',
+  'commonListStore',
 )(observer(App));

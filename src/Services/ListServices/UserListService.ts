@@ -1,4 +1,4 @@
-import {UserCollection} from '~/Firebase/Databasee/Collections/UsersCollection';
+import {UsersCollection} from '~/Firebase/Databasee/Collections/UsersCollection';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 
 export type userListLoadCallbackFn = (
@@ -10,7 +10,7 @@ export const subscribeToCommonUsers = (
   commonId: string,
   callback: userListLoadCallbackFn,
 ) =>
-  UserCollection.where('').onSnapshot((snapshot: any) => {
+  UsersCollection.where('').onSnapshot((snapshot: any) => {
     let userList = [];
 
     // TODO: Implement that method when we have commons property in the user document.
@@ -22,7 +22,7 @@ export const subscribeToCommonUsers = (
   });
 
 export const subscribeToAllUsers = (callback: userListLoadCallbackFn) =>
-  UserCollection.onSnapshot((snapshot: any) => {
+  UsersCollection.onSnapshot((snapshot: any) => {
     let userList = [];
 
     // TODO: Make better handling of changes with docChanges()
@@ -34,7 +34,7 @@ export const subscribeToAllUsers = (callback: userListLoadCallbackFn) =>
   });
 
 export const subscribeToUser = (uid: string, callback: userLoadCallbackFn) =>
-  UserCollection.doc(uid).onSnapshot((snapshot: any) => {
+  UsersCollection.doc(uid).onSnapshot((snapshot: any) => {
     let user: IUserEntity | null = null;
 
     // TODO: Make better handling of changes with docChanges()
@@ -51,7 +51,7 @@ export const getUserById = async (userId: string): Promise<IUserEntity> => {
       'Method getUserById has a required param userId, but it was not provided',
     );
   }
-  const user = await UserCollection.doc(userId).get();
+  const user = await UsersCollection.doc(userId).get();
   console.log('USER -> ', user);
   return user.data() as IUserEntity;
 };
