@@ -613,7 +613,7 @@ PODS:
     - React-Core
   - react-native-document-picker (4.1.0):
     - React-Core
-  - react-native-fast-openpgp (1.6.3):
+  - react-native-fast-openpgp (1.5.3):
     - React
   - react-native-image-picker (2.3.1):
     - React
@@ -1084,7 +1084,7 @@ SPEC CHECKSUMS:
   react-native-config: d8b45133fd13d4f23bd2064b72f6e2c08b2763ed
   react-native-date-picker: 5b66e04e7ed02478feb77a41d254ba24f120f956
   react-native-document-picker: d870e0a41510b241d5b764e7a2b5ccf129af7967
-  react-native-fast-openpgp: c3430242643acd0756c09485a2b873305465b907
+  react-native-fast-openpgp: 143b3dde8e6f520e5cb0b12fa54550d06e85406e
   react-native-image-picker: 6a850c41f57f0848d918c2a77aedd7aa272ffa30
   react-native-netinfo: 0212ce8604e88edf686f1481b925b17a42a52449
   react-native-pdf: 4b5a9e4465a6a3b399e91dc4838eb44ddf716d1f

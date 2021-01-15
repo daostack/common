@@ -6,12 +6,11 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import {string, shape, object} from 'prop-types';
+import {string, shape, object, func} from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
 import {colors, sizeM, font, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import UserService from '~/Services/UserService';
 import moment from 'moment';
 import NotificationService from '~/Services/NotificationService';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
@@ -21,10 +20,16 @@ import {CommonActions} from '@react-navigation/native';
 
 const {width} = Dimensions.get('window');
 
-const DiscussionCard = ({data, commonId, navigation, bottomSheetStore}) => {
+const DiscussionCard = ({
+  data,
+  commonId,
+  navigation,
+  bottomSheetStore,
+  userListStore,
+}) => {
   //when will data.owner be not undefined?
   const discussionId = data.id;
-  const [user, setUser] = useState({});
+  const user = userListStore.getUserById(data.ownerId);
   const [msgCount, setMsgCount] = useState(0);
 
   const navigateToDiscussion = () => {
@@ -38,19 +43,6 @@ const DiscussionCard = ({data, commonId, navigation, bottomSheetStore}) => {
     });
     navigation.dispatch(navigate);
   };
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const userData = await UserService.getInstance().getUserById(
-        data.ownerId,
-      );
-      if (userData) {
-        // logger.log('userData', userData);
-        setUser(userData);
-      }
-    };
-    fetchUser();
-  }, [data]);
 
   useEffect(() => {
     const unsubscribe = db
@@ -165,6 +157,9 @@ DiscussionCard.propTypes = {
   commonId: string,
   navigation: object.isRequired,
   bottomSheetStore: object.isRequired,
+  userListStore: shape({
+    getUserById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -291,4 +286,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(observer(DiscussionCard));
+export default inject(
+  'bottomSheetStore',
+  'userListStore',
+)(observer(DiscussionCard));

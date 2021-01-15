@@ -2,7 +2,7 @@ import {firebaseWebClientId} from '~/Config';
 
 // Firebase imports
 import {auth} from '~/Firebase';
-import UserService from './UserService';
+import {addUser, updateUser} from '~/Services/ListServices/UserListService';
 
 // Google imports
 import {GoogleSignin} from '@react-native-community/google-signin';
@@ -121,7 +121,7 @@ export default class AuthService {
     const currentUser = await auth().currentUser;
     currentUser.updateProfile(userData);
 
-    return await UserService.getInstance().editUser(currentUser.uid, {
+    return await updateUser(currentUser.uid, {
       ...publicData,
       ...userData,
     });
@@ -151,7 +151,7 @@ export default class AuthService {
       uid: user.uid,
     };
 
-    await UserService.getInstance().addUser(user.uid, userPublicData);
+    await addUser(user.uid, userPublicData);
     return userPublicData;
   }
 
