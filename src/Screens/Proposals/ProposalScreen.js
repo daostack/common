@@ -76,7 +76,11 @@ const ProposalScreen = ({
     showBottomVotingButtonsContainer,
     setShowBottomVotingButtonsContainer,
   ] = useState(false);
-  const [showPaymentStatus, setShowPaymentStatus] = useState(false);
+  const [showPaymentStatus, setShowPaymentStatus] = useState(
+    paymentState === PROPOSAL_PAYMENT_STATE.PENDING ||
+      paymentState === PROPOSAL_PAYMENT_STATE.NOT_ATTEMPTED ||
+      paymentState === PROPOSAL_PAYMENT_STATE.FAILED,
+  );
 
   const renderVoting =
     proposalScreenInfo?.proposalInfo &&
@@ -397,11 +401,12 @@ const ProposalScreen = ({
     }
   };
 
-  const paymentStatusModal = () =>
+  const paymentStatusModal = () => {
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.PAYMENT_STATUS, {
       proposerName: proposalScreenInfo?.proposedUser?.displayName,
       paymentState: proposalScreenInfo?.proposalInfo?.paymentState,
     });
+  };
 
   const renderVotingButtons = (reference) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
