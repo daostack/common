@@ -649,11 +649,11 @@ const CommonProfile = ({
               onPress={openCommonOptions}>
               <BlurView
                 style={{
-                  padding: 5,
+                  padding: 6,
                   borderRadius: 15,
                 }}
                 isBlurring={dark}>
-                <Icon name="menu1" size={32} color={dark ? 'black' : 'white'} />
+                <Icon name="menu1" size={30} color={dark ? 'black' : 'white'} />
               </BlurView>
             </TouchableOpacity>
           )}

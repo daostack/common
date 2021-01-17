@@ -81,7 +81,7 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
 
   const onFormSubmitEnd = async (updatedCommon) => {
     try {
-      await daoStore.updateDaoInfo(updatedCommon);
+      await daoStore.updateDaoInfo(updatedCommon, userStore.userInfo.uid);
       Toast.done('Your Common is updated');
     } catch (err) {
       Toast.error('Could not update your Common');

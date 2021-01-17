@@ -48,10 +48,21 @@ class DaoStore {
     }
     this.daos = daoArray;
   };
-  updateDaoInfo = async (updateCommonInfo) => {
+  /**
+   * This function is updating the common in the firebase with the new changes
+   * and the dao in the cache
+   * (TODO when we start using mobx persist, we won't need this)
+   * @param  updateCommonInfo - a common object with new changes
+   * @param  changedBy        - the user who is responsible for the change
+   * @return                  - response returned from the updateCommon call
+   */
+  updateDaoInfo = async (updateCommonInfo, changedBy) => {
     try {
-      const updateResponse = await DaoService.getInstance().editDao(
-        updateCommonInfo,
+      const updateResponse = await DaoService.getInstance().updateCommon(
+        {
+          newCommon: updateCommonInfo,
+          changedBy,
+        },
       );
       Cache.set(updateCommonInfo.id, updateCommonInfo);
       return updateResponse;

@@ -123,8 +123,8 @@ export default class DaoService {
     }
   }
 
-  editDao = async (updateCommonInfo) => {
-    logger.log('editDao new info -> ', updateCommonInfo);
+  updateCommon = async (updateCommonInfo) => {
+    logger.log('updateCommon new info -> ', updateCommonInfo);
     try {
       return await this.axiosClient.post(
         this.endpoints.update,
