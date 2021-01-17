@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react';
+import {observer, inject} from 'mobx-react';
 import {
   StyleSheet,
   Text,
@@ -13,7 +14,6 @@ import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
-import UserService from '~/Services/UserService';
 
 const {width} = Dimensions.get('window');
 
@@ -21,6 +21,7 @@ const DiscussionMessage = ({
   data: {ownerId, text, createTime},
   outcome,
   showCurrentUserAvatar,
+  userListStore,
 }) => {
   let currentUserUid = null;
   if (auth().currentUser) {
@@ -28,24 +29,7 @@ const DiscussionMessage = ({
   }
 
   const [outcomeState, setOutcomeState] = React.useState();
-  const [onwerInfo, setOwnerInfo] = React.useState(null);
-
-  useEffect(() => {
-    let unsubscribeOwnerId = null;
-    const loadOwnerInfo = (userInfo) => {
-      setOwnerInfo(userInfo);
-    };
-    const subscribeToOwner = async (currOwnerId) => {
-      unsubscribeOwnerId = await UserService.getInstance().subscribeToUserById(
-        currOwnerId,
-        loadOwnerInfo,
-      );
-    };
-    subscribeToOwner(ownerId);
-    return () => {
-      unsubscribeOwnerId && unsubscribeOwnerId();
-    };
-  }, [ownerId]);
+  const onwerInfo = userListStore.getUserById(ownerId);
 
   useEffect(() => {
     if (typeof outcome === 'object') {
@@ -160,6 +144,9 @@ DiscussionMessage.propTypes = {
     catch: func.isRequired,
   }),
   showCurrentUserAvatar: bool,
+  userListStore: shape({
+    getUserById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -213,4 +200,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DiscussionMessage;
+export default inject('userListStore')(observer(DiscussionMessage));

@@ -22,6 +22,16 @@ const AmountField = ({
   );
   const textInputRef = useRef();
 
+  let contributionValues =
+    minFeeToJoin > 0
+      ? [
+          1 * minFeeToJoin,
+          2.5 * minFeeToJoin,
+          5 * minFeeToJoin,
+          1 * minFeeToJoin,
+        ]
+      : [0, 5, 10, 10];
+
   const onAmountPress = (isCustom, amount, id) => {
     if (isCustom) {
       setIsCustomSelected(true);
@@ -49,13 +59,13 @@ const AmountField = ({
   return (
     <View>
       <View style={isCustomSelected ? styles.hidden : {}}>
-        {[1, 2.5, 5, 1].map((c, index) => (
+        {contributionValues.map((c, index) => (
           <JoinAmount
             key={`JoinAmount_${index}`}
             id={index}
             isSelected={index === selectedAmountId}
             isCustom={index === 3}
-            amount={c * minFeeToJoin}
+            amount={c}
             onPress={onAmountPress}
             isMonthly={isMonthly}
           />

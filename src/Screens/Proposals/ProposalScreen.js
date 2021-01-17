@@ -25,7 +25,6 @@ import ProposalService from '~/Services/ProposalService';
 import {UserAvatar} from '~/Components';
 import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
-import UserService from '~/Services/UserService';
 import DaoService from '~/Services/DaoService';
 import {observer, inject} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
@@ -59,6 +58,7 @@ const ProposalScreen = ({
       tabIndex = 0,
     },
   },
+  userListStore,
 }) => {
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
@@ -76,7 +76,11 @@ const ProposalScreen = ({
     showBottomVotingButtonsContainer,
     setShowBottomVotingButtonsContainer,
   ] = useState(false);
-  const [showPaymentStatus, setShowPaymentStatus] = useState(false);
+  const [showPaymentStatus, setShowPaymentStatus] = useState(
+    paymentState === PROPOSAL_PAYMENT_STATE.PENDING ||
+      paymentState === PROPOSAL_PAYMENT_STATE.NOT_ATTEMPTED ||
+      paymentState === PROPOSAL_PAYMENT_STATE.FAILED,
+  );
 
   const renderVoting =
     proposalScreenInfo?.proposalInfo &&
@@ -87,11 +91,11 @@ const ProposalScreen = ({
     );
 
   // Sticky Tab Bar
-  const [ showStickyTabBar, setShowStickyTabBar ] = useState(false);
+  const [showStickyTabBar, setShowStickyTabBar] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
 
-  const [ stickyTabBarState ] = useState({animation: new Animated.Value(0)});
+  const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
 
   // Top voting buttons ref
   const topVotingButtonsRef = useRef(null);
@@ -107,7 +111,7 @@ const ProposalScreen = ({
     let unsubscribe = null;
 
     const loadProposalInfo = async (currProposalInfo, currProposalDao) => {
-      const currProposedUser = await UserService.getInstance().getUserById(
+      const currProposedUser = userListStore.getUserById(
         currProposalInfo.proposerId,
       );
 
@@ -178,7 +182,7 @@ const ProposalScreen = ({
         unsubscribe();
       }
     };
-  }, [ proposalId, votingProcessState ]);
+  }, [proposalId, votingProcessState]);
 
   const [
     isApprovalBottomModalVisible,
@@ -203,7 +207,7 @@ const ProposalScreen = ({
     },
   ]);
 
-  const [ inputText, setInputText ] = useState(null);
+  const [inputText, setInputText] = useState(null);
 
   const inputRef = useRef();
 
@@ -397,11 +401,12 @@ const ProposalScreen = ({
     }
   };
 
-  const paymentStatusModal = () =>
+  const paymentStatusModal = () => {
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.PAYMENT_STATUS, {
       proposerName: proposalScreenInfo?.proposedUser?.displayName,
       paymentState: proposalScreenInfo?.proposalInfo?.paymentState,
     });
+  };
 
   const renderVotingButtons = (reference) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
@@ -430,7 +435,7 @@ const ProposalScreen = ({
             <TouchableOpacity
               onPress={(e) => openApprovalSheet(false)}
               style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
-              <Icon name="reject-24" color={colors.against} size={24}/>
+              <Icon name="reject-24" color={colors.against} size={24} />
             </TouchableOpacity>
           </View>
         </View>
@@ -493,8 +498,8 @@ const ProposalScreen = ({
     transform: [
       {
         translateY: stickyTabBarState.animation.interpolate({
-          inputRange: [ 0.01, 1 ],
-          outputRange: [ 0, 80 ],
+          inputRange: [0.01, 1],
+          outputRange: [0, 80],
           extrapolate: 'clamp',
         }),
       },
@@ -893,6 +898,9 @@ ProposalScreen.propTypes = {
       proposalId: string,
     }),
   }),
+  userListStore: shape({
+    getUserById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -1020,5 +1028,6 @@ const styles = StyleSheet.create({
 
 export default inject(
   'userStore',
+  'userListStore',
   'bottomSheetStore',
 )(observer(ProposalScreen));

@@ -9,13 +9,18 @@ import {name as appName} from './app.json';
 import stores from './src/Stores';
 import {Provider} from 'mobx-react';
 import CodePush from 'react-native-code-push';
+import {Update} from '~/Components/Update/Update';
 
 LogBox.ignoreAllLogs(true);
 
 const MobX = () => (
-  <Provider {...stores}>
-    <App />
-  </Provider>
+  <Update>
+    {() => (
+      <Provider {...stores}>
+        <App/>
+      </Provider>
+    )}
+  </Update>
 );
 
 const AppBundle = CodePush({
