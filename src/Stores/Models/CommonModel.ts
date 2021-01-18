@@ -26,6 +26,7 @@ export const commonInfoFields = [
 
 export class CommonModel extends BaseModel<ICommonEntity> {
   // Fields
+  id: string = '';
   name: string = '';
   image: string = '';
   balance: number = 0;
@@ -72,6 +73,7 @@ export class CommonModel extends BaseModel<ICommonEntity> {
 
 decorate(CommonModel, {
   //observables
+  id: observable,
   name: observable,
   image: observable,
   balance: observable,
