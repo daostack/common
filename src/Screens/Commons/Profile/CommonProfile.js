@@ -66,7 +66,6 @@ const CommonProfile = ({
   bottomSheetStore,
   userStore,
   route: {params},
-  commonListStore,
 }) => {
   /* all of  params.commonId,
   params.showRequestSentModal,
@@ -105,11 +104,8 @@ const CommonProfile = ({
   ]);
 
   //const routeCommon = params.currCommon;
-  Logger.log('Common id ->', params.currCommon);
-  Logger.log('Common id ->', params.commonId);
-  const currCommon = commonListStore.getCommonById(
-    params.commonId || params.currCommon?.id,
-  );
+  Logger.log('Common id ->', params.currCommon?.id);
+  const [currCommon, setCurrCommon] = useState(params.currCommon);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [showReqToJoin, setShowRequestToJoin] = React.useState(false);
   const [showPending, setShowPending] = React.useState(false);
@@ -134,6 +130,10 @@ const CommonProfile = ({
   const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(
     false,
   );
+  // right now, has permission is about user being the owner, this may change in the future
+  const [hasPermission, setHasPermission] = useState(
+    userStore?.userInfo?.uid === currCommon?.metadata.founderId,
+  );
 
   //setHeaderHeight(height + 35);
 
@@ -144,28 +144,31 @@ const CommonProfile = ({
       LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
   };
 
-  // useEffect(() => {
-  //   const loadCurrCommon = (snapshot) => {
-  //     if (snapshot.exists) {
-  //       setCurrCommon(snapshot.data());
-  //     } else {
-  //       Toast.error('This DAO cannot be found try again later');
-  //       navigation.pop();
-  //     }
-  //   };
-  //   let unsubscribeCommon = null;
-  //   const subscribeToCommon = async (currCommonId) => {
-  //     unsubscribeCommon = await DaoService.getInstance().subscribeToDaoById(
-  //       currCommonId,
-  //       loadCurrCommon,
-  //     );
-  //   };
-  //   // Subscribe to a common.
-  //   subscribeToCommon(params.commonId || currCommon.id);
-  //   return () => {
-  //     unsubscribeCommon && unsubscribeCommon();
-  //   };
-  // }, [params.commonId, currCommon?.id]);
+  useEffect(() => {
+    const loadCurrCommon = (snapshot) => {
+      if (snapshot.exists) {
+        setCurrCommon(snapshot.data());
+      } else {
+        Toast.error('This DAO cannot be found try again later');
+        navigation.pop();
+      }
+    };
+    let unsubscribeCommon = null;
+    const subscribeToCommon = async (currCommonId) => {
+      unsubscribeCommon = await DaoService.getInstance().subscribeToDaoById(
+        currCommonId,
+        loadCurrCommon,
+      );
+    };
+    setHasPermission(
+      userStore?.userInfo?.uid === currCommon?.metadata.founderId,
+    );
+    // Subscribe to a common.
+    subscribeToCommon(params.commonId || currCommon.id);
+    return () => {
+      unsubscribeCommon && unsubscribeCommon();
+    };
+  }, [params.commonId, currCommon?.id]);
 
   useEffect(() => {
     setShowRequestSentModal(params.showRequestSentModal);
@@ -228,9 +231,9 @@ const CommonProfile = ({
     }
   }, [pendingProposalsData]);
 
-  // useEffect(() => {
-  //   setCurrCommon(params.currCommon);
-  // }, [params.currCommon]);
+  useEffect(() => {
+    setCurrCommon(params.currCommon);
+  }, [params.currCommon]);
 
   const renderTabBar = (props) => (
     <TabBarRenderer
@@ -415,7 +418,18 @@ const CommonProfile = ({
   const openCommonOptions = (event) => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      {
+        editInfo: () => navigateTo('Edit info and cover photo'),
+        editRules: () => navigateTo('Edit Rules'),
+      },
     );
+  };
+
+  const navigateTo = (screenTitle) => {
+    navigation.navigate('EditCommon', {
+      currCommon: currCommon,
+      title: screenTitle,
+    });
   };
 
   /*
@@ -629,19 +643,20 @@ const CommonProfile = ({
               />
             </BlurView>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-              style={{justifyContent: 'center'}}
-              onPress={shareCommon}>
+          {hasPermission && (
+            <TouchableOpacity
+              style={{justifyContent: 'center', marginRight: 10}}
+              onPress={openCommonOptions}>
               <BlurView
-                style={{padding: 5, borderRadius: 15}}
+                style={{
+                  padding: 6,
+                  borderRadius: 15,
+                }}
                 isBlurring={dark}>
-                <Icon
-                  name="menu-horizontal"
-                  size={32}
-                  color={dark ? 'black' : 'white'}
-                />
+                <Icon name="menu1" size={30} color={dark ? 'black' : 'white'} />
               </BlurView>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
+          )}
         </View>
       }
     />
@@ -930,7 +945,6 @@ CommonProfile.propTypes = {
   }),
   bottomSheetStore: object,
   userStore: object,
-  commonListStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -1096,8 +1110,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'bottomSheetStore',
-  'userStore',
-  'commonListStore',
-)(observer(CommonProfile));
+export default inject('bottomSheetStore', 'userStore')(observer(CommonProfile));
