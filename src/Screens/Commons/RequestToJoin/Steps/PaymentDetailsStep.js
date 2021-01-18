@@ -303,15 +303,24 @@ const PaymentDetailsStep = ({
                 ...text.regularText,
                 color: colors.grey2,
                 textAlign: 'center',
-              }}>
-              If your membership request will not be accepted, you will not be
-              charged. Your card will be saved for the monthly contribution of $
-              {
-                personalContributionFormStore.getFormField(
-                  RequestToJoinForm.FIELD_AMOUNT,
-                )?.value?.value
-              }
-              , you can cancel at any time.
+              }}
+            >
+              {isMonthly ? (
+                <React.Fragment>
+                  If your membership request will not be accepted, you will not be
+                  charged. Your card will be saved for the monthly contribution of $
+                  {
+                    personalContributionFormStore.getFormField(
+                      RequestToJoinForm.FIELD_AMOUNT
+                    )?.value?.value
+                  }
+                  , you can cancel at any time.
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  If your membership request will not be accepted, you will not be charged.
+                </React.Fragment>
+              )}
             </Text>
           </View>
         </ScrollView>
