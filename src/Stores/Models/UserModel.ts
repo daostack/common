@@ -10,6 +10,7 @@ export const userInfoFields = [
   'photoURL',
   'updatedAt',
   'createdAt',
+  'intro',
 ];
 export class UserModel implements IUserEntity {
   // Fields
@@ -21,6 +22,7 @@ export class UserModel implements IUserEntity {
   lastName: string = '';
   createdAt: Date | null = null;
   updatedAt: Date | null = null;
+  intro: string = '';
 
   constructor(newUserInfo: IUserEntity) {
     // Filter the provided newUserInfo values in order to be sure there are no extra data.
