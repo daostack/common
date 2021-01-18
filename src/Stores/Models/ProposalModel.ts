@@ -18,6 +18,7 @@ export const proposalInfoFields = [
   'quietEndingPeriod',
   'votesFor',
   'votesAgainst',
+  'paymentState',
 ];
 export class ProposalModel extends BaseModel<IProposalEntity> {
   // Fields
@@ -31,12 +32,10 @@ export class ProposalModel extends BaseModel<IProposalEntity> {
   quietEndingPeriod: number = 0;
   votesFor: number = 0;
   votesAgainst: number = 0;
+  paymentState: string = '';
 
   constructor(newProposalInfo: IProposalEntity) {
     super();
-    // Filter the provided newProposalInfo values in order to be sure there are no extra data.
-    // Currently there are proposals with displayName prop in the DB,
-    // but here the displayName is computed field which can't be assigned a value to.
     const filteredProposal: IProposalEntity = filterObjectByKeys(
       newProposalInfo,
       proposalInfoFields,
@@ -64,6 +63,7 @@ decorate(ProposalModel, {
   quietEndingPeriod: observable,
   votesFor: observable,
   votesAgainst: observable,
+  paymentState: observable,
 
   //computed
 
