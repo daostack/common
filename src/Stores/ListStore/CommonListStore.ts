@@ -3,11 +3,11 @@ import ListStore from './ListStore';
 import {subscribeToAllCommons} from '~/Services/ListServices/CommonListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
-import {CommonModel} from '../Models/CommonModel';
+import {Common} from '../Models/Common';
 import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {DAO_REGISTERED} from '~/Firebase/Databasee';
 
-export default class CommonListStore extends ListStore<CommonModel> {
+export default class CommonStore extends ListStore<Common> {
   rootStore: RootStore;
   isLoading: boolean;
 
@@ -22,7 +22,7 @@ export default class CommonListStore extends ListStore<CommonModel> {
     //console.log('MY COMMONS -> ', super.getDataArray);
     return this.isLoading
       ? []
-      : super.getDataArray?.filter((common: CommonModel) =>
+      : super.getDataArray?.filter((common: Common) =>
           this.rootStore.authStore.isDaoMember(common?.members),
         );
   }
@@ -37,7 +37,7 @@ export default class CommonListStore extends ListStore<CommonModel> {
     return this.isLoading
       ? []
       : super.getDataArray?.filter(
-          (common: CommonModel) =>
+          (common: Common) =>
             !this.myCommons.includes(common) &&
             common.register === DAO_REGISTERED,
         );
@@ -59,7 +59,7 @@ export default class CommonListStore extends ListStore<CommonModel> {
 
     updatedUserList.forEach((commonEntity: ICommonEntity) => {
       console.log();
-      super.setData(commonEntity.id, new CommonModel(commonEntity));
+      super.setData(commonEntity.id, new Common(commonEntity));
     });
 
     runInAction(() => {
@@ -68,7 +68,7 @@ export default class CommonListStore extends ListStore<CommonModel> {
   };
 }
 
-decorate(CommonListStore, {
+decorate(CommonStore, {
   //observables
   isLoading: observable,
   //computed

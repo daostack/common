@@ -82,7 +82,7 @@ if (Platform.OS === 'android') {
 const App = ({
   userStore,
   userListStore,
-  commonListStore,
+  commonStore,
   bottomSheetStore,
   navigation,
 }) => {
@@ -114,7 +114,7 @@ const App = ({
 
   useEffect(() => {
     const unsubscribeUsers = userListStore.subscribeToAllUsers();
-    const unsubscribeCommons = commonListStore.subscribeToAllCommons();
+    const unsubscribeCommons = commonStore.subscribeToAllCommons();
     return () => {
       unsubscribeUsers && unsubscribeUsers();
       unsubscribeCommons && unsubscribeCommons();
@@ -573,7 +573,7 @@ App.propTypes = {
   userListStore: shape({
     subscribeToAllUsers: func,
   }),
-  commonListStore: shape({
+  commonStore: shape({
     subscribeToAllCommons: func,
   }),
   bottomSheetStore: shape({
@@ -598,5 +598,5 @@ export default inject(
   'userStore',
   'bottomSheetStore',
   'userListStore',
-  'commonListStore',
+  'commonStore',
 )(observer(App));

@@ -8,7 +8,7 @@ export default {
   rootStore,
   userStore: rootStore.authStore,
   userListStore: rootStore.userListStore,
-  commonListStore: rootStore.commonListStore,
+  commonStore: rootStore.commonStore,
 
   //TODO: move in UIStore and add ref to rootStore.
   bottomSheetStore: new BottomSheetStore(),

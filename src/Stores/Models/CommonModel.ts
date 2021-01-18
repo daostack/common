@@ -24,7 +24,7 @@ export const commonInfoFields = [
   'register',
 ];
 
-export class CommonModel extends BaseModel<ICommonEntity> {
+export class Common extends BaseModel<ICommonEntity> {
   // Fields
   id: string = '';
   name: string = '';
@@ -71,7 +71,7 @@ export class CommonModel extends BaseModel<ICommonEntity> {
   }
 }
 
-decorate(CommonModel, {
+decorate(Common, {
   //observables
   id: observable,
   name: observable,
