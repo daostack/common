@@ -45,8 +45,8 @@ const CommonsList = ({
     data: commonListStore.featuredCommons,
   };
 
-  const [allDaosGroup, setAllDaosGroup] = useState(null);
-  const [isSplited, setIsSplited] = useState(false);
+  //const [allDaosGroup, setAllDaosGroup] = useState(null);
+  //const [isSplited, setIsSplited] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
 
   const setAllCommons = (daoList, pendingDao, myDao, isFromCache, callback) => {
@@ -83,10 +83,10 @@ const CommonsList = ({
       if (userStore.signedInUser) {
         // we keep in the cache already filtered daos
         if (isFromCache) {
-          setAllDaosGroup({
-            title: '',
-            data: daoList,
-          });
+          // setAllDaosGroup({
+          //   title: '',
+          //   data: daoList,
+          // });
           daoStore.setDaos(daoList);
         }
 
@@ -125,60 +125,61 @@ const CommonsList = ({
     }
   };
 
-  const loadDaosList = (snapshot) => {
-    try {
-      if (snapshot?.empty || !snapshot) {
-        setAllDaosGroup({title: '', data: []});
-        return [];
-      }
-      let docs = snapshot.docs.map((doc) => doc.data());
-      filterAndSplitDaoList(docs, false, (filteredDaos) => {
-        daoStore.setDaos(filteredDaos);
-        setAllDaosGroup({
-          title: '',
-          data: filteredDaos,
-        });
-        Cache.set(CacheKey.AllDaoCache, filteredDaos);
-        setIsSplited(true);
-      });
-      setRefreshing(false);
-    } catch (err) {
-      bottomSheetStore.showBottomSheet(
-        BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
-      );
-    }
-  };
+  // const loadDaosList = (snapshot) => {
+  //   try {
+  //     if (snapshot?.empty || !snapshot) {
+  //       setAllDaosGroup({title: '', data: []});
+  //       return [];
+  //     }
+  //     let docs = snapshot.docs.map((doc) => doc.data());
+  //     filterAndSplitDaoList(docs, false, (filteredDaos) => {
+  //       daoStore.setDaos(filteredDaos);
+  //       setAllDaosGroup({
+  //         title: '',
+  //         data: filteredDaos,
+  //       });
+  //       Cache.set(CacheKey.AllDaoCache, filteredDaos);
+  //       setIsSplited(true);
+  //     });
+  //     setRefreshing(false);
+  //   } catch (err) {
+  //     bottomSheetStore.showBottomSheet(
+  //       BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR,
+  //     );
+  //   }
+  // };
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    DaoService.getInstance().getDaoList(loadDaosList);
+    // TODO: refresh
+    // DaoService.getInstance().getDaoList(loadDaosList);
   }, [refreshing]);
 
-  const filterCommons = () => {
-    setIsSplited(false);
-    daoStore.setDaos(null);
-    setAllDaosGroup(null);
-    // setMyDaosGroup({title: '', data: []});
-    setPendingDaosGroup({title: '', data: []});
-    // setFeaturedDaosGroup({title: '', data: []});
+  // const filterCommons = () => {
+  //   setIsSplited(false);
+  //   daoStore.setDaos(null);
+  //   setAllDaosGroup(null);
+  //   // setMyDaosGroup({title: '', data: []});
+  //   setPendingDaosGroup({title: '', data: []});
+  //   // setFeaturedDaosGroup({title: '', data: []});
 
-    Cache.getAsync(CacheKey.AllDaoCache).then((jsonValue) => {
-      if (jsonValue === null) {
-        return;
-      }
-      const docs = JSON.parse(jsonValue);
+  //   Cache.getAsync(CacheKey.AllDaoCache).then((jsonValue) => {
+  //     if (jsonValue === null) {
+  //       return;
+  //     }
+  //     const docs = JSON.parse(jsonValue);
 
-      filterAndSplitDaoList(docs, true, (filteredDaos) => {
-        setIsSplited(true);
-      });
-    });
+  //     filterAndSplitDaoList(docs, true, (filteredDaos) => {
+  //       setIsSplited(true);
+  //     });
+  //   });
 
-    DaoService.getInstance().subscribeToDaosList(loadDaosList);
-  };
+  //   DaoService.getInstance().subscribeToDaosList(loadDaosList);
+  // };
 
-  useEffect(() => {
-    filterCommons();
-  }, [userStore.signedInUser]);
+  // useEffect(() => {
+  //   filterCommons();
+  // }, [userStore.signedInUser]);
 
   const onAddCommon = () => {
     if (userStore.signedInUser) {
@@ -264,7 +265,9 @@ const CommonsList = ({
   );
 
   const refreshFeed = () => {
-    filterCommons();
+    console.log('TODO: implement refreshFeed with commonListStore');
+    // TODO
+    // filterCommons();
   };
 
   const navigateToCommon = (common) => {
@@ -279,17 +282,22 @@ const CommonsList = ({
     navigation.dispatch(navigate);
   };
 
+  const getInitialNumoRender = () =>
+    userStore.signedInUser
+      ? myDaosGroup.data.length +
+        pendingDaosGroup.data.length +
+        featuredDaosGroup.data.length
+      : featuredDaosGroup.data.length;
+
   return (
     <>
       <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
-        {allDaosGroup ? (
+        {featuredDaosGroup ? (
           <SectionList
             sections={
-              isSplited
-                ? userStore.signedInUser
-                  ? [myDaosGroup, pendingDaosGroup, featuredDaosGroup]
-                  : [featuredDaosGroup]
-                : [allDaosGroup]
+              userStore.signedInUser
+                ? [myDaosGroup, pendingDaosGroup, featuredDaosGroup]
+                : [featuredDaosGroup]
             }
             ListHeaderComponent={header}
             contentContainerStyle={{paddingHorizontal: 20}}
@@ -307,7 +315,7 @@ const CommonsList = ({
             stickySectionHeadersEnabled={true}
             renderSectionHeader={({section: {title}}) => sectionHeader(title)}
             ListFooterComponent={listFooter}
-            initialNumToRender={allDaosGroup.length}
+            initialNumToRender={getInitialNumoRender()}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }

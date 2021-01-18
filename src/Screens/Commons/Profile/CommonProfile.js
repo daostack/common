@@ -66,6 +66,7 @@ const CommonProfile = ({
   bottomSheetStore,
   userStore,
   route: {params},
+  commonListStore,
 }) => {
   /* all of  params.commonId,
   params.showRequestSentModal,
@@ -104,8 +105,11 @@ const CommonProfile = ({
   ]);
 
   //const routeCommon = params.currCommon;
-  Logger.log('Common id ->', params.currCommon?.id);
-  const [currCommon, setCurrCommon] = useState(params.currCommon);
+  Logger.log('Common id ->', params.currCommon);
+  Logger.log('Common id ->', params.commonId);
+  const currCommon = commonListStore.getCommonById(
+    params.commonId || params.currCommon?.id,
+  );
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [showReqToJoin, setShowRequestToJoin] = React.useState(false);
   const [showPending, setShowPending] = React.useState(false);
@@ -140,28 +144,28 @@ const CommonProfile = ({
       LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
   };
 
-  useEffect(() => {
-    const loadCurrCommon = (snapshot) => {
-      if (snapshot.exists) {
-        setCurrCommon(snapshot.data());
-      } else {
-        Toast.error('This DAO cannot be found try again later');
-        navigation.pop();
-      }
-    };
-    let unsubscribeCommon = null;
-    const subscribeToCommon = async (currCommonId) => {
-      unsubscribeCommon = await DaoService.getInstance().subscribeToDaoById(
-        currCommonId,
-        loadCurrCommon,
-      );
-    };
-    // Subscribe to a common.
-    subscribeToCommon(params.commonId || currCommon.id);
-    return () => {
-      unsubscribeCommon && unsubscribeCommon();
-    };
-  }, [params.commonId, currCommon?.id]);
+  // useEffect(() => {
+  //   const loadCurrCommon = (snapshot) => {
+  //     if (snapshot.exists) {
+  //       setCurrCommon(snapshot.data());
+  //     } else {
+  //       Toast.error('This DAO cannot be found try again later');
+  //       navigation.pop();
+  //     }
+  //   };
+  //   let unsubscribeCommon = null;
+  //   const subscribeToCommon = async (currCommonId) => {
+  //     unsubscribeCommon = await DaoService.getInstance().subscribeToDaoById(
+  //       currCommonId,
+  //       loadCurrCommon,
+  //     );
+  //   };
+  //   // Subscribe to a common.
+  //   subscribeToCommon(params.commonId || currCommon.id);
+  //   return () => {
+  //     unsubscribeCommon && unsubscribeCommon();
+  //   };
+  // }, [params.commonId, currCommon?.id]);
 
   useEffect(() => {
     setShowRequestSentModal(params.showRequestSentModal);
@@ -224,9 +228,9 @@ const CommonProfile = ({
     }
   }, [pendingProposalsData]);
 
-  useEffect(() => {
-    setCurrCommon(params.currCommon);
-  }, [params.currCommon]);
+  // useEffect(() => {
+  //   setCurrCommon(params.currCommon);
+  // }, [params.currCommon]);
 
   const renderTabBar = (props) => (
     <TabBarRenderer
@@ -926,6 +930,7 @@ CommonProfile.propTypes = {
   }),
   bottomSheetStore: object,
   userStore: object,
+  commonListStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -1091,4 +1096,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore', 'userStore')(observer(CommonProfile));
+export default inject(
+  'bottomSheetStore',
+  'userStore',
+  'commonListStore',
+)(observer(CommonProfile));
