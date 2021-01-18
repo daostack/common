@@ -75,7 +75,6 @@ export const getErrorObject = (axiosError) => {
 };
 
 export const isDaoMemberByUserId = (members, userUID) => {
-  console.log('isDaoMemberByUserId', members, userUID);
   if (!members) {
     return false;
   }
