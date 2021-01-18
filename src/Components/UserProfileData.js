@@ -1,5 +1,5 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {layout, font, colors, text, sizeL, sizeXXL} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import ImageField from '~/Components/FormFields/ImageField';
@@ -10,7 +10,7 @@ import {UserAvatar} from '~/Components/index';
 import {CommonActions} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
 import logger from '~/Services/Logger';
-import {string, object, shape, func} from 'prop-types';
+import {string, object, shape, array, func} from 'prop-types';
 
 import {
   Placeholder,
@@ -24,6 +24,7 @@ const UserProfileData = ({
   currUserInfo,
   navigation,
   userStore: {userInfo},
+  daoStore,
   userListStore,
 }) => {
   const providedUserId = userId || currUserInfo.uid;
@@ -39,6 +40,9 @@ const UserProfileData = ({
   const [proposalsCount, setProposalsCount] = useState(0);
   const [requestsCount, setRequestsCount] = useState(0);
   const [commonsCount, setCommonsCount] = useState(0);
+
+  useEffect(() => {
+  }, [userId, currUserInfo, userInfo, daoStore.daos]);
 
   const navigateToEditProfile = (isFirstOpening) => {
     const navigate = CommonActions.navigate({
@@ -288,6 +292,9 @@ UserProfileData.propTypes = {
       uid: string,
     }),
   }),
+  daoStore: shape({
+    daos: array,
+  }),
   userListStore: shape({
     getUserById: func,
   }),
@@ -354,4 +361,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'userListStore')(observer(UserProfileData));
+export default inject('userStore', 'daoStore', 'userListStore')(observer(UserProfileData));

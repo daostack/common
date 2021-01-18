@@ -45,6 +45,7 @@ import {
   FullScreenCreationLoader,
   MonthlyContributionsList,
   MonthlyContribution,
+  EditCommon,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import {observer, inject} from 'mobx-react';
@@ -351,6 +352,13 @@ const App = ({userStore, userListStore, bottomSheetStore, navigation}) => {
           options={({route}) => ({
             headerBackTitleVisible: false,
           })}
+        />
+        <Stack.Screen
+          name="EditCommon"
+          component={EditCommon}
+          options={{
+            headerShown: true,
+          }}
         />
         <Stack.Screen
           name="CommonExplanation"

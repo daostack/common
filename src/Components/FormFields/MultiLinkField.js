@@ -27,12 +27,19 @@ const MultiLinkField = (props) => {
 
   const [count, setCount] = useState(1);
   const [addButton, setAddButton] = useState(false);
+  let currRules = props?.currRules || [];
 
   useEffect(() => {
     const currFormField = validation.formStore.getFormField(validation.name);
     if (currFormField) {
-      setCount(Object.keys(currFormField)?.length);
+      setCount(
+        props?.currRules
+          ? Object.keys(props?.currRules)?.length
+          : Object.keys(currFormField)?.length,
+      );
+      currRules = rule ? currRules || currFormField : [];
     }
+
     canAddMore();
   }, []);
 
@@ -44,9 +51,10 @@ const MultiLinkField = (props) => {
         currIndex,
       );
     }
+    props.onChangeText && props.onChangeText(currIndex);
   };
 
-  const onChangeText = (value, currTitleItemValidation) => {
+  const onChangeText = (value, currTitleItemValidation, index) => {
     if (value.length > 0) {
       validation.formStore.updateFieldValidationRule(
         currTitleItemValidation.name,
@@ -62,6 +70,7 @@ const MultiLinkField = (props) => {
         true,
       );
     }
+    props.onChangeText && props.onChangeText(index);
     canAddMore();
   };
 
@@ -115,7 +124,7 @@ const MultiLinkField = (props) => {
           topPosition: true,
           invisibleContainer: true,
           immediateValidation: true,
-        }; //{...validation};
+        };
 
         return (
           <View
@@ -127,11 +136,11 @@ const MultiLinkField = (props) => {
                   currTitleItemValidation.formStore.getFormField(
                     currTitleItemValidation.name,
                     currTitleItemValidation.multiName,
-                  )?.value
+                  )?.value || currRules[currIndex]?.title
                 }
                 label={props.label}
                 onChangeText={(value) => {
-                  onChangeText(value, currItemValidation);
+                  onChangeText(value, currItemValidation, currIndex);
                 }}
                 viewStyle={{marginTop: 0}}
                 placeholderText={props.title}
@@ -145,10 +154,10 @@ const MultiLinkField = (props) => {
                 currItemValidation.formStore.getFormField(
                   currItemValidation.name,
                   currItemValidation.multiName,
-                )?.value
+                )?.value || currRules[currIndex]?.value
               }
               onChangeText={(value) => {
-                onChangeText(value, currTitleItemValidation);
+                onChangeText(value, currTitleItemValidation, currIndex);
               }}
               viewStyle={{marginTop: -5}}
               placeholderText={
@@ -193,6 +202,11 @@ MultiLinkField.propTypes = {
   link: bool,
   rule: bool,
   onFieldDeleted: func,
+  currRules: shape({
+    title: string,
+    value: string,
+  }),
+  onChangeText: func,
 };
 
 RemoveLinkBtn.propTypes = {
