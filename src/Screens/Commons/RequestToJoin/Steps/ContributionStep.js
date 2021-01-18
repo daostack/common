@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
+import {inject} from 'mobx-react';
 import AmountField from '~/Components/FormFields/AmountField';
 import {colors, text} from '~/Theme';
 import CreateStepHeader from '../RequestStepHeader';
@@ -18,6 +19,9 @@ import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from '../MembershipRequest';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {string, func, bool, object, shape, number} from 'prop-types';
+import ProposalService from '~/Services/ProposalService';
+import {showErrorPopUp} from '~/Util';
+
 const {width} = Dimensions.get('window');
 
 const ContributionStep = ({
@@ -25,6 +29,7 @@ const ContributionStep = ({
   route: {
     params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed},
   },
+  bottomSheetStore,
 }) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -33,6 +38,7 @@ const ContributionStep = ({
   const isMonthly = metadata.contributionType === 'monthly';
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
+  const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -56,7 +62,61 @@ const ContributionStep = ({
       value: amount,
       index,
     });
-    navigateToRequestStep4();
+
+    if (amount > 0) {
+      navigateToRequestStep4();
+    } else {
+      const formData = {
+        ...introduceYourselfFormStore.getFormFieldsJson(),
+      };
+      const data = {
+        description: formData.intro,
+        funding: 0,
+        commonId: currDaoId,
+      };
+      if (formData.links) {
+        data.links = formData.links;
+      }
+
+      navigation.navigate({
+        name: 'FullScreenCreationLoader',
+        params: {
+          title: 'Creating your membership request',
+        },
+      });
+
+      createRequest(data);
+    }
+  };
+
+  const createRequest = async (data) => {
+    const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin(
+      {
+        ...data,
+      },
+    );
+
+    if (createRequestToJoinResponse.status === 200) {
+      const proposalId = createRequestToJoinResponse.data.id;
+
+      navigation.pop();
+      const navigate = CommonActions.navigate({
+        name: 'CommonProfile',
+        params: {
+          showRequestSentModal: true,
+          createdProposalId: proposalId,
+        },
+      });
+
+      if (typeof refreshFeed === 'function') {
+        refreshFeed();
+      }
+
+      navigation.dispatch(navigate);
+    } else {
+      navigation.pop();
+      showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
+    }
   };
 
   const navigateToRequestStep4 = () => {
@@ -75,7 +135,33 @@ const ContributionStep = ({
 
   const push = () => {
     if (personalContributionFormStore.isFormValid()) {
-      navigateToRequestStep4();
+      const formData = {
+        ...introduceYourselfFormStore.getFormFieldsJson(),
+        ...personalContributionFormStore.getFormFieldsJson(),
+      };
+
+      if (formData.amount > 0) {
+        navigateToRequestStep4();
+      } else {
+        const data = {
+          description: formData.intro,
+          funding: 0,
+          commonId: currDaoId,
+        };
+
+        if (formData.links) {
+          data.links = formData.links;
+        }
+
+        navigation.navigate({
+          name: 'FullScreenCreationLoader',
+          params: {
+            title: 'Creating your membership request',
+          },
+        });
+
+        createRequest(data);
+      }
     }
   };
 
@@ -182,6 +268,10 @@ ContributionStep.propTypes = {
     fieldChanged: func,
     isFormValid: func,
   }),
+  introduceYourselfFormStore: shape({
+    fieldChanged: func,
+    isFormValid: func,
+  }),
   route: shape({
     params: shape({
       skipFirstStep: bool,
@@ -197,6 +287,7 @@ ContributionStep.propTypes = {
       }),
     }),
   }),
+  bottomSheetStore: object,
 };
 
-export default ContributionStep;
+export default inject('bottomSheetStore', 'userStore')(ContributionStep);
