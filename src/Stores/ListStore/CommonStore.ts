@@ -8,12 +8,10 @@ import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {DAO_REGISTERED} from '~/Firebase/Databasee';
 
 export default class CommonStore extends ListStore<Common> {
-  rootStore: RootStore;
   isLoading: boolean;
 
   constructor(rootStore: RootStore) {
-    super();
-    this.rootStore = rootStore;
+    super(rootStore);
     this.isLoading = false;
   }
 
@@ -22,21 +20,21 @@ export default class CommonStore extends ListStore<Common> {
     //console.log('MY COMMONS -> ', super.getDataArray);
     return this.isLoading
       ? []
-      : super.getDataArray?.filter((common: Common) =>
+      : this.getDataArray?.filter((common: Common) =>
           this.rootStore.authStore.isDaoMember(common?.members),
         );
   }
 
   get pendingCommons() {
     // TODO: filter data
-    return super.data;
+    return this.data;
   }
 
   get featuredCommons() {
     // return super.data;
     return this.isLoading
       ? []
-      : super.getDataArray?.filter(
+      : this.getDataArray?.filter(
           (common: Common) =>
             !this.myCommons.includes(common) &&
             common.register === DAO_REGISTERED,
@@ -45,7 +43,7 @@ export default class CommonStore extends ListStore<Common> {
 
   // Data consuming methods
   getCommonById = (id: string): ICommonEntity | undefined =>
-    super.getDataById(id);
+    this.getDataById(id);
 
   //Actions
   subscribeToAllCommons = (): FirestoreUnsubscribeFn =>

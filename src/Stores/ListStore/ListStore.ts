@@ -9,10 +9,13 @@ import {
   computed,
   values,
 } from 'mobx';
+import RootStore from '../RootStore';
 export default class ListStore<IEntity> {
   data: ObservableMap<string, IEntity>;
+  rootStore: RootStore;
 
-  constructor() {
+  constructor(rootStore: RootStore) {
+    this.rootStore = rootStore;
     this.data = observable.map({});
   }
 

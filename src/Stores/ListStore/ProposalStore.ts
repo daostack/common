@@ -26,12 +26,10 @@ interface IUserProposalFilter extends ITypeProposalFilter {}
 
 interface ICommonProposalFilter extends IStageProposalFilter {}
 export default class ProposalStore extends ListStore<Proposal> {
-  rootStore: RootStore;
   isLoading: boolean;
 
   constructor(rootStore: RootStore) {
-    super();
-    this.rootStore = rootStore;
+    super(rootStore);
     this.isLoading = false;
   }
   // Computed fields

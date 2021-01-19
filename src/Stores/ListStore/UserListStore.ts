@@ -4,12 +4,10 @@ import ListStore from './ListStore';
 import {subscribeToAllUsers} from '~/Services/ListServices/UserListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
-export default class UserListStore extends ListStore<UserModel> {
-  rootStore: RootStore;
 
+export default class UserListStore extends ListStore<UserModel> {
   constructor(rootStore: RootStore) {
-    super();
-    this.rootStore = rootStore;
+    super(rootStore);
   }
 
   // Data consuming methods
