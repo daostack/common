@@ -53,7 +53,7 @@ const ContributionStep = ({
     setIsActionBtnHidden(true);
   };
 
-  const onCustomSelect = (e) => {
+  const onCustomSelect = (xe) => {
     setIsActionBtnHidden(false);
   };
 
@@ -241,14 +241,17 @@ const ContributionStep = ({
               onAmountSelected={onAmountSelected}
               minFeeToJoin={metadata.minFeeToJoin / 100}
             />
-            <Text
-              style={{
-                ...text.regularText,
-                textAlign: 'center',
-                color: colors.slate,
-              }}>
-              You can cancel the recurring payment at any time
-            </Text>
+
+            {isMonthly && (
+              <Text
+                style={{
+                  ...text.regularText,
+                  textAlign: 'center',
+                  color: colors.slate,
+                }}>
+                You can cancel the recurring payment at any time
+              </Text>
+            )}
           </View>
         </ScrollView>
         <RequestStepActionButton

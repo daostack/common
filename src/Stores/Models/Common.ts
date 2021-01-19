@@ -1,4 +1,4 @@
-import {observable, decorate, action, computed} from 'mobx';
+import {observable, decorate, computed} from 'mobx';
 import {formatNumber} from '~/Util';
 import {
   CommonRegister,

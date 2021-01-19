@@ -11,6 +11,7 @@ export const userInfoFields = [
   'photoURL',
   'updatedAt',
   'createdAt',
+  'intro',
 ];
 export class UserModel extends BaseModel<IUserEntity> {
   // Fields
@@ -19,6 +20,9 @@ export class UserModel extends BaseModel<IUserEntity> {
   photoURL: string = '';
   firstName: string = '';
   lastName: string = '';
+  createdAt: Date | null = null;
+  updatedAt: Date | null = null;
+  intro: string = '';
 
   constructor(newUserInfo: IUserEntity) {
     super();
