@@ -1,7 +1,6 @@
 import {ProposalsCollection} from '~/Firebase/Databasee/Collections/ProposalsCollection';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PROPOSAL_TYPE} from '~/Config';
-import {ProposalModel} from '~/Stores/Models/ProposalModel';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 
 export type proposalListLoadCallbackFn = (

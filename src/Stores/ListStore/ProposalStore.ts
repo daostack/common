@@ -8,7 +8,7 @@ import {
 import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
-import {ProposalModel} from '../Models/ProposalModel';
+import {Proposal} from '../Models/Proposal';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PROPOSAL_TYPE} from '~/Config';
 
@@ -25,7 +25,7 @@ interface ITypeProposalFilter {
 interface IUserProposalFilter extends ITypeProposalFilter {}
 
 interface ICommonProposalFilter extends IStageProposalFilter {}
-export default class ProposalListStore extends ListStore<ProposalModel> {
+export default class ProposalStore extends ListStore<Proposal> {
   rootStore: RootStore;
   isLoading: boolean;
 
@@ -54,14 +54,13 @@ export default class ProposalListStore extends ListStore<ProposalModel> {
   }
 
   // Data consuming methods
-  getProposalById = (id: string): ProposalModel | undefined =>
-    super.getDataById(id);
+  getProposalById = (id: string): Proposal | undefined => super.getDataById(id);
 
   getUserActiveProposals = (
     userId: string,
     proposalFilter: IUserProposalFilter,
-  ): Array<ProposalModel> | undefined =>
-    this.getDataArray?.filter((proposal: ProposalModel) => {
+  ): Array<Proposal> | undefined =>
+    this.getDataArray?.filter((proposal: Proposal) => {
       const isProposer = proposal.proposerId === userId;
       if (isProposer) {
         if (proposalFilter.onlyFundingRequests) {
@@ -83,8 +82,8 @@ export default class ProposalListStore extends ListStore<ProposalModel> {
   getCommonProposals = (
     commonId: string,
     proposalFilter: ICommonProposalFilter,
-  ): Array<ProposalModel> | undefined =>
-    this.getDataArray?.filter((proposal: ProposalModel) => {
+  ): Array<Proposal> | undefined =>
+    this.getDataArray?.filter((proposal: Proposal) => {
       const isSameCommon = proposal.commonId === commonId;
       if (isSameCommon) {
         return this._filterProposalState(proposal, proposalFilter);
@@ -111,7 +110,7 @@ export default class ProposalListStore extends ListStore<ProposalModel> {
 
     updatedUserList.forEach((proposalEntity: IProposalEntity) => {
       console.log();
-      super.setData(proposalEntity.id, new ProposalModel(proposalEntity));
+      super.setData(proposalEntity.id, new Proposal(proposalEntity));
     });
 
     runInAction(() => {
@@ -120,7 +119,7 @@ export default class ProposalListStore extends ListStore<ProposalModel> {
   };
 
   _filterProposalState = (
-    proposal: ProposalModel,
+    proposal: Proposal,
     proposalFilter: IStageProposalFilter,
   ) => {
     if (proposalFilter.history) {
@@ -138,7 +137,7 @@ export default class ProposalListStore extends ListStore<ProposalModel> {
   };
 }
 
-decorate(ProposalListStore, {
+decorate(ProposalStore, {
   //observables
   isLoading: observable,
 

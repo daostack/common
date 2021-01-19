@@ -98,7 +98,7 @@ export interface IProposalVote {
   voteOutcome: VoteOutcome;
 }
 
-export interface IProposalDescription {
+export interface IBaseProposalDescription {
   /**
    * The proposal description
    */
@@ -109,6 +109,28 @@ export interface IProposalDescription {
    */
   links: IProposalLink[];
 }
+
+export interface IJoinReqDescription extends IBaseProposalDescription {}
+export interface IFundingRequestDescription {
+  /**
+   * The proposal in short
+   */
+  title: string;
+
+  /**
+   * Collection of images supporting the request
+   */
+  images: IProposalImage[];
+
+  /**
+   * Collection of files supporting the request
+   */
+  files: IProposalFile[];
+}
+
+export type TypeFundingRequestDescription =
+  | IBaseProposalDescription
+  | IFundingRequestDescription;
 
 export interface IProposalLink {
   /**
@@ -136,6 +158,19 @@ export interface IProposalFile {
   value: string;
 }
 
+export interface IProposalFundingRequest {
+  /**
+   * The amount (in US cents) that was requested
+   */
+  amount: number;
+
+  /**
+   * Whether the funds have been send
+   * to the requested
+   */
+  funded: boolean;
+}
+
 /**
  * The extended version of the proposal including
  * the fields for funding requests
@@ -148,37 +183,32 @@ export interface IFundingRequestProposal extends IBaseProposalEntity {
   /**
    * Object with some description of the proposal
    */
-  description:
-    | IProposalDescription
-    | {
-        /**
-         * The proposal in short
-         */
-        title: string;
+  description: TypeFundingRequestDescription;
 
-        /**
-         * Collection of images supporting the request
-         */
-        images: IProposalImage[];
+  fundingRequest: IProposalFundingRequest;
+}
 
-        /**
-         * Collection of files supporting the request
-         */
-        files: IProposalFile[];
-      };
+export interface IProposalJoin {
+  /**
+   *  The amount that will be contributed
+   */
+  funding: number;
 
-  fundingRequest: {
-    /**
-     * The amount (in US cents) that was requested
-     */
-    amount: number;
+  /**
+   * Whether the contribution will be monthly or one time
+   */
+  fundingType: ContributionType;
 
-    /**
-     * Whether the funds have been send
-     * to the requested
-     */
-    funded: boolean;
-  };
+  /**
+   * The card that will be charged if the
+   * proposal is approved
+   */
+  cardId: string;
+
+  /**
+   * Array of the payment IDs made for this proposal
+   */
+  payments: string[];
 }
 
 /**
@@ -193,7 +223,7 @@ export interface IJoinRequestProposal extends IBaseProposalEntity {
   /**
    * Object with some description of the proposal
    */
-  description: IProposalDescription;
+  description: IJoinReqDescription;
 
   /**
    * The current state of the payment for the proposal
@@ -205,28 +235,7 @@ export interface IJoinRequestProposal extends IBaseProposalEntity {
    */
   paymentState: ProposalPaymentState;
 
-  join: {
-    /**
-     *  The amount that will be contributed
-     */
-    funding: number;
-
-    /**
-     * Whether the contribution will be monthly or one time
-     */
-    fundingType: ContributionType;
-
-    /**
-     * The card that will be charged if the
-     * proposal is approved
-     */
-    cardId: string;
-
-    /**
-     * Array of the payment IDs made for this proposal
-     */
-    payments: string[];
-  };
+  join: IProposalJoin;
 }
 
 export type ProposalType = 'join' | 'fundingRequest';
