@@ -15,7 +15,6 @@ import RootStore from './RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 
 type SignInErrorWithCode = any;
-type UserInfo = any;
 
 class UserStore {
   userInfo: UserModel | null;
