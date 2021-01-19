@@ -29,6 +29,7 @@ const props = {
   commonName: string,
   commonByLine: string,
   currImage: string,
+  onImageChanged: func,
 };
 
 const CommonImage: React.FC<InferProps<typeof props>> = observer(
@@ -106,7 +107,8 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(
       }
       setTemplateIndex(index);
       const currImageUrl = getImageUrl(index);
-      reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, currImageUrl);
+      reviewFormStore?.fieldChanged(CreateCommonForm.IMAGE, currImageUrl);
+      onImageChanged && onImageChanged();
     };
 
     return (
