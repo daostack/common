@@ -26,6 +26,7 @@ const UserProfileData = ({
   userStore: {userInfo},
   daoStore,
   userListStore,
+  proposalStore,
 }) => {
   const providedUserId = userId || currUserInfo.uid;
   const isOwnProfile = providedUserId === userInfo?.uid;
@@ -37,12 +38,12 @@ const UserProfileData = ({
     title: user.displayNameFormatted,
   });
 
-  const [proposalsCount, setProposalsCount] = useState(0);
-  const [requestsCount, setRequestsCount] = useState(0);
+  const requestsCount = proposalStore.myActiveMembershipRequests.length;
+  const proposalsCount = proposalStore.myActiveProposals.length;
+
   const [commonsCount, setCommonsCount] = useState(0);
 
-  useEffect(() => {
-  }, [userId, currUserInfo, userInfo, daoStore.daos]);
+  useEffect(() => {}, [userId, currUserInfo, userInfo, daoStore.daos]);
 
   const navigateToEditProfile = (isFirstOpening) => {
     const navigate = CommonActions.navigate({
@@ -114,10 +115,6 @@ const UserProfileData = ({
     );
   }
 
-  const onProposalsCountChange = (newCount) => {
-    setProposalsCount(newCount);
-  };
-
   const onCommonsCountChange = (newCount) => {
     setCommonsCount(newCount);
   };
@@ -125,9 +122,6 @@ const UserProfileData = ({
   /**
    * @param newCount {number} - the new count of the requests
    */
-  const onRequestsCountChange = (newCount) => {
-    setRequestsCount(newCount);
-  };
 
   const showMaxData = user.uid === userInfo?.uid ? 5 : null;
 
@@ -225,13 +219,15 @@ const UserProfileData = ({
         </View>
 
         <ProposalsList
-          onlyFundingRequests
-          navigation={navigation}
-          userId={user.uid}
-          showAll={true}
+          list={proposalStore.myActiveProposals}
           isSwiper={true}
-          showMax={showMaxData}
-          onCountChange={onProposalsCountChange}
+          // onlyFundingRequests
+          // navigation={navigation}
+          // userId={user.uid}
+          // showAll={true}
+          // isSwiper={true}
+          // showMax={showMaxData}
+          // onCountChange={onProposalsCountChange}
         />
       </View>
 
@@ -243,7 +239,8 @@ const UserProfileData = ({
               ...layout.marginBottomL,
               ...layout.paddingHorizontalL,
             }}>
-            Membership requests ({requestsCount})
+            Membership requests (
+            {proposalStore.myActiveMembershipRequests.length})
           </Text>
 
           {showMaxData && requestsCount > 0 && (
@@ -270,13 +267,15 @@ const UserProfileData = ({
         </View>
 
         <ProposalsList
-          membershipRequests
-          navigation={navigation}
-          userId={user.uid}
-          showAll={true}
+          list={proposalStore.myActiveMembershipRequests}
           isSwiper={true}
-          showMax={showMaxData}
-          onCountChange={onRequestsCountChange}
+          // membershipRequests
+          // navigation={navigation}
+          // userId={user.uid}
+          // showAll={true}
+          // isSwiper={true}
+          // showMax={showMaxData}
+          // onCountChange={onRequestsCountChange}
         />
       </View>
     </React.Fragment>
@@ -294,6 +293,10 @@ UserProfileData.propTypes = {
   }),
   daoStore: shape({
     daos: array,
+  }),
+  proposalStore: shape({
+    myActiveProposals: array,
+    myActiveMembershipRequests: array,
   }),
   userListStore: shape({
     getUserById: func,
@@ -361,4 +364,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'daoStore', 'userListStore')(observer(UserProfileData));
+export default inject(
+  'userStore',
+  'daoStore',
+  'userListStore',
+  'proposalStore',
+)(observer(UserProfileData));

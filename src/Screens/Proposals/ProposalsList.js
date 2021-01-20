@@ -38,78 +38,79 @@ const ProposalsList = ({
   onlyRequestsToJoin,
   includeHistoryInCount,
   userStore: {userInfo},
+  list,
 }) => {
   const commonId = commonInfo?.id;
 
-  const [list, setList] = useState(null);
+  //const [list, setList] = useState(null);
 
   let listRef = useRef([]);
   let unsubscribe = null;
-  useEffect(() => {
-    const loadProposalInfo = async (
-      loadCommonId,
-      loadUserId,
-      loadIsHistory,
-      loadShowAll,
-      loadOnlyFundingRequests,
-      loadMembershipRequests,
-    ) => {
-      let proposalStages = [
-        ...PROPOSAL_STAGES_HISTORY,
-        ...PROPOSAL_STAGES_ACTIVE,
-      ];
+  // useEffect(() => {
+  //   const loadProposalInfo = async (
+  //     loadCommonId,
+  //     loadUserId,
+  //     loadIsHistory,
+  //     loadShowAll,
+  //     loadOnlyFundingRequests,
+  //     loadMembershipRequests,
+  //   ) => {
+  //     let proposalStages = [
+  //       ...PROPOSAL_STAGES_HISTORY,
+  //       ...PROPOSAL_STAGES_ACTIVE,
+  //     ];
 
-      unsubscribe = await ProposalService.getInstance().subscribeToProposalList(
-        loadCommonId,
-        loadUserId,
-        proposalStages,
-        loadShowAll,
-        (newList) => {
-          const history = newList.filter(
-            (proposal) =>
-              PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state) &&
-              !ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState),
-          );
+  //     unsubscribe = await ProposalService.getInstance().subscribeToProposalList(
+  //       loadCommonId,
+  //       loadUserId,
+  //       proposalStages,
+  //       loadShowAll,
+  //       (newList) => {
+  //         const history = newList.filter(
+  //           (proposal) =>
+  //             PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state) &&
+  //             !ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState),
+  //         );
 
-          const active = newList.filter(
-            (proposal) =>
-              PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.state) ||
-              ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState),
-          );
+  //         const active = newList.filter(
+  //           (proposal) =>
+  //             PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.state) ||
+  //             ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState),
+  //         );
 
-          const filteredList = loadIsHistory ? history : active;
+  //         const filteredList = loadIsHistory ? history : active;
 
-          setList(filteredList);
-          if (onCountChange) {
-            if (includeHistoryInCount) {
-              onCountChange(history.length + active.length);
-            } else {
-              onCountChange(filteredList.length);
-            }
-          }
-        },
-        listRef,
-        onlyRequestsToJoin,
-        loadOnlyFundingRequests,
-        loadMembershipRequests,
-      );
-    };
+  //         setList(filteredList);
+  //         if (onCountChange) {
+  //           if (includeHistoryInCount) {
+  //             onCountChange(history.length + active.length);
+  //           } else {
+  //             onCountChange(filteredList.length);
+  //           }
+  //         }
+  //       },
+  //       listRef,
+  //       onlyRequestsToJoin,
+  //       loadOnlyFundingRequests,
+  //       loadMembershipRequests,
+  //     );
+  //   };
 
-    loadProposalInfo(
-      commonId,
-      userId,
-      isHistory,
-      showAll,
-      onlyFundingRequests,
-      membershipRequests,
-    );
+  //   loadProposalInfo(
+  //     commonId,
+  //     userId,
+  //     isHistory,
+  //     showAll,
+  //     onlyFundingRequests,
+  //     membershipRequests,
+  //   );
 
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  }, [commonId, isHistory, userId, userInfo]);
+  //   return () => {
+  //     if (unsubscribe) {
+  //       unsubscribe();
+  //     }
+  //   };
+  // }, [commonId, isHistory, userId, userInfo]);
 
   const renderProposalCard = (item, index) =>
     isSwiper ? (

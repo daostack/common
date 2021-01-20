@@ -1,7 +1,7 @@
 import {ProposalsCollection} from '~/Firebase/Databasee/Collections/ProposalsCollection';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PROPOSAL_TYPE} from '~/Config';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+import {FirestoreUnsubscribeFn, IFirebaseSnapshot} from '~/Firebase/types';
 
 export type proposalListLoadCallbackFn = (
   updatedProposalList: Array<IProposalEntity>,
@@ -29,13 +29,17 @@ interface ProposalFilter {
   showAll?: boolean;
   onlyRequestsToJoin?: boolean;
   onlyFundingRequests?: boolean;
+  onlyActive?: boolean;
+  onlyHistory?: boolean;
 }
 
 // Private
 export const subscribeToProposalList = (
-  listChangeCallback: (updatedProposals: Array<IProposalEntity>) => void,
+  listChangeCallback: (updatedProposals: IFirebaseSnapshot) => void,
   filter: ProposalFilter,
 ): FirestoreUnsubscribeFn => {
+  console.log('PROPOSAL SERVICE subscribeToProposalList ', filter);
+
   let proposalListQuery = ProposalsCollection;
 
   if (filter.commonId) {
@@ -69,29 +73,42 @@ export const subscribeToProposalList = (
   }
 
   if (!filter.showAll) {
-    proposalListQuery = proposalListQuery.where(
-      'state',
-      'in',
-      PROPOSAL_STAGES_ALL,
-    );
+    if (filter.onlyActive || filter.onlyHistory) {
+      const stages = filter.onlyActive
+        ? PROPOSAL_STAGES_ACTIVE
+        : PROPOSAL_STAGES_HISTORY;
+      proposalListQuery = proposalListQuery.where('state', 'in', stages);
+    } else {
+      proposalListQuery = proposalListQuery.where(
+        'state',
+        'in',
+        PROPOSAL_STAGES_ALL,
+      );
+    }
   }
 
-  proposalListQuery = proposalListQuery.orderBy('createdAt', 'desc');
+  //proposalListQuery = proposalListQuery.orderBy('createdAt', 'desc');
 
-  return proposalListQuery.onSnapshot((snapshot: any) => {
-    if (!snapshot || snapshot.empty) {
-      listChangeCallback([]);
-    } else {
+  console.log('proposalListQuery ', proposalListQuery);
+
+  return proposalListQuery.onSnapshot((snapshot: IFirebaseSnapshot) => {
+    console.log('PROPOSAL ON SNAPSHOT -> ', snapshot);
+
+    if (snapshot) {
       let proposalsList = [];
 
-      // TODO: Make better handling of changes with docChanges()
-      if (!snapshot?.empty || !snapshot) {
-        proposalsList = snapshot.docs.map(
-          (doc: any) => doc.data() as IProposalEntity,
-        );
-      }
+      // // TODO: Make better handling of changes with docChanges()
+      // if (!snapshot.empty) {
+      //   proposalsList = snapshot.docs.map(
+      //     (doc: any) => doc.data() as IProposalEntity,
+      //   );
+      // }
 
-      listChangeCallback(proposalsList);
+      listChangeCallback(snapshot);
+    } else {
+      console.log('===========================================');
+      console.log('NULL SNAPSHOT RETURNED');
+      console.log('===========================================');
     }
   });
 };

@@ -6,6 +6,7 @@ import RootStore from '../RootStore';
 import {Common} from '../Models/Common';
 import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {DAO_REGISTERED} from '~/Firebase/Databasee';
+import {Proposal} from '../Models/Proposal';
 
 export default class CommonStore extends ListStore<Common> {
   isLoading: boolean;
@@ -26,8 +27,31 @@ export default class CommonStore extends ListStore<Common> {
   }
 
   get pendingCommons() {
-    // TODO: filter data
-    return this.data;
+    //return [];
+    console.log(
+      'this.rootStore.proposalStore.myActiveMembershipRequests.length ->',
+      this.rootStore.proposalStore.myActiveMembershipRequests.length,
+    );
+    if (
+      this.isLoading ||
+      this.rootStore.proposalStore.myActiveMembershipRequests.length === 0
+    ) {
+      return [];
+    } else {
+      let commons: Array<ICommonEntity> = [];
+      this.rootStore.proposalStore.myActiveMembershipRequests.forEach(
+        (proposal: Proposal) => {
+          const currPendingCommon = this.getCommonById(proposal.commonId);
+          if (currPendingCommon) {
+            commons.push(currPendingCommon);
+          }
+        },
+      );
+      // return this.getDataArray?.filter((common: Common) =>
+      //   commonIds.includes(common.id),
+      // );
+      return commons;
+    }
   }
 
   get featuredCommons() {
@@ -56,8 +80,7 @@ export default class CommonStore extends ListStore<Common> {
     });
 
     updatedUserList.forEach((commonEntity: ICommonEntity) => {
-      console.log();
-      super.setData(commonEntity.id, new Common(commonEntity));
+      this.setData(commonEntity.id, new Common(commonEntity));
     });
 
     runInAction(() => {

@@ -6,7 +6,11 @@ import {
   PROPOSAL_STAGES_HISTORY,
 } from '~/Services/ListServices/ProposalListService';
 import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+import {
+  FirestoreUnsubscribeFn,
+  IFirebaseDocChange,
+  IFirebaseSnapshot,
+} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
@@ -34,7 +38,7 @@ export default class ProposalStore extends ListStore<Proposal> {
   }
   // Computed fields
   get myActiveProposals() {
-    if (!this.rootStore.authStore.userInfo?.uid) {
+    if (this.isLoading || !this.rootStore.authStore.userInfo?.uid) {
       return [];
     }
     return this.getUserActiveProposals(this.rootStore.authStore.userInfo?.uid, {
@@ -43,7 +47,7 @@ export default class ProposalStore extends ListStore<Proposal> {
   }
 
   get myActiveMembershipRequests() {
-    if (!this.rootStore.authStore.userInfo?.uid) {
+    if (this.isLoading || !this.rootStore.authStore.userInfo?.uid) {
       return [];
     }
     return this.getUserActiveProposals(this.rootStore.authStore.userInfo?.uid, {
@@ -57,20 +61,20 @@ export default class ProposalStore extends ListStore<Proposal> {
   getUserActiveProposals = (
     userId: string,
     proposalFilter: IUserProposalFilter,
-  ): Array<Proposal> | undefined =>
+  ): Array<Proposal> | [] =>
     this.getDataArray?.filter((proposal: Proposal) => {
       const isProposer = proposal.proposerId === userId;
       if (isProposer) {
         if (proposalFilter.onlyFundingRequests) {
           return (
             proposal.type === PROPOSAL_TYPE.FundingRequest &&
-            this._filterProposalState(proposal, {active: true})
+            this._checkProposalState(proposal, {active: true})
           );
         }
         if (proposalFilter.onlyRequestsToJoin) {
           return (
             proposal.type === PROPOSAL_TYPE.Join &&
-            this._filterProposalState(proposal, {active: true})
+            this._checkProposalState(proposal, {active: true})
           );
         }
       }
@@ -84,16 +88,19 @@ export default class ProposalStore extends ListStore<Proposal> {
     this.getDataArray?.filter((proposal: Proposal) => {
       const isSameCommon = proposal.commonId === commonId;
       if (isSameCommon) {
-        return this._filterProposalState(proposal, proposalFilter);
+        return this._checkProposalState(proposal, proposalFilter);
       }
       return isSameCommon;
     });
 
   //Actions
-  subscribeToUserProposals = (userId: string): FirestoreUnsubscribeFn =>
-    subscribeToProposalList(this._updateProposalList, {
+  subscribeToUserActiveProposals = (userId: string): FirestoreUnsubscribeFn => {
+    console.log('subscribeToUserProposals userId -> ', userId);
+    return subscribeToProposalList(this._updateProposalList, {
       userId: userId,
+      onlyActive: true,
     });
+  };
 
   subscribeToCommonProposals = (commonId: string): FirestoreUnsubscribeFn =>
     subscribeToProposalList(this._updateProposalList, {
@@ -101,22 +108,34 @@ export default class ProposalStore extends ListStore<Proposal> {
     });
 
   // Private function
-  _updateProposalList = (updatedUserList: Array<IProposalEntity>) => {
+  _updateProposalList = (
+    updatedUserList: IFirebaseSnapshot<IProposalEntity>,
+  ) => {
     runInAction(() => {
       this.isLoading = true;
     });
 
-    updatedUserList.forEach((proposalEntity: IProposalEntity) => {
-      console.log();
-      super.setData(proposalEntity.id, new Proposal(proposalEntity));
-    });
+    console.log('updatedUserList -> ', updatedUserList);
+    // Initial loading
+
+    updatedUserList
+      .docChanges()
+      .forEach((updatedProposalDoc: IFirebaseDocChange<IProposalEntity>) => {
+        const currProposal = updatedProposalDoc.doc.data();
+        // let proposal = this.getDataById(currProposal.id);
+        // if (proposal) {
+        //   proposal.setUpdates(updatedProposalDoc);
+        // } else {
+        this.setData(currProposal.id, new Proposal(currProposal));
+        // }
+      });
 
     runInAction(() => {
       this.isLoading = false;
     });
   };
 
-  _filterProposalState = (
+  _checkProposalState = (
     proposal: Proposal,
     proposalFilter: IStageProposalFilter,
   ) => {

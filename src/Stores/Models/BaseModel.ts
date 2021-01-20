@@ -4,6 +4,10 @@ export class BaseModel<I> implements I {
   id: string = '';
   createdAt: Date | null = null;
   updatedAt: Date | null = null;
+
+  // setUpdates = () => {
+
+  // }
 }
 
 decorate(BaseModel, {
