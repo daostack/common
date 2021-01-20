@@ -116,13 +116,10 @@ const App = ({
 
   // Initialize Mobx Stores
   useEffect(() => {
-    console.log('INITIALIZE MOBX STORES');
     const unsubscribeUsers = userListStore.subscribeToAllUsers();
     const unsubscribeCommons = commonStore.subscribeToAllCommons();
     let unsubscribeProposals = null;
-    console.log('userStore.userInfo?.uid -> ', userStore.userInfo?.uid);
     if (userStore.userInfo?.uid) {
-      console.log('call subscribeToUserProposals');
       unsubscribeProposals = proposalStore.subscribeToUserActiveProposals(
         userStore.userInfo?.uid,
       );

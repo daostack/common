@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useRef} from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -9,109 +9,32 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import ViewTabNoData from '~/Components/ViewTabNoData';
-import ProposalService from '~/Services/ProposalService';
 import ProposalCard from '~/Components/Proposals/ProposalCard';
 import {layout, colors, font, text, sizeM} from '~/Theme';
 import SwiperCard from '~/Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
-import {
-  PROPOSAL_STAGES_ACTIVE,
-  PROPOSAL_STAGES_HISTORY,
-} from '~/Services/ProposalService';
-import {string, bool, object, number, shape, func} from 'prop-types';
-import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
+import {string, bool, object, number, shape, func, array} from 'prop-types';
 import {observer, inject} from 'mobx-react';
 const {width, height} = Dimensions.get('window');
 
 const ProposalsList = ({
   isMember,
   commonInfo,
-  showAll,
+  // showAll,
   showMax,
   onlyFundingRequests,
-  userId,
+  // userId,
   membershipRequests,
   isHistory,
   isSwiper,
   navigation,
-  onCountChange,
+  // onCountChange,
   onlyRequestsToJoin,
-  includeHistoryInCount,
-  userStore: {userInfo},
+  // includeHistoryInCount,
+  // userStore: {userInfo},
   list,
 }) => {
-  const commonId = commonInfo?.id;
-
-  //const [list, setList] = useState(null);
-
   let listRef = useRef([]);
-  let unsubscribe = null;
-  // useEffect(() => {
-  //   const loadProposalInfo = async (
-  //     loadCommonId,
-  //     loadUserId,
-  //     loadIsHistory,
-  //     loadShowAll,
-  //     loadOnlyFundingRequests,
-  //     loadMembershipRequests,
-  //   ) => {
-  //     let proposalStages = [
-  //       ...PROPOSAL_STAGES_HISTORY,
-  //       ...PROPOSAL_STAGES_ACTIVE,
-  //     ];
-
-  //     unsubscribe = await ProposalService.getInstance().subscribeToProposalList(
-  //       loadCommonId,
-  //       loadUserId,
-  //       proposalStages,
-  //       loadShowAll,
-  //       (newList) => {
-  //         const history = newList.filter(
-  //           (proposal) =>
-  //             PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state) &&
-  //             !ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState),
-  //         );
-
-  //         const active = newList.filter(
-  //           (proposal) =>
-  //             PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.state) ||
-  //             ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState),
-  //         );
-
-  //         const filteredList = loadIsHistory ? history : active;
-
-  //         setList(filteredList);
-  //         if (onCountChange) {
-  //           if (includeHistoryInCount) {
-  //             onCountChange(history.length + active.length);
-  //           } else {
-  //             onCountChange(filteredList.length);
-  //           }
-  //         }
-  //       },
-  //       listRef,
-  //       onlyRequestsToJoin,
-  //       loadOnlyFundingRequests,
-  //       loadMembershipRequests,
-  //     );
-  //   };
-
-  //   loadProposalInfo(
-  //     commonId,
-  //     userId,
-  //     isHistory,
-  //     showAll,
-  //     onlyFundingRequests,
-  //     membershipRequests,
-  //   );
-
-  //   return () => {
-  //     if (unsubscribe) {
-  //       unsubscribe();
-  //     }
-  //   };
-  // }, [commonId, isHistory, userId, userInfo]);
-
   const renderProposalCard = (item, index) =>
     isSwiper ? (
       !showMax || index < showMax ? (
@@ -244,6 +167,7 @@ ProposalsList.propTypes = {
       uid: string,
     }),
   }),
+  list: array,
 };
 
 const styles = StyleSheet.create({

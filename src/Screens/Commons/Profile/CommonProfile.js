@@ -31,9 +31,7 @@ import CommonHeader from '~/Components/Commons/CommonHeader';
 import {calcIsFundingStage, LAYOUT_ANIMATION_CONFIG} from '~/Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '~/Services/ProposalService';
-import DaoService from '~/Services/DaoService';
 import CountDown from 'react-native-countdown-component';
-import Toast from '~/Util/Toast';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -135,37 +133,12 @@ const CommonProfile = ({
     false,
   );
 
-  //setHeaderHeight(height + 35);
-
   const headerHeightLayouted = (height) => height;
 
   const animateNextStateRender = () => {
     Platform.OS === 'ios' &&
       LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
   };
-
-  // useEffect(() => {
-  //   const loadCurrCommon = (snapshot) => {
-  //     if (snapshot.exists) {
-  //       setCurrCommon(snapshot.data());
-  //     } else {
-  //       Toast.error('This DAO cannot be found try again later');
-  //       navigation.pop();
-  //     }
-  //   };
-  //   let unsubscribeCommon = null;
-  //   const subscribeToCommon = async (currCommonId) => {
-  //     unsubscribeCommon = await DaoService.getInstance().subscribeToDaoById(
-  //       currCommonId,
-  //       loadCurrCommon,
-  //     );
-  //   };
-  //   // Subscribe to a common.
-  //   subscribeToCommon(params.commonId || currCommon.id);
-  //   return () => {
-  //     unsubscribeCommon && unsubscribeCommon();
-  //   };
-  // }, [params.commonId, currCommon?.id]);
 
   useEffect(() => {
     setShowRequestSentModal(params.showRequestSentModal);
@@ -227,10 +200,6 @@ const CommonProfile = ({
       getPendingProposalsDiscussionCount();
     }
   }, [pendingProposalsData]);
-
-  // useEffect(() => {
-  //   setCurrCommon(params.currCommon);
-  // }, [params.currCommon]);
 
   const renderTabBar = (props) => (
     <TabBarRenderer
