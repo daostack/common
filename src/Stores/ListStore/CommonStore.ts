@@ -18,7 +18,6 @@ export default class CommonStore extends ListStore<Common> {
 
   // Computed fields
   get myCommons() {
-    //console.log('MY COMMONS -> ', super.getDataArray);
     return this.isLoading
       ? []
       : this.getDataArray?.filter((common: Common) =>
@@ -27,11 +26,6 @@ export default class CommonStore extends ListStore<Common> {
   }
 
   get pendingCommons() {
-    //return [];
-    console.log(
-      'this.rootStore.proposalStore.myActiveMembershipRequests.length ->',
-      this.rootStore.proposalStore.myActiveMembershipRequests.length,
-    );
     if (
       this.isLoading ||
       this.rootStore.proposalStore.myActiveMembershipRequests.length === 0

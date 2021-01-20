@@ -35,11 +35,11 @@ interface ProposalFilter {
 
 // Private
 export const subscribeToProposalList = (
-  listChangeCallback: (updatedProposals: IFirebaseSnapshot) => void,
+  listChangeCallback: (
+    updatedProposals: IFirebaseSnapshot<IProposalEntity>,
+  ) => void,
   filter: ProposalFilter,
 ): FirestoreUnsubscribeFn => {
-  console.log('PROPOSAL SERVICE subscribeToProposalList ', filter);
-
   let proposalListQuery = ProposalsCollection;
 
   if (filter.commonId) {
@@ -89,26 +89,13 @@ export const subscribeToProposalList = (
 
   //proposalListQuery = proposalListQuery.orderBy('createdAt', 'desc');
 
-  console.log('proposalListQuery ', proposalListQuery);
-
-  return proposalListQuery.onSnapshot((snapshot: IFirebaseSnapshot) => {
-    console.log('PROPOSAL ON SNAPSHOT -> ', snapshot);
-
-    if (snapshot) {
-      let proposalsList = [];
-
-      // // TODO: Make better handling of changes with docChanges()
-      // if (!snapshot.empty) {
-      //   proposalsList = snapshot.docs.map(
-      //     (doc: any) => doc.data() as IProposalEntity,
-      //   );
-      // }
-
-      listChangeCallback(snapshot);
-    } else {
-      console.log('===========================================');
-      console.log('NULL SNAPSHOT RETURNED');
-      console.log('===========================================');
-    }
-  });
+  return proposalListQuery.onSnapshot(
+    (snapshot: IFirebaseSnapshot<IProposalEntity>) => {
+      if (snapshot) {
+        listChangeCallback(snapshot);
+      } else {
+        console.log('!!! NULL SNAPSHOT RETURNED in PROPOSAL on SNAPSHOT !!!');
+      }
+    },
+  );
 };

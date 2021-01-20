@@ -94,13 +94,11 @@ export default class ProposalStore extends ListStore<Proposal> {
     });
 
   //Actions
-  subscribeToUserActiveProposals = (userId: string): FirestoreUnsubscribeFn => {
-    console.log('subscribeToUserProposals userId -> ', userId);
-    return subscribeToProposalList(this._updateProposalList, {
+  subscribeToUserActiveProposals = (userId: string): FirestoreUnsubscribeFn =>
+    subscribeToProposalList(this._updateProposalList, {
       userId: userId,
       onlyActive: true,
     });
-  };
 
   subscribeToCommonProposals = (commonId: string): FirestoreUnsubscribeFn =>
     subscribeToProposalList(this._updateProposalList, {
@@ -115,13 +113,13 @@ export default class ProposalStore extends ListStore<Proposal> {
       this.isLoading = true;
     });
 
-    console.log('updatedUserList -> ', updatedUserList);
     // Initial loading
-
     updatedUserList
       .docChanges()
       .forEach((updatedProposalDoc: IFirebaseDocChange<IProposalEntity>) => {
         const currProposal = updatedProposalDoc.doc.data();
+        // TODO: implement setUpdates method to handle single field changes in existing models
+
         // let proposal = this.getDataById(currProposal.id);
         // if (proposal) {
         //   proposal.setUpdates(updatedProposalDoc);
