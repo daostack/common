@@ -60,8 +60,9 @@ class DaoStore {
     try {
       const updateResponse = await DaoService.getInstance().updateCommon(
         {
-          newCommon: updateCommonInfo,
-          changedBy,
+          commonId: updateCommonInfo.id,
+          changes: updateCommonInfo,
+          userId: changedBy,
         },
       );
       Cache.set(updateCommonInfo.id, updateCommonInfo);
