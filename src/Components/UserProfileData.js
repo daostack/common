@@ -11,6 +11,7 @@ import {CommonActions} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
 import logger from '~/Services/Logger';
 import {string, object, shape, array, func} from 'prop-types';
+import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 
 import {
   Placeholder,
@@ -219,15 +220,15 @@ const UserProfileData = ({
         </View>
 
         <ProposalsList
-          list={proposalStore.myActiveProposals}
+          navigation={navigation}
           isSwiper={true}
-          // onlyFundingRequests
-          // navigation={navigation}
-          // userId={user.uid}
-          // showAll={true}
-          // isSwiper={true}
-          // showMax={showMaxData}
-          // onCountChange={onProposalsCountChange}
+          userInfo={{
+            id: userInfo.uid,
+          }}
+          proposalFilter={{
+            stage: PROPOSAL_STAGE.Active,
+            type: PROPOSAL_TYPE.FundingRequest,
+          }}
         />
       </View>
 
@@ -267,15 +268,15 @@ const UserProfileData = ({
         </View>
 
         <ProposalsList
-          list={proposalStore.myActiveMembershipRequests}
+          navigation={navigation}
           isSwiper={true}
-          // membershipRequests
-          // navigation={navigation}
-          // userId={user.uid}
-          // showAll={true}
-          // isSwiper={true}
-          // showMax={showMaxData}
-          // onCountChange={onRequestsCountChange}
+          userInfo={{
+            id: userInfo.uid,
+          }}
+          proposalFilter={{
+            stage: PROPOSAL_STAGE.Active,
+            type: PROPOSAL_TYPE.Join,
+          }}
         />
       </View>
     </React.Fragment>

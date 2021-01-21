@@ -21,13 +21,18 @@ const ProposalsList = ({
   isSwiper,
   navigation,
   commonInfo,
+  userInfo,
   proposalFilter,
   showMax,
   proposalStore,
 }) => {
-  const list = commonInfo
-    ? proposalStore.getCommonProposals(commonInfo.id, proposalFilter)
-    : list;
+  let list = [];
+  if (commonInfo) {
+    list = proposalStore.getCommonProposals(commonInfo.id, proposalFilter);
+  } else if (userInfo) {
+    list = proposalStore.getUserProposals(userInfo.id, proposalFilter);
+  }
+
   let listRef = useRef([]);
   const renderProposalCard = (item, index) =>
     isSwiper ? (
@@ -140,6 +145,9 @@ ProposalsList.propTypes = {
   commonInfo: shape({
     id: string,
     name: string,
+  }),
+  userInfo: shape({
+    id: string,
   }),
   showAll: bool,
   showMax: number,
