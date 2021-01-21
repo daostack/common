@@ -34,7 +34,6 @@ export const firstLastNameValidate = {
 export const cardholderNameValidator = {
   ruleName: VALIDATION_RULES.CARDHOLDER_NAME_VALIDATOR,
   validateFunc: (value) =>  new RegExp(/^[a-zA-Z'’. ]*$/).test(value),
-  errorMessage:
-    'The :attribute should consist of only latin characters, spaces, dots and single quotation marks,',
+  errorMessage: 'The :attribute should use latin characters only',
 };
 
