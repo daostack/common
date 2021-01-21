@@ -84,10 +84,7 @@ const App = ({
   userStore,
   userListStore,
   commonStore,
-<<<<<<< HEAD
   proposalStore,
-=======
->>>>>>> dev
   bottomSheetStore,
   navigation,
 }) => {
@@ -121,7 +118,6 @@ const App = ({
   useEffect(() => {
     const unsubscribeUsers = userListStore.subscribeToAllUsers();
     const unsubscribeCommons = commonStore.subscribeToAllCommons();
-<<<<<<< HEAD
     let unsubscribeProposals = null;
     if (userStore.userInfo?.uid) {
       unsubscribeProposals = proposalStore.subscribeToUserActiveProposals(
@@ -132,11 +128,6 @@ const App = ({
       unsubscribeUsers && unsubscribeUsers();
       unsubscribeCommons && unsubscribeCommons();
       unsubscribeProposals && unsubscribeProposals();
-=======
-    return () => {
-      unsubscribeUsers && unsubscribeUsers();
-      unsubscribeCommons && unsubscribeCommons();
->>>>>>> dev
     };
   }, [userStore.userInfo?.uid]);
 
@@ -602,12 +593,9 @@ App.propTypes = {
   commonStore: shape({
     subscribeToAllCommons: func,
   }),
-<<<<<<< HEAD
   proposalStore: shape({
     subscribeToUserProposals: func,
   }),
-=======
->>>>>>> dev
   bottomSheetStore: shape({
     isVisible: bool,
     showBottomSheet: func,
@@ -631,8 +619,5 @@ export default inject(
   'bottomSheetStore',
   'userListStore',
   'commonStore',
-<<<<<<< HEAD
   'proposalStore',
-=======
->>>>>>> dev
 )(observer(App));
