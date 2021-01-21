@@ -18,11 +18,22 @@ export type IProposalStageFilter =
 export type IProposalTypeFilter =
   | typeof PROPOSAL_TYPE.FundingRequest
   | typeof PROPOSAL_TYPE.Join;
-
-interface IProposalFilter {
+export interface IProposalFilter {
   type: IProposalTypeFilter;
   stage: IProposalStageFilter;
 }
+
+export const isTypeFilterJoin = (typeFilter: IProposalTypeFilter) =>
+  typeFilter === PROPOSAL_TYPE.Join;
+
+export const isTypeFilterFundingRequest = (typeFilter: IProposalTypeFilter) =>
+  typeFilter === PROPOSAL_TYPE.Join;
+
+export const isStageFilterActive = (stageFilter: IProposalStageFilter) =>
+  stageFilter === PROPOSAL_STAGE.Active;
+
+export const isStageFilterHistory = (stageFilter: IProposalStageFilter) =>
+  stageFilter === PROPOSAL_STAGE.History;
 
 export default class ProposalStore extends ListStore<Proposal> {
   isLoading: boolean;
