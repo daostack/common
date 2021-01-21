@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextInput, View, Text, StyleSheet} from 'react-native';
+import {TextInput, View, Text, StyleSheet, Platform} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import {layout, colors, font} from '~/Theme';
@@ -83,13 +83,15 @@ class TextInputField extends React.Component {
       keyboardType,
       validation,
       maxLength,
-      textContentType,
+      autofill,
       ...otherProps
     } = this.props;
-
+    console.log('autofill', autofill);
     const {formStore, name, multiName} = validation;
     let styleTextfield = styles.textfieldContainer;
     let defaultMultilineProps = {minHeight: 48};
+    const autoComplete = Platform.OS === 'ios' ? {'textContentType': autofill} : {'autoCompleteType': autofill};
+    console.log('autoComplete', autoComplete);
 
     styleTextfield = formStore.getFormField(name, multiName).error
       ? {...styles.textfieldContainer, ...{borderColor: colors.error}}
@@ -116,7 +118,7 @@ class TextInputField extends React.Component {
             ref={this.props.forwardRef}
             {...defaultMultilineProps}
             {...otherProps}
-            textContentType={textContentType}
+            {...autoComplete}
             maxLength={maxLength}
             multiline={multiline}
             style={styles.textfield}
@@ -157,7 +159,7 @@ Label.propTypes = {
 };
 
 TextInputField.propTypes = {
-  textContentType: string,
+  //textContentType: string,
   validation: object.isRequired,
   value: oneOfType([string, number]),
   onChangeText: func,
@@ -174,6 +176,7 @@ TextInputField.propTypes = {
   forwardRef: object,
   onSubmit: func,
   format: func,
+  autofill: string,
 };
 
 const styles = StyleSheet.create({
