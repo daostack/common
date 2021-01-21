@@ -106,8 +106,7 @@ const CreateStep2 = ({
     fundingFormStore.updateFieldValidationRule(
       CreateCommonForm.MINIMUM,
       null,
-      minimumFieldRules(index),
-      !isInitialSelect,
+      minimumFieldRules(index)
     );
   };
 
