@@ -22,6 +22,8 @@ import {inject} from 'mobx-react';
 import ProposalService from '~/Services/ProposalService';
 import UseOfFunds from '../../Components/Commons/UseOfFunds';
 import {BlurView} from '@react-native-community/blur';
+import DebtWarningNote from './components/DebtWarningNote';
+import ModalDebtWarning from './components/ModalDebtWarning';
 
 const FundingProposal = ({
   navigation,
@@ -30,8 +32,9 @@ const FundingProposal = ({
   },
   bottomSheetStore,
 }) => {
-  const [ fundingRequestFormStore ] = useState(new FundingRequestFormStore());
-  const [ useOfFundsVisible, setUseOfFundsVisible ] = useState(false);
+  const [fundingRequestFormStore] = useState(new FundingRequestFormStore());
+  const [useOfFundsVisible, setUseOfFundsVisible] = useState(false);
+  const [debtModalVisible, setDebtModalVisible] = useState(false);
 
   const createProposal = async () => {
     navigation.setOptions({headerShown: true});
@@ -57,9 +60,9 @@ const FundingProposal = ({
           },
         });
 
-        const createFundingProposalResponse = await ProposalService
-          .getInstance()
-          .createFundingProposal(data);
+        const createFundingProposalResponse = await ProposalService.getInstance().createFundingProposal(
+          data,
+        );
 
         if (createFundingProposalResponse.status === 200) {
           const proposalId = createFundingProposalResponse.data.id;
@@ -88,6 +91,14 @@ const FundingProposal = ({
     }
   };
 
+  const closeDebtModal = () => {
+    setDebtModalVisible(false);
+  };
+
+  const openDebtModal = () => {
+    setDebtModalVisible(true);
+  };
+
   const onCreateProposalButtonPressed = async () => {
     if (fundingRequestFormStore.isFormValid()) {
       Keyboard.dismiss();
@@ -108,12 +119,18 @@ const FundingProposal = ({
 
   return (
     <React.Fragment>
-      <StatusBar barStyle="dark-content"/>
+      <StatusBar barStyle="dark-content" />
       <Modal
         animationType="slide"
         transparent={true}
         visible={useOfFundsVisible}>
-        <UseOfFunds onPressAgree={createProposal}/>
+        <UseOfFunds onPressAgree={createProposal} />
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={debtModalVisible}>
+        <ModalDebtWarning onPressClose={() => closeDebtModal()} />
       </Modal>
       <SafeAreaView style={{flex: 1}}>
         <ScrollView
@@ -128,11 +145,12 @@ const FundingProposal = ({
               'Proposals allow you to make decisions as a group.\nIf you choose to request funding and the proposal is accepted, you will be responsible to follow it through.'
             }
           </Text>
-          <View style={styles.divider}/>
+          <View style={styles.divider} />
           <FundingRequestForm
             common={common}
             fundingRequestFormStore={fundingRequestFormStore}
           />
+          <DebtWarningNote onPress={() => openDebtModal()} />
         </ScrollView>
         <RequestStepActionButton
           title="Create Proposal"

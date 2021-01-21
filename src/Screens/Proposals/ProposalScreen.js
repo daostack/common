@@ -12,6 +12,7 @@ import {
   TextInput,
   Keyboard,
   Animated,
+  Modal,
 } from 'react-native';
 import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
@@ -21,7 +22,7 @@ import ProposalDiscussion from './ProposalDiscussion';
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
-import ProposalService from '~/Services/ProposalService';
+import ProposalService, {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import {UserAvatar} from '~/Components';
 import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
@@ -41,6 +42,12 @@ import {
   Fade,
 } from 'rn-placeholder';
 import {PROPOSAL_PAYMENT_STATE} from '~/Util/constants';
+import DebtWarningProposalNote from './components/DebtWarningProposalNote';
+import DebtErrorProposalNote from './components/DebtErrorProposalNote';
+import ModalDebtProposalWarning from './components/ModalDebtProposalWarning';
+import ModalDebtProposalError from './components/ModalDebtProposalError';
+import ModalDebtProposalInsufficient from './components/ModalDebtProposalInsufficient';
+import {State} from 'react-native-gesture-handler';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -76,6 +83,13 @@ const ProposalScreen = ({
     showBottomVotingButtonsContainer,
     setShowBottomVotingButtonsContainer,
   ] = useState(false);
+  const [debtModalVisible, setDebtModalVisible] = useState(false);
+  const [debtErrorModalVisible, setDebtErrorModalVisible] = useState(false);
+  const [
+    debtInsufficientModalVisible,
+    setDebtInsufficientModalVisible,
+  ] = useState(false);
+
   const [showPaymentStatus, setShowPaymentStatus] = useState(
     paymentState === PROPOSAL_PAYMENT_STATE.PENDING ||
       paymentState === PROPOSAL_PAYMENT_STATE.NOT_ATTEMPTED ||
@@ -461,6 +475,11 @@ const ProposalScreen = ({
 
   const votesCount = votesFor + votesAgainst;
 
+  const amount =
+    proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+      ? proposalScreenInfo?.proposalInfo.fundingRequest.amount / 100
+      : proposalScreenInfo?.proposalInfo.join.funding / 100;
+
   const onSetIndex = (item) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     const isDiscussionTab = item === 1;
@@ -516,6 +535,35 @@ const ProposalScreen = ({
       : Math.sign(availableFunds) * Math.abs(availableFunds);
   };
 
+  const closeDebtModal = () => {
+    setDebtModalVisible(false);
+  };
+
+  const openDebtModal = () => {
+    setDebtModalVisible(true);
+  };
+
+  const closeDebtErrorModal = () => {
+    setDebtErrorModalVisible(false);
+  };
+
+  const openDebtErrorModal = () => {
+    setDebtErrorModalVisible(true);
+  };
+
+  const openDebtInsufficientModal = () => {
+    if (
+      proposalScreenInfo?.proposalInfo?.state ===
+      PROPOSAL_STAGE.passedInsufficientBalance
+    ) {
+      setDebtInsufficientModalVisible(true);
+    }
+  };
+
+  const closeDebtInsufficientModal = () => {
+    setDebtInsufficientModalVisible(false);
+  };
+
   const stickyTabBarStyle = {
     position: 'absolute',
     top: -80,
@@ -526,6 +574,33 @@ const ProposalScreen = ({
 
   return (
     <React.Fragment>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={debtModalVisible}>
+        <ModalDebtProposalWarning
+          amount={amount}
+          onPressClose={() => closeDebtModal()}
+        />
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={debtErrorModalVisible}>
+        <ModalDebtProposalError
+          amount={amount}
+          onPressClose={() => closeDebtErrorModal()}
+        />
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={debtInsufficientModalVisible}>
+        <ModalDebtProposalInsufficient
+          amount={amount}
+          onPressClose={() => closeDebtInsufficientModal()}
+        />
+      </Modal>
       <SafeAreaView
         style={{
           backgroundColor: colors.white,
@@ -614,6 +689,7 @@ const ProposalScreen = ({
                           proposalScreenInfo.proposalInfo?.createdAt.seconds +
                           proposalScreenInfo.proposalInfo?.countdownPeriod
                         }
+                        onPress={() => openDebtInsufficientModal()}
                       />
                     </TouchableOpacity>
                     {proposalScreenInfo?.proposedUser && (
@@ -701,7 +777,16 @@ const ProposalScreen = ({
                   </React.Fragment>
                 )}
 
-                <View style={styles.contributionCard}>
+                <View
+                  style={[
+                    styles.contributionCard,
+                    {
+                      backgroundColor:
+                        amount < getAvailableFunds()
+                          ? colors.iceBlue2
+                          : colors.againstLightOpacity,
+                    },
+                  ]}>
                   <View style={styles.requestedAmountContainer}>
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
@@ -746,6 +831,11 @@ const ProposalScreen = ({
                         }>{`Available funds: $${getAvailableFunds()}`}</Text>
                     )}
                 </View>
+                {amount < getAvailableFunds() ? (
+                  <DebtWarningProposalNote onPress={() => openDebtModal()} />
+                ) : (
+                  <DebtErrorProposalNote onPress={() => openDebtErrorModal()} />
+                )}
 
                 <View
                   style={{
@@ -908,8 +998,8 @@ const styles = StyleSheet.create({
   contributionCard: {
     ...layout.content,
     width: '100%',
-    backgroundColor: colors.iceBlue2,
-    borderRadius: 28,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
     paddingVertical: 14,
   },
   requestedAmountContainer: {

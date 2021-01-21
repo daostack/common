@@ -5,6 +5,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
 import {string, number, bool} from 'prop-types';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 
 const TITLES = {
   APPROVED: 'Approved',
@@ -13,6 +14,7 @@ const TITLES = {
   COUNTDOWN: 'Countdown',
   PAYMENT_FAILED: 'Payment Failed',
   PAYMENT_PENDING: 'Pending Payment',
+  INSUFFICIENT_BALANCE: 'Insufficient Balance',
 };
 
 const calcStatus = (state, isScreenHeader, paymentStatus) => {
@@ -49,6 +51,11 @@ const calcStatus = (state, isScreenHeader, paymentStatus) => {
     }
   } else if (state === PROPOSAL_STAGE.failed) {
     status.text = TITLES.REJECTED;
+    status.lightColor = colors.redLightish;
+    status.darkColor = colors.error;
+    status.icon = 'declined';
+  } else if (state === PROPOSAL_STAGE.passedInsufficientBalance) {
+    status.text = TITLES.INSUFFICIENT_BALANCE;
     status.lightColor = colors.redLightish;
     status.darkColor = colors.error;
     status.icon = 'declined';
@@ -103,28 +110,39 @@ const ProposalCardHeader = ({
   closingAt,
   isScreenHeader = false,
   paymentStatus,
+  onPress,
 }) => {
   const headerStatus = calcStatus(state, isScreenHeader, paymentStatus);
 
   return isScreenHeader ? (
-    <View
-      style={{
-        ...styles.stateCard,
-        ...{
-          backgroundColor: headerStatus.darkColor,
-          paddingHorizontal: 50,
-        },
-      }}>
-      <Icon
-        style={styles.stateIcon}
-        name={headerStatus.icon}
-        color={colors.white}
-      />
+    <TouchableWithoutFeedback onPress={onPress}>
+      <View
+        style={{
+          ...styles.stateCard,
+          ...{
+            backgroundColor: headerStatus.darkColor,
+            paddingHorizontal: 50,
+          },
+        }}>
+        <Icon
+          style={styles.stateIcon}
+          name={headerStatus.icon}
+          color={colors.white}
+        />
 
-      <Text style={styles.stateText}>{headerStatus.text}</Text>
+        <Text style={styles.stateText}>{headerStatus.text}</Text>
 
-      {headerStatus.text === TITLES.COUNTDOWN && renderCountDown(closingAt)}
-    </View>
+        {headerStatus.text === TITLES.COUNTDOWN && renderCountDown(closingAt)}
+
+        {headerStatus.text === TITLES.INSUFFICIENT_BALANCE && (
+          <Icon
+            style={styles.rightIcon}
+            name={'questionMark'}
+            color={colors.white}
+          />
+        )}
+      </View>
+    </TouchableWithoutFeedback>
   ) : (
     <View
       style={{
@@ -189,6 +207,10 @@ const styles = StyleSheet.create({
   stateIcon: {
     position: 'absolute',
     left: sizeS,
+  },
+  rightIcon: {
+    position: 'absolute',
+    right: sizeS,
   },
 
   timerText: {
