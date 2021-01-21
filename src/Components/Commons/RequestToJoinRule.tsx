@@ -16,10 +16,16 @@ const RequestToJoinRule: React.FC<InferProps<typeof props>> = ({
   url,
 }) => (
   <View style={styles.container}>
-    <View style ={{width: '100%'}} >
-      <Text style={{...styles.ruleTitle, ...text.textAlign(title)}}>{index}. {title}</Text>
-      <Text style={{...styles.ruleDescription, ...text.textAlign(description)}}>{description}</Text>
-      <Text style={{...styles.ruleDescription, ...text.textAlign(url)}}>{url}</Text>
+    <View style={{width: '100%'}}>
+      <Text style={{...styles.ruleTitle, ...text.textAlign(title)}}>
+        {index}. {title}
+      </Text>
+      <Text style={{...styles.ruleDescription, ...text.textAlign(description)}}>
+        {description}
+      </Text>
+      <Text style={{...styles.ruleDescription, ...text.textAlign(url)}}>
+        {url}
+      </Text>
     </View>
   </View>
 );

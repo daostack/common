@@ -26,7 +26,6 @@ import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
 import Share from 'react-native-share';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {object, shape} from 'prop-types';
 import DaoService from '~/Services/DaoService';
 import CommonImage from '~/Components/Commons/CommonImage';
@@ -37,9 +36,7 @@ import {
   text,
   layout,
   sizeM,
-  sizeS,
   sizeL,
-  sizeLineHeight,
 } from '~/Theme';
 import logger from '~/Services/Logger';
 
@@ -96,12 +93,6 @@ const CreateStep4 = ({
     navigation.dispatch(navigate);
   };
 
-  const confirmModal = () => {
-    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.PUBLISH_COMMON, {
-      forgeCommon: forgeCommon,
-    });
-  };
-
   const shareCommon = (event) => {
     const {name} = generalInfoFormStore.getChangedFormFieldsJson();
     const currCommonId = newCommonAddress.toLowerCase();
@@ -131,6 +122,18 @@ const CreateStep4 = ({
       };
       logger.log('calling createCommon(...)');
 
+      const formattedData = {
+        name: data.name,
+        image: data.image,
+        rules: data.rules,
+        links: data.links,
+        byline: data.byline,
+        description: data.description,
+        contributionType: data.contributionType,
+        contributionAmount: data.contributionAmount,
+        fundingGoalDeadline: data.fundingGoalDeadline,
+      };
+
       navigation.navigate({
         name: 'FullScreenCreationLoader',
         params: {
@@ -139,9 +142,7 @@ const CreateStep4 = ({
         },
       });
 
-      const createCommonResponse = await DaoService.getInstance().createCommon(
-        data,
-      );
+      const createCommonResponse = await DaoService.getInstance().createCommon(formattedData);
 
       if (createCommonResponse.status === 200) {
         setNewCommonAddress(createCommonResponse.data.id);
@@ -155,6 +156,8 @@ const CreateStep4 = ({
       //navigation.pop();
       console.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
+
+      navigation.pop();
     }
   };
 
@@ -197,10 +200,6 @@ const CreateStep4 = ({
           }}>
           <Text style={stylesHeader.generalInfoTitle}>
             Final touches and review
-          </Text>
-          <Text style={stylesHeader.generalInfoSubtitle}>
-            You will not be able to make changes to the Common info after it is
-            published
           </Text>
           <CommonImage
             width={width}
@@ -312,7 +311,7 @@ const CreateStep4 = ({
       <RequestStepActionButton
         title="Publish Common"
         formStore={agendaFormStore}
-        onPress={() => confirmModal()}
+        onPress={() => forgeCommon()}
       />
       <Modal
         isVisible={Boolean(newCommonAddress)}
@@ -365,16 +364,7 @@ const stylesHeader = StyleSheet.create({
     ...font.primary.bold,
     ...font.fontSize(4),
     textAlign: 'center',
-  },
-  generalInfoSubtitle: {
-    marginHorizontal: 20,
-    marginTop: sizeS,
-    color: colors.slate,
     marginBottom: sizeL,
-    textAlign: 'center',
-    lineHeight: sizeLineHeight,
-    ...font.primary.regular,
-    ...font.fontSize(2),
   },
 });
 

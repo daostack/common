@@ -2,10 +2,9 @@ import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import MemberCard from '~/Components/MemberCard';
 import {layout, sizeS, colors} from '~/Theme';
-import UserService from '~/Services/UserService';
 import MemberImage from '~/Components/Commons/MemberImage';
 import {observer, inject} from 'mobx-react';
-import {object, array, bool, string, number} from 'prop-types';
+import {object, array, bool, string, number, shape, func} from 'prop-types';
 import DaoService from '~/Services/DaoService';
 
 import {
@@ -15,47 +14,68 @@ import {
   Fade,
 } from 'rn-placeholder';
 
-const CommonMembersList = ({navigation, members, commonId, limit, horizontal, bottomSheetStore}) => {
-
+const CommonMembersList = ({
+  navigation,
+  members,
+  commonId,
+  limit,
+  horizontal,
+  bottomSheetStore,
+  userListStore,
+}) => {
   const [membersInfo, setMembersInfo] = useState(null);
 
   const showUserProfile = (userInfo) => {
     navigation.navigate('Profile', {userId: userInfo.uid, userInfo});
   };
 
-  const limitCommonMembers = (commonMembers) => commonMembers?.length > limit ? commonMembers.slice(0, limit) : commonMembers || [];
+  const limitCommonMembers = (commonMembers) =>
+    commonMembers?.length > limit
+      ? commonMembers.slice(0, limit)
+      : commonMembers || [];
 
-  const getAllCommonMembers = async (commonMembers) => {
-    const size = 10;
-    let allUserInfos = [];
+  const getAllCommonMembers = (commonMembers) =>
+    userListStore.getCommonUsersByMembersArray(commonMembers);
 
-    const currCommonMembers = limit ? limitCommonMembers(commonMembers) : commonMembers;
+  // That's the old way of fatching commong members.
+  // Let's keep it here as refference untill find better way of fetching it from DB at once.
+  //
+  // const size = 10;
+  // let allUserInfos = [];
 
-    await Promise.all(Array.from({length: Math.ceil(currCommonMembers.length / size)}, async (v, i) => {
-      const currArrChunk = currCommonMembers.slice(i * size, i * size + size);
-      const currChunkUserIds = currArrChunk.map((member) => member.userId);
-      const currChunkUserInfos = await UserService.getInstance().getUsersByUpTo10Ids(currChunkUserIds);
-      allUserInfos = allUserInfos.concat(currChunkUserInfos);
-    }));
-    return allUserInfos;
-  };
+  // const currCommonMembers = limit
+  //   ? limitCommonMembers(commonMembers)
+  //   : commonMembers;
 
-  useEffect(() => {
-    const loadCommonMembers = async (currCommonMembers) => {
-      setMembersInfo(await getAllCommonMembers(currCommonMembers));
-    };
-    if (members) {
-      loadCommonMembers(members);
-    }
-  }, []);
+  // await Promise.all(
+  //   Array.from(
+  //     {length: Math.ceil(currCommonMembers.length / size)},
+  //     async (v, i) => {
+  //       const currArrChunk = currCommonMembers.slice(
+  //         i * size,
+  //         i * size + size,
+  //       );
+  //       const currChunkUserIds = currArrChunk.map((member) => member.userId);
+  //       const currChunkUserInfos = await UserService.getInstance().getUsersByUpTo10Ids(
+  //         currChunkUserIds,
+  //       );
+  //       allUserInfos = allUserInfos.concat(currChunkUserInfos)
+  //       .map((userInfo, index) => ({joinedAt: members[index].joinedAt, ...userInfo}));;
+  //     },
+  //   ),
+  // );
+  // return allUserInfos;
 
   useEffect(() => {
     let unsubscribeCommon = null;
     const subscribeToCommon = async (currCommonId) => {
-      unsubscribeCommon = await DaoService.getInstance().subscribeToDaoById(currCommonId, async (snapshot) => {
-        const updatedCommon = snapshot.data();
-        setMembersInfo(await getAllCommonMembers(updatedCommon?.members));
-      });
+      unsubscribeCommon = await DaoService.getInstance().subscribeToDaoById(
+        currCommonId,
+        async (snapshot) => {
+          const updatedCommon = snapshot.data();
+          setMembersInfo(getAllCommonMembers(updatedCommon?.members));
+        },
+      );
     };
     if (commonId) {
       subscribeToCommon(commonId);
@@ -64,70 +84,83 @@ const CommonMembersList = ({navigation, members, commonId, limit, horizontal, bo
     return () => {
       unsubscribeCommon && unsubscribeCommon();
     };
-
   }, [commonId]);
 
   const limitedMembers = limit ? limitCommonMembers(members) : members;
 
   return (
-    <View style={horizontal && {...layout.flexRow, paddingLeft: (limitedMembers.length - 1) * 15}}>
+    <View
+      style={
+        horizontal && {
+          ...layout.flexRow,
+          paddingLeft: (limitedMembers.length - 1) * 15,
+        }
+      }>
       {membersInfo ? (
-        membersInfo.map((member, i) => (
-          horizontal
-            ? (
-              <TouchableOpacity style={{position: 'relative', left: i * -15}} onPress={() => showUserProfile(member) } key={`touch_${i}`}>
-                <MemberImage
-                  id={i}
-                  userInfo={member}
-                  style={{marginLeft: i > 0 ? -15 : 0}}
-                />
-              </TouchableOpacity>
-            )
-            : (
-              <TouchableOpacity style={styles.item} onPress={ () => showUserProfile(member) } key={`touch_${i}`}>
-                <MemberCard
-                  key={i}
-                  userInfo={member}
-                />
-              </TouchableOpacity>
-            )
-        ))
+        membersInfo.map((member, i) =>
+          horizontal ? (
+            <TouchableOpacity
+              style={{position: 'relative', left: i * -15}}
+              onPress={() => showUserProfile(member)}
+              key={`touch_${i}`}>
+              <MemberImage
+                id={i}
+                userInfo={member}
+                style={{marginLeft: i > 0 ? -15 : 0}}
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.item}
+              onPress={() => showUserProfile(member)}
+              key={`touch_${i}`}>
+              <MemberCard key={i} userInfo={member} />
+            </TouchableOpacity>
+          ),
+        )
       ) : horizontal ? (
         limitedMembers.map((memberUserId, i) => (
-          <View style={{position: 'relative', left: i * -15}}
+          <View
+            style={{position: 'relative', left: i * -15}}
             key={`${memberUserId.userId}-${i}`}>
             <PlaceholderMedia
               size={50}
               isRound={true}
-              style={{width: 50,
+              style={{
+                width: 50,
                 height: 50,
                 borderRadius: 25,
                 borderWidth: 2,
-                borderColor: colors.white}}
+                borderColor: colors.white,
+              }}
             />
           </View>
         ))
-      ) :
+      ) : (
         <Placeholder Animation={Fade}>
-          {
-            limitedMembers.map((memberUserId, i) => (
-              <View style={{...layout.flexRow, justifyContent: 'space-between', paddingVertical: 10}} key={i}>
-                <View style={{padding: 10}}>
-                  <PlaceholderMedia
-                    size={50}
-                    isRound={true}
-                    style={{borderWidth: 2, borderColor: colors.white}}
-                  />
-                </View>
-                <View style={{padding: 10, paddingVertical: 15, width: '100%'}}>
-                  <PlaceholderLine width={50} />
-                  <PlaceholderLine width={30} />
-                </View>
+          {limitedMembers.map((memberUserId, i) => (
+            <View
+              style={{
+                ...layout.flexRow,
+                justifyContent: 'space-between',
+                paddingVertical: 10,
+              }}
+              key={i}>
+              <View style={{padding: 10}}>
+                <PlaceholderMedia
+                  size={50}
+                  isRound={true}
+                  style={{borderWidth: 2, borderColor: colors.white}}
+                />
               </View>
-            ))
-          }
+              <View style={{padding: 10, paddingVertical: 15, width: '100%'}}>
+                <PlaceholderLine width={50} />
+                <PlaceholderLine width={30} />
+              </View>
+            </View>
+          ))}
         </Placeholder>
-      }
+      )}
     </View>
   );
 };
@@ -139,6 +172,9 @@ CommonMembersList.propTypes = {
   limit: number,
   horizontal: bool,
   bottomSheetStore: object,
+  userListStore: shape({
+    getCommonUsersByMembersArray: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -149,4 +185,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(observer(CommonMembersList));
+export default inject(
+  'bottomSheetStore',
+  'userListStore',
+)(observer(CommonMembersList));

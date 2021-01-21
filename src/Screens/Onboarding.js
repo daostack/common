@@ -61,7 +61,8 @@ const Onboarding = ({navigation}) => {
               />
               <Text style={styles.text}>Join a Common or launch a new one</Text>
               <Text style={styles.subtitle}>
-              Collaborate on shared agendas by pooling funds and collectively making decisions.
+                Collaborate on shared agendas by pooling funds and collectively
+                making decisions.
               </Text>
             </View>
             <View style={styles.slide1}>
@@ -69,10 +70,12 @@ const Onboarding = ({navigation}) => {
                 source={require('~/Assets/volunteering.png')}
                 style={styles.image}
               />
-              <Text style={styles.text}>Vote and make funding decisions together</Text>
+              <Text style={styles.text}>
+                Vote and make funding decisions together
+              </Text>
               <Text style={styles.subtitle}>
-              All members get an equal vote and
-can take part in the shared effort.
+                All members get an equal vote and can take part in the shared
+                effort.
               </Text>
             </View>
             <View style={styles.slide1}>
@@ -82,7 +85,8 @@ can take part in the shared effort.
               />
               <Text style={styles.text}>Operate in complete transparency</Text>
               <Text style={styles.subtitle}>
-              All discussions, decisions, and expenses are visible to all Common members.
+                All discussions, decisions, and expenses are visible to all
+                Common members.
               </Text>
             </View>
             <View style={styles.slide1}>

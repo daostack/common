@@ -47,38 +47,36 @@ export default class TabBarIndicator extends React.Component {
 
   opacity = new Animated.Value(this.props.width === 'auto' ? 0 : 1);
 
-  getTranslateX = memoize(
-    ( position,routes,getTabWidth ) => {
-      const inputRange = routes.map((_, i) => i);
+  getTranslateX = memoize((position, routes, getTabWidth) => {
+    const inputRange = routes.map((_, i) => i);
 
-      // every index contains widths at all previous indices
-      const outputRange = routes.reduce((acc, _, i) => {
-        if (i === 0) {return [0];}
-        return [...acc, acc[i - 1] + getTabWidth(i - 1)];
-      }, []);
+    // every index contains widths at all previous indices
+    const outputRange = routes.reduce((acc, _, i) => {
+      if (i === 0) {
+        return [0];
+      }
+      return [...acc, acc[i - 1] + getTabWidth(i - 1)];
+    }, []);
 
-      const translateX = interpolate(position, {
-        inputRange,
-        outputRange,
-        extrapolate: Extrapolate.CLAMP,
-      });
+    const translateX = interpolate(position, {
+      inputRange,
+      outputRange,
+      extrapolate: Extrapolate.CLAMP,
+    });
 
-      return multiply(translateX, I18nManager.isRTL ? -1 : 1);
-    }
-  );
+    return multiply(translateX, I18nManager.isRTL ? -1 : 1);
+  });
 
-  getWidth = memoize(
-    ( position, routes, getTabWidth ) => {
-      const inputRange = routes.map((_, i) => i);
-      const outputRange = inputRange.map(getTabWidth);
+  getWidth = memoize((position, routes, getTabWidth) => {
+    const inputRange = routes.map((_, i) => i);
+    const outputRange = inputRange.map(getTabWidth);
 
-      return interpolate(position, {
-        inputRange,
-        outputRange,
-        extrapolate: Extrapolate.CLAMP,
-      });
-    }
-  );
+    return interpolate(position, {
+      inputRange,
+      outputRange,
+      extrapolate: Extrapolate.CLAMP,
+    });
+  });
 
   render() {
     const {
@@ -113,9 +111,8 @@ export default class TabBarIndicator extends React.Component {
             : {left: `${(100 / routes.length) * navigationState.index}%`},
           width === 'auto' ? {opacity: this.opacity} : null,
           style,
-        ]}
-      >
-        <View style={styles.indicatorDot}/>
+        ]}>
+        <View style={styles.indicatorDot} />
       </Animated.View>
     );
   }
@@ -124,10 +121,7 @@ export default class TabBarIndicator extends React.Component {
 TabBarIndicator.propTypes = {
   navigationState: object,
   indicatorLayout: object,
-  width: oneOfType([
-    string,
-    number,
-  ]),
+  width: oneOfType([string, number]),
   getTabWidth: func,
   position: object,
   style: object,

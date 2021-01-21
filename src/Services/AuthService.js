@@ -2,7 +2,7 @@ import {firebaseWebClientId} from '~/Config';
 
 // Firebase imports
 import {auth} from '~/Firebase';
-import UserService from './UserService';
+import {addUser, updateUser} from '~/Services/ListServices/UserListService';
 
 // Google imports
 import {GoogleSignin} from '@react-native-community/google-signin';
@@ -101,16 +101,18 @@ export default class AuthService {
 
   async getCurrentLoggedUser(providerId) {
     switch (providerId) {
-    case AUTH_PROVIDER_ID.APPLE: {
-      const {fullName} = await this._applePerformRequest();
-      return {user: {
-        givenName: fullName.givenName,
-        familyName: fullName.familyName,
-      }};
-    }
-    case AUTH_PROVIDER_ID.GOOGLE:
-      return await GoogleSignin.getCurrentUser();
-    default:
+      case AUTH_PROVIDER_ID.APPLE: {
+        const {fullName} = await this._applePerformRequest();
+        return {
+          user: {
+            givenName: fullName.givenName,
+            familyName: fullName.familyName,
+          },
+        };
+      }
+      case AUTH_PROVIDER_ID.GOOGLE:
+        return await GoogleSignin.getCurrentUser();
+      default:
     }
   }
 
@@ -119,29 +121,37 @@ export default class AuthService {
     const currentUser = await auth().currentUser;
     currentUser.updateProfile(userData);
 
-    return await UserService.getInstance().editUser(currentUser.uid, {
+    return await updateUser(currentUser.uid, {
       ...publicData,
       ...userData,
     });
   }
 
   async createUser(user) {
-    const splittedDisplayName = user?.displayName?.split(' ') || [user?.email.split('@')[0]];
+    const splittedDisplayName = user?.displayName?.split(' ') || [
+      user?.email.split('@')[0],
+    ];
     const userPhotoUrl = user.photoURL
       ? user.photoURL
       : `https://eu.ui-avatars.com/api/?background=7786ff&color=fff&name=${
-        user.displayName ? user.displayName : user.email
-      }&rounded=true`;
+          user.displayName ? user.displayName : user.email
+        }&rounded=true`;
     const userPublicData = {
       createdAt: new Date(user.metadata.creationTime),
-      firstName: user.firstName || splittedDisplayName?.length >= 1 ? splittedDisplayName[0] : '',
-      lastName: user.lastName || splittedDisplayName?.length >= 2 ? splittedDisplayName[1] : '',
+      firstName:
+        user.firstName || splittedDisplayName?.length >= 1
+          ? splittedDisplayName[0]
+          : '',
+      lastName:
+        user.lastName || splittedDisplayName?.length >= 2
+          ? splittedDisplayName[1]
+          : '',
       email: user.email,
       photoURL: userPhotoUrl,
       uid: user.uid,
     };
 
-    await UserService.getInstance().addUser(user.uid, userPublicData);
+    await addUser(user.uid, userPublicData);
     return userPublicData;
   }
 

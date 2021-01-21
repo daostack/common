@@ -6,7 +6,9 @@ export const useQuote = () => {
 
   React.useEffect(() => {
     setTimeout(() => {
-      const index = quotes.findIndex((item) =>  JSON.stringify(item) === JSON.stringify(quote));
+      const index = quotes.findIndex(
+        (item) => JSON.stringify(item) === JSON.stringify(quote),
+      );
 
       setQuote(quotes[index === quotes.length - 1 ? 0 : index + 1]);
     }, 10000);

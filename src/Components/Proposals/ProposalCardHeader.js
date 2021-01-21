@@ -26,7 +26,10 @@ const calcStatus = (state, isScreenHeader, paymentStatus) => {
       status.lightColor = colors.lightGreen;
       status.darkColor = colors.lightishGreen;
       status.icon = 'approved';
-    } else if (paymentStatus === 'notAttempted' || paymentStatus === 'pending') {
+    } else if (
+      paymentStatus === 'notAttempted' ||
+      paymentStatus === 'pending'
+    ) {
       status.text = TITLES.PAYMENT_PENDING;
       status.lightColor = colors.lightGreen;
       status.darkColor = colors.lightishGreen;
@@ -59,7 +62,6 @@ const calcStatus = (state, isScreenHeader, paymentStatus) => {
   return status;
 };
 
-
 const renderCountDown = (closingAt) => {
   /*
   const isLessThanOneHour = remainingSeconds < 3600;
@@ -74,16 +76,13 @@ const renderCountDown = (closingAt) => {
 */
   let counterTextColor = styles.timerText;
 
-  const remainingSeconds = closingAt
-    ? closingAt - Date.now() / 1000
-    : null;
+  const remainingSeconds = closingAt ? closingAt - Date.now() / 1000 : null;
 
   return (
     <View style={styles.timerContainer}>
-      <View
-        style={{...styles.timer}}>
+      <View style={{...styles.timer}}>
         <CountDown
-          timeToShow={[ 'D', 'H', 'M', 'S' ]}
+          timeToShow={['D', 'H', 'M', 'S']}
           digitTxtStyle={counterTextColor}
           timeLabels={false}
           showSeparator={true}
@@ -99,49 +98,51 @@ const renderCountDown = (closingAt) => {
   );
 };
 
-
-const ProposalCardHeader = ({state, closingAt, isScreenHeader = false, paymentStatus}) => {
+const ProposalCardHeader = ({
+  state,
+  closingAt,
+  isScreenHeader = false,
+  paymentStatus,
+}) => {
   const headerStatus = calcStatus(state, isScreenHeader, paymentStatus);
 
-  return isScreenHeader
-    ? (
-      <View style={{...styles.stateCard, ...{
-        backgroundColor: headerStatus.darkColor,
-        paddingHorizontal: 50,
-      }}}
-      >
-        <Icon
-          style={styles.stateIcon}
-          name={headerStatus.icon}
-          color={colors.white}
-        />
+  return isScreenHeader ? (
+    <View
+      style={{
+        ...styles.stateCard,
+        ...{
+          backgroundColor: headerStatus.darkColor,
+          paddingHorizontal: 50,
+        },
+      }}>
+      <Icon
+        style={styles.stateIcon}
+        name={headerStatus.icon}
+        color={colors.white}
+      />
 
-        <Text style={styles.stateText}>
-          {headerStatus.text}
-        </Text>
+      <Text style={styles.stateText}>{headerStatus.text}</Text>
 
-        {headerStatus.text === TITLES.COUNTDOWN && renderCountDown(closingAt)}
-      </View>
-    ) : (
-      <View
+      {headerStatus.text === TITLES.COUNTDOWN && renderCountDown(closingAt)}
+    </View>
+  ) : (
+    <View
+      style={{
+        ...styles.proposalCardHeader,
+        backgroundColor: headerStatus.lightColor,
+      }}>
+      <Icon name={headerStatus.icon} color={headerStatus.darkColor} size={16} />
+
+      <Text
         style={{
-          ...styles.proposalCardHeader,
-          backgroundColor: headerStatus.lightColor,
-        }}
-      >
-        <Icon name={headerStatus.icon} color={headerStatus.darkColor} size={16}/>
-
-        <Text
-          style={{
-            ...text.orangeSmallBold,
-            marginHorizontal: 5,
-            color: headerStatus.darkColor,
-          }}
-        >
-          {headerStatus.text}
-        </Text>
-      </View>
-    );
+          ...text.orangeSmallBold,
+          marginHorizontal: 5,
+          color: headerStatus.darkColor,
+        }}>
+        {headerStatus.text}
+      </Text>
+    </View>
+  );
 };
 
 ProposalCardHeader.propTypes = {

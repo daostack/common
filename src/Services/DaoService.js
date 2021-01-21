@@ -2,6 +2,7 @@ import {db} from '~/Firebase';
 import Toast from '~/Util/Toast';
 import axios from 'axios';
 import {commonsUrl} from '~/Config';
+import logger from './Logger';
 
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {auth} from '~/Firebase';
@@ -17,6 +18,7 @@ export default class DaoService {
 
     this.endpoints = {
       create: '/create',
+      update: '/update',
     };
   }
 
@@ -28,16 +30,12 @@ export default class DaoService {
   };
 
   async getDaoById(daoId) {
-
-    const dao = await db.collection(DB_COLLECTIONS.daos)
-      .doc(daoId)
-      .get();
+    const dao = await db.collection(DB_COLLECTIONS.daos).doc(daoId).get();
 
     return dao.data();
   }
 
   async getDaoNameById(daoId) {
-
     const dao = await this.getDaoById(daoId);
 
     return dao.metadata.name;
@@ -59,30 +57,34 @@ export default class DaoService {
         userId,
       });
 
-    return daos.onSnapshot((snapshot) => {
-      callback(snapshot);
-    }, (error) => Toast.error(error));
-
+    return daos.onSnapshot(
+      (snapshot) => {
+        callback(snapshot);
+      },
+      (error) => Toast.error(error),
+    );
   }
 
   async subscribeToDaosList(callback) {
-    let daos = db
-      .collection(DB_COLLECTIONS.daos);
+    let daos = db.collection(DB_COLLECTIONS.daos);
 
-    return daos.onSnapshot((snapshot) => {
-      callback(snapshot);
-    }, (error) => Toast.error(error));
+    return daos.onSnapshot(
+      (snapshot) => {
+        callback(snapshot);
+      },
+      (error) => Toast.error(error),
+    );
   }
 
   async subscribeToDaoById(daoId, callback) {
-    let daos = db
-      .collection(DB_COLLECTIONS.daos)
-      .doc(daoId);
+    let daos = db.collection(DB_COLLECTIONS.daos).doc(daoId);
 
-    return daos.onSnapshot((snapshot) => {
-      callback(snapshot);
-    }, (error) => Toast.error(error));
-
+    return daos.onSnapshot(
+      (snapshot) => {
+        callback(snapshot);
+      },
+      (error) => Toast.error(error),
+    );
   }
 
   // async getDaoInfo(dao) {
@@ -110,19 +112,32 @@ export default class DaoService {
   //TODO: NoBlockchain: Move that logic in separate file ?
   async createCommon(formData) {
     try {
-      return await this.axiosClient.post(
-        this.endpoints.create,
-        formData,
-        {
-          headers: {
-            Authorization: await auth().currentUser.getIdToken(true),
-          },
-        }
-      );
+      return await this.axiosClient.post(this.endpoints.create, formData, {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
+        },
+      });
     } catch (err) {
       console.log('CREATE COMMON ERROR -> ', err);
       throw err;
     }
   }
 
+  updateCommon = async (updateCommonInfo) => {
+    logger.log('updateCommon new info -> ', updateCommonInfo);
+    try {
+      return await this.axiosClient.post(
+        this.endpoints.update,
+        updateCommonInfo,
+        {
+          headers: {
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
+        },
+      );
+    } catch (err) {
+      console.log('UPDATE COMMON ERROR -> ', err);
+      throw err;
+    }
+  };
 }

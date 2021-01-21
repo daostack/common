@@ -18,7 +18,8 @@ import {object, shape, func, array} from 'prop-types';
 const MyCommons = ({navigation, daoStore, userStore}) => {
   const onScreenScroll = (event) => {
     navigation.setOptions({
-      title: event.nativeEvent.contentOffset.y > 75 ? 'My Commons' : 'My Profile',
+      title:
+        event.nativeEvent.contentOffset.y > 75 ? 'My Commons' : 'My Profile',
     });
   };
 
@@ -32,7 +33,7 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
     navigation.dispatch(navigate);
   };
 
-  const renderCommonCard = (dao, i) =>(
+  const renderCommonCard = (dao, i) => (
     <CommonBox
       image={dao.image}
       common={dao}
@@ -52,7 +53,8 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
     </View>
   );
 
-  const myDaos = (daoList) => daoList.filter((dao) => userStore.isDaoMember(dao?.members));
+  const myDaos = (daoList) =>
+    daoList.filter((dao) => userStore.isDaoMember(dao?.members));
 
   return (
     <>
@@ -66,8 +68,7 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
           nestedScrollEnabled={true}
           directionalLockEnabled={true}
           onScroll={onScreenScroll}
-          scrollEventThrottle={16}
-        >
+          scrollEventThrottle={16}>
           <View style={styles.sectionContainer}>
             <Text style={styles.title}>My Commons</Text>
           </View>
@@ -121,8 +122,4 @@ const styles = StyleSheet.create({
   },
 });
 
-
-export default inject(
-  'daoStore',
-  'userStore',
-)(observer(MyCommons));
+export default inject('daoStore', 'userStore')(observer(MyCommons));

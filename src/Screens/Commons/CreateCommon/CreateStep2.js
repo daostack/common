@@ -26,6 +26,7 @@ const {width} = Dimensions.get('window');
 
 const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
 const MAX_CONTRIBUTION = ['3000', '500'];
+const MIN_CONTRIBUTION = ['0', '5'];
 const SAFETY_PERIOD_TAB_VALUES = [
   moment().add('7', 'days').unix(),
   moment().add('1', 'months').unix(),
@@ -70,7 +71,7 @@ const CreateStep2 = ({
   const [show, setShow] = useState(false);
 
   const minimumFieldRules = (currContribIndex) =>
-    `required|integer|min:5|max:${MAX_CONTRIBUTION[currContribIndex]}`;
+    `required|integer|min:${MIN_CONTRIBUTION[currContribIndex]}|max:${MAX_CONTRIBUTION[currContribIndex]}`;
 
   useEffect(() => {
     const height = scrollY.interpolate({
@@ -105,8 +106,7 @@ const CreateStep2 = ({
     fundingFormStore.updateFieldValidationRule(
       CreateCommonForm.MINIMUM,
       null,
-      minimumFieldRules(index),
-      !isInitialSelect,
+      minimumFieldRules(index)
     );
   };
 
@@ -252,8 +252,8 @@ const CreateStep2 = ({
                 Minimum{' '}
                 <Text style={styles.boldText}>
                   {CONTRIBUTION_TAB_VALUES[contributionIndex]}
-                </Text>{' '}
-                contribution (min. $5)
+                </Text>
+                {` contribution (min. $${MIN_CONTRIBUTION[contributionIndex]})`}
               </React.Fragment>
             }
             subLabel="Set the minimum amount that new members will have to contribute in order to join this Common."
@@ -266,7 +266,9 @@ const CreateStep2 = ({
               name: CreateCommonForm.MINIMUM,
               formStore: fundingFormStore,
               validateRule: minimumFieldRules(contributionIndex),
-              customErrorMessage: `The amount must be at least $5 and at most $${parseFloat(
+              customErrorMessage: `The amount must be at least $${parseFloat(
+                MIN_CONTRIBUTION[contributionIndex],
+              ).toLocaleString('en')} and at most $${parseFloat(
                 MAX_CONTRIBUTION[contributionIndex],
               ).toLocaleString('en')}.`,
             }}

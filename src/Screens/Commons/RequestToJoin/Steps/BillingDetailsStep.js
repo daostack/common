@@ -18,8 +18,8 @@ import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import RequestStepActionButton from '../../RequestStepActionButton';
 
 import * as BillingDetailsConstants from '../../../../Components/Forms/BillingDetailsForm';
-import TextInputField from '../../../../Components/FormFields/TextInputField';
-import {CountrySelectField} from '../../../../Components/FormFields/CountrySelectField';
+import TextInputField from '~/Components/FormFields/TextInputField';
+import {CountrySelectField} from '~/Components/FormFields/CountrySelectField';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
 import {testCard} from '~/Config';
@@ -44,11 +44,13 @@ const AUTOFILL = {
 };
 
 const BillingDetailsStep = ({navigation, route, userStore}) => {
-  const {skipFirstStep,
+  const {
+    skipFirstStep,
     currCommon,
     currDaoId,
     refreshFeed,
-    formStores} = route.params;
+    formStores,
+  } = route.params;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
@@ -70,6 +72,10 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
     setHeaderHeight(height);
   }, [scrollY]);
 
+  const onSelectedCountryChange = (selectedCountry) => {
+    setCountry(selectedCountry);
+  };
+
   const navigateToPaymentDetailsStep = () => {
     if (billingDetailsFormStore.isFormValid()) {
       navigation.dispatch(
@@ -82,21 +88,32 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
             skipFirstStep: skipFirstStep,
             refreshFeed,
           },
-        })
+        }),
       );
     }
   };
 
+  const contributionAmount = formatNumber(
+    personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)
+      ?.value?.value,
+  );
+
+  const getUserFullName = () => {
+    const name = billingDetailsFormStore.getFormField(
+      BillingDetailsConstants.City,
+    )?.value || userStore.userInfo.displayName;
+
+    return new RegExp(/^[a-zA-Z'’. ]*$/).test(name)
+    ? name
+      : '';
+  };
+
   const subtitle = (style) => (
     <Text style={style}>
-      You are contributing $
-      {formatNumber(
-        personalContributionFormStore.getFormField(
-          RequestToJoinForm.FIELD_AMOUNT
-        )?.value?.value
-      )}
+      You are contributing ${contributionAmount ? contributionAmount : 0}
       <Text style={{...font.primary.bold}}>
-        {' '}({isMonthly ? 'monthly' : 'one time'}){' '}
+        {' '}
+        ({isMonthly ? 'monthly' : 'one time'}){' '}
       </Text>
       to this common
     </Text>
@@ -110,7 +127,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
           backgroundColor: 'white',
           flex: 1,
         }}>
-        <CreateStepNavigation navigation={navigation} title={currCommon.name}/>
+        <CreateStepNavigation navigation={navigation} title={currCommon.name} />
 
         <CreateStepDotHeader
           title="Billing Details"
@@ -130,14 +147,16 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
             padding: 24,
           }}
           scrollEventThrottle={16}
-          onScroll={Animated.event([{
-              nativeEvent: {
-                contentOffset: {y: scrollY},
+          onScroll={Animated.event(
+            [
+              {
+                nativeEvent: {
+                  contentOffset: {y: scrollY},
+                },
               },
-            },
             ],
-            {useNativeDriver: false})
-          }>
+            {useNativeDriver: false},
+          )}>
           <MembershipRequest />
 
           <CreateStepHeader
@@ -152,7 +171,9 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
               backgroundColor: 'white',
             }}>
             <RequestStepHeaderTitle
-              title="Billing Details" subtitle={subtitle} />
+              title="Billing Details"
+              subtitle={subtitle}
+            />
 
             <TextInputField
               editable
@@ -160,16 +181,14 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
               value={
                 testCard
                   ? 'Thor Odinson'
-                  : billingDetailsFormStore.getFormField(
-                      BillingDetailsConstants.City
-                    )?.value || userStore.userInfo.displayName
+                  : getUserFullName()
               }
               autoCapitalize="words"
               autofill={AUTOFILL[Platform.OS].name}
               validation={{
                 name: BillingDetailsConstants.CardName,
                 formStore: billingDetailsFormStore,
-                validateRule: ['required', VALIDATION_RULES.FIRST_LAST_NAME],
+                validateRule: ['required', VALIDATION_RULES.FIRST_LAST_NAME, VALIDATION_RULES.CARDHOLDER_NAME_VALIDATOR],
                 displayName: 'full name',
               }}
             />
@@ -182,7 +201,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
                 testCard
                   ? 'Metropolis'
                   : billingDetailsFormStore.getFormField(
-                      BillingDetailsConstants.City
+                      BillingDetailsConstants.City,
                     )?.value
               }
               autoCapitalize="words"
@@ -196,9 +215,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
 
             <CountrySelectField
               label="Country"
-              onChange={(x) => {
-                setCountry(x);
-              }}
+              onChange={onSelectedCountryChange}
               validation={{
                 name: BillingDetailsConstants.Country,
                 formStore: billingDetailsFormStore,
@@ -215,7 +232,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
                 testCard
                   ? '221B Baker Street'
                   : billingDetailsFormStore.getFormField(
-                      BillingDetailsConstants.Address
+                      BillingDetailsConstants.Address,
                     )?.value
               }
               autoCapitalize="words"
@@ -237,7 +254,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
                   testCard
                     ? 'TX'
                     : billingDetailsFormStore.getFormField(
-                        BillingDetailsConstants.District
+                        BillingDetailsConstants.District,
                       )?.value
                 }
                 validation={{
@@ -259,7 +276,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
                   testCard
                     ? '012345678'
                     : billingDetailsFormStore.getFormField(
-                        BillingDetailsConstants.ID
+                        BillingDetailsConstants.ID,
                       )?.value
                 }
                 validation={{
@@ -283,7 +300,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
                 testCard
                   ? '31415PI'
                   : billingDetailsFormStore.getFormField(
-                      BillingDetailsConstants.PostalCode
+                      BillingDetailsConstants.PostalCode,
                     )?.value
               }
               validation={{

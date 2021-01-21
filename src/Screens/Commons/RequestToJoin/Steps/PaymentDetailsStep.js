@@ -29,6 +29,7 @@ import {testCard} from '~/Config';
 import moment from 'moment';
 import {VALIDATION_RULES} from '~/FormStores/ValidationRules/paymentDetailsRules';
 import {formatNumber} from '~/Util/FormatUtil';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 
 const {width} = Dimensions.get('window');
 
@@ -48,17 +49,17 @@ const PaymentDetailsStep = ({
     formStores.personalContributionFormStore;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
 
-  const [scrollY] = useState(new Animated.Value(0));
-  const [headerHeight, setHeaderHeight] = useState(0);
+  const [ scrollY ] = useState(new Animated.Value(0));
+  const [ headerHeight, setHeaderHeight ] = useState(0);
 
   useEffect(() => {
     const height = scrollY.interpolate({
-      inputRange: [50, 50],
-      outputRange: [0, 67],
+      inputRange: [ 50, 50 ],
+      outputRange: [ 0, 67 ],
       extrapolate: 'clamp',
     });
     setHeaderHeight(height);
-  }, [scrollY]);
+  }, [ scrollY ]);
 
   const push = async () => {
     if (paymentFormStore.isFormValid()) {
@@ -73,7 +74,6 @@ const PaymentDetailsStep = ({
         const data = {
           description: formData.intro,
           funding: formData.amount * 100,
-          preAuthId: false,
           commonId: currDaoId,
         };
 
@@ -87,6 +87,7 @@ const PaymentDetailsStep = ({
             title: 'Creating your membership request',
           },
         });
+
 
         const createdCard = await createCard({
           ...formData,
@@ -123,7 +124,11 @@ const PaymentDetailsStep = ({
         }
       } catch (e) {
         navigation.pop();
-        showErrorPopUp(bottomSheetStore, e);
+
+        bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
+          subTitle: 'We couldn\'t create your proposal',
+          error: e,
+        });
       }
     }
   };
@@ -145,7 +150,7 @@ const PaymentDetailsStep = ({
       )}
       <Text style={{...font.primary.bold}}>
         {' '}
-        {isMonthly ? 'monthly' : 'one time'}{' '}
+        ({isMonthly ? 'monthly' : 'one time'}){' '}
       </Text>
       to this common
     </Text>
@@ -153,7 +158,7 @@ const PaymentDetailsStep = ({
 
   return (
     <React.Fragment>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
+      <SafeAreaView style={{backgroundColor: colors.white}}/>
       <SafeAreaView
         style={{
           flex: 1,
@@ -178,10 +183,10 @@ const PaymentDetailsStep = ({
             padding: 24,
           }}
           scrollEventThrottle={16}
-          onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
-          ],
-          {useNativeDriver: false})}>
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {y: scrollY}}}],
+            {useNativeDriver: false},
+          )}>
           <MembershipRequest />
 
           <CreateStepHeader
@@ -201,7 +206,7 @@ const PaymentDetailsStep = ({
             />
             <TextInputField
               label="Credit card number"
-              autofill={Platform.OS === 'ios' ? 'creditCardNumber' : 'c-number'}
+              autofill={Platform.OS === 'ios' ? 'creditCardNumber' : 'cc-number'}
               value={
                 testCard
                   ? '4007410000000006'
@@ -300,15 +305,24 @@ const PaymentDetailsStep = ({
                 ...text.regularText,
                 color: colors.grey2,
                 textAlign: 'center',
-              }}>
-              If your membership request will not be accepted, you will not be
-              charged. Your card will be saved for the monthly contribution of $
-              {
-                personalContributionFormStore.getFormField(
-                  RequestToJoinForm.FIELD_AMOUNT,
-                )?.value?.value
-              }
-              , you can cancel at any time.
+              }}
+            >
+              {isMonthly ? (
+                <React.Fragment>
+                  If your membership request will not be accepted, you will not be
+                  charged. Your card will be saved for the monthly contribution of $
+                  {
+                    personalContributionFormStore.getFormField(
+                      RequestToJoinForm.FIELD_AMOUNT
+                    )?.value?.value
+                  }
+                  , you can cancel at any time.
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  If your membership request will not be accepted, you will not be charged.
+                </React.Fragment>
+              )}
             </Text>
           </View>
         </ScrollView>

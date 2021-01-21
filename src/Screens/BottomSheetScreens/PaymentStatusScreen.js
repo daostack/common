@@ -8,39 +8,34 @@ import {PROPOSAL_PAYMENT_STATE} from '~/Util/constants';
 const PaymentFailed = ({bottomSheetStore, proposerName, paymentState}) => (
   <View style={styles.container}>
     <View style={styles.body}>
-      <Image
-        source={require('../../Assets/closed.png')}
-        style={styles.image}
-      />
+      <Image source={require('../../Assets/closed.png')} style={styles.image} />
 
       <Text style={styles.textTitle}>
         {paymentState === PROPOSAL_PAYMENT_STATE.FAILED
           ? 'Payment Failed'
-          : 'Payment Pending'
-        }
+          : 'Payment Pending'}
       </Text>
-
 
       {paymentState === PROPOSAL_PAYMENT_STATE.FAILED ? (
         <Text style={styles.subtitle}>
-          This request was approved by the Common members. However, we weren't able to collect the contribution, and the
-          request was cancelled.{' '}
-          {proposerName} was not added as a member. If this is your request, you may try to join again.
+          This request was approved by the Common members. However, we weren't
+          able to collect the contribution, and the request was cancelled.{' '}
+          {proposerName} was not added as a member. If this is your request, you
+          may try to join again.
         </Text>
       ) : (
         <Text style={styles.subtitle}>
-          This request was approved by the Common members. However, the contribution is still pending
-          and {proposerName} was not added as a member yet.
+          This request was approved by the Common members. However, the
+          contribution is still pending and {proposerName} was not added as a
+          member yet.
         </Text>
       )}
 
       <TouchableOpacity
         style={styles.dismissButton}
-        onPress={() => bottomSheetStore.hideBottomSheet()}
-      >
+        onPress={() => bottomSheetStore.hideBottomSheet()}>
         <Text style={styles.continueEditButtonTxt}>OK</Text>
       </TouchableOpacity>
-
     </View>
   </View>
 );
@@ -72,7 +67,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 20,
-
   },
   image: {
     height: '25%',

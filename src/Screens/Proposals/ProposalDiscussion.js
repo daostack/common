@@ -1,5 +1,12 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {Text, StyleSheet, SectionList, View, Image, Dimensions} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  SectionList,
+  View,
+  Image,
+  Dimensions,
+} from 'react-native';
 import {layout, text, colors, font} from '~/Theme';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
@@ -7,9 +14,13 @@ import moment from 'moment';
 import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
 import PropTypes, {string, number, func, shape, arrayOf} from 'prop-types';
-import UserService from '../../Services/UserService';
 
-const ProposalDiscussion = ({proposal, proposalId, scrollViewRef}) => {
+const ProposalDiscussion = ({
+  proposal,
+  proposalId,
+  scrollViewRef,
+  userListStore,
+}) => {
   const chatRef = useRef(null);
   const [msgGroups, setMsgGroups] = useState([]);
 
@@ -25,7 +36,8 @@ const ProposalDiscussion = ({proposal, proposalId, scrollViewRef}) => {
 
   let listRef = useRef([]);
   useEffect(() => {
-    const unsubscribe = db.collection('discussionMessage')
+    const unsubscribe = db
+      .collection('discussionMessage')
       .where('discussionId', '==', proposalId)
       .orderBy('createTime', 'desc')
       // .startAt(0)
@@ -62,14 +74,13 @@ const ProposalDiscussion = ({proposal, proposalId, scrollViewRef}) => {
 
             setMsgGroup(groupDate);
 
-
             chatRef.current.scrollToLocation({
               animated: true,
               itemIndex: msgList.length + groupDate.length - 1,
             });
           }
         },
-        (error) => logger.error(error)
+        (error) => logger.error(error),
       );
     return () => {
       unsubscribe();
@@ -77,13 +88,13 @@ const ProposalDiscussion = ({proposal, proposalId, scrollViewRef}) => {
   }, [proposalId]);
 
   const getOutcomeForMessage = async (proposalObj, message) => {
-    const user = await UserService.getInstance().getUserById(message.ownerId);
-
+    const user = userListStore.getUserById(message.ownerId);
     return proposalObj?.votes.find((y) => y.voterId === user.uid).outcome === 1;
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: colors.paleGrey, ...layout.content}}>
+    <View
+      style={{flex: 1, backgroundColor: colors.paleGrey, ...layout.content}}>
       {msgGroups.length > 0 ? (
         <SectionList
           inverted
@@ -95,7 +106,6 @@ const ProposalDiscussion = ({proposal, proposalId, scrollViewRef}) => {
             paddingTop: 100,
             width: Dimensions.get('screen').width * 0.9,
           }}
-
           renderItem={(x) => (
             <DiscussionMessage
               data={x.item}
@@ -103,11 +113,9 @@ const ProposalDiscussion = ({proposal, proposalId, scrollViewRef}) => {
               outcome={getOutcomeForMessage(proposal, x.item)}
             />
           )}
-
           onScrollToIndexFailed={(info) => {
             logger.error('Something bad happened: ', info);
           }}
-
           renderSectionFooter={({section: {date}}) => (
             <Text style={styles.timeHeader}>
               {moment().isSame(date, 'day') ? 'Today' : date}
@@ -124,11 +132,10 @@ const ProposalDiscussion = ({proposal, proposalId, scrollViewRef}) => {
             }}
           />
 
-          <Text style={styles.emptyTitle}>
-            No comments yet
-          </Text>
+          <Text style={styles.emptyTitle}>No comments yet</Text>
           <Text style={styles.emptyBody}>
-            Have any thoughts? Share them with other members by adding the first comment.
+            Have any thoughts? Share them with other members by adding the first
+            comment.
           </Text>
         </View>
       )}
@@ -138,15 +145,20 @@ const ProposalDiscussion = ({proposal, proposalId, scrollViewRef}) => {
 
 ProposalDiscussion.propTypes = {
   proposal: shape({
-    votes: arrayOf(shape({
-      voter: string,
-      outcome: number,
-    })),
+    votes: arrayOf(
+      shape({
+        voter: string,
+        outcome: number,
+      }),
+    ),
   }),
   proposalId: string,
   scrollViewRef: PropTypes.any,
   onFirstScrollDown: func,
   onScrollRefresh: func,
+  userListStore: shape({
+    getUserById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -177,4 +189,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(ProposalDiscussion));
+export default inject(
+  'userStore',
+  'userListStore',
+)(observer(ProposalDiscussion));

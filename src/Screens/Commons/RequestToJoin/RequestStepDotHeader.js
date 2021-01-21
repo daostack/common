@@ -2,16 +2,26 @@ import React from 'react';
 import {View, StyleSheet, Animated, Text, TouchableOpacity} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors, text, layout} from '~/Theme';
-import {string, bool, object, number, array, shape, oneOfType} from 'prop-types';
+import {
+  string,
+  bool,
+  object,
+  number,
+  array,
+  shape,
+  oneOfType,
+} from 'prop-types';
 
-const RequestStepDotHeader = ({headerHeight = 0, isFirstStepSkipped, currentIndex, navigation, title}) => {
-  const totalDots = isFirstStepSkipped
-    ? 4
-    : 5;
+const RequestStepDotHeader = ({
+  headerHeight = 0,
+  isFirstStepSkipped,
+  currentIndex,
+  navigation,
+  title,
+}) => {
+  const totalDots = isFirstStepSkipped ? 4 : 5;
 
-  currentIndex = isFirstStepSkipped
-    ? currentIndex - 1
-    : currentIndex;
+  currentIndex = isFirstStepSkipped ? currentIndex - 1 : currentIndex;
 
   return (
     <Animated.View style={[styles.header, {height: headerHeight}]}>
@@ -24,13 +34,11 @@ const RequestStepDotHeader = ({headerHeight = 0, isFirstStepSkipped, currentInde
             padding: 0,
             zIndex: 9999,
           }}
-          onPress={() => navigation.pop()}
-        >
+          onPress={() => navigation.pop()}>
           <Icon name="left-arrow" size={32} style={{margin: 10}} />
         </TouchableOpacity>
         <View style={styles.bar}>
-          <Text style={styles.title}>{title}
-          </Text>
+          <Text style={styles.title}>{title}</Text>
           <View
             style={{
               ...layout.marginTopS,

@@ -5,13 +5,11 @@ import moment from 'moment';
 
 export const LAYOUT_ANIMATION_CONFIG = {
   duration: 300,
-  create:
-  {
+  create: {
     type: LayoutAnimation.Types.easeInEaseOut,
     property: LayoutAnimation.Properties.scaleY,
   },
-  update:
-  {
+  update: {
     type: LayoutAnimation.Types.easeInEaseOut,
   },
 };
@@ -22,11 +20,11 @@ export const numberFormatter = (num) => {
     ? denom / 1.0e9 + 'B'
     : // Six Zeroes for Millions
     denom >= 1.0e6
-      ? denom / 1.0e6 + 'M'
-      : // Three Zeroes for Thousands
-      denom >= 1.0e4
-        ? denom / 1.0e4 + 'K'
-        : Math.floor(denom);
+    ? denom / 1.0e6 + 'M'
+    : // Three Zeroes for Thousands
+    denom >= 1.0e4
+    ? denom / 1.0e4 + 'K'
+    : Math.floor(denom);
 };
 
 export function filterObjectByKeys(currObj, allowedKeys) {
@@ -80,17 +78,26 @@ export const isDaoMemberByUserId = (members, userUID) => {
   if (!members) {
     return false;
   }
-  return members.some(
-    (member) =>
-      member.userId === userUID
-  );
+  return members.some((member) => member.userId === userUID);
 };
 
-export const formatNumber = (num) => (
+export const formatNumber = (num) =>
   Math.abs(num) > 999
-    ? Math.sign(num) * ((Math.abs(num) / 1000).toFixed(1)) + 'K'
-    : Math.sign(num) * Math.abs(num)
-);
+    ? Math.sign(num) * (Math.abs(num) / 1000).toFixed(1) + 'K'
+    : Math.sign(num) * Math.abs(num);
 
-export const formatCurrency = (amount) => (amount / 100).toLocaleString('en-US', {style: 'currency', currency: 'USD'});
-export const formatDate = (date) => moment(date).format('DD MMM, YYYY');
+export const formatCurrency = (amount) => {
+  const formattedAmount = (amount / 100)
+    .toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    })
+    // If the amount is whole number don't show the centes
+    .split('.00')[0];
+
+  return formattedAmount.indexOf('$') === -1
+    ? `$${formattedAmount}`
+    : formattedAmount;
+};
+
+export const formatDate = (date) => moment(date).format('DD MMMM YYYY');

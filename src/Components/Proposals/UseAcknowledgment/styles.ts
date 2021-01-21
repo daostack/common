@@ -2,9 +2,12 @@ import {StyleSheet} from 'react-native';
 import {colors, font} from '~/Theme';
 
 export default StyleSheet.create({
-  root:  {
-    paddingTop: 65,
-    height: '100%',
+  background: {
+    width: '100%',
+    height: 65,
+  },
+  root: {
+    flex: 1,
   },
   view: {
     flex: 1,
@@ -92,7 +95,7 @@ export default StyleSheet.create({
   centerText: {textAlign: 'center'},
   line: {
     backgroundColor: colors.grey4,
-    height:1,
+    height: 1,
     marginVertical: 24,
   },
   item: {
