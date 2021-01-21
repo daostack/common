@@ -164,7 +164,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
               validation={{
                 name: BillingDetailsConstants.CardName,
                 formStore: billingDetailsFormStore,
-                validateRule: ['required', VALIDATION_RULES.FIRST_LAST_NAME],
+                validateRule: ['required', VALIDATION_RULES.FIRST_LAST_NAME, VALIDATION_RULES.CARDHOLDER_NAME_VALIDATOR],
                 displayName: 'full name',
               }}
             />
