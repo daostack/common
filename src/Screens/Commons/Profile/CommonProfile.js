@@ -46,6 +46,7 @@ import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDat
 import {BlurView} from '~/Components';
 import Logger from '~/Services/Logger';
 import moment from 'moment';
+import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 
 import {
   IntroduceYourselfFormStore,
@@ -65,6 +66,7 @@ const CommonProfile = ({
   userStore,
   route: {params},
   commonStore,
+  proposalStore,
 }) => {
   /* all of  params.commonId,
   params.showRequestSentModal,
@@ -104,7 +106,6 @@ const CommonProfile = ({
 
   //const routeCommon = params.currCommon;
   Logger.log('Common id ->', params.currCommon);
-  Logger.log('Common id ->', params.commonId);
   const currCommon = commonStore.getCommonById(
     params.commonId || params.currCommon?.id,
   );
@@ -139,6 +140,13 @@ const CommonProfile = ({
     Platform.OS === 'ios' &&
       LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
   };
+
+  useEffect(() => {
+    const unsubscribe = proposalStore.subscribeToCommonProposals(currCommon.id);
+    return () => {
+      unsubscribe && unsubscribe();
+    };
+  }, [currCommon]);
 
   useEffect(() => {
     setShowRequestSentModal(params.showRequestSentModal);
@@ -222,14 +230,25 @@ const CommonProfile = ({
       <Text style={text.h1BlackTitle}>Proposals</Text>
 
       <ProposalsList
-        onlyFundingRequests={true}
-        isMember={isMember}
         navigation={navigation}
         commonInfo={{
           name: currCommon.name,
           id: currCommon.id,
           balance: currCommon.balance,
         }}
+        proposalFilter={{
+          stage: PROPOSAL_STAGE.Active,
+          type: PROPOSAL_TYPE.FundingRequest,
+        }}
+
+        // onlyFundingRequests={true}
+        // isMember={isMember}
+        // navigation={navigation}
+        // commonInfo={{
+        //   name: currCommon.name,
+        //   id: currCommon.id,
+        //   balance: currCommon.balance,
+        // }}
       />
 
       {isMember && (
@@ -245,7 +264,7 @@ const CommonProfile = ({
     <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
       <Text style={text.h1BlackTitle}>History</Text>
 
-      <ProposalsList
+      {/* <ProposalsList
         isMember={isMember}
         commonInfo={{
           name: currCommon.name,
@@ -255,6 +274,19 @@ const CommonProfile = ({
         navigation={navigation}
         onlyFundingRequests={true}
         isHistory={true}
+      /> */}
+
+      <ProposalsList
+        navigation={navigation}
+        commonInfo={{
+          name: currCommon.name,
+          id: currCommon.id,
+          balance: currCommon.balance,
+        }}
+        proposalFilter={{
+          stage: PROPOSAL_STAGE.History,
+          type: PROPOSAL_TYPE.FundingRequest,
+        }}
       />
     </View>
   );
@@ -900,6 +932,7 @@ CommonProfile.propTypes = {
   bottomSheetStore: object,
   userStore: object,
   commonStore: object,
+  proposalStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -1069,4 +1102,5 @@ export default inject(
   'bottomSheetStore',
   'userStore',
   'commonStore',
+  'proposalStore',
 )(observer(CommonProfile));

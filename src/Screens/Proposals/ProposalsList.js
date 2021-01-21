@@ -18,22 +18,23 @@ import {observer, inject} from 'mobx-react';
 const {width, height} = Dimensions.get('window');
 
 const ProposalsList = ({
-  isMember,
-  commonInfo,
-  // showAll,
-  showMax,
-  onlyFundingRequests,
-  // userId,
-  membershipRequests,
-  isHistory,
   isSwiper,
   navigation,
+  commonInfo,
+  proposalFilter,
+  showMax,
+  // showAll,
+  // userId,
+  //isHistory,
   // onCountChange,
-  onlyRequestsToJoin,
   // includeHistoryInCount,
   // userStore: {userInfo},
-  list,
+  //list,
+  proposalStore,
 }) => {
+  const list = commonInfo
+    ? proposalStore.getCommonProposals(commonInfo.id, proposalFilter)
+    : list;
   let listRef = useRef([]);
   const renderProposalCard = (item, index) =>
     isSwiper ? (
@@ -41,10 +42,7 @@ const ProposalsList = ({
         <ProposalCard
           proposalId={item.id}
           key={item.id}
-          data={item}
           isSwiper={true}
-          membershipRequest={onlyRequestsToJoin || membershipRequests}
-          isMember={isMember}
           commonInfo={commonInfo}
           navigation={navigation}
         />
@@ -52,14 +50,14 @@ const ProposalsList = ({
         <TouchableOpacity
           onPress={() =>
             navigation.navigate('MyProposals', {
-              onlyFundingRequests: onlyFundingRequests,
-              onlyMembershipRequests: membershipRequests,
+              onlyFundingRequests: proposalFilter.onlyFundingRequests,
+              onlyMembershipRequests: proposalFilter.onlyRequestsToJoin,
             })
           }
           style={{...styles.commonBox}}>
           <Text style={text.buttonblue}>
             {`View all ${list.length} ${
-              membershipRequests ? 'Requests' : 'Proposals'
+              item.isJoinRequest ? 'Requests' : 'Proposals'
             }`}
           </Text>
         </TouchableOpacity>
@@ -68,10 +66,7 @@ const ProposalsList = ({
       <ProposalCard
         proposalId={item.id}
         key={item.id}
-        data={item}
         isSwiper={false}
-        membershipRequest={onlyRequestsToJoin || membershipRequests}
-        isMember={isMember}
         commonInfo={commonInfo}
         navigation={navigation}
       />
@@ -95,7 +90,9 @@ const ProposalsList = ({
             source={require('../../../src/Assets/pencil.png')}
           />
           <Text style={{...text.h2Black, ...layout.marginTopS}}>
-            {membershipRequests ? 'No Active Requests' : 'No Active Proposals'}
+            {proposalFilter.onlyRequestsToJoin
+              ? 'No Active Requests'
+              : 'No Active Proposals'}
           </Text>
           <Text style={styles.textNoProposals}>
             Join a common and propose actions you think it should take to
@@ -121,21 +118,20 @@ const ProposalsList = ({
     <>
       {list && list.length > 0 ? (
         <FlatList
-          data={list}
+          data={list.slice()}
           renderItem={({item}) => renderProposalCard(item)}
-          extraData={listRef}
         />
       ) : (
         <ViewTabNoData
           title={
-            isHistory
+            proposalFilter.history
               ? 'No Past activity'
-              : membershipRequests
+              : proposalFilter.onlyRequestsToJoin
               ? 'No requests yet'
               : 'No proposals'
           }
           subtitle={
-            isHistory
+            proposalFilter.history
               ? 'You will be able to see proposals that passed or were rejected here.'
               : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
           }
@@ -154,8 +150,6 @@ ProposalsList.propTypes = {
   }),
   showAll: bool,
   showMax: number,
-  onlyFundingRequests: bool,
-  membershipRequests: bool,
   userId: string,
   isHistory: bool,
   isSwiper: bool,
@@ -168,6 +162,11 @@ ProposalsList.propTypes = {
     }),
   }),
   list: array,
+
+  proposalStore: shape({
+    getCommonProposals: func,
+  }),
+  proposalFilter: object,
 };
 
 const styles = StyleSheet.create({
@@ -226,4 +225,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(ProposalsList));
+export default inject('userStore', 'proposalStore')(observer(ProposalsList));

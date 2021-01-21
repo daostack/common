@@ -1,11 +1,6 @@
 import {decorate, computed, observable, runInAction} from 'mobx';
 import ListStore from './ListStore';
-import {
-  subscribeToProposalList,
-  PROPOSAL_STAGES_ACTIVE,
-  PROPOSAL_STAGES_HISTORY,
-} from '~/Services/ListServices/ProposalListService';
-import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
+import {subscribeToProposalList} from '~/Services/ListServices/ProposalListService';
 import {
   FirestoreUnsubscribeFn,
   IFirebaseDocChange,
@@ -14,21 +9,21 @@ import {
 import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
-import {PROPOSAL_TYPE} from '~/Config';
+import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 
-interface IStageProposalFilter {
-  active?: boolean;
-  history?: boolean;
+export type IProposalStageFilter =
+  | typeof PROPOSAL_STAGE.Active
+  | typeof PROPOSAL_STAGE.History;
+
+export type IProposalTypeFilter =
+  | typeof PROPOSAL_TYPE.FundingRequest
+  | typeof PROPOSAL_TYPE.Join;
+
+interface IProposalFilter {
+  type: IProposalTypeFilter;
+  stage: IProposalStageFilter;
 }
 
-interface ITypeProposalFilter {
-  onlyFundingRequests?: boolean;
-  onlyRequestsToJoin?: boolean;
-}
-
-interface IUserProposalFilter extends ITypeProposalFilter {}
-
-interface ICommonProposalFilter extends IStageProposalFilter {}
 export default class ProposalStore extends ListStore<Proposal> {
   isLoading: boolean;
 
@@ -41,8 +36,9 @@ export default class ProposalStore extends ListStore<Proposal> {
     if (this.isLoading || !this.rootStore.authStore.userInfo?.uid) {
       return [];
     }
-    return this.getUserActiveProposals(this.rootStore.authStore.userInfo?.uid, {
-      onlyFundingRequests: true,
+    return this.getUserProposals(this.rootStore.authStore.userInfo?.uid, {
+      type: PROPOSAL_TYPE.FundingRequest,
+      stage: PROPOSAL_STAGE.Active,
     });
   }
 
@@ -50,47 +46,37 @@ export default class ProposalStore extends ListStore<Proposal> {
     if (this.isLoading || !this.rootStore.authStore.userInfo?.uid) {
       return [];
     }
-    return this.getUserActiveProposals(this.rootStore.authStore.userInfo?.uid, {
-      onlyRequestsToJoin: true,
+    return this.getUserProposals(this.rootStore.authStore.userInfo?.uid, {
+      type: PROPOSAL_TYPE.Join,
+      stage: PROPOSAL_STAGE.Active,
     });
   }
 
   // Data consuming methods
   getProposalById = (id: string): Proposal | undefined => super.getDataById(id);
 
-  getUserActiveProposals = (
+  getUserProposals = (
     userId: string,
-    proposalFilter: IUserProposalFilter,
+    proposalFilter: IProposalFilter,
   ): Array<Proposal> | [] =>
     this.getDataArray?.filter((proposal: Proposal) => {
       const isProposer = proposal.proposerId === userId;
       if (isProposer) {
-        if (proposalFilter.onlyFundingRequests) {
-          return (
-            proposal.type === PROPOSAL_TYPE.FundingRequest &&
-            this._checkProposalState(proposal, {active: true})
-          );
-        }
-        if (proposalFilter.onlyRequestsToJoin) {
-          return (
-            proposal.type === PROPOSAL_TYPE.Join &&
-            this._checkProposalState(proposal, {active: true})
-          );
-        }
+        return this._applyFilter(proposal, proposalFilter);
       }
       return isProposer;
     });
 
   getCommonProposals = (
     commonId: string,
-    proposalFilter: ICommonProposalFilter,
+    proposalFilter: IProposalFilter,
   ): Array<Proposal> | undefined =>
     this.getDataArray?.filter((proposal: Proposal) => {
       const isSameCommon = proposal.commonId === commonId;
       if (isSameCommon) {
-        return this._checkProposalState(proposal, proposalFilter);
+        return this._applyFilter(proposal, proposalFilter);
       }
-      return isSameCommon;
+      return false;
     });
 
   //Actions
@@ -117,15 +103,15 @@ export default class ProposalStore extends ListStore<Proposal> {
     updatedUserList
       .docChanges()
       .forEach((updatedProposalDoc: IFirebaseDocChange<IProposalEntity>) => {
-        const currProposal = updatedProposalDoc.doc.data();
+        const updatedProposal = updatedProposalDoc.doc.data();
         // TODO: implement setUpdates method to handle single field changes in existing models
 
-        // let proposal = this.getDataById(currProposal.id);
-        // if (proposal) {
-        //   proposal.setUpdates(updatedProposalDoc);
-        // } else {
-        this.setData(currProposal.id, new Proposal(currProposal));
-        // }
+        let proposal = this.getDataById(updatedProposal.id);
+        if (proposal) {
+          proposal.setUpdates(updatedProposal);
+        } else {
+          this.setData(updatedProposal.id, new Proposal(updatedProposal));
+        }
       });
 
     runInAction(() => {
@@ -133,22 +119,21 @@ export default class ProposalStore extends ListStore<Proposal> {
     });
   };
 
-  _checkProposalState = (
-    proposal: Proposal,
-    proposalFilter: IStageProposalFilter,
-  ) => {
-    if (proposalFilter.history) {
-      return (
-        PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state) &&
-        !ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState)
-      );
+  _applyFilter = (proposal: Proposal, proposalFilter: IProposalFilter) => {
+    // Check IProposalFilter.type filter
+    if (proposalFilter.type && proposal.type !== proposalFilter.type) {
+      return false;
     }
-    if (proposalFilter.active) {
-      return (
-        PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.state) ||
-        ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState)
-      );
+    // Check IProposalFilter.stage filter
+    if (proposalFilter.stage) {
+      if (
+        (proposal.isActive && proposalFilter.stage !== PROPOSAL_STAGE.Active) ||
+        (proposal.isHistory && proposalFilter.stage !== PROPOSAL_STAGE.History)
+      ) {
+        return false;
+      }
     }
+    return true;
   };
 }
 

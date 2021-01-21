@@ -9,6 +9,11 @@ import {
   IProposalVote,
   ProposalType,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {
+  PROPOSAL_STAGES_ACTIVE,
+  PROPOSAL_STAGES_HISTORY,
+} from '~/Services/ListServices/ProposalListService';
+import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 import {BaseModel} from './BaseModel';
 
 export class Proposal extends BaseModel<IProposalEntity> {
@@ -27,9 +32,37 @@ export class Proposal extends BaseModel<IProposalEntity> {
   fundingRequest: IProposalFundingRequest | undefined;
   join: IProposalJoin | undefined;
 
+  get isJoinRequest() {
+    return this.type === PROPOSAL_TYPE.Join;
+  }
+
+  get isActive() {
+    return (
+      PROPOSAL_STAGES_ACTIVE.some((stg) => stg === this.state) ||
+      ACTIVE_PAYMENT_STATES.some((x) => x === this.paymentState)
+    );
+  }
+
+  get isHistory() {
+    return (
+      PROPOSAL_STAGES_HISTORY.some((stg) => stg === this.state) &&
+      !ACTIVE_PAYMENT_STATES.some((x) => x === this.paymentState)
+    );
+  }
+
+  get funding() {
+    if (this.type === PROPOSAL_TYPE.Join) {
+      return this.join?.funding;
+    } else {
+      return this.fundingRequest?.amount;
+    }
+  }
+
   constructor(newProposalInfo: IProposalEntity) {
     super();
     this.id = newProposalInfo.id;
+    this.createdAt = newProposalInfo.createdAt;
+    this.updatedAt = newProposalInfo.updatedAt;
     this.proposerId = newProposalInfo.proposerId;
     this.commonId = newProposalInfo.commonId;
     this.type = newProposalInfo.type;
