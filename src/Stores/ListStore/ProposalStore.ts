@@ -115,7 +115,6 @@ export default class ProposalStore extends ListStore<Proposal> {
       .docChanges()
       .forEach((updatedProposalDoc: IFirebaseDocChange<IProposalEntity>) => {
         const updatedProposal = updatedProposalDoc.doc.data();
-        // TODO: implement setUpdates method to handle single field changes in existing models
 
         let proposal = this.getDataById(updatedProposal.id);
         if (proposal) {
@@ -138,8 +137,8 @@ export default class ProposalStore extends ListStore<Proposal> {
     // Check IProposalFilter.stage filter
     if (proposalFilter.stage) {
       if (
-        (proposal.isActive && proposalFilter.stage !== PROPOSAL_STAGE.Active) ||
-        (proposal.isHistory && proposalFilter.stage !== PROPOSAL_STAGE.History)
+        (proposal.isActive && !isStageFilterActive(proposalFilter.stage)) ||
+        (proposal.isHistory && !isStageFilterHistory(proposalFilter.stage))
       ) {
         return false;
       }

@@ -59,21 +59,11 @@ const DiscussionMessage = ({
 
           <View style={styles.contentOwner}>
             <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
-              {Platform.OS === 'ios' ? (
-                <TextInput
-                  style={styles.text}
-                  value={text}
-                  editable={false}
-                  multiline
-                  {...textjs.textAlign(text)}
-                />
-              ) : (
-                <Text
-                  style={{...styles.text, ...textjs.writingDirection(text)}}
-                  selectable>
-                  {text}
-                </Text>
-              )}
+              <Text
+                style={{...styles.text, ...textjs.writingDirection(text)}}
+                selectable>
+                {text}
+              </Text>
             </Hyperlink>
             <View style={{position: 'relative', right: 0, bottom: 0}}>
               <Text style={styles.date} numberOfLines={1}>

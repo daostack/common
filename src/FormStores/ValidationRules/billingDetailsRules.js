@@ -1,6 +1,7 @@
 export const VALIDATION_RULES = {
   VALID_ID_PASSPORT: 'valid_id_passport',
   FIRST_LAST_NAME: 'first_last_name',
+  CARDHOLDER_NAME_VALIDATOR: 'cardholder_name_validator',
 };
 
 const isValidId = (id) =>
@@ -29,3 +30,10 @@ export const firstLastNameValidate = {
   errorMessage:
     'The :attribute should consist of first and last name separated with space.',
 };
+
+export const cardholderNameValidator = {
+  ruleName: VALIDATION_RULES.CARDHOLDER_NAME_VALIDATOR,
+  validateFunc: (value) =>  new RegExp(/^[a-zA-Z'’. ]*$/).test(value),
+  errorMessage: 'The :attribute should use latin characters only',
+};
+
