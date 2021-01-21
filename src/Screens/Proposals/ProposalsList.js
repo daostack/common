@@ -23,13 +23,6 @@ const ProposalsList = ({
   commonInfo,
   proposalFilter,
   showMax,
-  // showAll,
-  // userId,
-  //isHistory,
-  // onCountChange,
-  // includeHistoryInCount,
-  // userStore: {userInfo},
-  //list,
   proposalStore,
 }) => {
   const list = commonInfo

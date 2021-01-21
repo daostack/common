@@ -240,15 +240,6 @@ const CommonProfile = ({
           stage: PROPOSAL_STAGE.Active,
           type: PROPOSAL_TYPE.FundingRequest,
         }}
-
-        // onlyFundingRequests={true}
-        // isMember={isMember}
-        // navigation={navigation}
-        // commonInfo={{
-        //   name: currCommon.name,
-        //   id: currCommon.id,
-        //   balance: currCommon.balance,
-        // }}
       />
 
       {isMember && (
@@ -263,18 +254,6 @@ const CommonProfile = ({
   const History = () => (
     <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
       <Text style={text.h1BlackTitle}>History</Text>
-
-      {/* <ProposalsList
-        isMember={isMember}
-        commonInfo={{
-          name: currCommon.name,
-          id: currCommon.id,
-          balance: currCommon.balance,
-        }}
-        navigation={navigation}
-        onlyFundingRequests={true}
-        isHistory={true}
-      /> */}
 
       <ProposalsList
         navigation={navigation}
