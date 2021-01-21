@@ -6,8 +6,8 @@ export default StyleSheet.create({
     width: '100%',
     height: 65,
   },
-  root:  {
-    height: '100%',
+  root: {
+    flex: 1,
   },
   view: {
     flex: 1,
@@ -95,7 +95,7 @@ export default StyleSheet.create({
   centerText: {textAlign: 'center'},
   line: {
     backgroundColor: colors.grey4,
-    height:1,
+    height: 1,
     marginVertical: 24,
   },
   item: {

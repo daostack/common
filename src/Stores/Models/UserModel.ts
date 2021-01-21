@@ -24,6 +24,9 @@ export class UserModel extends BaseModel<IUserEntity> {
   updatedAt: Date | null = null;
   intro: string = '';
 
+  // That field is used only in the commonMembers list
+  joinedAt?: Date | null = null;
+
   constructor(newUserInfo: IUserEntity) {
     super();
     // Filter the provided newUserInfo values in order to be sure there are no extra data.

@@ -1,4 +1,5 @@
 import {IBaseEntity} from './IBaseEntity';
+import {firebase} from '~/Firebase';
 
 export interface ICommonEntity extends IBaseEntity {
   /**
@@ -58,10 +59,6 @@ export interface ICommonEntity extends IBaseEntity {
   register: CommonRegister;
 }
 
-export interface ICommonMember {
-  userId: string;
-}
-
 export interface ICommonRule {
   /**
    * The title for the rule
@@ -119,3 +116,8 @@ export type ContributionType = 'one-time' | 'monthly';
  * registered - The common is whitelisted and part of the featured list
  */
 export type CommonRegister = 'na' | 'registered';
+
+export interface ICommonMember {
+  userId: string;
+  joinedAt?: firebase.firestore.Timestamp;
+}
