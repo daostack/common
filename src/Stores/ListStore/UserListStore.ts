@@ -4,6 +4,7 @@ import ListStore from './ListStore';
 import {subscribeToAllUsers} from '~/Services/ListServices/UserListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
+import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 export default class UserListStore extends ListStore<UserModel> {
   rootStore: RootStore;
 
@@ -16,15 +17,15 @@ export default class UserListStore extends ListStore<UserModel> {
   getUserById = (uid: string): IUserEntity | undefined =>
     super.getDataById(uid);
 
-  getCommonUsersByMembersArray = (members: Array<string>): Array<UserModel> => {
+  getCommonUsersByMembersArray = (
+    members: Array<ICommonMember>,
+  ): Array<UserModel> => {
     const dataByIds: Array<UserModel> = [];
-    members.forEach((id) => {
-      const currData = this.getDataById(id);
-      if (currData) {
-        currData && dataByIds.push(currData);
-      } else {
-        this.rootStore.authStore.userInfo?.uid === id &&
-          dataByIds.push(this.rootStore.authStore.userInfo);
+    members.forEach((commonMember: ICommonMember) => {
+      const user = this.getDataById(commonMember.userId);
+      if (user) {
+        user.joinedAt = commonMember.joinedAt;
+        dataByIds.push(user);
       }
     });
     return dataByIds;

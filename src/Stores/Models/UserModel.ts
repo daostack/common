@@ -24,6 +24,9 @@ export class UserModel implements IUserEntity {
   updatedAt: Date | null = null;
   intro: string = '';
 
+  // That field is used only in the commonMembers list
+  joinedAt?: Date | null = null;
+
   constructor(newUserInfo: IUserEntity) {
     // Filter the provided newUserInfo values in order to be sure there are no extra data.
     // Currently there are users with displayName prop in the DB,
