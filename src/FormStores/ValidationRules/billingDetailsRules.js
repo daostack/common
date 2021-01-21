@@ -26,7 +26,7 @@ export const validPassport = {
 
 export const firstLastNameValidate = {
   ruleName: VALIDATION_RULES.FIRST_LAST_NAME,
-  validateFunc: (value, requirement, attribute) => new RegExp(/\s/).test(value),
+  validateFunc: (value, requirement, attribute) => new RegExp(/^((\w.)+\s{0,1}).+[^\s]$/).test(value),
   errorMessage:
     'The :attribute should consist of first and last name separated with space.',
 };
