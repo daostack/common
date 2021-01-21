@@ -12,9 +12,9 @@ import {
 import {UserModel} from './Models/UserModel';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from './RootStore';
+import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 
 type SignInErrorWithCode = any;
-type UserInfo = any;
 
 class UserStore {
   userInfo: UserModel | null;
@@ -85,7 +85,7 @@ class UserStore {
   setSignInError = (error: SignInErrorWithCode) => {
     this.signInError = error;
   };
-  isDaoMember = (members: UserInfo[]) =>
+  isDaoMember = (members: ICommonMember[]) =>
     this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false;
   isProposer = (proposal: any) =>
     this.userInfo ? this.userInfo.uid === proposal.proposerId : false;
