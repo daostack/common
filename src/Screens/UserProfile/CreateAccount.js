@@ -17,7 +17,6 @@ import AuthService from '~/Services/AuthService';
 import {bool, func} from 'prop-types';
 
 const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
-
   const onSignIn = async (userInfo) => {
     if (onSignedIn) {
       onSignedIn(userInfo.additionalUserInfo.isNewUser);
@@ -39,12 +38,12 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
         </View>
       )}
 
-      {isIos && isLoginWithAppleEnabled ? (
+      {isIos && isLoginWithAppleEnabled && (
         <AppleSignInButton
           customStyle={layout.marginBottomM}
           onSignIn={onSignIn}
         />
-      ) : null}
+      ) }
 
       <GSignInButton style={styles.googleSignInButton} onSignIn={onSignIn} />
 
@@ -52,7 +51,8 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
         <Text style={styles.termsOfUseText}>
           By using Common you agree to the app’s
         </Text>
-        <TouchableOpacity onPress={() => Linking.openURL('https://common.io/tos')}>
+        <TouchableOpacity
+          onPress={() => Linking.openURL('https://common.io/tos')}>
           <Text style={styles.termsOfUseTextBtn}>terms of use</Text>
         </TouchableOpacity>
       </View>

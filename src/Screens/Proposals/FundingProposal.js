@@ -25,14 +25,15 @@ import {BlurView} from '@react-native-community/blur';
 
 const FundingProposal = ({
   navigation,
-  route: {params: {commonId, common}} ,
+  route: {
+    params: {commonId, common},
+  },
   bottomSheetStore,
 }) => {
-
   const [fundingRequestFormStore] = useState(new FundingRequestFormStore());
   const [useOfFundsVisible, setUseOfFundsVisible] = useState(false);
 
-  const createProposal = async (e) => {
+  const createProposal = async () => {
     navigation.setOptions({headerShown: true});
     setUseOfFundsVisible(false);
     Keyboard.dismiss();
@@ -56,11 +57,16 @@ const FundingProposal = ({
           },
         });
 
-        const createFundingProposalResponse = await ProposalService.getInstance().createFundingProposal(data);
+        const createFundingProposalResponse = await ProposalService.getInstance().createFundingProposal(
+          data,
+        );
+
         if (createFundingProposalResponse.status === 200) {
           const proposalId = createFundingProposalResponse.data.id;
 
           navigation.pop();
+
+          // @question Is it good UX to show the ID to the user. Doesn't it look kinda scary to the end user?
           Toast.done(`Funding Proposal with id ${proposalId} created!`);
 
           const navigate = CommonActions.navigate({
@@ -81,11 +87,41 @@ const FundingProposal = ({
       }
     }
   };
+
+  const onCreateProposalButtonPressed = async () => {
+    if (fundingRequestFormStore.isFormValid()) {
+      Keyboard.dismiss();
+
+      navigation.setOptions({
+        headerShown: false,
+      });
+
+      const formData = fundingRequestFormStore.getChangedFormFieldsJson();
+
+      if (Number(formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED])) {
+        setUseOfFundsVisible(true);
+      } else {
+        await createProposal();
+      }
+    }
+  };
+
+  const hideModal = () => {
+    navigation.setOptions({headerShown: true});
+    setUseOfFundsVisible(false);
+  };
+
   return (
-    <>
+    <React.Fragment>
       <StatusBar barStyle="dark-content" />
-      <Modal animationType="slide" transparent={true} visible={useOfFundsVisible}>
-        <UseOfFunds onPressAgree={createProposal} />
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={useOfFundsVisible}>
+        <UseOfFunds
+          onPressAgree={createProposal}
+          onCancel={() => hideModal()}
+        />
       </Modal>
       <SafeAreaView style={{flex: 1}}>
         <ScrollView
@@ -96,32 +132,32 @@ const FundingProposal = ({
           contentContainerStyle={layout.content}>
           <Text style={styles.title}>New proposal</Text>
           <Text style={styles.subtitle}>
-            {'Proposals allow you to make decisions as a group.\nIf you choose to request funding and the proposal is accepted, you will be responsible to follow it through.'}
+            {
+              'Proposals allow you to make decisions as a group.\nIf you choose to request funding and the proposal is accepted, you will be responsible to follow it through.'
+            }
           </Text>
           <View style={styles.divider} />
-          <FundingRequestForm common={common} fundingRequestFormStore={fundingRequestFormStore}/>
+          <FundingRequestForm
+            common={common}
+            fundingRequestFormStore={fundingRequestFormStore}
+          />
         </ScrollView>
         <RequestStepActionButton
           title="Create Proposal"
           formStore={fundingRequestFormStore}
-          onPress={() => {
-            if (fundingRequestFormStore.isFormValid()) {
-              navigation.setOptions({headerShown: false});
-              Keyboard.dismiss();
-              setUseOfFundsVisible(true);
-            }
-          }}
+          onPress={onCreateProposalButtonPressed}
         />
       </SafeAreaView>
-      {useOfFundsVisible &&
-      <BlurView
-        style={styles.blurView}
-        blurType="dark"
-        blurAmount={1}
-        reducedTransparencyFallbackColor={colors.black}
-      />
-      }
-    </>
+
+      {useOfFundsVisible && (
+        <BlurView
+          style={styles.blurView}
+          blurType="dark"
+          blurAmount={1}
+          reducedTransparencyFallbackColor={colors.black}
+        />
+      )}
+    </React.Fragment>
   );
 };
 
@@ -160,6 +196,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'bottomSheetStore',
-)(FundingProposal);
+export default inject('bottomSheetStore')(FundingProposal);

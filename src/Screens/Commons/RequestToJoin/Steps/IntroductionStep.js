@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  View,
-} from 'react-native';
+import {Text, View} from 'react-native';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import MultiLinkField from '~/Components/FormFields/MultiLinkField';
 import {colors, text} from '~/Theme';
@@ -14,7 +11,12 @@ import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 
-const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
+const IntroductionStep = ({
+  navigation,
+  route: {
+    params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed},
+  },
+}) => {
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
 
   const push = () => {
@@ -48,8 +50,7 @@ const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep
           formStore={introduceYourselfFormStore}
           onPress={push}
         />
-      }
-    >
+      }>
       <View
         style={{
           flex: 1,
@@ -57,7 +58,10 @@ const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep
           // padding: 24,
           backgroundColor: 'white',
         }}>
-        <RequestStepHeaderTitle title="Introduce Yourself" subtitle="Let the Common members learn more about you and how you relate to the cause." />
+        <RequestStepHeaderTitle
+          title="Introduce Yourself"
+          subtitle="Let the Common members learn more about you and how you relate to the cause."
+        />
         <View
           style={{
             backgroundColor: colors.grey4,
@@ -82,7 +86,11 @@ const IntroductionStep = ({navigation, route:{params: {formStores, skipFirstStep
 
         <MultiLinkField
           link
-          value={introduceYourselfFormStore.getFormField(RequestToJoinForm.FIELD_LINKS)?.value}
+          value={
+            introduceYourselfFormStore.getFormField(
+              RequestToJoinForm.FIELD_LINKS,
+            )?.value
+          }
           allowsEditing={true}
           title="Title"
           maxLength={30}

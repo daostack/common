@@ -1,0 +1,97 @@
+import {ProposalsCollection} from '~/Firebase/Databasee/Collections/ProposalsCollection';
+import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {PROPOSAL_TYPE} from '~/Config';
+import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+
+export type proposalListLoadCallbackFn = (
+  updatedProposalList: Array<IProposalEntity>,
+) => void;
+
+export const PROPOSAL_STAGE = {
+  countdown: 'countdown',
+  passed: 'passed',
+  failed: 'failed',
+};
+
+export const PROPOSAL_STAGES_ACTIVE = [PROPOSAL_STAGE.countdown];
+export const PROPOSAL_STAGES_HISTORY = [
+  PROPOSAL_STAGE.passed,
+  PROPOSAL_STAGE.failed,
+];
+export const PROPOSAL_STAGES_ALL = [
+  ...PROPOSAL_STAGES_HISTORY,
+  ...PROPOSAL_STAGES_ACTIVE,
+];
+
+interface ProposalFilter {
+  commonId?: string;
+  userId?: string;
+  showAll?: boolean;
+  onlyRequestsToJoin?: boolean;
+  onlyFundingRequests?: boolean;
+}
+
+// Private
+export const subscribeToProposalList = (
+  listChangeCallback: (updatedProposals: Array<IProposalEntity>) => void,
+  filter: ProposalFilter,
+): FirestoreUnsubscribeFn => {
+  let proposalListQuery = ProposalsCollection;
+
+  if (filter.commonId) {
+    proposalListQuery = proposalListQuery.where(
+      'commonId',
+      '==',
+      filter.commonId,
+    );
+  }
+  if (filter.userId) {
+    proposalListQuery = proposalListQuery.where(
+      'proposerId',
+      '==',
+      filter.userId,
+    );
+  }
+
+  if (filter.onlyFundingRequests) {
+    proposalListQuery = proposalListQuery.where(
+      'type',
+      '==',
+      PROPOSAL_TYPE.FundingRequest,
+    );
+  }
+  if (filter.onlyRequestsToJoin) {
+    proposalListQuery = proposalListQuery.where(
+      'type',
+      '==',
+      PROPOSAL_TYPE.Join,
+    );
+  }
+
+  if (!filter.showAll) {
+    proposalListQuery = proposalListQuery.where(
+      'state',
+      'in',
+      PROPOSAL_STAGES_ALL,
+    );
+  }
+
+  proposalListQuery = proposalListQuery.orderBy('createdAt', 'desc');
+
+  return proposalListQuery.onSnapshot((snapshot: any) => {
+    if (!snapshot || snapshot.empty) {
+      listChangeCallback([]);
+    } else {
+      let proposalsList = [];
+
+      // TODO: Make better handling of changes with docChanges()
+      if (!snapshot?.empty || !snapshot) {
+        proposalsList = snapshot.docs.map(
+          (doc: any) => doc.data() as IProposalEntity,
+        );
+      }
+
+      listChangeCallback(proposalsList);
+    }
+  });
+};

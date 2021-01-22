@@ -4,13 +4,20 @@ import PropTypes from 'prop-types';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import {colors, font} from '../Theme';
+
 import Icon from '../Assets/iconfont/Icon';
 import MonthlyContributionStatus from './MonthlyContributionStatus';
-import {ACTIVE, CANCELED_BY_PAYMENT, CANCELED_BY_USER, PAYMENT_FAILED} from '../Services/SubscriptionService';
+import {
+  ACTIVE,
+  CANCELED_BY_PAYMENT,
+  CANCELED_BY_USER,
+  PAYMENT_FAILED,
+} from '~/Services/SubscriptionService';
 import {formatCurrency, formatDate} from '~/Util';
 
 const ContributionListItem = ({subscription, navigation}) => {
-  const isCanceled = subscription.status === CANCELED_BY_PAYMENT ||
+  const isCanceled =
+    subscription.status === CANCELED_BY_PAYMENT ||
     subscription.status === CANCELED_BY_USER;
 
   const onClick = () => {
@@ -32,16 +39,10 @@ const ContributionListItem = ({subscription, navigation}) => {
 
           <Text style={styles.bottomText}>
             {isCanceled
-              ? subscription.dueDate.toDate() < new Date()
-                ? (
-                  'Canceled by user'
-                ) : (
-                  'Cancels at'
-                )
-              : (
-                `Payment Due: ${dueDate}`
-              )
-            }
+              ? (subscription.dueDate.toDate() < new Date())
+                ? 'Canceled by user'
+                : 'Cancels at'
+              : `Payment Due: ${dueDate}`}
           </Text>
         </View>
 
@@ -53,16 +54,14 @@ const ContributionListItem = ({subscription, navigation}) => {
             />
 
             <Text style={styles.bottomText}>
-              {isCanceled ? (
-                formatDate(subscription.dueDate.toDate())
-              ) : (
-                `${paymentAmount}/mo`
-              )}
+              {isCanceled
+                ? formatDate(subscription.dueDate.toDate())
+                : `${paymentAmount}/mo`}
             </Text>
           </View>
 
           <View>
-            <Icon name="right-arrow"/>
+            <Icon name="right-arrow" />
           </View>
         </View>
       </View>
@@ -143,4 +142,3 @@ const styles = StyleSheet.create({
 });
 
 export default ContributionListItem;
-

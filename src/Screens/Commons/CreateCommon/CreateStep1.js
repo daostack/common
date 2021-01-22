@@ -1,9 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  Modal,
-} from 'react-native';
+import {View, StyleSheet, Modal} from 'react-native';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import {colors} from '~/Theme';
@@ -16,9 +12,16 @@ import {BlurView} from '@react-native-community/blur';
 import UseAcknowledgment from '../../../Components/Proposals/UseAcknowledgment';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 
-const CreateStep1 = ({navigation, route: {params: {formStores}}}) => {
+const CreateStep1 = ({
+  navigation,
+  route: {
+    params: {formStores},
+  },
+}) => {
   const generalInfoFormStore = formStores.generalInfoFormStore;
-  const [useAcknowledgmentVisible, setUseAcknowledgmentVisible] = useState(false);
+  const [useAcknowledgmentVisible, setUseAcknowledgmentVisible] = useState(
+    false,
+  );
 
   const push = () => {
     setUseAcknowledgmentVisible(false);
@@ -34,18 +37,22 @@ const CreateStep1 = ({navigation, route: {params: {formStores}}}) => {
       navTitle="General Info"
       currentIndex={1}
       prependedArea={
-        <Modal animationType="slide" transparent={true} visible={useAcknowledgmentVisible}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={useAcknowledgmentVisible}>
           <UseAcknowledgment onPressAgree={push} />
         </Modal>
       }
       appendedArea={
-        useAcknowledgmentVisible &&
+        useAcknowledgmentVisible && (
           <BlurView
             style={styles.blurView}
             blurType="dark"
             blurAmount={1}
             reducedTransparencyFallbackColor={colors.black}
           />
+        )
       }
       requestStepActionButton={
         <RequestStepActionButton
@@ -57,8 +64,7 @@ const CreateStep1 = ({navigation, route: {params: {formStores}}}) => {
             }
           }}
         />
-      }
-    >
+      }>
       <View
         style={{
           flex: 1,
@@ -80,7 +86,9 @@ const CreateStep1 = ({navigation, route: {params: {formStores}}}) => {
           }}
         />
         <TextInputField
-          value={generalInfoFormStore.getFormField(CreateCommonForm.NAME)?.value}
+          value={
+            generalInfoFormStore.getFormField(CreateCommonForm.NAME)?.value
+          }
           viewStyle={{alignSelf: 'stretch'}}
           label="Common name"
           infoLabel="Required"
@@ -97,7 +105,9 @@ const CreateStep1 = ({navigation, route: {params: {formStores}}}) => {
           }}
         />
         <TextInputField
-          value={generalInfoFormStore.getFormField(CreateCommonForm.BYLINE)?.value}
+          value={
+            generalInfoFormStore.getFormField(CreateCommonForm.BYLINE)?.value
+          }
           viewStyle={{alignSelf: 'stretch'}}
           label="Tagline"
           infoLabel="Required"
@@ -116,7 +126,10 @@ const CreateStep1 = ({navigation, route: {params: {formStores}}}) => {
           }}
         />
         <TextInputField
-          value={generalInfoFormStore.form.fields[CreateCommonForm.DESCRIPTION]?.value}
+          value={
+            generalInfoFormStore.form.fields[CreateCommonForm.DESCRIPTION]
+              ?.value
+          }
           label="About"
           infoLabel="Required"
           numberOfLines={5}
@@ -138,7 +151,9 @@ const CreateStep1 = ({navigation, route: {params: {formStores}}}) => {
           label="Links"
           title="Title"
           maxLength={30}
-          value={generalInfoFormStore.getFormField(CreateCommonForm.LINKS)?.value}
+          value={
+            generalInfoFormStore.getFormField(CreateCommonForm.LINKS)?.value
+          }
           validation={{
             name: CreateCommonForm.LINKS,
             formStore: generalInfoFormStore,
@@ -149,7 +164,6 @@ const CreateStep1 = ({navigation, route: {params: {formStores}}}) => {
     </StepDotLayout>
   );
 };
-
 
 CreateStep1.propTypes = {
   navigation: object,
@@ -169,6 +183,4 @@ const styles = StyleSheet.create({
   blurView: {position: 'absolute', ...StyleSheet.absoluteFill},
 });
 
-export default inject(
-  'bottomSheetStore',
-)(CreateStep1);
+export default inject('bottomSheetStore')(CreateStep1);

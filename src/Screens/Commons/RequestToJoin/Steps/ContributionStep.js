@@ -1,8 +1,6 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-} from 'react-native';
+import {View, Text} from 'react-native';
+import {inject} from 'mobx-react';
 import AmountField from '~/Components/FormFields/AmountField';
 import {colors, text} from '~/Theme';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
@@ -12,28 +10,90 @@ import MembershipRequest from '../MembershipRequest';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {string, func, bool, object, shape, number} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
+import ProposalService from '~/Services/ProposalService';
+import {showErrorPopUp} from '~/Util';
 
-
-const ContributionStep = ({navigation, route: {params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed}}}) => {
+const ContributionStep = ({
+  navigation,
+  route: {
+    params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed},
+  },
+}) => {
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
   const metadata = currCommon.metadata;
   const isMonthly = metadata.contributionType === 'monthly';
-  const personalContributionFormStore = formStores.personalContributionFormStore;
+  const personalContributionFormStore =
+    formStores.personalContributionFormStore;
+  const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
 
   const onCustomClose = (e) => {
     setIsActionBtnHidden(true);
   };
 
-  const onCustomSelect = (e) => {
+  const onCustomSelect = (xe) => {
     setIsActionBtnHidden(false);
   };
 
   const onAmountSelected = (amount, index) => {
-    personalContributionFormStore.fieldChanged(
-      RequestToJoinForm.FIELD_AMOUNT,
-      {value: amount, index},
+    personalContributionFormStore.fieldChanged(RequestToJoinForm.FIELD_AMOUNT, {
+      value: amount,
+      index,
+    });
+
+    if (amount > 0) {
+      navigateToRequestStep4();
+    } else {
+      const formData = {
+        ...introduceYourselfFormStore.getFormFieldsJson(),
+      };
+      const data = {
+        description: formData.intro,
+        funding: 0,
+        commonId: currDaoId,
+      };
+      if (formData.links) {
+        data.links = formData.links;
+      }
+
+      navigation.navigate({
+        name: 'FullScreenCreationLoader',
+        params: {
+          title: 'Creating your membership request',
+        },
+      });
+
+      createRequest(data);
+    }
+  };
+
+  const createRequest = async (data) => {
+    const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin(
+      {
+        ...data,
+      },
     );
-    navigateToRequestStep4();
+
+    if (createRequestToJoinResponse.status === 200) {
+      const proposalId = createRequestToJoinResponse.data.id;
+
+      navigation.pop();
+      const navigate = CommonActions.navigate({
+        name: 'CommonProfile',
+        params: {
+          showRequestSentModal: true,
+          createdProposalId: proposalId,
+        },
+      });
+
+      if (typeof refreshFeed === 'function') {
+        refreshFeed();
+      }
+
+      navigation.dispatch(navigate);
+    } else {
+      navigation.pop();
+      showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
+    }
   };
 
   const navigateToRequestStep4 = () => {
@@ -52,13 +112,41 @@ const ContributionStep = ({navigation, route: {params: {formStores, skipFirstSte
 
   const push = () => {
     if (personalContributionFormStore.isFormValid()) {
-      navigateToRequestStep4();
+      const formData = {
+        ...introduceYourselfFormStore.getFormFieldsJson(),
+        ...personalContributionFormStore.getFormFieldsJson(),
+      };
+
+      if (formData.amount > 0) {
+        navigateToRequestStep4();
+      } else {
+        const data = {
+          description: formData.intro,
+          funding: 0,
+          commonId: currDaoId,
+        };
+
+        if (formData.links) {
+          data.links = formData.links;
+        }
+
+        navigation.navigate({
+          name: 'FullScreenCreationLoader',
+          params: {
+            title: 'Creating your membership request',
+          },
+        });
+
+        createRequest(data);
+      }
     }
   };
 
   const contributeMessage = 'Select the amount you would like to contribute';
   const calcMinFeeToJoin = metadata.minFeeToJoin / 100;
-  const minContributionMessage = isMonthly ? `${contributeMessage} each month ($${calcMinFeeToJoin}/mo min.)` : `${contributeMessage} ($${calcMinFeeToJoin} min.)`;
+  const minContributionMessage = isMonthly
+    ? `${contributeMessage} each month ($${calcMinFeeToJoin}/mo min.)`
+    : `${contributeMessage} ($${calcMinFeeToJoin} min.)`;
 
   return (
     <StepDotLayout
@@ -76,19 +164,24 @@ const ContributionStep = ({navigation, route: {params: {formStores, skipFirstSte
           onPress={push}
           hidden={isActionBtnHidden}
         />
-      }
-    >
+      }>
       <View
         style={{
           flex: 1,
           // padding: 24,
           backgroundColor: 'white',
         }}>
-        {
-          isMonthly
-            ? <RequestStepHeaderTitle title="Monthly contribution" subtitle={minContributionMessage} />
-            : <RequestStepHeaderTitle title="Personal contribution" subtitle={minContributionMessage} />
-        }
+        {isMonthly ? (
+          <RequestStepHeaderTitle
+            title="Monthly contribution"
+            subtitle={minContributionMessage}
+          />
+        ) : (
+          <RequestStepHeaderTitle
+            title="Personal contribution"
+            subtitle={minContributionMessage}
+          />
+        )}
 
         <View
           style={{
@@ -107,12 +200,14 @@ const ContributionStep = ({navigation, route: {params: {formStores, skipFirstSte
           onAmountSelected={onAmountSelected}
           minFeeToJoin={metadata.minFeeToJoin / 100}
         />
-        <Text style={{
-          ...text.regularText,
-          textAlign: 'center',
-          color: colors.slate,
-        }}>
-      You can cancel the recurring payment at any time</Text>
+        <Text
+          style={{
+            ...text.regularText,
+            textAlign: 'center',
+            color: colors.slate,
+          }}>
+          You can cancel the recurring payment at any time
+        </Text>
       </View>
     </StepDotLayout>
   );
@@ -121,6 +216,10 @@ const ContributionStep = ({navigation, route: {params: {formStores, skipFirstSte
 ContributionStep.propTypes = {
   navigation: object,
   personalContributionFormStore: shape({
+    fieldChanged: func,
+    isFormValid: func,
+  }),
+  introduceYourselfFormStore: shape({
     fieldChanged: func,
     isFormValid: func,
   }),
@@ -139,6 +238,7 @@ ContributionStep.propTypes = {
       }),
     }),
   }),
+  bottomSheetStore: object,
 };
 
-export default ContributionStep;
+export default inject('bottomSheetStore', 'userStore')(ContributionStep);

@@ -5,20 +5,23 @@ import Icon from '~/Assets/iconfont/Icon';
 import FastImage from 'react-native-fast-image';
 import {string, object} from 'prop-types';
 
-const UserAvatar = ({image, iconName, displayName, imageStyle = {}}) =>
+const UserAvatar = ({image, iconName, displayName, imageStyle = {}}) => (
   <View style={styles.imageFieldContainer}>
     <FastImage
       style={{...styles.imageFieldStyle, ...imageStyle}}
       resizeMode="cover"
-      source={{uri: image}}/>
+      source={{uri: image}}
+    />
 
-    {iconName && <View style={styles.imageFielFollowIcon}>
-      <Icon name={iconName} size={17} color={colors.white} />
-    </View>}
+    {iconName && (
+      <View style={styles.imageFielFollowIcon}>
+        <Icon name={iconName} size={17} color={colors.white} />
+      </View>
+    )}
 
     {displayName && <Text style={text.regularText}>{displayName}</Text>}
-
-  </View>;
+  </View>
+);
 
 UserAvatar.propTypes = {
   image: string,
@@ -67,6 +70,5 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
 });
-
 
 export default UserAvatar;

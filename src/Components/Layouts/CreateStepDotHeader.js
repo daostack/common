@@ -4,11 +4,19 @@ import Icon from '~/Assets/iconfont/Icon';
 import {colors, font} from '~/Theme';
 import {string, object, number, oneOfType, shape, array} from 'prop-types';
 
-const CreateStepDotHeader = ({headerHeight = 0, currentIndex, navigation, title}) => (
-  <Animated.View style={{...styles.header, height: headerHeight, borderBottomWidth: headerHeight > 1 ? 1 : 0}}>
-    <TouchableOpacity
-      style={styles.back}
-      onPress={() => navigation.pop()}>
+const CreateStepDotHeader = ({
+  headerHeight = 0,
+  currentIndex,
+  navigation,
+  title,
+}) => (
+  <Animated.View
+    style={{
+      ...styles.header,
+      height: headerHeight,
+      borderBottomWidth: headerHeight > 1 ? 1 : 0,
+    }}>
+    <TouchableOpacity style={styles.back} onPress={() => navigation.pop()}>
       <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
     </TouchableOpacity>
     <View style={styles.bar}>
@@ -18,8 +26,7 @@ const CreateStepDotHeader = ({headerHeight = 0, currentIndex, navigation, title}
             key={x}
             style={x === currentIndex - 1 ? styles.dot : styles.dot2}
           />
-        )
-        )}
+        ))}
       </View>
       <Text style={styles.title}>{title}</Text>
     </View>

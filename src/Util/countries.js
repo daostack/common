@@ -15,7 +15,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'AG',
     name: 'Antigua & Barbuda 🇦🇬',
     payin: true,
@@ -27,7 +28,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'AM',
     name: 'Armenia 🇦🇲',
     payin: true,
@@ -39,7 +41,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'AQ',
     name: 'Antarctica 🇦🇶',
     payin: true,
@@ -69,13 +72,15 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'AW',
     name: 'Aruba 🇦🇼',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'AX',
     name: 'Åland Islands 🇦🇽',
     payin: true,
@@ -87,7 +92,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'BD',
     name: 'Bangladesh 🇧🇩',
     payin: true,
@@ -111,13 +117,15 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'BH',
     name: 'Bahrain 🇧🇭',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'BI',
     name: 'Burundi 🇧🇮',
     payin: true,
@@ -129,7 +137,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'BL',
     name: 'St. Barthélemy 🇧🇱',
     payin: true,
@@ -141,13 +150,15 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'BN',
     name: 'Brunei 🇧🇳',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'BO',
     name: 'Bolivia 🇧🇴',
     payin: true,
@@ -171,25 +182,29 @@ export const countryList = [
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'BT',
     name: 'Bhutan 🇧🇹',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'BV',
     name: 'Bouvet Island 🇧🇻',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'BY',
     name: 'Belarus 🇧🇾',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'BZ',
     name: 'Belize 🇧🇿',
     payin: true,
@@ -201,13 +216,15 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'CC',
     name: 'Cocos (Keeling) Islands 🇨🇨',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'CD',
     name: 'Congo - Kinshasa 🇨🇩',
     payin: true,
@@ -219,13 +236,15 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'CI',
     name: 'Côte d’Ivoire 🇨🇮',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'CK',
     name: 'Cook Islands 🇨🇰',
     payin: true,
@@ -249,43 +268,50 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'CO',
     name: 'Colombia 🇨🇴',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'CR',
     name: 'Costa Rica 🇨🇷',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'CV',
     name: 'Cape Verde 🇨🇻',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'CW',
     name: 'Curaçao 🇨🇼',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'CX',
     name: 'Christmas Island 🇨🇽',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'CY',
     name: 'Cyprus 🇨🇾',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'CZ',
     name: 'Czechia 🇨🇿',
     payin: true,
@@ -297,7 +323,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'DJ',
     name: 'Djibouti 🇩🇯',
   },
@@ -307,7 +334,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'DM',
     name: 'Dominica 🇩🇲',
     payin: true,
@@ -319,13 +347,15 @@ export const countryList = [
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'DZ',
     name: 'Algeria 🇩🇿',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'EC',
     name: 'Ecuador 🇪🇨',
     payin: true,
@@ -343,19 +373,22 @@ export const countryList = [
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'EG',
     name: 'Egypt 🇪🇬',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'EH',
     name: 'Western Sahara 🇪🇭',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'ER',
     name: 'Eritrea 🇪🇷',
     payin: true,
@@ -367,7 +400,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'ET',
     name: 'Ethiopia 🇪🇹',
     payin: true,
@@ -379,25 +413,29 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'FJ',
     name: 'Fiji 🇫🇯',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'FK',
     name: 'Falkland Islands 🇫🇰',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'FM',
     name: 'Micronesia 🇫🇲',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'FO',
     name: 'Faroe Islands 🇫🇴',
     payin: true,
@@ -409,7 +447,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'GA',
     name: 'Gabon 🇬🇦',
     payin: true,
@@ -421,7 +460,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'GD',
     name: 'Grenada 🇬🇩',
     payin: true,
@@ -433,7 +473,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'GF',
     name: 'French Guiana 🇬🇫',
     payin: true,
@@ -451,7 +492,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'GL',
     name: 'Greenland 🇬🇱',
     payin: true,
@@ -487,7 +529,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'GS',
     name: 'South Georgia & South Sandwich Islands 🇬🇸',
     payin: true,
@@ -505,7 +548,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // ?
+  {
+    // ?
     value: 'GW',
     name: 'Guinea-Bissau 🇬🇼',
   },
@@ -515,13 +559,15 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'HM',
     name: 'Heard & McDonald Islands 🇭🇲',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'HN',
     name: 'Honduras 🇭🇳',
     payin: true,
@@ -539,7 +585,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'HT',
     name: 'Haiti 🇭🇹',
     payin: true,
@@ -581,13 +628,15 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'IO',
     name: 'British Indian Ocean Territory 🇮🇴',
     payin: true,
     payout: false,
   },
-  { // only wire transfer & payouts
+  {
+    // only wire transfer & payouts
     value: 'IS',
     name: 'Iceland 🇮🇸',
     payin: false,
@@ -623,31 +672,36 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'KG',
     name: 'Kyrgyzstan 🇰🇬',
     payin: true,
     payout: false,
   },
-  { // only wire transfer & payouts
+  {
+    // only wire transfer & payouts
     value: 'KH',
     name: 'Cambodia 🇰🇭',
     payin: false,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'KI',
     name: 'Kiribati 🇰🇮',
     payin: true,
     payout: false,
   },
-  { // // only payin
+  {
+    // // only payin
     value: 'KM',
     name: 'Comoros 🇰🇲',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'KN',
     name: 'St. Kitts & Nevis 🇰🇳',
     payin: true,
@@ -659,7 +713,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'KW',
     name: 'Kuwait 🇰🇼',
     payin: true,
@@ -671,13 +726,15 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'KZ',
     name: 'Kazakhstan 🇰🇿',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'LC',
     name: 'St. Lucia 🇱🇨',
     payin: true,
@@ -689,13 +746,15 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'LR',
     name: 'Liberia 🇱🇷',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'LS',
     name: 'Lesotho 🇱🇸',
     payin: true,
@@ -725,7 +784,8 @@ export const countryList = [
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'MA',
     name: 'Morocco 🇲🇦',
     payin: true,
@@ -737,19 +797,22 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'MD',
     name: 'Moldova 🇲🇩',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'ME',
     name: 'Montenegro 🇲🇪',
     payin: true,
     payout: false,
   },
-  { //onyl payin
+  {
+    //onyl payin
     value: 'MF',
     name: 'St. Martin 🇲🇫',
     payin: true,
@@ -761,13 +824,15 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'MH',
     name: 'Marshall Islands 🇲🇭',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'MK',
     name: 'Macedonia 🇲🇰',
     payin: true,
@@ -779,25 +844,29 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'MP',
     name: 'Northern Mariana Islands 🇲🇵',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'MQ',
     name: 'Martinique 🇲🇶',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'MR',
     name: 'Mauritania 🇲🇷',
     payin: true,
     payout: false,
   },
-  { //only payin
+  {
+    //only payin
     value: 'MS',
     name: 'Montserrat 🇲🇸',
     payin: true,
@@ -809,7 +878,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'MV',
     name: 'Maldives 🇲🇻',
     payin: true,
@@ -839,13 +909,15 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'NA',
     name: 'Namibia 🇳🇦',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'NC',
     name: 'New Caledonia 🇳🇨',
     payin: true,
@@ -857,13 +929,15 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'NF',
     name: 'Norfolk Island 🇳🇫',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'NG',
     name: 'Nigeria 🇳🇬',
     payin: true,
@@ -881,19 +955,22 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'NP',
     name: 'Nepal 🇳🇵',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'NR',
     name: 'Nauru 🇳🇷',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'NU',
     name: 'Niue 🇳🇺',
     payin: true,
@@ -905,7 +982,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'OM',
     name: 'Oman 🇴🇲',
     payin: true,
@@ -917,13 +995,15 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only paying
+  {
+    // only paying
     value: 'PF',
     name: 'French Polynesia 🇵🇫',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'PG',
     name: 'Papua New Guinea 🇵🇬',
     payin: true,
@@ -941,7 +1021,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'PM',
     name: 'St. Pierre & Miquelon 🇵🇲',
     payin: true,
@@ -965,25 +1046,29 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'PW',
     name: 'Palau 🇵🇼',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'PY',
     name: 'Paraguay 🇵🇾',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'QA',
     name: 'Qatar 🇶🇦',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'RE',
     name: 'Réunion 🇷🇪',
     payin: true,
@@ -995,37 +1080,43 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'RS',
     name: 'Serbia 🇷🇸',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'RU',
     name: 'Russia 🇷🇺',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'RW',
     name: 'Rwanda 🇷🇼',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'SA',
     name: 'Saudi Arabia 🇸🇦',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'SB',
     name: 'Solomon Islands 🇸🇧',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'SC',
     name: 'Seychelles 🇸🇨',
     payin: true,
@@ -1043,7 +1134,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only paying
+  {
+    // only paying
     value: 'SH',
     name: 'St. Helena 🇸🇭',
     payin: true,
@@ -1055,7 +1147,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'SJ',
     name: 'Svalbard & Jan Mayen 🇸🇯',
     payin: true,
@@ -1067,7 +1160,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'SL',
     name: 'Sierra Leone 🇸🇱',
     payin: true,
@@ -1091,31 +1185,36 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'SR',
     name: 'Suriname 🇸🇷',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'SV',
     name: 'El Salvador 🇸🇻',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'SX',
     name: 'Sint Maarten 🇸🇽',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'TA',
     name: 'Tristan da Cunha 🇹🇦',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'TC',
     name: 'Turks & Caicos Islands 🇹🇨',
     payin: true,
@@ -1127,13 +1226,15 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'TF',
     name: 'French Southern Territories 🇹🇫',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'TG',
     name: 'Togo 🇹🇬',
     payin: true,
@@ -1145,25 +1246,29 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'TJ',
     name: 'Tajikistan 🇹🇯',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'TK',
     name: 'Tokelau 🇹🇰',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'TL',
     name: 'Timor-Leste 🇹🇱',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'TM',
     name: 'Turkmenistan 🇹🇲',
     payin: true,
@@ -1175,13 +1280,15 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'TO',
     name: 'Tonga 🇹🇴',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'TV',
     name: 'Tuvalu 🇹🇻',
     payin: true,
@@ -1217,13 +1324,15 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'UZ',
     name: 'Uzbekistan 🇺🇿',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'VC',
     name: 'St. Vincent & Grenadines 🇻🇨',
     payin: true,
@@ -1235,7 +1344,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // payout & wire transfer only
+  {
+    // payout & wire transfer only
     value: 'VI',
     name: 'U.S. Virgin Islands 🇻🇮',
     payin: false,
@@ -1247,19 +1357,22 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'WF',
     name: 'Wallis & Futuna 🇼🇫',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'WS',
     name: 'Samoa 🇼🇸',
     payin: true,
     payout: false,
   },
-  { // only payin
+  {
+    // only payin
     value: 'YT',
     name: 'Mayotte 🇾🇹',
     payin: true,
@@ -1271,7 +1384,8 @@ export const countryList = [
     payin: true,
     payout: true,
   },
-  { // only payin
+  {
+    // only payin
     value: 'ZM',
     name: 'Zambia 🇿🇲',
     payin: true,

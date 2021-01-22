@@ -14,10 +14,23 @@ const AmountField = ({
   minFeeToJoin,
   isMonthly,
 }) => {
-  const currFieldValue = formStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)?.value;
+  const currFieldValue = formStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)
+    ?.value;
   const [isCustomSelected, setIsCustomSelected] = useState(0);
-  const [selectedAmountId, setSelectedAmountId] = useState(currFieldValue ? currFieldValue.index : -1);
+  const [selectedAmountId, setSelectedAmountId] = useState(
+    currFieldValue ? currFieldValue.index : -1,
+  );
   const textInputRef = useRef();
+
+  let contributionValues =
+    minFeeToJoin > 0
+      ? [
+          1 * minFeeToJoin,
+          2.5 * minFeeToJoin,
+          5 * minFeeToJoin,
+          1 * minFeeToJoin,
+        ]
+      : [0, 5, 10, 10];
 
   const onAmountPress = (isCustom, amount, id) => {
     if (isCustom) {
@@ -37,23 +50,26 @@ const AmountField = ({
   };
 
   const onCustomAmountChange = (amount) => {
-    formStore.fieldChanged(RequestToJoinForm.FIELD_AMOUNT, {value: amount, index: -1});
+    formStore.fieldChanged(RequestToJoinForm.FIELD_AMOUNT, {
+      value: amount,
+      index: -1,
+    });
   };
 
   return (
     <View>
       <View style={isCustomSelected ? styles.hidden : {}}>
-        {
-          [1, 2.5, 5, 1].map((c, index) =>
-            <JoinAmount
-              key={`JoinAmount_${index}`}
-              id={index}
-              isSelected={index === selectedAmountId}
-              isCustom={index === 3}
-              amount={c * minFeeToJoin}
-              onPress={onAmountPress}
-              isMonthly={isMonthly}/>)
-        }
+        {contributionValues.map((c, index) => (
+          <JoinAmount
+            key={`JoinAmount_${index}`}
+            id={index}
+            isSelected={index === selectedAmountId}
+            isCustom={index === 3}
+            amount={c}
+            onPress={onAmountPress}
+            isMonthly={isMonthly}
+          />
+        ))}
       </View>
 
       <TextInputFieldWithIcon

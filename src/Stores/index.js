@@ -1,13 +1,17 @@
-import CreateDiscussionStore from '~/FormStores/CreateDiscussionStore';
-
-import UserStore from './UserStore';
 import DaoStore from './DaoStore';
+import RootStore from './RootStore';
 import BottomSheetStore from './BottomSheetStore';
 
-export default {
-  createDiscussionStore: new CreateDiscussionStore(),
+const rootStore = new RootStore();
 
-  userStore: new UserStore(),
-  daoStore: new DaoStore(),
+export default {
+  rootStore,
+  userStore: rootStore.authStore,
+  userListStore: rootStore.userListStore,
+  commonStore: rootStore.commonStore,
+
+  //TODO: move in UIStore and add ref to rootStore.
   bottomSheetStore: new BottomSheetStore(),
+  //TODO: rework DaoStore as UserListStore.
+  daoStore: new DaoStore(),
 };

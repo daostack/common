@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {colors} from '~/Theme';
 import {CommonsList, UserProfile} from '~/Screens';
@@ -15,30 +14,24 @@ const CommonHome = ({userStore}) => (
     // initialRouteName="My feed"
     initialRouteName="Explore"
     lazy={false}
-    screenOptions={({route}) => ({tabBarIcon: ({focused}) => {
-      switch (route.name) {
-      case 'Explore': {
-        if (focused) {
-          return (
-            <Icon name="commons-selected" size={30} />
-          );
+    screenOptions={({route}) => ({
+      tabBarIcon: ({focused}) => {
+        switch (route.name) {
+          case 'Explore': {
+            if (focused) {
+              return <Icon name="commons-selected" size={30} />;
+            }
+            return <Icon name="commons" size={30} />;
+          }
+          default: {
+            if (focused) {
+              return <Icon name="account-selected" size={30} />;
+            }
+            return <Icon name="account" size={30} />;
+          }
         }
-        return (
-          <Icon name="commons" size={30} />
-        );
-      }
-      default: {
-        if (focused) {
-          return (
-            <Icon name="account-selected" size={30} />
-          );
-        }
-        return (
-          <Icon name="account" size={30} />
-        );
-      }
-      }
-    }})}
+      },
+    })}
     tabBarOptions={{
       activeTintColor: colors.mainBlue,
       showLabel: false,
@@ -50,15 +43,14 @@ const CommonHome = ({userStore}) => (
         shadowRadius: 5,
         height: Platform.OS === 'ios' ? 100 : 60,
       },
-    }}
-  >
+    }}>
     <Tab.Screen name="Explore" component={CommonsList} />
     <Tab.Screen name="Profile" component={UserProfile} />
   </Tab.Navigator>
 );
 
 CommonHome.propTypes = {
-  userStore: object.isRequired ,
+  userStore: object.isRequired,
 };
 
 export default inject('userStore')(observer(CommonHome));

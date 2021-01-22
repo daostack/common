@@ -10,7 +10,16 @@ import ValidationMessage from './ValidationMessage';
 import {observer} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
 import {layout, colors, font, text, sizeS, sizeL} from '~/Theme';
-import {string, func, bool, shape, oneOfType, object, number, node} from 'prop-types';
+import {
+  string,
+  func,
+  bool,
+  shape,
+  oneOfType,
+  object,
+  number,
+  node,
+} from 'prop-types';
 import {formatNumber, unFormatNumber} from '~/Util/FormatUtil';
 
 class TextInputFieldWithIcon extends React.Component {
@@ -39,10 +48,23 @@ class TextInputFieldWithIcon extends React.Component {
 
     // Register form field for validation message component if name,formStore and validateRule props are provided
     if (validation) {
-      const {name, formStore, displayName, validateRule, invisibleContainer = true, customErrorMessage} = validation;
+      const {
+        name,
+        formStore,
+        displayName,
+        validateRule,
+        invisibleContainer = true,
+        customErrorMessage,
+      } = validation;
       formStore.registerFormField(name, validateRule, value);
       this.fieldValidation = (
-        <ValidationMessage displayName={displayName} formStore={formStore} customErrorMessage={customErrorMessage} name={name} invisibleContainer={invisibleContainer}/>
+        <ValidationMessage
+          displayName={displayName}
+          formStore={formStore}
+          customErrorMessage={customErrorMessage}
+          name={name}
+          invisibleContainer={invisibleContainer}
+        />
       );
     }
 
@@ -94,7 +116,10 @@ class TextInputFieldWithIcon extends React.Component {
     }
     this.props.onChangeText && this.props.onChangeText(unformattedText);
     // only update size when text length is increasing
-    if (this.state.prevTextLength < unformattedText.length && unformattedText.length > 3) {
+    if (
+      this.state.prevTextLength < unformattedText.length &&
+      unformattedText.length > 3
+    ) {
       this.updateSize(10);
     } else {
       this.setState({prevTextLength: unformattedText.length});
@@ -191,12 +216,18 @@ class TextInputFieldWithIcon extends React.Component {
 
     const getValue = () => {
       if (validation) {
-        let currValue = validation.formStore.getFormField(validation.name, validation.multiName)?.value;
-        currValue = typeof (currValue) === 'object' ? currValue.value?.toString() : currValue?.toString();
+        let currValue = validation.formStore.getFormField(
+          validation.name,
+          validation.multiName,
+        )?.value;
+        currValue =
+          typeof currValue === 'object'
+            ? currValue.value?.toString()
+            : currValue?.toString();
 
         currValue = currValue.replace(',', '');
         // if number, fix it to price format x,xxx (for currValue > 999)
-        return (+currValue) ? formatNumber(currValue) : currValue;
+        return +currValue ? formatNumber(currValue) : currValue;
       }
       return value;
     };
@@ -213,11 +244,7 @@ class TextInputFieldWithIcon extends React.Component {
             <Icon
               name={iconName}
               size={iconSize}
-              color={
-                getValue() === ''
-                  ? iconEmptyColor
-                  : iconFillColor
-              }
+              color={getValue() === '' ? iconEmptyColor : iconFillColor}
             />
           </View>
           <TextInput
@@ -246,11 +273,7 @@ class TextInputFieldWithIcon extends React.Component {
               <Icon
                 name={iconEndName}
                 size={iconSize}
-                color={
-                  getValue() === ''
-                    ? iconEmptyColor
-                    : iconFillColor
-                }
+                color={getValue() === '' ? iconEmptyColor : iconFillColor}
               />
             </View>
           )}
@@ -276,8 +299,7 @@ class TextInputFieldWithIcon extends React.Component {
             <View>{this.placeFieldActionComponent}</View>
           </View>
           {this.fieldValidation}
-          {infoMessage && (
-            <Text style={styles.infoMessage}>{infoMessage}</Text>)}
+          {infoMessage && <Text style={styles.infoMessage}>{infoMessage}</Text>}
         </View>
       );
     } else {
@@ -285,8 +307,7 @@ class TextInputFieldWithIcon extends React.Component {
         <View style={{...viewStyle}}>
           {this.renderTextField()}
           {this.fieldValidation}
-          {infoMessage && (
-            <Text style={styles.infoMessage}>{infoMessage}</Text>)}
+          {infoMessage && <Text style={styles.infoMessage}>{infoMessage}</Text>}
         </View>
       );
     }
@@ -303,27 +324,18 @@ TextInputFieldWithIcon.propTypes = {
     name: string,
     formStore: object,
     displayName: string,
-    validateRule: oneOfType([
-      string,
-      object,
-    ]),
+    validateRule: oneOfType([string, object]),
     invisibleContainer: bool,
     customErrorMessage: string,
   }),
-  value: oneOfType([
-    string,
-    object,
-  ]),
+  value: oneOfType([string, object]),
   fieldActionComponent: object,
   onTogglePress: func,
   toggleName: string,
   onChangeText: func,
   onBlur: func,
   placeholderText: string,
-  label: oneOfType([
-    string,
-    node,
-  ]),
+  label: oneOfType([string, node]),
   infoLabel: string,
   infoMessage: string,
   password: bool,

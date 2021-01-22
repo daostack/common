@@ -1,17 +1,16 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {layout, font,colors, text, sizeL, sizeXXL} from '~/Theme';
+import React, {useState, useEffect} from 'react';
+import {layout, font, colors, text, sizeL, sizeXXL} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import ImageField from '~/Components/FormFields/ImageField';
 import CountBox from '~/Components/CountBox';
-import UserService from '~/Services/UserService';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
 import CommonsSwiper from '~/Screens/Commons/CommonsSwiper';
-import {UserAvatar} from '~/Components';
+import {UserAvatar} from '~/Components/index';
 import {CommonActions} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
 import logger from '~/Services/Logger';
-import {string, object, shape} from 'prop-types';
+import {string, object, shape, array, func} from 'prop-types';
 
 import {
   Placeholder,
@@ -25,40 +24,25 @@ const UserProfileData = ({
   currUserInfo,
   navigation,
   userStore: {userInfo},
+  daoStore,
+  userListStore,
 }) => {
-  const [user, setUser] = useState(currUserInfo);
+  const providedUserId = userId || currUserInfo.uid;
+  const isOwnProfile = providedUserId === userInfo?.uid;
+  const user = isOwnProfile
+    ? userInfo
+    : userListStore.getUserById(providedUserId);
+
+  navigation.setOptions({
+    title: user.displayNameFormatted,
+  });
+
   const [proposalsCount, setProposalsCount] = useState(0);
   const [requestsCount, setRequestsCount] = useState(0);
   const [commonsCount, setCommonsCount] = useState(0);
-  const [isOwnProfile, setIsOwnProfile] = useState(false);
 
   useEffect(() => {
-    const getUser = async () => {
-      if (userId === userInfo?.uid) {
-        setUser(userInfo);
-        setIsOwnProfile(true);
-      } else {
-        if (!user) {
-          const usr = await UserService.getInstance().getUserById(userId);
-          setUser(usr);
-        }
-
-        setIsOwnProfile(false);
-
-        navigation.setOptions({
-          // The regex below is used to separate names and
-          // make them less at most 25 character, but with cutting
-          // the name only at whitespaces
-          title: user.displayName?.match(/.{1,25}(\s|$)/g)[0],
-        });
-      }
-    };
-
-    setUser(currUserInfo);
-    setIsOwnProfile(false);
-
-    getUser();
-  }, [userId, currUserInfo, userInfo]);
+  }, [userId, currUserInfo, userInfo, daoStore.daos]);
 
   const navigateToEditProfile = (isFirstOpening) => {
     const navigate = CommonActions.navigate({
@@ -70,59 +54,64 @@ const UserProfileData = ({
     navigation.dispatch(navigate);
   };
 
-  const renderUserProfilePicture = () => !isOwnProfile ? (
-    <UserAvatar image={user.photoURL} iconName={'follow'}/>
-  ) : (
-    <ImageField
-      isAvatar={true}
-      value={user?.photoURL}
-      placeholderUrl={user?.photoURL}
-      disableEdit={true}
-    />
-  );
+  const renderUserProfilePicture = () =>
+    !isOwnProfile ? (
+      <UserAvatar image={user.photoURL} iconName={'follow'} />
+    ) : (
+      <ImageField
+        isAvatar={true}
+        value={user?.photoURL}
+        placeholderUrl={user?.photoURL}
+        disableEdit={true}
+      />
+    );
 
   if (!user) {
-    return <Placeholder Animation={Fade}>
-      <PlaceholderMedia
-        size={100}
-        isRound={true}
-        style={{alignSelf: 'center', marginBottom: 10}}
-      />
-      <PlaceholderLine width={30} style={{alignSelf: 'center'}} />
-      {isOwnProfile && <PlaceholderLine width={50} style={{alignSelf: 'center'}} />}
-      <PlaceholderMedia
-        style={{
-          alignSelf: 'center',
-          marginTop: 50,
-          marginBottom: 50,
-          height: 100,
-          width: '100%',
-        }}
-      />
-      <PlaceholderLine width={30} style={{marginBottom: 15}}/>
-      <PlaceholderLine width={50} style={{marginBottom: 15}} />
-      <PlaceholderLine width={80} style={{marginBottom: 15}} />
-      <PlaceholderLine width={60} style={{marginBottom: 15, marginTop: 50}} />
-      <PlaceholderMedia
-        style={{
-          alignSelf: 'center',
-          marginTop: 10,
-          marginBottom: 50,
-          height: 150,
-          width: '100%',
-        }}
-      />
-      <PlaceholderLine width={60} style={{marginBottom: 15, marginTop: 50}} />
-      <PlaceholderMedia
-        style={{
-          alignSelf: 'center',
-          marginTop: 10,
-          marginBottom: 50,
-          height: 150,
-          width: '100%',
-        }}
-      />
-    </Placeholder>;
+    return (
+      <Placeholder Animation={Fade}>
+        <PlaceholderMedia
+          size={100}
+          isRound={true}
+          style={{alignSelf: 'center', marginBottom: 10}}
+        />
+        <PlaceholderLine width={30} style={{alignSelf: 'center'}} />
+        {isOwnProfile && (
+          <PlaceholderLine width={50} style={{alignSelf: 'center'}} />
+        )}
+        <PlaceholderMedia
+          style={{
+            alignSelf: 'center',
+            marginTop: 50,
+            marginBottom: 50,
+            height: 100,
+            width: '100%',
+          }}
+        />
+        <PlaceholderLine width={30} style={{marginBottom: 15}} />
+        <PlaceholderLine width={50} style={{marginBottom: 15}} />
+        <PlaceholderLine width={80} style={{marginBottom: 15}} />
+        <PlaceholderLine width={60} style={{marginBottom: 15, marginTop: 50}} />
+        <PlaceholderMedia
+          style={{
+            alignSelf: 'center',
+            marginTop: 10,
+            marginBottom: 50,
+            height: 150,
+            width: '100%',
+          }}
+        />
+        <PlaceholderLine width={60} style={{marginBottom: 15, marginTop: 50}} />
+        <PlaceholderMedia
+          style={{
+            alignSelf: 'center',
+            marginTop: 10,
+            marginBottom: 50,
+            height: 150,
+            width: '100%',
+          }}
+        />
+      </Placeholder>
+    );
   }
 
   const onProposalsCountChange = (newCount) => {
@@ -152,12 +141,8 @@ const UserProfileData = ({
         </View>
       )}
       {renderUserProfilePicture()}
-      <Text style={styles.name}>
-        {user.displayName}
-      </Text>
-      {isOwnProfile && (
-        <Text style={text.ashleyjquimbacom2}>{user.email}</Text>)
-      }
+      <Text style={styles.name}>{user.displayName}</Text>
+      {isOwnProfile && <Text style={text.ashleyjquimbacom2}>{user.email}</Text>}
       <View style={styles.countBoxContainer}>
         <CountBox
           count={commonsCount}
@@ -178,9 +163,7 @@ const UserProfileData = ({
 
       <View style={styles.contentContainer}>
         <Text style={text.h2Black}>Intro</Text>
-        <Text style={styles.userIntro}>
-          {user.intro}
-        </Text>
+        <Text style={styles.userIntro}>{user.intro}</Text>
       </View>
 
       <View style={styles.contentContainerWithoutPadding}>
@@ -191,14 +174,20 @@ const UserProfileData = ({
               ...layout.marginBottomL,
               ...layout.paddingHorizontalL,
             }}>{`Commons (${commonsCount})`}</Text>
-          {showMaxData && commonsCount > 0 && <TouchableOpacity onPress={() => navigation.navigate('MyCommons')} style={{flexDirection: 'row', ...layout.paddingHorizontalL}}>
-            <Text
-              style={{
-                ...text.h3Black,
-                ...layout.marginBottomL,
-              }}>{'View all'}</Text>
-            <Icon name="right-arrow" size={20} />
-          </TouchableOpacity>}
+          {showMaxData && commonsCount > 0 && (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('MyCommons')}
+              style={{flexDirection: 'row', ...layout.paddingHorizontalL}}>
+              <Text
+                style={{
+                  ...text.h3Black,
+                  ...layout.marginBottomL,
+                }}>
+                {'View all'}
+              </Text>
+              <Icon name="right-arrow" size={20} />
+            </TouchableOpacity>
+          )}
         </View>
 
         <CommonsSwiper
@@ -219,14 +208,17 @@ const UserProfileData = ({
             }}>{`Proposals (${proposalsCount})`}</Text>
           {showMaxData && proposalsCount > 0 && (
             <TouchableOpacity
-              onPress={() => navigation.navigate('MyProposals', {onlyFundingRequests: true})}
-              style={{flexDirection: 'row', ...layout.paddingHorizontalL}}
-            >
+              onPress={() =>
+                navigation.navigate('MyProposals', {onlyFundingRequests: true})
+              }
+              style={{flexDirection: 'row', ...layout.paddingHorizontalL}}>
               <Text
                 style={{
                   ...text.h3Black,
                   ...layout.marginBottomL,
-                }}>{'View all'}</Text>
+                }}>
+                {'View all'}
+              </Text>
               <Icon name="right-arrow" size={20} />
             </TouchableOpacity>
           )}
@@ -250,25 +242,26 @@ const UserProfileData = ({
               ...text.againstTextBlack,
               ...layout.marginBottomL,
               ...layout.paddingHorizontalL,
-            }}
-          >
+            }}>
             Membership requests ({requestsCount})
           </Text>
 
-          {showMaxData && (requestsCount > 0) && (
+          {showMaxData && requestsCount > 0 && (
             <TouchableOpacity
-              onPress={() => navigation.navigate('MyProposals', {onlyMembershipRequests: true})}
+              onPress={() =>
+                navigation.navigate('MyProposals', {
+                  onlyMembershipRequests: true,
+                })
+              }
               style={{
                 flexDirection: 'row',
                 ...layout.paddingHorizontalL,
-              }}
-            >
+              }}>
               <Text
                 style={{
                   ...text.h3Black,
                   ...layout.marginBottomL,
-                }}
-              >
+                }}>
                 {'View all'}
               </Text>
               <Icon name="right-arrow" size={20} />
@@ -299,6 +292,12 @@ UserProfileData.propTypes = {
       uid: string,
     }),
   }),
+  daoStore: shape({
+    daos: array,
+  }),
+  userListStore: shape({
+    getUserById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -328,7 +327,6 @@ const styles = StyleSheet.create({
   },
 
   contentContainerWithoutPadding: {
-
     ...layout.content,
     ...layout.flexStart,
     ...layout.marginTopL,
@@ -356,14 +354,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: sizeXXL,
     backgroundColor: colors.lightBlue,
   },
-  viewStyle:
-  {
+  viewStyle: {
     justifyContent: 'space-between',
     flexDirection: 'row',
     width: '100%',
   },
 });
 
-export default inject(
-  'userStore',
-)(observer(UserProfileData));
+export default inject('userStore', 'daoStore', 'userListStore')(observer(UserProfileData));

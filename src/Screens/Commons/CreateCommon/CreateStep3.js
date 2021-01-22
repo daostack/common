@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  View,
-} from 'react-native';
+import {Text, View} from 'react-native';
 import {colors, font} from '~/Theme';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import MultiLinkField from '~/Components/FormFields/MultiLinkField';
@@ -11,7 +8,12 @@ import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import {object, func, shape} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 
-const CreateStep3 = ({navigation, route: {params:{formStores}}}) => {
+const CreateStep3 = ({
+  navigation,
+  route: {
+    params: {formStores},
+  },
+}) => {
   const agendaFormStore = formStores.agendaFormStore;
   // var ruleBody = [];
 
@@ -60,8 +62,7 @@ const CreateStep3 = ({navigation, route: {params:{formStores}}}) => {
           formStore={agendaFormStore}
           onPress={push}
         />
-      }
-    >
+      }>
       <View
         style={{
           flex: 1,
@@ -88,8 +89,8 @@ const CreateStep3 = ({navigation, route: {params:{formStores}}}) => {
             ...font.lineHeight(2),
             color: colors.grey3,
           }}>
-          Use rules to set the tone for your Common's discussions.
-          (No advertising and spam, accepted language, etc.)
+          Use rules to set the tone for your Common's discussions. (No
+          advertising and spam, accepted language, etc.)
         </Text>
 
         <MultiLinkField

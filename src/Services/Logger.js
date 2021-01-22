@@ -1,5 +1,4 @@
 class logger {
-
   log = (...message) => __DEV__ && console.log(...message);
 
   error = (...error) => __DEV__ && console.error(...error);
@@ -10,6 +9,3 @@ class logger {
 }
 
 export default new logger();
-
-
-

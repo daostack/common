@@ -5,7 +5,13 @@ import CommonCover from './Commons/CommonCover';
 import CommonStageSummary from './Commons/CommonStageSummary';
 import {string, object, number, func, shape, array} from 'prop-types';
 
-const CommonBox = ({common, onPress, width = '100%', navigation, headerHeightLayouted}) => (
+const CommonBox = ({
+  common,
+  onPress,
+  width = '100%',
+  navigation,
+  headerHeightLayouted,
+}) => (
   <TouchableOpacity
     onPress={() => {
       onPress();

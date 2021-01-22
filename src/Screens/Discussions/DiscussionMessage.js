@@ -1,22 +1,27 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, Text, View, Image, Dimensions, Platform, TextInput} from 'react-native';
+import {observer, inject} from 'mobx-react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Dimensions,
+  Platform,
+  TextInput,
+} from 'react-native';
 import {colors, font, text as textjs} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
-import UserService from '~/Services/UserService';
 
 const {width} = Dimensions.get('window');
 
 const DiscussionMessage = ({
-  data: {
-    ownerId,
-    text,
-    createTime,
-  },
+  data: {ownerId, text, createTime},
   outcome,
   showCurrentUserAvatar,
+  userListStore,
 }) => {
   let currentUserUid = null;
   if (auth().currentUser) {
@@ -24,21 +29,7 @@ const DiscussionMessage = ({
   }
 
   const [outcomeState, setOutcomeState] = React.useState();
-  const [onwerInfo, setOwnerInfo] = React.useState(null);
-
-  useEffect(() => {
-    let unsubscribeOwnerId = null;
-    const loadOwnerInfo = (userInfo) => {
-      setOwnerInfo(userInfo);
-    };
-    const subscribeToOwner = async (currOwnerId) => {
-      unsubscribeOwnerId = await UserService.getInstance().subscribeToUserById(currOwnerId, loadOwnerInfo);
-    };
-    subscribeToOwner(ownerId);
-    return () => {
-      unsubscribeOwnerId && unsubscribeOwnerId();
-    };
-  }, [ownerId]);
+  const onwerInfo = userListStore.getUserById(ownerId);
 
   useEffect(() => {
     if (typeof outcome === 'object') {
@@ -68,22 +59,14 @@ const DiscussionMessage = ({
 
           <View style={styles.contentOwner}>
             <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
-              {Platform.OS === 'ios' ? (
-                <TextInput
-                  style={styles.text}
-                  value={text}
-                  editable={false}
-                  multiline
-                  {...textjs.textAlign(text)}
-                />
-              ) : (
-                <Text style={{...styles.text, ...textjs.writingDirection(text)}} selectable>{text}</Text>
-              )}
+              <Text
+                style={{...styles.text, ...textjs.writingDirection(text)}}
+                selectable>
+                {text}
+              </Text>
             </Hyperlink>
             <View style={{position: 'relative', right: 0, bottom: 0}}>
-              <Text
-                style={styles.date}
-                numberOfLines={1}>
+              <Text style={styles.date} numberOfLines={1}>
                 {moment(createTime.toDate()).format('HH:mm')}
               </Text>
             </View>
@@ -102,7 +85,6 @@ const DiscussionMessage = ({
                 }}
                 source={onwerInfo && {uri: onwerInfo.photoURL}}
               />
-
             </View>
             <View
               style={{
@@ -110,7 +92,6 @@ const DiscussionMessage = ({
                 marginLeft: 10,
                 maxWidth: width - 90,
                 backgroundColor: colors.paleLilacTwo,
-
               }}>
               <Text style={styles.ownerName}>{onwerInfo?.displayName}</Text>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
@@ -123,14 +104,17 @@ const DiscussionMessage = ({
                     {...textjs.textAlign(text)}
                   />
                 ) : (
-                  <Text style={{...styles.text, ...textjs.writingDirection(text)}} selectable>{text}</Text>
+                  <Text
+                    style={{...styles.text, ...textjs.writingDirection(text)}}
+                    selectable>
+                    {text}
+                  </Text>
                 )}
               </Hyperlink>
 
               <Text style={styles.date}>
                 {moment(createTime.toDate()).format('HH:mm')}
               </Text>
-
             </View>
           </View>
         </>
@@ -150,6 +134,9 @@ DiscussionMessage.propTypes = {
     catch: func.isRequired,
   }),
   showCurrentUserAvatar: bool,
+  userListStore: shape({
+    getUserById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -203,4 +190,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DiscussionMessage;
+export default inject('userListStore')(observer(DiscussionMessage));

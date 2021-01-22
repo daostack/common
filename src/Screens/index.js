@@ -13,13 +13,13 @@ export {default as IntroductionStep} from './Commons/RequestToJoin/Steps/Introdu
 export {default as ContributionStep} from './Commons/RequestToJoin/Steps/ContributionStep';
 export {default as BillingDetailsStep} from './Commons/RequestToJoin/Steps/BillingDetailsStep';
 export {default as PaymentDetailsStep} from './Commons/RequestToJoin/Steps/PaymentDetailsStep';
+export {default as EditCommon} from './Commons/EditCommon';
 
 //User Profile
 export {default as MonthlyContributionsList} from './UserProfile/MonthlyContributionsList';
 export {default as MonthlyContribution} from './UserProfile/MonthlyContribution';
 export {default as UserProfile} from './UserProfile/UserProfile';
 export {default as CreateAccount} from './UserProfile/CreateAccount';
-export {default as UserProfileReadMode} from './UserProfile/UserProfileReadMode';
 export {default as EditProfile} from './UserProfile/EditProfile';
 export {default as MyWallet} from './UserProfile/MyWallet';
 export {default as MyProposals} from './UserProfile/MyProposals';
@@ -39,4 +39,3 @@ export {default as Browser} from './Viewers/Browser';
 export {default as Onboarding} from './Onboarding';
 export {default as HUDTest} from './HUDTest';
 export {default as FullScreenCreationLoader} from './FullScreenCreationLoader';
-

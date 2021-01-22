@@ -4,10 +4,10 @@ import {default as LoginSheetScreen} from './LoginSheetScreen';
 import {default as SortProposals} from './SortProposals';
 import {default as UnsavedChanges} from './UnsavedChanges';
 import {default as TransactionError} from './TransactionError';
-import {default as PublishCommon} from './PublishCommon';
 import {default as SafetyPeriodAbout} from './SafetyPeriodAbout';
 import {default as PaymentStatusScreen} from './PaymentStatusScreen';
 import {default as CancelSubscription} from './CancelSubscriptionSheetScreen';
+import {default as BackendErrorSheetScreen} from '~/Screens/BottomSheetScreens/BackendErrorSheetScreen';
 
 export const BOTTOM_SHEET_TEMPLATES = {
   COMMON_OPERATIONAL_STATE_NOTIF: {
@@ -16,13 +16,13 @@ export const BOTTOM_SHEET_TEMPLATES = {
   },
   SCREEN_OPTIONS: {
     topSnap: 280,
-    content: CommonProfileOptions,
+    content: CommonProfileOptions, // this should have its own component maybe?
     props: {
       isCommonProfile: false,
     },
   },
   SCREEN_COMMON_PROFILE_OPTIONS: {
-    topSnap: 480,
+    topSnap: 280,
     content: CommonProfileOptions,
     props: {
       isCommonProfile: true,
@@ -48,10 +48,6 @@ export const BOTTOM_SHEET_TEMPLATES = {
     topSnap: 550,
     content: SafetyPeriodAbout,
   },
-  PUBLISH_COMMON: {
-    topSnap: 500,
-    content: PublishCommon,
-  },
   PAYMENT_STATUS: {
     topSnap: 500,
     content: PaymentStatusScreen,
@@ -59,5 +55,9 @@ export const BOTTOM_SHEET_TEMPLATES = {
   CANCEL_SUBSCRIPTION: {
     topSnap: 450,
     content: CancelSubscription,
+  },
+  BACKEND_ERROR: {
+    topSnap: 420,
+    content: BackendErrorSheetScreen,
   },
 };

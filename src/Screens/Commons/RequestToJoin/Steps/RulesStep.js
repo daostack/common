@@ -1,8 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  StyleSheet,
-} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import RequestToJoinRule from '~/Components/Commons/RequestToJoinRule';
 import {colors} from '~/Theme';
@@ -12,15 +9,12 @@ import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 
-const RulesStep = ({navigation,
+const RulesStep = ({
+  navigation,
   route: {
-    params: {
-      formStores,
-      currCommon,
-      currDaoId,
-      refreshFeed,
-    },
-  }}) => {
+    params: {formStores, currCommon, currDaoId, refreshFeed},
+  },
+}) => {
   const [pass, setPass] = useState(false);
   const onScrollToBottom = () => {
     setPass(true);
@@ -52,8 +46,7 @@ const RulesStep = ({navigation,
       onScrollEndDrag={onScrollToBottom}
       requestStepActionButton={
         <RequestStepActionButton title="Continue" pass={pass} onPress={push} />
-      }
-    >
+      }>
       <View
         style={{
           flex: 1,
@@ -65,18 +58,18 @@ const RulesStep = ({navigation,
           subtitle="If the Common approves your request you will become a member with equal voting rights."
         />
 
-        <View style={styles.content}/>
+        <View style={styles.content} />
 
         {currCommon?.rules?.length > 0 &&
-              currCommon.rules.map((rule, index) => (
-                <RequestToJoinRule
-                  key={index}
-                  index={index + 1}
-                  title={rule.title}
-                  description={rule.description}
-                  url={rule.value || rule.url} // NOTE: value of multiple fields was stored in url prop before
-                />
-              ))}
+          currCommon.rules.map((rule, index) => (
+            <RequestToJoinRule
+              key={index}
+              index={index + 1}
+              title={rule.title}
+              description={rule.description}
+              url={rule.value || rule.url} // NOTE: value of multiple fields was stored in url prop before
+            />
+          ))}
       </View>
     </StepDotLayout>
   );

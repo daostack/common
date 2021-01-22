@@ -19,34 +19,30 @@ import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
 import Share from 'react-native-share';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {object, shape} from 'prop-types';
 import DaoService from '~/Services/DaoService';
 import CommonImage from '~/Components/Commons/CommonImage';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 
-import {
-  colors,
-  font,
-  text,
-  layout,
-  sizeM,
-  sizeS,
-  sizeL,
-  sizeLineHeight,
-} from '~/Theme';
+import {colors, font, text, layout, sizeM, sizeL} from '~/Theme';
 import logger from '~/Services/Logger';
 
 const {width} = Dimensions.get('window');
 const CONTRIBUTION = {
-  'monthly': '/mo',
+  monthly: '/mo',
   'one-time': '',
 };
 
-const CreateStep4 = ({route: {params: {formStores}},
+const CreateStep4 = ({
+  route: {
+    params: {formStores},
+  },
   navigation,
   bottomSheetStore,
-  userStore: {userInfo: {uid}}}) => {
+  userStore: {
+    userInfo: {uid},
+  },
+}) => {
   const [newCommonAddress, setNewCommonAddress] = useState(false);
 
   const generalInfoFormStore = formStores.generalInfoFormStore;
@@ -70,15 +66,6 @@ const CreateStep4 = ({route: {params: {formStores}},
     });
     navigation.popToTop();
     navigation.dispatch(navigate);
-  };
-
-  const confirmModal = () => {
-    bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.PUBLISH_COMMON,
-      {
-        forgeCommon: forgeCommon,
-      }
-    );
   };
 
   const shareCommon = (event) => {
@@ -110,6 +97,18 @@ const CreateStep4 = ({route: {params: {formStores}},
       };
       logger.log('calling createCommon(...)');
 
+      const formattedData = {
+        name: data.name,
+        image: data.image,
+        rules: data.rules,
+        links: data.links,
+        byline: data.byline,
+        description: data.description,
+        contributionType: data.contributionType,
+        contributionAmount: data.contributionAmount,
+        fundingGoalDeadline: data.fundingGoalDeadline,
+      };
+
       navigation.navigate({
         name: 'FullScreenCreationLoader',
         params: {
@@ -118,7 +117,9 @@ const CreateStep4 = ({route: {params: {formStores}},
         },
       });
 
-      const createCommonResponse = await DaoService.getInstance().createCommon(data);
+      const createCommonResponse = await DaoService.getInstance().createCommon(
+        formattedData,
+      );
 
       if (createCommonResponse.status === 200) {
         setNewCommonAddress(createCommonResponse.data.id);
@@ -132,10 +133,15 @@ const CreateStep4 = ({route: {params: {formStores}},
       //navigation.pop();
       console.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
+
+      navigation.pop();
     }
   };
 
-  const displayString = () => `${numberFormatter(form[CreateCommonForm.MINIMUM])}${CONTRIBUTION[form.contribution]}`;
+  const displayString = () =>
+    `${numberFormatter(form[CreateCommonForm.MINIMUM])}${
+      CONTRIBUTION[form.contribution]
+    }`;
 
   return (
     <StepDotLayout
@@ -174,11 +180,9 @@ const CreateStep4 = ({route: {params: {formStores}},
         <RequestStepActionButton
           title="Publish Common"
           formStore={agendaFormStore}
-          onPress={() => confirmModal()}
+          onPress={() => forgeCommon()}
         />
-
-      }
-    >
+      }>
       <View
         style={{
           flex: 1,
@@ -219,23 +223,21 @@ const CreateStep4 = ({route: {params: {formStores}},
             <CreateStep4Indicators
               title="Safety period"
               currencySymbol={false}
-              value={
-                moment
-                  .unix(form[CreateCommonForm.DEADLINE])
-                  .fromNow(true)
-              }
-              date={
-                moment
-                  .unix(form[CreateCommonForm.DEADLINE])
-                  .format('MMM DD, YYYY')
-              }
+              value={moment.unix(form[CreateCommonForm.DEADLINE]).fromNow(true)}
+              date={moment
+                .unix(form[CreateCommonForm.DEADLINE])
+                .format('MMM DD, YYYY')}
             />
           </View>
         </View>
         <View style={styles.sectionTitle}>
           <Text style={styles.textTitle}>About</Text>
         </View>
-        <Text style={{...styles.textContent, ...text.writingDirection(form[CreateCommonForm.DESCRIPTION])}}>
+        <Text
+          style={{
+            ...styles.textContent,
+            ...text.writingDirection(form[CreateCommonForm.DESCRIPTION]),
+          }}>
           {form[CreateCommonForm.DESCRIPTION]}
         </Text>
         <>
@@ -249,7 +251,6 @@ const CreateStep4 = ({route: {params: {formStores}},
                   style={{textAlign: 'right', alignSelf: 'flex-end'}}
                 />
               </TouchableOpacity> */}
-
           </View>
           {form[CreateCommonForm.LINKS]?.length ? (
             form[CreateCommonForm.LINKS].map((x) => (
@@ -266,8 +267,7 @@ const CreateStep4 = ({route: {params: {formStores}},
                     alignContent: 'center',
                     ...styles.linkText,
                     ...styles.textContent,
-                  }}
-                >
+                  }}>
                   {x.title}
                 </Text>
               </View>
@@ -287,7 +287,7 @@ const CreateStep4 = ({route: {params: {formStores}},
                   paddingHorizontal: 24,
                   color: colors.grey3,
                 }}>
-                  Rule #{index + 1}
+                Rule #{index + 1}
               </Text>
               <View style={[styles.sectionTitle, {marginTop: 10}]}>
                 <Text style={styles.textSubtitle}>{rule.title}</Text>
@@ -325,16 +325,7 @@ const stylesHeader = StyleSheet.create({
     ...font.primary.bold,
     ...font.fontSize(4),
     textAlign: 'center',
-  },
-  generalInfoSubtitle: {
-    marginHorizontal: 20,
-    marginTop: sizeS,
-    color: colors.slate,
     marginBottom: sizeL,
-    textAlign: 'center',
-    lineHeight: sizeLineHeight,
-    ...font.primary.regular,
-    ...font.fontSize(2),
   },
 });
 
@@ -408,7 +399,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'bottomSheetStore',
-  'userStore',
-)(observer(CreateStep4));
+export default inject('bottomSheetStore', 'userStore')(observer(CreateStep4));
