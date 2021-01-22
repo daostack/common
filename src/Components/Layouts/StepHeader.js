@@ -8,7 +8,12 @@ const {width} = Dimensions.get('window');
 
 const StepHeader = ({dotInfo, currentIndex, skipFirstDot = false}) => {
   const getDotProgress = (index) => {
-    const dotsCount = skipFirstDot ? dotInfo.length - 1 : dotInfo.length;
+    let dotsCount = dotInfo.length;
+    if (skipFirstDot) {
+      dotsCount = dotsCount - 1;
+      index = index - 1;
+    }
+
     return (index * (1 / dotsCount)).toFixed(2);
   };
 
