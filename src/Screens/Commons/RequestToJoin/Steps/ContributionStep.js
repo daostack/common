@@ -166,20 +166,6 @@ const ContributionStep = ({
           hidden={isActionBtnHidden}
         />
       }>
-      {/* 
-      navigation={navigation}
-      stepDotHeaderTitle="Funding" 
-      navTitle="Funding" 
-      currentIndex={2}
-      requestStepActionButton=
-      {
-        <RequestStepActionButton
-          title="Continue to Additional Info"
-          formStore={fundingFormStore}
-          onPress={push}
-        />
-      }
-      > */}
       <View
         style={{
           flex: 1,
