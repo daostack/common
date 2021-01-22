@@ -18,6 +18,7 @@ const ContributionStep = ({
   route: {
     params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed},
   },
+  bottomSheetStore,
 }) => {
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
   const metadata = currCommon.metadata;

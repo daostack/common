@@ -7,7 +7,15 @@ import {
   Animated,
 } from 'react-native';
 import {inject} from 'mobx-react';
-import {object, bool, number, func, string, shape, InferProps} from 'prop-types';
+import {
+  object,
+  bool,
+  number,
+  func,
+  string,
+  shape,
+  InferProps,
+} from 'prop-types';
 import {colors, layout} from '~/Theme';
 import CreateStepHeader from './CreateStepHeader';
 import RequestStepHeader from './RequestStepHeader';
@@ -57,7 +65,6 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
   layoutTitle,
   bottomSheetStore,
 }) => {
-
   const [headerHeight, setHeaderHeight] = useState(new Animated.Value(0));
   const [scrollY] = useState(new Animated.Value(0));
 
@@ -113,7 +120,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
             </TouchableOpacity>
           }
         />
-        {isRequestToJoin ?
+        {isRequestToJoin ? (
           <RequestStepDotHeader
             title={stepDotHeaderTitle}
             currentIndex={currentIndex}
@@ -121,14 +128,14 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
             headerHeight={headerHeight}
             isFirstStepSkipped={skipFirstStep}
           />
-          :
+        ) : (
           <CreateStepDotHeader
             title={stepDotHeaderTitle}
             currentIndex={currentIndex}
             navigation={navigation}
             headerHeight={headerHeight}
           />
-        }
+        )}
         <ScrollView
           showsVerticalScrollIndicator={false}
           width={width}
@@ -139,16 +146,19 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
           }}
           scrollEventThrottle={16}
           onScrollEndDrag={onScrollEndDrag}
-          onScroll={Animated.event([
-            {nativeEvent: {contentOffset: {y: scrollY}}},
-          ],
-          {useNativeDriver: false})}>
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {y: scrollY}}}],
+            {useNativeDriver: false},
+          )}>
           {layoutTitle}
-          {
-            isRequestToJoin ?
-              <RequestStepHeader isFirstStepSkipped={skipFirstStep} currentIndex={Number(currentIndex) - 1} /> :
-              <CreateStepHeader currentIndex={Number(currentIndex) - 1} />
-          }
+          {isRequestToJoin ? (
+            <RequestStepHeader
+              isFirstStepSkipped={skipFirstStep}
+              currentIndex={Number(currentIndex) - 1}
+            />
+          ) : (
+            <CreateStepHeader currentIndex={Number(currentIndex) - 1} />
+          )}
           {children}
         </ScrollView>
         {requestStepActionButton}
@@ -160,6 +170,4 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
 
 StepDotLayout.propTypes = props;
 
-export default inject(
-  'bottomSheetStore',
-)(StepDotLayout);
+export default inject('bottomSheetStore')(StepDotLayout);
