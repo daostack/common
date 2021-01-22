@@ -17,6 +17,8 @@ export class PaymentFormStore extends FormStore {
 export class BillingDetailsFormStore extends FormStore {
   constructor() {
     super();
+
+    this.registerValidationRule(billingDetailsRules.cityValidator);
     this.registerValidationRule(billingDetailsRules.validPassport);
     this.registerValidationRule(billingDetailsRules.firstLastNameValidate);
     this.registerValidationRule(billingDetailsRules.cardholderNameValidator);

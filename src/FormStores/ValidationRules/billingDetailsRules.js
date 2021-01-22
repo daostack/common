@@ -2,6 +2,7 @@ export const VALIDATION_RULES = {
   VALID_ID_PASSPORT: 'valid_id_passport',
   FIRST_LAST_NAME: 'first_last_name',
   CARDHOLDER_NAME_VALIDATOR: 'cardholder_name_validator',
+  CITY_VALIDATOR: 'city_validator',
 };
 
 const isValidId = (id) =>
@@ -37,3 +38,8 @@ export const cardholderNameValidator = {
   errorMessage: 'The :attribute should use latin characters only',
 };
 
+export const cityValidator = {
+  ruleName: VALIDATION_RULES.CITY_VALIDATOR,
+  validateFunc: (value) =>  new RegExp(/^[a-zA-Z. ]*$/).test(value),
+  errorMessage: 'The :attribute should use latin characters only',
+};

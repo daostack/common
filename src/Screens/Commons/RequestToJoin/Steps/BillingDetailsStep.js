@@ -191,8 +191,8 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
               validation={{
                 name: BillingDetailsConstants.City,
                 formStore: billingDetailsFormStore,
-                validateRule: 'required|string',
                 displayName: 'city',
+                validateRule: ['required', VALIDATION_RULES.CITY_VALIDATOR],
               }}
             />
 
