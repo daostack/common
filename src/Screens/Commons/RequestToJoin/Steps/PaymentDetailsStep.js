@@ -135,7 +135,7 @@ const PaymentDetailsStep = ({
   return (
     <StepDotLayout
       navigation={navigation}
-      stepDotHeaderTitle="Billing Details"
+      stepDotHeaderTitle="Payment Details"
       navTitle={currCommon.name}
       currentIndex={5}
       skipFirstStep={skipFirstStep}

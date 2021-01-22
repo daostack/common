@@ -5,6 +5,7 @@ import {
   Dimensions,
   SafeAreaView,
   Animated,
+  StyleSheet,
 } from 'react-native';
 import {inject} from 'mobx-react';
 import {
@@ -17,12 +18,10 @@ import {
   InferProps,
 } from 'prop-types';
 import {colors, layout} from '~/Theme';
-import CreateStepHeader from './CreateStepHeader';
-import RequestStepHeader from './RequestStepHeader';
+import StepHeader from './StepHeader';
 import NavigationBar from 'react-native-navbar';
 import Icon from '~/Assets/iconfont/Icon';
-import CreateStepDotHeader from './CreateStepDotHeader';
-import RequestStepDotHeader from './RequestStepDotHeader';
+import StepDotHeader from './StepDotHeader';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 // import UseAcknowledgment from '../../../Components/Proposals/UseAcknowledgment';
 const {width} = Dimensions.get('window');
@@ -49,6 +48,39 @@ const props = {
     hideBottomSheet: func,
   }),
 };
+
+const DOT_INFO_JOIN_REQUEST = [
+  {
+    dotIconName: 'agenda-24',
+  },
+  {
+    dotIconName: 'account-selected',
+  },
+  {
+    dotIconName: 'contribution-24',
+  },
+  {
+    dotIconName: 'billing-details-24-copy-4',
+  },
+  {
+    dotIconName: 'wallet-24',
+  },
+];
+
+const DOT_INFO_CREATE_COMMON = [
+  {
+    dotIconName: 'dao-general-info-24',
+  },
+  {
+    dotIconName: 'funds',
+  },
+  {
+    dotIconName: 'agenda',
+  },
+  {
+    dotIconName: 'style',
+  },
+];
 
 const StepDotLayout: React.FC<InferProps<typeof props>> = ({
   navigation,
@@ -90,6 +122,10 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
     });
   };
 
+  const currDotInfo = isRequestToJoin
+    ? DOT_INFO_JOIN_REQUEST
+    : DOT_INFO_CREATE_COMMON;
+
   return (
     <>
       {prependedArea}
@@ -105,9 +141,16 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
           title={{
             title: navTitle,
           }}
+          leftButton={
+            <TouchableOpacity
+              style={styles.navBtn}
+              onPress={() => navigation.pop()}>
+              <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
+            </TouchableOpacity>
+          }
           rightButton={
             <TouchableOpacity
-              style={{justifyContent: 'center'}}
+              style={styles.navBtn}
               onPress={() => {
                 closeDialog();
               }}>
@@ -120,22 +163,16 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
             </TouchableOpacity>
           }
         />
-        {isRequestToJoin ? (
-          <RequestStepDotHeader
-            title={stepDotHeaderTitle}
-            currentIndex={currentIndex}
-            navigation={navigation}
-            headerHeight={headerHeight}
-            isFirstStepSkipped={skipFirstStep}
-          />
-        ) : (
-          <CreateStepDotHeader
-            title={stepDotHeaderTitle}
-            currentIndex={currentIndex}
-            navigation={navigation}
-            headerHeight={headerHeight}
-          />
-        )}
+        <StepDotHeader
+          title={stepDotHeaderTitle}
+          currentIndex={currentIndex}
+          navigation={navigation}
+          headerHeight={headerHeight}
+          isFirstStepSkipped={skipFirstStep}
+          totalDots={currDotInfo.length}
+          onClose={closeDialog}
+        />
+        {/* )} */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           width={width}
@@ -151,14 +188,11 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
             {useNativeDriver: false},
           )}>
           {layoutTitle}
-          {isRequestToJoin ? (
-            <RequestStepHeader
-              isFirstStepSkipped={skipFirstStep}
-              currentIndex={Number(currentIndex) - 1}
-            />
-          ) : (
-            <CreateStepHeader currentIndex={Number(currentIndex) - 1} />
-          )}
+          <StepHeader
+            skipFirstDot={Boolean(skipFirstStep)}
+            currentIndex={Number(currentIndex) - 1}
+            dotInfo={currDotInfo}
+          />
           {children}
         </ScrollView>
         {requestStepActionButton}
@@ -169,5 +203,11 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
 };
 
 StepDotLayout.propTypes = props;
+
+const styles = StyleSheet.create({
+  navBtn: {
+    justifyContent: 'center',
+  },
+});
 
 export default inject('bottomSheetStore')(StepDotLayout);

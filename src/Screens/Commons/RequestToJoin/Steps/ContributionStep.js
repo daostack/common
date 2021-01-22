@@ -152,7 +152,7 @@ const ContributionStep = ({
   return (
     <StepDotLayout
       navigation={navigation}
-      stepDotHeaderTitle="Billing Details"
+      stepDotHeaderTitle={`${isMonthly ? 'Monthly' : 'Personal'} contribution`}
       navTitle={currCommon.name}
       currentIndex={3}
       skipFirstStep={skipFirstStep}
@@ -166,6 +166,20 @@ const ContributionStep = ({
           hidden={isActionBtnHidden}
         />
       }>
+      {/* 
+      navigation={navigation}
+      stepDotHeaderTitle="Funding" 
+      navTitle="Funding" 
+      currentIndex={2}
+      requestStepActionButton=
+      {
+        <RequestStepActionButton
+          title="Continue to Additional Info"
+          formStore={fundingFormStore}
+          onPress={push}
+        />
+      }
+      > */}
       <View
         style={{
           flex: 1,

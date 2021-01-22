@@ -38,8 +38,8 @@ const RulesStep = ({
   return (
     <StepDotLayout
       navigation={navigation}
-      stepDotHeaderTitle="Billing Details"
-      navTitle="Billing Details"
+      stepDotHeaderTitle="Accept Common Rules"
+      navTitle={currCommon.name}
       currentIndex={1}
       layoutTitle={<MembershipRequest />}
       isRequestToJoin={true}

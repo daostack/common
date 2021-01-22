@@ -38,7 +38,7 @@ const IntroductionStep = ({
   return (
     <StepDotLayout
       navigation={navigation}
-      stepDotHeaderTitle="Billing Details"
+      stepDotHeaderTitle="Introduce Yourself"
       navTitle={currCommon.name}
       currentIndex={2}
       skipFirstStep={skipFirstStep}

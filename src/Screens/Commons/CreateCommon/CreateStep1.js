@@ -22,9 +22,15 @@ const CreateStep1 = ({
   const [useAcknowledgmentVisible, setUseAcknowledgmentVisible] = useState(
     false,
   );
+  const [agreed, setAgreed] = useState(false);
 
   const push = () => {
+    setAgreed(true);
     setUseAcknowledgmentVisible(false);
+    continueToFunding();
+  };
+
+  const continueToFunding = () => {
     if (generalInfoFormStore.isFormValid()) {
       navigation.navigate('CreateStep2', {formStores});
     }
@@ -60,7 +66,11 @@ const CreateStep1 = ({
           formStore={generalInfoFormStore}
           onPress={() => {
             if (generalInfoFormStore.isFormValid()) {
-              setUseAcknowledgmentVisible(true);
+              if (agreed) {
+                continueToFunding();
+              } else {
+                setUseAcknowledgmentVisible(true);
+              }
             }
           }}
         />

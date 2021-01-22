@@ -71,7 +71,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
     <StepDotLayout
       navigation={navigation}
       stepDotHeaderTitle="Billing Details"
-      navTitle="Billing Details"
+      navTitle={currCommon.name}
       currentIndex={4}
       isRequestToJoin={true}
       requestStepActionButton={
