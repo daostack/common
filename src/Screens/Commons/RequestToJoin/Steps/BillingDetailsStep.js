@@ -6,7 +6,7 @@ import {
   ScrollView,
   Animated,
   Dimensions,
-  Platform
+  Platform,
 } from 'react-native';
 import {bool, func, object, shape, string} from 'prop-types';
 
