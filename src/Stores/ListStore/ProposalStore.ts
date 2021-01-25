@@ -36,13 +36,14 @@ export const isStageFilterHistory = (stageFilter: IProposalStageFilter) =>
   stageFilter === PROPOSAL_STAGE.History;
 
 export default class ProposalStore extends ListStore<Proposal> {
+  @observable
   isLoading: boolean;
 
   constructor(rootStore: RootStore) {
     super(rootStore);
     this.isLoading = false;
   }
-  // Computed fields
+  @computed
   get myActiveProposals() {
     if (this.isLoading || !this.rootStore.authStore.userInfo?.uid) {
       return [];
@@ -53,6 +54,7 @@ export default class ProposalStore extends ListStore<Proposal> {
     });
   }
 
+  @computed
   get myActiveMembershipRequests() {
     if (this.isLoading || !this.rootStore.authStore.userInfo?.uid) {
       return [];
@@ -146,12 +148,3 @@ export default class ProposalStore extends ListStore<Proposal> {
     return true;
   };
 }
-
-decorate(ProposalStore, {
-  //observables
-  isLoading: observable,
-
-  //computed
-  myActiveProposals: computed,
-  myActiveMembershipRequests: computed,
-});

@@ -1,4 +1,4 @@
-import {decorate, computed, observable, runInAction} from 'mobx';
+import {computed, observable, runInAction} from 'mobx';
 import ListStore from './ListStore';
 import {subscribeToAllCommons} from '~/Services/ListServices/CommonListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
@@ -9,6 +9,7 @@ import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import {Proposal} from '../Models/Proposal';
 
 export default class CommonStore extends ListStore<Common> {
+  @observable
   isLoading: boolean;
 
   constructor(rootStore: RootStore) {
@@ -16,7 +17,7 @@ export default class CommonStore extends ListStore<Common> {
     this.isLoading = false;
   }
 
-  // Computed fields
+  @computed
   get myCommons() {
     return this.isLoading
       ? []
@@ -25,15 +26,16 @@ export default class CommonStore extends ListStore<Common> {
         );
   }
 
+  @computed
   get pendingCommons() {
     if (
       this.isLoading ||
-      this.rootStore.proposalStore.myActiveMembershipRequests.length === 0
+      this.rootStore.proposalStore.myActiveMembershipRequests?.length === 0
     ) {
       return [];
     } else {
       let commons: Array<ICommonEntity> = [];
-      this.rootStore.proposalStore.myActiveMembershipRequests.forEach(
+      this.rootStore.proposalStore.myActiveMembershipRequests?.forEach(
         (proposal: Proposal) => {
           const currPendingCommon = this.getCommonById(proposal.commonId);
           if (currPendingCommon) {
@@ -41,13 +43,11 @@ export default class CommonStore extends ListStore<Common> {
           }
         },
       );
-      // return this.getDataArray?.filter((common: Common) =>
-      //   commonIds.includes(common.id),
-      // );
       return commons;
     }
   }
 
+  @computed
   get featuredCommons() {
     // return super.data;
     return this.isLoading
@@ -82,12 +82,3 @@ export default class CommonStore extends ListStore<Common> {
     });
   };
 }
-
-decorate(CommonStore, {
-  //observables
-  isLoading: observable,
-  //computed
-  myCommons: computed,
-  pendingCommons: computed,
-  featuredCommons: computed,
-});

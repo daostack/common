@@ -1,4 +1,4 @@
-import {observable, decorate} from 'mobx';
+import {observable, computed} from 'mobx';
 import {PROPOSAL_TYPE} from '~/Config';
 import {
   IFundingRequestProposal,
@@ -17,25 +17,51 @@ import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 import {BaseModel} from './BaseModel';
 
 export class Proposal extends BaseModel<IProposalEntity> {
-  // Fields
-  id: string = '';
-  proposerId: string = '';
-  commonId: string = '';
-  type: ProposalType = 'join';
-  votes: IProposalVote[] = [];
-  state: string = '';
-  countdownPeriod: number = 0;
-  quietEndingPeriod: number = 0;
-  votesFor: number = 0;
-  votesAgainst: number = 0;
-  paymentState: string = '';
+  @observable
+  id: string;
+
+  @observable
+  proposerId: string;
+
+  @observable
+  commonId: string;
+
+  @observable
+  type: ProposalType;
+
+  @observable
+  votes: IProposalVote[];
+
+  @observable
+  state: string;
+
+  @observable
+  countdownPeriod: number;
+
+  @observable
+  quietEndingPeriod: number;
+
+  @observable
+  votesFor: number;
+
+  @observable
+  votesAgainst: number;
+
+  @observable
+  paymentState?: string;
+
+  @observable
   fundingRequest: IProposalFundingRequest | undefined;
+
+  @observable
   join: IProposalJoin | undefined;
 
+  @computed
   get isJoinRequest() {
     return this.type === PROPOSAL_TYPE.Join;
   }
 
+  @computed
   get isActive() {
     return (
       PROPOSAL_STAGES_ACTIVE.some((stg) => stg === this.state) ||
@@ -43,6 +69,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
     );
   }
 
+  @computed
   get isHistory() {
     return (
       PROPOSAL_STAGES_HISTORY.some((stg) => stg === this.state) &&
@@ -50,6 +77,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
     );
   }
 
+  @computed
   get funding() {
     if (this.type === PROPOSAL_TYPE.Join) {
       return this.join?.funding;
@@ -83,22 +111,3 @@ export class Proposal extends BaseModel<IProposalEntity> {
     }
   }
 }
-
-decorate(Proposal, {
-  //observables
-  id: observable,
-  proposerId: observable,
-  commonId: observable,
-  type: observable,
-  votes: observable,
-  state: observable,
-  countdownPeriod: observable,
-  quietEndingPeriod: observable,
-  votesFor: observable,
-  votesAgainst: observable,
-  paymentState: observable,
-
-  //computed
-
-  //actions
-});
