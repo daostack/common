@@ -1,6 +1,7 @@
 import {observable, decorate, action, computed} from 'mobx';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {filterObjectByKeys} from '~/Util';
+import {BaseModel} from './BaseModel';
 
 export const userInfoFields = [
   'uid',
@@ -12,10 +13,9 @@ export const userInfoFields = [
   'createdAt',
   'intro',
 ];
-export class UserModel implements IUserEntity {
+export class UserModel extends BaseModel<IUserEntity> {
   // Fields
   uid: string = '';
-  id: string = '';
   email: string = '';
   photoURL: string = '';
   firstName: string = '';
@@ -24,7 +24,11 @@ export class UserModel implements IUserEntity {
   updatedAt: Date | null = null;
   intro: string = '';
 
+  // That field is used only in the commonMembers list
+  joinedAt?: Date | null = null;
+
   constructor(newUserInfo: IUserEntity) {
+    super();
     // Filter the provided newUserInfo values in order to be sure there are no extra data.
     // Currently there are users with displayName prop in the DB,
     // but here the displayName is computed field which can't be assigned a value to.

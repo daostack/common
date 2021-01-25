@@ -83,6 +83,16 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
       ?.value?.value,
   );
 
+  const getUserFullName = () => {
+    const name = billingDetailsFormStore.getFormField(
+      BillingDetailsConstants.City,
+    )?.value || userStore.userInfo.displayName;
+
+    return new RegExp(/^[a-zA-Z'’. ]*$/).test(name)
+    ? name
+      : '';
+  };
+
   const subtitle = (style) => (
     <Text style={style}>
       You are contributing ${contributionAmount ? contributionAmount : 0}
@@ -156,15 +166,13 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
               value={
                 testCard
                   ? 'Thor Odinson'
-                  : billingDetailsFormStore.getFormField(
-                      BillingDetailsConstants.City,
-                    )?.value || userStore.userInfo.displayName
+                  : getUserFullName()
               }
               autoCapitalize="words"
               validation={{
                 name: BillingDetailsConstants.CardName,
                 formStore: billingDetailsFormStore,
-                validateRule: ['required', VALIDATION_RULES.FIRST_LAST_NAME],
+                validateRule: ['required', VALIDATION_RULES.FIRST_LAST_NAME, VALIDATION_RULES.CARDHOLDER_NAME_VALIDATOR],
                 displayName: 'full name',
               }}
             />
