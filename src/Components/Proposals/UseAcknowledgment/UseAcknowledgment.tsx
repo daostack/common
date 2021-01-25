@@ -10,13 +10,13 @@ const props = {
   onCancel: func,
 };
 const UseAcknowledgment: React.FC<InferProps<typeof props>> = ({
-  onPressAgree, onCancel,
+  onPressAgree,
+  onCancel,
 }) => {
   const [agreedWithStatement, setAgreedWithStatement] = useState(false);
   const [causesExpanded, setCausesExpanded] = useState(false);
   return (
-    <>
-      <Pressable onPress={onCancel} style={styles.background} />
+    <Pressable onPress={onCancel}>
       <View style={styles.root}>
         <View style={styles.view}>
           <View style={styles.plug} />
@@ -33,7 +33,9 @@ const UseAcknowledgment: React.FC<InferProps<typeof props>> = ({
               <View style={styles.checkMark}>
                 <Icon name="checkMark" size={24} />
               </View>
-              <Text style={[styles.text, styles.flex]}>{data.notViolation}</Text>
+              <Text style={[styles.text, styles.flex]}>
+                {data.notViolation}
+              </Text>
             </View>
             <View style={styles.item}>
               <View style={styles.checkMark}>
@@ -89,7 +91,9 @@ const UseAcknowledgment: React.FC<InferProps<typeof props>> = ({
               <View style={styles.item}>
                 <View style={styles.checkMark}>
                   <Icon
-                    name={agreedWithStatement ? 'checkIconSelected' : 'checkIcon'}
+                    name={
+                      agreedWithStatement ? 'checkIconSelected' : 'checkIcon'
+                    }
                     size={24}
                   />
                 </View>
@@ -110,7 +114,7 @@ const UseAcknowledgment: React.FC<InferProps<typeof props>> = ({
           </ScrollView>
         </View>
       </View>
-    </>
+    </Pressable>
   );
 };
 UseAcknowledgment.propTypes = props;

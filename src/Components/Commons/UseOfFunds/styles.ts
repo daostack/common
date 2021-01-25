@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 import {colors, font} from '~/Theme';
 
 export default StyleSheet.create({
-  root:  {
+  root: {
     paddingTop: 100,
     height: '100%',
   },
@@ -53,7 +53,7 @@ export default StyleSheet.create({
   centerText: {textAlign: 'center'},
   line: {
     backgroundColor: colors.grey4,
-    height:1,
+    height: 1,
     marginVertical: 24,
   },
   item: {
