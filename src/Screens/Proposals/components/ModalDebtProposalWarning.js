@@ -1,3 +1,4 @@
+import {func, string} from 'prop-types';
 import React from 'react';
 import {Text, StyleSheet} from 'react-native';
 import {colors, font} from '~/Theme';
@@ -19,6 +20,11 @@ const ModalDebtProposalWarning = ({onPressClose, amount}) => (
     </Text>
   </ModalCommonDebt>
 );
+
+ModalDebtProposalWarning.propTypes = {
+  onPressClose: func,
+  amount: string,
+};
 
 const styles = StyleSheet.create({
   title: {

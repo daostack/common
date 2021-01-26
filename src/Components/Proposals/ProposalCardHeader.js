@@ -4,7 +4,7 @@ import {text, layout, colors, sizeXS, sizeS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
-import {string, number, bool} from 'prop-types';
+import {string, number, bool, func} from 'prop-types';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 
 const TITLES = {
@@ -168,6 +168,7 @@ ProposalCardHeader.propTypes = {
   closingAt: number,
   isScreenHeader: bool,
   paymentStatus: string,
+  onPress: func,
 };
 
 const styles = StyleSheet.create({

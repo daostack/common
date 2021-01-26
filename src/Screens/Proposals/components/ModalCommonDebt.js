@@ -8,8 +8,9 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {colors, font, layout} from '~/Theme';
+import {colors, layout} from '~/Theme';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {func, object} from 'prop-types';
 
 const ModalCommonDebt = ({onPressClose, children}) => (
   <Pressable onPress={() => onPressClose()} style={styles.background}>
@@ -40,6 +41,11 @@ const ModalCommonDebt = ({onPressClose, children}) => (
     </View>
   </Pressable>
 );
+
+ModalCommonDebt.propTypes = {
+  onPressClose: func,
+  children: object,
+};
 
 const styles = StyleSheet.create({
   background: {

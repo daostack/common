@@ -1,3 +1,4 @@
+import {func} from 'prop-types';
 import React from 'react';
 import {Text, StyleSheet} from 'react-native';
 import {colors, font} from '~/Theme';
@@ -8,7 +9,9 @@ const ModalDebtProposalInsufficient = ({onPressClose}) => (
     <Text style={styles.title}>Insufficient balance</Text>
     <Text>
       <Text style={[styles.text, styles.centerText]}>
-        {`The proposal was approved by the Common members, but the Common balance was insufficient for the requested amount, `}
+        {
+          'The proposal was approved by the Common members, but the Common balance was insufficient for the requested amount, '
+        }
       </Text>
       <Text style={[styles.text, styles.centerText, {fontWeight: 'bold'}]}>
         and the proposal was cancelled
@@ -16,6 +19,10 @@ const ModalDebtProposalInsufficient = ({onPressClose}) => (
     </Text>
   </ModalCommonDebt>
 );
+
+ModalDebtProposalInsufficient.propTypes = {
+  onPressClose: func,
+};
 
 const styles = StyleSheet.create({
   title: {

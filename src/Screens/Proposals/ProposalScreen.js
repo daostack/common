@@ -47,7 +47,6 @@ import DebtErrorProposalNote from './components/DebtErrorProposalNote';
 import ModalDebtProposalWarning from './components/ModalDebtProposalWarning';
 import ModalDebtProposalError from './components/ModalDebtProposalError';
 import ModalDebtProposalInsufficient from './components/ModalDebtProposalInsufficient';
-import {State} from 'react-native-gesture-handler';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;

@@ -2,6 +2,7 @@ import {StyleSheet, Text, View, TouchableWithoutFeedback} from 'react-native';
 import React from 'react';
 import {colors, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
+import {func} from 'prop-types';
 
 const DebtWarningNote = ({onPress}) => (
   <TouchableWithoutFeedback onPress={onPress}>
@@ -18,6 +19,10 @@ const DebtWarningNote = ({onPress}) => (
     </View>
   </TouchableWithoutFeedback>
 );
+
+DebtWarningNote.propTypes = {
+  onPress: func,
+};
 
 const styles = StyleSheet.create({
   container: {
