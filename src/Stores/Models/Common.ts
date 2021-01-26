@@ -1,4 +1,4 @@
-import {observable, decorate, computed} from 'mobx';
+import {observable, computed} from 'mobx';
 import {formatNumber} from '~/Util';
 import {
   CommonRegister,
@@ -11,17 +11,37 @@ import {
 import {BaseModel} from './BaseModel';
 
 export class Common extends BaseModel<ICommonEntity> {
-  // Fields
+  @observable
   id: string;
+
+  @observable
   name: string;
+
+  @observable
   image: string;
+
+  @observable
   balance: number;
+
+  @observable
   raised: number;
+
+  @observable
   fundingGoalDeadline: number;
+
+  @observable
   members: ICommonMember[];
+
+  @observable
   rules: ICommonRule[];
+
+  @observable
   links: ICommonLink[];
+
+  @observable
   metadata: ICommonMetadata;
+
+  @observable
   register: CommonRegister;
 
   constructor(newCommonInfo: ICommonEntity) {
@@ -39,33 +59,13 @@ export class Common extends BaseModel<ICommonEntity> {
     this.register = newCommonInfo.register;
   }
 
-  // Computed fields:
+  @computed
   get raisedFormatted(): string {
     return formatNumber(this.raised / 100).toString();
   }
 
+  @computed
   get balanceFormatted(): string {
     return formatNumber(this.balance / 100).toString();
   }
 }
-
-decorate(Common, {
-  //observables
-  id: observable,
-  name: observable,
-  image: observable,
-  balance: observable,
-  raised: observable,
-  fundingGoalDeadline: observable,
-  members: observable,
-  rules: observable,
-  links: observable,
-  metadata: observable,
-  register: observable,
-
-  //computed
-  raisedFormatted: computed,
-  balanceFormatted: computed,
-
-  //actions
-});

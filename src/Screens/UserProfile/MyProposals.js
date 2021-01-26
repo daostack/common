@@ -17,12 +17,14 @@ import {inject, observer} from 'mobx-react';
 import ProposalService from '~/Services/ProposalService';
 import CommonTabBar from '../CommonTabBar';
 import {bool, object, shape} from 'prop-types';
+import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
+import {isTypeFilterJoin} from '~/Stores/ListStore/ProposalStore';
 
 const MyProposals = ({
   navigation,
   userStore,
   route: {
-    params: {onlyMembershipRequests, onlyFundingRequests},
+    params: {proposalTypeFilter},
   },
 }) => {
   const [index, setIndex] = React.useState(0);
@@ -32,8 +34,7 @@ const MyProposals = ({
     const getStats = async () => {
       const userProposalsStats = await ProposalService.getInstance().getUserProposalsCounts(
         userStore.userInfo.uid,
-        onlyMembershipRequests,
-        onlyFundingRequests,
+        proposalTypeFilter,
       );
       setStats({...userProposalsStats});
     };
@@ -44,7 +45,7 @@ const MyProposals = ({
     navigation.setOptions({
       title:
         event.nativeEvent.contentOffset.y > 75
-          ? onlyMembershipRequests
+          ? isTypeFilterJoin(proposalTypeFilter)
             ? 'My membership requests'
             : 'My Proposals'
           : 'My Profile',
@@ -69,11 +70,15 @@ const MyProposals = ({
   const SceneRenderer = (sceneIndex) => (
     <View style={{flex: 1, marginTop: 40, paddingHorizontal: 20}}>
       <ProposalsList
-        userId={userStore.userInfo.uid}
-        membershipRequests={onlyMembershipRequests}
-        onlyFundingRequests={onlyFundingRequests}
-        isHistory={sceneIndex === 2}
         navigation={navigation}
+        userInfo={{
+          id: userStore.userInfo.uid,
+        }}
+        proposalFilter={{
+          stage:
+            sceneIndex === 2 ? PROPOSAL_STAGE.History : PROPOSAL_STAGE.Active,
+          type: PROPOSAL_TYPE.FundingRequest,
+        }}
       />
     </View>
   );
@@ -104,7 +109,10 @@ const MyProposals = ({
           scrollEventThrottle={16}>
           <View style={styles.sectionContainer}>
             <Text style={styles.title}>
-              My {onlyMembershipRequests ? 'membership requests' : 'proposals'}
+              My{' '}
+              {isTypeFilterJoin(proposalTypeFilter)
+                ? 'membership requests'
+                : 'proposals'}
             </Text>
           </View>
           <View style={styles.sectionTabView}>

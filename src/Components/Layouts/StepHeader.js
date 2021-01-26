@@ -3,11 +3,19 @@ import {View, StyleSheet, Dimensions} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors} from '~/Theme';
 import * as Progress from 'react-native-progress';
-import {number} from 'prop-types';
+import {bool, number, object} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const CreateStepHeader = ({currentIndex}) => {
-  const progressList = [0, 0.35, 0.7, 1.0];
+const StepHeader = ({dotInfo, currentIndex, skipFirstDot = false}) => {
+  const getDotProgress = (index) => {
+    let dotsCount = dotInfo.length;
+    if (skipFirstDot) {
+      dotsCount = dotsCount - 1;
+      index = index - 1;
+    }
+
+    return (index * (1 / dotsCount)).toFixed(2);
+  };
 
   const ovalStyle = (index) => {
     if (currentIndex > index) {
@@ -44,7 +52,7 @@ const CreateStepHeader = ({currentIndex}) => {
         paddingHorizontal: 30,
       }}>
       <Progress.Bar
-        progress={progressList[currentIndex]} // 0 0.35 0.7 1.0
+        progress={getDotProgress(currentIndex)}
         width={width - 48 - 60}
         color={colors.mainBlue}
         borderWidth={0}
@@ -55,47 +63,32 @@ const CreateStepHeader = ({currentIndex}) => {
           marginHorizontal: 30,
         }}
       />
-      {/* <TouchableOpacity onPress={() => setCurrentIndex(0)}> */}
-      <View style={currentIndex === 0 ? styles.oval : styles.ovalDone}>
-        <Icon
-          name={currentIndex === 0 ? 'dao-general-info-24' : 'check'}
-          size={currentIndex > 0 ? 16 : 24}
-        />
-      </View>
-      {/* </TouchableOpacity> */}
-      {/* <TouchableOpacity onPress={() => setCurrentIndex(1)}> */}
-      <View style={ovalStyle(1)}>
-        <Icon
-          name={currentIndex < 2 ? 'funds' : 'check'}
-          size={currentIndex === 1 ? 24 : 16}
-          color={iconColor(1)}
-        />
-      </View>
-      {/* </TouchableOpacity> */}
-      {/* <TouchableOpacity onPress={() => setCurrentIndex(2)}> */}
-      <View style={ovalStyle(2)}>
-        <Icon
-          name={currentIndex < 3 ? 'agenda' : 'check'}
-          size={currentIndex === 2 ? 24 : 16}
-          color={iconColor(2)}
-        />
-      </View>
-      {/* </TouchableOpacity>
-      <TouchableOpacity onPress={() => setCurrentIndex(3)}> */}
-      <View style={ovalStyle(3)}>
-        <Icon
-          name={currentIndex < 4 ? 'style' : 'check'}
-          size={currentIndex === 3 ? 24 : 16}
-          color={iconColor(3)}
-        />
-      </View>
-      {/* </TouchableOpacity> */}
+
+      {dotInfo.map((currDotInfo, dotIndex) => {
+        if (skipFirstDot && dotIndex === 0) {
+          return null;
+        } else {
+          return (
+            <View style={ovalStyle(dotIndex)}>
+              <Icon
+                name={
+                  currentIndex <= dotIndex ? currDotInfo.dotIconName : 'check'
+                }
+                size={currentIndex === dotIndex ? 24 : 16}
+                color={iconColor(dotIndex)}
+              />
+            </View>
+          );
+        }
+      })}
     </View>
   );
 };
 
-CreateStepHeader.propTypes = {
+StepHeader.propTypes = {
+  dotInfo: object,
   currentIndex: number,
+  skipFirstDot: bool,
 };
 
 const styles = StyleSheet.create({
@@ -134,4 +127,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateStepHeader;
+export default StepHeader;

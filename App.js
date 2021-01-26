@@ -84,6 +84,7 @@ const App = ({
   userStore,
   userListStore,
   commonStore,
+  proposalStore,
   bottomSheetStore,
   navigation,
 }) => {
@@ -113,14 +114,22 @@ const App = ({
     return unsubscribe;
   }, []);
 
+  // Initialize Mobx Stores
   useEffect(() => {
     const unsubscribeUsers = userListStore.subscribeToAllUsers();
     const unsubscribeCommons = commonStore.subscribeToAllCommons();
+    let unsubscribeProposals = null;
+    if (userStore.userInfo?.uid) {
+      unsubscribeProposals = proposalStore.subscribeToUserActiveProposals(
+        userStore.userInfo?.uid,
+      );
+    }
     return () => {
       unsubscribeUsers && unsubscribeUsers();
       unsubscribeCommons && unsubscribeCommons();
+      unsubscribeProposals && unsubscribeProposals();
     };
-  }, []);
+  }, [userStore.userInfo?.uid]);
 
   const notificationNavigation = async (remoteMessage) => {
     logger.log('remoteMessage -> ', remoteMessage);
@@ -584,6 +593,9 @@ App.propTypes = {
   commonStore: shape({
     subscribeToAllCommons: func,
   }),
+  proposalStore: shape({
+    subscribeToUserProposals: func,
+  }),
   bottomSheetStore: shape({
     isVisible: bool,
     showBottomSheet: func,
@@ -607,4 +619,5 @@ export default inject(
   'bottomSheetStore',
   'userListStore',
   'commonStore',
+  'proposalStore',
 )(observer(App));
