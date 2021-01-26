@@ -80,7 +80,14 @@ if (Platform.OS === 'android') {
   }
 }
 
-const App = ({userStore, userListStore, bottomSheetStore, navigation}) => {
+const App = ({
+  userStore,
+  userListStore,
+  commonStore,
+  proposalStore,
+  bottomSheetStore,
+  navigation,
+}) => {
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
   //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
@@ -107,12 +114,22 @@ const App = ({userStore, userListStore, bottomSheetStore, navigation}) => {
     return unsubscribe;
   }, []);
 
+  // Initialize Mobx Stores
   useEffect(() => {
-    const unsubscribeCommonUsers = userListStore.subscribeToAllUsers();
+    const unsubscribeUsers = userListStore.subscribeToAllUsers();
+    const unsubscribeCommons = commonStore.subscribeToAllCommons();
+    let unsubscribeProposals = null;
+    if (userStore.userInfo?.uid) {
+      unsubscribeProposals = proposalStore.subscribeToUserActiveProposals(
+        userStore.userInfo?.uid,
+      );
+    }
     return () => {
-      unsubscribeCommonUsers && unsubscribeCommonUsers();
+      unsubscribeUsers && unsubscribeUsers();
+      unsubscribeCommons && unsubscribeCommons();
+      unsubscribeProposals && unsubscribeProposals();
     };
-  }, []);
+  }, [userStore.userInfo?.uid]);
 
   const notificationNavigation = async (remoteMessage) => {
     logger.log('remoteMessage -> ', remoteMessage);
@@ -573,6 +590,12 @@ App.propTypes = {
   userListStore: shape({
     subscribeToAllUsers: func,
   }),
+  commonStore: shape({
+    subscribeToAllCommons: func,
+  }),
+  proposalStore: shape({
+    subscribeToUserProposals: func,
+  }),
   bottomSheetStore: shape({
     isVisible: bool,
     showBottomSheet: func,
@@ -595,4 +618,6 @@ export default inject(
   'userStore',
   'bottomSheetStore',
   'userListStore',
+  'commonStore',
+  'proposalStore',
 )(observer(App));

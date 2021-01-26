@@ -1,7 +1,7 @@
 import {DB_COLLECTIONS} from '../index';
 import {db} from '../../index';
 
-export const UserCollection = db.collection(DB_COLLECTIONS.users);
+export const UsersCollection = db.collection(DB_COLLECTIONS.users);
 //TODD: in the react-native invertise SDK there is no implemented withConverter yet. Let's make custom conversion of the typing ?
 
 // .withConverter<IUserEntity>({

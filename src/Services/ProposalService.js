@@ -30,6 +30,11 @@ export const LAUNCHED_STATES = [PROPOSAL_STAGE.passed];
 
 export const COUNTDOWN_STATES = [PROPOSAL_STAGE.failed];
 
+import {
+  isTypeFilterFundingRequest,
+  isTypeFilterJoin,
+} from '~/Stores/ListStore/ProposalStore';
+
 export default class ProposalService {
   static serviceInstance = null;
 
@@ -53,20 +58,16 @@ export default class ProposalService {
     return this.serviceInstance;
   };
 
-  async getUserProposalsCounts(
-    uid,
-    onlyMembershipRequests = false,
-    onlyFundingProposals = false,
-  ) {
+  async getUserProposalsCounts(uid, proposalTypeFilter) {
     let query = db
       .collection(DB_COLLECTIONS.proposals)
       .where('proposerId', '==', uid);
 
-    if (onlyFundingProposals) {
+    if (isTypeFilterFundingRequest(proposalTypeFilter)) {
       query = query.where('type', '==', PROPOSAL_TYPE.FundingRequest);
     }
 
-    if (onlyMembershipRequests) {
+    if (isTypeFilterJoin(proposalTypeFilter)) {
       query = query.where('type', '==', PROPOSAL_TYPE.Join);
     }
 

@@ -117,6 +117,11 @@ const FundingProposal = ({
     }
   };
 
+  const hideModal = () => {
+    navigation.setOptions({headerShown: true});
+    setUseOfFundsVisible(false);
+  };
+
   return (
     <React.Fragment>
       <StatusBar barStyle="dark-content" />
@@ -124,7 +129,10 @@ const FundingProposal = ({
         animationType="slide"
         transparent={true}
         visible={useOfFundsVisible}>
-        <UseOfFunds onPressAgree={createProposal} />
+        <UseOfFunds
+          onPressAgree={createProposal}
+          onCancel={() => hideModal()}
+        />
       </Modal>
       <Modal
         animationType="slide"
