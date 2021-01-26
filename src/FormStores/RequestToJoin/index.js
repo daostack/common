@@ -19,6 +19,7 @@ export class BillingDetailsFormStore extends FormStore {
     super();
     this.registerValidationRule(billingDetailsRules.validPassport);
     this.registerValidationRule(billingDetailsRules.firstLastNameValidate);
+    this.registerValidationRule(billingDetailsRules.cardholderNameValidator);
   }
 }
 

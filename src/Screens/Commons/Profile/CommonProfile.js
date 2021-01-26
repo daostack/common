@@ -31,9 +31,7 @@ import CommonHeader from '~/Components/Commons/CommonHeader';
 import {calcIsFundingStage, LAYOUT_ANIMATION_CONFIG} from '~/Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '~/Services/ProposalService';
-import DaoService from '~/Services/DaoService';
 import CountDown from 'react-native-countdown-component';
-import Toast from '~/Util/Toast';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -48,6 +46,7 @@ import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDat
 import {BlurView} from '~/Components';
 import Logger from '~/Services/Logger';
 import moment from 'moment';
+import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 
 import {
   IntroduceYourselfFormStore,
@@ -66,6 +65,8 @@ const CommonProfile = ({
   bottomSheetStore,
   userStore,
   route: {params},
+  commonStore,
+  proposalStore,
 }) => {
   /* all of  params.commonId,
   params.showRequestSentModal,
@@ -104,8 +105,10 @@ const CommonProfile = ({
   ]);
 
   //const routeCommon = params.currCommon;
-  Logger.log('Common id ->', params.currCommon?.id);
-  const [currCommon, setCurrCommon] = useState(params.currCommon);
+  Logger.log('Common id ->', params.currCommon);
+  const currCommon = commonStore.getCommonById(
+    params.commonId || params.currCommon?.id,
+  );
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [showReqToJoin, setShowRequestToJoin] = React.useState(false);
   const [showPending, setShowPending] = React.useState(false);
@@ -130,12 +133,6 @@ const CommonProfile = ({
   const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(
     false,
   );
-  // right now, has permission is about user being the owner, this may change in the future
-  const [hasPermission, setHasPermission] = useState(
-    userStore?.userInfo?.uid === currCommon?.metadata.founderId,
-  );
-
-  //setHeaderHeight(height + 35);
 
   const headerHeightLayouted = (height) => height;
 
@@ -145,30 +142,11 @@ const CommonProfile = ({
   };
 
   useEffect(() => {
-    const loadCurrCommon = (snapshot) => {
-      if (snapshot.exists) {
-        setCurrCommon(snapshot.data());
-      } else {
-        Toast.error('This DAO cannot be found try again later');
-        navigation.pop();
-      }
-    };
-    let unsubscribeCommon = null;
-    const subscribeToCommon = async (currCommonId) => {
-      unsubscribeCommon = await DaoService.getInstance().subscribeToDaoById(
-        currCommonId,
-        loadCurrCommon,
-      );
-    };
-    setHasPermission(
-      userStore?.userInfo?.uid === currCommon?.metadata.founderId,
-    );
-    // Subscribe to a common.
-    subscribeToCommon(params.commonId || currCommon.id);
+    const unsubscribe = proposalStore.subscribeToCommonProposals(currCommon.id);
     return () => {
-      unsubscribeCommon && unsubscribeCommon();
+      unsubscribe && unsubscribe();
     };
-  }, [params.commonId, currCommon?.id]);
+  }, [currCommon]);
 
   useEffect(() => {
     setShowRequestSentModal(params.showRequestSentModal);
@@ -231,10 +209,6 @@ const CommonProfile = ({
     }
   }, [pendingProposalsData]);
 
-  useEffect(() => {
-    setCurrCommon(params.currCommon);
-  }, [params.currCommon]);
-
   const renderTabBar = (props) => (
     <TabBarRenderer
       originRef={originTabBarRef}
@@ -256,13 +230,15 @@ const CommonProfile = ({
       <Text style={text.h1BlackTitle}>Proposals</Text>
 
       <ProposalsList
-        onlyFundingRequests={true}
-        isMember={isMember}
         navigation={navigation}
         commonInfo={{
           name: currCommon.name,
           id: currCommon.id,
           balance: currCommon.balance,
+        }}
+        proposalFilter={{
+          stage: PROPOSAL_STAGE.Active,
+          type: PROPOSAL_TYPE.FundingRequest,
         }}
       />
 
@@ -280,15 +256,16 @@ const CommonProfile = ({
       <Text style={text.h1BlackTitle}>History</Text>
 
       <ProposalsList
-        isMember={isMember}
+        navigation={navigation}
         commonInfo={{
           name: currCommon.name,
           id: currCommon.id,
           balance: currCommon.balance,
         }}
-        navigation={navigation}
-        onlyFundingRequests={true}
-        isHistory={true}
+        proposalFilter={{
+          stage: PROPOSAL_STAGE.History,
+          type: PROPOSAL_TYPE.FundingRequest,
+        }}
       />
     </View>
   );
@@ -418,18 +395,7 @@ const CommonProfile = ({
   const openCommonOptions = (event) => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
-      {
-        editInfo: () => navigateTo('Edit info and cover photo'),
-        editRules: () => navigateTo('Edit Rules'),
-      },
     );
-  };
-
-  const navigateTo = (screenTitle) => {
-    navigation.navigate('EditCommon', {
-      currCommon: currCommon,
-      title: screenTitle,
-    });
   };
 
   /*
@@ -643,20 +609,19 @@ const CommonProfile = ({
               />
             </BlurView>
           </TouchableOpacity>
-          {hasPermission && (
-            <TouchableOpacity
-              style={{justifyContent: 'center', marginRight: 10}}
-              onPress={openCommonOptions}>
+          {/* <TouchableOpacity
+              style={{justifyContent: 'center'}}
+              onPress={shareCommon}>
               <BlurView
-                style={{
-                  padding: 6,
-                  borderRadius: 15,
-                }}
+                style={{padding: 5, borderRadius: 15}}
                 isBlurring={dark}>
-                <Icon name="menu1" size={30} color={dark ? 'black' : 'white'} />
+                <Icon
+                  name="menu-horizontal"
+                  size={32}
+                  color={dark ? 'black' : 'white'}
+                />
               </BlurView>
-            </TouchableOpacity>
-          )}
+            </TouchableOpacity> */}
         </View>
       }
     />
@@ -945,6 +910,8 @@ CommonProfile.propTypes = {
   }),
   bottomSheetStore: object,
   userStore: object,
+  commonStore: object,
+  proposalStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -1110,4 +1077,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore', 'userStore')(observer(CommonProfile));
+export default inject(
+  'bottomSheetStore',
+  'userStore',
+  'commonStore',
+  'proposalStore',
+)(observer(CommonProfile));

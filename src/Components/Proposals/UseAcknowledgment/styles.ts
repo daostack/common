@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Platform} from 'react-native';
 import {colors, font} from '~/Theme';
 
 export default StyleSheet.create({
@@ -7,7 +7,9 @@ export default StyleSheet.create({
     height: 65,
   },
   root: {
-    flex: 1,
+    //flex: 1,
+    paddingTop: Platform.OS === 'ios' ? 140 : 70,
+    height: '100%',
   },
   view: {
     flex: 1,

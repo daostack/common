@@ -30,8 +30,8 @@ const FundingProposal = ({
   },
   bottomSheetStore,
 }) => {
-  const [ fundingRequestFormStore ] = useState(new FundingRequestFormStore());
-  const [ useOfFundsVisible, setUseOfFundsVisible ] = useState(false);
+  const [fundingRequestFormStore] = useState(new FundingRequestFormStore());
+  const [useOfFundsVisible, setUseOfFundsVisible] = useState(false);
 
   const createProposal = async () => {
     navigation.setOptions({headerShown: true});
@@ -57,9 +57,9 @@ const FundingProposal = ({
           },
         });
 
-        const createFundingProposalResponse = await ProposalService
-          .getInstance()
-          .createFundingProposal(data);
+        const createFundingProposalResponse = await ProposalService.getInstance().createFundingProposal(
+          data,
+        );
 
         if (createFundingProposalResponse.status === 200) {
           const proposalId = createFundingProposalResponse.data.id;
@@ -106,14 +106,22 @@ const FundingProposal = ({
     }
   };
 
+  const hideModal = () => {
+    navigation.setOptions({headerShown: true});
+    setUseOfFundsVisible(false);
+  };
+
   return (
     <React.Fragment>
-      <StatusBar barStyle="dark-content"/>
+      <StatusBar barStyle="dark-content" />
       <Modal
         animationType="slide"
         transparent={true}
         visible={useOfFundsVisible}>
-        <UseOfFunds onPressAgree={createProposal}/>
+        <UseOfFunds
+          onPressAgree={createProposal}
+          onCancel={() => hideModal()}
+        />
       </Modal>
       <SafeAreaView style={{flex: 1}}>
         <ScrollView
@@ -128,7 +136,7 @@ const FundingProposal = ({
               'Proposals allow you to make decisions as a group.\nIf you choose to request funding and the proposal is accepted, you will be responsible to follow it through.'
             }
           </Text>
-          <View style={styles.divider}/>
+          <View style={styles.divider} />
           <FundingRequestForm
             common={common}
             fundingRequestFormStore={fundingRequestFormStore}

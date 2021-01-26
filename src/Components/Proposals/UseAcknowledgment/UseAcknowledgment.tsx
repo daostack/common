@@ -16,8 +16,7 @@ const UseAcknowledgment: React.FC<InferProps<typeof props>> = ({
   const [agreedWithStatement, setAgreedWithStatement] = useState(false);
   const [causesExpanded, setCausesExpanded] = useState(false);
   return (
-    <>
-      <Pressable onPress={onCancel} style={styles.background} />
+    <Pressable onPress={onCancel}>
       <View style={styles.root}>
         <View style={styles.view}>
           <View style={styles.plug} />
@@ -115,7 +114,7 @@ const UseAcknowledgment: React.FC<InferProps<typeof props>> = ({
           </ScrollView>
         </View>
       </View>
-    </>
+    </Pressable>
   );
 };
 UseAcknowledgment.propTypes = props;
