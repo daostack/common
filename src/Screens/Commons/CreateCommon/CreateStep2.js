@@ -1,28 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-  SafeAreaView,
-  Animated,
-} from 'react-native';
+import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import {colors, font, sizeL, sizeS} from '~/Theme';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
-import CreateStepHeader from './CreateStepHeader';
-import CreateStepNavigation from './CreateStepNavigation';
 import DatePicker from 'react-native-date-picker';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import Modal from 'react-native-modal';
 import moment from 'moment';
-import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {object, func, shape} from 'prop-types';
-const {width} = Dimensions.get('window');
+import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 
 const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
 const MAX_CONTRIBUTION = ['3000', '500'];
@@ -51,8 +39,6 @@ const CreateStep2 = ({
     ? getDeadlineValue().index
     : 0;
 
-  const [scrollY] = useState(new Animated.Value(0));
-  const [headerHeight, setHeaderHeight] = useState(0);
   const [segmentedIndex, setSegmentedIndex] = useState(initialSegmentedIndex);
 
   /**
@@ -72,15 +58,6 @@ const CreateStep2 = ({
 
   const minimumFieldRules = (currContribIndex) =>
     `required|integer|min:${MIN_CONTRIBUTION[currContribIndex]}|max:${MAX_CONTRIBUTION[currContribIndex]}`;
-
-  useEffect(() => {
-    const height = scrollY.interpolate({
-      inputRange: [0, 50],
-      outputRange: [0, 125],
-      extrapolate: 'clamp',
-    });
-    setHeaderHeight(height);
-  }, [scrollY]);
 
   useEffect(() => {
     fundingFormStore.registerFormField(
@@ -106,7 +83,7 @@ const CreateStep2 = ({
     fundingFormStore.updateFieldValidationRule(
       CreateCommonForm.MINIMUM,
       null,
-      minimumFieldRules(index)
+      minimumFieldRules(index),
     );
   };
 
@@ -182,127 +159,108 @@ const CreateStep2 = ({
   );
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: 'white',
-      }}>
-      <CreateStepNavigation navigation={navigation} title="General info" />
-      <CreateStepDotHeader
-        title="Funding"
-        currentIndex={2}
-        navigation={navigation}
-        headerHeight={headerHeight}
-      />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        width={width}
-        contentContainerStyle={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 24,
-        }}
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{nativeEvent: {contentOffset: {y: scrollY}}}],
-          {useNativeDriver: false},
-        )}>
-        <CreateStepHeader currentIndex={1} />
-
+    <StepDotLayout
+      navigation={navigation}
+      stepDotHeaderTitle="Funding"
+      navTitle="Funding"
+      currentIndex={2}
+      requestStepActionButton={
+        <RequestStepActionButton
+          title="Continue to Additional Info"
+          formStore={fundingFormStore}
+          onPress={push}
+        />
+      }>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+        }}>
+        <CreateStepHeaderTitle
+          title="Funding"
+          subtitle="Control how this Common will collect and manage funds."
+        />
         <View
           style={{
-            flex: 1,
-            backgroundColor: 'white',
-          }}>
-          <CreateStepHeaderTitle
-            title="Funding"
-            subtitle="Control how this Common will collect and manage funds."
-          />
-          <View
-            style={{
-              backgroundColor: colors.grey4,
-              height: 1,
-              marginBottom: 40,
-            }}
-          />
-          <Text style={styles.label}>{'Contribution'}</Text>
+            backgroundColor: colors.grey4,
+            height: 1,
+            marginBottom: 40,
+          }}
+        />
+        <Text style={styles.label}>{'Contribution'}</Text>
+        <SegmentedControlTab
+          tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 44}}
+          tabStyle={{borderColor: colors.grey4}}
+          activeTabStyle={{backgroundColor: colors.mainBlue}}
+          values={CONTRIBUTION_TAB_VALUES}
+          tabTextStyle={styles.tabTextStyle}
+          borderRadius={8}
+          selectedIndex={contributionIndex}
+          onTabPress={onContributionTabChange}
+        />
+        <TextInputFieldWithIcon
+          key={contributionIndex}
+          value={fundingFormStore.getFormField(CreateCommonForm.MINIMUM)?.value}
+          iconName="dollar"
+          iconSize={12}
+          iconStyle={{paddingRight: 5}}
+          iconEmptyColor={colors.grey3}
+          iconFillColor={colors.grey}
+          viewStyle={{alignSelf: 'stretch'}}
+          label={
+            <React.Fragment>
+              Minimum{' '}
+              <Text style={styles.boldText}>
+                {CONTRIBUTION_TAB_VALUES[contributionIndex]}
+              </Text>{' '}
+              contribution (min. $5)
+            </React.Fragment>
+          }
+          subLabel="Set the minimum amount that new members will have to contribute in order to join this Common."
+          infoLabel="Required"
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType="numeric"
+          maxLength={5}
+          validation={{
+            name: CreateCommonForm.MINIMUM,
+            formStore: fundingFormStore,
+            validateRule: minimumFieldRules(contributionIndex),
+            customErrorMessage: `The amount must be at least $5 and at most $${parseFloat(
+              MAX_CONTRIBUTION[contributionIndex],
+            ).toLocaleString('en')}.`,
+          }}
+        />
+        <View style={{marginTop: 24}}>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={styles.label}>Funds safety period</Text>
+            <Text style={[styles.infoLabel, {alignSelf: 'flex-end'}]}>
+              Required
+            </Text>
+          </View>
+          <Text style={styles.info2}>
+            Set a period in which members will not be able to create proposals
+            and allocate the funds. This will allow more members to join and
+            participate in the decision-making process.
+          </Text>
+
           <SegmentedControlTab
             tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 44}}
             tabStyle={{borderColor: colors.grey4}}
             activeTabStyle={{backgroundColor: colors.mainBlue}}
-            values={CONTRIBUTION_TAB_VALUES}
+            values={[
+              '1 week',
+              '1 month',
+              pickDate ? moment(pickDate).format('MMM DD, YYYY') : 'Custom',
+            ]}
             tabTextStyle={styles.tabTextStyle}
             borderRadius={8}
-            selectedIndex={contributionIndex}
-            onTabPress={onContributionTabChange}
+            selectedIndex={segmentedIndex}
+            onTabPress={onTabChange}
           />
-          <TextInputFieldWithIcon
-            key={contributionIndex}
-            value={
-              fundingFormStore.getFormField(CreateCommonForm.MINIMUM)?.value
-            }
-            iconName="dollar"
-            iconSize={12}
-            iconStyle={{paddingRight: 5}}
-            iconEmptyColor={colors.grey3}
-            iconFillColor={colors.grey}
-            viewStyle={{alignSelf: 'stretch'}}
-            label={
-              <React.Fragment>
-                Minimum{' '}
-                <Text style={styles.boldText}>
-                  {CONTRIBUTION_TAB_VALUES[contributionIndex]}
-                </Text>
-                {` contribution (min. $${MIN_CONTRIBUTION[contributionIndex]})`}
-              </React.Fragment>
-            }
-            subLabel="Set the minimum amount that new members will have to contribute in order to join this Common."
-            infoLabel="Required"
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="numeric"
-            maxLength={5}
-            validation={{
-              name: CreateCommonForm.MINIMUM,
-              formStore: fundingFormStore,
-              validateRule: minimumFieldRules(contributionIndex),
-              customErrorMessage: `The amount must be at least $${parseFloat(
-                MIN_CONTRIBUTION[contributionIndex],
-              ).toLocaleString('en')} and at most $${parseFloat(
-                MAX_CONTRIBUTION[contributionIndex],
-              ).toLocaleString('en')}.`,
-            }}
-          />
-          <View style={{marginTop: 24}}>
-            <View style={{flexDirection: 'row'}}>
-              <Text style={styles.label}>Funds safety period</Text>
-              <Text style={[styles.infoLabel, {alignSelf: 'flex-end'}]}>
-                Required
-              </Text>
-            </View>
-            <Text style={styles.info2}>
-              Set a period in which members will not be able to create proposals
-              and allocate the funds. This will allow more members to join and
-              participate in the decision-making process.
-            </Text>
-
-            <SegmentedControlTab
-              tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 44}}
-              tabStyle={{borderColor: colors.grey4}}
-              activeTabStyle={{backgroundColor: colors.mainBlue}}
-              values={[
-                '1 week',
-                '1 month',
-                pickDate ? moment(pickDate).format('MMM DD, YYYY') : 'Custom',
-              ]}
-              tabTextStyle={styles.tabTextStyle}
-              borderRadius={8}
-              selectedIndex={segmentedIndex}
-              onTabPress={onTabChange}
-            />
-            {DatePickerModal}
-          </View>
-          {/* <TextInputFieldWithIcon
+          {DatePickerModal}
+        </View>
+        {/* <TextInputFieldWithIcon
             iconName="dollar"
             iconSize={12}
             iconStyle={{paddingRight: 5}}
@@ -320,19 +278,13 @@ const CreateStep2 = ({
               validateRule: 'required|integer|min:100',
             }}
           /> */}
-          {/* <View style={{width: '100%'}}>
+        {/* <View style={{width: '100%'}}>
             <Text style={styles.readMoreButton}>
               Min. $5. Members can donate more if they want.{' '}
             </Text>
           </View> */}
-        </View>
-      </ScrollView>
-      <RequestStepActionButton
-        title="Continue to Additional Info"
-        formStore={fundingFormStore}
-        onPress={push}
-      />
-    </SafeAreaView>
+      </View>
+    </StepDotLayout>
   );
 };
 

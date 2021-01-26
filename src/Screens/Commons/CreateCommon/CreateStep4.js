@@ -1,23 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   TouchableOpacity,
   View,
   StyleSheet,
-  ScrollView,
   Dimensions,
-  SafeAreaView,
-  Animated,
 } from 'react-native';
 import {inject, observer} from 'mobx-react';
 import {StackActions} from '@react-navigation/native';
 
 import moment from 'moment';
-import CreateStepHeader from './CreateStepHeader';
-import CreateStepNavigation from './CreateStepNavigation';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
-
-import CreateStepDotHeader from './CreateStepDotHeader';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {numberFormatter, showErrorPopUp} from '~/Util';
 
@@ -29,15 +22,9 @@ import {CommonActions} from '@react-navigation/native';
 import {object, shape} from 'prop-types';
 import DaoService from '~/Services/DaoService';
 import CommonImage from '~/Components/Commons/CommonImage';
+import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 
-import {
-  colors,
-  font,
-  text,
-  layout,
-  sizeM,
-  sizeL,
-} from '~/Theme';
+import {colors, font, text, layout, sizeM, sizeL} from '~/Theme';
 import logger from '~/Services/Logger';
 
 const {width} = Dimensions.get('window');
@@ -56,8 +43,6 @@ const CreateStep4 = ({
     userInfo: {uid},
   },
 }) => {
-  const [scrollY] = useState(new Animated.Value(0));
-  const [headerHeight, setHeaderHeight] = useState(0);
   const [newCommonAddress, setNewCommonAddress] = useState(false);
 
   const generalInfoFormStore = formStores.generalInfoFormStore;
@@ -71,16 +56,6 @@ const CreateStep4 = ({
     ...agendaFormStore.getChangedFormFieldsJson(),
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
-
-  useEffect(() => {
-    const height = scrollY.interpolate({
-      inputRange: [0, 50],
-      outputRange: [0, 125],
-      extrapolate: 'clamp',
-    });
-    // const height = scrollY.value > 100 ? 125 : 0;
-    setHeaderHeight(height);
-  }, [scrollY]);
 
   const goToCommon = () => {
     const navigate = CommonActions.navigate({
@@ -142,7 +117,9 @@ const CreateStep4 = ({
         },
       });
 
-      const createCommonResponse = await DaoService.getInstance().createCommon(formattedData);
+      const createCommonResponse = await DaoService.getInstance().createCommon(
+        formattedData,
+      );
 
       if (createCommonResponse.status === 200) {
         setNewCommonAddress(createCommonResponse.data.id);
@@ -167,91 +144,106 @@ const CreateStep4 = ({
     }`;
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: 'white',
-      }}>
-      <CreateStepNavigation navigation={navigation} title="Agenda" />
-      <CreateStepDotHeader
-        title="Final touches and review"
-        currentIndex={4}
-        navigation={navigation}
-        headerHeight={headerHeight}
-      />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        width={width}
-        contentContainerStyle={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 24,
-        }}
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{nativeEvent: {contentOffset: {y: scrollY}}}],
-          {useNativeDriver: false},
-        )}>
-        <CreateStepHeader currentIndex={3} />
+    <StepDotLayout
+      navigation={navigation}
+      stepDotHeaderTitle="Final touches and review"
+      navTitle="Final touches and review"
+      currentIndex={4}
+      prependedArea={
+        <Modal
+          isVisible={Boolean(newCommonAddress)}
+          avoidKeyboard={true}
+          backdropColor={colors.white}
+          backdropOpacity={1}
+          style={{padding: 0}}>
+          <SentTemplate
+            isCommonCreation={true}
+            title="Your journey starts now"
+            description="Your Common is ready. Spread the word and invite others to join you. You can always share it later."
+            onClose={() => navigation.dispatch(StackActions.popToTop())}>
+            <View style={styles.shareContainer}>
+              <TouchableOpacity
+                style={styles.modalRequestSentBtnPrimary}
+                onPress={shareCommon}>
+                <Text style={text.buttoncenterwhite}>Share now</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalRequestSentBtnOutline}
+                onPress={goToCommon}>
+                <Text style={text.buttonblue}>Go to Common</Text>
+              </TouchableOpacity>
+            </View>
+          </SentTemplate>
+        </Modal>
+      }
+      requestStepActionButton={
+        <RequestStepActionButton
+          title="Publish Common"
+          formStore={agendaFormStore}
+          onPress={() => forgeCommon()}
+        />
+      }>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+        }}>
+        <Text style={stylesHeader.generalInfoTitle}>
+          Final touches and review
+        </Text>
+        <Text style={stylesHeader.generalInfoSubtitle}>
+          You will not be able to make changes to the Common info after it is
+          published
+        </Text>
+        <CommonImage
+          width={width}
+          reviewFormStore={reviewFormStore}
+          commonName={form[CreateCommonForm.NAME]}
+          commonByLine={form[CreateCommonForm.BYLINE]}
+        />
         <View
-          style={{
-            flex: 1,
-            backgroundColor: 'white',
-          }}>
-          <Text style={stylesHeader.generalInfoTitle}>
-            Final touches and review
-          </Text>
-          <CommonImage
-            width={width}
-            reviewFormStore={reviewFormStore}
-            commonName={form[CreateCommonForm.NAME]}
-            commonByLine={form[CreateCommonForm.BYLINE]}
-          />
-          <View
-            style={{height: 1, width: width, backgroundColor: colors.grey4}}
-          />
-          <View style={{...styles.sectionTitle, justifyContent: 'center'}}>
-            {/* <View style={{minWidth: 90, marginRight: 10}}>
+          style={{height: 1, width: width, backgroundColor: colors.grey4}}
+        />
+        <View style={{...styles.sectionTitle, justifyContent: 'center'}}>
+          {/* <View style={{minWidth: 90, marginRight: 10}}>
               <CreateStep4Indicators
                 title="Goal"
                 number={numberFormatter(form[CreateCommonForm.FUNDING_GOAL])}
               />
             </View> */}
-            <View style={{width: 120, marginHorizontal: 10}}>
-              <CreateStep4Indicators
-                title="Min. Contribution"
-                value={displayString()}
-                contribution
-              />
-            </View>
+          <View style={{width: 120, marginHorizontal: 10}}>
+            <CreateStep4Indicators
+              title="Min. Contribution"
+              value={displayString()}
+              contribution
+            />
+          </View>
 
-            <View style={{width: 120, marginHorizontal: 10}}>
-              <CreateStep4Indicators
-                title="Safety period"
-                currencySymbol={false}
-                value={moment
-                  .unix(form[CreateCommonForm.DEADLINE])
-                  .fromNow(true)}
-                date={moment
-                  .unix(form[CreateCommonForm.DEADLINE])
-                  .format('MMM DD, YYYY')}
-              />
-            </View>
+          <View style={{width: 120, marginHorizontal: 10}}>
+            <CreateStep4Indicators
+              title="Safety period"
+              currencySymbol={false}
+              value={moment.unix(form[CreateCommonForm.DEADLINE]).fromNow(true)}
+              date={moment
+                .unix(form[CreateCommonForm.DEADLINE])
+                .format('MMM DD, YYYY')}
+            />
           </View>
+        </View>
+        <View style={styles.sectionTitle}>
+          <Text style={styles.textTitle}>About</Text>
+        </View>
+        <Text
+          style={{
+            ...styles.textContent,
+            ...text.writingDirection(form[CreateCommonForm.DESCRIPTION]),
+          }}>
+          {form[CreateCommonForm.DESCRIPTION]}
+        </Text>
+        <>
           <View style={styles.sectionTitle}>
-            <Text style={styles.textTitle}>About</Text>
-          </View>
-          <Text
-            style={{
-              ...styles.textContent,
-              ...text.writingDirection(form[CreateCommonForm.DESCRIPTION]),
-            }}>
-            {form[CreateCommonForm.DESCRIPTION]}
-          </Text>
-          <>
-            <View style={styles.sectionTitle}>
-              <Text style={styles.textSubtitle}>Links</Text>
-              {/* <TouchableOpacity
+            <Text style={styles.textSubtitle}>Links</Text>
+            {/* <TouchableOpacity
                 style={{flex: 1, top: 0, right: 0, position: 'relative'}}>
                 <Icon
                   name="edit"
@@ -259,86 +251,55 @@ const CreateStep4 = ({
                   style={{textAlign: 'right', alignSelf: 'flex-end'}}
                 />
               </TouchableOpacity> */}
-            </View>
-            {form[CreateCommonForm.LINKS]?.length ? (
-              form[CreateCommonForm.LINKS].map((x) => (
-                <View key={`key_${CreateCommonForm.LINKS}_${x.title}`}>
-                  <Text
-                    onPress={() => {
-                      navigation.navigate('Browser', {
-                        url: x.value,
-                      });
-                    }}
-                    style={{
-                      display: 'flex',
-                      flexFlow: 'row',
-                      alignContent: 'center',
-                      ...styles.linkText,
-                      ...styles.textContent,
-                    }}>
-                    {x.title}
-                  </Text>
-                </View>
-              ))
-            ) : (
-              <View />
-            )}
-          </>
-          {form[CreateCommonForm.RULES]?.length > 0 ? (
-            form[CreateCommonForm.RULES].map((rule, index) => (
-              <View key={`key_${CreateCommonForm.RULES}_${index}`}>
+          </View>
+          {form[CreateCommonForm.LINKS]?.length ? (
+            form[CreateCommonForm.LINKS].map((x) => (
+              <View key={`key_${CreateCommonForm.LINKS}_${x.title}`}>
                 <Text
+                  onPress={() => {
+                    navigation.navigate('Browser', {
+                      url: x.value,
+                    });
+                  }}
                   style={{
-                    ...font.primary.regular,
-                    ...font.fontSize(2),
-                    marginTop: 20,
-                    paddingHorizontal: 24,
-                    color: colors.grey3,
+                    display: 'flex',
+                    flexFlow: 'row',
+                    alignContent: 'center',
+                    ...styles.linkText,
+                    ...styles.textContent,
                   }}>
-                  Rule #{index + 1}
+                  {x.title}
                 </Text>
-                <View style={[styles.sectionTitle, {marginTop: 10}]}>
-                  <Text style={styles.textSubtitle}>{rule.title}</Text>
-                </View>
-                <Text style={styles.textContent}>{rule.value}</Text>
               </View>
             ))
           ) : (
             <View />
           )}
-        </View>
-      </ScrollView>
-      <RequestStepActionButton
-        title="Publish Common"
-        formStore={agendaFormStore}
-        onPress={() => forgeCommon()}
-      />
-      <Modal
-        isVisible={Boolean(newCommonAddress)}
-        avoidKeyboard={true}
-        backdropColor={colors.white}
-        backdropOpacity={1}
-        style={{padding: 0}}>
-        <SentTemplate
-          isCommonCreation={true}
-          title="Your journey starts now"
-          description="Your Common is ready. Spread the word and invite others to join you. You can always share it later."
-          onClose={() => navigation.dispatch(StackActions.popToTop())}>
-          <View style={styles.shareContainer}>
-            <TouchableOpacity
-              style={styles.modalRequestSentBtnPrimary}
-              onPress={shareCommon}>
-              <Text style={text.buttoncenterwhite}>Share now</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.modalRequestSentBtnOutline}
-              onPress={goToCommon}>
-              <Text style={text.buttonblue}>Go to Common</Text>
-            </TouchableOpacity>
-          </View>
-        </SentTemplate>
-      </Modal>
-    </SafeAreaView>
+        </>
+        {form[CreateCommonForm.RULES]?.length > 0 ? (
+          form[CreateCommonForm.RULES].map((rule, index) => (
+            <View key={`key_${CreateCommonForm.RULES}_${index}`}>
+              <Text
+                style={{
+                  ...font.primary.regular,
+                  ...font.fontSize(2),
+                  marginTop: 20,
+                  paddingHorizontal: 24,
+                  color: colors.grey3,
+                }}>
+                Rule #{index + 1}
+              </Text>
+              <View style={[styles.sectionTitle, {marginTop: 10}]}>
+                <Text style={styles.textSubtitle}>{rule.title}</Text>
+              </View>
+              <Text style={styles.textContent}>{rule.value}</Text>
+            </View>
+          ))
+        ) : (
+          <View />
+        )}
+      </View>
+    </StepDotLayout>
   );
 };
 
