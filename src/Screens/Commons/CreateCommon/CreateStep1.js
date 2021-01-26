@@ -47,8 +47,10 @@ const CreateStep1 = ({
           animationType="slide"
           transparent={true}
           visible={useAcknowledgmentVisible}>
-          <UseAcknowledgment onPressAgree={push}
-          onCancel={() => setUseAcknowledgmentVisible(false)} />
+          <UseAcknowledgment
+            onPressAgree={push}
+            onCancel={() => setUseAcknowledgmentVisible(false)}
+          />
         </Modal>
       }
       appendedArea={
