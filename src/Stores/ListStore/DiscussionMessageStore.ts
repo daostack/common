@@ -23,12 +23,18 @@ export default class DiscussionMessageStore extends ListStore<DiscussionMessage>
     id: string,
   ): IDiscussionMessageEntity | undefined => this.getDataById(id);
 
-  getDiscussionMessages = (
+  getDiscussionMessagesByDiscussionId = (
     discussionId: string,
   ): Array<DiscussionMessage> | undefined =>
     this.getDataArray?.filter(
       (message: DiscussionMessage) => message.discussionId === discussionId,
     );
+
+  getDiscussionMessageByProposalId = (proposalId: string) => {
+    this.getDataArray?.filter(
+      (message: DiscussionMessage) => message.discussionId === proposalId,
+    );
+  };
   //Actions
   subscribeToDiscussionsMessages = (
     discussionIds: Array<string>,

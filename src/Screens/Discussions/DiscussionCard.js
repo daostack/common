@@ -31,8 +31,9 @@ const DiscussionCard = ({
   //when will data.owner be not undefined?
   const discussionId = data.id;
   const user = userListStore.getUserById(data.ownerId);
-  const msgCount = discussionMessageStore.getDiscussionMessages(discussionId)
-    .length;
+  const msgCount =
+    discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
+      ?.length || 0;
 
   const navigateToDiscussion = () => {
     const navigate = CommonActions.navigate({
@@ -150,7 +151,7 @@ DiscussionCard.propTypes = {
     getUserById: func,
   }),
   discussionMessageStore: shape({
-    getDiscussionMessages: func,
+    getDiscussionMessagesByDiscussionId: func,
   }),
 };
 

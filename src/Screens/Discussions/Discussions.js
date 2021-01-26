@@ -33,7 +33,8 @@ import DiscussionService from '../../Services/DiscussionService';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
-  daoStore,
+  commonStore,
+  discussionStore,
   userStore,
   bottomSheetStore,
   userListStore,
@@ -41,6 +42,7 @@ const Discussions = ({
   route: {
     params: {commonId, discussionId, data},
   },
+  discussionMessageStore,
 }) => {
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
@@ -48,96 +50,101 @@ const Discussions = ({
   let listRef = useRef([]);
 
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
-  const [followState, setFollowState] = useState(false);
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [inputText, setInputText] = useState(null);
-  const [msgGroup, setMsgGroup] = useState([]);
+
   const [showMenu, setShowMenu] = useState(false);
-  const [isMember, setIsMember] = useState(false);
-  const [dataState, setData] = useState(data);
   const [inputHeight, setInputHeight] = useState(false);
 
   const currentUser = auth().currentUser;
+
+  const dataState = discussionStore.getDiscussionById(discussionId);
   const user = userListStore.getUserById(dataState.ownerId);
 
-  useEffect(() => {
-    const currentDao = daoStore.daos.find((dao) => dao.id === commonId);
-    const isCurrMember =
-      userStore.userInfo && userStore.isDaoMember(currentDao?.members);
-    setIsMember(isCurrMember);
-  }, []);
+  const followState = dataState?.follower?.includes(currentUser.uid);
+  const msgGroup = discussionMessageStore
+    .getDiscussionMessagesByDiscussionId(discussionId)
+    .map((msg) => ({
+      date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
+      data: msg,
+    }));
+
+  const isMember =
+    userStore.userInfo &&
+    userStore.isDaoMember(commonStore.getCommonById(commonId)?.members);
 
   const hideMenu = () => {
     setShowMenu(false);
   };
 
-  useEffect(() => {
-    let uid = null;
-    if (currentUser) {
-      uid = currentUser.uid;
-    }
-    const unsubscribe = db
-      .collection('discussion')
-      .doc(discussionId)
-      .onSnapshot((snapshot) => {
-        if (!snapshot.exists) {
-          return;
-        }
-        setData({id: snapshot.id, ...snapshot.data()});
-        const follower = snapshot.data().follower;
-        if (follower && uid) {
-          const state = follower.includes(uid);
-          setFollowState(state);
-        }
-      });
-    return unsubscribe;
-  }, [commonId, discussionId, currentUser]);
+  // useEffect(() => {
+  //   let uid = null;
+  //   if (currentUser) {
+  //     uid = currentUser.uid;
+  //   }
+  //   const unsubscribe = db
+  //     .collection('discussion')
+  //     .doc(discussionId)
+  //     .onSnapshot((snapshot) => {
+  //       if (!snapshot.exists) {
+  //         return;
+  //       }
+  //       setData({id: snapshot.id, ...snapshot.data()});
+  //       const follower = snapshot.data().follower;
+  //       if (follower && uid) {
+  //         const state = follower.includes(uid);
+  //         setFollowState(state);
+  //       }
+  //     });
+  //   return unsubscribe;
+  // }, [commonId, discussionId, currentUser]);
 
-  useEffect(() => {
-    const unsubscribe = db
-      .collection('discussionMessage')
-      .where('discussionId', '==', discussionId)
-      .orderBy('createTime', 'desc')
-      // .startAt(0)
-      // .limit(25)
-      .onSnapshot(
-        (snapshot) => {
-          if (snapshot.docChanges().length !== 0) {
-            const newList = snapshot.docChanges().map(({doc}) => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-            const msgList = [...newList, ...listRef.current];
-            // _.union(listRef.current, newList);
-            listRef.current = msgList;
-            logger.log('newMessage', newList);
-            const groupDate = msgList
-              .map((msg) => ({
-                date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
-                data: msg,
-              }))
-              .reduce((acc, curr) => {
-                var key = curr.date;
-                let el = acc.find((x) => x && x.date === key);
-                if (el) {
-                  el.data.push(curr.data);
-                } else {
-                  acc.push({
-                    date: key,
-                    data: [curr.data],
-                  });
-                }
-                return acc;
-              }, []);
-            setMsgGroup(groupDate);
-          }
-        },
-        (error) => logger.error(error),
-      );
+  // useEffect(() => {
+  //   const unsubscribe = db
+  //     .collection('discussionMessage')
+  //     .where('discussionId', '==', discussionId)
+  //     .orderBy('createTime', 'desc')
+  //     // .startAt(0)
+  //     // .limit(25)
+  //     .onSnapshot(
+  //       (snapshot) => {
+  //         if (snapshot.docChanges().length !== 0) {
+  //           const newList = snapshot.docChanges().map(({doc}) => ({
+  //             id: doc.id,
+  //             ...doc.data(),
+  //           }));
+  //           const msgList = [...newList, ...listRef.current];
+  //           // _.union(listRef.current, newList);
+  //           listRef.current = msgList;
+  //           logger.log('newMessage', newList);
+  //           const groupDate = msgList
+  //             .map((msg) => ({
+  //               date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
+  //               data: msg,
+  //             }))
+  //             .reduce((acc, curr) => {
+  //               var key = curr.date;
+  //               let el = acc.find((x) => x && x.date === key);
+  //               if (el) {
+  //                 el.data.push(curr.data);
+  //               } else {
+  //                 acc.push({
+  //                   date: key,
+  //                   data: [curr.data],
+  //                 });
+  //               }
+  //               return acc;
+  //             }, []);
+  //           setMsgGroup(groupDate);
+  //         }
+  //       },
+  //       (error) => logger.error(error),
+  //     );
 
-    return unsubscribe;
-  }, [commonId, dataState.id]);
+  //   return unsubscribe;
+  // }, [commonId, dataState.id]);
 
   // const openOptionsMenu = () => {
   //   if (!currentUser) {
@@ -531,8 +538,11 @@ const Discussions = ({
 };
 
 Discussions.propTypes = {
-  daoStore: shape({
-    dao: object,
+  discussionStore: shape({
+    getDiscussionById: func,
+  }),
+  commonStore: shape({
+    getCommonById: func,
   }),
   userStore: shape({
     userInfo: object,
@@ -552,6 +562,7 @@ Discussions.propTypes = {
   userListStore: shape({
     getUserById: func,
   }),
+  discussionMessageStore: shape({}),
 };
 
 const styles = StyleSheet.create({
@@ -741,6 +752,8 @@ const styles = StyleSheet.create({
 export default inject(
   'userStore',
   'bottomSheetStore',
-  'daoStore',
+  'commonStore',
   'userListStore',
+  'discussionStore',
+  'discussionMessageStore',
 )(observer(Discussions));

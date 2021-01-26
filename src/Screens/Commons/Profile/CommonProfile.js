@@ -67,10 +67,7 @@ const CommonProfile = ({
   route: {params},
   commonStore,
   proposalStore,
-<<<<<<< HEAD
   discussionStore,
-=======
->>>>>>> dev
 }) => {
   /* all of  params.commonId,
   params.showRequestSentModal,

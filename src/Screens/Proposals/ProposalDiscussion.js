@@ -23,72 +23,80 @@ const ProposalDiscussion = ({
   discussionMessageStore,
 }) => {
   const chatRef = useRef(null);
-  const [msgGroups, setMsgGroups] = useState([]);
+  const msgGroups = loadProposalDiscussionMessages();
 
   //discussionMessageStore.get(proposalId);
 
-  const setMsgGroup = (msgGroup) => {
-    setMsgGroups(msgGroup);
+  const loadProposalDiscussionMessages = () =>
+    discussionMessageStore
+      .getDiscussionMessageByProposalId(proposalId)
+      .map((msg) => ({
+        date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
+        data: msg,
+      }));
 
-    setTimeout(() => {
-      scrollViewRef.current.scrollToEnd({
-        animated: true,
-      });
-    }, 150);
-  };
+  // const setMsgGroup = (msgGroup) => {
+  //   setMsgGroups(msgGroup);
 
-  let listRef = useRef([]);
-  useEffect(() => {
-    const unsubscribe = db
-      .collection('discussionMessage')
-      .where('discussionId', '==', proposalId)
-      .orderBy('createTime', 'desc')
-      // .startAt(0)
-      // .limit(25)
-      .onSnapshot(
-        (snapshot) => {
-          if (snapshot.docChanges().length !== 0) {
-            const newList = snapshot.docChanges().map(({doc}) => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-            const msgList = [...newList, ...listRef.current];
-            // _.union(listRef.current, newList);
-            listRef.current = msgList;
-            logger.log('newMessage', newList);
-            const groupDate = msgList
-              .map((msg) => ({
-                date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
-                data: msg,
-              }))
-              .reduce((acc, curr) => {
-                var key = curr.date;
-                let el = acc.find((x) => x && x.date === key);
-                if (el) {
-                  el.data.push(curr.data);
-                } else {
-                  acc.push({
-                    date: key,
-                    data: [curr.data],
-                  });
-                }
-                return acc;
-              }, []);
+  //   setTimeout(() => {
+  //     scrollViewRef.current.scrollToEnd({
+  //       animated: true,
+  //     });
+  //   }, 150);
+  // };
 
-            setMsgGroup(groupDate);
+  // let listRef = useRef([]);
+  // useEffect(() => {
+  //   const unsubscribe = db
+  //     .collection('discussionMessage')
+  //     .where('discussionId', '==', proposalId)
+  //     .orderBy('createTime', 'desc')
+  //     // .startAt(0)
+  //     // .limit(25)
+  //     .onSnapshot(
+  //       (snapshot) => {
+  //         if (snapshot.docChanges().length !== 0) {
+  //           const newList = snapshot.docChanges().map(({doc}) => ({
+  //             id: doc.id,
+  //             ...doc.data(),
+  //           }));
+  //           const msgList = [...newList, ...listRef.current];
+  //           // _.union(listRef.current, newList);
+  //           listRef.current = msgList;
+  //           logger.log('newMessage', newList);
+  //           const groupDate = msgList
+  //             .map((msg) => ({
+  //               date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
+  //               data: msg,
+  //             }))
+  //             .reduce((acc, curr) => {
+  //               var key = curr.date;
+  //               let el = acc.find((x) => x && x.date === key);
+  //               if (el) {
+  //                 el.data.push(curr.data);
+  //               } else {
+  //                 acc.push({
+  //                   date: key,
+  //                   data: [curr.data],
+  //                 });
+  //               }
+  //               return acc;
+  //             }, []);
 
-            chatRef.current.scrollToLocation({
-              animated: true,
-              itemIndex: msgList.length + groupDate.length - 1,
-            });
-          }
-        },
-        (error) => logger.error(error),
-      );
-    return () => {
-      unsubscribe();
-    };
-  }, [proposalId]);
+  //           setMsgGroup(groupDate);
+
+  //           chatRef.current.scrollToLocation({
+  //             animated: true,
+  //             itemIndex: msgList.length + groupDate.length - 1,
+  //           });
+  //         }
+  //       },
+  //       (error) => logger.error(error),
+  //     );
+  //   return () => {
+  //     unsubscribe();
+  //   };
+  // }, [proposalId]);
 
   const getOutcomeForMessage = async (proposalObj, message) => {
     const user = userListStore.getUserById(message.ownerId);
