@@ -39,7 +39,10 @@ const EditRules: React.FC<InferProps<typeof EditRules.propTypes>> = ({
       validation={{
         name: RULES,
         formStore: editCommonFormStore,
-        validateRule: {common: 'string', title: 'string|max:80'},
+        validateRule: {
+          common: 'string|required',
+          title: 'string|max:80|required',
+        },
       }}
     />
   </View>

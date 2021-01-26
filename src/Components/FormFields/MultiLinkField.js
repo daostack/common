@@ -54,7 +54,7 @@ const MultiLinkField = (props) => {
     props.onChangeText && props.onChangeText(currIndex);
   };
 
-  const onChangeText = (value, currTitleItemValidation, index, currItemValidation = null) => {
+  const onChangeText = (value, currTitleItemValidation, index) => {
     if (value.length > 0) {
       validation.formStore.updateFieldValidationRule(
         currTitleItemValidation.name,
@@ -69,14 +69,6 @@ const MultiLinkField = (props) => {
         currTitleItemValidation.validateRule,
         true,
       );
-      if (currItemValidation) {
-          validation.formStore.updateFieldValidationRule(
-          currItemValidation.name,
-          currItemValidation.multiName,
-          currItemValidation.validateRule + '|required',
-          true,
-        );
-      }
     }
     props.onChangeText && props.onChangeText(index);
     canAddMore();
@@ -165,7 +157,7 @@ const MultiLinkField = (props) => {
                 )?.value || currRules[currIndex]?.value
               }
               onChangeText={(value) => {
-                onChangeText(value, currTitleItemValidation, currIndex, currItemValidation);
+                onChangeText(value, currTitleItemValidation, currIndex);
               }}
               viewStyle={{marginTop: -5}}
               placeholderText={
