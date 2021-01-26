@@ -20,9 +20,12 @@ const ProposalDiscussion = ({
   proposalId,
   scrollViewRef,
   userListStore,
+  discussionMessageStore,
 }) => {
   const chatRef = useRef(null);
   const [msgGroups, setMsgGroups] = useState([]);
+
+  //discussionMessageStore.get(proposalId);
 
   const setMsgGroup = (msgGroup) => {
     setMsgGroups(msgGroup);
@@ -159,6 +162,9 @@ ProposalDiscussion.propTypes = {
   userListStore: shape({
     getUserById: func,
   }),
+  discussionMessageStore: shape({
+    subscribeToProposalDiscussions: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -192,4 +198,5 @@ const styles = StyleSheet.create({
 export default inject(
   'userStore',
   'userListStore',
+  'discussionMessageStore',
 )(observer(ProposalDiscussion));

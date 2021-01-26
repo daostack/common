@@ -1,42 +1,15 @@
-import {DiscussionsCollection} from '~/Firebase/Databasee/Collections/DiscussionsCollection';
-import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
+import {DiscussionMessagesCollection} from '~/Firebase/Databasee/Collections/DiscussionMessagesCollection';
+import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 
-export type commonDiscussionsListLoadCallbackFn = (
-  updatedDiscussionsList: Array<IDiscussionEntity>,
+export type commonDiscussionMessagesListLoadCallbackFn = (
+  updatedDiscussionsList: Array<IDiscussionMessageEntity>,
 ) => void;
 
-// .orderBy('lastMessage', 'desc')
-
-export const subscribeToCommonDiscussions = (
-  commonId: string,
-  callback: commonDiscussionsListLoadCallbackFn,
-) => {
-  const unsubscribe = DiscussionsCollection.where(
-    'commonId',
-    '==',
-    commonId,
-  ).onSnapshot((snapshot: any) => {
-    console.log('SNAPSHOT -> ', snapshot);
-    let discussionList = [];
-
-    // TODO: Make better handling of changes with docChanges()
-    if (!snapshot?.empty || !snapshot) {
-      discussionList = snapshot.docs.map(
-        // TODO: Add id prop in the document itself and apply the change here as well. (https://daostack1.atlassian.net/browse/CM-1532)
-        (doc: any) => ({id: doc.id, ...doc.data()} as IDiscussionEntity),
-      );
-    }
-
-    callback(discussionList);
-  });
-  return unsubscribe;
-};
-
-export const subscribeToProposalDiscussions = (
+export const subscribeToProposalDiscussionMessages = (
   proposalId: string,
-  callback: commonDiscussionsListLoadCallbackFn,
+  callback: commonDiscussionMessagesListLoadCallbackFn,
 ) =>
-  DiscussionsCollection.where('discussionId', '==', proposalId)
+  DiscussionMessagesCollection.where('discussionId', '==', proposalId)
     .orderBy('createTime', 'desc')
     .onSnapshot((snapshot: any) => {
       let discussionList = [];
@@ -45,9 +18,35 @@ export const subscribeToProposalDiscussions = (
       if (!snapshot?.empty || !snapshot) {
         discussionList = snapshot.docs.map(
           // TODO: Add id prop in the document itself and apply the change here as well. (https://daostack1.atlassian.net/browse/CM-1532)
-          (doc: any) => ({id: doc.id, ...doc.data()} as IDiscussionEntity),
+          (doc: any) =>
+            ({id: doc.id, ...doc.data()} as IDiscussionMessageEntity),
         );
       }
 
       callback(discussionList);
     });
+
+export const subscribeToDiscussionsMessages = (
+  discussionIds: Array<string>,
+  callback: commonDiscussionMessagesListLoadCallbackFn,
+) =>
+  discussionIds?.length > 0
+    ? DiscussionMessagesCollection.where('discussionId', 'in', discussionIds)
+        .orderBy('createTime', 'desc')
+        .onSnapshot((snapshot: any) => {
+          let discussionMessageList = [];
+          console.log('snapshot -> ', snapshot);
+          // TODO: Make better handling of changes with docChanges()
+          if (!snapshot?.empty || !snapshot) {
+            discussionMessageList = snapshot.docs.map(
+              // TODO: Add id prop in the document itself and apply the change here as well. (https://daostack1.atlassian.net/browse/CM-1532)
+              (doc: any) =>
+                ({id: doc.id, ...doc.data()} as IDiscussionMessageEntity),
+            );
+          }
+
+          console.log('discussionMessageList -> ', discussionMessageList);
+
+          callback(discussionMessageList);
+        })
+    : null;

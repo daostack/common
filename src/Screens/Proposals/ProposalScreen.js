@@ -59,6 +59,7 @@ const ProposalScreen = ({
     },
   },
   userListStore,
+  discussionMessageStore,
 }) => {
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
@@ -106,6 +107,17 @@ const ProposalScreen = ({
   const VOTE_APPROVE = 'approved';
   const VOTE_REJECT = 'rejected';
   let currTabViewScroll = 0;
+
+  useEffect(() => {
+    const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
+      proposalId,
+    );
+
+    return () => {
+      unsubscribeFromProposalDiscussionMessages &&
+        unsubscribeFromProposalDiscussionMessages();
+    };
+  }, [proposalId]);
 
   useEffect(() => {
     let unsubscribe = null;
@@ -901,6 +913,9 @@ ProposalScreen.propTypes = {
   userListStore: shape({
     getUserById: func,
   }),
+  discussionMessageStore: shape({
+    subscribeToProposalDiscussionMessages: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -1030,4 +1045,5 @@ export default inject(
   'userStore',
   'userListStore',
   'bottomSheetStore',
+  'discussionMessageStore',
 )(observer(ProposalScreen));

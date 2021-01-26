@@ -26,11 +26,13 @@ const DiscussionCard = ({
   navigation,
   bottomSheetStore,
   userListStore,
+  discussionMessageStore,
 }) => {
   //when will data.owner be not undefined?
   const discussionId = data.id;
   const user = userListStore.getUserById(data.ownerId);
-  const [msgCount, setMsgCount] = useState(0);
+  const msgCount = discussionMessageStore.getDiscussionMessages(discussionId)
+    .length;
 
   const navigateToDiscussion = () => {
     const navigate = CommonActions.navigate({
@@ -43,19 +45,6 @@ const DiscussionCard = ({
     });
     navigation.dispatch(navigate);
   };
-
-  useEffect(() => {
-    const unsubscribe = db
-      .collection('discussionMessage')
-      .where('discussionId', '==', discussionId)
-      .onSnapshot((snapshot) => {
-        setMsgCount(snapshot.docs.length);
-      });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [discussionId]);
 
   const follow = () => {
     logger.log('Follow user id', data.ownerId);
@@ -159,6 +148,9 @@ DiscussionCard.propTypes = {
   bottomSheetStore: object.isRequired,
   userListStore: shape({
     getUserById: func,
+  }),
+  discussionMessageStore: shape({
+    getDiscussionMessages: func,
   }),
 };
 
@@ -289,4 +281,5 @@ const styles = StyleSheet.create({
 export default inject(
   'bottomSheetStore',
   'userListStore',
+  'discussionMessageStore',
 )(observer(DiscussionCard));

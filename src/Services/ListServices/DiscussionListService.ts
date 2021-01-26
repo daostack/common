@@ -12,9 +12,7 @@ export const subscribeToCommonDiscussions = (
   const unsubscribe = DiscussionsCollection.where('commonId', '==', commonId)
     .orderBy('lastMessage', 'desc')
     .onSnapshot((snapshot: any) => {
-      console.log('SNAPSHOT -> ', snapshot);
       let discussionList = [];
-
       // TODO: Make better handling of changes with docChanges()
       if (!snapshot?.empty || !snapshot) {
         discussionList = snapshot.docs.map(
@@ -27,23 +25,3 @@ export const subscribeToCommonDiscussions = (
     });
   return unsubscribe;
 };
-
-export const subscribeToProposalDiscussions = (
-  proposalId: string,
-  callback: commonDiscussionsListLoadCallbackFn,
-) =>
-  DiscussionsCollection.where('discussionId', '==', proposalId)
-    .orderBy('createTime', 'desc')
-    .onSnapshot((snapshot: any) => {
-      let discussionList = [];
-
-      // TODO: Make better handling of changes with docChanges()
-      if (!snapshot?.empty || !snapshot) {
-        discussionList = snapshot.docs.map(
-          // TODO: Add id prop in the document itself and apply the change here as well. (https://daostack1.atlassian.net/browse/CM-1532)
-          (doc: any) => ({id: doc.id, ...doc.data()} as IDiscussionEntity),
-        );
-      }
-
-      callback(discussionList);
-    });
