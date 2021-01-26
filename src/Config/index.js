@@ -41,7 +41,7 @@ if (Config.ENV === 'production') {
   iosAppId = '1527060751';
 } else {
   throw Error(
-    `Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`
+    `Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`,
   );
 }
 
@@ -51,7 +51,7 @@ if (Config.local === 'true' && __DEV__) {
   axios.get('http://localhost:5003').catch((error) => {
     if (error.response?.status !== 404) {
       logger.error(
-        'Set to use local firebase, but the local firebase is not accessible'
+        'Set to use local firebase, but the local firebase is not accessible',
       );
     }
   });
@@ -85,13 +85,15 @@ export const isProduction = Config.ENV === 'production';
 // JUST HARDCODING THIS TO BE TRUE FOR A QUICK FIX; SORRY
 export const testCard = __DEV__ && false; //Config.testCard === 'true';
 
-export const appId = Platform.OS === 'android'
-  ? androidAppId
-  : iosAppId;
-
+export const appId = Platform.OS === 'android' ? androidAppId : iosAppId;
 
 // Arc.js related string constants
 export const PROPOSAL_TYPE = {
   Join: 'join',
   FundingRequest: 'fundingRequest',
+};
+
+export const PROPOSAL_STAGE = {
+  Active: 'active',
+  History: 'history',
 };

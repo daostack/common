@@ -180,11 +180,13 @@ const styles = StyleSheet.create({
     ...text.h3Black,
     ...layout.marginLeftXS,
     textDecorationLine: 'underline',
-    maxWidth: '90%',
+    flex: 1,
+    marginRight: 30,
   },
   adRow: {
     ...layout.flexRow,
     alignSelf: 'stretch',
+    flex: 1,
   },
   formFieldContainer: {
     width: 100,

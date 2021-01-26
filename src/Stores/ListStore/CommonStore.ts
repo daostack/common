@@ -1,4 +1,4 @@
-import {decorate, computed, observable, runInAction} from 'mobx';
+import {computed, observable, runInAction} from 'mobx';
 import ListStore from './ListStore';
 import {subscribeToAllCommons} from '~/Services/ListServices/CommonListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
@@ -6,8 +6,10 @@ import RootStore from '../RootStore';
 import {Common} from '../Models/Common';
 import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {DAO_REGISTERED} from '~/Firebase/Databasee';
+import {Proposal} from '../Models/Proposal';
 
 export default class CommonStore extends ListStore<Common> {
+  @observable
   isLoading: boolean;
 
   constructor(rootStore: RootStore) {
@@ -15,9 +17,8 @@ export default class CommonStore extends ListStore<Common> {
     this.isLoading = false;
   }
 
-  // Computed fields
+  @computed
   get myCommons() {
-    //console.log('MY COMMONS -> ', super.getDataArray);
     return this.isLoading
       ? []
       : this.getDataArray?.filter((common: Common) =>
@@ -25,11 +26,28 @@ export default class CommonStore extends ListStore<Common> {
         );
   }
 
+  @computed
   get pendingCommons() {
-    // TODO: filter data
-    return this.data;
+    if (
+      this.isLoading ||
+      this.rootStore.proposalStore.myActiveMembershipRequests?.length === 0
+    ) {
+      return [];
+    } else {
+      let commons: Array<ICommonEntity> = [];
+      this.rootStore.proposalStore.myActiveMembershipRequests?.forEach(
+        (proposal: Proposal) => {
+          const currPendingCommon = this.getCommonById(proposal.commonId);
+          if (currPendingCommon) {
+            commons.push(currPendingCommon);
+          }
+        },
+      );
+      return commons;
+    }
   }
 
+  @computed
   get featuredCommons() {
     // return super.data;
     return this.isLoading
@@ -56,8 +74,7 @@ export default class CommonStore extends ListStore<Common> {
     });
 
     updatedUserList.forEach((commonEntity: ICommonEntity) => {
-      console.log();
-      super.setData(commonEntity.id, new Common(commonEntity));
+      this.setData(commonEntity.id, new Common(commonEntity));
     });
 
     runInAction(() => {
@@ -65,12 +82,3 @@ export default class CommonStore extends ListStore<Common> {
     });
   };
 }
-
-decorate(CommonStore, {
-  //observables
-  isLoading: observable,
-  //computed
-  myCommons: computed,
-  pendingCommons: computed,
-  featuredCommons: computed,
-});
