@@ -11,10 +11,10 @@ const endpoints = {
   add: 'add-permission',
 };
 
-export const addPermission = async (common, userId, role) =>
+export const addPermission = async (commonId, userId, role) =>
   await axiosClient.post(
     endpoints.add,
-    {common, userId, role},
+    {commonId, userId, role},
     {
       headers: {
         Authorization: await auth().currentUser.getIdToken(true),

@@ -28,16 +28,10 @@ import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
 import {object, shape} from 'prop-types';
 import DaoService from '~/Services/DaoService';
+import {addPermission} from '~/Services/PermissionService';
 import CommonImage from '~/Components/Commons/CommonImage';
 
-import {
-  colors,
-  font,
-  text,
-  layout,
-  sizeM,
-  sizeL,
-} from '~/Theme';
+import {colors, font, text, layout, sizeM, sizeL} from '~/Theme';
 import logger from '~/Services/Logger';
 
 const {width} = Dimensions.get('window');
@@ -142,7 +136,11 @@ const CreateStep4 = ({
         },
       });
 
-      const createCommonResponse = await DaoService.getInstance().createCommon(formattedData);
+      const createCommonResponse = await DaoService.getInstance().createCommon(
+        formattedData,
+      );
+
+      await addPermission(createCommonResponse.data.id, uid, 'founder');
 
       if (createCommonResponse.status === 200) {
         setNewCommonAddress(createCommonResponse.data.id);
