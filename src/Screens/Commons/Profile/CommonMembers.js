@@ -15,6 +15,8 @@ import ProposalsList from '../../Proposals/ProposalsList';
 import CommonMembersList from './CommonMembersList';
 import CommonTabBar from '../../CommonTabBar';
 import {string, func, array, object, shape} from 'prop-types';
+import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
+import {observer, inject} from 'mobx-react';
 
 const initialLayout = {width: Dimensions.get('window').width};
 const getTabName = (objectName, count) =>
@@ -28,33 +30,42 @@ const Members = ({navigation, members, commonId}) => (
   />
 );
 
-const Pending = ({navigation, commonId, onProposalsCountChange}) => (
+const Pending = ({navigation, commonId}) => (
   <View style={layout.content}>
     <ProposalsList
       navigation={navigation}
       commonInfo={{id: commonId}}
-      onlyRequestsToJoin={true}
-      onCountChange={onProposalsCountChange}
+      proposalFilter={{
+        stage: PROPOSAL_STAGE.Active,
+        type: PROPOSAL_TYPE.Join,
+      }}
     />
   </View>
 );
 
-const History = ({navigation, commonId, onProposalsCountChange}) => (
+const History = ({navigation, commonId}) => (
   <View style={layout.content}>
     <ProposalsList
       navigation={navigation}
       commonInfo={{id: commonId}}
-      onlyRequestsToJoin={true}
-      isHistory={true}
-      onCountChange={onProposalsCountChange}
+      proposalFilter={{
+        stage: PROPOSAL_STAGE.History,
+        type: PROPOSAL_TYPE.Join,
+      }}
     />
   </View>
 );
 
-const CommonMembers = ({navigation, route: router}) => {
+const CommonMembers = ({navigation, route: router, proposalStore}) => {
   const [index, setIndex] = useState(0);
-  const [pendingCount, setPendingCount] = useState(0);
-  const [historyCount, setHistoryCount] = useState(0);
+  const pendingCount = proposalStore.getCommonProposals(commonId, {
+    stage: PROPOSAL_STAGE.Active,
+    type: PROPOSAL_TYPE.Join,
+  }).length;
+  const historyCount = proposalStore.getCommonProposals(commonId, {
+    stage: PROPOSAL_STAGE.History,
+    type: PROPOSAL_TYPE.Join,
+  }).length;
 
   const {members, commonId} = router.params;
 
@@ -75,21 +86,9 @@ const CommonMembers = ({navigation, route: router}) => {
           />
         );
       case 'pending':
-        return (
-          <Pending
-            navigation={navigation}
-            commonId={commonId}
-            onProposalsCountChange={(count) => setPendingCount(count)}
-          />
-        );
+        return <Pending navigation={navigation} commonId={commonId} />;
       case 'history':
-        return (
-          <History
-            navigation={navigation}
-            commonId={commonId}
-            onProposalsCountChange={(count) => setHistoryCount(count)}
-          />
-        );
+        return <History navigation={navigation} commonId={commonId} />;
       default:
         return null;
     }
@@ -151,6 +150,9 @@ CommonMembers.propTypes = {
       commonId: string,
     }),
   }),
+  proposalStore: shape({
+    getCommonProposals: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -183,4 +185,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommonMembers;
+export default inject('proposalStore')(observer(CommonMembers));

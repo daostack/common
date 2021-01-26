@@ -2,13 +2,12 @@
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "jsx": "react",
-    "lib": [
-      "es6"
-    ],
+    "lib": ["es6"],
     "moduleResolution": "node",
     "noEmit": true,
     "strict": true,
