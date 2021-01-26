@@ -1,4 +1,4 @@
-import {decorate, computed, observable, runInAction} from 'mobx';
+import {computed, observable, runInAction} from 'mobx';
 import ListStore from './ListStore';
 import {subscribeToProposalList} from '~/Services/ListServices/ProposalListService';
 import {
