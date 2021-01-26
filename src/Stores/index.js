@@ -10,6 +10,7 @@ export default {
   userListStore: rootStore.userListStore,
   commonStore: rootStore.commonStore,
   proposalStore: rootStore.proposalStore,
+  discussionStore: rootStore.discussionStore,
 
   //TODO: move in UIStore and add ref to rootStore.
   bottomSheetStore: new BottomSheetStore(),

@@ -67,6 +67,7 @@ const CommonProfile = ({
   route: {params},
   commonStore,
   proposalStore,
+  discussionStore,
 }) => {
   /* all of  params.commonId,
   params.showRequestSentModal,
@@ -142,9 +143,16 @@ const CommonProfile = ({
   };
 
   useEffect(() => {
-    const unsubscribe = proposalStore.subscribeToCommonProposals(currCommon.id);
+    const unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
+      currCommon.id,
+    );
+    console.log('subscribe for common discussions -> ', currCommon.id);
+    const unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
+      currCommon.id,
+    );
     return () => {
-      unsubscribe && unsubscribe();
+      unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
+      unsubscribeFromCommonDiscussions && unsubscribeFromCommonDiscussions();
     };
   }, [currCommon]);
 
@@ -912,6 +920,9 @@ CommonProfile.propTypes = {
   userStore: object,
   commonStore: object,
   proposalStore: object,
+  discussionStore: shape({
+    subscribeToCommonDiscussions: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -1082,4 +1093,5 @@ export default inject(
   'userStore',
   'commonStore',
   'proposalStore',
+  'discussionStore',
 )(observer(CommonProfile));

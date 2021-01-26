@@ -4,6 +4,7 @@ import CommonStore from './ListStore/CommonStore';
 import UserStore from './UserStore';
 import ProposalStore from './ListStore/ProposalStore';
 import AsyncStorage from '@react-native-community/async-storage';
+import DiscussionStore from './ListStore/DiscussionStore';
 
 const hydrate = create({
   storage: AsyncStorage,
@@ -15,18 +16,18 @@ export default class RootStore {
   userListStore: UserListStore;
   commonStore: CommonStore;
   proposalStore: ProposalStore;
+  discussionStore: DiscussionStore;
 
   constructor() {
     this.authStore = new UserStore(this);
     this.userListStore = new UserListStore(this);
     this.commonStore = new CommonStore(this);
     this.proposalStore = new ProposalStore(this);
+    this.discussionStore = new DiscussionStore(this);
 
     Promise.all([
       hydrate('auth', this.authStore),
-      hydrate('user', this.userListStore),
-      hydrate('auth', this.commonStore),
-      hydrate('user', this.proposalStore),
-    ]).then(() => console.log('AFTER ALL STORE INITI'));
+      hydrate('common', this.commonStore),
+    ]);
   }
 }
