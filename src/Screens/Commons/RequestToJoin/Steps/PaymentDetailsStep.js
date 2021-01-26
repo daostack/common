@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, Dimensions, Image} from 'react-native';
+import {Text, View, Dimensions, Image, Platform} from 'react-native';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import {colors, layout, text} from '~/Theme';
 import {inject} from 'mobx-react';
@@ -157,6 +157,7 @@ const PaymentDetailsStep = ({
         <RequestStepHeaderTitle title="Payment Details" subtitle={subtitle} />
         <TextInputField
           label="Credit card number"
+          autofill={Platform.OS === 'ios' ? 'creditCardNumber' : 'cc-number'}
           value={
             testCard
               ? '4007410000000006'

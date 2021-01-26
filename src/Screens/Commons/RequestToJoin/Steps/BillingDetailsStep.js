@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, Dimensions} from 'react-native';
+import {View, Text, Dimensions, Platform} from 'react-native';
 import {bool, func, object, shape, string} from 'prop-types';
 
 import {CommonActions} from '@react-navigation/native';
@@ -17,6 +17,21 @@ import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 
+const AUTOFILL = {
+  ios: {
+    name: 'name',
+    city: 'addressCity',
+    street: 'streetAddressLine1',
+    postalCode: 'postalCode',
+  },
+  android: {
+    name: 'name',
+    city: 'street-address',
+    street: 'street-address',
+    postalCode: 'postal-code',
+  },
+};
+
 const BillingDetailsStep = ({navigation, route, userStore}) => {
   const {
     skipFirstStep,
@@ -29,7 +44,6 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
   const {width} = Dimensions.get('window');
-
   const [country, setCountry] = useState(country);
 
   const isMonthly = currCommon.metadata.contributionType === 'monthly';
@@ -100,6 +114,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
                 )?.value || userStore.userInfo.displayName
           }
           autoCapitalize="words"
+          autofill={AUTOFILL[Platform.OS].name}
           validation={{
             name: BillingDetailsConstants.CardName,
             formStore: billingDetailsFormStore,
@@ -119,6 +134,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
                 )?.value
           }
           autoCapitalize="words"
+          autofill={AUTOFILL[Platform.OS].city}
           validation={{
             name: BillingDetailsConstants.City,
             formStore: billingDetailsFormStore,
@@ -151,6 +167,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
                 )?.value
           }
           autoCapitalize="words"
+          autofill={AUTOFILL[Platform.OS].street}
           validation={{
             name: BillingDetailsConstants.Address,
             formStore: billingDetailsFormStore,
@@ -210,6 +227,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
         <TextInputField
           editable
           label="Postal Code"
+          autofill={AUTOFILL[Platform.OS].postalCode}
           value={
             testCard
               ? '31415PI'
