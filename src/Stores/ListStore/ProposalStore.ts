@@ -118,12 +118,23 @@ export default class ProposalStore extends ListStore<Proposal> {
       .forEach((updatedProposalDoc: IFirebaseDocChange<IProposalEntity>) => {
         const updatedProposal = updatedProposalDoc.doc.data();
 
+<<<<<<< HEAD
         // let proposal = this.getDataById(updatedProposal.id);
         // if (proposal) {
         //   proposal.setUpdates(updatedProposal);
         // } else {
         this.setData(updatedProposal.id, new Proposal(updatedProposal));
         // }
+=======
+        // let proposal = this.getProposalById(
+        //   updatedProposal.id,
+        // );
+        // if (proposal) {
+        //   proposal.setUpdates(updatedProposal);
+        // }
+
+        this.setData(updatedProposal.id, new Proposal(updatedProposal));
+>>>>>>> dev
       });
 
     runInAction(() => {
