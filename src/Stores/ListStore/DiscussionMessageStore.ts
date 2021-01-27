@@ -4,7 +4,11 @@ import {
   subscribeToDiscussionsMessages,
   subscribeToProposalDiscussionMessages,
 } from '~/Services/ListServices/DiscussionMessageListService';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+import {
+  FirestoreUnsubscribeFn,
+  IFirebaseDocChange,
+  IFirebaseSnapshot,
+} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {DiscussionMessage} from '../Models/DiscussionMessage';
@@ -54,13 +58,38 @@ export default class DiscussionMessageStore extends ListStore<DiscussionMessage>
 
   // Private function
   _updateDiscussionMessageList = (
-    updatedDiscussionList: Array<IDiscussionMessageEntity>,
+    updatedDiscussionList: IFirebaseSnapshot<IDiscussionMessageEntity>,
   ) => {
     console.log('updatedDiscussionList -> ', updatedDiscussionList);
 
     runInAction(() => {
       this.isLoading = true;
     });
+
+    updatedDiscussionList
+      .docChanges()
+      .forEach(
+        (
+          updatedDiscussionMessageDoc: IFirebaseDocChange<IDiscussionMessageEntity>,
+        ) => {
+          const updatedDiscussionMessage = {
+            ...{
+              id: updatedDiscussionMessageDoc.doc.id,
+            },
+            ...updatedDiscussionMessageDoc.doc.data(),
+          };
+
+          let proposal = this.getDataById(updatedDiscussionMessage.id);
+          if (proposal) {
+            proposal.setUpdates(updatedDiscussionMessage);
+          } else {
+            this.setData(
+              updatedDiscussionMessage.id,
+              new DiscussionMessage(updatedDiscussionMessage),
+            );
+          }
+        },
+      );
 
     updatedDiscussionList.forEach(
       (discussionEntity: IDiscussionMessageEntity) => {

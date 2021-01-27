@@ -47,7 +47,7 @@ const Discussions = ({
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
   const chatRef = useRef(null);
-  let listRef = useRef([]);
+  //let listRef = useRef([]);
 
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
 
@@ -70,6 +70,8 @@ const Discussions = ({
       date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
       data: msg,
     }));
+
+  console.log('msgGroup -> ', msgGroup);
 
   const isMember =
     userStore.userInfo &&
@@ -414,7 +416,10 @@ const Discussions = ({
             inverted
             ref={chatRef}
             sections={msgGroup}
-            keyExtractor={(x) => x.id}
+            keyExtractor={(x) => {
+              console.log('X -> ', x);
+              return x.id;
+            }}
             stickySectionHeadersEnabled={true}
             contentContainerStyle={{
               paddingTop: 100,

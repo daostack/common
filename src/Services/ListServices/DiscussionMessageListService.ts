@@ -1,8 +1,9 @@
 import {DiscussionMessagesCollection} from '~/Firebase/Databasee/Collections/DiscussionMessagesCollection';
 import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
+import {IFirebaseSnapshot} from '~/Firebase/types';
 
 export type commonDiscussionMessagesListLoadCallbackFn = (
-  updatedDiscussionsList: Array<IDiscussionMessageEntity>,
+  updatedDiscussionsList: IFirebaseSnapshot<IDiscussionMessageEntity>,
 ) => void;
 
 export const subscribeToProposalDiscussionMessages = (
@@ -33,20 +34,7 @@ export const subscribeToDiscussionsMessages = (
   discussionIds?.length > 0
     ? DiscussionMessagesCollection.where('discussionId', 'in', discussionIds)
         .orderBy('createTime', 'desc')
-        .onSnapshot((snapshot: any) => {
-          let discussionMessageList = [];
-          console.log('snapshot -> ', snapshot);
-          // TODO: Make better handling of changes with docChanges()
-          if (!snapshot?.empty || !snapshot) {
-            discussionMessageList = snapshot.docs.map(
-              // TODO: Add id prop in the document itself and apply the change here as well. (https://daostack1.atlassian.net/browse/CM-1532)
-              (doc: any) =>
-                ({id: doc.id, ...doc.data()} as IDiscussionMessageEntity),
-            );
-          }
-
-          console.log('discussionMessageList -> ', discussionMessageList);
-
-          callback(discussionMessageList);
+        .onSnapshot((snapshot: IFirebaseSnapshot<IDiscussionMessageEntity>) => {
+          callback(snapshot);
         })
     : null;
