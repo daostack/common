@@ -37,4 +37,8 @@ export default {
   butterscotch: '#ffc23d22',
   mango: '#ffba36',
   iconBlack: '#002654',
+  mainBlueOpacity: 'rgba(119, 134, 255, 0.2)',
+  blackOpacity: 'rgba(0, 26, 54, 0.2)',
+  againstLightOpacity: 'rgba(255, 96, 62, 0.1)',
+  againstMediumOpacity: 'rgba(255, 96, 62, 0.2)',
 };
