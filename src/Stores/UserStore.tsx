@@ -73,19 +73,11 @@ class UserStore {
           this.setIsLoading(true);
           this.addLoginInProgress(user?.uid);
 
-          const loggedUser: UserModel = await this._processUser(user);
+          const loggedUser: UserModel | null = await this._processUser(user);
 
           this.setSignedInUser(loggedUser);
-          this.removeLoginInProgress(loggedUser.uid);
+          this.removeLoginInProgress(loggedUser?.uid);
           this.setIsLoading(false);
-
-          this.unsubscribeFromUser && this.unsubscribeFromUser();
-          this.unsubscribeFromUser = subscribeToUser(
-            loggedUser?.uid,
-            (updatedUser: IUserEntity | null) => {
-              updatedUser && this.setSignedInUser(new UserModel(updatedUser));
-            },
-          );
         } else {
           this.setSignedInUser(null);
           this.setIsLoading(false);
@@ -135,36 +127,42 @@ class UserStore {
     this.loginInProgress.filter((item: any) => item === uid).length > 0;
 
   // Private functions
-  async _processUser(user: any): Promise<UserModel> {
-    const providerId = user.providerData[0].providerId;
+  async _processUser(user: any): Promise<UserModel | null> {
+    let appUser = this.userInfo as UserModel | null;
 
-    let appUser = this.userInfo as IUserEntity | null;
+    this.unsubscribeFromUser && this.unsubscribeFromUser();
+    this.unsubscribeFromUser = subscribeToUser(
+      user?.uid,
+      async (updatedUser: IUserEntity | null) => {
+        const isNewUser = !updatedUser;
 
-    if (appUser?.uid !== user.uid) {
-      appUser = await getUserById(user.uid);
-    }
-    const isNewUser = !appUser;
+        if (isNewUser) {
+          const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(
+            user.providerData[0].providerId,
+          );
+          const userInfo = {
+            ...user._user,
+            ...{
+              firstName: providerUserInfo.user.givenName,
+              lastName: providerUserInfo.user.familyName,
+            },
+          };
+          appUser = await AuthService.getInstance().createUser(userInfo);
+        } else {
+          updatedUser && this.setSignedInUser(new UserModel(updatedUser));
+          NotificationService.saveTokenToDatabase();
+        }
+      },
+    );
 
-    if (isNewUser) {
-      const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(
-        providerId,
-      );
-      const userInfo = {
-        ...user._user,
-        ...{
-          firstName: providerUserInfo.user.givenName,
-          lastName: providerUserInfo.user.familyName,
-        },
-      };
-      appUser = await AuthService.getInstance().createUser(userInfo);
-    }
-
-    NotificationService.saveTokenToDatabase();
-
-    return new UserModel({
-      ...user._user,
-      ...appUser,
-    } as IUserEntity);
+    // if (appUser?.uid !== user.uid) {
+    //   appUser = await getUserById(user.uid);
+    // }
+    return appUser;
+    // return new UserModel({
+    //   ...user._user,
+    //   ...appUser,
+    // } as IUserEntity);
   }
 }
 

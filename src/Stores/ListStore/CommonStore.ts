@@ -29,12 +29,6 @@ export default class CommonStore extends ListStore<Common> {
   @persist
   @computed
   get pendingCommons() {
-    // if (
-    //   this.isLoading ||
-    //   this.rootStore.proposalStore.myActiveMembershipRequests?.length === 0
-    // ) {
-    //   return [];
-    // } else {
     let commons: Array<ICommonEntity> = [];
     this.rootStore.proposalStore.myActiveMembershipRequests?.forEach(
       (proposal: Proposal) => {
@@ -45,13 +39,11 @@ export default class CommonStore extends ListStore<Common> {
       },
     );
     return commons;
-    // }
   }
 
   @persist
   @computed
   get featuredCommons() {
-    // return super.data;
     return this.getDataArray?.filter(
       (common: Common) =>
         !this.myCommons.includes(common) && common.register === DAO_REGISTERED,
@@ -75,7 +67,6 @@ export default class CommonStore extends ListStore<Common> {
     const updatesMap = new Map<string, ICommonEntity>();
 
     updatedUserList.forEach((commonEntity: ICommonEntity) => {
-      //this.setData(commonEntity.id, new Common(commonEntity));
       updatesMap.set(commonEntity.id, new Common(commonEntity));
     });
 

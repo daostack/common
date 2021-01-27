@@ -161,10 +161,15 @@ const CommonsList = ({
         featuredDaosGroup.data.length
       : featuredDaosGroup.data.length;
 
+  console.log(
+    'featuredDaosGroup.data.length > 0 , ',
+    featuredDaosGroup.data.length > 0,
+  );
+
   return (
     <>
       <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
-        {featuredDaosGroup ? (
+        {featuredDaosGroup.data.length > 0 || !commonStore.isLoading ? (
           <SectionList
             sections={
               userStore.signedInUser

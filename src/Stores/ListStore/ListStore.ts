@@ -29,6 +29,7 @@ export default class ListStore<IEntity> {
     return keys(this.data).length > 0;
   }
 
+  @persist
   @computed
   get getDataArray(): readonly IEntity[] {
     return values(this.data);
