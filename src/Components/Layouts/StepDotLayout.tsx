@@ -37,7 +37,6 @@ const props = {
 
   //ScrollView:
   onScrollEndDrag: func,
-  keyboardShouldPersistTaps: string,
 
   prependedArea: object,
   appendedArea: object,
@@ -97,7 +96,6 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
   children,
   layoutTitle,
   bottomSheetStore,
-  keyboardShouldPersistTaps,
 }) => {
   const [headerHeight, setHeaderHeight] = useState(new Animated.Value(0));
   const [scrollY] = useState(new Animated.Value(0));
@@ -177,7 +175,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
         {/* )} */}
         <ScrollView
           showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps
+          keyboardShouldPersistTaps="handled"
           width={width}
           contentContainerStyle={{
             alignItems: 'center',
