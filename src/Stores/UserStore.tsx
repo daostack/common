@@ -124,9 +124,6 @@ class UserStore {
     if (isUserChanged) {
       this.signedInUser = newUserInfo?.uid;
     }
-
-    // TODO: Apply mobx-persist instead of local storage
-    // Cache.set(newUserInfo.uid, newUserObj);
   };
 
   isDaoMember = (members: ICommonMember[]) =>
@@ -141,16 +138,11 @@ class UserStore {
   async _processUser(user: any): Promise<UserModel> {
     const providerId = user.providerData[0].providerId;
 
-    // TODO: Use mobx-persist instead of local storage cache.
-    // The code bellow was the previous one using the cache.
-    // For the current PR we keep our implementation simple and will add the cache as a second step.
-    //
-    // let appUser = Cache.get(user.uid);
-    // if (!appUser) {
-    //   appUser = UserService.getInstance().getUserById(user.uid);
-    // }
+    let appUser = this.userInfo as IUserEntity | null;
 
-    let appUser = await getUserById(user.uid);
+    if (appUser?.uid !== user.uid) {
+      appUser = await getUserById(user.uid);
+    }
     const isNewUser = !appUser;
 
     if (isNewUser) {
