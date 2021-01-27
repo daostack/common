@@ -52,15 +52,13 @@ const MemberCard = ({userInfo, proposalInfo = null}) => {
       );
     } else {
       let memberCreatedDateInfo = null;
-      if (userInfo?.createdAt) {
-        const memberCreatedDate = new Date(userInfo.createdAt.seconds * 1000);
+      if (userInfo?.joinedAt) {
+        const memberCreatedDate = new Date(userInfo.joinedAt.seconds * 1000);
         memberCreatedDateInfo = memberCreatedDate
           ? `${
               monthShortNames[memberCreatedDate.getMonth()]
             } ${memberCreatedDate.getDate()} `
           : '';
-      } else {
-        memberCreatedDateInfo = 'NOT app user';
       }
 
       return (

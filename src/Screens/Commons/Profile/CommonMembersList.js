@@ -35,9 +35,7 @@ const CommonMembersList = ({
       : commonMembers || [];
 
   const getAllCommonMembers = (commonMembers) =>
-    userListStore.getCommonUsersByMembersArray(
-      commonMembers.map((member) => member.userId),
-    );
+    userListStore.getCommonUsersByMembersArray(commonMembers);
 
   // That's the old way of fatching commong members.
   // Let's keep it here as refference untill find better way of fetching it from DB at once.
@@ -61,7 +59,8 @@ const CommonMembersList = ({
   //       const currChunkUserInfos = await UserService.getInstance().getUsersByUpTo10Ids(
   //         currChunkUserIds,
   //       );
-  //       allUserInfos = allUserInfos.concat(currChunkUserInfos);
+  //       allUserInfos = allUserInfos.concat(currChunkUserInfos)
+  //       .map((userInfo, index) => ({joinedAt: members[index].joinedAt, ...userInfo}));;
   //     },
   //   ),
   // );

@@ -1,4 +1,4 @@
-import {observable, action, decorate} from 'mobx';
+import {observable, action} from 'mobx';
 import {isDaoMemberByUserId} from '~/Util';
 import logger from '~/Services/Logger';
 import AuthService from '~/Services/AuthService';
@@ -12,19 +12,33 @@ import {
 import {UserModel} from './Models/UserModel';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from './RootStore';
+import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {persist} from 'mobx-persist';
 
 type SignInErrorWithCode = any;
-type UserInfo = any;
 
 class UserStore {
+  @persist('object')
+  @observable
   userInfo: UserModel | null;
-  signedInUser: any;
+
+  @persist
+  @observable
+  signedInUser: string | null;
+
+  @observable
   loginInProgress: any;
+
+  @observable
   isLoading: boolean;
+
+  @observable
   signInError: SignInErrorWithCode;
-  myCommons: any;
-  myProposals: any;
+
+  @observable
   address: any;
+
+  @observable
   rootStore: RootStore;
 
   unsubscribeFromUser: FirestoreUnsubscribeFn | null;
@@ -32,6 +46,7 @@ class UserStore {
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     this.userInfo = null;
+    this.signedInUser = null;
     this.isLoading = false;
     this.loginInProgress = [];
     this.unsubscribeFromUser = null;
@@ -82,26 +97,27 @@ class UserStore {
     }
   };
 
+  @action
   setSignInError = (error: SignInErrorWithCode) => {
     this.signInError = error;
   };
-  isDaoMember = (members: UserInfo[]) =>
-    this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false;
-  isProposer = (proposal: any) =>
-    this.userInfo ? this.userInfo.uid === proposal.proposerId : false;
+
+  @action
   setIsLoading = (loading: boolean) => {
     this.isLoading = loading;
   };
+  @action
   addLoginInProgress = (uid: any) => {
     this.loginInProgress.push(uid);
   };
+  @action
   removeLoginInProgress = (uid: any) => {
     this.loginInProgress = this.loginInProgress.filter(
       (item: any) => item !== uid,
     );
   };
-  isLoginInProgressExists = (uid: any) =>
-    this.loginInProgress.filter((item: any) => item === uid).length > 0;
+
+  @action
   setSignedInUser = (newUserInfo: any) => {
     const isUserChanged = newUserInfo?.uid !== this.userInfo?.uid;
     this.userInfo = newUserInfo;
@@ -112,6 +128,14 @@ class UserStore {
     // TODO: Apply mobx-persist instead of local storage
     // Cache.set(newUserInfo.uid, newUserObj);
   };
+
+  isDaoMember = (members: ICommonMember[]) =>
+    this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false;
+  isProposer = (proposal: any) =>
+    this.userInfo ? this.userInfo.uid === proposal.proposerId : false;
+
+  isLoginInProgressExists = (uid: any) =>
+    this.loginInProgress.filter((item: any) => item === uid).length > 0;
 
   // Private functions
   async _processUser(user: any): Promise<UserModel> {
@@ -151,16 +175,5 @@ class UserStore {
     } as IUserEntity);
   }
 }
-decorate(UserStore, {
-  address: observable,
-  setSignedInUser: action,
-  setIsLoading: action,
-  userInfo: observable,
-  signedInUser: observable,
-  setSignInError: observable,
-  isLoading: observable,
-  myCommons: observable,
-  myProposals: observable,
-});
 
 export default UserStore;

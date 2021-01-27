@@ -144,8 +144,9 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
   };
 
   const isValidChange = (ruleIndex = null) => {
-    isRule && getRuleChanges(ruleIndex);
-    setValid(editCommonFormStore.isFormValid());
+    const isValid = editCommonFormStore.isFormValid();
+    isValid && isRule && getRuleChanges(ruleIndex);
+    setValid(isValid);
   };
 
   return (

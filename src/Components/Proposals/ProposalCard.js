@@ -30,46 +30,21 @@ const {width} = Dimensions.get('window');
 
 const ProposalCard = ({
   proposalId,
-  data,
   navigation,
   containerStyle,
-  membershipRequest,
   isSwiper,
-  isMember,
   commonInfo,
   userListStore,
+  proposalStore,
 }) => {
-  const [proposalCardInfo, setProposalCardInfo] = useState(false);
+  const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
-    let unsubscribeProposalInfo = null;
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        unsubscribeProposalInfo = await ProposalService.getInstance().subscribeToProposalById(
-          currProposalId,
-          async (currProposalInfo) => {
-            //RequestToJoin proposal
-            let funding = null;
-            if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
-              funding = currProposalInfo.join.funding;
-            }
-            //FundingRequest proposal
-            else {
-              funding = currProposalInfo.fundingRequest.amount;
-            }
-            const currProposedUser = userListStore.getUserById(
-              currProposalInfo.proposerId,
-            );
-            setProposalCardInfo({
-              proposedUser: currProposedUser,
-              proposalInfo: {...currProposalInfo, funding},
-            });
-          },
-        );
-
         unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
           currProposalId,
           (discussionsCount) => {
@@ -82,68 +57,15 @@ const ProposalCard = ({
       }
     };
 
-    if (proposalId) {
-      getProposalInfo(proposalId);
+    if (proposalInfo) {
+      getProposalInfo(proposalInfo.id);
     }
 
     return () => {
       unsubscribeProposalDiscussionsCount &&
         unsubscribeProposalDiscussionsCount();
-      unsubscribeProposalInfo && unsubscribeProposalInfo();
     };
-  }, [proposalId]);
-
-  useEffect(() => {
-    let unsubscribeProposalDiscussionsCount = null;
-    let unsubscribeProposalInfo = null;
-
-    const loadProposalInfo = async (currProposalInfo) => {
-      try {
-        unsubscribeProposalInfo = await ProposalService.getInstance().subscribeToProposalById(
-          currProposalInfo.id,
-          async (updatedProposalInfo) => {
-            //RequestToJoin proposal
-            const proposedMemberUser = await userListStore.getUserById(
-              updatedProposalInfo.proposerId,
-            );
-            let funding = null;
-            if (updatedProposalInfo.type === PROPOSAL_TYPE.Join) {
-              funding = updatedProposalInfo.join.funding;
-            }
-            //FundingRequest proposal
-            else {
-              funding = updatedProposalInfo.fundingRequest.amount;
-            }
-            const allProposalInfo = {...updatedProposalInfo, funding};
-            setProposalCardInfo({
-              proposedUser: proposedMemberUser,
-              proposalInfo: allProposalInfo,
-            });
-          },
-        );
-
-        unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
-          currProposalInfo.id,
-          (discussionsCount) => {
-            setProposalDiscussionCount(discussionsCount);
-          },
-        );
-      } catch (error) {
-        logger.log('error: ', error);
-        Toast.error(error?.toString());
-      }
-    };
-
-    if (data) {
-      loadProposalInfo(data);
-    }
-
-    return () => {
-      unsubscribeProposalDiscussionsCount &&
-        unsubscribeProposalDiscussionsCount();
-      unsubscribeProposalInfo && unsubscribeProposalInfo();
-    };
-  }, [data]);
+  }, [proposalInfo]);
 
   const cardWidth = () => {
     if (isSwiper && Platform.OS === 'ios') {
@@ -157,30 +79,31 @@ const ProposalCard = ({
 
     if (!currCommonInfo) {
       currCommonInfo = await DaoService.getInstance().getDaoById(
-        proposalCardInfo.proposalInfo.commonId,
+        proposalInfo.commonId,
       );
     }
 
+    console.log('onReviewProposal -> ', navigation);
+
     navigation.navigate('ProposalScreen', {
       title: commonInfo?.name,
-      proposalId: proposalCardInfo.proposalInfo.id,
-      proposalCardInfo,
+      proposalId: proposalInfo.id,
+      //TODO: Manage data in proposal Screen
+      //proposalCardInfo,
       commonBalance: commonInfo?.balance,
-      isMember,
-      paymentState: proposalCardInfo.proposalInfo?.paymentState,
+      paymentState: proposalInfo?.paymentState,
     });
   };
 
-  return proposalCardInfo ? (
+  return proposalInfo ? (
     <Animated.View
       style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
       <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
-          state={proposalCardInfo.proposalInfo?.state}
-          paymentStatus={proposalCardInfo.proposalInfo?.paymentState}
+          state={proposalInfo?.state}
+          paymentStatus={proposalInfo?.paymentState}
           closingAt={
-            proposalCardInfo.proposalInfo?.createdAt.seconds +
-            proposalCardInfo.proposalInfo?.countdownPeriod
+            proposalInfo?.createdAt.seconds + proposalInfo?.countdownPeriod
           }
         />
 
@@ -191,29 +114,27 @@ const ProposalCard = ({
             ...layout.flexStart,
             flexWrap: 'wrap',
           }}>
-          {proposalCardInfo?.proposalInfo?.type ===
-            PROPOSAL_TYPE.FundingRequest && (
+          {proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && (
             <Text style={styles.title}>
-              {proposalCardInfo.proposalInfo?.description?.title ||
-                'Unknown title'}
+              {proposalInfo?.description?.title || 'Unknown title'}
             </Text>
           )}
 
           <MemberCard
-            showDate={membershipRequest}
-            userInfo={proposalCardInfo.proposedUser}
-            proposalInfo={proposalCardInfo.proposalInfo}
+            showDate={proposalInfo.isJoinRequest}
+            userInfo={userListStore.getUserById(proposalInfo.proposerId)}
+            proposalInfo={proposalInfo}
             isPending={false}
           />
           <View style={{...layout.flexRow}}>
             <ProposalApprovalTag
               iconName="approved"
-              value={proposalCardInfo?.proposalInfo.votesFor || 0}
+              value={proposalInfo.votesFor || 0}
               isMarked={true}
             />
             <ProposalApprovalTag
               iconName="declined"
-              value={proposalCardInfo?.proposalInfo.votesAgainst || 0}
+              value={proposalInfo.votesAgainst || 0}
               isMarked={false}
             />
             <ProposalApprovalTag
@@ -225,7 +146,7 @@ const ProposalCard = ({
 
           <View style={styles.proposalCardActionContainer}>
             <Text style={styles.proposalActionBtnText}>
-              {membershipRequest ? 'View request' : 'View proposal'}
+              {proposalInfo.isJoinRequest ? 'View request' : 'View proposal'}
             </Text>
           </View>
         </View>
@@ -273,10 +194,12 @@ ProposalCard.propTypes = {
   containerStyle: object,
   membershipRequest: bool,
   isSwiper: bool,
-  isMember: bool,
   commonInfo: object,
   userListStore: shape({
     getUserById: func,
+  }),
+  proposalStore: shape({
+    getProposalById: func,
   }),
 };
 
@@ -329,4 +252,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userListStore')(observer(ProposalCard));
+export default inject('userListStore', 'proposalStore')(observer(ProposalCard));
