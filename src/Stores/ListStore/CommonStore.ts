@@ -18,7 +18,7 @@ export default class CommonStore extends ListStore<Common> {
     this.isLoading = false;
   }
 
-  @persist
+  //@persist
   @computed
   get myCommons() {
     return this.getDataArray?.filter((common: Common) =>
@@ -26,7 +26,7 @@ export default class CommonStore extends ListStore<Common> {
     );
   }
 
-  @persist
+  // @persist
   @computed
   get pendingCommons() {
     let commons: Array<ICommonEntity> = [];
@@ -41,7 +41,7 @@ export default class CommonStore extends ListStore<Common> {
     return commons;
   }
 
-  @persist
+  // @persist
   @computed
   get featuredCommons() {
     return this.getDataArray?.filter(

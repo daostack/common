@@ -20,37 +20,28 @@ type SignInErrorWithCode = any;
 class UserStore {
   @persist('object')
   @observable
-  userInfo: UserModel | null;
+  userInfo: UserModel | null = null;
 
   @persist
   @observable
-  signedInUser: string | null;
+  signedInUser: string | null = null;
 
   @observable
-  loginInProgress: any;
+  loginInProgress: string[] = [];
 
   @observable
-  isLoading: boolean;
+  isLoading: boolean = false;
 
   @observable
   signInError: SignInErrorWithCode;
 
   @observable
-  address: any;
-
-  @observable
   rootStore: RootStore;
 
-  unsubscribeFromUser: FirestoreUnsubscribeFn | null;
+  unsubscribeFromUser: FirestoreUnsubscribeFn | null = null;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
-    this.userInfo = null;
-    this.signedInUser = null;
-    this.isLoading = false;
-    this.loginInProgress = [];
-    this.unsubscribeFromUser = null;
-
     auth().onAuthStateChanged(this.onAuthStateChanged);
   }
 
@@ -155,14 +146,7 @@ class UserStore {
       },
     );
 
-    // if (appUser?.uid !== user.uid) {
-    //   appUser = await getUserById(user.uid);
-    // }
     return appUser;
-    // return new UserModel({
-    //   ...user._user,
-    //   ...appUser,
-    // } as IUserEntity);
   }
 }
 

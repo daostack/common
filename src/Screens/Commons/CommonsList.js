@@ -49,8 +49,9 @@ const CommonsList = ({
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    // TODO: refresh
+    // TODO: Implement logic for refresh or leave it as it is now - faky
     // DaoService.getInstance().getDaoList(loadDaosList);
+    setRefreshing(false);
   }, [refreshing]);
 
   const onAddCommon = () => {
@@ -160,11 +161,6 @@ const CommonsList = ({
         pendingDaosGroup.data.length +
         featuredDaosGroup.data.length
       : featuredDaosGroup.data.length;
-
-  console.log(
-    'featuredDaosGroup.data.length > 0 , ',
-    featuredDaosGroup.data.length > 0,
-  );
 
   return (
     <>
