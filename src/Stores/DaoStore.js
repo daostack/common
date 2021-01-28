@@ -1,6 +1,6 @@
 import {observable, action, decorate} from 'mobx';
 import DaoService from '../Services/DaoService';
-import Cache from '../Util/Cache';
+//import Cache from '../Util/Cache';
 
 export const daoInfoFields = [
   'uid',
