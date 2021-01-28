@@ -4,14 +4,7 @@ import {layout, colors, font} from '~/Theme';
 import {string, func, bool, object} from 'prop-types';
 import {observer} from 'mobx-react';
 
-const RequestStepActionButton = ({
-  hidden,
-  pass,
-  formStore,
-  onPress,
-  title,
-  messageBox = null,
-}) => {
+const RequestStepActionButton = ({hidden, pass, formStore, onPress, title}) => {
   let actionBtnStyle = styles.actionBtnContainer;
 
   if (hidden) {
@@ -23,7 +16,6 @@ const RequestStepActionButton = ({
 
   return (
     <View style={actionBtnStyle}>
-      {messageBox}
       <TouchableOpacity
         style={{
           ...styles.continueButton,
