@@ -12,22 +12,16 @@ export default class UserListStore extends ListStore<UserModel> {
   }
 
   // Data consuming methods
-  getUserById = (uid: string): IUserEntity | undefined =>
-    super.getDataById(uid);
+  getUserById = (uid: string): UserModel => super.getDataById(uid);
 
   getCommonUsersByMembersArray = (
     members: Array<ICommonMember>,
-  ): Array<UserModel> => {
-    const dataByIds: Array<UserModel> = [];
-    members.forEach((commonMember: ICommonMember) => {
-      const user = this.getDataById(commonMember.userId);
-      if (user) {
-        user.joinedAt = commonMember.joinedAt;
-        dataByIds.push(user);
-      }
+  ): Array<UserModel> =>
+    members.map((commonMember: ICommonMember) => {
+      const user = this.getUserById(commonMember.userId);
+      user.joinedAt = commonMember.joinedAt;
+      return user;
     });
-    return dataByIds;
-  };
 
   //Actions
   subscribeToAllUsers = (): FirestoreUnsubscribeFn =>
