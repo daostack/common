@@ -18,30 +18,25 @@ export default class CommonStore extends ListStore<Common> {
 
   @computed
   get myCommons() {
-    return this.getDataArray?.filter((common: Common) =>
+    return this.getDataArray.filter((common: Common) =>
       this.rootStore.authStore.isDaoMember(common?.members),
     );
   }
 
   @computed
   get pendingCommons() {
-    let commons: Array<ICommonEntity> = [];
-    this.rootStore.proposalStore.myActiveMembershipRequests?.forEach(
-      (proposal: Proposal) => {
-        const currPendingCommon = this.getCommonById(proposal.commonId);
-        if (currPendingCommon) {
-          commons.push(currPendingCommon);
-        }
-      },
+    return this.rootStore.proposalStore.myActiveMembershipRequests.map(
+      (proposal: Proposal) => this.getCommonById(proposal.commonId),
     );
-    return commons;
   }
 
   @computed
   get featuredCommons() {
-    return this.getDataArray?.filter(
+    return this.getDataArray.filter(
       (common: Common) =>
-        !this.myCommons.includes(common) && common.register === DAO_REGISTERED,
+        !this.myCommons.includes(common) &&
+        !this.pendingCommons.includes(common) &&
+        common.register === DAO_REGISTERED,
     );
   }
 
@@ -59,7 +54,7 @@ export default class CommonStore extends ListStore<Common> {
       this.isLoading = true;
     });
 
-    const updatesMap = new Map<string, ICommonEntity>();
+    const updatesMap = new Map<string, Common>();
 
     updatedUserList.forEach((commonEntity: ICommonEntity) => {
       updatesMap.set(commonEntity.id, new Common(commonEntity));

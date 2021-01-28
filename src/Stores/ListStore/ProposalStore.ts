@@ -71,20 +71,20 @@ export default class ProposalStore extends ListStore<Proposal> {
   getUserProposals = (
     userId: string,
     proposalFilter: IProposalFilter,
-  ): Array<Proposal> | [] =>
-    this.getDataArray?.filter((proposal: Proposal) => {
+  ): Array<Proposal> =>
+    this.getDataArray.filter((proposal: Proposal) => {
       const isProposer = proposal.proposerId === userId;
       if (isProposer) {
         return this._applyFilter(proposal, proposalFilter);
       }
-      return isProposer;
+      return false;
     });
 
   getCommonProposals = (
     commonId: string,
     proposalFilter: IProposalFilter,
-  ): Array<Proposal> | undefined =>
-    this.getDataArray?.filter((proposal: Proposal) => {
+  ): Array<Proposal> =>
+    this.getDataArray.filter((proposal: Proposal) => {
       const isSameCommon = proposal.commonId === commonId;
       if (isSameCommon) {
         return this._applyFilter(proposal, proposalFilter);
@@ -112,23 +112,19 @@ export default class ProposalStore extends ListStore<Proposal> {
       this.isLoading = true;
     });
 
+    const updatesMap = new Map<string, Proposal>();
+
     // Initial loading
     updatedUserList
       .docChanges()
       .forEach((updatedProposalDoc: IFirebaseDocChange<IProposalEntity>) => {
         const updatedProposal = updatedProposalDoc.doc.data();
 
-        // let proposal = this.getProposalById(
-        //   updatedProposal.id,
-        // );
-        // if (proposal) {
-        //   proposal.setUpdates(updatedProposal);
-        // }
-
-        this.setData(updatedProposal.id, new Proposal(updatedProposal));
+        updatesMap.set(updatedProposal.id, new Proposal(updatedProposal));
       });
 
     runInAction(() => {
+      this.data.merge(updatesMap);
       this.isLoading = false;
     });
   };
