@@ -5,10 +5,7 @@ import AuthService from '~/Services/AuthService';
 import NotificationService from '~/Services/NotificationService';
 import {auth} from '~/Firebase';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
-import {
-  getUserById,
-  subscribeToUser,
-} from '~/Services/ListServices/UserListService';
+import {subscribeToUser} from '~/Services/ListServices/UserListService';
 import {UserModel} from './Models/UserModel';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from './RootStore';

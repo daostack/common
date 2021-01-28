@@ -7,8 +7,6 @@ import {Common} from '../Models/Common';
 import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import {Proposal} from '../Models/Proposal';
-import {persist} from 'mobx-persist';
-
 export default class CommonStore extends ListStore<Common> {
   @observable
   isLoading: boolean;
@@ -18,7 +16,6 @@ export default class CommonStore extends ListStore<Common> {
     this.isLoading = false;
   }
 
-  //@persist
   @computed
   get myCommons() {
     return this.getDataArray?.filter((common: Common) =>
@@ -26,7 +23,6 @@ export default class CommonStore extends ListStore<Common> {
     );
   }
 
-  // @persist
   @computed
   get pendingCommons() {
     let commons: Array<ICommonEntity> = [];
@@ -41,7 +37,6 @@ export default class CommonStore extends ListStore<Common> {
     return commons;
   }
 
-  // @persist
   @computed
   get featuredCommons() {
     return this.getDataArray?.filter(
