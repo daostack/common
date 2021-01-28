@@ -11,50 +11,40 @@ import Icon from '~/Assets/iconfont/Icon';
 import {inject, observer} from 'mobx-react';
 import {object, func} from 'prop-types';
 
-const CommonProfileOptions = ({editInfo, editRules, bottomSheetStore}) => {
-  const onEdit = (type) => {
-    bottomSheetStore.hideBottomSheet();
-    type === 'info' ? editInfo() : editRules();
-  };
-
-  return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      style={styles.scrollView}
-      vertical={true}
-      nestedScrollEnabled={true}
-      directionalLockEnabled={true}>
-      <View style={styles.body}>
-        <Text style={styles.text}>Options</Text>
-        <TouchableOpacity
-          style={styles.optionBtn}
-          onPress={() => onEdit('info')}>
-          <Icon
-            name="dao-general-info-24"
-            style={layout.marginRightS}
-            color={colors.black}
-          />
-          <Text style={text.buttonblack}>Edit info and cover photo</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.optionBtn}
-          onPress={() => onEdit('rules')}>
-          <Icon
-            name="agenda-24"
-            style={layout.marginRightS}
-            color={colors.black}
-          />
-          <Text style={text.buttonblack}>Edit rules</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
-  );
-};
+const CommonProfileOptions = ({bottomSheetStore, onEdit}) => (
+  <ScrollView
+    contentInsetAdjustmentBehavior="automatic"
+    style={styles.scrollView}
+    vertical={true}
+    nestedScrollEnabled={true}
+    directionalLockEnabled={true}>
+    <View style={styles.body}>
+      <Text style={styles.text}>Options</Text>
+      <TouchableOpacity style={styles.optionBtn} onPress={() => onEdit('info')}>
+        <Icon
+          name="dao-general-info-24"
+          style={layout.marginRightS}
+          color={colors.black}
+        />
+        <Text style={text.buttonblack}>Edit info and cover photo</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.optionBtn}
+        onPress={() => onEdit('rules')}>
+        <Icon
+          name="agenda-24"
+          style={layout.marginRightS}
+          color={colors.black}
+        />
+        <Text style={text.buttonblack}>Edit rules</Text>
+      </TouchableOpacity>
+    </View>
+  </ScrollView>
+);
 
 CommonProfileOptions.propTypes = {
   bottomSheetStore: object,
-  editInfo: func,
-  editRules: func,
+  onEdit: func,
 };
 
 const styles = StyleSheet.create({

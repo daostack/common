@@ -291,7 +291,7 @@ const CommonProfile = ({
     }
   };
 
-  const openAgendaScreen = (e) => {
+  const openAgendaScreen = () => {
     navigation.navigate('CommonAgenda', {
       screenTitle: currCommon.name,
       common: currCommon,
@@ -400,12 +400,18 @@ const CommonProfile = ({
     Share.open(options);
   };
 
+  const onEdit = (type) => {
+    bottomSheetStore.hideBottomSheet();
+    type === 'info'
+      ? navigateTo('Edit info and cover photo')
+      : navigateTo('Edit Rules');
+  };
+
   const openCommonOptions = (event) => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
-        editInfo: () => navigateTo('Edit info and cover photo'),
-        editRules: () => navigateTo('Edit Rules'),
+        onEdit: (type) => onEdit(type),
       },
     );
   };
@@ -772,6 +778,8 @@ const CommonProfile = ({
                   cover: currCommon.image,
                 }}
                 common={currCommon}
+                canEdit={hasPermission}
+                onEdit={onEdit}
               />
             )}
             renderStickyHeader={() => (

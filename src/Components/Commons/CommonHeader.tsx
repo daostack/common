@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   StyleProp,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {layout, colors, text, font} from '~/Theme';
 import FastImage, {ImageStyle} from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
@@ -24,6 +24,8 @@ const props = {
     byline: string,
   }),
   common: object,
+  canEdit: bool,
+  onEdit: func,
 };
 
 const CommonHeader: React.FC<InferProps<typeof props>> = ({
@@ -32,11 +34,15 @@ const CommonHeader: React.FC<InferProps<typeof props>> = ({
   commonInfo: {logo, name, description, byline},
   headerHeightLayouted,
   common,
+  canEdit,
+  onEdit,
 }) => {
   const openAgendaScreen = () => {
     navigation.navigate('CommonAgenda', {
       screenTitle: name,
       common: common,
+      canEdit,
+      onEdit,
     });
   };
   return (
