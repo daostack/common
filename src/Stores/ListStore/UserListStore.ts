@@ -18,7 +18,7 @@ export default class UserListStore extends ListStore<UserModel> {
     members: Array<ICommonMember>,
   ): Array<UserModel> =>
     members.map((commonMember: ICommonMember) => {
-      let user = this.getUserById(commonMember.userId);
+      const user = this.getUserById(commonMember.userId);
       user.joinedAt = commonMember.joinedAt;
       return user;
     });
