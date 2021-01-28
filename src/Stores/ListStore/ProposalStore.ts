@@ -71,8 +71,8 @@ export default class ProposalStore extends ListStore<Proposal> {
   getUserProposals = (
     userId: string,
     proposalFilter: IProposalFilter,
-  ): Array<Proposal> | [] =>
-    this.getDataArray?.filter((proposal: Proposal) => {
+  ): Array<Proposal> =>
+    this.getDataArray.filter((proposal: Proposal) => {
       const isProposer = proposal.proposerId === userId;
       if (isProposer) {
         return this._applyFilter(proposal, proposalFilter);
@@ -83,8 +83,8 @@ export default class ProposalStore extends ListStore<Proposal> {
   getCommonProposals = (
     commonId: string,
     proposalFilter: IProposalFilter,
-  ): Array<Proposal> | undefined =>
-    this.getDataArray?.filter((proposal: Proposal) => {
+  ): Array<Proposal> =>
+    this.getDataArray.filter((proposal: Proposal) => {
       const isSameCommon = proposal.commonId === commonId;
       if (isSameCommon) {
         return this._applyFilter(proposal, proposalFilter);

@@ -18,21 +18,21 @@ export default class CommonStore extends ListStore<Common> {
 
   @computed
   get myCommons() {
-    return this.getDataArray?.filter((common: Common) =>
+    return this.getDataArray.filter((common: Common) =>
       this.rootStore.authStore.isDaoMember(common?.members),
     );
   }
 
   @computed
   get pendingCommons() {
-    return this.rootStore.proposalStore.myActiveMembershipRequests?.map(
+    return this.rootStore.proposalStore.myActiveMembershipRequests.map(
       (proposal: Proposal) => this.getCommonById(proposal.commonId),
     );
   }
 
   @computed
   get featuredCommons() {
-    return this.getDataArray?.filter(
+    return this.getDataArray.filter(
       (common: Common) =>
         !this.myCommons.includes(common) &&
         !this.pendingCommons.includes(common) &&
