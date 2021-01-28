@@ -58,14 +58,11 @@ class DaoStore {
    */
   updateDaoInfo = async (updateCommonInfo, changedBy) => {
     try {
-      const updateResponse = await DaoService.getInstance().updateCommon(
-        {
-          commonId: updateCommonInfo.id,
-          changes: updateCommonInfo,
-          userId: changedBy,
-        },
-      );
-      Cache.set(updateCommonInfo.id, updateCommonInfo);
+      const updateResponse = await DaoService.getInstance().updateCommon({
+        commonId: updateCommonInfo.id,
+        changes: updateCommonInfo,
+      });
+      // Cache.set(updateCommonInfo.id, updateCommonInfo); @question to Lyubo: about this and mobx-persist
       return updateResponse;
     } catch (err) {
       throw err;
