@@ -77,7 +77,7 @@ export default class ProposalStore extends ListStore<Proposal> {
       if (isProposer) {
         return this._applyFilter(proposal, proposalFilter);
       }
-      return isProposer;
+      return false;
     });
 
   getCommonProposals = (
@@ -112,23 +112,19 @@ export default class ProposalStore extends ListStore<Proposal> {
       this.isLoading = true;
     });
 
+    const updatesMap = new Map<string, Proposal>();
+
     // Initial loading
     updatedUserList
       .docChanges()
       .forEach((updatedProposalDoc: IFirebaseDocChange<IProposalEntity>) => {
         const updatedProposal = updatedProposalDoc.doc.data();
 
-        // let proposal = this.getProposalById(
-        //   updatedProposal.id,
-        // );
-        // if (proposal) {
-        //   proposal.setUpdates(updatedProposal);
-        // }
-
-        this.setData(updatedProposal.id, new Proposal(updatedProposal));
+        updatesMap.set(updatedProposal.id, new Proposal(updatedProposal));
       });
 
     runInAction(() => {
+      this.data.merge(updatesMap);
       this.isLoading = false;
     });
   };
