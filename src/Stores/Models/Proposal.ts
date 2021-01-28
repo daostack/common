@@ -63,11 +63,6 @@ export class Proposal extends BaseModel<IProposalEntity> {
 
   @computed
   get isActive() {
-    console.log(
-      'isActive ',
-      PROPOSAL_STAGES_ACTIVE.some((stg) => stg === this.state),
-      this.state,
-    );
     return (
       PROPOSAL_STAGES_ACTIVE.some((stg) => stg === this.state) ||
       ACTIVE_PAYMENT_STATES.some((x) => x === this.paymentState)
