@@ -22,6 +22,8 @@ import {inject} from 'mobx-react';
 import ProposalService from '~/Services/ProposalService';
 import UseOfFunds from '../../Components/Commons/UseOfFunds';
 import {BlurView} from '@react-native-community/blur';
+import DebtWarningNote from './components/DebtWarningNote';
+import ModalDebtWarning from './components/ModalDebtWarning';
 
 const FundingProposal = ({
   navigation,
@@ -32,6 +34,7 @@ const FundingProposal = ({
 }) => {
   const [fundingRequestFormStore] = useState(new FundingRequestFormStore());
   const [useOfFundsVisible, setUseOfFundsVisible] = useState(false);
+  const [debtModalVisible, setDebtModalVisible] = useState(false);
 
   const createProposal = async () => {
     navigation.setOptions({headerShown: true});
@@ -88,6 +91,14 @@ const FundingProposal = ({
     }
   };
 
+  const closeDebtModal = () => {
+    setDebtModalVisible(false);
+  };
+
+  const openDebtModal = () => {
+    setDebtModalVisible(true);
+  };
+
   const onCreateProposalButtonPressed = async () => {
     if (fundingRequestFormStore.isFormValid()) {
       Keyboard.dismiss();
@@ -123,6 +134,12 @@ const FundingProposal = ({
           onCancel={() => hideModal()}
         />
       </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={debtModalVisible}>
+        <ModalDebtWarning onPressClose={() => closeDebtModal()} />
+      </Modal>
       <SafeAreaView style={{flex: 1}}>
         <ScrollView
           style={{
@@ -141,6 +158,7 @@ const FundingProposal = ({
             common={common}
             fundingRequestFormStore={fundingRequestFormStore}
           />
+          <DebtWarningNote onPress={() => openDebtModal()} />
         </ScrollView>
         <RequestStepActionButton
           title="Create Proposal"

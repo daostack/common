@@ -175,6 +175,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
         {/* )} */}
         <ScrollView
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
           width={width}
           contentContainerStyle={{
             alignItems: 'center',

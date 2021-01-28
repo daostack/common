@@ -57,6 +57,7 @@ const History = ({navigation, commonId}) => (
 );
 
 const CommonMembers = ({navigation, route: router, proposalStore}) => {
+  const {members, commonId} = router.params;
   const [index, setIndex] = useState(0);
   const pendingCount = proposalStore.getCommonProposals(commonId, {
     stage: PROPOSAL_STAGE.Active,
@@ -66,8 +67,6 @@ const CommonMembers = ({navigation, route: router, proposalStore}) => {
     stage: PROPOSAL_STAGE.History,
     type: PROPOSAL_TYPE.Join,
   }).length;
-
-  const {members, commonId} = router.params;
 
   const routes = [
     {key: 'members', title: getTabName('Members', members.length)},

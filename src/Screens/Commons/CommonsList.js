@@ -49,8 +49,9 @@ const CommonsList = ({
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    // TODO: refresh
+    // TODO: Implement logic for refresh or leave it as it is now - faky
     // DaoService.getInstance().getDaoList(loadDaosList);
+    setRefreshing(false);
   }, [refreshing]);
 
   const onAddCommon = () => {
@@ -164,7 +165,7 @@ const CommonsList = ({
   return (
     <>
       <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
-        {featuredDaosGroup ? (
+        {featuredDaosGroup.data.length > 0 || !commonStore.isLoading ? (
           <SectionList
             sections={
               userStore.signedInUser

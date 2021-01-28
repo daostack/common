@@ -138,6 +138,15 @@ const CreateStep4 = ({
     }
   };
 
+  const changeLaterMessage = (
+    <View style={styles.textContainer}>
+      <Text style={styles.text}>
+        Don't worry, you will be able to make changes to the Common info after
+        it is published.
+      </Text>
+    </View>
+  );
+
   const displayString = () =>
     `${numberFormatter(form[CreateCommonForm.MINIMUM])}${
       CONTRIBUTION[form.contribution]
@@ -179,6 +188,7 @@ const CreateStep4 = ({
       requestStepActionButton={
         <RequestStepActionButton
           title="Publish Common"
+          messageBox={changeLaterMessage}
           formStore={agendaFormStore}
           onPress={() => forgeCommon()}
         />
@@ -190,10 +200,6 @@ const CreateStep4 = ({
         }}>
         <Text style={stylesHeader.generalInfoTitle}>
           Final touches and review
-        </Text>
-        <Text style={stylesHeader.generalInfoSubtitle}>
-          You will not be able to make changes to the Common info after it is
-          published
         </Text>
         <CommonImage
           width={width}
@@ -396,6 +402,21 @@ const styles = StyleSheet.create({
     ...layout.marginTopL,
     flexGrow: 0,
     width: '100%',
+  },
+  text: {
+    fontSize: 15,
+    textAlign: 'center',
+    ...font.lineHeight(0),
+    color: colors.slate,
+    paddingHorizontal: 2,
+  },
+  textContainer: {
+    borderRadius: 14,
+    backgroundColor: colors.lighterBlue,
+    marginBottom: sizeL,
+    height: 75,
+    width: '100%',
+    justifyContent: 'center',
   },
 });
 
