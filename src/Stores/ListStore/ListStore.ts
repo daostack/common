@@ -14,16 +14,14 @@ import {persist} from 'mobx-persist';
 export default class ListStore<IEntity> {
   @persist('map')
   @observable
-  data: ObservableMap<string, IEntity>;
+  data: ObservableMap<string, IEntity> = observable.map({});
 
   rootStore: RootStore;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
-    this.data = observable.map({});
   }
 
-  // Computed
   @computed
   get isEmpty(): boolean {
     return keys(this.data).length > 0;
