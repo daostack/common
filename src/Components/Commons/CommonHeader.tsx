@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   StyleProp,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {layout, colors, text, font} from '~/Theme';
 import FastImage, {ImageStyle} from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
