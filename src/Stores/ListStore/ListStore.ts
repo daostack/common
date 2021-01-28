@@ -38,7 +38,11 @@ export default class ListStore<IEntity> {
   }
 
   //Functions
-  getDataById(id: string): IEntity | undefined {
-    return get(this.data, id);
+  getDataById(id: string): IEntity {
+    const dataById = get(this.data, id);
+    if (!dataById) {
+      throw Error(`Data with ID ${id} not exists.`);
+    }
+    return dataById;
   }
 }
