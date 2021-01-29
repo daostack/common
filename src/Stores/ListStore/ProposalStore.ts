@@ -10,6 +10,11 @@ import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
+import {
+  PROPOSAL_STAGES_ACTIVE,
+  PROPOSAL_STAGES_HISTORY,
+} from '~/Services/ListServices/ProposalListService';
+import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 
 export type IProposalStageFilter =
   | typeof PROPOSAL_STAGE.Active
@@ -34,6 +39,14 @@ export const isStageFilterActive = (stageFilter: IProposalStageFilter) =>
 
 export const isStageFilterHistory = (stageFilter: IProposalStageFilter) =>
   stageFilter === PROPOSAL_STAGE.History;
+
+export const isProposalActive = (proposal: Proposal) =>
+  PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.state) ||
+  ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState);
+
+export const isProposalHistory = (proposal: Proposal) =>
+  PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state) &&
+  !ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState);
 
 export default class ProposalStore extends ListStore<Proposal> {
   @observable
@@ -130,6 +143,7 @@ export default class ProposalStore extends ListStore<Proposal> {
   };
 
   _applyFilter = (proposal: Proposal, proposalFilter: IProposalFilter) => {
+    console.log('PROPOSAL TEST ', proposal.isActive);
     // Check IProposalFilter.type filter
     if (proposalFilter.type && proposal.type !== proposalFilter.type) {
       return false;
@@ -137,8 +151,10 @@ export default class ProposalStore extends ListStore<Proposal> {
     // Check IProposalFilter.stage filter
     if (proposalFilter.stage) {
       if (
-        (proposal.isActive && !isStageFilterActive(proposalFilter.stage)) ||
-        (proposal.isHistory && !isStageFilterHistory(proposalFilter.stage))
+        (isProposalActive(proposal) &&
+          !isStageFilterActive(proposalFilter.stage)) ||
+        (isProposalHistory(proposal) &&
+          !isStageFilterHistory(proposalFilter.stage))
       ) {
         return false;
       }

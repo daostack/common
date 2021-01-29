@@ -62,22 +62,6 @@ export class Proposal extends BaseModel<IProposalEntity> {
   }
 
   @computed
-  get isActive() {
-    return (
-      PROPOSAL_STAGES_ACTIVE.some((stg) => stg === this.state) ||
-      ACTIVE_PAYMENT_STATES.some((x) => x === this.paymentState)
-    );
-  }
-
-  @computed
-  get isHistory() {
-    return (
-      PROPOSAL_STAGES_HISTORY.some((stg) => stg === this.state) &&
-      !ACTIVE_PAYMENT_STATES.some((x) => x === this.paymentState)
-    );
-  }
-
-  @computed
   get funding() {
     if (this.type === PROPOSAL_TYPE.Join) {
       return this.join?.funding;
