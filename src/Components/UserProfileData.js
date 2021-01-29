@@ -204,7 +204,9 @@ const UserProfileData = ({
           {showMaxData && proposalsCount > 0 && (
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate('MyProposals', {onlyFundingRequests: true})
+                navigation.navigate('MyProposals', {
+                  proposalTypeFilter: PROPOSAL_TYPE.FundingRequest,
+                })
               }
               style={{flexDirection: 'row', ...layout.paddingHorizontalL}}>
               <Text
@@ -248,7 +250,7 @@ const UserProfileData = ({
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate('MyProposals', {
-                  onlyMembershipRequests: true,
+                  proposalTypeFilter: PROPOSAL_TYPE.Join,
                 })
               }
               style={{

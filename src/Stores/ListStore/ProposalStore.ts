@@ -32,7 +32,7 @@ export const isTypeFilterJoin = (typeFilter: IProposalTypeFilter) =>
   typeFilter === PROPOSAL_TYPE.Join;
 
 export const isTypeFilterFundingRequest = (typeFilter: IProposalTypeFilter) =>
-  typeFilter === PROPOSAL_TYPE.Join;
+  typeFilter === PROPOSAL_TYPE.FundingRequest;
 
 export const isStageFilterActive = (stageFilter: IProposalStageFilter) =>
   stageFilter === PROPOSAL_STAGE.Active;
