@@ -95,8 +95,6 @@ const ProposalCard = ({
     });
   };
 
-  console.log(proposalInfo?.id);
-  console.log(proposalInfo?.state);
   return proposalInfo ? (
     <Animated.View
       style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
