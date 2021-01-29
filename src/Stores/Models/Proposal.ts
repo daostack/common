@@ -9,11 +9,6 @@ import {
   IProposalVote,
   ProposalType,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
-import {
-  PROPOSAL_STAGES_ACTIVE,
-  PROPOSAL_STAGES_HISTORY,
-} from '~/Services/ListServices/ProposalListService';
-import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 import {BaseModel} from './BaseModel';
 
 export class Proposal extends BaseModel<IProposalEntity> {
