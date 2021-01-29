@@ -174,7 +174,7 @@ export default class ProposalService {
               x.data().state !== PROPOSAL_STAGE.passed),
         );
 
-        console.log(pendingProposals);
+        // console.log(pendingProposals);
 
         callback({
           pendingProposalCount: pendingProposals.length,

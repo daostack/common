@@ -9,12 +9,12 @@ const ModalDebtWarning = ({onPressClose}) => (
     <Text style={styles.title}>
       The Common might not have the funds you request
     </Text>
-    <Text>
-      <Text style={[styles.text, styles.centerText]}>
+    <Text style={[styles.text, styles.centerText]}>
+      <Text>
         {`The Common is currently voting on other proposals, and the balance might change before your proposal is decided \n
-              If the Common balance is lower than the requested amount, `}
+If the Common balance is lower than the requested amount, `}
       </Text>
-      <Text style={[styles.text, styles.centerText, {fontWeight: 'bold'}]}>
+      <Text style={{fontWeight: 'bold'}}>
         the proposal will be rejected even if a majority of members approve it
       </Text>
     </Text>
@@ -46,8 +46,9 @@ const styles = StyleSheet.create({
     color: colors.black,
     ...font.primary.regular,
     fontSize: 16,
-    marginHorizontal: 50,
+    marginHorizontal: 30,
     lineHeight: 20,
+    textAlign: 'center',
   },
   centerText: {
     textAlign: 'center',

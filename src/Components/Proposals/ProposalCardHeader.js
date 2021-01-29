@@ -22,6 +22,8 @@ const calcStatus = (state, isScreenHeader, paymentStatus) => {
     opacity: 1,
   };
 
+  console.log(state);
+
   if (state === PROPOSAL_STAGE.passed) {
     if (paymentStatus === 'confirmed') {
       status.text = TITLES.APPROVED;

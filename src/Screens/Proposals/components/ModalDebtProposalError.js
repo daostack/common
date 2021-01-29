@@ -9,12 +9,12 @@ const ModalDebtProposalError = ({onPressClose, amount}) => (
     <Text style={styles.title}>
       The Common might not have the requested amount
     </Text>
-    <Text>
-      <Text style={[styles.text, styles.centerText]}>
+    <Text style={[styles.text, styles.centerText]}>
+      <Text>
         {`The Common balance is currently lower than $${amount} (the requested amount). \n
-                If the balance would still be insufficient when the proposal is decided, `}
+If the balance would still be insufficient when the proposal is decided, `}
       </Text>
-      <Text style={[styles.text, styles.centerText, {fontWeight: 'bold'}]}>
+      <Text style={{fontWeight: 'bold'}}>
         It will be rejected even if a majority of members approve it
       </Text>
     </Text>
@@ -47,8 +47,9 @@ const styles = StyleSheet.create({
     color: colors.black,
     ...font.primary.regular,
     fontSize: 16,
-    marginHorizontal: 50,
+    marginHorizontal: 30,
     lineHeight: 20,
+    textAlign: 'center',
   },
   centerText: {
     textAlign: 'center',

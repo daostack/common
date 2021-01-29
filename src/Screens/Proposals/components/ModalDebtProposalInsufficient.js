@@ -7,15 +7,13 @@ import ModalCommonDebt from './ModalCommonDebt';
 const ModalDebtProposalInsufficient = ({onPressClose}) => (
   <ModalCommonDebt onPressClose={onPressClose}>
     <Text style={styles.title}>Insufficient balance</Text>
-    <Text>
-      <Text style={[styles.text, styles.centerText]}>
+    <Text style={[styles.text, styles.centerText]}>
+      <Text>
         {
           'The proposal was approved by the Common members, but the Common balance was insufficient for the requested amount, '
         }
       </Text>
-      <Text style={[styles.text, styles.centerText, {fontWeight: 'bold'}]}>
-        and the proposal was cancelled
-      </Text>
+      <Text style={{fontWeight: 'bold'}}>and the proposal was cancelled</Text>
     </Text>
   </ModalCommonDebt>
 );
@@ -45,8 +43,9 @@ const styles = StyleSheet.create({
     color: colors.black,
     ...font.primary.regular,
     fontSize: 16,
-    marginHorizontal: 50,
+    marginHorizontal: 30,
     lineHeight: 20,
+    textAlign: 'center',
   },
   centerText: {
     textAlign: 'center',
