@@ -9,11 +9,6 @@ import {
   IProposalVote,
   ProposalType,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
-import {
-  PROPOSAL_STAGES_ACTIVE,
-  PROPOSAL_STAGES_HISTORY,
-} from '~/Services/ListServices/ProposalListService';
-import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 import {BaseModel} from './BaseModel';
 
 export class Proposal extends BaseModel<IProposalEntity> {
@@ -59,22 +54,6 @@ export class Proposal extends BaseModel<IProposalEntity> {
   @computed
   get isJoinRequest() {
     return this.type === PROPOSAL_TYPE.Join;
-  }
-
-  @computed
-  get isActive() {
-    return (
-      PROPOSAL_STAGES_ACTIVE.some((stg) => stg === this.state) ||
-      ACTIVE_PAYMENT_STATES.some((x) => x === this.paymentState)
-    );
-  }
-
-  @computed
-  get isHistory() {
-    return (
-      PROPOSAL_STAGES_HISTORY.some((stg) => stg === this.state) &&
-      !ACTIVE_PAYMENT_STATES.some((x) => x === this.paymentState)
-    );
   }
 
   @computed
