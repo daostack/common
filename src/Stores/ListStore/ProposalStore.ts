@@ -143,7 +143,6 @@ export default class ProposalStore extends ListStore<Proposal> {
   };
 
   _applyFilter = (proposal: Proposal, proposalFilter: IProposalFilter) => {
-    console.log('PROPOSAL TEST ', proposal.isActive);
     // Check IProposalFilter.type filter
     if (proposalFilter.type && proposal.type !== proposalFilter.type) {
       return false;
