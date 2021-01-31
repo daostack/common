@@ -30,6 +30,7 @@ import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
 import {func, object, shape, string} from 'prop-types';
 import DiscussionService from '../../Services/DiscussionService';
+import Hyperlink from 'react-native-hyperlink';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
@@ -351,7 +352,11 @@ const Discussions = ({
                 </View>
 
                 <View>
-                  <Text style={styles.message}>{dataState.message}</Text>
+                  <Hyperlink
+                    linkDefault={true}
+                    linkStyle={styles.hyperLinkStyle}>
+                    <Text style={styles.message}>{dataState.message}</Text>
+                  </Hyperlink>
                 </View>
 
                 {headerImages()}
@@ -735,6 +740,10 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOpacity: 0.8,
     elevation: 5,
+  },
+  hyperLinkStyle: {
+    textDecorationLine: 'underline',
+    color: colors.mainBlue,
   },
 });
 
