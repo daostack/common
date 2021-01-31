@@ -49,26 +49,6 @@ const CommonAgenda = ({
           </Text>
         </View>
 
-        {metadata.links?.length > 0 && (
-          <View style={styles.sectionContainer}>
-            <Text style={text.h3Black}>Links</Text>
-            {metadata.links.map((link, i) => (
-              <View key={i}>
-                <Text
-                  style={styles.linkText}
-                  onPress={() =>
-                    navigation.navigate('Browser', {
-                      url: link.value || link.url,
-                    })
-                  }>
-                  {/* NOTE: value of multiple fields was stored in url prop before */}
-                  {link.value || link.url}
-                </Text>
-              </View>
-            ))}
-          </View>
-        )}
-
         {common.links?.length > 0 && (
           <View style={styles.sectionContainer}>
             <Text style={text.h3Black}>Links</Text>
@@ -82,7 +62,7 @@ const CommonAgenda = ({
                     })
                   }>
                   {/* NOTE: value of multiple fields was stored in url prop before */}
-                  {link.value || link.url}
+                  {link.title}
                 </Text>
               </View>
             ))}
