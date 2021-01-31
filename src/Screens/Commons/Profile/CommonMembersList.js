@@ -86,7 +86,7 @@ const CommonMembersList = ({
     };
   }, [commonId]);
 
-  const limitedMembers = limit ? limitCommonMembers(members) : members;
+  const limitedMembers = limit ? limitCommonMembers(membersInfo) : membersInfo;
 
   return (
     <View
@@ -97,7 +97,7 @@ const CommonMembersList = ({
         }
       }>
       {membersInfo ? (
-        membersInfo.map((member, i) =>
+        limitedMembers.map((member, i) =>
           horizontal ? (
             <TouchableOpacity
               style={{position: 'relative', left: i * -15}}
