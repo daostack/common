@@ -166,7 +166,7 @@ const CreateStep2 = ({
       currentIndex={2}
       requestStepActionButton={
         <RequestStepActionButton
-          title="Continue to Additional Info"
+          title="Continue to Rules"
           formStore={fundingFormStore}
           onPress={push}
         />
