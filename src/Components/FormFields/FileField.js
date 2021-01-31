@@ -108,7 +108,7 @@ class FileField extends React.Component {
           <Icon name="file" color={colors.mainBlue} size={20} />
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('Browser', {
+              navigation?.navigate('Browser', {
                 url: currValue,
               });
             }}>

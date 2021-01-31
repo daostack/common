@@ -157,6 +157,7 @@ const FundingProposal = ({
           <FundingRequestForm
             common={common}
             fundingRequestFormStore={fundingRequestFormStore}
+            navigation={navigation}
           />
           <DebtWarningNote onPress={() => openDebtModal()} />
         </ScrollView>
