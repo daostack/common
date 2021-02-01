@@ -36,15 +36,14 @@ const {width} = Dimensions.get('window');
 const Discussions = ({
   commonStore,
   discussionStore,
+  discussionMessageStore,
   userStore,
   bottomSheetStore,
   userListStore,
   navigation,
-  commonStore,
   route: {
     params: {commonId, discussionId, data},
   },
-  discussionMessageStore,
 }) => {
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
