@@ -8,13 +8,14 @@ import {
   IProposalJoin,
   IProposalVote,
   ProposalType,
+  IProposalImage,
+  IUIProposalImage,
+  IJoinReqDescription,
+  IFundingRequestDescription,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
-import {
-  PROPOSAL_STAGES_ACTIVE,
-  PROPOSAL_STAGES_HISTORY,
-} from '~/Services/ListServices/ProposalListService';
-import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 import {BaseModel} from './BaseModel';
+import ImageSize from 'react-native-image-size';
+import {promisedComputed} from 'computed-async-mobx';
 
 export class Proposal extends BaseModel<IProposalEntity> {
   @observable
@@ -56,25 +57,41 @@ export class Proposal extends BaseModel<IProposalEntity> {
   @observable
   join: IProposalJoin | undefined;
 
+  @observable
+  description: IFundingRequestDescription | IJoinReqDescription;
+
+  @observable
+  imagesPromised = promisedComputed(
+    [],
+    async (): Promise<IUIProposalImage[]> => {
+      console.log('promisedComputed');
+      const tempImages: IUIProposalImage[] = [];
+      if (this.description.images?.length) {
+        await Promise.all(
+          this.description.images.map(async (currImage: IProposalImage) => {
+            if (currImage.value) {
+              const {width, height} = await ImageSize.getSize(currImage.value);
+              tempImages.push({
+                title: currImage.title,
+                widthRatio: (width / height) * 220,
+                uri: currImage.value,
+              } as IUIProposalImage);
+            }
+          }),
+        );
+      }
+      return tempImages;
+    },
+  );
+
+  @computed
+  get images() {
+    return this.imagesPromised.value;
+  }
+
   @computed
   get isJoinRequest() {
     return this.type === PROPOSAL_TYPE.Join;
-  }
-
-  @computed
-  get isActive() {
-    return (
-      PROPOSAL_STAGES_ACTIVE.some((stg) => stg === this.state) ||
-      ACTIVE_PAYMENT_STATES.some((x) => x === this.paymentState)
-    );
-  }
-
-  @computed
-  get isHistory() {
-    return (
-      PROPOSAL_STAGES_HISTORY.some((stg) => stg === this.state) &&
-      !ACTIVE_PAYMENT_STATES.some((x) => x === this.paymentState)
-    );
   }
 
   @computed
@@ -100,6 +117,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
     this.quietEndingPeriod = newProposalInfo.quietEndingPeriod;
     this.votesFor = newProposalInfo.votesFor;
     this.votesAgainst = newProposalInfo.votesAgainst;
+    this.description = newProposalInfo.description;
     if (this.type === PROPOSAL_TYPE.Join) {
       this.paymentState = (newProposalInfo as IJoinRequestProposal).paymentState;
       this.join = (newProposalInfo as IJoinRequestProposal).join;

@@ -114,6 +114,7 @@ const MultiLinkField = (props) => {
             validation.validateRule?.common || validation.validateRule,
           invisibleContainer: true,
           immediateValidation: true,
+          customErrorMessage: 'Link format is invalid',
         }; //{...validation};
 
         const currTitleItemValidation = {
@@ -124,6 +125,7 @@ const MultiLinkField = (props) => {
           topPosition: true,
           invisibleContainer: true,
           immediateValidation: true,
+          customErrorMessage: 'Link title is required',
         };
 
         return (

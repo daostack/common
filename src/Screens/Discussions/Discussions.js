@@ -30,14 +30,15 @@ import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
 import {func, object, shape, string} from 'prop-types';
 import DiscussionService from '../../Services/DiscussionService';
+import Hyperlink from 'react-native-hyperlink';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
-  daoStore,
   userStore,
   bottomSheetStore,
   userListStore,
   navigation,
+  commonStore,
   route: {
     params: {commonId, discussionId, data},
   },
@@ -62,7 +63,7 @@ const Discussions = ({
   const user = userListStore.getUserById(dataState.ownerId);
 
   useEffect(() => {
-    const currentDao = daoStore.daos.find((dao) => dao.id === commonId);
+    const currentDao = commonStore.getCommonById(commonId);
     const isCurrMember =
       userStore.userInfo && userStore.isDaoMember(currentDao?.members);
     setIsMember(isCurrMember);
@@ -351,7 +352,11 @@ const Discussions = ({
                 </View>
 
                 <View>
-                  <Text style={styles.message}>{dataState.message}</Text>
+                  <Hyperlink
+                    linkDefault={true}
+                    linkStyle={styles.hyperLinkStyle}>
+                    <Text style={styles.message}>{dataState.message}</Text>
+                  </Hyperlink>
                 </View>
 
                 {headerImages()}
@@ -552,6 +557,7 @@ Discussions.propTypes = {
   userListStore: shape({
     getUserById: func,
   }),
+  commonStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -736,11 +742,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     elevation: 5,
   },
+  hyperLinkStyle: {
+    textDecorationLine: 'underline',
+    color: colors.mainBlue,
+  },
 });
 
 export default inject(
   'userStore',
   'bottomSheetStore',
-  'daoStore',
   'userListStore',
+  'commonStore',
 )(observer(Discussions));

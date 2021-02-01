@@ -149,6 +149,8 @@ export interface IProposalImage {
    * The URL of where the image is
    */
   value: string;
+
+  title?: string;
 }
 
 export interface IProposalFile {
@@ -245,3 +247,9 @@ export type ProposalType = 'join' | 'fundingRequest';
  * available fields based on the type field (witch can be either joinRequest or fundingRequest)
  */
 export type IProposalEntity = IJoinRequestProposal | IFundingRequestProposal;
+
+export interface IUIProposalImage {
+  title: string;
+  widthRatio: number;
+  uri: string;
+}

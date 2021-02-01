@@ -120,7 +120,7 @@ const App = ({
     const unsubscribeCommons = commonStore.subscribeToAllCommons();
     let unsubscribeProposals = null;
     if (userStore.userInfo?.uid) {
-      unsubscribeProposals = proposalStore.subscribeToUserActiveProposals(
+      unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         userStore.userInfo?.uid,
       );
     }
