@@ -35,7 +35,12 @@ class FundingRequestForm extends React.Component {
   };
 
   render() {
-    const {fundingRequestFormStore, common, ...otherProps} = this.props;
+    const {
+      fundingRequestFormStore,
+      common,
+      navigation,
+      ...otherProps
+    } = this.props;
 
     logger.log('common.balance ->', common.balance);
     const balance = formatNumber(common.balance / 100);
@@ -154,6 +159,7 @@ class FundingRequestForm extends React.Component {
             formStore: fundingRequestFormStore,
             validateRule: 'string',
           }}
+          navigation={navigation}
         />
 
         <Text
@@ -186,6 +192,7 @@ FundingRequestForm.propTypes = {
   common: object,
   onFormSubmit: func,
   onFormClose: func,
+  navigation: object,
 };
 
 export default FundingRequestForm;
