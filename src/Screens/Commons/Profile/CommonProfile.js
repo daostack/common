@@ -373,7 +373,6 @@ const CommonProfile = ({
                 horizontal={true}
                 navigation={navigation}
                 commonId={currCommon.id}
-                members={currCommon?.members}
                 limit={5}
               />
             </View>

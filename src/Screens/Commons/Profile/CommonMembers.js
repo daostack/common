@@ -22,12 +22,8 @@ const initialLayout = {width: Dimensions.get('window').width};
 const getTabName = (objectName, count) =>
   `${objectName} (${count ? count : 0})`;
 
-const Members = ({navigation, members, commonId}) => (
-  <CommonMembersList
-    navigation={navigation}
-    members={members}
-    commonId={commonId}
-  />
+const Members = ({navigation, commonId}) => (
+  <CommonMembersList navigation={navigation} commonId={commonId} />
 );
 
 const Pending = ({navigation, commonId}) => (
@@ -77,13 +73,7 @@ const CommonMembers = ({navigation, route: router, proposalStore}) => {
   const renderScene = ({route}) => {
     switch (route.key) {
       case 'members':
-        return (
-          <Members
-            navigation={navigation}
-            members={members}
-            commonId={commonId}
-          />
-        );
+        return <Members navigation={navigation} commonId={commonId} />;
       case 'pending':
         return <Pending navigation={navigation} commonId={commonId} />;
       case 'history':
