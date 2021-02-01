@@ -6,8 +6,6 @@ import {
   View,
   Image,
   Dimensions,
-  Platform,
-  TextInput,
 } from 'react-native';
 import {colors, font, text as textjs} from '~/Theme';
 import auth from '@react-native-firebase/auth';
@@ -95,21 +93,11 @@ const DiscussionMessage = ({
               }}>
               <Text style={styles.ownerName}>{onwerInfo?.displayName}</Text>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
-                {Platform.OS === 'ios' ? (
-                  <TextInput
-                    style={styles.text}
-                    value={text}
-                    editable={false}
-                    multiline
-                    {...textjs.textAlign(text)}
-                  />
-                ) : (
-                  <Text
-                    style={{...styles.text, ...textjs.writingDirection(text)}}
-                    selectable>
-                    {text}
-                  </Text>
-                )}
+                <Text
+                  style={{...styles.text, ...textjs.writingDirection(text)}}
+                  selectable>
+                  {text}
+                </Text>
               </Hyperlink>
 
               <Text style={styles.date}>
