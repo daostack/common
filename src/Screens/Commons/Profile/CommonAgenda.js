@@ -33,7 +33,6 @@ const Title = ({title, onPress, canEdit}) => (
 
 const CommonAgenda = ({
   // This destructuring is bloody awful
-  // @alexI is it better now? :)
   navigation,
   route: {
     params: {common, canEdit, onEdit},
@@ -75,26 +74,6 @@ const CommonAgenda = ({
               {common.metadata.description}
             </Text>
           </View>
-
-          {common.metadata.links?.length > 0 && (
-            <View style={styles.sectionContainer}>
-              <Text style={text.h3Black}>Links</Text>
-              {common.metadata.links.map((link, i) => (
-                <View key={i}>
-                  <Text
-                    style={styles.linkText}
-                    onPress={() =>
-                      navigation.navigate('Browser', {
-                        url: link.value || link.url,
-                      })
-                    }>
-                    {/* NOTE: value of multiple fields was stored in url prop before */}
-                    {link.value || link.url}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          )}
 
           {common.links?.length > 0 && (
             <View style={styles.sectionContainer}>
