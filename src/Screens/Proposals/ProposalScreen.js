@@ -26,7 +26,6 @@ import ProposalService, {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import {UserAvatar} from '~/Components';
 import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
-import DaoService from '~/Services/DaoService';
 import {observer, inject} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
@@ -65,6 +64,8 @@ const ProposalScreen = ({
     },
   },
   userListStore,
+  commonStore,
+  proposalStore,
 }) => {
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
@@ -121,9 +122,7 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    let unsubscribe = null;
-
-    const loadProposalInfo = async (currProposalInfo, currProposalDao) => {
+    const loadProposalInfo = (currProposalInfo, currProposalDao) => {
       const currProposedUser = userListStore.getUserById(
         currProposalInfo.proposerId,
       );
@@ -159,26 +158,25 @@ const ProposalScreen = ({
       });
     };
 
-    const getProposalInfo = async (currProposalId) => {
+    const getProposalInfo = (currProposalId) => {
       try {
-        unsubscribe = await ProposalService.getInstance().subscribeToProposalById(
+        const updatedProposalInfo = proposalStore.getProposalById(
           currProposalId,
-          async (updatedProposalInfo) => {
-            if (updatedProposalInfo.type === PROPOSAL_TYPE.Join) {
-              navigation.setParams({
-                title: 'Request to join',
-              });
-            }
-
-            const currentDao = await DaoService.getInstance().getDaoById(
-              updatedProposalInfo.commonId,
-            );
-
-            setIsMember(userInfo && isDaoMember(currentDao?.members || []));
-            setIsProposer(userStore.isProposer(updatedProposalInfo));
-            await loadProposalInfo(updatedProposalInfo, currentDao);
-          },
         );
+
+        if (updatedProposalInfo.type === PROPOSAL_TYPE.Join) {
+          navigation.setParams({
+            title: 'Request to join',
+          });
+        }
+
+        const currentCommon = commonStore.getCommonById(
+          updatedProposalInfo.commonId,
+        );
+
+        setIsMember(userInfo && isDaoMember(currentCommon?.members || []));
+        setIsProposer(userStore.isProposer(updatedProposalInfo));
+        loadProposalInfo(updatedProposalInfo, currentCommon);
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());
@@ -189,12 +187,6 @@ const ProposalScreen = ({
       logger.log(`proposalId --> ${proposalId}`);
       getProposalInfo(proposalId);
     }
-
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
   }, [proposalId, votingProcessState]);
 
   const [
@@ -931,8 +923,8 @@ const ProposalScreen = ({
               {index === 0 && (
                 <ProposalData
                   proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
-                  proposalInfo={proposalScreenInfo?.proposalInfo}
-                  showMore={() => onSetIndex(1)}
+                  //proposalInfo={proposalScreenInfo?.proposalInfo}
+                  //showMore={() => onSetIndex(1)}
                 />
               )}
 
@@ -989,6 +981,12 @@ ProposalScreen.propTypes = {
   }),
   userListStore: shape({
     getUserById: func,
+  }),
+  commonStore: shape({
+    getCommonById: func,
+  }),
+  proposalStore: shape({
+    getProposalById: func,
   }),
 };
 
@@ -1119,4 +1117,6 @@ export default inject(
   'userStore',
   'userListStore',
   'bottomSheetStore',
+  'commonStore',
+  'proposalStore',
 )(observer(ProposalScreen));

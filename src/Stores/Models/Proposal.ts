@@ -8,8 +8,14 @@ import {
   IProposalJoin,
   IProposalVote,
   ProposalType,
+  IProposalImage,
+  IUIProposalImage,
+  IJoinReqDescription,
+  IFundingRequestDescription,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {BaseModel} from './BaseModel';
+import ImageSize from 'react-native-image-size';
+import {promisedComputed} from 'computed-async-mobx';
 
 export class Proposal extends BaseModel<IProposalEntity> {
   @observable
@@ -51,6 +57,38 @@ export class Proposal extends BaseModel<IProposalEntity> {
   @observable
   join: IProposalJoin | undefined;
 
+  @observable
+  description: IFundingRequestDescription | IJoinReqDescription;
+
+  @observable
+  imagesPromised = promisedComputed(
+    [],
+    async (): Promise<IUIProposalImage[]> => {
+      console.log('promisedComputed');
+      const tempImages: IUIProposalImage[] = [];
+      if (this.description.images?.length) {
+        await Promise.all(
+          this.description.images.map(async (currImage: IProposalImage) => {
+            if (currImage.value) {
+              const {width, height} = await ImageSize.getSize(currImage.value);
+              tempImages.push({
+                title: currImage.title,
+                widthRatio: (width / height) * 220,
+                uri: currImage.value,
+              } as IUIProposalImage);
+            }
+          }),
+        );
+      }
+      return tempImages;
+    },
+  );
+
+  @computed
+  get images() {
+    return this.imagesPromised.value;
+  }
+
   @computed
   get isJoinRequest() {
     return this.type === PROPOSAL_TYPE.Join;
@@ -79,6 +117,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
     this.quietEndingPeriod = newProposalInfo.quietEndingPeriod;
     this.votesFor = newProposalInfo.votesFor;
     this.votesAgainst = newProposalInfo.votesAgainst;
+    this.description = newProposalInfo.description;
     if (this.type === PROPOSAL_TYPE.Join) {
       this.paymentState = (newProposalInfo as IJoinRequestProposal).paymentState;
       this.join = (newProposalInfo as IJoinRequestProposal).join;
