@@ -34,11 +34,11 @@ import Hyperlink from 'react-native-hyperlink';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
-  daoStore,
   userStore,
   bottomSheetStore,
   userListStore,
   navigation,
+  commonStore,
   route: {
     params: {commonId, discussionId, data},
   },
@@ -63,7 +63,7 @@ const Discussions = ({
   const user = userListStore.getUserById(dataState.ownerId);
 
   useEffect(() => {
-    const currentDao = daoStore.daos.find((dao) => dao.id === commonId);
+    const currentDao = commonStore.getCommonById(commonId);
     const isCurrMember =
       userStore.userInfo && userStore.isDaoMember(currentDao?.members);
     setIsMember(isCurrMember);
@@ -557,6 +557,7 @@ Discussions.propTypes = {
   userListStore: shape({
     getUserById: func,
   }),
+  commonStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -750,6 +751,6 @@ const styles = StyleSheet.create({
 export default inject(
   'userStore',
   'bottomSheetStore',
-  'daoStore',
   'userListStore',
+  'commonStore',
 )(observer(Discussions));
