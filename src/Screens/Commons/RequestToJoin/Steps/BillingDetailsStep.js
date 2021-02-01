@@ -26,7 +26,6 @@ import {inject} from 'mobx-react';
 import {VALIDATION_RULES} from '~/FormStores/ValidationRules/billingDetailsRules';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import {formatNumber} from '~/Util/FormatUtil';
-import { get } from 'mobx';
 
 
 const BillingDetailsStep = ({navigation, route, userStore}) => {
