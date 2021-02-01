@@ -413,6 +413,22 @@ const ProposalScreen = ({
     });
   };
 
+  const renderDebWarningIfNeeded = () => {
+    if (isFundingRequest() && isCountdown()) {
+      return amount < getAvailableFunds() ? (
+        <DebtWarningProposalNote onPress={() => openDebtModal()} />
+      ) : (
+        <DebtErrorProposalNote onPress={() => openDebtErrorModal()} />
+      );
+    }
+  };
+
+  const isFundingRequest = () =>
+    proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest;
+
+  const isCountdown = () =>
+    proposalScreenInfo?.proposalInfo?.state === PROPOSAL_STAGE.countdown;
+
   const renderVotingButtons = (reference) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
@@ -516,9 +532,12 @@ const ProposalScreen = ({
     ],
   };
 
-  const getAvailableFunds = () => {
-    const availableFunds =
-      (commonBalance || proposalScreenInfo?.proposalDao?.balance || 0) / 100;
+  const getAvailableFunds = () =>
+    (commonBalance || proposalScreenInfo?.proposalDao?.balance || 0) / 100;
+
+  const getAvailableFundsText = () => {
+    const availableFunds = getAvailableFunds();
+
     return Math.abs(availableFunds) > 999
       ? Math.sign(availableFunds) *
           (Math.abs(availableFunds) / 1000).toFixed(1) +
@@ -773,16 +792,21 @@ const ProposalScreen = ({
                     styles.contributionCard,
                     {
                       backgroundColor:
-                        amount < getAvailableFunds()
-                          ? colors.iceBlue2
-                          : colors.againstLightOpacity,
+                        isFundingRequest() && isCountdown()
+                          ? amount < getAvailableFunds()
+                            ? colors.iceBlue2
+                            : colors.againstLightOpacity
+                          : colors.iceBlue2,
+                      borderBottomRightRadius:
+                        isFundingRequest() && isCountdown() ? 0 : 20,
+                      borderBottomLeftRadius:
+                        isFundingRequest() && isCountdown() ? 0 : 20,
                     },
                   ]}>
                   <View style={styles.requestedAmountContainer}>
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
-                      {proposalScreenInfo?.proposalInfo.type ===
-                      PROPOSAL_TYPE.FundingRequest
+                      {isFundingRequest()
                         ? proposalScreenInfo?.proposalInfo.fundingRequest
                             .amount > 0
                           ? 'Requested amount'
@@ -790,8 +814,7 @@ const ProposalScreen = ({
                         : 'Contribution:'}
                     </Text>
                     <Text style={text.h2Black}>
-                      {proposalScreenInfo?.proposalInfo.type ===
-                      PROPOSAL_TYPE.FundingRequest
+                      {isFundingRequest()
                         ? proposalScreenInfo?.proposalInfo.fundingRequest
                             .amount > 0
                           ? `$${
@@ -812,21 +835,17 @@ const ProposalScreen = ({
                         ' per month'}
                     </Text>
                   </View>
-                  {proposalScreenInfo?.proposalInfo.type ===
-                    PROPOSAL_TYPE.FundingRequest &&
+                  {isFundingRequest() &&
+                    isCountdown() &&
                     proposalScreenInfo?.proposalInfo.fundingRequest.amount >
                       0 && (
                       <Text
                         style={
                           text.smallBlackText
-                        }>{`Available funds: $${getAvailableFunds()}`}</Text>
+                        }>{`Available funds: $${getAvailableFundsText()}`}</Text>
                     )}
                 </View>
-                {amount < getAvailableFunds() ? (
-                  <DebtWarningProposalNote onPress={() => openDebtModal()} />
-                ) : (
-                  <DebtErrorProposalNote onPress={() => openDebtErrorModal()} />
-                )}
+                {renderDebWarningIfNeeded()}
 
                 <View
                   style={{

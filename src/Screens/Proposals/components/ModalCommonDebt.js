@@ -7,9 +7,9 @@ import {
   Image,
   StyleSheet,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import {colors, layout} from '~/Theme';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {func, object} from 'prop-types';
 
 const ModalCommonDebt = ({onPressClose, children}) => (
