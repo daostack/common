@@ -27,6 +27,7 @@ import {VALIDATION_RULES} from '~/FormStores/ValidationRules/billingDetailsRules
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import {formatNumber} from '~/Util/FormatUtil';
 
+
 const BillingDetailsStep = ({navigation, route, userStore}) => {
   const {
     skipFirstStep,
@@ -61,6 +62,16 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
     setCountry(selectedCountry);
   };
 
+  const getUserFullName = () => {
+    const name = billingDetailsFormStore.getFormField(
+      BillingDetailsConstants.City,
+    )?.value || userStore.userInfo.displayName;
+
+    return new RegExp(/^[a-zA-Z'’. ]*$/).test(name)
+      ? name
+      : '';
+  };
+
   const navigateToPaymentDetailsStep = () => {
     if (billingDetailsFormStore.isFormValid()) {
       navigation.dispatch(
@@ -82,16 +93,6 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
     personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)
       ?.value?.value,
   );
-
-  const getUserFullName = () => {
-    const name = billingDetailsFormStore.getFormField(
-      BillingDetailsConstants.City,
-    )?.value || userStore.userInfo.displayName;
-
-    return new RegExp(/^[a-zA-Z'’. ]*$/).test(name)
-    ? name
-      : '';
-  };
 
   const subtitle = (style) => (
     <Text style={style}>
@@ -172,7 +173,11 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
               validation={{
                 name: BillingDetailsConstants.CardName,
                 formStore: billingDetailsFormStore,
-                validateRule: ['required', VALIDATION_RULES.FIRST_LAST_NAME, VALIDATION_RULES.CARDHOLDER_NAME_VALIDATOR],
+                validateRule: [
+                  'required',
+                  VALIDATION_RULES.LATIN_ONLY,
+                  VALIDATION_RULES.FIRST_LAST_NAME,
+                ],
                 displayName: 'full name',
               }}
             />
@@ -191,7 +196,10 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
               validation={{
                 name: BillingDetailsConstants.City,
                 formStore: billingDetailsFormStore,
-                validateRule: 'required|string',
+                validateRule: [
+                  'required',
+                  VALIDATION_RULES.LATIN_ONLY
+                ],
                 displayName: 'city',
               }}
             />
@@ -242,7 +250,11 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
                 validation={{
                   name: BillingDetailsConstants.District,
                   formStore: billingDetailsFormStore,
-                  validateRule: 'required|min:2',
+                  validateRule: [
+                    'required',
+                    'min:2',
+                    VALIDATION_RULES.LATIN_ONLY
+                  ],
                   displayName: 'district',
                 }}
               />
