@@ -384,7 +384,6 @@ const CommonProfile = ({
 
   const openCommonMembers = (e) => {
     navigation.navigate('CommonMembers', {
-      members: currCommon?.members,
       commonId: currCommon.id,
       screenTitle: currCommon.name,
     });
