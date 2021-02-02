@@ -213,7 +213,7 @@ const CreateStep2 = ({
               <Text style={styles.boldText}>
                 {CONTRIBUTION_TAB_VALUES[contributionIndex]}
               </Text>{' '}
-              contribution (min. $5)
+              contribution (min. $0)
             </React.Fragment>
           }
           subLabel="Set the minimum amount that new members will have to contribute in order to join this Common."
