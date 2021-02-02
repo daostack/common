@@ -39,8 +39,15 @@ const UserProfileData = ({
     title: user.displayNameFormatted,
   });
 
-  const requestsCount = proposalStore.myActiveMembershipRequests.length;
-  const proposalsCount = proposalStore.myActiveProposals.length;
+  const requestsCount = proposalStore.getUserProposals(user.uid, {
+    stage: PROPOSAL_STAGE.Active,
+    type: PROPOSAL_TYPE.Join,
+  }).length;
+
+  const proposalsCount = proposalStore.getUserProposals(user.uid, {
+    stage: PROPOSAL_STAGE.Active,
+    type: PROPOSAL_TYPE.FundingRequest,
+  }).length;
 
   const [commonsCount, setCommonsCount] = useState(0);
 
@@ -225,7 +232,7 @@ const UserProfileData = ({
           navigation={navigation}
           isSwiper={true}
           userInfo={{
-            id: userInfo.uid,
+            id: user.uid,
           }}
           proposalFilter={{
             stage: PROPOSAL_STAGE.Active,
@@ -242,8 +249,7 @@ const UserProfileData = ({
               ...layout.marginBottomL,
               ...layout.paddingHorizontalL,
             }}>
-            Membership requests (
-            {proposalStore.myActiveMembershipRequests.length})
+            Membership requests ({requestsCount})
           </Text>
 
           {showMaxData && requestsCount > 0 && (
@@ -273,7 +279,7 @@ const UserProfileData = ({
           navigation={navigation}
           isSwiper={true}
           userInfo={{
-            id: userInfo.uid,
+            id: user.uid,
           }}
           proposalFilter={{
             stage: PROPOSAL_STAGE.Active,
