@@ -85,25 +85,35 @@ export default class ProposalStore extends ListStore<Proposal> {
     userId: string,
     proposalFilter: IProposalFilter,
   ): Array<Proposal> =>
-    this.getDataArray.filter((proposal: Proposal) => {
-      const isProposer = proposal.proposerId === userId;
-      if (isProposer) {
-        return this._applyFilter(proposal, proposalFilter);
-      }
-      return false;
-    });
+    this.getDataArray
+      .filter((proposal: Proposal) => {
+        const isProposer = proposal.proposerId === userId;
+        if (isProposer) {
+          return this._applyFilter(proposal, proposalFilter);
+        }
+        return false;
+      })
+      .sort(
+        (proposal: Proposal, prevProposal: Proposal) =>
+          prevProposal.createdAt?.seconds - proposal.createdAt?.seconds,
+      );
 
   getCommonProposals = (
     commonId: string,
     proposalFilter: IProposalFilter,
   ): Array<Proposal> =>
-    this.getDataArray.filter((proposal: Proposal) => {
-      const isSameCommon = proposal.commonId === commonId;
-      if (isSameCommon) {
-        return this._applyFilter(proposal, proposalFilter);
-      }
-      return false;
-    });
+    this.getDataArray
+      .filter((proposal: Proposal) => {
+        const isSameCommon = proposal.commonId === commonId;
+        if (isSameCommon) {
+          return this._applyFilter(proposal, proposalFilter);
+        }
+        return false;
+      })
+      .sort(
+        (proposal: Proposal, prevProposal: Proposal) =>
+          prevProposal.createdAt?.seconds - proposal.createdAt?.seconds,
+      );
 
   //Actions
   subscribeToUserActiveProposals = (userId: string): FirestoreUnsubscribeFn =>
@@ -149,7 +159,6 @@ export default class ProposalStore extends ListStore<Proposal> {
   };
 
   _applyFilter = (proposal: Proposal, proposalFilter: IProposalFilter) => {
-    console.log('PROPOSAL TEST ', proposal.isActive);
     // Check IProposalFilter.type filter
     if (proposalFilter.type && proposal.type !== proposalFilter.type) {
       return false;
