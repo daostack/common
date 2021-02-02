@@ -23,10 +23,10 @@ export default class RootStore {
     this.proposalStore = new ProposalStore(this);
 
     Promise.all([
-      hydrate('auth', this.authStore),
-      hydrate('user', this.userListStore),
-      hydrate('auth', this.commonStore),
-      hydrate('user', this.proposalStore),
+      hydrate('authStore', this.authStore),
+      hydrate('userListStore', this.userListStore),
+      hydrate('commonStore', this.commonStore),
+      hydrate('proposalStore', this.proposalStore),
     ]).then(() => console.log('AFTER ALL STORE INITI'));
   }
 }

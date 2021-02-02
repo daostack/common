@@ -194,10 +194,6 @@ const CreateStep4 = ({
         <Text style={stylesHeader.generalInfoTitle}>
           Final touches and review
         </Text>
-        <Text style={stylesHeader.generalInfoSubtitle}>
-          You will not be able to make changes to the Common info after it is
-          published
-        </Text>
         <CommonImage
           width={width}
           reviewFormStore={reviewFormStore}
@@ -255,7 +251,7 @@ const CreateStep4 = ({
                 />
               </TouchableOpacity> */}
           </View>
-          {form[CreateCommonForm.LINKS]?.length ? (
+          {form[CreateCommonForm.LINKS]?.length &&
             form[CreateCommonForm.LINKS].map((x) => (
               <View key={`key_${CreateCommonForm.LINKS}_${x.title}`}>
                 <Text
@@ -274,12 +270,9 @@ const CreateStep4 = ({
                   {x.title}
                 </Text>
               </View>
-            ))
-          ) : (
-            <View />
-          )}
+            ))}
         </>
-        {form[CreateCommonForm.RULES]?.length > 0 ? (
+        {form[CreateCommonForm.RULES]?.length > 0 &&
           form[CreateCommonForm.RULES].map((rule, index) => (
             <View key={`key_${CreateCommonForm.RULES}_${index}`}>
               <Text
@@ -297,10 +290,13 @@ const CreateStep4 = ({
               </View>
               <Text style={styles.textContent}>{rule.value}</Text>
             </View>
-          ))
-        ) : (
-          <View />
-        )}
+          ))}
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>
+            Don't worry, you will be able to make changes to the Common info
+            after it is published.
+          </Text>
+        </View>
       </View>
     </StepDotLayout>
   );
@@ -399,6 +395,22 @@ const styles = StyleSheet.create({
     ...layout.marginTopL,
     flexGrow: 0,
     width: '100%',
+  },
+  text: {
+    fontSize: 15,
+    textAlign: 'center',
+    ...font.lineHeight(0),
+    color: colors.slate,
+    paddingHorizontal: 5,
+  },
+  textContainer: {
+    alignSelf: 'center',
+    borderRadius: 14,
+    backgroundColor: colors.lighterBlue,
+    marginTop: sizeL,
+    height: 75,
+    width: '100%',
+    justifyContent: 'center',
   },
 });
 

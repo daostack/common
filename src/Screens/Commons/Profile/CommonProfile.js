@@ -134,6 +134,11 @@ const CommonProfile = ({
     false,
   );
 
+  // right now, has permission is about user being the owner, this may change in the future
+  const [hasPermission, setHasPermission] = useState(
+    userStore?.userInfo?.uid === currCommon?.metadata.founderId,
+  );
+
   const headerHeightLayouted = (height) => height;
 
   const animateNextStateRender = () => {
@@ -157,6 +162,9 @@ const CommonProfile = ({
       setMemberState(false);
       setHeaderHeight(DEFAULT_HEADER_HEIGHT);
     }
+    setHasPermission(
+      userStore?.userInfo?.uid === currCommon?.metadata.founderId,
+    );
   }, [params.showRequestSentModal, userStore.userInfo, currCommon?.members]);
 
   useEffect(() => {
@@ -283,7 +291,7 @@ const CommonProfile = ({
     }
   };
 
-  const openAgendaScreen = (e) => {
+  const openAgendaScreen = () => {
     navigation.navigate('CommonAgenda', {
       screenTitle: currCommon.name,
       common: currCommon,
@@ -365,7 +373,6 @@ const CommonProfile = ({
                 horizontal={true}
                 navigation={navigation}
                 commonId={currCommon.id}
-                members={currCommon?.members}
                 limit={5}
               />
             </View>
@@ -377,7 +384,6 @@ const CommonProfile = ({
 
   const openCommonMembers = (e) => {
     navigation.navigate('CommonMembers', {
-      members: currCommon?.members,
       commonId: currCommon.id,
       screenTitle: currCommon.name,
     });
@@ -392,10 +398,27 @@ const CommonProfile = ({
     Share.open(options);
   };
 
+  const onEdit = (type) => {
+    bottomSheetStore.hideBottomSheet();
+    type === 'info'
+      ? navigateTo('Edit info and cover photo')
+      : navigateTo('Edit Rules');
+  };
+
   const openCommonOptions = (event) => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      {
+        onEdit: (type) => onEdit(type),
+      },
     );
+  };
+
+  const navigateTo = (screenTitle) => {
+    navigation.navigate('EditCommon', {
+      currCommon: currCommon,
+      title: screenTitle,
+    });
   };
 
   /*
@@ -609,19 +632,20 @@ const CommonProfile = ({
               />
             </BlurView>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-              style={{justifyContent: 'center'}}
-              onPress={shareCommon}>
+          {hasPermission && (
+            <TouchableOpacity
+              style={{justifyContent: 'center', marginRight: 10}}
+              onPress={openCommonOptions}>
               <BlurView
-                style={{padding: 5, borderRadius: 15}}
+                style={{
+                  padding: 6,
+                  borderRadius: 15,
+                }}
                 isBlurring={dark}>
-                <Icon
-                  name="menu-horizontal"
-                  size={32}
-                  color={dark ? 'black' : 'white'}
-                />
+                <Icon name="menu1" size={30} color={dark ? 'black' : 'white'} />
               </BlurView>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
+          )}
         </View>
       }
     />
@@ -752,6 +776,8 @@ const CommonProfile = ({
                   cover: currCommon.image,
                 }}
                 common={currCommon}
+                canEdit={hasPermission}
+                onEdit={onEdit}
               />
             )}
             renderStickyHeader={() => (

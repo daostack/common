@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -7,122 +7,133 @@ import {
   ScrollView,
   View,
   Image,
+  TouchableOpacity,
 } from 'react-native';
-import {object, shape, number, array, string} from 'prop-types';
+import {object, shape, number, array, string, func, bool} from 'prop-types';
 import {layout, text, font, colors} from '~/Theme';
+import {useIsFocused} from '@react-navigation/native';
+import Icon from '~/Assets/iconfont/Icon';
+
+const Title = ({title, onPress, canEdit}) => (
+  <View style={styles.titleContainer}>
+    <Text style={styles.titleText}>{title}</Text>
+    {canEdit && (
+      <TouchableOpacity style={styles.editText} onPress={() => onPress()}>
+        <Icon
+          style={{marginTop: 2}}
+          size={16}
+          name="edit-16"
+          color={colors.black}
+        />
+        <Text style={{...text.h3Black, marginLeft: 5}}>Edit</Text>
+      </TouchableOpacity>
+    )}
+  </View>
+);
 
 const CommonAgenda = ({
   // This destructuring is bloody awful
   navigation,
   route: {
-    params: {
-      common: {metadata, ...common},
-    },
+    params: {common, canEdit, onEdit},
   },
-}) => (
-  <>
-    <StatusBar barStyle="dark-content" />
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={styles.scrollView}
-        vertical={true}
-        nestedScrollEnabled={true}
-        directionalLockEnabled={true}>
-        <Text style={styles.agendaTitletext}>Agenda and Rules</Text>
-        <View style={layout.content}>
-          <Image
-            source={require('~/Assets/Common/rules.png')}
-            style={styles.image}
-          />
-        </View>
+}) => {
+  const isFocused = useIsFocused();
+  useEffect(() => {}, [isFocused]);
 
-        <View style={styles.sectionContainer}>
-          <Text style={text.h2Black}>About</Text>
-          <Text
-            style={{
-              ...styles.description,
-              width: '100%',
-              ...text.writingDirection(metadata.description),
-            }}>
-            {metadata.description}
-          </Text>
-        </View>
-
-        {metadata.links?.length > 0 && (
-          <View style={styles.sectionContainer}>
-            <Text style={text.h3Black}>Links</Text>
-            {metadata.links.map((link, i) => (
-              <View key={i}>
-                <Text
-                  style={styles.linkText}
-                  onPress={() =>
-                    navigation.navigate('Browser', {
-                      url: link.value || link.url,
-                    })
-                  }>
-                  {/* NOTE: value of multiple fields was stored in url prop before */}
-                  {link.value || link.url}
-                </Text>
-              </View>
-            ))}
+  return (
+    <>
+      <StatusBar barStyle="dark-content" />
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          style={styles.scrollView}
+          vertical={true}
+          nestedScrollEnabled={true}
+          directionalLockEnabled={true}>
+          <Text style={styles.agendaTitletext}>Agenda and Rules</Text>
+          <View style={layout.content}>
+            <Image
+              source={require('~/Assets/Common/rules.png')}
+              style={styles.image}
+            />
           </View>
-        )}
 
-        {common.links?.length > 0 && (
           <View style={styles.sectionContainer}>
-            <Text style={text.h3Black}>Links</Text>
-            {common.links.map((link, i) => (
-              <View key={i}>
-                <Text
-                  style={styles.linkText}
-                  onPress={() =>
-                    navigation.navigate('Browser', {
-                      url: link.value || link.url,
-                    })
-                  }>
-                  {/* NOTE: value of multiple fields was stored in url prop before */}
-                  {link.value || link.url}
-                </Text>
-              </View>
-            ))}
+            <Title
+              title="About"
+              onPress={() => onEdit('info')}
+              canEdit={canEdit}
+            />
+            <Text
+              style={{
+                ...styles.description,
+                width: '100%',
+                ...text.writingDirection(common.metadata.description),
+              }}>
+              {common.metadata.description}
+            </Text>
           </View>
-        )}
 
-        {common.rules?.length > 0 && (
-          <React.Fragment>
-            <View style={styles.sectionDividerContent}>
-              <View style={styles.sectionDivider} />
-            </View>
-
+          {common.links?.length > 0 && (
             <View style={styles.sectionContainer}>
-              <Text style={text.h2Black}>Rules of conduct</Text>
-
-              {common.rules.map((rule, i) => (
-                <View key={i} style={{width: '100%'}}>
+              <Text style={text.h3Black}>Links</Text>
+              {common.links.map((link, i) => (
+                <View key={i}>
                   <Text
-                    style={{
-                      ...styles.ruleTitle,
-                      ...text.writingDirection(rule.title),
-                    }}>
-                    {rule.title}
-                  </Text>
-                  <Text
-                    style={{
-                      ...styles.ruleDescription,
-                      ...text.writingDirection(rule.value || rule.url),
-                    }}>
-                    {rule.value || rule.url}
+                    style={styles.linkText}
+                    onPress={() =>
+                      navigation.navigate('Browser', {
+                        url: link.value || link.url,
+                      })
+                    }>
+                    {/* NOTE: value of multiple fields was stored in url prop before */}
+                    {link.value || link.url}
                   </Text>
                 </View>
               ))}
             </View>
-          </React.Fragment>
-        )}
-      </ScrollView>
-    </SafeAreaView>
-  </>
-);
+          )}
+
+          {common.rules?.length > 0 && (
+            <React.Fragment>
+              <View style={styles.sectionDividerContent}>
+                <View style={styles.sectionDivider} />
+              </View>
+
+              <View style={styles.sectionContainer}>
+                <Title
+                  title="Rules of conduct"
+                  onPress={() => onEdit('rules')}
+                  canEdit={canEdit}
+                />
+
+                {common.rules.map((rule, i) => (
+                  <View key={i} style={{width: '100%'}}>
+                    <Text
+                      style={{
+                        ...styles.ruleTitle,
+                        ...text.writingDirection(rule.title),
+                      }}>
+                      {rule.title}
+                    </Text>
+                    <Text
+                      style={{
+                        ...styles.ruleDescription,
+                        ...text.writingDirection(rule.value || rule.url),
+                      }}>
+                      {rule.value || rule.url}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </React.Fragment>
+          )}
+        </ScrollView>
+      </SafeAreaView>
+    </>
+  );
+};
 
 CommonAgenda.propTypes = {
   navigation: object,
@@ -139,6 +150,12 @@ CommonAgenda.propTypes = {
       }).isRequired,
     }),
   }),
+};
+
+Title.propTypes = {
+  title: string,
+  onPress: func,
+  canEdit: bool,
 };
 
 const styles = StyleSheet.create({
@@ -197,6 +214,21 @@ const styles = StyleSheet.create({
   sectionContainer: {
     ...layout.content,
     alignItems: 'flex-start',
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  titleText: {
+    ...text.h2Black,
+    paddingVertical: 7,
+  },
+  editText: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 7,
   },
 });
 

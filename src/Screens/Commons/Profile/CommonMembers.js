@@ -22,12 +22,8 @@ const initialLayout = {width: Dimensions.get('window').width};
 const getTabName = (objectName, count) =>
   `${objectName} (${count ? count : 0})`;
 
-const Members = ({navigation, members, commonId}) => (
-  <CommonMembersList
-    navigation={navigation}
-    members={members}
-    commonId={commonId}
-  />
+const Members = ({navigation, commonId}) => (
+  <CommonMembersList navigation={navigation} commonId={commonId} />
 );
 
 const Pending = ({navigation, commonId}) => (
@@ -56,7 +52,13 @@ const History = ({navigation, commonId}) => (
   </View>
 );
 
-const CommonMembers = ({navigation, route: router, proposalStore}) => {
+const CommonMembers = ({
+  navigation,
+  route: router,
+  proposalStore,
+  commonStore,
+}) => {
+  const {commonId} = router.params;
   const [index, setIndex] = useState(0);
   const pendingCount = proposalStore.getCommonProposals(commonId, {
     stage: PROPOSAL_STAGE.Active,
@@ -66,11 +68,13 @@ const CommonMembers = ({navigation, route: router, proposalStore}) => {
     stage: PROPOSAL_STAGE.History,
     type: PROPOSAL_TYPE.Join,
   }).length;
-
-  const {members, commonId} = router.params;
+  const membersCount = commonStore.getCommonById(commonId)?.members.length;
 
   const routes = [
-    {key: 'members', title: getTabName('Members', members.length)},
+    {
+      key: 'members',
+      title: getTabName('Members', membersCount),
+    },
     {key: 'pending', title: getTabName('Pending', pendingCount)},
     {key: 'history', title: getTabName('History', historyCount)},
   ];
@@ -78,13 +82,7 @@ const CommonMembers = ({navigation, route: router, proposalStore}) => {
   const renderScene = ({route}) => {
     switch (route.key) {
       case 'members':
-        return (
-          <Members
-            navigation={navigation}
-            members={members}
-            commonId={commonId}
-          />
-        );
+        return <Members navigation={navigation} commonId={commonId} />;
       case 'pending':
         return <Pending navigation={navigation} commonId={commonId} />;
       case 'history':
@@ -153,6 +151,9 @@ CommonMembers.propTypes = {
   proposalStore: shape({
     getCommonProposals: func,
   }),
+  commonStore: shape({
+    getCommonById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -185,4 +186,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('proposalStore')(observer(CommonMembers));
+export default inject('proposalStore', 'commonStore')(observer(CommonMembers));

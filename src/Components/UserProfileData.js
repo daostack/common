@@ -1,5 +1,5 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {layout, font, colors, text, sizeL, sizeXXL} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import ImageField from '~/Components/FormFields/ImageField';
@@ -25,9 +25,9 @@ const UserProfileData = ({
   currUserInfo,
   navigation,
   userStore: {userInfo},
-  daoStore,
   userListStore,
   proposalStore,
+  commonStore,
 }) => {
   const providedUserId = userId || currUserInfo.uid;
   const isOwnProfile = providedUserId === userInfo?.uid;
@@ -39,12 +39,19 @@ const UserProfileData = ({
     title: user.displayNameFormatted,
   });
 
-  const requestsCount = proposalStore.myActiveMembershipRequests.length;
-  const proposalsCount = proposalStore.myActiveProposals.length;
+  const requestsCount = proposalStore.getUserProposals(user.uid, {
+    stage: PROPOSAL_STAGE.Active,
+    type: PROPOSAL_TYPE.Join,
+  }).length;
 
-  const [commonsCount, setCommonsCount] = useState(0);
+  const proposalsCount = proposalStore.getUserProposals(user.uid, {
+    stage: PROPOSAL_STAGE.Active,
+    type: PROPOSAL_TYPE.FundingRequest,
+  }).length;
 
-  useEffect(() => {}, [userId, currUserInfo, userInfo, daoStore.daos]);
+  const commonsCount = commonStore.getUserCommons(user.uid).length;
+
+  useEffect(() => {}, [userId, currUserInfo, userInfo]);
 
   const navigateToEditProfile = (isFirstOpening) => {
     const navigate = CommonActions.navigate({
@@ -116,10 +123,6 @@ const UserProfileData = ({
     );
   }
 
-  const onCommonsCountChange = (newCount) => {
-    setCommonsCount(newCount);
-  };
-
   /**
    * @param newCount {number} - the new count of the requests
    */
@@ -188,7 +191,6 @@ const UserProfileData = ({
         <CommonsSwiper
           navigation={navigation}
           userId={user.uid}
-          onCountChange={onCommonsCountChange}
           showMax={showMaxData}
         />
       </View>
@@ -204,7 +206,9 @@ const UserProfileData = ({
           {showMaxData && proposalsCount > 0 && (
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate('MyProposals', {onlyFundingRequests: true})
+                navigation.navigate('MyProposals', {
+                  proposalTypeFilter: PROPOSAL_TYPE.FundingRequest,
+                })
               }
               style={{flexDirection: 'row', ...layout.paddingHorizontalL}}>
               <Text
@@ -223,7 +227,7 @@ const UserProfileData = ({
           navigation={navigation}
           isSwiper={true}
           userInfo={{
-            id: userInfo.uid,
+            id: user.uid,
           }}
           proposalFilter={{
             stage: PROPOSAL_STAGE.Active,
@@ -240,15 +244,14 @@ const UserProfileData = ({
               ...layout.marginBottomL,
               ...layout.paddingHorizontalL,
             }}>
-            Membership requests (
-            {proposalStore.myActiveMembershipRequests.length})
+            Membership requests ({requestsCount})
           </Text>
 
           {showMaxData && requestsCount > 0 && (
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate('MyProposals', {
-                  onlyMembershipRequests: true,
+                  proposalTypeFilter: PROPOSAL_TYPE.Join,
                 })
               }
               style={{
@@ -271,7 +274,7 @@ const UserProfileData = ({
           navigation={navigation}
           isSwiper={true}
           userInfo={{
-            id: userInfo.uid,
+            id: user.uid,
           }}
           proposalFilter={{
             stage: PROPOSAL_STAGE.Active,
@@ -292,8 +295,8 @@ UserProfileData.propTypes = {
       uid: string,
     }),
   }),
-  daoStore: shape({
-    daos: array,
+  commonStore: shape({
+    getUserCommons: func,
   }),
   proposalStore: shape({
     myActiveProposals: array,
@@ -367,7 +370,7 @@ const styles = StyleSheet.create({
 
 export default inject(
   'userStore',
-  'daoStore',
+  'commonStore',
   'userListStore',
   'proposalStore',
 )(observer(UserProfileData));

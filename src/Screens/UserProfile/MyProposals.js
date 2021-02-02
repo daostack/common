@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 
 import {
   SafeAreaView,
@@ -14,33 +14,20 @@ import {layout, colors, text, font, sizeS} from '~/Theme';
 import {TabView} from 'react-native-tab-view';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
 import {inject, observer} from 'mobx-react';
-import ProposalService from '~/Services/ProposalService';
 import CommonTabBar from '../CommonTabBar';
-import {bool, object, shape} from 'prop-types';
-import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
+import {bool, object, shape, func} from 'prop-types';
+import {PROPOSAL_STAGE} from '~/Config';
 import {isTypeFilterJoin} from '~/Stores/ListStore/ProposalStore';
 
 const MyProposals = ({
   navigation,
   userStore,
+  proposalStore,
   route: {
     params: {proposalTypeFilter},
   },
 }) => {
   const [index, setIndex] = React.useState(0);
-  const [stats, setStats] = React.useState({all: 0, active: 0, history: 0});
-
-  useEffect(() => {
-    const getStats = async () => {
-      const userProposalsStats = await ProposalService.getInstance().getUserProposalsCounts(
-        userStore.userInfo.uid,
-        proposalTypeFilter,
-      );
-      setStats({...userProposalsStats});
-    };
-    getStats();
-  }, [userStore.userInfo.uid]);
-
   const onScreenScroll = (event) => {
     navigation.setOptions({
       title:
@@ -55,11 +42,21 @@ const MyProposals = ({
   const routes = [
     {
       key: 'active',
-      title: `Active (${stats.active})`,
+      title: `Active (${
+        proposalStore.getUserProposals(userStore.userInfo.uid, {
+          stage: PROPOSAL_STAGE.Active,
+          type: proposalTypeFilter,
+        }).length
+      })`,
     },
     {
       key: 'history',
-      title: `History (${stats.history})`,
+      title: `History (${
+        proposalStore.getUserProposals(userStore.userInfo.uid, {
+          stage: PROPOSAL_STAGE.History,
+          type: proposalTypeFilter,
+        }).length
+      })`,
     },
   ];
 
@@ -77,7 +74,7 @@ const MyProposals = ({
         proposalFilter={{
           stage:
             sceneIndex === 2 ? PROPOSAL_STAGE.History : PROPOSAL_STAGE.Active,
-          type: PROPOSAL_TYPE.FundingRequest,
+          type: proposalTypeFilter,
         }}
       />
     </View>
@@ -139,6 +136,9 @@ MyProposals.propTypes = {
   }),
   navigation: object,
   userStore: object,
+  proposalStore: shape({
+    getUserProposals: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -172,4 +172,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(MyProposals));
+export default inject('userStore', 'proposalStore')(observer(MyProposals));

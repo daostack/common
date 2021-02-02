@@ -10,6 +10,11 @@ import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
+import {
+  PROPOSAL_STAGES_ACTIVE,
+  PROPOSAL_STAGES_HISTORY,
+} from '~/Services/ListServices/ProposalListService';
+import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 
 export type IProposalStageFilter =
   | typeof PROPOSAL_STAGE.Active
@@ -27,13 +32,21 @@ export const isTypeFilterJoin = (typeFilter: IProposalTypeFilter) =>
   typeFilter === PROPOSAL_TYPE.Join;
 
 export const isTypeFilterFundingRequest = (typeFilter: IProposalTypeFilter) =>
-  typeFilter === PROPOSAL_TYPE.Join;
+  typeFilter === PROPOSAL_TYPE.FundingRequest;
 
 export const isStageFilterActive = (stageFilter: IProposalStageFilter) =>
   stageFilter === PROPOSAL_STAGE.Active;
 
 export const isStageFilterHistory = (stageFilter: IProposalStageFilter) =>
   stageFilter === PROPOSAL_STAGE.History;
+
+export const isProposalActive = (proposal: Proposal) =>
+  PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.state) ||
+  ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState);
+
+export const isProposalHistory = (proposal: Proposal) =>
+  PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state) &&
+  !ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState);
 
 export default class ProposalStore extends ListStore<Proposal> {
   @observable
@@ -71,32 +84,48 @@ export default class ProposalStore extends ListStore<Proposal> {
   getUserProposals = (
     userId: string,
     proposalFilter: IProposalFilter,
-  ): Array<Proposal> | [] =>
-    this.getDataArray?.filter((proposal: Proposal) => {
-      const isProposer = proposal.proposerId === userId;
-      if (isProposer) {
-        return this._applyFilter(proposal, proposalFilter);
-      }
-      return isProposer;
-    });
+  ): Array<Proposal> =>
+    this.getDataArray
+      .filter((proposal: Proposal) => {
+        const isProposer = proposal.proposerId === userId;
+        if (isProposer) {
+          return this._applyFilter(proposal, proposalFilter);
+        }
+        return false;
+      })
+      .sort(
+        (proposal: Proposal, prevProposal: Proposal) =>
+          prevProposal.createdAt?.seconds - proposal.createdAt?.seconds,
+      );
 
   getCommonProposals = (
     commonId: string,
     proposalFilter: IProposalFilter,
-  ): Array<Proposal> | undefined =>
-    this.getDataArray?.filter((proposal: Proposal) => {
-      const isSameCommon = proposal.commonId === commonId;
-      if (isSameCommon) {
-        return this._applyFilter(proposal, proposalFilter);
-      }
-      return false;
-    });
+  ): Array<Proposal> =>
+    this.getDataArray
+      .filter((proposal: Proposal) => {
+        const isSameCommon = proposal.commonId === commonId;
+        if (isSameCommon) {
+          return this._applyFilter(proposal, proposalFilter);
+        }
+        return false;
+      })
+      .sort(
+        (proposal: Proposal, prevProposal: Proposal) =>
+          prevProposal.createdAt?.seconds - proposal.createdAt?.seconds,
+      );
 
   //Actions
   subscribeToUserActiveProposals = (userId: string): FirestoreUnsubscribeFn =>
     subscribeToProposalList(this._updateProposalList, {
       userId: userId,
       onlyActive: true,
+    });
+
+  subscribeToUserAllProposals = (userId: string): FirestoreUnsubscribeFn =>
+    subscribeToProposalList(this._updateProposalList, {
+      userId: userId,
+      showAll: true,
     });
 
   subscribeToCommonProposals = (commonId: string): FirestoreUnsubscribeFn =>
@@ -112,21 +141,19 @@ export default class ProposalStore extends ListStore<Proposal> {
       this.isLoading = true;
     });
 
+    const updatesMap = new Map<string, Proposal>();
+
     // Initial loading
     updatedUserList
       .docChanges()
       .forEach((updatedProposalDoc: IFirebaseDocChange<IProposalEntity>) => {
         const updatedProposal = updatedProposalDoc.doc.data();
 
-        let proposal = this.getDataById(updatedProposal.id);
-        if (proposal) {
-          proposal.setUpdates(updatedProposal);
-        } else {
-          this.setData(updatedProposal.id, new Proposal(updatedProposal));
-        }
+        updatesMap.set(updatedProposal.id, new Proposal(updatedProposal));
       });
 
     runInAction(() => {
+      this.data.merge(updatesMap);
       this.isLoading = false;
     });
   };
@@ -139,8 +166,10 @@ export default class ProposalStore extends ListStore<Proposal> {
     // Check IProposalFilter.stage filter
     if (proposalFilter.stage) {
       if (
-        (proposal.isActive && !isStageFilterActive(proposalFilter.stage)) ||
-        (proposal.isHistory && !isStageFilterHistory(proposalFilter.stage))
+        (isProposalActive(proposal) &&
+          !isStageFilterActive(proposalFilter.stage)) ||
+        (isProposalHistory(proposal) &&
+          !isStageFilterHistory(proposalFilter.stage))
       ) {
         return false;
       }

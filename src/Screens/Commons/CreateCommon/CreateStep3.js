@@ -100,6 +100,7 @@ const CreateStep3 = ({
           placeholderValueText="Rule description"
           multiline={true}
           addMultiFieldBtnName="Add Rule"
+          maxLength={80}
           validation={{
             name: CreateCommonForm.RULES,
             formStore: agendaFormStore,

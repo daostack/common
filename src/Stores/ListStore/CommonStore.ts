@@ -7,7 +7,7 @@ import {Common} from '../Models/Common';
 import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import {Proposal} from '../Models/Proposal';
-
+import {isDaoMemberByUserId} from '~/Util';
 export default class CommonStore extends ListStore<Common> {
   @observable
   isLoading: boolean;
@@ -19,49 +19,36 @@ export default class CommonStore extends ListStore<Common> {
 
   @computed
   get myCommons() {
-    return this.isLoading
-      ? []
-      : this.getDataArray?.filter((common: Common) =>
-          this.rootStore.authStore.isDaoMember(common?.members),
-        );
+    return this.getDataArray.filter((common: Common) =>
+      this.rootStore.authStore.isDaoMember(common?.members),
+    );
   }
 
   @computed
   get pendingCommons() {
-    if (
-      this.isLoading ||
-      this.rootStore.proposalStore.myActiveMembershipRequests?.length === 0
-    ) {
-      return [];
-    } else {
-      let commons: Array<ICommonEntity> = [];
-      this.rootStore.proposalStore.myActiveMembershipRequests?.forEach(
-        (proposal: Proposal) => {
-          const currPendingCommon = this.getCommonById(proposal.commonId);
-          if (currPendingCommon) {
-            commons.push(currPendingCommon);
-          }
-        },
-      );
-      return commons;
-    }
+    return this.rootStore.proposalStore.myActiveMembershipRequests.map(
+      (proposal: Proposal) => this.getCommonById(proposal.commonId),
+    );
   }
 
   @computed
   get featuredCommons() {
-    // return super.data;
-    return this.isLoading
-      ? []
-      : this.getDataArray?.filter(
-          (common: Common) =>
-            !this.myCommons.includes(common) &&
-            common.register === DAO_REGISTERED,
-        );
+    return this.getDataArray.filter(
+      (common: Common) =>
+        !this.myCommons.includes(common) &&
+        !this.pendingCommons.includes(common) &&
+        common.register === DAO_REGISTERED,
+    );
   }
 
   // Data consuming methods
   getCommonById = (id: string): ICommonEntity | undefined =>
     this.getDataById(id);
+
+  getUserCommons = (userId: string) =>
+    this.getDataArray.filter((common: Common) =>
+      isDaoMemberByUserId(common?.members, userId),
+    );
 
   //Actions
   subscribeToAllCommons = (): FirestoreUnsubscribeFn =>
@@ -73,11 +60,14 @@ export default class CommonStore extends ListStore<Common> {
       this.isLoading = true;
     });
 
+    const updatesMap = new Map<string, Common>();
+
     updatedUserList.forEach((commonEntity: ICommonEntity) => {
-      this.setData(commonEntity.id, new Common(commonEntity));
+      updatesMap.set(commonEntity.id, new Common(commonEntity));
     });
 
     runInAction(() => {
+      this.data.merge(updatesMap);
       this.isLoading = false;
     });
   };

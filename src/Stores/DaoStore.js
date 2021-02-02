@@ -1,6 +1,6 @@
 import {observable, action, decorate} from 'mobx';
 import DaoService from '../Services/DaoService';
-import Cache from '../Util/Cache';
+//import Cache from '../Util/Cache';
 
 export const daoInfoFields = [
   'uid',
@@ -58,13 +58,11 @@ class DaoStore {
    */
   updateDaoInfo = async (updateCommonInfo, changedBy) => {
     try {
-      const updateResponse = await DaoService.getInstance().updateCommon(
-        {
-          newCommon: updateCommonInfo,
-          changedBy,
-        },
-      );
-      Cache.set(updateCommonInfo.id, updateCommonInfo);
+      const updateResponse = await DaoService.getInstance().updateCommon({
+        commonId: updateCommonInfo.id,
+        changes: updateCommonInfo,
+      });
+      // Cache.set(updateCommonInfo.id, updateCommonInfo); @question to Lyubo: about this and mobx-persist
       return updateResponse;
     } catch (err) {
       throw err;

@@ -14,16 +14,14 @@ import {persist} from 'mobx-persist';
 export default class ListStore<IEntity> {
   @persist('map')
   @observable
-  data: ObservableMap<string, IEntity>;
+  data: ObservableMap<string, IEntity> = observable.map({});
 
   rootStore: RootStore;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
-    this.data = observable.map({});
   }
 
-  // Computed
   @computed
   get isEmpty(): boolean {
     return keys(this.data).length > 0;
@@ -40,7 +38,11 @@ export default class ListStore<IEntity> {
   }
 
   //Functions
-  getDataById(id: string): IEntity | undefined {
-    return get(this.data, id);
+  getDataById(id: string): IEntity {
+    const dataById = get(this.data, id);
+    if (!dataById) {
+      throw Error(`Data with ID ${id} not exists.`);
+    }
+    return dataById;
   }
 }

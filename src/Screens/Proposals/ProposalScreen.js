@@ -12,6 +12,7 @@ import {
   TextInput,
   Keyboard,
   Animated,
+  Modal,
 } from 'react-native';
 import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
@@ -21,11 +22,10 @@ import ProposalDiscussion from './ProposalDiscussion';
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
-import ProposalService from '~/Services/ProposalService';
+import ProposalService, {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import {UserAvatar} from '~/Components';
 import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
-import DaoService from '~/Services/DaoService';
 import {observer, inject} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
@@ -41,6 +41,11 @@ import {
   Fade,
 } from 'rn-placeholder';
 import {PROPOSAL_PAYMENT_STATE} from '~/Util/constants';
+import DebtWarningProposalNote from './components/DebtWarningProposalNote';
+import DebtErrorProposalNote from './components/DebtErrorProposalNote';
+import ModalDebtProposalWarning from './components/ModalDebtProposalWarning';
+import ModalDebtProposalError from './components/ModalDebtProposalError';
+import ModalDebtProposalInsufficient from './components/ModalDebtProposalInsufficient';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -59,6 +64,8 @@ const ProposalScreen = ({
     },
   },
   userListStore,
+  commonStore,
+  proposalStore,
 }) => {
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
@@ -76,6 +83,13 @@ const ProposalScreen = ({
     showBottomVotingButtonsContainer,
     setShowBottomVotingButtonsContainer,
   ] = useState(false);
+  const [debtModalVisible, setDebtModalVisible] = useState(false);
+  const [debtErrorModalVisible, setDebtErrorModalVisible] = useState(false);
+  const [
+    debtInsufficientModalVisible,
+    setDebtInsufficientModalVisible,
+  ] = useState(false);
+
   const [showPaymentStatus, setShowPaymentStatus] = useState(
     paymentState === PROPOSAL_PAYMENT_STATE.PENDING ||
       paymentState === PROPOSAL_PAYMENT_STATE.NOT_ATTEMPTED ||
@@ -108,9 +122,7 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    let unsubscribe = null;
-
-    const loadProposalInfo = async (currProposalInfo, currProposalDao) => {
+    const loadProposalInfo = (currProposalInfo, currProposalDao) => {
       const currProposedUser = userListStore.getUserById(
         currProposalInfo.proposerId,
       );
@@ -146,26 +158,25 @@ const ProposalScreen = ({
       });
     };
 
-    const getProposalInfo = async (currProposalId) => {
+    const getProposalInfo = (currProposalId) => {
       try {
-        unsubscribe = await ProposalService.getInstance().subscribeToProposalById(
+        const updatedProposalInfo = proposalStore.getProposalById(
           currProposalId,
-          async (updatedProposalInfo) => {
-            if (updatedProposalInfo.type === PROPOSAL_TYPE.Join) {
-              navigation.setParams({
-                title: 'Request to join',
-              });
-            }
-
-            const currentDao = await DaoService.getInstance().getDaoById(
-              updatedProposalInfo.commonId,
-            );
-
-            setIsMember(userInfo && isDaoMember(currentDao?.members || []));
-            setIsProposer(userStore.isProposer(updatedProposalInfo));
-            await loadProposalInfo(updatedProposalInfo, currentDao);
-          },
         );
+
+        if (updatedProposalInfo.type === PROPOSAL_TYPE.Join) {
+          navigation.setParams({
+            title: 'Request to join',
+          });
+        }
+
+        const currentCommon = commonStore.getCommonById(
+          updatedProposalInfo.commonId,
+        );
+
+        setIsMember(userInfo && isDaoMember(currentCommon?.members || []));
+        setIsProposer(userStore.isProposer(updatedProposalInfo));
+        loadProposalInfo(updatedProposalInfo, currentCommon);
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());
@@ -176,12 +187,6 @@ const ProposalScreen = ({
       logger.log(`proposalId --> ${proposalId}`);
       getProposalInfo(proposalId);
     }
-
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
   }, [proposalId, votingProcessState]);
 
   const [
@@ -408,6 +413,22 @@ const ProposalScreen = ({
     });
   };
 
+  const renderDebWarningIfNeeded = () => {
+    if (isFundingRequest() && isCountdown()) {
+      return amount < getAvailableFunds() ? (
+        <DebtWarningProposalNote onPress={() => openDebtModal()} />
+      ) : (
+        <DebtErrorProposalNote onPress={() => openDebtErrorModal()} />
+      );
+    }
+  };
+
+  const isFundingRequest = () =>
+    proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest;
+
+  const isCountdown = () =>
+    proposalScreenInfo?.proposalInfo?.state === PROPOSAL_STAGE.countdown;
+
   const renderVotingButtons = (reference) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
@@ -461,6 +482,11 @@ const ProposalScreen = ({
 
   const votesCount = votesFor + votesAgainst;
 
+  const amount =
+    proposalScreenInfo?.proposalInfo.type === PROPOSAL_TYPE.FundingRequest
+      ? proposalScreenInfo?.proposalInfo.fundingRequest.amount / 100
+      : proposalScreenInfo?.proposalInfo.join.funding / 100;
+
   const onSetIndex = (item) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     const isDiscussionTab = item === 1;
@@ -506,14 +532,46 @@ const ProposalScreen = ({
     ],
   };
 
-  const getAvailableFunds = () => {
-    const availableFunds =
-      (commonBalance || proposalScreenInfo?.proposalDao?.balance || 0) / 100;
+  const getAvailableFunds = () =>
+    (commonBalance || proposalScreenInfo?.proposalDao?.balance || 0) / 100;
+
+  const getAvailableFundsText = () => {
+    const availableFunds = getAvailableFunds();
+
     return Math.abs(availableFunds) > 999
       ? Math.sign(availableFunds) *
           (Math.abs(availableFunds) / 1000).toFixed(1) +
           'K'
       : Math.sign(availableFunds) * Math.abs(availableFunds);
+  };
+
+  const closeDebtModal = () => {
+    setDebtModalVisible(false);
+  };
+
+  const openDebtModal = () => {
+    setDebtModalVisible(true);
+  };
+
+  const closeDebtErrorModal = () => {
+    setDebtErrorModalVisible(false);
+  };
+
+  const openDebtErrorModal = () => {
+    setDebtErrorModalVisible(true);
+  };
+
+  const openDebtInsufficientModal = () => {
+    if (
+      proposalScreenInfo?.proposalInfo?.state ===
+      PROPOSAL_STAGE.passedInsufficientBalance
+    ) {
+      setDebtInsufficientModalVisible(true);
+    }
+  };
+
+  const closeDebtInsufficientModal = () => {
+    setDebtInsufficientModalVisible(false);
   };
 
   const stickyTabBarStyle = {
@@ -526,6 +584,33 @@ const ProposalScreen = ({
 
   return (
     <React.Fragment>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={debtModalVisible}>
+        <ModalDebtProposalWarning
+          amount={amount}
+          onPressClose={() => closeDebtModal()}
+        />
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={debtErrorModalVisible}>
+        <ModalDebtProposalError
+          amount={amount}
+          onPressClose={() => closeDebtErrorModal()}
+        />
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={debtInsufficientModalVisible}>
+        <ModalDebtProposalInsufficient
+          amount={amount}
+          onPressClose={() => closeDebtInsufficientModal()}
+        />
+      </Modal>
       <SafeAreaView
         style={{
           backgroundColor: colors.white,
@@ -614,6 +699,7 @@ const ProposalScreen = ({
                           proposalScreenInfo.proposalInfo?.createdAt.seconds +
                           proposalScreenInfo.proposalInfo?.countdownPeriod
                         }
+                        onPress={() => openDebtInsufficientModal()}
                       />
                     </TouchableOpacity>
                     {proposalScreenInfo?.proposedUser && (
@@ -701,12 +787,26 @@ const ProposalScreen = ({
                   </React.Fragment>
                 )}
 
-                <View style={styles.contributionCard}>
+                <View
+                  style={[
+                    styles.contributionCard,
+                    {
+                      backgroundColor:
+                        isFundingRequest() && isCountdown()
+                          ? amount < getAvailableFunds()
+                            ? colors.iceBlue2
+                            : colors.againstLightOpacity
+                          : colors.iceBlue2,
+                      borderBottomRightRadius:
+                        isFundingRequest() && isCountdown() ? 0 : 20,
+                      borderBottomLeftRadius:
+                        isFundingRequest() && isCountdown() ? 0 : 20,
+                    },
+                  ]}>
                   <View style={styles.requestedAmountContainer}>
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
-                      {proposalScreenInfo?.proposalInfo.type ===
-                      PROPOSAL_TYPE.FundingRequest
+                      {isFundingRequest()
                         ? proposalScreenInfo?.proposalInfo.fundingRequest
                             .amount > 0
                           ? 'Requested amount'
@@ -714,8 +814,7 @@ const ProposalScreen = ({
                         : 'Contribution:'}
                     </Text>
                     <Text style={text.h2Black}>
-                      {proposalScreenInfo?.proposalInfo.type ===
-                      PROPOSAL_TYPE.FundingRequest
+                      {isFundingRequest()
                         ? proposalScreenInfo?.proposalInfo.fundingRequest
                             .amount > 0
                           ? `$${
@@ -736,16 +835,17 @@ const ProposalScreen = ({
                         ' per month'}
                     </Text>
                   </View>
-                  {proposalScreenInfo?.proposalInfo.type ===
-                    PROPOSAL_TYPE.FundingRequest &&
+                  {isFundingRequest() &&
+                    isCountdown() &&
                     proposalScreenInfo?.proposalInfo.fundingRequest.amount >
                       0 && (
                       <Text
                         style={
                           text.smallBlackText
-                        }>{`Available funds: $${getAvailableFunds()}`}</Text>
+                        }>{`Available funds: $${getAvailableFundsText()}`}</Text>
                     )}
                 </View>
+                {renderDebWarningIfNeeded()}
 
                 <View
                   style={{
@@ -842,8 +942,8 @@ const ProposalScreen = ({
               {index === 0 && (
                 <ProposalData
                   proposalId={proposalId || proposalScreenInfo?.proposalInfo.id}
-                  proposalInfo={proposalScreenInfo?.proposalInfo}
-                  showMore={() => onSetIndex(1)}
+                  //proposalInfo={proposalScreenInfo?.proposalInfo}
+                  //showMore={() => onSetIndex(1)}
                 />
               )}
 
@@ -901,6 +1001,12 @@ ProposalScreen.propTypes = {
   userListStore: shape({
     getUserById: func,
   }),
+  commonStore: shape({
+    getCommonById: func,
+  }),
+  proposalStore: shape({
+    getProposalById: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -908,8 +1014,8 @@ const styles = StyleSheet.create({
   contributionCard: {
     ...layout.content,
     width: '100%',
-    backgroundColor: colors.iceBlue2,
-    borderRadius: 28,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
     paddingVertical: 14,
   },
   requestedAmountContainer: {
@@ -1030,4 +1136,6 @@ export default inject(
   'userStore',
   'userListStore',
   'bottomSheetStore',
+  'commonStore',
+  'proposalStore',
 )(observer(ProposalScreen));

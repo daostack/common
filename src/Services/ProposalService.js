@@ -12,6 +12,7 @@ export const PROPOSAL_STAGE = {
   countdown: 'countdown',
   passed: 'passed',
   failed: 'failed',
+  passedInsufficientBalance: 'passedInsufficientBalance',
 };
 
 import {PROPOSAL_TYPE} from '../Config';
@@ -22,6 +23,7 @@ export const PROPOSAL_STAGES_ACTIVE = [PROPOSAL_STAGE.countdown];
 export const PROPOSAL_STAGES_HISTORY = [
   PROPOSAL_STAGE.passed,
   PROPOSAL_STAGE.failed,
+  PROPOSAL_STAGE.passedInsufficientBalance,
 ];
 
 export const LAUNCHED_STATES = [PROPOSAL_STAGE.passed];
