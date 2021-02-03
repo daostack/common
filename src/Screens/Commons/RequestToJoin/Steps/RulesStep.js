@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import RequestToJoinRule from '~/Components/Commons/RequestToJoinRule';
@@ -16,6 +16,15 @@ const RulesStep = ({
   },
 }) => {
   const [pass, setPass] = useState(false);
+  const [contentHeight, setContentHeight] = useState(0);
+  const [contentStaticHeight, setContentStaticHeight] = useState(0);
+
+  useEffect(() => {
+    if (contentStaticHeight !== 0 && contentHeight !== 0) {
+      setPass(!(contentHeight > contentStaticHeight));
+    }
+  }, [contentHeight, contentStaticHeight]);
+
   const onScrollToBottom = () => {
     setPass(true);
   };
@@ -44,6 +53,7 @@ const RulesStep = ({
       layoutTitle={<MembershipRequest />}
       isRequestToJoin={true}
       onScrollEndDrag={onScrollToBottom}
+      onContentSizeChange={(height) => setContentStaticHeight(height)}
       requestStepActionButton={
         <RequestStepActionButton title="Continue" pass={pass} onPress={push} />
       }>
@@ -60,16 +70,21 @@ const RulesStep = ({
 
         <View style={styles.content} />
 
-        {currCommon?.rules?.length > 0 &&
-          currCommon.rules.map((rule, index) => (
-            <RequestToJoinRule
-              key={index}
-              index={index + 1}
-              title={rule.title}
-              description={rule.description}
-              url={rule.value || rule.url} // NOTE: value of multiple fields was stored in url prop before
-            />
-          ))}
+        <View
+          onLayout={(event) => {
+            setContentHeight(event.nativeEvent.layout.height);
+          }}>
+          {currCommon?.rules?.length > 0 &&
+            currCommon.rules.map((rule, index) => (
+              <RequestToJoinRule
+                key={index}
+                index={index + 1}
+                title={rule.title}
+                description={rule.description}
+                url={rule.value || rule.url} // NOTE: value of multiple fields was stored in url prop before
+              />
+            ))}
+        </View>
       </View>
     </StepDotLayout>
   );
