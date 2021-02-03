@@ -83,15 +83,8 @@ const ProposalCard = ({
       );
     }
 
-    console.log('onReviewProposal -> ', navigation);
-
     navigation.navigate('ProposalScreen', {
-      title: commonInfo?.name,
       proposalId: proposalInfo.id,
-      //TODO: Manage data in proposal Screen
-      //proposalCardInfo,
-      commonBalance: commonInfo?.balance,
-      paymentState: proposalInfo?.paymentState,
     });
   };
 

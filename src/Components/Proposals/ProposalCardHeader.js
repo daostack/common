@@ -6,6 +6,7 @@ import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
 import {string, number, bool, func} from 'prop-types';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import {observer} from 'mobx-react';
 
 const TITLES = {
   APPROVED: 'Approved',
@@ -234,4 +235,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProposalCardHeader;
+export default observer(ProposalCardHeader);

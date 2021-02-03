@@ -149,7 +149,8 @@ const CommonProfile = ({
   useEffect(() => {
     const unsubscribe = proposalStore.subscribeToCommonProposals(currCommon.id);
     return () => {
-      unsubscribe && unsubscribe();
+      console.log('COMMON PROFILE UNMOUNT');
+      //unsubscribe && unsubscribe();
     };
   }, [currCommon]);
 
@@ -473,9 +474,6 @@ const CommonProfile = ({
   const viewProposal = () => {
     navigation.navigate('ProposalScreen', {
       proposalId: params.createdProposalId,
-      screenTitle: currCommon.name,
-      commonBalance: currCommon.balance,
-      isMember,
     });
 
     setShowRequestSentModal(false);
@@ -488,12 +486,6 @@ const CommonProfile = ({
   const openProposalScreen = () => {
     navigation.navigate('ProposalScreen', {
       proposalId: pendingProposalsData.usersPendingProposal?.id,
-      proposalCardInfo: {
-        proposalInfo: pendingProposalsData.usersPendingProposal,
-      },
-      screenTitle: currCommon.name,
-      commonBalance: currCommon.balance,
-      isMember,
     });
   };
 
