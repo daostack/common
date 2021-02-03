@@ -100,12 +100,6 @@ const ProposalScreen = ({
   const proposalCommon = commonStore.getCommonById(proposalInfo.commonId);
   const proposedUser = userListStore.getUserById(proposalInfo.proposerId);
 
-  const renderVoting =
-    proposalInfo &&
-    PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.state) &&
-    isMember &&
-    !proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid);
-
   const showPaymentStatus =
     proposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.PENDING ||
     proposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.NOT_ATTEMPTED ||
@@ -113,6 +107,12 @@ const ProposalScreen = ({
 
   const isMember = userInfo && isDaoMember(proposalCommon?.members || []);
   const isProposer = userStore.isProposer(proposalInfo);
+
+  const renderVoting =
+    proposalInfo &&
+    PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.state) &&
+    isMember &&
+    !proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid);
 
   useEffect(() => {
     if (proposalInfo.type === PROPOSAL_TYPE.Join) {
