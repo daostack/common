@@ -7,6 +7,7 @@ import {Common} from '../Models/Common';
 import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import {Proposal} from '../Models/Proposal';
+import {isDaoMemberByUserId} from '~/Util';
 export default class CommonStore extends ListStore<Common> {
   @observable
   isLoading: boolean;
@@ -43,6 +44,11 @@ export default class CommonStore extends ListStore<Common> {
   // Data consuming methods
   getCommonById = (id: string): ICommonEntity | undefined =>
     this.getDataById(id);
+
+  getUserCommons = (userId: string) =>
+    this.getDataArray.filter((common: Common) =>
+      isDaoMemberByUserId(common?.members, userId),
+    );
 
   //Actions
   subscribeToAllCommons = (): FirestoreUnsubscribeFn =>

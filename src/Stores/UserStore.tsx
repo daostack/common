@@ -43,7 +43,7 @@ class UserStore {
   }
 
   // TODO: Create type for incoming user from firebase onAuthStateChanged and reuse the type
-  onAuthStateChanged = async (user: any) => {
+  onAuthStateChanged = (user: any) => {
     logger.log(
       'AUTH STATE CHANGED:',
       user?.uid,
@@ -61,11 +61,7 @@ class UserStore {
           this.setIsLoading(true);
           this.addLoginInProgress(user?.uid);
 
-          const loggedUser: UserModel | null = await this._processUser(user);
-
-          this.setSignedInUser(loggedUser);
-          this.removeLoginInProgress(loggedUser?.uid);
-          this.setIsLoading(false);
+          this._processUser(user);
         } else {
           this.setSignedInUser(null);
           this.setIsLoading(false);
@@ -88,7 +84,7 @@ class UserStore {
   };
   @action
   addLoginInProgress = (uid: any) => {
-    this.loginInProgress.push(uid);
+    !this.isLoginInProgressExists(uid) && this.loginInProgress.push(uid);
   };
   @action
   removeLoginInProgress = (uid: any) => {
@@ -115,9 +111,7 @@ class UserStore {
     this.loginInProgress.filter((item: any) => item === uid).length > 0;
 
   // Private functions
-  async _processUser(user: any): Promise<UserModel | null> {
-    let appUser = this.userInfo as UserModel | null;
-
+  async _processUser(user: any) {
     this.unsubscribeFromUser && this.unsubscribeFromUser();
     this.unsubscribeFromUser = subscribeToUser(
       user?.uid,
@@ -135,15 +129,15 @@ class UserStore {
               lastName: providerUserInfo.user.familyName,
             },
           };
-          appUser = await AuthService.getInstance().createUser(userInfo);
+          AuthService.getInstance().createUser(userInfo);
         } else {
           updatedUser && this.setSignedInUser(new UserModel(updatedUser));
           NotificationService.saveTokenToDatabase();
+          this.removeLoginInProgress(updatedUser?.uid);
+          this.setIsLoading(false);
         }
       },
     );
-
-    return appUser;
   }
 }
 

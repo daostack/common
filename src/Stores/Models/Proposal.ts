@@ -1,5 +1,6 @@
 import {observable, computed} from 'mobx';
 import {PROPOSAL_TYPE} from '~/Config';
+import {PROPOSAL_STAGE} from '~/Services/ListServices/ProposalListService';
 import {
   IFundingRequestProposal,
   IJoinRequestProposal,
@@ -95,12 +96,37 @@ export class Proposal extends BaseModel<IProposalEntity> {
   }
 
   @computed
+  get isFundingRequest() {
+    return this.type === PROPOSAL_TYPE.FundingRequest;
+  }
+
+  @computed
+  get isCountdown() {
+    return this.state === PROPOSAL_STAGE.countdown;
+  }
+
+  @computed
   get funding() {
     if (this.type === PROPOSAL_TYPE.Join) {
       return this.join?.funding;
     } else {
       return this.fundingRequest?.amount;
     }
+  }
+
+  @computed
+  get fundingFormatted() {
+    return this.funding / 100;
+  }
+
+  @computed
+  get progressBarWidthPercent() {
+    return (this.votesFor / (this.votesFor + this.votesAgainst)) * 100;
+  }
+
+  @computed
+  get votesCount() {
+    return this.votesFor + this.votesAgainst;
   }
 
   constructor(newProposalInfo: IProposalEntity) {

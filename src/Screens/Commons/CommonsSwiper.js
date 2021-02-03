@@ -1,69 +1,18 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useState} from 'react';
 import {Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {CommonBox} from '~/Components';
 import SwiperCard from '~/Components/SwiperCard';
-import DaoService from '~/Services/DaoService';
 import {layout, text, font, colors} from '~/Theme';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
-import {isDaoMemberByUserId} from '~/Util';
 import {CommonActions} from '@react-navigation/native';
-import {string, object, number, func} from 'prop-types';
+import {string, object, number, func, shape} from 'prop-types';
+import {observer, inject} from 'mobx-react';
 
 const DEFAULT_HEADER_HEIGHT = 145;
 
-const CommonsSwiper = ({navigation, userId, onCountChange, showMax}) => {
-  const [myDaos, setMyDaos] = useState(myDaos);
+const CommonsSwiper = ({navigation, userId, showMax, commonStore}) => {
+  const myDaos = commonStore.getUserCommons(userId);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
-  let listRef = useRef([]);
-
-  const loadMydaos = (snapshot) => {
-    if (snapshot.empty) {
-      listChangeCallback([]);
-    } else {
-      if (snapshot.docChanges().length !== 0) {
-        const newList = snapshot.docChanges().map(({doc}, index) => {
-          const isMember = isDaoMemberByUserId(doc.data()?.members, userId);
-          if (!isMember) {
-            return false;
-          }
-          return doc.data();
-        });
-
-        let createList = newList
-          .map((item) => {
-            let index = listRef.current.findIndex((v) => v.id === item.id);
-            if (index > -1) {
-              listRef.current[index] = item;
-            } else {
-              return item;
-            }
-          })
-          .filter((item) => item);
-        if (createList.length > 0) {
-          const allList = [...createList, ...listRef.current];
-          listRef.current = allList;
-        }
-        listChangeCallback(listRef.current);
-      }
-    }
-  };
-
-  useEffect(() => {
-    let unsubscribe = null;
-    const getMyDaos = async () => {
-      unsubscribe = await DaoService.getInstance().subscribeToMyDaosList(
-        userId,
-        loadMydaos,
-      );
-    };
-
-    getMyDaos();
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  }, [userId]);
 
   const headerHeightLayouted = (height) => {
     setHeaderHeight(height);
@@ -97,13 +46,6 @@ const CommonsSwiper = ({navigation, userId, onCountChange, showMax}) => {
       </TouchableOpacity>
     );
 
-  const listChangeCallback = (newList) => {
-    setMyDaos(newList);
-    if (onCountChange) {
-      onCountChange(newList.length);
-    }
-  };
-
   return myDaos ? (
     myDaos.length > 0 ? (
       <View style={layout.flexRow}>
@@ -111,7 +53,6 @@ const CommonsSwiper = ({navigation, userId, onCountChange, showMax}) => {
           <SwiperCard
             cardRenderer={(item, index) => renderCommonCard(item, index)}
             data={myDaos}
-            extraData={listRef}
             showMax={showMax}
           />
         </View>
@@ -154,8 +95,10 @@ const CommonsSwiper = ({navigation, userId, onCountChange, showMax}) => {
 CommonsSwiper.propTypes = {
   navigation: object,
   userId: string,
-  onCountChange: func,
   showMax: number,
+  commonStore: shape({
+    getUserCommons: func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -202,4 +145,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommonsSwiper;
+export default inject('commonStore')(observer(CommonsSwiper));
