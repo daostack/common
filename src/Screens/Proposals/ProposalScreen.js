@@ -114,8 +114,6 @@ const ProposalScreen = ({
   const isMember = userInfo && isDaoMember(proposalCommon?.members || []);
   const isProposer = userStore.isProposer(proposalInfo);
 
-  console.log('Proposal -> ', proposalInfo);
-
   useEffect(() => {
     if (proposalInfo.type === PROPOSAL_TYPE.Join) {
       navigation.setParams({

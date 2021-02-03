@@ -51,7 +51,14 @@ const UserProfileData = ({
 
   const commonsCount = commonStore.getUserCommons(user.uid).length;
 
-  useEffect(() => {}, [userId, currUserInfo, userInfo]);
+  useEffect(() => {
+    const unsubscribeUserActiveProposals = !isOwnProfile
+      ? proposalStore.subscribeToUserActiveProposals(userId)
+      : null;
+    return () => {
+      unsubscribeUserActiveProposals && unsubscribeUserActiveProposals();
+    };
+  }, [userId, currUserInfo, userInfo]);
 
   const navigateToEditProfile = (isFirstOpening) => {
     const navigate = CommonActions.navigate({

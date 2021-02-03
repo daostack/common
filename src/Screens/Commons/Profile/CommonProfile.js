@@ -149,8 +149,7 @@ const CommonProfile = ({
   useEffect(() => {
     const unsubscribe = proposalStore.subscribeToCommonProposals(currCommon.id);
     return () => {
-      console.log('COMMON PROFILE UNMOUNT');
-      //unsubscribe && unsubscribe();
+      unsubscribe && unsubscribe();
     };
   }, [currCommon]);
 
