@@ -2,7 +2,6 @@ import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {db} from '~/Firebase';
 import axios from 'axios';
 import {discussionsUrl} from '~/Config';
-import logger from './Logger';
 import {auth} from '~/Firebase';
 
 export default class DiscussionService {
@@ -36,8 +35,6 @@ export default class DiscussionService {
   }
 
   updateDiscussionLastMessage = async (discussionId, messageOwner) => {
-    logger.log('updating discussion last message --> ', discussionId);
-
     try {
       return await this.axiosClient.post(
         this.endpoints.update,
@@ -52,7 +49,6 @@ export default class DiscussionService {
         }
       );
     } catch (error) {
-      logger.error('UPDATE COMMON ERROR -> ', error);
       throw error;
     }
   }
