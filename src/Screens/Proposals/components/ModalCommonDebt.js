@@ -11,9 +11,16 @@ import {
 } from 'react-native';
 import {colors, layout} from '~/Theme';
 import {func, object} from 'prop-types';
+import {BlurView} from '@react-native-community/blur';
 
 const ModalCommonDebt = ({onPressClose, children}) => (
   <Pressable onPress={() => onPressClose()} style={styles.background}>
+    <BlurView
+      style={styles.blurView}
+      blurType="light"
+      blurAmount={1}
+      reducedTransparencyFallbackColor={colors.blackOpacity}
+    />
     <View style={styles.root}>
       <TouchableWithoutFeedback onPress={() => {}}>
         <View style={styles.view}>
@@ -50,7 +57,7 @@ ModalCommonDebt.propTypes = {
 const styles = StyleSheet.create({
   background: {
     width: '100%',
-    // backgroundColor: colors.blackOpacity,
+    backgroundColor: colors.blackOpacity,
   },
   root: {
     paddingTop: 100,
@@ -81,6 +88,10 @@ const styles = StyleSheet.create({
   },
   btns: {
     marginVertical: 40,
+  },
+  blurView: {
+    position: 'absolute',
+    ...StyleSheet.absoluteFill,
   },
 });
 
