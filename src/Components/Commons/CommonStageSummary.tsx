@@ -5,7 +5,7 @@ import {InferProps} from 'prop-types';
 import {bool, shape, number} from 'prop-types';
 import Icon from '~/Assets/iconfont/Icon';
 import ModalConversion from './ModalConversion';
-import {isIsraelLocale} from '~/Util/locale';
+import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
 import {inject, observer} from 'mobx-react';
 
 const props = {
@@ -64,9 +64,6 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
       ? (Math.sign(num) * (Math.abs(num) / 1000)).toFixed(1) + 'K'
       : Math.sign(num) * Math.abs(num);
 
-  const convertValue = (num: number) =>
-    `~₪${Number(num * conversionRate).toFixed(2)}`;
-
   const commonNumberBox = (
     numberComponent: any,
     title: string,
@@ -100,7 +97,10 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
             ${formatNumber(isCommonCard ? raised / 100 : balance / 100)}
           </Text>,
           isCommonCard ? 'Raised' : 'Available funds',
-          convertValue(isCommonCard ? raised / 100 : balance / 100),
+          convertAmountToIls(
+            isCommonCard ? raised / 100 : balance / 100,
+            conversionRate,
+          ),
         )}
         {commonNumberBox(
           <Text style={styles.headerTitle}>

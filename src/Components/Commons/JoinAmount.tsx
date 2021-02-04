@@ -2,8 +2,8 @@ import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {layout, colors, text, font} from '~/Theme';
 import {func, bool, number, InferProps, shape} from 'prop-types';
-import {isIsraelLocale} from '~/Util/locale';
-import {inject} from 'mobx-react';
+import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
+import {inject, observer} from 'mobx-react';
 
 const props = {
   id: number.isRequired,
@@ -37,9 +37,9 @@ const JoinAmount: React.FC<InferProps<typeof props>> = ({
       }`}</Text>
       {amount && !isCustom && isIsraelLocale() && (
         <Text
-          style={
-            isSelected ? styles.conversionSelected : styles.conversion
-          }>{`~₪${Number(amount * conversionRate).toFixed(2)}`}</Text>
+          style={isSelected ? styles.conversionSelected : styles.conversion}>
+          {convertAmountToIls(amount, conversionRate)}
+        </Text>
       )}
     </TouchableOpacity>
   );
@@ -90,4 +90,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(JoinAmount);
+export default inject('userStore')(observer(JoinAmount));

@@ -3,7 +3,7 @@ import {Text, StyleSheet} from 'react-native';
 import {string, bool, shape, number} from 'prop-types';
 
 import {colors, font} from '~/Theme';
-import {isIsraelLocale} from '~/Util/locale';
+import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
 import {inject, observer} from 'mobx-react';
 
 const styles = StyleSheet.create({
@@ -48,9 +48,9 @@ const CreateStep4Indicators = ({
     {!contribution && <Text style={styles.date}>{date}</Text>}
 
     {contribution && isIsraelLocale() && (
-      <Text style={styles.conversion}>{`~₪${Number(
-        value * conversionRate,
-      ).toFixed(2)}`}</Text>
+      <Text style={styles.conversion}>
+        {convertAmountToIls(value, conversionRate)}
+      </Text>
     )}
   </>
 );

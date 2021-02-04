@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {colors, font, layout} from '~/Theme';
-import {func, object} from 'prop-types';
+import {bool, func, number, object} from 'prop-types';
 
 const ModalConversion = ({onPressClose, showAmount, amount, funds}) => (
   <Pressable onPress={() => onPressClose()} style={styles.background}>
@@ -60,6 +60,9 @@ const ModalConversion = ({onPressClose, showAmount, amount, funds}) => (
 ModalConversion.propTypes = {
   onPressClose: func,
   children: object,
+  showAmount: bool,
+  amount: number,
+  funds: number,
 };
 
 const styles = StyleSheet.create({

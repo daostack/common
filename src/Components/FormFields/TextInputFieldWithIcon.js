@@ -21,7 +21,7 @@ import {
   node,
 } from 'prop-types';
 import {formatNumber, unFormatNumber} from '~/Util/FormatUtil';
-import {isIsraelLocale} from '~/Util/locale';
+import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
 
 class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
@@ -45,7 +45,6 @@ class TextInputFieldWithIcon extends React.Component {
       fieldActionComponent,
       onTogglePress,
       toggleName,
-      userStore: {conversionRate},
     } = this.props;
 
     // Register form field for validation message component if name,formStore and validateRule props are provided
@@ -243,7 +242,7 @@ class TextInputFieldWithIcon extends React.Component {
       );
 
       if (currValue > 0) {
-        return `~₪${Number(currValue * conversionRate).toFixed(2)}`;
+        return convertAmountToIls(currValue, conversionRate);
       }
     };
 
