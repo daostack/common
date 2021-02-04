@@ -57,7 +57,7 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
         </>
       );
     }; */
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const formatNumber = (num: number) =>
     Math.abs(num) > 999
