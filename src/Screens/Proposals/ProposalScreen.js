@@ -13,6 +13,8 @@ import {
   Keyboard,
   Animated,
   Modal,
+  Pressable,
+  Image,
 } from 'react-native';
 import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
@@ -46,6 +48,8 @@ import DebtErrorProposalNote from './components/DebtErrorProposalNote';
 import ModalDebtProposalWarning from './components/ModalDebtProposalWarning';
 import ModalDebtProposalError from './components/ModalDebtProposalError';
 import ModalDebtProposalInsufficient from './components/ModalDebtProposalInsufficient';
+import ModalConversion from '~/Components/Commons/ModalConversion';
+import {isIsraelLocale} from '~/Util/locale';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -53,7 +57,7 @@ const screenHeight = Dimensions.get('window').height;
 const ProposalScreen = ({
   navigation,
   bottomSheetStore,
-  userStore: {userInfo, isDaoMember, ...userStore},
+  userStore: {userInfo, isDaoMember, conversionRate, ...userStore},
   route: {
     params: {
       commonBalance,
@@ -89,6 +93,7 @@ const ProposalScreen = ({
     debtInsufficientModalVisible,
     setDebtInsufficientModalVisible,
   ] = useState(false);
+  const [modalConversionVisible, setModalConversionVisible] = useState(false);
 
   const [showPaymentStatus, setShowPaymentStatus] = useState(
     paymentState === PROPOSAL_PAYMENT_STATE.PENDING ||
@@ -611,6 +616,19 @@ const ProposalScreen = ({
           onPressClose={() => closeDebtInsufficientModal()}
         />
       </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalConversionVisible}>
+        <ModalConversion
+          onPressClose={() =>
+            setModalConversionVisible(!modalConversionVisible)
+          }
+          showAmount={true}
+          amount={Number(amount * conversionRate).toFixed(2)}
+          funds={Number(getAvailableFunds() * conversionRate).toFixed(2)}
+        />
+      </Modal>
       <SafeAreaView
         style={{
           backgroundColor: colors.white,
@@ -805,7 +823,10 @@ const ProposalScreen = ({
                   ]}>
                   <View style={styles.requestedAmountContainer}>
                     <Text
-                      style={{...text.smallBlackText, ...layout.marginRightS}}>
+                      style={{
+                        ...text.smallBlackText,
+                        ...layout.marginRightS,
+                      }}>
                       {isFundingRequest()
                         ? proposalScreenInfo?.proposalInfo.fundingRequest
                             .amount > 0
@@ -827,7 +848,10 @@ const ProposalScreen = ({
                           }`}
                     </Text>
                     <Text
-                      style={{...text.smallBlackText, ...layout.marginRightS}}>
+                      style={{
+                        ...text.smallBlackText,
+                        ...layout.marginRightS,
+                      }}>
                       {proposalScreenInfo?.proposalInfo.type ===
                         PROPOSAL_TYPE.Join &&
                         proposalScreenInfo?.proposalDao?.metadata
@@ -835,6 +859,21 @@ const ProposalScreen = ({
                         ' per month'}
                     </Text>
                   </View>
+                  {isIsraelLocale() && amount > 0 && (
+                    <View style={styles.conversionContainer}>
+                      <Pressable
+                        onPress={() =>
+                          setModalConversionVisible(!modalConversionVisible)
+                        }>
+                        <Image
+                          source={require('~/Assets/ils.png')}
+                          width={15}
+                          height={15}
+                        />
+                      </Pressable>
+                    </View>
+                  )}
+
                   {isFundingRequest() &&
                     isCountdown() &&
                     proposalScreenInfo?.proposalInfo.fundingRequest.amount >
@@ -991,6 +1030,7 @@ ProposalScreen.propTypes = {
   userStore: shape({
     userInfo: object,
     isDaoMember: func,
+    conversionRate: number,
   }),
   route: shape({
     params: shape({
@@ -1022,6 +1062,7 @@ const styles = StyleSheet.create({
     ...layout.content,
     ...layout.flexRow,
     padding: 0,
+    flex: 1,
   },
   stickyVotingContainer: {
     ...layout.flexRow,
@@ -1087,7 +1128,13 @@ const styles = StyleSheet.create({
     position: 'relative',
     height: 48,
   },
-
+  conversionContainer: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    flex: 1,
+    right: 15,
+  },
   votedByYouText: {
     ...text.buttonblue,
     ...text.bold,
