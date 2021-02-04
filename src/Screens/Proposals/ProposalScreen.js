@@ -353,7 +353,7 @@ const ProposalScreen = ({
 
   const renderDebWarningIfNeeded = () => {
     if (proposalInfo.isFundingRequest && proposalInfo.isCountdown) {
-      return amount < getAvailableFunds() ? (
+      return amount <= getAvailableFunds() ? (
         <DebtWarningProposalNote onPress={() => openDebtModal()} />
       ) : (
         <DebtErrorProposalNote onPress={() => openDebtErrorModal()} />
@@ -701,7 +701,7 @@ const ProposalScreen = ({
                       backgroundColor:
                         proposalInfo.isFundingRequest &&
                         proposalInfo.isCountdown
-                          ? amount < getAvailableFunds()
+                          ? amount <= getAvailableFunds()
                             ? colors.iceBlue2
                             : colors.againstLightOpacity
                           : colors.iceBlue2,
