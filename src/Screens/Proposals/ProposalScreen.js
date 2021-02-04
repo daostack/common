@@ -759,7 +759,7 @@ const ProposalScreen = ({
                         ' per month'}
                     </Text>
                   </View>
-                  {isIsraelLocale() && amount > 0 && (
+                  {isIsraelLocale && amount > 0 && (
                     <View style={styles.conversionContainer}>
                       <Pressable
                         onPress={() =>

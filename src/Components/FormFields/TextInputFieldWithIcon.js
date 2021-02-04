@@ -293,7 +293,7 @@ class TextInputFieldWithIcon extends React.Component {
             </View>
           )}
 
-          {iconName === 'dollar' && isIsraelLocale() && (
+          {iconName === 'dollar' && isIsraelLocale && (
             <Text style={styles.rightText}>{getConversionValue()}</Text>
           )}
         </View>

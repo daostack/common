@@ -65,7 +65,7 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
       : Math.sign(num) * Math.abs(num);
 
   const commonNumberBox = (
-    numberComponent: any,
+    numberComponent: React.ReactNode,
     title: string,
     subtitle?: string,
   ) => (
@@ -76,7 +76,7 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
       }}>
       <Text style={styles.headerSmallText}>{title}</Text>
       <View style={styles.raisedContainer}>{numberComponent}</View>
-      {subtitle && isIsraelLocale() && (
+      {subtitle && isIsraelLocale && (
         <View style={styles.subtitleContainer}>
           <Text style={styles.subtitleText}>{subtitle}</Text>
           <Pressable onPress={() => setModalVisible(!modalVisible)}>
