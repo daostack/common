@@ -88,7 +88,7 @@ const CommonAgenda = ({
                       })
                     }>
                     {/* NOTE: value of multiple fields was stored in url prop before */}
-                    {link.value || link.url}
+                    {link.title}
                   </Text>
                 </View>
               ))}

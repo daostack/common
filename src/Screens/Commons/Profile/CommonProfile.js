@@ -384,7 +384,6 @@ const CommonProfile = ({
 
   const openCommonMembers = (e) => {
     navigation.navigate('CommonMembers', {
-      members: currCommon?.members,
       commonId: currCommon.id,
       screenTitle: currCommon.name,
     });
@@ -474,9 +473,6 @@ const CommonProfile = ({
   const viewProposal = () => {
     navigation.navigate('ProposalScreen', {
       proposalId: params.createdProposalId,
-      screenTitle: currCommon.name,
-      commonBalance: currCommon.balance,
-      isMember,
     });
 
     setShowRequestSentModal(false);
@@ -489,12 +485,6 @@ const CommonProfile = ({
   const openProposalScreen = () => {
     navigation.navigate('ProposalScreen', {
       proposalId: pendingProposalsData.usersPendingProposal?.id,
-      proposalCardInfo: {
-        proposalInfo: pendingProposalsData.usersPendingProposal,
-      },
-      screenTitle: currCommon.name,
-      commonBalance: currCommon.balance,
-      isMember,
     });
   };
 

@@ -10,7 +10,6 @@ const SwiperCard = ({
   navigation,
   renderNoDataCard,
   cardRenderer,
-  extraData,
   data,
 }) => {
   const [swiperCurrentIndex, setSwiperCurrentIndex] = useState({
@@ -50,7 +49,6 @@ const SwiperCard = ({
         data={
           showMax && data.length > showMax ? data.slice(0, showMax + 1) : data
         }
-        extraData={extraData}
         onChangeIndex={onSwiperIndexChanged}
       />
     </View>
