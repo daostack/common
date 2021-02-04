@@ -1,11 +1,18 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
-import {layout, text, font} from '~/Theme';
+import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {layout, text, font, colors} from '~/Theme';
 import {InferProps} from 'prop-types';
 import {bool, shape, number} from 'prop-types';
+import Icon from '~/Assets/iconfont/Icon';
+import ModalConversion from './ModalConversion';
+import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
+import {inject, observer} from 'mobx-react';
 
 const props = {
   isCommonCard: bool,
+  userStore: shape({
+    conversionRate: number,
+  }),
   commonProgressInfo: shape({
     time: number,
     activeProposals: number,
@@ -19,6 +26,7 @@ const props = {
 const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
   isCommonCard,
   commonProgressInfo: {raised, balance, members},
+  userStore: {conversionRate},
 }) => {
   // const deadlineMoment = moment.unix(time);
   // const deadlineHasPassed = moment().isAfter(deadlineMoment);
@@ -49,29 +57,50 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
         </>
       );
     }; */
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+
   const formatNumber = (num: number) =>
     Math.abs(num) > 999
       ? (Math.sign(num) * (Math.abs(num) / 1000)).toFixed(1) + 'K'
       : Math.sign(num) * Math.abs(num);
-  const commonNumberBox = (numberComponent: any, title: string) => (
+
+  const commonNumberBox = (
+    numberComponent: React.ReactNode,
+    title: string,
+    subtitle?: string,
+  ) => (
     <View
       style={{
-        justifyContent: 'center',
-        alignContent: 'center',
         alignItems: 'center',
+        flex: 1,
       }}>
       <Text style={styles.headerSmallText}>{title}</Text>
       <View style={styles.raisedContainer}>{numberComponent}</View>
+      {subtitle && isIsraelLocale && (
+        <View style={styles.subtitleContainer}>
+          <Text style={styles.subtitleText}>{subtitle}</Text>
+          <Pressable onPress={() => setModalVisible(!modalVisible)}>
+            <Icon name="questionMark" size={12} color={colors.grey2} />
+          </Pressable>
+        </View>
+      )}
     </View>
   );
   return (
     <View style={styles.commonProgressContainer}>
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+        <ModalConversion onPressClose={() => setModalVisible(!modalVisible)} />
+      </Modal>
       <View style={styles.commonNumbers}>
         {commonNumberBox(
           <Text style={styles.headerTitle}>
             ${formatNumber(isCommonCard ? raised / 100 : balance / 100)}
           </Text>,
           isCommonCard ? 'Raised' : 'Available funds',
+          convertAmountToIls(
+            isCommonCard ? raised / 100 : balance / 100,
+            conversionRate,
+          ),
         )}
         {commonNumberBox(
           <Text style={styles.headerTitle}>
@@ -95,12 +124,9 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   commonNumbers: {
-    ...layout.content,
     padding: 10,
     ...layout.flexRow,
     width: '100%',
-    alignItems: 'center',
-    justifyContent: 'space-around',
     paddingTop: 20,
     paddingBottom: 30,
   },
@@ -118,6 +144,15 @@ const styles = StyleSheet.create({
     ...text.smallBlackText,
     ...text.fontColorGreySteel,
   },
+  subtitleContainer: {
+    marginTop: 5,
+    flexDirection: 'row',
+  },
+  subtitleText: {
+    ...text.smallBlackText,
+    ...text.fontColorGreySteel,
+    marginRight: 5,
+  },
 });
 
-export default CommonStageSummary;
+export default inject('userStore')(observer(CommonStageSummary));

@@ -13,6 +13,8 @@ import {
   Keyboard,
   Animated,
   Modal,
+  Pressable,
+  Image,
 } from 'react-native';
 import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
@@ -30,7 +32,7 @@ import {observer, inject} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
-import {string, func, object, shape} from 'prop-types';
+import {string, func, object, shape, number} from 'prop-types';
 import logger from '~/Services/Logger';
 import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
@@ -46,6 +48,8 @@ import DebtErrorProposalNote from './components/DebtErrorProposalNote';
 import ModalDebtProposalWarning from './components/ModalDebtProposalWarning';
 import ModalDebtProposalError from './components/ModalDebtProposalError';
 import ModalDebtProposalInsufficient from './components/ModalDebtProposalInsufficient';
+import ModalConversion from '~/Components/Commons/ModalConversion';
+import {isIsraelLocale} from '~/Util/locale';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -53,7 +57,7 @@ const screenHeight = Dimensions.get('window').height;
 const ProposalScreen = ({
   navigation,
   bottomSheetStore,
-  userStore: {userInfo, isDaoMember, ...userStore},
+  userStore: {userInfo, isDaoMember, conversionRate, ...userStore},
   route: {
     params: {proposalId, tabIndex = 0},
   },
@@ -78,6 +82,7 @@ const ProposalScreen = ({
     debtInsufficientModalVisible,
     setDebtInsufficientModalVisible,
   ] = useState(false);
+  const [modalConversionVisible, setModalConversionVisible] = useState(false);
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -526,6 +531,19 @@ const ProposalScreen = ({
           onPressClose={() => closeDebtInsufficientModal()}
         />
       </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalConversionVisible}>
+        <ModalConversion
+          onPressClose={() =>
+            setModalConversionVisible(!modalConversionVisible)
+          }
+          showAmount={true}
+          amount={Number(amount * conversionRate).toFixed(2)}
+          funds={Number(getAvailableFunds() * conversionRate).toFixed(2)}
+        />
+      </Modal>
       <SafeAreaView
         style={{
           backgroundColor: colors.white,
@@ -741,6 +759,21 @@ const ProposalScreen = ({
                         ' per month'}
                     </Text>
                   </View>
+                  {isIsraelLocale && amount > 0 && (
+                    <View style={styles.conversionContainer}>
+                      <Pressable
+                        onPress={() =>
+                          setModalConversionVisible(!modalConversionVisible)
+                        }>
+                        <Image
+                          source={require('~/Assets/ils.png')}
+                          width={15}
+                          height={15}
+                        />
+                      </Pressable>
+                    </View>
+                  )}
+
                   {proposalInfo.isFundingRequest &&
                     proposalInfo.isCountdown &&
                     proposalInfo.fundingRequest.amount > 0 && (
@@ -900,6 +933,7 @@ ProposalScreen.propTypes = {
   userStore: shape({
     userInfo: object,
     isDaoMember: func,
+    conversionRate: number,
   }),
   route: shape({
     params: shape({
@@ -930,6 +964,7 @@ const styles = StyleSheet.create({
     ...layout.content,
     ...layout.flexRow,
     padding: 0,
+    flex: 1,
   },
   stickyVotingContainer: {
     ...layout.flexRow,
@@ -995,7 +1030,13 @@ const styles = StyleSheet.create({
     position: 'relative',
     height: 48,
   },
-
+  conversionContainer: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    flex: 1,
+    right: 15,
+  },
   votedByYouText: {
     ...text.buttonblue,
     ...text.bold,

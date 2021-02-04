@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import ValidationMessage from './ValidationMessage';
-import {observer} from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
 import {layout, colors, font, text, sizeS, sizeL} from '~/Theme';
 import {
@@ -21,6 +21,7 @@ import {
   node,
 } from 'prop-types';
 import {formatNumber, unFormatNumber} from '~/Util/FormatUtil';
+import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
 
 class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
@@ -159,6 +160,7 @@ class TextInputFieldWithIcon extends React.Component {
       multiline,
       numberOfLines,
       keyboardType,
+      userStore: {conversionRate},
 
       // Icon props
       iconName,
@@ -233,6 +235,17 @@ class TextInputFieldWithIcon extends React.Component {
       return value;
     };
 
+    const getConversionValue = () => {
+      let currValue = Number(
+        validation.formStore.getFormField(validation.name, validation.multiName)
+          ?.value,
+      );
+
+      if (currValue > 0) {
+        return convertAmountToIls(currValue, conversionRate);
+      }
+    };
+
     return (
       <View style={{alignSelf: 'stretch'}}>
         <View style={{flexDirection: 'row'}}>
@@ -278,6 +291,10 @@ class TextInputFieldWithIcon extends React.Component {
                 color={getValue() === '' ? iconEmptyColor : iconFillColor}
               />
             </View>
+          )}
+
+          {iconName === 'dollar' && isIsraelLocale && (
+            <Text style={styles.rightText}>{getConversionValue()}</Text>
           )}
         </View>
       </View>
@@ -354,6 +371,9 @@ TextInputFieldWithIcon.propTypes = {
   subLabel: string,
   forwardRef: object,
   viewStyle: object,
+  userStore: shape({
+    conversionRate: number,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -394,6 +414,11 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     flex: 1,
   },
+  rightText: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.grey2,
+  },
   infoLabel: {
     ...font.primary.italic,
     ...font.fontSize(2),
@@ -411,4 +436,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(TextInputFieldWithIcon);
+export default inject('userStore')(observer(TextInputFieldWithIcon));
