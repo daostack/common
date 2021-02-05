@@ -48,7 +48,7 @@ const CreateStep4Indicators = ({
 
     {!contribution && <Text style={styles.date}>{date}</Text>}
 
-    {contribution && isIsraelLocale && (
+    {contribution && isIsraelLocale && amount && (
       <Text style={styles.conversion}>
         {convertAmountToIls(amount, conversionRate)}
       </Text>
