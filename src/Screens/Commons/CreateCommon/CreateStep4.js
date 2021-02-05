@@ -212,6 +212,7 @@ const CreateStep4 = ({
               title="Min. Contribution"
               value={displayString()}
               contribution
+              amount={form[CreateCommonForm.MINIMUM]}
             />
           </View>
 

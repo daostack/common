@@ -160,6 +160,7 @@ class TextInputFieldWithIcon extends React.Component {
       multiline,
       numberOfLines,
       keyboardType,
+      toggleName,
       userStore: {conversionRate},
 
       // Icon props
@@ -283,6 +284,14 @@ class TextInputFieldWithIcon extends React.Component {
           />
           {this.toggleValueBtn}
 
+          {toggleName && isIsraelLocale && (
+            <View style={styles.conversionRateStyle}>
+              <Text style={styles.rightText}>
+                {convertAmountToIls(unFormatNumber(getValue()), conversionRate)}
+              </Text>
+            </View>
+          )}
+
           {iconEndName && (
             <View style={iconStyle}>
               <Icon
@@ -390,6 +399,14 @@ const styles = StyleSheet.create({
     borderColor: colors.grey4,
     paddingHorizontal: 12,
     ...layout.marginTopS,
+  },
+  conversionRateStyle: {
+    position: 'absolute',
+    bottom: 10,
+    left: 15,
+    right: 15,
+    ...layout.content,
+    padding: 0,
   },
   subLabel: {
     marginVertical: sizeS,

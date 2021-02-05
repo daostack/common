@@ -80,7 +80,7 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
         <View style={styles.subtitleContainer}>
           <Text style={styles.subtitleText}>{subtitle}</Text>
           <Pressable onPress={() => setModalVisible(!modalVisible)}>
-            <Icon name="questionMark" size={12} color={colors.grey2} />
+            <Icon name="questionMark" size={14} color={colors.grey2} />
           </Pressable>
         </View>
       )}
@@ -147,6 +147,7 @@ const styles = StyleSheet.create({
   subtitleContainer: {
     marginTop: 5,
     flexDirection: 'row',
+    alignItems: 'center',
   },
   subtitleText: {
     ...text.smallBlackText,
