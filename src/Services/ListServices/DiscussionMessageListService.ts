@@ -12,19 +12,20 @@ export const subscribeToProposalDiscussionMessages = (
 ) =>
   DiscussionMessagesCollection.where('discussionId', '==', proposalId)
     .orderBy('createTime', 'desc')
-    .onSnapshot((snapshot: any) => {
-      let discussionList = [];
+    .onSnapshot((snapshot: IFirebaseSnapshot<IDiscussionMessageEntity>) => {
+      callback(snapshot);
+      // let discussionList = [];
 
-      // TODO: Make better handling of changes with docChanges()
-      if (!snapshot?.empty || !snapshot) {
-        discussionList = snapshot.docs.map(
-          // TODO: Add id prop in the document itself and apply the change here as well. (https://daostack1.atlassian.net/browse/CM-1532)
-          (doc: any) =>
-            ({id: doc.id, ...doc.data()} as IDiscussionMessageEntity),
-        );
-      }
+      // // TODO: Make better handling of changes with docChanges()
+      // if (!snapshot?.empty || !snapshot) {
+      //   discussionList = snapshot.docs.map(
+      //     // TODO: Add id prop in the document itself and apply the change here as well. (https://daostack1.atlassian.net/browse/CM-1532)
+      //     (doc: any) =>
+      //       ({id: doc.id, ...doc.data()} as IDiscussionMessageEntity),
+      //   );
+      // }
 
-      callback(discussionList);
+      // callback(discussionList);
     });
 
 export const subscribeToDiscussionsMessages = (

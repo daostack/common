@@ -30,12 +30,6 @@ export class UserModel extends BaseModel<IUserEntity> {
   lastName: string = '';
 
   @observable
-  createdAt: Date | null = null;
-
-  @observable
-  updatedAt: Date | null = null;
-
-  @observable
   intro: string = '';
 
   // That field is used only in the commonMembers list
@@ -43,7 +37,7 @@ export class UserModel extends BaseModel<IUserEntity> {
   joinedAt?: Date | null = null;
 
   constructor(newUserInfo: IUserEntity) {
-    super();
+    super(newUserInfo);
     // Filter the provided newUserInfo values in order to be sure there are no extra data.
     // Currently there are users with displayName prop in the DB,
     // but here the displayName is computed field which can't be assigned a value to.

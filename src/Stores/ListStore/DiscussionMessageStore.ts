@@ -30,15 +30,18 @@ export default class DiscussionMessageStore extends ListStore<DiscussionMessage>
   getDiscussionMessagesByDiscussionId = (
     discussionId: string,
   ): Array<DiscussionMessage> | undefined =>
-    this.getDataArray?.filter(
-      (message: DiscussionMessage) => message.discussionId === discussionId,
-    );
+    this.getDataArray
+      ?.filter(
+        (message: DiscussionMessage) => message.discussionId === discussionId,
+      )
+      .sort(
+        (message: DiscussionMessage, prevMessage: DiscussionMessage) =>
+          prevMessage.createdAt.seconds - message.createdAt.seconds,
+      );
 
-  getDiscussionMessageByProposalId = (proposalId: string) => {
-    this.getDataArray?.filter(
-      (message: DiscussionMessage) => message.discussionId === proposalId,
-    );
-  };
+  getDiscussionMessageByProposalId = (proposalId: string) =>
+    this.getDiscussionMessagesByDiscussionId(proposalId);
+
   //Actions
   subscribeToDiscussionsMessages = (
     discussionIds: Array<string>,
@@ -61,47 +64,87 @@ export default class DiscussionMessageStore extends ListStore<DiscussionMessage>
     updatedDiscussionList: IFirebaseSnapshot<IDiscussionMessageEntity>,
   ) => {
     console.log('updatedDiscussionList -> ', updatedDiscussionList);
+    console.log('ONLY CHANGES -> ', updatedDiscussionList.docChanges());
 
     runInAction(() => {
       this.isLoading = true;
     });
 
+    const updatesMap = new Map<string, DiscussionMessage>();
+
+    // Initial loading
     updatedDiscussionList
       .docChanges()
       .forEach(
         (
           updatedDiscussionMessageDoc: IFirebaseDocChange<IDiscussionMessageEntity>,
         ) => {
+          // #datamodel
+          // TODO: remove that data conversion when the data model in backend is changed.
+          const data = updatedDiscussionMessageDoc.doc.data();
           const updatedDiscussionMessage = {
             ...{
               id: updatedDiscussionMessageDoc.doc.id,
+              createdAt: data.createTime,
             },
-            ...updatedDiscussionMessageDoc.doc.data(),
+            ...data,
           };
 
-          let proposal = this.getDataById(updatedDiscussionMessage.id);
-          if (proposal) {
-            proposal.setUpdates(updatedDiscussionMessage);
-          } else {
-            this.setData(
-              updatedDiscussionMessage.id,
-              new DiscussionMessage(updatedDiscussionMessage),
-            );
-          }
+          updatesMap.set(
+            updatedDiscussionMessage.id,
+            new DiscussionMessage(updatedDiscussionMessage),
+          );
         },
       );
 
-    updatedDiscussionList.forEach(
-      (discussionEntity: IDiscussionMessageEntity) => {
-        this.setData(
-          discussionEntity.id,
-          new DiscussionMessage(discussionEntity),
-        );
-      },
-    );
-
     runInAction(() => {
+      this.data.merge(updatesMap);
       this.isLoading = false;
     });
+
+    // updatedDiscussionList
+    //   .docChanges()
+    //   .forEach(
+    //     (
+    //       updatedDiscussionMessageDoc: IFirebaseDocChange<IDiscussionMessageEntity>,
+    //     ) => {
+    //       const updatedDiscussionMessage = {
+    //         ...{
+    //           id: updatedDiscussionMessageDoc.doc.id,
+    //         },
+    //         ...updatedDiscussionMessageDoc.doc.data(),
+    //       };
+
+    //       console.log(
+    //         'updatedDiscussionMessageDoc -> ',
+    //         updatedDiscussionMessageDoc,
+    //       );
+
+    //       let proposal = null;
+    //       try {
+    //         proposal = this.getDataById(updatedDiscussionMessage.id);
+    //       } catch (error) {
+    //         console.log('Not found data in store. Adding it ...');
+    //       }
+    //       console.log('proposal -> ', proposal);
+    //       if (proposal) {
+    //         proposal.setUpdates(updatedDiscussionMessage);
+    //       } else {
+    //         this.setData(
+    //           updatedDiscussionMessage.id,
+    //           new DiscussionMessage(updatedDiscussionMessage),
+    //         );
+    //       }
+    //     },
+    //   );
+
+    // updatedDiscussionList.forEach(
+    //   (discussionEntity: IDiscussionMessageEntity) => {
+    //     this.setData(
+    //       discussionEntity.id,
+    //       new DiscussionMessage(discussionEntity),
+    //     );
+    //   },
+    // );
   };
 }

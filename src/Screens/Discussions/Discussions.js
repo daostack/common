@@ -47,32 +47,37 @@ const Discussions = ({
 }) => {
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
-  const chatRef = useRef(null);
-  //let listRef = useRef([]);
-
-  const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
-
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isSending, setIsSending] = useState(false);
-  const [inputText, setInputText] = useState(null);
-
-  const [showMenu, setShowMenu] = useState(false);
-  const [inputHeight, setInputHeight] = useState(false);
 
   const currentUser = auth().currentUser;
-
   const dataState = discussionStore.getDiscussionById(discussionId);
   const user = userListStore.getUserById(dataState.ownerId);
-
   const followState = dataState?.follower?.includes(currentUser.uid);
   const msgGroup = discussionMessageStore
     .getDiscussionMessagesByDiscussionId(discussionId)
     .map((msg) => ({
       date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
       data: msg,
-    }));
+    }))
+    .reduce((acc, curr) => {
+      var key = curr.date;
+      let el = acc.find((x) => x && x.date === key);
+      if (el) {
+        el.data.push(curr.data);
+      } else {
+        acc.push({
+          date: key,
+          data: [curr.data],
+        });
+      }
+      return acc;
+    }, []);
 
-  console.log('msgGroup -> ', msgGroup);
+  const [inputText, setInputText] = useState(null);
+  const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [inputHeight, setInputHeight] = useState(false);
 
   const isMember =
     userStore.userInfo &&
@@ -82,82 +87,7 @@ const Discussions = ({
     setShowMenu(false);
   };
 
-  // useEffect(() => {
-  //   let uid = null;
-  //   if (currentUser) {
-  //     uid = currentUser.uid;
-  //   }
-  //   const unsubscribe = db
-  //     .collection('discussion')
-  //     .doc(discussionId)
-  //     .onSnapshot((snapshot) => {
-  //       if (!snapshot.exists) {
-  //         return;
-  //       }
-  //       setData({id: snapshot.id, ...snapshot.data()});
-  //       const follower = snapshot.data().follower;
-  //       if (follower && uid) {
-  //         const state = follower.includes(uid);
-  //         setFollowState(state);
-  //       }
-  //     });
-  //   return unsubscribe;
-  // }, [commonId, discussionId, currentUser]);
-
-  // useEffect(() => {
-  //   const unsubscribe = db
-  //     .collection('discussionMessage')
-  //     .where('discussionId', '==', discussionId)
-  //     .orderBy('createTime', 'desc')
-  //     // .startAt(0)
-  //     // .limit(25)
-  //     .onSnapshot(
-  //       (snapshot) => {
-  //         if (snapshot.docChanges().length !== 0) {
-  //           const newList = snapshot.docChanges().map(({doc}) => ({
-  //             id: doc.id,
-  //             ...doc.data(),
-  //           }));
-  //           const msgList = [...newList, ...listRef.current];
-  //           // _.union(listRef.current, newList);
-  //           listRef.current = msgList;
-  //           logger.log('newMessage', newList);
-  //           const groupDate = msgList
-  //             .map((msg) => ({
-  //               date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
-  //               data: msg,
-  //             }))
-  //             .reduce((acc, curr) => {
-  //               var key = curr.date;
-  //               let el = acc.find((x) => x && x.date === key);
-  //               if (el) {
-  //                 el.data.push(curr.data);
-  //               } else {
-  //                 acc.push({
-  //                   date: key,
-  //                   data: [curr.data],
-  //                 });
-  //               }
-  //               return acc;
-  //             }, []);
-  //           setMsgGroup(groupDate);
-  //         }
-  //       },
-  //       (error) => logger.error(error),
-  //     );
-
-  //   return unsubscribe;
-  // }, [commonId, dataState.id]);
-
-  // const openOptionsMenu = () => {
-  //   if (!currentUser) {
-  //     showLoginScreen();
-  //     return;
-  //   }
-  //   props.bottomSheetStore.showBottomSheet(
-  //     BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
-  //   );
-  // };
+  useEffect(() => {}, [commonId, discussionId, currentUser]);
 
   const showLoginScreen = () => {
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN);
@@ -419,7 +349,7 @@ const Discussions = ({
         {msgGroup.length > 0 ? (
           <SectionList
             inverted
-            ref={chatRef}
+            // ref={chatRef}
             sections={msgGroup}
             keyExtractor={(x) => {
               console.log('X -> ', x);

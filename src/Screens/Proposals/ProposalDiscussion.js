@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 import {
   Text,
   StyleSheet,
@@ -11,92 +11,35 @@ import {layout, text, colors, font} from '~/Theme';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
 import moment from 'moment';
-import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
 import PropTypes, {string, number, func, shape, arrayOf} from 'prop-types';
 
 const ProposalDiscussion = ({
   proposal,
   proposalId,
-  scrollViewRef,
   userListStore,
   discussionMessageStore,
 }) => {
   const chatRef = useRef(null);
-  const msgGroups = loadProposalDiscussionMessages();
-
-  //discussionMessageStore.get(proposalId);
-
-  const loadProposalDiscussionMessages = () =>
-    discussionMessageStore
-      .getDiscussionMessageByProposalId(proposalId)
-      .map((msg) => ({
-        date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
-        data: msg,
-      }));
-
-  // const setMsgGroup = (msgGroup) => {
-  //   setMsgGroups(msgGroup);
-
-  //   setTimeout(() => {
-  //     scrollViewRef.current.scrollToEnd({
-  //       animated: true,
-  //     });
-  //   }, 150);
-  // };
-
-  // let listRef = useRef([]);
-  // useEffect(() => {
-  //   const unsubscribe = db
-  //     .collection('discussionMessage')
-  //     .where('discussionId', '==', proposalId)
-  //     .orderBy('createTime', 'desc')
-  //     // .startAt(0)
-  //     // .limit(25)
-  //     .onSnapshot(
-  //       (snapshot) => {
-  //         if (snapshot.docChanges().length !== 0) {
-  //           const newList = snapshot.docChanges().map(({doc}) => ({
-  //             id: doc.id,
-  //             ...doc.data(),
-  //           }));
-  //           const msgList = [...newList, ...listRef.current];
-  //           // _.union(listRef.current, newList);
-  //           listRef.current = msgList;
-  //           logger.log('newMessage', newList);
-  //           const groupDate = msgList
-  //             .map((msg) => ({
-  //               date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
-  //               data: msg,
-  //             }))
-  //             .reduce((acc, curr) => {
-  //               var key = curr.date;
-  //               let el = acc.find((x) => x && x.date === key);
-  //               if (el) {
-  //                 el.data.push(curr.data);
-  //               } else {
-  //                 acc.push({
-  //                   date: key,
-  //                   data: [curr.data],
-  //                 });
-  //               }
-  //               return acc;
-  //             }, []);
-
-  //           setMsgGroup(groupDate);
-
-  //           chatRef.current.scrollToLocation({
-  //             animated: true,
-  //             itemIndex: msgList.length + groupDate.length - 1,
-  //           });
-  //         }
-  //       },
-  //       (error) => logger.error(error),
-  //     );
-  //   return () => {
-  //     unsubscribe();
-  //   };
-  // }, [proposalId]);
+  const msgGroups = discussionMessageStore
+    .getDiscussionMessageByProposalId(proposalId)
+    .map((msg) => ({
+      date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
+      data: msg,
+    }))
+    .reduce((acc, curr) => {
+      var key = curr.date;
+      let el = acc.find((x) => x && x.date === key);
+      if (el) {
+        el.data.push(curr.data);
+      } else {
+        acc.push({
+          date: key,
+          data: [curr.data],
+        });
+      }
+      return acc;
+    }, []);
 
   const getOutcomeForMessage = async (proposalObj, message) => {
     const user = userListStore.getUserById(message.ownerId);

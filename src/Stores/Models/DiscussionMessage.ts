@@ -22,7 +22,7 @@ export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
   ownerAvatar: string;
 
   constructor(newDiscussionMessageInfo: IDiscussionMessageEntity) {
-    super();
+    super(newDiscussionMessageInfo);
     this.discussionId = newDiscussionMessageInfo.discussionId;
     this.ownerId = newDiscussionMessageInfo.ownerId;
     this.ownerName = newDiscussionMessageInfo.ownerName;

@@ -34,7 +34,7 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
   followers: string[];
 
   constructor(newDiscussionInfo: IDiscussionEntity) {
-    super();
+    super(newDiscussionInfo);
     this.id = newDiscussionInfo.id;
     this.title = newDiscussionInfo.title;
     this.message = newDiscussionInfo.message;
