@@ -98,50 +98,5 @@ export default class DiscussionMessageStore extends ListStore<DiscussionMessage>
       this.data.merge(updatesMap);
       this.isLoading = false;
     });
-
-    // updatedDiscussionList
-    //   .docChanges()
-    //   .forEach(
-    //     (
-    //       updatedDiscussionMessageDoc: IFirebaseDocChange<IDiscussionMessageEntity>,
-    //     ) => {
-    //       const updatedDiscussionMessage = {
-    //         ...{
-    //           id: updatedDiscussionMessageDoc.doc.id,
-    //         },
-    //         ...updatedDiscussionMessageDoc.doc.data(),
-    //       };
-
-    //       console.log(
-    //         'updatedDiscussionMessageDoc -> ',
-    //         updatedDiscussionMessageDoc,
-    //       );
-
-    //       let proposal = null;
-    //       try {
-    //         proposal = this.getDataById(updatedDiscussionMessage.id);
-    //       } catch (error) {
-    //         console.log('Not found data in store. Adding it ...');
-    //       }
-    //       console.log('proposal -> ', proposal);
-    //       if (proposal) {
-    //         proposal.setUpdates(updatedDiscussionMessage);
-    //       } else {
-    //         this.setData(
-    //           updatedDiscussionMessage.id,
-    //           new DiscussionMessage(updatedDiscussionMessage),
-    //         );
-    //       }
-    //     },
-    //   );
-
-    // updatedDiscussionList.forEach(
-    //   (discussionEntity: IDiscussionMessageEntity) => {
-    //     this.setData(
-    //       discussionEntity.id,
-    //       new DiscussionMessage(discussionEntity),
-    //     );
-    //   },
-    // );
   };
 }
