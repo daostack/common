@@ -39,9 +39,6 @@ export default class DiscussionMessageStore extends ListStore<DiscussionMessage>
           prevMessage.createdAt.seconds - message.createdAt.seconds,
       );
 
-  getDiscussionMessageByProposalId = (proposalId: string) =>
-    this.getDiscussionMessagesByDiscussionId(proposalId);
-
   //Actions
   subscribeToDiscussionsMessages = (
     discussionIds: Array<string>,

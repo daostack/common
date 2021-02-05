@@ -284,7 +284,7 @@ const Discussions = ({
       {header()}
       <ScrollView style={{flex: 1, paddingBottom: 30}} ref={scrollRef}>
         <DiscussionMessagesList
-          proposalId={discussionId}
+          discussionId={discussionId}
           inputRef={inputRef}
           scrollViewRef={scrollRef}
         />

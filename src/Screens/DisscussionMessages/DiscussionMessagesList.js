@@ -16,14 +16,14 @@ import PropTypes, {string, number, func, shape, arrayOf} from 'prop-types';
 
 const DiscussionMessagesList = ({
   proposal,
-  proposalId,
+  discussionId,
   scrollViewRef,
   userListStore,
   discussionMessageStore,
 }) => {
   const chatRef = useRef(null);
   const msgGroups = discussionMessageStore
-    .getDiscussionMessageByProposalId(proposalId)
+    .getDiscussionMessagesByDiscussionId(discussionId)
     .map((msg) => ({
       date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
       data: msg,
@@ -113,7 +113,7 @@ DiscussionMessagesList.propTypes = {
       }),
     ),
   }),
-  proposalId: string,
+  discussionId: string,
   scrollViewRef: PropTypes.any,
   onFirstScrollDown: func,
   onScrollRefresh: func,
@@ -122,6 +122,7 @@ DiscussionMessagesList.propTypes = {
   }),
   discussionMessageStore: shape({
     subscribeToProposalDiscussions: func,
+    getDiscussionMessagesByDiscussionId: func,
   }),
 };
 
