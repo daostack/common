@@ -284,7 +284,7 @@ class TextInputFieldWithIcon extends React.Component {
           />
           {this.toggleValueBtn}
 
-          {toggleName && isIsraelLocale && (
+          {toggleName && isIsraelLocale && unFormatNumber(getValue()) > 0 && (
             <View style={styles.conversionRateStyle}>
               <Text style={styles.rightText}>
                 {convertAmountToIls(unFormatNumber(getValue()), conversionRate)}
