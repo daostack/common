@@ -151,7 +151,6 @@ const CommonProfile = ({
     const unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
       currCommon.id,
     );
-    console.log('subscribe for common discussions -> ', currCommon.id);
     const unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
       currCommon.id,
     );

@@ -11,32 +11,27 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Keyboard,
-  SectionList,
   Platform,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '~/Theme';
-import DiscussionMessage from './DiscussionMessage';
-import firestore from '@react-native-firebase/firestore';
 import Toast from '~/Util/Toast.js';
 import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
-import BottomSheetModal from '~/Components/BottomSheetModal';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import ImageView from 'react-native-image-viewing';
 import {db} from '../../Firebase';
-import logger from '../../Services/Logger';
 import {func, object, shape, string} from 'prop-types';
 import DiscussionService from '../../Services/DiscussionService';
 import Hyperlink from 'react-native-hyperlink';
+import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
   commonStore,
   discussionStore,
-  discussionMessageStore,
   userStore,
   bottomSheetStore,
   userListStore,
@@ -51,79 +46,21 @@ const Discussions = ({
   const currentUser = auth().currentUser;
   const dataState = discussionStore.getDiscussionById(discussionId);
   const user = userListStore.getUserById(dataState.ownerId);
-  const followState = dataState?.follower?.includes(currentUser.uid);
-  const msgGroup = discussionMessageStore
-    .getDiscussionMessagesByDiscussionId(discussionId)
-    .map((msg) => ({
-      date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
-      data: msg,
-    }))
-    .reduce((acc, curr) => {
-      var key = curr.date;
-      let el = acc.find((x) => x && x.date === key);
-      if (el) {
-        el.data.push(curr.data);
-      } else {
-        acc.push({
-          date: key,
-          data: [curr.data],
-        });
-      }
-      return acc;
-    }, []);
 
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isSending, setIsSending] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
   const [inputHeight, setInputHeight] = useState(false);
 
   const isMember =
     userStore.userInfo &&
     userStore.isDaoMember(commonStore.getCommonById(commonId)?.members);
 
-  const hideMenu = () => {
-    setShowMenu(false);
-  };
-
   useEffect(() => {}, [commonId, discussionId, currentUser]);
 
   const showLoginScreen = () => {
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN);
-  };
-
-  const followDiscussion = async () => {
-    let uid = null;
-    if (currentUser) {
-      uid = currentUser.uid;
-    } else {
-      showLoginScreen();
-    }
-
-    db.collection('discussion')
-      .doc(discussionId)
-      .update({
-        follower: followState
-          ? firestore.FieldValue.arrayRemove(uid)
-          : firestore.FieldValue.arrayUnion(uid),
-      })
-      .then(() => {
-        logger.log('Follow State Change');
-        setShowMenu(false);
-      });
-  };
-
-  const handleLayoutLoaded = ({nativeEvent}) => {
-    try {
-      // Once the list is loaded, measure it and scroll the user to the end of it
-      scrollRef.current.scrollTo({
-        y: nativeEvent.layout.height,
-        animated: true,
-      });
-    } catch (error) {
-      logger.error('HandleLayoutLoaded error: ', error);
-    }
   };
 
   const sendMessageToDiscussion = async () => {
@@ -346,54 +283,22 @@ const Discussions = ({
     <SafeAreaView style={styles.safeView}>
       {header()}
       <ScrollView style={{flex: 1, paddingBottom: 30}} ref={scrollRef}>
-        {msgGroup.length > 0 ? (
-          <SectionList
-            inverted
-            // ref={chatRef}
-            sections={msgGroup}
-            keyExtractor={(x) => {
-              console.log('X -> ', x);
-              return x.id;
-            }}
-            stickySectionHeadersEnabled={true}
-            contentContainerStyle={{
-              paddingTop: 100,
-            }}
-            renderItem={(x) => (
-              <DiscussionMessage data={x.item} showCurrentUserAvatar />
-            )}
-            renderSectionFooter={({section: {date}}) => (
-              <Text style={styles.timeHeader}>
-                {moment().isSame(date, 'day') ? 'Today' : date}
-              </Text>
-            )}
-            onLayout={handleLayoutLoaded}
-          />
-        ) : (
-          <View style={styles.emptyContainer}>
-            <Image
-              source={require('../../Assets/empty-discussion.png')}
-              style={{width: 240, height: 240}}
-            />
-
-            <Text style={styles.emptyTitle}> No comments yet</Text>
-            <Text style={styles.emptyBody}>
-              Have any thoughts? Share them with other members by adding the
-              first comment.
-            </Text>
-          </View>
-        )}
+        <DiscussionMessagesList
+          proposalId={discussionId}
+          inputRef={inputRef}
+          scrollViewRef={scrollRef}
+        />
       </ScrollView>
 
-      <KeyboardAvoidingView
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          flex: 1,
-          color: '#fbfdff',
-        }}>
-        <View style={styles.inputContainer}>
-          {isMember ? (
+      {isMember ? (
+        <KeyboardAvoidingView
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            flex: 1,
+            color: '#fbfdff',
+          }}>
+          <View style={styles.inputContainer}>
             <View
               style={[styles.input, {height: Math.max(35, inputHeight + 50)}]}>
               <TextInput
@@ -431,38 +336,15 @@ const Discussions = ({
                 />
               </TouchableOpacity>
             </View>
-          ) : (
-            <Text style={{...styles.joinCommonText}}>
-              {'Only members can send messages'}
-            </Text>
-          )}
+          </View>
+        </KeyboardAvoidingView>
+      ) : (
+        <View style={styles.input}>
+          <Text style={{...styles.joinCommonText}}>
+            Only members can send messages
+          </Text>
         </View>
-      </KeyboardAvoidingView>
-
-      <BottomSheetModal
-        isVisible={showMenu}
-        onClose={hideMenu}
-        style={styles.modalStyle}>
-        <View style={styles.bottomSheet}>
-          <Text style={styles.sheetTitle}>Options</Text>
-          <TouchableOpacity onPress={() => followDiscussion()}>
-            <View style={styles.sheetButton}>
-              <Icon name="following" color={colors.black} />
-              <View style={{flex: 1}}>
-                <Text style={[styles.sheetText, {color: colors.black}]}>
-                  {followState ? 'Unfollow' : 'Follow'}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.sheetButton}>
-              <Icon name="report" color={colors.against} />
-              <Text style={styles.sheetText}>Report</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </BottomSheetModal>
+      )}
 
       <ImageView
         images={
@@ -655,6 +537,7 @@ const styles = StyleSheet.create({
     color: colors.greySubtitle,
     paddingTop: sizeS,
     paddingBottom: sizeXL,
+    alignSelf: 'center',
   },
   emptyContainer: {
     flex: 0.8,

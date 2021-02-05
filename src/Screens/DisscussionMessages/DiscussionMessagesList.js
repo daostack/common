@@ -14,9 +14,10 @@ import moment from 'moment';
 import logger from '../../Services/Logger';
 import PropTypes, {string, number, func, shape, arrayOf} from 'prop-types';
 
-const ProposalDiscussion = ({
+const DiscussionMessagesList = ({
   proposal,
   proposalId,
+  scrollViewRef,
   userListStore,
   discussionMessageStore,
 }) => {
@@ -40,6 +41,12 @@ const ProposalDiscussion = ({
       }
       return acc;
     }, []);
+
+  setTimeout(() => {
+    scrollViewRef.current.scrollToEnd({
+      animated: true,
+    });
+  }, 150);
 
   const getOutcomeForMessage = async (proposalObj, message) => {
     const user = userListStore.getUserById(message.ownerId);
@@ -97,7 +104,7 @@ const ProposalDiscussion = ({
   );
 };
 
-ProposalDiscussion.propTypes = {
+DiscussionMessagesList.propTypes = {
   proposal: shape({
     votes: arrayOf(
       shape({
@@ -150,4 +157,4 @@ export default inject(
   'userStore',
   'userListStore',
   'discussionMessageStore',
-)(observer(ProposalDiscussion));
+)(observer(DiscussionMessagesList));
