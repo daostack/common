@@ -299,7 +299,7 @@ const CommonProfile = ({
     }
   };
 
-  const openAgendaScreen = (e) => {
+  const openAgendaScreen = () => {
     navigation.navigate('CommonAgenda', {
       screenTitle: currCommon.name,
       common: currCommon,
@@ -381,7 +381,6 @@ const CommonProfile = ({
                 horizontal={true}
                 navigation={navigation}
                 commonId={currCommon.id}
-                members={currCommon?.members}
                 limit={5}
               />
             </View>
@@ -393,7 +392,6 @@ const CommonProfile = ({
 
   const openCommonMembers = (e) => {
     navigation.navigate('CommonMembers', {
-      members: currCommon?.members,
       commonId: currCommon.id,
       screenTitle: currCommon.name,
     });
@@ -408,12 +406,18 @@ const CommonProfile = ({
     Share.open(options);
   };
 
+  const onEdit = (type) => {
+    bottomSheetStore.hideBottomSheet();
+    type === 'info'
+      ? navigateTo('Edit info and cover photo')
+      : navigateTo('Edit Rules');
+  };
+
   const openCommonOptions = (event) => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
-        editInfo: () => navigateTo('Edit info and cover photo'),
-        editRules: () => navigateTo('Edit Rules'),
+        onEdit: (type) => onEdit(type),
       },
     );
   };
@@ -477,9 +481,6 @@ const CommonProfile = ({
   const viewProposal = () => {
     navigation.navigate('ProposalScreen', {
       proposalId: params.createdProposalId,
-      screenTitle: currCommon.name,
-      commonBalance: currCommon.balance,
-      isMember,
     });
 
     setShowRequestSentModal(false);
@@ -492,12 +493,6 @@ const CommonProfile = ({
   const openProposalScreen = () => {
     navigation.navigate('ProposalScreen', {
       proposalId: pendingProposalsData.usersPendingProposal?.id,
-      proposalCardInfo: {
-        proposalInfo: pendingProposalsData.usersPendingProposal,
-      },
-      screenTitle: currCommon.name,
-      commonBalance: currCommon.balance,
-      isMember,
     });
   };
 
@@ -780,6 +775,8 @@ const CommonProfile = ({
                   cover: currCommon.image,
                 }}
                 common={currCommon}
+                canEdit={hasPermission}
+                onEdit={onEdit}
               />
             )}
             renderStickyHeader={() => (

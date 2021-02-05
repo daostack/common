@@ -9,18 +9,11 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from 'react-native';
-import {colors, layout} from '~/Theme';
-import {func, object} from 'prop-types';
-import {BlurView} from '@react-native-community/blur';
+import {colors, font, layout} from '~/Theme';
+import {bool, func, number, object} from 'prop-types';
 
-const ModalCommonDebt = ({onPressClose, children}) => (
+const ModalConversion = ({onPressClose, showAmount, amount, funds}) => (
   <Pressable onPress={() => onPressClose()} style={styles.background}>
-    <BlurView
-      style={styles.blurView}
-      blurType="light"
-      blurAmount={1}
-      reducedTransparencyFallbackColor={colors.blackOpacity}
-    />
     <View style={styles.root}>
       <TouchableWithoutFeedback onPress={() => {}}>
         <View style={styles.view}>
@@ -28,11 +21,26 @@ const ModalCommonDebt = ({onPressClose, children}) => (
           <ScrollView contentContainerStyle={styles.content}>
             <Image
               style={styles.piggyBank}
-              source={require('~/Assets/debt-funds.png')}
+              source={require('~/Assets/transparent.png')}
               width={116}
               height={116}
             />
-            {children}
+            <Text style={styles.title}>Local Currency</Text>
+            {showAmount && (
+              <View style={{marginBottom: 20}}>
+                <Text style={[styles.text, styles.centerText]}>
+                  <Text>Requested amount:</Text>
+                  <Text style={{fontWeight: 'bold'}}>{` ~₪${amount}`}</Text>
+                </Text>
+                <Text style={[styles.text, styles.centerText]}>
+                  {`Available funds: ~₪${funds}`}
+                </Text>
+              </View>
+            )}
+            <Text style={[styles.text, styles.centerText]}>
+              All funds are received in U.S. dollars. The actual balance in ILS
+              may be different than the amount estimated above.
+            </Text>
             <TouchableOpacity
               style={{
                 ...styles.btns,
@@ -49,9 +57,12 @@ const ModalCommonDebt = ({onPressClose, children}) => (
   </Pressable>
 );
 
-ModalCommonDebt.propTypes = {
+ModalConversion.propTypes = {
   onPressClose: func,
   children: object,
+  showAmount: bool,
+  amount: number,
+  funds: number,
 };
 
 const styles = StyleSheet.create({
@@ -89,10 +100,30 @@ const styles = StyleSheet.create({
   btns: {
     marginVertical: 40,
   },
-  blurView: {
-    position: 'absolute',
-    ...StyleSheet.absoluteFill,
+  title: {
+    color: colors.black,
+    ...font.primary.bold,
+    fontSize: 20,
+    marginHorizontal: 56,
+    lineHeight: 28,
+    textAlign: 'center',
+    paddingBottom: 8,
+  },
+  subtitle: {
+    color: colors.black,
+    ...font.primary.bold,
+    fontSize: 16,
+    lineHeight: 20,
+    marginBottom: 16,
+  },
+  text: {
+    color: colors.black,
+    ...font.primary.regular,
+    fontSize: 16,
+    marginHorizontal: 30,
+    lineHeight: 20,
+    textAlign: 'center',
   },
 });
 
-export default ModalCommonDebt;
+export default ModalConversion;

@@ -18,33 +18,35 @@ const UseOfFunds: React.FC<InferProps<typeof props>> = ({
       <View style={styles.view}>
         <View style={styles.plug} />
         <ScrollView contentContainerStyle={styles.content}>
-          <Image
-            style={styles.piggyBank}
-            source={require('~/Assets/CommonExplanation/funds.png')}
-            width={116}
-            height={116}
-          />
-          <Text style={styles.title}>{data.useOfFundsTitle}</Text>
-          <Text style={[styles.text, styles.centerText]}>
-            {data.useOfFundsText}
-          </Text>
-          <View style={styles.line} />
-          <Text style={styles.subtitle}>{data.onlyUseFundsTo}</Text>
-          {[data.payProperyBusinesses, data.contributeToNonProfits].map(
-            (text, index) => (
-              <View key={index} style={styles.item}>
-                <View style={styles.checkMark}>
-                  <Icon name="checkMark" size={24} />
+          <Pressable onPress={onCancel}>
+            <Image
+              style={styles.piggyBank}
+              source={require('~/Assets/CommonExplanation/funds.png')}
+              width={116}
+              height={116}
+            />
+            <Text style={styles.title}>{data.useOfFundsTitle}</Text>
+            <Text style={[styles.text, styles.centerText]}>
+              {data.useOfFundsText}
+            </Text>
+            <View style={styles.line} />
+            <Text style={styles.subtitle}>{data.onlyUseFundsTo}</Text>
+            {[data.payProperyBusinesses, data.contributeToNonProfits].map(
+              (text, index) => (
+                <View key={index} style={styles.item}>
+                  <View style={styles.checkMark}>
+                    <Icon name="checkMark" size={24} />
+                  </View>
+                  <Text style={[styles.text, styles.flex]}>{text}</Text>
                 </View>
-                <Text style={[styles.text, styles.flex]}>{text}</Text>
-              </View>
-            ),
-          )}
-          <Text style={[styles.text, styles.centerText, styles.highlighted]}>
-            {data.invoicesRequirment}
-          </Text>
-          <Pressable onPress={onPressAgree}>
-            <Text style={styles.button}>{data.iAgreeWithAbove}</Text>
+              ),
+            )}
+            <Text style={[styles.text, styles.centerText, styles.highlighted]}>
+              {data.invoicesRequirment}
+            </Text>
+            <Pressable onPress={onPressAgree}>
+              <Text style={styles.button}>{data.iAgreeWithAbove}</Text>
+            </Pressable>
           </Pressable>
         </ScrollView>
       </View>
