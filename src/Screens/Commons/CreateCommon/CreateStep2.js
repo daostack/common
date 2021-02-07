@@ -226,7 +226,7 @@ const CreateStep2 = ({
             name: CreateCommonForm.MINIMUM,
             formStore: fundingFormStore,
             validateRule: minimumFieldRules(contributionIndex),
-            customErrorMessage: `The amount must be at least $5 and at most $${parseFloat(
+            customErrorMessage: `The amount must be at least $${MIN_CONTRIBUTION[contributionIndex]} and at most $${parseFloat(
               MAX_CONTRIBUTION[contributionIndex],
             ).toLocaleString('en')}.`,
           }}
