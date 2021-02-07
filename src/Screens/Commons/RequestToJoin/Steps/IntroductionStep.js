@@ -19,8 +19,19 @@ const IntroductionStep = ({
 }) => {
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
 
+  const escapeUrl = (linkArr) => (
+    linkArr.map((link) => {
+        link.value = link.value.replace('[', '%5B').replace(']', '%5D');
+        return link;
+     })
+   );
+
   const push = () => {
     if (introduceYourselfFormStore.isFormValid()) {
+      //const formJson = introduceYourselfFormStore.getFormFieldsJson();
+      //const esc = escapeUrl(formJson.links);
+      //console.log('exc', esc)
+      //introduceYourselfFormStore.fieldChanged(RequestToJoinForm.FIELD_LINKS, esc, false)
       const navigate = CommonActions.navigate({
         name: 'ContributionStep',
         params: {

@@ -38,6 +38,12 @@ const PaymentDetailsStep = ({
     formStores.personalContributionFormStore;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
 
+  const escapeUrl = (linkArr) =>
+    // eslint-disable-next-line no-return-assign
+    linkArr.map((link) =>
+        link.value = link.value.replace('[', '%5B').replace(']', '%5D')
+     );
+
   const push = async () => {
     if (paymentFormStore.isFormValid()) {
       try {
@@ -47,6 +53,8 @@ const PaymentDetailsStep = ({
           ...paymentFormStore.getFormFieldsJson(),
           ...billingDetailsFormStore.getFormFieldsJson(),
         };
+
+        //escapeUrl(formData.links);
 
         const data = {
           description: formData.intro,
