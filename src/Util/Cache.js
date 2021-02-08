@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 export const CacheKey = {
   AllDaoCache: 'AllDaoCache',
-  AuthStorre: 'AuthStorre',
+  AuthStore: 'AuthStore',
 };
 
 export default class Cache {

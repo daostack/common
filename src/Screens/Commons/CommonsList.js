@@ -207,7 +207,6 @@ CommonsList.propTypes = {
   navigation: object.isRequired,
   bottomSheetStore: object.isRequired,
   authStore: object.isRequired,
-  daoStore: object.isRequired,
   commonStore: object.isRequired,
 };
 
@@ -246,5 +245,4 @@ export default inject(
   'bottomSheetStore',
   'authStore',
   'commonStore',
-  'daoStore',
 )(observer(CommonsList));

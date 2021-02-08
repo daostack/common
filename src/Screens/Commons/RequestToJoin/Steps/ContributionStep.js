@@ -231,14 +231,6 @@ ContributionStep.propTypes = {
       refreshFeed: func,
     }),
   }),
-  daoStore: shape({
-    dao: shape({
-      name: string,
-      metadata: shape({
-        minFeeToJoin: number,
-      }),
-    }),
-  }),
   bottomSheetStore: object,
 };
 

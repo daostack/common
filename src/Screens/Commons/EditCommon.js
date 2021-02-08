@@ -25,7 +25,7 @@ const metadataKeys = [
 ];
 
 const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
-  authStore,
+  userStore,
   daoStore,
   bottomSheetStore,
   route,
@@ -81,7 +81,7 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
 
   const onFormSubmitEnd = async (updatedCommon) => {
     try {
-      await daoStore.updateDaoInfo(updatedCommon, authStore.userInfo.uid);
+      await daoStore.updateDaoInfo(updatedCommon, userStore.userInfo.uid);
       Toast.done('Your Common is updated');
     } catch (err) {
       Toast.error('Could not update your Common');
@@ -157,7 +157,7 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
-          {authStore.userInfo ? (
+          {userStore.userInfo ? (
             isRule ? (
               <EditRules
                 isValidChange={(change) => isValidChange(change)}
@@ -200,7 +200,7 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
 };
 
 EditCommon.propTypes = {
-  authStore: shape({
+  userStore: shape({
     userInfo: object,
     setSignedInUser: func,
   }),
@@ -239,4 +239,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('authStore', 'daoStore', 'bottomSheetStore')(EditCommon);
+export default inject('userStore', 'daoStore', 'bottomSheetStore')(EditCommon);
