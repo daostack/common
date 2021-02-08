@@ -84,7 +84,7 @@ const CommonAgenda = ({
                     style={styles.linkText}
                     onPress={() =>
                       navigation.navigate('Browser', {
-                        url: decodeURIComponent(link.value || link.url),
+                        url: link.value || link.url,
                       })
                     }>
                     {/* NOTE: value of multiple fields was stored in url prop before */}

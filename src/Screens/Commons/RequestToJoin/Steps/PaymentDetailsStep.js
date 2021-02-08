@@ -19,7 +19,7 @@ import {VALIDATION_RULES} from '~/FormStores/ValidationRules/paymentDetailsRules
 import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-
+import {escapeUrl} from '~/Util';
 const {width} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
@@ -38,12 +38,6 @@ const PaymentDetailsStep = ({
     formStores.personalContributionFormStore;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
 
-  const escapeUrl = (linkArr) =>
-    // eslint-disable-next-line no-return-assign
-    linkArr.map((link) =>
-        link.value = link.value.replace('[', '%5B').replace(']', '%5D')
-     );
-
   const push = async () => {
     if (paymentFormStore.isFormValid()) {
       try {
@@ -54,7 +48,7 @@ const PaymentDetailsStep = ({
           ...billingDetailsFormStore.getFormFieldsJson(),
         };
 
-        //escapeUrl(formData.links);
+        escapeUrl(formData.links);
 
         const data = {
           description: formData.intro,
