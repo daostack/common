@@ -143,6 +143,15 @@ const CreateStep4 = ({
       CONTRIBUTION[form.contribution]
     }`;
 
+  const canChangeMessage = (
+    <View style={styles.textContainer}>
+      <Text style={styles.text}>
+        Don't worry, you will be able to make changes to the Common info
+        after it is published.
+      </Text>
+    </View>
+  );
+
   return (
     <StepDotLayout
       navigation={navigation}
@@ -175,13 +184,6 @@ const CreateStep4 = ({
             </View>
           </SentTemplate>
         </Modal>
-      }
-      requestStepActionButton={
-        <RequestStepActionButton
-          title="Publish Common"
-          formStore={agendaFormStore}
-          onPress={() => forgeCommon()}
-        />
       }>
       <View
         style={{
@@ -289,12 +291,12 @@ const CreateStep4 = ({
               <Text style={styles.textContent}>{rule.value}</Text>
             </View>
           ))}
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>
-            Don't worry, you will be able to make changes to the Common info
-            after it is published.
-          </Text>
-        </View>
+        <RequestStepActionButton
+          messageBox={canChangeMessage}
+          title="Publish Common"
+          formStore={agendaFormStore}
+          onPress={() => forgeCommon()}
+        />
       </View>
     </StepDotLayout>
   );
@@ -405,7 +407,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderRadius: 14,
     backgroundColor: colors.lighterBlue,
-    marginTop: sizeL,
+    marginBottom: sizeL,
     height: 75,
     width: '100%',
     justifyContent: 'center',
