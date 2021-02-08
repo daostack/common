@@ -81,8 +81,8 @@ if (Platform.OS === 'android') {
 }
 
 const App = ({
+  authStore,
   userStore,
-  userListStore,
   commonStore,
   proposalStore,
   bottomSheetStore,
@@ -116,12 +116,12 @@ const App = ({
 
   // Initialize Mobx Stores
   useEffect(() => {
-    const unsubscribeUsers = userListStore.subscribeToAllUsers();
+    const unsubscribeUsers = userStore.subscribeToAllUsers();
     const unsubscribeCommons = commonStore.subscribeToAllCommons();
     let unsubscribeProposals = null;
-    if (userStore.userInfo?.uid) {
+    if (authStore.userInfo?.uid) {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
-        userStore.userInfo?.uid,
+        authStore.userInfo?.uid,
       );
     }
     return () => {
@@ -129,7 +129,7 @@ const App = ({
       unsubscribeCommons && unsubscribeCommons();
       unsubscribeProposals && unsubscribeProposals();
     };
-  }, [userStore.userInfo?.uid]);
+  }, [authStore.userInfo?.uid]);
 
   const notificationNavigation = async (remoteMessage) => {
     logger.log('remoteMessage -> ', remoteMessage);
@@ -347,7 +347,7 @@ const App = ({
           name="CommonHome"
           component={CommonHome}
           options={{headerShown: false}}
-          userStore={userStore}
+          authStore={authStore}
         />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
         <Stack.Screen
@@ -583,11 +583,11 @@ const App = ({
 };
 
 App.propTypes = {
-  userStore: shape({
+  authStore: shape({
     setIsLoading: func,
     setSignedInUser: func,
   }),
-  userListStore: shape({
+  userStore: shape({
     subscribeToAllUsers: func,
   }),
   commonStore: shape({
@@ -615,9 +615,9 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
-  'userStore',
+  'authStore',
   'bottomSheetStore',
-  'userListStore',
+  'userStore',
   'commonStore',
   'proposalStore',
 )(observer(App));

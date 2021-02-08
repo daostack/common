@@ -21,7 +21,7 @@ import logger from '~/Services/Logger';
 import {bool, object, shape, func} from 'prop-types';
 import EditProfileFormStore from '~/FormStores/EditProfileFormStore';
 
-const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
+const EditProfile = ({authStore, bottomSheetStore, route, navigation}) => {
   navigation.setOptions({
     headerLeft: () => (
       <TouchableOpacity
@@ -93,7 +93,7 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
   };
 
   const EditForm = observer(() =>
-    userStore.userInfo ? (
+    authStore.userInfo ? (
       <View style={styles.body}>
         <EditProfileForm
           isFirstOpening={route.params.isFirstOpening}
@@ -155,7 +155,7 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
 };
 
 EditProfile.propTypes = {
-  userStore: shape({
+  authStore: shape({
     userInfo: object,
     setSignedInUser: func,
   }),
@@ -199,4 +199,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'bottomSheetStore')(EditProfile);
+export default inject('authStore', 'bottomSheetStore')(EditProfile);

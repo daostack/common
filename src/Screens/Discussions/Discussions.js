@@ -32,9 +32,9 @@ const {width} = Dimensions.get('window');
 const Discussions = ({
   commonStore,
   discussionStore,
-  userStore,
+  authStore,
   bottomSheetStore,
-  userListStore,
+  userStore,
   navigation,
   route: {
     params: {commonId, discussionId, data},
@@ -45,7 +45,7 @@ const Discussions = ({
 
   const currentUser = auth().currentUser;
   const dataState = discussionStore.getDiscussionById(discussionId);
-  const user = userListStore.getUserById(dataState.ownerId);
+  const user = userStore.getUserById(dataState.ownerId);
 
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
@@ -54,8 +54,8 @@ const Discussions = ({
   const [inputHeight, setInputHeight] = useState(false);
 
   const isMember =
-    userStore.userInfo &&
-    userStore.isDaoMember(commonStore.getCommonById(commonId)?.members);
+    authStore.userInfo &&
+    authStore.isDaoMember(commonStore.getCommonById(commonId)?.members);
 
   useEffect(() => {}, [commonId, discussionId, currentUser]);
 
@@ -367,7 +367,7 @@ Discussions.propTypes = {
   commonStore: shape({
     getCommonById: func,
   }),
-  userStore: shape({
+  authStore: shape({
     userInfo: object,
     isDaoMember: func,
   }),
@@ -382,7 +382,7 @@ Discussions.propTypes = {
       data: object,
     }),
   }),
-  userListStore: shape({
+  userStore: shape({
     getUserById: func,
   }),
 };
@@ -577,10 +577,10 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
-  'userStore',
+  'authStore',
   'bottomSheetStore',
   'commonStore',
-  'userListStore',
+  'userStore',
   'discussionStore',
   'discussionMessageStore',
 )(observer(Discussions));

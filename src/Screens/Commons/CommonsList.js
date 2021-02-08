@@ -29,7 +29,7 @@ const groupTitle = (title, arrLength) =>
 const CommonsList = ({
   navigation,
   bottomSheetStore,
-  userStore,
+  authStore,
   commonStore,
 }) => {
   const myDaosGroup = {
@@ -55,7 +55,7 @@ const CommonsList = ({
   }, [refreshing]);
 
   const onAddCommon = () => {
-    if (userStore.signedInUser) {
+    if (authStore.signedInUser) {
       navigation.navigate('CommonExplanation');
     } else {
       bottomSheetStore.showBottomSheet(
@@ -156,7 +156,7 @@ const CommonsList = ({
   };
 
   const getInitialNumoRender = () =>
-    userStore.signedInUser
+    authStore.signedInUser
       ? myDaosGroup.data.length +
         pendingDaosGroup.data.length +
         featuredDaosGroup.data.length
@@ -168,7 +168,7 @@ const CommonsList = ({
         {featuredDaosGroup.data.length > 0 || !commonStore.isLoading ? (
           <SectionList
             sections={
-              userStore.signedInUser
+              authStore.signedInUser
                 ? [myDaosGroup, pendingDaosGroup, featuredDaosGroup]
                 : [featuredDaosGroup]
             }
@@ -206,7 +206,7 @@ const CommonsList = ({
 CommonsList.propTypes = {
   navigation: object.isRequired,
   bottomSheetStore: object.isRequired,
-  userStore: object.isRequired,
+  authStore: object.isRequired,
   daoStore: object.isRequired,
   commonStore: object.isRequired,
 };
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
 
 export default inject(
   'bottomSheetStore',
-  'userStore',
+  'authStore',
   'commonStore',
   'daoStore',
 )(observer(CommonsList));

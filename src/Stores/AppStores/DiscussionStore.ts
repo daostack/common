@@ -1,5 +1,5 @@
 import {observable, runInAction} from 'mobx';
-import ListStore from './ListStore';
+import ListStore from './BaseStore';
 import {
   subscribeToCommonDiscussions,
   subscribeToProposalDiscussions,

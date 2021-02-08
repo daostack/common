@@ -1,5 +1,5 @@
 import {computed, observable, runInAction} from 'mobx';
-import ListStore from './ListStore';
+import ListStore from './BaseStore';
 import {subscribeToAllCommons} from '~/Services/ListServices/CommonListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';

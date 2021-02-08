@@ -1,5 +1,5 @@
 import {computed, observable, runInAction} from 'mobx';
-import ListStore from './ListStore';
+import ListStore from './BaseStore';
 import {subscribeToProposalList} from '~/Services/ListServices/ProposalListService';
 import {
   FirestoreUnsubscribeFn,

@@ -57,11 +57,11 @@ const screenHeight = Dimensions.get('window').height;
 const ProposalScreen = ({
   navigation,
   bottomSheetStore,
-  userStore: {userInfo, isDaoMember, conversionRate, ...userStore},
+  authStore: {userInfo, isDaoMember, conversionRate, ...authStore},
   route: {
     params: {proposalId, tabIndex = 0},
   },
-  userListStore,
+  userStore,
   discussionMessageStore,
   commonStore,
   proposalStore,
@@ -115,7 +115,7 @@ const ProposalScreen = ({
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const proposalCommon = commonStore.getCommonById(proposalInfo.commonId);
-  const proposedUser = userListStore.getUserById(proposalInfo.proposerId);
+  const proposedUser = userStore.getUserById(proposalInfo.proposerId);
 
   const showPaymentStatus =
     proposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.PENDING ||
@@ -123,7 +123,7 @@ const ProposalScreen = ({
     proposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.FAILED;
 
   const isMember = userInfo && isDaoMember(proposalCommon?.members || []);
-  const isProposer = userStore.isProposer(proposalInfo);
+  const isProposer = authStore.isProposer(proposalInfo);
 
   const renderVoting =
     proposalInfo &&
@@ -942,7 +942,7 @@ const ProposalScreen = ({
 ProposalScreen.propTypes = {
   navigation: object,
   bottomSheetStore: object,
-  userStore: shape({
+  authStore: shape({
     userInfo: object,
     isDaoMember: func,
     conversionRate: number,
@@ -952,7 +952,7 @@ ProposalScreen.propTypes = {
       proposalId: string,
     }),
   }),
-  userListStore: shape({
+  userStore: shape({
     getUserById: func,
   }),
   discussionMessageStore: shape({
@@ -1096,8 +1096,8 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
+  'authStore',
   'userStore',
-  'userListStore',
   'bottomSheetStore',
   'discussionMessageStore',
   'commonStore',

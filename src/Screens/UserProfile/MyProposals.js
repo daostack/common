@@ -17,11 +17,11 @@ import {inject, observer} from 'mobx-react';
 import CommonTabBar from '../CommonTabBar';
 import {bool, object, shape, func} from 'prop-types';
 import {PROPOSAL_STAGE} from '~/Config';
-import {isTypeFilterJoin} from '~/Stores/ListStore/ProposalStore';
+import {isTypeFilterJoin} from '~/Stores/AppStores/ProposalStore';
 
 const MyProposals = ({
   navigation,
-  userStore,
+  authStore,
   proposalStore,
   route: {
     params: {proposalTypeFilter},
@@ -43,7 +43,7 @@ const MyProposals = ({
     {
       key: 'active',
       title: `Active (${
-        proposalStore.getUserProposals(userStore.userInfo.uid, {
+        proposalStore.getUserProposals(authStore.userInfo.uid, {
           stage: PROPOSAL_STAGE.Active,
           type: proposalTypeFilter,
         }).length
@@ -52,7 +52,7 @@ const MyProposals = ({
     {
       key: 'history',
       title: `History (${
-        proposalStore.getUserProposals(userStore.userInfo.uid, {
+        proposalStore.getUserProposals(authStore.userInfo.uid, {
           stage: PROPOSAL_STAGE.History,
           type: proposalTypeFilter,
         }).length
@@ -69,7 +69,7 @@ const MyProposals = ({
       <ProposalsList
         navigation={navigation}
         userInfo={{
-          id: userStore.userInfo.uid,
+          id: authStore.userInfo.uid,
         }}
         proposalFilter={{
           stage:
@@ -135,7 +135,7 @@ MyProposals.propTypes = {
     }),
   }),
   navigation: object,
-  userStore: object,
+  authStore: object,
   proposalStore: shape({
     getUserProposals: func,
   }),
@@ -172,4 +172,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'proposalStore')(observer(MyProposals));
+export default inject('authStore', 'proposalStore')(observer(MyProposals));

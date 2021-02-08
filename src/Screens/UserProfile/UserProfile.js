@@ -31,7 +31,7 @@ import {
 } from 'rn-placeholder';
 import logger from '../../Services/Logger';
 
-const UserProfile = ({userStore, navigation, route}) => {
+const UserProfile = ({authStore, navigation, route}) => {
   //const [editMode, setEditMode] = useState(false);
 
   const [codePushVersion, setCodePushVersion] = useState('');
@@ -58,7 +58,7 @@ const UserProfile = ({userStore, navigation, route}) => {
           text: 'OK',
           onPress: async () => {
             // That loading status will be changed to false in the onAuthStateChanged method in App.js
-            userStore.setIsLoading(true);
+            authStore.setIsLoading(true);
 
             await AuthService.getInstance().signOut();
           },
@@ -66,7 +66,7 @@ const UserProfile = ({userStore, navigation, route}) => {
       ]);
     } catch (error) {
       await AuthService.getInstance().clearGoogleSignInCache();
-      userStore.setIsLoading(false);
+      authStore.setIsLoading(false);
       Toast.error(error?.toString());
       logger.log('SignOut Error -> ', error);
     }
@@ -100,7 +100,7 @@ const UserProfile = ({userStore, navigation, route}) => {
     />
   );
 
-  const currUserId = route.params?.userId || userStore.userInfo?.uid;
+  const currUserId = route.params?.userId || authStore.userInfo?.uid;
 
   const renderScreen = () => (
     <React.Fragment>
@@ -118,7 +118,7 @@ const UserProfile = ({userStore, navigation, route}) => {
               : renderUnsignedUserData()}
           </View>
           {!route.params?.userId ||
-          route.params.userId === userStore.userInfo?.uid ? (
+          route.params.userId === authStore.userInfo?.uid ? (
             <>
               <View style={layout.marginTopL}>
                 {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
@@ -138,7 +138,7 @@ const UserProfile = ({userStore, navigation, route}) => {
                   onPress={() => Linking.openURL('mailto:hi@common.io')}
                   title="Contact us"
                 />
-                {userStore.userInfo && (
+                {authStore.userInfo && (
                   <React.Fragment>
                     <AccordionBtn
                       title="Monthly Contributions"
@@ -229,7 +229,7 @@ const UserProfile = ({userStore, navigation, route}) => {
       </Placeholder>
     </ScrollView>
   );
-  return userStore.isLoading ? renderScreenLoader() : renderScreen();
+  return authStore.isLoading ? renderScreenLoader() : renderScreen();
 };
 
 const styles = StyleSheet.create({
@@ -310,4 +310,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(UserProfile));
+export default inject('authStore')(observer(UserProfile));

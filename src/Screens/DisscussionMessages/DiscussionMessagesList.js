@@ -18,7 +18,7 @@ const DiscussionMessagesList = ({
   proposal,
   discussionId,
   scrollViewRef,
-  userListStore,
+  userStore,
   discussionMessageStore,
 }) => {
   const chatRef = useRef(null);
@@ -49,7 +49,7 @@ const DiscussionMessagesList = ({
   }, 150);
 
   const getOutcomeForMessage = async (proposalObj, message) => {
-    const user = userListStore.getUserById(message.ownerId);
+    const user = userStore.getUserById(message.ownerId);
     return proposalObj?.votes.find((y) => y.voterId === user.uid).outcome === 1;
   };
 
@@ -117,7 +117,7 @@ DiscussionMessagesList.propTypes = {
   scrollViewRef: PropTypes.any,
   onFirstScrollDown: func,
   onScrollRefresh: func,
-  userListStore: shape({
+  userStore: shape({
     getUserById: func,
   }),
   discussionMessageStore: shape({
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
+  'authStore',
   'userStore',
-  'userListStore',
   'discussionMessageStore',
 )(observer(DiscussionMessagesList));

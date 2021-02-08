@@ -15,7 +15,7 @@ import {getCurrentConversionRate} from '~/Util/locale';
 
 type SignInErrorWithCode = any;
 
-class UserStore {
+class AuthStore {
   @persist('object')
   @observable
   userInfo: UserModel | null = null;
@@ -153,4 +153,4 @@ class UserStore {
   }
 }
 
-export default UserStore;
+export default AuthStore;

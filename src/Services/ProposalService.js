@@ -33,7 +33,7 @@ export const COUNTDOWN_STATES = [PROPOSAL_STAGE.failed];
 import {
   isTypeFilterFundingRequest,
   isTypeFilterJoin,
-} from '~/Stores/ListStore/ProposalStore';
+} from '~/Stores/AppStores/ProposalStore';
 
 export default class ProposalService {
   static serviceInstance = null;

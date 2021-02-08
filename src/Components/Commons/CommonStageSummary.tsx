@@ -10,7 +10,7 @@ import {inject, observer} from 'mobx-react';
 
 const props = {
   isCommonCard: bool,
-  userStore: shape({
+  authStore: shape({
     conversionRate: number,
   }),
   commonProgressInfo: shape({
@@ -26,7 +26,7 @@ const props = {
 const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
   isCommonCard,
   commonProgressInfo: {raised, balance, members},
-  userStore: {conversionRate},
+  authStore: {conversionRate},
 }) => {
   // const deadlineMoment = moment.unix(time);
   // const deadlineHasPassed = moment().isAfter(deadlineMoment);
@@ -156,4 +156,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(CommonStageSummary));
+export default inject('authStore')(observer(CommonStageSummary));

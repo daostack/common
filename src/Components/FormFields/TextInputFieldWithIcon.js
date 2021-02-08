@@ -161,7 +161,7 @@ class TextInputFieldWithIcon extends React.Component {
       numberOfLines,
       keyboardType,
       toggleName,
-      userStore: {conversionRate},
+      authStore: {conversionRate},
 
       // Icon props
       iconName,
@@ -380,7 +380,7 @@ TextInputFieldWithIcon.propTypes = {
   subLabel: string,
   forwardRef: object,
   viewStyle: object,
-  userStore: shape({
+  authStore: shape({
     conversionRate: number,
   }),
 };
@@ -453,4 +453,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(TextInputFieldWithIcon));
+export default inject('authStore')(observer(TextInputFieldWithIcon));

@@ -34,7 +34,7 @@ const ProposalCard = ({
   containerStyle,
   isSwiper,
   commonInfo,
-  userListStore,
+  userStore,
   proposalStore,
 }) => {
   const proposalInfo = proposalStore.getProposalById(proposalId);
@@ -115,7 +115,7 @@ const ProposalCard = ({
 
           <MemberCard
             showDate={proposalInfo.isJoinRequest}
-            userInfo={userListStore.getUserById(proposalInfo.proposerId)}
+            userInfo={userStore.getUserById(proposalInfo.proposerId)}
             proposalInfo={proposalInfo}
             isPending={false}
           />
@@ -188,7 +188,7 @@ ProposalCard.propTypes = {
   membershipRequest: bool,
   isSwiper: bool,
   commonInfo: object,
-  userListStore: shape({
+  userStore: shape({
     getUserById: func,
   }),
   proposalStore: shape({
@@ -245,4 +245,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userListStore', 'proposalStore')(observer(ProposalCard));
+export default inject('userStore', 'proposalStore')(observer(ProposalCard));

@@ -19,7 +19,7 @@ import {Proposal} from '~/Stores/Models/Proposal';
 import {
   isTypeFilterJoin,
   isStageFilterHistory,
-} from '~/Stores/ListStore/ProposalStore';
+} from '~/Stores/AppStores/ProposalStore';
 
 const {width, height} = Dimensions.get('window');
 
@@ -166,8 +166,8 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
               isStageFilterHistory(proposalFilter.stage)
                 ? 'You will be able to see proposals that passed or were rejected here.'
                 : isTypeFilterJoin(proposalFilter.type)
-                  ? 'There are no pending membership requests at the moment, check again later.'
-                  : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
+                ? 'There are no pending membership requests at the moment, check again later.'
+                : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
             }
           />
         )}

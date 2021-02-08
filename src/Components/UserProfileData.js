@@ -24,16 +24,14 @@ const UserProfileData = ({
   userId,
   currUserInfo,
   navigation,
-  userStore: {userInfo},
-  userListStore,
+  authStore: {userInfo},
+  userStore,
   proposalStore,
   commonStore,
 }) => {
   const providedUserId = userId || currUserInfo.uid;
   const isOwnProfile = providedUserId === userInfo?.uid;
-  const user = isOwnProfile
-    ? userInfo
-    : userListStore.getUserById(providedUserId);
+  const user = isOwnProfile ? userInfo : userStore.getUserById(providedUserId);
 
   navigation.setOptions({
     title: user.displayNameFormatted,
@@ -297,7 +295,7 @@ UserProfileData.propTypes = {
   userId: string,
   currUserInfo: object,
   navigation: object,
-  userStore: shape({
+  authStore: shape({
     userInfo: shape({
       uid: string,
     }),
@@ -309,7 +307,7 @@ UserProfileData.propTypes = {
     myActiveProposals: array,
     myActiveMembershipRequests: array,
   }),
-  userListStore: shape({
+  userStore: shape({
     getUserById: func,
   }),
 };
@@ -376,8 +374,8 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
-  'userStore',
+  'authStore',
   'commonStore',
-  'userListStore',
+  'userStore',
   'proposalStore',
 )(observer(UserProfileData));

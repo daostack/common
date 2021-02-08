@@ -1,12 +1,12 @@
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {UserModel} from '../Models/UserModel';
-import ListStore from './ListStore';
+import BaseStore from './BaseStore';
 import {subscribeToAllUsers} from '~/Services/ListServices/UserListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 
-export default class UserListStore extends ListStore<UserModel> {
+export default class UserStore extends BaseStore<UserModel> {
   constructor(rootStore: RootStore) {
     super(rootStore);
   }

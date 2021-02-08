@@ -6,8 +6,8 @@ const rootStore = new RootStore();
 
 export default {
   rootStore,
-  userStore: rootStore.authStore,
-  userListStore: rootStore.userListStore,
+  authStore: rootStore.authStore,
+  userStore: rootStore.userStore,
   commonStore: rootStore.commonStore,
   proposalStore: rootStore.proposalStore,
   discussionStore: rootStore.discussionStore,

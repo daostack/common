@@ -1,12 +1,6 @@
 import React, {useEffect} from 'react';
 import {observer, inject} from 'mobx-react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Dimensions,
-} from 'react-native';
+import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
 import {colors, font, text as textjs} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
@@ -19,7 +13,7 @@ const DiscussionMessage = ({
   data: {ownerId, text, createTime},
   outcome,
   showCurrentUserAvatar,
-  userListStore,
+  userStore,
 }) => {
   let currentUserUid = null;
   if (auth().currentUser) {
@@ -27,7 +21,7 @@ const DiscussionMessage = ({
   }
 
   const [outcomeState, setOutcomeState] = React.useState();
-  const onwerInfo = userListStore.getUserById(ownerId);
+  const onwerInfo = userStore.getUserById(ownerId);
 
   useEffect(() => {
     if (typeof outcome === 'object') {
@@ -122,7 +116,7 @@ DiscussionMessage.propTypes = {
     catch: func.isRequired,
   }),
   showCurrentUserAvatar: bool,
-  userListStore: shape({
+  userStore: shape({
     getUserById: func,
   }),
 };
@@ -178,4 +172,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userListStore')(observer(DiscussionMessage));
+export default inject('userStore')(observer(DiscussionMessage));

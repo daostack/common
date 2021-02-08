@@ -242,4 +242,4 @@ ContributionStep.propTypes = {
   bottomSheetStore: object,
 };
 
-export default inject('bottomSheetStore', 'userStore')(ContributionStep);
+export default inject('bottomSheetStore', 'authStore')(ContributionStep);

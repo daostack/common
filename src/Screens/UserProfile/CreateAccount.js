@@ -43,7 +43,7 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
           customStyle={layout.marginBottomM}
           onSignIn={onSignIn}
         />
-      ) }
+      )}
 
       <GSignInButton style={styles.googleSignInButton} onSignIn={onSignIn} />
 
@@ -102,4 +102,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(CreateAccount));
+export default inject('authStore')(observer(CreateAccount));

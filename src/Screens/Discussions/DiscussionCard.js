@@ -24,12 +24,12 @@ const DiscussionCard = ({
   commonId,
   navigation,
   bottomSheetStore,
-  userListStore,
+  userStore,
   discussionMessageStore,
 }) => {
   //when will data.owner be not undefined?
   const discussionId = data.id;
-  const user = userListStore.getUserById(data.ownerId);
+  const user = userStore.getUserById(data.ownerId);
   const msgCount =
     discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
       ?.length || 0;
@@ -146,7 +146,7 @@ DiscussionCard.propTypes = {
   commonId: string,
   navigation: object.isRequired,
   bottomSheetStore: object.isRequired,
-  userListStore: shape({
+  userStore: shape({
     getUserById: func,
   }),
   discussionMessageStore: shape({
@@ -280,6 +280,6 @@ const styles = StyleSheet.create({
 
 export default inject(
   'bottomSheetStore',
-  'userListStore',
+  'userStore',
   'discussionMessageStore',
 )(observer(DiscussionCard));

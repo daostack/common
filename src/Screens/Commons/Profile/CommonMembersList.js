@@ -18,11 +18,11 @@ const CommonMembersList = ({
   commonId,
   limit,
   horizontal,
-  userListStore,
+  userStore,
   commonStore,
 }) => {
   const currCommon = commonStore.getCommonById(commonId);
-  const membersInfo = userListStore.getCommonUsersByMembersArray(
+  const membersInfo = userStore.getCommonUsersByMembersArray(
     currCommon?.members || [],
   );
 
@@ -150,7 +150,7 @@ CommonMembersList.propTypes = {
   limit: number,
   horizontal: bool,
   bottomSheetStore: object,
-  userListStore: shape({
+  userStore: shape({
     getCommonUsersByMembersArray: func,
   }),
   commonStore: shape({
@@ -168,6 +168,6 @@ const styles = StyleSheet.create({
 
 export default inject(
   'bottomSheetStore',
-  'userListStore',
+  'userStore',
   'commonStore',
 )(observer(CommonMembersList));

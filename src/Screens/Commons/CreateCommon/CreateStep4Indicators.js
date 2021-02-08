@@ -39,7 +39,7 @@ const CreateStep4Indicators = ({
   title,
   value,
   amount,
-  userStore: {conversionRate},
+  authStore: {conversionRate},
 }) => (
   <>
     <Text style={styles.text}>{title}</Text>
@@ -62,9 +62,9 @@ CreateStep4Indicators.propTypes = {
   date: string,
   contribution: bool,
   amount: string,
-  userStore: shape({
+  authStore: shape({
     conversionRate: number,
   }),
 };
 
-export default inject('userStore')(observer(CreateStep4Indicators));
+export default inject('authStore')(observer(CreateStep4Indicators));
