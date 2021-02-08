@@ -35,7 +35,7 @@ const JoinAmount: React.FC<InferProps<typeof props>> = ({
       <Text style={isSelected ? styles.amountSelected : styles.amount}>{`${
         isCustom ? 'Other' : `$${amount}${isMonthly ? '/mo' : ''}`
       }`}</Text>
-      {amount && !isCustom && isIsraelLocale && (
+      {!!amount && !isCustom && isIsraelLocale && (
         <Text
           style={isSelected ? styles.conversionSelected : styles.conversion}>
           {convertAmountToIls(amount, conversionRate)}
