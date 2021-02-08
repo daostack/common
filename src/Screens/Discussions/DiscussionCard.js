@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,7 +14,6 @@ import Icon from '~/Assets/iconfont/Icon';
 import moment from 'moment';
 import NotificationService from '~/Services/NotificationService';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import {db} from '~/Firebase';
 import logger from '~/Services/Logger';
 import {CommonActions} from '@react-navigation/native';
 
