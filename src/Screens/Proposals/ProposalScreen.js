@@ -769,20 +769,22 @@ const ProposalScreen = ({
                         ' per month'}
                     </Text>
                   </View>
-                  {isIsraelLocale && amount > 0 && (
-                    <View style={styles.conversionContainer}>
-                      <Pressable
-                        onPress={() =>
-                          setModalConversionVisible(!modalConversionVisible)
-                        }>
-                        <Image
-                          source={require('~/Assets/ils.png')}
-                          width={15}
-                          height={15}
-                        />
-                      </Pressable>
-                    </View>
-                  )}
+                  {isIsraelLocale &&
+                    amount > 0 &&
+                    proposalInfo.isFundingRequest && (
+                      <View style={styles.conversionContainer}>
+                        <Pressable
+                          onPress={() =>
+                            setModalConversionVisible(!modalConversionVisible)
+                          }>
+                          <Image
+                            source={require('~/Assets/ils.png')}
+                            width={15}
+                            height={15}
+                          />
+                        </Pressable>
+                      </View>
+                    )}
 
                   {proposalInfo.isFundingRequest &&
                     proposalInfo.isCountdown &&

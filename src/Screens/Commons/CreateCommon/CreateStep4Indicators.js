@@ -38,6 +38,7 @@ const CreateStep4Indicators = ({
   date,
   title,
   value,
+  amount,
   userStore: {conversionRate},
 }) => (
   <>
@@ -47,9 +48,9 @@ const CreateStep4Indicators = ({
 
     {!contribution && <Text style={styles.date}>{date}</Text>}
 
-    {contribution && isIsraelLocale && (
+    {contribution && isIsraelLocale && amount && (
       <Text style={styles.conversion}>
-        {convertAmountToIls(value, conversionRate)}
+        {convertAmountToIls(amount, conversionRate)}
       </Text>
     )}
   </>
@@ -60,6 +61,7 @@ CreateStep4Indicators.propTypes = {
   value: string.isRequired,
   date: string,
   contribution: bool,
+  amount: string,
   userStore: shape({
     conversionRate: number,
   }),
