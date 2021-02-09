@@ -288,11 +288,6 @@ PaymentDetailsStep.propTypes = {
       refreshFeed: func,
     }),
   }),
-  daoStore: shape({
-    dao: shape({
-      name: string,
-    }),
-  }),
   authStore: shape({
     userInfo: shape({
       ethereumAddress: string,

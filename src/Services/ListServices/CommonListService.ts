@@ -1,6 +1,9 @@
 import {CommonsCollection} from '~/Firebase/Databasee/Collections/CommonsCollection';
 import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 
+import {axiosClient} from '../util/AxiosClient';
+import {auth} from '~/Firebase';
+
 export type commonListLoadCallbackFn = (
   updatedCommonList: Array<ICommonEntity>,
 ) => void;
@@ -19,6 +22,20 @@ export const subscribeToAllCommons = (callback: commonListLoadCallbackFn) =>
 
     callback(commonList);
   });
+
+export const updateCommon = async (updateCommonInfo: Partial<ICommonEntity>) =>
+  await axiosClient.getCommonClient().post(
+    axiosClient.getCommonEndpoints().update,
+    {
+      commonId: updateCommonInfo.id,
+      changes: updateCommonInfo,
+    },
+    {
+      headers: {
+        Authorization: await auth().currentUser.getIdToken(true),
+      },
+    },
+  );
 
 // export const subscribeToCommon = (
 //   uid: string,

@@ -1,6 +1,9 @@
 import {computed, observable, runInAction} from 'mobx';
 import ListStore from './BaseStore';
-import {subscribeToAllCommons} from '~/Services/ListServices/CommonListService';
+import {
+  subscribeToAllCommons,
+  updateCommon,
+} from '~/Services/ListServices/CommonListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Common} from '../Models/Common';
@@ -70,5 +73,27 @@ export default class CommonStore extends ListStore<Common> {
       this.data.merge(updatesMap);
       this.isLoading = false;
     });
+  };
+
+  /**
+   * This function is updating the common in the firebase with the new changes
+   * @param  updateCommonInfo - a common object with new changes
+   * @param  changedBy        - the user who is responsible for the change
+   * @return                  - response returned from the updateCommon call
+   */
+  updateCommonInfo = async (
+    updateCommonInfo: Partial<ICommonEntity>,
+    changedBy,
+  ) => {
+    try {
+      const updateResponse = await updateCommon({
+        commonId: updateCommonInfo.id,
+        changes: updateCommonInfo,
+      });
+      // Cache.set(updateCommonInfo.id, updateCommonInfo); @question to Lyubo: about this and mobx-persist
+      return updateResponse;
+    } catch (err) {
+      throw err;
+    }
   };
 }
