@@ -357,7 +357,11 @@ const ProposalScreen = ({
   };
 
   const renderDebWarningIfNeeded = () => {
-    if (proposalInfo.isFundingRequest && proposalInfo.isCountdown) {
+    if (
+      proposalInfo.isFundingRequest &&
+      proposalInfo.isCountdown &&
+      proposalInfo.fundingRequest.amount > 0
+    ) {
       return amount <= getAvailableFunds() ? (
         <DebtWarningProposalNote onPress={() => openDebtModal()} />
       ) : (
@@ -725,12 +729,14 @@ const ProposalScreen = ({
                           : colors.iceBlue2,
                       borderBottomRightRadius:
                         proposalInfo.isFundingRequest &&
-                        proposalInfo.isCountdown
+                        proposalInfo.isCountdown &&
+                        proposalInfo.fundingRequest.amount > 0
                           ? 0
                           : 20,
                       borderBottomLeftRadius:
                         proposalInfo.isFundingRequest &&
-                        proposalInfo.isCountdown
+                        proposalInfo.isCountdown &&
+                        proposalInfo.fundingRequest.amount > 0
                           ? 0
                           : 20,
                     },
