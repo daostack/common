@@ -3,9 +3,10 @@ import React from 'react';
 import {colors, text, layout} from '~/Theme';
 import {inject, observer} from 'mobx-react';
 import CreateAccount from '../UserProfile/CreateAccount';
-import {string, func, shape} from 'prop-types';
+import {string} from 'prop-types';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
-const LoginSheetScreen = ({bottomSheetStore, message = null}) => (
+const LoginSheetScreen = ({uiStore, message = null}) => (
   <View style={styles.contentContainer}>
     <Text style={styles.sheetTitleStyle}>Be a part of Common</Text>
     <Text
@@ -19,16 +20,14 @@ const LoginSheetScreen = ({bottomSheetStore, message = null}) => (
     <View style={layout.flexRow}>
       <CreateAccount
         hidePlaceholder={true}
-        onSignedIn={() => bottomSheetStore.hideBottomSheet()}
+        onSignedIn={() => uiStore.bottomSheetStore.hideBottomSheet()}
       />
     </View>
   </View>
 );
 
 LoginSheetScreen.propTypes = {
-  bottomSheetStore: shape({
-    hideBottomSheet: func,
-  }),
+  uiStore: uiStorePropTypes,
   message: string,
 };
 
@@ -71,4 +70,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(observer(LoginSheetScreen));
+export default inject('uiStore')(observer(LoginSheetScreen));

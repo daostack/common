@@ -4,7 +4,8 @@ import TextInputField from '../FormFields/TextInputField';
 import ImageField from '../FormFields/ImageField';
 import {inject} from 'mobx-react';
 import {layout, text, font, colors} from '~/Theme';
-import {string, shape, bool, object} from 'prop-types';
+import {bool, object} from 'prop-types';
+import {authStorePropTypes} from '~/Types/propTypes';
 
 class EditProfileForm extends React.Component {
   static FIELD_FIRST_NAME = 'firstName';
@@ -117,15 +118,7 @@ class EditProfileForm extends React.Component {
 }
 
 EditProfileForm.propTypes = {
-  authStore: shape({
-    userInfo: shape({
-      photoURL: string,
-      email: string,
-      firstName: string,
-      lastName: string,
-      intro: string,
-    }),
-  }).isRequired,
+  authStore: authStorePropTypes.isRequired,
   editProfileFormStore: object.isRequired,
   firstOpening: bool,
 };

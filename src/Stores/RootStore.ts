@@ -1,11 +1,12 @@
 import {create} from 'mobx-persist';
-import UserStore from './AppStores/UserStore';
-import CommonStore from './AppStores/CommonStore';
+import UserStore from './DataStores/UserStore';
+import CommonStore from './DataStores/CommonStore';
 import AuthStore from './AuthStore';
-import ProposalStore from './AppStores/ProposalStore';
+import ProposalStore from './DataStores/ProposalStore';
 import AsyncStorage from '@react-native-community/async-storage';
-import DiscussionStore from './AppStores/DiscussionStore';
-import DiscussionMessageStore from './AppStores/DiscussionMessageStore';
+import DiscussionStore from './DataStores/DiscussionStore';
+import DiscussionMessageStore from './DataStores/DiscussionMessageStore';
+import UIStore from './UIStore';
 
 const hydrate = create({
   storage: AsyncStorage,
@@ -19,6 +20,7 @@ export default class RootStore {
   proposalStore: ProposalStore;
   discussionStore: DiscussionStore;
   discussionMessageStore: DiscussionMessageStore;
+  uiStore: UIStore;
 
   constructor() {
     this.authStore = new AuthStore(this);
@@ -27,6 +29,7 @@ export default class RootStore {
     this.proposalStore = new ProposalStore(this);
     this.discussionStore = new DiscussionStore(this);
     this.discussionMessageStore = new DiscussionMessageStore(this);
+    this.uiStore = new UIStore(this);
 
     Promise.all([
       hydrate('authStore', this.authStore),

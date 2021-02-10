@@ -7,13 +7,12 @@ import {observer, inject} from 'mobx-react';
 import {AppleAuthError} from '@invertase/react-native-apple-authentication';
 import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
-import {func, shape, object, InferProps} from 'prop-types';
+import {func, object, InferProps} from 'prop-types';
+import {authStorePropTypes} from '~/Types/propTypes';
 
 const props = {
   onSignIn: func,
-  authStore: shape({
-    setIsLoading: func,
-  }).isRequired,
+  authStore: authStorePropTypes.isRequired,
   customStyle: object,
 };
 

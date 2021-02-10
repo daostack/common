@@ -18,13 +18,14 @@ import ProposalApprovalTag from './ProposalApprovalTag';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
-import {string, bool, object, shape, func} from 'prop-types';
+import {string, bool, object} from 'prop-types';
 import {
   Placeholder,
   PlaceholderMedia,
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const {width} = Dimensions.get('window');
 
@@ -34,9 +35,12 @@ const ProposalCard = ({
   containerStyle,
   isSwiper,
   commonInfo,
-  userStore,
-  proposalStore,
+  rootStore,
 }) => {
+  // Stores
+  const userStore = rootStore.userStore;
+  const proposalStore = rootStore.proposalStore;
+
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
 
@@ -188,12 +192,7 @@ ProposalCard.propTypes = {
   membershipRequest: bool,
   isSwiper: bool,
   commonInfo: object,
-  userStore: shape({
-    getUserById: func,
-  }),
-  proposalStore: shape({
-    getProposalById: func,
-  }),
+  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -245,4 +244,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'proposalStore')(observer(ProposalCard));
+export default inject('rootStore')(observer(ProposalCard));

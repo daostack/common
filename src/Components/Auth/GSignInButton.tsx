@@ -6,13 +6,12 @@ import {statusCodes} from '@react-native-community/google-signin';
 import {observer, inject} from 'mobx-react';
 import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
-import {shape, func, InferProps} from 'prop-types';
+import {func, InferProps} from 'prop-types';
+import {authStorePropTypes} from '~/Types/propTypes';
 
 const props = {
   onSignIn: func,
-  authStore: shape({
-    setIsLoading: func,
-  }),
+  authStore: authStorePropTypes.isRequired,
 };
 const GSignInButton: React.FC<InferProps<typeof props>> = ({
   onSignIn,

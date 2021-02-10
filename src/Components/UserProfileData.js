@@ -10,8 +10,9 @@ import {UserAvatar} from '~/Components/index';
 import {CommonActions} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
 import logger from '~/Services/Logger';
-import {string, object, shape, array, func} from 'prop-types';
+import {string, object} from 'prop-types';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 import {
   Placeholder,
@@ -20,15 +21,12 @@ import {
   Fade,
 } from 'rn-placeholder';
 
-const UserProfileData = ({
-  userId,
-  currUserInfo,
-  navigation,
-  authStore: {userInfo},
-  userStore,
-  proposalStore,
-  commonStore,
-}) => {
+const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
+  const userInfo = rootStore.authStore.userInfo;
+  const userStore = rootStore.userStore;
+  const proposalStore = rootStore.proposalStore;
+  const commonStore = rootStore.commonStore;
+
   const providedUserId = userId || currUserInfo.uid;
   const isOwnProfile = providedUserId === userInfo?.uid;
   const user = isOwnProfile ? userInfo : userStore.getUserById(providedUserId);
@@ -295,21 +293,7 @@ UserProfileData.propTypes = {
   userId: string,
   currUserInfo: object,
   navigation: object,
-  authStore: shape({
-    userInfo: shape({
-      uid: string,
-    }),
-  }),
-  commonStore: shape({
-    getUserCommons: func,
-  }),
-  proposalStore: shape({
-    myActiveProposals: array,
-    myActiveMembershipRequests: array,
-  }),
-  userStore: shape({
-    getUserById: func,
-  }),
+  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -373,9 +357,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'authStore',
-  'commonStore',
-  'userStore',
-  'proposalStore',
-)(observer(UserProfileData));
+export default inject('rootStore')(observer(UserProfileData));

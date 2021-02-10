@@ -11,6 +11,7 @@ import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
 import {db} from '~Firebase';
 import logger from '~/Services/Logger';
 import {string, func, shape, object} from 'prop-types';
+import {authStorePropTypes} from '~/Types/propTypes';
 
 const CreateDiscussionForm = ({
   authStore,
@@ -148,7 +149,7 @@ CreateDiscussionForm.propTypes = {
     getChangedFormFieldsJson: func,
     form: object,
   }),
-  authStore: object,
+  authStore: authStorePropTypes,
   commonId: string,
   onFormSubmit: func,
   onFormClose: func,

@@ -11,7 +11,6 @@ import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from './RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {persist} from 'mobx-persist';
-import {getCurrentConversionRate} from '~/Util/locale';
 
 type SignInErrorWithCode = any;
 
@@ -31,9 +30,6 @@ class AuthStore {
   isLoading: boolean = false;
 
   @observable
-  conversionRate: number = 0;
-
-  @observable
   signInError: SignInErrorWithCode;
 
   @observable
@@ -44,9 +40,6 @@ class AuthStore {
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     auth().onAuthStateChanged(this.onAuthStateChanged);
-    getCurrentConversionRate().then((result) => {
-      this.conversionRate = result.data.rates.ILS;
-    });
   }
 
   // TODO: Create type for incoming user from firebase onAuthStateChanged and reuse the type
@@ -83,11 +76,6 @@ class AuthStore {
   @action
   setSignInError = (error: SignInErrorWithCode) => {
     this.signInError = error;
-  };
-
-  @action
-  setConversionRate = (conversion: number) => {
-    this.conversionRate = conversion;
   };
 
   @action

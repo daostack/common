@@ -17,7 +17,7 @@ import {inject, observer} from 'mobx-react';
 import CommonTabBar from '../CommonTabBar';
 import {bool, object, shape, func} from 'prop-types';
 import {PROPOSAL_STAGE} from '~/Config';
-import {isTypeFilterJoin} from '~/Stores/AppStores/ProposalStore';
+import {isTypeFilterJoin} from '~/Stores/DataStores/ProposalStore';
 
 const MyProposals = ({
   navigation,

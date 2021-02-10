@@ -22,6 +22,7 @@ import {
 } from 'prop-types';
 import {formatNumber, unFormatNumber} from '~/Util/FormatUtil';
 import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
 class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
@@ -161,7 +162,7 @@ class TextInputFieldWithIcon extends React.Component {
       numberOfLines,
       keyboardType,
       toggleName,
-      authStore: {conversionRate},
+      uiStore,
 
       // Icon props
       iconName,
@@ -243,7 +244,7 @@ class TextInputFieldWithIcon extends React.Component {
       );
 
       if (currValue > 0) {
-        return convertAmountToIls(currValue, conversionRate);
+        return convertAmountToIls(currValue, uiStore.conversionRate);
       }
     };
 
@@ -287,7 +288,10 @@ class TextInputFieldWithIcon extends React.Component {
           {toggleName && isIsraelLocale && unFormatNumber(getValue()) > 0 && (
             <View style={styles.conversionRateStyle}>
               <Text style={styles.rightText}>
-                {convertAmountToIls(unFormatNumber(getValue()), conversionRate)}
+                {convertAmountToIls(
+                  unFormatNumber(getValue()),
+                  uiStore.conversionRate,
+                )}
               </Text>
             </View>
           )}
@@ -380,9 +384,7 @@ TextInputFieldWithIcon.propTypes = {
   subLabel: string,
   forwardRef: object,
   viewStyle: object,
-  authStore: shape({
-    conversionRate: number,
-  }),
+  uiStore: uiStorePropTypes.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -453,4 +455,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('authStore')(observer(TextInputFieldWithIcon));
+export default inject('uiStore')(observer(TextInputFieldWithIcon));

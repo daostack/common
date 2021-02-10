@@ -19,7 +19,7 @@ import {Proposal} from '~/Stores/Models/Proposal';
 import {
   isTypeFilterJoin,
   isStageFilterHistory,
-} from '~/Stores/AppStores/ProposalStore';
+} from '~/Stores/DataStores/ProposalStore';
 
 const {width, height} = Dimensions.get('window');
 
