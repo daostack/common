@@ -117,6 +117,11 @@ const ProposalScreen = ({
   const proposalCommon = commonStore.getCommonById(proposalInfo.commonId);
   const proposedUser = userStore.getUserById(proposalInfo.proposerId);
 
+  const showDebtInfo =
+    proposalInfo.isFundingRequest &&
+    proposalInfo.isCountdown &&
+    proposalInfo.fundingRequest.amount > 0;
+
   const showPaymentStatus =
     proposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.PENDING ||
     proposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.NOT_ATTEMPTED ||
@@ -367,7 +372,7 @@ const ProposalScreen = ({
   };
 
   const renderDebWarningIfNeeded = () => {
-    if (proposalInfo.isFundingRequest && proposalInfo.isCountdown) {
+    if (showDebtInfo) {
       return amount <= getAvailableFunds() ? (
         <DebtWarningProposalNote onPress={() => openDebtModal()} />
       ) : (
@@ -733,14 +738,11 @@ const ProposalScreen = ({
                             ? colors.iceBlue2
                             : colors.againstLightOpacity
                           : colors.iceBlue2,
-                      borderBottomRightRadius:
-                        proposalInfo.isFundingRequest &&
-                        proposalInfo.isCountdown
-                          ? 0
-                          : 20,
+                      borderBottomRightRadius: showDebtInfo ? 0 : 20,
                       borderBottomLeftRadius:
                         proposalInfo.isFundingRequest &&
-                        proposalInfo.isCountdown
+                        proposalInfo.isCountdown &&
+                        proposalInfo.fundingRequest.amount > 0
                           ? 0
                           : 20,
                     },
@@ -786,14 +788,12 @@ const ProposalScreen = ({
                       </View>
                     )}
 
-                  {proposalInfo.isFundingRequest &&
-                    proposalInfo.isCountdown &&
-                    proposalInfo.fundingRequest.amount > 0 && (
-                      <Text
-                        style={
-                          text.smallBlackText
-                        }>{`Available funds: $${getAvailableFundsText()}`}</Text>
-                    )}
+                  {showDebtInfo && (
+                    <Text
+                      style={
+                        text.smallBlackText
+                      }>{`Available funds: $${getAvailableFundsText()}`}</Text>
+                  )}
                 </View>
                 {renderDebWarningIfNeeded()}
 

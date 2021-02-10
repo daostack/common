@@ -88,12 +88,12 @@ const Discussions = ({
           commonId: commonId,
           discussionId: discussionId,
         })
-        .then(async () => {
+        .then(async (msg) => {
           Keyboard.dismiss();
           setInputText('');
-
           await DiscussionService.getInstance().updateDiscussionLastMessage(
             discussionId,
+            currentUser.uid
           );
         })
         .catch((error) => {
