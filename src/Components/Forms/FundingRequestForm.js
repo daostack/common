@@ -74,7 +74,6 @@ class FundingRequestForm extends React.Component {
           iconName="dollar"
           iconSize={12}
           iconStyle={{paddingRight: 5}}
-          maxLength={5}
           iconEmptyColor={colors.grey3}
           iconFillColor={colors.grey}
           viewStyle={{alignSelf: 'stretch'}}
