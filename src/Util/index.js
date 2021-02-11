@@ -101,7 +101,7 @@ export const formatCurrency = (amount) => {
 };
 
 export const escapeUrl = (linkArr) =>
-  linkArr.map((link) => {
+  linkArr?.map((link) => {
         link.value = encodeURI(link.value);
         return link;
       }
