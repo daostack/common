@@ -490,7 +490,12 @@ const Discussions = ({
               </TouchableOpacity>
             </View>
           ) : (
-            <Text style={{...styles.joinCommonText}}>
+            <Text
+              style={{
+                ...styles.joinCommonText,
+                width,
+                textAlign: 'center',
+              }}>
               {'Only members can send messages'}
             </Text>
           )}
