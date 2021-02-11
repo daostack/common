@@ -19,6 +19,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
 import {string, bool, object, shape, func} from 'prop-types';
+import {ModerationMenu} from '../../Util/moderation';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -36,6 +37,8 @@ const ProposalCard = ({
   commonInfo,
   userListStore,
   proposalStore,
+  hasPermission,
+  openCommonOptions,
 }) => {
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
@@ -91,7 +94,7 @@ const ProposalCard = ({
   return proposalInfo ? (
     <Animated.View
       style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
-      <TouchableOpacity onPress={onReviewProposal}>
+      <TouchableOpacity onPress={() => onReviewProposal()}>
         <ProposalCardHeader
           state={proposalInfo?.state}
           paymentStatus={proposalInfo?.paymentState}
@@ -100,17 +103,16 @@ const ProposalCard = ({
           }
         />
 
-        <View
-          style={{
-            paddingTop: 0,
-            paddingHorizontal: 7,
-            ...layout.flexStart,
-            flexWrap: 'wrap',
-          }}>
+        <View style={styles.containerView}>
           {proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && (
-            <Text style={styles.title}>
-              {proposalInfo?.description?.title || 'Unknown title'}
-            </Text>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>
+                {proposalInfo?.description?.title || 'Unknown title'}
+              </Text>
+              {hasPermission && (
+                <ModerationMenu showOptions={openCommonOptions} />
+              )}
+            </View>
           )}
 
           <MemberCard
@@ -194,6 +196,8 @@ ProposalCard.propTypes = {
   proposalStore: shape({
     getProposalById: func,
   }),
+  hasPermission: bool,
+  openCommonOptions: func,
 };
 
 const styles = StyleSheet.create({
@@ -214,7 +218,12 @@ const styles = StyleSheet.create({
     color: colors.mainBlue,
     marginVertical: 14,
   },
-
+  containerView: {
+    paddingTop: 0,
+    paddingHorizontal: 7,
+    ...layout.flexStart,
+    //flexWrap: 'wrap',
+  },
   proposalCard: {
     // marginHorizontal: 5,
     ...layout.marginBottomL,
@@ -238,10 +247,15 @@ const styles = StyleSheet.create({
   title: {
     ...text.h3Black,
     textAlign: 'left',
-    width: '100%',
+    //width: '100%',
     flexWrap: 'wrap',
-    padding: 10,
     fontSize: 16,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    width: '100%',
   },
 });
 

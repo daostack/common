@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import {string, shape, object, func} from 'prop-types';
+import {string, shape, object, func, bool} from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
 import {colors, sizeM, font, text} from '~/Theme';
@@ -17,6 +17,7 @@ import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {db} from '~/Firebase';
 import logger from '~/Services/Logger';
 import {CommonActions} from '@react-navigation/native';
+import {ModerationMenu} from '../../Util/moderation';
 
 const {width} = Dimensions.get('window');
 
@@ -26,6 +27,8 @@ const DiscussionCard = ({
   navigation,
   bottomSheetStore,
   userListStore,
+  hasPermission,
+  openCommonOptions,
 }) => {
   //when will data.owner be not undefined?
   const discussionId = data.id;
@@ -57,28 +60,24 @@ const DiscussionCard = ({
     };
   }, [discussionId]);
 
-  const follow = () => {
+  /*const follow = () => {
     logger.log('Follow user id', data.ownerId);
     NotificationService.follow(data.ownerId);
     bottomSheetStore.hideBottomSheet();
-  };
-
-  const showOptions = () => {
-    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS, {
-      onFollow: follow,
-    });
-  };
+  };*/
 
   return (
     <>
       <TouchableOpacity onPress={() => navigateToDiscussion()}>
         <View style={styles.container}>
-          <TouchableOpacity onPress={showOptions}>
-            <Icon name="menu" size={20} />
-          </TouchableOpacity>
-          <Text style={{...styles.title}} numberOfLines={2}>
-            {data.title}
-          </Text>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title} numberOfLines={2}>
+              {data.title}
+            </Text>
+            {hasPermission && (
+              <ModerationMenu showOptions={openCommonOptions} />
+            )}
+          </View>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             {user.photoURL ? (
               <FastImage style={styles.image} source={{uri: user.photoURL}} />
@@ -160,6 +159,8 @@ DiscussionCard.propTypes = {
   userListStore: shape({
     getUserById: func,
   }),
+  hasPermission: bool,
+  openCommonOptions: func,
 };
 
 const styles = StyleSheet.create({
@@ -249,6 +250,10 @@ const styles = StyleSheet.create({
     ...font.fontSize(3),
     marginBottom: 20,
     color: colors.black,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   sheetTitle: {
     ...font.primary.bold,

@@ -43,6 +43,8 @@ const props = {
   }),
   showMax: number,
   isSwiper: bool,
+  hasPermission: bool,
+  openCommonOptions: func,
 
   // Injected
   proposalStore: shape({
@@ -60,6 +62,8 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     commonInfo,
     userInfo,
     proposalStore,
+    hasPermission,
+    openCommonOptions,
   }) => {
     let list: Proposal[] = [];
     if (commonInfo) {
@@ -78,6 +82,8 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
             isSwiper={true}
             commonInfo={commonInfo}
             navigation={navigation}
+            hasPermission={hasPermission}
+            openCommonOptions={openCommonOptions}
           />
         ) : (
           <TouchableOpacity
@@ -101,6 +107,8 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
           isSwiper={false}
           commonInfo={commonInfo}
           navigation={navigation}
+          hasPermission={hasPermission}
+          openCommonOptions={openCommonOptions}
         />
       );
 
@@ -166,8 +174,8 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
               isStageFilterHistory(proposalFilter.stage)
                 ? 'You will be able to see proposals that passed or were rejected here.'
                 : isTypeFilterJoin(proposalFilter.type)
-                  ? 'There are no pending membership requests at the moment, check again later.'
-                  : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
+                ? 'There are no pending membership requests at the moment, check again later.'
+                : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
             }
           />
         )}

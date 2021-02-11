@@ -229,7 +229,12 @@ const CommonProfile = ({
   const Discussions = () => (
     <View style={{...styles.paleBackground, ...{paddingVertical: sizeL}}}>
       <Text style={text.h1BlackTitle}>Discussions</Text>
-      <DiscussionList navigation={navigation} commonId={currCommon.id} />
+      <DiscussionList
+        navigation={navigation}
+        commonId={currCommon.id}
+        hasPermission={hasPermission}
+        openCommonOptions={openCommonOptions}
+      />
     </View>
   );
 
@@ -248,6 +253,8 @@ const CommonProfile = ({
           stage: PROPOSAL_STAGE.Active,
           type: PROPOSAL_TYPE.FundingRequest,
         }}
+        hasPermission={hasPermission}
+        openCommonOptions={openCommonOptions}
       />
 
       {isMember && (

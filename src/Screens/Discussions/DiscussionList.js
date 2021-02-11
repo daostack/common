@@ -2,11 +2,11 @@ import React, {useEffect, useState, useRef} from 'react';
 import {FlatList} from 'react-native';
 import DiscussionCard from './DiscussionCard';
 import ViewTabNoData from '~/Components/ViewTabNoData';
-import {string, object} from 'prop-types';
+import {string, object, bool, func} from 'prop-types';
 import {db} from '~/Firebase';
 import logger from '~/Services/Logger';
 
-const DiscussionList = ({commonId, navigation}) => {
+const DiscussionList = ({commonId, navigation, hasPermission, openCommonOptions}) => {
   const [list, setList] = useState([]);
 
   let listRef = useRef([]);
@@ -52,6 +52,8 @@ const DiscussionList = ({commonId, navigation}) => {
               data={item}
               commonId={commonId}
               navigation={navigation}
+              hasPermission={hasPermission}
+              openCommonOptions={openCommonOptions}
             />
           )}
           extraData={listRef}
@@ -69,6 +71,8 @@ const DiscussionList = ({commonId, navigation}) => {
 DiscussionList.propTypes = {
   commonId: string.isRequired,
   navigation: object.isRequired,
+  hasPermission: bool,
+  openCommonOptions: func,
 };
 
 export default React.memo(DiscussionList);
