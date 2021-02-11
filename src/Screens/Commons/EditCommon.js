@@ -19,18 +19,21 @@ import {EditCommonFormStore} from '~/FormStores/EditCommonFormStore';
 import * as EditCommonConstants from '~/Components/Forms/EditCommonForm';
 import EditInfo from '~/Components/EditCommon/EditInfo';
 import EditRules from '~/Components/EditCommon/EditRules';
+import {rootStorePropTypes} from '~/Types/propTypes';
 const metadataKeys = [
   EditCommonConstants.BYLINE,
   EditCommonConstants.DESCRIPTION,
 ];
 
 const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
-  userStore,
-  daoStore,
-  bottomSheetStore,
+  rootStore,
   route,
   navigation,
 }) => {
+  const userStore = rootStore.userStore;
+  const commonStore = rootStore.commonStore;
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+
   navigation.setOptions({
     headerLeft: () => (
       <TouchableOpacity
@@ -81,7 +84,7 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
 
   const onFormSubmitEnd = async (updatedCommon) => {
     try {
-      await daoStore.updateDaoInfo(updatedCommon, userStore.userInfo.uid);
+      commonStore.updateDaoInfo(updatedCommon, userStore.userInfo.uid);
       Toast.done('Your Common is updated');
     } catch (err) {
       Toast.error('Could not update your Common');
@@ -200,17 +203,7 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
 };
 
 EditCommon.propTypes = {
-  userStore: shape({
-    userInfo: object,
-    setSignedInUser: func,
-  }),
-  bottomSheetStore: shape({
-    showBottomSheet: func,
-    hideBottomSheet: func,
-  }),
-  daoStore: shape({
-    setDaoInfo: func,
-  }),
+  rootStore: rootStorePropTypes,
   route: shape({
     params: shape({
       isFirstOpening: bool,
@@ -239,4 +232,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'daoStore', 'bottomSheetStore')(EditCommon);
+export default inject('rootStore')(EditCommon);

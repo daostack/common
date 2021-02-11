@@ -22,16 +22,16 @@ import {
   Fade,
 } from 'rn-placeholder';
 import {CommonActions} from '@react-navigation/native';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const groupTitle = (title, arrLength) =>
   arrLength > 0 ? `${title} (${arrLength})` : '';
 
-const CommonsList = ({
-  navigation,
-  bottomSheetStore,
-  authStore,
-  commonStore,
-}) => {
+const CommonsList = ({navigation, rootStore}) => {
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  const authStore = rootStore.authStore;
+  const commonStore = rootStore.commonStore;
+
   const myDaosGroup = {
     title: groupTitle('My Commons', commonStore.myCommons.length),
     data: commonStore.myCommons,
@@ -205,9 +205,7 @@ const CommonsList = ({
 
 CommonsList.propTypes = {
   navigation: object.isRequired,
-  bottomSheetStore: object.isRequired,
-  authStore: object.isRequired,
-  commonStore: object.isRequired,
+  rootStore: rootStorePropTypes.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -241,8 +239,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'bottomSheetStore',
-  'authStore',
-  'commonStore',
-)(observer(CommonsList));
+export default inject('rootStore')(observer(CommonsList));

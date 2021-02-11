@@ -31,6 +31,7 @@ export const userStorePropTypes = shape({
 
 export const commonStorePropTypes = shape({
   subscribeToAllCommons: func,
+  getUserCommons: func,
 });
 
 export const proposalStorePropTypes = shape({

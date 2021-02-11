@@ -7,6 +7,7 @@ import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import {CommonActions} from '@react-navigation/native';
 import {string, object, number, func, shape} from 'prop-types';
 import {observer, inject} from 'mobx-react';
+import {commonStorePropTypes} from '~/Types/propTypes';
 
 const DEFAULT_HEADER_HEIGHT = 145;
 
@@ -96,9 +97,7 @@ CommonsSwiper.propTypes = {
   navigation: object,
   userId: string,
   showMax: number,
-  commonStore: shape({
-    getUserCommons: func,
-  }),
+  commonStore: commonStorePropTypes,
 };
 
 const styles = StyleSheet.create({

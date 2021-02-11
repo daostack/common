@@ -86,10 +86,7 @@ export default class CommonStore extends ListStore<Common> {
     changedBy,
   ) => {
     try {
-      const updateResponse = await updateCommon({
-        commonId: updateCommonInfo.id,
-        changes: updateCommonInfo,
-      });
+      const updateResponse = await updateCommon(updateCommonInfo);
       // Cache.set(updateCommonInfo.id, updateCommonInfo); @question to Lyubo: about this and mobx-persist
       return updateResponse;
     } catch (err) {
