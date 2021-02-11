@@ -47,6 +47,7 @@ const props = {
     showBottomSheet: func,
     hideBottomSheet: func,
   }),
+  onContentSizeChange: func,
 };
 
 const DOT_INFO_JOIN_REQUEST = [
@@ -96,6 +97,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
   children,
   layoutTitle,
   bottomSheetStore,
+  onContentSizeChange,
 }) => {
   const [headerHeight, setHeaderHeight] = useState(new Animated.Value(0));
   const [scrollY] = useState(new Animated.Value(0));
@@ -177,6 +179,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           width={width}
+          onContentSizeChange={onContentSizeChange}
           contentContainerStyle={{
             alignItems: 'center',
             justifyContent: 'center',

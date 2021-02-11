@@ -1,11 +1,23 @@
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {db} from '~/Firebase';
-import logger from './Logger';
+import axios from 'axios';
+import {discussionsUrl} from '~/Config';
+import {auth} from '~/Firebase';
 
 export default class DiscussionService {
   static serviceInstance = null;
 
-  constructor() {}
+  constructor() {
+
+    this.axiosClient = axios.create({
+      baseURL: discussionsUrl(),
+      timeout: 1000000,
+    });
+
+    this.endpoints = {
+      update: '/update',
+    };
+  }
 
   static getInstance = () => {
     if (DiscussionService.serviceInstance == null) {
@@ -22,13 +34,22 @@ export default class DiscussionService {
       .then((snapshot) => (!snapshot ? null : snapshot.data()));
   }
 
-  async updateDiscussionLastMessage(discussionId) {
-    return db
-      .collection('discussion')
-      .doc(discussionId)
-      .update({
-        lastMessage: new Date(),
-      })
-      .catch((err) => logger.log(err));
+  updateDiscussionLastMessage = async (discussionId, messageOwner) => {
+    try {
+      return await this.axiosClient.post(
+        this.endpoints.update,
+        {
+          discussionId,
+          messageOwner,
+        },
+        {
+          headers: {
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 }

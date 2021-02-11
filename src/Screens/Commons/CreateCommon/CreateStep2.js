@@ -213,7 +213,7 @@ const CreateStep2 = ({
               <Text style={styles.boldText}>
                 {CONTRIBUTION_TAB_VALUES[contributionIndex]}
               </Text>{' '}
-              contribution (min. $5)
+              contribution (min. ${MIN_CONTRIBUTION[contributionIndex]})
             </React.Fragment>
           }
           subLabel="Set the minimum amount that new members will have to contribute in order to join this Common."
@@ -226,7 +226,7 @@ const CreateStep2 = ({
             name: CreateCommonForm.MINIMUM,
             formStore: fundingFormStore,
             validateRule: minimumFieldRules(contributionIndex),
-            customErrorMessage: `The amount must be at least $5 and at most $${parseFloat(
+            customErrorMessage: `The amount must be at least $${MIN_CONTRIBUTION[contributionIndex]} and at most $${parseFloat(
               MAX_CONTRIBUTION[contributionIndex],
             ).toLocaleString('en')}.`,
           }}
