@@ -26,6 +26,7 @@ import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 
 import {colors, font, text, layout, sizeM, sizeL} from '~/Theme';
 import logger from '~/Services/Logger';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const {width} = Dimensions.get('window');
 const CONTRIBUTION = {
@@ -38,13 +39,11 @@ const CreateStep4 = ({
     params: {formStores},
   },
   navigation,
-  bottomSheetStore,
-  authStore: {
-    userInfo: {uid},
-  },
+  rootStore,
 }) => {
-  const [newCommonAddress, setNewCommonAddress] = useState(false);
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
 
+  const [newCommonAddress, setNewCommonAddress] = useState(false);
   const generalInfoFormStore = formStores.generalInfoFormStore;
   const fundingFormStore = formStores.fundingFormStore;
   const agendaFormStore = formStores.agendaFormStore;
@@ -88,7 +87,7 @@ const CreateStep4 = ({
 
       const data = {
         ...formDataInit,
-        founderId: uid,
+        founderId: authStore.userInfo?.uid,
         minFeeToJoin: contributionAmount,
         contributionAmount,
         contributionType: formDataInit.contribution,
@@ -302,8 +301,7 @@ const CreateStep4 = ({
 
 CreateStep4.propTypes = {
   navigation: object,
-  bottomSheetStore: object,
-  authStore: object,
+  rootStore: rootStorePropTypes,
   route: shape({
     params: shape({
       formStores: shape({
@@ -412,4 +410,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore', 'authStore')(observer(CreateStep4));
+export default inject('rootStore')(observer(CreateStep4));

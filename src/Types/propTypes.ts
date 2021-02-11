@@ -39,10 +39,22 @@ export const proposalStorePropTypes = shape({
   getProposalById: func,
 });
 
+export const discussionStorePropTypes = shape({
+  subscribeToCommonDiscussions: func,
+  getCommonDiscussions: func,
+});
+
+export const discussionMessageStorePropTypes = shape({
+  subscribeToDiscussionsMessages: func,
+  getDiscussionMessagesByDiscussionId: func,
+});
+
 export const rootStorePropTypes = shape({
   authStore: authStorePropTypes.isRequired,
   userStore: userStorePropTypes.isRequired,
   commonStore: commonStorePropTypes.isRequired,
   proposalStore: proposalStorePropTypes.isRequired,
+  discussionStore: discussionStorePropTypes.isRequired,
+  discussionMessageStore: discussionMessageStorePropTypes.isRequired,
   uiStore: uiStorePropTypes.isRequired,
 });

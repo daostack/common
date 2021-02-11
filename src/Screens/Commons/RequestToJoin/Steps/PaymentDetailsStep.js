@@ -19,6 +19,7 @@ import {VALIDATION_RULES} from '~/FormStores/ValidationRules/paymentDetailsRules
 import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const {width} = Dimensions.get('window');
 
@@ -27,9 +28,11 @@ const PaymentDetailsStep = ({
   route: {
     params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed},
   },
-  authStore: {userInfo},
-  bottomSheetStore,
+  rootStore,
 }) => {
+  const userInfo = rootStore.authStore.userInfo;
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+
   const isMonthly = currCommon.metadata.contributionType === 'monthly';
 
   const paymentFormStore = formStores.paymentFormStore;
@@ -288,11 +291,6 @@ PaymentDetailsStep.propTypes = {
       refreshFeed: func,
     }),
   }),
-  authStore: shape({
-    userInfo: shape({
-      ethereumAddress: string,
-    }),
-  }),
   paymentFormStore: shape({
     isFormValid: func,
     getFormFieldsJson: func,
@@ -309,7 +307,7 @@ PaymentDetailsStep.propTypes = {
     getFormFieldsJson: func,
     form: object,
   }),
-  bottomSheetStore: object,
+  rootStore: rootStorePropTypes,
 };
 
-export default inject('bottomSheetStore', 'authStore')(PaymentDetailsStep);
+export default inject('rootStore')(PaymentDetailsStep);

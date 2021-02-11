@@ -1,10 +1,11 @@
 import React from 'react';
 import {Text, StyleSheet} from 'react-native';
-import {string, bool, shape, number} from 'prop-types';
+import {string, bool} from 'prop-types';
 
 import {colors, font} from '~/Theme';
 import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
 import {inject, observer} from 'mobx-react';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
 const styles = StyleSheet.create({
   text: {
@@ -39,7 +40,7 @@ const CreateStep4Indicators = ({
   title,
   value,
   amount,
-  authStore: {conversionRate},
+  uiStore,
 }) => (
   <>
     <Text style={styles.text}>{title}</Text>
@@ -50,7 +51,7 @@ const CreateStep4Indicators = ({
 
     {contribution && isIsraelLocale && amount && (
       <Text style={styles.conversion}>
-        {convertAmountToIls(amount, conversionRate)}
+        {convertAmountToIls(amount, uiStore.conversionRate)}
       </Text>
     )}
   </>
@@ -62,9 +63,7 @@ CreateStep4Indicators.propTypes = {
   date: string,
   contribution: bool,
   amount: string,
-  authStore: shape({
-    conversionRate: number,
-  }),
+  uiStore: uiStorePropTypes,
 };
 
-export default inject('authStore')(observer(CreateStep4Indicators));
+export default inject('uiStore')(observer(CreateStep4Indicators));

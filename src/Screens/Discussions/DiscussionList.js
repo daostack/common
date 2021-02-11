@@ -57,7 +57,4 @@ DiscussionList.propTypes = {
   }),
 };
 
-export default inject(
-  'discussionStore',
-  'discussionMessageStore',
-)(observer(DiscussionList));
+export default inject('rootStore')(observer(DiscussionList));

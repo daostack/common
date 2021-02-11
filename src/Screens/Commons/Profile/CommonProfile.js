@@ -54,27 +54,27 @@ import {
   BillingDetailsFormStore,
   PaymentFormStore,
 } from '~/FormStores/RequestToJoin';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 let stickyHeightAddon = 56;
 const STICKY_HEADER_HEIGHT =
   Math.round(getStatusBarHeight(true)) + stickyHeightAddon;
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
-const CommonProfile = ({
-  navigation,
-  bottomSheetStore,
-  authStore,
-  route: {params},
-  commonStore,
-  proposalStore,
-  discussionStore,
-}) => {
+const CommonProfile = ({navigation, rootStore, route: {params}}) => {
   /* all of  params.commonId,
   params.showRequestSentModal,
   params.createdProposalId
   are undefined
   is this sth we plan on having in future?
    */
+
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  const authStore = rootStore.authStore;
+  const commonStore = rootStore.commonStore;
+  const proposalStore = rootStore.proposalStore;
+  const discussionStore = rootStore.discussionStore;
+
   const [isMember, setMemberState] = useState(false);
   const window = Dimensions.get('window');
 
@@ -932,13 +932,7 @@ CommonProfile.propTypes = {
       //createdProposalId: func,
     }),
   }),
-  bottomSheetStore: object,
-  authStore: object,
-  commonStore: object,
-  proposalStore: object,
-  discussionStore: shape({
-    subscribeToCommonDiscussions: func,
-  }),
+  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -1104,10 +1098,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'bottomSheetStore',
-  'authStore',
-  'commonStore',
-  'proposalStore',
-  'discussionStore',
-)(observer(CommonProfile));
+export default inject('rootStore')(observer(CommonProfile));

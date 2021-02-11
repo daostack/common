@@ -16,6 +16,7 @@ import {VALIDATION_RULES} from '~/FormStores/ValidationRules/billingDetailsRules
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
+import {authStorePropTypes} from '~/Types/propTypes';
 
 const AUTOFILL = {
   ios: {
@@ -255,7 +256,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
 
 BillingDetailsStep.propTypes = {
   navigation: object,
-  authStore: object,
+  authStore: authStorePropTypes,
   route: shape({
     params: shape({
       skipFirstStep: bool,
