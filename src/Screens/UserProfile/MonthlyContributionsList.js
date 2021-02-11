@@ -16,6 +16,7 @@ import {ContributionListItem} from '../../Components';
 import {colors, text} from '../../Theme';
 import {fontSize} from '~/Theme/font';
 import {getUserSubscriptions} from '~/Services/SubscriptionService';
+import {authStorePropTypes} from '~/Types/propTypes';
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -106,13 +107,7 @@ const MonthlyContributionsList = ({authStore, navigation}) => {
 
 MonthlyContributionsList.propTypes = {
   navigation: PropTypes.object,
-
-  authStore: PropTypes.shape({
-    userInfo: PropTypes.shape({
-      uid: PropTypes.string,
-      safeAddress: PropTypes.string,
-    }),
-  }),
+  authStore: authStorePropTypes,
 };
 
 export default inject('authStore')(observer(MonthlyContributionsList));

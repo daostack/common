@@ -20,6 +20,7 @@ import {
   isTypeFilterJoin,
   isStageFilterHistory,
 } from '~/Stores/DataStores/ProposalStore';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const {width, height} = Dimensions.get('window');
 
@@ -49,6 +50,7 @@ const props = {
     getCommonProposals: func.isRequired,
     getUserProposals: func.isRequired,
   }).isRequired,
+  rootStore: rootStorePropTypes.isRequired,
 };
 
 const ProposalsList: React.FC<InferProps<typeof props>> = observer(
@@ -234,4 +236,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('proposalStore')(ProposalsList);
+export default inject('rootStore')(ProposalsList);

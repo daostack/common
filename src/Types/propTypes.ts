@@ -1,4 +1,4 @@
-import {func, string, object, shape, number} from 'prop-types';
+import {func, string, object, shape, number, array} from 'prop-types';
 
 export const uiStorePropTypes = shape({
   bottomSheetStore: shape({
@@ -6,8 +6,8 @@ export const uiStorePropTypes = shape({
     hideBottomSheet: func.isRequired,
     topSnap: number.isRequired,
     template: object.isRequired,
-    increseTopSnap: func,
-    decreseTopSnap: func,
+    increseTopSnap: func.isRequired,
+    decreseTopSnap: func.isRequired,
   }).isRequired,
   conversionRate: number.isRequired,
 });
@@ -20,33 +20,39 @@ export const authStorePropTypes = shape({
     lastName: string,
     intro: string,
   }),
-  setIsLoading: func,
-  setSignedInUser: func,
+  setIsLoading: func.isRequired,
+  setSignedInUser: func.isRequired,
+  isDaoMember: func.isRequired,
 });
 
 export const userStorePropTypes = shape({
-  subscribeToAllUsers: func,
-  getUserById: func,
+  subscribeToAllUsers: func.isRequired,
+  getUserById: func.isRequired,
 });
 
 export const commonStorePropTypes = shape({
-  subscribeToAllCommons: func,
-  getUserCommons: func,
+  subscribeToAllCommons: func.isRequired,
+  getUserCommons: func.isRequired,
+  getCommonById: func.isRequired,
+  myCommons: array.isRequired,
 });
 
 export const proposalStorePropTypes = shape({
-  subscribeToUserProposals: func,
-  getProposalById: func,
+  subscribeToUserProposals: func.isRequired,
+  getProposalById: func.isRequired,
+  getCommonProposals: func.isRequired,
+  getUserProposals: func.isRequired,
 });
 
 export const discussionStorePropTypes = shape({
-  subscribeToCommonDiscussions: func,
-  getCommonDiscussions: func,
+  subscribeToCommonDiscussions: func.isRequired,
+  getCommonDiscussions: func.isRequired,
+  getDiscussionById: func.isRequired,
 });
 
 export const discussionMessageStorePropTypes = shape({
-  subscribeToDiscussionsMessages: func,
-  getDiscussionMessagesByDiscussionId: func,
+  subscribeToDiscussionsMessages: func.isRequired,
+  getDiscussionMessagesByDiscussionId: func.isRequired,
 });
 
 export const rootStorePropTypes = shape({

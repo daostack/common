@@ -6,6 +6,7 @@ import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
+import {userStorePropTypes} from '~/Types/propTypes';
 
 const {width} = Dimensions.get('window');
 
@@ -116,9 +117,7 @@ DiscussionMessage.propTypes = {
     catch: func.isRequired,
   }),
   showCurrentUserAvatar: bool,
-  userStore: shape({
-    getUserById: func,
-  }),
+  userStore: userStorePropTypes,
 };
 
 const styles = StyleSheet.create({

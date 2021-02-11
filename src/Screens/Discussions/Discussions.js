@@ -23,23 +23,26 @@ import auth from '@react-native-firebase/auth';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import ImageView from 'react-native-image-viewing';
 import {db} from '../../Firebase';
-import {func, object, shape, string} from 'prop-types';
+import {object, shape, string} from 'prop-types';
 import DiscussionService from '../../Services/DiscussionService';
 import Hyperlink from 'react-native-hyperlink';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
+import {rootStorePropTypes} from '~/Types/propTypes';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
-  commonStore,
-  discussionStore,
-  authStore,
-  bottomSheetStore,
-  userStore,
   navigation,
   route: {
     params: {commonId, discussionId, data},
   },
+  rootStore,
 }) => {
+  const commonStore = rootStore.commonStore;
+  const discussionStore = rootStore.discussionStore;
+  const authStore = rootStore.authStore;
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  const userStore = rootStore.userStore;
+
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -93,7 +96,7 @@ const Discussions = ({
           setInputText('');
           await DiscussionService.getInstance().updateDiscussionLastMessage(
             discussionId,
-            currentUser.uid
+            currentUser.uid,
           );
         })
         .catch((error) => {
@@ -360,20 +363,7 @@ const Discussions = ({
 };
 
 Discussions.propTypes = {
-  discussionStore: shape({
-    getDiscussionById: func,
-  }),
-  discussionMessageStore: shape({}),
-  commonStore: shape({
-    getCommonById: func,
-  }),
-  authStore: shape({
-    userInfo: object,
-    isDaoMember: func,
-  }),
-  bottomSheetStore: shape({
-    showBottomSheet: func,
-  }),
+  rootStore: rootStorePropTypes.isRequired,
   navigation: object,
   route: shape({
     params: shape({
@@ -381,9 +371,6 @@ Discussions.propTypes = {
       discussionId: string,
       data: object,
     }),
-  }),
-  userStore: shape({
-    getUserById: func,
   }),
 };
 
@@ -576,11 +563,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'authStore',
-  'bottomSheetStore',
-  'commonStore',
-  'userStore',
-  'discussionStore',
-  'discussionMessageStore',
-)(observer(Discussions));
+export default inject('rootStore')(observer(Discussions));

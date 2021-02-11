@@ -13,7 +13,8 @@ import {inject, observer} from 'mobx-react';
 import CommonBox from '~/Components/CommonBox';
 import {layout, colors, text, font, sizeS} from '~/Theme';
 import {CommonActions} from '@react-navigation/native';
-import {object, shape, array} from 'prop-types';
+import {object} from 'prop-types';
+import {commonStorePropTypes} from '~/Types/propTypes';
 
 const MyCommons = ({navigation, commonStore}) => {
   const onScreenScroll = (event) => {
@@ -80,9 +81,7 @@ const MyCommons = ({navigation, commonStore}) => {
 
 MyCommons.propTypes = {
   navigation: object,
-  commonStore: shape({
-    myCommons: array,
-  }),
+  commonStore: commonStorePropTypes,
 };
 
 const styles = StyleSheet.create({

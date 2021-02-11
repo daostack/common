@@ -3,18 +3,14 @@ import {inject, observer} from 'mobx-react';
 import {FlatList} from 'react-native';
 import DiscussionCard from './DiscussionCard';
 import ViewTabNoData from '~/Components/ViewTabNoData';
-import {string, object, shape, func} from 'prop-types';
+import {string, object} from 'prop-types';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
-const DiscussionList = ({
-  commonId,
-  navigation,
-  discussionStore,
-  discussionMessageStore,
-}) => {
-  const list = discussionStore.getCommonDiscussions(commonId);
+const DiscussionList = ({commonId, navigation, rootStore}) => {
+  const list = rootStore.discussionStore.getCommonDiscussions(commonId);
 
   useEffect(() => {
-    const unsubscribeFromDiscussionMessages = discussionMessageStore.subscribeToDiscussionsMessages(
+    const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionsMessages(
       list.map((discussion) => discussion.id),
     );
     return () => {
@@ -49,12 +45,7 @@ const DiscussionList = ({
 DiscussionList.propTypes = {
   commonId: string.isRequired,
   navigation: object.isRequired,
-  discussionStore: shape({
-    getCommonDiscussions: func,
-  }),
-  discussionMessageStore: shape({
-    subscribeToDiscussionsMessages: func,
-  }),
+  rootStore: rootStorePropTypes,
 };
 
 export default inject('rootStore')(observer(DiscussionList));

@@ -22,7 +22,7 @@ import Toast from '~/Util/Toast';
 import CodePush from 'react-native-code-push';
 import Config from 'react-native-config';
 import {isProduction} from '~/Config';
-
+import {string, object, shape} from 'prop-types';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -30,6 +30,7 @@ import {
   Fade,
 } from 'rn-placeholder';
 import logger from '../../Services/Logger';
+import {authStorePropTypes} from '~/Types/propTypes';
 
 const UserProfile = ({authStore, navigation, route}) => {
   //const [editMode, setEditMode] = useState(false);
@@ -230,6 +231,17 @@ const UserProfile = ({authStore, navigation, route}) => {
     </ScrollView>
   );
   return authStore.isLoading ? renderScreenLoader() : renderScreen();
+};
+
+UserProfile.propTypes = {
+  route: shape({
+    params: shape({
+      userId: string,
+      userInfo: object,
+    }),
+  }),
+  navigation: object,
+  authStore: authStorePropTypes.isRequired,
 };
 
 const styles = StyleSheet.create({

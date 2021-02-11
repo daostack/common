@@ -15,18 +15,21 @@ import {TabView} from 'react-native-tab-view';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
 import {inject, observer} from 'mobx-react';
 import CommonTabBar from '../CommonTabBar';
-import {bool, object, shape, func} from 'prop-types';
+import {bool, object, shape} from 'prop-types';
 import {PROPOSAL_STAGE} from '~/Config';
 import {isTypeFilterJoin} from '~/Stores/DataStores/ProposalStore';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const MyProposals = ({
   navigation,
-  authStore,
-  proposalStore,
   route: {
     params: {proposalTypeFilter},
   },
+  rootStore,
 }) => {
+  const authStore = rootStore.authStore;
+  const proposalStore = rootStore.proposalStore;
+
   const [index, setIndex] = React.useState(0);
   const onScreenScroll = (event) => {
     navigation.setOptions({
@@ -135,10 +138,7 @@ MyProposals.propTypes = {
     }),
   }),
   navigation: object,
-  authStore: object,
-  proposalStore: shape({
-    getUserProposals: func,
-  }),
+  rootStore: rootStorePropTypes.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -172,4 +172,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('authStore', 'proposalStore')(observer(MyProposals));
+export default inject('rootStore')(observer(MyProposals));
