@@ -9,9 +9,13 @@ import React from 'react';
 import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {inject, observer} from 'mobx-react';
-import {object, func} from 'prop-types';
+import {object, func, bool} from 'prop-types';
 
-const CommonProfileOptions = ({bottomSheetStore, onEdit}) => (
+const CommonProfileOptions = ({
+  bottomSheetStore,
+  onEdit,
+  moderatorOptions = false,
+}) => (
   <ScrollView
     contentInsetAdjustmentBehavior="automatic"
     style={styles.scrollView}
@@ -20,24 +24,51 @@ const CommonProfileOptions = ({bottomSheetStore, onEdit}) => (
     directionalLockEnabled={true}>
     <View style={styles.body}>
       <Text style={styles.text}>Options</Text>
-      <TouchableOpacity style={styles.optionBtn} onPress={() => onEdit('info')}>
-        <Icon
-          name="dao-general-info-24"
-          style={layout.marginRightS}
-          color={colors.black}
-        />
-        <Text style={text.buttonblack}>Edit info and cover photo</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.optionBtn}
-        onPress={() => onEdit('rules')}>
-        <Icon
-          name="agenda-24"
-          style={layout.marginRightS}
-          color={colors.black}
-        />
-        <Text style={text.buttonblack}>Edit rules</Text>
-      </TouchableOpacity>
+      {!moderatorOptions && (
+        <>
+          <TouchableOpacity
+            style={styles.optionBtn}
+            onPress={() => onEdit('info')}>
+            <Icon
+              name="dao-general-info-24"
+              style={layout.marginRightS}
+              color={colors.black}
+            />
+            <Text style={text.buttonblack}>Edit info and cover photo</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.optionBtn}
+            onPress={() => onEdit('rules')}>
+            <Icon
+              name="agenda-24"
+              style={layout.marginRightS}
+              color={colors.black}
+            />
+            <Text style={text.buttonblack}>Edit rules</Text>
+          </TouchableOpacity>
+        </>
+      )}
+      {moderatorOptions && (
+        <>
+          <Text style={styles.text}>Moderator tools</Text>
+          <TouchableOpacity style={styles.optionBtn} onPress={() => {}}>
+            <Icon
+              name="hidden"
+              style={layout.marginRightS}
+              color={colors.error}
+            />
+            <Text style={text.buttonred}>Hide</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.optionBtn} onPress={() => {}}>
+            <Icon
+              name="report-16"
+              style={layout.marginRightS}
+              color={colors.error}
+            />
+            <Text style={text.buttonred}>Hide & Report</Text>
+          </TouchableOpacity>
+        </>
+      )}
     </View>
   </ScrollView>
 );
@@ -45,6 +76,7 @@ const CommonProfileOptions = ({bottomSheetStore, onEdit}) => (
 CommonProfileOptions.propTypes = {
   bottomSheetStore: object,
   onEdit: func,
+  moderatorOptions: bool,
 };
 
 const styles = StyleSheet.create({

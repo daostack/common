@@ -233,7 +233,7 @@ const CommonProfile = ({
         navigation={navigation}
         commonId={currCommon.id}
         hasPermission={hasPermission}
-        openCommonOptions={openCommonOptions}
+        openCommonOptions={() => openCommonOptions(true)}
       />
     </View>
   );
@@ -254,7 +254,7 @@ const CommonProfile = ({
           type: PROPOSAL_TYPE.FundingRequest,
         }}
         hasPermission={hasPermission}
-        openCommonOptions={openCommonOptions}
+        openCommonOptions={() => openCommonOptions(true)}
       />
 
       {isMember && (
@@ -412,11 +412,12 @@ const CommonProfile = ({
       : navigateTo('Edit Rules');
   };
 
-  const openCommonOptions = (event) => {
+  const openCommonOptions = (moderation = false) => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
         onEdit: (type) => onEdit(type),
+        moderatorOptions: moderation,
       },
     );
   };
