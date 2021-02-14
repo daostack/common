@@ -15,6 +15,7 @@ const CommonProfileOptions = ({
   bottomSheetStore,
   onEdit,
   moderatorOptions = false,
+  onModerate
 }) => (
   <ScrollView
     contentInsetAdjustmentBehavior="automatic"
@@ -51,7 +52,7 @@ const CommonProfileOptions = ({
       {moderatorOptions && (
         <>
           <Text style={styles.text}>Moderator tools</Text>
-          <TouchableOpacity style={styles.optionBtn} onPress={() => {}}>
+          <TouchableOpacity style={styles.optionBtn} onPress={onModerate}>
             <Icon
               name="hidden"
               style={layout.marginRightS}
@@ -59,7 +60,7 @@ const CommonProfileOptions = ({
             />
             <Text style={text.buttonred}>Hide</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.optionBtn} onPress={() => {}}>
+          <TouchableOpacity style={styles.optionBtn} onPress={onModerate}>
             <Icon
               name="report-16"
               style={layout.marginRightS}
@@ -77,6 +78,7 @@ CommonProfileOptions.propTypes = {
   bottomSheetStore: object,
   onEdit: func,
   moderatorOptions: bool,
+  onModerate: func
 };
 
 const styles = StyleSheet.create({

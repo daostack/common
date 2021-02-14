@@ -43,7 +43,7 @@ import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDate';
-import {BlurView} from '~/Components';
+import {BlurView, Hide} from '~/Components';
 import Logger from '~/Services/Logger';
 import moment from 'moment';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
@@ -75,6 +75,7 @@ const CommonProfile = ({
   is this sth we plan on having in future?
    */
   const [isMember, setMemberState] = useState(false);
+  const [showModerationModal, setShowModerationModal] = useState(false);
   const window = Dimensions.get('window');
 
   const {refreshFeed} = params;
@@ -418,6 +419,7 @@ const CommonProfile = ({
       {
         onEdit: (type) => onEdit(type),
         moderatorOptions: moderation,
+        onModerate: () => setShowModerationModal(true),
       },
     );
   };
@@ -634,7 +636,7 @@ const CommonProfile = ({
           {hasPermission && (
             <TouchableOpacity
               style={{justifyContent: 'center', marginRight: 10}}
-              onPress={openCommonOptions}>
+              onPress={() => openCommonOptions()}>
               <BlurView
                 style={{
                   padding: 6,
@@ -661,6 +663,18 @@ const CommonProfile = ({
     </TouchableOpacity>
   );
 
+  const moderationModal = () => (
+    <Modal
+      visible={showModerationModal}
+      transparent={true}
+      animationType="slide"
+      onBackdropPress={() => setShowModerationModal(false)}
+      >
+      <Hide title="Hide Post"
+        onCancel={() => setShowModerationModal(false)}/>
+    </Modal>
+  );
+
   const initialLayout = {width: Dimensions.get('window').width};
 
   const slideUp = {
@@ -685,6 +699,7 @@ const CommonProfile = ({
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
+      {moderationModal()}
       {currCommon ? (
         <View style={{flex: 1, position: 'relative'}}>
           <TouchableOpacity
@@ -766,7 +781,7 @@ const CommonProfile = ({
                 isMember={isMember}
                 navigation={navigation}
                 headerHeightLayouted={headerHeightLayouted}
-                onHeaderMenuOpen={openCommonOptions}
+                onHeaderMenuOpen={() => openCommonOptions()}
                 commonInfo={{
                   logo: currCommon.metadata?.avatar,
                   name: currCommon.name,
@@ -822,6 +837,8 @@ const CommonProfile = ({
             </View>
 
             {renderMembersRow()}
+
+
 
             {!isMember && showReqToJoin && (
               <View
