@@ -100,4 +100,11 @@ export const formatCurrency = (amount) => {
     : formattedAmount;
 };
 
+export const escapeUrl = (linkArr) =>
+  linkArr?.map((link) => {
+        link.value = encodeURI(link.value);
+        return link;
+      }
+   );
+
 export const formatDate = (date) => moment(date).format('DD MMMM YYYY');
