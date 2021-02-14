@@ -1,5 +1,7 @@
 import {DiscussionsCollection} from '~/Firebase/Databasee/Collections/DiscussionsCollection';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
+import {axiosClient} from '../util/AxiosClient';
+import {auth} from '~/Firebase';
 
 export type commonDiscussionsListLoadCallbackFn = (
   updatedDiscussionsList: Array<IDiscussionEntity>,
@@ -24,4 +26,26 @@ export const subscribeToCommonDiscussions = (
       callback(discussionList);
     });
   return unsubscribe;
+};
+
+export const updateDiscussionLastMessage = async (
+  discussionId: string,
+  messageOwner: string,
+) => {
+  try {
+    return await axiosClient.getDiscussionClient().post(
+      axiosClient.getDiscussionEndpoints().update,
+      {
+        discussionId,
+        messageOwner,
+      },
+      {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
+        },
+      },
+    );
+  } catch (error) {
+    throw error;
+  }
 };

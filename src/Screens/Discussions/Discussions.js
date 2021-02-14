@@ -24,9 +24,9 @@ import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import ImageView from 'react-native-image-viewing';
 import {db} from '../../Firebase';
 import {func, object, shape, string} from 'prop-types';
-import DiscussionService from '../../Services/DiscussionService';
 import Hyperlink from 'react-native-hyperlink';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
+import {updateDiscussionLastMessage} from '~/Services/ListServices/DiscussionListService';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
@@ -88,13 +88,10 @@ const Discussions = ({
           commonId: commonId,
           discussionId: discussionId,
         })
-        .then(async () => {
+        .then(async (msg) => {
           Keyboard.dismiss();
           setInputText('');
-
-          await DiscussionService.getInstance().updateDiscussionLastMessage(
-            discussionId,
-          );
+          await updateDiscussionLastMessage(discussionId, currentUser.uid);
         })
         .catch((error) => {
           Toast.error(error);
