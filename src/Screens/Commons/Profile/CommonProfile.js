@@ -54,6 +54,7 @@ import {
   BillingDetailsFormStore,
   PaymentFormStore,
 } from '~/FormStores/RequestToJoin';
+import ModerationFormStore from '~/FormStores/ModerationFormStore';
 
 let stickyHeightAddon = 56;
 const STICKY_HEADER_HEIGHT =
@@ -77,6 +78,7 @@ const CommonProfile = ({
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
   const window = Dimensions.get('window');
+  const moderationFormStore = new ModerationFormStore();
 
   const {refreshFeed} = params;
 
@@ -424,6 +426,27 @@ const CommonProfile = ({
     );
   };
 
+  const onHideContent = () => {
+    setShowModerationModal(false);
+    bottomSheetStore.hideBottomSheet();
+
+  };
+
+  const moderationModal = () => (
+    <Modal
+      visible={showModerationModal}
+      transparent={true}
+      animationType="slide"
+      onBackdropPress={() => setShowModerationModal(false)}
+      >
+      <Hide title="Hide Post"
+        onCancel={() => setShowModerationModal(false)}
+        onHideContent={() => onHideContent()}
+        formStore={moderationFormStore}
+      />
+    </Modal>
+  );
+
   const navigateTo = (screenTitle) => {
     navigation.navigate('EditCommon', {
       currCommon: currCommon,
@@ -661,18 +684,6 @@ const CommonProfile = ({
         contribution
       </Text>
     </TouchableOpacity>
-  );
-
-  const moderationModal = () => (
-    <Modal
-      visible={showModerationModal}
-      transparent={true}
-      animationType="slide"
-      onBackdropPress={() => setShowModerationModal(false)}
-      >
-      <Hide title="Hide Post"
-        onCancel={() => setShowModerationModal(false)}/>
-    </Modal>
   );
 
   const initialLayout = {width: Dimensions.get('window').width};

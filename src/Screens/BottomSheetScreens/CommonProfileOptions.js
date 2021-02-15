@@ -15,7 +15,7 @@ const CommonProfileOptions = ({
   bottomSheetStore,
   onEdit,
   moderatorOptions = false,
-  onModerate
+  onModerate,
 }) => (
   <ScrollView
     contentInsetAdjustmentBehavior="automatic"
@@ -78,7 +78,7 @@ CommonProfileOptions.propTypes = {
   bottomSheetStore: object,
   onEdit: func,
   moderatorOptions: bool,
-  onModerate: func
+  onModerate: func,
 };
 
 const styles = StyleSheet.create({

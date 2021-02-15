@@ -1,9 +1,8 @@
-import React, {useState, useEffect} from 'react';
-import {Text, View, ScrollView, Pressable, Linking, Dimensions, StyleSheet, TouchableOpacity, Platform} from 'react-native';
-import {colors, text, layout, font, sizeL, sizeLineHeight} from '~/Theme';
-import {string, func, object, shape, array, InferProps} from 'prop-types';
+import React, {useState} from 'react';
+import {Text, View, ScrollView, Pressable, Dimensions, StyleSheet, TouchableOpacity, Platform} from 'react-native';
+import {colors, text, layout, font} from '~/Theme';
+import {string, func, object, InferProps} from 'prop-types';
 import TextInputField from '~/Components/FormFields/TextInputField';
-import ModerationFormStore from '../../FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 const {width} = Dimensions.get('window');
 
@@ -12,32 +11,35 @@ const problems = [['Nudity', 'Violence', 'Harassment'], ['False News', 'Spam', '
 const Hide: React.FC<InferProps<typeof Hide.propTypes>> = ({
   title,
   onCancel,
+  formStore,
+  onHideContent,
 }) => {
-  const [done, setDone] = useState(false);
-  const [moderationFormStore] = useState(new ModerationFormStore());
   const [chosen, setChosen] = useState(['']);
-  moderationFormStore.registerFormField(ModerationForm.PROBLEM, 'string');
+  const [isValid, setIsValid] = useState(false);
+  formStore.registerFormField(ModerationForm.PROBLEM, 'required', []);
 
-  const Problem = ({text, row, col}) => (
-    <TouchableOpacity style={{...styles.problemButton, backgroundColor: chosen.includes(text) ? colors.mainBlue : colors.white}}
-      onPress={() => onProblemPressed(text, row, col) }>
-      <Text style={{...styles.problemText, color: chosen.includes(text) ? colors.white : colors.black}} >{text}</Text>
+  const problemButton = (chosenProblem: string) => (
+    <TouchableOpacity key={chosenProblem} style={{...styles.problemButton, backgroundColor: chosen.includes(chosenProblem) ? colors.mainBlue : colors.white}}
+      onPress={() => onProblemPressed(chosenProblem) }>
+      <Text style={{...styles.problemText, color: chosen.includes(chosenProblem) ? colors.white : colors.black}} >{chosenProblem}</Text>
     </TouchableOpacity>
   );
 
-  const onProblemPressed = (text, row, col) => {
-    let currProblems: any[] = [...moderationFormStore.getFormField(ModerationForm.PROBLEM, false)?.value]; 
-    if (currProblems) {
-      if (!currProblems.includes(text)) {
-        currProblems = [...currProblems, text];
+  const onProblemPressed = (chosenProblem: string) => {
+    let currProblems = `${formStore.getFormField(ModerationForm.PROBLEM, false)?.value}` || [];
+    if (currProblems.length !== 0) {
+      currProblems = currProblems.split(',');
+      if (!currProblems.includes(chosenProblem)) {
+        currProblems = [...currProblems, chosenProblem];
       } else {
-        currProblems.splice(currProblems.indexOf(text), 1);
+        currProblems.splice(currProblems.indexOf(chosenProblem), 1);
       }
     } else {
-      currProblems.push(text);
+      currProblems.push(chosenProblem);
     }
     setChosen(currProblems);
-    moderationFormStore.fieldChanged(ModerationForm.PROBLEM, currProblems, false);
+    formStore.fieldChanged(ModerationForm.PROBLEM, currProblems.toString(), false);
+    setIsValid(formStore.isFormChanged() && formStore.isFormValid(true));
   };
 
   return <Pressable onPress={onCancel}>
@@ -49,8 +51,8 @@ const Hide: React.FC<InferProps<typeof Hide.propTypes>> = ({
           <Text style={styles.action} >Please select a problem to continue</Text>
           <Text style={styles.explanation} >You can hide the post after selecting a problem</Text>
           <View style={{paddingVertical: 20}} >
-            {problems.map((problemRow, row) => <View style={{flexDirection: 'row'}}>
-              {problemRow.map((problem, col) => <Problem text={problem} row={row} col={col} />)}
+            {problems.map((problemRow) => <View style={{flexDirection: 'row'}}>
+              {problemRow.map((problem) => problemButton(problem) )}
             </View> )}
           </View>
           <View style={styles.divider} />
@@ -58,18 +60,21 @@ const Hide: React.FC<InferProps<typeof Hide.propTypes>> = ({
             label="Moderator note:"
             placeholderText="This note is public and will be shown to all members."
             multiline={true}
+            value={formStore.getFormField(ModerationForm.NOTE, false)?.value}
             validation={{
               name: 'moderatorNote',
-              formStore: moderationFormStore,
-              validateRule: 'required',
+              formStore: formStore,
+              validateRule: 'string',
               displayName: 'moderator note',
             }}
           />
-          <Pressable onPress={() => setDone(true)} disabled={!done}>
+          <Pressable
+            onPress={onHideContent}
+            disabled={!isValid}>
             <Text
               style={[
                 styles.button,
-                done && styles.buttonSelected,
+                isValid && styles.buttonSelected,
               ]}>
               Hide
             </Text>
@@ -83,6 +88,8 @@ const Hide: React.FC<InferProps<typeof Hide.propTypes>> = ({
 Hide.propTypes = {
   title: string,
   onCancel: func,
+  formStore: object,
+  onHideContent: func,
 };
 
 const styles = StyleSheet.create({
