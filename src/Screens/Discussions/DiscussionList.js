@@ -6,7 +6,7 @@ import {string, object, bool, func} from 'prop-types';
 import {db} from '~/Firebase';
 import logger from '~/Services/Logger';
 
-const DiscussionList = ({commonId, navigation, hasPermission, openCommonOptions}) => {
+const DiscussionList = ({commonId, navigation, hasPermission, openCommonOptions, showHiddenNote}) => {
   const [list, setList] = useState([]);
 
   let listRef = useRef([]);
@@ -53,7 +53,8 @@ const DiscussionList = ({commonId, navigation, hasPermission, openCommonOptions}
               commonId={commonId}
               navigation={navigation}
               hasPermission={hasPermission}
-              openCommonOptions={() => openCommonOptions(item.id)}
+              openCommonOptions={() => openCommonOptions(item)}
+              hiddenDiscussionNote={() => showHiddenNote(item)}
             />
           )}
           extraData={listRef}
@@ -73,6 +74,7 @@ DiscussionList.propTypes = {
   navigation: object.isRequired,
   hasPermission: bool,
   openCommonOptions: func,
+  showHiddenNote: func,
 };
 
 export default React.memo(DiscussionList);

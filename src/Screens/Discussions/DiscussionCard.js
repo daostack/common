@@ -26,6 +26,7 @@ const DiscussionCard = ({
   userListStore,
   hasPermission,
   openCommonOptions,
+  hiddenDiscussionNote,
 }) => {
   //when will data.owner be not undefined?
   const discussionId = data.id;
@@ -33,15 +34,19 @@ const DiscussionCard = ({
   const [msgCount, setMsgCount] = useState(0);
 
   const navigateToDiscussion = () => {
-    const navigate = CommonActions.navigate({
-      name: 'Discussions',
-      params: {
-        data: data,
-        discussionId: data.id,
-        commonId: commonId,
-      },
-    });
-    navigation.dispatch(navigate);
+    if (data.moderation) {
+      hiddenDiscussionNote();
+    } else {
+      const navigate = CommonActions.navigate({
+        name: 'Discussions',
+        params: {
+          data: data,
+          discussionId: data.id,
+          commonId: commonId,
+        },
+      });
+      navigation.dispatch(navigate);
+    }
   };
 
   useEffect(() => {
@@ -158,6 +163,7 @@ DiscussionCard.propTypes = {
   }),
   hasPermission: bool,
   openCommonOptions: func,
+  hiddenDiscussionNote: func,
 };
 
 const styles = StyleSheet.create({

@@ -70,6 +70,7 @@ const CommonProfile = ({
   route: {params},
   commonStore,
   proposalStore,
+  userListStore,
 }) => {
   /* all of  params.commonId,
   params.showRequestSentModal,
@@ -238,7 +239,8 @@ const CommonProfile = ({
         navigation={navigation}
         commonId={currCommon.id}
         hasPermission={hasPermission}
-        openCommonOptions={(discussionId) => openCommonOptions(discussionId, true)}
+        openCommonOptions={(discussion) => openCommonOptions(discussion)}
+        showHiddenNote={(hiddenDiscussion) => showHiddenNote(hiddenDiscussion, 'discussion')}
       />
     </View>
   );
@@ -259,7 +261,7 @@ const CommonProfile = ({
           type: PROPOSAL_TYPE.FundingRequest,
         }}
         hasPermission={hasPermission}
-        openCommonOptions={(proposalId) => openCommonOptions(proposalId, true)}
+        openCommonOptions={(proposalId) => openCommonOptions(proposalId)}
       />
 
       {isMember && (
@@ -417,17 +419,26 @@ const CommonProfile = ({
       : navigateTo('Edit Rules');
   };
 
+  const onModerate = (action) => {
+    if (action === 'Show') {
+      // TODO un-hide it in database
+    } else {
+      setShowModerationModal(true);
+    }
+  };
+
   // consider adding itemId to edit (?)
-  const openCommonOptions = (itemId = '', moderation = false) => {
-    if (moderation) {
-      moderationFormStore.registerFormField(ModerationForm.ITEM_ID, 'string', itemId);
+  const openCommonOptions = (item = null) => {
+    if (item) {
+      moderationFormStore.registerFormField(ModerationForm.ITEM_ID, 'string', item.id);
     }
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
-        onEdit: (type) => onEdit(type),
-        moderatorOptions: moderation,
-        onModerate: () => setShowModerationModal(true),
+        onAction: item ? (action) => onModerate(action) : (type) => onEdit(type),
+        //onEdit: (type) => onEdit(type),
+        moderatorOptions: item,
+        //onModerate: (action) => onModerate(action),
       },
     );
   };
@@ -437,6 +448,25 @@ const CommonProfile = ({
     bottomSheetStore.hideBottomSheet();
     await ModerationService.getInstance().hide(moderationFormStore.getFormFieldsJson(), commonId, 'discussion');
     moderationFormStore.clearFormStoreState();
+  };
+
+  const showHiddenNote = (hiddenItem, type) => {
+    const {moderation} = hiddenItem;
+    const user = userListStore.getUserById(moderation.moderator);
+    bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.HIDDEN_CONTENT_INFO,
+      {
+        userName: `${user.firstName || ''} ${user.lastName || ''}`,
+        date: moment(moderation.updatedAt.toMillis()).format('MMMM D'),
+        reasons: moderation.reasons,
+        moderatorNote: moderation.note,
+        type,
+      },
+    );
+  };
+
+  const onBackdropPress = () => {
+    setShowModerationModal(false);
   };
 
   const moderationModal = () => (
@@ -972,6 +1002,7 @@ CommonProfile.propTypes = {
   userStore: object,
   commonStore: object,
   proposalStore: object,
+  userListStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -1142,4 +1173,5 @@ export default inject(
   'userStore',
   'commonStore',
   'proposalStore',
+  'userListStore',
 )(observer(CommonProfile));

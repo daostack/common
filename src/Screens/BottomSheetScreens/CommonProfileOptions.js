@@ -13,11 +13,26 @@ import {object, func, bool} from 'prop-types';
 
 const CommonProfileOptions = ({
   bottomSheetStore,
-  onEdit,
-  moderatorOptions = false,
-  onModerate,
-}) => (
-  <ScrollView
+  //onEdit,
+  moderatorOptions = null,
+  //onModerate,
+  onAction,
+}) => {
+
+  let actions = ['Hide', 'Hide & Report'];
+
+  (() => {
+    if (moderatorOptions) {
+      if (moderatorOptions.moderation) {
+        if (moderatorOptions.moderation.flag === 'hidden') {
+          actions = ['Show', 'Report'];
+        }
+      }
+    }
+  })();
+
+
+  return <ScrollView
     contentInsetAdjustmentBehavior="automatic"
     style={styles.scrollView}
     vertical={true}
@@ -29,7 +44,7 @@ const CommonProfileOptions = ({
         <>
           <TouchableOpacity
             style={styles.optionBtn}
-            onPress={() => onEdit('info')}>
+            onPress={() => onAction('info')}>
             <Icon
               name="dao-general-info-24"
               style={layout.marginRightS}
@@ -39,7 +54,7 @@ const CommonProfileOptions = ({
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.optionBtn}
-            onPress={() => onEdit('rules')}>
+            onPress={() => onAction('rules')}>
             <Icon
               name="agenda-24"
               style={layout.marginRightS}
@@ -52,33 +67,34 @@ const CommonProfileOptions = ({
       {moderatorOptions && (
         <>
           <Text style={styles.text}>Moderator tools</Text>
-          <TouchableOpacity style={styles.optionBtn} onPress={onModerate}>
+          <TouchableOpacity style={styles.optionBtn} onPress={() => onAction(actions[0])}>
             <Icon
               name="hidden"
               style={layout.marginRightS}
               color={colors.error}
             />
-            <Text style={text.buttonred}>Hide</Text>
+            <Text style={text.buttonred}>{actions[0]}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.optionBtn} onPress={onModerate}>
+          <TouchableOpacity style={styles.optionBtn} onPress={() => onAction(actions[1])}>
             <Icon
               name="report-16"
               style={layout.marginRightS}
               color={colors.error}
             />
-            <Text style={text.buttonred}>Hide & Report</Text>
+            <Text style={text.buttonred}>{actions[1]}</Text>
           </TouchableOpacity>
         </>
       )}
     </View>
-  </ScrollView>
-);
+  </ScrollView>;
+};
 
 CommonProfileOptions.propTypes = {
   bottomSheetStore: object,
-  onEdit: func,
+  //onEdit: func,
   moderatorOptions: bool,
-  onModerate: func,
+  //onModerate: func,
+  onAction: func,
 };
 
 const styles = StyleSheet.create({
