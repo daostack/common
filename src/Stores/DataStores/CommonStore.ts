@@ -83,7 +83,7 @@ export default class CommonStore extends BaseStore<Common> {
    */
   updateCommonInfo = async (
     updateCommonInfo: Partial<ICommonEntity>,
-    changedBy,
+    //changedBy,
   ) => {
     try {
       const updateResponse = await updateCommon(updateCommonInfo);

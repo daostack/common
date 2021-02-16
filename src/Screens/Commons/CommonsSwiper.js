@@ -5,7 +5,7 @@ import SwiperCard from '~/Components/SwiperCard';
 import {layout, text, font, colors} from '~/Theme';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import {CommonActions} from '@react-navigation/native';
-import {string, object, number, func, shape} from 'prop-types';
+import {string, object, number} from 'prop-types';
 import {observer, inject} from 'mobx-react';
 import {commonStorePropTypes} from '~/Types/propTypes';
 

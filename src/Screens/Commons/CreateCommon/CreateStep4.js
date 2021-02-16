@@ -43,6 +43,7 @@ const CreateStep4 = ({
   rootStore,
 }) => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  const authStore = rootStore.authStore;
 
   const [newCommonAddress, setNewCommonAddress] = useState(false);
   const generalInfoFormStore = formStores.generalInfoFormStore;
