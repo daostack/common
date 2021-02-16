@@ -18,7 +18,7 @@ export const axiosClient = (function () {
   return {
     getDiscussionClient: () => {
       if (!commonClient.instance) {
-        commonClient.instance = createDiscussionInstance();
+        createDiscussionInstance();
       }
       return commonClient.instance;
     },
