@@ -20,7 +20,9 @@ export const CountrySelectField = ({onChange, ...props}) => {
   const countries = countryList.filter((country) => country.payin);
 
   const [ selectedCountryIndex, setSelectedCountryIndex ] = React.useState(getCountryIndex(countries, RNLocalize.getCountry()));
-  const [ selectedCountry, setSelectedCountry ] = React.useState(countries[selectedCountryIndex].value);
+  const [selectedCountryIndex, setSelectedCountryIndex] = React.useState(
+    getCountryIndex(countries, value || RNLocalize.getCountry()),
+  );
 
   // Call the callback with the initial country value
   React.useEffect(() => {

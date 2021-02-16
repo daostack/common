@@ -12,6 +12,7 @@ export const userInfoFields = [
   'updatedAt',
   'createdAt',
   'intro',
+  'country',
 ];
 export class UserModel extends BaseModel<IUserEntity> {
   @observable
@@ -28,6 +29,9 @@ export class UserModel extends BaseModel<IUserEntity> {
 
   @observable
   lastName: string = '';
+
+  @observable
+  country: string = '';
 
   @observable
   createdAt: Date | null = null;
