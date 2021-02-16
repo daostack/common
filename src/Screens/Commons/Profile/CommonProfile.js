@@ -31,6 +31,7 @@ import CommonHeader from '~/Components/Commons/CommonHeader';
 import {calcIsFundingStage, LAYOUT_ANIMATION_CONFIG} from '~/Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '~/Services/ProposalService';
+import ModerationService from '~/Services/ModerationService';
 import CountDown from 'react-native-countdown-component';
 import {
   Placeholder,
@@ -47,6 +48,7 @@ import {BlurView, Hide} from '~/Components';
 import Logger from '~/Services/Logger';
 import moment from 'moment';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
+import * as ModerationForm from '~/Components/Forms/ModerationForm';
 
 import {
   IntroduceYourselfFormStore,
@@ -78,7 +80,7 @@ const CommonProfile = ({
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
   const window = Dimensions.get('window');
-  const moderationFormStore = new ModerationFormStore();
+  const [moderationFormStore] = useState(new ModerationFormStore());
 
   const {refreshFeed} = params;
 
@@ -236,7 +238,7 @@ const CommonProfile = ({
         navigation={navigation}
         commonId={currCommon.id}
         hasPermission={hasPermission}
-        openCommonOptions={() => openCommonOptions(true)}
+        openCommonOptions={(discussionId) => openCommonOptions(discussionId, true)}
       />
     </View>
   );
@@ -257,7 +259,7 @@ const CommonProfile = ({
           type: PROPOSAL_TYPE.FundingRequest,
         }}
         hasPermission={hasPermission}
-        openCommonOptions={() => openCommonOptions(true)}
+        openCommonOptions={(proposalId) => openCommonOptions(proposalId, true)}
       />
 
       {isMember && (
@@ -415,7 +417,11 @@ const CommonProfile = ({
       : navigateTo('Edit Rules');
   };
 
-  const openCommonOptions = (moderation = false) => {
+  // consider adding itemId to edit (?)
+  const openCommonOptions = (itemId = '', moderation = false) => {
+    if (moderation) {
+      moderationFormStore.registerFormField(ModerationForm.ITEM_ID, 'string', itemId);
+    }
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
@@ -426,10 +432,11 @@ const CommonProfile = ({
     );
   };
 
-  const onHideContent = () => {
+  const onHideContent = async () => {
     setShowModerationModal(false);
     bottomSheetStore.hideBottomSheet();
-
+    await ModerationService.getInstance().hide(moderationFormStore.getFormFieldsJson(), commonId, 'discussion');
+    moderationFormStore.clearFormStoreState();
   };
 
   const moderationModal = () => (

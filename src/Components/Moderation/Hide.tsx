@@ -6,7 +6,7 @@ import TextInputField from '~/Components/FormFields/TextInputField';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 const {width} = Dimensions.get('window');
 
-const problems = [['Nudity', 'Violence', 'Harassment'], ['False News', 'Spam', 'Hate speech'], ['Something Else']];
+const reasons = [['Nudity', 'Violence', 'Harassment'], ['False News', 'Spam', 'Hate speech'], ['Something Else']];
 
 const Hide: React.FC<InferProps<typeof Hide.propTypes>> = ({
   title,
@@ -16,7 +16,7 @@ const Hide: React.FC<InferProps<typeof Hide.propTypes>> = ({
 }) => {
   const [chosen, setChosen] = useState(['']);
   const [isValid, setIsValid] = useState(false);
-  formStore.registerFormField(ModerationForm.PROBLEM, 'required', []);
+  formStore.registerFormField(ModerationForm.REASONS, 'required', []);
 
   const problemButton = (chosenProblem: string) => (
     <TouchableOpacity key={chosenProblem} style={{...styles.problemButton, backgroundColor: chosen.includes(chosenProblem) ? colors.mainBlue : colors.white}}
@@ -26,7 +26,7 @@ const Hide: React.FC<InferProps<typeof Hide.propTypes>> = ({
   );
 
   const onProblemPressed = (chosenProblem: string) => {
-    let currProblems = `${formStore.getFormField(ModerationForm.PROBLEM, false)?.value}` || [];
+    let currProblems = `${formStore.getFormField(ModerationForm.REASONS, false)?.value}` || [];
     if (currProblems.length !== 0) {
       currProblems = currProblems.split(',');
       if (!currProblems.includes(chosenProblem)) {
@@ -38,7 +38,7 @@ const Hide: React.FC<InferProps<typeof Hide.propTypes>> = ({
       currProblems.push(chosenProblem);
     }
     setChosen(currProblems);
-    formStore.fieldChanged(ModerationForm.PROBLEM, currProblems.toString(), false);
+    formStore.fieldChanged(ModerationForm.REASONS, currProblems.toString(), false);
     setIsValid(formStore.isFormChanged() && formStore.isFormValid(true));
   };
 
@@ -51,8 +51,8 @@ const Hide: React.FC<InferProps<typeof Hide.propTypes>> = ({
           <Text style={styles.action} >Please select a problem to continue</Text>
           <Text style={styles.explanation} >You can hide the post after selecting a problem</Text>
           <View style={{paddingVertical: 20}} >
-            {problems.map((problemRow) => <View style={{flexDirection: 'row'}}>
-              {problemRow.map((problem) => problemButton(problem) )}
+            {reasons.map((reasonRow) => <View style={{flexDirection: 'row'}}>
+              {reasonRow.map((reason) => problemButton(reason) )}
             </View> )}
           </View>
           <View style={styles.divider} />

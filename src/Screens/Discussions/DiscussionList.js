@@ -53,7 +53,7 @@ const DiscussionList = ({commonId, navigation, hasPermission, openCommonOptions}
               commonId={commonId}
               navigation={navigation}
               hasPermission={hasPermission}
-              openCommonOptions={openCommonOptions}
+              openCommonOptions={() => openCommonOptions(item.id)}
             />
           )}
           extraData={listRef}
