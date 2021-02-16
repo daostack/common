@@ -217,7 +217,7 @@ const Discussions = ({
           setInputText('');
           await DiscussionService.getInstance().updateDiscussionLastMessage(
             discussionId,
-            currentUser.uid
+            currentUser.uid,
           );
         })
         .catch((error) => {
@@ -490,12 +490,7 @@ const Discussions = ({
               </TouchableOpacity>
             </View>
           ) : (
-            <Text
-              style={{
-                ...styles.joinCommonText,
-                width,
-                textAlign: 'center',
-              }}>
+            <Text style={styles.joinCommonText}>
               {'Only members can send messages'}
             </Text>
           )}
@@ -712,6 +707,8 @@ const styles = StyleSheet.create({
   },
   joinCommonText: {
     ...text.textFieldplaceholder,
+    width,
+    textAlign: 'center',
     color: colors.greySubtitle,
     paddingTop: sizeS,
     paddingBottom: sizeXL,
