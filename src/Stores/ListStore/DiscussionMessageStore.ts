@@ -60,9 +60,6 @@ export default class DiscussionMessageStore extends ListStore<DiscussionMessage>
   _updateDiscussionMessageList = (
     updatedDiscussionList: IFirebaseSnapshot<IDiscussionMessageEntity>,
   ) => {
-    console.log('updatedDiscussionList -> ', updatedDiscussionList);
-    console.log('ONLY CHANGES -> ', updatedDiscussionList.docChanges());
-
     runInAction(() => {
       this.isLoading = true;
     });
