@@ -531,6 +531,8 @@ const styles = StyleSheet.create({
   },
   joinCommonText: {
     ...text.textFieldplaceholder,
+    width,
+    textAlign: 'center',
     color: colors.greySubtitle,
     paddingTop: sizeS,
     paddingBottom: sizeXL,
