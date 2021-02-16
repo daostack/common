@@ -6,6 +6,7 @@ import {
   StyleSheet,
   View,
   Text,
+  Platform,
 } from 'react-native';
 import EditProfileForm from '~/Components/Forms/EditProfileForm';
 import {colors, text, layout} from '~/Theme';
@@ -77,6 +78,15 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
   };
 
   const onFormClose = () => {
+    const isIos = Platform.OS === 'ios';
+    if (
+      isIos &&
+      route.params.isFirstOpening &&
+      !editProfileFormStore.isFormValid()
+    ) {
+      return;
+    }
+
     if (editProfileFormStore.isFormChanged()) {
       bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
         navigation: navigation,
