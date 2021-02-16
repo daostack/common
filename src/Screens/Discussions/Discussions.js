@@ -11,180 +11,56 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Keyboard,
-  SectionList,
   Platform,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '~/Theme';
-import DiscussionMessage from './DiscussionMessage';
-import firestore from '@react-native-firebase/firestore';
 import Toast from '~/Util/Toast.js';
 import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
-import BottomSheetModal from '~/Components/BottomSheetModal';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import ImageView from 'react-native-image-viewing';
 import {db} from '../../Firebase';
-import logger from '../../Services/Logger';
 import {func, object, shape, string} from 'prop-types';
-import DiscussionService from '../../Services/DiscussionService';
 import Hyperlink from 'react-native-hyperlink';
+import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
+import {updateDiscussionLastMessage} from '~/Services/ListServices/DiscussionListService';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
+  commonStore,
+  discussionStore,
   userStore,
   bottomSheetStore,
   userListStore,
   navigation,
-  commonStore,
   route: {
     params: {commonId, discussionId, data},
   },
 }) => {
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
-  const chatRef = useRef(null);
-  let listRef = useRef([]);
-
-  const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
-  const [followState, setFollowState] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isSending, setIsSending] = useState(false);
-  const [inputText, setInputText] = useState(null);
-  const [msgGroup, setMsgGroup] = useState([]);
-  const [showMenu, setShowMenu] = useState(false);
-  const [isMember, setIsMember] = useState(false);
-  const [dataState, setData] = useState(data);
-  const [inputHeight, setInputHeight] = useState(false);
 
   const currentUser = auth().currentUser;
+  const dataState = discussionStore.getDiscussionById(discussionId);
   const user = userListStore.getUserById(dataState.ownerId);
 
-  useEffect(() => {
-    const currentDao = commonStore.getCommonById(commonId);
-    const isCurrMember =
-      userStore.userInfo && userStore.isDaoMember(currentDao?.members);
-    setIsMember(isCurrMember);
-  }, []);
+  const [inputText, setInputText] = useState(null);
+  const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [inputHeight, setInputHeight] = useState(false);
 
-  const hideMenu = () => {
-    setShowMenu(false);
-  };
+  const isMember =
+    userStore.userInfo &&
+    userStore.isDaoMember(commonStore.getCommonById(commonId)?.members);
 
-  useEffect(() => {
-    let uid = null;
-    if (currentUser) {
-      uid = currentUser.uid;
-    }
-    const unsubscribe = db
-      .collection('discussion')
-      .doc(discussionId)
-      .onSnapshot((snapshot) => {
-        if (!snapshot.exists) {
-          return;
-        }
-        setData({id: snapshot.id, ...snapshot.data()});
-        const follower = snapshot.data().follower;
-        if (follower && uid) {
-          const state = follower.includes(uid);
-          setFollowState(state);
-        }
-      });
-    return unsubscribe;
-  }, [commonId, discussionId, currentUser]);
-
-  useEffect(() => {
-    const unsubscribe = db
-      .collection('discussionMessage')
-      .where('discussionId', '==', discussionId)
-      .orderBy('createTime', 'desc')
-      // .startAt(0)
-      // .limit(25)
-      .onSnapshot(
-        (snapshot) => {
-          if (snapshot.docChanges().length !== 0) {
-            const newList = snapshot.docChanges().map(({doc}) => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-            const msgList = [...newList, ...listRef.current];
-            // _.union(listRef.current, newList);
-            listRef.current = msgList;
-            logger.log('newMessage', newList);
-            const groupDate = msgList
-              .map((msg) => ({
-                date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
-                data: msg,
-              }))
-              .reduce((acc, curr) => {
-                var key = curr.date;
-                let el = acc.find((x) => x && x.date === key);
-                if (el) {
-                  el.data.push(curr.data);
-                } else {
-                  acc.push({
-                    date: key,
-                    data: [curr.data],
-                  });
-                }
-                return acc;
-              }, []);
-            setMsgGroup(groupDate);
-          }
-        },
-        (error) => logger.error(error),
-      );
-
-    return unsubscribe;
-  }, [commonId, dataState.id]);
-
-  // const openOptionsMenu = () => {
-  //   if (!currentUser) {
-  //     showLoginScreen();
-  //     return;
-  //   }
-  //   props.bottomSheetStore.showBottomSheet(
-  //     BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS,
-  //   );
-  // };
+  useEffect(() => {}, [commonId, discussionId, currentUser]);
 
   const showLoginScreen = () => {
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN);
-  };
-
-  const followDiscussion = async () => {
-    let uid = null;
-    if (currentUser) {
-      uid = currentUser.uid;
-    } else {
-      showLoginScreen();
-    }
-
-    db.collection('discussion')
-      .doc(discussionId)
-      .update({
-        follower: followState
-          ? firestore.FieldValue.arrayRemove(uid)
-          : firestore.FieldValue.arrayUnion(uid),
-      })
-      .then(() => {
-        logger.log('Follow State Change');
-        setShowMenu(false);
-      });
-  };
-
-  const handleLayoutLoaded = ({nativeEvent}) => {
-    try {
-      // Once the list is loaded, measure it and scroll the user to the end of it
-      scrollRef.current.scrollTo({
-        y: nativeEvent.layout.height,
-        animated: true,
-      });
-    } catch (error) {
-      logger.error('HandleLayoutLoaded error: ', error);
-    }
   };
 
   const sendMessageToDiscussion = async () => {
@@ -215,10 +91,7 @@ const Discussions = ({
         .then(async (msg) => {
           Keyboard.dismiss();
           setInputText('');
-          await DiscussionService.getInstance().updateDiscussionLastMessage(
-            discussionId,
-            currentUser.uid
-          );
+          await updateDiscussionLastMessage(discussionId, currentUser.uid);
         })
         .catch((error) => {
           Toast.error(error);
@@ -407,51 +280,22 @@ const Discussions = ({
     <SafeAreaView style={styles.safeView}>
       {header()}
       <ScrollView style={{flex: 1, paddingBottom: 30}} ref={scrollRef}>
-        {msgGroup.length > 0 ? (
-          <SectionList
-            inverted
-            ref={chatRef}
-            sections={msgGroup}
-            keyExtractor={(x) => x.id}
-            stickySectionHeadersEnabled={true}
-            contentContainerStyle={{
-              paddingTop: 100,
-            }}
-            renderItem={(x) => (
-              <DiscussionMessage data={x.item} showCurrentUserAvatar />
-            )}
-            renderSectionFooter={({section: {date}}) => (
-              <Text style={styles.timeHeader}>
-                {moment().isSame(date, 'day') ? 'Today' : date}
-              </Text>
-            )}
-            onLayout={handleLayoutLoaded}
-          />
-        ) : (
-          <View style={styles.emptyContainer}>
-            <Image
-              source={require('../../Assets/empty-discussion.png')}
-              style={{width: 240, height: 240}}
-            />
-
-            <Text style={styles.emptyTitle}> No comments yet</Text>
-            <Text style={styles.emptyBody}>
-              Have any thoughts? Share them with other members by adding the
-              first comment.
-            </Text>
-          </View>
-        )}
+        <DiscussionMessagesList
+          discussionId={discussionId}
+          inputRef={inputRef}
+          scrollViewRef={scrollRef}
+        />
       </ScrollView>
 
-      <KeyboardAvoidingView
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          flex: 1,
-          color: '#fbfdff',
-        }}>
-        <View style={styles.inputContainer}>
-          {isMember ? (
+      {isMember ? (
+        <KeyboardAvoidingView
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            flex: 1,
+            color: '#fbfdff',
+          }}>
+          <View style={styles.inputContainer}>
             <View
               style={[styles.input, {height: Math.max(35, inputHeight + 50)}]}>
               <TextInput
@@ -489,38 +333,15 @@ const Discussions = ({
                 />
               </TouchableOpacity>
             </View>
-          ) : (
-            <Text style={{...styles.joinCommonText}}>
-              {'Only members can send messages'}
-            </Text>
-          )}
+          </View>
+        </KeyboardAvoidingView>
+      ) : (
+        <View style={styles.input}>
+          <Text style={{...styles.joinCommonText}}>
+            Only members can send messages
+          </Text>
         </View>
-      </KeyboardAvoidingView>
-
-      <BottomSheetModal
-        isVisible={showMenu}
-        onClose={hideMenu}
-        style={styles.modalStyle}>
-        <View style={styles.bottomSheet}>
-          <Text style={styles.sheetTitle}>Options</Text>
-          <TouchableOpacity onPress={() => followDiscussion()}>
-            <View style={styles.sheetButton}>
-              <Icon name="following" color={colors.black} />
-              <View style={{flex: 1}}>
-                <Text style={[styles.sheetText, {color: colors.black}]}>
-                  {followState ? 'Unfollow' : 'Follow'}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.sheetButton}>
-              <Icon name="report" color={colors.against} />
-              <Text style={styles.sheetText}>Report</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </BottomSheetModal>
+      )}
 
       <ImageView
         images={
@@ -536,8 +357,12 @@ const Discussions = ({
 };
 
 Discussions.propTypes = {
-  daoStore: shape({
-    dao: object,
+  discussionStore: shape({
+    getDiscussionById: func,
+  }),
+  discussionMessageStore: shape({}),
+  commonStore: shape({
+    getCommonById: func,
   }),
   userStore: shape({
     userInfo: object,
@@ -557,7 +382,6 @@ Discussions.propTypes = {
   userListStore: shape({
     getUserById: func,
   }),
-  commonStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -707,9 +531,12 @@ const styles = StyleSheet.create({
   },
   joinCommonText: {
     ...text.textFieldplaceholder,
+    width,
+    textAlign: 'center',
     color: colors.greySubtitle,
     paddingTop: sizeS,
     paddingBottom: sizeXL,
+    alignSelf: 'center',
   },
   emptyContainer: {
     flex: 0.8,
@@ -751,6 +578,8 @@ const styles = StyleSheet.create({
 export default inject(
   'userStore',
   'bottomSheetStore',
-  'userListStore',
   'commonStore',
+  'userListStore',
+  'discussionStore',
+  'discussionMessageStore',
 )(observer(Discussions));

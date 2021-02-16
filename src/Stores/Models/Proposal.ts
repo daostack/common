@@ -130,7 +130,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
   }
 
   constructor(newProposalInfo: IProposalEntity) {
-    super();
+    super(newProposalInfo);
     this.id = newProposalInfo.id;
     this.createdAt = newProposalInfo.createdAt;
     this.updatedAt = newProposalInfo.updatedAt;

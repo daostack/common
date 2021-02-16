@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 import {
   Text,
   StyleSheet,
@@ -11,81 +11,42 @@ import {layout, text, colors, font} from '~/Theme';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
 import moment from 'moment';
-import {db} from '../../Firebase';
 import logger from '../../Services/Logger';
 import PropTypes, {string, number, func, shape, arrayOf} from 'prop-types';
 
-const ProposalDiscussion = ({
+const DiscussionMessagesList = ({
   proposal,
-  proposalId,
+  discussionId,
   scrollViewRef,
   userListStore,
+  discussionMessageStore,
 }) => {
   const chatRef = useRef(null);
-  const [msgGroups, setMsgGroups] = useState([]);
+  const msgGroups = discussionMessageStore
+    .getDiscussionMessagesByDiscussionId(discussionId)
+    .map((msg) => ({
+      date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
+      data: msg,
+    }))
+    .reduce((acc, curr) => {
+      var key = curr.date;
+      let el = acc.find((x) => x && x.date === key);
+      if (el) {
+        el.data.push(curr.data);
+      } else {
+        acc.push({
+          date: key,
+          data: [curr.data],
+        });
+      }
+      return acc;
+    }, []);
 
-  const setMsgGroup = (msgGroup) => {
-    setMsgGroups(msgGroup);
-
-    setTimeout(() => {
-      scrollViewRef.current.scrollToEnd({
-        animated: true,
-      });
-    }, 150);
-  };
-
-  let listRef = useRef([]);
-  useEffect(() => {
-    const unsubscribe = db
-      .collection('discussionMessage')
-      .where('discussionId', '==', proposalId)
-      .orderBy('createTime', 'desc')
-      // .startAt(0)
-      // .limit(25)
-      .onSnapshot(
-        (snapshot) => {
-          if (snapshot.docChanges().length !== 0) {
-            const newList = snapshot.docChanges().map(({doc}) => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-            const msgList = [...newList, ...listRef.current];
-            // _.union(listRef.current, newList);
-            listRef.current = msgList;
-            logger.log('newMessage', newList);
-            const groupDate = msgList
-              .map((msg) => ({
-                date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
-                data: msg,
-              }))
-              .reduce((acc, curr) => {
-                var key = curr.date;
-                let el = acc.find((x) => x && x.date === key);
-                if (el) {
-                  el.data.push(curr.data);
-                } else {
-                  acc.push({
-                    date: key,
-                    data: [curr.data],
-                  });
-                }
-                return acc;
-              }, []);
-
-            setMsgGroup(groupDate);
-
-            chatRef.current.scrollToLocation({
-              animated: true,
-              itemIndex: msgList.length + groupDate.length - 1,
-            });
-          }
-        },
-        (error) => logger.error(error),
-      );
-    return () => {
-      unsubscribe();
-    };
-  }, [proposalId]);
+  setTimeout(() => {
+    scrollViewRef.current.scrollToEnd({
+      animated: true,
+    });
+  }, 150);
 
   const getOutcomeForMessage = async (proposalObj, message) => {
     const user = userListStore.getUserById(message.ownerId);
@@ -143,7 +104,7 @@ const ProposalDiscussion = ({
   );
 };
 
-ProposalDiscussion.propTypes = {
+DiscussionMessagesList.propTypes = {
   proposal: shape({
     votes: arrayOf(
       shape({
@@ -152,12 +113,16 @@ ProposalDiscussion.propTypes = {
       }),
     ),
   }),
-  proposalId: string,
+  discussionId: string,
   scrollViewRef: PropTypes.any,
   onFirstScrollDown: func,
   onScrollRefresh: func,
   userListStore: shape({
     getUserById: func,
+  }),
+  discussionMessageStore: shape({
+    subscribeToProposalDiscussions: func,
+    getDiscussionMessagesByDiscussionId: func,
   }),
 };
 
@@ -192,4 +157,5 @@ const styles = StyleSheet.create({
 export default inject(
   'userStore',
   'userListStore',
-)(observer(ProposalDiscussion));
+  'discussionMessageStore',
+)(observer(DiscussionMessagesList));

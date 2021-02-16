@@ -20,7 +20,7 @@ import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
-import ProposalDiscussion from './ProposalDiscussion';
+import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
@@ -62,6 +62,7 @@ const ProposalScreen = ({
     params: {proposalId, tabIndex = 0},
   },
   userListStore,
+  discussionMessageStore,
   commonStore,
   proposalStore,
 }) => {
@@ -100,6 +101,17 @@ const ProposalScreen = ({
   const VOTE_APPROVE = 'approved';
   const VOTE_REJECT = 'rejected';
   let currTabViewScroll = 0;
+
+  useEffect(() => {
+    const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
+      proposalId,
+    );
+
+    return () => {
+      unsubscribeFromProposalDiscussionMessages &&
+        unsubscribeFromProposalDiscussionMessages();
+    };
+  }, [proposalId]);
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const proposalCommon = commonStore.getCommonById(proposalInfo.commonId);
@@ -217,7 +229,7 @@ const ProposalScreen = ({
       viewStyle = {...viewStyle, borderBottomWidth: 0};
     }
 
-    return (
+    return isMember || isProposer ? (
       <KeyboardAvoidingView
         style={{
           position: 'absolute',
@@ -226,48 +238,40 @@ const ProposalScreen = ({
           color: '#fbfdff',
         }}>
         <View style={viewStyle}>
-          {isMember || isProposer ? (
-            <View style={styles.inputBorder}>
-              <TextInput
-                ref={inputRef}
-                editable={true}
-                fontSize={15}
-                multiline
-                placeholder="What do you think?"
-                onChangeText={(currText) => setInputText(currText)}
-                onContentSizeChange={(event) => {
-                  setInputHeight(event.nativeEvent.contentSize.height);
-                }}
-                style={{
-                  flex: 1,
-                  padding: 0,
-                  marginHorizontal: 10,
-                  maxHeight: 110,
-                  height: Math.max(35, inputHeight + 10),
-                }}
+          <View style={styles.inputBorder}>
+            <TextInput
+              ref={inputRef}
+              editable={true}
+              fontSize={15}
+              multiline
+              placeholder="What do you think?"
+              onChangeText={(currText) => setInputText(currText)}
+              onContentSizeChange={(event) => {
+                setInputHeight(event.nativeEvent.contentSize.height);
+              }}
+              style={{
+                flex: 1,
+                padding: 0,
+                marginHorizontal: 10,
+                maxHeight: 110,
+                height: Math.max(35, inputHeight + 10),
+              }}
+            />
+            <TouchableOpacity
+              onPress={sendMessageToDiscussion}
+              style={{
+                paddingRight: 15,
+                justifyContent: 'center',
+              }}>
+              <Icon
+                name="send-message"
+                size={20}
+                color={
+                  inputText && inputText.trim() ? colors.mainBlue : colors.grey3
+                }
               />
-              <TouchableOpacity
-                onPress={sendMessageToDiscussion}
-                style={{
-                  paddingRight: 15,
-                  justifyContent: 'center',
-                }}>
-                <Icon
-                  name="send-message"
-                  size={20}
-                  color={
-                    inputText && inputText.trim()
-                      ? colors.mainBlue
-                      : colors.grey3
-                  }
-                />
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <Text style={{...styles.joinCommonText}}>
-              Only members or proposal creators can send messages
-            </Text>
-          )}
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View
@@ -277,6 +281,12 @@ const ProposalScreen = ({
           }}
         />
       </KeyboardAvoidingView>
+    ) : (
+      <View style={viewStyle}>
+        <Text style={{...styles.joinCommonText}}>
+          Only members or proposal creators can send messages
+        </Text>
+      </View>
     );
   };
 
@@ -892,8 +902,8 @@ const ProposalScreen = ({
               )}
 
               {index === 1 && (
-                <ProposalDiscussion
-                  proposalId={proposalId || proposalInfo.id}
+                <DiscussionMessagesList
+                  discussionId={proposalId || proposalInfo.id}
                   proposal={proposalInfo}
                   inputRef={inputRef}
                   scrollViewRef={scrollViewRef}
@@ -944,6 +954,9 @@ ProposalScreen.propTypes = {
   }),
   userListStore: shape({
     getUserById: func,
+  }),
+  discussionMessageStore: shape({
+    subscribeToProposalDiscussionMessages: func,
   }),
   commonStore: shape({
     getCommonById: func,
@@ -1078,8 +1091,7 @@ const styles = StyleSheet.create({
     color: colors.greySubtitle,
     marginTop: sizeS,
     marginBottom: sizeM,
-    width: Dimensions.get('window').width * 0.9,
-    textAlign: 'center',
+    alignSelf: 'center',
   },
 });
 
@@ -1087,6 +1099,7 @@ export default inject(
   'userStore',
   'userListStore',
   'bottomSheetStore',
+  'discussionMessageStore',
   'commonStore',
   'proposalStore',
 )(observer(ProposalScreen));
