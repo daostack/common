@@ -1,7 +1,33 @@
 import axios from 'axios';
-import {commonsUrl} from '~/Config';
+import {commonsUrl, discussionsUrl} from '~/Config';
 
-export const axiosClient = (function () {
+export const axiosDiscussionClient = (function () {
+  let commonClient = {
+    endpoints: {
+      create: '/create',
+      update: '/update',
+    },
+  };
+
+  const createDiscussionInstance = () => {
+    commonClient.instance = axios.create({
+      baseURL: discussionsUrl(),
+      timeout: 1000000,
+    });
+  };
+
+  return {
+    getDiscussionClient: () => {
+      if (!commonClient.instance) {
+        createDiscussionInstance();
+      }
+      return commonClient.instance;
+    },
+    getDiscussionEndpoints: () => commonClient.endpoints,
+  };
+})();
+
+export const axiosCommonClient = (function () {
   let commonClient = {
     endpoints: {
       create: '/create',
@@ -12,14 +38,13 @@ export const axiosClient = (function () {
   const createCommonInstance = () => {
     commonClient.instance = axios.create({
       baseURL: commonsUrl(),
-      timeout: 1000000,
     });
   };
 
   return {
     getCommonClient: () => {
       if (!commonClient.instance) {
-        commonClient.instance = createCommonInstance();
+        createCommonInstance();
       }
       return commonClient.instance;
     },

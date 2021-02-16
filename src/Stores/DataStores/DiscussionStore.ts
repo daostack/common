@@ -1,5 +1,5 @@
 import {observable, runInAction} from 'mobx';
-import ListStore from './BaseStore';
+import BaseStore from './BaseStore';
 import {
   subscribeToCommonDiscussions,
   subscribeToProposalDiscussions,
@@ -9,7 +9,7 @@ import RootStore from '../RootStore';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {Discussion} from '../Models/Discussion';
 
-export default class DiscussionStore extends ListStore<Discussion> {
+export default class DiscussionStore extends BaseStore<Discussion> {
   @observable
   isLoading: boolean;
 

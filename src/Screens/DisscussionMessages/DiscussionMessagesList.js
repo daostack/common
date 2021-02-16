@@ -13,14 +13,17 @@ import {observer, inject} from 'mobx-react';
 import moment from 'moment';
 import logger from '../../Services/Logger';
 import PropTypes, {string, number, func, shape, arrayOf} from 'prop-types';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const DiscussionMessagesList = ({
   proposal,
   discussionId,
   scrollViewRef,
-  userStore,
-  discussionMessageStore,
+  rootStore,
 }) => {
+  const userStore = rootStore.userStore;
+  const discussionMessageStore = rootStore.discussionMessageStore;
+
   const chatRef = useRef(null);
   const msgGroups = discussionMessageStore
     .getDiscussionMessagesByDiscussionId(discussionId)
@@ -117,13 +120,7 @@ DiscussionMessagesList.propTypes = {
   scrollViewRef: PropTypes.any,
   onFirstScrollDown: func,
   onScrollRefresh: func,
-  userStore: shape({
-    getUserById: func,
-  }),
-  discussionMessageStore: shape({
-    subscribeToProposalDiscussions: func,
-    getDiscussionMessagesByDiscussionId: func,
-  }),
+  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -154,8 +151,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'authStore',
-  'userStore',
-  'discussionMessageStore',
-)(observer(DiscussionMessagesList));
+export default inject('rootStore')(observer(DiscussionMessagesList));

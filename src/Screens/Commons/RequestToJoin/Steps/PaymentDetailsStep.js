@@ -21,6 +21,7 @@ import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {rootStorePropTypes} from '~/Types/propTypes';
 
+import {escapeUrl} from '~/Util';
 const {width} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
@@ -50,6 +51,8 @@ const PaymentDetailsStep = ({
           ...paymentFormStore.getFormFieldsJson(),
           ...billingDetailsFormStore.getFormFieldsJson(),
         };
+
+        escapeUrl(formData.links);
 
         const data = {
           description: formData.intro,

@@ -1,5 +1,5 @@
 import {observable, runInAction} from 'mobx';
-import ListStore from './BaseStore';
+import BaseStore from './BaseStore';
 import {
   subscribeToDiscussionsMessages,
   subscribeToProposalDiscussionMessages,
@@ -13,7 +13,7 @@ import RootStore from '../RootStore';
 import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {DiscussionMessage} from '../Models/DiscussionMessage';
 
-export default class DiscussionMessageStore extends ListStore<DiscussionMessage> {
+export default class DiscussionMessageStore extends BaseStore<DiscussionMessage> {
   @observable
   isLoading: boolean;
 
@@ -60,9 +60,6 @@ export default class DiscussionMessageStore extends ListStore<DiscussionMessage>
   _updateDiscussionMessageList = (
     updatedDiscussionList: IFirebaseSnapshot<IDiscussionMessageEntity>,
   ) => {
-    console.log('updatedDiscussionList -> ', updatedDiscussionList);
-    console.log('ONLY CHANGES -> ', updatedDiscussionList.docChanges());
-
     runInAction(() => {
       this.isLoading = true;
     });

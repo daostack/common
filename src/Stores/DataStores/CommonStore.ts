@@ -1,5 +1,5 @@
 import {computed, observable, runInAction} from 'mobx';
-import ListStore from './BaseStore';
+import BaseStore from './BaseStore';
 import {
   subscribeToAllCommons,
   updateCommon,
@@ -11,7 +11,7 @@ import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import {Proposal} from '../Models/Proposal';
 import {isDaoMemberByUserId} from '~/Util';
-export default class CommonStore extends ListStore<Common> {
+export default class CommonStore extends BaseStore<Common> {
   @observable
   isLoading: boolean;
 

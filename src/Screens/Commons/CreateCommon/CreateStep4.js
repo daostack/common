@@ -23,6 +23,7 @@ import {object, shape} from 'prop-types';
 import DaoService from '~/Services/DaoService';
 import CommonImage from '~/Components/Commons/CommonImage';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
+import {escapeUrl} from '~/Util';
 
 import {colors, font, text, layout, sizeM, sizeL} from '~/Theme';
 import logger from '~/Services/Logger';
@@ -100,7 +101,7 @@ const CreateStep4 = ({
         name: data.name,
         image: data.image,
         rules: data.rules,
-        links: data.links,
+        links: escapeUrl(data.links),
         byline: data.byline,
         description: data.description,
         contributionType: data.contributionType,
