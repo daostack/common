@@ -50,7 +50,6 @@ const props = {
     getCommonProposals: func.isRequired,
     getUserProposals: func.isRequired,
   }).isRequired,
-  rootStore: rootStorePropTypes.isRequired,
 };
 
 const ProposalsList: React.FC<InferProps<typeof props>> = observer(
@@ -236,4 +235,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(ProposalsList);
+export default inject('proposalStore')(ProposalsList);
