@@ -136,7 +136,7 @@ class TextInputField extends React.Component {
       validation
         ? validation.formStore
             .getFormField(validation.name, validation.multiName)
-            .value?.toString()
+            ?.value?.toString()
         : value;
 
     return (

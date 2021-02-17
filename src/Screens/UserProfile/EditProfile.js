@@ -45,6 +45,7 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
       let authData = filterObjectByKeys(changedFields, [
         EditProfileForm.FIELD_FIRST_NAME,
         EditProfileForm.FIELD_LAST_NAME,
+        EditProfileForm.FIELD_EMAIL,
         EditProfileForm.FIELD_PROFILE_IMAGE,
       ]);
       let publicData = filterObjectByKeys(changedFields, [
