@@ -1,12 +1,6 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {observer, inject} from 'mobx-react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Dimensions,
-} from 'react-native';
+import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
 import {colors, font, text as textjs} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
@@ -17,7 +11,6 @@ const {width} = Dimensions.get('window');
 
 const DiscussionMessage = ({
   data: {ownerId, text, createTime},
-  outcome,
   showCurrentUserAvatar,
   userListStore,
 }) => {
@@ -26,16 +19,7 @@ const DiscussionMessage = ({
     currentUserUid = auth().currentUser.uid;
   }
 
-  const [outcomeState, setOutcomeState] = React.useState();
   const onwerInfo = userListStore.getUserById(ownerId);
-
-  useEffect(() => {
-    if (typeof outcome === 'object') {
-      outcome.then((out) => setOutcomeState(out));
-
-      console.log(typeof outcomeState);
-    }
-  }, [outcome]);
 
   return (
     <View style={styles.container}>

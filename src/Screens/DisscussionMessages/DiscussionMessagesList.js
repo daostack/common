@@ -15,10 +15,8 @@ import logger from '../../Services/Logger';
 import PropTypes, {string, number, func, shape, arrayOf} from 'prop-types';
 
 const DiscussionMessagesList = ({
-  proposal,
   discussionId,
   scrollViewRef,
-  userListStore,
   discussionMessageStore,
 }) => {
   const chatRef = useRef(null);
@@ -48,11 +46,6 @@ const DiscussionMessagesList = ({
     });
   }, 150);
 
-  const getOutcomeForMessage = async (proposalObj, message) => {
-    const user = userListStore.getUserById(message.ownerId);
-    return proposalObj?.votes.find((y) => y.voterId === user.uid).outcome === 1;
-  };
-
   return (
     <View
       style={{flex: 1, backgroundColor: colors.paleGrey, ...layout.content}}>
@@ -68,11 +61,7 @@ const DiscussionMessagesList = ({
             width: Dimensions.get('screen').width * 0.9,
           }}
           renderItem={(x) => (
-            <DiscussionMessage
-              data={x.item}
-              showCurrentUserAvatar
-              outcome={getOutcomeForMessage(proposal, x.item)}
-            />
+            <DiscussionMessage data={x.item} showCurrentUserAvatar />
           )}
           onScrollToIndexFailed={(info) => {
             logger.error('Something bad happened: ', info);
