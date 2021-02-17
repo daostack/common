@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,7 +14,6 @@ import Icon from '~/Assets/iconfont/Icon';
 import moment from 'moment';
 import NotificationService from '~/Services/NotificationService';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import {db} from '~/Firebase';
 import logger from '~/Services/Logger';
 import {CommonActions} from '@react-navigation/native';
 
@@ -26,11 +25,14 @@ const DiscussionCard = ({
   navigation,
   bottomSheetStore,
   userListStore,
+  discussionMessageStore,
 }) => {
   //when will data.owner be not undefined?
   const discussionId = data.id;
   const user = userListStore.getUserById(data.ownerId);
-  const [msgCount, setMsgCount] = useState(0);
+  const msgCount =
+    discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
+      ?.length || 0;
 
   const navigateToDiscussion = () => {
     const navigate = CommonActions.navigate({
@@ -43,19 +45,6 @@ const DiscussionCard = ({
     });
     navigation.dispatch(navigate);
   };
-
-  useEffect(() => {
-    const unsubscribe = db
-      .collection('discussionMessage')
-      .where('discussionId', '==', discussionId)
-      .onSnapshot((snapshot) => {
-        setMsgCount(snapshot.docs.length);
-      });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [discussionId]);
 
   const follow = () => {
     logger.log('Follow user id', data.ownerId);
@@ -159,6 +148,9 @@ DiscussionCard.propTypes = {
   bottomSheetStore: object.isRequired,
   userListStore: shape({
     getUserById: func,
+  }),
+  discussionMessageStore: shape({
+    getDiscussionMessagesByDiscussionId: func,
   }),
 };
 
@@ -289,4 +281,5 @@ const styles = StyleSheet.create({
 export default inject(
   'bottomSheetStore',
   'userListStore',
+  'discussionMessageStore',
 )(observer(DiscussionCard));
