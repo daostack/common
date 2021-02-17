@@ -12,18 +12,14 @@ import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
 import moment from 'moment';
 import logger from '../../Services/Logger';
-import PropTypes, {string, number, func, shape, arrayOf} from 'prop-types';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import PropTypes, {string} from 'prop-types';
+import {discussionStorePropTypes} from '~/Types/propTypes';
 
 const DiscussionMessagesList = ({
-  proposal,
   discussionId,
   scrollViewRef,
-  rootStore,
+  discussionMessageStore,
 }) => {
-  const userStore = rootStore.userStore;
-  const discussionMessageStore = rootStore.discussionMessageStore;
-
   const chatRef = useRef(null);
   const msgGroups = discussionMessageStore
     .getDiscussionMessagesByDiscussionId(discussionId)
@@ -51,11 +47,6 @@ const DiscussionMessagesList = ({
     });
   }, 150);
 
-  const getOutcomeForMessage = async (proposalObj, message) => {
-    const user = userStore.getUserById(message.ownerId);
-    return proposalObj?.votes.find((y) => y.voterId === user.uid).outcome === 1;
-  };
-
   return (
     <View
       style={{flex: 1, backgroundColor: colors.paleGrey, ...layout.content}}>
@@ -71,11 +62,7 @@ const DiscussionMessagesList = ({
             width: Dimensions.get('screen').width * 0.9,
           }}
           renderItem={(x) => (
-            <DiscussionMessage
-              data={x.item}
-              showCurrentUserAvatar
-              outcome={getOutcomeForMessage(proposal, x.item)}
-            />
+            <DiscussionMessage data={x.item} showCurrentUserAvatar />
           )}
           onScrollToIndexFailed={(info) => {
             logger.error('Something bad happened: ', info);
@@ -108,19 +95,9 @@ const DiscussionMessagesList = ({
 };
 
 DiscussionMessagesList.propTypes = {
-  proposal: shape({
-    votes: arrayOf(
-      shape({
-        voter: string,
-        outcome: number,
-      }),
-    ),
-  }),
   discussionId: string,
   scrollViewRef: PropTypes.any,
-  onFirstScrollDown: func,
-  onScrollRefresh: func,
-  rootStore: rootStorePropTypes,
+  discussionMessageStore: discussionStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -151,4 +128,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(observer(DiscussionMessagesList));
+export default inject('discussionMessageStore')(
+  observer(DiscussionMessagesList),
+);
