@@ -82,7 +82,9 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
     if (
       isIos &&
       route.params.isFirstOpening &&
-      !editProfileFormStore.isFormValid()
+      (!editProfileFormStore.isFormValid() ||
+        !userStore.userInfo.firstName ||
+        !userStore.userInfo.lastName)
     ) {
       return;
     }
