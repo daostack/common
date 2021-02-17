@@ -20,7 +20,7 @@ import {
   isTypeFilterJoin,
   isStageFilterHistory,
 } from '~/Stores/DataStores/ProposalStore';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import {proposalStorePropTypes} from '~/Types/propTypes';
 
 const {width, height} = Dimensions.get('window');
 
@@ -46,10 +46,7 @@ const props = {
   isSwiper: bool,
 
   // Injected
-  proposalStore: shape({
-    getCommonProposals: func.isRequired,
-    getUserProposals: func.isRequired,
-  }).isRequired,
+  proposalStore: proposalStorePropTypes.isRequired,
 };
 
 const ProposalsList: React.FC<InferProps<typeof props>> = observer(
