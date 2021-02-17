@@ -4,17 +4,21 @@ import {
   StyleSheet,
 } from 'react-native';
 import React from 'react';
-import {text, layout, colors} from '~/Theme';
+import {text, colors} from '~/Theme';
 import {inject, observer} from 'mobx-react';
-import {object, string, array} from 'prop-types';
+import {string, array} from 'prop-types';
 
 const Bold = ({text, style = {}}) => <Text style={{...styles.bold, ...style}}>{text}</Text>;
 
 const getReasons = (reasonArr) => {
   const last = reasonArr.splice(-1,1);
   return <Text style={styles.text}>
-    {<Bold text={reasonArr.join(', ')}/>}
-    {' '}and{' '}
+    {reasonArr.length !== 0 &&
+      <>
+      <Bold text={reasonArr.join(', ')}/>
+      {' '}and{' '}
+      </>
+    }
     {<Bold text={last.toString()} />}
   </Text>;
 };
@@ -31,7 +35,7 @@ const HiddenContentInfo = ({
       <Text style={styles.title}>Hidden {type}</Text>
       <Text style={styles.text}>This {type} was hidden by  <Bold text={userName}/>at
       {'\n'} <Bold text={date}/> due to {getReasons(reasons)}</Text>
-      {moderatorNote && (<View style={styles.moderatorNoteContainer} >
+      {!!moderatorNote && (<View style={styles.moderatorNoteContainer} >
               <View style={styles.divider} />
               <Bold text={'Moderator note:'} style={{marginBottom: 10, fontSize: 15}}/>
               <Text style={styles.text}>{moderatorNote}</Text>

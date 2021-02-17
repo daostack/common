@@ -18,8 +18,8 @@ const CommonProfileOptions = ({
   //onModerate,
   onAction,
 }) => {
-
-  let actions = ['Hide', 'Hide & Report'];
+  let actions = moderatorOptions.actions || ['Hide', 'Hide & Report'];
+  console.log('moderatorOptions', actions);
 
   (() => {
     if (moderatorOptions) {
@@ -75,14 +75,14 @@ const CommonProfileOptions = ({
             />
             <Text style={text.buttonred}>{actions[0]}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.optionBtn} onPress={() => onAction(actions[1])}>
+          {actions[1] && <TouchableOpacity style={styles.optionBtn} onPress={() => onAction(actions[1])}>
             <Icon
               name="report-16"
               style={layout.marginRightS}
               color={colors.error}
             />
             <Text style={text.buttonred}>{actions[1]}</Text>
-          </TouchableOpacity>
+          </TouchableOpacity>}
         </>
       )}
     </View>
@@ -92,7 +92,7 @@ const CommonProfileOptions = ({
 CommonProfileOptions.propTypes = {
   bottomSheetStore: object,
   //onEdit: func,
-  moderatorOptions: bool,
+  moderatorOptions: object,
   //onModerate: func,
   onAction: func,
 };

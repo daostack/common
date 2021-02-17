@@ -421,6 +421,7 @@ const CommonProfile = ({
 
   const onModerate = (action) => {
     if (action === 'Show') {
+      //await ModerationService.getInstance().show(commonId, 'discussion');
       // TODO un-hide it in database
     } else {
       setShowModerationModal(true);
@@ -446,7 +447,7 @@ const CommonProfile = ({
   const onHideContent = async () => {
     setShowModerationModal(false);
     bottomSheetStore.hideBottomSheet();
-    await ModerationService.getInstance().hide(moderationFormStore.getFormFieldsJson(), commonId, 'discussion');
+    await ModerationService.getInstance().hide('discussion', commonId, moderationFormStore.getFormFieldsJson());
     moderationFormStore.clearFormStoreState();
   };
 
@@ -459,14 +460,10 @@ const CommonProfile = ({
         userName: `${user.firstName || ''} ${user.lastName || ''}`,
         date: moment(moderation.updatedAt.toMillis()).format('MMMM D'),
         reasons: moderation.reasons,
-        moderatorNote: moderation.note,
+        moderatorNote: moderation?.note,
         type,
       },
     );
-  };
-
-  const onBackdropPress = () => {
-    setShowModerationModal(false);
   };
 
   const moderationModal = () => (

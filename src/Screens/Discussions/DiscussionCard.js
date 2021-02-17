@@ -43,6 +43,7 @@ const DiscussionCard = ({
           data: data,
           discussionId: data.id,
           commonId: commonId,
+          hasPermission,
         },
       });
       navigation.dispatch(navigate);

@@ -40,7 +40,7 @@ const Discussions = ({
   navigation,
   commonStore,
   route: {
-    params: {commonId, discussionId, data},
+    params: {commonId, discussionId, data, hasPermission},
   },
 }) => {
   const scrollRef = useRef(null);
@@ -403,6 +403,12 @@ const Discussions = ({
     </>
   );
 
+  const showMessage = (message) => (
+    message.moderation?.flag === 'hidden'
+    ? (message.moderation?.moderator === currentUser.uid ? true : false)
+    : true
+  );
+
   return (
     <SafeAreaView style={styles.safeView}>
       {header()}
@@ -418,7 +424,7 @@ const Discussions = ({
               paddingTop: 100,
             }}
             renderItem={(x) => (
-              <DiscussionMessage data={x.item} showCurrentUserAvatar />
+              showMessage(x.item) &&  <DiscussionMessage data={x.item} showCurrentUserAvatar hasPermission={hasPermission} />
             )}
             renderSectionFooter={({section: {date}}) => (
               <Text style={styles.timeHeader}>

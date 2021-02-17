@@ -25,7 +25,27 @@ export default class ModerationService {
     return this.serviceInstance;
   };
 
-  hide = async (moderation, commonId, type, report = false) => {
+  hide = async (type, commonId, moderation = null, report = false) => {
+    try {
+      return await this.axiosClient.post(
+        this.endpoints.hide,
+        {
+          moderation,
+          commonId,
+          type,
+        },
+        {
+          headers: {
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  show = async (moderation, commonId, type, report = false) => {
     try {
       return await this.axiosClient.post(
         this.endpoints.hide,

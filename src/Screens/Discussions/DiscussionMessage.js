@@ -6,28 +6,35 @@ import {
   View,
   Image,
   Dimensions,
+  Pressable,
 } from 'react-native';
 import {colors, font, text as textjs} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import ModerationService from '~/Services/ModerationService';
 
 const {width} = Dimensions.get('window');
 
 const DiscussionMessage = ({
-  data: {ownerId, text, createTime},
+  data,
   outcome,
   showCurrentUserAvatar,
   userListStore,
+  bottomSheetStore,
+  hasPermission,
 }) => {
   let currentUserUid = null;
+  const isHidden = data.moderation?.flag === 'hidden';
+  const actionType = isHidden ? 'Show' : 'Hide';
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
   }
 
   const [outcomeState, setOutcomeState] = React.useState();
-  const onwerInfo = userListStore.getUserById(ownerId);
+  const ownerInfo = userListStore.getUserById(data.ownerId);
 
   useEffect(() => {
     if (typeof outcome === 'object') {
@@ -37,10 +44,44 @@ const DiscussionMessage = ({
     }
   }, [outcome]);
 
+  const onModerate = async () => {
+    bottomSheetStore.hideBottomSheet();
+    if (actionType === 'Show') {
+      //show message
+    } else {
+      const moderation = {itemId: data.id};
+      await ModerationService.getInstance().hide('discussionMessage', data.commonId, moderation);
+    }
+  };
+
+  const openMessageOptions = () => {
+    if (hasPermission) {
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+        {
+          onAction: () => onModerate(),
+          moderatorOptions: {
+            data,
+            actions: [actionType],
+          },
+        },
+      );
+    }
+  };
+
+  // icon missing
+  const hiddenView = isHidden && <Text style={{...styles.ownerName, color: colors.grey3, marginLeft: 30}} >Hidden</Text>;
+
+
+  const dateView = () =>
+    <Text style={{...styles.date, color: isHidden ? colors.grey3 : colors.formPlaceholderColor}}>
+      {moment(data.createTime.toDate()).format('HH:mm')}
+    </Text>;
+
   return (
-    <View style={styles.container}>
-      {currentUserUid === ownerId ? (
-        <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
+    <Pressable style={styles.container} onLongPress={() => openMessageOptions()}>
+      {currentUserUid === data.ownerId ? (
+        <View style={{display: 'flex', flexDirection: 'row-reverse', backgroundColor: 'pink'}}>
           {showCurrentUserAvatar && (
             <Image
               style={{
@@ -51,22 +92,21 @@ const DiscussionMessage = ({
                 justify: 'flex-end',
                 marginLeft: 10,
               }}
-              source={onwerInfo && {uri: onwerInfo.photoURL}}
+              source={ownerInfo && {uri: ownerInfo.photoURL}}
             />
           )}
 
-          <View style={styles.contentOwner}>
+          <View style={{...styles.contentOwner, backgroundColor: isHidden ? colors.paleLilacTwo : colors.white}}>
+            {hiddenView}
             <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
               <Text
-                style={{...styles.text, ...textjs.writingDirection(text)}}
+                style={{...styles.text, color: isHidden ? colors.grey3 : colors.black, ...textjs.writingDirection(data.text)}}
                 selectable>
-                {text}
+                {data.text}
               </Text>
             </Hyperlink>
             <View style={{position: 'relative', right: 0, bottom: 0}}>
-              <Text style={styles.date} numberOfLines={1}>
-                {moment(createTime.toDate()).format('HH:mm')}
-              </Text>
+              {dateView()}
             </View>
           </View>
         </View>
@@ -81,7 +121,7 @@ const DiscussionMessage = ({
                   width: 40,
                   borderRadius: 20,
                 }}
-                source={onwerInfo && {uri: onwerInfo.photoURL}}
+                source={ownerInfo && {uri: ownerInfo.photoURL}}
               />
             </View>
             <View
@@ -89,25 +129,25 @@ const DiscussionMessage = ({
                 ...styles.contentOwner,
                 marginLeft: 10,
                 maxWidth: width - 90,
-                backgroundColor: colors.paleLilacTwo,
+                backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
               }}>
-              <Text style={styles.ownerName}>{onwerInfo?.displayName}</Text>
+              <View style={{flexDirection: 'row'}} >
+              <Text style={{...styles.ownerName, color: isHidden ? colors.grey3 : colors.black}}>{ownerInfo?.displayName}</Text>
+              {hiddenView}
+              </View>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
                 <Text
-                  style={{...styles.text, ...textjs.writingDirection(text)}}
+                  style={{...styles.text, color: isHidden ? colors.grey3 : colors.black, ...textjs.writingDirection(data.text)}}
                   selectable>
-                  {text}
+                  {data.text}
                 </Text>
               </Hyperlink>
-
-              <Text style={styles.date}>
-                {moment(createTime.toDate()).format('HH:mm')}
-              </Text>
+              {dateView()}
             </View>
           </View>
         </>
       )}
-    </View>
+    </Pressable>
   );
 };
 
@@ -125,6 +165,8 @@ DiscussionMessage.propTypes = {
   userListStore: shape({
     getUserById: func,
   }),
+  bottomSheetStore: object,
+  hasPermission: bool
 };
 
 const styles = StyleSheet.create({
@@ -148,18 +190,16 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     marginVertical: 2,
     lineHeight: 24,
-    color: colors.black,
     ...font.primary.regular,
     ...font.fontSize(2),
   },
   date: {
-    color: colors.formPlaceholderColor,
     textAlign: 'right',
     ...font.primary.regular,
     ...font.fontSize(0),
   },
   contentOwner: {
-    backgroundColor: colors.white,
+    //backgroundColor: colors.white,
     padding: 10,
     borderRadius: 10,
     alignSelf: 'flex-end',
@@ -178,4 +218,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userListStore')(observer(DiscussionMessage));
+export default inject('userListStore', 'bottomSheetStore')(observer(DiscussionMessage));
