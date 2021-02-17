@@ -5,7 +5,6 @@ import {bool, func, object, oneOfType, shape, string} from 'prop-types';
 import * as RNLocalize from 'react-native-localize';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 
-
 import {countryList} from '~/Util/countries';
 import {colors} from '../../Theme';
 
@@ -16,12 +15,14 @@ const getCountryIndex = (countryArr, country) => countryArr.findIndex(
   (countryObj) => countryObj.value === country
 );
 
-export const CountrySelectField = ({onChange, ...props}) => {
+export const CountrySelectField = ({onChange, value, ...props}) => {
   const countries = countryList.filter((country) => country.payin);
 
-  const [ selectedCountryIndex, setSelectedCountryIndex ] = React.useState(getCountryIndex(countries, RNLocalize.getCountry()));
   const [selectedCountryIndex, setSelectedCountryIndex] = React.useState(
     getCountryIndex(countries, value || RNLocalize.getCountry()),
+  );
+  const [selectedCountry, setSelectedCountry] = React.useState(
+    countries[selectedCountryIndex].value,
   );
 
   // Call the callback with the initial country value
@@ -119,7 +120,7 @@ CountrySelectField.propTypes = {
     name: string,
     formStore: object,
     displayName: string,
-    validateRule: oneOfType([ string, object ]),
+    validateRule: oneOfType([string, object]),
     invisibleContainer: bool,
     customErrorMessage: string,
   }),
