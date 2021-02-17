@@ -98,20 +98,22 @@ class EditProfileForm extends React.Component {
           }}
         />
 
-        <CountrySelectField
-          label="Country"
-          value={
-            this.props.editProfileFormStore.getFormField(
-              EditProfileForm.FIELD_COUNTRY,
-            )?.value || userStore.userInfo.country
-          }
-          validation={{
-            name: EditProfileForm.FIELD_COUNTRY,
-            formStore: this.props.editProfileFormStore,
-            validateRule: 'required|string',
-            displayName: 'country',
-          }}
-        />
+        {firstOpening && (
+          <CountrySelectField
+            label="Country"
+            value={
+              this.props.editProfileFormStore.getFormField(
+                EditProfileForm.FIELD_COUNTRY,
+              )?.value || userStore.userInfo.country
+            }
+            validation={{
+              name: EditProfileForm.FIELD_COUNTRY,
+              formStore: this.props.editProfileFormStore,
+              validateRule: 'required|string',
+              displayName: 'country',
+            }}
+          />
+        )}
 
         <TextInputField
           label="Intro"
