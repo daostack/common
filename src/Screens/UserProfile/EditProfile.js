@@ -49,6 +49,7 @@ const EditProfile = ({rootStore, route, navigation}) => {
         EditProfileForm.FIELD_FIRST_NAME,
         EditProfileForm.FIELD_LAST_NAME,
         EditProfileForm.FIELD_PROFILE_IMAGE,
+        EditProfileForm.FIELD_COUNTRY,
       ]);
       let publicData = filterObjectByKeys(changedFields, [
         EditProfileForm.FIELD_INTRO,
@@ -116,6 +117,7 @@ const EditProfile = ({rootStore, route, navigation}) => {
       <SafeAreaView style={styles.container}>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
+          keyboardShouldPersistTaps="always"
           style={styles.scrollView}>
           <EditForm />
         </ScrollView>
