@@ -4,11 +4,13 @@ import TextInputField from '../FormFields/TextInputField';
 import ImageField from '../FormFields/ImageField';
 import {inject} from 'mobx-react';
 import {layout, text, font, colors} from '~/Theme';
+import {CountrySelectField} from '~/Components/FormFields/CountrySelectField';
 import {string, shape, bool, object} from 'prop-types';
 
 class EditProfileForm extends React.Component {
   static FIELD_FIRST_NAME = 'firstName';
   static FIELD_LAST_NAME = 'lastName';
+  static FIELD_COUNTRY = 'country';
   static FIELD_INTRO = 'intro';
   static FIELD_PROFILE_IMAGE = 'photoURL';
 
@@ -95,6 +97,23 @@ class EditProfileForm extends React.Component {
             displayName: 'last name',
           }}
         />
+
+        {firstOpening && (
+          <CountrySelectField
+            label="Country"
+            value={
+              this.props.editProfileFormStore.getFormField(
+                EditProfileForm.FIELD_COUNTRY,
+              )?.value || userStore.userInfo.country
+            }
+            validation={{
+              name: EditProfileForm.FIELD_COUNTRY,
+              formStore: this.props.editProfileFormStore,
+              validateRule: 'required|string',
+              displayName: 'country',
+            }}
+          />
+        )}
 
         <TextInputField
           label="Intro"
