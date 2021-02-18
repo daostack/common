@@ -44,8 +44,8 @@ const props = {
   showMax: number,
   isSwiper: bool,
   hasPermission: bool,
-  openCommonOptions: func,
-  showHiddenNote: func,
+  openCommonOptions: func.isRequired,
+  showHiddenNote: func.isRequired,
 
   // Injected
   proposalStore: shape({
@@ -81,7 +81,6 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
           <ProposalCard
             proposalId={item.id}
             key={item.id}
-            //data={item}
             isSwiper={true}
             commonInfo={commonInfo}
             navigation={navigation}
@@ -108,7 +107,6 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
         <ProposalCard
           proposalId={item.id}
           key={item.id}
-          //data={item} 
           isSwiper={false}
           commonInfo={commonInfo}
           navigation={navigation}

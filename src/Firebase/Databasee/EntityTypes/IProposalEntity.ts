@@ -78,6 +78,11 @@ interface IBaseProposalEntity extends IBaseEntity {
    * The number of votes against the proposal
    */
   votesAgainst: number;
+
+  /**
+   * The moderation object that handles hiding/showing proposals
+   */
+  moderation?: object //TODO moderation type
 }
 
 export interface IProposalVote {

@@ -95,6 +95,18 @@ const Discussions = ({
     return unsubscribe;
   }, [commonId, discussionId, currentUser]);
 
+
+  const getMsgList = (newMsg, currMsgList) => {
+    const msgIndex = (currMsgList.map((message) => message.id)).indexOf(newMsg[0].id);
+
+    if (msgIndex >= 0) {
+      currMsgList[msgIndex] = newMsg[0];
+    } else {
+      currMsgList = [...newMsg, ...currMsgList];
+    }
+    return currMsgList;
+  };
+
   useEffect(() => {
     const unsubscribe = db
       .collection('discussionMessage')
@@ -109,7 +121,8 @@ const Discussions = ({
               id: doc.id,
               ...doc.data(),
             }));
-            const msgList = [...newList, ...listRef.current];
+
+            const msgList = getMsgList(newList, listRef.current);
             // _.union(listRef.current, newList);
             listRef.current = msgList;
             logger.log('newMessage', newList);

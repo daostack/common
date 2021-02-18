@@ -44,16 +44,12 @@ const ProposalCard = ({
 }) => {
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
-  //const [moderation, setModeration] = useState(null);
+
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
 
     const getProposalInfo = async (currProposalId) => {
       try {
-       // BAD PRACTIVE ask Lyubo about subscribing to changes in proposal
-       // const proposalNew = await ProposalService.getInstance().getProposalInfo(currProposalId);
-       // setModeration(proposalNew.moderation);
-
         unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
           currProposalId,
           (discussionsCount) => {
@@ -84,20 +80,21 @@ const ProposalCard = ({
   };
 
   const onReviewProposal = async () => {
-    /*if (moderation) {
+    if (proposalInfo.moderation) {
       hiddenDiscussionNote();
-    }*/
-    let currCommonInfo = commonInfo;
+    } else {
+        let currCommonInfo = commonInfo;
 
-    if (!currCommonInfo) {
-      currCommonInfo = await DaoService.getInstance().getDaoById(
-        proposalInfo.commonId,
-      );
-    }
+        if (!currCommonInfo) {
+          currCommonInfo = await DaoService.getInstance().getDaoById(
+            proposalInfo.commonId,
+          );
+        }
 
-    navigation.navigate('ProposalScreen', {
-      proposalId: proposalInfo.id,
-    });
+        navigation.navigate('ProposalScreen', {
+          proposalId: proposalInfo.id,
+        });
+      }
   };
 
   return proposalInfo ? (

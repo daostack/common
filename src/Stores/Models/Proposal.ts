@@ -62,6 +62,9 @@ export class Proposal extends BaseModel<IProposalEntity> {
   description: IFundingRequestDescription | IJoinReqDescription;
 
   @observable
+  moderation?: object | undefined; // TODO create moderation type
+
+  @observable
   imagesPromised = promisedComputed(
     [],
     async (): Promise<IUIProposalImage[]> => {
@@ -144,6 +147,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
     this.votesFor = newProposalInfo.votesFor;
     this.votesAgainst = newProposalInfo.votesAgainst;
     this.description = newProposalInfo.description;
+    this.moderation = newProposalInfo.moderation;
     if (this.type === PROPOSAL_TYPE.Join) {
       this.paymentState = (newProposalInfo as IJoinRequestProposal).paymentState;
       this.join = (newProposalInfo as IJoinRequestProposal).join;

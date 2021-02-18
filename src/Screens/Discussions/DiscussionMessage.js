@@ -50,7 +50,7 @@ const DiscussionMessage = ({
       //show message
     } else {
       const moderation = {itemId: data.id};
-      await ModerationService.getInstance().hide('discussionMessage', data.commonId, moderation);
+      await ModerationService.getInstance().hide('DiscussionMessage', data.commonId, moderation);
     }
   };
 
