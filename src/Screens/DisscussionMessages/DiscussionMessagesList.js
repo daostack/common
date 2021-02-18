@@ -25,7 +25,6 @@ const DiscussionMessagesList = ({
   commonId,
 }) => {
   const chatRef = useRef(null);
-  const authStore = rootStore.authStore.userInfo;
   const msgGroups = discussionMessageStore
     .getDiscussionMessagesByDiscussionId(discussionId)
     .map((msg) => ({
@@ -52,12 +51,6 @@ const DiscussionMessagesList = ({
     });
   }, 150);
 
-  const showMessage = (message) => (
-    message.moderation?.flag === 'hidden'
-      ? (message.moderation?.moderator === authStore.uid ? true : false)
-      : true
-  );
-
   return (
     <View
       style={{flex: 1, backgroundColor: colors.paleGrey, ...layout.content}}>
@@ -73,7 +66,7 @@ const DiscussionMessagesList = ({
             width: Dimensions.get('screen').width * 0.9,
           }}
           renderItem={(x) => (
-            showMessage(x.item) && <DiscussionMessage data={x.item} showCurrentUserAvatar hasPermission={hasPermission} commonId={commonId}/>
+            <DiscussionMessage data={x.item} showCurrentUserAvatar hasPermission={hasPermission} commonId={commonId}/>
           )}
           onScrollToIndexFailed={(info) => {
             logger.error('Something bad happened: ', info);

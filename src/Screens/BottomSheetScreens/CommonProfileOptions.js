@@ -9,13 +9,13 @@ import React from 'react';
 import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {inject, observer} from 'mobx-react';
-import {object, func, bool} from 'prop-types';
+import {object, func} from 'prop-types';
 
 const CommonProfileOptions = ({
   moderatorOptions = null,
   onAction,
 }) => {
-  let actions = moderatorOptions.actions || ['Hide', 'Hide & Report'];
+  let actions = moderatorOptions.actions || ['Hide'];//, 'Hide & Report'];
 
   (() => {
     if (moderatorOptions) {

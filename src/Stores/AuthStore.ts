@@ -103,19 +103,18 @@ class AuthStore {
     }
   };
 
-  getPermission = async (commonId: string) => {
-    const roles = this.userInfo?.roles || [];
+  getPermission = async (commonId: string, userInfo: UserModel) => {
+    const roles = userInfo.roles || [];
     let role = '';
     roles.forEach((roleObj) => {
       if (roleObj.data.commonId === commonId) {
-        console.log('yessss', roleObj.role);
         role = roleObj.role;
       }
     });
 
     const dao = await CommonService.getInstance().getCommonInfo(commonId);
     // for older daos who don't have roles assigned to users
-    if (!role && dao.metadata.founderId === this.userInfo?.uid) {
+    if (!role && dao.metadata.founderId === userInfo.uid) {
       role = 'founder';
     }
     return role;

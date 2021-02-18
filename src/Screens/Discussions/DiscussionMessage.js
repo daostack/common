@@ -33,16 +33,18 @@ const DiscussionMessage = ({
   const isHidden = data.moderation?.flag === 'hidden';
   const [permission, setPermission] = useState('');
 
-  const actionType = isHidden ? 'Show' : 'Hide';
+  const actionType = /*hasPermission ? */(isHidden ? 'Show' : 'Hide') //: 'Report';
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
   }
 
   const ownerInfo = userStore.getUserById(data.ownerId);
+  const moderatorInfo = data.moderation && userStore.getUserById(data.moderation?.moderator);
+  const moderatorName = moderatorInfo?.uid === currentUserUid ? 'you' : `${moderatorInfo?.firstName || ''} ${moderatorInfo?.lastName || ''}`;
 
   useEffect(() => {
     (async () => {
-      const p = await rootStore.authStore.getPermission(commonId);
+      const p = await rootStore.authStore.getPermission(commonId, ownerInfo);
       setPermission(p);
     })();
 
@@ -59,22 +61,20 @@ const DiscussionMessage = ({
   };
 
   const openMessageOptions = () => {
-    if (hasPermission) {
-      bottomSheetStore.showBottomSheet(
-        BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
-        {
-          onAction: () => onModerate(),
-          moderatorOptions: {
-            data,
-            actions: [actionType],
-          },
+    bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      {
+        onAction: () => onModerate(),
+        moderatorOptions: {
+          data,
+          actions: [actionType],
         },
-      );
-    }
+      },
+    );
   };
 
   // icon missing
-  const hiddenView = isHidden && <Text style={{...styles.ownerName, color: colors.grey3, marginLeft: 30}} >Hidden</Text>;
+  const hiddenView = isHidden && <Text style={{...styles.hiddenTitle, color: colors.grey3, marginLeft: 30}} >Hidden by {moderatorName}</Text>;
 
 
   const dateView = () =>
@@ -135,17 +135,18 @@ const DiscussionMessage = ({
                 maxWidth: width - 90,
                 backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
               }}>
-              <View style={{flexDirection: 'row'}} >
+              <View style={{flexDirection: 'row', justifyContent: 'space-between'}} >
               <Text style={{...styles.ownerName, color: isHidden ? colors.grey3 : colors.black}}>{ownerInfo?.displayName}</Text>
+              {!isHidden && <Text style={{...styles.ownerName, color: colors.grey3}}>{permission}</Text>}
               {hiddenView}
               </View>
-              <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
+              {(!isHidden || hasPermission) && <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
                 <Text
                   style={{...styles.text, color: isHidden ? colors.grey3 : colors.black, ...textjs.writingDirection(data.text)}}
                   selectable>
                   {data.text}
                 </Text>
-              </Hyperlink>
+              </Hyperlink>}
               {dateView()}
             </View>
           </View>
@@ -166,7 +167,7 @@ DiscussionMessage.propTypes = {
   bottomSheetStore: object,
   hasPermission: bool,
   rootStore: rootStorePropTypes,
-  commonId: string
+  commonId: string,
 };
 
 const styles = StyleSheet.create({
@@ -177,6 +178,10 @@ const styles = StyleSheet.create({
   ownerName: {
     ...font.primary.bold,
     ...font.fontSize(2),
+  },
+  hiddenTitle: {
+    ...font.primary.bold,
+    ...font.fontSize(1),
   },
   container: {
     // backgroundColor: colors.grey4,
