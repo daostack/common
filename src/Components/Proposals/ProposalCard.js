@@ -7,6 +7,7 @@ import {
   View,
   Animated,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import {text, layout, colors, font} from '~/Theme';
 import MemberCard from '../MemberCard';
@@ -15,7 +16,6 @@ import ProposalService from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
 import DaoService from '~/Services/DaoService';
 import ProposalApprovalTag from './ProposalApprovalTag';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
 import {string, bool, object, shape, func} from 'prop-types';
@@ -30,6 +30,7 @@ import {
 const {width} = Dimensions.get('window');
 
 const ProposalCard = ({
+  //data,
   proposalId,
   navigation,
   containerStyle,
@@ -39,15 +40,20 @@ const ProposalCard = ({
   proposalStore,
   hasPermission,
   openCommonOptions,
+  hiddenDiscussionNote,
 }) => {
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
-
+  //const [moderation, setModeration] = useState(null);
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
 
     const getProposalInfo = async (currProposalId) => {
       try {
+       // BAD PRACTIVE ask Lyubo about subscribing to changes in proposal
+       // const proposalNew = await ProposalService.getInstance().getProposalInfo(currProposalId);
+       // setModeration(proposalNew.moderation);
+
         unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
           currProposalId,
           (discussionsCount) => {
@@ -78,6 +84,9 @@ const ProposalCard = ({
   };
 
   const onReviewProposal = async () => {
+    /*if (moderation) {
+      hiddenDiscussionNote();
+    }*/
     let currCommonInfo = commonInfo;
 
     if (!currCommonInfo) {
@@ -198,6 +207,7 @@ ProposalCard.propTypes = {
   }),
   hasPermission: bool,
   openCommonOptions: func,
+  hiddenDiscussionNote: func,
 };
 
 const styles = StyleSheet.create({

@@ -81,7 +81,7 @@ const DiscussionMessage = ({
   return (
     <Pressable style={styles.container} onLongPress={() => openMessageOptions()}>
       {currentUserUid === data.ownerId ? (
-        <View style={{display: 'flex', flexDirection: 'row-reverse', backgroundColor: 'pink'}}>
+        <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
           {showCurrentUserAvatar && (
             <Image
               style={{

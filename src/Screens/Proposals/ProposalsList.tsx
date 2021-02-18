@@ -45,6 +45,7 @@ const props = {
   isSwiper: bool,
   hasPermission: bool,
   openCommonOptions: func,
+  showHiddenNote: func,
 
   // Injected
   proposalStore: shape({
@@ -64,6 +65,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     proposalStore,
     hasPermission,
     openCommonOptions,
+    showHiddenNote,
   }) => {
     let list: Proposal[] = [];
     if (commonInfo) {
@@ -79,11 +81,13 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
           <ProposalCard
             proposalId={item.id}
             key={item.id}
+            //data={item}
             isSwiper={true}
             commonInfo={commonInfo}
             navigation={navigation}
             hasPermission={hasPermission}
-            openCommonOptions={openCommonOptions}
+            openCommonOptions={() => openCommonOptions(item)}
+            hiddenDiscussionNote={() => showHiddenNote(item)}
           />
         ) : (
           <TouchableOpacity
@@ -104,11 +108,13 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
         <ProposalCard
           proposalId={item.id}
           key={item.id}
+          //data={item} 
           isSwiper={false}
           commonInfo={commonInfo}
           navigation={navigation}
           hasPermission={hasPermission}
-          openCommonOptions={openCommonOptions}
+          openCommonOptions={() => openCommonOptions(item)}
+          hiddenDiscussionNote={() => showHiddenNote(item)}
         />
       );
 

@@ -82,6 +82,7 @@ const CommonProfile = ({
   const [showModerationModal, setShowModerationModal] = useState(false);
   const window = Dimensions.get('window');
   const [moderationFormStore] = useState(new ModerationFormStore());
+  const [moderationType, setModerationType] = useState('Discussion');
 
   const {refreshFeed} = params;
 
@@ -239,8 +240,8 @@ const CommonProfile = ({
         navigation={navigation}
         commonId={currCommon.id}
         hasPermission={hasPermission}
-        openCommonOptions={(discussion) => openCommonOptions(discussion)}
-        showHiddenNote={(hiddenDiscussion) => showHiddenNote(hiddenDiscussion, 'discussion')}
+        openCommonOptions={(discussion) => openCommonOptions(discussion, 'Discussion')}
+        showHiddenNote={(hiddenDiscussion) => showHiddenNote(hiddenDiscussion, 'Discussion')}
       />
     </View>
   );
@@ -261,7 +262,8 @@ const CommonProfile = ({
           type: PROPOSAL_TYPE.FundingRequest,
         }}
         hasPermission={hasPermission}
-        openCommonOptions={(proposalId) => openCommonOptions(proposalId)}
+        openCommonOptions={(proposal) => openCommonOptions(proposal, 'Proposal')}
+        showHiddenNote={(hiddenProposal) => showHiddenNote(hiddenProposal, 'Proposal')}
       />
 
       {isMember && (
@@ -272,7 +274,7 @@ const CommonProfile = ({
       )}
     </View>
   );
-
+// what about histoty?!?
   const History = () => (
     <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
       <Text style={text.h1BlackTitle}>History</Text>
@@ -288,6 +290,7 @@ const CommonProfile = ({
           stage: PROPOSAL_STAGE.History,
           type: PROPOSAL_TYPE.FundingRequest,
         }}
+        showHiddenNote={(hiddenProposal) => showHiddenNote(hiddenProposal, 'Proposal')}
       />
     </View>
   );
@@ -429,16 +432,19 @@ const CommonProfile = ({
   };
 
   // consider adding itemId to edit (?)
-  const openCommonOptions = (item = null) => {
+  const openCommonOptions = (item = null, itemType = '') => {
     if (item) {
       moderationFormStore.registerFormField(ModerationForm.ITEM_ID, 'string', item.id);
+      setModerationType(itemType);
     }
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
         onAction: item ? (action) => onModerate(action) : (type) => onEdit(type),
         //onEdit: (type) => onEdit(type),
-        moderatorOptions: item,
+        moderatorOptions: {
+          item,
+        },
         //onModerate: (action) => onModerate(action),
       },
     );
@@ -447,7 +453,7 @@ const CommonProfile = ({
   const onHideContent = async () => {
     setShowModerationModal(false);
     bottomSheetStore.hideBottomSheet();
-    await ModerationService.getInstance().hide('discussion', commonId, moderationFormStore.getFormFieldsJson());
+    await ModerationService.getInstance().hide(moderationType, commonId, moderationFormStore.getFormFieldsJson());
     moderationFormStore.clearFormStoreState();
   };
 
@@ -473,7 +479,7 @@ const CommonProfile = ({
       animationType="slide"
       onBackdropPress={() => setShowModerationModal(false)}
       >
-      <Hide title="Hide Post"
+      <Hide title={moderationType}
         onCancel={() => setShowModerationModal(false)}
         onHideContent={() => onHideContent()}
         formStore={moderationFormStore}
