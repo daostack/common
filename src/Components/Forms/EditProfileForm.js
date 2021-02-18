@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, Platform} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import ImageField from '../FormFields/ImageField';
 import {inject} from 'mobx-react';
@@ -9,7 +9,6 @@ import {string, shape, bool, object} from 'prop-types';
 class EditProfileForm extends React.Component {
   static FIELD_FIRST_NAME = 'firstName';
   static FIELD_LAST_NAME = 'lastName';
-  static FIELD_EMAIL = 'email';
   static FIELD_INTRO = 'intro';
   static FIELD_PROFILE_IMAGE = 'photoURL';
 
@@ -20,7 +19,6 @@ class EditProfileForm extends React.Component {
       firstOpening,
       ...otherProps
     } = this.props;
-    const isIOS = Platform.OS === 'ios';
 
     return (
       <View
@@ -97,28 +95,6 @@ class EditProfileForm extends React.Component {
             displayName: 'last name',
           }}
         />
-
-        {firstOpening && isIOS && (
-          <TextInputField
-            value={
-              this.props.editProfileFormStore.getFormField(
-                EditProfileForm.FIELD_EMAIL,
-              )?.value || userStore.userInfo.email
-            }
-            viewStyle={{alignSelf: 'stretch'}}
-            label="Email"
-            infoLabel="Required"
-            placeholderText="Email"
-            autoCapitalize="none"
-            autoCorrect={false}
-            validation={{
-              name: EditProfileForm.FIELD_EMAIL,
-              formStore: this.props.editProfileFormStore,
-              validateRule: 'required',
-              displayName: 'email',
-            }}
-          />
-        )}
 
         <TextInputField
           label="Intro"

@@ -45,7 +45,6 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
       let authData = filterObjectByKeys(changedFields, [
         EditProfileForm.FIELD_FIRST_NAME,
         EditProfileForm.FIELD_LAST_NAME,
-        EditProfileForm.FIELD_EMAIL,
         EditProfileForm.FIELD_PROFILE_IMAGE,
       ]);
       let publicData = filterObjectByKeys(changedFields, [
@@ -79,10 +78,11 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
   };
 
   const onFormClose = () => {
-    const isIos = Platform.OS === 'ios';
+    const {isFirstOpening, isSignedWithApple} = route.params;
+
     if (
-      isIos &&
-      route.params.isFirstOpening &&
+      isSignedWithApple &&
+      isFirstOpening &&
       (!editProfileFormStore.isFormValid() ||
         !userStore.userInfo.firstName ||
         !userStore.userInfo.lastName)
