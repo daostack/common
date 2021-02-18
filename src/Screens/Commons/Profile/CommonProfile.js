@@ -88,6 +88,7 @@ const CommonProfile = ({
   const window = Dimensions.get('window');
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState('Discussion');
+  const [action, setAction] = useState('Report');
 
   const {refreshFeed} = params;
 
@@ -434,6 +435,7 @@ const CommonProfile = ({
   };
 
   const onModerate = (action) => {
+    setAction(action);
     if (action === 'Show') {
       //await ModerationService.getInstance().show(commonId, 'discussion');
       // TODO un-hide it in database
@@ -490,7 +492,7 @@ const CommonProfile = ({
       animationType="slide"
       onBackdropPress={() => setShowModerationModal(false)}
       >
-      <Hide title={moderationType}
+      <Hide title={`${action} ${moderationType}`}
         onCancel={() => setShowModerationModal(false)}
         onHideContent={() => onHideContent()}
         formStore={moderationFormStore}

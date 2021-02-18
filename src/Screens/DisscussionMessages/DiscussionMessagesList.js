@@ -23,6 +23,7 @@ const DiscussionMessagesList = ({
   rootStore,
   hasPermission,
   commonId,
+  openMessageOptions,
 }) => {
   const chatRef = useRef(null);
   const msgGroups = discussionMessageStore
@@ -66,7 +67,7 @@ const DiscussionMessagesList = ({
             width: Dimensions.get('screen').width * 0.9,
           }}
           renderItem={(x) => (
-            <DiscussionMessage data={x.item} showCurrentUserAvatar hasPermission={hasPermission} commonId={commonId}/>
+            <DiscussionMessage data={x.item} showCurrentUserAvatar hasPermission={hasPermission} commonId={commonId} openMessageOptions={(action) => openMessageOptions(action, x.item.id)}/>
           )}
           onScrollToIndexFailed={(info) => {
             logger.error('Something bad happened: ', info);

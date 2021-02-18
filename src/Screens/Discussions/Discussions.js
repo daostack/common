@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   Platform,
+  Modal,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
@@ -29,6 +30,10 @@ import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMess
 
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {updateDiscussionLastMessage} from '~/Services/ListServices/DiscussionListService';
+import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import * as ModerationForm from '~/Components/Forms/ModerationForm';
+import {Hide} from '~/Components';
+import ModerationService from '~/Services/ModerationService';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
@@ -56,6 +61,9 @@ const Discussions = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [inputHeight, setInputHeight] = useState(false);
+  const [moderationFormStore] = useState(new ModerationFormStore());
+  const [showModerationModal, setShowModerationModal] = useState(false);
+  const [action, setAction] = useState('Report');
 
   const isMember =
     authStore.userInfo &&
@@ -280,6 +288,52 @@ const Discussions = ({
     </>
   );
 
+  const onModerate = async () => {
+    bottomSheetStore.hideBottomSheet();
+    if (action === 'Show') {
+      //show message
+    } else {
+      setShowModerationModal(true);
+    }
+  };
+
+  const openMessageOptions = (action, messageId) => {
+    moderationFormStore.registerFormField(ModerationForm.ITEM_ID, 'string', messageId);
+    setAction(action);
+    bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      {
+        onAction: (action) => onModerate(action),
+        moderatorOptions: {
+          data,
+          actions: [action],
+        },
+      },
+    );
+  };
+
+  const onHideContent = async () => {
+    setShowModerationModal(false);
+    bottomSheetStore.hideBottomSheet();
+    await ModerationService.getInstance().hide('DiscussionMessage', commonId, moderationFormStore.getFormFieldsJson());
+    moderationFormStore.clearFormStoreState();
+  };
+
+  const moderationModal = () => (
+    <Modal
+      visible={showModerationModal}
+      transparent={true}
+      animationType="slide"
+      onBackdropPress={() => setShowModerationModal(false)}
+      >
+      <Hide title={`${action} Comment`}
+        onCancel={() => setShowModerationModal(false)}
+        onHideContent={() => onHideContent()}
+        formStore={moderationFormStore}
+      />
+    </Modal>
+  );
+
   return (
     <SafeAreaView style={styles.safeView}>
       {header()}
@@ -290,8 +344,10 @@ const Discussions = ({
           scrollViewRef={scrollRef}
           hasPermission={hasPermission}
           commonId={commonId}
+          openMessageOptions={(action, messageId) => openMessageOptions(action, messageId)}
         />
       </ScrollView>
+      {moderationModal()}
 
       {isMember ? (
         <KeyboardAvoidingView

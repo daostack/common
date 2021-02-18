@@ -46,7 +46,7 @@ const Hide: React.FC<InferProps<typeof Hide.propTypes>> = ({
     <View style={styles.root} >
       <View style={styles.view} >
        <ScrollView style={{marginHorizontal: 24}} >
-          <Text style={styles.title} >Hide {title}</Text>
+          <Text style={styles.title} >{title}</Text>
 
           <Text style={styles.action} >Please select a problem to continue</Text>
           <Text style={styles.explanation} >You can hide the post after selecting a problem</Text>

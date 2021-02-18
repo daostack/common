@@ -11,11 +11,9 @@ import {
 import {colors, font, text as textjs} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
-import {shape, string, object, bool} from 'prop-types';
+import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import {userStorePropTypes} from '~/Types/propTypes';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import ModerationService from '~/Services/ModerationService';
 import {rootStorePropTypes} from '~/Types/propTypes';
 
 const {width} = Dimensions.get('window');
@@ -27,13 +25,13 @@ const DiscussionMessage = ({
   userStore,
   rootStore,
   commonId,
+  openMessageOptions,
 }) => {
   let currentUserUid = null;
-  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const isHidden = data.moderation?.flag === 'hidden';
   const [permission, setPermission] = useState('');
 
-  const actionType = /*hasPermission ? */(isHidden ? 'Show' : 'Hide') //: 'Report';
+  const action = hasPermission ? (isHidden ? 'Show' : 'Hide') : 'Report';
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
   }
@@ -44,34 +42,11 @@ const DiscussionMessage = ({
 
   useEffect(() => {
     (async () => {
-      const p = await rootStore.authStore.getPermission(commonId, ownerInfo);
-      setPermission(p);
+      const userPermission = await rootStore.authStore.getPermission(commonId, ownerInfo);
+      setPermission(userPermission);
     })();
 
   }, []);
-
-  const onModerate = async () => {
-    bottomSheetStore.hideBottomSheet();
-    if (actionType === 'Show') {
-      //show message
-    } else {
-      const moderation = {itemId: data.id};
-      await ModerationService.getInstance().hide('DiscussionMessage', data.commonId, moderation);
-    }
-  };
-
-  const openMessageOptions = () => {
-    bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
-      {
-        onAction: () => onModerate(),
-        moderatorOptions: {
-          data,
-          actions: [actionType],
-        },
-      },
-    );
-  };
 
   // icon missing
   const hiddenView = isHidden && <Text style={{...styles.hiddenTitle, color: colors.grey3, marginLeft: 30}} >Hidden by {moderatorName}</Text>;
@@ -83,7 +58,8 @@ const DiscussionMessage = ({
     </Text>;
 
   return (
-    <Pressable style={styles.container} onLongPress={() => openMessageOptions()}>
+    <Pressable style={styles.container} onLongPress={() => openMessageOptions(action)}>
+
       {currentUserUid === data.ownerId ? (
         <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
           {showCurrentUserAvatar && (
@@ -168,6 +144,7 @@ DiscussionMessage.propTypes = {
   hasPermission: bool,
   rootStore: rootStorePropTypes,
   commonId: string,
+  openMessageOptions: func,
 };
 
 const styles = StyleSheet.create({
