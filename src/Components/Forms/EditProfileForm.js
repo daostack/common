@@ -4,8 +4,9 @@ import TextInputField from '../FormFields/TextInputField';
 import ImageField from '../FormFields/ImageField';
 import {inject} from 'mobx-react';
 import {layout, text, font, colors} from '~/Theme';
+import {bool, object} from 'prop-types';
+import {authStorePropTypes} from '~/Types/propTypes';
 import {CountrySelectField} from '~/Components/FormFields/CountrySelectField';
-import {string, shape, bool, object} from 'prop-types';
 
 class EditProfileForm extends React.Component {
   static FIELD_FIRST_NAME = 'firstName';
@@ -16,7 +17,7 @@ class EditProfileForm extends React.Component {
 
   render() {
     const {
-      userStore,
+      authStore,
       editProfileFormStore,
       firstOpening,
       ...otherProps
@@ -43,7 +44,7 @@ class EditProfileForm extends React.Component {
           value={
             this.props.editProfileFormStore.getFormField(
               EditProfileForm.FIELD_PROFILE_IMAGE,
-            )?.value || userStore.userInfo.photoURL
+            )?.value || authStore.userInfo.photoURL
           }
           allowsEditing={true}
           title={'Select new avatar'}
@@ -55,14 +56,14 @@ class EditProfileForm extends React.Component {
         />
 
         <View style={styles.emailContainer}>
-          <Text style={text.ashleyjquimbacom}>{userStore.userInfo.email}</Text>
+          <Text style={text.ashleyjquimbacom}>{authStore.userInfo.email}</Text>
         </View>
 
         <TextInputField
           value={
             this.props.editProfileFormStore.getFormField(
               EditProfileForm.FIELD_FIRST_NAME,
-            )?.value || userStore.userInfo.firstName
+            )?.value || authStore.userInfo.firstName
           }
           viewStyle={{alignSelf: 'stretch'}}
           label="First name"
@@ -82,7 +83,7 @@ class EditProfileForm extends React.Component {
           value={
             this.props.editProfileFormStore.getFormField(
               EditProfileForm.FIELD_LAST_NAME,
-            )?.value || userStore.userInfo.lastName
+            )?.value || authStore.userInfo.lastName
           }
           viewStyle={{alignSelf: 'stretch'}}
           label="Last name"
@@ -104,7 +105,7 @@ class EditProfileForm extends React.Component {
             value={
               this.props.editProfileFormStore.getFormField(
                 EditProfileForm.FIELD_COUNTRY,
-              )?.value || userStore.userInfo.country
+              )?.value || authStore.userInfo.country
             }
             validation={{
               name: EditProfileForm.FIELD_COUNTRY,
@@ -122,7 +123,7 @@ class EditProfileForm extends React.Component {
           value={
             this.props.editProfileFormStore.getFormField(
               EditProfileForm.FIELD_INTRO,
-            )?.value || userStore.userInfo.intro
+            )?.value || authStore.userInfo.intro
           }
           validation={{
             name: EditProfileForm.FIELD_INTRO,
@@ -136,15 +137,7 @@ class EditProfileForm extends React.Component {
 }
 
 EditProfileForm.propTypes = {
-  userStore: shape({
-    userInfo: shape({
-      photoURL: string,
-      email: string,
-      firstName: string,
-      lastName: string,
-      intro: string,
-    }),
-  }).isRequired,
+  authStore: authStorePropTypes.isRequired,
   editProfileFormStore: object.isRequired,
   firstOpening: bool,
 };
@@ -169,4 +162,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(EditProfileForm);
+export default inject('authStore')(EditProfileForm);

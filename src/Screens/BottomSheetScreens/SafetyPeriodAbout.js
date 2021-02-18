@@ -13,10 +13,11 @@ import moment from 'moment';
 import {inject, observer} from 'mobx-react';
 
 import {text, layout, font} from '../../Theme';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
-const SafetyPeriodAbout = ({bottomSheetStore, activationDate}) => {
+const SafetyPeriodAbout = ({uiStore, activationDate}) => {
   const onClose = () => {
-    bottomSheetStore.hideBottomSheet();
+    uiStore.bottomSheetStore.hideBottomSheet();
   };
 
   return (
@@ -77,8 +78,8 @@ const styles = StyleSheet.create({
 });
 
 SafetyPeriodAbout.propTypes = {
-  bottomSheetStore: PropTypes.object.isRequired,
+  uiStore: uiStorePropTypes,
   activationDate: PropTypes.number.isRequired,
 };
 
-export default inject('bottomSheetStore')(observer(SafetyPeriodAbout));
+export default inject('uiStore')(observer(SafetyPeriodAbout));

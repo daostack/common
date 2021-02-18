@@ -18,10 +18,14 @@ import Toast from '~/Util/Toast';
 import AuthService from '~/Services/AuthService';
 import {filterObjectByKeys} from '~/Util';
 import logger from '~/Services/Logger';
-import {bool, object, shape, func} from 'prop-types';
+import {bool, object, shape} from 'prop-types';
 import EditProfileFormStore from '~/FormStores/EditProfileFormStore';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
-const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
+const EditProfile = ({rootStore, route, navigation}) => {
+  const authStore = rootStore.authStore;
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+
   navigation.setOptions({
     headerLeft: () => (
       <TouchableOpacity
@@ -94,7 +98,7 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
   };
 
   const EditForm = observer(() =>
-    userStore.userInfo ? (
+    authStore.userInfo ? (
       <View style={styles.body}>
         <EditProfileForm
           isFirstOpening={route.params.isFirstOpening}
@@ -157,14 +161,7 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
 };
 
 EditProfile.propTypes = {
-  userStore: shape({
-    userInfo: object,
-    setSignedInUser: func,
-  }),
-  bottomSheetStore: shape({
-    showBottomSheet: func,
-    hideBottomSheet: func,
-  }),
+  rootStore: rootStorePropTypes,
   route: shape({
     params: shape({
       isFirstOpening: bool,
@@ -201,4 +198,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'bottomSheetStore')(EditProfile);
+export default inject('rootStore')(EditProfile);
