@@ -1,0 +1,51 @@
+import {DiscussionsCollection} from '~/Firebase/Databasee/Collections/DiscussionsCollection';
+import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
+import {axiosDiscussionClient} from '../util/AxiosClient';
+import {auth} from '~/Firebase';
+
+export type commonDiscussionsListLoadCallbackFn = (
+  updatedDiscussionsList: Array<IDiscussionEntity>,
+) => void;
+
+export const subscribeToCommonDiscussions = (
+  commonId: string,
+  callback: commonDiscussionsListLoadCallbackFn,
+) => {
+  const unsubscribe = DiscussionsCollection.where('commonId', '==', commonId)
+    .orderBy('lastMessage', 'desc')
+    .onSnapshot((snapshot: any) => {
+      let discussionList = [];
+      // TODO: Make better handling of changes with docChanges()
+      if (!snapshot?.empty || !snapshot) {
+        discussionList = snapshot.docs.map(
+          // TODO: Add id prop in the document itself and apply the change here as well. (https://daostack1.atlassian.net/browse/CM-1532)
+          (doc: any) => ({id: doc.id, ...doc.data()} as IDiscussionEntity),
+        );
+      }
+
+      callback(discussionList);
+    });
+  return unsubscribe;
+};
+
+export const updateDiscussionLastMessage = async (
+  discussionId: string,
+  messageOwner: string,
+) => {
+  try {
+    return await axiosDiscussionClient.getDiscussionClient().post(
+      axiosDiscussionClient.getDiscussionEndpoints().update,
+      {
+        discussionId,
+        messageOwner,
+      },
+      {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
+        },
+      },
+    );
+  } catch (error) {
+    throw error;
+  }
+};

@@ -94,4 +94,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(observer(HiddenContentInfo));
+export default inject('rootStore')(observer(HiddenContentInfo));

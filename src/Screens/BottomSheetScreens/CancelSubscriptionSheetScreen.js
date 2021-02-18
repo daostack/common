@@ -15,6 +15,7 @@ import {inject, observer} from 'mobx-react';
 
 import {colors, font, layout, text} from '../../Theme';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens/index';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
 const width = Dimensions.get('window').width;
 
@@ -114,12 +115,12 @@ const CancelSubscriptionSheetScreen = ({
   commonName,
   initialStatus,
   onCancelConfirm,
-  bottomSheetStore,
+  uiStore,
 }) => {
-  const [ status, setStatus ] = React.useState(initialStatus);
+  const [status, setStatus] = React.useState(initialStatus);
 
   const onClose = () => {
-    bottomSheetStore.hideBottomSheet();
+    uiStore.bottomSheetStore.hideBottomSheet();
   };
 
   const onCancel = async () => {
@@ -130,12 +131,15 @@ const CancelSubscriptionSheetScreen = ({
 
       setStatus(statuses.canceled);
     } catch (e) {
-      bottomSheetStore.hideBottomSheet();
-      bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
-        subTitle: 'Try again later',
-        titleRed: true,
-        error: e,
-      });
+      uiStore.bottomSheetStore.hideBottomSheet();
+      uiStore.bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR,
+        {
+          subTitle: 'Try again later',
+          titleRed: true,
+          error: e,
+        },
+      );
     }
   };
 
@@ -147,15 +151,15 @@ const CancelSubscriptionSheetScreen = ({
       <Text style={styles.bold}>{commonName} </Text>
       {dueDate > new Date() && ' in '}
       {moment(dueDate).toNow(true, 'd')}
-      {dueDate < new Date() && ' ago'}{'  '}
-      ({moment(dueDate).format('DD.MM.YY')})
+      {dueDate < new Date() && ' ago'}
+      {'  '}({moment(dueDate).format('DD.MM.YY')})
     </Text>
   );
 
   return (
     <View style={styles.body}>
       <View style={styles.slider}>
-        <View style={styles.lever}/>
+        <View style={styles.lever} />
       </View>
 
       <View style={styles.content}>
@@ -169,7 +173,7 @@ const CancelSubscriptionSheetScreen = ({
 
               <Text style={styles.title}>Cancel payment</Text>
 
-              <LeaveText/>
+              <LeaveText />
             </View>
 
             <View style={styles.container}>
@@ -205,7 +209,7 @@ const CancelSubscriptionSheetScreen = ({
 
             <Text style={styles.title}>Recurring payment canceled</Text>
 
-            <LeaveText/>
+            <LeaveText />
 
             <TouchableOpacity
               style={{
@@ -229,18 +233,13 @@ CancelSubscriptionSheetScreen.propTypes = {
   onCancelConfirm: PropTypes.func.isRequired,
   commonName: PropTypes.string.isRequired,
   dueDate: PropTypes.instanceOf(Date).isRequired,
-  initialStatus: PropTypes.oneOf([ ...Object.values(statuses) ]),
+  initialStatus: PropTypes.oneOf([...Object.values(statuses)]),
 
-  bottomSheetStore: PropTypes.shape({
-    hideBottomSheet: PropTypes.func,
-    showBottomSheet: PropTypes.func,
-  }),
+  uiStore: uiStorePropTypes.isRequired,
 };
 
 CancelSubscriptionSheetScreen.defaultProps = {
   initialStatus: statuses.initial,
 };
 
-export default inject('bottomSheetStore')(
-  observer(CancelSubscriptionSheetScreen)
-);
+export default inject('uiStore')(observer(CancelSubscriptionSheetScreen));

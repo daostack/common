@@ -11,6 +11,7 @@ export interface IUserEntity extends IBaseEntity {
 
   firstName: string;
   lastName: string;
+  country: string;
 
   roles?: object // TODO roles type
 }

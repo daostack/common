@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {observer, inject} from 'mobx-react';
 import {
   StyleSheet,
@@ -11,38 +11,42 @@ import {
 import {colors, font, text as textjs} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
-import {shape, string, object, bool, func} from 'prop-types';
+import {shape, string, object, bool} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
+import {userStorePropTypes} from '~/Types/propTypes';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import ModerationService from '~/Services/ModerationService';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const {width} = Dimensions.get('window');
 
 const DiscussionMessage = ({
   data,
-  outcome,
   showCurrentUserAvatar,
-  userListStore,
-  bottomSheetStore,
   hasPermission,
+  userStore,
+  rootStore,
+  commonId,
 }) => {
   let currentUserUid = null;
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const isHidden = data.moderation?.flag === 'hidden';
+  const [permission, setPermission] = useState('');
+
   const actionType = isHidden ? 'Show' : 'Hide';
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
   }
 
-  const [outcomeState, setOutcomeState] = React.useState();
-  const ownerInfo = userListStore.getUserById(data.ownerId);
+  const ownerInfo = userStore.getUserById(data.ownerId);
 
   useEffect(() => {
-    if (typeof outcome === 'object') {
-      outcome.then((out) => setOutcomeState(out));
+    (async () => {
+      const p = await rootStore.authStore.getPermission(commonId);
+      setPermission(p);
+    })();
 
-      console.log(typeof outcomeState);
-    }
-  }, [outcome]);
+  }, []);
 
   const onModerate = async () => {
     bottomSheetStore.hideBottomSheet();
@@ -157,16 +161,12 @@ DiscussionMessage.propTypes = {
     text: string,
     createTime: object,
   }),
-  outcome: shape({
-    then: func.isRequired,
-    catch: func.isRequired,
-  }),
   showCurrentUserAvatar: bool,
-  userListStore: shape({
-    getUserById: func,
-  }),
+  userStore: userStorePropTypes,
   bottomSheetStore: object,
-  hasPermission: bool
+  hasPermission: bool,
+  rootStore: rootStorePropTypes,
+  commonId: string
 };
 
 const styles = StyleSheet.create({
@@ -218,4 +218,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userListStore', 'bottomSheetStore')(observer(DiscussionMessage));
+export default inject('userStore', 'rootStore')(observer(DiscussionMessage));

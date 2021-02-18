@@ -56,6 +56,7 @@ import {
   BillingDetailsFormStore,
   PaymentFormStore,
 } from '~/FormStores/RequestToJoin';
+import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 
 let stickyHeightAddon = 56;
@@ -65,12 +66,9 @@ const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
 const CommonProfile = ({
   navigation,
-  bottomSheetStore,
   userStore,
   route: {params},
-  commonStore,
-  proposalStore,
-  userListStore,
+  rootStore,
 }) => {
   /* all of  params.commonId,
   params.showRequestSentModal,
@@ -78,6 +76,13 @@ const CommonProfile = ({
   are undefined
   is this sth we plan on having in future?
    */
+
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  const authStore = rootStore.authStore;
+  const commonStore = rootStore.commonStore;
+  const proposalStore = rootStore.proposalStore;
+  const discussionStore = rootStore.discussionStore;
+
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
   const window = Dimensions.get('window');
@@ -143,7 +148,7 @@ const CommonProfile = ({
 
   // right now, has permission is about user being the owner, this may change in the future
   const [hasPermission, setHasPermission] = useState(
-    userStore?.userInfo?.uid === currCommon?.metadata.founderId,
+    authStore?.userInfo?.uid === currCommon?.metadata.founderId,
   );
 
   const headerHeightLayouted = (height) => height;
@@ -154,15 +159,21 @@ const CommonProfile = ({
   };
 
   useEffect(() => {
-    const unsubscribe = proposalStore.subscribeToCommonProposals(currCommon.id);
+    const unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
+      currCommon.id,
+    );
+    const unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
+      currCommon.id,
+    );
     return () => {
-      unsubscribe && unsubscribe();
+      unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
+      unsubscribeFromCommonDiscussions && unsubscribeFromCommonDiscussions();
     };
   }, [currCommon]);
 
   useEffect(() => {
     setShowRequestSentModal(params.showRequestSentModal);
-    if (userStore.userInfo && userStore.isDaoMember(currCommon?.members)) {
+    if (authStore.userInfo && authStore.isDaoMember(currCommon?.members)) {
       setMemberState(true);
       setHeaderHeight(DEFAULT_HEADER_HEIGHT + stickyHeightAddon);
     } else {
@@ -170,16 +181,16 @@ const CommonProfile = ({
       setHeaderHeight(DEFAULT_HEADER_HEIGHT);
     }
     setHasPermission(
-      userStore?.userInfo?.uid === currCommon?.metadata.founderId,
+      authStore?.userInfo?.uid === currCommon?.metadata.founderId,
     );
-  }, [params.showRequestSentModal, userStore.userInfo, currCommon?.members]);
+  }, [params.showRequestSentModal, authStore.userInfo, currCommon?.members]);
 
   useEffect(() => {
     let unsubscribe = null;
     let getPendingProposalsData = async () => {
       unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
         commonId,
-        userStore.userInfo?.uid,
+        authStore.userInfo?.uid,
         (data) => {
           setPendingProposalsData({...data});
 
@@ -208,7 +219,7 @@ const CommonProfile = ({
         unsubscribe();
       }
     };
-  }, [commonId, isMember, userStore.userInfo]);
+  }, [commonId, isMember, authStore.userInfo]);
 
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
@@ -459,7 +470,7 @@ const CommonProfile = ({
 
   const showHiddenNote = (hiddenItem, type) => {
     const {moderation} = hiddenItem;
-    const user = userListStore.getUserById(moderation.moderator);
+    const user = userStore.getUserById(moderation.moderator);
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.HIDDEN_CONTENT_INFO,
       {
@@ -512,7 +523,7 @@ const CommonProfile = ({
   };
 
   const requestToJoin = (event) => {
-    if (userStore.userInfo) {
+    if (authStore.userInfo) {
       const shouldSkipRules = calcShouldSkipRules();
 
       const introduceYourselfFormStore = new IntroduceYourselfFormStore();
@@ -1005,7 +1016,7 @@ CommonProfile.propTypes = {
   userStore: object,
   commonStore: object,
   proposalStore: object,
-  userListStore: object,
+  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -1172,9 +1183,7 @@ const styles = StyleSheet.create({
 });
 
 export default inject(
-  'bottomSheetStore',
   'userStore',
-  'commonStore',
   'proposalStore',
-  'userListStore',
+  'rootStore',
 )(observer(CommonProfile));

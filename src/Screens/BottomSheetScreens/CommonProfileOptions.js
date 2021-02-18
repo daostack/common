@@ -12,14 +12,10 @@ import {inject, observer} from 'mobx-react';
 import {object, func, bool} from 'prop-types';
 
 const CommonProfileOptions = ({
-  bottomSheetStore,
-  //onEdit,
   moderatorOptions = null,
-  //onModerate,
   onAction,
 }) => {
   let actions = moderatorOptions.actions || ['Hide', 'Hide & Report'];
-  console.log('moderatorOptions', actions);
 
   (() => {
     if (moderatorOptions) {
@@ -134,4 +130,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(observer(CommonProfileOptions));
+export default inject('rootStore')(observer(CommonProfileOptions));

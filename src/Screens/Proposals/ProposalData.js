@@ -17,10 +17,11 @@ import {useNavigation} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
 import {PROPOSAL_TYPE} from '~/Config';
 import {string, func, shape, array, bool, oneOfType} from 'prop-types';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
-const ProposalData = ({proposalId, proposalStore}) => {
+const ProposalData = ({proposalId, rootStore}) => {
   const navigation = useNavigation();
-  const proposalInfoState = proposalStore.getProposalById(proposalId);
+  const proposalInfoState = rootStore.proposalStore.getProposalById(proposalId);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
 
   const ImageGalleryFooter = ({}) => (
@@ -138,6 +139,7 @@ const ProposalData = ({proposalId, proposalStore}) => {
 };
 
 ProposalData.propTypes = {
+  rootStore: rootStorePropTypes,
   proposalId: string,
   proposalInfo: oneOfType([
     bool,
@@ -152,9 +154,6 @@ ProposalData.propTypes = {
   ]),
   showMore: func,
   onTabViewScroll: func,
-  proposalStore: shape({
-    getProposalById: func,
-  }),
 };
 
 const styles = StyleSheet.create({
@@ -303,7 +302,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'bottomSheetStore',
-  'proposalStore',
-)(observer(ProposalData));
+export default inject('rootStore')(observer(ProposalData));

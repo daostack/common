@@ -26,6 +26,7 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const {width} = Dimensions.get('window');
 
@@ -36,12 +37,15 @@ const ProposalCard = ({
   containerStyle,
   isSwiper,
   commonInfo,
-  userListStore,
-  proposalStore,
   hasPermission,
   openCommonOptions,
   hiddenDiscussionNote,
+  rootStore,
 }) => {
+  // Stores
+  const userStore = rootStore.userStore;
+  const proposalStore = rootStore.proposalStore;
+
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
 
@@ -90,7 +94,7 @@ const ProposalCard = ({
             proposalInfo.commonId,
           );
         }
-
+        
         navigation.navigate('ProposalScreen', {
           proposalId: proposalInfo.id,
         });
@@ -123,7 +127,7 @@ const ProposalCard = ({
 
           <MemberCard
             showDate={proposalInfo.isJoinRequest}
-            userInfo={userListStore.getUserById(proposalInfo.proposerId)}
+            userInfo={userStore.getUserById(proposalInfo.proposerId)}
             proposalInfo={proposalInfo}
             isPending={false}
           />
@@ -196,15 +200,13 @@ ProposalCard.propTypes = {
   membershipRequest: bool,
   isSwiper: bool,
   commonInfo: object,
-  userListStore: shape({
-    getUserById: func,
-  }),
   proposalStore: shape({
     getProposalById: func,
   }),
   hasPermission: bool,
   openCommonOptions: func,
   hiddenDiscussionNote: func,
+  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -266,4 +268,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userListStore', 'proposalStore')(observer(ProposalCard));
+export default inject('rootStore')(observer(ProposalCard));

@@ -19,7 +19,8 @@ import {Proposal} from '~/Stores/Models/Proposal';
 import {
   isTypeFilterJoin,
   isStageFilterHistory,
-} from '~/Stores/ListStore/ProposalStore';
+} from '~/Stores/DataStores/ProposalStore';
+import {proposalStorePropTypes} from '~/Types/propTypes';
 
 const {width, height} = Dimensions.get('window');
 
@@ -48,10 +49,7 @@ const props = {
   showHiddenNote: func.isRequired,
 
   // Injected
-  proposalStore: shape({
-    getCommonProposals: func.isRequired,
-    getUserProposals: func.isRequired,
-  }).isRequired,
+  proposalStore: proposalStorePropTypes.isRequired,
 };
 
 const ProposalsList: React.FC<InferProps<typeof props>> = observer(

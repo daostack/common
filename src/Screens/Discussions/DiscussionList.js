@@ -1,49 +1,26 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect} from 'react';
+import {inject, observer} from 'mobx-react';
 import {FlatList} from 'react-native';
 import DiscussionCard from './DiscussionCard';
 import ViewTabNoData from '~/Components/ViewTabNoData';
-import {string, object, bool, func} from 'prop-types';
-import {db} from '~/Firebase';
-import logger from '~/Services/Logger';
+import {string, object, bool,func} from 'prop-types';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
-const DiscussionList = ({commonId, navigation, hasPermission, openCommonOptions, showHiddenNote}) => {
-  const [list, setList] = useState([]);
+const DiscussionList = ({commonId, navigation, rootStore, hasPermission, openCommonOptions, showHiddenNote}) => {
+  const list = rootStore.discussionStore.getCommonDiscussions(commonId);
 
-  let listRef = useRef([]);
   useEffect(() => {
-    const unsubscribe = db
-      .collection('discussion')
-      .where('commonId', '==', commonId)
-      .orderBy('lastMessage', 'desc')
-      .onSnapshot(
-        (snapshot) => {
-          if (snapshot.empty) {
-            setList([]);
-          } else {
-            if (snapshot.docChanges().length !== 0) {
-              let newList = [];
-              snapshot.forEach((doc) => {
-                newList.push({
-                  id: doc.id,
-                  ...doc.data(),
-                });
-              });
-              listRef.current = newList;
-              setList(listRef.current);
-            }
-          }
-        },
-        // TOOD: please do not silence any errors like this
-        (error) => logger.error(error),
-      );
+    const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionsMessages(
+      list.map((discussion) => discussion.id),
+    );
     return () => {
-      unsubscribe();
+      unsubscribeFromDiscussionMessages && unsubscribeFromDiscussionMessages();
     };
-  }, [commonId]);
+  }, [list]);
 
   return (
     <>
-      {list.length > 0 ? (
+      {list?.length > 0 ? (
         <FlatList
           data={list}
           renderItem={({item}) => (
@@ -57,7 +34,6 @@ const DiscussionList = ({commonId, navigation, hasPermission, openCommonOptions,
               hiddenDiscussionNote={() => showHiddenNote(item)}
             />
           )}
-          extraData={listRef}
         />
       ) : (
         <ViewTabNoData
@@ -75,6 +51,7 @@ DiscussionList.propTypes = {
   hasPermission: bool,
   openCommonOptions: func,
   showHiddenNote: func,
+  rootStore: rootStorePropTypes,
 };
 
-export default React.memo(DiscussionList);
+export default inject('rootStore')(observer(DiscussionList));

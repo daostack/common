@@ -24,13 +24,14 @@ import UseOfFunds from '../../Components/Commons/UseOfFunds';
 import {BlurView} from '@react-native-community/blur';
 import DebtWarningNote from './components/DebtWarningNote';
 import ModalDebtWarning from './components/ModalDebtWarning';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
 const FundingProposal = ({
   navigation,
   route: {
     params: {commonId, common},
   },
-  bottomSheetStore,
+  uiStore,
 }) => {
   const [fundingRequestFormStore] = useState(new FundingRequestFormStore());
   const [useOfFundsVisible, setUseOfFundsVisible] = useState(false);
@@ -82,11 +83,14 @@ const FundingProposal = ({
           navigation.dispatch(navigate);
         } else {
           navigation.pop();
-          showErrorPopUp(bottomSheetStore, createFundingProposalResponse);
+          showErrorPopUp(
+            uiStore.bottomSheetStore,
+            createFundingProposalResponse,
+          );
         }
       } catch (error) {
         navigation.pop();
-        showErrorPopUp(bottomSheetStore, error);
+        showErrorPopUp(uiStore.bottomSheetStore, error);
       }
     }
   };
@@ -188,7 +192,7 @@ FundingProposal.propTypes = {
       common: object,
     }),
   }),
-  bottomSheetStore: object,
+  uiStore: uiStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -215,4 +219,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(FundingProposal);
+export default inject('uiStore')(FundingProposal);

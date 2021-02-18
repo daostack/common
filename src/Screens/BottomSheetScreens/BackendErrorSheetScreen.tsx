@@ -1,10 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Dimensions, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import {colors, font} from '~/Theme';
 import {inject, observer} from 'mobx-react';
 import {ErrorExpand} from '~/Components';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
 const propTypes = {
   title: PropTypes.string,
@@ -12,34 +20,33 @@ const propTypes = {
   buttonText: PropTypes.string,
 
   titleRed: PropTypes.bool,
-  bottomSheetStore: PropTypes.any.isRequired,
+  uiStore: uiStorePropTypes.isRequired,
   error: PropTypes.instanceOf(Error),
 
   onClose: PropTypes.func,
 };
 
-
-const BackendErrorSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> = ({bottomSheetStore, ...props}) => {
+const BackendErrorSheetScreen: React.FC<
+  PropTypes.InferProps<typeof propTypes>
+> = ({uiStore, ...props}) => {
   const onClose = (): void => {
-    bottomSheetStore.hideBottomSheet();
+    uiStore.bottomSheetStore.hideBottomSheet();
 
     typeof props.onClose === 'function' && onClose();
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.lever}/>
+      <View style={styles.lever} />
 
       <View style={styles.imageContainer}>
-        <Image
-          source={require('~/Assets/alert.png')}
-          style={styles.image}
-        />
+        <Image source={require('~/Assets/alert.png')} style={styles.image} />
       </View>
 
       <View style={styles.textContainer}>
-        <Text style={[styles.title, (props.titleRed && styles.titleRed)]}>{props.title || 'Something went wrong'}</Text>
-
+        <Text style={[styles.title, props.titleRed && styles.titleRed]}>
+          {props.title || 'Something went wrong'}
+        </Text>
 
         {props.subTitle && (
           <Text style={styles.subtitle}>{props.subTitle}</Text>
@@ -52,7 +59,7 @@ const BackendErrorSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> 
 
       <ErrorExpand
         error={props.error}
-        bottomSheetStore={bottomSheetStore}
+        bottomSheetStore={uiStore.bottomSheetStore}
       />
     </View>
   );
@@ -70,7 +77,7 @@ const styles = StyleSheet.create({
 
     shadowColor: '#000',
     shadowOpacity: 0.4,
-    shadowRadius: 16.00,
+    shadowRadius: 16.0,
     elevation: 24,
 
     alignItems: 'center',
@@ -139,5 +146,4 @@ BackendErrorSheetScreen.defaultProps = {
   buttonText: 'OK',
 };
 
-export default inject('bottomSheetStore')(observer(BackendErrorSheetScreen));
-
+export default inject('uiStore')(observer(BackendErrorSheetScreen));

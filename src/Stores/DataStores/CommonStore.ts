@@ -1,6 +1,9 @@
 import {computed, observable, runInAction} from 'mobx';
-import ListStore from './ListStore';
-import {subscribeToAllCommons} from '~/Services/ListServices/CommonListService';
+import BaseStore from './BaseStore';
+import {
+  subscribeToAllCommons,
+  updateCommon,
+} from '~/Services/ListServices/CommonListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Common} from '../Models/Common';
@@ -8,7 +11,7 @@ import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import {Proposal} from '../Models/Proposal';
 import {isDaoMemberByUserId} from '~/Util';
-export default class CommonStore extends ListStore<Common> {
+export default class CommonStore extends BaseStore<Common> {
   @observable
   isLoading: boolean;
 
@@ -70,5 +73,24 @@ export default class CommonStore extends ListStore<Common> {
       this.data.merge(updatesMap);
       this.isLoading = false;
     });
+  };
+
+  /**
+   * This function is updating the common in the firebase with the new changes
+   * @param  updateCommonInfo - a common object with new changes
+   * @param  changedBy        - the user who is responsible for the change
+   * @return                  - response returned from the updateCommon call
+   */
+  updateCommonInfo = async (
+    updateCommonInfo: Partial<ICommonEntity>,
+    //changedBy,
+  ) => {
+    try {
+      const updateResponse = await updateCommon(updateCommonInfo);
+      // Cache.set(updateCommonInfo.id, updateCommonInfo); @question to Lyubo: about this and mobx-persist
+      return updateResponse;
+    } catch (err) {
+      throw err;
+    }
   };
 }

@@ -8,17 +8,18 @@ import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from '../MembershipRequest';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
-import {string, func, bool, object, shape, number} from 'prop-types';
+import {string, func, bool, object, shape} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import ProposalService from '~/Services/ProposalService';
 import {showErrorPopUp} from '~/Util';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
 const ContributionStep = ({
   navigation,
   route: {
     params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed},
   },
-  bottomSheetStore,
+  uiStore,
 }) => {
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
   const metadata = currCommon.metadata;
@@ -93,7 +94,7 @@ const ContributionStep = ({
       navigation.dispatch(navigate);
     } else {
       navigation.pop();
-      showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
+      showErrorPopUp(uiStore.bottomSheetStore, createRequestToJoinResponse);
     }
   };
 
@@ -231,15 +232,7 @@ ContributionStep.propTypes = {
       refreshFeed: func,
     }),
   }),
-  daoStore: shape({
-    dao: shape({
-      name: string,
-      metadata: shape({
-        minFeeToJoin: number,
-      }),
-    }),
-  }),
-  bottomSheetStore: object,
+  uiStore: uiStorePropTypes,
 };
 
-export default inject('bottomSheetStore', 'userStore')(ContributionStep);
+export default inject('uiStore')(ContributionStep);

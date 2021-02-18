@@ -20,7 +20,7 @@ import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
-import ProposalDiscussion from './ProposalDiscussion';
+import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
@@ -32,7 +32,7 @@ import {observer, inject} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
-import {string, func, object, shape, number} from 'prop-types';
+import {string, object, shape} from 'prop-types';
 import logger from '~/Services/Logger';
 import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
@@ -50,21 +50,26 @@ import ModalDebtProposalError from './components/ModalDebtProposalError';
 import ModalDebtProposalInsufficient from './components/ModalDebtProposalInsufficient';
 import ModalConversion from '~/Components/Commons/ModalConversion';
 import {isIsraelLocale} from '~/Util/locale';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const ProposalScreen = ({
   navigation,
-  bottomSheetStore,
-  userStore: {userInfo, isDaoMember, conversionRate, ...userStore},
   route: {
     params: {proposalId, tabIndex = 0},
   },
-  userListStore,
-  commonStore,
-  proposalStore,
+  rootStore,
 }) => {
+  const userStore = rootStore.userStore;
+  const discussionMessageStore = rootStore.discussionMessageStore;
+  const commonStore = rootStore.commonStore;
+  const proposalStore = rootStore.proposalStore;
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  const authStore = rootStore.authStore;
+  const {userInfo, isDaoMember, conversionRate} = authStore;
+
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
     error: false,
@@ -101,9 +106,20 @@ const ProposalScreen = ({
   const VOTE_REJECT = 'rejected';
   let currTabViewScroll = 0;
 
+  useEffect(() => {
+    const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
+      proposalId,
+    );
+
+    return () => {
+      unsubscribeFromProposalDiscussionMessages &&
+        unsubscribeFromProposalDiscussionMessages();
+    };
+  }, [proposalId]);
+
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const proposalCommon = commonStore.getCommonById(proposalInfo.commonId);
-  const proposedUser = userListStore.getUserById(proposalInfo.proposerId);
+  const proposedUser = userStore.getUserById(proposalInfo.proposerId);
 
   const showDebtInfo =
     proposalInfo.isFundingRequest &&
@@ -116,7 +132,7 @@ const ProposalScreen = ({
     proposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.FAILED;
 
   const isMember = userInfo && isDaoMember(proposalCommon?.members || []);
-  const isProposer = userStore.isProposer(proposalInfo);
+  const isProposer = authStore.isProposer(proposalInfo);
 
   const renderVoting =
     proposalInfo &&
@@ -217,7 +233,7 @@ const ProposalScreen = ({
       viewStyle = {...viewStyle, borderBottomWidth: 0};
     }
 
-    return (
+    return isMember || isProposer ? (
       <KeyboardAvoidingView
         style={{
           position: 'absolute',
@@ -226,48 +242,40 @@ const ProposalScreen = ({
           color: '#fbfdff',
         }}>
         <View style={viewStyle}>
-          {isMember || isProposer ? (
-            <View style={styles.inputBorder}>
-              <TextInput
-                ref={inputRef}
-                editable={true}
-                fontSize={15}
-                multiline
-                placeholder="What do you think?"
-                onChangeText={(currText) => setInputText(currText)}
-                onContentSizeChange={(event) => {
-                  setInputHeight(event.nativeEvent.contentSize.height);
-                }}
-                style={{
-                  flex: 1,
-                  padding: 0,
-                  marginHorizontal: 10,
-                  maxHeight: 110,
-                  height: Math.max(35, inputHeight + 10),
-                }}
+          <View style={styles.inputBorder}>
+            <TextInput
+              ref={inputRef}
+              editable={true}
+              fontSize={15}
+              multiline
+              placeholder="What do you think?"
+              onChangeText={(currText) => setInputText(currText)}
+              onContentSizeChange={(event) => {
+                setInputHeight(event.nativeEvent.contentSize.height);
+              }}
+              style={{
+                flex: 1,
+                padding: 0,
+                marginHorizontal: 10,
+                maxHeight: 110,
+                height: Math.max(35, inputHeight + 10),
+              }}
+            />
+            <TouchableOpacity
+              onPress={sendMessageToDiscussion}
+              style={{
+                paddingRight: 15,
+                justifyContent: 'center',
+              }}>
+              <Icon
+                name="send-message"
+                size={20}
+                color={
+                  inputText && inputText.trim() ? colors.mainBlue : colors.grey3
+                }
               />
-              <TouchableOpacity
-                onPress={sendMessageToDiscussion}
-                style={{
-                  paddingRight: 15,
-                  justifyContent: 'center',
-                }}>
-                <Icon
-                  name="send-message"
-                  size={20}
-                  color={
-                    inputText && inputText.trim()
-                      ? colors.mainBlue
-                      : colors.grey3
-                  }
-                />
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <Text style={{...styles.joinCommonText}}>
-              Only members or proposal creators can send messages
-            </Text>
-          )}
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View
@@ -277,6 +285,12 @@ const ProposalScreen = ({
           }}
         />
       </KeyboardAvoidingView>
+    ) : (
+      <View style={viewStyle}>
+        <Text style={{...styles.joinCommonText}}>
+          Only members or proposal creators can send messages
+        </Text>
+      </View>
     );
   };
 
@@ -892,8 +906,8 @@ const ProposalScreen = ({
               )}
 
               {index === 1 && (
-                <ProposalDiscussion
-                  proposalId={proposalId || proposalInfo.id}
+                <DiscussionMessagesList
+                  discussionId={proposalId || proposalInfo.id}
                   proposal={proposalInfo}
                   inputRef={inputRef}
                   scrollViewRef={scrollViewRef}
@@ -931,26 +945,12 @@ const ProposalScreen = ({
 
 ProposalScreen.propTypes = {
   navigation: object,
-  bottomSheetStore: object,
-  userStore: shape({
-    userInfo: object,
-    isDaoMember: func,
-    conversionRate: number,
-  }),
   route: shape({
     params: shape({
       proposalId: string,
     }),
   }),
-  userListStore: shape({
-    getUserById: func,
-  }),
-  commonStore: shape({
-    getCommonById: func,
-  }),
-  proposalStore: shape({
-    getProposalById: func,
-  }),
+  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -1078,15 +1078,8 @@ const styles = StyleSheet.create({
     color: colors.greySubtitle,
     marginTop: sizeS,
     marginBottom: sizeM,
-    width: Dimensions.get('window').width * 0.9,
-    textAlign: 'center',
+    alignSelf: 'center',
   },
 });
 
-export default inject(
-  'userStore',
-  'userListStore',
-  'bottomSheetStore',
-  'commonStore',
-  'proposalStore',
-)(observer(ProposalScreen));
+export default inject('rootStore')(observer(ProposalScreen));
