@@ -12,7 +12,8 @@ import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
 import moment from 'moment';
 import logger from '../../Services/Logger';
-import PropTypes, {string, number, func, shape, arrayOf} from 'prop-types';
+import PropTypes, {string} from 'prop-types';
+import {discussionStorePropTypes} from '~/Types/propTypes';
 
 const DiscussionMessagesList = ({
   discussionId,
@@ -94,25 +95,9 @@ const DiscussionMessagesList = ({
 };
 
 DiscussionMessagesList.propTypes = {
-  proposal: shape({
-    votes: arrayOf(
-      shape({
-        voter: string,
-        outcome: number,
-      }),
-    ),
-  }),
   discussionId: string,
   scrollViewRef: PropTypes.any,
-  onFirstScrollDown: func,
-  onScrollRefresh: func,
-  userListStore: shape({
-    getUserById: func,
-  }),
-  discussionMessageStore: shape({
-    subscribeToProposalDiscussions: func,
-    getDiscussionMessagesByDiscussionId: func,
-  }),
+  discussionMessageStore: discussionStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -143,8 +128,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'userStore',
-  'userListStore',
-  'discussionMessageStore',
-)(observer(DiscussionMessagesList));
+export default inject('discussionMessageStore')(
+  observer(DiscussionMessagesList),
+);

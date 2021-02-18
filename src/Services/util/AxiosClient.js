@@ -1,9 +1,10 @@
 import axios from 'axios';
-import {discussionsUrl} from '~/Config';
+import {commonsUrl, discussionsUrl} from '~/Config';
 
-export const axiosClient = (function () {
+export const axiosDiscussionClient = (function () {
   let commonClient = {
     endpoints: {
+      create: '/create',
       update: '/update',
     },
   };
@@ -23,5 +24,30 @@ export const axiosClient = (function () {
       return commonClient.instance;
     },
     getDiscussionEndpoints: () => commonClient.endpoints,
+  };
+})();
+
+export const axiosCommonClient = (function () {
+  let commonClient = {
+    endpoints: {
+      create: '/create',
+      update: '/update',
+    },
+  };
+
+  const createCommonInstance = () => {
+    commonClient.instance = axios.create({
+      baseURL: commonsUrl(),
+    });
+  };
+
+  return {
+    getCommonClient: () => {
+      if (!commonClient.instance) {
+        createCommonInstance();
+      }
+      return commonClient.instance;
+    },
+    getCommonEndpoints: () => commonClient.endpoints,
   };
 })();

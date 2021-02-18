@@ -1,5 +1,5 @@
 import {computed, observable, runInAction} from 'mobx';
-import ListStore from './ListStore';
+import BaseStore from './BaseStore';
 import {subscribeToProposalList} from '~/Services/ListServices/ProposalListService';
 import {
   FirestoreUnsubscribeFn,
@@ -48,7 +48,7 @@ export const isProposalHistory = (proposal: Proposal) =>
   PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state) &&
   !ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState);
 
-export default class ProposalStore extends ListStore<Proposal> {
+export default class ProposalStore extends BaseStore<Proposal> {
   @observable
   isLoading: boolean;
 

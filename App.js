@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
+import {rootStorePropTypes} from '~/Types/propTypes';
 import {
   StyleSheet,
   Platform,
@@ -60,7 +61,7 @@ import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DeepLinking from 'react-native-deep-linking';
 import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
 import Toast from './src/Util/Toast';
-import {func, bool, object, shape} from 'prop-types';
+import {object} from 'prop-types';
 import logger from './src/Services/Logger';
 import {fontSize} from './src/Theme/font';
 import ProposalService from './src/Services/ProposalService';
@@ -80,14 +81,13 @@ if (Platform.OS === 'android') {
   }
 }
 
-const App = ({
-  userStore,
-  userListStore,
-  commonStore,
-  proposalStore,
-  bottomSheetStore,
-  navigation,
-}) => {
+const App = ({rootStore, navigation}) => {
+  const authStore = rootStore.authStore;
+  const userStore = rootStore.userStore;
+  const commonStore = rootStore.commonStore;
+  const proposalStore = rootStore.proposalStore;
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
   //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
@@ -116,12 +116,12 @@ const App = ({
 
   // Initialize Mobx Stores
   useEffect(() => {
-    const unsubscribeUsers = userListStore.subscribeToAllUsers();
+    const unsubscribeUsers = userStore.subscribeToAllUsers();
     const unsubscribeCommons = commonStore.subscribeToAllCommons();
     let unsubscribeProposals = null;
-    if (userStore.userInfo?.uid) {
+    if (authStore.userInfo?.uid) {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
-        userStore.userInfo?.uid,
+        authStore.userInfo?.uid,
       );
     }
     return () => {
@@ -129,7 +129,7 @@ const App = ({
       unsubscribeCommons && unsubscribeCommons();
       unsubscribeProposals && unsubscribeProposals();
     };
-  }, [userStore.userInfo?.uid]);
+  }, [authStore.userInfo?.uid]);
 
   const notificationNavigation = async (remoteMessage) => {
     logger.log('remoteMessage -> ', remoteMessage);
@@ -347,7 +347,7 @@ const App = ({
           name="CommonHome"
           component={CommonHome}
           options={{headerShown: false}}
-          userStore={userStore}
+          authStore={authStore}
         />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
         <Stack.Screen
@@ -583,23 +583,7 @@ const App = ({
 };
 
 App.propTypes = {
-  userStore: shape({
-    setIsLoading: func,
-    setSignedInUser: func,
-  }),
-  userListStore: shape({
-    subscribeToAllUsers: func,
-  }),
-  commonStore: shape({
-    subscribeToAllCommons: func,
-  }),
-  proposalStore: shape({
-    subscribeToUserProposals: func,
-  }),
-  bottomSheetStore: shape({
-    isVisible: bool,
-    showBottomSheet: func,
-  }),
+  rootStore: rootStorePropTypes,
   navigation: object,
 };
 
@@ -614,10 +598,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'userStore',
-  'bottomSheetStore',
-  'userListStore',
-  'commonStore',
-  'proposalStore',
-)(observer(App));
+export default inject('rootStore')(observer(App));

@@ -11,7 +11,7 @@ import {
 import RootStore from '../RootStore';
 import {persist} from 'mobx-persist';
 
-export default class ListStore<IEntity> {
+export default class BaseStore<IEntity> {
   @persist('map')
   @observable
   data: ObservableMap<string, IEntity> = observable.map({});

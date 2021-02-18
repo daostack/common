@@ -16,6 +16,7 @@ import {ContributionListItem} from '../../Components';
 import {colors, text} from '../../Theme';
 import {fontSize} from '~/Theme/font';
 import {getUserSubscriptions} from '~/Services/SubscriptionService';
+import {authStorePropTypes} from '~/Types/propTypes';
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -46,12 +47,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const MonthlyContributionsList = ({userStore, navigation}) => {
+const MonthlyContributionsList = ({authStore, navigation}) => {
   const [subs, setSubs] = React.useState(null);
 
   React.useEffect(() => {
     (async () => {
-      await getUserSubscriptions(userStore.userInfo.uid, (snap) => {
+      await getUserSubscriptions(authStore.userInfo.uid, (snap) => {
         setSubs(snap.docs.map((doc) => doc.data()));
       });
     })();
@@ -106,13 +107,7 @@ const MonthlyContributionsList = ({userStore, navigation}) => {
 
 MonthlyContributionsList.propTypes = {
   navigation: PropTypes.object,
-
-  userStore: PropTypes.shape({
-    userInfo: PropTypes.shape({
-      uid: PropTypes.string,
-      safeAddress: PropTypes.string,
-    }),
-  }),
+  authStore: authStorePropTypes,
 };
 
-export default inject('userStore')(observer(MonthlyContributionsList));
+export default inject('authStore')(observer(MonthlyContributionsList));

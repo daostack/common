@@ -1,6 +1,6 @@
 import {DiscussionsCollection} from '~/Firebase/Databasee/Collections/DiscussionsCollection';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
-import {axiosClient} from '../util/AxiosClient';
+import {axiosDiscussionClient} from '../util/AxiosClient';
 import {auth} from '~/Firebase';
 
 export type commonDiscussionsListLoadCallbackFn = (
@@ -33,8 +33,8 @@ export const updateDiscussionLastMessage = async (
   messageOwner: string,
 ) => {
   try {
-    return await axiosClient.getDiscussionClient().post(
-      axiosClient.getDiscussionEndpoints().update,
+    return await axiosDiscussionClient.getDiscussionClient().post(
+      axiosDiscussionClient.getDiscussionEndpoints().update,
       {
         discussionId,
         messageOwner,

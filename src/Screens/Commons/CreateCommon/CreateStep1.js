@@ -3,7 +3,6 @@ import {View, StyleSheet, Modal} from 'react-native';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import {colors} from '~/Theme';
-import {inject} from 'mobx-react';
 import MultiLinkField from '~/Components/FormFields/MultiLinkField';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import RequestStepActionButton from '../RequestStepActionButton';
@@ -196,4 +195,4 @@ const styles = StyleSheet.create({
   blurView: {position: 'absolute', ...StyleSheet.absoluteFill},
 });
 
-export default inject('bottomSheetStore')(CreateStep1);
+export default CreateStep1;
