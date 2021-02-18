@@ -5,10 +5,15 @@ import {subscribeToAllUsers} from '~/Services/ListServices/UserListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {observable, runInAction} from 'mobx';
 
 export default class UserListStore extends ListStore<UserModel> {
+  @observable
+  isLoading: boolean;
+
   constructor(rootStore: RootStore) {
     super(rootStore);
+    this.isLoading = false;
   }
 
   // Data consuming methods
@@ -29,8 +34,19 @@ export default class UserListStore extends ListStore<UserModel> {
 
   // Private function
   _updateUserList = (updatedUserList: Array<IUserEntity>) => {
-    updatedUserList.forEach((userEntity: IUserEntity) => {
-      super.setData(userEntity.uid, new UserModel(userEntity));
+    runInAction(() => {
+      this.isLoading = true;
     });
-  };
+
+    const updatesMap = new Map<string, UserModel>();
+
+    updatedUserList.forEach((userEntity: IUserEntity) => {
+      updatesMap.set(userEntity.uid, new UserModel(userEntity));
+    });
+
+    runInAction(() => {
+      this.data.merge(updatesMap);
+      this.isLoading = false;
+    });
+  }
 }
