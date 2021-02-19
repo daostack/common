@@ -23,7 +23,7 @@ export default class DiscussionStore extends BaseStore<
     );
   //Actions
   subscribeToCommonDiscussions = (commonId: string): FirestoreUnsubscribeFn =>
-    subscribeToCommonDiscussions(commonId, super.updateStoreData);
+    subscribeToCommonDiscussions(commonId, this.updateStoreData);
 
   // Overriden methods
   getEntityModel(entity: IDiscussionEntity): Discussion {

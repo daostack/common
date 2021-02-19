@@ -79,8 +79,7 @@ export default class ProposalStore extends BaseStore<
   }
 
   // Data consuming methods
-  getProposalById = (id: string): Proposal | undefined =>
-    super.getDataById(id) as Proposal;
+  getProposalById = (id: string): Proposal | undefined => this.getDataById(id);
 
   getUserProposals = (
     userId: string,
@@ -118,19 +117,19 @@ export default class ProposalStore extends BaseStore<
 
   //Actions
   subscribeToUserActiveProposals = (userId: string): FirestoreUnsubscribeFn =>
-    subscribeToProposalList(super.updateStoreData, {
+    subscribeToProposalList(this.updateStoreData, {
       userId: userId,
       onlyActive: true,
     });
 
   subscribeToUserAllProposals = (userId: string): FirestoreUnsubscribeFn =>
-    subscribeToProposalList(super.updateStoreData, {
+    subscribeToProposalList(this.updateStoreData, {
       userId: userId,
       showAll: true,
     });
 
   subscribeToCommonProposals = (commonId: string): FirestoreUnsubscribeFn =>
-    subscribeToProposalList(super.updateStoreData, {
+    subscribeToProposalList(this.updateStoreData, {
       commonId: commonId,
     });
 

@@ -37,12 +37,12 @@ export default class DiscussionMessageStore extends BaseStore<
   subscribeToDiscussionsMessages = (
     discussionIds: Array<string>,
   ): FirestoreUnsubscribeFn =>
-    subscribeToDiscussionsMessages(discussionIds, super.updateStoreData);
+    subscribeToDiscussionsMessages(discussionIds, this.updateStoreData);
 
   subscribeToProposalDiscussionMessages = (
     proposalId: string,
   ): FirestoreUnsubscribeFn =>
-    subscribeToProposalDiscussionMessages(proposalId, super.updateStoreData);
+    subscribeToProposalDiscussionMessages(proposalId, this.updateStoreData);
 
   // Overriden methods
   getEntityModel(entity: IDiscussionMessageEntity): DiscussionMessage {

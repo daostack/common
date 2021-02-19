@@ -60,7 +60,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
 
   //Actions
   subscribeToAllCommons = (): FirestoreUnsubscribeFn =>
-    subscribeToAllCommons(super.updateStoreData);
+    subscribeToAllCommons(this.updateStoreData);
 
   /**
    * This function is updating the common in the firebase with the new changes

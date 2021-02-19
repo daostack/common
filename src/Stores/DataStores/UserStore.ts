@@ -12,7 +12,7 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
   }
 
   // Data consuming methods
-  getUserById = (uid: string): UserModel => super.getDataById(uid);
+  getUserById = (uid: string): UserModel => this.getDataById(uid);
 
   getCommonUsersByMembersArray = (
     members: Array<ICommonMember>,
@@ -25,7 +25,7 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
 
   //Actions
   subscribeToAllUsers = (): FirestoreUnsubscribeFn =>
-    subscribeToAllUsers(super.updateStoreData);
+    subscribeToAllUsers(this.updateStoreData);
 
   // Overriden methods
   getEntityModel(entity: IUserEntity): UserModel {
