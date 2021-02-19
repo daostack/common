@@ -155,13 +155,6 @@ const CommonsList = ({navigation, rootStore}) => {
     navigation.dispatch(navigate);
   };
 
-  const getInitialNumoRender = () =>
-    authStore.signedInUser
-      ? myDaosGroup.data.length +
-        pendingDaosGroup.data.length +
-        featuredDaosGroup.data.length
-      : featuredDaosGroup.data.length;
-
   return (
     <>
       <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
@@ -188,7 +181,7 @@ const CommonsList = ({navigation, rootStore}) => {
             stickySectionHeadersEnabled={true}
             renderSectionHeader={({section: {title}}) => sectionHeader(title)}
             ListFooterComponent={listFooter}
-            initialNumToRender={getInitialNumoRender()}
+            initialNumToRender={5}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
