@@ -93,11 +93,7 @@ export const subscribeToProposalList = (
 
   return proposalListQuery.onSnapshot(
     (snapshot: IFirebaseSnapshot<IProposalEntity>) => {
-      if (snapshot) {
-        listChangeCallback(snapshot);
-      } else {
-        console.log('!!! NULL SNAPSHOT RETURNED in PROPOSAL on SNAPSHOT !!!');
-      }
+      listChangeCallback(snapshot);
     },
   );
 };

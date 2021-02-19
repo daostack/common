@@ -1,25 +1,19 @@
-import {observable, runInAction} from 'mobx';
 import BaseStore from './BaseStore';
 import {
   subscribeToDiscussionsMessages,
   subscribeToProposalDiscussionMessages,
 } from '~/Services/ListServices/DiscussionMessageListService';
-import {
-  FirestoreUnsubscribeFn,
-  IFirebaseDocChange,
-  IFirebaseSnapshot,
-} from '~/Firebase/types';
+import {FirestoreUnsubscribeFn, IFirebaseDocChange} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {DiscussionMessage} from '../Models/DiscussionMessage';
 
-export default class DiscussionMessageStore extends BaseStore<DiscussionMessage> {
-  @observable
-  isLoading: boolean;
-
+export default class DiscussionMessageStore extends BaseStore<
+  DiscussionMessage,
+  IDiscussionMessageEntity
+> {
   constructor(rootStore: RootStore) {
     super(rootStore);
-    this.isLoading = false;
   }
 
   // Data consuming methods
@@ -43,57 +37,25 @@ export default class DiscussionMessageStore extends BaseStore<DiscussionMessage>
   subscribeToDiscussionsMessages = (
     discussionIds: Array<string>,
   ): FirestoreUnsubscribeFn =>
-    subscribeToDiscussionsMessages(
-      discussionIds,
-      this._updateDiscussionMessageList,
-    );
+    subscribeToDiscussionsMessages(discussionIds, super.updateStoreData);
 
   subscribeToProposalDiscussionMessages = (
     proposalId: string,
   ): FirestoreUnsubscribeFn =>
-    subscribeToProposalDiscussionMessages(
-      proposalId,
-      this._updateDiscussionMessageList,
-    );
+    subscribeToProposalDiscussionMessages(proposalId, super.updateStoreData);
 
-  // Private function
-  _updateDiscussionMessageList = (
-    updatedDiscussionList: IFirebaseSnapshot<IDiscussionMessageEntity>,
-  ) => {
-    runInAction(() => {
-      this.isLoading = true;
-    });
+  // Overriden methods
+  getEntityModel(entity: IDiscussionMessageEntity): DiscussionMessage {
+    return new DiscussionMessage(entity);
+  }
 
-    const updatesMap = new Map<string, DiscussionMessage>();
-
-    // Initial loading
-    updatedDiscussionList
-      .docChanges()
-      .forEach(
-        (
-          updatedDiscussionMessageDoc: IFirebaseDocChange<IDiscussionMessageEntity>,
-        ) => {
-          // #datamodel
-          // TODO: remove that data conversion when the data model in backend is changed.
-          const data = updatedDiscussionMessageDoc.doc.data();
-          const updatedDiscussionMessage = {
-            ...{
-              id: updatedDiscussionMessageDoc.doc.id,
-              createdAt: data.createTime,
-            },
-            ...data,
-          };
-
-          updatesMap.set(
-            updatedDiscussionMessage.id,
-            new DiscussionMessage(updatedDiscussionMessage),
-          );
-        },
-      );
-
-    runInAction(() => {
-      this.data.merge(updatesMap);
-      this.isLoading = false;
-    });
-  };
+  firestoreDocToEntity(
+    firebaseDoc: IFirebaseDocChange<IDiscussionMessageEntity>,
+  ): IDiscussionMessageEntity {
+    const entity = super.firestoreDocToEntity(firebaseDoc);
+    return {
+      ...entity,
+      createdAt: entity.createTime,
+    };
+  }
 }

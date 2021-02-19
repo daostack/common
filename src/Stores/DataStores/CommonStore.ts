@@ -11,7 +11,7 @@ import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import {Proposal} from '../Models/Proposal';
 import {isDaoMemberByUserId} from '~/Util';
-export default class CommonStore extends BaseStore<Common> {
+export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @observable
   isLoading: boolean;
 
@@ -44,6 +44,11 @@ export default class CommonStore extends BaseStore<Common> {
     );
   }
 
+  // Overriden methods
+  getEntityModel(entity: ICommonEntity): Common {
+    return new Common(entity);
+  }
+
   // Data consuming methods
   getCommonById = (id: string): ICommonEntity | undefined =>
     this.getDataById(id);
@@ -55,25 +60,7 @@ export default class CommonStore extends BaseStore<Common> {
 
   //Actions
   subscribeToAllCommons = (): FirestoreUnsubscribeFn =>
-    subscribeToAllCommons(this._updateCommonList);
-
-  // Private function
-  _updateCommonList = (updatedUserList: Array<ICommonEntity>) => {
-    runInAction(() => {
-      this.isLoading = true;
-    });
-
-    const updatesMap = new Map<string, Common>();
-
-    updatedUserList.forEach((commonEntity: ICommonEntity) => {
-      updatesMap.set(commonEntity.id, new Common(commonEntity));
-    });
-
-    runInAction(() => {
-      this.data.merge(updatesMap);
-      this.isLoading = false;
-    });
-  };
+    subscribeToAllCommons(super.updateStoreData);
 
   /**
    * This function is updating the common in the firebase with the new changes

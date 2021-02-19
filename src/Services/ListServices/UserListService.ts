@@ -1,49 +1,28 @@
 import {UsersCollection} from '~/Firebase/Databasee/Collections/UsersCollection';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
+import {FirestoreUnsubscribeFn, IFirebaseSnapshot} from '~/Firebase/types';
 
 export type userListLoadCallbackFn = (
-  updatedUserList: Array<IUserEntity>,
+  updatedUserList: IFirebaseSnapshot<IUserEntity>,
 ) => void;
 export type userLoadCallbackFn = (updatedUserList: IUserEntity | null) => void;
 
-export const subscribeToCommonUsers = (
-  commonId: string,
+export const subscribeToAllUsers = (
+  callback: userListLoadCallbackFn,
+): FirestoreUnsubscribeFn =>
+  UsersCollection.onSnapshot((snapshot: IFirebaseSnapshot<IUserEntity>) => {
+    callback(snapshot);
+  });
+
+export const subscribeToUser = (
+  uid: string,
   callback: userListLoadCallbackFn,
 ) =>
-  UsersCollection.where('').onSnapshot((snapshot: any) => {
-    let userList = [];
-
-    // TODO: Implement that method when we have commons property in the user document.
-    if (!snapshot?.empty || !snapshot) {
-      userList = snapshot.docs.map((doc: any) => doc.data() as IUserEntity);
-    }
-
-    callback(userList);
-  });
-
-export const subscribeToAllUsers = (callback: userListLoadCallbackFn) =>
-  UsersCollection.onSnapshot((snapshot: any) => {
-    let userList = [];
-
-    // TODO: Make better handling of changes with docChanges()
-    if (!snapshot?.empty || !snapshot) {
-      userList = snapshot.docs.map((doc: any) => doc.data() as IUserEntity);
-    }
-
-    callback(userList);
-  });
-
-export const subscribeToUser = (uid: string, callback: userLoadCallbackFn) =>
-  UsersCollection.doc(uid).onSnapshot((snapshot: any) => {
-    let user: IUserEntity | null = null;
-
-    // TODO: Make better handling of changes with docChanges()
-    if (!snapshot?.empty || !snapshot) {
-      user = snapshot.data() as IUserEntity;
-    }
-
-    callback(user);
-  });
+  UsersCollection.doc(uid).onSnapshot(
+    (snapshot: IFirebaseSnapshot<IUserEntity>) => {
+      callback(snapshot);
+    },
+  );
 
 export const getUserById = async (userId: string): Promise<IUserEntity> => {
   if (!userId) {

@@ -2,18 +2,13 @@ import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {UserModel} from '../Models/UserModel';
 import BaseStore from './BaseStore';
 import {subscribeToAllUsers} from '~/Services/ListServices/UserListService';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+import {FirestoreUnsubscribeFn, IFirebaseDocChange} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
-import {observable, runInAction} from 'mobx';
 
-export default class UserStore extends BaseStore<UserModel> {
-  @observable
-  isLoading: boolean;
-
+export default class UserStore extends BaseStore<UserModel, IUserEntity> {
   constructor(rootStore: RootStore) {
     super(rootStore);
-    this.isLoading = false;
   }
 
   // Data consuming methods
@@ -30,23 +25,21 @@ export default class UserStore extends BaseStore<UserModel> {
 
   //Actions
   subscribeToAllUsers = (): FirestoreUnsubscribeFn =>
-    subscribeToAllUsers(this._updateUserList);
+    subscribeToAllUsers(super.updateStoreData);
 
-  // Private function
-  _updateUserList = (updatedUserList: Array<IUserEntity>) => {
-    runInAction(() => {
-      this.isLoading = true;
-    });
+  // Overriden methods
+  getEntityModel(entity: IUserEntity): UserModel {
+    return new UserModel(entity);
+  }
 
-    const updatesMap = new Map<string, UserModel>();
-
-    updatedUserList.forEach((userEntity: IUserEntity) => {
-      updatesMap.set(userEntity.uid, new UserModel(userEntity));
-    });
-
-    runInAction(() => {
-      this.data.merge(updatesMap);
-      this.isLoading = false;
-    });
-  };
+  firestoreDocToEntity(
+    firebaseDoc: IFirebaseDocChange<IUserEntity>,
+  ): IUserEntity {
+    const userDoc = super.firestoreDocToEntity(firebaseDoc);
+    // TODO: remove firestoreDocToEntity method overriding when we replace uid with id in user document
+    return {
+      ...userDoc,
+      id: userDoc.uid,
+    };
+  }
 }
