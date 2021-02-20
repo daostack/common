@@ -5,7 +5,7 @@ export const uiStorePropTypes = shape({
     showBottomSheet: func.isRequired,
     hideBottomSheet: func.isRequired,
     topSnap: number.isRequired,
-    template: object.isRequired,
+    template: object,
     increseTopSnap: func.isRequired,
     decreseTopSnap: func.isRequired,
   }).isRequired,
@@ -38,7 +38,6 @@ export const commonStorePropTypes = shape({
 });
 
 export const proposalStorePropTypes = shape({
-  subscribeToUserProposals: func.isRequired,
   getProposalById: func.isRequired,
   getCommonProposals: func.isRequired,
   getUserProposals: func.isRequired,
