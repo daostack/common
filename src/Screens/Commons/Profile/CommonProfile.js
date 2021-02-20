@@ -434,11 +434,11 @@ const CommonProfile = ({
       : navigateTo('Edit Rules');
   };
 
-  const onModerate = (action) => {
+  const onModerate = async (action, itemType = '', itemId = null) => {
     setAction(action);
     if (action === 'Show') {
-      //await ModerationService.getInstance().show(commonId, 'discussion');
-      // TODO un-hide it in database
+      await ModerationService.getInstance().show(itemId, commonId, itemType.toLowerCase());
+      bottomSheetStore.hideBottomSheet();
     } else {
       setShowModerationModal(true);
     }
@@ -453,12 +453,10 @@ const CommonProfile = ({
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
-        onAction: item ? (action) => onModerate(action) : (type) => onEdit(type),
-        //onEdit: (type) => onEdit(type),
+        onAction: item ? (action) => onModerate(action, itemType, item.id) : (type) => onEdit(type),
         moderatorOptions: {
           item,
         },
-        //onModerate: (action) => onModerate(action),
       },
     );
   };
@@ -466,7 +464,7 @@ const CommonProfile = ({
   const onHideContent = async () => {
     setShowModerationModal(false);
     bottomSheetStore.hideBottomSheet();
-    await ModerationService.getInstance().hide(moderationType, commonId, moderationFormStore.getFormFieldsJson());
+    await ModerationService.getInstance().hide(moderationType.toLowerCase(), commonId, moderationFormStore.getFormFieldsJson());
     moderationFormStore.clearFormStoreState();
   };
 

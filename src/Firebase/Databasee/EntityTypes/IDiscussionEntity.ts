@@ -46,4 +46,6 @@ export interface IDiscussionEntity extends IBaseEntity {
    * Users who follow this discussion
    */
   followers: string[];
+
+  moderation: object; //TODO typing
 }

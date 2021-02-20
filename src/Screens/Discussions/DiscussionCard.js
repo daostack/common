@@ -38,7 +38,7 @@ const DiscussionCard = ({
       ?.length || 0;
 
   const navigateToDiscussion = () => {
-    if (data.moderation) {
+    if (data.moderation && data.moderation.flag === 'hidden') {
       hiddenDiscussionNote();
     } else {
       const navigate = CommonActions.navigate({

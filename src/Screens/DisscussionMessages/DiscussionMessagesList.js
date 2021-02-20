@@ -12,7 +12,7 @@ import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
 import moment from 'moment';
 import logger from '../../Services/Logger';
-import PropTypes, {string, bool} from 'prop-types';
+import PropTypes, {string, bool, func} from 'prop-types';
 import {discussionStorePropTypes} from '~/Types/propTypes';
 import {rootStorePropTypes} from '~/Types/propTypes';
 
@@ -67,7 +67,13 @@ const DiscussionMessagesList = ({
             width: Dimensions.get('screen').width * 0.9,
           }}
           renderItem={(x) => (
-            <DiscussionMessage data={x.item} showCurrentUserAvatar hasPermission={hasPermission} commonId={commonId} openMessageOptions={(action) => openMessageOptions(action, x.item.id)}/>
+            <DiscussionMessage
+              data={x.item}
+              showCurrentUserAvatar
+              hasPermission={hasPermission}
+              commonId={commonId}
+              openMessageOptions={(action) => openMessageOptions(action, x.item)}
+            />
           )}
           onScrollToIndexFailed={(info) => {
             logger.error('Something bad happened: ', info);
@@ -106,6 +112,8 @@ DiscussionMessagesList.propTypes = {
   rootStore: rootStorePropTypes.isRequired,
   hasPermission: bool,
   commonId: string,
+  action: func,
+  openMessageOptions: func,
 };
 
 const styles = StyleSheet.create({

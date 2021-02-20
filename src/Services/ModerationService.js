@@ -15,6 +15,7 @@ export default class ModerationService {
     this.endpoints = {
       hide: '/hide',
       hideReport: '/hide-report',
+      show: '/show',
     };
   }
 
@@ -25,7 +26,7 @@ export default class ModerationService {
     return this.serviceInstance;
   };
 
-  hide = async (type, commonId, moderation = null, report = false) => {
+  hide = async (type, commonId, moderation = null) => {
     try {
       return await this.axiosClient.post(
         this.endpoints.hide,
@@ -45,12 +46,12 @@ export default class ModerationService {
     }
   }
 
-  show = async (moderation, commonId, type, report = false) => {
+  show = async (itemId, commonId, type) => {
     try {
       return await this.axiosClient.post(
-        this.endpoints.hide,
+        this.endpoints.show,
         {
-          moderation,
+          itemId,
           commonId,
           type,
         },

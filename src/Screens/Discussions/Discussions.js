@@ -288,24 +288,25 @@ const Discussions = ({
     </>
   );
 
-  const onModerate = async () => {
+  const onModerate = async (action, messageId) => {
     bottomSheetStore.hideBottomSheet();
     if (action === 'Show') {
-      //show message
+      await ModerationService.getInstance().show(messageId, commonId, 'discussionMessage');
+      bottomSheetStore.hideBottomSheet();
     } else {
       setShowModerationModal(true);
     }
   };
 
-  const openMessageOptions = (action, messageId) => {
-    moderationFormStore.registerFormField(ModerationForm.ITEM_ID, 'string', messageId);
+  const openMessageOptions = (action, message) => {
+    moderationFormStore.registerFormField(ModerationForm.ITEM_ID, 'string', message.id);
     setAction(action);
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
-        onAction: (action) => onModerate(action),
+        onAction: () => onModerate(action, message.id),
         moderatorOptions: {
-          data,
+          item: message,
           actions: [action],
         },
       },
@@ -315,7 +316,7 @@ const Discussions = ({
   const onHideContent = async () => {
     setShowModerationModal(false);
     bottomSheetStore.hideBottomSheet();
-    await ModerationService.getInstance().hide('DiscussionMessage', commonId, moderationFormStore.getFormFieldsJson());
+    await ModerationService.getInstance().hide('discussionMessage', commonId, moderationFormStore.getFormFieldsJson());
     moderationFormStore.clearFormStoreState();
   };
 
@@ -344,7 +345,7 @@ const Discussions = ({
           scrollViewRef={scrollRef}
           hasPermission={hasPermission}
           commonId={commonId}
-          openMessageOptions={(action, messageId) => openMessageOptions(action, messageId)}
+          openMessageOptions={(action, message) => openMessageOptions(action, message)}
         />
       </ScrollView>
       {moderationModal()}

@@ -5,7 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {inject, observer} from 'mobx-react';
@@ -15,17 +15,20 @@ const CommonProfileOptions = ({
   moderatorOptions = null,
   onAction,
 }) => {
-  let actions = moderatorOptions.actions || ['Hide'];//, 'Hide & Report'];
 
-  (() => {
+  const [actions, setActions] = useState(moderatorOptions.actions || ['Hide & Report']);
+  const [actionColor, setActionColor] = useState(text.buttonred);
+
+  useEffect(() => {
     if (moderatorOptions) {
-      if (moderatorOptions.moderation) {
-        if (moderatorOptions.moderation.flag === 'hidden') {
-          actions = ['Show', 'Report'];
+      if (moderatorOptions.item?.moderation) {
+        if (moderatorOptions.item?.moderation?.flag === 'hidden') {
+          setActions(['Show']);
+          setActionColor(text.buttonblack);
         }
       }
     }
-  })();
+  }, []);
 
 
   return <ScrollView
@@ -69,7 +72,7 @@ const CommonProfileOptions = ({
               style={layout.marginRightS}
               color={colors.error}
             />
-            <Text style={text.buttonred}>{actions[0]}</Text>
+            <Text style={actionColor}>{actions[0]}</Text>
           </TouchableOpacity>
           {actions[1] && <TouchableOpacity style={styles.optionBtn} onPress={() => onAction(actions[1])}>
             <Icon
@@ -77,7 +80,7 @@ const CommonProfileOptions = ({
               style={layout.marginRightS}
               color={colors.error}
             />
-            <Text style={text.buttonred}>{actions[1]}</Text>
+            <Text style={actionColor}>{actions[1]}</Text>
           </TouchableOpacity>}
         </>
       )}

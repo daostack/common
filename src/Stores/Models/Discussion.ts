@@ -33,6 +33,9 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
   @observable
   followers: string[];
 
+  @observable
+  moderation?: object | undefined; // TODO create moderation type
+
   constructor(newDiscussionInfo: IDiscussionEntity) {
     super(newDiscussionInfo);
     this.id = newDiscussionInfo.id;
@@ -45,5 +48,6 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
     this.files = newDiscussionInfo.files;
     this.images = newDiscussionInfo.images;
     this.followers = newDiscussionInfo.followers;
+    this.moderation = newDiscussionInfo.moderation;
   }
 }
