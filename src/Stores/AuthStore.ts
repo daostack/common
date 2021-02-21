@@ -95,7 +95,6 @@ class AuthStore {
 
   @action
   setSignedInUser = (newUserInfo: any) => {
-    console.log('setSignedInUser -> ', newUserInfo);
     const isUserChanged = newUserInfo?.uid !== this.userInfo?.uid;
     this.userInfo = newUserInfo;
     if (isUserChanged) {
