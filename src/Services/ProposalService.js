@@ -179,12 +179,11 @@ export default class ProposalService {
         callback({
           pendingProposalCount: pendingProposals.length,
           usersPendingProposal:
-            (
-              userInfoUid &&
-              pendingProposals.find(
-                (doc) => doc.data().proposerId === userInfoUid,
-              )
-            )?.data() || false,
+            (userInfoUid &&
+              pendingProposals
+                .find((doc) => doc.data().proposerId === userInfoUid)
+                ?.data()) ||
+            false,
         });
       },
       (error) => Toast.error(error),
