@@ -3,7 +3,7 @@ import {inject, observer} from 'mobx-react';
 import {FlatList} from 'react-native';
 import DiscussionCard from './DiscussionCard';
 import ViewTabNoData from '~/Components/ViewTabNoData';
-import {string, object, bool,func} from 'prop-types';
+import {string, object, bool, func} from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
 
 const DiscussionList = ({commonId, navigation, rootStore, hasPermission, openCommonOptions, showHiddenNote}) => {

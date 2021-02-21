@@ -32,7 +32,7 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 import {updateDiscussionLastMessage} from '~/Services/ListServices/DiscussionListService';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
-import {Hide} from '~/Components';
+import {Report, Show} from '~/Components';
 import ModerationService from '~/Services/ModerationService';
 const {width} = Dimensions.get('window');
 
@@ -63,7 +63,10 @@ const Discussions = ({
   const [inputHeight, setInputHeight] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [action, setAction] = useState('Report');
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
+  const action = ['Hide', 'Report'];
 
   const isMember =
     authStore.userInfo &&
@@ -288,36 +291,68 @@ const Discussions = ({
     </>
   );
 
-  const onModerate = async (action, messageId) => {
+  const onModerate = async (actionType, messageId) => {
     bottomSheetStore.hideBottomSheet();
-    if (action === 'Show') {
-      await ModerationService.getInstance().show(messageId, commonId, 'discussionMessage');
-      bottomSheetStore.hideBottomSheet();
-      moderationFormStore.clearFormStoreState();
-    } else {
-      setShowModerationModal(true);
+    switch (actionType) {
+      case 'Show':
+        Toast.loading('Loading...');
+        await ModerationService.getInstance().show(
+          messageId,
+          commonId,
+          'discussionMessage',
+        );
+        Toast.hide();
+        Toast.success('Done');
+        setShowModerationSuccessModal(true);
+        break;
+      case 'Hide':
+        Toast.loading('Loading...');
+        await ModerationService.getInstance().hide(
+          messageId,
+          'discussionMessage',
+          commonId,
+        );
+        Toast.hide();
+        Toast.success('Done');
+        setShowModerationSuccessModal(true);
+        break;
+      default:
+        setShowModerationModal(true);
+        break;
     }
   };
 
-  const openMessageOptions = (action, message) => {
-    moderationFormStore.registerFormField(ModerationForm.ITEM_ID, 'string', message.id);
-    setAction(action);
+  const openMessageOptions = (message) => {
+    if (message) {
+      moderationFormStore.registerFormField(
+        ModerationForm.ITEM_ID,
+        'string',
+        message.id,
+      );
+    }
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
-        onAction: () => onModerate(action, message.id),
+        onAction: (actionType) => onModerate(actionType, message.id),
         moderatorOptions: {
           item: message,
-          actions: [action],
+          actions: action,
         },
       },
     );
   };
 
-  const onHideContent = async () => {
+  const onReportContent = async () => {
     setShowModerationModal(false);
+    Toast.loading('Loading...');
     bottomSheetStore.hideBottomSheet();
-    await ModerationService.getInstance().hide('discussionMessage', commonId, moderationFormStore.getFormFieldsJson());
+    await ModerationService.getInstance().report(
+      'discussionMessage',
+      commonId,
+      moderationFormStore.getFormFieldsJson(),
+    );
+    Toast.hide();
+    Toast.success('Done');
     moderationFormStore.clearFormStoreState();
   };
 
@@ -326,12 +361,26 @@ const Discussions = ({
       visible={showModerationModal}
       transparent={true}
       animationType="slide"
-      onBackdropPress={() => setShowModerationModal(false)}
-      >
-      <Hide title={`${action} Comment`}
+      onBackdropPress={() => setShowModerationModal(false)}>
+      <Report
+        title={'Comment'}
         onCancel={() => setShowModerationModal(false)}
-        onHideContent={() => onHideContent()}
+        onReportContent={() => onReportContent()}
         formStore={moderationFormStore}
+      />
+    </Modal>
+  );
+
+  const moderationActionSuccessModal = () => (
+    <Modal
+      visible={showModerationSuccessModal}
+      transparent={true}
+      animationType="slide"
+      onBackdropPress={() => setShowModerationSuccessModal(false)}>
+      <Show
+        type={'comment'}
+        action={action}
+        onDismiss={() => setShowModerationSuccessModal(false)}
       />
     </Modal>
   );
@@ -339,6 +388,8 @@ const Discussions = ({
   return (
     <SafeAreaView style={styles.safeView}>
       {header()}
+      {moderationModal()}
+      {moderationActionSuccessModal()}
       <ScrollView style={{flex: 1, paddingBottom: 30}} ref={scrollRef}>
         <DiscussionMessagesList
           discussionId={discussionId}
@@ -346,10 +397,9 @@ const Discussions = ({
           scrollViewRef={scrollRef}
           hasPermission={hasPermission}
           commonId={commonId}
-          openMessageOptions={(action, message) => openMessageOptions(action, message)}
+          openMessageOptions={(message) => openMessageOptions(message)}
         />
       </ScrollView>
-      {moderationModal()}
 
       {isMember ? (
         <KeyboardAvoidingView

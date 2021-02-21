@@ -1,7 +1,8 @@
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
+import {TouchableOpacity, Text} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
-import {func, string} from 'prop-types';
+import {func, string, bool} from 'prop-types';
+import {colors} from '~/Theme';
 
 export const ModerationMenu = ({showOptions, color = ''}) => (
   <TouchableOpacity onPress={showOptions} style={{padding: 5}}>
@@ -12,4 +13,14 @@ export const ModerationMenu = ({showOptions, color = ''}) => (
 ModerationMenu.propTypes = {
   showOptions: func,
   color: string,
+};
+
+export const Reported = ({reported}) => (
+  <Text style={{fontSize: 15, color: colors.grey3}}>
+    {reported && ' (reported)'}
+  </Text>
+);
+
+Reported.propTypes = {
+  reported: bool,
 };

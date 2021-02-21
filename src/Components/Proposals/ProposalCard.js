@@ -19,7 +19,7 @@ import ProposalApprovalTag from './ProposalApprovalTag';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
 import {string, bool, object, shape, func} from 'prop-types';
-import {ModerationMenu} from '../../Util/moderation';
+import {ModerationMenu, Reported} from '../../Util/moderation';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -31,7 +31,6 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 const {width} = Dimensions.get('window');
 
 const ProposalCard = ({
-  //data,
   proposalId,
   navigation,
   containerStyle,
@@ -39,7 +38,7 @@ const ProposalCard = ({
   commonInfo,
   hasPermission,
   openCommonOptions,
-  hiddenDiscussionNote,
+  hiddenProposalNote,
   rootStore,
 }) => {
   // Stores
@@ -84,21 +83,20 @@ const ProposalCard = ({
   };
 
   const onReviewProposal = async () => {
-    if (proposalInfo.moderation) {
-      hiddenDiscussionNote();
+    if (proposalInfo.moderation && proposalInfo.moderation.flag === 'hidden') {
+      hiddenProposalNote();
     } else {
-        let currCommonInfo = commonInfo;
+      let currCommonInfo = commonInfo;
 
-        if (!currCommonInfo) {
-          currCommonInfo = await DaoService.getInstance().getDaoById(
-            proposalInfo.commonId,
-          );
-        }
-        
-        navigation.navigate('ProposalScreen', {
-          proposalId: proposalInfo.id,
-        });
+      if (!currCommonInfo) {
+        currCommonInfo = await DaoService.getInstance().getDaoById(
+          proposalInfo.commonId,
+        );
       }
+      navigation.navigate('ProposalScreen', {
+        proposalId: proposalInfo.id,
+      });
+    }
   };
 
   return proposalInfo ? (
@@ -118,6 +116,7 @@ const ProposalCard = ({
             <View style={styles.titleContainer}>
               <Text style={styles.title}>
                 {proposalInfo?.description?.title || 'Unknown title'}
+                <Reported reported={proposalInfo.moderation.flag === 'reported'} />
               </Text>
               {hasPermission && (
                 <ModerationMenu showOptions={openCommonOptions} />
@@ -205,7 +204,7 @@ ProposalCard.propTypes = {
   }),
   hasPermission: bool,
   openCommonOptions: func,
-  hiddenDiscussionNote: func,
+  hiddenProposalNote: func,
   rootStore: rootStorePropTypes,
 };
 

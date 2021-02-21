@@ -14,7 +14,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import moment from 'moment';
 import {CommonActions} from '@react-navigation/native';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {ModerationMenu} from '../../Util/moderation';
+import {ModerationMenu, Reported} from '../../Util/moderation';
 
 const {width} = Dimensions.get('window');
 
@@ -27,7 +27,6 @@ const DiscussionCard = ({
   hiddenDiscussionNote,
   rootStore,
 }) => {
-
   //const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const userStore = rootStore.userStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
@@ -67,6 +66,7 @@ const DiscussionCard = ({
           <View style={styles.titleContainer}>
             <Text style={styles.title} numberOfLines={2}>
               {data.title}
+              <Reported reported={data.moderation.flag === 'reported'} />
             </Text>
             {hasPermission && (
               <ModerationMenu showOptions={openCommonOptions} />
@@ -281,6 +281,10 @@ const styles = StyleSheet.create({
     color: colors.mainBlue,
     textAlign: 'center',
   },
+  textReported: {
+    fontSize: 15,
+    color: colors.grey3
+  }
 });
 
 export default inject('rootStore', 'userStore')(observer(DiscussionCard));

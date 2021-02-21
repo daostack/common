@@ -44,11 +44,12 @@ import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDate';
-import {BlurView, Hide} from '~/Components';
+import {BlurView, Report, Show} from '~/Components';
 import Logger from '~/Services/Logger';
 import moment from 'moment';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
+import Toast from '~/Util/Toast.js';
 
 import {
   IntroduceYourselfFormStore,
@@ -64,12 +65,7 @@ const STICKY_HEADER_HEIGHT =
   Math.round(getStatusBarHeight(true)) + stickyHeightAddon;
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
-const CommonProfile = ({
-  navigation,
-  userStore,
-  route: {params},
-  rootStore,
-}) => {
+const CommonProfile = ({navigation, userStore, route: {params}, rootStore}) => {
   /* all of  params.commonId,
   params.showRequestSentModal,
   params.createdProposalId
@@ -85,6 +81,7 @@ const CommonProfile = ({
 
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(false);
   const window = Dimensions.get('window');
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState('Discussion');
@@ -274,8 +271,12 @@ const CommonProfile = ({
           type: PROPOSAL_TYPE.FundingRequest,
         }}
         hasPermission={hasPermission}
-        openCommonOptions={(proposal) => openCommonOptions(proposal, 'Proposal')}
-        showHiddenNote={(hiddenProposal) => showHiddenNote(hiddenProposal, 'Proposal')}
+        openCommonOptions={(proposal) =>
+          openCommonOptions(proposal, 'Proposals')
+        }
+        showHiddenNote={(hiddenProposal) =>
+          showHiddenNote(hiddenProposal, 'Proposal')
+        }
       />
 
       {isMember && (
@@ -286,7 +287,7 @@ const CommonProfile = ({
       )}
     </View>
   );
-// what about histoty?!?
+
   const History = () => (
     <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
       <Text style={text.h1BlackTitle}>History</Text>
@@ -302,7 +303,9 @@ const CommonProfile = ({
           stage: PROPOSAL_STAGE.History,
           type: PROPOSAL_TYPE.FundingRequest,
         }}
-        showHiddenNote={(hiddenProposal) => showHiddenNote(hiddenProposal, 'Proposal')}
+        showHiddenNote={(hiddenProposal) =>
+          showHiddenNote(hiddenProposal, 'Proposal')
+        }
       />
     </View>
   );
@@ -434,26 +437,55 @@ const CommonProfile = ({
       : navigateTo('Edit Rules');
   };
 
-  const onModerate = async (action, itemType = '', itemId = null) => {
-    setAction(action);
-    if (action === 'Show') {
-      await ModerationService.getInstance().show(itemId, commonId, itemType.toLowerCase());
-      bottomSheetStore.hideBottomSheet();
-    } else {
-      setShowModerationModal(true);
+  const onModerate = async (actionType, itemType = '', itemId = null) => {
+    setAction(actionType);
+    bottomSheetStore.hideBottomSheet();
+    switch (actionType) {
+      case 'Show':
+        Toast.loading('Loading...');
+        await ModerationService.getInstance().show(
+          itemId,
+          commonId,
+          itemType.toLowerCase(),
+        );
+        Toast.hide();
+        Toast.success('Done');
+        setShowModerationSuccessModal(true);
+        break;
+      case 'Hide':
+        Toast.loading('Hiding content...');
+        await ModerationService.getInstance().hide(
+          itemId,
+          itemType.toLowerCase(),
+          commonId,
+        );
+        Toast.hide();
+        Toast.success('Done');
+        setShowModerationSuccessModal(true);
+        break;
+      default:
+        // reporting
+        setShowModerationModal(true);
+        break;
     }
   };
 
   // consider adding itemId to edit (?)
   const openCommonOptions = (item = null, itemType = '') => {
     if (item) {
-      moderationFormStore.registerFormField(ModerationForm.ITEM_ID, 'string', item.id);
-      setModerationType(itemType);
+      moderationFormStore.registerFormField(
+        ModerationForm.ITEM_ID,
+        'string',
+        item.id,
+      );
     }
+    setModerationType(itemType);
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
-        onAction: item ? (action) => onModerate(action, itemType, item.id) : (type) => onEdit(type),
+        onAction: item
+          ? (actionType) => onModerate(actionType, itemType, item.id)
+          : (type) => onEdit(type),
         moderatorOptions: {
           item,
         },
@@ -461,17 +493,18 @@ const CommonProfile = ({
     );
   };
 
-  const onHideContent = async () => {
+  const onReportContent = async () => {
     setShowModerationModal(false);
     bottomSheetStore.hideBottomSheet();
-    const resp = await ModerationService.getInstance().hide(moderationType.toLowerCase(), commonId, moderationFormStore.getFormFieldsJson());
-    console.log('resp', resp)
-    /*bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.HIDE_CONTENT_SUCCESS,
-      {
-        message: resp?.data?.message
-      }
-      )*/
+    Toast.loading('Reporting content...');
+    await ModerationService.getInstance().report(
+      moderationType.toLowerCase(),
+      commonId,
+      moderationFormStore.getFormFieldsJson(),
+    );
+    Toast.hide();
+    Toast.success('Done');
+    setShowModerationSuccessModal(true);
     moderationFormStore.clearFormStoreState();
   };
 
@@ -495,12 +528,26 @@ const CommonProfile = ({
       visible={showModerationModal}
       transparent={true}
       animationType="slide"
-      onBackdropPress={() => setShowModerationModal(false)}
-      >
-      <Hide title={`${action} ${moderationType}`}
+      onBackdropPress={() => setShowModerationModal(false)}>
+      <Report
+        title={moderationType}
         onCancel={() => setShowModerationModal(false)}
-        onHideContent={() => onHideContent()}
+        onReportContent={() => onReportContent()}
         formStore={moderationFormStore}
+      />
+    </Modal>
+  );
+
+  const moderationActionSuccessModal = () => (
+    <Modal
+      visible={showModerationSuccessModal}
+      transparent={true}
+      animationType="slide"
+      onBackdropPress={() => setShowModerationSuccessModal(false)}>
+      <Show
+        type={moderationType}
+        action={action}
+        onDismiss={() => setShowModerationSuccessModal(false)}
       />
     </Modal>
   );
@@ -769,6 +816,7 @@ const CommonProfile = ({
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       {moderationModal()}
+      {moderationActionSuccessModal()}
       {currCommon ? (
         <View style={{flex: 1, position: 'relative'}}>
           <TouchableOpacity
@@ -906,8 +954,6 @@ const CommonProfile = ({
             </View>
 
             {renderMembersRow()}
-
-
 
             {!isMember && showReqToJoin && (
               <View

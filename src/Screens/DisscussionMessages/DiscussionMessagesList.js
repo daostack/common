@@ -72,7 +72,7 @@ const DiscussionMessagesList = ({
               showCurrentUserAvatar
               hasPermission={hasPermission}
               commonId={commonId}
-              openMessageOptions={(action) => openMessageOptions(action, x.item)}
+              openMessageOptions={() => openMessageOptions(x.item)}
             />
           )}
           onScrollToIndexFailed={(info) => {

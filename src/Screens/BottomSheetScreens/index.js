@@ -9,7 +9,6 @@ import {default as PaymentStatusScreen} from './PaymentStatusScreen';
 import {default as CancelSubscription} from './CancelSubscriptionSheetScreen';
 import {default as BackendErrorSheetScreen} from '~/Screens/BottomSheetScreens/BackendErrorSheetScreen';
 import {default as HiddenContentInfo} from './HiddenContentInfo';
-import {default as HideContentSuccess} from './HideContentSuccess';
 
 export const BOTTOM_SHEET_TEMPLATES = {
   COMMON_OPERATIONAL_STATE_NOTIF: {
@@ -65,9 +64,5 @@ export const BOTTOM_SHEET_TEMPLATES = {
   HIDDEN_CONTENT_INFO: {
     topSnap: 300,
     content: HiddenContentInfo,
-  },
-  HIDE_CONTENT_SUCCESS: {
-    topSnap: 300,
-    content: HideContentSuccess,
-  },
+  }
 };

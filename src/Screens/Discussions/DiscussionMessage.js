@@ -29,37 +29,55 @@ const DiscussionMessage = ({
 }) => {
   let currentUserUid = null;
   const isHidden = data.moderation?.flag === 'hidden';
+  const flag = data.moderation?.flag || '';
   const [permission, setPermission] = useState('');
 
-  const action = hasPermission ? (isHidden ? 'Show' : 'Hide') : 'Report';
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
   }
 
   const ownerInfo = userStore.getUserById(data.ownerId);
-  const moderatorInfo = data.moderation && userStore.getUserById(data.moderation?.moderator);
-  const moderatorName = moderatorInfo?.uid === currentUserUid ? 'you' : `${moderatorInfo?.firstName || ''} ${moderatorInfo?.lastName || ''}`;
+  const moderatorInfo =
+    data.moderation &&
+    userStore.getUserById(
+      data?.moderation?.moderator || data?.moderation?.reporter,
+    );
+  const moderatorName =
+    moderatorInfo?.uid === currentUserUid
+      ? 'you'
+      : `${moderatorInfo?.firstName || ''} ${moderatorInfo?.lastName || ''}`;
 
   useEffect(() => {
     (async () => {
-      const userPermission = await rootStore.authStore.getPermission(commonId, ownerInfo);
+      const userPermission = await rootStore.authStore.getPermission(
+        commonId,
+        ownerInfo,
+      );
       setPermission(userPermission);
     })();
-
   }, []);
 
   // icon missing
-  const hiddenView = isHidden && <Text style={{...styles.hiddenTitle, color: colors.grey3, marginLeft: 30}} >Hidden by {moderatorName}</Text>;
+  const flagView = flag && flag !== 'visible' && (
+    <Text style={{...styles.hiddenTitle, color: colors.grey3, marginLeft: 30}}>
+      {flag} by {moderatorName}
+    </Text>
+  );
 
-
-  const dateView = () =>
-    <Text style={{...styles.date, color: isHidden ? colors.grey3 : colors.formPlaceholderColor}}>
+  const dateView = () => (
+    <Text
+      style={{
+        ...styles.date,
+        color: isHidden ? colors.grey3 : colors.formPlaceholderColor,
+      }}>
       {moment(data.createTime.toDate()).format('HH:mm')}
-    </Text>;
+    </Text>
+  );
 
   return (
-    <Pressable style={styles.container} onLongPress={() => openMessageOptions(action)}>
-
+    <Pressable
+      style={styles.container}
+      onLongPress={() => openMessageOptions()}>
       {currentUserUid === data.ownerId ? (
         <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
           {showCurrentUserAvatar && (
@@ -76,11 +94,19 @@ const DiscussionMessage = ({
             />
           )}
 
-          <View style={{...styles.contentOwner, backgroundColor: isHidden ? colors.paleLilacTwo : colors.white}}>
-            {hiddenView}
+          <View
+            style={{
+              ...styles.contentOwner,
+              backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
+            }}>
+            {flagView}
             <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
               <Text
-                style={{...styles.text, color: isHidden ? colors.grey3 : colors.black, ...textjs.writingDirection(data.text)}}
+                style={{
+                  ...styles.text,
+                  color: isHidden ? colors.grey3 : colors.black,
+                  ...textjs.writingDirection(data.text),
+                }}
                 selectable>
                 {data.text}
               </Text>
@@ -111,18 +137,38 @@ const DiscussionMessage = ({
                 maxWidth: width - 90,
                 backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
               }}>
-              <View style={{flexDirection: 'row', justifyContent: 'space-between'}} >
-              <Text style={{...styles.ownerName, color: isHidden ? colors.grey3 : colors.black}}>{ownerInfo?.displayName}</Text>
-              {!isHidden && <Text style={{...styles.ownerName, color: colors.grey3}}>{permission}</Text>}
-              {hiddenView}
-              </View>
-              {(!isHidden || hasPermission) && <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
                 <Text
-                  style={{...styles.text, color: isHidden ? colors.grey3 : colors.black, ...textjs.writingDirection(data.text)}}
-                  selectable>
-                  {data.text}
+                  style={{
+                    ...styles.ownerName,
+                    color: isHidden ? colors.grey3 : colors.black,
+                  }}>
+                  {ownerInfo?.displayName}
                 </Text>
-              </Hyperlink>}
+                {!isHidden && (
+                  <Text style={{...styles.ownerName, color: colors.grey3}}>
+                    {permission}
+                  </Text>
+                )}
+                {flagView}
+              </View>
+              {(!isHidden || hasPermission) && (
+                <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
+                  <Text
+                    style={{
+                      ...styles.text,
+                      color: isHidden ? colors.grey3 : colors.black,
+                      ...textjs.writingDirection(data.text),
+                    }}
+                    selectable>
+                    {data.text}
+                  </Text>
+                </Hyperlink>
+              )}
               {dateView()}
             </View>
           </View>

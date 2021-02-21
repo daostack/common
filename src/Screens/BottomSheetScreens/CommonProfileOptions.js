@@ -11,18 +11,17 @@ import Icon from '~/Assets/iconfont/Icon';
 import {inject, observer} from 'mobx-react';
 import {object, func} from 'prop-types';
 
-const CommonProfileOptions = ({
-  moderatorOptions = null,
-  onAction,
-}) => {
-
-  const [actions, setActions] = useState(moderatorOptions.actions || ['Hide & Report']);
+const CommonProfileOptions = ({moderatorOptions = null, onAction}) => {
+  const [actions, setActions] = useState(
+    moderatorOptions.actions || ['Hide', 'Report'],
+  );
   const [actionColor, setActionColor] = useState(text.buttonred);
-
+  const {item} = moderatorOptions;
   useEffect(() => {
-    if (moderatorOptions) {
-      if (moderatorOptions.item?.moderation) {
-        if (moderatorOptions.item?.moderation?.flag === 'hidden') {
+    console.log('actions', actions);
+    if (item) {
+      if (item?.moderation) {
+        if (item?.moderation?.flag === 'hidden') {
           setActions(['Show']);
           setActionColor(text.buttonblack);
         }
@@ -30,68 +29,75 @@ const CommonProfileOptions = ({
     }
   }, []);
 
-
-  return <ScrollView
-    contentInsetAdjustmentBehavior="automatic"
-    style={styles.scrollView}
-    vertical={true}
-    nestedScrollEnabled={true}
-    directionalLockEnabled={true}>
-    <View style={styles.body}>
-      <Text style={styles.text}>Options</Text>
-      {!moderatorOptions && (
-        <>
-          <TouchableOpacity
-            style={styles.optionBtn}
-            onPress={() => onAction('info')}>
-            <Icon
-              name="dao-general-info-24"
-              style={layout.marginRightS}
-              color={colors.black}
-            />
-            <Text style={text.buttonblack}>Edit info and cover photo</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.optionBtn}
-            onPress={() => onAction('rules')}>
-            <Icon
-              name="agenda-24"
-              style={layout.marginRightS}
-              color={colors.black}
-            />
-            <Text style={text.buttonblack}>Edit rules</Text>
-          </TouchableOpacity>
-        </>
-      )}
-      {moderatorOptions && (
-        <>
-          <Text style={styles.text}>Moderator tools</Text>
-          <TouchableOpacity style={styles.optionBtn} onPress={() => onAction(actions[0])}>
-            <Icon
-              name="hidden"
-              style={layout.marginRightS}
-              color={colors.error}
-            />
-            <Text style={actionColor}>{actions[0]}</Text>
-          </TouchableOpacity>
-          {actions[1] && <TouchableOpacity style={styles.optionBtn} onPress={() => onAction(actions[1])}>
-            <Icon
-              name="report-16"
-              style={layout.marginRightS}
-              color={colors.error}
-            />
-            <Text style={actionColor}>{actions[1]}</Text>
-          </TouchableOpacity>}
-        </>
-      )}
-    </View>
-  </ScrollView>;
+  return (
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      style={styles.scrollView}
+      vertical={true}
+      nestedScrollEnabled={true}
+      directionalLockEnabled={true}>
+      <View style={styles.body}>
+        <Text style={styles.text}>Options</Text>
+        {!item && (
+          <>
+            <TouchableOpacity
+              style={styles.optionBtn}
+              onPress={() => onAction('info')}>
+              <Icon
+                name="dao-general-info-24"
+                style={layout.marginRightS}
+                color={colors.black}
+              />
+              <Text style={text.buttonblack}>Edit info and cover photo</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.optionBtn}
+              onPress={() => onAction('rules')}>
+              <Icon
+                name="agenda-24"
+                style={layout.marginRightS}
+                color={colors.black}
+              />
+              <Text style={text.buttonblack}>Edit rules</Text>
+            </TouchableOpacity>
+          </>
+        )}
+        {item && (
+          <>
+            <Text style={styles.text}>Moderator tools</Text>
+            <TouchableOpacity
+              style={styles.optionBtn}
+              onPress={() => onAction(actions[0])}>
+              <Icon
+                name="hidden"
+                style={layout.marginRightS}
+                color={colors.error}
+              />
+              <Text style={actionColor}>{actions[0]}</Text>
+            </TouchableOpacity>
+            {actions[1] && (
+              <TouchableOpacity
+                style={styles.optionBtn}
+                onPress={() => onAction(actions[1])}>
+                <Icon
+                  name="report-16"
+                  style={layout.marginRightS}
+                  color={colors.error}
+                />
+                <Text style={actionColor}>{actions[1]}</Text>
+              </TouchableOpacity>
+            )}
+          </>
+        )}
+      </View>
+    </ScrollView>
+  );
 };
 
 CommonProfileOptions.propTypes = {
   bottomSheetStore: object,
   //onEdit: func,
-  moderatorOptions: object,
+  moderatorOptions: object, // TODO
   //onModerate: func,
   onAction: func,
 };

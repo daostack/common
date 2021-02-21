@@ -84,7 +84,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
             navigation={navigation}
             hasPermission={hasPermission}
             openCommonOptions={() => openCommonOptions(item)}
-            hiddenDiscussionNote={() => showHiddenNote(item)}
+            hiddenProposalNote={() => showHiddenNote(item)}
           />
         ) : (
           <TouchableOpacity
@@ -110,7 +110,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
           navigation={navigation}
           hasPermission={hasPermission}
           openCommonOptions={() => openCommonOptions(item)}
-          hiddenDiscussionNote={() => showHiddenNote(item)}
+          hiddenProposalNote={() => showHiddenNote(item)}
         />
       );
 

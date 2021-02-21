@@ -5,8 +5,7 @@ import {auth} from '~/Firebase';
 export default class ModerationService {
   static serviceInstance = null;
 
-    constructor() {
-
+  constructor() {
     this.axiosClient = axios.create({
       baseURL: moderationUrl(),
       timeout: 1000000,
@@ -14,7 +13,7 @@ export default class ModerationService {
 
     this.endpoints = {
       hide: '/hide',
-      hideReport: '/hide-report',
+      report: '/report',
       show: '/show',
     };
   }
@@ -26,10 +25,30 @@ export default class ModerationService {
     return this.serviceInstance;
   };
 
-  hide = async (type, commonId, moderation = null) => {
+  hide = async (itemId, type, commonId) => {
     try {
       return await this.axiosClient.post(
         this.endpoints.hide,
+        {
+          itemId,
+          commonId,
+          type,
+        },
+        {
+          headers: {
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
+        },
+      );
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  report = async (type, commonId, moderation = null) => {
+    try {
+      return await this.axiosClient.post(
+        this.endpoints.report,
         {
           moderation,
           commonId,
@@ -39,12 +58,12 @@ export default class ModerationService {
           headers: {
             Authorization: await auth().currentUser.getIdToken(true),
           },
-        }
+        },
       );
     } catch (error) {
       throw error;
     }
-  }
+  };
 
   show = async (itemId, commonId, type) => {
     try {
@@ -59,11 +78,10 @@ export default class ModerationService {
           headers: {
             Authorization: await auth().currentUser.getIdToken(true),
           },
-        }
+        },
       );
     } catch (error) {
       throw error;
     }
-  }
+  };
 }
-
