@@ -58,7 +58,7 @@ const DiscussionMessage = ({
     </Text>;
 
   return (
-    <Pressable style={styles.container} onLongPress={() => openMessageOptions(action, data)}>
+    <Pressable style={styles.container} onLongPress={() => openMessageOptions(action)}>
 
       {currentUserUid === data.ownerId ? (
         <View style={{display: 'flex', flexDirection: 'row-reverse'}}>

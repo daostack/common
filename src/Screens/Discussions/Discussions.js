@@ -293,6 +293,7 @@ const Discussions = ({
     if (action === 'Show') {
       await ModerationService.getInstance().show(messageId, commonId, 'discussionMessage');
       bottomSheetStore.hideBottomSheet();
+      moderationFormStore.clearFormStoreState();
     } else {
       setShowModerationModal(true);
     }

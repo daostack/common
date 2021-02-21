@@ -464,7 +464,14 @@ const CommonProfile = ({
   const onHideContent = async () => {
     setShowModerationModal(false);
     bottomSheetStore.hideBottomSheet();
-    await ModerationService.getInstance().hide(moderationType.toLowerCase(), commonId, moderationFormStore.getFormFieldsJson());
+    const resp = await ModerationService.getInstance().hide(moderationType.toLowerCase(), commonId, moderationFormStore.getFormFieldsJson());
+    console.log('resp', resp)
+    /*bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.HIDE_CONTENT_SUCCESS,
+      {
+        message: resp?.data?.message
+      }
+      )*/
     moderationFormStore.clearFormStoreState();
   };
 
