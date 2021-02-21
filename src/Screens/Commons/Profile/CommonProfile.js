@@ -44,7 +44,7 @@ import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDate';
-import {BlurView, Report, Show} from '~/Components';
+import {BlurView, Report, HideContentSuccess} from '~/Components';
 import Logger from '~/Services/Logger';
 import moment from 'moment';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
@@ -249,8 +249,12 @@ const CommonProfile = ({navigation, userStore, route: {params}, rootStore}) => {
         navigation={navigation}
         commonId={currCommon.id}
         hasPermission={hasPermission}
-        openCommonOptions={(discussion) => openCommonOptions(discussion, 'Discussion')}
-        showHiddenNote={(hiddenDiscussion) => showHiddenNote(hiddenDiscussion, 'Discussion')}
+        openCommonOptions={(discussion) =>
+          openCommonOptions(discussion, 'Discussion')
+        }
+        showHiddenNote={(hiddenDiscussion) =>
+          showHiddenNote(hiddenDiscussion, 'Discussion')
+        }
       />
     </View>
   );
@@ -473,6 +477,7 @@ const CommonProfile = ({navigation, userStore, route: {params}, rootStore}) => {
   // consider adding itemId to edit (?)
   const openCommonOptions = (item = null, itemType = '') => {
     if (item) {
+      moderationFormStore.clearFormStoreState();
       moderationFormStore.registerFormField(
         ModerationForm.ITEM_ID,
         'string',
@@ -486,6 +491,7 @@ const CommonProfile = ({navigation, userStore, route: {params}, rootStore}) => {
         onAction: item
           ? (actionType) => onModerate(actionType, itemType, item.id)
           : (type) => onEdit(type),
+        hasPermission,
         moderatorOptions: {
           item,
         },
@@ -523,12 +529,13 @@ const CommonProfile = ({navigation, userStore, route: {params}, rootStore}) => {
     );
   };
 
+  const getType = (type) => (type === 'Proposals' ? 'Proposal' : type);
+
   const moderationModal = () => (
     <Modal
       visible={showModerationModal}
       transparent={true}
-      animationType="slide"
-      onBackdropPress={() => setShowModerationModal(false)}>
+      animationType="slide">
       <Report
         title={moderationType}
         onCancel={() => setShowModerationModal(false)}
@@ -544,8 +551,8 @@ const CommonProfile = ({navigation, userStore, route: {params}, rootStore}) => {
       transparent={true}
       animationType="slide"
       onBackdropPress={() => setShowModerationSuccessModal(false)}>
-      <Show
-        type={moderationType}
+      <HideContentSuccess
+        type={getType(moderationType)}
         action={action}
         onDismiss={() => setShowModerationSuccessModal(false)}
       />

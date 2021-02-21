@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -35,9 +35,16 @@ const DiscussionCard = ({
   const msgCount =
     discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
       ?.length || 0;
+  const [isHidden, setIsHidden] = useState(
+    data.moderation && data.moderation.flag === 'hidden',
+  );
+
+  useEffect(() => {
+    setIsHidden(data.moderation && data.moderation.flag === 'hidden');
+  }, [data]);
 
   const navigateToDiscussion = () => {
-    if (data.moderation && data.moderation.flag === 'hidden') {
+    if (isHidden) {
       hiddenDiscussionNote();
     } else {
       const navigate = CommonActions.navigate({
@@ -66,9 +73,9 @@ const DiscussionCard = ({
           <View style={styles.titleContainer}>
             <Text style={styles.title} numberOfLines={2}>
               {data.title}
-              <Reported reported={data.moderation.flag === 'reported'} />
+              <Reported reported={data.moderation?.flag === 'reported'} />
             </Text>
-            {hasPermission && (
+            {(!isHidden || hasPermission) && (
               <ModerationMenu showOptions={openCommonOptions} />
             )}
           </View>

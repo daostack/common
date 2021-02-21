@@ -11,14 +11,17 @@ import Icon from '~/Assets/iconfont/Icon';
 import {inject, observer} from 'mobx-react';
 import {object, func} from 'prop-types';
 
-const CommonProfileOptions = ({moderatorOptions = null, onAction}) => {
+const CommonProfileOptions = ({
+  moderatorOptions = null,
+  onAction,
+  hasPermission
+}) => {
   const [actions, setActions] = useState(
     moderatorOptions.actions || ['Hide', 'Report'],
   );
   const [actionColor, setActionColor] = useState(text.buttonred);
   const {item} = moderatorOptions;
   useEffect(() => {
-    console.log('actions', actions);
     if (item) {
       if (item?.moderation) {
         if (item?.moderation?.flag === 'hidden') {
@@ -65,16 +68,18 @@ const CommonProfileOptions = ({moderatorOptions = null, onAction}) => {
         {item && (
           <>
             <Text style={styles.text}>Moderator tools</Text>
-            <TouchableOpacity
-              style={styles.optionBtn}
-              onPress={() => onAction(actions[0])}>
-              <Icon
-                name="hidden"
-                style={layout.marginRightS}
-                color={colors.error}
-              />
-              <Text style={actionColor}>{actions[0]}</Text>
-            </TouchableOpacity>
+            {hasPermission && (
+              <TouchableOpacity
+                style={styles.optionBtn}
+                onPress={() => onAction(actions[0])}>
+                <Icon
+                  name="hidden"
+                  style={layout.marginRightS}
+                  color={colors.error}
+                />
+                <Text style={actionColor}>{actions[0]}</Text>
+              </TouchableOpacity>
+            )}
             {actions[1] && (
               <TouchableOpacity
                 style={styles.optionBtn}

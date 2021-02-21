@@ -47,6 +47,9 @@ const ProposalCard = ({
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
+  const [isHidden, setIsHidden] = useState(
+    proposalInfo.moderation && proposalInfo.moderation.flag === 'hidden',
+  );
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
@@ -69,6 +72,10 @@ const ProposalCard = ({
       getProposalInfo(proposalInfo.id);
     }
 
+    setIsHidden(
+      proposalInfo.moderation && proposalInfo.moderation.flag === 'hidden',
+    );
+
     return () => {
       unsubscribeProposalDiscussionsCount &&
         unsubscribeProposalDiscussionsCount();
@@ -83,7 +90,7 @@ const ProposalCard = ({
   };
 
   const onReviewProposal = async () => {
-    if (proposalInfo.moderation && proposalInfo.moderation.flag === 'hidden') {
+    if (isHidden) {
       hiddenProposalNote();
     } else {
       let currCommonInfo = commonInfo;
@@ -116,9 +123,11 @@ const ProposalCard = ({
             <View style={styles.titleContainer}>
               <Text style={styles.title}>
                 {proposalInfo?.description?.title || 'Unknown title'}
-                <Reported reported={proposalInfo.moderation.flag === 'reported'} />
+                <Reported
+                  reported={proposalInfo.moderation?.flag === 'reported'}
+                />
               </Text>
-              {hasPermission && (
+              {(!isHidden || hasPermission) && (
                 <ModerationMenu showOptions={openCommonOptions} />
               )}
             </View>

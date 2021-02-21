@@ -58,7 +58,7 @@ const DiscussionMessage = ({
   }, []);
 
   // icon missing
-  const flagView = flag && flag !== 'visible' && (
+  const flagView = !!flag && flag !== 'visible' && (
     <Text style={{...styles.hiddenTitle, color: colors.grey3, marginLeft: 30}}>
       {flag} by {moderatorName}
     </Text>
@@ -77,7 +77,7 @@ const DiscussionMessage = ({
   return (
     <Pressable
       style={styles.container}
-      onLongPress={() => openMessageOptions()}>
+      onLongPress={() => (!isHidden || hasPermission) && openMessageOptions()}>
       {currentUserUid === data.ownerId ? (
         <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
           {showCurrentUserAvatar && (

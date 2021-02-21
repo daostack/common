@@ -9,18 +9,20 @@ const Bold = ({boldText, style = {}}) => (
 );
 
 const getReasons = (reasonArr) => {
-  const last = reasonArr.splice(-1, 1);
-  return (
-    <Text style={styles.text}>
-      {' due to '}
-      {reasonArr.length !== 0 && (
-        <>
-          <Bold text={reasonArr.join(', ')} /> and{' '}
-        </>
-      )}
-      {<Bold text={last.toString()} />}
-    </Text>
-  );
+  if (reasonArr.length !== 0) {
+    const last = reasonArr.splice(-1, 1);
+    return (
+      <Text style={styles.text}>
+        {' due to '}
+        {reasonArr.length !== 0 && (
+          <>
+            <Bold boldText={reasonArr.join(', ')} /> and{' '}
+          </>
+        )}
+        {<Bold boldText={last.toString()} />}
+      </Text>
+    );
+  }
 };
 
 const HiddenContentInfo = ({
@@ -34,14 +36,14 @@ const HiddenContentInfo = ({
     <View style={styles.body}>
       <Text style={styles.title}>Hidden {type}</Text>
       <Text style={styles.text}>
-        This {type} was hidden by <Bold text={userName} />
-        at{'\n'} <Bold text={date} /> {getReasons(reasons)}
+        This {type} was hidden by <Bold boldText={userName} />
+        at{'\n'} <Bold boldText={date} /> {getReasons(reasons)}
       </Text>
       {!!moderatorNote && (
         <View style={styles.moderatorNoteContainer}>
           <View style={styles.divider} />
           <Bold
-            text={'Moderator note:'}
+            boldText={'Moderator note:'}
             style={{marginBottom: 10, fontSize: 15}}
           />
           <Text style={styles.text}>{moderatorNote}</Text>

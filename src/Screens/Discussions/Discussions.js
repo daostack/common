@@ -66,7 +66,7 @@ const Discussions = ({
   const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
     false,
   );
-  const action = ['Hide', 'Report'];
+  const [action, setAction] = useState('Report');
 
   const isMember =
     authStore.userInfo &&
@@ -292,6 +292,7 @@ const Discussions = ({
   );
 
   const onModerate = async (actionType, messageId) => {
+    setAction(actionType);
     bottomSheetStore.hideBottomSheet();
     switch (actionType) {
       case 'Show':
@@ -322,7 +323,7 @@ const Discussions = ({
     }
   };
 
-  const openMessageOptions = (message) => {
+  const openMessageOptions = (message, itemType) => {
     if (message) {
       moderationFormStore.registerFormField(
         ModerationForm.ITEM_ID,
@@ -334,9 +335,9 @@ const Discussions = ({
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
         onAction: (actionType) => onModerate(actionType, message.id),
+        hasPermission,
         moderatorOptions: {
           item: message,
-          actions: action,
         },
       },
     );

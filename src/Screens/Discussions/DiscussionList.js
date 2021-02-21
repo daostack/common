@@ -6,7 +6,14 @@ import ViewTabNoData from '~/Components/ViewTabNoData';
 import {string, object, bool, func} from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
 
-const DiscussionList = ({commonId, navigation, rootStore, hasPermission, openCommonOptions, showHiddenNote}) => {
+const DiscussionList = ({
+  commonId,
+  navigation,
+  rootStore,
+  hasPermission,
+  openCommonOptions,
+  showHiddenNote
+}) => {
   const list = rootStore.discussionStore.getCommonDiscussions(commonId);
 
   useEffect(() => {
