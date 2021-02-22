@@ -173,7 +173,6 @@ const CommonsList = ({navigation, rootStore}) => {
                 width="100%"
                 key={x.item.id}
                 navigation={navigation}
-                // keyExtractor={x.item.id}
                 onPress={() => navigateToCommon(x.item)}
               />
             )}
@@ -181,7 +180,7 @@ const CommonsList = ({navigation, rootStore}) => {
             stickySectionHeadersEnabled={true}
             renderSectionHeader={({section: {title}}) => sectionHeader(title)}
             ListFooterComponent={listFooter}
-            initialNumToRender={5}
+            initialNumToRender={4}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }

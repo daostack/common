@@ -15,9 +15,9 @@ const TransactionError = ({uiStore, errorMessage, errorObj}) => {
     setShowMore(!showMore);
     const changeHeight = 60 + errorObj?.data?.detailedErrors?.length * 30 || 0;
     if (showMore) {
-      uiStore.bottomSheetStore.decreseTopSnap(changeHeight);
+      uiStore.bottomSheetStore.decreaseTopSnap(changeHeight);
     } else {
-      uiStore.bottomSheetStore.increseTopSnap(changeHeight);
+      uiStore.bottomSheetStore.increaseTopSnap(changeHeight);
     }
   };
 

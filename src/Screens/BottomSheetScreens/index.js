@@ -8,6 +8,7 @@ import {default as SafetyPeriodAbout} from './SafetyPeriodAbout';
 import {default as PaymentStatusScreen} from './PaymentStatusScreen';
 import {default as CancelSubscription} from './CancelSubscriptionSheetScreen';
 import {default as BackendErrorSheetScreen} from '~/Screens/BottomSheetScreens/BackendErrorSheetScreen';
+import {default as LoadingExpiration} from './LoadingExpiration';
 
 export const BOTTOM_SHEET_TEMPLATES = {
   COMMON_OPERATIONAL_STATE_NOTIF: {
@@ -35,6 +36,10 @@ export const BOTTOM_SHEET_TEMPLATES = {
   TRANSACTION_ERROR: {
     topSnap: 480,
     content: TransactionError,
+  },
+  LOADING_EXPIRATION: {
+    topSnap: 480,
+    content: LoadingExpiration,
   },
   SORT_PROPOSALS: {
     topSnap: 500,

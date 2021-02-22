@@ -576,7 +576,7 @@ const App = ({rootStore, navigation}) => {
           component={MonthlyContribution}
         />
       </Stack.Navigator>
-      {appLoaderStore.isLoading && <Loader isBigger isFullScreen />}
+      {appLoaderStore.isLoading && <Loader isBigger isFullScreen navigation={navigationRef}/>}
       {bottomSheetStore.isVisible && <BottomSheetContainer />}
       <ToastView
         ref={hudRef}
