@@ -22,7 +22,7 @@ export default class DiscussionStore extends BaseStore<
       ?.filter((discussion: Discussion) => discussion.commonId === commonId)
       .sort(
         (discussion: Discussion, prevDiscussion: Discussion) =>
-          prevDiscussion.createdAt.seconds - discussion.createdAt.seconds,
+          prevDiscussion.lastMessage.seconds - discussion.lastMessage.seconds,
       );
   //Actions
   subscribeToCommonDiscussions = (commonId: string): FirestoreUnsubscribeFn =>
