@@ -4,6 +4,7 @@ import messaging from '@react-native-firebase/messaging';
 import Toast from '~/Util/Toast';
 import {db} from '~/Firebase';
 import logger from './Logger';
+import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 
 export default class NotificationService {
   static async saveTokenToDatabase() {
@@ -43,6 +44,24 @@ export default class NotificationService {
     if (settings) {
       logger.log('Permission settings:', settings);
     }
+  }
+
+  static async getNotificationList() {
+    const userId = auth().currentUser.uid;
+
+    return db
+      .collection(DB_COLLECTIONS.notification)
+      .doc(userId)
+      .get()
+      .then((snapshots) => {
+        console.log('RESULTADO 2');
+        if (!snapshots) {
+          return null;
+        }
+
+        return snapshots.data();
+      })
+      .catch((error) => console.log('RESULTADO ERRORRR', error));
   }
 
   static async listenTransaction(txHash) {
