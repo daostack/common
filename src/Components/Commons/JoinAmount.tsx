@@ -12,7 +12,7 @@ const props = {
   onPress: func,
   isSelected: bool,
   isMonthly: bool,
-  userStore: shape({
+  authStore: shape({
     conversionRate: number,
   }),
 };
@@ -23,7 +23,7 @@ const JoinAmount: React.FC<InferProps<typeof props>> = ({
   onPress,
   isSelected,
   isMonthly,
-  userStore: {conversionRate},
+  authStore: {conversionRate},
 }) => {
   const onAmountPress = () => {
     onPress(isCustom, amount, id);
@@ -90,4 +90,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(JoinAmount));
+export default inject('authStore')(observer(JoinAmount));

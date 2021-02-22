@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import {string, shape, object, func} from 'prop-types';
+import {string, shape, object} from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
 import {colors, sizeM, font, text} from '~/Theme';
@@ -16,20 +16,18 @@ import NotificationService from '~/Services/NotificationService';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import logger from '~/Services/Logger';
 import {CommonActions} from '@react-navigation/native';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const {width} = Dimensions.get('window');
 
-const DiscussionCard = ({
-  data,
-  commonId,
-  navigation,
-  bottomSheetStore,
-  userListStore,
-  discussionMessageStore,
-}) => {
+const DiscussionCard = ({data, commonId, navigation, rootStore}) => {
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  const userStore = rootStore.userStore;
+  const discussionMessageStore = rootStore.discussionMessageStore;
+
   //when will data.owner be not undefined?
   const discussionId = data.id;
-  const user = userListStore.getUserById(data.ownerId);
+  const user = userStore.getUserById(data.ownerId);
   const msgCount =
     discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
       ?.length || 0;
@@ -145,13 +143,7 @@ DiscussionCard.propTypes = {
   }),
   commonId: string,
   navigation: object.isRequired,
-  bottomSheetStore: object.isRequired,
-  userListStore: shape({
-    getUserById: func,
-  }),
-  discussionMessageStore: shape({
-    getDiscussionMessagesByDiscussionId: func,
-  }),
+  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -278,8 +270,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'bottomSheetStore',
-  'userListStore',
-  'discussionMessageStore',
-)(observer(DiscussionCard));
+export default inject('rootStore')(observer(DiscussionCard));

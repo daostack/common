@@ -32,7 +32,7 @@ import {observer, inject} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
-import {string, func, object, shape, number} from 'prop-types';
+import {string, object, shape} from 'prop-types';
 import logger from '~/Services/Logger';
 import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
@@ -50,22 +50,26 @@ import ModalDebtProposalError from './components/ModalDebtProposalError';
 import ModalDebtProposalInsufficient from './components/ModalDebtProposalInsufficient';
 import ModalConversion from '~/Components/Commons/ModalConversion';
 import {isIsraelLocale} from '~/Util/locale';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 const ProposalScreen = ({
   navigation,
-  bottomSheetStore,
-  userStore: {userInfo, isDaoMember, conversionRate, ...userStore},
   route: {
     params: {proposalId, tabIndex = 0},
   },
-  userListStore,
-  discussionMessageStore,
-  commonStore,
-  proposalStore,
+  rootStore,
 }) => {
+  const userStore = rootStore.userStore;
+  const discussionMessageStore = rootStore.discussionMessageStore;
+  const commonStore = rootStore.commonStore;
+  const proposalStore = rootStore.proposalStore;
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  const authStore = rootStore.authStore;
+  const {userInfo, isDaoMember, conversionRate} = authStore;
+
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
     error: false,
@@ -115,7 +119,7 @@ const ProposalScreen = ({
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const proposalCommon = commonStore.getCommonById(proposalInfo.commonId);
-  const proposedUser = userListStore.getUserById(proposalInfo.proposerId);
+  const proposedUser = userStore.getUserById(proposalInfo.proposerId);
 
   const showDebtInfo =
     proposalInfo.isFundingRequest &&
@@ -128,7 +132,7 @@ const ProposalScreen = ({
     proposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.FAILED;
 
   const isMember = userInfo && isDaoMember(proposalCommon?.members || []);
-  const isProposer = userStore.isProposer(proposalInfo);
+  const isProposer = authStore.isProposer(proposalInfo);
 
   const renderVoting =
     proposalInfo &&
@@ -941,29 +945,12 @@ const ProposalScreen = ({
 
 ProposalScreen.propTypes = {
   navigation: object,
-  bottomSheetStore: object,
-  userStore: shape({
-    userInfo: object,
-    isDaoMember: func,
-    conversionRate: number,
-  }),
   route: shape({
     params: shape({
       proposalId: string,
     }),
   }),
-  userListStore: shape({
-    getUserById: func,
-  }),
-  discussionMessageStore: shape({
-    subscribeToProposalDiscussionMessages: func,
-  }),
-  commonStore: shape({
-    getCommonById: func,
-  }),
-  proposalStore: shape({
-    getProposalById: func,
-  }),
+  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -1095,11 +1082,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'userStore',
-  'userListStore',
-  'bottomSheetStore',
-  'discussionMessageStore',
-  'commonStore',
-  'proposalStore',
-)(observer(ProposalScreen));
+export default inject('rootStore')(observer(ProposalScreen));

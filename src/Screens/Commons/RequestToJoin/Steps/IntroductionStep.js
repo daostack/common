@@ -115,11 +115,6 @@ IntroductionStep.propTypes = {
       formStores: object,
     }),
   }),
-  daoStore: shape({
-    dao: shape({
-      name: string,
-    }),
-  }),
 };
 
 export default IntroductionStep;

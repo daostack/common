@@ -17,6 +17,7 @@ import CommonTabBar from '../../CommonTabBar';
 import {string, func, array, object, shape} from 'prop-types';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import {observer, inject} from 'mobx-react';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const initialLayout = {width: Dimensions.get('window').width};
 const getTabName = (objectName, count) =>
@@ -52,12 +53,10 @@ const History = ({navigation, commonId}) => (
   </View>
 );
 
-const CommonMembers = ({
-  navigation,
-  route: router,
-  proposalStore,
-  commonStore,
-}) => {
+const CommonMembers = ({navigation, route: router, rootStore}) => {
+  const proposalStore = rootStore.proposalStore;
+  const commonStore = rootStore.commonStore;
+
   const {commonId} = router.params;
   const [index, setIndex] = useState(0);
   const pendingCount = proposalStore.getCommonProposals(commonId, {
@@ -148,12 +147,7 @@ CommonMembers.propTypes = {
       commonId: string,
     }),
   }),
-  proposalStore: shape({
-    getCommonProposals: func,
-  }),
-  commonStore: shape({
-    getCommonById: func,
-  }),
+  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -186,4 +180,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('proposalStore', 'commonStore')(observer(CommonMembers));
+export default inject('rootStore')(observer(CommonMembers));
