@@ -523,8 +523,6 @@ const ProposalScreen = ({
     zIndex: 1,
   };
 
-  console.log('232323232', conversionRate);
-
   return (
     <React.Fragment>
       <Modal
