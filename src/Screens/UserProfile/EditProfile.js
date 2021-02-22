@@ -6,7 +6,6 @@ import {
   StyleSheet,
   View,
   Text,
-  Platform,
 } from 'react-native';
 import EditProfileForm from '~/Components/Forms/EditProfileForm';
 import {colors, text, layout} from '~/Theme';
@@ -84,8 +83,8 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
       isSignedWithApple &&
       isFirstOpening &&
       (!editProfileFormStore.isFormValid() ||
-        !userStore.userInfo.firstName ||
-        !userStore.userInfo.lastName)
+        !userStore.userInfo?.firstName ||
+        !userStore.userInfo?.lastName)
     ) {
       return;
     }
