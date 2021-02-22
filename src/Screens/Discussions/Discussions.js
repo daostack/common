@@ -38,7 +38,6 @@ const Discussions = ({
   },
   rootStore,
 }) => {
-  console.log('discussionId -> ', discussionId);
   const commonStore = rootStore.commonStore;
   const discussionStore = rootStore.discussionStore;
   const authStore = rootStore.authStore;
