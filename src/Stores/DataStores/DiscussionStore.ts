@@ -18,9 +18,12 @@ export default class DiscussionStore extends BaseStore<
     this.getDataById(id);
 
   getCommonDiscussions = (commonId: string): Array<Discussion> | undefined =>
-    this.getDataArray?.filter(
-      (discussion: Discussion) => discussion.commonId === commonId,
-    );
+    this.getDataArray
+      ?.filter((discussion: Discussion) => discussion.commonId === commonId)
+      .sort(
+        (discussion: Discussion, prevDiscussion: Discussion) =>
+          prevDiscussion.lastMessage.seconds - discussion.lastMessage.seconds,
+      );
   //Actions
   subscribeToCommonDiscussions = (commonId: string): FirestoreUnsubscribeFn =>
     subscribeToCommonDiscussions(commonId, this.updateStoreData);

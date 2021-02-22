@@ -18,6 +18,7 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
   @observable
   commonId: string;
 
+  // TODO: Remove that as we already have createAt in the BaseModel and every other collection follows that pattern
   @observable
   createTime: Date;
 
@@ -40,7 +41,9 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
     this.message = newDiscussionInfo.message;
     this.ownerId = newDiscussionInfo.ownerId;
     this.commonId = newDiscussionInfo.commonId;
+    // TODO: remove the createTime when we start using createdAt instead.
     this.createTime = newDiscussionInfo.createTime;
+    this.createdAt = newDiscussionInfo.createTime;
     this.lastMessage = newDiscussionInfo.lastMessage;
     this.files = newDiscussionInfo.files;
     this.images = newDiscussionInfo.images;
