@@ -70,10 +70,7 @@ const ProposalScreen = ({
   const authStore = rootStore.authStore;
   const uiStore = rootStore.uiStore;
   const {userInfo, isDaoMember} = authStore;
-
   const {conversionRate} = uiStore;
-
-  console.log('23232323', conversionRate);
 
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
