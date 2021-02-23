@@ -8,7 +8,7 @@ import {
   Text,
 } from 'react-native';
 import {colors, text, layout} from '~/Theme';
-import {inject} from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '~/Assets/iconfont/Icon';
 import Loader from '~/Components/Loader';
@@ -30,7 +30,7 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
   route,
   navigation,
 }) => {
-  const userStore = rootStore.userStore;
+  const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
 
@@ -84,7 +84,7 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
 
   const onFormSubmitEnd = async (updatedCommon) => {
     try {
-      commonStore.updateDaoInfo(updatedCommon, userStore.userInfo.uid);
+      commonStore.updateDaoInfo(updatedCommon, authStore.userInfo.uid);
       Toast.done('Your Common is updated');
     } catch (err) {
       Toast.error('Could not update your Common');
@@ -160,7 +160,7 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
-          {userStore.userInfo ? (
+          {authStore.userInfo ? (
             isRule ? (
               <EditRules
                 isValidChange={(change) => isValidChange(change)}
@@ -232,4 +232,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(EditCommon);
+export default inject('rootStore')(observer(EditCommon));
