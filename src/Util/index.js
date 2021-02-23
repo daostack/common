@@ -62,7 +62,7 @@ export const showErrorPopUp = (bottomSheetStore, arg) => {
 // This function requires the bottomSheetStore as a variable as you can't
 // access the mobx store outside of a react component
 export const showLoadingExpirationPopUp = (bottomSheetStore, errorMessage, navigation) => {
-    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOADING_EXPIRATION, {
+    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOADING_EXPIRATED, {
       errorMessage,
       navigation,
     });
