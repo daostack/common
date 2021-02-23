@@ -10,7 +10,7 @@ type Props = AppRootStore & WithNavigationRef & {
     errorMessage: string;
 }
 
-function LoadingExpirated({errorMessage, rootStore, navigation}: Props): ReactElement {
+function LoadingExpired({errorMessage, rootStore, navigation}: Props): ReactElement {
 
     function onReloadApp(): void {
         navigation.current.dispatch(StackActions.popToTop());
@@ -94,4 +94,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default inject('rootStore')(observer(LoadingExpirated));
+export default inject('rootStore')(observer(LoadingExpired));
