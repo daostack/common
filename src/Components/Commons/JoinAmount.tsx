@@ -1,9 +1,10 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {layout, colors, text, font} from '~/Theme';
-import {func, bool, number, InferProps, shape} from 'prop-types';
+import {func, bool, number, InferProps} from 'prop-types';
 import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
 import {inject, observer} from 'mobx-react';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
 const props = {
   id: number.isRequired,
@@ -12,9 +13,7 @@ const props = {
   onPress: func,
   isSelected: bool,
   isMonthly: bool,
-  uiStore: shape({
-    conversionRate: number,
-  }),
+  uiStore: uiStorePropTypes.isRequired,
 };
 const JoinAmount: React.FC<InferProps<typeof props>> = ({
   id,
