@@ -1,29 +1,21 @@
 import {DiscussionsCollection} from '~/Firebase/Databasee/Collections/DiscussionsCollection';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
-import {axiosClient} from '../util/AxiosClient';
+import {axiosDiscussionClient} from '../util/AxiosClient';
 import {auth} from '~/Firebase';
+import {IFirebaseSnapshot} from '~/Firebase/types';
 
 export type commonDiscussionsListLoadCallbackFn = (
-  updatedDiscussionsList: Array<IDiscussionEntity>,
+  updatedDiscussionsList: IFirebaseSnapshot<IDiscussionEntity>,
 ) => void;
 
 export const subscribeToCommonDiscussions = (
   commonId: string,
-  callback: commonDiscussionsListLoadCallbackFn,
+  listChangeCallback: commonDiscussionsListLoadCallbackFn,
 ) => {
   const unsubscribe = DiscussionsCollection.where('commonId', '==', commonId)
     .orderBy('lastMessage', 'desc')
     .onSnapshot((snapshot: any) => {
-      let discussionList = [];
-      // TODO: Make better handling of changes with docChanges()
-      if (!snapshot?.empty || !snapshot) {
-        discussionList = snapshot.docs.map(
-          // TODO: Add id prop in the document itself and apply the change here as well. (https://daostack1.atlassian.net/browse/CM-1532)
-          (doc: any) => ({id: doc.id, ...doc.data()} as IDiscussionEntity),
-        );
-      }
-
-      callback(discussionList);
+      listChangeCallback(snapshot);
     });
   return unsubscribe;
 };
@@ -33,8 +25,8 @@ export const updateDiscussionLastMessage = async (
   messageOwner: string,
 ) => {
   try {
-    return await axiosClient.getDiscussionClient().post(
-      axiosClient.getDiscussionEndpoints().update,
+    return await axiosDiscussionClient.getDiscussionClient().post(
+      axiosDiscussionClient.getDiscussionEndpoints().update,
       {
         discussionId,
         messageOwner,

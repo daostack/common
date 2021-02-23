@@ -2,15 +2,13 @@ import React from 'react';
 import {colors} from '~/Theme';
 import {CommonsList, UserProfile} from '~/Screens';
 import {Image, Platform} from 'react-native';
-import {object} from 'prop-types';
 
-import {inject, observer} from 'mobx-react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
 import Icon from '~/Assets/iconfont/Icon';
 import NotificationList from '~/Screens/Notifications/NotificationList';
 
-const CommonHome = ({userStore}) => (
+const CommonHome = () => (
   <Tab.Navigator
     // initialRouteName="My feed"
     initialRouteName="Explore"
@@ -69,8 +67,4 @@ const CommonHome = ({userStore}) => (
   </Tab.Navigator>
 );
 
-CommonHome.propTypes = {
-  userStore: object.isRequired,
-};
-
-export default inject('userStore')(observer(CommonHome));
+export default CommonHome;

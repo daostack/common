@@ -5,9 +5,10 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors, text, layout} from '~/Theme';
 import Animated, {Easing} from 'react-native-reanimated';
-import {number, func, shape, object, bool} from 'prop-types';
+import {bool} from 'prop-types';
+import {uiStorePropType} from '~/Types/propTypes';
 
-const BottomSheetContainer = ({bottomSheetStore, withoutHeader}) => {
+const BottomSheetContainer = ({uiStore, withoutHeader}) => {
   let ref = useRef();
   let fall = new Animated.Value(0);
   const state = {
@@ -15,7 +16,7 @@ const BottomSheetContainer = ({bottomSheetStore, withoutHeader}) => {
   };
 
   useEffect(() => {
-    const backAction = () => bottomSheetStore.hideBottomSheet();
+    const backAction = () => uiStore.bottomSheetStore.hideBottomSheet();
     BackHandler.addEventListener('hardwareBackPress', backAction);
     if (ref.current) {
       ref.current.snapTo(1);
@@ -35,7 +36,7 @@ const BottomSheetContainer = ({bottomSheetStore, withoutHeader}) => {
   };
 
   const onClosed = () => {
-    bottomSheetStore.hideBottomSheet();
+    uiStore.bottomSheetStore.hideBottomSheet();
   };
 
   const animatedStyles = {
@@ -43,7 +44,7 @@ const BottomSheetContainer = ({bottomSheetStore, withoutHeader}) => {
   };
 
   const renderSheetHeader = () => {
-    if (bottomSheetStore) {
+    if (uiStore.bottomSheetStore) {
       return null;
     }
     return (
@@ -59,14 +60,16 @@ const BottomSheetContainer = ({bottomSheetStore, withoutHeader}) => {
       ...styles.contentContainer,
       ...{
         padding: 0,
-        height: bottomSheetStore.topSnap + 100,
+        height: uiStore.bottomSheetStore.topSnap + 100,
       },
     };
 
     if (withoutHeader) {
       contentStyle = {...contentStyle, ...styles.contentContainerShadow};
     }
-    return <View style={contentStyle}>{bottomSheetStore.template}</View>;
+    return (
+      <View style={contentStyle}>{uiStore.bottomSheetStore.template}</View>
+    );
   };
 
   const AnimatedTouchable = Animated.createAnimatedComponent(Pressable);
@@ -80,7 +83,7 @@ const BottomSheetContainer = ({bottomSheetStore, withoutHeader}) => {
 
       <BottomSheet
         ref={ref}
-        snapPoints={[0, bottomSheetStore.topSnap]}
+        snapPoints={[0, uiStore.bottomSheetStore.topSnap]}
         renderContent={renderSheetContent}
         renderHeader={renderSheetHeader}
         enabledBottomInitialAnimation={true}
@@ -93,11 +96,7 @@ const BottomSheetContainer = ({bottomSheetStore, withoutHeader}) => {
 };
 
 BottomSheetContainer.propTypes = {
-  bottomSheetStore: shape({
-    hideBottomSheet: func,
-    topSnap: number,
-    template: object,
-  }),
+  uiStore: uiStorePropType,
   withoutHeader: bool,
 };
 
@@ -172,4 +171,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(observer(BottomSheetContainer));
+export default inject('uiStore')(observer(BottomSheetContainer));

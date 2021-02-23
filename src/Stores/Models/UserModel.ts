@@ -12,6 +12,7 @@ export const userInfoFields = [
   'updatedAt',
   'createdAt',
   'intro',
+  'country',
 ];
 export class UserModel extends BaseModel<IUserEntity> {
   @observable
@@ -30,6 +31,8 @@ export class UserModel extends BaseModel<IUserEntity> {
   lastName: string = '';
 
   @observable
+  country: string = '';
+
   intro: string = '';
 
   // That field is used only in the commonMembers list
