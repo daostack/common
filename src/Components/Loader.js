@@ -12,7 +12,8 @@ const TIMEOUT = 100000;
 const Loader = ({color, isBigger, isFullScreen = false, rootStore, navigation}) => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
 
-  useTimeoutFn(isFullScreen ? callbackFn : null, TIMEOUT);
+
+  useTimeoutFn(callbackFn, TIMEOUT);
 
   let loaderStyle = isBigger
     ? {
@@ -22,7 +23,7 @@ const Loader = ({color, isBigger, isFullScreen = false, rootStore, navigation}) 
     : styles.loader;
 
   function callbackFn() {
-      showLoadingExpirationPopUp(bottomSheetStore, "Oops... We couldn't load the app.", navigation);
+    isFullScreen ? showLoadingExpirationPopUp(bottomSheetStore, "Oops... We couldn't load the app.", navigation) : null;
   }
 
   return (
