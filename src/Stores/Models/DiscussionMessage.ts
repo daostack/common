@@ -1,5 +1,8 @@
-import {observable} from 'mobx';
-import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
+import {observable, computed} from 'mobx';
+import {
+  IDiscussionMessageEntity,
+  IModerationEntity,
+} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {BaseModel} from './BaseModel';
 
 export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
@@ -22,7 +25,12 @@ export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
   ownerAvatar: string;
 
   @observable
-  moderation?: object // TODO moderation type
+  moderation?: IModerationEntity;
+
+  @computed
+  get isModerationHidden() {
+    return this.moderation && this.moderation?.flag === 'hidden';
+  }
 
   constructor(newDiscussionMessageInfo: IDiscussionMessageEntity) {
     super(newDiscussionMessageInfo);

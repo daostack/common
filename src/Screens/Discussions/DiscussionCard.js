@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,7 +14,8 @@ import Icon from '~/Assets/iconfont/Icon';
 import moment from 'moment';
 import {CommonActions} from '@react-navigation/native';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {ModerationMenu, Reported} from '../../Util/moderation';
+import {ModerationMenu} from '../../Util/moderation';
+import DiscussionCardHeader from '../../Components/Discussion/DiscussionCardHeader';
 
 const {width} = Dimensions.get('window');
 
@@ -27,7 +28,6 @@ const DiscussionCard = ({
   hiddenDiscussionNote,
   rootStore,
 }) => {
-  //const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const userStore = rootStore.userStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
   const discussionId = data.id;
@@ -35,16 +35,11 @@ const DiscussionCard = ({
   const msgCount =
     discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
       ?.length || 0;
-  const [isHidden, setIsHidden] = useState(
-    data.moderation && data.moderation.flag === 'hidden',
-  );
 
-  useEffect(() => {
-    setIsHidden(data.moderation && data.moderation.flag === 'hidden');
-  }, [data]);
+  const isVisible = data.moderation?.flag === 'visible';
 
   const navigateToDiscussion = () => {
-    if (isHidden) {
+    if (discussionMessageStore.isModerationHidden) {
       hiddenDiscussionNote();
     } else {
       const navigate = CommonActions.navigate({
@@ -60,6 +55,10 @@ const DiscussionCard = ({
     }
   };
 
+  const getReporter = () =>
+    data.moderation?.reporter &&
+    userStore.getUserById(data.moderation?.reporter);
+
   /*const follow = () => {
     logger.log('Follow user id', data.ownerId);
     NotificationService.follow(data.ownerId);
@@ -69,77 +68,89 @@ const DiscussionCard = ({
   return (
     <>
       <TouchableOpacity onPress={() => navigateToDiscussion()}>
-        <View style={styles.container}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title} numberOfLines={2}>
-              {data.title}
-              <Reported reported={data.moderation?.flag === 'reported'} />
-            </Text>
-            {(!isHidden || hasPermission) && (
-              <ModerationMenu showOptions={openCommonOptions} />
-            )}
-          </View>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            {user.photoURL ? (
-              <FastImage style={styles.image} source={{uri: user.photoURL}} />
-            ) : (
-              <View style={styles.displayNameContainer}>
-                <Text style={styles.displayName}>
-                  {user.displayName && user.displayName.substring(0, 1)}
-                </Text>
-              </View>
-            )}
-            <View style={styles.primaryNameContainer}>
-              <Text style={styles.primaryName}>{user.displayName}</Text>
-              {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-              <Text style={styles.date}>
-                {moment(data.createTime.toDate()).fromNow()}
-              </Text>
-            </View>
-          </View>
-          <Text
-            style={{...styles.message, ...text.writingDirection(data.message)}}
-            numberOfLines={3}>
-            {data.message}
-          </Text>
-          <View
-            style={{
-              backgroundColor: colors.grey4,
-              height: 1,
-              marginBottom: 15,
-              marginTop: 10,
-              marginHorizontal: -20,
-            }}
-          />
-
-          {msgCount === 0 ? (
-            <View style={{}}>
-              <TouchableOpacity
-                style={{justifyContent: 'center', alignSelf: 'center'}}
-                onPress={() => navigateToDiscussion()}>
-                <Text style={styles.startTheDiscussion}>
-                  Start the discussion
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View style={styles.messageCountContainer}>
-              <View style={styles.messageCountContainer}>
-                <Icon name="discussion" size={20} />
-                <Text style={styles.msgCount}>{msgCount}</Text>
-              </View>
-              {/* <TouchableOpacity onPress={() => navigateToDiscussion()}> */}
-              <TouchableOpacity
-                style={styles.navigateToDiscussion}
-                onPress={() => navigateToDiscussion()}>
-                <Text style={styles.joinTheDiscussion}>
-                  Join the discussion
-                </Text>
-                <Icon name="right-arrow" size={20} color={colors.mainBlue} />
-              </TouchableOpacity>
-              {/* </TouchableOpacity> */}
-            </View>
+        <View style={styles.containerView}>
+          {!isVisible && (
+            <DiscussionCardHeader
+              isReported={data.moderation?.flag !== 'visible'}
+              moderation={data.moderation}
+              reporter={getReporter()}
+            />
           )}
+          <View style={styles.container}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title} numberOfLines={2}>
+                {data.title}
+              </Text>
+              {(!discussionMessageStore.isModerationHidden ||
+                hasPermission) && (
+                <ModerationMenu showOptions={openCommonOptions} />
+              )}
+            </View>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              {user.photoURL ? (
+                <FastImage style={styles.image} source={{uri: user.photoURL}} />
+              ) : (
+                <View style={styles.displayNameContainer}>
+                  <Text style={styles.displayName}>
+                    {user.displayName && user.displayName.substring(0, 1)}
+                  </Text>
+                </View>
+              )}
+              <View style={styles.primaryNameContainer}>
+                <Text style={styles.primaryName}>{user.displayName}</Text>
+                {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
+                <Text style={styles.date}>
+                  {moment(data.createTime.toDate()).fromNow()}
+                </Text>
+              </View>
+            </View>
+            <Text
+              style={{
+                ...styles.message,
+                ...text.writingDirection(data.message),
+              }}
+              numberOfLines={3}>
+              {data.message}
+            </Text>
+            <View
+              style={{
+                backgroundColor: colors.grey4,
+                height: 1,
+                marginBottom: 15,
+                marginTop: 10,
+                marginHorizontal: -20,
+              }}
+            />
+
+            {msgCount === 0 ? (
+              <View style={{}}>
+                <TouchableOpacity
+                  style={{justifyContent: 'center', alignSelf: 'center'}}
+                  onPress={() => navigateToDiscussion()}>
+                  <Text style={styles.startTheDiscussion}>
+                    Start the discussion
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View style={styles.messageCountContainer}>
+                <View style={styles.messageCountContainer}>
+                  <Icon name="discussion" size={20} />
+                  <Text style={styles.msgCount}>{msgCount}</Text>
+                </View>
+                {/* <TouchableOpacity onPress={() => navigateToDiscussion()}> */}
+                <TouchableOpacity
+                  style={styles.navigateToDiscussion}
+                  onPress={() => navigateToDiscussion()}>
+                  <Text style={styles.joinTheDiscussion}>
+                    Join the discussion
+                  </Text>
+                  <Icon name="right-arrow" size={20} color={colors.mainBlue} />
+                </TouchableOpacity>
+                {/* </TouchableOpacity> */}
+              </View>
+            )}
+          </View>
         </View>
       </TouchableOpacity>
     </>
@@ -216,16 +227,10 @@ const styles = StyleSheet.create({
     ...font.fontSize(2),
     color: colors.black,
   },
-  container: {
+  containerView: {
     backgroundColor: colors.white,
-    // borderTopWidth: 1,
-    // borderTopColor: colors.grey4,
-    // borderBottomWidth: 4,
-    // borderBottomColor: colors.grey4,
     marginHorizontal: 25,
     marginVertical: 10,
-    borderRadius: 10,
-    padding: 20,
     shadowColor: 'rgba(0, 0, 0, 0.22)',
     shadowOffset: {
       width: 0,
@@ -234,6 +239,18 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     shadowOpacity: 0.5,
     elevation: 2,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  container: {
+    backgroundColor: colors.white,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
   },
   primaryNameContainer: {
     flex: 1,
@@ -290,8 +307,8 @@ const styles = StyleSheet.create({
   },
   textReported: {
     fontSize: 15,
-    color: colors.grey3
-  }
+    color: colors.grey3,
+  },
 });
 
 export default inject('rootStore', 'userStore')(observer(DiscussionCard));

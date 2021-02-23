@@ -13,7 +13,6 @@ import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
-import {userStorePropTypes} from '~/Types/propTypes';
 import {rootStorePropTypes} from '~/Types/propTypes';
 
 const {width} = Dimensions.get('window');
@@ -22,7 +21,6 @@ const DiscussionMessage = ({
   data,
   showCurrentUserAvatar,
   hasPermission,
-  userStore,
   rootStore,
   commonId,
   openMessageOptions,
@@ -31,6 +29,7 @@ const DiscussionMessage = ({
   const isHidden = data.moderation?.flag === 'hidden';
   const flag = data.moderation?.flag || '';
   const [permission, setPermission] = useState('');
+  const userStore = rootStore.userStore;
 
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
@@ -185,8 +184,6 @@ DiscussionMessage.propTypes = {
     createTime: object,
   }),
   showCurrentUserAvatar: bool,
-  userStore: userStorePropTypes,
-  bottomSheetStore: object,
   hasPermission: bool,
   rootStore: rootStorePropTypes,
   commonId: string,
@@ -246,4 +243,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'rootStore')(observer(DiscussionMessage));
+export default inject('rootStore')(observer(DiscussionMessage));

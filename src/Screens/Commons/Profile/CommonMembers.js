@@ -27,7 +27,13 @@ const Members = ({navigation, commonId}) => (
   <CommonMembersList navigation={navigation} commonId={commonId} />
 );
 
-const Pending = ({navigation, commonId}) => (
+const Pending = ({
+  navigation,
+  commonId,
+  hasPermission,
+  openCommonOptions,
+  showHiddenNote,
+}) => (
   <View style={layout.content}>
     <ProposalsList
       navigation={navigation}
@@ -36,6 +42,13 @@ const Pending = ({navigation, commonId}) => (
         stage: PROPOSAL_STAGE.Active,
         type: PROPOSAL_TYPE.Join,
       }}
+      hasPermission={hasPermission}
+      openCommonOptions={(requestToJoin) =>
+        openCommonOptions(requestToJoin, 'Proposals')
+      }
+      showHiddenNote={(hiddenRequestToJoin) =>
+        showHiddenNote(hiddenRequestToJoin, 'Proposal')
+      }
     />
   </View>
 );
@@ -57,7 +70,12 @@ const CommonMembers = ({navigation, route: router, rootStore}) => {
   const proposalStore = rootStore.proposalStore;
   const commonStore = rootStore.commonStore;
 
-  const {commonId} = router.params;
+  const {
+    commonId,
+    hasPermission,
+    openCommonOptions,
+    showHiddenNote,
+  } = router.params;
   const [index, setIndex] = useState(0);
   const pendingCount = proposalStore.getCommonProposals(commonId, {
     stage: PROPOSAL_STAGE.Active,
@@ -83,7 +101,15 @@ const CommonMembers = ({navigation, route: router, rootStore}) => {
       case 'members':
         return <Members navigation={navigation} commonId={commonId} />;
       case 'pending':
-        return <Pending navigation={navigation} commonId={commonId} />;
+        return (
+          <Pending
+            navigation={navigation}
+            commonId={commonId}
+            hasPermission={hasPermission}
+            openCommonOptions={openCommonOptions}
+            showHiddenNote={showHiddenNote}
+          />
+        );
       case 'history':
         return <History navigation={navigation} commonId={commonId} />;
       default:

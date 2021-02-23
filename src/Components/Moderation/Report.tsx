@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   View,
@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import {colors, text, layout, font} from '~/Theme';
-import {string, func, object, InferProps} from 'prop-types';
+import {string, func, object, InferProps, shape} from 'prop-types';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 const {width} = Dimensions.get('window');
@@ -21,7 +21,19 @@ const reasons = [
   ['Something Else'],
 ];
 
-const Report: React.FC<InferProps<typeof Report.propTypes>> = ({
+const reportProps = {
+  title: string,
+  onCancel: func,
+  formStore: shape({
+    registerFormField: func.isRequired,
+    getFormField: func.isRequired,
+    fieldChanged: func.isRequired,
+    isFormValid: func.isRequired,
+  }).isRequired,
+  onReportContent: func,
+};
+
+const Report: React.FC<InferProps<typeof reportProps>> = ({
   title,
   onCancel,
   formStore,
@@ -54,7 +66,7 @@ const Report: React.FC<InferProps<typeof Report.propTypes>> = ({
   const onProblemPressed = (chosenProblem: string) => {
     let currProblems =
       `${formStore.getFormField(ModerationForm.REASONS, false)?.value}` || [];
-    if (currProblems.length !== 0) {
+    if (currProblems.length) {
       currProblems = currProblems.split(',');
       if (!currProblems.includes(chosenProblem)) {
         currProblems = [...currProblems, chosenProblem];
@@ -64,13 +76,14 @@ const Report: React.FC<InferProps<typeof Report.propTypes>> = ({
     } else {
       currProblems.push(chosenProblem);
     }
+
     setChosen(currProblems);
     formStore.fieldChanged(
       ModerationForm.REASONS,
       currProblems.toString(),
       false,
     );
-    setIsValid(formStore.isFormChanged() && formStore.isFormValid(true));
+    setIsValid(formStore.isFormValid(true));
   };
 
   return (
@@ -87,8 +100,8 @@ const Report: React.FC<InferProps<typeof Report.propTypes>> = ({
               You can hide the post after selecting a problem
             </Text>
             <View style={{paddingVertical: 20}}>
-              {reasons.map((reasonRow) => (
-                <View style={{flexDirection: 'row'}}>
+              {reasons.map((reasonRow, i) => (
+                <View key={i} style={{flexDirection: 'row'}}>
                   {reasonRow.map((reason) => problemButton(reason))}
                 </View>
               ))}
@@ -118,12 +131,7 @@ const Report: React.FC<InferProps<typeof Report.propTypes>> = ({
   );
 };
 
-Report.propTypes = {
-  title: string,
-  onCancel: func,
-  formStore: object,
-  onReportContent: func,
-};
+Report.propTypes = reportProps;
 
 const styles = StyleSheet.create({
   root: {

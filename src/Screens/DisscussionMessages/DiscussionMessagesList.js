@@ -19,13 +19,13 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 const DiscussionMessagesList = ({
   discussionId,
   scrollViewRef,
-  discussionMessageStore,
   rootStore,
   hasPermission,
   commonId,
   openMessageOptions,
 }) => {
   const chatRef = useRef(null);
+  const discussionMessageStore = rootStore.discussionMessageStore;
   const msgGroups = discussionMessageStore
     .getDiscussionMessagesByDiscussionId(discussionId)
     .map((msg) => ({
@@ -144,6 +144,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('discussionMessageStore', 'rootStore')(
-  observer(DiscussionMessagesList),
-);
+export default inject('rootStore')(observer(DiscussionMessagesList));

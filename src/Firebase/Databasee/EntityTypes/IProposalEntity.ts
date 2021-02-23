@@ -1,6 +1,7 @@
 import {IBaseEntity} from './IBaseEntity';
 import {ContributionType} from './ICommonEntity';
 import {VoteOutcome} from './IVoteEntity';
+import {IModerationEntity} from './IModerationEntity';
 
 export type FundingRequestState =
   | 'countdown'
@@ -82,7 +83,7 @@ interface IBaseProposalEntity extends IBaseEntity {
   /**
    * The moderation object that handles hiding/showing proposals
    */
-  moderation?: object //TODO moderation type
+  moderation?: IModerationEntity;
 }
 
 export interface IProposalVote {

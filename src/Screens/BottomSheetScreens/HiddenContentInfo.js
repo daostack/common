@@ -9,7 +9,7 @@ const Bold = ({boldText, style = {}}) => (
 );
 
 const getReasons = (reasonArr) => {
-  if (reasonArr.length !== 0) {
+  if (reasonArr.length) {
     const last = reasonArr.splice(-1, 1);
     return (
       <Text style={styles.text}>

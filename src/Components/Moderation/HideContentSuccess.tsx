@@ -9,24 +9,34 @@ import {
 } from 'react-native';
 import React from 'react';
 import {text, colors, font} from '~/Theme';
-import {inject, observer} from 'mobx-react';
-import {string, func} from 'prop-types';
+import {observer} from 'mobx-react';
+import {string, func, InferProps} from 'prop-types';
 const {width} = Dimensions.get('window');
 
-const getTitle = (type, action) =>
+const getTitle = (type: string, action: string) =>
   action === 'Show'
     ? `${type} is now visible`
     : `The ${type.toLowerCase()} was successfully ${
         action === 'Hide' ? 'hidden' : 'reported'
       }`;
 
-const getMessage = (type, action) =>
+const getMessage = (type: string, action: string) =>
   action === 'Report'
     ? 'A moderator will review your report and make a decision soon.'
     : `The ${type.toLowerCase()} will${action === 'Show' ? ' ' : ' not '}
       be visible to members. You can undo this at any time.`;
 
-const HideContentSuccess = ({action, onDismiss, type}) => (
+const props = {
+  action: string,
+  type: string,
+  onDismiss: func,
+};
+
+const HideContentSuccess: React.FC<InferProps<typeof props>> = ({
+  action,
+  onDismiss,
+  type,
+}) => (
   <Pressable onPress={onDismiss}>
     <View style={styles.root}>
       <View style={styles.view}>
@@ -49,11 +59,7 @@ const HideContentSuccess = ({action, onDismiss, type}) => (
   </Pressable>
 );
 
-HideContentSuccess.propTypes = {
-  action: string,
-  type: string,
-  onDismiss: func,
-};
+HideContentSuccess.propTypes = props;
 
 const styles = StyleSheet.create({
   root: {
@@ -115,4 +121,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(observer(HideContentSuccess));
+export default observer(HideContentSuccess);

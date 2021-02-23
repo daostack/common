@@ -44,11 +44,17 @@ import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDate';
-import {BlurView, Report, HideContentSuccess} from '~/Components';
+import {BlurView} from '~/Components';
 import Logger from '~/Services/Logger';
 import moment from 'moment';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
+import {
+  ModerationActionSuccessModal,
+  ModerationModal,
+  reporterName,
+  timeReported,
+} from '~Util/moderation';
 import Toast from '~/Util/Toast.js';
 
 import {
@@ -59,13 +65,14 @@ import {
 } from '~/FormStores/RequestToJoin';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
+const {width} = Dimensions.get('window');
 
 let stickyHeightAddon = 56;
 const STICKY_HEADER_HEIGHT =
   Math.round(getStatusBarHeight(true)) + stickyHeightAddon;
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
-const CommonProfile = ({navigation, userStore, route: {params}, rootStore}) => {
+const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   /* all of  params.commonId,
   params.showRequestSentModal,
   params.createdProposalId
@@ -78,11 +85,13 @@ const CommonProfile = ({navigation, userStore, route: {params}, rootStore}) => {
   const commonStore = rootStore.commonStore;
   const proposalStore = rootStore.proposalStore;
   const discussionStore = rootStore.discussionStore;
+  const userStore = rootStore.userStore;
 
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(false);
-  const window = Dimensions.get('window');
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState('Discussion');
   const [action, setAction] = useState('Report');
@@ -422,6 +431,10 @@ const CommonProfile = ({navigation, userStore, route: {params}, rootStore}) => {
     navigation.navigate('CommonMembers', {
       commonId: currCommon.id,
       screenTitle: currCommon.name,
+      hasPermission,
+      openCommonOptions: (proposal) => openCommonOptions(proposal, 'Proposals'),
+      showHiddenNote: (hiddenProposal) =>
+        showHiddenNote(hiddenProposal, 'Proposal'),
     });
   };
 
@@ -441,6 +454,13 @@ const CommonProfile = ({navigation, userStore, route: {params}, rootStore}) => {
       : navigateTo('Edit Rules');
   };
 
+  /**
+   * For other types of items
+   * @param  {[type]} actionType [description]
+   * @param  {String} itemType   [description]
+   * @param  {[type]} itemId     [description]
+   * @return {[type]}            [description]
+   */
   const onModerate = async (actionType, itemType = '', itemId = null) => {
     setAction(actionType);
     bottomSheetStore.hideBottomSheet();
@@ -516,12 +536,11 @@ const CommonProfile = ({navigation, userStore, route: {params}, rootStore}) => {
 
   const showHiddenNote = (hiddenItem, type) => {
     const {moderation} = hiddenItem;
-    const user = userStore.getUserById(moderation.moderator);
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.HIDDEN_CONTENT_INFO,
       {
-        userName: `${user.firstName || ''} ${user.lastName || ''}`,
-        date: moment(moderation.updatedAt.toMillis()).format('MMMM D'),
+        userName: reporterName(userStore.getUserById(moderation.moderator)),
+        date: timeReported(moderation.updatedAt),
         reasons: moderation.reasons,
         moderatorNote: moderation?.note,
         type,
@@ -530,34 +549,6 @@ const CommonProfile = ({navigation, userStore, route: {params}, rootStore}) => {
   };
 
   const getType = (type) => (type === 'Proposals' ? 'Proposal' : type);
-
-  const moderationModal = () => (
-    <Modal
-      visible={showModerationModal}
-      transparent={true}
-      animationType="slide">
-      <Report
-        title={moderationType}
-        onCancel={() => setShowModerationModal(false)}
-        onReportContent={() => onReportContent()}
-        formStore={moderationFormStore}
-      />
-    </Modal>
-  );
-
-  const moderationActionSuccessModal = () => (
-    <Modal
-      visible={showModerationSuccessModal}
-      transparent={true}
-      animationType="slide"
-      onBackdropPress={() => setShowModerationSuccessModal(false)}>
-      <HideContentSuccess
-        type={getType(moderationType)}
-        action={action}
-        onDismiss={() => setShowModerationSuccessModal(false)}
-      />
-    </Modal>
-  );
 
   const navigateTo = (screenTitle) => {
     navigation.navigate('EditCommon', {
@@ -798,7 +789,7 @@ const CommonProfile = ({navigation, userStore, route: {params}, rootStore}) => {
     </TouchableOpacity>
   );
 
-  const initialLayout = {width: Dimensions.get('window').width};
+  const initialLayout = {width};
 
   const slideUp = {
     transform: [
@@ -822,8 +813,21 @@ const CommonProfile = ({navigation, userStore, route: {params}, rootStore}) => {
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
-      {moderationModal()}
-      {moderationActionSuccessModal()}
+      <ModerationModal
+        title={moderationType}
+        visible={showModerationModal}
+        setShowModerationModal={() => setShowModerationModal(false)}
+        moderationFormStore={moderationFormStore}
+        onReportContent={() => onReportContent()}
+      />
+      <ModerationActionSuccessModal
+        type={getType(moderationType)}
+        visible={showModerationSuccessModal}
+        setShowModerationSuccessModal={() =>
+          setShowModerationSuccessModal(false)
+        }
+        action={action}
+      />
       {currCommon ? (
         <View style={{flex: 1, position: 'relative'}}>
           <TouchableOpacity
@@ -858,7 +862,7 @@ const CommonProfile = ({navigation, userStore, route: {params}, rootStore}) => {
                   uri: currCommon.image,
                 }}
                 style={{
-                  width: window.width,
+                  width: width,
                   height: headerHeight,
                   backgroundColor: colors.grey4,
                 }}>
@@ -1065,17 +1069,10 @@ CommonProfile.propTypes = {
   navigation: object.isRequired,
   route: shape({
     params: shape({
-      //commonId: string,
       currCommon: object,
       refreshFeed: func,
-      //showRequestSentModal: func,
-      //createdProposalId: func,
     }),
   }),
-  bottomSheetStore: object,
-  userStore: object,
-  commonStore: object,
-  proposalStore: object,
   rootStore: rootStorePropTypes,
 };
 
@@ -1242,8 +1239,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'userStore',
-  'proposalStore',
-  'rootStore',
-)(observer(CommonProfile));
+export default inject('rootStore')(observer(CommonProfile));

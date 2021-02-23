@@ -14,12 +14,11 @@ import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
 import ProposalService from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
-import DaoService from '~/Services/DaoService';
 import ProposalApprovalTag from './ProposalApprovalTag';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
-import {string, bool, object, shape, func} from 'prop-types';
-import {ModerationMenu, Reported} from '../../Util/moderation';
+import {string, bool, object, func} from 'prop-types';
+import {ModerationMenu} from '../../Util/moderation';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -44,12 +43,11 @@ const ProposalCard = ({
   // Stores
   const userStore = rootStore.userStore;
   const proposalStore = rootStore.proposalStore;
+  const commonStore = rootStore.commonStore;
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
-  const [isHidden, setIsHidden] = useState(
-    proposalInfo.moderation && proposalInfo.moderation.flag === 'hidden',
-  );
+  const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
@@ -72,10 +70,6 @@ const ProposalCard = ({
       getProposalInfo(proposalInfo.id);
     }
 
-    setIsHidden(
-      proposalInfo.moderation && proposalInfo.moderation.flag === 'hidden',
-    );
-
     return () => {
       unsubscribeProposalDiscussionsCount &&
         unsubscribeProposalDiscussionsCount();
@@ -90,21 +84,24 @@ const ProposalCard = ({
   };
 
   const onReviewProposal = async () => {
-    if (isHidden) {
+    if (proposalInfo.isModerationHidden) {
       hiddenProposalNote();
     } else {
-      let currCommonInfo = commonInfo;
+      let currCommonInfo = {...commonInfo};
 
       if (!currCommonInfo) {
-        currCommonInfo = await DaoService.getInstance().getDaoById(
-          proposalInfo.commonId,
-        );
+        currCommonInfo = await commonStore.getCommonById(proposalInfo.commonId);
       }
       navigation.navigate('ProposalScreen', {
         proposalId: proposalInfo.id,
+        hasPermission,
       });
     }
   };
+
+  const getReporter = () =>
+    proposalInfo.moderation?.reporter &&
+    userStore.getUserById(proposalInfo.moderation?.reporter);
 
   return proposalInfo ? (
     <Animated.View
@@ -116,22 +113,21 @@ const ProposalCard = ({
           closingAt={
             proposalInfo?.createdAt.seconds + proposalInfo?.countdownPeriod
           }
+          isReported={proposalInfo.moderation?.flag !== 'visible'}
+          moderation={proposalInfo.moderation}
+          reporter={getReporter()}
         />
 
         <View style={styles.containerView}>
-          {proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && (
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>
-                {proposalInfo?.description?.title || 'Unknown title'}
-                <Reported
-                  reported={proposalInfo.moderation?.flag === 'reported'}
-                />
-              </Text>
-              {(!isHidden || hasPermission) && (
-                <ModerationMenu showOptions={openCommonOptions} />
-              )}
-            </View>
-          )}
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>
+              {isFundingRequest &&
+                (proposalInfo?.description?.title || 'Unknown title')}
+            </Text>
+            {(!proposalInfo.isModerationHidden || hasPermission) && (
+              <ModerationMenu showOptions={openCommonOptions} />
+            )}
+          </View>
 
           <MemberCard
             showDate={proposalInfo.isJoinRequest}
@@ -208,9 +204,6 @@ ProposalCard.propTypes = {
   membershipRequest: bool,
   isSwiper: bool,
   commonInfo: object,
-  proposalStore: shape({
-    getProposalById: func,
-  }),
   hasPermission: bool,
   openCommonOptions: func,
   hiddenProposalNote: func,
@@ -264,7 +257,6 @@ const styles = StyleSheet.create({
   title: {
     ...text.h3Black,
     textAlign: 'left',
-    //width: '100%',
     flexWrap: 'wrap',
     fontSize: 16,
   },

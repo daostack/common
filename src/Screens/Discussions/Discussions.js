@@ -12,7 +12,6 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   Platform,
-  Modal,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
@@ -32,8 +31,8 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 import {updateDiscussionLastMessage} from '~/Services/ListServices/DiscussionListService';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
-import {Report, Show} from '~/Components';
 import ModerationService from '~/Services/ModerationService';
+import {ModerationActionSuccessModal, ModerationModal} from '~Util/moderation';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
@@ -291,6 +290,12 @@ const Discussions = ({
     </>
   );
 
+  /**
+   * For discussionMessages
+   * @param  {[type]} actionType [description]
+   * @param  {[type]} messageId  [description]
+   * @return {[type]}            [description]
+   */
   const onModerate = async (actionType, messageId) => {
     setAction(actionType);
     bottomSheetStore.hideBottomSheet();
@@ -357,40 +362,24 @@ const Discussions = ({
     moderationFormStore.clearFormStoreState();
   };
 
-  const moderationModal = () => (
-    <Modal
-      visible={showModerationModal}
-      transparent={true}
-      animationType="slide"
-      onBackdropPress={() => setShowModerationModal(false)}>
-      <Report
-        title={'Comment'}
-        onCancel={() => setShowModerationModal(false)}
-        onReportContent={() => onReportContent()}
-        formStore={moderationFormStore}
-      />
-    </Modal>
-  );
-
-  const moderationActionSuccessModal = () => (
-    <Modal
-      visible={showModerationSuccessModal}
-      transparent={true}
-      animationType="slide"
-      onBackdropPress={() => setShowModerationSuccessModal(false)}>
-      <Show
-        type={'comment'}
-        action={action}
-        onDismiss={() => setShowModerationSuccessModal(false)}
-      />
-    </Modal>
-  );
-
   return (
     <SafeAreaView style={styles.safeView}>
       {header()}
-      {moderationModal()}
-      {moderationActionSuccessModal()}
+      <ModerationModal
+        title={'Comment'}
+        visible={showModerationModal}
+        setShowModerationModal={() => setShowModerationModal(false)}
+        moderationFormStore={moderationFormStore}
+        onReportContent={() => onReportContent()}
+      />
+      <ModerationActionSuccessModal
+        type={'comment'}
+        visible={showModerationSuccessModal}
+        setShowModerationSuccessModal={() =>
+          setShowModerationSuccessModal(false)
+        }
+        action={action}
+      />
       <ScrollView style={{flex: 1, paddingBottom: 30}} ref={scrollRef}>
         <DiscussionMessagesList
           discussionId={discussionId}

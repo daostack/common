@@ -45,43 +45,33 @@ export default class ModerationService {
     }
   };
 
-  report = async (type, commonId, moderation = null) => {
-    try {
-      return await this.axiosClient.post(
-        this.endpoints.report,
-        {
-          moderation,
-          commonId,
-          type,
+  report = async (type, commonId, moderation = null) =>
+    await this.axiosClient.post(
+      this.endpoints.report,
+      {
+        moderation,
+        commonId,
+        type,
+      },
+      {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
         },
-        {
-          headers: {
-            Authorization: await auth().currentUser.getIdToken(true),
-          },
-        },
-      );
-    } catch (error) {
-      throw error;
-    }
-  };
+      },
+    );
 
-  show = async (itemId, commonId, type) => {
-    try {
-      return await this.axiosClient.post(
-        this.endpoints.show,
-        {
-          itemId,
-          commonId,
-          type,
+  show = async (itemId, commonId, type) =>
+    await this.axiosClient.post(
+      this.endpoints.show,
+      {
+        itemId,
+        commonId,
+        type,
+      },
+      {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
         },
-        {
-          headers: {
-            Authorization: await auth().currentUser.getIdToken(true),
-          },
-        },
-      );
-    } catch (error) {
-      throw error;
-    }
-  };
+      },
+    );
 }

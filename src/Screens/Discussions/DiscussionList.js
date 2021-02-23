@@ -12,7 +12,7 @@ const DiscussionList = ({
   rootStore,
   hasPermission,
   openCommonOptions,
-  showHiddenNote
+  showHiddenNote,
 }) => {
   const list = rootStore.discussionStore.getCommonDiscussions(commonId);
 
