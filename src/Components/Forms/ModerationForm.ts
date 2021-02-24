@@ -1,3 +1,3 @@
 export const REASONS = 'reasons';
-export const NOTE = 'note';
+export const MODERATOR_NOTE = 'moderatorNote';
 export const ITEM_ID = 'itemId';

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import {colors, text, layout, font} from '~/Theme';
-import {string, func, object, InferProps, shape} from 'prop-types';
+import {string, func, InferProps, shape} from 'prop-types';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 const {width} = Dimensions.get('window');
@@ -111,7 +111,10 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
               label="Moderator note:"
               placeholderText="This note is public and will be shown to all members."
               multiline={true}
-              value={formStore.getFormField(ModerationForm.NOTE, false)?.value}
+              value={
+                formStore.getFormField(ModerationForm.MODERATOR_NOTE, false)
+                  ?.value
+              }
               validation={{
                 name: 'moderatorNote',
                 formStore: formStore,
@@ -137,6 +140,13 @@ const styles = StyleSheet.create({
   root: {
     height: '100%',
     paddingTop: Platform.OS === 'ios' ? 200 : 100,
+    shadowColor: 'rgba(0, 0, 0, 0.9)',
+    shadowRadius: 100,
+    shadowOpacity: 0.5,
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
   },
   view: {
     flex: 1,

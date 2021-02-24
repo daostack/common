@@ -45,11 +45,11 @@ export default class ModerationService {
     }
   };
 
-  report = async (type, commonId, moderation = null) =>
+  report = async (type, commonId, moderationData) =>
     await this.axiosClient.post(
       this.endpoints.report,
       {
-        moderation,
+        moderationData,
         commonId,
         type,
       },

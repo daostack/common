@@ -13,18 +13,30 @@ import {observer} from 'mobx-react';
 import {string, func, InferProps} from 'prop-types';
 const {width} = Dimensions.get('window');
 
+const getType = (type: string) => {
+  console.log('type', type);
+  switch (type) {
+    case 'Discussion':
+      return 'Post';
+    default:
+      return type;
+  }
+};
+
 const getTitle = (type: string, action: string) =>
   action === 'Show'
-    ? `${type} is now visible`
-    : `The ${type.toLowerCase()} was successfully ${
+    ? `${getType(type)} is now visible`
+    : `The ${getType(type).toLowerCase()} was successfully ${
         action === 'Hide' ? 'hidden' : 'reported'
       }`;
 
 const getMessage = (type: string, action: string) =>
   action === 'Report'
     ? 'A moderator will review your report and make a decision soon.'
-    : `The ${type.toLowerCase()} will${action === 'Show' ? ' ' : ' not '}
-      be visible to members. You can undo this at any time.`;
+    : `The ${getType(type).toLowerCase()} will${
+        action === 'Show' ? ' ' : ' not '
+      }be visible to members.
+      You can undo this at any time.`;
 
 const props = {
   action: string,
@@ -65,6 +77,13 @@ const styles = StyleSheet.create({
   root: {
     height: '100%',
     paddingTop: Platform.OS === 'ios' ? 400 : 300,
+    shadowColor: 'rgba(0, 0, 0, 0.9)',
+    shadowRadius: 100,
+    shadowOpacity: 0.5,
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
   },
   view: {
     flex: 1,

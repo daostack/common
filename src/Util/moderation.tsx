@@ -87,7 +87,7 @@ const reportedProps = {
   reporter: shape({
     firstName: string,
     lastName: string,
-  }) ,
+  }),
 };
 
 const moderationModalProps = {

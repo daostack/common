@@ -36,7 +36,7 @@ const DiscussionCard = ({
     discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
       ?.length || 0;
 
-  const isVisible = data.moderation?.flag === 'visible';
+  const isVisible = data.moderation?.flag === 'visible' || !data.moderation;
 
   const navigateToDiscussion = () => {
     if (discussionMessageStore.isModerationHidden) {

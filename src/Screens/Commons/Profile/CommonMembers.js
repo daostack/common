@@ -14,7 +14,7 @@ import {TabView} from 'react-native-tab-view';
 import ProposalsList from '../../Proposals/ProposalsList';
 import CommonMembersList from './CommonMembersList';
 import CommonTabBar from '../../CommonTabBar';
-import {string, func, array, object, shape} from 'prop-types';
+import {string, func, array, object, shape, bool} from 'prop-types';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import {observer, inject} from 'mobx-react';
 import {rootStorePropTypes} from '~/Types/propTypes';
@@ -43,11 +43,9 @@ const Pending = ({
         type: PROPOSAL_TYPE.Join,
       }}
       hasPermission={hasPermission}
-      openCommonOptions={(requestToJoin) =>
-        openCommonOptions(requestToJoin, 'Proposals')
-      }
+      openCommonOptions={(requestToJoin) => openCommonOptions(requestToJoin)}
       showHiddenNote={(hiddenRequestToJoin) =>
-        showHiddenNote(hiddenRequestToJoin, 'Proposal')
+        showHiddenNote(hiddenRequestToJoin)
       }
     />
   </View>
@@ -157,6 +155,9 @@ Pending.propTypes = {
   navigation: object,
   commonId: string,
   onProposalsCountChange: func,
+  hasPermission: bool,
+  openCommonOptions: func,
+  showHiddenNote: func,
 };
 
 History.propTypes = {

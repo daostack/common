@@ -432,9 +432,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       commonId: currCommon.id,
       screenTitle: currCommon.name,
       hasPermission,
-      openCommonOptions: (proposal) => openCommonOptions(proposal, 'Proposals'),
-      showHiddenNote: (hiddenProposal) =>
-        showHiddenNote(hiddenProposal, 'Proposal'),
+      openCommonOptions: (requestToJoin) =>
+        openCommonOptions(requestToJoin, 'Membership request'),
+      showHiddenNote: (hiddenRequestToJoin) =>
+        showHiddenNote(hiddenRequestToJoin, 'Membership request'),
     });
   };
 
@@ -464,6 +465,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const onModerate = async (actionType, itemType = '', itemId = null) => {
     setAction(actionType);
     bottomSheetStore.hideBottomSheet();
+
     switch (actionType) {
       case 'Show':
         Toast.loading('Loading...');
@@ -494,6 +496,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     }
   };
 
+  const membershipRequestType = (itemType) =>
+    itemType === 'Membership request' ? 'Proposals' : itemType;
+
   // consider adding itemId to edit (?)
   const openCommonOptions = (item = null, itemType = '') => {
     if (item) {
@@ -505,11 +510,13 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       );
     }
     setModerationType(itemType);
+
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
         onAction: item
-          ? (actionType) => onModerate(actionType, itemType, item.id)
+          ? (actionType) =>
+              onModerate(actionType, membershipRequestType(itemType), item.id)
           : (type) => onEdit(type),
         hasPermission,
         moderatorOptions: {
@@ -523,8 +530,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     setShowModerationModal(false);
     bottomSheetStore.hideBottomSheet();
     Toast.loading('Reporting content...');
+
     await ModerationService.getInstance().report(
-      moderationType.toLowerCase(),
+      membershipRequestType(moderationType).toLowerCase(),
       commonId,
       moderationFormStore.getFormFieldsJson(),
     );
