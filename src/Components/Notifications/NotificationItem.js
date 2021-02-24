@@ -6,19 +6,27 @@ import FastImage from 'react-native-fast-image';
 import {string, object} from 'prop-types';
 import NotificationBadge from './NotificationBadge';
 
-const NotificationItem = ({photoURL, name, message, time, type}) => (
+const NotificationItem = ({item}) => (
   <View style={styles.messageCardContainer}>
+    {/* TODO: Dynamic URL */}
     <FastImage
       style={styles.userImage}
-      source={photoURL ? {uri: photoURL} : null}
+      source={{
+        uri:
+          'https://www.webconsultas.com/sites/default/files/styles/wc_adaptive_image__small/public/articulos/perfil-resilencia.jpg',
+      }}
     />
     <View style={styles.messageContainer}>
-      <NotificationBadge type={type} />
-      <Text style={styles.nameStyle}>{name}</Text>
-      <Text style={styles.messageStyle}>{message}</Text>
-      {/* <Text style={styles.timeStyle}>
-        {moment(time.toDate()).format('hh:mm')}
-      </Text> */}
+      <View style={styles.headerContainer}>
+        <NotificationBadge type={item.type} />
+        <Text style={styles.prefixStyle}>on</Text>
+        <Text style={styles.whereStyle}> "Milky Way"</Text>
+      </View>
+      <Text style={styles.messageStyle}>{item.type}</Text>
+      {/* TODO: FORMAT DATE NOT DONE */}
+      <Text style={styles.dateStyle}>
+        {moment(item.createdAt.toDate()).format('DD/MM/YYYY')}
+      </Text>
     </View>
   </View>
 );
@@ -40,20 +48,40 @@ const styles = StyleSheet.create({
     borderColor: colors.white,
     marginRight: 15,
   },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  prefixStyle: {
+    ...font.primary.regular,
+    ...font.fontSize(0),
+    color: colors.black,
+    marginLeft: 5,
+  },
+  whereStyle: {
+    ...font.primary.bold,
+    ...font.fontSize(0),
+    color: colors.black,
+  },
+  dateStyle: {
+    ...font.primary.regular,
+    ...font.fontSize(0),
+    color: colors.greySubtitle,
+  },
   messageCardContainer: {
     ...layout.content,
     ...layout.flexRow,
     ...layout.flexStart,
     padding: 0,
-    marginBottom: 20,
+    marginVertical: 20,
   },
-  messageContainer: {
-    ...layout.content,
-    paddingVertical: 10,
-    borderRadius: 15,
-    backgroundColor: colors.paleLilacTwo,
-    ...layout.flexStart,
-  },
+  // messageContainer: {
+  //   ...layout.content,
+  //   paddingVertical: 10,
+  //   borderRadius: 15,
+  //   backgroundColor: colors.paleLilacTwo,
+  //   ...layout.flexStart,
+  // },
   nameStyle: {
     ...font.primary.bold,
     ...font.fontSize(2),

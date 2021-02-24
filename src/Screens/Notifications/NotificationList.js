@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {
   SafeAreaView,
@@ -9,55 +9,49 @@ import {
   View,
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {layout, font, sizeS} from '~/Theme';
+import {layout, font, sizeS, colors} from '~/Theme';
 import {inject, observer} from 'mobx-react';
 import {object} from 'prop-types';
 import NotificationItem from '~/Components/Notifications/NotificationItem';
 import NotificationService from '~/Services/NotificationService';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {FlatList} from 'react-native-gesture-handler';
 
 const NotificationList = ({navigation}) => {
-  console.log('entra');
+  const [notificationList, setNotificationList] = useState([]);
 
-  NotificationService.getNotificationList().then((result) =>
-    console.log('RESULTADO', result),
-  );
+  useEffect(() => {
+    NotificationService.getNotificationList().then((result) => {
+      setNotificationList(result);
+    });
+  }, []);
+
+  console.log(notificationList);
 
   return (
     <>
       <StatusBar barStyle="dark-content" />
 
       <SafeAreaView style={styles.safeArea}>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}
-          vertical={true}
-          nestedScrollEnabled={true}
-          directionalLockEnabled={true}
-          scrollEventThrottle={16}>
-          <View style={styles.sectionContainer}>
-            <Text style={styles.title}>Test</Text>
-          </View>
+        <View style={styles.sectionContainer}>
+          <Text style={styles.title}>Notifications</Text>
+        </View>
 
-          <NotificationItem
-            photoURL={
-              'https://www.webconsultas.com/sites/default/files/styles/wc_adaptive_image__small/public/articulos/perfil-resilencia.jpg'
-            }
-            name={'gsagdshsd'}
-            type={EventTypeState.fundingRequestCreated}
-            message={'tetststs'}
-            time={new Date()}
-          />
-          <NotificationItem
-            photoURL={
-              'https://www.webconsultas.com/sites/default/files/styles/wc_adaptive_image__small/public/articulos/perfil-resilencia.jpg'
-            }
-            name={'gsagdshsd 2'}
-            type={EventTypeState.paymentFailed}
-            message={'tetststs 2'}
-            time={new Date()}
-          />
-        </ScrollView>
+        <FlatList
+          data={notificationList}
+          renderItem={({item}) => <NotificationItem item={item} />}
+          ItemSeparatorComponent={(props) => {
+            console.log('props', props); // here you can access the trailingItem with props.trailingItem
+            return (
+              <View
+                style={{
+                  height: 1,
+                  backgroundColor: colors.grey4,
+                }}
+              />
+            );
+          }}
+        />
       </SafeAreaView>
     </>
   );
@@ -78,12 +72,12 @@ const styles = StyleSheet.create({
   },
   title: {
     ...font.heading.bold,
-    ...font.fontSize(4),
+    ...font.fontSize(5),
   },
   sectionContainer: {
     ...layout.content,
     marginVertical: sizeS,
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
 });
 

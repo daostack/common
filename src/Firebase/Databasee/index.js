@@ -5,6 +5,7 @@ export const DB_COLLECTIONS = {
   discussionMessages: 'discussionMessage',
   discussions: 'discussion',
   notification: 'notification',
+  event: 'event',
 
   // Old collections definitions.
   // Keep it here until all the migration to mobx store is finished.

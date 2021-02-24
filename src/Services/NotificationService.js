@@ -49,19 +49,21 @@ export default class NotificationService {
   static async getNotificationList() {
     const userId = auth().currentUser.uid;
 
-    return db
-      .collection(DB_COLLECTIONS.notification)
-      .doc(userId)
-      .get()
-      .then((snapshots) => {
-        console.log('RESULTADO 2');
-        if (!snapshots) {
-          return null;
-        }
-
-        return snapshots.data();
-      })
-      .catch((error) => console.log('RESULTADO ERRORRR', error));
+    //Index creation doesn't work but is created already
+    return (
+      db
+        .collection(DB_COLLECTIONS.event)
+        .where('userId', '==', userId)
+        // .orderBy('createdAt', 'desc')
+        .get()
+        .then((snapshots) => {
+          if (!snapshots) {
+            return null;
+          }
+          return snapshots.docs.map((doc) => doc.data());
+        })
+        .catch((error) => console.log(error))
+    );
   }
 
   static async listenTransaction(txHash) {
