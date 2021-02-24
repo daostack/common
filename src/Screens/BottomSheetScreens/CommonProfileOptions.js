@@ -8,10 +8,9 @@ import {
 import React from 'react';
 import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {inject, observer} from 'mobx-react';
-import {object, func} from 'prop-types';
+import {func} from 'prop-types';
 
-const CommonProfileOptions = ({bottomSheetStore, onEdit}) => (
+const CommonProfileOptions = ({onEdit}) => (
   <ScrollView
     contentInsetAdjustmentBehavior="automatic"
     style={styles.scrollView}
@@ -43,7 +42,6 @@ const CommonProfileOptions = ({bottomSheetStore, onEdit}) => (
 );
 
 CommonProfileOptions.propTypes = {
-  bottomSheetStore: object,
   onEdit: func,
 };
 
@@ -84,4 +82,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(observer(CommonProfileOptions));
+export default CommonProfileOptions;

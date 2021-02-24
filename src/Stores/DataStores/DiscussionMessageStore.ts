@@ -1,0 +1,61 @@
+import BaseStore from './BaseStore';
+import {
+  subscribeToDiscussionsMessages,
+  subscribeToProposalDiscussionMessages,
+} from '~/Services/ListServices/DiscussionMessageListService';
+import {FirestoreUnsubscribeFn, IFirebaseDocChange} from '~/Firebase/types';
+import RootStore from '../RootStore';
+import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
+import {DiscussionMessage} from '../Models/DiscussionMessage';
+
+export default class DiscussionMessageStore extends BaseStore<
+  DiscussionMessage,
+  IDiscussionMessageEntity
+> {
+  constructor(rootStore: RootStore) {
+    super(rootStore);
+  }
+
+  // Data consuming methods
+  getDiscussionMessageById = (
+    id: string,
+  ): IDiscussionMessageEntity | undefined => this.getDataById(id);
+
+  getDiscussionMessagesByDiscussionId = (
+    discussionId: string,
+  ): Array<DiscussionMessage> | undefined =>
+    this.getDataArray
+      ?.filter(
+        (message: DiscussionMessage) => message.discussionId === discussionId,
+      )
+      .sort(
+        (message: DiscussionMessage, prevMessage: DiscussionMessage) =>
+          prevMessage.createdAt.seconds - message.createdAt.seconds,
+      );
+
+  //Actions
+  subscribeToDiscussionsMessages = (
+    discussionIds: Array<string>,
+  ): FirestoreUnsubscribeFn =>
+    subscribeToDiscussionsMessages(discussionIds, this.updateStoreData);
+
+  subscribeToProposalDiscussionMessages = (
+    proposalId: string,
+  ): FirestoreUnsubscribeFn =>
+    subscribeToProposalDiscussionMessages(proposalId, this.updateStoreData);
+
+  // Overriden methods
+  getEntityModel(entity: IDiscussionMessageEntity): DiscussionMessage {
+    return new DiscussionMessage(entity);
+  }
+
+  firestoreDocToEntity(
+    firebaseDoc: IFirebaseDocChange<IDiscussionMessageEntity>,
+  ): IDiscussionMessageEntity {
+    const entity = super.firestoreDocToEntity(firebaseDoc);
+    return {
+      ...entity,
+      createdAt: entity.createTime,
+    };
+  }
+}

@@ -33,7 +33,7 @@ export const COUNTDOWN_STATES = [PROPOSAL_STAGE.failed];
 import {
   isTypeFilterFundingRequest,
   isTypeFilterJoin,
-} from '~/Stores/ListStore/ProposalStore';
+} from '~/Stores/DataStores/ProposalStore';
 
 export default class ProposalService {
   static serviceInstance = null;
@@ -179,12 +179,11 @@ export default class ProposalService {
         callback({
           pendingProposalCount: pendingProposals.length,
           usersPendingProposal:
-            (
-              userInfoUid &&
-              pendingProposals.find(
-                (doc) => doc.data().proposerId === userInfoUid,
-              )
-            )?.data() || false,
+            (userInfoUid &&
+              pendingProposals
+                .find((doc) => doc.data().proposerId === userInfoUid)
+                ?.data()) ||
+            false,
         });
       },
       (error) => Toast.error(error),

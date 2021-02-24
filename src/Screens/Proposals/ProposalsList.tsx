@@ -19,7 +19,8 @@ import {Proposal} from '~/Stores/Models/Proposal';
 import {
   isTypeFilterJoin,
   isStageFilterHistory,
-} from '~/Stores/ListStore/ProposalStore';
+} from '~/Stores/DataStores/ProposalStore';
+import {proposalStorePropTypes} from '~/Types/propTypes';
 
 const {width, height} = Dimensions.get('window');
 
@@ -45,10 +46,7 @@ const props = {
   isSwiper: bool,
 
   // Injected
-  proposalStore: shape({
-    getCommonProposals: func.isRequired,
-    getUserProposals: func.isRequired,
-  }).isRequired,
+  proposalStore: proposalStorePropTypes.isRequired,
 };
 
 const ProposalsList: React.FC<InferProps<typeof props>> = observer(
@@ -166,8 +164,8 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
               isStageFilterHistory(proposalFilter.stage)
                 ? 'You will be able to see proposals that passed or were rejected here.'
                 : isTypeFilterJoin(proposalFilter.type)
-                  ? 'There are no pending membership requests at the moment, check again later.'
-                  : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
+                ? 'There are no pending membership requests at the moment, check again later.'
+                : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
             }
           />
         )}

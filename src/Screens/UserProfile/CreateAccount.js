@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import GSignInButton from '~/Components/Auth/GSignInButton';
 import {layout, text, colors} from '~/Theme';
-import {observer, inject} from 'mobx-react';
+import {observer} from 'mobx-react';
 import AppleSignInButton from '~/Components/Auth/AppleSignInButton';
 import AuthService from '~/Services/AuthService';
 import {bool, func} from 'prop-types';
@@ -102,4 +102,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(CreateAccount));
+export default observer(CreateAccount);

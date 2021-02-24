@@ -1,41 +1,26 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {observer, inject} from 'mobx-react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Dimensions,
-} from 'react-native';
+import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
 import {colors, font, text as textjs} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
-import {shape, string, object, bool, func} from 'prop-types';
+import {shape, string, object, bool} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
+import {userStorePropTypes} from '~/Types/propTypes';
 
 const {width} = Dimensions.get('window');
 
 const DiscussionMessage = ({
   data: {ownerId, text, createTime},
-  outcome,
   showCurrentUserAvatar,
-  userListStore,
+  userStore,
 }) => {
   let currentUserUid = null;
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
   }
 
-  const [outcomeState, setOutcomeState] = React.useState();
-  const onwerInfo = userListStore.getUserById(ownerId);
-
-  useEffect(() => {
-    if (typeof outcome === 'object') {
-      outcome.then((out) => setOutcomeState(out));
-
-      console.log(typeof outcomeState);
-    }
-  }, [outcome]);
+  const onwerInfo = userStore.getUserById(ownerId);
 
   return (
     <View style={styles.container}>
@@ -117,14 +102,8 @@ DiscussionMessage.propTypes = {
     text: string,
     createTime: object,
   }),
-  outcome: shape({
-    then: func.isRequired,
-    catch: func.isRequired,
-  }),
   showCurrentUserAvatar: bool,
-  userListStore: shape({
-    getUserById: func,
-  }),
+  userStore: userStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -178,4 +157,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userListStore')(observer(DiscussionMessage));
+export default inject('userStore')(observer(DiscussionMessage));
