@@ -36,11 +36,12 @@ const CommonsList = ({navigation, rootStore}) => {
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
   const [isLoading, setLoading ] = useState(true);
-  useTimeoutFn(handleLoader, TIMEOUT);
-
   const handleLoader = () => {
     setLoading(false);
   };
+
+  useTimeoutFn(handleLoader, TIMEOUT);
+
   const myDaosGroup = {
     title: groupTitle('My Commons', commonStore.myCommons.length),
     data: commonStore.myCommons,
