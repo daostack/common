@@ -88,8 +88,8 @@ const EditProfile = ({rootStore, route, navigation}) => {
       isSignedWithApple &&
       isFirstOpening &&
       (!editProfileFormStore.isFormValid() ||
-        !userStore.userInfo?.firstName ||
-        !userStore.userInfo?.lastName)
+        !authStore.userInfo?.firstName ||
+        !authStore.userInfo?.lastName)
     ) {
       return;
     }
