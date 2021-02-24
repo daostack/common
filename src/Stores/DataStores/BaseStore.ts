@@ -68,7 +68,6 @@ export default abstract class BaseStore<
     }
 
     runInAction(() => {
-      this.rootStore.uiStore.appLoaderStore.isLoading = true;
       this.isLoading = true;
     });
 
@@ -83,7 +82,6 @@ export default abstract class BaseStore<
     runInAction(() => {
       this.data.merge(updatesMap);
       this.isLoading = false;
-      this.rootStore.uiStore.appLoaderStore.isLoading = false;
     });
   };
 
