@@ -27,7 +27,6 @@ const CommonExplanation = ({navigation}) => {
     const [index, setIndex] = useState(0);
 
     const goToCreateScreen = async () => {
-      if (index === COMMON_EXPLANATION_SLIDERS_AMOUNT) {
       navigation.navigate(NAVIGATION_SCREENS.CREATE_STEP_1, {
         formStores: {
           generalInfoFormStore: new GeneralInfoFormStore(),
@@ -36,6 +35,11 @@ const CommonExplanation = ({navigation}) => {
           reviewFormStore: new ReviewFormStore(),
         },
       });
+    };
+
+    const onPress = () => {
+      if (index === COMMON_EXPLANATION_SLIDERS_AMOUNT) {
+        goToCreateScreen();
       } else {
         ref.current.scrollBy(1);
         setIndex(index + 1);
@@ -109,7 +113,7 @@ const CommonExplanation = ({navigation}) => {
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.button}
-              onPress={goToCreateScreen}>
+              onPress={onPress}>
               <Text style={styles.buttonText}>{index === COMMON_EXPLANATION_SLIDERS_AMOUNT ? 'Continue' : 'Get started'}</Text>
             </TouchableOpacity>
           </View>
