@@ -163,31 +163,28 @@ const styles = StyleSheet.create({
     height: 45,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     ...layout.marginTopS,
-    marginRight: 10,
+    marginRight: 5,
   },
   problemText: {
     ...font.primary.regular,
-    fontSize: 16,
+    fontSize: 15,
   },
   title: {
     ...text.h2Black,
-    //borderWidth: 1,
     fontSize: 18,
     alignSelf: 'center',
     marginTop: 30,
   },
   action: {
     ...font.primary.bold,
-    //borderWidth: 1,
     fontSize: 15,
     marginBottom: 10,
     marginVertical: 30,
   },
   explanation: {
     ...font.primary.regular,
-    //borderWidth: 1,
     fontSize: 15,
   },
   divider: {
@@ -204,7 +201,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     overflow: 'hidden',
     backgroundColor: colors.paleblue,
-    //marginBottom: 40,
     marginVertical: 40,
   },
   buttonSelected: {

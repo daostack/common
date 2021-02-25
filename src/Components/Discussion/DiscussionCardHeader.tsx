@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {layout, colors, sizeXS} from '~/Theme';
 import {observer} from 'mobx-react';
-import {Reported} from '~/Util/moderation';
+import {Reported} from '../../Components/Moderation/Reported';
 import {bool, object, InferProps} from 'prop-types';
 
 const props = {

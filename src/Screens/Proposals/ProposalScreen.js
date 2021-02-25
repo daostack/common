@@ -54,7 +54,8 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
-import {ModerationActionSuccessModal, ModerationModal} from '~Util/moderation';
+import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
+import ModerationModal from '~/Components/Moderation/ModerationModal';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;

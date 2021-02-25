@@ -18,7 +18,7 @@ import ProposalApprovalTag from './ProposalApprovalTag';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
 import {string, bool, object, func} from 'prop-types';
-import {ModerationMenu} from '../../Util/moderation';
+import ModerationMenu from '../../Components/Moderation/ModerationMenu';
 import {
   Placeholder,
   PlaceholderMedia,

@@ -7,7 +7,7 @@ import CountDown from 'react-native-countdown-component';
 import {string, number, bool, func, object} from 'prop-types';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {observer} from 'mobx-react';
-import {Reported} from '~/Util/moderation';
+import {Reported} from '../../Components/Moderation/Reported';
 
 const TITLES = {
   APPROVED: 'Approved',

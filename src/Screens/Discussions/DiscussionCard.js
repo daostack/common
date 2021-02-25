@@ -14,7 +14,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import moment from 'moment';
 import {CommonActions} from '@react-navigation/native';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {ModerationMenu} from '../../Util/moderation';
+import ModerationMenu from '../../Components/Moderation/ModerationMenu';
 import DiscussionCardHeader from '../../Components/Discussion/DiscussionCardHeader';
 
 const {width} = Dimensions.get('window');
@@ -39,7 +39,7 @@ const DiscussionCard = ({
   const isVisible = data.moderation?.flag === 'visible' || !data.moderation;
 
   const navigateToDiscussion = () => {
-    if (discussionMessageStore.isModerationHidden) {
+    if (data.isModerationHidden) {
       hiddenDiscussionNote();
     } else {
       const navigate = CommonActions.navigate({

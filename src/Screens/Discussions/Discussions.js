@@ -26,13 +26,13 @@ import {db} from '../../Firebase';
 import {object, shape, string} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
-
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {updateDiscussionLastMessage} from '~/Services/ListServices/DiscussionListService';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
-import {ModerationActionSuccessModal, ModerationModal} from '~Util/moderation';
+import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
+import ModerationModal from '~/Components/Moderation/ModerationModal';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
@@ -350,7 +350,7 @@ const Discussions = ({
 
   const onReportContent = async () => {
     setShowModerationModal(false);
-    Toast.loading('Loading...');
+    Toast.loading('Reporting content...');
     bottomSheetStore.hideBottomSheet();
     await ModerationService.getInstance().report(
       'discussionMessage',
@@ -359,6 +359,7 @@ const Discussions = ({
     );
     Toast.hide();
     Toast.success('Done');
+    setShowModerationSuccessModal(true);
     moderationFormStore.clearFormStoreState();
   };
 
