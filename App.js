@@ -67,6 +67,7 @@ import {fontSize} from './src/Theme/font';
 import ProposalService from './src/Services/ProposalService';
 import CommonService from './src/Services/CommonService';
 import DiscussionService from './src/Services/DiscussionService';
+import Loader from '~/Components/Loader';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -87,6 +88,7 @@ const App = ({rootStore, navigation}) => {
   const commonStore = rootStore.commonStore;
   const proposalStore = rootStore.proposalStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  const appLoaderStore = rootStore.uiStore.appLoaderStore;
 
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -132,6 +134,7 @@ const App = ({rootStore, navigation}) => {
   }, [authStore.userInfo?.uid]);
 
   const notificationNavigation = async (remoteMessage) => {
+    appLoaderStore.showLoader();
     logger.log('remoteMessage -> ', remoteMessage);
     if (remoteMessage) {
       const [
@@ -172,6 +175,7 @@ const App = ({rootStore, navigation}) => {
         });
       }
     }
+    appLoaderStore.hideLoader();
   };
 
   // notification navigation
@@ -572,6 +576,7 @@ const App = ({rootStore, navigation}) => {
           component={MonthlyContribution}
         />
       </Stack.Navigator>
+      {appLoaderStore.isLoading && <Loader isBigger isFullScreen navigation={navigationRef}/>}
       {bottomSheetStore.isVisible && <BottomSheetContainer />}
       <ToastView
         ref={hudRef}
