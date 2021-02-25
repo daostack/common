@@ -16,6 +16,7 @@ import PropTypes, {string} from 'prop-types';
 import {discussionStorePropTypes} from '~/Types/propTypes';
 
 const DiscussionMessagesList = ({
+  moderatorId,
   discussionId,
   scrollViewRef,
   discussionMessageStore,
@@ -62,7 +63,7 @@ const DiscussionMessagesList = ({
             width: Dimensions.get('screen').width * 0.9,
           }}
           renderItem={(x) => (
-            <DiscussionMessage data={x.item} showCurrentUserAvatar />
+            <DiscussionMessage moderatorId={moderatorId} data={x.item} showCurrentUserAvatar />
           )}
           onScrollToIndexFailed={(info) => {
             logger.error('Something bad happened: ', info);
@@ -95,6 +96,7 @@ const DiscussionMessagesList = ({
 };
 
 DiscussionMessagesList.propTypes = {
+  moderatorId: string,
   discussionId: string,
   scrollViewRef: PropTypes.any,
   discussionMessageStore: discussionStorePropTypes,

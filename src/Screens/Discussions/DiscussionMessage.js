@@ -14,6 +14,7 @@ const DiscussionMessage = ({
   data: {ownerId, text, createTime},
   showCurrentUserAvatar,
   userStore,
+  moderatorId,
 }) => {
   let currentUserUid = null;
   if (auth().currentUser) {
@@ -76,7 +77,10 @@ const DiscussionMessage = ({
                 maxWidth: width - 90,
                 backgroundColor: colors.paleLilacTwo,
               }}>
-              <Text style={styles.ownerName}>{onwerInfo?.displayName}</Text>
+              <View style={styles.ownerNameView}>
+                <Text style={styles.ownerName}>{onwerInfo?.displayName}</Text>
+                {ownerId === moderatorId && <Text style={textjs.moderatorText}>{' '}Moderator</Text>}
+              </View>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
                 <Text
                   style={{...styles.text, ...textjs.writingDirection(text)}}
@@ -97,6 +101,7 @@ const DiscussionMessage = ({
 };
 
 DiscussionMessage.propTypes = {
+  moderatorId: string,
   data: shape({
     ownerId: string,
     text: string,
@@ -154,6 +159,10 @@ const styles = StyleSheet.create({
   },
   contentMember: {
     flexDirection: 'row',
+  },
+  ownerNameView: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
   },
 });
 

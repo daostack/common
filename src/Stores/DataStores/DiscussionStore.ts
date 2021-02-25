@@ -24,6 +24,11 @@ export default class DiscussionStore extends BaseStore<
         (discussion: Discussion, prevDiscussion: Discussion) =>
           prevDiscussion.lastMessage.seconds - discussion.lastMessage.seconds,
       );
+
+  getModeratorIds = (commonId:string): Array<string> => {
+    const discussionList = this.getCommonDiscussions(commonId);
+    return (discussionList || []).map(({ownerId}) => ownerId);
+  }
   //Actions
   subscribeToCommonDiscussions = (commonId: string): FirestoreUnsubscribeFn =>
     subscribeToCommonDiscussions(commonId, this.updateStoreData);
