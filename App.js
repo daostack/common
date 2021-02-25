@@ -507,7 +507,7 @@ const App = ({rootStore, navigation}) => {
           name="EditProfile"
           component={EditProfile}
         />
-        <Stack.Screen name="PDFViwer" component={PDFViewer} />
+        <Stack.Screen name="PDFViewer" component={PDFViewer} />
         <Stack.Screen
           name="Browser"
           options={({nav, route}) => ({headerBackTitle: 'Back'})}

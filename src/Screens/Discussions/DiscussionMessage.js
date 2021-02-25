@@ -1,12 +1,14 @@
 import React from 'react';
 import {observer, inject} from 'mobx-react';
-import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
+import {StyleSheet, Text, View, Image, Dimensions, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import {colors, font, text as textjs} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import {userStorePropTypes} from '~/Types/propTypes';
+import {NAVIGATION_SCREENS} from '../../Util/constants/routes.enum';
 
 const {width} = Dimensions.get('window');
 
@@ -20,24 +22,31 @@ const DiscussionMessage = ({
     currentUserUid = auth().currentUser.uid;
   }
 
-  const onwerInfo = userStore.getUserById(ownerId);
+  const navigation = useNavigation();
+  const ownerInfo = userStore.getUserById(ownerId);
+
+  function goToUserProfile() {
+    navigation.navigate(NAVIGATION_SCREENS.PROFILE, {userId: ownerInfo.id, ownerInfo});
+  }
 
   return (
     <View style={styles.container}>
       {currentUserUid === ownerId ? (
         <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
           {showCurrentUserAvatar && (
-            <Image
-              style={{
-                backgroundColor: colors.grey3,
-                height: 40,
-                width: 40,
-                borderRadius: 20,
-                justify: 'flex-end',
-                marginLeft: 10,
-              }}
-              source={onwerInfo && {uri: onwerInfo.photoURL}}
-            />
+            <TouchableOpacity onPress={goToUserProfile}>
+              <Image
+                style={{
+                  backgroundColor: colors.grey3,
+                  height: 40,
+                  width: 40,
+                  borderRadius: 20,
+                  justify: 'flex-end',
+                  marginLeft: 10,
+                }}
+                source={ownerInfo && {uri: ownerInfo.photoURL}}
+              />
+            </TouchableOpacity>
           )}
 
           <View style={styles.contentOwner}>
@@ -59,15 +68,17 @@ const DiscussionMessage = ({
         <>
           <View style={styles.contentMember}>
             <View>
-              <Image
-                style={{
-                  backgroundColor: colors.grey3,
-                  height: 40,
-                  width: 40,
-                  borderRadius: 20,
-                }}
-                source={onwerInfo && {uri: onwerInfo.photoURL}}
-              />
+            <TouchableOpacity onPress={goToUserProfile}>
+                <Image
+                  style={{
+                    backgroundColor: colors.grey3,
+                    height: 40,
+                    width: 40,
+                    borderRadius: 20,
+                  }}
+                  source={ownerInfo && {uri: ownerInfo.photoURL}}
+                />
+              </TouchableOpacity>
             </View>
             <View
               style={{
@@ -76,7 +87,7 @@ const DiscussionMessage = ({
                 maxWidth: width - 90,
                 backgroundColor: colors.paleLilacTwo,
               }}>
-              <Text style={styles.ownerName}>{onwerInfo?.displayName}</Text>
+              <Text style={styles.ownerName}>{ownerInfo?.displayName}</Text>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
                 <Text
                   style={{...styles.text, ...textjs.writingDirection(text)}}
