@@ -8,7 +8,7 @@ import moment from 'moment';
 import {LAUNCHED_STATES} from '~/Services/ProposalService';
 import {string, array, number, shape, object, oneOfType} from 'prop-types';
 
-const MemberCard = ({userInfo, proposalInfo = null, moderatorIds}) => {
+const MemberCard = ({userInfo, proposalInfo = null, moderatorIds = []}) => {
   const isModerator = useMemo(() => moderatorIds.includes(userInfo.id),[moderatorIds]);
 
   const renderRightContainer = () => {
