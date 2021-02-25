@@ -89,7 +89,7 @@ const DiscussionMessage = ({
                 backgroundColor: colors.paleLilacTwo,
               }}>
               <View style={styles.ownerNameView}>
-                <Text style={styles.ownerName}>{onwerInfo?.displayName}</Text>
+                <Text style={styles.ownerName}>{ownerInfo?.displayName}</Text>
                 {ownerId === moderatorId && <Text style={textjs.moderatorText}>{' '}Moderator</Text>}
               </View>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
