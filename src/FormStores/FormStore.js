@@ -319,7 +319,7 @@ class FormStore {
       const formField = this.getFormField(fieldName, multiField);
       fieldsData[fieldName] =
         typeof formField.value === 'object'
-          ? formField.value.value
+          ? formField.value?.value
           : formField.value;
       fieldsRule[fieldName] = formField.rule;
     } else {
@@ -345,7 +345,7 @@ class FormStore {
         } else {
           fieldsData[key] =
             typeof formField.value === 'object'
-              ? formField.value.value
+              ? formField.value?.value
               : formField.value;
           fieldsRule[key] = formField.rule;
         }
