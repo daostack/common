@@ -14,6 +14,11 @@ export const LAYOUT_ANIMATION_CONFIG = {
   },
 };
 
+export const LAYOUT_ANIMATION_CONFIG_SLOW = {
+  ...LAYOUT_ANIMATION_CONFIG,
+  duration: 450,
+};
+
 export const numberFormatter = (num) => {
   const denom = Math.abs(Number(num));
   return denom >= 1.0e9
@@ -111,9 +116,8 @@ export const formatCurrency = (amount) => {
 
 export const escapeUrl = (linkArr) =>
   linkArr?.map((link) => {
-        link.value = encodeURI(link.value);
-        return link;
-      }
-   );
+    link.value = encodeURI(link.value);
+    return link;
+  });
 
 export const formatDate = (date) => moment(date).format('DD MMMM YYYY');
