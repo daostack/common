@@ -5,6 +5,11 @@ import Toast from '~/Util/Toast';
 import {db} from '~/Firebase';
 import logger from './Logger';
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
+import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {getCommonById} from './ListServices/CommonListService';
+import {getProposalById} from './ListServices/ProposalListService';
+import {getMessageById} from './ListServices/DiscussionMessageListService';
+import {getDiscussionId} from './ListServices/DiscussionListService';
 
 export default class NotificationService {
   static async saveTokenToDatabase() {
@@ -50,20 +55,127 @@ export default class NotificationService {
     const userId = auth().currentUser.uid;
 
     //Index creation doesn't work but is created already
-    return (
-      db
-        .collection(DB_COLLECTIONS.event)
-        .where('userId', '==', userId)
-        // .orderBy('createdAt', 'desc')
-        .get()
-        .then((snapshots) => {
-          if (!snapshots) {
-            return null;
-          }
-          return snapshots.docs.map((doc) => doc.data());
-        })
-        .catch((error) => console.log(error))
-    );
+    // return (
+    //   db
+    //     .collection(DB_COLLECTIONS.event)
+    //     .where('userId', '==', userId)
+    //     // .orderBy('createdAt', 'desc')
+    //     .get()
+    //     .then((snapshots) => {
+    //       if (!snapshots) {
+    //         return null;
+    //       }
+    //       return snapshots.docs.map((doc) => doc.data());
+    //     })
+    //     .catch((error) => console.log(error))
+    // );
+    return db
+      .collection(DB_COLLECTIONS.notification)
+      .orderBy('createdAt', 'desc')
+      .get()
+      .then(async (snapshots) => {
+        if (!snapshots) {
+          return null;
+        }
+
+        const result = snapshots.docs.filter((s) =>
+          s.data().userFilter?.includes(userId),
+        );
+
+        const resultFormatted = await Promise.all(
+          result.map(async (doc) => {
+            let data = doc.data();
+
+            if (data.eventObjectId) {
+              if (
+                data.eventType === EventTypeState.commonWhitelisted ||
+                data.eventType === EventTypeState.commonCreated ||
+                data.eventType === EventTypeState.commonMemberAdded
+              ) {
+                const common = await getCommonById(data.eventObjectId);
+                data = {
+                  ...data,
+                  descriptionBold: `"${common.name}"`,
+                  description: ' - You might want to check it out.',
+                };
+              } else if (
+                data.eventType === EventTypeState.fundingRequestCreated ||
+                data.eventType === EventTypeState.fundingRequestAccepted ||
+                data.eventType === EventTypeState.fundingRequestExecuted ||
+                data.eventType === EventTypeState.fundingRequestRejected
+              ) {
+                const proposal = await getProposalById(data.eventObjectId);
+                data = {
+                  ...data,
+                  descriptionBold: `"${proposal.description.title}"`,
+                  description: ` (${proposal.fundingRequest.amount}$ requested)`,
+                };
+              } else if (data.eventType === EventTypeState.messageCreated) {
+                const message = await getMessageById(data.eventObjectId);
+                const discussion = await getDiscussionId(message.discussionId);
+
+                data = {
+                  ...data,
+                  descriptionBold: `${message.ownerName}`,
+                  description: ` ${message.text}`,
+                };
+
+                if (discussion && discussion.commonId) {
+                  const common = await getCommonById(discussion.commonId);
+
+                  if (common && common.name) {
+                    data = {
+                      ...data,
+                      header: ' on',
+                      headerBold: ` "${common.name}"`,
+                    };
+                  }
+                }
+              } else if (
+                data.eventType === EventTypeState.requestToJoinAccepted
+              ) {
+                data = {
+                  ...data,
+                  description: ` Congrats! You are now a member!`,
+                };
+              } else if (
+                data.eventType === EventTypeState.requestToJoinCreated
+              ) {
+                data = {
+                  ...data,
+                  description: ` You are asking to be a common member`,
+                };
+              } else if (
+                data.eventType === EventTypeState.requestToJoinExecuted
+              ) {
+                data = {
+                  ...data,
+                  description: ` Don't give up, there are plenty of other Commons you can join.`,
+                };
+              }
+            }
+
+            return data;
+          }),
+        );
+
+        return resultFormatted;
+
+        // return result.map((doc) => {
+        //   let data = doc.data();
+
+        //   if (data.eventType === EventTypeState.commonWhitelisted) {
+        //     const common = getCommonById(data.eventObjectId);
+        //     data = {...data, common};
+        //   }
+
+        //   console.log(data);
+
+        //   return doc.data();
+        // });
+        // return result.map((doc) => doc.data());
+      })
+      .catch((error) => console.log(error));
   }
 
   static async listenTransaction(txHash) {

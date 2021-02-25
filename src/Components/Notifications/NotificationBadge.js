@@ -32,6 +32,8 @@ const NotificationBadge = ({type}) => {
         return EventTitleState.cardCreated;
       case EventTypeState.requestToJoinCreated:
         return EventTitleState.requestToJoinCreated;
+      case EventTypeState.requestToJoinRejected:
+        return EventTitleState.requestToJoinRejected;
       case EventTypeState.requestToJoinAccepted:
         return EventTitleState.requestToJoinAccepted;
       case EventTypeState.creationReqToJoin:
@@ -69,12 +71,14 @@ const NotificationBadge = ({type}) => {
         return colors.lightBlue;
       case EventTypeState.requestToJoinAccepted:
         return colors.lightGreen;
+      case EventTypeState.requestToJoinRejected:
+        return colors.redLight;
       case EventTypeState.creationReqToJoin:
         return colors.lightBlue;
       case EventTypeState.commonMemberAdded:
         return colors.lightGreen;
       case EventTypeState.commonWhitelisted:
-        return colors.lightGreen;
+        return colors.lightBlue;
       default:
         return null;
     }
@@ -102,6 +106,8 @@ const NotificationBadge = ({type}) => {
         return colors.mainBlue;
       case EventTypeState.requestToJoinCreated:
         return colors.mainBlue;
+      case EventTypeState.requestToJoinRejected:
+        return colors.error;
       case EventTypeState.creationReqToJoin:
         return colors.mainBlue;
       case EventTypeState.commonMemberAdded:
@@ -109,7 +115,7 @@ const NotificationBadge = ({type}) => {
       case EventTypeState.requestToJoinAccepted:
         return colors.lightishGreen;
       case EventTypeState.commonWhitelisted:
-        return colors.lightishGreen;
+        return colors.mainBlue;
       default:
         return null;
     }

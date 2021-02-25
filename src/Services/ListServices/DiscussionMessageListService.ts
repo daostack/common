@@ -27,3 +27,15 @@ export const subscribeToDiscussionsMessages = (
           callback(snapshot);
         })
     : null;
+
+export const getMessageById = async (
+  messageId: string,
+): Promise<IDiscussionMessageEntity> => {
+  if (!messageId) {
+    throw new Error(
+      'Message Id (messageId) is required parameter, but it was not provided',
+    );
+  }
+  const message = await DiscussionMessagesCollection.doc(messageId).get();
+  return message.data() as IDiscussionMessageEntity;
+};

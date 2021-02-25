@@ -40,17 +40,14 @@ const NotificationList = ({navigation}) => {
         <FlatList
           data={notificationList}
           renderItem={({item}) => <NotificationItem item={item} />}
-          ItemSeparatorComponent={(props) => {
-            console.log('props', props); // here you can access the trailingItem with props.trailingItem
-            return (
-              <View
-                style={{
-                  height: 1,
-                  backgroundColor: colors.grey4,
-                }}
-              />
-            );
-          }}
+          ItemSeparatorComponent={() => (
+            <View
+              style={{
+                height: 1,
+                backgroundColor: colors.grey4,
+              }}
+            />
+          )}
         />
       </SafeAreaView>
     </>

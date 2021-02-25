@@ -30,3 +30,15 @@ export const updateCommon = async (updateCommonInfo: Partial<ICommonEntity>) =>
       },
     },
   );
+
+export const getCommonById = async (
+  commonId: string,
+): Promise<ICommonEntity> => {
+  if (!commonId) {
+    throw new Error(
+      'Common Id (commonId) is required parameter, but it was not provided',
+    );
+  }
+  const common = await CommonsCollection.doc(commonId).get();
+  return common.data() as ICommonEntity;
+};

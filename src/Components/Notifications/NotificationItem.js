@@ -18,12 +18,22 @@ const NotificationItem = ({item}) => (
     />
     <View style={styles.messageContainer}>
       <View style={styles.headerContainer}>
-        <NotificationBadge type={item.type} />
-        <Text style={styles.prefixStyle}>on</Text>
-        <Text style={styles.whereStyle}> "Milky Way"</Text>
+        <NotificationBadge type={item.eventType} />
+        <Text>
+          <Text style={styles.prefixStyle}>{item.header}</Text>
+          <Text style={styles.whereStyle}>{item.headerBold}</Text>
+        </Text>
       </View>
-      <Text style={styles.messageStyle}>{item.type}</Text>
-      {/* TODO: FORMAT DATE NOT DONE */}
+      <View style={{marginTop: 5}}>
+        <Text numberOfLines={2} style={{flexDirection: 'row'}}>
+          <Text style={[styles.messageStyle, {...font.primary.bold}]}>
+            {item.descriptionBold}
+          </Text>
+          <Text style={[styles.messageStyle, {flexShrink: 1}]}>
+            {item.description}
+          </Text>
+        </Text>
+      </View>
       <Text style={styles.dateStyle}>
         {moment(item.createdAt.toDate()).format('DD/MM/YYYY')}
       </Text>
@@ -66,6 +76,7 @@ const styles = StyleSheet.create({
   dateStyle: {
     ...font.primary.regular,
     ...font.fontSize(0),
+    marginTop: 5,
     color: colors.greySubtitle,
   },
   messageCardContainer: {
