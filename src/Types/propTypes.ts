@@ -1,4 +1,4 @@
-import {func, string, object, shape, number, array} from 'prop-types';
+import {func, string, object, shape, number, array, bool} from 'prop-types';
 
 export const uiStorePropTypes = shape({
   bottomSheetStore: shape({
@@ -6,9 +6,14 @@ export const uiStorePropTypes = shape({
     hideBottomSheet: func.isRequired,
     topSnap: number.isRequired,
     template: object,
-    increseTopSnap: func.isRequired,
-    decreseTopSnap: func.isRequired,
+    increaseTopSnap: func.isRequired,
+    decreaseTopSnap: func.isRequired,
   }).isRequired,
+  appLoaderStore: shape({
+    isLoading: bool.isRequired,
+    showLoader: func.isRequired,
+    hideLoader: func.isRequired,
+  }),
   conversionRate: number.isRequired,
 });
 
