@@ -124,7 +124,7 @@ const Onboarding = ({navigation}) => {
             <TouchableOpacity
               style={styles.button}
               onPress={onPress}>
-              <Text style={styles.buttonText}>{index === ONBOARDING_SLIDERS_AMOUNT ? 'Continue' : 'Get started'}</Text>
+              <Text style={styles.buttonText}>{index === ONBOARDING_SLIDERS_AMOUNT ? 'Get started' : 'Continue' }</Text>
             </TouchableOpacity>
           </View>
         </View>

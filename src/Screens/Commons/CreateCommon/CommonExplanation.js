@@ -114,7 +114,7 @@ const CommonExplanation = ({navigation}) => {
             <TouchableOpacity
               style={styles.button}
               onPress={onPress}>
-              <Text style={styles.buttonText}>{index === COMMON_EXPLANATION_SLIDERS_AMOUNT ? 'Continue' : 'Get started'}</Text>
+              <Text style={styles.buttonText}>{index === COMMON_EXPLANATION_SLIDERS_AMOUNT ? 'Get started' : 'Continue'}</Text>
             </TouchableOpacity>
           </View>
         </View>
