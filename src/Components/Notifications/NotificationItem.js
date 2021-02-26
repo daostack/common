@@ -1,45 +1,82 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import moment from 'moment';
 import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
 import {string, object} from 'prop-types';
 import NotificationBadge from './NotificationBadge';
+import {CommonActions} from '@react-navigation/native';
 
-const NotificationItem = ({item}) => (
-  <View style={styles.messageCardContainer}>
-    {/* TODO: Dynamic URL */}
-    <FastImage
-      style={styles.userImage}
-      source={{
-        uri:
-          'https://www.webconsultas.com/sites/default/files/styles/wc_adaptive_image__small/public/articulos/perfil-resilencia.jpg',
-      }}
-    />
-    <View style={styles.messageContainer}>
-      <View style={styles.headerContainer}>
-        <NotificationBadge type={item.eventType} />
-        <Text>
-          <Text style={styles.prefixStyle}>{item.header}</Text>
-          <Text style={styles.whereStyle}>{item.headerBold}</Text>
-        </Text>
-      </View>
-      <View style={{marginTop: 5}}>
-        <Text numberOfLines={2} style={{flexDirection: 'row'}}>
-          <Text style={[styles.messageStyle, {...font.primary.bold}]}>
-            {item.descriptionBold}
+const NotificationItem = ({item, navigation}) => {
+  const navigateToDetail = () => {
+    let navigate;
+    console.log(item);
+
+    if (item.common) {
+      navigate = CommonActions.navigate({
+        name: 'CommonProfile',
+        params: {
+          currCommon: item.common,
+        },
+      });
+      navigation.dispatch(navigate);
+    } else if (item.proposal) {
+      console.log(item.proposal);
+      navigation.navigate('ProposalScreen', {
+        proposalId: item.proposal.id,
+      });
+    } else if (item.discussion) {
+      console.log(item.discussion);
+      navigation.navigate('Discussions', {
+        discussionId: item.discussion.id,
+      });
+    }
+  };
+
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        navigateToDetail();
+      }}>
+      <View style={styles.messageCardContainer}>
+        <FastImage
+          style={styles.userImage}
+          source={{
+            uri: item.ownerAvatar,
+          }}
+        />
+        <View>
+          <View style={styles.headerContainer}>
+            <NotificationBadge type={item.eventType} />
+            <Text>
+              <Text style={styles.prefixStyle}>{item.header}</Text>
+              <Text style={styles.whereStyle}>{item.headerBold}</Text>
+            </Text>
+          </View>
+          <View style={styles.messageContainer}>
+            <Text numberOfLines={2} style={{flexDirection: 'row'}}>
+              <Text style={[styles.messageStyle, {...font.primary.bold}]}>
+                {item.descriptionBold}
+              </Text>
+              <Text style={[styles.messageStyle, {flexShrink: 1}]}>
+                {item.description}
+              </Text>
+            </Text>
+          </View>
+          <Text style={styles.dateStyle}>
+            {moment(item.createdAt.toDate()).format('DD/MM/YYYY')}
           </Text>
-          <Text style={[styles.messageStyle, {flexShrink: 1}]}>
-            {item.description}
-          </Text>
-        </Text>
+        </View>
       </View>
-      <Text style={styles.dateStyle}>
-        {moment(item.createdAt.toDate()).format('DD/MM/YYYY')}
-      </Text>
-    </View>
-  </View>
-);
+    </TouchableOpacity>
+  );
+};
 
 NotificationItem.propTypes = {
   photoURL: string,
@@ -85,14 +122,12 @@ const styles = StyleSheet.create({
     ...layout.flexStart,
     padding: 0,
     marginVertical: 20,
+    marginTop: 5,
   },
-  // messageContainer: {
-  //   ...layout.content,
-  //   paddingVertical: 10,
-  //   borderRadius: 15,
-  //   backgroundColor: colors.paleLilacTwo,
-  //   ...layout.flexStart,
-  // },
+  messageContainer: {
+    marginTop: 5,
+    maxWidth: '85%',
+  },
   nameStyle: {
     ...font.primary.bold,
     ...font.fontSize(2),

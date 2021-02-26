@@ -28,7 +28,7 @@ export const EventTitleState = {
   subscriptionPaymentConfirmed: 'Subscription Payment Confirmed',
   subscriptionCanceledByUser: 'Subscription Canceled By User',
   fundingRequestAccepted: 'Proposal Accepted',
-  fundingRequestCreated: 'Proposal Created',
+  fundingRequestCreated: 'New Proposal',
   fundingRequestExecuted: 'Proposal Executed',
   fundingRequestRejected: 'Proposal Rejected',
   cardCreated: 'Card Created',

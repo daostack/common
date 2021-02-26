@@ -39,7 +39,9 @@ const NotificationList = ({navigation}) => {
 
         <FlatList
           data={notificationList}
-          renderItem={({item}) => <NotificationItem item={item} />}
+          renderItem={({item}) => (
+            <NotificationItem item={item} navigation={navigation} />
+          )}
           ItemSeparatorComponent={() => (
             <View
               style={{

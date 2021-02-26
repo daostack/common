@@ -10,6 +10,7 @@ import {getCommonById} from './ListServices/CommonListService';
 import {getProposalById} from './ListServices/ProposalListService';
 import {getMessageById} from './ListServices/DiscussionMessageListService';
 import {getDiscussionId} from './ListServices/DiscussionListService';
+import {getUserById} from './ListServices/UserListService';
 
 export default class NotificationService {
   static async saveTokenToDatabase() {
@@ -78,8 +79,19 @@ export default class NotificationService {
           return null;
         }
 
-        const result = snapshots.docs.filter((s) =>
-          s.data().userFilter?.includes(userId),
+        const result = snapshots.docs.filter(
+          (s) =>
+            s.data().userFilter?.includes(userId) &&
+            (s.data().eventType === EventTypeState.commonWhitelisted ||
+              s.data().eventType === EventTypeState.commonCreated ||
+              s.data().eventType === EventTypeState.fundingRequestCreated ||
+              s.data().eventType === EventTypeState.fundingRequestAccepted ||
+              s.data().eventType === EventTypeState.fundingRequestExecuted ||
+              s.data().eventType === EventTypeState.fundingRequestRejected ||
+              s.data().eventType === EventTypeState.messageCreated ||
+              s.data().eventType === EventTypeState.requestToJoinAccepted ||
+              s.data().eventType === EventTypeState.requestToJoinCreated ||
+              s.data().eventType === EventTypeState.requestToJoinRejected),
         );
 
         const resultFormatted = await Promise.all(
@@ -89,14 +101,17 @@ export default class NotificationService {
             if (data.eventObjectId) {
               if (
                 data.eventType === EventTypeState.commonWhitelisted ||
-                data.eventType === EventTypeState.commonCreated ||
-                data.eventType === EventTypeState.commonMemberAdded
+                data.eventType === EventTypeState.commonCreated
               ) {
                 const common = await getCommonById(data.eventObjectId);
+                const user = await getUserById(common.members[0].userId);
+
                 data = {
                   ...data,
                   descriptionBold: `"${common.name}"`,
                   description: ' - You might want to check it out.',
+                  ownerAvatar: user.photoURL,
+                  common,
                 };
               } else if (
                 data.eventType === EventTypeState.fundingRequestCreated ||
@@ -105,11 +120,23 @@ export default class NotificationService {
                 data.eventType === EventTypeState.fundingRequestRejected
               ) {
                 const proposal = await getProposalById(data.eventObjectId);
+                const user = await getUserById(proposal.proposerId);
+
                 data = {
                   ...data,
                   descriptionBold: `"${proposal.description.title}"`,
                   description: ` (${proposal.fundingRequest.amount}$ requested)`,
+                  ownerAvatar: user.photoURL,
+                  proposal,
                 };
+
+                if (data.eventType === EventTypeState.fundingRequestCreated) {
+                  data = {
+                    ...data,
+                    header: ' by',
+                    headerBold: ` "${user.displayName}"`,
+                  };
+                }
               } else if (data.eventType === EventTypeState.messageCreated) {
                 const message = await getMessageById(data.eventObjectId);
                 const discussion = await getDiscussionId(message.discussionId);
@@ -118,6 +145,8 @@ export default class NotificationService {
                   ...data,
                   descriptionBold: `${message.ownerName}`,
                   description: ` ${message.text}`,
+                  ownerAvatar: message.ownerAvatar,
+                  discussion,
                 };
 
                 if (discussion && discussion.commonId) {
@@ -134,23 +163,38 @@ export default class NotificationService {
               } else if (
                 data.eventType === EventTypeState.requestToJoinAccepted
               ) {
+                const proposal = await getProposalById(data.eventObjectId);
+                const user = await getUserById(proposal.proposerId);
+
                 data = {
                   ...data,
                   description: ` Congrats! You are now a member!`,
+                  ownerAvatar: user.photoURL,
+                  proposal,
                 };
               } else if (
                 data.eventType === EventTypeState.requestToJoinCreated
               ) {
+                const proposal = await getProposalById(data.eventObjectId);
+                const user = await getUserById(proposal.proposerId);
+
                 data = {
                   ...data,
                   description: ` You are asking to be a common member`,
+                  ownerAvatar: user.photoURL,
+                  proposal,
                 };
               } else if (
-                data.eventType === EventTypeState.requestToJoinExecuted
+                data.eventType === EventTypeState.requestToJoinRejected
               ) {
+                const proposal = await getProposalById(data.eventObjectId);
+                const user = await getUserById(proposal.proposerId);
+
                 data = {
                   ...data,
                   description: ` Don't give up, there are plenty of other Commons you can join.`,
+                  ownerAvatar: user.photoURL,
+                  proposal,
                 };
               }
             }
