@@ -55,21 +55,6 @@ export default class NotificationService {
   static async getNotificationList() {
     const userId = auth().currentUser.uid;
 
-    //Index creation doesn't work but is created already
-    // return (
-    //   db
-    //     .collection(DB_COLLECTIONS.event)
-    //     .where('userId', '==', userId)
-    //     // .orderBy('createdAt', 'desc')
-    //     .get()
-    //     .then((snapshots) => {
-    //       if (!snapshots) {
-    //         return null;
-    //       }
-    //       return snapshots.docs.map((doc) => doc.data());
-    //     })
-    //     .catch((error) => console.log(error))
-    // );
     return db
       .collection(DB_COLLECTIONS.notification)
       .orderBy('createdAt', 'desc')
