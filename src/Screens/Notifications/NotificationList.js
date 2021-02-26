@@ -26,8 +26,6 @@ const NotificationList = ({navigation}) => {
     });
   }, []);
 
-  console.log(notificationList);
-
   return (
     <>
       <StatusBar barStyle="dark-content" />

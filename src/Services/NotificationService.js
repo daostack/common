@@ -189,20 +189,6 @@ export default class NotificationService {
         );
 
         return resultFormatted;
-
-        // return result.map((doc) => {
-        //   let data = doc.data();
-
-        //   if (data.eventType === EventTypeState.commonWhitelisted) {
-        //     const common = getCommonById(data.eventObjectId);
-        //     data = {...data, common};
-        //   }
-
-        //   console.log(data);
-
-        //   return doc.data();
-        // });
-        // return result.map((doc) => doc.data());
       })
       .catch((error) => console.log(error));
   }
