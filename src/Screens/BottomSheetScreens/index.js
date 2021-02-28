@@ -8,6 +8,7 @@ import {default as SafetyPeriodAbout} from './SafetyPeriodAbout';
 import {default as PaymentStatusScreen} from './PaymentStatusScreen';
 import {default as CancelSubscription} from './CancelSubscriptionSheetScreen';
 import {default as BackendErrorSheetScreen} from '~/Screens/BottomSheetScreens/BackendErrorSheetScreen';
+import {default as LoadingExpired} from './LoadingExpired';
 import {default as HiddenContentInfo} from './HiddenContentInfo';
 
 export const BOTTOM_SHEET_TEMPLATES = {
@@ -36,6 +37,10 @@ export const BOTTOM_SHEET_TEMPLATES = {
   TRANSACTION_ERROR: {
     topSnap: 480,
     content: TransactionError,
+  },
+  LOADING_EXPIRED: {
+    topSnap: 480,
+    content: LoadingExpired,
   },
   SORT_PROPOSALS: {
     topSnap: 500,

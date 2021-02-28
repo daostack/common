@@ -7,7 +7,7 @@ import {auth} from '~/Firebase';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {subscribeToUser} from '~/Services/ListServices/UserListService';
 import {UserModel} from './Models/UserModel';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from './RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {persist} from 'mobx-persist';
@@ -131,9 +131,9 @@ class AuthStore {
     this.unsubscribeFromUser && this.unsubscribeFromUser();
     this.unsubscribeFromUser = subscribeToUser(
       user?.uid,
-      async (updatedUser: IUserEntity | null) => {
+      async (updatedUserDoc: IFirebaseDoc<IUserEntity>) => {
+        const updatedUser = updatedUserDoc.data();
         const isNewUser = !updatedUser;
-
         if (isNewUser) {
           const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(
             user.providerData[0].providerId,

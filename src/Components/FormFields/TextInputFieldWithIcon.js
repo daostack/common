@@ -227,7 +227,7 @@ class TextInputFieldWithIcon extends React.Component {
         )?.value;
         currValue =
           typeof currValue === 'object'
-            ? currValue.value?.toString()
+            ? currValue?.value?.toString()
             : currValue?.toString();
 
         currValue = currValue.replace(',', '');

@@ -1,14 +1,19 @@
-import {func, string, object, shape, number, array} from 'prop-types';
+import {func, string, object, shape, number, array, bool} from 'prop-types';
 
 export const uiStorePropTypes = shape({
   bottomSheetStore: shape({
     showBottomSheet: func.isRequired,
     hideBottomSheet: func.isRequired,
     topSnap: number.isRequired,
-    template: object.isRequired,
-    increseTopSnap: func.isRequired,
-    decreseTopSnap: func.isRequired,
+    template: object,
+    increaseTopSnap: func.isRequired,
+    decreaseTopSnap: func.isRequired,
   }).isRequired,
+  appLoaderStore: shape({
+    isLoading: bool.isRequired,
+    showLoader: func.isRequired,
+    hideLoader: func.isRequired,
+  }),
   conversionRate: number.isRequired,
 });
 
@@ -38,7 +43,6 @@ export const commonStorePropTypes = shape({
 });
 
 export const proposalStorePropTypes = shape({
-  subscribeToUserProposals: func.isRequired,
   getProposalById: func.isRequired,
   getCommonProposals: func.isRequired,
   getUserProposals: func.isRequired,

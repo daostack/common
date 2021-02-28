@@ -34,7 +34,7 @@ import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
 import {string, object, shape} from 'prop-types';
 import logger from '~/Services/Logger';
-import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
+import {LAYOUT_ANIMATION_CONFIG, LAYOUT_ANIMATION_CONFIG_SLOW} from '~/Util';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {
   Placeholder,
@@ -73,7 +73,9 @@ const ProposalScreen = ({
   const proposalStore = rootStore.proposalStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
-  const {userInfo, isDaoMember, conversionRate} = authStore;
+  const uiStore = rootStore.uiStore;
+  const {userInfo, isDaoMember} = authStore;
+  const {conversionRate} = uiStore;
 
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
@@ -442,14 +444,14 @@ const ProposalScreen = ({
   const amount = proposalInfo.funding / 100;
 
   const onSetIndex = (item) => {
-    LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
+    LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG_SLOW);
     const isDiscussionTab = item === 1;
     setIsHeaderHidden(isDiscussionTab);
 
     if (!isDiscussionTab && showStickyTabBar) {
       Animated.timing(stickyTabBarState.animation, {
         toValue: 0,
-        duration: 300,
+        duration: 450,
         useNativeDriver: true,
       }).start(() => {
         setShowStickyTabBar(false);
@@ -463,12 +465,12 @@ const ProposalScreen = ({
     const currScrollY = e.nativeEvent.contentOffset.y;
     if (currScrollY > currTabViewScroll) {
       if (!isHeaderHidden) {
-        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
+        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG_SLOW);
         setIsHeaderHidden(true);
       }
     } else if (currScrollY < 1) {
       if (isHeaderHidden) {
-        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
+        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG_SLOW);
         setIsHeaderHidden(false);
       }
     }
