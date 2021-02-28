@@ -9,12 +9,12 @@ import React, {useState, useEffect} from 'react';
 import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {inject, observer} from 'mobx-react';
-import {object, func} from 'prop-types';
+import {object, func, bool} from 'prop-types';
 
 const CommonProfileOptions = ({
   moderatorOptions = null,
   onAction,
-  hasPermission
+  hasPermission,
 }) => {
   const [actions, setActions] = useState(
     moderatorOptions.actions || ['Hide', 'Report'],
@@ -101,10 +101,9 @@ const CommonProfileOptions = ({
 
 CommonProfileOptions.propTypes = {
   bottomSheetStore: object,
-  //onEdit: func,
-  moderatorOptions: object, // TODO
-  //onModerate: func,
+  moderatorOptions: object,
   onAction: func,
+  hasPermission: bool,
 };
 
 const styles = StyleSheet.create({

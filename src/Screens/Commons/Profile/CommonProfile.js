@@ -877,12 +877,12 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             scrollEvent={(e) => {
               setDark(e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT);
               upperRequestToJoinBtnRef?.current?.measure(
-                (fx, fy, width, height, px, py) => {
+                (fx, fy, mWidth, height, px, py) => {
                   setShowStickyRequestToJoinBtn(py < stickyHeightAddon);
                 },
               );
               stickyTabBarRef?.current?.measure(
-                (fx, fy, width, height, px, py) => {
+                (fx, fy, mWidth, height, px, py) => {
                   const isVisible = py < STICKY_HEADER_HEIGHT - 80;
                   if (isVisible !== showStickyTabBar) {
                     if (isVisible) {

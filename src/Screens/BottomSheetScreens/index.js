@@ -64,5 +64,5 @@ export const BOTTOM_SHEET_TEMPLATES = {
   HIDDEN_CONTENT_INFO: {
     topSnap: 300,
     content: HiddenContentInfo,
-  }
+  },
 };
