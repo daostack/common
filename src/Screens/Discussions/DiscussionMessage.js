@@ -9,13 +9,13 @@ import {
   Pressable,
   TouchableOpacity,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import {colors, font, text as textjs} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {userStorePropTypes} from '~/Types/propTypes';
 import {NAVIGATION_SCREENS} from '../../Util/constants/routes.enum';
 
 const {width} = Dimensions.get('window');
@@ -39,12 +39,11 @@ const DiscussionMessage = ({
   }
 
   const navigation = useNavigation();
-  const ownerInfo = userStore.getUserById(ownerId);
+  const ownerInfo = userStore.getUserById(data.ownerId);
 
   function goToUserProfile() {
     navigation.navigate(NAVIGATION_SCREENS.PROFILE, {userId: ownerInfo.id, ownerInfo});
   }
-  const ownerInfo = userStore.getUserById(data.ownerId);
   const moderatorInfo =
     data.moderation &&
     userStore.getUserById(
@@ -149,8 +148,8 @@ const DiscussionMessage = ({
                 maxWidth: width - 90,
                 backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
               }}>
-              <Text style={styles.ownerName}>{ownerInfo?.displayName}</Text>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
+                <View style={{flexDirection: 'row'}} >
                 <Text
                   style={{
                     ...styles.ownerName,
@@ -159,12 +158,13 @@ const DiscussionMessage = ({
                   {ownerInfo?.displayName}
                 </Text>
                 {!isHidden && (
-                  <Text style={{...styles.ownerName, color: colors.grey3}}>
+                  <Text style={styles.permission}>
                     {permission}
                   </Text>
                 )}
                 {flagView}
-              </View>
+                </View>
+              </Hyperlink>
               {(!isHidden || hasPermission) && (
                 <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
                   <Text
@@ -179,8 +179,8 @@ const DiscussionMessage = ({
                 </Hyperlink>
               )}
               {dateView()}
+              </View>
             </View>
-          </View>
         </>
       )}
     </Pressable>
@@ -204,19 +204,24 @@ const styles = StyleSheet.create({
   hyperLinkStyle: {
     textDecorationLine: 'underline',
     color: colors.mainBlue,
+    backgroundColor: 'yellow',
+    flexDirection: 'row',
   },
   ownerName: {
     ...font.primary.bold,
     ...font.fontSize(2),
   },
+  permission: {
+    ...font.primary.bold,
+    fontSize: 13,
+    color: colors.grey3,
+  },
   hiddenTitle: {
     ...font.primary.bold,
-    ...font.fontSize(1),
+    fontSize: 13,
   },
   container: {
-    // backgroundColor: colors.grey4,
     borderRadius: 8,
-    // marginHorizontal: 10,
     marginVertical: 3,
     padding: 10,
     flex: 1,
