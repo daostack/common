@@ -8,7 +8,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import {colors, text, layout, font} from '~/Theme';
 import {string, func, InferProps, shape} from 'prop-types';
