@@ -33,6 +33,7 @@ const DiscussionMessage = ({
   const flag = data.moderation?.flag || '';
   const [permission, setPermission] = useState('');
   const userStore = rootStore.userStore;
+  const isFlagged = !!flag && flag !== 'visible';
 
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
@@ -65,7 +66,7 @@ const DiscussionMessage = ({
   }, []);
 
   // icon missing
-  const flagView = !!flag && flag !== 'visible' && (
+  const flagView = isFlagged && (
     <Text style={{...styles.hiddenTitle, color: colors.grey3, marginLeft: 30}}>
       {flag} by {moderatorName}
     </Text>
@@ -157,7 +158,7 @@ const DiscussionMessage = ({
                   }}>
                   {ownerInfo?.displayName}
                 </Text>
-                {!isHidden && (
+                {!isHidden && !isFlagged && (
                   <Text style={styles.permission}>
                     {permission}
                   </Text>
@@ -215,6 +216,7 @@ const styles = StyleSheet.create({
     ...font.primary.bold,
     fontSize: 13,
     color: colors.grey3,
+    marginLeft: 10,
   },
   hiddenTitle: {
     ...font.primary.bold,

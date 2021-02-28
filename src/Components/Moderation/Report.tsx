@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {colors, text, layout, font} from '~/Theme';
 import {string, func, InferProps, shape} from 'prop-types';
@@ -87,7 +88,6 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
   };
 
   return (
-    <Pressable onPress={onCancel}>
       <View style={styles.root}>
         <View style={styles.view}>
           <ScrollView style={{marginHorizontal: 24}}>
@@ -127,10 +127,14 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
                 Report
               </Text>
             </Pressable>
+            <Pressable onPress={onCancel}>
+              <Text style={styles.cancel}>
+                Cancel
+              </Text>
+            </Pressable>
           </ScrollView>
         </View>
       </View>
-    </Pressable>
   );
 };
 
@@ -201,7 +205,20 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     overflow: 'hidden',
     backgroundColor: colors.paleblue,
-    marginVertical: 40,
+    marginVertical: 5,
+  },
+  cancel: {
+    color: colors.slate,
+    ...font.primary.regular,
+    fontSize: 16,
+    padding: 14,
+    textAlign: 'center',
+    borderRadius: 25,
+    overflow: 'hidden',
+    backgroundColor: colors.white,
+    borderWidth: 2,
+    borderColor: colors.mainBlue,
+    marginVertical: 5,
   },
   buttonSelected: {
     color: colors.white,

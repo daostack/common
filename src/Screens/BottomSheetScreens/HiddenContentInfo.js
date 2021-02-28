@@ -33,11 +33,11 @@ const HiddenContentInfo = ({
   type,
 }) => (
   <View style={styles.root}>
-    <View style={styles.body}>
+    <View style={{...styles.body, height: moderatorNote  ? '100%' : '60%'}}>
       <Text style={styles.title}>Hidden {type}</Text>
       <Text style={styles.text}>
         This {type} was hidden by <Bold boldText={userName} />
-        at{'\n'} <Bold boldText={date} /> {getReasons(reasons)}
+        {' '}at{'\n'} <Bold boldText={date} /> {getReasons(reasons)}
       </Text>
       {!!moderatorNote && (
         <View style={styles.moderatorNoteContainer}>
@@ -69,8 +69,9 @@ Bold.propTypes = {
 const styles = StyleSheet.create({
   root: {
     backgroundColor: 'white',
-    flex: 1,
     width: '100%',
+    justifyContent: 'center',
+    height: '100%',
   },
   body: {
     justifyContent: 'flex-start',

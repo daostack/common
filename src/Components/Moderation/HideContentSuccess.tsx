@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Image,
   Pressable,
-  Platform,
   Dimensions,
 } from 'react-native';
 import React from 'react';
@@ -76,7 +75,7 @@ HideContentSuccess.propTypes = props;
 const styles = StyleSheet.create({
   root: {
     height: '100%',
-    paddingTop: Platform.OS === 'ios' ? 400 : 300,
+    paddingTop: 200,
     shadowColor: 'rgba(0, 0, 0, 0.9)',
     shadowRadius: 100,
     shadowOpacity: 0.5,

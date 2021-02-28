@@ -298,6 +298,13 @@ const Discussions = ({
    */
   const onModerate = async (actionType, messageId) => {
     setAction(actionType);
+    if (messageId) {
+      moderationFormStore.registerFormField(
+        ModerationForm.ITEM_ID,
+        'string',
+        messageId,
+      );
+    }
     bottomSheetStore.hideBottomSheet();
     switch (actionType) {
       case 'Show':
@@ -329,13 +336,6 @@ const Discussions = ({
   };
 
   const openMessageOptions = (message, itemType) => {
-    if (message) {
-      moderationFormStore.registerFormField(
-        ModerationForm.ITEM_ID,
-        'string',
-        message.id,
-      );
-    }
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {

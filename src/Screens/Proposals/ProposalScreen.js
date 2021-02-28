@@ -595,6 +595,7 @@ const ProposalScreen = ({
     );
     Toast.hide();
     Toast.success('Done');
+    setShowModerationSuccessModal(true);
     moderationFormStore.clearFormStoreState();
   };
 
