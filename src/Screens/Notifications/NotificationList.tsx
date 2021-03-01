@@ -3,16 +3,16 @@ import React, {useEffect, useState} from 'react';
 import {SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-native';
 import {layout, font, sizeS, colors} from '~/Theme';
 import {inject, observer} from 'mobx-react';
-import {object} from 'prop-types';
+import {InferProps, object} from 'prop-types';
 import NotificationItem from '~/Components/Notifications/NotificationItem';
 import NotificationService from '~/Services/NotificationService';
 import {FlatList} from 'react-native-gesture-handler';
 
-interface Props {
-  navigation: Object;
-}
+const props = {
+  navigation: object,
+};
 
-const NotificationList = ({navigation}: Props) => {
+const NotificationList: React.FC<InferProps<typeof props>> = ({navigation}) => {
   const [notificationList, setNotificationList] = useState([]);
 
   useEffect(() => {
@@ -73,4 +73,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'proposalStore')(observer(NotificationList));
+export default NotificationList;

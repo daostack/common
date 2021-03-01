@@ -6,10 +6,10 @@ import {db} from '~/Firebase';
 import logger from './Logger';
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
-import {getCommonById} from './ListServices/CommonListService';
+import {fetchCommonById} from './ListServices/CommonListService';
 import {getProposalById} from './ListServices/ProposalListService';
-import {getMessageById} from './ListServices/DiscussionMessageListService';
-import {getDiscussionId} from './ListServices/DiscussionListService';
+import {fetchMessageById} from './ListServices/DiscussionMessageListService';
+import {fetchDiscussionId} from './ListServices/DiscussionListService';
 import {getUserById} from './ListServices/UserListService';
 
 export default class NotificationService {
@@ -90,7 +90,7 @@ export default class NotificationService {
               switch (data.eventType) {
                 case EventTypeState.commonWhitelisted:
                 case EventTypeState.commonCreated:
-                  common = await getCommonById(data.eventObjectId);
+                  common = await fetchCommonById(data.eventObjectId);
                   user = await getUserById(common.members[0].userId);
 
                   data = {
@@ -128,8 +128,8 @@ export default class NotificationService {
                   break;
 
                 case EventTypeState.messageCreated:
-                  const message = await getMessageById(data.eventObjectId);
-                  const discussion = await getDiscussionId(
+                  const message = await fetchMessageById(data.eventObjectId);
+                  const discussion = await fetchDiscussionId(
                     message.discussionId,
                   );
 
@@ -142,7 +142,7 @@ export default class NotificationService {
                   };
 
                   if (discussion && discussion.commonId) {
-                    common = await getCommonById(discussion.commonId);
+                    common = await fetchCommonById(discussion.commonId);
 
                     if (common && common.name) {
                       data = {

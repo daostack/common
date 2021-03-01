@@ -1,3 +1,9 @@
+export interface BadgeProps {
+  title?: string;
+  bgColor?: string;
+  textColor?: string;
+}
+
 export const EventTypeState = {
   creationReqToJoin: 'creationReqToJoin',
   requestToJoinCreated: 'requestToJoinCreated',

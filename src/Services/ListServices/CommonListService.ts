@@ -31,7 +31,7 @@ export const updateCommon = async (updateCommonInfo: Partial<ICommonEntity>) =>
     },
   );
 
-export const getCommonById = async (
+export const fetchCommonById = async (
   commonId: string,
 ): Promise<ICommonEntity> => {
   if (!commonId) {

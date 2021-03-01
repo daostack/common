@@ -28,7 +28,7 @@ export const subscribeToDiscussionsMessages = (
         })
     : null;
 
-export const getMessageById = async (
+export const fetchMessageById = async (
   messageId: string,
 ): Promise<IDiscussionMessageEntity> => {
   if (!messageId) {

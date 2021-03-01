@@ -1,127 +1,149 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {colors, text, font} from '~/Theme';
-import {string} from 'prop-types';
+import {InferProps, string} from 'prop-types';
 import {
+  BadgeProps,
   EventTitleState,
   EventTypeState,
 } from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 
-const NotificationBadge = ({type}) => {
-  const renderTitle = () => {
-    switch (type) {
-      case EventTypeState.commonCreated:
-        return EventTitleState.commonCreated;
-      case EventTypeState.fundingRequestAccepted:
-        return EventTitleState.fundingRequestAccepted;
-      case EventTypeState.fundingRequestCreated:
-        return EventTitleState.fundingRequestCreated;
-      case EventTypeState.fundingRequestExecuted:
-        return EventTitleState.fundingRequestExecuted;
-      case EventTypeState.fundingRequestRejected:
-        return EventTitleState.fundingRequestRejected;
-      case EventTypeState.paymentFailed:
-        return EventTitleState.paymentFailed;
-      case EventTypeState.messageCreated:
-        return EventTitleState.messageCreated;
-      case EventTypeState.voteCreated:
-        return EventTitleState.voteCreated;
-      case EventTypeState.cardCreated:
-        return EventTitleState.cardCreated;
-      case EventTypeState.requestToJoinCreated:
-        return EventTitleState.requestToJoinCreated;
-      case EventTypeState.requestToJoinRejected:
-        return EventTitleState.requestToJoinRejected;
-      case EventTypeState.requestToJoinAccepted:
-        return EventTitleState.requestToJoinAccepted;
-      case EventTypeState.creationReqToJoin:
-        return EventTitleState.creationReqToJoin;
-      case EventTypeState.commonMemberAdded:
-        return EventTitleState.commonMemberAdded;
-      case EventTypeState.commonWhitelisted:
-        return EventTitleState.commonWhitelisted;
-      default:
-        return null;
-    }
-  };
+const props = {
+  type: string,
+};
 
-  const getBgColor = () => {
-    switch (type) {
-      case EventTypeState.commonCreated:
-        return colors.lightBlue;
-      case EventTypeState.fundingRequestAccepted:
-        return colors.lightGreen;
-      case EventTypeState.fundingRequestCreated:
-        return colors.lightBlue;
-      case EventTypeState.fundingRequestExecuted:
-        return colors.redLight;
-      case EventTypeState.fundingRequestRejected:
-        return colors.redLight;
-      case EventTypeState.paymentFailed:
-        return colors.redLight;
-      case EventTypeState.messageCreated:
-        return colors.lightBlue;
-      case EventTypeState.voteCreated:
-        return colors.lightBlue;
-      case EventTypeState.cardCreated:
-        return colors.lightBlue;
-      case EventTypeState.requestToJoinCreated:
-        return colors.lightBlue;
-      case EventTypeState.requestToJoinAccepted:
-        return colors.lightGreen;
-      case EventTypeState.requestToJoinRejected:
-        return colors.redLight;
-      case EventTypeState.creationReqToJoin:
-        return colors.lightBlue;
-      case EventTypeState.commonMemberAdded:
-        return colors.lightGreen;
-      case EventTypeState.commonWhitelisted:
-        return colors.lightBlue;
-      default:
-        return null;
-    }
-  };
+const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
+  const [badgeValues, setBadgeValues] = useState<BadgeProps>({});
 
-  const getTextColor = () => {
+  useEffect(() => {
     switch (type) {
       case EventTypeState.commonCreated:
-        return colors.mainBlue;
+        setBadgeValues({
+          title: EventTitleState.commonCreated,
+          bgColor: colors.lightBlue,
+          textColor: colors.mainBlue,
+        });
+
+        break;
       case EventTypeState.fundingRequestAccepted:
-        return colors.lightishGreen;
+        setBadgeValues({
+          title: EventTitleState.fundingRequestAccepted,
+          bgColor: colors.lightGreen,
+          textColor: colors.lightishGreen,
+        });
+        break;
+
       case EventTypeState.fundingRequestCreated:
-        return colors.mainBlue;
+        setBadgeValues({
+          title: EventTitleState.fundingRequestCreated,
+          bgColor: colors.lightBlue,
+          textColor: colors.mainBlue,
+        });
+        break;
+
       case EventTypeState.fundingRequestExecuted:
-        return colors.error;
+        setBadgeValues({
+          title: EventTitleState.fundingRequestExecuted,
+          bgColor: colors.redLight,
+          textColor: colors.error,
+        });
+        break;
+
       case EventTypeState.fundingRequestRejected:
-        return colors.error;
+        setBadgeValues({
+          title: EventTitleState.fundingRequestRejected,
+          bgColor: colors.redLight,
+          textColor: colors.error,
+        });
+        break;
+
       case EventTypeState.paymentFailed:
-        return colors.error;
+        setBadgeValues({
+          title: EventTitleState.paymentFailed,
+          bgColor: colors.redLight,
+          textColor: colors.error,
+        });
+        break;
+
       case EventTypeState.messageCreated:
-        return colors.mainBlue;
+        setBadgeValues({
+          title: EventTitleState.messageCreated,
+          bgColor: colors.lightBlue,
+          textColor: colors.mainBlue,
+        });
+        break;
+
       case EventTypeState.voteCreated:
-        return colors.mainBlue;
+        setBadgeValues({
+          title: EventTitleState.voteCreated,
+          bgColor: colors.lightBlue,
+          textColor: colors.mainBlue,
+        });
+        break;
+
       case EventTypeState.cardCreated:
-        return colors.mainBlue;
+        setBadgeValues({
+          title: EventTitleState.cardCreated,
+          bgColor: colors.lightBlue,
+          textColor: colors.mainBlue,
+        });
+        break;
+
       case EventTypeState.requestToJoinCreated:
-        return colors.mainBlue;
+        setBadgeValues({
+          title: EventTitleState.requestToJoinCreated,
+          bgColor: colors.lightBlue,
+          textColor: colors.mainBlue,
+        });
+        break;
+
       case EventTypeState.requestToJoinRejected:
-        return colors.error;
-      case EventTypeState.creationReqToJoin:
-        return colors.mainBlue;
-      case EventTypeState.commonMemberAdded:
-        return colors.lightishGreen;
+        setBadgeValues({
+          title: EventTitleState.requestToJoinRejected,
+          bgColor: colors.redLight,
+          textColor: colors.error,
+        });
+        break;
+
       case EventTypeState.requestToJoinAccepted:
-        return colors.lightishGreen;
+        setBadgeValues({
+          title: EventTitleState.requestToJoinAccepted,
+          bgColor: colors.lightGreen,
+          textColor: colors.lightishGreen,
+        });
+        break;
+
+      case EventTypeState.creationReqToJoin:
+        setBadgeValues({
+          title: EventTitleState.creationReqToJoin,
+          bgColor: colors.lightBlue,
+          textColor: colors.mainBlue,
+        });
+        break;
+
+      case EventTypeState.commonMemberAdded:
+        setBadgeValues({
+          title: EventTitleState.commonMemberAdded,
+          bgColor: colors.lightGreen,
+          textColor: colors.lightishGreen,
+        });
+        break;
+
       case EventTypeState.commonWhitelisted:
-        return colors.mainBlue;
-      default:
-        return null;
+        setBadgeValues({
+          title: EventTitleState.commonWhitelisted,
+          bgColor: colors.lightBlue,
+          textColor: colors.mainBlue,
+        });
+        break;
     }
-  };
+  }, []);
+
   return (
-    <View style={[styles.badgeContainer, {backgroundColor: getBgColor()}]}>
-      <Text style={[styles.textStyle, {color: getTextColor()}]}>
-        {renderTitle()}
+    <View
+      style={[styles.badgeContainer, {backgroundColor: badgeValues.bgColor}]}>
+      <Text style={[styles.textStyle, {color: badgeValues.textColor}]}>
+        {badgeValues.title}
       </Text>
     </View>
   );

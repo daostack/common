@@ -6,28 +6,32 @@ import FastImage from 'react-native-fast-image';
 import NotificationBadge from './NotificationBadge';
 import {CommonActions} from '@react-navigation/native';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {InferProps, object, shape, string} from 'prop-types';
 
-interface Props {
-  item: {
-    common: {};
-    proposal: {
-      id: string;
-    };
-    discussion: {
-      id: string;
-    };
-    ownerAvatar: string;
-    eventType: string;
-    createdAt: Date;
-    description: string;
-    descriptionBold: string;
-    header: string;
-    headerBold: string;
-  };
-  navigation: any;
-}
+const props = {
+  item: shape({
+    common: object,
+    proposal: shape({
+      id: string,
+    }),
+    discussion: shape({
+      id: string,
+    }),
+    ownerAvatar: string,
+    eventType: string,
+    createdAt: object,
+    description: string,
+    descriptionBold: string,
+    header: string,
+    headerBold: string,
+  }).isRequired,
+  navigation: object.isRequired,
+};
 
-const NotificationItem = ({item, navigation}: Props) => {
+const NotificationItem: React.FC<InferProps<typeof props>> = ({
+  item,
+  navigation,
+}) => {
   const navigateToDetail = () => {
     let navigate;
 
@@ -92,6 +96,8 @@ const NotificationItem = ({item, navigation}: Props) => {
     </TouchableOpacity>
   );
 };
+
+NotificationItem.propTypes = props;
 
 const styles = StyleSheet.create({
   userImage: {

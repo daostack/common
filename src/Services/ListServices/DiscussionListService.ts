@@ -42,12 +42,12 @@ export const updateDiscussionLastMessage = async (
   }
 };
 
-export const getDiscussionId = async (
+export const fetchDiscussionId = async (
   discussionId: string,
 ): Promise<IDiscussionEntity> => {
   if (!discussionId) {
     throw new Error(
-      'Message Id (messageId) is required parameter, but it was not provided',
+      'Discussion Id (discussionId) is required parameter, but it was not provided',
     );
   }
   const discussion = await DiscussionsCollection.doc(discussionId).get();
