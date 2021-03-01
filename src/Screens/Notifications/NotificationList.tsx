@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 
 import {SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-native';
 import {layout, font, sizeS, colors} from '~/Theme';
-import {inject, observer} from 'mobx-react';
 import {InferProps, object} from 'prop-types';
 import NotificationItem from '~/Components/Notifications/NotificationItem';
 import NotificationService from '~/Services/NotificationService';

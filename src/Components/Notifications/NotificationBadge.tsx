@@ -137,7 +137,7 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
         });
         break;
     }
-  }, []);
+  }, [type]);
 
   return (
     <View
