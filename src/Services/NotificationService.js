@@ -83,105 +83,119 @@ export default class NotificationService {
           result.map(async (doc) => {
             let data = doc.data();
 
+            let common;
+            let proposal;
+            let user;
             if (data.eventObjectId) {
-              if (
-                data.eventType === EventTypeState.commonWhitelisted ||
-                data.eventType === EventTypeState.commonCreated
-              ) {
-                const common = await getCommonById(data.eventObjectId);
-                const user = await getUserById(common.members[0].userId);
+              switch (data.eventType) {
+                case EventTypeState.commonWhitelisted:
+                case EventTypeState.commonCreated:
+                  common = await getCommonById(data.eventObjectId);
+                  user = await getUserById(common.members[0].userId);
 
-                data = {
-                  ...data,
-                  descriptionBold: `"${common.name}"`,
-                  description: ' - You might want to check it out.',
-                  ownerAvatar: user.photoURL,
-                  common,
-                };
-              } else if (
-                data.eventType === EventTypeState.fundingRequestCreated ||
-                data.eventType === EventTypeState.fundingRequestAccepted ||
-                data.eventType === EventTypeState.fundingRequestExecuted ||
-                data.eventType === EventTypeState.fundingRequestRejected
-              ) {
-                const proposal = await getProposalById(data.eventObjectId);
-                const user = await getUserById(proposal.proposerId);
-
-                data = {
-                  ...data,
-                  descriptionBold: `"${proposal.description.title}"`,
-                  description: ` (${proposal.fundingRequest.amount}$ requested)`,
-                  ownerAvatar: user.photoURL,
-                  proposal,
-                };
-
-                if (data.eventType === EventTypeState.fundingRequestCreated) {
                   data = {
                     ...data,
-                    header: ' by',
-                    headerBold: ` "${user.displayName}"`,
+                    descriptionBold: `"${common.name}"`,
+                    description: ' - You might want to check it out.',
+                    ownerAvatar: user.photoURL,
+                    common,
                   };
-                }
-              } else if (data.eventType === EventTypeState.messageCreated) {
-                const message = await getMessageById(data.eventObjectId);
-                const discussion = await getDiscussionId(message.discussionId);
 
-                data = {
-                  ...data,
-                  descriptionBold: `${message.ownerName}`,
-                  description: ` ${message.text}`,
-                  ownerAvatar: message.ownerAvatar,
-                  discussion,
-                };
+                  break;
 
-                if (discussion && discussion.commonId) {
-                  const common = await getCommonById(discussion.commonId);
+                case EventTypeState.fundingRequestCreated:
+                case EventTypeState.fundingRequestAccepted:
+                case EventTypeState.fundingRequestExecuted:
+                case EventTypeState.fundingRequestRejected:
+                  proposal = await getProposalById(data.eventObjectId);
+                  user = await getUserById(proposal.proposerId);
 
-                  if (common && common.name) {
+                  data = {
+                    ...data,
+                    descriptionBold: `"${proposal.description.title}"`,
+                    description: ` (${proposal.fundingRequest.amount}$ requested)`,
+                    ownerAvatar: user.photoURL,
+                    proposal,
+                  };
+
+                  if (data.eventType === EventTypeState.fundingRequestCreated) {
                     data = {
                       ...data,
-                      header: ' on',
-                      headerBold: ` "${common.name}"`,
+                      header: ' by',
+                      headerBold: ` "${user.displayName}"`,
                     };
                   }
-                }
-              } else if (
-                data.eventType === EventTypeState.requestToJoinAccepted
-              ) {
-                const proposal = await getProposalById(data.eventObjectId);
-                const user = await getUserById(proposal.proposerId);
+                  break;
 
-                data = {
-                  ...data,
-                  description: ` Congrats! You are now a member!`,
-                  ownerAvatar: user.photoURL,
-                  proposal,
-                };
-              } else if (
-                data.eventType === EventTypeState.requestToJoinCreated
-              ) {
-                const proposal = await getProposalById(data.eventObjectId);
-                const user = await getUserById(proposal.proposerId);
+                case EventTypeState.messageCreated:
+                  const message = await getMessageById(data.eventObjectId);
+                  const discussion = await getDiscussionId(
+                    message.discussionId,
+                  );
 
-                data = {
-                  ...data,
-                  description: ` You are asking to be a common member`,
-                  ownerAvatar: user.photoURL,
-                  proposal,
-                };
-              } else if (
-                data.eventType === EventTypeState.requestToJoinRejected
-              ) {
-                const proposal = await getProposalById(data.eventObjectId);
-                const user = await getUserById(proposal.proposerId);
+                  data = {
+                    ...data,
+                    descriptionBold: `${message.ownerName}`,
+                    description: ` ${message.text}`,
+                    ownerAvatar: message.ownerAvatar,
+                    discussion,
+                  };
 
-                data = {
-                  ...data,
-                  description: ` Don't give up, there are plenty of other Commons you can join.`,
-                  ownerAvatar: user.photoURL,
-                  proposal,
-                };
+                  if (discussion && discussion.commonId) {
+                    common = await getCommonById(discussion.commonId);
+
+                    if (common && common.name) {
+                      data = {
+                        ...data,
+                        header: ' on',
+                        headerBold: ` "${common.name}"`,
+                      };
+                    }
+                  }
+
+                  break;
+
+                case EventTypeState.requestToJoinAccepted:
+                  proposal = await getProposalById(data.eventObjectId);
+                  user = await getUserById(proposal.proposerId);
+
+                  data = {
+                    ...data,
+                    description: ' Congrats! You are now a member!',
+                    ownerAvatar: user.photoURL,
+                    proposal,
+                  };
+
+                  break;
+
+                case EventTypeState.requestToJoinCreated:
+                  proposal = await getProposalById(data.eventObjectId);
+                  user = await getUserById(proposal.proposerId);
+
+                  data = {
+                    ...data,
+                    description: ' You are asking to be a common member',
+                    ownerAvatar: user.photoURL,
+                    proposal,
+                  };
+
+                  break;
+
+                case EventTypeState.requestToJoinRejected:
+                  proposal = await getProposalById(data.eventObjectId);
+                  user = await getUserById(proposal.proposerId);
+
+                  data = {
+                    ...data,
+                    description:
+                      " Don't give up, there are plenty of other Commons you can join.",
+                    ownerAvatar: user.photoURL,
+                    proposal,
+                  };
+                  break;
               }
+
+              console.log(data);
             }
 
             return data;

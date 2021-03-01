@@ -1,23 +1,18 @@
 import React, {useEffect, useState} from 'react';
 
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  ScrollView,
-  View,
-} from 'react-native';
-import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
+import {SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-native';
 import {layout, font, sizeS, colors} from '~/Theme';
 import {inject, observer} from 'mobx-react';
 import {object} from 'prop-types';
 import NotificationItem from '~/Components/Notifications/NotificationItem';
 import NotificationService from '~/Services/NotificationService';
-import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {FlatList} from 'react-native-gesture-handler';
 
-const NotificationList = ({navigation}) => {
+interface Props {
+  navigation: Object;
+}
+
+const NotificationList = ({navigation}: Props) => {
   const [notificationList, setNotificationList] = useState([]);
 
   useEffect(() => {
@@ -61,11 +56,11 @@ NotificationList.propTypes = {
 const styles = StyleSheet.create({
   scrollView: {
     flexGrow: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
   },
   safeArea: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
   },
   title: {
     ...font.heading.bold,

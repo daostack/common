@@ -1,22 +1,34 @@
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import moment from 'moment';
 import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
-import {string, object} from 'prop-types';
 import NotificationBadge from './NotificationBadge';
 import {CommonActions} from '@react-navigation/native';
 
-const NotificationItem = ({item, navigation}) => {
+interface Props {
+  item: {
+    common: {};
+    proposal: {
+      id: string;
+    };
+    discussion: {
+      id: string;
+    };
+    ownerAvatar: string;
+    eventType: string;
+    createdAt: Date;
+    description: string;
+    descriptionBold: string;
+    header: string;
+    headerBold: string;
+  };
+  navigation: any;
+}
+
+const NotificationItem = ({item, navigation}: Props) => {
   const navigateToDetail = () => {
     let navigate;
-    console.log(item);
 
     if (item.common) {
       navigate = CommonActions.navigate({
@@ -27,12 +39,10 @@ const NotificationItem = ({item, navigation}) => {
       });
       navigation.dispatch(navigate);
     } else if (item.proposal) {
-      console.log(item.proposal);
       navigation.navigate('ProposalScreen', {
         proposalId: item.proposal.id,
       });
     } else if (item.discussion) {
-      console.log(item.discussion);
       navigation.navigate('Discussions', {
         discussionId: item.discussion.id,
       });
@@ -70,19 +80,12 @@ const NotificationItem = ({item, navigation}) => {
             </Text>
           </View>
           <Text style={styles.dateStyle}>
-            {moment(item.createdAt.toDate()).format('DD/MM/YYYY')}
+            {moment(item.createdAt).format('DD/MM/YYYY')}
           </Text>
         </View>
       </View>
     </TouchableOpacity>
   );
-};
-
-NotificationItem.propTypes = {
-  photoURL: string,
-  name: string,
-  message: string,
-  time: object,
 };
 
 const styles = StyleSheet.create({
