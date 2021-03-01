@@ -23,13 +23,11 @@ const CommonMembersList = ({
 }) => {
   const userStore = rootStore.userStore;
   const commonStore = rootStore.commonStore;
-  const discussionStore = rootStore.discussionStore;
 
   const currCommon = commonStore.getCommonById(commonId);
   const membersInfo = userStore.getCommonUsersByMembersArray(
     currCommon?.members || [],
   );
-  const moderatorIds = discussionStore.getModeratorIds(commonId);
 
   const showUserProfile = (userInfo) => {
     navigation.navigate('Profile', {userId: userInfo.uid, userInfo});
@@ -97,7 +95,7 @@ const CommonMembersList = ({
               style={styles.item}
               onPress={() => showUserProfile(member)}
               key={`touch_${i}`}>
-              <MemberCard key={i} moderatorIds={moderatorIds} userInfo={member} />
+              <MemberCard key={i} moderatorId={currCommon?.metadata?.founderId} userInfo={member} />
             </TouchableOpacity>
           ),
         )

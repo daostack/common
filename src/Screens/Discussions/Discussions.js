@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef,useMemo} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -50,6 +50,7 @@ const Discussions = ({
   const currentUser = auth().currentUser;
   const dataState = discussionStore.getDiscussionById(discussionId);
   const user = userStore.getUserById(dataState.ownerId);
+  const currCommon = useMemo(() => commonStore.getCommonById(commonId),[commonId]);
 
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
@@ -59,7 +60,8 @@ const Discussions = ({
 
   const isMember =
     authStore.userInfo &&
-    authStore.isDaoMember(commonStore.getCommonById(commonId)?.members);
+    authStore.isDaoMember(currCommon?.members);
+
 
   useEffect(() => {}, [commonId, discussionId, currentUser]);
 
@@ -285,7 +287,7 @@ const Discussions = ({
       {header()}
       <ScrollView style={{flex: 1, paddingBottom: 30}} ref={scrollRef}>
         <DiscussionMessagesList
-          moderatorId={dataState.ownerId}
+          moderatorId={currCommon?.metadata?.founderId}
           discussionId={discussionId}
           inputRef={inputRef}
           scrollViewRef={scrollRef}
