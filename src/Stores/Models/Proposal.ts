@@ -13,6 +13,7 @@ import {
   IUIProposalImage,
   IJoinReqDescription,
   IFundingRequestDescription,
+  IModerationEntity,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {BaseModel} from './BaseModel';
 import ImageSize from 'react-native-image-size';
@@ -60,6 +61,9 @@ export class Proposal extends BaseModel<IProposalEntity> {
 
   @observable
   description: IFundingRequestDescription | IJoinReqDescription;
+
+  @observable
+  moderation?: IModerationEntity;
 
   @observable
   imagesPromised = promisedComputed(
@@ -129,6 +133,11 @@ export class Proposal extends BaseModel<IProposalEntity> {
     return this.votesFor + this.votesAgainst;
   }
 
+  @computed
+  get isModerationHidden() {
+    return this.moderation && this.moderation?.flag === 'hidden';
+  }
+
   constructor(newProposalInfo: IProposalEntity) {
     super(newProposalInfo);
     this.id = newProposalInfo.id;
@@ -144,6 +153,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
     this.votesFor = newProposalInfo.votesFor;
     this.votesAgainst = newProposalInfo.votesAgainst;
     this.description = newProposalInfo.description;
+    this.moderation = newProposalInfo.moderation;
     if (this.type === PROPOSAL_TYPE.Join) {
       this.paymentState = (newProposalInfo as IJoinRequestProposal).paymentState;
       this.join = (newProposalInfo as IJoinRequestProposal).join;

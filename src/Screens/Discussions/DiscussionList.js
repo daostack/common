@@ -3,10 +3,17 @@ import {inject, observer} from 'mobx-react';
 import {FlatList} from 'react-native';
 import DiscussionCard from './DiscussionCard';
 import ViewTabNoData from '~/Components/ViewTabNoData';
-import {string, object} from 'prop-types';
+import {string, object, bool, func} from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
 
-const DiscussionList = ({commonId, navigation, rootStore}) => {
+const DiscussionList = ({
+  commonId,
+  navigation,
+  rootStore,
+  hasPermission,
+  openCommonOptions,
+  showHiddenNote,
+}) => {
   const list = rootStore.discussionStore.getCommonDiscussions(commonId);
 
   useEffect(() => {
@@ -29,6 +36,9 @@ const DiscussionList = ({commonId, navigation, rootStore}) => {
               data={item}
               commonId={commonId}
               navigation={navigation}
+              hasPermission={hasPermission}
+              openCommonOptions={() => openCommonOptions(item)}
+              hiddenDiscussionNote={() => showHiddenNote(item)}
             />
           )}
         />
@@ -45,6 +55,9 @@ const DiscussionList = ({commonId, navigation, rootStore}) => {
 DiscussionList.propTypes = {
   commonId: string.isRequired,
   navigation: object.isRequired,
+  hasPermission: bool,
+  openCommonOptions: func,
+  showHiddenNote: func,
   rootStore: rootStorePropTypes,
 };
 

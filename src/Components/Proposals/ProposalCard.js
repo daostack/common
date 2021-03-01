@@ -7,18 +7,18 @@ import {
   View,
   Animated,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import {text, layout, colors, font} from '~/Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
 import ProposalService from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
-import DaoService from '~/Services/DaoService';
 import ProposalApprovalTag from './ProposalApprovalTag';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
-import {string, bool, object} from 'prop-types';
+import {string, bool, object, func} from 'prop-types';
+import ModerationMenu from '../../Components/Moderation/ModerationMenu';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -35,14 +35,19 @@ const ProposalCard = ({
   containerStyle,
   isSwiper,
   commonInfo,
+  hasPermission,
+  openCommonOptions,
+  hiddenProposalNote,
   rootStore,
 }) => {
   // Stores
   const userStore = rootStore.userStore;
   const proposalStore = rootStore.proposalStore;
+  const commonStore = rootStore.commonStore;
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
+  const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
@@ -79,43 +84,50 @@ const ProposalCard = ({
   };
 
   const onReviewProposal = async () => {
-    let currCommonInfo = commonInfo;
+    if (proposalInfo.isModerationHidden) {
+      hiddenProposalNote();
+    } else {
+      let currCommonInfo = {...commonInfo};
 
-    if (!currCommonInfo) {
-      currCommonInfo = await DaoService.getInstance().getDaoById(
-        proposalInfo.commonId,
-      );
+      if (!currCommonInfo) {
+        currCommonInfo = await commonStore.getCommonById(proposalInfo.commonId);
+      }
+      navigation.navigate('ProposalScreen', {
+        proposalId: proposalInfo.id,
+        hasPermission,
+      });
     }
-
-    navigation.navigate('ProposalScreen', {
-      proposalId: proposalInfo.id,
-    });
   };
+
+  const getReporter = () =>
+    proposalInfo.moderation?.reporter &&
+    userStore.getUserById(proposalInfo.moderation?.reporter);
 
   return proposalInfo ? (
     <Animated.View
       style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
-      <TouchableOpacity onPress={onReviewProposal}>
+      <TouchableOpacity onPress={() => onReviewProposal()}>
         <ProposalCardHeader
           state={proposalInfo?.state}
           paymentStatus={proposalInfo?.paymentState}
           closingAt={
             proposalInfo?.createdAt.seconds + proposalInfo?.countdownPeriod
           }
+          isReported={proposalInfo.moderation?.flag !== 'visible'}
+          moderation={proposalInfo.moderation}
+          reporter={getReporter()}
         />
 
-        <View
-          style={{
-            paddingTop: 0,
-            paddingHorizontal: 7,
-            ...layout.flexStart,
-            flexWrap: 'wrap',
-          }}>
-          {proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && (
+        <View style={styles.containerView}>
+          <View style={styles.titleContainer}>
             <Text style={styles.title}>
-              {proposalInfo?.description?.title || 'Unknown title'}
+              {isFundingRequest &&
+                (proposalInfo?.description?.title || 'Unknown title')}
             </Text>
-          )}
+            {(!proposalInfo.isModerationHidden || hasPermission) && (
+              <ModerationMenu showOptions={openCommonOptions} />
+            )}
+          </View>
 
           <MemberCard
             showDate={proposalInfo.isJoinRequest}
@@ -192,6 +204,9 @@ ProposalCard.propTypes = {
   membershipRequest: bool,
   isSwiper: bool,
   commonInfo: object,
+  hasPermission: bool,
+  openCommonOptions: func,
+  hiddenProposalNote: func,
   rootStore: rootStorePropTypes,
 };
 
@@ -213,7 +228,12 @@ const styles = StyleSheet.create({
     color: colors.mainBlue,
     marginVertical: 14,
   },
-
+  containerView: {
+    paddingTop: 0,
+    paddingHorizontal: 7,
+    ...layout.flexStart,
+    //flexWrap: 'wrap',
+  },
   proposalCard: {
     // marginHorizontal: 5,
     ...layout.marginBottomL,
@@ -237,10 +257,14 @@ const styles = StyleSheet.create({
   title: {
     ...text.h3Black,
     textAlign: 'left',
-    width: '100%',
     flexWrap: 'wrap',
-    padding: 10,
     fontSize: 16,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    width: '100%',
   },
 });
 

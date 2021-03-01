@@ -1,37 +1,92 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {observer, inject} from 'mobx-react';
-import {StyleSheet, Text, View, Image, Dimensions, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Dimensions,
+  Pressable,
+  TouchableOpacity,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {colors, font, text as textjs} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
-import {shape, string, object, bool} from 'prop-types';
+import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
-import {userStorePropTypes} from '~/Types/propTypes';
+import {rootStorePropTypes} from '~/Types/propTypes';
 import {NAVIGATION_SCREENS} from '../../Util/constants/routes.enum';
 
 const {width} = Dimensions.get('window');
 
 const DiscussionMessage = ({
-  data: {ownerId, text, createTime},
+  data,
   showCurrentUserAvatar,
-  userStore,
+  hasPermission,
+  rootStore,
+  commonId,
+  openMessageOptions,
 }) => {
   let currentUserUid = null;
+  const isHidden = data.moderation?.flag === 'hidden';
+  const flag = data.moderation?.flag || '';
+  const [permission, setPermission] = useState('');
+  const userStore = rootStore.userStore;
+  const isFlagged = !!flag && flag !== 'visible';
+
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
   }
 
   const navigation = useNavigation();
-  const ownerInfo = userStore.getUserById(ownerId);
+  const ownerInfo = userStore.getUserById(data.ownerId);
 
   function goToUserProfile() {
     navigation.navigate(NAVIGATION_SCREENS.PROFILE, {userId: ownerInfo.id, ownerInfo});
   }
+  const moderatorInfo =
+    data.moderation &&
+    userStore.getUserById(
+      data?.moderation?.moderator || data?.moderation?.reporter,
+    );
+  const moderatorName =
+    moderatorInfo?.uid === currentUserUid
+      ? 'you'
+      : `${moderatorInfo?.firstName || ''} ${moderatorInfo?.lastName || ''}`;
+
+  useEffect(() => {
+    (async () => {
+      const userPermission = await rootStore.authStore.getPermission(
+        commonId,
+        ownerInfo,
+      );
+      setPermission(userPermission);
+    })();
+  }, []);
+
+  // icon missing
+  const flagView = isFlagged && (
+    <Text style={{...styles.hiddenTitle, color: colors.grey3, marginLeft: 30}}>
+      {flag} by {moderatorName}
+    </Text>
+  );
+
+  const dateView = () => (
+    <Text
+      style={{
+        ...styles.date,
+        color: isHidden ? colors.grey3 : colors.formPlaceholderColor,
+      }}>
+      {moment(data.createTime.toDate()).format('HH:mm')}
+    </Text>
+  );
 
   return (
-    <View style={styles.container}>
-      {currentUserUid === ownerId ? (
+    <Pressable
+      style={styles.container}
+      onLongPress={() => (!isHidden || hasPermission) && openMessageOptions()}>
+      {currentUserUid === data.ownerId ? (
         <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
           {showCurrentUserAvatar && (
             <TouchableOpacity onPress={goToUserProfile}>
@@ -49,18 +104,25 @@ const DiscussionMessage = ({
             </TouchableOpacity>
           )}
 
-          <View style={styles.contentOwner}>
+          <View
+            style={{
+              ...styles.contentOwner,
+              backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
+            }}>
+            {flagView}
             <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
               <Text
-                style={{...styles.text, ...textjs.writingDirection(text)}}
+                style={{
+                  ...styles.text,
+                  color: isHidden ? colors.grey3 : colors.black,
+                  ...textjs.writingDirection(data.text),
+                }}
                 selectable>
-                {text}
+                {data.text}
               </Text>
             </Hyperlink>
             <View style={{position: 'relative', right: 0, bottom: 0}}>
-              <Text style={styles.date} numberOfLines={1}>
-                {moment(createTime.toDate()).format('HH:mm')}
-              </Text>
+              {dateView()}
             </View>
           </View>
         </View>
@@ -85,25 +147,44 @@ const DiscussionMessage = ({
                 ...styles.contentOwner,
                 marginLeft: 10,
                 maxWidth: width - 90,
-                backgroundColor: colors.paleLilacTwo,
+                backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
               }}>
-              <Text style={styles.ownerName}>{ownerInfo?.displayName}</Text>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
+                <View style={{flexDirection: 'row'}} >
                 <Text
-                  style={{...styles.text, ...textjs.writingDirection(text)}}
-                  selectable>
-                  {text}
+                  style={{
+                    ...styles.ownerName,
+                    color: isHidden ? colors.grey3 : colors.black,
+                  }}>
+                  {ownerInfo?.displayName}
                 </Text>
+                {!isHidden && !isFlagged && (
+                  <Text style={styles.permission}>
+                    {permission}
+                  </Text>
+                )}
+                {flagView}
+                </View>
               </Hyperlink>
-
-              <Text style={styles.date}>
-                {moment(createTime.toDate()).format('HH:mm')}
-              </Text>
+              {(!isHidden || hasPermission) && (
+                <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
+                  <Text
+                    style={{
+                      ...styles.text,
+                      color: isHidden ? colors.grey3 : colors.black,
+                      ...textjs.writingDirection(data.text),
+                    }}
+                    selectable>
+                    {data.text}
+                  </Text>
+                </Hyperlink>
+              )}
+              {dateView()}
+              </View>
             </View>
-          </View>
         </>
       )}
-    </View>
+    </Pressable>
   );
 };
 
@@ -114,22 +195,35 @@ DiscussionMessage.propTypes = {
     createTime: object,
   }),
   showCurrentUserAvatar: bool,
-  userStore: userStorePropTypes,
+  hasPermission: bool,
+  rootStore: rootStorePropTypes,
+  commonId: string,
+  openMessageOptions: func,
 };
 
 const styles = StyleSheet.create({
   hyperLinkStyle: {
     textDecorationLine: 'underline',
     color: colors.mainBlue,
+    backgroundColor: 'yellow',
+    flexDirection: 'row',
   },
   ownerName: {
     ...font.primary.bold,
     ...font.fontSize(2),
   },
+  permission: {
+    ...font.primary.bold,
+    fontSize: 13,
+    color: colors.grey3,
+    marginLeft: 10,
+  },
+  hiddenTitle: {
+    ...font.primary.bold,
+    fontSize: 13,
+  },
   container: {
-    // backgroundColor: colors.grey4,
     borderRadius: 8,
-    // marginHorizontal: 10,
     marginVertical: 3,
     padding: 10,
     flex: 1,
@@ -138,18 +232,16 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     marginVertical: 2,
     lineHeight: 24,
-    color: colors.black,
     ...font.primary.regular,
     ...font.fontSize(2),
   },
   date: {
-    color: colors.formPlaceholderColor,
     textAlign: 'right',
     ...font.primary.regular,
     ...font.fontSize(0),
   },
   contentOwner: {
-    backgroundColor: colors.white,
+    //backgroundColor: colors.white,
     padding: 10,
     borderRadius: 10,
     alignSelf: 'flex-end',
@@ -168,4 +260,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(DiscussionMessage));
+export default inject('rootStore')(observer(DiscussionMessage));
