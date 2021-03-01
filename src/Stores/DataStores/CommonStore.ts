@@ -70,11 +70,9 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
    */
   updateCommonInfo = async (
     updateCommonInfo: Partial<ICommonEntity>,
-    //changedBy,
   ) => {
     try {
       const updateResponse = await updateCommon(updateCommonInfo);
-      // Cache.set(updateCommonInfo.id, updateCommonInfo); @question to Lyubo: about this and mobx-persist
       return updateResponse;
     } catch (err) {
       throw err;
