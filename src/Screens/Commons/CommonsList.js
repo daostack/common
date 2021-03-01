@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   SafeAreaView,
@@ -23,6 +23,10 @@ import {
 } from 'rn-placeholder';
 import {CommonActions} from '@react-navigation/native';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {useTimeoutFn} from '../../Util/hooks/useTimeoutFn';
+import Loader from '~/Components/Loader';
+
+const TIMEOUT = 1500;
 
 const groupTitle = (title, arrLength) =>
   arrLength > 0 ? `${title} (${arrLength})` : '';
@@ -31,6 +35,12 @@ const CommonsList = ({navigation, rootStore}) => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
+  const [isLoading, setLoading ] = useState(true);
+  const handleLoader = () => {
+    setLoading(false);
+  };
+
+  useTimeoutFn(handleLoader, TIMEOUT);
 
   const myDaosGroup = {
     title: groupTitle('My Commons', commonStore.myCommons.length),
@@ -87,7 +97,7 @@ const CommonsList = ({navigation, rootStore}) => {
       </View>
     );
 
-  const loadingPlaceholder = () => (
+  const LoadingPlaceholder = () => (
     <ScrollView
       contentContainerStyle={{
         paddingHorizontal: 20,
@@ -155,13 +165,6 @@ const CommonsList = ({navigation, rootStore}) => {
     navigation.dispatch(navigate);
   };
 
-  const getInitialNumoRender = () =>
-    authStore.signedInUser
-      ? myDaosGroup.data.length +
-        pendingDaosGroup.data.length +
-        featuredDaosGroup.data.length
-      : featuredDaosGroup.data.length;
-
   return (
     <>
       <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
@@ -180,7 +183,6 @@ const CommonsList = ({navigation, rootStore}) => {
                 width="100%"
                 key={x.item.id}
                 navigation={navigation}
-                // keyExtractor={x.item.id}
                 onPress={() => navigateToCommon(x.item)}
               />
             )}
@@ -188,17 +190,18 @@ const CommonsList = ({navigation, rootStore}) => {
             stickySectionHeadersEnabled={true}
             renderSectionHeader={({section: {title}}) => sectionHeader(title)}
             ListFooterComponent={listFooter}
-            initialNumToRender={getInitialNumoRender()}
+            initialNumToRender={4}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
           />
         ) : (
-          loadingPlaceholder()
+          <LoadingPlaceholder/>
         )}
 
         <BottomRightButton onPress={onAddCommon} />
       </SafeAreaView>
+      {isLoading && <Loader isBigger isFullScreen navigation={navigation}/>}
     </>
   );
 };

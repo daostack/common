@@ -102,6 +102,22 @@ class AuthStore {
     }
   };
 
+  getPermission = async (commonId: string, userInfo: UserModel) => {
+    const roles = [...userInfo.roles] || [];
+    const roleData = roles.find(
+      (roleObj) => roleObj.data.commonId === commonId,
+    );
+    let role = roleData?.role;
+
+    const common = await this.rootStore.commonStore.getCommonById(commonId);
+
+    // for older daos who don't have roles assigned to users
+    if (!role && common.metadata.founderId === userInfo.uid) {
+      role = 'founder';
+    }
+    return role;
+  };
+
   isDaoMember = (members: ICommonMember[]) =>
     this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false;
   isProposer = (proposal: any) =>

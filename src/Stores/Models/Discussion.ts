@@ -1,5 +1,8 @@
-import {observable} from 'mobx';
-import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
+import {observable, computed} from 'mobx';
+import {
+  IDiscussionEntity,
+  IModerationEntity,
+} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {BaseModel} from './BaseModel';
 
 export class Discussion extends BaseModel<IDiscussionEntity> {
@@ -34,6 +37,14 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
   @observable
   followers: string[];
 
+  @observable
+  moderation?: IModerationEntity;
+
+  @computed
+  get isModerationHidden() {
+    return this.moderation && this.moderation?.flag === 'hidden';
+  }
+
   constructor(newDiscussionInfo: IDiscussionEntity) {
     super(newDiscussionInfo);
     this.id = newDiscussionInfo.id;
@@ -48,5 +59,6 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
     this.files = newDiscussionInfo.files;
     this.images = newDiscussionInfo.images;
     this.followers = newDiscussionInfo.followers;
+    this.moderation = newDiscussionInfo.moderation;
   }
 }

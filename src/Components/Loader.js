@@ -1,9 +1,20 @@
 import {StyleSheet, ActivityIndicator, View} from 'react-native';
 import React from 'react';
+import {inject, observer} from 'mobx-react';
 import {layout, colors, sizeXXL} from '~/Theme';
-import {string, bool} from 'prop-types';
+import {string, bool, object} from 'prop-types';
+import {rootStorePropTypes} from '~/Types/propTypes';
+import {useTimeoutFn} from '../Util/hooks/useTimeoutFn';
+import {showLoadingExpirationPopUp} from '../Util';
 
-const Loader = ({color, isBigger}) => {
+const TIMEOUT = 100000;
+
+const Loader = ({color, isBigger, isFullScreen = false, rootStore, navigation}) => {
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+
+
+  useTimeoutFn(callbackFn, TIMEOUT);
+
   let loaderStyle = isBigger
     ? {
         ...styles.loader,
@@ -11,12 +22,20 @@ const Loader = ({color, isBigger}) => {
       }
     : styles.loader;
 
+  function callbackFn() {
+    isFullScreen ? showLoadingExpirationPopUp(bottomSheetStore, "Oops... We couldn't load the app.", navigation) : null;
+  }
+
   return (
-    <View styl={styles.loaderContainer}>
+    <View
+      style={[
+        styles.loaderContainer,
+        isFullScreen ? styles.loaderFullScreenContainer : {},
+      ]}>
       <ActivityIndicator
         size="large"
         color={color || colors.mainBlue}
-        style={loaderStyle}
+        style={[loaderStyle, isFullScreen ? styles.loaderFullScreen : {}]}
       />
     </View>
   );
@@ -25,6 +44,9 @@ const Loader = ({color, isBigger}) => {
 Loader.propTypes = {
   color: string,
   isBigger: bool,
+  isFullScreen: bool,
+  rootStore: rootStorePropTypes,
+  navigation: object,
 };
 
 const styles = StyleSheet.create({
@@ -33,10 +55,20 @@ const styles = StyleSheet.create({
     ...layout.flexStart,
     alignSelf: 'stretch',
   },
+  loaderFullScreenContainer: {
+    position: 'absolute',
+    backgroundColor: '#fff',
+    height: '100%',
+    width: '100%',
+  },
+  loaderFullScreen: {
+    display: 'flex',
+    flex: 1,
+  },
   loader: {
     marginTop: sizeXXL,
     alignSelf: 'center',
   },
 });
 
-export default Loader;
+export default inject('rootStore')(observer(Loader));

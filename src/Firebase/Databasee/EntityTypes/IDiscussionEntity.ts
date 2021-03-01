@@ -1,5 +1,6 @@
 import {IBaseEntity} from './IBaseEntity';
 import {firebase} from '~/Firebase';
+import {IModerationEntity} from './IModerationEntity';
 
 export interface IDiscussionEntity extends IBaseEntity {
   /**
@@ -46,4 +47,9 @@ export interface IDiscussionEntity extends IBaseEntity {
    * Users who follow this discussion
    */
   followers: string[];
+
+  /**
+   * The moderation object that handles hiding/showing proposals
+   */
+  moderation?: IModerationEntity;
 }

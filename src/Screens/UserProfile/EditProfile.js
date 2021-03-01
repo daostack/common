@@ -82,6 +82,18 @@ const EditProfile = ({rootStore, route, navigation}) => {
   };
 
   const onFormClose = () => {
+    const {isFirstOpening, isSignedWithApple} = route.params;
+
+    if (
+      isSignedWithApple &&
+      isFirstOpening &&
+      (!editProfileFormStore.isFormValid() ||
+        !authStore.userInfo?.firstName ||
+        !authStore.userInfo?.lastName)
+    ) {
+      return;
+    }
+
     if (editProfileFormStore.isFormChanged()) {
       bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
         navigation: navigation,

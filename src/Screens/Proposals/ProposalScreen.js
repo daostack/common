@@ -34,7 +34,7 @@ import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
 import {string, object, shape} from 'prop-types';
 import logger from '~/Services/Logger';
-import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
+import {LAYOUT_ANIMATION_CONFIG, LAYOUT_ANIMATION_CONFIG_SLOW} from '~/Util';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {
   Placeholder,
@@ -51,6 +51,11 @@ import ModalDebtProposalInsufficient from './components/ModalDebtProposalInsuffi
 import ModalConversion from '~/Components/Commons/ModalConversion';
 import {isIsraelLocale} from '~/Util/locale';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import * as ModerationForm from '~/Components/Forms/ModerationForm';
+import ModerationService from '~/Services/ModerationService';
+import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
+import ModerationModal from '~/Components/Moderation/ModerationModal';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -58,7 +63,7 @@ const screenHeight = Dimensions.get('window').height;
 const ProposalScreen = ({
   navigation,
   route: {
-    params: {proposalId, tabIndex = 0},
+    params: {proposalId, tabIndex = 0, hasPermission},
   },
   rootStore,
 }) => {
@@ -90,6 +95,12 @@ const ProposalScreen = ({
     setDebtInsufficientModalVisible,
   ] = useState(false);
   const [modalConversionVisible, setModalConversionVisible] = useState(false);
+  const [moderationFormStore] = useState(new ModerationFormStore());
+  const [action, setAction] = useState('Report');
+  const [showModerationModal, setShowModerationModal] = useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -433,14 +444,14 @@ const ProposalScreen = ({
   const amount = proposalInfo.funding / 100;
 
   const onSetIndex = (item) => {
-    LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
+    LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG_SLOW);
     const isDiscussionTab = item === 1;
     setIsHeaderHidden(isDiscussionTab);
 
     if (!isDiscussionTab && showStickyTabBar) {
       Animated.timing(stickyTabBarState.animation, {
         toValue: 0,
-        duration: 300,
+        duration: 450,
         useNativeDriver: true,
       }).start(() => {
         setShowStickyTabBar(false);
@@ -454,12 +465,12 @@ const ProposalScreen = ({
     const currScrollY = e.nativeEvent.contentOffset.y;
     if (currScrollY > currTabViewScroll) {
       if (!isHeaderHidden) {
-        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
+        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG_SLOW);
         setIsHeaderHidden(true);
       }
     } else if (currScrollY < 1) {
       if (isHeaderHidden) {
-        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
+        LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG_SLOW);
         setIsHeaderHidden(false);
       }
     }
@@ -515,6 +526,79 @@ const ProposalScreen = ({
     setDebtInsufficientModalVisible(false);
   };
 
+  /**
+   * For discussionMessages
+   * @param  {[type]} actionType [description]
+   * @param  {[type]} messageId  [description]
+   * @return {[type]}            [description]
+   */
+  const onModerate = async (actionType, messageId) => {
+    setAction(actionType);
+    bottomSheetStore.hideBottomSheet();
+    switch (actionType) {
+      case 'Show':
+        Toast.loading('Loading...');
+        await ModerationService.getInstance().show(
+          messageId,
+          proposalInfo.commonId,
+          'discussionMessage',
+        );
+        Toast.hide();
+        Toast.success('Done');
+        setShowModerationSuccessModal(true);
+        break;
+      case 'Hide':
+        Toast.loading('Loading...');
+        await ModerationService.getInstance().hide(
+          messageId,
+          'discussionMessage',
+          proposalInfo.commonId,
+        );
+        Toast.hide();
+        Toast.success('Done');
+        setShowModerationSuccessModal(true);
+        break;
+      default:
+        setShowModerationModal(true);
+        break;
+    }
+  };
+
+  const openMessageOptions = (message, itemType) => {
+    if (message) {
+      moderationFormStore.registerFormField(
+        ModerationForm.ITEM_ID,
+        'string',
+        message.id,
+      );
+    }
+    bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      {
+        onAction: (actionType) => onModerate(actionType, message.id),
+        hasPermission,
+        moderatorOptions: {
+          item: message,
+        },
+      },
+    );
+  };
+
+  const onReportContent = async () => {
+    setShowModerationModal(false);
+    Toast.loading('Loading...');
+    bottomSheetStore.hideBottomSheet();
+    await ModerationService.getInstance().report(
+      'discussionMessage',
+      proposalInfo.commonId,
+      moderationFormStore.getFormFieldsJson(),
+    );
+    Toast.hide();
+    Toast.success('Done');
+    setShowModerationSuccessModal(true);
+    moderationFormStore.clearFormStoreState();
+  };
+
   const stickyTabBarStyle = {
     position: 'absolute',
     top: -80,
@@ -525,6 +609,21 @@ const ProposalScreen = ({
 
   return (
     <React.Fragment>
+      <ModerationModal
+        title={'Comment'}
+        visible={showModerationModal}
+        setShowModerationModal={() => setShowModerationModal(false)}
+        moderationFormStore={moderationFormStore}
+        onReportContent={() => onReportContent()}
+      />
+      <ModerationActionSuccessModal
+        type={'comment'}
+        visible={showModerationSuccessModal}
+        setShowModerationSuccessModal={() =>
+          setShowModerationSuccessModal(false)
+        }
+        action={action}
+      />
       <Modal
         animationType="slide"
         transparent={true}
@@ -913,6 +1012,9 @@ const ProposalScreen = ({
                   proposal={proposalInfo}
                   inputRef={inputRef}
                   scrollViewRef={scrollViewRef}
+                  hasPermission={hasPermission}
+                  commonId={proposalInfo.commonId}
+                  openMessageOptions={(message) => openMessageOptions(message)}
                 />
               )}
             </View>
