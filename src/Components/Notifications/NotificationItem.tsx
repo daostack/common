@@ -5,6 +5,7 @@ import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
 import NotificationBadge from './NotificationBadge';
 import {CommonActions} from '@react-navigation/native';
+import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 
 interface Props {
   item: {
@@ -39,13 +40,17 @@ const NotificationItem = ({item, navigation}: Props) => {
       });
       navigation.dispatch(navigate);
     } else if (item.proposal) {
-      navigation.navigate('ProposalScreen', {
-        proposalId: item.proposal.id,
-      });
+      //TODO: Temporaly blocking new proposal
+      if (item.eventType !== EventTypeState.fundingRequestCreated) {
+        navigation.navigate('ProposalScreen', {
+          proposalId: item.proposal.id,
+        });
+      }
     } else if (item.discussion) {
-      navigation.navigate('Discussions', {
-        discussionId: item.discussion.id,
-      });
+      //TODO: Temporaly blocking click on messages
+      // navigation.navigate('Discussions', {
+      //   discussionId: item.discussion.id,
+      // });
     }
   };
 
