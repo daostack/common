@@ -1,9 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import moment from 'moment';
-import {layout, colors, text, font} from '~/Theme';
-import FastImage from 'react-native-fast-image';
-import {string, object} from 'prop-types';
+import {colors, text, font} from '~/Theme';
+import {string} from 'prop-types';
 import {
   EventTitleState,
   EventTypeState,
