@@ -129,7 +129,7 @@ class FundingRequestForm extends React.Component {
           validation={{
             name: FundingRequestForm.FIELD_LINKS,
             formStore: fundingRequestFormStore,
-            validateRule: 'string|url',
+            validateRule: {title: 'string'},
           }}
         />
 

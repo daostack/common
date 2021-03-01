@@ -4,6 +4,7 @@ import TextInputField from './TextInputField';
 import {text, layout, colors, sizeL} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {string, bool, object, number, shape, oneOfType, func} from 'prop-types';
+import {LINK_VALIDATION_RULES} from '~/FormStores/ValidationRules/linkRules';
 
 const RemoveLinkBtn = ({onFieldDeleted}) => (
   <TouchableOpacity
@@ -111,7 +112,7 @@ const MultiLinkField = (props) => {
           name: `${currIndex}_value`,
           multiName: props.validation.name,
           validateRule:
-            validation.validateRule?.common || validation.validateRule,
+            validation.validateRule?.common || LINK_VALIDATION_RULES.LINKS || validation.validateRule,
           invisibleContainer: true,
           immediateValidation: true,
           customErrorMessage: `${link ? 'Link format is invalid' : 'Rule description is required' }`,
