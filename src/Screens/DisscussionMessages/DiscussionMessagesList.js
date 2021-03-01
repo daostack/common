@@ -12,15 +12,20 @@ import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
 import moment from 'moment';
 import logger from '../../Services/Logger';
-import PropTypes, {string} from 'prop-types';
+import PropTypes, {string, bool, func} from 'prop-types';
 import {discussionStorePropTypes} from '~/Types/propTypes';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const DiscussionMessagesList = ({
   discussionId,
   scrollViewRef,
-  discussionMessageStore,
+  rootStore,
+  hasPermission,
+  commonId,
+  openMessageOptions,
 }) => {
   const chatRef = useRef(null);
+  const discussionMessageStore = rootStore.discussionMessageStore;
   const msgGroups = discussionMessageStore
     .getDiscussionMessagesByDiscussionId(discussionId)
     .map((msg) => ({
@@ -62,7 +67,13 @@ const DiscussionMessagesList = ({
             width: Dimensions.get('screen').width * 0.9,
           }}
           renderItem={(x) => (
-            <DiscussionMessage data={x.item} showCurrentUserAvatar />
+            <DiscussionMessage
+              data={x.item}
+              showCurrentUserAvatar
+              hasPermission={hasPermission}
+              commonId={commonId}
+              openMessageOptions={() => openMessageOptions(x.item)}
+            />
           )}
           onScrollToIndexFailed={(info) => {
             logger.error('Something bad happened: ', info);
@@ -98,6 +109,11 @@ DiscussionMessagesList.propTypes = {
   discussionId: string,
   scrollViewRef: PropTypes.any,
   discussionMessageStore: discussionStorePropTypes,
+  rootStore: rootStorePropTypes.isRequired,
+  hasPermission: bool,
+  commonId: string,
+  action: func,
+  openMessageOptions: func,
 };
 
 const styles = StyleSheet.create({
@@ -128,6 +144,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('discussionMessageStore')(
-  observer(DiscussionMessagesList),
-);
+export default inject('rootStore')(observer(DiscussionMessagesList));

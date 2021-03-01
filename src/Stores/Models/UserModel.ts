@@ -13,6 +13,7 @@ export const userInfoFields = [
   'createdAt',
   'intro',
   'country',
+  'roles',
 ];
 export class UserModel extends BaseModel<IUserEntity> {
   @observable
@@ -39,6 +40,9 @@ export class UserModel extends BaseModel<IUserEntity> {
   @observable
   joinedAt?: Date | null = null;
 
+  @observable
+  roles: Array<object> = [];
+
   constructor(newUserInfo: IUserEntity) {
     super(newUserInfo);
     // Filter the provided newUserInfo values in order to be sure there are no extra data.
@@ -49,6 +53,7 @@ export class UserModel extends BaseModel<IUserEntity> {
       userInfoFields,
     ) as IUserEntity;
 
+    this.roles = newUserInfo.roles;
     this.setUser(filteredUser);
   }
 

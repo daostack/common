@@ -4,9 +4,10 @@ import {text, layout, colors, sizeXS, sizeS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
-import {string, number, bool, func} from 'prop-types';
+import {string, number, bool, func, object} from 'prop-types';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {observer} from 'mobx-react';
+import {Reported} from '../../Components/Moderation/Reported';
 
 const TITLES = {
   APPROVED: 'Approved',
@@ -112,6 +113,9 @@ const ProposalCardHeader = ({
   isScreenHeader = false,
   paymentStatus,
   onPress,
+  isReported,
+  moderation,
+  reporter,
 }) => {
   const headerStatus = calcStatus(state, isScreenHeader, paymentStatus);
 
@@ -131,7 +135,7 @@ const ProposalCardHeader = ({
           color={colors.white}
         />
 
-        <Text style={styles.stateText}>{headerStatus.text}</Text>
+        <Text style={{...styles.stateText}}>{headerStatus.text}</Text>
 
         {headerStatus.text === TITLES.COUNTDOWN && renderCountDown(closingAt)}
 
@@ -149,17 +153,27 @@ const ProposalCardHeader = ({
       style={{
         ...styles.proposalCardHeader,
         backgroundColor: headerStatus.lightColor,
+        flexDirection: isReported ? 'column' : 'row',
       }}>
-      <Icon name={headerStatus.icon} color={headerStatus.darkColor} size={16} />
+      <View style={{flexDirection: 'row'}}>
+        <Icon
+          name={headerStatus.icon}
+          color={headerStatus.darkColor}
+          size={16}
+        />
 
-      <Text
-        style={{
-          ...text.orangeSmallBold,
-          marginHorizontal: 5,
-          color: headerStatus.darkColor,
-        }}>
-        {headerStatus.text}
-      </Text>
+        <Text
+          style={{
+            ...text.orangeSmallBold,
+            marginHorizontal: 5,
+            color: headerStatus.darkColor,
+          }}>
+          {headerStatus.text}
+        </Text>
+      </View>
+      {isReported && !!moderation && (
+        <Reported moderation={moderation} reporter={reporter} />
+      )}
     </View>
   );
 };
@@ -170,6 +184,9 @@ ProposalCardHeader.propTypes = {
   isScreenHeader: bool,
   paymentStatus: string,
   onPress: func,
+  isReported: bool,
+  moderation: object,
+  reporter: object,
 };
 
 const styles = StyleSheet.create({

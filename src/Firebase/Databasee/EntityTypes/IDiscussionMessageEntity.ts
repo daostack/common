@@ -1,5 +1,6 @@
 import {IBaseEntity} from './IBaseEntity';
 import {firebase} from '~/Firebase';
+import {IModerationEntity} from './IModerationEntity';
 
 // TODO: implement IBaseEntity when the backend is refactored
 export interface IDiscussionMessageEntity extends IBaseEntity {
@@ -32,4 +33,9 @@ export interface IDiscussionMessageEntity extends IBaseEntity {
    * Image URLs of the user's avatar
    */
   ownerAvatar: string;
+
+  /**
+   * The moderation object that handles hiding/showing proposals
+   */
+  moderation?: IModerationEntity;
 }
