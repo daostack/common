@@ -189,7 +189,6 @@ const DiscussionMessage = ({
 };
 
 DiscussionMessage.propTypes = {
-  moderatorId: string,
   data: shape({
     ownerId: string,
     text: string,
