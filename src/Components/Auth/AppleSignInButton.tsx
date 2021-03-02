@@ -28,7 +28,7 @@ const AppleSignInButton: React.FC<InferProps<typeof props>> = ({
       authStore.setIsLoading(true);
       const userInfo = await AuthService.getInstance().signInApple();
       if (onSignIn) {
-        onSignIn(userInfo);
+        onSignIn(userInfo, true);
       }
       setSignInError(null);
     } catch (error) {

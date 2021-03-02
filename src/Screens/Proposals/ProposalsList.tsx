@@ -44,6 +44,9 @@ const props = {
   }),
   showMax: number,
   isSwiper: bool,
+  hasPermission: bool,
+  openCommonOptions: func.isRequired,
+  showHiddenNote: func.isRequired,
 
   // Injected
   proposalStore: proposalStorePropTypes.isRequired,
@@ -58,6 +61,9 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     commonInfo,
     userInfo,
     proposalStore,
+    hasPermission,
+    openCommonOptions,
+    showHiddenNote,
   }) => {
     let list: Proposal[] = [];
     if (commonInfo) {
@@ -76,6 +82,9 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
             isSwiper={true}
             commonInfo={commonInfo}
             navigation={navigation}
+            hasPermission={hasPermission}
+            openCommonOptions={() => openCommonOptions(item)}
+            hiddenProposalNote={() => showHiddenNote(item)}
           />
         ) : (
           <TouchableOpacity
@@ -99,6 +108,9 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
           isSwiper={false}
           commonInfo={commonInfo}
           navigation={navigation}
+          hasPermission={hasPermission}
+          openCommonOptions={() => openCommonOptions(item)}
+          hiddenProposalNote={() => showHiddenNote(item)}
         />
       );
 

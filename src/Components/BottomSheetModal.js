@@ -3,9 +3,15 @@ import React from 'react';
 import Modal from 'react-native-modal';
 import {func, bool, object} from 'prop-types';
 
-const BottomSheetModal = ({style, children, isVisible, onClose}) => {
+const BottomSheetModal = ({
+  style,
+  children,
+  isVisible,
+  onClose,
+  transparent,
+}) => {
   const renderSheetContent = () => (
-    <View style={[styles.content, style]}>{children}</View>
+    <View style={[!transparent && styles.content, style]}>{children}</View>
   );
 
   const onSwipeComplete = () => {};
@@ -29,6 +35,7 @@ BottomSheetModal.propTypes = {
   children: object,
   isVisible: bool,
   onClose: func,
+  transparent: bool,
 };
 
 const styles = StyleSheet.create({

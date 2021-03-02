@@ -26,15 +26,19 @@ import {db} from '../../Firebase';
 import {object, shape, string} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
-
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {updateDiscussionLastMessage} from '~/Services/ListServices/DiscussionListService';
+import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import * as ModerationForm from '~/Components/Forms/ModerationForm';
+import ModerationService from '~/Services/ModerationService';
+import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
+import ModerationModal from '~/Components/Moderation/ModerationModal';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
   navigation,
   route: {
-    params: {commonId, discussionId, data},
+    params: {commonId, discussionId, data, hasPermission},
   },
   rootStore,
 }) => {
@@ -57,6 +61,12 @@ const Discussions = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [inputHeight, setInputHeight] = useState(false);
+  const [moderationFormStore] = useState(new ModerationFormStore());
+  const [showModerationModal, setShowModerationModal] = useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
+  const [action, setAction] = useState('Report');
 
   const isMember =
     authStore.userInfo &&
@@ -282,15 +292,106 @@ const Discussions = ({
     </>
   );
 
+  /**
+   * For discussionMessages
+   * @param  {[type]} actionType [description]
+   * @param  {[type]} messageId  [description]
+   * @return {[type]}            [description]
+   */
+  const onModerate = async (actionType, messageId) => {
+    setAction(actionType);
+    if (messageId) {
+      moderationFormStore.registerFormField(
+        ModerationForm.ITEM_ID,
+        'string',
+        messageId,
+      );
+    }
+    bottomSheetStore.hideBottomSheet();
+    switch (actionType) {
+      case 'Show':
+        Toast.loading('Loading...');
+        await ModerationService.getInstance().show(
+          messageId,
+          commonId,
+          'discussionMessage',
+        );
+        Toast.hide();
+        Toast.success('Done');
+        setShowModerationSuccessModal(true);
+        break;
+      case 'Hide':
+        Toast.loading('Loading...');
+        await ModerationService.getInstance().hide(
+          messageId,
+          'discussionMessage',
+          commonId,
+        );
+        Toast.hide();
+        Toast.success('Done');
+        setShowModerationSuccessModal(true);
+        break;
+      default:
+        setShowModerationModal(true);
+        break;
+    }
+  };
+
+  const openMessageOptions = (message, itemType) => {
+    bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      {
+        onAction: (actionType) => onModerate(actionType, message.id),
+        hasPermission,
+        moderatorOptions: {
+          item: message,
+        },
+      },
+    );
+  };
+
+  const onReportContent = async () => {
+    setShowModerationModal(false);
+    Toast.loading('Reporting content...');
+    bottomSheetStore.hideBottomSheet();
+    await ModerationService.getInstance().report(
+      'discussionMessage',
+      commonId,
+      moderationFormStore.getFormFieldsJson(),
+    );
+    Toast.hide();
+    Toast.success('Done');
+    setShowModerationSuccessModal(true);
+    moderationFormStore.clearFormStoreState();
+  };
+
   return (
     <SafeAreaView style={styles.safeView}>
       {header()}
+      <ModerationModal
+        title={'Comment'}
+        visible={showModerationModal}
+        setShowModerationModal={() => setShowModerationModal(false)}
+        moderationFormStore={moderationFormStore}
+        onReportContent={() => onReportContent()}
+      />
+      <ModerationActionSuccessModal
+        type={'comment'}
+        visible={showModerationSuccessModal}
+        setShowModerationSuccessModal={() =>
+          setShowModerationSuccessModal(false)
+        }
+        action={action}
+      />
       <ScrollView style={{flex: 1, paddingBottom: 30}} ref={scrollRef}>
         <DiscussionMessagesList
           moderatorId={currCommon?.metadata?.founderId}
           discussionId={discussionId}
           inputRef={inputRef}
           scrollViewRef={scrollRef}
+          hasPermission={hasPermission}
+          commonId={commonId}
+          openMessageOptions={(message) => openMessageOptions(message)}
         />
       </ScrollView>
 

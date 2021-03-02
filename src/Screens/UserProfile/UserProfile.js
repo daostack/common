@@ -73,12 +73,13 @@ const UserProfile = ({authStore, navigation, route}) => {
     }
   };
 
-  const onUserSignedIn = (isNewUser) => {
+  const onUserSignedIn = (isNewUser, isSignedWithApple = false) => {
     if (navigation && isNewUser) {
       const navigate = CommonActions.navigate({
         name: 'EditProfile',
         params: {
           isFirstOpening: true,
+          isSignedWithApple,
         },
       });
       navigation.dispatch(navigate);
