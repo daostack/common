@@ -5,7 +5,10 @@ import Toast from '~/Util/Toast';
 import {db} from '~/Firebase';
 import logger from './Logger';
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
-import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {
+  EventTypesOnNotificationList,
+  EventTypeState,
+} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {fetchCommonById} from './ListServices/CommonListService';
 import {getProposalById} from './ListServices/ProposalListService';
 import {fetchMessageById} from './ListServices/DiscussionMessageListService';
@@ -58,25 +61,15 @@ export default class NotificationService {
     return db
       .collection(DB_COLLECTIONS.notification)
       .orderBy('createdAt', 'desc')
+      .where('userFilter', 'array-contains', userId)
       .get()
       .then(async (snapshots) => {
         if (!snapshots) {
           return null;
         }
 
-        const result = snapshots.docs.filter(
-          (s) =>
-            s.data().userFilter?.includes(userId) &&
-            (s.data().eventType === EventTypeState.commonWhitelisted ||
-              s.data().eventType === EventTypeState.commonCreated ||
-              s.data().eventType === EventTypeState.fundingRequestCreated ||
-              s.data().eventType === EventTypeState.fundingRequestAccepted ||
-              s.data().eventType === EventTypeState.fundingRequestExecuted ||
-              s.data().eventType === EventTypeState.fundingRequestRejected ||
-              s.data().eventType === EventTypeState.messageCreated ||
-              s.data().eventType === EventTypeState.requestToJoinAccepted ||
-              s.data().eventType === EventTypeState.requestToJoinCreated ||
-              s.data().eventType === EventTypeState.requestToJoinRejected),
+        const result = snapshots.docs.filter((s) =>
+          EventTypesOnNotificationList.includes(s.data().eventType),
         );
 
         const resultFormatted = await Promise.all(
@@ -194,8 +187,6 @@ export default class NotificationService {
                   };
                   break;
               }
-
-              console.log(data);
             }
 
             return data;

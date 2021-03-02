@@ -2,6 +2,7 @@ import React from 'react';
 import {colors} from '~/Theme';
 import {CommonsList, UserProfile} from '~/Screens';
 import {Image, Platform} from 'react-native';
+import auth from '@react-native-firebase/auth';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
@@ -64,10 +65,12 @@ const CommonHome = () => (
     }}>
     <Tab.Screen name={NAVIGATION_SCREENS.EXPLORE} component={CommonsList} />
     <Tab.Screen name={NAVIGATION_SCREENS.PROFILE} component={UserProfile} />
-    <Tab.Screen
-      name={NAVIGATION_SCREENS.NOTIFICATIONS}
-      component={NotificationList}
-    />
+    {auth().currentUser !== null && (
+      <Tab.Screen
+        name={NAVIGATION_SCREENS.NOTIFICATIONS}
+        component={NotificationList}
+      />
+    )}
   </Tab.Navigator>
 );
 
