@@ -17,7 +17,6 @@ import {discussionStorePropTypes} from '~/Types/propTypes';
 import {rootStorePropTypes} from '~/Types/propTypes';
 
 const DiscussionMessagesList = ({
-  moderatorId,
   discussionId,
   scrollViewRef,
   rootStore,
@@ -107,7 +106,6 @@ const DiscussionMessagesList = ({
 };
 
 DiscussionMessagesList.propTypes = {
-  moderatorId: string,
   discussionId: string,
   scrollViewRef: PropTypes.any,
   discussionMessageStore: discussionStorePropTypes,

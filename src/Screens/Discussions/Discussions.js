@@ -385,7 +385,6 @@ const Discussions = ({
       />
       <ScrollView style={{flex: 1, paddingBottom: 30}} ref={scrollRef}>
         <DiscussionMessagesList
-          moderatorId={currCommon?.metadata?.founderId}
           discussionId={discussionId}
           inputRef={inputRef}
           scrollViewRef={scrollRef}
