@@ -1,12 +1,12 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import moment from 'moment';
 import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
 import NotificationBadge from './NotificationBadge';
 import {CommonActions} from '@react-navigation/native';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {InferProps, object, shape, string} from 'prop-types';
+import {formatNotificationDate} from '~/Util/DateUtil';
 
 const props = {
   item: shape({
@@ -24,6 +24,7 @@ const props = {
     descriptionBold: string,
     header: string,
     headerBold: string,
+    commonName: object,
   }).isRequired,
   navigation: object.isRequired,
 };
@@ -44,17 +45,13 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
       });
       navigation.dispatch(navigate);
     } else if (item.proposal) {
-      //TODO: Temporaly blocking new proposal
-      if (item.eventType !== EventTypeState.fundingRequestCreated) {
-        navigation.navigate('ProposalScreen', {
-          proposalId: item.proposal.id,
-        });
-      }
+      navigation.navigate('ProposalScreen', {
+        proposalId: item.proposal.id,
+      });
     } else if (item.discussion) {
-      //TODO: Temporaly blocking click on messages
-      // navigation.navigate('Discussions', {
-      //   discussionId: item.discussion.id,
-      // });
+      navigation.navigate('Discussions', {
+        discussionId: item.discussion.id,
+      });
     }
   };
 
@@ -89,7 +86,8 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
             </Text>
           </View>
           <Text style={styles.dateStyle}>
-            {moment(item.createdAt).format('DD/MM/YYYY')}
+            {formatNotificationDate(item.createdAt.toDate())}
+            {item.commonName && <Text>{`, ${item.commonName}`}</Text>}
           </Text>
         </View>
       </View>

@@ -101,12 +101,16 @@ export default class NotificationService {
                 case EventTypeState.fundingRequestExecuted:
                 case EventTypeState.fundingRequestRejected:
                   proposal = await getProposalById(data.eventObjectId);
+                  common = await fetchCommonById(proposal.commonId);
                   user = await getUserById(proposal.proposerId);
 
                   data = {
                     ...data,
                     descriptionBold: `"${proposal.description.title}"`,
-                    description: ` (${proposal.fundingRequest.amount}$ requested)`,
+                    description: ` (${
+                      proposal.fundingRequest.amount / 100
+                    }$ requested)`,
+                    commonName: common.name,
                     ownerAvatar: user.photoURL,
                     proposal,
                   };
@@ -141,7 +145,8 @@ export default class NotificationService {
                       data = {
                         ...data,
                         header: ' on',
-                        headerBold: ` "${common.name}"`,
+                        headerBold: ` "${discussion.title}"`,
+                        commonName: common.name,
                       };
                     }
                   }
@@ -150,12 +155,14 @@ export default class NotificationService {
 
                 case EventTypeState.requestToJoinAccepted:
                   proposal = await getProposalById(data.eventObjectId);
+                  common = await fetchCommonById(proposal.commonId);
                   user = await getUserById(proposal.proposerId);
 
                   data = {
                     ...data,
                     description: ' Congrats! You are now a member!',
                     ownerAvatar: user.photoURL,
+                    commonName: common.name,
                     proposal,
                   };
 
@@ -163,12 +170,14 @@ export default class NotificationService {
 
                 case EventTypeState.requestToJoinCreated:
                   proposal = await getProposalById(data.eventObjectId);
+                  common = await fetchCommonById(proposal.commonId);
                   user = await getUserById(proposal.proposerId);
 
                   data = {
                     ...data,
                     description: ' You are asking to be a common member',
                     ownerAvatar: user.photoURL,
+                    commonName: common.name,
                     proposal,
                   };
 
@@ -176,6 +185,7 @@ export default class NotificationService {
 
                 case EventTypeState.requestToJoinRejected:
                   proposal = await getProposalById(data.eventObjectId);
+                  common = await fetchCommonById(proposal.commonId);
                   user = await getUserById(proposal.proposerId);
 
                   data = {
@@ -183,6 +193,7 @@ export default class NotificationService {
                     description:
                       " Don't give up, there are plenty of other Commons you can join.",
                     ownerAvatar: user.photoURL,
+                    commonName: common.name,
                     proposal,
                   };
                   break;
