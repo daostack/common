@@ -259,10 +259,6 @@ const styles = StyleSheet.create({
   contentMember: {
     flexDirection: 'row',
   },
-  ownerNameView: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-  },
 });
 
 export default inject('rootStore')(observer(DiscussionMessage));
