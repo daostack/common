@@ -12,7 +12,10 @@ import {
 import {fetchCommonById} from './ListServices/CommonListService';
 import {getProposalById} from './ListServices/ProposalListService';
 import {fetchMessageById} from './ListServices/DiscussionMessageListService';
-import {fetchDiscussionId} from './ListServices/DiscussionListService';
+import {
+  fetchDiscussionId,
+  subscribeToCommonDiscussions,
+} from './ListServices/DiscussionListService';
 import {getUserById} from './ListServices/UserListService';
 
 export default class NotificationService {
@@ -135,7 +138,7 @@ export default class NotificationService {
                     descriptionBold: `${message.ownerName}`,
                     description: ` ${message.text}`,
                     ownerAvatar: message.ownerAvatar,
-                    discussion,
+                    discussion: {...discussion, id: message.discussionId},
                   };
 
                   if (discussion && discussion.commonId) {
@@ -147,6 +150,7 @@ export default class NotificationService {
                         header: ' on',
                         headerBold: ` "${discussion.title}"`,
                         commonName: common.name,
+                        commonId: discussion.commonId,
                       };
                     }
                   }

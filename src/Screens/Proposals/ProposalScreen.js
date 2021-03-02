@@ -862,11 +862,9 @@ const ProposalScreen = ({
                         : 'Contribution:'}
                     </Text>
                     <Text style={text.h2Black}>
-                      {proposalInfo.isFundingRequest
-                        ? proposalInfo.fundingRequest.amount > 0
-                          ? `$${proposalInfo.fundingRequest.amount / 100}`
-                          : ''
-                        : `$${proposalInfo.join?.funding / 100}`}
+                      {proposalInfo.funding > 0
+                        ? `$${proposalInfo.funding / 100}`
+                        : ''}
                     </Text>
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
