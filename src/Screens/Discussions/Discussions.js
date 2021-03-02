@@ -53,6 +53,11 @@ const Discussions = ({
 
   const currentUser = auth().currentUser;
   const dataState = discussionStore.getDiscussionById(discussionId);
+
+  if (!commonId) {
+    commonId = dataState.commonId;
+  }
+
   const user = userStore.getUserById(dataState.ownerId);
 
   const [inputText, setInputText] = useState(null);
