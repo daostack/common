@@ -13,6 +13,7 @@ import {object, shape, number, array, string, func, bool} from 'prop-types';
 import {layout, text, font, colors} from '~/Theme';
 import {useIsFocused} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
+import {HyperText} from '~/Components/Text/HyperText';
 
 const Title = ({title, onPress, canEdit}) => (
   <View style={styles.titleContainer}>
@@ -65,14 +66,15 @@ const CommonAgenda = ({
               onPress={() => onEdit('info')}
               canEdit={canEdit}
             />
-            <Text
-              style={{
+            <HyperText
+              isFullWidth={true}
+              textStyle={{
                 ...styles.description,
                 width: '100%',
                 ...text.writingDirection(common.metadata.description),
               }}>
-              {common.metadata.description}
-            </Text>
+                {common.metadata.description}
+            </HyperText>
           </View>
 
           {common.links?.length > 0 && (
@@ -110,20 +112,20 @@ const CommonAgenda = ({
 
                 {common.rules.map((rule, i) => (
                   <View key={i} style={{width: '100%'}}>
-                    <Text
-                      style={{
+                    <HyperText
+                      textStyle={{
                         ...styles.ruleTitle,
                         ...text.writingDirection(rule.title),
                       }}>
                       {rule.title}
-                    </Text>
-                    <Text
-                      style={{
+                    </HyperText>
+                    <HyperText
+                      textStyle={{
                         ...styles.ruleDescription,
                         ...text.writingDirection(rule.value || rule.url),
                       }}>
                       {rule.value || rule.url}
-                    </Text>
+                    </HyperText>
                   </View>
                 ))}
               </View>
