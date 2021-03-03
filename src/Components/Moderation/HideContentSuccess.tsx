@@ -22,16 +22,20 @@ const getType = (type: string) => {
   }
 };
 
-const getTitle = (type: string, action: string) =>
-  action === 'Show'
-    ? `${getType(type)} is now visible`
-    : `The ${getType(type).toLowerCase()} was successfully ${
-        action === 'Hide' ? 'hidden' : 'reported'
-      }`;
+const getTitle = (type: string, action: string) => {
+  switch (action) {
+    case 'Show':
+      return `${getType(type)} is now visible`;
+    case 'Report':
+      return 'Thanks for letting us know';
+    default:
+      return `The ${getType(type).toLowerCase()} was successfully hidden`;
+  }
+};
 
 const getMessage = (type: string, action: string) =>
   action === 'Report'
-    ? 'A moderator will review your report and make a decision soon.'
+    ? 'We greatly appreciate it! Your feedback is important in helping us keep Common safe.'
     : `The ${getType(type).toLowerCase()} will${
         action === 'Show' ? ' ' : ' not '
       }be visible to members.
