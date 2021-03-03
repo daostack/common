@@ -318,6 +318,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         showHiddenNote={(hiddenProposal) =>
           showHiddenNote(hiddenProposal, 'Proposal')
         }
+        sMember={isMember}
       />
     </View>
   );
@@ -435,6 +436,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         openCommonOptions(requestToJoin, 'Membership request'),
       showHiddenNote: (hiddenRequestToJoin) =>
         showHiddenNote(hiddenRequestToJoin, 'Membership request'),
+      isMember,
     });
   };
 

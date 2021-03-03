@@ -17,6 +17,7 @@ import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {NAVIGATION_SCREENS} from '../../Util/constants/routes.enum';
+import {reporterName} from '../../Components/Moderation/Reported';
 
 const {width} = Dimensions.get('window');
 
@@ -54,10 +55,7 @@ const DiscussionMessage = ({
     userStore.getUserById(
       data?.moderation?.moderator || data?.moderation?.reporter,
     );
-  const moderatorName =
-    moderatorInfo?.uid === currentUserUid
-      ? 'you'
-      : `${moderatorInfo?.firstName || ''} ${moderatorInfo?.lastName || ''}`;
+  const moderatorName = reporterName(moderatorInfo, currentUserUid);
 
   useEffect(() => {
     (async () => {

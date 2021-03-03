@@ -7,7 +7,7 @@ import {
   Dimensions,
 } from 'react-native';
 import React from 'react';
-import {text, colors, font} from '~/Theme';
+import {text, colors, font, layout} from '~/Theme';
 import {observer} from 'mobx-react';
 import {string, func, InferProps} from 'prop-types';
 const {width} = Dimensions.get('window');
@@ -78,7 +78,6 @@ HideContentSuccess.propTypes = props;
 
 const styles = StyleSheet.create({
   root: {
-    height: '100%',
     paddingTop: 200,
     shadowColor: 'rgba(0, 0, 0, 0.9)',
     shadowRadius: 100,
@@ -89,12 +88,12 @@ const styles = StyleSheet.create({
     },
   },
   view: {
-    flex: 1,
     backgroundColor: colors.white,
     width,
     borderTopLeftRadius: 27,
     borderTopRightRadius: 27,
     alignSelf: 'center',
+    paddingBottom: 40,
   },
   image: {
     height: 120,
@@ -122,16 +121,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    color: colors.white,
     ...font.primary.regular,
     fontSize: 16,
     padding: 14,
     textAlign: 'center',
     borderRadius: 25,
     overflow: 'hidden',
-    backgroundColor: colors.mainBlue,
+    borderColor: colors.mainBlue,
     marginTop: 50,
     width: '100%',
+    ...layout.btnOutline,
   },
   plug: {
     backgroundColor: colors.paleblue,

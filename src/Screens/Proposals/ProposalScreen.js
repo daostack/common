@@ -750,6 +750,8 @@ const ProposalScreen = ({
                           proposalInfo?.countdownPeriod
                         }
                         onPress={() => openDebtInsufficientModal()}
+                        hasPermission={hasPermission}
+                        authInfo={authStore.userInfo}
                       />
                     </TouchableOpacity>
                     {proposedUser && (
@@ -784,6 +786,8 @@ const ProposalScreen = ({
                           proposalInfo?.createdAt.seconds +
                           proposalInfo?.countdownPeriod
                         }
+                        hasPermission={hasPermission}
+                        authInfo={authStore.userInfo}
                       />
                     </TouchableOpacity>
 

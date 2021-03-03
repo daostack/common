@@ -45,10 +45,14 @@ const ProposalCard = ({
   const userStore = rootStore.userStore;
   const proposalStore = rootStore.proposalStore;
   const commonStore = rootStore.commonStore;
+  const authStore = rootStore.authStore;
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
   const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
+  const isVisible =
+    proposalInfo.moderation?.flag !== 'hidden' || !proposalInfo.moderation;
+  const showCard = isVisible || (!isVisible && hasPermission);
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
@@ -106,7 +110,11 @@ const ProposalCard = ({
 
   return proposalInfo ? (
     <Animated.View
-      style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
+      style={[
+        styles.proposalCard,
+        containerStyle,
+        {width: cardWidth(), borderRadius: showCard ? 20 : 5},
+      ]}>
       <TouchableOpacity onPress={() => onReviewProposal()}>
         <ProposalCardHeader
           state={proposalInfo?.state}
@@ -117,48 +125,50 @@ const ProposalCard = ({
           isReported={proposalInfo.moderation?.flag !== 'visible'}
           moderation={proposalInfo.moderation}
           reporter={getReporter()}
+          hasPermission={hasPermission}
+          authInfo={authStore.userInfo}
         />
 
-        <View style={styles.containerView}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>
-              {isFundingRequest &&
-                (proposalInfo?.description?.title || 'Unknown title')}
-            </Text>
-            {(!proposalInfo.isModerationHidden || hasPermission) &&
-              isMember && <ModerationMenu showOptions={openCommonOptions} />}
-          </View>
-
-          <MemberCard
-            showDate={proposalInfo.isJoinRequest}
-            userInfo={userStore.getUserById(proposalInfo.proposerId)}
-            proposalInfo={proposalInfo}
-            isPending={false}
-          />
-          <View style={{...layout.flexRow}}>
-            <ProposalApprovalTag
-              iconName="approved"
-              value={proposalInfo.votesFor || 0}
-              isMarked={true}
+        {showCard && (
+          <View style={styles.containerView}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>
+                {isFundingRequest &&
+                  (proposalInfo?.description?.title || 'Unknown title')}
+              </Text>
+              {(!proposalInfo.isModerationHidden || hasPermission) &&
+                isMember && <ModerationMenu showOptions={openCommonOptions} />}
+            </View>
+            <MemberCard
+              showDate={proposalInfo.isJoinRequest}
+              userInfo={userStore.getUserById(proposalInfo.proposerId)}
+              proposalInfo={proposalInfo}
+              isPending={false}
             />
-            <ProposalApprovalTag
-              iconName="declined"
-              value={proposalInfo.votesAgainst || 0}
-              isMarked={false}
-            />
-            <ProposalApprovalTag
-              iconName="discussion"
-              value={proposalDiscussionCount}
-              isMarked={false}
-            />
+            <View style={{...layout.flexRow}}>
+              <ProposalApprovalTag
+                iconName="approved"
+                value={proposalInfo.votesFor || 0}
+                isMarked={true}
+              />
+              <ProposalApprovalTag
+                iconName="declined"
+                value={proposalInfo.votesAgainst || 0}
+                isMarked={false}
+              />
+              <ProposalApprovalTag
+                iconName="discussion"
+                value={proposalDiscussionCount}
+                isMarked={false}
+              />
+            </View>
+            <View style={styles.proposalCardActionContainer}>
+              <Text style={styles.proposalActionBtnText}>
+                {proposalInfo.isJoinRequest ? 'View request' : 'View proposal'}
+              </Text>
+            </View>
           </View>
-
-          <View style={styles.proposalCardActionContainer}>
-            <Text style={styles.proposalActionBtnText}>
-              {proposalInfo.isJoinRequest ? 'View request' : 'View proposal'}
-            </Text>
-          </View>
-        </View>
+        )}
       </TouchableOpacity>
     </Animated.View>
   ) : (
@@ -239,7 +249,7 @@ const styles = StyleSheet.create({
     // marginHorizontal: 5,
     ...layout.marginBottomL,
     backgroundColor: colors.white,
-    borderRadius: 20,
+    //borderRadius: 20,
     //alignSelf: 'stretch',
 
     borderStyle: 'solid',

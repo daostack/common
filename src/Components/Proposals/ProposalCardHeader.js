@@ -1,10 +1,10 @@
 import React from 'react';
 import {Text, StyleSheet, View} from 'react-native';
-import {text, layout, colors, sizeXS, sizeS, font} from '~/Theme';
+import {text, layout, colors, sizeXS, sizeS, font, sizeM} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
-import {string, number, bool, func, object} from 'prop-types';
+import {string, number, bool, func, object, shape} from 'prop-types';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {observer} from 'mobx-react';
 import {Reported} from '../../Components/Moderation/Reported';
@@ -116,8 +116,13 @@ const ProposalCardHeader = ({
   isReported,
   moderation,
   reporter,
+  hasPermission,
+  authInfo,
 }) => {
   const headerStatus = calcStatus(state, isScreenHeader, paymentStatus);
+  const showCountdown = !isReported || !moderation;
+  const showIcon =
+    !showCountdown && moderation?.flag === 'hidden' && !hasPermission;
 
   return isScreenHeader ? (
     <TouchableWithoutFeedback onPress={onPress}>
@@ -150,29 +155,50 @@ const ProposalCardHeader = ({
     </TouchableWithoutFeedback>
   ) : (
     <View
-      style={{
-        ...styles.proposalCardHeader,
-        backgroundColor: headerStatus.lightColor,
-        flexDirection: isReported ? 'column' : 'row',
-      }}>
-      <View style={{flexDirection: 'row'}}>
-        <Icon
-          name={headerStatus.icon}
-          color={headerStatus.darkColor}
-          size={16}
-        />
-
-        <Text
-          style={{
-            ...text.orangeSmallBold,
-            marginHorizontal: 5,
-            color: headerStatus.darkColor,
-          }}>
-          {headerStatus.text}
-        </Text>
-      </View>
+      style={
+        showCountdown
+          ? {
+              ...styles.proposalCardHeader,
+              backgroundColor: headerStatus.lightColor,
+            }
+          : {
+              ...styles.hiddenCardHeader,
+              justifyContent: showIcon ? 'space-between' : 'center',
+              borderTopLeftRadius: hasPermission ? 20 : 5,
+              borderTopRightRadius: hasPermission ? 20 : 5,
+            }
+      }>
+      {showCountdown && (
+        <View style={{flexDirection: 'row'}}>
+          <Icon
+            name={headerStatus.icon}
+            color={headerStatus.darkColor}
+            size={16}
+          />
+          <Text
+            style={{
+              ...text.orangeSmallBold,
+              marginHorizontal: 5,
+              color: headerStatus.darkColor,
+            }}>
+            {headerStatus.text}
+          </Text>
+        </View>
+      )}
       {isReported && !!moderation && (
-        <Reported moderation={moderation} reporter={reporter} />
+        <Reported
+          moderation={moderation}
+          reporter={reporter}
+          currentUID={authInfo.uid}
+        />
+      )}
+      {showIcon && (
+        <Icon
+          name="questionMark"
+          size={16}
+          style={{padding: 10}}
+          color={colors.blueGray1}
+        />
       )}
     </View>
   );
@@ -187,6 +213,10 @@ ProposalCardHeader.propTypes = {
   isReported: bool,
   moderation: object,
   reporter: object,
+  hasPermission: bool,
+  authInfo: shape({
+    uid: string,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -199,6 +229,13 @@ const styles = StyleSheet.create({
     padding: sizeXS,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+  },
+  hiddenCardHeader: {
+    ...layout.flexRow,
+    alignItems: 'center',
+    backgroundColor: colors.blueGray,
+    paddingHorizontal: sizeM,
+    height: 35,
   },
   launchedColor: {
     color: colors.mainBlue,

@@ -33,6 +33,7 @@ const Pending = ({
   hasPermission,
   openCommonOptions,
   showHiddenNote,
+  isMember,
 }) => (
   <View style={layout.content}>
     <ProposalsList
@@ -47,6 +48,7 @@ const Pending = ({
       showHiddenNote={(hiddenRequestToJoin) =>
         showHiddenNote(hiddenRequestToJoin)
       }
+      isMember={isMember}
     />
   </View>
 );
@@ -73,6 +75,7 @@ const CommonMembers = ({navigation, route: router, rootStore}) => {
     hasPermission,
     openCommonOptions,
     showHiddenNote,
+    isMember,
   } = router.params;
   const [index, setIndex] = useState(0);
   const pendingCount = proposalStore.getCommonProposals(commonId, {
@@ -106,6 +109,7 @@ const CommonMembers = ({navigation, route: router, rootStore}) => {
             hasPermission={hasPermission}
             openCommonOptions={openCommonOptions}
             showHiddenNote={showHiddenNote}
+            isMember={isMember}
           />
         );
       case 'history':
@@ -158,6 +162,7 @@ Pending.propTypes = {
   hasPermission: bool,
   openCommonOptions: func,
   showHiddenNote: func,
+  isMember: bool,
 };
 
 History.propTypes = {
@@ -172,6 +177,7 @@ CommonMembers.propTypes = {
     params: shape({
       members: array,
       commonId: string,
+      isMember: bool,
     }),
   }),
   rootStore: rootStorePropTypes,
