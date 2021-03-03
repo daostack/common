@@ -1,12 +1,12 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
 import NotificationBadge from './NotificationBadge';
 import {CommonActions} from '@react-navigation/native';
-import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {InferProps, object, shape, string} from 'prop-types';
 import {formatNotificationDate} from '~/Util/DateUtil';
+import NotificationService from '~/Services/NotificationService';
 
 const props = {
   item: shape({
@@ -33,8 +33,13 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
   item,
   navigation,
 }) => {
+  const [isRead, setRead] = useState(false);
+  const [isClicked, setClicked] = useState(false);
   const navigateToDetail = () => {
     let navigate;
+
+    NotificationService.setNotificationClicked(item.id);
+    setClicked(true);
 
     if (item.common) {
       navigate = CommonActions.navigate({
@@ -55,18 +60,38 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
     }
   };
 
+  useEffect(() => {
+    NotificationService.isNotificationClicked(item.id).then((result) =>
+      setClicked(result),
+    );
+    NotificationService.isNotificationRead(item.id).then((result) => {
+      setRead(result);
+    });
+    NotificationService.setNotificationRead(item.id);
+  }, []);
+
   return (
     <TouchableOpacity
       onPress={() => {
         navigateToDetail();
       }}>
-      <View style={styles.messageCardContainer}>
-        <FastImage
-          style={styles.userImage}
-          source={{
-            uri: item.ownerAvatar,
-          }}
-        />
+      <View
+        style={[
+          styles.messageCardContainer,
+          {
+            backgroundColor: isClicked ? colors.white : colors.error,
+          },
+        ]}>
+        <View
+          style={{flexDirection: 'column', marginLeft: 20, marginRight: 15}}>
+          <FastImage
+            style={styles.userImage}
+            source={{
+              uri: item.ownerAvatar,
+            }}
+          />
+          {!isRead && <View style={styles.notReadDot} />}
+        </View>
         <View>
           <View style={styles.headerContainer}>
             <NotificationBadge type={item.eventType} />
@@ -99,13 +124,19 @@ NotificationItem.propTypes = props;
 
 const styles = StyleSheet.create({
   userImage: {
-    width: 42,
-    height: 42,
-    marginLeft: 20,
+    width: 40,
+    height: 40,
     borderRadius: 20,
+  },
+  notReadDot: {
+    width: 16,
+    height: 16,
+    borderRadius: 10,
+    backgroundColor: colors.mainBlue,
+    marginTop: -27,
+    marginLeft: -8,
     borderWidth: 2,
-    borderColor: colors.white,
-    marginRight: 15,
+    borderColor: colors.paleNotificationblue,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -132,9 +163,6 @@ const styles = StyleSheet.create({
     ...layout.content,
     ...layout.flexRow,
     ...layout.flexStart,
-    padding: 0,
-    marginVertical: 20,
-    marginTop: 5,
   },
   messageContainer: {
     marginTop: 5,

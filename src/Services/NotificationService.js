@@ -12,11 +12,9 @@ import {
 import {fetchCommonById} from './ListServices/CommonListService';
 import {getProposalById} from './ListServices/ProposalListService';
 import {fetchMessageById} from './ListServices/DiscussionMessageListService';
-import {
-  fetchDiscussionId,
-  subscribeToCommonDiscussions,
-} from './ListServices/DiscussionListService';
+import {fetchDiscussionId} from './ListServices/DiscussionListService';
 import {getUserById} from './ListServices/UserListService';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class NotificationService {
   static async saveTokenToDatabase() {
@@ -58,6 +56,39 @@ export default class NotificationService {
     }
   }
 
+  static setNotificationRead(notificationId) {
+    AsyncStorage.getItem('notificationsRead').then((notifications) => {
+      const list = notifications ? JSON.parse(notifications) : [];
+      if (!list.includes(notificationId)) {
+        list.push(notificationId);
+        AsyncStorage.setItem('notificationsRead', JSON.stringify(list));
+      }
+    });
+  }
+
+  static async isNotificationRead(notificationId) {
+    const notifications = await AsyncStorage.getItem('notificationsRead');
+    const list = notifications ? JSON.parse(notifications) : [];
+    return list.includes(notificationId);
+  }
+
+  static async setNotificationClicked(notificationId) {
+    AsyncStorage.getItem('notificationsClicked').then((notifications) => {
+      const list = notifications ? JSON.parse(notifications) : [];
+
+      if (!list.includes(notificationId)) {
+        list.push(notificationId);
+        AsyncStorage.setItem('notificationsClicked', JSON.stringify(list));
+      }
+    });
+  }
+
+  static async isNotificationClicked(notificationId) {
+    const notifications = await AsyncStorage.getItem('notificationsClicked');
+    const list = notifications ? JSON.parse(notifications) : [];
+    return list.includes(notificationId);
+  }
+
   static async getNotificationList() {
     const userId = auth().currentUser.uid;
 
@@ -77,7 +108,7 @@ export default class NotificationService {
 
         const resultFormatted = await Promise.all(
           result.map(async (doc) => {
-            let data = doc.data();
+            let data = {...doc.data(), id: doc.id};
 
             let common;
             let proposal;
