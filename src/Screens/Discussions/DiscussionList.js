@@ -61,7 +61,7 @@ DiscussionList.propTypes = {
   openCommonOptions: func,
   showHiddenNote: func,
   rootStore: rootStorePropTypes,
-  isMember: bool
+  isMember: bool,
 };
 
 export default inject('rootStore')(observer(DiscussionList));
