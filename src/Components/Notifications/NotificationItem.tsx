@@ -79,7 +79,9 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
         style={[
           styles.messageCardContainer,
           {
-            backgroundColor: isClicked ? colors.white : colors.error,
+            backgroundColor: isClicked
+              ? colors.white
+              : colors.paleNotificationblue,
           },
         ]}>
         <View
