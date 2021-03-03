@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef,useMemo} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -54,7 +54,7 @@ const Discussions = ({
   const currentUser = auth().currentUser;
   const dataState = discussionStore.getDiscussionById(discussionId);
   const user = userStore.getUserById(dataState.ownerId);
-  const currCommon = useMemo(() => commonStore.getCommonById(commonId),[commonId]);
+  const currCommon = commonStore.getCommonById(commonId);
 
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
