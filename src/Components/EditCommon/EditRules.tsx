@@ -40,7 +40,7 @@ const EditRules: React.FC<InferProps<typeof EditRules.propTypes>> = ({
         name: RULES,
         formStore: editCommonFormStore,
         validateRule: {
-          common: 'string|required',
+          url: 'string|required',
           title: 'string|max:80|required',
         },
       }}

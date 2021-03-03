@@ -97,7 +97,6 @@ const IntroductionStep = ({
           validation={{
             name: RequestToJoinForm.FIELD_LINKS,
             formStore: introduceYourselfFormStore,
-            validateRule: 'string|url',
           }}
         />
       </View>

@@ -112,7 +112,7 @@ const MultiLinkField = (props) => {
           name: `${currIndex}_value`,
           multiName: props.validation.name,
           validateRule:
-            validation.validateRule?.common || LINK_VALIDATION_RULES.LINKS || validation.validateRule,
+            validation?.validateRule?.url || LINK_VALIDATION_RULES.LINKS || validation.validateRule,
           invisibleContainer: true,
           immediateValidation: true,
           customErrorMessage: `${link ? 'Link format is invalid' : 'Rule description is required' }`,
@@ -122,7 +122,7 @@ const MultiLinkField = (props) => {
           ...props.validation,
           name: `${currIndex}_title`,
           multiName: props.validation.name,
-          validateRule: validation.validateRule?.title || 'string',
+          validateRule: validation?.validateRule?.title || 'string',
           topPosition: true,
           invisibleContainer: true,
           immediateValidation: true,

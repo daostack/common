@@ -169,7 +169,6 @@ const CreateStep1 = ({
           validation={{
             name: CreateCommonForm.LINKS,
             formStore: generalInfoFormStore,
-            validateRule: {title: 'string'},
           }}
         />
       </View>

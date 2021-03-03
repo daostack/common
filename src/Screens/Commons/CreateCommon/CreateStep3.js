@@ -104,7 +104,7 @@ const CreateStep3 = ({
           validation={{
             name: CreateCommonForm.RULES,
             formStore: agendaFormStore,
-            validateRule: {common: 'string', title: 'string|max:80'},
+            validateRule: {url: 'string', title: 'string|max:80'},
           }}
         />
 
