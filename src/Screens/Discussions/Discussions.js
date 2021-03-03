@@ -389,6 +389,7 @@ const Discussions = ({
           hasPermission={hasPermission}
           commonId={commonId}
           openMessageOptions={(message) => openMessageOptions(message)}
+          isMember={isMember}
         />
       </ScrollView>
 

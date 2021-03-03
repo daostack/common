@@ -27,6 +27,7 @@ const DiscussionMessage = ({
   rootStore,
   commonId,
   openMessageOptions,
+  isMember,
 }) => {
   let currentUserUid = null;
   const isHidden = data.moderation?.flag === 'hidden';
@@ -43,7 +44,10 @@ const DiscussionMessage = ({
   const ownerInfo = userStore.getUserById(data.ownerId);
 
   function goToUserProfile() {
-    navigation.navigate(NAVIGATION_SCREENS.PROFILE, {userId: ownerInfo.id, ownerInfo});
+    navigation.navigate(NAVIGATION_SCREENS.PROFILE, {
+      userId: ownerInfo.id,
+      ownerInfo,
+    });
   }
   const moderatorInfo =
     data.moderation &&
@@ -85,7 +89,9 @@ const DiscussionMessage = ({
   return (
     <Pressable
       style={styles.container}
-      onLongPress={() => (!isHidden || hasPermission) && openMessageOptions()}>
+      onLongPress={() =>
+        (!isHidden || hasPermission) && isMember && openMessageOptions()
+      }>
       {currentUserUid === data.ownerId ? (
         <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
           {showCurrentUserAvatar && (
@@ -130,7 +136,7 @@ const DiscussionMessage = ({
         <>
           <View style={styles.contentMember}>
             <View>
-            <TouchableOpacity onPress={goToUserProfile}>
+              <TouchableOpacity onPress={goToUserProfile}>
                 <Image
                   style={{
                     backgroundColor: colors.grey3,
@@ -150,20 +156,18 @@ const DiscussionMessage = ({
                 backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
               }}>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
-                <View style={{flexDirection: 'row'}} >
-                <Text
-                  style={{
-                    ...styles.ownerName,
-                    color: isHidden ? colors.grey3 : colors.black,
-                  }}>
-                  {ownerInfo?.displayName}
-                </Text>
-                {!isHidden && !isFlagged && (
-                  <Text style={styles.permission}>
-                    {permission}
+                <View style={{flexDirection: 'row'}}>
+                  <Text
+                    style={{
+                      ...styles.ownerName,
+                      color: isHidden ? colors.grey3 : colors.black,
+                    }}>
+                    {ownerInfo?.displayName}
                   </Text>
-                )}
-                {flagView}
+                  {!isHidden && !isFlagged && (
+                    <Text style={styles.permission}>{permission}</Text>
+                  )}
+                  {flagView}
                 </View>
               </Hyperlink>
               {(!isHidden || hasPermission) && (
@@ -180,8 +184,8 @@ const DiscussionMessage = ({
                 </Hyperlink>
               )}
               {dateView()}
-              </View>
             </View>
+          </View>
         </>
       )}
     </Pressable>
@@ -199,6 +203,7 @@ DiscussionMessage.propTypes = {
   rootStore: rootStorePropTypes,
   commonId: string,
   openMessageOptions: func,
+  isMember: bool,
 };
 
 const styles = StyleSheet.create({

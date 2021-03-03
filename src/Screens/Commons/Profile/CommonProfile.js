@@ -261,6 +261,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         showHiddenNote={(hiddenDiscussion) =>
           showHiddenNote(hiddenDiscussion, 'Discussion')
         }
+        isMember={isMember}
       />
     </View>
   );
@@ -287,6 +288,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         showHiddenNote={(hiddenProposal) =>
           showHiddenNote(hiddenProposal, 'Proposal')
         }
+        isMember={isMember}
       />
 
       {isMember && (

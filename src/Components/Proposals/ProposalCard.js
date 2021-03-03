@@ -39,6 +39,7 @@ const ProposalCard = ({
   openCommonOptions,
   hiddenProposalNote,
   rootStore,
+  isMember,
 }) => {
   // Stores
   const userStore = rootStore.userStore;
@@ -124,9 +125,8 @@ const ProposalCard = ({
               {isFundingRequest &&
                 (proposalInfo?.description?.title || 'Unknown title')}
             </Text>
-            {(!proposalInfo.isModerationHidden || hasPermission) && (
-              <ModerationMenu showOptions={openCommonOptions} />
-            )}
+            {(!proposalInfo.isModerationHidden || hasPermission) &&
+              isMember && <ModerationMenu showOptions={openCommonOptions} />}
           </View>
 
           <MemberCard
@@ -208,6 +208,7 @@ ProposalCard.propTypes = {
   openCommonOptions: func,
   hiddenProposalNote: func,
   rootStore: rootStorePropTypes,
+  isMember: bool,
 };
 
 const styles = StyleSheet.create({

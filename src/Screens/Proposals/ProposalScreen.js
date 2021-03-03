@@ -1015,6 +1015,7 @@ const ProposalScreen = ({
                   hasPermission={hasPermission}
                   commonId={proposalInfo.commonId}
                   openMessageOptions={(message) => openMessageOptions(message)}
+                  isMember={isMember}
                 />
               )}
             </View>

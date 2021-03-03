@@ -16,6 +16,7 @@ import {CommonActions} from '@react-navigation/native';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationMenu from '../../Components/Moderation/ModerationMenu';
 import DiscussionCardHeader from '../../Components/Discussion/DiscussionCardHeader';
+import {isDaoMemberByUserId} from '~/Util';
 
 const {width} = Dimensions.get('window');
 
@@ -27,6 +28,7 @@ const DiscussionCard = ({
   openCommonOptions,
   hiddenDiscussionNote,
   rootStore,
+  isMember,
 }) => {
   const userStore = rootStore.userStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
@@ -81,10 +83,8 @@ const DiscussionCard = ({
               <Text style={styles.title} numberOfLines={2}>
                 {data.title}
               </Text>
-              {(!discussionMessageStore.isModerationHidden ||
-                hasPermission) && (
-                <ModerationMenu showOptions={openCommonOptions} />
-              )}
+              {(!discussionMessageStore.isModerationHidden || hasPermission) &&
+                isMember && <ModerationMenu showOptions={openCommonOptions} />}
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               {user.photoURL ? (
@@ -171,6 +171,7 @@ DiscussionCard.propTypes = {
   openCommonOptions: func,
   hiddenDiscussionNote: func,
   rootStore: rootStorePropTypes,
+  isMember: bool,
 };
 
 const styles = StyleSheet.create({
