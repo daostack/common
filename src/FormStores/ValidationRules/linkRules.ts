@@ -6,6 +6,6 @@ export enum LINK_VALIDATION_RULES {
 
 export const validateLink = {
   ruleName: LINK_VALIDATION_RULES.LINKS,
-  validateFunc: (value: string) => new RegExp(urlRegex).test(value),
+  validateFunc: (value: string) => new RegExp(urlRegex).test(encodeURI(value)),
   errorMessage: 'Link format is invalid',
 };
