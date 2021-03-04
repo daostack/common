@@ -137,7 +137,8 @@ const ProposalCard = ({
                   (proposalInfo?.description?.title || 'Unknown title')}
               </Text>
               {(!proposalInfo.isModerationHidden || hasPermission) &&
-                isMember && <ModerationMenu showOptions={openCommonOptions} />}
+                isMember &&
+                !isSwiper && <ModerationMenu showOptions={openCommonOptions} />}
             </View>
             <MemberCard
               showDate={proposalInfo.isJoinRequest}

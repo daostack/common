@@ -91,53 +91,49 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
   };
 
   return (
-      <View style={styles.root}>
-        <View style={styles.view}>
-          <ScrollView style={{marginHorizontal: 24}}>
-            <Text style={styles.title}>Report {title}</Text>
+    <View style={styles.root}>
+      <View style={styles.view}>
+        <ScrollView style={{marginHorizontal: 24}}>
+          <Text style={styles.title}>Report {title}</Text>
 
-            <Text style={styles.action}>
-              Please select a problem to continue
+          <Text style={styles.action}>Please select a problem to continue</Text>
+          <Text style={styles.explanation}>
+            You can hide the post after selecting a problem
+          </Text>
+          <View style={{paddingVertical: 20}}>
+            {reasons.map((reasonRow, i) => (
+              <View key={i} style={{flexDirection: 'row'}}>
+                {reasonRow.map((reason) => problemButton(reason))}
+              </View>
+            ))}
+          </View>
+          <View style={styles.divider} />
+          <TextInputField
+            label="Add note:"
+            placeholderText="This note is public and will be shown to all members."
+            multiline={true}
+            value={
+              formStore.getFormField(ModerationForm.MODERATOR_NOTE, false)
+                ?.value
+            }
+            validation={{
+              name: 'moderatorNote',
+              formStore: formStore,
+              validateRule: 'string',
+              displayName: 'moderator note',
+            }}
+          />
+          <Pressable onPress={onReportContent} disabled={!isValid}>
+            <Text style={[styles.button, isValid && styles.buttonSelected]}>
+              Report
             </Text>
-            <Text style={styles.explanation}>
-              You can hide the post after selecting a problem
-            </Text>
-            <View style={{paddingVertical: 20}}>
-              {reasons.map((reasonRow, i) => (
-                <View key={i} style={{flexDirection: 'row'}}>
-                  {reasonRow.map((reason) => problemButton(reason))}
-                </View>
-              ))}
-            </View>
-            <View style={styles.divider} />
-            <TextInputField
-              label="Moderator note:"
-              placeholderText="This note is public and will be shown to all members."
-              multiline={true}
-              value={
-                formStore.getFormField(ModerationForm.MODERATOR_NOTE, false)
-                  ?.value
-              }
-              validation={{
-                name: 'moderatorNote',
-                formStore: formStore,
-                validateRule: 'string',
-                displayName: 'moderator note',
-              }}
-            />
-            <Pressable onPress={onReportContent} disabled={!isValid}>
-              <Text style={[styles.button, isValid && styles.buttonSelected]}>
-                Report
-              </Text>
-            </Pressable>
-            <Pressable onPress={onCancel}>
-              <Text style={styles.cancel}>
-                Cancel
-              </Text>
-            </Pressable>
-          </ScrollView>
-        </View>
+          </Pressable>
+          <Pressable onPress={onCancel}>
+            <Text style={styles.cancel}>Cancel</Text>
+          </Pressable>
+        </ScrollView>
       </View>
+    </View>
   );
 };
 
