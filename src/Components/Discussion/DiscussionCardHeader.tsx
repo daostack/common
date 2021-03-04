@@ -33,7 +33,7 @@ const DiscussionCardHeader: React.FC<InferProps<typeof props>> = ({
         <Reported
           moderation={moderation}
           reporter={reporter}
-          currentUID={authStore.userInfo.uid}
+          currentUID={authStore?.userInfo?.uid}
         />
       )}
       {showIcon && (
