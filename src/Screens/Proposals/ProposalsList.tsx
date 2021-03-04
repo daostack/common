@@ -47,6 +47,7 @@ const props = {
   hasPermission: bool,
   openCommonOptions: func.isRequired,
   showHiddenNote: func.isRequired,
+  isMember: bool,
 
   // Injected
   proposalStore: proposalStorePropTypes.isRequired,
@@ -64,6 +65,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     hasPermission,
     openCommonOptions,
     showHiddenNote,
+    isMember,
   }) => {
     let list: Proposal[] = [];
     if (commonInfo) {
@@ -85,6 +87,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
             hasPermission={hasPermission}
             openCommonOptions={() => openCommonOptions(item)}
             hiddenProposalNote={() => showHiddenNote(item)}
+            isMember={isMember}
           />
         ) : (
           <TouchableOpacity
@@ -111,6 +114,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
           hasPermission={hasPermission}
           openCommonOptions={() => openCommonOptions(item)}
           hiddenProposalNote={() => showHiddenNote(item)}
+          isMember={isMember}
         />
       );
 

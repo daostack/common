@@ -79,6 +79,7 @@ const MyProposals = ({
             sceneIndex === 2 ? PROPOSAL_STAGE.History : PROPOSAL_STAGE.Active,
           type: proposalTypeFilter,
         }}
+        isMember
       />
     </View>
   );

@@ -23,6 +23,7 @@ const DiscussionMessagesList = ({
   hasPermission,
   commonId,
   openMessageOptions,
+  isMember,
 }) => {
   const chatRef = useRef(null);
   const discussionMessageStore = rootStore.discussionMessageStore;
@@ -73,6 +74,7 @@ const DiscussionMessagesList = ({
               hasPermission={hasPermission}
               commonId={commonId}
               openMessageOptions={() => openMessageOptions(x.item)}
+              isMember={isMember}
             />
           )}
           onScrollToIndexFailed={(info) => {
@@ -114,6 +116,7 @@ DiscussionMessagesList.propTypes = {
   commonId: string,
   action: func,
   openMessageOptions: func,
+  isMember: bool,
 };
 
 const styles = StyleSheet.create({
