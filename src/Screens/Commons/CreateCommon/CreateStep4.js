@@ -159,6 +159,7 @@ const CreateStep4 = ({
       stepDotHeaderTitle="Final touches and review"
       navTitle="Final touches and review"
       currentIndex={4}
+      isRequestButtonSticky={false}
       prependedArea={
         <Modal
           isVisible={Boolean(newCommonAddress)}
@@ -185,6 +186,15 @@ const CreateStep4 = ({
             </View>
           </SentTemplate>
         </Modal>
+      }
+      requestStepActionButton={
+        <RequestStepActionButton
+          messageBox={canChangeMessage}
+          title="Publish Common"
+          formStore={agendaFormStore}
+          onPress={() => forgeCommon()}
+          isSticky={false}
+        />
       }>
       <View
         style={{
@@ -292,12 +302,6 @@ const CreateStep4 = ({
               <Text style={styles.textContent}>{rule.value}</Text>
             </View>
           ))}
-        <RequestStepActionButton
-          messageBox={canChangeMessage}
-          title="Publish Common"
-          formStore={agendaFormStore}
-          onPress={() => forgeCommon()}
-        />
       </View>
     </StepDotLayout>
   );

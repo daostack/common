@@ -1,8 +1,15 @@
 import React from 'react';
-import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
+import {
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  View,
+  Dimensions,
+} from 'react-native';
 import {layout, colors, font} from '~/Theme';
 import {string, func, bool, object} from 'prop-types';
 import {observer} from 'mobx-react';
+const {width} = Dimensions.get('window');
 
 const RequestStepActionButton = ({
   hidden,
@@ -11,11 +18,16 @@ const RequestStepActionButton = ({
   onPress,
   title,
   messageBox = null,
+  isSticky = true,
 }) => {
   let actionBtnStyle = styles.actionBtnContainer;
 
   if (hidden) {
     actionBtnStyle = {...actionBtnStyle, display: 'none'};
+  }
+
+  if (!isSticky) {
+    actionBtnStyle = {...actionBtnStyle, width};
   }
 
   const isButtonEnabled = () =>
@@ -43,6 +55,7 @@ RequestStepActionButton.propTypes = {
   title: string,
   formStore: object,
   messageBox: object,
+  isSticky: bool,
 };
 
 const styles = StyleSheet.create({
