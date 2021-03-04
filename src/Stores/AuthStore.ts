@@ -103,7 +103,7 @@ class AuthStore {
   };
 
   getPermission = async (commonId: string, userInfo: UserModel) => {
-    const roles = [...userInfo.roles] || [];
+    const roles = [...(Array.isArray(userInfo.roles) ? userInfo.roles : [])];
     const roleData = roles.find(
       (roleObj) => roleObj.data.commonId === commonId,
     );

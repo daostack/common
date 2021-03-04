@@ -95,7 +95,7 @@ const CommonMembersList = ({
               style={styles.item}
               onPress={() => showUserProfile(member)}
               key={`touch_${i}`}>
-              <MemberCard key={i} userInfo={member} />
+              <MemberCard key={i} moderatorId={currCommon?.metadata?.founderId} userInfo={member} />
             </TouchableOpacity>
           ),
         )

@@ -54,6 +54,7 @@ const Discussions = ({
   const currentUser = auth().currentUser;
   const dataState = discussionStore.getDiscussionById(discussionId);
   const user = userStore.getUserById(dataState.ownerId);
+  const currCommon = commonStore.getCommonById(commonId);
 
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
@@ -69,7 +70,8 @@ const Discussions = ({
 
   const isMember =
     authStore.userInfo &&
-    authStore.isDaoMember(commonStore.getCommonById(commonId)?.members);
+    authStore.isDaoMember(currCommon?.members);
+
 
   useEffect(() => {}, [commonId, discussionId, currentUser]);
 
