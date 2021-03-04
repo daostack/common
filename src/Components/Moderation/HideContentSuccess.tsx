@@ -10,13 +10,13 @@ import React from 'react';
 import {text, colors, font, layout} from '~/Theme';
 import {observer} from 'mobx-react';
 import {string, func, InferProps} from 'prop-types';
+import {ACTIONS, TITLES} from './constants';
 const {width} = Dimensions.get('window');
 
 const getType = (type: string) => {
-  console.log('type', type);
   switch (type) {
-    case 'Discussion':
-      return 'Post';
+    case TITLES.discussion:
+      return TITLES.post;
     default:
       return type;
   }
@@ -24,9 +24,9 @@ const getType = (type: string) => {
 
 const getTitle = (type: string, action: string) => {
   switch (action) {
-    case 'Show':
+    case ACTIONS.show:
       return `${getType(type)} is now visible`;
-    case 'Report':
+    case ACTIONS.report:
       return 'Thanks for letting us know';
     default:
       return `The ${getType(type).toLowerCase()} was successfully hidden`;
@@ -34,10 +34,10 @@ const getTitle = (type: string, action: string) => {
 };
 
 const getMessage = (type: string, action: string) =>
-  action === 'Report'
+  action === ACTIONS.report
     ? 'We greatly appreciate it! Your feedback is important in helping us keep Common safe.'
     : `The ${getType(type).toLowerCase()} will${
-        action === 'Show' ? ' ' : ' not '
+        action === ACTIONS.show ? ' ' : ' not '
       }be visible to members.
       You can undo this at any time.`;
 

@@ -16,6 +16,7 @@ import {CommonActions} from '@react-navigation/native';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationMenu from '../../Components/Moderation/ModerationMenu';
 import DiscussionCardHeader from '../../Components/Discussion/DiscussionCardHeader';
+import {FLAGS} from '../../Components/Moderation/constants';
 
 const {width} = Dimensions.get('window');
 
@@ -38,9 +39,11 @@ const DiscussionCard = ({
     discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
       ?.length || 0;
 
-  const isVisible = data.moderation?.flag !== 'hidden' || !data.moderation;
+  const showHeader = !data.moderation || data.moderation?.flag !== FLAGS.visible;
+
+  const isVisible = data.moderation?.flag !== FLAGS.hidden || !data.moderation;
   const showCard = isVisible || (!isVisible && hasPermission);
-  const isOwner = authStore.userInfo.uid === data.ownerId;
+  const isOwner = authStore.isCurrentlyLogged(data.ownerId);
 
   const navigateToDiscussion = () => {
     if (data.isModerationHidden) {
@@ -73,13 +76,12 @@ const DiscussionCard = ({
     <>
       <TouchableOpacity onPress={() => navigateToDiscussion()}>
         <View style={styles.containerView}>
-          {!isVisible && (
+          {showHeader && (
             <DiscussionCardHeader
-              isReported={data.moderation?.flag !== 'visible'}
+              isReported={data.moderation?.flag !== FLAGS.visible}
               moderation={data.moderation}
               reporter={getReporter()}
               hasPermission={hasPermission}
-              authInfo={authStore.userInfo}
             />
           )}
           {showCard && (

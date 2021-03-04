@@ -1,18 +1,23 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {layout, colors, sizeXS, sizeM} from '~/Theme';
-import {observer} from 'mobx-react';
+import {observer, inject} from 'mobx-react';
 import {Reported} from '../../Components/Moderation/Reported';
 import {bool, object, InferProps, shape, string} from 'prop-types';
 import Icon from '~/Assets/iconfont/Icon';
+import {FLAGS} from '../../Components/Moderation/constants';
 
 const props = {
   isReported: bool,
   moderation: object,
   reporter: object,
   hasPermission: bool,
-  authInfo: shape({
-    uid: string,
+  rootStore: shape({
+    authStore: shape({
+      userInfo: shape({
+        uid: string,
+      }).isRequired,
+    }).isRequired,
   }).isRequired,
 };
 
@@ -21,9 +26,10 @@ const DiscussionCardHeader: React.FC<InferProps<typeof props>> = ({
   moderation,
   reporter,
   hasPermission,
-  authInfo,
+  rootStore,
 }) => {
-  const showIcon = moderation?.flag === 'hidden' && !hasPermission;
+  const authStore = rootStore.authStore;
+  const showIcon = moderation?.flag === FLAGS.hidden && !hasPermission;
 
   return (
     <View
@@ -32,7 +38,7 @@ const DiscussionCardHeader: React.FC<InferProps<typeof props>> = ({
         <Reported
           moderation={moderation}
           reporter={reporter}
-          currentUID={authInfo.uid}
+          currentUID={authStore.userInfo.uid}
         />
       )}
       {showIcon && (
@@ -74,4 +80,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(DiscussionCardHeader);
+export default inject('rootStore')(observer(DiscussionCardHeader));

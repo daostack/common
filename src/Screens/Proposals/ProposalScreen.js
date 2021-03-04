@@ -752,7 +752,6 @@ const ProposalScreen = ({
                         }
                         onPress={() => openDebtInsufficientModal()}
                         hasPermission={hasPermission}
-                        authInfo={authStore.userInfo}
                       />
                     </TouchableOpacity>
                     {proposedUser && (

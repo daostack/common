@@ -19,6 +19,7 @@ import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
 import {string, bool, object, func} from 'prop-types';
 import ModerationMenu from '../../Components/Moderation/ModerationMenu';
+import {FLAGS} from '../../Components/Moderation/constants';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -51,9 +52,9 @@ const ProposalCard = ({
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
   const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
   const isVisible =
-    proposalInfo.moderation?.flag !== 'hidden' || !proposalInfo.moderation;
+    proposalInfo.moderation?.flag !== FLAGS.hidden || !proposalInfo.moderation;
   const showCard = isVisible || (!isVisible && hasPermission);
-  const isOwner = authStore.userInfo.uid === proposalInfo.proposerId;
+  const isOwner = authStore.isCurrentlyLogged(proposalInfo.proposerId);
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
@@ -123,11 +124,10 @@ const ProposalCard = ({
           closingAt={
             proposalInfo?.createdAt.seconds + proposalInfo?.countdownPeriod
           }
-          isReported={proposalInfo.moderation?.flag !== 'visible'}
+          isReported={proposalInfo.moderation?.flag !== FLAGS.visible}
           moderation={proposalInfo.moderation}
           reporter={getReporter()}
           hasPermission={hasPermission}
-          authInfo={authStore.userInfo}
         />
 
         {showCard && (

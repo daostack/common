@@ -6,8 +6,9 @@ import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
 import {string, number, bool, func, object, shape} from 'prop-types';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
-import {observer} from 'mobx-react';
+import {observer, inject} from 'mobx-react';
 import {Reported} from '../../Components/Moderation/Reported';
+import {FLAGS} from '../../Components/Moderation/constants';
 
 const TITLES = {
   APPROVED: 'Approved',
@@ -117,12 +118,13 @@ const ProposalCardHeader = ({
   moderation,
   reporter,
   hasPermission,
-  authInfo,
+  rootStore,
 }) => {
+  const authStore = rootStore.authStore;
   const headerStatus = calcStatus(state, isScreenHeader, paymentStatus);
   const showCountdown = !isReported || !moderation;
   const showIcon =
-    !showCountdown && moderation?.flag === 'hidden' && !hasPermission;
+    !showCountdown && moderation?.flag === FLAGS.hidden && !hasPermission;
 
   return isScreenHeader ? (
     <TouchableWithoutFeedback onPress={onPress}>
@@ -189,7 +191,7 @@ const ProposalCardHeader = ({
         <Reported
           moderation={moderation}
           reporter={reporter}
-          currentUID={authInfo.uid}
+          currentUID={authStore.userInfo.uid}
         />
       )}
       {showIcon && (
@@ -214,8 +216,12 @@ ProposalCardHeader.propTypes = {
   moderation: object,
   reporter: object,
   hasPermission: bool,
-  authInfo: shape({
-    uid: string,
+  rootStore: shape({
+    authStore: shape({
+      userInfo: shape({
+        uid: string,
+      }),
+    }),
   }),
 };
 
@@ -289,4 +295,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(ProposalCardHeader);
+export default inject('rootStore')(observer(ProposalCardHeader));

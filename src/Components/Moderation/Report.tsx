@@ -13,6 +13,7 @@ import {colors, text, layout, font} from '~/Theme';
 import {string, func, InferProps, shape, bool} from 'prop-types';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
+import {TITLES} from '~/Components/Moderation/constants';
 const {width} = Dimensions.get('window');
 
 const reasons = [
@@ -41,7 +42,7 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
   onReportContent,
   hasPermission,
 }) => {
-  if (title === 'Proposals') {
+  if (title === TITLES.proposals) {
     // this reason should only be displayed for proposals
     reasons[2].push('Violates the Common agenda');
   }

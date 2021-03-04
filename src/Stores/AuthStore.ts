@@ -126,6 +126,8 @@ class AuthStore {
   isLoginInProgressExists = (uid: any) =>
     this.loginInProgress.filter((item: any) => item === uid).length > 0;
 
+  isCurrentlyLogged = (userId: string) => this.userInfo?.uid === userId
+
   // Private functions
   async _processUser(user: any) {
     this.unsubscribeFromUser && this.unsubscribeFromUser();

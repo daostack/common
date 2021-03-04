@@ -19,6 +19,7 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 import {NAVIGATION_SCREENS} from '../../Util/constants/routes.enum';
 import {HyperText} from '~/Components/Text/HyperText';
 import {reporterName} from '../../Components/Moderation/Reported';
+import {FLAGS} from '../../Components/Moderation/constants';
 
 const {width} = Dimensions.get('window');
 
@@ -32,13 +33,13 @@ const DiscussionMessage = ({
   isMember,
 }) => {
   let currentUserUid = null;
-  const isHidden = data.moderation?.flag === 'hidden';
+  const isHidden = data.moderation?.flag === FLAGS.hidden;
   const flag = data.moderation?.flag || '';
   const [permission, setPermission] = useState('');
   const userStore = rootStore.userStore;
   const authStore = rootStore.authStore;
-  const isFlagged = !!flag && flag !== 'visible';
-  const isOwner = authStore.userInfo.uid === data.ownerId;
+  const isFlagged = !!flag && flag !== FLAGS.visible;
+  const isOwner = authStore.isCurrentlyLogged(data.ownerId);
 
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;

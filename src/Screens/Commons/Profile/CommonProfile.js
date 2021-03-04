@@ -53,6 +53,7 @@ import {reporterName, timeReported} from '~/Components/Moderation/Reported';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import Toast from '~/Util/Toast.js';
+import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
 
 import {
   IntroduceYourselfFormStore,
@@ -90,8 +91,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     false,
   );
   const [moderationFormStore] = useState(new ModerationFormStore());
-  const [moderationType, setModerationType] = useState('Discussion');
-  const [action, setAction] = useState('Report');
+  const [moderationType, setModerationType] = useState(TITLES.discussion);
+  const [action, setAction] = useState(ACTIONS.report);
 
   const {refreshFeed} = params;
 
@@ -256,10 +257,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         commonId={currCommon.id}
         hasPermission={hasPermission}
         openCommonOptions={(discussion) =>
-          openCommonOptions(discussion, 'Discussion')
+          openCommonOptions(discussion, TITLES.discussion)
         }
         showHiddenNote={(hiddenDiscussion) =>
-          showHiddenNote(hiddenDiscussion, 'Discussion')
+          showHiddenNote(hiddenDiscussion, TITLES.discussion)
         }
         isMember={isMember}
       />
@@ -283,10 +284,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         }}
         hasPermission={hasPermission}
         openCommonOptions={(proposal) =>
-          openCommonOptions(proposal, 'Proposals')
+          openCommonOptions(proposal, TITLES.proposals)
         }
         showHiddenNote={(hiddenProposal) =>
-          showHiddenNote(hiddenProposal, 'Proposal')
+          showHiddenNote(hiddenProposal, TITLES.proposalText)
         }
         isMember={isMember}
       />
@@ -316,7 +317,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           type: PROPOSAL_TYPE.FundingRequest,
         }}
         showHiddenNote={(hiddenProposal) =>
-          showHiddenNote(hiddenProposal, 'Proposal')
+          showHiddenNote(hiddenProposal, TITLES.proposalText)
         }
         sMember={isMember}
       />
@@ -433,9 +434,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       screenTitle: currCommon.name,
       hasPermission,
       openCommonOptions: (requestToJoin) =>
-        openCommonOptions(requestToJoin, 'Membership request'),
+        openCommonOptions(requestToJoin, TITLES.membershipRequest),
       showHiddenNote: (hiddenRequestToJoin) =>
-        showHiddenNote(hiddenRequestToJoin, 'Membership request'),
+        showHiddenNote(hiddenRequestToJoin, TITLES.membershipRequest),
       isMember,
     });
   };
@@ -497,8 +498,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     }
   };
 
-  const membershipRequestType = (itemType) =>
-    itemType === 'Membership request' ? 'Proposals' : itemType;
+  const membershipRequestType = (itemTitle) =>
+    itemTitle === TITLES.membershipRequest ? TITLES.proposals : itemTitle;
 
   // consider adding itemId to edit (?)
   const openCommonOptions = (item = null, itemType = '') => {
@@ -557,7 +558,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     );
   };
 
-  const getType = (type) => (type === 'Proposals' ? 'Proposal' : type);
+  const getType = (title) => (title === TITLES.proposals ? TITLES.proposalText : title);
 
   const navigateTo = (screenTitle) => {
     navigation.navigate('EditCommon', {
