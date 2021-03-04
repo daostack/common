@@ -10,7 +10,6 @@ const styles = StyleSheet.create({
     hyperLinkStyle: {
         textDecorationLine: 'underline',
         color: colors.mainBlue,
-        backgroundColor: 'yellow',
         flexDirection: 'row',
       },
 });
