@@ -72,7 +72,7 @@ const DiscussionCard = ({
     <>
       <TouchableOpacity onPress={() => navigateToDiscussion()}>
         <View style={styles.containerView}>
-          {data.moderation?.flag !== 'visible' && (
+          {!isVisible && (
             <DiscussionCardHeader
               isReported={data.moderation?.flag !== 'visible'}
               moderation={data.moderation}
