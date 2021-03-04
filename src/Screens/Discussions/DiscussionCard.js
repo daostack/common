@@ -40,6 +40,7 @@ const DiscussionCard = ({
 
   const isVisible = data.moderation?.flag !== 'hidden' || !data.moderation;
   const showCard = isVisible || (!isVisible && hasPermission);
+  const isOwner = authStore.userInfo.uid === data.ownerId;
 
   const navigateToDiscussion = () => {
     if (data.isModerationHidden) {
@@ -89,7 +90,7 @@ const DiscussionCard = ({
                 </Text>
                 {(!discussionMessageStore.isModerationHidden ||
                   hasPermission) &&
-                  isMember && (
+                  isMember && !isOwner && (
                     <ModerationMenu showOptions={openCommonOptions} />
                   )}
               </View>

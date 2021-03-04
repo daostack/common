@@ -53,6 +53,7 @@ const ProposalCard = ({
   const isVisible =
     proposalInfo.moderation?.flag !== 'hidden' || !proposalInfo.moderation;
   const showCard = isVisible || (!isVisible && hasPermission);
+  const isOwner = authStore.userInfo.uid === proposalInfo.proposerId;
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
@@ -138,7 +139,7 @@ const ProposalCard = ({
               </Text>
               {(!proposalInfo.isModerationHidden || hasPermission) &&
                 isMember &&
-                !isSwiper && <ModerationMenu showOptions={openCommonOptions} />}
+                !isSwiper && !isOwner && <ModerationMenu showOptions={openCommonOptions} />}
             </View>
             <MemberCard
               showDate={proposalInfo.isJoinRequest}

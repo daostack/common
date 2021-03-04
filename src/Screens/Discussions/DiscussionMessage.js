@@ -36,7 +36,9 @@ const DiscussionMessage = ({
   const flag = data.moderation?.flag || '';
   const [permission, setPermission] = useState('');
   const userStore = rootStore.userStore;
+  const authStore = rootStore.authStore;
   const isFlagged = !!flag && flag !== 'visible';
+  const isOwner = authStore.userInfo.uid === data.ownerId;
 
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
@@ -89,7 +91,7 @@ const DiscussionMessage = ({
     <Pressable
       style={styles.container}
       onLongPress={() =>
-        (!isHidden || hasPermission) && isMember && openMessageOptions()
+        (!isHidden || hasPermission) && isMember && !isOwner && openMessageOptions()
       }>
       {currentUserUid === data.ownerId ? (
         <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
