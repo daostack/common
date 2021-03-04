@@ -17,6 +17,7 @@ import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {NAVIGATION_SCREENS} from '../../Util/constants/routes.enum';
+import {HyperText} from '~/Components/Text/HyperText';
 
 const {width} = Dimensions.get('window');
 
@@ -110,17 +111,14 @@ const DiscussionMessage = ({
               backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
             }}>
             {flagView}
-            <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
-              <Text
-                style={{
+            <HyperText textStyle={{
                   ...styles.text,
                   color: isHidden ? colors.grey3 : colors.black,
                   ...textjs.writingDirection(data.text),
-                }}
-                selectable>
+              }}
+              selectable>
                 {data.text}
-              </Text>
-            </Hyperlink>
+            </HyperText>
             <View style={{position: 'relative', right: 0, bottom: 0}}>
               {dateView()}
             </View>
@@ -167,17 +165,13 @@ const DiscussionMessage = ({
                 </View>
               </Hyperlink>
               {(!isHidden || hasPermission) && (
-                <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
-                  <Text
-                    style={{
-                      ...styles.text,
-                      color: isHidden ? colors.grey3 : colors.black,
-                      ...textjs.writingDirection(data.text),
-                    }}
-                    selectable>
-                    {data.text}
-                  </Text>
-                </Hyperlink>
+                <HyperText textStyle={{
+                    ...styles.text,
+                    color: isHidden ? colors.grey3 : colors.black,
+                    ...textjs.writingDirection(data.text),
+                }}>
+                  {data.text}
+                </HyperText>
               )}
               {dateView()}
               </View>

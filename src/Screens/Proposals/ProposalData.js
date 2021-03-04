@@ -18,6 +18,7 @@ import {observer, inject} from 'mobx-react';
 import {PROPOSAL_TYPE} from '~/Config';
 import {string, func, shape, array, bool, oneOfType} from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {HyperText} from '~/Components/Text/HyperText';
 
 const ProposalData = ({proposalId, rootStore}) => {
   const navigation = useNavigation();
@@ -41,15 +42,15 @@ const ProposalData = ({proposalId, rootStore}) => {
             : 'Intro'}
         </Text>
         <View style={{...layout.content, ...layout.flexStart, width: '100%'}}>
-          <Text
-            style={{
+          <HyperText
+            textStyle={{
               ...text.regularTextBig,
               ...text.writingDirection(
                 proposalInfoState.description.description,
               ),
             }}>
             {proposalInfoState.description.description}
-          </Text>
+          </HyperText>
         </View>
 
         <View
