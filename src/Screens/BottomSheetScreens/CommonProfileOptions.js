@@ -67,7 +67,7 @@ const CommonProfileOptions = ({
         )}
         {item && (
           <>
-            <Text style={styles.text}>Moderator tools</Text>
+            {hasPermission && <Text style={styles.text}>Moderator tools</Text>}
             {hasPermission && (
               <TouchableOpacity
                 style={styles.optionBtn}
