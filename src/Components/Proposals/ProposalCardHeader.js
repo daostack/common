@@ -4,11 +4,12 @@ import {text, layout, colors, sizeXS, sizeS, font, sizeM} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import CountDown from 'react-native-countdown-component';
-import {string, number, bool, func, object, shape} from 'prop-types';
+import {string, number, bool, func, object} from 'prop-types';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {observer, inject} from 'mobx-react';
 import {Reported} from '../../Components/Moderation/Reported';
 import {FLAGS} from '../../Components/Moderation/constants';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const TITLES = {
   APPROVED: 'Approved',
@@ -216,13 +217,7 @@ ProposalCardHeader.propTypes = {
   moderation: object,
   reporter: object,
   hasPermission: bool,
-  rootStore: shape({
-    authStore: shape({
-      userInfo: shape({
-        uid: string,
-      }),
-    }),
-  }),
+  rootStore: rootStorePropTypes.isRequired,
 };
 
 const styles = StyleSheet.create({

@@ -3,22 +3,17 @@ import {StyleSheet, View} from 'react-native';
 import {layout, colors, sizeXS, sizeM} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import {Reported} from '../../Components/Moderation/Reported';
-import {bool, object, InferProps, shape, string} from 'prop-types';
+import {bool, object, InferProps} from 'prop-types';
 import Icon from '~/Assets/iconfont/Icon';
 import {FLAGS} from '../../Components/Moderation/constants';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const props = {
   isReported: bool,
   moderation: object,
   reporter: object,
   hasPermission: bool,
-  rootStore: shape({
-    authStore: shape({
-      userInfo: shape({
-        uid: string,
-      }).isRequired,
-    }).isRequired,
-  }).isRequired,
+  rootStore: rootStorePropTypes.isRequired,
 };
 
 const DiscussionCardHeader: React.FC<InferProps<typeof props>> = ({
