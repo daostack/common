@@ -39,6 +39,10 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
   formStore,
   onReportContent,
 }) => {
+  if (title === 'Proposals') {
+    // this reason should only be displayed for proposals
+    reasons[2].push('Violates the Common agenda');
+  }
   const [chosen, setChosen] = useState(['']);
   const [isValid, setIsValid] = useState(false);
   formStore.registerFormField(ModerationForm.REASONS, 'required', []);
