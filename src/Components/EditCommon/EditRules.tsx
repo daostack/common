@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import {colors, text, layout, font, sizeL, sizeLineHeight} from '~/Theme';
 import {func, object, shape, array, InferProps} from 'prop-types';
-import MultiLinkField from '~/Components/FormFields/MultiLinkField';
+import MultiTitleValueField from '~/Components/FormFields/MultiTitleValueField';
 import {RULES} from '~/Components/Forms/EditCommonForm';
 
 const EditRules: React.FC<InferProps<typeof EditRules.propTypes>> = ({
@@ -27,7 +27,7 @@ const EditRules: React.FC<InferProps<typeof EditRules.propTypes>> = ({
       and spam, accepted language, etc.)
     </Text>
 
-    <MultiLinkField
+    <MultiTitleValueField
       rule
       allowsEditing={true}
       title="Rule title"
@@ -40,7 +40,7 @@ const EditRules: React.FC<InferProps<typeof EditRules.propTypes>> = ({
         name: RULES,
         formStore: editCommonFormStore,
         validateRule: {
-          url: 'string|required',
+          value: 'string|required',
           title: 'string|max:80|required',
         },
       }}

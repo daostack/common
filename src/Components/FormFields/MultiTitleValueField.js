@@ -14,7 +14,7 @@ const RemoveLinkBtn = ({onFieldDeleted}) => (
   </TouchableOpacity>
 );
 
-const MultiLinkField = (props) => {
+const MultiTitleValueField = (props) => {
   const {
     maxCount,
     validation,
@@ -112,7 +112,7 @@ const MultiLinkField = (props) => {
           name: `${currIndex}_value`,
           multiName: props.validation.name,
           validateRule:
-            validation?.validateRule?.url || LINK_VALIDATION_RULES.LINKS || validation.validateRule,
+            validation?.validateRule?.value || LINK_VALIDATION_RULES.LINKS || validation.validateRule,
           invisibleContainer: true,
           immediateValidation: true,
           customErrorMessage: `${link ? 'Link format is invalid' : 'Rule description is required' }`,
@@ -189,7 +189,7 @@ const MultiLinkField = (props) => {
   );
 };
 
-MultiLinkField.propTypes = {
+MultiTitleValueField.propTypes = {
   validation: shape({
     formStore: object,
     name: string,
@@ -250,4 +250,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MultiLinkField;
+export default MultiTitleValueField;
