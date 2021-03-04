@@ -7,6 +7,7 @@ import {CommonActions} from '@react-navigation/native';
 import {InferProps, object, shape, string} from 'prop-types';
 import {formatNotificationDate} from '~/Util/DateUtil';
 import NotificationService from '~/Services/NotificationService';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 const props = {
   item: shape({
@@ -24,7 +25,7 @@ const props = {
     descriptionBold: string,
     header: string,
     headerBold: string,
-    commonName: object,
+    commonName: string,
   }).isRequired,
   navigation: object.isRequired,
 };
@@ -43,18 +44,18 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
 
     if (item.common) {
       navigate = CommonActions.navigate({
-        name: 'CommonProfile',
+        name: NAVIGATION_SCREENS.COMMON_PROFILE,
         params: {
           currCommon: item.common,
         },
       });
       navigation.dispatch(navigate);
     } else if (item.proposal) {
-      navigation.navigate('ProposalScreen', {
+      navigation.navigate(NAVIGATION_SCREENS.PROPOSAL_SCREEN, {
         proposalId: item.proposal.id,
       });
     } else if (item.discussion) {
-      navigation.navigate('Discussions', {
+      navigation.navigate(NAVIGATION_SCREENS.DISCUSSIONS, {
         discussionId: item.discussion.id,
       });
     }

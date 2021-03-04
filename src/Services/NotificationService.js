@@ -96,18 +96,15 @@ export default class NotificationService {
       .collection(DB_COLLECTIONS.notification)
       .orderBy('createdAt', 'desc')
       .where('userFilter', 'array-contains', userId)
+      .where('eventType', 'in', EventTypesOnNotificationList)
       .get()
       .then(async (snapshots) => {
         if (!snapshots) {
           return null;
         }
 
-        const result = snapshots.docs.filter((s) =>
-          EventTypesOnNotificationList.includes(s.data().eventType),
-        );
-
         const resultFormatted = await Promise.all(
-          result.map(async (doc) => {
+          snapshots.docs.map(async (doc) => {
             let data = {...doc.data(), id: doc.id};
 
             let common;
