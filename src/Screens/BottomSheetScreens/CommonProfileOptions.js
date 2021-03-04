@@ -19,12 +19,14 @@ const CommonProfileOptions = ({
   const [actions, setActions] = useState(
     moderatorOptions.actions || ['Hide', 'Report'],
   );
+  const [iconName, setIconName] = useState('hidden');
   const {item} = moderatorOptions;
   useEffect(() => {
     if (item) {
       if (item?.moderation) {
         if (item?.moderation?.flag === 'hidden') {
           setActions(['Show']);
+          setIconName('show');
         }
       }
     }
@@ -71,7 +73,7 @@ const CommonProfileOptions = ({
                 style={styles.optionBtn}
                 onPress={() => onAction(actions[0])}>
                 <Icon
-                  name="hidden"
+                  name={iconName}
                   style={layout.marginRightS}
                   color={colors.error}
                 />

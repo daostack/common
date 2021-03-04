@@ -372,6 +372,7 @@ const Discussions = ({
         setShowModerationModal={() => setShowModerationModal(false)}
         moderationFormStore={moderationFormStore}
         onReportContent={() => onReportContent()}
+        hasPermission={hasPermission}
       />
       <ModerationActionSuccessModal
         type={'comment'}

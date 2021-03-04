@@ -828,6 +828,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         setShowModerationModal={() => setShowModerationModal(false)}
         moderationFormStore={moderationFormStore}
         onReportContent={() => onReportContent()}
+        hasPermission={hasPermission}
       />
       <ModerationActionSuccessModal
         type={getType(moderationType)}
