@@ -16,6 +16,8 @@ import {fetchDiscussionId} from './ListServices/DiscussionListService';
 import {getUserById} from './ListServices/UserListService';
 import AsyncStorage from '@react-native-community/async-storage';
 
+export const TODELETE = 'To Delete';
+
 export default class NotificationService {
   static async saveTokenToDatabase() {
     if (auth().currentUser === null) {
@@ -110,20 +112,26 @@ export default class NotificationService {
             let common;
             let proposal;
             let user;
+            let dataProperlyLoaded = false;
+
             if (data.eventObjectId) {
               switch (data.eventType) {
                 case EventTypeState.commonWhitelisted:
                 case EventTypeState.commonCreated:
                   common = await fetchCommonById(data.eventObjectId);
-                  user = await getUserById(common.members[0].userId);
-
-                  data = {
-                    ...data,
-                    descriptionBold: `"${common.name}"`,
-                    description: ' - You might want to check it out.',
-                    ownerAvatar: user.photoURL,
-                    common,
-                  };
+                  if (common) {
+                    user = await getUserById(common.members[0].userId);
+                    if (user) {
+                      data = {
+                        ...data,
+                        descriptionBold: `"${common.name}"`,
+                        description: ' - You might want to check it out.',
+                        ownerAvatar: user.photoURL,
+                        common,
+                      };
+                      dataProperlyLoaded = true;
+                    }
+                  }
 
                   break;
 
@@ -132,54 +140,64 @@ export default class NotificationService {
                 case EventTypeState.fundingRequestExecuted:
                 case EventTypeState.fundingRequestRejected:
                   proposal = await getProposalById(data.eventObjectId);
-                  common = await fetchCommonById(proposal.commonId);
-                  user = await getUserById(proposal.proposerId);
+                  if (proposal) {
+                    common = await fetchCommonById(proposal.commonId);
+                    user = await getUserById(proposal.proposerId);
+                    if (common && user) {
+                      data = {
+                        ...data,
+                        descriptionBold: `"${proposal.description.title}"`,
+                        description: ` (${
+                          proposal.fundingRequest.amount / 100
+                        }$ requested)`,
+                        commonName: common.name,
+                        ownerAvatar: user.photoURL,
+                        proposal,
+                      };
 
-                  data = {
-                    ...data,
-                    descriptionBold: `"${proposal.description.title}"`,
-                    description: ` (${
-                      proposal.fundingRequest.amount / 100
-                    }$ requested)`,
-                    commonName: common.name,
-                    ownerAvatar: user.photoURL,
-                    proposal,
-                  };
-
-                  if (data.eventType === EventTypeState.fundingRequestCreated) {
-                    data = {
-                      ...data,
-                      header: ' by',
-                      headerBold: ` "${user.displayName}"`,
-                    };
+                      if (
+                        data.eventType === EventTypeState.fundingRequestCreated
+                      ) {
+                        data = {
+                          ...data,
+                          header: ' by',
+                          headerBold: ` "${user.displayName}"`,
+                        };
+                      }
+                      dataProperlyLoaded = true;
+                    }
                   }
+
                   break;
 
                 case EventTypeState.messageCreated:
                   const message = await fetchMessageById(data.eventObjectId);
-                  const discussion = await fetchDiscussionId(
-                    message.discussionId,
-                  );
+                  if (message) {
+                    const discussion = await fetchDiscussionId(
+                      message.discussionId,
+                    );
 
-                  data = {
-                    ...data,
-                    descriptionBold: `${message.ownerName}`,
-                    description: ` ${message.text}`,
-                    ownerAvatar: message.ownerAvatar,
-                    discussion: {...discussion, id: message.discussionId},
-                  };
+                    data = {
+                      ...data,
+                      descriptionBold: `${message.ownerName}`,
+                      description: ` ${message.text}`,
+                      ownerAvatar: message.ownerAvatar,
+                      discussion: {...discussion, id: message.discussionId},
+                    };
 
-                  if (discussion && discussion.commonId) {
-                    common = await fetchCommonById(discussion.commonId);
+                    if (discussion && discussion.commonId) {
+                      common = await fetchCommonById(discussion.commonId);
 
-                    if (common && common.name) {
-                      data = {
-                        ...data,
-                        header: ' on',
-                        headerBold: ` "${discussion.title}"`,
-                        commonName: common.name,
-                        commonId: discussion.commonId,
-                      };
+                      if (common && common.name) {
+                        data = {
+                          ...data,
+                          header: ' on',
+                          headerBold: ` "${discussion.title}"`,
+                          commonName: common.name,
+                          commonId: discussion.commonId,
+                        };
+                        dataProperlyLoaded = true;
+                      }
                     }
                   }
 
@@ -187,56 +205,75 @@ export default class NotificationService {
 
                 case EventTypeState.requestToJoinAccepted:
                   proposal = await getProposalById(data.eventObjectId);
-                  common = await fetchCommonById(proposal.commonId);
-                  user = await getUserById(proposal.proposerId);
+                  if (proposal) {
+                    common = await fetchCommonById(proposal.commonId);
+                    user = await getUserById(proposal.proposerId);
 
-                  data = {
-                    ...data,
-                    description: ' Congrats! You are now a member!',
-                    ownerAvatar: user.photoURL,
-                    commonName: common.name,
-                    proposal,
-                  };
+                    if (common && user) {
+                      data = {
+                        ...data,
+                        description: ' Congrats! You are now a member!',
+                        ownerAvatar: user.photoURL,
+                        commonName: common.name,
+                        proposal,
+                      };
+                      dataProperlyLoaded = true;
+                    }
+                  }
 
                   break;
 
                 case EventTypeState.requestToJoinCreated:
                   proposal = await getProposalById(data.eventObjectId);
-                  common = await fetchCommonById(proposal.commonId);
-                  user = await getUserById(proposal.proposerId);
+                  if (proposal) {
+                    common = await fetchCommonById(proposal.commonId);
+                    user = await getUserById(proposal.proposerId);
 
-                  data = {
-                    ...data,
-                    description: ' You are asking to be a common member',
-                    ownerAvatar: user.photoURL,
-                    commonName: common.name,
-                    proposal,
-                  };
+                    if (common && user) {
+                      data = {
+                        ...data,
+                        description: ' You are asking to be a common member',
+                        ownerAvatar: user.photoURL,
+                        commonName: common.name,
+                        proposal,
+                      };
+                      dataProperlyLoaded = true;
+                    }
+                  }
 
                   break;
 
                 case EventTypeState.requestToJoinRejected:
                   proposal = await getProposalById(data.eventObjectId);
-                  common = await fetchCommonById(proposal.commonId);
-                  user = await getUserById(proposal.proposerId);
+                  if (proposal) {
+                    common = await fetchCommonById(proposal.commonId);
+                    user = await getUserById(proposal.proposerId);
 
-                  data = {
-                    ...data,
-                    description:
-                      " Don't give up, there are plenty of other Commons you can join.",
-                    ownerAvatar: user.photoURL,
-                    commonName: common.name,
-                    proposal,
-                  };
+                    if (common && user) {
+                      data = {
+                        ...data,
+                        description:
+                          " Don't give up, there are plenty of other Commons you can join.",
+                        ownerAvatar: user.photoURL,
+                        commonName: common.name,
+                        proposal,
+                      };
+                      dataProperlyLoaded = true;
+                    }
+                  }
                   break;
               }
             }
 
-            return data;
+            if (dataProperlyLoaded) {
+              return data;
+            } else {
+              return TODELETE;
+            }
           }),
         );
 
-        return resultFormatted;
+        return resultFormatted.filter((item) => item !== TODELETE);
       })
       .catch((error) => console.log(error));
   }
