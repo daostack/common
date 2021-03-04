@@ -19,14 +19,12 @@ const CommonProfileOptions = ({
   const [actions, setActions] = useState(
     moderatorOptions.actions || ['Hide', 'Report'],
   );
-  const [actionColor, setActionColor] = useState(text.buttonred);
   const {item} = moderatorOptions;
   useEffect(() => {
     if (item) {
       if (item?.moderation) {
         if (item?.moderation?.flag === 'hidden') {
           setActions(['Show']);
-          setActionColor(text.buttonblack);
         }
       }
     }
@@ -77,7 +75,7 @@ const CommonProfileOptions = ({
                   style={layout.marginRightS}
                   color={colors.error}
                 />
-                <Text style={actionColor}>{actions[0]}</Text>
+                <Text style={text.buttonred}>{actions[0]}</Text>
               </TouchableOpacity>
             )}
             {actions[1] && (
@@ -89,7 +87,7 @@ const CommonProfileOptions = ({
                   style={layout.marginRightS}
                   color={colors.error}
                 />
-                <Text style={actionColor}>{actions[1]}</Text>
+                <Text style={text.buttonred}>{actions[1]}</Text>
               </TouchableOpacity>
             )}
           </>
