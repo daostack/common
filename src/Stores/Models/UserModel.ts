@@ -12,6 +12,8 @@ export const userInfoFields = [
   'updatedAt',
   'createdAt',
   'intro',
+  'country',
+  'roles',
 ];
 export class UserModel extends BaseModel<IUserEntity> {
   @observable
@@ -30,20 +32,19 @@ export class UserModel extends BaseModel<IUserEntity> {
   lastName: string = '';
 
   @observable
-  createdAt: Date | null = null;
+  country: string = '';
 
-  @observable
-  updatedAt: Date | null = null;
-
-  @observable
   intro: string = '';
 
   // That field is used only in the commonMembers list
   @observable
   joinedAt?: Date | null = null;
 
+  @observable
+  roles: Array<object> = [];
+
   constructor(newUserInfo: IUserEntity) {
-    super();
+    super(newUserInfo);
     // Filter the provided newUserInfo values in order to be sure there are no extra data.
     // Currently there are users with displayName prop in the DB,
     // but here the displayName is computed field which can't be assigned a value to.
@@ -52,6 +53,7 @@ export class UserModel extends BaseModel<IUserEntity> {
       userInfoFields,
     ) as IUserEntity;
 
+    this.roles = newUserInfo.roles;
     this.setUser(filteredUser);
   }
 

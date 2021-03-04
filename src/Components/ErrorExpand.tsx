@@ -45,8 +45,8 @@ export const ErrorExpand: React.FC<PropTypes.InferProps<typeof propTypes> & IPro
 
     if (typeof bottomSheetStore === 'object') {
       showDetails
-        ? bottomSheetStore.increseTopSnap(layout.height - containerHeight)
-        : bottomSheetStore.decreseTopSnap(containerHeight - layout.height);
+        ? bottomSheetStore.increaseTopSnap(layout.height - containerHeight)
+        : bottomSheetStore.decreaseTopSnap(containerHeight - layout.height);
     }
 
     if (typeof props.onLayout === 'function') {

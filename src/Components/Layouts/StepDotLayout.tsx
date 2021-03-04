@@ -23,12 +23,15 @@ import NavigationBar from 'react-native-navbar';
 import Icon from '~/Assets/iconfont/Icon';
 import StepDotHeader from './StepDotHeader';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import {uiStorePropTypes} from '~/Types/propTypes';
 // import UseAcknowledgment from '../../../Components/Proposals/UseAcknowledgment';
 const {width} = Dimensions.get('window');
 
 const props = {
   closeDialog: func,
-  navigation: object,
+  navigation: shape({
+    popToTop: func.isRequired,
+  }).isRequired,
   stepDotHeaderTitle: string,
   navTitle: string,
   currentIndex: number,
@@ -43,10 +46,7 @@ const props = {
   requestStepActionButton: object,
   layoutTitle: object,
   children: object,
-  bottomSheetStore: shape({
-    showBottomSheet: func,
-    hideBottomSheet: func,
-  }),
+  uiStore: uiStorePropTypes.isRequired,
   onContentSizeChange: func,
 };
 
@@ -96,7 +96,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
   appendedArea,
   children,
   layoutTitle,
-  bottomSheetStore,
+  uiStore,
   onContentSizeChange,
 }) => {
   const [headerHeight, setHeaderHeight] = useState(new Animated.Value(0));
@@ -114,14 +114,17 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
   }, [scrollY]);
 
   const closeDialog = () => {
-    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
-      navigation: navigation,
-      onContinueEditing: () => bottomSheetStore.hideBottomSheet(),
-      onLeaveWithoutSaving: () => {
-        bottomSheetStore.hideBottomSheet();
-        navigation.popToTop();
+    uiStore.bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES,
+      {
+        navigation: navigation,
+        onContinueEditing: () => uiStore.bottomSheetStore.hideBottomSheet(),
+        onLeaveWithoutSaving: () => {
+          uiStore.bottomSheetStore.hideBottomSheet();
+          navigation.popToTop();
+        },
       },
-    });
+    );
   };
 
   const currDotInfo = isRequestToJoin
@@ -214,4 +217,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(StepDotLayout);
+export default inject('uiStore')(StepDotLayout);

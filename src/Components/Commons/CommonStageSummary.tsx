@@ -7,12 +7,11 @@ import Icon from '~/Assets/iconfont/Icon';
 import ModalConversion from './ModalConversion';
 import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
 import {inject, observer} from 'mobx-react';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
 const props = {
   isCommonCard: bool,
-  userStore: shape({
-    conversionRate: number,
-  }),
+  uiStore: uiStorePropTypes.isRequired,
   commonProgressInfo: shape({
     time: number,
     activeProposals: number,
@@ -26,7 +25,7 @@ const props = {
 const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
   isCommonCard,
   commonProgressInfo: {raised, balance, members},
-  userStore: {conversionRate},
+  uiStore,
 }) => {
   // const deadlineMoment = moment.unix(time);
   // const deadlineHasPassed = moment().isAfter(deadlineMoment);
@@ -99,7 +98,7 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
           isCommonCard ? 'Raised' : 'Available funds',
           convertAmountToIls(
             isCommonCard ? raised / 100 : balance / 100,
-            conversionRate,
+            uiStore.conversionRate,
           ),
         )}
         {commonNumberBox(
@@ -156,4 +155,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(CommonStageSummary));
+export default inject('uiStore')(observer(CommonStageSummary));

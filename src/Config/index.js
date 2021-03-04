@@ -73,6 +73,9 @@ export const commonsUrl = () => functionEndpoint('commons');
 export const metadataUrl = () => functionEndpoint('metadata');
 export const proposalsUrl = () => functionEndpoint('proposals');
 export const votesUrl = () => functionEndpoint('votes');
+export const discussionsUrl = () => functionEndpoint('discussions');
+export const permissionsUrl = () => functionEndpoint('permissions');
+export const moderationUrl = () => functionEndpoint('moderation');
 
 export const circlePayUrl = () => functionEndpoint('circlepay');
 export const web3ProviderUrl = web3Provider;

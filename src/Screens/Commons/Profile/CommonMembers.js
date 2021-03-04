@@ -14,9 +14,10 @@ import {TabView} from 'react-native-tab-view';
 import ProposalsList from '../../Proposals/ProposalsList';
 import CommonMembersList from './CommonMembersList';
 import CommonTabBar from '../../CommonTabBar';
-import {string, func, array, object, shape} from 'prop-types';
+import {string, func, array, object, shape, bool} from 'prop-types';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import {observer, inject} from 'mobx-react';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const initialLayout = {width: Dimensions.get('window').width};
 const getTabName = (objectName, count) =>
@@ -26,7 +27,13 @@ const Members = ({navigation, commonId}) => (
   <CommonMembersList navigation={navigation} commonId={commonId} />
 );
 
-const Pending = ({navigation, commonId}) => (
+const Pending = ({
+  navigation,
+  commonId,
+  hasPermission,
+  openCommonOptions,
+  showHiddenNote,
+}) => (
   <View style={layout.content}>
     <ProposalsList
       navigation={navigation}
@@ -35,6 +42,11 @@ const Pending = ({navigation, commonId}) => (
         stage: PROPOSAL_STAGE.Active,
         type: PROPOSAL_TYPE.Join,
       }}
+      hasPermission={hasPermission}
+      openCommonOptions={(requestToJoin) => openCommonOptions(requestToJoin)}
+      showHiddenNote={(hiddenRequestToJoin) =>
+        showHiddenNote(hiddenRequestToJoin)
+      }
     />
   </View>
 );
@@ -52,13 +64,16 @@ const History = ({navigation, commonId}) => (
   </View>
 );
 
-const CommonMembers = ({
-  navigation,
-  route: router,
-  proposalStore,
-  commonStore,
-}) => {
-  const {commonId} = router.params;
+const CommonMembers = ({navigation, route: router, rootStore}) => {
+  const proposalStore = rootStore.proposalStore;
+  const commonStore = rootStore.commonStore;
+
+  const {
+    commonId,
+    hasPermission,
+    openCommonOptions,
+    showHiddenNote,
+  } = router.params;
   const [index, setIndex] = useState(0);
   const pendingCount = proposalStore.getCommonProposals(commonId, {
     stage: PROPOSAL_STAGE.Active,
@@ -84,7 +99,15 @@ const CommonMembers = ({
       case 'members':
         return <Members navigation={navigation} commonId={commonId} />;
       case 'pending':
-        return <Pending navigation={navigation} commonId={commonId} />;
+        return (
+          <Pending
+            navigation={navigation}
+            commonId={commonId}
+            hasPermission={hasPermission}
+            openCommonOptions={openCommonOptions}
+            showHiddenNote={showHiddenNote}
+          />
+        );
       case 'history':
         return <History navigation={navigation} commonId={commonId} />;
       default:
@@ -132,6 +155,9 @@ Pending.propTypes = {
   navigation: object,
   commonId: string,
   onProposalsCountChange: func,
+  hasPermission: bool,
+  openCommonOptions: func,
+  showHiddenNote: func,
 };
 
 History.propTypes = {
@@ -148,12 +174,7 @@ CommonMembers.propTypes = {
       commonId: string,
     }),
   }),
-  proposalStore: shape({
-    getCommonProposals: func,
-  }),
-  commonStore: shape({
-    getCommonById: func,
-  }),
+  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -186,4 +207,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('proposalStore', 'commonStore')(observer(CommonMembers));
+export default inject('rootStore')(observer(CommonMembers));

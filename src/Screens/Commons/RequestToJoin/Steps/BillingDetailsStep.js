@@ -16,6 +16,7 @@ import {VALIDATION_RULES} from '~/FormStores/ValidationRules/billingDetailsRules
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
+import {authStorePropTypes} from '~/Types/propTypes';
 
 const AUTOFILL = {
   ios: {
@@ -32,8 +33,7 @@ const AUTOFILL = {
   },
 };
 
-
-const BillingDetailsStep = ({navigation, route, userStore}) => {
+const BillingDetailsStep = ({navigation, route, authStore}) => {
   const {
     skipFirstStep,
     currCommon,
@@ -50,13 +50,11 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
   const isMonthly = currCommon.metadata.contributionType === 'monthly';
 
   const getUserFullName = () => {
-    const name = billingDetailsFormStore.getFormField(
-      BillingDetailsConstants.City,
-    )?.value || userStore.userInfo.displayName;
+    const name =
+      billingDetailsFormStore.getFormField(BillingDetailsConstants.City)
+        ?.value || authStore.userInfo.displayName;
 
-    return new RegExp(/^[a-zA-Z'’. ]*$/).test(name)
-      ? name
-      : '';
+    return new RegExp(/^[a-zA-Z'’. ]*$/).test(name) ? name : '';
   };
 
   const navigateToPaymentDetailsStep = () => {
@@ -117,11 +115,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
         <TextInputField
           editable
           label="Name on Card"
-          value={
-            testCard
-              ? 'Thor Odinson'
-              : getUserFullName()
-          }
+          value={testCard ? 'Thor Odinson' : getUserFullName()}
           autoCapitalize="words"
           autofill={AUTOFILL[Platform.OS].name}
           validation={{
@@ -151,10 +145,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
           validation={{
             name: BillingDetailsConstants.City,
             formStore: billingDetailsFormStore,
-            validateRule: [
-              'required',
-              VALIDATION_RULES.LATIN_ONLY,
-            ],
+            validateRule: ['required', VALIDATION_RULES.LATIN_ONLY],
             displayName: 'city',
           }}
         />
@@ -208,11 +199,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
             validation={{
               name: BillingDetailsConstants.District,
               formStore: billingDetailsFormStore,
-              validateRule: [
-                'required',
-                'min:2',
-                VALIDATION_RULES.LATIN_ONLY,
-              ],
+              validateRule: ['required', 'min:2', VALIDATION_RULES.LATIN_ONLY],
               displayName: 'district',
             }}
           />
@@ -269,7 +256,7 @@ const BillingDetailsStep = ({navigation, route, userStore}) => {
 
 BillingDetailsStep.propTypes = {
   navigation: object,
-  userStore: object,
+  authStore: authStorePropTypes,
   route: shape({
     params: shape({
       skipFirstStep: bool,
@@ -287,4 +274,4 @@ BillingDetailsStep.propTypes = {
   }),
 };
 
-export default inject('userStore')(BillingDetailsStep);
+export default inject('authStore')(BillingDetailsStep);

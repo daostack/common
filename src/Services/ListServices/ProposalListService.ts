@@ -93,11 +93,19 @@ export const subscribeToProposalList = (
 
   return proposalListQuery.onSnapshot(
     (snapshot: IFirebaseSnapshot<IProposalEntity>) => {
-      if (snapshot) {
-        listChangeCallback(snapshot);
-      } else {
-        console.log('!!! NULL SNAPSHOT RETURNED in PROPOSAL on SNAPSHOT !!!');
-      }
+      listChangeCallback(snapshot);
     },
   );
+};
+
+export const getProposalById = async (
+  proposalId: string,
+): Promise<IProposalEntity> => {
+  if (!proposalId) {
+    throw new Error(
+      'Proposal Id (proposalId) is required parameter, but it was not provided',
+    );
+  }
+  const proposal = await ProposalsCollection.doc(proposalId).get();
+  return proposal.data() as IProposalEntity;
 };

@@ -2,10 +2,11 @@ import React from 'react';
 import {View, Image, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {text, layout, font, colors} from '../../Theme';
 import {inject, observer} from 'mobx-react';
-import {object, string} from 'prop-types';
+import {string} from 'prop-types';
 import {PROPOSAL_PAYMENT_STATE} from '~/Util/constants';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
-const PaymentFailed = ({bottomSheetStore, proposerName, paymentState}) => (
+const PaymentFailed = ({uiStore, proposerName, paymentState}) => (
   <View style={styles.container}>
     <View style={styles.body}>
       <Image source={require('../../Assets/closed.png')} style={styles.image} />
@@ -33,7 +34,7 @@ const PaymentFailed = ({bottomSheetStore, proposerName, paymentState}) => (
 
       <TouchableOpacity
         style={styles.dismissButton}
-        onPress={() => bottomSheetStore.hideBottomSheet()}>
+        onPress={() => uiStore.bottomSheetStore.hideBottomSheet()}>
         <Text style={styles.continueEditButtonTxt}>OK</Text>
       </TouchableOpacity>
     </View>
@@ -41,7 +42,7 @@ const PaymentFailed = ({bottomSheetStore, proposerName, paymentState}) => (
 );
 
 PaymentFailed.propTypes = {
-  bottomSheetStore: object,
+  uiStore: uiStorePropTypes,
   proposerName: string,
   paymentState: string,
 };
@@ -101,4 +102,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(observer(PaymentFailed));
+export default inject('uiStore')(observer(PaymentFailed));

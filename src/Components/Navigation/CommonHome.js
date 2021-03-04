@@ -1,15 +1,15 @@
 import React from 'react';
 import {colors} from '~/Theme';
 import {CommonsList, UserProfile} from '~/Screens';
-import {Platform} from 'react-native';
-import {object} from 'prop-types';
+import {Image, Platform} from 'react-native';
 
-import {inject, observer} from 'mobx-react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
 import Icon from '~/Assets/iconfont/Icon';
+import NotificationList from '~/Screens/Notifications/NotificationList';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
-const CommonHome = ({userStore}) => (
+const CommonHome = () => (
   <Tab.Navigator
     // initialRouteName="My feed"
     initialRouteName="Explore"
@@ -17,17 +17,35 @@ const CommonHome = ({userStore}) => (
     screenOptions={({route}) => ({
       tabBarIcon: ({focused}) => {
         switch (route.name) {
-          case 'Explore': {
+          case NAVIGATION_SCREENS.EXPLORE: {
             if (focused) {
               return <Icon name="commons-selected" size={30} />;
             }
             return <Icon name="commons" size={30} />;
           }
-          default: {
+          case NAVIGATION_SCREENS.PROFILE: {
             if (focused) {
               return <Icon name="account-selected" size={30} />;
             }
             return <Icon name="account" size={30} />;
+          }
+          case NAVIGATION_SCREENS.NOTIFICATIONS: {
+            if (focused) {
+              return (
+                <Image
+                  source={require('~/Assets/notificationsSelected.png')}
+                  width={30}
+                  height={30}
+                />
+              );
+            }
+            return (
+              <Image
+                source={require('~/Assets/notificationsUnselected.png')}
+                width={30}
+                height={30}
+              />
+            );
           }
         }
       },
@@ -44,13 +62,13 @@ const CommonHome = ({userStore}) => (
         height: Platform.OS === 'ios' ? 100 : 60,
       },
     }}>
-    <Tab.Screen name="Explore" component={CommonsList} />
-    <Tab.Screen name="Profile" component={UserProfile} />
+    <Tab.Screen name={NAVIGATION_SCREENS.EXPLORE} component={CommonsList} />
+    <Tab.Screen name={NAVIGATION_SCREENS.PROFILE} component={UserProfile} />
+    <Tab.Screen
+      name={NAVIGATION_SCREENS.NOTIFICATIONS}
+      component={NotificationList}
+    />
   </Tab.Navigator>
 );
 
-CommonHome.propTypes = {
-  userStore: object.isRequired,
-};
-
-export default inject('userStore')(observer(CommonHome));
+export default CommonHome;

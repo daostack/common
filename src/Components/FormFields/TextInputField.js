@@ -114,7 +114,7 @@ class TextInputField extends React.Component {
     let defaultMultilineProps = {minHeight: 48};
     const autoComplete = Platform.OS === 'ios' ? {'textContentType': autofill} : {'autoCompleteType': autofill};
 
-    styleTextfield = formStore.getFormField(name, multiName).error
+    styleTextfield = formStore.getFormField(name, multiName)?.error
       ? {...styles.textfieldContainer, ...{borderColor: colors.error}}
       : {
           ...styles.textfieldContainer,
@@ -136,7 +136,7 @@ class TextInputField extends React.Component {
       validation
         ? validation.formStore
             .getFormField(validation.name, validation.multiName)
-            .value.toString()
+            ?.value?.toString()
         : value;
 
     return (

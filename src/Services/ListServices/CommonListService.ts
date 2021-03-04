@@ -1,8 +1,12 @@
 import {CommonsCollection} from '~/Firebase/Databasee/Collections/CommonsCollection';
 import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 
+import {axiosCommonClient} from '../util/AxiosClient';
+import {auth} from '~/Firebase';
+import {IFirebaseSnapshot} from '~/Firebase/types';
+
 export type commonListLoadCallbackFn = (
-  updatedCommonList: Array<ICommonEntity>,
+  updatedCommonList: IFirebaseSnapshot<ICommonEntity>,
 ) => void;
 export type commonLoadCallbackFn = (
   updatedCommonList: ICommonEntity | null,
@@ -10,39 +14,31 @@ export type commonLoadCallbackFn = (
 
 export const subscribeToAllCommons = (callback: commonListLoadCallbackFn) =>
   CommonsCollection.onSnapshot((snapshot: any) => {
-    let commonList = [];
-
-    // TODO: Make better handling of changes with docChanges()
-    if (!snapshot?.empty || !snapshot) {
-      commonList = snapshot.docs.map((doc: any) => doc.data() as ICommonEntity);
-    }
-
-    callback(commonList);
+    callback(snapshot);
   });
 
-// export const subscribeToCommon = (
-//   uid: string,
-//   callback: commonLoadCallbackFn,
-// ) =>
-//   CommonsCollection.doc(uid).onSnapshot((snapshot: any) => {
-//     let common: ICommonEntity | null = null;
+export const updateCommon = async (updateCommonInfo: Partial<ICommonEntity>) =>
+  await axiosCommonClient.getCommonClient().post(
+    axiosCommonClient.getCommonEndpoints().update,
+    {
+      commonId: updateCommonInfo.id,
+      changes: updateCommonInfo,
+    },
+    {
+      headers: {
+        Authorization: await auth().currentUser.getIdToken(true),
+      },
+    },
+  );
 
-//     // TODO: Make better handling of changes with docChanges()
-//     if (!snapshot?.empty || !snapshot) {
-//       common = snapshot.data() as ICommonEntity;
-//     }
-
-//     callback(common);
-//   });
-
-// export const getCommonById = async (
-//   commonId: string,
-// ): Promise<ICommonEntity> => {
-//   if (!commonId) {
-//     throw new Error(
-//       'Method getCommonById has a required param commonId, but it was not provided',
-//     );
-//   }
-//   const common = await CommonsCollection.doc(commonId).get();
-//   return common.data() as ICommonEntity;
-// };
+export const fetchCommonById = async (
+  commonId: string,
+): Promise<ICommonEntity> => {
+  if (!commonId) {
+    throw new Error(
+      'Common Id (commonId) is required parameter, but it was not provided',
+    );
+  }
+  const common = await CommonsCollection.doc(commonId).get();
+  return common.data() as ICommonEntity;
+};

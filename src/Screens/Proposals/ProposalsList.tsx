@@ -19,7 +19,8 @@ import {Proposal} from '~/Stores/Models/Proposal';
 import {
   isTypeFilterJoin,
   isStageFilterHistory,
-} from '~/Stores/ListStore/ProposalStore';
+} from '~/Stores/DataStores/ProposalStore';
+import {proposalStorePropTypes} from '~/Types/propTypes';
 
 const {width, height} = Dimensions.get('window');
 
@@ -43,12 +44,12 @@ const props = {
   }),
   showMax: number,
   isSwiper: bool,
+  hasPermission: bool,
+  openCommonOptions: func.isRequired,
+  showHiddenNote: func.isRequired,
 
   // Injected
-  proposalStore: shape({
-    getCommonProposals: func.isRequired,
-    getUserProposals: func.isRequired,
-  }).isRequired,
+  proposalStore: proposalStorePropTypes.isRequired,
 };
 
 const ProposalsList: React.FC<InferProps<typeof props>> = observer(
@@ -60,6 +61,9 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     commonInfo,
     userInfo,
     proposalStore,
+    hasPermission,
+    openCommonOptions,
+    showHiddenNote,
   }) => {
     let list: Proposal[] = [];
     if (commonInfo) {
@@ -78,6 +82,9 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
             isSwiper={true}
             commonInfo={commonInfo}
             navigation={navigation}
+            hasPermission={hasPermission}
+            openCommonOptions={() => openCommonOptions(item)}
+            hiddenProposalNote={() => showHiddenNote(item)}
           />
         ) : (
           <TouchableOpacity
@@ -101,6 +108,9 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
           isSwiper={false}
           commonInfo={commonInfo}
           navigation={navigation}
+          hasPermission={hasPermission}
+          openCommonOptions={() => openCommonOptions(item)}
+          hiddenProposalNote={() => showHiddenNote(item)}
         />
       );
 
@@ -166,8 +176,8 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
               isStageFilterHistory(proposalFilter.stage)
                 ? 'You will be able to see proposals that passed or were rejected here.'
                 : isTypeFilterJoin(proposalFilter.type)
-                  ? 'There are no pending membership requests at the moment, check again later.'
-                  : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
+                ? 'There are no pending membership requests at the moment, check again later.'
+                : 'Propose actions or request funding by creating proposals. The Common members will vote and decide to accept or reject them.'
             }
           />
         )}

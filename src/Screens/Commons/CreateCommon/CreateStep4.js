@@ -23,9 +23,11 @@ import {object, shape} from 'prop-types';
 import DaoService from '~/Services/DaoService';
 import CommonImage from '~/Components/Commons/CommonImage';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
+import {escapeUrl} from '~/Util';
 
 import {colors, font, text, layout, sizeM, sizeL} from '~/Theme';
 import logger from '~/Services/Logger';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const {width} = Dimensions.get('window');
 const CONTRIBUTION = {
@@ -38,13 +40,12 @@ const CreateStep4 = ({
     params: {formStores},
   },
   navigation,
-  bottomSheetStore,
-  userStore: {
-    userInfo: {uid},
-  },
+  rootStore,
 }) => {
-  const [newCommonAddress, setNewCommonAddress] = useState(false);
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  const authStore = rootStore.authStore;
 
+  const [newCommonAddress, setNewCommonAddress] = useState(false);
   const generalInfoFormStore = formStores.generalInfoFormStore;
   const fundingFormStore = formStores.fundingFormStore;
   const agendaFormStore = formStores.agendaFormStore;
@@ -88,7 +89,7 @@ const CreateStep4 = ({
 
       const data = {
         ...formDataInit,
-        founderId: uid,
+        founderId: authStore.userInfo?.uid,
         minFeeToJoin: contributionAmount,
         contributionAmount,
         contributionType: formDataInit.contribution,
@@ -101,7 +102,7 @@ const CreateStep4 = ({
         name: data.name,
         image: data.image,
         rules: data.rules,
-        links: data.links,
+        links: escapeUrl(data.links),
         byline: data.byline,
         description: data.description,
         contributionType: data.contributionType,
@@ -304,8 +305,7 @@ const CreateStep4 = ({
 
 CreateStep4.propTypes = {
   navigation: object,
-  bottomSheetStore: object,
-  userStore: object,
+  rootStore: rootStorePropTypes,
   route: shape({
     params: shape({
       formStores: shape({
@@ -414,4 +414,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore', 'userStore')(observer(CreateStep4));
+export default inject('rootStore')(observer(CreateStep4));

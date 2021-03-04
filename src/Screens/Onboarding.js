@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState, useRef} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -16,8 +16,13 @@ import AsyncStorage from '@react-native-community/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import logger from '../Services/Logger';
 import {object} from 'prop-types';
+import {NAVIGATION_SCREENS} from '../Util/constants/routes.enum';
+
+const ONBOARDING_SLIDERS_AMOUNT = 3;
 
 const Onboarding = ({navigation}) => {
+  const ref = useRef(null);
+  const [index, setIndex] = useState(0);
   const _onboardingClick = async () => {
     try {
       await AsyncStorage.setItem('onboarded', 'true');
@@ -27,7 +32,7 @@ const Onboarding = ({navigation}) => {
           index: 1,
           routes: [
             {
-              name: 'CommonHome',
+              name: NAVIGATION_SCREENS.COMMON_HOME,
               params: {user: 'jane'},
             },
           ],
@@ -37,6 +42,16 @@ const Onboarding = ({navigation}) => {
       logger.log(e);
     }
   };
+
+  const onPress = () => {
+    if (index === ONBOARDING_SLIDERS_AMOUNT) {
+      _onboardingClick(navigation);
+    } else {
+      ref.current.scrollBy(1);
+      setIndex(index + 1);
+    }
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -49,10 +64,12 @@ const Onboarding = ({navigation}) => {
             />
           </View>
           <Swiper
+            ref={ref}
             loadMinimal={true}
             style={styles.wrapper}
             showsButtons={false}
             activeDotColor={colors.mainBlue}
+            onIndexChanged={(slideIndex) => setIndex(slideIndex)}
             paginationStyle={{bottom: 0}}>
             <View style={styles.slide1}>
               <Image
@@ -106,8 +123,8 @@ const Onboarding = ({navigation}) => {
           <View style={styles.buttonConatiner}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => _onboardingClick(navigation)}>
-              <Text style={styles.buttonText}>Get started</Text>
+              onPress={onPress}>
+              <Text style={styles.buttonText}>{index === ONBOARDING_SLIDERS_AMOUNT ? 'Get started' : 'Continue' }</Text>
             </TouchableOpacity>
           </View>
         </View>

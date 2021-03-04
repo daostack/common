@@ -22,7 +22,7 @@ import Toast from '~/Util/Toast';
 import CodePush from 'react-native-code-push';
 import Config from 'react-native-config';
 import {isProduction} from '~/Config';
-
+import {string, object, shape} from 'prop-types';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -30,8 +30,9 @@ import {
   Fade,
 } from 'rn-placeholder';
 import logger from '../../Services/Logger';
+import {authStorePropTypes} from '~/Types/propTypes';
 
-const UserProfile = ({userStore, navigation, route}) => {
+const UserProfile = ({authStore, navigation, route}) => {
   //const [editMode, setEditMode] = useState(false);
 
   const [codePushVersion, setCodePushVersion] = useState('');
@@ -58,7 +59,7 @@ const UserProfile = ({userStore, navigation, route}) => {
           text: 'OK',
           onPress: async () => {
             // That loading status will be changed to false in the onAuthStateChanged method in App.js
-            userStore.setIsLoading(true);
+            authStore.setIsLoading(true);
 
             await AuthService.getInstance().signOut();
           },
@@ -66,18 +67,19 @@ const UserProfile = ({userStore, navigation, route}) => {
       ]);
     } catch (error) {
       await AuthService.getInstance().clearGoogleSignInCache();
-      userStore.setIsLoading(false);
+      authStore.setIsLoading(false);
       Toast.error(error?.toString());
       logger.log('SignOut Error -> ', error);
     }
   };
 
-  const onUserSignedIn = (isNewUser) => {
+  const onUserSignedIn = (isNewUser, isSignedWithApple = false) => {
     if (navigation && isNewUser) {
       const navigate = CommonActions.navigate({
         name: 'EditProfile',
         params: {
           isFirstOpening: true,
+          isSignedWithApple,
         },
       });
       navigation.dispatch(navigate);
@@ -100,7 +102,7 @@ const UserProfile = ({userStore, navigation, route}) => {
     />
   );
 
-  const currUserId = route.params?.userId || userStore.userInfo?.uid;
+  const currUserId = route.params?.userId || authStore.userInfo?.uid;
 
   const renderScreen = () => (
     <React.Fragment>
@@ -118,7 +120,7 @@ const UserProfile = ({userStore, navigation, route}) => {
               : renderUnsignedUserData()}
           </View>
           {!route.params?.userId ||
-          route.params.userId === userStore.userInfo?.uid ? (
+          route.params.userId === authStore.userInfo?.uid ? (
             <>
               <View style={layout.marginTopL}>
                 {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
@@ -138,7 +140,7 @@ const UserProfile = ({userStore, navigation, route}) => {
                   onPress={() => Linking.openURL('mailto:hi@common.io')}
                   title="Contact us"
                 />
-                {userStore.userInfo && (
+                {authStore.userInfo && (
                   <React.Fragment>
                     <AccordionBtn
                       title="Monthly Contributions"
@@ -229,7 +231,18 @@ const UserProfile = ({userStore, navigation, route}) => {
       </Placeholder>
     </ScrollView>
   );
-  return userStore.isLoading ? renderScreenLoader() : renderScreen();
+  return authStore.isLoading ? renderScreenLoader() : renderScreen();
+};
+
+UserProfile.propTypes = {
+  route: shape({
+    params: shape({
+      userId: string,
+      userInfo: object,
+    }),
+  }),
+  navigation: object,
+  authStore: authStorePropTypes.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -310,4 +323,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(UserProfile));
+export default inject('authStore')(observer(UserProfile));
