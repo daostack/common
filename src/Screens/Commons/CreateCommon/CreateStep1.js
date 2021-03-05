@@ -3,7 +3,7 @@ import {View, StyleSheet, Modal} from 'react-native';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import {colors} from '~/Theme';
-import MultiLinkField from '~/Components/FormFields/MultiLinkField';
+import MultiTitleValueField from '~/Components/FormFields/MultiTitleValueField';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {shape, func, object} from 'prop-types';
@@ -157,7 +157,7 @@ const CreateStep1 = ({
             displayName: 'about',
           }}
         />
-        <MultiLinkField
+        <MultiTitleValueField
           link
           allowsEditing={true}
           label="Links"
@@ -169,7 +169,6 @@ const CreateStep1 = ({
           validation={{
             name: CreateCommonForm.LINKS,
             formStore: generalInfoFormStore,
-            validateRule: {common: 'string|url', title: 'string'},
           }}
         />
       </View>

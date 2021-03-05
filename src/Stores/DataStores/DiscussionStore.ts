@@ -24,6 +24,7 @@ export default class DiscussionStore extends BaseStore<
         (discussion: Discussion, prevDiscussion: Discussion) =>
           prevDiscussion.lastMessage.seconds - discussion.lastMessage.seconds,
       );
+
   //Actions
   subscribeToCommonDiscussions = (commonId: string): FirestoreUnsubscribeFn =>
     subscribeToCommonDiscussions(commonId, this.updateStoreData);

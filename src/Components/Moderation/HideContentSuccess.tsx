@@ -7,33 +7,37 @@ import {
   Dimensions,
 } from 'react-native';
 import React from 'react';
-import {text, colors, font} from '~/Theme';
+import {text, colors, font, layout} from '~/Theme';
 import {observer} from 'mobx-react';
 import {string, func, InferProps} from 'prop-types';
+import {ACTIONS, TITLES} from './constants';
 const {width} = Dimensions.get('window');
 
 const getType = (type: string) => {
-  console.log('type', type);
   switch (type) {
-    case 'Discussion':
-      return 'Post';
+    case TITLES.discussion:
+      return TITLES.post;
     default:
       return type;
   }
 };
 
-const getTitle = (type: string, action: string) =>
-  action === 'Show'
-    ? `${getType(type)} is now visible`
-    : `The ${getType(type).toLowerCase()} was successfully ${
-        action === 'Hide' ? 'hidden' : 'reported'
-      }`;
+const getTitle = (type: string, action: string) => {
+  switch (action) {
+    case ACTIONS.show:
+      return `${getType(type)} is now visible`;
+    case ACTIONS.report:
+      return 'Thanks for letting us know';
+    default:
+      return `The ${getType(type).toLowerCase()} was successfully hidden`;
+  }
+};
 
 const getMessage = (type: string, action: string) =>
-  action === 'Report'
-    ? 'A moderator will review your report and make a decision soon.'
+  action === ACTIONS.report
+    ? 'We greatly appreciate it! Your feedback is important in helping us keep Common safe.'
     : `The ${getType(type).toLowerCase()} will${
-        action === 'Show' ? ' ' : ' not '
+        action === ACTIONS.show ? ' ' : ' not '
       }be visible to members.
       You can undo this at any time.`;
 
@@ -74,7 +78,6 @@ HideContentSuccess.propTypes = props;
 
 const styles = StyleSheet.create({
   root: {
-    height: '100%',
     paddingTop: 200,
     shadowColor: 'rgba(0, 0, 0, 0.9)',
     shadowRadius: 100,
@@ -85,12 +88,12 @@ const styles = StyleSheet.create({
     },
   },
   view: {
-    flex: 1,
     backgroundColor: colors.white,
     width,
     borderTopLeftRadius: 27,
     borderTopRightRadius: 27,
     alignSelf: 'center',
+    paddingBottom: 40,
   },
   image: {
     height: 120,
@@ -118,16 +121,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    color: colors.white,
     ...font.primary.regular,
     fontSize: 16,
     padding: 14,
     textAlign: 'center',
     borderRadius: 25,
     overflow: 'hidden',
-    backgroundColor: colors.mainBlue,
+    borderColor: colors.mainBlue,
     marginTop: 50,
     width: '100%',
+    ...layout.btnOutline,
   },
   plug: {
     backgroundColor: colors.paleblue,

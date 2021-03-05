@@ -103,7 +103,7 @@ class AuthStore {
   };
 
   getPermission = async (commonId: string, userInfo: UserModel) => {
-    const roles = [...userInfo.roles] || [];
+    const roles = [...(Array.isArray(userInfo.roles) ? userInfo.roles : [])];
     const roleData = roles.find(
       (roleObj) => roleObj.data.commonId === commonId,
     );
@@ -125,6 +125,8 @@ class AuthStore {
 
   isLoginInProgressExists = (uid: any) =>
     this.loginInProgress.filter((item: any) => item === uid).length > 0;
+
+  isCurrentlyLogged = (userId: string) => this.userInfo?.uid === userId
 
   // Private functions
   async _processUser(user: any) {

@@ -51,5 +51,5 @@ export const fetchDiscussionId = async (
     );
   }
   const discussion = await DiscussionsCollection.doc(discussionId).get();
-  return discussion.data() as IDiscussionEntity;
+  return {...discussion.data(), id: discussion.id} as IDiscussionEntity;
 };

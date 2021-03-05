@@ -1,5 +1,5 @@
 import {StyleSheet, View, Text} from 'react-native';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {layout, colors, text, font} from '~/Theme';
 import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
@@ -8,7 +8,9 @@ import moment from 'moment';
 import {LAUNCHED_STATES} from '~/Services/ProposalService';
 import {string, array, number, shape, object, oneOfType} from 'prop-types';
 
-const MemberCard = ({userInfo, proposalInfo = null}) => {
+const MemberCard = ({userInfo, proposalInfo = null, moderatorId}) => {
+  const isModerator = useMemo(() => moderatorId === userInfo.id,[moderatorId]);
+
   const renderRightContainer = () => {
     if (proposalInfo) {
       const closingAt =
@@ -82,6 +84,7 @@ const MemberCard = ({userInfo, proposalInfo = null}) => {
           flex: 1.9,
           flexWrap: 'wrap',
         }}>
+        {isModerator && <Text style={text.moderatorText}>Moderator</Text>}
         <Text style={styles.displayName}>
           {userInfo?.displayName || 'Unknown user'}
         </Text>
@@ -97,6 +100,7 @@ const MemberCard = ({userInfo, proposalInfo = null}) => {
 };
 
 MemberCard.propTypes = {
+  moderatorId: string,
   memberSince: string,
   commonsCount: number,
   userInfo: shape({

@@ -8,8 +8,10 @@ const Tab = createBottomTabNavigator();
 import Icon from '~/Assets/iconfont/Icon';
 import NotificationList from '~/Screens/Notifications/NotificationList';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {inject, observer} from 'mobx-react';
+import {authStorePropTypes} from '~/Types/propTypes';
 
-const CommonHome = () => (
+const CommonHome = ({authStore}) => (
   <Tab.Navigator
     // initialRouteName="My feed"
     initialRouteName="Explore"
@@ -64,11 +66,17 @@ const CommonHome = () => (
     }}>
     <Tab.Screen name={NAVIGATION_SCREENS.EXPLORE} component={CommonsList} />
     <Tab.Screen name={NAVIGATION_SCREENS.PROFILE} component={UserProfile} />
-    <Tab.Screen
-      name={NAVIGATION_SCREENS.NOTIFICATIONS}
-      component={NotificationList}
-    />
+    {authStore.signedInUser !== null && (
+      <Tab.Screen
+        name={NAVIGATION_SCREENS.NOTIFICATIONS}
+        component={NotificationList}
+      />
+    )}
   </Tab.Navigator>
 );
 
-export default CommonHome;
+CommonHome.propTypes = {
+  authStore: authStorePropTypes,
+};
+
+export default inject('authStore')(observer(CommonHome));

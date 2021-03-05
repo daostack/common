@@ -33,6 +33,7 @@ import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
+import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
@@ -53,7 +54,13 @@ const Discussions = ({
 
   const currentUser = auth().currentUser;
   const dataState = discussionStore.getDiscussionById(discussionId);
+
+  if (!commonId) {
+    commonId = dataState.commonId;
+  }
+
   const user = userStore.getUserById(dataState.ownerId);
+  const currCommon = commonStore.getCommonById(commonId);
 
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
@@ -65,11 +72,12 @@ const Discussions = ({
   const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
     false,
   );
-  const [action, setAction] = useState('Report');
+  const [action, setAction] = useState(ACTIONS.report);
 
   const isMember =
     authStore.userInfo &&
-    authStore.isDaoMember(commonStore.getCommonById(commonId)?.members);
+    authStore.isDaoMember(currCommon?.members);
+
 
   useEffect(() => {}, [commonId, discussionId, currentUser]);
 
@@ -307,22 +315,22 @@ const Discussions = ({
     }
     bottomSheetStore.hideBottomSheet();
     switch (actionType) {
-      case 'Show':
+      case ACTIONS.show:
         Toast.loading('Loading...');
         await ModerationService.getInstance().show(
           messageId,
           commonId,
-          'discussionMessage',
+          TITLES.discussionMessage,
         );
         Toast.hide();
         Toast.success('Done');
         setShowModerationSuccessModal(true);
         break;
-      case 'Hide':
+      case ACTIONS.hide:
         Toast.loading('Loading...');
         await ModerationService.getInstance().hide(
           messageId,
-          'discussionMessage',
+          TITLES.discussionMessage,
           commonId,
         );
         Toast.hide();
@@ -353,7 +361,7 @@ const Discussions = ({
     Toast.loading('Reporting content...');
     bottomSheetStore.hideBottomSheet();
     await ModerationService.getInstance().report(
-      'discussionMessage',
+      TITLES.discussionMessage,
       commonId,
       moderationFormStore.getFormFieldsJson(),
     );
@@ -367,14 +375,15 @@ const Discussions = ({
     <SafeAreaView style={styles.safeView}>
       {header()}
       <ModerationModal
-        title={'Comment'}
+        title={TITLES.comment}
         visible={showModerationModal}
         setShowModerationModal={() => setShowModerationModal(false)}
         moderationFormStore={moderationFormStore}
         onReportContent={() => onReportContent()}
+        hasPermission={hasPermission}
       />
       <ModerationActionSuccessModal
-        type={'comment'}
+        type={TITLES.comment.toLowerCase()}
         visible={showModerationSuccessModal}
         setShowModerationSuccessModal={() =>
           setShowModerationSuccessModal(false)
@@ -389,6 +398,7 @@ const Discussions = ({
           hasPermission={hasPermission}
           commonId={commonId}
           openMessageOptions={(message) => openMessageOptions(message)}
+          isMember={isMember}
         />
       </ScrollView>
 

@@ -615,6 +615,7 @@ const ProposalScreen = ({
         setShowModerationModal={() => setShowModerationModal(false)}
         moderationFormStore={moderationFormStore}
         onReportContent={() => onReportContent()}
+        hasPermission={hasPermission}
       />
       <ModerationActionSuccessModal
         type={'comment'}
@@ -750,6 +751,7 @@ const ProposalScreen = ({
                           proposalInfo?.countdownPeriod
                         }
                         onPress={() => openDebtInsufficientModal()}
+                        hasPermission={hasPermission}
                       />
                     </TouchableOpacity>
                     {proposedUser && (
@@ -784,6 +786,8 @@ const ProposalScreen = ({
                           proposalInfo?.createdAt.seconds +
                           proposalInfo?.countdownPeriod
                         }
+                        hasPermission={hasPermission}
+                        authInfo={authStore.userInfo}
                       />
                     </TouchableOpacity>
 
@@ -862,11 +866,9 @@ const ProposalScreen = ({
                         : 'Contribution:'}
                     </Text>
                     <Text style={text.h2Black}>
-                      {proposalInfo.isFundingRequest
-                        ? proposalInfo.fundingRequest.amount > 0
-                          ? `$${proposalInfo.fundingRequest.amount / 100}`
-                          : ''
-                        : `$${proposalInfo.join.funding / 100}`}
+                      {proposalInfo.funding > 0
+                        ? `$${proposalInfo.funding / 100}`
+                        : ''}
                     </Text>
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
@@ -1015,6 +1017,7 @@ const ProposalScreen = ({
                   hasPermission={hasPermission}
                   commonId={proposalInfo.commonId}
                   openMessageOptions={(message) => openMessageOptions(message)}
+                  isMember={isMember}
                 />
               )}
             </View>

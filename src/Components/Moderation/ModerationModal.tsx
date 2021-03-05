@@ -9,6 +9,7 @@ const ModerationModal: React.FC<InferProps<typeof moderationModalProps>> = ({
   setShowModerationModal,
   moderationFormStore,
   onReportContent,
+  hasPermission,
 }) => (
   <BottomSheetModal
     isVisible={visible}
@@ -19,6 +20,7 @@ const ModerationModal: React.FC<InferProps<typeof moderationModalProps>> = ({
       onCancel={setShowModerationModal}
       onReportContent={onReportContent}
       formStore={moderationFormStore}
+      hasPermission={hasPermission}
     />
   </BottomSheetModal>
 );
@@ -29,6 +31,7 @@ const moderationModalProps = {
   setShowModerationModal: func,
   moderationFormStore: func,
   onReportContent: func,
+  hasPermission: bool,
 };
 
 ModerationModal.propTypes = moderationModalProps;

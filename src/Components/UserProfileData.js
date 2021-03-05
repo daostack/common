@@ -236,6 +236,7 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
             stage: PROPOSAL_STAGE.Active,
             type: PROPOSAL_TYPE.FundingRequest,
           }}
+          isMember
         />
       </View>
 

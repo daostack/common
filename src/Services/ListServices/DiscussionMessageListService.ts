@@ -37,5 +37,5 @@ export const fetchMessageById = async (
     );
   }
   const message = await DiscussionMessagesCollection.doc(messageId).get();
-  return message.data() as IDiscussionMessageEntity;
+  return {...message.data(), id: message.id} as IDiscussionMessageEntity;
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 import TextInputField from '~/Components/FormFields/TextInputField';
-import MultiLinkField from '~/Components/FormFields/MultiLinkField';
+import MultiTitleValueField from '~/Components/FormFields/MultiTitleValueField';
 import {colors, text} from '~/Theme';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import RequestStepActionButton from '../../RequestStepActionButton';
@@ -84,7 +84,7 @@ const IntroductionStep = ({
 
         <Text style={{...text.h3Black, textAlign: 'left'}}>Links</Text>
 
-        <MultiLinkField
+        <MultiTitleValueField
           link
           value={
             introduceYourselfFormStore.getFormField(
@@ -97,7 +97,6 @@ const IntroductionStep = ({
           validation={{
             name: RequestToJoinForm.FIELD_LINKS,
             formStore: introduceYourselfFormStore,
-            validateRule: 'string|url',
           }}
         />
       </View>

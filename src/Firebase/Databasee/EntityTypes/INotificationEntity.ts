@@ -45,3 +45,16 @@ export const EventTitleState = {
   commonWhitelisted: 'New Featured Common',
   commonMemberAdded: 'Common Member Added',
 };
+
+export const EventTypesOnNotificationList = [
+  EventTypeState.commonWhitelisted,
+  EventTypeState.commonCreated,
+  EventTypeState.fundingRequestCreated,
+  EventTypeState.fundingRequestAccepted,
+  EventTypeState.fundingRequestExecuted,
+  EventTypeState.fundingRequestRejected,
+  EventTypeState.messageCreated,
+  EventTypeState.requestToJoinAccepted,
+  EventTypeState.requestToJoinCreated,
+  EventTypeState.requestToJoinRejected,
+];

@@ -1,12 +1,13 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
-import moment from 'moment';
+import React, {useEffect, useState} from 'react';
 import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
 import NotificationBadge from './NotificationBadge';
 import {CommonActions} from '@react-navigation/native';
-import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {InferProps, object, shape, string} from 'prop-types';
+import {formatNotificationDate} from '~/Util/DateUtil';
+import NotificationService from '~/Services/NotificationService';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 const props = {
   item: shape({
@@ -24,6 +25,7 @@ const props = {
     descriptionBold: string,
     header: string,
     headerBold: string,
+    commonName: string,
   }).isRequired,
   navigation: object.isRequired,
 };
@@ -32,44 +34,67 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
   item,
   navigation,
 }) => {
+  const [isRead, setRead] = useState(false);
+  const [isClicked, setClicked] = useState(false);
   const navigateToDetail = () => {
     let navigate;
 
+    NotificationService.setNotificationClicked(item.id);
+    setClicked(true);
+
     if (item.common) {
       navigate = CommonActions.navigate({
-        name: 'CommonProfile',
+        name: NAVIGATION_SCREENS.COMMON_PROFILE,
         params: {
           currCommon: item.common,
         },
       });
       navigation.dispatch(navigate);
     } else if (item.proposal) {
-      //TODO: Temporaly blocking new proposal
-      if (item.eventType !== EventTypeState.fundingRequestCreated) {
-        navigation.navigate('ProposalScreen', {
-          proposalId: item.proposal.id,
-        });
-      }
+      navigation.navigate(NAVIGATION_SCREENS.PROPOSAL_SCREEN, {
+        proposalId: item.proposal.id,
+      });
     } else if (item.discussion) {
-      //TODO: Temporaly blocking click on messages
-      // navigation.navigate('Discussions', {
-      //   discussionId: item.discussion.id,
-      // });
+      navigation.navigate(NAVIGATION_SCREENS.DISCUSSIONS, {
+        discussionId: item.discussion.id,
+      });
     }
   };
+
+  useEffect(() => {
+    NotificationService.isNotificationClicked(item.id).then((result) =>
+      setClicked(result),
+    );
+    NotificationService.isNotificationRead(item.id).then((result) => {
+      setRead(result);
+    });
+    NotificationService.setNotificationRead(item.id);
+  }, []);
 
   return (
     <TouchableOpacity
       onPress={() => {
         navigateToDetail();
       }}>
-      <View style={styles.messageCardContainer}>
-        <FastImage
-          style={styles.userImage}
-          source={{
-            uri: item.ownerAvatar,
-          }}
-        />
+      <View
+        style={[
+          styles.messageCardContainer,
+          {
+            backgroundColor: isClicked
+              ? colors.white
+              : colors.paleNotificationblue,
+          },
+        ]}>
+        <View
+          style={{flexDirection: 'column', marginLeft: 20, marginRight: 15}}>
+          <FastImage
+            style={styles.userImage}
+            source={{
+              uri: item.ownerAvatar,
+            }}
+          />
+          {!isRead && <View style={styles.notReadDot} />}
+        </View>
         <View>
           <View style={styles.headerContainer}>
             <NotificationBadge type={item.eventType} />
@@ -89,7 +114,8 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
             </Text>
           </View>
           <Text style={styles.dateStyle}>
-            {moment(item.createdAt).format('DD/MM/YYYY')}
+            {formatNotificationDate(item.createdAt.toDate())}
+            {item.commonName && <Text>{`, ${item.commonName}`}</Text>}
           </Text>
         </View>
       </View>
@@ -101,13 +127,19 @@ NotificationItem.propTypes = props;
 
 const styles = StyleSheet.create({
   userImage: {
-    width: 42,
-    height: 42,
-    marginLeft: 20,
+    width: 40,
+    height: 40,
     borderRadius: 20,
+  },
+  notReadDot: {
+    width: 16,
+    height: 16,
+    borderRadius: 10,
+    backgroundColor: colors.mainBlue,
+    marginTop: -27,
+    marginLeft: -8,
     borderWidth: 2,
-    borderColor: colors.white,
-    marginRight: 15,
+    borderColor: colors.paleNotificationblue,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -134,9 +166,6 @@ const styles = StyleSheet.create({
     ...layout.content,
     ...layout.flexRow,
     ...layout.flexStart,
-    padding: 0,
-    marginVertical: 20,
-    marginTop: 5,
   },
   messageContainer: {
     marginTop: 5,
