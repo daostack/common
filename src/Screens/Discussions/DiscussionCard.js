@@ -39,8 +39,8 @@ const DiscussionCard = ({
     discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
       ?.length || 0;
 
-  const showHeader = !data.moderation || data.moderation?.flag !== FLAGS.visible;
-
+  const hideHeader =
+    !data.moderation || data.moderation?.flag === FLAGS.visible;
   const isVisible = data.moderation?.flag !== FLAGS.hidden || !data.moderation;
   const showCard = isVisible || (!isVisible && hasPermission);
   const isOwner = authStore.isCurrentlyLogged(data.ownerId);
@@ -76,7 +76,7 @@ const DiscussionCard = ({
     <>
       <TouchableOpacity onPress={() => navigateToDiscussion()}>
         <View style={styles.containerView}>
-          {showHeader && (
+          {!hideHeader && (
             <DiscussionCardHeader
               isReported={data.moderation?.flag !== FLAGS.visible}
               moderation={data.moderation}
