@@ -6,6 +6,7 @@ import {InferProps, object} from 'prop-types';
 import NotificationItem from '~/Components/Notifications/NotificationItem';
 import NotificationService from '~/Services/NotificationService';
 import {FlatList} from 'react-native-gesture-handler';
+import Loader from '~/Components/Loader';
 
 const props = {
   navigation: object,
@@ -13,10 +14,12 @@ const props = {
 
 const NotificationList: React.FC<InferProps<typeof props>> = ({navigation}) => {
   const [notificationList, setNotificationList] = useState([]);
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     NotificationService.getNotificationList().then((result) => {
       setNotificationList(result);
+      setLoading(false);
     });
   }, []);
 
@@ -29,20 +32,24 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({navigation}) => {
           <Text style={styles.title}>Notifications</Text>
         </View>
 
-        <FlatList
-          data={notificationList}
-          renderItem={({item}) => (
-            <NotificationItem item={item} navigation={navigation} />
-          )}
-          ItemSeparatorComponent={() => (
-            <View
-              style={{
-                height: 1,
-                backgroundColor: colors.grey4,
-              }}
-            />
-          )}
-        />
+        {isLoading ? (
+          <Loader isBigger />
+        ) : (
+          <FlatList
+            data={notificationList}
+            renderItem={({item}) => (
+              <NotificationItem item={item} navigation={navigation} />
+            )}
+            ItemSeparatorComponent={() => (
+              <View
+                style={{
+                  height: 1,
+                  backgroundColor: colors.grey4,
+                }}
+              />
+            )}
+          />
+        )}
       </SafeAreaView>
     </>
   );

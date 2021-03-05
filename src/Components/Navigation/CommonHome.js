@@ -66,7 +66,7 @@ const CommonHome = ({authStore}) => (
     }}>
     <Tab.Screen name={NAVIGATION_SCREENS.EXPLORE} component={CommonsList} />
     <Tab.Screen name={NAVIGATION_SCREENS.PROFILE} component={UserProfile} />
-    {authStore.signedInUser !== null && (
+    {authStore.signedInUser && (
       <Tab.Screen
         name={NAVIGATION_SCREENS.NOTIFICATIONS}
         component={NotificationList}
