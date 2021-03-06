@@ -20,6 +20,18 @@ export const subscribeToCommonDiscussions = (
   return unsubscribe;
 };
 
+export const subscribeToDiscussionById = (
+  discussionId: string,
+  listChangeCallback: commonDiscussionsListLoadCallbackFn,
+) => {
+  const unsubscribe = DiscussionsCollection.doc(discussionId).onSnapshot(
+    (snapshot: any) => {
+      listChangeCallback(snapshot);
+    },
+  );
+  return unsubscribe;
+};
+
 export const updateDiscussionLastMessage = async (
   discussionId: string,
   messageOwner: string,

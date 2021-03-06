@@ -34,6 +34,7 @@ import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
+import Loader from '~/Components/Loader';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
@@ -53,13 +54,20 @@ const Discussions = ({
   const inputRef = useRef(null);
 
   const currentUser = auth().currentUser;
-  const dataState = discussionStore.getDiscussionById(discussionId);
+
+  let dataState = null;
+
+  try {
+    dataState = discussionStore.getDiscussionById(discussionId);
+  } catch (errr) {
+    discussionStore.subscribeToDiscussionById(discussionId);
+  }
 
   if (!commonId) {
     commonId = dataState.commonId;
   }
 
-  const user = userStore.getUserById(dataState.ownerId);
+  let user = userStore.getUserById(dataState?.ownerId);
   const currCommon = commonStore.getCommonById(commonId);
 
   const [inputText, setInputText] = useState(null);
@@ -75,9 +83,7 @@ const Discussions = ({
   const [action, setAction] = useState(ACTIONS.report);
 
   const isMember =
-    authStore.userInfo &&
-    authStore.isDaoMember(currCommon?.members);
-
+    authStore.userInfo && authStore.isDaoMember(currCommon?.members);
 
   useEffect(() => {}, [commonId, discussionId, currentUser]);
 
@@ -370,6 +376,10 @@ const Discussions = ({
     setShowModerationSuccessModal(true);
     moderationFormStore.clearFormStoreState();
   };
+
+  if (!dataState) {
+    return <Loader />;
+  }
 
   return (
     <SafeAreaView style={styles.safeView}>
