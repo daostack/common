@@ -18,6 +18,7 @@ import {
 import {BaseModel} from './BaseModel';
 import ImageSize from 'react-native-image-size';
 import {promisedComputed} from 'computed-async-mobx';
+import Logger from '~/Services/Logger';
 
 export class Proposal extends BaseModel<IProposalEntity> {
   @observable
@@ -75,12 +76,27 @@ export class Proposal extends BaseModel<IProposalEntity> {
         await Promise.all(
           this.description.images.map(async (currImage: IProposalImage) => {
             if (currImage.value) {
-              const {width, height} = await ImageSize.getSize(currImage.value);
-              tempImages.push({
-                title: currImage.title,
-                widthRatio: (width / height) * 220,
-                uri: currImage.value,
-              } as IUIProposalImage);
+              let currImageEntity: IUIProposalImage | null = null;
+              try {
+                const {width, height} = await ImageSize.getSize(
+                  currImage.value,
+                );
+
+                currImageEntity = {
+                  title: currImage.title,
+                  widthRatio: (width / height) * 220,
+                  uri: currImage.value,
+                } as IUIProposalImage;
+              } catch (err) {
+                Logger.warn(
+                  `An error occured while processing proposal image with url: ${currImage.value} , skippiing the image!`,
+                  err,
+                );
+              }
+
+              if (currImageEntity) {
+                tempImages.push(currImageEntity);
+              }
             }
           }),
         );

@@ -40,7 +40,7 @@ const {width} = Dimensions.get('window');
 const Discussions = ({
   navigation,
   route: {
-    params: {commonId, discussionId, data, hasPermission},
+    params: {commonId, discussionId, data, hasPermission, fromNotification},
   },
   rootStore,
 }) => {
@@ -55,20 +55,16 @@ const Discussions = ({
 
   const currentUser = auth().currentUser;
 
-  let dataState = null;
+  const dataState = discussionStore.getDiscussionById(discussionId);
 
-  try {
-    dataState = discussionStore.getDiscussionById(discussionId);
-  } catch (errr) {
-    discussionStore.subscribeToDiscussionById(discussionId);
-  }
-
-  if (!commonId) {
+  if (!commonId && dataState) {
     commonId = dataState.commonId;
   }
 
-  let user = userStore.getUserById(dataState?.ownerId);
-  const currCommon = commonStore.getCommonById(commonId);
+  let user = dataState?.ownerId
+    ? userStore.getUserById(dataState?.ownerId)
+    : null;
+  const currCommon = commonId ? commonStore.getCommonById(commonId) : null;
 
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
@@ -83,9 +79,23 @@ const Discussions = ({
   const [action, setAction] = useState(ACTIONS.report);
 
   const isMember =
-    authStore.userInfo && authStore.isDaoMember(currCommon?.members);
+    authStore.userInfo &&
+    (currCommon ? authStore.isDaoMember(currCommon?.members) : false);
 
   useEffect(() => {}, [commonId, discussionId, currentUser]);
+
+  useEffect(() => {
+    let unsubscribeFromDiscussionMessages = null;
+    if (fromNotification) {
+      rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
+        discussionId,
+      );
+    }
+
+    return () => {
+      unsubscribeFromDiscussionMessages && unsubscribeFromDiscussionMessages();
+    };
+  }, [discussionId]);
 
   const showLoginScreen = () => {
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN);
@@ -378,7 +388,11 @@ const Discussions = ({
   };
 
   if (!dataState) {
-    return <Loader />;
+    return (
+      <View style={{...styles.safeView, ...layout.content}}>
+        <Loader />
+      </View>
+    );
   }
 
   return (

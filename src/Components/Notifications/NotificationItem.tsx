@@ -58,6 +58,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
       //Temporaly disabling this for a data handling issue
       navigation.navigate(NAVIGATION_SCREENS.DISCUSSIONS, {
         discussionId: item.discussion.id,
+        fromNotification: true,
       });
     }
   };
