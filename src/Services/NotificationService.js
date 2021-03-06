@@ -161,7 +161,7 @@ export default class NotificationService {
                         data = {
                           ...data,
                           header: ' by',
-                          headerBold: ` "${user.displayName}"`,
+                          headerBold: ` "${user.firstName} ${user.lastName}"`,
                         };
                       }
                       dataProperlyLoaded = true;
@@ -176,27 +176,30 @@ export default class NotificationService {
                     const discussion = await fetchDiscussionId(
                       message.discussionId,
                     );
+                    user = await getUserById(message.ownerId);
 
-                    data = {
-                      ...data,
-                      descriptionBold: `${message.ownerName}`,
-                      description: ` ${message.text}`,
-                      ownerAvatar: message.ownerAvatar,
-                      discussion: {...discussion, id: message.discussionId},
-                    };
+                    if (user) {
+                      data = {
+                        ...data,
+                        descriptionBold: `${user.firstName} ${user.lastName}`,
+                        description: ` ${message.text}`,
+                        ownerAvatar: user.photoURL,
+                        discussion: {...discussion, id: message.discussionId},
+                      };
 
-                    if (discussion && discussion.commonId) {
-                      common = await fetchCommonById(discussion.commonId);
+                      if (discussion && discussion.commonId) {
+                        common = await fetchCommonById(discussion.commonId);
 
-                      if (common && common.name) {
-                        data = {
-                          ...data,
-                          header: ' on',
-                          headerBold: ` "${discussion.title}"`,
-                          commonName: common.name,
-                          commonId: discussion.commonId,
-                        };
-                        dataProperlyLoaded = true;
+                        if (common && common.name) {
+                          data = {
+                            ...data,
+                            header: ' on',
+                            headerBold: ` "${discussion.title}"`,
+                            commonName: common.name,
+                            commonId: discussion.commonId,
+                          };
+                          dataProperlyLoaded = true;
+                        }
                       }
                     }
                   }
