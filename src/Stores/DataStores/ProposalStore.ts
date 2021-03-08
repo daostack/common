@@ -86,10 +86,10 @@ export default class ProposalStore extends BaseStore<
     try {
       return this.getDataById(id);
     } catch (errr) {
-      // Temporary logic for fetching Discussion in case it's not in the store.
+      // Add the proposal id as a key in order to have null mobx state for that proposal, while it's loaded.
       this.data.set(id, null);
-      fetchProposalById(id).then((discussion: IProposalEntity) => {
-        this.data.set(id, new Discussion(discussion));
+      fetchProposalById(id).then((proposal: IProposalEntity) => {
+        this.data.set(id, new Proposal(proposal));
       });
       return this.getDataById(id);
     }
