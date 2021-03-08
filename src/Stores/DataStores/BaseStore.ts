@@ -82,8 +82,7 @@ export default abstract class BaseStore<
 
     // Shapshot handling in case of doc list result
     if (typeof updatedSnapshot?.docChanges === 'function') {
-      const updatedSnapshotChanges = updatedSnapshot as IFirebaseSnapshot<IEntity>;
-      updatedSnapshotChanges
+      (updatedSnapshot as IFirebaseSnapshot<IEntity>)
         .docChanges()
         .forEach((updatedUserDoc: IFirebaseDocChange<IEntity>) => {
           const updatedEntity = this.firestoreDocToEntity(updatedUserDoc);
@@ -94,12 +93,10 @@ export default abstract class BaseStore<
     // * Used for subscribeToEntityById type subscriptions
     else {
       const updatedFirebaseDoc = updatedSnapshot as IFirebaseDoc<IEntity>;
-
       const docData = this.prepareDocData(
         updatedFirebaseDoc.data(),
         updatedFirebaseDoc.id,
       );
-
       updatesMap.set(docData.id, this.getEntityModel(docData));
     }
 

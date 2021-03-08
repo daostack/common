@@ -87,7 +87,7 @@ const Discussions = ({
   useEffect(() => {
     let unsubscribeFromDiscussionMessages = null;
     if (fromNotification) {
-      rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
+      unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
         discussionId,
       );
     }
