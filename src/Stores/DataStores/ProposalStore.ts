@@ -1,6 +1,9 @@
 import {computed} from 'mobx';
 import BaseStore from './BaseStore';
-import {subscribeToProposalList} from '~/Services/ListServices/ProposalListService';
+import {
+  subscribeToProposalList,
+  fetchProposalById,
+} from '~/Services/ListServices/ProposalListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
@@ -79,7 +82,18 @@ export default class ProposalStore extends BaseStore<
   }
 
   // Data consuming methods
-  getProposalById = (id: string): Proposal | undefined => this.getDataById(id);
+  getProposalById = (id: string): Proposal | undefined => {
+    try {
+      return this.getDataById(id);
+    } catch (errr) {
+      // Temporary logic for fetching Discussion in case it's not in the store.
+      this.data.set(id, null);
+      fetchProposalById(id).then((discussion: IProposalEntity) => {
+        this.data.set(id, new Discussion(discussion));
+      });
+      return this.getDataById(id);
+    }
+  };
 
   getUserProposals = (
     userId: string,

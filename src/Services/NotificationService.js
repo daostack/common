@@ -10,7 +10,7 @@ import {
   EventTypeState,
 } from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {fetchCommonById} from './ListServices/CommonListService';
-import {getProposalById} from './ListServices/ProposalListService';
+import {fetchProposalById} from './ListServices/ProposalListService';
 import {fetchMessageById} from './ListServices/DiscussionMessageListService';
 import {fetchDiscussionId} from './ListServices/DiscussionListService';
 import {getUserById} from './ListServices/UserListService';
@@ -139,7 +139,7 @@ export default class NotificationService {
                 case EventTypeState.fundingRequestAccepted:
                 case EventTypeState.fundingRequestExecuted:
                 case EventTypeState.fundingRequestRejected:
-                  proposal = await getProposalById(data.eventObjectId);
+                  proposal = await fetchProposalById(data.eventObjectId);
                   if (proposal) {
                     common = await fetchCommonById(proposal.commonId);
                     user = await getUserById(proposal.proposerId);
@@ -207,7 +207,7 @@ export default class NotificationService {
                   break;
 
                 case EventTypeState.requestToJoinAccepted:
-                  proposal = await getProposalById(data.eventObjectId);
+                  proposal = await fetchProposalById(data.eventObjectId);
                   if (proposal) {
                     common = await fetchCommonById(proposal.commonId);
                     user = await getUserById(proposal.proposerId);
@@ -227,7 +227,7 @@ export default class NotificationService {
                   break;
 
                 case EventTypeState.requestToJoinCreated:
-                  proposal = await getProposalById(data.eventObjectId);
+                  proposal = await fetchProposalById(data.eventObjectId);
                   if (proposal) {
                     common = await fetchCommonById(proposal.commonId);
                     user = await getUserById(proposal.proposerId);
@@ -247,7 +247,7 @@ export default class NotificationService {
                   break;
 
                 case EventTypeState.requestToJoinRejected:
-                  proposal = await getProposalById(data.eventObjectId);
+                  proposal = await fetchProposalById(data.eventObjectId);
                   if (proposal) {
                     common = await fetchCommonById(proposal.commonId);
                     user = await getUserById(proposal.proposerId);
