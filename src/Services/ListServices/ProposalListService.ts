@@ -98,7 +98,7 @@ export const subscribeToProposalList = (
   );
 };
 
-export const getProposalById = async (
+export const fetchProposalById = async (
   proposalId: string,
 ): Promise<IProposalEntity> => {
   if (!proposalId) {
