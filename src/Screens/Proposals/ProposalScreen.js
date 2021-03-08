@@ -131,8 +131,13 @@ const ProposalScreen = ({
   }, [proposalId]);
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
-  const proposalCommon = commonStore.getCommonById(proposalInfo.commonId);
-  const proposedUser = userStore.getUserById(proposalInfo.proposerId);
+
+  const proposalCommon = proposalInfo
+    ? commonStore.getCommonById(proposalInfo.commonId)
+    : null;
+  const proposedUser = proposalInfo
+    ? userStore.getUserById(proposalInfo.proposerId)
+    : null;
 
   const showDebtInfo =
     proposalInfo.isFundingRequest &&
