@@ -22,6 +22,8 @@ const reasons = [
   ['Something Else'],
 ];
 
+const proposalReason = 'Violates the Common\nagenda';
+
 const reportProps = {
   title: string,
   onCancel: func,
@@ -42,9 +44,9 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
   onReportContent,
   hasPermission,
 }) => {
-  if (title === TITLES.proposals) {
+  if (title === TITLES.proposals && !reasons[2].includes(proposalReason)) {
     // this reason should only be displayed for proposals
-    reasons[2].push('Violates the Common agenda');
+    reasons[2].push(proposalReason);
   }
   const [chosen, setChosen] = useState(['']);
   const [isValid, setIsValid] = useState(false);
@@ -176,6 +178,7 @@ const styles = StyleSheet.create({
   problemText: {
     ...font.primary.regular,
     fontSize: 15,
+    textAlign: 'center',
   },
   title: {
     ...text.h2Black,
