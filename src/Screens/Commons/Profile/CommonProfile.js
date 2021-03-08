@@ -552,7 +552,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         userName: reporterName(userStore.getUserById(moderation.moderator)),
         date: timeReported(moderation.updatedAt),
         reasons: moderation.reasons,
-        moderatorNote: moderation?.note,
+        moderatorNote: moderation?.moderatorNote,
         type,
       },
     );
