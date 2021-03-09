@@ -232,10 +232,10 @@ workflows:
             # debug log
             set -x
 
-            # write your script here
-            cd node_modules/hermes-engine/osx-bin 
-            mv hermesc hermes
-            cd ../../..
+            # That's old logic which we used but bitrise started failing. Leaving as refference. 
+            # cd node_modules/hermes-engine/osx-bin 
+            # mv hermesc hermes
+            # cd ../../..
 
             # or run a script from your repository, like:
             # bash ./path/to/script.sh
@@ -695,10 +695,10 @@ workflows:
             # debug log
             set -x
 
-            # write your script here
-            cd node_modules/hermes-engine/osx-bin 
-            mv hermesc hermes
-            cd ../../..
+            # That's old logic which we used but bitrise started failing. Leaving as refference. 
+            # cd node_modules/hermes-engine/osx-bin 
+            # mv hermesc hermes
+            # cd ../../..
 
             # or run a script from your repository, like:
             # bash ./path/to/script.sh
