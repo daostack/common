@@ -87,7 +87,7 @@ export default class ProposalStore extends BaseStore<
   ): Array<Proposal> =>
     this.getDataArray
       .filter((proposal: Proposal) => {
-        const isProposer = proposal.proposerId === userId;
+        const isProposer = proposal?.proposerId === userId;
         if (isProposer) {
           return this._applyFilter(proposal, proposalFilter);
         }
