@@ -23,6 +23,7 @@ export const EventTypeState = {
   commonCreated: 'commonCreated',
   commonWhitelisted: 'commonWhitelisted',
   commonMemberAdded: 'commonMemberAdded',
+  welcomeNotification: 'welcomeNotification',
 };
 
 export const EventTitleState = {
@@ -44,11 +45,11 @@ export const EventTitleState = {
   commonCreated: 'Common Created',
   commonWhitelisted: 'New Featured Common',
   commonMemberAdded: 'Common Member Added',
+  welcomeNotification: 'Welcome to Common!',
 };
 
 export const EventTypesOnNotificationList = [
   EventTypeState.commonWhitelisted,
-  EventTypeState.commonCreated,
   EventTypeState.fundingRequestCreated,
   EventTypeState.fundingRequestAccepted,
   EventTypeState.fundingRequestExecuted,

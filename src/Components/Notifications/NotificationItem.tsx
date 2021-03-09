@@ -8,6 +8,7 @@ import {InferProps, object, shape, string} from 'prop-types';
 import {formatNotificationDate} from '~/Util/DateUtil';
 import NotificationService from '~/Services/NotificationService';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 
 const props = {
   item: shape({
@@ -60,6 +61,17 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
         discussionId: item.discussion.id,
         fromNotification: true,
       });
+    } else if (item.eventType === EventTypeState.welcomeNotification) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [
+            {
+              name: NAVIGATION_SCREENS.COMMON_HOME,
+            },
+          ],
+        }),
+      );
     }
   };
 
