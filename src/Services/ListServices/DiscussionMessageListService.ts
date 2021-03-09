@@ -23,8 +23,11 @@ export const subscribeToDiscussionsMessages = (
   const chunkSize = 10;
   const unsubscribeArr = [];
   if (discussionIds?.length > 0) {
-    while (discussionIds?.length) {
-      const currDiscussionIdsChunk = discussionIds.splice(0, chunkSize);
+    for (let index = 0; index < discussionIds.length; index += chunkSize) {
+      const currDiscussionIdsChunk = discussionIds.slice(
+        index,
+        index + chunkSize,
+      );
       unsubscribeArr.push(
         DiscussionMessagesCollection.where(
           'discussionId',
