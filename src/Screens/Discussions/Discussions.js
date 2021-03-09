@@ -34,12 +34,13 @@ import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
+import Loader from '~/Components/Loader';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
   navigation,
   route: {
-    params: {commonId, discussionId, data, hasPermission},
+    params: {commonId, discussionId, data, hasPermission, fromNotification},
   },
   rootStore,
 }) => {
@@ -53,14 +54,17 @@ const Discussions = ({
   const inputRef = useRef(null);
 
   const currentUser = auth().currentUser;
+
   const dataState = discussionStore.getDiscussionById(discussionId);
 
-  if (!commonId) {
+  if (!commonId && dataState) {
     commonId = dataState.commonId;
   }
 
-  const user = userStore.getUserById(dataState.ownerId);
-  const currCommon = commonStore.getCommonById(commonId);
+  let user = dataState?.ownerId
+    ? userStore.getUserById(dataState?.ownerId)
+    : null;
+  const currCommon = commonId ? commonStore.getCommonById(commonId) : null;
 
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
@@ -76,10 +80,22 @@ const Discussions = ({
 
   const isMember =
     authStore.userInfo &&
-    authStore.isDaoMember(currCommon?.members);
-
+    (currCommon ? authStore.isDaoMember(currCommon?.members) : false);
 
   useEffect(() => {}, [commonId, discussionId, currentUser]);
+
+  useEffect(() => {
+    let unsubscribeFromDiscussionMessages = null;
+    if (fromNotification) {
+      unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
+        discussionId,
+      );
+    }
+
+    return () => {
+      unsubscribeFromDiscussionMessages && unsubscribeFromDiscussionMessages();
+    };
+  }, [discussionId]);
 
   const showLoginScreen = () => {
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN);
@@ -370,6 +386,14 @@ const Discussions = ({
     setShowModerationSuccessModal(true);
     moderationFormStore.clearFormStoreState();
   };
+
+  if (!dataState) {
+    return (
+      <View style={{...styles.safeView, ...layout.content}}>
+        <Loader />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeView}>

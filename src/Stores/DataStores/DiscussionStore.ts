@@ -1,5 +1,9 @@
 import BaseStore from './BaseStore';
-import {subscribeToCommonDiscussions} from '~/Services/ListServices/DiscussionListService';
+import {
+  subscribeToCommonDiscussions,
+  subscribeToDiscussionById,
+  fetchDiscussionId,
+} from '~/Services/ListServices/DiscussionListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
@@ -14,8 +18,18 @@ export default class DiscussionStore extends BaseStore<
   }
 
   // Data consuming methods
-  getDiscussionById = (id: string): IDiscussionEntity | undefined =>
-    this.getDataById(id);
+  getDiscussionById = (id: string): IDiscussionEntity | undefined => {
+    try {
+      return this.getDataById(id);
+    } catch (errr) {
+      // Temporary logic for fetching Discussion in case it's not in the store.
+      this.data.set(id, null);
+      fetchDiscussionId(id).then((discussion: IDiscussionEntity) => {
+        this.data.set(id, new Discussion(discussion));
+      });
+      return this.getDataById(id);
+    }
+  };
 
   getCommonDiscussions = (commonId: string): Array<Discussion> | undefined =>
     this.getDataArray
@@ -24,10 +38,13 @@ export default class DiscussionStore extends BaseStore<
         (discussion: Discussion, prevDiscussion: Discussion) =>
           prevDiscussion.lastMessage.seconds - discussion.lastMessage.seconds,
       );
-
   //Actions
   subscribeToCommonDiscussions = (commonId: string): FirestoreUnsubscribeFn =>
     subscribeToCommonDiscussions(commonId, this.updateStoreData);
+
+  //Actions
+  subscribeToDiscussionById = (discussionId: string): FirestoreUnsubscribeFn =>
+    subscribeToDiscussionById(discussionId, this.updateStoreData);
 
   // Overriden methods
   getEntityModel(entity: IDiscussionEntity): Discussion {

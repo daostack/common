@@ -8,10 +8,15 @@ import {
   computed,
   values,
   runInAction,
+  has,
 } from 'mobx';
 import RootStore from '../RootStore';
 import {persist} from 'mobx-persist';
-import {IFirebaseDocChange, IFirebaseSnapshot} from '~/Firebase/types';
+import {
+  IFirebaseDoc,
+  IFirebaseDocChange,
+  IFirebaseSnapshot,
+} from '~/Firebase/types';
 import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
 import logger from '~/Services/Logger';
 
@@ -51,15 +56,17 @@ export default abstract class BaseStore<
   abstract getEntityModel(entity: IEntity): IEntityModel;
 
   //Functions
-  getDataById(id: string): IEntityModel {
-    const dataById = get(this.data, id);
-    if (!dataById) {
+  getDataById(id: string): IEntityModel | undefined {
+    if (has(this.data, id)) {
+      return get(this.data, id);
+    } else {
       throw Error(`Data with ID ${id} not exists.`);
     }
-    return dataById;
   }
 
-  updateStoreData = (updatedSnapshot: IFirebaseSnapshot<IEntity>) => {
+  updateStoreData = (
+    updatedSnapshot: IFirebaseSnapshot<IEntity> | IFirebaseDoc<IEntity>,
+  ) => {
     if (!updatedSnapshot) {
       // TBD: Decide what to do in that case. Probably show a Toast with a warning.
       // That's happening sometimes when there is a problem with firebase like missing index, rules etc.
@@ -72,12 +79,26 @@ export default abstract class BaseStore<
     });
 
     const updatesMap = new Map<string, IEntityModel>();
-    updatedSnapshot
-      .docChanges()
-      .forEach((updatedUserDoc: IFirebaseDocChange<IEntity>) => {
-        const updatedEntity = this.firestoreDocToEntity(updatedUserDoc);
-        updatesMap.set(updatedEntity.id, this.getEntityModel(updatedEntity));
-      });
+
+    // Shapshot handling in case of doc list result
+    if (typeof updatedSnapshot?.docChanges === 'function') {
+      (updatedSnapshot as IFirebaseSnapshot<IEntity>)
+        .docChanges()
+        .forEach((updatedUserDoc: IFirebaseDocChange<IEntity>) => {
+          const updatedEntity = this.firestoreDocToEntity(updatedUserDoc);
+          updatesMap.set(updatedEntity.id, this.getEntityModel(updatedEntity));
+        });
+    }
+    // Shapshot handling in case of single doc result.
+    // * Used for subscribeToEntityById type subscriptions
+    else {
+      const updatedFirebaseDoc = updatedSnapshot as IFirebaseDoc<IEntity>;
+      const docData = this.prepareDocData(
+        updatedFirebaseDoc.data(),
+        updatedFirebaseDoc.id,
+      );
+      updatesMap.set(docData.id, this.getEntityModel(docData));
+    }
 
     runInAction(() => {
       this.data.merge(updatesMap);
@@ -87,10 +108,14 @@ export default abstract class BaseStore<
 
   firestoreDocToEntity(firebaseDoc: IFirebaseDocChange<IEntity>): IEntity {
     let docData: IEntity = firebaseDoc.doc.data() as IEntity;
+    return this.prepareDocData(docData, firebaseDoc.doc.id);
+  }
+
+  prepareDocData(docData: IEntity, id: string): IEntity {
     if (!docData.id) {
       docData = {
         ...docData,
-        id: firebaseDoc.doc.id,
+        id,
       };
     }
     return docData;

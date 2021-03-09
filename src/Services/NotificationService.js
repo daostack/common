@@ -10,7 +10,7 @@ import {
   EventTypeState,
 } from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {fetchCommonById} from './ListServices/CommonListService';
-import {getProposalById} from './ListServices/ProposalListService';
+import {fetchProposalById} from './ListServices/ProposalListService';
 import {fetchMessageById} from './ListServices/DiscussionMessageListService';
 import {fetchDiscussionId} from './ListServices/DiscussionListService';
 import {getUserById} from './ListServices/UserListService';
@@ -139,7 +139,7 @@ export default class NotificationService {
                 case EventTypeState.fundingRequestAccepted:
                 case EventTypeState.fundingRequestExecuted:
                 case EventTypeState.fundingRequestRejected:
-                  proposal = await getProposalById(data.eventObjectId);
+                  proposal = await fetchProposalById(data.eventObjectId);
                   if (proposal) {
                     common = await fetchCommonById(proposal.commonId);
                     user = await getUserById(proposal.proposerId);
@@ -161,7 +161,7 @@ export default class NotificationService {
                         data = {
                           ...data,
                           header: ' by',
-                          headerBold: ` "${user.displayName}"`,
+                          headerBold: ` "${user.firstName} ${user.lastName}"`,
                         };
                       }
                       dataProperlyLoaded = true;
@@ -176,27 +176,30 @@ export default class NotificationService {
                     const discussion = await fetchDiscussionId(
                       message.discussionId,
                     );
+                    user = await getUserById(message.ownerId);
 
-                    data = {
-                      ...data,
-                      descriptionBold: `${message.ownerName}`,
-                      description: ` ${message.text}`,
-                      ownerAvatar: message.ownerAvatar,
-                      discussion: {...discussion, id: message.discussionId},
-                    };
+                    if (user) {
+                      data = {
+                        ...data,
+                        descriptionBold: `${user.firstName} ${user.lastName}`,
+                        description: ` ${message.text}`,
+                        ownerAvatar: user.photoURL,
+                        discussion: {...discussion, id: message.discussionId},
+                      };
 
-                    if (discussion && discussion.commonId) {
-                      common = await fetchCommonById(discussion.commonId);
+                      if (discussion && discussion.commonId) {
+                        common = await fetchCommonById(discussion.commonId);
 
-                      if (common && common.name) {
-                        data = {
-                          ...data,
-                          header: ' on',
-                          headerBold: ` "${discussion.title}"`,
-                          commonName: common.name,
-                          commonId: discussion.commonId,
-                        };
-                        dataProperlyLoaded = true;
+                        if (common && common.name) {
+                          data = {
+                            ...data,
+                            header: ' on',
+                            headerBold: ` "${discussion.title}"`,
+                            commonName: common.name,
+                            commonId: discussion.commonId,
+                          };
+                          dataProperlyLoaded = true;
+                        }
                       }
                     }
                   }
@@ -204,7 +207,7 @@ export default class NotificationService {
                   break;
 
                 case EventTypeState.requestToJoinAccepted:
-                  proposal = await getProposalById(data.eventObjectId);
+                  proposal = await fetchProposalById(data.eventObjectId);
                   if (proposal) {
                     common = await fetchCommonById(proposal.commonId);
                     user = await getUserById(proposal.proposerId);
@@ -224,7 +227,7 @@ export default class NotificationService {
                   break;
 
                 case EventTypeState.requestToJoinCreated:
-                  proposal = await getProposalById(data.eventObjectId);
+                  proposal = await fetchProposalById(data.eventObjectId);
                   if (proposal) {
                     common = await fetchCommonById(proposal.commonId);
                     user = await getUserById(proposal.proposerId);
@@ -244,7 +247,7 @@ export default class NotificationService {
                   break;
 
                 case EventTypeState.requestToJoinRejected:
-                  proposal = await getProposalById(data.eventObjectId);
+                  proposal = await fetchProposalById(data.eventObjectId);
                   if (proposal) {
                     common = await fetchCommonById(proposal.commonId);
                     user = await getUserById(proposal.proposerId);

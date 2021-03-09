@@ -55,8 +55,10 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
         proposalId: item.proposal.id,
       });
     } else if (item.discussion) {
+      //Temporaly disabling this for a data handling issue
       navigation.navigate(NAVIGATION_SCREENS.DISCUSSIONS, {
         discussionId: item.discussion.id,
+        fromNotification: true,
       });
     }
   };
