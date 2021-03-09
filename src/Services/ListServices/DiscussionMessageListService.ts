@@ -19,14 +19,29 @@ export const subscribeToProposalDiscussionMessages = (
 export const subscribeToDiscussionsMessages = (
   discussionIds: Array<string>,
   callback: commonDiscussionMessagesListLoadCallbackFn,
-) =>
-  discussionIds?.length > 0
-    ? DiscussionMessagesCollection.where('discussionId', 'in', discussionIds)
-        .orderBy('createTime', 'desc')
-        .onSnapshot((snapshot: IFirebaseSnapshot<IDiscussionMessageEntity>) => {
-          callback(snapshot);
-        })
-    : null;
+) => {
+  const chunkSize = 10;
+  const unsubscribeArr = [];
+  if (discussionIds?.length > 0) {
+    while (discussionIds?.length) {
+      const currDiscussionIdsChunk = discussionIds.splice(0, chunkSize);
+      unsubscribeArr.push(
+        DiscussionMessagesCollection.where(
+          'discussionId',
+          'in',
+          currDiscussionIdsChunk,
+        )
+          .orderBy('createTime', 'desc')
+          .onSnapshot(
+            (snapshot: IFirebaseSnapshot<IDiscussionMessageEntity>) => {
+              callback(snapshot);
+            },
+          ),
+      );
+    }
+  }
+  return unsubscribeArr;
+};
 
 export const fetchMessageById = async (
   messageId: string,
