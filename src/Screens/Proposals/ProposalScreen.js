@@ -140,17 +140,17 @@ const ProposalScreen = ({
     : null;
 
   const showDebtInfo =
-    proposalInfo.isFundingRequest &&
+    proposalInfo?.isFundingRequest &&
     proposalInfo.isCountdown &&
     proposalInfo.fundingRequest.amount > 0;
 
   const showPaymentStatus =
-    proposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.PENDING ||
-    proposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.NOT_ATTEMPTED ||
-    proposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.FAILED;
+    proposalInfo?.paymentState === PROPOSAL_PAYMENT_STATE.PENDING ||
+    proposalInfo?.paymentState === PROPOSAL_PAYMENT_STATE.NOT_ATTEMPTED ||
+    proposalInfo?.paymentState === PROPOSAL_PAYMENT_STATE.FAILED;
 
   const isMember = userInfo && isDaoMember(proposalCommon?.members || []);
-  const isProposer = authStore.isProposer(proposalInfo);
+  const isProposer = proposalInfo ? authStore.isProposer(proposalInfo) : false;
 
   const renderVoting =
     proposalInfo &&
@@ -159,7 +159,7 @@ const ProposalScreen = ({
     !proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid);
 
   useEffect(() => {
-    if (proposalInfo.type === PROPOSAL_TYPE.Join) {
+    if (proposalInfo?.type === PROPOSAL_TYPE.Join) {
       navigation.setParams({
         title: 'Request to join',
         subtitle: proposalCommon?.name,
@@ -446,7 +446,7 @@ const ProposalScreen = ({
     }),
   };
 
-  const amount = proposalInfo.funding / 100;
+  const amount = proposalInfo?.funding / 100;
 
   const onSetIndex = (item) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG_SLOW);
@@ -934,7 +934,7 @@ const ProposalScreen = ({
                     </View>
 
                     <Text style={text.smallBlackText}>
-                      {proposalInfo.votesCount === 0
+                      {!proposalInfo.votesCount
                         ? 'No votes yet'
                         : `${proposalInfo.votesCount} ${
                             proposalInfo.votesCount > 1 ? 'votes' : 'vote'
@@ -963,7 +963,7 @@ const ProposalScreen = ({
                       ...styles.proposalProgressBar,
                       ...{
                         backgroundColor: isNaN(
-                          proposalInfo.progressBarWidthPercent,
+                          proposalInfo?.progressBarWidthPercent,
                         )
                           ? colors.grey4
                           : colors.against,
@@ -972,7 +972,7 @@ const ProposalScreen = ({
                     <View
                       style={{
                         ...styles.proposalInnerProgressBar,
-                        width: `${proposalInfo.progressBarWidthPercent}%`,
+                        width: `${proposalInfo?.progressBarWidthPercent || 0}%`,
                       }}
                     />
                   </View>
