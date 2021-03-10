@@ -13,12 +13,12 @@ import {
   IUIProposalImage,
   IJoinReqDescription,
   IFundingRequestDescription,
-  IModerationEntity,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {BaseModel} from './BaseModel';
 import ImageSize from 'react-native-image-size';
 import {promisedComputed} from 'computed-async-mobx';
 import Logger from '~/Services/Logger';
+import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 
 export class Proposal extends BaseModel<IProposalEntity> {
   @observable
@@ -128,9 +128,9 @@ export class Proposal extends BaseModel<IProposalEntity> {
   @computed
   get funding() {
     if (this.type === PROPOSAL_TYPE.Join) {
-      return this.join?.funding;
+      return (this as IJoinRequestProposal).join.funding;
     } else {
-      return this.fundingRequest?.amount;
+      return (this as IFundingRequestProposal).fundingRequest.amount;
     }
   }
 

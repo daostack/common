@@ -1,5 +1,6 @@
 import BaseStore from './BaseStore';
 import {
+  fetchMessageById,
   subscribeToDiscussionsMessages,
   subscribeToProposalDiscussionMessages,
 } from '~/Services/ListServices/DiscussionMessageListService';
@@ -7,6 +8,7 @@ import {FirestoreUnsubscribeFn, IFirebaseDocChange} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {DiscussionMessage} from '../Models/DiscussionMessage';
+import {runInAction} from 'mobx';
 
 export default class DiscussionMessageStore extends BaseStore<
   DiscussionMessage,
@@ -17,9 +19,20 @@ export default class DiscussionMessageStore extends BaseStore<
   }
 
   // Data consuming methods
-  getDiscussionMessageById = (
-    id: string,
-  ): IDiscussionMessageEntity | undefined => this.getDataById(id);
+  getDiscussionMessageById = (id: string): DiscussionMessage | undefined => {
+    try {
+      return this.getDataById(id);
+    } catch (errr) {
+      // Temporary logic for fetching Discussion Message in case it's not in the store.
+      this.setData(id, null);
+      fetchMessageById(id).then((discussion: IDiscussionMessageEntity) => {
+        runInAction(() => {
+          this.setData(id, new DiscussionMessage(discussion));
+        });
+      });
+      return this.getDataById(id);
+    }
+  };
 
   getDiscussionMessagesByDiscussionId = (
     discussionId: string,

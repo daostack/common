@@ -64,9 +64,6 @@ import Toast from './src/Util/Toast';
 import {object} from 'prop-types';
 import logger from './src/Services/Logger';
 import {fontSize} from './src/Theme/font';
-import ProposalService from './src/Services/ProposalService';
-import CommonService from './src/Services/CommonService';
-import DiscussionService from './src/Services/DiscussionService';
 import Loader from '~/Components/Loader';
 
 const Stack = createStackNavigator();
@@ -87,6 +84,7 @@ const App = ({rootStore, navigation}) => {
   const userStore = rootStore.userStore;
   const commonStore = rootStore.commonStore;
   const proposalStore = rootStore.proposalStore;
+  const notificationStore = rootStore.notificationStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const appLoaderStore = rootStore.uiStore.appLoaderStore;
 
@@ -120,6 +118,9 @@ const App = ({rootStore, navigation}) => {
   useEffect(() => {
     const unsubscribeUsers = userStore.subscribeToAllUsers();
     const unsubscribeCommons = commonStore.subscribeToAllCommons();
+    const unsubscribeUserNotifications = notificationStore.subscribeToUserNotifications(
+      authStore.userInfo?.uid,
+    );
     let unsubscribeProposals = null;
     if (authStore.userInfo?.uid) {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
@@ -130,6 +131,7 @@ const App = ({rootStore, navigation}) => {
       unsubscribeUsers && unsubscribeUsers();
       unsubscribeCommons && unsubscribeCommons();
       unsubscribeProposals && unsubscribeProposals();
+      unsubscribeUserNotifications && unsubscribeUserNotifications();
     };
   }, [authStore.userInfo?.uid]);
 
@@ -143,34 +145,21 @@ const App = ({rootStore, navigation}) => {
         objectId,
         tabIndex = 0,
       ] = remoteMessage.data.path.split('/');
-      const currCommon = await CommonService.getInstance().getCommonInfo(
-        commonId,
-      );
       // whitelist;approve/reject requestToJoin
       if (screenName === 'CommonProfile') {
-        routing(screenName, {currCommon});
+        routing(screenName, {commonId});
       }
       // new discussionMessage
       else if (screenName === 'Discussions') {
-        const discussion = await DiscussionService.getInstance().getDiscussionInfo(
-          objectId,
-        );
         routing(screenName, {
-          data: discussion,
           discussionId: objectId,
           commonId,
         });
       }
       // create/approve proposal
       else {
-        const proposal = await ProposalService.getInstance().getProposalInfo(
-          objectId,
-        );
         routing(screenName, {
-          proposalId: proposal.id,
-          screenTitle: currCommon.name,
-          commonBalance: currCommon.balance,
-          proposalCardInfo: proposal,
+          proposalId: objectId,
           tabIndex: +tabIndex,
         });
       }
@@ -576,7 +565,9 @@ const App = ({rootStore, navigation}) => {
           component={MonthlyContribution}
         />
       </Stack.Navigator>
-      {appLoaderStore.isLoading && <Loader isBigger isFullScreen navigation={navigationRef}/>}
+      {appLoaderStore.isLoading && (
+        <Loader isBigger isFullScreen navigation={navigationRef} />
+      )}
       {bottomSheetStore.isVisible && <BottomSheetContainer />}
       <ToastView
         ref={hudRef}

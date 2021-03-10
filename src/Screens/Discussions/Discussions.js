@@ -40,7 +40,7 @@ const {width} = Dimensions.get('window');
 const Discussions = ({
   navigation,
   route: {
-    params: {commonId, discussionId, data, hasPermission, fromNotification},
+    params: {commonId, discussionId, hasPermission, fromNotification},
   },
   rootStore,
 }) => {
@@ -502,7 +502,6 @@ Discussions.propTypes = {
     params: shape({
       commonId: string,
       discussionId: string,
-      data: object,
     }),
   }),
 };
