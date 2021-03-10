@@ -5,6 +5,7 @@ import AuthStore from './AuthStore';
 import ProposalStore from './DataStores/ProposalStore';
 import AsyncStorage from '@react-native-community/async-storage';
 import DiscussionStore from './DataStores/DiscussionStore';
+import NotificationStore from './DataStores/NotificationStore';
 import DiscussionMessageStore from './DataStores/DiscussionMessageStore';
 import UIStore from './UIStore';
 
@@ -20,6 +21,7 @@ export default class RootStore {
   proposalStore: ProposalStore;
   discussionStore: DiscussionStore;
   discussionMessageStore: DiscussionMessageStore;
+  notificationStore: NotificationStore;
   uiStore: UIStore;
 
   constructor() {
@@ -29,6 +31,7 @@ export default class RootStore {
     this.proposalStore = new ProposalStore(this);
     this.discussionStore = new DiscussionStore(this);
     this.discussionMessageStore = new DiscussionMessageStore(this);
+    this.notificationStore = new NotificationStore(this);
     this.uiStore = new UIStore(this);
 
     Promise.all([
@@ -36,6 +39,7 @@ export default class RootStore {
       hydrate('userStore', this.userStore),
       hydrate('commonStore', this.commonStore),
       hydrate('proposalStore', this.proposalStore),
-    ]).then(() => console.log('AFTER ALL STORE INITI'));
+      hydrate('notificationStore', this.notificationStore),
+    ]);
   }
 }

@@ -1,5 +1,6 @@
 import BaseStore from './BaseStore';
 import {
+  fetchMessageById,
   subscribeToDiscussionsMessages,
   subscribeToProposalDiscussionMessages,
 } from '~/Services/ListServices/DiscussionMessageListService';
@@ -19,7 +20,18 @@ export default class DiscussionMessageStore extends BaseStore<
   // Data consuming methods
   getDiscussionMessageById = (
     id: string,
-  ): IDiscussionMessageEntity | undefined => this.getDataById(id);
+  ): IDiscussionMessageEntity | undefined => {
+    try {
+      return this.getDataById(id);
+    } catch (errr) {
+      // Temporary logic for fetching Discussion in case it's not in the store.
+      this.data.set(id, null);
+      fetchMessageById(id).then((discussion: IDiscussionMessageEntity) => {
+        this.data.set(id, new DiscussionMessage(discussion));
+      });
+      return this.getDataById(id);
+    }
+  };
 
   getDiscussionMessagesByDiscussionId = (
     discussionId: string,

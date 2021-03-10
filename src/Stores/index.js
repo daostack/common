@@ -10,5 +10,6 @@ export default {
   proposalStore: rootStore.proposalStore,
   discussionStore: rootStore.discussionStore,
   discussionMessageStore: rootStore.discussionMessageStore,
+  notificationStore: rootStore.notificationStore,
   uiStore: rootStore.uiStore,
 };

@@ -5,23 +5,34 @@ import {layout, font, sizeS, colors} from '~/Theme';
 import {InferProps, object} from 'prop-types';
 import NotificationItem from '~/Components/Notifications/NotificationItem';
 import NotificationService from '~/Services/NotificationService';
-import {FlatList} from 'react-native-gesture-handler';
+import {FlatList, ListRenderItem} from 'react-native-gesture-handler';
 import Loader from '~/Components/Loader';
+import {inject, observer} from 'mobx-react';
+import {notificationStorePropTypes} from '~/Types/propTypes';
+import {Notification} from '~/Stores/Models/Notification';
+import {ReactElement} from 'react';
 
 const props = {
   navigation: object,
+  notificationStore: notificationStorePropTypes.isRequired,
 };
+const NotificationList: React.FC<InferProps<typeof props>> = ({
+  navigation,
+  notificationStore,
+}) => {
+  const notificationList: Array<Notification> = notificationStore.getUserNotifications();
+  // useEffect(() => {
+  //   NotificationService.getNotificationList().then((result) => {
+  //     setNotificationList(result);
+  //     setLoading(false);
+  //   });
+  // }, []);
 
-const NotificationList: React.FC<InferProps<typeof props>> = ({navigation}) => {
-  const [notificationList, setNotificationList] = useState([]);
-  const [isLoading, setLoading] = useState(true);
+  console.log('notificationList -> ', notificationList);
 
-  useEffect(() => {
-    NotificationService.getNotificationList().then((result) => {
-      setNotificationList(result);
-      setLoading(false);
-    });
-  }, []);
+  const renderNotificationItem = ({item}: {item: Notification}) => (
+    <NotificationItem item={item} navigation={navigation} />
+  );
 
   return (
     <>
@@ -32,14 +43,10 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({navigation}) => {
           <Text style={styles.title}>Notifications</Text>
         </View>
 
-        {isLoading ? (
-          <Loader isBigger />
-        ) : (
+        {notificationList ? (
           <FlatList
-            data={notificationList}
-            renderItem={({item}) => (
-              <NotificationItem item={item} navigation={navigation} />
-            )}
+            data={notificationList.slice()}
+            renderItem={renderNotificationItem}
             ItemSeparatorComponent={() => (
               <View
                 style={{
@@ -49,15 +56,15 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({navigation}) => {
               />
             )}
           />
+        ) : (
+          <Loader isBigger />
         )}
       </SafeAreaView>
     </>
   );
 };
 
-NotificationList.propTypes = {
-  navigation: object,
-};
+NotificationList.propTypes = props;
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -79,4 +86,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NotificationList;
+export default inject('notificationStore')(observer(NotificationList));

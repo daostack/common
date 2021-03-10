@@ -50,8 +50,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   }
 
   // Data consuming methods
-  getCommonById = (id: string): ICommonEntity | undefined =>
-    this.getDataById(id);
+  getCommonById = (id: string): Common | undefined => this.getDataById(id);
 
   getUserCommons = (userId: string) =>
     this.getDataArray.filter((common: Common) =>
@@ -68,9 +67,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
    * @param  changedBy        - the user who is responsible for the change
    * @return                  - response returned from the updateCommon call
    */
-  updateCommonInfo = async (
-    updateCommonInfo: Partial<ICommonEntity>,
-  ) => {
+  updateCommonInfo = async (updateCommonInfo: Partial<ICommonEntity>) => {
     try {
       const updateResponse = await updateCommon(updateCommonInfo);
       return updateResponse;
