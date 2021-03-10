@@ -4,10 +4,12 @@ import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
 import NotificationBadge from './NotificationBadge';
 import {CommonActions} from '@react-navigation/native';
-import {InferProps, object, shape, string, bool} from 'prop-types';
+import {InferProps, object, shape, string, bool, func} from 'prop-types';
 import {formatNotificationDate} from '~/Util/DateUtil';
 import NotificationService from '~/Services/NotificationService';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {inject, observer} from 'mobx-react';
+import {notificationStorePropTypes} from '~/Types/propTypes';
 
 const props = {
   item: shape({
@@ -25,15 +27,18 @@ const props = {
       discussion: shape({
         id: string,
       }),
-      ownerAvatar: string,
+      ownerAvatar: string.isRequired,
       description: string,
       descriptionBold: string,
       header: string,
       headerBold: string,
-      commonName: string,
     }).isRequired,
   }).isRequired,
-  navigation: object.isRequired,
+  navigation: shape({
+    navigate: func.isRequired,
+    dispatch: func.isRequired,
+  }).isRequired,
+  notificationStore: notificationStorePropTypes.isRequired,
 };
 
 const NotificationItem: React.FC<InferProps<typeof props>> = ({
@@ -61,7 +66,6 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
         proposalId: item.notificationItemData.proposal.id,
       });
     } else if (item.notificationItemData.discussion) {
-      //Temporaly disabling this for a data handling issue
       navigation.navigate(NAVIGATION_SCREENS.DISCUSSIONS, {
         discussionId: item.notificationItemData.discussion.id,
         fromNotification: true,
@@ -78,13 +82,6 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
     });
     NotificationService.setNotificationRead(item.id);
   }, []);
-
-  if (
-    !item.notificationItemData ||
-    item.notificationItemData?.missingData === true
-  ) {
-    return null;
-  }
 
   return (
     <TouchableOpacity
@@ -211,4 +208,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NotificationItem;
+export default inject('notificationStore')(observer(NotificationItem));

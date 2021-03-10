@@ -11,14 +11,14 @@ import {notificationStorePropTypes} from '~/Types/propTypes';
 import {Notification} from '~/Stores/Models/Notification';
 
 const props = {
-  navigation: object,
+  navigation: object.isRequired,
   notificationStore: notificationStorePropTypes.isRequired,
 };
 const NotificationList: React.FC<InferProps<typeof props>> = ({
   navigation,
   notificationStore,
 }) => {
-  const notificationList: Array<Notification> = notificationStore.getUserNotifications();
+  const notificationList: Array<Notification> = notificationStore.getLoggedUserNotifications();
 
   const renderNotificationItem = ({item}: {item: Notification}) => (
     <NotificationItem item={item} navigation={navigation} />

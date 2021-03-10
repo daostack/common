@@ -1,4 +1,4 @@
-import {computed} from 'mobx';
+import {computed, runInAction} from 'mobx';
 import BaseStore from './BaseStore';
 import {
   subscribeToProposalList,
@@ -87,9 +87,11 @@ export default class ProposalStore extends BaseStore<
       return this.getDataById(id);
     } catch (errr) {
       // Add the proposal id as a key in order to have null mobx state for that proposal, while it's loaded.
-      this.data.set(id, null);
+      this.setData(id, null);
       fetchProposalById(id).then((proposal: IProposalEntity) => {
-        this.data.set(id, new Proposal(proposal));
+        runInAction(() => {
+          this.setData(id, new Proposal(proposal));
+        });
       });
       return this.getDataById(id);
     }

@@ -60,7 +60,8 @@ export const discussionMessageStorePropTypes = shape({
 });
 
 export const notificationStorePropTypes = shape({
-  getUserNotifications: func.isRequired,
+  getNotificationById: func.isRequired,
+  getLoggedUserNotifications: func.isRequired,
   subscribeToUserNotifications: func.isRequired,
 });
 

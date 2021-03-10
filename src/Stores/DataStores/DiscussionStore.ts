@@ -8,6 +8,7 @@ import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {Discussion} from '../Models/Discussion';
+import {runInAction} from 'mobx';
 
 export default class DiscussionStore extends BaseStore<
   Discussion,
@@ -18,14 +19,16 @@ export default class DiscussionStore extends BaseStore<
   }
 
   // Data consuming methods
-  getDiscussionById = (id: string): IDiscussionEntity | undefined => {
+  getDiscussionById = (id: string): Discussion | undefined => {
     try {
       return this.getDataById(id);
     } catch (errr) {
       // Temporary logic for fetching Discussion in case it's not in the store.
-      this.data.set(id, null);
+      this.setData(id, null);
       fetchDiscussionId(id).then((discussion: IDiscussionEntity) => {
-        this.data.set(id, new Discussion(discussion));
+        runInAction(() => {
+          this.setData(id, new Discussion(discussion));
+        });
       });
       return this.getDataById(id);
     }

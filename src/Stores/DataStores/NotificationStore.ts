@@ -13,8 +13,15 @@ export default class NotificationStore extends BaseStore<
     super(rootStore);
   }
 
-  getUserNotifications = (userId: string): Array<Notification> | undefined =>
-    this.getDataArray?.filter((notification: Notification) => true);
+  // Data consuming methods
+  getNotificationById = (id: string): Notification | undefined =>
+    this.getDataById(id);
+
+  getLoggedUserNotifications = (): Array<Notification> | undefined =>
+    this.getDataArray?.filter(
+      (notification: Notification) =>
+        notification.notificationItemData?.missingData === false,
+    );
   //Actions
   subscribeToUserNotifications = (userId: string): FirestoreUnsubscribeFn =>
     subscribeToUserNotifications(userId, this.updateStoreData);
