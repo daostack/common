@@ -4,30 +4,42 @@ import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
 import NotificationBadge from './NotificationBadge';
 import {CommonActions} from '@react-navigation/native';
-import {InferProps, object, shape, string} from 'prop-types';
+import {InferProps, object, shape, string, bool, func} from 'prop-types';
 import {formatNotificationDate} from '~/Util/DateUtil';
 import NotificationService from '~/Services/NotificationService';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {notificationStorePropTypes} from '~/Types/propTypes';
+import {inject, observer} from 'mobx-react';
 
 const props = {
   item: shape({
-    common: object,
-    proposal: shape({
-      id: string,
-    }),
-    discussion: shape({
-      id: string,
-    }),
-    ownerAvatar: string,
-    eventType: string,
-    createdAt: object,
-    description: string,
-    descriptionBold: string,
-    header: string,
-    headerBold: string,
-    commonName: string,
+    id: string.isRequired,
+    eventType: string.isRequired,
+    createdAt: object.isRequired,
+    notificationItemData: shape({
+      missingData: bool.isRequired,
+      common: shape({
+        name: string,
+      }),
+      proposal: shape({
+        id: string,
+      }),
+      discussion: shape({
+        id: string,
+      }),
+      ownerAvatar: string.isRequired,
+      description: string,
+      descriptionBold: string,
+      header: string,
+      headerBold: string,
+    }).isRequired,
   }).isRequired,
-  navigation: object.isRequired,
+  navigation: shape({
+    navigate: func.isRequired,
+    dispatch: func.isRequired,
+  }).isRequired,
+  notificationStore: notificationStorePropTypes.isRequired,
 };
 
 const NotificationItem: React.FC<InferProps<typeof props>> = ({
@@ -42,24 +54,34 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
     NotificationService.setNotificationClicked(item.id);
     setClicked(true);
 
-    if (item.common) {
+    if (item.notificationItemData.common) {
       navigate = CommonActions.navigate({
         name: NAVIGATION_SCREENS.COMMON_PROFILE,
         params: {
-          currCommon: item.common,
+          currCommon: item.notificationItemData.common,
         },
       });
       navigation.dispatch(navigate);
-    } else if (item.proposal) {
+    } else if (item.notificationItemData.proposal) {
       navigation.navigate(NAVIGATION_SCREENS.PROPOSAL_SCREEN, {
-        proposalId: item.proposal.id,
+        proposalId: item.notificationItemData.proposal.id,
       });
-    } else if (item.discussion) {
-      //Temporaly disabling this for a data handling issue
+    } else if (item.notificationItemData.discussion) {
       navigation.navigate(NAVIGATION_SCREENS.DISCUSSIONS, {
-        discussionId: item.discussion.id,
+        discussionId: item.notificationItemData.discussion.id,
         fromNotification: true,
       });
+    } else if (item.eventType === EventTypeState.welcomeNotification) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [
+            {
+              name: NAVIGATION_SCREENS.COMMON_HOME,
+            },
+          ],
+        }),
+      );
     }
   };
 
@@ -92,7 +114,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
           <FastImage
             style={styles.userImage}
             source={{
-              uri: item.ownerAvatar,
+              uri: item.notificationItemData.ownerAvatar,
             }}
           />
           {!isRead && <View style={styles.notReadDot} />}
@@ -101,23 +123,29 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
           <View style={styles.headerContainer}>
             <NotificationBadge type={item.eventType} />
             <Text>
-              <Text style={styles.prefixStyle}>{item.header}</Text>
-              <Text style={styles.whereStyle}>{item.headerBold}</Text>
+              <Text style={styles.prefixStyle}>
+                {item.notificationItemData.header}
+              </Text>
+              <Text style={styles.whereStyle}>
+                {item.notificationItemData.headerBold}
+              </Text>
             </Text>
           </View>
           <View style={styles.messageContainer}>
             <Text numberOfLines={2} style={{flexDirection: 'row'}}>
               <Text style={[styles.messageStyle, {...font.primary.bold}]}>
-                {item.descriptionBold}
+                {item.notificationItemData.descriptionBold}
               </Text>
               <Text style={[styles.messageStyle, {flexShrink: 1}]}>
-                {item.description}
+                {item.notificationItemData.description}
               </Text>
             </Text>
           </View>
           <Text style={styles.dateStyle}>
             {formatNotificationDate(item.createdAt.toDate())}
-            {item.commonName && <Text>{`, ${item.commonName}`}</Text>}
+            {item.notificationItemData.common && (
+              <Text>{`, ${item.notificationItemData.common.name}`}</Text>
+            )}
           </Text>
         </View>
       </View>
@@ -192,4 +220,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NotificationItem;
+export default inject('notificationStore')(observer(NotificationItem));

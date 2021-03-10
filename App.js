@@ -84,6 +84,7 @@ const App = ({rootStore, navigation}) => {
   const userStore = rootStore.userStore;
   const commonStore = rootStore.commonStore;
   const proposalStore = rootStore.proposalStore;
+  const notificationStore = rootStore.notificationStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const appLoaderStore = rootStore.uiStore.appLoaderStore;
 
@@ -117,6 +118,9 @@ const App = ({rootStore, navigation}) => {
   useEffect(() => {
     const unsubscribeUsers = userStore.subscribeToAllUsers();
     const unsubscribeCommons = commonStore.subscribeToAllCommons();
+    const unsubscribeUserNotifications = notificationStore.subscribeToUserNotifications(
+      authStore.userInfo?.uid,
+    );
     let unsubscribeProposals = null;
     if (authStore.userInfo?.uid) {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
@@ -127,6 +131,7 @@ const App = ({rootStore, navigation}) => {
       unsubscribeUsers && unsubscribeUsers();
       unsubscribeCommons && unsubscribeCommons();
       unsubscribeProposals && unsubscribeProposals();
+      unsubscribeUserNotifications && unsubscribeUserNotifications();
     };
   }, [authStore.userInfo?.uid]);
 
@@ -560,7 +565,9 @@ const App = ({rootStore, navigation}) => {
           component={MonthlyContribution}
         />
       </Stack.Navigator>
-      {appLoaderStore.isLoading && <Loader isBigger isFullScreen navigation={navigationRef}/>}
+      {appLoaderStore.isLoading && (
+        <Loader isBigger isFullScreen navigation={navigationRef} />
+      )}
       {bottomSheetStore.isVisible && <BottomSheetContainer />}
       <ToastView
         ref={hudRef}

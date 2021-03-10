@@ -117,7 +117,6 @@ export default class NotificationService {
             if (data.eventObjectId) {
               switch (data.eventType) {
                 case EventTypeState.commonWhitelisted:
-                case EventTypeState.commonCreated:
                   common = await fetchCommonById(data.eventObjectId);
                   if (common) {
                     user = await getUserById(common.members[0].userId);
@@ -276,9 +275,30 @@ export default class NotificationService {
           }),
         );
 
+        const welcomeNotification = await this.addWelcomeNotification();
+
+        resultFormatted.push(welcomeNotification);
+
         return resultFormatted.filter((item) => item !== TODELETE);
       })
       .catch((error) => console.log(error));
+  }
+
+  static async addWelcomeNotification() {
+    const userId = auth().currentUser.uid;
+    const user = await getUserById(userId);
+
+    const data = {
+      id: EventTypeState.welcomeNotification,
+      descriptionBold: "We're excited to have you with us",
+      description: ' Looking for the first Common to join? Browse now.',
+      ownerAvatar:
+        'https://firebasestorage.googleapis.com/v0/b/common-staging-50741.appspot.com/o/public_img%2FappLogo.png?alt=media&token=41fec685-b6fb-4b56-813a-fd3e8756787a',
+      createdAt: user.createdAt,
+      eventType: EventTypeState.welcomeNotification,
+    };
+
+    return data;
   }
 
   static async listenTransaction(txHash) {

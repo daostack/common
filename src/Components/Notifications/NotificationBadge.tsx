@@ -17,9 +17,9 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
 
   useEffect(() => {
     switch (type) {
-      case EventTypeState.commonCreated:
+      case EventTypeState.welcomeNotification:
         setBadgeValues({
-          title: EventTitleState.commonCreated,
+          title: EventTitleState.welcomeNotification,
           bgColor: colors.lightBlue,
           textColor: colors.mainBlue,
         });
