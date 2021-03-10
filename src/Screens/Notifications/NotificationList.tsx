@@ -1,16 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 
 import {SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-native';
 import {layout, font, sizeS, colors} from '~/Theme';
 import {InferProps, object} from 'prop-types';
 import NotificationItem from '~/Components/Notifications/NotificationItem';
-import NotificationService from '~/Services/NotificationService';
-import {FlatList, ListRenderItem} from 'react-native-gesture-handler';
+import {FlatList} from 'react-native-gesture-handler';
 import Loader from '~/Components/Loader';
 import {inject, observer} from 'mobx-react';
 import {notificationStorePropTypes} from '~/Types/propTypes';
 import {Notification} from '~/Stores/Models/Notification';
-import {ReactElement} from 'react';
 
 const props = {
   navigation: object,
@@ -21,14 +19,6 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
   notificationStore,
 }) => {
   const notificationList: Array<Notification> = notificationStore.getUserNotifications();
-  // useEffect(() => {
-  //   NotificationService.getNotificationList().then((result) => {
-  //     setNotificationList(result);
-  //     setLoading(false);
-  //   });
-  // }, []);
-
-  console.log('notificationList -> ', notificationList);
 
   const renderNotificationItem = ({item}: {item: Notification}) => (
     <NotificationItem item={item} navigation={navigation} />
@@ -47,6 +37,7 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
           <FlatList
             data={notificationList.slice()}
             renderItem={renderNotificationItem}
+            initialNumToRender={8}
             ItemSeparatorComponent={() => (
               <View
                 style={{

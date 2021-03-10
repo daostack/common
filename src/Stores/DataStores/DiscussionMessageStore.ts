@@ -24,7 +24,7 @@ export default class DiscussionMessageStore extends BaseStore<
     try {
       return this.getDataById(id);
     } catch (errr) {
-      // Temporary logic for fetching Discussion in case it's not in the store.
+      // Temporary logic for fetching Discussion Message in case it's not in the store.
       this.data.set(id, null);
       fetchMessageById(id).then((discussion: IDiscussionMessageEntity) => {
         this.data.set(id, new DiscussionMessage(discussion));
