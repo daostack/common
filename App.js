@@ -64,9 +64,6 @@ import Toast from './src/Util/Toast';
 import {object} from 'prop-types';
 import logger from './src/Services/Logger';
 import {fontSize} from './src/Theme/font';
-import ProposalService from './src/Services/ProposalService';
-import CommonService from './src/Services/CommonService';
-import DiscussionService from './src/Services/DiscussionService';
 import Loader from '~/Components/Loader';
 
 const Stack = createStackNavigator();
@@ -143,34 +140,21 @@ const App = ({rootStore, navigation}) => {
         objectId,
         tabIndex = 0,
       ] = remoteMessage.data.path.split('/');
-      const currCommon = await CommonService.getInstance().getCommonInfo(
-        commonId,
-      );
       // whitelist;approve/reject requestToJoin
       if (screenName === 'CommonProfile') {
-        routing(screenName, {currCommon});
+        routing(screenName, {commonId});
       }
       // new discussionMessage
       else if (screenName === 'Discussions') {
-        const discussion = await DiscussionService.getInstance().getDiscussionInfo(
-          objectId,
-        );
         routing(screenName, {
-          data: discussion,
           discussionId: objectId,
           commonId,
         });
       }
       // create/approve proposal
       else {
-        const proposal = await ProposalService.getInstance().getProposalInfo(
-          objectId,
-        );
         routing(screenName, {
-          proposalId: proposal.id,
-          screenTitle: currCommon.name,
-          commonBalance: currCommon.balance,
-          proposalCardInfo: proposal,
+          proposalId: objectId,
           tabIndex: +tabIndex,
         });
       }
