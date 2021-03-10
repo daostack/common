@@ -5,11 +5,8 @@ import {
   NotificationItemData,
   IProposalNotificationData,
 } from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
-import CommonStore from '../DataStores/CommonStore';
-import UserStore from '../DataStores/UserStore';
 import RootStore from '../RootStore';
 import {BaseModel} from './BaseModel';
-import {Common} from './Common';
 import logger from '~/Services/Logger';
 
 export class Notification extends BaseModel<INotificationEntity> {

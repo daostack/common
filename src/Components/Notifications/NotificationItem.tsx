@@ -4,11 +4,10 @@ import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
 import NotificationBadge from './NotificationBadge';
 import {CommonActions} from '@react-navigation/native';
-import {InferProps, object, shape, func, string, bool} from 'prop-types';
+import {InferProps, object, shape, string, bool} from 'prop-types';
 import {formatNotificationDate} from '~/Util/DateUtil';
 import NotificationService from '~/Services/NotificationService';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
-import {NotificationItemData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 
 const props = {
   item: shape({
