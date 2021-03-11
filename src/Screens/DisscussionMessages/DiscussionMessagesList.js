@@ -48,7 +48,7 @@ const DiscussionMessagesList = ({
     }, []);
 
   setTimeout(() => {
-    scrollViewRef.current.scrollToEnd({
+    scrollViewRef.current?.scrollToEnd({
       animated: true,
     });
   }, 150);

@@ -120,7 +120,7 @@ export default class ProposalStore extends BaseStore<
   ): Array<Proposal> =>
     this.getDataArray
       .filter((proposal: Proposal) => {
-        const isSameCommon = proposal.commonId === commonId;
+        const isSameCommon = proposal?.commonId === commonId;
         if (isSameCommon) {
           return this._applyFilter(proposal, proposalFilter);
         }

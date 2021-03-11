@@ -49,6 +49,7 @@ import {
   EditCommon,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
+import NotificationContainer from './src/Components/Notifications/NotificationContainer';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import KeyboardManager from 'react-native-keyboard-manager';
@@ -90,6 +91,7 @@ const App = ({rootStore, navigation}) => {
 
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [notificationRouting, setNotificationRouting] = useState('');
   //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
   const hudRef = useRef();
   const navigationRef = useRef();
@@ -248,14 +250,15 @@ const App = ({rootStore, navigation}) => {
       name: screenName,
       params: params,
     });
-    navigationRef.current?.dispatch(actions);
+    Platform.OS === 'ios'
+      ? navigationRef.current?.dispatch(actions)
+      : setNotificationRouting(actions);
   };
 
   useEffect(() => {
     DeepLinking.addScheme('common://');
     DeepLinking.addScheme('com.daostack.common://');
     DeepLinking.addScheme('https://app.common.io');
-    //console.log('tkt DeepLinking', DeepLinking)
 
     Linking.addEventListener('url', handleOpenURL);
 
@@ -565,10 +568,18 @@ const App = ({rootStore, navigation}) => {
           component={MonthlyContribution}
         />
       </Stack.Navigator>
+      {Platform.OS !== 'ios' && !!notificationRouting && (
+        <NotificationContainer
+          notificationRouting={notificationRouting}
+          navigation={navigationRef}
+        />
+      )}
       {appLoaderStore.isLoading && (
         <Loader isBigger isFullScreen navigation={navigationRef} />
       )}
-      {bottomSheetStore.isVisible && <BottomSheetContainer />}
+      {bottomSheetStore.isVisible && (
+        <BottomSheetContainer navigation={navigationRef} />
+      )}
       <ToastView
         ref={hudRef}
         style={{backgroundColor: 'transparent'}}
