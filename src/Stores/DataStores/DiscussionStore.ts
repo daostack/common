@@ -24,13 +24,12 @@ export default class DiscussionStore extends BaseStore<
       return this.getDataById(id);
     } catch (errr) {
       // Temporary logic for fetching Discussion in case it's not in the store.
-      this.setData(id, null);
       fetchDiscussionId(id).then((discussion: IDiscussionEntity) => {
         runInAction(() => {
           this.setData(id, new Discussion(discussion));
         });
       });
-      return this.getDataById(id);
+      return undefined;
     }
   };
 
