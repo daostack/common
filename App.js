@@ -65,6 +65,7 @@ import {object} from 'prop-types';
 import logger from './src/Services/Logger';
 import {fontSize} from './src/Theme/font';
 import Loader from '~/Components/Loader';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -316,6 +317,11 @@ const App = ({rootStore, navigation}) => {
 
     checkOnboardingStatus();
   }, []);
+
+  useEffect(() => {
+    crashlytics().log('App mounted.');
+  }, []);
+
 
   if (loading) {
     return <View style={{flex: 1}} />;
