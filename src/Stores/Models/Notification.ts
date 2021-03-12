@@ -64,11 +64,8 @@ export class Notification extends BaseModel<INotificationEntity> {
   private getCommonWhitelistedData(): NotificationItemData {
     let notificationData = {missingData: true} as NotificationItemData;
     let common = null;
-    try {
-      common = this.rootStore.commonStore.getCommonById(this.eventObjectId);
-    } catch (err) {
-      logger.warn('NOT EXISTING Common with id: ', this.eventObjectId);
-    }
+
+    common = this.rootStore.commonStore.getCommonById(this.eventObjectId);
 
     if (common) {
       const user = this.rootStore.userStore.getUserById(

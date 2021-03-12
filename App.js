@@ -118,9 +118,7 @@ const App = ({rootStore, navigation}) => {
   useEffect(() => {
     const unsubscribeUsers = userStore.subscribeToAllUsers();
     const unsubscribeCommons = commonStore.subscribeToAllCommons();
-    const unsubscribeUserNotifications = notificationStore.subscribeToUserNotifications(
-      authStore.userInfo?.uid,
-    );
+    const unsubscribeUserNotifications = notificationStore.subscribeToLoggedUserNotifications();
     let unsubscribeProposals = null;
     if (authStore.userInfo?.uid) {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(

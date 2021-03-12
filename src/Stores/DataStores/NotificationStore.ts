@@ -4,6 +4,7 @@ import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {INotificationEntity} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {Notification} from '../Models/Notification';
+import {action, observable} from 'mobx';
 
 export default class NotificationStore extends BaseStore<
   Notification,
@@ -28,8 +29,18 @@ export default class NotificationStore extends BaseStore<
           prevNotification.createdAt?.seconds - notification.createdAt?.seconds,
       );
   //Actions
-  subscribeToUserNotifications = (userId: string): FirestoreUnsubscribeFn =>
-    subscribeToUserNotifications(userId, this.updateStoreData);
+  subscribeToLoggedUserNotifications = (): FirestoreUnsubscribeFn | null =>
+    this.rootStore.authStore.signedInUser
+      ? subscribeToUserNotifications(
+          this.rootStore.authStore.signedInUser,
+          this.updateStoreData,
+        )
+      : null;
+
+  @action
+  deleteUserNotifications = () => {
+    this.data = observable.map({});
+  };
 
   // Overriden methods
   getEntityModel(entity: INotificationEntity): Notification {
