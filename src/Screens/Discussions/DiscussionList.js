@@ -22,7 +22,10 @@ const DiscussionList = ({
       list.map((discussion) => discussion.id),
     );
     return () => {
-      unsubscribeFromDiscussionMessages && unsubscribeFromDiscussionMessages();
+      unsubscribeFromDiscussionMessages &&
+        unsubscribeFromDiscussionMessages.map((unsubscribeFromChunk) =>
+          unsubscribeFromChunk(),
+        );
     };
   }, [list]);
 

@@ -1,8 +1,6 @@
 import {observable, computed} from 'mobx';
-import {
-  IDiscussionEntity,
-  IModerationEntity,
-} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
+import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
+import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 import {BaseModel} from './BaseModel';
 
 export class Discussion extends BaseModel<IDiscussionEntity> {
