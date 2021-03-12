@@ -1,10 +1,14 @@
 import BaseStore from './BaseStore';
 import {
-  fetchMessageById,
+  fetchDiscussionMessageById,
   subscribeToDiscussionsMessages,
   subscribeToProposalDiscussionMessages,
 } from '~/Services/ListServices/DiscussionMessageListService';
-import {FirestoreUnsubscribeFn, IFirebaseDocChange} from '~/Firebase/types';
+import {
+  FirestoreUnsubscribeFn,
+  IFirebaseDoc,
+  IFirebaseDocChange,
+} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {DiscussionMessage} from '../Models/DiscussionMessage';
@@ -24,11 +28,16 @@ export default class DiscussionMessageStore extends BaseStore<
       return this.getDataById(id);
     } catch (errr) {
       // Temporary logic for fetching Discussion Message in case it's not in the store.
-      fetchMessageById(id).then((discussion: IDiscussionMessageEntity) => {
-        runInAction(() => {
-          this.setData(id, new DiscussionMessage(discussion));
-        });
-      });
+      fetchDiscussionMessageById(id).then(
+        (discussion: IFirebaseDoc<IDiscussionMessageEntity>) => {
+          runInAction(() => {
+            this.setData(
+              id,
+              this.getEntityModel(this.firestoreDocToEntity(discussion)),
+            );
+          });
+        },
+      );
       return undefined;
     }
   };
@@ -61,10 +70,10 @@ export default class DiscussionMessageStore extends BaseStore<
     return new DiscussionMessage(entity);
   }
 
-  firestoreDocToEntity(
+  firestoreDocChangeToEntity(
     firebaseDoc: IFirebaseDocChange<IDiscussionMessageEntity>,
   ): IDiscussionMessageEntity {
-    const entity = super.firestoreDocToEntity(firebaseDoc);
+    const entity = super.firestoreDocChangeToEntity(firebaseDoc);
     return {
       ...entity,
       createdAt: entity.createTime,

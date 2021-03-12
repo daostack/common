@@ -85,7 +85,7 @@ export default abstract class BaseStore<
       (updatedSnapshot as IFirebaseSnapshot<IEntity>)
         .docChanges()
         .forEach((updatedUserDoc: IFirebaseDocChange<IEntity>) => {
-          const updatedEntity = this.firestoreDocToEntity(updatedUserDoc);
+          const updatedEntity = this.firestoreDocChangeToEntity(updatedUserDoc);
           updatesMap.set(updatedEntity.id, this.getEntityModel(updatedEntity));
         });
     }
@@ -106,7 +106,14 @@ export default abstract class BaseStore<
     });
   };
 
-  firestoreDocToEntity(firebaseDoc: IFirebaseDocChange<IEntity>): IEntity {
+  firestoreDocToEntity(firebaseDoc: IFirebaseDoc<IEntity>): IEntity {
+    let docData: IEntity = firebaseDoc.data() as IEntity;
+    return this.prepareDocData(docData, firebaseDoc.id);
+  }
+
+  firestoreDocChangeToEntity(
+    firebaseDoc: IFirebaseDocChange<IEntity>,
+  ): IEntity {
     let docData: IEntity = firebaseDoc.doc.data() as IEntity;
     return this.prepareDocData(docData, firebaseDoc.doc.id);
   }

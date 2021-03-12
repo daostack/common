@@ -61,7 +61,7 @@ const Discussions = ({
     commonId = dataState.commonId;
   }
 
-  let user = dataState?.ownerId
+  const user = dataState?.ownerId
     ? userStore.getUserById(dataState?.ownerId)
     : null;
   const currCommon = commonId ? commonStore.getCommonById(commonId) : null;
@@ -233,7 +233,7 @@ const Discussions = ({
         // }
       />
       <View style={{overflow: 'hidden', paddingBottom: 5}}>
-        <View style={styles.headerContainer}>
+        <View style={styles.q}>
           {isExpanded ? (
             <View
               style={{
@@ -386,6 +386,10 @@ const Discussions = ({
     setShowModerationSuccessModal(true);
     moderationFormStore.clearFormStoreState();
   };
+
+  console.log('dataState -> ', dataState);
+  console.log('user -> ', user);
+  console.log('currCommon -> ', currCommon);
 
   if (!dataState) {
     return (

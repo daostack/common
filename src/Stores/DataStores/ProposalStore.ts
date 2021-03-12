@@ -4,7 +4,7 @@ import {
   subscribeToProposalList,
   fetchProposalById,
 } from '~/Services/ListServices/ProposalListService';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
@@ -86,9 +86,12 @@ export default class ProposalStore extends BaseStore<
     try {
       return this.getDataById(id);
     } catch (errr) {
-      fetchProposalById(id).then((proposal: IProposalEntity) => {
+      fetchProposalById(id).then((proposal: IFirebaseDoc<IProposalEntity>) => {
         runInAction(() => {
-          this.setData(id, new Proposal(proposal));
+          this.setData(
+            id,
+            this.getEntityModel(this.firestoreDocToEntity(proposal)),
+          );
         });
       });
       return undefined;
