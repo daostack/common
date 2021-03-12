@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useEffect} from 'react';
 import {
   Text,
   StyleSheet,
@@ -25,6 +25,14 @@ const DiscussionMessagesList = ({
   openMessageOptions,
   isMember,
 }) => {
+  useEffect(() => {
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({
+        animated: true,
+      });
+    }, 150);
+  }, []);
+
   const chatRef = useRef(null);
   const discussionMessageStore = rootStore.discussionMessageStore;
   const msgGroups = discussionMessageStore
@@ -46,12 +54,6 @@ const DiscussionMessagesList = ({
       }
       return acc;
     }, []);
-
-  setTimeout(() => {
-    scrollViewRef.current.scrollToEnd({
-      animated: true,
-    });
-  }, 150);
 
   return (
     <View
