@@ -86,14 +86,12 @@ export default class ProposalStore extends BaseStore<
     try {
       return this.getDataById(id);
     } catch (errr) {
-      // Add the proposal id as a key in order to have null mobx state for that proposal, while it's loaded.
-      this.setData(id, null);
       fetchProposalById(id).then((proposal: IProposalEntity) => {
         runInAction(() => {
           this.setData(id, new Proposal(proposal));
         });
       });
-      return this.getDataById(id);
+      return undefined;
     }
   };
 
