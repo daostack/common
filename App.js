@@ -91,7 +91,7 @@ const App = ({rootStore, navigation}) => {
 
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [notificationRouting, setNotificationRouting] = useState('');
+  const [notificationRouting, setNotificationRouting] = useState(null);
   //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
   const hudRef = useRef();
   const navigationRef = useRef();
@@ -146,7 +146,7 @@ const App = ({rootStore, navigation}) => {
         commonId,
         objectId,
         tabIndex = 0,
-      ] = remoteMessage.data.path.split('/');
+      ] = remoteMessage.data.path?.split('/');
       // whitelist;approve/reject requestToJoin
       if (screenName === 'CommonProfile') {
         routing(screenName, {commonId});
@@ -250,9 +250,7 @@ const App = ({rootStore, navigation}) => {
       name: screenName,
       params: params,
     });
-    Platform.OS === 'ios'
-      ? navigationRef.current?.dispatch(actions)
-      : setNotificationRouting(actions);
+    setNotificationRouting(actions);
   };
 
   useEffect(() => {
@@ -568,9 +566,10 @@ const App = ({rootStore, navigation}) => {
           component={MonthlyContribution}
         />
       </Stack.Navigator>
-      {Platform.OS !== 'ios' && !!notificationRouting && (
+      {notificationRouting && (
         <NotificationContainer
           notificationRouting={notificationRouting}
+          setNotificationRouting={setNotificationRouting}
           navigation={navigationRef}
         />
       )}
