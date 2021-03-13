@@ -54,15 +54,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
     NotificationService.setNotificationClicked(item.id);
     setClicked(true);
 
-    if (item.notificationItemData.common) {
-      navigate = CommonActions.navigate({
-        name: NAVIGATION_SCREENS.COMMON_PROFILE,
-        params: {
-          currCommon: item.notificationItemData.common,
-        },
-      });
-      navigation.dispatch(navigate);
-    } else if (item.notificationItemData.proposal) {
+    if (item.notificationItemData.proposal) {
       navigation.navigate(NAVIGATION_SCREENS.PROPOSAL_SCREEN, {
         proposalId: item.notificationItemData.proposal.id,
       });
@@ -71,6 +63,14 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
         discussionId: item.notificationItemData.discussion.id,
         fromNotification: true,
       });
+    } else if (item.notificationItemData.common) {
+      navigate = CommonActions.navigate({
+        name: NAVIGATION_SCREENS.COMMON_PROFILE,
+        params: {
+          currCommon: item.notificationItemData.common,
+        },
+      });
+      navigation.dispatch(navigate);
     } else if (item.eventType === EventTypeState.welcomeNotification) {
       navigation.dispatch(
         CommonActions.reset({
