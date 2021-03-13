@@ -62,7 +62,7 @@ export const EventTypeState = {
 
 export const EventTitleState = {
   creationReqToJoin: 'Request To Join Created',
-  requestToJoinCreated: 'Membership Request Created',
+  requestToJoinCreated: 'New Members',
   requestToJoinExecuted: 'Request To Join Executed',
   requestToJoinAccepted: 'Membership Approved',
   requestToJoinRejected: 'Membership Rejected',
