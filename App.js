@@ -173,11 +173,11 @@ const App = ({rootStore, navigation}) => {
   useEffect(() => {
     // Assume a message-notification contains a "type" property in the data payload of the screen to open
     messaging().onNotificationOpenedApp((remoteMessage) => {
-      console.log(
+      logger.log(
         'Notification caused app to open from background state:',
         remoteMessage,
       );
-      console.log('onNotificationOpenedApp remoteMessage', remoteMessage);
+      logger.log('onNotificationOpenedApp remoteMessage', remoteMessage);
       notificationNavigation(remoteMessage);
     });
 
@@ -185,7 +185,7 @@ const App = ({rootStore, navigation}) => {
     messaging()
       .getInitialNotification()
       .then((remoteMessage) => {
-        console.log('getInitialNotification remoteMessage', remoteMessage);
+        logger.log('getInitialNotification remoteMessage', remoteMessage);
         notificationNavigation(remoteMessage);
       });
   }, []);
