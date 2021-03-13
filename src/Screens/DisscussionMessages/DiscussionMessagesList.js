@@ -50,7 +50,7 @@ const DiscussionMessagesList = ({
   setTimeout(() => {
     // Sometimes that code is executed after we leave the actual screen, so we need that check.
     if (scrollViewRef?.current) {
-      scrollViewRef.current.scrollToEnd({
+      scrollViewRef.current?.scrollToEnd({
         animated: true,
       });
     }

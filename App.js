@@ -49,6 +49,7 @@ import {
   EditCommon,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
+import NotificationContainer from './src/Components/Notifications/NotificationContainer';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import KeyboardManager from 'react-native-keyboard-manager';
@@ -91,6 +92,7 @@ const App = ({rootStore, navigation}) => {
 
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [notificationRouting, setNotificationRouting] = useState(null);
   //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
   const hudRef = useRef();
   const navigationRef = useRef();
@@ -145,7 +147,7 @@ const App = ({rootStore, navigation}) => {
         commonId,
         objectId,
         tabIndex = 0,
-      ] = remoteMessage.data.path.split('/');
+      ] = remoteMessage.data.path?.split('/');
       // whitelist;approve/reject requestToJoin
       if (screenName === 'CommonProfile') {
         routing(screenName, {commonId});
@@ -172,11 +174,11 @@ const App = ({rootStore, navigation}) => {
   useEffect(() => {
     // Assume a message-notification contains a "type" property in the data payload of the screen to open
     messaging().onNotificationOpenedApp((remoteMessage) => {
-      console.log(
+      logger.log(
         'Notification caused app to open from background state:',
         remoteMessage,
       );
-      console.log('onNotificationOpenedApp remoteMessage', remoteMessage);
+      logger.log('onNotificationOpenedApp remoteMessage', remoteMessage);
       notificationNavigation(remoteMessage);
     });
 
@@ -184,7 +186,7 @@ const App = ({rootStore, navigation}) => {
     messaging()
       .getInitialNotification()
       .then((remoteMessage) => {
-        console.log('getInitialNotification remoteMessage', remoteMessage);
+        logger.log('getInitialNotification remoteMessage', remoteMessage);
         notificationNavigation(remoteMessage);
       });
   }, []);
@@ -249,14 +251,13 @@ const App = ({rootStore, navigation}) => {
       name: screenName,
       params: params,
     });
-    navigationRef.current?.dispatch(actions);
+    setNotificationRouting(actions);
   };
 
   useEffect(() => {
     DeepLinking.addScheme('common://');
     DeepLinking.addScheme('com.daostack.common://');
     DeepLinking.addScheme('https://app.common.io');
-    //console.log('tkt DeepLinking', DeepLinking)
 
     Linking.addEventListener('url', handleOpenURL);
 
@@ -571,10 +572,19 @@ const App = ({rootStore, navigation}) => {
           component={MonthlyContribution}
         />
       </Stack.Navigator>
+      {notificationRouting && (
+        <NotificationContainer
+          notificationRouting={notificationRouting}
+          setNotificationRouting={setNotificationRouting}
+          navigation={navigationRef}
+        />
+      )}
       {appLoaderStore.isLoading && (
         <Loader isBigger isFullScreen navigation={navigationRef} />
       )}
-      {bottomSheetStore.isVisible && <BottomSheetContainer />}
+      {bottomSheetStore.isVisible && (
+        <BottomSheetContainer navigation={navigationRef} />
+      )}
       <ToastView
         ref={hudRef}
         style={{backgroundColor: 'transparent'}}
