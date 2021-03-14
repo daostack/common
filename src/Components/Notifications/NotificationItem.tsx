@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     marginTop: 5,
-    maxWidth: '85%',
+    maxWidth: '90%',
   },
   nameStyle: {
     ...font.primary.bold,

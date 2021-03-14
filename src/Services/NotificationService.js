@@ -234,7 +234,8 @@ export default class NotificationService {
                     if (common && user) {
                       data = {
                         ...data,
-                        description: ' You are asking to be a common member',
+                        description:
+                          ' Your Common has new pending members, view their requests and vote',
                         ownerAvatar: user.photoURL,
                         commonName: common.name,
                         proposal,
